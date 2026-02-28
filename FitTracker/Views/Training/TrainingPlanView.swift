@@ -392,7 +392,6 @@ struct SetRowView: View {
     @State private var weightStr = ""
     @State private var repsStr   = ""
     @State private var noteStr   = ""
-    @State private var rpe: Double?
 
     var body: some View {
         HStack(spacing: 0) {
