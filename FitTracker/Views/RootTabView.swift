@@ -138,7 +138,7 @@ struct RootTabView: View {
     // ── Shared account button ─────────────────────────────
     @ToolbarContentBuilder
     private var accountButton: some ToolbarContent {
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItem(placement: .topBarLeading) {
             Button { showAccount = true } label: {
                 avatarBadge(32)
                     .overlay(Circle().stroke(Color.green.opacity(0.3), lineWidth: 1.5))

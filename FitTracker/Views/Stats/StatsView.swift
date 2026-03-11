@@ -93,66 +93,72 @@ struct SettingsView: View {
     @State private var showResetAlert = false
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Profile") {
-                    LabeledContent("Name",          value: dataStore.userProfile.name)
-                    LabeledContent("Recovery Start", value: "Jan 29, 2026")
-                    LabeledContent("Phase",         value: dataStore.userProfile.currentPhase.rawValue)
-                    LabeledContent("Recovery Day",  value: "Day \(dataStore.userProfile.daysSinceStart)")
-                    LabeledContent("Goal Weight",   value: "\(Int(dataStore.userProfile.targetWeightMin))–\(Int(dataStore.userProfile.targetWeightMax)) kg")
-                    LabeledContent("Goal Body Fat", value: "\(Int(dataStore.userProfile.targetBFMin))–\(Int(dataStore.userProfile.targetBFMax))%")
-                }
+        #if os(macOS)
+        NavigationStack { settingsForm }
+        #else
+        settingsForm
+        #endif
+    }
 
-                Section("Apple Health") {
-                    LabeledContent("HealthKit", value: healthService.isAuthorized ? "Authorized ✓" : "Not authorized")
-                    LabeledContent("Apple Watch", value: "Background delivery active")
-                    Button("Re-authorize HealthKit") {
-                        Task { try? await healthService.requestAuthorization() }
-                    }
-                }
+    private var settingsForm: some View {
+        Form {
+            Section("Profile") {
+                LabeledContent("Name",          value: dataStore.userProfile.name)
+                LabeledContent("Recovery Start", value: "Jan 29, 2026")
+                LabeledContent("Phase",         value: dataStore.userProfile.currentPhase.rawValue)
+                LabeledContent("Recovery Day",  value: "Day \(dataStore.userProfile.daysSinceStart)")
+                LabeledContent("Goal Weight",   value: "\(Int(dataStore.userProfile.targetWeightMin))–\(Int(dataStore.userProfile.targetWeightMax)) kg")
+                LabeledContent("Goal Body Fat", value: "\(Int(dataStore.userProfile.targetBFMin))–\(Int(dataStore.userProfile.targetBFMax))%")
+            }
 
-                Section("iCloud Sync") {
-                    LabeledContent("Status",     value: cloudSync.status.rawValue)
-                    LabeledContent("iCloud",     value: cloudSync.iCloudAvailable ? "Available ✓" : "Unavailable")
-                    if let last = cloudSync.lastSyncDate {
-                        LabeledContent("Last Sync", value: lastSyncFormatted(last))
-                    }
-                    Button("Sync Now") {
-                        Task { await cloudSync.pushPendingChanges(dataStore: dataStore) }
-                    }
-                    Button("Fetch from iCloud") {
-                        Task { await cloudSync.fetchChanges(dataStore: dataStore) }
-                    }
-                }
-
-                Section("Security") {
-                    LabeledContent("Encryption",      value: "AES-256-GCM + ChaCha20-Poly1305")
-                    LabeledContent("Key Storage",     value: "Keychain (biometric-protected)")
-                    LabeledContent("Cloud Storage",   value: "Encrypted before upload ✓")
-                    LabeledContent("Data Protection", value: "NSFileProtectionCompleteUnlessOpen")
-                    LabeledContent("Platforms",       value: "iOS · iPadOS · macOS only")
-                }
-
-                Section("Data") {
-                    LabeledContent("Daily Logs",       value: "\(dataStore.dailyLogs.count) entries")
-                    LabeledContent("Weekly Snapshots", value: "\(dataStore.weeklySnapshots.count) entries")
-                    Button("Delete All Local Data", role: .destructive) {
-                        showResetAlert = true
-                    }
+            Section("Apple Health") {
+                LabeledContent("HealthKit", value: healthService.isAuthorized ? "Authorized ✓" : "Not authorized")
+                LabeledContent("Apple Watch", value: "Background delivery active")
+                Button("Re-authorize HealthKit") {
+                    Task { try? await healthService.requestAuthorization() }
                 }
             }
-            .navigationTitle("Settings")
-            .alert("Delete All Data?", isPresented: $showResetAlert) {
-                Button("Delete", role: .destructive) {
-                    dataStore.dailyLogs = []
-                    dataStore.weeklySnapshots = []
-                    Task { await dataStore.persistToDisk() }
+
+            Section("iCloud Sync") {
+                LabeledContent("Status",     value: cloudSync.status.rawValue)
+                LabeledContent("iCloud",     value: cloudSync.iCloudAvailable ? "Available ✓" : "Unavailable")
+                if let last = cloudSync.lastSyncDate {
+                    LabeledContent("Last Sync", value: lastSyncFormatted(last))
                 }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This permanently removes all locally stored logs. iCloud copies are not deleted.")
+                Button("Sync Now") {
+                    Task { await cloudSync.pushPendingChanges(dataStore: dataStore) }
+                }
+                Button("Fetch from iCloud") {
+                    Task { await cloudSync.fetchChanges(dataStore: dataStore) }
+                }
             }
+
+            Section("Security") {
+                LabeledContent("Encryption",      value: "AES-256-GCM + ChaCha20-Poly1305")
+                LabeledContent("Key Storage",     value: "Keychain (biometric-protected)")
+                LabeledContent("Cloud Storage",   value: "Encrypted before upload ✓")
+                LabeledContent("Data Protection", value: "NSFileProtectionCompleteUnlessOpen")
+                LabeledContent("Platforms",       value: "iOS · iPadOS · macOS only")
+            }
+
+            Section("Data") {
+                LabeledContent("Daily Logs",       value: "\(dataStore.dailyLogs.count) entries")
+                LabeledContent("Weekly Snapshots", value: "\(dataStore.weeklySnapshots.count) entries")
+                Button("Delete All Local Data", role: .destructive) {
+                    showResetAlert = true
+                }
+            }
+        }
+        .navigationTitle("Settings")
+        .alert("Delete All Data?", isPresented: $showResetAlert) {
+            Button("Delete", role: .destructive) {
+                dataStore.dailyLogs = []
+                dataStore.weeklySnapshots = []
+                Task { await dataStore.persistToDisk() }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This permanently removes all locally stored logs. iCloud copies are not deleted.")
         }
     }
 
