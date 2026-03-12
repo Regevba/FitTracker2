@@ -1,9 +1,8 @@
 // Views/Main/MainScreenView.swift
 // Tab 1: Main screen
-//   - Time-based greeting + today's date
-//   - Current weight ↔ body fat swipeable card
-//   - Goal progress ring
-//   - Start Exercise button
+//   - Dynamic gradient background: light orange → light blue as goal progress increases
+//   - Right-edge vertical tracker: orb descends top → bottom with progress
+//   - All elements blended directly on gradient (no card containers)
 
 import SwiftUI
 
@@ -14,22 +13,18 @@ struct MainScreenView: View {
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
 
-    // Metric card slide state
-    @State private var metricPage:       Int  = 0         // 0 = weight, 1 = body fat
-    @State private var dragOffset:       CGFloat = 0
+    @State private var metricPage:       Int  = 0
     @State private var showExerciseSheet = false
     @State private var manualEntry       = false
 
-    private var profile:  UserProfile   { dataStore.userProfile }
-    private var metrics:  LiveMetrics   { healthService.latest }
-    private var todayLog: DailyLog?     { dataStore.todayLog() }
+    private var profile:  UserProfile  { dataStore.userProfile }
+    private var metrics:  LiveMetrics  { healthService.latest }
+    private var todayLog: DailyLog?    { dataStore.todayLog() }
 
-    // Effective values: HealthKit > manual biometrics from today's log
     private var currentWeight: Double? {
         metrics.weightKg ?? todayLog?.biometrics.weightKg
     }
     private var currentBF: Double? {
-        // HealthKit returns 0–1 fraction; scale manual returns percentage
         if let hk = metrics.bodyFatPct { return hk * 100 }
         return todayLog?.biometrics.bodyFatPercent
     }
@@ -38,19 +33,30 @@ struct MainScreenView: View {
         profile.overallProgress(currentWeight: currentWeight, currentBF: currentBF)
     }
 
+    // Background palette
+    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
+    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+    private let bgBlue1   = Color(red: 0.73, green: 0.89, blue: 1.0)
+    private let bgBlue2   = Color(red: 0.54, green: 0.78, blue: 1.0)
+
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 24) {
-                greetingHeader
-                metricSlider
-                goalRing
-                recoveryStatus
-                startExerciseButton
-                quickStats
+        ZStack {
+            backgroundLayer
+            progressTracker
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 32) {
+                    greetingHeader
+                    metricSlider
+                    goalSection
+                    recoveryStatus
+                    startExerciseButton
+                    quickStats
+                }
+                .padding(.horizontal, 20)
+                .padding(.trailing, 28)   // leave room for right-edge tracker
+                .padding(.top, 8)
+                .padding(.bottom, 40)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
-            .padding(.bottom, 40)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarItems }
@@ -65,30 +71,98 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
+    // MARK: – Background gradient
+    // ─────────────────────────────────────────────────────
+
+    private var backgroundLayer: some View {
+        ZStack {
+            // Base: light orange (always present)
+            LinearGradient(colors: [bgOrange1, bgOrange2],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            // Overlay: light blue, fades in as goalProgress increases → 0 = full orange, 1 = full blue
+            LinearGradient(colors: [bgBlue1, bgBlue2],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+                .opacity(goalProgress)
+                .animation(.easeInOut(duration: 1.5), value: goalProgress)
+        }
+        .ignoresSafeArea()
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Vertical progress tracker
+    // Orb starts at the top and descends to the bottom as
+    // goalProgress goes from 0 → 1
+    // ─────────────────────────────────────────────────────
+
+    private var progressTracker: some View {
+        GeometryReader { proxy in
+            let trackStart: CGFloat = 110
+            let trackEnd:   CGFloat = proxy.size.height - 110
+            let trackH   = max(1, trackEnd - trackStart)
+            let orbY     = trackStart + trackH * goalProgress
+            let x        = proxy.size.width - 16
+            let fillH    = max(2, trackH * goalProgress)
+
+            // Rail
+            Capsule()
+                .fill(Color.white.opacity(0.35))
+                .frame(width: 3, height: trackH)
+                .position(x: x, y: trackStart + trackH / 2)
+
+            // Filled portion (orange at top → blue at bottom)
+            Capsule()
+                .fill(LinearGradient(
+                    colors: [.orange.opacity(0.65), .blue.opacity(0.65)],
+                    startPoint: .top, endPoint: .bottom))
+                .frame(width: 3, height: fillH)
+                .position(x: x, y: trackStart + fillH / 2)
+                .animation(.spring(response: 1.2), value: goalProgress)
+
+            // Glow halo behind orb
+            Circle()
+                .fill(goalProgress > 0.5
+                      ? Color.blue.opacity(0.22)
+                      : Color.orange.opacity(0.22))
+                .frame(width: 26, height: 26)
+                .blur(radius: 6)
+                .position(x: x, y: orbY)
+                .animation(.spring(response: 1.2), value: goalProgress)
+
+            // Orb
+            Circle()
+                .fill(Color.white)
+                .frame(width: 13, height: 13)
+                .shadow(color: goalProgress > 0.5
+                        ? .blue.opacity(0.55)
+                        : .orange.opacity(0.55),
+                        radius: 5)
+                .position(x: x, y: orbY)
+                .animation(.spring(response: 1.2), value: goalProgress)
+        }
+        .allowsHitTesting(false)
+    }
+
+    // ─────────────────────────────────────────────────────
     // MARK: – Greeting header
     // ─────────────────────────────────────────────────────
 
     private var greetingHeader: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(greeting)
-                        .font(.system(.title, design: .rounded, weight: .bold))
-                    Text(todayFormatted)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("Day \(profile.daysSinceStart)")
-                        .font(.system(.title2, design: .monospaced, weight: .bold))
-                        .foregroundStyle(.green)
-                    Text(profile.currentPhase.rawValue)
-                        .font(.caption2.monospaced())
-                        .foregroundStyle(.green.opacity(0.8))
-                        .padding(.horizontal, 8).padding(.vertical, 3)
-                        .background(.green.opacity(0.12), in: Capsule())
-                }
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(greeting)
+                    .font(.system(.title, design: .rounded, weight: .bold))
+                Text(todayFormatted)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("Day \(profile.daysSinceStart)")
+                    .font(.system(.title2, design: .monospaced, weight: .bold))
+                Text(profile.currentPhase.rawValue)
+                    .font(.caption2.monospaced())
+                    .padding(.horizontal, 8).padding(.vertical, 3)
+                    .background(Color.white.opacity(0.35), in: Capsule())
             }
         }
     }
@@ -110,7 +184,7 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Swipeable metric card (weight ↔ body fat)
+    // MARK: – Swipeable metric display (no card background)
     // ─────────────────────────────────────────────────────
 
     private var metricSlider: some View {
@@ -128,11 +202,10 @@ struct MainScreenView: View {
                     }
             )
 
-            // Page dots
             HStack(spacing: 6) {
                 ForEach(0..<2, id: \.self) { i in
                     Circle()
-                        .fill(i == metricPage ? Color.green : Color.secondary.opacity(0.35))
+                        .fill(i == metricPage ? Color.primary.opacity(0.55) : Color.primary.opacity(0.2))
                         .frame(width: 6, height: 6)
                         .animation(.easeInOut, value: metricPage)
                 }
@@ -183,20 +256,19 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Goal progress ring
+    // MARK: – Goal section (no card background)
     // ─────────────────────────────────────────────────────
 
-    private var goalRing: some View {
+    private var goalSection: some View {
         HStack(spacing: 20) {
-            // Animated ring
             ZStack {
                 Circle()
-                    .stroke(Color.secondary.opacity(0.2), lineWidth: 10)
+                    .stroke(Color.white.opacity(0.4), lineWidth: 10)
                     .frame(width: 90, height: 90)
                 Circle()
                     .trim(from: 0, to: goalProgress)
                     .stroke(
-                        AngularGradient(colors: [.green, .teal, .green], center: .center),
+                        AngularGradient(colors: [.orange, .blue, .orange], center: .center),
                         style: StrokeStyle(lineWidth: 10, lineCap: .round)
                     )
                     .frame(width: 90, height: 90)
@@ -205,7 +277,6 @@ struct MainScreenView: View {
                 VStack(spacing: 0) {
                     Text("\(Int(goalProgress * 100))%")
                         .font(.system(.headline, design: .monospaced, weight: .bold))
-                        .foregroundStyle(.green)
                     Text("Goal")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -217,18 +288,15 @@ struct MainScreenView: View {
                     .font(.caption2.monospaced())
                     .foregroundStyle(.secondary)
                     .tracking(1.5)
-
-                GoalProgressRow(label: "Weight", progress: profile.weightProgress(current: currentWeight), color: .blue)
-                GoalProgressRow(label: "Body Fat", progress: profile.bfProgress(current: currentBF), color: .orange)
+                GoalProgressRow(label: "Weight",   progress: profile.weightProgress(current: currentWeight), color: .blue)
+                GoalProgressRow(label: "Body Fat", progress: profile.bfProgress(current: currentBF),         color: .orange)
             }
             Spacer()
         }
-        .padding(16)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Recovery status banner
+    // MARK: – Recovery status
     // ─────────────────────────────────────────────────────
 
     private var recoveryStatus: some View {
@@ -241,7 +309,7 @@ struct MainScreenView: View {
                     Spacer()
                 }
                 .padding(12)
-                .background(.green.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 10))
             } else {
                 VStack(spacing: 6) {
                     if (metrics.restingHR ?? 0) > 75 || metrics.restingHR == nil {
@@ -268,9 +336,7 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var startExerciseButton: some View {
-        Button {
-            showExerciseSheet = true
-        } label: {
+        Button { showExerciseSheet = true } label: {
             HStack(spacing: 12) {
                 ZStack {
                     Circle().fill(.black.opacity(0.15)).frame(width: 44, height: 44)
@@ -278,15 +344,11 @@ struct MainScreenView: View {
                         .font(.title3.weight(.semibold))
                 }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Start Exercise")
-                        .font(.headline)
-                    Text("Today: \(programStore.todayDayType.rawValue)")
-                        .font(.caption)
-                        .opacity(0.8)
+                    Text("Start Exercise").font(.headline)
+                    Text("Today: \(programStore.todayDayType.rawValue)").font(.caption).opacity(0.8)
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.subheadline.weight(.semibold))
+                Image(systemName: "chevron.right").font(.subheadline.weight(.semibold))
             }
             .padding(16)
             .foregroundStyle(.black)
@@ -300,15 +362,23 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Quick stats row
+    // MARK: – Quick stats (no pill backgrounds)
     // ─────────────────────────────────────────────────────
 
     private var quickStats: some View {
         HStack(spacing: 10) {
-            QuickStatPill(icon: "waveform.path.ecg", value: metrics.hrv.map { String(format: "%.0f ms", $0) } ?? "—", label: "HRV", color: metrics.hrvStatus.color)
-            QuickStatPill(icon: "heart.fill", value: metrics.restingHR.map { String(format: "%.0f", $0) } ?? "—", label: "Rest HR", color: metrics.restingHRStatus.color)
-            QuickStatPill(icon: "moon.fill", value: metrics.sleepHours.map { String(format: "%.1f h", $0) } ?? "—", label: "Sleep", color: .purple)
-            QuickStatPill(icon: "figure.walk", value: metrics.stepCount.map { "\($0)" } ?? "—", label: "Steps", color: .blue)
+            QuickStatPill(icon: "waveform.path.ecg",
+                          value: metrics.hrv.map        { String(format: "%.0f ms", $0) } ?? "—",
+                          label: "HRV",     color: metrics.hrvStatus.color)
+            QuickStatPill(icon: "heart.fill",
+                          value: metrics.restingHR.map  { String(format: "%.0f",    $0) } ?? "—",
+                          label: "Rest HR", color: metrics.restingHRStatus.color)
+            QuickStatPill(icon: "moon.fill",
+                          value: metrics.sleepHours.map { String(format: "%.1f h",  $0) } ?? "—",
+                          label: "Sleep",   color: .purple)
+            QuickStatPill(icon: "figure.walk",
+                          value: metrics.stepCount.map  { "\($0)" } ?? "—",
+                          label: "Steps",   color: .blue)
         }
     }
 
@@ -330,18 +400,18 @@ struct MainScreenView: View {
 }
 
 // ─────────────────────────────────────────────────────────
-// MARK: – Sub-components
+// MARK: – MetricBigCard (no background — floats on gradient)
 // ─────────────────────────────────────────────────────────
 
 struct MetricBigCard: View {
-    let icon:         String
-    let label:        String
-    let value:        String
-    let unit:         String
-    let delta:        String
-    let targetLabel:  String
-    let color:        Color
-    let onTap:        () -> Void
+    let icon:          String
+    let label:         String
+    let value:         String
+    let unit:          String
+    let delta:         String
+    let targetLabel:   String
+    let color:         Color
+    let onTap:         () -> Void
     let onManualEntry: () -> Void
 
     var body: some View {
@@ -352,18 +422,12 @@ struct MetricBigCard: View {
                     .foregroundStyle(color)
                     .tracking(1)
                 Spacer()
-                Button {
-                    onManualEntry()
-                } label: {
-                    Image(systemName: "pencil.circle")
-                        .foregroundStyle(.secondary)
+                Button { onManualEntry() } label: {
+                    Image(systemName: "pencil.circle").foregroundStyle(.secondary)
                 }
-                Button {
-                    onTap()
-                } label: {
+                Button { onTap() } label: {
                     Image(systemName: "arrow.left.arrow.right")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
 
@@ -385,12 +449,14 @@ struct MetricBigCard: View {
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(20)
+        .padding(.vertical, 4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
-        .overlay(RoundedRectangle(cornerRadius: 16).stroke(color.opacity(0.2), lineWidth: 1))
     }
 }
+
+// ─────────────────────────────────────────────────────────
+// MARK: – GoalProgressRow
+// ─────────────────────────────────────────────────────────
 
 struct GoalProgressRow: View {
     let label:    String
@@ -406,8 +472,11 @@ struct GoalProgressRow: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2).fill(Color.secondary.opacity(0.15)).frame(height: 4)
-                    RoundedRectangle(cornerRadius: 2).fill(color)
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(Color.white.opacity(0.4))
+                        .frame(height: 4)
+                    RoundedRectangle(cornerRadius: 2)
+                        .fill(color)
                         .frame(width: geo.size.width * progress, height: 4)
                         .animation(.spring(response: 1.0), value: progress)
                 }
@@ -417,8 +486,12 @@ struct GoalProgressRow: View {
     }
 }
 
+// ─────────────────────────────────────────────────────────
+// MARK: – RecoveryBanner (subtle white-glass background)
+// ─────────────────────────────────────────────────────────
+
 struct RecoveryBanner: View {
-    let icon:  String; let text: String; let color: Color
+    let icon: String; let text: String; let color: Color
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: icon).foregroundStyle(color).font(.caption)
@@ -426,10 +499,13 @@ struct RecoveryBanner: View {
             Spacer()
         }
         .padding(10)
-        .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(color.opacity(0.2), lineWidth: 1))
+        .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 8))
     }
 }
+
+// ─────────────────────────────────────────────────────────
+// MARK: – QuickStatPill (no background — floats on gradient)
+// ─────────────────────────────────────────────────────────
 
 struct QuickStatPill: View {
     let icon: String; let value: String; let label: String; let color: Color
@@ -441,9 +517,12 @@ struct QuickStatPill: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 10))
     }
 }
+
+// ─────────────────────────────────────────────────────────
+// MARK: – SyncStatusIndicator
+// ─────────────────────────────────────────────────────────
 
 struct SyncStatusIndicator: View {
     @EnvironmentObject var cloud: CloudKitSyncService
@@ -516,10 +595,10 @@ struct ManualBiometricEntry: View {
             }
             .onAppear {
                 if let b = dataStore.todayLog()?.biometrics {
-                    weightText = b.weightKg.map { String($0) } ?? ""
-                    bfText     = b.bodyFatPercent.map { String($0) } ?? ""
-                    hrText     = b.manualRestingHR.map { String($0) } ?? ""
-                    hrvText    = b.manualHRV.map { String($0) } ?? ""
+                    weightText = b.weightKg.map         { String($0) } ?? ""
+                    bfText     = b.bodyFatPercent.map   { String($0) } ?? ""
+                    hrText     = b.manualRestingHR.map  { String($0) } ?? ""
+                    hrvText    = b.manualHRV.map        { String($0) } ?? ""
                     sleepText  = b.manualSleepHours.map { String($0) } ?? ""
                 }
             }
@@ -528,10 +607,10 @@ struct ManualBiometricEntry: View {
 
     private func save() {
         var log = dataStore.todayLog() ?? makeBlankLog()
-        log.biometrics.weightKg        = Double(weightText)
-        log.biometrics.bodyFatPercent  = Double(bfText)
-        log.biometrics.manualRestingHR = Double(hrText)
-        log.biometrics.manualHRV       = Double(hrvText)
+        log.biometrics.weightKg         = Double(weightText)
+        log.biometrics.bodyFatPercent   = Double(bfText)
+        log.biometrics.manualRestingHR  = Double(hrText)
+        log.biometrics.manualHRV        = Double(hrvText)
         log.biometrics.manualSleepHours = Double(sleepText)
         dataStore.upsertLog(log)
     }
