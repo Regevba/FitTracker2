@@ -52,13 +52,17 @@ struct MainScreenView: View {
             // All content in a VStack with flexible spacers — no scroll
             VStack(spacing: 0) {
                 greetingHeader
-                Spacer(minLength: 14)
+                Spacer(minLength: 10)
+                sectionHeader("Status")
                 metricPair
-                Spacer(minLength: 14)
+                Spacer(minLength: 10)
+                sectionHeader("Goal")
                 goalSection
-                Spacer(minLength: 12)
+                Spacer(minLength: 10)
+                sectionHeader("Start Training")
                 trainingButton
-                Spacer(minLength: 12)
+                Spacer(minLength: 10)
+                sectionHeader("Metrics")
                 quickStats
             }
             .padding(.horizontal, 20)
@@ -67,6 +71,7 @@ struct MainScreenView: View {
             .padding(.bottom, 12)
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar { toolbarItems }
         .sheet(isPresented: $showExerciseSheet) {
             NavigationStack { TrainingPlanView() }
@@ -319,7 +324,7 @@ struct MainScreenView: View {
                 ZStack {
                     Circle()
                         .fill(trainingActive
-                              ? Color(red: 1.0, green: 0.65, blue: 0.3)   // warm orange when active
+                              ? Color(red: 1.0, green: 0.65, blue: 0.3)
                               : buttonBlue)
                         .frame(width: 52, height: 52)
                         .shadow(color: (trainingActive ? Color.orange : buttonBlue).opacity(0.45),
@@ -332,53 +337,45 @@ struct MainScreenView: View {
             }
             .buttonStyle(.plain)
 
-            // Plan label + dropdown picker
-            VStack(alignment: .leading, spacing: 3) {
-                Text(trainingActive ? "Training Active" : "Start Training")
-                    .font(.subheadline.weight(.semibold))
-
-                Menu {
-                    // "Follow today's schedule" option
+            // Day picker dropdown only
+            Menu {
+                Button {
+                    selectedDayType = nil
+                } label: {
+                    HStack {
+                        Text("Today's Schedule (\(programStore.todayDayType.rawValue))")
+                        if selectedDayType == nil { Image(systemName: "checkmark") }
+                    }
+                }
+                Divider()
+                ForEach(DayType.allCases, id: \.self) { day in
                     Button {
-                        selectedDayType = nil
+                        selectedDayType = day
                     } label: {
                         HStack {
-                            Text("Today's Schedule (\(programStore.todayDayType.rawValue))")
-                            if selectedDayType == nil { Image(systemName: "checkmark") }
-                        }
-                    }
-                    Divider()
-                    ForEach(DayType.allCases, id: \.self) { day in
-                        Button {
-                            selectedDayType = day
-                        } label: {
-                            HStack {
-                                Label(day.rawValue, systemImage: day.icon)
-                                if activeDayType == day && selectedDayType != nil {
-                                    Image(systemName: "checkmark")
-                                }
+                            Label(day.rawValue, systemImage: day.icon)
+                            if activeDayType == day && selectedDayType != nil {
+                                Image(systemName: "checkmark")
                             }
                         }
                     }
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: activeDayType.icon)
-                            .font(.system(size: 10, weight: .semibold))
-                            .foregroundStyle(.secondary)
-                        Text(activeDayType.rawValue)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        Image(systemName: "chevron.down")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(.secondary)
-                    }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Image(systemName: activeDayType.icon)
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.secondary)
+                    Text(activeDayType.rawValue)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(.secondary)
                 }
             }
 
             Spacer()
         }
-        .padding(14)
-        .background(Color.white.opacity(0.25), in: RoundedRectangle(cornerRadius: 16))
     }
 
     // ─────────────────────────────────────────────────────
@@ -409,13 +406,17 @@ struct MainScreenView: View {
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
-            HStack(spacing: 12) {
-                Button { manualEntry = true } label: {
-                    Image(systemName: "square.and.pencil")
-                }
-                SyncStatusIndicator()
-            }
+            SyncStatusIndicator()
         }
+    }
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title.uppercased())
+            .font(.system(size: 10, weight: .semibold, design: .rounded))
+            .foregroundStyle(.secondary)
+            .tracking(1.2)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.bottom, 5)
     }
 }
 
