@@ -20,7 +20,7 @@ struct RootTabView: View {
     @State private var showAccount             = false
 
     enum AppTab: String, CaseIterable, Hashable {
-        case main       = "Main"
+        case main       = "Home"
         case training   = "Training Plan"
         case nutrition  = "Nutrition"
         case stats      = "Stats"
