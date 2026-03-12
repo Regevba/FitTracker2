@@ -20,15 +20,25 @@ struct TrainingPlanView: View {
     @State private var log: DailyLog?
     @State private var persistTask: Task<Void, Never>?
 
+    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
+    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+    private let appBlue   = Color(red: 0.73, green: 0.89, blue: 1.0)
+
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(spacing: 16) {
-                dayPicker
-                sessionHeader
-                exerciseSections
+        ZStack {
+            LinearGradient(colors: [bgOrange1, bgOrange2],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 16) {
+                    dayPicker
+                    sessionHeader
+                    exerciseSections
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 40)
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 40)
         }
         .navigationTitle("Training Plan")
         .navigationBarTitleDisplayMode(.inline)
@@ -66,8 +76,8 @@ struct TrainingPlanView: View {
                             Text(day.rawValue).font(.caption.weight(.semibold))
                         }
                         .padding(.horizontal, 14).padding(.vertical, 8)
-                        .background(selectedDay == day ? Color.green : Color.secondary.opacity(0.12), in: Capsule())
-                        .foregroundStyle(selectedDay == day ? .black : .primary)
+                        .background(selectedDay == day ? Color(red: 0.73, green: 0.89, blue: 1.0) : Color.white.opacity(0.35), in: Capsule())
+                        .foregroundStyle(.primary)
                     }
                     .buttonStyle(.plain)
                 }
@@ -99,7 +109,7 @@ struct TrainingPlanView: View {
             }
         }
         .padding(14)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+        .background(Color.white.opacity(0.35), in: RoundedRectangle(cornerRadius: 14))
     }
 
     private func completionRing(done: Int, total: Int) -> some View {
@@ -109,12 +119,12 @@ struct TrainingPlanView: View {
             Circle().stroke(Color.secondary.opacity(0.2), lineWidth: 5).frame(width: 44, height: 44)
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(.green, style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                .stroke(Color(red: 0.73, green: 0.89, blue: 1.0), style: StrokeStyle(lineWidth: 5, lineCap: .round))
                 .frame(width: 44, height: 44)
                 .rotationEffect(.degrees(-90))
             Text("\(percent)%")
                 .font(.system(size: 10, weight: .bold, design: .monospaced))
-                .foregroundStyle(.green)
+                .foregroundStyle(Color(red: 0.4, green: 0.6, blue: 0.9))
         }
     }
 

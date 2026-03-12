@@ -14,9 +14,14 @@ struct MainScreenView: View {
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
 
-    @State private var trainingActive    = false
-    @State private var showExerciseSheet = false
-    @State private var manualEntry       = false
+    @State private var trainingActive     = false
+    @State private var showExerciseSheet  = false
+    @State private var manualEntry        = false
+    @State private var selectedDayType:   DayType? = nil   // nil = follow today's schedule
+
+    private var activeDayType: DayType {
+        selectedDayType ?? programStore.todayDayType
+    }
 
     private var profile:  UserProfile  { dataStore.userProfile }
     private var metrics:  LiveMetrics  { healthService.latest }
@@ -52,7 +57,7 @@ struct MainScreenView: View {
                 Spacer(minLength: 14)
                 goalSection
                 Spacer(minLength: 12)
-                recoveryStatus
+                trainingButton
                 Spacer(minLength: 12)
                 quickStats
             }
@@ -137,8 +142,7 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var greetingHeader: some View {
-        HStack(alignment: .center, spacing: 12) {
-            // Left: greeting, date, day counter + phase
+        HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(greeting)
                     .font(.system(.title2, design: .rounded, weight: .bold))
@@ -147,45 +151,15 @@ struct MainScreenView: View {
                 Text(todayFormatted)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
-                HStack(spacing: 6) {
-                    Text("Day \(profile.daysSinceStart)")
-                        .font(.system(.subheadline, design: .monospaced, weight: .bold))
-                    Text(profile.currentPhase.rawValue)
-                        .font(.system(size: 10, weight: .medium, design: .monospaced))
-                        .padding(.horizontal, 6).padding(.vertical, 2)
-                        .background(Color.white.opacity(0.35), in: Capsule())
-                }
-                .padding(.top, 3)
             }
-
             Spacer()
-
-            // Right: play/pause training button
-            VStack(spacing: 5) {
-                Button {
-                    trainingActive.toggle()
-                    if trainingActive { showExerciseSheet = true }
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(trainingActive ? Color.orange : Color.green)
-                            .frame(width: 56, height: 56)
-                            .shadow(color: (trainingActive ? Color.orange : Color.green).opacity(0.4),
-                                    radius: 10, x: 0, y: 4)
-                        Image(systemName: trainingActive ? "pause.fill" : "play.fill")
-                            .font(.title2.weight(.semibold))
-                            .foregroundStyle(.white)
-                            .offset(x: trainingActive ? 0 : 2)
-                    }
-                }
-                .buttonStyle(.plain)
-
-                Text(trainingActive ? "Pause" : programStore.todayDayType.rawValue)
-                    .font(.system(size: 10, weight: .medium))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
-                    .frame(maxWidth: 68)
-                    .multilineTextAlignment(.center)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("Day \(profile.daysSinceStart)")
+                    .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                Text(profile.currentPhase.rawValue)
+                    .font(.system(size: 10, weight: .medium, design: .monospaced))
+                    .padding(.horizontal, 6).padding(.vertical, 2)
+                    .background(Color.white.opacity(0.35), in: Capsule())
             }
         }
     }
@@ -329,39 +303,82 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Recovery status
+    // MARK: – Training button with plan picker dropdown
     // ─────────────────────────────────────────────────────
 
-    private var recoveryStatus: some View {
-        Group {
-            if metrics.isReadyForTraining {
-                HStack(spacing: 8) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).font(.caption)
-                    Text("Recovery in range — ready for training")
-                        .font(.caption).fontWeight(.medium)
-                    Spacer()
+    // Light blue matching the gradient's bgBlue1
+    private let buttonBlue = Color(red: 0.73, green: 0.89, blue: 1.0)
+
+    private var trainingButton: some View {
+        HStack(spacing: 14) {
+            // Play / Pause circle
+            Button {
+                trainingActive.toggle()
+                if trainingActive { showExerciseSheet = true }
+            } label: {
+                ZStack {
+                    Circle()
+                        .fill(trainingActive
+                              ? Color(red: 1.0, green: 0.65, blue: 0.3)   // warm orange when active
+                              : buttonBlue)
+                        .frame(width: 52, height: 52)
+                        .shadow(color: (trainingActive ? Color.orange : buttonBlue).opacity(0.45),
+                                radius: 10, x: 0, y: 4)
+                    Image(systemName: trainingActive ? "pause.fill" : "play.fill")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.white)
+                        .offset(x: trainingActive ? 0 : 2)
                 }
-                .padding(10)
-                .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 10))
-            } else {
-                VStack(spacing: 5) {
-                    if (metrics.restingHR ?? 0) > 75 || metrics.restingHR == nil {
-                        RecoveryBanner(icon: "heart.fill",
-                                       text: metrics.restingHR != nil
-                                           ? "Resting HR \(Int(metrics.restingHR!)) bpm — above 75 threshold"
-                                           : "Resting HR: no data from Watch",
-                                       color: .orange)
+            }
+            .buttonStyle(.plain)
+
+            // Plan label + dropdown picker
+            VStack(alignment: .leading, spacing: 3) {
+                Text(trainingActive ? "Training Active" : "Start Training")
+                    .font(.subheadline.weight(.semibold))
+
+                Menu {
+                    // "Follow today's schedule" option
+                    Button {
+                        selectedDayType = nil
+                    } label: {
+                        HStack {
+                            Text("Today's Schedule (\(programStore.todayDayType.rawValue))")
+                            if selectedDayType == nil { Image(systemName: "checkmark") }
+                        }
                     }
-                    if (metrics.hrv ?? 0) < 28 || metrics.hrv == nil {
-                        RecoveryBanner(icon: "waveform.path.ecg",
-                                       text: metrics.hrv != nil
-                                           ? "HRV \(Int(metrics.hrv!)) ms — below 28 ms threshold"
-                                           : "HRV: no data from Watch",
-                                       color: .orange)
+                    Divider()
+                    ForEach(DayType.allCases, id: \.self) { day in
+                        Button {
+                            selectedDayType = day
+                        } label: {
+                            HStack {
+                                Label(day.rawValue, systemImage: day.icon)
+                                if activeDayType == day && selectedDayType != nil {
+                                    Image(systemName: "checkmark")
+                                }
+                            }
+                        }
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: activeDayType.icon)
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                        Text(activeDayType.rawValue)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Image(systemName: "chevron.down")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(.secondary)
                     }
                 }
             }
+
+            Spacer()
         }
+        .padding(14)
+        .background(Color.white.opacity(0.25), in: RoundedRectangle(cornerRadius: 16))
     }
 
     // ─────────────────────────────────────────────────────

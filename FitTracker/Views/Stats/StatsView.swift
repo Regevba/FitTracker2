@@ -9,14 +9,22 @@ struct StatsView: View {
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
 
+    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
+    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+
     var body: some View {
+        ZStack {
+        LinearGradient(colors: [bgOrange1, bgOrange2],
+                       startPoint: .topLeading, endPoint: .bottomTrailing)
+            .ignoresSafeArea()
+
         VStack(spacing: 0) {
             // ── Coming soon state ────────────────────────
             Spacer()
             VStack(spacing: 20) {
                 Image(systemName: "chart.bar.fill")
                     .font(.system(size: 56))
-                    .foregroundStyle(.green.opacity(0.5))
+                    .foregroundStyle(Color(red: 0.73, green: 0.89, blue: 1.0))
 
                 VStack(spacing: 8) {
                     Text("Stats coming soon")
@@ -36,6 +44,7 @@ struct StatsView: View {
             .padding(40)
             Spacer()
         }
+        } // ZStack
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
     }

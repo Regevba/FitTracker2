@@ -70,7 +70,7 @@ struct RootTabView: View {
                 .tag(tab)
             }
         }
-        .tint(.green)
+        .tint(Color(red: 0.73, green: 0.89, blue: 1.0))
     }
 
     // ── iPad / macOS sidebar ──────────────────────────────
@@ -140,8 +140,9 @@ struct RootTabView: View {
     private var accountButton: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
             Button { showAccount = true } label: {
-                avatarBadge(32)
-                    .overlay(Circle().stroke(Color.green.opacity(0.3), lineWidth: 1.5))
+                Image(systemName: "line.3.horizontal")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(.primary)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Account")

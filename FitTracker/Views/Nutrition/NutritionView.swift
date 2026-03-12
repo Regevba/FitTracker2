@@ -13,7 +13,15 @@ struct NutritionView: View {
     private var morning: [SupplementDefinition] { TrainingProgramData.morningSupplements }
     private var evening: [SupplementDefinition] { TrainingProgramData.eveningSupplements }
 
+    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
+    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+
     var body: some View {
+        ZStack {
+            LinearGradient(colors: [bgOrange1, bgOrange2],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+                .ignoresSafeArea()
+
         ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
                 dateHeader
@@ -64,6 +72,7 @@ struct NutritionView: View {
             .padding(.horizontal, 18)
             .padding(.bottom, 40)
         }
+        } // ZStack
         .navigationTitle("Nutrition")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { loadLog() }
