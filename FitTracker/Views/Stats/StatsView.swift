@@ -24,7 +24,7 @@ struct StatsView: View {
             VStack(spacing: 20) {
                 Image(systemName: "chart.bar.fill")
                     .font(.system(size: 56))
-                    .foregroundStyle(Color(red: 0.73, green: 0.89, blue: 1.0))
+                    .foregroundStyle(Color.blue)
 
                 VStack(spacing: 8) {
                     Text("Stats coming soon")

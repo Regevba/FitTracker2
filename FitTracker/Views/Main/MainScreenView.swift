@@ -307,7 +307,7 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     // Light blue matching the gradient's bgBlue1
-    private let buttonBlue = Color(red: 0.73, green: 0.89, blue: 1.0)
+    private let buttonBlue = Color.blue
 
     private var trainingButton: some View {
         HStack(spacing: 14) {

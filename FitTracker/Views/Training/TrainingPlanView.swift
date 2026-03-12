@@ -22,7 +22,7 @@ struct TrainingPlanView: View {
 
     private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
     private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
-    private let appBlue   = Color(red: 0.73, green: 0.89, blue: 1.0)
+    private let appBlue   = Color.blue
 
     var body: some View {
         ZStack {
@@ -76,8 +76,8 @@ struct TrainingPlanView: View {
                             Text(day.rawValue).font(.caption.weight(.semibold))
                         }
                         .padding(.horizontal, 14).padding(.vertical, 8)
-                        .background(selectedDay == day ? Color(red: 0.73, green: 0.89, blue: 1.0) : Color.white.opacity(0.35), in: Capsule())
-                        .foregroundStyle(.primary)
+                        .background(selectedDay == day ? Color.blue : Color.white.opacity(0.35), in: Capsule())
+                        .foregroundStyle(selectedDay == day ? .white : .primary)
                     }
                     .buttonStyle(.plain)
                 }
@@ -119,12 +119,12 @@ struct TrainingPlanView: View {
             Circle().stroke(Color.secondary.opacity(0.2), lineWidth: 5).frame(width: 44, height: 44)
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color(red: 0.73, green: 0.89, blue: 1.0), style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                .stroke(Color.blue, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                 .frame(width: 44, height: 44)
                 .rotationEffect(.degrees(-90))
             Text("\(percent)%")
                 .font(.system(size: 10, weight: .bold, design: .monospaced))
-                .foregroundStyle(Color(red: 0.4, green: 0.6, blue: 0.9))
+                .foregroundStyle(Color.blue)
         }
     }
 

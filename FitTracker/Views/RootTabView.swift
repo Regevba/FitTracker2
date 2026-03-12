@@ -70,7 +70,7 @@ struct RootTabView: View {
                 .tag(tab)
             }
         }
-        .tint(Color(red: 0.73, green: 0.89, blue: 1.0))
+        .tint(.blue)
     }
 
     // ── iPad / macOS sidebar ──────────────────────────────
