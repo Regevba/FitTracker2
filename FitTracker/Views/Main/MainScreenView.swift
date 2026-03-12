@@ -412,11 +412,12 @@ struct MainScreenView: View {
 
     private func sectionHeader(_ title: String) -> some View {
         Text(title.uppercased())
-            .font(.system(size: 10, weight: .semibold, design: .rounded))
-            .foregroundStyle(.secondary)
-            .tracking(1.2)
+            .font(.system(size: 13, weight: .black, design: .rounded))
+            .foregroundStyle(.black.opacity(0.75))
+            .tracking(1.5)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.bottom, 5)
+            .padding(.top, 4)
+            .padding(.bottom, 6)
     }
 }
 
@@ -493,14 +494,15 @@ struct QuickStatPill: View {
 struct SyncStatusIndicator: View {
     @EnvironmentObject var cloud: CloudKitSyncService
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 5) {
             Circle()
                 .fill(cloud.status == .idle ? Color.green : cloud.status == .syncing ? Color.orange : Color.red)
                 .frame(width: 6, height: 6)
             Text(cloud.status.rawValue)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .font(.caption2.weight(.medium))
+                .foregroundStyle(.white)
         }
+        .tint(.clear)
     }
 }
 
