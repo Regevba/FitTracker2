@@ -1,8 +1,9 @@
 // Views/Main/MainScreenView.swift
-// Tab 1: Main screen
-//   - Dynamic gradient background: light orange → light blue as goal progress increases
-//   - Right-edge vertical tracker: orb descends top → bottom with progress
-//   - All elements blended directly on gradient (no card containers)
+// Tab 1: Home screen — everything visible above the tab bar, no scroll
+//   - Gradient background (orange → blue by goal progress)
+//   - Right-edge vertical progress tracker
+//   - Greeting + play/pause training button in header
+//   - Weight & Body Fat displayed side-by-side
 
 import SwiftUI
 
@@ -13,7 +14,7 @@ struct MainScreenView: View {
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
 
-    @State private var metricPage:       Int  = 0
+    @State private var trainingActive    = false
     @State private var showExerciseSheet = false
     @State private var manualEntry       = false
 
@@ -28,7 +29,6 @@ struct MainScreenView: View {
         if let hk = metrics.bodyFatPct { return hk * 100 }
         return todayLog?.biometrics.bodyFatPercent
     }
-
     private var goalProgress: Double {
         profile.overallProgress(currentWeight: currentWeight, currentBF: currentBF)
     }
@@ -43,20 +43,23 @@ struct MainScreenView: View {
         ZStack {
             backgroundLayer
             progressTracker
-            ScrollView(showsIndicators: false) {
-                VStack(spacing: 32) {
-                    greetingHeader
-                    metricSlider
-                    goalSection
-                    recoveryStatus
-                    startExerciseButton
-                    quickStats
-                }
-                .padding(.horizontal, 20)
-                .padding(.trailing, 28)   // leave room for right-edge tracker
-                .padding(.top, 8)
-                .padding(.bottom, 40)
+
+            // All content in a VStack with flexible spacers — no scroll
+            VStack(spacing: 0) {
+                greetingHeader
+                Spacer(minLength: 14)
+                metricPair
+                Spacer(minLength: 14)
+                goalSection
+                Spacer(minLength: 12)
+                recoveryStatus
+                Spacer(minLength: 12)
+                quickStats
             }
+            .padding(.horizontal, 20)
+            .padding(.trailing, 28)   // room for right-edge tracker
+            .padding(.top, 6)
+            .padding(.bottom, 12)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbar { toolbarItems }
@@ -76,10 +79,8 @@ struct MainScreenView: View {
 
     private var backgroundLayer: some View {
         ZStack {
-            // Base: light orange (always present)
             LinearGradient(colors: [bgOrange1, bgOrange2],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
-            // Overlay: light blue, fades in as goalProgress increases → 0 = full orange, 1 = full blue
             LinearGradient(colors: [bgBlue1, bgBlue2],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
                 .opacity(goalProgress)
@@ -90,8 +91,6 @@ struct MainScreenView: View {
 
     // ─────────────────────────────────────────────────────
     // MARK: – Vertical progress tracker
-    // Orb starts at the top and descends to the bottom as
-    // goalProgress goes from 0 → 1
     // ─────────────────────────────────────────────────────
 
     private var progressTracker: some View {
@@ -103,13 +102,11 @@ struct MainScreenView: View {
             let x        = proxy.size.width - 16
             let fillH    = max(2, trackH * goalProgress)
 
-            // Rail
             Capsule()
                 .fill(Color.white.opacity(0.35))
                 .frame(width: 3, height: trackH)
                 .position(x: x, y: trackStart + trackH / 2)
 
-            // Filled portion (orange at top → blue at bottom)
             Capsule()
                 .fill(LinearGradient(
                     colors: [.orange.opacity(0.65), .blue.opacity(0.65)],
@@ -118,24 +115,17 @@ struct MainScreenView: View {
                 .position(x: x, y: trackStart + fillH / 2)
                 .animation(.spring(response: 1.2), value: goalProgress)
 
-            // Glow halo behind orb
             Circle()
-                .fill(goalProgress > 0.5
-                      ? Color.blue.opacity(0.22)
-                      : Color.orange.opacity(0.22))
+                .fill(goalProgress > 0.5 ? Color.blue.opacity(0.22) : Color.orange.opacity(0.22))
                 .frame(width: 26, height: 26)
                 .blur(radius: 6)
                 .position(x: x, y: orbY)
                 .animation(.spring(response: 1.2), value: goalProgress)
 
-            // Orb
             Circle()
                 .fill(Color.white)
                 .frame(width: 13, height: 13)
-                .shadow(color: goalProgress > 0.5
-                        ? .blue.opacity(0.55)
-                        : .orange.opacity(0.55),
-                        radius: 5)
+                .shadow(color: goalProgress > 0.5 ? .blue.opacity(0.55) : .orange.opacity(0.55), radius: 5)
                 .position(x: x, y: orbY)
                 .animation(.spring(response: 1.2), value: goalProgress)
         }
@@ -143,26 +133,59 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Greeting header
+    // MARK: – Greeting header + play/pause button
     // ─────────────────────────────────────────────────────
 
     private var greetingHeader: some View {
-        HStack(alignment: .top) {
+        HStack(alignment: .center, spacing: 12) {
+            // Left: greeting, date, day counter + phase
             VStack(alignment: .leading, spacing: 2) {
                 Text(greeting)
-                    .font(.system(.title, design: .rounded, weight: .bold))
+                    .font(.system(.title2, design: .rounded, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
                 Text(todayFormatted)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                HStack(spacing: 6) {
+                    Text("Day \(profile.daysSinceStart)")
+                        .font(.system(.subheadline, design: .monospaced, weight: .bold))
+                    Text(profile.currentPhase.rawValue)
+                        .font(.system(size: 10, weight: .medium, design: .monospaced))
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(Color.white.opacity(0.35), in: Capsule())
+                }
+                .padding(.top, 3)
             }
+
             Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("Day \(profile.daysSinceStart)")
-                    .font(.system(.title2, design: .monospaced, weight: .bold))
-                Text(profile.currentPhase.rawValue)
-                    .font(.caption2.monospaced())
-                    .padding(.horizontal, 8).padding(.vertical, 3)
-                    .background(Color.white.opacity(0.35), in: Capsule())
+
+            // Right: play/pause training button
+            VStack(spacing: 5) {
+                Button {
+                    trainingActive.toggle()
+                    if trainingActive { showExerciseSheet = true }
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(trainingActive ? Color.orange : Color.green)
+                            .frame(width: 56, height: 56)
+                            .shadow(color: (trainingActive ? Color.orange : Color.green).opacity(0.4),
+                                    radius: 10, x: 0, y: 4)
+                        Image(systemName: trainingActive ? "pause.fill" : "play.fill")
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .offset(x: trainingActive ? 0 : 2)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                Text(trainingActive ? "Pause" : programStore.todayDayType.rawValue)
+                    .font(.system(size: 10, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .frame(maxWidth: 68)
+                    .multilineTextAlignment(.center)
             }
         }
     }
@@ -184,61 +207,71 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Swipeable metric display (no card background)
+    // MARK: – Weight & Body Fat side by side
     // ─────────────────────────────────────────────────────
 
-    private var metricSlider: some View {
-        VStack(spacing: 10) {
-            ZStack {
-                weightCard.opacity(metricPage == 0 ? 1 : 0).offset(x: metricPage == 0 ? 0 : -30)
-                bodyFatCard.opacity(metricPage == 1 ? 1 : 0).offset(x: metricPage == 1 ? 0 : 30)
-            }
-            .animation(.easeInOut(duration: 0.3), value: metricPage)
-            .gesture(
-                DragGesture(minimumDistance: 40)
-                    .onEnded { val in
-                        if val.translation.width < -40 && metricPage == 0 { metricPage = 1 }
-                        if val.translation.width >  40 && metricPage == 1 { metricPage = 0 }
-                    }
-            )
+    private var metricPair: some View {
+        HStack(alignment: .top, spacing: 0) {
 
-            HStack(spacing: 6) {
-                ForEach(0..<2, id: \.self) { i in
-                    Circle()
-                        .fill(i == metricPage ? Color.primary.opacity(0.55) : Color.primary.opacity(0.2))
-                        .frame(width: 6, height: 6)
-                        .animation(.easeInOut, value: metricPage)
+            // Weight (left)
+            VStack(alignment: .leading, spacing: 4) {
+                Label("WEIGHT", systemImage: "scalemass.fill")
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.blue)
+                    .tracking(1)
+                HStack(alignment: .lastTextBaseline, spacing: 3) {
+                    Text(currentWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—")
+                        .font(.system(size: 36, weight: .bold, design: .monospaced))
+                        .foregroundStyle(.blue)
+                    Text(settings.unitSystem.weightLabel())
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
                 }
+                Text(weightDelta)
+                    .font(.system(size: 10))
+                    .foregroundStyle(weightDelta.hasPrefix("+") ? .red : .green)
+                Text("Target: \(settings.unitSystem.displayWeightValue(profile.targetWeightMin))–\(settings.unitSystem.displayWeightValue(profile.targetWeightMax)) \(settings.unitSystem.weightLabel())")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            // Divider
+            Rectangle()
+                .fill(Color.white.opacity(0.45))
+                .frame(width: 1, height: 75)
+                .padding(.horizontal, 14)
+
+            // Body Fat (right)
+            VStack(alignment: .leading, spacing: 4) {
+                Label("BODY FAT", systemImage: "drop.fill")
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.orange)
+                    .tracking(1)
+                HStack(alignment: .lastTextBaseline, spacing: 3) {
+                    Text(currentBF.map { String(format: "%.1f", $0) } ?? "—")
+                        .font(.system(size: 36, weight: .bold, design: .monospaced))
+                        .foregroundStyle(.orange)
+                    Text("%")
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                }
+                Text(bfDelta)
+                    .font(.system(size: 10))
+                    .foregroundStyle(bfDelta.hasPrefix("+") ? .red : .green)
+                Text("Target: \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .overlay(alignment: .topTrailing) {
+            Button { manualEntry = true } label: {
+                Image(systemName: "pencil.circle")
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
             }
         }
-    }
-
-    private var weightCard: some View {
-        MetricBigCard(
-            icon: "scalemass.fill",
-            label: "CURRENT WEIGHT",
-            value: currentWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—",
-            unit: settings.unitSystem.weightLabel(),
-            delta: weightDelta,
-            targetLabel: "Target: \(settings.unitSystem.displayWeightValue(profile.targetWeightMin))–\(settings.unitSystem.displayWeightValue(profile.targetWeightMax)) \(settings.unitSystem.weightLabel())",
-            color: .blue,
-            onTap: { metricPage = 1 },
-            onManualEntry: { manualEntry = true }
-        )
-    }
-
-    private var bodyFatCard: some View {
-        MetricBigCard(
-            icon: "drop.fill",
-            label: "BODY FAT",
-            value: currentBF.map { String(format: "%.1f", $0) } ?? "—",
-            unit: "%",
-            delta: bfDelta,
-            targetLabel: "Target: \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%",
-            color: .orange,
-            onTap: { metricPage = 0 },
-            onManualEntry: { manualEntry = true }
-        )
     }
 
     private var weightDelta: String {
@@ -256,36 +289,36 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Goal section (no card background)
+    // MARK: – Goal section
     // ─────────────────────────────────────────────────────
 
     private var goalSection: some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 16) {
             ZStack {
                 Circle()
-                    .stroke(Color.white.opacity(0.4), lineWidth: 10)
-                    .frame(width: 90, height: 90)
+                    .stroke(Color.white.opacity(0.4), lineWidth: 8)
+                    .frame(width: 74, height: 74)
                 Circle()
                     .trim(from: 0, to: goalProgress)
                     .stroke(
                         AngularGradient(colors: [.orange, .blue, .orange], center: .center),
-                        style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
                     )
-                    .frame(width: 90, height: 90)
+                    .frame(width: 74, height: 74)
                     .rotationEffect(.degrees(-90))
                     .animation(.spring(response: 1.0), value: goalProgress)
                 VStack(spacing: 0) {
                     Text("\(Int(goalProgress * 100))%")
-                        .font(.system(.headline, design: .monospaced, weight: .bold))
+                        .font(.system(.subheadline, design: .monospaced, weight: .bold))
                     Text("Goal")
-                        .font(.caption2)
+                        .font(.system(size: 9))
                         .foregroundStyle(.secondary)
                 }
             }
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text("GOAL PROGRESS")
-                    .font(.caption2.monospaced())
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
                     .foregroundStyle(.secondary)
                     .tracking(1.5)
                 GoalProgressRow(label: "Weight",   progress: profile.weightProgress(current: currentWeight), color: .blue)
@@ -302,16 +335,16 @@ struct MainScreenView: View {
     private var recoveryStatus: some View {
         Group {
             if metrics.isReadyForTraining {
-                HStack(spacing: 10) {
-                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green)
-                    Text("Recovery metrics in range — ready for training")
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill").foregroundStyle(.green).font(.caption)
+                    Text("Recovery in range — ready for training")
                         .font(.caption).fontWeight(.medium)
                     Spacer()
                 }
-                .padding(12)
+                .padding(10)
                 .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 10))
             } else {
-                VStack(spacing: 6) {
+                VStack(spacing: 5) {
                     if (metrics.restingHR ?? 0) > 75 || metrics.restingHR == nil {
                         RecoveryBanner(icon: "heart.fill",
                                        text: metrics.restingHR != nil
@@ -332,37 +365,7 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Start Exercise button
-    // ─────────────────────────────────────────────────────
-
-    private var startExerciseButton: some View {
-        Button { showExerciseSheet = true } label: {
-            HStack(spacing: 12) {
-                ZStack {
-                    Circle().fill(.black.opacity(0.15)).frame(width: 44, height: 44)
-                    Image(systemName: programStore.todayDayType.icon)
-                        .font(.title3.weight(.semibold))
-                }
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Start Exercise").font(.headline)
-                    Text("Today: \(programStore.todayDayType.rawValue)").font(.caption).opacity(0.8)
-                }
-                Spacer()
-                Image(systemName: "chevron.right").font(.subheadline.weight(.semibold))
-            }
-            .padding(16)
-            .foregroundStyle(.black)
-            .frame(maxWidth: .infinity)
-            .background(
-                LinearGradient(colors: [.green, .mint], startPoint: .leading, endPoint: .trailing),
-                in: RoundedRectangle(cornerRadius: 16)
-            )
-        }
-        .buttonStyle(.plain)
-    }
-
-    // ─────────────────────────────────────────────────────
-    // MARK: – Quick stats (no pill backgrounds)
+    // MARK: – Quick stats
     // ─────────────────────────────────────────────────────
 
     private var quickStats: some View {
@@ -400,61 +403,6 @@ struct MainScreenView: View {
 }
 
 // ─────────────────────────────────────────────────────────
-// MARK: – MetricBigCard (no background — floats on gradient)
-// ─────────────────────────────────────────────────────────
-
-struct MetricBigCard: View {
-    let icon:          String
-    let label:         String
-    let value:         String
-    let unit:          String
-    let delta:         String
-    let targetLabel:   String
-    let color:         Color
-    let onTap:         () -> Void
-    let onManualEntry: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Label(label, systemImage: icon)
-                    .font(.caption2.monospaced())
-                    .foregroundStyle(color)
-                    .tracking(1)
-                Spacer()
-                Button { onManualEntry() } label: {
-                    Image(systemName: "pencil.circle").foregroundStyle(.secondary)
-                }
-                Button { onTap() } label: {
-                    Image(systemName: "arrow.left.arrow.right")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-            }
-
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text(value)
-                    .font(.system(size: 52, weight: .bold, design: .monospaced))
-                    .foregroundStyle(color)
-                Text(unit)
-                    .font(.title3)
-                    .foregroundStyle(.secondary)
-            }
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(delta)
-                    .font(.caption)
-                    .foregroundStyle(delta.hasPrefix("+") ? .red : .green)
-                Text(targetLabel)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, 4)
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-// ─────────────────────────────────────────────────────────
 // MARK: – GoalProgressRow
 // ─────────────────────────────────────────────────────────
 
@@ -487,7 +435,7 @@ struct GoalProgressRow: View {
 }
 
 // ─────────────────────────────────────────────────────────
-// MARK: – RecoveryBanner (subtle white-glass background)
+// MARK: – RecoveryBanner
 // ─────────────────────────────────────────────────────────
 
 struct RecoveryBanner: View {
@@ -504,7 +452,7 @@ struct RecoveryBanner: View {
 }
 
 // ─────────────────────────────────────────────────────────
-// MARK: – QuickStatPill (no background — floats on gradient)
+// MARK: – QuickStatPill
 // ─────────────────────────────────────────────────────────
 
 struct QuickStatPill: View {
@@ -516,7 +464,7 @@ struct QuickStatPill: View {
             Text(label).font(.system(size: 9)).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
+        .padding(.vertical, 8)
     }
 }
 
