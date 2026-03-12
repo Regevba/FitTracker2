@@ -142,9 +142,11 @@ struct RootTabView: View {
             Button { showAccount = true } label: {
                 Image(systemName: "line.3.horizontal")
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.15), radius: 1, x: 0, y: 1)
             }
             .buttonStyle(.plain)
+            .background(.clear)
             .accessibilityLabel("Account")
         }
     }
