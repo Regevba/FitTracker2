@@ -23,3 +23,17 @@ Carthage/Build/
 
 # macOS
 .DS_Store
+
+# Xcode build artifacts
+DerivedData/
+build/
+
+# User-specific Xcode state
+xcuserdata/
+*.xcuserstate
+
+# Swift Package Manager
+.build/
+
+# macOS junk
+.DS_Store
