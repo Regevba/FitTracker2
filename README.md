@@ -3,6 +3,40 @@
 
 ---
 
+## 📋 Changelog
+
+### UI Refresh (March 2026)
+
+**Home Screen — Layout & Design**
+- Replaced scrollable layout with a fixed no-scroll VStack that fills the screen
+- Dynamic gradient background (orange → blue) that shifts based on overall goal progress
+- Right-edge vertical progress tracker bar
+- Side-by-side Weight / Body Fat status cards (replacing swipeable card)
+- Goal section: circular ring + inline Weight/Body Fat progress bars
+- Start Training: play/pause button + dropdown to override today's day type inline
+- Renamed main tab from "Main" to "Home"
+
+**Navigation Bar**
+- Hamburger menu button added (top-left) — opens account/settings panel as a sheet
+- Toolbar background hidden on Home tab — gradient shows through the nav bar
+- Hamburger icon: white, no circular container, blends into gradient background
+- Sync indicator: white text + colored dot, no pill/container background
+
+**Colors & Contrast**
+- Replaced light blue tint (`Color(red:0.73,green:0.89,blue:1.0)`) with standard `.blue` across interactive elements for better contrast on the orange gradient
+- Warm palette applied consistently across Training Plan, Nutrition, and Stats tabs
+
+**Section Headers**
+- Increased from 10pt semibold to 13pt black weight
+- Color changed from `.secondary` to `black.opacity(0.75)`
+- Added top/bottom padding for better spacing between header and content
+
+**Other**
+- `.gitignore` added; Xcode user state files removed from tracking
+- Various navigation UX fixes (NavigationStack, tab title display modes)
+
+---
+
 ## 📁 File Structure
 
 ```
@@ -167,11 +201,15 @@ All three keys are: 256-bit random, device-only (not iCloud Keychain), access re
 ### Tab 1 — Main Screen
 - **Time-aware greeting**: Good morning / afternoon / evening / night
 - **Today's date** + recovery day counter + phase badge
-- **Swipeable metric card**: slide between Current Weight (kg) and Body Fat (%). Tap pencil to enter manually from Xiaomi S400
-- **Goal progress ring**: combined weight + body fat progress toward 65–68 kg @ 13–15% BF
-- **Recovery status banners**: real-time from Apple Watch (HRV + Resting HR)
-- **Start Exercise button**: opens Training Plan for today's session
+- **Dynamic gradient background**: orange → blue, shifts based on goal progress (0% = full orange, 100% = full blue)
+- **Right-edge vertical progress tracker**: thin bar showing overall goal completion
+- **Side-by-side status cards**: Weight (kg) and Body Fat (%) displayed as a pair. Tap pencil icon to log manually
+- **Goal section**: circular ring + Weight/Body Fat progress bars toward 65–68 kg @ 13–15% BF
+- **Start Training button**: play/pause control + dropdown to override today's scheduled day type
 - **Quick stats row**: HRV · Resting HR · Sleep · Steps (all from Apple Watch)
+- **Section headers**: bold, black, uppercase with letter-spacing — STATUS / GOAL / START TRAINING / METRICS
+- **Hamburger menu** (top-left): white icon, no container, blends into gradient background
+- **Sync indicator** (top-right): colored dot + status text, white, no pill container
 
 ### Tab 2 — Training Plan
 - **Day type picker**: scroll horizontally to switch between all 6 day types
