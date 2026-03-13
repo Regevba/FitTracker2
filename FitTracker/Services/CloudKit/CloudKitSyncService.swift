@@ -156,6 +156,10 @@ final class CloudKitSyncService: ObservableObject {
             }
             dataStore.weeklySnapshots.sort { $0.weekStart > $1.weekStart }
 
+            if let remoteProfile = try await fetchUserProfile() {
+                dataStore.userProfile = remoteProfile
+            }
+
             await dataStore.persistToDisk()
             lastSyncDate = Date()
             status = .idle
@@ -230,6 +234,17 @@ final class CloudKitSyncService: ObservableObject {
         record[CKField.blob] = encrypted as CKRecordValue
         record[CKField.recordVersion] = 1 as CKRecordValue
         _ = try await privateDB.save(record)
+    }
+
+    private func fetchUserProfile() async throws -> UserProfile? {
+        let recordID = CKRecord.ID(recordName: "user-profile-singleton")
+        do {
+            let record = try await privateDB.record(for: recordID)
+            guard let blob = record[CKField.blob] as? Data else { return nil }
+            return try await EncryptionService.shared.decrypt(blob, as: UserProfile.self)
+        } catch let error as CKError where error.code == .unknownItem {
+            return nil
+        }
     }
 
     private func fetchEncryptedRecords<T: Decodable>(

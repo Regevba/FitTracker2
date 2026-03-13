@@ -74,7 +74,7 @@ struct MainScreenView: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar { toolbarItems }
         .sheet(isPresented: $showExerciseSheet) {
-            NavigationStack { TrainingPlanView() }
+            NavigationStack { TrainingPlanView(initialDay: activeDayType) }
                 .presentationDetents([.large])
         }
         .sheet(isPresented: $manualEntry) {
