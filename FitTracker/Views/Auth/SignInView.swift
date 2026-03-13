@@ -219,9 +219,7 @@ struct SignInView: View {
                     withAnimation(.default.repeatCount(3, autoreverses: true)) {
                         shakeOffset = 6
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        shakeOffset = 0
-                    }
+                    Task { try? await Task.sleep(for: .milliseconds(300)); shakeOffset = 0 }
                 default:
                     break
                 }

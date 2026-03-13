@@ -26,6 +26,13 @@ struct FitTrackerApp: App {
             rootView
                 // Apply appearance preference from settings
                 .preferredColorScheme(settings.appearance.colorScheme)
+                // Load encrypted data after biometric auth — EncryptionService has a valid
+                // session context at this point, so no extra biometric prompts fire.
+                .onChange(of: biometricAuth.isAuthenticated) { _, authenticated in
+                    if authenticated {
+                        Task { await dataStore.loadFromDisk() }
+                    }
+                }
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
                     case .active:

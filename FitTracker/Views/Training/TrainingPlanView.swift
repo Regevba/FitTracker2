@@ -19,8 +19,6 @@ struct TrainingPlanView: View {
     private let initialDay: DayType?
     @State private var selectedDay: DayType = .restDay
     @State private var log: DailyLog?
-    @State private var persistTask: Task<Void, Never>?
-
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
     private let appBlue   = Color.blue
@@ -51,11 +49,9 @@ struct TrainingPlanView: View {
             selectedDay = initialDay ?? programStore.todayDayType
             log = dataStore.todayLog() ?? makeBlankLog()
         }
-        .onChange(of: log) { _, newLog in
-            schedulePersist(newLog)
-        }
         .onDisappear {
-            persistTask?.cancel()
+            // Persist on disappear; the scene .background handler in FitTrackerApp
+            // ensures this reaches disk even if the app is about to be suspended.
             if let current = log {
                 dataStore.upsertLog(current)
             }
@@ -167,15 +163,6 @@ struct TrainingPlanView: View {
                  dayType: selectedDay, recoveryDay: dataStore.userProfile.daysSinceStart)
     }
 
-    private func schedulePersist(_ newLog: DailyLog?) {
-        persistTask?.cancel()
-        guard let newLog else { return }
-        persistTask = Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 350_000_000)
-            guard !Task.isCancelled else { return }
-            dataStore.upsertLog(newLog)
-        }
-    }
 }
 
 // ─────────────────────────────────────────────────────────
