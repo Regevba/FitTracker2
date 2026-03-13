@@ -20,6 +20,12 @@ final class AuthManager: ObservableObject {
     init() { authenticate() }
 
     func authenticate() {
+        #if targetEnvironment(simulator)
+        // Skip biometric/passcode prompt on simulator — set authenticated immediately.
+        isAuthenticated = true
+        return
+        #endif
+
         let ctx = LAContext()
         var err: NSError?
 
