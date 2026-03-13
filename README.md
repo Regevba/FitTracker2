@@ -5,6 +5,68 @@
 
 ## 📋 Changelog
 
+### Code Quality & Security Hardening (March 2026)
+
+**Security — Critical fixes**
+- `EncryptionService`: fix `loadKeyFromKeychain` to pass `LAContext` and remove `kSecAttrAccessible` from query — prevents silent key regeneration on cold launch (was causing all encrypted data to become permanently unreadable)
+- `EncryptionService`: fix `rotateKeys` to re-encrypt all blobs before deleting old keys — prevents catastrophic data loss on partial failure
+- `CloudKitSyncService`: replace `try?` with proper `do/catch` on decrypt calls — decryption errors now logged instead of silently dropping records
+- `CloudKitSyncService`: removed 200-record hard limit — all records now fetched (was silently truncating data after ~6.5 months)
+- `EncryptionService`: guard `completeFileProtectionUnlessOpen` with `#if os(iOS)` — fixes macOS build
+
+**Concurrency**
+- `HealthKitService`: call `done()` before `Task` in `HKObserverQuery` — fixes broken background delivery (future deliveries were silently stopping)
+- `AuthManager`: replace `DispatchQueue.main.async` with `Task { @MainActor in }` inside `@MainActor` class
+
+**Correctness**
+- `SignInService`: cache window before `performRequests()` — prevents `DispatchQueue.main.sync` deadlock on macOS
+- `SignInService`: store `userIdentifier` instead of `authorizationCode` as session token (single-use code must not be persisted)
+- `HealthKitService`: check `authorizationStatus` after `requestAuthorization` — `isAuthorized` now reflects actual permission state
+- `EncryptedDataStore`: add `@Published var loadError` surfaced via alert in `RootTabView` — disk-load failures are now visible to the user
+- `TrainingPlanView`: re-sync `SetRowView` local strings on binding change — prevents stale UI after CloudKit merge
+- `DomainModels`: replace `JSONEncoder`-based `DailyLog.==` with `id + date` comparison — fixes non-deterministic equality and unnecessary allocs
+
+**Architecture**
+- Extract `TrainingProgramStore` to its own file (`Services/TrainingProgramStore.swift`)
+- Add `AppTheme.swift` with shared `Color.appOrange1/2` and `Color.appBlue1/2` — removes copy-pasted palette constants from all four views
+
+**UI & Accessibility**
+- Add `.accessibilityLabel` / `.accessibilityValue` to `QuickStatPill` and `GoalProgressRow`
+- Dynamic Face ID / Touch ID label in `LockScreenView` via `LAContext.biometryType`
+- `WatchConnectivityService`: add `isWatchAppInstalled` check and `appNotInstalled` status case
+
+**Performance**
+- Cache `DateFormatter` as `private static let` in `MainScreenView`, `NutritionView`, `CloudKitSyncService` — removes allocations on every body evaluation
+
+**Dead code**
+- Remove unused `RecoveryBanner` component from `MainScreenView`
+
+---
+
+### Watch Connectivity & Navigation Bar (March 2026)
+
+**Watch Indicator (top-right)**
+- Replaced CloudKit sync status with Apple Watch connectivity indicator
+- New `WatchConnectivityService` using `WCSession` delegate — updates in real-time
+- 🟢 green dot + black **"Connected"** when watch is reachable
+- Faded dot + black **"Offline"** when not connected (covers BT off, watch charging, not in training)
+- Faded dot + black **"No Watch"** / **"App Not Installed"** for pairing states
+- No pill/container background — blends into gradient
+
+**Hamburger Menu (top-left)**
+- Icon changed from white to blue
+- No circular container or system background
+
+---
+
+### Home Screen Layout & Spacing (March 2026)
+
+**Equal spacing**
+- Replace `Spacer(minLength: 10)` with `Spacer()` — SwiftUI now distributes remaining screen height equally across all four section gaps
+- `QuickStatPill` HStack spacing set to `0` — pills fill equal widths via `.frame(maxWidth: .infinity)`
+
+---
+
 ### UI Refresh (March 2026)
 
 **Home Screen — Layout & Design**
@@ -19,11 +81,9 @@
 **Navigation Bar**
 - Hamburger menu button added (top-left) — opens account/settings panel as a sheet
 - Toolbar background hidden on Home tab — gradient shows through the nav bar
-- Hamburger icon: white, no circular container, blends into gradient background
-- Sync indicator: white text + colored dot, no pill/container background
 
 **Colors & Contrast**
-- Replaced light blue tint (`Color(red:0.73,green:0.89,blue:1.0)`) with standard `.blue` across interactive elements for better contrast on the orange gradient
+- Replaced light blue tint with standard `.blue` across interactive elements for better contrast on the orange gradient
 - Warm palette applied consistently across Training Plan, Nutrition, and Stats tabs
 
 **Section Headers**
@@ -46,23 +106,32 @@ FitTracker/
 │   ├── DomainModels.swift                  All data types (Codable, Sendable)
 │   └── TrainingProgramData.swift           Complete 6-day program + supplements (static)
 ├── Services/
+│   ├── AppTheme.swift                      Shared Color constants (appOrange1/2, appBlue1/2)
+│   ├── AppSettings.swift                   Unit system, appearance preferences
+│   ├── AuthManager.swift                   Face ID / Touch ID / Passcode biometric lock
+│   ├── TrainingProgramStore.swift          Today's day type detection + program store
+│   ├── WatchConnectivityService.swift      Apple Watch reachability via WCSession (iOS only)
 │   ├── Encryption/
 │   │   └── EncryptionService.swift         AES-256-GCM + ChaCha20-Poly1305 double encryption
+│   │                                       + EncryptedDataStore (persist/load/export)
 │   ├── CloudKit/
 │   │   └── CloudKitSyncService.swift       iCloud Private DB — encrypts BEFORE upload
 │   ├── HealthKit/
 │   │   └── HealthKitService.swift          Apple Watch + Apple Health full integration
-│   └── AuthManager.swift                   Face ID / Passcode lock + TrainingProgramStore
+│   └── Auth/
+│       └── SignInService.swift             Passkey / Apple Sign-In authentication
 ├── Views/
 │   ├── RootTabView.swift                   4-tab navigation (iPhone tab bar / iPad sidebar)
 │   ├── Main/
-│   │   └── MainScreenView.swift            Main screen: greeting, weight↔BF slider, goal ring, start button
+│   │   └── MainScreenView.swift            Home: gradient bg, status cards, goal ring, training button
 │   ├── Training/
 │   │   └── TrainingPlanView.swift          Training plan: exercises + set/rep/weight log + cardio photo
 │   ├── Nutrition/
 │   │   └── NutritionView.swift             Supplement tracking: morning + evening stacks
-│   └── Stats/
-│       └── StatsView.swift                 Stats (placeholder) + Settings view
+│   ├── Stats/
+│   │   └── StatsView.swift                 Stats (placeholder) + Settings view
+│   └── Auth/
+│       └── AccountPanelView.swift          Account sheet: profile, settings, sign out
 ├── FitTracker.entitlements                 HealthKit + CloudKit + Keychain + App Sandbox
 └── Info.plist                              Privacy strings + background modes + iCloud containers
 ```
@@ -208,8 +277,8 @@ All three keys are: 256-bit random, device-only (not iCloud Keychain), access re
 - **Start Training button**: play/pause control + dropdown to override today's scheduled day type
 - **Quick stats row**: HRV · Resting HR · Sleep · Steps (all from Apple Watch)
 - **Section headers**: bold, black, uppercase with letter-spacing — STATUS / GOAL / START TRAINING / METRICS
-- **Hamburger menu** (top-left): white icon, no container, blends into gradient background
-- **Sync indicator** (top-right): colored dot + status text, white, no pill container
+- **Hamburger menu** (top-left): blue icon, no container, blends into gradient background
+- **Watch indicator** (top-right): green dot = Connected, faded dot = Offline/No Watch — black text, no pill container
 
 ### Tab 2 — Training Plan
 - **Day type picker**: scroll horizontally to switch between all 6 day types
@@ -315,7 +384,7 @@ Cursor supports Swift natively. Add this `.cursorrules` file to the project root
 | `CloudKit` | iCloud encrypted sync | Built-in |
 | `LocalAuthentication` | Face ID / Passcode | Built-in |
 | `PhotosUI` | Photo picker for cardio images | Built-in |
-| `WatchConnectivity` | Watch companion (future) | Built-in |
+| `WatchConnectivity` | Apple Watch reachability indicator | Built-in |
 | `Charts` | Stats charts (future) | Built-in (iOS 16+) |
 
 **Zero SPM / CocoaPods / Carthage dependencies required.**
