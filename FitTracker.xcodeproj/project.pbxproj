@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E012F64641D006E7013 /* WatchConnectivityService.swift */; };
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		A40000010000000000000005 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				111A5E012F64641D006E7013 /* WatchConnectivityService.swift */,
 				A40000010000000000000007 /* Auth */,
 				A20000010000000000000004 /* AuthManager.swift */,
 				A40000010000000000000008 /* HealthKit */,
@@ -274,6 +277,7 @@
 				A10000010000000000000006 /* HealthKitService.swift in Sources */,
 				A10000010000000000000007 /* CloudKitSyncService.swift in Sources */,
 				A10000010000000000000008 /* AppSettings.swift in Sources */,
+				111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */,
 				A10000010000000000000009 /* EncryptionService.swift in Sources */,
 				A1000001000000000000000A /* RootTabView.swift in Sources */,
 				A1000001000000000000000B /* MainScreenView.swift in Sources */,
