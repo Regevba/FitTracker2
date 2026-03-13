@@ -273,7 +273,7 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     // Register a new passkey (called during first-time setup)
-    func registerPasskey(userHandle: String = "regev", displayName: String = "Regev") {
+    func registerPasskey(userHandle: String = "regev", displayName: String = "") {
         isLoading = true
         guard let relyingPartyID = passkeyRelyingPartyIdentifier else {
             isLoading = false
@@ -290,8 +290,9 @@ final class SignInService: NSObject, ObservableObject {
         cachedWindow = NSApplication.shared.windows.first
         #endif
         // Cache handles so the nonisolated delegate callback can read them.
+        // Use the current session display name if no explicit name is provided.
         pendingUserHandle  = userHandle
-        pendingDisplayName = displayName
+        pendingDisplayName = displayName.isEmpty ? (currentSession?.displayName ?? "User") : displayName
         currentChallenge   = generateRandomBytes(count: 32)
 
         let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(
