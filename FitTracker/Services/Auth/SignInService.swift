@@ -384,6 +384,26 @@ final class SignInService: NSObject, ObservableObject {
     }
 }
 
+extension SignInService {
+    static func mergedAppleSession(
+        userID: String,
+        incomingName: String,
+        incomingEmail: String?,
+        existingAppleSession: UserSession?
+    ) -> UserSession {
+        UserSession(
+            provider: .apple,
+            userID: userID,
+            displayName: incomingName.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : incomingName,
+            email: incomingEmail ?? existingAppleSession?.email,
+            phone: existingAppleSession?.phone,
+            avatarURL: existingAppleSession?.avatarURL,
+            // Use the stable Apple user identifier; authorizationCode is single-use.
+            sessionToken: userID
+        )
+    }
+}
+
 // ─────────────────────────────────────────────────────────
 // MARK: – ASAuthorizationControllerDelegate
 // ─────────────────────────────────────────────────────────
@@ -403,17 +423,11 @@ extension SignInService: ASAuthorizationControllerDelegate {
             case let cred as ASAuthorizationAppleIDCredential:
                 let name = [cred.fullName?.givenName, cred.fullName?.familyName]
                     .compactMap { $0 }.joined(separator: " ")
-                let existingAppleSession = currentSession?.provider == .apple ? currentSession : nil
-                // Use cred.user (the stable userIdentifier) as the session token.
-                // authorizationCode is a single-use, short-lived code and must NOT be stored.
-                let session = UserSession(
-                    provider: .apple,
+                let session = Self.mergedAppleSession(
                     userID: cred.user,
-                    displayName: name.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : name,
-                    email: cred.email ?? existingAppleSession?.email,
-                    phone: existingAppleSession?.phone,
-                    avatarURL: existingAppleSession?.avatarURL,
-                    sessionToken: cred.user
+                    incomingName: name,
+                    incomingEmail: cred.email,
+                    existingAppleSession: currentSession?.provider == .apple ? currentSession : nil
                 )
                 finishSignIn(session)
 

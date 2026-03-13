@@ -10,6 +10,7 @@
 		111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E012F64641D006E7013 /* WatchConnectivityService.swift */; };
 		111A5E042F64641D006E7013 /* TrainingProgramStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E032F64641D006E7013 /* TrainingProgramStore.swift */; };
 		111A5E062F64641D006E7013 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E052F64641D006E7013 /* AppTheme.swift */; };
+		B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000001 /* FitTrackerCoreTests.swift */; };
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
@@ -53,10 +54,19 @@
 		A20000010000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000010000000000000013 /* FitTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FitTracker.entitlements; sourceTree = "<group>"; };
 		A20000010000000000000014 /* FitTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B20000010000000000000001 /* FitTrackerCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerCoreTests.swift; sourceTree = "<group>"; };
+		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A30000010000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B30000010000000000000001 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -70,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				A40000010000000000000002 /* FitTracker */,
+				B40000010000000000000001 /* FitTrackerTests */,
 				A40000010000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,8 +102,17 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000014 /* FitTracker.app */,
+				B20000010000000000000002 /* FitTrackerTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B40000010000000000000001 /* FitTrackerTests */ = {
+			isa = PBXGroup;
+			children = (
+				B20000010000000000000001 /* FitTrackerCoreTests.swift */,
+			);
+			path = FitTrackerTests;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000004 /* Models */ = {
@@ -209,6 +229,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXContainerItemProxy section */
+		B60000010000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A60000010000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000010000000000000001;
+			remoteInfo = FitTracker;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXNativeTarget section */
 		A50000010000000000000001 /* FitTracker */ = {
 			isa = PBXNativeTarget;
@@ -226,6 +256,24 @@
 			productName = FitTracker;
 			productReference = A20000010000000000000014 /* FitTracker.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B50000010000000000000001 /* FitTrackerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B70000010000000000000001 /* Build configuration list for PBXNativeTarget "FitTrackerTests" */;
+			buildPhases = (
+				B30000010000000000000002 /* Sources */,
+				B30000010000000000000001 /* Frameworks */,
+				B30000010000000000000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B80000010000000000000001 /* PBXTargetDependency */,
+			);
+			name = FitTrackerTests;
+			productName = FitTrackerTests;
+			productReference = B20000010000000000000002 /* FitTrackerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -256,12 +304,20 @@
 			projectRoot = "";
 			targets = (
 				A50000010000000000000001 /* FitTracker */,
+				B50000010000000000000001 /* FitTrackerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		A30000010000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B30000010000000000000003 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -298,7 +354,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B30000010000000000000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B80000010000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000010000000000000001 /* FitTracker */;
+			targetProxy = B60000010000000000000001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A80000010000000000000001 /* Debug */ = {
@@ -452,6 +524,58 @@
 			};
 			name = Release;
 		};
+		B90000010000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = FitTracker;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitTracker.app/FitTracker";
+			};
+			name = Debug;
+		};
+		B90000010000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = FitTracker;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitTracker.app/FitTracker";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -469,6 +593,15 @@
 			buildConfigurations = (
 				A80000010000000000000001 /* Debug */,
 				A80000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B70000010000000000000001 /* Build configuration list for PBXNativeTarget "FitTrackerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B90000010000000000000001 /* Debug */,
+				B90000010000000000000002 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

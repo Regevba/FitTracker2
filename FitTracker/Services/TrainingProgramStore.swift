@@ -18,7 +18,15 @@ final class TrainingProgramStore: ObservableObject {
 
     func detectToday() {
         let wd = Calendar.current.component(.weekday, from: Date())
-        todayDayType = switch wd {
+        todayDayType = Self.dayType(forWeekday: wd)
+    }
+
+    func exercises(for day: DayType) -> [ExerciseDefinition] {
+        TrainingProgramData.exercises(for: day)
+    }
+
+    static func dayType(forWeekday weekday: Int) -> DayType {
+        switch weekday {
         case 2: .upperPush
         case 3: .lowerBody
         case 5: .upperPull
@@ -26,9 +34,5 @@ final class TrainingProgramStore: ObservableObject {
         case 7: .cardioOnly
         default: .restDay
         }
-    }
-
-    func exercises(for day: DayType) -> [ExerciseDefinition] {
-        TrainingProgramData.exercises(for: day)
     }
 }
