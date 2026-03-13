@@ -49,19 +49,19 @@ struct MainScreenView: View {
             backgroundLayer
             progressTracker
 
-            // All content in a VStack with flexible spacers — no scroll
+            // All content in a VStack with equal flexible spacers — no scroll
             VStack(spacing: 0) {
                 greetingHeader
-                Spacer(minLength: 10)
+                Spacer()
                 sectionHeader("Status")
                 metricPair
-                Spacer(minLength: 10)
+                Spacer()
                 sectionHeader("Goal")
                 goalSection
-                Spacer(minLength: 10)
+                Spacer()
                 sectionHeader("Start Training")
                 trainingButton
-                Spacer(minLength: 10)
+                Spacer()
                 sectionHeader("Metrics")
                 quickStats
             }
@@ -383,7 +383,7 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var quickStats: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 0) {
             QuickStatPill(icon: "waveform.path.ecg",
                           value: metrics.hrv.map        { String(format: "%.0f ms", $0) } ?? "—",
                           label: "HRV",     color: metrics.hrvStatus.color)
