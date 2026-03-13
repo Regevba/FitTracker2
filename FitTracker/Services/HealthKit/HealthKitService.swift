@@ -104,9 +104,16 @@ final class HealthKitService: ObservableObject {
     func requestAuthorization() async throws {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         try await store.requestAuthorization(toShare: Self.writeTypes, read: Self.readTypes)
-        isAuthorized = true
-        await fetchAll()
-        startBackgroundDelivery()
+        // requestAuthorization completes without throwing even if the user denies permission
+        // (Apple privacy model). Check actual authorization status for a critical type to
+        // determine whether we should proceed with fetching.
+        let heartRateType = HKQuantityType(.heartRate)
+        let authStatus = store.authorizationStatus(for: heartRateType)
+        isAuthorized = authStatus != .notDetermined
+        if isAuthorized {
+            await fetchAll()
+            startBackgroundDelivery()
+        }
     }
 
     // ── Background delivery from Apple Watch ─────────────
@@ -119,9 +126,12 @@ final class HealthKitService: ObservableObject {
         for id in ids {
             guard let type = HKQuantityType.quantityType(forIdentifier: id) else { continue }
             let q = HKObserverQuery(sampleType: type, predicate: nil) { [weak self] _, done, _ in
+                // Call done() immediately from the handler's execution context to unblock
+                // HealthKit background delivery. Future deliveries stop arriving if done() is
+                // called from a detached Task instead.
+                done()
                 Task { [weak self] in
                     await self?.fetchAll()
-                    done()
                 }
             }
             store.execute(q)

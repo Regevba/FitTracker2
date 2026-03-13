@@ -59,7 +59,10 @@ struct DailyLog: Identifiable, Codable, Sendable {
 
 extension DailyLog: Equatable {
     static func == (lhs: DailyLog, rhs: DailyLog) -> Bool {
-        (try? JSONEncoder().encode(lhs)) == (try? JSONEncoder().encode(rhs))
+        // Lightweight equality: identity + date is sufficient for .onChange(of: log) usage
+        // in TrainingPlanView, which only needs to detect when today's log changes.
+        // Avoids the O(n) cost of JSON-encoding on every comparison.
+        lhs.id == rhs.id && lhs.date == rhs.date
     }
 }
 
@@ -119,7 +122,7 @@ struct ExerciseLog: Identifiable, Codable, Sendable {
     var bestSet: SetLog? { sets.max { ($0.weightKg ?? 0) < ($1.weightKg ?? 0) } }
 }
 
-struct SetLog: Identifiable, Codable, Sendable {
+struct SetLog: Identifiable, Codable, Sendable, Equatable {
     var id:             UUID    = UUID()
     var setNumber:      Int
     var weightKg:       Double?

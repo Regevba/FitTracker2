@@ -38,11 +38,11 @@ struct MainScreenView: View {
         profile.overallProgress(currentWeight: currentWeight, currentBF: currentBF)
     }
 
-    // Background palette
-    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
-    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
-    private let bgBlue1   = Color(red: 0.73, green: 0.89, blue: 1.0)
-    private let bgBlue2   = Color(red: 0.54, green: 0.78, blue: 1.0)
+    // Background palette — defined centrally in AppTheme.swift
+    private let bgOrange1 = Color.appOrange1
+    private let bgOrange2 = Color.appOrange2
+    private let bgBlue1   = Color.appBlue1
+    private let bgBlue2   = Color.appBlue2
 
     var body: some View {
         ZStack {
@@ -179,10 +179,14 @@ struct MainScreenView: View {
         }
     }
 
-    private var todayFormatted: String {
+    private static let todayDateFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "EEEE, d MMMM yyyy"
-        return f.string(from: Date())
+        return f
+    }()
+
+    private var todayFormatted: String {
+        Self.todayDateFormatter.string(from: Date())
     }
 
     // ─────────────────────────────────────────────────────
@@ -450,23 +454,9 @@ struct GoalProgressRow: View {
             }
             .frame(height: 4)
         }
-    }
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – RecoveryBanner
-// ─────────────────────────────────────────────────────────
-
-struct RecoveryBanner: View {
-    let icon: String; let text: String; let color: Color
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon).foregroundStyle(color).font(.caption)
-            Text(text).font(.caption).foregroundStyle(.primary)
-            Spacer()
-        }
-        .padding(10)
-        .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 8))
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label) goal progress")
+        .accessibilityValue("\(Int(progress * 100)) percent")
     }
 }
 
@@ -484,6 +474,9 @@ struct QuickStatPill: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 8)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(label)
+        .accessibilityValue(value)
     }
 }
 

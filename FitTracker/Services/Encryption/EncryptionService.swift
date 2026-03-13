@@ -68,22 +68,24 @@ actor EncryptionService {
     private let hmacKeyTag        = "com.fittracker.regev.hmac"
 
     // ── Public: encrypt any Encodable
-    func encrypt<T: Encodable>(_ value: T) throws -> Data {
+    func encrypt<T: Encodable>(_ value: T) async throws -> Data {
         let json = try JSONEncoder().encode(value)
-        return try encryptRaw(json)
+        return try await encryptRaw(json)
     }
 
     // ── Public: decrypt to Decodable
-    func decrypt<T: Decodable>(_ data: Data, as type: T.Type) throws -> T {
-        let plain = try decryptRaw(data)
+    func decrypt<T: Decodable>(_ data: Data, as type: T.Type) async throws -> T {
+        let plain = try await decryptRaw(data)
         return try JSONDecoder().decode(type, from: plain)
     }
 
     // ── Public raw
-    func encryptRaw(_ plaintext: Data) throws -> Data {
-        let aesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag)
-        let chachaKey = try getOrCreateSymmetricKey(tag: chachaKeyTag)
-        let hmacKey   = try getOrCreateSymmetricKey(tag: hmacKeyTag)
+    func encryptRaw(_ plaintext: Data) async throws -> Data {
+        // Authenticate once; reuse the same context for all three key loads.
+        let ctx       = try await authenticatedContext()
+        let aesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
+        let chachaKey = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
+        let hmacKey   = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
 
         // Layer 1: AES-256-GCM
         guard let aesBox = try? AES.GCM.seal(plaintext, using: aesKey),
@@ -112,7 +114,7 @@ actor EncryptionService {
         return out
     }
 
-    func decryptRaw(_ data: Data) throws -> Data {
+    func decryptRaw(_ data: Data) async throws -> Data {
         guard data.count > 73 else { throw FTCryptoError.integrityCheckFailed }
 
         let version    = data[0]
@@ -122,9 +124,11 @@ actor EncryptionService {
         let mac        = data[9..<73]
         let ciphertext = data[73...]
 
-        let hmacKey    = try getOrCreateSymmetricKey(tag: hmacKeyTag)
-        let chachaKey  = try getOrCreateSymmetricKey(tag: chachaKeyTag)
-        let aesKey     = try getOrCreateSymmetricKey(tag: aesKeyTag)
+        // Authenticate once; reuse the same context for all three key loads.
+        let ctx        = try await authenticatedContext()
+        let hmacKey    = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
+        let chachaKey  = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
+        let aesKey     = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
 
         // Verify HMAC
         let toVerify   = Data([0x02]) + ts + ciphertext
@@ -148,22 +152,46 @@ actor EncryptionService {
 
     // ── Key management ───────────────────────────────────
 
-    private func getOrCreateSymmetricKey(tag: String) throws -> SymmetricKey {
-        if let existing = try? loadKeyFromKeychain(tag: tag) { return existing }
+    /// Authenticate once and return an LAContext that can be reused for all key loads in one operation.
+    private func authenticatedContext() async throws -> LAContext {
+        let ctx = LAContext()
+        var laError: NSError?
+        if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &laError) {
+            let authOK: Bool = try await withCheckedThrowingContinuation { cont in
+                ctx.evaluatePolicy(.deviceOwnerAuthentication,
+                                   localizedReason: "Unlock FitTracker encryption keys") { ok, err in
+                    if ok {
+                        cont.resume(returning: true)
+                    } else {
+                        cont.resume(throwing: err ?? FTCryptoError.biometricFailed)
+                    }
+                }
+            }
+            guard authOK else { throw FTCryptoError.biometricFailed }
+        }
+        return ctx
+    }
+
+    private func getOrCreateSymmetricKey(tag: String, context: LAContext) throws -> SymmetricKey {
+        if let existing = try? loadKeyFromKeychain(tag: tag, context: context) { return existing }
         let newKey = SymmetricKey(size: .bits256)
         try saveKeyToKeychain(newKey, tag: tag)
         return newKey
     }
 
-    private func loadKeyFromKeychain(tag: String) throws -> SymmetricKey? {
-        let query: [CFString: Any] = [
-            kSecClass:          kSecClassGenericPassword,
-            kSecAttrService:    keychainService,
-            kSecAttrAccount:    tag,
-            kSecReturnData:     true,
-            kSecMatchLimit:     kSecMatchLimitOne,
-            kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+    private func loadKeyFromKeychain(tag: String, context: LAContext? = nil) throws -> SymmetricKey? {
+        // NOTE: kSecAttrAccessible must NOT be included in a read query — it is write-only.
+        var query: [CFString: Any] = [
+            kSecClass:       kSecClassGenericPassword,
+            kSecAttrService: keychainService,
+            kSecAttrAccount: tag,
+            kSecReturnData:  true,
+            kSecMatchLimit:  kSecMatchLimitOne,
         ]
+        // Pass an authenticated LAContext so biometric-protected items can be read.
+        if let ctx = context {
+            query[kSecUseAuthenticationContext] = ctx
+        }
         var result: AnyObject?
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         if status == errSecItemNotFound { return nil }
@@ -203,20 +231,77 @@ actor EncryptionService {
     }
 
     // ── Key rotation: re-encrypt all blobs ───────────────
+    // Safe order: decrypt → generate new keys → re-encrypt → delete old keys.
+    // Old keys are only removed after ALL new blobs are successfully produced.
 
-    func rotateKeys(blobs: [Data]) throws -> [Data] {
-        // Decrypt with old keys
-        let plaintexts = try blobs.map { try decryptRaw($0) }
+    func rotateKeys(blobs: [Data]) async throws -> [Data] {
+        // Authenticate once for the entire rotation operation.
+        let ctx = try await authenticatedContext()
 
-        // Delete old keys
-        for tag in [aesKeyTag, chachaKeyTag, hmacKeyTag] {
-            let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
-                                      kSecAttrService: keychainService, kSecAttrAccount: tag]
-            SecItemDelete(q as CFDictionary)
+        // Step 1: Load old keys (using the already-authenticated context) and decrypt all blobs.
+        let oldAesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
+        let oldChachaKey = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
+        let oldHmacKey   = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
+
+        let plaintexts: [Data] = try blobs.map { data in
+            try decryptWithKeys(data: data, aesKey: oldAesKey, chachaKey: oldChachaKey, hmacKey: oldHmacKey)
         }
 
-        // Re-encrypt with new keys (generated fresh on first use)
-        return try plaintexts.map { try encryptRaw($0) }
+        // Step 2: Generate new keys and re-encrypt all plaintexts.
+        let newAesKey    = SymmetricKey(size: .bits256)
+        let newChachaKey = SymmetricKey(size: .bits256)
+        let newHmacKey   = SymmetricKey(size: .bits256)
+
+        let reEncrypted: [Data] = try plaintexts.map { plaintext in
+            try encryptWithKeys(plaintext: plaintext, aesKey: newAesKey, chachaKey: newChachaKey, hmacKey: newHmacKey)
+        }
+
+        // Step 3: All blobs successfully re-encrypted — now persist the new keys.
+        // saveKeyToKeychain deletes the old key before writing the new one.
+        try saveKeyToKeychain(newAesKey,    tag: aesKeyTag)
+        try saveKeyToKeychain(newChachaKey, tag: chachaKeyTag)
+        try saveKeyToKeychain(newHmacKey,   tag: hmacKeyTag)
+
+        return reEncrypted
+    }
+
+    // ── Synchronous helpers used by rotateKeys ────────────
+
+    private func encryptWithKeys(plaintext: Data, aesKey: SymmetricKey, chachaKey: SymmetricKey, hmacKey: SymmetricKey) throws -> Data {
+        guard let aesBox = try? AES.GCM.seal(plaintext, using: aesKey),
+              let layer1 = aesBox.combined else {
+            throw FTCryptoError.encryptFailed("AES-GCM seal failed during rotation")
+        }
+        guard let chachaBox = try? ChaChaPoly.seal(layer1, using: chachaKey) else {
+            throw FTCryptoError.encryptFailed("ChaCha20 seal failed during rotation")
+        }
+        let layer2 = chachaBox.combined
+        let ts     = withUnsafeBytes(of: Date().timeIntervalSince1970.bitPattern) { Data($0) }
+        let toSign = Data([0x02]) + ts + layer2
+        let mac    = HMAC<SHA512>.authenticationCode(for: toSign, using: hmacKey)
+        var out    = Data()
+        out.append(0x02); out.append(ts); out.append(Data(mac)); out.append(layer2)
+        return out
+    }
+
+    private func decryptWithKeys(data: Data, aesKey: SymmetricKey, chachaKey: SymmetricKey, hmacKey: SymmetricKey) throws -> Data {
+        guard data.count > 73 else { throw FTCryptoError.integrityCheckFailed }
+        guard data[0] == 0x02 else { throw FTCryptoError.decryptFailed("Unknown version during rotation") }
+        let ts         = data[1..<9]
+        let mac        = data[9..<73]
+        let ciphertext = data[73...]
+        let toVerify   = Data([0x02]) + ts + ciphertext
+        let expected   = HMAC<SHA512>.authenticationCode(for: toVerify, using: hmacKey)
+        guard Data(expected) == mac else { throw FTCryptoError.integrityCheckFailed }
+        guard let chachaBox = try? ChaChaPoly.SealedBox(combined: Data(ciphertext)),
+              let layer1 = try? ChaChaPoly.open(chachaBox, using: chachaKey) else {
+            throw FTCryptoError.decryptFailed("ChaCha20 open failed during rotation")
+        }
+        guard let aesBox = try? AES.GCM.SealedBox(combined: layer1),
+              let plaintext = try? AES.GCM.open(aesBox, using: aesKey) else {
+            throw FTCryptoError.decryptFailed("AES-GCM open failed during rotation")
+        }
+        return plaintext
     }
 }
 
@@ -232,6 +317,8 @@ final class EncryptedDataStore: ObservableObject {
     @Published var userProfile:     UserProfile       = UserProfile()
     @Published var isLoading:       Bool              = false
     @Published var lastError:       String?
+    /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
+    @Published var loadError:       String?
 
     private let fm  = FileManager.default
     private var dir: URL { fm.urls(for: .documentDirectory, in: .userDomainMask)[0] }
@@ -277,17 +364,23 @@ final class EncryptedDataStore: ObservableObject {
             let snapsEnc = try await EncryptionService.shared.encrypt(weeklySnapshots)
             let profEnc  = try await EncryptionService.shared.encrypt(userProfile)
 
-            // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked
+            // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked (iOS only)
+            #if os(iOS)
             try logsEnc.write(to:  url("logs"),    options: .completeFileProtectionUnlessOpen)
             try snapsEnc.write(to: url("snaps"),   options: .completeFileProtectionUnlessOpen)
             try profEnc.write(to:  url("profile"), options: .completeFileProtectionUnlessOpen)
+            #else
+            try logsEnc.write(to:  url("logs"))
+            try snapsEnc.write(to: url("snaps"))
+            try profEnc.write(to:  url("profile"))
+            #endif
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
         }
     }
 
     func loadFromDisk() async {
-        await MainActor.run { isLoading = true }
+        await MainActor.run { isLoading = true; loadError = nil }
         do {
             if let d = try? Data(contentsOf: url("logs")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: [DailyLog].self)
@@ -302,7 +395,10 @@ final class EncryptedDataStore: ObservableObject {
                 await MainActor.run { userProfile = v }
             }
         } catch {
-            await MainActor.run { lastError = error.localizedDescription }
+            await MainActor.run {
+                lastError = error.localizedDescription
+                loadError = error.localizedDescription
+            }
         }
         await MainActor.run { isLoading = false }
     }

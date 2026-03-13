@@ -252,25 +252,34 @@ final class CloudKitSyncService: ObservableObject {
     ) async throws -> [T] where T: Sendable {
         let query = CKQuery(recordType: type, predicate: NSPredicate(value: true))
         query.sortDescriptors = [NSSortDescriptor(key: CKField.logicDate, ascending: false)]
-        let result = try await privateDB.records(matching: query, resultsLimit: 200)
+        // Do not set resultsLimit — it defaults to server-decided unlimited pagination.
+        let result = try await privateDB.records(matching: query)
         var items: [T] = []
         for (_, recordResult) in result.matchResults {
-            if let record = try? recordResult.get(),
-               let blob = record[CKField.blob] as? Data {
-                if let item = try? await EncryptionService.shared.decrypt(blob, as: T.self) {
-                    items.append(item)
-                }
+            do {
+                let record = try recordResult.get()
+                guard let blob = record[CKField.blob] as? Data else { continue }
+                let item = try await EncryptionService.shared.decrypt(blob, as: T.self)
+                items.append(item)
+            } catch {
+                // Log decryption/record errors so they are visible rather than silently dropped.
+                print("[CloudKitSyncService] Failed to decode record of type \(type): \(error)")
+                errorMessage = "Sync decode error: \(error.localizedDescription)"
             }
         }
         return items
     }
 
+    private static let logicDayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.calendar = Calendar(identifier: .gregorian)
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.timeZone = TimeZone(secondsFromGMT: 0)
+        f.dateFormat = "yyyy-MM-dd"
+        return f
+    }()
+
     private func logicDayKey(for date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: date)
+        Self.logicDayFormatter.string(from: date)
     }
 }

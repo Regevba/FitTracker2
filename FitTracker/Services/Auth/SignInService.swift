@@ -78,6 +78,16 @@ final class SignInService: NSObject, ObservableObject {
     // Passkey / YubiKey challenge (from server in production)
     private var currentChallenge: Data = Data()
 
+    // Cached window reference for ASAuthorizationControllerPresentationContextProviding.
+    // Populated on the main actor before performRequests() is called, so the nonisolated
+    // delegate callback never needs to call DispatchQueue.main.sync (which deadlocks on macOS
+    // when the delegate is invoked from the main thread).
+    #if os(iOS)
+    private var cachedWindow: UIWindow?
+    #elseif os(macOS)
+    private var cachedWindow: NSWindow?
+    #endif
+
     var isAuthenticated: Bool {
         if case .authenticated = state { return true }
         return false
@@ -104,6 +114,17 @@ final class SignInService: NSObject, ObservableObject {
 
     func signInWithApple() {
         isLoading = true
+        // Cache the window on the main actor NOW, before handing off to the delegate which
+        // is nonisolated. This avoids the DispatchQueue.main.sync deadlock on macOS.
+        #if os(iOS)
+        cachedWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        #elseif os(macOS)
+        cachedWindow = NSApplication.shared.windows.first
+        #endif
+
         let nonce   = generateNonce()
         let request = ASAuthorizationAppleIDProvider().createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -204,6 +225,15 @@ final class SignInService: NSObject, ObservableObject {
             state = .error("Passkey is not configured. Add PasskeyRelyingPartyID to Info.plist.")
             return
         }
+        // Cache window reference on main actor before delegate callback runs.
+        #if os(iOS)
+        cachedWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        #elseif os(macOS)
+        cachedWindow = NSApplication.shared.windows.first
+        #endif
 
         // In production: fetch challenge from your server (prevents replay attacks)
         currentChallenge = generateRandomBytes(count: 32)
@@ -242,6 +272,15 @@ final class SignInService: NSObject, ObservableObject {
             state = .error("Passkey is not configured. Add PasskeyRelyingPartyID to Info.plist.")
             return
         }
+        // Cache window reference on main actor before delegate callback runs.
+        #if os(iOS)
+        cachedWindow = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }
+        #elseif os(macOS)
+        cachedWindow = NSApplication.shared.windows.first
+        #endif
         currentChallenge = generateRandomBytes(count: 32)
 
         let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(
@@ -364,6 +403,8 @@ extension SignInService: ASAuthorizationControllerDelegate {
                 let name = [cred.fullName?.givenName, cred.fullName?.familyName]
                     .compactMap { $0 }.joined(separator: " ")
                 let existingAppleSession = currentSession?.provider == .apple ? currentSession : nil
+                // Use cred.user (the stable userIdentifier) as the session token.
+                // authorizationCode is a single-use, short-lived code and must NOT be stored.
                 let session = UserSession(
                     provider: .apple,
                     userID: cred.user,
@@ -371,7 +412,7 @@ extension SignInService: ASAuthorizationControllerDelegate {
                     email: cred.email ?? existingAppleSession?.email,
                     phone: existingAppleSession?.phone,
                     avatarURL: existingAppleSession?.avatarURL,
-                    sessionToken: cred.authorizationCode.flatMap { String(data: $0, encoding: .utf8) } ?? existingAppleSession?.sessionToken ?? ""
+                    sessionToken: cred.user
                 )
                 finishSignIn(session)
 
@@ -446,17 +487,12 @@ extension SignInService: ASAuthorizationControllerDelegate {
 
 extension SignInService: ASAuthorizationControllerPresentationContextProviding {
     nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        // Use the window cached on the main actor before performRequests() was called.
+        // This avoids DispatchQueue.main.sync which deadlocks when already on the main thread (macOS).
         #if os(iOS)
-        return DispatchQueue.main.sync {
-            UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-                .flatMap { $0.windows }
-                .first { $0.isKeyWindow } ?? UIWindow()
-        }
+        return cachedWindow ?? UIWindow()
         #elseif os(macOS)
-        return DispatchQueue.main.sync {
-            NSApplication.shared.windows.first ?? NSWindow()
-        }
+        return cachedWindow ?? NSWindow()
         #endif
     }
 }

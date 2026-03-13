@@ -21,8 +21,8 @@ struct TrainingPlanView: View {
     @State private var log: DailyLog?
     @State private var persistTask: Task<Void, Never>?
 
-    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
-    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+    private let bgOrange1 = Color.appOrange1
+    private let bgOrange2 = Color.appOrange2
     private let appBlue   = Color.blue
 
     init(initialDay: DayType? = nil) {
@@ -472,6 +472,12 @@ struct SetRowView: View {
             weightStr = setLog.weightKg.map { String($0) } ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
             noteStr   = setLog.notes
+        }
+        // Re-sync local strings if the binding is updated externally (e.g. CloudKit merge).
+        .onChange(of: setLog) { _, newLog in
+            weightStr = newLog.weightKg.map { String($0) } ?? ""
+            repsStr   = newLog.repsCompleted.map { String($0) } ?? ""
+            noteStr   = newLog.notes
         }
     }
 }

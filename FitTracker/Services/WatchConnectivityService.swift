@@ -20,12 +20,14 @@ enum WatchStatus {
     case connected
     case offline
     case notPaired
+    case appNotInstalled
 
     var label: String {
         switch self {
-        case .connected: "Connected"
-        case .offline:   "Offline"
-        case .notPaired: "No Watch"
+        case .connected:      "Connected"
+        case .offline:        "Offline"
+        case .notPaired:      "No Watch"
+        case .appNotInstalled: "App Not Installed"
         }
     }
 
@@ -62,6 +64,10 @@ final class WatchConnectivityService: NSObject, ObservableObject {
         }
         guard session.isPaired else {
             status = .notPaired
+            return
+        }
+        guard session.isWatchAppInstalled else {
+            status = .appNotInstalled
             return
         }
         status = session.isReachable ? .connected : .offline

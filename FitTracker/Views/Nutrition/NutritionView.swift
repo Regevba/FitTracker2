@@ -13,8 +13,8 @@ struct NutritionView: View {
     private var morning: [SupplementDefinition] { TrainingProgramData.morningSupplements }
     private var evening: [SupplementDefinition] { TrainingProgramData.eveningSupplements }
 
-    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
-    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+    private let bgOrange1 = Color.appOrange1
+    private let bgOrange2 = Color.appOrange2
 
     var body: some View {
         ZStack {
@@ -160,9 +160,15 @@ struct NutritionView: View {
         .background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
     }
 
+    private static let todayDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .long
+        f.timeStyle = .none
+        return f
+    }()
+
     private var formattedToday: String {
-        let f = DateFormatter(); f.dateStyle = .long; f.timeStyle = .none
-        return f.string(from: Date())
+        Self.todayDateFormatter.string(from: Date())
     }
 
     // ─────────────────────────────────────────────────────

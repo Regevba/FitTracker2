@@ -9,8 +9,8 @@ struct StatsView: View {
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
 
-    private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
-    private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
+    private let bgOrange1 = Color.appOrange1
+    private let bgOrange2 = Color.appOrange2
 
     var body: some View {
         ZStack {

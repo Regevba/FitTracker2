@@ -47,6 +47,14 @@ struct RootTabView: View {
             try? await healthService.requestAuthorization()
             await cloudSync.fetchChanges(dataStore: dataStore)
         }
+        .alert("Data Load Error", isPresented: Binding(
+            get: { dataStore.loadError != nil },
+            set: { if !$0 { dataStore.loadError = nil } }
+        )) {
+            Button("OK", role: .cancel) { dataStore.loadError = nil }
+        } message: {
+            Text(dataStore.loadError ?? "")
+        }
         .sheet(isPresented: $showAccount) {
             AccountPanelView()
                 .environmentObject(signIn)

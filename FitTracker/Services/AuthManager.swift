@@ -26,9 +26,9 @@ final class AuthManager: ObservableObject {
         if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &err) {
             ctx.evaluatePolicy(.deviceOwnerAuthentication,
                                localizedReason: "Unlock FitTracker to access your encrypted health data") { ok, e in
-                DispatchQueue.main.async {
-                    self.isAuthenticated = ok
-                    self.authError = ok ? nil : e?.localizedDescription
+                Task { @MainActor [weak self] in
+                    self?.isAuthenticated = ok
+                    self?.authError = ok ? nil : e?.localizedDescription
                 }
             }
         } else {
@@ -78,8 +78,8 @@ struct LockScreenView: View {
                 VStack(spacing: 12) {
                     Button { auth.authenticate() } label: {
                         HStack(spacing: 10) {
-                            Image(systemName: "faceid").font(.title3)
-                            Text("Unlock with Face ID").fontWeight(.semibold)
+                            Image(systemName: biometricIcon).font(.title3)
+                            Text(biometricLabel).fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -99,32 +99,24 @@ struct LockScreenView: View {
             }
         }
     }
-}
 
-// ─────────────────────────────────────────────────────────
-// MARK: – Training Program Store
-// ─────────────────────────────────────────────────────────
-
-@MainActor
-final class TrainingProgramStore: ObservableObject {
-
-    @Published var todayDayType: DayType = .restDay
-
-    init() { detectToday() }
-
-    func detectToday() {
-        let wd = Calendar.current.component(.weekday, from: Date())
-        todayDayType = switch wd {
-        case 2: .upperPush
-        case 3: .lowerBody
-        case 5: .upperPull
-        case 6: .fullBody
-        case 7: .cardioOnly
-        default: .restDay
+    private var biometricLabel: String {
+        let ctx = LAContext()
+        var error: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return "Unlock"
         }
+        return ctx.biometryType == .faceID ? "Unlock with Face ID" : "Unlock with Touch ID"
     }
 
-    func exercises(for day: DayType) -> [ExerciseDefinition] {
-        TrainingProgramData.exercises(for: day)
+    private var biometricIcon: String {
+        let ctx = LAContext()
+        var error: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return "lock.open.fill"
+        }
+        return ctx.biometryType == .faceID ? "faceid" : "touchid"
     }
 }
+
+// TrainingProgramStore has been moved to Services/TrainingProgramStore.swift
