@@ -77,6 +77,8 @@ final class HealthKitService: ObservableObject {
     private let store = HKHealthStore()
     private var observers: [HKObserverQuery] = []
     private var hasStartedBackgroundDelivery = false
+    // Coalesces rapid multi-type deliveries (e.g. post-workout) into a single fetchAll().
+    private var fetchTask: Task<Void, Never>?
 
     // Types to read
     static var readTypes: Set<HKObjectType> {
@@ -126,12 +128,19 @@ final class HealthKitService: ObservableObject {
         for id in ids {
             guard let type = HKQuantityType.quantityType(forIdentifier: id) else { continue }
             let q = HKObserverQuery(sampleType: type, predicate: nil) { [weak self] _, done, _ in
-                // Call done() immediately from the handler's execution context to unblock
-                // HealthKit background delivery. Future deliveries stop arriving if done() is
-                // called from a detached Task instead.
+                // Call done() immediately to unblock HealthKit background delivery.
+                // Future deliveries stop if done() is called from a detached Task instead.
                 done()
-                Task { [weak self] in
-                    await self?.fetchAll()
+                // Debounce: cancel any pending fetch before scheduling a new one.
+                // A completed workout can fire 4–6 observer callbacks simultaneously;
+                // this coalesces them into a single fetchAll() 500 ms after the last one.
+                Task { @MainActor [weak self] in
+                    self?.fetchTask?.cancel()
+                    self?.fetchTask = Task { [weak self] in
+                        try? await Task.sleep(for: .milliseconds(500))
+                        guard !Task.isCancelled else { return }
+                        await self?.fetchAll()
+                    }
                 }
             }
             store.execute(q)

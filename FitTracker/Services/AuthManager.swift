@@ -29,10 +29,15 @@ final class AuthManager: ObservableObject {
                 Task { @MainActor [weak self] in
                     self?.isAuthenticated = ok
                     self?.authError = ok ? nil : e?.localizedDescription
+                    if ok {
+                        // Share the authenticated context with EncryptionService so all crypto
+                        // operations in this session reuse it without re-prompting biometrics.
+                        await EncryptionService.shared.setSessionContext(ctx)
+                    }
                 }
             }
         } else {
-            // Simulator / no biometrics
+            // Simulator / no biometrics configured — mark as authenticated immediately
             isAuthenticated = true
         }
     }
@@ -40,6 +45,8 @@ final class AuthManager: ObservableObject {
     func lockOnBackground() {
         isAuthenticated = false
         authError = nil
+        // Invalidate the shared session context so the next unlock re-authenticates.
+        Task { await EncryptionService.shared.clearSessionContext() }
     }
 }
 

@@ -203,36 +203,57 @@ final class CloudKitSyncService: ObservableObject {
 
     // ── Private helpers ──────────────────────────────────
 
+    /// Fetch an existing CKRecord (to preserve its server changeTag) or create a new one.
+    /// Passing the server-vended record back to save() prevents silent overwrites when two
+    /// devices write concurrently — CloudKit will detect the conflict via the changeTag.
+    private func fetchOrCreate(recordType: String, recordID: CKRecord.ID) async throws -> CKRecord {
+        do {
+            return try await privateDB.record(for: recordID)
+        } catch let error as CKError where error.code == .unknownItem {
+            return CKRecord(recordType: recordType, recordID: recordID)
+        }
+    }
+
     private func uploadDailyLog(_ log: DailyLog) async throws -> String {
-        let encrypted = try await EncryptionService.shared.encrypt(log)
+        // Strip inline JPEG bytes before encrypting — images travel as CKAssets to stay
+        // well under CKRecord's 1 MB size limit. Upload each image first, keep only its cloudID.
+        var logToUpload = log
+        for (key, var cardio) in logToUpload.cardioLogs where cardio.summaryImageData != nil {
+            let cloudID = try await uploadCardioImage(cardio.summaryImageData!, cardioLogID: cardio.id.uuidString)
+            cardio.summaryImageCloudID = cloudID
+            cardio.summaryImageData    = nil
+            logToUpload.cardioLogs[key] = cardio
+        }
+
+        let encrypted  = try await EncryptionService.shared.encrypt(logToUpload)
         let recordName = log.cloudRecordID ?? "log-\(logicDayKey(for: log.date))"
-        let recordID = CKRecord.ID(recordName: recordName)
-        let record = CKRecord(recordType: CKRecordType.dailyLog, recordID: recordID)
-        record[CKField.blob]       = encrypted as CKRecordValue
-        record[CKField.logicDate]  = log.date as CKRecordValue
-        record[CKField.recordVersion] = 2 as CKRecordValue
+        let recordID   = CKRecord.ID(recordName: recordName)
+        let record     = try await fetchOrCreate(recordType: CKRecordType.dailyLog, recordID: recordID)
+        record[CKField.blob]          = encrypted as CKRecordValue
+        record[CKField.logicDate]     = log.date  as CKRecordValue
+        record[CKField.recordVersion] = 2         as CKRecordValue
         _ = try await privateDB.save(record)
         return recordName
     }
 
     private func uploadWeeklySnapshot(_ snap: WeeklySnapshot) async throws -> String {
-        let encrypted = try await EncryptionService.shared.encrypt(snap)
+        let encrypted  = try await EncryptionService.shared.encrypt(snap)
         let recordName = snap.cloudRecordID ?? "snap-\(logicDayKey(for: snap.weekStart))"
-        let recordID = CKRecord.ID(recordName: recordName)
-        let record = CKRecord(recordType: CKRecordType.weeklySnapshot, recordID: recordID)
-        record[CKField.blob]       = encrypted as CKRecordValue
-        record[CKField.logicDate]  = snap.weekStart as CKRecordValue
-        record[CKField.recordVersion] = 1 as CKRecordValue
+        let recordID   = CKRecord.ID(recordName: recordName)
+        let record     = try await fetchOrCreate(recordType: CKRecordType.weeklySnapshot, recordID: recordID)
+        record[CKField.blob]          = encrypted      as CKRecordValue
+        record[CKField.logicDate]     = snap.weekStart as CKRecordValue
+        record[CKField.recordVersion] = 1              as CKRecordValue
         _ = try await privateDB.save(record)
         return recordName
     }
 
     private func uploadUserProfile(_ profile: UserProfile) async throws {
         let encrypted = try await EncryptionService.shared.encrypt(profile)
-        let recordID = CKRecord.ID(recordName: "user-profile-singleton")
-        let record = CKRecord(recordType: CKRecordType.userProfile, recordID: recordID)
-        record[CKField.blob] = encrypted as CKRecordValue
-        record[CKField.recordVersion] = 1 as CKRecordValue
+        let recordID  = CKRecord.ID(recordName: "user-profile-singleton")
+        let record    = try await fetchOrCreate(recordType: CKRecordType.userProfile, recordID: recordID)
+        record[CKField.blob]          = encrypted as CKRecordValue
+        record[CKField.recordVersion] = 1         as CKRecordValue
         _ = try await privateDB.save(record)
     }
 
@@ -252,21 +273,30 @@ final class CloudKitSyncService: ObservableObject {
     ) async throws -> [T] where T: Sendable {
         let query = CKQuery(recordType: type, predicate: NSPredicate(value: true))
         query.sortDescriptors = [NSSortDescriptor(key: CKField.logicDate, ascending: false)]
-        // Do not set resultsLimit — it defaults to server-decided unlimited pagination.
-        let result = try await privateDB.records(matching: query)
+
         var items: [T] = []
-        for (_, recordResult) in result.matchResults {
-            do {
-                let record = try recordResult.get()
-                guard let blob = record[CKField.blob] as? Data else { continue }
-                let item = try await EncryptionService.shared.decrypt(blob, as: T.self)
-                items.append(item)
-            } catch {
-                // Log decryption/record errors so they are visible rather than silently dropped.
-                print("[CloudKitSyncService] Failed to decode record of type \(type): \(error)")
-                errorMessage = "Sync decode error: \(error.localizedDescription)"
+        // Paginate with a cursor loop — the single-shot API is capped at ~200 records.
+        var cursor: CKQueryOperation.Cursor?
+        repeat {
+            let result = try await (cursor == nil
+                ? privateDB.records(matching: query)
+                : privateDB.records(continuingMatchFrom: cursor!))
+
+            for (_, recordResult) in result.matchResults {
+                do {
+                    let record = try recordResult.get()
+                    guard let blob = record[CKField.blob] as? Data else { continue }
+                    let item = try await EncryptionService.shared.decrypt(blob, as: T.self)
+                    items.append(item)
+                } catch {
+                    // Log errors so they are visible rather than silently dropped.
+                    print("[CloudKitSyncService] Failed to decode record of type \(type): \(error)")
+                    errorMessage = "Sync decode error: \(error.localizedDescription)"
+                }
             }
-        }
+            cursor = result.queryCursor
+        } while cursor != nil
+
         return items
     }
 

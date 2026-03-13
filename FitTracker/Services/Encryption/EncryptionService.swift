@@ -67,6 +67,26 @@ actor EncryptionService {
     private let chachaKeyTag      = "com.fittracker.regev.chacha20"
     private let hmacKeyTag        = "com.fittracker.regev.hmac"
 
+    // Cached LAContext — set by AuthManager after successful biometric auth.
+    // Cleared on background/lock. All crypto operations reuse this context so
+    // the system never shows more than one biometric prompt per session.
+    private var sessionContext: LAContext?
+
+    func setSessionContext(_ ctx: LAContext) {
+        sessionContext = ctx
+    }
+
+    func clearSessionContext() {
+        sessionContext = nil
+    }
+
+    /// Returns the cached session context if set; falls back to authenticating a new one.
+    /// On simulator (canEvaluatePolicy returns false) this always returns an unauthenticated context.
+    private func currentContext() async throws -> LAContext {
+        if let ctx = sessionContext { return ctx }
+        return try await authenticatedContext()
+    }
+
     // ── Public: encrypt any Encodable
     func encrypt<T: Encodable>(_ value: T) async throws -> Data {
         let json = try JSONEncoder().encode(value)
@@ -81,8 +101,8 @@ actor EncryptionService {
 
     // ── Public raw
     func encryptRaw(_ plaintext: Data) async throws -> Data {
-        // Authenticate once; reuse the same context for all three key loads.
-        let ctx       = try await authenticatedContext()
+        // Use cached session context (set by AuthManager) or fall back to a fresh auth.
+        let ctx       = try await currentContext()
         let aesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
         let chachaKey = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
         let hmacKey   = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
@@ -124,8 +144,8 @@ actor EncryptionService {
         let mac        = data[9..<73]
         let ciphertext = data[73...]
 
-        // Authenticate once; reuse the same context for all three key loads.
-        let ctx        = try await authenticatedContext()
+        // Use cached session context (set by AuthManager) or fall back to a fresh auth.
+        let ctx        = try await currentContext()
         let hmacKey    = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
         let chachaKey  = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
         let aesKey     = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
@@ -325,12 +345,9 @@ final class EncryptedDataStore: ObservableObject {
 
     private func url(_ name: String) -> URL { dir.appendingPathComponent("\(name).ftenc") }
 
-    init() {
-        Task {
-            await loadFromDisk()
-            await runCryptoSelfCheck()
-        }
-    }
+    // loadFromDisk() is NOT called here. FitTrackerApp triggers it after biometric
+    // auth succeeds so EncryptionService.shared already has a valid session context.
+    init() {}
 
     // ── CRUD ─────────────────────────────────────────────
 

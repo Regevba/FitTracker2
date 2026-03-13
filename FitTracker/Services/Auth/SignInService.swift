@@ -78,6 +78,10 @@ final class SignInService: NSObject, ObservableObject {
     // Passkey / YubiKey challenge (from server in production)
     private var currentChallenge: Data = Data()
 
+    // Stored before performRequests() so the nonisolated delegate callback can read them.
+    private var pendingUserHandle:   String = ""
+    private var pendingDisplayName:  String = ""
+
     // Cached window reference for ASAuthorizationControllerPresentationContextProviding.
     // Populated on the main actor before performRequests() is called, so the nonisolated
     // delegate callback never needs to call DispatchQueue.main.sync (which deadlocks on macOS
@@ -235,6 +239,10 @@ final class SignInService: NSObject, ObservableObject {
         cachedWindow = NSApplication.shared.windows.first
         #endif
 
+        // Cache user handle so the nonisolated delegate callback can read it.
+        pendingUserHandle  = userHandle
+        pendingDisplayName = currentSession?.displayName ?? "User"
+
         // In production: fetch challenge from your server (prevents replay attacks)
         currentChallenge = generateRandomBytes(count: 32)
 
@@ -281,7 +289,10 @@ final class SignInService: NSObject, ObservableObject {
         #elseif os(macOS)
         cachedWindow = NSApplication.shared.windows.first
         #endif
-        currentChallenge = generateRandomBytes(count: 32)
+        // Cache handles so the nonisolated delegate callback can read them.
+        pendingUserHandle  = userHandle
+        pendingDisplayName = displayName
+        currentChallenge   = generateRandomBytes(count: 32)
 
         let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(
             relyingPartyIdentifier: relyingPartyID
@@ -432,11 +443,12 @@ extension SignInService: ASAuthorizationControllerDelegate {
                 finishSignIn(session)
 
             // ── Passkey assertion (device or YubiKey) ─
+            // cred.userID is the user handle bytes set during registration.
             case let cred as ASAuthorizationPlatformPublicKeyCredentialAssertion:
                 let session = UserSession(
                     provider: .passkey,
-                    userID: String(data: cred.userID, encoding: .utf8) ?? "passkey-user",
-                    displayName: "Regev",
+                    userID: String(data: cred.userID, encoding: .utf8) ?? pendingUserHandle,
+                    displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     sessionToken: cred.signature.base64EncodedString(),
                     credentialID: cred.credentialID
                 )
@@ -446,19 +458,20 @@ extension SignInService: ASAuthorizationControllerDelegate {
             case let cred as ASAuthorizationSecurityKeyPublicKeyCredentialAssertion:
                 let session = UserSession(
                     provider: .passkey,
-                    userID: String(data: cred.userID, encoding: .utf8) ?? "seckey-user",
-                    displayName: "Regev (Security Key)",
+                    userID: String(data: cred.userID, encoding: .utf8) ?? pendingUserHandle,
+                    displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     sessionToken: cred.signature.base64EncodedString(),
                     credentialID: cred.credentialID
                 )
                 finishSignIn(session)
 
             // ── Passkey registration ──────────────────
+            // Use pendingUserHandle (stored before performRequests) as the stable userID.
             case let cred as ASAuthorizationPlatformPublicKeyCredentialRegistration:
                 let session = UserSession(
                     provider: .passkey,
-                    userID: String(data: cred.rawClientDataJSON, encoding: .utf8)?.prefix(36).description ?? UUID().uuidString,
-                    displayName: "Regev",
+                    userID: pendingUserHandle,
+                    displayName: pendingDisplayName,
                     sessionToken: cred.rawAttestationObject?.base64EncodedString() ?? "",
                     credentialID: cred.credentialID
                 )
@@ -468,8 +481,8 @@ extension SignInService: ASAuthorizationControllerDelegate {
             case let cred as ASAuthorizationSecurityKeyPublicKeyCredentialRegistration:
                 let session = UserSession(
                     provider: .passkey,
-                    userID: UUID().uuidString,
-                    displayName: "Regev (Security Key)",
+                    userID: pendingUserHandle,
+                    displayName: pendingDisplayName,
                     sessionToken: cred.rawAttestationObject?.base64EncodedString() ?? "",
                     credentialID: cred.credentialID
                 )
@@ -532,23 +545,33 @@ extension SignInService: ASAuthorizationControllerPresentationContextProviding {
 // ─────────────────────────────────────────────────────────
 
 enum KeychainHelper {
+    private static let service = "com.fittracker.regev"
+
     static func save(key: String, data: Data) {
-        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword, kSecAttrAccount: key, kSecValueData: data,
+        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
+                                  kSecAttrService: service,
+                                  kSecAttrAccount: key,
+                                  kSecValueData: data,
                                   kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly]
         SecItemDelete(q as CFDictionary)
         SecItemAdd(q as CFDictionary, nil)
     }
 
     static func load(key: String) -> Data? {
-        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword, kSecAttrAccount: key,
-                                  kSecReturnData: true, kSecMatchLimit: kSecMatchLimitOne]
+        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
+                                  kSecAttrService: service,
+                                  kSecAttrAccount: key,
+                                  kSecReturnData: true,
+                                  kSecMatchLimit: kSecMatchLimitOne]
         var result: AnyObject?
         SecItemCopyMatching(q as CFDictionary, &result)
         return result as? Data
     }
 
     static func delete(key: String) {
-        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword, kSecAttrAccount: key]
+        let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
+                                  kSecAttrService: service,
+                                  kSecAttrAccount: key]
         SecItemDelete(q as CFDictionary)
     }
 }

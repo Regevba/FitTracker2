@@ -2,7 +2,6 @@
 // Tab 4: Stats — placeholder for now, scaffolded for future charts
 
 import SwiftUI
-import Charts
 
 struct StatsView: View {
 
