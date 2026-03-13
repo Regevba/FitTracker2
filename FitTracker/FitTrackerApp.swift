@@ -10,13 +10,14 @@ import CloudKit
 struct FitTrackerApp: App {
 
     // ── Services (owned here, passed down as EnvironmentObjects)
-    @StateObject private var signIn       = SignInService()
+    @StateObject private var signIn        = SignInService()
     @StateObject private var biometricAuth = AuthManager()
     @StateObject private var healthService = HealthKitService()
     @StateObject private var dataStore     = EncryptedDataStore()
     @StateObject private var cloudSync     = CloudKitSyncService()
     @StateObject private var programStore  = TrainingProgramStore()
     @StateObject private var settings      = AppSettings()
+    @StateObject private var watchService  = WatchConnectivityService()
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -79,6 +80,7 @@ struct FitTrackerApp: App {
                     .environmentObject(cloudSync)
                     .environmentObject(programStore)
                     .environmentObject(settings)
+                    .environmentObject(watchService)
             }
         }
     }

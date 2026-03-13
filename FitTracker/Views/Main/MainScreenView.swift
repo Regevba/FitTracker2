@@ -492,15 +492,15 @@ struct QuickStatPill: View {
 // ─────────────────────────────────────────────────────────
 
 struct SyncStatusIndicator: View {
-    @EnvironmentObject var cloud: CloudKitSyncService
+    @EnvironmentObject var watchService: WatchConnectivityService
     var body: some View {
         HStack(spacing: 5) {
             Circle()
-                .fill(cloud.status == .idle ? Color.green : cloud.status == .syncing ? Color.orange : Color.red)
+                .fill(watchService.status.dotColor)
                 .frame(width: 6, height: 6)
-            Text(cloud.status.rawValue)
+            Text(watchService.status.label)
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(.white)
+                .foregroundStyle(.black.opacity(0.75))
         }
         .tint(.clear)
     }
