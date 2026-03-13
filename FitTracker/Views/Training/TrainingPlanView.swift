@@ -16,6 +16,7 @@ struct TrainingPlanView: View {
     @EnvironmentObject var dataStore:    EncryptedDataStore
     @EnvironmentObject var programStore: TrainingProgramStore
 
+    private let initialDay: DayType?
     @State private var selectedDay: DayType = .restDay
     @State private var log: DailyLog?
     @State private var persistTask: Task<Void, Never>?
@@ -23,6 +24,10 @@ struct TrainingPlanView: View {
     private let bgOrange1 = Color(red: 1.0,  green: 0.89, blue: 0.73)
     private let bgOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
     private let appBlue   = Color.blue
+
+    init(initialDay: DayType? = nil) {
+        self.initialDay = initialDay
+    }
 
     var body: some View {
         ZStack {
@@ -43,7 +48,7 @@ struct TrainingPlanView: View {
         .navigationTitle("Training Plan")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            selectedDay = programStore.todayDayType
+            selectedDay = initialDay ?? programStore.todayDayType
             log = dataStore.todayLog() ?? makeBlankLog()
         }
         .onChange(of: log) { _, newLog in
@@ -67,9 +72,6 @@ struct TrainingPlanView: View {
                 ForEach(DayType.allCases, id: \.self) { day in
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) { selectedDay = day }
-                        var current = dataStore.todayLog() ?? makeBlankLog()
-                        current.dayType = day
-                        log = current
                     } label: {
                         HStack(spacing: 5) {
                             Image(systemName: day.icon).font(.caption2)
@@ -141,6 +143,7 @@ struct TrainingPlanView: View {
                 ExerciseSectionBlock(
                     title: group.title,
                     exercises: group.exercises,
+                    selectedDay: selectedDay,
                     log: $log
                 )
             }
@@ -182,6 +185,7 @@ struct TrainingPlanView: View {
 struct ExerciseSectionBlock: View {
     let title:     String
     let exercises: [ExerciseDefinition]
+    let selectedDay: DayType
     @Binding var log: DailyLog?
 
     var body: some View {
@@ -193,7 +197,7 @@ struct ExerciseSectionBlock: View {
                 .padding(.leading, 2)
 
             ForEach(exercises) { ex in
-                ExerciseRowView(exercise: ex, log: $log)
+                ExerciseRowView(exercise: ex, selectedDay: selectedDay, log: $log)
             }
         }
     }
@@ -205,6 +209,7 @@ struct ExerciseSectionBlock: View {
 
 struct ExerciseRowView: View {
     let exercise: ExerciseDefinition
+    let selectedDay: DayType
     @Binding var log: DailyLog?
 
     private var status: TaskStatus { log?.taskStatuses[exercise.id] ?? .pending }
@@ -217,6 +222,7 @@ struct ExerciseRowView: View {
                 exerciseInfo
                 Spacer()
                 StatusDropdown(status: status) { newStatus in
+                    ensureLogMetadata()
                     log?.taskStatuses[exercise.id] = newStatus
                     if newStatus == .completed { initLogIfNeeded() }
                 }
@@ -274,11 +280,14 @@ struct ExerciseRowView: View {
     private var liftPanel: some View {
         LiftLogPanel(
             exercise: exercise,
-            exerciseLog: Binding(
-                get: { log?.exerciseLogs[exercise.id] ?? ExerciseLog(exerciseID: exercise.id, exerciseName: exercise.name) },
-                set: { log?.exerciseLogs[exercise.id] = $0 }
+                exerciseLog: Binding(
+                    get: { log?.exerciseLogs[exercise.id] ?? ExerciseLog(exerciseID: exercise.id, exerciseName: exercise.name) },
+                    set: {
+                        ensureLogMetadata()
+                        log?.exerciseLogs[exercise.id] = $0
+                    }
+                )
             )
-        )
     }
 
     // ── Cardio log panel (elliptical / rowing) with photo upload
@@ -287,7 +296,10 @@ struct ExerciseRowView: View {
             cardioType: exercise.equipment == .rowingMachine ? .rowing : .elliptical,
             cardioLog: Binding(
                 get: { log?.cardioLogs[exercise.id] ?? CardioLog(cardioType: exercise.equipment == .rowingMachine ? .rowing : .elliptical) },
-                set: { log?.cardioLogs[exercise.id] = $0 }
+                set: {
+                    ensureLogMetadata()
+                    log?.cardioLogs[exercise.id] = $0
+                }
             )
         )
     }
@@ -305,6 +317,7 @@ struct ExerciseRowView: View {
     }
 
     private func initLogIfNeeded() {
+        ensureLogMetadata()
         if exercise.category == .cardio && log?.cardioLogs[exercise.id] == nil {
             log?.cardioLogs[exercise.id] = CardioLog(
                 cardioType: exercise.equipment == .rowingMachine ? .rowing : .elliptical
@@ -314,6 +327,10 @@ struct ExerciseRowView: View {
                 exerciseID: exercise.id, exerciseName: exercise.name
             )
         }
+    }
+
+    private func ensureLogMetadata() {
+        log?.dayType = selectedDay
     }
 }
 

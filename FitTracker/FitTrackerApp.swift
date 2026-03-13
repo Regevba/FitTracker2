@@ -30,7 +30,6 @@ struct FitTrackerApp: App {
                     switch phase {
                     case .active:
                         signIn.restoreSession()
-                        healthService.startBackgroundDelivery()
                         Task { await cloudSync.fetchChanges(dataStore: dataStore) }
                     case .background:
                         Task {

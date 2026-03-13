@@ -13,13 +13,7 @@ struct AccountPanelView: View {
     @EnvironmentObject var settings:  AppSettings
     @Environment(\.dismiss) var dismiss
 
-    @State private var editingName  = false
-    @State private var editingPhone = false
-    @State private var nameText:    String = ""
-    @State private var phoneText:   String = ""
     @State private var showLogoutConfirm = false
-    @State private var expandAccount  = true
-    @State private var expandSettings = false
 
     private var session: UserSession? { signIn.currentSession }
 
@@ -48,26 +42,11 @@ struct AccountPanelView: View {
                     }
                     .padding(.vertical, 6)
 
-                    // Name (editable placeholder)
+                    // Name
                     LabeledContent("Name") {
-                        if editingName {
-                            TextField("Your name", text: $nameText,
-                                      onCommit: { editingName = false })
-                                .multilineTextAlignment(.trailing)
-                                .font(.subheadline)
-                                .foregroundStyle(.primary)
-                                .submitLabel(.done)
-                        } else {
-                            Button {
-                                nameText = session?.displayName ?? "Regev"
-                                editingName = true
-                            } label: {
-                                Text(session?.displayName ?? "—")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                        Text(session?.displayName ?? "—")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
 
                     // Email
@@ -78,26 +57,16 @@ struct AccountPanelView: View {
                             .textSelection(.enabled)
                     }
 
-                    // Phone (editable placeholder)
+                    // Phone
                     LabeledContent("Phone") {
-                        if editingPhone {
-                            TextField("+972 XX XXX XXXX", text: $phoneText,
-                                      onCommit: { editingPhone = false })
-                                .multilineTextAlignment(.trailing)
-                                .font(.subheadline)
-                                .keyboardType(.phonePad)
-                        } else {
-                            Button {
-                                phoneText = session?.phone ?? ""
-                                editingPhone = true
-                            } label: {
-                                Text(session?.phone.map { $0 } ?? "Add phone number")
-                                    .font(.subheadline)
-                                    .foregroundStyle(session?.phone != nil ? Color.secondary : Color.green)
-                            }
-                            .buttonStyle(.plain)
-                        }
+                        Text(session?.phone ?? "—")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
+
+                    Text("Account details are sourced from your active sign-in provider.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
 
                     // Sign-in method chip
                     if session?.provider == .passkey {

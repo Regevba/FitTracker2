@@ -76,6 +76,7 @@ final class HealthKitService: ObservableObject {
 
     private let store = HKHealthStore()
     private var observers: [HKObserverQuery] = []
+    private var hasStartedBackgroundDelivery = false
 
     // Types to read
     static var readTypes: Set<HKObjectType> {
@@ -110,7 +111,7 @@ final class HealthKitService: ObservableObject {
 
     // ── Background delivery from Apple Watch ─────────────
     func startBackgroundDelivery() {
-        guard isAuthorized else { return }
+        guard isAuthorized, !hasStartedBackgroundDelivery else { return }
         let ids: [HKQuantityTypeIdentifier] = [
             .heartRate, .restingHeartRate, .heartRateVariabilitySDNN,
             .bodyMass, .bodyFatPercentage, .stepCount
@@ -127,6 +128,7 @@ final class HealthKitService: ObservableObject {
             observers.append(q)
             store.enableBackgroundDelivery(for: type, frequency: .immediate) { _, _ in }
         }
+        hasStartedBackgroundDelivery = true
     }
 
     // ── Fetch all latest metrics ──────────────────────────
@@ -162,8 +164,9 @@ final class HealthKitService: ObservableObject {
         async let bf = samples(.bodyFatPercentage,   unit: .percent(),             from: start, to: end)
         async let h  = samples(.heartRateVariabilitySDNN, unit: .secondUnit(with: .milli), from: start, to: end)
         async let r  = samples(.restingHeartRate,    unit: HKUnit.count().unitDivided(by: .minute()), from: start, to: end)
-        let (wV,bfV,hV,rV) = await (w,bf,h,r)
-        return HistoricalData(weights: wV, bodyFat: bfV, hrv: hV, restingHR: rV)
+        async let s  = sleepSamples(from: start, to: end)
+        let (wV,bfV,hV,rV,sV) = await (w,bf,h,r,s)
+        return HistoricalData(weights: wV, bodyFat: bfV, hrv: hV, restingHR: rV, sleep: sV)
     }
 
     // ── Private: single latest sample ────────────────────
@@ -212,6 +215,31 @@ final class HealthKitService: ObservableObject {
                 }
                 let total = deep + rem + core
                 cont.resume(returning: (total > 0 ? total : nil, deep > 0 ? deep*60 : nil, rem > 0 ? rem*60 : nil))
+            }
+            store.execute(q)
+        }
+    }
+
+    private func sleepSamples(from: Date, to: Date) async -> [HistoricalPoint] {
+        guard let type = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else { return [] }
+        let pred = HKQuery.predicateForSamples(withStart: from, end: to)
+        return await withCheckedContinuation { cont in
+            let q = HKSampleQuery(
+                sampleType: type,
+                predicate: pred,
+                limit: HKObjectQueryNoLimit,
+                sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+            ) { _, samples, _ in
+                let grouped = Dictionary(grouping: samples as? [HKCategorySample] ?? []) {
+                    Calendar.current.startOfDay(for: $0.startDate)
+                }
+                let points = grouped.keys.sorted().compactMap { day -> HistoricalPoint? in
+                    let hours = grouped[day, default: []]
+                        .reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) / 3600 }
+                    guard hours > 0 else { return nil }
+                    return HistoricalPoint(date: day, value: hours)
+                }
+                cont.resume(returning: points)
             }
             store.execute(q)
         }

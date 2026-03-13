@@ -363,12 +363,15 @@ extension SignInService: ASAuthorizationControllerDelegate {
             case let cred as ASAuthorizationAppleIDCredential:
                 let name = [cred.fullName?.givenName, cred.fullName?.familyName]
                     .compactMap { $0 }.joined(separator: " ")
+                let existingAppleSession = currentSession?.provider == .apple ? currentSession : nil
                 let session = UserSession(
                     provider: .apple,
                     userID: cred.user,
-                    displayName: name.isEmpty ? "Apple User" : name,
-                    email: cred.email,
-                    sessionToken: cred.authorizationCode.flatMap { String(data: $0, encoding: .utf8) } ?? ""
+                    displayName: name.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : name,
+                    email: cred.email ?? existingAppleSession?.email,
+                    phone: existingAppleSession?.phone,
+                    avatarURL: existingAppleSession?.avatarURL,
+                    sessionToken: cred.authorizationCode.flatMap { String(data: $0, encoding: .utf8) } ?? existingAppleSession?.sessionToken ?? ""
                 )
                 finishSignIn(session)
 
