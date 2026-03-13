@@ -142,7 +142,7 @@ struct RootTabView: View {
             Button { showAccount = true } label: {
                 Image(systemName: "line.3.horizontal")
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.blue)
                     .frame(width: 32, height: 32)
                     .contentShape(Rectangle())
             }
