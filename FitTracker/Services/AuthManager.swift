@@ -100,22 +100,29 @@ struct LockScreenView: View {
         }
     }
 
-    private var biometricLabel: String {
+    private var biometricType: LABiometryType? {
         let ctx = LAContext()
         var error: NSError?
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return "Unlock"
+            return nil
         }
-        return ctx.biometryType == .faceID ? "Unlock with Face ID" : "Unlock with Touch ID"
+        return ctx.biometryType
+    }
+
+    private var biometricLabel: String {
+        switch biometricType {
+        case .faceID:  "Unlock with Face ID"
+        case .touchID: "Unlock with Touch ID"
+        default:       "Unlock"
+        }
     }
 
     private var biometricIcon: String {
-        let ctx = LAContext()
-        var error: NSError?
-        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return "lock.open.fill"
+        switch biometricType {
+        case .faceID:  "faceid"
+        case .touchID: "touchid"
+        default:       "lock.open.fill"
         }
-        return ctx.biometryType == .faceID ? "faceid" : "touchid"
     }
 }
 

@@ -87,7 +87,13 @@ struct TrainingProgramData {
     ]
 
     static func exercises(for day: DayType) -> [ExerciseDefinition] {
-        allExercises.filter { $0.dayType == day }.sorted { $0.order < $1.order }
+        #if DEBUG
+        assert(
+            Set(allExercises.map(\.id)).count == allExercises.count,
+            "Duplicate exercise IDs detected in TrainingProgramData.allExercises"
+        )
+        #endif
+        return allExercises.filter { $0.dayType == day }.sorted { $0.order < $1.order }
     }
 
     static let stage1Criteria = [
