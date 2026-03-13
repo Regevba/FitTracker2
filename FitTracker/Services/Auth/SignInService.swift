@@ -343,7 +343,8 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     private func simulateSignIn(provider: AuthProvider, name: String, email: String) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(800))
             let session = UserSession(
                 provider: provider,
                 userID: UUID().uuidString,
@@ -351,7 +352,7 @@ final class SignInService: NSObject, ObservableObject {
                 email: email,
                 sessionToken: UUID().uuidString
             )
-            self.finishSignIn(session)
+            self?.finishSignIn(session)
         }
     }
 
@@ -486,13 +487,10 @@ extension SignInService: ASAuthorizationControllerDelegate {
 // ─────────────────────────────────────────────────────────
 
 extension SignInService: ASAuthorizationControllerPresentationContextProviding {
+    // cachedWindow is always populated before performRequests() is called (on the main actor),
+    // so this nonisolated callback can safely return it without any cross-thread dispatch.
     nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        if Thread.isMainThread {
-            return MainActor.assumeIsolated { presentationAnchorOnMainActor() }
-        }
-        return DispatchQueue.main.sync {
-            MainActor.assumeIsolated { presentationAnchorOnMainActor() }
-        }
+        MainActor.assumeIsolated { presentationAnchorOnMainActor() }
     }
 
     @MainActor

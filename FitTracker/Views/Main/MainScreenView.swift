@@ -504,7 +504,8 @@ struct SyncStatusIndicator: View {
 // ─────────────────────────────────────────────────────────
 
 struct ManualBiometricEntry: View {
-    @EnvironmentObject var dataStore: EncryptedDataStore
+    @EnvironmentObject var dataStore:     EncryptedDataStore
+    @EnvironmentObject var programStore:  TrainingProgramStore
     @Environment(\.dismiss) var dismiss
 
     @State private var weightText  = ""
@@ -578,6 +579,6 @@ struct ManualBiometricEntry: View {
 
     private func makeBlankLog() -> DailyLog {
         DailyLog(date: Date(), phase: dataStore.userProfile.currentPhase,
-                 dayType: .restDay, recoveryDay: dataStore.userProfile.daysSinceStart)
+                 dayType: programStore.todayDayType, recoveryDay: dataStore.userProfile.daysSinceStart)
     }
 }

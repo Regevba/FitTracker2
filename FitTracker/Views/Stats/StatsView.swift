@@ -171,9 +171,13 @@ struct SettingsView: View {
         }
     }
 
-    private func lastSyncFormatted(_ date: Date) -> String {
+    private static let lastSyncFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateStyle = .short; f.timeStyle = .short
-        return f.string(from: date)
+        return f
+    }()
+
+    private func lastSyncFormatted(_ date: Date) -> String {
+        Self.lastSyncFormatter.string(from: date)
     }
 }
