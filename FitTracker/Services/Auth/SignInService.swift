@@ -487,12 +487,30 @@ extension SignInService: ASAuthorizationControllerDelegate {
 
 extension SignInService: ASAuthorizationControllerPresentationContextProviding {
     nonisolated func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        // Use the window cached on the main actor before performRequests() was called.
-        // This avoids DispatchQueue.main.sync which deadlocks when already on the main thread (macOS).
+        if Thread.isMainThread {
+            return MainActor.assumeIsolated { presentationAnchorOnMainActor() }
+        }
+        return DispatchQueue.main.sync {
+            MainActor.assumeIsolated { presentationAnchorOnMainActor() }
+        }
+    }
+
+    @MainActor
+    private func presentationAnchorOnMainActor() -> ASPresentationAnchor {
         #if os(iOS)
-        return cachedWindow ?? UIWindow()
+        return cachedWindow
+            ?? UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .flatMap { $0.windows }
+                .first { $0.isKeyWindow }
+            ?? UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .first?
+                .windows
+                .first
+            ?? UIWindow(frame: UIScreen.main.bounds)
         #elseif os(macOS)
-        return cachedWindow ?? NSWindow()
+        return cachedWindow ?? NSApplication.shared.windows.first ?? NSWindow()
         #endif
     }
 }
