@@ -1,0 +1,439 @@
+// Views/Shared/ReadinessCard.swift
+// Multi-page auto-cycling readiness/health summary card.
+// iOS, iPadOS, macOS
+
+import SwiftUI
+
+struct ReadinessCard: View {
+    @EnvironmentObject var dataStore: EncryptedDataStore
+    @EnvironmentObject var healthKit: HealthKitService
+
+    @State private var currentPage = 0
+    @State private var timer: Timer?
+
+    // ── Timer helpers ─────────────────────────────────────
+
+    private func startTimer() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+            withAnimation(.easeInOut) {
+                currentPage = (currentPage + 1) % 5
+            }
+        }
+    }
+
+    // ── Body ──────────────────────────────────────────────
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            TabView(selection: $currentPage) {
+                scorePage.tag(0)
+                weeklyTrainingPage.tag(1)
+                nutritionPage.tag(2)
+                trendsPage.tag(3)
+                achievementsPage.tag(4)
+            }
+            #if os(iOS)
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            #else
+            .tabViewStyle(.automatic)
+            #endif
+            .frame(height: 180)
+
+            // Custom page dots
+            pageDots
+                .padding(.bottom, 6)
+        }
+        .frame(height: 180)
+        .background(
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white.opacity(0.12))
+        )
+        .onAppear { startTimer() }
+        .onDisappear {
+            timer?.invalidate()
+            timer = nil
+        }
+        .onChange(of: currentPage) { _, _ in
+            startTimer()
+        }
+    }
+
+    // ── Page dots ─────────────────────────────────────────
+
+    private var pageDots: some View {
+        HStack(spacing: 5) {
+            ForEach(0..<5, id: \.self) { i in
+                Circle()
+                    .fill(i == currentPage ? Color.white : Color.white.opacity(0.35))
+                    .frame(width: i == currentPage ? 7 : 5, height: i == currentPage ? 7 : 5)
+                    .animation(.easeInOut(duration: 0.2), value: currentPage)
+            }
+        }
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Page 0: Readiness Score
+    // ─────────────────────────────────────────────────────
+
+    private var scorePage: some View {
+        let score = dataStore.readinessScore(for: Date(), fallbackMetrics: healthKit.latest)
+        let today = dataStore.todayLog()
+        let live  = healthKit.latest
+
+        let hrv    = live.hrv          ?? today?.biometrics.effectiveHRV
+        let rhr    = live.restingHR    ?? today?.biometrics.effectiveRestingHR
+        let sleep  = live.sleepHours   ?? today?.biometrics.effectiveSleep
+
+        return VStack(spacing: 4) {
+            HStack(alignment: .lastTextBaseline, spacing: 4) {
+                Text(score.map { "\($0)" } ?? "–")
+                    .font(.system(size: 48, weight: .bold))
+                    .foregroundStyle(.white)
+                if score != nil {
+                    Text("/ 100")
+                        .font(AppType.subheading)
+                        .foregroundStyle(.white.opacity(0.6))
+                }
+            }
+
+            if score == nil {
+                Text("Add 3+ days of data")
+                    .font(AppType.caption)
+                    .foregroundStyle(.white.opacity(0.5))
+            }
+
+            Text(contextLabel(for: score))
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.8))
+                .multilineTextAlignment(.center)
+
+            Spacer(minLength: 4)
+
+            HStack(spacing: 16) {
+                biometricRow(icon: "waveform.path.ecg", label: hrv.map { String(format: "%.0f ms", $0) } ?? "–", title: "HRV")
+                biometricRow(icon: "heart.fill", label: rhr.map { String(format: "%.0f bpm", $0) } ?? "–", title: "RHR")
+                biometricRow(icon: "moon.fill", label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+    }
+
+    private func contextLabel(for score: Int?) -> String {
+        guard let s = score else { return "Building your baseline..." }
+        switch s {
+        case 80...: return "HRV looks great today 💪"
+        case 60..<80: return "Good to go today"
+        case 40..<60: return "Sleep was short — train lighter"
+        default: return "Body needs rest today"
+        }
+    }
+
+    private func biometricRow(icon: String, label: String, title: String) -> some View {
+        VStack(spacing: 2) {
+            Image(systemName: icon)
+                .font(.system(size: 12))
+                .foregroundStyle(.white.opacity(0.7))
+            Text(label)
+                .font(AppType.caption)
+                .foregroundStyle(.white)
+                .lineLimit(1)
+            Text(title)
+                .font(.system(size: 9))
+                .foregroundStyle(.white.opacity(0.5))
+        }
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Page 1: Weekly Training
+    // ─────────────────────────────────────────────────────
+
+    private var weeklyTrainingPage: some View {
+        let cal = Calendar.current
+        // Build Mon–Sun for the current week
+        let today = Date()
+        let weekday = cal.component(.weekday, from: today) // 1=Sun..7=Sat
+        // Days offset so Monday = index 0
+        let mondayOffset = (weekday == 1) ? -6 : -(weekday - 2)
+        let monday = cal.date(byAdding: .day, value: mondayOffset, to: cal.startOfDay(for: today)) ?? today
+
+        let weekDays: [Date] = (0..<7).compactMap { cal.date(byAdding: .day, value: $0, to: monday) }
+        let dayLabels = ["M", "T", "W", "T", "F", "S", "S"]
+
+        // Map logs to the week
+        let logsMap: [Date: DailyLog] = Dictionary(
+            uniqueKeysWithValues: dataStore.dailyLogs.compactMap { log in
+                guard let day = weekDays.first(where: { cal.isDate(log.date, inSameDayAs: $0) }) else { return nil }
+                return (day, log)
+            }
+        )
+
+        return VStack(alignment: .leading, spacing: 6) {
+            Text("This Week")
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.7))
+                .padding(.horizontal, 16)
+
+            HStack(alignment: .bottom, spacing: 6) {
+                ForEach(Array(weekDays.enumerated()), id: \.offset) { idx, day in
+                    let log = logsMap[day]
+                    let pct = log?.completionPct ?? 0
+                    let barColor: Color = {
+                        guard log != nil else { return Color.secondary.opacity(0.2) }
+                        if pct >= 100 { return Color.status.success }
+                        if pct > 0    { return Color.accent.cyan }
+                        return Color.secondary.opacity(0.2)
+                    }()
+                    let maxBarHeight: CGFloat = 60
+                    let barHeight: CGFloat = log != nil ? max(4, CGFloat(pct / 100.0) * maxBarHeight) : 4
+
+                    VStack(spacing: 3) {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(barColor)
+                            .frame(height: barHeight)
+                            .frame(maxWidth: .infinity)
+
+                        Text(dayLabels[idx])
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: maxBarHeight + 16, alignment: .bottom)
+                }
+            }
+            .padding(.horizontal, 16)
+            .frame(height: 76)
+
+            // Next day label
+            let tomorrowType = logsMap[weekDays.first(where: { cal.isDateInTomorrow($0) }) ?? today]?.dayType
+            Text("Next: \(tomorrowType?.rawValue ?? "–")")
+                .font(AppType.caption)
+                .foregroundStyle(.white.opacity(0.6))
+                .padding(.horizontal, 16)
+        }
+        .padding(.vertical, 10)
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Page 2: Nutrition Snapshot
+    // ─────────────────────────────────────────────────────
+
+    private var nutritionPage: some View {
+        let todayLog = dataStore.todayLog()
+        let nutrition = todayLog?.nutritionLog
+        let protein = nutrition?.totalProteinG ?? 0
+        let lbm = todayLog?.biometrics.leanBodyMassKg
+        let proteinTarget = lbm.map { $0 * 2.0 } ?? 135.0
+        let waterML = nutrition?.waterML ?? 0
+
+        let morningDone = todayLog?.supplementLog.morningStatus == .completed
+        let eveningDone = todayLog?.supplementLog.eveningStatus == .completed
+
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Nutrition")
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.7))
+
+            // Protein progress
+            VStack(alignment: .leading, spacing: 3) {
+                HStack {
+                    Text("Protein")
+                        .font(AppType.caption)
+                        .foregroundStyle(.white.opacity(0.6))
+                    Spacer()
+                    Text(String(format: "%.0fg / %.0fg", protein, proteinTarget))
+                        .font(AppType.caption)
+                        .foregroundStyle(.white)
+                }
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(Color.white.opacity(0.15))
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(Color.accent.cyan)
+                            .frame(width: geo.size.width * min(1, CGFloat(protein / max(proteinTarget, 1))))
+                    }
+                }
+                .frame(height: 6)
+            }
+
+            // Supplements
+            HStack(spacing: 10) {
+                Image(systemName: "pill.fill")
+                    .font(.system(size: 11))
+                    .foregroundStyle(.white.opacity(0.6))
+                Text("Supplements")
+                    .font(AppType.caption)
+                    .foregroundStyle(.white.opacity(0.6))
+                supplementDot(label: "AM", done: morningDone)
+                supplementDot(label: "PM", done: eveningDone)
+            }
+
+            // Water
+            if waterML > 0 {
+                HStack(spacing: 6) {
+                    Image(systemName: "drop.fill")
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color.accent.cyan.opacity(0.8))
+                    Text(String(format: "%.0f mL water", waterML))
+                        .font(AppType.caption)
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+    }
+
+    private func supplementDot(label: String, done: Bool) -> some View {
+        HStack(spacing: 3) {
+            Circle()
+                .fill(done ? Color.status.success : Color.white.opacity(0.25))
+                .frame(width: 8, height: 8)
+            Text(label)
+                .font(.system(size: 9))
+                .foregroundStyle(.white.opacity(0.6))
+        }
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Page 3: 7-Day Trends
+    // ─────────────────────────────────────────────────────
+
+    private var trendsPage: some View {
+        let logs = dataStore.dailyLogs
+            .sorted { $0.date < $1.date }
+
+        let latest = logs.last
+        let sevenAgo = logs.count >= 2 ? logs[max(0, logs.count - 7)] : nil
+
+        let weightDelta   = delta(latest: latest?.biometrics.weightKg,          ago: sevenAgo?.biometrics.weightKg)
+        let bfDelta       = delta(latest: latest?.biometrics.bodyFatPercent,     ago: sevenAgo?.biometrics.bodyFatPercent)
+        let hrvDelta      = delta(latest: latest?.biometrics.effectiveHRV,       ago: sevenAgo?.biometrics.effectiveHRV)
+        let sleepDelta    = delta(latest: latest?.biometrics.effectiveSleep,     ago: sevenAgo?.biometrics.effectiveSleep)
+
+        // Training volume: total across last 7 logs vs previous 7
+        let last7  = Array(logs.suffix(7))
+        let prev7  = logs.count >= 14 ? Array(logs.dropLast(7).suffix(7)) : []
+        let volNow  = last7.reduce(0.0) { $0 + $1.exerciseLogs.values.reduce(0.0) { $0 + $1.totalVolume } }
+        let volPrev = prev7.reduce(0.0) { $0 + $1.exerciseLogs.values.reduce(0.0) { $0 + $1.totalVolume } }
+        let volDelta = volPrev > 0 ? volNow - volPrev : nil
+
+        // Steps: use biometrics.stepCount
+        let stepsNow  = last7.compactMap { $0.biometrics.stepCount }.last
+        let stepsPrev = prev7.compactMap { $0.biometrics.stepCount }.last
+        let stepsDelta: Double? = (stepsNow != nil && stepsPrev != nil) ? Double(stepsNow! - stepsPrev!) : nil
+
+        return VStack(alignment: .leading, spacing: 6) {
+            Text("7-Day Trends")
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.7))
+
+            let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+            LazyVGrid(columns: columns, spacing: 8) {
+                trendCell(label: "Weight",  delta: weightDelta,  positiveIsGood: false)
+                trendCell(label: "Body Fat",delta: bfDelta,      positiveIsGood: false)
+                trendCell(label: "HRV",     delta: hrvDelta,     positiveIsGood: true)
+                trendCell(label: "Sleep",   delta: sleepDelta,   positiveIsGood: true)
+                trendCell(label: "Volume",  delta: volDelta,     positiveIsGood: true)
+                trendCell(label: "Steps",   delta: stepsDelta,   positiveIsGood: true)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+    }
+
+    private func delta(latest: Double?, ago: Double?) -> Double? {
+        guard let a = latest, let b = ago else { return nil }
+        return a - b
+    }
+
+    private func trendCell(label: String, delta: Double?, positiveIsGood: Bool) -> some View {
+        VStack(spacing: 2) {
+            if let d = delta {
+                TrendIndicator(delta: d, positiveIsGood: positiveIsGood, isPercent: false)
+            } else {
+                Text("–")
+                    .font(AppType.caption)
+                    .foregroundStyle(.white.opacity(0.4))
+            }
+            Text(label)
+                .font(.system(size: 9))
+                .foregroundStyle(.white.opacity(0.5))
+        }
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Page 4: Achievements
+    // ─────────────────────────────────────────────────────
+
+    private var achievementsPage: some View {
+        let streak     = dataStore.supplementStreak
+        let dayOnProgram = dataStore.userProfile.daysSinceStart
+        let prsThisWeek = countPRsThisWeek()
+
+        return VStack(spacing: 6) {
+            Text("Achievements")
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.7))
+
+            HStack(spacing: 0) {
+                achievementCell(emoji: "🔥", value: streak,       label: "Supp Streak")
+                Divider().background(Color.white.opacity(0.2)).frame(height: 50)
+                achievementCell(emoji: "🏆", value: prsThisWeek,  label: "PRs This Week")
+                Divider().background(Color.white.opacity(0.2)).frame(height: 50)
+                achievementCell(emoji: "📅", value: dayOnProgram, label: "Program Day")
+            }
+            .padding(.horizontal, 8)
+        }
+        .padding(.vertical, 12)
+    }
+
+    private func achievementCell(emoji: String, value: Int, label: String) -> some View {
+        VStack(spacing: 4) {
+            Text(emoji)
+                .font(.system(size: 20))
+            Text("\(value)")
+                .font(.system(size: 28, weight: .bold))
+                .foregroundStyle(.white)
+            Text(label)
+                .font(.system(size: 9))
+                .foregroundStyle(.white.opacity(0.55))
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private func countPRsThisWeek() -> Int {
+        let cal = Calendar.current
+        let today = Date()
+        let weekday = cal.component(.weekday, from: today)
+        let mondayOffset = (weekday == 1) ? -6 : -(weekday - 2)
+        guard let weekStart = cal.date(byAdding: .day, value: mondayOffset, to: cal.startOfDay(for: today)) else { return 0 }
+
+        let thisWeekLogs = dataStore.dailyLogs.filter { $0.date >= weekStart }
+        let priorLogs    = dataStore.dailyLogs.filter { $0.date < weekStart }
+
+        // Build all-time best per exercise from prior logs
+        var allTimeBest: [String: Double] = [:]
+        for log in priorLogs {
+            for (exerciseID, exLog) in log.exerciseLogs {
+                let best = exLog.bestSet?.weightKg ?? 0
+                allTimeBest[exerciseID] = max(allTimeBest[exerciseID] ?? 0, best)
+            }
+        }
+
+        // Count exercises this week that beat all-time prior best
+        var prExercises = Set<String>()
+        for log in thisWeekLogs {
+            for (exerciseID, exLog) in log.exerciseLogs {
+                guard let best = exLog.bestSet?.weightKg else { continue }
+                let prior = allTimeBest[exerciseID] ?? 0
+                if best > prior {
+                    prExercises.insert(exerciseID)
+                }
+            }
+        }
+        return prExercises.count
+    }
+}

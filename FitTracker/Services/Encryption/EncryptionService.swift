@@ -388,6 +388,49 @@ final class EncryptedDataStore: ObservableObject {
         return streak
     }
 
+    /// Computes a 0–100 readiness score for the given date.
+    /// Returns `nil` if there is insufficient data (fewer than 3 logs with HRV,
+    /// no 30-day baseline, or today's HRV / resting HR not available).
+    func readinessScore(for date: Date, fallbackMetrics: LiveMetrics?) -> Int? {
+        // Need at least 3 biometric logs to establish baseline
+        let logsWithHRV = dailyLogs.filter { $0.biometrics.effectiveHRV != nil }
+        guard logsWithHRV.count >= 3 else { return nil }
+
+        // Get today's biometrics — either from stored log or fallback metrics
+        let todayLog = self.log(for: date)
+        let todayHRV   = todayLog?.biometrics.effectiveHRV      ?? fallbackMetrics?.hrv
+        let todayHR    = todayLog?.biometrics.effectiveRestingHR ?? fallbackMetrics?.restingHR
+        let todaySleep = todayLog?.biometrics.effectiveSleep     ?? fallbackMetrics?.sleepHours
+
+        guard let hrv = todayHRV, let hr = todayHR else { return nil }
+        let sleep = todaySleep ?? 7.0   // default if no sleep data
+
+        // 30-day baseline from stored logs (excluding today)
+        let cal = Calendar.current
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: date) ?? date
+        let baseline = dailyLogs.filter {
+            $0.date >= thirtyDaysAgo &&
+            !cal.isDate($0.date, inSameDayAs: date)
+        }
+
+        let baselineHRV = baseline.compactMap { $0.biometrics.effectiveHRV }
+        let baselineHR  = baseline.compactMap { $0.biometrics.effectiveRestingHR }
+
+        guard !baselineHRV.isEmpty, !baselineHR.isEmpty else { return nil }
+
+        let avgBaselineHRV = baselineHRV.reduce(0, +) / Double(baselineHRV.count)
+        let avgBaselineHR  = baselineHR.reduce(0, +)  / Double(baselineHR.count)
+
+        // Score components (each 0–100):
+        let hrvSignal   = min(100, max(0, (hrv / avgBaselineHRV) * 50))
+        let hrSignal    = min(100, max(0, 50 + (avgBaselineHR - hr) * 10))
+        let sleepSignal = min(100, max(0, (sleep / 8.0) * 100))
+
+        // Weighted average:
+        let score = Int(hrvSignal * 0.40 + hrSignal * 0.30 + sleepSignal * 0.30)
+        return score
+    }
+
     func saveProfile(_ p: UserProfile) {
         userProfile = p
         Task { await persistToDisk() }

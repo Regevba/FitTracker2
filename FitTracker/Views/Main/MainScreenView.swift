@@ -62,7 +62,7 @@ struct MainScreenView: View {
                 SectionHeader(title: "Start Training")
                 trainingButton
                 Spacer()
-                SectionHeader(title: "Metrics")
+                SectionHeader(title: "Readiness")
                 quickStats
             }
             .padding(.horizontal, 20)
@@ -135,6 +135,7 @@ struct MainScreenView: View {
             Circle()
                 .fill(Color.white)
                 .frame(width: 13, height: 13)
+                .shadow(color: .white.opacity(0.6), radius: 4)
                 .shadow(color: goalProgress > 0.5 ? .blue.opacity(0.55) : .orange.opacity(0.55), radius: 5)
                 .position(x: x, y: orbY)
                 .animation(.spring(response: 1.2), value: goalProgress)
@@ -194,10 +195,15 @@ struct MainScreenView: View {
 
             // Weight (left)
             VStack(alignment: .leading, spacing: 4) {
-                Label("WEIGHT", systemImage: "scalemass.fill")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.blue)
-                    .tracking(1)
+                HStack(spacing: 4) {
+                    Label("WEIGHT", systemImage: "scalemass.fill")
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.blue)
+                        .tracking(1)
+                    Circle()
+                        .fill(weightTrendColor)
+                        .frame(width: 8, height: 8)
+                }
                 HStack(alignment: .lastTextBaseline, spacing: 3) {
                     Text(currentWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—")
                         .font(.system(size: 36, weight: .bold, design: .monospaced))
@@ -223,10 +229,15 @@ struct MainScreenView: View {
 
             // Body Fat (right)
             VStack(alignment: .leading, spacing: 4) {
-                Label("BODY FAT", systemImage: "drop.fill")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.orange)
-                    .tracking(1)
+                HStack(spacing: 4) {
+                    Label("BODY FAT", systemImage: "drop.fill")
+                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                        .foregroundStyle(.orange)
+                        .tracking(1)
+                    Circle()
+                        .fill(bfTrendColor)
+                        .frame(width: 8, height: 8)
+                }
                 HStack(alignment: .lastTextBaseline, spacing: 3) {
                     Text(currentBF.map { String(format: "%.1f", $0) } ?? "—")
                         .font(.system(size: 36, weight: .bold, design: .monospaced))
@@ -267,6 +278,33 @@ struct MainScreenView: View {
         return String(format: "%+.1f%% since start", d)
     }
 
+    // Returns a colour dot for weight trend over 7 days
+    private var weightTrendColor: Color {
+        let logs = dataStore.dailyLogs
+            .filter { !Calendar.current.isDateInToday($0.date) }
+            .sorted { $0.date > $1.date }
+            .prefix(7)
+        let vals = logs.compactMap { $0.biometrics.weightKg }
+        guard vals.count >= 2 else { return Color.secondary }
+        let delta = vals.first! - vals.last!  // sorted newest-first, so first=recent, last=older
+        if delta < -0.2 { return Color.status.success }    // weight decreasing = good
+        if delta > 0.2  { return Color.status.error }      // weight increasing = bad
+        return Color.status.warning                         // flat
+    }
+
+    private var bfTrendColor: Color {
+        let logs = dataStore.dailyLogs
+            .filter { !Calendar.current.isDateInToday($0.date) }
+            .sorted { $0.date > $1.date }
+            .prefix(7)
+        let vals = logs.compactMap { $0.biometrics.bodyFatPercent }
+        guard vals.count >= 2 else { return Color.secondary }
+        let delta = vals.first! - vals.last!
+        if delta < -0.3 { return Color.status.success }
+        if delta > 0.3  { return Color.status.error }
+        return Color.status.warning
+    }
+
     // ─────────────────────────────────────────────────────
     // MARK: – Goal section
     // ─────────────────────────────────────────────────────
@@ -280,7 +318,7 @@ struct MainScreenView: View {
                 Circle()
                     .trim(from: 0, to: goalProgress)
                     .stroke(
-                        AngularGradient(colors: [.orange, .blue, .orange], center: .center),
+                        AngularGradient(colors: [Color.appOrange1, Color.accent.cyan, Color.appOrange1], center: .center),
                         style: StrokeStyle(lineWidth: 8, lineCap: .round)
                     )
                     .frame(width: 74, height: 74)
@@ -365,7 +403,7 @@ struct MainScreenView: View {
                     Image(systemName: activeDayType.icon)
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundStyle(.secondary)
-                    Text(activeDayType.rawValue)
+                    Text("💪 \(activeDayType.rawValue) · \(TrainingProgramData.exercises(for: activeDayType).count) ex")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Image(systemName: "chevron.down")
@@ -383,40 +421,7 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var quickStats: some View {
-        HStack(spacing: 8) {
-            MetricCard(
-                icon: "waveform.path.ecg",
-                label: "HRV",
-                value: metrics.hrv.map { String(format: "%.0f", $0) } ?? "—",
-                unit: "ms",
-                trendDelta: nil,
-                statusColor: metrics.hrvStatus.color
-            )
-            MetricCard(
-                icon: "heart.fill",
-                label: "Rest HR",
-                value: metrics.restingHR.map { String(format: "%.0f", $0) } ?? "—",
-                unit: "bpm",
-                trendDelta: nil,
-                statusColor: metrics.restingHRStatus.color
-            )
-            MetricCard(
-                icon: "moon.fill",
-                label: "Sleep",
-                value: metrics.sleepHours.map { String(format: "%.1f", $0) } ?? "—",
-                unit: "h",
-                trendDelta: nil,
-                statusColor: Color.accent.purple
-            )
-            MetricCard(
-                icon: "figure.walk",
-                label: "Steps",
-                value: metrics.stepCount.map { "\($0)" } ?? "—",
-                unit: nil,
-                trendDelta: nil,
-                statusColor: Color.accent.cyan
-            )
-        }
+        ReadinessCard()
     }
 
     // ─────────────────────────────────────────────────────
@@ -454,7 +459,7 @@ struct GoalProgressRow: View {
                         .fill(Color.white.opacity(0.4))
                         .frame(height: 4)
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(color)
+                        .fill(LinearGradient(colors: [Color.appOrange1, Color.accent.cyan], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * progress, height: 4)
                         .animation(.spring(response: 1.0), value: progress)
                 }

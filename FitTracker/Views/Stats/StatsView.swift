@@ -437,14 +437,62 @@ struct StatsView: View {
                 }
             }
 
-            // Readiness Score — placeholder for step 5.6
+            // Readiness Score — filled in step 5.6
             ChartCard(title: "Readiness Score", periodLabel: period.rawValue) {
-                EmptyStateView(
-                    icon: "sparkles",
-                    title: "Readiness Score",
-                    subtitle: "Readiness score available after biometric data loads"
-                )
-                .frame(height: 120)
+                let range = period.dateRange
+                let days: [Date] = {
+                    var result: [Date] = []
+                    var d = range.from
+                    while d <= range.to {
+                        result.append(d)
+                        d = Calendar.current.date(byAdding: .day, value: 1, to: d) ?? d.addingTimeInterval(86400)
+                    }
+                    return result
+                }()
+                let pts: [(date: Date, score: Int)] = days.compactMap { day in
+                    guard let s = dataStore.readinessScore(for: day, fallbackMetrics: healthService.latest) else { return nil }
+                    return (date: day, score: s)
+                }
+                if pts.isEmpty {
+                    EmptyStateView(
+                        icon: "sparkles",
+                        title: "Not Enough Data",
+                        subtitle: "Log biometrics for 3+ days to see your readiness trend"
+                    )
+                    .frame(height: 120)
+                } else {
+                    Chart(pts, id: \.date) { pt in
+                        LineMark(
+                            x: .value("Date", pt.date, unit: .day),
+                            y: .value("Score", pt.score)
+                        )
+                        .foregroundStyle(Color.accent.cyan)
+                        .interpolationMethod(.catmullRom)
+                        AreaMark(
+                            x: .value("Date", pt.date, unit: .day),
+                            y: .value("Score", pt.score)
+                        )
+                        .foregroundStyle(
+                            LinearGradient(colors: [Color.accent.cyan.opacity(0.3), Color.accent.cyan.opacity(0)],
+                                           startPoint: .top, endPoint: .bottom)
+                        )
+                        .interpolationMethod(.catmullRom)
+                    }
+                    .chartYScale(domain: 0...100)
+                    .chartXAxis {
+                        AxisMarks(values: .stride(by: .day, count: max(1, pts.count / 5))) {
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks(values: [0, 40, 60, 80, 100]) { v in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                    .frame(height: 120)
+                }
             }
         }
         .task(id: period) {
