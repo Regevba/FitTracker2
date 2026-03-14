@@ -14,6 +14,9 @@ final class TrainingProgramStore: ObservableObject {
 
     @Published var todayDayType: DayType = .restDay
 
+    /// Calendar weekday indices (1=Sunday, 4=Wednesday) that are rest days by default.
+    static let restWeekdays: Set<Int> = [1, 4]
+
     init() { detectToday() }
 
     func detectToday() {

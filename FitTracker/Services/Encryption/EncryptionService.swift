@@ -335,6 +335,7 @@ final class EncryptedDataStore: ObservableObject {
     @Published var dailyLogs:       [DailyLog]        = []
     @Published var weeklySnapshots: [WeeklySnapshot]  = []
     @Published var userProfile:     UserProfile       = UserProfile()
+    @Published var mealTemplates:   [MealTemplate]    = []
     @Published var isLoading:       Bool              = false
     @Published var lastError:       String?
     /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
@@ -368,6 +369,68 @@ final class EncryptedDataStore: ObservableObject {
 
     func todayLog() -> DailyLog? { log(for: Date()) }
 
+    var supplementStreak: Int {
+        let sorted = dailyLogs.sorted { $0.date > $1.date }
+        var streak = 0
+        let today = Calendar.current.startOfDay(for: Date())
+        for log in sorted {
+            let logDay = Calendar.current.startOfDay(for: log.date)
+            // Today counts only if fully complete
+            if logDay > today { continue }
+            let complete = log.supplementLog.morningStatus == .completed
+                        && log.supplementLog.eveningStatus == .completed
+            if complete {
+                streak += 1
+            } else {
+                break
+            }
+        }
+        return streak
+    }
+
+    /// Computes a 0–100 readiness score for the given date.
+    /// Returns `nil` if there is insufficient data (fewer than 3 logs with HRV,
+    /// no 30-day baseline, or today's HRV / resting HR not available).
+    func readinessScore(for date: Date, fallbackMetrics: LiveMetrics?) -> Int? {
+        // Need at least 3 biometric logs to establish baseline
+        let logsWithHRV = dailyLogs.filter { $0.biometrics.effectiveHRV != nil }
+        guard logsWithHRV.count >= 3 else { return nil }
+
+        // Get today's biometrics — either from stored log or fallback metrics
+        let todayLog = self.log(for: date)
+        let todayHRV   = todayLog?.biometrics.effectiveHRV      ?? fallbackMetrics?.hrv
+        let todayHR    = todayLog?.biometrics.effectiveRestingHR ?? fallbackMetrics?.restingHR
+        let todaySleep = todayLog?.biometrics.effectiveSleep     ?? fallbackMetrics?.sleepHours
+
+        guard let hrv = todayHRV, let hr = todayHR else { return nil }
+        let sleep = todaySleep ?? 7.0   // default if no sleep data
+
+        // 30-day baseline from stored logs (excluding today)
+        let cal = Calendar.current
+        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: date) ?? date
+        let baseline = dailyLogs.filter {
+            $0.date >= thirtyDaysAgo &&
+            !cal.isDate($0.date, inSameDayAs: date)
+        }
+
+        let baselineHRV = baseline.compactMap { $0.biometrics.effectiveHRV }
+        let baselineHR  = baseline.compactMap { $0.biometrics.effectiveRestingHR }
+
+        guard !baselineHRV.isEmpty, !baselineHR.isEmpty else { return nil }
+
+        let avgBaselineHRV = baselineHRV.reduce(0, +) / Double(baselineHRV.count)
+        let avgBaselineHR  = baselineHR.reduce(0, +)  / Double(baselineHR.count)
+
+        // Score components (each 0–100):
+        let hrvSignal   = min(100, max(0, (hrv / avgBaselineHRV) * 50))
+        let hrSignal    = min(100, max(0, 50 + (avgBaselineHR - hr) * 10))
+        let sleepSignal = min(100, max(0, (sleep / 8.0) * 100))
+
+        // Weighted average:
+        let score = Int(hrvSignal * 0.40 + hrSignal * 0.30 + sleepSignal * 0.30)
+        return score
+    }
+
     func saveProfile(_ p: UserProfile) {
         userProfile = p
         Task { await persistToDisk() }
@@ -377,19 +440,22 @@ final class EncryptedDataStore: ObservableObject {
 
     func persistToDisk() async {
         do {
-            let logsEnc  = try await EncryptionService.shared.encrypt(dailyLogs)
-            let snapsEnc = try await EncryptionService.shared.encrypt(weeklySnapshots)
-            let profEnc  = try await EncryptionService.shared.encrypt(userProfile)
+            let logsEnc      = try await EncryptionService.shared.encrypt(dailyLogs)
+            let snapsEnc     = try await EncryptionService.shared.encrypt(weeklySnapshots)
+            let profEnc      = try await EncryptionService.shared.encrypt(userProfile)
+            let templatesEnc = try await EncryptionService.shared.encrypt(mealTemplates)
 
             // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked (iOS only)
             #if os(iOS)
-            try logsEnc.write(to:  url("logs"),    options: .completeFileProtectionUnlessOpen)
-            try snapsEnc.write(to: url("snaps"),   options: .completeFileProtectionUnlessOpen)
-            try profEnc.write(to:  url("profile"), options: .completeFileProtectionUnlessOpen)
+            try logsEnc.write(to:      url("logs"),          options: .completeFileProtectionUnlessOpen)
+            try snapsEnc.write(to:     url("snaps"),         options: .completeFileProtectionUnlessOpen)
+            try profEnc.write(to:      url("profile"),       options: .completeFileProtectionUnlessOpen)
+            try templatesEnc.write(to: url("mealTemplates"), options: .completeFileProtectionUnlessOpen)
             #else
-            try logsEnc.write(to:  url("logs"))
-            try snapsEnc.write(to: url("snaps"))
-            try profEnc.write(to:  url("profile"))
+            try logsEnc.write(to:      url("logs"))
+            try snapsEnc.write(to:     url("snaps"))
+            try profEnc.write(to:      url("profile"))
+            try templatesEnc.write(to: url("mealTemplates"))
             #endif
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
@@ -410,6 +476,10 @@ final class EncryptedDataStore: ObservableObject {
             if let d = try? Data(contentsOf: url("profile")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: UserProfile.self)
                 await MainActor.run { userProfile = v }
+            }
+            if let d = try? Data(contentsOf: url("mealTemplates")), !d.isEmpty {
+                let v = try await EncryptionService.shared.decrypt(d, as: [MealTemplate].self)
+                await MainActor.run { mealTemplates = v }
             }
         } catch {
             await MainActor.run {

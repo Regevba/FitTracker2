@@ -213,6 +213,15 @@ struct MealEntry: Identifiable, Codable, Sendable {
     var status:    TaskStatus = .pending
 }
 
+struct MealTemplate: Identifiable, Codable, Sendable {
+    var id:        UUID   = UUID()
+    var name:      String = ""
+    var calories:  Double?
+    var proteinG:  Double?
+    var carbsG:    Double?
+    var fatG:      Double?
+}
+
 // ─────────────────────────────────────────────────────────
 // MARK: – Daily Biometrics
 // ─────────────────────────────────────────────────────────

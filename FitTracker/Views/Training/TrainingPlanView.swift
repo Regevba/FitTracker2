@@ -18,7 +18,10 @@ struct TrainingPlanView: View {
 
     private let initialDay: DayType?
     @State private var selectedDay: DayType = .restDay
+    @State private var activeDate: Date = Date()
     @State private var log: DailyLog?
+    @State private var showCompletionSheet = false
+    @State private var showNotesEditor     = false
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
     private let appBlue   = Color.blue
@@ -35,7 +38,8 @@ struct TrainingPlanView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    dayPicker
+                    weekStrip
+                    sessionPicker
                     sessionHeader
                     exerciseSections
                 }
@@ -56,32 +60,99 @@ struct TrainingPlanView: View {
                 dataStore.upsertLog(current)
             }
         }
+        .onChange(of: log) { _, newLog in
+            guard let log = newLog else { return }
+            let exercises = TrainingProgramData.exercises(for: selectedDay)
+            guard !exercises.isEmpty else { return }
+            let allDone = exercises.allSatisfy { log.taskStatuses[$0.id] == .completed }
+            if allDone && !showCompletionSheet {
+                showCompletionSheet = true
+            }
+        }
+        .sheet(isPresented: $showCompletionSheet) {
+            SessionCompletionSheet(
+                log: log,
+                selectedDay: selectedDay,
+                previousLog: previousSameDayLog,
+                onDone: { showCompletionSheet = false },
+                onLogNotes: { showCompletionSheet = false; showNotesEditor = true }
+            )
+            .presentationDetents([.medium, .large])
+            .presentationCornerRadius(24)
+        }
+        .sheet(isPresented: $showNotesEditor) {
+            NotesEditorSheet(notes: Binding(
+                get: { log?.notes ?? "" },
+                set: { log?.notes = $0; saveLog() }
+            ), onDone: { showNotesEditor = false })
+            .presentationDetents([.medium])
+            .presentationCornerRadius(20)
+        }
     }
 
     // ─────────────────────────────────────────────────────
-    // Day picker
+    // Week strip (Mon–Sun)
     // ─────────────────────────────────────────────────────
 
-    private var dayPicker: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(DayType.allCases, id: \.self) { day in
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { selectedDay = day }
-                    } label: {
-                        HStack(spacing: 5) {
-                            Image(systemName: day.icon).font(.caption2)
-                            Text(day.rawValue).font(.caption.weight(.semibold))
+    private var weekStrip: some View {
+        let calendar = Calendar.current
+        // Build Mon–Sun for the week containing today
+        let today = Date()
+        let weekday = calendar.component(.weekday, from: today) // 1=Sun … 7=Sat
+        // Days offset so Monday is first
+        let daysFromMonday = (weekday + 5) % 7   // Mon=0, Tue=1 … Sun=6
+        let monday = calendar.date(byAdding: .day, value: -daysFromMonday, to: calendar.startOfDay(for: today))!
+        let weekDays = (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: monday) }
+
+        return HStack(spacing: 0) {
+            ForEach(weekDays, id: \.self) { day in
+                let wday    = calendar.component(.weekday, from: day)
+                let isToday = calendar.isDateInToday(day)
+                let isActive = calendar.isDate(day, inSameDayAs: activeDate)
+                let isRest  = TrainingProgramStore.restWeekdays.contains(wday)
+                let hasLog  = dataStore.dailyLogs.first {
+                    calendar.isDate($0.date, inSameDayAs: day)
+                }.map { $0.completionPct > 0 } ?? false
+
+                VStack(spacing: 4) {
+                    Text(day.formatted(.dateTime.weekday(.abbreviated)))
+                        .font(AppType.caption)
+                        .foregroundStyle(isActive ? Color.primary : Color.secondary)
+
+                    ZStack {
+                        if isToday {
+                            Circle()
+                                .fill(Color.appOrange1)
+                                .frame(width: 28, height: 28)
+                        } else if isActive {
+                            Circle()
+                                .fill(Color.white.opacity(0.25))
+                                .frame(width: 28, height: 28)
                         }
-                        .padding(.horizontal, 14).padding(.vertical, 8)
-                        .background(selectedDay == day ? Color.blue : Color.white.opacity(0.35), in: Capsule())
-                        .foregroundStyle(selectedDay == day ? .white : .primary)
+                        Text("\(calendar.component(.day, from: day))")
+                            .font(isToday ? AppType.body : AppType.subheading)
+                            .fontWeight(isToday ? .bold : .regular)
+                            .foregroundStyle(isToday ? Color.black : Color.primary)
                     }
-                    .buttonStyle(.plain)
+
+                    // Completion dot
+                    Circle()
+                        .fill(hasLog ? Color.status.success : Color.clear)
+                        .frame(width: 5, height: 5)
+                }
+                .opacity(isRest && !hasLog ? 0.4 : 1.0)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    activeDate = day
+                    // Derive suggested day type from weekday
+                    let suggested = TrainingProgramStore.dayType(forWeekday: wday)
+                    withAnimation(.easeInOut(duration: 0.2)) { selectedDay = suggested }
                 }
             }
-            .padding(.vertical, 4)
         }
+        .padding(.vertical, 8)
+        .onAppear { activeDate = today }
     }
 
     // ─────────────────────────────────────────────────────
@@ -163,6 +234,107 @@ struct TrainingPlanView: View {
                  dayType: selectedDay, recoveryDay: dataStore.userProfile.daysSinceStart)
     }
 
+    // ─────────────────────────────────────────────────────
+    // Suggested day derived from activeDate's weekday
+    // ─────────────────────────────────────────────────────
+
+    private var suggestedDay: DayType {
+        let wd = Calendar.current.component(.weekday, from: activeDate)
+        return TrainingProgramStore.dayType(forWeekday: wd)
+    }
+
+    // ─────────────────────────────────────────────────────
+    // Previous same-day log (for completion sheet comparison)
+    // ─────────────────────────────────────────────────────
+
+    private var previousSameDayLog: DailyLog? {
+        dataStore.dailyLogs
+            .filter {
+                $0.dayType == selectedDay &&
+                !Calendar.current.isDate($0.date, inSameDayAs: log?.date ?? Date())
+            }
+            .sorted { $0.date > $1.date }
+            .first
+    }
+
+    private func saveLog() {
+        if let l = log { dataStore.upsertLog(l) }
+    }
+
+    // ─────────────────────────────────────────────────────
+    // Session type picker (3×2 grid)
+    // ─────────────────────────────────────────────────────
+
+    private var sessionPicker: some View {
+        LazyVGrid(
+            columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
+            spacing: 10
+        ) {
+            ForEach(DayType.allCases, id: \.self) { dt in
+                SessionTypeButton(
+                    dayType: dt,
+                    isSelected: dt == selectedDay,
+                    isSuggested: dt == suggestedDay
+                ) {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        selectedDay = dt
+                        log?.dayType = dt
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – Session Type Button
+// ─────────────────────────────────────────────────────────
+
+fileprivate struct SessionTypeButton: View {
+    let dayType:    DayType
+    let isSelected: Bool
+    let isSuggested: Bool
+    let action:     () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 5) {
+                Image(systemName: dayType.icon)
+                    .font(.system(size: 18, weight: .semibold))
+                Text(dayType.rawValue)
+                    .font(.caption2.weight(.semibold))
+                    .multilineTextAlignment(.center)
+            }
+            .foregroundStyle(foregroundColor)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .background(backgroundColor, in: RoundedRectangle(cornerRadius: 10))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(borderColor, lineWidth: isSelected ? 1.5 : 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var foregroundColor: Color {
+        if isSelected   { return Color.blue }
+        if isSuggested  { return Color.appOrange2 }
+        return Color.primary
+    }
+
+    private var backgroundColor: Color {
+        if isSelected   { return Color.blue.opacity(0.2) }
+        if isSuggested  { return Color.appOrange1.opacity(0.25) }
+        return Color.secondary.opacity(0.08)
+    }
+
+    private var borderColor: Color {
+        if isSelected   { return Color.blue }
+        if isSuggested  { return Color.appOrange2 }
+        return Color.secondary.opacity(0.2)
+    }
 }
 
 // ─────────────────────────────────────────────────────────
@@ -195,11 +367,24 @@ struct ExerciseSectionBlock: View {
 // ─────────────────────────────────────────────────────────
 
 struct ExerciseRowView: View {
+    @EnvironmentObject var dataStore: EncryptedDataStore
     let exercise: ExerciseDefinition
     let selectedDay: DayType
     @Binding var log: DailyLog?
 
     private var status: TaskStatus { log?.taskStatuses[exercise.id] ?? .pending }
+
+    private var previousSessionLog: ExerciseLog? {
+        dataStore.dailyLogs
+            .filter {
+                $0.dayType == selectedDay &&
+                !Calendar.current.isDateInToday($0.date) &&
+                $0.exerciseLogs[exercise.id] != nil
+            }
+            .sorted { $0.date > $1.date }
+            .first?
+            .exerciseLogs[exercise.id]
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -244,7 +429,7 @@ struct ExerciseRowView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(exercise.name)
                 .font(.subheadline.weight(.semibold))
-                .strikethrough(status == .completed, color: .green)
+                .strikethrough(status == .completed, color: Color.status.success)
                 .foregroundStyle(status == .completed ? .secondary : .primary)
 
             Text(exercise.muscleGroups.map { $0.rawValue.capitalized }.joined(separator: " · "))
@@ -267,14 +452,15 @@ struct ExerciseRowView: View {
     private var liftPanel: some View {
         LiftLogPanel(
             exercise: exercise,
-                exerciseLog: Binding(
-                    get: { log?.exerciseLogs[exercise.id] ?? ExerciseLog(exerciseID: exercise.id, exerciseName: exercise.name) },
-                    set: {
-                        ensureLogMetadata()
-                        log?.exerciseLogs[exercise.id] = $0
-                    }
-                )
+            previousSessionLog: previousSessionLog,
+            exerciseLog: Binding(
+                get: { log?.exerciseLogs[exercise.id] ?? ExerciseLog(exerciseID: exercise.id, exerciseName: exercise.name) },
+                set: {
+                    ensureLogMetadata()
+                    log?.exerciseLogs[exercise.id] = $0
+                }
             )
+        )
     }
 
     // ── Cardio log panel (elliptical / rowing) with photo upload
@@ -293,13 +479,13 @@ struct ExerciseRowView: View {
 
     private var accentColor: Color {
         switch status {
-        case .completed: .green; case .partial: .orange; case .missed: .red; case .pending: .secondary
+        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
         }
     }
 
     private var rowBG: Color {
         switch status {
-        case .completed: .green.opacity(0.03); case .missed: .red.opacity(0.03); default: Color(.systemBackground).opacity(0.5)
+        case .completed: Color.status.success.opacity(0.03); case .missed: Color.status.error.opacity(0.03); default: Color(.systemBackground).opacity(0.5)
         }
     }
 
@@ -327,6 +513,7 @@ struct ExerciseRowView: View {
 
 struct LiftLogPanel: View {
     let exercise: ExerciseDefinition
+    let previousSessionLog: ExerciseLog?
     @Binding var exerciseLog: ExerciseLog
 
     var body: some View {
@@ -334,11 +521,26 @@ struct LiftLogPanel: View {
             // Panel header
             HStack {
                 Text("📋 SET LOG")
-                    .font(.caption2.monospaced()).foregroundStyle(.green).tracking(1)
+                    .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
                 Spacer()
                 if exerciseLog.totalVolume > 0 {
                     Text("Total: \(Int(exerciseLog.totalVolume)) kg")
-                        .font(.caption2.monospaced()).foregroundStyle(.green.opacity(0.8))
+                        .font(.caption2.monospaced()).foregroundStyle(Color.status.success.opacity(0.8))
+                }
+                if let prev = previousSessionLog, exerciseLog.sets.isEmpty {
+                    Button {
+                        exerciseLog.sets = prev.sets.enumerated().map { (i, s) in
+                            SetLog(
+                                setNumber: i + 1,
+                                weightKg: s.weightKg,
+                                repsCompleted: s.repsCompleted
+                            )
+                        }
+                    } label: {
+                        Label("Copy Last", systemImage: "bolt.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.accent.cyan)
+                    }
                 }
                 Button {
                     exerciseLog.sets.append(SetLog(
@@ -347,11 +549,11 @@ struct LiftLogPanel: View {
                     ))
                 } label: {
                     Label("Add Set", systemImage: "plus.circle.fill")
-                        .font(.caption.weight(.semibold)).foregroundStyle(.green)
+                        .font(.caption.weight(.semibold)).foregroundStyle(Color.status.success)
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(.green.opacity(0.05))
+            .background(Color.status.success.opacity(0.05))
 
             // Column headers
             HStack(spacing: 0) {
@@ -372,6 +574,7 @@ struct LiftLogPanel: View {
                 SetRowView(
                     setLog: $exerciseLog.sets[i],
                     setNum: i + 1,
+                    previousSet: previousSessionLog?.sets.indices.contains(i) == true ? previousSessionLog?.sets[i] : nil,
                     onDelete: {
                         exerciseLog.sets.remove(at: i)
                         for j in exerciseLog.sets.indices { exerciseLog.sets[j].setNumber = j + 1 }
@@ -401,12 +604,12 @@ struct LiftLogPanel: View {
 struct SetRowView: View {
     @Binding var setLog: SetLog
     let setNum:  Int
+    let previousSet: SetLog?
     let onDelete: () -> Void
 
     @State private var weightStr = ""
     @State private var repsStr   = ""
     @State private var noteStr   = ""
-    @State private var rpe: Double?
 
     var body: some View {
         HStack(spacing: 0) {
@@ -417,30 +620,58 @@ struct SetRowView: View {
                 .frame(width: 32, alignment: .leading)
 
             // Weight
-            TextField("0", text: $weightStr)
-                .font(.system(.body, design: .monospaced))
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 6).padding(.horizontal, 4)
-                .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
-                .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
-                .onChange(of: weightStr) { _, v in setLog.weightKg = Double(v) }
+            if weightStr.isEmpty, let prev = previousSet, let prevWeight = prev.weightKg {
+                Button {
+                    weightStr = String(format: "%.1f", prevWeight)
+                } label: {
+                    Text(String(format: "%.1f", prevWeight))
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6).padding(.horizontal, 4)
+                        .background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
+                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.1)))
+                }
+            } else {
+                TextField("0", text: $weightStr)
+                    .font(.system(.body, design: .monospaced))
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 6).padding(.horizontal, 4)
+                    .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
+                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
+                    .onChange(of: weightStr) { _, v in setLog.weightKg = Double(v) }
+            }
 
             // Reps
-            TextField("—", text: $repsStr)
-                .font(.system(.body, design: .monospaced))
-                .keyboardType(.numberPad)
-                .multilineTextAlignment(.center)
-                .frame(width: 48)
-                .padding(.vertical, 6).padding(.horizontal, 4)
-                .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
-                .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
-                .onChange(of: repsStr) { _, v in setLog.repsCompleted = Int(v) }
+            if repsStr.isEmpty, let prev = previousSet, let prevReps = prev.repsCompleted {
+                Button {
+                    repsStr = String(prevReps)
+                } label: {
+                    Text(String(prevReps))
+                        .font(.system(.body, design: .monospaced))
+                        .foregroundStyle(.tertiary)
+                        .frame(width: 48)
+                        .padding(.vertical, 6).padding(.horizontal, 4)
+                        .background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
+                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.1)))
+                }
+            } else {
+                TextField("—", text: $repsStr)
+                    .font(.system(.body, design: .monospaced))
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 48)
+                    .padding(.vertical, 6).padding(.horizontal, 4)
+                    .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
+                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
+                    .onChange(of: repsStr) { _, v in setLog.repsCompleted = Int(v) }
+            }
 
-            // RPE
-            RPEBadge(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
-                .frame(width: 40)
+            // RPE — 5-segment tap bar
+            RPETapBar(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
+                .frame(maxWidth: .infinity)
 
             // Note
             TextField("—", text: $noteStr)
@@ -488,16 +719,16 @@ struct CardioLogPanel: View {
             // Panel header
             HStack {
                 Text(cardioType == .rowing ? "🚣 ROWING LOG" : "🚴 ELLIPTICAL LOG")
-                    .font(.caption2.monospaced()).foregroundStyle(.green).tracking(1)
+                    .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
                 Spacer()
                 if let zone = cardioLog.wasInZone2 {
                     Text(zone ? "✓ Zone 2" : "↑ Above Zone 2")
                         .font(.caption2.monospaced())
-                        .foregroundStyle(zone ? .green : .orange)
+                        .foregroundStyle(zone ? Color.status.success : Color.status.warning)
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(.green.opacity(0.05))
+            .background(Color.status.success.opacity(0.05))
 
             // Metric grid
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
@@ -545,8 +776,8 @@ struct CardioLogPanel: View {
                         }
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10).padding(.vertical, 5)
-                        .background(.green.opacity(0.1), in: Capsule())
-                        .foregroundStyle(.green)
+                        .background(Color.status.success.opacity(0.1), in: Capsule())
+                        .foregroundStyle(Color.status.success)
                     }
                     #endif
 
@@ -766,41 +997,36 @@ struct CardioField: View {
     }
 }
 
-struct RPEBadge: View {
+struct RPETapBar: View {
     @Binding var rpe: Double?
-    @State private var show = false
+
+    private let segments: [Int] = [6, 7, 8, 9, 10]
 
     var body: some View {
-        Button { show.toggle() } label: {
-            Text(rpe.map { String(format: "%.0f", $0) } ?? "—")
-                .font(.system(size: 11, design: .monospaced))
-                .foregroundStyle(rpe != nil ? .primary : .tertiary)
-                .frame(width: 34).padding(.vertical, 4)
-                .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
-                .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
-        }
-        .popover(isPresented: $show) {
-            VStack(spacing: 2) {
-                Text("RPE").font(.caption.bold()).padding(.top, 8)
-                ForEach([6.0, 7.0, 7.5, 8.0, 8.5, 9.0, 10.0], id: \.self) { v in
-                    Button("\(v == floor(v) ? String(Int(v)) : String(v))  ·  \(rpeLabel(v))") { rpe = v; show = false }
-                        .font(.caption).padding(.vertical, 3)
+        HStack(spacing: 2) {
+            ForEach(segments, id: \.self) { v in
+                let isSelected = rpe.map { Int($0) } == v
+                Button {
+                    rpe = isSelected ? nil : Double(v)
+                } label: {
+                    Text("\(v)")
+                        .font(.system(size: 10, design: .monospaced, weight: isSelected ? .bold : .regular))
+                        .foregroundStyle(isSelected ? Color.black : Color.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 5)
+                        .background(
+                            isSelected
+                                ? Color.appOrange2
+                                : Color(.systemBackground),
+                            in: RoundedRectangle(cornerRadius: 4)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 4)
+                                .stroke(isSelected ? Color.appOrange2 : Color.secondary.opacity(0.2), lineWidth: 1)
+                        )
                 }
+                .buttonStyle(.plain)
             }
-            .padding()
-            .presentationCompactAdaptation(.popover)
-        }
-    }
-
-    private func rpeLabel(_ v: Double) -> String {
-        switch v {
-        case 6:   "Easy"
-        case 7:   "Moderate"
-        case 7.5: "Somewhat Hard"
-        case 8:   "Hard"
-        case 8.5: "Very Hard"
-        case 9:   "Near Max"
-        default:  "Absolute Max"
         }
     }
 }
@@ -831,7 +1057,7 @@ struct StatusDropdown: View {
 
     private var color: Color {
         switch status {
-        case .completed: .green; case .partial: .orange; case .missed: .red; case .pending: .secondary
+        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
         }
     }
 }
@@ -845,5 +1071,198 @@ struct Pill: View {
             .foregroundStyle(.secondary)
             .padding(.horizontal, 6).padding(.vertical, 2)
             .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 4))
+    }
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – Session Completion Sheet
+// ─────────────────────────────────────────────────────────
+
+struct SessionCompletionSheet: View {
+    let log: DailyLog?
+    let selectedDay: DayType
+    let previousLog: DailyLog?
+    let onDone: () -> Void
+    let onLogNotes: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Header
+                    VStack(spacing: 6) {
+                        Image(systemName: "checkmark.seal.fill")
+                            .font(.system(size: 48))
+                            .foregroundStyle(Color.status.success)
+                        Text("Session Complete!")
+                            .font(.title2.bold())
+                        Text(selectedDay.rawValue)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.top, 8)
+
+                    // Stats grid: 4 metric tiles
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                        // Total Volume
+                        statTile(
+                            icon: "scalemass.fill",
+                            label: "Volume",
+                            value: totalVolumeStr,
+                            delta: volumeDeltaStr,
+                            color: Color.accent.cyan
+                        )
+                        // Exercises done
+                        statTile(
+                            icon: "checkmark.circle.fill",
+                            label: "Exercises",
+                            value: exerciseSummaryStr,
+                            delta: nil,
+                            color: Color.status.success
+                        )
+                        // Session duration
+                        statTile(
+                            icon: "clock.fill",
+                            label: "Duration",
+                            value: durationStr,
+                            delta: nil,
+                            color: Color.accent.purple
+                        )
+                        // PRs this session (from exerciseLogs bestSet vs previous)
+                        statTile(
+                            icon: "trophy.fill",
+                            label: "PRs",
+                            value: prCountStr,
+                            delta: nil,
+                            color: Color.accent.gold
+                        )
+                    }
+
+                    Divider()
+
+                    // Buttons
+                    VStack(spacing: 12) {
+                        Button(action: onLogNotes) {
+                            Label("Log Notes", systemImage: "note.text")
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
+                        }
+                        .buttonStyle(.plain)
+
+                        Button(action: onDone) {
+                            Text("Done")
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 14)
+                                .foregroundStyle(.black)
+                                .background(
+                                    LinearGradient(colors: [Color.status.success, Color.status.success.opacity(0.8)],
+                                                   startPoint: .leading, endPoint: .trailing),
+                                    in: RoundedRectangle(cornerRadius: 14)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 32)
+            }
+            .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+
+    // ── Helpers ────────────────────────────────────────────
+
+    private var totalVolume: Double {
+        log?.exerciseLogs.values.map(\.totalVolume).reduce(0, +) ?? 0
+    }
+
+    private var previousVolume: Double {
+        previousLog?.exerciseLogs.values.map(\.totalVolume).reduce(0, +) ?? 0
+    }
+
+    private var totalVolumeStr: String {
+        totalVolume > 0 ? "\(Int(totalVolume)) kg" : "—"
+    }
+
+    private var volumeDeltaStr: String? {
+        guard totalVolume > 0, previousVolume > 0 else { return nil }
+        let delta = totalVolume - previousVolume
+        return delta >= 0 ? "+\(Int(delta)) kg" : "\(Int(delta)) kg"
+    }
+
+    private var exerciseSummaryStr: String {
+        let total = TrainingProgramData.exercises(for: selectedDay).count
+        let done  = log?.taskStatuses.values.filter { $0 == .completed }.count ?? 0
+        return "\(done)/\(total)"
+    }
+
+    private var durationStr: String {
+        guard let exLogs = log?.exerciseLogs.values, !exLogs.isEmpty else { return "—" }
+        let allTimestamps = exLogs.flatMap { $0.sets }.map(\.timestamp)
+        guard let first = allTimestamps.min(), let last = allTimestamps.max() else { return "—" }
+        let minutes = Int(last.timeIntervalSince(first) / 60)
+        return minutes > 0 ? "\(minutes) min" : "< 1 min"
+    }
+
+    private var prCountStr: String {
+        guard let exLogs = log?.exerciseLogs, let prevExLogs = previousLog?.exerciseLogs else {
+            return "—"
+        }
+        let count = exLogs.filter { (exerciseID, current) in
+            guard let best = current.bestSet?.weightKg,
+                  let prevBest = prevExLogs[exerciseID]?.bestSet?.weightKg else { return false }
+            return best > prevBest
+        }.count
+        return count > 0 ? "\(count)" : "0"
+    }
+
+    @ViewBuilder
+    private func statTile(icon: String, label: String, value: String, delta: String?, color: Color) -> some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 6) {
+                Image(systemName: icon)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(color)
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            Text(value)
+                .font(.title3.bold())
+            if let delta {
+                Text(delta)
+                    .font(.caption2)
+                    .foregroundStyle(delta.hasPrefix("+") ? Color.status.success : Color.status.error)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(14)
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+    }
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – Notes Editor Sheet
+// ─────────────────────────────────────────────────────────
+
+struct NotesEditorSheet: View {
+    @Binding var notes: String
+    let onDone: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            TextEditor(text: $notes)
+                .font(.body)
+                .padding()
+                .navigationTitle("Session Notes")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done", action: onDone)
+                    }
+                }
+        }
     }
 }

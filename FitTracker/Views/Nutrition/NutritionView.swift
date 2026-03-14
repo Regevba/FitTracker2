@@ -9,6 +9,8 @@ struct NutritionView: View {
 
     @EnvironmentObject var dataStore: EncryptedDataStore
     @State private var log: DailyLog?
+    @State private var supplementsExpanded = false
+    @State private var editingMealEntry: MealEntry?
 
     private var morning: [SupplementDefinition] { TrainingProgramData.morningSupplements }
     private var evening: [SupplementDefinition] { TrainingProgramData.eveningSupplements }
@@ -25,47 +27,10 @@ struct NutritionView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
                 dateHeader
+                macroBar
                 adherenceRow
-                SupplementStackCard(
-                    stackTitle: "🌅  Morning Stack",
-                    stackSubtitle: "Take with breakfast",
-                    supplements: morning,
-                    stackStatus: morningStatus,
-                    individualStatus: individualStatus,
-                    accentColor: Color(red: 1.0, green: 0.75, blue: 0.0)
-                ) { newStatus in
-                    log?.supplementLog.morningStatus = newStatus
-                    if newStatus == .completed {
-                        log?.supplementLog.morningTime = Date()
-                        // Auto-mark all morning supplements as taken
-                        for s in morning { log?.supplementLog.individualOverrides[s.id] = true }
-                    }
-                    saveLog()
-                } onToggle: { suppID, taken in
-                    log?.supplementLog.individualOverrides[suppID] = taken
-                    recomputeStackStatus(isEvening: false)
-                    saveLog()
-                }
-
-                SupplementStackCard(
-                    stackTitle: "🌙  Evening Stack",
-                    stackSubtitle: "30 min before bed",
-                    supplements: evening,
-                    stackStatus: eveningStatus,
-                    individualStatus: individualStatus,
-                    accentColor: .purple
-                ) { newStatus in
-                    log?.supplementLog.eveningStatus = newStatus
-                    if newStatus == .completed {
-                        log?.supplementLog.eveningTime = Date()
-                        for s in evening { log?.supplementLog.individualOverrides[s.id] = true }
-                    }
-                    saveLog()
-                } onToggle: { suppID, taken in
-                    log?.supplementLog.individualOverrides[suppID] = taken
-                    recomputeStackStatus(isEvening: true)
-                    saveLog()
-                }
+                mealSection
+                supplementRow
 
                 disclaimerNote
             }
@@ -76,6 +41,30 @@ struct NutritionView: View {
         .navigationTitle("Nutrition")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { loadLog() }
+        .sheet(item: $editingMealEntry) { entry in
+            let entryBinding = Binding<MealEntry>(
+                get: { log?.nutritionLog.meals.first(where: { $0.mealNumber == entry.mealNumber }) ?? entry },
+                set: { newEntry in
+                    if let i = log?.nutritionLog.meals.firstIndex(where: { $0.mealNumber == entry.mealNumber }) {
+                        log?.nutritionLog.meals[i] = newEntry
+                    } else {
+                        log?.nutritionLog.meals.append(newEntry)
+                    }
+                }
+            )
+            MealEntrySheet(entry: entryBinding) { saved in
+                if let i = log?.nutritionLog.meals.firstIndex(where: { $0.mealNumber == saved.mealNumber }) {
+                    log?.nutritionLog.meals[i] = saved
+                } else {
+                    log?.nutritionLog.meals.append(saved)
+                }
+                saveLog()
+                editingMealEntry = nil
+            }
+            .environmentObject(dataStore)
+            .presentationDetents([.large])
+            .presentationCornerRadius(24)
+        }
     }
 
     // ─────────────────────────────────────────────────────
@@ -96,7 +85,7 @@ struct NutritionView: View {
     private var dateHeader: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Supplements")
+                Text("Nutrition")
                     .font(.title2.bold())
                 Text(formattedToday)
                     .font(.subheadline).foregroundStyle(.secondary)
@@ -114,7 +103,7 @@ struct NutritionView: View {
         return VStack(spacing: 2) {
             Text("\(pct)%")
                 .font(.system(.title3, design: .monospaced, weight: .bold))
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.status.success)
             Text("today")
                 .font(.caption2).foregroundStyle(.secondary)
         }
@@ -139,7 +128,7 @@ struct NutritionView: View {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.secondary.opacity(0.15)).frame(height: 6)
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(LinearGradient(colors: [.green, .mint], startPoint: .leading, endPoint: .trailing))
+                        .fill(LinearGradient(colors: [Color.status.success, Color.status.success], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * frac, height: 6)
                         .animation(.spring(response: 0.6), value: frac)
                 }
@@ -148,6 +137,234 @@ struct NutritionView: View {
         }
         .padding(14)
         .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var macroBar: some View {
+        let nutrition = log?.nutritionLog ?? NutritionLog()
+        let protein   = nutrition.totalProteinG ?? nutrition.meals.compactMap(\.proteinG).reduce(0, +)
+        let carbs     = nutrition.totalCarbsG   ?? nutrition.meals.compactMap(\.carbsG).reduce(0, +)
+        let fat       = nutrition.totalFatG     ?? nutrition.meals.compactMap(\.fatG).reduce(0, +)
+        let phase     = dataStore.userProfile.currentPhase
+        let isTraining = log?.dayType.isTrainingDay ?? false
+        let targetCal = isTraining ? phase.trainingCalories : phase.restCalories
+        let leanMass  = log?.biometrics.leanBodyMassKg
+        let targetPro = leanMass.map { $0 * 2 } ?? 135.0
+
+        return MacroTargetBar(
+            protein: protein,
+            carbs: carbs,
+            fat: fat,
+            targetCalories: targetCal,
+            targetProteinG: targetPro
+        )
+    }
+
+    private var mealSection: some View {
+        let nutritionBinding = Binding<NutritionLog>(
+            get: { log?.nutritionLog ?? NutritionLog() },
+            set: { log?.nutritionLog = $0 }
+        )
+        return MealSectionView(nutritionLog: nutritionBinding) { mealNumber in
+            let existing = log?.nutritionLog.meals.first(where: { $0.mealNumber == mealNumber })
+            editingMealEntry = existing ?? MealEntry(mealNumber: max(mealNumber, 1))
+        }
+    }
+
+    // ─────────────────────────────────────────────────────
+    // Compact supplement row (collapsed) / full cards (expanded)
+    // ─────────────────────────────────────────────────────
+
+    private var supplementRow: some View {
+        Group {
+            if supplementsExpanded {
+                // ── Expanded: show full stack cards with a collapse button ──
+                VStack(spacing: 12) {
+                    HStack {
+                        Spacer()
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.25)) {
+                                supplementsExpanded = false
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text("Hide")
+                                    .font(.caption.weight(.semibold))
+                                Image(systemName: "chevron.up")
+                                    .font(.caption.weight(.semibold))
+                            }
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(Color.secondary.opacity(0.1), in: Capsule())
+                        }
+                    }
+
+                    SupplementStackCard(
+                        stackTitle: "🌅  Morning Stack",
+                        stackSubtitle: "Take with breakfast",
+                        supplements: morning,
+                        stackStatus: morningStatus,
+                        individualStatus: individualStatus,
+                        accentColor: Color(red: 1.0, green: 0.75, blue: 0.0)
+                    ) { newStatus in
+                        log?.supplementLog.morningStatus = newStatus
+                        if newStatus == .completed {
+                            log?.supplementLog.morningTime = Date()
+                            for s in morning { log?.supplementLog.individualOverrides[s.id] = true }
+                        }
+                        saveLog()
+                    } onToggle: { suppID, taken in
+                        log?.supplementLog.individualOverrides[suppID] = taken
+                        recomputeStackStatus(isEvening: false)
+                        saveLog()
+                    }
+
+                    SupplementStackCard(
+                        stackTitle: "🌙  Evening Stack",
+                        stackSubtitle: "30 min before bed",
+                        supplements: evening,
+                        stackStatus: eveningStatus,
+                        individualStatus: individualStatus,
+                        accentColor: Color.accent.purple
+                    ) { newStatus in
+                        log?.supplementLog.eveningStatus = newStatus
+                        if newStatus == .completed {
+                            log?.supplementLog.eveningTime = Date()
+                            for s in evening { log?.supplementLog.individualOverrides[s.id] = true }
+                        }
+                        saveLog()
+                    } onToggle: { suppID, taken in
+                        log?.supplementLog.individualOverrides[suppID] = taken
+                        recomputeStackStatus(isEvening: true)
+                        saveLog()
+                    }
+                }
+            } else {
+                // ── Collapsed: single compact row ──
+                HStack(spacing: 12) {
+
+                    // Pills icon
+                    Image(systemName: "pills.fill")
+                        .font(.title3)
+                        .foregroundStyle(Color(red: 1.0, green: 0.75, blue: 0.0))
+
+                    // Morning + Evening pill status buttons
+                    HStack(spacing: 8) {
+                        // Morning pill
+                        Button {
+                            HapticFeedback.impact()
+                            let newStatus: TaskStatus = morningStatus == .completed ? .pending : .completed
+                            log?.supplementLog.morningStatus = newStatus
+                            if newStatus == .completed {
+                                log?.supplementLog.morningTime = Date()
+                                for s in morning { log?.supplementLog.individualOverrides[s.id] = true }
+                            } else {
+                                for s in morning { log?.supplementLog.individualOverrides[s.id] = false }
+                            }
+                            recomputeStackStatus(isEvening: false)
+                            saveLog()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text("Morning")
+                                    .font(.caption.weight(.semibold))
+                                if morningStatus == .completed {
+                                    Image(systemName: "checkmark")
+                                        .font(.caption2.weight(.bold))
+                                }
+                            }
+                            .foregroundStyle(morningStatus == .completed ? Color.status.success : .secondary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(
+                                morningStatus == .completed
+                                    ? Color.status.success.opacity(0.15)
+                                    : Color.secondary.opacity(0.08)
+                            )
+                            .overlay(
+                                Capsule()
+                                    .stroke(
+                                        morningStatus == .completed
+                                            ? Color.status.success
+                                            : Color.secondary.opacity(0.3),
+                                        lineWidth: 1
+                                    )
+                            )
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+
+                        // Evening pill
+                        Button {
+                            HapticFeedback.impact()
+                            let newStatus: TaskStatus = eveningStatus == .completed ? .pending : .completed
+                            log?.supplementLog.eveningStatus = newStatus
+                            if newStatus == .completed {
+                                log?.supplementLog.eveningTime = Date()
+                                for s in evening { log?.supplementLog.individualOverrides[s.id] = true }
+                            } else {
+                                for s in evening { log?.supplementLog.individualOverrides[s.id] = false }
+                            }
+                            recomputeStackStatus(isEvening: true)
+                            saveLog()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text("Evening")
+                                    .font(.caption.weight(.semibold))
+                                if eveningStatus == .completed {
+                                    Image(systemName: "checkmark")
+                                        .font(.caption2.weight(.bold))
+                                }
+                            }
+                            .foregroundStyle(eveningStatus == .completed ? Color.status.success : .secondary)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(
+                                eveningStatus == .completed
+                                    ? Color.status.success.opacity(0.15)
+                                    : Color.secondary.opacity(0.08)
+                            )
+                            .overlay(
+                                Capsule()
+                                    .stroke(
+                                        eveningStatus == .completed
+                                            ? Color.status.success
+                                            : Color.secondary.opacity(0.3),
+                                        lineWidth: 1
+                                    )
+                            )
+                            .clipShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    Spacer()
+
+                    // Streak badge
+                    Text("🔥 \(dataStore.supplementStreak)")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.orange)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Color.orange.opacity(0.12), in: Capsule())
+
+                    // Expand chevron
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            supplementsExpanded = true
+                        }
+                    } label: {
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+            }
+        }
+        .animation(.easeInOut(duration: 0.25), value: supplementsExpanded)
     }
 
     private var disclaimerNote: some View {

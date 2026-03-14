@@ -11,7 +11,6 @@ struct WelcomeView: View {
     @EnvironmentObject var signIn: SignInService
 
     @State private var showSignIn       = false
-    @State private var showRegisterNote = false
     @State private var logoScale: CGFloat = 0.6
     @State private var logoOpacity: CGFloat = 0
     @State private var textOffset: CGFloat = 30
@@ -156,32 +155,6 @@ struct WelcomeView: View {
                     }
                     .buttonStyle(.plain)
 
-                    // REGISTER — cosmetic (visual only)
-                    Button {
-                        showRegisterNote = true
-                    } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: "person.badge.plus")
-                                .font(.title3)
-                                .opacity(0.5)
-                            Text("Create Account")
-                                .font(.headline)
-                                .opacity(0.5)
-                            Spacer()
-                            Text("Coming soon")
-                                .font(.caption2)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 8).padding(.vertical, 3)
-                                .background(Color.secondary.opacity(0.1), in: Capsule())
-                        }
-                        .padding(.horizontal, 22)
-                        .padding(.vertical, 17)
-                        .foregroundStyle(.white)
-                        .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 16))
-                        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white.opacity(0.1)))
-                    }
-                    .buttonStyle(.plain)
-
                     // Privacy footnote
                     Text("Your health data never leaves your Apple ecosystem.\nAll data is double-encrypted end-to-end.")
                         .font(.caption2)
@@ -215,12 +188,6 @@ struct WelcomeView: View {
                 .presentationDetents([.large])
                 .presentationCornerRadius(28)
                 .presentationBackground(.ultraThinMaterial)
-        }
-        // ── Register toast ────────────────────────────────
-        .alert("Coming Soon", isPresented: $showRegisterNote) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Account registration will be available in the next update. Use Log In with Apple, Google, or Facebook to get started now.")
         }
     }
 }
