@@ -1010,7 +1010,7 @@ struct RPETapBar: View {
                     rpe = isSelected ? nil : Double(v)
                 } label: {
                     Text("\(v)")
-                        .font(.system(size: 10, design: .monospaced, weight: isSelected ? .bold : .regular))
+                        .font(.system(size: 10, weight: isSelected ? .bold : .regular, design: .monospaced))
                         .foregroundStyle(isSelected ? Color.black : Color.secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 5)
