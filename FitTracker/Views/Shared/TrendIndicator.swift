@@ -36,7 +36,7 @@ struct TrendIndicator: View {
             .padding(.vertical, 4)
             .padding(.horizontal, 8)
             .background(statusColor.opacity(0.2))
-            .capsule()
+            .clipShape(Capsule())
     }
 }
 

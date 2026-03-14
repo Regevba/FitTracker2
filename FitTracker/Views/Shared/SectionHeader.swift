@@ -12,8 +12,7 @@ struct SectionHeader: View {
                 .font(AppType.caption)
                 .textCase(.uppercase)
                 .tracking(1.5)
-                .smallCaps()
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
 
             Spacer()
 
