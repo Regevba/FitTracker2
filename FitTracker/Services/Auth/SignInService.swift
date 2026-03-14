@@ -354,6 +354,12 @@ final class SignInService: NSObject, ObservableObject {
         }
     }
 
+    #if targetEnvironment(simulator)
+    func signInAsTestUser() {
+        simulateSignIn(provider: .apple, name: "Regev", email: "regev@simulator.local")
+    }
+    #endif
+
     private func simulateSignIn(provider: AuthProvider, name: String, email: String) {
         Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(800))
