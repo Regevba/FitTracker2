@@ -23,7 +23,7 @@ struct MetricCard: View {
                 .foregroundColor(.secondary)
 
                 // Middle: value + unit
-                HStack(alignment: .baseline, spacing: 4) {
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(value)
                         .font(AppType.display)
                         .lineLimit(1)
