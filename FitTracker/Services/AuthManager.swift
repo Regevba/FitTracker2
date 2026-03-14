@@ -4,7 +4,7 @@
 // Also houses TrainingProgramStore
 
 import Foundation
-import LocalAuthentication
+@preconcurrency import LocalAuthentication
 import SwiftUI
 
 // ─────────────────────────────────────────────────────────
@@ -23,9 +23,7 @@ final class AuthManager: ObservableObject {
         #if targetEnvironment(simulator)
         // Skip biometric/passcode prompt on simulator — set authenticated immediately.
         isAuthenticated = true
-        return
-        #endif
-
+        #else
         let ctx = LAContext()
         var err: NSError?
 
@@ -43,9 +41,10 @@ final class AuthManager: ObservableObject {
                 }
             }
         } else {
-            // Simulator / no biometrics configured — mark as authenticated immediately
+            // No biometrics configured — mark as authenticated immediately
             isAuthenticated = true
         }
+        #endif
     }
 
     func lockOnBackground() {

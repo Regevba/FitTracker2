@@ -231,9 +231,7 @@ struct StatsView: View {
         }
         .task(id: period) {
             let range = dateRange
-            bodyData = await Task.detached(priority: .userInitiated) { [store = dataStore] in
-                store.bodyCompositionPoints(from: range.from, to: range.to)
-            }.value
+            bodyData = dataStore.bodyCompositionPoints(from: range.from, to: range.to)
         }
     }
 
@@ -304,14 +302,8 @@ struct StatsView: View {
         }
         .task(id: period) {
             let range = dateRange
-            async let volumeTask = Task.detached(priority: .userInitiated) { [store = dataStore] in
-                store.trainingVolumePoints(from: range.from, to: range.to)
-            }.value
-            async let zone2Task = Task.detached(priority: .userInitiated) { [store = dataStore] in
-                store.zone2Minutes(from: range.from, to: range.to)
-            }.value
-            volumeData = await volumeTask
-            zone2Data  = await zone2Task
+            volumeData = dataStore.trainingVolumePoints(from: range.from, to: range.to)
+            zone2Data  = dataStore.zone2Minutes(from: range.from, to: range.to)
         }
     }
 
@@ -497,9 +489,7 @@ struct StatsView: View {
         }
         .task(id: period) {
             let range = dateRange
-            recoveryData = await Task.detached(priority: .userInitiated) { [store = dataStore] in
-                store.recoveryPoints(from: range.from, to: range.to)
-            }.value
+            recoveryData = dataStore.recoveryPoints(from: range.from, to: range.to)
         }
     }
 
@@ -612,9 +602,7 @@ struct StatsView: View {
         }
         .task(id: period) {
             let range = dateRange
-            nutritionData = await Task.detached(priority: .userInitiated) { [store = dataStore] in
-                store.nutritionAdherencePoints(from: range.from, to: range.to)
-            }.value
+            nutritionData = dataStore.nutritionAdherencePoints(from: range.from, to: range.to)
         }
     }
 }
