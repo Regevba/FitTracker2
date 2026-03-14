@@ -24,6 +24,7 @@ struct RootTabView: View {
         case training   = "Training Plan"
         case nutrition  = "Nutrition"
         case stats      = "Stats"
+        case history    = "History"
 
         var icon: String {
             switch self {
@@ -31,6 +32,7 @@ struct RootTabView: View {
             case .training:  "figure.strengthtraining.traditional"
             case .nutrition: "leaf.fill"
             case .stats:     "chart.bar.fill"
+            case .history:   "clock.fill"
             }
         }
     }
@@ -168,6 +170,7 @@ struct RootTabView: View {
         case .training:  TrainingPlanView()
         case .nutrition: NutritionView()
         case .stats:     StatsView()
+        case .history:   WorkoutHistoryView()
         }
     }
 

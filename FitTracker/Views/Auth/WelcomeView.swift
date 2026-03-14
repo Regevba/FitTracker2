@@ -9,6 +9,7 @@ import SwiftUI
 struct WelcomeView: View {
 
     @EnvironmentObject var signIn: SignInService
+    @EnvironmentObject var dataStore: EncryptedDataStore
 
     @State private var showSignIn       = false
     @State private var showRegisterNote = false
@@ -90,14 +91,16 @@ struct WelcomeView: View {
 
                         // Personalised welcome line
                         HStack(spacing: 6) {
-                            Text("Welcome")
+                            Text("Welcome back")
                                 .foregroundStyle(.secondary)
-                            Text("Regev")
-                                .foregroundStyle(
-                                    LinearGradient(colors: [.green, .mint],
-                                                   startPoint: .leading, endPoint: .trailing)
-                                )
-                                .fontWeight(.semibold)
+                            if !dataStore.userProfile.name.isEmpty {
+                                Text(dataStore.userProfile.name)
+                                    .foregroundStyle(
+                                        LinearGradient(colors: [.green, .mint],
+                                                       startPoint: .leading, endPoint: .trailing)
+                                    )
+                                    .fontWeight(.semibold)
+                            }
                         }
                         .font(.title3)
 

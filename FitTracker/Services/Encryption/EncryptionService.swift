@@ -332,13 +332,92 @@ actor EncryptionService {
 @MainActor
 final class EncryptedDataStore: ObservableObject {
 
-    @Published var dailyLogs:       [DailyLog]        = []
-    @Published var weeklySnapshots: [WeeklySnapshot]  = []
-    @Published var userProfile:     UserProfile       = UserProfile()
-    @Published var isLoading:       Bool              = false
-    @Published var lastError:       String?
+    @Published var dailyLogs:         [DailyLog]          = []
+    @Published var weeklySnapshots:   [WeeklySnapshot]    = []
+    @Published var userProfile:       UserProfile         = UserProfile()
+    @Published var bodyMeasurements:  [BodyMeasurement]   = []
+    @Published var personalRecords:   [PersonalRecord]    = []
+    @Published var isLoading:         Bool                = false
+    @Published var lastError:         String?
     /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
-    @Published var loadError:       String?
+    @Published var loadError:         String?
+
+    // ── Streak computation ────────────────────────────────
+
+    /// Current consecutive training-day streak (training days only, not rest days).
+    var currentTrainingStreak: Int {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        var streak = 0
+        var checkDate = today
+        while true {
+            let dayLog = dailyLogs.first { calendar.isDate($0.date, inSameDayAs: checkDate) }
+            guard let log = dayLog, log.dayType.isTrainingDay,
+                  log.completionPct > 0 else { break }
+            streak += 1
+            checkDate = calendar.date(byAdding: .day, value: -1, to: checkDate) ?? checkDate.addingTimeInterval(-86400)
+        }
+        return streak
+    }
+
+    /// Best ever training streak across all logs.
+    var bestTrainingStreak: Int {
+        let calendar = Calendar.current
+        let trainingDays = dailyLogs
+            .filter { $0.dayType.isTrainingDay && $0.completionPct > 0 }
+            .map { calendar.startOfDay(for: $0.date) }
+            .sorted()
+        guard !trainingDays.isEmpty else { return 0 }
+        var best = 1; var current = 1
+        for i in 1..<trainingDays.count {
+            let prev = trainingDays[i - 1]
+            let curr = trainingDays[i]
+            let diff = calendar.dateComponents([.day], from: prev, to: curr).day ?? 0
+            if diff == 1 { current += 1; best = max(best, current) }
+            else { current = 1 }
+        }
+        return best
+    }
+
+    /// Detect new PRs set within the last 7 days.
+    var recentPRs: [PersonalRecord] {
+        let cutoff = Date().addingTimeInterval(-7 * 86400)
+        return personalRecords.filter { $0.date >= cutoff }.sorted { $0.date > $1.date }
+    }
+
+    // ── PR management ─────────────────────────────────────
+
+    func updatePR(for exerciseLog: ExerciseLog) {
+        guard let best = exerciseLog.bestSet,
+              let w = best.weightKg, let r = best.repsCompleted else { return }
+        let existing = personalRecords.first { $0.exerciseID == exerciseLog.exerciseID }
+        if existing == nil || w > (existing?.weightKg ?? 0) {
+            let pr = PersonalRecord(exerciseID: exerciseLog.exerciseID,
+                                    exerciseName: exerciseLog.exerciseName,
+                                    weightKg: w, reps: r, date: Date())
+            personalRecords.removeAll { $0.exerciseID == exerciseLog.exerciseID }
+            personalRecords.append(pr)
+            personalRecords.sort { $0.date > $1.date }
+        }
+    }
+
+    // ── Body measurements CRUD ────────────────────────────
+
+    func upsertMeasurement(_ m: BodyMeasurement) {
+        var measurement = m; measurement.needsSync = true
+        if let i = bodyMeasurements.firstIndex(where: { $0.id == m.id }) {
+            bodyMeasurements[i] = measurement
+        } else {
+            bodyMeasurements.append(measurement)
+            bodyMeasurements.sort { $0.date > $1.date }
+        }
+        Task { await persistToDisk() }
+    }
+
+    func deleteMeasurement(_ m: BodyMeasurement) {
+        bodyMeasurements.removeAll { $0.id == m.id }
+        Task { await persistToDisk() }
+    }
 
     private let fm  = FileManager.default
     private var dir: URL { fm.urls(for: .documentDirectory, in: .userDomainMask)[0] }
@@ -380,16 +459,22 @@ final class EncryptedDataStore: ObservableObject {
             let logsEnc  = try await EncryptionService.shared.encrypt(dailyLogs)
             let snapsEnc = try await EncryptionService.shared.encrypt(weeklySnapshots)
             let profEnc  = try await EncryptionService.shared.encrypt(userProfile)
+            let measEnc  = try await EncryptionService.shared.encrypt(bodyMeasurements)
+            let prsEnc   = try await EncryptionService.shared.encrypt(personalRecords)
 
             // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked (iOS only)
             #if os(iOS)
-            try logsEnc.write(to:  url("logs"),    options: .completeFileProtectionUnlessOpen)
-            try snapsEnc.write(to: url("snaps"),   options: .completeFileProtectionUnlessOpen)
-            try profEnc.write(to:  url("profile"), options: .completeFileProtectionUnlessOpen)
+            try logsEnc.write(to:  url("logs"),         options: .completeFileProtectionUnlessOpen)
+            try snapsEnc.write(to: url("snaps"),        options: .completeFileProtectionUnlessOpen)
+            try profEnc.write(to:  url("profile"),      options: .completeFileProtectionUnlessOpen)
+            try measEnc.write(to:  url("measurements"), options: .completeFileProtectionUnlessOpen)
+            try prsEnc.write(to:   url("prs"),          options: .completeFileProtectionUnlessOpen)
             #else
             try logsEnc.write(to:  url("logs"))
             try snapsEnc.write(to: url("snaps"))
             try profEnc.write(to:  url("profile"))
+            try measEnc.write(to:  url("measurements"))
+            try prsEnc.write(to:   url("prs"))
             #endif
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
@@ -410,6 +495,14 @@ final class EncryptedDataStore: ObservableObject {
             if let d = try? Data(contentsOf: url("profile")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: UserProfile.self)
                 await MainActor.run { userProfile = v }
+            }
+            if let d = try? Data(contentsOf: url("measurements")), !d.isEmpty {
+                let v = try await EncryptionService.shared.decrypt(d, as: [BodyMeasurement].self)
+                await MainActor.run { bodyMeasurements = v }
+            }
+            if let d = try? Data(contentsOf: url("prs")), !d.isEmpty {
+                let v = try await EncryptionService.shared.decrypt(d, as: [PersonalRecord].self)
+                await MainActor.run { personalRecords = v }
             }
         } catch {
             await MainActor.run {

@@ -13,6 +13,16 @@ import WatchConnectivity
 #endif
 
 // ─────────────────────────────────────────────────────────
+// MARK: – Notification names for Watch ↔ Phone events
+// ─────────────────────────────────────────────────────────
+
+extension Notification.Name {
+    static let watchRequestedTodayData   = Notification.Name("ft.watchRequestedTodayData")
+    static let watchSentSetCompletions   = Notification.Name("ft.watchSentSetCompletions")
+    static let watchSentSupplementToggle = Notification.Name("ft.watchSentSupplementToggle")
+}
+
+// ─────────────────────────────────────────────────────────
 // MARK: – Watch status
 // ─────────────────────────────────────────────────────────
 
@@ -72,6 +82,45 @@ final class WatchConnectivityService: NSObject, ObservableObject {
         }
         status = session.isReachable ? .connected : .offline
     }
+
+    // ── Send today's data to Watch ────────────────────────
+
+    /// Push today's exercise list and supplement stack to the paired Watch.
+    func sendTodayData(exercises: [ExerciseDefinition],
+                       supplements: [SupplementDefinition]) {
+        guard WCSession.default.isReachable else { return }
+
+        let watchExercises = exercises.map { ex in
+            ["id": ex.id, "name": ex.name,
+             "sets": ex.targetSets, "reps": ex.targetReps,
+             "category": ex.category.rawValue]
+        }
+        let watchSupplements = supplements.map { s in
+            ["id": s.id, "name": s.name,
+             "dose": s.dose, "timing": s.timing.rawValue]
+        }
+
+        guard let exData   = try? JSONSerialization.data(withJSONObject: watchExercises),
+              let suppData = try? JSONSerialization.data(withJSONObject: watchSupplements) else { return }
+
+        WCSession.default.sendMessage(
+            ["exercises": exData, "supplements": suppData],
+            replyHandler: nil
+        )
+    }
+
+    /// Push live HealthKit metrics to the Watch display.
+    func sendLiveMetrics(heartRate: Double?, hrv: Double?,
+                          calories: Double?, steps: Int?) {
+        guard WCSession.default.isReachable else { return }
+        var msg: [String: Any] = [:]
+        if let hr  = heartRate { msg["heartRate"] = hr }
+        if let h   = hrv       { msg["hrv"]       = h }
+        if let cal = calories  { msg["calories"]  = cal }
+        if let s   = steps     { msg["steps"]     = s }
+        guard !msg.isEmpty else { return }
+        WCSession.default.sendMessage(msg, replyHandler: nil)
+    }
     #endif
 }
 
@@ -96,6 +145,30 @@ extension WatchConnectivityService: WCSessionDelegate {
 
     nonisolated func sessionDidBecomeInactive(_ session: WCSession) {
         Task { @MainActor [weak self] in self?.refreshStatus() }
+    }
+
+    nonisolated func session(_ session: WCSession,
+                              didReceiveMessage message: [String: Any]) {
+        // Handle Watch → Phone messages
+        Task { @MainActor in
+            // "request": "todayData" — Watch is asking for today's data
+            if (message["request"] as? String) == "todayData" {
+                // Caller needs to hook up dataStore; logged in RootTabView via .task
+                NotificationCenter.default.post(name: .watchRequestedTodayData, object: nil)
+            }
+            // Set completions from Watch
+            if let data = message["setCompletions"] as? Data {
+                NotificationCenter.default.post(name: .watchSentSetCompletions, object: data)
+            }
+            // Supplement toggle from Watch
+            if let suppID = message["suppToggle"] as? String,
+               let checked = message["checked"] as? Bool {
+                NotificationCenter.default.post(
+                    name: .watchSentSupplementToggle,
+                    object: ["id": suppID, "checked": checked]
+                )
+            }
+        }
     }
 
     nonisolated func sessionDidDeactivate(_ session: WCSession) {

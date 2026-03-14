@@ -49,26 +49,34 @@ struct MainScreenView: View {
             backgroundLayer
             progressTracker
 
-            // All content in a VStack with equal flexible spacers — no scroll
-            VStack(spacing: 0) {
-                greetingHeader
-                Spacer()
-                sectionHeader("Status")
-                metricPair
-                Spacer()
-                sectionHeader("Goal")
-                goalSection
-                Spacer()
-                sectionHeader("Start Training")
-                trainingButton
-                Spacer()
-                sectionHeader("Metrics")
-                quickStats
+            // All content in a ScrollView so streak/PR banners don't crowd layout
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 0) {
+                    greetingHeader
+                    Spacer(minLength: 6)
+                    // Streak & PR banners (only show when relevant)
+                    streakAndPRBanner
+                    Spacer(minLength: 6)
+                    sectionHeader("Status")
+                    metricPair
+                    Spacer(minLength: 8)
+                    sectionHeader("Goal")
+                    goalSection
+                    Spacer(minLength: 8)
+                    sectionHeader("Start Training")
+                    trainingButton
+                    Spacer(minLength: 8)
+                    // Today's program preview (first 3 exercises)
+                    todaysProgramPreview
+                    Spacer(minLength: 8)
+                    sectionHeader("Metrics")
+                    quickStats
+                }
+                .padding(.horizontal, 20)
+                .padding(.trailing, 28)   // room for right-edge tracker
+                .padding(.top, 6)
+                .padding(.bottom, 20)
             }
-            .padding(.horizontal, 20)
-            .padding(.trailing, 28)   // room for right-edge tracker
-            .padding(.top, 6)
-            .padding(.bottom, 12)
         }
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
@@ -140,6 +148,97 @@ struct MainScreenView: View {
                 .animation(.spring(response: 1.2), value: goalProgress)
         }
         .allowsHitTesting(false)
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Streak & PR banner
+    // ─────────────────────────────────────────────────────
+
+    private var streakAndPRBanner: some View {
+        HStack(spacing: 10) {
+            let streak = dataStore.currentTrainingStreak
+            if streak > 0 {
+                HStack(spacing: 6) {
+                    Image(systemName: "flame.fill").foregroundStyle(.orange).font(.caption)
+                    Text("\(streak) day streak")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                    if dataStore.bestTrainingStreak > 0 && streak >= dataStore.bestTrainingStreak {
+                        Text("PB!")
+                            .font(.system(size: 9, weight: .black))
+                            .foregroundStyle(.orange)
+                    }
+                }
+                .padding(.horizontal, 10).padding(.vertical, 5)
+                .background(Color.orange.opacity(0.18), in: Capsule())
+                .overlay(Capsule().stroke(Color.orange.opacity(0.25)))
+            }
+
+            if let pr = dataStore.recentPRs.first {
+                HStack(spacing: 6) {
+                    Image(systemName: "trophy.fill").foregroundStyle(.yellow).font(.caption)
+                    Text("PR: \(pr.exerciseName)")
+                        .font(.system(size: 11, weight: .semibold, design: .rounded))
+                        .lineLimit(1)
+                }
+                .padding(.horizontal, 10).padding(.vertical, 5)
+                .background(Color.yellow.opacity(0.18), in: Capsule())
+                .overlay(Capsule().stroke(Color.yellow.opacity(0.25)))
+            }
+
+            Spacer()
+        }
+        .padding(.vertical, 2)
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Today's program preview
+    // ─────────────────────────────────────────────────────
+
+    @ViewBuilder
+    private var todaysProgramPreview: some View {
+        let exercises = TrainingProgramData.allExercises
+            .filter { $0.dayType == activeDayType }
+            .sorted { $0.order < $1.order }
+            .prefix(3)
+
+        if !exercises.isEmpty && activeDayType.isTrainingDay {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text("TODAY'S PLAN")
+                        .font(.system(size: 13, weight: .black, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.75))
+                        .tracking(1.5)
+                    Spacer()
+                    Button {
+                        showExerciseSheet = true
+                    } label: {
+                        Text("View all")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                ForEach(Array(exercises), id: \.id) { ex in
+                    HStack(spacing: 10) {
+                        let status = todayLog?.taskStatuses[ex.id]
+                        Circle()
+                            .fill(status == .completed ? Color.green : Color.white.opacity(0.4))
+                            .frame(width: 8, height: 8)
+                        Text(ex.name)
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundStyle(status == .completed ? Color.secondary : Color.primary)
+                            .strikethrough(status == .completed)
+                        Spacer()
+                        Text("\(ex.targetSets)×\(ex.targetReps)")
+                            .font(.system(size: 11, design: .monospaced))
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(.vertical, 3)
+                }
+            }
+            .padding(.bottom, 2)
+        }
     }
 
     // ─────────────────────────────────────────────────────

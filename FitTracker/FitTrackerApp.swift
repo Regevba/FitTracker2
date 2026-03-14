@@ -62,31 +62,40 @@ struct FitTrackerApp: App {
     }
 
     // ── Auth state machine ────────────────────────────────
-    // welcome → signIn (sheet) → authenticated → biometricLock → app
+    // onboarding (first launch) → welcome → signIn (sheet) → authenticated → biometricLock → app
     @ViewBuilder
     private var rootView: some View {
-        switch signIn.state {
+        // First launch: show onboarding before anything else
+        if !settings.hasCompletedOnboarding {
+            OnboardingContainerView()
+                .environmentObject(dataStore)
+                .environmentObject(healthService)
+                .environmentObject(settings)
+        } else {
+            switch signIn.state {
 
-        case .welcome, .signIn, .error:
-            // Not yet signed in → show welcome / sign-in flow
-            WelcomeView()
-                .environmentObject(signIn)
-
-        case .authenticated:
-            // Signed in → check biometric lock
-            if !biometricAuth.isAuthenticated {
-                LockScreenView()
-                    .environmentObject(biometricAuth)
-            } else {
-                RootTabView()
+            case .welcome, .signIn, .error:
+                // Not yet signed in → show welcome / sign-in flow
+                WelcomeView()
                     .environmentObject(signIn)
-                    .environmentObject(biometricAuth)
-                    .environmentObject(healthService)
                     .environmentObject(dataStore)
-                    .environmentObject(cloudSync)
-                    .environmentObject(programStore)
-                    .environmentObject(settings)
-                    .environmentObject(watchService)
+
+            case .authenticated:
+                // Signed in → check biometric lock
+                if !biometricAuth.isAuthenticated {
+                    LockScreenView()
+                        .environmentObject(biometricAuth)
+                } else {
+                    RootTabView()
+                        .environmentObject(signIn)
+                        .environmentObject(biometricAuth)
+                        .environmentObject(healthService)
+                        .environmentObject(dataStore)
+                        .environmentObject(cloudSync)
+                        .environmentObject(programStore)
+                        .environmentObject(settings)
+                        .environmentObject(watchService)
+                }
             }
         }
     }

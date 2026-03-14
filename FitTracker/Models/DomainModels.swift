@@ -313,9 +313,10 @@ enum SupplementTiming: String, Codable, CaseIterable, Sendable {
 // ─────────────────────────────────────────────────────────
 
 struct UserProfile: Codable, Sendable {
-    var name:               String          = "Regev"
-    var age:                Int             = 43
+    var name:               String          = ""
+    var age:                Int             = 30
     var heightCm:           Double          = 175
+    var profilePhotoData:   Data?           = nil
     var recoveryStart:      Date            = iso("2026-01-29")
     var currentPhase:       ProgramPhase    = .recovery
     var targetWeightMin:    Double          = 65
@@ -355,6 +356,40 @@ struct UserProfile: Codable, Sendable {
 private func iso(_ s: String) -> Date {
     let f = ISO8601DateFormatter(); f.formatOptions = [.withFullDate]
     return f.date(from: s) ?? Date()
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – Personal Record
+// ─────────────────────────────────────────────────────────
+
+struct PersonalRecord: Identifiable, Codable, Sendable {
+    var id:           UUID   = UUID()
+    var exerciseID:   String
+    var exerciseName: String
+    var weightKg:     Double
+    var reps:         Int
+    var date:         Date
+    var notes:        String = ""
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – Body Measurement
+// ─────────────────────────────────────────────────────────
+
+struct BodyMeasurement: Identifiable, Codable, Sendable {
+    var id:               UUID    = UUID()
+    var date:             Date    = Date()
+    var waistCm:          Double?
+    var chestCm:          Double?
+    var leftArmCm:        Double?
+    var rightArmCm:       Double?
+    var hipsCm:           Double?
+    var neckCm:           Double?
+    var thighCm:          Double?
+    var progressPhotoData: Data?  // encrypted JPEG front/side
+    var notes:            String  = ""
+    var cloudRecordID:    String?
+    var needsSync:        Bool    = true
 }
 
 // ─────────────────────────────────────────────────────────

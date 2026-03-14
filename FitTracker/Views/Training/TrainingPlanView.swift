@@ -17,14 +17,21 @@ struct TrainingPlanView: View {
     @EnvironmentObject var programStore: TrainingProgramStore
 
     private let initialDay: DayType?
-    @State private var selectedDay: DayType = .restDay
-    @State private var log: DailyLog?
+    @State private var selectedDay:   DayType = .restDay
+    @State private var log:           DailyLog?
+    @State private var isEditMode:    Bool = false
+    @State private var showAddExercise = false
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
     private let appBlue   = Color.blue
 
     init(initialDay: DayType? = nil) {
         self.initialDay = initialDay
+    }
+
+    /// Current exercises to show (custom override or static default)
+    private var currentExercises: [ExerciseDefinition] {
+        programStore.exercises(for: selectedDay)
     }
 
     var body: some View {
@@ -37,7 +44,11 @@ struct TrainingPlanView: View {
                 VStack(spacing: 16) {
                     dayPicker
                     sessionHeader
-                    exerciseSections
+                    if isEditMode {
+                        editModeSection
+                    } else {
+                        exerciseSections
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 40)
@@ -45,6 +56,7 @@ struct TrainingPlanView: View {
         }
         .navigationTitle("Training Plan")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar { editToolbar }
         .onAppear {
             selectedDay = initialDay ?? programStore.todayDayType
             log = dataStore.todayLog() ?? makeBlankLog()
@@ -56,6 +68,89 @@ struct TrainingPlanView: View {
                 dataStore.upsertLog(current)
             }
         }
+        .sheet(isPresented: $showAddExercise) {
+            AddExerciseView(dayType: selectedDay)
+                .environmentObject(programStore)
+                .presentationDetents([.large])
+                .presentationCornerRadius(24)
+        }
+    }
+
+    // ── Edit toolbar ──────────────────────────────────────
+
+    @ToolbarContentBuilder
+    private var editToolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button(isEditMode ? "Done" : "Edit") {
+                withAnimation { isEditMode.toggle() }
+            }
+            .font(.body.weight(.semibold))
+        }
+    }
+
+    // ── Edit mode section ─────────────────────────────────
+
+    private var editModeSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("EDIT \(selectedDay.rawValue.uppercased())")
+                    .font(.system(size: 11, weight: .black, design: .rounded))
+                    .foregroundStyle(.secondary)
+                    .tracking(1.5)
+                Spacer()
+                if programStore.isCustomised(for: selectedDay) {
+                    Button("Reset to default") {
+                        programStore.resetToDefault(for: selectedDay)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.red)
+                    .buttonStyle(.plain)
+                }
+            }
+
+            let exercises = programStore.exercises(for: selectedDay)
+            ForEach(exercises) { ex in
+                HStack(spacing: 12) {
+                    Image(systemName: "line.3.horizontal")
+                        .foregroundStyle(.secondary)
+                        .font(.body)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(ex.name).font(.subheadline.weight(.medium))
+                        Text("\(ex.targetSets)×\(ex.targetReps) · \(ex.category.rawValue.capitalized)")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Button {
+                        var updated = exercises
+                        updated.removeAll { $0.id == ex.id }
+                        programStore.setExercises(updated, for: selectedDay)
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .foregroundStyle(.red)
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(12)
+                .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: 10))
+            }
+
+            Button {
+                showAddExercise = true
+            } label: {
+                HStack {
+                    Image(systemName: "plus.circle.fill")
+                    Text("Add Exercise")
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.blue)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: 10))
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(14)
+        .background(Color.white.opacity(0.15), in: RoundedRectangle(cornerRadius: 14))
     }
 
     // ─────────────────────────────────────────────────────
@@ -89,7 +184,7 @@ struct TrainingPlanView: View {
     // ─────────────────────────────────────────────────────
 
     private var sessionHeader: some View {
-        let exercises = TrainingProgramData.exercises(for: selectedDay)
+        let exercises = programStore.exercises(for: selectedDay)
         let done = exercises.filter { log?.taskStatuses[$0.id] == .completed }.count
         let total = exercises.count
         let summaryText = total == 0 ? "Active rest - walk, yoga, recover" : "\(total) exercises - \(done) done"
@@ -131,7 +226,7 @@ struct TrainingPlanView: View {
     // ─────────────────────────────────────────────────────
 
     private var exerciseSections: some View {
-        let exercises = TrainingProgramData.exercises(for: selectedDay)
+        let exercises = programStore.exercises(for: selectedDay)
         let grouped = groupedExercises(exercises)
 
         return ForEach(grouped, id: \.title) { group in

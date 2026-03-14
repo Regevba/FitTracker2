@@ -100,10 +100,16 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(appearance.rawValue, forKey: "ft.appearance") }
     }
 
+    // ── Onboarding ───────────────────────────────────────
+    @Published var hasCompletedOnboarding: Bool = false {
+        didSet { UserDefaults.standard.set(hasCompletedOnboarding, forKey: "ft.onboardingComplete") }
+    }
+
     init() {
         if let raw = UserDefaults.standard.string(forKey: "ft.unitSystem"),
            let v = UnitSystem(rawValue: raw) { unitSystem = v }
         if let raw = UserDefaults.standard.string(forKey: "ft.appearance"),
            let v = AppAppearance(rawValue: raw) { appearance = v }
+        hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "ft.onboardingComplete")
     }
 }
