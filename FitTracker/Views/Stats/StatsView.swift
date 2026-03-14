@@ -38,6 +38,20 @@ struct StatsView: View {
     @State private var period:   StatsPeriod   = .thirtyDays
     @State private var category: StatsCategory = .body
 
+    // Body section data
+    @State private var bodyData: [(date: Date, weightKg: Double?, bodyFatPercent: Double?, leanBodyMassKg: Double?)] = []
+
+    // Training section data
+    @State private var volumeData:        [(date: Date, volumeKg: Double)] = []
+    @State private var zone2Data:         [(date: Date, minutes: Double)]  = []
+    @State private var selectedExercise:  String? = nil
+
+    // Recovery section data
+    @State private var recoveryData: [(date: Date, hrv: Double?, restingHR: Double?, sleepHours: Double?)] = []
+
+    // Nutrition section data
+    @State private var nutritionData: [(date: Date, calories: Double?, proteinG: Double?, supplementPct: Double)] = []
+
     private var dateRange: (from: Date, to: Date) { period.dateRange }
 
     var body: some View {
@@ -109,38 +123,451 @@ struct StatsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    // MARK: – Stub sections (filled in subsequent steps)
+    // MARK: – Body Section
 
     private var bodySection: some View {
-        EmptyStateView(
-            icon: "chart.line.uptrend.xyaxis",
-            title: "Body Composition",
-            subtitle: "Charts coming in the next build step"
-        )
+        VStack(spacing: 16) {
+            // Weight chart
+            ChartCard(title: "Weight", periodLabel: period.rawValue) {
+                if bodyData.compactMap(\.weightKg).isEmpty {
+                    EmptyStateView(icon: "scalemass", title: "No weight data", subtitle: "Log your weight to see the chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(bodyData.filter { $0.weightKg != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("kg", p.weightKg!))
+                                .foregroundStyle(Color.appOrange1.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("kg", p.weightKg!))
+                                .foregroundStyle(Color.appOrange1)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                        RuleMark(y: .value("Target", dataStore.userProfile.targetWeightMax))
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+                            .foregroundStyle(Color.appOrange1.opacity(0.5))
+                            .annotation(position: .trailing) {
+                                Text("Goal").font(AppType.caption).foregroundStyle(Color.appOrange1)
+                            }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Body Fat chart
+            ChartCard(title: "Body Fat %", periodLabel: period.rawValue) {
+                if bodyData.compactMap(\.bodyFatPercent).isEmpty {
+                    EmptyStateView(icon: "drop", title: "No body fat data", subtitle: "Log your body fat to see the chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(bodyData.filter { $0.bodyFatPercent != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("%", p.bodyFatPercent!))
+                                .foregroundStyle(Color.status.warning.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("%", p.bodyFatPercent!))
+                                .foregroundStyle(Color.status.warning)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                        RuleMark(y: .value("Target", dataStore.userProfile.targetBFMax))
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+                            .foregroundStyle(Color.status.warning.opacity(0.5))
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Lean Mass chart
+            ChartCard(title: "Lean Mass", periodLabel: period.rawValue) {
+                if bodyData.compactMap(\.leanBodyMassKg).isEmpty {
+                    EmptyStateView(icon: "figure.arms.open", title: "No lean mass data", subtitle: "Log your body composition to see the chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(bodyData.filter { $0.leanBodyMassKg != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("kg", p.leanBodyMassKg!))
+                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("kg", p.leanBodyMassKg!))
+                                .foregroundStyle(Color.accent.cyan)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+        }
+        .task(id: period) {
+            let range = dateRange
+            bodyData = await Task.detached(priority: .userInitiated) { [store = dataStore] in
+                store.bodyCompositionPoints(from: range.from, to: range.to)
+            }.value
+        }
     }
+
+    // MARK: – Training Section
 
     private var trainingSection: some View {
-        EmptyStateView(
-            icon: "dumbbell.fill",
-            title: "Training Performance",
-            subtitle: "Charts coming in the next build step"
-        )
+        VStack(spacing: 16) {
+            // Training Volume chart
+            ChartCard(title: "Training Volume", periodLabel: period.rawValue) {
+                if volumeData.isEmpty {
+                    EmptyStateView(icon: "dumbbell.fill", title: "No training data", subtitle: "Log a workout to see your volume chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(volumeData, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("kg", p.volumeKg))
+                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("kg", p.volumeKg))
+                                .foregroundStyle(Color.accent.cyan)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                        // TODO: Add gold ★ annotations at PR dates once exercise selection UI is added
+                        // prRecords()[selectedExercise]?.date matching a volumeData point
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Zone 2 chart
+            ChartCard(title: "Zone 2 Cardio", periodLabel: period.rawValue) {
+                if zone2Data.isEmpty {
+                    EmptyStateView(icon: "heart.circle", title: "No Zone 2 data", subtitle: "Log cardio with HR 106–124 bpm to see this chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(zone2Data, id: \.date) { p in
+                            BarMark(x: .value("Date", p.date), y: .value("min", p.minutes))
+                                .foregroundStyle(Color.status.success)
+                        }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+        }
+        .task(id: period) {
+            let range = dateRange
+            async let volumeTask = Task.detached(priority: .userInitiated) { [store = dataStore] in
+                store.trainingVolumePoints(from: range.from, to: range.to)
+            }.value
+            async let zone2Task = Task.detached(priority: .userInitiated) { [store = dataStore] in
+                store.zone2Minutes(from: range.from, to: range.to)
+            }.value
+            volumeData = await volumeTask
+            zone2Data  = await zone2Task
+        }
     }
+
+    // MARK: – Recovery Section
 
     private var recoverySection: some View {
-        EmptyStateView(
-            icon: "waveform.path.ecg",
-            title: "Recovery Metrics",
-            subtitle: "Charts coming in the next build step"
-        )
+        VStack(spacing: 16) {
+            // HRV chart with zone bands
+            ChartCard(title: "HRV", periodLabel: period.rawValue) {
+                if recoveryData.compactMap(\.hrv).isEmpty {
+                    EmptyStateView(icon: "waveform.path.ecg", title: "No HRV data", subtitle: "HRV is recorded via Apple Watch or manual entry")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        // Zone bands behind the line
+                        RectangleMark(
+                            xStart: .value("Start", dateRange.from),
+                            xEnd:   .value("End",   dateRange.to),
+                            yStart: .value("Low",   35.0),
+                            yEnd:   .value("High",  100.0)
+                        )
+                        .foregroundStyle(Color.status.success.opacity(0.08))
+
+                        RectangleMark(
+                            xStart: .value("Start", dateRange.from),
+                            xEnd:   .value("End",   dateRange.to),
+                            yStart: .value("Low",   28.0),
+                            yEnd:   .value("High",  35.0)
+                        )
+                        .foregroundStyle(Color.status.warning.opacity(0.08))
+
+                        RectangleMark(
+                            xStart: .value("Start", dateRange.from),
+                            xEnd:   .value("End",   dateRange.to),
+                            yStart: .value("Low",   0.0),
+                            yEnd:   .value("High",  28.0)
+                        )
+                        .foregroundStyle(Color.status.error.opacity(0.08))
+
+                        ForEach(recoveryData.filter { $0.hrv != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("ms", p.hrv!))
+                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("ms", p.hrv!))
+                                .foregroundStyle(Color.accent.cyan)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Resting HR chart
+            ChartCard(title: "Resting Heart Rate", periodLabel: period.rawValue) {
+                if recoveryData.compactMap(\.restingHR).isEmpty {
+                    EmptyStateView(icon: "heart.fill", title: "No resting HR data", subtitle: "Resting HR is recorded via Apple Watch or manual entry")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(recoveryData.filter { $0.restingHR != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("bpm", p.restingHR!))
+                                .foregroundStyle(Color.status.error.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("bpm", p.restingHR!))
+                                .foregroundStyle(Color.status.error)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Sleep Hours chart
+            ChartCard(title: "Sleep Hours", periodLabel: period.rawValue) {
+                if recoveryData.compactMap(\.sleepHours).isEmpty {
+                    EmptyStateView(icon: "bed.double.fill", title: "No sleep data", subtitle: "Sleep is recorded via Apple Watch or manual entry")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(recoveryData.filter { $0.sleepHours != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("hrs", p.sleepHours!))
+                                .foregroundStyle(Color.accent.purple.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("hrs", p.sleepHours!))
+                                .foregroundStyle(Color.accent.purple)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Readiness Score — placeholder for step 5.6
+            ChartCard(title: "Readiness Score", periodLabel: period.rawValue) {
+                EmptyStateView(
+                    icon: "sparkles",
+                    title: "Readiness Score",
+                    subtitle: "Readiness score available after biometric data loads"
+                )
+                .frame(height: 120)
+            }
+        }
+        .task(id: period) {
+            let range = dateRange
+            recoveryData = await Task.detached(priority: .userInitiated) { [store = dataStore] in
+                store.recoveryPoints(from: range.from, to: range.to)
+            }.value
+        }
     }
 
+    // MARK: – Nutrition Section
+
     private var nutritionSection: some View {
-        EmptyStateView(
-            icon: "fork.knife",
-            title: "Nutrition Adherence",
-            subtitle: "Charts coming in the next build step"
-        )
+        VStack(spacing: 16) {
+            // Calories chart
+            ChartCard(title: "Calories", periodLabel: period.rawValue) {
+                if nutritionData.compactMap(\.calories).isEmpty {
+                    EmptyStateView(icon: "fork.knife", title: "No calorie data", subtitle: "Log your meals to see the chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(nutritionData.filter { $0.calories != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("kcal", p.calories!))
+                                .foregroundStyle(Color.appOrange1.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("kcal", p.calories!))
+                                .foregroundStyle(Color.appOrange1)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                        RuleMark(y: .value("Target", Double(dataStore.userProfile.currentPhase.trainingCalories)))
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+                            .foregroundStyle(Color.appOrange1.opacity(0.5))
+                            .annotation(position: .trailing) {
+                                Text("Target").font(AppType.caption).foregroundStyle(Color.appOrange1)
+                            }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Protein chart
+            ChartCard(title: "Protein", periodLabel: period.rawValue) {
+                if nutritionData.compactMap(\.proteinG).isEmpty {
+                    EmptyStateView(icon: "fork.knife", title: "No protein data", subtitle: "Log your meals to see the chart")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(nutritionData.filter { $0.proteinG != nil }, id: \.date) { p in
+                            AreaMark(x: .value("Date", p.date), y: .value("g", p.proteinG!))
+                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
+                            LineMark(x: .value("Date", p.date), y: .value("g", p.proteinG!))
+                                .foregroundStyle(Color.accent.cyan)
+                                .lineStyle(StrokeStyle(lineWidth: 2))
+                        }
+                        RuleMark(y: .value("Target", dataStore.userProfile.currentPhase.proteinTargetG.upperBound))
+                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+                            .foregroundStyle(Color.accent.cyan.opacity(0.5))
+                            .annotation(position: .trailing) {
+                                Text("Target").font(AppType.caption).foregroundStyle(Color.accent.cyan)
+                            }
+                    }
+                    .frame(height: 140)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+
+            // Supplement adherence chart
+            ChartCard(title: "Supplement Adherence", periodLabel: period.rawValue) {
+                if nutritionData.isEmpty {
+                    EmptyStateView(icon: "pill.fill", title: "No supplement data", subtitle: "Log your supplements to see adherence")
+                        .frame(height: 120)
+                } else {
+                    Chart {
+                        ForEach(nutritionData, id: \.date) { p in
+                            BarMark(x: .value("Date", p.date), y: .value("%", p.supplementPct * 100))
+                                .foregroundStyle(Color.accent.gold)
+                        }
+                    }
+                    .frame(height: 140)
+                    .chartYScale(domain: 0...100)
+                    .chartXAxis {
+                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                            AxisGridLine()
+                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks { _ in
+                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                            AxisValueLabel()
+                        }
+                    }
+                }
+            }
+        }
+        .task(id: period) {
+            let range = dateRange
+            nutritionData = await Task.detached(priority: .userInitiated) { [store = dataStore] in
+                store.nutritionAdherencePoints(from: range.from, to: range.to)
+            }.value
+        }
     }
 }
 
