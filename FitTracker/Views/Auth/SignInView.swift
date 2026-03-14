@@ -74,39 +74,6 @@ struct SignInView: View {
                                 signIn.signInWithApple()
                             }
 
-                            // Google
-                            SocialSignInButton(
-                                provider: .google,
-                                isLoading: signIn.isLoading
-                            ) {
-                                #if os(iOS)
-                                let root = UIApplication.shared.connectedScenes
-                                    .compactMap { $0 as? UIWindowScene }
-                                    .flatMap { $0.windows }
-                                    .first { $0.isKeyWindow }?
-                                    .rootViewController
-                                signIn.signInWithGoogle(presenting: root)
-                                #else
-                                signIn.signInWithGoogle(presenting: nil)
-                                #endif
-                            }
-
-                            // Facebook
-                            SocialSignInButton(
-                                provider: .facebook,
-                                isLoading: signIn.isLoading
-                            ) {
-                                #if os(iOS)
-                                let root = UIApplication.shared.connectedScenes
-                                    .compactMap { $0 as? UIWindowScene }
-                                    .flatMap { $0.windows }
-                                    .first { $0.isKeyWindow }?
-                                    .rootViewController
-                                signIn.signInWithFacebook(presenting: root)
-                                #else
-                                signIn.signInWithFacebook(presenting: nil)
-                                #endif
-                            }
                         }
 
                         // ── Divider ───────────────────────────────────
@@ -171,16 +138,6 @@ struct SignInView: View {
                                         signIn.registerPasskey()
                                     }
 
-                                    // Info chip about YubiKey
-                                    HStack(spacing: 8) {
-                                        Image(systemName: "info.circle")
-                                            .font(.caption).foregroundStyle(.secondary)
-                                        Text("Physical keys (YubiKey 5 NFC, Security Key NFC) are detected automatically via NFC or USB-C when prompted.")
-                                            .font(.caption2).foregroundStyle(.secondary)
-                                    }
-                                    .padding(10)
-                                    .background(Color.secondary.opacity(0.05),
-                                                in: RoundedRectangle(cornerRadius: 8))
                                 }
                                 .padding(.top, 8)
                                 .transition(.opacity.combined(with: .move(edge: .top)))

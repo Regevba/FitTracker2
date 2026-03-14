@@ -40,10 +40,6 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>FitTracker can save or access cardio session summary photos from your photo library.</string>
 
-	<!-- Microphone (not used — deny access) -->
-	<key>NSMicrophoneUsageDescription</key>
-	<string>FitTracker does not use the microphone.</string>
-
 	<!-- Background modes -->
 	<key>UIBackgroundModes</key>
 	<array>
