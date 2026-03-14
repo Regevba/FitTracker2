@@ -335,6 +335,7 @@ final class EncryptedDataStore: ObservableObject {
     @Published var dailyLogs:       [DailyLog]        = []
     @Published var weeklySnapshots: [WeeklySnapshot]  = []
     @Published var userProfile:     UserProfile       = UserProfile()
+    @Published var mealTemplates:   [MealTemplate]    = []
     @Published var isLoading:       Bool              = false
     @Published var lastError:       String?
     /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
@@ -368,6 +369,25 @@ final class EncryptedDataStore: ObservableObject {
 
     func todayLog() -> DailyLog? { log(for: Date()) }
 
+    var supplementStreak: Int {
+        let sorted = dailyLogs.sorted { $0.date > $1.date }
+        var streak = 0
+        let today = Calendar.current.startOfDay(for: Date())
+        for log in sorted {
+            let logDay = Calendar.current.startOfDay(for: log.date)
+            // Today counts only if fully complete
+            if logDay > today { continue }
+            let complete = log.supplementLog.morningStatus == .completed
+                        && log.supplementLog.eveningStatus == .completed
+            if complete {
+                streak += 1
+            } else {
+                break
+            }
+        }
+        return streak
+    }
+
     func saveProfile(_ p: UserProfile) {
         userProfile = p
         Task { await persistToDisk() }
@@ -377,19 +397,22 @@ final class EncryptedDataStore: ObservableObject {
 
     func persistToDisk() async {
         do {
-            let logsEnc  = try await EncryptionService.shared.encrypt(dailyLogs)
-            let snapsEnc = try await EncryptionService.shared.encrypt(weeklySnapshots)
-            let profEnc  = try await EncryptionService.shared.encrypt(userProfile)
+            let logsEnc      = try await EncryptionService.shared.encrypt(dailyLogs)
+            let snapsEnc     = try await EncryptionService.shared.encrypt(weeklySnapshots)
+            let profEnc      = try await EncryptionService.shared.encrypt(userProfile)
+            let templatesEnc = try await EncryptionService.shared.encrypt(mealTemplates)
 
             // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked (iOS only)
             #if os(iOS)
-            try logsEnc.write(to:  url("logs"),    options: .completeFileProtectionUnlessOpen)
-            try snapsEnc.write(to: url("snaps"),   options: .completeFileProtectionUnlessOpen)
-            try profEnc.write(to:  url("profile"), options: .completeFileProtectionUnlessOpen)
+            try logsEnc.write(to:      url("logs"),          options: .completeFileProtectionUnlessOpen)
+            try snapsEnc.write(to:     url("snaps"),         options: .completeFileProtectionUnlessOpen)
+            try profEnc.write(to:      url("profile"),       options: .completeFileProtectionUnlessOpen)
+            try templatesEnc.write(to: url("mealTemplates"), options: .completeFileProtectionUnlessOpen)
             #else
-            try logsEnc.write(to:  url("logs"))
-            try snapsEnc.write(to: url("snaps"))
-            try profEnc.write(to:  url("profile"))
+            try logsEnc.write(to:      url("logs"))
+            try snapsEnc.write(to:     url("snaps"))
+            try profEnc.write(to:      url("profile"))
+            try templatesEnc.write(to: url("mealTemplates"))
             #endif
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
@@ -410,6 +433,10 @@ final class EncryptedDataStore: ObservableObject {
             if let d = try? Data(contentsOf: url("profile")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: UserProfile.self)
                 await MainActor.run { userProfile = v }
+            }
+            if let d = try? Data(contentsOf: url("mealTemplates")), !d.isEmpty {
+                let v = try await EncryptionService.shared.decrypt(d, as: [MealTemplate].self)
+                await MainActor.run { mealTemplates = v }
             }
         } catch {
             await MainActor.run {
