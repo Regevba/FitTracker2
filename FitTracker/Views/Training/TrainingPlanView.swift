@@ -18,6 +18,7 @@ struct TrainingPlanView: View {
 
     private let initialDay: DayType?
     @State private var selectedDay: DayType = .restDay
+    @State private var activeDate: Date = Date()
     @State private var log: DailyLog?
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
@@ -35,7 +36,7 @@ struct TrainingPlanView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
-                    dayPicker
+                    weekStrip
                     sessionHeader
                     exerciseSections
                 }
@@ -59,29 +60,68 @@ struct TrainingPlanView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // Day picker
+    // Week strip (Mon–Sun)
     // ─────────────────────────────────────────────────────
 
-    private var dayPicker: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(DayType.allCases, id: \.self) { day in
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { selectedDay = day }
-                    } label: {
-                        HStack(spacing: 5) {
-                            Image(systemName: day.icon).font(.caption2)
-                            Text(day.rawValue).font(.caption.weight(.semibold))
+    private var weekStrip: some View {
+        let calendar = Calendar.current
+        // Build Mon–Sun for the week containing today
+        let today = Date()
+        let weekday = calendar.component(.weekday, from: today) // 1=Sun … 7=Sat
+        // Days offset so Monday is first
+        let daysFromMonday = (weekday + 5) % 7   // Mon=0, Tue=1 … Sun=6
+        let monday = calendar.date(byAdding: .day, value: -daysFromMonday, to: calendar.startOfDay(for: today))!
+        let weekDays = (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: monday) }
+
+        return HStack(spacing: 0) {
+            ForEach(weekDays, id: \.self) { day in
+                let wday    = calendar.component(.weekday, from: day)
+                let isToday = calendar.isDateInToday(day)
+                let isActive = calendar.isDate(day, inSameDayAs: activeDate)
+                let isRest  = TrainingProgramStore.restWeekdays.contains(wday)
+                let hasLog  = dataStore.dailyLogs.first {
+                    calendar.isDate($0.date, inSameDayAs: day)
+                }.map { $0.completionPct > 0 } ?? false
+
+                VStack(spacing: 4) {
+                    Text(day.formatted(.dateTime.weekday(.abbreviated)))
+                        .font(AppType.caption)
+                        .foregroundStyle(isActive ? Color.primary : Color.secondary)
+
+                    ZStack {
+                        if isToday {
+                            Circle()
+                                .fill(Color.appOrange1)
+                                .frame(width: 28, height: 28)
+                        } else if isActive {
+                            Circle()
+                                .fill(Color.white.opacity(0.25))
+                                .frame(width: 28, height: 28)
                         }
-                        .padding(.horizontal, 14).padding(.vertical, 8)
-                        .background(selectedDay == day ? Color.blue : Color.white.opacity(0.35), in: Capsule())
-                        .foregroundStyle(selectedDay == day ? .white : .primary)
+                        Text("\(calendar.component(.day, from: day))")
+                            .font(isToday ? AppType.body : AppType.subheading)
+                            .fontWeight(isToday ? .bold : .regular)
+                            .foregroundStyle(isToday ? Color.black : Color.primary)
                     }
-                    .buttonStyle(.plain)
+
+                    // Completion dot
+                    Circle()
+                        .fill(hasLog ? Color.status.success : Color.clear)
+                        .frame(width: 5, height: 5)
+                }
+                .opacity(isRest && !hasLog ? 0.4 : 1.0)
+                .frame(maxWidth: .infinity)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    activeDate = day
+                    // Derive suggested day type from weekday
+                    let suggested = TrainingProgramStore.dayType(forWeekday: wday)
+                    withAnimation(.easeInOut(duration: 0.2)) { selectedDay = suggested }
                 }
             }
-            .padding(.vertical, 4)
         }
+        .padding(.vertical, 8)
+        .onAppear { activeDate = today }
     }
 
     // ─────────────────────────────────────────────────────
