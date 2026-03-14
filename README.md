@@ -1,24 +1,79 @@
 # FitTracker v2.0 — iOS · iPadOS · macOS
+
 ## Regev's Personal Training, Recovery & Body Composition Tracker
 
 ---
 
 ## 📋 Changelog
 
+### v2.0 — Full Redesign (March 2026)
+
+#### Design System
+
+- `AppTheme.swift`: added `Color.status` namespace (`success` #34C759, `warning` #FF9500, `error` #FF3B30) and `Color.accent` namespace (`cyan` #5AC8FA, `purple` #BF5AF2, `gold` #FFD60A)
+- `AppTheme.swift`: added `AppType` enum with type scale — `display` (34/bold), `headline` (20/semibold), `body` (15/medium), `subheading` (13/regular), `caption` (11/regular)
+- New shared components: `MetricCard`, `TrendIndicator`, `SectionHeader`, `StatusBadge`, `EmptyStateView`, `ChartCard`
+- All views migrated from hardcoded color/font literals to semantic tokens
+
+#### Home Screen
+
+- `ReadinessCard`: 5-page `TabView` replacing the static quick-stats row — Score + context, weekly training bars, nutrition snapshot, 6-metric trend indicators, achievements panel. Auto-cycles every 5 s; swipe resets timer
+- `readinessScore(for:fallbackMetrics:)`: 0–100 score from 30-day HRV/HR/sleep baseline; returns `nil` with <3 data points
+- Visual polish: orb glow shadow, angular gradient ring (`appOrange1 → accent.cyan → appOrange1`), linear gradient fill on goal progress bars
+- Weight/BF trend status dots (8pt circle) — green/red/yellow based on ±0.2 kg / ±0.3% BF over 7 days
+- Training button shows active day type and exercise count: `"💪 {DayType} · {N} ex"`
+
+#### Stats — Full Chart Implementation
+
+- Period picker (7D / 30D / 90D / All) + category tab bar (Body / Training / Recovery / Nutrition)
+- `StatsDataHelpers.swift`: pure data helpers — body composition points, training volume, Zone 2 minutes, recovery metrics, nutrition adherence, all-time PR records per exercise
+- **Body Composition tab**: Weight, Body Fat %, Lean Mass — `LineMark + AreaMark` with 7-day rolling average, target `RuleMark`, tap tooltip, drag scrub
+- **Training Performance tab**: Volume per session with PR annotations, per-exercise best set picker, Zone 2 minutes
+- **Recovery tab**: HRV with zone bands, Resting HR, Sleep, Readiness Score chart
+- **Nutrition Adherence tab**: Calories vs target (switches training/rest), Protein vs target, Supplement adherence %
+
+#### Nutrition — Meal Tracking
+
+- `MacroTargetBar`: stacked protein/carbs/fat bar with calorie target switching between training-day and rest-day targets
+- `MealSectionView`: 4 meal slots (Breakfast / Lunch / Dinner / Snacks) with status borders and placeholders
+- `MealEntrySheet`: 3-tab sheet — Manual entry with "Save as Template", Template library (persisted to disk), Search via OpenFoodFacts API + barcode scanner (iOS)
+- `mealTemplates` persistence in `EncryptedDataStore` — AES-256-GCM encrypted, not CloudKit-synced
+- Supplement row collapsed to pill buttons (Morning / Evening) + 🔥 streak badge + expand chevron
+
+#### Training Plan
+
+- 7-day week strip (Mon–Sun) replaces day type scroll picker — TODAY highlighted in orange, completion dot per day, rest days dimmed
+- Session type picker grid (6 buttons) below week strip — orange = suggested, blue = selected
+- Ghost weights: previous same-`dayType` session values shown as dimmed placeholders in empty set rows; tap to copy; "⚡ Copy Last" pre-fills all sets
+- RPE tap bar replaces popover — 5 segments `[6 7 8 9 10]`, tap again to clear
+- Session completion sheet: fires when all exercises marked complete — total volume + delta, exercises done, new PRs, session duration, "Log Notes" editor
+- `TrainingProgramStore.restWeekdays`: `[1, 4]` (Sunday + Wednesday)
+
+#### Auth Cleanup
+
+- `WelcomeView`: removed "Create Account" button + "Coming Soon" alert
+- `SignInView`: removed Google + Facebook sign-in rows; removed YubiKey info chip
+- `Info.plist`: removed `NSMicrophoneUsageDescription`
+
+---
+
 ### Code Quality & Security Hardening (March 2026)
 
-**Security — Critical fixes**
+#### Security — Critical Fixes
+
 - `EncryptionService`: fix `loadKeyFromKeychain` to pass `LAContext` and remove `kSecAttrAccessible` from query — prevents silent key regeneration on cold launch (was causing all encrypted data to become permanently unreadable)
 - `EncryptionService`: fix `rotateKeys` to re-encrypt all blobs before deleting old keys — prevents catastrophic data loss on partial failure
 - `CloudKitSyncService`: replace `try?` with proper `do/catch` on decrypt calls — decryption errors now logged instead of silently dropping records
 - `CloudKitSyncService`: removed 200-record hard limit — all records now fetched (was silently truncating data after ~6.5 months)
 - `EncryptionService`: guard `completeFileProtectionUnlessOpen` with `#if os(iOS)` — fixes macOS build
 
-**Concurrency**
+#### Concurrency
+
 - `HealthKitService`: call `done()` before `Task` in `HKObserverQuery` — fixes broken background delivery (future deliveries were silently stopping)
 - `AuthManager`: replace `DispatchQueue.main.async` with `Task { @MainActor in }` inside `@MainActor` class
 
-**Correctness**
+#### Correctness
+
 - `SignInService`: cache window before `performRequests()` — prevents `DispatchQueue.main.sync` deadlock on macOS
 - `SignInService`: store `userIdentifier` instead of `authorizationCode` as session token (single-use code must not be persisted)
 - `HealthKitService`: check `authorizationStatus` after `requestAuthorization` — `isAuthorized` now reflects actual permission state
@@ -26,26 +81,31 @@
 - `TrainingPlanView`: re-sync `SetRowView` local strings on binding change — prevents stale UI after CloudKit merge
 - `DomainModels`: replace `JSONEncoder`-based `DailyLog.==` with `id + date` comparison — fixes non-deterministic equality and unnecessary allocs
 
-**Architecture**
+#### Architecture
+
 - Extract `TrainingProgramStore` to its own file (`Services/TrainingProgramStore.swift`)
 - Add `AppTheme.swift` with shared `Color.appOrange1/2` and `Color.appBlue1/2` — removes copy-pasted palette constants from all four views
 
-**UI & Accessibility**
+#### UI & Accessibility
+
 - Add `.accessibilityLabel` / `.accessibilityValue` to `QuickStatPill` and `GoalProgressRow`
 - Dynamic Face ID / Touch ID label in `LockScreenView` via `LAContext.biometryType`
 - `WatchConnectivityService`: add `isWatchAppInstalled` check and `appNotInstalled` status case
 
-**Performance**
+#### Performance
+
 - Cache `DateFormatter` as `private static let` in `MainScreenView`, `NutritionView`, `CloudKitSyncService` — removes allocations on every body evaluation
 
-**Dead code**
+#### Dead Code
+
 - Remove unused `RecoveryBanner` component from `MainScreenView`
 
 ---
 
 ### Watch Connectivity & Navigation Bar (March 2026)
 
-**Watch Indicator (top-right)**
+#### Watch Indicator (top-right)
+
 - Replaced CloudKit sync status with Apple Watch connectivity indicator
 - New `WatchConnectivityService` using `WCSession` delegate — updates in real-time
 - 🟢 green dot + black **"Connected"** when watch is reachable
@@ -53,7 +113,8 @@
 - Faded dot + black **"No Watch"** / **"App Not Installed"** for pairing states
 - No pill/container background — blends into gradient
 
-**Hamburger Menu (top-left)**
+#### Hamburger Menu (top-left)
+
 - Icon changed from white to blue
 - No circular container or system background
 
@@ -61,7 +122,8 @@
 
 ### Home Screen Layout & Spacing (March 2026)
 
-**Equal spacing**
+#### Equal Spacing
+
 - Replace `Spacer(minLength: 10)` with `Spacer()` — SwiftUI now distributes remaining screen height equally across all four section gaps
 - `QuickStatPill` HStack spacing set to `0` — pills fill equal widths via `.frame(maxWidth: .infinity)`
 
@@ -69,7 +131,8 @@
 
 ### UI Refresh (March 2026)
 
-**Home Screen — Layout & Design**
+#### Home Screen — Layout & Design
+
 - Replaced scrollable layout with a fixed no-scroll VStack that fills the screen
 - Dynamic gradient background (orange → blue) that shifts based on overall goal progress
 - Right-edge vertical progress tracker bar
@@ -78,20 +141,24 @@
 - Start Training: play/pause button + dropdown to override today's day type inline
 - Renamed main tab from "Main" to "Home"
 
-**Navigation Bar**
+#### Navigation Bar
+
 - Hamburger menu button added (top-left) — opens account/settings panel as a sheet
 - Toolbar background hidden on Home tab — gradient shows through the nav bar
 
-**Colors & Contrast**
+#### Colors & Contrast
+
 - Replaced light blue tint with standard `.blue` across interactive elements for better contrast on the orange gradient
 - Warm palette applied consistently across Training Plan, Nutrition, and Stats tabs
 
-**Section Headers**
+#### Section Headers
+
 - Increased from 10pt semibold to 13pt black weight
 - Color changed from `.secondary` to `black.opacity(0.75)`
 - Added top/bottom padding for better spacing between header and content
 
-**Other**
+#### Other
+
 - `.gitignore` added; Xcode user state files removed from tracking
 - Various navigation UX fixes (NavigationStack, tab title display modes)
 
@@ -99,21 +166,23 @@
 
 ## 📁 File Structure
 
-```
+```text
 FitTracker/
 ├── FitTrackerApp.swift                     App entry point, lifecycle, service wiring
 ├── Models/
-│   ├── DomainModels.swift                  All data types (Codable, Sendable)
+│   ├── DomainModels.swift                  All data types (Codable, Sendable) incl. MealTemplate
 │   └── TrainingProgramData.swift           Complete 6-day program + supplements (static)
 ├── Services/
-│   ├── AppTheme.swift                      Shared Color constants (appOrange1/2, appBlue1/2)
+│   ├── AppTheme.swift                      Color tokens (appOrange, status.*, accent.*) + AppType scale
 │   ├── AppSettings.swift                   Unit system, appearance preferences
 │   ├── AuthManager.swift                   Face ID / Touch ID / Passcode biometric lock
-│   ├── TrainingProgramStore.swift          Today's day type detection + program store
+│   ├── TrainingProgramStore.swift          Today's day type detection + restWeekdays constant
 │   ├── WatchConnectivityService.swift      Apple Watch reachability via WCSession (iOS only)
 │   ├── Encryption/
 │   │   └── EncryptionService.swift         AES-256-GCM + ChaCha20-Poly1305 double encryption
 │   │                                       + EncryptedDataStore (persist/load/export)
+│   │                                       + mealTemplates persistence + supplementStreak
+│   │                                       + readinessScore(for:fallbackMetrics:)
 │   ├── CloudKit/
 │   │   └── CloudKitSyncService.swift       iCloud Private DB — encrypts BEFORE upload
 │   ├── HealthKit/
@@ -122,14 +191,27 @@ FitTracker/
 │       └── SignInService.swift             Passkey / Apple Sign-In authentication
 ├── Views/
 │   ├── RootTabView.swift                   4-tab navigation (iPhone tab bar / iPad sidebar)
+│   ├── Shared/
+│   │   ├── MetricCard.swift                Icon + value + unit + optional trend pill
+│   │   ├── TrendIndicator.swift            Coloured delta pill (↑/↓ %, auto status colour)
+│   │   ├── SectionHeader.swift             Bold section header with optional action button
+│   │   ├── StatusBadge.swift               Capsule pill with colour + text
+│   │   ├── EmptyStateView.swift            Icon + title + subtitle + optional CTA
+│   │   ├── ChartCard.swift                 Titled chart container with period label + trend
+│   │   └── ReadinessCard.swift             5-page auto-cycling readiness summary card
 │   ├── Main/
-│   │   └── MainScreenView.swift            Home: gradient bg, status cards, goal ring, training button
+│   │   └── MainScreenView.swift            Home: gradient bg, goal ring, ReadinessCard, training button
 │   ├── Training/
-│   │   └── TrainingPlanView.swift          Training plan: exercises + set/rep/weight log + cardio photo
+│   │   └── TrainingPlanView.swift          7-day week strip, session picker, ghost weights,
+│   │                                       RPE tap bar, completion summary sheet
 │   ├── Nutrition/
-│   │   └── NutritionView.swift             Supplement tracking: morning + evening stacks
+│   │   ├── NutritionView.swift             MacroTargetBar + meal section + collapsible supplements
+│   │   ├── MacroTargetBar.swift            Stacked macro bar with training/rest calorie targets
+│   │   ├── MealSectionView.swift           4 meal slot cards with status borders
+│   │   └── MealEntrySheet.swift            Manual / Template / Search (OpenFoodFacts + barcode)
 │   ├── Stats/
-│   │   └── StatsView.swift                 Stats (placeholder) + Settings view
+│   │   ├── StatsView.swift                 Period picker + Body/Training/Recovery/Nutrition charts
+│   │   └── StatsDataHelpers.swift          Pure data helpers for all chart data + PR records
 │   └── Auth/
 │       └── AccountPanelView.swift          Account sheet: profile, settings, sign out
 ├── FitTracker.entitlements                 HealthKit + CloudKit + Keychain + App Sandbox
@@ -141,6 +223,7 @@ FitTracker/
 ## 🛠 Xcode Setup — Step by Step
 
 ### Prerequisites
+
 - **Xcode 15.2+** (download from Mac App Store or developer.apple.com)
 - **Apple Developer Account** — any plan ($0/free for local testing, $99/yr for device + CloudKit)
 - **Real iPhone or iPad** — HealthKit doesn't run in Simulator
@@ -148,7 +231,7 @@ FitTracker/
 
 ### 1. Create the Xcode Project
 
-```
+```text
 File → New → Project
 Platform: iOS
 Template: App
@@ -164,6 +247,7 @@ Minimum Deployments: iOS 17.0
 ### 2. Import Source Files
 
 Drag the entire folder structure into Xcode's project navigator:
+
 - Tick **"Copy items if needed"**
 - Tick **"Add to target: FitTracker"**
 - Tick **"Create groups"**
@@ -173,7 +257,7 @@ Drag the entire folder structure into Xcode's project navigator:
 In **Xcode → Target → Signing & Capabilities**, add:
 
 | Capability | Settings |
-|---|---|
+| --- | --- |
 | **HealthKit** | Check "Background Delivery" + "Clinical Health Records" |
 | **iCloud** | Select "CloudKit", add container: `iCloud.com.fittracker.regev` |
 | **Keychain Sharing** | Add group: `com.fittracker.regev` |
@@ -182,26 +266,24 @@ In **Xcode → Target → Signing & Capabilities**, add:
 ### 4. CloudKit Schema Setup
 
 After adding iCloud capability:
+
 1. Open **CloudKit Console** → cloudkit.apple.com
-2. Select your container: `iCloud.com.fittracker.regev`
-3. Go to **Development → Record Types**, create these types:
+1. Select your container: `iCloud.com.fittracker.regev`
+1. Go to **Development → Record Types**, create these types:
 
 | Record Type | Fields |
-|---|---|
+| --- | --- |
 | `EncryptedDailyLog` | `encryptedBlob` (Bytes), `logicDate` (Date/Time), `recordVersion` (Int64) |
 | `EncryptedWeeklySnapshot` | `encryptedBlob` (Bytes), `logicDate` (Date/Time), `recordVersion` (Int64) |
 | `EncryptedUserProfile` | `encryptedBlob` (Bytes), `recordVersion` (Int64) |
 | `EncryptedCardioAsset` | `assetData` (Asset), `assetRef` (String), `recordVersion` (Int64) |
 
-4. Add an index on `logicDate` (sortable) for each record type.
+Add an index on `logicDate` (sortable) for each record type.
 
 > **Important:** CloudKit stores only encrypted blobs. The field names are non-sensitive. Never add plaintext fields.
+> **Note:** `mealTemplates` are stored on-device only — they are not synced to CloudKit.
 
-### 5. PhotosUI Permission (for cardio image capture)
-
-Already in `Info.plist`. No additional steps needed.
-
-### 6. Build & Run
+### 5. Build & Run
 
 ```bash
 # Command line (optional)
@@ -219,8 +301,8 @@ Or press **⌘R** in Xcode with your device selected.
 
 ### Double Encryption (every piece of data, always)
 
-```
-Plaintext  (DailyLog, ExerciseLog, CardioLog, etc.)
+```text
+Plaintext  (DailyLog, ExerciseLog, CardioLog, MealTemplate, etc.)
     │
     ▼ JSONEncoder
 Raw JSON bytes
@@ -250,6 +332,7 @@ Raw JSON bytes
 ```
 
 ### Three Separate Keys
+
 - `AES-256 key` — stored in Keychain, ACL: biometric OR device passcode
 - `ChaCha20 key` — stored in Keychain, ACL: biometric OR device passcode
 - `HMAC-SHA512 key` — stored in Keychain, ACL: biometric OR device passcode
@@ -257,6 +340,7 @@ Raw JSON bytes
 All three keys are: 256-bit random, device-only (not iCloud Keychain), access requires Face ID or passcode.
 
 ### Apple-Only Platform Enforcement
+
 - **iOS/iPadOS**: App Store distribution = Apple devices only, no sideloading without Apple account
 - **macOS**: Mac App Store + Hardened Runtime + App Sandbox
 - **Code-level**: `HealthKit`, `CryptoKit`, `LocalAuthentication`, `CloudKit` = Apple frameworks only
@@ -267,70 +351,89 @@ All three keys are: 256-bit random, device-only (not iCloud Keychain), access re
 
 ## 📱 App Screens
 
-### Tab 1 — Main Screen
+### Tab 1 — Home Screen
+
 - **Time-aware greeting**: Good morning / afternoon / evening / night
 - **Today's date** + recovery day counter + phase badge
-- **Dynamic gradient background**: orange → blue, shifts based on goal progress (0% = full orange, 100% = full blue)
+- **Dynamic gradient background**: orange → blue, shifts based on goal progress
 - **Right-edge vertical progress tracker**: thin bar showing overall goal completion
-- **Side-by-side status cards**: Weight (kg) and Body Fat (%) displayed as a pair. Tap pencil icon to log manually
-- **Goal section**: circular ring + Weight/Body Fat progress bars toward 65–68 kg @ 13–15% BF
-- **Start Training button**: play/pause control + dropdown to override today's scheduled day type
-- **Quick stats row**: HRV · Resting HR · Sleep · Steps (all from Apple Watch)
-- **Section headers**: bold, black, uppercase with letter-spacing — STATUS / GOAL / START TRAINING / METRICS
-- **Hamburger menu** (top-left): blue icon, no container, blends into gradient background
-- **Watch indicator** (top-right): green dot = Connected, faded dot = Offline/No Watch — black text, no pill container
+- **Side-by-side status cards**: Weight (kg) and Body Fat (%) with trend status dots (↑/↓/flat)
+- **Goal section**: circular ring with orb glow + Weight/Body Fat progress bars (angular gradient fill)
+- **ReadinessCard** (5-page, auto-cycles every 5 s):
+  - Page 1: Readiness score (0–100) + context label + HRV / Resting HR / Sleep
+  - Page 2: Mon–Sun weekly training bars + next session name
+  - Page 3: Protein progress + AM/PM supplement dots + water intake
+  - Page 4: 6-metric trend indicators (Weight, BF, HRV, Sleep, Volume, Steps)
+  - Page 5: Achievements — supplement streak 🔥, PRs this week 🏆, program day 📅
+- **Training button**: `"💪 {DayType} · {N} ex"` — shows exercise count for today
+- **Hamburger menu** (top-left): blue icon, no container
+- **Watch indicator** (top-right): green dot = Connected, faded dot = Offline/No Watch
 
 ### Tab 2 — Training Plan
-- **Day type picker**: scroll horizontally to switch between all 6 day types
+
+- **7-day week strip**: Mon–Sun with TODAY highlighted in orange; completion dot per day; rest days dimmed
+- **Session type picker**: 6-button grid — orange = weekday suggestion, blue = user override
 - **Session completion ring**: exercises done / total
 - **Exercise sections**: Machines → Free Weights → Calisthenics → Core → Cardio
 - **Per exercise**: coaching cue, muscle groups, target sets/reps/rest
 - **Status dropdown**: Completed / Partial / Missed / Reset
-- **On Completed → Lift panel**: set-by-set table (weight × reps × RPE × notes)
-- **On Completed → Cardio panel**: duration, avg HR, max HR, calories + type-specific fields
-- **Photo upload for Elliptical + Rowing**: Take Photo (camera) or Choose from Library
-- Uploaded photo stored as encrypted JPEG in `CardioLog.summaryImageData` and synced via CloudKit as `CKAsset`
+- **On Completed → Lift panel**: set-by-set table with ghost weights from last same-type session; tap ghost to copy; "⚡ Copy Last" pre-fills all sets; RPE tap bar (6–10, tap to deselect)
+- **On Completed → Cardio panel**: duration, avg HR, max HR, calories + type-specific fields; photo upload for Elliptical + Rowing
+- **Session completion sheet**: triggers when all exercises done — volume + delta vs previous session, PRs detected, session duration, notes editor
 
 ### Tab 3 — Nutrition
-- **Morning Stack** (7 supplements): per-supplement checkboxes + bulk "Mark all" dropdown
-- **Evening Stack** (3 supplements): same pattern
-- **Progress bar**: taken / total supplements for today
-- **Expandable rows**: tap ℹ️ to see full benefit rationale and timing notes
+
+- **MacroTargetBar**: stacked protein / carbs / fat bar; calorie target switches between training-day and rest-day targets from the active program phase
+- **Meal section**: 4 meal slots (Breakfast / Lunch / Dinner / Snacks); tap to open `MealEntrySheet`
+  - **Manual tab**: name + kcal + P/C/F; "Save as Template" persists entry for reuse
+  - **Template tab**: saved templates list; tap to auto-fill Manual tab
+  - **Search tab**: OpenFoodFacts API search + barcode scanner (iOS); results fill Manual tab
+- **Supplement row** (collapsible): Morning / Evening pill buttons + 🔥 streak badge; expand for full supplement cards with checkboxes and ℹ️ benefit details
 - **Haptic feedback** on every checkbox toggle
 
 ### Tab 4 — Stats
-- Empty placeholder, shows data counts
-- Scaffolded for future Charts integration (Apple Charts framework, iOS 16+ built-in)
+
+- **Period picker**: 7D / 30D / 90D / All (segmented, updates all charts)
+- **Category tabs**: Body / Training / Recovery / Nutrition
+- **Body Composition**: Weight (rolling avg + target line), Body Fat % (target line), Lean Mass — line + area charts; tap tooltip; drag scrub
+- **Training Performance**: Volume per session with PR stars, per-exercise best set (exercise picker), Zone 2 minutes
+- **Recovery**: HRV (zone bands), Resting HR, Sleep, Readiness Score trend
+- **Nutrition Adherence**: Calories vs target, Protein vs target, Supplement adherence %
+- Empty state shown for each chart when no data exists in the selected period
 
 ---
 
 ## 🎨 Figma → Xcode Workflow
 
-FitTracker ships with minimal styling — you style it in Figma, then bring tokens into Xcode.
+FitTracker ships with a full design token system in `AppTheme.swift`.
 
-### Recommended process:
-1. **Figma Desktop** → design at 390pt (iPhone 15 Pro canvas)
-2. Install **iOS 17 UI Kit** from Figma Community
-3. Use **Figma Variables** for colors/typography:
-   - Create a `FitTracker` library
-   - Define tokens: `color/accent`, `color/surface`, `color/background`, etc.
-4. Export tokens as JSON via **Tokens Studio** Figma plugin
-5. Convert to Swift using this pattern:
+### Token Reference
 
 ```swift
-// Generated from Figma tokens
-extension Color {
-    static let ftAccent      = Color("ftAccent")       // in Assets.xcassets
-    static let ftSurface     = Color("ftSurface")
-    static let ftBackground  = Color("ftBackground")
-}
+// Semantic status colours
+Color.status.success   // #34C759 — green
+Color.status.warning   // #FF9500 — orange
+Color.status.error     // #FF3B30 — red
+
+// Accent colours
+Color.accent.cyan      // #5AC8FA
+Color.accent.purple    // #BF5AF2
+Color.accent.gold      // #FFD60A
+
+// Type scale
+AppType.display        // 34pt bold
+AppType.headline       // 20pt semibold
+AppType.body           // 15pt medium
+AppType.subheading     // 13pt regular
+AppType.caption        // 11pt regular
 ```
 
-6. Add color sets to `Assets.xcassets` in Xcode (light + dark variants)
+### Recommended Process
 
-### Figma Dev Mode API (optional):
-- `api.figma.com/v1/files/{fileKey}` → JSON of all design tokens
-- Use this to auto-generate `Assets.xcassets` color sets if you want full automation
+1. **Figma Desktop** → design at 390pt (iPhone 15 Pro canvas)
+1. Install **iOS 17 UI Kit** from Figma Community
+1. Map Figma styles to `AppTheme` tokens above
+1. Export new tokens as JSON via **Tokens Studio** plugin, then add to `AppTheme.swift`
 
 ---
 
@@ -338,7 +441,7 @@ extension Color {
 
 Cursor supports Swift natively. Add this `.cursorrules` file to the project root:
 
-```
+```text
 # .cursorrules — FitTracker v2.0
 
 ## Project context
@@ -353,6 +456,7 @@ Cursor supports Swift natively. Add this `.cursorrules` file to the project root
 - Encryption: Services/Encryption/EncryptionService.swift (actor, thread-safe)
 - CloudKit: Services/CloudKit/CloudKitSyncService.swift (@MainActor)
 - Health: Services/HealthKit/HealthKitService.swift (@MainActor)
+- Design tokens: Services/AppTheme.swift (Color.status.*, Color.accent.*, AppType)
 
 ## Rules
 - NEVER store plaintext health data to disk
@@ -360,9 +464,11 @@ Cursor supports Swift natively. Add this `.cursorrules` file to the project root
 - Use async/await, never callbacks or DispatchQueue directly
 - Use @EnvironmentObject for dataStore, healthService, cloudSync, programStore
 - Use #if os(iOS) / #if os(macOS) for platform-specific code
-- New UI components go in the relevant Views/ subfolder
+- New UI components go in Views/Shared/ or the relevant Views/ subfolder
 - All new models must be Codable + Sendable
 - Encrypt any new persistent field before storage
+- Use Color.status.* / Color.accent.* instead of hardcoded color literals
+- Use AppType.* instead of .font(.system(size:))
 
 ## SwiftUI patterns used
 - @StateObject for service ownership in FitTrackerApp
@@ -377,14 +483,15 @@ Cursor supports Swift natively. Add this `.cursorrules` file to the project root
 ## 🚀 No External Dependencies
 
 | Framework | Use | Source |
-|---|---|---|
+| --- | --- | --- |
 | `SwiftUI` | All UI | Built-in |
+| `Charts` | Stats charts (iOS 16+) | Built-in |
 | `HealthKit` | Apple Watch / Health data | Built-in |
 | `CryptoKit` | AES-256-GCM + ChaCha20 + HMAC | Built-in |
 | `CloudKit` | iCloud encrypted sync | Built-in |
 | `LocalAuthentication` | Face ID / Passcode | Built-in |
 | `PhotosUI` | Photo picker for cardio images | Built-in |
+| `AVFoundation` | Barcode scanner in MealEntrySheet (iOS) | Built-in |
 | `WatchConnectivity` | Apple Watch reachability indicator | Built-in |
-| `Charts` | Stats charts (future) | Built-in (iOS 16+) |
 
 **Zero SPM / CocoaPods / Carthage dependencies required.**
