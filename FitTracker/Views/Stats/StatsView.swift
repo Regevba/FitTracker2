@@ -80,7 +80,7 @@ struct StatPreviewPill: View {
     let value: String; let label: String
     var body: some View {
         VStack(spacing: 3) {
-            Text(value).font(.system(.title2, design: .monospaced, weight: .bold)).foregroundStyle(.green)
+            Text(value).font(.system(.title2, design: .monospaced, weight: .bold)).foregroundStyle(Color.status.success)
             Text(label).font(.caption2).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)

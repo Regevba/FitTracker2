@@ -244,7 +244,7 @@ struct ExerciseRowView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(exercise.name)
                 .font(.subheadline.weight(.semibold))
-                .strikethrough(status == .completed, color: .green)
+                .strikethrough(status == .completed, color: Color.status.success)
                 .foregroundStyle(status == .completed ? .secondary : .primary)
 
             Text(exercise.muscleGroups.map { $0.rawValue.capitalized }.joined(separator: " · "))
@@ -293,13 +293,13 @@ struct ExerciseRowView: View {
 
     private var accentColor: Color {
         switch status {
-        case .completed: .green; case .partial: .orange; case .missed: .red; case .pending: .secondary
+        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
         }
     }
 
     private var rowBG: Color {
         switch status {
-        case .completed: .green.opacity(0.03); case .missed: .red.opacity(0.03); default: Color(.systemBackground).opacity(0.5)
+        case .completed: Color.status.success.opacity(0.03); case .missed: Color.status.error.opacity(0.03); default: Color(.systemBackground).opacity(0.5)
         }
     }
 
@@ -334,11 +334,11 @@ struct LiftLogPanel: View {
             // Panel header
             HStack {
                 Text("📋 SET LOG")
-                    .font(.caption2.monospaced()).foregroundStyle(.green).tracking(1)
+                    .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
                 Spacer()
                 if exerciseLog.totalVolume > 0 {
                     Text("Total: \(Int(exerciseLog.totalVolume)) kg")
-                        .font(.caption2.monospaced()).foregroundStyle(.green.opacity(0.8))
+                        .font(.caption2.monospaced()).foregroundStyle(Color.status.success.opacity(0.8))
                 }
                 Button {
                     exerciseLog.sets.append(SetLog(
@@ -347,11 +347,11 @@ struct LiftLogPanel: View {
                     ))
                 } label: {
                     Label("Add Set", systemImage: "plus.circle.fill")
-                        .font(.caption.weight(.semibold)).foregroundStyle(.green)
+                        .font(.caption.weight(.semibold)).foregroundStyle(Color.status.success)
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(.green.opacity(0.05))
+            .background(Color.status.success.opacity(0.05))
 
             // Column headers
             HStack(spacing: 0) {
@@ -488,16 +488,16 @@ struct CardioLogPanel: View {
             // Panel header
             HStack {
                 Text(cardioType == .rowing ? "🚣 ROWING LOG" : "🚴 ELLIPTICAL LOG")
-                    .font(.caption2.monospaced()).foregroundStyle(.green).tracking(1)
+                    .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
                 Spacer()
                 if let zone = cardioLog.wasInZone2 {
                     Text(zone ? "✓ Zone 2" : "↑ Above Zone 2")
                         .font(.caption2.monospaced())
-                        .foregroundStyle(zone ? .green : .orange)
+                        .foregroundStyle(zone ? Color.status.success : Color.status.warning)
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(.green.opacity(0.05))
+            .background(Color.status.success.opacity(0.05))
 
             // Metric grid
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
@@ -545,8 +545,8 @@ struct CardioLogPanel: View {
                         }
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, 10).padding(.vertical, 5)
-                        .background(.green.opacity(0.1), in: Capsule())
-                        .foregroundStyle(.green)
+                        .background(Color.status.success.opacity(0.1), in: Capsule())
+                        .foregroundStyle(Color.status.success)
                     }
                     #endif
 
@@ -831,7 +831,7 @@ struct StatusDropdown: View {
 
     private var color: Color {
         switch status {
-        case .completed: .green; case .partial: .orange; case .missed: .red; case .pending: .secondary
+        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
         }
     }
 }

@@ -53,7 +53,7 @@ struct NutritionView: View {
                     supplements: evening,
                     stackStatus: eveningStatus,
                     individualStatus: individualStatus,
-                    accentColor: .purple
+                    accentColor: Color.accent.purple
                 ) { newStatus in
                     log?.supplementLog.eveningStatus = newStatus
                     if newStatus == .completed {
@@ -114,7 +114,7 @@ struct NutritionView: View {
         return VStack(spacing: 2) {
             Text("\(pct)%")
                 .font(.system(.title3, design: .monospaced, weight: .bold))
-                .foregroundStyle(.green)
+                .foregroundStyle(Color.status.success)
             Text("today")
                 .font(.caption2).foregroundStyle(.secondary)
         }
@@ -139,7 +139,7 @@ struct NutritionView: View {
                     RoundedRectangle(cornerRadius: 3)
                         .fill(Color.secondary.opacity(0.15)).frame(height: 6)
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(LinearGradient(colors: [.green, .mint], startPoint: .leading, endPoint: .trailing))
+                        .fill(LinearGradient(colors: [Color.status.success, Color.status.success], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * frac, height: 6)
                         .animation(.spring(response: 0.6), value: frac)
                 }
