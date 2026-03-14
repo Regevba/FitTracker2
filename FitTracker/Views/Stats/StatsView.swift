@@ -1,78 +1,146 @@
 // Views/Stats/StatsView.swift
-// Tab 4: Stats — placeholder for now, scaffolded for future charts
 
 import SwiftUI
+import Charts
+
+// MARK: – Supporting enums
+
+enum StatsPeriod: String, CaseIterable {
+    case sevenDays    = "7D"
+    case thirtyDays   = "30D"
+    case ninetyDays   = "90D"
+    case allTime      = "All"
+
+    var dateRange: (from: Date, to: Date) {
+        let to = Date()
+        switch self {
+        case .sevenDays:   return (Calendar.current.date(byAdding: .day, value: -7, to: to)!, to)
+        case .thirtyDays:  return (Calendar.current.date(byAdding: .day, value: -30, to: to)!, to)
+        case .ninetyDays:  return (Calendar.current.date(byAdding: .day, value: -90, to: to)!, to)
+        case .allTime:     return (Date.distantPast, to)
+        }
+    }
+}
+
+enum StatsCategory: String, CaseIterable {
+    case body      = "Body"
+    case training  = "Training"
+    case recovery  = "Recovery"
+    case nutrition = "Nutrition"
+}
+
+// MARK: – StatsView
 
 struct StatsView: View {
-
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
 
-    private let bgOrange1 = Color.appOrange1
-    private let bgOrange2 = Color.appOrange2
+    @State private var period:   StatsPeriod   = .thirtyDays
+    @State private var category: StatsCategory = .body
+
+    private var dateRange: (from: Date, to: Date) { period.dateRange }
 
     var body: some View {
         ZStack {
-        LinearGradient(colors: [bgOrange1, bgOrange2],
-                       startPoint: .topLeading, endPoint: .bottomTrailing)
+            // Background gradient (same warm orange palette as rest of app)
+            LinearGradient(
+                colors: [Color.appOrange1, Color.appOrange2],
+                startPoint: .topLeading, endPoint: .bottomTrailing
+            )
             .ignoresSafeArea()
 
-        VStack(spacing: 0) {
-            // ── Coming soon state ────────────────────────
-            Spacer()
-            VStack(spacing: 20) {
-                Image(systemName: "chart.bar.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Color.blue)
-
-                VStack(spacing: 8) {
-                    Text("Stats coming soon")
-                        .font(.title3.bold())
-                        .foregroundStyle(.secondary)
-                    Text("Keep logging your training, supplements,\nand biometrics. Charts and trends will\nappear here as data builds up.")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
-                        .multilineTextAlignment(.center)
+            VStack(spacing: 0) {
+                // Period picker
+                Picker("Period", selection: $period) {
+                    ForEach(StatsPeriod.allCases, id: \.self) { p in
+                        Text(p.rawValue).tag(p)
+                    }
                 }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
 
-                // Show a tiny summary if there's any data
-                if !dataStore.dailyLogs.isEmpty {
-                    dataPreviewCard
+                // Category tab buttons
+                HStack(spacing: 0) {
+                    ForEach(StatsCategory.allCases, id: \.self) { cat in
+                        Button {
+                            withAnimation(.easeInOut(duration: 0.2)) { category = cat }
+                        } label: {
+                            Text(cat.rawValue)
+                                .font(AppType.body)
+                                .foregroundStyle(category == cat ? Color.primary : Color.secondary)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .background(
+                                    category == cat
+                                        ? Color.white.opacity(0.25)
+                                        : Color.clear
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .background(Color.white.opacity(0.1))
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
+
+                // Chart content area
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        switch category {
+                        case .body:
+                            bodySection
+                        case .training:
+                            trainingSection
+                        case .recovery:
+                            recoverySection
+                        case .nutrition:
+                            nutritionSection
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 24)
                 }
             }
-            .padding(40)
-            Spacer()
         }
-        } // ZStack
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    private var dataPreviewCard: some View {
-        VStack(spacing: 12) {
-            Text("DATA COLLECTED SO FAR")
-                .font(.caption2.monospaced())
-                .foregroundStyle(.secondary)
-                .tracking(1.5)
+    // MARK: – Stub sections (filled in subsequent steps)
 
-            HStack(spacing: 0) {
-                StatPreviewPill(value: "\(dataStore.dailyLogs.count)", label: "Days logged")
-                Divider().frame(height: 30)
-                StatPreviewPill(value: "\(totalSets)", label: "Sets logged")
-                Divider().frame(height: 30)
-                StatPreviewPill(value: "\(totalCardioSessions)", label: "Cardio sessions")
-            }
-        }
-        .padding(16)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 14))
+    private var bodySection: some View {
+        EmptyStateView(
+            icon: "chart.line.uptrend.xyaxis",
+            title: "Body Composition",
+            subtitle: "Charts coming in the next build step"
+        )
     }
 
-    private var totalSets: Int {
-        dataStore.dailyLogs.flatMap { $0.exerciseLogs.values }.map { $0.sets.count }.reduce(0, +)
+    private var trainingSection: some View {
+        EmptyStateView(
+            icon: "dumbbell.fill",
+            title: "Training Performance",
+            subtitle: "Charts coming in the next build step"
+        )
     }
 
-    private var totalCardioSessions: Int {
-        dataStore.dailyLogs.map { $0.cardioLogs.count }.reduce(0, +)
+    private var recoverySection: some View {
+        EmptyStateView(
+            icon: "waveform.path.ecg",
+            title: "Recovery Metrics",
+            subtitle: "Charts coming in the next build step"
+        )
+    }
+
+    private var nutritionSection: some View {
+        EmptyStateView(
+            icon: "fork.knife",
+            title: "Nutrition Adherence",
+            subtitle: "Charts coming in the next build step"
+        )
     }
 }
 
