@@ -53,16 +53,16 @@ struct MainScreenView: View {
             VStack(spacing: 0) {
                 greetingHeader
                 Spacer()
-                sectionHeader("Status")
+                SectionHeader(title: "Status")
                 metricPair
                 Spacer()
-                sectionHeader("Goal")
+                SectionHeader(title: "Goal")
                 goalSection
                 Spacer()
-                sectionHeader("Start Training")
+                SectionHeader(title: "Start Training")
                 trainingButton
                 Spacer()
-                sectionHeader("Metrics")
+                SectionHeader(title: "Metrics")
                 quickStats
             }
             .padding(.horizontal, 20)
@@ -158,13 +158,9 @@ struct MainScreenView: View {
                     .foregroundStyle(.secondary)
             }
             Spacer()
-            VStack(alignment: .trailing, spacing: 2) {
-                Text("Day \(profile.daysSinceStart)")
-                    .font(.system(.subheadline, design: .monospaced, weight: .bold))
-                Text(profile.currentPhase.rawValue)
-                    .font(.system(size: 10, weight: .medium, design: .monospaced))
-                    .padding(.horizontal, 6).padding(.vertical, 2)
-                    .background(Color.white.opacity(0.35), in: Capsule())
+            VStack(alignment: .trailing, spacing: 4) {
+                StatusBadge(text: "Day \(profile.daysSinceStart)", color: .appOrange2)
+                StatusBadge(text: profile.currentPhase.rawValue, color: .appBlue1)
             }
         }
     }
@@ -212,7 +208,7 @@ struct MainScreenView: View {
                 }
                 Text(weightDelta)
                     .font(.system(size: 10))
-                    .foregroundStyle(weightDelta.hasPrefix("+") ? .red : .green)
+                    .foregroundStyle(weightDelta.hasPrefix("+") ? Color.status.error : Color.status.success)
                 Text("Target: \(settings.unitSystem.displayWeightValue(profile.targetWeightMin))–\(settings.unitSystem.displayWeightValue(profile.targetWeightMax)) \(settings.unitSystem.weightLabel())")
                     .font(.system(size: 9))
                     .foregroundStyle(.secondary)
@@ -241,7 +237,7 @@ struct MainScreenView: View {
                 }
                 Text(bfDelta)
                     .font(.system(size: 10))
-                    .foregroundStyle(bfDelta.hasPrefix("+") ? .red : .green)
+                    .foregroundStyle(bfDelta.hasPrefix("+") ? Color.status.error : Color.status.success)
                 Text("Target: \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%")
                     .font(.system(size: 9))
                     .foregroundStyle(.secondary)
@@ -387,19 +383,39 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var quickStats: some View {
-        HStack(spacing: 0) {
-            QuickStatPill(icon: "waveform.path.ecg",
-                          value: metrics.hrv.map        { String(format: "%.0f ms", $0) } ?? "—",
-                          label: "HRV",     color: metrics.hrvStatus.color)
-            QuickStatPill(icon: "heart.fill",
-                          value: metrics.restingHR.map  { String(format: "%.0f",    $0) } ?? "—",
-                          label: "Rest HR", color: metrics.restingHRStatus.color)
-            QuickStatPill(icon: "moon.fill",
-                          value: metrics.sleepHours.map { String(format: "%.1f h",  $0) } ?? "—",
-                          label: "Sleep",   color: .purple)
-            QuickStatPill(icon: "figure.walk",
-                          value: metrics.stepCount.map  { "\($0)" } ?? "—",
-                          label: "Steps",   color: .blue)
+        HStack(spacing: 8) {
+            MetricCard(
+                icon: "waveform.path.ecg",
+                label: "HRV",
+                value: metrics.hrv.map { String(format: "%.0f", $0) } ?? "—",
+                unit: "ms",
+                trendDelta: nil,
+                statusColor: metrics.hrvStatus.color
+            )
+            MetricCard(
+                icon: "heart.fill",
+                label: "Rest HR",
+                value: metrics.restingHR.map { String(format: "%.0f", $0) } ?? "—",
+                unit: "bpm",
+                trendDelta: nil,
+                statusColor: metrics.restingHRStatus.color
+            )
+            MetricCard(
+                icon: "moon.fill",
+                label: "Sleep",
+                value: metrics.sleepHours.map { String(format: "%.1f", $0) } ?? "—",
+                unit: "h",
+                trendDelta: nil,
+                statusColor: Color.accent.purple
+            )
+            MetricCard(
+                icon: "figure.walk",
+                label: "Steps",
+                value: metrics.stepCount.map { "\($0)" } ?? "—",
+                unit: nil,
+                trendDelta: nil,
+                statusColor: Color.accent.cyan
+            )
         }
     }
 
@@ -414,15 +430,6 @@ struct MainScreenView: View {
         }
     }
 
-    private func sectionHeader(_ title: String) -> some View {
-        Text(title.uppercased())
-            .font(.system(size: 13, weight: .black, design: .rounded))
-            .foregroundStyle(.black.opacity(0.75))
-            .tracking(1.5)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 4)
-            .padding(.bottom, 6)
-    }
 }
 
 // ─────────────────────────────────────────────────────────
