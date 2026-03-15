@@ -60,14 +60,15 @@ struct StatsView: View {
     private var dateRange: (from: Date, to: Date) { period.dateRange }
 
     private var latestBodyLog: DailyLog? {
-        dataStore.dailyLogs
-            .filter {
-                let biometrics = $0.biometrics
-                return biometrics.weightKg != nil ||
-                    biometrics.bodyFatPercent != nil ||
-                    biometrics.leanBodyMassKg != nil ||
-                    biometrics.bodyWaterPercent != nil ||
-                    biometrics.visceralFatRating != nil
+        let (from, to) = dateRange
+        return dataStore.dailyLogs
+            .filter { log in
+                log.date >= from && log.date <= to &&
+                (log.biometrics.weightKg != nil ||
+                 log.biometrics.bodyFatPercent != nil ||
+                 log.biometrics.leanBodyMassKg != nil ||
+                 log.biometrics.bodyWaterPercent != nil ||
+                 log.biometrics.visceralFatRating != nil)
             }
             .sorted { $0.date > $1.date }
             .first
@@ -75,23 +76,23 @@ struct StatsView: View {
 
     private var bodyInsights: [String] {
         guard !bodyData.isEmpty else {
-            return ["Log body metrics a few times this week to unlock weekly averages and trend stories."]
+            return ["Log body metrics a few times this period to unlock period averages and trend stories."]
         }
 
         var notes: [String] = []
 
-        let recentWeight = bodyData.suffix(7).compactMap(\.weightKg)
-        let recentBF = bodyData.suffix(7).compactMap(\.bodyFatPercent)
-        let recentLean = bodyData.suffix(7).compactMap(\.leanBodyMassKg)
+        let recentWeight = bodyData.compactMap(\.weightKg)
+        let recentBF = bodyData.compactMap(\.bodyFatPercent)
+        let recentLean = bodyData.compactMap(\.leanBodyMassKg)
 
         if recentWeight.count >= 2 {
             let delta = recentWeight.last! - recentWeight.first!
             if abs(delta) < 0.2 {
-                notes.append("Weight has been steady over the recent check-ins, which usually means the trend is reliable.")
+                notes.append("Weight has been steady over the selected period, which usually means the trend is reliable.")
             } else if delta < 0 {
-                notes.append(String(format: "Weight is down %.1f kg across recent entries, which is aligned with the cut.", abs(delta)))
+                notes.append(String(format: "Weight is down %.1f kg across entries this period, which is aligned with the cut.", abs(delta)))
             } else {
-                notes.append(String(format: "Weight is up %.1f kg across recent entries, so review calorie consistency before changing training.", delta))
+                notes.append(String(format: "Weight is up %.1f kg across entries this period, so review calorie consistency before changing training.", delta))
             }
         }
 
@@ -100,14 +101,14 @@ struct StatsView: View {
             if delta < -0.2 {
                 notes.append(String(format: "Body fat is trending down by %.1f%%, which is a strong signal that the plan is working.", abs(delta)))
             } else if delta > 0.2 {
-                notes.append(String(format: "Body fat is up %.1f%% recently, so use nutrition and recovery consistency as the first correction.", delta))
+                notes.append(String(format: "Body fat is up %.1f%% this period, so use nutrition and recovery consistency as the first correction.", delta))
             }
         }
 
         if recentLean.count >= 2 {
             let delta = recentLean.last! - recentLean.first!
             if delta > 0.2 {
-                notes.append(String(format: "Lean mass is up %.1f kg across recent logs, which is the best sign the cut is preserving muscle.", delta))
+                notes.append(String(format: "Lean mass is up %.1f kg across entries this period, which is the best sign the cut is preserving muscle.", delta))
             } else if delta < -0.2 {
                 notes.append(String(format: "Lean mass is off by %.1f kg, so keep protein and recovery high while you monitor the next few entries.", abs(delta)))
             }
@@ -125,10 +126,9 @@ struct StatsView: View {
     }
 
     private var weeklyAverageSummary: [(label: String, value: String, tint: Color)] {
-        let weekly = bodyData.suffix(7)
-        let weightAvg = average(of: weekly.compactMap(\.weightKg))
-        let bfAvg = average(of: weekly.compactMap(\.bodyFatPercent))
-        let leanAvg = average(of: weekly.compactMap(\.leanBodyMassKg))
+        let weightAvg = average(of: bodyData.compactMap(\.weightKg))
+        let bfAvg = average(of: bodyData.compactMap(\.bodyFatPercent))
+        let leanAvg = average(of: bodyData.compactMap(\.leanBodyMassKg))
 
         return [
             ("Avg Weight", weightAvg.map { String(format: "%.1f kg", $0) } ?? "—", Color.appOrange2),
@@ -209,7 +209,7 @@ struct StatsView: View {
                 .presentationDetents([.medium])
         }
         .sheet(isPresented: $showTrainingPlan) {
-            NavigationStack { TrainingPlanView() }
+            TrainingPlanView()
                 .presentationDetents([.large])
         }
         .alert("Log Your Nutrition", isPresented: $showNutritionAlert) {
@@ -223,9 +223,11 @@ struct StatsView: View {
 
     private var bodySection: some View {
         VStack(spacing: 16) {
-            bodyStoryCard
+            if !bodyData.isEmpty {
+                bodyStoryCard
+                insightFeedCard
+            }
             latestSnapshotCard
-            insightFeedCard
 
             // Weight chart
             ChartCard(title: "Weight", periodLabel: period.rawValue) {
@@ -344,7 +346,7 @@ struct StatsView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Progress Story")
                         .font(AppType.headline)
-                    Text("Weekly averages make the signal easier to trust than any single weigh-in.")
+                    Text("Period averages make the signal easier to trust than any single weigh-in.")
                         .font(AppType.subheading)
                         .foregroundStyle(.secondary)
                 }
@@ -418,7 +420,7 @@ struct StatsView: View {
             Text("Insight Feed")
                 .font(AppType.headline)
 
-            ForEach(bodyInsights, id: \.self) { insight in
+            ForEach(Array(bodyInsights.enumerated()), id: \.offset) { _, insight in
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "sparkles")
                         .font(.caption.weight(.semibold))
