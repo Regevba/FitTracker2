@@ -10,9 +10,8 @@ struct MetricCard: View {
     let statusColor: Color    // dot colour: Color.status.success / warning / error
 
     var body: some View {
-        ZStack(alignment: .topTrailing) {
-            VStack(alignment: .leading, spacing: 8) {
-                // Top row: icon + label
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top) {
                 HStack(spacing: 6) {
                     Image(systemName: icon)
                         .font(.system(size: 12, weight: .semibold))
@@ -22,37 +21,42 @@ struct MetricCard: View {
                 }
                 .foregroundColor(.secondary)
 
-                // Middle: value + unit
-                HStack(alignment: .lastTextBaseline, spacing: 4) {
-                    Text(value)
-                        .font(AppType.display)
-                        .lineLimit(1)
+                Spacer()
 
-                    if let unit = unit {
-                        Text(unit)
-                            .font(AppType.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
+                Circle()
+                    .fill(statusColor)
+                    .frame(width: 8, height: 8)
+            }
 
-                // Bottom: trend delta (if present)
-                if let trendDelta = trendDelta {
-                    Text(trendDelta)
+            HStack(alignment: .lastTextBaseline, spacing: 4) {
+                Text(value)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .lineLimit(1)
+
+                if let unit = unit {
+                    Text(unit)
                         .font(AppType.caption)
-                        .foregroundColor(statusColor)
+                        .foregroundColor(.secondary)
                 }
             }
-            .padding(12)
-            .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Status dot at top-right
-            Circle()
-                .fill(statusColor)
-                .frame(width: 8, height: 8)
-                .padding(12)
+            if let trendDelta = trendDelta {
+                Text(trendDelta)
+                    .font(AppType.caption)
+                    .foregroundColor(statusColor)
+            } else {
+                Text("No change signal yet")
+                    .font(AppType.caption)
+                    .foregroundColor(.secondary)
+            }
         }
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(accessibilityValue)

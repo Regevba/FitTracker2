@@ -406,11 +406,56 @@ struct UserProfile: Codable, Sendable {
 // ─────────────────────────────────────────────────────────
 
 struct UserPreferences: Codable, Equatable, Sendable {
-    var zone2LowerHR: Int     = 106
-    var zone2UpperHR: Int     = 124
-    var hrReadyThreshold: Int = 60
-    var hrvReadyThreshold: Double = 28.0
-    var nutritionGoalMode: NutritionGoalMode = .fatLoss
+    static let defaultStatsCarouselMetrics: [String] = [
+        "readiness",
+        "sleep",
+        "hrv",
+        "trainingVolume",
+        "steps",
+        "protein"
+    ]
+
+    var zone2LowerHR: Int
+    var zone2UpperHR: Int
+    var hrReadyThreshold: Int
+    var hrvReadyThreshold: Double
+    var nutritionGoalMode: NutritionGoalMode
+    var preferredStatsCarouselMetrics: [String]
+
+    init(
+        zone2LowerHR: Int = 106,
+        zone2UpperHR: Int = 124,
+        hrReadyThreshold: Int = 60,
+        hrvReadyThreshold: Double = 28.0,
+        nutritionGoalMode: NutritionGoalMode = .fatLoss,
+        preferredStatsCarouselMetrics: [String] = UserPreferences.defaultStatsCarouselMetrics
+    ) {
+        self.zone2LowerHR = zone2LowerHR
+        self.zone2UpperHR = zone2UpperHR
+        self.hrReadyThreshold = hrReadyThreshold
+        self.hrvReadyThreshold = hrvReadyThreshold
+        self.nutritionGoalMode = nutritionGoalMode
+        self.preferredStatsCarouselMetrics = preferredStatsCarouselMetrics
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case zone2LowerHR
+        case zone2UpperHR
+        case hrReadyThreshold
+        case hrvReadyThreshold
+        case nutritionGoalMode
+        case preferredStatsCarouselMetrics
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        zone2LowerHR = try container.decodeIfPresent(Int.self, forKey: .zone2LowerHR) ?? 106
+        zone2UpperHR = try container.decodeIfPresent(Int.self, forKey: .zone2UpperHR) ?? 124
+        hrReadyThreshold = try container.decodeIfPresent(Int.self, forKey: .hrReadyThreshold) ?? 60
+        hrvReadyThreshold = try container.decodeIfPresent(Double.self, forKey: .hrvReadyThreshold) ?? 28.0
+        nutritionGoalMode = try container.decodeIfPresent(NutritionGoalMode.self, forKey: .nutritionGoalMode) ?? .fatLoss
+        preferredStatsCarouselMetrics = try container.decodeIfPresent([String].self, forKey: .preferredStatsCarouselMetrics) ?? Self.defaultStatsCarouselMetrics
+    }
 }
 
 enum NutritionGoalMode: String, Codable, CaseIterable, Sendable {

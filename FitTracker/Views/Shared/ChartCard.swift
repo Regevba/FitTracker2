@@ -9,30 +9,39 @@ struct ChartCard<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        VStack(spacing: 0) {
-            HStack {
-                Text(title)
-                    .font(AppType.headline)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(title)
+                        .font(AppType.headline)
+
+                    Text(periodLabel)
+                        .font(AppType.caption)
+                        .foregroundColor(.secondary)
+                }
 
                 Spacer()
 
                 if let trendDelta = trendDelta {
                     TrendIndicator(delta: trendDelta, positiveIsGood: positiveIsGood)
+                } else {
+                    Text("Trend")
+                        .font(AppType.caption)
+                        .foregroundColor(.secondary)
+                        .padding(.vertical, 3)
+                        .padding(.horizontal, 9)
+                        .background(Color.white.opacity(0.08), in: Capsule())
                 }
             }
-            .padding(.bottom, 8)
-
-            Text(periodLabel)
-                .font(AppType.caption)
-                .foregroundColor(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.bottom, 12)
 
             content()
         }
-        .padding(16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .padding(14)
+        .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
         .accessibilityElement(children: .contain)
     }
 }

@@ -177,6 +177,47 @@ struct SettingsView: View {
                     }
                 }
                 .padding(.vertical, 4)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Label("Stats Carousel", systemImage: "chart.bar.xaxis")
+                        .font(.subheadline.weight(.medium))
+
+                    Text("Weight and Body Fat stay pinned on the stats screen. Choose which extra metrics appear in Track More.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    ForEach(statsMetricOptions) { metric in
+                        Button {
+                            toggleStatsMetric(metric)
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: metric.icon)
+                                    .font(.system(size: 14, weight: .semibold))
+                                    .foregroundStyle(metric.tint)
+                                    .frame(width: 20)
+
+                                Text(metric.title)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.primary)
+
+                                Spacer()
+
+                                Image(systemName: isStatsMetricVisible(metric) ? "checkmark.circle.fill" : "circle")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundStyle(isStatsMetricVisible(metric) ? metric.tint : .secondary.opacity(0.5))
+                            }
+                            .padding(.vertical, 4)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    Button("Reset Recommended Metrics") {
+                        dataStore.userPreferences.preferredStatsCarouselMetrics = UserPreferences.defaultStatsCarouselMetrics
+                        Task { await dataStore.persistToDisk() }
+                    }
+                    .font(.caption.weight(.semibold))
+                }
+                .padding(.vertical, 4)
             }
 
             // Nutrition section
@@ -335,6 +376,28 @@ struct SettingsView: View {
         case .touchID: return "Touch ID"
         default: return "Biometric Unlock"
         }
+    }
+
+    private var statsMetricOptions: [StatsFocusMetric] {
+        StatsFocusMetric.allCases.filter { !$0.isPermanent }
+    }
+
+    private func isStatsMetricVisible(_ metric: StatsFocusMetric) -> Bool {
+        dataStore.userPreferences.preferredStatsCarouselMetrics.contains(metric.rawValue)
+    }
+
+    private func toggleStatsMetric(_ metric: StatsFocusMetric) {
+        var metrics = dataStore.userPreferences.preferredStatsCarouselMetrics
+
+        if let index = metrics.firstIndex(of: metric.rawValue) {
+            guard metrics.count > 1 else { return }
+            metrics.remove(at: index)
+        } else {
+            metrics.append(metric.rawValue)
+        }
+
+        dataStore.userPreferences.preferredStatsCarouselMetrics = metrics
+        Task { await dataStore.persistToDisk() }
     }
 
     private func securitySummaryRow(title: String, detail: String) -> some View {

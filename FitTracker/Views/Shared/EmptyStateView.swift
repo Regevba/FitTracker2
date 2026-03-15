@@ -9,9 +9,9 @@ struct EmptyStateView: View {
     var ctaAction: (() -> Void)? = nil
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 44))
+                .font(.system(size: 36))
                 .foregroundColor(.secondary)
 
             Text(title)
@@ -31,7 +31,7 @@ struct EmptyStateView: View {
                 .foregroundColor(.orange)
             }
         }
-        .padding(.horizontal, 32)
+        .padding(.horizontal, 24)
         .accessibilityElement(children: .contain)
     }
 }

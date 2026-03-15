@@ -3,215 +3,344 @@
 import SwiftUI
 import Charts
 
-// MARK: – Supporting enums
-
 enum StatsPeriod: String, CaseIterable {
-    case sevenDays    = "7D"
-    case thirtyDays   = "30D"
-    case ninetyDays   = "90D"
-    case allTime      = "All"
+    case daily = "D"
+    case weekly = "W"
+    case monthly = "M"
+    case threeMonths = "3M"
+    case sixMonths = "6M"
+
+    var periodLabel: String {
+        switch self {
+        case .daily:
+            return "Today"
+        case .weekly:
+            return "Last 7 days"
+        case .monthly:
+            return "This month"
+        case .threeMonths:
+            return "Last 3 months"
+        case .sixMonths:
+            return "Last 6 months"
+        }
+    }
 
     var dateRange: (from: Date, to: Date) {
-        let to = Date()
+        let calendar = Calendar.current
+        let now = Date()
+        let todayEnd = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: now) ?? now
+
         switch self {
-        case .sevenDays:   return (Calendar.current.date(byAdding: .day, value: -7, to: to) ?? Date.distantPast, to)
-        case .thirtyDays:  return (Calendar.current.date(byAdding: .day, value: -30, to: to) ?? Date.distantPast, to)
-        case .ninetyDays:  return (Calendar.current.date(byAdding: .day, value: -90, to: to) ?? Date.distantPast, to)
-        case .allTime:     return (Date.distantPast, to)
+        case .daily:
+            return (calendar.startOfDay(for: now), todayEnd)
+        case .weekly:
+            let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: now)) ?? now
+            return (start, todayEnd)
+        case .monthly:
+            let monthStart = calendar.dateInterval(of: .month, for: now)?.start ?? calendar.startOfDay(for: now)
+            return (monthStart, todayEnd)
+        case .threeMonths:
+            let monthStart = calendar.dateInterval(of: .month, for: now)?.start ?? calendar.startOfDay(for: now)
+            let start = calendar.date(byAdding: .month, value: -2, to: monthStart) ?? monthStart
+            return (start, todayEnd)
+        case .sixMonths:
+            let monthStart = calendar.dateInterval(of: .month, for: now)?.start ?? calendar.startOfDay(for: now)
+            let start = calendar.date(byAdding: .month, value: -5, to: monthStart) ?? monthStart
+            return (start, todayEnd)
         }
     }
 }
 
-enum StatsCategory: String, CaseIterable {
-    case body      = "Body"
-    case training  = "Training"
-    case recovery  = "Recovery"
-    case nutrition = "Nutrition"
+enum StatsFocusMetric: String, CaseIterable, Identifiable {
+    case weight
+    case bodyFat
+    case readiness
+    case sleep
+    case hrv
+    case restingHeartRate
+    case trainingVolume
+    case zone2
+    case steps
+    case activeCalories
+    case vo2Max
+    case leanMass
+    case muscleMass
+    case bodyWater
+    case visceralFat
+    case protein
+    case calories
+    case supplementAdherence
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .weight:
+            return "Weight"
+        case .bodyFat:
+            return "Body Fat %"
+        case .readiness:
+            return "Readiness"
+        case .sleep:
+            return "Sleep"
+        case .hrv:
+            return "HRV"
+        case .restingHeartRate:
+            return "Resting HR"
+        case .trainingVolume:
+            return "Training Volume"
+        case .zone2:
+            return "Zone 2"
+        case .steps:
+            return "Steps"
+        case .activeCalories:
+            return "Active Calories"
+        case .vo2Max:
+            return "VO2 Max"
+        case .leanMass:
+            return "Lean Mass"
+        case .muscleMass:
+            return "Muscle Mass"
+        case .bodyWater:
+            return "Body Water"
+        case .visceralFat:
+            return "Visceral Fat"
+        case .protein:
+            return "Protein"
+        case .calories:
+            return "Calories"
+        case .supplementAdherence:
+            return "Supplement Adherence"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .weight:
+            return "scalemass.fill"
+        case .bodyFat:
+            return "drop.fill"
+        case .readiness:
+            return "sparkles"
+        case .sleep:
+            return "bed.double.fill"
+        case .hrv:
+            return "waveform.path.ecg"
+        case .restingHeartRate:
+            return "heart.fill"
+        case .trainingVolume:
+            return "dumbbell.fill"
+        case .zone2:
+            return "heart.circle.fill"
+        case .steps:
+            return "figure.walk"
+        case .activeCalories:
+            return "flame.fill"
+        case .vo2Max:
+            return "lungs.fill"
+        case .leanMass:
+            return "figure.arms.open"
+        case .muscleMass:
+            return "figure.strengthtraining.traditional"
+        case .bodyWater:
+            return "drop.circle.fill"
+        case .visceralFat:
+            return "dot.scope"
+        case .protein:
+            return "fork.knife"
+        case .calories:
+            return "flame.circle.fill"
+        case .supplementAdherence:
+            return "pill.fill"
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .weight:
+            return .appOrange2
+        case .bodyFat:
+            return .status.warning
+        case .readiness:
+            return .accent.cyan
+        case .sleep:
+            return .accent.purple
+        case .hrv:
+            return .accent.cyan
+        case .restingHeartRate:
+            return .status.error
+        case .trainingVolume:
+            return .accent.cyan
+        case .zone2:
+            return .status.success
+        case .steps:
+            return .appBlue2
+        case .activeCalories:
+            return .appOrange1
+        case .vo2Max:
+            return .status.success
+        case .leanMass:
+            return .accent.cyan
+        case .muscleMass:
+            return .status.success
+        case .bodyWater:
+            return .appBlue2
+        case .visceralFat:
+            return .accent.purple
+        case .protein:
+            return .status.success
+        case .calories:
+            return .appOrange1
+        case .supplementAdherence:
+            return .accent.gold
+        }
+    }
+
+    var positiveIsGood: Bool {
+        switch self {
+        case .weight, .bodyFat, .restingHeartRate, .visceralFat:
+            return false
+        case .calories:
+            return true
+        default:
+            return true
+        }
+    }
+
+    var usesBars: Bool {
+        switch self {
+        case .trainingVolume, .zone2, .steps, .activeCalories, .supplementAdherence:
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isPermanent: Bool {
+        self == .weight || self == .bodyFat
+    }
+
+    var emptyStateTitle: String {
+        "No \(title.lowercased()) data"
+    }
+
+    var emptyStateSubtitle: String {
+        switch self {
+        case .weight, .bodyFat, .leanMass, .muscleMass, .bodyWater, .visceralFat:
+            return "Log body metrics or sync a smart scale to populate this chart."
+        case .readiness, .sleep, .hrv, .restingHeartRate, .steps, .activeCalories, .vo2Max:
+            return "Apple Health and Apple Watch data will show here once available."
+        case .trainingVolume, .zone2:
+            return "Log workouts and cardio sessions to populate this chart."
+        case .protein, .calories, .supplementAdherence:
+            return "Log nutrition and supplements to populate this chart."
+        }
+    }
 }
 
-// MARK: – StatsView
+private struct MetricSeriesPoint: Identifiable {
+    let date: Date
+    let value: Double
+
+    var id: Date { date }
+}
 
 struct StatsView: View {
-    @EnvironmentObject var dataStore:     EncryptedDataStore
+    @EnvironmentObject var dataStore: EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
 
-    @State private var period:   StatsPeriod   = .thirtyDays
-    @State private var category: StatsCategory = .body
+    @State private var period: StatsPeriod = .monthly
+    @State private var selectedMetric: StatsFocusMetric = .readiness
 
-    // CTA sheet state
     @State private var showBiometricEntry = false
-    @State private var showTrainingPlan   = false
+    @State private var showTrainingPlan = false
     @State private var showNutritionAlert = false
+    @State private var chartSelection: (date: Date, label: String)?
 
-    // Shared chart tooltip state — one tooltip shows at a time
-    @State private var chartSelection: (date: Date, label: String)? = nil
+    private var carouselMetrics: [StatsFocusMetric] {
+        let preferred = dataStore.userPreferences.preferredStatsCarouselMetrics
+            .compactMap(StatsFocusMetric.init(rawValue:))
+            .filter { !$0.isPermanent }
+
+        return preferred.isEmpty ? UserPreferences.defaultStatsCarouselMetrics.compactMap(StatsFocusMetric.init(rawValue:)) : preferred
+    }
 
     private var dateRange: (from: Date, to: Date) { period.dateRange }
+
     private var bodyData: [(date: Date, weightKg: Double?, bodyFatPercent: Double?, leanBodyMassKg: Double?)] {
-        dataStore.bodyCompositionPoints(from: dateRange.from, to: dateRange.to)
+        dataStore.bodyCompositionPoints(from: dateRange.from, to: dateRange.to, period: period)
+    }
+
+    private var bodyDetailData: [(date: Date, bodyWaterPercent: Double?, muscleMassKg: Double?, visceralFatRating: Double?)] {
+        dataStore.bodyCompositionDetailPoints(from: dateRange.from, to: dateRange.to, period: period)
     }
 
     private var volumeData: [(date: Date, volumeKg: Double)] {
-        dataStore.trainingVolumePoints(from: dateRange.from, to: dateRange.to)
+        dataStore.trainingVolumePoints(from: dateRange.from, to: dateRange.to, period: period)
     }
 
     private var zone2Data: [(date: Date, minutes: Double)] {
-        dataStore.zone2Minutes(from: dateRange.from, to: dateRange.to)
+        dataStore.zone2Minutes(from: dateRange.from, to: dateRange.to, period: period)
+    }
+
+    private var activityData: [(date: Date, steps: Double?, activeCalories: Double?, vo2Max: Double?)] {
+        dataStore.activityPoints(
+            from: dateRange.from,
+            to: dateRange.to,
+            period: period,
+            fallbackMetrics: healthService.latest
+        )
     }
 
     private var recoveryData: [(date: Date, hrv: Double?, restingHR: Double?, sleepHours: Double?)] {
-        dataStore.recoveryPoints(from: dateRange.from, to: dateRange.to)
+        dataStore.recoveryPoints(from: dateRange.from, to: dateRange.to, period: period)
     }
 
     private var nutritionData: [(date: Date, calories: Double?, proteinG: Double?, supplementPct: Double)] {
-        dataStore.nutritionAdherencePoints(from: dateRange.from, to: dateRange.to)
+        dataStore.nutritionAdherencePoints(from: dateRange.from, to: dateRange.to, period: period)
     }
 
-    private var latestBodyLog: DailyLog? {
-        let (from, to) = dateRange
-        return dataStore.dailyLogs
-            .filter { log in
-                log.date >= from && log.date <= to &&
-                (log.biometrics.weightKg != nil ||
-                 log.biometrics.bodyFatPercent != nil ||
-                 log.biometrics.leanBodyMassKg != nil ||
-                 log.biometrics.bodyWaterPercent != nil ||
-                 log.biometrics.visceralFatRating != nil)
-            }
-            .sorted { $0.date > $1.date }
-            .first
-    }
-
-    private var bodyInsights: [String] {
-        guard !bodyData.isEmpty else {
-            return ["Log body metrics a few times this period to unlock period averages and trend stories."]
-        }
-
-        var notes: [String] = []
-
-        let recentWeight = bodyData.compactMap(\.weightKg)
-        let recentBF = bodyData.compactMap(\.bodyFatPercent)
-        let recentLean = bodyData.compactMap(\.leanBodyMassKg)
-
-        if recentWeight.count >= 2 {
-            let delta = recentWeight.last! - recentWeight.first!
-            if abs(delta) < 0.2 {
-                notes.append("Weight has been steady over the selected period, which usually means the trend is reliable.")
-            } else if delta < 0 {
-                notes.append(String(format: "Weight is down %.1f kg across entries this period, which is aligned with the cut.", abs(delta)))
-            } else {
-                notes.append(String(format: "Weight is up %.1f kg across entries this period, so review calorie consistency before changing training.", delta))
-            }
-        }
-
-        if recentBF.count >= 2 {
-            let delta = recentBF.last! - recentBF.first!
-            if delta < -0.2 {
-                notes.append(String(format: "Body fat is trending down by %.1f%%, which is a strong signal that the plan is working.", abs(delta)))
-            } else if delta > 0.2 {
-                notes.append(String(format: "Body fat is up %.1f%% this period, so use nutrition and recovery consistency as the first correction.", delta))
-            }
-        }
-
-        if recentLean.count >= 2 {
-            let delta = recentLean.last! - recentLean.first!
-            if delta > 0.2 {
-                notes.append(String(format: "Lean mass is up %.1f kg across entries this period, which is the best sign the cut is preserving muscle.", delta))
-            } else if delta < -0.2 {
-                notes.append(String(format: "Lean mass is off by %.1f kg, so keep protein and recovery high while you monitor the next few entries.", abs(delta)))
-            }
-        }
-
-        if let latest = latestBodyLog?.biometrics.bodyWaterPercent, latest < 50 {
-            notes.append(String(format: "Body water is %.1f%%, so hydration probably needs attention before interpreting the next weigh-in too aggressively.", latest))
-        }
-
-        if notes.isEmpty {
-            notes.append("The current body data set is still small, so focus on logging a few more consistent check-ins before reacting to single-day swings.")
-        }
-
-        return Array(notes.prefix(3))
-    }
-
-    private var weeklyAverageSummary: [(label: String, value: String, tint: Color)] {
-        let weightAvg = average(of: bodyData.compactMap(\.weightKg))
-        let bfAvg = average(of: bodyData.compactMap(\.bodyFatPercent))
-        let leanAvg = average(of: bodyData.compactMap(\.leanBodyMassKg))
-
-        return [
-            ("Avg Weight", weightAvg.map { String(format: "%.1f kg", $0) } ?? "—", Color.appOrange2),
-            ("Avg Body Fat", bfAvg.map { String(format: "%.1f%%", $0) } ?? "—", Color.status.warning),
-            ("Avg Lean Mass", leanAvg.map { String(format: "%.1f kg", $0) } ?? "—", Color.accent.cyan)
-        ]
+    private var readinessData: [(date: Date, score: Int)] {
+        dataStore.readinessPoints(
+            from: dateRange.from,
+            to: dateRange.to,
+            period: period,
+            fallbackMetrics: healthService.latest
+        )
     }
 
     var body: some View {
         ZStack {
-            // Background gradient (same warm orange palette as rest of app)
             LinearGradient(
                 colors: [Color.appOrange1, Color.appOrange2],
-                startPoint: .topLeading, endPoint: .bottomTrailing
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // Period picker
-                Picker("Period", selection: $period) {
-                    ForEach(StatsPeriod.allCases, id: \.self) { p in
-                        Text(p.rawValue).tag(p)
-                    }
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 14) {
+                    periodPicker
+                    permanentBodyCharts
+                    metricCarouselSection
+                    selectedMetricSection
                 }
-                .pickerStyle(.segmented)
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
-                .padding(.bottom, 8)
-
-                // Category tab buttons
-                HStack(spacing: 0) {
-                    ForEach(StatsCategory.allCases, id: \.self) { cat in
-                        Button {
-                            withAnimation(.easeInOut(duration: 0.2)) { category = cat }
-                        } label: {
-                            Text(cat.rawValue)
-                                .font(AppType.body)
-                                .foregroundStyle(category == cat ? Color.primary : Color.secondary)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                                .background(
-                                    category == cat
-                                        ? Color.white.opacity(0.25)
-                                        : Color.clear
-                                )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .background(Color.white.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
-
-                // Chart content area
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        switch category {
-                        case .body:
-                            bodySection
-                        case .training:
-                            trainingSection
-                        case .recovery:
-                            recoverySection
-                        case .nutrition:
-                            nutritionSection
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 24)
-                }
+                .padding(.bottom, 24)
             }
         }
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            syncSelectedMetric()
+        }
+        .onChange(of: period) { _, _ in
+            chartSelection = nil
+        }
+        .onChange(of: dataStore.userPreferences.preferredStatsCarouselMetrics) { _, _ in
+            syncSelectedMetric()
+        }
         .sheet(isPresented: $showBiometricEntry) {
             ManualBiometricEntry()
                 .presentationDetents([.medium])
@@ -223,996 +352,514 @@ struct StatsView: View {
         .alert("Log Your Nutrition", isPresented: $showNutritionAlert) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Switch to the Nutrition tab to log your meals and supplements.")
+            Text("Switch to the Nutrition tab to log meals and supplements.")
         }
     }
 
-    // MARK: – Body Section
-
-    private var bodySection: some View {
-        VStack(spacing: 16) {
-            if !bodyData.isEmpty {
-                bodyStoryCard
-                insightFeedCard
+    private var periodPicker: some View {
+        Picker("Period", selection: $period) {
+            ForEach(StatsPeriod.allCases, id: \.self) { option in
+                Text(option.rawValue).tag(option)
             }
-            latestSnapshotCard
+        }
+        .pickerStyle(.segmented)
+    }
 
-            // Weight chart
-            ChartCard(title: "Weight", periodLabel: period.rawValue) {
-                if bodyData.compactMap(\.weightKg).isEmpty {
-                    EmptyStateView(icon: "scalemass", title: "No weight data", subtitle: "Log your weight to see the chart",
-                                   ctaLabel: "Log Weight", ctaAction: { showBiometricEntry = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(bodyData.filter { $0.weightKg != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("kg", p.weightKg!))
-                                .foregroundStyle(Color.appOrange1.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("kg", p.weightKg!))
-                                .foregroundStyle(Color.appOrange1)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                        RuleMark(y: .value("Target", dataStore.userProfile.targetWeightMax))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
-                            .foregroundStyle(Color.appOrange1.opacity(0.5))
-                            .annotation(position: .trailing) {
-                                Text("Goal").font(AppType.caption).foregroundStyle(Color.appOrange1)
-                            }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = bodyData.filter({ $0.weightKg != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.1f kg", pt.weightKg!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Body Fat chart
-            ChartCard(title: "Body Fat %", periodLabel: period.rawValue) {
-                if bodyData.compactMap(\.bodyFatPercent).isEmpty {
-                    EmptyStateView(icon: "drop", title: "No body fat data", subtitle: "Log your body fat to see the chart",
-                                   ctaLabel: "Log Body Fat", ctaAction: { showBiometricEntry = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(bodyData.filter { $0.bodyFatPercent != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("%", p.bodyFatPercent!))
-                                .foregroundStyle(Color.status.warning.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("%", p.bodyFatPercent!))
-                                .foregroundStyle(Color.status.warning)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                        RuleMark(y: .value("Target", dataStore.userProfile.targetBFMax))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
-                            .foregroundStyle(Color.status.warning.opacity(0.5))
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = bodyData.filter({ $0.bodyFatPercent != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.1f%%", pt.bodyFatPercent!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Lean Mass chart
-            ChartCard(title: "Lean Mass", periodLabel: period.rawValue) {
-                if bodyData.compactMap(\.leanBodyMassKg).isEmpty {
-                    EmptyStateView(icon: "figure.arms.open", title: "No lean mass data", subtitle: "Log your body composition to see the chart",
-                                   ctaLabel: "Log Body Composition", ctaAction: { showBiometricEntry = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(bodyData.filter { $0.leanBodyMassKg != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("kg", p.leanBodyMassKg!))
-                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("kg", p.leanBodyMassKg!))
-                                .foregroundStyle(Color.accent.cyan)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = bodyData.filter({ $0.leanBodyMassKg != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.1f kg", pt.leanBodyMassKg!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
+    private var permanentBodyCharts: some View {
+        VStack(spacing: 12) {
+            metricCard(for: .weight)
+            metricCard(for: .bodyFat)
         }
     }
 
-    private var bodyStoryCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Progress Story")
-                        .font(AppType.headline)
-                    Text("Period averages make the signal easier to trust than any single weigh-in.")
-                        .font(AppType.subheading)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                if let latestDate = latestBodyLog?.date {
-                    Text(latestDate.formatted(.dateTime.month(.abbreviated).day()))
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            HStack(spacing: 12) {
-                ForEach(weeklyAverageSummary, id: \.label) { item in
-                    StatPreviewPill(value: item.value, label: item.label, color: item.tint)
-                }
-            }
-        }
-        .padding(16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-    }
-
-    private var latestSnapshotCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text("Latest Body Snapshot")
+    private var metricCarouselSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Track More")
                     .font(AppType.headline)
-                Spacer()
-                Text(latestBodyLog?.date.formatted(.dateTime.month(.abbreviated).day()) ?? "No data")
-                    .font(.caption)
+                Text("Choose what appears here in Settings, then tap a metric to update the chart below.")
+                    .font(AppType.subheading)
                     .foregroundStyle(.secondary)
             }
 
-            if let latest = latestBodyLog?.biometrics {
-                let items: [(String, String, Color)] = [
-                    ("Weight", latest.weightKg.map { String(format: "%.1f kg", $0) } ?? "—", Color.appOrange2),
-                    ("Body Fat", latest.bodyFatPercent.map { String(format: "%.1f%%", $0) } ?? "—", Color.status.warning),
-                    ("Lean Mass", latest.leanBodyMassKg.map { String(format: "%.1f kg", $0) } ?? "—", Color.accent.cyan),
-                    ("Body Water", latest.bodyWaterPercent.map { String(format: "%.1f%%", $0) } ?? "—", Color.appBlue2),
-                    ("Muscle Mass", latest.muscleMassKg.map { String(format: "%.1f kg", $0) } ?? "—", Color.status.success),
-                    ("Visceral Fat", latest.visceralFatRating.map(String.init) ?? "—", Color.accent.purple)
-                ]
-
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                    ForEach(items, id: \.0) { item in
-                        bodySnapshotTile(title: item.0, value: item.1, tint: item.2)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(carouselMetrics) { metric in
+                        metricChip(metric)
                     }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
+
+    private var selectedMetricSection: some View {
+        metricCard(for: selectedMetric)
+    }
+
+    @ViewBuilder
+    private func metricCard(for metric: StatsFocusMetric) -> some View {
+        let points = series(for: metric)
+        ChartCard(
+            title: metric.title,
+            periodLabel: period.periodLabel,
+            trendDelta: deltaValue(from: points.map(\.value)),
+            positiveIsGood: metric.positiveIsGood
+        ) {
+            if points.isEmpty {
+                EmptyStateView(
+                    icon: metric.icon,
+                    title: metric.emptyStateTitle,
+                    subtitle: metric.emptyStateSubtitle,
+                    ctaLabel: ctaLabel(for: metric),
+                    ctaAction: ctaAction(for: metric)
+                )
+                .frame(height: 128)
+            } else {
+                VStack(alignment: .leading, spacing: 12) {
+                    metricHeader(for: metric, points: points)
+                    chartBody(points: points, metric: metric)
+                }
+            }
+        }
+    }
+
+    private func metricChip(_ metric: StatsFocusMetric) -> some View {
+        let selected = selectedMetric == metric
+        let value = metricPrimaryValue(for: metric)
+        let subtitle = metricChipSubtitle(for: metric)
+
+        return Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                selectedMetric = metric
+                chartSelection = nil
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Image(systemName: metric.icon)
+                        .font(.system(size: 13, weight: .semibold))
+                    Spacer()
+                    Circle()
+                        .fill(metric.tint)
+                        .frame(width: 8, height: 8)
+                }
+                .foregroundStyle(selected ? metric.tint : .secondary)
+
+                Text(metric.title)
+                    .font(AppType.body.weight(.semibold))
+                    .foregroundStyle(.primary)
+                    .lineLimit(1)
+
+                Text(value)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(selected ? metric.tint : .primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+
+                Text(subtitle)
+                    .font(AppType.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+            }
+            .frame(width: 132, alignment: .leading)
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(selected ? metric.tint.opacity(0.16) : Color.white.opacity(0.08))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(selected ? metric.tint.opacity(0.45) : Color.white.opacity(0.08), lineWidth: 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func metricHeader(for metric: StatsFocusMetric, points: [MetricSeriesPoint]) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .lastTextBaseline, spacing: 10) {
+                Text(metricPrimaryValue(for: metric))
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(metric.tint)
+                    .lineLimit(1)
+
+                Text(metricChipSubtitle(for: metric))
+                    .font(AppType.subheading)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+
+            Text(metricSummaryText(for: metric, points: points))
+                .font(AppType.caption)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private func chartBody(points: [MetricSeriesPoint], metric: StatsFocusMetric) -> some View {
+        let chart = Chart {
+            if let goal = goalValue(for: metric) {
+                RuleMark(y: .value("Target", goal))
+                    .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
+                    .foregroundStyle(metric.tint.opacity(0.45))
+                    .annotation(position: .trailing) {
+                        Text(goalLabel(for: metric))
+                            .font(AppType.caption)
+                            .foregroundStyle(metric.tint)
+                    }
+            }
+
+            if metric.usesBars {
+                ForEach(points) { point in
+                    BarMark(
+                        x: .value("Date", point.date),
+                        y: .value(metric.title, point.value)
+                    )
+                    .foregroundStyle(metric.tint.gradient)
                 }
             } else {
-                EmptyStateView(
-                    icon: "figure.arms.open",
-                    title: "No composition snapshot yet",
-                    subtitle: "Once you log weight and body composition, this section becomes your latest trusted check-in.",
-                    ctaLabel: "Log Metrics",
-                    ctaAction: { showBiometricEntry = true }
-                )
-                .frame(height: 120)
-            }
-        }
-        .padding(16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-    }
-
-    private var insightFeedCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Insight Feed")
-                .font(AppType.headline)
-
-            ForEach(Array(bodyInsights.enumerated()), id: \.offset) { _, insight in
-                HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "sparkles")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.accent.cyan)
-                        .padding(.top, 2)
-                    Text(insight)
-                        .font(AppType.subheading)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-        .padding(16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-    }
-
-    // MARK: – Training Section
-
-    private var trainingSection: some View {
-        VStack(spacing: 16) {
-            // Training Volume chart
-            ChartCard(title: "Training Volume", periodLabel: period.rawValue) {
-                if volumeData.isEmpty {
-                    EmptyStateView(icon: "dumbbell.fill", title: "No training data", subtitle: "Log a workout to see your volume chart",
-                                   ctaLabel: "Open Training Plan", ctaAction: { showTrainingPlan = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(volumeData, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("kg", p.volumeKg))
-                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("kg", p.volumeKg))
-                                .foregroundStyle(Color.accent.cyan)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                        // PR gold star annotations — one star per date a personal record was set
-                        let prDates: Set<Date> = {
-                            let (from, to) = dateRange
-                            let cal = Calendar.current
-                            return Set(
-                                dataStore.prRecords().values
-                                    .filter { $0.date >= from && $0.date <= to }
-                                    .map { cal.startOfDay(for: $0.date) }
-                            )
-                        }()
-                        ForEach(volumeData.filter { prDates.contains(Calendar.current.startOfDay(for: $0.date)) }, id: \.date) { p in
-                            PointMark(x: .value("Date", p.date), y: .value("kg", p.volumeKg))
-                                .foregroundStyle(Color.accent.gold)
-                                .symbolSize(120)
-                                .annotation(position: .top) {
-                                    Text("★")
-                                        .font(.caption.weight(.bold))
-                                        .foregroundStyle(Color.accent.gold)
-                                }
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = volumeData
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    let formatted = pt.volumeKg >= 1000
-                                                        ? String(format: "%,.0f kg vol", pt.volumeKg)
-                                                        : String(format: "%.0f kg vol", pt.volumeKg)
-                                                    chartSelection = (date: pt.date, label: formatted)
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Zone 2 chart
-            ChartCard(title: "Zone 2 Cardio", periodLabel: period.rawValue) {
-                if zone2Data.isEmpty {
-                    EmptyStateView(icon: "heart.circle", title: "No Zone 2 data", subtitle: "Log cardio with HR \(dataStore.userPreferences.zone2LowerHR)–\(dataStore.userPreferences.zone2UpperHR) bpm to see this chart",
-                                   ctaLabel: "Open Training Plan", ctaAction: { showTrainingPlan = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(zone2Data, id: \.date) { p in
-                            BarMark(x: .value("Date", p.date), y: .value("min", p.minutes))
-                                .foregroundStyle(Color.status.success)
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    // MARK: – Recovery Section
-
-    private var recoverySection: some View {
-        VStack(spacing: 16) {
-            // HRV chart with zone bands
-            ChartCard(title: "HRV", periodLabel: period.rawValue) {
-                if recoveryData.compactMap(\.hrv).isEmpty {
-                    EmptyStateView(icon: "waveform.path.ecg", title: "No HRV data", subtitle: "HRV is recorded via Apple Watch or manual entry")
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        // Zone bands behind the line
-                        RectangleMark(
-                            xStart: .value("Start", dateRange.from),
-                            xEnd:   .value("End",   dateRange.to),
-                            yStart: .value("Low",   35.0),
-                            yEnd:   .value("High",  100.0)
-                        )
-                        .foregroundStyle(Color.status.success.opacity(0.08))
-
-                        RectangleMark(
-                            xStart: .value("Start", dateRange.from),
-                            xEnd:   .value("End",   dateRange.to),
-                            yStart: .value("Low",   28.0),
-                            yEnd:   .value("High",  35.0)
-                        )
-                        .foregroundStyle(Color.status.warning.opacity(0.08))
-
-                        RectangleMark(
-                            xStart: .value("Start", dateRange.from),
-                            xEnd:   .value("End",   dateRange.to),
-                            yStart: .value("Low",   0.0),
-                            yEnd:   .value("High",  28.0)
-                        )
-                        .foregroundStyle(Color.status.error.opacity(0.08))
-
-                        ForEach(recoveryData.filter { $0.hrv != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("ms", p.hrv!))
-                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("ms", p.hrv!))
-                                .foregroundStyle(Color.accent.cyan)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = recoveryData.filter({ $0.hrv != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.0f ms", pt.hrv!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Resting HR chart
-            ChartCard(title: "Resting Heart Rate", periodLabel: period.rawValue) {
-                if recoveryData.compactMap(\.restingHR).isEmpty {
-                    EmptyStateView(icon: "heart.fill", title: "No resting HR data", subtitle: "Resting HR is recorded via Apple Watch or manual entry")
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(recoveryData.filter { $0.restingHR != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("bpm", p.restingHR!))
-                                .foregroundStyle(Color.status.error.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("bpm", p.restingHR!))
-                                .foregroundStyle(Color.status.error)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = recoveryData.filter({ $0.restingHR != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.0f bpm", pt.restingHR!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Sleep Hours chart
-            ChartCard(title: "Sleep Hours", periodLabel: period.rawValue) {
-                if recoveryData.compactMap(\.sleepHours).isEmpty {
-                    EmptyStateView(icon: "bed.double.fill", title: "No sleep data", subtitle: "Sleep is recorded via Apple Watch or manual entry")
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(recoveryData.filter { $0.sleepHours != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("hrs", p.sleepHours!))
-                                .foregroundStyle(Color.accent.purple.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("hrs", p.sleepHours!))
-                                .foregroundStyle(Color.accent.purple)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = recoveryData.filter({ $0.sleepHours != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.1f hrs", pt.sleepHours!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Readiness Score — filled in step 5.6
-            ChartCard(title: "Readiness Score", periodLabel: period.rawValue) {
-                let range = period.dateRange
-                let days: [Date] = {
-                    var result: [Date] = []
-                    var d = range.from
-                    while d <= range.to {
-                        result.append(d)
-                        d = Calendar.current.date(byAdding: .day, value: 1, to: d) ?? d.addingTimeInterval(86400)
-                    }
-                    return result
-                }()
-                let pts: [(date: Date, score: Int)] = days.compactMap { day in
-                    guard let s = dataStore.readinessScore(for: day, fallbackMetrics: healthService.latest) else { return nil }
-                    return (date: day, score: s)
-                }
-                if pts.isEmpty {
-                    EmptyStateView(
-                        icon: "sparkles",
-                        title: "Not Enough Data",
-                        subtitle: "Log biometrics for 3+ days to see your readiness trend"
+                ForEach(points) { point in
+                    AreaMark(
+                        x: .value("Date", point.date),
+                        y: .value(metric.title, point.value)
                     )
-                    .frame(height: 120)
-                } else {
-                    Chart(pts, id: \.date) { pt in
-                        LineMark(
-                            x: .value("Date", pt.date, unit: .day),
-                            y: .value("Score", pt.score)
-                        )
-                        .foregroundStyle(Color.accent.cyan)
-                        .interpolationMethod(.catmullRom)
-                        AreaMark(
-                            x: .value("Date", pt.date, unit: .day),
-                            y: .value("Score", pt.score)
-                        )
-                        .foregroundStyle(
-                            LinearGradient(colors: [Color.accent.cyan.opacity(0.3), Color.accent.cyan.opacity(0)],
-                                           startPoint: .top, endPoint: .bottom)
-                        )
-                        .interpolationMethod(.catmullRom)
-                    }
-                    .chartYScale(domain: 0...100)
-                    .chartXAxis {
-                        AxisMarks(values: .stride(by: .day, count: max(1, pts.count / 5))) {
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks(values: [0, 40, 60, 80, 100]) { v in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .frame(height: 120)
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = pts
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: "Score: \(pt.score)"
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
+                    .foregroundStyle(metric.tint.opacity(0.18).gradient)
+
+                    LineMark(
+                        x: .value("Date", point.date),
+                        y: .value(metric.title, point.value)
+                    )
+                    .foregroundStyle(metric.tint)
+                    .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(metric == .readiness ? .catmullRom : .monotone)
+
+                    PointMark(
+                        x: .value("Date", point.date),
+                        y: .value(metric.title, point.value)
+                    )
+                    .foregroundStyle(metric.tint)
+                    .symbolSize(period == .daily ? 48 : 28)
                 }
             }
         }
-    }
-
-    // MARK: – Nutrition Section
-
-    private var nutritionSection: some View {
-        VStack(spacing: 16) {
-            // Calories chart
-            ChartCard(title: "Calories", periodLabel: period.rawValue) {
-                if nutritionData.compactMap(\.calories).isEmpty {
-                    EmptyStateView(icon: "fork.knife", title: "No calorie data", subtitle: "Log your meals to see the chart",
-                                   ctaLabel: "Go to Nutrition", ctaAction: { showNutritionAlert = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(nutritionData.filter { $0.calories != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("kcal", p.calories!))
-                                .foregroundStyle(Color.appOrange1.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("kcal", p.calories!))
-                                .foregroundStyle(Color.appOrange1)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                        RuleMark(y: .value("Target", Double(dataStore.userProfile.currentPhase.trainingCalories)))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
-                            .foregroundStyle(Color.appOrange1.opacity(0.5))
-                            .annotation(position: .trailing) {
-                                Text("Target").font(AppType.caption).foregroundStyle(Color.appOrange1)
-                            }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = nutritionData.filter({ $0.calories != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    let kcal = pt.calories!
-                                                    let formatted = kcal >= 1000
-                                                        ? String(format: "%,.0f kcal", kcal)
-                                                        : String(format: "%.0f kcal", kcal)
-                                                    chartSelection = (date: pt.date, label: formatted)
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Protein chart
-            ChartCard(title: "Protein", periodLabel: period.rawValue) {
-                if nutritionData.compactMap(\.proteinG).isEmpty {
-                    EmptyStateView(icon: "fork.knife", title: "No protein data", subtitle: "Log your meals to see the chart",
-                                   ctaLabel: "Go to Nutrition", ctaAction: { showNutritionAlert = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(nutritionData.filter { $0.proteinG != nil }, id: \.date) { p in
-                            AreaMark(x: .value("Date", p.date), y: .value("g", p.proteinG!))
-                                .foregroundStyle(Color.accent.cyan.opacity(0.2).gradient)
-                            LineMark(x: .value("Date", p.date), y: .value("g", p.proteinG!))
-                                .foregroundStyle(Color.accent.cyan)
-                                .lineStyle(StrokeStyle(lineWidth: 2))
-                        }
-                        RuleMark(y: .value("Target", dataStore.userProfile.currentPhase.proteinTargetG.upperBound))
-                            .lineStyle(StrokeStyle(lineWidth: 1, dash: [4]))
-                            .foregroundStyle(Color.accent.cyan.opacity(0.5))
-                            .annotation(position: .trailing) {
-                                Text("Target").font(AppType.caption).foregroundStyle(Color.accent.cyan)
-                            }
-                    }
-                    .frame(height: 140)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                    .chartOverlay { proxy in
-                        GeometryReader { geo in
-                            Rectangle().fill(.clear).contentShape(Rectangle())
-                                .gesture(
-                                    DragGesture(minimumDistance: 0)
-                                        .onChanged { value in
-                                            let x = value.location.x - (proxy.plotFrame.map { geo[$0] } ?? .zero).origin.x
-                                            if let date: Date = proxy.value(atX: x) {
-                                                if let pt = nutritionData.filter({ $0.proteinG != nil })
-                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
-                                                    chartSelection = (
-                                                        date: pt.date,
-                                                        label: String(format: "%.0f g", pt.proteinG!)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                        .onEnded { _ in chartSelection = nil }
-                                )
-                        }
-                    }
-                    .overlay(alignment: .topLeading) {
-                        if let sel = chartSelection {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(.secondary)
-                                Text(sel.label)
-                                    .font(AppType.body.weight(.semibold))
-                            }
-                            .padding(8)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
-                            .padding(.top, 4)
-                            .padding(.leading, 8)
-                        }
-                    }
-                }
-            }
-
-            // Supplement adherence chart
-            ChartCard(title: "Supplement Adherence", periodLabel: period.rawValue) {
-                if nutritionData.isEmpty {
-                    EmptyStateView(icon: "pill.fill", title: "No supplement data", subtitle: "Log your supplements to see adherence",
-                                   ctaLabel: "Go to Nutrition", ctaAction: { showNutritionAlert = true })
-                        .frame(height: 120)
-                } else {
-                    Chart {
-                        ForEach(nutritionData, id: \.date) { p in
-                            BarMark(x: .value("Date", p.date), y: .value("%", p.supplementPct * 100))
-                                .foregroundStyle(Color.accent.gold)
-                        }
-                    }
-                    .frame(height: 140)
-                    .chartYScale(domain: 0...100)
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine()
-                            AxisValueLabel(format: .dateTime.month(.abbreviated).day())
-                        }
-                    }
-                    .chartYAxis {
-                        AxisMarks { _ in
-                            AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
-                            AxisValueLabel()
-                        }
-                    }
-                }
+        .frame(height: 158)
+        .chartXAxis { statsXAxis() }
+        .chartYAxis {
+            AxisMarks { _ in
+                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisValueLabel()
             }
         }
-    }
-}
+        .chartOverlay { proxy in
+            GeometryReader { geometry in
+                Rectangle()
+                    .fill(.clear)
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                let frame = proxy.plotFrame.map { geometry[$0] } ?? .zero
+                                let localX = value.location.x - frame.origin.x
+                                guard let date: Date = proxy.value(atX: localX) else { return }
 
-struct StatPreviewPill: View {
-    let value: String
-    let label: String
-    var color: Color = Color.status.success
-    var body: some View {
-        VStack(spacing: 3) {
-            Text(value).font(.system(.title2, design: .monospaced, weight: .bold)).foregroundStyle(color)
-            Text(label).font(.caption2).foregroundStyle(.secondary)
+                                if let point = nearestPoint(to: date, in: points) {
+                                    chartSelection = (
+                                        date: point.date,
+                                        label: formattedValue(point.value, for: metric)
+                                    )
+                                }
+                            }
+                            .onEnded { _ in
+                                chartSelection = nil
+                            }
+                    )
+            }
         }
-        .frame(maxWidth: .infinity)
+        .overlay(alignment: .topLeading) {
+            if let selection = chartSelection {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(selection.date.formatted(.dateTime.month(.abbreviated).day()))
+                        .font(AppType.caption)
+                        .foregroundStyle(.secondary)
+                    Text(selection.label)
+                        .font(AppType.body.weight(.semibold))
+                }
+                .padding(8)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
+                .padding(.top, 4)
+                .padding(.leading, 4)
+            }
+        }
+
+        if metric == .readiness || metric == .supplementAdherence {
+            chart
+                .chartYScale(domain: 0...100)
+        } else {
+            chart
+        }
     }
+
 }
 
 private extension StatsView {
+    func syncSelectedMetric() {
+        if let firstVisible = carouselMetrics.first, !carouselMetrics.contains(selectedMetric) {
+            selectedMetric = firstVisible
+        }
+    }
+
+    func series(for metric: StatsFocusMetric) -> [MetricSeriesPoint] {
+        switch metric {
+        case .weight:
+            return bodyData.compactMap { row in
+                row.weightKg.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .bodyFat:
+            return bodyData.compactMap { row in
+                row.bodyFatPercent.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .readiness:
+            return readinessData.map { MetricSeriesPoint(date: $0.date, value: Double($0.score)) }
+        case .sleep:
+            return recoveryData.compactMap { row in
+                row.sleepHours.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .hrv:
+            return recoveryData.compactMap { row in
+                row.hrv.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .restingHeartRate:
+            return recoveryData.compactMap { row in
+                row.restingHR.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .trainingVolume:
+            return volumeData.map { MetricSeriesPoint(date: $0.date, value: $0.volumeKg) }
+        case .zone2:
+            return zone2Data.map { MetricSeriesPoint(date: $0.date, value: $0.minutes) }
+        case .steps:
+            return activityData.compactMap { row in
+                row.steps.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .activeCalories:
+            return activityData.compactMap { row in
+                row.activeCalories.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .vo2Max:
+            return activityData.compactMap { row in
+                row.vo2Max.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .leanMass:
+            return bodyData.compactMap { row in
+                row.leanBodyMassKg.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .muscleMass:
+            return bodyDetailData.compactMap { row in
+                row.muscleMassKg.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .bodyWater:
+            return bodyDetailData.compactMap { row in
+                row.bodyWaterPercent.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .visceralFat:
+            return bodyDetailData.compactMap { row in
+                row.visceralFatRating.map { MetricSeriesPoint(date: row.date, value: Double($0)) }
+            }
+        case .protein:
+            return nutritionData.compactMap { row in
+                row.proteinG.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .calories:
+            return nutritionData.compactMap { row in
+                row.calories.map { MetricSeriesPoint(date: row.date, value: $0) }
+            }
+        case .supplementAdherence:
+            return nutritionData.map { MetricSeriesPoint(date: $0.date, value: $0.supplementPct * 100) }
+        }
+    }
+
+    func metricPrimaryValue(for metric: StatsFocusMetric) -> String {
+        guard let latest = series(for: metric).last?.value else { return "—" }
+        return formattedValue(latest, for: metric)
+    }
+
+    func metricChipSubtitle(for metric: StatsFocusMetric) -> String {
+        let points = series(for: metric)
+        guard !points.isEmpty else { return "No data yet" }
+
+        if let delta = deltaValue(from: points.map(\.value)) {
+            let change = formattedDelta(delta, for: metric)
+            return change == "Stable" ? "Stable in this window" : change
+        }
+
+        return "\(points.count) \(points.count == 1 ? "reading" : "readings")"
+    }
+
+    func metricSummaryText(for metric: StatsFocusMetric, points: [MetricSeriesPoint]) -> String {
+        let averageValue = average(of: points.map(\.value))
+        let readingCount = "\(points.count) \(points.count == 1 ? "reading" : "readings")"
+
+        if let averageValue {
+            return "Average \(formattedValue(averageValue, for: metric)) across \(readingCount.lowercased())."
+        }
+
+        return "Collected \(readingCount.lowercased()) in this timeframe."
+    }
+
+    func formattedValue(_ value: Double, for metric: StatsFocusMetric) -> String {
+        switch metric {
+        case .weight, .leanMass, .muscleMass:
+            return String(format: "%.1f kg", value)
+        case .bodyFat, .bodyWater:
+            return String(format: "%.1f%%", value)
+        case .readiness, .supplementAdherence:
+            return String(format: "%.0f%%", value == floor(value) ? value : value)
+                .replacingOccurrences(of: "%", with: metric == .readiness ? "/100" : "%")
+        case .sleep:
+            return String(format: "%.1f h", value)
+        case .hrv:
+            return String(format: "%.0f ms", value)
+        case .restingHeartRate:
+            return String(format: "%.0f bpm", value)
+        case .trainingVolume:
+            return value >= 1000 ? String(format: "%.1fk kg", value / 1000) : String(format: "%.0f kg", value)
+        case .zone2:
+            return String(format: "%.0f min", value)
+        case .steps:
+            return value >= 1000 ? String(format: "%.1fk", value / 1000) : String(format: "%.0f", value)
+        case .activeCalories, .calories:
+            return String(format: "%.0f kcal", value)
+        case .vo2Max:
+            return String(format: "%.1f", value)
+        case .visceralFat:
+            return String(format: "%.0f", value)
+        case .protein:
+            return String(format: "%.0f g", value)
+        }
+    }
+
+    func formattedDelta(_ delta: Double, for metric: StatsFocusMetric) -> String {
+        guard abs(delta) > 0.001 else { return "Stable" }
+
+        let sign = delta > 0 ? "+" : "-"
+        switch metric {
+        case .weight, .leanMass, .muscleMass:
+            return String(format: "%@%.1f kg", sign, abs(delta))
+        case .bodyFat, .bodyWater:
+            return String(format: "%@%.1f%%", sign, abs(delta))
+        case .readiness, .supplementAdherence:
+            return String(format: "%@%.0f pts", sign, abs(delta))
+        case .sleep:
+            return String(format: "%@%.1f h", sign, abs(delta))
+        case .hrv:
+            return String(format: "%@%.0f ms", sign, abs(delta))
+        case .restingHeartRate:
+            return String(format: "%@%.0f bpm", sign, abs(delta))
+        case .trainingVolume:
+            return String(format: "%@%.0f kg", sign, abs(delta))
+        case .zone2:
+            return String(format: "%@%.0f min", sign, abs(delta))
+        case .steps:
+            return String(format: "%@%.0f", sign, abs(delta))
+        case .activeCalories, .calories:
+            return String(format: "%@%.0f kcal", sign, abs(delta))
+        case .vo2Max:
+            return String(format: "%@%.1f", sign, abs(delta))
+        case .visceralFat:
+            return String(format: "%@%.0f", sign, abs(delta))
+        case .protein:
+            return String(format: "%@%.0f g", sign, abs(delta))
+        }
+    }
+
+    func goalValue(for metric: StatsFocusMetric) -> Double? {
+        switch metric {
+        case .weight:
+            return dataStore.userProfile.targetWeightMax
+        case .bodyFat:
+            return dataStore.userProfile.targetBFMax
+        case .protein:
+            return dataStore.userProfile.currentPhase.proteinTargetG.upperBound
+        case .calories:
+            return Double(dataStore.userProfile.currentPhase.trainingCalories)
+        default:
+            return nil
+        }
+    }
+
+    func goalLabel(for metric: StatsFocusMetric) -> String {
+        switch metric {
+        case .weight, .bodyFat, .protein, .calories:
+            return "Target"
+        default:
+            return "Goal"
+        }
+    }
+
+    func ctaLabel(for metric: StatsFocusMetric) -> String? {
+        switch metric {
+        case .weight, .bodyFat, .leanMass, .muscleMass, .bodyWater, .visceralFat:
+            return "Log Metrics"
+        case .trainingVolume, .zone2:
+            return "Open Training"
+        case .protein, .calories, .supplementAdherence:
+            return "Go to Nutrition"
+        default:
+            return nil
+        }
+    }
+
+    func ctaAction(for metric: StatsFocusMetric) -> (() -> Void)? {
+        switch metric {
+        case .weight, .bodyFat, .leanMass, .muscleMass, .bodyWater, .visceralFat:
+            return { showBiometricEntry = true }
+        case .trainingVolume, .zone2:
+            return { showTrainingPlan = true }
+        case .protein, .calories, .supplementAdherence:
+            return { showNutritionAlert = true }
+        default:
+            return nil
+        }
+    }
+
+    func nearestPoint(to date: Date, in points: [MetricSeriesPoint]) -> MetricSeriesPoint? {
+        points.min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) })
+    }
+
     func average(of values: [Double]) -> Double? {
         guard !values.isEmpty else { return nil }
         return values.reduce(0, +) / Double(values.count)
     }
 
-    @ViewBuilder
-    func bodySnapshotTile(title: String, value: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.caption2.monospaced())
-                .foregroundStyle(.secondary)
-                .tracking(1)
-            Text(value)
-                .font(.headline.weight(.semibold))
-                .foregroundStyle(tint)
+    func deltaValue(from values: [Double]) -> Double? {
+        guard values.count >= 2, let first = values.first, let last = values.last else { return nil }
+        return last - first
+    }
+
+    @AxisContentBuilder
+    func statsXAxis() -> some AxisContent {
+        switch period {
+        case .daily:
+            AxisMarks(values: .stride(by: .hour, count: 4)) { _ in
+                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisValueLabel(format: .dateTime.hour())
+            }
+        case .weekly:
+            AxisMarks(values: .stride(by: .day)) { _ in
+                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisValueLabel(format: .dateTime.weekday(.narrow))
+            }
+        case .monthly:
+            AxisMarks(values: .stride(by: .day, count: 7)) { _ in
+                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisValueLabel(format: .dateTime.day())
+            }
+        case .threeMonths, .sixMonths:
+            AxisMarks(values: .stride(by: .month)) { _ in
+                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisValueLabel(format: .dateTime.month(.abbreviated))
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
     }
 }

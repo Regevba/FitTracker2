@@ -7,7 +7,7 @@ The current app is built around a `Today`-first experience:
 - an active-session training flow with rest timing and previous-performance context
 - smarter nutrition logging with adaptive targets, quick actions, label capture, and barcode lookup
 - recovery recommendations and guided routines
-- a clearer stats hub for progress, trends, and body composition
+- a cleaner stats hub for progress, trends, and body composition
 
 ## Current Highlights
 
@@ -33,7 +33,10 @@ The current app is built around a `Today`-first experience:
 ### Recovery and progress
 - readiness-aware recovery recommendations
 - guided routine support
-- richer progress storytelling in stats, including body snapshots and weekly summaries
+- richer progress storytelling in stats
+- a redesigned stats screen with pinned `Weight` and `Body Fat %` charts
+- a settings-driven `Track More` carousel so each user can choose which extra metrics matter most
+- tighter, more Apple-style card density across stats surfaces and empty states
 
 ### Security and access
 - all sensitive data is encrypted on device before disk persistence or CloudKit sync
@@ -49,13 +52,14 @@ The current app is built around a `Today`-first experience:
 - improved background save and lock sequencing
 - improved stats refresh behavior after new data is logged
 - added safer singleton sync handling for CloudKit profile and preferences data
+- disabled CloudKit container initialization in simulator builds so the app no longer crashes on launch there
 
 ### Product and UX overhaul
 - rebuilt Home into a focused `Today` screen
 - redesigned Training around an active-session experience
 - redesigned Nutrition around adaptive targets and smart meal capture
 - added recovery recommendation surfaces
-- reworked Stats into a clearer progress hub
+- reworked Stats into a simpler progress hub with permanent body charts, a focused metric carousel, and more compact cards
 
 ### Auth and settings cleanup
 - removed the intrusive iPhone passcode fallback for app unlock
@@ -63,6 +67,7 @@ The current app is built around a `Today`-first experience:
 - added passkey creation from Settings
 - simplified the welcome and sign-in experience
 - reorganized account and settings information architecture
+- added stats-carousel controls in Settings so users can personalize which metrics appear on the stats screen
 
 ### Nutrition intelligence
 - added goal-based nutrition planning for fat loss, maintenance, and lean gain
@@ -127,6 +132,7 @@ xcodebuild build \
 
 - HealthKit features require running on Apple platforms with Health permissions available.
 - CloudKit sync depends on a signed-in iCloud account.
+- CloudKit is intentionally disabled on simulator builds; use a signed physical device for end-to-end iCloud sync validation.
 - Passkey creation requires a valid `PasskeyRelyingPartyID` configuration.
 - Barcode product lookup currently uses Open Food Facts as the primary free/public packaged-food database.
 - Smart nutrition-label OCR uses Apple's Vision framework. English label photos are the best-supported path.

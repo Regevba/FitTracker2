@@ -57,17 +57,44 @@ final class CloudKitSyncService: ObservableObject {
     @Published var iCloudAvailable: Bool = false
     @Published var errorMessage:  String?
 
-    private let container = CKContainer(identifier: "iCloud.com.fittracker.regev")
+    private let containerIdentifier = "iCloud.com.fittracker.regev"
+    private lazy var container: CKContainer? = makeContainer()
     private let defaults = UserDefaults.standard
-    private var privateDB: CKDatabase { container.privateCloudDatabase }
+    private var privateDB: CKDatabase? { container?.privateCloudDatabase }
+
+    private func cloudKitUnavailableError() -> NSError {
+        NSError(
+            domain: "FTCloudKit",
+            code: -1,
+            userInfo: [NSLocalizedDescriptionKey: "CloudKit sync is unavailable in this environment."]
+        )
+    }
 
     // ── Init ─────────────────────────────────────────────
     init() {
         Task { await checkiCloudStatus() }
     }
 
+    private func makeContainer() -> CKContainer? {
+        #if targetEnvironment(simulator)
+        errorMessage = "CloudKit sync is disabled in the simulator build."
+        status = .disabled
+        return nil
+        #else
+        return CKContainer(identifier: containerIdentifier)
+        #endif
+    }
+
     // ── iCloud account check ─────────────────────────────
     func checkiCloudStatus() async {
+        guard let container else {
+            iCloudAvailable = false
+            status = .disabled
+            if errorMessage == nil {
+                errorMessage = "CloudKit is unavailable in this environment."
+            }
+            return
+        }
         do {
             let accountStatus = try await container.accountStatus()
             iCloudAvailable = (accountStatus == .available)
@@ -75,11 +102,18 @@ final class CloudKitSyncService: ObservableObject {
         } catch {
             iCloudAvailable = false
             status = .offline
+            errorMessage = error.localizedDescription
         }
     }
 
     // ── Push pending changes UP to CloudKit ─────────────
     func pushPendingChanges(dataStore: EncryptedDataStore) async {
+        guard privateDB != nil else {
+            iCloudAvailable = false
+            status = .disabled
+            errorMessage = errorMessage ?? "CloudKit sync is unavailable in this environment."
+            return
+        }
         if !iCloudAvailable { await checkiCloudStatus() }
         guard iCloudAvailable else { status = .offline; return }
         status = .syncing
@@ -124,6 +158,12 @@ final class CloudKitSyncService: ObservableObject {
 
     // ── Fetch changes DOWN from CloudKit ────────────────
     func fetchChanges(dataStore: EncryptedDataStore) async {
+        guard privateDB != nil else {
+            iCloudAvailable = false
+            status = .disabled
+            errorMessage = errorMessage ?? "CloudKit sync is unavailable in this environment."
+            return
+        }
         if !iCloudAvailable { await checkiCloudStatus() }
         guard iCloudAvailable else { status = .offline; return }
         status = .syncing
@@ -211,6 +251,10 @@ final class CloudKitSyncService: ObservableObject {
         record[CKField.assetRef]  = cardioLogID as CKRecordValue
         record[CKField.recordVersion] = 1 as CKRecordValue
 
+        guard let privateDB else {
+            throw NSError(domain: "FTCloudKit", code: -1, userInfo: [NSLocalizedDescriptionKey: "CloudKit database unavailable"])
+        }
+
         let saved = try await privateDB.save(record)
         return saved.recordID.recordName
     }
@@ -218,6 +262,7 @@ final class CloudKitSyncService: ObservableObject {
     // ── Download cardio summary image ───────────────────
     func downloadCardioImage(cloudID: String) async throws -> Data {
         let recordID = CKRecord.ID(recordName: cloudID)
+        guard let privateDB else { throw cloudKitUnavailableError() }
         let record = try await privateDB.record(for: recordID)
 
         guard let asset = record[CKField.assetData] as? CKAsset,
@@ -235,6 +280,7 @@ final class CloudKitSyncService: ObservableObject {
     /// Passing the server-vended record back to save() prevents silent overwrites when two
     /// devices write concurrently — CloudKit will detect the conflict via the changeTag.
     private func fetchOrCreate(recordType: String, recordID: CKRecord.ID) async throws -> CKRecord {
+        guard let privateDB else { throw cloudKitUnavailableError() }
         do {
             return try await privateDB.record(for: recordID)
         } catch let error as CKError where error.code == .unknownItem {
@@ -260,6 +306,7 @@ final class CloudKitSyncService: ObservableObject {
         record[CKField.blob]          = encrypted as CKRecordValue
         record[CKField.logicDate]     = log.date  as CKRecordValue
         record[CKField.recordVersion] = 2         as CKRecordValue
+        guard let privateDB else { throw cloudKitUnavailableError() }
         _ = try await privateDB.save(record)
         return recordName
     }
@@ -272,6 +319,7 @@ final class CloudKitSyncService: ObservableObject {
         record[CKField.blob]          = encrypted      as CKRecordValue
         record[CKField.logicDate]     = snap.weekStart as CKRecordValue
         record[CKField.recordVersion] = 1              as CKRecordValue
+        guard let privateDB else { throw cloudKitUnavailableError() }
         _ = try await privateDB.save(record)
         return recordName
     }
@@ -282,6 +330,7 @@ final class CloudKitSyncService: ObservableObject {
         let record    = try await fetchOrCreate(recordType: CKRecordType.userProfile, recordID: recordID)
         record[CKField.blob]          = encrypted as CKRecordValue
         record[CKField.recordVersion] = 1         as CKRecordValue
+        guard let privateDB else { throw cloudKitUnavailableError() }
         _ = try await privateDB.save(record)
     }
 
@@ -291,11 +340,13 @@ final class CloudKitSyncService: ObservableObject {
         let record    = try await fetchOrCreate(recordType: CKRecordType.userPreferences, recordID: recordID)
         record[CKField.blob]          = encrypted as CKRecordValue
         record[CKField.recordVersion] = 1         as CKRecordValue
+        guard let privateDB else { throw cloudKitUnavailableError() }
         _ = try await privateDB.save(record)
     }
 
     private func fetchUserProfile() async throws -> UserProfile? {
         let recordID = CKRecord.ID(recordName: "user-profile-singleton")
+        guard let privateDB else { throw cloudKitUnavailableError() }
         do {
             let record = try await privateDB.record(for: recordID)
             guard let blob = record[CKField.blob] as? Data else { return nil }
@@ -307,6 +358,7 @@ final class CloudKitSyncService: ObservableObject {
 
     private func fetchUserPreferences() async throws -> UserPreferences? {
         let recordID = CKRecord.ID(recordName: "user-preferences-singleton")
+        guard let privateDB else { throw cloudKitUnavailableError() }
         do {
             let record = try await privateDB.record(for: recordID)
             guard let blob = record[CKField.blob] as? Data else { return nil }
@@ -319,6 +371,7 @@ final class CloudKitSyncService: ObservableObject {
     private func fetchEncryptedRecords<T: Decodable>(
         ofType type: String, as decodable: T.Type
     ) async throws -> [T] where T: Sendable {
+        guard let privateDB else { throw cloudKitUnavailableError() }
         let query = CKQuery(recordType: type, predicate: NSPredicate(value: true))
         query.sortDescriptors = [NSSortDescriptor(key: CKField.logicDate, ascending: false)]
 
