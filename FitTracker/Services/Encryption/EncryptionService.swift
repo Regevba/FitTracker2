@@ -41,20 +41,6 @@ enum FTCryptoError: LocalizedError {
 }
 
 // ─────────────────────────────────────────────────────────
-// MARK: – Encrypted Container (wire format)
-// ─────────────────────────────────────────────────────────
-// Layout on disk / CloudKit:
-//   [1 byte version][8 bytes timestamp][32 bytes HMAC-SHA512][payload...]
-//   payload = ChaCha20-Poly1305( AES-256-GCM(plaintext) )
-
-private struct EncContainer: Codable {
-    var version:   UInt8       = 2              // format version
-    var timestamp: Date        = Date()
-    var hmac:      Data                         // HMAC-SHA512 over (version+timestamp+ciphertext)
-    var ciphertext: Data                        // double-encrypted payload
-}
-
-// ─────────────────────────────────────────────────────────
 // MARK: – Encryption Service (actor — thread-safe)
 // ─────────────────────────────────────────────────────────
 
@@ -175,10 +161,11 @@ actor EncryptionService {
     /// Authenticate once and return an LAContext that can be reused for all key loads in one operation.
     private func authenticatedContext() async throws -> LAContext {
         let ctx = LAContext()
+        ctx.localizedFallbackTitle = ""
         var laError: NSError?
-        if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &laError) {
+        if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &laError) {
             let authOK: Bool = try await withCheckedThrowingContinuation { cont in
-                ctx.evaluatePolicy(.deviceOwnerAuthentication,
+                ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
                                    localizedReason: "Unlock FitTracker encryption keys") { ok, err in
                     if ok {
                         cont.resume(returning: true)
@@ -237,7 +224,7 @@ actor EncryptionService {
         let keyData = key.withUnsafeBytes { Data($0) }
 
         #if os(iOS) || os(macOS)
-        let accessFlags: SecAccessControlCreateFlags = [.biometryCurrentSet, .or, .devicePasscode]
+        let accessFlags: SecAccessControlCreateFlags = [.biometryCurrentSet]
         #else
         let accessFlags: SecAccessControlCreateFlags = []
         #endif

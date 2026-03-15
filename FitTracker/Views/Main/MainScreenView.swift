@@ -1,9 +1,5 @@
 // Views/Main/MainScreenView.swift
-// Tab 1: Home screen — everything visible above the tab bar, no scroll
-//   - Gradient background (orange → blue by goal progress)
-//   - Right-edge vertical progress tracker
-//   - Greeting + play/pause training button in header
-//   - Weight & Body Fat displayed side-by-side
+// Action-first Today screen — kept above the fold with no scroll on iPhone.
 
 import SwiftUI
 
@@ -16,16 +12,15 @@ struct MainScreenView: View {
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
 
-    @State private var trainingActive     = false
     @State private var showExerciseSheet  = false
     @State private var manualEntry        = false
     @State private var selectedRecoveryRoutine: RecoveryRoutine?
     @State private var selectedDayType:   DayType? = nil   // nil = follow today's schedule
 
     @State private var readinessHapticDay: Date? = nil
+    @State private var highlightedActionID: String? = nil
+    @State private var statusPulse = false
     @State private var shownMilestoneStreak: Int = 0
-    @State private var animatedWeight: Double? = nil
-    @State private var animatedBF: Double? = nil
     @State private var shownMilestonePhase: ProgramPhase? = nil
     @State private var milestoneTitle: String? = nil
     @State private var milestoneMessage: String? = nil
@@ -63,9 +58,6 @@ struct MainScreenView: View {
         let morning = todayLog?.supplementLog.morningStatus == .completed ? 1 : 0
         let evening = todayLog?.supplementLog.eveningStatus == .completed ? 1 : 0
         return morning + evening
-    }
-    private var completedExerciseCount: Int {
-        todayLog?.taskStatuses.values.filter { $0 == .completed }.count ?? 0
     }
     private var totalExerciseCount: Int {
         TrainingProgramData.exercises(for: activeDayType).count
@@ -128,51 +120,23 @@ struct MainScreenView: View {
     var body: some View {
         ZStack {
             backgroundLayer
+            GeometryReader { proxy in
+                let compact = proxy.size.height < 820
 
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: compact ? 14 : 18) {
                     greetingHeader
-                    readinessHeadline
-                    recommendationCard
-                    aiTipChip
-                    wellnessQuickLog
-
-                    SectionHeader(title: "Today Actions")
-                    actionGrid
-
-                    SectionHeader(title: "At A Glance")
-                    summaryGrid
-                    syncBadge
-
-                    SectionHeader(title: "Today Timeline")
-                    todayTimeline
-
-                    SectionHeader(title: "Recovery Studio")
-                    recoveryStudio
-
-                    SectionHeader(title: "Readiness")
-                    quickStats
+                    todayStatusCard(compact: compact)
+                    essentialsCard
+                    secondaryActionsRow(compact: compact)
+                    syncFooter
+                    Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
-                .padding(.bottom, 28)
+                .padding(.bottom, max(proxy.safeAreaInsets.bottom + 12, 24))
             }
         }
-        .onAppear {
-            checkMilestones()
-            animatedWeight = currentWeight
-            animatedBF = currentBF
-        }
-        .onChange(of: currentWeight) { _, newWeight in
-            withAnimation(.interpolatingSpring(stiffness: 60, damping: 12)) {
-                animatedWeight = newWeight
-            }
-        }
-        .onChange(of: currentBF) { _, newBF in
-            withAnimation(.interpolatingSpring(stiffness: 60, damping: 12)) {
-                animatedBF = newBF
-            }
-        }
+        .onAppear { checkMilestones() }
         .onChange(of: dataStore.supplementStreak) { _, _ in checkMilestones() }
         .onChange(of: dataStore.userProfile.currentPhase) { _, _ in checkMilestones() }
         .onChange(of: readinessScore) { _, newScore in
@@ -189,6 +153,20 @@ struct MainScreenView: View {
             g.prepare()
             g.impactOccurred()
         }
+        .onChange(of: essentialMissingCount) { oldValue, newValue in
+            guard oldValue != newValue else { return }
+            let g = UINotificationFeedbackGenerator()
+            g.prepare()
+            g.notificationOccurred(newValue < oldValue ? .success : .warning)
+            withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                statusPulse = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) {
+                withAnimation(.easeOut(duration: 0.22)) {
+                    statusPulse = false
+                }
+            }
+        }
         .fullScreenCover(isPresented: Binding(
             get: { milestoneTitle != nil },
             set: { if !$0 { milestoneTitle = nil; milestoneMessage = nil } }
@@ -203,7 +181,6 @@ struct MainScreenView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar { toolbarItems }
-        .preferredColorScheme(.dark)
         .sheet(isPresented: $showExerciseSheet) {
             NavigationStack { TrainingPlanView(initialDay: activeDayType) }
                 .presentationDetents([.large])
@@ -241,55 +218,11 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Vertical progress tracker
-    // ─────────────────────────────────────────────────────
-
-    private var progressTracker: some View {
-        GeometryReader { proxy in
-            let trackStart: CGFloat = 110
-            let trackEnd:   CGFloat = proxy.size.height - 110
-            let trackH   = max(1, trackEnd - trackStart)
-            let orbY     = trackStart + trackH * goalProgress
-            let x        = proxy.size.width - 16
-            let fillH    = max(2, trackH * goalProgress)
-
-            Capsule()
-                .fill(Color.white.opacity(0.35))
-                .frame(width: 3, height: trackH)
-                .position(x: x, y: trackStart + trackH / 2)
-
-            Capsule()
-                .fill(LinearGradient(
-                    colors: [.orange.opacity(0.65), .blue.opacity(0.65)],
-                    startPoint: .top, endPoint: .bottom))
-                .frame(width: 3, height: fillH)
-                .position(x: x, y: trackStart + fillH / 2)
-                .animation(.spring(response: 1.2), value: goalProgress)
-
-            Circle()
-                .fill(goalProgress > 0.5 ? Color.blue.opacity(0.22) : Color.orange.opacity(0.22))
-                .frame(width: 26, height: 26)
-                .blur(radius: 6)
-                .position(x: x, y: orbY)
-                .animation(.spring(response: 1.2), value: goalProgress)
-
-            Circle()
-                .fill(Color.white)
-                .frame(width: 13, height: 13)
-                .shadow(color: .white.opacity(0.6), radius: 4)
-                .shadow(color: goalProgress > 0.5 ? .blue.opacity(0.55) : .orange.opacity(0.55), radius: 5)
-                .position(x: x, y: orbY)
-                .animation(.spring(response: 1.2), value: goalProgress)
-        }
-        .allowsHitTesting(false)
-    }
-
-    // ─────────────────────────────────────────────────────
-    // MARK: – Greeting header + play/pause button
+    // MARK: – Greeting header
     // ─────────────────────────────────────────────────────
 
     private var greetingHeader: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(greeting)
@@ -306,25 +239,391 @@ struct MainScreenView: View {
                     StatusBadge(text: profile.currentPhase.rawValue, color: .appBlue1)
                 }
             }
+            Text("See your status, take the next action, and close what is still missing today.")
+                .font(AppType.subheading)
+                .foregroundStyle(.black.opacity(0.65))
+        }
+    }
 
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    statusChip(
-                        title: "Scheduled",
-                        value: activeDayType.rawValue,
-                        tint: activeDayType.isTrainingDay ? Color.accent.cyan : Color.status.warning
-                    )
-                    statusChip(
-                        title: "Readiness",
-                        value: readinessScore.map { "\($0)" } ?? "—",
-                        tint: readinessColor
-                    )
+    private func todayStatusCard(compact: Bool) -> some View {
+        VStack(alignment: .leading, spacing: compact ? 14 : 18) {
+            HStack(alignment: .top, spacing: 14) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        Text("Today's Status")
+                            .font(AppType.caption)
+                            .textCase(.uppercase)
+                            .tracking(1.5)
+                            .foregroundStyle(.black.opacity(0.45))
+                        Text(essentialsNeedAttention ? "Needs focus" : "On track")
+                            .font(.system(size: 10, weight: .bold, design: .rounded))
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 5)
+                            .background((essentialsNeedAttention ? Color.status.warning : recommendationAccent).opacity(0.14), in: Capsule())
+                            .foregroundStyle(essentialsNeedAttention ? Color.status.warning : recommendationAccent)
+                    }
+                    Text(recommendationTitle)
+                        .font(.system(size: compact ? 24 : 28, weight: .bold, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.85))
+                        .lineLimit(2)
+                    Text(recommendationSubtitle)
+                        .font(AppType.subheading)
+                        .foregroundStyle(.black.opacity(0.62))
+                        .lineLimit(compact ? 2 : 3)
                 }
-                Text("Today is built around the next best action: capture the essentials quickly, then drill into details only when you need them.")
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.65))
+
+                Spacer(minLength: 8)
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text(readinessScore.map { "\($0)" } ?? "—")
+                        .font(.system(size: compact ? 34 : 40, weight: .bold, design: .rounded))
+                        .foregroundStyle(readinessColor)
+                    Text(readinessContextShort)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.black.opacity(0.55))
+                }
+            }
+
+            HStack(spacing: 8) {
+                statusChip(
+                    title: "Scheduled",
+                    value: activeDayType.rawValue,
+                    tint: activeDayType.isTrainingDay ? Color.accent.cyan : Color.status.warning
+                )
+                statusChip(
+                    title: "Focus",
+                    value: recommendationTone,
+                    tint: recommendationAccent
+                )
+                statusChip(
+                    title: "Time",
+                    value: estimatedSessionLength,
+                    tint: Color.appBlue1
+                )
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    performHomeAction("primary", style: .medium, action: runPrimaryAction)
+                } label: {
+                    Label(primaryActionTitle, systemImage: primaryActionIcon)
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, compact ? 12 : 14)
+                        .background(recommendationAccent, in: RoundedRectangle(cornerRadius: 16))
+                        .foregroundStyle(.white)
+                }
+                .buttonStyle(.plain)
+                .scaleEffect(highlightedActionID == "primary" ? 0.985 : 1)
+                .shadow(color: recommendationAccent.opacity(0.22), radius: highlightedActionID == "primary" ? 8 : 14, y: 6)
+
+                Menu {
+                    Button("Use Today's Schedule") { selectedDayType = nil }
+                    Divider()
+                    ForEach(DayType.allCases, id: \.self) { day in
+                        Button(day.rawValue) { selectedDayType = day }
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "slider.horizontal.3")
+                        Text("Adjust")
+                    }
+                    .font(.subheadline.weight(.semibold))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, compact ? 12 : 14)
+                    .background(Color.white.opacity(0.45), in: RoundedRectangle(cornerRadius: 16))
+                    .foregroundStyle(.black.opacity(0.78))
+                }
             }
         }
+        .padding(compact ? 16 : 18)
+        .background(
+            ZStack {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.8), recommendationAccent.opacity(0.16)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                Circle()
+                    .fill(recommendationAccent.opacity(0.18))
+                    .frame(width: compact ? 136 : 164, height: compact ? 136 : 164)
+                    .blur(radius: 18)
+                    .offset(x: compact ? 80 : 92, y: compact ? -42 : -52)
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color.white.opacity(0.18), Color.clear],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .padding(1)
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(Color.white.opacity(0.25), lineWidth: 1)
+                    .blendMode(.plusLighter)
+            }
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(Color.white.opacity(0.55), lineWidth: 1)
+        )
+        .shadow(color: recommendationAccent.opacity(0.18), radius: 18, y: 8)
+        .scaleEffect(statusPulse ? 1.01 : 1)
+    }
+
+    private var essentialsCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Essentials")
+                    .font(AppType.caption)
+                    .textCase(.uppercase)
+                    .tracking(1.5)
+                    .foregroundStyle(.black.opacity(0.45))
+                Text(essentialsSummary)
+                    .font(AppType.subheading)
+                    .foregroundStyle(essentialsNeedAttention ? Color.status.warning : .black.opacity(0.58))
+            }
+
+            essentialRow(
+                title: "Body Check-In",
+                detail: bodyCheckDetail,
+                status: bodyCheckStatus,
+                tint: .blue,
+                actionTitle: currentWeight == nil && currentBF == nil ? "Log" : "Edit",
+                isMissing: currentWeight == nil && currentBF == nil
+            ) {
+                manualEntry = true
+            }
+
+            essentialRow(
+                title: "Nutrition",
+                detail: nutritionDetail,
+                status: nutritionStatus,
+                tint: .accent.cyan,
+                actionTitle: "Open",
+                isMissing: loggedMealCount == 0
+            ) {
+                selectedTab = .nutrition
+            }
+
+            essentialRow(
+                title: "Supplements",
+                detail: supplementDetail,
+                status: supplementStatus,
+                tint: .accent.gold,
+                actionTitle: "Track",
+                isMissing: completedSupplementStacks < 2
+            ) {
+                selectedTab = .nutrition
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .fill(.ultraThinMaterial)
+                .overlay(
+                    LinearGradient(
+                        colors: [
+                            Color.white.opacity(0.18),
+                            essentialsNeedAttention ? Color.status.warning.opacity(0.1) : Color.clear
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(Color.white.opacity(0.35), lineWidth: 1)
+        )
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+    }
+
+    private func essentialRow(
+        title: String,
+        detail: String,
+        status: String,
+        tint: Color,
+        actionTitle: String,
+        isMissing: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            performHomeAction(title, action: action)
+        } label: {
+            HStack(alignment: .center, spacing: 12) {
+                Circle()
+                    .fill(tint.opacity(isMissing ? 0.2 : 0.14))
+                    .frame(width: 36, height: 36)
+                    .overlay(
+                        Circle()
+                            .stroke(tint.opacity(isMissing ? 0.55 : 0.35), lineWidth: isMissing ? 1.4 : 1)
+                    )
+                    .overlay(
+                        Circle()
+                            .fill(tint)
+                            .frame(width: 10, height: 10)
+                    )
+
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 6) {
+                        Text(title)
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.black.opacity(0.82))
+                        if isMissing {
+                            Text("Needs attention")
+                                .font(.system(size: 10, weight: .bold, design: .rounded))
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 4)
+                                .background(Color.status.warning.opacity(0.16), in: Capsule())
+                                .foregroundStyle(Color.status.warning)
+                        }
+                    }
+                    Text(detail)
+                        .font(AppType.subheading)
+                        .foregroundStyle(.black.opacity(0.6))
+                        .lineLimit(2)
+                }
+
+                Spacer(minLength: 8)
+
+                VStack(alignment: .trailing, spacing: 8) {
+                    Text(status)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(tint)
+                    HStack(spacing: 6) {
+                        Text(actionTitle)
+                            .font(.caption.weight(.semibold))
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 10, weight: .bold))
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(tint.opacity(0.14), in: Capsule())
+                    .foregroundStyle(tint)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 12)
+            .background(
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(isMissing ? tint.opacity(0.1) : Color.white.opacity(0.38))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(
+                        highlightedActionID == title
+                            ? tint.opacity(0.58)
+                            : tint.opacity(isMissing ? 0.28 : 0.18),
+                        lineWidth: highlightedActionID == title ? 1.6 : 1
+                    )
+            )
+            .shadow(color: highlightedActionID == title ? tint.opacity(0.18) : .clear, radius: 10, y: 4)
+            .scaleEffect(highlightedActionID == title ? 0.99 : 1)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func secondaryActionsRow(compact: Bool) -> some View {
+        HStack(spacing: 12) {
+            secondaryActionCard(
+                actionID: "plan",
+                title: "Open Plan",
+                subtitle: activeDayType.isTrainingDay ? "\(activeDayType.rawValue) • \(totalExerciseCount) items" : "Review today's training decision",
+                icon: "figure.strengthtraining.traditional",
+                tint: recommendationAccent,
+                compact: compact
+            ) {
+                showExerciseSheet = true
+            }
+
+            secondaryActionCard(
+                actionID: "progress",
+                title: "View Progress",
+                subtitle: "Weight, body fat, training, and adherence trends",
+                icon: "chart.line.uptrend.xyaxis",
+                tint: .accent.gold,
+                compact: compact
+            ) {
+                selectedTab = .stats
+            }
+        }
+    }
+
+    private func secondaryActionCard(
+        actionID: String,
+        title: String,
+        subtitle: String,
+        icon: String,
+        tint: Color,
+        compact: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button {
+            performHomeAction(actionID, action: action)
+        } label: {
+            VStack(alignment: .leading, spacing: compact ? 10 : 12) {
+                HStack {
+                    Image(systemName: icon)
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(tint)
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.black.opacity(0.35))
+                }
+
+                Text(title)
+                    .font(.headline)
+                    .foregroundStyle(.black.opacity(0.84))
+
+                Text(subtitle)
+                    .font(AppType.subheading)
+                    .foregroundStyle(.black.opacity(0.62))
+                    .lineLimit(compact ? 2 : 3)
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, minHeight: compact ? 124 : 136, alignment: .topLeading)
+            .background(
+                RoundedRectangle(cornerRadius: 22)
+                    .fill(.ultraThinMaterial)
+                    .overlay(
+                        LinearGradient(
+                            colors: [tint.opacity(0.14), Color.white.opacity(0.02)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 22))
+                    )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 22)
+                    .stroke(highlightedActionID == actionID ? tint.opacity(0.58) : tint.opacity(0.28), lineWidth: highlightedActionID == actionID ? 1.6 : 1)
+            )
+            .shadow(color: highlightedActionID == actionID ? tint.opacity(0.18) : .clear, radius: 12, y: 5)
+            .scaleEffect(highlightedActionID == actionID ? 0.99 : 1)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var syncFooter: some View {
+        HStack(spacing: 8) {
+            if !syncLabel.isEmpty {
+                Text(syncLabel)
+                    .font(AppType.caption)
+                    .foregroundStyle(Color.white.opacity(0.65))
+            }
+            Spacer()
+            Text(aiTip)
+                .font(AppType.caption)
+                .foregroundStyle(Color.white.opacity(0.65))
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 2)
     }
 
     private func statusChip(title: String, value: String, tint: Color) -> some View {
@@ -394,14 +693,14 @@ struct MainScreenView: View {
         if recoveryRecommendation.shouldReplaceTraining {
             let reasons = recoveryRecommendation.reasons.joined(separator: " ")
             return reasons.isEmpty
-                ? "Use guided recovery today: calm the system, move a little, and tighten nutrition."
+                ? "Use recovery today, move a little, and keep nutrition tight."
                 : reasons
         }
         switch readinessScore ?? 65 {
-        case 80...: return "Readiness supports a full effort day. Keep the plan intact and push the top sets."
-        case 60..<80: return "You look good enough to stay on schedule. Aim for consistency over hero numbers."
-        case 40..<60: return "Keep the session, but pull back one block or reduce load if the first work sets feel heavy."
-        default: return "Treat today as a lighter practice day. Keep momentum, but protect recovery."
+        case 80...: return "Readiness supports a full effort day. Keep the plan intact."
+        case 60..<80: return "Stay on plan and prioritize consistency over hero numbers."
+        case 40..<60: return "Keep the session, but trim one block if the work sets feel heavy."
+        default: return "Treat today as a lighter practice day and protect recovery."
         }
     }
 
@@ -433,278 +732,85 @@ struct MainScreenView: View {
         }
     }
 
-    private var readinessHeadline: some View {
-        VStack(spacing: 4) {
-            Text(readinessScore.map { "\($0)" } ?? "—")
-                .font(.system(size: 48, weight: .bold, design: .rounded))
-                .foregroundStyle(readinessScore != nil ? readinessColor : Color.secondary)
-            Text(readinessContextShort)
-                .font(.subheadline)
-                .foregroundStyle(.black.opacity(0.62))
-        }
-        .frame(maxWidth: .infinity)
+    private func makeBlankLog() -> DailyLog {
+        .scheduled(profile: dataStore.userProfile, dayType: programStore.todayDayType)
     }
 
-    private var recommendationCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Recommended Right Now")
-                        .font(AppType.caption)
-                        .textCase(.uppercase)
-                        .tracking(1.5)
-                        .foregroundStyle(.black.opacity(0.45))
-                    Text(recommendationTitle)
-                        .font(.system(size: 26, weight: .bold, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.85))
-                    Text(recommendationSubtitle)
-                        .font(AppType.subheading)
-                        .foregroundStyle(.black.opacity(0.62))
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
-                    Text(estimatedSessionLength)
-                        .font(.system(size: 24, weight: .bold, design: .monospaced))
-                        .foregroundStyle(recommendationAccent)
-                    Text("estimated")
-                        .font(AppType.caption)
-                        .foregroundStyle(.black.opacity(0.45))
-                }
-            }
-
-            HStack(spacing: 10) {
-                Button {
-                    if recoveryRecommendation.shouldReplaceTraining {
-                        selectedRecoveryRoutine = recoveryRecommendation.routine
-                    } else if activeDayType.isTrainingDay {
-                        showExerciseSheet = true
-                    } else {
-                        selectedRecoveryRoutine = recoveryRecommendation.routine
-                    }
-                } label: {
-                    Label(
-                        recoveryRecommendation.shouldReplaceTraining ? "Start Recovery Flow" : "Start Session",
-                        systemImage: recoveryRecommendation.shouldReplaceTraining ? recoveryRecommendation.routine.icon : "play.fill"
-                    )
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(recommendationAccent, in: RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.white)
-                }
-                .buttonStyle(.plain)
-
-                Menu {
-                    Button("Use Today's Schedule") { selectedDayType = nil }
-                    Divider()
-                    ForEach(DayType.allCases, id: \.self) { day in
-                        Button(day.rawValue) { selectedDayType = day }
-                    }
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "slider.horizontal.3")
-                        Text("Adjust")
-                    }
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 14)
-                    .background(Color.white.opacity(0.45), in: RoundedRectangle(cornerRadius: 16))
-                    .foregroundStyle(.black.opacity(0.78))
-                }
-            }
-        }
-        .padding(18)
-        .background(
-            RoundedRectangle(cornerRadius: 24)
-                .fill(
-                    LinearGradient(
-                        colors: [Color.white.opacity(0.72), recommendationAccent.opacity(0.22)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.white.opacity(0.55), lineWidth: 1)
-        )
-        .shadow(color: recommendationAccent.opacity(0.18), radius: 18, y: 8)
+    private var primaryActionTitle: String {
+        recoveryRecommendation.shouldReplaceTraining ? "Start Recovery" : "Start Workout"
     }
 
-    private var aiTipChip: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "sparkles")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.accent.cyan)
-            Text(aiTip)
-                .font(AppType.subheading)
-                .foregroundStyle(.black.opacity(0.72))
-                .lineLimit(1)
-        }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 10)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(Color.accent.cyan.opacity(0.3), lineWidth: 1)
-        )
+    private var primaryActionIcon: String {
+        recoveryRecommendation.shouldReplaceTraining ? recoveryRecommendation.routine.icon : "play.fill"
     }
 
-    // MARK: - Wellness Quick-Log
-
-    private var wellnessQuickLog: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("How are you feeling?")
-                .font(AppType.caption)
-                .textCase(.uppercase)
-                .tracking(1.5)
-                .foregroundStyle(.black.opacity(0.45))
-
-            wellnessRow(
-                label: "Mood",
-                emojis: ["😴", "😐", "🙂", "😄", "🔥"],
-                current: todayLog?.mood
-            ) { value in saveWellness(\.mood, value: value) }
-
-            wellnessRow(
-                label: "Energy",
-                emojis: ["😴", "😐", "🙂", "😄", "🔥"],
-                current: todayLog?.energyLevel
-            ) { value in saveWellness(\.energyLevel, value: value) }
-
-            wellnessRow(
-                label: "Cravings",
-                emojis: ["🌿", "😕", "😐", "🍕", "🍰"],
-                current: todayLog?.cravingLevel
-            ) { value in saveWellness(\.cravingLevel, value: value) }
-        }
-        .padding(16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white.opacity(0.35), lineWidth: 1))
-    }
-
-    private func wellnessRow(label: String, emojis: [String], current: Int?, onSelect: @escaping (Int) -> Void) -> some View {
-        HStack {
-            Text(label)
-                .font(AppType.subheading)
-                .foregroundStyle(.black.opacity(0.65))
-                .frame(width: 70, alignment: .leading)
-            Spacer()
-            HStack(spacing: 6) {
-                ForEach(Array(emojis.enumerated()), id: \.offset) { offset, emoji in
-                    let value = offset + 1
-                    Button {
-                        onSelect(value)
-                    } label: {
-                        Text(emoji)
-                            .font(.system(size: 24))
-                            .opacity(current == nil ? 0.5 : (current == value ? 1.0 : 0.3))
-                            .scaleEffect(current == value ? 1.15 : 1.0)
-                            .animation(.spring(response: 0.2), value: current)
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
+    private func runPrimaryAction() {
+        if recoveryRecommendation.shouldReplaceTraining {
+            selectedRecoveryRoutine = recoveryRecommendation.routine
+        } else {
+            showExerciseSheet = true
         }
     }
 
-    private func saveWellness(_ keyPath: WritableKeyPath<DailyLog, Int?>, value: Int) {
-        var log = dataStore.dailyLogs.first(where: { Calendar.current.isDateInToday($0.date) }) ?? DailyLog(date: Date())
-        log[keyPath: keyPath] = value
-        dataStore.upsertLog(log)
-        Task { await dataStore.persistToDisk() }
+    private var bodyCheckDetail: String {
+        if let currentWeight, let currentBF {
+            return "\(settings.unitSystem.displayWeightValue(currentWeight)) \(settings.unitSystem.weightLabel()) • \(String(format: "%.1f", currentBF))% body fat"
+        }
+        if let currentWeight {
+            return "\(settings.unitSystem.displayWeightValue(currentWeight)) \(settings.unitSystem.weightLabel()) recorded today"
+        }
+        if let currentBF {
+            return "\(String(format: "%.1f", currentBF))% body fat recorded today"
+        }
+        return "Weight and body composition are still missing today."
     }
 
-    private var actionGrid: some View {
-        LazyVGrid(
-            columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
-            spacing: 12
-        ) {
-            TodayActionCard(
-                title: "Weigh In",
-                subtitle: currentWeight.map { "Latest \(settings.unitSystem.displayWeightValue($0)) \(settings.unitSystem.weightLabel())" } ?? "Capture weight and body fat",
-                icon: "scalemass.fill",
-                tint: .blue
-            ) {
-                manualEntry = true
-            }
-
-            TodayActionCard(
-                title: recoveryRecommendation.shouldReplaceTraining ? "Recovery Flow" : "Start Workout",
-                subtitle: recoveryRecommendation.shouldReplaceTraining
-                    ? "\(recoveryRecommendation.routine.title) · \(recoveryRecommendation.routine.durationMinutes) min"
-                    : (totalExerciseCount > 0 ? "\(activeDayType.rawValue) · \(totalExerciseCount) items" : "Open your plan for today"),
-                icon: recoveryRecommendation.shouldReplaceTraining ? recoveryRecommendation.routine.icon : "figure.strengthtraining.traditional",
-                tint: recommendationAccent
-            ) {
-                if recoveryRecommendation.shouldReplaceTraining {
-                    selectedRecoveryRoutine = recoveryRecommendation.routine
-                } else {
-                    showExerciseSheet = true
-                }
-            }
-
-            TodayActionCard(
-                title: "Log Meals",
-                subtitle: loggedMealCount > 0 ? "\(loggedMealCount) meals logged" : "Jump into nutrition tracking",
-                icon: "fork.knife",
-                tint: .accent.cyan
-            ) {
-                selectedTab = .nutrition
-            }
-
-            TodayActionCard(
-                title: "Check Progress",
-                subtitle: "Open trends, charts, and adherence",
-                icon: "chart.line.uptrend.xyaxis",
-                tint: .accent.gold
-            ) {
-                selectedTab = .stats
-            }
-        }
+    private var bodyCheckStatus: String {
+        (currentWeight != nil || currentBF != nil) ? "Logged" : "Missing"
     }
 
-    private var summaryGrid: some View {
-        LazyVGrid(
-            columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)],
-            spacing: 12
-        ) {
-            MetricCard(
-                icon: "scalemass.fill",
-                label: "Weight",
-                value: currentWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—",
-                unit: currentWeight == nil ? nil : settings.unitSystem.weightLabel(),
-                trendDelta: weightDelta.isEmpty ? nil : weightDelta,
-                statusColor: weightTrendColor
-            )
-            MetricCard(
-                icon: "drop.fill",
-                label: "Body Fat",
-                value: currentBF.map { String(format: "%.1f", $0) } ?? "—",
-                unit: currentBF == nil ? nil : "%",
-                trendDelta: bfDelta.isEmpty ? nil : bfDelta,
-                statusColor: bfTrendColor
-            )
-            MetricCard(
-                icon: "scope",
-                label: "Goal Progress",
-                value: "\(Int(goalProgress * 100))",
-                unit: "%",
-                trendDelta: recommendationTone,
-                statusColor: recommendationAccent
-            )
-            MetricCard(
-                icon: "sparkles",
-                label: "Readiness",
-                value: readinessScore.map { "\($0)" } ?? "—",
-                unit: readinessScore == nil ? nil : "/100",
-                trendDelta: readinessContextShort,
-                statusColor: readinessColor
-            )
+    private var essentialsNeedAttention: Bool {
+        essentialMissingCount > 0
+    }
+
+    private var essentialMissingCount: Int {
+        var missingCount = 0
+        if currentWeight == nil && currentBF == nil { missingCount += 1 }
+        if loggedMealCount == 0 { missingCount += 1 }
+        if completedSupplementStacks < 2 { missingCount += 1 }
+        return missingCount
+    }
+
+    private var essentialsSummary: String {
+        if !essentialsNeedAttention {
+            return "The main daily checkboxes are on track."
         }
+        return "\(essentialMissingCount) core \(essentialMissingCount == 1 ? "item needs" : "items need") attention before the day is complete."
+    }
+
+    private var nutritionDetail: String {
+        if loggedMealCount == 0 {
+            return "No meals logged yet. Protein and calories still need attention."
+        }
+        return "\(loggedMealCount) meals logged • \(Int(remainingProteinForHome))g protein left"
+    }
+
+    private var nutritionStatus: String {
+        loggedMealCount == 0 ? "Open" : "Active"
+    }
+
+    private var supplementDetail: String {
+        "\(completedSupplementStacks) of 2 stacks completed today."
+    }
+
+    private var supplementStatus: String {
+        completedSupplementStacks == 2 ? "Done" : (completedSupplementStacks == 0 ? "Open" : "Partial")
+    }
+
+    private var remainingProteinForHome: Double {
+        let target = todayLog?.biometrics.leanBodyMassKg.map { $0 * 2 } ?? 135
+        let consumed = todayLog?.nutritionLog.resolvedProteinG ?? 0
+        return max(target - consumed, 0)
     }
 
     private var syncLabel: String {
@@ -715,393 +821,27 @@ struct MainScreenView: View {
         else { return "⌚ Synced today" }
     }
 
-    @ViewBuilder
-    private var syncBadge: some View {
-        if healthService.lastSyncDate != nil {
-            Text(syncLabel)
-                .font(AppType.caption)
-                .foregroundStyle(Color.white.opacity(0.6))
+    private func performHomeAction(
+        _ id: String,
+        style: UIImpactFeedbackGenerator.FeedbackStyle = .light,
+        action: @escaping () -> Void
+    ) {
+        let g = UIImpactFeedbackGenerator(style: style)
+        g.prepare()
+        g.impactOccurred()
+
+        withAnimation(.spring(response: 0.24, dampingFraction: 0.8)) {
+            highlightedActionID = id
         }
-    }
-
-    private var todayTimeline: some View {
-        VStack(spacing: 12) {
-            TodayTimelineRow(
-                title: "Body check-in",
-                detail: currentWeight != nil || currentBF != nil ? "Weight or body fat logged" : "Weight and body fat still missing",
-                status: currentWeight != nil || currentBF != nil ? .complete : .pending,
-                accent: .blue
-            )
-            TodayTimelineRow(
-                title: activeDayType.isTrainingDay ? "Workout progress" : "Recovery day",
-                detail: activeDayType.isTrainingDay
-                    ? "\(completedExerciseCount) of \(totalExerciseCount) workout items complete"
-                    : "Use \(recoveryRecommendation.routine.title.lowercased()) and easy movement today",
-                status: activeDayType.isTrainingDay
-                    ? (completedExerciseCount == 0 ? .pending : (completedExerciseCount >= totalExerciseCount ? .complete : .inProgress))
-                    : .inProgress,
-                accent: recommendationAccent
-            )
-            TodayTimelineRow(
-                title: "Nutrition",
-                detail: loggedMealCount > 0 ? "\(loggedMealCount) meals logged today" : "No meals logged yet",
-                status: loggedMealCount == 0 ? .pending : .inProgress,
-                accent: .accent.cyan
-            )
-            TodayTimelineRow(
-                title: "Supplements",
-                detail: "\(completedSupplementStacks) of 2 stacks completed",
-                status: completedSupplementStacks == 0 ? .pending : (completedSupplementStacks == 2 ? .complete : .inProgress),
-                accent: .accent.gold
-            )
-        }
-        .padding(16)
-        .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 22))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22)
-                .stroke(Color.white.opacity(0.35), lineWidth: 1)
-        )
-    }
-
-    private var recoveryStudio: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Button {
-                selectedRecoveryRoutine = recoveryRecommendation.routine
-            } label: {
-                HStack(alignment: .top, spacing: 14) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("Recommended Flow")
-                            .font(.caption2.monospaced())
-                            .foregroundStyle(.black.opacity(0.45))
-                            .tracking(1.2)
-                        Text(recoveryRecommendation.routine.title)
-                            .font(.headline)
-                            .foregroundStyle(.black.opacity(0.82))
-                        Text(recoveryRecommendation.routine.focus)
-                            .font(AppType.subheading)
-                            .foregroundStyle(.black.opacity(0.62))
-                        if let reason = recoveryRecommendation.reasons.first {
-                            Text(reason)
-                                .font(.caption)
-                                .foregroundStyle(.black.opacity(0.6))
-                                .lineLimit(2)
-                        }
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 6) {
-                        Image(systemName: recoveryRecommendation.routine.icon)
-                            .font(.title3.weight(.semibold))
-                            .foregroundStyle(recoveryTint(for: recoveryRecommendation.routine))
-                        Text("\(recoveryRecommendation.routine.durationMinutes)m")
-                            .font(.system(.headline, design: .monospaced, weight: .bold))
-                            .foregroundStyle(recoveryTint(for: recoveryRecommendation.routine))
-                        Text(recoveryRecommendation.routine.intensityLabel)
-                            .font(.caption2)
-                            .foregroundStyle(.black.opacity(0.45))
-                    }
+        action()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
+            withAnimation(.easeOut(duration: 0.18)) {
+                if highlightedActionID == id {
+                    highlightedActionID = nil
                 }
-                .padding(16)
-                .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 20))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(recoveryTint(for: recoveryRecommendation.routine).opacity(0.3), lineWidth: 1)
-                )
-            }
-            .buttonStyle(.plain)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(RecoveryRoutineLibrary.all) { routine in
-                        Button {
-                            selectedRecoveryRoutine = routine
-                        } label: {
-                            VStack(alignment: .leading, spacing: 10) {
-                                HStack {
-                                    Image(systemName: routine.icon)
-                                        .font(.headline)
-                                        .foregroundStyle(recoveryTint(for: routine))
-                                    Spacer()
-                                    Text("\(routine.durationMinutes)m")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.black.opacity(0.55))
-                                }
-                                Text(routine.title)
-                                    .font(.subheadline.weight(.semibold))
-                                    .foregroundStyle(.black.opacity(0.82))
-                                    .lineLimit(2)
-                                Text(routine.subtitle)
-                                    .font(.caption)
-                                    .foregroundStyle(.black.opacity(0.6))
-                                    .lineLimit(3)
-                            }
-                            .frame(width: 190, height: 140, alignment: .topLeading)
-                            .padding(16)
-                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-                            .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(recoveryTint(for: routine).opacity(0.22), lineWidth: 1)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-                .padding(.vertical, 2)
             }
         }
     }
-
-    // ─────────────────────────────────────────────────────
-    // MARK: – Weight & Body Fat side by side
-    // ─────────────────────────────────────────────────────
-
-    private var metricPair: some View {
-        HStack(alignment: .top, spacing: 0) {
-
-            // Weight (left)
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 4) {
-                    Label("WEIGHT", systemImage: "scalemass.fill")
-                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(.blue)
-                        .tracking(1)
-                    Circle()
-                        .fill(weightTrendColor)
-                        .frame(width: 8, height: 8)
-                }
-                HStack(alignment: .lastTextBaseline, spacing: 3) {
-                    Text(animatedWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—")
-                        .font(.system(size: 36, weight: .bold, design: .monospaced))
-                        .foregroundStyle(.blue)
-                        .contentTransition(.numericText())
-                    Text(settings.unitSystem.weightLabel())
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
-                Text(weightDelta)
-                    .font(.system(size: 10))
-                    .foregroundStyle(weightDelta.hasPrefix("+") ? Color.status.error : Color.status.success)
-                Text("Target: \(settings.unitSystem.displayWeightValue(profile.targetWeightMin))–\(settings.unitSystem.displayWeightValue(profile.targetWeightMax)) \(settings.unitSystem.weightLabel())")
-                    .font(.system(size: 9))
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            // Divider
-            Rectangle()
-                .fill(Color.white.opacity(0.45))
-                .frame(width: 1, height: 75)
-                .padding(.horizontal, 14)
-
-            // Body Fat (right)
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 4) {
-                    Label("BODY FAT", systemImage: "drop.fill")
-                        .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                        .foregroundStyle(.orange)
-                        .tracking(1)
-                    Circle()
-                        .fill(bfTrendColor)
-                        .frame(width: 8, height: 8)
-                }
-                HStack(alignment: .lastTextBaseline, spacing: 3) {
-                    Text(animatedBF.map { String(format: "%.1f", $0) } ?? "—")
-                        .font(.system(size: 36, weight: .bold, design: .monospaced))
-                        .foregroundStyle(.orange)
-                        .contentTransition(.numericText())
-                    Text("%")
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                }
-                Text(bfDelta)
-                    .font(.system(size: 10))
-                    .foregroundStyle(bfDelta.hasPrefix("+") ? Color.status.error : Color.status.success)
-                Text("Target: \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%")
-                    .font(.system(size: 9))
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .overlay(alignment: .topTrailing) {
-            Button { manualEntry = true } label: {
-                Image(systemName: "pencil.circle")
-                    .font(.callout)
-                    .foregroundStyle(.secondary)
-            }
-        }
-    }
-
-    private var weightDelta: String {
-        guard let w = currentWeight else { return "" }
-        let d = w - profile.startWeightKg
-        let unit = settings.unitSystem.weightLabel()
-        let displayD = settings.unitSystem == .metric ? d : d * 2.20462
-        return String(format: "%+.1f \(unit) since start", displayD)
-    }
-
-    private var bfDelta: String {
-        guard let b = currentBF else { return "" }
-        let d = b - profile.startBodyFatPct
-        return String(format: "%+.1f%% since start", d)
-    }
-
-    // Returns a colour dot for weight trend over 7 days
-    private var weightTrendColor: Color {
-        let logs = dataStore.dailyLogs
-            .filter { !Calendar.current.isDateInToday($0.date) }
-            .sorted { $0.date > $1.date }
-            .prefix(7)
-        let vals = logs.compactMap { $0.biometrics.weightKg }
-        guard vals.count >= 2 else { return Color.secondary }
-        let delta = vals.first! - vals.last!  // sorted newest-first, so first=recent, last=older
-        if delta < -0.2 { return Color.status.success }    // weight decreasing = good
-        if delta > 0.2  { return Color.status.error }      // weight increasing = bad
-        return Color.status.warning                         // flat
-    }
-
-    private var bfTrendColor: Color {
-        let logs = dataStore.dailyLogs
-            .filter { !Calendar.current.isDateInToday($0.date) }
-            .sorted { $0.date > $1.date }
-            .prefix(7)
-        let vals = logs.compactMap { $0.biometrics.bodyFatPercent }
-        guard vals.count >= 2 else { return Color.secondary }
-        let delta = vals.first! - vals.last!
-        if delta < -0.3 { return Color.status.success }
-        if delta > 0.3  { return Color.status.error }
-        return Color.status.warning
-    }
-
-    // ─────────────────────────────────────────────────────
-    // MARK: – Goal section
-    // ─────────────────────────────────────────────────────
-
-    private var goalSection: some View {
-        HStack(spacing: 16) {
-            ZStack {
-                Circle()
-                    .stroke(Color.white.opacity(0.4), lineWidth: 8)
-                    .frame(width: 74, height: 74)
-                Circle()
-                    .trim(from: 0, to: goalProgress)
-                    .stroke(
-                        AngularGradient(colors: [Color.appOrange1, Color.accent.cyan, Color.appOrange1], center: .center),
-                        style: StrokeStyle(lineWidth: 8, lineCap: .round)
-                    )
-                    .frame(width: 74, height: 74)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.spring(response: 1.0), value: goalProgress)
-                VStack(spacing: 0) {
-                    Text("\(Int(goalProgress * 100))%")
-                        .font(.system(.subheadline, design: .monospaced, weight: .bold))
-                    Text("Goal")
-                        .font(.system(size: 9))
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 6) {
-                Text("GOAL PROGRESS")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                    .foregroundStyle(.secondary)
-                    .tracking(1.5)
-                GoalProgressRow(label: "Weight",   progress: profile.weightProgress(current: currentWeight), color: .blue)
-                GoalProgressRow(label: "Body Fat", progress: profile.bfProgress(current: currentBF),         color: .orange)
-            }
-            Spacer()
-        }
-    }
-
-    // ─────────────────────────────────────────────────────
-    // MARK: – Training button with plan picker dropdown
-    // ─────────────────────────────────────────────────────
-
-    // Light blue matching the gradient's bgBlue1
-    private let buttonBlue = Color.blue
-
-    private var trainingButton: some View {
-        HStack(spacing: 14) {
-            // Play / Pause circle
-            Button {
-                trainingActive.toggle()
-                if trainingActive { showExerciseSheet = true }
-            } label: {
-                ZStack {
-                    Circle()
-                        .fill(trainingActive
-                              ? Color(red: 1.0, green: 0.65, blue: 0.3)
-                              : buttonBlue)
-                        .frame(width: 52, height: 52)
-                        .shadow(color: (trainingActive ? Color.orange : buttonBlue).opacity(0.45),
-                                radius: 10, x: 0, y: 4)
-                    Image(systemName: trainingActive ? "pause.fill" : "play.fill")
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.white)
-                        .offset(x: trainingActive ? 0 : 2)
-                }
-            }
-            .buttonStyle(.plain)
-
-            // Day picker dropdown only
-            Menu {
-                Button {
-                    selectedDayType = nil
-                } label: {
-                    HStack {
-                        Text("Today's Schedule (\(programStore.todayDayType.rawValue))")
-                        if selectedDayType == nil { Image(systemName: "checkmark") }
-                    }
-                }
-                Divider()
-                ForEach(DayType.allCases, id: \.self) { day in
-                    Button {
-                        selectedDayType = day
-                    } label: {
-                        HStack {
-                            Label(day.rawValue, systemImage: day.icon)
-                            if activeDayType == day && selectedDayType != nil {
-                                Image(systemName: "checkmark")
-                            }
-                        }
-                    }
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: activeDayType.icon)
-                        .font(.system(size: 10, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                    Text("💪 \(activeDayType.rawValue) · \(TrainingProgramData.exercises(for: activeDayType).count) ex")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 9, weight: .semibold))
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Spacer()
-        }
-    }
-
-    // ─────────────────────────────────────────────────────
-    // MARK: – Quick stats
-    // ─────────────────────────────────────────────────────
-
-    private var quickStats: some View {
-        ReadinessCard()
-    }
-
-    private func recoveryTint(for routine: RecoveryRoutine) -> Color {
-        switch routine.id {
-        case RecoveryRoutineLibrary.nervousSystemReset.id:
-            return Color.status.warning
-        case RecoveryRoutineLibrary.mobilityFlush.id:
-            return Color.accent.cyan
-        default:
-            return Color.accent.purple
-        }
-    }
-
     // ─────────────────────────────────────────────────────
     // MARK: – Toolbar
     // ─────────────────────────────────────────────────────
@@ -1113,154 +853,6 @@ struct MainScreenView: View {
         }
     }
 
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – GoalProgressRow
-// ─────────────────────────────────────────────────────────
-
-struct GoalProgressRow: View {
-    let label:    String
-    let progress: Double
-    let color:    Color
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack {
-                Text(label).font(.caption2).foregroundStyle(.secondary)
-                Spacer()
-                Text("\(Int(progress * 100))%").font(.caption2.monospaced()).foregroundStyle(color)
-            }
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.white.opacity(0.4))
-                        .frame(height: 4)
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(LinearGradient(colors: [Color.appOrange1, Color.accent.cyan], startPoint: .leading, endPoint: .trailing))
-                        .frame(width: geo.size.width * progress, height: 4)
-                        .animation(.spring(response: 1.0), value: progress)
-                }
-            }
-            .frame(height: 4)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(label) goal progress")
-        .accessibilityValue("\(Int(progress * 100)) percent")
-    }
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – TodayActionCard
-// ─────────────────────────────────────────────────────────
-
-struct TodayActionCard: View {
-    let title: String
-    let subtitle: String
-    let icon: String
-    let tint: Color
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Image(systemName: icon)
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(tint)
-                    Spacer()
-                    Image(systemName: "arrow.up.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.black.opacity(0.35))
-                }
-                VStack(alignment: .leading, spacing: 6) {
-                    Text(title)
-                        .font(.headline)
-                        .foregroundStyle(.black.opacity(0.84))
-                    Text(subtitle)
-                        .font(AppType.subheading)
-                        .foregroundStyle(.black.opacity(0.62))
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                }
-            }
-            .padding(16)
-            .frame(maxWidth: .infinity, minHeight: 128, alignment: .topLeading)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22))
-            .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-            .overlay(
-                RoundedRectangle(cornerRadius: 22)
-                    .stroke(tint.opacity(0.28), lineWidth: 1)
-            )
-        }
-        .buttonStyle(.plain)
-    }
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – TodayTimelineRow
-// ─────────────────────────────────────────────────────────
-
-struct TodayTimelineRow: View {
-    enum RowStatus {
-        case pending
-        case inProgress
-        case complete
-
-        var symbol: String {
-            switch self {
-            case .pending: "circle.dashed"
-            case .inProgress: "arrow.trianglehead.clockwise"
-            case .complete: "checkmark.circle.fill"
-            }
-        }
-    }
-
-    let title: String
-    let detail: String
-    let status: RowStatus
-    let accent: Color
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: status.symbol)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(accent)
-                .frame(width: 20)
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.black.opacity(0.82))
-                Text(detail)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.6))
-            }
-
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – QuickStatPill
-// ─────────────────────────────────────────────────────────
-
-struct QuickStatPill: View {
-    let icon: String; let value: String; let label: String; let color: Color
-    var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: icon).font(.caption).foregroundStyle(color)
-            Text(value).font(.system(.caption2, design: .monospaced, weight: .semibold))
-            Text(label).font(.system(size: 9)).foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(label)
-        .accessibilityValue(value)
-    }
 }
 
 struct RecoveryRoutineSheet: View {
@@ -1482,7 +1074,6 @@ struct ManualBiometricEntry: View {
     }
 
     private func makeBlankLog() -> DailyLog {
-        DailyLog(date: Date(), phase: dataStore.userProfile.currentPhase,
-                 dayType: programStore.todayDayType, recoveryDay: dataStore.userProfile.daysSinceStart)
+        .scheduled(profile: dataStore.userProfile, dayType: programStore.todayDayType)
     }
 }

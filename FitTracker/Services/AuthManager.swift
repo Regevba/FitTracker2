@@ -1,7 +1,6 @@
 // Services/AuthManager.swift
-// Biometric lock AFTER sign-in — Face ID / Touch ID / Passcode
+// Biometric lock after sign-in — Face ID / Touch ID only
 // Separate from SignInService (social/passkey auth)
-// Also houses TrainingProgramStore
 
 import Foundation
 @preconcurrency import LocalAuthentication
@@ -21,14 +20,15 @@ final class AuthManager: ObservableObject {
 
     func authenticate() {
         #if targetEnvironment(simulator)
-        // Skip biometric/passcode prompt on simulator — set authenticated immediately.
+        // Skip biometric prompt on simulator — set authenticated immediately.
         isAuthenticated = true
         #else
         let ctx = LAContext()
+        ctx.localizedFallbackTitle = ""
         var err: NSError?
 
-        if ctx.canEvaluatePolicy(.deviceOwnerAuthentication, error: &err) {
-            ctx.evaluatePolicy(.deviceOwnerAuthentication,
+        if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &err) {
+            ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
                                localizedReason: "Unlock FitTracker to access your encrypted health data") { ok, e in
                 Task { @MainActor [weak self] in
                     self?.isAuthenticated = ok
@@ -138,5 +138,3 @@ struct LockScreenView: View {
         }
     }
 }
-
-// TrainingProgramStore has been moved to Services/TrainingProgramStore.swift
