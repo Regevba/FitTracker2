@@ -60,6 +60,15 @@ struct DailyLog: Identifiable, Codable, Sendable {
     }
 }
 
+extension DailyLog {
+    init(date: Date, phase: ProgramPhase = .recovery) {
+        self.date = date
+        self.phase = phase
+        self.dayType = .restDay
+        self.recoveryDay = 0
+    }
+}
+
 extension DailyLog: Equatable {
     static func == (lhs: DailyLog, rhs: DailyLog) -> Bool {
         // Lightweight equality: identity + date is sufficient for .onChange(of: log) usage

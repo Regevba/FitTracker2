@@ -707,19 +707,18 @@ struct MainScreenView: View {
         }
     }
 
+    private var syncLabel: String {
+        guard let lastSync = healthService.lastSyncDate else { return "" }
+        let elapsed = Date().timeIntervalSince(lastSync)
+        if elapsed < 120 { return "⌚ Just now" }
+        else if elapsed < 3600 { return "⌚ Synced \(Int(elapsed / 60))m ago" }
+        else { return "⌚ Synced today" }
+    }
+
     @ViewBuilder
     private var syncBadge: some View {
-        if let syncDate = healthService.lastSyncDate {
-            let elapsed = Date().timeIntervalSince(syncDate)
-            let label: String
-            if elapsed < 60 {
-                label = "⌚ Just now"
-            } else if elapsed < 3600 {
-                label = "⌚ Synced \(Int(elapsed / 60))m ago"
-            } else {
-                label = "⌚ Synced today"
-            }
-            Text(label)
+        if healthService.lastSyncDate != nil {
+            Text(syncLabel)
                 .font(AppType.caption)
                 .foregroundStyle(Color.white.opacity(0.6))
         }

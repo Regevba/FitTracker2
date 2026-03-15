@@ -273,7 +273,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = bodyData.filter({ $0.weightKg != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -344,7 +344,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = bodyData.filter({ $0.bodyFatPercent != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -412,7 +412,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = bodyData.filter({ $0.leanBodyMassKg != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -603,7 +603,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = volumeData
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -735,7 +735,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = recoveryData.filter({ $0.hrv != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -802,7 +802,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = recoveryData.filter({ $0.restingHR != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -869,7 +869,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = recoveryData.filter({ $0.sleepHours != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -963,7 +963,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = pts
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -1047,7 +1047,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = nutritionData.filter({ $0.calories != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
@@ -1122,7 +1122,7 @@ struct StatsView: View {
                                 .gesture(
                                     DragGesture(minimumDistance: 0)
                                         .onChanged { value in
-                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            let x = value.location.x - geo[proxy.plotFrame].origin.x
                                             if let date: Date = proxy.value(atX: x) {
                                                 if let pt = nutritionData.filter({ $0.proteinG != nil })
                                                     .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
