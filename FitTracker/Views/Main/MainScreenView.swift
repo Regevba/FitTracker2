@@ -1,9 +1,5 @@
 // Views/Main/MainScreenView.swift
-// Tab 1: Home screen — everything visible above the tab bar, no scroll
-//   - Gradient background (orange → blue by goal progress)
-//   - Right-edge vertical progress tracker
-//   - Greeting + play/pause training button in header
-//   - Weight & Body Fat displayed side-by-side
+// Action-first Today screen — kept above the fold with no scroll on iPhone.
 
 import SwiftUI
 
@@ -222,7 +218,7 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: – Greeting header + play/pause button
+    // MARK: – Greeting header
     // ─────────────────────────────────────────────────────
 
     private var greetingHeader: some View {
@@ -737,12 +733,7 @@ struct MainScreenView: View {
     }
 
     private func makeBlankLog() -> DailyLog {
-        DailyLog(
-            date: Date(),
-            phase: dataStore.userProfile.currentPhase,
-            dayType: programStore.todayDayType,
-            recoveryDay: dataStore.userProfile.daysSinceStart
-        )
+        .scheduled(profile: dataStore.userProfile, dayType: programStore.todayDayType)
     }
 
     private var primaryActionTitle: String {
@@ -1083,7 +1074,6 @@ struct ManualBiometricEntry: View {
     }
 
     private func makeBlankLog() -> DailyLog {
-        DailyLog(date: Date(), phase: dataStore.userProfile.currentPhase,
-                 dayType: programStore.todayDayType, recoveryDay: dataStore.userProfile.daysSinceStart)
+        .scheduled(profile: dataStore.userProfile, dayType: programStore.todayDayType)
     }
 }

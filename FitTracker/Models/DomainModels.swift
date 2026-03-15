@@ -61,11 +61,17 @@ struct DailyLog: Identifiable, Codable, Sendable {
 }
 
 extension DailyLog {
-    init(date: Date, phase: ProgramPhase = .recovery) {
-        self.date = date
-        self.phase = phase
-        self.dayType = .restDay
-        self.recoveryDay = 0
+    static func scheduled(
+        for date: Date = Date(),
+        profile: UserProfile,
+        dayType: DayType
+    ) -> DailyLog {
+        DailyLog(
+            date: date,
+            phase: profile.currentPhase,
+            dayType: dayType,
+            recoveryDay: profile.daysSinceStart
+        )
     }
 }
 

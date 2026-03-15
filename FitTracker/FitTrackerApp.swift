@@ -3,8 +3,6 @@
 // Entry point — wires all services, drives auth state machine
 
 import SwiftUI
-import HealthKit
-import CloudKit
 
 @main
 struct FitTrackerApp: App {

@@ -30,7 +30,7 @@
 
 	<!-- Face ID / Touch ID -->
 	<key>NSFaceIDUsageDescription</key>
-	<string>FitTracker uses Face ID to protect access to your encrypted health data. No data can be accessed without biometric or passcode authentication.</string>
+	<string>FitTracker uses Face ID to protect access to your encrypted health data. No data can be accessed without biometric authentication on this device.</string>
 
 	<!-- Camera (for cardio session photo capture) -->
 	<key>NSCameraUsageDescription</key>
