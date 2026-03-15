@@ -81,6 +81,7 @@ struct MainScreenView: View {
 
                     SectionHeader(title: "At A Glance")
                     summaryGrid
+                    syncBadge
 
                     SectionHeader(title: "Today Timeline")
                     todayTimeline
@@ -500,6 +501,24 @@ struct MainScreenView: View {
                 trendDelta: readinessContextShort,
                 statusColor: readinessColor
             )
+        }
+    }
+
+    @ViewBuilder
+    private var syncBadge: some View {
+        if let syncDate = healthService.lastSyncDate {
+            let elapsed = Date().timeIntervalSince(syncDate)
+            let label: String
+            if elapsed < 60 {
+                label = "⌚ Just now"
+            } else if elapsed < 3600 {
+                label = "⌚ Synced \(Int(elapsed / 60))m ago"
+            } else {
+                label = "⌚ Synced today"
+            }
+            Text(label)
+                .font(AppType.caption)
+                .foregroundStyle(Color.white.opacity(0.6))
         }
     }
 

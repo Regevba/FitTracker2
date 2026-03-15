@@ -73,6 +73,7 @@ final class HealthKitService: ObservableObject {
     @Published var isAuthorized   = false
     @Published var latest         = LiveMetrics()
     @Published var errorMessage:  String?
+    @Published var lastSyncDate:  Date?
 
     private let store = HKHealthStore()
     private var observers: [HKObserverQuery] = []
@@ -173,6 +174,7 @@ final class HealthKitService: ObservableObject {
             sleepHours: sleepV.total, deepSleepMin: sleepV.deep,
             remSleepMin: sleepV.rem
         )
+        lastSyncDate = Date()
     }
 
     // ── Historical data for charts ────────────────────────
