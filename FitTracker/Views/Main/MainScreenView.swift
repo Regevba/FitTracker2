@@ -66,27 +66,6 @@ struct MainScreenView: View {
         RecoveryRoutineLibrary.recommend(dayType: activeDayType, readinessScore: readinessScore, liveMetrics: metrics, log: todayLog, preferences: dataStore.userPreferences)
     }
 
-    private var aiTip: String {
-        let logs = Array(dataStore.dailyLogs.prefix(28))
-        let r7 = logs.prefix(7)
-        let prefs = dataStore.userPreferences
-        // dailyLogs is always kept sorted descending; first == most recent
-        if let hrv = logs.first?.biometrics.effectiveHRV, hrv < prefs.hrvReadyThreshold {
-            return "HRV below threshold — consider a walk instead of lifting"
-        }
-        let r7CardioLogs = r7.flatMap { $0.cardioLogs.values }
-        let r7Zone2Logs = r7CardioLogs.filter { $0.wasInZone2(lower: prefs.zone2LowerHR, upper: prefs.zone2UpperHR) == true }
-        let z2min: Double = r7Zone2Logs.compactMap(\.durationMinutes).reduce(0, +)
-        if z2min < 90 {
-            return "Under 90 min Zone 2 — a 20-min walk fills the gap"
-        }
-        let adh = logs.isEmpty ? 0.0 : logs.map { $0.completionPct }.reduce(0, +) / Double(logs.count)
-        if adh < 70 {
-            return "Consistency gap this month — partial sessions count too"
-        }
-        return "All signals green — push hard today"
-    }
-
     // Background palette — defined centrally in AppTheme.swift
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
@@ -122,17 +101,18 @@ struct MainScreenView: View {
             backgroundLayer
             GeometryReader { proxy in
                 let compact = proxy.size.height < 820
+                let tight = proxy.size.height < 760
 
-                VStack(alignment: .leading, spacing: compact ? 14 : 18) {
-                    greetingHeader
-                    todayStatusCard(compact: compact)
-                    essentialsCard
-                    secondaryActionsRow(compact: compact)
-                    syncFooter
+                VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 14 : 18)) {
+                    greetingHeader(tight: tight)
+                    statusOverviewCard(compact: compact, tight: tight)
+                    goalProgressCard(compact: compact, tight: tight)
+                    startTrainingCard(compact: compact, tight: tight)
+                    metricsCard(compact: compact, tight: tight)
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, 8)
+                .padding(.top, max(proxy.safeAreaInsets.top, 10))
                 .padding(.bottom, max(proxy.safeAreaInsets.bottom + 12, 24))
             }
         }
@@ -221,429 +201,341 @@ struct MainScreenView: View {
     // MARK: – Greeting header
     // ─────────────────────────────────────────────────────
 
-    private var greetingHeader: some View {
+    private func greetingHeader(tight: Bool) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(greeting)
-                        .font(.system(.title2, design: .rounded, weight: .bold))
+                        .font(.system(size: tight ? 24 : 27, weight: .bold, design: .rounded))
                         .lineLimit(2)
-                        .minimumScaleFactor(0.8)
+                        .minimumScaleFactor(0.82)
                     Text(todayFormatted)
-                        .font(.subheadline)
+                        .font(.system(size: tight ? 15 : 17, weight: .medium, design: .rounded))
                         .foregroundStyle(.black.opacity(0.65))
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 6) {
-                    StatusBadge(text: "Day \(profile.daysSinceStart)", color: .appOrange2)
-                    StatusBadge(text: profile.currentPhase.rawValue, color: .appBlue1)
+                    Text("Day \(profile.daysSinceStart)")
+                        .font(.system(size: tight ? 13 : 14, weight: .bold, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.82))
+                    Text(profile.currentPhase.rawValue)
+                        .font(.system(size: tight ? 12 : 13, weight: .semibold, design: .rounded))
+                        .padding(.horizontal, tight ? 10 : 12)
+                        .padding(.vertical, tight ? 6 : 7)
+                        .background(Color.white.opacity(0.5), in: Capsule())
+                        .foregroundStyle(.black.opacity(0.72))
                 }
             }
-            Text("See your status, take the next action, and close what is still missing today.")
-                .font(AppType.subheading)
-                .foregroundStyle(.black.opacity(0.65))
         }
     }
 
-    private func todayStatusCard(compact: Bool) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 14 : 18) {
-            HStack(alignment: .top, spacing: 14) {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        Text("Today's Status")
-                            .font(AppType.caption)
-                            .textCase(.uppercase)
-                            .tracking(1.5)
-                            .foregroundStyle(.black.opacity(0.45))
-                        Text(essentialsNeedAttention ? "Needs focus" : "On track")
-                            .font(.system(size: 10, weight: .bold, design: .rounded))
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 5)
-                            .background((essentialsNeedAttention ? Color.status.warning : recommendationAccent).opacity(0.14), in: Capsule())
-                            .foregroundStyle(essentialsNeedAttention ? Color.status.warning : recommendationAccent)
-                    }
-                    Text(recommendationTitle)
-                        .font(.system(size: compact ? 24 : 28, weight: .bold, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.85))
-                        .lineLimit(2)
-                    Text(recommendationSubtitle)
-                        .font(AppType.subheading)
-                        .foregroundStyle(.black.opacity(0.62))
-                        .lineLimit(compact ? 2 : 3)
-                }
-
-                Spacer(minLength: 8)
-
-                VStack(alignment: .trailing, spacing: 4) {
-                    Text(readinessScore.map { "\($0)" } ?? "—")
-                        .font(.system(size: compact ? 34 : 40, weight: .bold, design: .rounded))
-                        .foregroundStyle(readinessColor)
+    private func statusOverviewCard(compact: Bool, tight: Bool) -> some View {
+        VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 12 : 16)) {
+            HStack {
+                sectionEyebrow("Status")
+                Spacer()
+                HStack(spacing: 6) {
+                    Circle()
+                        .fill(recommendationAccent)
+                        .frame(width: 8, height: 8)
                     Text(readinessContextShort)
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.black.opacity(0.55))
+                        .foregroundStyle(.black.opacity(0.58))
                 }
             }
 
-            HStack(spacing: 8) {
-                statusChip(
-                    title: "Scheduled",
-                    value: activeDayType.rawValue,
-                    tint: activeDayType.isTrainingDay ? Color.accent.cyan : Color.status.warning
+            HStack(alignment: .top, spacing: 0) {
+                statusValueColumn(
+                    title: "Weight",
+                    icon: "scalemass.fill",
+                    tint: .blue,
+                    value: currentWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—",
+                    unit: settings.unitSystem.weightLabel(),
+                    target: "Target: \(settings.unitSystem.displayWeightValue(profile.targetWeightMin))–\(settings.unitSystem.displayWeightValue(profile.targetWeightMax)) \(settings.unitSystem.weightLabel())",
+                    isMissing: currentWeight == nil,
+                    compact: tight
                 )
-                statusChip(
-                    title: "Focus",
-                    value: recommendationTone,
-                    tint: recommendationAccent
-                )
-                statusChip(
-                    title: "Time",
-                    value: estimatedSessionLength,
-                    tint: Color.appBlue1
+
+                Divider()
+                    .overlay(Color.white.opacity(0.4))
+                    .padding(.vertical, 8)
+
+                statusValueColumn(
+                    title: "Body Fat",
+                    icon: "drop.fill",
+                    tint: .appOrange2,
+                    value: currentBF.map { String(format: "%.1f", $0) } ?? "—",
+                    unit: "%",
+                    target: "Target: \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%",
+                    isMissing: currentBF == nil,
+                    compact: tight
                 )
             }
 
-            HStack(spacing: 10) {
+            HStack {
+                Text(recommendationTitle)
+                    .font(tight ? AppType.subheading : AppType.body)
+                    .foregroundStyle(.black.opacity(0.72))
+                    .lineLimit(2)
+                Spacer()
                 Button {
-                    performHomeAction("primary", style: .medium, action: runPrimaryAction)
+                    performHomeAction("metrics", action: { manualEntry = true })
                 } label: {
-                    Label(primaryActionTitle, systemImage: primaryActionIcon)
-                        .font(.subheadline.weight(.semibold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, compact ? 12 : 14)
-                        .background(recommendationAccent, in: RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.white)
+                    Image(systemName: "square.and.pencil")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Color.appBlue1)
+                        .frame(width: 34, height: 34)
+                        .background(Color.white.opacity(0.42), in: Circle())
                 }
                 .buttonStyle(.plain)
-                .scaleEffect(highlightedActionID == "primary" ? 0.985 : 1)
-                .shadow(color: recommendationAccent.opacity(0.22), radius: highlightedActionID == "primary" ? 8 : 14, y: 6)
-
-                Menu {
-                    Button("Use Today's Schedule") { selectedDayType = nil }
-                    Divider()
-                    ForEach(DayType.allCases, id: \.self) { day in
-                        Button(day.rawValue) { selectedDayType = day }
-                    }
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "slider.horizontal.3")
-                        Text("Adjust")
-                    }
-                    .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, compact ? 12 : 14)
-                    .background(Color.white.opacity(0.45), in: RoundedRectangle(cornerRadius: 16))
-                    .foregroundStyle(.black.opacity(0.78))
-                }
             }
         }
-        .padding(compact ? 16 : 18)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 24)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.8), recommendationAccent.opacity(0.16)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                Circle()
-                    .fill(recommendationAccent.opacity(0.18))
-                    .frame(width: compact ? 136 : 164, height: compact ? 136 : 164)
-                    .blur(radius: 18)
-                    .offset(x: compact ? 80 : 92, y: compact ? -42 : -52)
-                RoundedRectangle(cornerRadius: 24)
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.white.opacity(0.18), Color.clear],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .padding(1)
-                RoundedRectangle(cornerRadius: 24)
-                    .stroke(Color.white.opacity(0.25), lineWidth: 1)
-                    .blendMode(.plusLighter)
-            }
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.white.opacity(0.55), lineWidth: 1)
-        )
-        .shadow(color: recommendationAccent.opacity(0.18), radius: 18, y: 8)
+        .padding(tight ? 14 : (compact ? 16 : 18))
+        .background(homeCardBackground(accent: .appOrange2))
         .scaleEffect(statusPulse ? 1.01 : 1)
     }
 
-    private var essentialsCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Essentials")
-                    .font(AppType.caption)
-                    .textCase(.uppercase)
-                    .tracking(1.5)
-                    .foregroundStyle(.black.opacity(0.45))
-                Text(essentialsSummary)
-                    .font(AppType.subheading)
-                    .foregroundStyle(essentialsNeedAttention ? Color.status.warning : .black.opacity(0.58))
-            }
-
-            essentialRow(
-                title: "Body Check-In",
-                detail: bodyCheckDetail,
-                status: bodyCheckStatus,
-                tint: .blue,
-                actionTitle: currentWeight == nil && currentBF == nil ? "Log" : "Edit",
-                isMissing: currentWeight == nil && currentBF == nil
-            ) {
-                manualEntry = true
-            }
-
-            essentialRow(
-                title: "Nutrition",
-                detail: nutritionDetail,
-                status: nutritionStatus,
-                tint: .accent.cyan,
-                actionTitle: "Open",
-                isMissing: loggedMealCount == 0
-            ) {
-                selectedTab = .nutrition
-            }
-
-            essentialRow(
-                title: "Supplements",
-                detail: supplementDetail,
-                status: supplementStatus,
-                tint: .accent.gold,
-                actionTitle: "Track",
-                isMissing: completedSupplementStacks < 2
-            ) {
-                selectedTab = .nutrition
-            }
-        }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 22)
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    LinearGradient(
-                        colors: [
-                            Color.white.opacity(0.18),
-                            essentialsNeedAttention ? Color.status.warning.opacity(0.1) : Color.clear
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .clipShape(RoundedRectangle(cornerRadius: 22))
-                )
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 22)
-                .stroke(Color.white.opacity(0.35), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
-    }
-
-    private func essentialRow(
-        title: String,
-        detail: String,
-        status: String,
-        tint: Color,
-        actionTitle: String,
-        isMissing: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button {
-            performHomeAction(title, action: action)
-        } label: {
-            HStack(alignment: .center, spacing: 12) {
-                Circle()
-                    .fill(tint.opacity(isMissing ? 0.2 : 0.14))
-                    .frame(width: 36, height: 36)
-                    .overlay(
-                        Circle()
-                            .stroke(tint.opacity(isMissing ? 0.55 : 0.35), lineWidth: isMissing ? 1.4 : 1)
-                    )
-                    .overlay(
-                        Circle()
-                            .fill(tint)
-                            .frame(width: 10, height: 10)
-                    )
-
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        Text(title)
-                            .font(.subheadline.weight(.semibold))
+    private func goalProgressCard(compact: Bool, tight: Bool) -> some View {
+        HStack(alignment: .center, spacing: tight ? 14 : (compact ? 18 : 22)) {
+            VStack(alignment: .leading, spacing: 12) {
+                sectionEyebrow("Goal")
+                ZStack {
+                    Circle()
+                        .stroke(Color.white.opacity(0.38), lineWidth: 12)
+                    Circle()
+                        .trim(from: 0, to: max(goalProgress, 0.02))
+                        .stroke(
+                            AngularGradient(colors: [.appBlue1, .appOrange2, .appBlue1], center: .center),
+                            style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(-90))
+                    VStack(spacing: 2) {
+                        Text("\(Int(goalProgress * 100))%")
+                            .font(.system(size: tight ? 22 : (compact ? 24 : 28), weight: .bold, design: .rounded))
                             .foregroundStyle(.black.opacity(0.82))
-                        if isMissing {
-                            Text("Needs attention")
-                                .font(.system(size: 10, weight: .bold, design: .rounded))
-                                .padding(.horizontal, 7)
-                                .padding(.vertical, 4)
-                                .background(Color.status.warning.opacity(0.16), in: Capsule())
-                                .foregroundStyle(Color.status.warning)
+                        Text("Goal")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.black.opacity(0.56))
+                    }
+                }
+                .frame(width: tight ? 92 : (compact ? 104 : 116), height: tight ? 92 : (compact ? 104 : 116))
+            }
+
+            VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 14 : 18)) {
+                sectionEyebrow("Goal Progress")
+                progressLine(
+                    title: "Weight",
+                    progress: profile.weightProgress(current: currentWeight),
+                    tint: .appBlue1,
+                    compact: tight
+                )
+                progressLine(
+                    title: "Body Fat",
+                    progress: profile.bfProgress(current: currentBF),
+                    tint: .appOrange2,
+                    compact: tight
+                )
+                Text(essentialsSummary)
+                    .font(.caption)
+                    .foregroundStyle(.black.opacity(0.56))
+                    .lineLimit(2)
+            }
+        }
+        .padding(tight ? 14 : (compact ? 16 : 18))
+        .background(homeCardBackground(accent: .appBlue1))
+    }
+
+    private func startTrainingCard(compact: Bool, tight: Bool) -> some View {
+        VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 14 : 16)) {
+            sectionEyebrow("Start Training")
+
+            HStack(spacing: tight ? 12 : (compact ? 14 : 18)) {
+                Button {
+                    performHomeAction("primary", style: .medium, action: runPrimaryAction)
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(recommendationAccent)
+                            .frame(width: tight ? 68 : (compact ? 78 : 88), height: tight ? 68 : (compact ? 78 : 88))
+                        Image(systemName: primaryActionIcon)
+                            .font(.system(size: tight ? 24 : (compact ? 28 : 32), weight: .bold))
+                            .foregroundStyle(.white)
+                    }
+                }
+                .buttonStyle(.plain)
+                .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
+                .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
+
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(primaryActionTitle)
+                        .font(.system(size: tight ? 18 : 20, weight: .bold, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.82))
+
+                    Menu {
+                        Button("Use Today's Schedule") { selectedDayType = nil }
+                        Divider()
+                        ForEach(DayType.allCases, id: \.self) { day in
+                            Button(day.rawValue) { selectedDayType = day }
                         }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: activeDayType.icon)
+                            Text(activeDayType.rawValue)
+                                .lineLimit(1)
+                            Image(systemName: "chevron.down")
+                                .font(.caption.weight(.bold))
+                        }
+                        .font(.system(size: tight ? 15 : 16, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color.appBlue1)
                     }
-                    Text(detail)
+
+                    Text("\(estimatedSessionLength) • \(recommendationTone)")
                         .font(AppType.subheading)
-                        .foregroundStyle(.black.opacity(0.6))
-                        .lineLimit(2)
-                }
-
-                Spacer(minLength: 8)
-
-                VStack(alignment: .trailing, spacing: 8) {
-                    Text(status)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(tint)
-                    HStack(spacing: 6) {
-                        Text(actionTitle)
-                            .font(.caption.weight(.semibold))
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.black.opacity(0.58))
+                    if !tight {
+                        Text(recommendationSubtitle)
+                            .font(.caption)
+                            .foregroundStyle(.black.opacity(0.56))
+                            .lineLimit(2)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(tint.opacity(0.14), in: Capsule())
-                    .foregroundStyle(tint)
                 }
-            }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 18)
-                    .fill(isMissing ? tint.opacity(0.1) : Color.white.opacity(0.38))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 18)
-                    .stroke(
-                        highlightedActionID == title
-                            ? tint.opacity(0.58)
-                            : tint.opacity(isMissing ? 0.28 : 0.18),
-                        lineWidth: highlightedActionID == title ? 1.6 : 1
-                    )
-            )
-            .shadow(color: highlightedActionID == title ? tint.opacity(0.18) : .clear, radius: 10, y: 4)
-            .scaleEffect(highlightedActionID == title ? 0.99 : 1)
-        }
-        .buttonStyle(.plain)
-    }
 
-    private func secondaryActionsRow(compact: Bool) -> some View {
-        HStack(spacing: 12) {
-            secondaryActionCard(
-                actionID: "plan",
-                title: "Open Plan",
-                subtitle: activeDayType.isTrainingDay ? "\(activeDayType.rawValue) • \(totalExerciseCount) items" : "Review today's training decision",
-                icon: "figure.strengthtraining.traditional",
-                tint: recommendationAccent,
-                compact: compact
-            ) {
-                showExerciseSheet = true
-            }
-
-            secondaryActionCard(
-                actionID: "progress",
-                title: "View Progress",
-                subtitle: "Weight, body fat, training, and adherence trends",
-                icon: "chart.line.uptrend.xyaxis",
-                tint: .accent.gold,
-                compact: compact
-            ) {
-                selectedTab = .stats
+                Spacer(minLength: 0)
             }
         }
+        .padding(tight ? 14 : (compact ? 16 : 18))
+        .background(homeCardBackground(accent: recommendationAccent))
     }
 
-    private func secondaryActionCard(
-        actionID: String,
+    private func metricsCard(compact: Bool, tight: Bool) -> some View {
+        VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 12 : 16)) {
+            sectionEyebrow("Metrics")
+            HStack(spacing: tight ? 5 : (compact ? 6 : 8)) {
+                metricTile(icon: "waveform.path.ecg", value: displayMetricNumber(hrvValue), label: "HRV", tint: .gray, compact: tight)
+                metricTile(icon: "heart.fill", value: displayMetricNumber(restingHRValue), label: "Rest HR", tint: .brown, compact: tight)
+                metricTile(icon: "moon.fill", value: displaySleepValue, label: "Sleep", tint: .purple, compact: tight)
+                metricTile(icon: "figure.walk", value: displayStepsValue, label: "Steps", tint: .blue, compact: tight)
+            }
+        }
+        .padding(tight ? 14 : (compact ? 16 : 18))
+        .background(homeCardBackground(accent: .accent.cyan))
+    }
+
+    private func statusValueColumn(
         title: String,
-        subtitle: String,
         icon: String,
         tint: Color,
-        compact: Bool,
-        action: @escaping () -> Void
+        value: String,
+        unit: String,
+        target: String,
+        isMissing: Bool,
+        compact: Bool
     ) -> some View {
-        Button {
-            performHomeAction(actionID, action: action)
-        } label: {
-            VStack(alignment: .leading, spacing: compact ? 10 : 12) {
-                HStack {
-                    Image(systemName: icon)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(tint)
-                    Spacer()
-                    Image(systemName: "arrow.up.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.black.opacity(0.35))
-                }
-
+        VStack(alignment: .leading, spacing: compact ? 10 : 14) {
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                    .font(.caption.weight(.bold))
                 Text(title)
-                    .font(.headline)
-                    .foregroundStyle(.black.opacity(0.84))
-
-                Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.62))
-                    .lineLimit(compact ? 2 : 3)
+                    .font(.system(size: 11, weight: .bold, design: .rounded))
+                    .tracking(2)
+                if isMissing {
+                    Text("Missing")
+                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .padding(.horizontal, 7)
+                        .padding(.vertical, 4)
+                        .background(tint.opacity(0.14), in: Capsule())
+                        .foregroundStyle(tint)
+                }
             }
-            .padding(16)
-            .frame(maxWidth: .infinity, minHeight: compact ? 124 : 136, alignment: .topLeading)
-            .background(
-                RoundedRectangle(cornerRadius: 22)
-                    .fill(.ultraThinMaterial)
-                    .overlay(
-                        LinearGradient(
-                            colors: [tint.opacity(0.14), Color.white.opacity(0.02)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 22))
-                    )
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 22)
-                    .stroke(highlightedActionID == actionID ? tint.opacity(0.58) : tint.opacity(0.28), lineWidth: highlightedActionID == actionID ? 1.6 : 1)
-            )
-            .shadow(color: highlightedActionID == actionID ? tint.opacity(0.18) : .clear, radius: 12, y: 5)
-            .scaleEffect(highlightedActionID == actionID ? 0.99 : 1)
+            .foregroundStyle(tint)
+
+            HStack(alignment: .lastTextBaseline, spacing: 4) {
+                Text(value)
+                    .font(.system(size: compact ? 22 : 26, weight: .bold, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(.black.opacity(0.82))
+                Text(unit)
+                    .font((compact ? Font.subheadline : Font.title3).weight(.medium))
+                    .foregroundStyle(.black.opacity(0.42))
+            }
+
+            Text(target)
+                .font(.caption)
+                .foregroundStyle(isMissing ? tint.opacity(0.88) : .black.opacity(0.52))
         }
-        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 4)
+        .padding(.vertical, 4)
+        .background(isMissing ? tint.opacity(0.06) : Color.clear, in: RoundedRectangle(cornerRadius: 18))
     }
 
-    private var syncFooter: some View {
-        HStack(spacing: 8) {
-            if !syncLabel.isEmpty {
-                Text(syncLabel)
-                    .font(AppType.caption)
-                    .foregroundStyle(Color.white.opacity(0.65))
+    private func progressLine(title: String, progress: Double, tint: Color, compact: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(title)
+                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
+                    .foregroundStyle(.black.opacity(0.64))
+                Spacer()
+                Text("\(Int(progress * 100))%")
+                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(tint)
             }
-            Spacer()
-            Text(aiTip)
-                .font(AppType.caption)
-                .foregroundStyle(Color.white.opacity(0.65))
-                .lineLimit(1)
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Color.white.opacity(0.42))
+                    Capsule()
+                        .fill(tint.opacity(0.95))
+                        .frame(width: max(proxy.size.width * progress, 8))
+                }
+            }
+            .frame(height: 8)
         }
-        .padding(.horizontal, 2)
     }
 
-    private func statusChip(title: String, value: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(title)
-                .font(.system(size: 9, weight: .semibold, design: .monospaced))
-                .foregroundStyle(.black.opacity(0.45))
-                .tracking(1.2)
+    private func metricTile(icon: String, value: String, label: String, tint: Color, compact: Bool) -> some View {
+        VStack(spacing: compact ? 6 : 8) {
+            Image(systemName: icon)
+                .font(.system(size: compact ? 16 : 18, weight: .semibold))
+                .foregroundStyle(tint)
             Text(value)
-                .font(AppType.body)
+                .font(.system(size: compact ? 17 : 19, weight: .bold, design: .rounded))
+                .monospacedDigit()
                 .foregroundStyle(.black.opacity(0.82))
                 .lineLimit(1)
+                .minimumScaleFactor(0.7)
+            Text(label)
+                .font(compact ? .caption2 : .caption)
+                .foregroundStyle(.black.opacity(0.54))
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(tint.opacity(0.35), lineWidth: 1)
-        )
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, compact ? 8 : 9)
+        .background(Color.white.opacity(0.22), in: RoundedRectangle(cornerRadius: 18))
+    }
+
+    private func sectionEyebrow(_ title: String) -> some View {
+        Text(title)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .tracking(2.1)
+            .foregroundStyle(.black.opacity(0.45))
+            .textCase(.uppercase)
+    }
+
+    private func homeCardBackground(accent: Color) -> some View {
+        RoundedRectangle(cornerRadius: 24)
+            .fill(
+                LinearGradient(
+                    colors: [Color.white.opacity(0.46), accent.opacity(0.12)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 24)
+                    .stroke(Color.white.opacity(0.35), lineWidth: 1)
+            )
+            .shadow(color: .white.opacity(0.12), radius: 8, y: 2)
     }
 
     private var greeting: String {
@@ -674,8 +566,6 @@ struct MainScreenView: View {
         default: Color.status.error
         }
     }
-
-    private var readinessColor: Color { recommendationAccent }
 
     private var recommendationTitle: String {
         if recoveryRecommendation.shouldReplaceTraining {
@@ -748,23 +638,6 @@ struct MainScreenView: View {
         }
     }
 
-    private var bodyCheckDetail: String {
-        if let currentWeight, let currentBF {
-            return "\(settings.unitSystem.displayWeightValue(currentWeight)) \(settings.unitSystem.weightLabel()) • \(String(format: "%.1f", currentBF))% body fat"
-        }
-        if let currentWeight {
-            return "\(settings.unitSystem.displayWeightValue(currentWeight)) \(settings.unitSystem.weightLabel()) recorded today"
-        }
-        if let currentBF {
-            return "\(String(format: "%.1f", currentBF))% body fat recorded today"
-        }
-        return "Weight and body composition are still missing today."
-    }
-
-    private var bodyCheckStatus: String {
-        (currentWeight != nil || currentBF != nil) ? "Logged" : "Missing"
-    }
-
     private var essentialsNeedAttention: Bool {
         essentialMissingCount > 0
     }
@@ -779,42 +652,41 @@ struct MainScreenView: View {
 
     private var essentialsSummary: String {
         if !essentialsNeedAttention {
-            return "The main daily checkboxes are on track."
+            return "Status is on track for today."
         }
-        return "\(essentialMissingCount) core \(essentialMissingCount == 1 ? "item needs" : "items need") attention before the day is complete."
+        return "\(essentialMissingCount) core \(essentialMissingCount == 1 ? "item still needs" : "items still need") attention."
     }
 
-    private var nutritionDetail: String {
-        if loggedMealCount == 0 {
-            return "No meals logged yet. Protein and calories still need attention."
+    private var hrvValue: Double? {
+        metrics.hrv ?? todayLog?.biometrics.manualHRV
+    }
+
+    private var restingHRValue: Double? {
+        metrics.restingHR ?? todayLog?.biometrics.manualRestingHR
+    }
+
+    private var sleepValue: Double? {
+        metrics.sleepHours ?? todayLog?.biometrics.manualSleepHours
+    }
+
+    private var displaySleepValue: String {
+        guard let sleepValue else { return "—" }
+        return String(format: "%.1f", sleepValue)
+    }
+
+    private var displayStepsValue: String {
+        guard let steps = metrics.stepCount else { return "—" }
+        if steps >= 1000 {
+            return String(format: "%.1fk", Double(steps) / 1000)
         }
-        return "\(loggedMealCount) meals logged • \(Int(remainingProteinForHome))g protein left"
+        return "\(steps)"
     }
 
-    private var nutritionStatus: String {
-        loggedMealCount == 0 ? "Open" : "Active"
-    }
-
-    private var supplementDetail: String {
-        "\(completedSupplementStacks) of 2 stacks completed today."
-    }
-
-    private var supplementStatus: String {
-        completedSupplementStacks == 2 ? "Done" : (completedSupplementStacks == 0 ? "Open" : "Partial")
-    }
-
-    private var remainingProteinForHome: Double {
-        let target = todayLog?.biometrics.leanBodyMassKg.map { $0 * 2 } ?? 135
-        let consumed = todayLog?.nutritionLog.resolvedProteinG ?? 0
-        return max(target - consumed, 0)
-    }
-
-    private var syncLabel: String {
-        guard let lastSync = healthService.lastSyncDate else { return "" }
-        let elapsed = Date().timeIntervalSince(lastSync)
-        if elapsed < 120 { return "⌚ Just now" }
-        else if elapsed < 3600 { return "⌚ Synced \(Int(elapsed / 60))m ago" }
-        else { return "⌚ Synced today" }
+    private func displayMetricNumber(_ value: Double?) -> String {
+        guard let value else { return "—" }
+        return value.rounded() == value
+            ? String(Int(value))
+            : String(format: "%.1f", value)
     }
 
     private func performHomeAction(
@@ -985,8 +857,19 @@ struct SyncStatusIndicator: View {
                 .frame(width: 6, height: 6)
             Text(watchService.status.label)
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(.black.opacity(0.75))
+                .foregroundStyle(.black.opacity(0.72))
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            Capsule()
+                .fill(Color.white.opacity(0.34))
+                .overlay(
+                    Capsule()
+                        .stroke(Color.white.opacity(0.42), lineWidth: 1)
+                )
+        )
+        .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
         .tint(.clear)
     }
 }

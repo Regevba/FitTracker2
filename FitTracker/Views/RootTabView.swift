@@ -83,6 +83,9 @@ struct RootTabView: View {
             }
         }
         .tint(.blue)
+        .toolbarBackground(.visible, for: .tabBar)
+        .toolbarBackground(Color.white.opacity(0.92), for: .tabBar)
+        .toolbarColorScheme(.light, for: .tabBar)
     }
 
     // ── iPad / macOS sidebar ──────────────────────────────
@@ -154,9 +157,18 @@ struct RootTabView: View {
             Button { showAccount = true } label: {
                 Image(systemName: "line.3.horizontal")
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.blue)
-                    .frame(width: 32, height: 32)
-                    .contentShape(Rectangle())
+                    .foregroundStyle(.white.opacity(0.92))
+                    .frame(width: 46, height: 46)
+                    .background(
+                        Circle()
+                            .fill(Color.white.opacity(0.34))
+                            .overlay(
+                                Circle()
+                                    .stroke(Color.white.opacity(0.45), lineWidth: 1)
+                            )
+                    )
+                    .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
+                    .contentShape(Circle())
             }
             .buttonStyle(.plain)
             .tint(.clear)
