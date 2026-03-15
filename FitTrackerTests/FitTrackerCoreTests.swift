@@ -112,8 +112,8 @@ final class FitTrackerCoreTests: XCTestCase {
         let points = store.nutritionAdherencePoints(from: .distantPast, to: .distantFuture)
 
         XCTAssertEqual(points.count, 1)
-        XCTAssertEqual(points[0].calories, 1000, accuracy: 0.001)
-        XCTAssertEqual(points[0].proteinG, 75, accuracy: 0.001)
+        XCTAssertEqual(points[0].calories ?? 0, 1000, accuracy: 0.001)
+        XCTAssertEqual(points[0].proteinG ?? 0, 75, accuracy: 0.001)
     }
 
     func testRecoveryDayUsesStartOfDayBoundaries() {
