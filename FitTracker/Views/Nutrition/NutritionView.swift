@@ -1,8 +1,3 @@
-// Views/Nutrition/NutritionView.swift
-// Tab 3: Nutrition
-//   At this stage: supplement tracking only
-//   Morning stack + Evening stack, per-supplement check-off
-
 import SwiftUI
 
 struct NutritionView: View {
@@ -27,7 +22,7 @@ struct NutritionView: View {
                 .ignoresSafeArea()
 
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 20) {
+            VStack(spacing: 24) {
                 dateHeader
                 nutritionCommandDeck
                 macroBar
@@ -91,23 +86,49 @@ struct NutritionView: View {
         log?.nutritionLog ?? NutritionLog()
     }
 
-    private var currentPhase: ProgramPhase {
-        dataStore.userProfile.currentPhase
-    }
-
     private var isTrainingDay: Bool {
         (log?.dayType ?? suggestedDay(for: activeDate)).isTrainingDay
     }
 
+    private var latestWeightKg: Double? {
+        if let current = log?.biometrics.weightKg { return current }
+        return dataStore.dailyLogs
+            .sorted { $0.date > $1.date }
+            .compactMap { $0.biometrics.weightKg }
+            .first
+    }
+
+    private var latestBodyFatPercent: Double? {
+        if let current = log?.biometrics.bodyFatPercent { return current }
+        return dataStore.dailyLogs
+            .sorted { $0.date > $1.date }
+            .compactMap { $0.biometrics.bodyFatPercent }
+            .first
+    }
+
+    private var goalPlan: NutritionGoalPlan {
+        dataStore.userProfile.nutritionPlan(
+            currentWeightKg: latestWeightKg,
+            currentBodyFatPercent: latestBodyFatPercent,
+            isTrainingDay: isTrainingDay,
+            preferences: dataStore.userPreferences
+        )
+    }
+
     private var targetCalories: Double {
-        isTrainingDay ? Double(currentPhase.trainingCalories) : Double(currentPhase.restCalories)
+        goalPlan.calories
     }
 
     private var targetProteinG: Double {
-        if let leanMass = log?.biometrics.leanBodyMassKg {
-            return leanMass * 2
-        }
-        return 135
+        goalPlan.proteinG
+    }
+
+    private var targetCarbsG: Double {
+        goalPlan.carbsG
+    }
+
+    private var targetFatG: Double {
+        goalPlan.fatG
     }
 
     private var consumedCalories: Double {
@@ -118,12 +139,24 @@ struct NutritionView: View {
         nutritionLog.resolvedProteinG ?? 0
     }
 
+    private var consumedCarbsG: Double {
+        nutritionLog.resolvedCarbsG ?? 0
+    }
+
+    private var consumedFatG: Double {
+        nutritionLog.resolvedFatG ?? 0
+    }
+
     private var remainingCalories: Double {
         max(targetCalories - consumedCalories, 0)
     }
 
     private var remainingProteinG: Double {
         max(targetProteinG - consumedProteinG, 0)
+    }
+
+    private var remainingFatG: Double {
+        max(targetFatG - consumedFatG, 0)
     }
 
     private var nextMealNumber: Int {
@@ -134,15 +167,18 @@ struct NutritionView: View {
         let completedMeals = nutritionLog.meals.filter { $0.status == .completed }.count
         let templateCount = dataStore.mealTemplates.count
         if completedMeals == 0 {
-            return templateCount > 0 ? "Use your saved meals to log faster." : "Log your first meal to start building momentum."
+            return templateCount > 0 ? "Use your saved meals or scan a label to start the cut cleanly." : "Log your first meal to start the deficit with structure."
         }
         if remainingProteinG > 25 {
             return "Protein is the main gap right now. A quick repeat meal can close it fast."
         }
-        if remainingCalories > 400 {
-            return "You still have room in the plan. Finish the day with one more full meal."
+        if remainingFatG > 18 {
+            return "You still need some healthy fats. Add them without overshooting calories."
         }
-        return "Nutrition is on track. Keep hydration and supplements tight."
+        if remainingCalories > 400 {
+            return "You still have room in the plan. Finish the day with one more measured meal."
+        }
+        return "Nutrition is on track. Keep hydration tight and protect the deficit."
     }
 
     private var recentMeals: [MealEntry] {
@@ -243,13 +279,13 @@ struct NutritionView: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("Nutrition Focus")
+                    Text("NUTRITION STRATEGY")
                         .font(.caption2.monospaced())
                         .foregroundStyle(.secondary)
-                        .tracking(1)
-                    Text(remainingProteinG > 25 ? "Close the protein gap" : "Stay consistent through the day")
+                        .tracking(1.4)
+                    Text(goalPlan.title)
                         .font(.headline)
-                    Text(completionText)
+                    Text(goalPlan.summary)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -258,9 +294,10 @@ struct NutritionView: View {
                     Text("\(Int(remainingCalories))")
                         .font(.system(.title3, design: .monospaced, weight: .bold))
                         .foregroundStyle(Color.appOrange2)
-                    Text("kcal left")
+                    Text(goalPlan.emphasis)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.trailing)
                 }
             }
 
@@ -295,16 +332,11 @@ struct NutritionView: View {
 
             HStack(spacing: 20) {
                 nutritionMetric(title: "Protein left", value: "\(Int(remainingProteinG))g", color: Color.accent.cyan)
+                nutritionMetric(title: "Fat floor", value: "\(Int(max(targetFatG, 0)))g", color: Color(red: 0.60, green: 0.35, blue: 0.15))
                 nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: Color.appOrange2)
-                nutritionMetric(title: "Water", value: "\(Int((nutritionLog.waterML ?? 0) / 250)) cups", color: Color.appBlue2)
             }
         }
-        .padding(16)
-        .background(Color.white.opacity(0.5), in: RoundedRectangle(cornerRadius: 18))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.white.opacity(0.45), lineWidth: 1)
-        )
+        .padding(.bottom, 4)
     }
 
     private var adherenceRow: some View {
@@ -352,17 +384,16 @@ struct NutritionView: View {
             }
             .frame(height: 6)
         }
-        .padding(14)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .padding(.vertical, 6)
     }
 
     private var macroBar: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("Macro Targets")
+                Text("MACRO TARGETS")
                     .font(.caption2.monospaced())
                     .foregroundStyle(.secondary)
-                    .tracking(1)
+                    .tracking(1.4)
                 Spacer()
                 Text("\(Int(consumedCalories)) / \(Int(targetCalories)) kcal")
                     .font(.caption.weight(.semibold))
@@ -374,8 +405,14 @@ struct NutritionView: View {
                 carbs: nutritionLog.resolvedCarbsG ?? 0,
                 fat: nutritionLog.resolvedFatG ?? 0,
                 targetCalories: Int(targetCalories),
-                targetProteinG: targetProteinG
+                targetProteinG: targetProteinG,
+                targetCarbsG: targetCarbsG,
+                targetFatG: targetFatG
             )
+
+            Text(completionText)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -484,8 +521,7 @@ struct NutritionView: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(16)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
+        .padding(.vertical, 6)
     }
 
     // ─────────────────────────────────────────────────────
@@ -691,8 +727,7 @@ struct NutritionView: View {
             Text("Supplement timing matters. Take morning stack with food. Evening stack 30 min before bed — especially glycine + magnesium for deep sleep. Always separate creatine from NAC by 2+ hours.")
                 .font(.caption2).foregroundStyle(.tertiary)
         }
-        .padding(12)
-        .background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 10))
+        .padding(.vertical, 8)
     }
 
     private static let todayDateFormatter: DateFormatter = {
@@ -729,11 +764,10 @@ struct NutritionView: View {
     private func loadLog(for date: Date) {
         let normalizedDate = Calendar.current.startOfDay(for: date)
         activeDate = normalizedDate
-        log = dataStore.log(for: normalizedDate) ?? DailyLog(
-            date: normalizedDate,
-            phase: dataStore.userProfile.currentPhase,
-            dayType: suggestedDay(for: normalizedDate),
-            recoveryDay: dataStore.userProfile.recoveryDay(for: normalizedDate)
+        log = dataStore.log(for: normalizedDate) ?? DailyLog.scheduled(
+            for: normalizedDate,
+            profile: dataStore.userProfile,
+            dayType: suggestedDay(for: normalizedDate)
         )
     }
 
@@ -829,12 +863,7 @@ struct NutritionView: View {
                                     .foregroundStyle(.secondary)
                             }
                             .frame(width: 180, alignment: .leading)
-                            .padding(14)
-                            .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 16))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color.white.opacity(0.5), lineWidth: 1)
-                            )
+                            .padding(.vertical, 6)
                         }
                         .buttonStyle(.plain)
                     }

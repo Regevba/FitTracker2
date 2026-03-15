@@ -15,12 +15,14 @@ struct MealSectionView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("Meals")
-                    .font(.headline)
-                Text("Fast log from your saved meals, or open a fresh slot.")
-                    .font(.caption)
+                Text("MEALS")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(.secondary)
+                    .tracking(1.6)
+                Text("Fast log from saved meals, barcode, or a nutrition label photo.")
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
@@ -29,15 +31,11 @@ struct MealSectionView: View {
                 MealCard(mealNumber: mealNumber, entry: entry, isSuggested: mealNumber == suggestedMealNumber, mealSlotNames: mealSlotNames) {
                     onTapMeal(mealNumber)
                 }
-            }
 
-            Text("Tap any meal slot to log")
-                .font(AppType.caption)
-                .foregroundStyle(Color.secondary.opacity(0.6))
-                .frame(maxWidth: .infinity)
-                .multilineTextAlignment(.center)
-                .padding(.top, 4)
-                .accessibilityHidden(true)
+                if mealNumber != displayedMealNumbers.last {
+                    Divider().opacity(0.35)
+                }
+            }
         }
     }
 }
@@ -71,9 +69,9 @@ private struct MealCard: View {
             return Color.status.success
         }
         if isSuggested {
-            return Color.accent.cyan.opacity(0.45)
+            return Color.accent.cyan.opacity(0.24)
         }
-        return Color.secondary.opacity(0.15)
+        return Color.clear
     }
 
     private var borderWidth: CGFloat {
@@ -92,11 +90,10 @@ private struct MealCard: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 12) {
-                // Meal number indicator
                 ZStack {
                     Circle()
-                        .fill(entry != nil ? Color.appOrange1.opacity(0.25) : Color.secondary.opacity(0.1))
-                        .frame(width: 36, height: 36)
+                        .fill(entry != nil ? Color.appOrange1.opacity(0.2) : Color.white.opacity(0.26))
+                        .frame(width: 40, height: 40)
                     Text("\(mealNumber)")
                         .font(AppType.body)
                         .foregroundStyle(entry != nil ? Color.appOrange2 : Color.secondary)
@@ -134,7 +131,6 @@ private struct MealCard: View {
 
                 Spacer()
 
-                // Status indicator / chevron
                 if entry?.status == .completed {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Color.status.success)
@@ -145,12 +141,8 @@ private struct MealCard: View {
                         .foregroundStyle(Color.secondary.opacity(0.5))
                 }
             }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSuggested ? Color.accent.cyan.opacity(0.08) : Color(UIColor.secondarySystemBackground))
-            )
+            .padding(.horizontal, 4)
+            .padding(.vertical, 4)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .strokeBorder(borderColor, lineWidth: borderWidth)

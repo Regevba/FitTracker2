@@ -228,6 +228,14 @@ extension NutritionLog {
     var resolvedFatG: Double? { totalFatG ?? mealFatTotal }
 }
 
+enum MealEntrySource: String, Codable, CaseIterable, Sendable {
+    case manual = "Manual"
+    case template = "Template"
+    case search = "Search"
+    case barcode = "Barcode"
+    case photoLabel = "Photo Label"
+}
+
 struct MealEntry: Identifiable, Codable, Sendable {
     var id:        UUID   = UUID()
     var mealNumber: Int
@@ -236,6 +244,10 @@ struct MealEntry: Identifiable, Codable, Sendable {
     var proteinG:  Double?
     var carbsG:    Double?
     var fatG:      Double?
+    var servingGrams: Double?
+    var labelReferenceGrams: Double?
+    var source: MealEntrySource = .manual
+    var sourceDetails: String = ""
     var eatenAt:   Date?
     var status:    TaskStatus = .pending
 }
@@ -398,6 +410,86 @@ struct UserPreferences: Codable, Equatable, Sendable {
     var zone2UpperHR: Int     = 124
     var hrReadyThreshold: Int = 60
     var hrvReadyThreshold: Double = 28.0
+    var nutritionGoalMode: NutritionGoalMode = .fatLoss
+}
+
+enum NutritionGoalMode: String, Codable, CaseIterable, Sendable {
+    case fatLoss = "Fat Loss"
+    case maintain = "Maintain"
+    case gain = "Lean Gain"
+
+    var shortLabel: String {
+        switch self {
+        case .fatLoss: "Deficit"
+        case .maintain: "Maintain"
+        case .gain: "Build"
+        }
+    }
+}
+
+struct NutritionGoalPlan: Sendable {
+    var calories: Double
+    var proteinG: Double
+    var carbsG: Double
+    var fatG: Double
+    var title: String
+    var summary: String
+    var emphasis: String
+}
+
+extension UserProfile {
+    func nutritionPlan(
+        currentWeightKg: Double?,
+        currentBodyFatPercent: Double?,
+        isTrainingDay: Bool,
+        preferences: UserPreferences
+    ) -> NutritionGoalPlan {
+        let weight = currentWeightKg ?? startWeightKg
+        let bodyFat = currentBodyFatPercent ?? startBodyFatPct
+        let leanMassKg = max(weight * (1 - bodyFat / 100.0), weight * 0.68)
+        let baseCalories = Double(isTrainingDay ? currentPhase.trainingCalories : currentPhase.restCalories)
+
+        let targetWeightMid = (targetWeightMin + targetWeightMax) / 2.0
+        let targetBFMid = (targetBFMin + targetBFMax) / 2.0
+        let weightGap = max(0, weight - targetWeightMid)
+        let bodyFatGap = max(0, bodyFat - targetBFMid)
+
+        let calories: Double
+        let title: String
+        let summary: String
+
+        switch preferences.nutritionGoalMode {
+        case .fatLoss:
+            let deficit = min(420, 170 + (weightGap * 34) + (bodyFatGap * 18))
+            let trainingRelief = isTrainingDay ? 70.0 : 0.0
+            calories = max(1400, baseCalories - deficit + trainingRelief)
+            title = "Continuous deficit"
+            summary = "High protein, moderate carbs, and a fat floor to keep recovery stable while body fat comes down."
+        case .maintain:
+            calories = baseCalories + (isTrainingDay ? 60 : 0)
+            title = "Hold maintenance"
+            summary = "Keep protein high and calories steady while you stabilize body composition and performance."
+        case .gain:
+            calories = baseCalories + (isTrainingDay ? 180 : 120)
+            title = "Lean gain"
+            summary = "Small surplus with high protein and controlled fats so weight climbs without losing structure."
+        }
+
+        let protein = max(130, leanMassKg * (preferences.nutritionGoalMode == .fatLoss ? 2.3 : 2.0))
+        let fat = max(48, weight * 0.7)
+        let remainingForCarbs = max(80, calories - (protein * 4) - (fat * 9))
+        let carbs = max(75, remainingForCarbs / 4)
+
+        return NutritionGoalPlan(
+            calories: calories,
+            proteinG: protein,
+            carbsG: carbs,
+            fatG: fat,
+            title: title,
+            summary: summary,
+            emphasis: "Protein floor \(Int(protein))g • Fat floor \(Int(fat))g • Carbs flex with activity"
+        )
+    }
 }
 
 private func iso(_ s: String) -> Date {

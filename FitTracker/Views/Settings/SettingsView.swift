@@ -181,6 +181,50 @@ struct SettingsView: View {
 
             // Nutrition section
             Section("Nutrition") {
+                Picker("Goal Mode", selection: Binding(
+                    get: { dataStore.userPreferences.nutritionGoalMode },
+                    set: {
+                        dataStore.userPreferences.nutritionGoalMode = $0
+                        Task { await dataStore.persistToDisk() }
+                    }
+                )) {
+                    ForEach(NutritionGoalMode.allCases, id: \.self) { mode in
+                        Text(mode.rawValue).tag(mode)
+                    }
+                }
+
+                TextField("Goal Weight Min", value: Binding(
+                    get: { dataStore.userProfile.targetWeightMin },
+                    set: {
+                        dataStore.userProfile.targetWeightMin = $0
+                        Task { await dataStore.persistToDisk() }
+                    }
+                ), format: .number.precision(.fractionLength(0...1)))
+
+                TextField("Goal Weight Max", value: Binding(
+                    get: { dataStore.userProfile.targetWeightMax },
+                    set: {
+                        dataStore.userProfile.targetWeightMax = $0
+                        Task { await dataStore.persistToDisk() }
+                    }
+                ), format: .number.precision(.fractionLength(0...1)))
+
+                TextField("Goal Body Fat Min", value: Binding(
+                    get: { dataStore.userProfile.targetBFMin },
+                    set: {
+                        dataStore.userProfile.targetBFMin = $0
+                        Task { await dataStore.persistToDisk() }
+                    }
+                ), format: .number.precision(.fractionLength(0...1)))
+
+                TextField("Goal Body Fat Max", value: Binding(
+                    get: { dataStore.userProfile.targetBFMax },
+                    set: {
+                        dataStore.userProfile.targetBFMax = $0
+                        Task { await dataStore.persistToDisk() }
+                    }
+                ), format: .number.precision(.fractionLength(0...1)))
+
                 ForEach(dataStore.userProfile.mealSlotNames.indices, id: \.self) { i in
                     TextField("Slot \(i+1)", text: Binding(
                         get: { dataStore.userProfile.mealSlotNames.indices.contains(i) ? dataStore.userProfile.mealSlotNames[i] : "Meal \(i+1)" },

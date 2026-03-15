@@ -4,6 +4,10 @@
 
 import SwiftUI
 import AVFoundation
+import Vision
+#if canImport(PhotosUI)
+import PhotosUI
+#endif
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -13,6 +17,7 @@ import UIKit
 // ─────────────────────────────────────────────────────────
 
 enum MealEntryTab: String, CaseIterable {
+    case smart    = "Smart"
     case manual   = "Manual"
     case template = "Template"
     case search   = "Search"
@@ -28,7 +33,7 @@ struct MealEntrySheet: View {
     let onSave: (MealEntry) -> Void
     @Environment(\.dismiss) var dismiss
 
-    @State private var activeTab: MealEntryTab = .manual
+    @State private var activeTab: MealEntryTab = .smart
 
     // Manual tab fields
     @State private var name:     String = ""
@@ -36,6 +41,15 @@ struct MealEntrySheet: View {
     @State private var proteinG: String = ""
     @State private var carbsG:   String = ""
     @State private var fatG:     String = ""
+    @State private var servingGrams: String = ""
+    @State private var referenceGrams: String = "100"
+    @State private var sourceDetails: String = ""
+
+    // Smart label parsing
+    @State private var rawLabelText: String = ""
+    @State private var parsedLabel: ParsedNutritionLabel?
+    @State private var smartStatus: String?
+    @State private var smartError: String?
 
     // Template save confirmation
     @State private var savedTemplate = false
@@ -48,6 +62,13 @@ struct MealEntrySheet: View {
 
     // Barcode scanner
     @State private var showScanner: Bool = false
+    #if canImport(UIKit)
+    @State private var showCameraCapture = false
+    @State private var selectedImagePreview: UIImage?
+    #endif
+    #if canImport(PhotosUI)
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    #endif
 
     // ── Initialise fields from the binding on appear ──────
     var body: some View {
@@ -68,6 +89,7 @@ struct MealEntrySheet: View {
                 // Tab content
                 Group {
                     switch activeTab {
+                    case .smart:    smartTab
                     case .manual:   manualTab
                     case .template: templateTab
                     case .search:   searchTab
@@ -88,6 +110,10 @@ struct MealEntrySheet: View {
                 proteinG = entry.proteinG.map  { String($0) } ?? ""
                 carbsG   = entry.carbsG.map    { String($0) } ?? ""
                 fatG     = entry.fatG.map      { String($0) } ?? ""
+                servingGrams = entry.servingGrams.map { formatNum($0) } ?? ""
+                referenceGrams = entry.labelReferenceGrams.map { formatNum($0) } ?? "100"
+                sourceDetails = entry.sourceDetails
+                rawLabelText = entry.source == .photoLabel ? entry.sourceDetails : ""
             }
         }
         #if os(iOS)
@@ -97,7 +123,131 @@ struct MealEntrySheet: View {
                 fetchProduct(barcode: barcode)
             }
         }
+        .sheet(isPresented: $showCameraCapture) {
+            NutritionCameraSheet { image in
+                showCameraCapture = false
+                processNutritionImage(image)
+            }
+        }
+        #if canImport(PhotosUI)
+        .onChange(of: selectedPhotoItem) { _, newItem in
+            guard let newItem else { return }
+            Task { await loadSelectedPhoto(newItem) }
+        }
         #endif
+        #endif
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: – Smart Tab
+    // ─────────────────────────────────────────────────────
+
+    private var smartTab: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Smart Nutrition Capture")
+                        .font(.headline)
+                    Text("Scan a nutrition label, paste English or Hebrew nutrition text, then scale it to the weight you actually ate.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                #if canImport(UIKit)
+                if let selectedImagePreview {
+                    Image(uiImage: selectedImagePreview)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 150)
+                        .frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18)
+                                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                        )
+                }
+                #endif
+
+                HStack(spacing: 10) {
+                    #if canImport(UIKit)
+                    Button {
+                        showCameraCapture = true
+                    } label: {
+                        smartActionLabel("Take Label Photo", systemImage: "camera.fill", tint: Color.accent.cyan)
+                    }
+                    .buttonStyle(.plain)
+                    #endif
+
+                    #if canImport(PhotosUI)
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                        smartActionLabel("Choose Photo", systemImage: "photo.fill", tint: Color.appOrange2)
+                    }
+                    .buttonStyle(.plain)
+                    #endif
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Nutrition Text")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                    TextEditor(text: $rawLabelText)
+                        .frame(minHeight: 140)
+                        .padding(10)
+                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+                    Text("Hebrew and English keywords are parsed here. Photos use Apple Vision OCR first, then this parser scales the label to your consumed weight. If a Hebrew label photo doesn’t scan cleanly, paste the label text here and the parser still works.")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+
+                HStack(spacing: 12) {
+                    manualField(label: "Consumed weight (g)", placeholder: "e.g. 100", text: $servingGrams, isNumeric: true)
+                    manualField(label: "Label reference (g)", placeholder: "100", text: $referenceGrams, isNumeric: true)
+                }
+
+                if let smartStatus {
+                    Label(smartStatus, systemImage: "checkmark.circle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.status.success)
+                }
+
+                if let smartError {
+                    Label(smartError, systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.status.error)
+                }
+
+                Button {
+                    parseSmartLabel()
+                } label: {
+                    Text("Parse and Apply")
+                        .font(AppType.body.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 14))
+                        .foregroundColor(.white)
+                }
+                .buttonStyle(.plain)
+
+                if let parsedLabel {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("Parsed Per \(Int(parsedLabel.referenceGrams))g")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                        HStack(spacing: 14) {
+                            parsedMetric("kcal", parsedLabel.calories, tint: Color.appOrange2)
+                            parsedMetric("Protein", parsedLabel.proteinG, tint: Color.accent.cyan)
+                            parsedMetric("Carbs", parsedLabel.carbsG, tint: Color.appOrange1)
+                            parsedMetric("Fat", parsedLabel.fatG, tint: Color(red: 0.60, green: 0.35, blue: 0.15))
+                        }
+                    }
+                    .padding(14)
+                    .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: 16))
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
+        }
     }
 
     // ─────────────────────────────────────────────────────
@@ -320,6 +470,9 @@ struct MealEntrySheet: View {
                                         .foregroundColor(Color.accent.cyan)
                                 }
                             }
+                            Text(product.sourceDescription)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.vertical, 4)
                     }
@@ -358,6 +511,9 @@ struct MealEntrySheet: View {
         entry.proteinG = Double(proteinG)
         entry.carbsG   = Double(carbsG)
         entry.fatG     = Double(fatG)
+        entry.servingGrams = Double(servingGrams)
+        entry.labelReferenceGrams = Double(referenceGrams)
+        entry.sourceDetails = sourceDetails
         entry.eatenAt  = Date()
         entry.status   = .completed
         onSave(entry)
@@ -370,6 +526,8 @@ struct MealEntrySheet: View {
         proteinG = template.proteinG.map  { formatNum($0) } ?? ""
         carbsG   = template.carbsG.map    { formatNum($0) } ?? ""
         fatG     = template.fatG.map      { formatNum($0) } ?? ""
+        entry.source = .template
+        sourceDetails = "Saved template"
         activeTab = .manual
     }
 
@@ -379,6 +537,10 @@ struct MealEntrySheet: View {
         proteinG = product.proteinPer100g.map   { formatNum($0) } ?? ""
         carbsG   = product.carbsPer100g.map     { formatNum($0) } ?? ""
         fatG     = product.fatPer100g.map       { formatNum($0) } ?? ""
+        referenceGrams = formatNum(product.referenceGrams)
+        servingGrams = servingGrams.isEmpty ? formatNum(product.referenceGrams) : servingGrams
+        entry.source = product.source
+        sourceDetails = product.sourceDescription
         activeTab = .manual
     }
 
@@ -391,6 +553,147 @@ struct MealEntrySheet: View {
         v == v.rounded() ? String(Int(v)) : String(format: "%.1f", v)
     }
 
+    private func parseSmartLabel() {
+        smartError = nil
+        smartStatus = nil
+
+        guard let parsed = NutritionLabelParser.parse(rawLabelText, fallbackReferenceGrams: Double(referenceGrams) ?? 100) else {
+            smartError = "I couldn’t parse the label yet. Try a clearer photo or paste the nutrition lines."
+            return
+        }
+
+        parsedLabel = parsed
+        referenceGrams = formatNum(parsed.referenceGrams)
+        applyParsedLabel(parsed)
+        entry.source = .photoLabel
+        sourceDetails = rawLabelText
+        smartStatus = parsed.detectedLanguageHint == .hebrew
+            ? "Hebrew nutrition text parsed successfully."
+            : "Nutrition label applied successfully."
+        activeTab = .manual
+    }
+
+    private func applyParsedLabel(_ parsed: ParsedNutritionLabel) {
+        let consumedGrams = Double(servingGrams) ?? parsed.referenceGrams
+        servingGrams = formatNum(consumedGrams)
+        let scale = max(consumedGrams, 1) / max(parsed.referenceGrams, 1)
+
+        if name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            name = parsed.nameHint ?? name
+        }
+
+        calories = parsed.calories.map { formatNum($0 * scale) } ?? calories
+        proteinG = parsed.proteinG.map { formatNum($0 * scale) } ?? proteinG
+        carbsG = parsed.carbsG.map { formatNum($0 * scale) } ?? carbsG
+        fatG = parsed.fatG.map { formatNum($0 * scale) } ?? fatG
+    }
+
+    #if canImport(UIKit)
+    private func processNutritionImage(_ image: UIImage) {
+        selectedImagePreview = image
+        smartError = nil
+        smartStatus = "Reading nutrition label…"
+
+        guard let cgImage = image.cgImage else {
+            smartStatus = nil
+            smartError = "That image could not be processed."
+            return
+        }
+
+        let request = VNRecognizeTextRequest { request, error in
+            DispatchQueue.main.async {
+                if let error {
+                    smartStatus = nil
+                    smartError = "Photo scan failed: \(error.localizedDescription)"
+                    return
+                }
+
+                let lines = (request.results as? [VNRecognizedTextObservation])?
+                    .compactMap { $0.topCandidates(1).first?.string }
+                    .joined(separator: "\n") ?? ""
+
+                rawLabelText = lines
+                parseSmartLabel()
+            }
+        }
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = true
+        if #available(iOS 16.0, macOS 13.0, *) {
+            request.automaticallyDetectsLanguage = true
+        }
+        if let languages = try? request.supportedRecognitionLanguages() {
+            let preferred = ["en-US", "he-IL", "ar-SA"]
+            request.recognitionLanguages = preferred.filter { languages.contains($0) }
+        }
+
+        Task.detached(priority: .userInitiated) {
+            do {
+                try VNImageRequestHandler(cgImage: cgImage, options: [:]).perform([request])
+            } catch {
+                await MainActor.run {
+                    smartStatus = nil
+                    smartError = "Photo scan failed: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+
+    #if canImport(PhotosUI)
+    private func loadSelectedPhoto(_ item: PhotosPickerItem) async {
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self),
+                  let image = UIImage(data: data) else {
+                await MainActor.run { smartError = "That photo could not be opened." }
+                return
+            }
+            await MainActor.run { processNutritionImage(image) }
+        } catch {
+            await MainActor.run { smartError = "Photo import failed: \(error.localizedDescription)" }
+        }
+    }
+    #endif
+    #endif
+
+    private func smartActionLabel(_ title: String, systemImage: String, tint: Color) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: systemImage)
+            Text(title)
+        }
+        .font(.caption.weight(.semibold))
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
+        .foregroundStyle(tint)
+    }
+
+    private func parsedMetric(_ title: String, _ value: Double?, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(value.map { formatNum($0) } ?? "—")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(tint)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func matchingLocalFoods(for query: String) -> [FoodProduct] {
+        let normalized = query.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+        return FoodProduct.referenceFoods.filter { product in
+            product.searchAliases.contains {
+                $0.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current).contains(normalized)
+            }
+        }
+    }
+
+    private func deduplicatedProducts(_ products: [FoodProduct]) -> [FoodProduct] {
+        var seen = Set<String>()
+        return products.filter { product in
+            seen.insert(product.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()).inserted
+        }
+    }
+
     // ─────────────────────────────────────────────────────
     // MARK: – Networking
     // ─────────────────────────────────────────────────────
@@ -400,7 +703,7 @@ struct MealEntrySheet: View {
         guard !query.isEmpty else { return }
         searchError = nil
         isSearching = true
-        searchResults = []
+        searchResults = matchingLocalFoods(for: query)
 
         Task {
             defer { isSearching = false }
@@ -413,12 +716,15 @@ struct MealEntrySheet: View {
             do {
                 let (data, _) = try await URLSession.shared.data(from: url)
                 let decoded = try JSONDecoder().decode(OFFSearchResponse.self, from: data)
-                searchResults = decoded.products.compactMap { FoodProduct(from: $0) }
+                let remoteResults = decoded.products.compactMap { FoodProduct(from: $0) }
+                searchResults = deduplicatedProducts(searchResults + remoteResults)
                 if searchResults.isEmpty {
                     searchError = "No results found."
                 }
             } catch {
-                searchError = "Search failed: \(error.localizedDescription)"
+                if searchResults.isEmpty {
+                    searchError = "Search failed: \(error.localizedDescription)"
+                }
             }
         }
     }
@@ -491,6 +797,10 @@ private struct FoodProduct: Identifiable {
     var proteinPer100g:   Double?
     var carbsPer100g:     Double?
     var fatPer100g:       Double?
+    var referenceGrams:   Double = 100
+    var source:           MealEntrySource = .search
+    var sourceDescription: String = "Open Food Facts"
+    var searchAliases:    [String] = []
 
     init?(from raw: OFFProduct) {
         name             = raw.product_name ?? ""
@@ -498,7 +808,149 @@ private struct FoodProduct: Identifiable {
         proteinPer100g   = raw.nutriments?.proteins100g.flatMap       { $0 > 0 ? $0 : nil }
         carbsPer100g     = raw.nutriments?.carbohydrates100g.flatMap  { $0 > 0 ? $0 : nil }
         fatPer100g       = raw.nutriments?.fat100g.flatMap            { $0 > 0 ? $0 : nil }
+        source = .barcode
+        sourceDescription = "Open Food Facts barcode or text search"
+        searchAliases = [name]
         return  // always succeed — caller filters empty names in UI
+    }
+
+    init(
+        name: String,
+        caloriesPer100g: Double?,
+        proteinPer100g: Double?,
+        carbsPer100g: Double?,
+        fatPer100g: Double?,
+        aliases: [String]
+    ) {
+        self.name = name
+        self.caloriesPer100g = caloriesPer100g
+        self.proteinPer100g = proteinPer100g
+        self.carbsPer100g = carbsPer100g
+        self.fatPer100g = fatPer100g
+        self.referenceGrams = 100
+        self.source = .search
+        self.sourceDescription = "Built-in reference food"
+        self.searchAliases = aliases
+    }
+
+    static let referenceFoods: [FoodProduct] = [
+        .init(name: "White Rice / אורז לבן", caloriesPer100g: 130, proteinPer100g: 2.4, carbsPer100g: 28.2, fatPer100g: 0.3, aliases: ["white rice", "rice", "אורז", "אורז לבן"]),
+        .init(name: "Chicken Breast / חזה עוף", caloriesPer100g: 165, proteinPer100g: 31.0, carbsPer100g: 0, fatPer100g: 3.6, aliases: ["chicken breast", "chicken", "חזה עוף", "עוף"]),
+        .init(name: "Greek Yogurt / יוגורט יווני", caloriesPer100g: 97, proteinPer100g: 9.0, carbsPer100g: 3.9, fatPer100g: 5.0, aliases: ["greek yogurt", "יוגורט יווני", "יוגורט"]),
+        .init(name: "Oats / שיבולת שועל", caloriesPer100g: 389, proteinPer100g: 16.9, carbsPer100g: 66.3, fatPer100g: 6.9, aliases: ["oats", "oatmeal", "שיבולת שועל", "קוואקר"]),
+        .init(name: "Egg / ביצה", caloriesPer100g: 143, proteinPer100g: 12.6, carbsPer100g: 0.7, fatPer100g: 9.5, aliases: ["egg", "eggs", "ביצה", "ביצים"])
+    ]
+}
+
+private enum ParsedNutritionLanguageHint {
+    case english
+    case hebrew
+    case mixed
+}
+
+private struct ParsedNutritionLabel {
+    var referenceGrams: Double
+    var calories: Double?
+    var proteinG: Double?
+    var carbsG: Double?
+    var fatG: Double?
+    var nameHint: String?
+    var detectedLanguageHint: ParsedNutritionLanguageHint
+}
+
+private enum NutritionLabelParser {
+    static func parse(_ rawText: String, fallbackReferenceGrams: Double) -> ParsedNutritionLabel? {
+        let normalized = rawText
+            .replacingOccurrences(of: "\u{00A0}", with: " ")
+            .replacingOccurrences(of: ",", with: ".")
+            .lowercased()
+
+        let lines = normalized
+            .split(whereSeparator: \.isNewline)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+
+        guard !lines.isEmpty else { return nil }
+
+        let referenceGrams = detectReferenceGrams(in: lines) ?? fallbackReferenceGrams
+        let calories = extractCalories(in: lines)
+        let protein = extractValue(in: lines, keywords: ["protein", "proteins", "חלבון", "חלבונים"])
+        let carbs = extractValue(in: lines, keywords: ["carbs", "carbohydrate", "carbohydrates", "פחמימה", "פחמימות"])
+        let fat = extractValue(in: lines, keywords: ["fat", "total fat", "שומן", "שומנים"])
+
+        guard calories != nil || protein != nil || carbs != nil || fat != nil else { return nil }
+
+        let languageHint: ParsedNutritionLanguageHint
+        if normalized.contains(where: { $0.unicodeScalars.contains(where: { $0.value >= 0x0590 && $0.value <= 0x05FF }) }) {
+            languageHint = normalized.contains("protein") || normalized.contains("fat") ? .mixed : .hebrew
+        } else {
+            languageHint = .english
+        }
+
+        return ParsedNutritionLabel(
+            referenceGrams: referenceGrams,
+            calories: calories,
+            proteinG: protein,
+            carbsG: carbs,
+            fatG: fat,
+            nameHint: lines.first(where: { !$0.contains("calories") && !$0.contains("חלבון") && !$0.contains("פחמ") && !$0.contains("שומן") }),
+            detectedLanguageHint: languageHint
+        )
+    }
+
+    private static func detectReferenceGrams(in lines: [String]) -> Double? {
+        if lines.contains(where: { $0.contains("100g") || $0.contains("100 g") || $0.contains("100גרם") || $0.contains("100 גרם") || $0.contains("ל-100") }) {
+            return 100
+        }
+
+        let referenceKeywords = ["serving", "serving size", "מנה", "כמות למנה", "portion"]
+        for line in lines where referenceKeywords.contains(where: { line.contains($0) }) {
+            if let grams = extractGrams(from: line) {
+                return grams
+            }
+        }
+        return nil
+    }
+
+    private static func extractCalories(in lines: [String]) -> Double? {
+        for line in lines where ["calories", "energy", "kcal", "קלוריות", "אנרגיה"].contains(where: { line.contains($0) }) {
+            let values = extractNumbers(from: line)
+            if line.contains("kcal"), let kcal = values.last(where: { $0 < 1200 }) {
+                return kcal
+            }
+            if let single = values.first {
+                return single
+            }
+        }
+        return nil
+    }
+
+    private static func extractValue(in lines: [String], keywords: [String]) -> Double? {
+        for line in lines where keywords.contains(where: { line.contains($0) }) {
+            if let value = extractNumbers(from: line).first {
+                return value
+            }
+        }
+        return nil
+    }
+
+    private static func extractGrams(from line: String) -> Double? {
+        let pattern = #"(\d+(?:\.\d+)?)\s*(?:g|gr|gram|grams|גרם)"#
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else { return nil }
+        let nsRange = NSRange(line.startIndex..<line.endIndex, in: line)
+        guard let match = regex.firstMatch(in: line, options: [], range: nsRange),
+              let range = Range(match.range(at: 1), in: line) else { return nil }
+        return Double(String(line[range]))
+    }
+
+    private static func extractNumbers(from line: String) -> [Double] {
+        let pattern = #"\d+(?:\.\d+)?"#
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else { return [] }
+        let nsRange = NSRange(line.startIndex..<line.endIndex, in: line)
+        return regex.matches(in: line, options: [], range: nsRange).compactMap { match in
+            guard let range = Range(match.range(at: 0), in: line) else { return nil }
+            return Double(String(line[range]))
+        }
     }
 }
 
@@ -507,6 +959,42 @@ private struct FoodProduct: Identifiable {
 // ─────────────────────────────────────────────────────────
 
 #if os(iOS)
+struct NutritionCameraSheet: UIViewControllerRepresentable {
+    let onCapture: (UIImage) -> Void
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onCapture: onCapture)
+    }
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.cameraCaptureMode = .photo
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    final class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let onCapture: (UIImage) -> Void
+
+        init(onCapture: @escaping (UIImage) -> Void) {
+            self.onCapture = onCapture
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let image = info[.originalImage] as? UIImage {
+                onCapture(image)
+            }
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+    }
+}
+
 struct BarcodeScannerSheet: View {
     let onScan: (String) -> Void
     @Environment(\.dismiss) var dismiss
