@@ -43,6 +43,9 @@ struct StatsView: View {
     @State private var showTrainingPlan   = false
     @State private var showNutritionAlert = false
 
+    // Shared chart tooltip state — one tooltip shows at a time
+    @State private var chartSelection: (date: Date, label: String)? = nil
+
     // Body section data
     @State private var bodyData: [(date: Date, weightKg: Double?, bodyFatPercent: Double?, leanBodyMassKg: Double?)] = []
 
@@ -264,6 +267,42 @@ struct StatsView: View {
                             AxisValueLabel()
                         }
                     }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = bodyData.filter({ $0.weightKg != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.1f kg", pt.weightKg!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
 
@@ -299,6 +338,42 @@ struct StatsView: View {
                             AxisValueLabel()
                         }
                     }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = bodyData.filter({ $0.bodyFatPercent != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.1f%%", pt.bodyFatPercent!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
 
@@ -329,6 +404,42 @@ struct StatsView: View {
                         AxisMarks { _ in
                             AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
                             AxisValueLabel()
+                        }
+                    }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = bodyData.filter({ $0.leanBodyMassKg != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.1f kg", pt.leanBodyMassKg!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
                         }
                     }
                 }
@@ -492,6 +603,42 @@ struct StatsView: View {
                             AxisValueLabel()
                         }
                     }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = volumeData
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    let formatted = pt.volumeKg >= 1000
+                                                        ? String(format: "%,.0f kg vol", pt.volumeKg)
+                                                        : String(format: "%.0f kg vol", pt.volumeKg)
+                                                    chartSelection = (date: pt.date, label: formatted)
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
 
@@ -588,6 +735,42 @@ struct StatsView: View {
                             AxisValueLabel()
                         }
                     }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = recoveryData.filter({ $0.hrv != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.0f ms", pt.hrv!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
 
@@ -619,6 +802,42 @@ struct StatsView: View {
                             AxisValueLabel()
                         }
                     }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = recoveryData.filter({ $0.restingHR != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.0f bpm", pt.restingHR!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
 
@@ -648,6 +867,42 @@ struct StatsView: View {
                         AxisMarks { _ in
                             AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
                             AxisValueLabel()
+                        }
+                    }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = recoveryData.filter({ $0.sleepHours != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.1f hrs", pt.sleepHours!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
                         }
                     }
                 }
@@ -708,6 +963,42 @@ struct StatsView: View {
                         }
                     }
                     .frame(height: 120)
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = pts
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: "Score: \(pt.score)"
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
         }
@@ -756,6 +1047,43 @@ struct StatsView: View {
                             AxisValueLabel()
                         }
                     }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = nutritionData.filter({ $0.calories != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    let kcal = pt.calories!
+                                                    let formatted = kcal >= 1000
+                                                        ? String(format: "%,.0f kcal", kcal)
+                                                        : String(format: "%.0f kcal", kcal)
+                                                    chartSelection = (date: pt.date, label: formatted)
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
+                        }
+                    }
                 }
             }
 
@@ -792,6 +1120,42 @@ struct StatsView: View {
                         AxisMarks { _ in
                             AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
                             AxisValueLabel()
+                        }
+                    }
+                    .chartOverlay { proxy in
+                        GeometryReader { geo in
+                            Rectangle().fill(.clear).contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onChanged { value in
+                                            let x = value.location.x - geo[proxy.plotAreaFrame].origin.x
+                                            if let date: Date = proxy.value(atX: x) {
+                                                if let pt = nutritionData.filter({ $0.proteinG != nil })
+                                                    .min(by: { abs($0.date.timeIntervalSince(date)) < abs($1.date.timeIntervalSince(date)) }) {
+                                                    chartSelection = (
+                                                        date: pt.date,
+                                                        label: String(format: "%.0f g", pt.proteinG!)
+                                                    )
+                                                }
+                                            }
+                                        }
+                                        .onEnded { _ in chartSelection = nil }
+                                )
+                        }
+                    }
+                    .overlay(alignment: .topLeading) {
+                        if let sel = chartSelection {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(sel.date.formatted(.dateTime.month(.abbreviated).day()))
+                                    .font(AppType.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(sel.label)
+                                    .font(AppType.body.weight(.semibold))
+                            }
+                            .padding(8)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                            .padding(.top, 4)
+                            .padding(.leading, 8)
                         }
                     }
                 }
