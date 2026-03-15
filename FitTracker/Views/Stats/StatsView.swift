@@ -38,6 +38,11 @@ struct StatsView: View {
     @State private var period:   StatsPeriod   = .thirtyDays
     @State private var category: StatsCategory = .body
 
+    // CTA sheet state
+    @State private var showBiometricEntry = false
+    @State private var showTrainingPlan   = false
+    @State private var showNutritionAlert = false
+
     // Body section data
     @State private var bodyData: [(date: Date, weightKg: Double?, bodyFatPercent: Double?, leanBodyMassKg: Double?)] = []
 
@@ -53,6 +58,84 @@ struct StatsView: View {
     @State private var nutritionData: [(date: Date, calories: Double?, proteinG: Double?, supplementPct: Double)] = []
 
     private var dateRange: (from: Date, to: Date) { period.dateRange }
+
+    private var latestBodyLog: DailyLog? {
+        dataStore.dailyLogs
+            .filter {
+                let biometrics = $0.biometrics
+                return biometrics.weightKg != nil ||
+                    biometrics.bodyFatPercent != nil ||
+                    biometrics.leanBodyMassKg != nil ||
+                    biometrics.bodyWaterPercent != nil ||
+                    biometrics.visceralFatRating != nil
+            }
+            .sorted { $0.date > $1.date }
+            .first
+    }
+
+    private var bodyInsights: [String] {
+        guard !bodyData.isEmpty else {
+            return ["Log body metrics a few times this week to unlock weekly averages and trend stories."]
+        }
+
+        var notes: [String] = []
+
+        let recentWeight = bodyData.suffix(7).compactMap(\.weightKg)
+        let recentBF = bodyData.suffix(7).compactMap(\.bodyFatPercent)
+        let recentLean = bodyData.suffix(7).compactMap(\.leanBodyMassKg)
+
+        if recentWeight.count >= 2 {
+            let delta = recentWeight.last! - recentWeight.first!
+            if abs(delta) < 0.2 {
+                notes.append("Weight has been steady over the recent check-ins, which usually means the trend is reliable.")
+            } else if delta < 0 {
+                notes.append(String(format: "Weight is down %.1f kg across recent entries, which is aligned with the cut.", abs(delta)))
+            } else {
+                notes.append(String(format: "Weight is up %.1f kg across recent entries, so review calorie consistency before changing training.", delta))
+            }
+        }
+
+        if recentBF.count >= 2 {
+            let delta = recentBF.last! - recentBF.first!
+            if delta < -0.2 {
+                notes.append(String(format: "Body fat is trending down by %.1f%%, which is a strong signal that the plan is working.", abs(delta)))
+            } else if delta > 0.2 {
+                notes.append(String(format: "Body fat is up %.1f%% recently, so use nutrition and recovery consistency as the first correction.", delta))
+            }
+        }
+
+        if recentLean.count >= 2 {
+            let delta = recentLean.last! - recentLean.first!
+            if delta > 0.2 {
+                notes.append(String(format: "Lean mass is up %.1f kg across recent logs, which is the best sign the cut is preserving muscle.", delta))
+            } else if delta < -0.2 {
+                notes.append(String(format: "Lean mass is off by %.1f kg, so keep protein and recovery high while you monitor the next few entries.", abs(delta)))
+            }
+        }
+
+        if let latest = latestBodyLog?.biometrics.bodyWaterPercent, latest < 50 {
+            notes.append(String(format: "Body water is %.1f%%, so hydration probably needs attention before interpreting the next weigh-in too aggressively.", latest))
+        }
+
+        if notes.isEmpty {
+            notes.append("The current body data set is still small, so focus on logging a few more consistent check-ins before reacting to single-day swings.")
+        }
+
+        return Array(notes.prefix(3))
+    }
+
+    private var weeklyAverageSummary: [(label: String, value: String, tint: Color)] {
+        let weekly = bodyData.suffix(7)
+        let weightAvg = average(of: weekly.compactMap(\.weightKg))
+        let bfAvg = average(of: weekly.compactMap(\.bodyFatPercent))
+        let leanAvg = average(of: weekly.compactMap(\.leanBodyMassKg))
+
+        return [
+            ("Avg Weight", weightAvg.map { String(format: "%.1f kg", $0) } ?? "—", Color.appOrange2),
+            ("Avg Body Fat", bfAvg.map { String(format: "%.1f%%", $0) } ?? "—", Color.status.warning),
+            ("Avg Lean Mass", leanAvg.map { String(format: "%.1f kg", $0) } ?? "—", Color.accent.cyan)
+        ]
+    }
 
     var body: some View {
         ZStack {
@@ -121,16 +204,34 @@ struct StatsView: View {
         }
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showBiometricEntry) {
+            ManualBiometricEntry()
+                .presentationDetents([.medium])
+        }
+        .sheet(isPresented: $showTrainingPlan) {
+            NavigationStack { TrainingPlanView() }
+                .presentationDetents([.large])
+        }
+        .alert("Log Your Nutrition", isPresented: $showNutritionAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Switch to the Nutrition tab to log your meals and supplements.")
+        }
     }
 
     // MARK: – Body Section
 
     private var bodySection: some View {
         VStack(spacing: 16) {
+            bodyStoryCard
+            latestSnapshotCard
+            insightFeedCard
+
             // Weight chart
             ChartCard(title: "Weight", periodLabel: period.rawValue) {
                 if bodyData.compactMap(\.weightKg).isEmpty {
-                    EmptyStateView(icon: "scalemass", title: "No weight data", subtitle: "Log your weight to see the chart")
+                    EmptyStateView(icon: "scalemass", title: "No weight data", subtitle: "Log your weight to see the chart",
+                                   ctaLabel: "Log Weight", ctaAction: { showBiometricEntry = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -167,7 +268,8 @@ struct StatsView: View {
             // Body Fat chart
             ChartCard(title: "Body Fat %", periodLabel: period.rawValue) {
                 if bodyData.compactMap(\.bodyFatPercent).isEmpty {
-                    EmptyStateView(icon: "drop", title: "No body fat data", subtitle: "Log your body fat to see the chart")
+                    EmptyStateView(icon: "drop", title: "No body fat data", subtitle: "Log your body fat to see the chart",
+                                   ctaLabel: "Log Body Fat", ctaAction: { showBiometricEntry = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -201,7 +303,8 @@ struct StatsView: View {
             // Lean Mass chart
             ChartCard(title: "Lean Mass", periodLabel: period.rawValue) {
                 if bodyData.compactMap(\.leanBodyMassKg).isEmpty {
-                    EmptyStateView(icon: "figure.arms.open", title: "No lean mass data", subtitle: "Log your body composition to see the chart")
+                    EmptyStateView(icon: "figure.arms.open", title: "No lean mass data", subtitle: "Log your body composition to see the chart",
+                                   ctaLabel: "Log Body Composition", ctaAction: { showBiometricEntry = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -235,6 +338,105 @@ struct StatsView: View {
         }
     }
 
+    private var bodyStoryCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Progress Story")
+                        .font(AppType.headline)
+                    Text("Weekly averages make the signal easier to trust than any single weigh-in.")
+                        .font(AppType.subheading)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                if let latestDate = latestBodyLog?.date {
+                    Text(latestDate.formatted(.dateTime.month(.abbreviated).day()))
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            HStack(spacing: 12) {
+                ForEach(weeklyAverageSummary, id: \.label) { item in
+                    StatPreviewPill(value: item.value, label: item.label, color: item.tint)
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color.white.opacity(0.16))
+        )
+    }
+
+    private var latestSnapshotCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Latest Body Snapshot")
+                    .font(AppType.headline)
+                Spacer()
+                Text(latestBodyLog?.date.formatted(.dateTime.month(.abbreviated).day()) ?? "No data")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            if let latest = latestBodyLog?.biometrics {
+                let items: [(String, String, Color)] = [
+                    ("Weight", latest.weightKg.map { String(format: "%.1f kg", $0) } ?? "—", Color.appOrange2),
+                    ("Body Fat", latest.bodyFatPercent.map { String(format: "%.1f%%", $0) } ?? "—", Color.status.warning),
+                    ("Lean Mass", latest.leanBodyMassKg.map { String(format: "%.1f kg", $0) } ?? "—", Color.accent.cyan),
+                    ("Body Water", latest.bodyWaterPercent.map { String(format: "%.1f%%", $0) } ?? "—", Color.appBlue2),
+                    ("Muscle Mass", latest.muscleMassKg.map { String(format: "%.1f kg", $0) } ?? "—", Color.status.success),
+                    ("Visceral Fat", latest.visceralFatRating.map(String.init) ?? "—", Color.accent.purple)
+                ]
+
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    ForEach(items, id: \.0) { item in
+                        bodySnapshotTile(title: item.0, value: item.1, tint: item.2)
+                    }
+                }
+            } else {
+                EmptyStateView(
+                    icon: "figure.arms.open",
+                    title: "No composition snapshot yet",
+                    subtitle: "Once you log weight and body composition, this section becomes your latest trusted check-in.",
+                    ctaLabel: "Log Metrics",
+                    ctaAction: { showBiometricEntry = true }
+                )
+                .frame(height: 120)
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color.white.opacity(0.14))
+        )
+    }
+
+    private var insightFeedCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Insight Feed")
+                .font(AppType.headline)
+
+            ForEach(bodyInsights, id: \.self) { insight in
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "sparkles")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.accent.cyan)
+                        .padding(.top, 2)
+                    Text(insight)
+                        .font(AppType.subheading)
+                        .foregroundStyle(.secondary)
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Color.white.opacity(0.12))
+        )
+    }
+
     // MARK: – Training Section
 
     private var trainingSection: some View {
@@ -242,7 +444,8 @@ struct StatsView: View {
             // Training Volume chart
             ChartCard(title: "Training Volume", periodLabel: period.rawValue) {
                 if volumeData.isEmpty {
-                    EmptyStateView(icon: "dumbbell.fill", title: "No training data", subtitle: "Log a workout to see your volume chart")
+                    EmptyStateView(icon: "dumbbell.fill", title: "No training data", subtitle: "Log a workout to see your volume chart",
+                                   ctaLabel: "Open Training Plan", ctaAction: { showTrainingPlan = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -275,7 +478,8 @@ struct StatsView: View {
             // Zone 2 chart
             ChartCard(title: "Zone 2 Cardio", periodLabel: period.rawValue) {
                 if zone2Data.isEmpty {
-                    EmptyStateView(icon: "heart.circle", title: "No Zone 2 data", subtitle: "Log cardio with HR 106–124 bpm to see this chart")
+                    EmptyStateView(icon: "heart.circle", title: "No Zone 2 data", subtitle: "Log cardio with HR 106–124 bpm to see this chart",
+                                   ctaLabel: "Open Training Plan", ctaAction: { showTrainingPlan = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -500,7 +704,8 @@ struct StatsView: View {
             // Calories chart
             ChartCard(title: "Calories", periodLabel: period.rawValue) {
                 if nutritionData.compactMap(\.calories).isEmpty {
-                    EmptyStateView(icon: "fork.knife", title: "No calorie data", subtitle: "Log your meals to see the chart")
+                    EmptyStateView(icon: "fork.knife", title: "No calorie data", subtitle: "Log your meals to see the chart",
+                                   ctaLabel: "Go to Nutrition", ctaAction: { showNutritionAlert = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -537,7 +742,8 @@ struct StatsView: View {
             // Protein chart
             ChartCard(title: "Protein", periodLabel: period.rawValue) {
                 if nutritionData.compactMap(\.proteinG).isEmpty {
-                    EmptyStateView(icon: "fork.knife", title: "No protein data", subtitle: "Log your meals to see the chart")
+                    EmptyStateView(icon: "fork.knife", title: "No protein data", subtitle: "Log your meals to see the chart",
+                                   ctaLabel: "Go to Nutrition", ctaAction: { showNutritionAlert = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -574,7 +780,8 @@ struct StatsView: View {
             // Supplement adherence chart
             ChartCard(title: "Supplement Adherence", periodLabel: period.rawValue) {
                 if nutritionData.isEmpty {
-                    EmptyStateView(icon: "pill.fill", title: "No supplement data", subtitle: "Log your supplements to see adherence")
+                    EmptyStateView(icon: "pill.fill", title: "No supplement data", subtitle: "Log your supplements to see adherence",
+                                   ctaLabel: "Go to Nutrition", ctaAction: { showNutritionAlert = true })
                         .frame(height: 120)
                 } else {
                     Chart {
@@ -608,13 +815,38 @@ struct StatsView: View {
 }
 
 struct StatPreviewPill: View {
-    let value: String; let label: String
+    let value: String
+    let label: String
+    var color: Color = Color.status.success
     var body: some View {
         VStack(spacing: 3) {
-            Text(value).font(.system(.title2, design: .monospaced, weight: .bold)).foregroundStyle(Color.status.success)
+            Text(value).font(.system(.title2, design: .monospaced, weight: .bold)).foregroundStyle(color)
             Text(label).font(.caption2).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
+    }
+}
+
+private extension StatsView {
+    func average(of values: [Double]) -> Double? {
+        guard !values.isEmpty else { return nil }
+        return values.reduce(0, +) / Double(values.count)
+    }
+
+    @ViewBuilder
+    func bodySnapshotTile(title: String, value: String, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption2.monospaced())
+                .foregroundStyle(.secondary)
+                .tracking(1)
+            Text(value)
+                .font(.headline.weight(.semibold))
+                .foregroundStyle(tint)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
     }
 }
 

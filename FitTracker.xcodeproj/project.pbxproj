@@ -39,6 +39,7 @@
 		CC000001000000000000AA09 /* MacroTargetBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA09 /* MacroTargetBar.swift */; };
 		CC000001000000000000AA0A /* MealSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0A /* MealSectionView.swift */; };
 		CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0B /* MealEntrySheet.swift */; };
+		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +79,7 @@
 		CC000002000000000000AA09 /* MacroTargetBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroTargetBar.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0A /* MealSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealSectionView.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0B /* MealEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEntrySheet.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA0C /* RecoverySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverySupport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +256,7 @@
 				CC000002000000000000AA05 /* TrendIndicator.swift */,
 				CC000002000000000000AA06 /* ChartCard.swift */,
 				CC000002000000000000AA07 /* EmptyStateView.swift */,
+				CC000002000000000000AA0C /* RecoverySupport.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -403,6 +406,7 @@
 				CC000001000000000000AA09 /* MacroTargetBar.swift in Sources */,
 				CC000001000000000000AA0A /* MealSectionView.swift in Sources */,
 				CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */,
+				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
