@@ -595,7 +595,6 @@
 		B90000010000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -613,15 +612,13 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = FitTracker;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitTracker.app/FitTracker";
+				TEST_HOST = "";
 			};
 			name = Debug;
 		};
 		B90000010000000000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
@@ -639,8 +636,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = FitTracker;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitTracker.app/FitTracker";
+				TEST_HOST = "";
 			};
 			name = Release;
 		};
