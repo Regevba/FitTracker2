@@ -14,23 +14,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app
+      - name: Install xcpretty
+        run: gem install xcpretty --no-document
 
       - name: Build
         run: |
           xcodebuild build \
             -project FitTracker.xcodeproj \
             -scheme FitTracker \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
-            | xcpretty
+            | xcpretty && exit ${PIPESTATUS[0]}
 
       - name: Test
         run: |
           xcodebuild test \
             -project FitTracker.xcodeproj \
             -scheme FitTracker \
-            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
             CODE_SIGNING_ALLOWED=NO \
-            | xcpretty
+            | xcpretty && exit ${PIPESTATUS[0]}
