@@ -100,10 +100,10 @@ struct MainScreenView: View {
         ZStack {
             backgroundLayer
             GeometryReader { proxy in
-                let compact = proxy.size.height < 820
-                let tight = proxy.size.height < 760
+                let compact = proxy.size.height < 880
+                let tight = proxy.size.height < 800
 
-                VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 14 : 18)) {
+                VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 12 : 16)) {
                     greetingHeader(tight: tight)
                     statusOverviewCard(compact: compact, tight: tight)
                     goalProgressCard(compact: compact, tight: tight)
@@ -112,8 +112,8 @@ struct MainScreenView: View {
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, tight ? 4 : 8)
-                .padding(.bottom, max(proxy.safeAreaInsets.bottom + (tight ? 8 : 12), tight ? 18 : 24))
+                .padding(.top, tight ? 2 : 4)
+                .padding(.bottom, max(proxy.safeAreaInsets.bottom + (tight ? 8 : 10), tight ? 14 : 18))
             }
         }
         .onAppear { checkMilestones() }
@@ -202,26 +202,26 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private func greetingHeader(tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(greeting)
-                        .font(.system(size: tight ? 24 : 27, weight: .bold, design: .rounded))
+                        .font(.system(size: tight ? 23 : 25, weight: .bold, design: .rounded))
                         .lineLimit(2)
                         .minimumScaleFactor(0.82)
                     Text(todayFormatted)
-                        .font(.system(size: tight ? 15 : 17, weight: .medium, design: .rounded))
+                        .font(.system(size: tight ? 14 : 16, weight: .medium, design: .rounded))
                         .foregroundStyle(.black.opacity(0.65))
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 6) {
                     Text("Day \(profile.daysSinceStart)")
-                        .font(.system(size: tight ? 13 : 14, weight: .bold, design: .rounded))
+                        .font(.system(size: tight ? 12 : 13, weight: .bold, design: .rounded))
                         .foregroundStyle(.black.opacity(0.82))
                     Text(profile.currentPhase.rawValue)
-                        .font(.system(size: tight ? 12 : 13, weight: .semibold, design: .rounded))
-                        .padding(.horizontal, tight ? 10 : 12)
-                        .padding(.vertical, tight ? 6 : 7)
+                        .font(.system(size: tight ? 11 : 12, weight: .semibold, design: .rounded))
+                        .padding(.horizontal, tight ? 9 : 11)
+                        .padding(.vertical, tight ? 5 : 6)
                         .background(Color.white.opacity(0.5), in: Capsule())
                         .foregroundStyle(.black.opacity(0.72))
                 }
@@ -230,7 +230,7 @@ struct MainScreenView: View {
     }
 
     private func statusOverviewCard(compact: Bool, tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 12 : 16)) {
+        VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 10 : 14)) {
             HStack {
                 sectionEyebrow("Status")
                 Spacer()
@@ -290,7 +290,7 @@ struct MainScreenView: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(tight ? 14 : (compact ? 16 : 18))
+        .padding(tight ? 12 : (compact ? 14 : 18))
         .background(homeCardBackground(accent: .appOrange2))
         .scaleEffect(statusPulse ? 1.01 : 1)
     }
@@ -318,10 +318,10 @@ struct MainScreenView: View {
                             .foregroundStyle(.black.opacity(0.56))
                     }
                 }
-                .frame(width: tight ? 92 : (compact ? 104 : 116), height: tight ? 92 : (compact ? 104 : 116))
+                .frame(width: tight ? 86 : (compact ? 96 : 116), height: tight ? 86 : (compact ? 96 : 116))
             }
 
-            VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 14 : 18)) {
+            VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 10 : 16)) {
                 sectionEyebrow("Goal Progress")
                 progressLine(
                     title: "Weight",
@@ -341,12 +341,12 @@ struct MainScreenView: View {
                     .lineLimit(2)
             }
         }
-        .padding(tight ? 14 : (compact ? 16 : 18))
+        .padding(tight ? 12 : (compact ? 14 : 18))
         .background(homeCardBackground(accent: .appBlue1))
     }
 
     private func startTrainingCard(compact: Bool, tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 14 : 16)) {
+        VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 10 : 14)) {
             sectionEyebrow("Start Training")
 
             HStack(spacing: tight ? 12 : (compact ? 14 : 18)) {
@@ -356,9 +356,9 @@ struct MainScreenView: View {
                     ZStack {
                         Circle()
                             .fill(recommendationAccent)
-                            .frame(width: tight ? 68 : (compact ? 78 : 88), height: tight ? 68 : (compact ? 78 : 88))
+                            .frame(width: tight ? 64 : (compact ? 72 : 88), height: tight ? 64 : (compact ? 72 : 88))
                         Image(systemName: primaryActionIcon)
-                            .font(.system(size: tight ? 24 : (compact ? 28 : 32), weight: .bold))
+                            .font(.system(size: tight ? 22 : (compact ? 25 : 32), weight: .bold))
                             .foregroundStyle(.white)
                     }
                 }
@@ -366,9 +366,9 @@ struct MainScreenView: View {
                 .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
                 .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
 
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: tight ? 8 : 10) {
                     Text(primaryActionTitle)
-                        .font(.system(size: tight ? 18 : 20, weight: .bold, design: .rounded))
+                        .font(.system(size: tight ? 17 : 19, weight: .bold, design: .rounded))
                         .foregroundStyle(.black.opacity(0.82))
 
                     Menu {
@@ -385,12 +385,12 @@ struct MainScreenView: View {
                             Image(systemName: "chevron.down")
                                 .font(.caption.weight(.bold))
                         }
-                        .font(.system(size: tight ? 15 : 16, weight: .medium, design: .rounded))
+                        .font(.system(size: tight ? 14 : 15, weight: .medium, design: .rounded))
                         .foregroundStyle(Color.appBlue1)
                     }
 
                     Text("\(estimatedSessionLength) • \(recommendationTone)")
-                        .font(AppType.subheading)
+                        .font(tight ? .caption : AppType.subheading)
                         .foregroundStyle(.black.opacity(0.58))
                     if !tight {
                         Text(recommendationSubtitle)
@@ -403,12 +403,12 @@ struct MainScreenView: View {
                 Spacer(minLength: 0)
             }
         }
-        .padding(tight ? 14 : (compact ? 16 : 18))
+        .padding(tight ? 12 : (compact ? 14 : 18))
         .background(homeCardBackground(accent: recommendationAccent))
     }
 
     private func metricsCard(compact: Bool, tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: tight ? 10 : (compact ? 12 : 16)) {
+        VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 10 : 14)) {
             sectionEyebrow("Metrics")
             HStack(spacing: tight ? 5 : (compact ? 6 : 8)) {
                 metricTile(icon: "waveform.path.ecg", value: displayMetricNumber(hrvValue), label: "HRV", tint: .gray, compact: tight)
@@ -417,7 +417,7 @@ struct MainScreenView: View {
                 metricTile(icon: "figure.walk", value: displayStepsValue, label: "Steps", tint: .blue, compact: tight)
             }
         }
-        .padding(tight ? 14 : (compact ? 16 : 18))
+        .padding(tight ? 12 : (compact ? 14 : 18))
         .background(homeCardBackground(accent: .accent.cyan))
     }
 
@@ -431,13 +431,13 @@ struct MainScreenView: View {
         isMissing: Bool,
         compact: Bool
     ) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 10 : 14) {
+        VStack(alignment: .leading, spacing: compact ? 8 : 12) {
             HStack(spacing: 8) {
                 Image(systemName: icon)
                     .font(.caption.weight(.bold))
                 Text(title)
-                    .font(.system(size: 11, weight: .bold, design: .rounded))
-                    .tracking(2)
+                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .tracking(1.8)
                 if isMissing {
                     Text("Missing")
                         .font(.system(size: 9, weight: .bold, design: .rounded))
@@ -451,7 +451,7 @@ struct MainScreenView: View {
 
             HStack(alignment: .lastTextBaseline, spacing: 4) {
                 Text(value)
-                    .font(.system(size: compact ? 22 : 26, weight: .bold, design: .rounded))
+                    .font(.system(size: compact ? 20 : 25, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(.black.opacity(0.82))
                 Text(unit)
@@ -464,20 +464,20 @@ struct MainScreenView: View {
                 .foregroundStyle(isMissing ? tint.opacity(0.88) : .black.opacity(0.52))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 4)
-        .padding(.vertical, 4)
+        .padding(.horizontal, 3)
+        .padding(.vertical, 3)
         .background(isMissing ? tint.opacity(0.06) : Color.clear, in: RoundedRectangle(cornerRadius: 18))
     }
 
     private func progressLine(title: String, progress: Double, tint: Color, compact: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text(title)
-                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
+                    .font(.system(size: compact ? 13 : 16, weight: .medium, design: .rounded))
                     .foregroundStyle(.black.opacity(0.64))
                 Spacer()
                 Text("\(Int(progress * 100))%")
-                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
+                    .font(.system(size: compact ? 13 : 16, weight: .medium, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(tint)
             }
@@ -495,12 +495,12 @@ struct MainScreenView: View {
     }
 
     private func metricTile(icon: String, value: String, label: String, tint: Color, compact: Bool) -> some View {
-        VStack(spacing: compact ? 6 : 8) {
+        VStack(spacing: compact ? 4 : 8) {
             Image(systemName: icon)
-                .font(.system(size: compact ? 16 : 18, weight: .semibold))
+                .font(.system(size: compact ? 15 : 18, weight: .semibold))
                 .foregroundStyle(tint)
             Text(value)
-                .font(.system(size: compact ? 17 : 19, weight: .bold, design: .rounded))
+                .font(.system(size: compact ? 16 : 19, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(.black.opacity(0.82))
                 .lineLimit(1)
@@ -510,7 +510,7 @@ struct MainScreenView: View {
                 .foregroundStyle(.black.opacity(0.54))
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, compact ? 8 : 9)
+        .padding(.vertical, compact ? 6 : 9)
         .background(Color.white.opacity(0.22), in: RoundedRectangle(cornerRadius: 18))
     }
 
