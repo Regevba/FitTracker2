@@ -112,8 +112,8 @@ struct MainScreenView: View {
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 20)
-                .padding(.top, max(proxy.safeAreaInsets.top, 10))
-                .padding(.bottom, max(proxy.safeAreaInsets.bottom + 12, 24))
+                .padding(.top, tight ? 4 : 8)
+                .padding(.bottom, max(proxy.safeAreaInsets.bottom + (tight ? 8 : 12), tight ? 18 : 24))
             }
         }
         .onAppear { checkMilestones() }
