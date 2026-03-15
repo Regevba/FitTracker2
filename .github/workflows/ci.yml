@@ -14,23 +14,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install xcpretty
-        run: gem install xcpretty --no-document
+      - name: Show available simulators
+        run: xcrun simctl list devicetypes | grep iPhone
+
+      - name: Show available Xcode schemes
+        run: xcodebuild -project FitTracker.xcodeproj -list
 
       - name: Build
         run: |
           xcodebuild build \
             -project FitTracker.xcodeproj \
             -scheme FitTracker \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty && exit ${PIPESTATUS[0]}
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO
 
       - name: Test
         run: |
           xcodebuild test \
             -project FitTracker.xcodeproj \
             -scheme FitTracker \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty && exit ${PIPESTATUS[0]}
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            CODE_SIGNING_ALLOWED=NO
