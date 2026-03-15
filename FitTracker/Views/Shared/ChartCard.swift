@@ -31,10 +31,8 @@ struct ChartCard<Content: View>: View {
             content()
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white.opacity(0.12))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
         .accessibilityElement(children: .contain)
     }
 }

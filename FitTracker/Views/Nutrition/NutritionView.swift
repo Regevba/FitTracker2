@@ -12,6 +12,7 @@ struct NutritionView: View {
     @State private var log: DailyLog?
     @State private var supplementsExpanded = false
     @State private var editingMealEntry: MealEntry?
+    @State private var showSupplementInfo = false
 
     private var morning: [SupplementDefinition] { TrainingProgramData.morningSupplements }
     private var evening: [SupplementDefinition] { TrainingProgramData.eveningSupplements }
@@ -44,6 +45,7 @@ struct NutritionView: View {
         } // ZStack
         .navigationTitle("Nutrition")
         .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(.dark)
         .onAppear {
             activeDate = Calendar.current.startOfDay(for: Date())
             loadLog(for: activeDate)
@@ -319,6 +321,25 @@ struct NutritionView: View {
                 Spacer()
                 Text("\(taken)/\(total) taken")
                     .font(.caption2.monospaced()).foregroundStyle(.secondary)
+                Button { showSupplementInfo.toggle() } label: {
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("About supplement adherence")
+                .popover(isPresented: $showSupplementInfo) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Supplement Adherence")
+                            .font(.headline)
+                        Text("Tracks whether you took all pills in your morning and evening stacks today. The 🔥 streak counts consecutive days with 100% adherence across both stacks.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(16)
+                    .frame(minWidth: 260)
+                    .presentationCompactAdaptation(.popover)
+                }
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
@@ -364,7 +385,7 @@ struct NutritionView: View {
             get: { nutritionLog },
             set: { log?.nutritionLog = $0 }
         )
-        return MealSectionView(nutritionLog: nutritionBinding, suggestedMealNumber: nextMealNumber) { mealNumber in
+        return MealSectionView(nutritionLog: nutritionBinding, suggestedMealNumber: nextMealNumber, mealSlotNames: dataStore.userProfile.mealSlotNames) { mealNumber in
             let existing = log?.nutritionLog.meals.first(where: { $0.mealNumber == mealNumber })
             editingMealEntry = existing ?? MealEntry(mealNumber: max(mealNumber, nextMealNumber))
         }
@@ -995,7 +1016,9 @@ struct SupplementItemRow: View {
 enum HapticFeedback {
     static func impact() {
         #if os(iOS)
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        let g = UIImpactFeedbackGenerator(style: .medium)
+        g.prepare()
+        g.impactOccurred()
         #endif
     }
 }

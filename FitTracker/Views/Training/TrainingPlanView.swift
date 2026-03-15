@@ -22,12 +22,14 @@ struct TrainingPlanView: View {
     @State private var log: DailyLog?
     @State private var showCompletionSheet = false
     @State private var showNotesEditor     = false
+    @State private var showFocusMode       = false
     @State private var focusedExerciseID: String?
     @State private var restTimerEnd: Date?
     @State private var restPresetSeconds = 90
+    @State private var didHapticAt10 = false
+    @State private var didHapticAt0 = false
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
-    private let appBlue   = Color.blue
 
     init(initialDay: DayType? = nil) {
         self.initialDay = initialDay
@@ -51,9 +53,26 @@ struct TrainingPlanView: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 40)
             }
+
+            // Floating rest timer — bottom-right corner, safe-area aware
+            GeometryReader { geo in
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        floatingRestTimer
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
+                    .padding(.bottom, geo.safeAreaInsets.bottom + 56)
+                    .padding(.trailing, 16)
+                }
+            }
+            .allowsHitTesting(restTimerEnd != nil)
+            .animation(.spring(response: 0.35), value: restTimerEnd != nil)
         }
         .navigationTitle("Training Plan")
         .navigationBarTitleDisplayMode(.inline)
+        .preferredColorScheme(.dark)
         .onAppear {
             activeDate = Calendar.current.startOfDay(for: Date())
             loadLog(for: activeDate, preferredDay: initialDay ?? programStore.todayDayType)
@@ -82,6 +101,7 @@ struct TrainingPlanView: View {
                 log: log,
                 selectedDay: selectedDay,
                 previousLog: previousSameDayLog,
+                streak: dataStore.supplementStreak,
                 onDone: { showCompletionSheet = false },
                 onLogNotes: { showCompletionSheet = false; showNotesEditor = true }
             )
@@ -96,6 +116,20 @@ struct TrainingPlanView: View {
             .presentationDetents([.medium])
             .presentationCornerRadius(20)
         }
+        .fullScreenCover(isPresented: $showFocusMode) {
+            if let exercise = focusedExercise {
+                FocusModeView(
+                    exercise: exercise,
+                    exerciseLog: Binding(
+                        get: { log?.exerciseLogs[exercise.id] ?? ExerciseLog(exerciseID: exercise.id, exerciseName: exercise.name) },
+                        set: {
+                            log?.exerciseLogs[exercise.id] = $0
+                        }
+                    ),
+                    onExit: { showFocusMode = false }
+                )
+            }
+        }
     }
 
     // ─────────────────────────────────────────────────────
@@ -109,7 +143,7 @@ struct TrainingPlanView: View {
         let weekday = calendar.component(.weekday, from: today) // 1=Sun … 7=Sat
         // Days offset so Monday is first
         let daysFromMonday = (weekday + 5) % 7   // Mon=0, Tue=1 … Sun=6
-        let monday = calendar.date(byAdding: .day, value: -daysFromMonday, to: calendar.startOfDay(for: today))!
+        let monday = calendar.date(byAdding: .day, value: -daysFromMonday, to: calendar.startOfDay(for: today)) ?? calendar.startOfDay(for: today)
         let weekDays = (0..<7).compactMap { calendar.date(byAdding: .day, value: $0, to: monday) }
 
         return HStack(spacing: 0) {
@@ -259,6 +293,18 @@ struct TrainingPlanView: View {
                         .foregroundStyle(.black.opacity(0.78))
                 }
                 .buttonStyle(.plain)
+
+                Button {
+                    showFocusMode = true
+                } label: {
+                    Label("Focus Mode", systemImage: "eye.fill")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.black.opacity(0.65), in: RoundedRectangle(cornerRadius: 12))
+                        .foregroundStyle(.white)
+                }
+                .buttonStyle(.plain)
+                .disabled(focusedExercise == nil)
             }
         }
         .padding(16)
@@ -290,6 +336,51 @@ struct TrainingPlanView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(Color.black.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    @ViewBuilder
+    private var floatingRestTimer: some View {
+        if restTimerEnd != nil {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                let remaining = restTimeRemaining(at: context.date)
+                let isDone = remaining == 0
+
+                Button {
+                    restTimerEnd = nil
+                    didHapticAt10 = false
+                    didHapticAt0 = false
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: isDone ? "checkmark.circle.fill" : "timer")
+                            .font(.system(size: 14, weight: .semibold))
+                        Text(isDone ? "Done — tap to clear" : restTimeString(at: context.date))
+                            .font(.system(size: 15, weight: .bold, design: .monospaced))
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 10)
+                    .background(
+                        isDone ? Color.status.success : Color.black.opacity(0.75),
+                        in: Capsule()
+                    )
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
+                }
+                .buttonStyle(.plain)
+                .onChange(of: remaining) { _, newRemaining in
+                    if newRemaining == 10 && !didHapticAt10 {
+                        let g = UIImpactFeedbackGenerator(style: .light)
+                        g.prepare()
+                        g.impactOccurred()
+                        didHapticAt10 = true
+                    } else if newRemaining == 0 && !didHapticAt0 {
+                        let g = UINotificationFeedbackGenerator()
+                        g.prepare()
+                        g.notificationOccurred(.success)
+                        didHapticAt0 = true
+                    }
+                }
+            }
+        }
     }
 
     private var exerciseQueueStrip: some View {
@@ -453,6 +544,8 @@ struct TrainingPlanView: View {
 
     private func startRestTimer() {
         restTimerEnd = Date().addingTimeInterval(TimeInterval(restPresetSeconds))
+        didHapticAt10 = false
+        didHapticAt0 = false
     }
 
     private func restTimeRemaining(at date: Date) -> Int {
@@ -719,7 +812,12 @@ struct ExerciseRowView: View {
                     log?.exerciseLogs[exercise.id] = $0
                 }
             ),
-            onStartRest: onStartRest
+            onStartRest: onStartRest,
+            onSetCompleted: {
+                if log?.sessionStartTime == nil {
+                    log?.sessionStartTime = Date()
+                }
+            }
         )
     }
 
@@ -779,6 +877,7 @@ struct LiftLogPanel: View {
     let previousSessionLog: ExerciseLog?
     @Binding var exerciseLog: ExerciseLog
     let onStartRest: () -> Void
+    var onSetCompleted: (() -> Void)? = nil
 
     var body: some View {
         VStack(spacing: 0) {
@@ -805,6 +904,26 @@ struct LiftLogPanel: View {
                             value: prev.totalVolume > 0 ? "\(Int(prev.totalVolume)) kg" : "—"
                         )
                     }
+                }
+
+                // Estimated 1RM from current session best set
+                if let best = exerciseLog.bestSet,
+                   let weight = best.weightKg,
+                   let reps = best.repsCompleted,
+                   let orm = estimated1RM(weightKg: weight, reps: reps) {
+                    Text("Est. 1RM ~\(Int(orm.rounded())) kg")
+                        .font(.caption)
+                        .foregroundStyle(Color.accent.cyan)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 2)
+                }
+
+                if let suggestion = overloadSuggestion {
+                    Text(suggestion)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Color.accent.cyan)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 2)
                 }
 
                 HStack(spacing: 10) {
@@ -867,7 +986,9 @@ struct LiftLogPanel: View {
                     previousSet: previousSessionLog?.sets.indices.contains(i) == true ? previousSessionLog?.sets[i] : nil,
                     onCompleteSet: {
                         exerciseLog.sets[i].timestamp = Date()
+                        onSetCompleted?()
                         onStartRest()
+                        let hap = UIImpactFeedbackGenerator(style: .medium); hap.prepare(); hap.impactOccurred()
                     },
                     onDelete: {
                         exerciseLog.sets.remove(at: i)
@@ -894,6 +1015,28 @@ struct LiftLogPanel: View {
         }
     }
 
+    private var overloadSuggestion: String? {
+        guard let prev = previousSessionLog else { return nil }
+        // Exclude warmup sets from both the target check and best-weight calculation
+        let workingSets = prev.sets.filter { !$0.isWarmup }
+        guard !workingSets.isEmpty else { return nil }
+        // Parse minimum reps from targetReps string (e.g., "8-12" → 8, "10" → 10)
+        let minTargetReps = exercise.targetReps
+            .components(separatedBy: CharacterSet.decimalDigits.inverted)
+            .compactMap { Int($0) }
+            .first ?? 0
+        guard minTargetReps > 0 else { return nil }
+        // Check all working sets hit target reps
+        let allHitTarget = workingSets.allSatisfy { ($0.repsCompleted ?? 0) >= minTargetReps }
+        guard allHitTarget else { return nil }
+        // Suggest +2.5 kg from previous best working weight
+        guard let bestWeight = workingSets.compactMap(\.weightKg).max() else { return nil }
+        let suggested = bestWeight + 2.5
+        let fmt = suggested.truncatingRemainder(dividingBy: 1) == 0
+            ? String(Int(suggested)) : String(format: "%.1f", suggested)
+        return "→ Try \(fmt) kg today (+2.5)"
+    }
+
     private func previousPerformanceTile(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
@@ -917,9 +1060,10 @@ struct SetRowView: View {
     let onCompleteSet: () -> Void
     let onDelete: () -> Void
 
-    @State private var weightStr = ""
-    @State private var repsStr   = ""
-    @State private var noteStr   = ""
+    @State private var weightStr  = ""
+    @State private var repsStr    = ""
+    @State private var noteStr    = ""
+    @State private var flashGreen = false
 
     private var setIsComplete: Bool {
         setLog.weightKg != nil && setLog.repsCompleted != nil
@@ -1000,8 +1144,14 @@ struct SetRowView: View {
                 .frame(maxWidth: .infinity)
                 .onChange(of: noteStr) { _, v in setLog.notes = v }
 
-            // Delete
-            Button(action: onCompleteSet) {
+            // Done / complete-set
+            Button {
+                onCompleteSet()
+                withAnimation(.easeOut(duration: 0.1)) { flashGreen = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                    withAnimation(.easeIn(duration: 0.25)) { flashGreen = false }
+                }
+            } label: {
                 Image(systemName: setIsComplete ? "checkmark.circle.fill" : "timer")
                     .foregroundStyle(setIsComplete ? Color.status.success : Color.appOrange2)
                     .font(.caption)
@@ -1014,7 +1164,7 @@ struct SetRowView: View {
             .frame(width: 28)
         }
         .padding(.horizontal, 12).padding(.vertical, 7)
-        .background(setIsComplete ? Color.status.success.opacity(0.03) : Color.clear)
+        .background(flashGreen ? Color.status.success.opacity(0.12) : (setIsComplete ? Color.status.success.opacity(0.03) : Color.clear))
         .onAppear {
             weightStr = setLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
@@ -1034,6 +1184,7 @@ struct SetRowView: View {
 // ─────────────────────────────────────────────────────────
 
 struct CardioLogPanel: View {
+    @EnvironmentObject var dataStore: EncryptedDataStore
     let cardioType: CardioType
     @Binding var cardioLog: CardioLog
 
@@ -1050,7 +1201,7 @@ struct CardioLogPanel: View {
                 Text(cardioType == .rowing ? "🚣 ROWING LOG" : "🚴 ELLIPTICAL LOG")
                     .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
                 Spacer()
-                if let zone = cardioLog.wasInZone2 {
+                if let zone = cardioLog.wasInZone2(lower: dataStore.userPreferences.zone2LowerHR, upper: dataStore.userPreferences.zone2UpperHR) {
                     Text(zone ? "✓ Zone 2" : "↑ Above Zone 2")
                         .font(.caption2.monospaced())
                         .foregroundStyle(zone ? Color.status.success : Color.status.warning)
@@ -1411,8 +1562,15 @@ struct SessionCompletionSheet: View {
     let log: DailyLog?
     let selectedDay: DayType
     let previousLog: DailyLog?
+    let streak: Int
     let onDone: () -> Void
     let onLogNotes: () -> Void
+
+    @EnvironmentObject var dataStore: EncryptedDataStore
+
+    @State private var milestoneTitle: String? = nil
+    @State private var milestoneMessage: String? = nil
+    @State private var hasShownMilestone = false
 
     var body: some View {
         NavigationStack {
@@ -1430,6 +1588,13 @@ struct SessionCompletionSheet: View {
                             .foregroundStyle(.secondary)
                     }
                     .padding(.top, 8)
+
+                    // Warm completion micro-copy
+                    Text(completionMessage)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 8)
 
                     // Stats grid: 4 metric tiles
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -1496,8 +1661,36 @@ struct SessionCompletionSheet: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, 32)
+                .onAppear {
+                    guard !hasShownMilestone else { return }
+                    hasShownMilestone = true
+                    let totalCompleted = dataStore.dailyLogs.filter {
+                        $0.taskStatuses.values.contains(.completed)
+                    }.count
+                    if totalCompleted == 1 {
+                        milestoneTitle = "First Workout Complete!"
+                        milestoneMessage = "That's day one. The hardest one. Every session from here builds on this."
+                    } else if let name = firstPRExerciseName {
+                        milestoneTitle = "New Personal Record!"
+                        milestoneMessage = "New record on \(name). You're stronger than last week."
+                        let g = UIImpactFeedbackGenerator(style: .medium)
+                        g.prepare()
+                        g.impactOccurred()
+                    }
+                    let ng = UINotificationFeedbackGenerator()
+                    ng.prepare()
+                    ng.notificationOccurred(.success)
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .fullScreenCover(isPresented: Binding(get: { milestoneTitle != nil }, set: { if !$0 { milestoneTitle = nil; milestoneMessage = nil } })) {
+            if let title = milestoneTitle, let message = milestoneMessage {
+                MilestoneModal(title: title, message: message) {
+                    milestoneTitle = nil
+                    milestoneMessage = nil
+                }
+            }
         }
     }
 
@@ -1527,12 +1720,19 @@ struct SessionCompletionSheet: View {
         return "\(done)/\(total)"
     }
 
-    private var durationStr: String {
-        guard let exLogs = log?.exerciseLogs.values, !exLogs.isEmpty else { return "—" }
-        let allTimestamps = exLogs.flatMap { $0.sets }.map(\.timestamp)
-        guard let first = allTimestamps.min(), let last = allTimestamps.max() else { return "—" }
-        let minutes = Int(last.timeIntervalSince(first) / 60)
+    private func formatSessionDuration(since start: Date) -> String {
+        let minutes = max(0, Int(Date().timeIntervalSince(start) / 60))
+        if minutes >= 60 {
+            let h = minutes / 60
+            let m = minutes % 60
+            return m > 0 ? "\(h)h \(m)m" : "\(h)h"
+        }
         return minutes > 0 ? "\(minutes) min" : "< 1 min"
+    }
+
+    private var durationStr: String {
+        guard let start = log?.sessionStartTime else { return "—" }
+        return formatSessionDuration(since: start)
     }
 
     private var prCountStr: String {
@@ -1545,6 +1745,38 @@ struct SessionCompletionSheet: View {
             return best > prevBest
         }.count
         return count > 0 ? "\(count)" : "0"
+    }
+
+    private var firstPRExerciseName: String? {
+        guard let exLogs = log?.exerciseLogs, let prevExLogs = previousLog?.exerciseLogs else { return nil }
+        // Sort by biggest weight improvement for a deterministic, most-impressive PR
+        let bestEntry = exLogs
+            .filter { (exerciseID, current) in
+                guard let best = current.bestSet?.weightKg,
+                      let prevBest = prevExLogs[exerciseID]?.bestSet?.weightKg else { return false }
+                return best > prevBest
+            }
+            .max { a, b in
+                let aGain = (a.value.bestSet?.weightKg ?? 0) - (prevExLogs[a.key]?.bestSet?.weightKg ?? 0)
+                let bGain = (b.value.bestSet?.weightKg ?? 0) - (prevExLogs[b.key]?.bestSet?.weightKg ?? 0)
+                return aGain < bGain
+            }
+        return bestEntry.map { exerciseID, _ in
+            TrainingProgramData.allExercises.first { $0.id == exerciseID }?.name ?? exerciseID
+        }
+    }
+
+    private var completionMessage: String {
+        if previousLog == nil {
+            return "That's day one. The hardest one."
+        }
+        if let firstPRExercise = firstPRExerciseName {
+            return "New record on \(firstPRExercise). You're stronger than last week."
+        }
+        if streak >= 7 {
+            return "\(streak) days straight. Consistency beats intensity every time."
+        }
+        return "Good work. Come back stronger."
     }
 
     @ViewBuilder
@@ -1592,6 +1824,180 @@ struct NotesEditorSheet: View {
                         Button("Done", action: onDone)
                     }
                 }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – Focus Mode (distraction-free)
+// ─────────────────────────────────────────────────────────
+
+struct FocusModeView: View {
+    let exercise: ExerciseDefinition
+    @Binding var exerciseLog: ExerciseLog
+    let onExit: () -> Void
+
+    @State private var weightStr = ""
+    @State private var repsStr   = ""
+
+    private var nextIncompleteSetIndex: Int? {
+        exerciseLog.sets.indices.first {
+            exerciseLog.sets[$0].weightKg == nil || exerciseLog.sets[$0].repsCompleted == nil
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            VStack(spacing: 32) {
+                // Exit button
+                HStack {
+                    Spacer()
+                    Button(action: onExit) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(Color.white.opacity(0.5))
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 16)
+
+                Spacer()
+
+                // Exercise name
+                Text(exercise.name)
+                    .font(.system(.title, design: .rounded, weight: .bold))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+
+                // Set info
+                if let idx = nextIncompleteSetIndex {
+                    VStack(spacing: 8) {
+                        Text("Set \(idx + 1)")
+                            .font(.system(size: 18, weight: .semibold, design: .monospaced))
+                            .foregroundStyle(Color.white.opacity(0.55))
+                        Text(exercise.targetReps)
+                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .foregroundStyle(.white)
+                    }
+                } else {
+                    Text("All sets done ✓")
+                        .font(.title2.bold())
+                        .foregroundStyle(Color.status.success)
+                }
+
+                // Weight + Reps fields
+                HStack(spacing: 16) {
+                    focusField(placeholder: "kg", text: $weightStr)
+                    Text("×")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(Color.white.opacity(0.5))
+                    focusField(placeholder: "reps", text: $repsStr)
+                }
+                .padding(.horizontal, 32)
+
+                // Done button
+                Button {
+                    guard let idx = nextIncompleteSetIndex else { onExit(); return }
+                    exerciseLog.sets[idx].weightKg      = Double(weightStr.replacingOccurrences(of: ",", with: "."))
+                    exerciseLog.sets[idx].repsCompleted = Int(repsStr)
+                    exerciseLog.sets[idx].timestamp     = Date()
+                    let hap = UIImpactFeedbackGenerator(style: .medium); hap.prepare(); hap.impactOccurred()
+                    repsStr = ""
+                    // Prefill weight for the next incomplete set from the one just completed
+                    if let kg = exerciseLog.sets[idx].weightKg {
+                        weightStr = kg.truncatingRemainder(dividingBy: 1) == 0
+                            ? String(Int(kg)) : String(kg)
+                    } else {
+                        weightStr = ""
+                    }
+                } label: {
+                    Text(nextIncompleteSetIndex != nil ? "Done" : "Finish")
+                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .foregroundStyle(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 20)
+                        .background(Color.status.success, in: RoundedRectangle(cornerRadius: 20))
+                }
+                .buttonStyle(.plain)
+                .padding(.horizontal, 32)
+                .disabled(nextIncompleteSetIndex == nil)
+
+                Spacer()
+            }
+        }
+        .persistentSystemOverlays(.hidden)
+        .onAppear {
+            // Prefill weight from last set that has a weight logged
+            if let kg = exerciseLog.sets.last(where: { $0.weightKg != nil })?.weightKg {
+                weightStr = kg.truncatingRemainder(dividingBy: 1) == 0
+                    ? String(Int(kg)) : String(kg)
+            }
+        }
+    }
+
+    private func focusField(placeholder: String, text: Binding<String>) -> some View {
+        TextField(placeholder, text: text)
+            .font(.system(size: 42, weight: .bold, design: .monospaced))
+            .foregroundStyle(.white)
+            .multilineTextAlignment(.center)
+            .keyboardType(.decimalPad)
+            .padding(16)
+            .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+            .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - MilestoneModal
+
+struct MilestoneModal: View {
+    let title: String
+    let message: String
+    let onDismiss: () -> Void
+
+    @State private var autoDismissTimer: Timer? = nil
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.85).ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                Text("🎉")
+                    .font(.system(size: 72))
+
+                Text(title)
+                    .font(.system(.title, design: .rounded, weight: .bold))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+
+                Text(message)
+                    .font(.subheadline)
+                    .foregroundStyle(.white.opacity(0.8))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 24)
+
+                Button("Continue") {
+                    autoDismissTimer?.invalidate()
+                    onDismiss()
+                }
+                .font(.headline)
+                .padding(.horizontal, 40)
+                .padding(.vertical, 14)
+                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 20))
+                .foregroundStyle(.white)
+            }
+            .padding(32)
+        }
+        .onAppear {
+            autoDismissTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in
+                onDismiss()
+            }
+        }
+        .onDisappear {
+            autoDismissTimer?.invalidate()
         }
     }
 }

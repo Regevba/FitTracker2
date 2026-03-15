@@ -20,6 +20,8 @@ enum ProgramPhase: String, Codable, CaseIterable, Sendable {
 
     var trainingCalories: Int { switch self { case .recovery: 1800; case .stage1: 1900; case .stage2: 2000 } }
     var restCalories: Int     { switch self { case .recovery: 1600; case .stage1: 1700; case .stage2: 1800 } }
+    /// Intentionally uniform across all phases — protein target does not vary by phase.
+    /// Used as a fallback when lean body mass is unavailable (see StatsView, spec).
     var proteinTargetG: ClosedRange<Double> { 125...135 }
 }
 
@@ -41,9 +43,10 @@ struct DailyLog: Identifiable, Codable, Sendable {
     var nutritionLog:   NutritionLog                = NutritionLog()
     var biometrics:     DailyBiometrics             = DailyBiometrics()
     var notes:          String                      = ""
+    var sessionStartTime: Date?                     // set on first set confirmation
     var mood:           Int?                        // 1–5
-    var energyLevel:    Int?                        // 1–10
-    var cravingLevel:   Int?                        // 1–10
+    var energyLevel:    Int?                        // 1–5
+    var cravingLevel:   Int?                        // 1–5
 
     // CloudKit sync metadata
     var cloudRecordID: String?
@@ -160,9 +163,9 @@ struct CardioLog: Identifiable, Codable, Sendable {
     var summaryImageData:   Data?           // compressed JPEG stored encrypted
     var summaryImageCloudID: String?        // CloudKit CKAsset reference
 
-    var wasInZone2: Bool? {
+    func wasInZone2(lower: Int, upper: Int) -> Bool? {
         guard let avg = avgHeartRate else { return nil }
-        return avg >= 106 && avg <= 124
+        return avg >= Double(lower) && avg <= Double(upper)
     }
 }
 
@@ -275,10 +278,6 @@ struct DailyBiometrics: Codable, Sendable {
     var effectiveRestingHR: Double? { restingHeartRate ?? manualRestingHR }
     var effectiveHRV:       Double? { hrv ?? manualHRV }
     var effectiveSleep:     Double? { sleepHours ?? manualSleepHours }
-
-    var hrOK:  Bool { (effectiveRestingHR ?? 999) < 75 }
-    var hrvOK: Bool { (effectiveHRV ?? 0) >= 28 }
-    var readyForTraining: Bool { hrOK && hrvOK }
 }
 
 // ─────────────────────────────────────────────────────────
@@ -351,6 +350,7 @@ struct UserProfile: Codable, Sendable {
     var targetBFMax:        Double          = 15
     var startWeightKg:      Double          = 70.95
     var startBodyFatPct:    Double          = 21.0
+    var mealSlotNames:      [String]        = ["Breakfast", "Lunch", "Dinner", "Snacks"]
 
     func recoveryDay(for date: Date, calendar: Calendar = .current) -> Int {
         let start = calendar.startOfDay(for: recoveryStart)
@@ -381,6 +381,17 @@ struct UserProfile: Codable, Sendable {
         let bp = bfProgress(current: currentBF)
         return (wp + bp) / 2.0
     }
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – User Preferences
+// ─────────────────────────────────────────────────────────
+
+struct UserPreferences: Codable, Equatable, Sendable {
+    var zone2LowerHR: Int     = 106
+    var zone2UpperHR: Int     = 124
+    var hrReadyThreshold: Int = 60
+    var hrvReadyThreshold: Double = 28.0
 }
 
 private func iso(_ s: String) -> Date {

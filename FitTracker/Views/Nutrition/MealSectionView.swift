@@ -5,6 +5,7 @@ import SwiftUI
 struct MealSectionView: View {
     @Binding var nutritionLog: NutritionLog
     let suggestedMealNumber: Int
+    var mealSlotNames: [String]
     let onTapMeal: (Int) -> Void  // called with mealNumber (1-4) when meal card is tapped
 
     private var displayedMealNumbers: [Int] {
@@ -25,35 +26,18 @@ struct MealSectionView: View {
 
             ForEach(displayedMealNumbers, id: \.self) { mealNumber in
                 let entry = nutritionLog.meals.first(where: { $0.mealNumber == mealNumber })
-                MealCard(mealNumber: mealNumber, entry: entry, isSuggested: mealNumber == suggestedMealNumber) {
+                MealCard(mealNumber: mealNumber, entry: entry, isSuggested: mealNumber == suggestedMealNumber, mealSlotNames: mealSlotNames) {
                     onTapMeal(mealNumber)
                 }
             }
 
-            // "+ Add Meal" footer button
-            Button {
-                onTapMeal(suggestedMealNumber)
-            } label: {
-                HStack(spacing: 6) {
-                    Image(systemName: "plus.circle.fill")
-                        .font(AppType.body)
-                        .foregroundStyle(Color.accent.cyan)
-                    Text(suggestedMealNumber > displayedMealNumbers.count ? "Add Meal \(suggestedMealNumber)" : "Add Another Meal")
-                        .font(AppType.body)
-                        .foregroundStyle(Color.accent.cyan)
-                }
+            Text("Tap any meal slot to log")
+                .font(AppType.caption)
+                .foregroundStyle(Color.secondary.opacity(0.6))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.accent.cyan.opacity(0.08))
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .strokeBorder(Color.accent.cyan.opacity(0.3), lineWidth: 1)
-                )
-            }
-            .buttonStyle(.plain)
+                .multilineTextAlignment(.center)
+                .padding(.top, 4)
+                .accessibilityHidden(true)
         }
     }
 }
@@ -64,16 +48,15 @@ private struct MealCard: View {
     let mealNumber: Int
     let entry: MealEntry?
     let isSuggested: Bool
+    let mealSlotNames: [String]
     let onTap: () -> Void
 
     private var defaultName: String {
-        switch mealNumber {
-        case 1: return "Breakfast"
-        case 2: return "Lunch"
-        case 3: return "Dinner"
-        case 4: return "Snacks"
-        default: return "Meal \(mealNumber)"
+        let index = mealNumber - 1
+        if mealSlotNames.indices.contains(index) {
+            return mealSlotNames[index]
         }
+        return "Meal \(mealNumber)"
     }
 
     private var displayName: String {

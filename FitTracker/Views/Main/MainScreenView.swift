@@ -22,6 +22,14 @@ struct MainScreenView: View {
     @State private var selectedRecoveryRoutine: RecoveryRoutine?
     @State private var selectedDayType:   DayType? = nil   // nil = follow today's schedule
 
+    @State private var readinessHapticDay: Date? = nil
+    @State private var shownMilestoneStreak: Int = 0
+    @State private var animatedWeight: Double? = nil
+    @State private var animatedBF: Double? = nil
+    @State private var shownMilestonePhase: ProgramPhase? = nil
+    @State private var milestoneTitle: String? = nil
+    @State private var milestoneMessage: String? = nil
+
     private var activeDayType: DayType {
         selectedDayType ?? programStore.todayDayType
     }
@@ -43,6 +51,11 @@ struct MainScreenView: View {
     private var readinessScore: Int? {
         dataStore.readinessScore(for: Date(), fallbackMetrics: metrics)
     }
+    private var streakMilestone: Int? {
+        let streak = dataStore.supplementStreak
+        let milestones = [7, 14, 30, 60, 90]
+        return milestones.first(where: { streak == $0 })
+    }
     private var loggedMealCount: Int {
         todayLog?.nutritionLog.meals.filter { $0.status == .completed }.count ?? 0
     }
@@ -58,7 +71,28 @@ struct MainScreenView: View {
         TrainingProgramData.exercises(for: activeDayType).count
     }
     private var recoveryRecommendation: RecoveryRecommendation {
-        RecoveryRoutineLibrary.recommend(dayType: activeDayType, readinessScore: readinessScore, liveMetrics: metrics, log: todayLog)
+        RecoveryRoutineLibrary.recommend(dayType: activeDayType, readinessScore: readinessScore, liveMetrics: metrics, log: todayLog, preferences: dataStore.userPreferences)
+    }
+
+    private var aiTip: String {
+        let logs = Array(dataStore.dailyLogs.prefix(28))
+        let r7 = logs.prefix(7)
+        let prefs = dataStore.userPreferences
+        // dailyLogs is always kept sorted descending; first == most recent
+        if let hrv = logs.first?.biometrics.effectiveHRV, hrv < prefs.hrvReadyThreshold {
+            return "HRV below threshold — consider a walk instead of lifting"
+        }
+        let r7CardioLogs = r7.flatMap { $0.cardioLogs.values }
+        let r7Zone2Logs = r7CardioLogs.filter { $0.wasInZone2(lower: prefs.zone2LowerHR, upper: prefs.zone2UpperHR) == true }
+        let z2min: Double = r7Zone2Logs.compactMap(\.durationMinutes).reduce(0, +)
+        if z2min < 90 {
+            return "Under 90 min Zone 2 — a 20-min walk fills the gap"
+        }
+        let adh = logs.isEmpty ? 0.0 : logs.map { $0.completionPct }.reduce(0, +) / Double(logs.count)
+        if adh < 70 {
+            return "Consistency gap this month — partial sessions count too"
+        }
+        return "All signals green — push hard today"
     }
 
     // Background palette — defined centrally in AppTheme.swift
@@ -67,6 +101,30 @@ struct MainScreenView: View {
     private let bgBlue1   = Color.appBlue1
     private let bgBlue2   = Color.appBlue2
 
+    private func checkMilestones() {
+        // Supplement streak
+        if let milestone = streakMilestone, milestone != shownMilestoneStreak {
+            shownMilestoneStreak = milestone
+            milestoneTitle = "\(milestone)-Day Streak!"
+            milestoneMessage = "\(milestone) days straight. Consistency beats intensity every time."
+            return
+        }
+        // Phase transition
+        let phase = dataStore.userProfile.currentPhase
+        if shownMilestonePhase == nil {
+            shownMilestonePhase = phase   // initialize on first appear, no modal
+            return
+        }
+        if phase != shownMilestonePhase {
+            shownMilestonePhase = phase
+            milestoneTitle = "Phase Complete!"
+            milestoneMessage = "Welcome to \(phase.rawValue). A new chapter begins."
+            let ng = UINotificationFeedbackGenerator()
+            ng.prepare()
+            ng.notificationOccurred(.success)
+        }
+    }
+
     var body: some View {
         ZStack {
             backgroundLayer
@@ -74,7 +132,10 @@ struct MainScreenView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 20) {
                     greetingHeader
+                    readinessHeadline
                     recommendationCard
+                    aiTipChip
+                    wellnessQuickLog
 
                     SectionHeader(title: "Today Actions")
                     actionGrid
@@ -97,9 +158,52 @@ struct MainScreenView: View {
                 .padding(.bottom, 28)
             }
         }
+        .onAppear {
+            checkMilestones()
+            animatedWeight = currentWeight
+            animatedBF = currentBF
+        }
+        .onChange(of: currentWeight) { _, newWeight in
+            withAnimation(.interpolatingSpring(stiffness: 60, damping: 12)) {
+                animatedWeight = newWeight
+            }
+        }
+        .onChange(of: currentBF) { _, newBF in
+            withAnimation(.interpolatingSpring(stiffness: 60, damping: 12)) {
+                animatedBF = newBF
+            }
+        }
+        .onChange(of: dataStore.supplementStreak) { _, _ in checkMilestones() }
+        .onChange(of: dataStore.userProfile.currentPhase) { _, _ in checkMilestones() }
+        .onChange(of: readinessScore) { _, newScore in
+            guard newScore != nil else { return }
+            let today = Calendar.current.startOfDay(for: Date())
+            guard readinessHapticDay.map({ Calendar.current.startOfDay(for: $0) }) != today else { return }
+            readinessHapticDay = today
+            let g = UINotificationFeedbackGenerator()
+            g.prepare()
+            g.notificationOccurred(.success)
+        }
+        .onChange(of: selectedTab) { _, _ in
+            let g = UIImpactFeedbackGenerator(style: .light)
+            g.prepare()
+            g.impactOccurred()
+        }
+        .fullScreenCover(isPresented: Binding(
+            get: { milestoneTitle != nil },
+            set: { if !$0 { milestoneTitle = nil; milestoneMessage = nil } }
+        )) {
+            if let title = milestoneTitle, let msg = milestoneMessage {
+                MilestoneModal(title: title, message: msg) {
+                    milestoneTitle = nil
+                    milestoneMessage = nil
+                }
+            }
+        }
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(.hidden, for: .navigationBar)
         .toolbar { toolbarItems }
+        .preferredColorScheme(.dark)
         .sheet(isPresented: $showExerciseSheet) {
             NavigationStack { TrainingPlanView(initialDay: activeDayType) }
                 .presentationDetents([.large])
@@ -131,7 +235,7 @@ struct MainScreenView: View {
             LinearGradient(colors: [bgBlue1, bgBlue2],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
                 .opacity(goalProgress)
-                .animation(.easeInOut(duration: 1.5), value: goalProgress)
+                .animation(.easeOut(duration: 0.6), value: goalProgress)
         }
         .ignoresSafeArea()
     }
@@ -329,6 +433,18 @@ struct MainScreenView: View {
         }
     }
 
+    private var readinessHeadline: some View {
+        VStack(spacing: 4) {
+            Text(readinessScore.map { "\($0)" } ?? "—")
+                .font(.system(size: 48, weight: .bold, design: .rounded))
+                .foregroundStyle(readinessScore != nil ? readinessColor : Color.secondary)
+            Text(readinessContextShort)
+                .font(.subheadline)
+                .foregroundStyle(.black.opacity(0.62))
+        }
+        .frame(maxWidth: .infinity)
+    }
+
     private var recommendationCard: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top) {
@@ -413,6 +529,93 @@ struct MainScreenView: View {
                 .stroke(Color.white.opacity(0.55), lineWidth: 1)
         )
         .shadow(color: recommendationAccent.opacity(0.18), radius: 18, y: 8)
+    }
+
+    private var aiTipChip: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "sparkles")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Color.accent.cyan)
+            Text(aiTip)
+                .font(AppType.subheading)
+                .foregroundStyle(.black.opacity(0.72))
+                .lineLimit(1)
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 14)
+                .stroke(Color.accent.cyan.opacity(0.3), lineWidth: 1)
+        )
+    }
+
+    // MARK: - Wellness Quick-Log
+
+    private var wellnessQuickLog: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("How are you feeling?")
+                .font(AppType.caption)
+                .textCase(.uppercase)
+                .tracking(1.5)
+                .foregroundStyle(.black.opacity(0.45))
+
+            wellnessRow(
+                label: "Mood",
+                emojis: ["😴", "😐", "🙂", "😄", "🔥"],
+                current: todayLog?.mood
+            ) { value in saveWellness(\.mood, value: value) }
+
+            wellnessRow(
+                label: "Energy",
+                emojis: ["😴", "😐", "🙂", "😄", "🔥"],
+                current: todayLog?.energyLevel
+            ) { value in saveWellness(\.energyLevel, value: value) }
+
+            wellnessRow(
+                label: "Cravings",
+                emojis: ["🌿", "😕", "😐", "🍕", "🍰"],
+                current: todayLog?.cravingLevel
+            ) { value in saveWellness(\.cravingLevel, value: value) }
+        }
+        .padding(16)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .overlay(RoundedRectangle(cornerRadius: 20).stroke(Color.white.opacity(0.35), lineWidth: 1))
+    }
+
+    private func wellnessRow(label: String, emojis: [String], current: Int?, onSelect: @escaping (Int) -> Void) -> some View {
+        HStack {
+            Text(label)
+                .font(AppType.subheading)
+                .foregroundStyle(.black.opacity(0.65))
+                .frame(width: 70, alignment: .leading)
+            Spacer()
+            HStack(spacing: 6) {
+                ForEach(Array(emojis.enumerated()), id: \.offset) { offset, emoji in
+                    let value = offset + 1
+                    Button {
+                        onSelect(value)
+                    } label: {
+                        Text(emoji)
+                            .font(.system(size: 24))
+                            .opacity(current == nil ? 0.5 : (current == value ? 1.0 : 0.3))
+                            .scaleEffect(current == value ? 1.15 : 1.0)
+                            .animation(.spring(response: 0.2), value: current)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+        }
+    }
+
+    private func saveWellness(_ keyPath: WritableKeyPath<DailyLog, Int?>, value: Int) {
+        var log = dataStore.dailyLogs.first(where: { Calendar.current.isDateInToday($0.date) }) ?? DailyLog(date: Date())
+        log[keyPath: keyPath] = value
+        dataStore.upsertLog(log)
+        Task { await dataStore.persistToDisk() }
     }
 
     private var actionGrid: some View {
@@ -634,7 +837,8 @@ struct MainScreenView: View {
                             }
                             .frame(width: 190, height: 140, alignment: .topLeading)
                             .padding(16)
-                            .background(Color.white.opacity(0.24), in: RoundedRectangle(cornerRadius: 20))
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+                            .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(recoveryTint(for: routine).opacity(0.22), lineWidth: 1)
@@ -667,9 +871,10 @@ struct MainScreenView: View {
                         .frame(width: 8, height: 8)
                 }
                 HStack(alignment: .lastTextBaseline, spacing: 3) {
-                    Text(currentWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—")
+                    Text(animatedWeight.map { settings.unitSystem.displayWeightValue($0) } ?? "—")
                         .font(.system(size: 36, weight: .bold, design: .monospaced))
                         .foregroundStyle(.blue)
+                        .contentTransition(.numericText())
                     Text(settings.unitSystem.weightLabel())
                         .font(.callout)
                         .foregroundStyle(.secondary)
@@ -701,9 +906,10 @@ struct MainScreenView: View {
                         .frame(width: 8, height: 8)
                 }
                 HStack(alignment: .lastTextBaseline, spacing: 3) {
-                    Text(currentBF.map { String(format: "%.1f", $0) } ?? "—")
+                    Text(animatedBF.map { String(format: "%.1f", $0) } ?? "—")
                         .font(.system(size: 36, weight: .bold, design: .monospaced))
                         .foregroundStyle(.orange)
+                        .contentTransition(.numericText())
                     Text("%")
                         .font(.callout)
                         .foregroundStyle(.secondary)
@@ -981,7 +1187,8 @@ struct TodayActionCard: View {
             }
             .padding(16)
             .frame(maxWidth: .infinity, minHeight: 128, alignment: .topLeading)
-            .background(Color.white.opacity(0.24), in: RoundedRectangle(cornerRadius: 22))
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22))
+            .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
             .overlay(
                 RoundedRectangle(cornerRadius: 22)
                     .stroke(tint.opacity(0.28), lineWidth: 1)

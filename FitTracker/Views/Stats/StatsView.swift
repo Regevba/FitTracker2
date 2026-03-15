@@ -14,9 +14,9 @@ enum StatsPeriod: String, CaseIterable {
     var dateRange: (from: Date, to: Date) {
         let to = Date()
         switch self {
-        case .sevenDays:   return (Calendar.current.date(byAdding: .day, value: -7, to: to)!, to)
-        case .thirtyDays:  return (Calendar.current.date(byAdding: .day, value: -30, to: to)!, to)
-        case .ninetyDays:  return (Calendar.current.date(byAdding: .day, value: -90, to: to)!, to)
+        case .sevenDays:   return (Calendar.current.date(byAdding: .day, value: -7, to: to) ?? Date.distantPast, to)
+        case .thirtyDays:  return (Calendar.current.date(byAdding: .day, value: -30, to: to) ?? Date.distantPast, to)
+        case .ninetyDays:  return (Calendar.current.date(byAdding: .day, value: -90, to: to) ?? Date.distantPast, to)
         case .allTime:     return (Date.distantPast, to)
         }
     }
@@ -476,10 +476,8 @@ struct StatsView: View {
             }
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 18)
-                .fill(Color.white.opacity(0.16))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
     }
 
     private var latestSnapshotCard: some View {
@@ -520,10 +518,8 @@ struct StatsView: View {
             }
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 18)
-                .fill(Color.white.opacity(0.14))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
     }
 
     private var insightFeedCard: some View {
@@ -544,10 +540,8 @@ struct StatsView: View {
             }
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 18)
-                .fill(Color.white.opacity(0.12))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
     }
 
     // MARK: – Training Section
@@ -645,7 +639,7 @@ struct StatsView: View {
             // Zone 2 chart
             ChartCard(title: "Zone 2 Cardio", periodLabel: period.rawValue) {
                 if zone2Data.isEmpty {
-                    EmptyStateView(icon: "heart.circle", title: "No Zone 2 data", subtitle: "Log cardio with HR 106–124 bpm to see this chart",
+                    EmptyStateView(icon: "heart.circle", title: "No Zone 2 data", subtitle: "Log cardio with HR \(dataStore.userPreferences.zone2LowerHR)–\(dataStore.userPreferences.zone2UpperHR) bpm to see this chart",
                                    ctaLabel: "Open Training Plan", ctaAction: { showTrainingPlan = true })
                         .frame(height: 120)
                 } else {
@@ -1230,100 +1224,7 @@ private extension StatsView {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
-        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
-    }
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – Settings View
-// ─────────────────────────────────────────────────────────
-
-struct SettingsView: View {
-
-    @EnvironmentObject var dataStore:     EncryptedDataStore
-    @EnvironmentObject var healthService: HealthKitService
-    @EnvironmentObject var cloudSync:     CloudKitSyncService
-    @EnvironmentObject var settings:      AppSettings
-
-    @State private var showResetAlert = false
-
-    var body: some View {
-        #if os(macOS)
-        NavigationStack { settingsForm }
-        #else
-        settingsForm
-        #endif
-    }
-
-    private var settingsForm: some View {
-        Form {
-            Section("Profile") {
-                LabeledContent("Name",          value: dataStore.userProfile.name)
-                LabeledContent("Recovery Start", value: "Jan 29, 2026")
-                LabeledContent("Phase",         value: dataStore.userProfile.currentPhase.rawValue)
-                LabeledContent("Recovery Day",  value: "Day \(dataStore.userProfile.daysSinceStart)")
-                LabeledContent("Goal Weight",   value: "\(Int(dataStore.userProfile.targetWeightMin))–\(Int(dataStore.userProfile.targetWeightMax)) kg")
-                LabeledContent("Goal Body Fat", value: "\(Int(dataStore.userProfile.targetBFMin))–\(Int(dataStore.userProfile.targetBFMax))%")
-            }
-
-            Section("Apple Health") {
-                LabeledContent("HealthKit", value: healthService.isAuthorized ? "Authorized ✓" : "Not authorized")
-                LabeledContent("Apple Watch", value: "Background delivery active")
-                Button("Re-authorize HealthKit") {
-                    Task { try? await healthService.requestAuthorization() }
-                }
-            }
-
-            Section("iCloud Sync") {
-                LabeledContent("Status",     value: cloudSync.status.rawValue)
-                LabeledContent("iCloud",     value: cloudSync.iCloudAvailable ? "Available ✓" : "Unavailable")
-                if let last = cloudSync.lastSyncDate {
-                    LabeledContent("Last Sync", value: lastSyncFormatted(last))
-                }
-                Button("Sync Now") {
-                    Task { await cloudSync.pushPendingChanges(dataStore: dataStore) }
-                }
-                Button("Fetch from iCloud") {
-                    Task { await cloudSync.fetchChanges(dataStore: dataStore) }
-                }
-            }
-
-            Section("Security") {
-                LabeledContent("Encryption",      value: "AES-256-GCM + ChaCha20-Poly1305")
-                LabeledContent("Key Storage",     value: "Keychain (biometric-protected)")
-                LabeledContent("Cloud Storage",   value: "Encrypted before upload ✓")
-                LabeledContent("Data Protection", value: "NSFileProtectionCompleteUnlessOpen")
-                LabeledContent("Platforms",       value: "iOS · iPadOS · macOS only")
-            }
-
-            Section("Data") {
-                LabeledContent("Daily Logs",       value: "\(dataStore.dailyLogs.count) entries")
-                LabeledContent("Weekly Snapshots", value: "\(dataStore.weeklySnapshots.count) entries")
-                Button("Delete All Local Data", role: .destructive) {
-                    showResetAlert = true
-                }
-            }
-        }
-        .navigationTitle("Settings")
-        .alert("Delete All Data?", isPresented: $showResetAlert) {
-            Button("Delete", role: .destructive) {
-                dataStore.dailyLogs = []
-                dataStore.weeklySnapshots = []
-                Task { await dataStore.persistToDisk() }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This permanently removes all locally stored logs. iCloud copies are not deleted.")
-        }
-    }
-
-    private static let lastSyncFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateStyle = .short; f.timeStyle = .short
-        return f
-    }()
-
-    private func lastSyncFormatted(_ date: Date) -> String {
-        Self.lastSyncFormatter.string(from: date)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
     }
 }

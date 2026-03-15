@@ -78,7 +78,7 @@ enum RecoveryRoutineLibrary {
 
     static let all: [RecoveryRoutine] = [nervousSystemReset, mobilityFlush, yogaFlow]
 
-    static func recommend(dayType: DayType, readinessScore: Int?, liveMetrics: LiveMetrics, log: DailyLog?) -> RecoveryRecommendation {
+    static func recommend(dayType: DayType, readinessScore: Int?, liveMetrics: LiveMetrics, log: DailyLog?, preferences: UserPreferences = UserPreferences()) -> RecoveryRecommendation {
         let sleep = liveMetrics.sleepHours ?? log?.biometrics.effectiveSleep ?? 0
         let hrv = liveMetrics.hrv ?? log?.biometrics.effectiveHRV ?? 0
         let restingHR = liveMetrics.restingHR ?? log?.biometrics.effectiveRestingHR ?? 0
@@ -92,8 +92,8 @@ enum RecoveryRoutineLibrary {
         else if score < 60 { reasons.append("Readiness is moderate, so lighter movement will likely give better return today.") }
 
         if sleep > 0, sleep < 6.5 { reasons.append(String(format: "Sleep came in at %.1f hrs, so downshifting will help more than pushing load.", sleep)) }
-        if hrv > 0, hrv < 28 { reasons.append(String(format: "HRV is %.0f ms, which points toward a lighter nervous-system day.", hrv)) }
-        if restingHR > 0, restingHR >= 75 { reasons.append(String(format: "Resting HR is %.0f bpm, so recovery work is the safer call.", restingHR)) }
+        if hrv > 0, hrv < preferences.hrvReadyThreshold { reasons.append(String(format: "HRV is %.0f ms, which points toward a lighter nervous-system day.", hrv)) }
+        if restingHR > 0, restingHR >= Double(preferences.hrReadyThreshold) { reasons.append(String(format: "Resting HR is %.0f bpm, so recovery work is the safer call.", restingHR)) }
         if protein > 0, protein < 120 { reasons.append("Protein is still behind target, so keep training stress modest until nutrition catches up.") }
         if water > 0, water < 1800 { reasons.append("Hydration is still low, so use recovery work while you bring fluids up.") }
         if completedMeals == 0 { reasons.append("No meals logged yet, which is another sign to keep the day restorative.") }
@@ -101,7 +101,7 @@ enum RecoveryRoutineLibrary {
         let routine: RecoveryRoutine
         let shouldReplaceTraining = !dayType.isTrainingDay || score < 45
 
-        if sleep > 0, sleep < 6.5 || restingHR >= 78 || score < 40 {
+        if (sleep > 0 && sleep < 6.5) || restingHR >= 78 || score < 40 {
             routine = nervousSystemReset
         } else if dayType == .lowerBody || dayType == .fullBody || score < 60 {
             routine = mobilityFlush

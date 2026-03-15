@@ -10,6 +10,8 @@ struct ReadinessCard: View {
 
     @State private var currentPage = 0
     @State private var timer: Timer?
+    @State private var showReadinessInfo = false
+    @State private var displayedScore: Int = 0
 
     // ── Timer helpers ─────────────────────────────────────
 
@@ -46,10 +48,8 @@ struct ReadinessCard: View {
                 .padding(.bottom, 6)
         }
         .frame(height: 180)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.12))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
         .onAppear { startTimer() }
         .onDisappear {
             timer?.invalidate()
@@ -88,9 +88,10 @@ struct ReadinessCard: View {
 
         return VStack(spacing: 4) {
             HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text(score.map { "\($0)" } ?? "–")
+                Text(score != nil ? "\(displayedScore)" : "–")
                     .font(.system(size: 48, weight: .bold))
                     .foregroundStyle(.white)
+                    .contentTransition(.numericText())
                 if score != nil {
                     Text("/ 100")
                         .font(AppType.subheading)
@@ -119,6 +120,36 @@ struct ReadinessCard: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        .onAppear {
+            guard let target = score else { return }
+            displayedScore = 0
+            withAnimation(.interpolatingSpring(stiffness: 40, damping: 8)) {
+                displayedScore = target
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            Button { showReadinessInfo.toggle() } label: {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white.opacity(0.6))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("About readiness score")
+            .popover(isPresented: $showReadinessInfo) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("How Readiness Is Calculated")
+                        .font(.headline)
+                    Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(16)
+                .frame(minWidth: 260)
+                .presentationCompactAdaptation(.popover)
+            }
+            .padding(.top, 10)
+            .padding(.trailing, 16)
+        }
     }
 
     private func contextLabel(for score: Int?) -> String {
@@ -444,7 +475,8 @@ struct ReadinessCard: View {
             dayType: todayLog?.dayType ?? .restDay,
             readinessScore: dataStore.readinessScore(for: Date(), fallbackMetrics: healthKit.latest),
             liveMetrics: healthKit.latest,
-            log: todayLog
+            log: todayLog,
+            preferences: dataStore.userPreferences
         )
 
         return VStack(alignment: .leading, spacing: 8) {

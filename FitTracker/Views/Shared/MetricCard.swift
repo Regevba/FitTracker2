@@ -51,8 +51,8 @@ struct MetricCard: View {
                 .frame(width: 8, height: 8)
                 .padding(12)
         }
-        .background(Color.white.opacity(0.15))
-        .cornerRadius(14)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(accessibilityValue)
