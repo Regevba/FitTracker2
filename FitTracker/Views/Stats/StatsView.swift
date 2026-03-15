@@ -458,6 +458,26 @@ struct StatsView: View {
                                 .foregroundStyle(Color.accent.cyan)
                                 .lineStyle(StrokeStyle(lineWidth: 2))
                         }
+                        // PR gold star annotations — one star per date a personal record was set
+                        let prDates: Set<Date> = {
+                            let (from, to) = dateRange
+                            let cal = Calendar.current
+                            return Set(
+                                dataStore.prRecords().values
+                                    .filter { $0.date >= from && $0.date <= to }
+                                    .map { cal.startOfDay(for: $0.date) }
+                            )
+                        }()
+                        ForEach(volumeData.filter { prDates.contains(Calendar.current.startOfDay(for: $0.date)) }, id: \.date) { p in
+                            PointMark(x: .value("Date", p.date), y: .value("kg", p.volumeKg))
+                                .foregroundStyle(Color.accent.gold)
+                                .symbolSize(120)
+                                .annotation(position: .top) {
+                                    Text("★")
+                                        .font(.caption.weight(.bold))
+                                        .foregroundStyle(Color.accent.gold)
+                                }
+                        }
                     }
                     .frame(height: 140)
                     .chartXAxis {
