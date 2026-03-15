@@ -22,6 +22,9 @@ struct TrainingPlanView: View {
     @State private var log: DailyLog?
     @State private var showCompletionSheet = false
     @State private var showNotesEditor     = false
+    @State private var focusedExerciseID: String?
+    @State private var restTimerEnd: Date?
+    @State private var restPresetSeconds = 90
     private let bgOrange1 = Color.appOrange1
     private let bgOrange2 = Color.appOrange2
     private let appBlue   = Color.blue
@@ -41,6 +44,8 @@ struct TrainingPlanView: View {
                     weekStrip
                     sessionPicker
                     sessionHeader
+                    sessionCommandDeck
+                    exerciseQueueStrip
                     exerciseSections
                 }
                 .padding(.horizontal, 16)
@@ -50,24 +55,27 @@ struct TrainingPlanView: View {
         .navigationTitle("Training Plan")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            selectedDay = initialDay ?? programStore.todayDayType
-            log = dataStore.todayLog() ?? makeBlankLog()
+            activeDate = Calendar.current.startOfDay(for: Date())
+            loadLog(for: activeDate, preferredDay: initialDay ?? programStore.todayDayType)
         }
         .onDisappear {
             // Persist on disappear; the scene .background handler in FitTrackerApp
             // ensures this reaches disk even if the app is about to be suspended.
-            if let current = log {
-                dataStore.upsertLog(current)
-            }
+            saveLog()
         }
         .onChange(of: log) { _, newLog in
             guard let log = newLog else { return }
             let exercises = TrainingProgramData.exercises(for: selectedDay)
+            syncFocusedExercise()
             guard !exercises.isEmpty else { return }
             let allDone = exercises.allSatisfy { log.taskStatuses[$0.id] == .completed }
             if allDone && !showCompletionSheet {
                 showCompletionSheet = true
             }
+        }
+        .onChange(of: selectedDay) { _, _ in
+            syncFocusedExercise()
+            restPresetSeconds = focusedExercise?.restSeconds ?? 90
         }
         .sheet(isPresented: $showCompletionSheet) {
             SessionCompletionSheet(
@@ -144,26 +152,43 @@ struct TrainingPlanView: View {
                 .frame(maxWidth: .infinity)
                 .contentShape(Rectangle())
                 .onTapGesture {
+                    saveLog()
                     activeDate = day
-                    // Derive suggested day type from weekday
                     let suggested = TrainingProgramStore.dayType(forWeekday: wday)
-                    withAnimation(.easeInOut(duration: 0.2)) { selectedDay = suggested }
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        loadLog(for: day, preferredDay: suggested)
+                    }
                 }
             }
         }
         .padding(.vertical, 8)
-        .onAppear { activeDate = today }
     }
 
     // ─────────────────────────────────────────────────────
     // Session summary header
     // ─────────────────────────────────────────────────────
 
+    private var exercisesForSelectedDay: [ExerciseDefinition] {
+        TrainingProgramData.exercises(for: selectedDay)
+    }
+
+    private var focusedExercise: ExerciseDefinition? {
+        if let focusedExerciseID,
+           let selected = exercisesForSelectedDay.first(where: { $0.id == focusedExerciseID }) {
+            return selected
+        }
+        return nextExercise
+    }
+
+    private var nextExercise: ExerciseDefinition? {
+        exercisesForSelectedDay.first { (log?.taskStatuses[$0.id] ?? .pending) != .completed }
+    }
+
     private var sessionHeader: some View {
-        let exercises = TrainingProgramData.exercises(for: selectedDay)
+        let exercises = exercisesForSelectedDay
         let done = exercises.filter { log?.taskStatuses[$0.id] == .completed }.count
         let total = exercises.count
-        let summaryText = total == 0 ? "Active rest - walk, yoga, recover" : "\(total) exercises - \(done) done"
+        let summaryText = total == 0 ? "Active rest - walk, yoga, recover" : "\(done) of \(total) complete · \(max(total - done, 0)) left"
 
         return HStack(spacing: 16) {
             VStack(alignment: .leading, spacing: 2) {
@@ -179,6 +204,134 @@ struct TrainingPlanView: View {
         }
         .padding(14)
         .background(Color.white.opacity(0.35), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var sessionCommandDeck: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text("Current Focus")
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.secondary)
+                        .tracking(1)
+                    Text(focusedExercise?.name ?? "Recovery and movement")
+                        .font(.headline)
+                    Text(sessionFocusSubtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                restTimerCard
+            }
+
+            if let focusedExercise {
+                HStack(spacing: 8) {
+                    Label(focusedExercise.targetReps, systemImage: "repeat")
+                    Label("Rest \(focusedExercise.restSeconds)s", systemImage: "timer")
+                    Label("\(focusedExercise.targetSets) sets", systemImage: "number.square")
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    if let next = nextExercise {
+                        focusedExerciseID = next.id
+                        restPresetSeconds = next.restSeconds
+                    }
+                } label: {
+                    Label("Jump To Next", systemImage: "arrow.down.circle.fill")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 12))
+                        .foregroundStyle(.white)
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    startRestTimer()
+                } label: {
+                    Label(restTimerEnd == nil ? "Start Rest" : "Restart Rest", systemImage: "timer")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 12))
+                        .foregroundStyle(.black.opacity(0.78))
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(16)
+        .background(Color.white.opacity(0.48), in: RoundedRectangle(cornerRadius: 18))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.white.opacity(0.45), lineWidth: 1)
+        )
+    }
+
+    private var restTimerCard: some View {
+        VStack(alignment: .trailing, spacing: 6) {
+            TimelineView(.periodic(from: .now, by: 1)) { context in
+                Text(restTimeString(at: context.date))
+                    .font(.system(size: 22, weight: .bold, design: .monospaced))
+                    .foregroundStyle(restTimeRemaining(at: context.date) > 0 ? Color.appOrange2 : Color.black.opacity(0.78))
+            }
+            Text(restTimerEnd == nil ? "rest preset" : "remaining")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Stepper(value: $restPresetSeconds, in: 30...180, step: 15) {
+                Text("\(restPresetSeconds)s")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .labelsHidden()
+            .frame(width: 90)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(Color.black.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    private var exerciseQueueStrip: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                ForEach(exercisesForSelectedDay) { exercise in
+                    let isFocused = exercise.id == focusedExercise?.id
+                    let status = log?.taskStatuses[exercise.id] ?? .pending
+                    Button {
+                        focusedExerciseID = exercise.id
+                        restPresetSeconds = exercise.restSeconds
+                    } label: {
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack(spacing: 6) {
+                                Circle()
+                                    .fill(queueColor(for: status))
+                                    .frame(width: 7, height: 7)
+                                Text(exercise.name)
+                                    .font(.caption.weight(.semibold))
+                                    .lineLimit(1)
+                            }
+                            Text(status.rawValue.capitalized)
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .frame(width: 146, alignment: .leading)
+                        .background(
+                            isFocused ? Color.appBlue1.opacity(0.35) : Color.white.opacity(0.28),
+                            in: RoundedRectangle(cornerRadius: 14)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14)
+                                .stroke(isFocused ? Color.blue : Color.white.opacity(0.3), lineWidth: isFocused ? 1.5 : 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding(.vertical, 2)
+        }
     }
 
     private func completionRing(done: Int, total: Int) -> some View {
@@ -202,7 +355,7 @@ struct TrainingPlanView: View {
     // ─────────────────────────────────────────────────────
 
     private var exerciseSections: some View {
-        let exercises = TrainingProgramData.exercises(for: selectedDay)
+        let exercises = exercisesForSelectedDay
         let grouped = groupedExercises(exercises)
 
         return ForEach(grouped, id: \.title) { group in
@@ -211,7 +364,13 @@ struct TrainingPlanView: View {
                     title: group.title,
                     exercises: group.exercises,
                     selectedDay: selectedDay,
-                    log: $log
+                    focusedExerciseID: $focusedExerciseID,
+                    log: $log,
+                    onFocusExercise: { exercise in
+                        focusedExerciseID = exercise.id
+                        restPresetSeconds = exercise.restSeconds
+                    },
+                    onStartRest: startRestTimer
                 )
             }
         }
@@ -230,8 +389,12 @@ struct TrainingPlanView: View {
     }
 
     private func makeBlankLog() -> DailyLog {
-        DailyLog(date: Date(), phase: dataStore.userProfile.currentPhase,
-                 dayType: selectedDay, recoveryDay: dataStore.userProfile.daysSinceStart)
+        DailyLog(
+            date: activeDate,
+            phase: dataStore.userProfile.currentPhase,
+            dayType: selectedDay,
+            recoveryDay: dataStore.userProfile.recoveryDay(for: activeDate)
+        )
     }
 
     // ─────────────────────────────────────────────────────
@@ -258,7 +421,77 @@ struct TrainingPlanView: View {
     }
 
     private func saveLog() {
-        if let l = log { dataStore.upsertLog(l) }
+        guard var current = log else { return }
+        current.date = activeDate
+        current.dayType = selectedDay
+        current.recoveryDay = dataStore.userProfile.recoveryDay(for: activeDate)
+        log = current
+        dataStore.upsertLog(current)
+    }
+
+    private func loadLog(for date: Date, preferredDay: DayType) {
+        let normalizedDate = Calendar.current.startOfDay(for: date)
+        activeDate = normalizedDate
+        if let existing = dataStore.log(for: normalizedDate) {
+            log = existing
+            selectedDay = existing.dayType
+        } else {
+            selectedDay = preferredDay
+            log = makeBlankLog()
+        }
+        syncFocusedExercise()
+        restPresetSeconds = focusedExercise?.restSeconds ?? 90
+    }
+
+    private func syncFocusedExercise() {
+        let exerciseIDs = Set(exercisesForSelectedDay.map(\.id))
+        if let focusedExerciseID, exerciseIDs.contains(focusedExerciseID) {
+            return
+        }
+        focusedExerciseID = nextExercise?.id ?? exercisesForSelectedDay.first?.id
+    }
+
+    private func startRestTimer() {
+        restTimerEnd = Date().addingTimeInterval(TimeInterval(restPresetSeconds))
+    }
+
+    private func restTimeRemaining(at date: Date) -> Int {
+        guard let restTimerEnd else { return 0 }
+        return max(0, Int(restTimerEnd.timeIntervalSince(date)))
+    }
+
+    private func restTimeString(at date: Date) -> String {
+        let remaining = restTimeRemaining(at: date)
+        if remaining == 0 {
+            return restTimerEnd == nil ? "--:--" : "Done"
+        }
+        return String(format: "%02d:%02d", remaining / 60, remaining % 60)
+    }
+
+    private var sessionFocusSubtitle: String {
+        guard let focusedExercise else {
+            return "Use today for walking, mobility, and recovery notes."
+        }
+        let status = log?.taskStatuses[focusedExercise.id] ?? .pending
+        switch status {
+        case .completed:
+            return "Completed. Review the next queue item or move to session notes."
+        case .partial:
+            return "In progress. Finish the work sets or log what changed."
+        case .missed:
+            return "Marked missed. Either swap the movement or move on."
+        case .pending:
+            return "Your next working block. Use the previous-performance hints below."
+        }
+    }
+
+    private func queueColor(for status: TaskStatus) -> Color {
+        switch status {
+        case .completed: Color.status.success
+        case .partial: Color.status.warning
+        case .missed: Color.status.error
+        case .pending: Color.secondary
+        }
     }
 
     // ─────────────────────────────────────────────────────
@@ -345,7 +578,10 @@ struct ExerciseSectionBlock: View {
     let title:     String
     let exercises: [ExerciseDefinition]
     let selectedDay: DayType
+    @Binding var focusedExerciseID: String?
     @Binding var log: DailyLog?
+    let onFocusExercise: (ExerciseDefinition) -> Void
+    let onStartRest: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -356,7 +592,14 @@ struct ExerciseSectionBlock: View {
                 .padding(.leading, 2)
 
             ForEach(exercises) { ex in
-                ExerciseRowView(exercise: ex, selectedDay: selectedDay, log: $log)
+                ExerciseRowView(
+                    exercise: ex,
+                    selectedDay: selectedDay,
+                    isFocused: focusedExerciseID == ex.id,
+                    onFocus: { onFocusExercise(ex) },
+                    log: $log,
+                    onStartRest: onStartRest
+                )
             }
         }
     }
@@ -370,7 +613,10 @@ struct ExerciseRowView: View {
     @EnvironmentObject var dataStore: EncryptedDataStore
     let exercise: ExerciseDefinition
     let selectedDay: DayType
+    let isFocused: Bool
+    let onFocus: () -> Void
     @Binding var log: DailyLog?
+    let onStartRest: () -> Void
 
     private var status: TaskStatus { log?.taskStatuses[exercise.id] ?? .pending }
 
@@ -378,7 +624,7 @@ struct ExerciseRowView: View {
         dataStore.dailyLogs
             .filter {
                 $0.dayType == selectedDay &&
-                !Calendar.current.isDateInToday($0.date) &&
+                !Calendar.current.isDate($0.date, inSameDayAs: log?.date ?? Date()) &&
                 $0.exerciseLogs[exercise.id] != nil
             }
             .sorted { $0.date > $1.date }
@@ -400,6 +646,8 @@ struct ExerciseRowView: View {
                 }
             }
             .padding(12)
+            .contentShape(Rectangle())
+            .onTapGesture { onFocus() }
 
             // Expanded log panel (only when completed or partial)
             if status == .completed || status == .partial {
@@ -412,7 +660,7 @@ struct ExerciseRowView: View {
             }
         }
         .background(rowBG, in: RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(accentColor.opacity(0.25), lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(isFocused ? Color.blue.opacity(0.8) : accentColor.opacity(0.25), lineWidth: isFocused ? 1.5 : 1))
         .animation(.easeInOut(duration: 0.25), value: status)
     }
 
@@ -427,10 +675,20 @@ struct ExerciseRowView: View {
     // ── Exercise info block
     private var exerciseInfo: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(exercise.name)
-                .font(.subheadline.weight(.semibold))
-                .strikethrough(status == .completed, color: Color.status.success)
-                .foregroundStyle(status == .completed ? .secondary : .primary)
+            HStack(spacing: 8) {
+                Text(exercise.name)
+                    .font(.subheadline.weight(.semibold))
+                    .strikethrough(status == .completed, color: Color.status.success)
+                    .foregroundStyle(status == .completed ? .secondary : .primary)
+                if isFocused {
+                    Text("LIVE")
+                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 3)
+                        .background(Color.blue.opacity(0.12), in: Capsule())
+                        .foregroundStyle(Color.blue)
+                }
+            }
 
             Text(exercise.muscleGroups.map { $0.rawValue.capitalized }.joined(separator: " · "))
                 .font(.caption2).foregroundStyle(.secondary)
@@ -452,6 +710,7 @@ struct ExerciseRowView: View {
     private var liftPanel: some View {
         LiftLogPanel(
             exercise: exercise,
+            isFocused: isFocused,
             previousSessionLog: previousSessionLog,
             exerciseLog: Binding(
                 get: { log?.exerciseLogs[exercise.id] ?? ExerciseLog(exerciseID: exercise.id, exerciseName: exercise.name) },
@@ -459,7 +718,8 @@ struct ExerciseRowView: View {
                     ensureLogMetadata()
                     log?.exerciseLogs[exercise.id] = $0
                 }
-            )
+            ),
+            onStartRest: onStartRest
         )
     }
 
@@ -485,7 +745,9 @@ struct ExerciseRowView: View {
 
     private var rowBG: Color {
         switch status {
-        case .completed: Color.status.success.opacity(0.03); case .missed: Color.status.error.opacity(0.03); default: Color(.systemBackground).opacity(0.5)
+        case .completed: Color.status.success.opacity(0.03)
+        case .missed: Color.status.error.opacity(0.03)
+        default: isFocused ? Color.white.opacity(0.72) : Color(.systemBackground).opacity(0.5)
         }
     }
 
@@ -513,47 +775,75 @@ struct ExerciseRowView: View {
 
 struct LiftLogPanel: View {
     let exercise: ExerciseDefinition
+    let isFocused: Bool
     let previousSessionLog: ExerciseLog?
     @Binding var exerciseLog: ExerciseLog
+    let onStartRest: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
             // Panel header
-            HStack {
-                Text("📋 SET LOG")
-                    .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
-                Spacer()
-                if exerciseLog.totalVolume > 0 {
-                    Text("Total: \(Int(exerciseLog.totalVolume)) kg")
-                        .font(.caption2.monospaced()).foregroundStyle(Color.status.success.opacity(0.8))
-                }
-                if let prev = previousSessionLog, exerciseLog.sets.isEmpty {
-                    Button {
-                        exerciseLog.sets = prev.sets.enumerated().map { (i, s) in
-                            SetLog(
-                                setNumber: i + 1,
-                                weightKg: s.weightKg,
-                                repsCompleted: s.repsCompleted
-                            )
-                        }
-                    } label: {
-                        Label("Copy Last", systemImage: "bolt.fill")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.accent.cyan)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text(isFocused ? "LIVE SET LOG" : "SET LOG")
+                        .font(.caption2.monospaced()).foregroundStyle(isFocused ? Color.blue : Color.status.success).tracking(1)
+                    Spacer()
+                    if exerciseLog.totalVolume > 0 {
+                        Text("Total: \(Int(exerciseLog.totalVolume)) kg")
+                            .font(.caption2.monospaced()).foregroundStyle(Color.status.success.opacity(0.8))
                     }
                 }
-                Button {
-                    exerciseLog.sets.append(SetLog(
-                        setNumber: exerciseLog.sets.count + 1,
-                        weightKg: exerciseLog.sets.last?.weightKg
-                    ))
-                } label: {
-                    Label("Add Set", systemImage: "plus.circle.fill")
-                        .font(.caption.weight(.semibold)).foregroundStyle(Color.status.success)
+
+                if let prev = previousSessionLog {
+                    HStack(spacing: 10) {
+                        previousPerformanceTile(
+                            title: "Last Best",
+                            value: prev.bestSet.map { "\((Int(($0.weightKg ?? 0).rounded()))) kg x \($0.repsCompleted ?? 0)" } ?? "—"
+                        )
+                        previousPerformanceTile(
+                            title: "Last Volume",
+                            value: prev.totalVolume > 0 ? "\(Int(prev.totalVolume)) kg" : "—"
+                        )
+                    }
+                }
+
+                HStack(spacing: 10) {
+                    if let prev = previousSessionLog, exerciseLog.sets.isEmpty {
+                        Button {
+                            exerciseLog.sets = prev.sets.enumerated().map { (i, s) in
+                                SetLog(
+                                    setNumber: i + 1,
+                                    weightKg: s.weightKg,
+                                    repsCompleted: s.repsCompleted
+                                )
+                            }
+                        } label: {
+                            Label("Copy Last", systemImage: "bolt.fill")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(Color.accent.cyan)
+                        }
+                    }
+                    Button {
+                        exerciseLog.sets.append(SetLog(
+                            setNumber: exerciseLog.sets.count + 1,
+                            weightKg: exerciseLog.sets.last?.weightKg
+                        ))
+                    } label: {
+                        Label("Add Set", systemImage: "plus.circle.fill")
+                            .font(.caption.weight(.semibold)).foregroundStyle(Color.status.success)
+                    }
+                    Spacer()
+                    Button {
+                        onStartRest()
+                    } label: {
+                        Label("Start Rest", systemImage: "timer")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.appOrange2)
+                    }
                 }
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(Color.status.success.opacity(0.05))
+            .background((isFocused ? Color.blue.opacity(0.06) : Color.status.success.opacity(0.05)))
 
             // Column headers
             HStack(spacing: 0) {
@@ -562,7 +852,7 @@ struct LiftLogPanel: View {
                 Text("REPS").frame(width: 52)
                 Text("RPE").frame(width: 44)
                 Text("NOTE").frame(maxWidth: .infinity)
-                Spacer().frame(width: 28)
+                Text("DONE").frame(width: 56)
             }
             .font(.system(size: 9, design: .monospaced))
             .foregroundStyle(.tertiary)
@@ -575,6 +865,10 @@ struct LiftLogPanel: View {
                     setLog: $exerciseLog.sets[i],
                     setNum: i + 1,
                     previousSet: previousSessionLog?.sets.indices.contains(i) == true ? previousSessionLog?.sets[i] : nil,
+                    onCompleteSet: {
+                        exerciseLog.sets[i].timestamp = Date()
+                        onStartRest()
+                    },
                     onDelete: {
                         exerciseLog.sets.remove(at: i)
                         for j in exerciseLog.sets.indices { exerciseLog.sets[j].setNumber = j + 1 }
@@ -599,17 +893,44 @@ struct LiftLogPanel: View {
             .padding(10)
         }
     }
+
+    private func previousPerformanceTile(title: String, value: String) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.primary)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.6), in: RoundedRectangle(cornerRadius: 10))
+    }
 }
 
 struct SetRowView: View {
     @Binding var setLog: SetLog
     let setNum:  Int
     let previousSet: SetLog?
+    let onCompleteSet: () -> Void
     let onDelete: () -> Void
 
     @State private var weightStr = ""
     @State private var repsStr   = ""
     @State private var noteStr   = ""
+
+    private var setIsComplete: Bool {
+        setLog.weightKg != nil && setLog.repsCompleted != nil
+    }
+
+    private func formattedWeight(_ value: Double) -> String {
+        if value.rounded() == value {
+            return String(Int(value))
+        }
+        return String(format: "%.1f", value)
+    }
 
     var body: some View {
         HStack(spacing: 0) {
@@ -622,9 +943,9 @@ struct SetRowView: View {
             // Weight
             if weightStr.isEmpty, let prev = previousSet, let prevWeight = prev.weightKg {
                 Button {
-                    weightStr = String(format: "%.1f", prevWeight)
+                    weightStr = formattedWeight(prevWeight)
                 } label: {
-                    Text(String(format: "%.1f", prevWeight))
+                    Text(formattedWeight(prevWeight))
                         .font(.system(.body, design: .monospaced))
                         .foregroundStyle(.tertiary)
                         .frame(maxWidth: .infinity)
@@ -680,20 +1001,28 @@ struct SetRowView: View {
                 .onChange(of: noteStr) { _, v in setLog.notes = v }
 
             // Delete
+            Button(action: onCompleteSet) {
+                Image(systemName: setIsComplete ? "checkmark.circle.fill" : "timer")
+                    .foregroundStyle(setIsComplete ? Color.status.success : Color.appOrange2)
+                    .font(.caption)
+            }
+            .frame(width: 28)
+
             Button(action: onDelete) {
                 Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary).font(.caption)
             }
             .frame(width: 28)
         }
         .padding(.horizontal, 12).padding(.vertical, 7)
+        .background(setIsComplete ? Color.status.success.opacity(0.03) : Color.clear)
         .onAppear {
-            weightStr = setLog.weightKg.map { String($0) } ?? ""
+            weightStr = setLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
             noteStr   = setLog.notes
         }
         // Re-sync local strings if the binding is updated externally (e.g. CloudKit merge).
         .onChange(of: setLog) { _, newLog in
-            weightStr = newLog.weightKg.map { String($0) } ?? ""
+            weightStr = newLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = newLog.repsCompleted.map { String($0) } ?? ""
             noteStr   = newLog.notes
         }

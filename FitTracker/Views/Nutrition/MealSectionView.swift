@@ -4,26 +4,41 @@ import SwiftUI
 
 struct MealSectionView: View {
     @Binding var nutritionLog: NutritionLog
+    let suggestedMealNumber: Int
     let onTapMeal: (Int) -> Void  // called with mealNumber (1-4) when meal card is tapped
 
+    private var displayedMealNumbers: [Int] {
+        let highestLoggedMeal = nutritionLog.meals.map(\.mealNumber).max() ?? 0
+        let visibleMax = max(4, highestLoggedMeal)
+        return Array(1...visibleMax)
+    }
+
     var body: some View {
-        VStack(spacing: 12) {
-            ForEach(1...4, id: \.self) { mealNumber in
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Meals")
+                    .font(.headline)
+                Text("Fast log from your saved meals, or open a fresh slot.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            ForEach(displayedMealNumbers, id: \.self) { mealNumber in
                 let entry = nutritionLog.meals.first(where: { $0.mealNumber == mealNumber })
-                MealCard(mealNumber: mealNumber, entry: entry) {
+                MealCard(mealNumber: mealNumber, entry: entry, isSuggested: mealNumber == suggestedMealNumber) {
                     onTapMeal(mealNumber)
                 }
             }
 
             // "+ Add Meal" footer button
             Button {
-                onTapMeal(0)
+                onTapMeal(suggestedMealNumber)
             } label: {
                 HStack(spacing: 6) {
                     Image(systemName: "plus.circle.fill")
                         .font(AppType.body)
                         .foregroundStyle(Color.accent.cyan)
-                    Text("Add Meal")
+                    Text(suggestedMealNumber > displayedMealNumbers.count ? "Add Meal \(suggestedMealNumber)" : "Add Another Meal")
                         .font(AppType.body)
                         .foregroundStyle(Color.accent.cyan)
                 }
@@ -48,6 +63,7 @@ struct MealSectionView: View {
 private struct MealCard: View {
     let mealNumber: Int
     let entry: MealEntry?
+    let isSuggested: Bool
     let onTap: () -> Void
 
     private var defaultName: String {
@@ -71,11 +87,17 @@ private struct MealCard: View {
         if entry?.status == .completed {
             return Color.status.success
         }
+        if isSuggested {
+            return Color.accent.cyan.opacity(0.45)
+        }
         return Color.secondary.opacity(0.15)
     }
 
     private var borderWidth: CGFloat {
-        entry?.status == .completed ? 1.5 : 1.0
+        if entry?.status == .completed {
+            return 1.5
+        }
+        return isSuggested ? 1.3 : 1.0
     }
 
     private static let timeFormatter: DateFormatter = {
@@ -121,9 +143,9 @@ private struct MealCard: View {
                             }
                         }
                     } else {
-                        Text("Tap to log")
+                        Text(isSuggested ? "Suggested next meal" : "Tap to log")
                             .font(AppType.subheading)
-                            .foregroundStyle(Color.secondary.opacity(0.6))
+                            .foregroundStyle(isSuggested ? Color.accent.cyan : Color.secondary.opacity(0.6))
                     }
                 }
 
@@ -144,7 +166,7 @@ private struct MealCard: View {
             .padding(.vertical, 12)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(UIColor.secondarySystemBackground))
+                    .fill(isSuggested ? Color.accent.cyan.opacity(0.08) : Color(UIColor.secondarySystemBackground))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 12)

@@ -353,7 +353,10 @@ final class EncryptedDataStore: ObservableObject {
     // ── CRUD ─────────────────────────────────────────────
 
     func upsertLog(_ log: DailyLog) {
-        var l = log; l.lastModified = Date(); l.needsSync = true
+        var l = log
+        l.nutritionLog = normalizedNutritionLog(l.nutritionLog)
+        l.lastModified = Date()
+        l.needsSync = true
         if let i = dailyLogs.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: log.date) }) {
             dailyLogs[i] = l
         } else {
@@ -522,6 +525,23 @@ final class EncryptedDataStore: ObservableObject {
         )
     }
 
+    private func normalizedNutritionLog(_ nutrition: NutritionLog) -> NutritionLog {
+        var normalized = nutrition
+        if let calories = nutrition.mealCaloriesTotal {
+            normalized.totalCalories = calories
+        }
+        if let protein = nutrition.mealProteinTotal {
+            normalized.totalProteinG = protein
+        }
+        if let carbs = nutrition.mealCarbsTotal {
+            normalized.totalCarbsG = carbs
+        }
+        if let fat = nutrition.mealFatTotal {
+            normalized.totalFatG = fat
+        }
+        return normalized
+    }
+
     private func buildHints(_ logs: [DailyLog]) -> ExportPackage.AIHints {
         let r7  = logs.prefix(7)
         let r28 = logs.prefix(28)
@@ -537,7 +557,7 @@ final class EncryptedDataStore: ObservableObject {
         }
 
         let adh   = r28.map { $0.completionPct }.reduce(0,+) / max(1, Double(r28.count))
-        let prot  = Double(r28.filter { ($0.nutritionLog.totalProteinG ?? 0) >= 125 }.count) / max(1, Double(r28.count))
+        let prot  = Double(r28.filter { ($0.nutritionLog.resolvedProteinG ?? 0) >= 125 }.count) / max(1, Double(r28.count))
         let supp  = Double(r28.filter { $0.supplementLog.morningStatus == .completed }.count) / max(1, Double(r28.count))
         let z2min = r7.flatMap { $0.cardioLogs.values }.compactMap { $0.wasInZone2 == true ? $0.durationMinutes : nil }.reduce(0,+)
 

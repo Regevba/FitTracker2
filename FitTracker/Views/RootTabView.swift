@@ -5,6 +5,22 @@
 
 import SwiftUI
 
+enum AppTab: String, CaseIterable, Hashable {
+    case main       = "Home"
+    case training   = "Training Plan"
+    case nutrition  = "Nutrition"
+    case stats      = "Stats"
+
+    var icon: String {
+        switch self {
+        case .main:      "house.fill"
+        case .training:  "figure.strengthtraining.traditional"
+        case .nutrition: "leaf.fill"
+        case .stats:     "chart.bar.fill"
+        }
+    }
+}
+
 struct RootTabView: View {
 
     @EnvironmentObject var signIn:        SignInService
@@ -19,22 +35,6 @@ struct RootTabView: View {
     @State private var selectedTab:    AppTab = .main
     @State private var showAccount             = false
 
-    enum AppTab: String, CaseIterable, Hashable {
-        case main       = "Home"
-        case training   = "Training Plan"
-        case nutrition  = "Nutrition"
-        case stats      = "Stats"
-
-        var icon: String {
-            switch self {
-            case .main:      "house.fill"
-            case .training:  "figure.strengthtraining.traditional"
-            case .nutrition: "leaf.fill"
-            case .stats:     "chart.bar.fill"
-            }
-        }
-    }
-
     var body: some View {
         Group {
             #if os(iOS)
@@ -45,7 +45,6 @@ struct RootTabView: View {
         }
         .task {
             try? await healthService.requestAuthorization()
-            await cloudSync.fetchChanges(dataStore: dataStore)
         }
         .alert("Data Load Error", isPresented: Binding(
             get: { dataStore.loadError != nil },
@@ -164,7 +163,7 @@ struct RootTabView: View {
     @ViewBuilder
     private func tabContent(_ tab: AppTab) -> some View {
         switch tab {
-        case .main:      MainScreenView()
+        case .main:      MainScreenView(selectedTab: $selectedTab)
         case .training:  TrainingPlanView()
         case .nutrition: NutritionView()
         case .stats:     StatsView()

@@ -201,6 +201,24 @@ struct NutritionLog: Codable, Sendable {
     var alluloseTaken:  Bool = false
 }
 
+extension NutritionLog {
+    private func sum<T: BinaryFloatingPoint>(_ values: [T?]) -> Double? {
+        let resolved = values.compactMap { $0.map(Double.init) }
+        guard !resolved.isEmpty else { return nil }
+        return resolved.reduce(0, +)
+    }
+
+    var mealCaloriesTotal: Double? { sum(meals.map(\.calories)) }
+    var mealProteinTotal: Double? { sum(meals.map(\.proteinG)) }
+    var mealCarbsTotal: Double? { sum(meals.map(\.carbsG)) }
+    var mealFatTotal: Double? { sum(meals.map(\.fatG)) }
+
+    var resolvedCalories: Double? { totalCalories ?? mealCaloriesTotal }
+    var resolvedProteinG: Double? { totalProteinG ?? mealProteinTotal }
+    var resolvedCarbsG: Double? { totalCarbsG ?? mealCarbsTotal }
+    var resolvedFatG: Double? { totalFatG ?? mealFatTotal }
+}
+
 struct MealEntry: Identifiable, Codable, Sendable {
     var id:        UUID   = UUID()
     var mealNumber: Int
@@ -334,9 +352,13 @@ struct UserProfile: Codable, Sendable {
     var startWeightKg:      Double          = 70.95
     var startBodyFatPct:    Double          = 21.0
 
-    var daysSinceStart: Int {
-        max(0, Calendar.current.dateComponents([.day], from: recoveryStart, to: Date()).day ?? 0)
+    func recoveryDay(for date: Date, calendar: Calendar = .current) -> Int {
+        let start = calendar.startOfDay(for: recoveryStart)
+        let current = calendar.startOfDay(for: date)
+        return max(0, calendar.dateComponents([.day], from: start, to: current).day ?? 0)
     }
+
+    var daysSinceStart: Int { recoveryDay(for: Date()) }
 
     // Goal progress: 0.0 – 1.0
     func weightProgress(current: Double?) -> Double {

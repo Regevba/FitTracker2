@@ -30,20 +30,27 @@ struct FitTrackerApp: App {
                 // session context at this point, so no extra biometric prompts fire.
                 .onChange(of: biometricAuth.isAuthenticated) { _, authenticated in
                     if authenticated {
-                        Task { await dataStore.loadFromDisk() }
+                        Task {
+                            await dataStore.loadFromDisk()
+                            if scenePhase == .active {
+                                await cloudSync.fetchChanges(dataStore: dataStore)
+                            }
+                        }
                     }
                 }
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
                     case .active:
                         signIn.restoreSession()
+                        guard biometricAuth.isAuthenticated else { break }
                         Task { await cloudSync.fetchChanges(dataStore: dataStore) }
                     case .background:
+                        biometricAuth.lockOnBackground(clearCryptoSession: false)
                         Task {
                             await dataStore.persistToDisk()
                             await cloudSync.pushPendingChanges(dataStore: dataStore)
+                            await EncryptionService.shared.clearSessionContext()
                         }
-                        biometricAuth.lockOnBackground()
                     case .inactive: break
                     @unknown default: break
                     }

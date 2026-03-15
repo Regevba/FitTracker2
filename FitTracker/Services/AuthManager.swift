@@ -47,9 +47,10 @@ final class AuthManager: ObservableObject {
         #endif
     }
 
-    func lockOnBackground() {
+    func lockOnBackground(clearCryptoSession: Bool = true) {
         isAuthenticated = false
         authError = nil
+        guard clearCryptoSession else { return }
         // Invalidate the shared session context so the next unlock re-authenticates.
         Task { await EncryptionService.shared.clearSessionContext() }
     }

@@ -37,27 +37,34 @@ struct TrendIndicator: View {
             .padding(.horizontal, 8)
             .background(statusColor.opacity(0.2))
             .clipShape(Capsule())
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Trend")
+            .accessibilityValue(displayText)
     }
 }
 
-#Preview {
-    VStack(spacing: 12) {
-        HStack(spacing: 12) {
-            TrendIndicator(delta: 0.12, positiveIsGood: true)
-            TrendIndicator(delta: -0.04, positiveIsGood: false)
-            TrendIndicator(delta: 0.0, positiveIsGood: true)
-        }
+#if DEBUG
+struct TrendIndicator_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 12) {
+                TrendIndicator(delta: 0.12, positiveIsGood: true)
+                TrendIndicator(delta: -0.04, positiveIsGood: false)
+                TrendIndicator(delta: 0.0, positiveIsGood: true)
+            }
 
-        HStack(spacing: 12) {
-            TrendIndicator(delta: -0.08, positiveIsGood: true)
-            TrendIndicator(delta: 0.05, positiveIsGood: false)
-        }
+            HStack(spacing: 12) {
+                TrendIndicator(delta: -0.08, positiveIsGood: true)
+                TrendIndicator(delta: 0.05, positiveIsGood: false)
+            }
 
-        HStack(spacing: 12) {
-            TrendIndicator(delta: 0.15, positiveIsGood: false, isPercent: false)
-            TrendIndicator(delta: -2.5, positiveIsGood: false, isPercent: false)
+            HStack(spacing: 12) {
+                TrendIndicator(delta: 0.15, positiveIsGood: false, isPercent: false)
+                TrendIndicator(delta: -2.5, positiveIsGood: false, isPercent: false)
+            }
         }
+        .padding()
+        .background(Color.black.opacity(0.05))
     }
-    .padding()
-    .background(Color.black.opacity(0.05))
 }
+#endif

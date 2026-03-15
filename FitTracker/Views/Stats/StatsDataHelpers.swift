@@ -113,8 +113,8 @@ extension EncryptedDataStore {
                     (supp.eveningStatus == .completed ? 0.5 : 0.0)
                 return (
                     date: log.date,
-                    calories: nutrition.totalCalories,
-                    proteinG: nutrition.totalProteinG,
+                    calories: nutrition.resolvedCalories,
+                    proteinG: nutrition.resolvedProteinG,
                     supplementPct: supplementPct
                 )
             }

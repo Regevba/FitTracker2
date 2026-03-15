@@ -94,4 +94,39 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertGreaterThan(progress, 0)
         XCTAssertLessThan(progress, 1)
     }
+
+    func testNutritionAdherencePointsFallBackToMealEntriesWhenTotalsAreMissing() {
+        let store = EncryptedDataStore()
+        var log = DailyLog(
+            date: Date(),
+            phase: .recovery,
+            dayType: .restDay,
+            recoveryDay: 1
+        )
+        log.nutritionLog.meals = [
+            MealEntry(mealNumber: 1, name: "Breakfast", calories: 400, proteinG: 30, carbsG: 20, fatG: 10, eatenAt: Date(), status: .completed),
+            MealEntry(mealNumber: 2, name: "Lunch", calories: 600, proteinG: 45, carbsG: 50, fatG: 15, eatenAt: Date(), status: .completed),
+        ]
+        store.dailyLogs = [log]
+
+        let points = store.nutritionAdherencePoints(from: .distantPast, to: .distantFuture)
+
+        XCTAssertEqual(points.count, 1)
+        XCTAssertEqual(points[0].calories, 1000, accuracy: 0.001)
+        XCTAssertEqual(points[0].proteinG, 75, accuracy: 0.001)
+    }
+
+    func testRecoveryDayUsesStartOfDayBoundaries() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withFullDate]
+        let profile = UserProfile(recoveryStart: formatter.date(from: "2026-01-29")!)
+
+        let sameDayLate = calendar.date(from: DateComponents(year: 2026, month: 1, day: 29, hour: 23, minute: 59))!
+        let nextDayEarly = calendar.date(from: DateComponents(year: 2026, month: 1, day: 30, hour: 0, minute: 1))!
+
+        XCTAssertEqual(profile.recoveryDay(for: sameDayLate, calendar: calendar), 0)
+        XCTAssertEqual(profile.recoveryDay(for: nextDayEarly, calendar: calendar), 1)
+    }
 }

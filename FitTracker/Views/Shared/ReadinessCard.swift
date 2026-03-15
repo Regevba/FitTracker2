@@ -17,7 +17,7 @@ struct ReadinessCard: View {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
             withAnimation(.easeInOut) {
-                currentPage = (currentPage + 1) % 5
+                currentPage = (currentPage + 1) % 6
             }
         }
     }
@@ -32,6 +32,7 @@ struct ReadinessCard: View {
                 nutritionPage.tag(2)
                 trendsPage.tag(3)
                 achievementsPage.tag(4)
+                recoveryPage.tag(5)
             }
             #if os(iOS)
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -63,7 +64,7 @@ struct ReadinessCard: View {
 
     private var pageDots: some View {
         HStack(spacing: 5) {
-            ForEach(0..<5, id: \.self) { i in
+            ForEach(0..<6, id: \.self) { i in
                 Circle()
                     .fill(i == currentPage ? Color.white : Color.white.opacity(0.35))
                     .frame(width: i == currentPage ? 7 : 5, height: i == currentPage ? 7 : 5)
@@ -221,7 +222,7 @@ struct ReadinessCard: View {
     private var nutritionPage: some View {
         let todayLog = dataStore.todayLog()
         let nutrition = todayLog?.nutritionLog
-        let protein = nutrition?.totalProteinG ?? 0
+        let protein = nutrition?.resolvedProteinG ?? 0
         let lbm = todayLog?.biometrics.leanBodyMassKg
         let proteinTarget = lbm.map { $0 * 2.0 } ?? 135.0
         let waterML = nutrition?.waterML ?? 0
@@ -435,5 +436,76 @@ struct ReadinessCard: View {
             }
         }
         return prExercises.count
+    }
+
+    private var recoveryPage: some View {
+        let todayLog = dataStore.todayLog()
+        let recommendation = RecoveryRoutineLibrary.recommend(
+            dayType: todayLog?.dayType ?? .restDay,
+            readinessScore: dataStore.readinessScore(for: Date(), fallbackMetrics: healthKit.latest),
+            liveMetrics: healthKit.latest,
+            log: todayLog
+        )
+
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Recovery Studio")
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.7))
+
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(recommendation.routine.title)
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                    Text(recommendation.routine.focus)
+                        .font(AppType.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                        .lineLimit(2)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("\(recommendation.routine.durationMinutes)m")
+                        .font(.system(.headline, design: .monospaced, weight: .bold))
+                        .foregroundStyle(.white)
+                    Text(recommendation.routine.intensityLabel)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.white.opacity(0.55))
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(Array(recommendation.reasons.prefix(2)), id: \.self) { reason in
+                    HStack(alignment: .top, spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 10))
+                            .foregroundStyle(Color.accent.cyan.opacity(0.9))
+                            .padding(.top, 1)
+                        Text(reason)
+                            .font(AppType.caption)
+                            .foregroundStyle(.white.opacity(0.68))
+                            .lineLimit(2)
+                    }
+                }
+            }
+
+            HStack(spacing: 10) {
+                ForEach(recommendation.routine.steps.prefix(2)) { step in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(step.title)
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(2)
+                        Text("\(step.minutes) min")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white.opacity(0.55))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(8)
+                    .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }

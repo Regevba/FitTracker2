@@ -456,8 +456,6 @@ struct StatsView: View {
                                 .foregroundStyle(Color.accent.cyan)
                                 .lineStyle(StrokeStyle(lineWidth: 2))
                         }
-                        // TODO: Add gold ★ annotations at PR dates once exercise selection UI is added
-                        // prRecords()[selectedExercise]?.date matching a volumeData point
                     }
                     .frame(height: 140)
                     .chartXAxis {
