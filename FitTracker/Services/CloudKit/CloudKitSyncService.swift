@@ -15,6 +15,7 @@ private enum CKRecordType {
     static let dailyLog       = "EncryptedDailyLog"
     static let weeklySnapshot = "EncryptedWeeklySnapshot"
     static let userProfile    = "EncryptedUserProfile"
+    static let userPreferences = "EncryptedUserPreferences"
     static let cardioAsset    = "EncryptedCardioAsset"
 }
 
@@ -100,6 +101,7 @@ final class CloudKitSyncService: ObservableObject {
 
             // Upload user profile
             try await uploadUserProfile(dataStore.userProfile)
+            try await uploadUserPreferences(dataStore.userPreferences)
             await dataStore.persistToDisk()
 
             lastSyncDate = Date()
@@ -158,6 +160,9 @@ final class CloudKitSyncService: ObservableObject {
 
             if let remoteProfile = try await fetchUserProfile() {
                 dataStore.userProfile = remoteProfile
+            }
+            if let remotePreferences = try await fetchUserPreferences() {
+                dataStore.userPreferences = remotePreferences
             }
 
             await dataStore.persistToDisk()
@@ -257,12 +262,32 @@ final class CloudKitSyncService: ObservableObject {
         _ = try await privateDB.save(record)
     }
 
+    private func uploadUserPreferences(_ preferences: UserPreferences) async throws {
+        let encrypted = try await EncryptionService.shared.encrypt(preferences)
+        let recordID  = CKRecord.ID(recordName: "user-preferences-singleton")
+        let record    = try await fetchOrCreate(recordType: CKRecordType.userPreferences, recordID: recordID)
+        record[CKField.blob]          = encrypted as CKRecordValue
+        record[CKField.recordVersion] = 1         as CKRecordValue
+        _ = try await privateDB.save(record)
+    }
+
     private func fetchUserProfile() async throws -> UserProfile? {
         let recordID = CKRecord.ID(recordName: "user-profile-singleton")
         do {
             let record = try await privateDB.record(for: recordID)
             guard let blob = record[CKField.blob] as? Data else { return nil }
             return try await EncryptionService.shared.decrypt(blob, as: UserProfile.self)
+        } catch let error as CKError where error.code == .unknownItem {
+            return nil
+        }
+    }
+
+    private func fetchUserPreferences() async throws -> UserPreferences? {
+        let recordID = CKRecord.ID(recordName: "user-preferences-singleton")
+        do {
+            let record = try await privateDB.record(for: recordID)
+            guard let blob = record[CKField.blob] as? Data else { return nil }
+            return try await EncryptionService.shared.decrypt(blob, as: UserPreferences.self)
         } catch let error as CKError where error.code == .unknownItem {
             return nil
         }

@@ -46,21 +46,26 @@ struct StatsView: View {
     // Shared chart tooltip state — one tooltip shows at a time
     @State private var chartSelection: (date: Date, label: String)? = nil
 
-    // Body section data
-    @State private var bodyData: [(date: Date, weightKg: Double?, bodyFatPercent: Double?, leanBodyMassKg: Double?)] = []
-
-    // Training section data
-    @State private var volumeData:        [(date: Date, volumeKg: Double)] = []
-    @State private var zone2Data:         [(date: Date, minutes: Double)]  = []
-    @State private var selectedExercise:  String? = nil
-
-    // Recovery section data
-    @State private var recoveryData: [(date: Date, hrv: Double?, restingHR: Double?, sleepHours: Double?)] = []
-
-    // Nutrition section data
-    @State private var nutritionData: [(date: Date, calories: Double?, proteinG: Double?, supplementPct: Double)] = []
-
     private var dateRange: (from: Date, to: Date) { period.dateRange }
+    private var bodyData: [(date: Date, weightKg: Double?, bodyFatPercent: Double?, leanBodyMassKg: Double?)] {
+        dataStore.bodyCompositionPoints(from: dateRange.from, to: dateRange.to)
+    }
+
+    private var volumeData: [(date: Date, volumeKg: Double)] {
+        dataStore.trainingVolumePoints(from: dateRange.from, to: dateRange.to)
+    }
+
+    private var zone2Data: [(date: Date, minutes: Double)] {
+        dataStore.zone2Minutes(from: dateRange.from, to: dateRange.to)
+    }
+
+    private var recoveryData: [(date: Date, hrv: Double?, restingHR: Double?, sleepHours: Double?)] {
+        dataStore.recoveryPoints(from: dateRange.from, to: dateRange.to)
+    }
+
+    private var nutritionData: [(date: Date, calories: Double?, proteinG: Double?, supplementPct: Double)] {
+        dataStore.nutritionAdherencePoints(from: dateRange.from, to: dateRange.to)
+    }
 
     private var latestBodyLog: DailyLog? {
         let (from, to) = dateRange
@@ -445,10 +450,6 @@ struct StatsView: View {
                 }
             }
         }
-        .task(id: period) {
-            let range = dateRange
-            bodyData = dataStore.bodyCompositionPoints(from: range.from, to: range.to)
-        }
     }
 
     private var bodyStoryCard: some View {
@@ -664,11 +665,6 @@ struct StatsView: View {
                     }
                 }
             }
-        }
-        .task(id: period) {
-            let range = dateRange
-            volumeData = dataStore.trainingVolumePoints(from: range.from, to: range.to)
-            zone2Data  = dataStore.zone2Minutes(from: range.from, to: range.to)
         }
     }
 
@@ -996,10 +992,6 @@ struct StatsView: View {
                 }
             }
         }
-        .task(id: period) {
-            let range = dateRange
-            recoveryData = dataStore.recoveryPoints(from: range.from, to: range.to)
-        }
     }
 
     // MARK: – Nutrition Section
@@ -1184,10 +1176,6 @@ struct StatsView: View {
                     }
                 }
             }
-        }
-        .task(id: period) {
-            let range = dateRange
-            nutritionData = dataStore.nutritionAdherencePoints(from: range.from, to: range.to)
         }
     }
 }

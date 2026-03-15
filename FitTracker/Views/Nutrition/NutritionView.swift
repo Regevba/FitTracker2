@@ -45,7 +45,6 @@ struct NutritionView: View {
         } // ZStack
         .navigationTitle("Nutrition")
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .onAppear {
             activeDate = Calendar.current.startOfDay(for: Date())
             loadLog(for: activeDate)

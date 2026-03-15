@@ -69,15 +69,6 @@ extension DailyLog {
     }
 }
 
-extension DailyLog: Equatable {
-    static func == (lhs: DailyLog, rhs: DailyLog) -> Bool {
-        // Lightweight equality: identity + date is sufficient for .onChange(of: log) usage
-        // in TrainingPlanView, which only needs to detect when today's log changes.
-        // Avoids the O(n) cost of JSON-encoding on every comparison.
-        lhs.id == rhs.id && lhs.date == rhs.date
-    }
-}
-
 enum DayType: String, Codable, CaseIterable, Sendable {
     case restDay    = "Rest Day"
     case upperPush  = "Upper Push"

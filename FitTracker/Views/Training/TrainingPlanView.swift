@@ -72,7 +72,6 @@ struct TrainingPlanView: View {
         }
         .navigationTitle("Training Plan")
         .navigationBarTitleDisplayMode(.inline)
-        .preferredColorScheme(.dark)
         .onAppear {
             activeDate = Calendar.current.startOfDay(for: Date())
             loadLog(for: activeDate, preferredDay: initialDay ?? programStore.todayDayType)
@@ -82,8 +81,8 @@ struct TrainingPlanView: View {
             // ensures this reaches disk even if the app is about to be suspended.
             saveLog()
         }
-        .onChange(of: log) { _, newLog in
-            guard let log = newLog else { return }
+        .onChange(of: taskStatusSignature) { _, _ in
+            guard let log else { return }
             let exercises = TrainingProgramData.exercises(for: selectedDay)
             syncFocusedExercise()
             guard !exercises.isEmpty else { return }
@@ -216,6 +215,12 @@ struct TrainingPlanView: View {
 
     private var nextExercise: ExerciseDefinition? {
         exercisesForSelectedDay.first { (log?.taskStatuses[$0.id] ?? .pending) != .completed }
+    }
+
+    private var taskStatusSignature: [String] {
+        exercisesForSelectedDay.map { exercise in
+            "\(exercise.id):\(log?.taskStatuses[exercise.id]?.rawValue ?? TaskStatus.pending.rawValue)"
+        }
     }
 
     private var sessionHeader: some View {
