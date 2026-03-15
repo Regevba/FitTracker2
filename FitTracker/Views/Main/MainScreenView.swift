@@ -102,8 +102,9 @@ struct MainScreenView: View {
             GeometryReader { proxy in
                 let compact = proxy.size.height < 860
                 let tight = proxy.size.height < 760
+                let horizontalPadding = screenHorizontalPadding(for: proxy.size.width)
 
-                VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 13 : 16)) {
+                VStack(alignment: .leading, spacing: cardStackSpacing(compact: compact, tight: tight)) {
                     greetingHeader(tight: tight)
                     statusOverviewCard(compact: compact, tight: tight)
                     goalProgressCard(compact: compact, tight: tight)
@@ -111,9 +112,9 @@ struct MainScreenView: View {
                     metricsCard(compact: compact, tight: tight)
                     Spacer(minLength: 0)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, tight ? 2 : 6)
-                .padding(.bottom, max(proxy.safeAreaInsets.bottom + (tight ? 8 : 10), tight ? 14 : 20))
+                .padding(.horizontal, horizontalPadding)
+                .padding(.top, tight ? 4 : 8)
+                .padding(.bottom, max(proxy.safeAreaInsets.bottom + 12, tight ? 16 : 20))
             }
         }
         .onAppear { checkMilestones() }
@@ -230,7 +231,7 @@ struct MainScreenView: View {
     }
 
     private func statusOverviewCard(compact: Bool, tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 11 : 14)) {
+        VStack(alignment: .leading, spacing: cardInnerSpacing(compact: compact, tight: tight)) {
             HStack {
                 sectionEyebrow("Status")
                 Spacer()
@@ -290,13 +291,13 @@ struct MainScreenView: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(tight ? 12 : (compact ? 15 : 18))
+        .padding(cardPadding(compact: compact, tight: tight))
         .background(homeCardBackground(accent: .appOrange2))
         .scaleEffect(statusPulse ? 1.01 : 1)
     }
 
     private func goalProgressCard(compact: Bool, tight: Bool) -> some View {
-        HStack(alignment: .center, spacing: tight ? 14 : (compact ? 18 : 22)) {
+        HStack(alignment: .center, spacing: splitSectionSpacing(compact: compact, tight: tight)) {
             VStack(alignment: .leading, spacing: 12) {
                 sectionEyebrow("Goal")
                 ZStack {
@@ -321,7 +322,7 @@ struct MainScreenView: View {
                 .frame(width: tight ? 86 : (compact ? 100 : 116), height: tight ? 86 : (compact ? 100 : 116))
             }
 
-            VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 12 : 16)) {
+            VStack(alignment: .leading, spacing: goalColumnSpacing(compact: compact, tight: tight)) {
                 sectionEyebrow("Goal Progress")
                 progressLine(
                     title: "Weight",
@@ -341,15 +342,15 @@ struct MainScreenView: View {
                     .lineLimit(2)
             }
         }
-        .padding(tight ? 12 : (compact ? 15 : 18))
+        .padding(cardPadding(compact: compact, tight: tight))
         .background(homeCardBackground(accent: .appBlue1))
     }
 
     private func startTrainingCard(compact: Bool, tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 11 : 14)) {
+        VStack(alignment: .leading, spacing: cardInnerSpacing(compact: compact, tight: tight)) {
             sectionEyebrow("Start Training")
 
-            HStack(spacing: tight ? 12 : (compact ? 14 : 18)) {
+            HStack(spacing: splitSectionSpacing(compact: compact, tight: tight)) {
                 Button {
                     performHomeAction("primary", style: .medium, action: runPrimaryAction)
                 } label: {
@@ -366,7 +367,7 @@ struct MainScreenView: View {
                 .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
                 .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
 
-                VStack(alignment: .leading, spacing: tight ? 8 : 10) {
+                VStack(alignment: .leading, spacing: trainingTextSpacing(compact: compact, tight: tight)) {
                     Text(primaryActionTitle)
                         .font(.system(size: tight ? 17 : 19.5, weight: .bold, design: .rounded))
                         .foregroundStyle(.black.opacity(0.82))
@@ -403,21 +404,21 @@ struct MainScreenView: View {
                 Spacer(minLength: 0)
             }
         }
-        .padding(tight ? 12 : (compact ? 15 : 18))
+        .padding(cardPadding(compact: compact, tight: tight))
         .background(homeCardBackground(accent: recommendationAccent))
     }
 
     private func metricsCard(compact: Bool, tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: tight ? 8 : (compact ? 11 : 14)) {
+        VStack(alignment: .leading, spacing: cardInnerSpacing(compact: compact, tight: tight)) {
             sectionEyebrow("Metrics")
-            HStack(spacing: tight ? 5 : (compact ? 6 : 8)) {
+            HStack(spacing: metricsTileSpacing(compact: compact, tight: tight)) {
                 metricTile(icon: "waveform.path.ecg", value: displayMetricNumber(hrvValue), label: "HRV", tint: .gray, compact: tight)
                 metricTile(icon: "heart.fill", value: displayMetricNumber(restingHRValue), label: "Rest HR", tint: .brown, compact: tight)
                 metricTile(icon: "moon.fill", value: displaySleepValue, label: "Sleep", tint: .purple, compact: tight)
                 metricTile(icon: "figure.walk", value: displayStepsValue, label: "Steps", tint: .blue, compact: tight)
             }
         }
-        .padding(tight ? 12 : (compact ? 15 : 18))
+        .padding(cardPadding(compact: compact, tight: tight))
         .background(homeCardBackground(accent: .accent.cyan))
     }
 
@@ -536,6 +537,38 @@ struct MainScreenView: View {
                     .stroke(Color.white.opacity(0.35), lineWidth: 1)
             )
             .shadow(color: .white.opacity(0.12), radius: 8, y: 2)
+    }
+
+    private func screenHorizontalPadding(for width: CGFloat) -> CGFloat {
+        width <= 390 ? 18 : 20
+    }
+
+    private func cardStackSpacing(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 12 : (compact ? 14 : 16)
+    }
+
+    private func cardPadding(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 14 : (compact ? 16 : 18)
+    }
+
+    private func cardInnerSpacing(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 10 : (compact ? 12 : 14)
+    }
+
+    private func splitSectionSpacing(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 14 : (compact ? 18 : 22)
+    }
+
+    private func goalColumnSpacing(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 10 : (compact ? 12 : 16)
+    }
+
+    private func trainingTextSpacing(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 8 : (compact ? 9 : 10)
+    }
+
+    private func metricsTileSpacing(compact: Bool, tight: Bool) -> CGFloat {
+        tight ? 6 : (compact ? 8 : 10)
     }
 
     private var greeting: String {
