@@ -174,7 +174,12 @@ final class SignInService: NSObject, ObservableObject {
         // }
 
         // ── Fallback stub until SDK is added ──────────
+        #if DEBUG
         simulateSignIn(provider: .google, name: "Google User", email: "user@gmail.com")
+        #else
+        isLoading = false
+        state = .error("Google Sign-In SDK is not configured. Add it via SPM.")
+        #endif
     }
 
     // ─────────────────────────────────────────────────────
@@ -214,7 +219,12 @@ final class SignInService: NSObject, ObservableObject {
         // }
 
         // ── Fallback stub until SDK is added ──────────
+        #if DEBUG
         simulateSignIn(provider: .facebook, name: "Facebook User", email: "user@facebook.com")
+        #else
+        isLoading = false
+        state = .error("Facebook Login SDK is not configured. Add it via SPM.")
+        #endif
     }
 
     // ─────────────────────────────────────────────────────
@@ -566,14 +576,19 @@ extension SignInService: ASAuthorizationControllerPresentationContextProviding {
 enum KeychainHelper {
     private static let service = "com.fittracker.regev"
 
-    static func save(key: String, data: Data) {
+    @discardableResult
+    static func save(key: String, data: Data) -> Bool {
         let q: [CFString: Any] = [kSecClass: kSecClassGenericPassword,
                                   kSecAttrService: service,
                                   kSecAttrAccount: key,
                                   kSecValueData: data,
                                   kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly]
         SecItemDelete(q as CFDictionary)
-        SecItemAdd(q as CFDictionary, nil)
+        let status = SecItemAdd(q as CFDictionary, nil)
+        if status != errSecSuccess {
+            print("[KeychainHelper] Failed to save key '\(key)': OSStatus \(status)")
+        }
+        return status == errSecSuccess
     }
 
     static func load(key: String) -> Data? {

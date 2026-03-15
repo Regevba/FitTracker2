@@ -427,7 +427,7 @@ final class CloudKitSyncService: ObservableObject {
             let remoteDigest = digest(for: remote)
         else {
             apply(remote)
-            defaults.set(remoteDigestFallback(for: remote), forKey: digestKey)
+            defaults.set(digest(for: remote), forKey: digestKey)
             return
         }
 
@@ -459,9 +459,5 @@ final class CloudKitSyncService: ObservableObject {
         encoder.outputFormatting = [.sortedKeys]
         guard let data = try? encoder.encode(value) else { return nil }
         return SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
-    }
-
-    private func remoteDigestFallback<T: Encodable>(for value: T) -> String? {
-        digest(for: value)
     }
 }
