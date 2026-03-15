@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install xcpretty
+        run: gem install xcpretty --no-document
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project FitTracker.xcodeproj \
+            -scheme FitTracker \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty && exit ${PIPESTATUS[0]}
+
+      - name: Test
+        run: |
+          xcodebuild test \
+            -project FitTracker.xcodeproj \
+            -scheme FitTracker \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            CODE_SIGNING_ALLOWED=NO \
+            | xcpretty && exit ${PIPESTATUS[0]}
