@@ -32,13 +32,18 @@ struct EmptyStateView: View {
             }
         }
         .padding(.horizontal, 32)
+        .accessibilityElement(children: .contain)
     }
 }
 
-#Preview {
-    EmptyStateView(
-        icon: "chart.line.uptrend.xyaxis",
-        title: "No data yet",
-        subtitle: "Log a workout to see your stats here"
-    )
+#if DEBUG
+struct EmptyStateView_Previews: PreviewProvider {
+    static var previews: some View {
+        EmptyStateView(
+            icon: "chart.line.uptrend.xyaxis",
+            title: "No data yet",
+            subtitle: "Log a workout to see your stats here"
+        )
+    }
 }
+#endif

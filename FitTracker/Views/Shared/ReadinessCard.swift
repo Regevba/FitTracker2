@@ -10,6 +10,8 @@ struct ReadinessCard: View {
 
     @State private var currentPage = 0
     @State private var timer: Timer?
+    @State private var showReadinessInfo = false
+    @State private var displayedScore: Int = 0
 
     // ── Timer helpers ─────────────────────────────────────
 
@@ -17,7 +19,7 @@ struct ReadinessCard: View {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
             withAnimation(.easeInOut) {
-                currentPage = (currentPage + 1) % 5
+                currentPage = (currentPage + 1) % 6
             }
         }
     }
@@ -32,6 +34,7 @@ struct ReadinessCard: View {
                 nutritionPage.tag(2)
                 trendsPage.tag(3)
                 achievementsPage.tag(4)
+                recoveryPage.tag(5)
             }
             #if os(iOS)
             .tabViewStyle(.page(indexDisplayMode: .never))
@@ -45,10 +48,8 @@ struct ReadinessCard: View {
                 .padding(.bottom, 6)
         }
         .frame(height: 180)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white.opacity(0.12))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
         .onAppear { startTimer() }
         .onDisappear {
             timer?.invalidate()
@@ -63,7 +64,7 @@ struct ReadinessCard: View {
 
     private var pageDots: some View {
         HStack(spacing: 5) {
-            ForEach(0..<5, id: \.self) { i in
+            ForEach(0..<6, id: \.self) { i in
                 Circle()
                     .fill(i == currentPage ? Color.white : Color.white.opacity(0.35))
                     .frame(width: i == currentPage ? 7 : 5, height: i == currentPage ? 7 : 5)
@@ -87,9 +88,10 @@ struct ReadinessCard: View {
 
         return VStack(spacing: 4) {
             HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text(score.map { "\($0)" } ?? "–")
+                Text(score != nil ? "\(displayedScore)" : "–")
                     .font(.system(size: 48, weight: .bold))
                     .foregroundStyle(.white)
+                    .contentTransition(.numericText())
                 if score != nil {
                     Text("/ 100")
                         .font(AppType.subheading)
@@ -118,6 +120,36 @@ struct ReadinessCard: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 10)
+        .onAppear {
+            guard let target = score else { return }
+            displayedScore = 0
+            withAnimation(.interpolatingSpring(stiffness: 40, damping: 8)) {
+                displayedScore = target
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            Button { showReadinessInfo.toggle() } label: {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white.opacity(0.6))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("About readiness score")
+            .popover(isPresented: $showReadinessInfo) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("How Readiness Is Calculated")
+                        .font(.headline)
+                    Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(16)
+                .frame(minWidth: 260)
+                .presentationCompactAdaptation(.popover)
+            }
+            .padding(.top, 10)
+            .padding(.trailing, 16)
+        }
     }
 
     private func contextLabel(for score: Int?) -> String {
@@ -221,7 +253,7 @@ struct ReadinessCard: View {
     private var nutritionPage: some View {
         let todayLog = dataStore.todayLog()
         let nutrition = todayLog?.nutritionLog
-        let protein = nutrition?.totalProteinG ?? 0
+        let protein = nutrition?.resolvedProteinG ?? 0
         let lbm = todayLog?.biometrics.leanBodyMassKg
         let proteinTarget = lbm.map { $0 * 2.0 } ?? 135.0
         let waterML = nutrition?.waterML ?? 0
@@ -435,5 +467,77 @@ struct ReadinessCard: View {
             }
         }
         return prExercises.count
+    }
+
+    private var recoveryPage: some View {
+        let todayLog = dataStore.todayLog()
+        let recommendation = RecoveryRoutineLibrary.recommend(
+            dayType: todayLog?.dayType ?? .restDay,
+            readinessScore: dataStore.readinessScore(for: Date(), fallbackMetrics: healthKit.latest),
+            liveMetrics: healthKit.latest,
+            log: todayLog,
+            preferences: dataStore.userPreferences
+        )
+
+        return VStack(alignment: .leading, spacing: 8) {
+            Text("Recovery Studio")
+                .font(AppType.subheading)
+                .foregroundStyle(.white.opacity(0.7))
+
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(recommendation.routine.title)
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                    Text(recommendation.routine.focus)
+                        .font(AppType.caption)
+                        .foregroundStyle(.white.opacity(0.72))
+                        .lineLimit(2)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("\(recommendation.routine.durationMinutes)m")
+                        .font(.system(.headline, design: .monospaced, weight: .bold))
+                        .foregroundStyle(.white)
+                    Text(recommendation.routine.intensityLabel)
+                        .font(.system(size: 9))
+                        .foregroundStyle(.white.opacity(0.55))
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(Array(recommendation.reasons.prefix(2)), id: \.self) { reason in
+                    HStack(alignment: .top, spacing: 6) {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 10))
+                            .foregroundStyle(Color.accent.cyan.opacity(0.9))
+                            .padding(.top, 1)
+                        Text(reason)
+                            .font(AppType.caption)
+                            .foregroundStyle(.white.opacity(0.68))
+                            .lineLimit(2)
+                    }
+                }
+            }
+
+            HStack(spacing: 10) {
+                ForEach(recommendation.routine.steps.prefix(2)) { step in
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(step.title)
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .lineLimit(2)
+                        Text("\(step.minutes) min")
+                            .font(.system(size: 9))
+                            .foregroundStyle(.white.opacity(0.55))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(8)
+                    .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                }
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
     }
 }

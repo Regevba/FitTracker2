@@ -74,6 +74,23 @@ struct SignInView: View {
                                 signIn.signInWithApple()
                             }
 
+                            #if targetEnvironment(simulator)
+                            Button { signIn.signInAsTestUser() } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "hammer.fill")
+                                        .foregroundStyle(.orange)
+                                    Text("Continue as Test User")
+                                        .font(.subheadline.weight(.semibold))
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 16)
+                                .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+                                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.orange.opacity(0.3)))
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(signIn.isLoading)
+                            #endif
+
                         }
 
                         // ── Divider ───────────────────────────────────

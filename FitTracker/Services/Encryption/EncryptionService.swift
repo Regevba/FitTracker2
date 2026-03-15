@@ -193,7 +193,19 @@ actor EncryptionService {
     }
 
     private func getOrCreateSymmetricKey(tag: String, context: LAContext) throws -> SymmetricKey {
-        if let existing = try? loadKeyFromKeychain(tag: tag, context: context) { return existing }
+        // Use explicit do/catch so that a genuine keychain error (biometric failure,
+        // corrupt entry, locked device, etc.) is propagated rather than silently treated
+        // as "key not found" and overwritten with a freshly generated key.
+        // loadKeyFromKeychain returns nil only for errSecItemNotFound; all other
+        // failures are thrown as FTCryptoError.keychainError — let those bubble up.
+        do {
+            if let existing = try loadKeyFromKeychain(tag: tag, context: context) {
+                return existing
+            }
+        } catch {
+            throw error   // propagate any real keychain error; do NOT generate a new key
+        }
+        // Reaching here means the item genuinely does not exist yet — create it.
         let newKey = SymmetricKey(size: .bits256)
         try saveKeyToKeychain(newKey, tag: tag)
         return newKey
@@ -332,12 +344,13 @@ actor EncryptionService {
 @MainActor
 final class EncryptedDataStore: ObservableObject {
 
-    @Published var dailyLogs:       [DailyLog]        = []
-    @Published var weeklySnapshots: [WeeklySnapshot]  = []
-    @Published var userProfile:     UserProfile       = UserProfile()
-    @Published var mealTemplates:   [MealTemplate]    = []
-    @Published var isLoading:       Bool              = false
-    @Published var lastError:       String?
+    @Published var dailyLogs:        [DailyLog]        = []
+    @Published var weeklySnapshots:  [WeeklySnapshot]  = []
+    @Published var userProfile:      UserProfile       = UserProfile()
+    @Published var mealTemplates:    [MealTemplate]    = []
+    @Published var userPreferences:  UserPreferences   = UserPreferences()
+    @Published var isLoading:        Bool              = false
+    @Published var lastError:        String?
     /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
     @Published var loadError:       String?
 
@@ -353,7 +366,10 @@ final class EncryptedDataStore: ObservableObject {
     // ── CRUD ─────────────────────────────────────────────
 
     func upsertLog(_ log: DailyLog) {
-        var l = log; l.lastModified = Date(); l.needsSync = true
+        var l = log
+        l.nutritionLog = normalizedNutritionLog(l.nutritionLog)
+        l.lastModified = Date()
+        l.needsSync = true
         if let i = dailyLogs.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: log.date) }) {
             dailyLogs[i] = l
         } else {
@@ -375,7 +391,7 @@ final class EncryptedDataStore: ObservableObject {
         let today = Calendar.current.startOfDay(for: Date())
         for log in sorted {
             let logDay = Calendar.current.startOfDay(for: log.date)
-            // Today counts only if fully complete
+            // Skip future-dated logs
             if logDay > today { continue }
             let complete = log.supplementLog.morningStatus == .completed
                         && log.supplementLog.eveningStatus == .completed
@@ -444,18 +460,21 @@ final class EncryptedDataStore: ObservableObject {
             let snapsEnc     = try await EncryptionService.shared.encrypt(weeklySnapshots)
             let profEnc      = try await EncryptionService.shared.encrypt(userProfile)
             let templatesEnc = try await EncryptionService.shared.encrypt(mealTemplates)
+            let prefsEnc     = try await EncryptionService.shared.encrypt(userPreferences)
 
             // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked (iOS only)
             #if os(iOS)
-            try logsEnc.write(to:      url("logs"),          options: .completeFileProtectionUnlessOpen)
-            try snapsEnc.write(to:     url("snaps"),         options: .completeFileProtectionUnlessOpen)
-            try profEnc.write(to:      url("profile"),       options: .completeFileProtectionUnlessOpen)
-            try templatesEnc.write(to: url("mealTemplates"), options: .completeFileProtectionUnlessOpen)
+            try logsEnc.write(to:      url("logs"),             options: .completeFileProtectionUnlessOpen)
+            try snapsEnc.write(to:     url("snaps"),            options: .completeFileProtectionUnlessOpen)
+            try profEnc.write(to:      url("profile"),          options: .completeFileProtectionUnlessOpen)
+            try templatesEnc.write(to: url("mealTemplates"),    options: .completeFileProtectionUnlessOpen)
+            try prefsEnc.write(to:     url("userPreferences"),  options: .completeFileProtectionUnlessOpen)
             #else
             try logsEnc.write(to:      url("logs"))
             try snapsEnc.write(to:     url("snaps"))
             try profEnc.write(to:      url("profile"))
             try templatesEnc.write(to: url("mealTemplates"))
+            try prefsEnc.write(to:     url("userPreferences"))
             #endif
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
@@ -480,6 +499,10 @@ final class EncryptedDataStore: ObservableObject {
             if let d = try? Data(contentsOf: url("mealTemplates")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: [MealTemplate].self)
                 await MainActor.run { mealTemplates = v }
+            }
+            if let d = try? Data(contentsOf: url("userPreferences")), !d.isEmpty {
+                let v = try await EncryptionService.shared.decrypt(d, as: UserPreferences.self)
+                await MainActor.run { userPreferences = v }
             }
         } catch {
             await MainActor.run {
@@ -522,6 +545,23 @@ final class EncryptedDataStore: ObservableObject {
         )
     }
 
+    private func normalizedNutritionLog(_ nutrition: NutritionLog) -> NutritionLog {
+        var normalized = nutrition
+        if let calories = nutrition.mealCaloriesTotal {
+            normalized.totalCalories = calories
+        }
+        if let protein = nutrition.mealProteinTotal {
+            normalized.totalProteinG = protein
+        }
+        if let carbs = nutrition.mealCarbsTotal {
+            normalized.totalCarbsG = carbs
+        }
+        if let fat = nutrition.mealFatTotal {
+            normalized.totalFatG = fat
+        }
+        return normalized
+    }
+
     private func buildHints(_ logs: [DailyLog]) -> ExportPackage.AIHints {
         let r7  = logs.prefix(7)
         let r28 = logs.prefix(28)
@@ -537,13 +577,14 @@ final class EncryptedDataStore: ObservableObject {
         }
 
         let adh   = r28.map { $0.completionPct }.reduce(0,+) / max(1, Double(r28.count))
-        let prot  = Double(r28.filter { ($0.nutritionLog.totalProteinG ?? 0) >= 125 }.count) / max(1, Double(r28.count))
+        let prot  = Double(r28.filter { ($0.nutritionLog.resolvedProteinG ?? 0) >= 125 }.count) / max(1, Double(r28.count))
         let supp  = Double(r28.filter { $0.supplementLog.morningStatus == .completed }.count) / max(1, Double(r28.count))
-        let z2min = r7.flatMap { $0.cardioLogs.values }.compactMap { $0.wasInZone2 == true ? $0.durationMinutes : nil }.reduce(0,+)
+        let prefs = userPreferences
+        let z2min = r7.flatMap { $0.cardioLogs.values }.compactMap { $0.wasInZone2(lower: prefs.zone2LowerHR, upper: prefs.zone2UpperHR) == true ? $0.durationMinutes : nil }.reduce(0,+)
 
         var flags: [String] = []; var pos: [String] = []
-        if let hrv = logs.first?.biometrics.effectiveHRV, hrv < 28 { flags.append("HRV below 28 ms") }
-        if let rhr = logs.first?.biometrics.effectiveRestingHR, rhr > 75 { flags.append("Resting HR above 75 bpm") }
+        if let hrv = logs.first?.biometrics.effectiveHRV, hrv < prefs.hrvReadyThreshold { flags.append("HRV below \(Int(prefs.hrvReadyThreshold)) ms") }
+        if let rhr = logs.first?.biometrics.effectiveRestingHR, rhr > Double(userPreferences.hrReadyThreshold) { flags.append("Resting HR above \(userPreferences.hrReadyThreshold) bpm") }
         if adh < 70 { flags.append("Task adherence below 70%") }
         if z2min < 90 { flags.append("Zone 2 below 90 min/week") }
         if trend(hrvVals) == "increasing" { pos.append("HRV trend improving") }
@@ -551,7 +592,7 @@ final class EncryptedDataStore: ObservableObject {
         if adh > 85 { pos.append("Excellent task adherence") }
 
         let cw = wVals.last; let cb = bfVals.last
-        let gp = userProfile.overallProgress(currentWeight: cw, currentBF: cb.map { $0 * 100 })
+        let gp = userProfile.overallProgress(currentWeight: cw, currentBF: cb)
 
         return ExportPackage.AIHints(
             hrvTrend: trend(hrvVals), weightTrend: trend(wVals), bfTrend: trend(bfVals),

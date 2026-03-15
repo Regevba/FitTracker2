@@ -31,21 +31,24 @@ struct ChartCard<Content: View>: View {
             content()
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white.opacity(0.12))
-        )
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .accessibilityElement(children: .contain)
     }
 }
 
-#Preview {
-    ChartCard(
-        title: "Weekly Activity",
-        periodLabel: "Last 7 days",
-        trendDelta: 12.5,
-        positiveIsGood: true
-    ) {
-        Text("Chart content goes here")
-            .frame(height: 200)
+#if DEBUG
+struct ChartCard_Previews: PreviewProvider {
+    static var previews: some View {
+        ChartCard(
+            title: "Weekly Activity",
+            periodLabel: "Last 7 days",
+            trendDelta: 12.5,
+            positiveIsGood: true
+        ) {
+            Text("Chart content goes here")
+                .frame(height: 200)
+        }
     }
 }
+#endif

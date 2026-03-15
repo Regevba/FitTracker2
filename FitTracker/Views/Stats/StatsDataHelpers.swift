@@ -54,9 +54,11 @@ extension EncryptedDataStore {
 
     // MARK: – Zone 2 Cardio
 
-    /// Total cardio duration (minutes) per DailyLog where avgHeartRate is in 106–124 bpm.
+    /// Total cardio duration (minutes) per DailyLog where avgHeartRate is in the configured Zone 2 range.
     func zone2Minutes(from: Date, to: Date) -> [(date: Date, minutes: Double)] {
-        dailyLogs
+        let lower = Double(userPreferences.zone2LowerHR)
+        let upper = Double(userPreferences.zone2UpperHR)
+        return dailyLogs
             .filter { log in
                 log.date >= from && log.date <= to
             }
@@ -64,7 +66,7 @@ extension EncryptedDataStore {
             .compactMap { log in
                 let minutes = log.cardioLogs.values.compactMap { cardioLog -> Double? in
                     guard let hr = cardioLog.avgHeartRate,
-                          hr >= 106 && hr <= 124,
+                          hr >= lower && hr <= upper,
                           let duration = cardioLog.durationMinutes
                     else { return nil }
                     return duration
@@ -113,8 +115,8 @@ extension EncryptedDataStore {
                     (supp.eveningStatus == .completed ? 0.5 : 0.0)
                 return (
                     date: log.date,
-                    calories: nutrition.totalCalories,
-                    proteinG: nutrition.totalProteinG,
+                    calories: nutrition.resolvedCalories,
+                    proteinG: nutrition.resolvedProteinG,
                     supplementPct: supplementPct
                 )
             }
@@ -143,4 +145,11 @@ extension EncryptedDataStore {
         }
         return records
     }
+}
+
+/// Epley estimated 1-rep max.  Returns nil when reps < 1 or weight ≤ 0.
+func estimated1RM(weightKg: Double, reps: Int) -> Double? {
+    guard reps >= 1, weightKg > 0 else { return nil }
+    if reps == 1 { return weightKg }          // already a 1RM
+    return weightKg * (1 + Double(reps) / 30)
 }

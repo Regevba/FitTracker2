@@ -28,6 +28,18 @@
 		A1000001000000000000000F /* AccountPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AccountPanelView.swift */; };
 		A10000010000000000000010 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* SignInView.swift */; };
 		A10000010000000000000011 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* WelcomeView.swift */; };
+		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
+		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
+		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
+		CC000001000000000000AA04 /* MetricCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA04 /* MetricCard.swift */; };
+		CC000001000000000000AA05 /* TrendIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA05 /* TrendIndicator.swift */; };
+		CC000001000000000000AA06 /* ChartCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA06 /* ChartCard.swift */; };
+		CC000001000000000000AA07 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA07 /* EmptyStateView.swift */; };
+		CC000001000000000000AA08 /* StatsDataHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA08 /* StatsDataHelpers.swift */; };
+		CC000001000000000000AA09 /* MacroTargetBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA09 /* MacroTargetBar.swift */; };
+		CC000001000000000000AA0A /* MealSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0A /* MealSectionView.swift */; };
+		CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0B /* MealEntrySheet.swift */; };
+		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +68,18 @@
 		A20000010000000000000014 /* FitTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B20000010000000000000001 /* FitTrackerCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerCoreTests.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA03 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA04 /* MetricCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricCard.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA05 /* TrendIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendIndicator.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA06 /* ChartCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartCard.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA07 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA08 /* StatsDataHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsDataHelpers.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA09 /* MacroTargetBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacroTargetBar.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA0A /* MealSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealSectionView.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA0B /* MealEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEntrySheet.swift; sourceTree = "<group>"; };
+		CC000002000000000000AA0C /* RecoverySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverySupport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +173,7 @@
 				A4000001000000000000000D /* Nutrition */,
 				A4000001000000000000000E /* Stats */,
 				A4000001000000000000000F /* Auth */,
+				CC000001000000000000AA00 /* Shared */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -205,6 +230,9 @@
 			isa = PBXGroup;
 			children = (
 				A2000001000000000000000C /* NutritionView.swift */,
+				CC000002000000000000AA09 /* MacroTargetBar.swift */,
+				CC000002000000000000AA0A /* MealSectionView.swift */,
+				CC000002000000000000AA0B /* MealEntrySheet.swift */,
 			);
 			path = Nutrition;
 			sourceTree = "<group>";
@@ -213,8 +241,24 @@
 			isa = PBXGroup;
 			children = (
 				A2000001000000000000000E /* StatsView.swift */,
+				CC000002000000000000AA08 /* StatsDataHelpers.swift */,
 			);
 			path = Stats;
+			sourceTree = "<group>";
+		};
+		CC000001000000000000AA00 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				CC000002000000000000AA01 /* ReadinessCard.swift */,
+				CC000002000000000000AA02 /* SectionHeader.swift */,
+				CC000002000000000000AA03 /* StatusBadge.swift */,
+				CC000002000000000000AA04 /* MetricCard.swift */,
+				CC000002000000000000AA05 /* TrendIndicator.swift */,
+				CC000002000000000000AA06 /* ChartCard.swift */,
+				CC000002000000000000AA07 /* EmptyStateView.swift */,
+				CC000002000000000000AA0C /* RecoverySupport.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		A4000001000000000000000F /* Auth */ = {
@@ -351,6 +395,18 @@
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
 				A10000010000000000000010 /* SignInView.swift in Sources */,
 				A10000010000000000000011 /* WelcomeView.swift in Sources */,
+				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
+				CC000001000000000000AA02 /* SectionHeader.swift in Sources */,
+				CC000001000000000000AA03 /* StatusBadge.swift in Sources */,
+				CC000001000000000000AA04 /* MetricCard.swift in Sources */,
+				CC000001000000000000AA05 /* TrendIndicator.swift in Sources */,
+				CC000001000000000000AA06 /* ChartCard.swift in Sources */,
+				CC000001000000000000AA07 /* EmptyStateView.swift in Sources */,
+				CC000001000000000000AA08 /* StatsDataHelpers.swift in Sources */,
+				CC000001000000000000AA09 /* MacroTargetBar.swift in Sources */,
+				CC000001000000000000AA0A /* MealSectionView.swift in Sources */,
+				CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */,
+				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

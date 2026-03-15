@@ -23,7 +23,7 @@ struct MetricCard: View {
                 .foregroundColor(.secondary)
 
                 // Middle: value + unit
-                HStack(alignment: .baseline, spacing: 4) {
+                HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(value)
                         .font(AppType.display)
                         .lineLimit(1)
@@ -51,40 +51,58 @@ struct MetricCard: View {
                 .frame(width: 8, height: 8)
                 .padding(12)
         }
-        .background(Color.white.opacity(0.15))
-        .cornerRadius(14)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14))
+        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
+        .accessibilityValue(accessibilityValue)
+    }
+
+    private var accessibilityValue: String {
+        var parts = [value]
+        if let unit {
+            parts.append(unit)
+        }
+        if let trendDelta {
+            parts.append(trendDelta)
+        }
+        return parts.joined(separator: " ")
     }
 }
 
-#Preview {
-    VStack(spacing: 16) {
-        MetricCard(
-            icon: "scalemass.fill",
-            label: "Weight",
-            value: "67.3",
-            unit: "kg",
-            trendDelta: "↓ 0.5",
-            statusColor: .status.success
-        )
+#if DEBUG
+struct MetricCard_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack(spacing: 16) {
+            MetricCard(
+                icon: "scalemass.fill",
+                label: "Weight",
+                value: "67.3",
+                unit: "kg",
+                trendDelta: "↓ 0.5",
+                statusColor: .status.success
+            )
 
-        MetricCard(
-            icon: "heart.fill",
-            label: "Resting HR",
-            value: "58",
-            unit: "bpm",
-            trendDelta: nil,
-            statusColor: .status.warning
-        )
+            MetricCard(
+                icon: "heart.fill",
+                label: "Resting HR",
+                value: "58",
+                unit: "bpm",
+                trendDelta: nil,
+                statusColor: .status.warning
+            )
 
-        MetricCard(
-            icon: "flame.fill",
-            label: "Calories",
-            value: "2400",
-            unit: nil,
-            trendDelta: "↑ 120",
-            statusColor: .status.error
-        )
+            MetricCard(
+                icon: "flame.fill",
+                label: "Calories",
+                value: "2400",
+                unit: nil,
+                trendDelta: "↑ 120",
+                statusColor: .status.error
+            )
+        }
+        .padding()
+        .background(Color.black.opacity(0.05))
     }
-    .padding()
-    .background(Color.black.opacity(0.05))
 }
+#endif

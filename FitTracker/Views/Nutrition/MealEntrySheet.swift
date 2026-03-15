@@ -192,30 +192,33 @@ struct MealEntrySheet: View {
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List(dataStore.mealTemplates) { template in
-                    Button {
-                        fillFromTemplate(template)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(template.name)
-                                .font(AppType.body)
-                                .foregroundColor(.primary)
-                            HStack(spacing: 8) {
-                                if let cal = template.calories {
-                                    Text("\(Int(cal)) kcal")
-                                        .font(AppType.caption)
-                                        .foregroundColor(Color.accent.gold)
-                                }
-                                if let pro = template.proteinG {
-                                    Text("\(Int(pro))g protein")
-                                        .font(AppType.caption)
-                                        .foregroundColor(Color.accent.cyan)
+                List {
+                    ForEach(dataStore.mealTemplates) { template in
+                        Button {
+                            fillFromTemplate(template)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(template.name)
+                                    .font(AppType.body)
+                                    .foregroundColor(.primary)
+                                HStack(spacing: 8) {
+                                    if let cal = template.calories {
+                                        Text("\(Int(cal)) kcal")
+                                            .font(AppType.caption)
+                                            .foregroundColor(Color.accent.gold)
+                                    }
+                                    if let pro = template.proteinG {
+                                        Text("\(Int(pro))g protein")
+                                            .font(AppType.caption)
+                                            .foregroundColor(Color.accent.cyan)
+                                    }
                                 }
                             }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
+                    .onDelete { offsets in deleteTemplates(at: offsets) }
                 }
                 .listStyle(.plain)
             }
@@ -377,6 +380,11 @@ struct MealEntrySheet: View {
         carbsG   = product.carbsPer100g.map     { formatNum($0) } ?? ""
         fatG     = product.fatPer100g.map       { formatNum($0) } ?? ""
         activeTab = .manual
+    }
+
+    private func deleteTemplates(at offsets: IndexSet) {
+        dataStore.mealTemplates.remove(atOffsets: offsets)
+        Task { await dataStore.persistToDisk() }
     }
 
     private func formatNum(_ v: Double) -> String {

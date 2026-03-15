@@ -1,8 +1,8 @@
 // Views/Auth/AccountPanelView.swift
 // Slide-out panel from the top-right account button.
-// Sections:
-//   1. Account  — avatar / name / email / phone
-//   2. Settings — units (metric ↔ imperial) + appearance (light/dark/system)
+// Structure:
+//   1. Profile card  — avatar / name / email / phone / sign-in provider
+//   2. Settings      — button that opens SettingsView as a sheet
 //   3. Sign Out
 
 import SwiftUI
@@ -14,6 +14,7 @@ struct AccountPanelView: View {
     @Environment(\.dismiss) var dismiss
 
     @State private var showLogoutConfirm = false
+    @State private var showSettings = false
 
     private var session: UserSession? { signIn.currentSession }
 
@@ -29,7 +30,7 @@ struct AccountPanelView: View {
                     HStack(spacing: 16) {
                         avatarView
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(session?.displayName ?? "Regev")
+                            Text(session?.displayName ?? "User")
                                 .font(.headline)
                             HStack(spacing: 6) {
                                 providerBadge
@@ -88,84 +89,15 @@ struct AccountPanelView: View {
                 }
 
                 // ─────────────────────────────────────────
-                // MARK: SETTINGS section
+                // MARK: SETTINGS button
                 // ─────────────────────────────────────────
                 Section {
-
-                    // Unit system
-                    VStack(alignment: .leading, spacing: 10) {
-                        Label("Units", systemImage: "ruler")
-                            .font(.subheadline.weight(.medium))
-
-                        HStack(spacing: 8) {
-                            ForEach(UnitSystem.allCases, id: \.self) { system in
-                                Button {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        settings.unitSystem = system
-                                    }
-                                } label: {
-                                    VStack(spacing: 4) {
-                                        Text(system.rawValue)
-                                            .font(.subheadline.weight(.semibold))
-                                        Text(system == .metric ? "kg · cm · km" : "lbs · in · mi")
-                                            .font(.system(size: 10))
-                                            .opacity(0.7)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 10)
-                                    .foregroundStyle(settings.unitSystem == system ? .black : .primary)
-                                    .background(
-                                        settings.unitSystem == system
-                                            ? Color.green
-                                            : Color.secondary.opacity(0.1),
-                                        in: RoundedRectangle(cornerRadius: 10)
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gearshape.fill")
+                            .foregroundStyle(.primary)
                     }
-                    .padding(.vertical, 4)
-
-                    // Appearance
-                    VStack(alignment: .leading, spacing: 10) {
-                        Label("Appearance", systemImage: "paintpalette")
-                            .font(.subheadline.weight(.medium))
-
-                        HStack(spacing: 8) {
-                            ForEach(AppAppearance.allCases, id: \.self) { mode in
-                                Button {
-                                    withAnimation(.easeInOut(duration: 0.2)) {
-                                        settings.appearance = mode
-                                    }
-                                } label: {
-                                    VStack(spacing: 5) {
-                                        Image(systemName: mode.icon)
-                                            .font(.title3)
-                                        Text(mode.rawValue)
-                                            .font(.caption2.weight(.medium))
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .padding(.vertical, 10)
-                                    .foregroundStyle(settings.appearance == mode ? .black : .primary)
-                                    .background(
-                                        settings.appearance == mode
-                                            ? Color.green
-                                            : Color.secondary.opacity(0.1),
-                                        in: RoundedRectangle(cornerRadius: 10)
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    .padding(.vertical, 4)
-
-                } header: {
-                    Label("Settings", systemImage: "gearshape.fill")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                        .textCase(nil)
                 }
 
                 // ─────────────────────────────────────────
@@ -205,6 +137,10 @@ struct AccountPanelView: View {
             } message: {
                 Text("You'll be returned to the welcome screen. Your encrypted data remains safely stored on this device and in iCloud.")
             }
+            .sheet(isPresented: $showSettings) {
+                NavigationStack { SettingsView() }
+                    .presentationDetents([.large])
+            }
         }
     }
 
@@ -221,9 +157,9 @@ struct AccountPanelView: View {
                 )
                 .frame(width: 52, height: 52)
 
-            Text(session?.initials ?? "R")
+            Text(session?.initials ?? "—")
                 .font(.system(.title2, design: .rounded, weight: .bold))
-                .foregroundStyle(.black)
+                .foregroundStyle(.white)
         }
     }
 

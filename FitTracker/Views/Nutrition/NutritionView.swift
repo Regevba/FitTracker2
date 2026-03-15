@@ -8,9 +8,11 @@ import SwiftUI
 struct NutritionView: View {
 
     @EnvironmentObject var dataStore: EncryptedDataStore
+    @State private var activeDate: Date = Date()
     @State private var log: DailyLog?
     @State private var supplementsExpanded = false
     @State private var editingMealEntry: MealEntry?
+    @State private var showSupplementInfo = false
 
     private var morning: [SupplementDefinition] { TrainingProgramData.morningSupplements }
     private var evening: [SupplementDefinition] { TrainingProgramData.eveningSupplements }
@@ -27,7 +29,10 @@ struct NutritionView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 20) {
                 dateHeader
+                nutritionCommandDeck
                 macroBar
+                quickLogSection
+                hydrationCard
                 adherenceRow
                 mealSection
                 supplementRow
@@ -40,7 +45,12 @@ struct NutritionView: View {
         } // ZStack
         .navigationTitle("Nutrition")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear { loadLog() }
+        .preferredColorScheme(.dark)
+        .onAppear {
+            activeDate = Calendar.current.startOfDay(for: Date())
+            loadLog(for: activeDate)
+        }
+        .onDisappear { saveLog() }
         .sheet(item: $editingMealEntry) { entry in
             let entryBinding = Binding<MealEntry>(
                 get: { log?.nutritionLog.meals.first(where: { $0.mealNumber == entry.mealNumber }) ?? entry },
@@ -78,20 +88,141 @@ struct NutritionView: View {
         log?.supplementLog.individualOverrides ?? [:]
     }
 
+    private var nutritionLog: NutritionLog {
+        log?.nutritionLog ?? NutritionLog()
+    }
+
+    private var currentPhase: ProgramPhase {
+        dataStore.userProfile.currentPhase
+    }
+
+    private var isTrainingDay: Bool {
+        (log?.dayType ?? suggestedDay(for: activeDate)).isTrainingDay
+    }
+
+    private var targetCalories: Double {
+        isTrainingDay ? Double(currentPhase.trainingCalories) : Double(currentPhase.restCalories)
+    }
+
+    private var targetProteinG: Double {
+        if let leanMass = log?.biometrics.leanBodyMassKg {
+            return leanMass * 2
+        }
+        return 135
+    }
+
+    private var consumedCalories: Double {
+        nutritionLog.resolvedCalories ?? 0
+    }
+
+    private var consumedProteinG: Double {
+        nutritionLog.resolvedProteinG ?? 0
+    }
+
+    private var remainingCalories: Double {
+        max(targetCalories - consumedCalories, 0)
+    }
+
+    private var remainingProteinG: Double {
+        max(targetProteinG - consumedProteinG, 0)
+    }
+
+    private var nextMealNumber: Int {
+        max((nutritionLog.meals.map(\.mealNumber).max() ?? 0) + 1, 1)
+    }
+
+    private var completionText: String {
+        let completedMeals = nutritionLog.meals.filter { $0.status == .completed }.count
+        let templateCount = dataStore.mealTemplates.count
+        if completedMeals == 0 {
+            return templateCount > 0 ? "Use your saved meals to log faster." : "Log your first meal to start building momentum."
+        }
+        if remainingProteinG > 25 {
+            return "Protein is the main gap right now. A quick repeat meal can close it fast."
+        }
+        if remainingCalories > 400 {
+            return "You still have room in the plan. Finish the day with one more full meal."
+        }
+        return "Nutrition is on track. Keep hydration and supplements tight."
+    }
+
+    private var recentMeals: [MealEntry] {
+        var seen = Set<String>()
+        return dataStore.dailyLogs
+            .sorted { $0.date > $1.date }
+            .filter { !Calendar.current.isDate($0.date, inSameDayAs: activeDate) }
+            .flatMap { $0.nutritionLog.meals }
+            .filter { $0.status == .completed && !$0.name.trimmingCharacters(in: .whitespaces).isEmpty }
+            .filter { meal in
+                let key = meal.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                return seen.insert(key).inserted
+            }
+            .prefix(6)
+            .map { $0 }
+    }
+
     // ─────────────────────────────────────────────────────
     // Sub-views
     // ─────────────────────────────────────────────────────
 
     private var dateHeader: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Nutrition")
-                    .font(.title2.bold())
-                Text(formattedToday)
-                    .font(.subheadline).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Nutrition")
+                        .font(.title2.bold())
+                    Text(formattedActiveDate)
+                        .font(.subheadline).foregroundStyle(.secondary)
+                }
+                Spacer()
+                overallBadge
             }
-            Spacer()
-            overallBadge
+
+            HStack(spacing: 10) {
+                Button {
+                    shiftDay(by: -1)
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.primary)
+                        .frame(width: 36, height: 36)
+                        .background(Color.white.opacity(0.7), in: Circle())
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    activeDate = Calendar.current.startOfDay(for: Date())
+                    loadLog(for: activeDate)
+                } label: {
+                    Text(isViewingToday ? "Today" : "Jump to Today")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(isViewingToday ? .secondary : .primary)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 9)
+                        .background(Color.white.opacity(0.58), in: Capsule())
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    shiftDay(by: 1)
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(.primary)
+                        .frame(width: 36, height: 36)
+                        .background(Color.white.opacity(0.7), in: Circle())
+                }
+                .buttonStyle(.plain)
+
+                Spacer()
+
+                Text(log?.dayType.rawValue ?? suggestedDay(for: activeDate).rawValue)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.5), in: Capsule())
+            }
         }
         .padding(.top, 6)
     }
@@ -104,9 +235,77 @@ struct NutritionView: View {
             Text("\(pct)%")
                 .font(.system(.title3, design: .monospaced, weight: .bold))
                 .foregroundStyle(Color.status.success)
-            Text("today")
+            Text("supps")
                 .font(.caption2).foregroundStyle(.secondary)
         }
+    }
+
+    private var nutritionCommandDeck: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Nutrition Focus")
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.secondary)
+                        .tracking(1)
+                    Text(remainingProteinG > 25 ? "Close the protein gap" : "Stay consistent through the day")
+                        .font(.headline)
+                    Text(completionText)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 6) {
+                    Text("\(Int(remainingCalories))")
+                        .font(.system(.title3, design: .monospaced, weight: .bold))
+                        .foregroundStyle(Color.appOrange2)
+                    Text("kcal left")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            HStack(spacing: 10) {
+                quickActionButton(
+                    title: nutritionLog.meals.isEmpty ? "Log First Meal" : "Add Meal",
+                    icon: "plus.circle.fill",
+                    tint: Color.accent.cyan
+                ) {
+                    editingMealEntry = MealEntry(mealNumber: nextMealNumber)
+                }
+
+                quickActionButton(
+                    title: recentMeals.isEmpty ? "Quick Protein" : "Repeat Last",
+                    icon: recentMeals.isEmpty ? "bolt.heart.fill" : "clock.arrow.circlepath",
+                    tint: Color.status.success
+                ) {
+                    if let recent = recentMeals.first {
+                        openPrefilledMeal(recent)
+                    } else {
+                        editingMealEntry = MealEntry(
+                            mealNumber: nextMealNumber,
+                            name: "Protein Shake",
+                            calories: 180,
+                            proteinG: 30,
+                            carbsG: 8,
+                            fatG: 3
+                        )
+                    }
+                }
+            }
+
+            HStack(spacing: 20) {
+                nutritionMetric(title: "Protein left", value: "\(Int(remainingProteinG))g", color: Color.accent.cyan)
+                nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: Color.appOrange2)
+                nutritionMetric(title: "Water", value: "\(Int((nutritionLog.waterML ?? 0) / 250)) cups", color: Color.appBlue2)
+            }
+        }
+        .padding(16)
+        .background(Color.white.opacity(0.5), in: RoundedRectangle(cornerRadius: 18))
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.white.opacity(0.45), lineWidth: 1)
+        )
     }
 
     private var adherenceRow: some View {
@@ -122,6 +321,25 @@ struct NutritionView: View {
                 Spacer()
                 Text("\(taken)/\(total) taken")
                     .font(.caption2.monospaced()).foregroundStyle(.secondary)
+                Button { showSupplementInfo.toggle() } label: {
+                    Image(systemName: "info.circle")
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("About supplement adherence")
+                .popover(isPresented: $showSupplementInfo) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Supplement Adherence")
+                            .font(.headline)
+                        Text("Tracks whether you took all pills in your morning and evening stacks today. The 🔥 streak counts consecutive days with 100% adherence across both stacks.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(16)
+                    .frame(minWidth: 260)
+                    .presentationCompactAdaptation(.popover)
+                }
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
@@ -140,34 +358,135 @@ struct NutritionView: View {
     }
 
     private var macroBar: some View {
-        let nutrition = log?.nutritionLog ?? NutritionLog()
-        let protein   = nutrition.totalProteinG ?? nutrition.meals.compactMap(\.proteinG).reduce(0, +)
-        let carbs     = nutrition.totalCarbsG   ?? nutrition.meals.compactMap(\.carbsG).reduce(0, +)
-        let fat       = nutrition.totalFatG     ?? nutrition.meals.compactMap(\.fatG).reduce(0, +)
-        let phase     = dataStore.userProfile.currentPhase
-        let isTraining = log?.dayType.isTrainingDay ?? false
-        let targetCal = isTraining ? phase.trainingCalories : phase.restCalories
-        let leanMass  = log?.biometrics.leanBodyMassKg
-        let targetPro = leanMass.map { $0 * 2 } ?? 135.0
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Macro Targets")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(.secondary)
+                    .tracking(1)
+                Spacer()
+                Text("\(Int(consumedCalories)) / \(Int(targetCalories)) kcal")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+            }
 
-        return MacroTargetBar(
-            protein: protein,
-            carbs: carbs,
-            fat: fat,
-            targetCalories: targetCal,
-            targetProteinG: targetPro
-        )
+            MacroTargetBar(
+                protein: nutritionLog.resolvedProteinG ?? 0,
+                carbs: nutritionLog.resolvedCarbsG ?? 0,
+                fat: nutritionLog.resolvedFatG ?? 0,
+                targetCalories: Int(targetCalories),
+                targetProteinG: targetProteinG
+            )
+        }
     }
 
     private var mealSection: some View {
         let nutritionBinding = Binding<NutritionLog>(
-            get: { log?.nutritionLog ?? NutritionLog() },
+            get: { nutritionLog },
             set: { log?.nutritionLog = $0 }
         )
-        return MealSectionView(nutritionLog: nutritionBinding) { mealNumber in
+        return MealSectionView(nutritionLog: nutritionBinding, suggestedMealNumber: nextMealNumber, mealSlotNames: dataStore.userProfile.mealSlotNames) { mealNumber in
             let existing = log?.nutritionLog.meals.first(where: { $0.mealNumber == mealNumber })
-            editingMealEntry = existing ?? MealEntry(mealNumber: max(mealNumber, 1))
+            editingMealEntry = existing ?? MealEntry(mealNumber: max(mealNumber, nextMealNumber))
         }
+    }
+
+    private var quickLogSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if !dataStore.mealTemplates.isEmpty {
+                quickMealLane(
+                    title: "Favorites",
+                    subtitle: "Saved templates for repeat meals",
+                    meals: dataStore.mealTemplates.prefix(6).map {
+                        MealEntry(
+                            mealNumber: nextMealNumber,
+                            name: $0.name,
+                            calories: $0.calories,
+                            proteinG: $0.proteinG,
+                            carbsG: $0.carbsG,
+                            fatG: $0.fatG
+                        )
+                    }
+                )
+            }
+
+            if !recentMeals.isEmpty {
+                quickMealLane(
+                    title: "Remembered Meals",
+                    subtitle: "Recently logged meals you can reuse",
+                    meals: recentMeals
+                )
+            }
+        }
+    }
+
+    private var hydrationCard: some View {
+        let waterML = nutritionLog.waterML ?? 0
+        let waterTarget = isTrainingDay ? 3500.0 : 2800.0
+        let waterProgress = min(max(waterML / waterTarget, 0), 1)
+
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Hydration")
+                        .font(.headline)
+                    Text(isTrainingDay ? "Training days need a little more water." : "Keep the baseline high even on rest days.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text("\(Int(waterML)) ml")
+                    .font(.system(.title3, design: .monospaced, weight: .bold))
+                    .foregroundStyle(Color.appBlue2)
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.secondary.opacity(0.15))
+                        .frame(height: 8)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(LinearGradient(colors: [Color.appBlue1, Color.appBlue2], startPoint: .leading, endPoint: .trailing))
+                        .frame(width: geo.size.width * waterProgress, height: 8)
+                }
+            }
+            .frame(height: 8)
+
+            HStack(spacing: 10) {
+                ForEach([250.0, 500.0, 1000.0], id: \.self) { amount in
+                    Button {
+                        log?.nutritionLog.waterML = waterML + amount
+                        saveLog()
+                    } label: {
+                        Text("+\(Int(amount)) ml")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Color.appBlue2)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            .background(Color.appBlue1.opacity(0.2), in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Spacer()
+
+                Button {
+                    let current = log?.nutritionLog.alluloseTaken ?? false
+                    log?.nutritionLog.alluloseTaken = !current
+                    saveLog()
+                } label: {
+                    Label(log?.nutritionLog.alluloseTaken == true ? "Allulose done" : "Allulose", systemImage: log?.nutritionLog.alluloseTaken == true ? "checkmark.circle.fill" : "circle")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(log?.nutritionLog.alluloseTaken == true ? Color.status.success : .secondary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        .background(Color.white.opacity(0.55), in: Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(16)
+        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 16))
     }
 
     // ─────────────────────────────────────────────────────
@@ -384,23 +703,49 @@ struct NutritionView: View {
         return f
     }()
 
-    private var formattedToday: String {
-        Self.todayDateFormatter.string(from: Date())
+    private var formattedActiveDate: String {
+        if Calendar.current.isDateInToday(activeDate) {
+            return "Today"
+        }
+        return Self.todayDateFormatter.string(from: activeDate)
     }
 
     // ─────────────────────────────────────────────────────
     // Helpers
     // ─────────────────────────────────────────────────────
 
-    private func loadLog() {
-        log = dataStore.todayLog() ?? DailyLog(
-            date: Date(), phase: dataStore.userProfile.currentPhase,
-            dayType: .restDay, recoveryDay: dataStore.userProfile.daysSinceStart
-        )
+    private var isViewingToday: Bool {
+        Calendar.current.isDateInToday(activeDate)
     }
 
     private func saveLog() {
-        if let l = log { dataStore.upsertLog(l) }
+        guard var current = log else { return }
+        current.date = activeDate
+        current.dayType = log?.dayType ?? suggestedDay(for: activeDate)
+        current.recoveryDay = dataStore.userProfile.recoveryDay(for: activeDate)
+        log = current
+        dataStore.upsertLog(current)
+    }
+
+    private func loadLog(for date: Date) {
+        let normalizedDate = Calendar.current.startOfDay(for: date)
+        activeDate = normalizedDate
+        log = dataStore.log(for: normalizedDate) ?? DailyLog(
+            date: normalizedDate,
+            phase: dataStore.userProfile.currentPhase,
+            dayType: suggestedDay(for: normalizedDate),
+            recoveryDay: dataStore.userProfile.recoveryDay(for: normalizedDate)
+        )
+    }
+
+    private func shiftDay(by days: Int) {
+        guard let nextDate = Calendar.current.date(byAdding: .day, value: days, to: activeDate) else { return }
+        saveLog()
+        loadLog(for: nextDate)
+    }
+
+    private func suggestedDay(for date: Date) -> DayType {
+        TrainingProgramStore.dayType(forWeekday: Calendar.current.component(.weekday, from: date))
     }
 
     private func recomputeStackStatus(isEvening: Bool) {
@@ -411,6 +756,93 @@ struct NutritionView: View {
                                : .partial
         if isEvening { log?.supplementLog.eveningStatus = status }
         else          { log?.supplementLog.morningStatus = status }
+    }
+
+    private func openPrefilledMeal(_ meal: MealEntry) {
+        editingMealEntry = MealEntry(
+            mealNumber: nextMealNumber,
+            name: meal.name,
+            calories: meal.calories,
+            proteinG: meal.proteinG,
+            carbsG: meal.carbsG,
+            fatG: meal.fatG
+        )
+    }
+
+    private func quickActionButton(title: String, icon: String, tint: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: icon)
+                .font(.caption.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+                .foregroundStyle(tint)
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func nutritionMetric(title: String, value: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.caption2.monospaced())
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(color)
+        }
+    }
+
+    private func quickMealLane(title: String, subtitle: String, meals: [MealEntry]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title)
+                    .font(.headline)
+                Text(subtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(meals) { meal in
+                        Button {
+                            openPrefilledMeal(meal)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(meal.name)
+                                    .font(.subheadline.weight(.semibold))
+                                    .foregroundStyle(.primary)
+                                    .lineLimit(2)
+                                HStack(spacing: 8) {
+                                    if let calories = meal.calories {
+                                        Text("\(Int(calories)) kcal")
+                                            .font(.caption)
+                                            .foregroundStyle(Color.appOrange2)
+                                    }
+                                    if let protein = meal.proteinG {
+                                        Text("\(Int(protein))g protein")
+                                            .font(.caption)
+                                            .foregroundStyle(Color.accent.cyan)
+                                    }
+                                }
+                                Text("Tap to prefill")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(width: 180, alignment: .leading)
+                            .padding(14)
+                            .background(Color.white.opacity(0.62), in: RoundedRectangle(cornerRadius: 16))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .stroke(Color.white.opacity(0.5), lineWidth: 1)
+                            )
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+        }
     }
 }
 
@@ -584,7 +1016,9 @@ struct SupplementItemRow: View {
 enum HapticFeedback {
     static func impact() {
         #if os(iOS)
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        let g = UIImpactFeedbackGenerator(style: .medium)
+        g.prepare()
+        g.impactOccurred()
         #endif
     }
 }

@@ -24,21 +24,26 @@ struct SectionHeader: View {
                 }
             }
         }
+        .accessibilityElement(children: .combine)
     }
 }
 
-#Preview {
-    VStack(spacing: 16) {
-        SectionHeader(title: "Today's Metrics")
+#if DEBUG
+struct SectionHeader_Previews: PreviewProvider {
+    static var previews: some View {
+        VStack(spacing: 16) {
+            SectionHeader(title: "Today's Metrics")
 
-        SectionHeader(
-            title: "Recent Workouts",
-            actionLabel: "View All",
-            action: { print("View All tapped") }
-        )
+            SectionHeader(
+                title: "Recent Workouts",
+                actionLabel: "View All",
+                action: { print("View All tapped") }
+            )
 
-        SectionHeader(title: "Health Data")
+            SectionHeader(title: "Health Data")
+        }
+        .padding()
+        .background(Color.black.opacity(0.05))
     }
-    .padding()
-    .background(Color.black.opacity(0.05))
 }
+#endif
