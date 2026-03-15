@@ -42,11 +42,10 @@ struct TrainingPlanView: View {
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 16) {
+                VStack(spacing: 14) {
                     weekStrip
                     sessionPicker
-                    sessionHeader
-                    sessionCommandDeck
+                    sessionOverviewBlock
                     exerciseQueueStrip
                     exerciseSections
                 }
@@ -223,101 +222,99 @@ struct TrainingPlanView: View {
         }
     }
 
-    private var sessionHeader: some View {
+    private var sessionOverviewBlock: some View {
         let exercises = exercisesForSelectedDay
         let done = exercises.filter { log?.taskStatuses[$0.id] == .completed }.count
         let total = exercises.count
         let summaryText = total == 0 ? "Active rest - walk, yoga, recover" : "\(done) of \(total) complete · \(max(total - done, 0)) left"
 
-        return HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(selectedDay.rawValue)
-                    .font(.title3.bold())
-                Text(summaryText)
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer()
-            if total > 0 {
-                completionRing(done: done, total: total)
-            }
-        }
-        .padding(14)
-        .background(Color.white.opacity(0.35), in: RoundedRectangle(cornerRadius: 14))
-    }
-
-    private var sessionCommandDeck: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Current Focus")
-                        .font(.caption2.monospaced())
-                        .foregroundStyle(.secondary)
-                        .tracking(1)
-                    Text(focusedExercise?.name ?? "Recovery and movement")
-                        .font(.headline)
-                    Text(sessionFocusSubtitle)
+        return VStack(alignment: .leading, spacing: 14) {
+            HStack(alignment: .top, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(selectedDay.rawValue)
+                        .font(.title3.bold())
+                    Text(summaryText)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+
                 Spacer()
-                restTimerCard
+
+                HStack(spacing: 14) {
+                    if total > 0 {
+                        completionRing(done: done, total: total)
+                    }
+                    restTimerCard
+                }
             }
 
-            if let focusedExercise {
-                HStack(spacing: 8) {
-                    Label(focusedExercise.targetReps, systemImage: "repeat")
-                    Label("Rest \(focusedExercise.restSeconds)s", systemImage: "timer")
-                    Label("\(focusedExercise.targetSets) sets", systemImage: "number.square")
+            Divider()
+                .overlay(Color.white.opacity(0.34))
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Current Focus")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(.secondary)
+                    .tracking(1)
+
+                Text(focusedExercise?.name ?? "Recovery and movement")
+                    .font(.headline)
+
+                Text(sessionFocusSubtitle)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                if let focusedExercise {
+                    HStack(spacing: 8) {
+                        sessionMetaPill(label: focusedExercise.targetReps, systemImage: "repeat")
+                        sessionMetaPill(label: "Rest \(focusedExercise.restSeconds)s", systemImage: "timer")
+                        sessionMetaPill(label: "\(focusedExercise.targetSets) sets", systemImage: "number.square")
+                    }
+                } else {
+                    HStack(spacing: 8) {
+                        sessionMetaPill(label: "Walk or yoga", systemImage: "figure.walk")
+                        sessionMetaPill(label: "Recovery notes", systemImage: "note.text")
+                    }
                 }
-                .font(.caption)
-                .foregroundStyle(.secondary)
             }
 
             HStack(spacing: 10) {
-                Button {
+                trainingActionButton(
+                    title: "Jump To Next",
+                    systemImage: "arrow.down.circle.fill",
+                    fill: Color.accent.cyan,
+                    foreground: .white
+                ) {
                     if let next = nextExercise {
                         focusedExerciseID = next.id
                         restPresetSeconds = next.restSeconds
                     }
-                } label: {
-                    Label("Jump To Next", systemImage: "arrow.down.circle.fill")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.white)
                 }
-                .buttonStyle(.plain)
 
-                Button {
+                trainingActionButton(
+                    title: restTimerEnd == nil ? "Start Rest" : "Restart Rest",
+                    systemImage: "timer",
+                    fill: Color.white.opacity(0.45),
+                    foreground: .black.opacity(0.78)
+                ) {
                     startRestTimer()
-                } label: {
-                    Label(restTimerEnd == nil ? "Start Rest" : "Restart Rest", systemImage: "timer")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.white.opacity(0.7), in: RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.black.opacity(0.78))
                 }
-                .buttonStyle(.plain)
 
-                Button {
+                trainingActionButton(
+                    title: "Focus Mode",
+                    systemImage: "eye.fill",
+                    fill: Color.black.opacity(0.65),
+                    foreground: .white
+                ) {
                     showFocusMode = true
-                } label: {
-                    Label("Focus Mode", systemImage: "eye.fill")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.black.opacity(0.65), in: RoundedRectangle(cornerRadius: 12))
-                        .foregroundStyle(.white)
                 }
-                .buttonStyle(.plain)
                 .disabled(focusedExercise == nil)
             }
+
+            Divider()
+                .overlay(Color.white.opacity(0.34))
         }
-        .padding(16)
-        .background(Color.white.opacity(0.48), in: RoundedRectangle(cornerRadius: 18))
-        .overlay(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.white.opacity(0.45), lineWidth: 1)
-        )
+        .padding(.vertical, 2)
     }
 
     private var restTimerCard: some View {
@@ -338,9 +335,9 @@ struct TrainingPlanView: View {
             .labelsHidden()
             .frame(width: 90)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Color.black.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 8)
+        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 14))
     }
 
     @ViewBuilder
@@ -412,15 +409,15 @@ struct TrainingPlanView: View {
                                 .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
+                        .padding(.vertical, 9)
                         .frame(width: 146, alignment: .leading)
                         .background(
-                            isFocused ? Color.appBlue1.opacity(0.35) : Color.white.opacity(0.28),
+                            isFocused ? Color.appBlue1.opacity(0.18) : Color.white.opacity(0.08),
                             in: RoundedRectangle(cornerRadius: 14)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 14)
-                                .stroke(isFocused ? Color.blue : Color.white.opacity(0.3), lineWidth: isFocused ? 1.5 : 1)
+                                .stroke(isFocused ? Color.blue.opacity(0.85) : Color.white.opacity(0.16), lineWidth: isFocused ? 1.2 : 1)
                         )
                     }
                     .buttonStyle(.plain)
@@ -428,6 +425,38 @@ struct TrainingPlanView: View {
             }
             .padding(.vertical, 2)
         }
+    }
+
+    private func sessionMetaPill(label: String, systemImage: String) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.caption.weight(.semibold))
+            Text(label)
+                .font(.caption.weight(.medium))
+                .lineLimit(1)
+        }
+        .foregroundStyle(.black.opacity(0.68))
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(Color.white.opacity(0.28), in: Capsule())
+    }
+
+    private func trainingActionButton(
+        title: String,
+        systemImage: String,
+        fill: Color,
+        foreground: Color,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: systemImage)
+                .font(.caption.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(fill, in: RoundedRectangle(cornerRadius: 12))
+                .foregroundStyle(foreground)
+        }
+        .buttonStyle(.plain)
     }
 
     private func completionRing(done: Int, total: Int) -> some View {
@@ -476,11 +505,11 @@ struct TrainingPlanView: View {
 
     private func groupedExercises(_ all: [ExerciseDefinition]) -> [ExGroup] {
         [
-            ExGroup(title: "🏋️ Machines",      exercises: all.filter { $0.category == .machine }),
-            ExGroup(title: "🏋️ Free Weights",   exercises: all.filter { $0.category == .freeWeight }),
-            ExGroup(title: "🤸 Calisthenics",   exercises: all.filter { $0.category == .calisthenics }),
-            ExGroup(title: "🧘 Core Circuit",   exercises: all.filter { $0.category == .core }),
-            ExGroup(title: "❤️ Cardio",         exercises: all.filter { $0.category == .cardio }),
+            ExGroup(title: "Machines",      exercises: all.filter { $0.category == .machine }),
+            ExGroup(title: "Free Weights",  exercises: all.filter { $0.category == .freeWeight }),
+            ExGroup(title: "Calisthenics",  exercises: all.filter { $0.category == .calisthenics }),
+            ExGroup(title: "Core Circuit",  exercises: all.filter { $0.category == .core }),
+            ExGroup(title: "Cardio",        exercises: all.filter { $0.category == .cardio }),
         ]
     }
 
@@ -635,11 +664,7 @@ fileprivate struct SessionTypeButton: View {
             .foregroundStyle(foregroundColor)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 10)
-            .background(backgroundColor, in: RoundedRectangle(cornerRadius: 10))
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .stroke(borderColor, lineWidth: isSelected ? 1.5 : 1)
-            )
+            .background(backgroundColor, in: RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
     }
@@ -651,15 +676,9 @@ fileprivate struct SessionTypeButton: View {
     }
 
     private var backgroundColor: Color {
-        if isSelected   { return Color.blue.opacity(0.2) }
-        if isSuggested  { return Color.appOrange1.opacity(0.25) }
-        return Color.secondary.opacity(0.08)
-    }
-
-    private var borderColor: Color {
-        if isSelected   { return Color.blue }
-        if isSuggested  { return Color.appOrange2 }
-        return Color.secondary.opacity(0.2)
+        if isSelected   { return Color.blue.opacity(0.18) }
+        if isSuggested  { return Color.appOrange1.opacity(0.24) }
+        return Color.white.opacity(0.12)
     }
 }
 
@@ -677,22 +696,33 @@ struct ExerciseSectionBlock: View {
     let onStartRest: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.caption.monospaced())
-                .foregroundStyle(.secondary)
-                .tracking(1)
-                .padding(.leading, 2)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Rectangle()
+                    .fill(Color.white.opacity(0.36))
+                    .frame(width: 22, height: 1)
+                Text(title)
+                    .font(.caption.monospaced())
+                    .foregroundStyle(.secondary)
+                    .tracking(1.2)
+                Rectangle()
+                    .fill(Color.white.opacity(0.18))
+                    .frame(height: 1)
+            }
+            .padding(.top, 4)
 
-            ForEach(exercises) { ex in
-                ExerciseRowView(
-                    exercise: ex,
-                    selectedDay: selectedDay,
-                    isFocused: focusedExerciseID == ex.id,
-                    onFocus: { onFocusExercise(ex) },
-                    log: $log,
-                    onStartRest: onStartRest
-                )
+            VStack(spacing: 0) {
+                ForEach(Array(exercises.enumerated()), id: \.element.id) { index, ex in
+                    ExerciseRowView(
+                        exercise: ex,
+                        selectedDay: selectedDay,
+                        isFocused: focusedExerciseID == ex.id,
+                        showsDivider: index < exercises.count - 1,
+                        onFocus: { onFocusExercise(ex) },
+                        log: $log,
+                        onStartRest: onStartRest
+                    )
+                }
             }
         }
     }
@@ -707,6 +737,7 @@ struct ExerciseRowView: View {
     let exercise: ExerciseDefinition
     let selectedDay: DayType
     let isFocused: Bool
+    let showsDivider: Bool
     let onFocus: () -> Void
     @Binding var log: DailyLog?
     let onStartRest: () -> Void
@@ -738,36 +769,55 @@ struct ExerciseRowView: View {
                     if newStatus == .completed { initLogIfNeeded() }
                 }
             }
-            .padding(12)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 14)
             .contentShape(Rectangle())
             .onTapGesture { onFocus() }
 
             // Expanded log panel (only when completed or partial)
             if status == .completed || status == .partial {
-                Divider().padding(.leading, 12)
+                Divider()
+                    .overlay(Color.white.opacity(0.24))
+                    .padding(.leading, 14)
                 if exercise.category == .cardio {
                     cardioPanel
                 } else {
                     liftPanel
                 }
             }
+
+            if showsDivider {
+                Divider()
+                    .overlay(Color.white.opacity(0.2))
+                    .padding(.leading, 14)
+            }
         }
-        .background(rowBG, in: RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(isFocused ? Color.blue.opacity(0.8) : accentColor.opacity(0.25), lineWidth: isFocused ? 1.5 : 1))
+        .padding(.horizontal, 10)
+        .background(
+            Group {
+                if isFocused || status == .completed || status == .partial {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(rowBG)
+                } else {
+                    Color.clear
+                }
+            }
+        )
         .animation(.easeInOut(duration: 0.25), value: status)
+        .animation(.easeInOut(duration: 0.2), value: isFocused)
     }
 
     // ── Status stripe
     private var statusStripe: some View {
-        RoundedRectangle(cornerRadius: 2)
+        RoundedRectangle(cornerRadius: 3)
             .fill(accentColor)
-            .frame(width: 3)
+            .frame(width: 4)
             .padding(.vertical, 4)
     }
 
     // ── Exercise info block
     private var exerciseInfo: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 5) {
             HStack(spacing: 8) {
                 Text(exercise.name)
                     .font(.subheadline.weight(.semibold))
@@ -787,10 +837,10 @@ struct ExerciseRowView: View {
                 .font(.caption2).foregroundStyle(.secondary)
 
             if exercise.category != .cardio {
-                HStack(spacing: 6) {
-                    Pill("\(exercise.targetSets) sets")
-                    Pill(exercise.targetReps)
-                    Pill("Rest \(exercise.restSeconds)s")
+                HStack(spacing: 8) {
+                    exerciseMetaPill("\(exercise.targetSets) sets")
+                    exerciseMetaPill(exercise.targetReps)
+                    exerciseMetaPill("Rest \(exercise.restSeconds)s")
                 }
             }
             Text("↳ \(exercise.coachingCue)")
@@ -843,10 +893,20 @@ struct ExerciseRowView: View {
 
     private var rowBG: Color {
         switch status {
-        case .completed: Color.status.success.opacity(0.03)
-        case .missed: Color.status.error.opacity(0.03)
-        default: isFocused ? Color.white.opacity(0.72) : Color(.systemBackground).opacity(0.5)
+        case .completed: Color.status.success.opacity(0.08)
+        case .partial: Color.status.warning.opacity(0.06)
+        case .missed: Color.status.error.opacity(0.06)
+        default: isFocused ? Color.white.opacity(0.24) : Color.clear
         }
+    }
+
+    private func exerciseMetaPill(_ text: String) -> some View {
+        Text(text)
+            .font(.caption2.weight(.medium))
+            .foregroundStyle(.black.opacity(0.62))
+            .padding(.horizontal, 8)
+            .padding(.vertical, 5)
+            .background(Color.white.opacity(0.18), in: Capsule())
     }
 
     private func initLogIfNeeded() {
@@ -880,16 +940,18 @@ struct LiftLogPanel: View {
     var onSetCompleted: (() -> Void)? = nil
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Panel header
+        VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text(isFocused ? "LIVE SET LOG" : "SET LOG")
-                        .font(.caption2.monospaced()).foregroundStyle(isFocused ? Color.blue : Color.status.success).tracking(1)
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(isFocused ? Color.blue : Color.status.success)
+                        .tracking(1)
                     Spacer()
                     if exerciseLog.totalVolume > 0 {
                         Text("Total: \(Int(exerciseLog.totalVolume)) kg")
-                            .font(.caption2.monospaced()).foregroundStyle(Color.status.success.opacity(0.8))
+                            .font(.caption2.monospaced())
+                            .foregroundStyle(Color.status.success.opacity(0.82))
                     }
                 }
 
@@ -922,8 +984,6 @@ struct LiftLogPanel: View {
                     Text(suggestion)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Color.accent.cyan)
-                        .padding(.horizontal, 12)
-                        .padding(.top, 2)
                 }
 
                 HStack(spacing: 10) {
@@ -961,58 +1021,54 @@ struct LiftLogPanel: View {
                     }
                 }
             }
-            .padding(.horizontal, 12).padding(.vertical, 8)
-            .background((isFocused ? Color.blue.opacity(0.06) : Color.status.success.opacity(0.05)))
-
-            // Column headers
-            HStack(spacing: 0) {
-                Text("SET").frame(width: 32, alignment: .leading)
-                Text("KG").frame(maxWidth: .infinity)
-                Text("REPS").frame(width: 52)
-                Text("RPE").frame(width: 44)
-                Text("NOTE").frame(maxWidth: .infinity)
-                Text("DONE").frame(width: 56)
-            }
-            .font(.system(size: 9, design: .monospaced))
-            .foregroundStyle(.tertiary)
-            .padding(.horizontal, 12).padding(.vertical, 5)
-            .background(Color.secondary.opacity(0.05))
-
-            // Set rows
-            ForEach(exerciseLog.sets.indices, id: \.self) { i in
-                SetRowView(
-                    setLog: $exerciseLog.sets[i],
-                    setNum: i + 1,
-                    previousSet: previousSessionLog?.sets.indices.contains(i) == true ? previousSessionLog?.sets[i] : nil,
-                    onCompleteSet: {
-                        exerciseLog.sets[i].timestamp = Date()
-                        onSetCompleted?()
-                        onStartRest()
-                        let hap = UIImpactFeedbackGenerator(style: .medium); hap.prepare(); hap.impactOccurred()
-                    },
-                    onDelete: {
-                        exerciseLog.sets.remove(at: i)
-                        for j in exerciseLog.sets.indices { exerciseLog.sets[j].setNumber = j + 1 }
-                    }
-                )
-                if i < exerciseLog.sets.count - 1 { Divider().padding(.leading, 12) }
-            }
+            .padding(.horizontal, 12)
+            .padding(.top, 10)
 
             if exerciseLog.sets.isEmpty {
-                Text("Tap 'Add Set' to log your first set")
-                    .font(.caption).foregroundStyle(.tertiary)
-                    .frame(maxWidth: .infinity).padding(14)
+                VStack(spacing: 8) {
+                    Image(systemName: "plus.circle")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                    Text("Tap 'Add Set' to log your first set")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            } else {
+                VStack(spacing: 10) {
+                    ForEach(exerciseLog.sets.indices, id: \.self) { i in
+                        SetRowView(
+                            setLog: $exerciseLog.sets[i],
+                            setNum: i + 1,
+                            previousSet: previousSessionLog?.sets.indices.contains(i) == true ? previousSessionLog?.sets[i] : nil,
+                            onCompleteSet: {
+                                exerciseLog.sets[i].timestamp = Date()
+                                onSetCompleted?()
+                                onStartRest()
+                                let hap = UIImpactFeedbackGenerator(style: .medium); hap.prepare(); hap.impactOccurred()
+                            },
+                            onDelete: {
+                                exerciseLog.sets.remove(at: i)
+                                for j in exerciseLog.sets.indices { exerciseLog.sets[j].setNumber = j + 1 }
+                            }
+                        )
+                    }
+                }
             }
 
-            // Notes
-            Divider()
             HStack(spacing: 8) {
-                Image(systemName: "note.text").font(.caption).foregroundStyle(.secondary)
+                Image(systemName: "note.text")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 TextField("Session notes, form, pain, PR…", text: $exerciseLog.notes)
                     .font(.caption)
             }
             .padding(10)
+            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
         }
+        .padding(12)
+        .background(Color.white.opacity(isFocused ? 0.18 : 0.12), in: RoundedRectangle(cornerRadius: 16))
     }
 
     private var overloadSuggestion: String? {
@@ -1049,7 +1105,7 @@ struct LiftLogPanel: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.6), in: RoundedRectangle(cornerRadius: 10))
+        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 10))
     }
 }
 
@@ -1077,94 +1133,98 @@ struct SetRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: 0) {
-            // Set number
-            Text("\(setNum)")
-                .font(.system(.caption, design: .monospaced, weight: .bold))
-                .foregroundStyle(.secondary)
-                .frame(width: 32, alignment: .leading)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 10) {
+                Text("Set \(setNum)")
+                    .font(.system(.caption, design: .monospaced, weight: .bold))
+                    .foregroundStyle(.secondary)
 
-            // Weight
-            if weightStr.isEmpty, let prev = previousSet, let prevWeight = prev.weightKg {
+                if let previousSet {
+                    Text(previousHint(for: previousSet))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                }
+
+                Spacer()
+
                 Button {
-                    weightStr = formattedWeight(prevWeight)
+                    onCompleteSet()
+                    withAnimation(.easeOut(duration: 0.1)) { flashGreen = true }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                        withAnimation(.easeIn(duration: 0.25)) { flashGreen = false }
+                    }
                 } label: {
-                    Text(formattedWeight(prevWeight))
-                        .font(.system(.body, design: .monospaced))
-                        .foregroundStyle(.tertiary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6).padding(.horizontal, 4)
-                        .background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
-                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.1)))
-                }
-            } else {
-                TextField("0", text: $weightStr)
-                    .font(.system(.body, design: .monospaced))
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 6).padding(.horizontal, 4)
-                    .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
-                    .onChange(of: weightStr) { _, v in setLog.weightKg = Double(v) }
-            }
-
-            // Reps
-            if repsStr.isEmpty, let prev = previousSet, let prevReps = prev.repsCompleted {
-                Button {
-                    repsStr = String(prevReps)
-                } label: {
-                    Text(String(prevReps))
-                        .font(.system(.body, design: .monospaced))
-                        .foregroundStyle(.tertiary)
-                        .frame(width: 48)
-                        .padding(.vertical, 6).padding(.horizontal, 4)
-                        .background(Color.secondary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
-                        .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.1)))
-                }
-            } else {
-                TextField("—", text: $repsStr)
-                    .font(.system(.body, design: .monospaced))
-                    .keyboardType(.numberPad)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 48)
-                    .padding(.vertical, 6).padding(.horizontal, 4)
-                    .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 5))
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(Color.secondary.opacity(0.2)))
-                    .onChange(of: repsStr) { _, v in setLog.repsCompleted = Int(v) }
-            }
-
-            // RPE — 5-segment tap bar
-            RPETapBar(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
-                .frame(maxWidth: .infinity)
-
-            // Note
-            TextField("—", text: $noteStr)
-                .font(.caption)
-                .frame(maxWidth: .infinity)
-                .onChange(of: noteStr) { _, v in setLog.notes = v }
-
-            // Done / complete-set
-            Button {
-                onCompleteSet()
-                withAnimation(.easeOut(duration: 0.1)) { flashGreen = true }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                    withAnimation(.easeIn(duration: 0.25)) { flashGreen = false }
-                }
-            } label: {
-                Image(systemName: setIsComplete ? "checkmark.circle.fill" : "timer")
+                    HStack(spacing: 5) {
+                        Image(systemName: setIsComplete ? "checkmark.circle.fill" : "timer")
+                        Text(setIsComplete ? "Done" : "Log")
+                            .font(.caption.weight(.semibold))
+                    }
                     .foregroundStyle(setIsComplete ? Color.status.success : Color.appOrange2)
-                    .font(.caption)
-            }
-            .frame(width: 28)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background((setIsComplete ? Color.status.success : Color.appOrange2).opacity(0.12), in: Capsule())
+                }
+                .buttonStyle(.plain)
 
-            Button(action: onDelete) {
-                Image(systemName: "xmark.circle.fill").foregroundStyle(.secondary).font(.caption)
+                Button(action: onDelete) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundStyle(.secondary)
+                        .font(.caption)
+                }
             }
-            .frame(width: 28)
+
+            HStack(spacing: 10) {
+                entryField(
+                    title: "KG",
+                    text: $weightStr,
+                    placeholder: "0",
+                    previousValue: previousSet?.weightKg.map(formattedWeight),
+                    onUsePrevious: {
+                        if let prevWeight = previousSet?.weightKg {
+                            weightStr = formattedWeight(prevWeight)
+                            setLog.weightKg = prevWeight
+                        }
+                    }
+                )
+
+                entryField(
+                    title: "REPS",
+                    text: $repsStr,
+                    placeholder: "0",
+                    previousValue: previousSet?.repsCompleted.map(String.init),
+                    fixedWidth: 86,
+                    keyboardType: .numberPad,
+                    onUsePrevious: {
+                        if let prevReps = previousSet?.repsCompleted {
+                            repsStr = String(prevReps)
+                            setLog.repsCompleted = prevReps
+                        }
+                    }
+                )
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("RPE")
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.secondary)
+                RPETapBar(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
+            }
+
+            HStack(spacing: 8) {
+                Image(systemName: "note.text")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                TextField("Add note or cue", text: $noteStr)
+                    .font(.caption)
+                    .onChange(of: noteStr) { _, v in setLog.notes = v }
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 8)
+            .background(Color.white.opacity(0.16), in: RoundedRectangle(cornerRadius: 10))
         }
-        .padding(.horizontal, 12).padding(.vertical, 7)
-        .background(flashGreen ? Color.status.success.opacity(0.12) : (setIsComplete ? Color.status.success.opacity(0.03) : Color.clear))
+        .padding(12)
+        .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : Color.white.opacity(0.08)), in: RoundedRectangle(cornerRadius: 14))
         .onAppear {
             weightStr = setLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
@@ -1175,6 +1235,59 @@ struct SetRowView: View {
             weightStr = newLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = newLog.repsCompleted.map { String($0) } ?? ""
             noteStr   = newLog.notes
+        }
+    }
+
+    private func previousHint(for set: SetLog) -> String {
+        let weight = set.weightKg.map(formattedWeight) ?? "—"
+        let reps = set.repsCompleted.map(String.init) ?? "—"
+        return "Last \(weight) × \(reps)"
+    }
+
+    @ViewBuilder
+    private func entryField(
+        title: String,
+        text: Binding<String>,
+        placeholder: String,
+        previousValue: String?,
+        fixedWidth: CGFloat? = nil,
+        keyboardType: UIKeyboardType = .decimalPad,
+        onUsePrevious: @escaping () -> Void
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 6) {
+                Text(title)
+                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.secondary)
+                if let previousValue, text.wrappedValue.isEmpty {
+                    Button("Last \(previousValue)") {
+                        onUsePrevious()
+                    }
+                    .font(.caption2.weight(.medium))
+                    .foregroundStyle(Color.accent.cyan)
+                }
+            }
+
+            TextField(placeholder, text: text)
+                .font(.system(.body, design: .monospaced))
+                .keyboardType(keyboardType)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 9)
+                .padding(.horizontal, 8)
+                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 10))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.white.opacity(0.12))
+                )
+        }
+        .frame(width: fixedWidth)
+        .frame(maxWidth: fixedWidth == nil ? .infinity : nil)
+        .onChange(of: text.wrappedValue) { _, v in
+            if title == "KG" {
+                setLog.weightKg = Double(v)
+            } else {
+                setLog.repsCompleted = Int(v)
+            }
         }
     }
 }
@@ -1195,11 +1308,12 @@ struct CardioLogPanel: View {
     @State private var showImageExpanded = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Panel header
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
-                Text(cardioType == .rowing ? "🚣 ROWING LOG" : "🚴 ELLIPTICAL LOG")
-                    .font(.caption2.monospaced()).foregroundStyle(Color.status.success).tracking(1)
+                Text(cardioType == .rowing ? "ROWING LOG" : "ELLIPTICAL LOG")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(Color.status.success)
+                    .tracking(1)
                 Spacer()
                 if let zone = cardioLog.wasInZone2(lower: dataStore.userPreferences.zone2LowerHR, upper: dataStore.userPreferences.zone2UpperHR) {
                     Text(zone ? "✓ Zone 2" : "↑ Above Zone 2")
@@ -1207,8 +1321,6 @@ struct CardioLogPanel: View {
                         .foregroundStyle(zone ? Color.status.success : Color.status.warning)
                 }
             }
-            .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(Color.status.success.opacity(0.05))
 
             // Metric grid
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
@@ -1225,18 +1337,18 @@ struct CardioLogPanel: View {
                     CardioField("Distance km", value: distBinding, placeholder: "0.0")
                 }
             }
-            .padding(12)
 
             // Notes
             HStack(alignment: .top, spacing: 8) {
-                Image(systemName: "note.text").foregroundStyle(.secondary).font(.caption)
+                Image(systemName: "note.text")
+                    .foregroundStyle(.secondary)
+                    .font(.caption)
                 TextField("Feel, energy, breathing, HR stability…", text: $cardioLog.notes, axis: .vertical)
-                    .font(.caption).lineLimit(2...4)
+                    .font(.caption)
+                    .lineLimit(2...4)
             }
             .padding(10)
-            .background(Color.secondary.opacity(0.04))
-
-            Divider()
+            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
 
             // ── Photo Section ──────────────────────────────
             VStack(alignment: .leading, spacing: 10) {
@@ -1299,7 +1411,7 @@ struct CardioLogPanel: View {
                         .onTapGesture { showImageExpanded = true }
                 } else {
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.secondary.opacity(0.07))
+                        .fill(Color.white.opacity(0.12))
                         .frame(height: 80)
                         .overlay {
                             VStack(spacing: 6) {
@@ -1312,7 +1424,10 @@ struct CardioLogPanel: View {
                 }
             }
             .padding(12)
+            .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
         }
+        .padding(12)
+        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
         // Handle photo selection from library
         .onChange(of: selectedPhotoItem) { _, item in
             Task {
@@ -1463,16 +1578,18 @@ struct CardioField: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(label)
                 .font(.system(size: 9, design: .monospaced))
-                .foregroundStyle(.secondary).textCase(.uppercase).tracking(0.5)
+                .foregroundStyle(.secondary)
+                .textCase(.uppercase)
+                .tracking(0.5)
             TextField(placeholder, text: $value)
                 .font(.system(.body, design: .monospaced))
                 .keyboardType(.decimalPad)
-                .padding(7)
-                .background(Color(.systemBackground), in: RoundedRectangle(cornerRadius: 6))
-                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.secondary.opacity(0.2)))
+                .padding(10)
+                .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 10))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.12)))
         }
     }
 }
@@ -1493,16 +1610,16 @@ struct RPETapBar: View {
                         .font(.system(size: 10, weight: isSelected ? .bold : .regular, design: .monospaced))
                         .foregroundStyle(isSelected ? Color.black : Color.secondary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 5)
+                        .padding(.vertical, 7)
                         .background(
                             isSelected
                                 ? Color.appOrange2
-                                : Color(.systemBackground),
+                                : Color.white.opacity(0.14),
                             in: RoundedRectangle(cornerRadius: 4)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 4)
-                                .stroke(isSelected ? Color.appOrange2 : Color.secondary.opacity(0.2), lineWidth: 1)
+                                .stroke(isSelected ? Color.appOrange2 : Color.white.opacity(0.12), lineWidth: 1)
                         )
                 }
                 .buttonStyle(.plain)
@@ -1530,8 +1647,7 @@ struct StatusDropdown: View {
             }
             .foregroundStyle(color)
             .padding(.horizontal, 9).padding(.vertical, 5)
-            .background(color.opacity(0.08), in: RoundedRectangle(cornerRadius: 7))
-            .overlay(RoundedRectangle(cornerRadius: 7).stroke(color.opacity(0.25)))
+            .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 7))
         }
     }
 
@@ -1539,18 +1655,6 @@ struct StatusDropdown: View {
         switch status {
         case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
         }
-    }
-}
-
-struct Pill: View {
-    let text: String
-    init(_ text: String) { self.text = text }
-    var body: some View {
-        Text(text)
-            .font(.system(size: 9, design: .monospaced))
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 6).padding(.vertical, 2)
-            .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 4))
     }
 }
 
@@ -1640,7 +1744,7 @@ struct SessionCompletionSheet: View {
                             Label("Log Notes", systemImage: "note.text")
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 14)
-                                .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 14))
+                                .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
                         }
                         .buttonStyle(.plain)
 
@@ -1800,7 +1904,7 @@ struct SessionCompletionSheet: View {
         }
         .frame(maxWidth: .infinity)
         .padding(14)
-        .background(.background.secondary, in: RoundedRectangle(cornerRadius: 12))
+        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
     }
 }
 
@@ -1850,7 +1954,7 @@ struct FocusModeView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            VStack(spacing: 32) {
+            VStack(spacing: 28) {
                 // Exit button
                 HStack {
                     Spacer()
@@ -1867,11 +1971,17 @@ struct FocusModeView: View {
                 Spacer()
 
                 // Exercise name
-                Text(exercise.name)
-                    .font(.system(.title, design: .rounded, weight: .bold))
-                    .foregroundStyle(.white)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
+                VStack(spacing: 8) {
+                    Text("Focus Mode")
+                        .font(.caption.monospaced())
+                        .tracking(1.2)
+                        .foregroundStyle(Color.white.opacity(0.48))
+                    Text(exercise.name)
+                        .font(.system(.title, design: .rounded, weight: .bold))
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.horizontal, 24)
 
                 // Set info
                 if let idx = nextIncompleteSetIndex {
@@ -1898,6 +2008,12 @@ struct FocusModeView: View {
                     focusField(placeholder: "reps", text: $repsStr)
                 }
                 .padding(.horizontal, 32)
+
+                Text("Tap Done after each set to keep momentum and stay off the main sheet.")
+                    .font(.caption)
+                    .foregroundStyle(Color.white.opacity(0.46))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 36)
 
                 // Done button
                 Button {
@@ -1940,14 +2056,19 @@ struct FocusModeView: View {
     }
 
     private func focusField(placeholder: String, text: Binding<String>) -> some View {
-        TextField(placeholder, text: text)
-            .font(.system(size: 42, weight: .bold, design: .monospaced))
-            .foregroundStyle(.white)
-            .multilineTextAlignment(.center)
-            .keyboardType(.decimalPad)
-            .padding(16)
-            .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
-            .frame(maxWidth: .infinity)
+        VStack(alignment: .leading, spacing: 6) {
+            Text(placeholder.uppercased())
+                .font(.caption2.monospaced())
+                .foregroundStyle(Color.white.opacity(0.42))
+            TextField(placeholder, text: text)
+                .font(.system(size: 42, weight: .bold, design: .monospaced))
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.center)
+                .keyboardType(.decimalPad)
+                .padding(16)
+                .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 
