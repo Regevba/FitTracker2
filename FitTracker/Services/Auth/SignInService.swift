@@ -102,6 +102,10 @@ final class SignInService: NSObject, ObservableObject {
         return nil
     }
 
+    var isPasskeyConfigured: Bool {
+        passkeyRelyingPartyIdentifier != nil
+    }
+
     // ── Restore session from Keychain on launch ───────────
     func restoreSession() {
         if let data = KeychainHelper.load(key: "ft.session"),
@@ -327,6 +331,14 @@ final class SignInService: NSObject, ObservableObject {
         controller.delegate = self
         controller.presentationContextProvider = self
         controller.performRequests()
+    }
+
+    func addPasskeyForCurrentUser() {
+        let session = currentSession
+        registerPasskey(
+            userHandle: session?.userID ?? "regev",
+            displayName: session?.displayName ?? "FitTracker User"
+        )
     }
 
     // ─────────────────────────────────────────────────────

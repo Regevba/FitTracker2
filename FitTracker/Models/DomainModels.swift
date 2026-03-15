@@ -70,7 +70,7 @@ extension DailyLog {
             date: date,
             phase: profile.currentPhase,
             dayType: dayType,
-            recoveryDay: profile.daysSinceStart
+            recoveryDay: profile.recoveryDay(for: date)
         )
     }
 }

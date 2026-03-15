@@ -1,9 +1,12 @@
 // Views/Settings/SettingsView.swift
 
 import SwiftUI
+import LocalAuthentication
 
 struct SettingsView: View {
 
+    @EnvironmentObject var signIn:        SignInService
+    @EnvironmentObject var biometricAuth: AuthManager
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var cloudSync:     CloudKitSyncService
@@ -36,8 +39,71 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Access") {
+                if let session = signIn.currentSession {
+                    LabeledContent("Sign-In Method", value: session.provider.rawValue)
+                }
+                Toggle(isOn: $settings.requireBiometricUnlockOnReopen) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Require \(biometricUnlockLabel) on Reopen")
+                        Text("When off, FitTracker stays unlocked while the app remains in memory.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .disabled(!biometricsAvailable)
+
+                if !biometricsAvailable {
+                    Text("Biometric unlock is unavailable on this device. Set up Face ID or Touch ID to use FitTracker's encrypted app lock.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Button {
+                    signIn.addPasskeyForCurrentUser()
+                } label: {
+                    HStack {
+                        Label(
+                            signIn.currentSession?.provider == .passkey ? "Create Another Passkey" : "Add Passkey",
+                            systemImage: "key.fill"
+                        )
+                        Spacer()
+                        if signIn.isLoading {
+                            ProgressView().scaleEffect(0.8)
+                        }
+                    }
+                }
+                .disabled(signIn.isLoading || !signIn.isPasskeyConfigured)
+
+                if !signIn.isPasskeyConfigured {
+                    Text("Passkey setup requires a valid `PasskeyRelyingPartyID` in the app configuration.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            // Security section
+            Section("Security") {
+                securitySummaryRow(
+                    title: "Encryption",
+                    detail: "AES-256-GCM + ChaCha20-Poly1305"
+                )
+                securitySummaryRow(
+                    title: "Key Storage",
+                    detail: "Keychain with biometric protection"
+                )
+                securitySummaryRow(
+                    title: "Cloud Storage",
+                    detail: "Encrypted locally before upload"
+                )
+                securitySummaryRow(
+                    title: "Data Protection",
+                    detail: "NSFileProtectionCompleteUnlessOpen"
+                )
+            }
+
             // iCloud Sync section
-            Section("iCloud Sync") {
+            Section("Sync") {
                 LabeledContent("Status",  value: cloudSync.status.rawValue)
                 LabeledContent("iCloud",  value: cloudSync.iCloudAvailable ? "Available ✓" : "Unavailable")
                 if let last = cloudSync.lastSyncDate {
@@ -49,15 +115,6 @@ struct SettingsView: View {
                 Button("Fetch from iCloud") {
                     Task { await cloudSync.fetchChanges(dataStore: dataStore) }
                 }
-            }
-
-            // Security section
-            Section("Security") {
-                LabeledContent("Encryption",      value: "AES-256-GCM + ChaCha20-Poly1305")
-                LabeledContent("Key Storage",     value: "Keychain (biometric-protected)")
-                LabeledContent("Cloud Storage",   value: "Encrypted before upload ✓")
-                LabeledContent("Data Protection", value: "NSFileProtectionCompleteUnlessOpen")
-                LabeledContent("Platforms",       value: "iOS · iPadOS · macOS only")
             }
 
             // Preferences section (moved from AccountPanelView)
@@ -216,4 +273,34 @@ struct SettingsView: View {
         f.timeStyle = .none
         return f
     }()
+
+    private var biometricsAvailable: Bool {
+        let ctx = LAContext()
+        var error: NSError?
+        return ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+    }
+
+    private var biometricUnlockLabel: String {
+        let ctx = LAContext()
+        var error: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return "Face ID"
+        }
+        switch ctx.biometryType {
+        case .faceID: return "Face ID"
+        case .touchID: return "Touch ID"
+        default: return "Biometric Unlock"
+        }
+    }
+
+    private func securitySummaryRow(title: String, detail: String) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title)
+                .font(.subheadline.weight(.medium))
+            Text(detail)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 2)
+    }
 }

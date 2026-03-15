@@ -732,10 +732,6 @@ struct MainScreenView: View {
         }
     }
 
-    private func makeBlankLog() -> DailyLog {
-        .scheduled(profile: dataStore.userProfile, dayType: programStore.todayDayType)
-    }
-
     private var primaryActionTitle: String {
         recoveryRecommendation.shouldReplaceTraining ? "Start Recovery" : "Start Workout"
     }
@@ -1064,16 +1060,15 @@ struct ManualBiometricEntry: View {
     }
 
     private func save() {
-        var log = dataStore.todayLog() ?? makeBlankLog()
+        var log = dataStore.todayLog() ?? .scheduled(
+            profile: dataStore.userProfile,
+            dayType: programStore.todayDayType
+        )
         log.biometrics.weightKg         = Double(weightText)
         log.biometrics.bodyFatPercent   = Double(bfText)
         log.biometrics.manualRestingHR  = Double(hrText)
         log.biometrics.manualHRV        = Double(hrvText)
         log.biometrics.manualSleepHours = Double(sleepText)
         dataStore.upsertLog(log)
-    }
-
-    private func makeBlankLog() -> DailyLog {
-        .scheduled(profile: dataStore.userProfile, dayType: programStore.todayDayType)
     }
 }

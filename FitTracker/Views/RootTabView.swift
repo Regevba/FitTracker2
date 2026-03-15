@@ -24,6 +24,7 @@ enum AppTab: String, CaseIterable, Hashable {
 struct RootTabView: View {
 
     @EnvironmentObject var signIn:        SignInService
+    @EnvironmentObject var biometricAuth: AuthManager
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var cloudSync:     CloudKitSyncService
@@ -57,6 +58,10 @@ struct RootTabView: View {
         .sheet(isPresented: $showAccount) {
             AccountPanelView()
                 .environmentObject(signIn)
+                .environmentObject(biometricAuth)
+                .environmentObject(dataStore)
+                .environmentObject(healthService)
+                .environmentObject(cloudSync)
                 .environmentObject(settings)
                 .presentationDetents([.large])
                 .presentationCornerRadius(24)

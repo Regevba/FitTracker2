@@ -43,11 +43,15 @@ struct FitTrackerApp: App {
                         guard biometricAuth.isAuthenticated else { break }
                         Task { await cloudSync.fetchChanges(dataStore: dataStore) }
                     case .background:
-                        biometricAuth.lockOnBackground(clearCryptoSession: false)
+                        if settings.requireBiometricUnlockOnReopen {
+                            biometricAuth.lockOnBackground(clearCryptoSession: false)
+                        }
                         Task {
                             await dataStore.persistToDisk()
                             await cloudSync.pushPendingChanges(dataStore: dataStore)
-                            await EncryptionService.shared.clearSessionContext()
+                            if settings.requireBiometricUnlockOnReopen {
+                                await EncryptionService.shared.clearSessionContext()
+                            }
                         }
                     case .inactive: break
                     @unknown default: break
@@ -56,12 +60,14 @@ struct FitTrackerApp: App {
         }
 
         #if os(macOS)
-        Settings {
-            SettingsView()
-                .environmentObject(dataStore)
-                .environmentObject(healthService)
-                .environmentObject(cloudSync)
-                .environmentObject(settings)
+            Settings {
+                SettingsView()
+                    .environmentObject(signIn)
+                    .environmentObject(biometricAuth)
+                    .environmentObject(dataStore)
+                    .environmentObject(healthService)
+                    .environmentObject(cloudSync)
+                    .environmentObject(settings)
         }
         #endif
     }

@@ -1,5 +1,5 @@
 // Services/AppSettings.swift
-// App-wide preferences: unit system + appearance mode
+// App-wide preferences: unit system, appearance, and app lock behavior
 // Persisted to UserDefaults — no encryption needed (not health data)
 
 import SwiftUI
@@ -100,10 +100,18 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(appearance.rawValue, forKey: "ft.appearance") }
     }
 
+    // ── App lock behavior ───────────────────────────────
+    @Published var requireBiometricUnlockOnReopen: Bool = true {
+        didSet { UserDefaults.standard.set(requireBiometricUnlockOnReopen, forKey: "ft.requireBiometricUnlockOnReopen") }
+    }
+
     init() {
         if let raw = UserDefaults.standard.string(forKey: "ft.unitSystem"),
            let v = UnitSystem(rawValue: raw) { unitSystem = v }
         if let raw = UserDefaults.standard.string(forKey: "ft.appearance"),
            let v = AppAppearance(rawValue: raw) { appearance = v }
+        if UserDefaults.standard.object(forKey: "ft.requireBiometricUnlockOnReopen") != nil {
+            requireBiometricUnlockOnReopen = UserDefaults.standard.bool(forKey: "ft.requireBiometricUnlockOnReopen")
+        }
     }
 }

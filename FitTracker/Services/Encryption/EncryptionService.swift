@@ -163,19 +163,20 @@ actor EncryptionService {
         let ctx = LAContext()
         ctx.localizedFallbackTitle = ""
         var laError: NSError?
-        if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &laError) {
-            let authOK: Bool = try await withCheckedThrowingContinuation { cont in
-                ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
-                                   localizedReason: "Unlock FitTracker encryption keys") { ok, err in
-                    if ok {
-                        cont.resume(returning: true)
-                    } else {
-                        cont.resume(throwing: err ?? FTCryptoError.biometricFailed)
-                    }
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &laError) else {
+            throw laError ?? FTCryptoError.biometricFailed
+        }
+        let authOK: Bool = try await withCheckedThrowingContinuation { cont in
+            ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
+                               localizedReason: "Unlock FitTracker encryption keys") { ok, err in
+                if ok {
+                    cont.resume(returning: true)
+                } else {
+                    cont.resume(throwing: err ?? FTCryptoError.biometricFailed)
                 }
             }
-            guard authOK else { throw FTCryptoError.biometricFailed }
         }
+        guard authOK else { throw FTCryptoError.biometricFailed }
         return ctx
     }
 

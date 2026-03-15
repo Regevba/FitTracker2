@@ -5,6 +5,7 @@
 
 import Foundation
 import CloudKit
+import CryptoKit
 import SwiftUI
 
 // ─────────────────────────────────────────────────────────
@@ -25,6 +26,11 @@ private enum CKField {
     static let recordVersion = "recordVersion"   // Int — schema migration
     static let assetData  = "assetData"          // CKAsset — encrypted image blob
     static let assetRef   = "assetRef"           // String — foreign key to CardioLog
+}
+
+private enum SyncStateKey {
+    static let userProfileDigest     = "ft.sync.userProfileDigest"
+    static let userPreferencesDigest = "ft.sync.userPreferencesDigest"
 }
 
 // ─────────────────────────────────────────────────────────
@@ -52,6 +58,7 @@ final class CloudKitSyncService: ObservableObject {
     @Published var errorMessage:  String?
 
     private let container = CKContainer(identifier: "iCloud.com.fittracker.regev")
+    private let defaults = UserDefaults.standard
     private var privateDB: CKDatabase { container.privateCloudDatabase }
 
     // ── Init ─────────────────────────────────────────────
@@ -76,6 +83,7 @@ final class CloudKitSyncService: ObservableObject {
         if !iCloudAvailable { await checkiCloudStatus() }
         guard iCloudAvailable else { status = .offline; return }
         status = .syncing
+        errorMessage = nil
 
         do {
             // Upload daily logs that need sync
@@ -102,6 +110,8 @@ final class CloudKitSyncService: ObservableObject {
             // Upload user profile
             try await uploadUserProfile(dataStore.userProfile)
             try await uploadUserPreferences(dataStore.userPreferences)
+            storeSingletonDigest(dataStore.userProfile, forKey: SyncStateKey.userProfileDigest)
+            storeSingletonDigest(dataStore.userPreferences, forKey: SyncStateKey.userPreferencesDigest)
             await dataStore.persistToDisk()
 
             lastSyncDate = Date()
@@ -117,6 +127,7 @@ final class CloudKitSyncService: ObservableObject {
         if !iCloudAvailable { await checkiCloudStatus() }
         guard iCloudAvailable else { status = .offline; return }
         status = .syncing
+        errorMessage = nil
 
         do {
             // Fetch daily logs
@@ -158,11 +169,23 @@ final class CloudKitSyncService: ObservableObject {
             }
             dataStore.weeklySnapshots.sort { $0.weekStart > $1.weekStart }
 
-            if let remoteProfile = try await fetchUserProfile() {
-                dataStore.userProfile = remoteProfile
+            let remoteProfile = try await fetchUserProfile()
+            applyRemoteSingleton(
+                remote: remoteProfile,
+                local: dataStore.userProfile,
+                digestKey: SyncStateKey.userProfileDigest,
+                conflictLabel: "profile"
+            ) { merged in
+                dataStore.userProfile = merged
             }
-            if let remotePreferences = try await fetchUserPreferences() {
-                dataStore.userPreferences = remotePreferences
+            let remotePreferences = try await fetchUserPreferences()
+            applyRemoteSingleton(
+                remote: remotePreferences,
+                local: dataStore.userPreferences,
+                digestKey: SyncStateKey.userPreferencesDigest,
+                conflictLabel: "preferences"
+            ) { merged in
+                dataStore.userPreferences = merged
             }
 
             await dataStore.persistToDisk()
@@ -336,5 +359,56 @@ final class CloudKitSyncService: ObservableObject {
 
     private func logicDayKey(for date: Date) -> String {
         Self.logicDayFormatter.string(from: date)
+    }
+
+    private func applyRemoteSingleton<T: Encodable>(
+        remote: T?,
+        local: T,
+        digestKey: String,
+        conflictLabel: String,
+        apply: (T) -> Void
+    ) {
+        guard let remote else { return }
+        guard
+            let localDigest = digest(for: local),
+            let remoteDigest = digest(for: remote)
+        else {
+            apply(remote)
+            defaults.set(remoteDigestFallback(for: remote), forKey: digestKey)
+            return
+        }
+
+        let lastSyncedDigest = defaults.string(forKey: digestKey)
+
+        if localDigest == remoteDigest {
+            defaults.set(remoteDigest, forKey: digestKey)
+            return
+        }
+
+        if lastSyncedDigest == nil || localDigest == lastSyncedDigest {
+            apply(remote)
+            defaults.set(remoteDigest, forKey: digestKey)
+            return
+        }
+
+        if errorMessage == nil {
+            errorMessage = "Kept local \(conflictLabel) changes because they have not synced yet."
+        }
+    }
+
+    private func storeSingletonDigest<T: Encodable>(_ value: T, forKey key: String) {
+        guard let digest = digest(for: value) else { return }
+        defaults.set(digest, forKey: key)
+    }
+
+    private func digest<T: Encodable>(for value: T) -> String? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        guard let data = try? encoder.encode(value) else { return nil }
+        return SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+    }
+
+    private func remoteDigestFallback<T: Encodable>(for value: T) -> String? {
+        digest(for: value)
     }
 }

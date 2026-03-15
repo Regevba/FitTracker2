@@ -485,12 +485,7 @@ struct TrainingPlanView: View {
     }
 
     private func makeBlankLog() -> DailyLog {
-        DailyLog(
-            date: activeDate,
-            phase: dataStore.userProfile.currentPhase,
-            dayType: selectedDay,
-            recoveryDay: dataStore.userProfile.recoveryDay(for: activeDate)
-        )
+        .scheduled(for: activeDate, profile: dataStore.userProfile, dayType: selectedDay)
     }
 
     // ─────────────────────────────────────────────────────

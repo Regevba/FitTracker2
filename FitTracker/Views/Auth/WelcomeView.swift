@@ -1,8 +1,6 @@
 // Views/Auth/WelcomeView.swift
 // First screen the user sees before signing in.
-// "Welcome Regev, ready to begin"
-// → Log In button (active)  → SignInView sheet
-// → Register button (cosmetic only — visual placeholder for future)
+// Keeps the entry point focused on continuing into the encrypted app.
 
 import SwiftUI
 
@@ -31,7 +29,7 @@ struct WelcomeView: View {
             .ignoresSafeArea()
 
             // Subtle grid pattern overlay
-            GeometryReader { geo in
+            GeometryReader { _ in
                 Canvas { ctx, size in
                     let spacing: CGFloat = 32
                     var path = Path()
@@ -55,15 +53,12 @@ struct WelcomeView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                // ── Logo + branding ───────────────────────
-                VStack(spacing: 20) {
+                VStack(spacing: 22) {
                     ZStack {
-                        // Outer glow ring
                         Circle()
                             .fill(Color.green.opacity(0.12))
                             .frame(width: 120, height: 120)
                             .blur(radius: 16)
-                        // Icon ring
                         Circle()
                             .stroke(
                                 AngularGradient(colors: [.green, .mint, .green.opacity(0.3), .green],
@@ -71,7 +66,6 @@ struct WelcomeView: View {
                                 lineWidth: 1.5
                             )
                             .frame(width: 96, height: 96)
-                        // Icon
                         Image(systemName: "figure.strengthtraining.traditional")
                             .font(.system(size: 38, weight: .semibold))
                             .foregroundStyle(
@@ -87,56 +81,40 @@ struct WelcomeView: View {
                             .font(.system(size: 38, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
 
-                        // Personalised welcome line
-                        HStack(spacing: 6) {
-                            Text("Welcome")
-                                .foregroundStyle(.secondary)
-                            Text("Regev")
-                                .foregroundStyle(
-                                    LinearGradient(colors: [.green, .mint],
-                                                   startPoint: .leading, endPoint: .trailing)
-                                )
-                                .fontWeight(.semibold)
-                        }
-                        .font(.title3)
+                        Text("Continue into your encrypted training workspace.")
+                            .font(.title3.weight(.semibold))
+                            .foregroundStyle(.white.opacity(0.9))
 
-                        Text("Ready to begin")
+                        Text("Apple sign-in and passkeys are supported. FitTracker keeps your health data encrypted on device and before sync.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
-                            .opacity(0.7)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 14)
                     }
                     .offset(y: textOffset)
                     .opacity(textOpacity)
                 }
 
-                Spacer().frame(height: 56)
+                Spacer().frame(height: 36)
 
-                // ── Tagline chips ─────────────────────────
-                HStack(spacing: 10) {
-                    ForEach(["🔒 Encrypted", "☁️ CloudKit", "⌚ Apple Watch"], id: \.self) { tag in
-                        Text(tag)
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 10).padding(.vertical, 5)
-                            .background(Color.white.opacity(0.06), in: Capsule())
-                            .overlay(Capsule().stroke(Color.white.opacity(0.08)))
-                    }
+                VStack(spacing: 10) {
+                    welcomeFactRow(icon: "lock.shield.fill", text: "Encrypted locally before any iCloud sync")
+                    welcomeFactRow(icon: "faceid", text: "Face ID or Touch ID can protect reopen access")
+                    welcomeFactRow(icon: "key.fill", text: "Passkeys and security keys are supported")
                 }
                 .opacity(buttonsOpacity)
+                .padding(.horizontal, 28)
 
                 Spacer()
 
-                // ── Action buttons ────────────────────────
                 VStack(spacing: 14) {
-
-                    // LOG IN — active
                     Button {
                         showSignIn = true
                     } label: {
                         HStack(spacing: 10) {
                             Image(systemName: "arrow.right.circle.fill")
                                 .font(.title3)
-                            Text("Log In")
+                            Text("Continue")
                                 .font(.headline)
                             Spacer()
                             Image(systemName: "chevron.right")
@@ -155,12 +133,10 @@ struct WelcomeView: View {
                     }
                     .buttonStyle(.plain)
 
-                    // Privacy footnote
-                    Text("Your health data never leaves your Apple ecosystem.\nAll data is double-encrypted end-to-end.")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary.opacity(0.5))
+                    Text("Choose Apple sign-in or a passkey on the next screen.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary.opacity(0.65))
                         .multilineTextAlignment(.center)
-                        .padding(.top, 4)
                 }
                 .padding(.horizontal, 28)
                 .offset(y: buttonsOffset)
@@ -189,5 +165,25 @@ struct WelcomeView: View {
                 .presentationCornerRadius(28)
                 .presentationBackground(.ultraThinMaterial)
         }
+    }
+
+    private func welcomeFactRow(icon: String, text: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.green)
+                .frame(width: 24)
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.white.opacity(0.78))
+            Spacer()
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: 16))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.white.opacity(0.06), lineWidth: 1)
+        )
     }
 }

@@ -22,6 +22,7 @@ final class AuthManager: ObservableObject {
         #if targetEnvironment(simulator)
         // Skip biometric prompt on simulator — set authenticated immediately.
         isAuthenticated = true
+        authError = nil
         #else
         let ctx = LAContext()
         ctx.localizedFallbackTitle = ""
@@ -41,8 +42,8 @@ final class AuthManager: ObservableObject {
                 }
             }
         } else {
-            // No biometrics configured — mark as authenticated immediately
-            isAuthenticated = true
+            isAuthenticated = false
+            authError = "Face ID or Touch ID is required to unlock FitTracker. Set up biometrics in device settings, then try again."
         }
         #endif
     }
@@ -66,49 +67,69 @@ struct LockScreenView: View {
 
     var body: some View {
         ZStack {
-            Color.black.ignoresSafeArea()
+            LinearGradient(
+                colors: [Color.black, Color(red: 0.05, green: 0.12, blue: 0.08)],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
 
-            VStack(spacing: 32) {
+            VStack {
                 Spacer()
 
-                Image(systemName: "lock.shield.fill")
-                    .font(.system(size: 72))
-                    .foregroundStyle(.green)
-                    .symbolEffect(.pulse)
+                VStack(spacing: 22) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.green.opacity(0.14))
+                            .frame(width: 108, height: 108)
+                            .blur(radius: 10)
+                        Circle()
+                            .stroke(Color.green.opacity(0.22), lineWidth: 1)
+                            .frame(width: 86, height: 86)
+                        Image(systemName: "lock.shield.fill")
+                            .font(.system(size: 36, weight: .semibold))
+                            .foregroundStyle(.green)
+                    }
 
-                VStack(spacing: 8) {
-                    Text("FitTracker")
-                        .font(.system(.title, design: .rounded, weight: .bold))
-                        .foregroundStyle(.white)
-                    Text("Your health data is encrypted\nand protected on this device.")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
+                    VStack(spacing: 8) {
+                        Text("Unlock FitTracker")
+                            .font(.system(.title2, design: .rounded, weight: .bold))
+                            .foregroundStyle(.white)
+                        Text("Use \(biometricName) to reopen your encrypted data.")
+                            .font(.subheadline)
+                            .foregroundStyle(.white.opacity(0.68))
+                            .multilineTextAlignment(.center)
+                    }
 
-                Spacer()
-
-                VStack(spacing: 12) {
                     Button { auth.authenticate() } label: {
                         HStack(spacing: 10) {
                             Image(systemName: biometricIcon).font(.title3)
                             Text(biometricLabel).fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(.green, in: RoundedRectangle(cornerRadius: 14))
+                        .padding(.vertical, 15)
+                        .background(.green, in: RoundedRectangle(cornerRadius: 16))
                         .foregroundStyle(.black)
                     }
-                    .padding(.horizontal, 32)
+                    .buttonStyle(.plain)
 
                     if let err = auth.authError {
                         Text(err)
-                            .font(.caption2)
-                            .foregroundStyle(.red.opacity(0.8))
+                            .font(.caption)
+                            .foregroundStyle(.red.opacity(0.82))
+                            .multilineTextAlignment(.center)
                     }
                 }
+                .padding(28)
+                .frame(maxWidth: 360)
+                .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 28))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 28)
+                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                )
+                .padding(.horizontal, 24)
 
-                Spacer().frame(height: 40)
+                Spacer()
             }
         }
     }
@@ -127,6 +148,14 @@ struct LockScreenView: View {
         case .faceID:  "Unlock with Face ID"
         case .touchID: "Unlock with Touch ID"
         default:       "Unlock"
+        }
+    }
+
+    private var biometricName: String {
+        switch biometricType {
+        case .faceID:  "Face ID"
+        case .touchID: "Touch ID"
+        default:       "biometric unlock"
         }
     }
 

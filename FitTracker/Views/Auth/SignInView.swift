@@ -1,7 +1,6 @@
 // Views/Auth/SignInView.swift
 // Sign-in screen presented as a sheet from WelcomeView.
-// Providers: Apple · Google · Facebook
-// Passkey / YubiKey: separate expandable section
+// Primary paths: Apple sign-in or passkey / security key.
 
 import SwiftUI
 import AuthenticationServices
@@ -11,7 +10,6 @@ struct SignInView: View {
     @EnvironmentObject var signIn: SignInService
     @Environment(\.dismiss) var dismiss
 
-    @State private var showPasskeySection = false
     @State private var errorBanner: String?
     @State private var shakeOffset: CGFloat = 0
 
@@ -23,24 +21,25 @@ struct SignInView: View {
                 Color(.systemBackground).ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 28) {
+                    VStack(spacing: 22) {
 
                         // ── Header ────────────────────────────────────
-                        VStack(spacing: 10) {
-                            Image(systemName: "lock.shield.fill")
-                                .font(.system(size: 52))
+                        VStack(spacing: 12) {
+                            Image(systemName: "figure.strengthtraining.traditional")
+                                .font(.system(size: 44, weight: .semibold))
                                 .foregroundStyle(
                                     LinearGradient(colors: [.green, .mint],
                                                    startPoint: .top, endPoint: .bottom)
                                 )
                                 .padding(.top, 8)
 
-                            Text("Sign In")
+                            Text("Continue to FitTracker")
                                 .font(.system(.title, design: .rounded, weight: .bold))
 
-                            Text("Choose how you'd like to continue")
+                            Text("Use Apple or a passkey to get back to your encrypted training data.")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
                         }
                         .padding(.top, 16)
 
@@ -63,15 +62,37 @@ struct SignInView: View {
                             .offset(x: shakeOffset)
                         }
 
-                        // ── Social sign-in buttons ────────────────────
-                        VStack(spacing: 12) {
+                        VStack(spacing: 14) {
 
-                            // Apple
                             SocialSignInButton(
                                 provider: .apple,
                                 isLoading: signIn.isLoading
                             ) {
                                 signIn.signInWithApple()
+                            }
+
+                            VStack(spacing: 10) {
+                                PasskeyActionButton(
+                                    icon: "person.badge.key.fill",
+                                    title: "Use Passkey",
+                                    subtitle: "Sign in with a saved passkey or security key",
+                                    color: .indigo,
+                                    isLoading: signIn.isLoading
+                                ) {
+                                    signIn.signInWithPasskey()
+                                }
+                                .disabled(!signIn.isPasskeyConfigured)
+
+                                PasskeyActionButton(
+                                    icon: "plus.circle.fill",
+                                    title: "Create Passkey",
+                                    subtitle: "Create one on this device or register a hardware key",
+                                    color: .purple,
+                                    isLoading: signIn.isLoading
+                                ) {
+                                    signIn.registerPasskey()
+                                }
+                                .disabled(!signIn.isPasskeyConfigured)
                             }
 
                             #if targetEnvironment(simulator)
@@ -90,83 +111,19 @@ struct SignInView: View {
                             .buttonStyle(.plain)
                             .disabled(signIn.isLoading)
                             #endif
-
-                        }
-
-                        // ── Divider ───────────────────────────────────
-                        HStack(spacing: 12) {
-                            Rectangle().fill(Color.secondary.opacity(0.2)).frame(height: 0.5)
-                            Text("or").font(.caption).foregroundStyle(.secondary)
-                            Rectangle().fill(Color.secondary.opacity(0.2)).frame(height: 0.5)
-                        }
-
-                        // ── Passkey / YubiKey section ─────────────────
-                        VStack(spacing: 0) {
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    showPasskeySection.toggle()
-                                }
-                            } label: {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "key.fill")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.purple)
-                                        .frame(width: 28)
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("Sign in with Passkey or Security Key")
-                                            .font(.subheadline.weight(.semibold))
-                                            .foregroundStyle(.primary)
-                                        Text("YubiKey · NFC · USB-C hardware keys supported")
-                                            .font(.caption2)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                    Spacer()
-                                    Image(systemName: showPasskeySection ? "chevron.up" : "chevron.down")
-                                        .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding(16)
-                                .background(Color.purple.opacity(0.05), in: RoundedRectangle(cornerRadius: 14))
-                                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color.purple.opacity(0.18)))
-                            }
-                            .buttonStyle(.plain)
-
-                            if showPasskeySection {
-                                VStack(spacing: 10) {
-                                    // Authenticate with existing passkey
-                                    PasskeyActionButton(
-                                        icon: "person.badge.key.fill",
-                                        title: "Use Saved Passkey",
-                                        subtitle: "Stored on this device or iCloud Keychain",
-                                        color: .purple,
-                                        isLoading: signIn.isLoading
-                                    ) {
-                                        signIn.signInWithPasskey()
-                                    }
-
-                                    // Register new passkey
-                                    PasskeyActionButton(
-                                        icon: "plus.circle.fill",
-                                        title: "Register New Passkey",
-                                        subtitle: "Create a passkey or add a YubiKey / security key",
-                                        color: .indigo,
-                                        isLoading: signIn.isLoading
-                                    ) {
-                                        signIn.registerPasskey()
-                                    }
-
-                                }
-                                .padding(.top, 8)
-                                .transition(.opacity.combined(with: .move(edge: .top)))
-                            }
                         }
 
                         // ── Footer ────────────────────────────────────
-                        VStack(spacing: 4) {
-                            Text("By continuing, you agree to our Terms of Service.")
-                                .font(.caption2)
-                                .foregroundStyle(.tertiary)
-                            Text("Your data stays private, encrypted, and on your Apple devices.")
+                        VStack(spacing: 6) {
+                            Text("Apple sign-in is the default. Passkeys work for iCloud Keychain and hardware keys like YubiKey.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            if !signIn.isPasskeyConfigured {
+                                Text("Passkey setup is currently unavailable until `PasskeyRelyingPartyID` is configured.")
+                                    .font(.caption2)
+                                    .foregroundStyle(.orange)
+                            }
+                            Text("Your data stays private, encrypted, and inside your Apple ecosystem.")
                                 .font(.caption2)
                                 .foregroundStyle(.tertiary)
                         }
