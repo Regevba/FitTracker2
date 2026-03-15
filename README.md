@@ -5,7 +5,7 @@ FitTracker is a personal fitness command center for training, recovery, nutritio
 The current app is built around a `Today`-first experience:
 - a focused home screen with today's status and the next best action
 - an active-session training flow with rest timing and previous-performance context
-- faster nutrition logging with quick actions and remembered meals
+- smarter nutrition logging with adaptive targets, quick actions, label capture, and barcode lookup
 - recovery recommendations and guided routines
 - a clearer stats hub for progress, trends, and body composition
 
@@ -23,7 +23,10 @@ The current app is built around a `Today`-first experience:
 - date-aware workout editing so past days no longer overwrite today's log
 
 ### Nutrition flow
-- quicker meal logging with repeat-last and remembered-meal patterns
+- adaptive daily calorie and macro targets based on goal mode, phase, and training/rest day
+- quicker meal logging with repeat-last, remembered meals, barcode lookup, and saved templates
+- smart nutrition-label capture with OCR plus scaling from label weight to consumed grams
+- bilingual parsing support for English and Hebrew nutrition text
 - day-aware nutrition navigation
 - totals that stay consistent across nutrition, stats, and export flows
 
@@ -50,7 +53,7 @@ The current app is built around a `Today`-first experience:
 ### Product and UX overhaul
 - rebuilt Home into a focused `Today` screen
 - redesigned Training around an active-session experience
-- sped up Nutrition entry points
+- redesigned Nutrition around adaptive targets and smart meal capture
 - added recovery recommendation surfaces
 - reworked Stats into a clearer progress hub
 
@@ -60,6 +63,12 @@ The current app is built around a `Today`-first experience:
 - added passkey creation from Settings
 - simplified the welcome and sign-in experience
 - reorganized account and settings information architecture
+
+### Nutrition intelligence
+- added goal-based nutrition planning for fat loss, maintenance, and lean gain
+- added nutrition goal controls in Settings for weight/body-fat target ranges and goal mode
+- added OCR-backed nutrition-label parsing with consumed-weight scaling
+- expanded food lookup with Open Food Facts plus built-in bilingual reference foods for common staples
 
 ## Architecture Overview
 
@@ -119,10 +128,13 @@ xcodebuild build \
 - HealthKit features require running on Apple platforms with Health permissions available.
 - CloudKit sync depends on a signed-in iCloud account.
 - Passkey creation requires a valid `PasskeyRelyingPartyID` configuration.
+- Barcode product lookup currently uses Open Food Facts as the primary free/public packaged-food database.
+- Smart nutrition-label OCR uses Apple's Vision framework. English label photos are the best-supported path.
+- Hebrew nutrition text is supported by the parser, but fully automatic Hebrew photo-label OCR can still depend on OS/runtime language support.
 - Simulator-based test runs can still be flaky if local CoreSimulator services are unhealthy.
 
 ## Next Recommended Areas
 
 - manual QA across Home, Training, Nutrition, Recovery, and Stats after major UI changes
-- broader automated coverage for sync, auth, and date-scoped logging flows
+- broader automated coverage for sync, auth, OCR parsing, and date-scoped logging flows
 - a future `Education` surface for recovery content and live guidance that no longer belongs on Home
