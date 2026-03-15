@@ -71,6 +71,7 @@ struct MainScreenView: View {
     private let bgOrange2 = Color.appOrange2
     private let bgBlue1   = Color.appBlue1
     private let bgBlue2   = Color.appBlue2
+    private let bodyFatTint = Color(red: 0.76, green: 0.38, blue: 0.06)
 
     private func checkMilestones() {
         // Supplement streak
@@ -264,7 +265,7 @@ struct MainScreenView: View {
                 statusValueColumn(
                     title: "Body Fat",
                     icon: "drop.fill",
-                    tint: .appOrange2,
+                    tint: bodyFatTint,
                     value: currentBF.map { String(format: "%.1f", $0) } ?? "—",
                     unit: "%",
                     target: "Target: \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%",
@@ -292,7 +293,7 @@ struct MainScreenView: View {
             }
         }
         .padding(cardPadding(compact: compact, tight: tight))
-        .background(homeCardBackground(accent: .appOrange2))
+        .modifier(BlendedSectionStyle())
         .scaleEffect(statusPulse ? 1.01 : 1)
     }
 
@@ -306,7 +307,7 @@ struct MainScreenView: View {
                     Circle()
                         .trim(from: 0, to: max(goalProgress, 0.02))
                         .stroke(
-                            AngularGradient(colors: [.appBlue1, .appOrange2, .appBlue1], center: .center),
+                            AngularGradient(colors: [.appBlue1, bodyFatTint, .appBlue1], center: .center),
                             style: StrokeStyle(lineWidth: 12, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -333,7 +334,7 @@ struct MainScreenView: View {
                 progressLine(
                     title: "Body Fat",
                     progress: profile.bfProgress(current: currentBF),
-                    tint: .appOrange2,
+                    tint: bodyFatTint,
                     compact: tight
                 )
                 Text(essentialsSummary)
@@ -343,7 +344,7 @@ struct MainScreenView: View {
             }
         }
         .padding(cardPadding(compact: compact, tight: tight))
-        .background(homeCardBackground(accent: .appBlue1))
+        .modifier(BlendedSectionStyle())
     }
 
     private func startTrainingCard(compact: Bool, tight: Bool) -> some View {
@@ -405,7 +406,7 @@ struct MainScreenView: View {
             }
         }
         .padding(cardPadding(compact: compact, tight: tight))
-        .background(homeCardBackground(accent: recommendationAccent))
+        .modifier(BlendedSectionStyle())
     }
 
     private func metricsCard(compact: Bool, tight: Bool) -> some View {
@@ -419,7 +420,7 @@ struct MainScreenView: View {
             }
         }
         .padding(cardPadding(compact: compact, tight: tight))
-        .background(homeCardBackground(accent: .accent.cyan))
+        .modifier(BlendedSectionStyle(showDivider: false))
     }
 
     private func statusValueColumn(
@@ -465,9 +466,6 @@ struct MainScreenView: View {
                 .foregroundStyle(isMissing ? tint.opacity(0.88) : .black.opacity(0.52))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 3)
-        .padding(.vertical, 3)
-        .background(isMissing ? tint.opacity(0.06) : Color.clear, in: RoundedRectangle(cornerRadius: 18))
     }
 
     private func progressLine(title: String, progress: Double, tint: Color, compact: Bool) -> some View {
@@ -512,7 +510,6 @@ struct MainScreenView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, compact ? 7 : 9)
-        .background(Color.white.opacity(0.22), in: RoundedRectangle(cornerRadius: 18))
     }
 
     private func sectionEyebrow(_ title: String) -> some View {
@@ -521,22 +518,6 @@ struct MainScreenView: View {
             .tracking(2.1)
             .foregroundStyle(.black.opacity(0.45))
             .textCase(.uppercase)
-    }
-
-    private func homeCardBackground(accent: Color) -> some View {
-        RoundedRectangle(cornerRadius: 24)
-            .fill(
-                LinearGradient(
-                    colors: [Color.white.opacity(0.46), accent.opacity(0.12)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 24)
-                    .stroke(Color.white.opacity(0.35), lineWidth: 1)
-            )
-            .shadow(color: .white.opacity(0.12), radius: 8, y: 2)
     }
 
     private func screenHorizontalPadding(for width: CGFloat) -> CGFloat {
@@ -754,6 +735,22 @@ struct MainScreenView: View {
         }
     }
 
+}
+
+private struct BlendedSectionStyle: ViewModifier {
+    var showDivider: Bool = true
+
+    func body(content: Content) -> some View {
+        content
+            .overlay(alignment: .bottom) {
+                if showDivider {
+                    Rectangle()
+                        .fill(Color.white.opacity(0.34))
+                        .frame(height: 1)
+                        .padding(.top, 12)
+                }
+            }
+    }
 }
 
 struct RecoveryRoutineSheet: View {
