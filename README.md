@@ -144,3 +144,4 @@ xcodebuild build \
 - manual QA across Home, Training, Nutrition, Recovery, and Stats after major UI changes
 - broader automated coverage for sync, auth, OCR parsing, and date-scoped logging flows
 - a future `Education` surface for recovery content and live guidance that no longer belongs on Home
+
