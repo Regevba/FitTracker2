@@ -1,37 +1,91 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build & Test
-    runs-on: macos-latest
+  build-and-test:
+    name: Build and Test (Xcode 26.3)
+    runs-on: macos-15
+    env:
+      PROJECT_PATH: FitTracker.xcodeproj
+      SCHEME: FitTracker
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Show available simulators
-        run: xcrun simctl list devicetypes | grep iPhone
+      - name: Select Xcode 26.3
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: '26.3'
+
+      - name: Print Xcode version
+        run: xcodebuild -version
 
       - name: Show available Xcode schemes
-        run: xcodebuild -project FitTracker.xcodeproj -list
+        run: xcodebuild -project "$PROJECT_PATH" -list
+
+      - name: Show available iOS simulators
+        run: xcrun simctl list devices available
+
+      - name: Resolve preferred simulator destination
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          simulator_list="$(xcrun simctl list devices available)"
+          preferred_devices=("iPhone 17" "iPhone 16e" "iPhone 14 Pro")
+
+          for device in "${preferred_devices[@]}"; do
+            if grep -F "name=${device}" <<< "$(xcodebuild -project "$PROJECT_PATH" -scheme "$SCHEME" -showdestinations 2>/dev/null)" >/dev/null; then
+              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
+              echo "Selected simulator: ${device}"
+              exit 0
+            fi
+
+            if grep -F "${device} (" <<< "$simulator_list" >/dev/null; then
+              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
+              echo "Selected simulator: ${device}"
+              exit 0
+            fi
+          done
+
+          echo "No supported simulator found. Checked: ${preferred_devices[*]}" >&2
+          exit 1
 
       - name: Build
         run: |
           xcodebuild build \
-            -project FitTracker.xcodeproj \
-            -scheme FitTracker \
+            -project "$PROJECT_PATH" \
+            -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
             CODE_SIGNING_ALLOWED=NO
 
       - name: Test
         run: |
           xcodebuild test \
-            -project FitTracker.xcodeproj \
-            -scheme FitTracker \
-            -destination 'platform=iOS Simulator,name=iPhone 16' \
+            -project "$PROJECT_PATH" \
+            -scheme "$SCHEME" \
+            -destination "$SIMULATOR_DESTINATION" \
+            -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload test result bundle on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fittracker-testresults-xcresult
+          path: TestResults.xcresult
+          retention-days: 7
+          if-no-files-found: ignore
