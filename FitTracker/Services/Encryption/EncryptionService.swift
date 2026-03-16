@@ -92,68 +92,21 @@ actor EncryptionService {
         let aesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
         let chachaKey = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
         let hmacKey   = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
-
-        // Layer 1: AES-256-GCM
-        guard let aesBox = try? AES.GCM.seal(plaintext, using: aesKey),
-              let layer1 = aesBox.combined else {
-            throw FTCryptoError.encryptFailed("AES-GCM seal failed")
-        }
-
-        // Layer 2: ChaCha20-Poly1305
-        guard let chachaBox = try? ChaChaPoly.seal(layer1, using: chachaKey) else {
-            throw FTCryptoError.encryptFailed("ChaCha20 seal failed")
-        }
-        let layer2 = chachaBox.combined
-
-        // HMAC-SHA512 integrity tag
-        let ts        = withUnsafeBytes(of: Date().timeIntervalSince1970.bitPattern) { Data($0) }
-        let toSign    = Data([0x02]) + ts + layer2
-        let mac       = HMAC<SHA512>.authenticationCode(for: toSign, using: hmacKey)
-        let macData   = Data(mac)
-
-        // Assemble container: [version 1B][timestamp 8B][hmac 64B][ciphertext]
-        var out = Data()
-        out.append(0x02)                // version
-        out.append(ts)                  // 8 bytes
-        out.append(macData)             // 64 bytes
-        out.append(layer2)
-        return out
+        return try encryptWithKeys(plaintext: plaintext, aesKey: aesKey, chachaKey: chachaKey, hmacKey: hmacKey)
     }
 
     func decryptRaw(_ data: Data) async throws -> Data {
+        // Fast-fail before touching the keychain.
         guard data.count > 73 else { throw FTCryptoError.integrityCheckFailed }
-
-        let version    = data[0]
+        let version = data[0]
         guard version == 0x02 else { throw FTCryptoError.decryptFailed("Unknown version \(version)") }
 
-        let ts         = data[1..<9]
-        let mac        = data[9..<73]
-        let ciphertext = data[73...]
-
         // Use cached session context (set by AuthManager) or fall back to a fresh auth.
-        let ctx        = try await currentContext()
-        let hmacKey    = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
-        let chachaKey  = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
-        let aesKey     = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
-
-        // Verify HMAC
-        let toVerify   = Data([0x02]) + ts + ciphertext
-        let expected   = HMAC<SHA512>.authenticationCode(for: toVerify, using: hmacKey)
-        guard Data(expected) == mac else { throw FTCryptoError.integrityCheckFailed }
-
-        // Layer 2 decrypt: ChaCha20
-        guard let chachaBox = try? ChaChaPoly.SealedBox(combined: Data(ciphertext)),
-              let layer1 = try? ChaChaPoly.open(chachaBox, using: chachaKey) else {
-            throw FTCryptoError.decryptFailed("ChaCha20 open failed")
-        }
-
-        // Layer 1 decrypt: AES-256-GCM
-        guard let aesBox = try? AES.GCM.SealedBox(combined: layer1),
-              let plaintext = try? AES.GCM.open(aesBox, using: aesKey) else {
-            throw FTCryptoError.decryptFailed("AES-GCM open failed")
-        }
-
-        return plaintext
+        let ctx       = try await currentContext()
+        let hmacKey   = try getOrCreateSymmetricKey(tag: hmacKeyTag,   context: ctx)
+        let chachaKey = try getOrCreateSymmetricKey(tag: chachaKeyTag, context: ctx)
+        let aesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
+        return try decryptWithKeys(data: data, aesKey: aesKey, chachaKey: chachaKey, hmacKey: hmacKey)
     }
 
     // ── Key management ───────────────────────────────────
@@ -311,8 +264,10 @@ actor EncryptionService {
         let mac        = data[9..<73]
         let ciphertext = data[73...]
         let toVerify   = Data([0x02]) + ts + ciphertext
-        let expected   = HMAC<SHA512>.authenticationCode(for: toVerify, using: hmacKey)
-        guard Data(expected) == mac else { throw FTCryptoError.integrityCheckFailed }
+        // Use constant-time comparison to prevent timing side-channel attacks.
+        guard HMAC<SHA512>.isValidAuthenticationCode(mac, authenticating: toVerify, using: hmacKey) else {
+            throw FTCryptoError.integrityCheckFailed
+        }
         guard let chachaBox = try? ChaChaPoly.SealedBox(combined: Data(ciphertext)),
               let layer1 = try? ChaChaPoly.open(chachaBox, using: chachaKey) else {
             throw FTCryptoError.decryptFailed("ChaCha20 open failed during rotation")
@@ -344,6 +299,8 @@ final class EncryptedDataStore: ObservableObject {
 
     private let fm  = FileManager.default
     private var dir: URL { fm.urls(for: .documentDirectory, in: .userDomainMask)[0] }
+    // Coalesce rapid successive saves (e.g. logging multiple sets) into a single write.
+    private var pendingPersist: Task<Void, Never>?
 
     private func url(_ name: String) -> URL { dir.appendingPathComponent("\(name).ftenc") }
 
@@ -364,7 +321,10 @@ final class EncryptedDataStore: ObservableObject {
             dailyLogs.append(l)
             dailyLogs.sort { $0.date > $1.date }
         }
-        Task { await persistToDisk() }
+        // Cancel any pending write and schedule a fresh one; rapid successive calls
+        // (e.g. logging multiple sets) coalesce into a single disk write.
+        pendingPersist?.cancel()
+        pendingPersist = Task { await persistToDisk() }
     }
 
     func log(for date: Date) -> DailyLog? {
@@ -374,17 +334,22 @@ final class EncryptedDataStore: ObservableObject {
     func todayLog() -> DailyLog? { log(for: Date()) }
 
     var supplementStreak: Int {
-        let sorted = dailyLogs.sorted { $0.date > $1.date }
+        // dailyLogs is already sorted descending by upsertLog — no need to sort again.
+        let cal = Calendar.current
         var streak = 0
-        let today = Calendar.current.startOfDay(for: Date())
-        for log in sorted {
-            let logDay = Calendar.current.startOfDay(for: log.date)
+        // Walk backwards from today; break as soon as a day is missed or incomplete.
+        var expectedDay = cal.startOfDay(for: Date())
+        for log in dailyLogs {
+            let logDay = cal.startOfDay(for: log.date)
             // Skip future-dated logs
-            if logDay > today { continue }
+            if logDay > expectedDay { continue }
+            // Gap detected — a day with no log breaks the streak
+            if logDay < expectedDay { break }
             let complete = log.supplementLog.morningStatus == .completed
                         && log.supplementLog.eveningStatus == .completed
             if complete {
                 streak += 1
+                expectedDay = cal.date(byAdding: .day, value: -1, to: expectedDay)!
             } else {
                 break
             }
