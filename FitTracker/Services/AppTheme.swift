@@ -9,6 +9,9 @@ extension Color {
     static let appOrange2 = Color(red: 1.0,  green: 0.78, blue: 0.54)
     static let appBlue1   = Color(red: 0.73, green: 0.89, blue: 1.0)
     static let appBlue2   = Color(red: 0.54, green: 0.78, blue: 1.0)
+    static let appBlue3   = Color(red: 0.87, green: 0.95, blue: 1.0)
+    static let appSurface = Color.white.opacity(0.68)
+    static let appStroke  = Color.white.opacity(0.48)
 
     // Status colour tokens
     enum status {
@@ -32,4 +35,12 @@ enum AppType {
     static let body       = Font.system(size: 15, weight: .medium)
     static let subheading = Font.system(size: 13, weight: .regular)
     static let caption    = Font.system(size: 11, weight: .regular)
+}
+
+enum AppGradient {
+    static let authBackground = LinearGradient(
+        colors: [.appBlue3, .appBlue1, .appBlue2.opacity(0.92)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
 }

@@ -24,10 +24,8 @@ struct FitTrackerApp: App {
             rootView
                 // Apply appearance preference from settings
                 .preferredColorScheme(settings.appearance.colorScheme)
-                // Load encrypted data after biometric auth — EncryptionService has a valid
-                // session context at this point, so no extra biometric prompts fire.
-                .onChange(of: biometricAuth.isAuthenticated) { _, authenticated in
-                    if authenticated {
+                .onChange(of: signIn.activeSession) { _, session in
+                    if session != nil {
                         Task {
                             await dataStore.loadFromDisk()
                             if scenePhase == .active {
@@ -40,10 +38,14 @@ struct FitTrackerApp: App {
                     switch phase {
                     case .active:
                         signIn.restoreSession()
-                        guard biometricAuth.isAuthenticated else { break }
-                        Task { await cloudSync.fetchChanges(dataStore: dataStore) }
+                        guard signIn.isAuthenticated else { break }
+                        Task {
+                            await dataStore.loadFromDisk()
+                            await cloudSync.fetchChanges(dataStore: dataStore)
+                        }
                     case .background:
                         if settings.requireBiometricUnlockOnReopen {
+                            signIn.lockForReopen()
                             biometricAuth.lockOnBackground(clearCryptoSession: false)
                         }
                         Task {
@@ -76,29 +78,21 @@ struct FitTrackerApp: App {
     // welcome → signIn (sheet) → authenticated → biometricLock → app
     @ViewBuilder
     private var rootView: some View {
-        switch signIn.state {
-
-        case .welcome, .signIn, .error:
-            // Not yet signed in → show welcome / sign-in flow
-            WelcomeView()
+        if signIn.isAuthenticated {
+            RootTabView()
                 .environmentObject(signIn)
-
-        case .authenticated:
-            // Signed in → check biometric lock
-            if !biometricAuth.isAuthenticated {
-                LockScreenView()
-                    .environmentObject(biometricAuth)
-            } else {
-                RootTabView()
-                    .environmentObject(signIn)
-                    .environmentObject(biometricAuth)
-                    .environmentObject(healthService)
-                    .environmentObject(dataStore)
-                    .environmentObject(cloudSync)
-                    .environmentObject(programStore)
-                    .environmentObject(settings)
-                    .environmentObject(watchService)
-            }
+                .environmentObject(biometricAuth)
+                .environmentObject(healthService)
+                .environmentObject(dataStore)
+                .environmentObject(cloudSync)
+                .environmentObject(programStore)
+                .environmentObject(settings)
+                .environmentObject(watchService)
+        } else {
+            AuthHubView()
+                .environmentObject(signIn)
+                .environmentObject(biometricAuth)
+                .environmentObject(settings)
         }
     }
 }

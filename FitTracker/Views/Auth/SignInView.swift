@@ -229,6 +229,10 @@ struct SocialSignInButton: View {
             Image(systemName: "key.fill")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.purple)
+        case .email:
+            Image(systemName: "envelope.fill")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(Color.appBlue2)
         }
     }
 
@@ -238,6 +242,7 @@ struct SocialSignInButton: View {
         case .google:   return Color(.systemBackground)
         case .facebook: return Color(red: 0.23, green: 0.35, blue: 0.60)
         case .passkey:  return Color.purple.opacity(0.08)
+        case .email:    return Color.appBlue2.opacity(0.08)
         }
     }
 
@@ -247,6 +252,7 @@ struct SocialSignInButton: View {
         case .google:   return Color(.label)
         case .facebook: return .white
         case .passkey:  return .purple
+        case .email:    return .appBlue2
         }
     }
 
@@ -256,6 +262,7 @@ struct SocialSignInButton: View {
         case .google:   return Color.secondary.opacity(0.25)
         case .facebook: return .clear
         case .passkey:  return Color.purple.opacity(0.25)
+        case .email:    return Color.appBlue2.opacity(0.25)
         }
     }
 
@@ -265,6 +272,7 @@ struct SocialSignInButton: View {
         case .google:   return Color.black.opacity(0.06)
         case .facebook: return Color(red: 0.23, green: 0.35, blue: 0.60).opacity(0.3)
         case .passkey:  return .purple.opacity(0.1)
+        case .email:    return Color.appBlue2.opacity(0.14)
         }
     }
 }

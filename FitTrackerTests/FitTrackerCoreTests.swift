@@ -129,4 +129,19 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertEqual(profile.recoveryDay(for: sameDayLate, calendar: calendar), 0)
         XCTAssertEqual(profile.recoveryDay(for: nextDayEarly, calendar: calendar), 1)
     }
+
+    func testPasswordRuleEvaluatorRejectsMissingRequirements() {
+        let result = PasswordRuleEvaluator.validate("abc123")
+
+        XCTAssertFalse(result.isValid)
+        XCTAssertTrue(result.issues.contains("Include at least 1 capital letter."))
+        XCTAssertTrue(result.issues.contains("Include at least 1 special character."))
+    }
+
+    func testPasswordRuleEvaluatorAcceptsValidPassword() {
+        let result = PasswordRuleEvaluator.validate("Strong1!")
+
+        XCTAssertTrue(result.isValid)
+        XCTAssertTrue(result.issues.isEmpty)
+    }
 }

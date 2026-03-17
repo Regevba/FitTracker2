@@ -303,6 +303,7 @@ struct AccountPanelView: View {
         case .google:   "globe"
         case .facebook: "person.2.fill"
         case .passkey:  "key.fill"
+        case .email:    "envelope.fill"
         }
     }
 
@@ -312,6 +313,7 @@ struct AccountPanelView: View {
         case .google:   Color(red: 0.26, green: 0.52, blue: 0.96)
         case .facebook: Color(red: 0.23, green: 0.35, blue: 0.60)
         case .passkey:  .purple
+        case .email:    .appBlue2
         }
     }
 }

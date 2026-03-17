@@ -8,6 +8,7 @@ The current app is built around a `Today`-first experience:
 - smarter nutrition logging with adaptive targets, quick actions, label capture, and barcode lookup
 - recovery recommendations and guided routines
 - a cleaner stats hub for progress, trends, and body composition
+- a rebuilt auth experience with a single light-mode entry hub, provider choosers, email registration, and biometric quick reopen
 
 ## Current Highlights
 
@@ -43,7 +44,11 @@ The current app is built around a `Today`-first experience:
 - biometric unlock for encryption keys
 - optional `Require Face ID/Touch ID on Reopen` behavior in Settings
 - Apple Sign In plus passkey support
-- simplified welcome, sign-in, lock, account, and settings flows
+- a new auth hub with separate register and log-in paths
+- conditional quick actions for Face ID/Touch ID and passkey sign-in
+- email registration with password rules, verification-code flow, and AutoFill-friendly fields
+- Google and email auth adapters that are UI-ready and backend-ready, with mock development implementations today
+- simplified account and settings flows that keep passkey creation in Settings
 
 ## What Changed Recently
 
@@ -65,9 +70,15 @@ The current app is built around a `Today`-first experience:
 - removed the intrusive iPhone passcode fallback for app unlock
 - added biometric reopen preference in Settings
 - added passkey creation from Settings
-- simplified the welcome and sign-in experience
+- replaced the old `WelcomeView -> SignInView` split with a single auth hub and focused secondary auth screens
+- added email sign-up, email verification, email login, provider chooser, and biometric/passkey quick-entry flows
 - reorganized account and settings information architecture
 - added stats-carousel controls in Settings so users can personalize which metrics appear on the stats screen
+
+### Engineering and release readiness
+- added a GitHub Actions CI workflow that builds and tests `FitTracker` on pushes and pull requests to `main`
+- pinned CI to Xcode 26.3 with dynamic simulator resolution for current GitHub-hosted macOS runners
+- fixed the unit-test target wiring so `FitTrackerTests` runs cleanly in CI and locally
 
 ### Nutrition intelligence
 - added goal-based nutrition planning for fat loss, maintenance, and lean gain
@@ -79,6 +90,9 @@ The current app is built around a `Today`-first experience:
 
 ```text
 FitTracker/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── FitTrackerApp.swift
 ├── Models/
 │   └── DomainModels.swift
@@ -88,6 +102,7 @@ FitTracker/
 │   ├── TrainingProgramStore.swift
 │   ├── WatchConnectivityService.swift
 │   ├── Auth/
+│   │   ├── AuthValidation.swift
 │   │   └── SignInService.swift
 │   ├── CloudKit/
 │   │   └── CloudKitSyncService.swift
@@ -97,6 +112,9 @@ FitTracker/
 │       └── HealthKitService.swift
 ├── Views/
 │   ├── Auth/
+│   │   ├── AuthHubView.swift
+│   │   ├── AccountPanelView.swift
+│   │   └── SignInView.swift
 │   ├── Main/
 │   ├── Nutrition/
 │   ├── Shared/
@@ -112,10 +130,45 @@ FitTracker/
 - Encryption keys live in the Keychain with biometric protection.
 - Cold launch can still require biometric unlock because the encryption keys must be unlocked before data can be read.
 - Disabling biometric reopen in Settings only affects re-locking while the app stays alive in memory.
+- Biometrics on the auth hub are only used to reopen a previously stored local session.
+- Passkey creation remains a Settings action; passkey sign-in only appears on the auth hub after passkey registration exists.
+
+## Authentication Overview
+
+- Unauthenticated users now land on a single auth hub instead of a welcome screen plus a separate modal sign-in step.
+- The hub presents:
+  - app name and lightweight value proposition
+  - `Register`
+  - `Log In`
+  - conditional `Use Face ID/Touch ID`
+  - conditional `Use Passkey`
+- Registration and login use separate method choosers so provider selection and form entry are not mixed together.
+- `Sign in with Apple` remains the live provider path.
+- Email and Google auth are implemented behind adapters so the UI and flow are production-shaped while backend exchange and verification services can be swapped in later.
+- Email registration includes:
+  - first name, last name, birthday, email, password, confirm password
+  - password-rule guidance
+  - strong-password and AutoFill affordances
+  - a 5-digit verification code flow with one-time-code AutoFill support
+
+## Continuous Integration
+
+- GitHub Actions workflow: `.github/workflows/ci.yml`
+- Triggers:
+  - push to `main`
+  - pull request to `main`
+  - manual dispatch
+- Current CI behavior:
+  - pins Xcode 26.3 on `macos-15`
+  - prints Xcode version, schemes, and available simulators
+  - resolves the simulator destination dynamically
+  - builds `FitTracker` with signing disabled
+  - runs `FitTrackerTests`
+  - uploads `.xcresult` diagnostics on failure
 
 ## Build
 
-Open the project in Xcode 15.2+ and build the `FitTracker` scheme, or use:
+Open the project in Xcode 26.3+ and build the `FitTracker` scheme, or use:
 
 ```bash
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
@@ -128,11 +181,25 @@ xcodebuild build \
   CODE_SIGNING_REQUIRED=NO
 ```
 
+To run the current unit-test suite locally:
+
+```bash
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
+xcodebuild test \
+  -project FitTracker.xcodeproj \
+  -scheme FitTracker \
+  -destination 'platform=iOS Simulator,name=iPhone 17' \
+  -resultBundlePath /tmp/FitTrackerTests.xcresult \
+  CODE_SIGNING_ALLOWED=NO
+```
+
 ## Project Notes
 
 - HealthKit features require running on Apple platforms with Health permissions available.
 - CloudKit sync depends on a signed-in iCloud account.
 - CloudKit is intentionally disabled on simulator builds; use a signed physical device for end-to-end iCloud sync validation.
+- Auth entry uses the new `AuthHubView` path in `FitTrackerApp`; older auth views remain in the project for compatibility while the new flow is the active root experience.
+- Email verification and Google auth are currently mock-backed adapter flows until production backend/provider wiring is finalized.
 - Passkey creation requires a valid `PasskeyRelyingPartyID` configuration.
 - Barcode product lookup currently uses Open Food Facts as the primary free/public packaged-food database.
 - Smart nutrition-label OCR uses Apple's Vision framework. English label photos are the best-supported path.
@@ -144,4 +211,3 @@ xcodebuild build \
 - manual QA across Home, Training, Nutrition, Recovery, and Stats after major UI changes
 - broader automated coverage for sync, auth, OCR parsing, and date-scoped logging flows
 - a future `Education` surface for recovery content and live guidance that no longer belongs on Home
-
