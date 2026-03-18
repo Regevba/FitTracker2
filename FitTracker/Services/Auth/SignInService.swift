@@ -168,7 +168,7 @@ struct MockEmailAuthProvider: EmailAuthProviding {
 
         let inferredName = email.split(separator: "@").first
             .map { $0.replacingOccurrences(of: ".", with: " ").capitalized }
-            ?? "FitTracker User"
+            ?? "\(AppBrand.name) User"
 
         return UserSession(
             provider: .email,
@@ -394,6 +394,20 @@ final class SignInService: NSObject, ObservableObject {
         appleProvider.startSignIn(using: self)
     }
 
+    func prepareAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
+        authErrorMessage = nil
+        statusMessage = nil
+        isLoading = true
+
+        let nonce = generateNonce()
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
+    }
+
+    func handleAppleSignInResult(_ result: Result<ASAuthorization, Error>) {
+        handleAuthorizationResult(result)
+    }
+
     @MainActor
     func startSystemAppleSignIn() {
         #if os(iOS)
@@ -437,7 +451,7 @@ final class SignInService: NSObject, ObservableObject {
         #endif
 
         pendingUserHandle = userHandle ?? storedSession?.userID ?? activeSession?.userID ?? "fittracker-user"
-        pendingDisplayName = currentSession?.displayName ?? "FitTracker User"
+        pendingDisplayName = currentSession?.displayName ?? "\(AppBrand.name) User"
         currentChallenge = generateRandomBytes(count: 32)
 
         let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: relyingPartyID)
@@ -474,7 +488,7 @@ final class SignInService: NSObject, ObservableObject {
 
         let session = currentSession
         pendingUserHandle = session?.userID ?? userHandle
-        pendingDisplayName = displayName.isEmpty ? (session?.displayName ?? "FitTracker User") : displayName
+        pendingDisplayName = displayName.isEmpty ? (session?.displayName ?? "\(AppBrand.name) User") : displayName
         currentChallenge = generateRandomBytes(count: 32)
 
         let provider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: relyingPartyID)
@@ -507,7 +521,7 @@ final class SignInService: NSObject, ObservableObject {
         let session = currentSession
         registerPasskey(
             userHandle: session?.userID ?? "fittracker-user",
-            displayName: session?.displayName ?? "FitTracker User"
+            displayName: session?.displayName ?? "\(AppBrand.name) User"
         )
     }
 
@@ -573,40 +587,12 @@ final class SignInService: NSObject, ObservableObject {
         guard !value.isEmpty, value.contains(".") else { return nil }
         return value
     }
-}
 
-extension SignInService {
-    static func mergedAppleSession(
-        userID: String,
-        incomingName: String,
-        incomingEmail: String?,
-        existingAppleSession: UserSession?
-    ) -> UserSession {
-        UserSession(
-            provider: .apple,
-            userID: userID,
-            displayName: incomingName.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : incomingName,
-            email: incomingEmail ?? existingAppleSession?.email,
-            phone: existingAppleSession?.phone,
-            avatarURL: existingAppleSession?.avatarURL,
-            sessionToken: userID
-        )
-    }
-}
+    private func handleAuthorizationResult(_ result: Result<ASAuthorization, Error>) {
+        isLoading = false
 
-// ─────────────────────────────────────────────────────────
-// MARK: – ASAuthorizationControllerDelegate
-// ─────────────────────────────────────────────────────────
-
-extension SignInService: ASAuthorizationControllerDelegate {
-
-    nonisolated func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithAuthorization authorization: ASAuthorization
-    ) {
-        Task { @MainActor in
-            isLoading = false
-
+        switch result {
+        case let .success(authorization):
             switch authorization.credential {
             case let cred as ASAuthorizationAppleIDCredential:
                 let name = [cred.fullName?.givenName, cred.fullName?.familyName]
@@ -648,11 +634,51 @@ extension SignInService: ASAuthorizationControllerDelegate {
                 setHasRegisteredPasskey(true)
                 statusMessage = "Passkey added. You can use it from the login screen next time."
                 authErrorMessage = nil
-                isLoading = false
 
             default:
                 authErrorMessage = "Unknown credential type received."
             }
+
+        case let .failure(error):
+            let authError = error as? ASAuthorizationError
+            if authError?.code != .canceled {
+                authErrorMessage = error.localizedDescription
+            }
+        }
+    }
+}
+
+extension SignInService {
+    static func mergedAppleSession(
+        userID: String,
+        incomingName: String,
+        incomingEmail: String?,
+        existingAppleSession: UserSession?
+    ) -> UserSession {
+        UserSession(
+            provider: .apple,
+            userID: userID,
+            displayName: incomingName.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : incomingName,
+            email: incomingEmail ?? existingAppleSession?.email,
+            phone: existingAppleSession?.phone,
+            avatarURL: existingAppleSession?.avatarURL,
+            sessionToken: userID
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – ASAuthorizationControllerDelegate
+// ─────────────────────────────────────────────────────────
+
+extension SignInService: ASAuthorizationControllerDelegate {
+
+    nonisolated func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithAuthorization authorization: ASAuthorization
+    ) {
+        Task { @MainActor in
+            handleAuthorizationResult(.success(authorization))
         }
     }
 
@@ -661,11 +687,7 @@ extension SignInService: ASAuthorizationControllerDelegate {
         didCompleteWithError error: Error
     ) {
         Task { @MainActor in
-            isLoading = false
-            let authError = error as? ASAuthorizationError
-            if authError?.code != .canceled {
-                authErrorMessage = error.localizedDescription
-            }
+            handleAuthorizationResult(.failure(error))
         }
     }
 }

@@ -12,7 +12,7 @@ struct SectionHeader: View {
                 .font(AppType.caption)
                 .textCase(.uppercase)
                 .tracking(1.5)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(Color.appTextSecondary)
 
             Spacer()
 
@@ -20,7 +20,7 @@ struct SectionHeader: View {
                 Button(action: { action?() }) {
                     Text(actionLabel)
                         .font(AppType.caption)
-                        .foregroundColor(.blue)
+                        .foregroundColor(Color.appAccentPrimary)
                 }
             }
         }

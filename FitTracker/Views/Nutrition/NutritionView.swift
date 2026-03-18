@@ -12,13 +12,9 @@ struct NutritionView: View {
     private var morning: [SupplementDefinition] { TrainingProgramData.morningSupplements }
     private var evening: [SupplementDefinition] { TrainingProgramData.eveningSupplements }
 
-    private let bgOrange1 = Color.appOrange1
-    private let bgOrange2 = Color.appOrange2
-
     var body: some View {
         ZStack {
-            LinearGradient(colors: [bgOrange1, bgOrange2],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            AppGradient.screenBackground
                 .ignoresSafeArea()
 
         ScrollView(showsIndicators: false) {

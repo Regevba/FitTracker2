@@ -77,7 +77,7 @@ struct WelcomeView: View {
                     .opacity(logoOpacity)
 
                     VStack(spacing: 8) {
-                        Text("FitTracker")
+                        Text(AppBrand.name)
                             .font(.system(size: 38, weight: .bold, design: .rounded))
                             .foregroundStyle(.white)
 
@@ -85,7 +85,7 @@ struct WelcomeView: View {
                             .font(.title3.weight(.semibold))
                             .foregroundStyle(.white.opacity(0.9))
 
-                        Text("Apple sign-in and passkeys are supported. FitTracker keeps your health data encrypted on device and before sync.")
+                        Text("Apple sign-in and passkeys are supported. \(AppBrand.name) keeps your health data encrypted on device and before sync.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)

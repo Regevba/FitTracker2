@@ -66,11 +66,6 @@ struct MainScreenView: View {
         RecoveryRoutineLibrary.recommend(dayType: activeDayType, readinessScore: readinessScore, liveMetrics: metrics, log: todayLog, preferences: dataStore.userPreferences)
     }
 
-    // Background palette — defined centrally in AppTheme.swift
-    private let bgOrange1 = Color.appOrange1
-    private let bgOrange2 = Color.appOrange2
-    private let bgBlue1   = Color.appBlue1
-    private let bgBlue2   = Color.appBlue2
     private let bodyFatTint = Color(red: 0.76, green: 0.38, blue: 0.06)
 
     private func checkMilestones() {
@@ -188,15 +183,8 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var backgroundLayer: some View {
-        ZStack {
-            LinearGradient(colors: [bgOrange1, bgOrange2],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
-            LinearGradient(colors: [bgBlue1, bgBlue2],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
-                .opacity(goalProgress)
-                .animation(.easeOut(duration: 0.6), value: goalProgress)
-        }
-        .ignoresSafeArea()
+        AppGradient.screenBackground
+            .ignoresSafeArea()
     }
 
     // ─────────────────────────────────────────────────────
@@ -351,7 +339,7 @@ struct MainScreenView: View {
         VStack(alignment: .leading, spacing: cardInnerSpacing(compact: compact, tight: tight)) {
             sectionEyebrow("Start Training")
 
-            HStack(spacing: splitSectionSpacing(compact: compact, tight: tight)) {
+            HStack(alignment: .center, spacing: splitSectionSpacing(compact: compact, tight: tight)) {
                 Button {
                     performHomeAction("primary", style: .medium, action: runPrimaryAction)
                 } label: {
@@ -401,6 +389,8 @@ struct MainScreenView: View {
                             .lineLimit(2)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(minHeight: tight ? 64 : (compact ? 76 : 88), alignment: .center)
 
                 Spacer(minLength: 0)
             }
@@ -893,13 +883,13 @@ struct SyncStatusIndicator: View {
         .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.34))
+                .fill(Color.appSurface.opacity(0.96))
                 .overlay(
                     Capsule()
-                        .stroke(Color.white.opacity(0.42), lineWidth: 1)
+                        .stroke(Color.appStroke, lineWidth: 1)
                 )
         )
-        .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
+        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
         .tint(.clear)
     }
 }

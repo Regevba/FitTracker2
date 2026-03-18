@@ -14,10 +14,11 @@ struct ChartCard<Content: View>: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(title)
                         .font(AppType.headline)
+                        .foregroundStyle(Color.appTextPrimary)
 
                     Text(periodLabel)
                         .font(AppType.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.appTextSecondary)
                 }
 
                 Spacer()
@@ -27,20 +28,20 @@ struct ChartCard<Content: View>: View {
                 } else {
                     Text("Trend")
                         .font(AppType.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.appTextSecondary)
                         .padding(.vertical, 3)
                         .padding(.horizontal, 9)
-                        .background(Color.white.opacity(0.08), in: Capsule())
+                        .background(Color.appSurface.opacity(0.9), in: Capsule())
                 }
             }
 
             content()
         }
         .padding(14)
-        .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(Color.appStroke, lineWidth: 1)
         )
         .accessibilityElement(children: .contain)
     }

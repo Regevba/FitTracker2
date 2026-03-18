@@ -311,12 +311,8 @@ struct StatsView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [Color.appOrange1, Color.appOrange2],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            AppGradient.screenBackground
+                .ignoresSafeArea()
 
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 14) {

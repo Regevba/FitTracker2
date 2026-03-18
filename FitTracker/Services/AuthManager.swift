@@ -47,7 +47,7 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
             return await withCheckedContinuation { continuation in
                 ctx.evaluatePolicy(
                     .deviceOwnerAuthenticationWithBiometrics,
-                    localizedReason: "Unlock FitTracker to access your encrypted health data"
+                    localizedReason: "Unlock \(AppBrand.name) to access your encrypted health data"
                 ) { ok, e in
                     Task { @MainActor [weak self] in
                         self?.isAuthenticated = ok
@@ -61,7 +61,7 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
             }
         } else {
             isAuthenticated = false
-            authError = "Face ID or Touch ID is required to unlock FitTracker. Set up biometrics in device settings, then try again."
+            authError = "Face ID or Touch ID is required to unlock \(AppBrand.name). Set up biometrics in device settings, then try again."
             return false
         }
         #endif
@@ -76,18 +76,26 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
     }
 
     var isAvailable: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
         let ctx = LAContext()
         var error: NSError?
         return ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        #endif
     }
 
     var biometricType: LABiometryType? {
+        #if targetEnvironment(simulator)
+        return .faceID
+        #else
         let ctx = LAContext()
         var error: NSError?
         guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
             return nil
         }
         return ctx.biometryType
+        #endif
     }
 
     var biometricLabel: String {
@@ -150,7 +158,7 @@ struct LockScreenView: View {
                     }
 
                     VStack(spacing: 8) {
-                        Text("Unlock FitTracker")
+                        Text("Unlock \(AppBrand.name)")
                             .font(.system(.title2, design: .rounded, weight: .bold))
                             .foregroundStyle(.white)
                         Text("Use \(biometricName) to reopen your encrypted data.")

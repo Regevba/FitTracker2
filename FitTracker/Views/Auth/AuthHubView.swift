@@ -81,74 +81,107 @@ private struct AuthEntryScreen: View {
     @EnvironmentObject private var settings: AppSettings
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .center, spacing: 22) {
             Spacer(minLength: 14)
 
-            VStack(alignment: .leading, spacing: 10) {
-                Text("FitTracker")
+            VStack(alignment: .center, spacing: 10) {
+                Text(AppBrand.name)
                     .font(AppType.display)
-                    .foregroundStyle(.black.opacity(0.88))
+                    .fontWeight(.bold)
+                    .foregroundStyle(.clear)
+                    .overlay(
+                        AppGradient.brand.mask(
+                            Text(AppBrand.name)
+                                .font(AppType.display)
+                                .fontWeight(.bold)
+                        )
+                    )
 
                 Text("Private health, training, and recovery tracking in one secure place.")
                     .font(AppType.body)
-                    .foregroundStyle(.black.opacity(0.58))
-                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(Color.appTextSecondary)
+                    .multilineTextAlignment(.center)
             }
+            .frame(maxWidth: .infinity)
 
-            Spacer(minLength: 10)
+            Spacer(minLength: 24)
 
             VStack(spacing: 12) {
-                Button("Register") {
-                    signIn.openRegisterFlow()
-                }
-                .buttonStyle(AuthPrimaryButtonStyle())
-
                 Button("Log In") {
                     signIn.openLoginFlow()
                 }
                 .buttonStyle(AuthSecondaryButtonStyle())
+                .frame(maxWidth: 260)
 
-                VStack(spacing: 10) {
-                    if showBiometricQuickAction {
-                        Button {
-                            Task {
-                                let success = await biometricAuth.authenticateForQuickUnlock()
-                                if success {
+                if showBiometricQuickAction {
+                    Button {
+                        Task {
+                            let success = await biometricAuth.authenticateForQuickUnlock()
+                            if success {
+                                if signIn.hasStoredSession {
                                     signIn.resumeStoredSession()
+                                } else {
+                                    signIn.openLoginFlow()
                                 }
                             }
-                        } label: {
-                            AuthQuickActionLabel(
-                                icon: biometricAuth.biometricIcon,
-                                title: biometricAuth.biometricLabel,
-                                subtitle: "Open your existing FitTracker session"
-                            )
                         }
-                        .buttonStyle(AuthTertiaryButtonStyle())
-                    }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: biometricAuth.biometricIcon)
+                                .font(.system(size: 18, weight: .semibold))
 
-                    if signIn.canShowPasskeyLogin {
-                        Button {
-                            signIn.signInWithPasskey()
-                        } label: {
-                            AuthQuickActionLabel(
-                                icon: "key.fill",
-                                title: "Use Passkey",
-                                subtitle: "Sign in with a saved passkey or hardware key"
-                            )
+                            Text("Log in with \(biometricAuth.biometricName)")
+                                .font(AppType.body.weight(.semibold))
+                                .underline()
                         }
-                        .buttonStyle(AuthTertiaryButtonStyle())
+                        .foregroundStyle(Color.accent.cyan)
                     }
+                    .buttonStyle(.plain)
+                }
+
+                if signIn.canShowPasskeyLogin {
+                    Button {
+                        signIn.signInWithPasskey()
+                    } label: {
+                        AuthQuickActionLabel(
+                            icon: "key.fill",
+                            title: "Use Passkey",
+                            subtitle: "Sign in with a saved passkey or hardware key"
+                        )
+                    }
+                    .buttonStyle(AuthTertiaryButtonStyle())
                 }
             }
 
             Spacer()
+
+            Button {
+                signIn.openRegisterFlow()
+            } label: {
+                HStack(spacing: 4) {
+                    Text("New to \(AppBrand.name)?")
+                        .font(AppType.body)
+                        .foregroundStyle(Color.appTextSecondary)
+
+                    Text("Register now")
+                        .font(AppType.body.weight(.semibold))
+                        .foregroundStyle(.clear)
+                        .overlay(
+                            AppGradient.brand.mask(
+                                Text("Register now")
+                                    .font(AppType.body.weight(.semibold))
+                            )
+                        )
+                }
+            }
+            .buttonStyle(.plain)
+            .padding(.bottom, 32)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var showBiometricQuickAction: Bool {
-        signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen && biometricAuth.isAvailable
+        biometricAuth.isAvailable
     }
 }
 
@@ -159,7 +192,7 @@ private enum AuthMethodMode {
     var title: String {
         switch self {
         case .register: "Create your account"
-        case .login: "Log in to FitTracker"
+        case .login: "Log in to \(AppBrand.name)"
         }
     }
 
@@ -206,15 +239,7 @@ private struct AuthMethodSelectionView: View {
                     }
                     .buttonStyle(AuthCardButtonStyle(baseFill: .white, useDarkStroke: true))
 
-                    Button {
-                        signIn.signInWithApple()
-                    } label: {
-                        AppleProviderRow(
-                            title: mode == .register ? "Continue with Apple" : "Log in with Apple",
-                            subtitle: "Use your Apple Account"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: .black.opacity(0.88), foreground: .white))
+                    AppleSignInProviderButton(mode: mode)
 
                     if mode == .login && signIn.canShowPasskeyLogin {
                         Button {
@@ -504,42 +529,28 @@ private struct GoogleProviderRow: View {
     }
 }
 
-private struct AppleProviderRow: View {
-    let title: String
-    let subtitle: String
+private struct AppleSignInProviderButton: View {
+    @EnvironmentObject private var signIn: SignInService
+    let mode: AuthMethodMode
 
     var body: some View {
-        HStack(spacing: 14) {
-            OfficialAppleButtonIcon()
-                .frame(width: 28, height: 28)
+        VStack(alignment: .leading, spacing: 8) {
+            SignInWithAppleButton(
+                mode == .register ? .continue : .signIn,
+                onRequest: signIn.prepareAppleSignInRequest,
+                onCompletion: signIn.handleAppleSignInResult
+            )
+            .signInWithAppleButtonStyle(.black)
+            .frame(maxWidth: .infinity)
+            .frame(height: 62)
+            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(.white)
-                Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.white.opacity(0.72))
-            }
-
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.75))
+            Text("Use your Apple Account")
+                .font(AppType.subheading)
+                .foregroundStyle(.black.opacity(0.48))
+                .padding(.horizontal, 6)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
-}
-
-private struct OfficialAppleButtonIcon: UIViewRepresentable {
-    func makeUIView(context: Context) -> ASAuthorizationAppleIDButton {
-        let button = ASAuthorizationAppleIDButton(type: .signIn, style: .white)
-        button.isUserInteractionEnabled = false
-        button.cornerRadius = 8
-        return button
-    }
-
-    func updateUIView(_ uiView: ASAuthorizationAppleIDButton, context: Context) {}
 }
 
 private struct AuthTextField: View {
@@ -632,7 +643,15 @@ private struct AuthPrimaryButtonStyle: ButtonStyle {
             .padding(.vertical, 16)
             .background(
                 RoundedRectangle(cornerRadius: 18)
-                    .fill(Color.black.opacity(configuration.isPressed ? 0.74 : 0.82))
+                    .fill(
+                        LinearGradient(
+                            colors: configuration.isPressed
+                                ? [Color.appOrange3.opacity(0.92), Color.appOrange2.opacity(0.92)]
+                                : [Color.appOrange3, Color.appOrange2],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
@@ -642,12 +661,12 @@ private struct AuthSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(AppType.body.weight(.semibold))
-            .foregroundStyle(.black.opacity(0.76))
+            .foregroundStyle(Color.appTextPrimary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 16)
             .background(
                 RoundedRectangle(cornerRadius: 18)
-                    .fill(Color.white.opacity(configuration.isPressed ? 0.72 : 0.62))
+                    .fill(Color.appSurface.opacity(configuration.isPressed ? 0.82 : 1))
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 18)
@@ -676,7 +695,7 @@ private struct AuthTertiaryButtonStyle: ButtonStyle {
 
 private struct AuthCardButtonStyle: ButtonStyle {
     var baseFill: Color = Color.appSurface
-    var foreground: Color = .black
+    var foreground: Color = .appTextPrimary
     var useDarkStroke = false
 
     func makeBody(configuration: Configuration) -> some View {

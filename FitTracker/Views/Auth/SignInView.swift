@@ -33,7 +33,7 @@ struct SignInView: View {
                                 )
                                 .padding(.top, 8)
 
-                            Text("Continue to FitTracker")
+                            Text("Continue to \(AppBrand.name)")
                                 .font(.system(.title, design: .rounded, weight: .bold))
 
                             Text("Use Apple or a passkey to get back to your encrypted training data.")

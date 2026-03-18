@@ -70,6 +70,7 @@ struct FitTrackerApp: App {
                     .environmentObject(healthService)
                     .environmentObject(cloudSync)
                     .environmentObject(settings)
+                    .environmentObject(watchService)
         }
         #endif
     }

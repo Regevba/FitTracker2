@@ -12,15 +12,15 @@ struct EmptyStateView: View {
         VStack(spacing: 10) {
             Image(systemName: icon)
                 .font(.system(size: 36))
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.appTextSecondary)
 
             Text(title)
                 .font(AppType.headline)
-                .foregroundColor(.primary)
+                .foregroundColor(Color.appTextPrimary)
 
             Text(subtitle)
                 .font(AppType.subheading)
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.appTextSecondary)
                 .multilineTextAlignment(.center)
 
             if let ctaLabel = ctaLabel, ctaAction != nil {
@@ -28,7 +28,7 @@ struct EmptyStateView: View {
                     Text(ctaLabel)
                         .font(AppType.body)
                 }
-                .foregroundColor(.orange)
+                .foregroundColor(Color.appAccentPrimary)
             }
         }
         .padding(.horizontal, 24)

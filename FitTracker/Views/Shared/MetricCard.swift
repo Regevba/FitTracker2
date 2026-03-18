@@ -19,7 +19,7 @@ struct MetricCard: View {
                         .font(AppType.caption)
                         .textCase(.uppercase)
                 }
-                .foregroundColor(.secondary)
+                .foregroundColor(Color.appTextSecondary)
 
                 Spacer()
 
@@ -31,12 +31,13 @@ struct MetricCard: View {
             HStack(alignment: .lastTextBaseline, spacing: 4) {
                 Text(value)
                     .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.appTextPrimary)
                     .lineLimit(1)
 
                 if let unit = unit {
                     Text(unit)
                         .font(AppType.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.appTextSecondary)
                 }
             }
 
@@ -47,15 +48,15 @@ struct MetricCard: View {
             } else {
                 Text("No change signal yet")
                     .font(AppType.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(Color.appTextSecondary)
             }
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: 16))
         .overlay(
             RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(Color.appStroke, lineWidth: 1)
         )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)

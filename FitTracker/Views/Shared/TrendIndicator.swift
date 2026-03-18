@@ -35,7 +35,11 @@ struct TrendIndicator: View {
             .foregroundColor(statusColor)
             .padding(.vertical, 4)
             .padding(.horizontal, 8)
-            .background(statusColor.opacity(0.2))
+            .background(statusColor.opacity(0.16))
+            .overlay(
+                Capsule()
+                    .stroke(statusColor.opacity(0.24), lineWidth: 1)
+            )
             .clipShape(Capsule())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Trend")

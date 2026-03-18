@@ -28,8 +28,6 @@ struct TrainingPlanView: View {
     @State private var restPresetSeconds = 90
     @State private var didHapticAt10 = false
     @State private var didHapticAt0 = false
-    private let bgOrange1 = Color.appOrange1
-    private let bgOrange2 = Color.appOrange2
 
     init(initialDay: DayType? = nil) {
         self.initialDay = initialDay
@@ -37,8 +35,7 @@ struct TrainingPlanView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [bgOrange1, bgOrange2],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            AppGradient.screenBackground
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {

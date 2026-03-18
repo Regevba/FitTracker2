@@ -15,6 +15,7 @@ struct AccountPanelView: View {
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var cloudSync: CloudKitSyncService
     @EnvironmentObject var settings:  AppSettings
+    @EnvironmentObject var watchService: WatchConnectivityService
     @Environment(\.dismiss) var dismiss
 
     @State private var showLogoutConfirm = false
@@ -24,23 +25,26 @@ struct AccountPanelView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 18) {
-                    accountHeroCard
-                    accessCard
-                    settingsCard
-                    signOutCard
+            ZStack {
+                AppGradient.screenBackground
+                    .ignoresSafeArea()
+
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 18) {
+                        accountHeroCard
+                        settingsLauncherCard
+                        signOutCard
+                    }
+                    .padding(20)
                 }
-                .padding(20)
             }
-            .background(Color(.systemGroupedBackground))
             .navigationTitle("Account")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                         .fontWeight(.semibold)
-                        .foregroundStyle(.green)
+                        .foregroundStyle(Color.appAccentPrimary)
                 }
             }
             .alert("Sign Out?", isPresented: $showLogoutConfirm) {
@@ -53,15 +57,14 @@ struct AccountPanelView: View {
                 Text("You'll be returned to the welcome screen. Your encrypted data remains safely stored on this device and in iCloud.")
             }
             .sheet(isPresented: $showSettings) {
-                NavigationStack {
-                    SettingsView()
-                        .environmentObject(signIn)
-                        .environmentObject(biometricAuth)
-                        .environmentObject(dataStore)
-                        .environmentObject(healthService)
-                        .environmentObject(cloudSync)
-                        .environmentObject(settings)
-                }
+                SettingsView()
+                    .environmentObject(signIn)
+                    .environmentObject(biometricAuth)
+                    .environmentObject(dataStore)
+                    .environmentObject(healthService)
+                    .environmentObject(cloudSync)
+                    .environmentObject(settings)
+                    .environmentObject(watchService)
                     .presentationDetents([.large])
             }
         }
@@ -101,9 +104,9 @@ struct AccountPanelView: View {
         .background(cardBackground)
     }
 
-    private var accessCard: some View {
+    private var settingsLauncherCard: some View {
         VStack(alignment: .leading, spacing: 14) {
-            sectionTitle("Access")
+            sectionTitle("Settings")
 
             HStack(spacing: 10) {
                 accessPill(
@@ -115,19 +118,25 @@ struct AccountPanelView: View {
                 if session?.provider == .passkey {
                     accessPill(icon: "key.fill", label: "Passkey Active", tint: .purple)
                 }
+
+                accessPill(
+                    icon: "applewatch",
+                    label: watchService.status.label,
+                    tint: watchService.status.dotColor
+                )
             }
 
             Button {
                 showSettings = true
             } label: {
                 HStack(spacing: 12) {
-                    Image(systemName: "faceid")
-                        .foregroundStyle(.green)
+                    Image(systemName: "gearshape.fill")
+                        .foregroundStyle(Color.appAccentPrimary)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Security and Access Settings")
+                        Text("Open Full Settings")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.primary)
-                        Text("Manage reopen lock, passkeys, sync, and device protection.")
+                        Text("Manage account security, HealthKit, goals, training preferences, and sync.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -138,36 +147,6 @@ struct AccountPanelView: View {
                 }
                 .padding(14)
                 .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
-            }
-            .buttonStyle(.plain)
-        }
-        .padding(18)
-        .background(cardBackground)
-    }
-
-    private var settingsCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            sectionTitle("App")
-
-            HStack(spacing: 12) {
-                settingsMiniTile(title: settings.unitSystem.rawValue, subtitle: "Units", icon: "ruler", tint: .blue)
-                settingsMiniTile(title: settings.appearance.rawValue, subtitle: "Appearance", icon: "paintpalette.fill", tint: .indigo)
-            }
-
-            Button {
-                showSettings = true
-            } label: {
-                HStack(spacing: 12) {
-                    Image(systemName: "gearshape.fill")
-                        .foregroundStyle(.blue)
-                    Text("Open Full Settings")
-                        .font(.subheadline.weight(.semibold))
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.vertical, 4)
             }
             .buttonStyle(.plain)
         }
@@ -218,7 +197,11 @@ struct AccountPanelView: View {
 
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: 22)
-            .fill(Color(.secondarySystemGroupedBackground))
+            .fill(Color.appSurface.opacity(0.96))
+            .overlay(
+                RoundedRectangle(cornerRadius: 22)
+                    .stroke(Color.appStroke, lineWidth: 1)
+            )
     }
 
     private var dividerLine: some View {
@@ -265,22 +248,6 @@ struct AccountPanelView: View {
         .padding(.horizontal, 10)
         .padding(.vertical, 8)
         .background(tint.opacity(0.12), in: Capsule())
-    }
-
-    private func settingsMiniTile(title: String, subtitle: String, icon: String, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Image(systemName: icon)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(tint)
-            Text(title)
-                .font(.subheadline.weight(.semibold))
-            Text(subtitle)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
     }
 
     @ViewBuilder

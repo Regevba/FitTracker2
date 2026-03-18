@@ -30,6 +30,7 @@ struct RootTabView: View {
     @EnvironmentObject var cloudSync:     CloudKitSyncService
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
+    @EnvironmentObject var watchService:  WatchConnectivityService
 
     @Environment(\.horizontalSizeClass) var sizeClass
 
@@ -63,6 +64,7 @@ struct RootTabView: View {
                 .environmentObject(healthService)
                 .environmentObject(cloudSync)
                 .environmentObject(settings)
+                .environmentObject(watchService)
                 .presentationDetents([.large])
                 .presentationCornerRadius(24)
         }
@@ -82,9 +84,9 @@ struct RootTabView: View {
                 .tag(tab)
             }
         }
-        .tint(.blue)
+        .tint(.appAccentPrimary)
         .toolbarBackground(.visible, for: .tabBar)
-        .toolbarBackground(Color.white.opacity(0.92), for: .tabBar)
+        .toolbarBackground(Color.appSurface, for: .tabBar)
         .toolbarColorScheme(.light, for: .tabBar)
     }
 
@@ -94,9 +96,11 @@ struct RootTabView: View {
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
                     Image(systemName: "figure.strengthtraining.traditional")
-                        .font(.title3.weight(.semibold)).foregroundStyle(.green)
-                    Text("FitTracker")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Color.appAccentPrimary)
+                    Text(AppBrand.name)
                         .font(.system(.headline, design: .rounded, weight: .bold))
+                        .foregroundStyle(Color.appTextPrimary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16).padding(.vertical, 12)
@@ -157,17 +161,17 @@ struct RootTabView: View {
             Button { showAccount = true } label: {
                 Image(systemName: "line.3.horizontal")
                     .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.92))
+                    .foregroundStyle(Color.appTextPrimary)
                     .frame(width: 46, height: 46)
                     .background(
                         Circle()
-                            .fill(Color.white.opacity(0.34))
+                            .fill(Color.appSurface.opacity(0.96))
                             .overlay(
                                 Circle()
-                                    .stroke(Color.white.opacity(0.45), lineWidth: 1)
+                                    .stroke(Color.appStroke, lineWidth: 1)
                             )
                     )
-                    .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
+                    .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
                     .contentShape(Circle())
             }
             .buttonStyle(.plain)
