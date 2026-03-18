@@ -550,6 +550,95 @@ final class EncryptedDataStore: ObservableObject {
         return normalized
     }
 
+    // ── Supabase sync merge helpers ───────────────────────
+
+    /// Merge a remote DailyLog using last-modified-wins conflict resolution.
+    func mergeDailyLog(_ remote: DailyLog) {
+        if let i = dailyLogs.firstIndex(where: {
+            Calendar.current.isDate($0.date, inSameDayAs: remote.date)
+        }) {
+            if remote.lastModified > dailyLogs[i].lastModified {
+                dailyLogs[i] = remote
+            }
+        } else {
+            dailyLogs.append(remote)
+            dailyLogs.sort { $0.date > $1.date }
+        }
+    }
+
+    /// Merge a remote WeeklySnapshot: local wins if needsSync (unsaved changes), else remote wins.
+    func mergeWeeklySnapshot(_ remote: WeeklySnapshot) {
+        if let i = weeklySnapshots.firstIndex(where: {
+            Calendar.current.isDate($0.weekStart, inSameDayAs: remote.weekStart)
+        }) {
+            guard !weeklySnapshots[i].needsSync else { return }  // local unsaved — skip
+            weeklySnapshots[i] = remote
+        } else {
+            weeklySnapshots.append(remote)
+            weeklySnapshots.sort { $0.weekStart > $1.weekStart }
+        }
+    }
+
+    /// Mark a daily log as synced (clears needsSync flag).
+    func markSynced(logID: UUID) {
+        if let i = dailyLogs.firstIndex(where: { $0.id == logID }) {
+            dailyLogs[i].needsSync = false
+        }
+    }
+
+    /// Mark a weekly snapshot as synced.
+    func markSnapshotSynced(id: UUID) {
+        if let i = weeklySnapshots.firstIndex(where: { $0.id == id }) {
+            weeklySnapshots[i].needsSync = false
+        }
+    }
+
+    /// SHA-256 three-way merge for UserProfile singleton.
+    /// Remote wins unless the local copy has been modified since the last sync.
+    func mergeProfile(_ remote: UserProfile, remoteChecksum: String, digestKey: String) {
+        guard let localBlob = try? JSONEncoder().encode(userProfile) else { return }
+        let localChecksum = SHA256.hash(data: localBlob).hexString
+        let lastSyncedChecksum = UserDefaults.standard.string(forKey: digestKey) ?? ""
+        if localChecksum == remoteChecksum { return }              // identical — no-op
+        if localChecksum != lastSyncedChecksum { return }          // local has unsaved changes — keep
+        userProfile = remote
+        UserDefaults.standard.set(remoteChecksum, forKey: digestKey)
+    }
+
+    /// SHA-256 three-way merge for UserPreferences singleton.
+    func mergePreferences(_ remote: UserPreferences, remoteChecksum: String, digestKey: String) {
+        guard let localBlob = try? JSONEncoder().encode(userPreferences) else { return }
+        let localChecksum = SHA256.hash(data: localBlob).hexString
+        let lastSyncedChecksum = UserDefaults.standard.string(forKey: digestKey) ?? ""
+        if localChecksum == remoteChecksum { return }
+        if localChecksum != lastSyncedChecksum { return }
+        userPreferences = remote
+        UserDefaults.standard.set(remoteChecksum, forKey: digestKey)
+    }
+
+    /// SHA-256 three-way merge for MealTemplates singleton.
+    func mergeMealTemplates(_ remote: [MealTemplate], remoteChecksum: String, digestKey: String) {
+        guard let localBlob = try? JSONEncoder().encode(mealTemplates) else { return }
+        let localChecksum = SHA256.hash(data: localBlob).hexString
+        let lastSyncedChecksum = UserDefaults.standard.string(forKey: digestKey) ?? ""
+        if localChecksum == remoteChecksum { return }
+        if localChecksum != lastSyncedChecksum { return }
+        mealTemplates = remote
+        UserDefaults.standard.set(remoteChecksum, forKey: digestKey)
+    }
+
+    /// Store the Supabase Storage path for a cardio asset on the matching CardioLog.
+    func updateCardioImagePath(date: Date, cardioType: String, storagePath: String) {
+        guard let logIdx = dailyLogs.firstIndex(where: {
+            Calendar.current.isDate($0.date, inSameDayAs: date)
+        }) else { return }
+        let key = cardioType.lowercased()
+        if var cardioLog = dailyLogs[logIdx].cardioLogs[key] {
+            cardioLog.summaryImageCloudID = storagePath
+            dailyLogs[logIdx].cardioLogs[key] = cardioLog
+        }
+    }
+
     private func buildHints(_ logs: [DailyLog]) -> ExportPackage.AIHints {
         let r7  = logs.prefix(7)
         let r28 = logs.prefix(28)

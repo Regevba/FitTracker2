@@ -564,6 +564,7 @@ struct WeeklySnapshot: Identifiable, Codable, Sendable {
     var bfChange:           Double?
     var cloudRecordID:      String?
     var needsSync:          Bool    = true
+    var lastModified:       Date    = Date()
 }
 
 // ─────────────────────────────────────────────────────────

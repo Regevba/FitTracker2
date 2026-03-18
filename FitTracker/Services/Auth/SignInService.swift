@@ -83,8 +83,7 @@ struct EmailRegistrationChallenge: Codable, Hashable, Sendable {
 }
 
 protocol AppleAuthProviding {
-    @MainActor
-    func startSignIn(using service: SignInService)
+    func startSignIn() async throws -> UserSession
 }
 
 protocol GoogleAuthProviding {
@@ -97,12 +96,8 @@ protocol EmailAuthProviding {
     func login(email: String, password: String) async throws -> UserSession
 }
 
-struct SystemAppleAuthProvider: AppleAuthProviding {
-    @MainActor
-    func startSignIn(using service: SignInService) {
-        service.startSystemAppleSignIn()
-    }
-}
+// SystemAppleAuthProvider removed — replaced by SupabaseAppleAuthProvider.
+// SupabaseAppleAuthProvider is defined in SupabaseAppleAuthProvider.swift.
 
 struct MockGoogleAuthProvider: GoogleAuthProviding {
     func signIn() async throws -> UserSession {
@@ -208,7 +203,7 @@ final class SignInService: NSObject, ObservableObject {
     #endif
 
     override init() {
-        self.appleProvider = SystemAppleAuthProvider()
+        self.appleProvider = SupabaseAppleAuthProvider()
         self.googleProvider = MockGoogleAuthProvider()
         self.emailProvider = MockEmailAuthProvider()
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
@@ -246,15 +241,23 @@ final class SignInService: NSObject, ObservableObject {
     var isPasskeyConfigured: Bool { passkeyRelyingPartyIdentifier != nil }
     var canShowPasskeyLogin: Bool { hasRegisteredPasskey && isPasskeyConfigured }
 
-    func restoreSession() {
+    /// Restores a previous session. Checks Supabase for a live/refreshable JWT;
+    /// updates the stored token if valid. Call from within a Task block at app launch.
+    func restoreSession() async {
         guard activeSession == nil else { return }
-
-        if let data = KeychainHelper.load(key: Self.sessionKey),
-           let session = try? JSONDecoder().decode(UserSession.self, from: data) {
-            storedSession = session
-        } else {
-            storedSession = nil
+        // 1. Ask Supabase if there's a live (or refreshable) session
+        if let supabaseSession = try? await supabase.auth.session {
+            // 2. Load UserSession metadata from Keychain and refresh the JWT
+            if let data = KeychainHelper.load(key: Self.sessionKey),
+               var stored = try? JSONDecoder().decode(UserSession.self, from: data) {
+                stored.sessionToken = supabaseSession.accessToken
+                self.storedSession = stored
+                return
+            }
         }
+        // 3. No valid Supabase session → clear Keychain
+        KeychainHelper.delete(key: Self.sessionKey)
+        self.storedSession = nil
     }
 
     func lockForReopen() {
@@ -391,29 +394,18 @@ final class SignInService: NSObject, ObservableObject {
         authErrorMessage = nil
         statusMessage = nil
         isLoading = true
-        appleProvider.startSignIn(using: self)
-    }
-
-    @MainActor
-    func startSystemAppleSignIn() {
-        #if os(iOS)
-        cachedWindow = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-        #elseif os(macOS)
-        cachedWindow = NSApplication.shared.windows.first
-        #endif
-
-        let nonce = generateNonce()
-        let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = sha256(nonce)
-
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-        controller.presentationContextProvider = self
-        controller.performRequests()
+        Task {
+            do {
+                let session = try await appleProvider.startSignIn()
+                finishSignIn(session)
+            } catch {
+                isLoading = false
+                let authError = error as? ASAuthorizationError
+                if authError?.code != .canceled {
+                    authErrorMessage = error.localizedDescription
+                }
+            }
+        }
     }
 
     func signInWithPasskey(userHandle: String? = nil) {
@@ -575,24 +567,9 @@ final class SignInService: NSObject, ObservableObject {
     }
 }
 
-extension SignInService {
-    static func mergedAppleSession(
-        userID: String,
-        incomingName: String,
-        incomingEmail: String?,
-        existingAppleSession: UserSession?
-    ) -> UserSession {
-        UserSession(
-            provider: .apple,
-            userID: userID,
-            displayName: incomingName.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : incomingName,
-            email: incomingEmail ?? existingAppleSession?.email,
-            phone: existingAppleSession?.phone,
-            avatarURL: existingAppleSession?.avatarURL,
-            sessionToken: userID
-        )
-    }
-}
+// mergedAppleSession removed — SupabaseAppleAuthProvider returns a complete UserSession
+// with the correct JWT sessionToken. The old implementation stored userID as sessionToken
+// (a bug), which is now fixed by construction in UserSession(from: Supabase.Session).
 
 // ─────────────────────────────────────────────────────────
 // MARK: – ASAuthorizationControllerDelegate
@@ -608,18 +585,8 @@ extension SignInService: ASAuthorizationControllerDelegate {
             isLoading = false
 
             switch authorization.credential {
-            case let cred as ASAuthorizationAppleIDCredential:
-                let name = [cred.fullName?.givenName, cred.fullName?.familyName]
-                    .compactMap { $0 }
-                    .joined(separator: " ")
-
-                let session = Self.mergedAppleSession(
-                    userID: cred.user,
-                    incomingName: name,
-                    incomingEmail: cred.email,
-                    existingAppleSession: storedSession?.provider == .apple ? storedSession : nil
-                )
-                finishSignIn(session)
+            // Note: ASAuthorizationAppleIDCredential is no longer handled here.
+            // SupabaseAppleAuthProvider uses its own ASAuthorizationController + delegate.
 
             case let cred as ASAuthorizationPlatformPublicKeyCredentialAssertion:
                 let session = UserSession(

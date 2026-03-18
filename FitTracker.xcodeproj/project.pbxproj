@@ -43,6 +43,16 @@
 		CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0B /* MealEntrySheet.swift */; };
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 		CC000001000000000000AA0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0D /* SettingsView.swift */; };
+		FB1000001000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000001 /* SupabaseClient.swift */; };
+		FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000002 /* SupabaseSyncService.swift */; };
+		FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000003 /* UserSession+Supabase.swift */; };
+		FB1000001000000000000004 /* FTAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000004 /* FTAuthError.swift */; };
+		FB1000001000000000000005 /* SupabaseAppleAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000005 /* SupabaseAppleAuthProvider.swift */; };
+		FB1000001000000000000006 /* EmailAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000006 /* EmailAuthProvider.swift */; };
+		FB1000001000000000000007 /* Date+Sync.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000007 /* Date+Sync.swift */; };
+		FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000001 /* UserSessionMappingTests.swift */; };
+		FT1000001000000000000002 /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000002 /* SyncMergeTests.swift */; };
+		FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000003 /* SupabaseClientTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +96,17 @@
 		CC000002000000000000AA0B /* MealEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEntrySheet.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0C /* RecoverySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverySupport.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		FB2000001000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
+		FB2000001000000000000002 /* SupabaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncService.swift; sourceTree = "<group>"; };
+		FB2000001000000000000003 /* UserSession+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSession+Supabase.swift"; sourceTree = "<group>"; };
+		FB2000001000000000000004 /* FTAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTAuthError.swift; sourceTree = "<group>"; };
+		FB2000001000000000000005 /* SupabaseAppleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAppleAuthProvider.swift; sourceTree = "<group>"; };
+		FB2000001000000000000006 /* EmailAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailAuthProvider.swift; sourceTree = "<group>"; };
+		FB2000001000000000000007 /* Date+Sync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Sync.swift"; sourceTree = "<group>"; };
+		FB2000001000000000000008 /* GoogleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthProvider.swift; sourceTree = "<group>"; };
+		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
+		FT2000001000000000000002 /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
+		FT2000001000000000000003 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +143,7 @@
 				A40000010000000000000004 /* Models */,
 				A40000010000000000000005 /* Services */,
 				A40000010000000000000006 /* Views */,
+				FB4000001000000000000002 /* Extensions */,
 				A20000010000000000000012 /* Info.plist */,
 				A20000010000000000000013 /* FitTracker.entitlements */,
 			);
@@ -141,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				B20000010000000000000001 /* FitTrackerCoreTests.swift */,
+				FT4000001000000000000001 /* SupabaseTests */,
 			);
 			path = FitTrackerTests;
 			sourceTree = "<group>";
@@ -150,8 +173,36 @@
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
+				FB2000001000000000000003 /* UserSession+Supabase.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FB4000001000000000000001 /* Supabase */ = {
+			isa = PBXGroup;
+			children = (
+				FB2000001000000000000001 /* SupabaseClient.swift */,
+				FB2000001000000000000002 /* SupabaseSyncService.swift */,
+			);
+			path = Supabase;
+			sourceTree = "<group>";
+		};
+		FB4000001000000000000002 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FB2000001000000000000007 /* Date+Sync.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FT4000001000000000000001 /* SupabaseTests */ = {
+			isa = PBXGroup;
+			children = (
+				FT2000001000000000000003 /* SupabaseClientTests.swift */,
+				FT2000001000000000000001 /* UserSessionMappingTests.swift */,
+				FT2000001000000000000002 /* SyncMergeTests.swift */,
+			);
+			path = SupabaseTests;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000005 /* Services */ = {
@@ -165,6 +216,7 @@
 				A40000010000000000000008 /* HealthKit */,
 				A40000010000000000000009 /* CloudKit */,
 				A4000001000000000000000A /* Encryption */,
+				FB4000001000000000000001 /* Supabase */,
 				A20000010000000000000008 /* AppSettings.swift */,
 			);
 			path = Services;
@@ -190,6 +242,10 @@
 			children = (
 				A20000010000000000000005 /* SignInService.swift */,
 				A20000010000000000000015 /* AuthValidation.swift */,
+				FB2000001000000000000004 /* FTAuthError.swift */,
+				FB2000001000000000000005 /* SupabaseAppleAuthProvider.swift */,
+				FB2000001000000000000006 /* EmailAuthProvider.swift */,
+				FB2000001000000000000008 /* GoogleAuthProvider.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -427,6 +483,13 @@
 				CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */,
 				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 				CC000001000000000000AA0D /* SettingsView.swift in Sources */,
+				FB1000001000000000000001 /* SupabaseClient.swift in Sources */,
+				FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */,
+				FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */,
+				FB1000001000000000000004 /* FTAuthError.swift in Sources */,
+				FB1000001000000000000005 /* SupabaseAppleAuthProvider.swift in Sources */,
+				FB1000001000000000000006 /* EmailAuthProvider.swift in Sources */,
+				FB1000001000000000000007 /* Date+Sync.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -435,6 +498,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */,
+				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
+				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
+				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
