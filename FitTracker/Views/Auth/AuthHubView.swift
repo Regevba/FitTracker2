@@ -181,7 +181,7 @@ private struct AuthEntryScreen: View {
     }
 
     private var showBiometricQuickAction: Bool {
-        biometricAuth.isAvailable
+        biometricAuth.isAvailable && signIn.hasStoredSession
     }
 }
 
@@ -214,6 +214,8 @@ private struct AuthMethodSelectionView: View {
                 AuthScreenHeader(title: mode.title, subtitle: mode.subtitle)
 
                 VStack(spacing: 12) {
+                    AppleSignInProviderButton(mode: mode)
+
                     Button {
                         switch mode {
                         case .register: signIn.showEmailRegistration()
@@ -228,18 +230,6 @@ private struct AuthMethodSelectionView: View {
                         )
                     }
                     .buttonStyle(AuthCardButtonStyle())
-
-                    Button {
-                        signIn.signInWithGoogle()
-                    } label: {
-                        GoogleProviderRow(
-                            title: mode == .register ? "Continue with Google" : "Log in with Google",
-                            subtitle: "Use your Google account"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: .white, useDarkStroke: true))
-
-                    AppleSignInProviderButton(mode: mode)
 
                     if mode == .login && signIn.canShowPasskeyLogin {
                         Button {
@@ -485,39 +475,6 @@ private struct AuthProviderRow: View {
                 Text(subtitle)
                     .font(AppType.subheading)
                     .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct GoogleProviderRow: View {
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 26, height: 26)
-                Text("G")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
-            }
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(.black.opacity(0.84))
-                Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.48))
             }
 
             Spacer()

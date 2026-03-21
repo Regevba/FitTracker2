@@ -43,11 +43,11 @@ The current app is built around a `Today`-first experience:
 - all sensitive data is encrypted on device before disk persistence or CloudKit sync
 - biometric unlock for encryption keys
 - optional `Require Face ID/Touch ID on Reopen` behavior in Settings
-- Apple Sign In plus passkey support
+- Apple Sign In, email auth, and passkey support
 - a new auth hub with separate register and log-in paths
 - conditional quick actions for Face ID/Touch ID and passkey sign-in
 - email registration with password rules, verification-code flow, and AutoFill-friendly fields
-- Google and email auth adapters that are UI-ready and backend-ready, with mock development implementations today
+- email auth is UI-ready today and still backed by mock development adapters
 - simplified account and settings flows that keep passkey creation in Settings
 
 ## What Changed Recently
@@ -144,7 +144,7 @@ FitTracker/
   - conditional `Use Passkey`
 - Registration and login use separate method choosers so provider selection and form entry are not mixed together.
 - `Sign in with Apple` remains the live provider path.
-- Email and Google auth are implemented behind adapters so the UI and flow are production-shaped while backend exchange and verification services can be swapped in later.
+- Email auth is implemented behind adapters so the UI and flow are production-shaped while backend exchange and verification services can be swapped in later.
 - Email registration includes:
   - first name, last name, birthday, email, password, confirm password
   - password-rule guidance
@@ -199,7 +199,7 @@ xcodebuild test \
 - CloudKit sync depends on a signed-in iCloud account.
 - CloudKit is intentionally disabled on simulator builds; use a signed physical device for end-to-end iCloud sync validation.
 - Auth entry uses the new `AuthHubView` path in `FitTrackerApp`; older auth views remain in the project for compatibility while the new flow is the active root experience.
-- Email verification and Google auth are currently mock-backed adapter flows until production backend/provider wiring is finalized.
+- Email verification is currently a mock-backed adapter flow until production backend/provider wiring is finalized.
 - Passkey creation requires a valid `PasskeyRelyingPartyID` configuration.
 - Barcode product lookup currently uses Open Food Facts as the primary free/public packaged-food database.
 - Smart nutrition-label OCR uses Apple's Vision framework. English label photos are the best-supported path.

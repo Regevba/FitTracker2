@@ -1,7 +1,6 @@
 // Services/Auth/SignInService.swift
 // Session + auth flow manager for:
 //   - Sign in with Apple
-//   - Google sign-in (adapter-backed, mockable)
 //   - Email registration / verification / login (adapter-backed, mockable)
 //   - Passkey / WebAuthn login and registration
 
@@ -40,8 +39,6 @@ struct UserSession: Codable, Sendable, Equatable {
 
 enum AuthProvider: String, Codable, Sendable {
     case apple    = "Apple"
-    case google   = "Google"
-    case facebook = "Facebook"
     case passkey  = "Passkey"
     case email    = "Email"
 }
@@ -87,10 +84,6 @@ protocol AppleAuthProviding {
     func startSignIn(using service: SignInService)
 }
 
-protocol GoogleAuthProviding {
-    func signIn() async throws -> UserSession
-}
-
 protocol EmailAuthProviding {
     func register(_ draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge
     func verify(code: String, challenge: EmailRegistrationChallenge, draft: PendingEmailRegistration) async throws -> UserSession
@@ -101,19 +94,6 @@ struct SystemAppleAuthProvider: AppleAuthProviding {
     @MainActor
     func startSignIn(using service: SignInService) {
         service.startSystemAppleSignIn()
-    }
-}
-
-struct MockGoogleAuthProvider: GoogleAuthProviding {
-    func signIn() async throws -> UserSession {
-        try await Task.sleep(for: .milliseconds(700))
-        return UserSession(
-            provider: .google,
-            userID: UUID().uuidString,
-            displayName: "Google User",
-            email: "user@gmail.com",
-            sessionToken: UUID().uuidString
-        )
     }
 }
 
@@ -194,7 +174,6 @@ final class SignInService: NSObject, ObservableObject {
     @Published private(set) var hasRegisteredPasskey: Bool
 
     private let appleProvider: AppleAuthProviding
-    private let googleProvider: GoogleAuthProviding
     private let emailProvider: EmailAuthProviding
 
     private var currentChallenge: Data = Data()
@@ -209,7 +188,6 @@ final class SignInService: NSObject, ObservableObject {
 
     override init() {
         self.appleProvider = SystemAppleAuthProvider()
-        self.googleProvider = MockGoogleAuthProvider()
         self.emailProvider = MockEmailAuthProvider()
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
@@ -217,11 +195,9 @@ final class SignInService: NSObject, ObservableObject {
 
     init(
         appleProvider: AppleAuthProviding,
-        googleProvider: GoogleAuthProviding,
         emailProvider: EmailAuthProviding
     ) {
         self.appleProvider = appleProvider
-        self.googleProvider = googleProvider
         self.emailProvider = emailProvider
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
@@ -364,26 +340,6 @@ final class SignInService: NSObject, ObservableObject {
         } catch {
             isLoading = false
             authErrorMessage = error.localizedDescription
-        }
-    }
-
-    func signInWithGoogle() {
-        isLoading = true
-        authErrorMessage = nil
-        statusMessage = nil
-
-        Task {
-            do {
-                let session = try await googleProvider.signIn()
-                await MainActor.run {
-                    self.finishSignIn(session)
-                }
-            } catch {
-                await MainActor.run {
-                    self.isLoading = false
-                    self.authErrorMessage = error.localizedDescription
-                }
-            }
         }
     }
 
