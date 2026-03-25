@@ -145,7 +145,7 @@ private struct AuthLandingView: View {
     @FocusState private var focusedField: AuthField?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 18) {
             AuthHeroSection(mode: mode)
 
             if showQuickReturn {
@@ -160,14 +160,8 @@ private struct AuthLandingView: View {
             }
 
             AuthSurfaceCard {
-                VStack(alignment: .leading, spacing: 18) {
-                    Picker("Authentication mode", selection: $mode) {
-                        ForEach(AuthMode.allCases) { currentMode in
-                            Text(currentMode.rawValue).tag(currentMode)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                    .accessibilityHint("Switch between login and account creation.")
+                VStack(alignment: .leading, spacing: 16) {
+                    AuthModeSwitcher(mode: $mode)
 
                     VStack(alignment: .leading, spacing: 6) {
                         Text(mode.title)
@@ -248,53 +242,92 @@ private struct AuthHeroSection: View {
     private let trustItems: [(icon: String, title: String)] = [
         ("lock.shield.fill", "Encrypted on device"),
         ("icloud.fill", "Apple ecosystem ready"),
-        ("heart.text.square.fill", "Health data stays private"),
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 8) {
                 Text(AppBrand.name)
-                    .font(.system(size: 38, weight: .bold, design: .rounded))
+                    .font(.system(size: 31, weight: .bold, design: .rounded))
                     .foregroundStyle(.clear)
                     .overlay(
                         AppGradient.brand.mask(
                             Text(AppBrand.name)
-                                .font(.system(size: 38, weight: .bold, design: .rounded))
+                                .font(.system(size: 31, weight: .bold, design: .rounded))
                         )
                     )
 
                 Text(mode == .login ? "Your secure fitness command center." : "A calmer way to track training, recovery, and nutrition.")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(Color.appTextPrimary)
 
                 Text("Sign in quickly, keep your data encrypted, and get back to the workouts, meals, and recovery signals that matter today.")
-                    .font(AppType.body)
+                    .font(AppType.subheading.weight(.medium))
                     .foregroundStyle(Color.appTextSecondary)
             }
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(trustItems, id: \.title) { item in
-                        HStack(spacing: 8) {
-                            Image(systemName: item.icon)
-                                .font(.system(size: 13, weight: .semibold))
-                            Text(item.title)
-                                .font(AppType.subheading.weight(.semibold))
-                        }
-                        .foregroundStyle(Color.appTextPrimary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
-                        .background(Color.white.opacity(0.55), in: Capsule())
-                        .overlay(
-                            Capsule()
-                                .stroke(Color.appStroke, lineWidth: 1)
-                        )
+            HStack(spacing: 10) {
+                ForEach(trustItems, id: \.title) { item in
+                    HStack(spacing: 7) {
+                        Image(systemName: item.icon)
+                            .font(.system(size: 12, weight: .semibold))
+                        Text(item.title)
+                            .font(AppType.caption.weight(.semibold))
+                            .lineLimit(1)
                     }
+                    .foregroundStyle(Color.appTextPrimary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.46), in: Capsule())
+                    .overlay(
+                        Capsule()
+                            .stroke(Color.white.opacity(0.28), lineWidth: 1)
+                    )
                 }
             }
             .accessibilityElement(children: .contain)
+
+            Text("Private health data stays on-device first and encrypted before sync.")
+                .font(AppType.caption.weight(.medium))
+                .foregroundStyle(Color.appTextSecondary)
         }
+    }
+}
+
+private struct AuthModeSwitcher: View {
+    @Binding var mode: AuthMode
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(AuthMode.allCases) { currentMode in
+                Button {
+                    mode = currentMode
+                } label: {
+                    Text(currentMode.rawValue)
+                        .font(AppType.subheading.weight(.semibold))
+                        .foregroundStyle(
+                            mode == currentMode
+                                ? Color.appTextPrimary
+                                : Color.appTextSecondary
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                        .background(
+                            Capsule(style: .continuous)
+                                .fill(mode == currentMode ? Color.white.opacity(0.88) : Color.clear)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Switch between login and account creation.")
+            }
+        }
+        .padding(6)
+        .background(Color.white.opacity(0.34), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(Color.white.opacity(0.24), lineWidth: 1)
+        )
     }
 }
 
@@ -308,13 +341,13 @@ private struct QuickReturnSection: View {
 
     var body: some View {
         AuthSurfaceCard {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text("Quick return")
-                    .font(AppType.headline.weight(.semibold))
+                    .font(AppType.body.weight(.semibold))
                     .foregroundStyle(Color.appTextPrimary)
 
                 Text("For returning users only. Standard login options are still available below.")
-                    .font(AppType.subheading)
+                    .font(AppType.caption.weight(.medium))
                     .foregroundStyle(Color.appTextSecondary)
 
                 if canUseBiometrics {
@@ -363,7 +396,7 @@ private struct ApplePrimaryButton: View {
             .accessibilityHint("Uses your Apple Account for a secure \(mode == .login ? "login" : "account setup").")
 
             Text(mode == .login ? "Fastest way back into your encrypted data." : "Fastest way to create a secure account with less typing.")
-                .font(AppType.subheading)
+                .font(AppType.caption.weight(.medium))
                 .foregroundStyle(Color.appTextSecondary)
         }
     }
@@ -742,7 +775,7 @@ private struct AuthFlowHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 30, weight: .bold, design: .rounded))
+                .font(.system(size: 28, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.appTextPrimary)
 
             Text(subtitle)
@@ -759,13 +792,13 @@ private struct AuthSurfaceCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
             content
         }
-        .padding(18)
-        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+        .padding(16)
+        .background(Color.white.opacity(0.68), in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(Color.appStroke, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(Color.white.opacity(0.3), lineWidth: 1)
         )
-        .shadow(color: .black.opacity(0.05), radius: 14, y: 8)
+        .shadow(color: .black.opacity(0.04), radius: 12, y: 6)
     }
 }
 
@@ -787,7 +820,7 @@ private struct AuthBannerView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .background(Color.white.opacity(0.82), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Color.white.opacity(0.74), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(tint.opacity(0.18), lineWidth: 1)
@@ -834,7 +867,7 @@ private struct AuthDividerLabel: View {
                 .frame(height: 1)
 
             Text(text.uppercased())
-                .font(AppType.caption.weight(.semibold))
+                .font(.system(size: 10, weight: .semibold, design: .rounded))
                 .foregroundStyle(Color.appTextTertiary)
 
             Rectangle()
@@ -873,11 +906,11 @@ private struct AuthTextInput: View {
         .authTextContentType(contentType)
         .submitLabel(submitLabel)
         .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .background(Color.white.opacity(0.74), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(.vertical, 13)
+        .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(Color.white.opacity(0.35), lineWidth: 1)
+                .stroke(Color.white.opacity(0.4), lineWidth: 1)
         )
         .accessibilityLabel(title)
     }
@@ -912,11 +945,11 @@ private struct AuthSecureInput: View {
             .accessibilityLabel(isRevealed ? "Hide password" : "Show password")
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .background(Color.white.opacity(0.74), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(.vertical, 13)
+        .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .stroke(Color.white.opacity(0.35), lineWidth: 1)
+                .stroke(Color.white.opacity(0.4), lineWidth: 1)
         )
         .accessibilityLabel(title)
     }
@@ -969,7 +1002,7 @@ private struct AuthFootnote: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(mode == .login ? "New here? Switch to Create Account above if you’re setting up FitMe for the first time." : "Already have an account? Switch to Log In above to use your existing Apple, email, or passkey sign-in.")
-                .font(AppType.subheading)
+                .font(AppType.caption.weight(.medium))
                 .foregroundStyle(Color.appTextSecondary)
 
             Text("Passkeys can be added later in Settings after your first successful sign-in.")
