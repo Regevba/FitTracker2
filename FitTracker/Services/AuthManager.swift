@@ -6,44 +6,63 @@ import Foundation
 @preconcurrency import LocalAuthentication
 import SwiftUI
 
+@MainActor
+protocol BiometricQuickUnlockProviding {
+    var isAvailable: Bool { get }
+    var biometricLabel: String { get }
+    var biometricName: String { get }
+    var biometricIcon: String { get }
+    func authenticateForQuickUnlock() async -> Bool
+}
+
 // ─────────────────────────────────────────────────────────
 // MARK: – Biometric Lock Manager
 // ─────────────────────────────────────────────────────────
 
 @MainActor
-final class AuthManager: ObservableObject {
+final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
 
     @Published var isAuthenticated = false
     @Published var authError: String?
 
-    init() { authenticate() }
+    init() {}
 
     func authenticate() {
+        Task {
+            _ = await authenticateForQuickUnlock()
+        }
+    }
+
+    func authenticateForQuickUnlock() async -> Bool {
         #if targetEnvironment(simulator)
-        // Skip biometric prompt on simulator — set authenticated immediately.
         isAuthenticated = true
         authError = nil
+        return true
         #else
         let ctx = LAContext()
         ctx.localizedFallbackTitle = ""
         var err: NSError?
 
         if ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &err) {
-            ctx.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
-                               localizedReason: "Unlock FitTracker to access your encrypted health data") { ok, e in
-                Task { @MainActor [weak self] in
-                    self?.isAuthenticated = ok
-                    self?.authError = ok ? nil : e?.localizedDescription
-                    if ok {
-                        // Share the authenticated context with EncryptionService so all crypto
-                        // operations in this session reuse it without re-prompting biometrics.
-                        await EncryptionService.shared.setSessionContext(ctx)
+            return await withCheckedContinuation { continuation in
+                ctx.evaluatePolicy(
+                    .deviceOwnerAuthenticationWithBiometrics,
+                    localizedReason: "Unlock \(AppBrand.name) to access your encrypted health data"
+                ) { ok, e in
+                    Task { @MainActor [weak self] in
+                        self?.isAuthenticated = ok
+                        self?.authError = ok ? nil : e?.localizedDescription
+                        if ok {
+                            await EncryptionService.shared.setSessionContext(ctx)
+                        }
+                        continuation.resume(returning: ok)
                     }
                 }
             }
         } else {
             isAuthenticated = false
-            authError = "Face ID or Touch ID is required to unlock FitTracker. Set up biometrics in device settings, then try again."
+            authError = "Face ID or Touch ID is required to unlock \(AppBrand.name). Set up biometrics in device settings, then try again."
+            return false
         }
         #endif
     }
@@ -54,6 +73,53 @@ final class AuthManager: ObservableObject {
         guard clearCryptoSession else { return }
         // Invalidate the shared session context so the next unlock re-authenticates.
         Task { await EncryptionService.shared.clearSessionContext() }
+    }
+
+    var isAvailable: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        let ctx = LAContext()
+        var error: NSError?
+        return ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        #endif
+    }
+
+    var biometricType: LABiometryType? {
+        #if targetEnvironment(simulator)
+        return .faceID
+        #else
+        let ctx = LAContext()
+        var error: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return nil
+        }
+        return ctx.biometryType
+        #endif
+    }
+
+    var biometricLabel: String {
+        switch biometricType {
+        case .faceID: "Use Face ID"
+        case .touchID: "Use Touch ID"
+        default: "Use Biometrics"
+        }
+    }
+
+    var biometricName: String {
+        switch biometricType {
+        case .faceID: "Face ID"
+        case .touchID: "Touch ID"
+        default: "biometric unlock"
+        }
+    }
+
+    var biometricIcon: String {
+        switch biometricType {
+        case .faceID: "faceid"
+        case .touchID: "touchid"
+        default: "lock.open.fill"
+        }
     }
 }
 
@@ -92,7 +158,7 @@ struct LockScreenView: View {
                     }
 
                     VStack(spacing: 8) {
-                        Text("Unlock FitTracker")
+                        Text("Unlock \(AppBrand.name)")
                             .font(.system(.title2, design: .rounded, weight: .bold))
                             .foregroundStyle(.white)
                         Text("Use \(biometricName) to reopen your encrypted data.")
@@ -134,36 +200,7 @@ struct LockScreenView: View {
         }
     }
 
-    private var biometricType: LABiometryType? {
-        let ctx = LAContext()
-        var error: NSError?
-        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return nil
-        }
-        return ctx.biometryType
-    }
-
-    private var biometricLabel: String {
-        switch biometricType {
-        case .faceID:  "Unlock with Face ID"
-        case .touchID: "Unlock with Touch ID"
-        default:       "Unlock"
-        }
-    }
-
-    private var biometricName: String {
-        switch biometricType {
-        case .faceID:  "Face ID"
-        case .touchID: "Touch ID"
-        default:       "biometric unlock"
-        }
-    }
-
-    private var biometricIcon: String {
-        switch biometricType {
-        case .faceID:  "faceid"
-        case .touchID: "touchid"
-        default:       "lock.open.fill"
-        }
-    }
+    private var biometricLabel: String { auth.biometricLabel.replacingOccurrences(of: "Use", with: "Unlock with") }
+    private var biometricName: String { auth.biometricName }
+    private var biometricIcon: String { auth.biometricIcon }
 }

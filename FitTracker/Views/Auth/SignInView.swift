@@ -33,7 +33,7 @@ struct SignInView: View {
                                 )
                                 .padding(.top, 8)
 
-                            Text("Continue to FitTracker")
+                            Text("Continue to \(AppBrand.name)")
                                 .font(.system(.title, design: .rounded, weight: .bold))
 
                             Text("Use Apple or a passkey to get back to your encrypted training data.")
@@ -208,63 +208,46 @@ struct SocialSignInButton: View {
             Image(systemName: "apple.logo")
                 .font(.system(size: 22, weight: .semibold))
                 .foregroundStyle(labelColor)
-        case .google:
-            // Google "G" drawn with SF Symbols approximation
-            ZStack {
-                Circle().fill(Color.white).frame(width: 26, height: 26)
-                Text("G")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
-            }
-        case .facebook:
-            ZStack {
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color(red: 0.23, green: 0.35, blue: 0.60))
-                    .frame(width: 28, height: 28)
-                Text("f")
-                    .font(.system(size: 18, weight: .bold, design: .serif))
-                    .foregroundStyle(.white)
-            }
         case .passkey:
             Image(systemName: "key.fill")
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.purple)
+        case .email:
+            Image(systemName: "envelope.fill")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(Color.appBlue2)
         }
     }
 
     private var bgColor: Color {
         switch provider {
         case .apple:    return Color(.label)            // black in light, white in dark
-        case .google:   return Color(.systemBackground)
-        case .facebook: return Color(red: 0.23, green: 0.35, blue: 0.60)
         case .passkey:  return Color.purple.opacity(0.08)
+        case .email:    return Color.appBlue2.opacity(0.08)
         }
     }
 
     private var labelColor: Color {
         switch provider {
         case .apple:    return Color(.systemBackground) // white in dark, black in light
-        case .google:   return Color(.label)
-        case .facebook: return .white
         case .passkey:  return .purple
+        case .email:    return .appBlue2
         }
     }
 
     private var borderColor: Color {
         switch provider {
         case .apple:    return .clear
-        case .google:   return Color.secondary.opacity(0.25)
-        case .facebook: return .clear
         case .passkey:  return Color.purple.opacity(0.25)
+        case .email:    return Color.appBlue2.opacity(0.25)
         }
     }
 
     private var shadowColor: Color {
         switch provider {
         case .apple:    return Color.black.opacity(0.15)
-        case .google:   return Color.black.opacity(0.06)
-        case .facebook: return Color(red: 0.23, green: 0.35, blue: 0.60).opacity(0.3)
         case .passkey:  return .purple.opacity(0.1)
+        case .email:    return Color.appBlue2.opacity(0.14)
         }
     }
 }

@@ -28,6 +28,8 @@
 		A1000001000000000000000F /* AccountPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AccountPanelView.swift */; };
 		A10000010000000000000010 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010 /* SignInView.swift */; };
 		A10000010000000000000011 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011 /* WelcomeView.swift */; };
+		A10000010000000000000015 /* AuthValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* AuthValidation.swift */; };
+		A10000010000000000000016 /* AuthHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* AuthHubView.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -64,6 +66,8 @@
 		A2000001000000000000000F /* AccountPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountPanelView.swift; sourceTree = "<group>"; };
 		A20000010000000000000010 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		A20000010000000000000011 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		A20000010000000000000015 /* AuthValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthValidation.swift; sourceTree = "<group>"; };
+		A20000010000000000000016 /* AuthHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubView.swift; sourceTree = "<group>"; };
 		A20000010000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000010000000000000013 /* FitTracker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FitTracker.entitlements; sourceTree = "<group>"; };
 		A20000010000000000000014 /* FitTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FitTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				A20000010000000000000005 /* SignInService.swift */,
+				A20000010000000000000015 /* AuthValidation.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -276,6 +281,7 @@
 			isa = PBXGroup;
 			children = (
 				A2000001000000000000000F /* AccountPanelView.swift */,
+				A20000010000000000000016 /* AuthHubView.swift */,
 				A20000010000000000000010 /* SignInView.swift */,
 				A20000010000000000000011 /* WelcomeView.swift */,
 			);
@@ -391,6 +397,7 @@
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
 				A10000010000000000000004 /* AuthManager.swift in Sources */,
 				A10000010000000000000005 /* SignInService.swift in Sources */,
+				A10000010000000000000015 /* AuthValidation.swift in Sources */,
 				A10000010000000000000006 /* HealthKitService.swift in Sources */,
 				A10000010000000000000007 /* CloudKitSyncService.swift in Sources */,
 				A10000010000000000000008 /* AppSettings.swift in Sources */,
@@ -404,6 +411,7 @@
 				A1000001000000000000000D /* TrainingPlanView.swift in Sources */,
 				A1000001000000000000000E /* StatsView.swift in Sources */,
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
+				A10000010000000000000016 /* AuthHubView.swift in Sources */,
 				A10000010000000000000010 /* SignInView.swift in Sources */,
 				A10000010000000000000011 /* WelcomeView.swift in Sources */,
 				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
