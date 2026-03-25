@@ -123,8 +123,8 @@ private struct AuthScaffold<Content: View>: View {
                     content
                 }
                 .frame(maxWidth: 620)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 18)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 14)
                 .frame(maxWidth: .infinity)
             }
         }
@@ -145,7 +145,7 @@ private struct AuthLandingView: View {
     @FocusState private var focusedField: AuthField?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: 14) {
             AuthHeroSection(mode: mode)
 
             if showQuickReturn {
@@ -160,7 +160,7 @@ private struct AuthLandingView: View {
             }
 
             AuthSurfaceCard {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 14) {
                     AuthModeSwitcher(mode: $mode)
 
                     VStack(alignment: .leading, spacing: 6) {
@@ -169,7 +169,7 @@ private struct AuthLandingView: View {
                             .foregroundStyle(Color.appTextPrimary)
 
                         Text(mode.subtitle)
-                            .font(AppType.body)
+                            .font(AppType.subheading.weight(.medium))
                             .foregroundStyle(Color.appTextSecondary)
                     }
 
@@ -245,27 +245,17 @@ private struct AuthHeroSection: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(spacing: 12) {
                 Text(AppBrand.name)
-                    .font(.system(size: 31, weight: .bold, design: .rounded))
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
                     .foregroundStyle(.clear)
                     .overlay(
                         AppGradient.brand.mask(
                             Text(AppBrand.name)
-                                .font(.system(size: 31, weight: .bold, design: .rounded))
+                                .font(.system(size: 32, weight: .bold, design: .rounded))
                         )
                     )
-
-                Text(mode == .login ? "Your secure fitness command center." : "A calmer way to track training, recovery, and nutrition.")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .foregroundStyle(Color.appTextPrimary)
-
-                Text("Sign in quickly, keep your data encrypted, and get back to the workouts, meals, and recovery signals that matter today.")
-                    .font(AppType.subheading.weight(.medium))
-                    .foregroundStyle(Color.appTextSecondary)
-            }
+                    .frame(maxWidth: .infinity)
 
             HStack(spacing: 10) {
                 ForEach(trustItems, id: \.title) { item in
@@ -282,16 +272,14 @@ private struct AuthHeroSection: View {
                     .background(Color.white.opacity(0.46), in: Capsule())
                     .overlay(
                         Capsule()
-                            .stroke(Color.white.opacity(0.28), lineWidth: 1)
+                            .stroke(Color.white.opacity(0.22), lineWidth: 1)
                     )
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .center)
             .accessibilityElement(children: .contain)
-
-            Text("Private health data stays on-device first and encrypted before sync.")
-                .font(AppType.caption.weight(.medium))
-                .foregroundStyle(Color.appTextSecondary)
         }
+        .frame(maxWidth: .infinity)
     }
 }
 
@@ -323,10 +311,17 @@ private struct AuthModeSwitcher: View {
             }
         }
         .padding(6)
-        .background(Color.white.opacity(0.34), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .background(Color.white.opacity(0.28), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color.white.opacity(0.24), lineWidth: 1)
+            ZStack {
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .stroke(Color.white.opacity(0.22), lineWidth: 1)
+
+                Capsule(style: .continuous)
+                    .fill(AppGradient.brand)
+                    .frame(width: 8, height: 28)
+                    .blur(radius: 3)
+            }
         )
     }
 }
@@ -340,39 +335,33 @@ private struct QuickReturnSection: View {
     let passkeyAction: () -> Void
 
     var body: some View {
-        AuthSurfaceCard {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Quick return")
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(Color.appTextPrimary)
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Quick return")
+                .font(AppType.caption.weight(.semibold))
+                .foregroundStyle(Color.appTextSecondary)
 
-                Text("For returning users only. Standard login options are still available below.")
-                    .font(AppType.caption.weight(.medium))
-                    .foregroundStyle(Color.appTextSecondary)
-
-                if canUseBiometrics {
-                    Button(action: biometricAction) {
-                        AuthQuickReturnRow(
-                            icon: biometricIcon,
-                            title: "Use \(biometricLabel)",
-                            subtitle: "Reopen the last secure session on this device"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: Color.white.opacity(0.6)))
-                    .accessibilityHint("Authenticate with biometrics and reopen your saved session.")
+            if canUseBiometrics {
+                Button(action: biometricAction) {
+                    AuthQuickReturnRow(
+                        icon: biometricIcon,
+                        title: biometricLabel,
+                        subtitle: "Reopen on this device"
+                    )
                 }
+                .buttonStyle(AuthCardButtonStyle(baseFill: Color.white.opacity(0.42)))
+                .accessibilityHint("Authenticate with biometrics and reopen your saved session.")
+            }
 
-                if canUsePasskey {
-                    Button(action: passkeyAction) {
-                        AuthQuickReturnRow(
-                            icon: "key.fill",
-                            title: "Use Passkey",
-                            subtitle: "Sign in with a saved passkey or security key"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: Color.white.opacity(0.6)))
-                    .accessibilityHint("Sign in with a saved passkey.")
+            if canUsePasskey {
+                Button(action: passkeyAction) {
+                    AuthQuickReturnRow(
+                        icon: "key.fill",
+                        title: "Use Passkey",
+                        subtitle: "Saved passkey or security key"
+                    )
                 }
+                .buttonStyle(AuthCardButtonStyle(baseFill: Color.white.opacity(0.42)))
+                .accessibilityHint("Sign in with a saved passkey.")
             }
         }
     }
@@ -383,7 +372,7 @@ private struct ApplePrimaryButton: View {
     let mode: AuthMode
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 6) {
             SignInWithAppleButton(
                 mode == .register ? .continue : .signIn,
                 onRequest: signIn.prepareAppleSignInRequest,
@@ -394,10 +383,6 @@ private struct ApplePrimaryButton: View {
             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .accessibilityLabel(mode.appleButtonTitle)
             .accessibilityHint("Uses your Apple Account for a secure \(mode == .login ? "login" : "account setup").")
-
-            Text(mode == .login ? "Fastest way back into your encrypted data." : "Fastest way to create a secure account with less typing.")
-                .font(AppType.caption.weight(.medium))
-                .foregroundStyle(Color.appTextSecondary)
         }
     }
 }
@@ -409,7 +394,7 @@ private struct EmailLoginSection: View {
     let focusedField: FocusState<AuthField?>.Binding
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("Use email instead")
                 .font(AppType.body.weight(.semibold))
                 .foregroundStyle(Color.appTextPrimary)
@@ -442,7 +427,7 @@ private struct EmailLoginSection: View {
                     signIn.showPasswordReset(prefillEmail: form.normalizedEmail)
                 }
                 .buttonStyle(.plain)
-                .font(AppType.subheading.weight(.semibold))
+                .font(AppType.caption.weight(.semibold))
                 .foregroundStyle(Color.accent.cyan)
                 .accessibilityHint("Open password reset.")
             }
@@ -479,7 +464,7 @@ private struct EmailRegistrationSection: View {
     let focusedField: FocusState<AuthField?>.Binding
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
             Text("Create with email")
                 .font(AppType.body.weight(.semibold))
                 .foregroundStyle(Color.appTextPrimary)
@@ -548,7 +533,7 @@ private struct EmailRegistrationSection: View {
                 )
 
                 Text(PasswordRuleEvaluator.guidanceText)
-                    .font(AppType.subheading)
+                    .font(AppType.caption)
                     .foregroundStyle(Color.appTextSecondary)
 
                 if let error = errors["password"] {
@@ -792,13 +777,7 @@ private struct AuthSurfaceCard<Content: View>: View {
         VStack(alignment: .leading, spacing: 12) {
             content
         }
-        .padding(16)
-        .background(Color.white.opacity(0.68), in: RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .stroke(Color.white.opacity(0.3), lineWidth: 1)
-        )
-        .shadow(color: .black.opacity(0.04), radius: 12, y: 6)
+        .padding(.top, 2)
     }
 }
 
@@ -836,16 +815,16 @@ private struct AuthQuickReturnRow: View {
     var body: some View {
         HStack(spacing: 14) {
             Image(systemName: icon)
-                .font(.system(size: 18, weight: .semibold))
+                .font(.system(size: 16, weight: .semibold))
                 .foregroundStyle(Color.accent.cyan)
                 .frame(width: 26)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
-                    .font(AppType.body.weight(.semibold))
+                    .font(AppType.subheading.weight(.semibold))
                     .foregroundStyle(Color.appTextPrimary)
                 Text(subtitle)
-                    .font(AppType.subheading)
+                    .font(AppType.caption)
                     .foregroundStyle(Color.appTextSecondary)
             }
 
@@ -906,7 +885,7 @@ private struct AuthTextInput: View {
         .authTextContentType(contentType)
         .submitLabel(submitLabel)
         .padding(.horizontal, 14)
-        .padding(.vertical, 13)
+        .padding(.vertical, 12)
         .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -936,16 +915,24 @@ private struct AuthSecureInput: View {
                 }
             }
 
-            Button(isRevealed ? "Hide" : "Show") {
-                isRevealed.toggle()
+            Button {
+                withAnimation(.spring(response: 0.24, dampingFraction: 0.82)) {
+                    isRevealed.toggle()
+                }
+            } label: {
+                Image(systemName: isRevealed ? "eye.slash.fill" : "eye.fill")
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(Color.accent.cyan)
+                    .frame(width: 30, height: 30)
+                    .background(Color.white.opacity(0.55), in: Circle())
+                    .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.bounce, value: isRevealed)
             }
             .buttonStyle(.plain)
-            .font(AppType.subheading.weight(.semibold))
-            .foregroundStyle(Color.accent.cyan)
             .accessibilityLabel(isRevealed ? "Hide password" : "Show password")
         }
         .padding(.horizontal, 14)
-        .padding(.vertical, 13)
+        .padding(.vertical, 12)
         .background(Color.white.opacity(0.9), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
@@ -1002,11 +989,11 @@ private struct AuthFootnote: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(mode == .login ? "New here? Switch to Create Account above if you’re setting up FitMe for the first time." : "Already have an account? Switch to Log In above to use your existing Apple, email, or passkey sign-in.")
-                .font(AppType.caption.weight(.medium))
+                .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(Color.appTextSecondary)
 
             Text("Passkeys can be added later in Settings after your first successful sign-in.")
-                .font(AppType.caption)
+                .font(.system(size: 10, weight: .regular))
                 .foregroundStyle(Color.appTextTertiary)
         }
         .padding(.horizontal, 4)
