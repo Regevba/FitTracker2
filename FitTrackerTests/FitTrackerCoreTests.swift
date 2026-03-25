@@ -129,4 +129,46 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertEqual(profile.recoveryDay(for: sameDayLate, calendar: calendar), 0)
         XCTAssertEqual(profile.recoveryDay(for: nextDayEarly, calendar: calendar), 1)
     }
+
+    func testPasswordRuleEvaluatorRejectsMissingRequirements() {
+        let result = PasswordRuleEvaluator.validate("short")
+
+        XCTAssertFalse(result.isValid)
+        XCTAssertTrue(result.issues.contains("Use at least 8 characters."))
+    }
+
+    func testPasswordRuleEvaluatorAcceptsValidPassword() {
+        let result = PasswordRuleEvaluator.validate("correct horse battery staple")
+
+        XCTAssertTrue(result.isValid)
+        XCTAssertTrue(result.issues.isEmpty)
+    }
+
+    func testEmailRegistrationResendRefreshesChallengeExpiry() async throws {
+        let service = SignInService()
+        let draft = PendingEmailRegistration(
+            firstName: "Regev",
+            lastName: "Barak",
+            email: "regev@example.com",
+            password: "correct horse battery staple"
+        )
+
+        await service.startEmailRegistration(draft)
+        let initialExpiry = try XCTUnwrap(service.pendingEmailChallenge?.expiresAt)
+
+        await service.resendEmailRegistrationCode()
+        let refreshedExpiry = try XCTUnwrap(service.pendingEmailChallenge?.expiresAt)
+
+        XCTAssertGreaterThan(refreshedExpiry, initialExpiry)
+        XCTAssertEqual(service.navigationPath, [.emailVerification])
+    }
+
+    func testPasswordResetRequestUsesGenericSuccessMessage() async throws {
+        let service = SignInService()
+
+        await service.requestPasswordReset(email: "regev@example.com")
+
+        XCTAssertNil(service.authErrorMessage)
+        XCTAssertEqual(service.statusMessage, "If that email is registered, a password reset link is on the way.")
+    }
 }

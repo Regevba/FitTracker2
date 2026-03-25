@@ -43,6 +43,9 @@ The current app is built around a `Today`-first experience:
 - biometric unlock for encryption keys
 - optional `Require Face ID/Touch ID on Reopen` behavior in Settings
 - Apple Sign In plus passkey support
+- a trust-first auth hub with `Log In` and `Create Account` modes on one screen
+- inline email sign-up and login alongside Apple Sign In
+- password reset, resend verification code, and quick-return biometric/passkey entry
 - simplified welcome, sign-in, lock, account, and settings flows
 
 ## What Changed Recently
@@ -65,7 +68,10 @@ The current app is built around a `Today`-first experience:
 - removed the intrusive iPhone passcode fallback for app unlock
 - added biometric reopen preference in Settings
 - added passkey creation from Settings
-- simplified the welcome and sign-in experience
+- replaced the old auth method chooser with a single login/create-account hub
+- added inline email registration and login, verification resend, and password reset flows
+- simplified password rules to support stronger passphrase-style passwords
+- improved auth form focus flow, submit behavior, and accessibility messaging
 - reorganized account and settings information architecture
 - added stats-carousel controls in Settings so users can personalize which metrics appear on the stats screen
 
