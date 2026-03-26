@@ -7,7 +7,7 @@ import SwiftUI
 // AI engine base URL — override via Info.plist key "AIEngineBaseURL" for staging/prod
 private func makeAIEngineBaseURL() -> URL {
     let plistValue = Bundle.main.object(forInfoDictionaryKey: "AIEngineBaseURL") as? String ?? ""
-    return URL(string: plistValue.isEmpty ? "https://fittracker-ai.up.railway.app" : plistValue)!
+    return URL(string: plistValue.isEmpty ? "https://fittracker-ai-production.up.railway.app" : plistValue)!
 }
 
 @main
