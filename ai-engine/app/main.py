@@ -1,9 +1,17 @@
+import logging
 from functools import lru_cache
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 
 from app.config import Settings, get_settings
 from app.routers import training, nutrition, recovery, stats
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 
 @lru_cache
@@ -26,6 +34,15 @@ def create_app() -> FastAPI:
     @app.get("/health", tags=["infra"])
     async def health() -> dict:
         return {"status": "ok"}
+
+    @app.exception_handler(404)
+    async def not_found_handler(request: Request, exc: Exception) -> JSONResponse:
+        return JSONResponse(status_code=404, content={"detail": "Not found"})
+
+    @app.exception_handler(500)
+    async def internal_error_handler(request: Request, exc: Exception) -> JSONResponse:
+        logger.error("Unhandled error on %s %s: %s", request.method, request.url.path, exc)
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 
     return app
 

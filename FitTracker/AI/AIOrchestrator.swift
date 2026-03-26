@@ -27,8 +27,9 @@ public final class AIOrchestrator: ObservableObject {
     private let foundationModel: any FoundationModelProtocol
     private let snapshot:       () -> LocalUserSnapshot
 
-    /// Confidence threshold below which cloud escalation is triggered.
-    private let escalationThreshold: Double = 0.4
+    /// Minimum on-device confidence required to use personalised result.
+    /// Below this threshold the unmodified cloud recommendation is used instead.
+    private let personalisationThreshold: Double = 0.4
 
     public init(
         engineClient: some AIEngineClientProtocol,
@@ -46,12 +47,14 @@ public final class AIOrchestrator: ObservableObject {
 
     /// Process a specific segment. Only segments with complete band data are submitted.
     /// Call this when the user navigates to a segment or data materially changes.
-    public func process(segment: AISegment, jwt: String?) async {
+    /// - Parameter overrideSnapshot: If provided, used instead of the stored snapshot closure.
+    ///   Pass a populated snapshot built from live stores (HealthKit, profile, training data).
+    public func process(segment: AISegment, jwt: String?, overrideSnapshot: LocalUserSnapshot? = nil) async {
         isProcessing = true
         lastError = nil
         defer { isProcessing = false }
 
-        let userSnapshot = snapshot()
+        let userSnapshot = overrideSnapshot ?? snapshot()
         let bands = extractBands(segment: segment, snapshot: userSnapshot)
 
         guard let bands else {
@@ -95,7 +98,7 @@ public final class AIOrchestrator: ObservableObject {
             )
             // If confidence below threshold, use cloud recommendation as-is
             // (Foundation Models returned low confidence or FallbackFoundationModel was used)
-            finalRecommendation = confidence >= escalationThreshold ? adapted : cloudRecommendation
+            finalRecommendation = confidence >= personalisationThreshold ? adapted : cloudRecommendation
         } catch {
             // Foundation Models threw — fall back to unmodified cloud recommendation
             finalRecommendation = cloudRecommendation
@@ -105,9 +108,11 @@ public final class AIOrchestrator: ObservableObject {
     }
 
     /// Process all segments sequentially for a full refresh.
-    public func processAll(jwt: String?) async {
+    /// - Parameter snapshot: Live snapshot built from stores (HealthKit, profile, training).
+    ///   When nil, falls back to the closure provided at init time.
+    public func processAll(jwt: String?, snapshot: LocalUserSnapshot? = nil) async {
         for segment in AISegment.allCases {
-            await process(segment: segment, jwt: jwt)
+            await process(segment: segment, jwt: jwt, overrideSnapshot: snapshot)
         }
     }
 

@@ -9,6 +9,7 @@ from unittest.mock import AsyncMock, patch
 from httpx import ASGITransport, AsyncClient
 
 from app.main import create_app
+from app.models.common import InsightResponse
 
 
 @pytest.fixture
@@ -41,9 +42,24 @@ async def test_training_insight_requires_auth(app):
 
 
 @pytest.mark.asyncio
+async def test_training_insight_invalid_payload_rejected(app):
+    """Invalid band value must return 422 (Pydantic validation)."""
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.post(
+            "/v1/training/insight",
+            json={**VALID_TRAINING_PAYLOAD, "age_band": "invalid_value"},
+            headers={"Authorization": "Bearer mock-token"},
+        )
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
 async def test_training_insight_fire_and_forget_path(app):
     """Cohort write is dispatched as asyncio.create_task and does not block response.
-    Mocks JWT validation and CohortService to isolate the fire-and-forget path.
+    Mocks are patched at the router module level (not auth module level) so that
+    FastAPI dependency injection is correctly intercepted at call time.
     """
     mock_claims = {"sub": "user-123", "role": "authenticated"}
     mock_totals = {
@@ -58,7 +74,11 @@ async def test_training_insight_fire_and_forget_path(app):
     }
 
     with (
-        patch("app.routers.training.get_verified_claims", return_value=mock_claims),
+        # Patch at the router module level — where the dependency is resolved
+        patch(
+            "app.routers.training.get_verified_claims",
+            return_value=mock_claims,
+        ),
         patch(
             "app.routers.training.CohortService.get_cohort_totals",
             new_callable=AsyncMock,
@@ -67,7 +87,7 @@ async def test_training_insight_fire_and_forget_path(app):
         patch(
             "app.routers.training.CohortService.increment_fields",
             new_callable=AsyncMock,
-        ) as mock_increment,
+        ),
     ):
         async with AsyncClient(
             transport=ASGITransport(app=app), base_url="http://test"
@@ -82,6 +102,8 @@ async def test_training_insight_fire_and_forget_path(app):
     body = response.json()
     assert body["segment"] == "training"
     assert "signals" in body
-    assert "confidence" in body
     assert isinstance(body["confidence"], float)
+    assert 0.0 <= body["confidence"] <= 1.0
     assert "escalate_to_llm" in body
+    assert isinstance(body["escalate_to_llm"], bool)
+    assert "supporting_data" in body

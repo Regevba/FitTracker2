@@ -52,12 +52,13 @@ public struct AnyCodable: Codable, Sendable, Equatable {
     }
 
     public static func == (lhs: AnyCodable, rhs: AnyCodable) -> Bool {
-        // Structural equality for common types
         switch (lhs.value, rhs.value) {
-        case let (l as Bool,   r as Bool):   return l == r
-        case let (l as Int,    r as Int):    return l == r
-        case let (l as Double, r as Double): return l == r
-        case let (l as String, r as String): return l == r
+        case let (l as Bool,                 r as Bool):                 return l == r
+        case let (l as Int,                  r as Int):                  return l == r
+        case let (l as Double,               r as Double):               return l == r
+        case let (l as String,               r as String):               return l == r
+        case let (l as [AnyCodable],         r as [AnyCodable]):         return l == r
+        case let (l as [String: AnyCodable], r as [String: AnyCodable]): return l == r
         default: return false
         }
     }
@@ -353,6 +354,22 @@ extension LocalUserSnapshot {
         case 5000..<7500: return "5000-7500"
         case 7500..<10000: return "7500-10000"
         default:          return "10000+"
+        }
+    }
+}
+
+// ─────────────────────────────────────────────────────────
+// MARK: – DayType → AI program phase mapping
+// ─────────────────────────────────────────────────────────
+
+extension DayType {
+    /// Maps the current training day type to the AI engine's program_phase band.
+    var aiProgramPhase: String {
+        switch self {
+        case .restDay:                          return "recovery"
+        case .upperPush, .lowerBody,
+             .upperPull, .fullBody:             return "build"
+        case .cardioOnly:                       return "foundation"
         }
     }
 }

@@ -7,7 +7,12 @@ import SwiftUI
 // AI engine base URL — override via Info.plist key "AIEngineBaseURL" for staging/prod
 private func makeAIEngineBaseURL() -> URL {
     let plistValue = Bundle.main.object(forInfoDictionaryKey: "AIEngineBaseURL") as? String ?? ""
-    return URL(string: plistValue.isEmpty ? "https://fittracker-ai-production.up.railway.app" : plistValue)!
+    let urlString = plistValue.isEmpty ? "https://fittracker-ai-production.up.railway.app" : plistValue
+    guard let url = URL(string: urlString) else {
+        // Fallback to hardcoded default — only reachable if Info.plist value is malformed
+        return URL(string: "https://fittracker-ai-production.up.railway.app")!
+    }
+    return url
 }
 
 @main
@@ -55,7 +60,7 @@ struct FitTrackerApp: App {
                             // Kick off AI insight refresh for all segments on sign-in.
                             // JWT from the active session token (Supabase JWT).
                             let jwt = signIn.activeSession?.sessionToken
-                            await aiOrchestrator.processAll(jwt: jwt)
+                            await aiOrchestrator.processAll(jwt: jwt, snapshot: buildSnapshot())
                         }
                     }
                 }
@@ -98,6 +103,16 @@ struct FitTrackerApp: App {
                     .environmentObject(watchService)
         }
         #endif
+    }
+
+    // ── AI snapshot builder ───────────────────────────────
+    // Populates the fields we can derive from existing stores.
+    // HealthKit metrics and full profile fields will be added here
+    // once the profile/onboarding screen is implemented.
+    private func buildSnapshot() -> LocalUserSnapshot {
+        var snap = LocalUserSnapshot()
+        snap.programPhase = programStore.todayDayType.aiProgramPhase
+        return snap
     }
 
     // ── Auth state machine ────────────────────────────────

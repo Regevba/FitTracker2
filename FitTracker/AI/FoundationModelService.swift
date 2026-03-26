@@ -28,7 +28,7 @@ public protocol FoundationModelProtocol: Sendable {
 
 // ─────────────────────────────────────────────────────────
 // MARK: – FallbackFoundationModel (pre-iOS 26 / unavailable)
-// ─────────────────────────────────────────────────────ation
+// ─────────────────────────────────────────────────────────
 
 /// Used on devices where Apple Foundation Models is unavailable (pre-iOS 26).
 /// Returns confidence = 0.0, which causes AIOrchestrator to always escalate

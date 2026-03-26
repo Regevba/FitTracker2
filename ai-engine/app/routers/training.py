@@ -6,7 +6,8 @@ from fastapi import APIRouter, Depends
 from app.auth.jwt_validator import get_verified_claims
 from app.config import Settings, get_settings
 from app.middleware.rate_limiter import make_rate_limit_dependency
-from app.models.training import InsightResponse, TrainingSegmentRequest
+from app.models.common import InsightResponse
+from app.models.training import TrainingSegmentRequest
 from app.services.cohort_service import CohortService
 from app.services.insight_service import InsightService
 

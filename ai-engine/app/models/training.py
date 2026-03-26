@@ -14,11 +14,3 @@ class TrainingSegmentRequest(BaseModel):
 
     def to_cohort_fields(self) -> dict[str, str]:
         return self.model_dump()
-
-
-class InsightResponse(BaseModel):
-    segment: str
-    signals: list[str]
-    confidence: float
-    escalate_to_llm: bool
-    supporting_data: dict
