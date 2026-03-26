@@ -4,6 +4,12 @@
 
 import SwiftUI
 
+// AI engine base URL — override via Info.plist key "AIEngineBaseURL" for staging/prod
+private func makeAIEngineBaseURL() -> URL {
+    let plistValue = Bundle.main.object(forInfoDictionaryKey: "AIEngineBaseURL") as? String ?? ""
+    return URL(string: plistValue.isEmpty ? "https://fittracker-ai.up.railway.app" : plistValue)!
+}
+
 @main
 struct FitTrackerApp: App {
 
@@ -16,6 +22,21 @@ struct FitTrackerApp: App {
     @StateObject private var programStore  = TrainingProgramStore()
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
+    @StateObject private var aiOrchestrator: AIOrchestrator = {
+        let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
+        let foundationModel: any FoundationModelProtocol = {
+            if #available(iOS 26, *) {
+                return FoundationModelService()
+            } else {
+                return FallbackFoundationModel()
+            }
+        }()
+        return AIOrchestrator(
+            engineClient:    client,
+            foundationModel: foundationModel,
+            snapshot:        { LocalUserSnapshot() }
+        )
+    }()
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -31,6 +52,10 @@ struct FitTrackerApp: App {
                             if scenePhase == .active {
                                 await cloudSync.fetchChanges(dataStore: dataStore)
                             }
+                            // Kick off AI insight refresh for all segments on sign-in.
+                            // JWT from the active session token (Supabase JWT).
+                            let jwt = signIn.activeSession?.sessionToken
+                            await aiOrchestrator.processAll(jwt: jwt)
                         }
                     }
                 }
@@ -89,6 +114,7 @@ struct FitTrackerApp: App {
                 .environmentObject(programStore)
                 .environmentObject(settings)
                 .environmentObject(watchService)
+                .environmentObject(aiOrchestrator)
         } else {
             AuthHubView()
                 .environmentObject(signIn)
