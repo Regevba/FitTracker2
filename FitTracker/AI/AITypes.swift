@@ -12,7 +12,10 @@ import Foundation
 
 /// Type-erased Codable wrapper satisfying Swift 6 Sendable requirements.
 /// Replaces [String: Any] in AIRecommendation.supportingData.
-public struct AnyCodable: Codable, Sendable, Equatable {
+/// @unchecked Sendable: we manually constrain stored values to known Sendable
+/// primitives (Bool, Int, Double, String, [AnyCodable], [String: AnyCodable]).
+/// The init and decode paths enforce this invariant at runtime.
+public struct AnyCodable: Codable, @unchecked Sendable, Equatable {
     public let value: any Sendable
 
     public init(_ value: some Sendable) {
@@ -47,7 +50,14 @@ public struct AnyCodable: Codable, Sendable, Equatable {
         case let v as String:                try container.encode(v)
         case let v as [AnyCodable]:          try container.encode(v)
         case let v as [String: AnyCodable]:  try container.encode(v)
-        default:                             try container.encodeNil()
+        default:
+            throw EncodingError.invalidValue(
+                value,
+                EncodingError.Context(
+                    codingPath: encoder.codingPath,
+                    debugDescription: "AnyCodable: unsupported value type \(type(of: value))"
+                )
+            )
         }
     }
 

@@ -106,9 +106,27 @@ struct FitTrackerApp: App {
     }
 
     // ── AI snapshot builder ───────────────────────────────
-    // Populates the fields we can derive from existing stores.
-    // HealthKit metrics and full profile fields will be added here
-    // once the profile/onboarding screen is implemented.
+    // Builds the LocalUserSnapshot from available stores.
+    //
+    // CURRENT STATE: Only programPhase is populated (from today's training day type).
+    // All other fields — age, gender, BMI, training frequency, goals, nutrition,
+    // recovery, and stats metrics — require profile/onboarding data and HealthKit
+    // authorisation that is not yet implemented.
+    //
+    // IMPACT: Segments whose band() methods return nil due to missing fields are
+    // silently skipped by AIOrchestrator (no AI call is made for that segment).
+    // The training segment will fire once programPhase is the only required field
+    // that has a value; all others will skip until this method is fully populated.
+    //
+    // TODO: Wire remaining fields here when profile onboarding and HealthKit
+    // integration are implemented:
+    //   snap.ageYears           = profile.ageYears
+    //   snap.genderIdentity     = profile.genderIdentity
+    //   snap.bmiValue           = healthService.latestBMI
+    //   snap.primaryGoal        = profile.primaryGoal
+    //   snap.trainingDaysPerWeek = programStore.weeklyTrainingDays
+    //   snap.avgSleepHours      = healthService.avgSleepHours
+    //   ... (see LocalUserSnapshot fields for full list)
     private func buildSnapshot() -> LocalUserSnapshot {
         var snap = LocalUserSnapshot()
         snap.programPhase = programStore.todayDayType.aiProgramPhase

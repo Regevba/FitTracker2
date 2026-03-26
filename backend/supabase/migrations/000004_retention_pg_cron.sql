@@ -4,7 +4,11 @@
 -- when frequency falls below k=50, preserving anonymity at the bucket level.
 -- Also enforces 90-day storage limitation per GDPR Article 5.
 
--- Enable pg_cron extension (requires Supabase Pro / pg_cron enabled)
+-- PREREQUISITE: pg_cron requires the Supabase Pro plan (or higher).
+-- On the Free tier, enable it manually via:
+--   Dashboard → Database → Extensions → search "pg_cron" → toggle on
+-- If unavailable, skip this migration. The app works without it;
+-- cohort retention will not run automatically until this is applied.
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 SELECT cron.schedule(

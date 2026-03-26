@@ -24,8 +24,7 @@ INSERT INTO cohort_stats (segment, field_name, field_value, frequency) VALUES
   ('training', 'active_weeks_band', '4+',  1017),
 
   ('training', 'program_phase', 'foundation', 423),
-  ('training', 'program_phase', 'build',      612),
-  ('training', 'program_phase', 'peak',       298),
+  ('training', 'program_phase', 'build',      910),
   ('training', 'program_phase', 'recovery',   194),
 
   ('training', 'training_days_week_band', '1-2', 287),

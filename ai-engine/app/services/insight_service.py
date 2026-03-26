@@ -84,8 +84,8 @@ class InsightService:
             signals.append("cohort_muscle_gain_foundation_common")
         if goal == "weight_loss" and days_band == "1-2":
             signals.append("cohort_weight_loss_low_frequency_suboptimal")
-        if phase == "peak":
-            signals.append("cohort_peak_phase_recovery_emphasis")
+        if goal == "muscle_gain" and phase == "build":
+            signals.append("cohort_build_phase_volume_emphasis")
 
         return signals
 
