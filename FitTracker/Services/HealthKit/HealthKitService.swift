@@ -12,18 +12,18 @@ import Combine
 // ─────────────────────────────────────────────────────────
 
 struct LiveMetrics: Sendable {
-    var heartRate:       Double?
-    var restingHR:       Double?
-    var hrv:             Double?
-    var vo2Max:          Double?
-    var weightKg:        Double?
-    var bodyFatPct:      Double?   // 0.0–1.0 from HealthKit
-    var leanMassKg:      Double?
-    var stepCount:       Int?
-    var activeCalories:  Double?
-    var sleepHours:      Double?
-    var deepSleepMin:    Double?
-    var remSleepMin:     Double?
+    var heartRate:       Double? = nil
+    var restingHR:       Double? = nil
+    var hrv:             Double? = nil
+    var vo2Max:          Double? = nil
+    var weightKg:        Double? = nil
+    var bodyFatPct:      Double? = nil   // 0.0–1.0 from HealthKit
+    var leanMassKg:      Double? = nil
+    var stepCount:       Int? = nil
+    var activeCalories:  Double? = nil
+    var sleepHours:      Double? = nil
+    var deepSleepMin:    Double? = nil
+    var remSleepMin:     Double? = nil
     var lastUpdated:     Date = Date()
 
     var restingHRStatus: MetricStatus {
@@ -107,15 +107,14 @@ final class HealthKitService: ObservableObject {
     func requestAuthorization() async throws {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         try await store.requestAuthorization(toShare: Self.writeTypes, read: Self.readTypes)
-        // requestAuthorization completes without throwing even if the user denies permission
-        // (Apple privacy model). Check actual authorization status for a critical type to
-        // determine whether we should proceed with fetching.
-        let heartRateType = HKQuantityType(.heartRate)
-        let authStatus = store.authorizationStatus(for: heartRateType)
-        isAuthorized = authStatus != .notDetermined
+        let workoutType = HKObjectType.workoutType()
+        let authStatus = store.authorizationStatus(for: workoutType)
+        isAuthorized = authStatus == .sharingAuthorized
         if isAuthorized {
             await fetchAll()
             startBackgroundDelivery()
+        } else {
+            errorMessage = "Health access was not granted. You can enable it later in the Health app."
         }
     }
 
@@ -231,7 +230,10 @@ final class HealthKitService: ObservableObject {
                     switch HKCategoryValueSleepAnalysis(rawValue: s.value) {
                     case .asleepDeep: deep += h
                     case .asleepREM:  rem  += h
-                    default:          core += h
+                    case .asleep, .asleepCore, .asleepUnspecified:
+                        core += h
+                    default:
+                        break
                     }
                 }
                 let total = deep + rem + core
@@ -255,8 +257,14 @@ final class HealthKitService: ObservableObject {
                     Calendar.current.startOfDay(for: $0.startDate)
                 }
                 let points = grouped.keys.sorted().compactMap { day -> HistoricalPoint? in
-                    let hours = grouped[day, default: []]
-                        .reduce(0.0) { $0 + $1.endDate.timeIntervalSince($1.startDate) / 3600 }
+                    let hours = grouped[day, default: []].reduce(0.0) { partial, sample in
+                        switch HKCategoryValueSleepAnalysis(rawValue: sample.value) {
+                        case .asleepDeep, .asleepREM, .asleep, .asleepCore, .asleepUnspecified:
+                            return partial + sample.endDate.timeIntervalSince(sample.startDate) / 3600
+                        default:
+                            return partial
+                        }
+                    }
                     guard hours > 0 else { return nil }
                     return HistoricalPoint(date: day, value: hours)
                 }

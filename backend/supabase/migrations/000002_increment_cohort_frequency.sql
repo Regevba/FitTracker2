@@ -27,3 +27,6 @@ $$;
 COMMENT ON FUNCTION increment_cohort_frequency IS
   'Atomically increments frequency count for a cohort bucket. '
   'SECURITY DEFINER so AI engine service key can write despite RLS restrictions.';
+
+REVOKE ALL ON FUNCTION increment_cohort_frequency(TEXT, TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION increment_cohort_frequency(TEXT, TEXT, TEXT) TO service_role;

@@ -1,13 +1,14 @@
 // AI/AIOrchestrator.swift
-// Orchestrates the two-layer federated cohort intelligence pipeline:
-//   1. On-device layer: Apple Foundation Models personalises using private user data
-//   2. Cloud layer: AI engine provides population-level cohort insights
+// Orchestrates the federated cohort intelligence pipeline:
+//   1. Build a local baseline recommendation from on-device data
+//   2. Prefer cloud cohort insight when a valid backend JWT is available
+//   3. Apply on-device personalisation using private user data
 //
 // Architecture:
 //   - PII never leaves the device — only banded categorical values are sent to cloud
-//   - On-device layer always runs first; cloud is called only per active segment
-//   - If on-device confidence < threshold, cloud insight is fetched and merged
-//   - Foundation Models unavailable (pre-iOS 26) → FallbackFoundationModel → always escalates
+//   - A local baseline always exists, even when cloud auth is unavailable
+//   - Cloud is called only when a segment has enough banded data and a valid JWT
+//   - Foundation Models unavailable (pre-iOS 26) → FallbackFoundationModel → skips personalisation
 
 import Foundation
 
@@ -45,10 +46,6 @@ public final class AIOrchestrator: ObservableObject {
     // MARK: – Public API
     // ─────────────────────────────────────────────────────
 
-    /// Process a specific segment. Only segments with complete band data are submitted.
-    /// Call this when the user navigates to a segment or data materially changes.
-    /// - Parameter overrideSnapshot: If provided, used instead of the stored snapshot closure.
-    ///   Pass a populated snapshot built from live stores (HealthKit, profile, training data).
     public func process(segment: AISegment, jwt: String?, overrideSnapshot: LocalUserSnapshot? = nil) async {
         isProcessing = true
         lastError = nil
@@ -56,52 +53,38 @@ public final class AIOrchestrator: ObservableObject {
 
         let userSnapshot = overrideSnapshot ?? snapshot()
         let bands = extractBands(segment: segment, snapshot: userSnapshot)
-
-        guard let bands else {
-            // Insufficient data — skip silently; will retry on next app foreground
-            return
+        let localRecommendation = AIRecommendation.localFallback(for: segment, snapshot: userSnapshot)
+        let baseRecommendation: AIRecommendation
+        if let jwt, jwt.looksLikeJWT, let bands {
+            do {
+                baseRecommendation = try await engineClient.fetchInsight(
+                    segment: segment,
+                    payload: bands,
+                    jwt: jwt
+                )
+            } catch AIEngineError.rateLimited {
+                lastError = .rateLimited
+                baseRecommendation = localRecommendation
+            } catch AIEngineError.unauthorised {
+                lastError = .unauthenticated
+                baseRecommendation = localRecommendation
+            } catch {
+                lastError = .networkError(error)
+                baseRecommendation = localRecommendation
+            }
+        } else {
+            baseRecommendation = localRecommendation
         }
 
-        guard let jwt, !jwt.isEmpty else {
-            lastError = .unauthenticated
-            return
-        }
-
-        // Step 1: Attempt on-device inference
-        // Uses explicit do/catch — try? would silently swallow Foundation Models errors
-        let cloudRecommendation: AIRecommendation
-        do {
-            cloudRecommendation = try await engineClient.fetchInsight(
-                segment: segment,
-                payload: bands,
-                jwt: jwt
-            )
-        } catch AIEngineError.rateLimited {
-            lastError = .rateLimited
-            return
-        } catch AIEngineError.unauthorised {
-            lastError = .unauthenticated
-            return
-        } catch {
-            lastError = .networkError(error)
-            return
-        }
-
-        // Step 2: Apply on-device personalisation layer
-        // Explicit do/catch: Foundation Models can throw — silently swallowing would
-        // skip personalisation without the caller knowing.
         let finalRecommendation: AIRecommendation
         do {
             let (adapted, confidence) = try await foundationModel.adapt(
-                recommendation: cloudRecommendation,
+                recommendation: baseRecommendation,
                 snapshot: userSnapshot
             )
-            // If confidence below threshold, use cloud recommendation as-is
-            // (Foundation Models returned low confidence or FallbackFoundationModel was used)
-            finalRecommendation = confidence >= personalisationThreshold ? adapted : cloudRecommendation
+            finalRecommendation = confidence >= personalisationThreshold ? adapted : baseRecommendation
         } catch {
-            // Foundation Models threw — fall back to unmodified cloud recommendation
-            finalRecommendation = cloudRecommendation
+            finalRecommendation = baseRecommendation
         }
 
         latestRecommendations[segment] = finalRecommendation
@@ -133,6 +116,12 @@ public final class AIOrchestrator: ObservableObject {
     }
 }
 
+private extension String {
+    var looksLikeJWT: Bool {
+        split(separator: ".").count == 3
+    }
+}
+
 // ─────────────────────────────────────────────────────────
 // MARK: – AIError
 // ─────────────────────────────────────────────────────────
@@ -144,7 +133,7 @@ public enum AIError: Error, Sendable {
 
     public var localizedDescription: String {
         switch self {
-        case .unauthenticated:    return "Sign in required for AI insights."
+        case .unauthenticated:    return "Cloud AI is unavailable until a backend-authenticated session is active."
         case .rateLimited:        return "AI requests are temporarily limited. Try again later."
         case .networkError(let e): return "Network error: \(e.localizedDescription)"
         }

@@ -2,7 +2,7 @@
 // On-device personalisation layer using Apple Foundation Models (iOS 26+).
 // Protocol-driven for testability — inject FoundationModelProtocol in XCTest.
 // FallbackFoundationModel handles pre-iOS 26 devices by returning confidence 0,
-// which causes AIOrchestrator to always escalate to the cloud AI engine.
+// which means AIOrchestrator keeps the unpersonalised baseline recommendation.
 
 import Foundation
 
@@ -31,8 +31,8 @@ public protocol FoundationModelProtocol: Sendable {
 // ─────────────────────────────────────────────────────────
 
 /// Used on devices where Apple Foundation Models is unavailable (pre-iOS 26).
-/// Returns confidence = 0.0, which causes AIOrchestrator to always escalate
-/// to the cloud AI engine for personalisation.
+/// Returns confidence = 0.0, which causes AIOrchestrator to keep the
+/// baseline recommendation without additional personalisation.
 public struct FallbackFoundationModel: FoundationModelProtocol {
     public var isAvailable: Bool { false }
 

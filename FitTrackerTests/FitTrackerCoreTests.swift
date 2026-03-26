@@ -1,6 +1,36 @@
 import XCTest
 @testable import FitTracker
 
+private actor CountingAIEngineClient: AIEngineClientProtocol {
+    private(set) var callCount = 0
+
+    func fetchInsight(
+        segment: AISegment,
+        payload: [String : String],
+        jwt: String
+    ) async throws -> AIRecommendation {
+        callCount += 1
+        return AIRecommendation(
+            segment: segment.rawValue,
+            signals: ["cloud_signal"],
+            confidence: 0.9,
+            escalateToLLM: false,
+            supportingData: [:]
+        )
+    }
+}
+
+private struct PassthroughFoundationModel: FoundationModelProtocol {
+    var isAvailable: Bool { true }
+
+    func adapt(
+        recommendation: AIRecommendation,
+        snapshot: LocalUserSnapshot
+    ) async throws -> (recommendation: AIRecommendation, confidence: Double) {
+        (recommendation, 1.0)
+    }
+}
+
 @MainActor
 final class FitTrackerCoreTests: XCTestCase {
     func testMergedAppleSessionPreservesExistingProfileDataWhenCredentialOmitsThem() {
@@ -10,7 +40,8 @@ final class FitTrackerCoreTests: XCTestCase {
             displayName: "Regev Barak",
             email: "regev@example.com",
             phone: "+972500000000",
-            sessionToken: "old-user-id"
+            sessionToken: "old-user-id",
+            backendAccessToken: nil
         )
 
         let merged = SignInService.mergedAppleSession(
@@ -32,7 +63,8 @@ final class FitTrackerCoreTests: XCTestCase {
             userID: "apple-user",
             displayName: "Old Name",
             email: "old@example.com",
-            sessionToken: "old-user-id"
+            sessionToken: "old-user-id",
+            backendAccessToken: nil
         )
 
         let merged = SignInService.mergedAppleSession(
@@ -170,5 +202,125 @@ final class FitTrackerCoreTests: XCTestCase {
 
         XCTAssertNil(service.authErrorMessage)
         XCTAssertEqual(service.statusMessage, "If that email is registered, a password reset link is on the way.")
+    }
+
+    func testUserSessionBackendAccessTokenOnlyExistsForJWTShape() {
+        let localSession = UserSession(
+            provider: .email,
+            userID: "regev@example.com",
+            displayName: "Regev",
+            email: "regev@example.com",
+            sessionToken: UUID().uuidString,
+            backendAccessToken: nil
+        )
+        let backendSession = UserSession(
+            provider: .email,
+            userID: "regev@example.com",
+            displayName: "Regev",
+            email: "regev@example.com",
+            sessionToken: UUID().uuidString,
+            backendAccessToken: "header.payload.signature"
+        )
+
+        XCTAssertFalse(localSession.hasBackendAccessToken)
+        XCTAssertTrue(backendSession.hasBackendAccessToken)
+    }
+
+    func testAISnapshotBuilderPopulatesCoreBandsFromExistingData() {
+        let now = Date()
+        let profile = UserProfile()
+        let preferences = UserPreferences(nutritionGoalMode: .fatLoss)
+        let liveMetrics = LiveMetrics(
+            restingHR: 58,
+            weightKg: 69.5,
+            bodyFatPct: 0.19,
+            stepCount: 8200,
+            sleepHours: 7.4
+        )
+        var today = DailyLog.scheduled(for: now, profile: profile, dayType: .upperPush)
+        today.nutritionLog.meals = [
+            MealEntry(mealNumber: 1, name: "Breakfast", calories: 550, proteinG: 40, carbsG: 45, fatG: 15, eatenAt: now, status: .completed),
+            MealEntry(mealNumber: 2, name: "Lunch", calories: 650, proteinG: 50, carbsG: 55, fatG: 20, eatenAt: now, status: .completed),
+            MealEntry(mealNumber: 3, name: "Dinner", calories: 500, proteinG: 35, carbsG: 35, fatG: 18, eatenAt: now, status: .completed),
+        ]
+        today.exerciseLogs = [
+            "bench": ExerciseLog(exerciseID: "bench", exerciseName: "Bench Press")
+        ]
+        today.biometrics.restingHeartRate = 58
+        today.biometrics.sleepHours = 7.2
+        today.biometrics.stepCount = 8400
+        today.mood = 4
+        today.energyLevel = 4
+
+        let snapshot = AISnapshotBuilder.build(
+            profile: profile,
+            preferences: preferences,
+            liveMetrics: liveMetrics,
+            dailyLogs: [today],
+            todayDayType: .upperPush,
+            now: now
+        )
+
+        XCTAssertNotNil(snapshot.trainingBands())
+        XCTAssertNotNil(snapshot.nutritionBands())
+        XCTAssertNotNil(snapshot.recoveryBands())
+        XCTAssertNotNil(snapshot.statsBands())
+    }
+
+    func testSupplementStreakStopsAtMissingDay() {
+        let store = EncryptedDataStore()
+        let calendar = Calendar.current
+
+        var today = DailyLog.scheduled(for: Date(), profile: store.userProfile, dayType: .restDay)
+        today.supplementLog.morningStatus = .completed
+        today.supplementLog.eveningStatus = .completed
+
+        let twoDaysAgoDate = calendar.date(byAdding: .day, value: -2, to: Date())!
+        var twoDaysAgo = DailyLog.scheduled(for: twoDaysAgoDate, profile: store.userProfile, dayType: .restDay)
+        twoDaysAgo.supplementLog.morningStatus = .completed
+        twoDaysAgo.supplementLog.eveningStatus = .completed
+
+        store.dailyLogs = [today, twoDaysAgo]
+
+        XCTAssertEqual(store.supplementStreak, 1)
+    }
+
+    func testBuildExportUsesNewestFirstTrendDirection() {
+        let store = EncryptedDataStore()
+        let calendar = Calendar.current
+
+        var newest = DailyLog.scheduled(for: Date(), profile: store.userProfile, dayType: .restDay)
+        newest.biometrics.weightKg = 68
+        newest.biometrics.hrv = 40
+
+        let olderDate = calendar.date(byAdding: .day, value: -1, to: Date())!
+        var older = DailyLog.scheduled(for: olderDate, profile: store.userProfile, dayType: .restDay)
+        older.biometrics.weightKg = 70
+        older.biometrics.hrv = 35
+
+        store.dailyLogs = [newest, older]
+
+        let export = store.buildExport()
+
+        XCTAssertEqual(export.aiHints.weightTrend, "decreasing")
+        XCTAssertEqual(export.aiHints.hrvTrend, "increasing")
+    }
+
+    func testAIOrchestratorFallsBackLocallyWhenBandsAreIncomplete() async {
+        let engine = CountingAIEngineClient()
+        let orchestrator = AIOrchestrator(
+            engineClient: engine,
+            foundationModel: PassthroughFoundationModel(),
+            snapshot: { LocalUserSnapshot() }
+        )
+
+        await orchestrator.process(
+            segment: .training,
+            jwt: "header.payload.signature",
+            overrideSnapshot: LocalUserSnapshot()
+        )
+
+        XCTAssertEqual(await engine.callCount, 0)
+        XCTAssertEqual(orchestrator.latestRecommendations[.training]?.segment, AISegment.training.rawValue)
     }
 }

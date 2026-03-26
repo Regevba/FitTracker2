@@ -57,9 +57,7 @@ struct FitTrackerApp: App {
                             if scenePhase == .active {
                                 await cloudSync.fetchChanges(dataStore: dataStore)
                             }
-                            // Kick off AI insight refresh for all segments on sign-in.
-                            // JWT from the active session token (Supabase JWT).
-                            let jwt = signIn.activeSession?.sessionToken
+                            let jwt = signIn.activeSession?.backendAccessToken
                             await aiOrchestrator.processAll(jwt: jwt, snapshot: buildSnapshot())
                         }
                     }
@@ -105,32 +103,14 @@ struct FitTrackerApp: App {
         #endif
     }
 
-    // ── AI snapshot builder ───────────────────────────────
-    // Builds the LocalUserSnapshot from available stores.
-    //
-    // CURRENT STATE: Only programPhase is populated (from today's training day type).
-    // All other fields — age, gender, BMI, training frequency, goals, nutrition,
-    // recovery, and stats metrics — require profile/onboarding data and HealthKit
-    // authorisation that is not yet implemented.
-    //
-    // IMPACT: Segments whose band() methods return nil due to missing fields are
-    // silently skipped by AIOrchestrator (no AI call is made for that segment).
-    // The training segment will fire once programPhase is the only required field
-    // that has a value; all others will skip until this method is fully populated.
-    //
-    // TODO: Wire remaining fields here when profile onboarding and HealthKit
-    // integration are implemented:
-    //   snap.ageYears           = profile.ageYears
-    //   snap.genderIdentity     = profile.genderIdentity
-    //   snap.bmiValue           = healthService.latestBMI
-    //   snap.primaryGoal        = profile.primaryGoal
-    //   snap.trainingDaysPerWeek = programStore.weeklyTrainingDays
-    //   snap.avgSleepHours      = healthService.avgSleepHours
-    //   ... (see LocalUserSnapshot fields for full list)
     private func buildSnapshot() -> LocalUserSnapshot {
-        var snap = LocalUserSnapshot()
-        snap.programPhase = programStore.todayDayType.aiProgramPhase
-        return snap
+        AISnapshotBuilder.build(
+            profile: dataStore.userProfile,
+            preferences: dataStore.userPreferences,
+            liveMetrics: healthService.latest,
+            dailyLogs: dataStore.dailyLogs,
+            todayDayType: programStore.todayDayType
+        )
     }
 
     // ── Auth state machine ────────────────────────────────

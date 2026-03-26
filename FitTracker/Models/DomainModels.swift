@@ -32,6 +32,7 @@ enum ProgramPhase: String, Codable, CaseIterable, Sendable {
 struct DailyLog: Identifiable, Codable, Sendable {
     var id: UUID           = UUID()
     var date: Date
+    var logicDayKey: String?
     var phase: ProgramPhase
     var dayType: DayType
     var recoveryDay: Int                            // Days since Jan 29 2026
@@ -58,6 +59,10 @@ struct DailyLog: Identifiable, Codable, Sendable {
         guard !all.isEmpty else { return 0 }
         return Double(all.filter { $0 == .completed }.count) / Double(all.count) * 100
     }
+
+    var resolvedLogicDayKey: String {
+        logicDayKey ?? Date.fitLogicDayKey(for: date)
+    }
 }
 
 extension DailyLog {
@@ -68,6 +73,7 @@ extension DailyLog {
     ) -> DailyLog {
         DailyLog(
             date: date,
+            logicDayKey: Date.fitLogicDayKey(for: date),
             phase: profile.currentPhase,
             dayType: dayType,
             recoveryDay: profile.recoveryDay(for: date)
@@ -540,6 +546,16 @@ extension UserProfile {
 private func iso(_ s: String) -> Date {
     let f = ISO8601DateFormatter(); f.formatOptions = [.withFullDate]
     return f.date(from: s) ?? Date()
+}
+
+extension Date {
+    static func fitLogicDayKey(for date: Date, calendar: Calendar = .current) -> String {
+        let components = calendar.dateComponents([.year, .month, .day], from: date)
+        let year = components.year ?? 1970
+        let month = components.month ?? 1
+        let day = components.day ?? 1
+        return String(format: "%04d-%02d-%02d", year, month, day)
+    }
 }
 
 // ─────────────────────────────────────────────────────────

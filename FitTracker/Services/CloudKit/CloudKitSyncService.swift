@@ -123,11 +123,11 @@ final class CloudKitSyncService: ObservableObject {
             // Upload daily logs that need sync
             let pendingLogs = dataStore.dailyLogs.filter { $0.needsSync }
             for log in pendingLogs {
-                let recordName = try await uploadDailyLog(log)
+                let uploadedLog = try await uploadDailyLog(log)
                 // Mark as synced in the store
                 if let idx = dataStore.dailyLogs.firstIndex(where: { $0.id == log.id }) {
+                    dataStore.dailyLogs[idx] = uploadedLog
                     dataStore.dailyLogs[idx].needsSync = false
-                    dataStore.dailyLogs[idx].cloudRecordID = recordName
                 }
             }
 
@@ -177,14 +177,19 @@ final class CloudKitSyncService: ObservableObject {
             )
             // Merge: remote wins on conflict (last-write-wins by logicDate)
             for remote in remoteLogs {
-                if let local = dataStore.log(for: remote.date) {
+                let remoteKey = remote.resolvedLogicDayKey
+                if let local = dataStore.log(forLogicDayKey: remoteKey) {
                     if remote.lastModified > local.lastModified {
-                        dataStore.dailyLogs.removeAll { Calendar.current.isDate($0.date, inSameDayAs: remote.date) }
-                        var r = remote; r.needsSync = false
+                        dataStore.dailyLogs.removeAll { $0.resolvedLogicDayKey == remoteKey }
+                        var r = remote
+                        r.needsSync = false
+                        r.logicDayKey = remoteKey
                         dataStore.dailyLogs.append(r)
                     }
                 } else {
-                    var r = remote; r.needsSync = false
+                    var r = remote
+                    r.needsSync = false
+                    r.logicDayKey = remoteKey
                     dataStore.dailyLogs.append(r)
                 }
             }
@@ -196,7 +201,7 @@ final class CloudKitSyncService: ObservableObject {
                 as: WeeklySnapshot.self
             )
             for remote in remoteSnaps {
-                if let idx = dataStore.weeklySnapshots.firstIndex(where: { Calendar.current.isDate($0.weekStart, inSameDayAs: remote.weekStart) }) {
+                if let idx = dataStore.weeklySnapshots.firstIndex(where: { logicDayKey(for: $0.weekStart) == logicDayKey(for: remote.weekStart) }) {
                     // Keep local unsynced edits; otherwise refresh from cloud.
                     if !dataStore.weeklySnapshots[idx].needsSync {
                         var r = remote; r.needsSync = false
@@ -288,7 +293,7 @@ final class CloudKitSyncService: ObservableObject {
         }
     }
 
-    private func uploadDailyLog(_ log: DailyLog) async throws -> String {
+    private func uploadDailyLog(_ log: DailyLog) async throws -> DailyLog {
         // Strip inline JPEG bytes before encrypting — images travel as CKAssets to stay
         // well under CKRecord's 1 MB size limit. Upload each image first, keep only its cloudID.
         var logToUpload = log
@@ -298,22 +303,25 @@ final class CloudKitSyncService: ObservableObject {
             cardio.summaryImageData    = nil
             logToUpload.cardioLogs[key] = cardio
         }
+        logToUpload.logicDayKey = logToUpload.resolvedLogicDayKey
 
         let encrypted  = try await EncryptionService.shared.encrypt(logToUpload)
-        let recordName = log.cloudRecordID ?? "log-\(logicDayKey(for: log.date))"
+        let recordName = log.cloudRecordID ?? "log-\(logToUpload.resolvedLogicDayKey)"
         let recordID   = CKRecord.ID(recordName: recordName)
         let record     = try await fetchOrCreate(recordType: CKRecordType.dailyLog, recordID: recordID)
-        record[CKField.blob]          = encrypted as CKRecordValue
-        record[CKField.logicDate]     = log.date  as CKRecordValue
+        record[CKField.blob]          = encrypted        as CKRecordValue
+        record[CKField.logicDate]     = logToUpload.date as CKRecordValue
         record[CKField.recordVersion] = 2         as CKRecordValue
         guard let privateDB else { throw cloudKitUnavailableError() }
         _ = try await privateDB.save(record)
-        return recordName
+        logToUpload.cloudRecordID = recordName
+        logToUpload.needsSync = false
+        return logToUpload
     }
 
     private func uploadWeeklySnapshot(_ snap: WeeklySnapshot) async throws -> String {
         let encrypted  = try await EncryptionService.shared.encrypt(snap)
-        let recordName = snap.cloudRecordID ?? "snap-\(logicDayKey(for: snap.weekStart))"
+        let recordName = snap.cloudRecordID ?? "snap-\(Date.fitLogicDayKey(for: snap.weekStart))"
         let recordID   = CKRecord.ID(recordName: recordName)
         let record     = try await fetchOrCreate(recordType: CKRecordType.weeklySnapshot, recordID: recordID)
         record[CKField.blob]          = encrypted      as CKRecordValue
@@ -401,17 +409,8 @@ final class CloudKitSyncService: ObservableObject {
         return items
     }
 
-    private static let logicDayFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.calendar = Calendar(identifier: .gregorian)
-        f.locale = Locale(identifier: "en_US_POSIX")
-        f.timeZone = TimeZone(secondsFromGMT: 0)
-        f.dateFormat = "yyyy-MM-dd"
-        return f
-    }()
-
     private func logicDayKey(for date: Date) -> String {
-        Self.logicDayFormatter.string(from: date)
+        Date.fitLogicDayKey(for: date)
     }
 
     private func applyRemoteSingleton<T: Encodable>(

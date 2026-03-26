@@ -1,7 +1,7 @@
 // Services/Auth/SignInService.swift
 // Session + auth flow manager for:
 //   - Sign in with Apple
-//   - Email registration / verification / login (adapter-backed, mockable)
+//   - Local email registration / verification / login
 //   - Passkey / WebAuthn login and registration
 
 import Foundation
@@ -26,6 +26,7 @@ struct UserSession: Codable, Sendable, Equatable {
     var phone:         String?
     var avatarURL:     URL?
     var sessionToken:  String
+    var backendAccessToken: String?
     var credentialID:  Data?
     var signedInAt:    Date = Date()
 
@@ -34,6 +35,11 @@ struct UserSession: Codable, Sendable, Equatable {
         let first = parts.first.map { String($0.prefix(1)) } ?? ""
         let last  = parts.dropFirst().first.map { String($0.prefix(1)) } ?? ""
         return (first + last).uppercased()
+    }
+
+    var hasBackendAccessToken: Bool {
+        guard let backendAccessToken else { return false }
+        return backendAccessToken.split(separator: ".").count == 3
     }
 }
 
@@ -95,7 +101,7 @@ struct SystemAppleAuthProvider: AppleAuthProviding {
     }
 }
 
-struct MockEmailAuthProvider: EmailAuthProviding {
+struct LocalEmailAuthProvider: EmailAuthProviding {
     func register(_ draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge {
         try await Task.sleep(for: .milliseconds(600))
         return EmailRegistrationChallenge(
@@ -129,7 +135,8 @@ struct MockEmailAuthProvider: EmailAuthProviding {
             userID: draft.email.lowercased(),
             displayName: draft.fullName,
             email: draft.email,
-            sessionToken: UUID().uuidString
+            sessionToken: UUID().uuidString,
+            backendAccessToken: nil
         )
     }
 
@@ -153,7 +160,8 @@ struct MockEmailAuthProvider: EmailAuthProviding {
             userID: email.lowercased(),
             displayName: inferredName,
             email: email,
-            sessionToken: UUID().uuidString
+            sessionToken: UUID().uuidString,
+            backendAccessToken: nil
         )
     }
 
@@ -208,7 +216,7 @@ final class SignInService: NSObject, ObservableObject {
 
     override init() {
         self.appleProvider = SystemAppleAuthProvider()
-        self.emailProvider = MockEmailAuthProvider()
+        self.emailProvider = LocalEmailAuthProvider()
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
     }
@@ -528,19 +536,6 @@ final class SignInService: NSObject, ObservableObject {
         )
     }
 
-    #if targetEnvironment(simulator)
-    func signInAsTestUser() {
-        let session = UserSession(
-            provider: .apple,
-            userID: UUID().uuidString,
-            displayName: "Regev",
-            email: "regev@simulator.local",
-            sessionToken: UUID().uuidString
-        )
-        finishSignIn(session)
-    }
-    #endif
-
     private func finishSignIn(_ session: UserSession) {
         activeSession = session
         storedSession = session
@@ -617,6 +612,7 @@ final class SignInService: NSObject, ObservableObject {
                     displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     email: storedSession?.email,
                     sessionToken: cred.signature.base64EncodedString(),
+                    backendAccessToken: nil,
                     credentialID: cred.credentialID
                 )
                 finishSignIn(session)
@@ -628,6 +624,7 @@ final class SignInService: NSObject, ObservableObject {
                     displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     email: storedSession?.email,
                     sessionToken: cred.signature.base64EncodedString(),
+                    backendAccessToken: nil,
                     credentialID: cred.credentialID
                 )
                 finishSignIn(session)
@@ -665,7 +662,8 @@ extension SignInService {
             email: incomingEmail ?? existingAppleSession?.email,
             phone: existingAppleSession?.phone,
             avatarURL: existingAppleSession?.avatarURL,
-            sessionToken: userID
+            sessionToken: userID,
+            backendAccessToken: existingAppleSession?.backendAccessToken
         )
     }
 }

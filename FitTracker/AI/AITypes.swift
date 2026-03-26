@@ -105,6 +105,45 @@ public struct AIRecommendation: Codable, Sendable {
     }
 }
 
+extension AIRecommendation {
+    static func localFallback(for segment: AISegment, snapshot: LocalUserSnapshot) -> AIRecommendation {
+        var signals: [String] = []
+
+        switch segment {
+        case .training:
+            if snapshot.programPhase == "recovery" { signals.append("local_recovery_phase_keep_intensity_in_check") }
+            if let days = snapshot.trainingDaysPerWeek, days >= 5 { signals.append("local_high_frequency_program_detected") }
+            if snapshot.primaryGoal == "weight_loss" { signals.append("local_goal_fat_loss_support") }
+        case .nutrition:
+            if let delta = snapshot.caloricBalanceDelta, delta < 0 { signals.append("local_calorie_deficit_active") }
+            if let actual = snapshot.dailyProteinGrams, let target = snapshot.proteinTargetGrams, actual < target {
+                signals.append("local_protein_below_target")
+            }
+            if let meals = snapshot.mealsPerDay, meals <= 2 { signals.append("local_low_meal_frequency") }
+        case .recovery:
+            if let sleep = snapshot.avgSleepHours, sleep < 6 { signals.append("local_sleep_debt_flag") }
+            if let restingHR = snapshot.restingHeartRate, restingHR > 80 { signals.append("local_elevated_resting_hr") }
+            if snapshot.stressLevel == "high" { signals.append("local_high_stress_detected") }
+        case .stats:
+            if let sessions = snapshot.weeklySessionCount, sessions < 3 { signals.append("local_weekly_sessions_below_target") }
+            if let steps = snapshot.avgDailySteps, steps < 7_500 { signals.append("local_daily_steps_below_target") }
+            if snapshot.workoutConsistency == "high" { signals.append("local_consistency_strength") }
+        }
+
+        if signals.isEmpty {
+            signals = ["local_baseline_ready"]
+        }
+
+        return AIRecommendation(
+            segment: segment.rawValue,
+            signals: signals,
+            confidence: 0.25,
+            escalateToLLM: false,
+            supportingData: [:]
+        )
+    }
+}
+
 // ─────────────────────────────────────────────────────────
 // MARK: – LocalUserSnapshot (on-device anonymisable metrics)
 // ─────────────────────────────────────────────────────────

@@ -356,9 +356,10 @@ final class EncryptedDataStore: ObservableObject {
     func upsertLog(_ log: DailyLog) {
         var l = log
         l.nutritionLog = normalizedNutritionLog(l.nutritionLog)
+        l.logicDayKey = l.resolvedLogicDayKey
         l.lastModified = Date()
         l.needsSync = true
-        if let i = dailyLogs.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: log.date) }) {
+        if let i = dailyLogs.firstIndex(where: { $0.resolvedLogicDayKey == l.resolvedLogicDayKey }) {
             dailyLogs[i] = l
         } else {
             dailyLogs.append(l)
@@ -368,23 +369,30 @@ final class EncryptedDataStore: ObservableObject {
     }
 
     func log(for date: Date) -> DailyLog? {
-        dailyLogs.first { Calendar.current.isDate($0.date, inSameDayAs: date) }
+        log(forLogicDayKey: Date.fitLogicDayKey(for: date))
     }
 
     func todayLog() -> DailyLog? { log(for: Date()) }
+
+    func log(forLogicDayKey key: String) -> DailyLog? {
+        dailyLogs.first { $0.resolvedLogicDayKey == key }
+    }
 
     var supplementStreak: Int {
         let sorted = dailyLogs.sorted { $0.date > $1.date }
         var streak = 0
         let today = Calendar.current.startOfDay(for: Date())
+        var expectedDay = today
         for log in sorted {
             let logDay = Calendar.current.startOfDay(for: log.date)
             // Skip future-dated logs
             if logDay > today { continue }
+            guard logDay == expectedDay else { break }
             let complete = log.supplementLog.morningStatus == .completed
                         && log.supplementLog.eveningStatus == .completed
             if complete {
                 streak += 1
+                expectedDay = Calendar.current.date(byAdding: .day, value: -1, to: expectedDay) ?? expectedDay
             } else {
                 break
             }
@@ -472,23 +480,28 @@ final class EncryptedDataStore: ObservableObject {
     func loadFromDisk() async {
         await MainActor.run { isLoading = true; loadError = nil }
         do {
-            if let d = try? Data(contentsOf: url("logs")), !d.isEmpty {
+            if let d = try loadDataIfPresent(from: url("logs")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: [DailyLog].self)
-                await MainActor.run { dailyLogs = v }
+                let normalized = v.map { log in
+                    var normalizedLog = log
+                    normalizedLog.logicDayKey = log.resolvedLogicDayKey
+                    return normalizedLog
+                }
+                await MainActor.run { dailyLogs = normalized }
             }
-            if let d = try? Data(contentsOf: url("snaps")), !d.isEmpty {
+            if let d = try loadDataIfPresent(from: url("snaps")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: [WeeklySnapshot].self)
                 await MainActor.run { weeklySnapshots = v }
             }
-            if let d = try? Data(contentsOf: url("profile")), !d.isEmpty {
+            if let d = try loadDataIfPresent(from: url("profile")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: UserProfile.self)
                 await MainActor.run { userProfile = v }
             }
-            if let d = try? Data(contentsOf: url("mealTemplates")), !d.isEmpty {
+            if let d = try loadDataIfPresent(from: url("mealTemplates")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: [MealTemplate].self)
                 await MainActor.run { mealTemplates = v }
             }
-            if let d = try? Data(contentsOf: url("userPreferences")), !d.isEmpty {
+            if let d = try loadDataIfPresent(from: url("userPreferences")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: UserPreferences.self)
                 await MainActor.run { userPreferences = v }
             }
@@ -499,6 +512,17 @@ final class EncryptedDataStore: ObservableObject {
             }
         }
         await MainActor.run { isLoading = false }
+    }
+
+    private func loadDataIfPresent(from fileURL: URL) throws -> Data? {
+        do {
+            return try Data(contentsOf: fileURL)
+        } catch let error as NSError
+            where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
+            return nil
+        } catch {
+            throw error
+        }
     }
 
     // Fast startup check to detect keychain/encryption misconfiguration early.
@@ -560,7 +584,7 @@ final class EncryptedDataStore: ObservableObject {
 
         func trend(_ vals: [Double]) -> String {
             guard vals.count >= 2 else { return "insufficient data" }
-            let d = vals.last! - vals.first!
+            let d = vals.first! - vals.last!
             return d < -1 ? "decreasing" : d > 1 ? "increasing" : "stable"
         }
 

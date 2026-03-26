@@ -50,9 +50,22 @@ async def test_training_insight_invalid_payload_rejected(app):
         response = await client.post(
             "/v1/training/insight",
             json={**VALID_TRAINING_PAYLOAD, "age_band": "invalid_value"},
-            headers={"Authorization": "Bearer mock-token"},
+            headers={"Authorization": "Bearer header.payload.signature"},
         )
     assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_training_insight_rejects_non_jwt_token_shape(app):
+    async with AsyncClient(
+        transport=ASGITransport(app=app), base_url="http://test"
+    ) as client:
+        response = await client.post(
+            "/v1/training/insight",
+            json=VALID_TRAINING_PAYLOAD,
+            headers={"Authorization": "Bearer local-session-token"},
+        )
+    assert response.status_code == 401
 
 
 @pytest.mark.asyncio

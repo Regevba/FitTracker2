@@ -55,6 +55,9 @@ async def get_verified_claims(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
+    if token.count(".") != 2:
+        raise credentials_exception
+
     try:
         keys = await _fetch_jwks(settings.supabase_jwks_url)
     except Exception as exc:
