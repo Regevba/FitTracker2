@@ -129,6 +129,7 @@
 				A20000010000000000000001 /* FitTrackerApp.swift */,
 				A40000010000000000000004 /* Models */,
 				A40000010000000000000005 /* Services */,
+				AI300000000000000000AAA1 /* AI */,
 				A40000010000000000000006 /* Views */,
 				A20000010000000000000012 /* Info.plist */,
 				A20000010000000000000013 /* FitTracker.entitlements */,
@@ -174,7 +175,6 @@
 				A40000010000000000000009 /* CloudKit */,
 				A4000001000000000000000A /* Encryption */,
 				A20000010000000000000008 /* AppSettings.swift */,
-				AI300000000000000000AAA1 /* AI */,
 			);
 			path = Services;
 			sourceTree = "<group>";

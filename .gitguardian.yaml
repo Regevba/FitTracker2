@@ -1,0 +1,5 @@
+version: 2
+ignore-paths:
+  # backend CI workflow — PGPASSWORD: postgres is the default PostgreSQL test
+  # password used in ephemeral GitHub Actions containers. Not a real credential.
+  - path: backend/.github/workflows/ci.yml
