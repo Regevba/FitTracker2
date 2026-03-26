@@ -43,6 +43,10 @@
 		CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0B /* MealEntrySheet.swift */; };
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 		CC000001000000000000AA0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0D /* SettingsView.swift */; };
+		AI100000000000000000AAA1 /* AITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA1 /* AITypes.swift */; };
+		AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA2 /* AIEngineClient.swift */; };
+		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
+		AI100000000000000000AAA4 /* AIOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA4 /* AIOrchestrator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +90,10 @@
 		CC000002000000000000AA0B /* MealEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEntrySheet.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0C /* RecoverySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverySupport.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		AI200000000000000000AAA1 /* AITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITypes.swift; sourceTree = "<group>"; };
+		AI200000000000000000AAA2 /* AIEngineClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEngineClient.swift; sourceTree = "<group>"; };
+		AI200000000000000000AAA3 /* FoundationModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationModelService.swift; sourceTree = "<group>"; };
+		AI200000000000000000AAA4 /* AIOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestrator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +129,7 @@
 				A20000010000000000000001 /* FitTrackerApp.swift */,
 				A40000010000000000000004 /* Models */,
 				A40000010000000000000005 /* Services */,
+				AI300000000000000000AAA1 /* AI */,
 				A40000010000000000000006 /* Views */,
 				A20000010000000000000012 /* Info.plist */,
 				A20000010000000000000013 /* FitTracker.entitlements */,
@@ -168,6 +177,17 @@
 				A20000010000000000000008 /* AppSettings.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		AI300000000000000000AAA1 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				AI200000000000000000AAA1 /* AITypes.swift */,
+				AI200000000000000000AAA2 /* AIEngineClient.swift */,
+				AI200000000000000000AAA3 /* FoundationModelService.swift */,
+				AI200000000000000000AAA4 /* AIOrchestrator.swift */,
+			);
+			path = AI;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000006 /* Views */ = {
@@ -427,6 +447,10 @@
 				CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */,
 				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 				CC000001000000000000AA0D /* SettingsView.swift in Sources */,
+				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
+				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
+				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
+				AI100000000000000000AAA4 /* AIOrchestrator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

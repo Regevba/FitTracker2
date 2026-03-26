@@ -1,0 +1,68 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths: ["backend/**"]
+  pull_request:
+    paths: ["backend/**"]
+
+jobs:
+  validate-migrations:
+    name: Validate SQL migrations
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+          POSTGRES_DB: fittracker_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run migrations in order
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          for f in backend/supabase/migrations/*.sql; do
+            echo "Applying $f..."
+            psql -h localhost -U postgres -d fittracker_test -f "$f"
+          done
+
+      - name: Verify cohort_stats table
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT column_name, data_type
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+              AND table_name   = 'cohort_stats'
+            ORDER BY ordinal_position;
+          "
+
+      - name: Run seed data
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test \
+            -f backend/supabase/seed/seed_cohort_stats.sql
+
+      - name: Verify seed row count
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT segment, COUNT(*) AS bucket_count
+            FROM cohort_stats
+            GROUP BY segment
+            ORDER BY segment;
+          "

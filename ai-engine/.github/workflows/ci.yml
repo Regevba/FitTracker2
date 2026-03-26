@@ -1,0 +1,47 @@
+name: AI Engine CI
+
+on:
+  push:
+    branches: [main, "claude/**"]
+    paths: ["ai-engine/**"]
+  pull_request:
+    paths: ["ai-engine/**"]
+
+jobs:
+  test:
+    name: Test Python FastAPI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-engine
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install ".[dev]"
+
+      - name: Run tests
+        env:
+          SUPABASE_URL: http://localhost:54321
+          SUPABASE_SERVICE_KEY: test-service-key
+          SUPABASE_JWKS_URL: http://localhost:54321/auth/v1/.well-known/jwks.json
+          SUPABASE_JWT_AUDIENCE: authenticated
+        run: pytest -v
+
+  docker-build:
+    name: Docker build check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-engine
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t fittracker-ai:ci .

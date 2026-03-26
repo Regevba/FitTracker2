@@ -4,6 +4,17 @@
 
 import SwiftUI
 
+// AI engine base URL — override via Info.plist key "AIEngineBaseURL" for staging/prod
+private func makeAIEngineBaseURL() -> URL {
+    let plistValue = Bundle.main.object(forInfoDictionaryKey: "AIEngineBaseURL") as? String ?? ""
+    let urlString = plistValue.isEmpty ? "https://fittracker-ai-production.up.railway.app" : plistValue
+    guard let url = URL(string: urlString) else {
+        // Fallback to hardcoded default — only reachable if Info.plist value is malformed
+        return URL(string: "https://fittracker-ai-production.up.railway.app")!
+    }
+    return url
+}
+
 @main
 struct FitTrackerApp: App {
 
@@ -16,6 +27,21 @@ struct FitTrackerApp: App {
     @StateObject private var programStore  = TrainingProgramStore()
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
+    @StateObject private var aiOrchestrator: AIOrchestrator = {
+        let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
+        let foundationModel: any FoundationModelProtocol = {
+            if #available(iOS 26, *) {
+                return FoundationModelService()
+            } else {
+                return FallbackFoundationModel()
+            }
+        }()
+        return AIOrchestrator(
+            engineClient:    client,
+            foundationModel: foundationModel,
+            snapshot:        { LocalUserSnapshot() }
+        )
+    }()
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -31,6 +57,10 @@ struct FitTrackerApp: App {
                             if scenePhase == .active {
                                 await cloudSync.fetchChanges(dataStore: dataStore)
                             }
+                            // Kick off AI insight refresh for all segments on sign-in.
+                            // JWT from the active session token (Supabase JWT).
+                            let jwt = signIn.activeSession?.sessionToken
+                            await aiOrchestrator.processAll(jwt: jwt, snapshot: buildSnapshot())
                         }
                     }
                 }
@@ -75,6 +105,34 @@ struct FitTrackerApp: App {
         #endif
     }
 
+    // ── AI snapshot builder ───────────────────────────────
+    // Builds the LocalUserSnapshot from available stores.
+    //
+    // CURRENT STATE: Only programPhase is populated (from today's training day type).
+    // All other fields — age, gender, BMI, training frequency, goals, nutrition,
+    // recovery, and stats metrics — require profile/onboarding data and HealthKit
+    // authorisation that is not yet implemented.
+    //
+    // IMPACT: Segments whose band() methods return nil due to missing fields are
+    // silently skipped by AIOrchestrator (no AI call is made for that segment).
+    // The training segment will fire once programPhase is the only required field
+    // that has a value; all others will skip until this method is fully populated.
+    //
+    // TODO: Wire remaining fields here when profile onboarding and HealthKit
+    // integration are implemented:
+    //   snap.ageYears           = profile.ageYears
+    //   snap.genderIdentity     = profile.genderIdentity
+    //   snap.bmiValue           = healthService.latestBMI
+    //   snap.primaryGoal        = profile.primaryGoal
+    //   snap.trainingDaysPerWeek = programStore.weeklyTrainingDays
+    //   snap.avgSleepHours      = healthService.avgSleepHours
+    //   ... (see LocalUserSnapshot fields for full list)
+    private func buildSnapshot() -> LocalUserSnapshot {
+        var snap = LocalUserSnapshot()
+        snap.programPhase = programStore.todayDayType.aiProgramPhase
+        return snap
+    }
+
     // ── Auth state machine ────────────────────────────────
     // welcome → signIn (sheet) → authenticated → biometricLock → app
     @ViewBuilder
@@ -89,6 +147,7 @@ struct FitTrackerApp: App {
                 .environmentObject(programStore)
                 .environmentObject(settings)
                 .environmentObject(watchService)
+                .environmentObject(aiOrchestrator)
         } else {
             AuthHubView()
                 .environmentObject(signIn)
