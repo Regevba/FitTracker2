@@ -583,8 +583,8 @@ final class EncryptedDataStore: ObservableObject {
         let bfVals     = r7.compactMap { $0.biometrics.bodyFatPercent }
 
         func trend(_ vals: [Double]) -> String {
-            guard vals.count >= 2 else { return "insufficient data" }
-            let d = vals.first! - vals.last!
+            guard vals.count >= 2, let first = vals.first, let last = vals.last else { return "insufficient data" }
+            let d = first - last
             return d < -1 ? "decreasing" : d > 1 ? "increasing" : "stable"
         }
 

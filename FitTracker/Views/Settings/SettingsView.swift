@@ -335,8 +335,11 @@ struct SettingsView: View {
         .navigationTitle("Settings")
         .alert("Delete All Data?", isPresented: $showResetAlert) {
             Button("Delete", role: .destructive) {
-                dataStore.dailyLogs = []
+                dataStore.dailyLogs       = []
                 dataStore.weeklySnapshots = []
+                dataStore.userProfile     = UserProfile()
+                dataStore.mealTemplates   = []
+                dataStore.userPreferences = UserPreferences()
                 Task { await dataStore.persistToDisk() }
             }
             Button("Cancel", role: .cancel) {}
@@ -360,18 +363,12 @@ struct SettingsView: View {
     }()
 
     private var biometricsAvailable: Bool {
-        let ctx = LAContext()
-        var error: NSError?
-        return ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+        biometricAuth.isAvailable
     }
 
     private var biometricUnlockLabel: String {
-        let ctx = LAContext()
-        var error: NSError?
-        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            return "Face ID"
-        }
-        switch ctx.biometryType {
+        guard biometricAuth.isAvailable else { return "Face ID" }
+        switch biometricAuth.biometricType {
         case .faceID: return "Face ID"
         case .touchID: return "Touch ID"
         default: return "Biometric Unlock"

@@ -363,17 +363,17 @@ enum SupplementTiming: String, Codable, CaseIterable, Sendable {
 // ─────────────────────────────────────────────────────────
 
 struct UserProfile: Codable, Sendable {
-    var name:               String          = "Regev"
-    var age:                Int             = 43
-    var heightCm:           Double          = 175
-    var recoveryStart:      Date            = iso("2026-01-29")
+    var name:               String          = ""
+    var age:                Int             = 30
+    var heightCm:           Double          = 170.0
+    var recoveryStart:      Date            = Date()
     var currentPhase:       ProgramPhase    = .recovery
     var targetWeightMin:    Double          = 65
     var targetWeightMax:    Double          = 68
     var targetBFMin:        Double          = 13
     var targetBFMax:        Double          = 15
-    var startWeightKg:      Double          = 70.95
-    var startBodyFatPct:    Double          = 21.0
+    var startWeightKg:      Double          = 70.0
+    var startBodyFatPct:    Double          = 20.0
     var mealSlotNames:      [String]        = ["Breakfast", "Lunch", "Dinner", "Snacks"]
 
     func recoveryDay(for date: Date, calendar: Calendar = .current) -> Int {

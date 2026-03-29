@@ -145,7 +145,13 @@ final class HealthKitService: ObservableObject {
             }
             store.execute(q)
             observers.append(q)
-            store.enableBackgroundDelivery(for: type, frequency: .immediate) { _, _ in }
+            store.enableBackgroundDelivery(for: type, frequency: .immediate) { success, error in
+                #if DEBUG
+                if !success {
+                    print("[HealthKitService] Background delivery registration failed for \(type.identifier): \(error?.localizedDescription ?? "unknown error")")
+                }
+                #endif
+            }
         }
         hasStartedBackgroundDelivery = true
     }
@@ -179,7 +185,9 @@ final class HealthKitService: ObservableObject {
     // ── Historical data for charts ────────────────────────
     func fetchHistorical(days: Int) async -> HistoricalData {
         let end   = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -days, to: end)!
+        guard let start = Calendar.current.date(byAdding: .day, value: -days, to: end) else {
+            return HistoricalData(weights: [], bodyFat: [], hrv: [], restingHR: [], sleep: [])
+        }
         async let w  = samples(.bodyMass,           unit: .gramUnit(with: .kilo), from: start, to: end)
         async let bf = samples(.bodyFatPercentage,   unit: .percent(),             from: start, to: end)
         async let h  = samples(.heartRateVariabilitySDNN, unit: .secondUnit(with: .milli), from: start, to: end)
