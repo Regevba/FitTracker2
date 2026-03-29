@@ -171,7 +171,7 @@ final class FitTrackerCoreTests: XCTestCase {
     }
 
     func testPasswordRuleEvaluatorAcceptsValidPassword() {
-        let result = PasswordRuleEvaluator.validate("Strong1!")
+        let result = PasswordRuleEvaluator.validate("T3st_0nly!")
 
         XCTAssertTrue(result.isValid)
         XCTAssertTrue(result.issues.isEmpty)
@@ -184,7 +184,7 @@ final class FitTrackerCoreTests: XCTestCase {
             lastName: "User",
             birthday: Date(),
             email: "test@example.com",
-            password: "Strong1!"
+            password: "T3st_0nly!"
         )
 
         await service.startEmailRegistration(draft)
