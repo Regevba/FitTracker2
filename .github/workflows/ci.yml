@@ -64,6 +64,12 @@ jobs:
           echo "No supported simulator found. Checked: ${preferred_devices[*]}" >&2
           exit 1
 
+      - name: Resolve Swift packages
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project "$PROJECT_PATH" \
+            -scheme "$SCHEME"
+
       - name: Build
         run: |
           xcodebuild build \
