@@ -94,6 +94,12 @@
 		<string>fb-messenger-share-api</string>
 	</array>
 
+	<!-- Supabase configuration — replace placeholder values with real ones from Project Settings → API -->
+	<key>SupabaseURL</key>
+	<string>https://YOUR_PROJECT_ID.supabase.co</string>
+	<key>SupabaseAnonKey</key>
+	<string>YOUR_SUPABASE_ANON_KEY</string>
+
 	<!-- Passkey relying party domain (must match your associated domain) -->
 	<!-- Add Associated Domains capability: webcredentials:fittracker.regev.app -->
 	<key>PasskeyRelyingPartyID</key>

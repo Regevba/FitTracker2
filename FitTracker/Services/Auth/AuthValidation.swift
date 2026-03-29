@@ -7,13 +7,23 @@ struct PasswordValidationResult: Equatable {
 
 enum PasswordRuleEvaluator {
     static let minimumLength = 8
-    static let guidanceText = "Use 8 or more characters. Longer passphrases work great."
+    static let guidanceText = "Use 8 or more characters with a mix of letters, numbers, and symbols."
+    static let allowedSpecialCharacters = "!@#$%^&*()-_=+[]{};:,.?/"
 
     static func validate(_ password: String) -> PasswordValidationResult {
         var issues: [String] = []
 
         if password.count < minimumLength {
             issues.append("Use at least \(minimumLength) characters.")
+        }
+        if password.range(of: "[A-Z]", options: .regularExpression) == nil {
+            issues.append("Include at least 1 capital letter.")
+        }
+        if password.range(of: "[0-9]", options: .regularExpression) == nil {
+            issues.append("Include at least 1 number.")
+        }
+        if password.rangeOfCharacter(from: CharacterSet(charactersIn: allowedSpecialCharacters)) == nil {
+            issues.append("Include at least 1 special character.")
         }
 
         return PasswordValidationResult(issues: issues)
@@ -30,6 +40,7 @@ enum AuthInputValidator {
 struct EmailRegistrationFormState: Equatable, Sendable {
     var firstName = ""
     var lastName = ""
+    var birthday = Date()
     var email = ""
     var password = ""
     var confirmPassword = ""

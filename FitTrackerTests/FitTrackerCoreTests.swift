@@ -163,14 +163,15 @@ final class FitTrackerCoreTests: XCTestCase {
     }
 
     func testPasswordRuleEvaluatorRejectsMissingRequirements() {
-        let result = PasswordRuleEvaluator.validate("short")
+        let result = PasswordRuleEvaluator.validate("abc123")
 
         XCTAssertFalse(result.isValid)
-        XCTAssertTrue(result.issues.contains("Use at least 8 characters."))
+        XCTAssertTrue(result.issues.contains("Include at least 1 capital letter."))
+        XCTAssertTrue(result.issues.contains("Include at least 1 special character."))
     }
 
     func testPasswordRuleEvaluatorAcceptsValidPassword() {
-        let result = PasswordRuleEvaluator.validate("correct horse battery staple")
+        let result = PasswordRuleEvaluator.validate("Strong1!")
 
         XCTAssertTrue(result.isValid)
         XCTAssertTrue(result.issues.isEmpty)
@@ -179,10 +180,11 @@ final class FitTrackerCoreTests: XCTestCase {
     func testEmailRegistrationResendRefreshesChallengeExpiry() async throws {
         let service = SignInService()
         let draft = PendingEmailRegistration(
-            firstName: "Regev",
-            lastName: "Barak",
-            email: "regev@example.com",
-            password: "correct horse battery staple"
+            firstName: "Test",
+            lastName: "User",
+            birthday: Date(),
+            email: "test@example.com",
+            password: "Strong1!"
         )
 
         await service.startEmailRegistration(draft)
@@ -192,13 +194,13 @@ final class FitTrackerCoreTests: XCTestCase {
         let refreshedExpiry = try XCTUnwrap(service.pendingEmailChallenge?.expiresAt)
 
         XCTAssertGreaterThan(refreshedExpiry, initialExpiry)
-        XCTAssertEqual(service.navigationPath, [.emailVerification])
+        XCTAssertEqual(service.navigationPath, [.registerMethods, .emailVerification])
     }
 
     func testPasswordResetRequestUsesGenericSuccessMessage() async throws {
         let service = SignInService()
 
-        await service.requestPasswordReset(email: "regev@example.com")
+        await service.requestPasswordReset(email: "test@example.com")
 
         XCTAssertNil(service.authErrorMessage)
         XCTAssertEqual(service.statusMessage, "If that email is registered, a password reset link is on the way.")
@@ -207,17 +209,17 @@ final class FitTrackerCoreTests: XCTestCase {
     func testUserSessionBackendAccessTokenOnlyExistsForJWTShape() {
         let localSession = UserSession(
             provider: .email,
-            userID: "regev@example.com",
-            displayName: "Regev",
-            email: "regev@example.com",
+            userID: "test@example.com",
+            displayName: "Test User",
+            email: "test@example.com",
             sessionToken: UUID().uuidString,
             backendAccessToken: nil
         )
         let backendSession = UserSession(
             provider: .email,
-            userID: "regev@example.com",
-            displayName: "Regev",
-            email: "regev@example.com",
+            userID: "test@example.com",
+            displayName: "Test User",
+            email: "test@example.com",
             sessionToken: UUID().uuidString,
             backendAccessToken: "header.payload.signature"
         )
