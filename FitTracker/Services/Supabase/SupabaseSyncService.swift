@@ -94,7 +94,8 @@ final class SupabaseSyncService: ObservableObject {
         }
 
         // Singletons
-        anyFailed = anyFailed || (await pushSingletons(userID: userID, dataStore: dataStore))
+        let singletonsFailed = await pushSingletons(userID: userID, dataStore: dataStore)
+        anyFailed = anyFailed || singletonsFailed
 
         status = anyFailed ? .failed("One or more records failed to sync") : .idle
     }
