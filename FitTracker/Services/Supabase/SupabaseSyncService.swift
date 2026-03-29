@@ -13,7 +13,7 @@ import Supabase  // supabase-swift v2.x
 
 // MARK: - Sync Status
 
-enum SyncStatus: Equatable {
+enum SupabaseSyncStatus: Equatable {
     case idle
     case syncing
     case failed(String)
@@ -26,7 +26,7 @@ enum SyncStatus: Equatable {
 @MainActor
 final class SupabaseSyncService: ObservableObject {
 
-    @Published private(set) var status: SyncStatus = .idle
+    @Published private(set) var status: SupabaseSyncStatus = .idle
 
     private var realtimeChannel: RealtimeChannelV2?
 
@@ -137,8 +137,9 @@ final class SupabaseSyncService: ObservableObject {
                 table: "sync_records",
                 filter: "user_id=eq.\(userID.uuidString)"
             )
-        ) { [weak self] change in
-            Task { await self?.handleRealtimeChange(change, dataStore: dataStore) }
+        ) { [weak self] _ in
+            guard let self else { return }
+            Task { await self.fetchChanges(dataStore: dataStore) }
         }
         await channel.subscribe()
         realtimeChannel = channel
@@ -340,16 +341,3 @@ private extension SupabaseSyncService {
         }
     }
 
-    func handleRealtimeChange(_ change: RealtimeChangeV2, dataStore: EncryptedDataStore) async {
-        // Extract the changed record's fields from the realtime payload
-        guard
-            let record = change.record,
-            let recordType = record["record_type"]?.stringValue,
-            let payloadB64 = record["encrypted_payload"]?.stringValue,
-            let payload = Data(base64Encoded: payloadB64),
-            let checksum = record["checksum"]?.stringValue
-        else { return }
-
-        try? await applyRow(recordType, payload: payload, checksum: checksum, dataStore: dataStore)
-    }
-}

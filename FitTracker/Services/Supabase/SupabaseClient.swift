@@ -1,4 +1,5 @@
 // FitTracker/Services/Supabase/SupabaseClient.swift
+import Foundation
 import Supabase
 
 /// Shared Supabase client. Initialized lazily on first access.

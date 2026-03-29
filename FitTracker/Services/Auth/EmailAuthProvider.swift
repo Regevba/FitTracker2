@@ -51,3 +51,21 @@ struct EmailAuthProvider: EmailAuthProviding {
         return userSession
     }
 }
+
+extension EmailAuthProvider {
+    func resendRegistrationCode(
+        challenge: EmailRegistrationChallenge,
+        draft: PendingEmailRegistration
+    ) async throws -> EmailRegistrationChallenge {
+        try await supabase.auth.resend(email: challenge.email, type: .signup)
+        return EmailRegistrationChallenge(
+            email: challenge.email,
+            expectedCode: "",
+            expiresAt: Date().addingTimeInterval(600)
+        )
+    }
+
+    func requestPasswordReset(email: String) async throws {
+        try await supabase.auth.resetPasswordForEmail(email)
+    }
+}
