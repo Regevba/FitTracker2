@@ -267,6 +267,8 @@ struct AccountPanelView: View {
     private func providerIcon(_ p: AuthProvider) -> String {
         switch p {
         case .apple:    "apple.logo"
+        case .google:   "globe"
+        case .facebook: "f.circle.fill"
         case .passkey:  "key.fill"
         case .email:    "envelope.fill"
         }
@@ -275,6 +277,8 @@ struct AccountPanelView: View {
     private func providerColor(_ p: AuthProvider) -> Color {
         switch p {
         case .apple:    .primary
+        case .google:   .red
+        case .facebook: .blue
         case .passkey:  .purple
         case .email:    .appBlue2
         }
