@@ -1,4 +1,5 @@
 // FitTracker/Models/UserSession+Supabase.swift
+import Foundation
 import Auth  // Supabase Auth module
 
 extension UserSession {

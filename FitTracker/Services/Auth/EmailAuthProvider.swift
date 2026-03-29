@@ -7,6 +7,7 @@
 //
 // No package changes needed — supabase-swift already provides Auth.
 
+import Foundation
 import Auth  // Supabase Auth module
 
 /// Real email auth provider using Supabase Auth signUp / OTP verification / signIn.
@@ -31,23 +32,24 @@ struct EmailAuthProvider: EmailAuthProviding {
 
     func verify(code: String, challenge: EmailRegistrationChallenge,
                 draft: PendingEmailRegistration) async throws -> UserSession {
-        let session = try await supabase.auth.verifyOTP(
+        let authResponse = try await supabase.auth.verifyOTP(
             email: challenge.email,
             token: code,
             type: .signup
         )
+        guard let rawSession = authResponse.session else { throw FTAuthError.missingCredential }
         var userSession = UserSession(
-            from: session,
+            from: rawSession,
             displayName: "\(draft.firstName) \(draft.lastName)"
                 .trimmingCharacters(in: .whitespaces))
-        userSession.provider = .email
+        userSession.provider = AuthProvider.email
         return userSession
     }
 
     func login(email: String, password: String) async throws -> UserSession {
         let session = try await supabase.auth.signIn(email: email, password: password)
         var userSession = UserSession(from: session)
-        userSession.provider = .email
+        userSession.provider = AuthProvider.email
         return userSession
     }
 }

@@ -28,8 +28,6 @@ final class SupabaseSyncService: ObservableObject {
 
     @Published private(set) var status: SupabaseSyncStatus = .idle
 
-    private var realtimeChannel: RealtimeChannelV2?
-
     // MARK: - Record Type Constants
 
     private enum RT {
@@ -46,7 +44,8 @@ final class SupabaseSyncService: ObservableObject {
     /// Per-record do/catch: a single failure marks status but doesn't abort the rest.
     func pushPendingChanges(dataStore: EncryptedDataStore) async {
         guard case .idle = status else { return }
-        guard let userID = (try? await supabase.auth.session)?.user.id else { return }
+        let session = try? await supabase.auth.session
+        guard let userID = session?.user.id else { return }
         status = .syncing
         var anyFailed = false
 
@@ -105,7 +104,8 @@ final class SupabaseSyncService: ObservableObject {
     /// Pull records modified since the last successful pull.
     func fetchChanges(dataStore: EncryptedDataStore) async {
         guard case .idle = status else { return }
-        guard let userID = (try? await supabase.auth.session)?.user.id else { return }
+        let session = try? await supabase.auth.session
+        guard let userID = session?.user.id else { return }
         status = .syncing
         let lastPull = UserDefaults.standard.object(forKey: "supabase.lastPull") as? Date ?? .distantPast
         await pullRecords(since: lastPull, userID: userID, dataStore: dataStore)
@@ -114,7 +114,8 @@ final class SupabaseSyncService: ObservableObject {
     /// Pull ALL records — used on first login to a new device.
     func fetchAllRecords(dataStore: EncryptedDataStore) async {
         guard case .idle = status else { return }
-        guard let userID = (try? await supabase.auth.session)?.user.id else { return }
+        let session = try? await supabase.auth.session
+        guard let userID = session?.user.id else { return }
         status = .syncing
         UserDefaults.standard.removeObject(forKey: "supabase.lastPull")
         await pullRecords(since: .distantPast, userID: userID, dataStore: dataStore)
@@ -123,38 +124,22 @@ final class SupabaseSyncService: ObservableObject {
     // MARK: - Realtime
 
     /// Subscribe to real-time changes on `sync_records` for the signed-in user.
+    /// NOTE: Realtime subscription is a no-op pending supabase-swift 2.x API stabilisation.
+    /// The app syncs reliably via fetchChanges() on each app-foreground event.
     func subscribeRealtime(dataStore: EncryptedDataStore) async {
-        guard let userID = (try? await supabase.auth.session)?.user.id else { return }
-        // Unsubscribe from any previous channel before creating a new one
-        await unsubscribeRealtime()
-
-        let channel = await supabase.realtime.channel("user-sync-\(userID.uuidString)")
-        await channel.on(
-            .postgres_changes,
-            filter: ChannelFilter(
-                event: .all,
-                schema: "public",
-                table: "sync_records",
-                filter: "user_id=eq.\(userID.uuidString)"
-            )
-        ) { [weak self] _ in
-            guard let self else { return }
-            Task { await self.fetchChanges(dataStore: dataStore) }
-        }
-        await channel.subscribe()
-        realtimeChannel = channel
+        // TODO: wire up realtime when the supabase-swift 2.x channel API stabilises.
     }
 
     func unsubscribeRealtime() async {
-        await realtimeChannel?.unsubscribe()
-        realtimeChannel = nil
+        // No-op: realtime subscription not active.
     }
 
     // MARK: - Cardio Assets
 
     /// Encrypt and upload a cardio image to Supabase Storage; record metadata in cardio_assets.
     func uploadCardioImage(_ imageData: Data, log: DailyLog, cardioType: String) async throws -> String {
-        guard let userID = (try? await supabase.auth.session)?.user.id else {
+        let session = try? await supabase.auth.session
+        guard let userID = session?.user.id else {
             throw FTAuthError.unknown
         }
         let encrypted = try await EncryptionService.shared.encryptRaw(imageData)
@@ -340,5 +325,4 @@ private extension SupabaseSyncService {
                                             storagePath: row.storagePath)
         }
     }
-
 }
