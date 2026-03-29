@@ -351,6 +351,17 @@ final class EncryptedDataStore: ObservableObject {
     // auth succeeds so EncryptionService.shared already has a valid session context.
     init() {}
 
+    /// Wipe all in-memory user data (called on sign-out / session lock).
+    func clearInMemory() {
+        dailyLogs       = []
+        weeklySnapshots = []
+        userProfile     = UserProfile()
+        mealTemplates   = []
+        userPreferences = UserPreferences()
+        lastError       = nil
+        loadError       = nil
+    }
+
     // ── CRUD ─────────────────────────────────────────────
 
     func upsertLog(_ log: DailyLog) {

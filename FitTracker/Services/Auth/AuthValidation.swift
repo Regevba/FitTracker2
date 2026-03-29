@@ -49,6 +49,7 @@ struct EmailRegistrationFormState: Equatable, Sendable {
         PendingEmailRegistration(
             firstName: firstName.trimmingCharacters(in: .whitespacesAndNewlines),
             lastName: lastName.trimmingCharacters(in: .whitespacesAndNewlines),
+            birthday: birthday,
             email: email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
             password: password
         )
