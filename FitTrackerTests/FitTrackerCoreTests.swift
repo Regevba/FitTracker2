@@ -322,7 +322,8 @@ final class FitTrackerCoreTests: XCTestCase {
             overrideSnapshot: LocalUserSnapshot()
         )
 
-        XCTAssertEqual(await engine.callCount, 0)
+        let callCount = await engine.callCount
+        XCTAssertEqual(callCount, 0)
         XCTAssertEqual(orchestrator.latestRecommendations[.training]?.segment, AISegment.training.rawValue)
     }
 }

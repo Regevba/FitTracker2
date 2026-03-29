@@ -55,10 +55,10 @@ final class UserSessionMappingTests: XCTestCase {
             appMetadata: [:],
             userMetadata: [:],
             aud: "authenticated",
-            createdAt: Date(),
-            updatedAt: Date(),
             email: email,
-            phone: "+1555000000"
+            phone: "+1555000000",
+            createdAt: Date(),
+            updatedAt: Date()
         )
     }
 

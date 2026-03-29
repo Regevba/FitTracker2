@@ -767,6 +767,35 @@ extension SignInService: ASAuthorizationControllerPresentationContextProviding {
 }
 
 // ─────────────────────────────────────────────────────────
+// MARK: – Apple session merge helper
+
+extension SignInService {
+    /// Merge an incoming Apple credential with an existing session.
+    /// Retains existing display name / email when the incoming values are empty.
+    static func mergedAppleSession(
+        userID: String,
+        incomingName: String,
+        incomingEmail: String?,
+        existingAppleSession: UserSession?
+    ) -> UserSession {
+        let displayName = incomingName.isEmpty
+            ? (existingAppleSession?.displayName ?? "")
+            : incomingName
+        let email = incomingEmail ?? existingAppleSession?.email
+        return UserSession(
+            provider: .apple,
+            userID: userID,
+            displayName: displayName,
+            email: email,
+            phone: existingAppleSession?.phone,
+            avatarURL: existingAppleSession?.avatarURL,
+            sessionToken: userID,
+            backendAccessToken: existingAppleSession?.backendAccessToken,
+            credentialID: existingAppleSession?.credentialID
+        )
+    }
+}
+
 // MARK: – Keychain helper
 // ─────────────────────────────────────────────────────────
 
