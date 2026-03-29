@@ -57,6 +57,7 @@
 		FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000001 /* UserSessionMappingTests.swift */; };
 		FT1000001000000000000002 /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000002 /* SyncMergeTests.swift */; };
 		FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000003 /* SupabaseClientTests.swift */; };
+		SUP0000001000000000000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = SUP0000002000000000000001 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -122,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				SUP0000001000000000000001 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,6 +392,9 @@
 			dependencies = (
 			);
 			name = FitTracker;
+			packageProductDependencies = (
+				SUP0000002000000000000001 /* Supabase */,
+			);
 			productName = FitTracker;
 			productReference = A20000010000000000000014 /* FitTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -436,6 +441,9 @@
 				Base,
 			);
 			mainGroup = A40000010000000000000001;
+			packageReferences = (
+				SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			productRefGroup = A40000010000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -771,6 +779,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin XCRemoteSwiftPackageReference section */
+		SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		SUP0000002000000000000001 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A60000010000000000000001 /* Project object */;
 }
