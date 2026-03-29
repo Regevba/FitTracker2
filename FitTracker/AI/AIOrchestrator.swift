@@ -46,6 +46,12 @@ public final class AIOrchestrator: ObservableObject {
     // MARK: – Public API
     // ─────────────────────────────────────────────────────
 
+    /// Clear all cached recommendations (called on sign-out).
+    public func clearRecommendations() {
+        latestRecommendations = [:]
+        lastError = nil
+    }
+
     public func process(segment: AISegment, jwt: String?, overrideSnapshot: LocalUserSnapshot? = nil) async {
         isProcessing = true
         lastError = nil
