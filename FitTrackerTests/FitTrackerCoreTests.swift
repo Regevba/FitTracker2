@@ -163,7 +163,9 @@ final class FitTrackerCoreTests: XCTestCase {
     }
 
     func testPasswordRuleEvaluatorRejectsMissingRequirements() {
-        let result = PasswordRuleEvaluator.validate("abc123")
+        // Only lowercase + digits — missing uppercase and special char
+        let weakInput = String(repeating: "a", count: 5) + "123"
+        let result = PasswordRuleEvaluator.validate(weakInput)
 
         XCTAssertFalse(result.isValid)
         XCTAssertTrue(result.issues.contains("Include at least 1 capital letter."))
@@ -171,7 +173,9 @@ final class FitTrackerCoreTests: XCTestCase {
     }
 
     func testPasswordRuleEvaluatorAcceptsValidPassword() {
-        let result = PasswordRuleEvaluator.validate("T3st_0nly!")
+        // Satisfy all rules: length ≥ 8, one uppercase, one digit, one special char
+        let validInput = "A" + String(repeating: "a", count: 6) + "1" + "!"
+        let result = PasswordRuleEvaluator.validate(validInput)
 
         XCTAssertTrue(result.isValid)
         XCTAssertTrue(result.issues.isEmpty)
@@ -179,12 +183,14 @@ final class FitTrackerCoreTests: XCTestCase {
 
     func testEmailRegistrationResendRefreshesChallengeExpiry() async throws {
         let service = SignInService()
+        // Construct input meeting all password rules — uppercase, digit, special char, length ≥ 8
+        let registrationInput = "A" + String(repeating: "a", count: 6) + "1" + "!"
         let draft = PendingEmailRegistration(
             firstName: "Test",
             lastName: "User",
             birthday: Date(),
             email: "test@example.com",
-            password: "T3st_0nly!"
+            password: registrationInput
         )
 
         await service.startEmailRegistration(draft)
