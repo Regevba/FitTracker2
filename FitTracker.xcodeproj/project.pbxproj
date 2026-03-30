@@ -44,6 +44,10 @@
 		CC000001000000000000AA0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0D /* SettingsView.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
+		DS000001000000000000AA01 /* AppPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA01 /* AppPalette.swift */; };
+		DS000001000000000000AA02 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA02 /* DesignTokens.swift */; };
+		DS000001000000000000AA03 /* AppMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA03 /* AppMotion.swift */; };
+		DS000001000000000000AA04 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA04 /* AppIcon.swift */; };
 		AI100000000000000000AAA1 /* AITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA1 /* AITypes.swift */; };
 		AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA2 /* AIEngineClient.swift */; };
 		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
@@ -66,6 +70,10 @@
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA01 /* AppPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPalette.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA02 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA03 /* AppMotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMotion.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA04 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
@@ -157,6 +165,7 @@
 				A40000010000000000000004 /* Models */,
 				A40000010000000000000005 /* Services */,
 				AI300000000000000000AAA1 /* AI */,
+				DS000000000000000000AA00 /* DesignSystem */,
 				A40000010000000000000006 /* Views */,
 				FB4000001000000000000002 /* Extensions */,
 				A20000010000000000000012 /* Info.plist */,
@@ -247,6 +256,17 @@
 				AI200000000000000000AAA5 /* AISnapshotBuilder.swift */,
 			);
 			path = AI;
+			sourceTree = "<group>";
+		};
+		DS000000000000000000AA00 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				DS000002000000000000AA01 /* AppPalette.swift */,
+				DS000002000000000000AA02 /* DesignTokens.swift */,
+				DS000002000000000000AA03 /* AppMotion.swift */,
+				DS000002000000000000AA04 /* AppIcon.swift */,
+			);
+			path = DesignSystem;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000006 /* Views */ = {
@@ -518,6 +538,10 @@
 				CC000001000000000000AA0D /* SettingsView.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
+				DS000001000000000000AA01 /* AppPalette.swift in Sources */,
+				DS000001000000000000AA02 /* DesignTokens.swift in Sources */,
+				DS000001000000000000AA03 /* AppMotion.swift in Sources */,
+				DS000001000000000000AA04 /* AppIcon.swift in Sources */,
 				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
 				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
