@@ -58,6 +58,12 @@ struct FitTrackerApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
+    init() {
+        #if DEBUG
+        ColorContrastValidator.validate()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             rootView
