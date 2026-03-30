@@ -150,7 +150,7 @@ struct MealEntrySheet: View {
                         .font(.headline)
                     Text("Scan a nutrition label, paste English or Hebrew nutrition text, then scale it to the weight you actually ate.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
 
                 #if canImport(UIKit)
@@ -163,7 +163,7 @@ struct MealEntrySheet: View {
                         .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium))
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.medium)
-                                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                                .stroke(AppColor.Border.subtle, lineWidth: 1)
                         )
                 }
                 #endif
@@ -180,7 +180,7 @@ struct MealEntrySheet: View {
 
                     #if canImport(PhotosUI)
                     PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                        smartActionLabel("Choose Photo", systemImage: "photo.fill", tint: Color.appOrange2)
+                        smartActionLabel("Choose Photo", systemImage: "photo.fill", tint: AppColor.Brand.warm)
                     }
                     .buttonStyle(.plain)
                     #endif
@@ -189,14 +189,14 @@ struct MealEntrySheet: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Nutrition Text")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                     TextEditor(text: $rawLabelText)
                         .frame(minHeight: 140)
                         .padding(AppSpacing.xxSmall)
-                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.small))
+                        .background(AppColor.Text.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.small))
                     Text("Hebrew and English keywords are parsed here. Photos use Apple Vision OCR first, then this parser scales the label to your consumed weight. If a Hebrew label photo doesn’t scan cleanly, paste the label text here and the parser still works.")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
 
                 HStack(spacing: 12) {
@@ -232,16 +232,16 @@ struct MealEntrySheet: View {
                     VStack(alignment: .leading, spacing: 10) {
                         Text("Parsed Per \(Int(parsedLabel.referenceGrams))g")
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppColor.Text.secondary)
                         HStack(spacing: 14) {
-                            parsedMetric("kcal", parsedLabel.calories, tint: Color.appOrange2)
+                            parsedMetric("kcal", parsedLabel.calories, tint: AppColor.Brand.warm)
                             parsedMetric("Protein", parsedLabel.proteinG, tint: Color.accent.cyan)
-                            parsedMetric("Carbs", parsedLabel.carbsG, tint: Color.appOrange1)
+                            parsedMetric("Carbs", parsedLabel.carbsG, tint: AppColor.Brand.warmSoft)
                             parsedMetric("Fat", parsedLabel.fatG, tint: AppColor.Chart.nutritionFat)
                         }
                     }
                     .padding(AppSpacing.xSmall)
-                    .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                    .background(AppColor.Surface.materialStrong, in: RoundedRectangle(cornerRadius: AppRadius.medium))
                 }
             }
             .padding(.horizontal, AppSpacing.small)
@@ -464,7 +464,7 @@ struct MealEntrySheet: View {
                             }
                             Text(product.sourceDescription)
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AppColor.Text.secondary)
                         }
                         .padding(.vertical, 4)
                     }
@@ -662,7 +662,7 @@ struct MealEntrySheet: View {
         VStack(alignment: .leading, spacing: 3) {
             Text(title)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
             Text(value.map { formatNum($0) } ?? "—")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(tint)

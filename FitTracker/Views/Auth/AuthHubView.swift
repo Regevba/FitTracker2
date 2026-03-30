@@ -297,7 +297,7 @@ private struct AuthTrustSection: View {
             Capsule()
                 .stroke(AppColor.Border.hairline, lineWidth: 1)
         )
-        .shadow(color: Color.black.opacity(0.04), radius: 5, y: 2)
+        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
     }
 }
 
@@ -329,10 +329,10 @@ private struct AuthModeSwitcher: View {
             }
         }
         .padding(3)
-        .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
+        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous)
-                .stroke(Color.white.opacity(0.20), lineWidth: 1)
+                .stroke(AppColor.Border.subtle, lineWidth: 1)
         )
     }
 }
@@ -1034,7 +1034,7 @@ private struct AuthCardButtonStyle: ButtonStyle {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
-                    .stroke(Color.white.opacity(0.24), lineWidth: 1)
+                    .stroke(AppColor.Surface.materialStrong, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }

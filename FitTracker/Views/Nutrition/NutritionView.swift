@@ -333,7 +333,7 @@ struct NutritionView: View {
             HStack(spacing: 20) {
                 nutritionMetric(title: "Protein left", value: "\(Int(remainingProteinG))g", color: Color.accent.cyan)
                 nutritionMetric(title: "Fat floor", value: "\(Int(max(targetFatG, 0)))g", color: AppColor.Chart.nutritionFat)
-                nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: Color.appOrange2)
+                nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: AppColor.Brand.warm)
             }
         }
         .padding(.bottom, AppSpacing.xxxSmall)
@@ -376,7 +376,7 @@ struct NutritionView: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(Color.secondary.opacity(0.15)).frame(height: 6)
+                        .fill(AppColor.Text.secondary.opacity(0.15)).frame(height: 6)
                     RoundedRectangle(cornerRadius: 3)
                         .fill(LinearGradient(colors: [Color.status.success, Color.status.success], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * frac, height: 6)
@@ -480,7 +480,7 @@ struct NutritionView: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.secondary.opacity(0.15))
+                        .fill(AppColor.Text.secondary.opacity(0.15))
                         .frame(height: 8)
                     RoundedRectangle(cornerRadius: 4)
                         .fill(LinearGradient(colors: [AppColor.Accent.recovery.opacity(0.72), AppColor.Accent.secondary], startPoint: .leading, endPoint: .trailing))

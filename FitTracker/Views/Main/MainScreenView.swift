@@ -248,7 +248,7 @@ struct MainScreenView: View {
                 )
 
                 Divider()
-                    .overlay(Color.white.opacity(0.4))
+                    .overlay(AppColor.Surface.materialStrong)
                     .padding(.vertical, AppSpacing.xxSmall)
 
                 statusValueColumn(
@@ -292,7 +292,7 @@ struct MainScreenView: View {
                 sectionEyebrow("Goal")
                 ZStack {
                     Circle()
-                        .stroke(Color.white.opacity(0.38), lineWidth: 12)
+                        .stroke(AppColor.Surface.materialStrong, lineWidth: 12)
                     Circle()
                         .trim(from: 0, to: max(goalProgress, 0.02))
                         .stroke(
@@ -355,7 +355,7 @@ struct MainScreenView: View {
                 }
                 .buttonStyle(.plain)
                 .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
-                .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
+                .shadow(color: AppShadow.ctaColor, radius: AppShadow.ctaRadius, y: AppShadow.ctaYOffset)
 
                 VStack(alignment: .leading, spacing: trainingTextSpacing(compact: compact, tight: tight)) {
                     Text(primaryActionTitle)
@@ -472,7 +472,7 @@ struct MainScreenView: View {
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Color.white.opacity(0.42))
+                        .fill(AppColor.Surface.materialStrong)
                     Capsule()
                         .fill(tint.opacity(0.95))
                         .frame(width: max(proxy.size.width * progress, 8))
@@ -734,7 +734,7 @@ private struct BlendedSectionStyle: ViewModifier {
             .overlay(alignment: .bottom) {
                 if showDivider {
                     Rectangle()
-                        .fill(Color.white.opacity(0.34))
+                        .fill(AppColor.Surface.materialStrong)
                         .frame(height: 1)
                         .padding(.top, AppSpacing.xSmall)
                 }
@@ -783,7 +783,7 @@ struct RecoveryRoutineSheet: View {
                                     .padding(.top, 2)
                                 Text(reason)
                                     .font(AppType.subheading)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AppColor.Text.secondary)
                             }
                         }
                     }
@@ -810,15 +810,15 @@ struct RecoveryRoutineSheet: View {
                                     Spacer()
                                     Text("\(step.minutes) min")
                                         .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(AppColor.Text.secondary)
                                 }
                                 Text(step.detail)
                                     .font(AppType.subheading)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AppColor.Text.secondary)
                             }
                         }
                         .padding(AppSpacing.xSmall)
-                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                        .background(AppColor.Text.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
                     }
                 }
 
@@ -827,7 +827,7 @@ struct RecoveryRoutineSheet: View {
                         .font(.headline)
                     Text(routine.coachingNote)
                         .font(AppType.subheading)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
                 .padding(AppSpacing.small)
                 .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.medium))
@@ -882,13 +882,13 @@ struct SyncStatusIndicator: View {
         .padding(.vertical, AppSpacing.xxSmall)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.34))
+                .fill(AppColor.Surface.materialStrong)
                 .overlay(
                     Capsule()
-                        .stroke(Color.white.opacity(0.42), lineWidth: 1)
+                        .stroke(AppColor.Border.subtle, lineWidth: 1)
                 )
         )
-        .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
+        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
         .tint(.clear)
     }
 }

@@ -387,7 +387,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                     } label: {
                         HStack(spacing: 12) {
                             Image(systemName: metric.icon)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(AppText.captionStrong)
                                 .foregroundStyle(metric.tint)
                                 .frame(width: 20)
 
@@ -398,7 +398,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                             Spacer()
 
                             Image(systemName: isStatsMetricVisible(metric) ? "checkmark.circle.fill" : "circle")
-                                .font(.system(size: 18, weight: .semibold))
+                                .font(AppText.sectionTitle)
                                 .foregroundStyle(isStatsMetricVisible(metric) ? metric.tint : AppColor.Text.tertiary)
                         }
                         .padding(.vertical, 4)
@@ -691,7 +691,7 @@ private struct SettingsCategoryCard: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top) {
                 Image(systemName: category.icon)
-                    .font(.system(size: featured ? 18 : 16, weight: .semibold))
+                    .font(featured ? AppText.sectionTitle : AppText.callout)
                     .foregroundStyle(category.tint)
                     .frame(width: 34, height: 34)
                     .background(category.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
@@ -730,7 +730,7 @@ private struct SettingsCategoryCard: View {
                         .stroke(AppColor.Border.subtle, lineWidth: 1)
                 )
         )
-        .shadow(color: .black.opacity(0.04), radius: featured ? 8 : 5, y: 3)
+        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
     }
 }
 
@@ -824,7 +824,7 @@ private struct SettingsSectionCard<Content: View>: View {
                         .stroke(AppColor.Border.subtle, lineWidth: 1)
                 )
         )
-        .shadow(color: .black.opacity(0.04), radius: 6, y: 3)
+        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
     }
 }
 
@@ -876,7 +876,7 @@ private struct SettingsActionLabel: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.system(size: 15, weight: .semibold))
+                .font(AppText.captionStrong)
                 .foregroundStyle(tint)
                 .frame(width: 26, height: 26)
                 .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
@@ -920,7 +920,7 @@ private struct SettingsSelectionTile: View {
                 .foregroundStyle(isSelected ? .white : AppColor.Text.primary)
             Text(subtitle)
                 .font(AppType.caption)
-                .foregroundStyle(isSelected ? Color.white.opacity(0.86) : AppColor.Text.secondary)
+                .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -928,11 +928,11 @@ private struct SettingsSelectionTile: View {
         .padding(.horizontal, AppSpacing.xSmall)
         .background(
             RoundedRectangle(cornerRadius: AppRadius.medium)
-                .fill(isSelected ? tint : Color.white.opacity(0.44))
+                .fill(isSelected ? tint : AppColor.Surface.materialStrong)
         )
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.medium)
-                .stroke(isSelected ? tint.opacity(0.18) : Color.white.opacity(0.32), lineWidth: 1)
+                .stroke(isSelected ? tint.opacity(0.18) : AppColor.Border.subtle, lineWidth: 1)
         )
     }
 }

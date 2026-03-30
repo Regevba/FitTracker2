@@ -58,7 +58,7 @@ struct ReadinessCard: View {
         )
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                .stroke(AppColor.Border.hairline, lineWidth: 1)
         )
         .shadow(color: AppShadow.cardColor, radius: 8, y: 4)
         .onAppear { startTimer() }
@@ -152,7 +152,7 @@ struct ReadinessCard: View {
                         .font(.headline)
                     Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
                 .padding(AppSpacing.small)
                 .frame(minWidth: 260)
@@ -223,10 +223,10 @@ struct ReadinessCard: View {
                     let log = logsMap[day]
                     let pct = log?.completionPct ?? 0
                     let barColor: Color = {
-                        guard log != nil else { return Color.secondary.opacity(0.2) }
+                        guard log != nil else { return AppColor.Text.secondary.opacity(0.2) }
                         if pct >= 100 { return Color.status.success }
                         if pct > 0    { return Color.accent.cyan }
-                        return Color.secondary.opacity(0.2)
+                        return AppColor.Text.secondary.opacity(0.2)
                     }()
                     let maxBarHeight: CGFloat = 60
                     let barHeight: CGFloat = log != nil ? max(4, CGFloat(pct / 100.0) * maxBarHeight) : 4
@@ -291,7 +291,7 @@ struct ReadinessCard: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 3)
-                            .fill(Color.white.opacity(0.15))
+                            .fill(AppColor.Surface.materialLight)
                         RoundedRectangle(cornerRadius: 3)
                             .fill(Color.accent.cyan)
                             .frame(width: geo.size.width * min(1, CGFloat(protein / max(proteinTarget, 1))))
@@ -331,7 +331,7 @@ struct ReadinessCard: View {
     private func supplementDot(label: String, done: Bool) -> some View {
         HStack(spacing: 3) {
             Circle()
-                .fill(done ? Color.status.success : Color.white.opacity(0.25))
+                .fill(done ? Color.status.success : AppColor.Surface.materialStrong)
                 .frame(width: 8, height: 8)
             Text(label)
                 .font(AppText.monoLabel)
@@ -422,9 +422,9 @@ struct ReadinessCard: View {
 
             HStack(spacing: 0) {
                 achievementCell(emoji: "🔥", value: streak,       label: "Supp Streak")
-                Divider().background(Color.white.opacity(0.2)).frame(height: 50)
+                Divider().background(AppColor.Surface.materialLight).frame(height: 50)
                 achievementCell(emoji: "🏆", value: prsThisWeek,  label: "PRs This Week")
-                Divider().background(Color.white.opacity(0.2)).frame(height: 50)
+                Divider().background(AppColor.Surface.materialLight).frame(height: 50)
                 achievementCell(emoji: "📅", value: dayOnProgram, label: "Program Day")
             }
             .padding(.horizontal, AppSpacing.xxSmall)

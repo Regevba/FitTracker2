@@ -59,7 +59,7 @@ struct AppCard<Content: View>: View {
     private var borderColor: Color {
         switch tone {
         case .inverse:
-            return Color.white.opacity(0.08)
+            return AppColor.Surface.materialLight
         case .elevated:
             return AppColor.Border.subtle
         case .standard, .quiet:

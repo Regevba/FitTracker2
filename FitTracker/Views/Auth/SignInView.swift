@@ -252,7 +252,7 @@ struct SocialSignInButton: View {
 
     private var shadowColor: Color {
         switch provider {
-        case .apple:    return Color.black.opacity(0.15)
+        case .apple:    return AppShadow.cardColor
         case .passkey:  return AppColor.Accent.sleep.opacity(0.1)
         case .email:    return AppColor.Accent.secondary.opacity(0.14)
         }

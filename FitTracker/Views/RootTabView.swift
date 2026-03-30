@@ -191,7 +191,7 @@ struct RootTabView: View {
                                     .stroke(AppColor.Border.strong, lineWidth: 1)
                             )
                     )
-                    .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
+                    .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
                     .contentShape(Circle())
             }
             .buttonStyle(.plain)

@@ -101,7 +101,7 @@ struct MetricCard_Previews: PreviewProvider {
             )
         }
         .padding()
-        .background(Color.black.opacity(0.05))
+        .background(AppShadow.cardColor)
     }
 }
 #endif

@@ -92,24 +92,24 @@ private struct MealCard: View {
             HStack(spacing: 12) {
                 ZStack {
                     Circle()
-                        .fill(entry != nil ? Color.appOrange1.opacity(0.2) : Color.white.opacity(0.26))
+                        .fill(entry != nil ? AppColor.Brand.warmSoft.opacity(0.2) : AppColor.Surface.materialStrong)
                         .frame(width: 40, height: 40)
                     Text("\(mealNumber)")
                         .font(AppType.body)
-                        .foregroundStyle(entry != nil ? Color.appOrange2 : Color.secondary)
+                        .foregroundStyle(entry != nil ? AppColor.Brand.warm : AppColor.Text.secondary)
                 }
 
                 VStack(alignment: .leading, spacing: 3) {
                     Text(displayName)
                         .font(AppType.body)
-                        .foregroundStyle(entry != nil ? Color.primary : Color.secondary)
+                        .foregroundStyle(entry != nil ? AppColor.Text.primary : AppColor.Text.secondary)
 
                     if let entry {
                         HStack(spacing: 8) {
                             if let calories = entry.calories {
                                 Text("\(Int(calories)) kcal")
                                     .font(AppType.subheading)
-                                    .foregroundStyle(Color.appOrange2)
+                                    .foregroundStyle(AppColor.Brand.warm)
                             }
                             if let protein = entry.proteinG {
                                 Text("\(Int(protein))g protein")
@@ -119,13 +119,13 @@ private struct MealCard: View {
                             if let time = entry.eatenAt {
                                 Text(Self.timeFormatter.string(from: time))
                                     .font(AppType.caption)
-                                    .foregroundStyle(Color.secondary)
+                                    .foregroundStyle(AppColor.Text.secondary)
                             }
                         }
                     } else {
                         Text(isSuggested ? "Suggested next meal" : "Tap to log")
                             .font(AppType.subheading)
-                            .foregroundStyle(isSuggested ? Color.accent.cyan : Color.secondary.opacity(0.6))
+                            .foregroundStyle(isSuggested ? Color.accent.cyan : AppColor.Text.secondary.opacity(0.6))
                     }
                 }
 
@@ -138,7 +138,7 @@ private struct MealCard: View {
                 } else {
                     Image(systemName: "chevron.right")
                         .font(AppType.caption)
-                        .foregroundStyle(Color.secondary.opacity(0.5))
+                        .foregroundStyle(AppColor.Text.secondary.opacity(0.5))
                 }
             }
             .padding(.horizontal, AppSpacing.xxxSmall)
