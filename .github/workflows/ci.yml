@@ -25,6 +25,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js (for token pipeline CI gate)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies (Style Dictionary)
+        run: npm install --silent
+
+      - name: Verify DesignTokens.swift is in sync with tokens.json
+        run: make tokens-check
+
       - name: Select Xcode 26.3
         uses: maxim-lobanov/setup-xcode@v1
         with:
