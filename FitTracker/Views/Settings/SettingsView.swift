@@ -881,7 +881,7 @@ private struct SettingsActionLabel: View {
                 .frame(width: 26, height: 26)
                 .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(AppColor.Text.primary)

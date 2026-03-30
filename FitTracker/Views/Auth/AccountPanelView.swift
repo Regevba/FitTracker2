@@ -132,7 +132,7 @@ struct AccountPanelView: View {
                 HStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "gearshape.fill")
                         .foregroundStyle(Color.appAccentPrimary)
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         Text("Open Full Settings")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.primary)
@@ -196,10 +196,10 @@ struct AccountPanelView: View {
     }
 
     private var cardBackground: some View {
-        RoundedRectangle(cornerRadius: 22)
+        RoundedRectangle(cornerRadius: AppRadius.large)
             .fill(Color.appSurface.opacity(0.96))
             .overlay(
-                RoundedRectangle(cornerRadius: 22)
+                RoundedRectangle(cornerRadius: AppRadius.large)
                     .stroke(Color.appStroke, lineWidth: 1)
             )
     }
@@ -253,13 +253,13 @@ struct AccountPanelView: View {
     @ViewBuilder
     private var providerBadge: some View {
         let provider = session?.provider ?? .apple
-        HStack(spacing: 3) {
+        HStack(spacing: AppSpacing.micro) {
             Image(systemName: providerIcon(provider))
                 .font(.system(size: 9, weight: .semibold))
             Text(provider.rawValue)
                 .font(.system(size: 9, weight: .semibold))
         }
-        .padding(.horizontal, 6).padding(.vertical, 2)
+        .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.micro)
         .background(providerColor(provider).opacity(0.12), in: Capsule())
         .foregroundStyle(providerColor(provider))
     }

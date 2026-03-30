@@ -30,7 +30,7 @@ struct ChartCard<Content: View>: View {
                         Text("Trend")
                             .font(AppText.caption)
                             .foregroundStyle(AppColor.Text.secondary)
-                            .padding(.vertical, 3)
+                            .padding(.vertical, AppSpacing.micro)
                             .padding(.horizontal, AppSpacing.xxSmall)
                             .background(AppColor.Surface.materialLight, in: Capsule())
                     }

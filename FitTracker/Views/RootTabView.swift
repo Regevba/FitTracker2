@@ -138,7 +138,7 @@ struct RootTabView: View {
                     Button { showAccount = true } label: {
                         HStack(spacing: AppSpacing.xxSmall) {
                             avatarBadge(30)
-                            VStack(alignment: .leading, spacing: 1) {
+                            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                                 Text(signIn.currentSession?.displayName ?? "Regev")
                                     .font(AppText.captionStrong)
                                     .foregroundStyle(AppColor.Text.primary)

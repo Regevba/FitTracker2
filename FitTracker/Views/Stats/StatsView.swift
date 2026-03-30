@@ -408,7 +408,7 @@ struct StatsView: View {
                         metricChip(metric)
                     }
                 }
-                .padding(.vertical, 2)
+                .padding(.vertical, AppSpacing.micro)
             }
         }
     }
@@ -593,7 +593,7 @@ struct StatsView: View {
         }
         .overlay(alignment: .topLeading) {
             if let selection = chartSelection {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text(selection.date.formatted(.dateTime.month(.abbreviated).day()))
                         .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.secondary)

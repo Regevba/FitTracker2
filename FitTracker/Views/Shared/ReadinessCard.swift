@@ -74,7 +74,7 @@ struct ReadinessCard: View {
     // ── Page dots ─────────────────────────────────────────
 
     private var pageDots: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: AppSpacing.xxxSmall) {
             ForEach(0..<6, id: \.self) { i in
                 Circle()
                     .fill(i == currentPage ? AppColor.Selection.active : AppColor.Selection.inactive)
@@ -97,8 +97,8 @@ struct ReadinessCard: View {
         let rhr    = live.restingHR    ?? today?.biometrics.effectiveRestingHR
         let sleep  = live.sleepHours   ?? today?.biometrics.effectiveSleep
 
-        return VStack(spacing: 4) {
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
+        return VStack(spacing: AppSpacing.xxxSmall) {
+            HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxxSmall) {
                 Text(score != nil ? "\(displayedScore)" : "–")
                     .font(AppText.metricDisplay)
                     .foregroundStyle(AppColor.Text.inversePrimary)
@@ -174,7 +174,7 @@ struct ReadinessCard: View {
     }
 
     private func biometricRow(icon: String, label: String, title: String) -> some View {
-        VStack(spacing: 2) {
+        VStack(spacing: AppSpacing.micro) {
             Image(systemName: icon)
                 .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -231,8 +231,8 @@ struct ReadinessCard: View {
                     let maxBarHeight: CGFloat = 60
                     let barHeight: CGFloat = log != nil ? max(4, CGFloat(pct / 100.0) * maxBarHeight) : 4
 
-                    VStack(spacing: 3) {
-                        RoundedRectangle(cornerRadius: 3)
+                    VStack(spacing: AppSpacing.micro) {
+                        RoundedRectangle(cornerRadius: AppRadius.micro)
                             .fill(barColor)
                             .frame(height: barHeight)
                             .frame(maxWidth: .infinity)
@@ -278,7 +278,7 @@ struct ReadinessCard: View {
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
             // Protein progress
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 HStack {
                     Text("Protein")
                         .font(AppType.caption)
@@ -290,9 +290,9 @@ struct ReadinessCard: View {
                 }
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 3)
+                        RoundedRectangle(cornerRadius: AppRadius.micro)
                             .fill(AppColor.Surface.materialLight)
-                        RoundedRectangle(cornerRadius: 3)
+                        RoundedRectangle(cornerRadius: AppRadius.micro)
                             .fill(Color.accent.cyan)
                             .frame(width: geo.size.width * min(1, CGFloat(protein / max(proteinTarget, 1))))
                     }
@@ -329,7 +329,7 @@ struct ReadinessCard: View {
     }
 
     private func supplementDot(label: String, done: Bool) -> some View {
-        HStack(spacing: 3) {
+        HStack(spacing: AppSpacing.micro) {
             Circle()
                 .fill(done ? Color.status.success : AppColor.Surface.materialStrong)
                 .frame(width: 8, height: 8)
@@ -392,7 +392,7 @@ struct ReadinessCard: View {
     }
 
     private func trendCell(label: String, delta: Double?, positiveIsGood: Bool) -> some View {
-        VStack(spacing: 2) {
+        VStack(spacing: AppSpacing.micro) {
             if let d = delta {
                 TrendIndicator(delta: d, positiveIsGood: positiveIsGood, isPercent: false)
             } else {
@@ -533,7 +533,7 @@ struct ReadinessCard: View {
 
             HStack(spacing: AppSpacing.xxSmall) {
                 ForEach(recommendation.routine.steps.prefix(2)) { step in
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         Text(step.title)
                             .font(AppText.captionStrong)
                             .foregroundStyle(AppColor.Text.inversePrimary)

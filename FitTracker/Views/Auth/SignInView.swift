@@ -21,7 +21,7 @@ struct SignInView: View {
                 Color(.systemBackground).ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(spacing: 22) {
+                    VStack(spacing: AppSpacing.large) {
 
                         // ── Header ────────────────────────────────────
                         VStack(spacing: AppSpacing.xSmall) {
@@ -279,7 +279,7 @@ struct PasskeyActionButton: View {
                     .foregroundStyle(color)
                     .frame(width: 28)
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text(title)
                         .font(AppText.callout)
                         .foregroundStyle(AppColor.Text.primary)

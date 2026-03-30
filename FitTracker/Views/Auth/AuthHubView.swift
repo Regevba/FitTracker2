@@ -81,7 +81,7 @@ private struct AuthEntryScreen: View {
     @EnvironmentObject private var settings: AppSettings
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: AppSpacing.large) {
             Spacer(minLength: AppSpacing.xSmall)
 
             VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
@@ -454,7 +454,7 @@ private struct AuthProviderRow: View {
                 .foregroundStyle(tint)
                 .frame(width: 26)
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                 Text(subtitle)
@@ -486,7 +486,7 @@ private struct GoogleProviderRow: View {
                     .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
             }
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(.black.opacity(0.84))
@@ -513,7 +513,7 @@ private struct AppleProviderRow: View {
             OfficialAppleButtonIcon()
                 .frame(width: 28, height: 28)
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(.white)
@@ -609,7 +609,7 @@ private struct AuthQuickActionLabel: View {
                 .foregroundStyle(.black.opacity(0.72))
                 .frame(width: 26)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(.black.opacity(0.76))
@@ -631,7 +631,7 @@ private struct AuthPrimaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .padding(.vertical, AppSpacing.small)
             .background(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: AppRadius.button)
                     .fill(Color.black.opacity(configuration.isPressed ? 0.74 : 0.82))
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -646,11 +646,11 @@ private struct AuthSecondaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .padding(.vertical, AppSpacing.small)
             .background(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: AppRadius.button)
                     .fill(Color.white.opacity(configuration.isPressed ? 0.72 : 0.62))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: AppRadius.button)
                     .stroke(Color.appStroke, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)

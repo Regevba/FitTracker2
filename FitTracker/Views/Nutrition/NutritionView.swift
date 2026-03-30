@@ -479,10 +479,10 @@ struct NutritionView: View {
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(AppColor.Text.secondary.opacity(0.15))
                         .frame(height: 8)
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(LinearGradient(colors: [AppColor.Accent.recovery.opacity(0.72), AppColor.Accent.secondary], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * waterProgress, height: 8)
                 }
@@ -541,7 +541,7 @@ struct NutritionView: View {
                                 supplementsExpanded = false
                             }
                         } label: {
-                            HStack(spacing: 4) {
+                            HStack(spacing: AppSpacing.xxxSmall) {
                                 Text("Hide")
                                     .font(AppText.captionStrong)
                                 Image(systemName: "chevron.up")
@@ -816,7 +816,7 @@ struct NutritionView: View {
     }
 
     private func nutritionMetric(title: String, value: String, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
             Text(title)
                 .font(AppText.monoLabel)
                 .foregroundStyle(AppColor.Text.secondary)
@@ -828,7 +828,7 @@ struct NutritionView: View {
 
     private func quickMealLane(title: String, subtitle: String, meals: [MealEntry]) -> some View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppText.sectionTitle)
                     .foregroundStyle(AppColor.Text.primary)
@@ -870,7 +870,7 @@ struct NutritionView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.vertical, 2)
+                .padding(.vertical, AppSpacing.micro)
             }
         }
     }
@@ -898,7 +898,7 @@ struct SupplementStackCard: View {
 
             // ── Stack header ─────────────────────────────
             HStack(spacing: AppSpacing.xSmall) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text(stackTitle)
                         .font(AppText.sectionTitle)
                         .foregroundStyle(AppColor.Text.primary)
@@ -978,7 +978,7 @@ struct SupplementItemRow: View {
                 HStack(spacing: AppSpacing.xSmall) {
                     // Checkbox
                     ZStack {
-                        RoundedRectangle(cornerRadius: 6)
+                        RoundedRectangle(cornerRadius: AppRadius.xSmall)
                             .stroke(isTaken ? accentColor : AppColor.Border.subtle, lineWidth: 1.5)
                             .frame(width: 26, height: 26)
                         if isTaken {
@@ -989,7 +989,7 @@ struct SupplementItemRow: View {
                     }
 
                     // Supplement info
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         HStack(spacing: AppSpacing.xxSmall) {
                             Text(supplement.name)
                                 .font(AppText.callout)
@@ -998,7 +998,7 @@ struct SupplementItemRow: View {
                             Text(supplement.dose)
                                 .font(AppText.monoLabel)
                                 .foregroundStyle(accentColor)
-                                .padding(.horizontal, AppSpacing.xxxSmall).padding(.vertical, 2)
+                                .padding(.horizontal, AppSpacing.xxxSmall).padding(.vertical, AppSpacing.micro)
                                 .background(accentColor.opacity(0.1), in: Capsule())
                         }
                         Text(supplement.timing.rawValue)

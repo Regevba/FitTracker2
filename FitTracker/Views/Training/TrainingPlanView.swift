@@ -150,7 +150,7 @@ struct TrainingPlanView: View {
                     calendar.isDate($0.date, inSameDayAs: day)
                 }.map { $0.completionPct > 0 } ?? false
 
-                VStack(spacing: 4) {
+                VStack(spacing: AppSpacing.xxxSmall) {
                     Text(day.formatted(.dateTime.weekday(.abbreviated)))
                         .font(AppType.caption)
                         .foregroundStyle(isActive ? AppColor.Text.primary : AppColor.Text.secondary)
@@ -650,7 +650,7 @@ fileprivate struct SessionTypeButton: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(spacing: 5) {
+            VStack(spacing: AppSpacing.xxxSmall) {
                 Image(systemName: dayType.icon)
                     .font(AppText.sectionTitle)
                 Text(dayType.rawValue)
@@ -755,7 +755,7 @@ struct ExerciseRowView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Header row
-            HStack(alignment: .top, spacing: 10) {
+            HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                 statusStripe
                 exerciseInfo
                 Spacer()
@@ -805,15 +805,15 @@ struct ExerciseRowView: View {
 
     // ── Status stripe
     private var statusStripe: some View {
-        RoundedRectangle(cornerRadius: 3)
+        RoundedRectangle(cornerRadius: AppRadius.micro)
             .fill(accentColor)
             .frame(width: 4)
-            .padding(.vertical, 4)
+            .padding(.vertical, AppSpacing.xxxSmall)
     }
 
     // ── Exercise info block
     private var exerciseInfo: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
             HStack(spacing: AppSpacing.xxSmall) {
                 Text(exercise.name)
                     .font(.subheadline.weight(.semibold))
@@ -823,7 +823,7 @@ struct ExerciseRowView: View {
                     Text("LIVE")
                         .font(AppText.monoLabel)
                         .padding(.horizontal, AppSpacing.xxxSmall)
-                        .padding(.vertical, 3)
+                        .padding(.vertical, AppSpacing.micro)
                         .background(AppColor.Accent.secondary.opacity(0.18), in: Capsule())
                         .foregroundStyle(AppColor.Accent.secondary)
                 }
@@ -1151,7 +1151,7 @@ struct SetRowView: View {
                         withAnimation(.easeIn(duration: 0.25)) { flashGreen = false }
                     }
                 } label: {
-                    HStack(spacing: 5) {
+                    HStack(spacing: AppSpacing.xxxSmall) {
                         Image(systemName: setIsComplete ? "checkmark.circle.fill" : "timer")
                         Text(setIsComplete ? "Done" : "Log")
                             .font(.caption.weight(.semibold))
@@ -1574,7 +1574,7 @@ struct CardioField: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
             Text(label)
                 .font(.system(size: 9, design: .monospaced))
                 .foregroundStyle(AppColor.Text.secondary)
@@ -1596,7 +1596,7 @@ struct RPETapBar: View {
     private let segments: [Int] = [6, 7, 8, 9, 10]
 
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: AppSpacing.micro) {
             ForEach(segments, id: \.self) { v in
                 let isSelected = rpe.map { Int($0) } == v
                 Button {
@@ -1611,10 +1611,10 @@ struct RPETapBar: View {
                             isSelected
                                 ? AppColor.Brand.warm
                                 : AppColor.Surface.materialLight,
-                            in: RoundedRectangle(cornerRadius: 4)
+                            in: RoundedRectangle(cornerRadius: AppRadius.micro)
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 4)
+                            RoundedRectangle(cornerRadius: AppRadius.micro)
                                 .stroke(isSelected ? AppColor.Brand.warm : Color.white.opacity(0.12), lineWidth: 1)
                         )
                 }
@@ -1636,14 +1636,14 @@ struct StatusDropdown: View {
             Divider()
             Button { onSelect(.pending)   } label: { Label("Reset",     systemImage: "arrow.counterclockwise") }
         } label: {
-            HStack(spacing: 4) {
+            HStack(spacing: AppSpacing.xxxSmall) {
                 Circle().fill(color).frame(width: 6, height: 6)
                 Text(status.rawValue.capitalized).font(.caption.weight(.medium))
                 Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold))
             }
             .foregroundStyle(color)
             .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
-            .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 7))
+            .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
         }
     }
 
@@ -1675,9 +1675,9 @@ struct SessionCompletionSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: AppSpacing.medium) {
                     // Header
-                    VStack(spacing: 6) {
+                    VStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: "checkmark.seal.fill")
                             .font(.system(size: 48))
                             .foregroundStyle(Color.status.success)
@@ -1697,7 +1697,7 @@ struct SessionCompletionSheet: View {
                         .padding(.horizontal, AppSpacing.xxSmall)
 
                     // Stats grid: 4 metric tiles
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: AppSpacing.xSmall) {
                         // Total Volume
                         statTile(
                             icon: "scalemass.fill",
@@ -1735,7 +1735,7 @@ struct SessionCompletionSheet: View {
                     Divider()
 
                     // Buttons
-                    VStack(spacing: 12) {
+                    VStack(spacing: AppSpacing.xSmall) {
                         Button(action: onLogNotes) {
                             Label("Log Notes", systemImage: "note.text")
                                 .frame(maxWidth: .infinity)
@@ -1881,8 +1881,8 @@ struct SessionCompletionSheet: View {
 
     @ViewBuilder
     private func statTile(icon: String, label: String, value: String, delta: String?, color: Color) -> some View {
-        VStack(spacing: 6) {
-            HStack(spacing: 6) {
+        VStack(spacing: AppSpacing.xxSmall) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: icon)
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(color)
@@ -1950,7 +1950,7 @@ struct FocusModeView: View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            VStack(spacing: 28) {
+            VStack(spacing: AppSpacing.xLarge) {
                 // Exit button
                 HStack {
                     Spacer()
@@ -1967,7 +1967,7 @@ struct FocusModeView: View {
                 Spacer()
 
                 // Exercise name
-                VStack(spacing: 8) {
+                VStack(spacing: AppSpacing.xxSmall) {
                     Text("Focus Mode")
                         .font(.caption.monospaced())
                         .tracking(1.2)
@@ -1981,7 +1981,7 @@ struct FocusModeView: View {
 
                 // Set info
                 if let idx = nextIncompleteSetIndex {
-                    VStack(spacing: 8) {
+                    VStack(spacing: AppSpacing.xxSmall) {
                         Text("Set \(idx + 1)")
                             .font(.system(size: 18, weight: .semibold, design: .monospaced))
                             .foregroundStyle(Color.white.opacity(0.55))
@@ -1996,7 +1996,7 @@ struct FocusModeView: View {
                 }
 
                 // Weight + Reps fields
-                HStack(spacing: 16) {
+                HStack(spacing: AppSpacing.small) {
                     focusField(placeholder: "kg", text: $weightStr)
                     Text("×")
                         .font(.system(size: 28, weight: .bold))
@@ -2052,7 +2052,7 @@ struct FocusModeView: View {
     }
 
     private func focusField(placeholder: String, text: Binding<String>) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(placeholder.uppercased())
                 .font(.caption2.monospaced())
                 .foregroundStyle(Color.white.opacity(0.42))
@@ -2081,7 +2081,7 @@ struct MilestoneModal: View {
         ZStack {
             Color.black.opacity(0.85).ignoresSafeArea()
 
-            VStack(spacing: 20) {
+            VStack(spacing: AppSpacing.medium) {
                 Text("🎉")
                     .font(.system(size: 72))
 

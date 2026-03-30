@@ -311,7 +311,7 @@ struct MainScreenView: View {
                             style: StrokeStyle(lineWidth: 12, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
-                    VStack(spacing: 2) {
+                    VStack(spacing: AppSpacing.micro) {
                         Text("\(Int(goalProgress * 100))%")
                             .font(.system(size: tight ? 22 : (compact ? 24 : 28), weight: .bold, design: .rounded))
                             .foregroundStyle(.black.opacity(0.82))
@@ -451,7 +451,7 @@ struct MainScreenView: View {
             }
             .foregroundStyle(tint)
 
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
+            HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxxSmall) {
                 Text(value)
                     .font(.system(size: compact ? 21 : 25, weight: .bold, design: .rounded))
                     .monospacedDigit()
@@ -841,7 +841,7 @@ struct RecoveryRoutineSheet: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(AppSpacing.small)
-                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 18))
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.button))
             }
             .padding(AppSpacing.medium)
         }
@@ -860,7 +860,7 @@ private struct RecoveryMetaPill: View {
     let icon: String
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
                 .font(.caption.weight(.semibold))
             Text(label)
@@ -881,7 +881,7 @@ private struct RecoveryMetaPill: View {
 struct SyncStatusIndicator: View {
     @EnvironmentObject var watchService: WatchConnectivityService
     var body: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: AppSpacing.xxxSmall) {
             Circle()
                 .fill(watchService.status.dotColor)
                 .frame(width: 6, height: 6)

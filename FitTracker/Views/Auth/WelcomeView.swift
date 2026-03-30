@@ -47,7 +47,7 @@ struct WelcomeView: View {
             VStack(spacing: 0) {
                 Spacer()
 
-                VStack(spacing: 22) {
+                VStack(spacing: AppSpacing.large) {
                     ZStack {
                         Circle()
                             .fill(AppColor.Accent.recovery.opacity(0.12))
@@ -107,7 +107,7 @@ struct WelcomeView: View {
                     welcomeFactRow(icon: "key.fill", text: "Passkeys and security keys are supported")
                 }
                 .opacity(buttonsOpacity)
-                .padding(.horizontal, 28)
+                .padding(.horizontal, AppSpacing.xLarge)
 
                 Spacer()
 
@@ -125,7 +125,7 @@ struct WelcomeView: View {
                         .foregroundStyle(AppColor.Text.inverseTertiary)
                         .multilineTextAlignment(.center)
                 }
-                .padding(.horizontal, 28)
+                .padding(.horizontal, AppSpacing.xLarge)
                 .offset(y: buttonsOffset)
                 .opacity(buttonsOpacity)
 
