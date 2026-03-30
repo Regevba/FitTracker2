@@ -174,7 +174,7 @@ struct MainScreenView: View {
                 )
             }
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(24)
+            .presentationCornerRadius(AppSheet.standardCornerRadius)
         }
     }
 
@@ -275,7 +275,7 @@ struct MainScreenView: View {
                     Image(systemName: "square.and.pencil")
                         .font(AppText.callout)
                         .foregroundStyle(AppColor.Accent.secondary)
-                        .frame(width: 34, height: 34)
+                        .frame(width: 44, height: 44)
                         .background(AppColor.Surface.primary, in: Circle())
                 }
                 .buttonStyle(.plain)

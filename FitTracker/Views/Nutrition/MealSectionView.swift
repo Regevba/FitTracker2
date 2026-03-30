@@ -18,12 +18,12 @@ struct MealSectionView: View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("MEALS")
-                    .font(.caption2.monospaced())
-                    .foregroundStyle(.secondary)
+                    .font(AppText.monoLabel)
+                    .foregroundStyle(AppColor.Text.tertiary)
                     .tracking(1.6)
                 Text("Fast log from saved meals, barcode, or a nutrition label photo.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(AppText.subheading)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
 
             ForEach(displayedMealNumbers, id: \.self) { mealNumber in

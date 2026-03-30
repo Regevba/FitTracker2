@@ -100,7 +100,7 @@ struct TrainingPlanView: View {
                 onLogNotes: { showCompletionSheet = false; showNotesEditor = true }
             )
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(24)
+            .presentationCornerRadius(AppSheet.standardCornerRadius)
         }
         .sheet(isPresented: $showNotesEditor) {
             NotesEditorSheet(notes: Binding(
@@ -317,7 +317,7 @@ struct TrainingPlanView: View {
         VStack(alignment: .trailing, spacing: 6) {
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 Text(restTimeString(at: context.date))
-                    .font(.system(size: 22, weight: .bold, design: .monospaced))
+                    .font(AppText.monoMetric)
                     .foregroundStyle(restTimeRemaining(at: context.date) > 0 ? Color.appOrange2 : Color.black.opacity(0.78))
             }
             Text(restTimerEnd == nil ? "rest preset" : "remaining")
@@ -350,9 +350,9 @@ struct TrainingPlanView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Image(systemName: isDone ? "checkmark.circle.fill" : "timer")
-                            .font(.system(size: 14, weight: .semibold))
+                            .font(AppText.captionStrong)
                         Text(isDone ? "Done — tap to clear" : restTimeString(at: context.date))
-                            .font(.system(size: 15, weight: .bold, design: .monospaced))
+                            .font(AppText.monoMetric)
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 10)
@@ -466,7 +466,7 @@ struct TrainingPlanView: View {
                 .frame(width: 44, height: 44)
                 .rotationEffect(.degrees(-90))
             Text("\(percent)%")
-                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .font(AppText.monoLabel)
                 .foregroundStyle(Color.blue)
         }
     }
@@ -652,7 +652,7 @@ fileprivate struct SessionTypeButton: View {
         Button(action: action) {
             VStack(spacing: 5) {
                 Image(systemName: dayType.icon)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(AppText.sectionTitle)
                 Text(dayType.rawValue)
                     .font(.caption2.weight(.semibold))
                     .multilineTextAlignment(.center)
@@ -821,7 +821,7 @@ struct ExerciseRowView: View {
                     .foregroundStyle(status == .completed ? AppColor.Text.secondary : AppColor.Text.primary)
                 if isFocused {
                     Text("LIVE")
-                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .font(AppText.monoLabel)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
                         .background(AppColor.Accent.secondary.opacity(0.18), in: Capsule())

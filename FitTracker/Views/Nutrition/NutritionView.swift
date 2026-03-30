@@ -63,7 +63,7 @@ struct NutritionView: View {
             }
             .environmentObject(dataStore)
             .presentationDetents([.large])
-            .presentationCornerRadius(24)
+            .presentationCornerRadius(AppSheet.standardCornerRadius)
         }
     }
 
@@ -218,7 +218,7 @@ struct NutritionView: View {
                     Image(systemName: "chevron.left")
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.primary)
-                        .frame(width: 36, height: 36)
+                        .frame(width: 44, height: 44)
                         .background(AppColor.Surface.elevated, in: Circle())
                 }
                 .buttonStyle(.plain)
@@ -242,7 +242,7 @@ struct NutritionView: View {
                     Image(systemName: "chevron.right")
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.primary)
-                        .frame(width: 36, height: 36)
+                        .frame(width: 44, height: 44)
                         .background(AppColor.Surface.elevated, in: Circle())
                 }
                 .buttonStyle(.plain)

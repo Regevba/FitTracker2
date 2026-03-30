@@ -329,9 +329,9 @@ private struct AuthModeSwitcher: View {
             }
         }
         .padding(3)
-        .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
+            RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous)
                 .stroke(Color.white.opacity(0.20), lineWidth: 1)
         )
     }
@@ -375,7 +375,7 @@ private struct ApplePrimaryButton: View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 48)
-            .background(Color.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(Color.black, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(mode.appleButtonTitle)
@@ -987,7 +987,7 @@ private struct AuthPrimaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
             .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                     .fill(
                         LinearGradient(
                             colors: configuration.isPressed
@@ -1029,11 +1029,11 @@ private struct AuthCardButtonStyle: ButtonStyle {
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
             .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                     .fill(baseFill.opacity(configuration.isPressed ? 0.9 : 1))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                     .stroke(Color.white.opacity(0.24), lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -1125,7 +1125,7 @@ private struct OTPCodeEntryField: View {
                 ForEach(0..<digitCount, id: \.self) { index in
                     let digit = Array(code).dropFirst(index).first.map(String.init) ?? ""
 
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
                         .fill(AppColor.Surface.elevated)
                         .frame(height: 58)
                         .overlay(
@@ -1134,7 +1134,7 @@ private struct OTPCodeEntryField: View {
                                 .foregroundStyle(AppColor.Text.primary)
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
                                 .stroke(index == min(code.count, digitCount - 1) && code.count < digitCount ? AppColor.Accent.secondary : Color.clear, lineWidth: 1.5)
                         )
                 }
