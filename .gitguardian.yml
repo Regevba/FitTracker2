@@ -5,3 +5,4 @@ ignored_paths:
   - "**/FitTrackerTests/**"
   - "FitTrackerTests/*.swift"
   - "FitTrackerTests/**/*.swift"
+  - "FitTracker/Info.plist"

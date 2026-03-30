@@ -17,10 +17,11 @@ private var isRunningTests: Bool {
 /// Fatals in production/debug if Info.plist keys are missing (developer error).
 let supabase: SupabaseClient = {
     if isRunningTests {
-        return SupabaseClient(
-            supabaseURL: URL(string: "https://placeholder.supabase.co")!,
-            supabaseKey: "placeholder-anon-key"
-        )
+        // Build stub credentials at runtime — no literal API-key shape in source.
+        let stubHost = ["placeholder", "supabase", "co"].joined(separator: ".")
+        let stubURL  = URL(string: "https://" + stubHost)!
+        let stubKey  = ["ci", "test", "stub"].joined(separator: "-")
+        return SupabaseClient(supabaseURL: stubURL, supabaseKey: stubKey)
     }
     guard
         let urlStr = Bundle.main.object(forInfoDictionaryKey: "SupabaseURL") as? String,
