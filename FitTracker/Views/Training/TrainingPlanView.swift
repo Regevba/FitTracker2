@@ -45,8 +45,8 @@ struct TrainingPlanView: View {
                     exerciseQueueStrip
                     exerciseSections
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 40)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.bottom, AppSpacing.xxLarge)
             }
 
             // Floating rest timer — bottom-right corner, safe-area aware
@@ -59,7 +59,7 @@ struct TrainingPlanView: View {
                             .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
                     .padding(.bottom, geo.safeAreaInsets.bottom + 56)
-                    .padding(.trailing, 16)
+                    .padding(.trailing, AppSpacing.small)
                 }
             }
             .allowsHitTesting(restTimerEnd != nil)
@@ -189,7 +189,7 @@ struct TrainingPlanView: View {
                 }
             }
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, AppSpacing.xxSmall)
     }
 
     // ─────────────────────────────────────────────────────
@@ -331,9 +331,9 @@ struct TrainingPlanView: View {
             .labelsHidden()
             .frame(width: 90)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
-        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
+        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: AppRadius.small))
     }
 
     @ViewBuilder
@@ -354,8 +354,8 @@ struct TrainingPlanView: View {
                         Text(isDone ? "Done — tap to clear" : restTimeString(at: context.date))
                             .font(AppText.monoMetric)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 10)
+                    .padding(.horizontal, AppSpacing.small)
+                    .padding(.vertical, AppSpacing.xxSmall)
                     .background(
                         isDone ? Color.status.success : Color.black.opacity(0.75),
                         in: Capsule()
@@ -404,15 +404,15 @@ struct TrainingPlanView: View {
                                 .font(.caption2)
                                 .foregroundStyle(AppColor.Text.secondary)
                         }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 9)
+                        .padding(.horizontal, AppSpacing.xSmall)
+                        .padding(.vertical, AppSpacing.xxSmall)
                         .frame(width: 146, alignment: .leading)
                         .background(
                             isFocused ? Color.appBlue1.opacity(0.18) : Color.white.opacity(0.08),
-                            in: RoundedRectangle(cornerRadius: 14)
+                            in: RoundedRectangle(cornerRadius: AppRadius.small)
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14)
+                            RoundedRectangle(cornerRadius: AppRadius.small)
                                 .stroke(isFocused ? Color.blue.opacity(0.85) : Color.white.opacity(0.16), lineWidth: isFocused ? 1.2 : 1)
                         )
                     }
@@ -432,8 +432,8 @@ struct TrainingPlanView: View {
                 .lineLimit(1)
         }
         .foregroundStyle(AppColor.Text.primary)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(Color.white.opacity(0.28), in: Capsule())
     }
 
@@ -448,8 +448,8 @@ struct TrainingPlanView: View {
             Label(title, systemImage: systemImage)
                 .font(.caption.weight(.semibold))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(fill, in: RoundedRectangle(cornerRadius: 12))
+                .padding(.vertical, AppSpacing.xSmall)
+                .background(fill, in: RoundedRectangle(cornerRadius: AppRadius.small))
                 .foregroundStyle(foreground)
         }
         .buttonStyle(.plain)
@@ -659,8 +659,8 @@ fileprivate struct SessionTypeButton: View {
             }
             .foregroundStyle(foregroundColor)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
-            .background(backgroundColor, in: RoundedRectangle(cornerRadius: 12))
+            .padding(.vertical, AppSpacing.xxSmall)
+            .background(backgroundColor, in: RoundedRectangle(cornerRadius: AppRadius.small))
         }
         .buttonStyle(.plain)
     }
@@ -765,8 +765,8 @@ struct ExerciseRowView: View {
                     if newStatus == .completed { initLogIfNeeded() }
                 }
             }
-            .padding(.horizontal, 4)
-            .padding(.vertical, 14)
+            .padding(.horizontal, AppSpacing.xxxSmall)
+            .padding(.vertical, AppSpacing.xSmall)
             .contentShape(Rectangle())
             .onTapGesture { onFocus() }
 
@@ -788,11 +788,11 @@ struct ExerciseRowView: View {
                     .padding(.leading, 14)
             }
         }
-        .padding(.horizontal, 10)
+        .padding(.horizontal, AppSpacing.xxSmall)
         .background(
             Group {
                 if isFocused || status == .completed || status == .partial {
-                    RoundedRectangle(cornerRadius: 16)
+                    RoundedRectangle(cornerRadius: AppRadius.medium)
                         .fill(rowBG)
                 } else {
                     Color.clear
@@ -822,7 +822,7 @@ struct ExerciseRowView: View {
                 if isFocused {
                     Text("LIVE")
                         .font(AppText.monoLabel)
-                        .padding(.horizontal, 6)
+                        .padding(.horizontal, AppSpacing.xxxSmall)
                         .padding(.vertical, 3)
                         .background(AppColor.Accent.secondary.opacity(0.18), in: Capsule())
                         .foregroundStyle(AppColor.Accent.secondary)
@@ -900,8 +900,8 @@ struct ExerciseRowView: View {
         Text(text)
             .font(.caption2.weight(.medium))
             .foregroundStyle(AppColor.Text.primary)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 5)
+            .padding(.horizontal, AppSpacing.xxSmall)
+            .padding(.vertical, AppSpacing.xxxSmall)
             .background(Color.white.opacity(0.18), in: Capsule())
     }
 
@@ -972,7 +972,7 @@ struct LiftLogPanel: View {
                     Text("Est. 1RM ~\(Int(orm.rounded())) kg")
                         .font(.caption)
                         .foregroundStyle(Color.accent.cyan)
-                        .padding(.horizontal, 12)
+                        .padding(.horizontal, AppSpacing.xSmall)
                         .padding(.top, 2)
                 }
 
@@ -1017,8 +1017,8 @@ struct LiftLogPanel: View {
                     }
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.top, 10)
+            .padding(.horizontal, AppSpacing.xSmall)
+            .padding(.top, AppSpacing.xxSmall)
 
             if exerciseLog.sets.isEmpty {
                 VStack(spacing: 8) {
@@ -1030,7 +1030,7 @@ struct LiftLogPanel: View {
                         .foregroundStyle(.tertiary)
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 20)
+                .padding(.vertical, AppSpacing.medium)
             } else {
                 VStack(spacing: 10) {
                     ForEach(exerciseLog.sets.indices, id: \.self) { i in
@@ -1060,11 +1060,11 @@ struct LiftLogPanel: View {
                 TextField("Session notes, form, pain, PR…", text: $exerciseLog.notes)
                     .font(.caption)
             }
-            .padding(10)
-            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+            .padding(AppSpacing.xxSmall)
+            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
         }
-        .padding(12)
-        .background(Color.white.opacity(isFocused ? 0.18 : 0.12), in: RoundedRectangle(cornerRadius: 16))
+        .padding(AppSpacing.xSmall)
+        .background(Color.white.opacity(isFocused ? 0.18 : 0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 
     private var overloadSuggestion: String? {
@@ -1098,10 +1098,10 @@ struct LiftLogPanel: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.primary)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 10))
+        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
     }
 }
 
@@ -1157,8 +1157,8 @@ struct SetRowView: View {
                             .font(.caption.weight(.semibold))
                     }
                     .foregroundStyle(setIsComplete ? Color.status.success : Color.appOrange2)
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
+                    .padding(.horizontal, AppSpacing.xxSmall)
+                    .padding(.vertical, AppSpacing.xxxSmall)
                     .background((setIsComplete ? Color.status.success : Color.appOrange2).opacity(0.12), in: Capsule())
                 }
                 .buttonStyle(.plain)
@@ -1215,12 +1215,12 @@ struct SetRowView: View {
                     .font(.caption)
                     .onChange(of: noteStr) { _, v in setLog.notes = v }
             }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
-            .background(Color.white.opacity(0.16), in: RoundedRectangle(cornerRadius: 10))
+            .padding(.horizontal, AppSpacing.xxSmall)
+            .padding(.vertical, AppSpacing.xxSmall)
+            .background(Color.white.opacity(0.16), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
         }
-        .padding(12)
-        .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : Color.white.opacity(0.08)), in: RoundedRectangle(cornerRadius: 14))
+        .padding(AppSpacing.xSmall)
+        .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : Color.white.opacity(0.08)), in: RoundedRectangle(cornerRadius: AppRadius.small))
         .onAppear {
             weightStr = setLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
@@ -1268,11 +1268,11 @@ struct SetRowView: View {
                 .font(.system(.body, design: .monospaced))
                 .keyboardType(keyboardType)
                 .multilineTextAlignment(.center)
-                .padding(.vertical, 9)
-                .padding(.horizontal, 8)
-                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 10))
+                .padding(.vertical, AppSpacing.xxSmall)
+                .padding(.horizontal, AppSpacing.xxSmall)
+                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: AppRadius.xSmall)
                         .stroke(Color.white.opacity(0.12))
                 )
         }
@@ -1343,8 +1343,8 @@ struct CardioLogPanel: View {
                     .font(.caption)
                     .lineLimit(2...4)
             }
-            .padding(10)
-            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+            .padding(AppSpacing.xxSmall)
+            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
 
             // ── Photo Section ──────────────────────────────
             VStack(alignment: .leading, spacing: 10) {
@@ -1363,7 +1363,7 @@ struct CardioLogPanel: View {
                             Text("Take Photo")
                         }
                         .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
                         .background(Color.status.success.opacity(0.1), in: Capsule())
                         .foregroundStyle(Color.status.success)
                     }
@@ -1376,7 +1376,7 @@ struct CardioLogPanel: View {
                             Text("Library")
                         }
                         .font(.caption.weight(.semibold))
-                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
                         .background(Color.secondary.opacity(0.1), in: Capsule())
                         .foregroundStyle(.secondary)
                     }
@@ -1391,7 +1391,7 @@ struct CardioLogPanel: View {
                     img.resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 180)
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
+                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.xSmall))
                         .overlay(alignment: .topTrailing) {
                             Button {
                                 capturedImage = nil
@@ -1402,7 +1402,7 @@ struct CardioLogPanel: View {
                                     .foregroundStyle(.white)
                                     .background(Color.black.opacity(0.4), in: Circle())
                             }
-                            .padding(8)
+                            .padding(AppSpacing.xxSmall)
                         }
                         .onTapGesture { showImageExpanded = true }
                 } else {

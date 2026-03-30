@@ -321,9 +321,9 @@ struct StatsView: View {
                     metricCarouselSection
                     selectedMetricSection
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 12)
-                .padding(.bottom, 24)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.top, AppSpacing.xSmall)
+                .padding(.bottom, AppSpacing.large)
             }
         }
         .navigationTitle("Stats")
@@ -600,10 +600,10 @@ struct StatsView: View {
                     Text(selection.label)
                         .font(AppText.body.weight(.semibold))
                 }
-                .padding(8)
-                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
-                .padding(.top, 4)
-                .padding(.leading, 4)
+                .padding(AppSpacing.xxSmall)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+                .padding(.top, AppSpacing.xxxSmall)
+                .padding(.leading, AppSpacing.xxxSmall)
             }
         }
 

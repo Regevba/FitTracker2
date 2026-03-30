@@ -94,8 +94,8 @@ struct AppButton: View {
                 }
             }
             .font(AppText.button)
-            .padding(.horizontal, AppSpacing.large)
-            .padding(.vertical, AppSpacing.medium)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.vertical, AppSpacing.xSmall)
             .frame(maxWidth: isFullWidth ? .infinity : nil, alignment: .center)
         }
         .buttonStyle(AppHierarchyButtonStyle(hierarchy: hierarchy))

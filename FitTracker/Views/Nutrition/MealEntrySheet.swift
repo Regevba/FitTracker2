@@ -81,8 +81,8 @@ struct MealEntrySheet: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.vertical, AppSpacing.xxSmall)
 
                 Divider()
 
@@ -160,9 +160,9 @@ struct MealEntrySheet: View {
                         .scaledToFill()
                         .frame(height: 150)
                         .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 18)
+                            RoundedRectangle(cornerRadius: AppRadius.medium)
                                 .stroke(Color.white.opacity(0.4), lineWidth: 1)
                         )
                 }
@@ -192,8 +192,8 @@ struct MealEntrySheet: View {
                         .foregroundStyle(.secondary)
                     TextEditor(text: $rawLabelText)
                         .frame(minHeight: 140)
-                        .padding(10)
-                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+                        .padding(AppSpacing.xxSmall)
+                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.small))
                     Text("Hebrew and English keywords are parsed here. Photos use Apple Vision OCR first, then this parser scales the label to your consumed weight. If a Hebrew label photo doesn’t scan cleanly, paste the label text here and the parser still works.")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -222,8 +222,8 @@ struct MealEntrySheet: View {
                     Text("Parse and Apply")
                         .font(AppType.body.weight(.semibold))
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 14))
+                        .padding(.vertical, AppSpacing.xSmall)
+                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: AppRadius.small))
                         .foregroundColor(.white)
                 }
                 .buttonStyle(.plain)
@@ -240,13 +240,13 @@ struct MealEntrySheet: View {
                             parsedMetric("Fat", parsedLabel.fatG, tint: AppColor.Chart.nutritionFat)
                         }
                     }
-                    .padding(14)
-                    .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: 16))
+                    .padding(AppSpacing.xSmall)
+                    .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: AppRadius.medium))
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 32)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.top, AppSpacing.small)
+            .padding(.bottom, AppSpacing.xLarge)
         }
     }
 
@@ -264,7 +264,7 @@ struct MealEntrySheet: View {
                     manualField(label: "Carbs (g)",       placeholder: "e.g. 60",             text: $carbsG,   isNumeric: true)
                     manualField(label: "Fat (g)",         placeholder: "e.g. 15",             text: $fatG,     isNumeric: true)
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, AppSpacing.small)
 
                 // Buttons
                 VStack(spacing: 12) {
@@ -285,7 +285,7 @@ struct MealEntrySheet: View {
                         }
                         .font(AppText.body)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
+                        .padding(.vertical, AppSpacing.xSmall)
                         .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
@@ -302,11 +302,11 @@ struct MealEntrySheet: View {
                     }
                     .disabled(name.isEmpty)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.top, AppSpacing.xxSmall)
             }
-            .padding(.top, 16)
-            .padding(.bottom, 32)
+            .padding(.top, AppSpacing.small)
+            .padding(.bottom, AppSpacing.xLarge)
         }
     }
 
@@ -421,9 +421,9 @@ struct MealEntrySheet: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            .padding(.bottom, 8)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.top, AppSpacing.xSmall)
+            .padding(.bottom, AppSpacing.xxSmall)
 
             Divider()
 
@@ -653,8 +653,8 @@ struct MealEntrySheet: View {
         }
         .font(.caption.weight(.semibold))
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
+        .padding(.vertical, AppSpacing.xSmall)
+        .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
         .foregroundStyle(tint)
     }
 

@@ -141,10 +141,10 @@ private struct MealCard: View {
                         .foregroundStyle(Color.secondary.opacity(0.5))
                 }
             }
-            .padding(.horizontal, 4)
-            .padding(.vertical, 4)
+            .padding(.horizontal, AppSpacing.xxxSmall)
+            .padding(.vertical, AppSpacing.xxxSmall)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: AppRadius.small)
                     .strokeBorder(borderColor, lineWidth: borderWidth)
             )
             .opacity(entry == nil ? 0.75 : 1.0)
