@@ -108,7 +108,7 @@ struct TrainingPlanView: View {
                 set: { log?.notes = $0; saveLog() }
             ), onDone: { showNotesEditor = false })
             .presentationDetents([.medium])
-            .presentationCornerRadius(20)
+            .presentationCornerRadius(AppSheet.standardCornerRadius)
         }
         .fullScreenCover(isPresented: $showFocusMode) {
             if let exercise = focusedExercise {

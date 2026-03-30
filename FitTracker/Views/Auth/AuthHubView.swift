@@ -787,9 +787,9 @@ private struct AuthBannerView: View {
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                 .stroke(tint.opacity(0.18), lineWidth: 1)
         )
     }
@@ -1010,11 +1010,11 @@ private struct AuthSecondaryButtonStyle: ButtonStyle {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 14)
             .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                     .fill(AppColor.Surface.elevated.opacity(configuration.isPressed ? 0.76 : 1))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                     .stroke(AppColor.Border.strong, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -1164,9 +1164,9 @@ private struct OTPCodeEntryField: View {
         .font(AppText.body)
         .padding(.horizontal, 14)
         .padding(.vertical, 14)
-        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
                 .stroke(AppColor.Border.subtle, lineWidth: 1)
         )
     }
