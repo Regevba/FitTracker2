@@ -659,7 +659,7 @@ struct MealEntrySheet: View {
     }
 
     private func parsedMetric(_ title: String, _ value: Double?, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: AppSpacing.micro) {
             Text(title)
                 .font(.caption2)
                 .foregroundStyle(AppColor.Text.secondary)

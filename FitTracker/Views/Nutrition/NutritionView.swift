@@ -18,7 +18,7 @@ struct NutritionView: View {
                 .ignoresSafeArea()
 
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 24) {
+            VStack(spacing: AppSpacing.large) {
                 dateHeader
                 nutritionCommandDeck
                 macroBar
@@ -199,7 +199,7 @@ struct NutritionView: View {
     private var dateHeader: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             HStack {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text("Nutrition")
                         .font(AppText.pageTitle)
                         .foregroundStyle(AppColor.Text.primary)
@@ -264,7 +264,7 @@ struct NutritionView: View {
         let total  = morning.count + evening.count
         let taken  = individualStatus.filter { $0.value }.count
         let pct    = total > 0 ? Int(Double(taken) / Double(total) * 100) : 0
-        return VStack(spacing: 2) {
+        return VStack(spacing: AppSpacing.micro) {
             Text("\(pct)%")
                 .font(AppText.monoMetric)
                 .foregroundStyle(Color.status.success)
@@ -375,9 +375,9 @@ struct NutritionView: View {
             }
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 3)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(AppColor.Text.secondary.opacity(0.15)).frame(height: 6)
-                    RoundedRectangle(cornerRadius: 3)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(LinearGradient(colors: [Color.status.success, Color.status.success], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * frac, height: 6)
                         .animation(.spring(response: 0.6), value: frac)

@@ -86,8 +86,12 @@ enum AppColor {
     }
 }
 
-// MARK: - Spacing (strict 4pt grid)
+// MARK: - Spacing
 enum AppSpacing {
+    /// Sub-grid — tightest data-display pairs only (value+unit, inline icon+label).
+    /// Not for general layout — use xxxSmall (4) for all other tight spacing.
+    static let micro:    CGFloat = 2
+    // 4pt grid below
     static let xxxSmall: CGFloat = 4
     static let xxSmall:  CGFloat = 8
     static let xSmall:   CGFloat = 12
@@ -100,9 +104,14 @@ enum AppSpacing {
 
 // MARK: - Radius
 enum AppRadius {
+    /// Data-viz only — progress bars, chart bar segments, small inline indicators.
+    /// Not for interactive surfaces — use xSmall (8) as the smallest component radius.
+    static let micro:     CGFloat = 4
     static let xSmall:    CGFloat = 8
     static let small:     CGFloat = 12
     static let medium:    CGFloat = 16
+    /// Pill-style buttons and action tiles with a softer corner than medium.
+    static let button:    CGFloat = 20
     static let large:     CGFloat = 24
     static let xLarge:    CGFloat = 28   // deliberately 28 — distinct from sheet=32
     static let sheet:     CGFloat = 32

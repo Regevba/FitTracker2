@@ -15,8 +15,8 @@ struct MealSectionView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                 Text("MEALS")
                     .font(AppText.monoLabel)
                     .foregroundStyle(AppColor.Text.tertiary)
@@ -89,7 +89,7 @@ private struct MealCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 ZStack {
                     Circle()
                         .fill(entry != nil ? AppColor.Brand.warmSoft.opacity(0.2) : AppColor.Surface.materialStrong)
@@ -99,13 +99,13 @@ private struct MealCard: View {
                         .foregroundStyle(entry != nil ? AppColor.Brand.warm : AppColor.Text.secondary)
                 }
 
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text(displayName)
                         .font(AppType.body)
                         .foregroundStyle(entry != nil ? AppColor.Text.primary : AppColor.Text.secondary)
 
                     if let entry {
-                        HStack(spacing: 8) {
+                        HStack(spacing: AppSpacing.xxSmall) {
                             if let calories = entry.calories {
                                 Text("\(Int(calories)) kcal")
                                     .font(AppType.subheading)

@@ -33,25 +33,25 @@ struct MacroTargetBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.medium) {
             GeometryReader { geo in
-                HStack(spacing: 2) {
+                HStack(spacing: AppSpacing.micro) {
                     let proteinWidth = geo.size.width * (protein * proteinKcal / max(totalForBar, 1))
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(AppColor.Accent.recovery)
                         .frame(width: max(proteinWidth, 2))
 
                     let carbsWidth = geo.size.width * (carbs * carbsKcal / max(totalForBar, 1))
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(AppColor.Chart.body)
                         .frame(width: max(carbsWidth, 2))
 
                     let fatWidth = geo.size.width * (fat * fatKcal / max(totalForBar, 1))
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(AppColor.Chart.nutritionFat)
                         .frame(width: max(fatWidth, 2))
 
                     let remaining = geo.size.width * (remainingCalories / max(totalForBar, 1))
                     if remaining > 2 {
-                        RoundedRectangle(cornerRadius: 4)
+                        RoundedRectangle(cornerRadius: AppRadius.micro)
                             .fill(AppColor.Surface.tertiary)
                             .frame(width: remaining)
                     }
@@ -75,8 +75,8 @@ struct MacroTargetBar: View {
     }
 
     private func macroLabel(_ title: String, value: Double, target: Double, color: Color) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            HStack(spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.micro) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Circle().fill(color).frame(width: 8, height: 8)
                 Text(title)
                     .font(AppText.captionStrong)
