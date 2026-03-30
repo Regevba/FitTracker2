@@ -66,6 +66,7 @@
 		FT1000001000000000000002 /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000002 /* SyncMergeTests.swift */; };
 		FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000003 /* SupabaseClientTests.swift */; };
 		SUP0000001000000000000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = SUP0000002000000000000001 /* Supabase */; };
+		AS000001000000000000AA01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AS000002000000000000AA01 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -132,6 +133,7 @@
 		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
 		FT2000001000000000000002 /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
 		FT2000001000000000000003 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
+		AS000002000000000000AA01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				FB4000001000000000000002 /* Extensions */,
 				A20000010000000000000012 /* Info.plist */,
 				A20000010000000000000013 /* FitTracker.entitlements */,
+				AS000002000000000000AA01 /* Assets.xcassets */,
 			);
 			path = FitTracker;
 			sourceTree = "<group>";
@@ -491,6 +494,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AS000001000000000000AA01 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

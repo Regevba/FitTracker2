@@ -9,71 +9,71 @@ enum AppBrand {
 
 enum AppColor {
     enum Brand {
-        static let primary   = AppPalette.orange500
-        static let secondary = AppPalette.blue500
-        static let warmSoft  = AppPalette.orange50
-        static let warm      = AppPalette.orange100
-        static let coolSoft  = AppPalette.blue50
-        static let cool      = AppPalette.blue200
+        static let primary   = Color("brand-primary")
+        static let secondary = Color("brand-secondary")
+        static let warmSoft  = Color("brand-warm-soft")
+        static let warm      = Color("brand-warm")
+        static let coolSoft  = Color("brand-cool-soft")
+        static let cool      = Color("brand-cool")
     }
 
     enum Background {
-        static let appPrimary   = AppPalette.blue50
-        static let appSecondary = AppPalette.blue100
-        static let appTint      = AppPalette.blue200
-        static let appWarmTint  = AppPalette.orange50
-
-        static let authTop    = AppPalette.darkForest0
-        static let authMiddle = AppPalette.darkForest1
-        static let authBottom = AppPalette.darkForest2
+        static let appPrimary   = Color("bg-app-primary")
+        static let appSecondary = Color("bg-app-secondary")
+        static let appTint      = Color("bg-app-tint")
+        static let appWarmTint  = Color("bg-app-warm-tint")
+        // Auth backgrounds are always dark — same value in light and dark mode
+        static let authTop    = Color("bg-auth-top")
+        static let authMiddle = Color("bg-auth-middle")
+        static let authBottom = Color("bg-auth-bottom")
     }
 
     enum Surface {
-        static let primary        = AppPalette.white.opacity(0.72)
-        static let secondary      = AppPalette.white.opacity(0.58)
-        static let tertiary       = AppPalette.white.opacity(0.38)
-        static let elevated       = AppPalette.white.opacity(0.92)
-        static let materialLight  = AppPalette.white.opacity(0.22)
-        static let materialStrong = AppPalette.white.opacity(0.34)
-        static let inverse        = AppPalette.black.opacity(0.82)
+        static let primary        = Color("surface-primary")
+        static let secondary      = Color("surface-secondary")
+        static let tertiary       = Color("surface-tertiary")
+        static let elevated       = Color("surface-elevated")
+        static let materialLight  = Color("surface-material-light")
+        static let materialStrong = Color("surface-material-strong")
+        static let inverse        = Color("surface-inverse")
     }
 
     enum Text {
-        static let primary          = AppPalette.black.opacity(0.84)
-        static let secondary        = AppPalette.black.opacity(0.62)
-        static let tertiary         = AppPalette.black.opacity(0.55)  // raised from 0.42 — WCAG AA (≈4.6:1)
-        static let inversePrimary   = AppPalette.white.opacity(0.94)
-        static let inverseSecondary = AppPalette.white.opacity(0.76)
-        static let inverseTertiary  = AppPalette.white.opacity(0.54)
+        static let primary          = Color("text-primary")
+        static let secondary        = Color("text-secondary")
+        static let tertiary         = Color("text-tertiary")  // WCAG AA: ≈4.6:1 light, ≈5.1:1 dark
+        static let inversePrimary   = Color("text-inverse-primary")
+        static let inverseSecondary = Color("text-inverse-secondary")
+        static let inverseTertiary  = Color("text-inverse-tertiary")
     }
 
     enum Border {
-        static let strong   = AppPalette.white.opacity(0.54)
-        static let subtle   = AppPalette.white.opacity(0.30)
-        static let hairline = AppPalette.black.opacity(0.08)
+        static let strong   = Color("border-strong")
+        static let subtle   = Color("border-subtle")
+        static let hairline = Color("border-hairline")
     }
 
     enum Accent {
         static let primary     = Brand.primary
         static let secondary   = Brand.secondary
-        static let recovery    = AppPalette.cyan
-        static let sleep       = AppPalette.purple
-        static let achievement = AppPalette.gold
+        static let recovery    = Color("accent-recovery")
+        static let sleep       = Color("accent-sleep")
+        static let achievement = Color("accent-achievement")
     }
 
     enum Status {
-        static let success = AppPalette.green
-        static let warning = AppPalette.amber
-        static let error   = AppPalette.red
+        static let success = Color("status-success")
+        static let warning = Color("status-warning")
+        static let error   = Color("status-error")
     }
 
     enum Chart {
-        static let body         = Brand.warm
-        static let cardio       = Accent.recovery
-        static let sleep        = Accent.sleep
-        static let achievement  = Accent.achievement
-        static let progress     = Brand.secondary
-        static let nutritionFat = AppPalette.brown
+        static let body         = Color("chart-body")
+        static let cardio       = Color("chart-cardio")
+        static let sleep        = Color("chart-sleep")
+        static let achievement  = Color("chart-achievement")
+        static let progress     = Color("chart-progress")
+        static let nutritionFat = Color("chart-nutrition-fat")
     }
 
     enum Focus {
@@ -81,8 +81,8 @@ enum AppColor {
     }
 
     enum Selection {
-        static let active   = AppPalette.white.opacity(0.84)
-        static let inactive = AppPalette.white.opacity(0.42)
+        static let active   = Color("selection-active")
+        static let inactive = Color("selection-inactive")
     }
 }
 
