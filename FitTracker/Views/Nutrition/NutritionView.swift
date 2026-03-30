@@ -30,8 +30,8 @@ struct NutritionView: View {
 
                 disclaimerNote
             }
-            .padding(.horizontal, 18)
-            .padding(.bottom, 40)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.bottom, AppSpacing.xxLarge)
         }
         } // ZStack
         .navigationTitle("Nutrition")
@@ -230,8 +230,8 @@ struct NutritionView: View {
                     Text(isViewingToday ? "Today" : "Jump to Today")
                         .font(AppText.captionStrong)
                         .foregroundStyle(isViewingToday ? AppColor.Text.secondary : AppColor.Text.primary)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 9)
+                        .padding(.horizontal, AppSpacing.xSmall)
+                        .padding(.vertical, AppSpacing.xxSmall)
                         .background(AppColor.Surface.elevated, in: Capsule())
                 }
                 .buttonStyle(.plain)
@@ -252,12 +252,12 @@ struct NutritionView: View {
                 Text(log?.dayType.rawValue ?? suggestedDay(for: activeDate).rawValue)
                     .font(AppText.captionStrong)
                     .foregroundStyle(AppColor.Text.secondary)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                    .padding(.horizontal, AppSpacing.xSmall)
+                    .padding(.vertical, AppSpacing.xxSmall)
                     .background(AppColor.Surface.elevated, in: Capsule())
             }
         }
-        .padding(.top, 6)
+        .padding(.top, AppSpacing.xxxSmall)
     }
 
     private var overallBadge: some View {
@@ -336,7 +336,7 @@ struct NutritionView: View {
                 nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: Color.appOrange2)
             }
         }
-        .padding(.bottom, 4)
+        .padding(.bottom, AppSpacing.xxxSmall)
     }
 
     private var adherenceRow: some View {
@@ -368,7 +368,7 @@ struct NutritionView: View {
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.secondary)
                     }
-                    .padding(16)
+                    .padding(AppSpacing.small)
                     .frame(minWidth: 260)
                     .presentationCompactAdaptation(.popover)
                 }
@@ -385,7 +385,7 @@ struct NutritionView: View {
             }
             .frame(height: 6)
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, AppSpacing.xxxSmall)
     }
 
     private var macroBar: some View {
@@ -498,8 +498,8 @@ struct NutritionView: View {
                         Text("+\(Int(amount)) ml")
                             .font(AppText.captionStrong)
                             .foregroundStyle(AppColor.Accent.secondary)
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 10)
+                            .padding(.horizontal, AppSpacing.xSmall)
+                            .padding(.vertical, AppSpacing.xxSmall)
                             .background(AppColor.Accent.recovery.opacity(0.14), in: Capsule())
                     }
                     .buttonStyle(.plain)
@@ -515,14 +515,14 @@ struct NutritionView: View {
                     Label(log?.nutritionLog.alluloseTaken == true ? "Allulose done" : "Allulose", systemImage: log?.nutritionLog.alluloseTaken == true ? "checkmark.circle.fill" : "circle")
                         .font(AppText.captionStrong)
                         .foregroundStyle(log?.nutritionLog.alluloseTaken == true ? Color.status.success : AppColor.Text.secondary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
+                        .padding(.horizontal, AppSpacing.xSmall)
+                        .padding(.vertical, AppSpacing.xxSmall)
                         .background(AppColor.Surface.elevated, in: Capsule())
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(.vertical, 6)
+        .padding(.vertical, AppSpacing.xxxSmall)
     }
 
     // ─────────────────────────────────────────────────────
@@ -548,8 +548,8 @@ struct NutritionView: View {
                                     .font(AppText.captionStrong)
                             }
                             .foregroundStyle(AppColor.Text.secondary)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 5)
+                            .padding(.horizontal, AppSpacing.xxSmall)
+                            .padding(.vertical, AppSpacing.xxxSmall)
                             .background(AppColor.Surface.elevated, in: Capsule())
                         }
                     }
@@ -628,8 +628,8 @@ struct NutritionView: View {
                                 }
                             }
                             .foregroundStyle(morningStatus == .completed ? Color.status.success : AppColor.Text.secondary)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
+                            .padding(.horizontal, AppSpacing.xxSmall)
+                            .padding(.vertical, AppSpacing.xxxSmall)
                             .background(
                                 morningStatus == .completed
                                     ? Color.status.success.opacity(0.15)
@@ -671,8 +671,8 @@ struct NutritionView: View {
                                 }
                             }
                             .foregroundStyle(eveningStatus == .completed ? Color.status.success : AppColor.Text.secondary)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
+                            .padding(.horizontal, AppSpacing.xxSmall)
+                            .padding(.vertical, AppSpacing.xxxSmall)
                             .background(
                                 eveningStatus == .completed
                                     ? Color.status.success.opacity(0.15)
@@ -698,8 +698,8 @@ struct NutritionView: View {
                     Text("🔥 \(dataStore.supplementStreak)")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Color.orange)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, AppSpacing.xxSmall)
+                        .padding(.vertical, AppSpacing.xxxSmall)
                         .background(Color.orange.opacity(0.12), in: Capsule())
 
                     // Expand chevron
@@ -714,9 +714,9 @@ struct NutritionView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-                .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .padding(.horizontal, AppSpacing.xSmall)
+                .padding(.vertical, AppSpacing.xSmall)
+                .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
             }
         }
         .animation(.easeInOut(duration: 0.25), value: supplementsExpanded)
@@ -728,7 +728,7 @@ struct NutritionView: View {
             Text("Supplement timing matters. Take morning stack with food. Evening stack 30 min before bed — especially glycine + magnesium for deep sleep. Always separate creatine from NAC by 2+ hours.")
                 .font(AppText.caption).foregroundStyle(AppColor.Text.tertiary)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, AppSpacing.xxSmall)
     }
 
     private static let todayDateFormatter: DateFormatter = {
@@ -808,8 +808,8 @@ struct NutritionView: View {
             Label(title, systemImage: icon)
                 .font(AppText.captionStrong)
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+                .padding(.vertical, AppSpacing.xSmall)
+                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
                 .foregroundStyle(tint)
         }
         .buttonStyle(.plain)
@@ -865,7 +865,7 @@ struct NutritionView: View {
                                     .foregroundStyle(AppColor.Text.secondary)
                             }
                             .frame(minWidth: 160, idealWidth: 180, maxWidth: 220, alignment: .leading)
-                            .padding(.vertical, 6)
+                            .padding(.vertical, AppSpacing.xxxSmall)
                         }
                         .buttonStyle(.plain)
                     }
@@ -917,7 +917,7 @@ struct SupplementStackCard: View {
                         .foregroundStyle(AppColor.Text.secondary)
                 }
             }
-            .padding(14)
+            .padding(AppSpacing.xSmall)
             .background(accentColor.opacity(0.07))
 
             // ── Status indicator bar ─────────────────────
@@ -947,9 +947,9 @@ struct SupplementStackCard: View {
                 }
             }
         }
-        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 14)
+            RoundedRectangle(cornerRadius: AppRadius.small)
                 .stroke(stackStatus == .completed ? accentColor.opacity(0.4) : Color.clear, lineWidth: 1)
         )
         .clipped()
@@ -998,7 +998,7 @@ struct SupplementItemRow: View {
                             Text(supplement.dose)
                                 .font(AppText.monoLabel)
                                 .foregroundStyle(accentColor)
-                                .padding(.horizontal, 6).padding(.vertical, 2)
+                                .padding(.horizontal, AppSpacing.xxxSmall).padding(.vertical, 2)
                                 .background(accentColor.opacity(0.1), in: Capsule())
                         }
                         Text(supplement.timing.rawValue)
@@ -1016,7 +1016,7 @@ struct SupplementItemRow: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 14).padding(.vertical, 12)
+                .padding(.horizontal, AppSpacing.xSmall).padding(.vertical, AppSpacing.xSmall)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
@@ -1031,7 +1031,7 @@ struct SupplementItemRow: View {
                         Text(supplement.notes).font(AppText.caption).foregroundStyle(AppColor.Text.tertiary)
                     }
                 }
-                .padding(.horizontal, 54).padding(.bottom, 10)
+                .padding(.horizontal, 54).padding(.bottom, AppSpacing.xxSmall)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(accentColor.opacity(0.03))
                 .transition(.opacity.combined(with: .move(edge: .top)))

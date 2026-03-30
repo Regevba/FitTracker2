@@ -109,8 +109,8 @@ struct MainScreenView: View {
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, horizontalPadding)
-                .padding(.top, tight ? 4 : 8)
-                .padding(.bottom, max(proxy.safeAreaInsets.bottom + 12, tight ? 16 : 20))
+                .padding(.top, tight ? AppSpacing.xxxSmall : AppSpacing.xxSmall)
+                .padding(.bottom, max(proxy.safeAreaInsets.bottom + AppSpacing.xSmall, tight ? AppSpacing.small : AppSpacing.medium))
             }
         }
         .onAppear { checkMilestones() }
@@ -211,8 +211,8 @@ struct MainScreenView: View {
                         .foregroundStyle(AppColor.Text.primary)
                     Text(profile.currentPhase.rawValue)
                         .font(AppText.captionStrong)
-                        .padding(.horizontal, tight ? 9 : 11)
-                        .padding(.vertical, tight ? 5 : 6)
+                        .padding(.horizontal, tight ? AppSpacing.xxSmall : AppSpacing.xxSmall)
+                        .padding(.vertical, tight ? AppSpacing.xxxSmall : AppSpacing.xxxSmall)
                         .background(AppColor.Surface.elevated, in: Capsule())
                         .foregroundStyle(AppColor.Text.secondary)
                 }
@@ -249,7 +249,7 @@ struct MainScreenView: View {
 
                 Divider()
                     .overlay(Color.white.opacity(0.4))
-                    .padding(.vertical, 8)
+                    .padding(.vertical, AppSpacing.xxSmall)
 
                 statusValueColumn(
                     title: "Body Fat",
@@ -432,8 +432,8 @@ struct MainScreenView: View {
                 if isMissing {
                     Text("Missing")
                         .font(AppText.captionStrong)
-                        .padding(.horizontal, 7)
-                        .padding(.vertical, 4)
+                        .padding(.horizontal, AppSpacing.xxSmall)
+                        .padding(.vertical, AppSpacing.xxxSmall)
                         .background(tint.opacity(0.14), in: Capsule())
                         .foregroundStyle(tint)
                 }
@@ -498,7 +498,7 @@ struct MainScreenView: View {
                 .foregroundStyle(AppColor.Text.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, compact ? 7 : 9)
+        .padding(.vertical, compact ? AppSpacing.xxSmall : AppSpacing.xxSmall)
     }
 
     private func sectionEyebrow(_ title: String) -> some View {
@@ -736,7 +736,7 @@ private struct BlendedSectionStyle: ViewModifier {
                     Rectangle()
                         .fill(Color.white.opacity(0.34))
                         .frame(height: 1)
-                        .padding(.top, 12)
+                        .padding(.top, AppSpacing.xSmall)
                 }
             }
     }
@@ -817,8 +817,8 @@ struct RecoveryRoutineSheet: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .padding(14)
-                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
+                        .padding(AppSpacing.xSmall)
+                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
                     }
                 }
 
@@ -829,10 +829,10 @@ struct RecoveryRoutineSheet: View {
                         .font(AppType.subheading)
                         .foregroundStyle(.secondary)
                 }
-                .padding(16)
-                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 18))
+                .padding(AppSpacing.small)
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
-            .padding(20)
+            .padding(AppSpacing.medium)
         }
         .navigationTitle("Recovery Flow")
         .navigationBarTitleDisplayMode(.inline)
@@ -857,8 +857,8 @@ private struct RecoveryMetaPill: View {
                 .lineLimit(1)
         }
         .foregroundStyle(Color.accentColor)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 9)
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(Color.accentColor.opacity(0.1), in: Capsule())
     }
 }
@@ -878,8 +878,8 @@ struct SyncStatusIndicator: View {
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(.black.opacity(0.72))
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(
             Capsule()
                 .fill(Color.white.opacity(0.34))
