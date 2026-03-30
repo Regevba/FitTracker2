@@ -123,7 +123,7 @@ struct ReadinessCard: View {
 
             Spacer(minLength: 4)
 
-            HStack(spacing: 16) {
+            HStack(spacing: AppSpacing.small) {
                 biometricRow(icon: "waveform.path.ecg", label: hrv.map { String(format: "%.0f ms", $0) } ?? "–", title: "HRV")
                 biometricRow(icon: "heart.fill", label: rhr.map { String(format: "%.0f bpm", $0) } ?? "–", title: "RHR")
                 biometricRow(icon: "moon.fill", label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
@@ -147,7 +147,7 @@ struct ReadinessCard: View {
             .buttonStyle(.plain)
             .accessibilityLabel("About readiness score")
             .popover(isPresented: $showReadinessInfo) {
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("How Readiness Is Calculated")
                         .font(.headline)
                     Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
@@ -212,13 +212,13 @@ struct ReadinessCard: View {
             }
         )
 
-        return VStack(alignment: .leading, spacing: 6) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("This Week")
                 .font(AppType.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
                 .padding(.horizontal, AppSpacing.small)
 
-            HStack(alignment: .bottom, spacing: 6) {
+            HStack(alignment: .bottom, spacing: AppSpacing.xxSmall) {
                 ForEach(Array(weekDays.enumerated()), id: \.offset) { idx, day in
                     let log = logsMap[day]
                     let pct = log?.completionPct ?? 0
@@ -272,7 +272,7 @@ struct ReadinessCard: View {
         let morningDone = todayLog?.supplementLog.morningStatus == .completed
         let eveningDone = todayLog?.supplementLog.eveningStatus == .completed
 
-        return VStack(alignment: .leading, spacing: 8) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("Nutrition")
                 .font(AppType.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -301,7 +301,7 @@ struct ReadinessCard: View {
             }
 
             // Supplements
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: "pill.fill")
                     .font(AppText.captionStrong)
                     .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -314,7 +314,7 @@ struct ReadinessCard: View {
 
             // Water
             if waterML > 0 {
-                HStack(spacing: 6) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     Image(systemName: "drop.fill")
                         .font(AppText.captionStrong)
                         .foregroundStyle(Color.accent.cyan.opacity(0.8))
@@ -367,13 +367,13 @@ struct ReadinessCard: View {
         let stepsPrev = prev7.compactMap { $0.biometrics.stepCount }.last
         let stepsDelta: Double? = (stepsNow != nil && stepsPrev != nil) ? Double(stepsNow! - stepsPrev!) : nil
 
-        return VStack(alignment: .leading, spacing: 6) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("7-Day Trends")
                 .font(AppType.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
             let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-            LazyVGrid(columns: columns, spacing: 8) {
+            LazyVGrid(columns: columns, spacing: AppSpacing.xxSmall) {
                 trendCell(label: "Weight",  delta: weightDelta,  positiveIsGood: false)
                 trendCell(label: "Body Fat",delta: bfDelta,      positiveIsGood: false)
                 trendCell(label: "HRV",     delta: hrvDelta,     positiveIsGood: true)
@@ -415,7 +415,7 @@ struct ReadinessCard: View {
         let dayOnProgram = dataStore.userProfile.daysSinceStart
         let prsThisWeek = countPRsThisWeek()
 
-        return VStack(spacing: 6) {
+        return VStack(spacing: AppSpacing.xxSmall) {
             Text("Achievements")
                 .font(AppType.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -433,7 +433,7 @@ struct ReadinessCard: View {
     }
 
     private func achievementCell(emoji: String, value: Int, label: String) -> some View {
-        VStack(spacing: 4) {
+        VStack(spacing: AppSpacing.xxxSmall) {
             Text(emoji)
                 .font(AppText.titleStrong)
             Text("\(value)")
@@ -490,13 +490,13 @@ struct ReadinessCard: View {
             preferences: dataStore.userPreferences
         )
 
-        return VStack(alignment: .leading, spacing: 8) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("Recovery Studio")
                 .font(AppType.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 4) {
+            HStack(alignment: .top, spacing: AppSpacing.xSmall) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(recommendation.routine.title)
                         .font(.headline)
                         .foregroundStyle(AppColor.Text.inversePrimary)
@@ -506,7 +506,7 @@ struct ReadinessCard: View {
                         .lineLimit(2)
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 4) {
+                VStack(alignment: .trailing, spacing: AppSpacing.xxxSmall) {
                     Text("\(recommendation.routine.durationMinutes)m")
                         .font(AppText.monoMetric)
                         .foregroundStyle(AppColor.Text.inversePrimary)
@@ -516,9 +516,9 @@ struct ReadinessCard: View {
                 }
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 ForEach(Array(recommendation.reasons.prefix(2)), id: \.self) { reason in
-                    HStack(alignment: .top, spacing: 6) {
+                    HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                         Image(systemName: "sparkles")
                             .font(AppText.caption)
                             .foregroundStyle(Color.accent.cyan.opacity(0.9))
@@ -531,7 +531,7 @@ struct ReadinessCard: View {
                 }
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 ForEach(recommendation.routine.steps.prefix(2)) { step in
                     VStack(alignment: .leading, spacing: 3) {
                         Text(step.title)

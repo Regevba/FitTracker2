@@ -315,7 +315,7 @@ struct StatsView: View {
             .ignoresSafeArea()
 
             ScrollView {
-                LazyVStack(alignment: .leading, spacing: 14) {
+                LazyVStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     periodPicker
                     permanentBodyCharts
                     metricCarouselSection
@@ -385,15 +385,15 @@ struct StatsView: View {
     }
 
     private var permanentBodyCharts: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: AppSpacing.xSmall) {
             metricCard(for: .weight)
             metricCard(for: .bodyFat)
         }
     }
 
     private var metricCarouselSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                 Text("Track More")
                     .font(AppText.sectionTitle)
                     .foregroundStyle(AppColor.Text.primary)
@@ -403,7 +403,7 @@ struct StatsView: View {
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     ForEach(carouselMetrics) { metric in
                         metricChip(metric)
                     }
@@ -436,7 +436,7 @@ struct StatsView: View {
                 )
                 .frame(height: 128)
             } else {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     metricHeader(for: metric, points: points)
                     chartBody(points: points, metric: metric)
                 }
@@ -456,7 +456,7 @@ struct StatsView: View {
             }
         } label: {
             AppSelectionTile(isSelected: selected, tint: metric.tint, cornerRadius: AppRadius.large) {
-                VStack(alignment: .leading, spacing: 10) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     HStack {
                         Image(systemName: metric.icon)
                             .font(AppText.captionStrong)
@@ -492,8 +492,8 @@ struct StatsView: View {
     }
 
     private func metricHeader(for metric: StatsFocusMetric, points: [MetricSeriesPoint]) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .lastTextBaseline, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxSmall) {
                 Text(metricPrimaryValue(for: metric))
                     .font(AppText.metric)
                     .foregroundStyle(metric.tint)

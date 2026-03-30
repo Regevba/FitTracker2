@@ -102,7 +102,7 @@ struct RootTabView: View {
     private var iPadLayout: some View {
         NavigationSplitView {
             VStack(spacing: 0) {
-                HStack(spacing: 10) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     Image(systemName: "figure.strengthtraining.traditional")
                         .font(AppText.titleMedium)
                         .foregroundStyle(AppColor.Accent.recovery)
@@ -127,8 +127,8 @@ struct RootTabView: View {
 
                 Divider()
 
-                VStack(spacing: 10) {
-                    HStack(spacing: 6) {
+                VStack(spacing: AppSpacing.xxSmall) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         Circle().fill(syncColor).frame(width: 6, height: 6)
                         Text(cloudSync.status.rawValue)
                             .font(AppText.caption)
@@ -136,7 +136,7 @@ struct RootTabView: View {
                         Spacer()
                     }
                     Button { showAccount = true } label: {
-                        HStack(spacing: 10) {
+                        HStack(spacing: AppSpacing.xxSmall) {
                             avatarBadge(30)
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(signIn.currentSession?.displayName ?? "Regev")

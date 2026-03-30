@@ -769,7 +769,7 @@ private struct OTPCodeEntryField: View {
             .focused($isFocused)
             .opacity(0.01)
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 ForEach(0..<digitCount, id: \.self) { index in
                     let digit = Array(code).dropFirst(index).first.map(String.init) ?? ""
 
@@ -824,9 +824,9 @@ private struct OTPCodeEntryField: View {
             }
         ))
         .font(AppType.body)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xSmall)
+        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 }
 #endif

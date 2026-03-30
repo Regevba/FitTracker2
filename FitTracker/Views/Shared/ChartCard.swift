@@ -10,9 +10,9 @@ struct ChartCard<Content: View>: View {
 
     var body: some View {
         AppCard(tone: .standard) {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                 HStack(alignment: .firstTextBaseline) {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                         Text(title)
                             .font(AppText.sectionTitle)
                             .foregroundStyle(AppColor.Text.primary)

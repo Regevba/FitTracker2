@@ -70,8 +70,8 @@ struct SettingsView: View {
     @State private var showResetAlert = false
 
     private let dashboardColumns = [
-        GridItem(.flexible(), spacing: 12, alignment: .top),
-        GridItem(.flexible(), spacing: 12, alignment: .top),
+        GridItem(.flexible(), spacing: AppSpacing.xSmall, alignment: .top),
+        GridItem(.flexible(), spacing: AppSpacing.xSmall, alignment: .top),
     ]
 
     var body: some View {
@@ -81,7 +81,7 @@ struct SettingsView: View {
                     .ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: AppSpacing.large) {
                         SettingsHomeHeader(
                             title: "Settings",
                             subtitle: "Everything is grouped by area so device access, goals, and sync controls stay easy to find."
@@ -97,7 +97,7 @@ struct SettingsView: View {
                         }
                         .buttonStyle(.plain)
 
-                        LazyVGrid(columns: dashboardColumns, spacing: 12) {
+                        LazyVGrid(columns: dashboardColumns, spacing: AppSpacing.xSmall) {
                             ForEach(SettingsCategory.allCases.filter { $0 != .accountSecurity }) { category in
                                 NavigationLink(value: category) {
                                     SettingsCategoryCard(
@@ -217,7 +217,7 @@ private struct AccountSecuritySettingsScreen: View {
 
             SettingsSectionCard(title: "Access on Reopen", eyebrow: "Security") {
                 Toggle(isOn: $settings.requireBiometricUnlockOnReopen) {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                         Text("Require \(biometricUnlockLabel) on Reopen")
                             .font(AppType.body.weight(.semibold))
                             .foregroundStyle(AppColor.Text.primary)
@@ -385,7 +385,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                     Button {
                         toggleStatsMetric(metric)
                     } label: {
-                        HStack(spacing: 12) {
+                        HStack(spacing: AppSpacing.xSmall) {
                             Image(systemName: metric.icon)
                                 .font(AppText.captionStrong)
                                 .foregroundStyle(metric.tint)
@@ -401,7 +401,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                                 .font(AppText.sectionTitle)
                                 .foregroundStyle(isStatsMetricVisible(metric) ? metric.tint : AppColor.Text.tertiary)
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, AppSpacing.xxxSmall)
                     }
                     .buttonStyle(.plain)
                 }
@@ -669,7 +669,7 @@ private struct SettingsHomeHeader: View {
     let subtitle: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(title)
                 .font(AppType.display)
                 .foregroundStyle(AppColor.Text.primary)
@@ -688,7 +688,7 @@ private struct SettingsCategoryCard: View {
     let featured: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             HStack(alignment: .top) {
                 Image(systemName: category.icon)
                     .font(featured ? AppText.sectionTitle : AppText.callout)
@@ -703,7 +703,7 @@ private struct SettingsCategoryCard: View {
                     .foregroundStyle(AppColor.Text.tertiary)
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 Text(category.title)
                     .font(featured ? AppType.headline : AppType.body.weight(.semibold))
                     .foregroundStyle(AppColor.Text.primary)
@@ -739,13 +739,13 @@ private struct FlexibleBadgeRow: View {
 
     var body: some View {
         ViewThatFits(in: .horizontal) {
-            HStack(spacing: 8) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 ForEach(badges) { badge in
                     SettingsBadgeView(badge: badge)
                 }
             }
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 ForEach(badges) { badge in
                     SettingsBadgeView(badge: badge)
                 }
@@ -758,7 +758,7 @@ private struct SettingsBadgeView: View {
     let badge: SettingsSummaryBadge
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Circle()
                 .fill(badge.tint)
                 .frame(width: 6, height: 6)
@@ -783,7 +783,7 @@ private struct SettingsDetailScaffold<Content: View>: View {
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: AppSpacing.large) {
                     SettingsHomeHeader(title: title, subtitle: subtitle)
                     content
                 }
@@ -801,8 +801,8 @@ private struct SettingsSectionCard<Content: View>: View {
     @ViewBuilder var content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                 Text(eyebrow.uppercased())
                     .font(AppType.caption.weight(.semibold))
                     .tracking(1.1)
@@ -833,7 +833,7 @@ private struct SettingsValueRow: View {
     let value: String
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) {
+        HStack(alignment: .firstTextBaseline, spacing: AppSpacing.xSmall) {
             Text(title)
                 .font(AppType.body)
                 .foregroundStyle(AppColor.Text.primary)
@@ -874,7 +874,7 @@ private struct SettingsActionLabel: View {
     var trailing: SettingsActionTrailing = .chevron
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: icon)
                 .font(AppText.captionStrong)
                 .foregroundStyle(tint)
@@ -903,7 +903,7 @@ private struct SettingsActionLabel: View {
                     .scaleEffect(0.8)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, AppSpacing.xxxSmall)
     }
 }
 
@@ -914,7 +914,7 @@ private struct SettingsSelectionTile: View {
     let tint: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(title)
                 .font(AppType.body.weight(.semibold))
                 .foregroundStyle(isSelected ? .white : AppColor.Text.primary)
@@ -943,12 +943,12 @@ private struct SettingsChoiceGrid<Option: Hashable, Tile: View>: View {
     let tile: (Option) -> Tile
 
     private let columns = [
-        GridItem(.flexible(), spacing: 10, alignment: .top),
-        GridItem(.flexible(), spacing: 10, alignment: .top),
+        GridItem(.flexible(), spacing: AppSpacing.xxSmall, alignment: .top),
+        GridItem(.flexible(), spacing: AppSpacing.xxSmall, alignment: .top),
     ]
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 10) {
+        LazyVGrid(columns: columns, spacing: AppSpacing.xxSmall) {
             ForEach(options, id: \.self) { option in
                 Button {
                     selection = option
@@ -967,7 +967,7 @@ private struct SettingsNumericFieldRow: View {
     @Binding var value: Double
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.xSmall) {
             Text(title)
                 .font(AppType.body)
                 .foregroundStyle(AppColor.Text.primary)
@@ -996,7 +996,7 @@ private struct SettingsSliderRow: View {
     let onCommit: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack {
                 Text(title)
                     .font(AppType.body)

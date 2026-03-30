@@ -10,10 +10,10 @@ struct MetricCard: View {
     let statusColor: Color    // dot colour: Color.status.success / warning / error
 
     var body: some View {
-        AppCard(tone: .standard, contentPadding: 12) {
-            VStack(alignment: .leading, spacing: 10) {
+        AppCard(tone: .standard, contentPadding: AppSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 HStack(alignment: .top) {
-                    HStack(spacing: 6) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: icon)
                             .font(AppText.captionStrong)
                         Text(label)
@@ -29,7 +29,7 @@ struct MetricCard: View {
                         .frame(width: 8, height: 8)
                 }
 
-                HStack(alignment: .lastTextBaseline, spacing: 4) {
+                HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxxSmall) {
                     Text(value)
                         .font(AppText.metric)
                         .lineLimit(1)
@@ -72,7 +72,7 @@ struct MetricCard: View {
 #if DEBUG
 struct MetricCard_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: AppSpacing.small) {
             MetricCard(
                 icon: "scalemass.fill",
                 label: "Weight",

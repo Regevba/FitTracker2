@@ -9,7 +9,7 @@ struct EmptyStateView: View {
     var ctaAction: (() -> Void)? = nil
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
                 .font(AppText.metric)
                 .foregroundStyle(AppColor.Text.secondary)

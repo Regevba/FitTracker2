@@ -31,7 +31,7 @@ struct SectionHeader: View {
 #if DEBUG
 struct SectionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: AppSpacing.small) {
             SectionHeader(title: "Today's Metrics")
 
             SectionHeader(

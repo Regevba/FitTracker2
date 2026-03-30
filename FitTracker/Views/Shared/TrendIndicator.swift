@@ -50,19 +50,19 @@ struct TrendIndicator: View {
 #if DEBUG
 struct TrendIndicator_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 12) {
+        VStack(spacing: AppSpacing.xSmall) {
+            HStack(spacing: AppSpacing.xSmall) {
                 TrendIndicator(delta: 0.12, positiveIsGood: true)
                 TrendIndicator(delta: -0.04, positiveIsGood: false)
                 TrendIndicator(delta: 0.0, positiveIsGood: true)
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 TrendIndicator(delta: -0.08, positiveIsGood: true)
                 TrendIndicator(delta: 0.05, positiveIsGood: false)
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 TrendIndicator(delta: 0.15, positiveIsGood: false, isPercent: false)
                 TrendIndicator(delta: -2.5, positiveIsGood: false, isPercent: false)
             }

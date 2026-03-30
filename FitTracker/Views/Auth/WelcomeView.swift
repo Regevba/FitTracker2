@@ -80,7 +80,7 @@ struct WelcomeView: View {
                     .scaleEffect(logoScale)
                     .opacity(logoOpacity)
 
-                    VStack(spacing: 8) {
+                    VStack(spacing: AppSpacing.xxSmall) {
                         Text(AppBrand.name)
                             .font(AppText.metricHero)
                             .foregroundStyle(AppColor.Text.inversePrimary)
@@ -93,7 +93,7 @@ struct WelcomeView: View {
                             .font(AppText.subheading)
                             .foregroundStyle(AppColor.Text.inverseSecondary)
                             .multilineTextAlignment(.center)
-                            .padding(.horizontal, 14)
+                            .padding(.horizontal, AppSpacing.xSmall)
                     }
                     .offset(y: textOffset)
                     .opacity(textOpacity)
@@ -101,7 +101,7 @@ struct WelcomeView: View {
 
                 Spacer().frame(height: 36)
 
-                VStack(spacing: 10) {
+                VStack(spacing: AppSpacing.xxSmall) {
                     welcomeFactRow(icon: "lock.shield.fill", text: "Encrypted locally before any iCloud sync")
                     welcomeFactRow(icon: "faceid", text: "Face ID or Touch ID can protect reopen access")
                     welcomeFactRow(icon: "key.fill", text: "Passkeys and security keys are supported")
@@ -111,7 +111,7 @@ struct WelcomeView: View {
 
                 Spacer()
 
-                VStack(spacing: 14) {
+                VStack(spacing: AppSpacing.xSmall) {
                     AppButton(
                         title: "Continue",
                         systemImage: "arrow.right.circle.fill",
@@ -155,7 +155,7 @@ struct WelcomeView: View {
     }
 
     private func welcomeFactRow(icon: String, text: String) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: icon)
                 .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Accent.recovery)
@@ -165,8 +165,8 @@ struct WelcomeView: View {
                 .foregroundStyle(AppColor.Text.inverseSecondary)
             Spacer()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xSmall)
         .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous)

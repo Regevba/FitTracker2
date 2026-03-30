@@ -24,11 +24,11 @@ struct SignInView: View {
                     VStack(spacing: 22) {
 
                         // ── Header ────────────────────────────────────
-                        VStack(spacing: 12) {
+                        VStack(spacing: AppSpacing.xSmall) {
                             Image(systemName: "figure.strengthtraining.traditional")
                                 .font(AppText.metricHero)
                                 .foregroundStyle(AppGradient.brand)
-                                .padding(.top, 8)
+                                .padding(.top, AppSpacing.xxSmall)
 
                             Text("Continue to \(AppBrand.name)")
                                 .font(AppText.pageTitle)
@@ -39,11 +39,11 @@ struct SignInView: View {
                                 .foregroundStyle(AppColor.Text.secondary)
                                 .multilineTextAlignment(.center)
                         }
-                        .padding(.top, 16)
+                        .padding(.top, AppSpacing.small)
 
                         // ── Error banner ──────────────────────────────
                         if let err = errorBanner {
-                            HStack(spacing: 10) {
+                            HStack(spacing: AppSpacing.xxSmall) {
                                 Image(systemName: "exclamationmark.triangle.fill")
                                     .foregroundStyle(AppColor.Status.warning)
                                 Text(err)
@@ -56,7 +56,7 @@ struct SignInView: View {
                                         .foregroundStyle(AppColor.Text.secondary)
                                 }
                             }
-                            .padding(12)
+                            .padding(AppSpacing.xSmall)
                             .background(AppColor.Status.warning.opacity(0.10), in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
                             .overlay(
                                 RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
@@ -65,7 +65,7 @@ struct SignInView: View {
                             .offset(x: shakeOffset)
                         }
 
-                        VStack(spacing: 14) {
+                        VStack(spacing: AppSpacing.xSmall) {
 
                             SocialSignInButton(
                                 provider: .apple,
@@ -74,7 +74,7 @@ struct SignInView: View {
                                 signIn.signInWithApple()
                             }
 
-                            VStack(spacing: 10) {
+                            VStack(spacing: AppSpacing.xxSmall) {
                                 PasskeyActionButton(
                                     icon: "person.badge.key.fill",
                                     title: "Use Passkey",
@@ -100,7 +100,7 @@ struct SignInView: View {
 
                             #if targetEnvironment(simulator)
                             Button { signIn.signInAsTestUser() } label: {
-                                HStack(spacing: 12) {
+                                HStack(spacing: AppSpacing.xSmall) {
                                     Image(systemName: "hammer.fill")
                                         .foregroundStyle(AppColor.Status.warning)
                                     Text("Continue as Test User")
@@ -108,7 +108,7 @@ struct SignInView: View {
                                         .foregroundStyle(AppColor.Status.warning)
                                 }
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 16)
+                                .padding(.vertical, AppSpacing.small)
                                 .background(AppColor.Status.warning.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
@@ -121,7 +121,7 @@ struct SignInView: View {
                         }
 
                         // ── Footer ────────────────────────────────────
-                        VStack(spacing: 6) {
+                        VStack(spacing: AppSpacing.xxSmall) {
                             Text("Apple sign-in is the default. Passkeys work for iCloud Keychain and hardware keys like YubiKey.")
                                 .font(AppText.caption)
                                 .foregroundStyle(AppColor.Text.secondary)
@@ -135,9 +135,9 @@ struct SignInView: View {
                                 .foregroundStyle(AppColor.Text.tertiary)
                         }
                         .multilineTextAlignment(.center)
-                        .padding(.bottom, 24)
+                        .padding(.bottom, AppSpacing.large)
                     }
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, AppSpacing.large)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -178,7 +178,7 @@ struct SocialSignInButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 14) {
+            HStack(spacing: AppSpacing.xSmall) {
                 providerIcon
                     .frame(width: 28)
 
@@ -194,8 +194,8 @@ struct SocialSignInButton: View {
                         .scaleEffect(0.8)
                 }
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
+            .padding(.horizontal, AppSpacing.medium)
+            .padding(.vertical, AppSpacing.small)
             .background(bgColor, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
@@ -273,7 +273,7 @@ struct PasskeyActionButton: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 Image(systemName: icon)
                     .font(AppText.callout)
                     .foregroundStyle(color)
@@ -298,7 +298,7 @@ struct PasskeyActionButton: View {
                         .foregroundStyle(AppColor.Text.secondary)
                 }
             }
-            .padding(14)
+            .padding(AppSpacing.xSmall)
             .background(color.opacity(0.06), in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)

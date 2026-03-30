@@ -30,7 +30,7 @@ struct AccountPanelView: View {
                     .ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: AppSpacing.large) {
                         accountHeroCard
                         settingsLauncherCard
                         signOutCard

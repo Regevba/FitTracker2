@@ -38,7 +38,7 @@ struct TrainingPlanView: View {
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 14) {
+                VStack(spacing: AppSpacing.xSmall) {
                     weekStrip
                     sessionPicker
                     sessionOverviewBlock
@@ -224,9 +224,9 @@ struct TrainingPlanView: View {
         let total = exercises.count
         let summaryText = total == 0 ? "Active rest - walk, yoga, recover" : "\(done) of \(total) complete · \(max(total - done, 0)) left"
 
-        return VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            HStack(alignment: .top, spacing: AppSpacing.small) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(selectedDay.rawValue)
                         .font(.title3.bold())
                     Text(summaryText)
@@ -236,7 +236,7 @@ struct TrainingPlanView: View {
 
                 Spacer()
 
-                HStack(spacing: 14) {
+                HStack(spacing: AppSpacing.xSmall) {
                     if total > 0 {
                         completionRing(done: done, total: total)
                     }
@@ -247,7 +247,7 @@ struct TrainingPlanView: View {
             Divider()
                 .overlay(AppColor.Border.subtle)
 
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 Text("Current Focus")
                     .font(.caption2.monospaced())
                     .foregroundStyle(AppColor.Text.secondary)
@@ -261,20 +261,20 @@ struct TrainingPlanView: View {
                     .foregroundStyle(AppColor.Text.secondary)
 
                 if let focusedExercise {
-                    HStack(spacing: 8) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         sessionMetaPill(label: focusedExercise.targetReps, systemImage: "repeat")
                         sessionMetaPill(label: "Rest \(focusedExercise.restSeconds)s", systemImage: "timer")
                         sessionMetaPill(label: "\(focusedExercise.targetSets) sets", systemImage: "number.square")
                     }
                 } else {
-                    HStack(spacing: 8) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         sessionMetaPill(label: "Walk or yoga", systemImage: "figure.walk")
                         sessionMetaPill(label: "Recovery notes", systemImage: "note.text")
                     }
                 }
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 trainingActionButton(
                     title: "Jump To Next",
                     systemImage: "arrow.down.circle.fill",
@@ -314,7 +314,7 @@ struct TrainingPlanView: View {
     }
 
     private var restTimerCard: some View {
-        VStack(alignment: .trailing, spacing: 6) {
+        VStack(alignment: .trailing, spacing: AppSpacing.xxSmall) {
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 Text(restTimeString(at: context.date))
                     .font(AppText.monoMetric)
@@ -348,7 +348,7 @@ struct TrainingPlanView: View {
                     didHapticAt10 = false
                     didHapticAt0 = false
                 } label: {
-                    HStack(spacing: 8) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: isDone ? "checkmark.circle.fill" : "timer")
                             .font(AppText.captionStrong)
                         Text(isDone ? "Done — tap to clear" : restTimeString(at: context.date))
@@ -383,7 +383,7 @@ struct TrainingPlanView: View {
 
     private var exerciseQueueStrip: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 ForEach(exercisesForSelectedDay) { exercise in
                     let isFocused = exercise.id == focusedExercise?.id
                     let status = log?.taskStatuses[exercise.id] ?? .pending
@@ -391,8 +391,8 @@ struct TrainingPlanView: View {
                         focusedExerciseID = exercise.id
                         restPresetSeconds = exercise.restSeconds
                     } label: {
-                        VStack(alignment: .leading, spacing: 6) {
-                            HStack(spacing: 6) {
+                        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+                            HStack(spacing: AppSpacing.xxSmall) {
                                 Circle()
                                     .fill(queueColor(for: status))
                                     .frame(width: 7, height: 7)
@@ -424,7 +424,7 @@ struct TrainingPlanView: View {
     }
 
     private func sessionMetaPill(label: String, systemImage: String) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: systemImage)
                 .font(.caption.weight(.semibold))
             Text(label)
@@ -619,7 +619,7 @@ struct TrainingPlanView: View {
     private var sessionPicker: some View {
         LazyVGrid(
             columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())],
-            spacing: 10
+            spacing: AppSpacing.xxSmall
         ) {
             ForEach(DayType.allCases, id: \.self) { dt in
                 SessionTypeButton(
@@ -692,8 +692,8 @@ struct ExerciseSectionBlock: View {
     let onStartRest: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Rectangle()
                     .fill(AppColor.Surface.materialStrong)
                     .frame(width: 22, height: 1)
@@ -705,7 +705,7 @@ struct ExerciseSectionBlock: View {
                     .fill(AppColor.Surface.materialLight)
                     .frame(height: 1)
             }
-            .padding(.top, 4)
+            .padding(.top, AppSpacing.xxxSmall)
 
             VStack(spacing: 0) {
                 ForEach(Array(exercises.enumerated()), id: \.element.id) { index, ex in
@@ -814,7 +814,7 @@ struct ExerciseRowView: View {
     // ── Exercise info block
     private var exerciseInfo: some View {
         VStack(alignment: .leading, spacing: 5) {
-            HStack(spacing: 8) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Text(exercise.name)
                     .font(.subheadline.weight(.semibold))
                     .strikethrough(status == .completed, color: Color.status.success)
@@ -833,7 +833,7 @@ struct ExerciseRowView: View {
                 .font(.caption2).foregroundStyle(AppColor.Text.secondary)
 
             if exercise.category != .cardio {
-                HStack(spacing: 8) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     exerciseMetaPill("\(exercise.targetSets) sets")
                     exerciseMetaPill(exercise.targetReps)
                     exerciseMetaPill("Rest \(exercise.restSeconds)s")
@@ -936,8 +936,8 @@ struct LiftLogPanel: View {
     var onSetCompleted: (() -> Void)? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 HStack {
                     Text(isFocused ? "LIVE SET LOG" : "SET LOG")
                         .font(.caption2.monospaced())
@@ -952,7 +952,7 @@ struct LiftLogPanel: View {
                 }
 
                 if let prev = previousSessionLog {
-                    HStack(spacing: 10) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         previousPerformanceTile(
                             title: "Last Best",
                             value: prev.bestSet.map { "\((Int(($0.weightKg ?? 0).rounded()))) kg x \($0.repsCompleted ?? 0)" } ?? "—"
@@ -982,7 +982,7 @@ struct LiftLogPanel: View {
                         .foregroundStyle(Color.accent.cyan)
                 }
 
-                HStack(spacing: 10) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     if let prev = previousSessionLog, exerciseLog.sets.isEmpty {
                         Button {
                             exerciseLog.sets = prev.sets.enumerated().map { (i, s) in
@@ -1021,7 +1021,7 @@ struct LiftLogPanel: View {
             .padding(.top, AppSpacing.xxSmall)
 
             if exerciseLog.sets.isEmpty {
-                VStack(spacing: 8) {
+                VStack(spacing: AppSpacing.xxSmall) {
                     Image(systemName: "plus.circle")
                         .font(.title3)
                         .foregroundStyle(AppColor.Text.secondary)
@@ -1032,7 +1032,7 @@ struct LiftLogPanel: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, AppSpacing.medium)
             } else {
-                VStack(spacing: 10) {
+                VStack(spacing: AppSpacing.xxSmall) {
                     ForEach(exerciseLog.sets.indices, id: \.self) { i in
                         SetRowView(
                             setLog: $exerciseLog.sets[i],
@@ -1053,7 +1053,7 @@ struct LiftLogPanel: View {
                 }
             }
 
-            HStack(spacing: 8) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: "note.text")
                     .font(.caption)
                     .foregroundStyle(AppColor.Text.secondary)
@@ -1090,7 +1090,7 @@ struct LiftLogPanel: View {
     }
 
     private func previousPerformanceTile(title: String, value: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
             Text(title)
                 .font(AppText.monoLabel)
                 .foregroundStyle(AppColor.Text.secondary)
@@ -1129,8 +1129,8 @@ struct SetRowView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .center, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            HStack(alignment: .center, spacing: AppSpacing.xxSmall) {
                 Text("Set \(setNum)")
                     .font(.system(.caption, design: .monospaced, weight: .bold))
                     .foregroundStyle(AppColor.Text.secondary)
@@ -1170,7 +1170,7 @@ struct SetRowView: View {
                 }
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 entryField(
                     title: "KG",
                     text: $weightStr,
@@ -1200,14 +1200,14 @@ struct SetRowView: View {
                 )
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 Text("RPE")
                     .font(AppText.monoLabel)
                     .foregroundStyle(AppColor.Text.secondary)
                 RPETapBar(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
             }
 
-            HStack(spacing: 8) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: "note.text")
                     .font(.caption)
                     .foregroundStyle(AppColor.Text.secondary)
@@ -1250,8 +1250,8 @@ struct SetRowView: View {
         keyboardType: UIKeyboardType = .decimalPad,
         onUsePrevious: @escaping () -> Void
     ) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Text(title)
                     .font(AppText.monoLabel)
                     .foregroundStyle(AppColor.Text.secondary)
@@ -1304,7 +1304,7 @@ struct CardioLogPanel: View {
     @State private var showImageExpanded = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             HStack {
                 Text(cardioType == .rowing ? "ROWING LOG" : "ELLIPTICAL LOG")
                     .font(.caption2.monospaced())
@@ -1319,7 +1319,7 @@ struct CardioLogPanel: View {
             }
 
             // Metric grid
-            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: AppSpacing.xxSmall) {
                 CardioField("Duration (min)", value: durationBinding)
                 CardioField("Avg HR (bpm)",   value: avgHRBinding)
                 CardioField("Max HR (bpm)",   value: maxHRBinding)
@@ -1335,7 +1335,7 @@ struct CardioLogPanel: View {
             }
 
             // Notes
-            HStack(alignment: .top, spacing: 8) {
+            HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                 Image(systemName: "note.text")
                     .foregroundStyle(AppColor.Text.secondary)
                     .font(.caption)
@@ -1347,7 +1347,7 @@ struct CardioLogPanel: View {
             .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
 
             // ── Photo Section ──────────────────────────────
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 HStack {
                     Label("Session Summary Photo", systemImage: "camera.fill")
                         .font(.caption.weight(.semibold))
@@ -1358,7 +1358,7 @@ struct CardioLogPanel: View {
                     Button {
                         showCamera = true
                     } label: {
-                        HStack(spacing: 4) {
+                        HStack(spacing: AppSpacing.xxxSmall) {
                             Image(systemName: "camera")
                             Text("Take Photo")
                         }
@@ -1371,7 +1371,7 @@ struct CardioLogPanel: View {
 
                     // Photo library picker
                     PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                        HStack(spacing: 4) {
+                        HStack(spacing: AppSpacing.xxxSmall) {
                             Image(systemName: "photo")
                             Text("Library")
                         }
@@ -1410,7 +1410,7 @@ struct CardioLogPanel: View {
                         .fill(AppColor.Surface.materialLight)
                         .frame(height: 80)
                         .overlay {
-                            VStack(spacing: 6) {
+                            VStack(spacing: AppSpacing.xxSmall) {
                                 Image(systemName: "camera.viewfinder")
                                     .font(.title2).foregroundStyle(AppColor.Text.secondary)
                                 Text("No photo yet — tap camera to capture")

@@ -179,7 +179,7 @@ struct MainScreenView: View {
                 )
             }
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(24)
+            .presentationCornerRadius(AppRadius.large)
         }
     }
 
@@ -433,7 +433,7 @@ struct MainScreenView: View {
         isMissing: Bool,
         compact: Bool
     ) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 9 : AppSpacing.xSmall) {
+        VStack(alignment: .leading, spacing: compact ? AppSpacing.xxSmall : AppSpacing.xSmall) {
             HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: icon)
                     .font(.caption.weight(.bold))

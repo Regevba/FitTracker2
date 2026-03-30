@@ -197,7 +197,7 @@ struct NutritionView: View {
     // ─────────────────────────────────────────────────────
 
     private var dateHeader: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Nutrition")
@@ -211,7 +211,7 @@ struct NutritionView: View {
                 overallBadge
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Button {
                     shiftDay(by: -1)
                 } label: {
@@ -275,9 +275,9 @@ struct NutritionView: View {
     }
 
     private var nutritionCommandDeck: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .top, spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            HStack(alignment: .top, spacing: AppSpacing.xSmall) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("NUTRITION STRATEGY")
                         .font(AppText.monoLabel)
                         .foregroundStyle(AppColor.Text.secondary)
@@ -290,7 +290,7 @@ struct NutritionView: View {
                         .foregroundStyle(AppColor.Text.secondary)
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
+                VStack(alignment: .trailing, spacing: AppSpacing.xxSmall) {
                     Text("\(Int(remainingCalories))")
                         .font(AppText.monoMetric)
                         .foregroundStyle(AppColor.Accent.primary)
@@ -301,7 +301,7 @@ struct NutritionView: View {
                 }
             }
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 quickActionButton(
                     title: nutritionLog.meals.isEmpty ? "Log First Meal" : "Add Meal",
                     icon: "plus.circle.fill",
@@ -330,7 +330,7 @@ struct NutritionView: View {
                 }
             }
 
-            HStack(spacing: 20) {
+            HStack(spacing: AppSpacing.medium) {
                 nutritionMetric(title: "Protein left", value: "\(Int(remainingProteinG))g", color: Color.accent.cyan)
                 nutritionMetric(title: "Fat floor", value: "\(Int(max(targetFatG, 0)))g", color: AppColor.Chart.nutritionFat)
                 nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: AppColor.Brand.warm)
@@ -345,7 +345,7 @@ struct NutritionView: View {
         let total = all.count
         let frac  = total > 0 ? Double(taken) / Double(total) : 0.0
 
-        return VStack(alignment: .leading, spacing: 6) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack {
                 Text("DAILY PROGRESS")
                     .font(AppText.monoLabel).foregroundStyle(AppColor.Text.secondary).tracking(1)
@@ -360,7 +360,7 @@ struct NutritionView: View {
                 .buttonStyle(.plain)
                 .accessibilityLabel("About supplement adherence")
                 .popover(isPresented: $showSupplementInfo) {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                         Text("Supplement Adherence")
                             .font(AppText.sectionTitle)
                             .foregroundStyle(AppColor.Text.primary)
@@ -389,7 +389,7 @@ struct NutritionView: View {
     }
 
     private var macroBar: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             HStack {
                 Text("MACRO TARGETS")
                     .font(AppText.monoLabel)
@@ -429,7 +429,7 @@ struct NutritionView: View {
     }
 
     private var quickLogSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             if !dataStore.mealTemplates.isEmpty {
                 quickMealLane(
                     title: "Favorites",
@@ -462,9 +462,9 @@ struct NutritionView: View {
         let waterTarget = isTrainingDay ? 3500.0 : 2800.0
         let waterProgress = min(max(waterML / waterTarget, 0), 1)
 
-        return VStack(alignment: .leading, spacing: 12) {
+        return VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text("Hydration")
                         .font(AppText.sectionTitle)
                     Text(isTrainingDay ? "Training days need a little more water." : "Keep the baseline high even on rest days.")
@@ -489,7 +489,7 @@ struct NutritionView: View {
             }
             .frame(height: 8)
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 ForEach([250.0, 500.0, 1000.0], id: \.self) { amount in
                     Button {
                         log?.nutritionLog.waterML = waterML + amount
@@ -533,7 +533,7 @@ struct NutritionView: View {
         Group {
             if supplementsExpanded {
                 // ── Expanded: show full stack cards with a collapse button ──
-                VStack(spacing: 12) {
+                VStack(spacing: AppSpacing.xSmall) {
                     HStack {
                         Spacer()
                         Button {
@@ -596,7 +596,7 @@ struct NutritionView: View {
                 }
             } else {
                 // ── Collapsed: single compact row ──
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.xSmall) {
 
                     // Pills icon
                     Image(systemName: "pills.fill")
@@ -604,7 +604,7 @@ struct NutritionView: View {
                         .foregroundStyle(AppColor.Accent.achievement)
 
                     // Morning + Evening pill status buttons
-                    HStack(spacing: 8) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         // Morning pill
                         Button {
                             HapticFeedback.impact()
@@ -619,7 +619,7 @@ struct NutritionView: View {
                             recomputeStackStatus(isEvening: false)
                             saveLog()
                         } label: {
-                            HStack(spacing: 4) {
+                            HStack(spacing: AppSpacing.xxxSmall) {
                                 Text("Morning")
                                     .font(AppText.captionStrong)
                                 if morningStatus == .completed {
@@ -662,7 +662,7 @@ struct NutritionView: View {
                             recomputeStackStatus(isEvening: true)
                             saveLog()
                         } label: {
-                            HStack(spacing: 4) {
+                            HStack(spacing: AppSpacing.xxxSmall) {
                                 Text("Evening")
                                     .font(AppText.captionStrong)
                                 if eveningStatus == .completed {
@@ -723,7 +723,7 @@ struct NutritionView: View {
     }
 
     private var disclaimerNote: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
             Image(systemName: "info.circle").foregroundStyle(AppColor.Text.secondary).font(AppText.caption)
             Text("Supplement timing matters. Take morning stack with food. Evening stack 30 min before bed — especially glycine + magnesium for deep sleep. Always separate creatine from NAC by 2+ hours.")
                 .font(AppText.caption).foregroundStyle(AppColor.Text.tertiary)
@@ -827,7 +827,7 @@ struct NutritionView: View {
     }
 
     private func quickMealLane(title: String, subtitle: String, meals: [MealEntry]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                     .font(AppText.sectionTitle)
@@ -838,17 +838,17 @@ struct NutritionView: View {
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.xSmall) {
                     ForEach(meals) { meal in
                         Button {
                             openPrefilledMeal(meal)
                         } label: {
-                            VStack(alignment: .leading, spacing: 8) {
+                            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                                 Text(meal.name)
                                     .font(AppText.callout)
                                     .foregroundStyle(AppColor.Text.primary)
                                     .lineLimit(2)
-                                HStack(spacing: 8) {
+                                HStack(spacing: AppSpacing.xxSmall) {
                                     if let calories = meal.calories {
                                         Text("\(Int(calories)) kcal")
                                             .font(AppText.caption)
@@ -897,7 +897,7 @@ struct SupplementStackCard: View {
         VStack(spacing: 0) {
 
             // ── Stack header ─────────────────────────────
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(stackTitle)
                         .font(AppText.sectionTitle)
@@ -975,7 +975,7 @@ struct SupplementItemRow: View {
                 HapticFeedback.impact()
                 onToggle(!isTaken)
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.xSmall) {
                     // Checkbox
                     ZStack {
                         RoundedRectangle(cornerRadius: 6)
@@ -990,7 +990,7 @@ struct SupplementItemRow: View {
 
                     // Supplement info
                     VStack(alignment: .leading, spacing: 2) {
-                        HStack(spacing: 6) {
+                        HStack(spacing: AppSpacing.xxSmall) {
                             Text(supplement.name)
                                 .font(AppText.callout)
                                 .strikethrough(isTaken, color: accentColor)
@@ -1023,10 +1023,10 @@ struct SupplementItemRow: View {
 
             // Expandable benefit / notes
             if expanded {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text(supplement.benefit)
                         .font(AppText.caption).foregroundStyle(AppColor.Text.secondary)
-                    HStack(spacing: 4) {
+                    HStack(spacing: AppSpacing.xxxSmall) {
                         Image(systemName: "clock").font(AppText.caption).foregroundStyle(AppColor.Text.tertiary)
                         Text(supplement.notes).font(AppText.caption).foregroundStyle(AppColor.Text.tertiary)
                     }
