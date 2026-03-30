@@ -158,11 +158,11 @@ struct TrainingPlanView: View {
                     ZStack {
                         if isToday {
                             Circle()
-                                .fill(Color.appOrange1)
+                                .fill(AppColor.Brand.warmSoft)
                                 .frame(width: 28, height: 28)
                         } else if isActive {
                             Circle()
-                                .fill(Color.white.opacity(0.25))
+                                .fill(AppColor.Surface.materialStrong)
                                 .frame(width: 28, height: 28)
                         }
                         Text("\(calendar.component(.day, from: day))")
@@ -258,7 +258,7 @@ struct TrainingPlanView: View {
 
                 Text(sessionFocusSubtitle)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
 
                 if let focusedExercise {
                     HStack(spacing: 8) {
@@ -290,7 +290,7 @@ struct TrainingPlanView: View {
                 trainingActionButton(
                     title: restTimerEnd == nil ? "Start Rest" : "Restart Rest",
                     systemImage: "timer",
-                    fill: Color.white.opacity(0.45),
+                    fill: AppColor.Surface.materialStrong,
                     foreground: AppColor.Text.primary
                 ) {
                     startRestTimer()
@@ -318,7 +318,7 @@ struct TrainingPlanView: View {
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 Text(restTimeString(at: context.date))
                     .font(AppText.monoMetric)
-                    .foregroundStyle(restTimeRemaining(at: context.date) > 0 ? Color.appOrange2 : Color.black.opacity(0.78))
+                    .foregroundStyle(restTimeRemaining(at: context.date) > 0 ? AppColor.Brand.warm : Color.black.opacity(0.78))
             }
             Text(restTimerEnd == nil ? "rest preset" : "remaining")
                 .font(.caption2)
@@ -333,7 +333,7 @@ struct TrainingPlanView: View {
         }
         .padding(.horizontal, AppSpacing.xxSmall)
         .padding(.vertical, AppSpacing.xxSmall)
-        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: AppRadius.small))
+        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
     }
 
     @ViewBuilder
@@ -360,8 +360,8 @@ struct TrainingPlanView: View {
                         isDone ? Color.status.success : AppColor.Text.primary,
                         in: Capsule()
                     )
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.25), radius: 8, y: 4)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
+                    .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
                 }
                 .buttonStyle(.plain)
                 .onChange(of: remaining) { _, newRemaining in
@@ -408,12 +408,12 @@ struct TrainingPlanView: View {
                         .padding(.vertical, AppSpacing.xxSmall)
                         .frame(width: 146, alignment: .leading)
                         .background(
-                            isFocused ? Color.appBlue1.opacity(0.18) : Color.white.opacity(0.08),
+                            isFocused ? AppColor.Brand.cool.opacity(0.18) : Color.white.opacity(0.08),
                             in: RoundedRectangle(cornerRadius: AppRadius.small)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.small)
-                                .stroke(isFocused ? Color.blue.opacity(0.85) : Color.white.opacity(0.16), lineWidth: isFocused ? 1.2 : 1)
+                                .stroke(isFocused ? AppColor.Brand.secondary : Color.white.opacity(0.16), lineWidth: isFocused ? 1.2 : 1)
                         )
                     }
                     .buttonStyle(.plain)
@@ -434,7 +434,7 @@ struct TrainingPlanView: View {
         .foregroundStyle(AppColor.Text.primary)
         .padding(.horizontal, AppSpacing.xxSmall)
         .padding(.vertical, AppSpacing.xxSmall)
-        .background(Color.white.opacity(0.28), in: Capsule())
+        .background(AppColor.Surface.materialStrong, in: Capsule())
     }
 
     private func trainingActionButton(
@@ -608,7 +608,7 @@ struct TrainingPlanView: View {
         case .completed: Color.status.success
         case .partial: Color.status.warning
         case .missed: Color.status.error
-        case .pending: Color.secondary
+        case .pending: AppColor.Text.secondary
         }
     }
 
@@ -673,8 +673,8 @@ fileprivate struct SessionTypeButton: View {
 
     private var backgroundColor: Color {
         if isSelected   { return AppColor.Accent.secondary.opacity(0.28) }
-        if isSuggested  { return Color.appOrange1.opacity(0.24) }
-        return Color.white.opacity(0.12)
+        if isSuggested  { return AppColor.Brand.warmSoft.opacity(0.24) }
+        return AppColor.Surface.materialLight
     }
 }
 
@@ -695,14 +695,14 @@ struct ExerciseSectionBlock: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
                 Rectangle()
-                    .fill(Color.white.opacity(0.36))
+                    .fill(AppColor.Surface.materialStrong)
                     .frame(width: 22, height: 1)
                 Text(title)
                     .font(.caption.monospaced())
                     .foregroundStyle(AppColor.Text.secondary)
                     .tracking(1.2)
                 Rectangle()
-                    .fill(Color.white.opacity(0.18))
+                    .fill(AppColor.Surface.materialLight)
                     .frame(height: 1)
             }
             .padding(.top, 4)
@@ -773,7 +773,7 @@ struct ExerciseRowView: View {
             // Expanded log panel (only when completed or partial)
             if status == .completed || status == .partial {
                 Divider()
-                    .overlay(Color.white.opacity(0.24))
+                    .overlay(AppColor.Surface.materialStrong)
                     .padding(.leading, 14)
                 if exercise.category == .cardio {
                     cardioPanel
@@ -784,7 +784,7 @@ struct ExerciseRowView: View {
 
             if showsDivider {
                 Divider()
-                    .overlay(Color.white.opacity(0.2))
+                    .overlay(AppColor.Surface.materialLight)
                     .padding(.leading, 14)
             }
         }
@@ -883,7 +883,7 @@ struct ExerciseRowView: View {
 
     private var accentColor: Color {
         switch status {
-        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
+        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: AppColor.Text.secondary
         }
     }
 
@@ -892,7 +892,7 @@ struct ExerciseRowView: View {
         case .completed: Color.status.success.opacity(0.08)
         case .partial: Color.status.warning.opacity(0.06)
         case .missed: Color.status.error.opacity(0.06)
-        default: isFocused ? Color.white.opacity(0.24) : Color.clear
+        default: isFocused ? AppColor.Surface.materialStrong : Color.clear
         }
     }
 
@@ -902,7 +902,7 @@ struct ExerciseRowView: View {
             .foregroundStyle(AppColor.Text.primary)
             .padding(.horizontal, AppSpacing.xxSmall)
             .padding(.vertical, AppSpacing.xxxSmall)
-            .background(Color.white.opacity(0.18), in: Capsule())
+            .background(AppColor.Surface.materialLight, in: Capsule())
     }
 
     private func initLogIfNeeded() {
@@ -941,7 +941,7 @@ struct LiftLogPanel: View {
                 HStack {
                     Text(isFocused ? "LIVE SET LOG" : "SET LOG")
                         .font(.caption2.monospaced())
-                        .foregroundStyle(isFocused ? Color.blue : Color.status.success)
+                        .foregroundStyle(isFocused ? AppColor.Brand.secondary : Color.status.success)
                         .tracking(1)
                     Spacer()
                     if exerciseLog.totalVolume > 0 {
@@ -1013,7 +1013,7 @@ struct LiftLogPanel: View {
                     } label: {
                         Label("Start Rest", systemImage: "timer")
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(Color.appOrange2)
+                            .foregroundStyle(AppColor.Brand.warm)
                     }
                 }
             }
@@ -1024,10 +1024,10 @@ struct LiftLogPanel: View {
                 VStack(spacing: 8) {
                     Image(systemName: "plus.circle")
                         .font(.title3)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                     Text("Tap 'Add Set' to log your first set")
                         .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(AppColor.Text.tertiary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, AppSpacing.medium)
@@ -1056,15 +1056,15 @@ struct LiftLogPanel: View {
             HStack(spacing: 8) {
                 Image(systemName: "note.text")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                 TextField("Session notes, form, pain, PR…", text: $exerciseLog.notes)
                     .font(.caption)
             }
             .padding(AppSpacing.xxSmall)
-            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
+            .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
         }
         .padding(AppSpacing.xSmall)
-        .background(Color.white.opacity(isFocused ? 0.18 : 0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+        .background(isFocused ? AppColor.Surface.materialLight : Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 
     private var overloadSuggestion: String? {
@@ -1093,15 +1093,15 @@ struct LiftLogPanel: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(AppText.monoLabel)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
             Text(value)
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.primary)
+                .foregroundStyle(AppColor.Text.primary)
         }
         .padding(.horizontal, AppSpacing.xxSmall)
         .padding(.vertical, AppSpacing.xxSmall)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
     }
 }
 
@@ -1133,12 +1133,12 @@ struct SetRowView: View {
             HStack(alignment: .center, spacing: 10) {
                 Text("Set \(setNum)")
                     .font(.system(.caption, design: .monospaced, weight: .bold))
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
 
                 if let previousSet {
                     Text(previousHint(for: previousSet))
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                         .lineLimit(1)
                 }
 
@@ -1156,16 +1156,16 @@ struct SetRowView: View {
                         Text(setIsComplete ? "Done" : "Log")
                             .font(.caption.weight(.semibold))
                     }
-                    .foregroundStyle(setIsComplete ? Color.status.success : Color.appOrange2)
+                    .foregroundStyle(setIsComplete ? Color.status.success : AppColor.Brand.warm)
                     .padding(.horizontal, AppSpacing.xxSmall)
                     .padding(.vertical, AppSpacing.xxxSmall)
-                    .background((setIsComplete ? Color.status.success : Color.appOrange2).opacity(0.12), in: Capsule())
+                    .background((setIsComplete ? Color.status.success : AppColor.Brand.warm).opacity(0.12), in: Capsule())
                 }
                 .buttonStyle(.plain)
 
                 Button(action: onDelete) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                         .font(.caption)
                 }
             }
@@ -1203,21 +1203,21 @@ struct SetRowView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("RPE")
                     .font(AppText.monoLabel)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                 RPETapBar(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
             }
 
             HStack(spacing: 8) {
                 Image(systemName: "note.text")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                 TextField("Add note or cue", text: $noteStr)
                     .font(.caption)
                     .onChange(of: noteStr) { _, v in setLog.notes = v }
             }
             .padding(.horizontal, AppSpacing.xxSmall)
             .padding(.vertical, AppSpacing.xxSmall)
-            .background(Color.white.opacity(0.16), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+            .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
         }
         .padding(AppSpacing.xSmall)
         .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : Color.white.opacity(0.08)), in: RoundedRectangle(cornerRadius: AppRadius.small))
@@ -1254,7 +1254,7 @@ struct SetRowView: View {
             HStack(spacing: 6) {
                 Text(title)
                     .font(AppText.monoLabel)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                 if let previousValue, text.wrappedValue.isEmpty {
                     Button("Last \(previousValue)") {
                         onUsePrevious()
@@ -1270,7 +1270,7 @@ struct SetRowView: View {
                 .multilineTextAlignment(.center)
                 .padding(.vertical, AppSpacing.xxSmall)
                 .padding(.horizontal, AppSpacing.xxSmall)
-                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
                 .overlay(
                     RoundedRectangle(cornerRadius: AppRadius.xSmall)
                         .stroke(Color.white.opacity(0.12))
@@ -1337,21 +1337,21 @@ struct CardioLogPanel: View {
             // Notes
             HStack(alignment: .top, spacing: 8) {
                 Image(systemName: "note.text")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                     .font(.caption)
                 TextField("Feel, energy, breathing, HR stability…", text: $cardioLog.notes, axis: .vertical)
                     .font(.caption)
                     .lineLimit(2...4)
             }
             .padding(AppSpacing.xxSmall)
-            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
+            .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
 
             // ── Photo Section ──────────────────────────────
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Label("Session Summary Photo", systemImage: "camera.fill")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                     Spacer()
                     // Camera button (iOS only)
                     #if os(iOS)
@@ -1377,14 +1377,14 @@ struct CardioLogPanel: View {
                         }
                         .font(.caption.weight(.semibold))
                         .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
-                        .background(Color.secondary.opacity(0.1), in: Capsule())
-                        .foregroundStyle(.secondary)
+                        .background(AppColor.Text.secondary.opacity(0.1), in: Capsule())
+                        .foregroundStyle(AppColor.Text.secondary)
                     }
                 }
 
                 // Caption text
                 Text("Photograph the machine's summary screen to capture all session data.")
-                    .font(.caption2).foregroundStyle(.tertiary)
+                    .font(.caption2).foregroundStyle(AppColor.Text.tertiary)
 
                 // Preview
                 if let img = capturedImage {
@@ -1407,23 +1407,23 @@ struct CardioLogPanel: View {
                         .onTapGesture { showImageExpanded = true }
                 } else {
                     RoundedRectangle(cornerRadius: AppRadius.xSmall)
-                        .fill(Color.white.opacity(0.12))
+                        .fill(AppColor.Surface.materialLight)
                         .frame(height: 80)
                         .overlay {
                             VStack(spacing: 6) {
                                 Image(systemName: "camera.viewfinder")
-                                    .font(.title2).foregroundStyle(.secondary)
+                                    .font(.title2).foregroundStyle(AppColor.Text.secondary)
                                 Text("No photo yet — tap camera to capture")
-                                    .font(.caption2).foregroundStyle(.tertiary)
+                                    .font(.caption2).foregroundStyle(AppColor.Text.tertiary)
                             }
                         }
                 }
             }
             .padding(AppSpacing.xSmall)
-            .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
+            .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
         }
         .padding(AppSpacing.xSmall)
-        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.medium))
         // Handle photo selection from library
         .onChange(of: selectedPhotoItem) { _, item in
             Task {
@@ -1577,14 +1577,14 @@ struct CardioField: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(label)
                 .font(.system(size: 9, design: .monospaced))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
                 .textCase(.uppercase)
                 .tracking(0.5)
             TextField(placeholder, text: $value)
                 .font(.system(.body, design: .monospaced))
                 .keyboardType(.decimalPad)
                 .padding(AppSpacing.xxSmall)
-                .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
                 .overlay(RoundedRectangle(cornerRadius: AppRadius.xSmall).stroke(Color.white.opacity(0.12)))
         }
     }
@@ -1604,18 +1604,18 @@ struct RPETapBar: View {
                 } label: {
                     Text("\(v)")
                         .font(.system(size: 10, weight: isSelected ? .bold : .regular, design: .monospaced))
-                        .foregroundStyle(isSelected ? Color.black : Color.secondary)
+                        .foregroundStyle(isSelected ? Color.black : AppColor.Text.secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.xxSmall)
                         .background(
                             isSelected
-                                ? Color.appOrange2
-                                : Color.white.opacity(0.14),
+                                ? AppColor.Brand.warm
+                                : AppColor.Surface.materialLight,
                             in: RoundedRectangle(cornerRadius: 4)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: 4)
-                                .stroke(isSelected ? Color.appOrange2 : Color.white.opacity(0.12), lineWidth: 1)
+                                .stroke(isSelected ? AppColor.Brand.warm : Color.white.opacity(0.12), lineWidth: 1)
                         )
                 }
                 .buttonStyle(.plain)
@@ -1649,7 +1649,7 @@ struct StatusDropdown: View {
 
     private var color: Color {
         switch status {
-        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: .secondary
+        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: AppColor.Text.secondary
         }
     }
 }
@@ -1685,14 +1685,14 @@ struct SessionCompletionSheet: View {
                             .font(.title2.bold())
                         Text(selectedDay.rawValue)
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(AppColor.Text.secondary)
                     }
                     .padding(.top, AppSpacing.xxSmall)
 
                     // Warm completion micro-copy
                     Text(completionMessage)
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, AppSpacing.xxSmall)
 
@@ -1740,7 +1740,7 @@ struct SessionCompletionSheet: View {
                             Label("Log Notes", systemImage: "note.text")
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, AppSpacing.xSmall)
-                                .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
+                                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
                         }
                         .buttonStyle(.plain)
 
@@ -1888,7 +1888,7 @@ struct SessionCompletionSheet: View {
                     .foregroundStyle(color)
                 Text(label)
                     .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
             Text(value)
                 .font(.title3.bold())
@@ -1900,7 +1900,7 @@ struct SessionCompletionSheet: View {
         }
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.xSmall)
-        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
+        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
     }
 }
 
@@ -1973,7 +1973,7 @@ struct FocusModeView: View {
                         .tracking(1.2)
                         .foregroundStyle(Color.white.opacity(0.48))
                     Text(exercise.name)
-                        .font(.system(.title, design: .rounded, weight: .bold))
+                        .font(AppText.metric)
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                 }
@@ -2062,7 +2062,7 @@ struct FocusModeView: View {
                 .multilineTextAlignment(.center)
                 .keyboardType(.decimalPad)
                 .padding(AppSpacing.small)
-                .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.medium))
         }
         .frame(maxWidth: .infinity)
     }
@@ -2086,12 +2086,12 @@ struct MilestoneModal: View {
                     .font(.system(size: 72))
 
                 Text(title)
-                    .font(.system(.title, design: .rounded, weight: .bold))
+                    .font(AppText.metric)
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
 
                 Text(message)
-                    .font(.subheadline)
+                    .font(AppText.subheading)
                     .foregroundStyle(.white.opacity(0.8))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, AppSpacing.large)
@@ -2103,7 +2103,7 @@ struct MilestoneModal: View {
                 .font(.headline)
                 .padding(.horizontal, AppSpacing.xxLarge)
                 .padding(.vertical, AppSpacing.xSmall)
-                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: AppRadius.large))
+                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.large))
                 .foregroundStyle(.white)
             }
             .padding(AppSpacing.xLarge)
