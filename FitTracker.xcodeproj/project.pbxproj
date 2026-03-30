@@ -48,6 +48,8 @@
 		DS000001000000000000AA02 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA02 /* DesignTokens.swift */; };
 		DS000001000000000000AA03 /* AppMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA03 /* AppMotion.swift */; };
 		DS000001000000000000AA04 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA04 /* AppIcon.swift */; };
+		DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA05 /* AppViewModifiers.swift */; };
+		DS000001000000000000AA06 /* AppComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA06 /* AppComponents.swift */; };
 		AI100000000000000000AAA1 /* AITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA1 /* AITypes.swift */; };
 		AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA2 /* AIEngineClient.swift */; };
 		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
@@ -74,6 +76,8 @@
 		DS000002000000000000AA02 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA03 /* AppMotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMotion.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA04 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA05 /* AppViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModifiers.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA06 /* AppComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponents.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
@@ -265,6 +269,8 @@
 				DS000002000000000000AA02 /* DesignTokens.swift */,
 				DS000002000000000000AA03 /* AppMotion.swift */,
 				DS000002000000000000AA04 /* AppIcon.swift */,
+				DS000002000000000000AA05 /* AppViewModifiers.swift */,
+				DS000002000000000000AA06 /* AppComponents.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -542,6 +548,8 @@
 				DS000001000000000000AA02 /* DesignTokens.swift in Sources */,
 				DS000001000000000000AA03 /* AppMotion.swift in Sources */,
 				DS000001000000000000AA04 /* AppIcon.swift in Sources */,
+				DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */,
+				DS000001000000000000AA06 /* AppComponents.swift in Sources */,
 				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
 				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
