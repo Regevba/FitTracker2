@@ -181,6 +181,59 @@ This document defines what each major FitTracker color means, when it should be 
 - `Nutrition`: cool shell with warm fat-related metrics and green quick action
 - `Stats`: cool shell with orange logging CTA and neutral empty-state cards
 
+## Token migration mapping
+
+This section documents the canonical substitution rules used during the 2026-03-30 token migration pass (commits `f140230`, `e7f333a`). Use these mappings whenever replacing raw literals with semantic tokens.
+
+### `Color.white.opacity(N)` — fill contexts
+
+| Raw value | Semantic token | Notes |
+|---|---|---|
+| `0.08–0.10` | `AppColor.Surface.materialLight` | atmospheric fills, light tints |
+| `0.14–0.22` | `AppColor.Surface.materialLight` | soft overlays, panel washes |
+| `0.23–0.45` | `AppColor.Surface.materialStrong` | chips, floating surfaces, selection tiles |
+| `0.72+` | `AppColor.Surface.primary` | glass card default |
+
+### `Color.white.opacity(N)` — stroke/border contexts
+
+| Raw value | Semantic token | Notes |
+|---|---|---|
+| `0.08` on light surface | `AppColor.Border.hairline` | hairline separator inside elevated surface |
+| `0.20–0.32` | `AppColor.Border.subtle` | soft outlines, pill strokes, grouping edges |
+| `0.54+` | `AppColor.Border.strong` | prominent outlines, selected-state strokes |
+
+### Text and foreground roles
+
+| Raw value | Semantic token |
+|---|---|
+| `.foregroundStyle(.secondary)` | `.foregroundStyle(AppColor.Text.secondary)` |
+| `.foregroundStyle(.tertiary)` | `.foregroundStyle(AppColor.Text.tertiary)` |
+| `.foregroundStyle(.primary)` | `.foregroundStyle(AppColor.Text.primary)` |
+| `Color.secondary.opacity(N)` | `AppColor.Text.secondary.opacity(N)` |
+| `Color.white.opacity(0.86–0.94)` on dark surface | `AppColor.Text.inversePrimary` |
+| `Color.white.opacity(0.70–0.80)` on dark surface | `AppColor.Text.inverseSecondary` |
+| `Color.white.opacity(0.44–0.60)` on dark surface | `AppColor.Text.inverseTertiary` |
+
+### Shadow roles
+
+| Raw value | Semantic token |
+|---|---|
+| `.shadow(color: .black.opacity(0.04–0.10), radius: N, y: N)` (cards) | `AppShadow.cardColor / cardRadius / cardYOffset` |
+| `.shadow(color: accentColor.opacity(0.24), radius: N, y: N)` (CTAs) | `AppShadow.ctaColor / ctaRadius / ctaYOffset` |
+
+### Legacy brand aliases
+
+| Legacy | Canonical |
+|---|---|
+| `Color.appOrange1` | `AppColor.Brand.warmSoft` |
+| `Color.appOrange2` | `AppColor.Brand.warm` |
+| `Color.appBlue1` | `AppColor.Brand.cool` |
+| `Color.blue.opacity(0.85)` | `AppColor.Brand.secondary` |
+
+### FocusModeView exception
+
+`FocusModeView` in `TrainingPlanView.swift` uses a non-adaptive `Color.black.ignoresSafeArea()` background in all color scheme modes. Inverse text tokens (`AppColor.Text.inversePrimary` etc.) are adaptive and resolve to **dark** values in Dark Mode, which would render dark text on a black background. For this view only, raw `Color.white.opacity(N)` is intentionally retained for text foreground colors. Do not replace them with adaptive inverse tokens.
+
 ## Implementation notes
 
 - Figma should show both the semantic token name and the exact value for every documented swatch.

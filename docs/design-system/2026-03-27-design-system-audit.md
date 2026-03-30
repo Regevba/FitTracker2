@@ -109,7 +109,7 @@ Audience: product design, SwiftUI engineering, future Android implementation
 ### Should fix during migration
 
 - Replace screen-local rounded-rectangle card styling with shared card surfaces
-- Reduce remaining ad hoc font sizes and raw color literals in major flows
+- ~~Reduce remaining ad hoc font sizes and raw color literals in major flows~~ **Done 2026-03-30** — all remaining `Color.white.opacity()`, `Color.secondary/primary`, `Font.system()`, magic shadow values, and legacy brand aliases replaced across 12 view files. See `color-usage-guidelines.md` → Token migration mapping.
 - Standardize settings and account row treatments
 - Unify auth and product under shared semantic roles
 

@@ -23,6 +23,21 @@ For each feature, add:
 
 ---
 
+## 2026-03-30 — Full token migration across all views
+
+- Problem solved: after the TrainingPlanView deep migration, ~82 residual token violations remained across 11 other view files: raw `Color.white.opacity()` surface/border fills, `Color.secondary/primary` foreground roles, hardcoded `Font.system()` size calls, legacy brand alias colors (`Color.appOrange1/2`, `Color.appBlue1`), and raw `.shadow(color: .black.opacity(...))` calls.
+- Primary platform: iPhone first, no platform-specific behavior changes.
+- Reused tokens: `AppColor.Surface.materialLight`, `AppColor.Surface.materialStrong`, `AppColor.Border.hairline`, `AppColor.Border.subtle`, `AppColor.Text.secondary/tertiary/primary`, `AppColor.Text.inversePrimary`, `AppColor.Brand.warm/warmSoft/cool/secondary`, `AppText.captionStrong`, `AppText.sectionTitle`, `AppText.callout`, `AppShadow.cardColor/cardRadius/cardYOffset`, `AppShadow.ctaColor/ctaRadius/ctaYOffset`.
+- Reused components: no new primitives introduced.
+- New primitives introduced: none.
+- Wireframe and UX notes: purely a code-side token cleanup pass — no visual change to any user-visible element.
+- Final UI decisions: all adaptive surface, text, border, and shadow roles now route through the semantic token layer. The single exception is `FocusModeView` text colors (raw `Color.white.opacity(N)` retained for always-black-background text — see `color-usage-guidelines.md` for rationale).
+- Accessibility considerations: replacing `Color.white.opacity(N)` literals with adaptive tokens improves Dark Mode correctness across all affected surfaces. The FocusModeView exception is intentional and preserves readability on that view's non-adaptive black background.
+- Android adaptation note: the semantic token layer is now the clean API for all color, typography, and shadow roles in Swift — any Android Material 3 mapping should reference these token names, not the removed literals.
+- Follow-up gaps: spacing/radius migration (M1/M2/M3 from ui-audit-2026-03-30.md) still pending. Auth corner-radius tokens (I3), sheet corner radii (I1), and touch-target sizes (I2) remain open.
+
+---
+
 ## 2026-03-27 — Design system gateway
 
 - Problem solved: feature work was at risk of jumping directly into polished UI without aligned behavior, state coverage, or shared-system mapping.
