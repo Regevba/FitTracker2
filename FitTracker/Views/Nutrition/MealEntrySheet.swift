@@ -237,7 +237,7 @@ struct MealEntrySheet: View {
                             parsedMetric("kcal", parsedLabel.calories, tint: Color.appOrange2)
                             parsedMetric("Protein", parsedLabel.proteinG, tint: Color.accent.cyan)
                             parsedMetric("Carbs", parsedLabel.carbsG, tint: Color.appOrange1)
-                            parsedMetric("Fat", parsedLabel.fatG, tint: Color(red: 0.60, green: 0.35, blue: 0.15))
+                            parsedMetric("Fat", parsedLabel.fatG, tint: AppColor.Chart.nutritionFat)
                         }
                     }
                     .padding(14)
@@ -275,32 +275,30 @@ struct MealEntrySheet: View {
                         HStack {
                             if savedTemplate {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(Color.status.success)
+                                    .foregroundStyle(AppColor.Status.success)
                                 Text("Saved!")
-                                    .foregroundColor(Color.status.success)
+                                    .foregroundStyle(AppColor.Status.success)
                             } else {
                                 Image(systemName: "square.and.arrow.down")
                                 Text("Save as Template")
                             }
                         }
-                        .font(AppType.body)
+                        .font(AppText.body)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
-                        .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
+                                .stroke(AppColor.Border.subtle, lineWidth: 1)
+                        )
                     }
                     .disabled(name.isEmpty)
 
-                    // Log button
-                    Button {
+                    AppButton(
+                        title: "Log",
+                        hierarchy: .primary
+                    ) {
                         logMeal()
-                    } label: {
-                        Text("Log")
-                            .font(AppType.body)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(name.isEmpty ? Color.secondary.opacity(0.2) : Color.accent.cyan, in: RoundedRectangle(cornerRadius: 12))
-                            .foregroundColor(name.isEmpty ? .secondary : .white)
                     }
                     .disabled(name.isEmpty)
                 }
@@ -315,16 +313,15 @@ struct MealEntrySheet: View {
     @ViewBuilder
     private func manualField(label: String, placeholder: String, text: Binding<String>, isNumeric: Bool = false) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(label)
-                .font(AppType.caption)
-                .foregroundColor(.secondary)
-            TextField(placeholder, text: text)
-                .font(AppType.body)
-                #if canImport(UIKit)
-                .keyboardType(isNumeric ? .decimalPad : .default)
-                #endif
-                .padding(10)
-                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+            AppFieldLabel(title: label)
+            AppInputShell {
+                TextField(placeholder, text: text)
+                    .font(AppText.body)
+                    .foregroundStyle(AppColor.Text.primary)
+                    #if canImport(UIKit)
+                    .keyboardType(isNumeric ? .decimalPad : .default)
+                    #endif
+            }
         }
     }
 
@@ -349,18 +346,18 @@ struct MealEntrySheet: View {
                         } label: {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(template.name)
-                                    .font(AppType.body)
-                                    .foregroundColor(.primary)
+                                    .font(AppText.body)
+                                    .foregroundStyle(AppColor.Text.primary)
                                 HStack(spacing: 8) {
                                     if let cal = template.calories {
                                         Text("\(Int(cal)) kcal")
-                                            .font(AppType.caption)
-                                            .foregroundColor(Color.accent.gold)
+                                            .font(AppText.caption)
+                                            .foregroundStyle(AppColor.Accent.achievement)
                                     }
                                     if let pro = template.proteinG {
                                         Text("\(Int(pro))g protein")
-                                            .font(AppType.caption)
-                                            .foregroundColor(Color.accent.cyan)
+                                            .font(AppText.caption)
+                                            .foregroundStyle(AppColor.Accent.recovery)
                                     }
                                 }
                             }
@@ -384,47 +381,42 @@ struct MealEntrySheet: View {
             // Search bar
             VStack(spacing: 8) {
                 HStack(spacing: 8) {
-                    TextField("Search food…", text: $searchQuery)
-                        .font(AppType.body)
-                        .padding(10)
-                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                        .submitLabel(.search)
-                        .onSubmit { runTextSearch() }
+                    AppInputShell {
+                        TextField("Search food…", text: $searchQuery)
+                            .font(AppText.body)
+                            .foregroundStyle(AppColor.Text.primary)
+                            .submitLabel(.search)
+                            .onSubmit { runTextSearch() }
+                    }
 
-                    Button {
+                    AppButton(
+                        title: "",
+                        systemImage: isSearching ? "clock" : "magnifyingglass",
+                        hierarchy: .primary,
+                        isFullWidth: false
+                    ) {
                         runTextSearch()
-                    } label: {
-                        Image(systemName: isSearching ? "clock" : "magnifyingglass")
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 10))
                     }
                     .disabled(searchQuery.trimmingCharacters(in: .whitespaces).isEmpty || isSearching)
                 }
 
                 #if os(iOS)
-                Button {
+                AppQuietButton(
+                    title: "Scan Barcode",
+                    systemImage: "barcode.viewfinder",
+                    tint: AppColor.Accent.sleep
+                ) {
                     showScanner = true
-                } label: {
-                    HStack {
-                        Image(systemName: "barcode.viewfinder")
-                        Text("Scan Barcode")
-                    }
-                    .font(AppType.body)
-                    .foregroundColor(Color.accent.purple)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(Color.accent.purple.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
                 }
                 #endif
 
                 if let error = searchError {
                     HStack(spacing: 6) {
                         Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(Color.status.error)
+                            .foregroundStyle(AppColor.Status.error)
                         Text(error)
-                            .font(AppType.caption)
-                            .foregroundColor(Color.status.error)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Status.error)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }

@@ -31,42 +31,42 @@ struct MacroTargetBar: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.medium) {
             GeometryReader { geo in
                 HStack(spacing: 2) {
                     let proteinWidth = geo.size.width * (protein * proteinKcal / max(totalForBar, 1))
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.accent.cyan)
+                        .fill(AppColor.Accent.recovery)
                         .frame(width: max(proteinWidth, 2))
 
                     let carbsWidth = geo.size.width * (carbs * carbsKcal / max(totalForBar, 1))
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.appOrange2)
+                        .fill(AppColor.Chart.body)
                         .frame(width: max(carbsWidth, 2))
 
                     let fatWidth = geo.size.width * (fat * fatKcal / max(totalForBar, 1))
                     RoundedRectangle(cornerRadius: 4)
-                        .fill(Color(red: 0.60, green: 0.35, blue: 0.15))
+                        .fill(AppColor.Chart.nutritionFat)
                         .frame(width: max(fatWidth, 2))
 
                     let remaining = geo.size.width * (remainingCalories / max(totalForBar, 1))
                     if remaining > 2 {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.white.opacity(0.26))
+                            .fill(AppColor.Surface.tertiary)
                             .frame(width: remaining)
                     }
                 }
             }
             .frame(height: 14)
 
-            HStack(alignment: .top, spacing: 18) {
-                macroLabel("Protein", value: protein, target: targetProteinG, color: Color.accent.cyan)
-                macroLabel("Carbs", value: carbs, target: targetCarbsG, color: Color.appOrange2)
-                macroLabel("Fat", value: fat, target: targetFatG, color: Color(red: 0.60, green: 0.35, blue: 0.15))
+            HStack(alignment: .top, spacing: AppSpacing.large) {
+                macroLabel("Protein", value: protein, target: targetProteinG, color: AppColor.Accent.recovery)
+                macroLabel("Carbs", value: carbs, target: targetCarbsG, color: AppColor.Chart.body)
+                macroLabel("Fat", value: fat, target: targetFatG, color: AppColor.Chart.nutritionFat)
                 Spacer()
                 Text("\(Int(consumedCalories)) / \(targetCalories) kcal")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .font(AppText.captionStrong)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
         }
         .accessibilityElement(children: .ignore)
@@ -79,15 +79,15 @@ struct MacroTargetBar: View {
             HStack(spacing: 6) {
                 Circle().fill(color).frame(width: 8, height: 8)
                 Text(title)
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+                    .font(AppText.captionStrong)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
             Text("\(Int(value))g")
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primary)
+                .font(AppText.callout)
+                .foregroundStyle(AppColor.Text.primary)
             Text("Target \(Int(target))g")
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
         }
     }
 }
@@ -97,7 +97,7 @@ struct MacroTargetBar_Previews: PreviewProvider {
     static var previews: some View {
         MacroTargetBar(protein: 120, carbs: 180, fat: 55, targetCalories: 1900, targetProteinG: 130, targetCarbsG: 170, targetFatG: 55)
             .padding()
-            .background(Color.appOrange2)
+            .background(AppGradient.screenBackground)
     }
 }
 #endif

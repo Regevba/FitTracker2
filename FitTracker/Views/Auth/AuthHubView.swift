@@ -1,419 +1,745 @@
 import SwiftUI
 import AuthenticationServices
-#if os(iOS)
-import UIKit
+#if os(macOS)
+import AppKit
 #endif
 
 struct AuthHubView: View {
     @EnvironmentObject private var signIn: SignInService
-    @EnvironmentObject private var biometricAuth: AuthManager
-    @EnvironmentObject private var settings: AppSettings
+    @State private var mode: AuthMode = .login
+    @State private var registrationForm = EmailRegistrationFormState()
+    @State private var loginForm = EmailLoginFormState()
 
     var body: some View {
         NavigationStack(path: $signIn.navigationPath) {
-            AuthScaffold {
-                AuthEntryScreen()
-            }
+            AuthScaffold(
+                content: {
+                AuthLandingView(
+                    mode: $mode,
+                    registrationForm: $registrationForm,
+                    loginForm: $loginForm
+                )
+                },
+                bottomAccessory: {
+                    AuthTrustSection()
+                        .padding(.horizontal, 18)
+                        .padding(.bottom, 10)
+                }
+            )
             .navigationDestination(for: AuthRoute.self) { route in
                 switch route {
-                case .registerMethods:
-                    AuthScaffold {
-                        AuthMethodSelectionView(mode: .register)
-                    }
-                case .loginMethods:
-                    AuthScaffold {
-                        AuthMethodSelectionView(mode: .login)
-                    }
-                case .emailRegistration:
-                    AuthScaffold {
-                        EmailRegistrationView()
-                    }
                 case .emailVerification:
-                    AuthScaffold {
-                        EmailVerificationView()
-                    }
-                case .emailLogin:
-                    AuthScaffold {
-                        EmailLoginView()
-                    }
-                }
-            }
-        }
-    }
-}
-
-private struct AuthScaffold<Content: View>: View {
-    @EnvironmentObject private var signIn: SignInService
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        ZStack {
-            AppGradient.authBackground
-                .ignoresSafeArea()
-
-            VStack(spacing: 14) {
-                if let error = signIn.authErrorMessage {
-                    AuthBannerView(
-                        icon: "exclamationmark.triangle.fill",
-                        text: error,
-                        tint: .status.error
+                    AuthScaffold(
+                        content: {
+                        EmailVerificationView(
+                            mode: $mode,
+                            registrationForm: $registrationForm
+                        )
+                        },
+                        bottomAccessory: { EmptyView() }
                     )
-                } else if let status = signIn.statusMessage {
-                    AuthBannerView(
-                        icon: "checkmark.circle.fill",
-                        text: status,
-                        tint: .status.success
+                case let .passwordReset(prefillEmail):
+                    AuthScaffold(
+                        content: {
+                        PasswordResetView(
+                            mode: $mode,
+                            initialEmail: prefillEmail
+                        )
+                        },
+                        bottomAccessory: { EmptyView() }
                     )
                 }
-
-                content
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 18)
-            .padding(.bottom, 12)
         }
     }
 }
 
-private struct AuthEntryScreen: View {
-    @EnvironmentObject private var signIn: SignInService
-    @EnvironmentObject private var biometricAuth: AuthManager
-    @EnvironmentObject private var settings: AppSettings
+private enum AuthMode: String, CaseIterable, Identifiable {
+    case login = "Log In"
+    case register = "Create Account"
 
-    var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Spacer(minLength: 14)
-
-            VStack(alignment: .leading, spacing: 10) {
-                Text("FitTracker")
-                    .font(AppType.display)
-                    .foregroundStyle(.black.opacity(0.88))
-
-                Text("Private health, training, and recovery tracking in one secure place.")
-                    .font(AppType.body)
-                    .foregroundStyle(.black.opacity(0.58))
-                    .multilineTextAlignment(.leading)
-            }
-
-            Spacer(minLength: 10)
-
-            VStack(spacing: 12) {
-                Button("Register") {
-                    signIn.openRegisterFlow()
-                }
-                .buttonStyle(AuthPrimaryButtonStyle())
-
-                Button("Log In") {
-                    signIn.openLoginFlow()
-                }
-                .buttonStyle(AuthSecondaryButtonStyle())
-
-                VStack(spacing: 10) {
-                    if showBiometricQuickAction {
-                        Button {
-                            Task {
-                                let success = await biometricAuth.authenticateForQuickUnlock()
-                                if success {
-                                    signIn.resumeStoredSession()
-                                }
-                            }
-                        } label: {
-                            AuthQuickActionLabel(
-                                icon: biometricAuth.biometricIcon,
-                                title: biometricAuth.biometricLabel,
-                                subtitle: "Open your existing FitTracker session"
-                            )
-                        }
-                        .buttonStyle(AuthTertiaryButtonStyle())
-                    }
-
-                    if signIn.canShowPasskeyLogin {
-                        Button {
-                            signIn.signInWithPasskey()
-                        } label: {
-                            AuthQuickActionLabel(
-                                icon: "key.fill",
-                                title: "Use Passkey",
-                                subtitle: "Sign in with a saved passkey or hardware key"
-                            )
-                        }
-                        .buttonStyle(AuthTertiaryButtonStyle())
-                    }
-                }
-            }
-
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    }
-
-    private var showBiometricQuickAction: Bool {
-        signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen && biometricAuth.isAvailable
-    }
-}
-
-private enum AuthMethodMode {
-    case register
-    case login
+    var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .register: "Create your account"
-        case .login: "Log in to FitTracker"
+        case .login:
+            return "Welcome back"
+        case .register:
+            return "Create your account"
         }
     }
 
     var subtitle: String {
         switch self {
-        case .register: "Choose how you want to get started."
-        case .login: "Pick a sign-in method and continue."
+        case .login:
+            return "Private training, nutrition, and recovery data protected from the moment you enter."
+        case .register:
+            return "Set up a secure FitMe account with Apple or email in under a minute."
         }
     }
+
+    var appleButtonTitle: String {
+        switch self {
+        case .login:
+            return "Sign in with Apple"
+        case .register:
+            return "Continue with Apple"
+        }
+    }
+
 }
 
-private struct AuthMethodSelectionView: View {
+private enum AuthField: Hashable {
+    case loginEmail
+    case loginPassword
+    case registerFirstName
+    case registerLastName
+    case registerEmail
+    case registerPassword
+    case registerConfirmPassword
+    case resetEmail
+}
+
+private struct AuthScaffold<Content: View, BottomAccessory: View>: View {
     @EnvironmentObject private var signIn: SignInService
-    let mode: AuthMethodMode
+    let content: Content
+    let bottomAccessory: BottomAccessory
+
+    init(
+        @ViewBuilder content: () -> Content,
+        @ViewBuilder bottomAccessory: () -> BottomAccessory
+    ) {
+        self.content = content()
+        self.bottomAccessory = bottomAccessory()
+    }
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 18) {
-                AuthScreenHeader(title: mode.title, subtitle: mode.subtitle)
+        ZStack {
+            AppGradient.screenBackground
+                .ignoresSafeArea()
 
-                VStack(spacing: 12) {
-                    Button {
-                        switch mode {
-                        case .register: signIn.showEmailRegistration()
-                        case .login: signIn.showEmailLogin()
-                        }
-                    } label: {
-                        AuthProviderRow(
-                            icon: "envelope.fill",
-                            title: mode == .register ? "Continue with Email" : "Log in with Email",
-                            subtitle: mode == .register ? "Register with your email address" : "Use your email and password",
-                            tint: .appBlue2
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 14) {
+                    if let error = signIn.authErrorMessage {
+                        AuthBannerView(
+                            icon: "exclamationmark.triangle.fill",
+                            text: error,
+                            tint: .status.error
+                        )
+                    } else if let status = signIn.statusMessage {
+                        AuthBannerView(
+                            icon: "checkmark.circle.fill",
+                            text: status,
+                            tint: .status.success
                         )
                     }
-                    .buttonStyle(AuthCardButtonStyle())
 
-                    Button {
-                        signIn.signInWithGoogle()
-                    } label: {
-                        GoogleProviderRow(
-                            title: mode == .register ? "Continue with Google" : "Log in with Google",
-                            subtitle: "Use your Google account"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: .white, useDarkStroke: true))
-
-                    Button {
-                        signIn.signInWithApple()
-                    } label: {
-                        AppleProviderRow(
-                            title: mode == .register ? "Continue with Apple" : "Log in with Apple",
-                            subtitle: "Use your Apple Account"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: .black.opacity(0.88), foreground: .white))
-
-                    if mode == .login && signIn.canShowPasskeyLogin {
-                        Button {
-                            signIn.signInWithPasskey()
-                        } label: {
-                            AuthProviderRow(
-                                icon: "key.fill",
-                                title: "Use Passkey",
-                                subtitle: "Sign in with a saved passkey",
-                                tint: .accent.purple
-                            )
-                        }
-                        .buttonStyle(AuthCardButtonStyle())
-                    }
+                    content
                 }
+                .frame(maxWidth: 620)
+                .padding(.horizontal, 18)
+                .padding(.vertical, 16)
+                .frame(maxWidth: .infinity)
             }
         }
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            bottomAccessory
+        }
+        .scrollDismissesKeyboardCompat()
     }
 }
 
-private struct EmailRegistrationView: View {
+private struct AuthLandingView: View {
     @EnvironmentObject private var signIn: SignInService
-    @State private var form = EmailRegistrationFormState()
-    @State private var errors: [String: String] = [:]
+
+    @Binding var mode: AuthMode
+    @Binding var registrationForm: EmailRegistrationFormState
+    @Binding var loginForm: EmailLoginFormState
+
+    @State private var registrationErrors: [String: String] = [:]
+    @State private var loginError: String?
+    @FocusState private var focusedField: AuthField?
 
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 18) {
-                AuthScreenHeader(
-                    title: "Register with Email",
-                    subtitle: "Create your account, then verify your email with a 5-digit code."
+        VStack(alignment: .leading, spacing: 14) {
+            AuthHeroSection()
+
+            if showQuickReturn {
+                QuickReturnSection(
+                    passkeyAction: { signIn.signInWithPasskey() }
                 )
+            }
 
-                AuthFormCard {
-                    AuthTextField(title: "First name", text: $form.firstName, contentType: .givenName)
-                    if let error = errors["firstName"] { AuthInlineError(text: error) }
+            VStack(alignment: .leading, spacing: 16) {
+                AuthModeSwitcher(mode: $mode)
 
-                    AuthTextField(title: "Last name", text: $form.lastName, contentType: .familyName)
-                    if let error = errors["lastName"] { AuthInlineError(text: error) }
+                ApplePrimaryButton(mode: mode)
 
-                    DatePicker("Birthday", selection: $form.birthday, displayedComponents: .date)
-                        .datePickerStyle(.compact)
-                        .font(AppType.body)
-                        .padding(.top, 2)
+                AuthDividerLabel(text: "or use email")
 
-                    AuthTextField(title: "Email", text: $form.email, keyboardType: .emailAddress, contentType: .emailAddress, textInputAutocapitalization: .never)
-                    if let error = errors["email"] { AuthInlineError(text: error) }
-
-                    PasswordRulesSecureField(placeholder: "Password", text: $form.password, textContentType: .newPassword)
-                    PasswordRulesTooltip()
-                    if let error = errors["password"] { AuthInlineError(text: error) }
-
-                    PasswordRulesSecureField(placeholder: "Confirm password", text: $form.confirmPassword, textContentType: .newPassword)
-                    if let error = errors["confirmPassword"] { AuthInlineError(text: error) }
+                if mode == .login {
+                    EmailLoginSection(
+                        form: $loginForm,
+                        localError: $loginError,
+                        focusedField: $focusedField
+                    )
+                } else {
+                    EmailRegistrationSection(
+                        form: $registrationForm,
+                        errors: $registrationErrors,
+                        focusedField: $focusedField
+                    )
                 }
+            }
+            .padding(.top, showQuickReturn ? 8 : 18)
+            .padding(.horizontal, 14)
 
-                Button(signIn.isLoading ? "Registering..." : "Register") {
-                    errors = form.validationErrors()
-                    guard errors.isEmpty else { return }
-                    Task {
-                        await signIn.startEmailRegistration(form.normalizedDraft())
-                    }
+            AuthFootnote(mode: mode)
+        }
+        .onChange(of: mode) { _, _ in
+            signIn.clearFeedback()
+            loginError = nil
+            registrationErrors = [:]
+            focusedField = nil
+        }
+        .onChange(of: loginForm.email) { _, _ in
+            if loginError != nil {
+                loginError = nil
+            }
+        }
+        .onChange(of: loginForm.password) { _, _ in
+            if loginError != nil {
+                loginError = nil
+            }
+        }
+        .onChange(of: registrationForm) { _, _ in
+            if !registrationErrors.isEmpty {
+                registrationErrors = [:]
+            }
+        }
+    }
+
+    private var showQuickReturn: Bool {
+        signIn.canShowPasskeyLogin
+    }
+}
+
+private struct AuthHeroSection: View {
+    var body: some View {
+        Text(AppBrand.name)
+            .font(AppText.hero)
+            .foregroundStyle(.clear)
+            .overlay(
+                AppGradient.brand.mask(
+                    Text(AppBrand.name)
+                        .font(AppText.hero)
+                )
+            )
+            .frame(maxWidth: .infinity)
+            .padding(.top, 4)
+    }
+}
+
+private struct AuthTrustSection: View {
+    private let trustItems: [(icon: String, title: String)] = [
+        ("lock.shield.fill", "Encrypted on device"),
+        ("icloud.fill", "Apple ecosystem ready"),
+    ]
+
+    var body: some View {
+        VStack(spacing: 8) {
+            ForEach(trustItems, id: \.title) { item in
+                trustBadge(item)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 8)
+    }
+
+    private func trustBadge(_ item: (icon: String, title: String)) -> some View {
+        HStack(spacing: 7) {
+            Image(systemName: item.icon)
+                .font(AppText.caption)
+            Text(item.title)
+                .font(AppText.captionStrong)
+                .lineLimit(1)
+                .minimumScaleFactor(0.82)
+        }
+        .foregroundStyle(AppColor.Text.primary)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 7)
+        .frame(maxWidth: 222)
+        .frame(maxWidth: .infinity)
+        .background(AppColor.Surface.elevated, in: Capsule())
+        .overlay(
+            Capsule()
+                .stroke(AppColor.Border.hairline, lineWidth: 1)
+        )
+        .shadow(color: Color.black.opacity(0.04), radius: 5, y: 2)
+    }
+}
+
+private struct AuthModeSwitcher: View {
+    @Binding var mode: AuthMode
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ForEach(AuthMode.allCases) { currentMode in
+                Button {
+                    mode = currentMode
+                } label: {
+                    Text(currentMode.rawValue)
+                        .font(AppType.subheading.weight(.semibold))
+                        .foregroundStyle(
+                            mode == currentMode
+                                ? AppColor.Text.primary
+                                : AppColor.Text.secondary
+                        )
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 7)
+                        .background(
+                            Capsule(style: .continuous)
+                                .fill(mode == currentMode ? AppColor.Surface.elevated.opacity(0.9) : Color.clear)
+                        )
                 }
+                .buttonStyle(.plain)
+                .accessibilityHint("Switch between login and account creation.")
+            }
+        }
+        .padding(3)
+        .background(Color.white.opacity(0.10), in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color.white.opacity(0.20), lineWidth: 1)
+        )
+    }
+}
+
+private struct QuickReturnSection: View {
+    let passkeyAction: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Saved sign-in")
+                .font(AppText.captionStrong)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            Button(action: passkeyAction) {
+                AuthQuickReturnRow(
+                    icon: "key.fill",
+                    title: "Use Passkey",
+                    subtitle: "Sign in with your saved passkey or security key"
+                )
+            }
+            .buttonStyle(AuthCardButtonStyle(baseFill: AppColor.Surface.elevated.opacity(0.84)))
+            .accessibilityHint("Sign in with a saved passkey.")
+        }
+        .padding(.horizontal, 14)
+    }
+}
+
+private struct ApplePrimaryButton: View {
+    @EnvironmentObject private var signIn: SignInService
+    let mode: AuthMode
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            SignInWithAppleButton(
+                mode == .register ? .continue : .signIn,
+                onRequest: signIn.prepareAppleSignInRequest,
+                onCompletion: signIn.handleAppleSignInResult
+            )
+            .signInWithAppleButtonStyle(.black)
+            .frame(height: 48)
+            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .accessibilityLabel(mode.appleButtonTitle)
+            .accessibilityHint("Uses your Apple Account for a secure \(mode == .login ? "login" : "account setup").")
+        }
+    }
+}
+
+private struct EmailLoginSection: View {
+    @EnvironmentObject private var signIn: SignInService
+    @Binding var form: EmailLoginFormState
+    @Binding var localError: String?
+    let focusedField: FocusState<AuthField?>.Binding
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            AuthTextInput(
+                title: "Email",
+                text: $form.email,
+                keyboard: .emailAddress,
+                contentType: .username,
+                textInputAutocapitalization: .never,
+                submitLabel: .next,
+                focusedField: focusedField,
+                equals: .loginEmail,
+                onSubmitAction: { focusedField.wrappedValue = .loginPassword }
+            )
+
+            AuthSecureInput(
+                title: "Password",
+                text: $form.password,
+                contentType: .password,
+                submitLabel: .go,
+                focusedField: focusedField,
+                equals: .loginPassword,
+                onSubmitAction: submit
+            )
+
+            HStack {
+                Spacer()
+                Button("Forgot password?") {
+                    signIn.showPasswordReset(prefillEmail: form.normalizedEmail)
+                }
+                .buttonStyle(.plain)
+                .font(AppType.caption.weight(.semibold))
+                .foregroundStyle(AppColor.Accent.secondary)
+                .accessibilityHint("Open password reset.")
+            }
+
+            if let localError {
+                AuthInlineError(text: localError)
+            }
+
+            Button(signIn.isLoading ? "Logging in..." : "Log In", action: submit)
                 .buttonStyle(AuthPrimaryButtonStyle())
                 .disabled(signIn.isLoading)
+                .accessibilityHint("Log in using your email and password.")
+        }
+    }
+
+    private func submit() {
+        if let error = form.validationError() {
+            localError = error
+            return
+        }
+
+        localError = nil
+        signIn.clearFeedback()
+        Task {
+            await signIn.signInWithEmail(email: form.normalizedEmail, password: form.password)
+        }
+    }
+}
+
+private struct EmailRegistrationSection: View {
+    @EnvironmentObject private var signIn: SignInService
+    @Binding var form: EmailRegistrationFormState
+    @Binding var errors: [String: String]
+    let focusedField: FocusState<AuthField?>.Binding
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    AuthTextInput(
+                        title: "First name",
+                        text: $form.firstName,
+                        contentType: .givenName,
+                        submitLabel: .next,
+                        focusedField: focusedField,
+                        equals: .registerFirstName,
+                        onSubmitAction: { focusedField.wrappedValue = .registerLastName }
+                    )
+
+                    if let error = errors["firstName"] {
+                        AuthInlineError(text: error)
+                    }
+                }
+
+                VStack(alignment: .leading, spacing: 6) {
+                    AuthTextInput(
+                        title: "Last name",
+                        text: $form.lastName,
+                        contentType: .familyName,
+                        submitLabel: .next,
+                        focusedField: focusedField,
+                        equals: .registerLastName,
+                        onSubmitAction: { focusedField.wrappedValue = .registerEmail }
+                    )
+
+                    if let error = errors["lastName"] {
+                        AuthInlineError(text: error)
+                    }
+                }
             }
+
+            VStack(alignment: .leading, spacing: 6) {
+                AuthTextInput(
+                    title: "Email",
+                    text: $form.email,
+                    keyboard: .emailAddress,
+                    contentType: .emailAddress,
+                    textInputAutocapitalization: .never,
+                    submitLabel: .next,
+                    focusedField: focusedField,
+                    equals: .registerEmail,
+                    onSubmitAction: { focusedField.wrappedValue = .registerPassword }
+                )
+
+                if let error = errors["email"] {
+                    AuthInlineError(text: error)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                AuthSecureInput(
+                    title: "Password",
+                    text: $form.password,
+                    contentType: .newPassword,
+                    submitLabel: .next,
+                    focusedField: focusedField,
+                    equals: .registerPassword,
+                    onSubmitAction: { focusedField.wrappedValue = .registerConfirmPassword }
+                )
+
+                Text(PasswordRuleEvaluator.guidanceText)
+                    .font(AppType.caption)
+                    .foregroundStyle(AppColor.Text.secondary)
+
+                if let error = errors["password"] {
+                    AuthInlineError(text: error)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                AuthSecureInput(
+                    title: "Confirm password",
+                    text: $form.confirmPassword,
+                    contentType: .newPassword,
+                    submitLabel: .go,
+                    focusedField: focusedField,
+                    equals: .registerConfirmPassword,
+                    onSubmitAction: submit
+                )
+
+                if let error = errors["confirmPassword"] {
+                    AuthInlineError(text: error)
+                }
+            }
+
+            Button(signIn.isLoading ? "Creating account..." : "Create Account", action: submit)
+                .buttonStyle(AuthPrimaryButtonStyle())
+                .disabled(signIn.isLoading)
+                .accessibilityHint("Create an account with email and continue to verification.")
+        }
+    }
+
+    private func submit() {
+        let currentErrors = form.validationErrors()
+        errors = currentErrors
+
+        guard currentErrors.isEmpty else { return }
+
+        signIn.clearFeedback()
+        Task {
+            await signIn.startEmailRegistration(form.normalizedDraft())
         }
     }
 }
 
 private struct EmailVerificationView: View {
     @EnvironmentObject private var signIn: SignInService
+    @Binding var mode: AuthMode
+    @Binding var registrationForm: EmailRegistrationFormState
     @State private var code = ""
-    @State private var codeState: VerificationCodeState = .idle
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            AuthScreenHeader(
-                title: "Verify your email",
-                subtitle: "A confirmation email with a verification code was sent to \(signIn.pendingEmailRegistration?.email ?? "your address")."
-            )
-
-            AuthFormCard {
-                OTPCodeEntryField(code: $code, digitCount: 5)
-                Text("Enter the 5-digit code. AutoFill and paste are supported.")
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.48))
-
-                if case let .invalid(message) = codeState {
-                    AuthInlineError(text: message)
-                }
-            }
-
-            Button(signIn.isLoading ? "Verifying..." : "Done") {
-                let trimmedCode = code.filter(\.isNumber)
-                guard trimmedCode.count == 5 else {
-                    codeState = .invalid("Enter the 5-digit code.")
-                    return
-                }
-
-                codeState = .verifying
-                Task {
-                    await signIn.verifyEmailRegistrationCode(trimmedCode)
-                    if signIn.authErrorMessage == nil {
-                        codeState = .accepted
-                    } else {
-                        codeState = .invalid(signIn.authErrorMessage ?? "The code is invalid.")
-                    }
-                }
-            }
-            .buttonStyle(AuthPrimaryButtonStyle())
-            .disabled(signIn.isLoading)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-    }
-}
-
-private struct EmailLoginView: View {
-    @EnvironmentObject private var signIn: SignInService
-    @State private var email = ""
-    @State private var password = ""
     @State private var localError: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            AuthScreenHeader(
-                title: "Log in with Email",
-                subtitle: "Use your registered email address and password."
+        VStack(alignment: .leading, spacing: 20) {
+            AuthFlowHeader(
+                title: "Verify your email",
+                subtitle: "Enter the code sent to \(signIn.pendingEmailRegistration?.email ?? registrationForm.email)."
             )
 
-            AuthFormCard {
-                AuthTextField(title: "Email", text: $email, keyboardType: .emailAddress, contentType: .username, textInputAutocapitalization: .never)
-                PasswordRulesSecureField(placeholder: "Password", text: $password, textContentType: .password)
+            AuthSurfaceCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    OTPCodeEntryField(code: $code, digitCount: 5)
+                        .accessibilityLabel("Verification code")
+                        .accessibilityHint("Enter the 5 digit code from your email.")
 
-                if let localError {
-                    AuthInlineError(text: localError)
+                    expiryNote
+
+                    if let localError {
+                        AuthInlineError(text: localError)
+                    }
                 }
             }
 
-            Button(signIn.isLoading ? "Logging in..." : "Log In") {
-                guard !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                    localError = "Enter your email address."
-                    return
+            HStack(spacing: 12) {
+                Button("Change email") {
+                    localError = nil
+                    signIn.resetToEntry()
+                    mode = .register
                 }
-                guard !password.isEmpty else {
-                    localError = "Enter your password."
+                .buttonStyle(AuthSecondaryButtonStyle())
+                .accessibilityHint("Go back and edit your email address.")
+
+                Button(signIn.isLoading ? "Sending..." : "Resend code") {
+                    localError = nil
+                    Task {
+                        await signIn.resendEmailRegistrationCode()
+                        if let message = signIn.authErrorMessage {
+                            localError = message
+                        }
+                    }
+                }
+                .buttonStyle(AuthSecondaryButtonStyle())
+                .disabled(signIn.isLoading)
+                .accessibilityHint("Send a fresh verification code.")
+            }
+
+            Button(signIn.isLoading ? "Verifying..." : "Verify Email") {
+                let trimmedCode = code.filter(\.isNumber)
+                guard trimmedCode.count == 5 else {
+                    localError = "Enter the 5-digit code."
                     return
                 }
 
                 localError = nil
                 Task {
-                    await signIn.signInWithEmail(
-                        email: email.trimmingCharacters(in: .whitespacesAndNewlines),
-                        password: password
-                    )
+                    await signIn.verifyEmailRegistrationCode(trimmedCode)
+                    if let message = signIn.authErrorMessage {
+                        localError = message
+                    }
                 }
             }
             .buttonStyle(AuthPrimaryButtonStyle())
             .disabled(signIn.isLoading)
-
-            Spacer()
+            .accessibilityHint("Complete account verification.")
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder
+    private var expiryNote: some View {
+        if let expiresAt = signIn.pendingEmailChallenge?.expiresAt {
+            (
+                Text("Code expires in ")
+                    .foregroundStyle(AppColor.Text.secondary)
+                + Text(expiresAt, style: .timer)
+                    .foregroundStyle(AppColor.Text.primary)
+                + Text(". AutoFill and paste are supported.")
+                    .foregroundStyle(AppColor.Text.secondary)
+            )
+            .font(AppType.subheading)
+        }
+        else {
+            Text("AutoFill and paste are supported.")
+                .font(AppType.subheading)
+                .foregroundStyle(AppColor.Text.secondary)
+        }
     }
 }
 
-private struct AuthScreenHeader: View {
+private struct PasswordResetView: View {
+    @EnvironmentObject private var signIn: SignInService
+    @Binding var mode: AuthMode
+    let initialEmail: String
+
+    @State private var email = ""
+    @State private var localError: String?
+    @FocusState private var focusedField: AuthField?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            AuthFlowHeader(
+                title: "Reset your password",
+                subtitle: "We’ll send a reset link if the email belongs to an existing account."
+            )
+
+            AuthSurfaceCard {
+                VStack(alignment: .leading, spacing: 14) {
+                    AuthTextInput(
+                        title: "Email",
+                        text: $email,
+                        keyboard: .emailAddress,
+                        contentType: .emailAddress,
+                        textInputAutocapitalization: .never,
+                        submitLabel: .go,
+                        focusedField: $focusedField,
+                        equals: .resetEmail,
+                        onSubmitAction: sendReset
+                    )
+
+                    if let localError {
+                        AuthInlineError(text: localError)
+                    }
+                }
+            }
+
+            HStack(spacing: 12) {
+                Button("Back to login") {
+                    localError = nil
+                    mode = .login
+                    signIn.resetToEntry()
+                }
+                .buttonStyle(AuthSecondaryButtonStyle())
+
+                Button(signIn.isLoading ? "Sending..." : "Send Reset Link", action: sendReset)
+                    .buttonStyle(AuthPrimaryButtonStyle())
+                    .disabled(signIn.isLoading)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .onAppear {
+            if email.isEmpty {
+                email = initialEmail
+            }
+            focusedField = .resetEmail
+        }
+    }
+
+    private func sendReset() {
+        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !trimmedEmail.isEmpty else {
+            localError = "Enter your email address."
+            return
+        }
+        guard AuthInputValidator.isValidEmail(trimmedEmail) else {
+            localError = "Enter a valid email address."
+            return
+        }
+
+        localError = nil
+        Task {
+            await signIn.requestPasswordReset(email: trimmedEmail)
+            if let message = signIn.authErrorMessage {
+                localError = message
+            } else {
+                mode = .login
+                signIn.resetToEntry(keepingStatus: true)
+            }
+        }
+    }
+}
+
+private struct AuthFlowHeader: View {
     let title: String
     let subtitle: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(AppType.display)
-                .foregroundStyle(.black.opacity(0.88))
+                .font(AppText.pageTitle)
+                .foregroundStyle(AppColor.Text.primary)
 
             Text(subtitle)
                 .font(AppType.body)
-                .foregroundStyle(.black.opacity(0.55))
+                .foregroundStyle(AppColor.Text.secondary)
         }
-        .padding(.top, 8)
     }
 }
 
-private struct AuthFormCard<Content: View>: View {
+private struct AuthSurfaceCard<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        AppCard(tone: .elevated, contentPadding: 18) {
             content
         }
-        .padding(18)
-        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: 24))
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .stroke(Color.appStroke, lineWidth: 1)
-        )
     }
 }
 
@@ -426,164 +752,175 @@ private struct AuthBannerView: View {
         HStack(spacing: 10) {
             Image(systemName: icon)
                 .foregroundStyle(tint)
+
             Text(text)
                 .font(AppType.subheading)
-                .foregroundStyle(.black.opacity(0.72))
+                .foregroundStyle(AppColor.Text.primary)
+
             Spacer()
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
-        .background(Color.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 16))
+        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .stroke(tint.opacity(0.18), lineWidth: 1)
         )
     }
 }
 
-private struct AuthProviderRow: View {
+private struct AuthQuickReturnRow: View {
     let icon: String
     let title: String
     let subtitle: String
-    let tint: Color
 
     var body: some View {
         HStack(spacing: 14) {
             Image(systemName: icon)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(tint)
+                .font(AppText.callout)
+                .foregroundStyle(AppColor.Accent.recovery)
                 .frame(width: 26)
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
-                    .font(AppType.body.weight(.semibold))
+                    .font(AppText.callout)
+                    .foregroundStyle(AppColor.Text.primary)
                 Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.secondary)
+                    .font(AppType.caption)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
 
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .font(AppText.captionStrong)
+                .foregroundStyle(AppColor.Text.tertiary)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-private struct GoogleProviderRow: View {
-    let title: String
-    let subtitle: String
+private struct AuthDividerLabel: View {
+    let text: String
 
     var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                Circle()
-                    .fill(Color.white)
-                    .frame(width: 26, height: 26)
-                Text("G")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
-                    .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
-            }
+        HStack(spacing: 12) {
+            Rectangle()
+                .fill(AppColor.Border.strong)
+                .frame(height: 1)
 
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(.black.opacity(0.84))
-                Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.48))
-            }
+            Text(text.uppercased())
+                .font(AppText.eyebrow)
+                .foregroundStyle(AppColor.Text.tertiary)
 
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+            Rectangle()
+                .fill(AppColor.Border.strong)
+                .frame(height: 1)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-private struct AppleProviderRow: View {
-    let title: String
-    let subtitle: String
-
-    var body: some View {
-        HStack(spacing: 14) {
-            OfficialAppleButtonIcon()
-                .frame(width: 28, height: 28)
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title)
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(.white)
-                Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.white.opacity(0.72))
-            }
-
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.white.opacity(0.75))
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-private struct OfficialAppleButtonIcon: UIViewRepresentable {
-    func makeUIView(context: Context) -> ASAuthorizationAppleIDButton {
-        let button = ASAuthorizationAppleIDButton(type: .signIn, style: .white)
-        button.isUserInteractionEnabled = false
-        button.cornerRadius = 8
-        return button
-    }
-
-    func updateUIView(_ uiView: ASAuthorizationAppleIDButton, context: Context) {}
-}
-
-private struct AuthTextField: View {
+private struct AuthTextInput: View {
     let title: String
     @Binding var text: String
-    #if os(iOS)
-    var keyboardType: UIKeyboardType = .default
-    var contentType: UITextContentType?
-    #else
-    var contentType: NSTextContentType?
-    #endif
+    var keyboard: UIKeyboardTypeCompat = .default
+    var contentType: AuthTextContentType?
     var textInputAutocapitalization: TextInputAutocapitalization = .words
+    var submitLabel: SubmitLabel = .next
+    var focusedField: FocusState<AuthField?>.Binding? = nil
+    var equals: AuthField? = nil
+    var onSubmitAction: (() -> Void)? = nil
 
     var body: some View {
-        #if os(iOS)
-        TextField(title, text: $text)
-            .keyboardType(keyboardType)
-            .textContentType(contentType)
-            .textInputAutocapitalization(textInputAutocapitalization)
-            .autocorrectionDisabled()
-            .font(AppType.body)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
-        #else
-        TextField(title, text: $text)
-            .font(AppType.body)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
-        #endif
+        AppInputShell {
+            Group {
+                if let focusedField, let equals {
+                    TextField(title, text: $text)
+                        .focused(focusedField, equals: equals)
+                        .onSubmit { onSubmitAction?() }
+                } else {
+                    TextField(title, text: $text)
+                        .onSubmit { onSubmitAction?() }
+                }
+            }
+            .authTextInputAutocapitalization(textInputAutocapitalization)
+            .authAutocorrectionDisabled()
+            .font(AppText.body)
+            .foregroundStyle(AppColor.Text.primary)
+            .authKeyboardType(keyboard)
+            .authTextContentType(contentType)
+            .submitLabel(submitLabel)
+        }
+        .accessibilityLabel(title)
     }
 }
 
-private struct PasswordRulesTooltip: View {
+private struct AuthSecureInput: View {
+    let title: String
+    @Binding var text: String
+    var contentType: AuthTextContentType?
+    var submitLabel: SubmitLabel = .next
+    var focusedField: FocusState<AuthField?>.Binding? = nil
+    var equals: AuthField? = nil
+    var onSubmitAction: (() -> Void)? = nil
+    @State private var isRevealed = false
+
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Image(systemName: "info.circle.fill")
-                .foregroundStyle(Color.accent.cyan)
-                .padding(.top, 1)
-            Text("Use 6 to 14 characters with at least 1 capital letter, 1 number, and 1 special character.")
-                .font(AppType.subheading)
-                .foregroundStyle(.black.opacity(0.56))
+        AppInputShell {
+            Group {
+                if isRevealed {
+                    secureInputField(revealed: true)
+                } else {
+                    secureInputField(revealed: false)
+                }
+            }
+
+            Button {
+                withAnimation(.spring(response: 0.24, dampingFraction: 0.82)) {
+                    isRevealed.toggle()
+                }
+            } label: {
+                Image(systemName: isRevealed ? "eye.slash.fill" : "eye.fill")
+                    .font(AppText.callout)
+                    .foregroundStyle(AppColor.Accent.secondary)
+                    .frame(width: 30, height: 30)
+                    .background(AppColor.Surface.primary, in: Circle())
+                    .contentTransition(.symbolEffect(.replace))
+                    .symbolEffect(.bounce, value: isRevealed)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isRevealed ? "Hide password" : "Show password")
         }
+        .accessibilityLabel(title)
+    }
+
+    @ViewBuilder
+    private func secureInputField(revealed: Bool) -> some View {
+        Group {
+            if revealed {
+                if let focusedField, let equals {
+                    TextField(title, text: $text)
+                        .focused(focusedField, equals: equals)
+                        .onSubmit { onSubmitAction?() }
+                } else {
+                    TextField(title, text: $text)
+                        .onSubmit { onSubmitAction?() }
+                }
+            } else {
+                if let focusedField, let equals {
+                    SecureField(title, text: $text)
+                        .focused(focusedField, equals: equals)
+                        .onSubmit { onSubmitAction?() }
+                } else {
+                    SecureField(title, text: $text)
+                        .onSubmit { onSubmitAction?() }
+                }
+            }
+        }
+        .authTextInputAutocapitalization(.never)
+        .authAutocorrectionDisabled()
+        .font(AppText.body)
+        .foregroundStyle(AppColor.Text.primary)
+        .authTextContentType(contentType)
+        .submitLabel(submitLabel)
     }
 }
 
@@ -592,47 +929,48 @@ private struct AuthInlineError: View {
 
     var body: some View {
         Text(text)
-            .font(AppType.subheading)
-            .foregroundStyle(Color.status.error)
+            .font(AppText.subheading)
+            .foregroundStyle(AppColor.Status.error)
+            .accessibilityLabel("Error: \(text)")
     }
 }
 
-private struct AuthQuickActionLabel: View {
-    let icon: String
-    let title: String
-    let subtitle: String
+private struct AuthFootnote: View {
+    let mode: AuthMode
 
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(.black.opacity(0.72))
-                .frame(width: 26)
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(.black.opacity(0.76))
-                Text(subtitle)
-                    .font(AppType.subheading)
-                    .foregroundStyle(.black.opacity(0.46))
-            }
-
-            Spacer()
-        }
+        Text(
+            mode == .login
+                ? "New here? Switch to Create Account above to set up FitMe. Passkeys can be added later in Settings after your first successful sign-in."
+                : "Already have an account? Switch to Log In above to use your existing Apple, email, or passkey sign-in."
+        )
+        .font(AppText.caption)
+        .foregroundStyle(AppColor.Text.secondary)
+        .multilineTextAlignment(.center)
+        .lineSpacing(1)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 12)
     }
 }
 
 private struct AuthPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(AppType.body.weight(.semibold))
-            .foregroundStyle(.white)
+            .font(AppText.button)
+            .foregroundStyle(AppColor.Text.primary)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, 12)
             .background(
-                RoundedRectangle(cornerRadius: 18)
-                    .fill(Color.black.opacity(configuration.isPressed ? 0.74 : 0.82))
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(
+                        LinearGradient(
+                            colors: configuration.isPressed
+                                ? [AppColor.Accent.primary.opacity(0.92), AppColor.Brand.warm.opacity(0.92)]
+                                : [AppColor.Accent.primary, AppColor.Brand.warm],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
@@ -641,116 +979,104 @@ private struct AuthPrimaryButtonStyle: ButtonStyle {
 private struct AuthSecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(AppType.body.weight(.semibold))
-            .foregroundStyle(.black.opacity(0.76))
+            .font(AppText.button)
+            .foregroundStyle(AppColor.Text.primary)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, 14)
             .background(
-                RoundedRectangle(cornerRadius: 18)
-                    .fill(Color.white.opacity(configuration.isPressed ? 0.72 : 0.62))
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(AppColor.Surface.elevated.opacity(configuration.isPressed ? 0.76 : 1))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 18)
-                    .stroke(Color.appStroke, lineWidth: 1)
-            )
-            .scaleEffect(configuration.isPressed ? 0.99 : 1)
-    }
-}
-
-private struct AuthTertiaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .padding(.horizontal, 14)
-            .padding(.vertical, 13)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color.white.opacity(configuration.isPressed ? 0.72 : 0.58))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.appStroke, lineWidth: 1)
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .stroke(AppColor.Border.strong, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
 }
 
 private struct AuthCardButtonStyle: ButtonStyle {
-    var baseFill: Color = Color.appSurface
-    var foreground: Color = .black
-    var useDarkStroke = false
+    var baseFill: Color = AppColor.Surface.elevated
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(.horizontal, 16)
-            .padding(.vertical, 16)
-            .foregroundStyle(foreground)
+            .padding(.vertical, 14)
             .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(baseFill.opacity(configuration.isPressed ? 0.88 : 1))
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(baseFill.opacity(configuration.isPressed ? 0.9 : 1))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .stroke(useDarkStroke ? Color.black.opacity(0.08) : Color.appStroke, lineWidth: 1)
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(Color.white.opacity(0.24), lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
 }
 
 #if os(iOS)
-private struct PasswordRulesSecureField: UIViewRepresentable {
-    let placeholder: String
-    @Binding var text: String
-    let textContentType: UITextContentType
+private typealias UIKeyboardTypeCompat = UIKeyboardType
+private typealias AuthTextContentType = UITextContentType
+#else
+private enum UIKeyboardTypeCompat {
+    case `default`
+    case emailAddress
+}
+private typealias AuthTextContentType = NSTextContentType
+#endif
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(text: $text)
+private extension View {
+    @ViewBuilder
+    func authKeyboardType(_ type: UIKeyboardTypeCompat) -> some View {
+        #if os(iOS)
+        keyboardType(type)
+        #else
+        self
+        #endif
     }
 
-    func makeUIView(context: Context) -> UITextField {
-        let field = UITextField(frame: .zero)
-        field.isSecureTextEntry = true
-        field.placeholder = placeholder
-        field.textContentType = textContentType
-        field.passwordRules = UITextInputPasswordRules(
-            descriptor: "allowed: ascii-printable; required: upper; required: digit; required: [-!@#$%^&*()_=+[]{};:,.?/]; minlength: 6; maxlength: 14;"
-        )
-        field.autocapitalizationType = .none
-        field.autocorrectionType = .no
-        field.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        field.borderStyle = .none
-        field.backgroundColor = UIColor(Color.white.opacity(0.72))
-        field.layer.cornerRadius = 16
-        field.setContentHuggingPriority(.defaultHigh, for: .vertical)
-        field.delegate = context.coordinator
-        field.addTarget(context.coordinator, action: #selector(Coordinator.textChanged(_:)), for: .editingChanged)
-
-        let padding = UIView(frame: CGRect(x: 0, y: 0, width: 14, height: 1))
-        field.leftView = padding
-        field.leftViewMode = .always
-        field.rightView = padding
-        field.rightViewMode = .always
-        return field
+    @ViewBuilder
+    func authTextContentType(_ type: AuthTextContentType?) -> some View {
+        #if os(iOS)
+        textContentType(type)
+        #elseif os(macOS)
+        if let type {
+            textContentType(type)
+        } else {
+            self
+        }
+        #endif
     }
 
-    func updateUIView(_ uiView: UITextField, context: Context) {
-        if uiView.text != text {
-            uiView.text = text
-        }
+    @ViewBuilder
+    func authTextInputAutocapitalization(_ value: TextInputAutocapitalization) -> some View {
+        #if os(iOS)
+        textInputAutocapitalization(value)
+        #else
+        self
+        #endif
     }
 
-    final class Coordinator: NSObject, UITextFieldDelegate {
-        @Binding var text: String
+    @ViewBuilder
+    func authAutocorrectionDisabled() -> some View {
+        #if os(iOS)
+        autocorrectionDisabled()
+        #else
+        self
+        #endif
+    }
 
-        init(text: Binding<String>) {
-            self._text = text
-        }
-
-        @objc func textChanged(_ textField: UITextField) {
-            text = textField.text ?? ""
-        }
+    @ViewBuilder
+    func scrollDismissesKeyboardCompat() -> some View {
+        #if os(iOS)
+        scrollDismissesKeyboard(.interactively)
+        #else
+        self
+        #endif
     }
 }
 
+#if os(iOS)
 private struct OTPCodeEntryField: View {
     @Binding var code: String
     let digitCount: Int
@@ -773,17 +1099,17 @@ private struct OTPCodeEntryField: View {
                 ForEach(0..<digitCount, id: \.self) { index in
                     let digit = Array(code).dropFirst(index).first.map(String.init) ?? ""
 
-                    RoundedRectangle(cornerRadius: 14)
-                        .fill(Color.white.opacity(0.72))
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(AppColor.Surface.elevated)
                         .frame(height: 58)
                         .overlay(
                             Text(digit)
-                                .font(.system(size: 24, weight: .semibold, design: .rounded))
-                                .foregroundStyle(.black.opacity(0.78))
+                                .font(AppText.metricCompact)
+                                .foregroundStyle(AppColor.Text.primary)
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14)
-                                .stroke(index == code.count ? Color.appBlue2 : Color.clear, lineWidth: 1.5)
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .stroke(index == min(code.count, digitCount - 1) && code.count < digitCount ? AppColor.Accent.secondary : Color.clear, lineWidth: 1.5)
                         )
                 }
             }
@@ -798,20 +1124,6 @@ private struct OTPCodeEntryField: View {
     }
 }
 #else
-private struct PasswordRulesSecureField: View {
-    let placeholder: String
-    @Binding var text: String
-    let textContentType: NSTextContentType?
-
-    var body: some View {
-        SecureField(placeholder, text: $text)
-            .font(AppType.body)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
-    }
-}
-
 private struct OTPCodeEntryField: View {
     @Binding var code: String
     let digitCount: Int
@@ -823,10 +1135,14 @@ private struct OTPCodeEntryField: View {
                 code = String(newValue.filter(\.isNumber).prefix(digitCount))
             }
         ))
-        .font(AppType.body)
+        .font(AppText.body)
         .padding(.horizontal, 14)
         .padding(.vertical, 14)
-        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(AppColor.Border.subtle, lineWidth: 1)
+        )
     }
 }
 #endif

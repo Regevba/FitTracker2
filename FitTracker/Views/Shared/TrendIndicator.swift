@@ -31,11 +31,15 @@ struct TrendIndicator: View {
 
     var body: some View {
         Text(displayText)
-            .font(AppType.caption)
-            .foregroundColor(statusColor)
+            .font(AppText.captionStrong)
+            .foregroundStyle(statusColor)
             .padding(.vertical, 4)
             .padding(.horizontal, 8)
-            .background(statusColor.opacity(0.2))
+            .background(statusColor.opacity(0.14), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(statusColor.opacity(0.16), lineWidth: 1)
+            )
             .clipShape(Capsule())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Trend")
@@ -64,7 +68,7 @@ struct TrendIndicator_Previews: PreviewProvider {
             }
         }
         .padding()
-        .background(Color.black.opacity(0.05))
+        .background(AppColor.Background.appSecondary)
     }
 }
 #endif

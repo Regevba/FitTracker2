@@ -33,8 +33,12 @@ struct RootTabView: View {
 
     @Environment(\.horizontalSizeClass) var sizeClass
 
-    @State private var selectedTab:    AppTab = .main
+    @State private var selectedTab:    AppTab
     @State private var showAccount             = false
+
+    init() {
+        _selectedTab = State(initialValue: Self.reviewSelectedTab)
+    }
 
     var body: some View {
         Group {
@@ -44,7 +48,13 @@ struct RootTabView: View {
             iPadLayout
             #endif
         }
+        .onAppear {
+            if Self.isReviewMode {
+                selectedTab = Self.reviewSelectedTab
+            }
+        }
         .task {
+            guard !Self.isReviewMode else { return }
             try? await healthService.requestAuthorization()
         }
         .alert("Data Load Error", isPresented: Binding(
@@ -64,7 +74,7 @@ struct RootTabView: View {
                 .environmentObject(cloudSync)
                 .environmentObject(settings)
                 .presentationDetents([.large])
-                .presentationCornerRadius(24)
+                .presentationCornerRadius(AppSheet.standardCornerRadius)
         }
     }
 
@@ -82,9 +92,9 @@ struct RootTabView: View {
                 .tag(tab)
             }
         }
-        .tint(.blue)
+        .tint(AppColor.Accent.secondary)
         .toolbarBackground(.visible, for: .tabBar)
-        .toolbarBackground(Color.white.opacity(0.92), for: .tabBar)
+        .toolbarBackground(AppColor.Surface.elevated, for: .tabBar)
         .toolbarColorScheme(.light, for: .tabBar)
     }
 
@@ -94,9 +104,11 @@ struct RootTabView: View {
             VStack(spacing: 0) {
                 HStack(spacing: 10) {
                     Image(systemName: "figure.strengthtraining.traditional")
-                        .font(.title3.weight(.semibold)).foregroundStyle(.green)
+                        .font(AppText.titleMedium)
+                        .foregroundStyle(AppColor.Accent.recovery)
                     Text("FitTracker")
-                        .font(.system(.headline, design: .rounded, weight: .bold))
+                        .font(AppText.sectionTitle)
+                        .foregroundStyle(AppColor.Text.primary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 16).padding(.vertical, 12)
@@ -118,7 +130,9 @@ struct RootTabView: View {
                 VStack(spacing: 10) {
                     HStack(spacing: 6) {
                         Circle().fill(syncColor).frame(width: 6, height: 6)
-                        Text(cloudSync.status.rawValue).font(.caption2).foregroundStyle(.secondary)
+                        Text(cloudSync.status.rawValue)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Text.secondary)
                         Spacer()
                     }
                     Button { showAccount = true } label: {
@@ -126,15 +140,25 @@ struct RootTabView: View {
                             avatarBadge(30)
                             VStack(alignment: .leading, spacing: 1) {
                                 Text(signIn.currentSession?.displayName ?? "Regev")
-                                    .font(.caption.weight(.semibold)).lineLimit(1)
+                                    .font(AppText.captionStrong)
+                                    .foregroundStyle(AppColor.Text.primary)
+                                    .lineLimit(1)
                                 Text(signIn.currentSession?.email ?? "")
-                                    .font(.system(size: 10)).foregroundStyle(.secondary).lineLimit(1)
+                                    .font(AppText.caption)
+                                    .foregroundStyle(AppColor.Text.secondary)
+                                    .lineLimit(1)
                             }
                             Spacer()
-                            Image(systemName: "ellipsis").font(.caption).foregroundStyle(.secondary)
+                            Image(systemName: "ellipsis")
+                                .font(AppText.caption)
+                                .foregroundStyle(AppColor.Text.secondary)
                         }
                         .padding(10)
-                        .background(Color.secondary.opacity(0.06), in: RoundedRectangle(cornerRadius: 10))
+                        .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
+                                .stroke(AppColor.Border.subtle, lineWidth: 1)
+                        )
                     }
                     .buttonStyle(.plain)
                 }
@@ -156,15 +180,15 @@ struct RootTabView: View {
         ToolbarItem(placement: .topBarLeading) {
             Button { showAccount = true } label: {
                 Image(systemName: "line.3.horizontal")
-                    .font(.system(size: 18, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.92))
+                    .font(AppText.titleMedium)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                     .frame(width: 46, height: 46)
                     .background(
                         Circle()
-                            .fill(Color.white.opacity(0.34))
+                            .fill(AppColor.Surface.materialStrong)
                             .overlay(
                                 Circle()
-                                    .stroke(Color.white.opacity(0.45), lineWidth: 1)
+                                    .stroke(AppColor.Border.strong, lineWidth: 1)
                             )
                     )
                     .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
@@ -191,19 +215,39 @@ struct RootTabView: View {
     private func avatarBadge(_ size: CGFloat) -> some View {
         ZStack {
             Circle()
-                .fill(LinearGradient(colors: [.green.opacity(0.8), .mint.opacity(0.6)],
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(
+                    LinearGradient(
+                        colors: [AppColor.Accent.recovery.opacity(0.88), AppColor.Brand.secondary.opacity(0.72)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
                 .frame(width: size, height: size)
             Text(signIn.currentSession?.initials ?? "R")
-                .font(.system(size: size * 0.38, weight: .bold, design: .rounded))
-                .foregroundStyle(.black)
+                .font(AppText.captionStrong)
+                .foregroundStyle(AppColor.Text.primary)
         }
     }
 
     private var syncColor: Color {
         switch cloudSync.status {
-        case .idle: .green; case .syncing: .orange
-        case .failed: .red; case .offline, .disabled: .secondary
+        case .idle: AppColor.Status.success
+        case .syncing: AppColor.Status.warning
+        case .failed: AppColor.Status.error
+        case .offline, .disabled: AppColor.Text.tertiary
+        }
+    }
+
+    private static var isReviewMode: Bool {
+        ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_AUTH"] == "authenticated"
+    }
+
+    private static var reviewSelectedTab: AppTab {
+        switch ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_TAB"]?.lowercased() {
+        case "training": .training
+        case "nutrition": .nutrition
+        case "stats": .stats
+        default: .main
         }
     }
 }

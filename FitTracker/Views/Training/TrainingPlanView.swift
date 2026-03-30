@@ -28,17 +28,13 @@ struct TrainingPlanView: View {
     @State private var restPresetSeconds = 90
     @State private var didHapticAt10 = false
     @State private var didHapticAt0 = false
-    private let bgOrange1 = Color.appOrange1
-    private let bgOrange2 = Color.appOrange2
-
     init(initialDay: DayType? = nil) {
         self.initialDay = initialDay
     }
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [bgOrange1, bgOrange2],
-                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            AppGradient.screenBackground
                 .ignoresSafeArea()
 
             ScrollView(showsIndicators: false) {
@@ -157,7 +153,7 @@ struct TrainingPlanView: View {
                 VStack(spacing: 4) {
                     Text(day.formatted(.dateTime.weekday(.abbreviated)))
                         .font(AppType.caption)
-                        .foregroundStyle(isActive ? Color.primary : Color.secondary)
+                        .foregroundStyle(isActive ? AppColor.Text.primary : AppColor.Text.secondary)
 
                     ZStack {
                         if isToday {
@@ -172,7 +168,7 @@ struct TrainingPlanView: View {
                         Text("\(calendar.component(.day, from: day))")
                             .font(isToday ? AppType.body : AppType.subheading)
                             .fontWeight(isToday ? .bold : .regular)
-                            .foregroundStyle(isToday ? Color.black : Color.primary)
+                            .foregroundStyle(isToday ? Color.black : AppColor.Text.primary)
                     }
 
                     // Completion dot
@@ -235,7 +231,7 @@ struct TrainingPlanView: View {
                         .font(.title3.bold())
                     Text(summaryText)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
 
                 Spacer()
@@ -249,12 +245,12 @@ struct TrainingPlanView: View {
             }
 
             Divider()
-                .overlay(Color.white.opacity(0.34))
+                .overlay(AppColor.Border.subtle)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Current Focus")
                     .font(.caption2.monospaced())
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                     .tracking(1)
 
                 Text(focusedExercise?.name ?? "Recovery and movement")
@@ -295,7 +291,7 @@ struct TrainingPlanView: View {
                     title: restTimerEnd == nil ? "Start Rest" : "Restart Rest",
                     systemImage: "timer",
                     fill: Color.white.opacity(0.45),
-                    foreground: .black.opacity(0.78)
+                    foreground: AppColor.Text.primary
                 ) {
                     startRestTimer()
                 }
@@ -312,7 +308,7 @@ struct TrainingPlanView: View {
             }
 
             Divider()
-                .overlay(Color.white.opacity(0.34))
+                .overlay(AppColor.Border.subtle)
         }
         .padding(.vertical, 2)
     }
@@ -326,11 +322,11 @@ struct TrainingPlanView: View {
             }
             Text(restTimerEnd == nil ? "rest preset" : "remaining")
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
             Stepper(value: $restPresetSeconds, in: 30...180, step: 15) {
                 Text("\(restPresetSeconds)s")
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
             .labelsHidden()
             .frame(width: 90)
@@ -406,7 +402,7 @@ struct TrainingPlanView: View {
                             }
                             Text(status.rawValue.capitalized)
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AppColor.Text.secondary)
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 9)
@@ -435,7 +431,7 @@ struct TrainingPlanView: View {
                 .font(.caption.weight(.medium))
                 .lineLimit(1)
         }
-        .foregroundStyle(.black.opacity(0.68))
+        .foregroundStyle(AppColor.Text.primary)
         .padding(.horizontal, 10)
         .padding(.vertical, 7)
         .background(Color.white.opacity(0.28), in: Capsule())
@@ -670,13 +666,13 @@ fileprivate struct SessionTypeButton: View {
     }
 
     private var foregroundColor: Color {
-        if isSelected   { return Color.blue }
-        if isSuggested  { return Color.appOrange2 }
-        return Color.primary
+        if isSelected   { return AppColor.Text.primary }
+        if isSuggested  { return AppColor.Brand.primary }
+        return AppColor.Text.primary
     }
 
     private var backgroundColor: Color {
-        if isSelected   { return Color.blue.opacity(0.18) }
+        if isSelected   { return AppColor.Accent.secondary.opacity(0.28) }
         if isSuggested  { return Color.appOrange1.opacity(0.24) }
         return Color.white.opacity(0.12)
     }
@@ -703,7 +699,7 @@ struct ExerciseSectionBlock: View {
                     .frame(width: 22, height: 1)
                 Text(title)
                     .font(.caption.monospaced())
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
                     .tracking(1.2)
                 Rectangle()
                     .fill(Color.white.opacity(0.18))
@@ -822,19 +818,19 @@ struct ExerciseRowView: View {
                 Text(exercise.name)
                     .font(.subheadline.weight(.semibold))
                     .strikethrough(status == .completed, color: Color.status.success)
-                    .foregroundStyle(status == .completed ? .secondary : .primary)
+                    .foregroundStyle(status == .completed ? AppColor.Text.secondary : AppColor.Text.primary)
                 if isFocused {
                     Text("LIVE")
                         .font(.system(size: 9, weight: .bold, design: .monospaced))
                         .padding(.horizontal, 6)
                         .padding(.vertical, 3)
-                        .background(Color.blue.opacity(0.12), in: Capsule())
-                        .foregroundStyle(Color.blue)
+                        .background(AppColor.Accent.secondary.opacity(0.18), in: Capsule())
+                        .foregroundStyle(AppColor.Accent.secondary)
                 }
             }
 
             Text(exercise.muscleGroups.map { $0.rawValue.capitalized }.joined(separator: " · "))
-                .font(.caption2).foregroundStyle(.secondary)
+                .font(.caption2).foregroundStyle(AppColor.Text.secondary)
 
             if exercise.category != .cardio {
                 HStack(spacing: 8) {
@@ -844,7 +840,7 @@ struct ExerciseRowView: View {
                 }
             }
             Text("↳ \(exercise.coachingCue)")
-                .font(.caption2.italic()).foregroundStyle(.tertiary)
+                .font(.caption2.italic()).foregroundStyle(AppColor.Text.tertiary)
                 .lineLimit(2)
         }
     }
@@ -903,7 +899,7 @@ struct ExerciseRowView: View {
     private func exerciseMetaPill(_ text: String) -> some View {
         Text(text)
             .font(.caption2.weight(.medium))
-            .foregroundStyle(.black.opacity(0.62))
+            .foregroundStyle(AppColor.Text.primary)
             .padding(.horizontal, 8)
             .padding(.vertical, 5)
             .background(Color.white.opacity(0.18), in: Capsule())

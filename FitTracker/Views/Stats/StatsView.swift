@@ -311,11 +311,7 @@ struct StatsView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [Color.appOrange1, Color.appOrange2],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
+            AppGradient.screenBackground
             .ignoresSafeArea()
 
             ScrollView {
@@ -357,12 +353,35 @@ struct StatsView: View {
     }
 
     private var periodPicker: some View {
-        Picker("Period", selection: $period) {
+        HStack(spacing: AppSpacing.xSmall) {
             ForEach(StatsPeriod.allCases, id: \.self) { option in
-                Text(option.rawValue).tag(option)
+                let isSelected = option == period
+
+                Button {
+                    period = option
+                } label: {
+                    Text(option.rawValue)
+                        .font(AppText.captionStrong)
+                        .foregroundStyle(isSelected ? AppColor.Text.primary : AppColor.Text.secondary)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, AppSpacing.small)
+                        .background(
+                            Capsule(style: .continuous)
+                                .fill(isSelected ? AppColor.Surface.elevated : Color.clear)
+                        )
+                }
+                .buttonStyle(.plain)
             }
         }
-        .pickerStyle(.segmented)
+        .padding(AppSpacing.xSmall)
+        .background(
+            Capsule(style: .continuous)
+                .fill(AppColor.Surface.materialStrong)
+        )
+        .overlay(
+            Capsule(style: .continuous)
+                .stroke(AppColor.Border.subtle, lineWidth: 1)
+        )
     }
 
     private var permanentBodyCharts: some View {
@@ -376,10 +395,11 @@ struct StatsView: View {
         VStack(alignment: .leading, spacing: 8) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Track More")
-                    .font(AppType.headline)
+                    .font(AppText.sectionTitle)
+                    .foregroundStyle(AppColor.Text.primary)
                 Text("Choose what appears here in Settings, then tap a metric to update the chart below.")
-                    .font(AppType.subheading)
-                    .foregroundStyle(.secondary)
+                    .font(AppText.subheading)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
 
             ScrollView(.horizontal, showsIndicators: false) {
@@ -435,44 +455,38 @@ struct StatsView: View {
                 chartSelection = nil
             }
         } label: {
-            VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    Image(systemName: metric.icon)
-                        .font(.system(size: 13, weight: .semibold))
-                    Spacer()
-                    Circle()
-                        .fill(metric.tint)
-                        .frame(width: 8, height: 8)
+            AppSelectionTile(isSelected: selected, tint: metric.tint, cornerRadius: AppRadius.large) {
+                VStack(alignment: .leading, spacing: 10) {
+                    HStack {
+                        Image(systemName: metric.icon)
+                            .font(AppText.captionStrong)
+                        Spacer()
+                        Circle()
+                            .fill(metric.tint)
+                            .frame(width: 8, height: 8)
+                    }
+                    .foregroundStyle(selected ? metric.tint : AppColor.Text.secondary)
+
+                    Text(metric.title)
+                        .font(AppText.body)
+                        .foregroundStyle(AppColor.Text.primary)
+                        .lineLimit(1)
+
+                    Text(value)
+                        .font(AppText.metricCompact)
+                        .foregroundStyle(selected ? metric.tint : AppColor.Text.primary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.8)
+
+                    Text(subtitle)
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.secondary)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
                 }
-                .foregroundStyle(selected ? metric.tint : .secondary)
-
-                Text(metric.title)
-                    .font(AppType.body.weight(.semibold))
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
-
-                Text(value)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                    .foregroundStyle(selected ? metric.tint : .primary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-
-                Text(subtitle)
-                    .font(AppType.caption)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(width: 132, alignment: .leading)
-            .padding(12)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(selected ? metric.tint.opacity(0.16) : Color.white.opacity(0.08))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(selected ? metric.tint.opacity(0.45) : Color.white.opacity(0.08), lineWidth: 1)
-            )
+            .frame(minWidth: 128, idealWidth: 144, maxWidth: 168, alignment: .leading)
         }
         .buttonStyle(.plain)
     }
@@ -481,19 +495,19 @@ struct StatsView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .lastTextBaseline, spacing: 10) {
                 Text(metricPrimaryValue(for: metric))
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .font(AppText.metric)
                     .foregroundStyle(metric.tint)
                     .lineLimit(1)
 
                 Text(metricChipSubtitle(for: metric))
-                    .font(AppType.subheading)
-                    .foregroundStyle(.secondary)
+                    .font(AppText.subheading)
+                    .foregroundStyle(AppColor.Text.secondary)
                     .lineLimit(2)
             }
 
             Text(metricSummaryText(for: metric, points: points))
-                .font(AppType.caption)
-                .foregroundStyle(.secondary)
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
         }
     }
 
@@ -506,7 +520,7 @@ struct StatsView: View {
                     .foregroundStyle(metric.tint.opacity(0.45))
                     .annotation(position: .trailing) {
                         Text(goalLabel(for: metric))
-                            .font(AppType.caption)
+                            .font(AppText.caption)
                             .foregroundStyle(metric.tint)
                     }
             }
@@ -548,7 +562,7 @@ struct StatsView: View {
         .chartXAxis { statsXAxis() }
         .chartYAxis {
             AxisMarks { _ in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisGridLine().foregroundStyle(AppColor.Border.subtle.opacity(0.7))
                 AxisValueLabel()
             }
         }
@@ -581,10 +595,10 @@ struct StatsView: View {
             if let selection = chartSelection {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(selection.date.formatted(.dateTime.month(.abbreviated).day()))
-                        .font(AppType.caption)
-                        .foregroundStyle(.secondary)
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.secondary)
                     Text(selection.label)
-                        .font(AppType.body.weight(.semibold))
+                        .font(AppText.body.weight(.semibold))
                 }
                 .padding(8)
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 10))
@@ -842,22 +856,22 @@ private extension StatsView {
         switch period {
         case .daily:
             AxisMarks(values: .stride(by: .hour, count: 4)) { _ in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisGridLine().foregroundStyle(AppColor.Border.subtle.opacity(0.7))
                 AxisValueLabel(format: .dateTime.hour())
             }
         case .weekly:
             AxisMarks(values: .stride(by: .day)) { _ in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisGridLine().foregroundStyle(AppColor.Border.subtle.opacity(0.7))
                 AxisValueLabel(format: .dateTime.weekday(.narrow))
             }
         case .monthly:
             AxisMarks(values: .stride(by: .day, count: 7)) { _ in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisGridLine().foregroundStyle(AppColor.Border.subtle.opacity(0.7))
                 AxisValueLabel(format: .dateTime.day())
             }
         case .threeMonths, .sixMonths:
             AxisMarks(values: .stride(by: .month)) { _ in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.2))
+                AxisGridLine().foregroundStyle(AppColor.Border.subtle.opacity(0.7))
                 AxisValueLabel(format: .dateTime.month(.abbreviated))
             }
         }

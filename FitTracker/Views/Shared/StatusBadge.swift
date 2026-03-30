@@ -7,11 +7,15 @@ struct StatusBadge: View {
 
     var body: some View {
         Text(text)
-            .font(AppType.caption)
-            .foregroundColor(color)
-            .padding(.vertical, 4)
+            .font(AppText.captionStrong)
+            .foregroundStyle(color)
+            .padding(.vertical, 5)
             .padding(.horizontal, 10)
-            .background(color.opacity(0.2))
+            .background(color.opacity(0.16), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(color.opacity(0.18), lineWidth: 1)
+            )
             .clipShape(Capsule())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(text)

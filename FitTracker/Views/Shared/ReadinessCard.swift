@@ -48,8 +48,19 @@ struct ReadinessCard: View {
                 .padding(.bottom, 6)
         }
         .frame(height: 180)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-        .shadow(color: .black.opacity(0.08), radius: 8, y: 4)
+        .background(
+            RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous)
+                .fill(AppColor.Surface.inverse)
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous)
+                        .fill(AppGradient.darkAccent.opacity(0.78))
+                )
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous)
+                .stroke(Color.white.opacity(0.08), lineWidth: 1)
+        )
+        .shadow(color: AppShadow.cardColor, radius: 8, y: 4)
         .onAppear { startTimer() }
         .onDisappear {
             timer?.invalidate()
@@ -66,7 +77,7 @@ struct ReadinessCard: View {
         HStack(spacing: 5) {
             ForEach(0..<6, id: \.self) { i in
                 Circle()
-                    .fill(i == currentPage ? Color.white : Color.white.opacity(0.35))
+                    .fill(i == currentPage ? AppColor.Selection.active : AppColor.Selection.inactive)
                     .frame(width: i == currentPage ? 7 : 5, height: i == currentPage ? 7 : 5)
                     .animation(.easeInOut(duration: 0.2), value: currentPage)
             }
@@ -89,25 +100,25 @@ struct ReadinessCard: View {
         return VStack(spacing: 4) {
             HStack(alignment: .lastTextBaseline, spacing: 4) {
                 Text(score != nil ? "\(displayedScore)" : "–")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundStyle(.white)
+                    .font(AppText.metricDisplay)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                     .contentTransition(.numericText())
                 if score != nil {
                     Text("/ 100")
                         .font(AppType.subheading)
-                        .foregroundStyle(.white.opacity(0.6))
+                        .foregroundStyle(AppColor.Text.inverseSecondary)
                 }
             }
 
             if score == nil {
                 Text("Add 3+ days of data")
                     .font(AppType.caption)
-                    .foregroundStyle(.white.opacity(0.5))
+                    .foregroundStyle(AppColor.Text.inverseTertiary)
             }
 
             Text(contextLabel(for: score))
                 .font(AppType.subheading)
-                .foregroundStyle(.white.opacity(0.8))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
                 .multilineTextAlignment(.center)
 
             Spacer(minLength: 4)
@@ -130,8 +141,8 @@ struct ReadinessCard: View {
         .overlay(alignment: .topTrailing) {
             Button { showReadinessInfo.toggle() } label: {
                 Image(systemName: "info.circle")
-                    .font(.system(size: 14))
-                    .foregroundStyle(.white.opacity(0.6))
+                    .font(AppText.captionStrong)
+                    .foregroundStyle(AppColor.Text.inverseSecondary)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("About readiness score")
@@ -165,15 +176,15 @@ struct ReadinessCard: View {
     private func biometricRow(icon: String, label: String, title: String) -> some View {
         VStack(spacing: 2) {
             Image(systemName: icon)
-                .font(.system(size: 12))
-                .foregroundStyle(.white.opacity(0.7))
+                .font(AppText.captionStrong)
+                .foregroundStyle(AppColor.Text.inverseSecondary)
             Text(label)
                 .font(AppType.caption)
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColor.Text.inversePrimary)
                 .lineLimit(1)
             Text(title)
-                .font(.system(size: 9))
-                .foregroundStyle(.white.opacity(0.5))
+                .font(AppText.monoLabel)
+                .foregroundStyle(AppColor.Text.inverseTertiary)
         }
     }
 
@@ -204,7 +215,7 @@ struct ReadinessCard: View {
         return VStack(alignment: .leading, spacing: 6) {
             Text("This Week")
                 .font(AppType.subheading)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
                 .padding(.horizontal, 16)
 
             HStack(alignment: .bottom, spacing: 6) {
@@ -227,8 +238,8 @@ struct ReadinessCard: View {
                             .frame(maxWidth: .infinity)
 
                         Text(dayLabels[idx])
-                            .font(.system(size: 9))
-                            .foregroundStyle(.white.opacity(0.5))
+                            .font(AppText.monoLabel)
+                            .foregroundStyle(AppColor.Text.inverseTertiary)
                     }
                     .frame(maxWidth: .infinity, maxHeight: maxBarHeight + 16, alignment: .bottom)
                 }
@@ -240,7 +251,7 @@ struct ReadinessCard: View {
             let tomorrowType = logsMap[weekDays.first(where: { cal.isDateInTomorrow($0) }) ?? today]?.dayType
             Text("Next: \(tomorrowType?.rawValue ?? "–")")
                 .font(AppType.caption)
-                .foregroundStyle(.white.opacity(0.6))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
                 .padding(.horizontal, 16)
         }
         .padding(.vertical, 10)
@@ -264,18 +275,18 @@ struct ReadinessCard: View {
         return VStack(alignment: .leading, spacing: 8) {
             Text("Nutrition")
                 .font(AppType.subheading)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
 
             // Protein progress
             VStack(alignment: .leading, spacing: 3) {
                 HStack {
                     Text("Protein")
                         .font(AppType.caption)
-                        .foregroundStyle(.white.opacity(0.6))
+                        .foregroundStyle(AppColor.Text.inverseSecondary)
                     Spacer()
                     Text(String(format: "%.0fg / %.0fg", protein, proteinTarget))
                         .font(AppType.caption)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                 }
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
@@ -292,11 +303,11 @@ struct ReadinessCard: View {
             // Supplements
             HStack(spacing: 10) {
                 Image(systemName: "pill.fill")
-                    .font(.system(size: 11))
-                    .foregroundStyle(.white.opacity(0.6))
+                    .font(AppText.captionStrong)
+                    .foregroundStyle(AppColor.Text.inverseSecondary)
                 Text("Supplements")
                     .font(AppType.caption)
-                    .foregroundStyle(.white.opacity(0.6))
+                    .foregroundStyle(AppColor.Text.inverseSecondary)
                 supplementDot(label: "AM", done: morningDone)
                 supplementDot(label: "PM", done: eveningDone)
             }
@@ -305,11 +316,11 @@ struct ReadinessCard: View {
             if waterML > 0 {
                 HStack(spacing: 6) {
                     Image(systemName: "drop.fill")
-                        .font(.system(size: 11))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(Color.accent.cyan.opacity(0.8))
                     Text(String(format: "%.0f mL water", waterML))
                         .font(AppType.caption)
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(AppColor.Text.inverseSecondary)
                 }
             }
         }
@@ -323,8 +334,8 @@ struct ReadinessCard: View {
                 .fill(done ? Color.status.success : Color.white.opacity(0.25))
                 .frame(width: 8, height: 8)
             Text(label)
-                .font(.system(size: 9))
-                .foregroundStyle(.white.opacity(0.6))
+                .font(AppText.monoLabel)
+                .foregroundStyle(AppColor.Text.inverseSecondary)
         }
     }
 
@@ -359,7 +370,7 @@ struct ReadinessCard: View {
         return VStack(alignment: .leading, spacing: 6) {
             Text("7-Day Trends")
                 .font(AppType.subheading)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
 
             let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
             LazyVGrid(columns: columns, spacing: 8) {
@@ -387,11 +398,11 @@ struct ReadinessCard: View {
             } else {
                 Text("–")
                     .font(AppType.caption)
-                    .foregroundStyle(.white.opacity(0.4))
+                    .foregroundStyle(AppColor.Text.inverseTertiary)
             }
             Text(label)
-                .font(.system(size: 9))
-                .foregroundStyle(.white.opacity(0.5))
+                .font(AppText.monoLabel)
+                .foregroundStyle(AppColor.Text.inverseTertiary)
         }
     }
 
@@ -407,7 +418,7 @@ struct ReadinessCard: View {
         return VStack(spacing: 6) {
             Text("Achievements")
                 .font(AppType.subheading)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
 
             HStack(spacing: 0) {
                 achievementCell(emoji: "🔥", value: streak,       label: "Supp Streak")
@@ -424,13 +435,13 @@ struct ReadinessCard: View {
     private func achievementCell(emoji: String, value: Int, label: String) -> some View {
         VStack(spacing: 4) {
             Text(emoji)
-                .font(.system(size: 20))
+                .font(AppText.titleStrong)
             Text("\(value)")
-                .font(.system(size: 28, weight: .bold))
-                .foregroundStyle(.white)
+                .font(AppText.metric)
+                .foregroundStyle(AppColor.Text.inversePrimary)
             Text(label)
-                .font(.system(size: 9))
-                .foregroundStyle(.white.opacity(0.55))
+                .font(AppText.monoLabel)
+                .foregroundStyle(AppColor.Text.inverseTertiary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -482,26 +493,26 @@ struct ReadinessCard: View {
         return VStack(alignment: .leading, spacing: 8) {
             Text("Recovery Studio")
                 .font(AppType.subheading)
-                .foregroundStyle(.white.opacity(0.7))
+                .foregroundStyle(AppColor.Text.inverseSecondary)
 
             HStack(alignment: .top, spacing: 12) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(recommendation.routine.title)
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                     Text(recommendation.routine.focus)
                         .font(AppType.caption)
-                        .foregroundStyle(.white.opacity(0.72))
+                        .foregroundStyle(AppColor.Text.inverseSecondary)
                         .lineLimit(2)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: 4) {
                     Text("\(recommendation.routine.durationMinutes)m")
-                        .font(.system(.headline, design: .monospaced, weight: .bold))
-                        .foregroundStyle(.white)
+                        .font(AppText.monoMetric)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                     Text(recommendation.routine.intensityLabel)
-                        .font(.system(size: 9))
-                        .foregroundStyle(.white.opacity(0.55))
+                        .font(AppText.monoLabel)
+                        .foregroundStyle(AppColor.Text.inverseTertiary)
                 }
             }
 
@@ -509,12 +520,12 @@ struct ReadinessCard: View {
                 ForEach(Array(recommendation.reasons.prefix(2)), id: \.self) { reason in
                     HStack(alignment: .top, spacing: 6) {
                         Image(systemName: "sparkles")
-                            .font(.system(size: 10))
+                            .font(AppText.caption)
                             .foregroundStyle(Color.accent.cyan.opacity(0.9))
                             .padding(.top, 1)
                         Text(reason)
                             .font(AppType.caption)
-                            .foregroundStyle(.white.opacity(0.68))
+                            .foregroundStyle(AppColor.Text.inverseSecondary)
                             .lineLimit(2)
                     }
                 }
@@ -524,16 +535,16 @@ struct ReadinessCard: View {
                 ForEach(recommendation.routine.steps.prefix(2)) { step in
                     VStack(alignment: .leading, spacing: 3) {
                         Text(step.title)
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundStyle(.white)
+                            .font(AppText.captionStrong)
+                            .foregroundStyle(AppColor.Text.inversePrimary)
                             .lineLimit(2)
                         Text("\(step.minutes) min")
-                            .font(.system(size: 9))
-                            .foregroundStyle(.white.opacity(0.55))
+                            .font(AppText.monoLabel)
+                            .foregroundStyle(AppColor.Text.inverseTertiary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(8)
-                    .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+                    .background(AppColor.Surface.primary.opacity(0.16), in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
                 }
             }
         }

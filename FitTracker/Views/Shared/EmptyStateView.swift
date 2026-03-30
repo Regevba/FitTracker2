@@ -11,24 +11,20 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 36))
-                .foregroundColor(.secondary)
+                .font(AppText.metric)
+                .foregroundStyle(AppColor.Text.secondary)
 
             Text(title)
                 .font(AppType.headline)
-                .foregroundColor(.primary)
+                .foregroundStyle(AppColor.Text.primary)
 
             Text(subtitle)
                 .font(AppType.subheading)
-                .foregroundColor(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
                 .multilineTextAlignment(.center)
 
             if let ctaLabel = ctaLabel, ctaAction != nil {
-                Button(action: ctaAction ?? {}) {
-                    Text(ctaLabel)
-                        .font(AppType.body)
-                }
-                .foregroundColor(.orange)
+                AppButton(title: ctaLabel, hierarchy: .tertiary, isFullWidth: false, action: ctaAction ?? {})
             }
         }
         .padding(.horizontal, 24)
