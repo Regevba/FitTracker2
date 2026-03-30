@@ -1406,7 +1406,7 @@ struct CardioLogPanel: View {
                         }
                         .onTapGesture { showImageExpanded = true }
                 } else {
-                    RoundedRectangle(cornerRadius: 10)
+                    RoundedRectangle(cornerRadius: AppRadius.xSmall)
                         .fill(Color.white.opacity(0.12))
                         .frame(height: 80)
                         .overlay {
@@ -1419,11 +1419,11 @@ struct CardioLogPanel: View {
                         }
                 }
             }
-            .padding(12)
-            .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+            .padding(AppSpacing.xSmall)
+            .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
         }
-        .padding(12)
-        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 16))
+        .padding(AppSpacing.xSmall)
+        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
         // Handle photo selection from library
         .onChange(of: selectedPhotoItem) { _, item in
             Task {
@@ -1583,9 +1583,9 @@ struct CardioField: View {
             TextField(placeholder, text: $value)
                 .font(.system(.body, design: .monospaced))
                 .keyboardType(.decimalPad)
-                .padding(10)
-                .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 10))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.white.opacity(0.12)))
+                .padding(AppSpacing.xxSmall)
+                .background(Color.white.opacity(0.18), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+                .overlay(RoundedRectangle(cornerRadius: AppRadius.xSmall).stroke(Color.white.opacity(0.12)))
         }
     }
 }
@@ -1606,7 +1606,7 @@ struct RPETapBar: View {
                         .font(.system(size: 10, weight: isSelected ? .bold : .regular, design: .monospaced))
                         .foregroundStyle(isSelected ? Color.black : Color.secondary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 7)
+                        .padding(.vertical, AppSpacing.xxSmall)
                         .background(
                             isSelected
                                 ? Color.appOrange2
@@ -1642,7 +1642,7 @@ struct StatusDropdown: View {
                 Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold))
             }
             .foregroundStyle(color)
-            .padding(.horizontal, 9).padding(.vertical, 5)
+            .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
             .background(color.opacity(0.1), in: RoundedRectangle(cornerRadius: 7))
         }
     }
