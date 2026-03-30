@@ -66,7 +66,12 @@ struct MainScreenView: View {
         RecoveryRoutineLibrary.recommend(dayType: activeDayType, readinessScore: readinessScore, liveMetrics: metrics, log: todayLog, preferences: dataStore.userPreferences)
     }
 
-    private let bodyFatTint = AppColor.Status.warning
+    // Background palette — defined centrally in AppTheme.swift
+    private let bgOrange1 = Color.appOrange1
+    private let bgOrange2 = Color.appOrange2
+    private let bgBlue1   = Color.appBlue1
+    private let bgBlue2   = Color.appBlue2
+    private let bodyFatTint = Color(red: 0.76, green: 0.38, blue: 0.06)
 
     private func checkMilestones() {
         // Supplement streak
@@ -174,7 +179,7 @@ struct MainScreenView: View {
                 )
             }
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(AppSheet.standardCornerRadius)
+            .presentationCornerRadius(24)
         }
     }
 
@@ -183,7 +188,14 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var backgroundLayer: some View {
-        AppGradient.screenBackground
+        ZStack {
+            LinearGradient(colors: [bgOrange1, bgOrange2],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(colors: [bgBlue1, bgBlue2],
+                           startPoint: .topLeading, endPoint: .bottomTrailing)
+                .opacity(goalProgress)
+                .animation(.easeOut(duration: 0.6), value: goalProgress)
+        }
         .ignoresSafeArea()
     }
 
@@ -192,29 +204,28 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private func greetingHeader(tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(greeting)
-                        .font(AppText.pageTitle)
-                        .foregroundStyle(AppColor.Text.primary)
+                        .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded))
                         .lineLimit(2)
                         .minimumScaleFactor(0.82)
                     Text(todayFormatted)
-                        .font(AppText.subheading)
-                        .foregroundStyle(AppColor.Text.secondary)
+                        .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.65))
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
+                VStack(alignment: .trailing, spacing: AppSpacing.xxSmall) {
                     Text("Day \(profile.daysSinceStart)")
-                        .font(AppText.captionStrong)
-                        .foregroundStyle(AppColor.Text.primary)
+                        .font(.system(size: tight ? 12 : 13, weight: .bold, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.82))
                     Text(profile.currentPhase.rawValue)
-                        .font(AppText.captionStrong)
-                        .padding(.horizontal, tight ? AppSpacing.xxSmall : AppSpacing.xxSmall)
-                        .padding(.vertical, tight ? AppSpacing.xxxSmall : AppSpacing.xxxSmall)
-                        .background(AppColor.Surface.elevated, in: Capsule())
-                        .foregroundStyle(AppColor.Text.secondary)
+                        .font(.system(size: tight ? 11 : 12, weight: .semibold, design: .rounded))
+                        .padding(.horizontal, tight ? 9 : 11)
+                        .padding(.vertical, tight ? 5 : 6)
+                        .background(Color.white.opacity(0.5), in: Capsule())
+                        .foregroundStyle(.black.opacity(0.72))
                 }
             }
         }
@@ -225,13 +236,13 @@ struct MainScreenView: View {
             HStack {
                 sectionEyebrow("Status")
                 Spacer()
-                HStack(spacing: 6) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     Circle()
                         .fill(recommendationAccent)
                         .frame(width: 8, height: 8)
                     Text(readinessContextShort)
-                        .font(AppText.captionStrong)
-                        .foregroundStyle(AppColor.Text.secondary)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.black.opacity(0.58))
                 }
             }
 
@@ -248,7 +259,7 @@ struct MainScreenView: View {
                 )
 
                 Divider()
-                    .overlay(AppColor.Surface.materialStrong)
+                    .overlay(Color.white.opacity(0.4))
                     .padding(.vertical, AppSpacing.xxSmall)
 
                 statusValueColumn(
@@ -265,18 +276,18 @@ struct MainScreenView: View {
 
             HStack {
                 Text(recommendationTitle)
-                        .font(tight ? AppType.subheading : AppType.body)
-                    .foregroundStyle(AppColor.Text.secondary)
+                    .font(tight ? AppType.subheading : AppType.body)
+                    .foregroundStyle(.black.opacity(0.72))
                     .lineLimit(2)
                 Spacer()
                 Button {
                     performHomeAction("metrics", action: { manualEntry = true })
                 } label: {
                     Image(systemName: "square.and.pencil")
-                        .font(AppText.callout)
-                        .foregroundStyle(AppColor.Accent.secondary)
-                        .frame(width: 44, height: 44)
-                        .background(AppColor.Surface.primary, in: Circle())
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(Color.appBlue1)
+                        .frame(width: 34, height: 34)
+                        .background(Color.white.opacity(0.42), in: Circle())
                 }
                 .buttonStyle(.plain)
             }
@@ -288,25 +299,25 @@ struct MainScreenView: View {
 
     private func goalProgressCard(compact: Bool, tight: Bool) -> some View {
         HStack(alignment: .center, spacing: splitSectionSpacing(compact: compact, tight: tight)) {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                 sectionEyebrow("Goal")
                 ZStack {
                     Circle()
-                        .stroke(AppColor.Surface.materialStrong, lineWidth: 12)
+                        .stroke(Color.white.opacity(0.38), lineWidth: 12)
                     Circle()
                         .trim(from: 0, to: max(goalProgress, 0.02))
                         .stroke(
-                            AngularGradient(colors: [AppColor.Accent.secondary, bodyFatTint, AppColor.Accent.secondary], center: .center),
+                            AngularGradient(colors: [.appBlue1, bodyFatTint, .appBlue1], center: .center),
                             style: StrokeStyle(lineWidth: 12, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
                     VStack(spacing: 2) {
                         Text("\(Int(goalProgress * 100))%")
-                            .font(AppText.metricCompact)
-                            .foregroundStyle(AppColor.Text.primary)
+                            .font(.system(size: tight ? 22 : (compact ? 24 : 28), weight: .bold, design: .rounded))
+                            .foregroundStyle(.black.opacity(0.82))
                         Text("Goal")
-                            .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.secondary)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.black.opacity(0.56))
                     }
                 }
                 .frame(width: tight ? 86 : (compact ? 100 : 116), height: tight ? 86 : (compact ? 100 : 116))
@@ -327,8 +338,8 @@ struct MainScreenView: View {
                     compact: tight
                 )
                 Text(essentialsSummary)
-                    .font(AppText.caption)
-                    .foregroundStyle(AppColor.Text.secondary)
+                    .font(.caption)
+                    .foregroundStyle(.black.opacity(0.56))
                     .lineLimit(2)
             }
         }
@@ -349,18 +360,18 @@ struct MainScreenView: View {
                             .fill(recommendationAccent)
                             .frame(width: tight ? 64 : (compact ? 76 : 88), height: tight ? 64 : (compact ? 76 : 88))
                         Image(systemName: primaryActionIcon)
-                            .font(AppText.metricCompact)
-                            .foregroundStyle(AppColor.Text.inversePrimary)
+                            .font(.system(size: tight ? 22 : (compact ? 26 : 32), weight: .bold))
+                            .foregroundStyle(.white)
                     }
                 }
                 .buttonStyle(.plain)
                 .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
-                .shadow(color: AppShadow.ctaColor, radius: AppShadow.ctaRadius, y: AppShadow.ctaYOffset)
+                .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
 
                 VStack(alignment: .leading, spacing: trainingTextSpacing(compact: compact, tight: tight)) {
                     Text(primaryActionTitle)
-                        .font(AppText.titleStrong)
-                        .foregroundStyle(AppColor.Text.primary)
+                        .font(.system(size: tight ? 17 : 19.5, weight: .bold, design: .rounded))
+                        .foregroundStyle(.black.opacity(0.82))
 
                     Menu {
                         Button("Use Today's Schedule") { selectedDayType = nil }
@@ -369,24 +380,24 @@ struct MainScreenView: View {
                             Button(day.rawValue) { selectedDayType = day }
                         }
                     } label: {
-                        HStack(spacing: 8) {
+                        HStack(spacing: AppSpacing.xxSmall) {
                             Image(systemName: activeDayType.icon)
                             Text(activeDayType.rawValue)
                                 .lineLimit(1)
                             Image(systemName: "chevron.down")
-                                .font(AppText.captionStrong)
+                                .font(.caption.weight(.bold))
                         }
-                        .font(AppText.callout)
-                        .foregroundStyle(AppColor.Accent.secondary)
+                        .font(.system(size: tight ? 14 : 15.5, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color.appBlue1)
                     }
 
                     Text("\(estimatedSessionLength) • \(recommendationTone)")
                         .font(tight ? .caption : AppType.subheading)
-                        .foregroundStyle(AppColor.Text.secondary)
+                        .foregroundStyle(.black.opacity(0.58))
                     if !tight {
                         Text(recommendationSubtitle)
-                            .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.secondary)
+                            .font(.caption)
+                            .foregroundStyle(.black.opacity(0.56))
                             .lineLimit(2)
                     }
                 }
@@ -422,17 +433,17 @@ struct MainScreenView: View {
         isMissing: Bool,
         compact: Bool
     ) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 9 : 12) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: compact ? 9 : AppSpacing.xSmall) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: icon)
-                    .font(AppText.captionStrong)
+                    .font(.caption.weight(.bold))
                 Text(title)
-                    .font(AppText.eyebrow)
+                    .font(.system(size: 10, weight: .bold, design: .rounded))
                     .tracking(1.8)
                 if isMissing {
                     Text("Missing")
-                        .font(AppText.captionStrong)
-                        .padding(.horizontal, AppSpacing.xxSmall)
+                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .padding(.horizontal, 7)
                         .padding(.vertical, AppSpacing.xxxSmall)
                         .background(tint.opacity(0.14), in: Capsule())
                         .foregroundStyle(tint)
@@ -442,17 +453,17 @@ struct MainScreenView: View {
 
             HStack(alignment: .lastTextBaseline, spacing: 4) {
                 Text(value)
-                    .font(AppText.metricCompact)
+                    .font(.system(size: compact ? 21 : 25, weight: .bold, design: .rounded))
                     .monospacedDigit()
-                    .foregroundStyle(AppColor.Text.primary)
+                    .foregroundStyle(.black.opacity(0.82))
                 Text(unit)
-                    .font(AppText.subheading)
-                    .foregroundStyle(AppColor.Text.tertiary)
+                    .font((compact ? Font.subheadline : Font.title3).weight(.medium))
+                    .foregroundStyle(.black.opacity(0.42))
             }
 
             Text(target)
-                .font(AppText.caption)
-                .foregroundStyle(isMissing ? tint.opacity(0.88) : AppColor.Text.secondary)
+                .font(.caption)
+                .foregroundStyle(isMissing ? tint.opacity(0.88) : .black.opacity(0.52))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -461,18 +472,18 @@ struct MainScreenView: View {
         VStack(alignment: .leading, spacing: compact ? 6 : 5) {
             HStack {
                 Text(title)
-                    .font(AppText.callout)
-                    .foregroundStyle(AppColor.Text.secondary)
+                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
+                    .foregroundStyle(.black.opacity(0.64))
                 Spacer()
                 Text("\(Int(progress * 100))%")
-                    .font(AppText.callout)
+                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
                     .monospacedDigit()
                     .foregroundStyle(tint)
             }
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(AppColor.Surface.materialStrong)
+                        .fill(Color.white.opacity(0.42))
                     Capsule()
                         .fill(tint.opacity(0.95))
                         .frame(width: max(proxy.size.width * progress, 8))
@@ -485,27 +496,27 @@ struct MainScreenView: View {
     private func metricTile(icon: String, value: String, label: String, tint: Color, compact: Bool) -> some View {
         VStack(spacing: compact ? 5 : 8) {
             Image(systemName: icon)
-                .font(AppText.callout)
+                .font(.system(size: compact ? 15 : 18, weight: .semibold))
                 .foregroundStyle(tint)
             Text(value)
-                .font(AppText.titleMedium)
+                .font(.system(size: compact ? 17 : 19, weight: .bold, design: .rounded))
                 .monospacedDigit()
-                .foregroundStyle(AppColor.Text.primary)
+                .foregroundStyle(.black.opacity(0.82))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(label)
-                .font(AppText.caption)
-                .foregroundStyle(AppColor.Text.secondary)
+                .font(compact ? .caption2 : .caption)
+                .foregroundStyle(.black.opacity(0.54))
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, compact ? AppSpacing.xxSmall : AppSpacing.xxSmall)
+        .padding(.vertical, compact ? 7 : 9)
     }
 
     private func sectionEyebrow(_ title: String) -> some View {
         Text(title)
-            .font(AppText.eyebrow)
+            .font(.system(size: 11, weight: .bold, design: .rounded))
             .tracking(2.1)
-            .foregroundStyle(AppColor.Text.tertiary)
+            .foregroundStyle(.black.opacity(0.45))
             .textCase(.uppercase)
     }
 
@@ -514,31 +525,31 @@ struct MainScreenView: View {
     }
 
     private func cardStackSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 12 : (compact ? 14 : 16)
+        tight ? AppSpacing.xSmall : (compact ? AppSpacing.xSmall : AppSpacing.small)
     }
 
     private func cardPadding(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 14 : (compact ? 16 : 18)
+        tight ? AppSpacing.xSmall : (compact ? AppSpacing.small : AppSpacing.large)
     }
 
     private func cardInnerSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 10 : (compact ? 12 : 14)
+        tight ? AppSpacing.xxSmall : (compact ? AppSpacing.xSmall : AppSpacing.xSmall)
     }
 
     private func splitSectionSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 14 : (compact ? 18 : 22)
+        tight ? AppSpacing.xSmall : (compact ? AppSpacing.large : 22)
     }
 
     private func goalColumnSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 10 : (compact ? 12 : 16)
+        tight ? AppSpacing.xxSmall : (compact ? AppSpacing.xSmall : AppSpacing.small)
     }
 
     private func trainingTextSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 8 : (compact ? 9 : 10)
+        tight ? AppSpacing.xxSmall : (compact ? 9 : AppSpacing.xxSmall)
     }
 
     private func metricsTileSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 6 : (compact ? 8 : 10)
+        tight ? AppSpacing.xxSmall : (compact ? AppSpacing.xxSmall : AppSpacing.xxSmall)
     }
 
     private var greeting: String {
@@ -734,9 +745,9 @@ private struct BlendedSectionStyle: ViewModifier {
             .overlay(alignment: .bottom) {
                 if showDivider {
                     Rectangle()
-                        .fill(AppColor.Surface.materialStrong)
+                        .fill(Color.white.opacity(0.34))
                         .frame(height: 1)
-                        .padding(.top, AppSpacing.xSmall)
+                        .padding(.top, 12)
                 }
             }
     }
@@ -750,50 +761,50 @@ struct RecoveryRoutineSheet: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: AppSpacing.medium) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 6) {
+                        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                             Text(routine.title)
-                                .font(AppText.pageTitle)
+                                .font(.system(size: 28, weight: .bold, design: .rounded))
                             Text(routine.subtitle)
                                 .font(AppType.body)
-                                .foregroundStyle(AppColor.Text.secondary)
+                                .foregroundStyle(.secondary)
                         }
                         Spacer()
                         Text("\(routine.durationMinutes)m")
-                            .font(AppText.monoMetric)
-                            .foregroundStyle(AppColor.Accent.primary)
+                            .font(.system(.title2, design: .monospaced, weight: .bold))
+                            .foregroundStyle(Color.accentColor)
                     }
 
-                    HStack(spacing: 10) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         RecoveryMetaPill(label: routine.intensityLabel, icon: "dial.low")
                         RecoveryMetaPill(label: routine.focus, icon: routine.icon)
                     }
                 }
 
                 if !reasons.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                         Text("Why today")
                             .font(.headline)
                         ForEach(reasons, id: \.self) { reason in
-                            HStack(alignment: .top, spacing: 8) {
+                            HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                                 Image(systemName: "sparkles")
                                     .foregroundStyle(Color.accentColor)
                                     .padding(.top, 2)
                                 Text(reason)
                                     .font(AppType.subheading)
-                                    .foregroundStyle(AppColor.Text.secondary)
+                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     Text("Flow")
                         .font(.headline)
                     ForEach(Array(routine.steps.enumerated()), id: \.element.id) { index, step in
-                        HStack(alignment: .top, spacing: 12) {
+                        HStack(alignment: .top, spacing: AppSpacing.xSmall) {
                             ZStack {
                                 Circle()
                                     .fill(Color.accentColor.opacity(0.14))
@@ -803,34 +814,34 @@ struct RecoveryRoutineSheet: View {
                                     .foregroundStyle(Color.accentColor)
                             }
 
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                                 HStack {
                                     Text(step.title)
                                         .font(.subheadline.weight(.semibold))
                                     Spacer()
                                     Text("\(step.minutes) min")
                                         .font(.caption.weight(.semibold))
-                                        .foregroundStyle(AppColor.Text.secondary)
+                                        .foregroundStyle(.secondary)
                                 }
                                 Text(step.detail)
                                     .font(AppType.subheading)
-                                    .foregroundStyle(AppColor.Text.secondary)
+                                    .foregroundStyle(.secondary)
                             }
                         }
                         .padding(AppSpacing.xSmall)
-                        .background(AppColor.Text.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Coaching note")
                         .font(.headline)
                     Text(routine.coachingNote)
                         .font(AppType.subheading)
-                        .foregroundStyle(AppColor.Text.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 .padding(AppSpacing.small)
-                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 18))
             }
             .padding(AppSpacing.medium)
         }
@@ -857,8 +868,8 @@ private struct RecoveryMetaPill: View {
                 .lineLimit(1)
         }
         .foregroundStyle(Color.accentColor)
-        .padding(.horizontal, AppSpacing.xSmall)
-        .padding(.vertical, AppSpacing.xxSmall)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 9)
         .background(Color.accentColor.opacity(0.1), in: Capsule())
     }
 }
@@ -878,17 +889,17 @@ struct SyncStatusIndicator: View {
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(.black.opacity(0.72))
         }
-        .padding(.horizontal, AppSpacing.xSmall)
-        .padding(.vertical, AppSpacing.xxSmall)
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(AppColor.Surface.materialStrong)
+                .fill(Color.white.opacity(0.34))
                 .overlay(
                     Capsule()
-                        .stroke(AppColor.Border.subtle, lineWidth: 1)
+                        .stroke(Color.white.opacity(0.42), lineWidth: 1)
                 )
         )
-        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
+        .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
         .tint(.clear)
     }
 }
@@ -914,40 +925,30 @@ struct ManualBiometricEntry: View {
                 Section("Scale Readings — Xiaomi S400") {
                     HStack {
                         Text("Weight")
-                            .font(AppText.body)
-                            .foregroundStyle(AppColor.Text.primary)
                         Spacer()
-                        compactMetricField("kg", text: $weightText, keyboardType: .decimalPad)
+                        TextField("kg", text: $weightText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
                     }
                     HStack {
                         Text("Body Fat")
-                            .font(AppText.body)
-                            .foregroundStyle(AppColor.Text.primary)
                         Spacer()
-                        compactMetricField("%", text: $bfText, keyboardType: .decimalPad)
+                        TextField("%", text: $bfText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
                     }
                 }
                 Section("Manual Overrides (if Watch unavailable)") {
                     HStack {
                         Text("Resting HR")
-                            .font(AppText.body)
-                            .foregroundStyle(AppColor.Text.primary)
                         Spacer()
-                        compactMetricField("bpm", text: $hrText, keyboardType: .numberPad)
+                        TextField("bpm", text: $hrText).keyboardType(.numberPad).multilineTextAlignment(.trailing).frame(width: 80)
                     }
                     HStack {
                         Text("HRV")
-                            .font(AppText.body)
-                            .foregroundStyle(AppColor.Text.primary)
                         Spacer()
-                        compactMetricField("ms", text: $hrvText, keyboardType: .decimalPad)
+                        TextField("ms", text: $hrvText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
                     }
                     HStack {
                         Text("Sleep")
-                            .font(AppText.body)
-                            .foregroundStyle(AppColor.Text.primary)
                         Spacer()
-                        compactMetricField("hrs", text: $sleepText, keyboardType: .decimalPad)
+                        TextField("hrs", text: $sleepText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
                     }
                 }
             }
@@ -969,18 +970,6 @@ struct ManualBiometricEntry: View {
                 }
             }
         }
-    }
-
-    private func compactMetricField(_ placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType) -> some View {
-        AppInputShell {
-            TextField(placeholder, text: text)
-                .font(AppText.body)
-                .foregroundStyle(AppColor.Text.primary)
-                .keyboardType(keyboardType)
-                .multilineTextAlignment(.trailing)
-                .frame(maxWidth: .infinity, alignment: .trailing)
-        }
-        .frame(minWidth: 92, idealWidth: 112, maxWidth: 128)
     }
 
     private func save() {

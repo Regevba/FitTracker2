@@ -35,7 +35,7 @@ struct AccountPanelView: View {
                         settingsLauncherCard
                         signOutCard
                     }
-                    .padding(20)
+                    .padding(AppSpacing.medium)
                 }
             }
             .navigationTitle("Account")
@@ -44,7 +44,7 @@ struct AccountPanelView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                         .fontWeight(.semibold)
-                        .foregroundStyle(AppColor.Accent.primary)
+                        .foregroundStyle(Color.appAccentPrimary)
                 }
             }
             .alert("Sign Out?", isPresented: $showLogoutConfirm) {
@@ -57,18 +57,15 @@ struct AccountPanelView: View {
                 Text("You'll be returned to the welcome screen. Your encrypted data remains safely stored on this device and in iCloud.")
             }
             .sheet(isPresented: $showSettings) {
-                NavigationStack {
-                    SettingsView()
-                        .environmentObject(signIn)
-                        .environmentObject(biometricAuth)
-                        .environmentObject(dataStore)
-                        .environmentObject(healthService)
-                        .environmentObject(cloudSync)
-                        .environmentObject(settings)
-                        .environmentObject(watchService)
-                }
-                .presentationDetents([.large])
-                .presentationCornerRadius(AppSheet.standardCornerRadius)
+                SettingsView()
+                    .environmentObject(signIn)
+                    .environmentObject(biometricAuth)
+                    .environmentObject(dataStore)
+                    .environmentObject(healthService)
+                    .environmentObject(cloudSync)
+                    .environmentObject(settings)
+                    .environmentObject(watchService)
+                    .presentationDetents([.large])
             }
         }
     }
@@ -78,18 +75,17 @@ struct AccountPanelView: View {
     // ─────────────────────────────────────────────────────
 
     private var accountHeroCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 16) {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            HStack(spacing: AppSpacing.small) {
                 avatarView
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(session?.displayName ?? "User")
-                        .font(AppText.titleStrong)
-                        .foregroundStyle(AppColor.Text.primary)
-                    HStack(spacing: 6) {
+                        .font(.title3.weight(.bold))
+                    HStack(spacing: AppSpacing.xxSmall) {
                         providerBadge
                         Text(session?.provider.rawValue ?? "Signed In")
-                            .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.secondary)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
                 }
                 Spacer()
@@ -101,18 +97,18 @@ struct AccountPanelView: View {
             accountDetailRow(title: "Phone", value: session?.phone ?? "—")
 
             Text("Account details come from your active sign-in provider and stay tied to this device's encrypted data.")
-                .font(AppText.caption)
-                .foregroundStyle(AppColor.Text.secondary)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        .padding(18)
+        .padding(AppSpacing.large)
         .background(cardBackground)
     }
 
     private var settingsLauncherCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             sectionTitle("Settings")
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 accessPill(
                     icon: "lock.fill",
                     label: settings.requireBiometricUnlockOnReopen ? "Biometric Reopen On" : "Biometric Reopen Off",
@@ -133,36 +129,54 @@ struct AccountPanelView: View {
             Button {
                 showSettings = true
             } label: {
-                AppMenuRow(
-                    icon: "gearshape.fill",
-                    title: "Open Full Settings",
-                    subtitle: "Manage account security, HealthKit, goals, training preferences, sync, and design system guidance.",
-                    tint: AppColor.Accent.primary
-                )
+                HStack(spacing: AppSpacing.xSmall) {
+                    Image(systemName: "gearshape.fill")
+                        .foregroundStyle(Color.appAccentPrimary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Open Full Settings")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.primary)
+                        Text("Manage account security, HealthKit, goals, training preferences, and sync.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(AppSpacing.xSmall)
+                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
             .buttonStyle(.plain)
         }
-        .padding(18)
+        .padding(AppSpacing.large)
         .background(cardBackground)
     }
 
     private var signOutCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             sectionTitle("Session")
-            AppButton(
-                title: "Sign Out",
-                systemImage: "rectangle.portrait.and.arrow.right",
-                hierarchy: .destructive
-            ) {
+            Button(role: .destructive) {
                 showLogoutConfirm = true
+            } label: {
+                HStack(spacing: AppSpacing.xSmall) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                    Text("Sign Out")
+                        .fontWeight(.semibold)
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, AppSpacing.xSmall)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.borderedProminent)
+            .tint(.red)
 
             Text("Signing out returns you to the welcome screen. Encrypted logs remain on device and in iCloud.")
-                .font(AppText.caption)
-                .foregroundStyle(AppColor.Text.secondary)
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        .padding(18)
+        .padding(AppSpacing.large)
         .background(cardBackground)
     }
 
@@ -170,26 +184,23 @@ struct AccountPanelView: View {
         ZStack {
             Circle()
                 .fill(
-                    LinearGradient(
-                        colors: [AppColor.Accent.primary.opacity(0.88), AppColor.Accent.secondary.opacity(0.72)],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
+                    LinearGradient(colors: [.green.opacity(0.8), .mint.opacity(0.6)],
+                                   startPoint: .topLeading, endPoint: .bottomTrailing)
                 )
                 .frame(width: 52, height: 52)
 
             Text(session?.initials ?? "—")
-                .font(AppText.metricCompact)
-                .foregroundStyle(AppColor.Text.inversePrimary)
+                .font(.system(.title2, design: .rounded, weight: .bold))
+                .foregroundStyle(.white)
         }
     }
 
     private var cardBackground: some View {
         RoundedRectangle(cornerRadius: 22)
-            .fill(AppColor.Surface.elevated)
+            .fill(Color.appSurface.opacity(0.96))
             .overlay(
                 RoundedRectangle(cornerRadius: 22)
-                    .stroke(AppColor.Border.subtle, lineWidth: 1)
+                    .stroke(Color.appStroke, lineWidth: 1)
             )
     }
 
@@ -201,8 +212,8 @@ struct AccountPanelView: View {
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(AppText.captionStrong)
-            .foregroundStyle(AppColor.Text.secondary)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.secondary)
             .textCase(.uppercase)
             .tracking(1)
     }
@@ -210,8 +221,8 @@ struct AccountPanelView: View {
     private func accountDetailRow(title: String, value: String, selectable: Bool = false) -> some View {
         HStack(alignment: .top) {
             Text(title)
-                .font(AppText.captionStrong)
-                .foregroundStyle(AppColor.Text.secondary)
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
                 .frame(width: 52, alignment: .leading)
             Group {
                 if selectable {
@@ -220,22 +231,22 @@ struct AccountPanelView: View {
                     Text(value)
                 }
             }
-            .font(AppText.subheading)
-            .foregroundStyle(AppColor.Text.primary)
+            .font(.subheadline)
+            .foregroundStyle(.primary.opacity(0.82))
             Spacer(minLength: 0)
         }
     }
 
     private func accessPill(icon: String, label: String, tint: Color) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
-                .font(AppText.captionStrong)
+                .font(.caption.weight(.semibold))
             Text(label)
-                .font(AppText.captionStrong)
+                .font(.caption.weight(.semibold))
         }
         .foregroundStyle(tint)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(tint.opacity(0.12), in: Capsule())
     }
 
@@ -244,9 +255,9 @@ struct AccountPanelView: View {
         let provider = session?.provider ?? .apple
         HStack(spacing: 3) {
             Image(systemName: providerIcon(provider))
-                .font(AppText.monoLabel)
+                .font(.system(size: 9, weight: .semibold))
             Text(provider.rawValue)
-                .font(AppText.monoLabel)
+                .font(.system(size: 9, weight: .semibold))
         }
         .padding(.horizontal, 6).padding(.vertical, 2)
         .background(providerColor(provider).opacity(0.12), in: Capsule())
@@ -257,7 +268,7 @@ struct AccountPanelView: View {
         switch p {
         case .apple:    "apple.logo"
         case .google:   "globe"
-        case .facebook: "person.2.fill"
+        case .facebook: "f.circle.fill"
         case .passkey:  "key.fill"
         case .email:    "envelope.fill"
         }
@@ -265,11 +276,11 @@ struct AccountPanelView: View {
 
     private func providerColor(_ p: AuthProvider) -> Color {
         switch p {
-        case .apple:    AppColor.Text.primary
-        case .google:   AppColor.Accent.secondary
-        case .facebook: AppColor.Accent.sleep
-        case .passkey:  AppColor.Accent.sleep
-        case .email:    AppColor.Accent.secondary
+        case .apple:    .primary
+        case .google:   .red
+        case .facebook: .blue
+        case .passkey:  .purple
+        case .email:    .appBlue2
         }
     }
 }
