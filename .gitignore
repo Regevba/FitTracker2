@@ -38,4 +38,4 @@ xcuserdata/
 # macOS junk
 .DS_Store
 
-*.code-workspace
+*.code-workspace.worktrees/

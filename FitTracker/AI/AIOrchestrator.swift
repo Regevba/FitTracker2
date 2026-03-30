@@ -46,6 +46,12 @@ public final class AIOrchestrator: ObservableObject {
     // MARK: – Public API
     // ─────────────────────────────────────────────────────
 
+    /// Clear all cached recommendations (called on sign-out).
+    public func clearRecommendations() {
+        latestRecommendations = [:]
+        lastError = nil
+    }
+
     public func process(segment: AISegment, jwt: String?, overrideSnapshot: LocalUserSnapshot? = nil) async {
         isProcessing = true
         lastError = nil
@@ -74,6 +80,9 @@ public final class AIOrchestrator: ObservableObject {
             }
         } else {
             baseRecommendation = localRecommendation
+            if bands == nil {
+                lastError = .insufficientData
+            }
         }
 
         let finalRecommendation: AIRecommendation
@@ -130,12 +139,14 @@ public enum AIError: Error, Sendable {
     case unauthenticated
     case rateLimited
     case networkError(any Error)
+    case insufficientData
 
     public var localizedDescription: String {
         switch self {
         case .unauthenticated:    return "Cloud AI is unavailable until a backend-authenticated session is active."
         case .rateLimited:        return "AI requests are temporarily limited. Try again later."
         case .networkError(let e): return "Network error: \(e.localizedDescription)"
+        case .insufficientData:   return "Not enough tracking data yet to generate AI insights. Keep logging!"
         }
     }
 }

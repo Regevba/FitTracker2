@@ -1,7 +1,8 @@
 // Services/Auth/SignInService.swift
 // Session + auth flow manager for:
-//   - Sign in with Apple
-//   - Local email registration / verification / login
+//   - Sign in with Apple (Supabase-backed)
+//   - Google sign-in (adapter-backed, mockable)
+//   - Email registration / verification / login (adapter-backed, mockable)
 //   - Passkey / WebAuthn login and registration
 
 import Foundation
@@ -19,16 +20,16 @@ import AppKit
 // ─────────────────────────────────────────────────────────
 
 struct UserSession: Codable, Sendable, Equatable {
-    var provider:      AuthProvider
-    var userID:        String
-    var displayName:   String
-    var email:         String?
-    var phone:         String?
-    var avatarURL:     URL?
-    var sessionToken:  String
+    var provider:           AuthProvider
+    var userID:             String
+    var displayName:        String
+    var email:              String?
+    var phone:              String?
+    var avatarURL:          URL?
+    var sessionToken:       String
     var backendAccessToken: String?
-    var credentialID:  Data?
-    var signedInAt:    Date = Date()
+    var credentialID:       Data?
+    var signedInAt:         Date = Date()
 
     var initials: String {
         let parts = displayName.split(separator: " ")
@@ -45,6 +46,8 @@ struct UserSession: Codable, Sendable, Equatable {
 
 enum AuthProvider: String, Codable, Sendable {
     case apple    = "Apple"
+    case google   = "Google"
+    case facebook = "Facebook"
     case passkey  = "Passkey"
     case email    = "Email"
 }
@@ -57,13 +60,17 @@ enum AuthState: Equatable {
 }
 
 enum AuthRoute: Hashable {
+    case registerMethods
+    case loginMethods
+    case emailRegistration
     case emailVerification
-    case passwordReset(prefillEmail: String)
+    case emailLogin
 }
 
 struct PendingEmailRegistration: Codable, Hashable, Sendable {
     var firstName: String
     var lastName: String
+    var birthday: Date
     var email: String
     var password: String
 
@@ -82,8 +89,11 @@ struct EmailRegistrationChallenge: Codable, Hashable, Sendable {
 }
 
 protocol AppleAuthProviding {
-    @MainActor
-    func startSignIn(using service: SignInService)
+    func startSignIn() async throws -> UserSession
+}
+
+protocol GoogleAuthProviding {
+    func signIn() async throws -> UserSession
 }
 
 protocol EmailAuthProviding {
@@ -94,16 +104,26 @@ protocol EmailAuthProviding {
     func requestPasswordReset(email: String) async throws
 }
 
-struct SystemAppleAuthProvider: AppleAuthProviding {
-    @MainActor
-    func startSignIn(using service: SignInService) {
-        service.startSystemAppleSignIn()
+// SupabaseAppleAuthProvider is defined in SupabaseAppleAuthProvider.swift.
+
+struct MockGoogleAuthProvider: GoogleAuthProviding {
+    func signIn() async throws -> UserSession {
+        try await Task.sleep(for: .milliseconds(700))
+        return UserSession(
+            provider: .google,
+            userID: UUID().uuidString,
+            displayName: "Google User",
+            email: "user@gmail.com",
+            sessionToken: UUID().uuidString
+        )
     }
 }
 
+#if DEBUG
 struct LocalEmailAuthProvider: EmailAuthProviding {
     func register(_ draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge {
         try await Task.sleep(for: .milliseconds(600))
+        // DEBUG-only: fixed code for Simulator/TestFlight-internal testing. Never ships in release.
         return EmailRegistrationChallenge(
             email: draft.email,
             expectedCode: "48291",
@@ -167,7 +187,6 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
 
     func resendRegistrationCode(challenge: EmailRegistrationChallenge, draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge {
         try await Task.sleep(for: .milliseconds(350))
-
         return EmailRegistrationChallenge(
             email: draft.email,
             expectedCode: challenge.expectedCode,
@@ -177,7 +196,6 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
 
     func requestPasswordReset(email: String) async throws {
         try await Task.sleep(for: .milliseconds(450))
-
         guard !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw NSError(
                 domain: "FitTracker.Auth",
@@ -187,6 +205,29 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
         }
     }
 }
+#else
+// Release builds: email auth requires a real Supabase backend.
+// Until wired, reject all email auth attempts so no mock session
+// can be created in a production binary.
+struct UnavailableEmailAuthProvider: EmailAuthProviding {
+    private static let msg = "Email sign-in is not available in this build. Use Sign in with Apple or Passkey."
+    func register(_ draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+    func verify(code: String, challenge: EmailRegistrationChallenge, draft: PendingEmailRegistration) async throws -> UserSession {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+    func login(email: String, password: String) async throws -> UserSession {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+    func resendRegistrationCode(challenge: EmailRegistrationChallenge, draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+    func requestPasswordReset(email: String) async throws {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+}
+#endif
 
 @MainActor
 final class SignInService: NSObject, ObservableObject {
@@ -202,6 +243,7 @@ final class SignInService: NSObject, ObservableObject {
     @Published private(set) var hasRegisteredPasskey: Bool
 
     private let appleProvider: AppleAuthProviding
+    private let googleProvider: GoogleAuthProviding
     private let emailProvider: EmailAuthProviding
 
     private var currentChallenge: Data = Data()
@@ -215,17 +257,24 @@ final class SignInService: NSObject, ObservableObject {
     #endif
 
     override init() {
-        self.appleProvider = SystemAppleAuthProvider()
+        self.appleProvider = SupabaseAppleAuthProvider()
+        self.googleProvider = MockGoogleAuthProvider()
+        #if DEBUG
         self.emailProvider = LocalEmailAuthProvider()
+        #else
+        self.emailProvider = UnavailableEmailAuthProvider()
+        #endif
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
     }
 
     init(
         appleProvider: AppleAuthProviding,
+        googleProvider: GoogleAuthProviding,
         emailProvider: EmailAuthProviding
     ) {
         self.appleProvider = appleProvider
+        self.googleProvider = googleProvider
         self.emailProvider = emailProvider
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
@@ -250,15 +299,23 @@ final class SignInService: NSObject, ObservableObject {
     var isPasskeyConfigured: Bool { passkeyRelyingPartyIdentifier != nil }
     var canShowPasskeyLogin: Bool { hasRegisteredPasskey && isPasskeyConfigured }
 
-    func restoreSession() {
+    /// Restores a previous session. Checks Supabase for a live/refreshable JWT;
+    /// updates the stored token if valid. Call from within a Task block at app launch.
+    func restoreSession() async {
         guard activeSession == nil else { return }
-
-        if let data = KeychainHelper.load(key: Self.sessionKey),
-           let session = try? JSONDecoder().decode(UserSession.self, from: data) {
-            storedSession = session
-        } else {
-            storedSession = nil
+        // 1. Ask Supabase if there's a live (or refreshable) session
+        if let supabaseSession = try? await supabase.auth.session {
+            // 2. Load UserSession metadata from Keychain and refresh the backend JWT
+            if let data = KeychainHelper.load(key: Self.sessionKey),
+               var stored = try? JSONDecoder().decode(UserSession.self, from: data) {
+                stored.backendAccessToken = supabaseSession.accessToken
+                self.storedSession = stored
+                return
+            }
         }
+        // 3. No valid Supabase session -> clear Keychain
+        KeychainHelper.delete(key: Self.sessionKey)
+        self.storedSession = nil
     }
 
     func lockForReopen() {
@@ -278,7 +335,7 @@ final class SignInService: NSObject, ObservableObject {
 
     func signOut() {
         KeychainHelper.delete(key: Self.sessionKey)
-        activeSession = nil
+        activeSession = nil       // triggers FitTrackerApp.onChange to clear dataStore + AI
         storedSession = nil
         pendingEmailRegistration = nil
         pendingEmailChallenge = nil
@@ -287,23 +344,39 @@ final class SignInService: NSObject, ObservableObject {
         statusMessage = nil
     }
 
-    func showPasswordReset(prefillEmail: String = "") {
+    func openRegisterFlow() {
         authErrorMessage = nil
         statusMessage = nil
-        navigationPath = [.passwordReset(prefillEmail: prefillEmail)]
+        navigationPath = [.registerMethods]
+    }
+
+    func openLoginFlow() {
+        authErrorMessage = nil
+        statusMessage = nil
+        navigationPath = [.loginMethods]
+    }
+
+    func showEmailRegistration() {
+        authErrorMessage = nil
+        statusMessage = nil
+        navigationPath.append(.emailRegistration)
+    }
+
+    func showEmailLogin() {
+        authErrorMessage = nil
+        statusMessage = nil
+        navigationPath.append(.emailLogin)
+    }
+
+    func resetToEntry() {
+        authErrorMessage = nil
+        statusMessage = nil
+        navigationPath.removeAll()
     }
 
     func clearFeedback() {
         authErrorMessage = nil
         statusMessage = nil
-    }
-
-    func resetToEntry(keepingStatus: Bool = false) {
-        authErrorMessage = nil
-        if !keepingStatus {
-            statusMessage = nil
-        }
-        navigationPath.removeAll()
     }
 
     func startEmailRegistration(_ draft: PendingEmailRegistration) async {
@@ -315,7 +388,7 @@ final class SignInService: NSObject, ObservableObject {
             let challenge = try await emailProvider.register(draft)
             pendingEmailRegistration = draft
             pendingEmailChallenge = challenge
-            navigationPath = [.emailVerification]
+            navigationPath = [.registerMethods, .emailVerification]
             isLoading = false
         } catch {
             isLoading = false
@@ -398,47 +471,42 @@ final class SignInService: NSObject, ObservableObject {
         }
     }
 
+    func signInWithGoogle() {
+        isLoading = true
+        authErrorMessage = nil
+        statusMessage = nil
+
+        Task {
+            do {
+                let session = try await googleProvider.signIn()
+                await MainActor.run {
+                    self.finishSignIn(session)
+                }
+            } catch {
+                await MainActor.run {
+                    self.isLoading = false
+                    self.authErrorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+
     func signInWithApple() {
         authErrorMessage = nil
         statusMessage = nil
         isLoading = true
-        appleProvider.startSignIn(using: self)
-    }
-
-    func prepareAppleSignInRequest(_ request: ASAuthorizationAppleIDRequest) {
-        authErrorMessage = nil
-        statusMessage = nil
-        isLoading = true
-
-        let nonce = generateNonce()
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = sha256(nonce)
-    }
-
-    func handleAppleSignInResult(_ result: Result<ASAuthorization, Error>) {
-        handleAuthorizationResult(result)
-    }
-
-    @MainActor
-    func startSystemAppleSignIn() {
-        #if os(iOS)
-        cachedWindow = UIApplication.shared.connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .flatMap { $0.windows }
-            .first { $0.isKeyWindow }
-        #elseif os(macOS)
-        cachedWindow = NSApplication.shared.windows.first
-        #endif
-
-        let nonce = generateNonce()
-        let request = ASAuthorizationAppleIDProvider().createRequest()
-        request.requestedScopes = [.fullName, .email]
-        request.nonce = sha256(nonce)
-
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-        controller.presentationContextProvider = self
-        controller.performRequests()
+        Task {
+            do {
+                let session = try await appleProvider.startSignIn()
+                finishSignIn(session)
+            } catch {
+                isLoading = false
+                let authError = error as? ASAuthorizationError
+                if authError?.code != .canceled {
+                    authErrorMessage = error.localizedDescription
+                }
+            }
+        }
     }
 
     func signInWithPasskey(userHandle: String? = nil) {
@@ -536,6 +604,20 @@ final class SignInService: NSObject, ObservableObject {
         )
     }
 
+    #if targetEnvironment(simulator)
+    func signInAsTestUser() {
+        let session = UserSession(
+            provider: .apple,
+            userID: UUID().uuidString,
+            displayName: "\(AppBrand.name) User",
+            email: "test@simulator.local",
+            sessionToken: UUID().uuidString,
+            backendAccessToken: nil
+        )
+        finishSignIn(session)
+    }
+    #endif
+
     private func finishSignIn(_ session: UserSession) {
         activeSession = session
         storedSession = session
@@ -585,25 +667,24 @@ final class SignInService: NSObject, ObservableObject {
         guard !value.isEmpty, value.contains(".") else { return nil }
         return value
     }
+}
 
-    private func handleAuthorizationResult(_ result: Result<ASAuthorization, Error>) {
-        isLoading = false
+// ─────────────────────────────────────────────────────────
+// MARK: – ASAuthorizationControllerDelegate
+// ─────────────────────────────────────────────────────────
 
-        switch result {
-        case let .success(authorization):
+extension SignInService: ASAuthorizationControllerDelegate {
+
+    nonisolated func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithAuthorization authorization: ASAuthorization
+    ) {
+        Task { @MainActor in
+            isLoading = false
+
             switch authorization.credential {
-            case let cred as ASAuthorizationAppleIDCredential:
-                let name = [cred.fullName?.givenName, cred.fullName?.familyName]
-                    .compactMap { $0 }
-                    .joined(separator: " ")
-
-                let session = Self.mergedAppleSession(
-                    userID: cred.user,
-                    incomingName: name,
-                    incomingEmail: cred.email,
-                    existingAppleSession: storedSession?.provider == .apple ? storedSession : nil
-                )
-                finishSignIn(session)
+            // Note: ASAuthorizationAppleIDCredential is no longer handled here.
+            // SupabaseAppleAuthProvider uses its own ASAuthorizationController + delegate.
 
             case let cred as ASAuthorizationPlatformPublicKeyCredentialAssertion:
                 let session = UserSession(
@@ -634,52 +715,11 @@ final class SignInService: NSObject, ObservableObject {
                 setHasRegisteredPasskey(true)
                 statusMessage = "Passkey added. You can use it from the login screen next time."
                 authErrorMessage = nil
+                isLoading = false
 
             default:
                 authErrorMessage = "Unknown credential type received."
             }
-
-        case let .failure(error):
-            let authError = error as? ASAuthorizationError
-            if authError?.code != .canceled {
-                authErrorMessage = error.localizedDescription
-            }
-        }
-    }
-}
-
-extension SignInService {
-    static func mergedAppleSession(
-        userID: String,
-        incomingName: String,
-        incomingEmail: String?,
-        existingAppleSession: UserSession?
-    ) -> UserSession {
-        UserSession(
-            provider: .apple,
-            userID: userID,
-            displayName: incomingName.isEmpty ? (existingAppleSession?.displayName ?? "Apple User") : incomingName,
-            email: incomingEmail ?? existingAppleSession?.email,
-            phone: existingAppleSession?.phone,
-            avatarURL: existingAppleSession?.avatarURL,
-            sessionToken: userID,
-            backendAccessToken: existingAppleSession?.backendAccessToken
-        )
-    }
-}
-
-// ─────────────────────────────────────────────────────────
-// MARK: – ASAuthorizationControllerDelegate
-// ─────────────────────────────────────────────────────────
-
-extension SignInService: ASAuthorizationControllerDelegate {
-
-    nonisolated func authorizationController(
-        controller: ASAuthorizationController,
-        didCompleteWithAuthorization authorization: ASAuthorization
-    ) {
-        Task { @MainActor in
-            handleAuthorizationResult(.success(authorization))
         }
     }
 
@@ -688,7 +728,11 @@ extension SignInService: ASAuthorizationControllerDelegate {
         didCompleteWithError error: Error
     ) {
         Task { @MainActor in
-            handleAuthorizationResult(.failure(error))
+            isLoading = false
+            let authError = error as? ASAuthorizationError
+            if authError?.code != .canceled {
+                authErrorMessage = error.localizedDescription
+            }
         }
     }
 }
@@ -723,6 +767,35 @@ extension SignInService: ASAuthorizationControllerPresentationContextProviding {
 }
 
 // ─────────────────────────────────────────────────────────
+// MARK: – Apple session merge helper
+
+extension SignInService {
+    /// Merge an incoming Apple credential with an existing session.
+    /// Retains existing display name / email when the incoming values are empty.
+    static func mergedAppleSession(
+        userID: String,
+        incomingName: String,
+        incomingEmail: String?,
+        existingAppleSession: UserSession?
+    ) -> UserSession {
+        let displayName = incomingName.isEmpty
+            ? (existingAppleSession?.displayName ?? "")
+            : incomingName
+        let email = incomingEmail ?? existingAppleSession?.email
+        return UserSession(
+            provider: .apple,
+            userID: userID,
+            displayName: displayName,
+            email: email,
+            phone: existingAppleSession?.phone,
+            avatarURL: existingAppleSession?.avatarURL,
+            sessionToken: userID,
+            backendAccessToken: existingAppleSession?.backendAccessToken,
+            credentialID: existingAppleSession?.credentialID
+        )
+    }
+}
+
 // MARK: – Keychain helper
 // ─────────────────────────────────────────────────────────
 

@@ -24,6 +24,7 @@ struct FitTrackerApp: App {
     @StateObject private var healthService = HealthKitService()
     @StateObject private var dataStore     = EncryptedDataStore()
     @StateObject private var cloudSync     = CloudKitSyncService()
+    @StateObject private var supabaseSync  = SupabaseSyncService()
     @StateObject private var programStore  = TrainingProgramStore()
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
@@ -56,29 +57,61 @@ struct FitTrackerApp: App {
                             await dataStore.loadFromDisk()
                             if scenePhase == .active {
                                 await cloudSync.fetchChanges(dataStore: dataStore)
+                                // First login on a new device — pull all records from Supabase
+                                await supabaseSync.fetchAllRecords(dataStore: dataStore)
+                                await supabaseSync.subscribeRealtime(dataStore: dataStore)
                             }
                             let jwt = signIn.activeSession?.backendAccessToken
                             await aiOrchestrator.processAll(jwt: jwt, snapshot: buildSnapshot())
                         }
+                    } else {
+                        // Session cleared (sign-out or lock) — wipe all in-memory sensitive state
+                        Task {
+                            await dataStore.clearInMemory()
+                            await aiOrchestrator.clearRecommendations()
+                            await EncryptionService.shared.clearSessionContext()
+                        }
                     }
+                }
+                .onChange(of: biometricAuth.isAuthenticated) { _, unlocked in
+                    // Biometric lock screen succeeded — resume the stored session
+                    if unlocked { signIn.resumeStoredSession() }
                 }
                 .onChange(of: scenePhase) { _, phase in
                     switch phase {
                     case .active:
-                        signIn.restoreSession()
-                        guard signIn.isAuthenticated else { break }
                         Task {
+                            await signIn.restoreSession()   // async — refreshes Supabase JWT
+                            // Check if a clear-crypto flag was set before a potential OS kill
+                            if UserDefaults.standard.bool(forKey: "ft.clearCryptoOnNextLaunch") {
+                                UserDefaults.standard.removeObject(forKey: "ft.clearCryptoOnNextLaunch")
+                                await EncryptionService.shared.clearSessionContext()
+                            }
+                            guard signIn.isAuthenticated else { return }
                             await dataStore.loadFromDisk()
+                            // CloudKit (unchanged)
                             await cloudSync.fetchChanges(dataStore: dataStore)
+                            // Supabase — incremental pull + realtime subscription
+                            await supabaseSync.fetchChanges(dataStore: dataStore)
+                            await supabaseSync.subscribeRealtime(dataStore: dataStore)
                         }
                     case .background:
                         if settings.requireBiometricUnlockOnReopen {
                             signIn.lockForReopen()
                             biometricAuth.lockOnBackground(clearCryptoSession: false)
+                            // Write flag synchronously so crypto context is cleared on next
+                            // launch even if OS kills the app before the async Task completes
+                            UserDefaults.standard.set(true, forKey: "ft.clearCryptoOnNextLaunch")
                         }
                         Task {
                             await dataStore.persistToDisk()
+                            // CloudKit (unchanged)
                             await cloudSync.pushPendingChanges(dataStore: dataStore)
+                            // Supabase — unsubscribe realtime, push pending
+                            await supabaseSync.unsubscribeRealtime()
+                            if signIn.isAuthenticated {
+                                await supabaseSync.pushPendingChanges(dataStore: dataStore)
+                            }
                             if settings.requireBiometricUnlockOnReopen {
                                 await EncryptionService.shared.clearSessionContext()
                             }
@@ -128,6 +161,10 @@ struct FitTrackerApp: App {
                 .environmentObject(settings)
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
+        } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
+            // Session exists but was locked for reopen — require biometric to resume
+            LockScreenView()
+                .environmentObject(biometricAuth)
         } else {
             AuthHubView()
                 .environmentObject(signIn)

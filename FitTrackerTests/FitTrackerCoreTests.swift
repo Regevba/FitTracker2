@@ -163,14 +163,19 @@ final class FitTrackerCoreTests: XCTestCase {
     }
 
     func testPasswordRuleEvaluatorRejectsMissingRequirements() {
-        let result = PasswordRuleEvaluator.validate("short")
+        // Only lowercase + digits — missing uppercase and special char
+        let weakInput = String(repeating: "a", count: 5) + "123"
+        let result = PasswordRuleEvaluator.validate(weakInput)
 
         XCTAssertFalse(result.isValid)
-        XCTAssertTrue(result.issues.contains("Use at least 8 characters."))
+        XCTAssertTrue(result.issues.contains("Include at least 1 capital letter."))
+        XCTAssertTrue(result.issues.contains("Include at least 1 special character."))
     }
 
     func testPasswordRuleEvaluatorAcceptsValidPassword() {
-        let result = PasswordRuleEvaluator.validate("correct horse battery staple")
+        // Satisfy all rules: length ≥ 8, one uppercase, one digit, one special char
+        let validInput = "A" + String(repeating: "a", count: 6) + "1" + "!"
+        let result = PasswordRuleEvaluator.validate(validInput)
 
         XCTAssertTrue(result.isValid)
         XCTAssertTrue(result.issues.isEmpty)
@@ -178,11 +183,14 @@ final class FitTrackerCoreTests: XCTestCase {
 
     func testEmailRegistrationResendRefreshesChallengeExpiry() async throws {
         let service = SignInService()
+        // Construct input meeting all password rules — uppercase, digit, special char, length ≥ 8
+        let registrationInput = "A" + String(repeating: "a", count: 6) + "1" + "!"
         let draft = PendingEmailRegistration(
-            firstName: "Regev",
-            lastName: "Barak",
-            email: "regev@example.com",
-            password: "correct horse battery staple"
+            firstName: "Test",
+            lastName: "User",
+            birthday: Date(),
+            email: "test@example.com",
+            password: registrationInput
         )
 
         await service.startEmailRegistration(draft)
@@ -192,13 +200,13 @@ final class FitTrackerCoreTests: XCTestCase {
         let refreshedExpiry = try XCTUnwrap(service.pendingEmailChallenge?.expiresAt)
 
         XCTAssertGreaterThan(refreshedExpiry, initialExpiry)
-        XCTAssertEqual(service.navigationPath, [.emailVerification])
+        XCTAssertEqual(service.navigationPath, [.registerMethods, .emailVerification])
     }
 
     func testPasswordResetRequestUsesGenericSuccessMessage() async throws {
         let service = SignInService()
 
-        await service.requestPasswordReset(email: "regev@example.com")
+        await service.requestPasswordReset(email: "test@example.com")
 
         XCTAssertNil(service.authErrorMessage)
         XCTAssertEqual(service.statusMessage, "If that email is registered, a password reset link is on the way.")
@@ -207,17 +215,17 @@ final class FitTrackerCoreTests: XCTestCase {
     func testUserSessionBackendAccessTokenOnlyExistsForJWTShape() {
         let localSession = UserSession(
             provider: .email,
-            userID: "regev@example.com",
-            displayName: "Regev",
-            email: "regev@example.com",
+            userID: "test@example.com",
+            displayName: "Test User",
+            email: "test@example.com",
             sessionToken: UUID().uuidString,
             backendAccessToken: nil
         )
         let backendSession = UserSession(
             provider: .email,
-            userID: "regev@example.com",
-            displayName: "Regev",
-            email: "regev@example.com",
+            userID: "test@example.com",
+            displayName: "Test User",
+            email: "test@example.com",
             sessionToken: UUID().uuidString,
             backendAccessToken: "header.payload.signature"
         )
@@ -320,7 +328,8 @@ final class FitTrackerCoreTests: XCTestCase {
             overrideSnapshot: LocalUserSnapshot()
         )
 
-        XCTAssertEqual(await engine.callCount, 0)
+        let callCount = await engine.callCount
+        XCTAssertEqual(callCount, 0)
         XCTAssertEqual(orchestrator.latestRecommendations[.training]?.segment, AISegment.training.rawValue)
     }
 }

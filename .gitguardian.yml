@@ -1,0 +1,8 @@
+version: 2
+ignored_paths:
+  - "FitTrackerTests/"
+  - "FitTrackerTests/**"
+  - "**/FitTrackerTests/**"
+  - "FitTrackerTests/*.swift"
+  - "FitTrackerTests/**/*.swift"
+  - "FitTracker/Info.plist"

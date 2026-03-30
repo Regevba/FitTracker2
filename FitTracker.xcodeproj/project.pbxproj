@@ -26,6 +26,7 @@
 		A1000001000000000000000D /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* TrainingPlanView.swift */; };
 		A1000001000000000000000E /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E /* StatsView.swift */; };
 		A1000001000000000000000F /* AccountPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AccountPanelView.swift */; };
+
 		A10000010000000000000015 /* AuthValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* AuthValidation.swift */; };
 		A10000010000000000000016 /* AuthHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000016 /* AuthHubView.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
@@ -46,6 +47,17 @@
 		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
 		AI100000000000000000AAA4 /* AIOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA4 /* AIOrchestrator.swift */; };
 		AI100000000000000000AAA5 /* AISnapshotBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA5 /* AISnapshotBuilder.swift */; };
+		FB1000001000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000001 /* SupabaseClient.swift */; };
+		FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000002 /* SupabaseSyncService.swift */; };
+		FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000003 /* UserSession+Supabase.swift */; };
+		FB1000001000000000000004 /* FTAuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000004 /* FTAuthError.swift */; };
+		FB1000001000000000000005 /* SupabaseAppleAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000005 /* SupabaseAppleAuthProvider.swift */; };
+		FB1000001000000000000006 /* EmailAuthProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000006 /* EmailAuthProvider.swift */; };
+		FB1000001000000000000007 /* Date+Sync.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000007 /* Date+Sync.swift */; };
+		FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000001 /* UserSessionMappingTests.swift */; };
+		FT1000001000000000000002 /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000002 /* SyncMergeTests.swift */; };
+		FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000003 /* SupabaseClientTests.swift */; };
+		SUP0000001000000000000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = SUP0000002000000000000001 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +79,7 @@
 		A2000001000000000000000D /* TrainingPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPlanView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000E /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000F /* AccountPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountPanelView.swift; sourceTree = "<group>"; };
+
 		A20000010000000000000015 /* AuthValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthValidation.swift; sourceTree = "<group>"; };
 		A20000010000000000000016 /* AuthHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubView.swift; sourceTree = "<group>"; };
 		A20000010000000000000012 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -92,6 +105,17 @@
 		AI200000000000000000AAA3 /* FoundationModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationModelService.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA4 /* AIOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestrator.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA5 /* AISnapshotBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AISnapshotBuilder.swift; sourceTree = "<group>"; };
+		FB2000001000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
+		FB2000001000000000000002 /* SupabaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncService.swift; sourceTree = "<group>"; };
+		FB2000001000000000000003 /* UserSession+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSession+Supabase.swift"; sourceTree = "<group>"; };
+		FB2000001000000000000004 /* FTAuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTAuthError.swift; sourceTree = "<group>"; };
+		FB2000001000000000000005 /* SupabaseAppleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseAppleAuthProvider.swift; sourceTree = "<group>"; };
+		FB2000001000000000000006 /* EmailAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailAuthProvider.swift; sourceTree = "<group>"; };
+		FB2000001000000000000007 /* Date+Sync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Sync.swift"; sourceTree = "<group>"; };
+		FB2000001000000000000008 /* GoogleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthProvider.swift; sourceTree = "<group>"; };
+		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
+		FT2000001000000000000002 /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
+		FT2000001000000000000003 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				SUP0000001000000000000001 /* Supabase in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +154,7 @@
 				A40000010000000000000005 /* Services */,
 				AI300000000000000000AAA1 /* AI */,
 				A40000010000000000000006 /* Views */,
+				FB4000001000000000000002 /* Extensions */,
 				A20000010000000000000012 /* Info.plist */,
 				A20000010000000000000013 /* FitTracker.entitlements */,
 			);
@@ -148,6 +174,7 @@
 			isa = PBXGroup;
 			children = (
 				B20000010000000000000001 /* FitTrackerCoreTests.swift */,
+				FT4000001000000000000001 /* SupabaseTests */,
 			);
 			path = FitTrackerTests;
 			sourceTree = "<group>";
@@ -157,8 +184,36 @@
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
+				FB2000001000000000000003 /* UserSession+Supabase.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		FB4000001000000000000001 /* Supabase */ = {
+			isa = PBXGroup;
+			children = (
+				FB2000001000000000000001 /* SupabaseClient.swift */,
+				FB2000001000000000000002 /* SupabaseSyncService.swift */,
+			);
+			path = Supabase;
+			sourceTree = "<group>";
+		};
+		FB4000001000000000000002 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				FB2000001000000000000007 /* Date+Sync.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FT4000001000000000000001 /* SupabaseTests */ = {
+			isa = PBXGroup;
+			children = (
+				FT2000001000000000000003 /* SupabaseClientTests.swift */,
+				FT2000001000000000000001 /* UserSessionMappingTests.swift */,
+				FT2000001000000000000002 /* SyncMergeTests.swift */,
+			);
+			path = SupabaseTests;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000005 /* Services */ = {
@@ -172,6 +227,7 @@
 				A40000010000000000000008 /* HealthKit */,
 				A40000010000000000000009 /* CloudKit */,
 				A4000001000000000000000A /* Encryption */,
+				FB4000001000000000000001 /* Supabase */,
 				A20000010000000000000008 /* AppSettings.swift */,
 			);
 			path = Services;
@@ -209,6 +265,10 @@
 			children = (
 				A20000010000000000000005 /* SignInService.swift */,
 				A20000010000000000000015 /* AuthValidation.swift */,
+				FB2000001000000000000004 /* FTAuthError.swift */,
+				FB2000001000000000000005 /* SupabaseAppleAuthProvider.swift */,
+				FB2000001000000000000006 /* EmailAuthProvider.swift */,
+				FB2000001000000000000008 /* GoogleAuthProvider.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -301,6 +361,7 @@
 			children = (
 				A2000001000000000000000F /* AccountPanelView.swift */,
 				A20000010000000000000016 /* AuthHubView.swift */,
+
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -331,6 +392,9 @@
 			dependencies = (
 			);
 			name = FitTracker;
+			packageProductDependencies = (
+				SUP0000002000000000000001 /* Supabase */,
+			);
 			productName = FitTracker;
 			productReference = A20000010000000000000014 /* FitTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -377,6 +441,9 @@
 				Base,
 			);
 			mainGroup = A40000010000000000000001;
+			packageReferences = (
+				SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			productRefGroup = A40000010000000000000003 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -429,6 +496,7 @@
 				A1000001000000000000000E /* StatsView.swift in Sources */,
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
 				A10000010000000000000016 /* AuthHubView.swift in Sources */,
+
 				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
 				CC000001000000000000AA02 /* SectionHeader.swift in Sources */,
 				CC000001000000000000AA03 /* StatusBadge.swift in Sources */,
@@ -447,6 +515,13 @@
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
 				AI100000000000000000AAA4 /* AIOrchestrator.swift in Sources */,
 				AI100000000000000000AAA5 /* AISnapshotBuilder.swift in Sources */,
+				FB1000001000000000000001 /* SupabaseClient.swift in Sources */,
+				FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */,
+				FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */,
+				FB1000001000000000000004 /* FTAuthError.swift in Sources */,
+				FB1000001000000000000005 /* SupabaseAppleAuthProvider.swift in Sources */,
+				FB1000001000000000000006 /* EmailAuthProvider.swift in Sources */,
+				FB1000001000000000000007 /* Date+Sync.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,6 +530,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */,
+				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
+				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
+				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -701,6 +779,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+/* Begin XCRemoteSwiftPackageReference section */
+		SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase-community/supabase-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		SUP0000002000000000000001 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = SUP0000003000000000000001 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A60000010000000000000001 /* Project object */;
 }
