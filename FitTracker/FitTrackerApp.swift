@@ -31,7 +31,7 @@ struct FitTrackerApp: App {
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
-            if #available(iOS 26, *) {
+            if #available(iOS 18.1, *) {
                 return FoundationModelService()
             } else {
                 return FallbackFoundationModel()

@@ -55,7 +55,7 @@ public struct FallbackFoundationModel: FoundationModelProtocol {
 /// Only available on iOS 26+ — the build target gates this with
 /// #available checks in AIOrchestrator. On earlier OS versions
 /// AIOrchestrator injects FallbackFoundationModel instead.
-@available(iOS 26, *)
+@available(iOS 18.1, *)
 public final class FoundationModelService: FoundationModelProtocol {
     public var isAvailable: Bool { true }
 

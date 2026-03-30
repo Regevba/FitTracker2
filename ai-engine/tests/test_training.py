@@ -10,6 +10,7 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import create_app
 from app.models.common import InsightResponse
+from app.auth.jwt_validator import get_verified_claims
 
 
 @pytest.fixture
@@ -31,28 +32,32 @@ VALID_TRAINING_PAYLOAD = {
 
 @pytest.mark.asyncio
 async def test_training_insight_requires_auth(app):
-    """Unauthenticated request must return 403."""
+    """Unauthenticated request must return 401."""
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as client:
         response = await client.post(
             "/v1/training/insight", json=VALID_TRAINING_PAYLOAD
         )
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 @pytest.mark.asyncio
 async def test_training_insight_invalid_payload_rejected(app):
     """Invalid band value must return 422 (Pydantic validation)."""
-    async with AsyncClient(
-        transport=ASGITransport(app=app), base_url="http://test"
-    ) as client:
-        response = await client.post(
-            "/v1/training/insight",
-            json={**VALID_TRAINING_PAYLOAD, "age_band": "invalid_value"},
-            headers={"Authorization": "Bearer header.payload.signature"},
-        )
-    assert response.status_code == 422
+    app.dependency_overrides[get_verified_claims] = lambda: {"sub": "user-123", "role": "authenticated"}
+    try:
+        async with AsyncClient(
+            transport=ASGITransport(app=app), base_url="http://test"
+        ) as client:
+            response = await client.post(
+                "/v1/training/insight",
+                json={**VALID_TRAINING_PAYLOAD, "age_band": "invalid_value"},
+                headers={"Authorization": "Bearer fake.jwt.token"},
+            )
+        assert response.status_code == 422
+    finally:
+        app.dependency_overrides.clear()
 
 
 @pytest.mark.asyncio
@@ -86,30 +91,29 @@ async def test_training_insight_fire_and_forget_path(app):
         "primary_goal:muscle_gain": 450,
     }
 
-    with (
-        # Patch at the router module level — where the dependency is resolved
-        patch(
-            "app.routers.training.get_verified_claims",
-            return_value=mock_claims,
-        ),
-        patch(
-            "app.routers.training.CohortService.get_cohort_totals",
-            new_callable=AsyncMock,
-            return_value=mock_totals,
-        ),
-        patch(
-            "app.routers.training.CohortService.increment_fields",
-            new_callable=AsyncMock,
-        ),
-    ):
-        async with AsyncClient(
-            transport=ASGITransport(app=app), base_url="http://test"
-        ) as client:
-            response = await client.post(
-                "/v1/training/insight",
-                json=VALID_TRAINING_PAYLOAD,
-                headers={"Authorization": "Bearer mock-token"},
-            )
+    app.dependency_overrides[get_verified_claims] = lambda: mock_claims
+    try:
+        with (
+            patch(
+                "app.routers.training.CohortService.get_cohort_totals",
+                new_callable=AsyncMock,
+                return_value=mock_totals,
+            ),
+            patch(
+                "app.routers.training.CohortService.increment_fields",
+                new_callable=AsyncMock,
+            ),
+        ):
+            async with AsyncClient(
+                transport=ASGITransport(app=app), base_url="http://test"
+            ) as client:
+                response = await client.post(
+                    "/v1/training/insight",
+                    json=VALID_TRAINING_PAYLOAD,
+                    headers={"Authorization": "Bearer mock-token"},
+                )
+    finally:
+        app.dependency_overrides.clear()
 
     assert response.status_code == 200
     body = response.json()
