@@ -44,7 +44,7 @@ struct AccountPanelView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { dismiss() }
                         .fontWeight(.semibold)
-                        .foregroundStyle(Color.appAccentPrimary)
+                        .foregroundStyle(AppColor.Accent.primary)
                 }
             }
             .alert("Sign Out?", isPresented: $showLogoutConfirm) {

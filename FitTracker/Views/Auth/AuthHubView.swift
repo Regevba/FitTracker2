@@ -9,6 +9,8 @@ struct AuthHubView: View {
     @State private var mode: AuthMode = .login
     @State private var registrationForm = EmailRegistrationFormState()
     @State private var loginForm = EmailLoginFormState()
+    @State private var passwordResetPrefill: String = ""
+    @State private var showPasswordReset = false
 
     var body: some View {
         NavigationStack(path: $signIn.navigationPath) {
@@ -17,7 +19,11 @@ struct AuthHubView: View {
                 AuthLandingView(
                     mode: $mode,
                     registrationForm: $registrationForm,
-                    loginForm: $loginForm
+                    loginForm: $loginForm,
+                    onForgotPassword: { prefill in
+                        passwordResetPrefill = prefill
+                        showPasswordReset = true
+                    }
                 )
                 },
                 bottomAccessory: {
@@ -38,17 +44,31 @@ struct AuthHubView: View {
                         },
                         bottomAccessory: { EmptyView() }
                     )
-                case let .passwordReset(prefillEmail):
+                default:
+                    EmptyView()
+                }
+            }
+            .sheet(isPresented: $showPasswordReset) {
+                NavigationStack {
                     AuthScaffold(
                         content: {
                         PasswordResetView(
                             mode: $mode,
-                            initialEmail: prefillEmail
+                            initialEmail: passwordResetPrefill
                         )
                         },
                         bottomAccessory: { EmptyView() }
                     )
+                    .navigationTitle("Reset Password")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Cancel") { showPasswordReset = false }
+                        }
+                    }
                 }
+                .presentationDetents([.medium, .large])
+                .presentationCornerRadius(AppSheet.standardCornerRadius)
             }
         }
     }
@@ -155,6 +175,7 @@ private struct AuthLandingView: View {
     @Binding var mode: AuthMode
     @Binding var registrationForm: EmailRegistrationFormState
     @Binding var loginForm: EmailLoginFormState
+    var onForgotPassword: (String) -> Void = { _ in }
 
     @State private var registrationErrors: [String: String] = [:]
     @State private var loginError: String?
@@ -181,7 +202,8 @@ private struct AuthLandingView: View {
                     EmailLoginSection(
                         form: $loginForm,
                         localError: $loginError,
-                        focusedField: $focusedField
+                        focusedField: $focusedField,
+                        onForgotPassword: onForgotPassword
                     )
                 } else {
                     EmailRegistrationSection(
@@ -343,18 +365,21 @@ private struct ApplePrimaryButton: View {
     let mode: AuthMode
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            SignInWithAppleButton(
-                mode == .register ? .continue : .signIn,
-                onRequest: signIn.prepareAppleSignInRequest,
-                onCompletion: signIn.handleAppleSignInResult
-            )
-            .signInWithAppleButtonStyle(.black)
+        Button(action: { signIn.signInWithApple() }) {
+            HStack {
+                Image(systemName: "apple.logo")
+                    .font(AppText.body)
+                Text(mode.appleButtonTitle)
+                    .font(AppText.button)
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
             .frame(height: 48)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .accessibilityLabel(mode.appleButtonTitle)
-            .accessibilityHint("Uses your Apple Account for a secure \(mode == .login ? "login" : "account setup").")
+            .background(Color.black, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
+        .buttonStyle(.plain)
+        .accessibilityLabel(mode.appleButtonTitle)
+        .accessibilityHint("Uses your Apple Account for a secure \(mode == .login ? "login" : "account setup").")
     }
 }
 
@@ -363,6 +388,7 @@ private struct EmailLoginSection: View {
     @Binding var form: EmailLoginFormState
     @Binding var localError: String?
     let focusedField: FocusState<AuthField?>.Binding
+    var onForgotPassword: (String) -> Void = { _ in }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -391,7 +417,7 @@ private struct EmailLoginSection: View {
             HStack {
                 Spacer()
                 Button("Forgot password?") {
-                    signIn.showPasswordReset(prefillEmail: form.normalizedEmail)
+                    onForgotPassword(form.normalizedEmail)
                 }
                 .buttonStyle(.plain)
                 .font(AppType.caption.weight(.semibold))
@@ -710,7 +736,7 @@ private struct PasswordResetView: View {
                 localError = message
             } else {
                 mode = .login
-                signIn.resetToEntry(keepingStatus: true)
+                signIn.resetToEntry()
             }
         }
     }
