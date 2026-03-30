@@ -357,7 +357,7 @@ struct TrainingPlanView: View {
                     .padding(.horizontal, AppSpacing.small)
                     .padding(.vertical, AppSpacing.xxSmall)
                     .background(
-                        isDone ? Color.status.success : Color.black.opacity(0.75),
+                        isDone ? Color.status.success : AppColor.Text.primary,
                         in: Capsule()
                     )
                     .foregroundStyle(.white)
@@ -459,15 +459,15 @@ struct TrainingPlanView: View {
         let progress = total > 0 ? Double(done) / Double(total) : 0
         let percent = Int(progress * 100)
         return ZStack {
-            Circle().stroke(Color.secondary.opacity(0.2), lineWidth: 5).frame(width: 44, height: 44)
+            Circle().stroke(AppColor.Surface.secondary, lineWidth: 5).frame(width: 44, height: 44)
             Circle()
                 .trim(from: 0, to: progress)
-                .stroke(Color.blue, style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                .stroke(AppColor.Brand.secondary, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                 .frame(width: 44, height: 44)
                 .rotationEffect(.degrees(-90))
             Text("\(percent)%")
                 .font(AppText.monoLabel)
-                .foregroundStyle(Color.blue)
+                .foregroundStyle(AppColor.Brand.secondary)
         }
     }
 
@@ -1092,7 +1092,7 @@ struct LiftLogPanel: View {
     private func previousPerformanceTile(title: String, value: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                .font(AppText.monoLabel)
                 .foregroundStyle(.secondary)
             Text(value)
                 .font(.caption.weight(.semibold))
@@ -1202,7 +1202,7 @@ struct SetRowView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("RPE")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .font(AppText.monoLabel)
                     .foregroundStyle(.secondary)
                 RPETapBar(rpe: Binding(get: { setLog.rpe }, set: { setLog.rpe = $0 }))
             }
@@ -1253,7 +1253,7 @@ struct SetRowView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
                 Text(title)
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .font(AppText.monoLabel)
                     .foregroundStyle(.secondary)
                 if let previousValue, text.wrappedValue.isEmpty {
                     Button("Last \(previousValue)") {
