@@ -111,7 +111,7 @@ struct RootTabView: View {
                         .foregroundStyle(AppColor.Text.primary)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 16).padding(.vertical, 12)
+                .padding(.horizontal, AppSpacing.small).padding(.vertical, AppSpacing.xSmall)
 
                 Divider()
 
@@ -153,7 +153,7 @@ struct RootTabView: View {
                                 .font(AppText.caption)
                                 .foregroundStyle(AppColor.Text.secondary)
                         }
-                        .padding(10)
+                        .padding(AppSpacing.xxSmall)
                         .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
@@ -162,7 +162,7 @@ struct RootTabView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 12).padding(.bottom, 16)
+                .padding(.horizontal, AppSpacing.xSmall).padding(.bottom, AppSpacing.small)
             }
         } detail: {
             NavigationStack {

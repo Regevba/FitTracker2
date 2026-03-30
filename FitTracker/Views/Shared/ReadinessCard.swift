@@ -129,8 +129,8 @@ struct ReadinessCard: View {
                 biometricRow(icon: "moon.fill", label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, AppSpacing.small)
+        .padding(.vertical, AppSpacing.xxSmall)
         .onAppear {
             guard let target = score else { return }
             displayedScore = 0
@@ -154,12 +154,12 @@ struct ReadinessCard: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-                .padding(16)
+                .padding(AppSpacing.small)
                 .frame(minWidth: 260)
                 .presentationCompactAdaptation(.popover)
             }
-            .padding(.top, 10)
-            .padding(.trailing, 16)
+            .padding(.top, AppSpacing.xxSmall)
+            .padding(.trailing, AppSpacing.small)
         }
     }
 
@@ -216,7 +216,7 @@ struct ReadinessCard: View {
             Text("This Week")
                 .font(AppType.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, AppSpacing.small)
 
             HStack(alignment: .bottom, spacing: 6) {
                 ForEach(Array(weekDays.enumerated()), id: \.offset) { idx, day in
@@ -244,7 +244,7 @@ struct ReadinessCard: View {
                     .frame(maxWidth: .infinity, maxHeight: maxBarHeight + 16, alignment: .bottom)
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, AppSpacing.small)
             .frame(height: 76)
 
             // Next day label
@@ -252,9 +252,9 @@ struct ReadinessCard: View {
             Text("Next: \(tomorrowType?.rawValue ?? "–")")
                 .font(AppType.caption)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
-                .padding(.horizontal, 16)
+                .padding(.horizontal, AppSpacing.small)
         }
-        .padding(.vertical, 10)
+        .padding(.vertical, AppSpacing.xxSmall)
     }
 
     // ─────────────────────────────────────────────────────
@@ -324,8 +324,8 @@ struct ReadinessCard: View {
                 }
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, AppSpacing.small)
+        .padding(.vertical, AppSpacing.xSmall)
     }
 
     private func supplementDot(label: String, done: Bool) -> some View {
@@ -382,8 +382,8 @@ struct ReadinessCard: View {
                 trendCell(label: "Steps",   delta: stepsDelta,   positiveIsGood: true)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, AppSpacing.small)
+        .padding(.vertical, AppSpacing.xxSmall)
     }
 
     private func delta(latest: Double?, ago: Double?) -> Double? {
@@ -427,9 +427,9 @@ struct ReadinessCard: View {
                 Divider().background(Color.white.opacity(0.2)).frame(height: 50)
                 achievementCell(emoji: "📅", value: dayOnProgram, label: "Program Day")
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, AppSpacing.xxSmall)
         }
-        .padding(.vertical, 12)
+        .padding(.vertical, AppSpacing.xSmall)
     }
 
     private func achievementCell(emoji: String, value: Int, label: String) -> some View {
@@ -543,12 +543,12 @@ struct ReadinessCard: View {
                             .foregroundStyle(AppColor.Text.inverseTertiary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(8)
+                    .padding(AppSpacing.xxSmall)
                     .background(AppColor.Surface.primary.opacity(0.16), in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
                 }
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, AppSpacing.small)
+        .padding(.vertical, AppSpacing.xSmall)
     }
 }

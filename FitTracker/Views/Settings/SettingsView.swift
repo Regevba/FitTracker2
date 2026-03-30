@@ -111,9 +111,9 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 18)
-                    .padding(.bottom, 28)
+                    .padding(.horizontal, AppSpacing.medium)
+                    .padding(.top, AppSpacing.small)
+                    .padding(.bottom, AppSpacing.large)
                 }
             }
             .navigationTitle("Settings")
@@ -694,7 +694,7 @@ private struct SettingsCategoryCard: View {
                     .font(.system(size: featured ? 18 : 16, weight: .semibold))
                     .foregroundStyle(category.tint)
                     .frame(width: 34, height: 34)
-                    .background(category.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+                    .background(category.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
 
                 Spacer(minLength: 12)
 
@@ -721,12 +721,12 @@ private struct SettingsCategoryCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(featured ? 18 : 16)
+        .padding(featured ? AppSpacing.small : AppSpacing.small)
         .background(
-            RoundedRectangle(cornerRadius: 24)
+            RoundedRectangle(cornerRadius: AppRadius.large)
                 .fill(AppColor.Surface.elevated.opacity(featured ? 0.96 : 0.92))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24)
+                    RoundedRectangle(cornerRadius: AppRadius.large)
                         .stroke(AppColor.Border.subtle, lineWidth: 1)
                 )
         )
@@ -766,8 +766,8 @@ private struct SettingsBadgeView: View {
                 .font(AppType.caption.weight(.semibold))
         }
         .foregroundStyle(badge.tint)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 7)
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(badge.tint.opacity(0.12), in: Capsule())
     }
 }
@@ -787,9 +787,9 @@ private struct SettingsDetailScaffold<Content: View>: View {
                     SettingsHomeHeader(title: title, subtitle: subtitle)
                     content
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 18)
-                .padding(.bottom, 28)
+                .padding(.horizontal, AppSpacing.medium)
+                .padding(.top, AppSpacing.small)
+                .padding(.bottom, AppSpacing.large)
             }
         }
     }
@@ -815,12 +815,12 @@ private struct SettingsSectionCard<Content: View>: View {
             content
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
+        .padding(AppSpacing.small)
         .background(
-            RoundedRectangle(cornerRadius: 24)
+            RoundedRectangle(cornerRadius: AppRadius.large)
                 .fill(AppColor.Surface.elevated.opacity(0.96))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 24)
+                    RoundedRectangle(cornerRadius: AppRadius.large)
                         .stroke(AppColor.Border.subtle, lineWidth: 1)
                 )
         )
@@ -879,7 +879,7 @@ private struct SettingsActionLabel: View {
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(tint)
                 .frame(width: 26, height: 26)
-                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 10))
+                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
@@ -924,14 +924,14 @@ private struct SettingsSelectionTile: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 10)
-        .padding(.horizontal, 12)
+        .padding(.vertical, AppSpacing.xxSmall)
+        .padding(.horizontal, AppSpacing.xSmall)
         .background(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: AppRadius.medium)
                 .fill(isSelected ? tint : Color.white.opacity(0.44))
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: AppRadius.medium)
                 .stroke(isSelected ? tint.opacity(0.18) : Color.white.opacity(0.32), lineWidth: 1)
         )
     }

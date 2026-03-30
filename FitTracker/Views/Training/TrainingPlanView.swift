@@ -1687,14 +1687,14 @@ struct SessionCompletionSheet: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, AppSpacing.xxSmall)
 
                     // Warm completion micro-copy
                     Text(completionMessage)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 8)
+                        .padding(.horizontal, AppSpacing.xxSmall)
 
                     // Stats grid: 4 metric tiles
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -1739,8 +1739,8 @@ struct SessionCompletionSheet: View {
                         Button(action: onLogNotes) {
                             Label("Log Notes", systemImage: "note.text")
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
+                                .padding(.vertical, AppSpacing.xSmall)
+                                .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
                         }
                         .buttonStyle(.plain)
 
@@ -1748,19 +1748,19 @@ struct SessionCompletionSheet: View {
                             Text("Done")
                                 .font(.headline)
                                 .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
+                                .padding(.vertical, AppSpacing.xSmall)
                                 .foregroundStyle(.black)
                                 .background(
                                     LinearGradient(colors: [Color.status.success, Color.status.success.opacity(0.8)],
                                                    startPoint: .leading, endPoint: .trailing),
-                                    in: RoundedRectangle(cornerRadius: 14)
+                                    in: RoundedRectangle(cornerRadius: AppRadius.small)
                                 )
                         }
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 32)
+                .padding(.horizontal, AppSpacing.large)
+                .padding(.bottom, AppSpacing.xLarge)
                 .onAppear {
                     guard !hasShownMilestone else { return }
                     hasShownMilestone = true
@@ -1899,8 +1899,8 @@ struct SessionCompletionSheet: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(14)
-        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+        .padding(AppSpacing.xSmall)
+        .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
     }
 }
 
@@ -1961,8 +1961,8 @@ struct FocusModeView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.horizontal, 24)
-                .padding(.top, 16)
+                .padding(.horizontal, AppSpacing.large)
+                .padding(.top, AppSpacing.small)
 
                 Spacer()
 
@@ -1977,7 +1977,7 @@ struct FocusModeView: View {
                         .foregroundStyle(.white)
                         .multilineTextAlignment(.center)
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, AppSpacing.large)
 
                 // Set info
                 if let idx = nextIncompleteSetIndex {
@@ -2003,13 +2003,13 @@ struct FocusModeView: View {
                         .foregroundStyle(Color.white.opacity(0.5))
                     focusField(placeholder: "reps", text: $repsStr)
                 }
-                .padding(.horizontal, 32)
+                .padding(.horizontal, AppSpacing.xLarge)
 
                 Text("Tap Done after each set to keep momentum and stay off the main sheet.")
                     .font(.caption)
                     .foregroundStyle(Color.white.opacity(0.46))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 36)
+                    .padding(.horizontal, AppSpacing.xLarge)
 
                 // Done button
                 Button {
@@ -2031,11 +2031,11 @@ struct FocusModeView: View {
                         .font(.system(size: 22, weight: .bold, design: .rounded))
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 20)
-                        .background(Color.status.success, in: RoundedRectangle(cornerRadius: 20))
+                        .padding(.vertical, AppSpacing.medium)
+                        .background(Color.status.success, in: RoundedRectangle(cornerRadius: AppRadius.large))
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, 32)
+                .padding(.horizontal, AppSpacing.xLarge)
                 .disabled(nextIncompleteSetIndex == nil)
 
                 Spacer()
@@ -2061,8 +2061,8 @@ struct FocusModeView: View {
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .keyboardType(.decimalPad)
-                .padding(16)
-                .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
+                .padding(AppSpacing.small)
+                .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: AppRadius.medium))
         }
         .frame(maxWidth: .infinity)
     }
@@ -2094,19 +2094,19 @@ struct MilestoneModal: View {
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.8))
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
+                    .padding(.horizontal, AppSpacing.large)
 
                 Button("Continue") {
                     autoDismissTimer?.invalidate()
                     onDismiss()
                 }
                 .font(.headline)
-                .padding(.horizontal, 40)
-                .padding(.vertical, 14)
-                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: 20))
+                .padding(.horizontal, AppSpacing.xxLarge)
+                .padding(.vertical, AppSpacing.xSmall)
+                .background(Color.white.opacity(0.2), in: RoundedRectangle(cornerRadius: AppRadius.large))
                 .foregroundStyle(.white)
             }
-            .padding(32)
+            .padding(AppSpacing.xLarge)
         }
         .onAppear {
             autoDismissTimer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { _ in

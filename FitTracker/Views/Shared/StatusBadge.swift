@@ -9,8 +9,8 @@ struct StatusBadge: View {
         Text(text)
             .font(AppText.captionStrong)
             .foregroundStyle(color)
-            .padding(.vertical, 5)
-            .padding(.horizontal, 10)
+            .padding(.vertical, AppSpacing.xxxSmall)
+            .padding(.horizontal, AppSpacing.xxSmall)
             .background(color.opacity(0.16), in: Capsule())
             .overlay(
                 Capsule()

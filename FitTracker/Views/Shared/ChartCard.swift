@@ -31,7 +31,7 @@ struct ChartCard<Content: View>: View {
                             .font(AppText.caption)
                             .foregroundStyle(AppColor.Text.secondary)
                             .padding(.vertical, 3)
-                            .padding(.horizontal, 9)
+                            .padding(.horizontal, AppSpacing.xxSmall)
                             .background(AppColor.Surface.materialLight, in: Capsule())
                     }
                 }

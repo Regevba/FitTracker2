@@ -33,8 +33,8 @@ struct TrendIndicator: View {
         Text(displayText)
             .font(AppText.captionStrong)
             .foregroundStyle(statusColor)
-            .padding(.vertical, 4)
-            .padding(.horizontal, 8)
+            .padding(.vertical, AppSpacing.xxxSmall)
+            .padding(.horizontal, AppSpacing.xxSmall)
             .background(statusColor.opacity(0.14), in: Capsule())
             .overlay(
                 Capsule()

@@ -27,7 +27,7 @@ struct EmptyStateView: View {
                 AppButton(title: ctaLabel, hierarchy: .tertiary, isFullWidth: false, action: ctaAction ?? {})
             }
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, AppSpacing.large)
         .accessibilityElement(children: .contain)
     }
 }
