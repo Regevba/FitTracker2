@@ -152,7 +152,7 @@ struct TrainingPlanView: View {
 
                 VStack(spacing: AppSpacing.xxxSmall) {
                     Text(day.formatted(.dateTime.weekday(.abbreviated)))
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(isActive ? AppColor.Text.primary : AppColor.Text.secondary)
 
                     ZStack {
@@ -166,7 +166,7 @@ struct TrainingPlanView: View {
                                 .frame(width: 28, height: 28)
                         }
                         Text("\(calendar.component(.day, from: day))")
-                            .font(isToday ? AppType.body : AppType.subheading)
+                            .font(isToday ? AppText.body : AppText.subheading)
                             .fontWeight(isToday ? .bold : .regular)
                             .foregroundStyle(isToday ? Color.black : AppColor.Text.primary)
                     }
@@ -408,12 +408,12 @@ struct TrainingPlanView: View {
                         .padding(.vertical, AppSpacing.xxSmall)
                         .frame(width: 146, alignment: .leading)
                         .background(
-                            isFocused ? AppColor.Brand.cool.opacity(0.18) : Color.white.opacity(0.08),
+                            isFocused ? AppColor.Brand.cool.opacity(0.18) : AppColor.Surface.materialLight,
                             in: RoundedRectangle(cornerRadius: AppRadius.small)
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.small)
-                                .stroke(isFocused ? AppColor.Brand.secondary : Color.white.opacity(0.16), lineWidth: isFocused ? 1.2 : 1)
+                                .stroke(isFocused ? AppColor.Brand.secondary : AppColor.Border.hairline, lineWidth: isFocused ? 1.2 : 1)
                         )
                     }
                     .buttonStyle(.plain)
@@ -1064,7 +1064,7 @@ struct LiftLogPanel: View {
             .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
         }
         .padding(AppSpacing.xSmall)
-        .background(isFocused ? AppColor.Surface.materialLight : Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+        .background(isFocused ? AppColor.Surface.materialLight : AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 
     private var overloadSuggestion: String? {
@@ -1220,7 +1220,7 @@ struct SetRowView: View {
             .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
         }
         .padding(AppSpacing.xSmall)
-        .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : Color.white.opacity(0.08)), in: RoundedRectangle(cornerRadius: AppRadius.small))
+        .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : AppColor.Surface.materialLight), in: RoundedRectangle(cornerRadius: AppRadius.small))
         .onAppear {
             weightStr = setLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
@@ -1273,7 +1273,7 @@ struct SetRowView: View {
                 .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
                 .overlay(
                     RoundedRectangle(cornerRadius: AppRadius.xSmall)
-                        .stroke(Color.white.opacity(0.12))
+                        .stroke(AppColor.Border.hairline)
                 )
         }
         .frame(width: fixedWidth)
@@ -1576,7 +1576,7 @@ struct CardioField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
             Text(label)
-                .font(.system(size: 9, design: .monospaced))
+                .font(AppText.monoLabel)
                 .foregroundStyle(AppColor.Text.secondary)
                 .textCase(.uppercase)
                 .tracking(0.5)
@@ -1585,7 +1585,7 @@ struct CardioField: View {
                 .keyboardType(.decimalPad)
                 .padding(AppSpacing.xxSmall)
                 .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
-                .overlay(RoundedRectangle(cornerRadius: AppRadius.xSmall).stroke(Color.white.opacity(0.12)))
+                .overlay(RoundedRectangle(cornerRadius: AppRadius.xSmall).stroke(AppColor.Border.hairline))
         }
     }
 }
@@ -1603,7 +1603,7 @@ struct RPETapBar: View {
                     rpe = isSelected ? nil : Double(v)
                 } label: {
                     Text("\(v)")
-                        .font(.system(size: 10, weight: isSelected ? .bold : .regular, design: .monospaced))
+                        .font(AppText.monoLabel)
                         .foregroundStyle(isSelected ? Color.black : AppColor.Text.secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.xxSmall)
@@ -1615,7 +1615,7 @@ struct RPETapBar: View {
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.micro)
-                                .stroke(isSelected ? AppColor.Brand.warm : Color.white.opacity(0.12), lineWidth: 1)
+                                .stroke(isSelected ? AppColor.Brand.warm : AppColor.Border.hairline, lineWidth: 1)
                         )
                 }
                 .buttonStyle(.plain)
@@ -1639,7 +1639,7 @@ struct StatusDropdown: View {
             HStack(spacing: AppSpacing.xxxSmall) {
                 Circle().fill(color).frame(width: 6, height: 6)
                 Text(status.rawValue.capitalized).font(.caption.weight(.medium))
-                Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold))
+                Image(systemName: "chevron.down").font(AppText.monoLabel)
             }
             .foregroundStyle(color)
             .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
@@ -1679,7 +1679,7 @@ struct SessionCompletionSheet: View {
                     // Header
                     VStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 48))
+                            .font(.system(size: 48)) // intentional oversized icon — no AppText equivalent
                             .foregroundStyle(Color.status.success)
                         Text("Session Complete!")
                             .font(.title2.bold())
@@ -1957,7 +1957,7 @@ struct FocusModeView: View {
                     Button(action: onExit) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.title2)
-                            .foregroundStyle(Color.white.opacity(0.5))
+                            .foregroundStyle(AppColor.Text.inverseTertiary)
                     }
                     .buttonStyle(.plain)
                 }
@@ -1971,7 +1971,7 @@ struct FocusModeView: View {
                     Text("Focus Mode")
                         .font(.caption.monospaced())
                         .tracking(1.2)
-                        .foregroundStyle(Color.white.opacity(0.48))
+                        .foregroundStyle(AppColor.Text.inverseTertiary)
                     Text(exercise.name)
                         .font(AppText.metric)
                         .foregroundStyle(.white)
@@ -1983,10 +1983,10 @@ struct FocusModeView: View {
                 if let idx = nextIncompleteSetIndex {
                     VStack(spacing: AppSpacing.xxSmall) {
                         Text("Set \(idx + 1)")
-                            .font(.system(size: 18, weight: .semibold, design: .monospaced))
-                            .foregroundStyle(Color.white.opacity(0.55))
+                            .font(AppText.monoMetric)
+                            .foregroundStyle(AppColor.Text.inverseTertiary)
                         Text(exercise.targetReps)
-                            .font(.system(size: 36, weight: .bold, design: .rounded))
+                            .font(AppText.metricDisplay)
                             .foregroundStyle(.white)
                     }
                 } else {
@@ -1999,15 +1999,15 @@ struct FocusModeView: View {
                 HStack(spacing: AppSpacing.small) {
                     focusField(placeholder: "kg", text: $weightStr)
                     Text("×")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(Color.white.opacity(0.5))
+                        .font(AppText.metric)
+                        .foregroundStyle(AppColor.Text.inverseTertiary)
                     focusField(placeholder: "reps", text: $repsStr)
                 }
                 .padding(.horizontal, AppSpacing.xLarge)
 
                 Text("Tap Done after each set to keep momentum and stay off the main sheet.")
                     .font(.caption)
-                    .foregroundStyle(Color.white.opacity(0.46))
+                    .foregroundStyle(AppColor.Text.inverseTertiary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, AppSpacing.xLarge)
 
@@ -2028,7 +2028,7 @@ struct FocusModeView: View {
                     }
                 } label: {
                     Text(nextIncompleteSetIndex != nil ? "Done" : "Finish")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .font(AppText.metricCompact)
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.medium)
@@ -2055,9 +2055,9 @@ struct FocusModeView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(placeholder.uppercased())
                 .font(.caption2.monospaced())
-                .foregroundStyle(Color.white.opacity(0.42))
+                .foregroundStyle(AppColor.Text.inverseTertiary)
             TextField(placeholder, text: text)
-                .font(.system(size: 42, weight: .bold, design: .monospaced))
+                .font(AppText.metricDisplayMono)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .keyboardType(.decimalPad)
@@ -2083,7 +2083,7 @@ struct MilestoneModal: View {
 
             VStack(spacing: AppSpacing.medium) {
                 Text("🎉")
-                    .font(.system(size: 72))
+                    .font(.system(size: 72)) // intentional oversized icon — no AppText equivalent
 
                 Text(title)
                     .font(AppText.metric)
@@ -2092,7 +2092,7 @@ struct MilestoneModal: View {
 
                 Text(message)
                     .font(AppText.subheading)
-                    .foregroundStyle(.white.opacity(0.8))
+                    .foregroundStyle(AppColor.Text.inverseSecondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, AppSpacing.large)
 

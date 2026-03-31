@@ -71,7 +71,7 @@ struct MainScreenView: View {
     private let bgOrange2 = Color.appOrange2
     private let bgBlue1   = Color.appBlue1
     private let bgBlue2   = Color.appBlue2
-    private let bodyFatTint = Color(red: 0.76, green: 0.38, blue: 0.06)
+    private let bodyFatTint = AppColor.Chart.nutritionFat
 
     private func checkMilestones() {
         // Supplement streak
@@ -208,24 +208,24 @@ struct MainScreenView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(greeting)
-                        .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded))
+                        .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
                         .lineLimit(2)
                         .minimumScaleFactor(0.82)
                     Text(todayFormatted)
-                        .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.65))
+                        .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: AppSpacing.xxSmall) {
                     Text("Day \(profile.daysSinceStart)")
-                        .font(.system(size: tight ? 12 : 13, weight: .bold, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.82))
+                        .font(.system(size: tight ? 12 : 13, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
+                        .foregroundStyle(AppColor.Text.primary)
                     Text(profile.currentPhase.rawValue)
-                        .font(.system(size: tight ? 11 : 12, weight: .semibold, design: .rounded))
+                        .font(.system(size: tight ? 11 : 12, weight: .semibold, design: .rounded)) // responsive — no AppText equivalent
                         .padding(.horizontal, tight ? 9 : 11)
                         .padding(.vertical, tight ? 5 : 6)
-                        .background(Color.white.opacity(0.5), in: Capsule())
-                        .foregroundStyle(.black.opacity(0.72))
+                        .background(AppColor.Surface.tertiary, in: Capsule())
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
             }
         }
@@ -242,7 +242,7 @@ struct MainScreenView: View {
                         .frame(width: 8, height: 8)
                     Text(readinessContextShort)
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.black.opacity(0.58))
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
             }
 
@@ -259,7 +259,7 @@ struct MainScreenView: View {
                 )
 
                 Divider()
-                    .overlay(Color.white.opacity(0.4))
+                    .overlay(AppColor.Surface.tertiary)
                     .padding(.vertical, AppSpacing.xxSmall)
 
                 statusValueColumn(
@@ -276,18 +276,18 @@ struct MainScreenView: View {
 
             HStack {
                 Text(recommendationTitle)
-                    .font(tight ? AppType.subheading : AppType.body)
-                    .foregroundStyle(.black.opacity(0.72))
+                    .font(tight ? AppText.subheading : AppText.body)
+                    .foregroundStyle(AppColor.Text.secondary)
                     .lineLimit(2)
                 Spacer()
                 Button {
                     performHomeAction("metrics", action: { manualEntry = true })
                 } label: {
                     Image(systemName: "square.and.pencil")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(AppText.body)
                         .foregroundStyle(Color.appBlue1)
                         .frame(width: 34, height: 34)
-                        .background(Color.white.opacity(0.42), in: Circle())
+                        .background(AppColor.Surface.tertiary, in: Circle())
                 }
                 .buttonStyle(.plain)
             }
@@ -303,7 +303,7 @@ struct MainScreenView: View {
                 sectionEyebrow("Goal")
                 ZStack {
                     Circle()
-                        .stroke(Color.white.opacity(0.38), lineWidth: 12)
+                        .stroke(AppColor.Surface.tertiary, lineWidth: 12)
                     Circle()
                         .trim(from: 0, to: max(goalProgress, 0.02))
                         .stroke(
@@ -313,11 +313,11 @@ struct MainScreenView: View {
                         .rotationEffect(.degrees(-90))
                     VStack(spacing: AppSpacing.micro) {
                         Text("\(Int(goalProgress * 100))%")
-                            .font(.system(size: tight ? 22 : (compact ? 24 : 28), weight: .bold, design: .rounded))
-                            .foregroundStyle(.black.opacity(0.82))
+                            .font(.system(size: tight ? 22 : (compact ? 24 : 28), weight: .bold, design: .rounded)) // responsive — no AppText equivalent
+                            .foregroundStyle(AppColor.Text.primary)
                         Text("Goal")
                             .font(.caption.weight(.medium))
-                            .foregroundStyle(.black.opacity(0.56))
+                            .foregroundStyle(AppColor.Text.tertiary)
                     }
                 }
                 .frame(width: tight ? 86 : (compact ? 100 : 116), height: tight ? 86 : (compact ? 100 : 116))
@@ -339,7 +339,7 @@ struct MainScreenView: View {
                 )
                 Text(essentialsSummary)
                     .font(.caption)
-                    .foregroundStyle(.black.opacity(0.56))
+                    .foregroundStyle(AppColor.Text.tertiary)
                     .lineLimit(2)
             }
         }
@@ -370,8 +370,8 @@ struct MainScreenView: View {
 
                 VStack(alignment: .leading, spacing: trainingTextSpacing(compact: compact, tight: tight)) {
                     Text(primaryActionTitle)
-                        .font(.system(size: tight ? 17 : 19.5, weight: .bold, design: .rounded))
-                        .foregroundStyle(.black.opacity(0.82))
+                        .font(.system(size: tight ? 17 : 19.5, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
+                        .foregroundStyle(AppColor.Text.primary)
 
                     Menu {
                         Button("Use Today's Schedule") { selectedDayType = nil }
@@ -387,17 +387,17 @@ struct MainScreenView: View {
                             Image(systemName: "chevron.down")
                                 .font(.caption.weight(.bold))
                         }
-                        .font(.system(size: tight ? 14 : 15.5, weight: .medium, design: .rounded))
+                        .font(.system(size: tight ? 14 : 15.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
                         .foregroundStyle(Color.appBlue1)
                     }
 
                     Text("\(estimatedSessionLength) • \(recommendationTone)")
-                        .font(tight ? .caption : AppType.subheading)
-                        .foregroundStyle(.black.opacity(0.58))
+                        .font(tight ? .caption : AppText.subheading)
+                        .foregroundStyle(AppColor.Text.secondary)
                     if !tight {
                         Text(recommendationSubtitle)
                             .font(.caption)
-                            .foregroundStyle(.black.opacity(0.56))
+                            .foregroundStyle(AppColor.Text.tertiary)
                             .lineLimit(2)
                     }
                 }
@@ -438,11 +438,11 @@ struct MainScreenView: View {
                 Image(systemName: icon)
                     .font(.caption.weight(.bold))
                 Text(title)
-                    .font(.system(size: 10, weight: .bold, design: .rounded))
+                    .font(AppText.eyebrow)
                     .tracking(1.8)
                 if isMissing {
                     Text("Missing")
-                        .font(.system(size: 9, weight: .bold, design: .rounded))
+                        .font(AppText.eyebrow)
                         .padding(.horizontal, 7)
                         .padding(.vertical, AppSpacing.xxxSmall)
                         .background(tint.opacity(0.14), in: Capsule())
@@ -453,17 +453,17 @@ struct MainScreenView: View {
 
             HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxxSmall) {
                 Text(value)
-                    .font(.system(size: compact ? 21 : 25, weight: .bold, design: .rounded))
+                    .font(.system(size: compact ? 21 : 25, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
                     .monospacedDigit()
-                    .foregroundStyle(.black.opacity(0.82))
+                    .foregroundStyle(AppColor.Text.primary)
                 Text(unit)
                     .font((compact ? Font.subheadline : Font.title3).weight(.medium))
-                    .foregroundStyle(.black.opacity(0.42))
+                    .foregroundStyle(AppColor.Text.tertiary)
             }
 
             Text(target)
                 .font(.caption)
-                .foregroundStyle(isMissing ? tint.opacity(0.88) : .black.opacity(0.52))
+                .foregroundStyle(isMissing ? tint.opacity(0.88) : AppColor.Text.tertiary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -472,18 +472,18 @@ struct MainScreenView: View {
         VStack(alignment: .leading, spacing: compact ? 6 : 5) {
             HStack {
                 Text(title)
-                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
-                    .foregroundStyle(.black.opacity(0.64))
+                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
+                    .foregroundStyle(AppColor.Text.secondary)
                 Spacer()
                 Text("\(Int(progress * 100))%")
-                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded))
+                    .font(.system(size: compact ? 14 : 16, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
                     .monospacedDigit()
                     .foregroundStyle(tint)
             }
             GeometryReader { proxy in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Color.white.opacity(0.42))
+                        .fill(AppColor.Surface.tertiary)
                     Capsule()
                         .fill(tint.opacity(0.95))
                         .frame(width: max(proxy.size.width * progress, 8))
@@ -499,14 +499,14 @@ struct MainScreenView: View {
                 .font(.system(size: compact ? 15 : 18, weight: .semibold))
                 .foregroundStyle(tint)
             Text(value)
-                .font(.system(size: compact ? 17 : 19, weight: .bold, design: .rounded))
+                .font(.system(size: compact ? 17 : 19, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
                 .monospacedDigit()
-                .foregroundStyle(.black.opacity(0.82))
+                .foregroundStyle(AppColor.Text.primary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
             Text(label)
                 .font(compact ? .caption2 : .caption)
-                .foregroundStyle(.black.opacity(0.54))
+                .foregroundStyle(AppColor.Text.tertiary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, compact ? 7 : 9)
@@ -514,9 +514,9 @@ struct MainScreenView: View {
 
     private func sectionEyebrow(_ title: String) -> some View {
         Text(title)
-            .font(.system(size: 11, weight: .bold, design: .rounded))
+            .font(AppText.eyebrow)
             .tracking(2.1)
-            .foregroundStyle(.black.opacity(0.45))
+            .foregroundStyle(AppColor.Text.tertiary)
             .textCase(.uppercase)
     }
 
@@ -745,7 +745,7 @@ private struct BlendedSectionStyle: ViewModifier {
             .overlay(alignment: .bottom) {
                 if showDivider {
                     Rectangle()
-                        .fill(Color.white.opacity(0.34))
+                        .fill(AppColor.Surface.materialStrong)
                         .frame(height: 1)
                         .padding(.top, 12)
                 }
@@ -766,9 +766,9 @@ struct RecoveryRoutineSheet: View {
                     HStack(alignment: .top) {
                         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                             Text(routine.title)
-                                .font(.system(size: 28, weight: .bold, design: .rounded))
+                                .font(AppText.metric)
                             Text(routine.subtitle)
-                                .font(AppType.body)
+                                .font(AppText.body)
                                 .foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -793,7 +793,7 @@ struct RecoveryRoutineSheet: View {
                                     .foregroundStyle(Color.accentColor)
                                     .padding(.top, 2)
                                 Text(reason)
-                                    .font(AppType.subheading)
+                                    .font(AppText.subheading)
                                     .foregroundStyle(.secondary)
                             }
                         }
@@ -824,12 +824,12 @@ struct RecoveryRoutineSheet: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 Text(step.detail)
-                                    .font(AppType.subheading)
+                                    .font(AppText.subheading)
                                     .foregroundStyle(.secondary)
                             }
                         }
                         .padding(AppSpacing.xSmall)
-                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.medium))
                     }
                 }
 
@@ -837,7 +837,7 @@ struct RecoveryRoutineSheet: View {
                     Text("Coaching note")
                         .font(.headline)
                     Text(routine.coachingNote)
-                        .font(AppType.subheading)
+                        .font(AppText.subheading)
                         .foregroundStyle(.secondary)
                 }
                 .padding(AppSpacing.small)
@@ -887,16 +887,16 @@ struct SyncStatusIndicator: View {
                 .frame(width: 6, height: 6)
             Text(watchService.status.label)
                 .font(.caption2.weight(.medium))
-                .foregroundStyle(.black.opacity(0.72))
+                .foregroundStyle(AppColor.Text.secondary)
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(
             Capsule()
-                .fill(Color.white.opacity(0.34))
+                .fill(AppColor.Surface.materialStrong)
                 .overlay(
                     Capsule()
-                        .stroke(Color.white.opacity(0.42), lineWidth: 1)
+                        .stroke(AppColor.Surface.tertiary, lineWidth: 1)
                 )
         )
         .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
