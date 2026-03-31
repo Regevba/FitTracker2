@@ -308,7 +308,7 @@ Each screen frame:
 - Complete RLS policies for all tables
 - `program_phase` enum migration
 - Realtime: wire `subscribeRealtime` and `unsubscribeRealtime` in `SupabaseSyncService` (currently stubs)
-- Verify all 6 sync record types push/pull correctly end-to-end
+- Verify all 5 sync record types push/pull correctly end-to-end (daily_log, weekly_snapshot, user_profile, user_preferences, meal_templates)
 
 ### C2 — AI Engine (fittracker-ai repo)
 - Complete remaining endpoint coverage (nutrition, recovery segments)

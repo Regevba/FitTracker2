@@ -152,6 +152,10 @@ enum AppText {
     static let footnote          = Font.system(.footnote,     design: .rounded)
     static let metric            = Font.system(.title,        design: .rounded).weight(.bold)
     static let metricCompact     = Font.system(.title2,       design: .rounded).weight(.bold)
+    // metricHero and metricDisplay are intentional semantic aliases of hero (largeTitle/bold/rounded).
+    // metricHero: full-screen readiness score (ReadinessCard).
+    // metricDisplay: large standalone metric (e.g. body weight hero in StatsView).
+    // hero: page-level heading. Same font, different semantic role — kept separate for Figma mapping.
     static let metricHero        = Font.system(.largeTitle,   design: .rounded).weight(.bold)
     static let metricDisplay     = Font.system(.largeTitle,   design: .rounded).weight(.bold)
     static let metricDisplayMono = Font.system(.title,        design: .monospaced).weight(.bold)
@@ -160,12 +164,19 @@ enum AppText {
     static let button            = Font.system(.body,         design: .rounded).weight(.semibold)
 }
 
-// Legacy aliases — kept until all call sites migrate
+// MARK: - Legacy aliases (DEPRECATED — migrate call sites to AppText.*)
+// These exist only for backward compatibility. Do not use in new code.
+// Removal tracked: all call sites should use AppText.* directly.
 enum AppType {
+    @available(*, deprecated, renamed: "AppText.hero")
     static let display    = AppText.hero
+    @available(*, deprecated, renamed: "AppText.sectionTitle")
     static let headline   = AppText.sectionTitle
+    @available(*, deprecated, renamed: "AppText.body")
     static let body       = AppText.body
+    @available(*, deprecated, renamed: "AppText.subheading")
     static let subheading = AppText.subheading
+    @available(*, deprecated, renamed: "AppText.caption")
     static let caption    = AppText.caption
 }
 
@@ -212,7 +223,9 @@ enum AppGradient {
     )
 }
 
-// MARK: - Legacy compatibility aliases while the rest of the app migrates
+// MARK: - Legacy compatibility aliases (DEPRECATED — migrate call sites to AppColor.*)
+// These exist only for backward compatibility with older view code.
+// Do not use in new code. Removal tracked for next cleanup pass.
 extension Color {
     static let appOrange1 = AppColor.Brand.warmSoft
     static let appOrange2 = AppColor.Brand.warm

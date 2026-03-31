@@ -1,6 +1,12 @@
 // FitTracker/DesignSystem/AppComponents.swift
-// New shared components for Design System v2.
-// References AppTheme.* only — never AppPalette or raw values.
+// Lower-level design system primitives: chips, filters, sheets, stat rows, segments, progress rings.
+// These are atomic/molecule-level components that compose into larger patterns.
+//
+// Split rationale:
+//   This file:                              Atomic/molecule components (picker, filter, ring, stat row)
+//   Views/Shared/AppDesignSystemComponents: Composite components (card, button, menu row, selection tile, input shell)
+//
+// Both files reference AppTheme.* only — never AppPalette or raw values.
 import SwiftUI
 
 // MARK: - AppPickerChip

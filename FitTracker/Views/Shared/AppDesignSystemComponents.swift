@@ -1,3 +1,12 @@
+// FitTracker/Views/Shared/AppDesignSystemComponents.swift
+// Composite design system components: cards, buttons, menu rows, selection tiles, input shells.
+// These are higher-level patterns that compose atomic components and tokens into reusable surfaces.
+//
+// Split rationale:
+//   DesignSystem/AppComponents:  Atomic/molecule components (picker, filter, ring, stat row)
+//   This file:                   Composite components (card, button, menu row, selection tile, input shell)
+//
+// Both files reference AppTheme.* only — never AppPalette or raw values.
 import SwiftUI
 
 enum AppButtonHierarchy: String, CaseIterable, Identifiable {
