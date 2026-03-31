@@ -1,378 +1,468 @@
-// Views/Settings/SettingsView.swift
-
 import SwiftUI
 import LocalAuthentication
 
-struct SettingsView: View {
+private enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
+    case accountSecurity
+    case healthDevices
+    case goalsPreferences
+    case trainingNutrition
+    case dataSync
 
-    @EnvironmentObject var signIn:        SignInService
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .accountSecurity: "Account & Security"
+        case .healthDevices: "Health & Devices"
+        case .goalsPreferences: "Goals & Preferences"
+        case .trainingNutrition: "Training & Nutrition"
+        case .dataSync: "Data & Sync"
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .accountSecurity: "Sign-in, biometrics, passkeys, and device protection."
+        case .healthDevices: "HealthKit, Apple Watch status, and connected data sources."
+        case .goalsPreferences: "Units, appearance, stats layout, and body goals."
+        case .trainingNutrition: "Nutrition mode, meal slots, and readiness thresholds."
+        case .dataSync: "Cloud sync, local data counts, and destructive actions."
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .accountSecurity: "lock.shield.fill"
+        case .healthDevices: "heart.text.square.fill"
+        case .goalsPreferences: "slider.horizontal.3"
+        case .trainingNutrition: "figure.run.circle.fill"
+        case .dataSync: "arrow.triangle.2.circlepath.icloud.fill"
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .accountSecurity: AppColor.Accent.primary
+        case .healthDevices: .accent.cyan
+        case .goalsPreferences: .blue
+        case .trainingNutrition: .accent.purple
+        case .dataSync: .status.success
+        }
+    }
+}
+
+private struct SettingsSummaryBadge: Identifiable {
+    let title: String
+    let tint: Color
+
+    var id: String { title }
+}
+
+struct SettingsView: View {
+    @EnvironmentObject var signIn: SignInService
     @EnvironmentObject var biometricAuth: AuthManager
-    @EnvironmentObject var dataStore:     EncryptedDataStore
+    @EnvironmentObject var dataStore: EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
-    @EnvironmentObject var cloudSync:     CloudKitSyncService
-    @EnvironmentObject var settings:      AppSettings
+    @EnvironmentObject var cloudSync: CloudKitSyncService
+    @EnvironmentObject var settings: AppSettings
+    @EnvironmentObject var watchService: WatchConnectivityService
 
     @State private var showResetAlert = false
 
+    private let dashboardColumns = [
+        GridItem(.flexible(), spacing: AppSpacing.xSmall, alignment: .top),
+        GridItem(.flexible(), spacing: AppSpacing.xSmall, alignment: .top),
+    ]
+
     var body: some View {
-        settingsForm
+        NavigationStack {
+            ZStack {
+                AppGradient.screenBackground
+                    .ignoresSafeArea()
+
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: AppSpacing.large) {
+                        SettingsHomeHeader(
+                            title: "Settings",
+                            subtitle: "Everything is grouped by area so device access, goals, and sync controls stay easy to find."
+                        )
+
+                        NavigationLink(value: SettingsCategory.accountSecurity) {
+                            SettingsCategoryCard(
+                                category: .accountSecurity,
+                                summary: SettingsCategory.accountSecurity.subtitle,
+                                badges: summaryBadges(for: .accountSecurity),
+                                featured: true
+                            )
+                        }
+                        .buttonStyle(.plain)
+
+                        LazyVGrid(columns: dashboardColumns, spacing: AppSpacing.xSmall) {
+                            ForEach(SettingsCategory.allCases.filter { $0 != .accountSecurity }) { category in
+                                NavigationLink(value: category) {
+                                    SettingsCategoryCard(
+                                        category: category,
+                                        summary: category.subtitle,
+                                        badges: summaryBadges(for: category),
+                                        featured: false
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding(.horizontal, AppSpacing.medium)
+                    .padding(.top, AppSpacing.small)
+                    .padding(.bottom, AppSpacing.large)
+                }
+            }
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationDestination(for: SettingsCategory.self) { category in
+                switch category {
+                case .accountSecurity:
+                    AccountSecuritySettingsScreen()
+                case .healthDevices:
+                    HealthDevicesSettingsScreen()
+                case .goalsPreferences:
+                    GoalsPreferencesSettingsScreen()
+                case .trainingNutrition:
+                    TrainingNutritionSettingsScreen()
+                case .dataSync:
+                    DataSyncSettingsScreen(showResetAlert: $showResetAlert)
+                }
+            }
+            .alert("Delete All Data?", isPresented: $showResetAlert) {
+                Button("Delete", role: .destructive) {
+                    dataStore.dailyLogs = []
+                    dataStore.weeklySnapshots = []
+                    Task { await dataStore.persistToDisk() }
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This permanently removes all locally stored logs. Data will be restored from iCloud on the next sync. To permanently delete, remove \(AppBrand.name) from your iCloud account in iOS Settings.")
+            }
+        }
     }
 
-    private var settingsForm: some View {
-        Form {
-            // Profile section
-            Section("Profile") {
-                LabeledContent("Name",           value: dataStore.userProfile.name)
-                LabeledContent("Recovery Start", value: Self.recoveryStartFormatter.string(from: dataStore.userProfile.recoveryStart))
-                LabeledContent("Phase",          value: dataStore.userProfile.currentPhase.rawValue)
-                LabeledContent("Recovery Day",   value: "Day \(dataStore.userProfile.daysSinceStart)")
-                LabeledContent("Goal Weight",    value: "\(Int(dataStore.userProfile.targetWeightMin))–\(Int(dataStore.userProfile.targetWeightMax)) kg")
-                LabeledContent("Goal Body Fat",  value: "\(Int(dataStore.userProfile.targetBFMin))–\(Int(dataStore.userProfile.targetBFMax))%")
+    private func summaryBadges(for category: SettingsCategory) -> [SettingsSummaryBadge] {
+        switch category {
+        case .accountSecurity:
+            let provider = signIn.currentSession?.provider.rawValue ?? "No Session"
+            let biometric = settings.requireBiometricUnlockOnReopen ? "Biometric Reopen On" : "Biometric Reopen Off"
+            return [
+                SettingsSummaryBadge(title: provider, tint: AppColor.Accent.primary),
+                SettingsSummaryBadge(
+                    title: biometric,
+                    tint: settings.requireBiometricUnlockOnReopen ? .status.success : .status.warning
+                ),
+            ]
+        case .healthDevices:
+            let health = healthService.isAuthorized ? "HealthKit On" : "HealthKit Off"
+            return [
+                SettingsSummaryBadge(title: health, tint: healthService.isAuthorized ? .status.success : .status.warning),
+                SettingsSummaryBadge(title: watchService.status.label, tint: watchService.status.dotColor),
+            ]
+        case .goalsPreferences:
+            return [
+                SettingsSummaryBadge(title: settings.unitSystem.rawValue, tint: .blue),
+                SettingsSummaryBadge(title: settings.appearance.rawValue, tint: .accent.purple),
+            ]
+        case .trainingNutrition:
+            return [
+                SettingsSummaryBadge(title: dataStore.userPreferences.nutritionGoalMode.shortLabel, tint: .accent.purple),
+                SettingsSummaryBadge(
+                    title: "Zone 2 \(dataStore.userPreferences.zone2LowerHR)-\(dataStore.userPreferences.zone2UpperHR)",
+                    tint: .accent.cyan
+                ),
+            ]
+        case .dataSync:
+            return [
+                SettingsSummaryBadge(title: cloudSync.status.rawValue, tint: syncTint),
+                SettingsSummaryBadge(title: "\(dataStore.dailyLogs.count) Logs", tint: AppColor.Accent.primary),
+            ]
+        }
+    }
+
+    private var syncTint: Color {
+        switch cloudSync.status {
+        case .idle:
+            return .status.success
+        case .syncing:
+            return .status.warning
+        case .failed:
+            return .status.error
+        case .offline, .disabled:
+            return AppColor.Text.secondary
+        }
+    }
+}
+
+private struct AccountSecuritySettingsScreen: View {
+    @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var settings: AppSettings
+    @EnvironmentObject private var biometricAuth: AuthManager
+
+    var body: some View {
+        SettingsDetailScaffold(
+            title: SettingsCategory.accountSecurity.title,
+            subtitle: "Manage how your account opens, how credentials are stored, and which protections are active on this device."
+        ) {
+            SettingsSectionCard(title: "Account Identity", eyebrow: "Account") {
+                SettingsValueRow(title: "Sign-In Method", value: signIn.currentSession?.provider.rawValue ?? "Unavailable")
+                SettingsValueRow(title: "Name", value: signIn.currentSession?.displayName ?? "—")
+                SettingsValueRow(title: "Email", value: signIn.currentSession?.email ?? "—")
+                SettingsValueRow(title: "Phone", value: signIn.currentSession?.phone ?? "—")
             }
 
-            // Health & Watch section
-            Section("Health & Watch") {
-                LabeledContent("HealthKit", value: healthService.isAuthorized ? "Authorized ✓" : "Not authorized")
-                LabeledContent("Apple Watch", value: "Background delivery active")
-                Button("Re-authorize HealthKit") {
-                    Task { try? await healthService.requestAuthorization() }
-                }
-            }
-
-            Section("Access") {
-                if let session = signIn.currentSession {
-                    LabeledContent("Sign-In Method", value: session.provider.rawValue)
-                }
+            SettingsSectionCard(title: "Access on Reopen", eyebrow: "Security") {
                 Toggle(isOn: $settings.requireBiometricUnlockOnReopen) {
-                    VStack(alignment: .leading, spacing: 3) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                         Text("Require \(biometricUnlockLabel) on Reopen")
-                        Text("When off, FitTracker stays unlocked while the app remains in memory.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(AppType.body.weight(.semibold))
+                            .foregroundStyle(AppColor.Text.primary)
+                        Text("When off, \(AppBrand.name) stays unlocked while the app remains in memory.")
+                            .font(AppType.subheading)
+                            .foregroundStyle(AppColor.Text.secondary)
                     }
                 }
+                .tint(AppColor.Accent.primary)
                 .disabled(!biometricsAvailable)
 
                 if !biometricsAvailable {
-                    Text("Biometric unlock is unavailable on this device. Set up Face ID or Touch ID to use FitTracker's encrypted app lock.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    SettingsSupportingText("Biometric unlock is unavailable on this device. Set up Face ID or Touch ID to protect reopen access.")
                 }
 
                 Button {
                     signIn.addPasskeyForCurrentUser()
                 } label: {
-                    HStack {
-                        Label(
-                            signIn.currentSession?.provider == .passkey ? "Create Another Passkey" : "Add Passkey",
-                            systemImage: "key.fill"
-                        )
-                        Spacer()
-                        if signIn.isLoading {
-                            ProgressView().scaleEffect(0.8)
-                        }
-                    }
+                    SettingsActionLabel(
+                        title: signIn.currentSession?.provider == .passkey ? "Create Another Passkey" : "Add Passkey",
+                        subtitle: signIn.isPasskeyConfigured ? "Register a passkey for quick passwordless sign in." : "Passkey setup requires a valid relying party configuration.",
+                        icon: "key.fill",
+                        tint: .accent.purple,
+                        trailing: signIn.isLoading ? .progress : .chevron
+                    )
                 }
+                .buttonStyle(.plain)
                 .disabled(signIn.isLoading || !signIn.isPasskeyConfigured)
-
-                if !signIn.isPasskeyConfigured {
-                    Text("Passkey setup requires a valid `PasskeyRelyingPartyID` in the app configuration.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
             }
 
-            // Security section
-            Section("Security") {
-                securitySummaryRow(
-                    title: "Encryption",
-                    detail: "AES-256-GCM + ChaCha20-Poly1305"
-                )
-                securitySummaryRow(
-                    title: "Key Storage",
-                    detail: "Keychain with biometric protection"
-                )
-                securitySummaryRow(
-                    title: "Cloud Storage",
-                    detail: "Encrypted locally before upload"
-                )
-                securitySummaryRow(
-                    title: "Data Protection",
-                    detail: "NSFileProtectionCompleteUnlessOpen"
-                )
-            }
-
-            // iCloud Sync section
-            Section("Sync") {
-                LabeledContent("Status",  value: cloudSync.status.rawValue)
-                LabeledContent("iCloud",  value: cloudSync.iCloudAvailable ? "Available ✓" : "Unavailable")
-                if let last = cloudSync.lastSyncDate {
-                    LabeledContent("Last Sync", value: Self.lastSyncFormatter.string(from: last))
-                }
-                Button("Sync Now") {
-                    Task { await cloudSync.pushPendingChanges(dataStore: dataStore) }
-                }
-                Button("Fetch from iCloud") {
-                    Task { await cloudSync.fetchChanges(dataStore: dataStore) }
-                }
-            }
-
-            // Preferences section (moved from AccountPanelView)
-            Section("Preferences") {
-                // Unit system picker
-                VStack(alignment: .leading, spacing: 10) {
-                    Label("Units", systemImage: "ruler")
-                        .font(.subheadline.weight(.medium))
-                    HStack(spacing: 8) {
-                        ForEach(UnitSystem.allCases, id: \.self) { system in
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    settings.unitSystem = system
-                                }
-                            } label: {
-                                VStack(spacing: 4) {
-                                    Text(system.rawValue).font(.subheadline.weight(.semibold))
-                                    Text(system == .metric ? "kg · cm · km" : "lbs · in · mi")
-                                        .font(.system(size: 10)).opacity(0.7)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .foregroundStyle(settings.unitSystem == system ? .white : .primary)
-                                .background(
-                                    settings.unitSystem == system ? Color.green : Color.secondary.opacity(0.1),
-                                    in: RoundedRectangle(cornerRadius: 10)
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-                .padding(.vertical, 4)
-
-                // Appearance picker
-                VStack(alignment: .leading, spacing: 10) {
-                    Label("Appearance", systemImage: "paintpalette")
-                        .font(.subheadline.weight(.medium))
-                    HStack(spacing: 8) {
-                        ForEach(AppAppearance.allCases, id: \.self) { mode in
-                            Button {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    settings.appearance = mode
-                                }
-                            } label: {
-                                VStack(spacing: 5) {
-                                    Image(systemName: mode.icon).font(.title3)
-                                    Text(mode.rawValue).font(.caption2.weight(.medium))
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .foregroundStyle(settings.appearance == mode ? .white : .primary)
-                                .background(
-                                    settings.appearance == mode ? Color.green : Color.secondary.opacity(0.1),
-                                    in: RoundedRectangle(cornerRadius: 10)
-                                )
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-                .padding(.vertical, 4)
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Label("Stats Carousel", systemImage: "chart.bar.xaxis")
-                        .font(.subheadline.weight(.medium))
-
-                    Text("Weight and Body Fat stay pinned on the stats screen. Choose which extra metrics appear in Track More.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    ForEach(statsMetricOptions) { metric in
-                        Button {
-                            toggleStatsMetric(metric)
-                        } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: metric.icon)
-                                    .font(.system(size: 14, weight: .semibold))
-                                    .foregroundStyle(metric.tint)
-                                    .frame(width: 20)
-
-                                Text(metric.title)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.primary)
-
-                                Spacer()
-
-                                Image(systemName: isStatsMetricVisible(metric) ? "checkmark.circle.fill" : "circle")
-                                    .font(.system(size: 18, weight: .semibold))
-                                    .foregroundStyle(isStatsMetricVisible(metric) ? metric.tint : .secondary.opacity(0.5))
-                            }
-                            .padding(.vertical, 4)
-                        }
-                        .buttonStyle(.plain)
-                    }
-
-                    Button("Reset Recommended Metrics") {
-                        dataStore.userPreferences.preferredStatsCarouselMetrics = UserPreferences.defaultStatsCarouselMetrics
-                        Task { await dataStore.persistToDisk() }
-                    }
-                    .font(.caption.weight(.semibold))
-                }
-                .padding(.vertical, 4)
-            }
-
-            // Nutrition section
-            Section("Nutrition") {
-                Picker("Goal Mode", selection: Binding(
-                    get: { dataStore.userPreferences.nutritionGoalMode },
-                    set: {
-                        dataStore.userPreferences.nutritionGoalMode = $0
-                        Task { await dataStore.persistToDisk() }
-                    }
-                )) {
-                    ForEach(NutritionGoalMode.allCases, id: \.self) { mode in
-                        Text(mode.rawValue).tag(mode)
-                    }
-                }
-
-                TextField("Goal Weight Min", value: Binding(
-                    get: { dataStore.userProfile.targetWeightMin },
-                    set: {
-                        dataStore.userProfile.targetWeightMin = $0
-                        Task { await dataStore.persistToDisk() }
-                    }
-                ), format: .number.precision(.fractionLength(0...1)))
-
-                TextField("Goal Weight Max", value: Binding(
-                    get: { dataStore.userProfile.targetWeightMax },
-                    set: {
-                        dataStore.userProfile.targetWeightMax = $0
-                        Task { await dataStore.persistToDisk() }
-                    }
-                ), format: .number.precision(.fractionLength(0...1)))
-
-                TextField("Goal Body Fat Min", value: Binding(
-                    get: { dataStore.userProfile.targetBFMin },
-                    set: {
-                        dataStore.userProfile.targetBFMin = $0
-                        Task { await dataStore.persistToDisk() }
-                    }
-                ), format: .number.precision(.fractionLength(0...1)))
-
-                TextField("Goal Body Fat Max", value: Binding(
-                    get: { dataStore.userProfile.targetBFMax },
-                    set: {
-                        dataStore.userProfile.targetBFMax = $0
-                        Task { await dataStore.persistToDisk() }
-                    }
-                ), format: .number.precision(.fractionLength(0...1)))
-
-                ForEach(dataStore.userProfile.mealSlotNames.indices, id: \.self) { i in
-                    TextField("Slot \(i+1)", text: Binding(
-                        get: { dataStore.userProfile.mealSlotNames.indices.contains(i) ? dataStore.userProfile.mealSlotNames[i] : "Meal \(i+1)" },
-                        set: {
-                            while dataStore.userProfile.mealSlotNames.count <= i {
-                                dataStore.userProfile.mealSlotNames.append("Meal \(dataStore.userProfile.mealSlotNames.count + 1)")
-                            }
-                            dataStore.userProfile.mealSlotNames[i] = $0
-                            Task { await dataStore.persistToDisk() }
-                        }
-                    ))
-                }
-            }
-
-            // Training section
-            Section("Training") {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Zone 2 Lower HR: \(dataStore.userPreferences.zone2LowerHR) bpm")
-                    Slider(value: Binding(
-                        get: { Double(dataStore.userPreferences.zone2LowerHR) },
-                        set: {
-                            let newVal = Int($0)
-                            dataStore.userPreferences.zone2LowerHR = min(newVal, dataStore.userPreferences.zone2UpperHR - 1)
-                        }
-                    ), in: 80...160, step: 1) { _ in
-                        Task { await dataStore.persistToDisk() }
-                    }
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Zone 2 Upper HR: \(dataStore.userPreferences.zone2UpperHR) bpm")
-                    Slider(value: Binding(
-                        get: { Double(dataStore.userPreferences.zone2UpperHR) },
-                        set: {
-                            let newVal = Int($0)
-                            dataStore.userPreferences.zone2UpperHR = max(newVal, dataStore.userPreferences.zone2LowerHR + 1)
-                        }
-                    ), in: 90...180, step: 1) { _ in
-                        Task { await dataStore.persistToDisk() }
-                    }
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Readiness HR Threshold: \(dataStore.userPreferences.hrReadyThreshold) bpm")
-                    Slider(value: Binding(
-                        get: { Double(dataStore.userPreferences.hrReadyThreshold) },
-                        set: { dataStore.userPreferences.hrReadyThreshold = Int($0) }
-                    ), in: 40...80, step: 1) { _ in
-                        Task { await dataStore.persistToDisk() }
-                    }
-                }
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Readiness HRV Threshold: \(dataStore.userPreferences.hrvReadyThreshold, specifier: "%.0f") ms")
-                    Slider(value: $dataStore.userPreferences.hrvReadyThreshold, in: 10...80, step: 1) { _ in
-                        Task { await dataStore.persistToDisk() }
-                    }
-                }
-            }
-
-            // Data section
-            Section("Data") {
-                LabeledContent("Daily Logs",       value: "\(dataStore.dailyLogs.count) entries")
-                LabeledContent("Weekly Snapshots", value: "\(dataStore.weeklySnapshots.count) entries")
-                Button("Delete All Local Data", role: .destructive) {
-                    showResetAlert = true
-                }
+            SettingsSectionCard(title: "Protection Summary", eyebrow: "Security") {
+                SettingsValueRow(title: "Encryption", value: "AES-256-GCM + ChaCha20-Poly1305")
+                SettingsValueRow(title: "Key Storage", value: "Keychain with biometric protection")
+                SettingsValueRow(title: "Cloud Storage", value: "Encrypted locally before upload")
+                SettingsValueRow(title: "Data Protection", value: "NSFileProtectionCompleteUnlessOpen")
             }
         }
-        .navigationTitle("Settings")
-        .alert("Delete All Data?", isPresented: $showResetAlert) {
-            Button("Delete", role: .destructive) {
-                dataStore.dailyLogs       = []
-                dataStore.weeklySnapshots = []
-                dataStore.userProfile     = UserProfile()
-                dataStore.mealTemplates   = []
-                dataStore.userPreferences = UserPreferences()
-                Task { await dataStore.persistToDisk() }
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This permanently removes all locally stored logs. Data will be restored from iCloud on the next sync. To permanently delete, remove FitTracker from your iCloud account in iOS Settings.")
-        }
+        .navigationTitle(SettingsCategory.accountSecurity.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
-    private static let lastSyncFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateStyle = .short
-        f.timeStyle = .short
-        return f
-    }()
-
-    private static let recoveryStartFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateStyle = .medium
-        f.timeStyle = .none
-        return f
-    }()
-
     private var biometricsAvailable: Bool {
-        biometricAuth.isAvailable
+        let ctx = LAContext()
+        var error: NSError?
+        return ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
     }
 
     private var biometricUnlockLabel: String {
-        guard biometricAuth.isAvailable else { return "Face ID" }
-        switch biometricAuth.biometricType {
+        let ctx = LAContext()
+        var error: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+            return biometricAuth.biometricName
+        }
+        switch ctx.biometryType {
         case .faceID: return "Face ID"
         case .touchID: return "Touch ID"
         default: return "Biometric Unlock"
         }
+    }
+}
+
+private struct HealthDevicesSettingsScreen: View {
+    @EnvironmentObject private var healthService: HealthKitService
+    @EnvironmentObject private var watchService: WatchConnectivityService
+
+    var body: some View {
+        SettingsDetailScaffold(
+            title: SettingsCategory.healthDevices.title,
+            subtitle: "See whether health data access is active, whether your Apple Watch is reachable, and which connected sources are currently feeding the app."
+        ) {
+            SettingsSectionCard(title: "Connection Status", eyebrow: "Devices") {
+                SettingsValueRow(title: "HealthKit", value: healthService.isAuthorized ? "Authorized" : "Not Authorized")
+                SettingsValueRow(title: "Apple Watch", value: watchService.status.label)
+                SettingsSupportingText(healthSummary)
+                SettingsSupportingText(watchSummary)
+            }
+
+            SettingsSectionCard(title: "Actions", eyebrow: "Devices") {
+                Button {
+                    Task { try? await healthService.requestAuthorization() }
+                } label: {
+                    SettingsActionLabel(
+                        title: "Re-authorize HealthKit",
+                        subtitle: "Refresh the current HealthKit permissions and reconnect read access.",
+                        icon: "heart.text.square.fill",
+                        tint: .accent.cyan
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .navigationTitle(SettingsCategory.healthDevices.title)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var healthSummary: String {
+        healthService.isAuthorized
+            ? "HealthKit is connected, so compatible body, recovery, and activity metrics can flow into \(AppBrand.name)."
+            : "HealthKit is not authorized yet, so recovery and body signals depend on manual entry and imported device data."
+    }
+
+    private var watchSummary: String {
+        switch watchService.status {
+        case .connected:
+            return "Your Apple Watch is reachable right now and can provide live workout-related context."
+        case .offline:
+            return "Your watch is paired, but it is not currently reachable. This is common when the watch app is not active."
+        case .notPaired:
+            return "No paired Apple Watch is detected for this iPhone."
+        case .appNotInstalled:
+            return "A paired watch was found, but the watch companion app is not installed."
+        }
+    }
+}
+
+private struct GoalsPreferencesSettingsScreen: View {
+    @EnvironmentObject private var dataStore: EncryptedDataStore
+    @EnvironmentObject private var settings: AppSettings
+
+    var body: some View {
+        SettingsDetailScaffold(
+            title: SettingsCategory.goalsPreferences.title,
+            subtitle: "Personalize the app’s presentation, choose how stats are surfaced, and keep body-composition targets in one place."
+        ) {
+            SettingsSectionCard(title: "Profile Snapshot", eyebrow: "Goals") {
+                SettingsValueRow(title: "Name", value: dataStore.userProfile.name)
+                SettingsValueRow(title: "Recovery Start", value: Self.recoveryStartFormatter.string(from: dataStore.userProfile.recoveryStart))
+                SettingsValueRow(title: "Phase", value: dataStore.userProfile.currentPhase.rawValue)
+                SettingsValueRow(title: "Recovery Day", value: "Day \(dataStore.userProfile.daysSinceStart)")
+            }
+
+            SettingsSectionCard(title: "Body Goals", eyebrow: "Goals") {
+                SettingsNumericFieldRow(title: "Goal Weight Min", suffix: settings.unitSystem.weightLabel(), value: goalWeightMinBinding)
+                SettingsNumericFieldRow(title: "Goal Weight Max", suffix: settings.unitSystem.weightLabel(), value: goalWeightMaxBinding)
+                SettingsNumericFieldRow(title: "Goal Body Fat Min", suffix: "%", value: goalBodyFatMinBinding)
+                SettingsNumericFieldRow(title: "Goal Body Fat Max", suffix: "%", value: goalBodyFatMaxBinding)
+            }
+
+            SettingsSectionCard(title: "Units", eyebrow: "Preferences") {
+                SettingsChoiceGrid(options: UnitSystem.allCases, selection: $settings.unitSystem) { system in
+                    SettingsSelectionTile(
+                        title: system.rawValue,
+                        subtitle: system == .metric ? "kg · cm · km" : "lbs · in · mi",
+                        isSelected: settings.unitSystem == system,
+                        tint: .blue
+                    )
+                }
+            }
+
+            SettingsSectionCard(title: "Appearance", eyebrow: "Preferences") {
+                SettingsChoiceGrid(options: AppAppearance.allCases, selection: $settings.appearance) { mode in
+                    SettingsSelectionTile(
+                        title: mode.rawValue,
+                        subtitle: mode == .system ? "Follow the device setting" : "Force \(mode.rawValue.lowercased()) mode",
+                        isSelected: settings.appearance == mode,
+                        tint: .accent.purple
+                    )
+                }
+            }
+
+            SettingsSectionCard(title: "Stats Carousel", eyebrow: "Preferences") {
+                SettingsSupportingText("Weight and Body Fat stay pinned on the stats screen. Choose which extra metrics appear in Track More.")
+
+                ForEach(statsMetricOptions) { metric in
+                    Button {
+                        toggleStatsMetric(metric)
+                    } label: {
+                        HStack(spacing: AppSpacing.xSmall) {
+                            Image(systemName: metric.icon)
+                                .font(AppText.captionStrong)
+                                .foregroundStyle(metric.tint)
+                                .frame(width: 20)
+
+                            Text(metric.title)
+                                .font(AppType.body)
+                                .foregroundStyle(AppColor.Text.primary)
+
+                            Spacer()
+
+                            Image(systemName: isStatsMetricVisible(metric) ? "checkmark.circle.fill" : "circle")
+                                .font(AppText.sectionTitle)
+                                .foregroundStyle(isStatsMetricVisible(metric) ? metric.tint : AppColor.Text.tertiary)
+                        }
+                        .padding(.vertical, AppSpacing.xxxSmall)
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                Button("Reset Recommended Metrics") {
+                    dataStore.userPreferences.preferredStatsCarouselMetrics = UserPreferences.defaultStatsCarouselMetrics
+                    Task { await dataStore.persistToDisk() }
+                }
+                .font(AppType.subheading.weight(.semibold))
+                .foregroundStyle(AppColor.Accent.primary)
+            }
+        }
+        .navigationTitle(SettingsCategory.goalsPreferences.title)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private static let recoveryStartFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }()
+
+    private var goalWeightMinBinding: Binding<Double> {
+        Binding(
+            get: { dataStore.userProfile.targetWeightMin },
+            set: {
+                dataStore.userProfile.targetWeightMin = $0
+                Task { await dataStore.persistToDisk() }
+            }
+        )
+    }
+
+    private var goalWeightMaxBinding: Binding<Double> {
+        Binding(
+            get: { dataStore.userProfile.targetWeightMax },
+            set: {
+                dataStore.userProfile.targetWeightMax = $0
+                Task { await dataStore.persistToDisk() }
+            }
+        )
+    }
+
+    private var goalBodyFatMinBinding: Binding<Double> {
+        Binding(
+            get: { dataStore.userProfile.targetBFMin },
+            set: {
+                dataStore.userProfile.targetBFMin = $0
+                Task { await dataStore.persistToDisk() }
+            }
+        )
+    }
+
+    private var goalBodyFatMaxBinding: Binding<Double> {
+        Binding(
+            get: { dataStore.userProfile.targetBFMax },
+            set: {
+                dataStore.userProfile.targetBFMax = $0
+                Task { await dataStore.persistToDisk() }
+            }
+        )
     }
 
     private var statsMetricOptions: [StatsFocusMetric] {
@@ -396,15 +486,535 @@ struct SettingsView: View {
         dataStore.userPreferences.preferredStatsCarouselMetrics = metrics
         Task { await dataStore.persistToDisk() }
     }
+}
 
-    private func securitySummaryRow(title: String, detail: String) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(title)
-                .font(.subheadline.weight(.medium))
-            Text(detail)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+private struct TrainingNutritionSettingsScreen: View {
+    @EnvironmentObject private var dataStore: EncryptedDataStore
+
+    var body: some View {
+        SettingsDetailScaffold(
+            title: SettingsCategory.trainingNutrition.title,
+            subtitle: "Tune the strategy that drives your nutrition recommendations and the thresholds used for training and readiness logic."
+        ) {
+            SettingsSectionCard(title: "Nutrition Strategy", eyebrow: "Nutrition") {
+                Picker("Goal Mode", selection: nutritionGoalModeBinding) {
+                    ForEach(NutritionGoalMode.allCases, id: \.self) { mode in
+                        Text(mode.rawValue).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                ForEach(dataStore.userProfile.mealSlotNames.indices, id: \.self) { index in
+                    TextField(
+                        "Meal Slot \(index + 1)",
+                        text: Binding(
+                            get: { dataStore.userProfile.mealSlotNames[index] },
+                            set: {
+                                dataStore.userProfile.mealSlotNames[index] = $0
+                                Task { await dataStore.persistToDisk() }
+                            }
+                        )
+                    )
+                    .textFieldStyle(.roundedBorder)
+                }
+            }
+
+            SettingsSectionCard(title: "Cardio Targets", eyebrow: "Training") {
+                SettingsSliderRow(
+                    title: "Zone 2 Lower HR",
+                    valueText: "\(dataStore.userPreferences.zone2LowerHR) bpm",
+                    value: Binding(
+                        get: { Double(dataStore.userPreferences.zone2LowerHR) },
+                        set: {
+                            let newValue = Int($0)
+                            dataStore.userPreferences.zone2LowerHR = min(newValue, dataStore.userPreferences.zone2UpperHR - 1)
+                        }
+                    ),
+                    range: 80...160
+                ) {
+                    Task { await dataStore.persistToDisk() }
+                }
+
+                SettingsSliderRow(
+                    title: "Zone 2 Upper HR",
+                    valueText: "\(dataStore.userPreferences.zone2UpperHR) bpm",
+                    value: Binding(
+                        get: { Double(dataStore.userPreferences.zone2UpperHR) },
+                        set: {
+                            let newValue = Int($0)
+                            dataStore.userPreferences.zone2UpperHR = max(newValue, dataStore.userPreferences.zone2LowerHR + 1)
+                        }
+                    ),
+                    range: 90...180
+                ) {
+                    Task { await dataStore.persistToDisk() }
+                }
+            }
+
+            SettingsSectionCard(title: "Readiness Thresholds", eyebrow: "Training") {
+                SettingsSliderRow(
+                    title: "Readiness HR Threshold",
+                    valueText: "\(dataStore.userPreferences.hrReadyThreshold) bpm",
+                    value: Binding(
+                        get: { Double(dataStore.userPreferences.hrReadyThreshold) },
+                        set: { dataStore.userPreferences.hrReadyThreshold = Int($0) }
+                    ),
+                    range: 40...80
+                ) {
+                    Task { await dataStore.persistToDisk() }
+                }
+
+                SettingsSliderRow(
+                    title: "Readiness HRV Threshold",
+                    valueText: "\(Int(dataStore.userPreferences.hrvReadyThreshold)) ms",
+                    value: $dataStore.userPreferences.hrvReadyThreshold,
+                    range: 10...80
+                ) {
+                    Task { await dataStore.persistToDisk() }
+                }
+            }
         }
-        .padding(.vertical, 2)
+        .navigationTitle(SettingsCategory.trainingNutrition.title)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var nutritionGoalModeBinding: Binding<NutritionGoalMode> {
+        Binding(
+            get: { dataStore.userPreferences.nutritionGoalMode },
+            set: {
+                dataStore.userPreferences.nutritionGoalMode = $0
+                Task { await dataStore.persistToDisk() }
+            }
+        )
+    }
+}
+
+private struct DataSyncSettingsScreen: View {
+    @EnvironmentObject private var dataStore: EncryptedDataStore
+    @EnvironmentObject private var cloudSync: CloudKitSyncService
+    @Binding var showResetAlert: Bool
+
+    var body: some View {
+        SettingsDetailScaffold(
+            title: SettingsCategory.dataSync.title,
+            subtitle: "Monitor iCloud sync health, manually trigger transfers when needed, and manage local storage carefully."
+        ) {
+            SettingsSectionCard(title: "Sync Status", eyebrow: "Sync") {
+                SettingsValueRow(title: "Status", value: cloudSync.status.rawValue)
+                SettingsValueRow(title: "iCloud", value: cloudSync.iCloudAvailable ? "Available" : "Unavailable")
+                if let lastSyncDate = cloudSync.lastSyncDate {
+                    SettingsValueRow(title: "Last Sync", value: Self.lastSyncFormatter.string(from: lastSyncDate))
+                }
+
+                Button {
+                    Task { await cloudSync.pushPendingChanges(dataStore: dataStore) }
+                } label: {
+                    SettingsActionLabel(
+                        title: "Sync Now",
+                        subtitle: "Push local encrypted changes to your private iCloud database.",
+                        icon: "icloud.and.arrow.up.fill",
+                        tint: .status.success
+                    )
+                }
+                .buttonStyle(.plain)
+
+                Button {
+                    Task { await cloudSync.fetchChanges(dataStore: dataStore) }
+                } label: {
+                    SettingsActionLabel(
+                        title: "Fetch from iCloud",
+                        subtitle: "Download the latest encrypted changes from your account.",
+                        icon: "icloud.and.arrow.down.fill",
+                        tint: .accent.cyan
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+
+            SettingsSectionCard(title: "Local Storage", eyebrow: "Data") {
+                SettingsValueRow(title: "Daily Logs", value: "\(dataStore.dailyLogs.count) entries")
+                SettingsValueRow(title: "Weekly Snapshots", value: "\(dataStore.weeklySnapshots.count) entries")
+            }
+
+            SettingsSectionCard(title: "Danger Zone", eyebrow: "Data") {
+                SettingsSupportingText("Delete local logs only if you understand they will repopulate from iCloud on the next fetch. Permanent deletion requires removing the data from your iCloud account as well.")
+
+                Button(role: .destructive) {
+                    showResetAlert = true
+                } label: {
+                    SettingsActionLabel(
+                        title: "Delete All Local Data",
+                        subtitle: "Remove all daily logs and snapshots from this device.",
+                        icon: "trash.fill",
+                        tint: .status.error
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+        }
+        .navigationTitle(SettingsCategory.dataSync.title)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private static let lastSyncFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
+}
+
+private struct SettingsHomeHeader: View {
+    let title: String
+    let subtitle: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            Text(title)
+                .font(AppType.display)
+                .foregroundStyle(AppColor.Text.primary)
+
+            Text(subtitle)
+                .font(AppType.body)
+                .foregroundStyle(AppColor.Text.secondary)
+        }
+    }
+}
+
+private struct SettingsCategoryCard: View {
+    let category: SettingsCategory
+    let summary: String
+    let badges: [SettingsSummaryBadge]
+    let featured: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            HStack(alignment: .top) {
+                Image(systemName: category.icon)
+                    .font(featured ? AppText.sectionTitle : AppText.callout)
+                    .foregroundStyle(category.tint)
+                    .frame(width: 34, height: 34)
+                    .background(category.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
+
+                Spacer(minLength: 12)
+
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppColor.Text.tertiary)
+            }
+
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+                Text(category.title)
+                    .font(featured ? AppType.headline : AppType.body.weight(.semibold))
+                    .foregroundStyle(AppColor.Text.primary)
+                    .multilineTextAlignment(.leading)
+
+                Text(summary)
+                    .font(AppType.subheading)
+                    .foregroundStyle(AppColor.Text.secondary)
+                    .lineLimit(featured ? 2 : 3)
+                    .multilineTextAlignment(.leading)
+            }
+
+            if !badges.isEmpty {
+                FlexibleBadgeRow(badges: badges)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(featured ? AppSpacing.small : AppSpacing.small)
+        .background(
+            RoundedRectangle(cornerRadius: AppRadius.large)
+                .fill(AppColor.Surface.elevated.opacity(featured ? 0.96 : 0.92))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppRadius.large)
+                        .stroke(AppColor.Border.subtle, lineWidth: 1)
+                )
+        )
+        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
+    }
+}
+
+private struct FlexibleBadgeRow: View {
+    let badges: [SettingsSummaryBadge]
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: AppSpacing.xxSmall) {
+                ForEach(badges) { badge in
+                    SettingsBadgeView(badge: badge)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+                ForEach(badges) { badge in
+                    SettingsBadgeView(badge: badge)
+                }
+            }
+        }
+    }
+}
+
+private struct SettingsBadgeView: View {
+    let badge: SettingsSummaryBadge
+
+    var body: some View {
+        HStack(spacing: AppSpacing.xxSmall) {
+            Circle()
+                .fill(badge.tint)
+                .frame(width: 6, height: 6)
+            Text(badge.title)
+                .font(AppType.caption.weight(.semibold))
+        }
+        .foregroundStyle(badge.tint)
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
+        .background(badge.tint.opacity(0.12), in: Capsule())
+    }
+}
+
+private struct SettingsDetailScaffold<Content: View>: View {
+    let title: String
+    let subtitle: String
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        ZStack {
+            AppGradient.screenBackground
+                .ignoresSafeArea()
+
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: AppSpacing.large) {
+                    SettingsHomeHeader(title: title, subtitle: subtitle)
+                    content
+                }
+                .padding(.horizontal, AppSpacing.medium)
+                .padding(.top, AppSpacing.small)
+                .padding(.bottom, AppSpacing.large)
+            }
+        }
+    }
+}
+
+private struct SettingsSectionCard<Content: View>: View {
+    let title: String
+    let eyebrow: String
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
+                Text(eyebrow.uppercased())
+                    .font(AppType.caption.weight(.semibold))
+                    .tracking(1.1)
+                    .foregroundStyle(AppColor.Text.tertiary)
+                Text(title)
+                    .font(AppType.headline)
+                    .foregroundStyle(AppColor.Text.primary)
+            }
+
+            content
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(AppSpacing.small)
+        .background(
+            RoundedRectangle(cornerRadius: AppRadius.large)
+                .fill(AppColor.Surface.elevated.opacity(0.96))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppRadius.large)
+                        .stroke(AppColor.Border.subtle, lineWidth: 1)
+                )
+        )
+        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
+    }
+}
+
+private struct SettingsValueRow: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: AppSpacing.xSmall) {
+            Text(title)
+                .font(AppType.body)
+                .foregroundStyle(AppColor.Text.primary)
+            Spacer()
+            Text(value)
+                .font(AppType.subheading.weight(.semibold))
+                .foregroundStyle(AppColor.Text.secondary)
+                .multilineTextAlignment(.trailing)
+        }
+    }
+}
+
+private struct SettingsSupportingText: View {
+    let text: String
+
+    init(_ text: String) {
+        self.text = text
+    }
+
+    var body: some View {
+        Text(text)
+            .font(AppType.subheading)
+            .foregroundStyle(AppColor.Text.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+private enum SettingsActionTrailing {
+    case chevron
+    case progress
+}
+
+private struct SettingsActionLabel: View {
+    let title: String
+    let subtitle: String
+    let icon: String
+    let tint: Color
+    var trailing: SettingsActionTrailing = .chevron
+
+    var body: some View {
+        HStack(spacing: AppSpacing.xSmall) {
+            Image(systemName: icon)
+                .font(AppText.captionStrong)
+                .foregroundStyle(tint)
+                .frame(width: 26, height: 26)
+                .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
+
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
+                Text(title)
+                    .font(AppType.body.weight(.semibold))
+                    .foregroundStyle(AppColor.Text.primary)
+                Text(subtitle)
+                    .font(AppType.subheading)
+                    .foregroundStyle(AppColor.Text.secondary)
+                    .multilineTextAlignment(.leading)
+            }
+
+            Spacer()
+
+            switch trailing {
+            case .chevron:
+                Image(systemName: "chevron.right")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(AppColor.Text.tertiary)
+            case .progress:
+                ProgressView()
+                    .scaleEffect(0.8)
+            }
+        }
+        .padding(.vertical, AppSpacing.xxxSmall)
+    }
+}
+
+private struct SettingsSelectionTile: View {
+    let title: String
+    let subtitle: String
+    let isSelected: Bool
+    let tint: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            Text(title)
+                .font(AppType.body.weight(.semibold))
+                .foregroundStyle(isSelected ? .white : AppColor.Text.primary)
+            Text(subtitle)
+                .font(AppType.caption)
+                .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, AppSpacing.xxSmall)
+        .padding(.horizontal, AppSpacing.xSmall)
+        .background(
+            RoundedRectangle(cornerRadius: AppRadius.medium)
+                .fill(isSelected ? tint : AppColor.Surface.materialStrong)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: AppRadius.medium)
+                .stroke(isSelected ? tint.opacity(0.18) : AppColor.Border.subtle, lineWidth: 1)
+        )
+    }
+}
+
+private struct SettingsChoiceGrid<Option: Hashable, Tile: View>: View {
+    let options: [Option]
+    @Binding var selection: Option
+    let tile: (Option) -> Tile
+
+    private let columns = [
+        GridItem(.flexible(), spacing: AppSpacing.xxSmall, alignment: .top),
+        GridItem(.flexible(), spacing: AppSpacing.xxSmall, alignment: .top),
+    ]
+
+    var body: some View {
+        LazyVGrid(columns: columns, spacing: AppSpacing.xxSmall) {
+            ForEach(options, id: \.self) { option in
+                Button {
+                    selection = option
+                } label: {
+                    tile(option)
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+}
+
+private struct SettingsNumericFieldRow: View {
+    let title: String
+    let suffix: String
+    @Binding var value: Double
+
+    var body: some View {
+        HStack(spacing: AppSpacing.xSmall) {
+            Text(title)
+                .font(AppType.body)
+                .foregroundStyle(AppColor.Text.primary)
+            Spacer()
+            TextField(
+                title,
+                value: $value,
+                format: .number.precision(.fractionLength(0...1))
+            )
+            .multilineTextAlignment(.trailing)
+            .keyboardType(.decimalPad)
+            .textFieldStyle(.roundedBorder)
+            .frame(width: 96)
+            Text(suffix)
+                .font(AppType.subheading.weight(.semibold))
+                .foregroundStyle(AppColor.Text.secondary)
+        }
+    }
+}
+
+private struct SettingsSliderRow: View {
+    let title: String
+    let valueText: String
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+    let onCommit: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            HStack {
+                Text(title)
+                    .font(AppType.body)
+                    .foregroundStyle(AppColor.Text.primary)
+                Spacer()
+                Text(valueText)
+                    .font(AppType.subheading.weight(.semibold))
+                    .foregroundStyle(AppColor.Text.secondary)
+            }
+
+            Slider(
+                value: $value,
+                in: range,
+                step: 1
+            ) { _ in
+                onCommit()
+            }
+            .tint(AppColor.Accent.primary)
+        }
     }
 }

@@ -30,12 +30,12 @@ struct AccountPanelView: View {
                     .ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: AppSpacing.large) {
                         accountHeroCard
                         settingsLauncherCard
                         signOutCard
                     }
-                    .padding(20)
+                    .padding(AppSpacing.medium)
                 }
             }
             .navigationTitle("Account")
@@ -75,13 +75,13 @@ struct AccountPanelView: View {
     // ─────────────────────────────────────────────────────
 
     private var accountHeroCard: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(spacing: 16) {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            HStack(spacing: AppSpacing.small) {
                 avatarView
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(session?.displayName ?? "User")
                         .font(.title3.weight(.bold))
-                    HStack(spacing: 6) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         providerBadge
                         Text(session?.provider.rawValue ?? "Signed In")
                             .font(.caption)
@@ -100,15 +100,15 @@ struct AccountPanelView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(18)
+        .padding(AppSpacing.large)
         .background(cardBackground)
     }
 
     private var settingsLauncherCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             sectionTitle("Settings")
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 accessPill(
                     icon: "lock.fill",
                     label: settings.requireBiometricUnlockOnReopen ? "Biometric Reopen On" : "Biometric Reopen Off",
@@ -129,10 +129,10 @@ struct AccountPanelView: View {
             Button {
                 showSettings = true
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "gearshape.fill")
                         .foregroundStyle(Color.appAccentPrimary)
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         Text("Open Full Settings")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(.primary)
@@ -145,29 +145,29 @@ struct AccountPanelView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.secondary)
                 }
-                .padding(14)
-                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 16))
+                .padding(AppSpacing.xSmall)
+                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
             .buttonStyle(.plain)
         }
-        .padding(18)
+        .padding(AppSpacing.large)
         .background(cardBackground)
     }
 
     private var signOutCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             sectionTitle("Session")
             Button(role: .destructive) {
                 showLogoutConfirm = true
             } label: {
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "rectangle.portrait.and.arrow.right")
                     Text("Sign Out")
                         .fontWeight(.semibold)
                     Spacer()
                 }
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 14)
+                .padding(.vertical, AppSpacing.xSmall)
             }
             .buttonStyle(.borderedProminent)
             .tint(.red)
@@ -176,7 +176,7 @@ struct AccountPanelView: View {
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
-        .padding(18)
+        .padding(AppSpacing.large)
         .background(cardBackground)
     }
 
@@ -196,10 +196,10 @@ struct AccountPanelView: View {
     }
 
     private var cardBackground: some View {
-        RoundedRectangle(cornerRadius: 22)
+        RoundedRectangle(cornerRadius: AppRadius.large)
             .fill(Color.appSurface.opacity(0.96))
             .overlay(
-                RoundedRectangle(cornerRadius: 22)
+                RoundedRectangle(cornerRadius: AppRadius.large)
                     .stroke(Color.appStroke, lineWidth: 1)
             )
     }
@@ -238,28 +238,28 @@ struct AccountPanelView: View {
     }
 
     private func accessPill(icon: String, label: String, tint: Color) -> some View {
-        HStack(spacing: 6) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
                 .font(.caption.weight(.semibold))
             Text(label)
                 .font(.caption.weight(.semibold))
         }
         .foregroundStyle(tint)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 8)
+        .padding(.horizontal, AppSpacing.xxSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(tint.opacity(0.12), in: Capsule())
     }
 
     @ViewBuilder
     private var providerBadge: some View {
         let provider = session?.provider ?? .apple
-        HStack(spacing: 3) {
+        HStack(spacing: AppSpacing.micro) {
             Image(systemName: providerIcon(provider))
                 .font(.system(size: 9, weight: .semibold))
             Text(provider.rawValue)
                 .font(.system(size: 9, weight: .semibold))
         }
-        .padding(.horizontal, 6).padding(.vertical, 2)
+        .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.micro)
         .background(providerColor(provider).opacity(0.12), in: Capsule())
         .foregroundStyle(providerColor(provider))
     }

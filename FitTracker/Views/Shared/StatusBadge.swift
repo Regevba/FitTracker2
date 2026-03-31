@@ -7,11 +7,15 @@ struct StatusBadge: View {
 
     var body: some View {
         Text(text)
-            .font(AppType.caption)
-            .foregroundColor(color)
-            .padding(.vertical, 4)
-            .padding(.horizontal, 10)
-            .background(color.opacity(0.2))
+            .font(AppText.captionStrong)
+            .foregroundStyle(color)
+            .padding(.vertical, AppSpacing.xxxSmall)
+            .padding(.horizontal, AppSpacing.xxSmall)
+            .background(color.opacity(0.16), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(color.opacity(0.18), lineWidth: 1)
+            )
             .clipShape(Capsule())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(text)
@@ -21,14 +25,14 @@ struct StatusBadge: View {
 #if DEBUG
 struct StatusBadge_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 8) {
+        VStack(spacing: AppSpacing.xSmall) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 StatusBadge(text: "Active", color: .status.success)
                 StatusBadge(text: "Pending", color: .status.warning)
                 StatusBadge(text: "Error", color: .status.error)
             }
 
-            HStack(spacing: 8) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 StatusBadge(text: "Completed", color: .accent.cyan)
                 StatusBadge(text: "Premium", color: .accent.gold)
                 StatusBadge(text: "Featured", color: .accent.purple)

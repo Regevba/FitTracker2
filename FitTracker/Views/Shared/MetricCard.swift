@@ -10,53 +10,48 @@ struct MetricCard: View {
     let statusColor: Color    // dot colour: Color.status.success / warning / error
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .top) {
-                HStack(spacing: 6) {
-                    Image(systemName: icon)
-                        .font(.system(size: 12, weight: .semibold))
-                    Text(label)
-                        .font(AppType.caption)
-                        .textCase(.uppercase)
+        AppCard(tone: .standard, contentPadding: AppSpacing.xSmall) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+                HStack(alignment: .top) {
+                    HStack(spacing: AppSpacing.xxSmall) {
+                        Image(systemName: icon)
+                            .font(AppText.captionStrong)
+                        Text(label)
+                            .font(AppType.caption)
+                            .textCase(.uppercase)
+                    }
+                    .foregroundStyle(AppColor.Text.secondary)
+
+                    Spacer()
+
+                    Circle()
+                        .fill(statusColor)
+                        .frame(width: 8, height: 8)
                 }
-                .foregroundColor(.secondary)
 
-                Spacer()
+                HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxxSmall) {
+                    Text(value)
+                        .font(AppText.metric)
+                        .lineLimit(1)
 
-                Circle()
-                    .fill(statusColor)
-                    .frame(width: 8, height: 8)
-            }
-
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
-                Text(value)
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .lineLimit(1)
-
-                if let unit = unit {
-                    Text(unit)
-                        .font(AppType.caption)
-                        .foregroundColor(.secondary)
+                    if let unit = unit {
+                        Text(unit)
+                            .font(AppType.caption)
+                            .foregroundStyle(AppColor.Text.secondary)
+                    }
                 }
-            }
 
-            if let trendDelta = trendDelta {
-                Text(trendDelta)
-                    .font(AppType.caption)
-                    .foregroundColor(statusColor)
-            } else {
-                Text("No change signal yet")
-                    .font(AppType.caption)
-                    .foregroundColor(.secondary)
+                if let trendDelta = trendDelta {
+                    Text(trendDelta)
+                        .font(AppType.caption)
+                        .foregroundStyle(statusColor)
+                } else {
+                    Text("No change signal yet")
+                        .font(AppType.caption)
+                        .foregroundStyle(AppColor.Text.secondary)
+                }
             }
         }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
-        )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(label)
         .accessibilityValue(accessibilityValue)
@@ -77,7 +72,7 @@ struct MetricCard: View {
 #if DEBUG
 struct MetricCard_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: AppSpacing.small) {
             MetricCard(
                 icon: "scalemass.fill",
                 label: "Weight",
@@ -106,7 +101,7 @@ struct MetricCard_Previews: PreviewProvider {
             )
         }
         .padding()
-        .background(Color.black.opacity(0.05))
+        .background(AppShadow.cardColor)
     }
 }
 #endif

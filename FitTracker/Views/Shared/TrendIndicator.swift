@@ -31,11 +31,15 @@ struct TrendIndicator: View {
 
     var body: some View {
         Text(displayText)
-            .font(AppType.caption)
-            .foregroundColor(statusColor)
-            .padding(.vertical, 4)
-            .padding(.horizontal, 8)
-            .background(statusColor.opacity(0.2))
+            .font(AppText.captionStrong)
+            .foregroundStyle(statusColor)
+            .padding(.vertical, AppSpacing.xxxSmall)
+            .padding(.horizontal, AppSpacing.xxSmall)
+            .background(statusColor.opacity(0.14), in: Capsule())
+            .overlay(
+                Capsule()
+                    .stroke(statusColor.opacity(0.16), lineWidth: 1)
+            )
             .clipShape(Capsule())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("Trend")
@@ -46,25 +50,25 @@ struct TrendIndicator: View {
 #if DEBUG
 struct TrendIndicator_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 12) {
+        VStack(spacing: AppSpacing.xSmall) {
+            HStack(spacing: AppSpacing.xSmall) {
                 TrendIndicator(delta: 0.12, positiveIsGood: true)
                 TrendIndicator(delta: -0.04, positiveIsGood: false)
                 TrendIndicator(delta: 0.0, positiveIsGood: true)
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 TrendIndicator(delta: -0.08, positiveIsGood: true)
                 TrendIndicator(delta: 0.05, positiveIsGood: false)
             }
 
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 TrendIndicator(delta: 0.15, positiveIsGood: false, isPercent: false)
                 TrendIndicator(delta: -2.5, positiveIsGood: false, isPercent: false)
             }
         }
         .padding()
-        .background(Color.black.opacity(0.05))
+        .background(AppColor.Background.appSecondary)
     }
 }
 #endif

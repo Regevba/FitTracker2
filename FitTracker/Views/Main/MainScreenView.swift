@@ -114,8 +114,8 @@ struct MainScreenView: View {
                     Spacer(minLength: 0)
                 }
                 .padding(.horizontal, horizontalPadding)
-                .padding(.top, tight ? 4 : 8)
-                .padding(.bottom, max(proxy.safeAreaInsets.bottom + 12, tight ? 16 : 20))
+                .padding(.top, tight ? AppSpacing.xxxSmall : AppSpacing.xxSmall)
+                .padding(.bottom, max(proxy.safeAreaInsets.bottom + AppSpacing.xSmall, tight ? AppSpacing.small : AppSpacing.medium))
             }
         }
         .onAppear { checkMilestones() }
@@ -179,7 +179,7 @@ struct MainScreenView: View {
                 )
             }
             .presentationDetents([.medium, .large])
-            .presentationCornerRadius(24)
+            .presentationCornerRadius(AppRadius.large)
         }
     }
 
@@ -204,9 +204,9 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private func greetingHeader(tight: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(greeting)
                         .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded))
                         .lineLimit(2)
@@ -216,7 +216,7 @@ struct MainScreenView: View {
                         .foregroundStyle(.black.opacity(0.65))
                 }
                 Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
+                VStack(alignment: .trailing, spacing: AppSpacing.xxSmall) {
                     Text("Day \(profile.daysSinceStart)")
                         .font(.system(size: tight ? 12 : 13, weight: .bold, design: .rounded))
                         .foregroundStyle(.black.opacity(0.82))
@@ -236,7 +236,7 @@ struct MainScreenView: View {
             HStack {
                 sectionEyebrow("Status")
                 Spacer()
-                HStack(spacing: 6) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     Circle()
                         .fill(recommendationAccent)
                         .frame(width: 8, height: 8)
@@ -260,7 +260,7 @@ struct MainScreenView: View {
 
                 Divider()
                     .overlay(Color.white.opacity(0.4))
-                    .padding(.vertical, 8)
+                    .padding(.vertical, AppSpacing.xxSmall)
 
                 statusValueColumn(
                     title: "Body Fat",
@@ -299,7 +299,7 @@ struct MainScreenView: View {
 
     private func goalProgressCard(compact: Bool, tight: Bool) -> some View {
         HStack(alignment: .center, spacing: splitSectionSpacing(compact: compact, tight: tight)) {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                 sectionEyebrow("Goal")
                 ZStack {
                     Circle()
@@ -311,7 +311,7 @@ struct MainScreenView: View {
                             style: StrokeStyle(lineWidth: 12, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
-                    VStack(spacing: 2) {
+                    VStack(spacing: AppSpacing.micro) {
                         Text("\(Int(goalProgress * 100))%")
                             .font(.system(size: tight ? 22 : (compact ? 24 : 28), weight: .bold, design: .rounded))
                             .foregroundStyle(.black.opacity(0.82))
@@ -380,7 +380,7 @@ struct MainScreenView: View {
                             Button(day.rawValue) { selectedDayType = day }
                         }
                     } label: {
-                        HStack(spacing: 8) {
+                        HStack(spacing: AppSpacing.xxSmall) {
                             Image(systemName: activeDayType.icon)
                             Text(activeDayType.rawValue)
                                 .lineLimit(1)
@@ -433,8 +433,8 @@ struct MainScreenView: View {
         isMissing: Bool,
         compact: Bool
     ) -> some View {
-        VStack(alignment: .leading, spacing: compact ? 9 : 12) {
-            HStack(spacing: 8) {
+        VStack(alignment: .leading, spacing: compact ? AppSpacing.xxSmall : AppSpacing.xSmall) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: icon)
                     .font(.caption.weight(.bold))
                 Text(title)
@@ -444,14 +444,14 @@ struct MainScreenView: View {
                     Text("Missing")
                         .font(.system(size: 9, weight: .bold, design: .rounded))
                         .padding(.horizontal, 7)
-                        .padding(.vertical, 4)
+                        .padding(.vertical, AppSpacing.xxxSmall)
                         .background(tint.opacity(0.14), in: Capsule())
                         .foregroundStyle(tint)
                 }
             }
             .foregroundStyle(tint)
 
-            HStack(alignment: .lastTextBaseline, spacing: 4) {
+            HStack(alignment: .lastTextBaseline, spacing: AppSpacing.xxxSmall) {
                 Text(value)
                     .font(.system(size: compact ? 21 : 25, weight: .bold, design: .rounded))
                     .monospacedDigit()
@@ -525,31 +525,31 @@ struct MainScreenView: View {
     }
 
     private func cardStackSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 12 : (compact ? 14 : 16)
+        tight ? AppSpacing.xSmall : (compact ? AppSpacing.xSmall : AppSpacing.small)
     }
 
     private func cardPadding(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 14 : (compact ? 16 : 18)
+        tight ? AppSpacing.xSmall : (compact ? AppSpacing.small : AppSpacing.large)
     }
 
     private func cardInnerSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 10 : (compact ? 12 : 14)
+        tight ? AppSpacing.xxSmall : (compact ? AppSpacing.xSmall : AppSpacing.xSmall)
     }
 
     private func splitSectionSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 14 : (compact ? 18 : 22)
+        tight ? AppSpacing.xSmall : (compact ? AppSpacing.large : 22)
     }
 
     private func goalColumnSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 10 : (compact ? 12 : 16)
+        tight ? AppSpacing.xxSmall : (compact ? AppSpacing.xSmall : AppSpacing.small)
     }
 
     private func trainingTextSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 8 : (compact ? 9 : 10)
+        tight ? AppSpacing.xxSmall : (compact ? 9 : AppSpacing.xxSmall)
     }
 
     private func metricsTileSpacing(compact: Bool, tight: Bool) -> CGFloat {
-        tight ? 6 : (compact ? 8 : 10)
+        tight ? AppSpacing.xxSmall : (compact ? AppSpacing.xxSmall : AppSpacing.xxSmall)
     }
 
     private var greeting: String {
@@ -761,10 +761,10 @@ struct RecoveryRoutineSheet: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 20) {
-                VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: AppSpacing.medium) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 6) {
+                        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                             Text(routine.title)
                                 .font(.system(size: 28, weight: .bold, design: .rounded))
                             Text(routine.subtitle)
@@ -777,18 +777,18 @@ struct RecoveryRoutineSheet: View {
                             .foregroundStyle(Color.accentColor)
                     }
 
-                    HStack(spacing: 10) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         RecoveryMetaPill(label: routine.intensityLabel, icon: "dial.low")
                         RecoveryMetaPill(label: routine.focus, icon: routine.icon)
                     }
                 }
 
                 if !reasons.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                         Text("Why today")
                             .font(.headline)
                         ForEach(reasons, id: \.self) { reason in
-                            HStack(alignment: .top, spacing: 8) {
+                            HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                                 Image(systemName: "sparkles")
                                     .foregroundStyle(Color.accentColor)
                                     .padding(.top, 2)
@@ -800,11 +800,11 @@ struct RecoveryRoutineSheet: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     Text("Flow")
                         .font(.headline)
                     ForEach(Array(routine.steps.enumerated()), id: \.element.id) { index, step in
-                        HStack(alignment: .top, spacing: 12) {
+                        HStack(alignment: .top, spacing: AppSpacing.xSmall) {
                             ZStack {
                                 Circle()
                                     .fill(Color.accentColor.opacity(0.14))
@@ -814,7 +814,7 @@ struct RecoveryRoutineSheet: View {
                                     .foregroundStyle(Color.accentColor)
                             }
 
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                                 HStack {
                                     Text(step.title)
                                         .font(.subheadline.weight(.semibold))
@@ -828,22 +828,22 @@ struct RecoveryRoutineSheet: View {
                                     .foregroundStyle(.secondary)
                             }
                         }
-                        .padding(14)
-                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: 16))
+                        .padding(AppSpacing.xSmall)
+                        .background(Color.secondary.opacity(0.07), in: RoundedRectangle(cornerRadius: AppRadius.medium))
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Coaching note")
                         .font(.headline)
                     Text(routine.coachingNote)
                         .font(AppType.subheading)
                         .foregroundStyle(.secondary)
                 }
-                .padding(16)
-                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 18))
+                .padding(AppSpacing.small)
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.button))
             }
-            .padding(20)
+            .padding(AppSpacing.medium)
         }
         .navigationTitle("Recovery Flow")
         .navigationBarTitleDisplayMode(.inline)
@@ -860,7 +860,7 @@ private struct RecoveryMetaPill: View {
     let icon: String
 
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
                 .font(.caption.weight(.semibold))
             Text(label)
@@ -881,7 +881,7 @@ private struct RecoveryMetaPill: View {
 struct SyncStatusIndicator: View {
     @EnvironmentObject var watchService: WatchConnectivityService
     var body: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: AppSpacing.xxxSmall) {
             Circle()
                 .fill(watchService.status.dotColor)
                 .frame(width: 6, height: 6)

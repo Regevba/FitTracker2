@@ -1,0 +1,69 @@
+// FitTracker/DesignSystem/AppMotion.swift
+// Motion tokens — duration, spring, and easing constants.
+// Use these instead of inline animation literals.
+// Reduce-motion helpers respect UIAccessibility.isReduceMotionEnabled.
+import SwiftUI
+
+// MARK: - Duration
+enum AppDuration {
+    /// Instant feedback: button press, toggle — 100 ms
+    static let instant:  Double = 0.10
+    /// Micro: icon swap, badge update — 150 ms
+    static let micro:    Double = 0.15
+    /// Short: chip appear, row highlight — 200 ms
+    static let short:    Double = 0.20
+    /// Standard: card appear, sheet expand — 300 ms
+    static let standard: Double = 0.30
+    /// Long: page transition, onboarding — 450 ms
+    static let long:     Double = 0.45
+    /// Extra-long: celebration, milestone — 600 ms
+    static let xLong:    Double = 0.60
+}
+
+// MARK: - Spring presets
+enum AppSpring {
+    /// Snappy: interactive controls
+    static let snappy   = Animation.spring(response: 0.30, dampingFraction: 0.72)
+    /// Bouncy: achievement, milestone
+    static let bouncy   = Animation.spring(response: 0.45, dampingFraction: 0.60)
+    /// Smooth: card transitions
+    static let smooth   = Animation.spring(response: 0.40, dampingFraction: 0.85)
+    /// Stiff: overlay/sheet dismiss
+    static let stiff    = Animation.spring(response: 0.25, dampingFraction: 0.90)
+}
+
+// MARK: - Easing
+enum AppEasing {
+    static let standard  = Animation.easeInOut(duration: AppDuration.standard)
+    static let short     = Animation.easeInOut(duration: AppDuration.short)
+    static let instant   = Animation.easeOut(duration: AppDuration.instant)
+    static let linear    = Animation.linear(duration: AppDuration.standard)
+}
+
+// MARK: - Reduce-motion helpers
+extension Animation {
+    /// Returns `self` normally; returns `.instant` if reduce motion is on.
+    var accessibilityAdapted: Animation {
+        UIAccessibility.isReduceMotionEnabled ? .easeOut(duration: 0.01) : self
+    }
+}
+
+/// Conditional animation modifier — applies `animation` unless reduce motion is enabled.
+struct MotionSafe: ViewModifier {
+    let animation: Animation
+    let value: AnyHashable
+
+    func body(content: Content) -> some View {
+        if UIAccessibility.isReduceMotionEnabled {
+            content
+        } else {
+            content.animation(animation, value: value)
+        }
+    }
+}
+
+extension View {
+    func motionSafe<V: Hashable>(_ animation: Animation, value: V) -> some View {
+        modifier(MotionSafe(animation: animation, value: AnyHashable(value)))
+    }
+}

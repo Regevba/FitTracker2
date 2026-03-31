@@ -12,7 +12,7 @@ struct SectionHeader: View {
                 .font(AppType.caption)
                 .textCase(.uppercase)
                 .tracking(1.5)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
 
             Spacer()
 
@@ -20,7 +20,7 @@ struct SectionHeader: View {
                 Button(action: { action?() }) {
                     Text(actionLabel)
                         .font(AppType.caption)
-                        .foregroundColor(.blue)
+                        .foregroundStyle(AppColor.Accent.primary)
                 }
             }
         }
@@ -31,7 +31,7 @@ struct SectionHeader: View {
 #if DEBUG
 struct SectionHeader_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: AppSpacing.small) {
             SectionHeader(title: "Today's Metrics")
 
             SectionHeader(

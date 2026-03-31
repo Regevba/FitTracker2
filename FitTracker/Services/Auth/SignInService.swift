@@ -266,6 +266,7 @@ final class SignInService: NSObject, ObservableObject {
         #endif
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
+        applyReviewSessionIfNeeded()
     }
 
     init(
@@ -278,10 +279,12 @@ final class SignInService: NSObject, ObservableObject {
         self.emailProvider = emailProvider
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
+        applyReviewSessionIfNeeded()
     }
 
     static let sessionKey = "ft.session"
     private static let passkeyRegisteredKey = "ft.passkeyRegistered"
+    private static let reviewAuthKey = "FITTRACKER_REVIEW_AUTH"
 
     var state: AuthState {
         if let activeSession {
@@ -316,6 +319,24 @@ final class SignInService: NSObject, ObservableObject {
         // 3. No valid Supabase session -> clear Keychain
         KeychainHelper.delete(key: Self.sessionKey)
         self.storedSession = nil
+    }
+
+    private func applyReviewSessionIfNeeded() {
+        let reviewMode = ProcessInfo.processInfo.environment[Self.reviewAuthKey]?.lowercased()
+        guard reviewMode == "authenticated" || reviewMode == "settings" else { return }
+
+        let session = UserSession(
+            provider: .email,
+            userID: "review@fitme.app",
+            displayName: "Regev",
+            email: "review@fitme.app",
+            sessionToken: "review-session-token"
+        )
+
+        activeSession = session
+        storedSession = session
+        statusMessage = nil
+        authErrorMessage = nil
     }
 
     func lockForReopen() {

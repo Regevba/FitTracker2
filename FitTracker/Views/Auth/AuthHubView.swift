@@ -51,7 +51,7 @@ private struct AuthScaffold<Content: View>: View {
             AppGradient.authBackground
                 .ignoresSafeArea()
 
-            VStack(spacing: 14) {
+            VStack(spacing: AppSpacing.xSmall) {
                 if let error = signIn.authErrorMessage {
                     AuthBannerView(
                         icon: "exclamationmark.triangle.fill",
@@ -68,9 +68,9 @@ private struct AuthScaffold<Content: View>: View {
 
                 content
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 18)
-            .padding(.bottom, 12)
+            .padding(.horizontal, AppSpacing.medium)
+            .padding(.top, AppSpacing.large)
+            .padding(.bottom, AppSpacing.xSmall)
         }
     }
 }
@@ -81,10 +81,10 @@ private struct AuthEntryScreen: View {
     @EnvironmentObject private var settings: AppSettings
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Spacer(minLength: 14)
+        VStack(alignment: .leading, spacing: AppSpacing.large) {
+            Spacer(minLength: AppSpacing.xSmall)
 
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 Text("FitTracker")
                     .font(AppType.display)
                     .foregroundStyle(.black.opacity(0.88))
@@ -95,9 +95,9 @@ private struct AuthEntryScreen: View {
                     .multilineTextAlignment(.leading)
             }
 
-            Spacer(minLength: 10)
+            Spacer(minLength: AppSpacing.xxSmall)
 
-            VStack(spacing: 12) {
+            VStack(spacing: AppSpacing.xSmall) {
                 Button("Register") {
                     signIn.openRegisterFlow()
                 }
@@ -108,7 +108,7 @@ private struct AuthEntryScreen: View {
                 }
                 .buttonStyle(AuthSecondaryButtonStyle())
 
-                VStack(spacing: 10) {
+                VStack(spacing: AppSpacing.xxSmall) {
                     if showBiometricQuickAction {
                         Button {
                             Task {
@@ -177,10 +177,10 @@ private struct AuthMethodSelectionView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppSpacing.large) {
                 AuthScreenHeader(title: mode.title, subtitle: mode.subtitle)
 
-                VStack(spacing: 12) {
+                VStack(spacing: AppSpacing.xSmall) {
                     Button {
                         switch mode {
                         case .register: signIn.showEmailRegistration()
@@ -244,7 +244,7 @@ private struct EmailRegistrationView: View {
 
     var body: some View {
         ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: AppSpacing.large) {
                 AuthScreenHeader(
                     title: "Register with Email",
                     subtitle: "Create your account, then verify your email with a 5-digit code."
@@ -293,7 +293,7 @@ private struct EmailVerificationView: View {
     @State private var codeState: VerificationCodeState = .idle
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: AppSpacing.large) {
             AuthScreenHeader(
                 title: "Verify your email",
                 subtitle: "A confirmation email with a verification code was sent to \(signIn.pendingEmailRegistration?.email ?? "your address")."
@@ -341,7 +341,7 @@ private struct EmailLoginView: View {
     @State private var localError: String?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
+        VStack(alignment: .leading, spacing: AppSpacing.large) {
             AuthScreenHeader(
                 title: "Log in with Email",
                 subtitle: "Use your registered email address and password."
@@ -388,7 +388,7 @@ private struct AuthScreenHeader: View {
     let subtitle: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(title)
                 .font(AppType.display)
                 .foregroundStyle(.black.opacity(0.88))
@@ -397,7 +397,7 @@ private struct AuthScreenHeader: View {
                 .font(AppType.body)
                 .foregroundStyle(.black.opacity(0.55))
         }
-        .padding(.top, 8)
+        .padding(.top, AppSpacing.xxSmall)
     }
 }
 
@@ -405,13 +405,13 @@ private struct AuthFormCard<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             content
         }
-        .padding(18)
-        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: 24))
+        .padding(AppSpacing.large)
+        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: AppRadius.sheet))
         .overlay(
-            RoundedRectangle(cornerRadius: 24)
+            RoundedRectangle(cornerRadius: AppRadius.sheet)
                 .stroke(Color.appStroke, lineWidth: 1)
         )
     }
@@ -423,7 +423,7 @@ private struct AuthBannerView: View {
     let tint: Color
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
                 .foregroundStyle(tint)
             Text(text)
@@ -431,11 +431,11 @@ private struct AuthBannerView: View {
                 .foregroundStyle(.black.opacity(0.72))
             Spacer()
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
-        .background(Color.white.opacity(0.78), in: RoundedRectangle(cornerRadius: 16))
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xSmall)
+        .background(Color.white.opacity(0.78), in: RoundedRectangle(cornerRadius: AppRadius.medium))
         .overlay(
-            RoundedRectangle(cornerRadius: 16)
+            RoundedRectangle(cornerRadius: AppRadius.medium)
                 .stroke(tint.opacity(0.18), lineWidth: 1)
         )
     }
@@ -448,13 +448,13 @@ private struct AuthProviderRow: View {
     let tint: Color
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: icon)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(tint)
                 .frame(width: 26)
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                 Text(subtitle)
@@ -476,7 +476,7 @@ private struct GoogleProviderRow: View {
     let subtitle: String
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: AppSpacing.xSmall) {
             ZStack {
                 Circle()
                     .fill(Color.white)
@@ -486,7 +486,7 @@ private struct GoogleProviderRow: View {
                     .foregroundStyle(Color(red: 0.26, green: 0.52, blue: 0.96))
             }
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(.black.opacity(0.84))
@@ -509,11 +509,11 @@ private struct AppleProviderRow: View {
     let subtitle: String
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: AppSpacing.xSmall) {
             OfficialAppleButtonIcon()
                 .frame(width: 28, height: 28)
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(.white)
@@ -561,22 +561,22 @@ private struct AuthTextField: View {
             .textInputAutocapitalization(textInputAutocapitalization)
             .autocorrectionDisabled()
             .font(AppType.body)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+            .padding(.horizontal, AppSpacing.xSmall)
+            .padding(.vertical, AppSpacing.xSmall)
+            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: AppRadius.medium))
         #else
         TextField(title, text: $text)
             .font(AppType.body)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+            .padding(.horizontal, AppSpacing.xSmall)
+            .padding(.vertical, AppSpacing.xSmall)
+            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: AppRadius.medium))
         #endif
     }
 }
 
 private struct PasswordRulesTooltip: View {
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
             Image(systemName: "info.circle.fill")
                 .foregroundStyle(Color.accent.cyan)
                 .padding(.top, 1)
@@ -603,13 +603,13 @@ private struct AuthQuickActionLabel: View {
     let subtitle: String
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: icon)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.black.opacity(0.72))
                 .frame(width: 26)
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppType.body.weight(.semibold))
                     .foregroundStyle(.black.opacity(0.76))
@@ -629,9 +629,9 @@ private struct AuthPrimaryButtonStyle: ButtonStyle {
             .font(AppType.body.weight(.semibold))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, AppSpacing.small)
             .background(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: AppRadius.button)
                     .fill(Color.black.opacity(configuration.isPressed ? 0.74 : 0.82))
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -644,13 +644,13 @@ private struct AuthSecondaryButtonStyle: ButtonStyle {
             .font(AppType.body.weight(.semibold))
             .foregroundStyle(.black.opacity(0.76))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, AppSpacing.small)
             .background(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: AppRadius.button)
                     .fill(Color.white.opacity(configuration.isPressed ? 0.72 : 0.62))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 18)
+                RoundedRectangle(cornerRadius: AppRadius.button)
                     .stroke(Color.appStroke, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -660,14 +660,14 @@ private struct AuthSecondaryButtonStyle: ButtonStyle {
 private struct AuthTertiaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(.horizontal, 14)
+            .padding(.horizontal, AppSpacing.xSmall)
             .padding(.vertical, 13)
             .background(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: AppRadius.medium)
                     .fill(Color.white.opacity(configuration.isPressed ? 0.72 : 0.58))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 16)
+                RoundedRectangle(cornerRadius: AppRadius.medium)
                     .stroke(Color.appStroke, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -681,15 +681,15 @@ private struct AuthCardButtonStyle: ButtonStyle {
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(.horizontal, 16)
-            .padding(.vertical, 16)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.vertical, AppSpacing.small)
             .foregroundStyle(foreground)
             .background(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: AppRadius.medium)
                     .fill(baseFill.opacity(configuration.isPressed ? 0.88 : 1))
             )
             .overlay(
-                RoundedRectangle(cornerRadius: 20)
+                RoundedRectangle(cornerRadius: AppRadius.medium)
                     .stroke(useDarkStroke ? Color.black.opacity(0.08) : Color.appStroke, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
@@ -769,11 +769,11 @@ private struct OTPCodeEntryField: View {
             .focused($isFocused)
             .opacity(0.01)
 
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.xxSmall) {
                 ForEach(0..<digitCount, id: \.self) { index in
                     let digit = Array(code).dropFirst(index).first.map(String.init) ?? ""
 
-                    RoundedRectangle(cornerRadius: 14)
+                    RoundedRectangle(cornerRadius: AppRadius.small)
                         .fill(Color.white.opacity(0.72))
                         .frame(height: 58)
                         .overlay(
@@ -782,7 +782,7 @@ private struct OTPCodeEntryField: View {
                                 .foregroundStyle(.black.opacity(0.78))
                         )
                         .overlay(
-                            RoundedRectangle(cornerRadius: 14)
+                            RoundedRectangle(cornerRadius: AppRadius.small)
                                 .stroke(index == code.count ? Color.appBlue2 : Color.clear, lineWidth: 1.5)
                         )
                 }
@@ -806,9 +806,9 @@ private struct PasswordRulesSecureField: View {
     var body: some View {
         SecureField(placeholder, text: $text)
             .font(AppType.body)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 14)
-            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+            .padding(.horizontal, AppSpacing.xSmall)
+            .padding(.vertical, AppSpacing.xSmall)
+            .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 }
 
@@ -824,9 +824,9 @@ private struct OTPCodeEntryField: View {
             }
         ))
         .font(AppType.body)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 14)
-        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: 16))
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xSmall)
+        .background(Color.white.opacity(0.72), in: RoundedRectangle(cornerRadius: AppRadius.medium))
     }
 }
 #endif

@@ -9,39 +9,36 @@ struct ChartCard<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(AppType.headline)
+        AppCard(tone: .standard) {
+            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+                HStack(alignment: .firstTextBaseline) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
+                        Text(title)
+                            .font(AppText.sectionTitle)
+                            .foregroundStyle(AppColor.Text.primary)
 
-                    Text(periodLabel)
-                        .font(AppType.caption)
-                        .foregroundColor(.secondary)
+                        Text(periodLabel)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Text.secondary)
+                    }
+
+                    Spacer()
+
+                    if let trendDelta = trendDelta {
+                        TrendIndicator(delta: trendDelta, positiveIsGood: positiveIsGood)
+                    } else {
+                        Text("Trend")
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Text.secondary)
+                            .padding(.vertical, AppSpacing.micro)
+                            .padding(.horizontal, AppSpacing.xxSmall)
+                            .background(AppColor.Surface.materialLight, in: Capsule())
+                    }
                 }
 
-                Spacer()
-
-                if let trendDelta = trendDelta {
-                    TrendIndicator(delta: trendDelta, positiveIsGood: positiveIsGood)
-                } else {
-                    Text("Trend")
-                        .font(AppType.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.vertical, 3)
-                        .padding(.horizontal, 9)
-                        .background(Color.white.opacity(0.08), in: Capsule())
-                }
+                content()
             }
-
-            content()
         }
-        .padding(14)
-        .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 16))
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .stroke(Color.white.opacity(0.08), lineWidth: 1)
-        )
         .accessibilityElement(children: .contain)
     }
 }
