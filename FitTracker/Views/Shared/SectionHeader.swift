@@ -9,7 +9,7 @@ struct SectionHeader: View {
     var body: some View {
         HStack {
             Text(title)
-                .font(AppType.caption)
+                .font(AppText.caption)
                 .textCase(.uppercase)
                 .tracking(1.5)
                 .foregroundStyle(AppColor.Text.secondary)
@@ -19,7 +19,7 @@ struct SectionHeader: View {
             if let actionLabel = actionLabel {
                 Button(action: { action?() }) {
                     Text(actionLabel)
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Accent.primary)
                 }
             }
@@ -43,7 +43,7 @@ struct SectionHeader_Previews: PreviewProvider {
             SectionHeader(title: "Health Data")
         }
         .padding()
-        .background(Color.black.opacity(0.05))
+        .background(AppColor.Border.hairline)
     }
 }
 #endif

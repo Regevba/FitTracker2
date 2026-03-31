@@ -146,7 +146,7 @@ struct AccountPanelView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(AppSpacing.xSmall)
-                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
             .buttonStyle(.plain)
         }
@@ -206,7 +206,7 @@ struct AccountPanelView: View {
 
     private var dividerLine: some View {
         Rectangle()
-            .fill(Color.primary.opacity(0.08))
+            .fill(AppColor.Border.hairline)
             .frame(height: 1)
     }
 
@@ -255,9 +255,9 @@ struct AccountPanelView: View {
         let provider = session?.provider ?? .apple
         HStack(spacing: AppSpacing.micro) {
             Image(systemName: providerIcon(provider))
-                .font(.system(size: 9, weight: .semibold))
+                .font(AppText.monoLabel)
             Text(provider.rawValue)
-                .font(.system(size: 9, weight: .semibold))
+                .font(AppText.monoLabel)
         }
         .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.micro)
         .background(providerColor(provider).opacity(0.12), in: Capsule())

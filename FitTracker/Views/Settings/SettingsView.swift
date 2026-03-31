@@ -219,10 +219,10 @@ private struct AccountSecuritySettingsScreen: View {
                 Toggle(isOn: $settings.requireBiometricUnlockOnReopen) {
                     VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                         Text("Require \(biometricUnlockLabel) on Reopen")
-                            .font(AppType.body.weight(.semibold))
+                            .font(AppText.button)
                             .foregroundStyle(AppColor.Text.primary)
                         Text("When off, \(AppBrand.name) stays unlocked while the app remains in memory.")
-                            .font(AppType.subheading)
+                            .font(AppText.subheading)
                             .foregroundStyle(AppColor.Text.secondary)
                     }
                 }
@@ -392,7 +392,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                                 .frame(width: 20)
 
                             Text(metric.title)
-                                .font(AppType.body)
+                                .font(AppText.body)
                                 .foregroundStyle(AppColor.Text.primary)
 
                             Spacer()
@@ -410,7 +410,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                     dataStore.userPreferences.preferredStatsCarouselMetrics = UserPreferences.defaultStatsCarouselMetrics
                     Task { await dataStore.persistToDisk() }
                 }
-                .font(AppType.subheading.weight(.semibold))
+                .font(AppText.chip)
                 .foregroundStyle(AppColor.Accent.primary)
             }
         }
@@ -671,11 +671,11 @@ private struct SettingsHomeHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(title)
-                .font(AppType.display)
+                .font(AppText.hero)
                 .foregroundStyle(AppColor.Text.primary)
 
             Text(subtitle)
-                .font(AppType.body)
+                .font(AppText.body)
                 .foregroundStyle(AppColor.Text.secondary)
         }
     }
@@ -705,12 +705,12 @@ private struct SettingsCategoryCard: View {
 
             VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 Text(category.title)
-                    .font(featured ? AppType.headline : AppType.body.weight(.semibold))
+                    .font(featured ? AppText.sectionTitle : AppText.button)
                     .foregroundStyle(AppColor.Text.primary)
                     .multilineTextAlignment(.leading)
 
                 Text(summary)
-                    .font(AppType.subheading)
+                    .font(AppText.subheading)
                     .foregroundStyle(AppColor.Text.secondary)
                     .lineLimit(featured ? 2 : 3)
                     .multilineTextAlignment(.leading)
@@ -763,7 +763,7 @@ private struct SettingsBadgeView: View {
                 .fill(badge.tint)
                 .frame(width: 6, height: 6)
             Text(badge.title)
-                .font(AppType.caption.weight(.semibold))
+                .font(AppText.captionStrong)
         }
         .foregroundStyle(badge.tint)
         .padding(.horizontal, AppSpacing.xxSmall)
@@ -804,11 +804,11 @@ private struct SettingsSectionCard<Content: View>: View {
         VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                 Text(eyebrow.uppercased())
-                    .font(AppType.caption.weight(.semibold))
+                    .font(AppText.captionStrong)
                     .tracking(1.1)
                     .foregroundStyle(AppColor.Text.tertiary)
                 Text(title)
-                    .font(AppType.headline)
+                    .font(AppText.sectionTitle)
                     .foregroundStyle(AppColor.Text.primary)
             }
 
@@ -835,11 +835,11 @@ private struct SettingsValueRow: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: AppSpacing.xSmall) {
             Text(title)
-                .font(AppType.body)
+                .font(AppText.body)
                 .foregroundStyle(AppColor.Text.primary)
             Spacer()
             Text(value)
-                .font(AppType.subheading.weight(.semibold))
+                .font(AppText.chip)
                 .foregroundStyle(AppColor.Text.secondary)
                 .multilineTextAlignment(.trailing)
         }
@@ -855,7 +855,7 @@ private struct SettingsSupportingText: View {
 
     var body: some View {
         Text(text)
-            .font(AppType.subheading)
+            .font(AppText.subheading)
             .foregroundStyle(AppColor.Text.secondary)
             .fixedSize(horizontal: false, vertical: true)
     }
@@ -883,10 +883,10 @@ private struct SettingsActionLabel: View {
 
             VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
-                    .font(AppType.body.weight(.semibold))
+                    .font(AppText.button)
                     .foregroundStyle(AppColor.Text.primary)
                 Text(subtitle)
-                    .font(AppType.subheading)
+                    .font(AppText.subheading)
                     .foregroundStyle(AppColor.Text.secondary)
                     .multilineTextAlignment(.leading)
             }
@@ -916,10 +916,10 @@ private struct SettingsSelectionTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(title)
-                .font(AppType.body.weight(.semibold))
+                .font(AppText.button)
                 .foregroundStyle(isSelected ? .white : AppColor.Text.primary)
             Text(subtitle)
-                .font(AppType.caption)
+                .font(AppText.caption)
                 .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -969,7 +969,7 @@ private struct SettingsNumericFieldRow: View {
     var body: some View {
         HStack(spacing: AppSpacing.xSmall) {
             Text(title)
-                .font(AppType.body)
+                .font(AppText.body)
                 .foregroundStyle(AppColor.Text.primary)
             Spacer()
             TextField(
@@ -982,7 +982,7 @@ private struct SettingsNumericFieldRow: View {
             .textFieldStyle(.roundedBorder)
             .frame(width: 96)
             Text(suffix)
-                .font(AppType.subheading.weight(.semibold))
+                .font(AppText.chip)
                 .foregroundStyle(AppColor.Text.secondary)
         }
     }
@@ -999,11 +999,11 @@ private struct SettingsSliderRow: View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack {
                 Text(title)
-                    .font(AppType.body)
+                    .font(AppText.body)
                     .foregroundStyle(AppColor.Text.primary)
                 Spacer()
                 Text(valueText)
-                    .font(AppType.subheading.weight(.semibold))
+                    .font(AppText.chip)
                     .foregroundStyle(AppColor.Text.secondary)
             }
 

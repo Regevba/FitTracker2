@@ -105,19 +105,19 @@ struct ReadinessCard: View {
                     .contentTransition(.numericText())
                 if score != nil {
                     Text("/ 100")
-                        .font(AppType.subheading)
+                        .font(AppText.subheading)
                         .foregroundStyle(AppColor.Text.inverseSecondary)
                 }
             }
 
             if score == nil {
                 Text("Add 3+ days of data")
-                    .font(AppType.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.inverseTertiary)
             }
 
             Text(contextLabel(for: score))
-                .font(AppType.subheading)
+                .font(AppText.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
                 .multilineTextAlignment(.center)
 
@@ -179,7 +179,7 @@ struct ReadinessCard: View {
                 .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
             Text(label)
-                .font(AppType.caption)
+                .font(AppText.caption)
                 .foregroundStyle(AppColor.Text.inversePrimary)
                 .lineLimit(1)
             Text(title)
@@ -214,7 +214,7 @@ struct ReadinessCard: View {
 
         return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("This Week")
-                .font(AppType.subheading)
+                .font(AppText.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
                 .padding(.horizontal, AppSpacing.small)
 
@@ -250,7 +250,7 @@ struct ReadinessCard: View {
             // Next day label
             let tomorrowType = logsMap[weekDays.first(where: { cal.isDateInTomorrow($0) }) ?? today]?.dayType
             Text("Next: \(tomorrowType?.rawValue ?? "–")")
-                .font(AppType.caption)
+                .font(AppText.caption)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
                 .padding(.horizontal, AppSpacing.small)
         }
@@ -274,18 +274,18 @@ struct ReadinessCard: View {
 
         return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("Nutrition")
-                .font(AppType.subheading)
+                .font(AppText.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
             // Protein progress
             VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 HStack {
                     Text("Protein")
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.inverseSecondary)
                     Spacer()
                     Text(String(format: "%.0fg / %.0fg", protein, proteinTarget))
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                 }
                 GeometryReader { geo in
@@ -306,7 +306,7 @@ struct ReadinessCard: View {
                     .font(AppText.captionStrong)
                     .foregroundStyle(AppColor.Text.inverseSecondary)
                 Text("Supplements")
-                    .font(AppType.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.inverseSecondary)
                 supplementDot(label: "AM", done: morningDone)
                 supplementDot(label: "PM", done: eveningDone)
@@ -319,7 +319,7 @@ struct ReadinessCard: View {
                         .font(AppText.captionStrong)
                         .foregroundStyle(Color.accent.cyan.opacity(0.8))
                     Text(String(format: "%.0f mL water", waterML))
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.inverseSecondary)
                 }
             }
@@ -369,7 +369,7 @@ struct ReadinessCard: View {
 
         return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("7-Day Trends")
-                .font(AppType.subheading)
+                .font(AppText.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
             let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
@@ -397,7 +397,7 @@ struct ReadinessCard: View {
                 TrendIndicator(delta: d, positiveIsGood: positiveIsGood, isPercent: false)
             } else {
                 Text("–")
-                    .font(AppType.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.inverseTertiary)
             }
             Text(label)
@@ -417,7 +417,7 @@ struct ReadinessCard: View {
 
         return VStack(spacing: AppSpacing.xxSmall) {
             Text("Achievements")
-                .font(AppType.subheading)
+                .font(AppText.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
             HStack(spacing: 0) {
@@ -492,7 +492,7 @@ struct ReadinessCard: View {
 
         return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("Recovery Studio")
-                .font(AppType.subheading)
+                .font(AppText.subheading)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
 
             HStack(alignment: .top, spacing: AppSpacing.xSmall) {
@@ -501,7 +501,7 @@ struct ReadinessCard: View {
                         .font(.headline)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                     Text(recommendation.routine.focus)
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.inverseSecondary)
                         .lineLimit(2)
                 }
@@ -524,7 +524,7 @@ struct ReadinessCard: View {
                             .foregroundStyle(Color.accent.cyan.opacity(0.9))
                             .padding(.top, 1)
                         Text(reason)
-                            .font(AppType.caption)
+                            .font(AppText.caption)
                             .foregroundStyle(AppColor.Text.inverseSecondary)
                             .lineLimit(2)
                     }

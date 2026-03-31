@@ -17,7 +17,7 @@ struct MetricCard: View {
                         Image(systemName: icon)
                             .font(AppText.captionStrong)
                         Text(label)
-                            .font(AppType.caption)
+                            .font(AppText.caption)
                             .textCase(.uppercase)
                     }
                     .foregroundStyle(AppColor.Text.secondary)
@@ -36,18 +36,18 @@ struct MetricCard: View {
 
                     if let unit = unit {
                         Text(unit)
-                            .font(AppType.caption)
+                            .font(AppText.caption)
                             .foregroundStyle(AppColor.Text.secondary)
                     }
                 }
 
                 if let trendDelta = trendDelta {
                     Text(trendDelta)
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(statusColor)
                 } else {
                     Text("No change signal yet")
-                        .font(AppType.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
             }

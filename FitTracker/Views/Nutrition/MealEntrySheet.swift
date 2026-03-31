@@ -220,7 +220,7 @@ struct MealEntrySheet: View {
                     parseSmartLabel()
                 } label: {
                     Text("Parse and Apply")
-                        .font(AppType.body.weight(.semibold))
+                        .font(AppText.button)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.xSmall)
                         .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: AppRadius.small))
@@ -439,7 +439,7 @@ struct MealEntrySheet: View {
             } else if isSearching {
                 Spacer()
                 ProgressView("Searching…")
-                    .font(AppType.subheading)
+                    .font(AppText.subheading)
                 Spacer()
             } else {
                 List(searchResults) { product in
@@ -448,17 +448,17 @@ struct MealEntrySheet: View {
                     } label: {
                         VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                             Text(product.name.isEmpty ? "Unknown product" : product.name)
-                                .font(AppType.body)
+                                .font(AppText.body)
                                 .foregroundColor(.primary)
                             HStack(spacing: AppSpacing.xxSmall) {
                                 if let cal = product.caloriesPer100g {
                                     Text("\(Int(cal)) kcal/100g")
-                                        .font(AppType.caption)
+                                        .font(AppText.caption)
                                         .foregroundColor(Color.accent.gold)
                                 }
                                 if let pro = product.proteinPer100g {
                                     Text("\(Int(pro))g prot")
-                                        .font(AppType.caption)
+                                        .font(AppText.caption)
                                         .foregroundColor(Color.accent.cyan)
                                 }
                             }
