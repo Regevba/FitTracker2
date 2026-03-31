@@ -899,7 +899,7 @@ struct SyncStatusIndicator: View {
                         .stroke(AppColor.Surface.tertiary, lineWidth: 1)
                 )
         )
-        .shadow(color: .black.opacity(0.08), radius: 10, y: 5)
+        .shadow(color: AppShadow.cardColor, radius: 10, y: 5)
         .tint(.clear)
     }
 }

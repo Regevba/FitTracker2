@@ -299,8 +299,8 @@ struct TrainingPlanView: View {
                 trainingActionButton(
                     title: "Focus Mode",
                     systemImage: "eye.fill",
-                    fill: Color.black.opacity(0.65),
-                    foreground: .white
+                    fill: AppColor.Surface.inverse,
+                    foreground: AppColor.Text.inversePrimary
                 ) {
                     showFocusMode = true
                 }
@@ -318,7 +318,7 @@ struct TrainingPlanView: View {
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 Text(restTimeString(at: context.date))
                     .font(AppText.monoMetric)
-                    .foregroundStyle(restTimeRemaining(at: context.date) > 0 ? AppColor.Brand.warm : Color.black.opacity(0.78))
+                    .foregroundStyle(restTimeRemaining(at: context.date) > 0 ? AppColor.Brand.warm : AppColor.Text.primary)
             }
             Text(restTimerEnd == nil ? "rest preset" : "remaining")
                 .font(.caption2)
@@ -1400,7 +1400,7 @@ struct CardioLogPanel: View {
                                 Image(systemName: "xmark.circle.fill")
                                     .font(.title3)
                                     .foregroundStyle(.white)
-                                    .background(Color.black.opacity(0.4), in: Circle())
+                                    .background(AppColor.Surface.inverse.opacity(0.5), in: Circle())
                             }
                             .padding(AppSpacing.xxSmall)
                         }
@@ -2079,7 +2079,7 @@ struct MilestoneModal: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.85).ignoresSafeArea()
+            AppColor.Surface.inverse.ignoresSafeArea()
 
             VStack(spacing: AppSpacing.medium) {
                 Text("🎉")
