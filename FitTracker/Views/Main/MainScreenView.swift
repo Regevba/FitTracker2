@@ -24,7 +24,6 @@ struct MainScreenView: View {
     @State private var shownMilestonePhase: ProgramPhase? = nil
     @State private var milestoneTitle: String? = nil
     @State private var milestoneMessage: String? = nil
-    @State private var showReadinessInGreeting = false
 
     private var activeDayType: DayType {
         selectedDayType ?? programStore.todayDayType
@@ -208,28 +207,8 @@ struct MainScreenView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
-                    // Animated greeting → readiness transition after 10s
-                    ZStack(alignment: .leading) {
-                        if showReadinessInGreeting, let score = readinessScore {
-                            HStack(spacing: AppSpacing.xxSmall) {
-                                Text("\(score)")
-                                    .font(AppText.metric)
-                                    .foregroundStyle(readinessColor(for: score))
-                                Text("Readiness — \(readinessLabel(for: score))")
-                                    .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
-                                    .foregroundStyle(AppColor.Text.secondary)
-                            }
-                            .transition(.opacity)
-                        } else {
-                            Text(greeting)
-                                .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.82)
-                                .transition(.opacity)
-                        }
-                    }
-                    .animation(.easeInOut(duration: AppDuration.standard), value: showReadinessInGreeting)
-                    .frame(minHeight: tight ? 28 : 32) // stable height — prevents layout shift
+                    // Animated info strip — cycles between greeting, readiness, and contextual info
+                    LiveInfoStrip(slides: greetingSlides, cycleDuration: 5.0)
 
                     Text(todayFormatted)
                         .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
@@ -249,13 +228,28 @@ struct MainScreenView: View {
                 }
             }
         }
-        .onAppear {
-            guard readinessScore != nil else { return }
-            Task {
-                try? await Task.sleep(for: .seconds(10))
-                showReadinessInGreeting = true
-            }
+    }
+
+    private var greetingSlides: [InfoSlide] {
+        var slides: [InfoSlide] = [
+            InfoSlide(text: greeting)
+        ]
+        if let score = readinessScore {
+            slides.append(InfoSlide(
+                text: "\(score) — \(readinessLabel(for: score))",
+                icon: "heart.fill",
+                color: readinessColor(for: score)
+            ))
         }
+        let streak = dataStore.supplementStreak
+        if streak >= 3 {
+            slides.append(InfoSlide(
+                text: "\(streak)-day supplement streak",
+                icon: "flame.fill",
+                color: AppColor.Brand.primary
+            ))
+        }
+        return slides
     }
 
     private func readinessColor(for score: Int) -> Color {
