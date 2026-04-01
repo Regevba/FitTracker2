@@ -57,15 +57,18 @@ jobs:
           set -euo pipefail
 
           simulator_list="$(xcrun simctl list devices available)"
-          preferred_devices=("iPhone 17" "iPhone 16e" "iPhone 14 Pro")
+          preferred_devices=(
+            "iPhone 17"
+            "iPhone 16e"
+            "iPhone 16 Pro"
+            "iPhone 16"
+            "iPhone 15 Pro"
+            "iPhone 15"
+            "iPhone 14 Pro"
+            "iPhone 14"
+          )
 
           for device in "${preferred_devices[@]}"; do
-            if grep -F "name=${device}" <<< "$(xcodebuild -project "$PROJECT_PATH" -scheme "$SCHEME" -showdestinations 2>/dev/null)" >/dev/null; then
-              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
-              echo "Selected simulator: ${device}"
-              exit 0
-            fi
-
             if grep -F "${device} (" <<< "$simulator_list" >/dev/null; then
               echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
               echo "Selected simulator: ${device}"
@@ -73,7 +76,17 @@ jobs:
             fi
           done
 
-          echo "No supported simulator found. Checked: ${preferred_devices[*]}" >&2
+          # Fallback: pick the first available iPhone simulator
+          fallback="$(echo "$simulator_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
+          if [ -n "$fallback" ]; then
+            echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${fallback}" >> "$GITHUB_ENV"
+            echo "Selected fallback simulator: ${fallback}"
+            exit 0
+          fi
+
+          echo "No supported simulator found." >&2
+          echo "Available devices:" >&2
+          echo "$simulator_list" >&2
           exit 1
 
       - name: Resolve Swift packages
