@@ -130,72 +130,78 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
 struct LockScreenView: View {
 
     @EnvironmentObject var auth: AuthManager
+    @State private var hasAttemptedAutoUnlock = false
 
     var body: some View {
         ZStack {
-            LinearGradient(
-                colors: [Color.black, Color(red: 0.05, green: 0.12, blue: 0.08)],
-                startPoint: .topLeading,
-                endPoint: .bottomTrailing
-            )
-            .ignoresSafeArea()
+            AppGradient.authBackground
+                .ignoresSafeArea()
 
             VStack {
                 Spacer()
 
-                VStack(spacing: 22) {
+                VStack(spacing: AppSpacing.large) {
                     ZStack {
                         Circle()
-                            .fill(Color.green.opacity(0.14))
+                            .fill(AppColor.Brand.primary.opacity(0.14))
                             .frame(width: 108, height: 108)
                             .blur(radius: 10)
                         Circle()
-                            .stroke(Color.green.opacity(0.22), lineWidth: 1)
+                            .stroke(AppColor.Brand.primary.opacity(0.22), lineWidth: 1)
                             .frame(width: 86, height: 86)
                         Image(systemName: "lock.shield.fill")
                             .font(.system(size: 36, weight: .semibold))
-                            .foregroundStyle(.green)
+                            .foregroundStyle(AppColor.Brand.primary)
                     }
 
-                    VStack(spacing: 8) {
+                    VStack(spacing: AppSpacing.xxSmall) {
                         Text("Unlock \(AppBrand.name)")
-                            .font(.system(.title2, design: .rounded, weight: .bold))
-                            .foregroundStyle(.white)
+                            .font(AppText.pageTitle)
+                            .foregroundStyle(AppColor.Text.primary)
                         Text("Use \(biometricName) to reopen your encrypted data.")
-                            .font(.subheadline)
-                            .foregroundStyle(.white.opacity(0.68))
+                            .font(AppText.subheading)
+                            .foregroundStyle(AppColor.Text.secondary)
                             .multilineTextAlignment(.center)
                     }
 
                     Button { auth.authenticate() } label: {
-                        HStack(spacing: 10) {
-                            Image(systemName: biometricIcon).font(.title3)
+                        HStack(spacing: AppSpacing.xxSmall) {
+                            Image(systemName: biometricIcon).font(AppText.titleMedium)
                             Text(biometricLabel).fontWeight(.semibold)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 15)
-                        .background(.green, in: RoundedRectangle(cornerRadius: 16))
-                        .foregroundStyle(.black)
+                        .padding(.vertical, AppSpacing.small)
+                        .background(AppColor.Brand.primary, in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                        .foregroundStyle(AppColor.Text.primary)
                     }
                     .buttonStyle(.plain)
 
                     if let err = auth.authError {
                         Text(err)
-                            .font(.caption)
-                            .foregroundStyle(.red.opacity(0.82))
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Status.error.opacity(0.82))
                             .multilineTextAlignment(.center)
                     }
                 }
-                .padding(28)
+                .padding(AppSpacing.xLarge)
                 .frame(maxWidth: 360)
-                .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 28))
+                .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xLarge))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 28)
-                        .stroke(Color.white.opacity(0.08), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: AppRadius.xLarge)
+                        .stroke(AppColor.Border.subtle, lineWidth: 1)
                 )
-                .padding(.horizontal, 24)
+                .padding(.horizontal, AppSpacing.large)
 
                 Spacer()
+            }
+        }
+        .onAppear {
+            // Auto-trigger Face ID/Touch ID on appear — no manual button press needed
+            guard !hasAttemptedAutoUnlock else { return }
+            hasAttemptedAutoUnlock = true
+            Task {
+                try? await Task.sleep(for: .seconds(0.3))  // brief branded delay
+                auth.authenticate()
             }
         }
     }

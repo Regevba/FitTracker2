@@ -13,9 +13,13 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build-and-test:
-    name: Build and Test (Xcode 26.3)
+    name: Build and Test
     runs-on: macos-15
     env:
       PROJECT_PATH: FitTracker.xcodeproj
@@ -25,73 +29,114 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Select Xcode 26.3
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '26.3'
-
-      - name: Print Xcode version
-        run: xcodebuild -version
-
-      - name: Show available Xcode schemes
-        run: xcodebuild -project "$PROJECT_PATH" -list
-
-      - name: Show available iOS simulators
-        run: xcrun simctl list devices available
-
-      - name: Resolve preferred simulator destination
+      - name: Full CI pipeline
         shell: bash
         run: |
           set -euo pipefail
 
-          simulator_list="$(xcrun simctl list devices available)"
-          preferred_devices=("iPhone 17" "iPhone 16e" "iPhone 14 Pro")
+          # Token pipeline
+          echo "::group::Token Pipeline"
+          npm install --silent
+          make tokens-check
+          echo "::endgroup::"
 
-          for device in "${preferred_devices[@]}"; do
-            if grep -F "name=${device}" <<< "$(xcodebuild -project "$PROJECT_PATH" -scheme "$SCHEME" -showdestinations 2>/dev/null)" >/dev/null; then
-              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
-              echo "Selected simulator: ${device}"
-              exit 0
-            fi
+          # Xcode setup
+          echo "::group::Xcode Setup"
+          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode apps"
+          xcodebuild -version
+          echo "::endgroup::"
 
-            if grep -F "${device} (" <<< "$simulator_list" >/dev/null; then
-              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
-              echo "Selected simulator: ${device}"
-              exit 0
+          # Schemes
+          echo "::group::Schemes"
+          xcodebuild -project "$PROJECT_PATH" -list
+          echo "::endgroup::"
+
+          # Simulator
+          echo "::group::Simulator"
+          sim_list="$(xcrun simctl list devices available)"
+          echo "$sim_list" | grep -i iphone | head -10
+          SIM_DEST=""
+          for d in "iPhone 16 Pro" "iPhone 16" "iPhone 15 Pro" "iPhone 15" "iPhone 14"; do
+            if echo "$sim_list" | grep -qF "${d} ("; then
+              SIM_DEST="platform=iOS Simulator,name=${d}"
+              echo "Selected: ${d}"
+              break
             fi
           done
+          if [ -z "$SIM_DEST" ]; then
+            fb="$(echo "$sim_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
+            SIM_DEST="platform=iOS Simulator,name=${fb}"
+            echo "Fallback: ${fb}"
+          fi
+          echo "::endgroup::"
 
-          echo "No supported simulator found. Checked: ${preferred_devices[*]}" >&2
-          exit 1
-
-      - name: Resolve Swift packages
-        run: |
+          # SPM
+          echo "::group::SPM Resolve"
           xcodebuild -resolvePackageDependencies \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME"
+          echo "::endgroup::"
 
-      - name: Build
-        run: |
+          # Build
+          echo "::group::Build"
           xcodebuild build \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/build.log
+          echo "::endgroup::"
 
-      - name: Test
-        run: |
+          # Test
+          echo "::group::Test"
           xcodebuild test \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
-            -destination "$SIMULATOR_DESTINATION" \
+            -destination "$SIM_DEST" \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/test.log
+          echo "::endgroup::"
 
-      - name: Upload test result bundle on failure
+      - name: Upload build log on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: fittracker-testresults-xcresult
-          path: TestResults.xcresult
-          retention-days: 7
+          name: build-log
+          path: /tmp/build.log
+          retention-days: 3
           if-no-files-found: ignore
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults.xcresult
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Comment error summary on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const fs = require('fs');
+            let errors = '';
+            for (const f of ['/tmp/build.log', '/tmp/test.log']) {
+              try {
+                const log = fs.readFileSync(f, 'utf8');
+                const errLines = log.split('\n').filter(l => /error:|FAIL|failed/i.test(l));
+                if (errLines.length > 0) {
+                  errors += `### ${f}\n` + errLines.slice(0, 30).join('\n') + '\n\n';
+                } else {
+                  errors += `### ${f}\n` + log.split('\n').slice(-30).join('\n') + '\n\n';
+                }
+              } catch {}
+            }
+            if (!errors) errors = 'No logs captured';
+            const body = `## CI Failed\n\n\`\`\`\n${errors.slice(0, 60000)}\n\`\`\``;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: ${{ github.event.pull_request.number || 0 }},
+              body
+            });

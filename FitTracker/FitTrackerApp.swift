@@ -15,6 +15,18 @@ private func makeAIEngineBaseURL() -> URL {
     return url
 }
 
+private var isScreenReviewModeEnabled: Bool {
+    ["authenticated", "settings"].contains(
+        ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_AUTH"]?.lowercased()
+    )
+}
+
+private var isSettingsReviewModeEnabled: Bool {
+    ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_AUTH"]?.lowercased() == "settings"
+        || ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_SETTINGS"] == "1"
+        || ProcessInfo.processInfo.arguments.contains("--review-settings")
+}
+
 @main
 struct FitTrackerApp: App {
 
@@ -31,7 +43,7 @@ struct FitTrackerApp: App {
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
-            if #available(iOS 18.1, *) {
+            if #available(iOS 26, *) {
                 return FoundationModelService()
             } else {
                 return FallbackFoundationModel()
@@ -46,6 +58,12 @@ struct FitTrackerApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
+    init() {
+        #if DEBUG
+        ColorContrastValidator.validate()
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             rootView
@@ -54,6 +72,7 @@ struct FitTrackerApp: App {
                 .onChange(of: signIn.activeSession) { _, session in
                     if session != nil {
                         Task {
+                            guard !isScreenReviewModeEnabled else { return }
                             await dataStore.loadFromDisk()
                             if scenePhase == .active {
                                 await cloudSync.fetchChanges(dataStore: dataStore)
@@ -78,6 +97,7 @@ struct FitTrackerApp: App {
                     if unlocked { signIn.resumeStoredSession() }
                 }
                 .onChange(of: scenePhase) { _, phase in
+                    guard !isScreenReviewModeEnabled else { return }
                     switch phase {
                     case .active:
                         Task {
@@ -150,7 +170,18 @@ struct FitTrackerApp: App {
     // welcome → signIn (sheet) → authenticated → biometricLock → app
     @ViewBuilder
     private var rootView: some View {
-        if signIn.isAuthenticated {
+        if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
+            SettingsView()
+                .environmentObject(signIn)
+                .environmentObject(biometricAuth)
+                .environmentObject(healthService)
+                .environmentObject(dataStore)
+                .environmentObject(cloudSync)
+                .environmentObject(programStore)
+                .environmentObject(settings)
+                .environmentObject(watchService)
+                .environmentObject(aiOrchestrator)
+        } else if signIn.isAuthenticated {
             RootTabView()
                 .environmentObject(signIn)
                 .environmentObject(biometricAuth)

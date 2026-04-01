@@ -28,6 +28,9 @@ final class SupabaseSyncService: ObservableObject {
 
     @Published private(set) var status: SupabaseSyncStatus = .idle
 
+    // Realtime channel — held to keep the subscription alive and to allow unsubscribe.
+    private var realtimeChannel: RealtimeChannelV2?
+
     // MARK: - Record Type Constants
 
     private enum RT {
@@ -125,14 +128,46 @@ final class SupabaseSyncService: ObservableObject {
     // MARK: - Realtime
 
     /// Subscribe to real-time changes on `sync_records` for the signed-in user.
-    /// NOTE: Realtime subscription is a no-op pending supabase-swift 2.x API stabilisation.
-    /// The app syncs reliably via fetchChanges() on each app-foreground event.
+    /// When the server notifies of a new/updated row, the app pulls the full incremental
+    /// change set via `fetchChanges()` — we don't trust the realtime payload directly
+    /// because the payload is unencrypted metadata only (encrypted_payload is not sent
+    /// in the Change event to avoid unnecessary data transfer).
     func subscribeRealtime(dataStore: EncryptedDataStore) async {
-        // TODO: wire up realtime when the supabase-swift 2.x channel API stabilises.
+        guard realtimeChannel == nil else { return }   // already subscribed
+        guard let session = try? await supabase.auth.session else { return }
+        let userID = session.user.id.uuidString
+
+        let channel = supabase.realtimeV2.channel("sync_records:\(userID)")
+
+        // Listen for INSERT and UPDATE on rows belonging to this user.
+        // RLS on the `sync_records` table ensures the server only broadcasts
+        // rows where user_id matches the authenticated session.
+        channel.onPostgresChange(
+            InsertAction.self,
+            schema: "public",
+            table: "sync_records"
+        ) { [weak self] _ in
+            guard let self else { return }
+            Task { await self.fetchChanges(dataStore: dataStore) }
+        }
+
+        channel.onPostgresChange(
+            UpdateAction.self,
+            schema: "public",
+            table: "sync_records"
+        ) { [weak self] _ in
+            guard let self else { return }
+            Task { await self.fetchChanges(dataStore: dataStore) }
+        }
+
+        await channel.subscribe()
+        realtimeChannel = channel
     }
 
     func unsubscribeRealtime() async {
-        // No-op: realtime subscription not active.
+        guard let channel = realtimeChannel else { return }
+        await channel.unsubscribe()
+        realtimeChannel = nil
     }
 
     // MARK: - Cardio Assets

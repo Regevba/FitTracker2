@@ -28,6 +28,44 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ── Supabase compatibility stubs ───────────────────────────────────────
+      # Migrations reference auth.users (Supabase auth schema) and auth.uid().
+      # Plain PostgreSQL 15 doesn't have these — create minimal stubs so
+      # foreign-key constraints and policy USING clauses compile without error.
+      - name: Create Supabase auth schema stub
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            CREATE SCHEMA IF NOT EXISTS auth;
+
+            CREATE TABLE IF NOT EXISTS auth.users (
+              id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+            );
+
+            -- Stub auth.uid() returning a fixed UUID so RLS policy bodies compile.
+            -- Policies are syntactically validated but not behaviorally tested in CI.
+            CREATE OR REPLACE FUNCTION auth.uid()
+            RETURNS UUID
+            LANGUAGE sql STABLE
+            AS \$\$
+              SELECT '00000000-0000-0000-0000-000000000000'::UUID;
+            \$\$;
+
+            -- Stub roles that Supabase creates by default
+            DO \$\$
+            BEGIN
+              IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'authenticated') THEN
+                CREATE ROLE authenticated;
+              END IF;
+              IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'service_role') THEN
+                CREATE ROLE service_role;
+              END IF;
+            END
+            \$\$;
+          "
+
+      # ── Run all migrations in order ────────────────────────────────────────
       - name: Run migrations in order
         env:
           PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
@@ -37,7 +75,8 @@ jobs:
             psql -h localhost -U postgres -d fittracker_test -f "$f"
           done
 
-      - name: Verify cohort_stats table
+      # ── Verify cohort_stats ────────────────────────────────────────────────
+      - name: Verify cohort_stats table schema
         env:
           PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
         run: |
@@ -49,14 +88,14 @@ jobs:
             ORDER BY ordinal_position;
           "
 
-      - name: Run seed data
+      - name: Run cohort seed data
         env:
           PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
         run: |
           psql -h localhost -U postgres -d fittracker_test \
             -f backend/supabase/seed/seed_cohort_stats.sql
 
-      - name: Verify seed row count
+      - name: Verify cohort seed row count
         env:
           PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
         run: |
@@ -66,3 +105,73 @@ jobs:
             GROUP BY segment
             ORDER BY segment;
           "
+
+      # ── Verify sync_records ────────────────────────────────────────────────
+      - name: Verify sync_records table schema
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT column_name, data_type, is_nullable
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+              AND table_name   = 'sync_records'
+            ORDER BY ordinal_position;
+          "
+
+      - name: Verify sync_records RLS is enabled
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT relname, relrowsecurity
+            FROM pg_class
+            WHERE relname = 'sync_records'
+              AND relrowsecurity = true;
+          " | grep sync_records
+
+      - name: Verify sync_records policies exist
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT policyname, cmd
+            FROM pg_policies
+            WHERE tablename = 'sync_records'
+            ORDER BY policyname;
+          "
+
+      - name: Verify sync_records unique constraints
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT conname, contype
+            FROM pg_constraint
+            WHERE conrelid = 'sync_records'::regclass
+            ORDER BY conname;
+          "
+
+      # ── Verify cardio_assets ───────────────────────────────────────────────
+      - name: Verify cardio_assets table schema
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT column_name, data_type, is_nullable
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+              AND table_name   = 'cardio_assets'
+            ORDER BY ordinal_position;
+          "
+
+      - name: Verify cardio_assets RLS is enabled
+        env:
+          PGPASSWORD: ${{ secrets.CI_DB_PASSWORD }}
+        run: |
+          psql -h localhost -U postgres -d fittracker_test -c "
+            SELECT relname, relrowsecurity
+            FROM pg_class
+            WHERE relname = 'cardio_assets'
+              AND relrowsecurity = true;
+          " | grep cardio_assets
