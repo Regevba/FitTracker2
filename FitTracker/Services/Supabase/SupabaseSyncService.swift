@@ -29,7 +29,7 @@ final class SupabaseSyncService: ObservableObject {
     @Published private(set) var status: SupabaseSyncStatus = .idle
 
     // Realtime channel — held to keep the subscription alive and to allow unsubscribe.
-    private var realtimeChannel: RealtimeChannelV2?
+    private var realtimeChannel: RealtimeChannel?
 
     // MARK: - Record Type Constants
 
@@ -142,26 +142,34 @@ final class SupabaseSyncService: ObservableObject {
         // Listen for INSERT and UPDATE on rows belonging to this user.
         // RLS on the `sync_records` table ensures the server only broadcasts
         // rows where user_id matches the authenticated session.
-        await channel.onPostgresChange(
+        let changes = await channel.postgresChange(
             InsertAction.self,
             schema: "public",
             table: "sync_records"
-        ) { [weak self] _ in
-            guard let self else { return }
-            Task { await self.fetchChanges(dataStore: dataStore) }
-        }
+        )
 
-        await channel.onPostgresChange(
+        let updates = await channel.postgresChange(
             UpdateAction.self,
             schema: "public",
             table: "sync_records"
-        ) { [weak self] _ in
-            guard let self else { return }
-            Task { await self.fetchChanges(dataStore: dataStore) }
-        }
+        )
 
         await channel.subscribe()
         realtimeChannel = channel
+
+        // Process incoming changes in background tasks
+        Task { [weak self] in
+            for await _ in changes {
+                guard let self else { return }
+                await self.fetchChanges(dataStore: dataStore)
+            }
+        }
+        Task { [weak self] in
+            for await _ in updates {
+                guard let self else { return }
+                await self.fetchChanges(dataStore: dataStore)
+            }
+        }
     }
 
     func unsubscribeRealtime() async {
