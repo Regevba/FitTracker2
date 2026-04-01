@@ -808,7 +808,7 @@ struct RecoveryRoutineSheet: View {
                                 .font(AppText.metric)
                             Text(routine.subtitle)
                                 .font(AppText.body)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AppColor.Text.secondary)
                         }
                         Spacer()
                         Text("\(routine.durationMinutes)m")
@@ -833,7 +833,7 @@ struct RecoveryRoutineSheet: View {
                                     .padding(.top, 2)
                                 Text(reason)
                                     .font(AppText.subheading)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AppColor.Text.secondary)
                             }
                         }
                     }
@@ -860,11 +860,11 @@ struct RecoveryRoutineSheet: View {
                                     Spacer()
                                     Text("\(step.minutes) min")
                                         .font(.caption.weight(.semibold))
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(AppColor.Text.secondary)
                                 }
                                 Text(step.detail)
                                     .font(AppText.subheading)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(AppColor.Text.secondary)
                             }
                         }
                         .padding(AppSpacing.xSmall)
@@ -877,7 +877,7 @@ struct RecoveryRoutineSheet: View {
                         .font(.headline)
                     Text(routine.coachingNote)
                         .font(AppText.subheading)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
                 .padding(AppSpacing.small)
                 .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.button))

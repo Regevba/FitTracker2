@@ -459,13 +459,13 @@ private struct AuthProviderRow: View {
                     .font(AppText.button)
                 Text(subtitle)
                     .font(AppText.subheading)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
 
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -498,7 +498,7 @@ private struct GoogleProviderRow: View {
             Spacer()
             Image(systemName: "chevron.right")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
