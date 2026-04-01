@@ -48,3 +48,4 @@ FitMe-GDPR-Docs/
 
 # Local Xcode package resolution
 FitTracker.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+node_modules/
