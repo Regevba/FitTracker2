@@ -25,107 +25,82 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js (for token pipeline CI gate)
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install npm dependencies (Style Dictionary)
-        run: npm install --silent
-
-      - name: Verify DesignTokens.swift is in sync with tokens.json
-        run: make tokens-check
-
-      - name: Xcode setup and build
-        id: build
+      - name: Full CI pipeline
+        id: ci
+        continue-on-error: true
         run: |
-          exec > >(tee /tmp/ci-full.log) 2>&1
+          exec > >(tee /tmp/ci.log) 2>&1
+          set -x
 
-          echo "=== STEP: Available Xcode versions ==="
-          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode found"
+          echo "========== NODE + TOKEN PIPELINE =========="
+          node --version || true
+          npm install --silent
+          make tokens-check
 
-          echo "=== STEP: Select Xcode ==="
-          if [ -d "/Applications/Xcode_26.3.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
-          elif [ -d "/Applications/Xcode_16.3.app" ]; then
-            sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
-          else
-            echo "Using default Xcode"
-          fi
+          echo "========== XCODE SETUP =========="
+          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode apps found"
           xcode-select -p
           xcodebuild -version
 
-          echo "=== STEP: Schemes ==="
+          echo "========== SCHEMES =========="
           xcodebuild -project "$PROJECT_PATH" -list
 
-          echo "=== STEP: Simulators ==="
-          xcrun simctl list devices available | grep -i iphone | head -15
+          echo "========== SIMULATORS =========="
+          xcrun simctl list devices available | grep -i iphone | head -20
 
-          echo "=== STEP: Resolve simulator ==="
-          simulator_list="$(xcrun simctl list devices available)"
-          for device in "iPhone 16 Pro" "iPhone 16" "iPhone 15 Pro" "iPhone 15" "iPhone 14"; do
-            if grep -F "${device} (" <<< "$simulator_list" >/dev/null; then
-              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
-              echo "Selected simulator: ${device}"
+          echo "========== RESOLVE SIMULATOR =========="
+          sim_list="$(xcrun simctl list devices available)"
+          SIM_DEST=""
+          for d in "iPhone 16 Pro" "iPhone 16" "iPhone 15 Pro" "iPhone 15" "iPhone 14"; do
+            if echo "$sim_list" | grep -F "${d} (" >/dev/null; then
+              SIM_DEST="platform=iOS Simulator,name=${d}"
+              echo "Selected: ${d}"
               break
             fi
           done
-          # Fallback
-          if ! grep -q SIMULATOR_DESTINATION "$GITHUB_ENV" 2>/dev/null; then
-            fallback="$(echo "$simulator_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
-            if [ -n "$fallback" ]; then
-              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${fallback}" >> "$GITHUB_ENV"
-              echo "Fallback simulator: ${fallback}"
-            else
-              echo "ERROR: No iPhone simulator found"
-              exit 1
-            fi
+          if [ -z "$SIM_DEST" ]; then
+            fb="$(echo "$sim_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
+            SIM_DEST="platform=iOS Simulator,name=${fb}"
+            echo "Fallback: ${fb}"
           fi
 
-          echo "=== STEP: Resolve Swift packages ==="
+          echo "========== SPM RESOLVE =========="
           xcodebuild -resolvePackageDependencies \
             -project "$PROJECT_PATH" \
-            -scheme "$SCHEME" 2>&1 | tail -30
+            -scheme "$SCHEME"
 
-          echo "=== STEP: Build ==="
+          echo "========== BUILD =========="
           xcodebuild build \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tail -100
+            CODE_SIGNING_ALLOWED=NO
 
-      - name: Test
-        run: |
-          set -o pipefail
+          echo "========== TEST =========="
           xcodebuild test \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
-            -destination "$SIMULATOR_DESTINATION" \
+            -destination "$SIM_DEST" \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/test.log | tail -80
+            CODE_SIGNING_ALLOWED=NO
 
-      - name: Post failure log as PR comment
-        if: failure() && github.event_name == 'pull_request'
+          echo "========== ALL PASSED =========="
+
+      - name: Post log as PR comment
+        if: always() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            let body = '## CI Failure Log\n\n';
-            for (const [label, f] of [['Full CI log', '/tmp/ci-full.log'], ['Test log', '/tmp/test.log']]) {
-              try {
-                const log = fs.readFileSync(f, 'utf8');
-                const lines = log.split('\n');
-                const errors = lines.filter(l => /error:|fatal error|BUILD FAILED|exit code/i.test(l));
-                const tail = lines.slice(-150).join('\n');
-                body += `### ${label}\n`;
-                if (errors.length > 0) {
-                  body += '**Errors:**\n```\n' + errors.slice(0, 40).join('\n') + '\n```\n';
-                }
-                body += '<details><summary>Last 150 lines</summary>\n\n```\n' + tail + '\n```\n</details>\n\n';
-              } catch (e) {
-                body += `### ${label}\nNot found\n\n`;
-              }
+            let body = '## CI Log (outcome: ${{ steps.ci.outcome }})\n\n';
+            try {
+              const log = fs.readFileSync('/tmp/ci.log', 'utf8');
+              const lines = log.split('\n');
+              const errors = lines.filter(l => /error:|BUILD FAILED|FAILED|exit code [1-9]/i.test(l));
+              body += '**Errors:**\n```\n' + (errors.length ? errors.slice(0,50).join('\n') : 'None extracted') + '\n```\n\n';
+              body += '<details><summary>Last 200 lines</summary>\n\n```\n' + lines.slice(-200).join('\n') + '\n```\n</details>\n';
+            } catch (e) {
+              body += 'Log file not found: ' + e.message;
             }
             await github.rest.issues.createComment({
               owner: context.repo.owner,
@@ -133,6 +108,10 @@ jobs:
               issue_number: context.issue.number,
               body: body.slice(0, 65000)
             });
+
+      - name: Fail if CI failed
+        if: steps.ci.outcome == 'failure'
+        run: exit 1
 
       - name: Upload test result bundle on failure
         if: failure()
