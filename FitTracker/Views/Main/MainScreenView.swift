@@ -208,7 +208,7 @@ struct MainScreenView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     // Animated info strip — cycles between greeting, readiness, and contextual info
-                    LiveInfoStrip(slides: greetingSlides, cycleDuration: 5.0)
+                    LiveInfoStrip(slides: greetingSlides, cycleDuration: 5)
 
                     Text(todayFormatted)
                         .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent

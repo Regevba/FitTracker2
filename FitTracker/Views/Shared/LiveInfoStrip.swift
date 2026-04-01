@@ -1,21 +1,18 @@
 // FitTracker/Views/Shared/LiveInfoStrip.swift
 // Reusable animated info strip that cycles through contextual slides.
-// Used in the Home screen greeting area to rotate between greeting,
-// readiness score, supplement streak, and other contextual info.
 import SwiftUI
-import Combine
 
 struct InfoSlide: Identifiable {
     let id = UUID()
     let text: String
-    var icon: String?       // SF Symbol name
-    var color: Color?       // accent color for the text/icon
+    var icon: String?
+    var color: Color?
 }
 
 struct LiveInfoStrip: View {
 
     let slides: [InfoSlide]
-    var cycleDuration: TimeInterval = 5.0
+    var cycleDuration: UInt64 = 5
 
     @State private var currentIndex = 0
     @State private var isPaused = false
@@ -35,17 +32,23 @@ struct LiveInfoStrip: View {
             }
         }
         .contentShape(Rectangle())
-        .onTapGesture { pauseAndResume() }
-        .onReceive(timer) { _ in
-            guard !isPaused, slides.count > 1, !reduceMotion else { return }
-            withAnimation {
-                currentIndex = (currentIndex + 1) % slides.count
+        .onTapGesture {
+            isPaused = true
+            Task {
+                try? await Task.sleep(nanoseconds: 10_000_000_000)
+                isPaused = false
             }
         }
-    }
-
-    private var timer: Publishers.Autoconnect<Timer.TimerPublisher> {
-        Timer.publish(every: cycleDuration, on: .main, in: .common).autoconnect()
+        .task {
+            guard slides.count > 1, !reduceMotion else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: cycleDuration * 1_000_000_000)
+                guard !isPaused else { continue }
+                withAnimation {
+                    currentIndex = (currentIndex + 1) % slides.count
+                }
+            }
+        }
     }
 
     private func slideView(_ slide: InfoSlide) -> some View {
@@ -64,13 +67,6 @@ struct LiveInfoStrip: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .frame(minHeight: 34)
     }
-
-    private func pauseAndResume() {
-        isPaused = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-            isPaused = false
-        }
-    }
 }
 
 #if DEBUG
@@ -80,7 +76,7 @@ struct LiveInfoStrip_Previews: PreviewProvider {
             LiveInfoStrip(slides: [
                 InfoSlide(text: "Good evening, Regev 🌙"),
                 InfoSlide(text: "78 — Ready to train", icon: "heart.fill", color: AppColor.Status.success),
-                InfoSlide(text: "🔥 7-day supplement streak", color: AppColor.Brand.primary),
+                InfoSlide(text: "🔥 7-day streak", color: AppColor.Brand.primary),
             ])
         }
         .padding()
