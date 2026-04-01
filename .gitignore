@@ -39,3 +39,8 @@ xcuserdata/
 .DS_Store
 
 *.code-workspace.worktrees/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
