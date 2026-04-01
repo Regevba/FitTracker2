@@ -406,7 +406,7 @@ struct NutritionView: View {
     private var loggedItemsFeed: some View {
         let completedMeals = nutritionLog.meals
             .filter { $0.status == .completed }
-            .sorted { ($0.loggedAt ?? .distantPast) < ($1.loggedAt ?? .distantPast) }
+            .sorted { ($0.eatenAt ?? .distantPast) < ($1.eatenAt ?? .distantPast) }
 
         return VStack(spacing: AppSpacing.xxSmall) {
             if completedMeals.isEmpty {
@@ -434,7 +434,7 @@ struct NutritionView: View {
                                 Text(meal.name.isEmpty ? "Meal \(meal.mealNumber)" : meal.name)
                                     .font(AppText.body)
                                     .foregroundStyle(AppColor.Text.primary)
-                                if let time = meal.loggedAt {
+                                if let time = meal.eatenAt {
                                     Text(time, style: .time)
                                         .font(AppText.caption)
                                         .foregroundStyle(AppColor.Text.tertiary)
@@ -442,10 +442,10 @@ struct NutritionView: View {
                             }
                             Spacer()
                             VStack(alignment: .trailing, spacing: AppSpacing.micro) {
-                                Text("\(Int(meal.calories)) kcal")
+                                Text("\(Int(meal.calories ?? 0)) kcal")
                                     .font(AppText.captionStrong)
                                     .foregroundStyle(AppColor.Text.primary)
-                                Text("\(Int(meal.proteinG))g protein")
+                                Text("\(Int(meal.proteinG ?? 0))g protein")
                                     .font(AppText.caption)
                                     .foregroundStyle(AppColor.Text.secondary)
                             }

@@ -49,6 +49,8 @@
 		DS000001000000000000AA01 /* AppPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA01 /* AppPalette.swift */; };
 		DS000001000000000000AA02 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA02 /* DesignTokens.swift */; };
 		DS000001000000000000AA03 /* AppMotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA03 /* AppMotion.swift */; };
+		FF000001000000000000AA01 /* FitMeLogoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000002000000000000AA01 /* FitMeLogoLoader.swift */; };
+		FF000001000000000000AA02 /* LiveInfoStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000002000000000000AA02 /* LiveInfoStrip.swift */; };
 		DS000001000000000000AA04 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA04 /* AppIcon.swift */; };
 		DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA05 /* AppViewModifiers.swift */; };
 		DS000001000000000000AA06 /* AppComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA06 /* AppComponents.swift */; };
@@ -78,6 +80,8 @@
 		DS000002000000000000AA01 /* AppPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPalette.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA02 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA03 /* AppMotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMotion.swift; sourceTree = "<group>"; };
+		FF000002000000000000AA01 /* FitMeLogoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitMeLogoLoader.swift; sourceTree = "<group>"; };
+		FF000002000000000000AA02 /* LiveInfoStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveInfoStrip.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA04 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA05 /* AppViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModifiers.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA06 /* AppComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponents.swift; sourceTree = "<group>"; };
@@ -275,6 +279,7 @@
 				DS000002000000000000AA01 /* AppPalette.swift */,
 				DS000002000000000000AA02 /* DesignTokens.swift */,
 				DS000002000000000000AA03 /* AppMotion.swift */,
+				FF000002000000000000AA01 /* FitMeLogoLoader.swift */,
 				DS000002000000000000AA04 /* AppIcon.swift */,
 				DS000002000000000000AA05 /* AppViewModifiers.swift */,
 				DS000002000000000000AA06 /* AppComponents.swift */,
@@ -558,6 +563,8 @@
 				DS000001000000000000AA01 /* AppPalette.swift in Sources */,
 				DS000001000000000000AA02 /* DesignTokens.swift in Sources */,
 				DS000001000000000000AA03 /* AppMotion.swift in Sources */,
+				FF000001000000000000AA01 /* FitMeLogoLoader.swift in Sources */,
+				FF000001000000000000AA02 /* LiveInfoStrip.swift in Sources */,
 				DS000001000000000000AA04 /* AppIcon.swift in Sources */,
 				DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */,
 				DS000001000000000000AA06 /* AppComponents.swift in Sources */,
