@@ -29,7 +29,7 @@ final class SupabaseSyncService: ObservableObject {
     @Published private(set) var status: SupabaseSyncStatus = .idle
 
     // Realtime channel — held to keep the subscription alive and to allow unsubscribe.
-    private var realtimeChannel: RealtimeChannel?
+    private var realtimeChannel: RealtimeChannelV2?
 
     // MARK: - Record Type Constants
 
@@ -137,39 +137,31 @@ final class SupabaseSyncService: ObservableObject {
         guard let session = try? await supabase.auth.session else { return }
         let userID = session.user.id.uuidString
 
-        let channel = await supabase.realtime.channel("sync_records:\(userID)")
+        let channel = supabase.realtimeV2.channel("sync_records:\(userID)")
 
         // Listen for INSERT and UPDATE on rows belonging to this user.
         // RLS on the `sync_records` table ensures the server only broadcasts
         // rows where user_id matches the authenticated session.
-        let changes = await channel.postgresChange(
+        channel.onPostgresChange(
             InsertAction.self,
             schema: "public",
             table: "sync_records"
-        )
+        ) { [weak self] _ in
+            guard let self else { return }
+            Task { await self.fetchChanges(dataStore: dataStore) }
+        }
 
-        let updates = await channel.postgresChange(
+        channel.onPostgresChange(
             UpdateAction.self,
             schema: "public",
             table: "sync_records"
-        )
+        ) { [weak self] _ in
+            guard let self else { return }
+            Task { await self.fetchChanges(dataStore: dataStore) }
+        }
 
         await channel.subscribe()
         realtimeChannel = channel
-
-        // Process incoming changes in background tasks
-        Task { [weak self] in
-            for await _ in changes {
-                guard let self else { return }
-                await self.fetchChanges(dataStore: dataStore)
-            }
-        }
-        Task { [weak self] in
-            for await _ in updates {
-                guard let self else { return }
-                await self.fetchChanges(dataStore: dataStore)
-            }
-        }
     }
 
     func unsubscribeRealtime() async {
