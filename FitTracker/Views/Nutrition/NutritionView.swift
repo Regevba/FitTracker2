@@ -20,13 +20,13 @@ struct NutritionView: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: AppSpacing.large) {
                 dateHeader
-                nutritionCommandDeck
-                macroBar
-                quickLogSection
-                hydrationCard
-                adherenceRow
-                mealSection
-                supplementRow
+                macroBar             // 1. Macro targets always pinned at top
+                nutritionCommandDeck // 2. Log First Meal + Quick Protein buttons
+                loggedItemsFeed      // 3. Chronological feed (replaces meal slot sections)
+                quickLogSection      // 4. Favorites + Remembered meals
+                supplementRow        // 5. Supplements
+                hydrationCard        // 6. Hydration
+                adherenceRow         // 7. Adherence summary
 
                 disclaimerNote
             }
@@ -401,14 +401,66 @@ struct NutritionView: View {
         }
     }
 
-    private var mealSection: some View {
-        let nutritionBinding = Binding<NutritionLog>(
-            get: { nutritionLog },
-            set: { log?.nutritionLog = $0 }
-        )
-        return MealSectionView(nutritionLog: nutritionBinding, suggestedMealNumber: nextMealNumber, mealSlotNames: dataStore.userProfile.mealSlotNames) { mealNumber in
-            let existing = log?.nutritionLog.meals.first(where: { $0.mealNumber == mealNumber })
-            editingMealEntry = existing ?? MealEntry(mealNumber: max(mealNumber, nextMealNumber))
+    // Chronological feed of all logged meals — replaces the old slot-based MealSectionView.
+    // Each entry shows name + time + kcal + protein. Tappable to edit.
+    private var loggedItemsFeed: some View {
+        let completedMeals = nutritionLog.meals
+            .filter { $0.status == .completed }
+            .sorted { ($0.loggedAt ?? .distantPast) < ($1.loggedAt ?? .distantPast) }
+
+        return VStack(spacing: AppSpacing.xxSmall) {
+            if completedMeals.isEmpty {
+                // Empty state — encourage first log
+                VStack(spacing: AppSpacing.xSmall) {
+                    Image(systemName: "fork.knife.circle")
+                        .font(AppText.metric)
+                        .foregroundStyle(AppColor.Text.tertiary)
+                    Text("No meals logged yet today")
+                        .font(AppText.subheading)
+                        .foregroundStyle(AppColor.Text.secondary)
+                    Text("Tap "Log First Meal" above to start tracking.")
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.tertiary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, AppSpacing.large)
+            } else {
+                ForEach(completedMeals, id: \.mealNumber) { meal in
+                    Button {
+                        editingMealEntry = meal
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: AppSpacing.micro) {
+                                Text(meal.name.isEmpty ? "Meal \(meal.mealNumber)" : meal.name)
+                                    .font(AppText.body)
+                                    .foregroundStyle(AppColor.Text.primary)
+                                if let time = meal.loggedAt {
+                                    Text(time, style: .time)
+                                        .font(AppText.caption)
+                                        .foregroundStyle(AppColor.Text.tertiary)
+                                }
+                            }
+                            Spacer()
+                            VStack(alignment: .trailing, spacing: AppSpacing.micro) {
+                                Text("\(Int(meal.calories)) kcal")
+                                    .font(AppText.captionStrong)
+                                    .foregroundStyle(AppColor.Text.primary)
+                                Text("\(Int(meal.proteinG))g protein")
+                                    .font(AppText.caption)
+                                    .foregroundStyle(AppColor.Text.secondary)
+                            }
+                        }
+                        .padding(.horizontal, AppSpacing.small)
+                        .padding(.vertical, AppSpacing.xSmall)
+                        .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppRadius.medium)
+                                .stroke(AppColor.Border.subtle.opacity(0.35), lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
         }
     }
 
