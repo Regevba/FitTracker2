@@ -13,6 +13,10 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   build-and-test:
     name: Build and Test
@@ -26,33 +30,34 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Full CI pipeline
-        id: ci
-        continue-on-error: true
+        shell: bash
         run: |
-          exec > >(tee /tmp/ci.log) 2>&1
-          set -x
+          set -euo pipefail
 
-          echo "========== NODE + TOKEN PIPELINE =========="
-          node --version || true
+          # Token pipeline
+          echo "::group::Token Pipeline"
           npm install --silent
           make tokens-check
+          echo "::endgroup::"
 
-          echo "========== XCODE SETUP =========="
-          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode apps found"
-          xcode-select -p
+          # Xcode setup
+          echo "::group::Xcode Setup"
+          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode apps"
           xcodebuild -version
+          echo "::endgroup::"
 
-          echo "========== SCHEMES =========="
+          # Schemes
+          echo "::group::Schemes"
           xcodebuild -project "$PROJECT_PATH" -list
+          echo "::endgroup::"
 
-          echo "========== SIMULATORS =========="
-          xcrun simctl list devices available | grep -i iphone | head -20
-
-          echo "========== RESOLVE SIMULATOR =========="
+          # Simulator
+          echo "::group::Simulator"
           sim_list="$(xcrun simctl list devices available)"
+          echo "$sim_list" | grep -i iphone | head -10
           SIM_DEST=""
           for d in "iPhone 16 Pro" "iPhone 16" "iPhone 15 Pro" "iPhone 15" "iPhone 14"; do
-            if echo "$sim_list" | grep -F "${d} (" >/dev/null; then
+            if echo "$sim_list" | grep -qF "${d} ("; then
               SIM_DEST="platform=iOS Simulator,name=${d}"
               echo "Selected: ${d}"
               break
@@ -63,61 +68,70 @@ jobs:
             SIM_DEST="platform=iOS Simulator,name=${fb}"
             echo "Fallback: ${fb}"
           fi
+          echo "::endgroup::"
 
-          echo "========== SPM RESOLVE =========="
+          # SPM
+          echo "::group::SPM Resolve"
           xcodebuild -resolvePackageDependencies \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME"
+          echo "::endgroup::"
 
-          echo "========== BUILD =========="
+          # Build
+          echo "::group::Build"
           xcodebuild build \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/build.log
+          echo "::endgroup::"
 
-          echo "========== TEST =========="
+          # Test
+          echo "::group::Test"
           xcodebuild test \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination "$SIM_DEST" \
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO
+          echo "::endgroup::"
 
-          echo "========== ALL PASSED =========="
-
-      - name: Post log as PR comment
-        if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            let body = '## CI Log (outcome: ${{ steps.ci.outcome }})\n\n';
-            try {
-              const log = fs.readFileSync('/tmp/ci.log', 'utf8');
-              const lines = log.split('\n');
-              const errors = lines.filter(l => /error:|BUILD FAILED|FAILED|exit code [1-9]/i.test(l));
-              body += '**Errors:**\n```\n' + (errors.length ? errors.slice(0,50).join('\n') : 'None extracted') + '\n```\n\n';
-              body += '<details><summary>Last 200 lines</summary>\n\n```\n' + lines.slice(-200).join('\n') + '\n```\n</details>\n';
-            } catch (e) {
-              body += 'Log file not found: ' + e.message;
-            }
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: body.slice(0, 65000)
-            });
-
-      - name: Fail if CI failed
-        if: steps.ci.outcome == 'failure'
-        run: exit 1
-
-      - name: Upload test result bundle on failure
+      - name: Upload build log on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: fittracker-testresults-xcresult
-          path: TestResults.xcresult
-          retention-days: 7
+          name: build-log
+          path: /tmp/build.log
+          retention-days: 3
           if-no-files-found: ignore
+
+      - name: Upload test results on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults.xcresult
+          retention-days: 3
+          if-no-files-found: ignore
+
+      - name: Comment error summary on PR
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const fs = require('fs');
+            let errors = 'No build log captured (failure was before build step)';
+            try {
+              const log = fs.readFileSync('/tmp/build.log', 'utf8');
+              const errLines = log.split('\n').filter(l => /error:/i.test(l));
+              errors = errLines.length > 0
+                ? errLines.slice(0, 30).join('\n')
+                : log.split('\n').slice(-50).join('\n');
+            } catch {}
+            const body = `## CI Failed\n\n\`\`\`\n${errors.slice(0, 60000)}\n\`\`\``;
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: ${{ github.event.pull_request.number || 0 }},
+              body
+            });
