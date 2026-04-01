@@ -5,8 +5,10 @@
 .PHONY: tokens tokens-check install
 
 # Regenerate DesignTokens.swift from tokens.json via Style Dictionary
+# Uses node to run sd.config.js directly (not CLI) because custom transforms
+# and formats are registered in the config file itself.
 tokens: node_modules
-	node node_modules/.bin/style-dictionary build --config sd.config.js
+	node -e "const sd = require('style-dictionary').extend(require('./sd.config.js')); sd.buildAllPlatforms();"
 	@echo "✅  DesignTokens.swift regenerated"
 
 # CI gate: verify committed DesignTokens.swift matches what make tokens would produce
