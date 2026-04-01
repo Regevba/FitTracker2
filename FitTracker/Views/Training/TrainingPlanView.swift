@@ -230,7 +230,7 @@ struct TrainingPlanView: View {
                     Text(selectedDay.rawValue)
                         .font(.title3.bold())
                     Text(summaryText)
-                        .font(.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
 
@@ -257,7 +257,7 @@ struct TrainingPlanView: View {
                     .font(.headline)
 
                 Text(sessionFocusSubtitle)
-                    .font(.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.secondary)
 
                 if let focusedExercise {
@@ -325,7 +325,7 @@ struct TrainingPlanView: View {
                 .foregroundStyle(AppColor.Text.secondary)
             Stepper(value: $restPresetSeconds, in: 30...180, step: 15) {
                 Text("\(restPresetSeconds)s")
-                    .font(.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.secondary)
             }
             .labelsHidden()
@@ -397,7 +397,7 @@ struct TrainingPlanView: View {
                                     .fill(queueColor(for: status))
                                     .frame(width: 7, height: 7)
                                 Text(exercise.name)
-                                    .font(.caption.weight(.semibold))
+                                    .font(AppText.captionStrong)
                                     .lineLimit(1)
                             }
                             Text(status.rawValue.capitalized)
@@ -419,16 +419,16 @@ struct TrainingPlanView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, AppSpacing.micro)
         }
     }
 
     private func sessionMetaPill(label: String, systemImage: String) -> some View {
         HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: systemImage)
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
             Text(label)
-                .font(.caption.weight(.medium))
+                .font(AppText.caption)
                 .lineLimit(1)
         }
         .foregroundStyle(AppColor.Text.primary)
@@ -446,7 +446,7 @@ struct TrainingPlanView: View {
     ) -> some View {
         Button(action: action) {
             Label(title, systemImage: systemImage)
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, AppSpacing.xSmall)
                 .background(fill, in: RoundedRectangle(cornerRadius: AppRadius.small))
@@ -970,7 +970,7 @@ struct LiftLogPanel: View {
                    let reps = best.repsCompleted,
                    let orm = estimated1RM(weightKg: weight, reps: reps) {
                     Text("Est. 1RM ~\(Int(orm.rounded())) kg")
-                        .font(.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(Color.accent.cyan)
                         .padding(.horizontal, AppSpacing.xSmall)
                         .padding(.top, 2)
@@ -978,7 +978,7 @@ struct LiftLogPanel: View {
 
                 if let suggestion = overloadSuggestion {
                     Text(suggestion)
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(Color.accent.cyan)
                 }
 
@@ -994,7 +994,7 @@ struct LiftLogPanel: View {
                             }
                         } label: {
                             Label("Copy Last", systemImage: "bolt.fill")
-                                .font(.caption.weight(.semibold))
+                                .font(AppText.captionStrong)
                                 .foregroundStyle(Color.accent.cyan)
                         }
                     }
@@ -1005,14 +1005,14 @@ struct LiftLogPanel: View {
                         ))
                     } label: {
                         Label("Add Set", systemImage: "plus.circle.fill")
-                            .font(.caption.weight(.semibold)).foregroundStyle(Color.status.success)
+                            .font(AppText.captionStrong).foregroundStyle(Color.status.success)
                     }
                     Spacer()
                     Button {
                         onStartRest()
                     } label: {
                         Label("Start Rest", systemImage: "timer")
-                            .font(.caption.weight(.semibold))
+                            .font(AppText.captionStrong)
                             .foregroundStyle(AppColor.Brand.warm)
                     }
                 }
@@ -1026,7 +1026,7 @@ struct LiftLogPanel: View {
                         .font(.title3)
                         .foregroundStyle(AppColor.Text.secondary)
                     Text("Tap 'Add Set' to log your first set")
-                        .font(.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.tertiary)
                 }
                 .frame(maxWidth: .infinity)
@@ -1055,10 +1055,10 @@ struct LiftLogPanel: View {
 
             HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: "note.text")
-                    .font(.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.secondary)
                 TextField("Session notes, form, pain, PR…", text: $exerciseLog.notes)
-                    .font(.caption)
+                    .font(AppText.caption)
             }
             .padding(AppSpacing.xxSmall)
             .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small))
@@ -1095,7 +1095,7 @@ struct LiftLogPanel: View {
                 .font(AppText.monoLabel)
                 .foregroundStyle(AppColor.Text.secondary)
             Text(value)
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Text.primary)
         }
         .padding(.horizontal, AppSpacing.xxSmall)
@@ -1154,7 +1154,7 @@ struct SetRowView: View {
                     HStack(spacing: AppSpacing.xxxSmall) {
                         Image(systemName: setIsComplete ? "checkmark.circle.fill" : "timer")
                         Text(setIsComplete ? "Done" : "Log")
-                            .font(.caption.weight(.semibold))
+                            .font(AppText.captionStrong)
                     }
                     .foregroundStyle(setIsComplete ? Color.status.success : AppColor.Brand.warm)
                     .padding(.horizontal, AppSpacing.xxSmall)
@@ -1166,7 +1166,7 @@ struct SetRowView: View {
                 Button(action: onDelete) {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(AppColor.Text.secondary)
-                        .font(.caption)
+                        .font(AppText.caption)
                 }
             }
 
@@ -1209,10 +1209,10 @@ struct SetRowView: View {
 
             HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: "note.text")
-                    .font(.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.secondary)
                 TextField("Add note or cue", text: $noteStr)
-                    .font(.caption)
+                    .font(AppText.caption)
                     .onChange(of: noteStr) { _, v in setLog.notes = v }
             }
             .padding(.horizontal, AppSpacing.xxSmall)
@@ -1338,9 +1338,9 @@ struct CardioLogPanel: View {
             HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                 Image(systemName: "note.text")
                     .foregroundStyle(AppColor.Text.secondary)
-                    .font(.caption)
+                    .font(AppText.caption)
                 TextField("Feel, energy, breathing, HR stability…", text: $cardioLog.notes, axis: .vertical)
-                    .font(.caption)
+                    .font(AppText.caption)
                     .lineLimit(2...4)
             }
             .padding(AppSpacing.xxSmall)
@@ -1350,7 +1350,7 @@ struct CardioLogPanel: View {
             VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 HStack {
                     Label("Session Summary Photo", systemImage: "camera.fill")
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.secondary)
                     Spacer()
                     // Camera button (iOS only)
@@ -1362,7 +1362,7 @@ struct CardioLogPanel: View {
                             Image(systemName: "camera")
                             Text("Take Photo")
                         }
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
                         .background(Color.status.success.opacity(0.1), in: Capsule())
                         .foregroundStyle(Color.status.success)
@@ -1375,7 +1375,7 @@ struct CardioLogPanel: View {
                             Image(systemName: "photo")
                             Text("Library")
                         }
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
                         .background(AppColor.Text.secondary.opacity(0.1), in: Capsule())
                         .foregroundStyle(AppColor.Text.secondary)
@@ -1638,7 +1638,7 @@ struct StatusDropdown: View {
         } label: {
             HStack(spacing: AppSpacing.xxxSmall) {
                 Circle().fill(color).frame(width: 6, height: 6)
-                Text(status.rawValue.capitalized).font(.caption.weight(.medium))
+                Text(status.rawValue.capitalized).font(AppText.caption)
                 Image(systemName: "chevron.down").font(AppText.monoLabel)
             }
             .foregroundStyle(color)
@@ -1884,7 +1884,7 @@ struct SessionCompletionSheet: View {
         VStack(spacing: AppSpacing.xxSmall) {
             HStack(spacing: AppSpacing.xxSmall) {
                 Image(systemName: icon)
-                    .font(.caption.weight(.semibold))
+                    .font(AppText.captionStrong)
                     .foregroundStyle(color)
                 Text(label)
                     .font(.caption2)
@@ -2006,7 +2006,7 @@ struct FocusModeView: View {
                 .padding(.horizontal, AppSpacing.xLarge)
 
                 Text("Tap Done after each set to keep momentum and stay off the main sheet.")
-                    .font(.caption)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.inverseTertiary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, AppSpacing.xLarge)
