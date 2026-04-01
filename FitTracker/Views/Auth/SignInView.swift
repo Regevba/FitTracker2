@@ -214,8 +214,8 @@ struct SocialSignInButton: View {
             Image(systemName: "apple.logo")
                 .font(AppText.titleMedium)
                 .foregroundStyle(labelColor)
-        case .google:
-            Image(systemName: "g.circle.fill")
+        case .google, .facebook:
+            Image(systemName: provider == .google ? "g.circle.fill" : "f.circle.fill")
                 .font(AppText.titleMedium)
                 .foregroundStyle(labelColor)
         case .passkey:
@@ -231,37 +231,37 @@ struct SocialSignInButton: View {
 
     private var bgColor: Color {
         switch provider {
-        case .apple:    return Color(.label)
-        case .google:   return AppColor.Brand.warm.opacity(0.08)
-        case .passkey:  return AppColor.Accent.sleep.opacity(0.08)
-        case .email:    return AppColor.Accent.secondary.opacity(0.08)
+        case .apple:              return Color(.label)
+        case .google, .facebook:  return AppColor.Brand.warm.opacity(0.08)
+        case .passkey:            return AppColor.Accent.sleep.opacity(0.08)
+        case .email:              return AppColor.Accent.secondary.opacity(0.08)
         }
     }
 
     private var labelColor: Color {
         switch provider {
-        case .apple:    return Color(.systemBackground)
-        case .google:   return AppColor.Brand.warm
-        case .passkey:  return AppColor.Accent.sleep
-        case .email:    return AppColor.Accent.secondary
+        case .apple:              return Color(.systemBackground)
+        case .google, .facebook:  return AppColor.Brand.warm
+        case .passkey:            return AppColor.Accent.sleep
+        case .email:              return AppColor.Accent.secondary
         }
     }
 
     private var borderColor: Color {
         switch provider {
-        case .apple:    return .clear
-        case .google:   return AppColor.Brand.warm.opacity(0.25)
-        case .passkey:  return AppColor.Accent.sleep.opacity(0.25)
-        case .email:    return AppColor.Accent.secondary.opacity(0.25)
+        case .apple:              return .clear
+        case .google, .facebook:  return AppColor.Brand.warm.opacity(0.25)
+        case .passkey:            return AppColor.Accent.sleep.opacity(0.25)
+        case .email:              return AppColor.Accent.secondary.opacity(0.25)
         }
     }
 
     private var shadowColor: Color {
         switch provider {
-        case .apple:    return AppShadow.cardColor
-        case .google:   return AppColor.Brand.warm.opacity(0.1)
-        case .passkey:  return AppColor.Accent.sleep.opacity(0.1)
-        case .email:    return AppColor.Accent.secondary.opacity(0.14)
+        case .apple:              return AppShadow.cardColor
+        case .google, .facebook:  return AppColor.Brand.warm.opacity(0.1)
+        case .passkey:            return AppColor.Accent.sleep.opacity(0.1)
+        case .email:              return AppColor.Accent.secondary.opacity(0.14)
         }
     }
 }
