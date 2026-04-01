@@ -91,26 +91,46 @@ jobs:
 
       - name: Resolve Swift packages
         run: |
+          echo "::group::SPM Resolution"
           xcodebuild -resolvePackageDependencies \
             -project "$PROJECT_PATH" \
-            -scheme "$SCHEME"
+            -scheme "$SCHEME" 2>&1 | tail -50
+          echo "::endgroup::"
 
       - name: Build
         run: |
+          set -o pipefail
           xcodebuild build \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/build.log | tail -80
+
+      - name: Print build errors on failure
+        if: failure()
+        run: |
+          echo "=== LAST 200 LINES OF BUILD LOG ==="
+          tail -200 /tmp/build.log
+          echo "=== ERRORS ONLY ==="
+          grep -i 'error:' /tmp/build.log || echo "No error: lines found"
 
       - name: Test
         run: |
+          set -o pipefail
           xcodebuild test \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination "$SIMULATOR_DESTINATION" \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/test.log | tail -80
+
+      - name: Print test errors on failure
+        if: failure()
+        run: |
+          echo "=== LAST 200 LINES OF TEST LOG ==="
+          tail -200 /tmp/test.log 2>/dev/null || echo "No test log (build may have failed)"
+          echo "=== ERRORS ONLY ==="
+          grep -i 'error:\|failed' /tmp/test.log 2>/dev/null || echo "No error lines found"
 
       - name: Upload test result bundle on failure
         if: failure()
