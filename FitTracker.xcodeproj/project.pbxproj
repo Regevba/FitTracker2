@@ -387,6 +387,7 @@
 				CC000002000000000000AA06 /* ChartCard.swift */,
 				CC000002000000000000AA07 /* EmptyStateView.swift */,
 				CC000002000000000000AA0C /* RecoverySupport.swift */,
+				FF000002000000000000AA02 /* LiveInfoStrip.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
