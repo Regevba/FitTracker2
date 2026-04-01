@@ -38,7 +38,17 @@ xcuserdata/
 # macOS junk
 .DS_Store
 
-*.code-workspace.worktrees/
+*.code-workspace
+
+# Local Codex / workspace artifacts
+.claude/
+.superpowers/
+.worktrees/
+FitMe-GDPR-Docs/
+
+# Local Xcode package resolution
+FitTracker.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+node_modules/
 
 # Python
 __pycache__/

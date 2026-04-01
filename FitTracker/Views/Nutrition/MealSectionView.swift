@@ -15,15 +15,15 @@ struct MealSectionView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                 Text("MEALS")
-                    .font(.caption2.monospaced())
-                    .foregroundStyle(.secondary)
+                    .font(AppText.monoLabel)
+                    .foregroundStyle(AppColor.Text.tertiary)
                     .tracking(1.6)
                 Text("Fast log from saved meals, barcode, or a nutrition label photo.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .font(AppText.subheading)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
 
             ForEach(displayedMealNumbers, id: \.self) { mealNumber in
@@ -89,43 +89,43 @@ private struct MealCard: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.xSmall) {
                 ZStack {
                     Circle()
-                        .fill(entry != nil ? Color.appOrange1.opacity(0.2) : Color.white.opacity(0.26))
+                        .fill(entry != nil ? AppColor.Brand.warmSoft.opacity(0.2) : AppColor.Surface.materialStrong)
                         .frame(width: 40, height: 40)
                     Text("\(mealNumber)")
-                        .font(AppType.body)
-                        .foregroundStyle(entry != nil ? Color.appOrange2 : Color.secondary)
+                        .font(AppText.body)
+                        .foregroundStyle(entry != nil ? AppColor.Brand.warm : AppColor.Text.secondary)
                 }
 
-                VStack(alignment: .leading, spacing: 3) {
+                VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text(displayName)
-                        .font(AppType.body)
-                        .foregroundStyle(entry != nil ? Color.primary : Color.secondary)
+                        .font(AppText.body)
+                        .foregroundStyle(entry != nil ? AppColor.Text.primary : AppColor.Text.secondary)
 
                     if let entry {
-                        HStack(spacing: 8) {
+                        HStack(spacing: AppSpacing.xxSmall) {
                             if let calories = entry.calories {
                                 Text("\(Int(calories)) kcal")
-                                    .font(AppType.subheading)
-                                    .foregroundStyle(Color.appOrange2)
+                                    .font(AppText.subheading)
+                                    .foregroundStyle(AppColor.Brand.warm)
                             }
                             if let protein = entry.proteinG {
                                 Text("\(Int(protein))g protein")
-                                    .font(AppType.subheading)
+                                    .font(AppText.subheading)
                                     .foregroundStyle(Color.accent.cyan)
                             }
                             if let time = entry.eatenAt {
                                 Text(Self.timeFormatter.string(from: time))
-                                    .font(AppType.caption)
-                                    .foregroundStyle(Color.secondary)
+                                    .font(AppText.caption)
+                                    .foregroundStyle(AppColor.Text.secondary)
                             }
                         }
                     } else {
                         Text(isSuggested ? "Suggested next meal" : "Tap to log")
-                            .font(AppType.subheading)
-                            .foregroundStyle(isSuggested ? Color.accent.cyan : Color.secondary.opacity(0.6))
+                            .font(AppText.subheading)
+                            .foregroundStyle(isSuggested ? Color.accent.cyan : AppColor.Text.secondary.opacity(0.6))
                     }
                 }
 
@@ -134,17 +134,17 @@ private struct MealCard: View {
                 if entry?.status == .completed {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Color.status.success)
-                        .font(AppType.body)
+                        .font(AppText.body)
                 } else {
                     Image(systemName: "chevron.right")
-                        .font(AppType.caption)
-                        .foregroundStyle(Color.secondary.opacity(0.5))
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.secondary.opacity(0.5))
                 }
             }
-            .padding(.horizontal, 4)
-            .padding(.vertical, 4)
+            .padding(.horizontal, AppSpacing.xxxSmall)
+            .padding(.vertical, AppSpacing.xxxSmall)
             .overlay(
-                RoundedRectangle(cornerRadius: 12)
+                RoundedRectangle(cornerRadius: AppRadius.small)
                     .strokeBorder(borderColor, lineWidth: borderWidth)
             )
             .opacity(entry == nil ? 0.75 : 1.0)

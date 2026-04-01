@@ -81,8 +81,8 @@ struct MealEntrySheet: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.vertical, AppSpacing.xxSmall)
 
                 Divider()
 
@@ -144,13 +144,13 @@ struct MealEntrySheet: View {
 
     private var smartTab: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: AppSpacing.large) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Smart Nutrition Capture")
                         .font(.headline)
                     Text("Scan a nutrition label, paste English or Hebrew nutrition text, then scale it to the weight you actually ate.")
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
 
                 #if canImport(UIKit)
@@ -160,15 +160,15 @@ struct MealEntrySheet: View {
                         .scaledToFill()
                         .frame(height: 150)
                         .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 18))
+                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium))
                         .overlay(
-                            RoundedRectangle(cornerRadius: 18)
-                                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                            RoundedRectangle(cornerRadius: AppRadius.medium)
+                                .stroke(AppColor.Border.subtle, lineWidth: 1)
                         )
                 }
                 #endif
 
-                HStack(spacing: 10) {
+                HStack(spacing: AppSpacing.xxSmall) {
                     #if canImport(UIKit)
                     Button {
                         showCameraCapture = true
@@ -180,26 +180,26 @@ struct MealEntrySheet: View {
 
                     #if canImport(PhotosUI)
                     PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                        smartActionLabel("Choose Photo", systemImage: "photo.fill", tint: Color.appOrange2)
+                        smartActionLabel("Choose Photo", systemImage: "photo.fill", tint: AppColor.Brand.warm)
                     }
                     .buttonStyle(.plain)
                     #endif
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
+                VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Nutrition Text")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                     TextEditor(text: $rawLabelText)
                         .frame(minHeight: 140)
-                        .padding(10)
-                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+                        .padding(AppSpacing.xxSmall)
+                        .background(AppColor.Text.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.small))
                     Text("Hebrew and English keywords are parsed here. Photos use Apple Vision OCR first, then this parser scales the label to your consumed weight. If a Hebrew label photo doesn’t scan cleanly, paste the label text here and the parser still works.")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(AppColor.Text.secondary)
                 }
 
-                HStack(spacing: 12) {
+                HStack(spacing: AppSpacing.xSmall) {
                     manualField(label: "Consumed weight (g)", placeholder: "e.g. 100", text: $servingGrams, isNumeric: true)
                     manualField(label: "Label reference (g)", placeholder: "100", text: $referenceGrams, isNumeric: true)
                 }
@@ -220,33 +220,33 @@ struct MealEntrySheet: View {
                     parseSmartLabel()
                 } label: {
                     Text("Parse and Apply")
-                        .font(AppType.body.weight(.semibold))
+                        .font(AppText.button)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 14))
+                        .padding(.vertical, AppSpacing.xSmall)
+                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: AppRadius.small))
                         .foregroundColor(.white)
                 }
                 .buttonStyle(.plain)
 
                 if let parsedLabel {
-                    VStack(alignment: .leading, spacing: 10) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                         Text("Parsed Per \(Int(parsedLabel.referenceGrams))g")
                             .font(.caption.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                        HStack(spacing: 14) {
-                            parsedMetric("kcal", parsedLabel.calories, tint: Color.appOrange2)
+                            .foregroundStyle(AppColor.Text.secondary)
+                        HStack(spacing: AppSpacing.xSmall) {
+                            parsedMetric("kcal", parsedLabel.calories, tint: AppColor.Brand.warm)
                             parsedMetric("Protein", parsedLabel.proteinG, tint: Color.accent.cyan)
-                            parsedMetric("Carbs", parsedLabel.carbsG, tint: Color.appOrange1)
-                            parsedMetric("Fat", parsedLabel.fatG, tint: Color(red: 0.60, green: 0.35, blue: 0.15))
+                            parsedMetric("Carbs", parsedLabel.carbsG, tint: AppColor.Brand.warmSoft)
+                            parsedMetric("Fat", parsedLabel.fatG, tint: AppColor.Chart.nutritionFat)
                         }
                     }
-                    .padding(14)
-                    .background(Color.white.opacity(0.3), in: RoundedRectangle(cornerRadius: 16))
+                    .padding(AppSpacing.xSmall)
+                    .background(AppColor.Surface.materialStrong, in: RoundedRectangle(cornerRadius: AppRadius.medium))
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 16)
-            .padding(.bottom, 32)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.top, AppSpacing.small)
+            .padding(.bottom, AppSpacing.xLarge)
         }
     }
 
@@ -256,7 +256,7 @@ struct MealEntrySheet: View {
 
     private var manualTab: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            VStack(spacing: AppSpacing.small) {
                 Group {
                     manualField(label: "Meal name",       placeholder: "e.g. Chicken & Rice", text: $name)
                     manualField(label: "Calories (kcal)", placeholder: "e.g. 500",            text: $calories, isNumeric: true)
@@ -264,10 +264,10 @@ struct MealEntrySheet: View {
                     manualField(label: "Carbs (g)",       placeholder: "e.g. 60",             text: $carbsG,   isNumeric: true)
                     manualField(label: "Fat (g)",         placeholder: "e.g. 15",             text: $fatG,     isNumeric: true)
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, AppSpacing.small)
 
                 // Buttons
-                VStack(spacing: 12) {
+                VStack(spacing: AppSpacing.xSmall) {
                     // Save as Template
                     Button {
                         saveAsTemplate()
@@ -275,56 +275,53 @@ struct MealEntrySheet: View {
                         HStack {
                             if savedTemplate {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(Color.status.success)
+                                    .foregroundStyle(AppColor.Status.success)
                                 Text("Saved!")
-                                    .foregroundColor(Color.status.success)
+                                    .foregroundStyle(AppColor.Status.success)
                             } else {
                                 Image(systemName: "square.and.arrow.down")
                                 Text("Save as Template")
                             }
                         }
-                        .font(AppType.body)
+                        .font(AppText.body)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(Color.secondary.opacity(0.1), in: RoundedRectangle(cornerRadius: 12))
+                        .padding(.vertical, AppSpacing.xSmall)
+                        .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
+                                .stroke(AppColor.Border.subtle, lineWidth: 1)
+                        )
                     }
                     .disabled(name.isEmpty)
 
-                    // Log button
-                    Button {
+                    AppButton(
+                        title: "Log",
+                        hierarchy: .primary
+                    ) {
                         logMeal()
-                    } label: {
-                        Text("Log")
-                            .font(AppType.body)
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(name.isEmpty ? Color.secondary.opacity(0.2) : Color.accent.cyan, in: RoundedRectangle(cornerRadius: 12))
-                            .foregroundColor(name.isEmpty ? .secondary : .white)
                     }
                     .disabled(name.isEmpty)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.top, AppSpacing.xxSmall)
             }
-            .padding(.top, 16)
-            .padding(.bottom, 32)
+            .padding(.top, AppSpacing.small)
+            .padding(.bottom, AppSpacing.xLarge)
         }
     }
 
     @ViewBuilder
     private func manualField(label: String, placeholder: String, text: Binding<String>, isNumeric: Bool = false) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(label)
-                .font(AppType.caption)
-                .foregroundColor(.secondary)
-            TextField(placeholder, text: text)
-                .font(AppType.body)
-                #if canImport(UIKit)
-                .keyboardType(isNumeric ? .decimalPad : .default)
-                #endif
-                .padding(10)
-                .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            AppFieldLabel(title: label)
+            AppInputShell {
+                TextField(placeholder, text: text)
+                    .font(AppText.body)
+                    .foregroundStyle(AppColor.Text.primary)
+                    #if canImport(UIKit)
+                    .keyboardType(isNumeric ? .decimalPad : .default)
+                    #endif
+            }
         }
     }
 
@@ -347,24 +344,24 @@ struct MealEntrySheet: View {
                         Button {
                             fillFromTemplate(template)
                         } label: {
-                            VStack(alignment: .leading, spacing: 4) {
+                            VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                                 Text(template.name)
-                                    .font(AppType.body)
-                                    .foregroundColor(.primary)
-                                HStack(spacing: 8) {
+                                    .font(AppText.body)
+                                    .foregroundStyle(AppColor.Text.primary)
+                                HStack(spacing: AppSpacing.xxSmall) {
                                     if let cal = template.calories {
                                         Text("\(Int(cal)) kcal")
-                                            .font(AppType.caption)
-                                            .foregroundColor(Color.accent.gold)
+                                            .font(AppText.caption)
+                                            .foregroundStyle(AppColor.Accent.achievement)
                                     }
                                     if let pro = template.proteinG {
                                         Text("\(Int(pro))g protein")
-                                            .font(AppType.caption)
-                                            .foregroundColor(Color.accent.cyan)
+                                            .font(AppText.caption)
+                                            .foregroundStyle(AppColor.Accent.recovery)
                                     }
                                 }
                             }
-                            .padding(.vertical, 4)
+                            .padding(.vertical, AppSpacing.xxxSmall)
                         }
                         .buttonStyle(.plain)
                     }
@@ -382,56 +379,51 @@ struct MealEntrySheet: View {
     private var searchTab: some View {
         VStack(spacing: 0) {
             // Search bar
-            VStack(spacing: 8) {
-                HStack(spacing: 8) {
-                    TextField("Search food…", text: $searchQuery)
-                        .font(AppType.body)
-                        .padding(10)
-                        .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 10))
-                        .submitLabel(.search)
-                        .onSubmit { runTextSearch() }
+            VStack(spacing: AppSpacing.xxSmall) {
+                HStack(spacing: AppSpacing.xxSmall) {
+                    AppInputShell {
+                        TextField("Search food…", text: $searchQuery)
+                            .font(AppText.body)
+                            .foregroundStyle(AppColor.Text.primary)
+                            .submitLabel(.search)
+                            .onSubmit { runTextSearch() }
+                    }
 
-                    Button {
+                    AppButton(
+                        title: "",
+                        systemImage: isSearching ? "clock" : "magnifyingglass",
+                        hierarchy: .primary,
+                        isFullWidth: false
+                    ) {
                         runTextSearch()
-                    } label: {
-                        Image(systemName: isSearching ? "clock" : "magnifyingglass")
-                            .foregroundColor(.white)
-                            .padding(10)
-                            .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: 10))
                     }
                     .disabled(searchQuery.trimmingCharacters(in: .whitespaces).isEmpty || isSearching)
                 }
 
                 #if os(iOS)
-                Button {
+                AppQuietButton(
+                    title: "Scan Barcode",
+                    systemImage: "barcode.viewfinder",
+                    tint: AppColor.Accent.sleep
+                ) {
                     showScanner = true
-                } label: {
-                    HStack {
-                        Image(systemName: "barcode.viewfinder")
-                        Text("Scan Barcode")
-                    }
-                    .font(AppType.body)
-                    .foregroundColor(Color.accent.purple)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .background(Color.accent.purple.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
                 }
                 #endif
 
                 if let error = searchError {
-                    HStack(spacing: 6) {
+                    HStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundColor(Color.status.error)
+                            .foregroundStyle(AppColor.Status.error)
                         Text(error)
-                            .font(AppType.caption)
-                            .foregroundColor(Color.status.error)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Status.error)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            .padding(.bottom, 8)
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.top, AppSpacing.xSmall)
+            .padding(.bottom, AppSpacing.xxSmall)
 
             Divider()
 
@@ -447,34 +439,34 @@ struct MealEntrySheet: View {
             } else if isSearching {
                 Spacer()
                 ProgressView("Searching…")
-                    .font(AppType.subheading)
+                    .font(AppText.subheading)
                 Spacer()
             } else {
                 List(searchResults) { product in
                     Button {
                         fillFromProduct(product)
                     } label: {
-                        VStack(alignment: .leading, spacing: 4) {
+                        VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                             Text(product.name.isEmpty ? "Unknown product" : product.name)
-                                .font(AppType.body)
+                                .font(AppText.body)
                                 .foregroundColor(.primary)
-                            HStack(spacing: 8) {
+                            HStack(spacing: AppSpacing.xxSmall) {
                                 if let cal = product.caloriesPer100g {
                                     Text("\(Int(cal)) kcal/100g")
-                                        .font(AppType.caption)
+                                        .font(AppText.caption)
                                         .foregroundColor(Color.accent.gold)
                                 }
                                 if let pro = product.proteinPer100g {
                                     Text("\(Int(pro))g prot")
-                                        .font(AppType.caption)
+                                        .font(AppText.caption)
                                         .foregroundColor(Color.accent.cyan)
                                 }
                             }
                             Text(product.sourceDescription)
                                 .font(.caption2)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(AppColor.Text.secondary)
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, AppSpacing.xxxSmall)
                     }
                     .buttonStyle(.plain)
                 }
@@ -655,22 +647,22 @@ struct MealEntrySheet: View {
     #endif
 
     private func smartActionLabel(_ title: String, systemImage: String, tint: Color) -> some View {
-        HStack(spacing: 8) {
+        HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: systemImage)
             Text(title)
         }
         .font(.caption.weight(.semibold))
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 12)
-        .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
+        .padding(.vertical, AppSpacing.xSmall)
+        .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
         .foregroundStyle(tint)
     }
 
     private func parsedMetric(_ title: String, _ value: Double?, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: AppSpacing.micro) {
             Text(title)
                 .font(.caption2)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(AppColor.Text.secondary)
             Text(value.map { formatNum($0) } ?? "—")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(tint)

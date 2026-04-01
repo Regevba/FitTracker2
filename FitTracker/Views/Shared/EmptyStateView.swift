@@ -9,29 +9,25 @@ struct EmptyStateView: View {
     var ctaAction: (() -> Void)? = nil
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
-                .font(.system(size: 36))
-                .foregroundColor(.secondary)
+                .font(AppText.metric)
+                .foregroundStyle(AppColor.Text.secondary)
 
             Text(title)
-                .font(AppType.headline)
-                .foregroundColor(.primary)
+                .font(AppText.sectionTitle)
+                .foregroundStyle(AppColor.Text.primary)
 
             Text(subtitle)
-                .font(AppType.subheading)
-                .foregroundColor(.secondary)
+                .font(AppText.subheading)
+                .foregroundStyle(AppColor.Text.secondary)
                 .multilineTextAlignment(.center)
 
             if let ctaLabel = ctaLabel, ctaAction != nil {
-                Button(action: ctaAction ?? {}) {
-                    Text(ctaLabel)
-                        .font(AppType.body)
-                }
-                .foregroundColor(.orange)
+                AppButton(title: ctaLabel, hierarchy: .tertiary, isFullWidth: false, action: ctaAction ?? {})
             }
         }
-        .padding(.horizontal, 24)
+        .padding(.horizontal, AppSpacing.large)
         .accessibilityElement(children: .contain)
     }
 }
