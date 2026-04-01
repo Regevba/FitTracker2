@@ -44,7 +44,7 @@ private enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         switch self {
         case .accountSecurity: AppColor.Accent.primary
         case .healthDevices: .accent.cyan
-        case .goalsPreferences: .blue
+        case .goalsPreferences: AppColor.Accent.achievement
         case .trainingNutrition: .accent.purple
         case .dataSync: .status.success
         }
@@ -165,7 +165,7 @@ struct SettingsView: View {
             ]
         case .goalsPreferences:
             return [
-                SettingsSummaryBadge(title: settings.unitSystem.rawValue, tint: .blue),
+                SettingsSummaryBadge(title: settings.unitSystem.rawValue, tint: AppColor.Accent.achievement),
                 SettingsSummaryBadge(title: settings.appearance.rawValue, tint: .accent.purple),
             ]
         case .trainingNutrition:
@@ -362,7 +362,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                         title: system.rawValue,
                         subtitle: system == .metric ? "kg · cm · km" : "lbs · in · mi",
                         isSelected: settings.unitSystem == system,
-                        tint: .blue
+                        tint: AppColor.Accent.achievement
                     )
                 }
             }
