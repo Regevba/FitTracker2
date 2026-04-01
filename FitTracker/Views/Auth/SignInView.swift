@@ -214,6 +214,10 @@ struct SocialSignInButton: View {
             Image(systemName: "apple.logo")
                 .font(AppText.titleMedium)
                 .foregroundStyle(labelColor)
+        case .google:
+            Image(systemName: "g.circle.fill")
+                .font(AppText.titleMedium)
+                .foregroundStyle(labelColor)
         case .passkey:
             Image(systemName: "key.fill")
                 .font(AppText.callout)
@@ -227,7 +231,8 @@ struct SocialSignInButton: View {
 
     private var bgColor: Color {
         switch provider {
-        case .apple:    return Color(.label)            // black in light, white in dark
+        case .apple:    return Color(.label)
+        case .google:   return AppColor.Brand.warm.opacity(0.08)
         case .passkey:  return AppColor.Accent.sleep.opacity(0.08)
         case .email:    return AppColor.Accent.secondary.opacity(0.08)
         }
@@ -235,7 +240,8 @@ struct SocialSignInButton: View {
 
     private var labelColor: Color {
         switch provider {
-        case .apple:    return Color(.systemBackground) // white in dark, black in light
+        case .apple:    return Color(.systemBackground)
+        case .google:   return AppColor.Brand.warm
         case .passkey:  return AppColor.Accent.sleep
         case .email:    return AppColor.Accent.secondary
         }
@@ -244,6 +250,7 @@ struct SocialSignInButton: View {
     private var borderColor: Color {
         switch provider {
         case .apple:    return .clear
+        case .google:   return AppColor.Brand.warm.opacity(0.25)
         case .passkey:  return AppColor.Accent.sleep.opacity(0.25)
         case .email:    return AppColor.Accent.secondary.opacity(0.25)
         }
@@ -252,6 +259,7 @@ struct SocialSignInButton: View {
     private var shadowColor: Color {
         switch provider {
         case .apple:    return AppShadow.cardColor
+        case .google:   return AppColor.Brand.warm.opacity(0.1)
         case .passkey:  return AppColor.Accent.sleep.opacity(0.1)
         case .email:    return AppColor.Accent.secondary.opacity(0.14)
         }
