@@ -141,6 +141,35 @@ jobs:
           echo "=== ERRORS ONLY ==="
           grep -i 'error:\|failed' /tmp/test.log 2>/dev/null || echo "No error lines found"
 
+      - name: Post build errors as PR comment
+        if: failure() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '## CI Build Failure Log\n\n';
+            for (const f of ['/tmp/build.log', '/tmp/test.log']) {
+              try {
+                const log = fs.readFileSync(f, 'utf8');
+                const lines = log.split('\n');
+                const errors = lines.filter(l => /error:|fatal:|failed/i.test(l));
+                const tail = lines.slice(-100).join('\n');
+                body += `### ${f}\n`;
+                if (errors.length > 0) {
+                  body += '**Errors found:**\n```\n' + errors.slice(0, 30).join('\n') + '\n```\n';
+                }
+                body += '<details><summary>Last 100 lines</summary>\n\n```\n' + tail + '\n```\n</details>\n\n';
+              } catch (e) {
+                body += `### ${f}\nNot found (step may not have run)\n\n`;
+              }
+            }
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body.slice(0, 65000)
+            });
+
       - name: Upload test result bundle on failure
         if: failure()
         uses: actions/upload-artifact@v4
