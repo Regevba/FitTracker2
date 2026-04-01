@@ -375,5 +375,5 @@ final class FitTrackerCoreTests: XCTestCase {
     func testSheetCornerRadiusMatchesSpec() {
         XCTAssertEqual(AppSheet.standardCornerRadius, 32, "Sheet standard corner radius must be 32pt")
         XCTAssertEqual(AppSheet.authCornerRadius, 36, "Auth sheet corner radius must be 36pt")
-    }}
+    }
 }
