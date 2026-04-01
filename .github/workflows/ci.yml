@@ -37,12 +37,15 @@ jobs:
       - name: Verify DesignTokens.swift is in sync with tokens.json
         run: make tokens-check
 
-      - name: Select Xcode
+      - name: Xcode setup and build
+        id: build
         run: |
-          echo "=== Available Xcode versions ==="
-          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode found in /Applications"
-          echo ""
-          # Try Xcode 26.3 first, fall back to latest available
+          exec > >(tee /tmp/ci-full.log) 2>&1
+
+          echo "=== STEP: Available Xcode versions ==="
+          ls -d /Applications/Xcode*.app 2>/dev/null || echo "No Xcode found"
+
+          echo "=== STEP: Select Xcode ==="
           if [ -d "/Applications/Xcode_26.3.app" ]; then
             sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer
           elif [ -d "/Applications/Xcode_16.3.app" ]; then
@@ -50,78 +53,47 @@ jobs:
           else
             echo "Using default Xcode"
           fi
-          echo "=== Selected Xcode ==="
           xcode-select -p
           xcodebuild -version
 
-      - name: Show available Xcode schemes
-        run: xcodebuild -project "$PROJECT_PATH" -list
+          echo "=== STEP: Schemes ==="
+          xcodebuild -project "$PROJECT_PATH" -list
 
-      - name: Show available iOS simulators
-        run: xcrun simctl list devices available
+          echo "=== STEP: Simulators ==="
+          xcrun simctl list devices available | grep -i iphone | head -15
 
-      - name: Resolve preferred simulator destination
-        shell: bash
-        run: |
-          set -euo pipefail
-
+          echo "=== STEP: Resolve simulator ==="
           simulator_list="$(xcrun simctl list devices available)"
-          preferred_devices=(
-            "iPhone 17"
-            "iPhone 16e"
-            "iPhone 16 Pro"
-            "iPhone 16"
-            "iPhone 15 Pro"
-            "iPhone 15"
-            "iPhone 14 Pro"
-            "iPhone 14"
-          )
-
-          for device in "${preferred_devices[@]}"; do
+          for device in "iPhone 16 Pro" "iPhone 16" "iPhone 15 Pro" "iPhone 15" "iPhone 14"; do
             if grep -F "${device} (" <<< "$simulator_list" >/dev/null; then
               echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${device}" >> "$GITHUB_ENV"
               echo "Selected simulator: ${device}"
-              exit 0
+              break
             fi
           done
-
-          # Fallback: pick the first available iPhone simulator
-          fallback="$(echo "$simulator_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
-          if [ -n "$fallback" ]; then
-            echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${fallback}" >> "$GITHUB_ENV"
-            echo "Selected fallback simulator: ${fallback}"
-            exit 0
+          # Fallback
+          if ! grep -q SIMULATOR_DESTINATION "$GITHUB_ENV" 2>/dev/null; then
+            fallback="$(echo "$simulator_list" | grep -oE 'iPhone [^(]+' | head -1 | xargs)"
+            if [ -n "$fallback" ]; then
+              echo "SIMULATOR_DESTINATION=platform=iOS Simulator,name=${fallback}" >> "$GITHUB_ENV"
+              echo "Fallback simulator: ${fallback}"
+            else
+              echo "ERROR: No iPhone simulator found"
+              exit 1
+            fi
           fi
 
-          echo "No supported simulator found." >&2
-          echo "Available devices:" >&2
-          echo "$simulator_list" >&2
-          exit 1
-
-      - name: Resolve Swift packages
-        run: |
-          echo "::group::SPM Resolution"
+          echo "=== STEP: Resolve Swift packages ==="
           xcodebuild -resolvePackageDependencies \
             -project "$PROJECT_PATH" \
-            -scheme "$SCHEME" 2>&1 | tail -50
-          echo "::endgroup::"
+            -scheme "$SCHEME" 2>&1 | tail -30
 
-      - name: Build
-        run: |
-          set -o pipefail
+          echo "=== STEP: Build ==="
           xcodebuild build \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/build.log | tail -80
-
-      - name: Print build errors on failure
-        if: failure()
-        run: |
-          echo "=== LAST 200 LINES OF BUILD LOG ==="
-          tail -200 /tmp/build.log
-          echo "=== ERRORS ONLY ==="
-          grep -i 'error:' /tmp/build.log || echo "No error: lines found"
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tail -100
 
       - name: Test
         run: |
@@ -133,34 +105,26 @@ jobs:
             -resultBundlePath TestResults.xcresult \
             CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/test.log | tail -80
 
-      - name: Print test errors on failure
-        if: failure()
-        run: |
-          echo "=== LAST 200 LINES OF TEST LOG ==="
-          tail -200 /tmp/test.log 2>/dev/null || echo "No test log (build may have failed)"
-          echo "=== ERRORS ONLY ==="
-          grep -i 'error:\|failed' /tmp/test.log 2>/dev/null || echo "No error lines found"
-
-      - name: Post build errors as PR comment
+      - name: Post failure log as PR comment
         if: failure() && github.event_name == 'pull_request'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
-            let body = '## CI Build Failure Log\n\n';
-            for (const f of ['/tmp/build.log', '/tmp/test.log']) {
+            let body = '## CI Failure Log\n\n';
+            for (const [label, f] of [['Full CI log', '/tmp/ci-full.log'], ['Test log', '/tmp/test.log']]) {
               try {
                 const log = fs.readFileSync(f, 'utf8');
                 const lines = log.split('\n');
-                const errors = lines.filter(l => /error:|fatal:|failed/i.test(l));
-                const tail = lines.slice(-100).join('\n');
-                body += `### ${f}\n`;
+                const errors = lines.filter(l => /error:|fatal error|BUILD FAILED|exit code/i.test(l));
+                const tail = lines.slice(-150).join('\n');
+                body += `### ${label}\n`;
                 if (errors.length > 0) {
-                  body += '**Errors found:**\n```\n' + errors.slice(0, 30).join('\n') + '\n```\n';
+                  body += '**Errors:**\n```\n' + errors.slice(0, 40).join('\n') + '\n```\n';
                 }
-                body += '<details><summary>Last 100 lines</summary>\n\n```\n' + tail + '\n```\n</details>\n\n';
+                body += '<details><summary>Last 150 lines</summary>\n\n```\n' + tail + '\n```\n</details>\n\n';
               } catch (e) {
-                body += `### ${f}\nNot found (step may not have run)\n\n`;
+                body += `### ${label}\nNot found\n\n`;
               }
             }
             await github.rest.issues.createComment({
