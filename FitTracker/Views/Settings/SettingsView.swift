@@ -899,8 +899,7 @@ private struct SettingsActionLabel: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(AppColor.Text.tertiary)
             case .progress:
-                ProgressView()
-                    .scaleEffect(0.8)
+                FitMeLogoLoader(mode: .rotate, size: .small)
             }
         }
         .padding(.vertical, AppSpacing.xxxSmall)

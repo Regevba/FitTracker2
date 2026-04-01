@@ -67,3 +67,24 @@ extension View {
         modifier(MotionSafe(animation: animation, value: AnyHashable(value)))
     }
 }
+
+// MARK: - Loading animation presets
+/// Branded loading animation modes for the FitMeLogoLoader.
+/// Each preset is tuned for a specific loading context.
+enum AppLoadingAnimation {
+    /// Breathing pulse: logo scales 0.92→1.08 with easeInOut, 1.2s cycle.
+    /// Use for: calculating, processing, AI thinking.
+    static let breathe = Animation.easeInOut(duration: 1.2).repeatForever(autoreverses: true)
+
+    /// Gentle rotation: logo rotates 360° continuously, 2.0s cycle.
+    /// Use for: syncing, uploading, downloading.
+    static let rotate = Animation.linear(duration: 2.0).repeatForever(autoreverses: false)
+
+    /// Quick pulse: logo scales 1.0→1.15 and bounces back, single shot.
+    /// Use for: success confirmation, data received.
+    static let confirmPulse = Animation.spring(response: 0.3, dampingFraction: 0.5)
+
+    /// Shimmer: opacity oscillates 0.4→1.0, 0.8s cycle.
+    /// Use for: waiting, background refresh.
+    static let shimmer = Animation.easeInOut(duration: 0.8).repeatForever(autoreverses: true)
+}

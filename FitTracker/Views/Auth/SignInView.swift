@@ -189,8 +189,7 @@ struct SocialSignInButton: View {
                 Spacer()
 
                 if isLoading {
-                    ProgressView()
-                        .tint(labelColor)
+                    FitMeLogoLoader(mode: .breathe, size: .small)
                         .scaleEffect(0.8)
                 }
             }
@@ -291,7 +290,7 @@ struct PasskeyActionButton: View {
                 Spacer()
 
                 if isLoading {
-                    ProgressView().tint(color).scaleEffect(0.8)
+                    FitMeLogoLoader(mode: .breathe, size: .small)
                 } else {
                     Image(systemName: "chevron.right")
                         .font(AppText.captionStrong)

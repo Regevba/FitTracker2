@@ -146,3 +146,42 @@ extension View {
         modifier(AppSectionBackgroundModifier())
     }
 }
+
+// MARK: - Loading overlay
+
+/// Overlays a branded `FitMeLogoLoader` on any view when `isLoading` is true.
+/// The content dims and the loader appears centered with an optional message.
+private struct LoadingOverlayModifier: ViewModifier {
+    let isLoading: Bool
+    let mode: FitMeLogoLoader.Mode
+    let message: String?
+
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+                .opacity(isLoading ? 0.4 : 1.0)
+                .allowsHitTesting(!isLoading)
+
+            if isLoading {
+                FitMeLogoLoader(mode: mode, size: .medium, message: message)
+                    .transition(.opacity)
+            }
+        }
+        .animation(AppEasing.standard, value: isLoading)
+    }
+}
+
+extension View {
+    /// Shows a branded loading overlay with the FitMe logo animation.
+    /// - Parameters:
+    ///   - isLoading: Whether the overlay is visible.
+    ///   - mode: Animation mode (default: `.breathe`).
+    ///   - message: Optional status text below the loader.
+    func loadingOverlay(
+        isLoading: Bool,
+        mode: FitMeLogoLoader.Mode = .breathe,
+        message: String? = nil
+    ) -> some View {
+        modifier(LoadingOverlayModifier(isLoading: isLoading, mode: mode, message: message))
+    }
+}
