@@ -418,7 +418,7 @@ struct NutritionView: View {
                     Text("No meals logged yet today")
                         .font(AppText.subheading)
                         .foregroundStyle(AppColor.Text.secondary)
-                    Text("Tap "Log First Meal" above to start tracking.")
+                    Text("Tap \"Log First Meal\" above to start tracking.")
                         .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.tertiary)
                 }
