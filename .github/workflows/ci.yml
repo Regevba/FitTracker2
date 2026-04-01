@@ -93,7 +93,7 @@ jobs:
             -scheme "$SCHEME" \
             -destination "$SIM_DEST" \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO
+            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/test.log
           echo "::endgroup::"
 
       - name: Upload build log on failure
@@ -121,14 +121,19 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            let errors = 'No build log captured (failure was before build step)';
-            try {
-              const log = fs.readFileSync('/tmp/build.log', 'utf8');
-              const errLines = log.split('\n').filter(l => /error:/i.test(l));
-              errors = errLines.length > 0
-                ? errLines.slice(0, 30).join('\n')
-                : log.split('\n').slice(-50).join('\n');
-            } catch {}
+            let errors = '';
+            for (const f of ['/tmp/build.log', '/tmp/test.log']) {
+              try {
+                const log = fs.readFileSync(f, 'utf8');
+                const errLines = log.split('\n').filter(l => /error:|FAIL|failed/i.test(l));
+                if (errLines.length > 0) {
+                  errors += `### ${f}\n` + errLines.slice(0, 30).join('\n') + '\n\n';
+                } else {
+                  errors += `### ${f}\n` + log.split('\n').slice(-30).join('\n') + '\n\n';
+                }
+              } catch {}
+            }
+            if (!errors) errors = 'No logs captured';
             const body = `## CI Failed\n\n\`\`\`\n${errors.slice(0, 60000)}\n\`\`\``;
             await github.rest.issues.createComment({
               ...context.repo,
