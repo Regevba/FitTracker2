@@ -301,31 +301,15 @@ struct NutritionView: View {
                 }
             }
 
-            HStack(spacing: AppSpacing.xxSmall) {
+            // Quick shortcuts — meal logging itself happens through the meal slots below.
+            if !recentMeals.isEmpty {
                 quickActionButton(
-                    title: nutritionLog.meals.isEmpty ? "Log First Meal" : "Add Meal",
-                    icon: "plus.circle.fill",
-                    tint: Color.accent.cyan
-                ) {
-                    editingMealEntry = MealEntry(mealNumber: nextMealNumber)
-                }
-
-                quickActionButton(
-                    title: recentMeals.isEmpty ? "Quick Protein" : "Repeat Last",
-                    icon: recentMeals.isEmpty ? "bolt.heart.fill" : "clock.arrow.circlepath",
+                    title: "Repeat Last",
+                    icon: "clock.arrow.circlepath",
                     tint: Color.status.success
                 ) {
                     if let recent = recentMeals.first {
                         openPrefilledMeal(recent)
-                    } else {
-                        editingMealEntry = MealEntry(
-                            mealNumber: nextMealNumber,
-                            name: "Protein Shake",
-                            calories: 180,
-                            proteinG: 30,
-                            carbsG: 8,
-                            fatG: 3
-                        )
                     }
                 }
             }

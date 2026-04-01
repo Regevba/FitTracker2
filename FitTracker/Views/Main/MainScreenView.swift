@@ -24,6 +24,7 @@ struct MainScreenView: View {
     @State private var shownMilestonePhase: ProgramPhase? = nil
     @State private var milestoneTitle: String? = nil
     @State private var milestoneMessage: String? = nil
+    @State private var showReadinessInGreeting = false
 
     private var activeDayType: DayType {
         selectedDayType ?? programStore.todayDayType
@@ -207,10 +208,29 @@ struct MainScreenView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
-                    Text(greeting)
-                        .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.82)
+                    // Animated greeting → readiness transition after 10s
+                    ZStack(alignment: .leading) {
+                        if showReadinessInGreeting, let score = readinessScore {
+                            HStack(spacing: AppSpacing.xxSmall) {
+                                Text("\(score)")
+                                    .font(AppText.metric)
+                                    .foregroundStyle(readinessColor(for: score))
+                                Text("Readiness — \(readinessLabel(for: score))")
+                                    .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
+                                    .foregroundStyle(AppColor.Text.secondary)
+                            }
+                            .transition(.opacity)
+                        } else {
+                            Text(greeting)
+                                .font(.system(size: tight ? 23 : 26, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.82)
+                                .transition(.opacity)
+                        }
+                    }
+                    .animation(.easeInOut(duration: AppDuration.standard), value: showReadinessInGreeting)
+                    .frame(minHeight: tight ? 28 : 32) // stable height — prevents layout shift
+
                     Text(todayFormatted)
                         .font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
                         .foregroundStyle(AppColor.Text.secondary)
@@ -229,6 +249,25 @@ struct MainScreenView: View {
                 }
             }
         }
+        .onAppear {
+            guard readinessScore != nil else { return }
+            Task {
+                try? await Task.sleep(for: .seconds(10))
+                showReadinessInGreeting = true
+            }
+        }
+    }
+
+    private func readinessColor(for score: Int) -> Color {
+        if score >= 70 { return AppColor.Status.success }
+        if score >= 50 { return AppColor.Status.warning }
+        return AppColor.Status.error
+    }
+
+    private func readinessLabel(for score: Int) -> String {
+        if score >= 70 { return "Ready to train" }
+        if score >= 50 { return "Moderate" }
+        return "Recovery day"
     }
 
     private func statusOverviewCard(compact: Bool, tight: Bool) -> some View {

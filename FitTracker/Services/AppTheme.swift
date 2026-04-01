@@ -193,15 +193,9 @@ enum AppGradient {
         endPoint: .bottomTrailing
     )
 
-    static let authBackground = LinearGradient(
-        colors: [
-            AppColor.Background.authTop,
-            AppColor.Background.authMiddle,
-            AppColor.Background.authBottom,
-        ],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-    )
+    // Auth uses the same brand gradient as the rest of the app.
+    // Previously used a dark forest gradient (darkForest0/1/2) which was off-brand.
+    static let authBackground = screenBackground
 
     static let brand = LinearGradient(
         colors: [
