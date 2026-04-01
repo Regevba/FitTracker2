@@ -323,6 +323,26 @@ final class SignInService: NSObject, ObservableObject {
 
     private func applyReviewSessionIfNeeded() {
         let reviewMode = ProcessInfo.processInfo.environment[Self.reviewAuthKey]?.lowercased()
+
+        #if DEBUG && targetEnvironment(simulator)
+        // Auto-login on Simulator in DEBUG builds so developers can test
+        // the app without going through Apple Sign In or email OTP.
+        // Set FITTRACKER_SKIP_AUTO_LOGIN=1 in the scheme to disable.
+        let skipAutoLogin = ProcessInfo.processInfo.environment["FITTRACKER_SKIP_AUTO_LOGIN"] == "1"
+        if reviewMode == nil && !skipAutoLogin && activeSession == nil && storedSession == nil {
+            let session = UserSession(
+                provider: .email,
+                userID: "simulator@fitme.app",
+                displayName: "Simulator User",
+                email: "simulator@fitme.app",
+                sessionToken: "simulator-debug-token"
+            )
+            activeSession = session
+            storedSession = session
+            return
+        }
+        #endif
+
         guard reviewMode == "authenticated" || reviewMode == "settings" else { return }
 
         let session = UserSession(
