@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-primary: #FA8F40;
+  --color-brand-secondary: #8AC7FF;
+  --color-brand-warm: #FFC78A;
+  --color-brand-cool: #DFF3FF;
+
+  --color-status-backlog: #9CA3AF;
+  --color-status-research: #9CA3AF;
+  --color-status-prd: #9CA3AF;
+  --color-status-ux: #3B82F6;
+  --color-status-implement: #3B82F6;
+  --color-status-testing: #A855F7;
+  --color-status-review: #A855F7;
+  --color-status-done: #10B981;
+
+  --color-priority-critical: #DC2626;
+  --color-priority-high: #F59E0B;
+  --color-priority-medium: #FBBF24;
+  --color-priority-low: #D1D5DB;
+
+  --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+  --shadow-card-drag: 0 12px 28px rgba(0, 0, 0, 0.18);
+
+  --radius-card: 12px;
+  --radius-badge: 6px;
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
