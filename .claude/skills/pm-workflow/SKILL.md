@@ -33,15 +33,16 @@ Create `.claude/features/$0/state.json`:
   "branch": "feature/$0",
   "current_phase": "research",
   "has_ui": null,
+  "requires_analytics": null,
   "phases": {
     "research": { "status": "in_progress", "approved_at": null, "sources": [] },
-    "prd": { "status": "pending", "approved_at": null },
+    "prd": { "status": "pending", "approved_at": null, "analytics_spec_complete": false },
     "tasks": { "status": "pending", "count": 0 },
     "ux_or_integration": { "status": "pending", "type": null },
     "implementation": { "status": "pending", "commits": [] },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
     "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
-    "merge": { "status": "pending", "pr_number": null },
+    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
     "documentation": { "status": "pending" },
     "metrics": {
       "primary": { "name": "", "baseline": null, "target": null, "current": null },
@@ -101,6 +102,37 @@ Create `.claude/features/$0/prd.md` using the PRD template (see prd-template.md)
 - Kill criteria
 
 Ask the user: "Does this feature have a UI component?" → Set `has_ui` in state.json.
+
+Ask the user: "Does this feature introduce new measurable interactions (screens, user actions, badges, achievements)?" → Set `requires_analytics` in state.json.
+
+### Analytics Spec Gate (if requires_analytics = true)
+
+Before the PRD can be approved, define and validate the GA4 analytics instrumentation for this feature:
+
+1. **Read existing taxonomy** — Read `FitTracker/Services/Analytics/AnalyticsProvider.swift` (all enums: `AnalyticsEvent`, `AnalyticsParam`, `AnalyticsScreen`, `AnalyticsUserProperty`) and `docs/product/analytics-taxonomy.csv` to understand the current event landscape.
+
+2. **Draft Analytics Spec** — For each measurable action in the PRD, fill in the "Analytics Spec (GA4 Event Definitions)" section of the PRD template:
+   - New events (name, category, GA4 type, trigger screen, parameters, conversion flag)
+   - New parameters (name, type, allowed values, which events use them)
+   - New screens (snake_case name, SwiftUI view class, category)
+   - New user properties (if any — remember max 25 total custom)
+
+3. **Validate naming conventions** against GA4 rules documented in `AnalyticsProvider.swift`:
+   - snake_case format, lowercase only
+   - Max 40 characters for event and parameter names
+   - No reserved prefixes (`ga_`, `firebase_`, `google_`)
+   - No duplicate names against existing enums in `AnalyticsProvider.swift`
+   - No PII in any parameter (no emails, names, phone numbers, user IDs)
+   - Parameter values max 100 characters
+   - Max 25 parameters per event
+   - Total custom user properties still ≤25 after additions
+   - Use GA4 recommended events where available (`login`, `sign_up`, `share`, `select_content`, `tutorial_begin`, `tutorial_complete`)
+
+4. **Complete the Naming Validation Checklist** in the PRD (all boxes must be checked).
+
+5. **Update state.json:** Set `phases.prd.analytics_spec_complete = true`.
+
+**The PRD is NOT approvable until the Analytics Spec passes validation** (when `requires_analytics = true`). If `requires_analytics = false`, the Analytics Spec section is skipped.
 
 Present the PRD and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
@@ -262,6 +294,37 @@ Present implementation summary and ask for approval. **On approval, execute the 
 5. **Record baseline values** for all metrics before the feature is live
 6. Update state.json: `ci_passed`, `tests_added`, `instrumentation_verified`
 
+### Analytics Verification (if requires_analytics = true)
+
+After general tests pass, run dedicated analytics verification:
+
+1. **Unit test event firing** — For each event defined in the PRD's Analytics Spec:
+   - Create a test in `FitTrackerTests/AnalyticsTests.swift` (create the file if it doesn't exist — first feature bootstraps it)
+   - Construct a `MockAnalyticsAdapter` and inject it via `AnalyticsService(provider: mockAdapter, consent: consentManager)`
+   - Trigger the action that should fire the event
+   - Assert `mockAdapter.capturedEvents` contains the event with the correct name
+   - Assert all expected parameters are present with correct types and values
+   - Assert no unexpected parameters leak through
+
+2. **Screen tracking verification** — For each new screen in the Analytics Spec:
+   - Call the screen tracking method (or trigger `.analyticsScreen()` modifier)
+   - Assert `mockAdapter.capturedScreens` contains the expected screen name
+
+3. **Consent gating verification** — For at least one representative event per feature:
+   - Set consent to denied → trigger the action → assert event is NOT in `capturedEvents`
+   - Set consent to granted → trigger the action → assert event IS in `capturedEvents`
+   - This validates the consent gate works end-to-end
+
+4. **Taxonomy sync check** — Verify code and documentation are in sync:
+   - Every event in the Analytics Spec has a corresponding constant in `AnalyticsEvent` enum (`AnalyticsProvider.swift`)
+   - Every event has a row in `docs/product/analytics-taxonomy.csv`
+   - Every new screen has entries in both `AnalyticsScreen` enum and the CSV screens section
+   - Every new parameter has a constant in `AnalyticsParam` enum
+
+5. **Update state.json:** Set `analytics_tests_added` (count of tests written) and `analytics_verification_passed = true`
+
+**The phase is NOT approvable if `analytics_verification_passed = false`** (when `requires_analytics = true`).
+
 If CI fails, fix and re-run. Do NOT proceed until CI is green.
 
 Present test results and ask for approval. **On approval, execute the Phase Transition Procedure.**
@@ -297,6 +360,30 @@ Present review and ask for approval. **On approval, execute the Phase Transition
 3. Squash merge to main
 4. Delete feature branch
 5. Update state.json: `pr_number`
+
+### Post-Merge Analytics Regression (if requires_analytics = true)
+
+After the merge to main is complete, verify analytics integrity on the merged branch:
+
+1. **Switch to main** — `git checkout main && git pull origin main`
+
+2. **Run analytics test suite on main** — Execute all tests in `FitTrackerTests/AnalyticsTests.swift`:
+   - All pre-existing analytics events still fire correctly (no regressions from the merge)
+   - All new events from this feature work on the main branch
+   - Screen tracking for both existing and new screens works
+   - Consent gating still functions
+
+3. **Taxonomy completeness check** — Programmatically verify code ↔ documentation sync:
+   - Every constant in `AnalyticsEvent` enum has a corresponding row in the events section of `analytics-taxonomy.csv`
+   - Every constant in `AnalyticsScreen` enum has a row in the screens section
+   - Every constant in `AnalyticsUserProperty` enum has a row in the user properties section
+   - Report any orphaned constants (in code but not CSV) or missing rows (in CSV but not code)
+
+4. **Update state.json:** Set `phases.merge.analytics_regression_passed = true/false`
+
+**If regression fails:** Alert the user with the specific failures. Recommend either:
+- Fix on main directly (if trivial — e.g., missing CSV row)
+- Create a hotfix branch for non-trivial issues
 
 ---
 
