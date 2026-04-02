@@ -1,0 +1,45 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import Dashboard from '../components/Dashboard.jsx';
+import featuresData from '../data/features.json';
+import { reconcile } from '../scripts/reconcile.js';
+
+// Use static features.json as primary data source
+// Parsers enrich this with data from markdown files at build time
+const allFeatures = [
+  ...featuresData.shipped.map(f => ({ ...f, source: 'shipped' })),
+  ...featuresData.planned.map(f => ({ ...f, source: 'planned' })),
+  ...featuresData.backlog.map(f => ({ ...f, source: 'backlog' })),
+];
+
+// Try to load parsed data from markdown sources (build-time only)
+let parsedData = null;
+try {
+  const { getUnifiedFeatures } = await import('../scripts/parsers/unified.js');
+  parsedData = getUnifiedFeatures();
+} catch {
+  // Parsers may fail if markdown files are not available (e.g., in CI)
+}
+
+// Reconcile across sources
+const { alerts, sources } = reconcile({
+  githubIssues: [],
+  staticFeatures: allFeatures,
+  stateFiles: [],
+});
+
+// Add parser source counts if available
+if (parsedData) {
+  sources.static.count = allFeatures.length;
+  sources.state.count = parsedData.sourceCounts.state;
+}
+---
+
+<DashboardLayout>
+  <Dashboard
+    features={allFeatures}
+    alerts={alerts}
+    sources={sources}
+    client:load
+  />
+</DashboardLayout>
