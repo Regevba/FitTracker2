@@ -408,3 +408,216 @@ Thresholds configurable via UserPreferences.
 - `FitTracker/Views/Main/MainScreenView.swift`
 - `FitTracker/Views/Shared/ReadinessCard.swift`
 - `FitTracker/Views/Shared/LiveInfoStrip.swift`
+
+---
+
+### 2.5 Stats / Progress Hub
+
+**Purpose:** Comprehensive historical analytics across 18 metrics with multi-period views, trend analysis, PR detection, and data source attribution.
+
+**Business objective:** Stats create long-term stickiness. Users who review weekly trends are 2x more likely to sustain training habits. Stats also validate the product's value proposition — "your data, your insights."
+
+**Functional requirements:**
+
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| Period picker | Shipped | Daily, Weekly, Monthly, 3-Month, 6-Month |
+| 18 metrics | Shipped | Body (6), Recovery (4), Training (5), Nutrition (3) |
+| Chart types | Shipped | Line/area, bar, stacked area, discrete points, dual-axis |
+| Delta indicators | Shipped | Period-over-period change with color coding |
+| Data source badges | Shipped | Apple Health, Watch, Smart Scale, Manual, HealthKit Off |
+| Coverage summary | Shipped | X/Y days logged with category breakdown |
+| PR records | Shipped | All-time max per exercise (Epley 1RM estimation) |
+| Weekly bucketing | Shipped | Auto-aggregation for longer periods |
+| Live fallback | Shipped | Today's data from Watch/HealthKit when no log exists |
+
+**18 Tracked Metrics:**
+
+| Category | Metrics |
+|----------|---------|
+| Body | Weight, Body Fat %, Lean Mass, Muscle Mass, Body Water, Visceral Fat |
+| Recovery | Readiness Score, Sleep Hours, HRV, Resting HR |
+| Training | Volume (kg), Zone 2 Minutes, Steps, Active Calories, VO2 Max |
+| Nutrition | Protein (g), Calories, Supplement Adherence (%) |
+
+**Current state & gaps:**
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| No goal target lines on charts | Medium | Weight/BF goals exist in UserProfile but not overlaid on charts |
+| No chart interaction (tap-to-tooltip) | Medium | Mentioned in v2 spec but implementation status unclear |
+| No export/share | Low | No chart screenshot or CSV export |
+| No comparison mode | Low | Can't overlay two metrics on same chart |
+
+**Success metrics:**
+- Stats views per user per week (target: 2+)
+- Most-viewed metric (identifies user priorities)
+- Period distribution (which timeframes are most popular)
+- Coverage rate (% of days with at least 1 metric logged)
+
+**Key files:**
+- `FitTracker/Views/Stats/StatsView.swift`
+- `FitTracker/Views/Stats/StatsDataHelpers.swift`
+- `FitTracker/Views/Shared/ChartCard.swift`
+- `FitTracker/Views/Shared/MetricCard.swift`
+- `FitTracker/Views/Shared/TrendIndicator.swift`
+
+---
+
+### 2.6 Authentication & Account
+
+**Purpose:** Secure, trust-first authentication supporting Apple Sign In, passkeys, email/password, and post-login biometric lock. Session management with Supabase backend JWT tokens.
+
+**Business objective:** Auth is the front door — friction here kills conversion. Apple-first auth (one-tap Sign In with Apple) minimizes friction while biometric lock protects sensitive health data.
+
+**Functional requirements:**
+
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| Apple Sign In | Shipped | Primary auth via Supabase OAuth |
+| Passkey/WebAuthn | Shipped | Challenge-response biometric auth |
+| Email registration | Shipped | Name, birthday, email, password with OTP verification |
+| Email login | Shipped | Email + password |
+| Google Sign In | Dormant | Mock provider exists, requires GoogleSignIn-iOS SDK |
+| Facebook Sign In | Planned | Enum case exists, no implementation |
+| Biometric lock | Shipped | Face ID / Touch ID post-sign-in lock |
+| Auto-lock on background | Shipped | Configurable; clears crypto session |
+| Session persistence | Shipped | Keychain storage, JWT refresh on foreground |
+| Simulator bypass | Shipped | Auto-login in DEBUG + Simulator builds |
+
+**Auth flow:**
+```
+Welcome → AuthHub → [Apple / Passkey / Email] → Authenticated
+                                                       ↓
+                              Background → LockScreen → Biometric → Authenticated
+```
+
+**Session model:**
+- `UserSession`: provider, userID, displayName, email, phone, sessionToken, backendAccessToken (JWT), credentialID
+- Stored in Keychain (encrypted)
+- JWT for AI Engine API calls
+
+**Current state & gaps:**
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| Google Sign In not active | Medium | Mock exists, needs GoogleSignIn-iOS SDK |
+| Facebook Sign In not implemented | Low | Enum case only |
+| No account deletion | High | GDPR requirement — user can't delete account from within app |
+| No password reset flow | Medium | Protocol exists but not wired in UI |
+| No passcode fallback | Low | Only biometric — no PIN/pattern alternative |
+| Phone OTP deferred | Low | Documented in `deferred-phone-otp-task.md` |
+
+**Success metrics:**
+- Sign-up completion rate (start → authenticated)
+- Auth method distribution (Apple vs email vs passkey)
+- Biometric unlock success rate
+- Session restore success rate (JWT refresh)
+
+**Key files:**
+- `FitTracker/Views/Auth/AuthHubView.swift`
+- `FitTracker/Views/Auth/SignInView.swift`
+- `FitTracker/Views/Auth/WelcomeView.swift`
+- `FitTracker/Views/Auth/AccountPanelView.swift`
+- `FitTracker/Services/Auth/SignInService.swift`
+- `FitTracker/Services/AuthManager.swift`
+
+---
+
+### 2.7 Settings
+
+**Purpose:** Organized preferences dashboard with 5 category groups, each opening a focused detail surface. Controls app behavior, health integrations, goals, training configuration, and data management.
+
+**Business objective:** Settings reduce friction (unit preferences, appearance) and enable power users to customize the experience. Well-organized settings also reduce support requests.
+
+**Functional requirements:**
+
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| 5 category groups | Shipped | Account & Security, Health & Devices, Goals & Preferences, Training & Nutrition, Data & Sync |
+| Category cards | Shipped | Icon, title, subtitle, optional badge |
+| Detail screens | Shipped | Each category opens dedicated sub-screen |
+| Unit system | Shipped | Metric (kg/cm) or Imperial (lbs/in) with auto-conversion |
+| Appearance | Shipped | System / Light / Dark mode |
+| Biometric toggle | Shipped | Enable/disable lock-on-reopen |
+| HealthKit toggle | Shipped | Connect/disconnect Apple Health |
+| Sync status | Shipped | Real-time CloudKit/Supabase status (idle/syncing/failed/offline) |
+| Data reset | Shipped | Destructive action with confirmation dialog |
+| Nutrition mode | Shipped | Fat loss / Maintain / Gain selector |
+| Meal slot names | Shipped | Customizable (default: Breakfast, Lunch, Dinner, Snacks) |
+| Readiness thresholds | Shipped | Configurable HR and HRV targets |
+| Zone 2 HR range | Shipped | Configurable lower/upper bounds (default 106-124) |
+
+**Current state & gaps:**
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| No notification settings | Medium | No push notification preferences |
+| No data export | Medium | No CSV/JSON export of health data |
+| No Apple Watch settings | Low | WatchConnectivityService exists but no settings UI |
+
+**Success metrics:**
+- Settings visit rate (% of users who visit settings in first 7 days)
+- Customization rate (% who change at least 1 default)
+- Most-changed setting (identifies UX friction points)
+
+**Key files:**
+- `FitTracker/Views/Settings/SettingsView.swift`
+- `FitTracker/Services/AppSettings.swift`
+
+---
+
+### 2.8 Data & Sync (Encrypted)
+
+**Purpose:** Secure local storage with AES-256-GCM encryption, multi-backend sync (CloudKit + Supabase), and zero-knowledge architecture where servers never see raw health data.
+
+**Business objective:** Data security is a key differentiator. Users trust FitMe with sensitive biometrics because encryption is end-to-end. Multi-backend sync enables device migration and web dashboard (future).
+
+**Functional requirements:**
+
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| AES-256-GCM encryption | Shipped | Primary cipher via CryptoKit |
+| ChaCha20-Poly1305 | Shipped | Backup cipher |
+| Secure Enclave keys | Shipped | P-256 keys with biometric ACL |
+| Keychain fallback | Shipped | When Secure Enclave unavailable |
+| HKDF-SHA512 key derivation | Shipped | Standard NIST key derivation |
+| CloudKit sync | Shipped | iCloud Private Database, incremental push/pull |
+| Supabase sync | Shipped | PostgreSQL + Realtime subscriptions |
+| Realtime subscriptions | Shipped | RealtimeChannelV2 for live updates |
+| Encrypted payloads | Shipped | `.ftenc` opaque blobs — server stores ciphertext only |
+| First-login full pull | Shipped | New device gets complete history |
+| Background push | Shipped | Pending changes pushed on app background |
+| Conflict resolution | Shipped | Last-write-wins (timestamp-based) |
+| File protection | Shipped | `NSFileProtectionCompleteUnlessOpen` |
+| Cardio image upload | Shipped | Encrypted image → Supabase Storage |
+
+**Sync record types:**
+- `daily_log` — daily training/nutrition/biometric data
+- `weekly_snapshot` — aggregated weekly summary
+- `user_profile` — goals, phase, demographics
+- `user_preferences` — settings, thresholds
+- `meal_templates` — saved meal blueprints
+
+**Current state & gaps:**
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| No data export for user | High | GDPR Article 20 — right to data portability |
+| No account deletion | High | GDPR Article 17 — right to erasure |
+| CloudKit unavailable on Simulator | Low | Known iOS limitation, Supabase covers sync |
+| No offline conflict UI | Low | Conflicts resolved silently (last-write-wins) |
+| No sync health indicator in UI | Low | Settings shows status but no persistent badge |
+
+**Success metrics:**
+- Sync success rate (% of push/pull operations without errors)
+- Sync latency (p50/p95 time for incremental pull)
+- Encryption overhead (ms added per read/write operation)
+- Multi-device adoption (% of users syncing across 2+ devices)
+
+**Key files:**
+- `FitTracker/Services/Encryption/EncryptionService.swift`
+- `FitTracker/Services/Supabase/SupabaseSyncService.swift`
+- `FitTracker/Services/Supabase/SupabaseClient.swift`
+- `FitTracker/Services/CloudKit/CloudKitSyncService.swift`
+- `FitTracker/Models/UserSession+Supabase.swift`
