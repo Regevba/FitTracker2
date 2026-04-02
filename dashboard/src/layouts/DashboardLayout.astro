@@ -7,8 +7,25 @@ const { title = 'FitMe — Development Dashboard' } = Astro.props;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FitMe development dashboard — track features, pipeline stages, and project health across all data sources." />
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>" />
+  <style>
+    /* Kanban horizontal scroll on tablet */
+    @media (max-width: 1024px) {
+      .kanban-scroll { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+      .kanban-scroll > div { scroll-snap-align: start; min-width: 260px; }
+    }
+    /* Mobile: stack kanban columns vertically */
+    @media (max-width: 640px) {
+      .kanban-scroll { flex-direction: column !important; overflow-x: visible !important; }
+      .kanban-scroll > div { width: 100% !important; min-width: unset !important; }
+    }
+    /* Touch-friendly tap targets */
+    @media (pointer: coarse) {
+      button, a, [role="button"] { min-height: 44px; min-width: 44px; }
+    }
+  </style>
 </head>
 <body class="min-h-screen bg-white dark:bg-[#0F1419] transition-colors duration-200">
   <slot />

@@ -150,7 +150,7 @@ export default function KanbanBoard({ features: initialFeatures, filters = {} })
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-thin">
+        <div className="kanban-scroll flex gap-3 overflow-x-auto pb-4 scrollbar-thin">
           {columns.map(col => (
             <Column
               key={col.id}

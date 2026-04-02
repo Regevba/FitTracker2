@@ -1,99 +1,45 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro';
-import ThemeToggle from '../components/ThemeToggle.jsx';
-import PipelineOverview from '../components/PipelineOverview.jsx';
-import KanbanBoard from '../components/KanbanBoard.jsx';
-import AlertsBanner from '../components/AlertsBanner.jsx';
-import SourceHealth from '../components/SourceHealth.jsx';
+import Dashboard from '../components/Dashboard.jsx';
 import featuresData from '../data/features.json';
 import { reconcile } from '../scripts/reconcile.js';
 
-// Merge all features into a single array
+// Use static features.json as primary data source
+// Parsers enrich this with data from markdown files at build time
 const allFeatures = [
   ...featuresData.shipped.map(f => ({ ...f, source: 'shipped' })),
   ...featuresData.planned.map(f => ({ ...f, source: 'planned' })),
   ...featuresData.backlog.map(f => ({ ...f, source: 'backlog' })),
 ];
 
-// Run reconciliation (static-only for now; GitHub API added when issues exist)
+// Try to load parsed data from markdown sources (build-time only)
+let parsedData = null;
+try {
+  const { getUnifiedFeatures } = await import('../scripts/parsers/unified.js');
+  parsedData = getUnifiedFeatures();
+} catch {
+  // Parsers may fail if markdown files are not available (e.g., in CI)
+}
+
+// Reconcile across sources
 const { alerts, sources } = reconcile({
   githubIssues: [],
   staticFeatures: allFeatures,
   stateFiles: [],
 });
+
+// Add parser source counts if available
+if (parsedData) {
+  sources.static.count = allFeatures.length;
+  sources.state.count = parsedData.sourceCounts.state;
+}
 ---
 
 <DashboardLayout>
-  <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <!-- Header -->
-    <header class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-brand-primary flex items-center justify-center">
-          <span class="text-white font-bold text-sm">F</span>
-        </div>
-        <div>
-          <h1 class="text-lg font-bold text-gray-900 dark:text-white">FitMe</h1>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Development Dashboard</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <a
-          href="https://github.com/Regevba/FitTracker2"
-          target="_blank"
-          rel="noopener"
-          class="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-        >
-          GitHub
-        </a>
-        <ThemeToggle client:load />
-      </div>
-    </header>
-
-    <!-- Alerts -->
-    {alerts.length > 0 && (
-      <div class="mb-4">
-        <AlertsBanner alerts={alerts} client:idle />
-      </div>
-    )}
-
-    <!-- Pipeline Overview -->
-    <div class="mb-6">
-      <PipelineOverview features={allFeatures} client:load />
-    </div>
-
-    <!-- View Tabs (Kanban only for v1) -->
-    <div class="flex items-center gap-4 mb-4">
-      <div class="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
-        <button class="px-3 py-1.5 text-xs font-semibold rounded-md bg-white dark:bg-[#1A1F2E] text-gray-900 dark:text-white shadow-sm">
-          Board
-        </button>
-        <button class="px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors" disabled>
-          Table (v2)
-        </button>
-      </div>
-      <div class="text-xs text-gray-400 dark:text-gray-500">
-        {allFeatures.length} features across {new Set(allFeatures.map(f => f.phase)).size} stages
-      </div>
-    </div>
-
-    <!-- Kanban Board -->
-    <div class="mb-8">
-      <KanbanBoard features={allFeatures} client:load />
-    </div>
-
-    <!-- Source Health -->
-    <SourceHealth
-      sources={sources}
-      lastSync={new Date().toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
-      client:idle
-    />
-
-    <!-- Footer -->
-    <footer class="mt-8 pt-4 border-t border-gray-100 dark:border-gray-800 text-center">
-      <p class="text-[10px] text-gray-400 dark:text-gray-600">
-        Built with <a href="https://github.com/Regevba/FitTracker2/blob/main/docs/showcase/pm-workflow-skill.md" class="text-brand-primary hover:underline">/pm-workflow</a> skill
-        · Powered by <a href="https://astro.build" class="hover:underline">Astro</a> + <a href="https://tailwindcss.com" class="hover:underline">Tailwind</a>
-      </p>
-    </footer>
-  </div>
+  <Dashboard
+    features={allFeatures}
+    alerts={alerts}
+    sources={sources}
+    client:load
+  />
 </DashboardLayout>
