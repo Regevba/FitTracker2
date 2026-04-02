@@ -1,0 +1,39 @@
+{
+  "feature": "development-dashboard",
+  "created": "2026-04-02T18:00:00Z",
+  "updated": "2026-04-02T22:00:00Z",
+  "branch": "feature/development-dashboard",
+  "current_phase": "implement",
+  "has_ui": true,
+  "github_issue_number": null,
+  "transitions": [
+    { "from": "init", "to": "research", "timestamp": "2026-04-02T18:00:00Z", "approved_by": "user", "note": "Feature initialized via /pm-workflow" },
+    { "from": "research", "to": "prd", "timestamp": "2026-04-02T18:45:00Z", "approved_by": "user", "note": "Research approved: Astro + Tailwind + GitHub API chosen over GitHub Projects, Notion, markdown" },
+    { "from": "prd", "to": "tasks", "timestamp": "2026-04-02T19:30:00Z", "approved_by": "user", "note": "PRD approved with 16 requirements including reconciliation engine and cross-source sync" },
+    { "from": "tasks", "to": "ux", "timestamp": "2026-04-02T19:45:00Z", "approved_by": "user", "note": "16 subtasks approved, 10-day execution plan" },
+    { "from": "ux", "to": "implement", "timestamp": "2026-04-02T20:00:00Z", "approved_by": "user", "note": "UX spec approved: kanban + table views, design system compliance passed, 12 components defined" }
+  ],
+  "phases": {
+    "research": { "status": "approved", "approved_at": "2026-04-02T18:45:00Z", "sources": ["astro-docs", "github-api", "dnd-kit", "nngroup", "wcag", "linear", "jira", "monday", "lemonade"] },
+    "prd": { "status": "approved", "approved_at": "2026-04-02T19:30:00Z" },
+    "tasks": { "status": "approved", "count": 16 },
+    "ux_or_integration": { "status": "approved", "type": "ux", "compliance_passed": true, "compliance_violations": [], "compliance_decision": null, "design_system_changes": ["4 web-only status/priority colors extending FitMe palette"] },
+    "implementation": { "status": "in_progress", "commits": ["4aff49f", "7acf610"] },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false },
+    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "merge": { "status": "pending", "pr_number": null },
+    "documentation": { "status": "pending" },
+    "metrics": {
+      "primary": { "name": "Dashboard page views per week", "baseline": 0, "target": 10, "current": null },
+      "secondary": [
+        { "name": "Priority changes per week", "baseline": 0, "target": 1 },
+        { "name": "Time to find feature status", "baseline": null, "target": "< 10 seconds" },
+        { "name": "External shares", "baseline": 0, "target": 3 }
+      ],
+      "guardrails": ["Crash-free rate > 99.5%", "CI pass rate > 95%", "Main branch stability green"],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": "< 5 unique visitors/week after 60 days AND developer stops using it"
+    }
+  }
+}

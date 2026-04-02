@@ -4,6 +4,24 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-02 — Development Dashboard & PM Platform
+
+### Added
+- **Development Dashboard** (`dashboard/`): Astro + React + Tailwind v4 custom dashboard
+  - KanbanBoard with dnd-kit drag-drop (8 columns, undo toast)
+  - TableView with @tanstack/react-table (sortable, filterable, searchable)
+  - PipelineOverview stacked bar chart
+  - AlertsBanner (reconciliation alerts with severity levels)
+  - SourceHealth panel (per-source health indicators)
+  - ThemeToggle (dark mode with localStorage + system preference)
+  - 6 markdown parsers (backlog, roadmap, PRD, metrics, state, unified)
+  - GitHub API client + reconciliation engine
+  - Responsive layout (desktop/tablet/mobile)
+  - Vercel deployment config
+  - 37 features tracked (11 shipped, 11 planned, 15 backlog)
+
+---
+
 ## 2026-04-02 — Product Management Platform & Foundation Docs
 
 ### Added
