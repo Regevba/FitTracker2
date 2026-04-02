@@ -42,6 +42,11 @@ xcuserdata/
 
 # Local Codex / workspace artifacts
 .claude/
+!.claude/skills/
+!.claude/skills/**
+!.claude/settings.json
+# Feature state is runtime-only (not committed)
+# .claude/features/ stays gitignored via the .claude/ rule
 .superpowers/
 .worktrees/
 FitMe-GDPR-Docs/

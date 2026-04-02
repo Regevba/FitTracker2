@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '## Active Features' && for f in .claude/features/*/state.json; do [ -f \"$f\" ] && echo \"- $(basename $(dirname $f)): phase=$(python3 -c \"import json,sys; print(json.load(open('$f'))['current_phase'])\" 2>/dev/null || echo 'unknown')\" ; done 2>/dev/null || echo '(none)'"
+          }
+        ]
+      }
+    ]
+  }
+}
