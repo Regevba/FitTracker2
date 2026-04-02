@@ -621,3 +621,289 @@ Welcome → AuthHub → [Apple / Passkey / Email] → Authenticated
 - `FitTracker/Services/Supabase/SupabaseClient.swift`
 - `FitTracker/Services/CloudKit/CloudKitSyncService.swift`
 - `FitTracker/Models/UserSession+Supabase.swift`
+
+---
+
+### 2.9 AI / Cohort Intelligence
+
+**Purpose:** Federated AI recommendation engine that combines population-level cohort signals (cloud) with private on-device personalization — without ever exposing individual PII to any server.
+
+**Business objective:** AI recommendations are the premium differentiator. Users who receive actionable insights (e.g., "your cohort's data suggests reducing volume this week") have higher engagement and willingness to pay for premium tier.
+
+**Functional requirements:**
+
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| AIOrchestrator | Shipped | Dual-path: cloud baseline + on-device personalization |
+| 4 recommendation segments | Shipped | Training, Nutrition, Recovery, Stats |
+| Privacy-preserving bands | Shipped | Age → "25-34", sleep → "7-8", BMI → "25-29.9" (no raw PII sent) |
+| Cloud AI Engine | Shipped | FastAPI on Railway, JWT-authenticated, JWKS validation |
+| On-device Foundation Model | Shipped | iOS 26+ Apple Intelligence with FallbackFoundationModel for older devices |
+| Confidence scoring | Shipped | 0.0-1.0 scale; ≥0.4 threshold for acceptance |
+| k-anonymity floor | Shipped | k=50 minimum cohort size before returning population signals |
+| Rate limiting | Shipped | Per-user request throttling on cloud endpoint |
+| Offline fallback | Shipped | Local rule-based recommendations when cloud unavailable |
+
+**Data flow:**
+```
+LocalUserSnapshot (on-device)
+  → Band extraction (age_band, bmi_band, etc.)
+    → Cloud POST /v1/{segment}/insight (only bands + JWT)
+      → AIRecommendation (signals, confidence)
+        → FoundationModel.adapt() (on-device, uses private data)
+          → Final personalized recommendation
+```
+
+**AI segments and input bands:**
+
+| Band | Values | Source |
+|------|--------|--------|
+| age_band | 18-24, 25-34, 35-44, 45-54, 55+ | UserProfile |
+| gender_band | male, female, prefer_not_to_say | UserProfile |
+| bmi_band | <18.5, 18.5-24.9, 25-29.9, 30+ | Computed |
+| active_weeks_band | 0, 1-3, 4+ | DailyLog history |
+| program_phase | foundation, build, peak, recovery | UserProfile |
+| sleep_band | under_6, 6-7, 7-8, 8+ | HealthKit/manual |
+| resting_hr_band | under_60, 60-70, 71-80, 81+ | HealthKit/manual |
+| stress_level | low, moderate, high | Derived |
+
+**Current state & gaps:**
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| Foundation Model is placeholder | Medium | Uses rule-based adjustments; real LLM pending iOS 26 SDK |
+| No recommendation UI | High | Signals exist but no dedicated UI to surface them to users |
+| No A/B testing | Low | Can't test recommendation effectiveness |
+| No user feedback loop | Medium | Users can't rate recommendation quality |
+
+**Success metrics:**
+- Recommendation acceptance rate (% of recommendations acted upon)
+- Average confidence score per segment
+- Cloud vs fallback ratio (% of requests served by cloud vs local)
+- Escalation rate (% of recommendations that escalate to LLM)
+
+**Key files:**
+- `FitTracker/AI/AIOrchestrator.swift` (153 lines)
+- `FitTracker/AI/AIEngineClient.swift` (85 lines)
+- `FitTracker/AI/AITypes.swift` — AISegment, AIRecommendation, AIRecommendationSet, LocalUserSnapshot
+- `FitTracker/AI/AISnapshotBuilder.swift` — builds snapshot from live data
+- `FitTracker/AI/FoundationModelService.swift` — on-device LLM adapter
+
+---
+
+### 2.10 Design System v2
+
+**Purpose:** Three-tier semantic design token architecture that ensures visual consistency across all screens, enables Dark Mode, supports automated Figma sync, and provides a foundation for Android adaptation.
+
+**Business objective:** Design system reduces development time (no ad-hoc styling decisions), ensures accessibility compliance (WCAG AA), and enables platform expansion (Android tokens from same source).
+
+**Functional requirements:**
+
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| Three-tier architecture | Shipped | AppPalette (primitives) → AppTheme (semantic) → Views (consumption) |
+| 57 color tokens | Shipped | Brand (6), Background (7), Surface (7), Text (6), Border (3), Accent (5), Status (3), Chart (6), Focus (1), Selection (2) |
+| 43 asset catalog colorsets | Shipped | All with Light + Dark mode variants |
+| 9 spacing tokens | Shipped | 4pt grid: micro(2) through xxLarge(40) |
+| 9 radius tokens | Shipped | micro(4) through authSheet(36) |
+| 20 typography tokens | Shipped | hero through monoLabel |
+| Motion tokens | Shipped | 5 durations, 4 spring presets, 4 easing curves, 4 loading animations |
+| Shadow tokens | Shipped | Card (subtle) + CTA (brand-tinted) |
+| 87 icon constants | Shipped | AppIcon enum wrapping all SF Symbols |
+| 6 atomic components | Shipped | AppPickerChip, AppFilterBar, AppSheetShell, AppStatRow, AppSegmentedControl, AppProgressRing |
+| 7 composite components | Shipped | AppCard, AppButton, AppMenuRow, AppSelectionTile, AppFieldLabel, AppInputShell, AppQuietButton |
+| Token pipeline | Shipped | tokens.json → Style Dictionary → DesignTokens.swift |
+| CI gate | Shipped | `make tokens-check` verifies sync before build |
+| WCAG AA contrast | Shipped | Text.tertiary at 4.6:1, validated with ColorContrastValidator |
+| Reduce Motion support | Shipped | AppMotion + MotionSafe modifier |
+| FitMeLogoLoader | Shipped | Branded animation (4 modes × 3 sizes) |
+| 95% token adoption | Shipped | ~9 raw literals remaining across 25 views |
+
+**Current state & gaps:**
+
+| Gap | Priority | Notes |
+|-----|----------|-------|
+| Dark Mode not tested end-to-end | Medium | Asset catalog has dark values but no systematic verification |
+| Code Connect not started | Low | Figma ↔ code component mapping |
+| 9 raw literals remaining | Low | Mostly responsive micro-adjustments in MainScreenView |
+| No Android token output | Medium | Style Dictionary config needs Android platform |
+| Dynamic Type partial | Medium | @ScaledMetric not applied to all text tokens |
+
+**Success metrics:**
+- Token adoption rate (% of views using semantic tokens exclusively)
+- Raw literal count (target: 0 in new code)
+- CI gate pass rate (tokens-check should never fail)
+- Accessibility audit pass rate
+
+**Key files:**
+- `FitTracker/Services/AppTheme.swift` (267 lines — all semantic tokens)
+- `FitTracker/DesignSystem/AppPalette.swift` (39 lines — raw primitives)
+- `FitTracker/DesignSystem/AppComponents.swift` (267 lines — 6 atomic components)
+- `FitTracker/DesignSystem/AppMotion.swift` (90 lines — motion tokens)
+- `FitTracker/DesignSystem/AppIcon.swift` (86 lines — SF Symbol inventory)
+- `FitTracker/DesignSystem/AppViewModifiers.swift` (187 lines — shared modifiers)
+- `FitTracker/DesignSystem/DesignTokens.swift` (69 lines — auto-generated)
+- `FitTracker/DesignSystem/FitMeLogoLoader.swift` (180 lines — branded loader)
+- `design-tokens/tokens.json` — token source of truth
+- `sd.config.js` — Style Dictionary config
+
+---
+
+### 2.11 Onboarding (Planned — Not Yet Built)
+
+**Purpose:** First-run experience that introduces users to FitMe's key features, requests necessary permissions, and guides them to their first meaningful action.
+
+**Business objective:** Onboarding directly impacts D1 retention. Users who complete onboarding are 3x more likely to return on Day 2. A clear first-run flow reduces support requests and sets expectations.
+
+**Planned requirements:**
+
+| Requirement | Priority | Details |
+|-------------|----------|---------|
+| Welcome slide | Must Have | Brand introduction with FitMeLogoLoader animation |
+| Feature highlights | Must Have | 3-4 slides showing key features (training, nutrition, recovery, AI) |
+| HealthKit permission | Must Have | Explain why + request authorization |
+| Notification permission | Should Have | Training reminders, readiness alerts |
+| Goal setup | Should Have | Quick goal selection (lose fat, build muscle, maintain) |
+| Body composition entry | Could Have | Initial weight, height, body fat % |
+| First action CTA | Must Have | "Start your first workout" or "Log your first meal" |
+| Skip option | Must Have | Allow experienced users to skip |
+
+**Illustration style:** Hand-drawn sketching (warm, approachable) with brand colors (#FA8F40 orange, #8AC7FF blue accents). Consistent with empty states and feature highlights throughout the app.
+
+**Current state:** No code exists. PRD defines scope for implementation.
+
+**Success metrics:**
+- Onboarding completion rate (target: >80%)
+- Permission grant rate (HealthKit, notifications)
+- Time to first meaningful action (target: <5 minutes after install)
+- D1 retention for users who complete vs skip onboarding
+
+---
+
+## Part 3: Non-Functional Requirements
+
+### 3.1 Security & Privacy
+
+| Requirement | Status | Implementation |
+|-------------|--------|----------------|
+| Encryption at rest | Shipped | AES-256-GCM via CryptoKit |
+| Zero-knowledge sync | Shipped | Servers store only `.ftenc` ciphertext blobs |
+| Biometric-gated keys | Shipped | Secure Enclave P-256 keys with biometric ACL |
+| GDPR Article 5 compliance | Shipped | Data minimization — only banded values leave device |
+| GDPR Article 17 (erasure) | Gap | User cannot delete account from within app |
+| GDPR Article 20 (portability) | Gap | No data export functionality |
+| Session token security | Shipped | Memory-only session token, never persisted to disk |
+| File protection | Shipped | `NSFileProtectionCompleteUnlessOpen` |
+
+### 3.2 Performance
+
+| Metric | Target | Current |
+|--------|--------|---------|
+| Cold start | <2s | Not measured |
+| Screen transition | <300ms | Meets target (AppMotion.standard) |
+| Sync latency (incremental) | <5s | Not measured |
+| Encryption overhead | <50ms per record | Not measured |
+| Chart render | <500ms | Not measured |
+
+### 3.3 Accessibility
+
+| Requirement | Status |
+|-------------|--------|
+| WCAG AA contrast | Shipped (4.6:1+ on all text) |
+| Dynamic Type | Partial (not all text tokens use @ScaledMetric) |
+| VoiceOver labels | Partial (key components labeled, not comprehensive) |
+| Reduce Motion | Shipped (AppMotion + MotionSafe modifier) |
+| Minimum tap targets | Shipped (44pt enforced) |
+
+### 3.4 Scalability
+
+| Component | Strategy |
+|-----------|----------|
+| Supabase backend | Horizontal scaling, connection pooling |
+| AI Engine (Railway) | Auto-scaling containers |
+| CloudKit | Apple-managed infrastructure |
+| Local storage | Encrypted JSON files, bounded by device storage |
+
+---
+
+## Part 4: Prioritization & Roadmap
+
+### MoSCoW for Current Features
+
+| Priority | Features |
+|----------|----------|
+| **Must Have** | Training Tracking, Nutrition Logging, Home/Today, Authentication, Data & Sync |
+| **Should Have** | Stats/Progress, Recovery & Biometrics, AI Intelligence, Settings |
+| **Could Have** | Onboarding, Design System Catalog, FitMeLogoLoader animations |
+| **Won't Have (this release)** | Blood Test Reader, DEXA Import, Android, Marketing Website |
+
+### RICE Roadmap Reference
+
+Full RICE-prioritized 18-task roadmap with phase gates: see [`docs/project/master-backlog-roadmap.md`](../project/master-backlog-roadmap.md)
+
+---
+
+## Part 5: Appendices
+
+### A. Glossary
+
+| Term | Definition |
+|------|------------|
+| PRD | Product Requirements Document |
+| RPE | Rate of Perceived Exertion (6-10 scale) |
+| PR | Personal Record (heaviest set for an exercise) |
+| HRV | Heart Rate Variability (ms) |
+| RHR | Resting Heart Rate (bpm) |
+| LBM | Lean Body Mass (kg) |
+| BF% | Body Fat Percentage |
+| Zone 2 | Aerobic training zone (106-124 bpm default) |
+| RICE | Reach × Impact × Confidence / Effort scoring |
+| MoSCoW | Must/Should/Could/Won't prioritization |
+| WAU | Weekly Active Users |
+| NPS | Net Promoter Score |
+
+### B. API Contracts
+
+**AI Engine endpoints:**
+- `POST /v1/training/insight` — training recommendations
+- `POST /v1/nutrition/insight` — nutrition recommendations
+- `POST /v1/recovery/insight` — recovery recommendations
+- `POST /v1/stats/insight` — stats/progress recommendations
+- `GET /health` — service health check
+
+All endpoints require `Authorization: Bearer <JWT>` (Supabase JWKS-validated).
+
+### C. Data Model Reference
+
+Core types defined in `FitTracker/Models/DomainModels.swift`:
+- `DailyLog` — daily container (training, nutrition, biometrics, mood)
+- `ExerciseLog` / `SetLog` — strength training data
+- `CardioLog` — cardio session data
+- `NutritionLog` / `MealEntry` / `MealTemplate` — nutrition data
+- `SupplementLog` / `SupplementDefinition` — supplement tracking
+- `DailyBiometrics` — health metrics (auto + manual)
+- `UserProfile` — goals, phase, demographics
+- `UserPreferences` — configurable thresholds
+- `WeeklySnapshot` — aggregated weekly summary
+- `ExportPackage` — complete data export structure
+
+### D. Design Token Inventory
+
+92 semantic tokens defined in `FitTracker/Services/AppTheme.swift`:
+- **AppColor** — 57 color tokens across 10 namespaces
+- **AppSpacing** — 9 tokens (4pt grid: 2-40pt)
+- **AppRadius** — 9 tokens (4-36pt)
+- **AppText** — 20 typography tokens
+- **AppShadow** — card + CTA shadow definitions
+- **AppSheet** — standard (32pt) + auth (36pt) corner radii
+- **AppGradient** — 4 gradient definitions
+- **AppMotion** — durations, springs, easing, loading animations
+- **AppIcon** — 87 SF Symbol constants
+
+Token source: `design-tokens/tokens.json`  
+Pipeline: `tokens.json` → Style Dictionary (`sd.config.js`) → `DesignTokens.swift`  
+CI gate: `make tokens-check`
+
+---
+
+*End of PRD — this is a living document. Update as features evolve.*
