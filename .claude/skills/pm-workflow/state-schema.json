@@ -43,7 +43,19 @@
           "type": "object",
           "properties": {
             "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
-            "type": { "type": ["string", "null"], "enum": ["ux", "integration", null] }
+            "type": { "type": ["string", "null"], "enum": ["ux", "integration", null] },
+            "compliance_passed": { "type": ["boolean", "null"] },
+            "compliance_violations": { "type": "array", "items": { "type": "string" } },
+            "compliance_decision": {
+              "type": ["string", "null"],
+              "enum": ["fix", "evolve", "override", null],
+              "description": "User's decision when design system violations found: fix (comply), evolve (update design system), override (proceed with justification)"
+            },
+            "design_system_changes": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "New tokens or components proposed for the design system by this feature"
+            }
           }
         },
         "implementation": {

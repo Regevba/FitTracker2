@@ -35,6 +35,24 @@
 |-------------|-------------|-------------|----------------|-----------------|
 | | | | | |
 
+## UX Research & Principles (if UI feature)
+
+### Applicable UX Principles
+| Principle | How It Applies | Design Implication |
+|-----------|---------------|-------------------|
+| {e.g., Hick's Law} | {e.g., "Meal entry has many options"} | {e.g., "Progressive disclosure — show 4 tabs, not all fields at once"} |
+| {e.g., Fitts's Law} | {e.g., "Primary action must be easy to reach"} | {e.g., "Large CTA button at bottom of screen"} |
+
+### iOS HIG References
+| Pattern | HIG Section | Notes |
+|---------|------------|-------|
+| {e.g., "Modal sheet"} | {Human Interface Guidelines link/section} | {How we'll apply it} |
+
+### UX Best Practices (external research)
+| Source | Key Insight | Link |
+|--------|------------|------|
+| {article/study title} | {what we learned} | {URL} |
+
 ## Design Inspiration (if UI feature)
 
 ### Designs We Liked

@@ -116,7 +116,37 @@ Present task list and ask for approval.
 
 ## Phase 3: UX/UI Definition (if has_ui = true)
 
-**Goal:** Define screens, components, and design requirements before coding.
+**Goal:** Define screens, components, and design requirements before coding — grounded in UX research and validated against the design system.
+
+### Step 1: UX Research & Principles
+
+Before designing screens, research and document UX best practices relevant to this feature:
+
+1. **UX principles applicable to this feature** — identify which core principles apply:
+   - Fitts's Law (target size and distance for tap targets)
+   - Hick's Law (minimize choices per screen)
+   - Jakob's Law (users expect your app to work like others they know)
+   - Progressive disclosure (show only what's needed at each step)
+   - Recognition over recall (visible options vs memorized commands)
+   - Consistency (internal consistency with FitMe, external with iOS conventions)
+   - Feedback (every action gets a response)
+   - Error prevention (design to prevent mistakes, not just handle them)
+
+2. **iOS Human Interface Guidelines** — check Apple's HIG for relevant patterns:
+   - Navigation patterns (push, modal, tab, sheet)
+   - Input patterns (forms, pickers, steppers, sliders)
+   - Feedback patterns (haptics, animations, alerts)
+   - Accessibility requirements (Dynamic Type, VoiceOver, minimum tap targets 44pt)
+
+3. **UX best practices for this feature type** — search for research and articles on the specific interaction pattern (e.g., "best practices for food logging UX", "training timer UI patterns")
+
+4. **Document findings** in `.claude/features/$0/ux-research.md`:
+   - Applicable principles and how they apply
+   - iOS HIG references
+   - External UX research sources with links
+   - Recommended patterns based on research
+
+### Step 2: Design Definition
 
 Follow the Feature Development Gateway at `docs/design-system/feature-development-gateway.md`:
 1. Problem framing (already done in PRD)
@@ -125,14 +155,63 @@ Follow the Feature Development Gateway at `docs/design-system/feature-developmen
 4. Component inventory (reuse existing AppComponents where possible — check `FitTracker/DesignSystem/AppComponents.swift`)
 5. Design token requirements (map to existing `AppTheme.swift` tokens; flag any new primitives needed)
 6. User interaction flows
-7. Accessibility requirements
+7. Accessibility requirements (informed by UX research from Step 1)
 8. Reference the design inspiration from Phase 0 research
+9. Reference the UX principles from Step 1 — explain HOW each principle influenced the design
 
 Also walk through `docs/design-system/feature-design-checklist.md` for every UI decision.
 
 Create `.claude/features/$0/ux-spec.md` with the above.
 
-Present UX spec and ask for approval.
+### Step 3: Design System Compliance Gateway
+
+**Before approval, validate the design against the design system.**
+
+Run a compliance check on the UX spec:
+
+1. **Token compliance** — Every color, font, spacing, and radius value maps to an existing semantic token in `AppTheme.swift`. Flag any raw/hardcoded values.
+2. **Component reuse** — Every UI element maps to an existing component in `AppComponents.swift` or has a documented reason for a new component.
+3. **Pattern consistency** — Navigation, layout, and interaction patterns are consistent with existing screens (check `docs/design-system/component-contracts.md`).
+4. **Accessibility compliance** — Minimum 44pt tap targets, WCAG AA contrast (4.5:1 text), Dynamic Type support, VoiceOver labels defined.
+5. **Motion compliance** — Animations use `AppMotion` presets, reduce-motion support via `MotionSafe` modifier.
+
+**Generate a compliance report:**
+
+| Check | Status | Details |
+|-------|--------|---------|
+| Token compliance | Pass/Fail | {list any violations} |
+| Component reuse | Pass/Fail | {new components needed?} |
+| Pattern consistency | Pass/Fail | {deviations from existing patterns} |
+| Accessibility | Pass/Fail | {issues found} |
+| Motion | Pass/Fail | {non-standard animations?} |
+
+**If all checks pass:** Present the UX spec for approval.
+
+**If any checks fail:** Alert the user with the compliance report and present three options:
+
+> **Design System Compliance Alert**
+>
+> The UX spec has {N} design system violations:
+> {list violations}
+>
+> Since this feature is on its own branch, you have full flexibility:
+>
+> 1. **Fix violations** — Update the UX spec to comply with the current design system
+> 2. **Evolve the design system** — The design system is a living framework. If these changes improve it, update the tokens/components as part of this feature. Document the evolution in `docs/design-system/feature-memory.md`
+> 3. **Override with justification** — Proceed with the violations, documenting why the design system doesn't apply here (edge case, experimental, etc.)
+>
+> The design system should serve the product, not constrain it. Choose the path that makes the best product.
+
+Record the user's decision in state.json under `ux_or_integration.compliance_decision`.
+
+**Design system evolution rules:**
+- New tokens/components proposed by a feature are added on the feature branch
+- They are reviewed alongside the feature code in Phase 6
+- If approved, they become part of the design system when the feature merges to main
+- Update `docs/design-system/feature-memory.md` with what changed and why
+- Run `make tokens-check` to verify token pipeline still passes
+
+Present UX spec + compliance report and ask for approval.
 
 ## Phase 3b: Integration Requirements (if has_ui = false)
 

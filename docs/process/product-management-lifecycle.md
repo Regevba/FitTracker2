@@ -163,8 +163,31 @@ Every PRD uses the same template (`.claude/skills/pm-workflow/prd-template.md`).
 
 Tasks are broken down by type (UI, backend, data, test, docs, infra) with effort estimates and dependency ordering.
 
-For UI features: screen list, component inventory, design token requirements, interaction flows.
 For non-UI features: API contracts, data model changes, service dependencies, backward compatibility.
+
+For UI features, Phase 3 has three steps:
+
+**Step 1: UX Research** — Before designing, research the relevant UX principles (Fitts's Law, Hick's Law, progressive disclosure, etc.), check iOS Human Interface Guidelines for applicable patterns, and find external research on best practices for the specific interaction type. Documented in `ux-research.md`.
+
+**Step 2: Design Definition** — Screen list, component inventory, design tokens, interaction flows, accessibility. Every design decision references which UX principle informed it.
+
+**Step 3: Design System Compliance Gateway** — Automated check against the design system:
+
+| Check | What's validated |
+|-------|-----------------|
+| Token compliance | Every color/font/spacing maps to AppTheme.swift |
+| Component reuse | Uses AppComponents.swift or justifies new components |
+| Pattern consistency | Matches existing screen patterns |
+| Accessibility | 44pt targets, WCAG AA contrast, Dynamic Type, VoiceOver |
+| Motion | Uses AppMotion presets, reduce-motion support |
+
+**If violations are found**, the user gets three options:
+
+1. **Fix** — Update the design to comply with the current system
+2. **Evolve** — Update the design system as part of this feature (new tokens/components on the feature branch)
+3. **Override** — Proceed with documented justification
+
+This reflects a core philosophy: **the design system is a living, evolving framework — not a static constraint.** Since every feature is on its own branch, there's zero risk to main. Design system changes proposed by a feature are reviewed alongside the code and merge together.
 
 ### Phases 4-5: Implementation & Testing
 

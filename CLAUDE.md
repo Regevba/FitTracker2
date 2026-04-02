@@ -40,13 +40,22 @@ This app is data-driven at every level:
 - **Every feature** has a metrics section in its PRD with kill criteria
 - **Post-launch** reviews happen at the cadence defined in the PRD
 
-## Design System
+## Design System (Living Framework)
+
+The design system is a **living, evolving framework** — not a static constraint. It should serve the product.
 
 - 92 semantic tokens in `FitTracker/Services/AppTheme.swift`
 - 13 reusable components in `FitTracker/DesignSystem/`
 - Token pipeline: `design-tokens/tokens.json` → Style Dictionary → `DesignTokens.swift`
 - CI gate: `make tokens-check` prevents token drift
 - Always use semantic tokens (AppColor, AppText, AppSpacing) — never raw literals
+
+**Evolution rules:**
+- New tokens/components are proposed on feature branches, never directly on main
+- Phase 3 compliance gateway validates every UI feature against the design system
+- If a feature needs to deviate, the user chooses: fix, evolve the system, or override with justification
+- Approved changes merge to main with the feature and become part of the system
+- All changes documented in `docs/design-system/feature-memory.md`
 
 ## Key Paths
 
