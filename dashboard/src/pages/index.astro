@@ -3,36 +3,44 @@ import DashboardLayout from '../layouts/DashboardLayout.astro';
 import Dashboard from '../components/Dashboard.jsx';
 import featuresData from '../data/features.json';
 import { reconcile } from '../scripts/reconcile.js';
+import { fetchIssues } from '../scripts/github.js';
+import { parseStateFiles } from '../scripts/parsers/state.js';
 
-// Use static features.json as primary data source
-// Parsers enrich this with data from markdown files at build time
+// Static features from features.json
 const allFeatures = [
   ...featuresData.shipped.map(f => ({ ...f, source: 'shipped' })),
   ...featuresData.planned.map(f => ({ ...f, source: 'planned' })),
   ...featuresData.backlog.map(f => ({ ...f, source: 'backlog' })),
 ];
 
-// Try to load parsed data from markdown sources (build-time only)
-let parsedData = null;
+// Fetch live GitHub Issues (build-time only, requires GITHUB_TOKEN env var)
+const token = import.meta.env.GITHUB_TOKEN;
+let githubIssues = [];
 try {
-  const { getUnifiedFeatures } = await import('../scripts/parsers/unified.js');
-  parsedData = getUnifiedFeatures();
-} catch {
-  // Parsers may fail if markdown files are not available (e.g., in CI)
+  if (token) {
+    githubIssues = await fetchIssues(token);
+  }
+} catch (e) {
+  console.warn('GitHub API unavailable:', e.message);
 }
 
-// Reconcile across sources
+// Load PM workflow state files from .claude/features/*/state.json
+let stateFiles = [];
+try {
+  stateFiles = parseStateFiles();
+} catch {
+  // State files may not exist in CI/Vercel environment
+}
+
+// Reconcile across all three data sources
 const { alerts, sources } = reconcile({
-  githubIssues: [],
+  githubIssues,
   staticFeatures: allFeatures,
-  stateFiles: [],
+  stateFiles,
 });
 
-// Add parser source counts if available
-if (parsedData) {
-  sources.static.count = allFeatures.length;
-  sources.state.count = parsedData.sourceCounts.state;
-}
+// Determine if GitHub is connected
+const githubConnected = githubIssues.length > 0;
 ---
 
 <DashboardLayout>
@@ -40,6 +48,7 @@ if (parsedData) {
     features={allFeatures}
     alerts={alerts}
     sources={sources}
+    githubConnected={githubConnected}
     client:load
   />
 </DashboardLayout>

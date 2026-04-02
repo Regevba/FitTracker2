@@ -59,11 +59,12 @@ function Column({ column, features, isOver }) {
   );
 }
 
-export default function KanbanBoard({ features: initialFeatures, filters = {} }) {
+export default function KanbanBoard({ features: initialFeatures, filters = {}, onPhaseChange }) {
   const [features, setFeatures] = useState(initialFeatures);
   const [activeId, setActiveId] = useState(null);
   const [overColumnId, setOverColumnId] = useState(null);
   const [undoAction, setUndoAction] = useState(null);
+  const [hasLocalChanges, setHasLocalChanges] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -127,6 +128,16 @@ export default function KanbanBoard({ features: initialFeatures, filters = {} })
       to: targetPhase,
       slug: active.id,
     });
+    setHasLocalChanges(true);
+
+    if (onPhaseChange) {
+      onPhaseChange({
+        slug: active.id,
+        name: draggedFeature.name,
+        from: oldPhase,
+        to: targetPhase,
+      });
+    }
 
     setTimeout(() => setUndoAction(null), 5000);
   }
@@ -169,6 +180,14 @@ export default function KanbanBoard({ features: initialFeatures, filters = {} })
           )}
         </DragOverlay>
       </DndContext>
+
+      {/* Local changes banner */}
+      {hasLocalChanges && !undoAction && (
+        <div className="mt-3 px-3 py-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-xs text-amber-700 dark:text-amber-300 flex items-center gap-2">
+          <span>⚠</span>
+          <span>Board changes are local only. Run <code className="font-mono bg-amber-100 dark:bg-amber-900/40 px-1 rounded">/pm-workflow</code> to sync to GitHub.</span>
+        </div>
+      )}
 
       {/* Undo toast */}
       {undoAction && (

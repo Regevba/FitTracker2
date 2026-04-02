@@ -109,7 +109,7 @@
         "documentation": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "done"] }
+            "status": { "type": "string", "enum": ["pending", "in_progress", "done", "skipped"] }
           }
         },
         "metrics": {
