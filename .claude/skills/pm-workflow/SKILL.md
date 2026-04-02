@@ -118,13 +118,19 @@ Present task list and ask for approval.
 
 **Goal:** Define screens, components, and design requirements before coding.
 
-Create `.claude/features/$0/ux-spec.md` with:
-1. Screen list with wireframe descriptions
-2. Component inventory (reuse existing AppComponents where possible)
-3. Design token requirements (new tokens needed?)
-4. User interaction flows
-5. Accessibility requirements
-6. Reference the design inspiration from Phase 0 research
+Follow the Feature Development Gateway at `docs/design-system/feature-development-gateway.md`:
+1. Problem framing (already done in PRD)
+2. Behavior definition: entry points, primary task flow, edge cases, states (empty/loading/error/success)
+3. Screen list with wireframe descriptions
+4. Component inventory (reuse existing AppComponents where possible — check `FitTracker/DesignSystem/AppComponents.swift`)
+5. Design token requirements (map to existing `AppTheme.swift` tokens; flag any new primitives needed)
+6. User interaction flows
+7. Accessibility requirements
+8. Reference the design inspiration from Phase 0 research
+
+Also walk through `docs/design-system/feature-design-checklist.md` for every UI decision.
+
+Create `.claude/features/$0/ux-spec.md` with the above.
 
 Present UX spec and ask for approval.
 
