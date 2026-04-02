@@ -65,9 +65,7 @@ struct ConsentView: View {
                 analytics.consent.grantConsent()
                 analytics.syncConsentToProvider()
                 analytics.logConsentGranted(type: "gdpr")
-                Task {
-                    await analytics.consent.requestATT()
-                }
+                Task { await analytics.consent.requestATT() }
                 onComplete()
             } label: {
                 Text("Accept & Continue")
