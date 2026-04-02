@@ -1,3 +1,9 @@
+// SERVER-ONLY: This module must only run at build time (Astro frontmatter).
+// Never import from client-side React components.
+if (typeof window !== 'undefined') {
+  throw new Error('github.js must not be imported in client-side code');
+}
+
 const OWNER = 'Regevba';
 const REPO = 'FitTracker2';
 const API_BASE = 'https://api.github.com';

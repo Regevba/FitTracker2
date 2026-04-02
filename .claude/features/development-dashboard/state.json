@@ -1,9 +1,9 @@
 {
   "feature": "development-dashboard",
   "created": "2026-04-02T18:00:00Z",
-  "updated": "2026-04-02T23:00:00Z",
+  "updated": "2026-04-02T23:30:00Z",
   "branch": "feature/development-dashboard",
-  "current_phase": "testing",
+  "current_phase": "review",
   "has_ui": true,
   "github_issue_number": null,
   "transitions": [
@@ -12,7 +12,8 @@
     { "from": "prd", "to": "tasks", "timestamp": "2026-04-02T19:30:00Z", "approved_by": "user", "note": "PRD approved with 16 requirements including reconciliation engine and cross-source sync" },
     { "from": "tasks", "to": "ux", "timestamp": "2026-04-02T19:45:00Z", "approved_by": "user", "note": "16 subtasks approved, 10-day execution plan" },
     { "from": "ux", "to": "implement", "timestamp": "2026-04-02T20:00:00Z", "approved_by": "user", "note": "UX spec approved: kanban + table views, design system compliance passed, 12 components defined" },
-    { "from": "implement", "to": "testing", "timestamp": "2026-04-02T23:00:00Z", "approved_by": "user", "note": "15/16 tasks complete. 7 components, 6 parsers, reconciliation engine, GitHub API, drag-drop, dark mode, responsive, Vercel config. T14 (GitHub Issues) deferred — needs MCP auth." }
+    { "from": "implement", "to": "testing", "timestamp": "2026-04-02T23:00:00Z", "approved_by": "user", "note": "15/16 tasks complete. 7 components, 6 parsers, reconciliation engine, GitHub API, drag-drop, dark mode, responsive, Vercel config. T14 (GitHub Issues) deferred — needs MCP auth." },
+    { "from": "testing", "to": "review", "timestamp": "2026-04-02T23:30:00Z", "approved_by": "user", "note": "9/9 reconcile tests pass, Astro build green, tokens-check green, metrics instrumentation deferred to post-deploy" }
   ],
   "phases": {
     "research": { "status": "approved", "approved_at": "2026-04-02T18:45:00Z", "sources": ["astro-docs", "github-api", "dnd-kit", "nngroup", "wcag", "linear", "jira", "monday", "lemonade"] },
@@ -20,8 +21,8 @@
     "tasks": { "status": "approved", "count": 16 },
     "ux_or_integration": { "status": "approved", "type": "ux", "compliance_passed": true, "compliance_violations": [], "compliance_decision": null, "design_system_changes": ["4 web-only status/priority colors extending FitMe palette"] },
     "implementation": { "status": "approved", "approved_at": "2026-04-02T23:00:00Z", "commits": ["4aff49f", "7acf610", "494e814", "969c1f9"] },
-    "testing": { "status": "in_progress", "ci_passed": true, "tests_added": 9, "instrumentation_verified": false },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "testing": { "status": "approved", "approved_at": "2026-04-02T23:30:00Z", "ci_passed": true, "tests_added": 9, "instrumentation_verified": false },
+    "review": { "status": "in_progress", "risks": ["Metrics instrumentation requires Vercel deploy (post-merge)", "T14 GitHub Issues deferred (MCP auth unavailable)", "github.js token guard added — server-only enforcement"], "ci_main": false, "ci_feature": true },
     "merge": { "status": "pending", "pr_number": null },
     "documentation": { "status": "pending" },
     "metrics": {
