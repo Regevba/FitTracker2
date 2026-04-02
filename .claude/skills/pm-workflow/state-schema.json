@@ -1,0 +1,109 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Feature Lifecycle State",
+  "description": "Tracks a feature through the PM lifecycle. Created by /pm-workflow, updated at each phase gate.",
+  "type": "object",
+  "required": ["feature", "created", "updated", "branch", "current_phase", "has_ui", "phases"],
+  "properties": {
+    "feature": { "type": "string", "description": "Feature slug (kebab-case)" },
+    "created": { "type": "string", "format": "date-time" },
+    "updated": { "type": "string", "format": "date-time" },
+    "branch": { "type": "string", "description": "Git branch name" },
+    "current_phase": {
+      "type": "string",
+      "enum": ["research", "prd", "tasks", "ux", "integration", "implement", "testing", "review", "merge", "docs", "complete"]
+    },
+    "has_ui": { "type": ["boolean", "null"] },
+    "phases": {
+      "type": "object",
+      "properties": {
+        "research": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "approved_at": { "type": ["string", "null"], "format": "date-time" },
+            "sources": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "prd": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "approved_at": { "type": ["string", "null"], "format": "date-time" }
+          }
+        },
+        "tasks": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "count": { "type": "integer" }
+          }
+        },
+        "ux_or_integration": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
+            "type": { "type": ["string", "null"], "enum": ["ux", "integration", null] }
+          }
+        },
+        "implementation": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "commits": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "testing": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "ci_passed": { "type": "boolean" },
+            "tests_added": { "type": "integer" },
+            "instrumentation_verified": { "type": "boolean" }
+          }
+        },
+        "review": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "risks": { "type": "array", "items": { "type": "string" } },
+            "ci_main": { "type": "boolean" },
+            "ci_feature": { "type": "boolean" }
+          }
+        },
+        "merge": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "done"] },
+            "pr_number": { "type": ["integer", "null"] }
+          }
+        },
+        "documentation": {
+          "type": "object",
+          "properties": {
+            "status": { "type": "string", "enum": ["pending", "in_progress", "done"] }
+          }
+        },
+        "metrics": {
+          "type": "object",
+          "properties": {
+            "primary": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "baseline": { "type": ["number", "null"] },
+                "target": { "type": ["number", "null"] },
+                "current": { "type": ["number", "null"] }
+              }
+            },
+            "secondary": { "type": "array", "items": { "type": "object" } },
+            "guardrails": { "type": "array", "items": { "type": "object" } },
+            "instrumentation_ready": { "type": "boolean" },
+            "first_review_date": { "type": ["string", "null"], "format": "date" },
+            "kill_criteria": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
