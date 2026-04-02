@@ -14,13 +14,29 @@
       "enum": ["research", "prd", "tasks", "ux", "integration", "implement", "testing", "review", "merge", "docs", "complete"]
     },
     "has_ui": { "type": ["boolean", "null"] },
+    "github_issue_number": { "type": ["integer", "null"], "description": "GitHub Issue number linked to this feature for dashboard sync" },
+    "transitions": {
+      "type": "array",
+      "description": "Audit trail of all phase transitions (automatic + manual)",
+      "items": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "approved_by": { "type": "string", "enum": ["user", "user-manual", "dashboard-drag"] },
+          "note": { "type": "string" }
+        },
+        "required": ["from", "to", "timestamp", "approved_by"]
+      }
+    },
     "phases": {
       "type": "object",
       "properties": {
         "research": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "approved_at": { "type": ["string", "null"], "format": "date-time" },
             "sources": { "type": "array", "items": { "type": "string" } }
           }
@@ -28,14 +44,14 @@
         "prd": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "approved_at": { "type": ["string", "null"], "format": "date-time" }
           }
         },
         "tasks": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "count": { "type": "integer" }
           }
         },
@@ -61,14 +77,14 @@
         "implementation": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "commits": { "type": "array", "items": { "type": "string" } }
           }
         },
         "testing": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "ci_passed": { "type": "boolean" },
             "tests_added": { "type": "integer" },
             "instrumentation_verified": { "type": "boolean" }
@@ -77,7 +93,7 @@
         "review": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "in_progress", "approved"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "risks": { "type": "array", "items": { "type": "string" } },
             "ci_main": { "type": "boolean" },
             "ci_feature": { "type": "boolean" }
@@ -86,7 +102,7 @@
         "merge": {
           "type": "object",
           "properties": {
-            "status": { "type": "string", "enum": ["pending", "done"] },
+            "status": { "type": "string", "enum": ["pending", "in_progress", "done", "skipped"] },
             "pr_number": { "type": ["integer", "null"] }
           }
         },

@@ -12,6 +12,9 @@ Every new feature MUST follow the PM workflow. Invoke with `/pm-workflow {featur
 3. No merge without CI. Both feature branch AND main must be green.
 4. Data drives decisions. Research, metrics, and kill criteria guide the lifecycle.
 5. Post-launch metrics review is mandatory at the cadence defined in the PRD.
+6. Phase transitions auto-sync to GitHub Issue labels (dashboard updates automatically).
+7. Manual overrides allowed — user can move features forward (skip) or backward (rollback) at any time. Skipped phases are recorded in the audit trail.
+8. Conflicts between state.json and GitHub Issues are resolved by asking the user.
 
 ## Branching Strategy
 

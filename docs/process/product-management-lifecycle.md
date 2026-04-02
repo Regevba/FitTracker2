@@ -285,6 +285,48 @@ ls .claude/features/*/state.json
 
 ---
 
+## Dashboard Sync & Manual Override
+
+Phase transitions are **automatically synced** to the development dashboard:
+
+```
+User approves phase
+        │
+        ▼
+┌─────────────────────────┐
+│ 1. state.json updates   │ ← current_phase advances, previous phase marked "approved"
+│ 2. GitHub Issue label    │ ← phase:prd → phase:tasks (auto-swap)
+│ 3. Transition log entry  │ ← audit trail: { from, to, timestamp, approved_by }
+└─────────────────────────┘
+        │
+        ▼
+  Dashboard auto-refreshes
+```
+
+### Manual Override
+
+The user has full control to move features **forward** or **backward** at any time:
+
+| Action | How | What Happens |
+|--------|-----|-------------|
+| **Skip forward** | Tell Claude "Move to {phase}" or drag card on dashboard | Skipped phases marked `"skipped"` with reason in audit trail |
+| **Roll back** | Tell Claude "Roll back to {phase}" | Future phases reset to `"pending"`. Work product (research.md, prd.md) preserved. |
+| **Dashboard drag-drop** | Drag card to different column | GitHub label updates. Next skill invocation detects and asks user to confirm. |
+
+### Conflict Resolution
+
+When state.json and GitHub disagree (e.g., user dragged card on dashboard but didn't run the skill):
+
+| Scenario | Resolution |
+|----------|-----------|
+| state.json ahead of GitHub | Auto-sync: update GitHub to match |
+| GitHub ahead of state.json | Ask user: "Dashboard moved this. Accept?" |
+| Both changed | Ask user to choose source of truth |
+
+The system defaults to **sequential phases** but respects the user's authority to override. Every transition is logged.
+
+---
+
 ## Integration with Notion
 
 Feature PRDs and research docs can be exported to Notion using the Notion MCP prompt at `docs/product/notion-setup-prompt.md`. The PRD template fields map directly to Notion database properties.

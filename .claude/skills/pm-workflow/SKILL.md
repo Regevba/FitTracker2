@@ -15,6 +15,13 @@ You are orchestrating the feature **"$ARGUMENTS"** through the complete product 
 
 2. Read the current state and announce: "Feature **$0** — currently in Phase {N}: {name}. Here's what needs to happen next."
 
+3. **GitHub Issue sync check:**
+   - If `github_issue_number` is set in state.json: verify the issue exists and check its `phase:*` label
+   - If no `github_issue_number`: search GitHub Issues for this feature by title. If found, store the number. If not found, offer to create one.
+   - If state.json `current_phase` doesn't match the GitHub Issue's `phase:*` label: ask the user which source is correct and reconcile (see Conflict Resolution in Dashboard Sync Automation)
+
+4. If the user says "Move to {phase}" or "Roll back to {phase}": execute the Manual Override procedure (see Dashboard Sync Automation) instead of the normal phase workflow.
+
 ## State Initialization
 
 Create `.claude/features/$0/state.json`:
@@ -73,7 +80,7 @@ Create `.claude/features/$0/research.md` using the research template. Fill in:
 9. **Proposed success metrics** — Draft the primary metric and 2-3 secondary metrics
 10. **Decision** — Recommended approach with rationale
 
-Present the research to the user and ask for approval. Update state.json when approved.
+Present the research to the user and ask for approval. **On approval, execute the Phase Transition Procedure (see Dashboard Sync Automation).**
 
 ---
 
@@ -95,7 +102,7 @@ Create `.claude/features/$0/prd.md` using the PRD template (see prd-template.md)
 
 Ask the user: "Does this feature have a UI component?" → Set `has_ui` in state.json.
 
-Present the PRD and ask for approval.
+Present the PRD and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ---
 
@@ -110,7 +117,7 @@ Create `.claude/features/$0/tasks.md` with:
 4. Order by dependency graph
 5. Estimate total effort
 
-Present task list and ask for approval.
+Present task list and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ---
 
@@ -211,7 +218,7 @@ Record the user's decision in state.json under `ux_or_integration.compliance_dec
 - Update `docs/design-system/feature-memory.md` with what changed and why
 - Run `make tokens-check` to verify token pipeline still passes
 
-Present UX spec + compliance report and ask for approval.
+Present UX spec + compliance report and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ## Phase 3b: Integration Requirements (if has_ui = false)
 
@@ -224,7 +231,7 @@ Create `.claude/features/$0/integration-spec.md` with:
 4. Error handling strategy
 5. Backward compatibility plan
 
-Present spec and ask for approval.
+Present spec and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ---
 
@@ -240,7 +247,7 @@ Present spec and ask for approval.
    - Features touching >5 files OR adding new models/services → MUST use `feature/{name}` branch
    - Both the feature branch and main must remain CI-green
 
-Present implementation summary and ask for approval.
+Present implementation summary and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ---
 
@@ -257,7 +264,7 @@ Present implementation summary and ask for approval.
 
 If CI fails, fix and re-run. Do NOT proceed until CI is green.
 
-Present test results and ask for approval.
+Present test results and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ---
 
@@ -277,7 +284,7 @@ Present test results and ask for approval.
    - Main branch: green
 4. List risks and mitigations
 
-Present review and ask for approval.
+Present review and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ---
 
@@ -320,8 +327,171 @@ When the review cadence date arrives:
 
 ## Rules
 
-- **No phase is skipped.** Every phase must be completed and approved.
+- **No phase is skipped by default.** The automated workflow enforces sequential gates. Manual overrides are allowed — skipped phases are marked as "skipped" with a reason in the audit trail. The user always has final authority.
 - **No PRD without metrics.** Every feature must define how success is measured.
 - **No merge without CI.** Both feature branch and main must be green.
 - **Data drives decisions.** Research, metrics, and kill criteria guide the lifecycle.
 - **User approves every gate.** No autonomous phase transitions.
+
+---
+
+## Dashboard Sync Automation
+
+### How Phase Transitions Work
+
+When a phase is approved and the feature moves to the next phase, **three things happen automatically:**
+
+1. **state.json updates** — `current_phase` advances, previous phase gets `status: "approved"` + timestamp
+2. **GitHub Issue label updates** — the feature's GitHub Issue gets its `phase:*` label swapped (e.g., `phase:prd` → `phase:tasks`)
+3. **Transition log entry** — a timestamped record is appended to the `transitions` array in state.json
+
+### Phase Transition Procedure
+
+On every phase approval, execute this procedure:
+
+```
+1. Read current state.json
+2. Record the transition:
+   - Set phases.{current_phase}.status = "approved"
+   - Set phases.{current_phase}.approved_at = current timestamp
+   - Determine next_phase from the phase order (see below)
+   - Set current_phase = next_phase
+   - Set phases.{next_phase}.status = "in_progress"
+   - Set updated = current timestamp
+   - Append to transitions array: { from, to, timestamp, approved_by: "user" }
+3. Write updated state.json
+4. Sync to GitHub Issue (if GitHub MCP tools are available):
+   - Find the issue for this feature (by title match or issue number in state.json)
+   - Remove old phase label (e.g., `phase:prd`)
+   - Add new phase label (e.g., `phase:tasks`)
+   - Add a comment: "Phase transition: {from} → {to} (approved {timestamp})"
+5. Announce: "✓ Phase {from} approved. Moving to Phase {next}: {description}."
+```
+
+### Phase Order
+
+The canonical phase sequence is:
+
+```
+research → prd → tasks → ux (if has_ui) → implement → testing → review → merge → docs → complete
+                          └→ integration (if !has_ui) ─┘
+```
+
+Index mapping for ordering:
+| Index | Phase | Label |
+|-------|-------|-------|
+| 0 | research | `phase:research` |
+| 1 | prd | `phase:prd` |
+| 2 | tasks | `phase:tasks` |
+| 3 | ux / integration | `phase:ux` or `phase:integration` |
+| 4 | implement | `phase:implement` |
+| 5 | testing | `phase:testing` |
+| 6 | review | `phase:review` |
+| 7 | merge | `phase:merge` |
+| 8 | docs | `phase:docs` |
+| 9 | complete | `phase:done` |
+
+### Manual Override: Moving Forward or Backward
+
+The user can manually move a feature to any phase at any time. This supports:
+- **Skipping ahead** (e.g., a hotfix doesn't need UX research)
+- **Rolling back** (e.g., implementation revealed the PRD was wrong, go back to PRD)
+- **Dashboard drag-drop** (user drags a card to a different column)
+
+**To manually override via the skill:**
+```
+/pm-workflow {feature-name}
+```
+Then tell Claude: "Move this feature to {phase}" or "Roll back to {phase}".
+
+**Manual override procedure:**
+```
+1. Read current state.json
+2. Validate the target phase exists in the phase order
+3. If moving BACKWARD:
+   - Set all phases between target and current back to "pending"
+   - Set target phase to "in_progress"
+   - Log transition with approved_by: "user-manual"
+   - Warn: "Rolling back to {phase}. Phases {list} have been reset to pending."
+4. If moving FORWARD (skipping phases):
+   - Set all skipped phases to "skipped" with reason: "manual-override"
+   - Set target phase to "in_progress"
+   - Log transition with approved_by: "user-manual"
+   - Warn: "Skipping phases {list}. These are marked as skipped."
+5. Write updated state.json
+6. Sync GitHub Issue labels (same as automatic transition)
+7. Announce the change
+```
+
+**Via dashboard drag-drop:**
+When the dashboard writes a label change to GitHub, the next time the skill runs it will:
+1. Read state.json
+2. Detect that the GitHub Issue label doesn't match `current_phase`
+3. Ask the user: "GitHub shows this feature in {phase} but state.json says {other_phase}. Which is correct?"
+4. Reconcile based on user choice
+
+### Transition Log (audit trail)
+
+state.json includes a `transitions` array that records every phase change:
+
+```json
+{
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-02T18:45:00Z",
+      "approved_by": "user",
+      "note": ""
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-02T19:30:00Z",
+      "approved_by": "user",
+      "note": ""
+    },
+    {
+      "from": "tasks",
+      "to": "research",
+      "timestamp": "2026-04-03T10:00:00Z",
+      "approved_by": "user-manual",
+      "note": "PRD scope changed, need to re-research alternatives"
+    }
+  ]
+}
+```
+
+### GitHub Label Convention
+
+For the dashboard to read feature phases from GitHub Issues, use these labels:
+
+| Label | Color | Meaning |
+|-------|-------|---------|
+| `phase:research` | #9CA3AF (gray) | Phase 0 |
+| `phase:prd` | #9CA3AF (gray) | Phase 1 |
+| `phase:tasks` | #9CA3AF (gray) | Phase 2 |
+| `phase:ux` | #3B82F6 (blue) | Phase 3 |
+| `phase:integration` | #3B82F6 (blue) | Phase 3b |
+| `phase:implement` | #3B82F6 (blue) | Phase 4 |
+| `phase:testing` | #A855F7 (purple) | Phase 5 |
+| `phase:review` | #A855F7 (purple) | Phase 6 |
+| `phase:merge` | #A855F7 (purple) | Phase 7 |
+| `phase:docs` | #10B981 (green) | Phase 8 |
+| `phase:done` | #10B981 (green) | Complete |
+| `priority:critical` | #DC2626 (red) | P0 |
+| `priority:high` | #F59E0B (amber) | P1 |
+| `priority:medium` | #FBBF24 (yellow) | P2 |
+| `priority:low` | #D1D5DB (gray) | P3 |
+
+### Conflict Resolution
+
+When state.json and GitHub Issue disagree:
+
+| Scenario | Resolution |
+|----------|-----------|
+| state.json ahead of GitHub | Auto-sync: update GitHub label to match state.json |
+| GitHub ahead of state.json | Ask user: "Dashboard moved this feature. Accept?" |
+| Both changed since last sync | Ask user to choose which source is correct |
+| state.json missing, GitHub exists | Create state.json from GitHub Issue data |
+| GitHub Issue missing, state.json exists | Offer to create GitHub Issue from state.json |

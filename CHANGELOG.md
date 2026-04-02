@@ -4,6 +4,35 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-02 — Product Management Platform & Foundation Docs
+
+### Added
+- **Phase 0 Foundation Docs** (PR #20): unified PRD (620 lines, 11 features), metrics framework (40 metrics, 6 categories), complete backlog (Done/Planned/Backlog/Icebox), RICE-prioritized 18-task roadmap with phase gates
+- **Public README**: badges, features (5 pillars), architecture diagram, tech stack, privacy section, getting started, roadmap
+- **PM Workflow Skill** (PR #21): `/pm-workflow {feature-name}` — 9-phase lifecycle (Research → PRD → Tasks → UX/Integration → Implement → Test → Review → Merge → Docs) with post-launch metrics review
+- **PRD Template**: mandatory success metrics (primary, secondary, guardrails, leading/lagging indicators, instrumentation, baseline, target, review cadence, kill criteria)
+- **Research Template**: Phase 0 discovery (alternatives comparison, external sources, market examples, design inspiration, data/demand signals, technical feasibility)
+- **UX Research & Principles**: Fitts's Law, Hick's Law, progressive disclosure, Jakob's Law, iOS HIG patterns integrated into Phase 3
+- **Design System Compliance Gateway**: automated 5-point check (tokens, components, patterns, accessibility, motion) with 3 user options: fix, evolve the system, or override with justification
+- **Living Design System philosophy**: design system documented as evolving framework. New tokens/components proposed on feature branches, reviewed alongside code, merge together.
+- **Dashboard Sync Automation**: auto-sync state.json → GitHub Issue labels on phase transitions, manual override (forward skip + backward rollback), transition audit log, conflict resolution between state.json and GitHub
+- **CLAUDE.md**: project-wide rules for PM lifecycle, branching strategy, CI requirements, data-driven development, design system governance
+- **SessionStart hook**: shows active features and current phase on every session open
+- **Showcase doc**: `docs/showcase/pm-workflow-skill.md` — externally-shareable skill overview with diagrams
+- **Figma prototype audit**: `docs/design-system/figma-prototype-audit.md` — file structure, 14 missing screens, MCP limitations
+- **Figma prototype prompt**: `docs/design-system/figma-prototype-prompt.md` — 22+ screen build prompt for Claude console
+- **Notion setup prompt**: `docs/product/notion-setup-prompt.md` — workspace creation prompt for Claude console
+- **Development Dashboard** (in progress): custom Astro + Tailwind + GitHub API dashboard — first feature built using `/pm-workflow`, showcasing the PM system end-to-end
+
+### Changed
+- README.md replaced with public-facing product README (old version relocated to `docs/project/original-readme-redesign-casestudy.md`)
+- `.gitignore` updated to allow `.claude/skills/` and `.claude/settings.json` to be committed
+
+### Docs
+- `docs/process/product-management-lifecycle.md` — full showcase documentation with lifecycle diagrams, phase walkthroughs, branching strategy, UX compliance gateway, dashboard sync, and example feature walkthrough
+
+---
+
 ## 2026-03-29 — Apple-first integration phase
 
 ### Added
