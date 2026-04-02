@@ -41,6 +41,7 @@ Complete project roadmap with 18 tasks across 6 phases. Prioritized using the RI
 | 9 | Blood test reader | 7 | 3 | 50% | 8 | **1.3** | LOW |
 | 7 | Notion MCP integration | 3 | 1 | 50% | 0.5 | **3.0** | LOW |
 | 8 | Marketing mini-site | — | — | — | — | — | SUPERSEDED by Task 16 |
+| 19 | Marketing & Growth Strategy | 10 | 2 | 60% | 6 | **2.0** | HIGH |
 
 ---
 
@@ -192,7 +193,7 @@ Output: `docs/product/prd/` directory with one PRD per feature
 
 ---
 
-## PHASE 5 — Marketing & Launch (HIGH — after product stable)
+## PHASE 5 — Marketing & Growth (HIGH — after product stable)
 **Gateway:** Phase 2+ approved → Phase 5 can run in parallel.
 
 ### Task 16: Comprehensive Marketing Website [RICE: 4.3]
@@ -202,6 +203,53 @@ Output: `docs/product/prd/` directory with one PRD per feature
 - Public roadmap link, privacy policy, terms
 - Stack: Astro/Next.js + Tailwind, Vercel
 - SEO, Open Graph, GA4
+
+### Task 19: Marketing & Growth Strategy [RICE: 2.0]
+
+**SEO & Content Marketing:**
+- Marketing website SEO (metadata, structured data, sitemap, OG tags, robots.txt)
+- Landing pages with keyword targeting (fitness tracker, workout log, nutrition tracker)
+- Blog/content hub for organic search (workout guides, nutrition tips)
+- Link building (fitness communities, app review sites)
+
+**Paid Acquisition — Google:**
+- Google Ads Search campaigns (branded + category keywords)
+- Google App campaigns (UAC — automated install campaigns)
+- YouTube pre-roll ads (short-form demo targeting fitness audiences)
+
+**Paid Acquisition — Meta (Facebook + Instagram):**
+- Facebook App Install campaigns (lookalike audiences)
+- Instagram Stories/Reels ads (visual workout tracking demos)
+- Retargeting campaigns (website visitors, app abandoners)
+
+**App Store Optimization — Apple:**
+- Listing optimization (title, subtitle, keywords, description)
+- Screenshot templates (6.7" + 6.5" + 12.9" iPad)
+- App Preview video (15-30s core workflow demo)
+- Apple Search Ads (basic + advanced keyword bidding)
+- App Store feature nomination
+- In-app review prompt strategy (timing, frequency)
+
+**App Store Optimization — Google Play:**
+- Play Store listing optimization (title, descriptions, tags)
+- Screenshots + feature graphic
+- Pre-registration campaign (before Android launch)
+- LiveOps cards and promotional content
+
+**Product Marketing:**
+- Positioning & messaging framework (ICP, value props per persona)
+- Competitive comparison pages (vs MyFitnessPal, Strong, Hevy, Strava)
+- Feature launch announcements (in-app + email + social)
+- Referral program design
+- Email automation (onboarding drip, re-engagement, milestones)
+- Social media presence (Instagram, Twitter/X, Reddit r/fitness)
+
+**Analytics & Attribution:**
+- UTM parameter strategy for all campaigns
+- Firebase Dynamic Links for deep linking
+- Attribution tracking (campaign → install → active → retained)
+- ROAS dashboard per channel
+- GA4 conversion events linked to marketing funnels
 
 ### Task 7: Notion MCP Integration [RICE: 3.0]
 - Requires OAuth via claude.ai/code Settings
