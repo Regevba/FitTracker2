@@ -59,7 +59,7 @@ struct LiveInfoStrip: View {
                     .foregroundStyle(slide.color ?? AppColor.Text.primary)
             }
             Text(slide.text)
-                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .font(AppText.hero)
                 .foregroundStyle(slide.color ?? AppColor.Text.primary)
                 .lineLimit(2)
                 .minimumScaleFactor(0.75)

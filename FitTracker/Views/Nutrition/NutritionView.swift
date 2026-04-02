@@ -960,9 +960,9 @@ struct SupplementStackCard: View {
             GeometryReader { geo in
                 let taken = supplements.filter { individualStatus[$0.id] == true }.count
                 let frac  = supplements.count > 0 ? Double(taken) / Double(supplements.count) : 0
-                RoundedRectangle(cornerRadius: 0)
+                Rectangle()
                     .fill(accentColor.opacity(0.15)).frame(height: 3)
-                RoundedRectangle(cornerRadius: 0)
+                Rectangle()
                     .fill(accentColor)
                     .frame(width: geo.size.width * frac, height: 3)
                     .animation(.spring(response: 0.5), value: frac)
@@ -979,6 +979,7 @@ struct SupplementStackCard: View {
                     ) { taken in
                         onToggle(supp.id, taken)
                     }
+                    // 54pt indent aligns divider with text after supplement icon + spacing
                     if supp.id != supplements.last?.id { Divider().padding(.leading, 54) }
                 }
             }
@@ -1067,6 +1068,7 @@ struct SupplementItemRow: View {
                         Text(supplement.notes).font(AppText.caption).foregroundStyle(AppColor.Text.tertiary)
                     }
                 }
+                // 54pt horizontal indent matches supplement icon + label alignment
                 .padding(.horizontal, 54).padding(.bottom, AppSpacing.xxSmall)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(accentColor.opacity(0.03))
