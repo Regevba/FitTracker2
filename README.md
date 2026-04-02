@@ -1,180 +1,139 @@
-# FitTracker
+![Swift](https://img.shields.io/badge/Swift-5.0-orange)
+![iOS](https://img.shields.io/badge/iOS-17.0+-blue)
+![CI](https://github.com/Regevba/FitTracker2/actions/workflows/ci.yml/badge.svg)
 
-FitTracker is an iPhone-first fitness command center designed to help a user understand today, act quickly, and stay consistent across training, nutrition, recovery, and body-composition goals.
+# FitMe
 
-This repository is both a product build and a redesign case study. It shows how the app evolved from a capable but visually inconsistent SwiftUI project into a more unified Apple-first experience with a real design system, screen-by-screen review process, and live Figma assets.
+**The iPhone-first fitness command center that unifies training, nutrition, recovery, and body composition into a single privacy-first experience — powered by federated AI.**
 
-## Quick Links
+FitMe replaces your training log, meal tracker, and recovery dashboard with one app that knows what you should do today — without ever seeing your private health data.
 
-- Figma design system and live app file: [FitTracker Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
-- Full project story: [FitTracker Evolution Walkthrough](docs/project/fittracker-evolution-walkthrough.md)
-- Milestone summary: [CHANGELOG.md](CHANGELOG.md)
-- Merge brief: [UI Integration PR Draft](docs/project/ui-integration-pr-draft.md)
-- Design-system docs: [docs/design-system](docs/design-system)
+> Repo name is `FitTracker2` for historical reasons. The product brand is **FitMe**.
 
-## Project Snapshot
+---
 
-FitTracker combines five product jobs in one experience:
-- daily status and next-best-action guidance
-- active workout tracking
-- adaptive nutrition planning and meal logging
-- progress and body-composition review
-- secure personal data handling with Apple-first sign-in and encryption
+## Features
 
-The current design direction is:
-- iPhone first
-- Apple-first visual language
-- semantic design system in code and Figma
-- live editable screen assets instead of static mockups
+### Training
+- 87 exercises across a 6-day push/pull/legs split
+- Set-by-set logging with weight, reps, RPE, and per-set notes
+- Automatic PR detection and progressive overload tracking
+- Floating rest timer with haptic feedback
+- Cardio tracking with heart rate zone detection and machine photo capture
 
-## Why This Project Exists
+### Nutrition
+- Dynamic macro targets that adapt to training day, program phase, and body composition goals
+- 4-tab meal entry: smart label parsing, manual, templates, search/barcode
+- Morning + evening supplement tracking with streak detection
+- Quick-log favorites for fast re-logging
+- Hydration tracking
 
-The app started with strong product ambition, but over time the team ran into a common problem: the product was getting better, yet the system around it was not keeping up.
+### Recovery & Biometrics
+- HealthKit integration for HR, HRV, VO2Max, steps, sleep (total/deep/REM)
+- Manual entry for Xiaomi S400 smart scale body composition
+- Daily readiness scoring based on HRV, resting HR, and sleep
+- Color-coded status dots with configurable thresholds
 
-There were three main issues:
-- screens were evolving quickly but not always together
-- styling and interaction patterns were too local and inconsistent
-- Figma, runtime truth, and documentation were not tightly connected
+### Stats & Progress
+- 18 metrics across body, recovery, training, and nutrition
+- Multi-period views: daily, weekly, monthly, 3-month, 6-month
+- Charts with trend deltas and data source attribution
+- All-time PR records with estimated 1RM (Epley formula)
 
-The recent work in this repository was about solving that, not just polishing visuals.
+### AI Intelligence
+- Federated cohort AI: population insights computed on anonymized aggregates
+- On-device personalization via Apple Intelligence Foundation Models (iOS 26+)
+- Privacy-preserving bands — only categorical values leave the device
+- 4 recommendation segments: training, nutrition, recovery, stats
 
-## What Changed
+---
 
-The product evolved in a few major stages.
+## Screenshots
 
-### 1. Core app foundation
-The app established its SwiftUI shell, encrypted local data model, HealthKit connections, sync architecture, training logic, nutrition logging, and the base product flows.
+> Screenshots from the interactive Figma prototype will be added here.
 
-### 2. Today-first product redesign
-The user-facing experience was rebuilt around a clearer idea:
-- `Home` became a focused Today screen
-- `Training` became an active-session flow
-- `Nutrition` became more adaptive and easier to log
-- `Stats` became a more readable progress hub
+| Home | Training | Nutrition | Stats | Settings |
+|------|----------|-----------|-------|----------|
+| *coming soon* | *coming soon* | *coming soon* | *coming soon* | *coming soon* |
 
-### 3. Auth and settings overhaul
-The trust and account side of the app was reworked:
-- auth moved toward a cleaner Apple-first flow
-- Apple Sign In and passkeys became central
-- settings moved from a flat form into grouped categories
+Design file: [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
 
-### 4. Design system and review workflow
-The project then introduced:
-- semantic tokens in code
-- shared UI primitives
-- design-system governance docs
-- Figma library structure
-- screen-by-screen approval workflow
-- runtime-to-Figma reverse-sync
+---
 
-### 5. Apple-first integration phase
-Approved screens were consolidated into one integration branch and synchronized into a shared, editable design system file so the app could be reviewed as one coherent product.
+## Tech Stack
 
-For the full phase-by-phase story, read [FitTracker Evolution Walkthrough](docs/project/fittracker-evolution-walkthrough.md).
+| Layer | Technology |
+|-------|------------|
+| UI | SwiftUI, SF Symbols |
+| Health | HealthKit |
+| Auth | Apple Sign In, Passkeys (WebAuthn), Email/OTP |
+| Encryption | AES-256-GCM + ChaCha20-Poly1305 via CryptoKit |
+| Key Storage | Secure Enclave (P-256 with biometric ACL) |
+| Sync | CloudKit (iCloud Private DB) + Supabase (PostgreSQL + Realtime) |
+| AI — Cloud | FastAPI on Railway, JWT-authenticated, JWKS validation |
+| AI — On-device | Apple Intelligence Foundation Models (iOS 26+) |
+| Design System | 92 semantic tokens, Style Dictionary pipeline, CI drift detection |
+| CI | GitHub Actions, Xcode 16+, `make tokens-check` gate |
 
-## Current Approved Product State
+---
 
-The current approved Apple-first screens are:
-- Login
-- Home
-- Training
-- Nutrition
-- Stats
-- grouped Settings
+## Architecture
 
-What is already in good shape:
-- semantic Apple-first tokens and shared UI primitives
-- integrated approved screen baselines in code
-- synchronized Figma live assets for the approved screens
-- guidance for color, typography, spacing, review standards, and UX copy
+```
+                          iPhone (on-device)
+┌─────────────────────────────────────────────────────┐
+│  SwiftUI Views                                      │
+│       ↕                                             │
+│  EncryptedDataStore ← AES-256-GCM (CryptoKit)      │
+│       ↕                    ↕                        │
+│  HealthKit Service    Secure Enclave (keys)         │
+│       ↕                                             │
+│  AI Orchestrator                                    │
+│    ├── Local rules (always available)               │
+│    ├── Cloud cohort (banded values only) ──────────→│── AI Engine (FastAPI)
+│    └── Foundation Model (private, on-device)        │      k≥50 anonymity
+└─────────────────────────────────────────────────────┘
+       ↕ encrypted .ftenc blobs only
+┌──────────────┐  ┌──────────────┐
+│  CloudKit    │  │  Supabase    │
+│  (iCloud)    │  │  (PostgreSQL)│
+└──────────────┘  └──────────────┘
+```
 
-What is still part of the current phase closeout:
-- final integrated runtime proof at the same standard for every approved screen
-- the live iPhone prototype in Figma representing the full approved app state map
-- final merge and handoff packaging for `main`
+**Zero-knowledge sync:** Servers store only encrypted `.ftenc` blobs. No plaintext health data ever leaves the device.
 
-## Design System And Prototype
+**Design system pipeline:** `tokens.json` → Style Dictionary → `DesignTokens.swift` (CI validates drift with `make tokens-check`).
 
-Primary file:
-- [FitTracker Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
+---
 
-That file is intended to be more than a design-system reference. It is the active design workspace for:
-- foundations
-- shared components
-- product-area pages
-- integrated runtime boards
-- the live iPhone prototype for the app
+## Privacy & Security
 
-Prototype status:
-- an initial live iPhone prototype now exists in the same Figma file as the design system
-- it is built from approved integrated runtime boards rather than screenshots
-- it currently covers the main app flow plus representative grouped Settings detail states
-- it remains part of the completion gate for the current Apple-first phase because final state expansion and polish are still in progress
+- **AES-256-GCM** encryption for all personal data at rest
+- **Secure Enclave** for cryptographic key management with biometric ACL
+- **Zero-knowledge architecture** — servers never see unencrypted health data
+- **Federated AI** — no PII leaves the device; only categorical bands sent to cloud
+- **k-anonymity floor** — cohort signals require k=50 minimum before returning
+- **Apple Sign In + Passkeys** — no password database to breach
 
-This setup is intentional: it keeps product, design system, and prototype work connected in one place.
+---
 
-## Why This Repo Can Work As A Presentation Project
+## Getting Started
 
-This repository is not only a codebase. It also shows a product-design process:
-- where the product started
-- how the UI and UX changed
-- why the design system was introduced
-- how screens were reviewed and approved
-- how code and Figma were kept aligned
+### Prerequisites
+- Xcode 16+ (macOS 15+)
+- iOS 17.0+ deployment target
+- Node.js (for design token pipeline)
 
-That makes it suitable as a portfolio or presentation project alongside the prototype, because it shows both outcome and process.
-
-If you are sharing this project publicly, the best reading order is:
-1. this README
-2. the Figma file
-3. the walkthrough doc
-4. the changelog
-
-## Repo Guide
-
-The easiest way to understand the repository is by layer:
-
-### Product code
-- `FitTracker/`
-- SwiftUI screens, services, models, app shell, and shared UI primitives
-
-### Tests
-- `FitTrackerTests/`
-- regression and design-system guard coverage
-
-### Design-system and review docs
-- `docs/design-system/`
-- governance, progress tracking, review rules, and platform notes
-
-### Feature/spec docs
-- `docs/superpowers/`
-- planning and template artifacts
-
-### Related legal repository
-- `FitMe-GDPR-Docs/`
-- separate legal/privacy work and not part of the main product redesign story
-
-## Merge Status
-
-The current Apple-first UI integration target is:
-- source branch: `codex/ui-integration`
-- target branch: `main`
-
-The intent is to treat `codex/ui-integration` as the integrated Apple-first source of truth for this phase.
-
-Important merge guidance:
-- merge `codex/ui-integration` into `main`
-- do not separately merge older per-screen UI branches if their approved work is already integrated here
-- confirm runtime, Figma, and docs are aligned before calling the phase complete
-
-For the full merge brief, read [UI Integration PR Draft](docs/project/ui-integration-pr-draft.md).
-
-## Build
-
-Build with Xcode 15.2+ or use:
+### Build
 
 ```bash
-DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
+# Install token pipeline dependencies
+npm install
+
+# Verify design tokens are in sync
+make tokens-check
+
+# Build with Xcode
 xcodebuild build \
   -project FitTracker.xcodeproj \
   -scheme FitTracker \
@@ -184,22 +143,54 @@ xcodebuild build \
   CODE_SIGNING_REQUIRED=NO
 ```
 
-Notes:
-- HealthKit requires Apple-platform runtime permissions
-- CloudKit is intentionally disabled on simulator builds
-- simulator QA can still be flaky if local CoreSimulator services are unhealthy
-- final device validation on iPhone 14 Pro remains part of the current phase closeout
+### Notes
+- HealthKit requires device runtime permissions (not available on Simulator for all queries)
+- CloudKit requires iCloud entitlements (disabled on Simulator builds)
+- Simulator builds auto-login in DEBUG mode for faster development
 
-## What Comes Next
+---
 
-After the Apple-first phase is fully closed, the next major work is:
-- finish expanding and polishing the live iPhone prototype
-- finalize the merge package
-- merge the Apple-first baseline into `main`
-- move into App Store asset production and Android / Pixel adaptation
+## Roadmap
 
-## Additional Reading
+Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/project/master-backlog-roadmap.md)
 
-- [FitTracker Evolution Walkthrough](docs/project/fittracker-evolution-walkthrough.md)
-- [CHANGELOG.md](CHANGELOG.md)
-- [UI Integration PR Draft](docs/project/ui-integration-pr-draft.md)
+| Phase | Name | Status |
+|-------|------|--------|
+| 0 | Foundation (PRD, metrics, backlog) | Active |
+| 1 | Design & Prototype (Figma, public README) | Next |
+| 2 | Measurement & CX (Analytics, NPS, reviews) | Locked |
+| 3 | Platform Expansion (Android, health APIs, DEXA) | Locked |
+| 4 | Advanced Features (blood test reader, skills) | Locked |
+| 5 | Marketing & Launch (website, App Store assets) | Locked |
+
+---
+
+## Design System
+
+92 semantic tokens across 8 namespaces, 13 reusable components, WCAG AA contrast compliance.
+
+- **Figma:** [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
+- **Docs:** [`docs/design-system/`](docs/design-system/)
+- **Tokens:** [`design-tokens/tokens.json`](design-tokens/tokens.json) (source of truth)
+- **Pipeline:** `tokens.json` → Style Dictionary → `DesignTokens.swift`
+- **CI gate:** `make tokens-check` prevents token drift
+
+---
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [PRD](docs/product/PRD.md) | Product requirements — strategy, 11 features, non-functional requirements |
+| [Metrics Framework](docs/product/metrics-framework.md) | 40 metrics across 6 categories with instrumentation status |
+| [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
+| [Roadmap](docs/project/master-backlog-roadmap.md) | RICE-prioritized 18-task roadmap with phase gates |
+| [Changelog](CHANGELOG.md) | Milestone history |
+| [Design System Docs](docs/design-system/) | Token architecture, components, review standards |
+| [Redesign Case Study](docs/project/original-readme-redesign-casestudy.md) | How the app evolved from v1 to Apple-first design |
+
+---
+
+## License
+
+License not yet specified. All rights reserved.
