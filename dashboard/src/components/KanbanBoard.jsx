@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core';
+import { DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, DragOverlay, useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import FeatureCard from './FeatureCard';
@@ -33,7 +33,11 @@ function SortableCard({ feature }) {
   );
 }
 
+const COLUMN_IDS = new Set(COLUMNS.map(c => c.id));
+
 function Column({ column, features, isOver }) {
+  const { setNodeRef } = useDroppable({ id: column.id });
+
   return (
     <div className={`flex-shrink-0 w-64 ${isOver ? 'ring-2 ring-brand-primary/40 rounded-xl' : ''}`}>
       <div className="flex items-center gap-2 mb-3 px-1">
@@ -43,7 +47,7 @@ function Column({ column, features, isOver }) {
           {features.length}
         </span>
       </div>
-      <div className="space-y-2 min-h-[120px] p-1 rounded-xl bg-gray-50/50 dark:bg-white/[0.02]">
+      <div ref={setNodeRef} className="space-y-2 min-h-[120px] p-1 rounded-xl bg-gray-50/50 dark:bg-white/[0.02]">
         <SortableContext items={features.map(f => f.slug)} strategy={verticalListSortingStrategy}>
           {features.map(f => (
             <SortableCard key={f.slug} feature={f} />
@@ -95,9 +99,13 @@ export default function KanbanBoard({ features: initialFeatures, filters = {}, o
   }
 
   function handleDragOver(event) {
-    const overData = event.over?.data?.current;
-    if (overData?.phase) {
-      setOverColumnId(overData.phase);
+    const overId = event.over?.id;
+    if (!overId) return;
+    if (COLUMN_IDS.has(overId)) {
+      setOverColumnId(overId);
+    } else {
+      const overFeature = features.find(f => f.slug === overId);
+      if (overFeature) setOverColumnId(overFeature.phase);
     }
   }
 
@@ -112,10 +120,14 @@ export default function KanbanBoard({ features: initialFeatures, filters = {}, o
     if (!draggedFeature) return;
 
     // Determine target column from drop position
-    const overFeature = features.find(f => f.slug === over.id);
-    const targetPhase = overFeature?.phase || over.id;
-
-    if (draggedFeature.phase === targetPhase) return;
+    let targetPhase;
+    if (COLUMN_IDS.has(over.id)) {
+      targetPhase = over.id;
+    } else {
+      const overFeature = features.find(f => f.slug === over.id);
+      targetPhase = overFeature?.phase;
+    }
+    if (!targetPhase || draggedFeature.phase === targetPhase) return;
 
     const oldPhase = draggedFeature.phase;
     setFeatures(prev => prev.map(f =>
