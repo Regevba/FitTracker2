@@ -221,6 +221,14 @@ docs/process/product-management-lifecycle.md  # Full documentation
 
 ## Live Dashboard
 
-See the development pipeline in real-time: **[FitMe Development Dashboard](../dashboard/)**
+See the development pipeline in real-time: **[FitMe Development Dashboard](../../dashboard/)**
 
-*The dashboard itself was built using this PM workflow skill — dogfooding the system.*
+Built with Astro + React + Tailwind v4. Features:
+- **Kanban board** with drag-drop (dnd-kit) — 8 columns from Backlog to Done
+- **Table view** with sort/filter/search (@tanstack/react-table)
+- **Pipeline overview** — stacked bar chart of feature distribution
+- **Reconciliation engine** — cross-source conflict detection (9 tests)
+- **Dark mode** — system preference + localStorage toggle
+- **Responsive** — desktop, tablet, mobile breakpoints
+
+*The dashboard itself was the first feature built end-to-end using `/pm-workflow` — dogfooding the system through all 9 phases.*

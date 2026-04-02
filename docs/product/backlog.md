@@ -19,6 +19,8 @@
 | 8 | Simulator auto-login + token cleanup | PR #18 | 2026-04-02 | DEBUG bypass, LiveInfoStrip/NutritionView tokens |
 | 9 | RICE-prioritized 18-task roadmap with phase gates | PR #19 | 2026-04-02 | Master backlog doc |
 | 10 | Phase 0 PRD + metrics + backlog | Current branch | 2026-04-02 | This document |
+| 11 | Development Dashboard (Astro + React + Tailwind v4) | feature/development-dashboard | 2026-04-02 | Kanban, table, reconciliation, dark mode |
+| 12 | PM Workflow Skill (/pm-workflow) | PR #21 | 2026-04-02 | 9-phase lifecycle, dashboard sync |
 
 ---
 
