@@ -1,243 +1,259 @@
-# FitTracker2 — Master Backlog & Roadmap Plan
+# FitTracker2 — Master Backlog & Roadmap (RICE Prioritized)
 
 ## Context
-Following the successful merge of Design System v2 (PR #17) and CI fixes, the user wants to define and document the full project backlog across 8 work streams. Each task requires individual approval before execution. This plan serves as the docs & backlog definition.
+Complete project roadmap with 18 tasks across 6 phases. Prioritized using the RICE framework (Reach × Impact × Confidence / Effort). Each phase completion is a **gateway** — no coding for the next phase begins until the current phase is approved.
+
+**Added 2026-04-02:** Task 18 — Create PRD for every existing shipped feature before building new ones.
 
 ---
 
-## Task 1: Figma Working Prototype
-**Approval needed:** Yes  
-**Figma file:** `0Ai7s3fCFqR5JXDW8JvgmD` (connected, Regev Barak Pro plan)
+## RICE Scoring Legend
 
-### What exists
-- 22 screens across 7 product pages (approved and locked)
-- Pages: Login (7 screens), Home (2), Nutrition (3), Training (4), Settings (6), Stats (1), Account (1)
-- Partial prototype flows wired (auth → home, tab navigation)
-- Component library: 6 atomic + 7 composite components
-- 43 colorsets, 118 Figma variables
-
-### Scope
-- [ ] Audit current file structure via `get_metadata`
-- [ ] Wire complete end-to-end prototype flow across all 22+ screens
-- [ ] **NEW: Onboarding flow** — design welcome/walkthrough screens (3-5 slides)
-  - Sketching or 3D animation style for onboarding illustrations
-  - Cover: welcome, key features, permissions (HealthKit/notifications), get started
-- [ ] **NEW: Live animations** — prototype animated transitions and micro-interactions
-  - FitMeLogoLoader (breathe/rotate/pulse/shimmer) as loading states
-  - Tab transitions, sheet presentations, card taps
-  - Onboarding slide transitions with animation specs
-- [ ] **NEW: Logo & custom icons** — integrate user-provided logo and icon assets
-  - Generate logo from `FitMeLogoLoader.swift` (4 animation modes × 3 sizes)
-  - Create static logo component in Figma based on the FitMe brand mark
-  - Place custom icons alongside SF Symbol references
-  - Update Icon Repository page
-- [ ] **NEW: Onboarding illustration language** — define visual style
-  - **DECIDED: Hand-drawn sketching style** (warm, approachable)
-  - Apply consistently across onboarding slides + empty states + feature highlights
-  - Line-art with brand colors (#FA8F40 orange, #8AC7FF blue accents)
-- [ ] Add missing states: loading (FitMeLogoLoader), empty, error
-- [ ] Create "Prototype / Full App Demo" page
-- [ ] Connect all areas: Onboarding → Auth → Home → Training → Nutrition → Stats → Settings → Account
-
-### Tools: Figma MCP (`get_metadata`, `get_design_context`, `use_figma`, `create_new_file`)
+| Factor | Scale | Description |
+|--------|-------|-------------|
+| **Reach** | 1-10 | How many users/stakeholders does this impact? |
+| **Impact** | 0.25 / 0.5 / 1 / 2 / 3 | Minimal / Low / Medium / High / Massive |
+| **Confidence** | 50% / 80% / 100% | Low / Medium / High certainty |
+| **Effort** | Person-weeks | How long to complete |
+| **RICE Score** | R × I × C / E | Higher = do first |
 
 ---
 
-## Task 2: Android Design System Investigation
-**Approval needed:** Yes
+## RICE PRIORITIZATION MATRIX
 
-### 2.1 What we have (iOS)
-- 92 semantic tokens (57 colors, 9 spacing, 9 radius, 20 typography, motion, shadows)
-- 43 asset catalog colorsets (Light + Dark)
-- 13 shared components with contracts
-- Token pipeline: `tokens.json` → Style Dictionary → Swift
-- `docs/design-system/android-adaptation.md` — strategy doc exists
-
-### 2.2 What adapts directly
-- Color hex values (platform-agnostic)
-- Spacing (4pt grid = MD3 base unit)
-- Radius (maps to MD3 shape scale)
-- Shadow/elevation → MD3 elevation
-- Backend (Supabase + AI Engine) — fully portable
-- `design-tokens/tokens.json` — can add Android output via Style Dictionary
-
-### 2.3 Gaps
-| iOS | Android Equivalent | Status |
-|-----|-------------------|--------|
-| SF Pro Rounded | Roboto / Nunito | Needs mapping |
-| SF Mono | JetBrains Mono / Roboto Mono | Needs mapping |
-| Spring physics animations | Material easing curves | Needs translation |
-| Tab bar | BottomNavigationBar + NavigationRail | Needs redesign |
-| SwiftUI components | Jetpack Compose MD3 | Needs rebuild |
-| HealthKit | Google Health Connect | Needs new integration |
-| Apple Sign In | Google Sign In | Needs new provider |
-| Foundation Models (iOS 26) | Gemini Nano / TF Lite | Needs research |
-| SF Symbols (87 icons) | Material Symbols | Needs 1:1 mapping |
-| Keychain | EncryptedSharedPreferences | Needs migration |
-| CloudKit sync | (remove — Supabase covers this) | N/A |
-
-### 2.4 What needs to change
-- Add Android platform to `sd.config.js` (Style Dictionary)
-- Expand Figma "Platform Adaptations" page
-- Add MD3 variant column to component contracts
-- Create adaptive navigation specs (compact/medium/expanded)
-
-### 2.5 Asset conversion research
-- [ ] iOS colorsets → `colors.xml` / Compose `Color` objects
-- [ ] SF Symbols → Material Symbols mapping table
-- [ ] Compose theme generation from `tokens.json`
-- [ ] iOS animation presets → Material motion specs
-
-### Key files
-- `docs/design-system/android-adaptation.md`
-- `design-tokens/tokens.json`, `sd.config.js`
-- `docs/design-system/responsive-handoff-rules.md`
+| # | Task | Reach | Impact | Confidence | Effort (wks) | RICE Score | Priority |
+|---|------|-------|--------|------------|-------------|------------|----------|
+| 18 | PRD per existing feature | 10 | 3 | 100% | 2 | **15.0** | CRITICAL |
+| 12 | PRD — Business objectives | 10 | 3 | 100% | 2 | **15.0** | CRITICAL |
+| 13 | Metrics definition | 10 | 2 | 100% | 1 | **20.0** | CRITICAL |
+| 6 | Full backlog dump | 10 | 2 | 100% | 1 | **20.0** | CRITICAL |
+| 4 | Google Analytics integration | 10 | 2 | 80% | 2 | **8.0** | HIGH |
+| 1 | Figma working prototype | 8 | 2 | 80% | 3 | **4.3** | HIGH |
+| 17 | Public README | 8 | 1 | 100% | 0.5 | **16.0** | HIGH |
+| 15 | CX system | 8 | 2 | 80% | 4 | **3.2** | HIGH |
+| 14 | Skills operating system | 6 | 2 | 80% | 3 | **3.2** | HIGH |
+| 16 | Comprehensive marketing website | 8 | 2 | 80% | 3 | **4.3** | HIGH |
+| 2 | Android design system investigation | 6 | 2 | 80% | 2 | **4.8** | MEDIUM |
+| 3 | Android full app build research | 6 | 2 | 60% | 2 | **3.6** | MEDIUM |
+| 10 | Health app API connections | 7 | 2 | 60% | 4 | **2.1** | MEDIUM |
+| 11 | DEXA + body composition layers | 5 | 1 | 80% | 2 | **2.0** | MEDIUM |
+| 5 | Skills feature (in-app) | 5 | 1 | 60% | 3 | **1.0** | LOW |
+| 9 | Blood test reader | 7 | 3 | 50% | 8 | **1.3** | LOW |
+| 7 | Notion MCP integration | 3 | 1 | 50% | 0.5 | **3.0** | LOW |
+| 8 | Marketing mini-site | — | — | — | — | — | SUPERSEDED by Task 16 |
 
 ---
 
-## Task 3: Android Full App Build Research
-**Approval needed:** Yes
+## PHASE 0 — Foundation (CRITICAL)
+**Gateway:** All Phase 0 tasks must be approved before any coding begins.
 
-### Current iOS architecture
-| Layer | iOS | Portable? |
-|-------|-----|-----------|
-| UI | SwiftUI (declarative) | No — needs Compose |
-| State | ObservableObject / @StateObject | No — needs ViewModel |
-| Auth | Apple Sign In + Supabase Auth | Partial (Supabase portable) |
-| Data | EncryptedDataStore (local) | No — needs Room + encryption |
-| Sync | CloudKit + Supabase | Supabase yes, CloudKit no |
-| Health | HealthKit | No — needs Health Connect |
-| AI | Foundation Models + Cloud API | Cloud yes, on-device needs research |
-| Crypto | CryptoKit (AES-GCM) | No — needs Tink/JCA |
-| Backend | Supabase (Postgres + Auth + Realtime) | Yes — supabase-kt exists |
-| AI Engine | FastAPI on Railway | Yes — REST API, fully portable |
+### Task 18: PRD for Every Existing Feature [RICE: 15.0]
+**NEW — Phase gate requirement**
 
-### Research deliverables
-- [ ] Native Kotlin+Compose vs React Native vs KMP — pros/cons matrix
-- [ ] Architecture mapping: SwiftUI→Compose, ObservableObject→ViewModel, etc.
-- [ ] Platform API mapping: HealthKit→Health Connect, Keychain→EncryptedSharedPrefs
-- [ ] Supabase Android SDK (supabase-kt) compatibility
-- [ ] Google Health Connect scope and permissions
-- [ ] On-device ML: Gemini Nano vs TF Lite vs ML Kit
-- [ ] Effort estimate per approach
+Create a viable PRD for each of the 11 shipped feature areas. Each PRD defines:
+- **What it is**: Feature description and current implementation
+- **Why it exists**: Business objective, user problem solved
+- **For whom**: Target persona(s)
+- **Success metrics**: How we measure if it's working
+- **Current state**: What's built, what's missing, what needs improvement
 
-### Key files to scan
-- `FitTracker/FitTrackerApp.swift` — 57 lines, wires 10 services
-- `FitTracker/Services/` — Auth, Encryption, HealthKit, CloudKit, Supabase
-- `FitTracker/AI/` — AIOrchestrator, AIEngineClient, FoundationModelService
-- `FitTracker/Models/DomainModels.swift` — data models
-- `ai-engine/` & `backend/` — fully portable
+#### Features requiring PRDs:
+
+| # | Feature Area | Key Files | Status |
+|---|-------------|-----------|--------|
+| 18.1 | Training Tracking | `TrainingPlanView.swift`, `TrainingProgramStore.swift` | Shipped — 87 exercises, RPE, PRs |
+| 18.2 | Nutrition Logging | `NutritionView.swift`, `MealEntrySheet.swift` | Shipped — meals, macros, supplements |
+| 18.3 | Recovery & Biometrics | `HealthKitService.swift`, biometric entry | Shipped — HRV, RHR, sleep, weight |
+| 18.4 | Home / Today Screen | `MainScreenView.swift`, `ReadinessCard.swift` | Shipped — readiness, goals, status |
+| 18.5 | Stats / Progress Hub | `StatsView.swift`, `ChartCard.swift` | Shipped — charts, trends, periods |
+| 18.6 | Authentication | `SignInService.swift`, `AuthManager.swift` | Shipped — Apple, email, passkey, biometric lock |
+| 18.7 | Settings | `SettingsView.swift` | Shipped — 5 category groups |
+| 18.8 | Data & Sync | `EncryptedDataStore`, `SupabaseSyncService` | Shipped — encrypted, CloudKit + Supabase |
+| 18.9 | AI / Cohort Intelligence | `AIOrchestrator.swift`, `AIEngineClient.swift` | Shipped — federated, on-device + cloud |
+| 18.10 | Design System | `AppTheme.swift`, `DesignSystem/` | Shipped — 92 tokens, 13 components |
+| 18.11 | Onboarding | (not yet built) | Planned — PRD defines scope |
+
+Output: `docs/product/prd/` directory with one PRD per feature
 
 ---
 
-## Task 4: Google Analytics Integration
-**Approval needed:** Yes
+### Task 12: PRD — Business Objectives & Purpose [RICE: 15.0]
+- Product definition, positioning, elevator pitch
+- Target personas (primary, secondary, tertiary)
+- Problem statement and value proposition
+- Business objectives: revenue model, growth targets, retention goals
+- Competitive analysis: Fitbod, Strong, MyFitnessPal, Hevy, MacroFactor
+- Go-to-market and monetization strategy
+- Output: `docs/product/PRD.md`
 
-### Scope
-- [ ] Define analytics goals (engagement, retention, funnel conversion)
-- [ ] Create event taxonomy with naming conventions
-- [ ] Map all screens → `screen_view` events
-- [ ] Map all user actions → custom events
-- [ ] Define user properties (training phase, app version, platform)
-- [ ] Define conversion funnels: onboarding → first workout → first meal → weekly streak
-- [ ] Define custom dimensions: day type, nutrition adherence, readiness score
-- [ ] Integration plan: Firebase Analytics SDK (iOS + future Android)
-- [ ] Privacy: GDPR consent, data retention, opt-out
-- [ ] Dashboard requirements
+### Task 13: Metrics Definition [RICE: 20.0]
+- Product: DAU/MAU/WAU, retention D1/D7/D30, session length
+- Health engagement: workouts/week, meals logged/day, supplement adherence
+- AI: recommendation acceptance, confidence, escalation rate
+- Technical: crash rate, cold start time, sync latency
+- Business: conversion, churn, LTV, CAC
+- CX: NPS, CSAT, app store rating, response time
+- Output: `docs/product/metrics-framework.md`
 
-### Screens to map (25 views)
-Auth (4) · Home (1) · Training (1) · Nutrition (4) · Stats (2) · Settings (2) · Shared (9) · Root (1) · DesignSystem (1)
-
----
-
-## Task 5: Skills Feature
-**Approval needed:** Yes — needs specification first
-
-### Status
-- Referenced in prior sessions as a planned feature
-- No formal spec found in `docs/` directory
-- Master plan (`docs/superpowers/specs/2026-03-30-fittracker-master-plan-design.md`) may contain references
-
-### Deliverables needed
-- [ ] Retrieve any prior specs from docs or conversation history
-- [ ] Define skill categories and progression model
-- [ ] Design data model
-- [ ] Design UI screens
-- [ ] Integrate with training + stats systems
+### Task 6: Full Memory & Backlog Dump [RICE: 20.0]
+- Compile from: README, CHANGELOG, feature-memory, gap-review, handoff, specs
+- Output: structured backlog (Done / In Progress / Planned / Backlog)
 
 ---
 
-## Task 6: Full Memory & Backlog Dump
-**Approval needed:** Yes
+## PHASE 1 — Design & Prototype (HIGH)
+**Gateway:** Phase 0 approved → Phase 1 unlocked.
 
-### Sources to compile into structured backlog
-| Source | Content |
-|--------|---------|
-| `README.md` | Project overview, current state |
-| `CHANGELOG.md` | 5-phase milestone history (Feb 28 → Mar 29) |
-| `docs/design-system/feature-memory.md` | Feature tracking entries |
-| `docs/design-system/gap-review-and-backlog.md` | Known gaps |
-| `docs/design-system/deferred-phone-otp-task.md` | Deferred: phone OTP registration |
-| `docs/project/resume-handoff-2026-03-29.md` | Latest handoff state |
-| `docs/superpowers/specs/*` | v2 redesign + master plan |
-| Session work today | CI fixes, PR #17 merge, PR #18, design system audit |
+### Task 1: Figma Working Prototype [RICE: 4.3]
+- Figma file: `0Ai7s3fCFqR5JXDW8JvgmD`
+- Wire all 22+ screens into interactive prototype
+- Onboarding flow (3-5 slides, hand-drawn sketching, brand colors)
+- Live animations (FitMeLogoLoader, transitions)
+- Logo from FitMeLogoLoader.swift
+- Loading/empty/error states
+- Full flow: Onboarding → Auth → Home → Training → Nutrition → Stats → Settings → Account
 
-### Output: structured doc with Done / In Progress / Planned / Backlog categories
-
----
-
-## Task 7: Notion MCP Integration
-**Approval needed:** Yes — requires session restart
-
-### Finding
-User added Notion MCP to Claude Code config, but it's **not yet visible** in this session's tool list. This likely requires a **session restart** for the MCP server to initialize.
-
-### Next steps
-1. Restart Claude Code session to pick up Notion MCP server
-2. Once connected, verify with `notion_search` or similar tool
-3. Create FitTracker workspace structure in Notion:
-   - **Roadmap** database (timeline view)
-   - **Backlog** database (kanban: Done / In Progress / Planned / Backlog)
-   - **Design System** page (token reference)
-   - **Research** pages (Android, Analytics, Marketing)
-4. Transfer all backlog items from Task 6 into Notion databases
-
-### Alternatives (if Notion is unavailable after restart)
-1. Use **GitHub Issues + Project board** as backlog
-2. Generate **Markdown backlog doc** to paste into Notion manually
+### Task 17: Public README [RICE: 16.0]
+- Polished public-facing README with badges
+- Sections: About, Features, Screenshots, Tech Stack, Architecture
+- Links to website and design system docs
 
 ---
 
-## Task 8: Marketing Mini-Site
-**Approval needed:** Yes
+## PHASE 2 — Measurement & CX (HIGH)
+**Gateway:** Phase 1 approved → Phase 2 unlocked.
 
-### Deliverables
-- [ ] Define site structure: hero, features, screenshots, download CTA
-- [ ] Choose stack: static site (Astro/Next.js) or simple HTML/Tailwind
-- [ ] Source screenshots from Figma or Simulator
-- [ ] Write copy: tagline, feature descriptions
-- [ ] Design using FitTracker brand tokens (#FA8F40 primary, #8AC7FF secondary)
-- [ ] Deploy: Vercel / Netlify / GitHub Pages
-- [ ] App Store / Play Store badges
-- [ ] SEO + Open Graph metadata
+### Task 4: Google Analytics Integration [RICE: 8.0]
+- Event taxonomy, screen mapping (25 views), user properties
+- Conversion funnels: onboarding → first workout → first meal → weekly streak
+- Firebase Analytics SDK (iOS + Android)
+- GDPR consent, data retention, opt-out
 
-### Brand assets available
-- Brand name: **FitMe** (per `AppBrand.name`)
-- Primary: #FA8F40 (orange), Secondary: #8AC7FF (blue)
-- FitMeLogoLoader animation system in code
-- 22 screens available for screenshots
+### Task 14: Skills Operating System [RICE: 3.2]
+- API connections: App Store Connect, Play Console, Firebase, GA4, Supabase, Railway, GitHub Actions
+- Review cycles: daily (crashes), weekly (adoption), monthly (cohorts)
+- Live dashboard: real-time users, demographics, app health
+
+### Task 15: CX System [RICE: 3.2]
+- **15.1** Review monitoring (App Store + Play Store, AI sentiment)
+- **15.2** "Rate Me" (SKStoreReviewController, smart timing)
+- **15.3** NPS/CSAT (in-app surveys, dashboard, alert below 4.5)
+- **15.4** High-rating pipeline → email → approve → post to website
+- **15.5** Low-rating follow-up → dynamic email with embedded text box
+- **15.6** Public roadmap ("What we fixed", auto-update from GitHub Issues)
+- **15.7** Live user dashboard (GA4 Realtime)
+- **15.8** Keyword analysis (positive/negative sentiment from reviews)
+- **15.9** Follow-through dashboard (public: fixed vs working on, time to fix)
 
 ---
 
-## Execution Order (recommended)
-1. **Task 7** — Notion setup (quick, unblocks backlog management)
-2. **Task 6** — Full backlog dump (foundation for everything else)
-3. **Task 1** — Figma prototype (visual foundation)
-4. **Task 4** — Analytics definition (measurement before building)
-5. **Task 2** — Android design system investigation
-6. **Task 3** — Android build research
-7. **Task 5** — Skills feature spec
-8. **Task 8** — Marketing mini-site
+## PHASE 3 — Platform Expansion (MEDIUM)
+**Gateway:** Phase 2 approved → Phase 3 unlocked.
+
+### Task 2: Android Design System Investigation [RICE: 4.8]
+- Map 92 iOS tokens to MD3 equivalents
+- Gaps: typography, motion, navigation, icons
+- Add Android platform to Style Dictionary
+- Asset conversion research
+
+### Task 3: Android Full App Build Research [RICE: 3.6]
+- Native Kotlin+Compose vs React Native vs KMP — pros/cons
+- Architecture mapping, platform API mapping
+- Supabase Android SDK, Health Connect, on-device ML
+- Effort estimate: 8-12 weeks
+
+### Task 10: Health App API Connections [RICE: 2.1]
+- Expand HealthKit scope (glucose, BP, respiratory)
+- Google Health Connect (Android)
+- Third-party: Garmin, Whoop, Oura, Samsung Health, Fitbit, MyFitnessPal
+- Bidirectional sync
+
+### Task 11: DEXA + Body Composition [RICE: 2.0]
+- DEXA scan import (manual/photo)
+- Regional breakdown, visceral fat, waist-hip ratio
+- New "Body Comp" tab in Stats
+
+---
+
+## PHASE 4 — Advanced Features (LOW)
+**Gateway:** Phase 3 approved → Phase 4 unlocked.
+
+### Task 9: Blood Test Reader [RICE: 1.3]
+- Input: photo/PDF → OCR (Apple Vision / ML Kit)
+- Process: parse biomarkers (CBC, lipid, metabolic, hormones, vitamins)
+- Display: reference ranges, trends, AI interpretation
+- Delete: GDPR Article 17 full erasure
+- Security: AES-256-GCM, zero-knowledge, on-device OCR only, audit trail
+- Regulatory: FDA wellness vs medical device, EU MDR, GDPR Article 9
+
+### Task 5: Skills Feature (In-App) [RICE: 1.0]
+- Define categories, progression model, data model, UI
+- Integrate with training + stats
+
+---
+
+## PHASE 5 — Marketing & Launch (HIGH — after product stable)
+**Gateway:** Phase 2+ approved → Phase 5 can run in parallel.
+
+### Task 16: Comprehensive Marketing Website [RICE: 4.3]
+- Hero, features (6-8 cards), screenshots, testimonials (from CX pipeline)
+- Live rating badge, download CTAs, Q&A/FAQ
+- Customer success email: `support@fitme.app`
+- Public roadmap link, privacy policy, terms
+- Stack: Astro/Next.js + Tailwind, Vercel
+- SEO, Open Graph, GA4
+
+### Task 7: Notion MCP Integration [RICE: 3.0]
+- Requires OAuth via claude.ai/code Settings
+- Once connected: create Roadmap DB, Backlog DB, transfer all tasks
+
+---
+
+## PHASE GATE RULES
+
+1. **No coding for Phase N+1 until Phase N is reviewed and approved**
+2. Each phase produces specific deliverables (docs, prototypes, research)
+3. Approval = user explicitly confirms "phase complete, proceed to next"
+4. Tasks within a phase can run in parallel
+5. Phase 5 (Marketing) can run in parallel with Phases 3-4 once Phase 2 is done
+
+---
+
+## CURRENT STATUS
+
+| Phase | Status | Blocker |
+|-------|--------|---------|
+| Phase 0 | **NEXT** | None — ready to start |
+| Phase 1 | Locked | Waiting for Phase 0 |
+| Phase 2 | Locked | Waiting for Phase 1 |
+| Phase 3 | Locked | Waiting for Phase 2 |
+| Phase 4 | Locked | Waiting for Phase 3 |
+| Phase 5 | Locked | Waiting for Phase 2+ |
+
+---
+
+## SHIPPED FEATURES (for reference)
+
+| # | Feature | Files | Token Coverage | Tests |
+|---|---------|-------|---------------|-------|
+| 1 | Training (87 exercises, RPE, PRs) | TrainingPlanView, TrainingProgramStore | 100% | Yes |
+| 2 | Nutrition (meals, macros, supplements) | NutritionView, MealEntrySheet, MealSectionView | 95% | Yes |
+| 3 | Recovery (HRV, RHR, sleep, weight, BF%) | HealthKitService, biometric entry | 100% | Yes |
+| 4 | Home / Today (readiness, goals, status) | MainScreenView, ReadinessCard | 95% | Yes |
+| 5 | Stats (charts, trends, periods) | StatsView, ChartCard, MetricCard | 100% | Yes |
+| 6 | Auth (Apple, email, passkey, biometric) | SignInService, AuthManager | 100% | Yes |
+| 7 | Settings (5 categories) | SettingsView | 100% | Yes |
+| 8 | Data & Sync (encrypted, multi-backend) | EncryptedDataStore, SupabaseSyncService | N/A | Yes |
+| 9 | AI / Cohort Intelligence | AIOrchestrator, AIEngineClient | N/A | Yes |
+| 10 | Design System v2 | AppTheme, DesignSystem/ | 95% | Yes |
+| 11 | CI Pipeline | ci.yml, token pipeline | N/A | Green |
+
+---
 
 ## Verification
-Each task produces a reviewable deliverable (Figma prototype, research doc, event taxonomy, backlog doc, deployed site) that can be verified independently.
+- Phase 0: PRD docs reviewed, metrics doc reviewed, backlog compiled
+- Phase 1: Figma prototype interactive and complete, README published
+- Phase 2: Firebase events firing, CX dashboard live, NPS baseline
+- Phase 3: Android research doc with effort estimates, token export working
+- Phase 4: Blood test OCR demo, regulatory assessment doc
+- Phase 5: Website deployed, support email active, SEO indexed
