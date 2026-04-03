@@ -31,11 +31,9 @@ final class AnalyticsService: ObservableObject {
 
     static func makeDefault() -> AnalyticsService {
         let consent = ConsentManager()
-        #if DEBUG
-        let provider = MockAnalyticsAdapter()
-        #else
+        // Always use Firebase in both DEBUG and RELEASE.
+        // MockAnalyticsAdapter is for unit tests only (injected via init(provider:consent:)).
         let provider = FirebaseAnalyticsAdapter()
-        #endif
         return AnalyticsService(provider: provider, consent: consent)
     }
 
