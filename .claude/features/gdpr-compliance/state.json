@@ -1,0 +1,36 @@
+{
+  "feature": "gdpr-compliance",
+  "created": "2026-04-04T11:00:00Z",
+  "updated": "2026-04-04T12:30:00Z",
+  "branch": "feature/gdpr-compliance",
+  "current_phase": "implement",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "transitions": [
+    { "from": "init", "to": "research", "timestamp": "2026-04-04T11:00:00Z", "approved_by": "user", "note": "Feature initialized via /pm-workflow. Priority: CRITICAL (legal/App Store requirement)." },
+    { "from": "research", "to": "prd", "timestamp": "2026-04-04T11:30:00Z", "approved_by": "user", "note": "9 data stores audited, full in-app deletion + JSON export + 30-day grace period chosen." },
+    { "from": "prd", "to": "tasks", "timestamp": "2026-04-04T11:45:00Z", "approved_by": "user", "note": "PRD approved with analytics spec gate. 12 requirements, 5 events, 2 screens." },
+    { "from": "tasks", "to": "ux", "timestamp": "2026-04-04T12:00:00Z", "approved_by": "user", "note": "10 tasks approved, 9-day execution plan." },
+    { "from": "ux", "to": "implement", "timestamp": "2026-04-04T12:30:00Z", "approved_by": "user", "note": "UX spec approved. All 5 compliance checks pass. DeleteAccountView + ExportDataView + Settings integration." }
+  ],
+  "phases": {
+    "research": { "status": "approved", "approved_at": "2026-04-04T11:30:00Z", "sources": ["gdpr-info-art17", "gdpr-info-art20", "apple-guidelines-5.1.1", "supabase-auth-docs", "cloudkit-delete-docs"] },
+    "prd": { "status": "approved", "approved_at": "2026-04-04T11:45:00Z", "analytics_spec_complete": true },
+    "tasks": { "status": "approved", "count": 10 },
+    "ux_or_integration": { "status": "approved", "type": "ux", "compliance_passed": true, "compliance_violations": [], "compliance_decision": null, "design_system_changes": [] },
+    "implementation": { "status": "in_progress", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
+    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
+    "documentation": { "status": "pending" },
+    "metrics": {
+      "primary": { "name": "", "baseline": null, "target": null, "current": null },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    }
+  }
+}
