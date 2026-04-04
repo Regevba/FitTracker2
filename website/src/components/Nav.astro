@@ -1,0 +1,51 @@
+---
+---
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="#" class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-gradient-to-br from-brand-primary to-brand-warm rounded-lg flex items-center justify-center">
+          <span class="text-white font-bold text-sm">F</span>
+        </div>
+        <span class="font-bold text-xl text-text-primary">FitMe</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#features" class="text-sm text-text-secondary hover:text-brand-primary transition-colors">Features</a>
+        <a href="#how-it-works" class="text-sm text-text-secondary hover:text-brand-primary transition-colors">How It Works</a>
+        <a href="#privacy" class="text-sm text-text-secondary hover:text-brand-primary transition-colors">Privacy</a>
+        <a href="#faq" class="text-sm text-text-secondary hover:text-brand-primary transition-colors">FAQ</a>
+      </div>
+
+      <a
+        href="#download"
+        class="hidden sm:inline-flex items-center gap-2 bg-brand-primary hover:bg-brand-primary/90 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all hover:shadow-lg"
+        data-cta="nav"
+      >
+        Download App
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+      </a>
+
+      <button id="mobile-menu-btn" class="sm:hidden p-2 text-text-secondary" aria-label="Open menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden sm:hidden border-t border-gray-100 bg-white">
+    <div class="px-4 py-3 space-y-2">
+      <a href="#features" class="block py-2 text-sm text-text-secondary">Features</a>
+      <a href="#how-it-works" class="block py-2 text-sm text-text-secondary">How It Works</a>
+      <a href="#privacy" class="block py-2 text-sm text-text-secondary">Privacy</a>
+      <a href="#faq" class="block py-2 text-sm text-text-secondary">FAQ</a>
+      <a href="#download" class="block py-2 text-sm font-semibold text-brand-primary" data-cta="nav-mobile">Download App</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  btn?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+  menu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => menu?.classList.add('hidden')));
+</script>

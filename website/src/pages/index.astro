@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Features from '../components/Features.astro';
+import Screenshots from '../components/Screenshots.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import Privacy from '../components/Privacy.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+---
+<Layout
+  title="FitMe — Your Fitness Command Center"
+  description="Track workouts, nutrition, and recovery in one beautiful app. AI-powered insights help you reach your fitness goals faster. Download FitMe for iOS."
+>
+  <Nav />
+  <main>
+    <Hero />
+    <Features />
+    <Screenshots />
+    <HowItWorks />
+    <Privacy />
+    <FAQ />
+    <CTA />
+  </main>
+  <Footer />
+</Layout>

@@ -1,0 +1,49 @@
+---
+const points = [
+  {
+    icon: '🔐',
+    title: 'End-to-End Encrypted',
+    description: 'All your health data is encrypted on your device before it ever leaves. We can\'t read it even if we wanted to.',
+  },
+  {
+    icon: '🛡️',
+    title: 'Zero-Knowledge Architecture',
+    description: 'Your encryption keys live on your device. We store encrypted blobs — meaningless without your key.',
+  },
+  {
+    icon: '🇪🇺',
+    title: 'GDPR Compliant',
+    description: 'Full data portability, right to deletion, and transparent data processing. Your data, your rules.',
+  },
+  {
+    icon: '☁️',
+    title: 'Secure Sync',
+    description: 'Sync across devices via iCloud or Supabase with encrypted payloads. Even the sync layer can\'t see your data.',
+  },
+];
+---
+<section id="privacy" class="py-20 sm:py-28">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-gradient-to-br from-surface-dark-primary to-surface-dark-secondary rounded-3xl p-8 sm:p-12 lg:p-16">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-4">
+          Your Data Stays
+          <span class="bg-gradient-to-r from-brand-primary to-brand-warm bg-clip-text text-transparent">Yours</span>
+        </h2>
+        <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+          Health data is the most personal data there is. We built FitMe with privacy as the foundation, not an afterthought.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        {points.map((point) => (
+          <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-colors">
+            <div class="text-3xl mb-3">{point.icon}</div>
+            <h3 class="text-lg font-bold text-white mb-2">{point.title}</h3>
+            <p class="text-sm text-gray-400 leading-relaxed">{point.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

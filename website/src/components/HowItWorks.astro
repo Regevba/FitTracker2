@@ -1,0 +1,53 @@
+---
+const steps = [
+  {
+    number: '1',
+    title: 'Download the App',
+    description: 'Get FitMe from the App Store. Create your account in seconds — no credit card required.',
+    icon: '📱',
+  },
+  {
+    number: '2',
+    title: 'Set Your Goals',
+    description: 'Tell us your fitness goals. Our AI creates a personalized plan tailored to your level and schedule.',
+    icon: '🎯',
+  },
+  {
+    number: '3',
+    title: 'Track & Improve',
+    description: 'Log workouts and meals effortlessly. Watch your progress unfold with beautiful analytics.',
+    icon: '📈',
+  },
+];
+---
+<section id="how-it-works" class="py-20 sm:py-28 bg-surface-secondary">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-text-primary mb-4">
+        Get Started in
+        <span class="bg-gradient-to-r from-brand-primary to-brand-warm bg-clip-text text-transparent">3 Steps</span>
+      </h2>
+      <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+        From download to your first workout in under 2 minutes.
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8">
+      {steps.map((step, i) => (
+        <div class="relative text-center">
+          {i < steps.length - 1 && (
+            <div class="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-brand-primary/30 to-transparent"></div>
+          )}
+          <div class="relative inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-brand-primary/10 to-brand-warm/10 rounded-3xl mb-6">
+            <span class="text-4xl">{step.icon}</span>
+            <div class="absolute -top-2 -right-2 w-7 h-7 bg-brand-primary text-white text-xs font-bold rounded-full flex items-center justify-center shadow-lg">
+              {step.number}
+            </div>
+          </div>
+          <h3 class="text-xl font-bold text-text-primary mb-2">{step.title}</h3>
+          <p class="text-sm text-text-secondary leading-relaxed max-w-xs mx-auto">{step.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
