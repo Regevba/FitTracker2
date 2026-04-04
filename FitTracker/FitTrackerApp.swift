@@ -186,6 +186,7 @@ struct FitTrackerApp: App {
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
+                .analyticsScreen(AnalyticsScreen.settings)
         } else if signIn.isAuthenticated {
             if analytics.consent.gdprConsent == .pending {
                 ConsentView {
@@ -215,6 +216,7 @@ struct FitTrackerApp: App {
                 .environmentObject(biometricAuth)
                 .environmentObject(settings)
                 .environmentObject(analytics)
+                .analyticsScreen(AnalyticsScreen.signIn)
         }
     }
 }

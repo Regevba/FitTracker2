@@ -62,6 +62,7 @@ struct NutritionView: View {
                 editingMealEntry = nil
             }
             .environmentObject(dataStore)
+            .analyticsScreen(AnalyticsScreen.mealEntry)
             .presentationDetents([.large])
             .presentationCornerRadius(AppSheet.standardCornerRadius)
         }
