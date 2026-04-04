@@ -4,6 +4,20 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-04 — GDPR Compliance + Google Analytics
+
+### Added (GDPR)
+- **AccountDeletionService** — 10-step deletion cascade across 9 data stores with 30-day grace period
+- **DataExportService** — JSON export of all user data via iOS share sheet
+- **DeleteAccountView** — account deletion UI with biometric re-auth, "I understand" toggle, grace period countdown
+- **ExportDataView** — data summary + one-tap JSON export
+- **Settings integration** — "Delete Account" in Account & Security, "Export My Data" in Data & Sync
+- **5 GDPR analytics events** (delete requested/completed/cancelled, export requested/completed)
+- **6 new tests** (23 total analytics tests)
+- **Missing back buttons fixed** — SettingsView sheet + RecoveryRoutineSheet now have dismiss buttons
+
+---
+
 ## 2026-04-04 — Google Analytics (GA4) Integration
 
 ### Added
