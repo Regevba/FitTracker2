@@ -17,7 +17,7 @@ final class FirebaseAnalyticsAdapter: AnalyticsProvider {
     }
 
     func logScreenView(_ screenName: String, screenClass: String?) {
-        Analytics.logEvent(AnalyticsEvents.screenView, parameters: [
+        Analytics.logEvent(AnalyticsEventScreenView, parameters: [
             AnalyticsParameterScreenName: screenName,
             AnalyticsParameterScreenClass: screenClass ?? "SwiftUIView",
         ])
