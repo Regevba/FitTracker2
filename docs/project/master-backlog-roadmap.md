@@ -271,30 +271,43 @@ Output: `docs/product/prd/` directory with one PRD per feature
 
 | Phase | Status | Blocker |
 |-------|--------|---------|
-| Phase 0 | **NEXT** | None — ready to start |
-| Phase 1 | Locked | Waiting for Phase 0 |
-| Phase 2 | Locked | Waiting for Phase 1 |
-| Phase 3 | Locked | Waiting for Phase 2 |
+| Phase 0 | **COMPLETE** | Tasks 6, 12, 13, 18 all shipped |
+| Phase 1 | **ACTIVE** | Task 17 (README) in progress, Task 1 (Figma) next |
+| Phase 2 | Partially shipped | Task 4 (GA4) shipped; Tasks 14, 15 remaining |
+| Phase 3 | Partially shipped | Task 2 (Android DS) shipped; Tasks 3, 10, 11 remaining |
 | Phase 4 | Locked | Waiting for Phase 3 |
-| Phase 5 | Locked | Waiting for Phase 2+ |
+| Phase 5 | Partially shipped | Task 16 (Marketing Website) shipped; Task 19 remaining |
 
 ---
 
 ## SHIPPED FEATURES (for reference)
 
+### Core iOS Features
 | # | Feature | Files | Token Coverage | Tests |
 |---|---------|-------|---------------|-------|
-| 1 | Training (87 exercises, RPE, PRs) | TrainingPlanView, TrainingProgramStore | 100% | Yes |
+| 1 | Training (49 exercises, RPE, PRs) | TrainingPlanView, TrainingProgramStore | 100% | Yes |
 | 2 | Nutrition (meals, macros, supplements) | NutritionView, MealEntrySheet, MealSectionView | 95% | Yes |
 | 3 | Recovery (HRV, RHR, sleep, weight, BF%) | HealthKitService, biometric entry | 100% | Yes |
 | 4 | Home / Today (readiness, goals, status) | MainScreenView, ReadinessCard | 95% | Yes |
 | 5 | Stats (charts, trends, periods) | StatsView, ChartCard, MetricCard | 100% | Yes |
 | 6 | Auth (Apple, email, passkey, biometric) | SignInService, AuthManager | 100% | Yes |
-| 7 | Settings (5 categories) | SettingsView | 100% | Yes |
-| 8 | Data & Sync (encrypted, multi-backend) | EncryptedDataStore, SupabaseSyncService | N/A | Yes |
+| 7 | Settings (9 categories) | SettingsView | 100% | Yes |
+| 8 | Data & Sync (AES-256 + ChaCha20, dual backend) | EncryptedDataStore, SupabaseSyncService | N/A | Yes |
 | 9 | AI / Cohort Intelligence | AIOrchestrator, AIEngineClient | N/A | Yes |
 | 10 | Design System v2 | AppTheme, DesignSystem/ | 95% | Yes |
 | 11 | CI Pipeline | ci.yml, token pipeline | N/A | Green |
+
+### Features Built via PM Workflow
+| # | Feature | Branch | Status |
+|---|---------|--------|--------|
+| 12 | Google Analytics (GA4) | feature/google-analytics | Merged to main |
+| 13 | GDPR Compliance | feature/gdpr-compliance | Merged to main |
+| 14 | Development Dashboard | feature/development-dashboard | Merged to main |
+| 15 | Android Design System | feature/android-design-system (on main) | Complete |
+| 16 | Marketing Website | feature/marketing-website | Merged to main |
+
+### Individual Feature PRDs
+All 18 features documented in `docs/product/prd/` (Task 18 complete)
 
 ---
 

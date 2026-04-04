@@ -4,6 +4,29 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-04 — Marketing Website + Feature PRDs + README Update
+
+### Added (Marketing Website)
+- **Marketing website** (`website/`): Astro + Tailwind v4 single-page site
+  - 9 components: Nav, Hero, Features, Screenshots, HowItWorks, Privacy, FAQ, CTA, Footer
+  - GA4 web analytics: 3 custom events (cta_click, section_view, faq_expand)
+  - SEO: JSON-LD structured data, OG tags, Twitter Cards, canonical URL, robots.txt
+  - Vercel deployment config
+  - FitMe brand tokens in global.css
+
+### Added (Feature PRDs — Task 18)
+- **18 standalone PRDs** in `docs/product/prd/`:
+  - 11 shipped iOS features (training, nutrition, recovery, home, stats, auth, settings, data & sync, AI, design system, onboarding)
+  - 5 PM workflow features (GA4, GDPR, dashboard, Android DS, website)
+  - 3 infrastructure systems (AI backend, CI pipeline, PM skill)
+  - PRD index with discrepancy notes
+
+### Changed
+- **README.md** updated: accurate feature descriptions, web properties section, current roadmap status, expanded documentation index
+- **Roadmap** updated: Phase 0 marked complete, shipped features inventory expanded
+
+---
+
 ## 2026-04-04 — Android Design System + GDPR + GA4 + Figma
 
 ### Added (Android Design System)
