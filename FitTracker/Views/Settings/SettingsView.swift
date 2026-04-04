@@ -254,6 +254,20 @@ private struct AccountSecuritySettingsScreen: View {
                 SettingsValueRow(title: "Cloud Storage", value: "Encrypted locally before upload")
                 SettingsValueRow(title: "Data Protection", value: "NSFileProtectionCompleteUnlessOpen")
             }
+
+            SettingsSectionCard(title: "Account", eyebrow: "GDPR") {
+                NavigationLink {
+                    DeleteAccountView()
+                } label: {
+                    SettingsActionLabel(
+                        title: "Delete Account",
+                        subtitle: "Schedule permanent deletion of your account and all data.",
+                        icon: "trash.fill",
+                        tint: .status.error
+                    )
+                }
+                .buttonStyle(.plain)
+            }
         }
         .navigationTitle(SettingsCategory.accountSecurity.title)
         .navigationBarTitleDisplayMode(.inline)
@@ -661,6 +675,20 @@ private struct DataSyncSettingsScreen: View {
                     }
                 }
                 .tint(AppColor.Brand.primary)
+            }
+
+            SettingsSectionCard(title: "Data Portability", eyebrow: "GDPR") {
+                NavigationLink {
+                    ExportDataView()
+                } label: {
+                    SettingsActionLabel(
+                        title: "Export My Data",
+                        subtitle: "Download all your data as a JSON file.",
+                        icon: "square.and.arrow.up.fill",
+                        tint: .accent.primary
+                    )
+                }
+                .buttonStyle(.plain)
             }
 
             SettingsSectionCard(title: "Danger Zone", eyebrow: "Data") {
