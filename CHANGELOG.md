@@ -4,6 +4,28 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-04 — Google Analytics (GA4) Integration
+
+### Added
+- **Firebase Analytics SDK** integrated via SPM (FirebaseAnalytics package)
+- **AnalyticsProvider protocol** with adapter pattern (Firebase + Mock for testing)
+- **ConsentManager** — GDPR consent + ATT authorization, UserDefaults persistence
+- **AnalyticsService** — consent-gated orchestrator with 20 typed convenience methods
+- **ConsentView** — GDPR consent screen on first launch (Accept & Continue / Continue Without)
+- **Settings analytics toggle** — enable/disable in Data & Sync settings
+- **Screen tracking** on 9 primary views via `.analyticsScreen()` ViewModifier
+- **17 unit tests** — event firing, consent gating, taxonomy validation
+- **Analytics taxonomy CSV** — 20 events, 24 screens, 6 user properties, 5 conversions
+- **Firebase setup guide** — 20-step guide from zero to working analytics
+- **PM Skill v1.2** — Analytics Instrumentation Gate (pre-code spec, testing, post-merge regression)
+- **Marketing & Growth Strategy** (Task 19) added to roadmap with 7 areas
+
+### Changed
+- **Metrics framework** — 11 metrics marked as instrumented (14/40 = 35% coverage)
+- **FitTrackerApp** — Firebase initialization, AnalyticsService as EnvironmentObject, consent flow in auth state machine
+
+---
+
 ## 2026-04-02 — Development Dashboard & PM Platform
 
 ### Added

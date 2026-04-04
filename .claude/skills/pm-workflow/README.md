@@ -159,4 +159,4 @@ Added `requires_analytics` conditional gate (mirrors `has_ui` pattern) with 3 to
 | Feature | Phases Completed | Analytics Gate? | Notes |
 |---------|-----------------|-----------------|-------|
 | `development-dashboard` | All 9 → complete | No | First feature through the full lifecycle |
-| `google-analytics` | Phases 0-4 (in progress) | N/A (this IS the analytics feature) | Drove v1.2.0 evolution |
+| `google-analytics` | All 9 → complete | N/A (this IS the analytics feature) | Drove v1.2.0 evolution. First feature with `requires_analytics` gate. |
