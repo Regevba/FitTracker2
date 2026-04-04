@@ -1,9 +1,9 @@
 {
   "feature": "google-analytics",
   "created": "2026-04-02T19:30:00Z",
-  "updated": "2026-04-04T09:30:00Z",
+  "updated": "2026-04-04T10:00:00Z",
   "branch": "feature/google-analytics",
-  "current_phase": "testing",
+  "current_phase": "review",
   "has_ui": true,
   "github_issue_number": null,
   "transitions": [
@@ -12,7 +12,8 @@
     { "from": "prd", "to": "tasks", "timestamp": "2026-04-02T20:30:00Z", "approved_by": "user", "note": "PRD approved: 25 screens, 15 events, 4 funnels, consent flow, 10-day effort." },
     { "from": "tasks", "to": "ux", "timestamp": "2026-04-02T21:00:00Z", "approved_by": "user", "note": "12 tasks approved, 11-day execution plan with parallelism." },
     { "from": "ux", "to": "implement", "timestamp": "2026-04-02T21:30:00Z", "approved_by": "user", "note": "UX spec approved. All 5 design system compliance checks pass. ConsentView + Settings toggle + AnalyticsScreenModifier." },
-    { "from": "implement", "to": "testing", "timestamp": "2026-04-04T09:30:00Z", "approved_by": "user", "note": "10/12 tasks done. Firebase SDK integrated, ConsentView live, screen tracking on 9 views, Settings toggle wired. T11+T12 are Phase 5 gates." }
+    { "from": "implement", "to": "testing", "timestamp": "2026-04-04T09:30:00Z", "approved_by": "user", "note": "10/12 tasks done. Firebase SDK integrated, ConsentView live, screen tracking on 9 views, Settings toggle wired. T11+T12 are Phase 5 gates." },
+    { "from": "testing", "to": "review", "timestamp": "2026-04-04T10:00:00Z", "approved_by": "user", "note": "17 unit tests pass, tokens-check green, 14/40 metrics instrumented (35%), analytics verification passed." }
   ],
   "phases": {
     "research": { "status": "approved", "approved_at": "2026-04-02T20:00:00Z", "sources": ["firebase-docs", "ga4-automatic-events", "att-gdpr-guide", "ga4-processing-terms", "ios-analytics-architecture"] },
@@ -20,8 +21,8 @@
     "tasks": { "status": "approved", "count": 12 },
     "ux_or_integration": { "status": "approved", "type": "ux", "compliance_passed": true, "compliance_violations": [], "compliance_decision": null, "design_system_changes": [] },
     "implementation": { "status": "approved", "approved_at": "2026-04-04T09:30:00Z", "commits": ["e09b58f", "48d1dd3", "05d34d8", "ea7364a", "9f4a29c", "1421a23", "0bd8c35", "35d770a"] },
-    "testing": { "status": "in_progress", "ci_passed": true, "tests_added": 17, "instrumentation_verified": true, "analytics_tests_added": 17, "analytics_verification_passed": true },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "testing": { "status": "approved", "approved_at": "2026-04-04T10:00:00Z", "ci_passed": true, "tests_added": 17, "instrumentation_verified": true, "analytics_tests_added": 17, "analytics_verification_passed": true },
+    "review": { "status": "in_progress", "risks": ["GoogleService-Info.plist contains API key (not committed to git — local only)", "Firebase adapter stubbed until SPM added in Xcode", "Xcode build requires paid Apple Developer account for device testing"], "ci_main": false, "ci_feature": true },
     "merge": { "status": "pending", "pr_number": null },
     "documentation": { "status": "pending" },
     "metrics": {
