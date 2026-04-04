@@ -227,6 +227,9 @@ final class AnalyticsTests: XCTestCase {
             AnalyticsEvent.biometricLog, AnalyticsEvent.statsView,
             AnalyticsEvent.streakMaintained, AnalyticsEvent.goalReached,
             AnalyticsEvent.crossFeatureEngagement,
+            AnalyticsEvent.accountDeleteRequested, AnalyticsEvent.accountDeleteCompleted,
+            AnalyticsEvent.accountDeleteCancelled,
+            AnalyticsEvent.dataExportRequested, AnalyticsEvent.dataExportCompleted,
             AnalyticsEvent.consentGranted, AnalyticsEvent.consentDenied,
             AnalyticsEvent.settingsChanged,
         ]
@@ -274,6 +277,8 @@ final class AnalyticsTests: XCTestCase {
             AnalyticsParam.statType, AnalyticsParam.timePeriod,
             AnalyticsParam.streakLength, AnalyticsParam.goalType, AnalyticsParam.featuresUsed,
             AnalyticsParam.settingName, AnalyticsParam.settingValue,
+            AnalyticsParam.storesDeleted, AnalyticsParam.daysRemaining,
+            AnalyticsParam.sizeBytes, AnalyticsParam.recordCount,
             AnalyticsParam.consentType,
         ]
 
@@ -292,6 +297,68 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertTrue(conversions.contains(AnalyticsEvent.mealLog))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.tutorialComplete))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.crossFeatureEngagement))
-        XCTAssertEqual(conversions.count, 5)
+        XCTAssertTrue(conversions.contains(AnalyticsEvent.accountDeleteCompleted))
+        XCTAssertEqual(conversions.count, 6)
+    }
+
+    // MARK: - GDPR Event Tests
+
+    @MainActor
+    func testAccountDeleteRequestedEvent() {
+        analyticsService.logAccountDeleteRequested(method: "biometric")
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.accountDeleteRequested)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.method] as? String, "biometric")
+    }
+
+    @MainActor
+    func testAccountDeleteCompletedEvent() {
+        analyticsService.logAccountDeleteCompleted(storesDeleted: ["device", "cloudkit", "supabase"])
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.accountDeleteCompleted)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.storesDeleted] as? String, "device,cloudkit,supabase")
+    }
+
+    @MainActor
+    func testAccountDeleteCancelledEvent() {
+        analyticsService.logAccountDeleteCancelled(daysRemaining: 15)
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.accountDeleteCancelled)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.daysRemaining] as? Int, 15)
+    }
+
+    @MainActor
+    func testDataExportRequestedEvent() {
+        analyticsService.logDataExportRequested()
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.dataExportRequested)
+    }
+
+    @MainActor
+    func testDataExportCompletedEvent() {
+        analyticsService.logDataExportCompleted(sizeBytes: 524288, recordCount: 247)
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.dataExportCompleted)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.sizeBytes] as? Int, 524288)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.recordCount] as? Int, 247)
+    }
+
+    @MainActor
+    func testGDPRScreenNames() {
+        let screens = [AnalyticsScreen.deleteAccount, AnalyticsScreen.exportData]
+        for screen in screens {
+            XCTAssertTrue(screen.count <= 40)
+            XCTAssertEqual(screen, screen.lowercased())
+            XCTAssertFalse(screen.contains(" "))
+        }
     }
 }
