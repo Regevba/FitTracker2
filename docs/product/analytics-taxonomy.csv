@@ -1,0 +1,65 @@
+Category,Event Name,GA4 Type,Screen/Trigger,Parameter 1,Parameter 2,Parameter 3,Parameter 4,Parameter 5,Conversion,Scope,Notes
+Auth,login,Recommended,Sign In Screen,method (apple/email/passkey/biometric),,,,,,event,GA4 recommended event
+Auth,sign_up,Recommended,Sign Up Screen,method (apple/email),,,,,,event,GA4 recommended event. Mark as conversion.
+Onboarding,tutorial_begin,Recommended,Onboarding Step 1,,,,,,,event,GA4 recommended event
+Onboarding,tutorial_complete,Recommended,Onboarding Final Step,,,,,,Yes,event,GA4 recommended event. Mark as conversion.
+Workout,workout_start,Custom,Active Workout,workout_type (push/pull/legs/cardio/rest),day_number (1-6),,,,,event,
+Workout,workout_complete,Custom,Workout Save,duration_seconds (int),exercise_count (int),set_count (int),,,Yes,event,Mark as conversion. SI unit: seconds.
+Workout,exercise_log,Custom,Exercise Detail,exercise_name (string),muscle_group (string),sets (int),reps (int),weight (float kg),,event,Weight always in kg (SI). No unit suffix.
+Workout,pr_achieved,Custom,PR Detection,exercise_name (string),pr_type (weight/reps/volume),,,,,event,System-detected event
+Nutrition,meal_log,Custom,Meal Entry Save,meal_type (breakfast/lunch/dinner/snack),entry_method (manual/template/photo/barcode),,,,Yes,event,Mark as conversion.
+Nutrition,supplement_log,Custom,Supplement Tracker,time_of_day (am/pm),count (int),,,,,event,
+Recovery,biometric_log,Custom,Biometrics Entry,metric_type (weight/hrv/rhr/sleep/body_fat),source (manual/healthkit),,,,,event,
+Engagement,stats_view,Custom,Stats Screen,stat_type (string),time_period (week/month/quarter/year/all),,,,,event,
+Engagement,share,Recommended,Workout/Stats,content_type (workout/stats/achievement),item_id (string),,,,,event,GA4 recommended event
+Engagement,select_content,Recommended,Filter/Search,content_type (exercise/stat/meal),item_id (string),,,,,event,GA4 recommended event
+Engagement,streak_maintained,Custom,Daily Check,streak_length (int days),,,,,,event,Fitness industry standard
+Engagement,goal_reached,Custom,Goal Detection,goal_type (weight/strength/nutrition),,,,,,event,Fitness industry standard
+Engagement,cross_feature_engagement,Custom,Cross-Feature Detection,features_used (comma-separated list),,,,,,event,North Star proxy. Mark as conversion.
+Consent,consent_granted,Custom,Consent View / Settings,consent_type (gdpr/att),,,,,,event,Always logged (bypasses consent gate)
+Consent,consent_denied,Custom,Consent View / Settings,consent_type (gdpr/att),,,,,,event,Always logged (bypasses consent gate)
+Settings,settings_changed,Custom,Settings Screen,setting_name (string),setting_value (string),,,,,event,
+,,,,,,,,,,
+Screen Name,View Name,SwiftUI View,Category,,,,,,,,
+Home / Today,home,MainScreenView,core,,,,,,,,
+Training Plan,training_plan,TrainingPlanView,workout,,,,,,,,
+Active Workout,active_workout,ActiveWorkoutView,workout,,,,,,,,
+Exercise Detail,exercise_detail,ExerciseDetailView,workout,,,,,,,,
+Nutrition,nutrition,NutritionView,nutrition,,,,,,,,
+Meal Entry,meal_entry,MealEntrySheet,nutrition,,,,,,,,
+Supplements,supplements,SupplementView,nutrition,,,,,,,,
+Recovery,recovery,RecoveryView,recovery,,,,,,,,
+Biometrics Entry,biometrics_entry,BiometricsEntryView,recovery,,,,,,,,
+Stats / Progress,stats,StatsView,engagement,,,,,,,,
+Chart Detail,chart_detail,ChartDetailView,engagement,,,,,,,,
+PR Records,pr_records,PRRecordsView,engagement,,,,,,,,
+Settings,settings,SettingsView,settings,,,,,,,,
+Account Settings,settings_account,AccountSettingsView,settings,,,,,,,,
+Data Settings,settings_data,DataSettingsView,settings,,,,,,,,
+Appearance,settings_appearance,AppearanceSettingsView,settings,,,,,,,,
+Notifications,settings_notifications,NotificationSettingsView,settings,,,,,,,,
+About,settings_about,AboutView,settings,,,,,,,,
+Sign In,sign_in,SignInView,auth,,,,,,,,
+Sign Up,sign_up,SignUpView,auth,,,,,,,,
+Profile,profile,ProfileView,core,,,,,,,,
+Readiness,readiness,ReadinessCard,core,,,,,,,,
+Consent,consent,ConsentView,consent,,,,,,,,
+Onboarding,onboarding,OnboardingView,onboarding,,,,,,,,
+,,,,,,,,,,
+User Property,Type,Values,Auto-Collected,Notes,,,,,,,
+training_level,string,beginner/intermediate/advanced,No,Set after profile setup,,,,,,,
+has_healthkit,string,true/false,No,Set after HealthKit auth,,,,,,,
+consent_status,string,granted/denied/pending,No,Updated on consent change,,,,,,,
+goal_type,string,weight_loss/strength/endurance/general,No,Set after profile setup,,,,,,,
+workout_frequency,string,1-7,No,Updated weekly based on actual usage,,,,,,,
+subscription_status,string,free/premium/trial,No,Future: after StoreKit integration,,,,,,,
+app_version,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
+device_model,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
+os_version,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
+,,,,,,,,,,
+Conversion Event,Funnel,Purpose,,,,,,,,
+sign_up,Onboarding,Activation rate,,,,,,,,
+tutorial_complete,Onboarding,Onboarding completion rate,,,,,,,,
+workout_complete,First Workout,Training adoption,,,,,,,,
+meal_log,First Meal,Nutrition adoption,,,,,,,,
+cross_feature_engagement,Weekly Engagement,North Star metric proxy,,,,,,,,

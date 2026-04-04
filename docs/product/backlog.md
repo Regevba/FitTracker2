@@ -109,6 +109,60 @@
 
 ---
 
+## Marketing & Product Marketing (Planned)
+
+> High-level growth strategy. Each item will go through `/pm-workflow` when prioritized.
+
+### SEO & Content Marketing
+- [ ] Marketing website SEO optimization (Task 16 dependency — metadata, structured data, sitemap, OG tags)
+- [ ] App landing pages with keyword targeting (fitness tracker, workout log, nutrition tracker)
+- [ ] Blog/content hub for organic search (workout guides, nutrition tips, progress tracking articles)
+- [ ] Link building strategy (fitness communities, app review sites, health blogs)
+
+### Paid Acquisition — Google
+- [ ] Google Ads campaigns (Search — branded + category keywords)
+- [ ] Google Ads App campaigns (UAC — automated app install campaigns)
+- [ ] Google Display Network (retargeting website visitors)
+- [ ] YouTube pre-roll ads (short-form demo videos targeting fitness audiences)
+
+### Paid Acquisition — Meta (Facebook + Instagram)
+- [ ] Facebook App Install campaigns (lookalike audiences from existing users)
+- [ ] Instagram Stories/Reels ads (visual workout tracking demos)
+- [ ] Facebook audience segmentation (gym-goers, health-conscious, data-driven personas)
+- [ ] Retargeting campaigns (website visitors, app abandoners)
+
+### App Store Optimization (ASO) — Apple App Store
+- [ ] App Store listing optimization (title, subtitle, keywords, description)
+- [ ] Screenshot templates (6.7" + 6.5" + 12.9" iPad) showing key features
+- [ ] App Preview video (15-30s demo of core workflow)
+- [ ] App Store rating/review strategy (in-app review prompt timing)
+- [ ] Apple Search Ads (basic + advanced) — keyword bidding for discovery
+- [ ] App Store feature nomination (Self-Service → editorial pitch)
+
+### App Store Optimization (ASO) — Google Play Store
+- [ ] Play Store listing optimization (title, short description, full description, tags)
+- [ ] Play Store screenshots + feature graphic
+- [ ] Play Store pre-registration campaign (before Android launch)
+- [ ] Google Play promotional content (LiveOps cards, offers)
+
+### Product Marketing
+- [ ] Product positioning & messaging framework (ICP definition, value propositions per persona)
+- [ ] Competitive comparison pages (FitMe vs MyFitnessPal, Strong, Hevy, Strava)
+- [ ] Feature launch announcements (in-app + email + social)
+- [ ] User testimonials & case studies
+- [ ] Referral program design (invite friends, earn premium features)
+- [ ] Email marketing automation (onboarding drip, re-engagement, milestone celebrations)
+- [ ] Social media presence (Instagram, Twitter/X, Reddit r/fitness)
+
+### Analytics & Attribution
+- [ ] UTM parameter strategy for all campaigns
+- [ ] Firebase Dynamic Links for deep linking from campaigns
+- [ ] Attribution tracking (which campaigns drive installs → active users → retained users)
+- [ ] ROAS (Return on Ad Spend) dashboard per channel
+- [ ] GA4 conversion events linked to marketing funnels (sign_up, tutorial_complete, workout_complete)
+
+---
+
 ## Icebox (Deprioritized / Speculative)
 
 - [ ] Wear OS app (wearable training UI)

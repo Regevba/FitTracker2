@@ -3,6 +3,7 @@
 // Entry point — wires all services, drives auth state machine
 
 import SwiftUI
+import FirebaseCore
 
 // AI engine base URL — override via Info.plist key "AIEngineBaseURL" for staging/prod
 private func makeAIEngineBaseURL() -> URL {
@@ -40,6 +41,7 @@ struct FitTrackerApp: App {
     @StateObject private var programStore  = TrainingProgramStore()
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
+    @StateObject private var analytics     = AnalyticsService.makeDefault()
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
@@ -59,6 +61,7 @@ struct FitTrackerApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        FirebaseApp.configure()
         #if DEBUG
         ColorContrastValidator.validate()
         #endif
@@ -152,6 +155,7 @@ struct FitTrackerApp: App {
                     .environmentObject(cloudSync)
                     .environmentObject(settings)
                     .environmentObject(watchService)
+                    .environmentObject(analytics)
         }
         #endif
     }
@@ -181,17 +185,27 @@ struct FitTrackerApp: App {
                 .environmentObject(settings)
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
+                .environmentObject(analytics)
+                .analyticsScreen(AnalyticsScreen.settings)
         } else if signIn.isAuthenticated {
-            RootTabView()
-                .environmentObject(signIn)
-                .environmentObject(biometricAuth)
-                .environmentObject(healthService)
-                .environmentObject(dataStore)
-                .environmentObject(cloudSync)
-                .environmentObject(programStore)
-                .environmentObject(settings)
-                .environmentObject(watchService)
-                .environmentObject(aiOrchestrator)
+            if analytics.consent.gdprConsent == .pending {
+                ConsentView {
+                    analytics.syncConsentToProvider()
+                }
+                .environmentObject(analytics)
+            } else {
+                RootTabView()
+                    .environmentObject(signIn)
+                    .environmentObject(biometricAuth)
+                    .environmentObject(healthService)
+                    .environmentObject(dataStore)
+                    .environmentObject(cloudSync)
+                    .environmentObject(programStore)
+                    .environmentObject(settings)
+                    .environmentObject(watchService)
+                    .environmentObject(aiOrchestrator)
+                    .environmentObject(analytics)
+            }
         } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
             // Session exists but was locked for reopen — require biometric to resume
             LockScreenView()
@@ -201,6 +215,8 @@ struct FitTrackerApp: App {
                 .environmentObject(signIn)
                 .environmentObject(biometricAuth)
                 .environmentObject(settings)
+                .environmentObject(analytics)
+                .analyticsScreen(AnalyticsScreen.signIn)
         }
     }
 }

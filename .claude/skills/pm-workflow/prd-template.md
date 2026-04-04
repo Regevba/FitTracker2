@@ -94,6 +94,47 @@
 |-------------|--------|--------|
 | {event name} | {GA4 / HealthKit / Manual / Available now} | {Not started / Ready} |
 
+### Analytics Spec (GA4 Event Definitions)
+
+> **Required when `requires_analytics = true`.** Skip for infra/refactoring features.
+> Reference: `FitTracker/Services/Analytics/AnalyticsProvider.swift` for existing naming conventions.
+
+#### New Events
+| Event Name | Category | GA4 Type | Screen/Trigger | Parameters | Conversion? | Notes |
+|------------|----------|----------|----------------|------------|-------------|-------|
+| {snake_case, <40 chars} | {Workout/Nutrition/Recovery/Engagement/Auth/Settings} | {Recommended/Custom} | {screen or action} | {param1, param2...} | {Yes/No} | |
+
+#### New Parameters
+| Parameter Name | Type | Allowed Values | Used By Events | Notes |
+|---------------|------|----------------|----------------|-------|
+| {snake_case, <40 chars} | {string/int/float} | {enumerated values or range} | {event1, event2} | {max 100 char values} |
+
+#### New Screens
+| Screen Name | View Name | SwiftUI View | Category |
+|-------------|-----------|--------------|----------|
+| {Human readable} | {snake_case} | {ViewClassName} | {core/workout/nutrition/recovery/engagement/settings/auth} |
+
+#### New User Properties
+| Property Name | Type | Values | Notes |
+|--------------|------|--------|-------|
+| {snake_case} | {string} | {enumerated} | {max 25 total custom properties} |
+
+#### Naming Validation Checklist
+- [ ] All event names: snake_case, <40 chars
+- [ ] All parameter names: snake_case, <40 chars
+- [ ] No reserved prefixes (ga_, firebase_, google_)
+- [ ] No duplicate names (checked against AnalyticsProvider.swift)
+- [ ] No PII in any parameter (no emails, names, user IDs)
+- [ ] ≤25 parameters per event
+- [ ] Total custom user properties still ≤25 (currently {N})
+- [ ] Parameter values spec'd to max 100 chars
+- [ ] Conversion events identified for GA4 UI setup
+
+#### Files to Update During Implementation
+- [ ] `AnalyticsProvider.swift` — add constants to AnalyticsEvent, AnalyticsParam, AnalyticsScreen, AnalyticsUserProperty enums
+- [ ] `AnalyticsService.swift` — add typed convenience methods for new events
+- [ ] `docs/product/analytics-taxonomy.csv` — add rows to events, screens, and properties sections
+
 ### Review Cadence
 - **First review:** {date, typically 1 week post-launch}
 - **Ongoing:** {Weekly for 4 weeks, then monthly}

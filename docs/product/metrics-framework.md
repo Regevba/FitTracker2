@@ -2,7 +2,7 @@
 
 > Defines what to measure, how to measure it, and when to review it.  
 > Each metric links to a PRD feature section and indicates instrumentation status.  
-> Last updated: 2026-04-02
+> Last updated: 2026-04-04
 
 ---
 
@@ -10,15 +10,15 @@
 
 | Metric | Definition | Target | Instrumentation | PRD Section |
 |--------|-----------|--------|-----------------|-------------|
-| DAU | Unique users opening app per day | — | Requires GA4 (Task 4) | 1.8 |
-| WAU | Unique users with ≥1 session per week | — | Requires GA4 | 1.8 |
-| MAU | Unique users with ≥1 session per month | — | Requires GA4 | 1.8 |
-| Cross-feature WAU (North Star) | Users who train + log meal in same week | 40% of installs | Requires GA4 | 1.2 |
-| D1 Retention | % returning Day 1 | >60% | Requires Firebase | 1.5 |
-| D7 Retention | % returning Day 7 | >30% | Requires Firebase | 1.5 |
-| D30 Retention | % returning Day 30 | >20% | Requires Firebase | 1.5 |
-| Avg session length | Time per app open | >3 min | Requires GA4 | — |
-| Sessions per day | App opens per active user | 1.5+ | Requires GA4 | 2.4 |
+| DAU | Unique users opening app per day | — | ✅ GA4 (auto: session_start) | 1.8 |
+| WAU | Unique users with ≥1 session per week | — | ✅ GA4 (auto: session_start) | 1.8 |
+| MAU | Unique users with ≥1 session per month | — | ✅ GA4 (auto: session_start) | 1.8 |
+| Cross-feature WAU (North Star) | Users who train + log meal in same week | 40% of installs | ✅ GA4 (cross_feature_engagement event) | 1.2 |
+| D1 Retention | % returning Day 1 | >60% | ✅ Firebase (auto: cohort analysis) | 1.5 |
+| D7 Retention | % returning Day 7 | >30% | ✅ Firebase (auto: cohort analysis) | 1.5 |
+| D30 Retention | % returning Day 30 | >20% | ✅ Firebase (auto: cohort analysis) | 1.5 |
+| Avg session length | Time per app open | >3 min | ✅ GA4 (auto: engagement_time) | — |
+| Sessions per day | App opens per active user | 1.5+ | ✅ GA4 (auto: session_start) | 2.4 |
 
 ## 2. Health & Fitness Engagement
 
@@ -34,7 +34,7 @@
 | Template usage rate | % of meals from templates vs manual | >30% | Available now (MealEntrySource) | 2.2 |
 | Daily biometric entry rate | % of active days with ≥1 metric logged | >50% | Available now (DailyBiometrics) | 2.3 |
 | HealthKit connection rate | % of users with HealthKit authorized | >70% | Available now (HealthKitService) | 2.3 |
-| Readiness check-in rate | % of users who view readiness daily | >40% | Requires GA4 (screen_view) | 2.4 |
+| Readiness check-in rate | % of users who view readiness daily | >40% | ✅ GA4 (screen_view: readiness) | 2.4 |
 
 ## 3. AI & Intelligence
 

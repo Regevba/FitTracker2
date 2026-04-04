@@ -14,6 +14,7 @@
       "enum": ["research", "prd", "tasks", "ux", "integration", "implement", "testing", "review", "merge", "docs", "complete"]
     },
     "has_ui": { "type": ["boolean", "null"] },
+    "requires_analytics": { "type": ["boolean", "null"], "description": "Whether this feature needs analytics instrumentation (new screens, actions, badges, etc.). Set during PRD phase." },
     "github_issue_number": { "type": ["integer", "null"], "description": "GitHub Issue number linked to this feature for dashboard sync" },
     "transitions": {
       "type": "array",
@@ -45,7 +46,8 @@
           "type": "object",
           "properties": {
             "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
-            "approved_at": { "type": ["string", "null"], "format": "date-time" }
+            "approved_at": { "type": ["string", "null"], "format": "date-time" },
+            "analytics_spec_complete": { "type": "boolean", "default": false, "description": "Whether the GA4 analytics spec has been validated and included in the PRD" }
           }
         },
         "tasks": {
@@ -87,7 +89,9 @@
             "status": { "type": "string", "enum": ["pending", "in_progress", "approved", "skipped"] },
             "ci_passed": { "type": "boolean" },
             "tests_added": { "type": "integer" },
-            "instrumentation_verified": { "type": "boolean" }
+            "instrumentation_verified": { "type": "boolean" },
+            "analytics_tests_added": { "type": "integer", "default": 0, "description": "Number of analytics-specific unit tests added" },
+            "analytics_verification_passed": { "type": "boolean", "default": false, "description": "Whether all analytics events, screens, and consent gating verified via MockAnalyticsAdapter" }
           }
         },
         "review": {
@@ -103,7 +107,8 @@
           "type": "object",
           "properties": {
             "status": { "type": "string", "enum": ["pending", "in_progress", "done", "skipped"] },
-            "pr_number": { "type": ["integer", "null"] }
+            "pr_number": { "type": ["integer", "null"] },
+            "analytics_regression_passed": { "type": ["boolean", "null"], "default": null, "description": "Whether analytics regression tests passed on main after merge. Null if requires_analytics is false." }
           }
         },
         "documentation": {
