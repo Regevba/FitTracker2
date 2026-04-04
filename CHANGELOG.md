@@ -4,6 +4,17 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-04 — Android Design System + GDPR + GA4 + Figma
+
+### Added (Android Design System)
+- **Token mapping document** — 92 iOS tokens mapped to MD3 equivalents (`docs/design-system/android-token-mapping.md`)
+- **Style Dictionary Android config** — generates Kotlin/Compose + XML resources from `tokens.json`
+- **Component parity audit** — 13 iOS components mapped to MD3 composables
+- **Dark mode strategy** — iOS opacity-based → MD3 tonal elevation mapping
+- **Compose code examples** — FitMeTheme, FitMeLightColors, FitMeExtendedColors
+
+---
+
 ## 2026-04-04 — GDPR Compliance + Google Analytics
 
 ### Added (GDPR)

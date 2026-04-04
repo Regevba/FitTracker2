@@ -25,6 +25,7 @@
 | 14 | PM Skill v1.2 (Analytics Gate) | feature/google-analytics | 2026-04-04 | Pre-code spec, testing verification, post-merge regression |
 | 15 | Figma Interactive Prototype (28 screens) | Figma file | 2026-04-04 | Full flows wired: onboarding, auth, tabs, training, nutrition, settings |
 | 16 | GDPR Compliance (Account Deletion + Data Export) | feature/gdpr-compliance | 2026-04-04 | Articles 15/17/20, 30-day grace period, 9-store cascade, JSON export |
+| 17 | Android Design System (Token Mapping) | main | 2026-04-04 | 92 iOS tokens → MD3, Style Dictionary config, component parity audit |
 
 ---
 

@@ -161,3 +161,4 @@ Added `requires_analytics` conditional gate (mirrors `has_ui` pattern) with 3 to
 | `development-dashboard` | All 9 → complete | No | First feature through the full lifecycle |
 | `google-analytics` | All 9 → complete | N/A (this IS the analytics feature) | Drove v1.2.0 evolution. First feature with `requires_analytics` gate. |
 | `gdpr-compliance` | All 9 → complete | Yes (5 events, 4 params, 2 screens) | First feature using analytics gate end-to-end. CRITICAL legal requirement. |
+| `android-design-system` | All 9 → complete | No (docs-only) | Research deliverable. 92 tokens mapped, Style Dictionary config. |
