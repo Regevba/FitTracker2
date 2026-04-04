@@ -57,15 +57,22 @@ struct AccountPanelView: View {
                 Text("You'll be returned to the welcome screen. Your encrypted data remains safely stored on this device and in iCloud.")
             }
             .sheet(isPresented: $showSettings) {
-                SettingsView()
-                    .environmentObject(signIn)
-                    .environmentObject(biometricAuth)
-                    .environmentObject(dataStore)
-                    .environmentObject(healthService)
-                    .environmentObject(cloudSync)
-                    .environmentObject(settings)
-                    .environmentObject(watchService)
-                    .presentationDetents([.large])
+                NavigationStack {
+                    SettingsView()
+                        .environmentObject(signIn)
+                        .environmentObject(biometricAuth)
+                        .environmentObject(dataStore)
+                        .environmentObject(healthService)
+                        .environmentObject(cloudSync)
+                        .environmentObject(settings)
+                        .environmentObject(watchService)
+                        .toolbar {
+                            ToolbarItem(placement: .cancellationAction) {
+                                Button("Done") { showSettings = false }
+                            }
+                        }
+                }
+                .presentationDetents([.large])
             }
         }
     }

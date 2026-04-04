@@ -177,6 +177,11 @@ struct MainScreenView: View {
                     routine: routine,
                     reasons: routine.id == recoveryRecommendation.routine.id ? recoveryRecommendation.reasons : []
                 )
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Done") { selectedRecoveryRoutine = nil }
+                    }
+                }
             }
             .presentationDetents([.medium, .large])
             .presentationCornerRadius(AppRadius.large)
