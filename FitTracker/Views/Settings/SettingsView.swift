@@ -592,6 +592,7 @@ private struct TrainingNutritionSettingsScreen: View {
 private struct DataSyncSettingsScreen: View {
     @EnvironmentObject private var dataStore: EncryptedDataStore
     @EnvironmentObject private var cloudSync: CloudKitSyncService
+    @EnvironmentObject private var analytics: AnalyticsService
     @Binding var showResetAlert: Bool
 
     var body: some View {
@@ -634,6 +635,32 @@ private struct DataSyncSettingsScreen: View {
             SettingsSectionCard(title: "Local Storage", eyebrow: "Data") {
                 SettingsValueRow(title: "Daily Logs", value: "\(dataStore.dailyLogs.count) entries")
                 SettingsValueRow(title: "Weekly Snapshots", value: "\(dataStore.weeklySnapshots.count) entries")
+            }
+
+            SettingsSectionCard(title: "Analytics", eyebrow: "Privacy") {
+                Toggle(isOn: Binding(
+                    get: { analytics.consent.gdprConsent == .granted },
+                    set: { enabled in
+                        if enabled {
+                            analytics.consent.regrantConsent()
+                            analytics.syncConsentToProvider()
+                            analytics.logSettingsChanged(settingName: "analytics", newValue: "enabled")
+                        } else {
+                            analytics.consent.revokeConsent()
+                            analytics.syncConsentToProvider()
+                        }
+                    }
+                )) {
+                    VStack(alignment: .leading, spacing: AppSpacing.micro) {
+                        Text("App Analytics")
+                            .font(AppText.body)
+                            .foregroundStyle(AppColor.Text.primary)
+                        Text("Help improve FitMe by sharing anonymous usage data. No health data is ever shared.")
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Text.tertiary)
+                    }
+                }
+                .tint(AppColor.Brand.primary)
             }
 
             SettingsSectionCard(title: "Danger Zone", eyebrow: "Data") {
