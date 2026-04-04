@@ -23,6 +23,7 @@
 | 12 | PM Workflow Skill (/pm-workflow) | PR #21 | 2026-04-02 | 9-phase lifecycle, dashboard sync |
 | 13 | Google Analytics (GA4) Integration | feature/google-analytics | 2026-04-04 | Firebase SDK, 20 events, consent flow, 17 tests |
 | 14 | PM Skill v1.2 (Analytics Gate) | feature/google-analytics | 2026-04-04 | Pre-code spec, testing verification, post-merge regression |
+| 15 | Figma Interactive Prototype (28 screens) | Figma file | 2026-04-04 | Full flows wired: onboarding, auth, tabs, training, nutrition, settings |
 
 ---
 
