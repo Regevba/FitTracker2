@@ -1,0 +1,33 @@
+{
+  "feature": "android-design-system",
+  "created": "2026-04-04T14:00:00Z",
+  "updated": "2026-04-04T14:30:00Z",
+  "branch": "feature/android-design-system",
+  "current_phase": "prd",
+  "has_ui": false,
+  "requires_analytics": false,
+  "github_issue_number": null,
+  "transitions": [
+    { "from": "init", "to": "research", "timestamp": "2026-04-04T14:00:00Z", "approved_by": "user", "note": "Feature initialized via /pm-workflow. RICE: 4.8. Research-only: map 92 iOS tokens to MD3." },
+    { "from": "research", "to": "prd", "timestamp": "2026-04-04T14:30:00Z", "approved_by": "user", "note": "92 iOS tokens mapped to MD3 equivalents. Style Dictionary dual-output approach chosen." }
+  ],
+  "phases": {
+    "research": { "status": "approved", "approved_at": "2026-04-04T14:30:00Z", "sources": ["m3-material-io", "android-developers-compose", "style-dictionary", "compose-theming-codelab"] },
+    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": false },
+    "tasks": { "status": "pending", "count": 0 },
+    "ux_or_integration": { "status": "pending", "type": null },
+    "implementation": { "status": "pending", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
+    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
+    "documentation": { "status": "pending" },
+    "metrics": {
+      "primary": { "name": "", "baseline": null, "target": null, "current": null },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    }
+  }
+}

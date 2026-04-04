@@ -1,0 +1,47 @@
+{
+  "source": ["tokens.json"],
+  "platforms": {
+    "android-compose": {
+      "transformGroup": "compose",
+      "buildPath": "android/",
+      "files": [
+        {
+          "destination": "FitMeDesignTokens.kt",
+          "format": "compose/object",
+          "className": "FitMeTokens",
+          "packageName": "com.fitme.designsystem",
+          "options": {
+            "outputReferences": true
+          }
+        }
+      ],
+      "transforms": [
+        "attribute/cti",
+        "name/cti/camel",
+        "color/composeColor",
+        "size/compose/dp",
+        "size/compose/sp"
+      ]
+    },
+    "android-xml": {
+      "transformGroup": "android",
+      "buildPath": "android/res/",
+      "files": [
+        {
+          "destination": "values/colors.xml",
+          "format": "android/colors",
+          "filter": {
+            "type": "color"
+          }
+        },
+        {
+          "destination": "values/dimens.xml",
+          "format": "android/dimens",
+          "filter": {
+            "type": "dimension"
+          }
+        }
+      ]
+    }
+  }
+}
