@@ -1,0 +1,65 @@
+---
+const features = [
+  {
+    icon: '🏋️',
+    title: 'Smart Training',
+    description: 'Log workouts with an intelligent exercise library. Track sets, reps, and weight with auto-suggestions based on your history.',
+    color: 'from-orange-500/10 to-amber-500/10',
+  },
+  {
+    icon: '🥗',
+    title: 'Nutrition Tracking',
+    description: 'Scan barcodes, search foods, or use AI to log meals. Track macros and calories with minimal effort.',
+    color: 'from-green-500/10 to-emerald-500/10',
+  },
+  {
+    icon: '😴',
+    title: 'Recovery Insights',
+    description: 'Monitor sleep, stress, and recovery scores. Know when to push hard and when to rest.',
+    color: 'from-purple-500/10 to-indigo-500/10',
+  },
+  {
+    icon: '📊',
+    title: 'Progress Analytics',
+    description: 'Beautiful charts and trends for every metric. See your body composition, strength gains, and personal records.',
+    color: 'from-blue-500/10 to-cyan-500/10',
+  },
+  {
+    icon: '🤖',
+    title: 'AI Coach',
+    description: 'Get personalized recommendations powered by AI. Adaptive plans that evolve with your progress.',
+    color: 'from-pink-500/10 to-rose-500/10',
+  },
+  {
+    icon: '🔒',
+    title: 'Privacy First',
+    description: 'End-to-end encrypted data. Zero-knowledge architecture means only you can see your health data.',
+    color: 'from-slate-500/10 to-gray-500/10',
+  },
+];
+---
+<section id="features" class="py-20 sm:py-28 bg-surface-secondary">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-text-primary mb-4">
+        Everything You Need to
+        <span class="bg-gradient-to-r from-brand-primary to-brand-warm bg-clip-text text-transparent">Get Fit</span>
+      </h2>
+      <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+        One app that replaces your workout tracker, calorie counter, and recovery journal.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {features.map((feature) => (
+        <div class="group relative bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 border border-gray-100">
+          <div class={`w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center text-2xl mb-4`}>
+            {feature.icon}
+          </div>
+          <h3 class="text-lg font-bold text-text-primary mb-2">{feature.title}</h3>
+          <p class="text-sm text-text-secondary leading-relaxed">{feature.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

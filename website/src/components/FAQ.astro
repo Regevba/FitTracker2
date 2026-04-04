@@ -1,0 +1,54 @@
+---
+const faqs = [
+  {
+    question: 'Is FitMe free to use?',
+    answer: 'FitMe offers a generous free tier with core workout and nutrition tracking. Premium features like AI coaching and advanced analytics are available with a subscription.',
+  },
+  {
+    question: 'Does FitMe work offline?',
+    answer: 'Yes! All core features work offline. Your data syncs automatically when you\'re back online. Perfect for gym basements with no signal.',
+  },
+  {
+    question: 'Can I import data from other apps?',
+    answer: 'FitMe supports importing data from Apple Health, and we\'re adding support for more sources. Your existing fitness history won\'t be lost.',
+  },
+  {
+    question: 'How does the AI coaching work?',
+    answer: 'Our AI analyzes your workout history, recovery patterns, and goals to suggest optimal training plans. It adapts as you progress — no two plans are the same.',
+  },
+  {
+    question: 'Is my health data really private?',
+    answer: 'Absolutely. We use end-to-end encryption with a zero-knowledge architecture. Your data is encrypted on your device before it\'s synced. We literally cannot access it.',
+  },
+  {
+    question: 'What devices are supported?',
+    answer: 'FitMe is available on iPhone and iPad running iOS 17 or later. Apple Watch companion app is coming soon for real-time workout tracking.',
+  },
+];
+---
+<section id="faq" class="py-20 sm:py-28 bg-surface-secondary">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-text-primary mb-4">
+        Frequently Asked
+        <span class="bg-gradient-to-r from-brand-primary to-brand-warm bg-clip-text text-transparent">Questions</span>
+      </h2>
+    </div>
+
+    <div class="space-y-3">
+      {faqs.map((faq, index) => (
+        <details class="group bg-white rounded-xl border border-gray-100 overflow-hidden" data-faq-index={index}>
+          <summary class="flex items-center justify-between p-5 cursor-pointer list-none select-none">
+            <span class="text-base font-semibold text-text-primary pr-4">{faq.question}</span>
+            <svg class="w-5 h-5 text-text-tertiary flex-shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </summary>
+          <div class="px-5 pb-5 pt-0 text-sm text-text-secondary leading-relaxed">
+            {faq.answer}
+          </div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
