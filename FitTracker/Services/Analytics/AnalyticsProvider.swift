@@ -83,6 +83,19 @@ enum AnalyticsEvent {
     /// User denies analytics consent
     static let consentDenied     = "consent_denied"
 
+    // ── GDPR Events (custom) ────────────────────────────────
+
+    /// User requests account deletion
+    static let accountDeleteRequested = "account_delete_requested"
+    /// Account deletion completed across all stores
+    static let accountDeleteCompleted = "account_delete_completed"
+    /// User cancels pending account deletion
+    static let accountDeleteCancelled = "account_delete_cancelled"
+    /// User requests data export
+    static let dataExportRequested = "data_export_requested"
+    /// Data export generated successfully
+    static let dataExportCompleted = "data_export_completed"
+
     // ── Settings Events (custom) ────────────────────────────
 
     /// User changes a setting
@@ -137,6 +150,12 @@ enum AnalyticsParam {
 
     // Consent parameters
     static let consentType       = "consent_type"     // gdpr/att
+
+    // GDPR parameters
+    static let storesDeleted     = "stores_deleted"   // comma-sep: device,keychain,cloudkit,supabase,etc
+    static let daysRemaining     = "days_remaining"   // 0-30 (grace period)
+    static let sizeBytes         = "size_bytes"       // export file size
+    static let recordCount       = "record_count"     // total records exported
 }
 
 // MARK: - Screen Constants
@@ -166,6 +185,8 @@ enum AnalyticsScreen {
     static let readiness         = "readiness"
     static let consent           = "consent"
     static let onboarding        = "onboarding"
+    static let deleteAccount     = "delete_account"
+    static let exportData        = "export_data"
 }
 
 // MARK: - User Property Constants
@@ -191,5 +212,6 @@ enum AnalyticsConversion {
         AnalyticsEvent.mealLog,
         AnalyticsEvent.tutorialComplete,
         AnalyticsEvent.crossFeatureEngagement,
+        AnalyticsEvent.accountDeleteCompleted,
     ]
 }

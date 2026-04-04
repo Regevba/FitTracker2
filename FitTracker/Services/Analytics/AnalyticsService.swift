@@ -197,6 +197,37 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - GDPR Events
+
+    func logAccountDeleteRequested(method: String) {
+        logEvent(AnalyticsEvent.accountDeleteRequested, parameters: [
+            AnalyticsParam.method: method,
+        ])
+    }
+
+    func logAccountDeleteCompleted(storesDeleted: [String]) {
+        logEvent(AnalyticsEvent.accountDeleteCompleted, parameters: [
+            AnalyticsParam.storesDeleted: storesDeleted.joined(separator: ","),
+        ])
+    }
+
+    func logAccountDeleteCancelled(daysRemaining: Int) {
+        logEvent(AnalyticsEvent.accountDeleteCancelled, parameters: [
+            AnalyticsParam.daysRemaining: daysRemaining,
+        ])
+    }
+
+    func logDataExportRequested() {
+        logEvent(AnalyticsEvent.dataExportRequested, parameters: nil)
+    }
+
+    func logDataExportCompleted(sizeBytes: Int, recordCount: Int) {
+        logEvent(AnalyticsEvent.dataExportCompleted, parameters: [
+            AnalyticsParam.sizeBytes: sizeBytes,
+            AnalyticsParam.recordCount: recordCount,
+        ])
+    }
+
     // MARK: - Settings Events
 
     func logSettingsChanged(settingName: String, newValue: String) {
