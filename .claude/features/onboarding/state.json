@@ -1,16 +1,16 @@
 {
   "feature": "onboarding",
   "created": "2026-04-05T09:00:00Z",
-  "updated": "2026-04-05T09:15:00Z",
+  "updated": "2026-04-05T10:00:00Z",
   "branch": "feature/onboarding",
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": 51,
   "phases": {
     "research": { "status": "approved", "approved_at": "2026-04-05T09:15:00Z", "sources": ["competitor-analysis", "ux-best-practices", "ga4-events"] },
-    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": false },
-    "tasks": { "status": "pending", "count": 0 },
+    "prd": { "status": "approved", "approved_at": "2026-04-05T09:45:00Z", "analytics_spec_complete": true },
+    "tasks": { "status": "in_progress", "count": 10 },
     "ux_or_integration": { "status": "pending", "type": "ux" },
     "implementation": { "status": "pending", "commits": [] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
@@ -27,6 +27,7 @@
     }
   },
   "transitions": [
-    { "from": "research", "to": "prd", "timestamp": "2026-04-05T09:15:00Z", "approved_by": "user", "note": "" }
+    { "from": "research", "to": "prd", "timestamp": "2026-04-05T09:15:00Z", "approved_by": "user", "note": "" },
+    { "from": "prd", "to": "tasks", "timestamp": "2026-04-05T09:45:00Z", "approved_by": "user", "note": "PRD approved with full analytics spec" }
   ]
 }
