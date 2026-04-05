@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "nps": { "score": null, "last_survey": null, "trend": [] },
+  "reviews": {
+    "avg_rating": null,
+    "count": 0,
+    "sentiment": { "positive": [], "negative": [], "neutral": [] },
+    "word_analysis": {
+      "positive_keywords": {},
+      "negative_keywords": {},
+      "request_phrases": [],
+      "confusion_phrases": [],
+      "friction_phrases": [],
+      "comparison_mentions": []
+    }
+  },
+  "feature_requests": [],
+  "confusion_signals": [],
+  "post_deployment": {},
+  "churn_signals": [],
+  "testimonials": [],
+  "keyword_patterns": {
+    "positive": ["love", "amazing", "finally", "exactly what I needed", "best app", "game changer", "perfect", "great", "awesome", "fantastic"],
+    "negative": ["hate", "terrible", "broken", "waste", "deleted", "uninstalled", "worst", "useless", "frustrating", "disappointing"],
+    "feature_request": ["I'd like to see", "I wish", "would be great if", "please add", "missing", "need", "should have", "want", "hoping for"],
+    "confusion": ["I don't understand", "confusing", "how do I", "can't figure out", "unclear", "what does this do", "doesn't make sense", "confused", "hard to find", "not intuitive"],
+    "friction": ["too many steps", "complicated", "takes too long", "annoying", "tedious", "slow", "cumbersome", "clunky"],
+    "comparison": ["compared to", "switched from", "better than", "worse than", "unlike", "similar to", "just like"]
+  },
+  "root_cause_dispatch": {
+    "messaging": { "patterns": ["what does this do", "what is this for", "I thought it would"], "dispatch_to": "/marketing" },
+    "ux": { "patterns": ["how do I", "can't find", "where is", "confusing navigation"], "dispatch_to": "/design" },
+    "functionality": { "patterns": ["doesn't work", "broken", "bug", "wrong data", "inaccurate"], "dispatch_to": "/dev" },
+    "expectation_mismatch": { "patterns": ["I expected", "I thought", "not what I wanted", "misleading"], "dispatch_to": "/pm-workflow" }
+  }
+}

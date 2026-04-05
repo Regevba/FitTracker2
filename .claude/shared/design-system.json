@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "tokens": {
+    "total": 120,
+    "categories": {
+      "colors": { "count": 45, "examples": ["Brand.primary", "Surface.primary", "Text.primary", "Status.success", "Chart.body"] },
+      "spacing": { "count": 9, "scale": "micro(2) → xxLarge(40)" },
+      "radius": { "count": 9, "scale": "micro(4) → authSheet(36)" },
+      "typography": { "count": 20, "examples": ["hero", "pageTitle", "body", "caption", "metricHero"] },
+      "motion": { "count": 8, "examples": ["Duration.instant(0.1s)", "Spring.snappy", "Easing.standard"] },
+      "shadow": { "count": 2, "types": ["Card", "CTA"] },
+      "icons": { "count": 40, "source": "SF Symbols" }
+    },
+    "source": "design-tokens/tokens.json",
+    "generated": "FitTracker/DesignSystem/DesignTokens.swift",
+    "semantic_layer": "FitTracker/Services/AppTheme.swift",
+    "ci_gate": "make tokens-check"
+  },
+  "components": {
+    "atomic": ["AppPickerChip", "AppFilterBar", "AppSheetShell", "AppStatRow", "AppSegmentedControl", "AppProgressRing"],
+    "composite": ["AppCard", "AppButton", "AppMenuRow"],
+    "motion": ["AppSpring.snappy", "AppSpring.bouncy", "breathe", "rotate", "shimmer"],
+    "modifiers": [".appEyebrowStyle()", ".appTextRole()", ".appCardStyle()", ".appReducedMotion()"]
+  },
+  "accessibility": {
+    "wcag_level": "AA",
+    "contrast_validation": true,
+    "reduced_motion": true,
+    "validator": "ColorContrastValidator (DEBUG)"
+  },
+  "android_mapping": {
+    "status": "complete",
+    "tokens_mapped": 92,
+    "output": "docs/design-system/android-token-mapping.md",
+    "style_dictionary_config": "sd.config.js"
+  }
+}

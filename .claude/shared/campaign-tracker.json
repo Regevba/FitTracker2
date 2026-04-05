@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "campaigns": [],
+  "utm_convention": {
+    "source": "google|facebook|instagram|twitter|email|organic|direct",
+    "medium": "cpc|social|email|referral|organic|display",
+    "campaign": "{campaign-name}",
+    "content": "{variant}",
+    "term": "{keyword}"
+  },
+  "channels": {
+    "organic_search": { "status": "active", "url": "fitme.app", "ga4_events": ["cta_click", "section_view"] },
+    "app_store": { "status": "not_live", "aso_optimized": false },
+    "play_store": { "status": "not_applicable" },
+    "email": { "status": "not_started", "provider": null },
+    "social": { "status": "not_started", "platforms": [] },
+    "paid_google": { "status": "not_started" },
+    "paid_meta": { "status": "not_started" },
+    "apple_search_ads": { "status": "not_started" }
+  },
+  "attribution": {
+    "model": "last_touch",
+    "deep_links": false,
+    "firebase_dynamic_links": false
+  }
+}

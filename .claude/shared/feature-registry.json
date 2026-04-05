@@ -1,0 +1,102 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "features": [
+    {
+      "id": "training", "name": "Training Tracking", "prd": "docs/product/prd/18.1-training-tracking.md",
+      "status": "shipped", "phase": "complete", "category": "core",
+      "pain_point": "Logging workouts across 3+ apps is tedious and fragmented",
+      "metrics": { "sessions_per_week": { "target": 3, "current": null }, "completion_rate": { "target": 80, "current": null } }
+    },
+    {
+      "id": "nutrition", "name": "Nutrition Logging", "prd": "docs/product/prd/18.2-nutrition-logging.md",
+      "status": "shipped", "phase": "complete", "category": "core",
+      "pain_point": "Tracking macros requires separate app; no connection to training",
+      "metrics": { "meals_per_day": { "target": 2, "current": null }, "supplement_adherence": { "target": 70, "current": null } }
+    },
+    {
+      "id": "recovery", "name": "Recovery & Biometrics", "prd": "docs/product/prd/18.3-recovery-biometrics.md",
+      "status": "shipped", "phase": "complete", "category": "core",
+      "pain_point": "No way to know if body is ready for training based on HRV/sleep/RHR",
+      "metrics": { "daily_biometric_rate": { "target": 50, "current": null }, "healthkit_connection": { "target": 70, "current": null } }
+    },
+    {
+      "id": "home", "name": "Home / Today Screen", "prd": "docs/product/prd/18.4-home-today-screen.md",
+      "status": "shipped", "phase": "complete", "category": "core",
+      "pain_point": "Decision fatigue: what should I do today?",
+      "metrics": { "sessions_per_day": { "target": 1.5, "current": null }, "training_cta_tap_rate": { "target": 30, "current": null } }
+    },
+    {
+      "id": "stats", "name": "Stats / Progress Hub", "prd": "docs/product/prd/18.5-stats-progress-hub.md",
+      "status": "shipped", "phase": "complete", "category": "core",
+      "pain_point": "No unified view of progress across training, nutrition, body composition",
+      "metrics": { "stats_visits_per_week": { "target": 2, "current": null } }
+    },
+    {
+      "id": "auth", "name": "Authentication", "prd": "docs/product/prd/18.6-authentication.md",
+      "status": "shipped", "phase": "complete", "category": "infrastructure",
+      "pain_point": "Auth friction causes abandonment",
+      "metrics": { "signup_completion": { "target": 80, "current": null }, "apple_signin_usage": { "target": 60, "current": null } }
+    },
+    {
+      "id": "settings", "name": "Settings", "prd": "docs/product/prd/18.7-settings.md",
+      "status": "shipped", "phase": "complete", "category": "infrastructure",
+      "pain_point": "User control and GDPR compliance",
+      "metrics": { "analytics_optin_rate": { "target": 60, "current": null } }
+    },
+    {
+      "id": "data-sync", "name": "Data & Sync", "prd": "docs/product/prd/18.8-data-sync.md",
+      "status": "shipped", "phase": "complete", "category": "infrastructure",
+      "pain_point": "Health data privacy; multi-device sync",
+      "metrics": { "sync_success_rate": { "target": 99, "current": null }, "sync_latency_p50": { "target": 3000, "current": null } }
+    },
+    {
+      "id": "ai", "name": "AI / Cohort Intelligence", "prd": "docs/product/prd/18.9-ai-cohort-intelligence.md",
+      "status": "shipped", "phase": "complete", "category": "intelligence",
+      "pain_point": "Users want personalized guidance without exposing private data",
+      "metrics": { "recommendation_acceptance": { "target": 30, "current": null }, "avg_confidence": { "target": 0.6, "current": null } }
+    },
+    {
+      "id": "design-system", "name": "Design System v2", "prd": "docs/product/prd/18.10-design-system.md",
+      "status": "shipped", "phase": "complete", "category": "infrastructure",
+      "pain_point": "Visual inconsistency across features; slow UI development",
+      "metrics": { "token_pipeline_sync": { "target": 100, "current": 100 }, "wcag_compliance": { "target": 100, "current": 100 } }
+    },
+    {
+      "id": "onboarding", "name": "Onboarding", "prd": "docs/product/prd/18.11-onboarding.md",
+      "status": "planned", "phase": "not_started", "category": "core",
+      "pain_point": "No guided first experience; users don't connect HealthKit or set goals",
+      "metrics": { "completion_rate": { "target": 80, "current": null }, "d1_retention": { "target": 60, "current": null } }
+    },
+    {
+      "id": "google-analytics", "name": "Google Analytics (GA4)", "prd": "docs/product/prd/google-analytics.md",
+      "status": "shipped", "phase": "complete", "category": "measurement",
+      "pain_point": "Zero product analytics; decisions based on assumptions",
+      "metrics": { "events_flowing": { "target": 20, "current": 20 }, "test_coverage": { "target": 23, "current": 23 } }
+    },
+    {
+      "id": "gdpr", "name": "GDPR Compliance", "prd": "docs/product/prd/gdpr-compliance.md",
+      "status": "shipped", "phase": "complete", "category": "compliance",
+      "pain_point": "EU legal requirement; user trust for health data app",
+      "metrics": { "deletion_success": { "target": 100, "current": 100 }, "export_success": { "target": 100, "current": 100 } }
+    },
+    {
+      "id": "dashboard", "name": "Development Dashboard", "prd": "docs/product/prd/development-dashboard.md",
+      "status": "shipped", "phase": "complete", "category": "tooling",
+      "pain_point": "No unified view of feature lifecycle across data sources",
+      "metrics": { "features_tracked": { "target": 37, "current": 37 } }
+    },
+    {
+      "id": "android-ds", "name": "Android Design System", "prd": "docs/product/prd/android-design-system.md",
+      "status": "shipped", "phase": "complete", "category": "platform",
+      "pain_point": "Android represents 45% of market; need design system ready before build",
+      "metrics": { "tokens_mapped": { "target": 92, "current": 92 } }
+    },
+    {
+      "id": "marketing-website", "name": "Marketing Website", "prd": "docs/product/prd/marketing-website.md",
+      "status": "shipped", "phase": "complete", "category": "marketing",
+      "pain_point": "Zero web presence; no organic or paid acquisition funnel",
+      "metrics": { "monthly_visitors": { "target": 500, "current": null }, "app_store_ctr": { "target": 5, "current": null } }
+    }
+  ]
+}

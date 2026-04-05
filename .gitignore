@@ -44,6 +44,8 @@ xcuserdata/
 .claude/
 !.claude/skills/
 !.claude/skills/**
+!.claude/shared/
+!.claude/shared/**
 !.claude/settings.json
 # Feature state is runtime-only (not committed)
 # .claude/features/ stays gitignored via the .claude/ rule

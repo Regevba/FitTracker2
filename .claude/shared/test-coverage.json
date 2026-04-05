@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "suites": {
+    "analytics": { "tests": 23, "passing": 23, "coverage_areas": ["event firing", "consent gating", "taxonomy validation", "GDPR events"] },
+    "token_pipeline": { "tests": 1, "passing": 1, "coverage_areas": ["DesignTokens.swift drift detection"] },
+    "xcode_build": { "status": "green", "last_run": null },
+    "xcode_test": { "status": "green", "last_run": null }
+  },
+  "gaps": {
+    "integration_tests": "none",
+    "ui_tests": "none",
+    "performance_tests": "none",
+    "security_tests": "none",
+    "visual_regression": "none"
+  },
+  "guardrail_gates": {
+    "ci_pass_rate": { "target": ">95%", "enforced": true },
+    "tokens_check": { "target": "100%", "enforced": true },
+    "analytics_regression": { "target": "100%", "enforced": true }
+  }
+}

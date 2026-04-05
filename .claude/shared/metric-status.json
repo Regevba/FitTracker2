@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "categories": {
+    "product_engagement": [
+      { "name": "DAU", "target": null, "current": null, "instrumented": true, "source": "GA4" },
+      { "name": "WAU", "target": null, "current": null, "instrumented": true, "source": "GA4" },
+      { "name": "MAU", "target": null, "current": null, "instrumented": true, "source": "GA4" },
+      { "name": "cross_feature_wau", "target": "40% of installs", "current": null, "instrumented": true, "source": "GA4" },
+      { "name": "d1_retention", "target": ">60%", "current": null, "instrumented": false, "source": "Firebase", "blocker": "Firebase setup" },
+      { "name": "d7_retention", "target": ">30%", "current": null, "instrumented": false, "source": "Firebase", "blocker": "Firebase setup" },
+      { "name": "d30_retention", "target": ">20%", "current": null, "instrumented": false, "source": "Firebase", "blocker": "Firebase setup" },
+      { "name": "avg_session_length", "target": ">3 min", "current": null, "instrumented": true, "source": "GA4" },
+      { "name": "sessions_per_day", "target": "1.5+", "current": null, "instrumented": true, "source": "GA4" }
+    ],
+    "health_fitness": [
+      { "name": "training_sessions_per_week", "target": "3+", "current": null, "instrumented": true, "source": "DailyLog" },
+      { "name": "avg_sets_per_session", "target": "15+", "current": null, "instrumented": true, "source": "ExerciseLog" },
+      { "name": "pr_frequency_per_month", "target": "2+", "current": null, "instrumented": true, "source": "StatsDataHelpers" },
+      { "name": "meals_logged_per_day", "target": "2+", "current": null, "instrumented": true, "source": "NutritionLog" },
+      { "name": "supplement_adherence", "target": ">70%", "current": null, "instrumented": true, "source": "SupplementLog" },
+      { "name": "protein_target_hit_rate", "target": ">60%", "current": null, "instrumented": true, "source": "computed" },
+      { "name": "daily_biometric_entry_rate", "target": ">50%", "current": null, "instrumented": true, "source": "DailyBiometrics" },
+      { "name": "healthkit_connection_rate", "target": ">70%", "current": null, "instrumented": true, "source": "HealthKitService" }
+    ],
+    "ai_intelligence": [
+      { "name": "recommendation_acceptance_rate", "target": ">30%", "current": null, "instrumented": false, "blocker": "Task 14" },
+      { "name": "avg_confidence_score", "target": ">0.6", "current": null, "instrumented": true, "source": "AIRecommendation" },
+      { "name": "cloud_vs_fallback_ratio", "target": ">70% cloud", "current": null, "instrumented": true, "source": "AIOrchestrator" },
+      { "name": "escalation_rate", "target": "<20%", "current": null, "instrumented": true, "source": "escalateToLLM" }
+    ],
+    "technical_health": [
+      { "name": "crash_free_rate", "target": ">99.5%", "current": null, "instrumented": false, "blocker": "Crashlytics setup" },
+      { "name": "cold_start_time", "target": "<2s", "current": null, "instrumented": false, "blocker": "instrumentation" },
+      { "name": "sync_success_rate", "target": ">99%", "current": null, "instrumented": true, "source": "SupabaseSyncService" },
+      { "name": "token_pipeline_sync", "target": "100%", "current": "100%", "instrumented": true, "source": "CI" },
+      { "name": "ci_pass_rate", "target": ">95%", "current": null, "instrumented": true, "source": "GitHub Actions" }
+    ],
+    "business_growth": [
+      { "name": "total_installs", "target": "50K Y1", "current": null, "instrumented": false, "blocker": "App Store Connect" },
+      { "name": "premium_conversion", "target": ">5%", "current": null, "instrumented": false, "blocker": "revenue tracking" },
+      { "name": "monthly_churn", "target": "<8%", "current": null, "instrumented": false, "blocker": "subscription analytics" }
+    ],
+    "customer_experience": [
+      { "name": "app_store_rating", "target": ">4.5", "current": null, "instrumented": false, "blocker": "App Store Connect API" },
+      { "name": "nps", "target": ">50", "current": null, "instrumented": false, "blocker": "Task 15" },
+      { "name": "csat", "target": ">80%", "current": null, "instrumented": false, "blocker": "Task 15" }
+    ]
+  },
+  "instrumentation_summary": {
+    "available_now": 14,
+    "requires_ga4": 11,
+    "requires_firebase": 3,
+    "requires_task14": 3,
+    "requires_task15": 4,
+    "requires_external": 5,
+    "total": 40,
+    "instrumented_percentage": 35
+  }
+}

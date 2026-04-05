@@ -1,0 +1,92 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "product": {
+    "name": "FitMe",
+    "repo": "FitTracker2",
+    "tagline": "Your Fitness Command Center",
+    "elevator_pitch": "FitMe replaces your training log, meal tracker, and recovery dashboard with one app that knows what you should do today — without ever seeing your private health data.",
+    "positioning": "Privacy-first fitness intelligence",
+    "differentiators": [
+      "Only app combining training + nutrition + recovery + AI in one native experience",
+      "Only app with zero-knowledge encryption for health data",
+      "Only app with federated AI (population insights, private data stays on device)",
+      "Only app with on-device Foundation Model integration (iOS 26+)"
+    ]
+  },
+  "personas": [
+    {
+      "name": "The Consistent Lifter",
+      "type": "primary",
+      "age": "25-40",
+      "training_frequency": "4-6 days/week",
+      "goals": ["Build muscle", "Track progressive overload", "Optimize nutrition for body composition"],
+      "pain_points": ["Logging is tedious", "Can't see nutrition→recovery correlation", "Uses 3+ apps"],
+      "devices": ["iPhone (primary)", "Apple Watch (secondary)"]
+    },
+    {
+      "name": "The Health-Conscious Professional",
+      "type": "secondary",
+      "age": "30-50",
+      "training_frequency": "3-4 days/week",
+      "goals": ["Maintain fitness", "Manage weight", "Improve sleep and recovery"],
+      "pain_points": ["Too many screens", "Too much data entry", "Wants actionable guidance"],
+      "devices": ["iPhone only"]
+    },
+    {
+      "name": "The Data-Driven Optimizer",
+      "type": "tertiary",
+      "age": "25-45",
+      "training_frequency": "3-6 days/week",
+      "goals": ["Optimize every variable", "DEXA integration", "Blood work trends"],
+      "pain_points": ["Apps don't cross-reference enough data", "Wants deep stats"],
+      "devices": ["iPhone", "Apple Watch", "Potentially Android"]
+    }
+  ],
+  "brand": {
+    "colors": {
+      "primary": "#FA8F40",
+      "secondary": "#8AC7FF",
+      "warm": "#FFC78A",
+      "cool": "#DFF3FF"
+    },
+    "fonts": {
+      "primary": "Inter",
+      "mono": "SF Mono"
+    }
+  },
+  "guardrails": {
+    "crash_free_rate": { "target": 99.5, "unit": "%" },
+    "cold_start": { "target": 2000, "unit": "ms" },
+    "sync_success_rate": { "target": 99, "unit": "%" },
+    "ci_pass_rate": { "target": 95, "unit": "%" },
+    "cross_feature_wau": { "direction": "up_or_flat" }
+  },
+  "north_star": "Cross-feature WAU: users who complete training session AND log meal in same week",
+  "competitive_landscape": {
+    "market_size_2025": "$12.12B",
+    "market_size_2033": "$33.58B",
+    "cagr": "13.4%",
+    "competitors": {
+      "MyFitnessPal": { "strengths": ["14M food database", "barcode scanning"], "weaknesses": ["Sells user data", "No training", "$19.99/mo"] },
+      "Strong": { "strengths": ["Simple strength logging", "muscle heat maps"], "weaknesses": ["No nutrition", "No recovery", "$4.99/mo"] },
+      "Hevy": { "strengths": ["Social gym logging", "free tier", "copy routines"], "weaknesses": ["No nutrition", "No recovery", "No AI"] },
+      "Fitbod": { "strengths": ["AI-generated workouts"], "weaknesses": ["No nutrition", "No recovery", "$12.99/mo"] },
+      "Strava": { "strengths": ["Social/community", "endurance tracking"], "weaknesses": ["No strength training", "No nutrition"] },
+      "MacroFactor": { "strengths": ["Adaptive nutrition", "macro coaching"], "weaknesses": ["No training", "$11.99/mo"] }
+    }
+  },
+  "tech_stack": {
+    "ui": "SwiftUI + SF Symbols",
+    "health": "HealthKit",
+    "auth": "Apple Sign In (Supabase OAuth) + Passkeys (WebAuthn) + Email/OTP",
+    "encryption": "AES-256-GCM + ChaCha20-Poly1305 + HMAC-SHA512",
+    "sync": "CloudKit + Supabase (PostgreSQL + Realtime)",
+    "ai_cloud": "FastAPI on Railway (JWT + JWKS)",
+    "ai_device": "Apple Intelligence Foundation Models (iOS 26+)",
+    "analytics": "Firebase Analytics (GA4)",
+    "design_system": "~120 semantic tokens, Style Dictionary pipeline",
+    "ci": "GitHub Actions + make tokens-check",
+    "web": "Astro + Tailwind v4 + Vercel"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-04",
+  "infrastructure": {
+    "railway": { "status": "unknown", "service": "AI Engine (FastAPI)", "url": null, "last_check": null },
+    "supabase": { "status": "unknown", "service": "PostgreSQL + Realtime + Storage", "last_check": null },
+    "cloudkit": { "status": "unknown", "service": "iCloud Private DB", "last_check": null },
+    "firebase": { "status": "unknown", "service": "Analytics (GA4)", "last_check": null },
+    "vercel_website": { "status": "unknown", "service": "Marketing Website", "url": "fitme.app", "last_check": null },
+    "vercel_dashboard": { "status": "unknown", "service": "Development Dashboard", "last_check": null }
+  },
+  "ci": {
+    "last_build": { "status": null, "branch": null, "timestamp": null },
+    "tokens_check": { "status": "passing", "last_run": null },
+    "xcode_build": { "status": null, "last_run": null },
+    "xcode_test": { "status": null, "last_run": null }
+  },
+  "quality_gates": {
+    "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0 },
+    "cold_start_ms": { "current": null, "target": 2000, "alert_threshold": 3000 },
+    "sync_success_rate": { "current": null, "target": 99, "alert_threshold": 95 },
+    "ci_pass_rate": { "current": null, "target": 95, "alert_threshold": 85 }
+  },
+  "incidents": [],
+  "cost": {
+    "monthly_estimate": null,
+    "breakdown": {
+      "railway": null,
+      "supabase": null,
+      "vercel": null,
+      "firebase": null,
+      "apple_developer": "$99/year"
+    }
+  }
+}
