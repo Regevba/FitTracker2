@@ -147,7 +147,7 @@ struct MealEntrySheet: View {
             VStack(alignment: .leading, spacing: AppSpacing.large) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Smart Nutrition Capture")
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                     Text("Scan a nutrition label, paste English or Hebrew nutrition text, then scale it to the weight you actually ate.")
                         .font(.caption)
                         .foregroundStyle(AppColor.Text.secondary)

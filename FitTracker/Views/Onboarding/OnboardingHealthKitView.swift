@@ -22,7 +22,7 @@ struct OnboardingHealthKitView: View {
 
             VStack(spacing: AppSpacing.medium) {
                 Image(systemName: "heart.text.square")
-                    .font(.system(size: 56, weight: .medium))
+                    .font(AppText.iconHero)
                     .foregroundStyle(AppColor.Brand.primary)
 
                 Text("Sync your health data")

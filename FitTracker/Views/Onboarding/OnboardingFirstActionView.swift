@@ -73,7 +73,7 @@ private struct FirstActionCard: View {
         Button(action: action) {
             VStack(spacing: AppSpacing.xSmall) {
                 Image(systemName: icon)
-                    .font(.system(size: 32, weight: .medium))
+                    .font(AppText.iconMedium)
                     .foregroundStyle(AppColor.Brand.primary)
 
                 Text(label)

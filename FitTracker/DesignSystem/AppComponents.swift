@@ -210,7 +210,7 @@ struct AppSegmentedControl: View {
                 .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
         }
-        .padding(3)
+        .padding(AppSpacing.micro)
         .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))
         .animation(reduceMotion ? .none : AppSpring.snappy, value: selection)
         .accessibilityLabel(accessibilityLabel ?? "Segment")

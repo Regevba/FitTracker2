@@ -22,12 +22,12 @@ struct ConsentView: View {
 
                 // Shield body
                 Image(systemName: "lock.shield.fill")
-                    .font(.system(size: 64, weight: .regular))
+                    .font(AppText.iconHero)
                     .foregroundStyle(AppColor.Brand.secondary)
 
                 // Check badge
                 Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 24, weight: .bold))
+                    .font(AppText.subheading)
                     .foregroundStyle(AppColor.Status.success)
                     .background(Circle().fill(Color.white).frame(width: 26, height: 26))
                     .offset(x: 44, y: -44)
@@ -132,7 +132,7 @@ struct ConsentView: View {
         HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: allowed ? "checkmark.circle.fill" : "xmark.circle.fill")
                 .foregroundStyle(allowed ? AppColor.Status.success : AppColor.Status.error)
-                .font(.system(size: 18))
+                .font(AppText.body)
             Text(text)
                 .font(AppText.body)
                 .foregroundStyle(AppColor.Text.primary)

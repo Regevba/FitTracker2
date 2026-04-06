@@ -162,6 +162,14 @@ enum AppText {
     static let monoMetric        = Font.system(.title3,       design: .monospaced).weight(.bold)
     static let monoLabel         = Font.system(.caption2,     design: .monospaced).weight(.semibold)
     static let button            = Font.system(.body,         design: .rounded).weight(.semibold)
+
+    // Icon sizes — for SF Symbol illustrations in onboarding, empty states, hero displays.
+    // These are intentionally fixed-size (icons don't scale with Dynamic Type).
+    static let iconSmall         = Font.system(size: 18, weight: .medium)
+    static let iconMedium        = Font.system(size: 28, weight: .medium)
+    static let iconLarge         = Font.system(size: 48, weight: .medium)
+    static let iconHero          = Font.system(size: 64, weight: .regular)
+    static let iconDisplay       = Font.system(size: 72, weight: .regular)
 }
 
 // MARK: - Legacy aliases (DEPRECATED — migrate call sites to AppText.*)

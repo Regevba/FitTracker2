@@ -637,7 +637,7 @@ struct NutritionView: View {
 
                     // Pills icon
                     Image(systemName: "pills.fill")
-                        .font(.title3)
+                        .font(AppText.titleMedium)
                         .foregroundStyle(AppColor.Accent.achievement)
 
                     // Morning + Evening pill status buttons

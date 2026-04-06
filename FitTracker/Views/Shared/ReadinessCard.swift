@@ -149,7 +149,7 @@ struct ReadinessCard: View {
             .popover(isPresented: $showReadinessInfo) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("How Readiness Is Calculated")
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                     Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
                         .font(.subheadline)
                         .foregroundStyle(AppColor.Text.secondary)
@@ -498,7 +498,7 @@ struct ReadinessCard: View {
             HStack(alignment: .top, spacing: AppSpacing.xSmall) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(recommendation.routine.title)
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                     Text(recommendation.routine.focus)
                         .font(AppText.caption)

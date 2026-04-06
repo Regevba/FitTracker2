@@ -94,7 +94,7 @@ private struct GoalCard: View {
         Button(action: action) {
             VStack(spacing: AppSpacing.xSmall) {
                 Image(systemName: icon)
-                    .font(.system(size: 28, weight: .medium))
+                    .font(AppText.iconMedium)
                     .foregroundStyle(isSelected ? AppColor.Brand.primary : AppColor.Text.secondary)
 
                 Text(label)

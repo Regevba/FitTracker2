@@ -89,7 +89,7 @@ struct AccountPanelView: View {
                 avatarView
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(session?.displayName ?? "User")
-                        .font(.title3.weight(.bold))
+                        .font(AppText.titleStrong)
                     HStack(spacing: AppSpacing.xxSmall) {
                         providerBadge
                         Text(session?.provider.rawValue ?? "Signed In")
@@ -199,7 +199,7 @@ struct AccountPanelView: View {
                 .frame(width: 52, height: 52)
 
             Text(session?.initials ?? "—")
-                .font(.system(.title2, design: .rounded, weight: .bold))
+                .font(AppText.pageTitle)
                 .foregroundStyle(.white)
         }
     }
