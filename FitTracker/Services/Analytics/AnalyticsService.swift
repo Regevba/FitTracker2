@@ -12,6 +12,23 @@
 import Foundation
 import SwiftUI
 
+enum AnalyticsRuntimeConfiguration {
+    static var isRunningTests: Bool {
+        let env = ProcessInfo.processInfo.environment
+        return env["XCTestBundlePath"] != nil
+            || env["XCTestConfigurationFilePath"] != nil
+            || env["XCTestSessionIdentifier"] != nil
+    }
+
+    static var hasFirebaseConfiguration: Bool {
+        Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") != nil
+    }
+
+    static var canUseFirebase: Bool {
+        !isRunningTests && hasFirebaseConfiguration
+    }
+}
+
 @MainActor
 final class AnalyticsService: ObservableObject {
 
@@ -31,9 +48,9 @@ final class AnalyticsService: ObservableObject {
 
     static func makeDefault() -> AnalyticsService {
         let consent = ConsentManager()
-        // Always use Firebase in both DEBUG and RELEASE.
-        // MockAnalyticsAdapter is for unit tests only (injected via init(provider:consent:)).
-        let provider = FirebaseAnalyticsAdapter()
+        let provider: AnalyticsProvider = AnalyticsRuntimeConfiguration.canUseFirebase
+            ? FirebaseAnalyticsAdapter()
+            : MockAnalyticsAdapter()
         return AnalyticsService(provider: provider, consent: consent)
     }
 

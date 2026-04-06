@@ -102,12 +102,13 @@ final class DataExportService: ObservableObject {
     private func encodePreferences() -> [String: Any] {
         let p = dataStore.userPreferences
         return [
-            "unitSystem": p.unitSystem.rawValue,
+            "unitSystem": UserDefaults.standard.string(forKey: "ft.unitSystem") ?? UnitSystem.metric.rawValue,
             "nutritionGoalMode": p.nutritionGoalMode.rawValue,
             "zone2LowerHR": p.zone2LowerHR,
             "zone2UpperHR": p.zone2UpperHR,
             "hrReadyThreshold": p.hrReadyThreshold,
             "hrvReadyThreshold": p.hrvReadyThreshold,
+            "preferredStatsCarouselMetrics": p.preferredStatsCarouselMetrics,
         ]
     }
 
@@ -115,37 +116,53 @@ final class DataExportService: ObservableObject {
         dataStore.dailyLogs.map { log in
             var dict: [String: Any] = [
                 "date": ISO8601DateFormatter().string(from: log.date),
+                "phase": log.phase.rawValue,
+                "dayType": log.dayType.rawValue,
+                "recoveryDay": log.recoveryDay,
+                "completionPct": log.completionPct,
+                "notes": log.notes,
             ]
-            // Training data (if present)
-            if !log.trainingLog.exercises.isEmpty {
+
+            let exerciseLogs = Array(log.exerciseLogs.values)
+            let cardioLogs = Array(log.cardioLogs.values)
+            if !exerciseLogs.isEmpty || !cardioLogs.isEmpty {
                 dict["training"] = [
-                    "dayType": log.trainingLog.dayType.rawValue,
-                    "exerciseCount": log.trainingLog.exercises.count,
-                    "totalSets": log.trainingLog.exercises.reduce(0) { $0 + $1.sets.count },
-                    "durationSeconds": log.trainingLog.durationSeconds,
-                    "completed": log.trainingLog.isComplete,
+                    "exerciseCount": exerciseLogs.count,
+                    "cardioCount": cardioLogs.count,
+                    "totalSets": exerciseLogs.reduce(0) { $0 + $1.sets.count },
+                    "totalVolume": exerciseLogs.reduce(0) { $0 + $1.totalVolume },
+                    "cardioMinutes": cardioLogs.compactMap(\.durationMinutes).reduce(0, +),
+                    "completedTaskCount": log.taskStatuses.values.filter { $0 == .completed }.count,
                 ]
             }
-            // Nutrition data (if present)
+
             if !log.nutritionLog.meals.isEmpty {
                 dict["nutrition"] = [
                     "mealCount": log.nutritionLog.meals.count,
-                    "totalCalories": log.nutritionLog.totalCalories,
-                    "totalProtein": log.nutritionLog.totalProtein,
-                    "totalCarbs": log.nutritionLog.totalCarbs,
-                    "totalFat": log.nutritionLog.totalFat,
+                    "totalCalories": log.nutritionLog.resolvedCalories as Any,
+                    "totalProteinG": log.nutritionLog.resolvedProteinG as Any,
+                    "totalCarbsG": log.nutritionLog.resolvedCarbsG as Any,
+                    "totalFatG": log.nutritionLog.resolvedFatG as Any,
+                    "waterML": log.nutritionLog.waterML as Any,
                 ]
             }
-            // Biometrics (if present)
-            if let bio = log.biometrics {
+
+            let bio = log.biometrics
+            if bio.weightKg != nil ||
+                bio.bodyFatPercent != nil ||
+                bio.effectiveRestingHR != nil ||
+                bio.effectiveHRV != nil ||
+                bio.effectiveSleep != nil
+            {
                 var bioDict: [String: Any] = [:]
                 if let w = bio.weightKg { bioDict["weightKg"] = w }
-                if let bf = bio.bodyFatPct { bioDict["bodyFatPct"] = bf }
-                if let hr = bio.restingHR { bioDict["restingHR"] = hr }
+                if let bf = bio.bodyFatPercent { bioDict["bodyFatPercent"] = bf }
+                if let hr = bio.effectiveRestingHR { bioDict["restingHeartRate"] = hr }
                 if let hrv = bio.hrv { bioDict["hrv"] = hrv }
-                if let sleep = bio.sleepHours { bioDict["sleepHours"] = sleep }
+                if let sleep = bio.effectiveSleep { bioDict["sleepHours"] = sleep }
                 if !bioDict.isEmpty { dict["biometrics"] = bioDict }
             }
+
             return dict
         }
     }
@@ -154,10 +171,19 @@ final class DataExportService: ObservableObject {
         dataStore.weeklySnapshots.map { snap in
             [
                 "weekStart": ISO8601DateFormatter().string(from: snap.weekStart),
-                "avgWeight": snap.avgWeight as Any,
-                "avgBodyFat": snap.avgBodyFat as Any,
-                "trainingDays": snap.trainingDays,
-                "adherenceScore": snap.adherenceScore,
+                "weekNumber": snap.weekNumber,
+                "avgWeightKg": snap.avgWeightKg as Any,
+                "avgBodyFatPct": snap.avgBodyFatPct as Any,
+                "avgRestingHR": snap.avgRestingHR as Any,
+                "avgHRV": snap.avgHRV as Any,
+                "avgSleepHours": snap.avgSleepHours as Any,
+                "avgProteinG": snap.avgProteinG as Any,
+                "totalTrainingDays": snap.totalTrainingDays,
+                "totalVolume": snap.totalVolume,
+                "totalCardioMinutes": snap.totalCardioMinutes,
+                "taskAdherence": snap.taskAdherence,
+                "weightChange": snap.weightChange as Any,
+                "bfChange": snap.bfChange as Any,
             ]
         }
     }

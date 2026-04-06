@@ -62,14 +62,16 @@ FitMe replaces your training log, meal tracker, and recovery dashboard with one 
 - **Secure Enclave** key storage with biometric ACL
 - **Zero-knowledge sync** — servers store only encrypted `.ftenc` blobs
 - **Federated AI** — no PII leaves the device
-- **GDPR compliant** — account deletion (30-day grace), data export (JSON), consent management
+- **GDPR-oriented flows** — account deletion (30-day grace), data export (JSON), consent management; runtime verification is still being tightened
 - **Apple Sign In + Passkeys (WebAuthn)** — no password database to breach
 
 ### Analytics
-- Firebase Analytics (GA4) with GDPR-compliant consent management
+- Firebase Analytics (GA4) integration with GDPR-compliant consent management
 - 20 typed events across 6 categories, 24 screen views, 6 user properties, 5 conversions
-- Consent-gated: respects user opt-in/out via ConsentManager
+- Consent-gated: respects user opt-in/out via `ConsentManager`
 - Settings toggle for runtime enable/disable
+- Falls back to `MockAnalyticsAdapter` during XCTest or when a local Firebase plist is absent
+- Requires a local `GoogleService-Info.plist` for real Firebase runtime verification
 
 ---
 
@@ -146,23 +148,64 @@ Internal PM dashboard. Astro + React + Tailwind with Kanban board (drag-drop), t
 
 ---
 
+## Current Repo Status
+
+Verification snapshot as of `2026-04-06`:
+
+- iOS app builds again with full Xcode after Firebase/Xcode project recovery
+- targeted iOS core XCTest coverage passes on simulator (`FitTrackerTests/FitTrackerCoreTests`, `28` tests)
+- simulator settings review launch now reaches the live Settings screen
+- simulator nested delete-account review route now reaches the live GDPR deletion screen
+- simulator nested export-data review route now reaches the live portability/export screen
+- export generation is now covered in the targeted iOS core XCTest suite
+- sync merge coverage now verifies multiple dated daily logs and weekly snapshots coexist correctly
+- design-token drift check passes
+- dashboard tests pass (`9/9`) and the production build now passes
+- marketing website production build now passes
+- AI engine tests pass (`5/5`) with a self-contained test harness and stub settings override
+- Firebase bootstrap is now config-aware, so missing local plist no longer blocks unit tests or clean builds
+- Firebase runtime verification still requires a local `FitTracker/GoogleService-Info.plist`
+- live signed-in Supabase sync and deletion/export execution still require local runtime credentials and backend validation
+
+Detailed recovery and verification notes live in [`docs/project/stabilization-report-2026-04-05.md`](docs/project/stabilization-report-2026-04-05.md).
+
+---
+
 ## Getting Started
 
 ### Prerequisites
-- Xcode 16+ (macOS 15+)
+- Full Xcode installed and selected, not Command Line Tools only
+- Xcode 26.4 verified during the current stabilization pass
 - iOS 17.0+ deployment target
-- Node.js (for design token pipeline)
+- Node.js for the root token pipeline and both web projects
+- Python 3.12 for `ai-engine`
 
-### Build
+### Bootstrap
 
 ```bash
-# Install token pipeline dependencies
+# Root token pipeline
 npm install
 
-# Verify design tokens are in sync
-make tokens-check
+# Dashboard
+cd dashboard && npm install
 
-# Build with Xcode
+# Marketing site
+cd ../website && npm install
+
+# AI engine
+cd ../ai-engine
+python3.12 -m venv /tmp/FitTracker2-ai-venv
+source /tmp/FitTracker2-ai-venv/bin/activate
+pip install -e '.[dev]'
+```
+
+### iOS Build
+
+```bash
+cd /path/to/FitTracker2
+npm run tokens:check
+
+# Build with full Xcode selected
 xcodebuild build \
   -project FitTracker.xcodeproj \
   -scheme FitTracker \
@@ -170,22 +213,44 @@ xcodebuild build \
   -derivedDataPath /tmp/FitTrackerDerivedData \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO
+
+# Targeted simulator regression coverage
+xcodebuild test \
+  -project FitTracker.xcodeproj \
+  -scheme FitTracker \
+  -destination 'platform=iOS Simulator,id=87E96E30-350E-46AC-AB34-B87AF8D1AB1E' \
+  -only-testing:FitTrackerTests/FitTrackerCoreTests \
+  -derivedDataPath /tmp/FitTrackerTestsDD \
+  CODE_SIGNING_ALLOWED=NO \
+  CODE_SIGNING_REQUIRED=NO
 ```
 
 ### Web Projects
 
 ```bash
-# Marketing website
-cd website && npm install && npm run build
-
 # Development dashboard
-cd dashboard && npm install && npm run build
+cd dashboard && npm test && npm run build
+
+# Marketing website
+cd ../website && npm run build
+```
+
+### AI Engine
+
+```bash
+cd ai-engine
+source /tmp/FitTracker2-ai-venv/bin/activate
+pytest -q
 ```
 
 ### Notes
 - HealthKit requires device runtime permissions (not available on Simulator for all queries)
 - CloudKit requires iCloud entitlements (disabled on Simulator builds)
 - Simulator builds auto-login in DEBUG mode for faster development
+- `FitTracker/Info.plist` is restored, but the repo still ships placeholder values for `SupabaseURL` and `SupabaseAnonKey`; replace them locally before runtime Supabase verification
+- `PasskeyRelyingPartyID` must match the associated-domains setup you use for passkeys
+- `FitTracker/GoogleService-Info.plist` is intentionally not present in this clone; add your Firebase app config locally before verifying analytics
+- `/tmp` virtualenvs and derived-data folders are convenient but ephemeral; recreate them if they disappear between sessions
 
 ---
 
@@ -226,6 +291,7 @@ Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/p
 | [Metrics Framework](docs/product/metrics-framework.md) | 40 metrics across 6 categories with instrumentation status |
 | [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
 | [Roadmap](docs/project/master-backlog-roadmap.md) | RICE-prioritized 19-task roadmap with phase gates |
+| [Stabilization Report](docs/project/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |
 | [Firebase Setup](docs/project/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
 | [Changelog](CHANGELOG.md) | Milestone history |

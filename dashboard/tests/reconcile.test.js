@@ -93,6 +93,7 @@ describe('reconcile', () => {
     const missing = result.alerts.filter(a => a.type === 'missing' && a.message.includes('PM workflow'));
     expect(missing).toHaveLength(1);
     expect(missing[0].severity).toBe('amber');
+    expect(result.sources.github.healthy).toBe(false);
   });
 
   it('reports correct source counts', () => {

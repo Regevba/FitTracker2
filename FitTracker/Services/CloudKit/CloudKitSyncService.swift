@@ -279,6 +279,43 @@ final class CloudKitSyncService: ObservableObject {
         return try await EncryptionService.shared.decryptRaw(encryptedData)
     }
 
+    func deleteAllUserRecords() async throws {
+        guard let privateDB else { throw cloudKitUnavailableError() }
+        status = .syncing
+
+        for recordType in [
+            CKRecordType.dailyLog,
+            CKRecordType.weeklySnapshot,
+            CKRecordType.userProfile,
+            CKRecordType.userPreferences,
+            CKRecordType.cardioAsset,
+        ] {
+            let query = CKQuery(recordType: recordType, predicate: NSPredicate(value: true))
+            var cursor: CKQueryOperation.Cursor?
+
+            repeat {
+                let result = try await (cursor == nil
+                    ? privateDB.records(matching: query)
+                    : privateDB.records(continuingMatchFrom: cursor!))
+
+                let recordIDs = result.matchResults.compactMap { _, recordResult in
+                    try? recordResult.get().recordID
+                }
+
+                for recordID in recordIDs {
+                    _ = try await privateDB.deleteRecord(withID: recordID)
+                }
+
+                cursor = result.queryCursor
+            } while cursor != nil
+        }
+
+        defaults.removeObject(forKey: SyncStateKey.userProfileDigest)
+        defaults.removeObject(forKey: SyncStateKey.userPreferencesDigest)
+        lastSyncDate = nil
+        status = .idle
+    }
+
     // ── Private helpers ──────────────────────────────────
 
     /// Fetch an existing CKRecord (to preserve its server changeTag) or create a new one.

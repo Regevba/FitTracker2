@@ -8,13 +8,7 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from httpx import ASGITransport, AsyncClient
 
-from app.main import create_app
-from app.models.common import InsightResponse
-
-
-@pytest.fixture
-def app():
-    return create_app()
+from app.auth.jwt_validator import get_verified_claims
 
 
 VALID_TRAINING_PAYLOAD = {
@@ -31,19 +25,23 @@ VALID_TRAINING_PAYLOAD = {
 
 @pytest.mark.asyncio
 async def test_training_insight_requires_auth(app):
-    """Unauthenticated request must return 403."""
+    """Unauthenticated request must be rejected by the auth dependency."""
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as client:
         response = await client.post(
             "/v1/training/insight", json=VALID_TRAINING_PAYLOAD
         )
-    assert response.status_code == 403
+    assert response.status_code == 401
 
 
 @pytest.mark.asyncio
 async def test_training_insight_invalid_payload_rejected(app):
     """Invalid band value must return 422 (Pydantic validation)."""
+    app.dependency_overrides[get_verified_claims] = lambda: {
+        "sub": "test-user",
+        "role": "authenticated",
+    }
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test"
     ) as client:
@@ -52,6 +50,7 @@ async def test_training_insight_invalid_payload_rejected(app):
             json={**VALID_TRAINING_PAYLOAD, "age_band": "invalid_value"},
             headers={"Authorization": "Bearer header.payload.signature"},
         )
+    app.dependency_overrides.pop(get_verified_claims, None)
     assert response.status_code == 422
 
 
@@ -86,12 +85,9 @@ async def test_training_insight_fire_and_forget_path(app):
         "primary_goal:muscle_gain": 450,
     }
 
+    app.dependency_overrides[get_verified_claims] = lambda: mock_claims
+
     with (
-        # Patch at the router module level — where the dependency is resolved
-        patch(
-            "app.routers.training.get_verified_claims",
-            return_value=mock_claims,
-        ),
         patch(
             "app.routers.training.CohortService.get_cohort_totals",
             new_callable=AsyncMock,
@@ -110,6 +106,8 @@ async def test_training_insight_fire_and_forget_path(app):
                 json=VALID_TRAINING_PAYLOAD,
                 headers={"Authorization": "Bearer mock-token"},
             )
+
+    app.dependency_overrides.pop(get_verified_claims, None)
 
     assert response.status_code == 200
     body = response.json()

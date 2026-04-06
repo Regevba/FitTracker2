@@ -99,47 +99,50 @@ final class AccountDeletionService: ObservableObject {
         isDeleting = true
         deletionError = nil
         var deletedStores: [String] = []
+        var failedStores: [String] = []
+
+        analytics.setUserID(nil)
 
         do {
-            // 1. Reset Firebase Analytics
-            analytics.setUserID(nil)
-            deletedStores.append("firebase")
-
-            // 2. Supabase: delete sync_records + cardio_assets
-            // (RLS enforced — only deletes authenticated user's data)
-            // TODO: Implement supabaseSync.deleteAllUserData() when Supabase methods are ready
+            await supabaseSync.unsubscribeRealtime()
+            try await supabaseSync.deleteAllUserData()
             deletedStores.append("supabase")
-
-            // 3. CloudKit: delete all records in private zone
-            // TODO: Implement cloudSync.deleteAllUserRecords() when CloudKit methods are ready
-            deletedStores.append("cloudkit")
-
-            // 4. Local device: clear encrypted data store
-            await dataStore.clearInMemory()
-            deletedStores.append("device")
-
-            // 5. Encryption: clear crypto session + delete keys
-            await EncryptionService.shared.clearSessionContext()
-            deletedStores.append("keychain")
-
-            // 6. UserDefaults: remove all ft.* keys
-            clearUserDefaults()
-            deletedStores.append("userdefaults")
-
-            // 7. Log completion
-            analytics.logAccountDeleteCompleted(storesDeleted: deletedStores)
-
-            // 8. Sign out (clears Supabase session)
-            signIn.signOut()
-
-            isDeleting = false
-
         } catch {
-            deletionError = error.localizedDescription
-            isDeleting = false
-            // Partial deletion — log what we managed to delete
-            analytics.logAccountDeleteCompleted(storesDeleted: deletedStores)
+            failedStores.append("supabase")
         }
+
+        do {
+            try await cloudSync.deleteAllUserRecords()
+            deletedStores.append("cloudkit")
+        } catch {
+            failedStores.append("cloudkit")
+        }
+
+        do {
+            try dataStore.deletePersistedData()
+            deletedStores.append("device")
+        } catch {
+            failedStores.append("device")
+        }
+
+        do {
+            try await EncryptionService.shared.deleteStoredKeys()
+            deletedStores.append("keychain")
+        } catch {
+            failedStores.append("keychain")
+        }
+
+        clearUserDefaults()
+        deletedStores.append("userdefaults")
+
+        if failedStores.isEmpty {
+            analytics.logAccountDeleteCompleted(storesDeleted: deletedStores)
+        } else {
+            deletionError = "Deleted: \(deletedStores.joined(separator: ", ")). Still pending: \(failedStores.joined(separator: ", "))."
+        }
+
+        signIn.signOut()
+        isDeleting = false
     }
 
     // MARK: - Private

@@ -32,6 +32,9 @@ struct DeleteAccountView: View {
         } message: {
             Text(authErrorMessage)
         }
+        .task {
+            deletionService.checkGracePeriod()
+        }
         .analyticsScreen(AnalyticsScreen.deleteAccount)
     }
 

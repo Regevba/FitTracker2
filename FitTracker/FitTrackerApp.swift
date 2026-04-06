@@ -25,6 +25,7 @@ private var isScreenReviewModeEnabled: Bool {
 private var isSettingsReviewModeEnabled: Bool {
     ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_AUTH"]?.lowercased() == "settings"
         || ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_SETTINGS"] == "1"
+        || ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_TAB"]?.lowercased() == "settings"
         || ProcessInfo.processInfo.arguments.contains("--review-settings")
 }
 
@@ -61,7 +62,9 @@ struct FitTrackerApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
-        FirebaseApp.configure()
+        if AnalyticsRuntimeConfiguration.canUseFirebase {
+            FirebaseApp.configure()
+        }
         #if DEBUG
         ColorContrastValidator.validate()
         #endif
@@ -89,8 +92,8 @@ struct FitTrackerApp: App {
                     } else {
                         // Session cleared (sign-out or lock) — wipe all in-memory sensitive state
                         Task {
-                            await dataStore.clearInMemory()
-                            await aiOrchestrator.clearRecommendations()
+                            dataStore.clearInMemory()
+                            aiOrchestrator.clearRecommendations()
                             await EncryptionService.shared.clearSessionContext()
                         }
                     }
@@ -104,7 +107,9 @@ struct FitTrackerApp: App {
                     switch phase {
                     case .active:
                         Task {
-                            await signIn.restoreSession()   // async — refreshes Supabase JWT
+                            await signIn.restoreSession(
+                                activateStoredSession: !settings.requireBiometricUnlockOnReopen
+                            )
                             // Check if a clear-crypto flag was set before a potential OS kill
                             if UserDefaults.standard.bool(forKey: "ft.clearCryptoOnNextLaunch") {
                                 UserDefaults.standard.removeObject(forKey: "ft.clearCryptoOnNextLaunch")
@@ -153,6 +158,7 @@ struct FitTrackerApp: App {
                     .environmentObject(dataStore)
                     .environmentObject(healthService)
                     .environmentObject(cloudSync)
+                    .environmentObject(supabaseSync)
                     .environmentObject(settings)
                     .environmentObject(watchService)
                     .environmentObject(analytics)
@@ -176,17 +182,18 @@ struct FitTrackerApp: App {
     private var rootView: some View {
         if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
             SettingsView()
+                .analyticsScreen(AnalyticsScreen.settings)
                 .environmentObject(signIn)
                 .environmentObject(biometricAuth)
                 .environmentObject(healthService)
                 .environmentObject(dataStore)
                 .environmentObject(cloudSync)
+                .environmentObject(supabaseSync)
                 .environmentObject(programStore)
                 .environmentObject(settings)
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
-                .analyticsScreen(AnalyticsScreen.settings)
         } else if signIn.isAuthenticated {
             if analytics.consent.gdprConsent == .pending {
                 ConsentView {
@@ -200,6 +207,7 @@ struct FitTrackerApp: App {
                     .environmentObject(healthService)
                     .environmentObject(dataStore)
                     .environmentObject(cloudSync)
+                    .environmentObject(supabaseSync)
                     .environmentObject(programStore)
                     .environmentObject(settings)
                     .environmentObject(watchService)

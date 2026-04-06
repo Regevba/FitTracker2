@@ -244,6 +244,7 @@ extension Color {
     }
 
     enum accent {
+        static let primary = AppColor.Accent.primary
         static let cyan   = AppColor.Accent.recovery
         static let purple = AppColor.Accent.sleep
         static let gold   = AppColor.Accent.achievement

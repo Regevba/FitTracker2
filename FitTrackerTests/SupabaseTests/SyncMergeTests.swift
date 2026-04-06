@@ -39,6 +39,30 @@ final class SyncMergeTests: XCTestCase {
         XCTAssertEqual(store.dailyLogs.first?.notes, "remote")
     }
 
+    func testDailyLogMerge_differentLogicDates_coexistAndStaySortedNewestFirst() {
+        let store = EncryptedDataStore()
+        let calendar = Calendar.current
+        let newerDate = calendar.startOfDay(for: Date())
+        let olderDate = calendar.date(byAdding: .day, value: -1, to: newerDate)!
+
+        let older = makeDailyLog(
+            date: olderDate,
+            notes: "older",
+            modifiedAt: olderDate.addingTimeInterval(300)
+        )
+        let newer = makeDailyLog(
+            date: newerDate,
+            notes: "newer",
+            modifiedAt: newerDate.addingTimeInterval(300)
+        )
+
+        store.mergeDailyLog(older)
+        store.mergeDailyLog(newer)
+
+        XCTAssertEqual(store.dailyLogs.count, 2)
+        XCTAssertEqual(store.dailyLogs.map(\.notes), ["newer", "older"])
+    }
+
     // MARK: - Weekly Snapshot Merge
 
     func testWeeklySnapshotMerge_localNeedsSync_keepsLocal() {
@@ -66,6 +90,24 @@ final class SyncMergeTests: XCTestCase {
         store.weeklySnapshots = [local]
         store.mergeWeeklySnapshot(remote)
         XCTAssertEqual(store.weeklySnapshots.first?.avgWeightKg, 68.0, "remote wins when local is synced")
+    }
+
+    func testWeeklySnapshotMerge_differentWeeks_coexistAndStaySortedNewestFirst() {
+        let store = EncryptedDataStore()
+        let calendar = Calendar.current
+        let newerWeekStart = calendar.startOfDay(for: Date())
+        let olderWeekStart = calendar.date(byAdding: .day, value: -7, to: newerWeekStart)!
+
+        var older = makeWeeklySnapshot(weekStart: olderWeekStart)
+        older.avgWeightKg = 70.0
+        var newer = makeWeeklySnapshot(weekStart: newerWeekStart)
+        newer.avgWeightKg = 68.0
+
+        store.mergeWeeklySnapshot(older)
+        store.mergeWeeklySnapshot(newer)
+
+        XCTAssertEqual(store.weeklySnapshots.count, 2)
+        XCTAssertEqual(store.weeklySnapshots.map(\.avgWeightKg), [68.0, 70.0])
     }
 
     // MARK: - markSynced

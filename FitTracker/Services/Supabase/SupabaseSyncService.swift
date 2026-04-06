@@ -142,7 +142,7 @@ final class SupabaseSyncService: ObservableObject {
         // Listen for INSERT and UPDATE on rows belonging to this user.
         // RLS on the `sync_records` table ensures the server only broadcasts
         // rows where user_id matches the authenticated session.
-        channel.onPostgresChange(
+        _ = channel.onPostgresChange(
             InsertAction.self,
             schema: "public",
             table: "sync_records"
@@ -151,7 +151,7 @@ final class SupabaseSyncService: ObservableObject {
             Task { await self.fetchChanges(dataStore: dataStore) }
         }
 
-        channel.onPostgresChange(
+        _ = channel.onPostgresChange(
             UpdateAction.self,
             schema: "public",
             table: "sync_records"
@@ -160,8 +160,12 @@ final class SupabaseSyncService: ObservableObject {
             Task { await self.fetchChanges(dataStore: dataStore) }
         }
 
-        await channel.subscribe()
-        realtimeChannel = channel
+        do {
+            try await channel.subscribeWithError()
+            realtimeChannel = channel
+        } catch {
+            status = .failed(error.localizedDescription)
+        }
     }
 
     func unsubscribeRealtime() async {
@@ -183,7 +187,7 @@ final class SupabaseSyncService: ObservableObject {
 
         try await supabase.storage
             .from("cardio-images")
-            .upload(path: path, file: encrypted, options: FileOptions(upsert: true))
+            .upload(path, data: encrypted, options: FileOptions(upsert: true))
 
         let checksum = SHA256.hash(data: encrypted).hexString
         try await supabase
@@ -206,6 +210,48 @@ final class SupabaseSyncService: ObservableObject {
             .from("cardio-images")
             .download(path: storagePath)
         return try await EncryptionService.shared.decryptRaw(encrypted)
+    }
+
+    /// Delete all remote user data owned by the currently authenticated user.
+    func deleteAllUserData() async throws {
+        guard let session = try? await supabase.auth.session else { return }
+        let userID = session.user.id.uuidString
+        status = .syncing
+
+        struct CardioAssetPathRow: Decodable {
+            let storagePath: String
+
+            enum CodingKeys: String, CodingKey {
+                case storagePath = "storage_path"
+            }
+        }
+
+        let assetRows: [CardioAssetPathRow] = try await supabase
+            .from("cardio_assets")
+            .select("storage_path")
+            .eq("user_id", value: userID)
+            .execute()
+            .value
+
+        if !assetRows.isEmpty {
+            _ = try await supabase.storage
+                .from("cardio-images")
+                .remove(paths: assetRows.map(\.storagePath))
+        }
+
+        try await supabase
+            .from("cardio_assets")
+            .delete()
+            .eq("user_id", value: userID)
+            .execute()
+
+        try await supabase
+            .from("sync_records")
+            .delete()
+            .eq("user_id", value: userID)
+            .execute()
+
+        status = .idle
     }
 }
 

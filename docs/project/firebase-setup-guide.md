@@ -3,13 +3,15 @@
 > Complete step-by-step instructions to connect GA4 via Firebase to the FitMe iOS app.
 > Estimated time: 30-45 minutes
 
+> Status note (`2026-04-05`): the repo already contains the Firebase package linkage, `FirebaseCore` / `FirebaseAnalytics` imports, and config-aware Firebase bootstrap in [`FitTrackerApp.swift`](../../FitTracker/FitTrackerApp.swift). This guide is now mainly about supplying local Firebase app configuration and verifying runtime analytics. Clean builds and XCTest runs no longer require `GoogleService-Info.plist`, but real Firebase event verification still does.
+
 ---
 
 ## Prerequisites
 
 - Apple Developer account (for bundle ID)
 - Google account (for Firebase Console)
-- Xcode 15+ installed
+- Full Xcode installed (Xcode 16+ minimum; Xcode 26.4 verified during stabilization)
 - FitMe project opens and builds in Xcode
 
 ---
@@ -43,7 +45,7 @@
 
 1. On the Firebase project overview page, click the **iOS+ icon** (Apple icon)
 2. Fill in:
-   - **Apple bundle ID:** `com.regevba.FitTracker` (check your Xcode project → General → Bundle Identifier)
+   - **Apple bundle ID:** `com.fittracker.regev` (check the FitTracker target → General → Bundle Identifier)
    - **App nickname:** `FitMe iOS`
    - **App Store ID:** (leave blank for now)
 3. Click **Register app**
@@ -60,20 +62,18 @@
 
 ## Part 3: Add Firebase SDK to Xcode
 
-### Step 5: Add Firebase SPM Package
+### Step 5: Verify Firebase SPM Package
 
-1. Open `FitTracker2.xcodeproj` in Xcode
-2. Go to **File → Add Package Dependencies...**
-3. In the search bar, paste:
+1. Open `FitTracker.xcodeproj` in Xcode
+2. Check **Package Dependencies**
+3. Confirm this package is present:
    ```
    https://github.com/firebase/firebase-ios-sdk
    ```
-4. Click **Add Package**
-5. Wait for Xcode to resolve the package (may take 1-2 minutes)
-6. In the **"Choose Package Products"** dialog, select ONLY:
-   - ✅ **FirebaseAnalytics**
-   - ❌ Everything else (uncheck all others)
-7. Click **Add Package**
+4. Confirm the FitTracker target links:
+   - `FirebaseCore`
+   - `FirebaseAnalytics`
+5. If the package is missing, add it via **File → Add Package Dependencies...**
 
 ### Step 6: Add GoogleService-Info.plist to Project
 
@@ -99,96 +99,61 @@
 Firebase auto-tracks UIViewController screen views, which doesn't work well with SwiftUI. We handle screen tracking manually via `.analyticsScreen()`.
 
 1. Open `Info.plist` (or the Info tab in target settings)
-2. Add a new row:
-   - Key: `FirebaseAutomaticScreenReportingEnabled`
-   - Type: Boolean
-   - Value: `NO`
+2. Verify this key exists:
+   - `FirebaseAutomaticScreenReportingEnabled = NO`
 
 ---
 
 ## Part 4: Configure Firebase in Code
 
-### Step 9: Uncomment Firebase Imports
+### Step 9: Verify Firebase Imports
 
-Open `FitTracker/Services/Analytics/FirebaseAnalyticsAdapter.swift` and uncomment the Firebase lines:
+Open [`FitTracker/Services/Analytics/FirebaseAnalyticsAdapter.swift`](../../FitTracker/Services/Analytics/FirebaseAnalyticsAdapter.swift) and verify the Firebase imports are active:
 
 ```swift
-// Change this:
-// import FirebaseCore
-// import FirebaseAnalytics
-
-// To this:
 import FirebaseCore
 import FirebaseAnalytics
 ```
 
-Then uncomment ALL the method bodies in that file (remove the `//` before each `Analytics.` and `FirebaseApp.` call).
+### Step 10: Verify FirebaseApp.configure() in App Entry
 
-### Step 10: Add FirebaseApp.configure() to App Entry
-
-Open `FitTracker/FitTrackerApp.swift` and add Firebase configuration in the `init()`:
+Open [`FitTracker/FitTrackerApp.swift`](../../FitTracker/FitTrackerApp.swift) and verify Firebase configuration exists in `init()`:
 
 ```swift
 init() {
+    if AnalyticsRuntimeConfiguration.canUseFirebase {
+        FirebaseApp.configure()
+    }
+
     #if DEBUG
     ColorContrastValidator.validate()
     #endif
-    
-    // Configure Firebase (must be called before any Firebase service)
-    FirebaseApp.configure()
 }
 ```
 
-Add the import at the top of the file:
-```swift
-import FirebaseCore
-```
+### Step 11: Verify AnalyticsService Wiring
 
-### Step 11: Add AnalyticsService to FitTrackerApp
-
-In `FitTrackerApp.swift`, add the analytics service alongside the other `@StateObject` services:
+In `FitTrackerApp.swift`, verify the analytics service exists alongside the other `@StateObject` services:
 
 ```swift
 @StateObject private var analytics = AnalyticsService.makeDefault()
 ```
 
-Then add `.environmentObject(analytics)` to all the view hierarchies where other environment objects are passed. There are 3 places in `rootView`:
+Then verify `.environmentObject(analytics)` is passed into the authenticated app, settings review mode, and auth flows.
 
-```swift
-// In the RootTabView branch:
-RootTabView()
-    .environmentObject(signIn)
-    // ... existing environment objects ...
-    .environmentObject(analytics)   // ← Add this
+### Step 12: Verify Consent Flow in Auth State Machine
 
-// In the SettingsView branch:
-SettingsView()
-    .environmentObject(signIn)
-    // ... existing environment objects ...
-    .environmentObject(analytics)   // ← Add this
-
-// In the AuthHubView branch:
-AuthHubView()
-    .environmentObject(signIn)
-    // ... existing environment objects ...
-    .environmentObject(analytics)   // ← Add this
-```
-
-### Step 12: Add Consent Check to Auth Flow
-
-After the user signs in/up, show the ConsentView if consent hasn't been granted:
-
-In the `rootView` computed property, add a consent check before showing `RootTabView`:
+In `rootView`, verify the authenticated flow shows `ConsentView` before `RootTabView` when GDPR consent is still pending.
 
 ```swift
 } else if signIn.isAuthenticated {
-    if analytics.consent.needsConsentPrompt {
-        ConsentView(onComplete: { /* consent handled internally */ })
+    if analytics.consent.gdprConsent == .pending {
+        ConsentView {
+            analytics.syncConsentToProvider()
+        }
             .environmentObject(analytics)
     } else {
         RootTabView()
-            .environmentObject(signIn)
-            // ... all other environment objects ...
             .environmentObject(analytics)
     }
 }
@@ -201,9 +166,8 @@ In the `rootView` computed property, add a consent check before showing `RootTab
 ### Step 13: Add App Tracking Transparency Usage Description
 
 1. Open `Info.plist`
-2. Add a new row:
-   - Key: `NSUserTrackingUsageDescription`
-   - Type: String
+2. Verify this key exists:
+   - `NSUserTrackingUsageDescription`
    - Value: `FitMe uses this to understand how the app is used and improve your experience. No health data is shared.`
 
 ---
@@ -214,7 +178,8 @@ In the `rootView` computed property, add a consent check before showing `RootTab
 
 1. **Build:** `Cmd + B` — should compile without errors
 2. **Run:** `Cmd + R` on a simulator or device
-3. Check the Xcode console for:
+3. If `GoogleService-Info.plist` is still missing, the app can still build and unit tests can still run, but Firebase itself will not initialize and GA4 verification will not be meaningful yet
+4. Check the Xcode console for:
    ```
    [Analytics:Firebase] screen_view: consent
    [Analytics:Firebase] consent_granted {"consent_type": "gdpr"}

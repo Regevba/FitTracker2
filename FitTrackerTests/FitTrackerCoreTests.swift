@@ -33,6 +33,17 @@ private struct PassthroughFoundationModel: FoundationModelProtocol {
 
 @MainActor
 final class FitTrackerCoreTests: XCTestCase {
+    override func tearDown() {
+        KeychainHelper.delete(key: SignInService.sessionKey)
+        unsetenv("FITTRACKER_SKIP_AUTO_LOGIN")
+        unsetenv("FITTRACKER_REVIEW_AUTH")
+        unsetenv("FITTRACKER_REVIEW_SETTINGS")
+        UserDefaults.standard.removeObject(forKey: "ft.deletion.scheduledAt")
+        UserDefaults.standard.removeObject(forKey: "ft.unitTestFlag")
+        UserDefaults.standard.removeObject(forKey: "supabase.lastPull")
+        super.tearDown()
+    }
+
     func testMergedAppleSessionPreservesExistingProfileDataWhenCredentialOmitsThem() {
         let existing = UserSession(
             provider: .apple,
@@ -331,6 +342,340 @@ final class FitTrackerCoreTests: XCTestCase {
         let callCount = await engine.callCount
         XCTAssertEqual(callCount, 0)
         XCTAssertEqual(orchestrator.latestRecommendations[.training]?.segment, AISegment.training.rawValue)
+    }
+
+    func testSignOutClearsLocalSessionStateAndUiMessages() throws {
+        let service = SignInService()
+        let session = UserSession(
+            provider: .email,
+            userID: "test@example.com",
+            displayName: "Test User",
+            email: "test@example.com",
+            sessionToken: "local-session-token"
+        )
+        let encoded = try JSONEncoder().encode(session)
+        KeychainHelper.save(key: SignInService.sessionKey, data: encoded)
+
+        service.navigationPath = [.loginMethods, .emailLogin]
+        service.authErrorMessage = "Previous error"
+        service.statusMessage = "Previous status"
+
+        service.signOut()
+
+        XCTAssertNil(KeychainHelper.load(key: SignInService.sessionKey))
+        XCTAssertFalse(service.isAuthenticated)
+        XCTAssertFalse(service.hasStoredSession)
+        XCTAssertTrue(service.navigationPath.isEmpty)
+        XCTAssertNil(service.authErrorMessage)
+        XCTAssertNil(service.statusMessage)
+        XCTAssertNil(service.currentSession)
+    }
+
+    func testSkipAutoLoginStartsUnauthenticatedOnSimulator() {
+        setenv("FITTRACKER_SKIP_AUTO_LOGIN", "1", 1)
+
+        let service = SignInService()
+
+        XCTAssertFalse(service.isAuthenticated)
+        XCTAssertFalse(service.hasStoredSession)
+        XCTAssertNil(service.currentSession)
+    }
+
+    func testLockForReopenClearsActiveSessionAndResumeStoredSessionRestoresIt() {
+        setenv("FITTRACKER_SKIP_AUTO_LOGIN", "1", 1)
+        setenv("FITTRACKER_REVIEW_AUTH", "authenticated", 1)
+
+        let service = SignInService()
+        XCTAssertTrue(service.isAuthenticated)
+        XCTAssertTrue(service.hasStoredSession)
+
+        service.navigationPath = [.loginMethods, .emailLogin]
+        service.authErrorMessage = "Old error"
+        service.statusMessage = "Old status"
+
+        service.lockForReopen()
+
+        XCTAssertFalse(service.isAuthenticated)
+        XCTAssertTrue(service.hasStoredSession)
+        XCTAssertTrue(service.navigationPath.isEmpty)
+        XCTAssertNil(service.authErrorMessage)
+        XCTAssertNil(service.statusMessage)
+
+        service.resumeStoredSession()
+
+        XCTAssertTrue(service.isAuthenticated)
+        XCTAssertTrue(service.hasStoredSession)
+        XCTAssertNil(service.authErrorMessage)
+        XCTAssertNil(service.statusMessage)
+        XCTAssertTrue(service.navigationPath.isEmpty)
+        XCTAssertEqual(service.currentSession?.email, "review@fitme.app")
+    }
+
+    func testRestoreSessionClearsStaleKeychainWhenBackendSessionIsUnavailable() async throws {
+        setenv("FITTRACKER_SKIP_AUTO_LOGIN", "1", 1)
+
+        let storedSession = UserSession(
+            provider: .email,
+            userID: "restore@example.com",
+            displayName: "Restore User",
+            email: "restore@example.com",
+            sessionToken: "restore-session-token"
+        )
+        let encoded = try JSONEncoder().encode(storedSession)
+        KeychainHelper.save(key: SignInService.sessionKey, data: encoded)
+
+        let service = SignInService()
+        XCTAssertFalse(service.hasStoredSession)
+
+        await service.restoreSession()
+
+        XCTAssertNil(KeychainHelper.load(key: SignInService.sessionKey))
+        XCTAssertFalse(service.hasStoredSession)
+        XCTAssertFalse(service.isAuthenticated)
+        XCTAssertNil(service.currentSession)
+    }
+
+    func testDeletePersistedDataRemovesEncryptedFilesAndClearsInMemoryState() throws {
+        let store = EncryptedDataStore()
+        let fileManager = FileManager.default
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let fileNames = ["logs", "snaps", "profile", "mealTemplates", "userPreferences"]
+
+        store.dailyLogs = [
+            DailyLog(date: Date(), phase: .recovery, dayType: .restDay, recoveryDay: 1)
+        ]
+        store.weeklySnapshots = [
+            WeeklySnapshot(weekStart: Date(), weekNumber: 1)
+        ]
+        store.userProfile = UserProfile(name: "Regev")
+        store.mealTemplates = [MealTemplate(name: "Breakfast", calories: 400, proteinG: 30, carbsG: 20, fatG: 10)]
+        store.userPreferences = UserPreferences(nutritionGoalMode: .gain)
+
+        for name in fileNames {
+            let url = documentsDirectory.appendingPathComponent("\(name).ftenc")
+            try Data("fixture".utf8).write(to: url)
+            XCTAssertTrue(fileManager.fileExists(atPath: url.path))
+        }
+
+        try store.deletePersistedData()
+
+        XCTAssertTrue(store.dailyLogs.isEmpty)
+        XCTAssertTrue(store.weeklySnapshots.isEmpty)
+        XCTAssertEqual(store.userProfile.name, UserProfile().name)
+        XCTAssertEqual(store.userProfile.age, UserProfile().age)
+        XCTAssertEqual(store.userProfile.heightCm, UserProfile().heightCm, accuracy: 0.001)
+        XCTAssertEqual(store.userProfile.currentPhase, UserProfile().currentPhase)
+        XCTAssertTrue(store.mealTemplates.isEmpty)
+        XCTAssertEqual(store.userPreferences, UserPreferences())
+
+        for name in fileNames {
+            let url = documentsDirectory.appendingPathComponent("\(name).ftenc")
+            XCTAssertFalse(fileManager.fileExists(atPath: url.path))
+        }
+    }
+
+    func testAccountDeletionRequestAndCancelRoundTrip() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consentManager = ConsentManager()
+        consentManager.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consentManager)
+        let deletionService = AccountDeletionService(
+            dataStore: EncryptedDataStore(),
+            cloudSync: CloudKitSyncService(),
+            supabaseSync: SupabaseSyncService(),
+            signIn: SignInService(),
+            analytics: analytics
+        )
+
+        UserDefaults.standard.removeObject(forKey: "ft.deletion.scheduledAt")
+
+        await deletionService.requestDeletion(authMethod: "biometric")
+
+        XCTAssertTrue(deletionService.isDeletionPending)
+        XCTAssertNotNil(deletionService.deletionScheduledAt)
+        XCTAssertNotNil(deletionService.deletionDateFormatted)
+        XCTAssertNotNil(deletionService.daysRemaining)
+
+        deletionService.cancelDeletion()
+
+        XCTAssertFalse(deletionService.isDeletionPending)
+        XCTAssertNil(deletionService.deletionScheduledAt)
+        XCTAssertNil(deletionService.daysRemaining)
+        XCTAssertNil(UserDefaults.standard.object(forKey: "ft.deletion.scheduledAt"))
+
+        let eventNames = mockAdapter.capturedEvents.map(\.name)
+        XCTAssertTrue(eventNames.contains(AnalyticsEvent.accountDeleteRequested))
+        XCTAssertTrue(eventNames.contains(AnalyticsEvent.accountDeleteCancelled))
+    }
+
+    func testAccountDeletionCheckGracePeriodRestoresStoredSchedule() {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consentManager = ConsentManager()
+        consentManager.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consentManager)
+        let deletionService = AccountDeletionService(
+            dataStore: EncryptedDataStore(),
+            cloudSync: CloudKitSyncService(),
+            supabaseSync: SupabaseSyncService(),
+            signIn: SignInService(),
+            analytics: analytics
+        )
+        let scheduledAt = Date(timeIntervalSince1970: 1_775_404_800) // 2026-04-05T00:00:00Z
+
+        UserDefaults.standard.set(scheduledAt.timeIntervalSince1970, forKey: "ft.deletion.scheduledAt")
+        deletionService.checkGracePeriod()
+
+        XCTAssertTrue(deletionService.isDeletionPending)
+        guard let restoredScheduledAt = deletionService.deletionScheduledAt else {
+            return XCTFail("Expected deletion schedule to be restored from UserDefaults")
+        }
+        XCTAssertEqual(
+            restoredScheduledAt.timeIntervalSince1970,
+            scheduledAt.timeIntervalSince1970,
+            accuracy: 0.001
+        )
+        XCTAssertNotNil(deletionService.deletionDateFormatted)
+
+        UserDefaults.standard.removeObject(forKey: "ft.deletion.scheduledAt")
+    }
+
+    func testExecuteDeletionClearsManagedDefaultsAndSurfacesPendingCloudKitOnSimulator() async {
+        let mockAdapter = MockAnalyticsAdapter()
+        let consentManager = ConsentManager()
+        consentManager.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consentManager)
+        let deletionService = AccountDeletionService(
+            dataStore: EncryptedDataStore(),
+            cloudSync: CloudKitSyncService(),
+            supabaseSync: SupabaseSyncService(),
+            signIn: SignInService(),
+            analytics: analytics
+        )
+
+        UserDefaults.standard.set("1", forKey: "ft.unitTestFlag")
+        UserDefaults.standard.set(Date(), forKey: "supabase.lastPull")
+
+        await deletionService.executeDeletion()
+
+        XCTAssertFalse(deletionService.isDeleting)
+        XCTAssertNil(UserDefaults.standard.object(forKey: "ft.unitTestFlag"))
+        XCTAssertNil(UserDefaults.standard.object(forKey: "supabase.lastPull"))
+
+        #if targetEnvironment(simulator)
+        let errorMessage = try? XCTUnwrap(deletionService.deletionError)
+        XCTAssertNotNil(errorMessage)
+        XCTAssertTrue(errorMessage?.contains("Deleted: supabase, device") ?? false)
+        XCTAssertTrue(errorMessage?.contains("userdefaults") ?? false)
+        XCTAssertTrue(errorMessage?.contains("Still pending:") ?? false)
+        XCTAssertTrue(errorMessage?.contains("cloudkit") ?? false)
+        #else
+        XCTAssertNotNil(deletionService.deletionError)
+        #endif
+    }
+
+    func testDataExportServiceGeneratesJSONFileWithExpectedCountsAndAnalytics() async throws {
+        let store = EncryptedDataStore()
+        let now = Date(timeIntervalSince1970: 1_775_491_200) // 2026-04-06T00:00:00Z
+        store.userProfile = UserProfile(
+            name: "Regev",
+            age: 43,
+            heightCm: 175,
+            recoveryStart: now,
+            currentPhase: .recovery,
+            targetWeightMin: 65,
+            targetWeightMax: 68,
+            targetBFMin: 13,
+            targetBFMax: 15
+        )
+        store.userPreferences = UserPreferences(nutritionGoalMode: .gain)
+
+        var dailyLog = DailyLog.scheduled(for: now, profile: store.userProfile, dayType: .upperPush)
+        dailyLog.notes = "Strong session"
+        dailyLog.biometrics.weightKg = 69.2
+        dailyLog.biometrics.restingHeartRate = 57
+        dailyLog.nutritionLog.meals = [
+            MealEntry(
+                mealNumber: 1,
+                name: "Breakfast",
+                calories: 520,
+                proteinG: 38,
+                carbsG: 42,
+                fatG: 16,
+                eatenAt: now,
+                status: .completed
+            )
+        ]
+        store.dailyLogs = [dailyLog]
+        store.weeklySnapshots = [
+            WeeklySnapshot(
+                weekStart: now,
+                weekNumber: 14,
+                avgWeightKg: 69.0,
+                avgBodyFatPct: 0.18,
+                avgRestingHR: 57,
+                avgHRV: 41,
+                avgSleepHours: 7.4,
+                avgProteinG: 160,
+                totalTrainingDays: 4,
+                totalVolume: 12_500,
+                totalCardioMinutes: 95,
+                taskAdherence: 0.91,
+                weightChange: -0.4,
+                bfChange: -0.01
+            )
+        ]
+
+        let mockAdapter = MockAnalyticsAdapter()
+        let consentManager = ConsentManager()
+        consentManager.grantConsent()
+        let analytics = AnalyticsService(provider: mockAdapter, consent: consentManager)
+        let exportService = DataExportService(dataStore: store, analytics: analytics)
+
+        await exportService.generateExport()
+
+        XCTAssertFalse(exportService.isExporting)
+        XCTAssertNil(exportService.exportError)
+        let exportURL = try XCTUnwrap(exportService.exportURL)
+        defer { try? FileManager.default.removeItem(at: exportURL) }
+        XCTAssertTrue(FileManager.default.fileExists(atPath: exportURL.path))
+
+        let jsonData = try Data(contentsOf: exportURL)
+        let jsonObject = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
+        )
+
+        XCTAssertEqual(jsonObject["exportVersion"] as? String, "1.0")
+        XCTAssertEqual(jsonObject["recordCount"] as? Int, exportService.totalRecords)
+
+        let profile = try XCTUnwrap(jsonObject["profile"] as? [String: Any])
+        XCTAssertEqual(profile["name"] as? String, "Regev")
+
+        let preferences = try XCTUnwrap(jsonObject["preferences"] as? [String: Any])
+        XCTAssertEqual(preferences["nutritionGoalMode"] as? String, NutritionGoalMode.gain.rawValue)
+
+        let dailyLogs = try XCTUnwrap(jsonObject["dailyLogs"] as? [[String: Any]])
+        XCTAssertEqual(dailyLogs.count, 1)
+        XCTAssertEqual(dailyLogs.first?["notes"] as? String, "Strong session")
+
+        let weeklySnapshots = try XCTUnwrap(jsonObject["weeklySnapshots"] as? [[String: Any]])
+        XCTAssertEqual(weeklySnapshots.count, 1)
+        XCTAssertEqual(weeklySnapshots.first?["weekNumber"] as? Int, 14)
+
+        let eventNames = mockAdapter.capturedEvents.map(\.name)
+        XCTAssertEqual(
+            eventNames,
+            [AnalyticsEvent.dataExportRequested, AnalyticsEvent.dataExportCompleted]
+        )
+
+        let completedEvent = try XCTUnwrap(mockAdapter.capturedEvents.last)
+        XCTAssertEqual(
+            completedEvent.parameters?[AnalyticsParam.recordCount] as? Int,
+            exportService.totalRecords
+        )
+        XCTAssertGreaterThan(
+            completedEvent.parameters?[AnalyticsParam.sizeBytes] as? Int ?? 0,
+            0
+        )
     }
 
     // MARK: - Design Token Tests

@@ -72,6 +72,7 @@ export function reconcile({ githubIssues = [], staticFeatures = [], stateFiles =
         feature: state.feature,
         source: 'github',
       });
+      sources.github.alerts++;
     }
   }
 

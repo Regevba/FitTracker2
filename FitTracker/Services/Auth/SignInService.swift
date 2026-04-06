@@ -304,7 +304,7 @@ final class SignInService: NSObject, ObservableObject {
 
     /// Restores a previous session. Checks Supabase for a live/refreshable JWT;
     /// updates the stored token if valid. Call from within a Task block at app launch.
-    func restoreSession() async {
+    func restoreSession(activateStoredSession: Bool = false) async {
         guard activeSession == nil else { return }
         // 1. Ask Supabase if there's a live (or refreshable) session
         if let supabaseSession = try? await supabase.auth.session {
@@ -313,6 +313,9 @@ final class SignInService: NSObject, ObservableObject {
                var stored = try? JSONDecoder().decode(UserSession.self, from: data) {
                 stored.backendAccessToken = supabaseSession.accessToken
                 self.storedSession = stored
+                if activateStoredSession {
+                    self.activeSession = stored
+                }
                 return
             }
         }
@@ -375,6 +378,9 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func signOut() {
+        Task {
+            try? await supabase.auth.signOut(scope: .local)
+        }
         KeychainHelper.delete(key: Self.sessionKey)
         activeSession = nil       // triggers FitTrackerApp.onChange to clear dataStore + AI
         storedSession = nil

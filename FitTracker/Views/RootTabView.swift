@@ -28,6 +28,7 @@ struct RootTabView: View {
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var cloudSync:     CloudKitSyncService
+    @EnvironmentObject var supabaseSync:  SupabaseSyncService
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
 
@@ -72,6 +73,7 @@ struct RootTabView: View {
                 .environmentObject(dataStore)
                 .environmentObject(healthService)
                 .environmentObject(cloudSync)
+                .environmentObject(supabaseSync)
                 .environmentObject(settings)
                 .presentationDetents([.large])
                 .presentationCornerRadius(AppSheet.standardCornerRadius)

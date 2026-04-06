@@ -4,6 +4,51 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-05 — Stabilization Recovery, Build Repair, and Truth Alignment
+
+### Added
+- **`FitTracker/Info.plist` restored** so the app target can build again on a clean checkout
+- **Supabase deletion support** for `sync_records`, `cardio_assets`, and encrypted cardio image blobs
+- **CloudKit deletion support** for the app's encrypted private records
+- **Explicit local encrypted-file deletion path** for `.ftenc` blobs
+- **Explicit encryption-key deletion path** for the keychain-backed encryption material
+- **Sync uniqueness repair migration** in `backend/supabase/migrations/000008_fix_sync_records_uniqueness.sql`
+- **Expanded iOS core regression coverage** in `FitTrackerTests/FitTrackerCoreTests.swift` for auth/session and deletion-related flows
+- **Stabilization report** in `docs/project/stabilization-report-2026-04-05.md`
+
+### Changed
+- **Xcode project recovery**: Firebase packages linked, missing analytics/GDPR source files re-added to the target, and the iOS app now builds with full Xcode
+- **Firebase bootstrap**: analytics now fall back to the mock adapter during XCTest or when `GoogleService-Info.plist` is absent, so clean builds and unit tests do not depend on local secrets
+- **Auth lifecycle**: `restoreSession()` can reactivate a valid stored session when biometric reopen is disabled, and `signOut()` now revokes the local Supabase auth session
+- **Deletion flow**: analytics now report only stores actually deleted, and the service surfaces partial-failure state instead of always claiming success
+- **Simulator settings review path**: `FITTRACKER_REVIEW_TAB=settings` now routes through the app-level settings review gate, and the settings destinations explicitly receive `AnalyticsService`
+- **Simulator delete-account review route**: `FITTRACKER_REVIEW_SETTINGS_DESTINATION=delete-account` now opens the nested GDPR deletion screen through the real settings navigation stack for deterministic runtime verification
+- **Simulator export-data review route**: `FITTRACKER_REVIEW_SETTINGS_DESTINATION=export-data` now opens the nested data-portability screen through the real settings navigation stack for deterministic runtime verification
+- **Daily-log sync merge fix**: `mergeDailyLog` now matches on `resolvedLogicDayKey`, so different dated rows no longer collapse together when `logicDayKey` is absent on decoded logs
+- **Data export** reconciled with the current domain model instead of stale field names
+- **AI engine tests** now use a self-contained stub-settings fixture instead of implicitly depending on production-style Supabase env vars
+- **Dashboard reconciliation** now marks GitHub as unhealthy when PM state exists without a matching GitHub issue
+- **README / planning docs** updated to reflect the recovered build state and the remaining stabilization gaps
+
+### Verified
+- `xcodebuild build -project FitTracker.xcodeproj -scheme FitTracker -destination 'generic/platform=iOS'` passes
+- `xcodebuild test -project FitTracker.xcodeproj -scheme FitTracker -only-testing:FitTrackerTests/FitTrackerCoreTests` passes on simulator
+- `npm run tokens:check` passes
+- dashboard tests pass (`9/9`)
+- dashboard production build passes
+- marketing website production build passes
+- AI engine tests pass (`5/5`)
+
+### Coverage Notes
+- `FitTrackerCoreTests` now runs `28` simulator-backed tests
+- coverage now includes simulator auto-login opt-out, lock/resume auth flow, stale-session cleanup, local encrypted-file deletion, deletion grace-period request/cancel/restore, simulator partial-failure deletion reporting, and JSON export generation verification
+- `SyncMergeTests` passes (`9/9`) and now verifies multiple dated daily logs and weekly snapshots coexist correctly after merge
+- simulator runtime spot-check on `2026-04-06` now confirms the live Settings screen plus both nested GDPR/settings screens (`Delete Account`, `Export My Data`) launch in review mode after the settings-review routing and environment injection fixes
+
+### Still Open
+- Firebase runtime verification still needs a local `GoogleService-Info.plist`
+- signed-in device/runtime sync plus deletion/export execution verification still needs local runtime credentials and backend validation
+
 ## 2026-04-04 — Marketing Website + Feature PRDs + README Update
 
 ### Added (Marketing Website)

@@ -58,16 +58,25 @@ private struct SettingsSummaryBadge: Identifiable {
     var id: String { title }
 }
 
+private enum SettingsReviewDestination: String, Hashable {
+    case deleteAccount = "delete-account"
+    case exportData = "export-data"
+}
+
 struct SettingsView: View {
     @EnvironmentObject var signIn: SignInService
     @EnvironmentObject var biometricAuth: AuthManager
     @EnvironmentObject var dataStore: EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var cloudSync: CloudKitSyncService
+    @EnvironmentObject var supabaseSync: SupabaseSyncService
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var watchService: WatchConnectivityService
+    @EnvironmentObject var analytics: AnalyticsService
 
+    @State private var navigationPath = NavigationPath()
     @State private var showResetAlert = false
+    @State private var didApplyReviewRoute = false
 
     private let dashboardColumns = [
         GridItem(.flexible(), spacing: AppSpacing.xSmall, alignment: .top),
@@ -75,7 +84,7 @@ struct SettingsView: View {
     ]
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             ZStack {
                 AppGradient.screenBackground
                     .ignoresSafeArea()
@@ -122,14 +131,37 @@ struct SettingsView: View {
                 switch category {
                 case .accountSecurity:
                     AccountSecuritySettingsScreen()
+                        .environmentObject(signIn)
+                        .environmentObject(dataStore)
+                        .environmentObject(cloudSync)
+                        .environmentObject(supabaseSync)
+                        .environmentObject(settings)
+                        .environmentObject(biometricAuth)
+                        .environmentObject(analytics)
                 case .healthDevices:
                     HealthDevicesSettingsScreen()
+                        .environmentObject(healthService)
+                        .environmentObject(watchService)
                 case .goalsPreferences:
                     GoalsPreferencesSettingsScreen()
+                        .environmentObject(dataStore)
+                        .environmentObject(settings)
                 case .trainingNutrition:
                     TrainingNutritionSettingsScreen()
+                        .environmentObject(dataStore)
                 case .dataSync:
                     DataSyncSettingsScreen(showResetAlert: $showResetAlert)
+                        .environmentObject(dataStore)
+                        .environmentObject(cloudSync)
+                        .environmentObject(analytics)
+                }
+            }
+            .navigationDestination(for: SettingsReviewDestination.self) { destination in
+                switch destination {
+                case .deleteAccount:
+                    deleteAccountDestination
+                case .exportData:
+                    exportDataDestination
                 }
             }
             .alert("Delete All Data?", isPresented: $showResetAlert) {
@@ -142,7 +174,33 @@ struct SettingsView: View {
             } message: {
                 Text("This permanently removes all locally stored logs. Data will be restored from iCloud on the next sync. To permanently delete, remove \(AppBrand.name) from your iCloud account in iOS Settings.")
             }
+            .onAppear {
+                applyReviewRouteIfNeeded()
+            }
         }
+    }
+
+    @ViewBuilder
+    private var deleteAccountDestination: some View {
+        DeleteAccountView()
+            .environmentObject(AccountDeletionService(
+                dataStore: dataStore,
+                cloudSync: cloudSync,
+                supabaseSync: supabaseSync,
+                signIn: signIn,
+                analytics: analytics
+            ))
+            .environmentObject(analytics)
+    }
+
+    @ViewBuilder
+    private var exportDataDestination: some View {
+        ExportDataView()
+            .environmentObject(DataExportService(
+                dataStore: dataStore,
+                analytics: analytics
+            ))
+            .environmentObject(analytics)
     }
 
     private func summaryBadges(for category: SettingsCategory) -> [SettingsSummaryBadge] {
@@ -196,12 +254,47 @@ struct SettingsView: View {
             return AppColor.Text.secondary
         }
     }
+
+    private var reviewSettingsDestination: SettingsReviewDestination? {
+        guard isSettingsReviewMode else { return nil }
+        let rawValue = ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_SETTINGS_DESTINATION"]?.lowercased()
+        return SettingsReviewDestination(rawValue: rawValue ?? "")
+    }
+
+    private var isSettingsReviewMode: Bool {
+        ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_AUTH"]?.lowercased() == "settings"
+            || ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_SETTINGS"] == "1"
+            || ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_TAB"]?.lowercased() == "settings"
+            || ProcessInfo.processInfo.arguments.contains("--review-settings")
+    }
+
+    private func applyReviewRouteIfNeeded() {
+        guard !didApplyReviewRoute else { return }
+        didApplyReviewRoute = true
+        guard let destination = reviewSettingsDestination else { return }
+
+        navigationPath.append(reviewRootCategory(for: destination))
+        navigationPath.append(destination)
+    }
+
+    private func reviewRootCategory(for destination: SettingsReviewDestination) -> SettingsCategory {
+        switch destination {
+        case .deleteAccount:
+            return .accountSecurity
+        case .exportData:
+            return .dataSync
+        }
+    }
 }
 
 private struct AccountSecuritySettingsScreen: View {
     @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var dataStore: EncryptedDataStore
+    @EnvironmentObject private var cloudSync: CloudKitSyncService
+    @EnvironmentObject private var supabaseSync: SupabaseSyncService
     @EnvironmentObject private var settings: AppSettings
     @EnvironmentObject private var biometricAuth: AuthManager
+    @EnvironmentObject private var analytics: AnalyticsService
 
     var body: some View {
         SettingsDetailScaffold(
@@ -258,6 +351,14 @@ private struct AccountSecuritySettingsScreen: View {
             SettingsSectionCard(title: "Account", eyebrow: "GDPR") {
                 NavigationLink {
                     DeleteAccountView()
+                        .environmentObject(AccountDeletionService(
+                            dataStore: dataStore,
+                            cloudSync: cloudSync,
+                            supabaseSync: supabaseSync,
+                            signIn: signIn,
+                            analytics: analytics
+                        ))
+                        .environmentObject(analytics)
                 } label: {
                     SettingsActionLabel(
                         title: "Delete Account",
@@ -680,6 +781,11 @@ private struct DataSyncSettingsScreen: View {
             SettingsSectionCard(title: "Data Portability", eyebrow: "GDPR") {
                 NavigationLink {
                     ExportDataView()
+                        .environmentObject(DataExportService(
+                            dataStore: dataStore,
+                            analytics: analytics
+                        ))
+                        .environmentObject(analytics)
                 } label: {
                     SettingsActionLabel(
                         title: "Export My Data",
@@ -827,7 +933,7 @@ private struct SettingsBadgeView: View {
     }
 }
 
-private struct SettingsDetailScaffold<Content: View>: View {
+struct SettingsDetailScaffold<Content: View>: View {
     let title: String
     let subtitle: String
     @ViewBuilder var content: Content
@@ -850,7 +956,7 @@ private struct SettingsDetailScaffold<Content: View>: View {
     }
 }
 
-private struct SettingsSectionCard<Content: View>: View {
+struct SettingsSectionCard<Content: View>: View {
     let title: String
     let eyebrow: String
     @ViewBuilder var content: Content
@@ -883,7 +989,7 @@ private struct SettingsSectionCard<Content: View>: View {
     }
 }
 
-private struct SettingsValueRow: View {
+struct SettingsValueRow: View {
     let title: String
     let value: String
 
@@ -901,7 +1007,7 @@ private struct SettingsValueRow: View {
     }
 }
 
-private struct SettingsSupportingText: View {
+struct SettingsSupportingText: View {
     let text: String
 
     init(_ text: String) {

@@ -14,6 +14,7 @@ struct AccountPanelView: View {
     @EnvironmentObject var dataStore: EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var cloudSync: CloudKitSyncService
+    @EnvironmentObject var supabaseSync: SupabaseSyncService
     @EnvironmentObject var settings:  AppSettings
     @EnvironmentObject var watchService: WatchConnectivityService
     @Environment(\.dismiss) var dismiss
@@ -64,6 +65,7 @@ struct AccountPanelView: View {
                         .environmentObject(dataStore)
                         .environmentObject(healthService)
                         .environmentObject(cloudSync)
+                        .environmentObject(supabaseSync)
                         .environmentObject(settings)
                         .environmentObject(watchService)
                         .toolbar {

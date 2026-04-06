@@ -66,6 +66,13 @@ actor EncryptionService {
         sessionContext = nil
     }
 
+    func deleteStoredKeys() throws {
+        try deleteKeyFromKeychain(tag: aesKeyTag)
+        try deleteKeyFromKeychain(tag: chachaKeyTag)
+        try deleteKeyFromKeychain(tag: hmacKeyTag)
+        sessionContext = nil
+    }
+
     /// Returns the cached session context if set; falls back to authenticating a new one.
     /// On simulator (canEvaluatePolicy returns false) this always returns an unauthenticated context.
     private func currentContext() async throws -> LAContext {
@@ -221,6 +228,18 @@ actor EncryptionService {
         return SymmetricKey(data: data)
     }
 
+    private func deleteKeyFromKeychain(tag: String) throws {
+        let query: [CFString: Any] = [
+            kSecClass:       kSecClassGenericPassword,
+            kSecAttrService: keychainService,
+            kSecAttrAccount: tag,
+        ]
+        let status = SecItemDelete(query as CFDictionary)
+        guard status == errSecSuccess || status == errSecItemNotFound else {
+            throw FTCryptoError.keychainError(status)
+        }
+    }
+
     private func saveKeyToKeychain(_ key: SymmetricKey, tag: String) throws {
         let keyData = key.withUnsafeBytes { Data($0) }
 
@@ -360,6 +379,16 @@ final class EncryptedDataStore: ObservableObject {
         userPreferences = UserPreferences()
         lastError       = nil
         loadError       = nil
+    }
+
+    func deletePersistedData() throws {
+        clearInMemory()
+        for name in ["logs", "snaps", "profile", "mealTemplates", "userPreferences"] {
+            let fileURL = url(name)
+            if fm.fileExists(atPath: fileURL.path) {
+                try fm.removeItem(at: fileURL)
+            }
+        }
     }
 
     // ── CRUD ─────────────────────────────────────────────
@@ -589,8 +618,9 @@ final class EncryptedDataStore: ObservableObject {
 
     /// Merge a remote DailyLog using last-modified-wins conflict resolution.
     func mergeDailyLog(_ remote: DailyLog) {
+        let remoteLogicDayKey = remote.resolvedLogicDayKey
         if let i = dailyLogs.firstIndex(where: {
-            $0.logicDayKey == remote.logicDayKey
+            $0.resolvedLogicDayKey == remoteLogicDayKey
         }) {
             if remote.lastModified > dailyLogs[i].lastModified {
                 dailyLogs[i] = remote
