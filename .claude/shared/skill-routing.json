@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-06T15:30:00Z",
+  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks.",
+  "routing_rules": {
+    "ui": { "primary": "dev", "secondary": ["design"] },
+    "backend": { "primary": "dev", "secondary": ["ops"] },
+    "data": { "primary": "dev", "secondary": ["analytics"] },
+    "analytics": { "primary": "analytics", "secondary": ["qa"] },
+    "test": { "primary": "qa", "secondary": ["dev"] },
+    "design": { "primary": "design", "secondary": ["research"] },
+    "docs": { "primary": "release", "secondary": ["marketing"] },
+    "infra": { "primary": "ops", "secondary": ["dev"] },
+    "research": { "primary": "research", "secondary": ["cx"] },
+    "marketing": { "primary": "marketing", "secondary": ["cx"] },
+    "security": { "primary": "qa", "secondary": ["ops", "dev"] },
+    "ux-research": { "primary": "research", "secondary": ["design"] },
+    "release": { "primary": "release", "secondary": [] }
+  },
+  "lifecycles": {
+    "feature": {
+      "phases": ["research", "prd", "tasks", "ux_or_integration", "implementation", "testing", "review", "merge", "documentation"],
+      "gates": ["research", "prd", "tasks", "ux_or_integration", "testing", "review"],
+      "description": "Full 9-phase lifecycle for new capabilities"
+    },
+    "enhancement": {
+      "phases": ["tasks", "implementation", "testing", "review", "merge"],
+      "gates": ["tasks", "testing", "review"],
+      "parent_required": true,
+      "description": "Partial lifecycle for improvements to shipped features"
+    },
+    "fix": {
+      "phases": ["implementation", "testing", "review", "merge"],
+      "gates": ["testing", "review"],
+      "parent_required": true,
+      "description": "Fast-track for bug fixes with mandatory test + review"
+    },
+    "chore": {
+      "phases": ["implementation", "review", "merge"],
+      "gates": ["review"],
+      "description": "Minimal lifecycle for docs, config, refactoring"
+    }
+  }
+}
