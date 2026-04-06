@@ -114,6 +114,41 @@ final class AnalyticsService: ObservableObject {
         logEvent(AnalyticsEvent.tutorialComplete, parameters: nil)
     }
 
+    // MARK: - Onboarding Events
+
+    /// User views an onboarding step
+    func logOnboardingStepViewed(stepIndex: Int, stepName: String) {
+        logEvent(AnalyticsEvent.onboardingStepViewed, parameters: [
+            AnalyticsParam.stepIndex: stepIndex,
+            AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// User completes an onboarding step
+    func logOnboardingStepCompleted(stepIndex: Int, stepName: String) {
+        logEvent(AnalyticsEvent.onboardingStepCompleted, parameters: [
+            AnalyticsParam.stepIndex: stepIndex,
+            AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// User skips onboarding from a given step
+    func logOnboardingSkipped(stepIndex: Int, stepName: String) {
+        logEvent(AnalyticsEvent.onboardingSkipped, parameters: [
+            AnalyticsParam.stepIndex: stepIndex,
+            AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// Sets the onboarding_completed user property
+    func setOnboardingCompleted(_ completed: Bool) {
+        guard consent.isAnalyticsAllowed else { return }
+        provider.setUserProperty(
+            completed ? "true" : "false",
+            forName: AnalyticsUserProperty.onboardingCompleted
+        )
+    }
+
     // MARK: - Workout Events
 
     func logWorkoutStarted(workoutType: String, dayNumber: Int) {

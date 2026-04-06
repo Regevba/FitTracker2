@@ -179,11 +179,20 @@ struct FitTrackerApp: App {
         )
     }
 
+    // ── Onboarding guard ─────────────────────────────────
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
     // ── Auth state machine ────────────────────────────────
-    // welcome → signIn (sheet) → authenticated → biometricLock → app
+    // onboarding (first launch) → welcome → signIn (sheet) → authenticated → biometricLock → app
     @ViewBuilder
     private var rootView: some View {
-        if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
+        if !hasCompletedOnboarding, !isScreenReviewModeEnabled {
+            OnboardingView {
+                analytics.setOnboardingCompleted(true)
+            }
+            .environmentObject(healthService)
+            .environmentObject(analytics)
+        } else if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
             SettingsView()
                 .analyticsScreen(AnalyticsScreen.settings)
                 .environmentObject(signIn)
