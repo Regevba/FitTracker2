@@ -13,14 +13,9 @@ struct OnboardingWelcomeView: View {
         VStack(spacing: AppSpacing.medium) {
             Spacer()
 
-            // Logo — Figma: white circle with FitMe logo
-            FitMeLogoLoader(mode: .breathe, size: .large)
+            // Brand icon — Figma: 4 intertwined circles + gradient "FitMe" text
+            FitMeBrandIcon.hero
                 .padding(.bottom, AppSpacing.xSmall)
-
-            // App name — Figma: Inter Bold 44px, white
-            Text("FitMe")
-                .font(.system(size: 44, weight: .bold, design: .rounded))
-                .foregroundStyle(AppColor.Text.inversePrimary)
 
             // Tagline — Figma: Inter Medium 20px, white 85%
             Text("Your fitness command center")
