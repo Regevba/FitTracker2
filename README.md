@@ -153,7 +153,7 @@ Internal PM dashboard. Astro + React + Tailwind with Kanban board (drag-drop), t
 Verification snapshot as of `2026-04-06`:
 
 - iOS app builds again with full Xcode after Firebase/Xcode project recovery
-- targeted iOS core XCTest coverage passes on simulator (`FitTrackerTests/FitTrackerCoreTests`, `28` tests)
+- targeted iOS core XCTest coverage passes on simulator (`FitTrackerTests/FitTrackerCoreTests`, `31` tests)
 - simulator settings review launch now reaches the live Settings screen
 - simulator nested delete-account review route now reaches the live GDPR deletion screen
 - simulator nested export-data review route now reaches the live portability/export screen
@@ -164,6 +164,7 @@ Verification snapshot as of `2026-04-06`:
 - marketing website production build now passes
 - AI engine tests pass (`5/5`) with a self-contained test harness and stub settings override
 - Firebase bootstrap is now config-aware, so missing local plist no longer blocks unit tests or clean builds
+- Supabase runtime now degrades gracefully when local config is missing instead of crashing on placeholder values
 - Firebase runtime verification still requires a local `FitTracker/GoogleService-Info.plist`
 - live signed-in Supabase sync and deletion/export execution still require local runtime credentials and backend validation
 
@@ -198,6 +199,15 @@ python3.12 -m venv /tmp/FitTracker2-ai-venv
 source /tmp/FitTracker2-ai-venv/bin/activate
 pip install -e '.[dev]'
 ```
+
+### One-Command Verification
+
+```bash
+make verify-local
+```
+
+This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass.
+The current verified result is green end to end, including `40` passing XCTest cases across `FitTrackerCoreTests` and `SyncMergeTests`.
 
 ### iOS Build
 
@@ -248,6 +258,7 @@ pytest -q
 - CloudKit requires iCloud entitlements (disabled on Simulator builds)
 - Simulator builds auto-login in DEBUG mode for faster development
 - `FitTracker/Info.plist` is restored, but the repo still ships placeholder values for `SupabaseURL` and `SupabaseAnonKey`; replace them locally before runtime Supabase verification
+- when those Supabase values are still placeholders, the app now surfaces configuration-disabled behavior instead of crashing on access
 - `PasskeyRelyingPartyID` must match the associated-domains setup you use for passkeys
 - `FitTracker/GoogleService-Info.plist` is intentionally not present in this clone; add your Firebase app config locally before verifying analytics
 - `/tmp` virtualenvs and derived-data folders are convenient but ephemeral; recreate them if they disappear between sessions

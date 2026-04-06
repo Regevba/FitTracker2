@@ -84,6 +84,25 @@ pytest -q
 
 Note: `/tmp` virtualenvs and derived-data folders are ephemeral. Recreate them if they disappear between sessions.
 
+### One-Command Verification
+
+```bash
+make verify-local
+```
+
+What it covers:
+
+- root token drift check
+- dashboard test + production build
+- website production build
+- AI engine tests
+- iOS build plus the targeted `FitTrackerCoreTests` and `SyncMergeTests` simulator pass
+
+Current status:
+
+- passes end to end
+- latest verified XCTest bundle: `/tmp/FitTrackerTestsDD-verify/Logs/Test/Test-FitTracker-2026.04.06_07-15-38-+0300.xcresult`
+
 ---
 
 ## Runtime Config Still Required
@@ -149,9 +168,10 @@ Status:
 
 - passes
 - verifies the targeted `FitTrackerCoreTests` suite on simulator
-- current focused suite size: `28` tests
+- current focused suite size: `31` tests
 - confirms Firebase/runtime bootstrap no longer aborts tests when local analytics config is absent
 - now also covers successful JSON export generation, exported payload structure, and export analytics events
+- now also covers graceful handling for missing local Supabase configuration
 
 #### Focused Sync Merge Coverage
 
@@ -175,6 +195,7 @@ Status:
 - current focused suite size: `9` tests
 - verifies multiple dated `DailyLog` and `WeeklySnapshot` rows coexist instead of collapsing into one logical record
 - surfaced and confirmed the fix for a real bug in [`EncryptionService.swift`](../../FitTracker/Services/Encryption/EncryptionService.swift), where `mergeDailyLog` had been comparing optional `logicDayKey` values directly instead of normalized `resolvedLogicDayKey` values
+- combined with `FitTrackerCoreTests`, the current targeted simulator XCTest pass is `40/40`
 
 #### iOS Simulator Runtime Spot Check
 
@@ -307,6 +328,7 @@ Primary code/config changes:
 - [`FitTracker/Services/Analytics/AnalyticsService.swift`](../../FitTracker/Services/Analytics/AnalyticsService.swift)
 - [`FitTracker/Services/Auth/SignInService.swift`](../../FitTracker/Services/Auth/SignInService.swift)
 - [`FitTracker/Services/AccountDeletionService.swift`](../../FitTracker/Services/AccountDeletionService.swift)
+- [`FitTracker/Services/Supabase/SupabaseClient.swift`](../../FitTracker/Services/Supabase/SupabaseClient.swift)
 - [`FitTracker/Services/Supabase/SupabaseSyncService.swift`](../../FitTracker/Services/Supabase/SupabaseSyncService.swift)
 - [`FitTracker/Services/CloudKit/CloudKitSyncService.swift`](../../FitTracker/Services/CloudKit/CloudKitSyncService.swift)
 - [`FitTracker/Services/Encryption/EncryptionService.swift`](../../FitTracker/Services/Encryption/EncryptionService.swift)
@@ -321,6 +343,7 @@ Primary code/config changes:
 - [`dashboard/src/scripts/reconcile.js`](../../dashboard/src/scripts/reconcile.js)
 - [`dashboard/tests/reconcile.test.js`](../../dashboard/tests/reconcile.test.js)
 - [`FitTrackerTests/FitTrackerCoreTests.swift`](../../FitTrackerTests/FitTrackerCoreTests.swift)
+- [`Makefile`](../../Makefile)
 
 Primary docs updated:
 

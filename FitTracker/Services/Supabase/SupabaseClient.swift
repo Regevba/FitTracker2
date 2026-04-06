@@ -11,27 +11,66 @@ private var isRunningTests: Bool {
         || env["XCTestSessionIdentifier"] != nil
 }
 
+enum SupabaseRuntimeConfiguration {
+    static let missingConfigurationMessage =
+        "Supabase is not configured in this build. Set SupabaseURL and SupabaseAnonKey in Info.plist to enable sign-in and sync."
+
+    static func credentials(
+        urlString: String?,
+        key: String?
+    ) -> (url: URL, key: String)? {
+        guard
+            let urlString,
+            let url = URL(string: urlString),
+            !urlString.isEmpty,
+            !urlString.contains("YOUR_PROJECT_ID"),
+            let key,
+            !key.isEmpty,
+            !key.contains("YOUR_SUPABASE")
+        else {
+            return nil
+        }
+        return (url, key)
+    }
+
+    static func credentials(in bundle: Bundle = .main) -> (url: URL, key: String)? {
+        credentials(
+            urlString: bundle.object(forInfoDictionaryKey: "SupabaseURL") as? String,
+            key: bundle.object(forInfoDictionaryKey: "SupabaseAnonKey") as? String
+        )
+    }
+
+    static var isConfigured: Bool {
+        credentials() != nil
+    }
+
+    static var missingConfigurationError: NSError {
+        NSError(
+            domain: "FitTracker.Supabase",
+            code: 503,
+            userInfo: [NSLocalizedDescriptionKey: missingConfigurationMessage]
+        )
+    }
+
+    static func makeStubClient() -> SupabaseClient {
+        let stubHost = ["placeholder", "supabase", "co"].joined(separator: ".")
+        let stubURL = URL(string: "https://" + stubHost)!
+        let stubKey = ["ci", "test", "stub"].joined(separator: "-")
+        return SupabaseClient(supabaseURL: stubURL, supabaseKey: stubKey)
+    }
+}
+
 /// Shared Supabase client. Initialized lazily on first access.
 /// Returns a stub client during unit-test runs (avoids fatalError — no network calls
 /// are made in tests, and any Supabase tests that need a real client are @testable-skipped).
-/// Fatals in production/debug if Info.plist keys are missing (developer error).
+/// Also returns a stub client when local config is intentionally absent on a clean checkout,
+/// allowing the app to surface configuration errors instead of crashing.
 let supabase: SupabaseClient = {
     if isRunningTests {
-        // Build stub credentials at runtime — no literal API-key shape in source.
-        let stubHost = ["placeholder", "supabase", "co"].joined(separator: ".")
-        let stubURL  = URL(string: "https://" + stubHost)!
-        let stubKey  = ["ci", "test", "stub"].joined(separator: "-")
-        return SupabaseClient(supabaseURL: stubURL, supabaseKey: stubKey)
+        return SupabaseRuntimeConfiguration.makeStubClient()
     }
-    guard
-        let urlStr = Bundle.main.object(forInfoDictionaryKey: "SupabaseURL") as? String,
-        let url = URL(string: urlStr),
-        !urlStr.contains("YOUR_PROJECT_ID"),
-        let key = Bundle.main.object(forInfoDictionaryKey: "SupabaseAnonKey") as? String,
-        !key.isEmpty,
-        !key.contains("YOUR_SUPABASE")
-    else {
-        fatalError("SupabaseURL and SupabaseAnonKey must be set in Info.plist before using Supabase features.")
+    guard let credentials = SupabaseRuntimeConfiguration.credentials() else {
+        return SupabaseRuntimeConfiguration.makeStubClient()
     }
-    return SupabaseClient(supabaseURL: url, supabaseKey: key)
+    return SupabaseClient(supabaseURL: credentials.url, supabaseKey: credentials.key)
 }()

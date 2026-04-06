@@ -27,6 +27,7 @@ This changelog is intentionally lightweight. It is not a commit dump and it is n
 - **Daily-log sync merge fix**: `mergeDailyLog` now matches on `resolvedLogicDayKey`, so different dated rows no longer collapse together when `logicDayKey` is absent on decoded logs
 - **Data export** reconciled with the current domain model instead of stale field names
 - **AI engine tests** now use a self-contained stub-settings fixture instead of implicitly depending on production-style Supabase env vars
+- **Supabase runtime config handling** now degrades gracefully on placeholder local config instead of crashing on `fatalError`
 - **Dashboard reconciliation** now marks GitHub as unhealthy when PM state exists without a matching GitHub issue
 - **README / planning docs** updated to reflect the recovered build state and the remaining stabilization gaps
 
@@ -38,11 +39,14 @@ This changelog is intentionally lightweight. It is not a commit dump and it is n
 - dashboard production build passes
 - marketing website production build passes
 - AI engine tests pass (`5/5`)
+- targeted local verification can now be reproduced via `make verify-local`
 
 ### Coverage Notes
-- `FitTrackerCoreTests` now runs `28` simulator-backed tests
+- `FitTrackerCoreTests` now runs `31` simulator-backed tests
+- `FitTrackerCoreTests` now also verifies graceful handling for missing local Supabase config
 - coverage now includes simulator auto-login opt-out, lock/resume auth flow, stale-session cleanup, local encrypted-file deletion, deletion grace-period request/cancel/restore, simulator partial-failure deletion reporting, and JSON export generation verification
 - `SyncMergeTests` passes (`9/9`) and now verifies multiple dated daily logs and weekly snapshots coexist correctly after merge
+- the consolidated `make verify-local` target now passes end to end, including `40` passing XCTest cases across `FitTrackerCoreTests` and `SyncMergeTests`
 - simulator runtime spot-check on `2026-04-06` now confirms the live Settings screen plus both nested GDPR/settings screens (`Delete Account`, `Export My Data`) launch in review mode after the settings-review routing and environment injection fixes
 
 ### Still Open

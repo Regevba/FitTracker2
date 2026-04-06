@@ -435,6 +435,47 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertNil(service.currentSession)
     }
 
+    func testSupabaseRuntimeConfigurationRejectsPlaceholderCredentials() {
+        XCTAssertNil(
+            SupabaseRuntimeConfiguration.credentials(
+                urlString: "https://YOUR_PROJECT_ID.supabase.co",
+                key: "YOUR_SUPABASE_ANON_KEY"
+            )
+        )
+        XCTAssertNil(
+            SupabaseRuntimeConfiguration.credentials(
+                urlString: nil,
+                key: "configured-key"
+            )
+        )
+        XCTAssertNotNil(
+            SupabaseRuntimeConfiguration.credentials(
+                urlString: "https://example.supabase.co",
+                key: "configured-key"
+            )
+        )
+    }
+
+    func testSignInWithAppleSurfacesMissingSupabaseConfiguration() {
+        setenv("FITTRACKER_SKIP_AUTO_LOGIN", "1", 1)
+
+        let service = SignInService()
+        service.signInWithApple()
+
+        XCTAssertEqual(service.authErrorMessage, SupabaseRuntimeConfiguration.missingConfigurationMessage)
+        XCTAssertFalse(service.isLoading)
+        XCTAssertFalse(service.isAuthenticated)
+    }
+
+    func testSupabaseSyncServiceDisablesWhenConfigurationIsMissing() async {
+        let service = SupabaseSyncService()
+        let store = EncryptedDataStore()
+
+        await service.fetchChanges(dataStore: store)
+
+        XCTAssertEqual(service.status, .disabled)
+    }
+
     func testDeletePersistedDataRemovesEncryptedFilesAndClearsInMemoryState() throws {
         let store = EncryptedDataStore()
         let fileManager = FileManager.default
@@ -564,9 +605,10 @@ final class FitTrackerCoreTests: XCTestCase {
         #if targetEnvironment(simulator)
         let errorMessage = try? XCTUnwrap(deletionService.deletionError)
         XCTAssertNotNil(errorMessage)
-        XCTAssertTrue(errorMessage?.contains("Deleted: supabase, device") ?? false)
+        XCTAssertTrue(errorMessage?.contains("Deleted: device") ?? false)
         XCTAssertTrue(errorMessage?.contains("userdefaults") ?? false)
         XCTAssertTrue(errorMessage?.contains("Still pending:") ?? false)
+        XCTAssertTrue(errorMessage?.contains("supabase") ?? false)
         XCTAssertTrue(errorMessage?.contains("cloudkit") ?? false)
         #else
         XCTAssertNotNil(deletionService.deletionError)

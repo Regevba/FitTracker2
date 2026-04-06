@@ -46,6 +46,10 @@ final class SupabaseSyncService: ObservableObject {
     /// Upload all records that have `needsSync = true`.
     /// Per-record do/catch: a single failure marks status but doesn't abort the rest.
     func pushPendingChanges(dataStore: EncryptedDataStore) async {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            return
+        }
         guard case .idle = status else { return }
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else { return }
@@ -107,6 +111,10 @@ final class SupabaseSyncService: ObservableObject {
 
     /// Pull records modified since the last successful pull.
     func fetchChanges(dataStore: EncryptedDataStore) async {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            return
+        }
         guard case .idle = status else { return }
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else { return }
@@ -117,6 +125,10 @@ final class SupabaseSyncService: ObservableObject {
 
     /// Pull ALL records — used on first login to a new device.
     func fetchAllRecords(dataStore: EncryptedDataStore) async {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            return
+        }
         guard case .idle = status else { return }
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else { return }
@@ -133,6 +145,10 @@ final class SupabaseSyncService: ObservableObject {
     /// because the payload is unencrypted metadata only (encrypted_payload is not sent
     /// in the Change event to avoid unnecessary data transfer).
     func subscribeRealtime(dataStore: EncryptedDataStore) async {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            return
+        }
         guard realtimeChannel == nil else { return }   // already subscribed
         guard let session = try? await supabase.auth.session else { return }
         let userID = session.user.id.uuidString
@@ -178,6 +194,10 @@ final class SupabaseSyncService: ObservableObject {
 
     /// Encrypt and upload a cardio image to Supabase Storage; record metadata in cardio_assets.
     func uploadCardioImage(_ imageData: Data, log: DailyLog, cardioType: String) async throws -> String {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            throw SupabaseRuntimeConfiguration.missingConfigurationError
+        }
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else {
             throw FTAuthError.unknown
@@ -206,6 +226,10 @@ final class SupabaseSyncService: ObservableObject {
 
     /// Download and decrypt a cardio image from Supabase Storage.
     func downloadCardioImage(storagePath: String) async throws -> Data {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            throw SupabaseRuntimeConfiguration.missingConfigurationError
+        }
         let encrypted = try await supabase.storage
             .from("cardio-images")
             .download(path: storagePath)
@@ -214,6 +238,10 @@ final class SupabaseSyncService: ObservableObject {
 
     /// Delete all remote user data owned by the currently authenticated user.
     func deleteAllUserData() async throws {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            status = .disabled
+            throw SupabaseRuntimeConfiguration.missingConfigurationError
+        }
         guard let session = try? await supabase.auth.session else { return }
         let userID = session.user.id.uuidString
         status = .syncing

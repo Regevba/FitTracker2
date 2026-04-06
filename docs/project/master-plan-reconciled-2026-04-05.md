@@ -58,7 +58,7 @@ These are not minor cleanup items. They are plan-shaping constraints.
 
 ### Verification Snapshot
 
-Fresh verification completed on 2026-04-05:
+Fresh verification completed on 2026-04-06:
 
 - `xcodebuild -list` succeeds with full Xcode
 - `xcodebuild build -project FitTracker.xcodeproj -scheme FitTracker -destination 'generic/platform=iOS'` now passes after project, plist, and source-target recovery
@@ -68,6 +68,7 @@ Fresh verification completed on 2026-04-05:
 - dashboard production build passes
 - marketing website production build passes
 - AI engine tests pass
+- `make verify-local` now passes end to end
 - Python and Node environments can be provisioned successfully
 
 ### 2026-04-05 Execution Update
@@ -503,7 +504,7 @@ Before Android or advanced health features:
 4. Revalidate remote branch inventory directly from GitHub.
 5. Decide whether design-system branch work should be resumed from `main` or re-imported from verified branches.
 6. Harden CI around the now-green iOS, dashboard, website, token, and AI verification paths.
-7. Add one command-level script or Make target that reproduces the now-green local verification matrix.
+7. Wire `make verify-local` into CI or a documented release-check flow.
 8. Continue truth-aligning product docs only after runtime verification confirms the remaining claims.
 9. Verify production deploy health for dashboard and website.
 10. Resume design-system and product-expansion work only after the runtime and analytics gates above are closed.

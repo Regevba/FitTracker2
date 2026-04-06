@@ -301,11 +301,17 @@ final class SignInService: NSObject, ObservableObject {
     var hasStoredSession: Bool { storedSession != nil }
     var isPasskeyConfigured: Bool { passkeyRelyingPartyIdentifier != nil }
     var canShowPasskeyLogin: Bool { hasRegisteredPasskey && isPasskeyConfigured }
+    var isSupabaseConfigured: Bool { SupabaseRuntimeConfiguration.isConfigured }
 
     /// Restores a previous session. Checks Supabase for a live/refreshable JWT;
     /// updates the stored token if valid. Call from within a Task block at app launch.
     func restoreSession(activateStoredSession: Bool = false) async {
         guard activeSession == nil else { return }
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            KeychainHelper.delete(key: Self.sessionKey)
+            self.storedSession = nil
+            return
+        }
         // 1. Ask Supabase if there's a live (or refreshable) session
         if let supabaseSession = try? await supabase.auth.session {
             // 2. Load UserSession metadata from Keychain and refresh the backend JWT
@@ -378,8 +384,10 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func signOut() {
-        Task {
-            try? await supabase.auth.signOut(scope: .local)
+        if SupabaseRuntimeConfiguration.isConfigured {
+            Task {
+                try? await supabase.auth.signOut(scope: .local)
+            }
         }
         KeychainHelper.delete(key: Self.sessionKey)
         activeSession = nil       // triggers FitTrackerApp.onChange to clear dataStore + AI
@@ -539,6 +547,12 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func signInWithApple() {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            authErrorMessage = SupabaseRuntimeConfiguration.missingConfigurationMessage
+            statusMessage = nil
+            isLoading = false
+            return
+        }
         authErrorMessage = nil
         statusMessage = nil
         isLoading = true
