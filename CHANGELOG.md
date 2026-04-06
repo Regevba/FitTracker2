@@ -4,6 +4,20 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-06 — Runtime Verification Checkpoint Before SSD Move
+
+### Changed
+- **Runtime checkpoint docs** now record that a clean simulator reinstall reaches the consent gate on first launch, and that the earlier `Biometry is not enrolled` alert was stale simulator state rather than the true first-launch path
+
+### Verified
+- `xcodebuild build -project FitTracker.xcodeproj -scheme FitTracker -destination id=87E96E30-350E-46AC-AB34-B87AF8D1AB1E` passes from the matching stabilized clone at `/tmp/FitTracker2-review`
+- the built app installs and launches on the iPhone 14 Pro simulator
+- a clean reinstall lands on the consent screen on first launch
+
+### Remaining Blockers
+- real Supabase runtime verification is still blocked by placeholder values in `FitTracker/Info.plist`
+- real Firebase runtime verification is still blocked until a local `FitTracker/GoogleService-Info.plist` is supplied
+
 ## 2026-04-05 — Stabilization Recovery, Build Repair, and Truth Alignment
 
 ### Added

@@ -71,6 +71,7 @@ FitMe replaces your training log, meal tracker, and recovery dashboard with one 
 - Consent-gated: respects user opt-in/out via `ConsentManager`
 - Settings toggle for runtime enable/disable
 - Falls back to `MockAnalyticsAdapter` during XCTest or when a local Firebase plist is absent
+- Clean simulator reinstall now verifies first launch reaches the consent gate without crashing
 - Requires a local `GoogleService-Info.plist` for real Firebase runtime verification
 
 ---

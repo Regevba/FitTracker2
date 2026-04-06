@@ -363,6 +363,12 @@ High-priority remaining work:
 - supply local Firebase config and verify consent-gated analytics events in DebugView
 - keep the deterministic review-routing approach for any future nested settings screens that need reliable simulator verification
 
+Checkpoint note from 2026-04-06:
+
+- a clean simulator reinstall now reaches the consent gate on first launch without crashing
+- the earlier `Biometry is not enrolled` alert was traced to stale simulator app state rather than the real first-launch flow
+- runtime verification should continue from a clean reinstall baseline after the project move to the external SSD
+
 ---
 
 ## Practical Next Step
