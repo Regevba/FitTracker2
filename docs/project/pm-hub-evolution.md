@@ -301,7 +301,85 @@ Dashboard reads:
 
 ---
 
-## 14. Migration Notes
+## 14. UX Foundation Layer (Added 2026-04-06)
+
+### Why This Exists
+
+The PM workflow defined 8 UX principles as bullet points in Phase 3, but only 2 of 16 features had ever completed a formal UX spec. Zero `ux-research.md` files existed. The 11 core shipped features were built pre-PM-workflow with no UX framework.
+
+### What Was Added
+
+**New Skill: `/ux`** (`.claude/skills/ux/SKILL.md`)
+
+A dedicated UX planning and validation skill with 5 sub-commands:
+
+| Command | Purpose | Output |
+|---------|---------|--------|
+| `/ux research {feature}` | UX research against 13 principles + HIG + competitors | `ux-research.md` |
+| `/ux spec {feature}` | Full UX specification with flows, states, accessibility | `ux-spec.md` |
+| `/ux validate {feature}` | Heuristic evaluation + principle compliance check | Validation report |
+| `/ux audit` | App-wide UX audit (missing states, a11y, navigation depth) | Audit report |
+| `/ux patterns` | Quick reference to the UX pattern library | Pattern summary |
+
+**Boundary with `/design`:**
+- `/ux` owns the **what and why** — user flows, behavior, heuristics, accessibility-as-usability
+- `/design` owns the **how it looks** — tokens, components, Figma, compliance gateway
+
+**New Document: `docs/design-system/ux-foundations.md`**
+
+A comprehensive 10-part UX reference document grounding all future UI decisions:
+
+1. Design Philosophy & Principles (8 core + 5 FitMe-specific)
+2. Information Architecture (navigation model, content hierarchy, data flow)
+3. Interaction Patterns (navigation, input, feedback, gesture)
+4. Data Visualization Patterns (charts, metrics, color semantics)
+5. Permission & Trust Patterns (HealthKit, notifications, ATT, GDPR)
+6. State Patterns (empty, loading, error, success)
+7. Accessibility Standards (visual, motor, cognitive, screen reader)
+8. Micro-Interactions & Motion (animation principles, haptic patterns)
+9. Content Strategy (terminology, number formatting, health sensitivity)
+10. Platform-Specific Patterns (iPhone, iPad, Apple Watch)
+
+**13 UX Principles** (expanded from 8):
+
+| # | Principle | Category |
+|---|-----------|----------|
+| 1-8 | Fitts's, Hick's, Jakob's, Progressive Disclosure, Recognition over Recall, Consistency, Feedback, Error Prevention | Core (universal) |
+| 9 | Readiness-First | FitMe-specific |
+| 10 | Zero-Friction Logging | FitMe-specific |
+| 11 | Privacy by Default | FitMe-specific |
+| 12 | Progressive Profiling | FitMe-specific |
+| 13 | Celebration Not Guilt | FitMe-specific |
+
+**PM Workflow Integration:**
+
+| Phase | /ux Command | When |
+|-------|-------------|------|
+| Phase 0 | `/ux research` | After research, before PRD |
+| Phase 3 | `/ux spec` → `/ux validate` | Before design compliance |
+| Phase 5 | `/ux validate` | Post-implementation check |
+| Post-Launch | `/ux audit` | When CX signals indicate issues |
+
+### Updated Dependency Map
+
+```
+CLAUDE.md (rules)
+  └─→ SKILL.md (pm-workflow)
+        ├─→ /ux research → ux-research.md (Phase 0/3)
+        ├─→ /ux spec → ux-spec.md (Phase 3)
+        ├─→ /ux validate → validation report (Phase 3/5)
+        ├─→ /design audit → compliance check (Phase 3)
+        ├─→ state.json (lifecycle + tasks[])
+        ├─→ skill-routing.json (task assignments)
+        ├─→ task-queue.json (priority queue)
+        └─→ change-log.json (post-merge broadcast)
+              └─→ All skills notified
+                    └─→ /cx analyze → /ux audit → Fix/Enhancement
+```
+
+---
+
+## 15. Migration Notes
 
 - **Backwards compatible:** State.json files without `tasks[]` or `work_type` fields work as `type: "feature"` with feature-level tracking only
 - **New features should use `work_type`** — selected during `/pm-workflow` initialization
