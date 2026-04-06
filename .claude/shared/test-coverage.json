@@ -1,18 +1,29 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-04",
+  "version": "1.1",
+  "updated": "2026-04-06",
   "suites": {
-    "analytics": { "tests": 23, "passing": 23, "coverage_areas": ["event firing", "consent gating", "taxonomy validation", "GDPR events"] },
-    "token_pipeline": { "tests": 1, "passing": 1, "coverage_areas": ["DesignTokens.swift drift detection"] },
-    "xcode_build": { "status": "green", "last_run": null },
-    "xcode_test": { "status": "green", "last_run": null }
+    "core": { "file": "FitTrackerTests/FitTrackerCoreTests.swift", "tests": 31, "passing": 31, "coverage_areas": ["auth session lifecycle", "sign-out cleanup", "biometric lock/resume", "encrypted-file deletion", "deletion grace-period", "export generation", "Supabase config fallback"] },
+    "sync_merge": { "file": "FitTrackerTests/SupabaseTests/SyncMergeTests.swift", "tests": 9, "passing": 9, "coverage_areas": ["daily log merge", "weekly snapshot merge", "dated row coexistence", "logicDayKey normalization"] },
+    "analytics": { "file": "FitTrackerTests/AnalyticsTests.swift", "tests": 23, "passing": 23, "coverage_areas": ["event firing", "consent gating", "taxonomy validation", "GDPR events", "screen tracking"] },
+    "supabase_client": { "file": "FitTrackerTests/SupabaseTests/SupabaseClientTests.swift", "tests": 0, "passing": 0, "coverage_areas": ["client configuration"] },
+    "user_session_mapping": { "file": "FitTrackerTests/SupabaseTests/UserSessionMappingTests.swift", "tests": 0, "passing": 0, "coverage_areas": ["session serialization"] },
+    "token_pipeline": { "file": "scripts/check-tokens.js", "tests": 1, "passing": 1, "coverage_areas": ["DesignTokens.swift drift detection"] },
+    "dashboard": { "file": "dashboard/tests/reconcile.test.js", "tests": 9, "passing": 9, "coverage_areas": ["feature reconciliation", "source health"] },
+    "ai_engine": { "file": "ai-engine/tests/test_training.py", "tests": 5, "passing": 5, "coverage_areas": ["training endpoint", "auth flow", "payload validation"] }
+  },
+  "totals": {
+    "ios_xctest": 40,
+    "dashboard": 9,
+    "ai_engine": 5,
+    "token_pipeline": 1,
+    "all": 55
   },
   "gaps": {
-    "integration_tests": "none",
-    "ui_tests": "none",
+    "integration_tests": "none — blocked until signed-in runtime verification",
+    "ui_tests": "none — consider XCUITest for critical flows",
     "performance_tests": "none",
-    "security_tests": "none",
-    "visual_regression": "none"
+    "security_tests": "none — encryption round-trip tests needed",
+    "visual_regression": "none — consider snapshot tests"
   },
   "guardrail_gates": {
     "ci_pass_rate": { "target": ">95%", "enforced": true },

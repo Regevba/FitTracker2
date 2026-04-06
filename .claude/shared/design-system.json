@@ -1,8 +1,8 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-04",
+  "version": "1.1",
+  "updated": "2026-04-06",
   "tokens": {
-    "total": 120,
+    "total": 125,
     "categories": {
       "colors": { "count": 45, "examples": ["Brand.primary", "Surface.primary", "Text.primary", "Status.success", "Chart.body"] },
       "spacing": { "count": 9, "scale": "micro(2) → xxLarge(40)" },

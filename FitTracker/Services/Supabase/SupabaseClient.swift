@@ -54,7 +54,9 @@ enum SupabaseRuntimeConfiguration {
 
     static func makeStubClient() -> SupabaseClient {
         let stubHost = ["placeholder", "supabase", "co"].joined(separator: ".")
-        let stubURL = URL(string: "https://" + stubHost)!
+        guard let stubURL = URL(string: "https://" + stubHost) else {
+            fatalError("Stub Supabase URL is invalid — infrastructure error")
+        }
         let stubKey = ["ci", "test", "stub"].joined(separator: "-")
         return SupabaseClient(supabaseURL: stubURL, supabaseKey: stubKey)
     }

@@ -294,9 +294,12 @@ final class CloudKitSyncService: ObservableObject {
             var cursor: CKQueryOperation.Cursor?
 
             repeat {
-                let result = try await (cursor == nil
-                    ? privateDB.records(matching: query)
-                    : privateDB.records(continuingMatchFrom: cursor!))
+                let result: (matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)], queryCursor: CKQueryOperation.Cursor?)
+                if let activeCursor = cursor {
+                    result = try await privateDB.records(continuingMatchFrom: activeCursor)
+                } else {
+                    result = try await privateDB.records(matching: query)
+                }
 
                 let recordIDs = result.matchResults.compactMap { _, recordResult in
                     try? recordResult.get().recordID
@@ -334,8 +337,9 @@ final class CloudKitSyncService: ObservableObject {
         // Strip inline JPEG bytes before encrypting — images travel as CKAssets to stay
         // well under CKRecord's 1 MB size limit. Upload each image first, keep only its cloudID.
         var logToUpload = log
-        for (key, var cardio) in logToUpload.cardioLogs where cardio.summaryImageData != nil {
-            let cloudID = try await uploadCardioImage(cardio.summaryImageData!, cardioLogID: cardio.id.uuidString)
+        for (key, var cardio) in logToUpload.cardioLogs {
+            guard let imageData = cardio.summaryImageData else { continue }
+            let cloudID = try await uploadCardioImage(imageData, cardioLogID: cardio.id.uuidString)
             cardio.summaryImageCloudID = cloudID
             cardio.summaryImageData    = nil
             logToUpload.cardioLogs[key] = cardio
@@ -424,9 +428,12 @@ final class CloudKitSyncService: ObservableObject {
         // Paginate with a cursor loop — the single-shot API is capped at ~200 records.
         var cursor: CKQueryOperation.Cursor?
         repeat {
-            let result = try await (cursor == nil
-                ? privateDB.records(matching: query)
-                : privateDB.records(continuingMatchFrom: cursor!))
+            let result: (matchResults: [(CKRecord.ID, Result<CKRecord, any Error>)], queryCursor: CKQueryOperation.Cursor?)
+            if let activeCursor = cursor {
+                result = try await privateDB.records(continuingMatchFrom: activeCursor)
+            } else {
+                result = try await privateDB.records(matching: query)
+            }
 
             for (_, recordResult) in result.matchResults {
                 do {

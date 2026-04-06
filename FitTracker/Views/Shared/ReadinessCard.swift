@@ -365,7 +365,7 @@ struct ReadinessCard: View {
         // Steps: use biometrics.stepCount
         let stepsNow  = last7.compactMap { $0.biometrics.stepCount }.last
         let stepsPrev = prev7.compactMap { $0.biometrics.stepCount }.last
-        let stepsDelta: Double? = (stepsNow != nil && stepsPrev != nil) ? Double(stepsNow! - stepsPrev!) : nil
+        let stepsDelta: Double? = if let now = stepsNow, let prev = stepsPrev { Double(now - prev) } else { nil }
 
         return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("7-Day Trends")

@@ -11,7 +11,10 @@ private func makeAIEngineBaseURL() -> URL {
     let urlString = plistValue.isEmpty ? "https://fittracker-ai-production.up.railway.app" : plistValue
     guard let url = URL(string: urlString) else {
         // Fallback to hardcoded default — only reachable if Info.plist value is malformed
-        return URL(string: "https://fittracker-ai-production.up.railway.app")!
+        guard let fallback = URL(string: "https://fittracker-ai-production.up.railway.app") else {
+            fatalError("Hardcoded AI engine URL is invalid — infrastructure error")
+        }
+        return fallback
     }
     return url
 }

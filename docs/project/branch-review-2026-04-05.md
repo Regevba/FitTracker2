@@ -2,7 +2,7 @@
 
 > **Date:** 2026-04-05
 > **Reviewer:** Claude Opus 4.6 (automated deep review of all branches vs main)
-> **Repo:** FitTracker2 (`/Users/regevbarak/Desktop/FitMe/FitTracker2`)
+> **Repo:** FitTracker2 (https://github.com/Regevba/FitTracker2)
 
 ---
 
