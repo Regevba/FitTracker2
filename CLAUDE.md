@@ -47,7 +47,7 @@ This app is data-driven at every level:
 
 The design system is a **living, evolving framework** — not a static constraint. It should serve the product.
 
-- 92 semantic tokens in `FitTracker/Services/AppTheme.swift`
+- ~125 semantic tokens in `FitTracker/Services/AppTheme.swift`
 - 13 reusable components in `FitTracker/DesignSystem/`
 - Token pipeline: `design-tokens/tokens.json` → Style Dictionary → `DesignTokens.swift`
 - CI gate: `make tokens-check` prevents token drift

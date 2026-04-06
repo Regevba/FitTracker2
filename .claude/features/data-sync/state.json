@@ -1,0 +1,39 @@
+{
+  "feature": "data-sync",
+  "created": "2026-04-06T14:00:00Z",
+  "updated": "2026-04-06T14:00:00Z",
+  "branch": null,
+  "current_phase": "complete",
+  "has_ui": false,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "note": "Backfill record. Feature shipped before PM workflow enforcement. State created retroactively during 2026-04-06 audit.",
+  "transitions": [
+    {
+      "from": "init",
+      "to": "complete",
+      "timestamp": "2026-04-06T14:00:00Z",
+      "approved_by": "audit",
+      "note": "Retroactive backfill — feature was shipped pre-PM workflow."
+    }
+  ],
+  "phases": {
+    "research": { "status": "pre-pm-workflow" },
+    "prd": { "status": "backfilled", "prd_path": "docs/product/prd/18.8-data-sync.md" },
+    "tasks": { "status": "pre-pm-workflow" },
+    "ux_or_integration": { "status": "pre-pm-workflow" },
+    "implementation": { "status": "shipped" },
+    "testing": { "status": "pre-pm-workflow", "note": "Test coverage varies by feature" },
+    "review": { "status": "pre-pm-workflow" },
+    "merge": { "status": "done" },
+    "documentation": { "status": "done" },
+    "metrics": {
+      "primary": { "name": "sync_success_rate", "baseline": 0, "target": 99, "current": null },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": "Core infrastructure"
+    }
+  }
+}

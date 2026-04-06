@@ -29,12 +29,16 @@
     "merge": { "status": "done", "pr_number": null, "analytics_regression_passed": true },
     "documentation": { "status": "done" },
     "metrics": {
-      "primary": { "name": "", "baseline": null, "target": null, "current": null },
-      "secondary": [],
-      "guardrails": [],
-      "instrumentation_ready": false,
+      "primary": { "name": "ga4_events_flowing", "baseline": 0, "target": 20, "current": 20 },
+      "secondary": [
+        { "name": "screen_tracking_views", "target": 24, "current": 24 },
+        { "name": "consent_opt_in_rate", "target": 0.6, "current": null },
+        { "name": "analytics_test_coverage", "target": 23, "current": 23 }
+      ],
+      "guardrails": ["crash_free_rate > 99.5%", "consent gating on all events"],
+      "instrumentation_ready": true,
       "first_review_date": null,
-      "kill_criteria": ""
+      "kill_criteria": "Data-driven foundation — cannot be killed. If consent rate <5%, simplify consent flow."
     }
   }
 }
