@@ -1,5 +1,7 @@
 // FitTracker/Views/Onboarding/OnboardingWelcomeView.swift
-// Onboarding Step 0 — Welcome screen with branded logo and Get Started CTA.
+// Onboarding Step 0 — Welcome screen
+// Figma ref: "Onboarding / Welcome" (node 472:2)
+// Orange gradient bg, white logo, "FitMe" title, tagline, white CTA button
 import SwiftUI
 
 struct OnboardingWelcomeView: View {
@@ -8,43 +10,50 @@ struct OnboardingWelcomeView: View {
     @EnvironmentObject private var analytics: AnalyticsService
 
     var body: some View {
-        VStack(spacing: AppSpacing.large) {
+        VStack(spacing: AppSpacing.medium) {
             Spacer()
 
-            VStack(spacing: AppSpacing.xSmall) {
-                FitMeLogoLoader(mode: .breathe, size: .large)
+            // Logo — Figma: white circle with FitMe logo
+            FitMeLogoLoader(mode: .breathe, size: .large)
+                .padding(.bottom, AppSpacing.xSmall)
 
-                Text("Your fitness command center")
-                    .font(AppText.body)
-                    .foregroundStyle(AppColor.Text.secondary)
-                    .multilineTextAlignment(.center)
-            }
+            // App name — Figma: Inter Bold 44px, white
+            Text("FitMe")
+                .font(.system(size: 44, weight: .bold, design: .rounded))
+                .foregroundStyle(AppColor.Text.inversePrimary)
+
+            // Tagline — Figma: Inter Medium 20px, white 85%
+            Text("Your fitness command center")
+                .font(AppText.subheading)
+                .foregroundStyle(AppColor.Text.inverseSecondary)
+                .multilineTextAlignment(.center)
+
+            // Pillars — Figma: Inter Regular 15px, white 65%
+            Text("Training · Nutrition · Recovery · AI")
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.inverseTertiary)
 
             Spacer()
 
+            // CTA — Figma: white bg, brand-primary text, 20px radius, 52pt height
             Button(action: onContinue) {
                 Text("Get Started")
                     .font(AppText.button)
-                    .foregroundStyle(AppColor.Text.inversePrimary)
+                    .foregroundStyle(AppColor.Brand.primary)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, AppSpacing.small)
-                    .background(
-                        AppGradient.brand,
-                        in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
-                    )
-                    .shadow(
-                        color: AppShadow.ctaColor,
-                        radius: AppShadow.ctaRadius,
-                        y: AppShadow.ctaYOffset
-                    )
+                    .frame(height: 52)
             }
+            .background(.white, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
+            .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
             .buttonStyle(.plain)
-            .padding(.horizontal, AppSpacing.small)
-            .padding(.bottom, AppSpacing.xLarge)
+            .padding(.horizontal, AppSpacing.medium)
+
+            Spacer().frame(height: AppSpacing.xLarge)
         }
-        .background(Color.clear)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppGradient.brand.ignoresSafeArea())
         .onAppear {
-            analytics.logScreenView("onboarding_welcome")
+            analytics.logScreenView(AnalyticsScreen.onboardingWelcome, screenClass: "OnboardingWelcomeView")
         }
     }
 }
@@ -52,10 +61,7 @@ struct OnboardingWelcomeView: View {
 #if DEBUG
 struct OnboardingWelcomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ZStack {
-            AppGradient.screenBackground.ignoresSafeArea()
-            OnboardingWelcomeView(onContinue: {})
-        }
+        OnboardingWelcomeView(onContinue: {})
     }
 }
 #endif
