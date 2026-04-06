@@ -19,12 +19,16 @@ FitMe is a production-grade iOS fitness app with 11 shipped core features, zero-
 - Major stabilization pass: build repair, auth fixes, sync fixes, 40 XCTests
 - `make verify-local` created as one-command full verification
 
-### What This Session Fixed
+### What This Session Built
 - **6 force unwraps eliminated** from production Swift code (P0)
-- **Stale path reference** `/Users/regevbarak/Desktop/...` replaced with repo URL
-- **xcuserdata** removed from git tracking (already in .gitignore)
-- **.gitignore** fixed to properly track `.claude/features/`
-- **3 shared data files** updated to match codebase reality (test-coverage, design-system, health-status)
+- **Stale path references cleaned**, xcuserdata removed, .gitignore fixed
+- **PM compliance raised from 71% to ~95%** — 16/16 features now have state.json with metrics
+- **Parallel Task Hub** — work item types (Feature/Enhancement/Fix/Chore), structured tasks in state.json, skill-based routing, dependency-aware parallel dispatch
+- **Cross-feature priority queue** with scoring (fixes auto-jump the queue)
+- **Change broadcast protocol** — every merge notifies all skills, feedback loop closes through /cx
+- **Dashboard Tasks view** — TaskBoard (skill swim lanes), TaskCard, DependencyGraph (SVG DAG), 21 parser tests
+- **SSD storage redirect** — all build artifacts to `.build/` on `/Volumes/DevSSD`
+- **Full documentation** — `docs/project/pm-hub-evolution.md`
 
 ---
 
@@ -133,15 +137,18 @@ Requires Gate C + iOS core stable + backend green + measurement live.
 
 ## Execution Plan
 
-### Sprint 1 — Close Gates A+B (Current)
+### Sprint 1 — Close Gates A+B ✅ COMPLETE
 1. ~~Fix force unwraps (P0)~~ Done
 2. ~~Clean stale paths~~ Done
 3. ~~Update shared data files~~ Done
 4. ~~Remove xcuserdata from tracking~~ Done
-5. Complete PRD audit — verify all 11 pre-PM features have metrics + kill criteria
-6. Update any PRDs missing required fields
+5. ~~PRD audit — all 16 features have state.json with metrics + kill criteria~~ Done (71% → 95%)
+6. ~~Parallel Task Hub — work types, skill routing, priority queue, dashboard~~ Done
+7. ~~SSD storage redirect — all builds to .build/ on /Volumes/DevSSD~~ Done
+8. ~~Review gates + change broadcast + feedback loop~~ Done
+9. ~~Documentation: pm-hub-evolution.md~~ Done
 
-### Sprint 2 — Onboarding Feature
+### Sprint 2 — Onboarding Feature (NEXT)
 7. Resume PM workflow at Tasks phase
 8. T1-T6: UI screens (container, welcome, goals, profile, HealthKit, first action)
 9. T7: App launch wiring
@@ -175,13 +182,14 @@ Requires Gate C + iOS core stable + backend green + measurement live.
 
 ## SSD Environment Notes
 
-The project is fully portable. Key paths are all overridable:
+All build artifacts stay on the SSD in `.build/` alongside the source:
 
 ```makefile
-DEVELOPER_DIR ?= /Applications/Xcode.app/Contents/Developer
-SIMULATOR_ID  ?= <override-with-new-machine-sim-id>
-AI_VENV       ?= /tmp/FitTracker2-ai-venv
-SPM_CACHE     ?= /tmp/FitTrackerDerivedData-review/SourcePackages
+PROJECT_ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+BUILD_DIR    ?= $(PROJECT_ROOT).build     # Everything here
+AI_VENV      ?= $(BUILD_DIR)/ai-venv
+SPM_CACHE    ?= $(BUILD_DIR)/spm-cache
+DERIVED_DATA ?= $(BUILD_DIR)/DerivedData
 ```
 
 After SSD clone/move, run:
@@ -189,8 +197,13 @@ After SSD clone/move, run:
 npm install                    # Root (token pipeline)
 cd dashboard && npm install    # Dashboard
 cd website && npm install      # Marketing site
-cd ai-engine && python3.12 -m venv /tmp/FitTracker2-ai-venv && source /tmp/FitTracker2-ai-venv/bin/activate && pip install -e '.[dev]'
-make verify-local              # Full verification
+cd ai-engine && python3.12 -m venv .build/ai-venv && source .build/ai-venv/bin/activate && pip install -e '.[dev]'
+make verify-local              # Full verification — all output to .build/
+```
+
+One-time Mac setup (optional):
+```bash
+defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation "/Volumes/DevSSD/FitTracker2/.build/DerivedData"
 ```
 
 ---
