@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import KanbanBoard from './KanbanBoard';
 import TableView from './TableView';
+import TaskBoard from './TaskBoard';
 import PipelineOverview from './PipelineOverview';
 import AlertsBanner from './AlertsBanner';
 import SourceHealth from './SourceHealth';
@@ -9,6 +10,7 @@ import ThemeToggle from './ThemeToggle';
 const VIEW_TABS = [
   { id: 'board', label: 'Board' },
   { id: 'table', label: 'Table' },
+  { id: 'tasks', label: 'Tasks' },
 ];
 
 export default function Dashboard({ features, alerts, sources }) {
@@ -78,6 +80,7 @@ export default function Dashboard({ features, alerts, sources }) {
       <div className="mb-8">
         {view === 'board' && <KanbanBoard features={features} />}
         {view === 'table' && <TableView features={features} />}
+        {view === 'tasks' && <TaskBoard features={features} />}
       </div>
 
       {/* Source Health */}

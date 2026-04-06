@@ -194,11 +194,24 @@ cd dashboard && npm install
 # Marketing site
 cd ../website && npm install
 
-# AI engine
+# AI engine (venv goes to .build/ on the SSD automatically)
 cd ../ai-engine
-python3.12 -m venv /tmp/FitTracker2-ai-venv
-source /tmp/FitTracker2-ai-venv/bin/activate
+python3.12 -m venv .build/ai-venv
+source .build/ai-venv/bin/activate
 pip install -e '.[dev]'
+```
+
+### SSD Development Environment
+
+All build artifacts (DerivedData, SPM cache, npm cache, Python venv) are stored in `.build/` alongside the project source, keeping your internal drive clean.
+
+**One-time Mac setup (optional):**
+```bash
+# Override Xcode default DerivedData to SSD
+defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation "/Volumes/DevSSD/FitTracker2/.build/DerivedData"
+
+# Redirect Homebrew cache to SSD (if Homebrew is used)
+echo 'export HOMEBREW_CACHE="/Volumes/DevSSD/.cache/homebrew"' >> ~/.zshrc
 ```
 
 ### One-Command Verification
@@ -207,7 +220,7 @@ pip install -e '.[dev]'
 make verify-local
 ```
 
-This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass.
+This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass. All output goes to `.build/` on the SSD.
 The current verified result is green end to end, including `40` passing XCTest cases across `FitTrackerCoreTests` and `SyncMergeTests`.
 
 ### iOS Build

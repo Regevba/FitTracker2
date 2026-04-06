@@ -64,3 +64,6 @@ __pycache__/
 dashboard/node_modules/
 dashboard/dist/
 dashboard/.vercel/
+
+# SSD-local build artifacts (caches, DerivedData, venvs, npm cache)
+.build/

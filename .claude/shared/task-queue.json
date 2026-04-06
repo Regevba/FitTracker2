@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-06T15:00:00Z",
+  "queue": [],
+  "scoring": {
+    "base": { "critical": 10, "high": 7, "medium": 4, "low": 1 },
+    "work_type_boost": { "fix": 3, "enhancement": 1, "feature": 0, "chore": -1 },
+    "note": "priority_score = base[priority] + work_type_boost[work_type]. Higher score = execute first."
+  },
+  "skill_capacity": {
+    "dev": { "description": "Code implementation, branching, CI" },
+    "qa": { "description": "Test planning, execution, coverage, security" },
+    "design": { "description": "UX specs, design system, accessibility" },
+    "analytics": { "description": "GA4 events, instrumentation, dashboards" },
+    "ops": { "description": "Infrastructure, monitoring, incidents" },
+    "marketing": { "description": "ASO, campaigns, content, launch" },
+    "cx": { "description": "Reviews, NPS, sentiment, feedback loops" },
+    "research": { "description": "Market research, competitive analysis" },
+    "release": { "description": "Versioning, changelogs, App Store" }
+  }
+}

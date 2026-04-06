@@ -16,6 +16,16 @@ Every new feature MUST follow the PM workflow. Invoke with `/pm-workflow {featur
 7. Manual overrides allowed — user can move features forward (skip) or backward (rollback) at any time. Skipped phases are recorded in the audit trail.
 8. Conflicts between state.json and GitHub Issues are resolved by asking the user.
 
+## Work Item Types
+
+Not everything needs the full 9-phase funnel:
+- **Feature** — Full lifecycle (Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs). New capabilities requiring research, PRD, design.
+- **Enhancement** — 4-phase (Tasks → Implement → Test → Merge). Improvements to shipped features. Parent feature must already have a PRD.
+- **Fix** — 2-phase (Implement → Test). Bug fixes, error handling, security patches.
+- **Chore** — 1-phase (Implement). Docs, config, refactoring, dependency updates.
+
+Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded in the audit trail with reason `work_type:{type}`.
+
 ## Branching Strategy
 
 - **Large features** (>5 files changed OR new models/services) → `feature/{name}` branch
