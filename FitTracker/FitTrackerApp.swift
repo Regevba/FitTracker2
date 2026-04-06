@@ -207,7 +207,9 @@ struct FitTrackerApp: App {
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
         } else if signIn.isAuthenticated {
-            if analytics.consent.gdprConsent == .pending {
+            if analytics.consent.gdprConsent == .pending && hasCompletedOnboarding {
+                // Fallback: user completed onboarding before consent was added,
+                // or consent state was reset. Show standalone consent screen.
                 ConsentView {
                     analytics.syncConsentToProvider()
                 }

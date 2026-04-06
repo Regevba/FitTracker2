@@ -1,5 +1,6 @@
 // FitTracker/Views/Onboarding/OnboardingView.swift
-// Main onboarding container — manages 5-step flow with progress tracking.
+// Main onboarding container — manages 6-step flow with progress tracking.
+// Consent is integrated as step 5 (after HealthKit, before First Action).
 // Swipe is disabled; the user advances only via explicit button actions.
 
 import SwiftUI
@@ -12,19 +13,19 @@ struct OnboardingView: View {
 
     let onComplete: () -> Void
 
-    private let totalSteps = 5
+    private let totalSteps = 6
 
     var body: some View {
         VStack(spacing: 0) {
-            // Progress bar — hidden on welcome step
-            if currentStep > 0 {
+            // Progress bar — hidden on welcome step (0) and consent step (4)
+            if currentStep > 0 && currentStep != 4 {
                 OnboardingProgressBar(currentStep: currentStep, totalSteps: totalSteps)
                     .padding(.horizontal, AppSpacing.medium)
                     .padding(.top, AppSpacing.small)
                     .transition(.opacity)
             }
 
-            // Page content — swipe disabled via .never
+            // Page content — swipe disabled
             TabView(selection: $currentStep) {
                 OnboardingWelcomeView(onContinue: { advance() })
                     .tag(0)
@@ -34,14 +35,27 @@ struct OnboardingView: View {
                     .tag(2)
                 OnboardingHealthKitView(onContinue: { advance() }, onSkip: { advance() })
                     .tag(3)
-                OnboardingFirstActionView(onComplete: { completeOnboarding() })
+                OnboardingConsentView(onAccept: {
+                    analytics.consent.grantConsent()
+                    analytics.syncConsentToProvider()
+                    analytics.logConsentGranted(type: "gdpr")
+                    Task { await analytics.consent.requestATT() }
+                    advance()
+                }, onDecline: {
+                    analytics.consent.denyConsent()
+                    analytics.syncConsentToProvider()
+                    analytics.logConsentDenied(type: "gdpr")
+                    advance()
+                })
                     .tag(4)
+                OnboardingFirstActionView(onComplete: { completeOnboarding() })
+                    .tag(5)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .scrollDisabled(true)
             .animation(.easeInOut(duration: 0.3), value: currentStep)
         }
-        .background(AppGradient.screenBackground)
+        .background(currentStep == 0 ? AnyShapeStyle(AppGradient.brand) : AnyShapeStyle(AppColor.Background.appTint))
         .onAppear {
             analytics.logEvent(AnalyticsEvent.tutorialBegin, parameters: nil)
             analytics.logScreenView(AnalyticsScreen.onboarding, screenClass: "OnboardingView")
@@ -57,10 +71,7 @@ struct OnboardingView: View {
             guard currentStep < totalSteps - 1 else { return }
             let completedStep = currentStep
             currentStep += 1
-            analytics.logEvent("onboarding_step_completed", parameters: [
-                "step_index": completedStep,
-                "step_name": stepName(for: completedStep)
-            ])
+            analytics.logOnboardingStepCompleted(stepIndex: completedStep, stepName: stepName(for: completedStep))
         }
     }
 
@@ -69,6 +80,7 @@ struct OnboardingView: View {
         analytics.logEvent(AnalyticsEvent.tutorialComplete, parameters: [
             "steps_completed": totalSteps
         ])
+        analytics.setOnboardingCompleted(true)
         onComplete()
     }
 
@@ -78,7 +90,8 @@ struct OnboardingView: View {
         case 1: return "goals"
         case 2: return "profile"
         case 3: return "healthkit"
-        case 4: return "first_action"
+        case 4: return "consent"
+        case 5: return "first_action"
         default: return "unknown"
         }
     }
@@ -91,7 +104,7 @@ struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         OnboardingView(onComplete: {})
             .environmentObject(HealthKitService())
-            .environmentObject(AnalyticsService())
+            .environmentObject(AnalyticsService.makeDefault())
     }
 }
 #endif

@@ -1,5 +1,5 @@
 // FitTracker/Views/Onboarding/OnboardingProgressBar.swift
-// 5-segment horizontal progress indicator for onboarding flow.
+// 6-segment horizontal progress indicator for onboarding flow.
 // Completed segments use brand primary, active segment uses brand gradient,
 // upcoming segments use a muted surface color.
 
@@ -55,9 +55,9 @@ struct OnboardingProgressBar: View {
 struct OnboardingProgressBar_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: AppSpacing.large) {
-            OnboardingProgressBar(currentStep: 0, totalSteps: 5)
-            OnboardingProgressBar(currentStep: 2, totalSteps: 5)
-            OnboardingProgressBar(currentStep: 4, totalSteps: 5)
+            OnboardingProgressBar(currentStep: 0, totalSteps: 6)
+            OnboardingProgressBar(currentStep: 3, totalSteps: 6)
+            OnboardingProgressBar(currentStep: 5, totalSteps: 6)
         }
         .padding(AppSpacing.medium)
         .background(AppGradient.screenBackground)
