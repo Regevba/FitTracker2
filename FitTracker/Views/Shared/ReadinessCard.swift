@@ -552,3 +552,13 @@ struct ReadinessCard: View {
         .padding(.vertical, AppSpacing.xSmall)
     }
 }
+
+#if DEBUG
+#Preview("ReadinessCard") {
+    ReadinessCard()
+        .environmentObject(EncryptedDataStore())
+        .environmentObject(HealthKitService())
+        .padding()
+        .background(AppGradient.screenBackground)
+}
+#endif
