@@ -293,3 +293,151 @@ When designing any new feature, the `/ux research` skill walks through this chec
 This produces the "Principle Application Table" in every `ux-spec.md` (see `.claude/features/gdpr-compliance/ux-spec.md` for an example).
 
 ---
+
+## Part 2: Information Architecture
+
+### 2.1 The Fundamental Axis: Today vs. History
+
+FitMe organizes around **temporal context** — the same axis used by every successful fitness app:
+
+- **Today** (the active state): What should I do? How am I doing? What's my readiness?
+- **History** (the archive): How did I do? What patterns are emerging? What progressed?
+
+Every screen is on one side of this axis. The home screen, training plan, nutrition tracker, and biometric entry are **today** surfaces. The stats hub, workout history, and progress charts are **history** surfaces.
+
+### 2.2 Tab Bar Structure
+
+FitMe uses a 4-tab bottom bar — iOS standard, matches Strava (Feed/Maps/Record/Groups/You) and Hevy (Log/Routines/History/Profile).
+
+| Tab | Purpose | Side of Axis |
+|-----|---------|--------------|
+| **Home** | Readiness, today's plan, quick actions, 7-day trends | Today |
+| **Training** | Today's session, exercise logging, program view | Today |
+| **Nutrition** | Today's macros, meal log, supplement tracking | Today |
+| **Stats** | Charts, metrics, trends, history | History |
+
+**Settings** is accessed via a profile icon (top-right of Home), not a 5th tab. This keeps the tab bar focused on daily use, with infrequent settings access pushed off the main path.
+
+**Why 4 tabs, not 5?**
+- Hick's Law: 4 options is the cognitive sweet spot
+- Thumb reach: 4 tabs at 393pt screen width = 98pt per tab, comfortable thumb zone
+- Apple HIG recommends 3-5 tabs
+
+### 2.3 Content Hierarchy Per Tab
+
+#### Home Tab
+```
+Home
+├─ Greeting + date strip (LiveInfoStrip)
+├─ Readiness card (ReadinessCard — 6 rotating pages)
+├─ Today's plan card (workout type + suggested exercises)
+├─ Quick actions row (Log meal, Start workout, Log biometric)
+└─ 7-day trend strip (mini metric cards)
+```
+
+#### Training Tab
+```
+Training
+├─ Today's session header (day type badge + readiness adjusted suggestion)
+├─ Exercise list (AppCard per exercise)
+│   └─ Tap to enter active workout
+├─ Active Workout (full-screen modal)
+│   ├─ Set entry (auto-populated from previous session)
+│   ├─ Rest timer overlay
+│   └─ Completion sheet (volume delta + PRs)
+└─ Workout history (push, secondary path)
+```
+
+#### Nutrition Tab
+```
+Nutrition
+├─ Macro target bars (protein, carbs, fat, calories)
+├─ Meal sections (breakfast, lunch, dinner, snacks)
+│   └─ Tap "+" to open meal entry sheet
+├─ Meal Entry Sheet (4 tabs: Smart, Manual, Template, Search)
+└─ Supplements row (daily checklist)
+```
+
+#### Stats Tab
+```
+Stats
+├─ Period selector (week, month, quarter, year, all-time)
+├─ Recovery metrics section (HRV, sleep, RHR — Readiness-First principle)
+├─ Body composition section (weight, body fat, lean mass)
+├─ Performance section (volume, PRs by exercise)
+├─ Nutrition section (macro adherence, calorie trend)
+└─ Tap any metric → push to ChartCard detail view
+```
+
+### 2.4 Depth Limit Rule
+
+**Maximum navigation depth: 3 levels from any tab.**
+
+```
+Tab → Section → Detail   (3 levels — OK)
+Tab → Section → Sub      (3 levels — OK)
+Tab → Section → Detail → Sub-detail   (4 levels — NOT OK)
+```
+
+**Why:** Beyond 3 levels, users lose context and the back button becomes a chore. If a feature needs more depth, it belongs in its own modal or sheet, not pushed deeper.
+
+**Examples:**
+- ✅ Stats → Body Composition → Weight Chart (3 levels)
+- ✅ Training → Active Workout → Exercise Detail (3 levels via push, modal-style)
+- ❌ Settings → Account → Email → Verification → Confirmation (5 levels — collapse into modal flow)
+
+### 2.5 Modal vs. Push Navigation
+
+**Push navigation** is for **reading flows** — drilling into existing content:
+- Stats → metric chart (push)
+- Training → exercise detail (push)
+- Settings → category detail (push)
+
+**Sheets / modals** are for **creation and editing flows** — creating new content:
+- Add meal → Meal Entry Sheet (sheet)
+- Add biometric → Biometrics Entry (sheet)
+- Edit profile → Account Panel (full-screen sheet)
+- Delete account → Confirmation modal (modal — destructive)
+
+**Full-screen modals** are reserved for:
+- Active workout (immersive, requires focus)
+- Onboarding (first-run experience)
+- Destructive confirmations (account deletion)
+
+### 2.6 Search & Discovery
+
+As the app grows, search becomes critical for content discovery:
+
+- **Exercise library:** inline search bar at top of `TrainingPlanView` exercise list with real-time filtering
+- **Food database:** search tab in `MealEntrySheet` with debounced query (300ms)
+- **Settings:** no search (only 9 categories — Hick's Law allows direct scan)
+
+**No global search** — FitMe has tab-scoped search only. A global search bar would be a Jakob's Law violation (iOS apps don't have global search except for system-level features).
+
+### 2.7 Cross-Domain Connections
+
+Some content lives in multiple places. The **canonical location** owns the data; other locations **reference** it:
+
+| Content | Canonical Location | Referenced From |
+|---------|-------------------|------------------|
+| Today's readiness | Home (`ReadinessCard`) | Training (adjusts session), Stats (recovery section) |
+| Macros today | Nutrition (`MacroTargetBar`) | Home (quick action), Stats (nutrition section) |
+| Training program | Training (`TrainingPlanView`) | Home (today's plan), Settings (program selection) |
+| HealthKit data | HealthKit (`HealthKitService`) | Home (HRV/sleep), Stats (charts), Training (readiness adjustment) |
+
+**Rule:** Edit in canonical, view from references. Never duplicate edit surfaces.
+
+### 2.8 IA Decision Log
+
+Decisions made about IA that aren't immediately obvious:
+
+| Decision | Rationale |
+|----------|-----------|
+| Settings is profile-icon, not 5th tab | Frequency-based: tabs are for daily use, settings is infrequent |
+| No "Recovery" tab — recovery lives in Home + Stats | Avoids fragmentation; readiness is contextual to today's session |
+| Exercise library is inside Training, not standalone | Discovery happens in the context of programming a workout |
+| Stats period selector uses segmented control, not picker | Segmented = visible options (recognition over recall); picker = hidden |
+| Onboarding bypasses tabs entirely | First-run is an immersive flow, not part of normal navigation |
+
+---
+
