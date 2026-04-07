@@ -2,32 +2,38 @@
   "feature": "onboarding",
   "work_type": "feature",
   "created": "2026-04-05T09:00:00Z",
-  "updated": "2026-04-06T16:00:00Z",
-  "branch": "claude/review-code-changes-E7RH7",
-  "current_phase": "testing",
+  "updated": "2026-04-07T11:30:00Z",
+  "branch": "feature/onboarding-ux-align",
+  "current_phase": "prd",
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": 51,
+  "version": "v2-ux-alignment",
+  "parent_version": {
+    "version": "v1",
+    "status": "testing-incomplete",
+    "note": "v1 shipped 7 Swift views + analytics + wiring on this branch, UX phase was skipped. v1 code preserved; v2 is alignment layer on top."
+  },
   "tasks": [
-    { "id": "T1", "title": "OnboardingView container + flow navigation", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": "2026-04-06T15:37:00Z" },
-    { "id": "T2", "title": "Welcome screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z" },
-    { "id": "T3", "title": "Goals screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z" },
-    { "id": "T4", "title": "Profile screen", "type": "ui", "skill": "dev", "status": "done", "priority": "medium", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z" },
-    { "id": "T5", "title": "HealthKit permission screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z" },
-    { "id": "T6", "title": "First Action screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1", "T3"], "completed_at": "2026-04-06T15:39:00Z" },
-    { "id": "T7", "title": "Wire into app launch flow", "type": "infra", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:40:00Z" },
-    { "id": "T8", "title": "GA4 analytics instrumentation", "type": "analytics", "skill": "analytics", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:41:00Z" },
-    { "id": "T9", "title": "Progress bar component", "type": "ui", "skill": "design", "status": "done", "priority": "medium", "effort_days": 0.25, "depends_on": [], "completed_at": "2026-04-06T15:37:00Z" },
-    { "id": "T10", "title": "Unit tests + analytics tests", "type": "test", "skill": "qa", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"], "completed_at": "2026-04-06T15:45:00Z" }
+    { "id": "T1", "title": "OnboardingView container + flow navigation", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": "2026-04-06T15:37:00Z", "version": "v1" },
+    { "id": "T2", "title": "Welcome screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z", "version": "v1" },
+    { "id": "T3", "title": "Goals screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z", "version": "v1" },
+    { "id": "T4", "title": "Profile screen", "type": "ui", "skill": "dev", "status": "done", "priority": "medium", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z", "version": "v1" },
+    { "id": "T5", "title": "HealthKit permission screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:38:00Z", "version": "v1" },
+    { "id": "T6", "title": "First Action screen", "type": "ui", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1", "T3"], "completed_at": "2026-04-06T15:39:00Z", "version": "v1" },
+    { "id": "T7", "title": "Wire into app launch flow", "type": "infra", "skill": "dev", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:40:00Z", "version": "v1" },
+    { "id": "T8", "title": "GA4 analytics instrumentation", "type": "analytics", "skill": "analytics", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1"], "completed_at": "2026-04-06T15:41:00Z", "version": "v1" },
+    { "id": "T9", "title": "Progress bar component", "type": "ui", "skill": "design", "status": "done", "priority": "medium", "effort_days": 0.25, "depends_on": [], "completed_at": "2026-04-06T15:37:00Z", "version": "v1" },
+    { "id": "T10", "title": "Unit tests + analytics tests", "type": "test", "skill": "qa", "status": "done", "priority": "high", "effort_days": 0.5, "depends_on": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8"], "completed_at": "2026-04-06T15:45:00Z", "version": "v1" }
   ],
   "phases": {
     "research": { "status": "approved", "approved_at": "2026-04-05T09:15:00Z", "sources": ["competitor-analysis", "ux-best-practices", "ga4-events"] },
-    "prd": { "status": "approved", "approved_at": "2026-04-05T09:45:00Z", "analytics_spec_complete": true },
-    "tasks": { "status": "approved", "count": 10 },
-    "ux_or_integration": { "status": "skipped", "type": "ux", "reason": "UX defined inline in PRD and task descriptions. Design system compliance verified during implementation." },
-    "implementation": { "status": "approved", "approved_at": "2026-04-06T15:45:00Z", "commits": [], "note": "7 Swift views + analytics instrumentation + app launch wiring. Parallel dispatch: T1+T9 first, T2-T6+T7+T8 parallel, T10 last." },
-    "testing": { "status": "in_progress", "ci_passed": false, "tests_added": 6, "instrumentation_verified": true, "analytics_tests_added": 6, "analytics_verification_passed": true, "note": "6 onboarding analytics tests added. Awaiting CI verification." },
-    "review": { "status": "pending", "risks": ["FitTrackerApp.swift modified (high-risk file)", "New @AppStorage property in app entry point"], "ci_main": false, "ci_feature": false },
+    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": true, "v2_note": "Rolled back from testing to append v2 UX alignment section per ux-foundations.md" },
+    "tasks": { "status": "pending", "count": 10, "v1_count": 10, "v2_count": null },
+    "ux_or_integration": { "status": "pending", "type": "ux", "v1_status": "skipped", "v1_reason": "UX defined inline in PRD. No ux-spec.md created. This is the gap v2 closes." },
+    "implementation": { "status": "pending", "v1_approved_at": "2026-04-06T15:45:00Z", "commits": [], "note": "v1 code exists on feature/onboarding-ux-align branch. v2 will produce delta patches after UX spec is approved." },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 6, "instrumentation_verified": true, "analytics_tests_added": 6, "analytics_verification_passed": true, "note": "v1 had 6 analytics tests + 6 unit tests. CI was not yet green when rollback executed." },
+    "review": { "status": "pending", "risks": ["FitTrackerApp.swift modified (high-risk file)", "New @AppStorage property in app entry point", "v2 alignment may touch additional high-risk files depending on gap report"], "ci_main": false, "ci_feature": false },
     "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
     "documentation": { "status": "pending" },
     "metrics": {
@@ -48,6 +54,7 @@
     { "from": "prd", "to": "tasks", "timestamp": "2026-04-05T09:45:00Z", "approved_by": "user", "note": "PRD approved with full analytics spec" },
     { "from": "tasks", "to": "ux_or_integration", "timestamp": "2026-04-06T15:30:00Z", "approved_by": "user", "note": "10 tasks approved. Structured tasks added to state.json." },
     { "from": "ux_or_integration", "to": "implementation", "timestamp": "2026-04-06T15:30:00Z", "approved_by": "user", "reason": "skipped", "note": "UX spec inline in PRD. Design system compliance verified during implementation." },
-    { "from": "implementation", "to": "testing", "timestamp": "2026-04-06T15:45:00Z", "approved_by": "user", "note": "10/10 tasks done. 7 views, analytics instrumentation, app wiring, 6 tests. Parallel dispatch used." }
+    { "from": "implementation", "to": "testing", "timestamp": "2026-04-06T15:45:00Z", "approved_by": "user", "note": "10/10 tasks done. 7 views, analytics instrumentation, app wiring, 6 tests. Parallel dispatch used." },
+    { "from": "testing", "to": "prd", "timestamp": "2026-04-07T11:30:00Z", "approved_by": "user-manual", "note": "Manual rollback for v2 UX alignment initiative. V1 UX phase was skipped; re-entering PRD phase to append v2 section aligning to ux-foundations.md. v1 code preserved. First feature in sequential alignment effort. Branch renamed from claude/review-code-changes-E7RH7 to feature/onboarding-ux-align." }
   ]
 }
