@@ -1,5 +1,13 @@
 // FitTracker/Views/Onboarding/OnboardingFirstActionView.swift
-// Onboarding Step 4 — First action selection to complete onboarding.
+// Onboarding Step 5 — First action selection to complete onboarding.
+//
+// v2 UX alignment (2026-04-07):
+//  - AnalyticsScreen.onboardingFirstAction enum [P1-01]
+//  - onboarding_step_viewed event [P0-02]
+//  - "Ready to maintain?" → "Ready to stay on track?" [P2-04]
+//  - sensoryFeedback haptic on tap [P0-05]
+//  - ScrollView wrapper for Dynamic Type [P1-06]
+
 import SwiftUI
 
 struct OnboardingFirstActionView: View {
@@ -7,57 +15,65 @@ struct OnboardingFirstActionView: View {
     let onComplete: () -> Void
 
     @EnvironmentObject private var analytics: AnalyticsService
+    @State private var lastTappedAction: String?
 
     private var title: String {
         switch selectedGoal {
         case "Build Muscle":    return "Ready to build muscle?"
         case "Lose Fat":        return "Ready to lose fat?"
-        case "Maintain":        return "Ready to maintain?"
+        case "Maintain":        return "Ready to stay on track?"
         case "General Fitness": return "Ready to get fit?"
         default:                return "Let's get started!"
         }
     }
 
     var body: some View {
-        VStack(spacing: AppSpacing.large) {
-            Spacer()
+        ScrollView {
+            VStack(spacing: AppSpacing.large) {
+                Spacer().frame(height: AppSpacing.xxLarge)
 
-            Text(title)
-                .font(AppText.pageTitle)
-                .foregroundStyle(AppColor.Text.primary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, AppSpacing.small)
+                Text(title)
+                    .font(AppText.pageTitle)
+                    .foregroundStyle(AppColor.Text.primary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, AppSpacing.small)
 
-            Text("Pick your first action to begin your journey.")
-                .font(AppText.body)
-                .foregroundStyle(AppColor.Text.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, AppSpacing.small)
+                Text("Pick your first action to begin your journey.")
+                    .font(AppText.body)
+                    .foregroundStyle(AppColor.Text.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, AppSpacing.small)
 
-            HStack(spacing: AppSpacing.xSmall) {
-                FirstActionCard(
-                    icon: "figure.strengthtraining.traditional",
-                    label: "Start Your First Workout"
-                ) {
-                    analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "workout")
-                    onComplete()
+                HStack(spacing: AppSpacing.xSmall) {
+                    FirstActionCard(
+                        icon: "figure.strengthtraining.traditional",
+                        label: "Start Your First Workout"
+                    ) {
+                        lastTappedAction = "workout"
+                        analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "workout")
+                        onComplete()
+                    }
+
+                    FirstActionCard(
+                        icon: "fork.knife",
+                        label: "Log Your First Meal"
+                    ) {
+                        lastTappedAction = "meal"
+                        analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "meal")
+                        onComplete()
+                    }
                 }
+                .padding(.horizontal, AppSpacing.small)
+                .sensoryFeedback(.success, trigger: lastTappedAction)
 
-                FirstActionCard(
-                    icon: "fork.knife",
-                    label: "Log Your First Meal"
-                ) {
-                    analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "meal")
-                    onComplete()
-                }
+                Spacer().frame(height: AppSpacing.xLarge)
             }
-            .padding(.horizontal, AppSpacing.small)
-
-            Spacer()
         }
+        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onAppear {
-            analytics.logScreenView("onboarding_first_action")
+            analytics.logScreenView(AnalyticsScreen.onboardingFirstAction, screenClass: "OnboardingFirstActionView")
+            analytics.logOnboardingStepViewed(stepIndex: 5, stepName: "first_action")
         }
     }
 }

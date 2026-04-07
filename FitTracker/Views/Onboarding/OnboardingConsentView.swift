@@ -3,6 +3,13 @@
 // Figma ref: "Privacy + Permissions" pattern (node 474:2)
 // Light blue bg, shield illustration, consent explanation,
 // brand CTA "Accept & Continue", quiet "Continue Without"
+//
+// v2 UX alignment (2026-04-07):
+//  - ScrollView wrapper for Dynamic Type [P1-06]
+//  - AppSize.iconBadge token [P2-02]
+//  - AppColor.Text.inversePrimary instead of .white [P1-05]
+//  - AppSize.ctaHeight token [P1-03]
+//  - onboarding_step_viewed event [P0-02]
 
 import SwiftUI
 
@@ -12,8 +19,9 @@ struct OnboardingConsentView: View {
     let onDecline: () -> Void
 
     var body: some View {
+        ScrollView {
         VStack(spacing: 0) {
-            Spacer()
+            Spacer().frame(height: AppSpacing.xxLarge)
 
             // Shield illustration — matches Figma shield+lock+check
             ZStack {
@@ -28,7 +36,7 @@ struct OnboardingConsentView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Status.success)
-                    .background(Circle().fill(Color.white).frame(width: 26, height: 26))
+                    .background(Circle().fill(Color.white).frame(width: AppSize.iconBadge, height: AppSize.iconBadge))
                     .offset(x: 44, y: -44)
             }
             .padding(.bottom, AppSpacing.large)
@@ -70,9 +78,9 @@ struct OnboardingConsentView: View {
             Button(action: onAccept) {
                 Text("Accept & Continue")
                     .font(AppText.button)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 52)
+                    .frame(height: AppSize.ctaHeight)
             }
             .background(AppColor.Brand.primary, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
             .shadow(color: AppShadow.ctaColor, radius: AppShadow.ctaRadius, y: AppShadow.ctaYOffset)
@@ -94,10 +102,13 @@ struct OnboardingConsentView: View {
                 .padding(.top, AppSpacing.xSmall)
                 .padding(.bottom, AppSpacing.large)
         }
+        }
+        .scrollBounceBehavior(.basedOnSize)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.clear)
         .onAppear {
             analytics.logScreenView(AnalyticsScreen.consent, screenClass: "OnboardingConsentView")
+            analytics.logOnboardingStepViewed(stepIndex: 4, stepName: "consent")
         }
     }
 

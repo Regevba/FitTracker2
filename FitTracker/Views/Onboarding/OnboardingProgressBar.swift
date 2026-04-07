@@ -2,6 +2,10 @@
 // 6-segment horizontal progress indicator for onboarding flow.
 // Completed segments use brand primary, active segment uses brand gradient,
 // upcoming segments use a muted surface color.
+//
+// v2 UX alignment (2026-04-07):
+//  - AppMotion.stepTransition token [P1-02]
+//  - AppSize.progressBarHeight token [P2-02]
 
 import SwiftUI
 
@@ -24,14 +28,14 @@ struct OnboardingProgressBar: View {
                         }
                     }
                     .clipShape(Capsule())
-                    .frame(height: 4)
+                    .frame(height: AppSize.progressBarHeight)
                     .animation(
-                        reduceMotion ? .none : .easeInOut(duration: 0.3),
+                        reduceMotion ? .none : AppMotion.stepTransition,
                         value: currentStep
                     )
             }
         }
-        .frame(height: 4)
+        .frame(height: AppSize.progressBarHeight)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Onboarding progress")
         .accessibilityValue("Step \(currentStep + 1) of \(totalSteps)")

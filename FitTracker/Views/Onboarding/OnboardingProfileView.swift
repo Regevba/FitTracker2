@@ -1,5 +1,14 @@
 // FitTracker/Views/Onboarding/OnboardingProfileView.swift
 // Onboarding Step 2 — Training experience and weekly frequency.
+//
+// v2 UX alignment (2026-04-07):
+//  - AnalyticsScreen.onboardingProfile enum [P1-01]
+//  - onboarding_step_viewed event [P0-02]
+//  - sensoryFeedback haptic on selection [P0-05]
+//  - ScrollView wrapper for Dynamic Type [P1-06]
+//  - Skip transparency footer [P1-11]
+//  - AppSize.touchTargetLarge token [P2-02]
+
 import SwiftUI
 
 struct OnboardingProfileView: View {
@@ -15,6 +24,7 @@ struct OnboardingProfileView: View {
     private let frequencyRange = 2...6
 
     var body: some View {
+        ScrollView {
         VStack(spacing: AppSpacing.large) {
             Text("Tell us about you")
                 .font(AppText.pageTitle)
@@ -87,13 +97,23 @@ struct OnboardingProfileView: View {
                         .foregroundStyle(AppColor.Text.secondary)
                 }
                 .buttonStyle(.plain)
+
+                Text("You can set this later in Settings.")
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+                    .padding(.top, AppSpacing.xxxSmall)
             }
             .padding(.horizontal, AppSpacing.small)
             .padding(.bottom, AppSpacing.xLarge)
         }
+        .sensoryFeedback(.selection, trigger: selectedExperience)
+        .sensoryFeedback(.selection, trigger: selectedFrequency)
+        }
+        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onAppear {
-            analytics.logScreenView("onboarding_profile")
+            analytics.logScreenView(AnalyticsScreen.onboardingProfile, screenClass: "OnboardingProfileView")
+            analytics.logOnboardingStepViewed(stepIndex: 2, stepName: "profile")
         }
     }
 }
@@ -142,7 +162,7 @@ private struct FrequencyCircle: View {
             Text("\(value)")
                 .font(AppText.button)
                 .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.secondary)
-                .frame(width: 48, height: 48)
+                .frame(width: AppSize.touchTargetLarge, height: AppSize.touchTargetLarge)
                 .background(
                     isSelected ? AppColor.Accent.primary : AppColor.Surface.elevated,
                     in: Circle()

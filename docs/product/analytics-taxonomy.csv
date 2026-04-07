@@ -19,6 +19,11 @@ Engagement,cross_feature_engagement,Custom,Cross-Feature Detection,features_used
 Consent,consent_granted,Custom,Consent View / Settings,consent_type (gdpr/att),,,,,,event,Always logged (bypasses consent gate)
 Consent,consent_denied,Custom,Consent View / Settings,consent_type (gdpr/att),,,,,,event,Always logged (bypasses consent gate)
 Settings,settings_changed,Custom,Settings Screen,setting_name (string),setting_value (string),,,,,event,
+Onboarding,onboarding_step_viewed,Custom,Each onboarding screen,step_index (0-5),step_name (welcome/goals/profile/healthkit/consent/first_action),,,,,event,Funnel drop-off per step (v2)
+Onboarding,onboarding_step_completed,Custom,User taps Continue,step_index (0-5),step_name,,,,,event,Per-step completion (v2)
+Onboarding,onboarding_skipped,Custom,User taps Skip,step_index (0-5),step_name,,,,,event,Skip rate per step (v2)
+Onboarding,onboarding_goal_selected,Custom,Goals screen selection,goal_value (build_muscle/lose_fat/maintain/general_fitness),,,,,,event,Most popular goal (v2)
+Onboarding,permission_result,Custom,HealthKit auth response,permission_type (healthkit/notifications),permission_granted (true/false),,,,,event,Auth grant/deny rate (v2)
 ,,,,,,,,,,
 Screen Name,View Name,SwiftUI View,Category,,,,,,,,
 Home / Today,home,MainScreenView,core,,,,,,,,
@@ -45,6 +50,11 @@ Profile,profile,ProfileView,core,,,,,,,,
 Readiness,readiness,ReadinessCard,core,,,,,,,,
 Consent,consent,ConsentView,consent,,,,,,,,
 Onboarding,onboarding,OnboardingView,onboarding,,,,,,,,
+Onboarding Welcome,onboarding_welcome,OnboardingWelcomeView,onboarding,,,,,,,,
+Onboarding Goals,onboarding_goals,OnboardingGoalsView,onboarding,,,,,,,,
+Onboarding Profile,onboarding_profile,OnboardingProfileView,onboarding,,,,,,,,
+Onboarding HealthKit,onboarding_healthkit,OnboardingHealthKitView,onboarding,,,,,,,,
+Onboarding First Action,onboarding_first_action,OnboardingFirstActionView,onboarding,,,,,,,,
 ,,,,,,,,,,
 User Property,Type,Values,Auto-Collected,Notes,,,,,,,
 training_level,string,beginner/intermediate/advanced,No,Set after profile setup,,,,,,,

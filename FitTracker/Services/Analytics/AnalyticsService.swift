@@ -72,6 +72,12 @@ final class AnalyticsService: ObservableObject {
         provider.logScreenView(screenName, screenClass: nil)
     }
 
+    /// Overload — accepts the SwiftUI view class name for richer GA4 reporting.
+    func logScreenView(_ screenName: String, screenClass: String?) {
+        guard consent.isAnalyticsAllowed else { return }
+        provider.logScreenView(screenName, screenClass: screenClass)
+    }
+
     // MARK: - GA4 Recommended Events
 
     /// GA4 recommended: "login"
@@ -137,6 +143,21 @@ final class AnalyticsService: ObservableObject {
         logEvent(AnalyticsEvent.onboardingSkipped, parameters: [
             AnalyticsParam.stepIndex: stepIndex,
             AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// User selects a goal during onboarding
+    func logOnboardingGoalSelected(goalValue: String) {
+        logEvent(AnalyticsEvent.onboardingGoalSelected, parameters: [
+            AnalyticsParam.goalValue: goalValue,
+        ])
+    }
+
+    /// System permission result (HealthKit, notifications, etc.)
+    func logPermissionResult(type: String, granted: Bool) {
+        logEvent(AnalyticsEvent.permissionResult, parameters: [
+            AnalyticsParam.permissionType: type,
+            AnalyticsParam.permissionGranted: granted ? "true" : "false",
         ])
     }
 

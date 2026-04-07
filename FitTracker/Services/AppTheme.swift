@@ -127,6 +127,34 @@ enum AppShadow {
     static let ctaColor:    Color  = AppColor.Accent.primary.opacity(0.28)
     static let ctaRadius:   CGFloat = 12
     static let ctaYOffset:  CGFloat = 4
+
+    // Welcome screen CTA: white-on-orange shadow (subtler than the brand-tinted CTA shadow)
+    static let ctaInverseColor:   Color   = AppPalette.black.opacity(0.12)
+    static let ctaInverseRadius:  CGFloat = 8
+    static let ctaInverseYOffset: CGFloat = 4
+}
+
+// MARK: - Size
+// Semantic size tokens for fixed-dimension UI elements (introduced for onboarding v2 alignment).
+enum AppSize {
+    /// Standard CTA height (52pt) — used for all primary action buttons
+    static let ctaHeight: CGFloat = 52
+    /// Large touch target (48pt) — exceeds 44pt minimum, used for selection circles
+    static let touchTargetLarge: CGFloat = 48
+    /// Icon badge / inset element (26pt) — small overlay icons
+    static let iconBadge: CGFloat = 26
+    /// Progress bar segment height (4pt)
+    static let progressBarHeight: CGFloat = 4
+}
+
+// MARK: - Motion
+// Semantic animation tokens that respect Reduce Motion when consumed via SwiftUI's
+// `accessibilityReduceMotion` environment value.
+enum AppMotion {
+    /// Onboarding step transition — easeInOut 0.3s
+    static let stepTransition: Animation = .easeInOut(duration: 0.3)
+    /// Standard quick interaction — easeOut 0.2s
+    static let quickInteraction: Animation = .easeOut(duration: 0.2)
 }
 
 enum AppSheet {

@@ -2,6 +2,12 @@
 // Main onboarding container — manages 6-step flow with progress tracking.
 // Consent is integrated as step 5 (after HealthKit, before First Action).
 // Swipe is disabled; the user advances only via explicit button actions.
+//
+// v2 UX alignment (2026-04-07):
+//  - Back navigation on steps 1-5 [P0-06]
+//  - Skip events fired in this container [P0-03]
+//  - AppMotion.stepTransition token [P1-02]
+//  - Reduce Motion respected [P1-09]
 
 import SwiftUI
 
@@ -10,6 +16,7 @@ struct OnboardingView: View {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var analytics: AnalyticsService
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     let onComplete: () -> Void
 
@@ -17,23 +24,49 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Progress bar — hidden on welcome step (0) and consent step (4)
-            if currentStep > 0 && currentStep != 4 {
-                OnboardingProgressBar(currentStep: currentStep, totalSteps: totalSteps)
-                    .padding(.horizontal, AppSpacing.medium)
-                    .padding(.top, AppSpacing.small)
+            // Top bar: Back button (steps 1-5) + Progress bar (steps 1, 2, 3, 5)
+            HStack(spacing: AppSpacing.xSmall) {
+                if currentStep > 0 {
+                    Button(action: goBack) {
+                        Image(systemName: "chevron.left")
+                            .font(AppText.body)
+                            .foregroundStyle(AppColor.Text.secondary)
+                            .frame(width: AppSize.touchTargetLarge, height: AppSize.touchTargetLarge)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Back")
+                    .accessibilityHint("Returns to the previous step")
                     .transition(.opacity)
+                }
+
+                // Progress bar — hidden on welcome step (0) and consent step (4)
+                if currentStep > 0 && currentStep != 4 {
+                    OnboardingProgressBar(currentStep: currentStep, totalSteps: totalSteps)
+                        .padding(.trailing, AppSpacing.medium)
+                        .transition(.opacity)
+                }
             }
+            .padding(.top, AppSpacing.xxSmall)
+            .padding(.leading, AppSpacing.xSmall)
 
             // Page content — swipe disabled
             TabView(selection: $currentStep) {
                 OnboardingWelcomeView(onContinue: { advance() })
                     .tag(0)
-                OnboardingGoalsView(onContinue: { advance() }, onSkip: { advance() })
+                OnboardingGoalsView(
+                    onContinue: { advance() },
+                    onSkip: { skipStep() }
+                )
                     .tag(1)
-                OnboardingProfileView(onContinue: { advance() }, onSkip: { advance() })
+                OnboardingProfileView(
+                    onContinue: { advance() },
+                    onSkip: { skipStep() }
+                )
                     .tag(2)
-                OnboardingHealthKitView(onContinue: { advance() }, onSkip: { advance() })
+                OnboardingHealthKitView(
+                    onContinue: { advance() },
+                    onSkip: { skipStep() }
+                )
                     .tag(3)
                 OnboardingConsentView(onAccept: {
                     analytics.consent.grantConsent()
@@ -53,11 +86,11 @@ struct OnboardingView: View {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .scrollDisabled(true)
-            .animation(.easeInOut(duration: 0.3), value: currentStep)
+            .animation(reduceMotion ? .none : AppMotion.stepTransition, value: currentStep)
         }
         .background(currentStep == 0 ? AnyShapeStyle(AppGradient.brand) : AnyShapeStyle(AppColor.Background.appTint))
         .onAppear {
-            analytics.logEvent(AnalyticsEvent.tutorialBegin, parameters: nil)
+            analytics.logTutorialBegin()
             analytics.logScreenView(AnalyticsScreen.onboarding, screenClass: "OnboardingView")
         }
         .accessibilityElement(children: .contain)
@@ -67,7 +100,7 @@ struct OnboardingView: View {
     // MARK: - Navigation
 
     private func advance() {
-        withAnimation(.easeInOut(duration: 0.3)) {
+        withAnimation(reduceMotion ? .none : AppMotion.stepTransition) {
             guard currentStep < totalSteps - 1 else { return }
             let completedStep = currentStep
             currentStep += 1
@@ -75,11 +108,22 @@ struct OnboardingView: View {
         }
     }
 
+    private func skipStep() {
+        let skippedStep = currentStep
+        analytics.logOnboardingSkipped(stepIndex: skippedStep, stepName: stepName(for: skippedStep))
+        advance()
+    }
+
+    private func goBack() {
+        withAnimation(reduceMotion ? .none : AppMotion.stepTransition) {
+            guard currentStep > 0 else { return }
+            currentStep -= 1
+        }
+    }
+
     private func completeOnboarding() {
         hasCompletedOnboarding = true
-        analytics.logEvent(AnalyticsEvent.tutorialComplete, parameters: [
-            "steps_completed": totalSteps
-        ])
+        analytics.logTutorialComplete()
         analytics.setOnboardingCompleted(true)
         onComplete()
     }

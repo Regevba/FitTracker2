@@ -104,6 +104,10 @@ enum AnalyticsEvent {
     static let onboardingStepCompleted = "onboarding_step_completed"
     /// User skips onboarding
     static let onboardingSkipped       = "onboarding_skipped"
+    /// User selects a goal during onboarding
+    static let onboardingGoalSelected  = "onboarding_goal_selected"
+    /// System or user permission result (HealthKit, notifications, etc.)
+    static let permissionResult        = "permission_result"
 
     // ── Settings Events (custom) ────────────────────────────
 
