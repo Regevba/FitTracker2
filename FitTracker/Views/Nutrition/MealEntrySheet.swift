@@ -75,7 +75,7 @@ struct MealEntrySheet: View {
         NavigationStack {
             VStack(spacing: 0) {
                 // Tab picker
-                Picker("Tab", selection: $activeTab) {
+                Picker("Meal entry method", selection: $activeTab) {
                     ForEach(MealEntryTab.allCases, id: \.self) { tab in
                         Text(tab.rawValue).tag(tab)
                     }
@@ -83,6 +83,8 @@ struct MealEntrySheet: View {
                 .pickerStyle(.segmented)
                 .padding(.horizontal, AppSpacing.small)
                 .padding(.vertical, AppSpacing.xxSmall)
+                .accessibilityLabel("Meal entry method")
+                .accessibilityHint("Choose how to enter your meal: smart capture, manual, template, or search")
 
                 Divider()
 

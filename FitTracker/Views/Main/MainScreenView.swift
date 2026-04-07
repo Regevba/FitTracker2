@@ -328,6 +328,8 @@ struct MainScreenView: View {
                         .background(AppColor.Surface.tertiary, in: Circle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Manual biometric entry")
+                .accessibilityHint("Open form to enter weight, body fat, and other biometrics")
             }
         }
         .padding(cardPadding(compact: compact, tight: tight))
@@ -405,6 +407,8 @@ struct MainScreenView: View {
                 .buttonStyle(.plain)
                 .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
                 .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
+                .accessibilityLabel("Primary action: \(primaryActionTitle)")
+                .accessibilityHint("Tap to begin your recommended action for today")
 
                 VStack(alignment: .leading, spacing: trainingTextSpacing(compact: compact, tight: tight)) {
                     Text(primaryActionTitle)

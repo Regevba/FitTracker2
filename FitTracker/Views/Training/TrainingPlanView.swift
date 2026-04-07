@@ -330,6 +330,8 @@ struct TrainingPlanView: View {
             }
             .labelsHidden()
             .frame(width: 90)
+            .accessibilityLabel("Rest duration")
+            .accessibilityValue("\(restPresetSeconds) seconds")
         }
         .padding(.horizontal, AppSpacing.xxSmall)
         .padding(.vertical, AppSpacing.xxSmall)
@@ -354,6 +356,8 @@ struct TrainingPlanView: View {
                         Text(isDone ? "Done — tap to clear" : restTimeString(at: context.date))
                             .font(AppText.monoMetric)
                     }
+                    .accessibilityLabel(isDone ? "Rest timer done. Tap to clear." : "Rest timer running")
+                    .accessibilityHint("Clears the rest timer")
                     .padding(.horizontal, AppSpacing.small)
                     .padding(.vertical, AppSpacing.xxSmall)
                     .background(
@@ -417,6 +421,9 @@ struct TrainingPlanView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Exercise: \(exercise.name)")
+                    .accessibilityValue("Status: \(status.rawValue)")
+                    .accessibilityHint("Tap to focus this exercise")
                 }
             }
             .padding(.vertical, AppSpacing.micro)
@@ -1401,6 +1408,8 @@ struct CardioLogPanel: View {
                                     .font(AppText.titleMedium)
                                     .foregroundStyle(.white)
                                     .background(AppColor.Surface.inverse.opacity(0.5), in: Circle())
+                                    .accessibilityLabel("Remove photo")
+                                    .accessibilityHint("Removes the captured cardio photo")
                             }
                             .padding(AppSpacing.xxSmall)
                         }
@@ -1464,6 +1473,7 @@ struct CardioLogPanel: View {
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.largeTitle).foregroundStyle(.white)
+                        .accessibilityLabel("Close expanded photo view")
                 }
                 .padding(40)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
@@ -1619,8 +1629,13 @@ struct RPETapBar: View {
                         )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("RPE \(v)")
+                .accessibilityValue(isSelected ? "Selected" : "Not selected")
+                .accessibilityHint("Set Rate of Perceived Exertion to \(v)")
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Rate of Perceived Exertion")
     }
 }
 

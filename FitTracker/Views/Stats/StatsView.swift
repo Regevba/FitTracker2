@@ -489,6 +489,10 @@ struct StatsView: View {
             .frame(minWidth: 128, idealWidth: 144, maxWidth: 168, alignment: .leading)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("\(metric.title) metric")
+        .accessibilityValue(subtitle)
+        .accessibilityAddTraits(selected ? [.isSelected, .isButton] : .isButton)
+        .accessibilityHint("Tap to view chart for \(metric.title)")
     }
 
     private func metricHeader(for metric: StatsFocusMetric, points: [MetricSeriesPoint]) -> some View {

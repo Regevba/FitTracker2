@@ -219,6 +219,8 @@ struct NutritionView: View {
                     Image(systemName: "chevron.left")
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.primary)
+                        .accessibilityLabel("Previous day")
+                        .accessibilityHint("Navigate to the previous day's nutrition log")
                         .frame(width: 44, height: 44)
                         .background(AppColor.Surface.elevated, in: Circle())
                 }
@@ -243,6 +245,8 @@ struct NutritionView: View {
                     Image(systemName: "chevron.right")
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.primary)
+                        .accessibilityLabel("Next day")
+                        .accessibilityHint("Navigate to the next day's nutrition log")
                         .frame(width: 44, height: 44)
                         .background(AppColor.Surface.elevated, in: Circle())
                 }
@@ -343,6 +347,8 @@ struct NutritionView: View {
                         .foregroundStyle(AppColor.Text.secondary)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Supplement information")
+                .accessibilityHint("Show details about supplements")
                 .accessibilityLabel("About supplement adherence")
                 .popover(isPresented: $showSupplementInfo) {
                     VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
@@ -746,6 +752,8 @@ struct NutritionView: View {
                         }
                     } label: {
                         Image(systemName: "chevron.down")
+                            .accessibilityLabel("Expand supplements")
+                            .accessibilityHint("Show supplement tracking section")
                             .font(AppText.captionStrong)
                             .foregroundStyle(AppColor.Text.secondary)
                     }
@@ -952,6 +960,8 @@ struct SupplementStackCard: View {
                     Image(systemName: expanded ? "chevron.up" : "chevron.down")
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.secondary)
+                        .accessibilityLabel(expanded ? "Collapse" : "Expand")
+                        .accessibilityHint(expanded ? "Hide details" : "Show details")
                 }
             }
             .padding(AppSpacing.xSmall)
@@ -1052,6 +1062,8 @@ struct SupplementItemRow: View {
                         Image(systemName: "info.circle")
                             .font(AppText.caption).foregroundStyle(AppColor.Text.secondary)
                     }
+                    .accessibilityLabel("Show details")
+                    .accessibilityHint("Toggle supplement details")
                     .buttonStyle(.plain)
                 }
                 .padding(.horizontal, AppSpacing.xSmall).padding(.vertical, AppSpacing.xSmall)
