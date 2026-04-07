@@ -390,3 +390,18 @@ For each feature, add:
 - Accessibility considerations: this pass focused on structural navigation and editability rather than new visual system changes.
 - Android adaptation note: having a clickable Apple-first prototype will make later cross-platform flow mapping easier because it expresses app behavior, not just screen inventory.
 - Follow-up gaps: auth variants, more populated state variants, and final prototype polish still need to be added before the Apple-first phase is fully closed.
+
+## 2026-04-07 — UX Foundations layer + Onboarding v2 added to Figma library
+
+- Problem solved: the design system had token + component layers in Figma but no behavioral layer (principles, IA, interaction, accessibility, motion, content), and the Onboarding page only contained v1 feature-showcase slides that did not match the merged v2 code from PR #59.
+- Primary platform: iPhone-first Figma library (file `0Ai7s3fCFqR5JXDW8JvgmD`).
+- Reused tokens: bound `Color/Semantic` variables (surface/primary, text/{primary,secondary,tertiary,inversePrimary}, brand/{primary,secondary}, border/subtle, status/{success,error}, bg/app-tint) across every new frame. No raw hex was used for primary surfaces or text.
+- Reused components: cloned the App Icon master `635:2` (1024×1024) and rescaled to 180×180 for the Welcome screen brand mark, then re-tinted petals with the canonical 4-color palette (Pink/Yellow/Teal/Blue).
+- New primitives introduced: no code primitives. In Figma, two new artifacts were added:
+  - New page `UX Foundations` (`684:2`), positioned between Patterns and Platform Adaptations, with a master overview frame and 10 section frames mirroring `docs/design-system/ux-foundations.md` (1,533 lines, 10 parts).
+  - New section `I3.2 — Onboarding v2 (PRD-Aligned)` (`688:2`) on the Onboarding page with 6 screens (Welcome, Goals, Profile, HealthKit, Consent, First Action) plus 3 HealthKit state variants (loading, denied, iPad fallback).
+- Wireframe and UX notes: every Onboarding v2 screen reflects the v2 audit deltas (P0-06 back button on screens 2-6, AppSize.ctaHeight 52pt, AppShadow.ctaInverse, "Apple Health" terminology, AppColor.Text.inversePrimary on Consent CTA, "Ready to stay on track?" Maintain copy, selection-haptic annotations).
+- Final UI decisions: v1 onboarding section `469:2` was preserved unchanged as design history. Both new artifacts use semantic variable bindings; deviations are documented as token follow-ups (layout-property tokens not bound, SF Symbol glyphs rendered as Unicode/emoji approximations).
+- Accessibility considerations: the UX Foundations Part 7 frame documents the contrast ratios per text token and the Sprint B label coverage status; no new color tokens were added so contrast is unchanged.
+- Android adaptation note: the UX Foundations layer also documents Android as deferred (Part 10), keeping the cross-platform plan visible to designers using the library.
+- Follow-up gaps: (a) bind layout-property values to Spacing/Radius/Elevation FLOAT variables via `setBoundVariable`; (b) replace SF Symbol approximations with imported SVG glyphs; (c) consider promoting HealthKit data-row icon colors to `accent/{heart-rate, hrv, steps, sleep}` semantic tokens; (d) wire HealthKit state variants as Figma component-property variants instead of stacked frames.

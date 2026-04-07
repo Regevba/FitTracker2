@@ -305,8 +305,8 @@ No changes to primary, secondary, guardrail, leading, or lagging metrics. v1 met
 In addition to v1 acceptance criteria:
 - [ ] `.claude/features/onboarding/ux-research.md` created and references ≥5 foundations principles
 - [ ] `.claude/features/onboarding/ux-spec.md` created with screen list, flows, states, copy, a11y, motion
-- [ ] Figma file `0Ai7s3fCFqR5JXDW8JvgmD` has section "I3.2 — Onboarding v2 (PRD-Aligned)" with 6 screens
-- [ ] Existing Figma "I3.1 — Onboarding Slides" section is UNCHANGED (history preserved)
+- [x] Figma file `0Ai7s3fCFqR5JXDW8JvgmD` has section "I3.2 — Onboarding v2 (PRD-Aligned)" with 6 screens (built 2026-04-07, section node `688:2`; node IDs in `ux-spec.md`)
+- [x] Existing Figma "I3.1 — Onboarding Slides" section is UNCHANGED (history preserved — verified post-build, `469:2` bounds + child count unchanged)
 - [ ] Design compliance gateway report (5 checks) passes OR documented overrides with justification per CLAUDE.md evolution rules
 - [ ] Every UI change from v1 was manually confirmed by user before being applied
 - [ ] `.claude/features/onboarding/state.json` has `phases.ux_or_integration.status = "approved"` with timestamp

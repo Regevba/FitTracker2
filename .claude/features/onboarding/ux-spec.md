@@ -212,3 +212,19 @@ This document specifies the v2 onboarding UX after audit findings are applied. I
 - PRD v2: prd.md → `# v2 — UX Alignment`
 - Foundations: docs/design-system/ux-foundations.md
 - Figma target: docs/project/figma-onboarding-v2-prompt.md
+
+## Figma v2 build — node IDs
+
+Built 2026-04-07 in file `0Ai7s3fCFqR5JXDW8JvgmD`, page `Onboarding` (`25:6`), section `I3.2 — Onboarding v2 (PRD-Aligned)` (`688:2`). v1 section `469:2` confirmed UNCHANGED.
+
+| Screen | Node ID |
+|---|---|
+| Welcome | `688:6` |
+| Goals | `695:2` |
+| Profile | `697:2` |
+| HealthKit (idle) | `698:2` |
+| HealthKit (loading variant) | `698:32` |
+| HealthKit (denied variant) | `698:63` |
+| HealthKit (iPad fallback variant) | `698:96` |
+| Consent | `704:2` |
+| First Action | `705:2` |

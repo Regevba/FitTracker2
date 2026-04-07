@@ -192,3 +192,23 @@ Items auto-applicable (13 — token cleanups + analytics gap fixes).
 3. Round 3 (manual): P0-05, P0-06, P1-06, P1-07, P1-08 batch
 4. Round 4 (manual): P1-10, P1-11, P2-03, P2-04 batch
 5. Defer: P2-01, P2-05, P2-06, P2-07 to follow-up enhancement (out of v2 scope)
+
+## Post-build addendum — 2026-04-07
+
+Figma v2 build (V2-T5) executed in file `0Ai7s3fCFqR5JXDW8JvgmD` against the merged main code (PR #59). All 6 screens built under section `688:2` "I3.2 — Onboarding v2 (PRD-Aligned)" with per-screen user approval. v1 section `469:2` verified untouched.
+
+**Audit findings reflected in Figma:**
+- P0-06 (back button on screens 2-6): present on Goals, Profile, HealthKit, Consent, First Action
+- "Apple Health" terminology unification: applied throughout HealthKit screen + variants
+- HealthKit state expansion: idle (`698:2`), loading (`698:32`), denied (`698:63`), iPad fallback (`698:96`)
+- Consent screen has NO progress bar (standalone decision, integrated as step 5/6 since v1 commit `d017a30`)
+- Consent CTA bound to `text/inverse-primary` semantic variable (was raw `.white` in v1)
+- First Action subtitle for Maintain goal: "Ready to stay on track?" (NOT "Ready to maintain?") — annotated
+- Selection haptic notes added to Goals card and Profile (ExperienceCard + FrequencyCircle)
+
+**Follow-up gaps surfaced during build:**
+- SF Symbol glyphs are emoji approximations in Figma (Plugin API can't load Apple SF Symbols)
+- Layout-property tokens (padding/radius/spacing) use raw float values matching token canon, not bound `setBoundVariable` references
+- HealthKit data-row icon colors are raw hex; could be promoted to `accent/{heart-rate, hrv, steps, sleep}` semantic tokens
+
+See `ux-spec.md` for the full node ID table.
