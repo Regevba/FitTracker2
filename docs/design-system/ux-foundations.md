@@ -660,4 +660,226 @@ This is non-negotiable. A chart that VoiceOver users can't understand is broken.
 
 ---
 
+## Part 5: Permission & Trust Patterns
+
+### 5.1 Core Principle (Apple HIG)
+
+> Request permission at the moment of relevance, not during onboarding. Explain _why_ before showing the system dialog.
+
+System permission dialogs are **one-shot**. If a user denies, you cannot ask again — you can only deep-link them to Settings. This makes the **first request** critical.
+
+### 5.2 Permission Priming Pattern (3 Steps)
+
+Every permission follows this flow:
+
+```
+Step 1: Pre-Primer Screen
+  ↓ (app-branded explanation of benefit)
+Step 2: System Dialog
+  ↓ (iOS native permission prompt)
+Step 3: Graceful Degradation
+  ↓ (if denied, feature works in degraded mode with re-enable banner)
+```
+
+**Pre-primer rules:**
+- App-branded screen, NOT a system alert
+- Explains the benefit ("get reminded when rest is over") not the mechanism ("we need notification access")
+- Has two clear options: "Allow" (proceeds to system dialog) and "Not Now" (skips, can re-prompt later)
+- Uses real screenshots or illustrations of the benefit when possible
+
+### 5.3 FitMe Permission Matrix
+
+| Permission | When to Request | Pre-Primer Copy | Degraded State |
+|------------|----------------|-----------------|----------------|
+| **HealthKit (read)** | Onboarding step 4 OR first time user opens Stats | "Connect to Apple Health to import workouts and recovery metrics — your data stays encrypted on device" | Manual entry only, no auto-sync |
+| **HealthKit (write)** | After first completed workout | "Save workouts to Apple Health so all your apps stay in sync" | Workouts stay in FitMe only |
+| **Notifications** | After user sets first rest timer or schedules a workout | "Get reminded when rest is over and when it's time to train" | No reminders, manual timer only |
+| **Camera** | When user taps barcode scan or progress photo | "Scan barcodes to log meals instantly" | Manual entry only |
+| **Photo Library** | When user taps "Add progress photo" | "Track your transformation with progress photos — they stay encrypted on your device" | No photo feature |
+| **ATT (App Tracking Transparency)** | During GDPR consent flow (onboarding step 5) | "Help us improve FitMe with anonymous usage data — your health values are never tracked" | No analytics, app fully functional |
+| **Location** | Only if outdoor tracking is added | "Track your route during outdoor workouts" | No route map |
+
+**Critical: NEVER request multiple permissions at once.** Each permission has its own contextual moment. Batching destroys trust.
+
+### 5.4 Onboarding Permission Strategy
+
+The onboarding flow has 6 steps. Permissions appear in step 4 (HealthKit) and step 5 (consent/ATT) — NOT in batch at the start.
+
+```
+1. Welcome (no permission)
+2. Goals (no permission)
+3. Profile (no permission)
+4. HealthKit (one permission, in context, with clear benefit)
+5. Consent / ATT (analytics permission, with full transparency)
+6. First Action (no permission)
+```
+
+Notifications, Camera, Photos are deferred until the user encounters those features naturally.
+
+### 5.5 Trust Signals
+
+Visible markers that reinforce FitMe's privacy commitment:
+
+| Signal | Where | What It Says |
+|--------|-------|--------------|
+| Encryption badge | Settings → Account & Security | "AES-256 encrypted, end-to-end" |
+| "Stays on device" label | HealthKit permission screen | "Your health data never leaves your phone unencrypted" |
+| Privacy summary | Consent screen tracking list | Clear list of what's tracked / not tracked |
+| Sync status indicator | Top of `RootTabView` (sidebar mode) | Shows "Synced" with checkmark |
+| Privacy policy link | Every data screen footer | One tap to full policy |
+
+**Rule:** Privacy is a feature, not a disclosure. Surface it as a benefit, not a legal requirement.
+
+### 5.6 GDPR Consent Integration
+
+Consent is integrated into onboarding (step 5 of 6) — not a post-auth gate. This:
+- Gives users context before asking
+- Bundles ATT request with analytics consent (one ask, not two)
+- Allows skip ("Continue Without") with full app functionality
+- Sets `analytics.consent.gdprConsent` immediately on choice
+- Records the choice in the audit trail
+
+The standalone `ConsentView` exists as a fallback for users who completed onboarding before consent was added to the flow.
+
+### 5.7 Re-Permission Strategy
+
+When a user denies a permission, you cannot re-prompt. Instead:
+
+1. Show a non-intrusive banner explaining the missed feature
+2. Provide a "Open Settings" button that deep-links to the FitMe permission page
+3. Detect on app foreground when the permission has been granted
+4. Remove the banner and enable the feature without further interruption
+
+**Example banner:**
+```
+┌──────────────────────────────────────┐
+│ ⓘ HealthKit access denied            │
+│ Connect Health to auto-sync recovery │
+│ [ Open Settings ]      [ Dismiss ]   │
+└──────────────────────────────────────┘
+```
+
+---
+
+## Part 6: State Patterns
+
+Every screen has 5 possible states. The default state is the easy one. The other 4 are where most apps fail.
+
+### 6.1 The 5 States
+
+| State | When | Required? |
+|-------|------|-----------|
+| **Default** | Normal content present | Always |
+| **Loading** | Async operation in progress | Required if any async work |
+| **Empty** | No content yet (first use, no data) | Required for any list/chart |
+| **Error** | Operation failed | Required for any async work |
+| **Success** | Operation succeeded (transient) | Recommended for save/submit |
+
+### 6.2 Loading States
+
+| Context | Pattern | Component | Duration Threshold |
+|---------|---------|-----------|---------------------|
+| Initial data load | Skeleton shimmer matching content shape | Custom skeleton | > 200ms |
+| Sync in progress | `FitMeLogoLoader` with `.breathe` mode + "Syncing..." | `FitMeLogoLoader` | Always |
+| AI computation | `FitMeLogoLoader` with `.breathe` + contextual message ("Building your plan...") | `FitMeLogoLoader` | Always |
+| Pull to refresh | Standard iOS pull-to-refresh spinner | System component | Always |
+| Button action | Inline spinner replacing button label | Custom | > 500ms |
+
+**Rules:**
+- Operations under 200ms: no loading state (instant feels better)
+- Operations 200ms-500ms: skeleton or fade
+- Operations 500ms+: explicit loading with progress or message
+- Operations > 5s: progress percentage if possible, cancel option if appropriate
+
+### 6.3 Empty States
+
+Empty states are the most-seen screen for new users. Treat them as primary onboarding surfaces, not error pages.
+
+| Context | Message Pattern | CTA | Component |
+|---------|----------------|-----|-----------|
+| First use, no workouts | "Your workout history will appear here" | "Start your first workout" | `EmptyStateView` |
+| First use, no meals today | "Log your first meal to track macros" | "Add Meal" | `EmptyStateView` |
+| No data for selected period | "No workouts in this period. Try a wider range." | Period selector | inline |
+| No exercises in routine | "Add exercises to build your routine" | "Browse exercises" | `EmptyStateView` |
+| Search returned nothing | "No exercises match '{query}'" | "Clear search" | inline |
+| HealthKit not connected | "Connect Health to see your recovery metrics" | "Connect" | `EmptyStateView` |
+
+**Empty state copy formula:**
+1. **What is missing** (factual, no judgment)
+2. **What to do next** (specific action)
+3. **Optional: why it matters** (benefit, not pressure)
+
+**Don't:**
+- ❌ "You haven't logged anything yet" (sounds judgmental)
+- ❌ "No data" (factual but unhelpful)
+- ❌ Show a blank screen (violates Recognition over Recall)
+
+**Do:**
+- ✅ "Your workout history will appear here. Log your first session to start tracking."
+- ✅ Pair with an illustration or icon
+- ✅ Make the CTA the obvious next action
+
+### 6.4 Error States
+
+Error states are a trust test. They reveal whether FitMe is forgiving or punishing.
+
+| Error Type | Message Pattern | Recovery |
+|------------|----------------|----------|
+| Network failure | "Couldn't connect. Your data is saved locally and will sync when you're back online." | Auto-retry, manual retry button |
+| Sync conflict | "This workout was edited on another device. Choose which version to keep." | Show diff view, user picks |
+| HealthKit denied | "FitMe can't access Health data. Connect in Settings to enable recovery tracking." | "Open Settings" deep link |
+| Invalid input | Inline field-level error in red below the field | Highlight field, explain expected format |
+| Server error (5xx) | "Something went wrong on our end. Try again in a moment." | Manual retry button |
+| Auth expired | "Sign in to continue syncing your data." | Re-auth flow |
+
+**Error copy formula (from `ux-copy-guidelines.md`):**
+1. **State the issue** clearly, no jargon
+2. **State the consequence** ("Your data is safe locally")
+3. **State the next action** (what to tap)
+
+**Never:**
+- ❌ Show raw error messages: "Error: NSURLErrorDomain code -1009"
+- ❌ Blame the user: "You entered invalid data"
+- ❌ Lose user data without explanation: "Sync failed."
+
+**Always:**
+- ✅ Reassure the user their work is safe
+- ✅ Offer a clear recovery path
+- ✅ Sanitize technical details before display
+
+### 6.5 Success States
+
+Success feedback prevents anxiety and builds confidence.
+
+| Action | Success Pattern | Duration |
+|--------|----------------|----------|
+| Save workout | Toast: "Workout saved" + checkmark animation | 2.0s |
+| Log meal | Toast: "Meal added" + macro bars update | 2.0s |
+| Sync complete | Status indicator updates to "Synced" | Persistent |
+| Achievement | Celebration animation (PR, streak) + persistent card | Until dismissed |
+| Onboarding complete | Transition animation → home screen | 0.5s |
+| Account deleted | Full-screen confirmation → exit to welcome | Persistent until tap |
+
+**Rules:**
+- Success states are **transient** (2-3s) for routine actions — they shouldn't block flow
+- Success states are **celebratory** for achievements (PRs, streaks) — they should feel earned
+- Success states are **persistent** for state changes (sync status, account state) — they're informational, not transient
+
+### 6.6 State Coverage Checklist
+
+Before any screen ships, verify all 5 states are defined:
+
+```
+[ ] Default state — primary content rendering
+[ ] Loading state — what shows while data loads?
+[ ] Empty state — what shows if there's no data yet?
+[ ] Error state — what shows if loading fails?
+[ ] Success state — what shows after a save/submit?
+```
+
+This is enforced by `/ux validate {feature}` and `feature-design-checklist.md`.
+
+---
+
+
 
