@@ -23,6 +23,67 @@ For each feature, add:
 
 ---
 
+## 2026-04-07 — Onboarding v2 UX Alignment (PR #59)
+
+- **Date:** 2026-04-07
+- **Feature name:** Onboarding (v2 UX alignment)
+- **Problem solved:** v1 onboarding shipped without a `/ux spec` phase. The structure was sound but principles from `ux-foundations.md` weren't visibly enforced. v2 adds the missing UX layer + 20 mechanical patches. Also closed 5 latent v1 compile bugs as a side effect (v1 had never built successfully).
+- **Primary platform:** iPhone first. iPad gets a fallback HealthKit copy variant.
+- **Reused tokens:** `AppColor.Brand.primary/secondary/warm/cool/coolSoft`, `AppColor.Background.appTint`, `AppColor.Text.primary/secondary/tertiary/inversePrimary/inverseSecondary/inverseTertiary`, `AppColor.Surface.elevated/primary`, `AppColor.Border.subtle`, `AppColor.Status.success/error/warning`, `AppColor.Accent.primary`, `AppText.hero/pageTitle/titleStrong/subheading/sectionTitle/body/bodyRegular/button/callout/caption/iconHero/iconMedium`, `AppSpacing.xxxSmall/xxSmall/xSmall/small/medium/large/xLarge/xxLarge`, `AppRadius.medium/large/button`, `AppShadow.cardColor/cardRadius/cardYOffset/ctaColor/ctaRadius/ctaYOffset`, `AppGradient.brand/screenBackground`.
+- **Reused components:** None directly — onboarding screens use ad-hoc private structs (GoalCard, ExperienceCard, FrequencyCircle, HealthDataRow, FirstActionCard) for one-off layouts. Component consolidation deferred to enhancement P2-01.
+- **New primitives introduced:**
+  - `AppSize` enum: `ctaHeight (52pt)`, `touchTargetLarge (48pt)`, `iconBadge (26pt)`, `progressBarHeight (4pt)`. Semantic size tokens for fixed-dimension UI.
+  - `AppMotion` enum: `stepTransition (.easeInOut 0.3s)`, `quickInteraction (.easeOut 0.2s)`. Token-based animations honoring Reduce Motion.
+  - `AppShadow.ctaInverse*`: white-CTA-on-orange shadow variant (subtler than `cta*`).
+  - `AppRadius.card`: alias for `medium = 16` — disambiguates intent for card surfaces.
+- **Wireframe and UX notes:**
+  - 6-screen linear flow: Welcome → Goals → Profile → HealthKit → Consent → First Action.
+  - Welcome: orange brand gradient hero with FitMeBrandIcon, white CTA.
+  - Goals: 2×2 card grid, single-select, haptic on selection, Continue disabled until selection.
+  - Profile: experience level (3 cards) + frequency (5 circles 2-6), defaults if skipped.
+  - HealthKit: contextual priming with 4 data type rows, loading state during async auth, denial footer message + retry, iPad fallback copy.
+  - Consent: shield illustration, accept/decline card, footer "change anytime in Settings."
+  - First Action: personalized goal-based title, 2 large CTA cards (workout / meal).
+  - Progress bar: 6 segments, hidden on Welcome (step 0) and Consent (step 4).
+  - Back navigation: chevron-left button on steps 1-5, hidden on Welcome.
+- **Final UI decisions:**
+  - All CTAs use `AppSize.ctaHeight` (52pt) for consistency
+  - Selection state: 2pt brand border + colored icon/text
+  - Card surfaces: `AppColor.Surface.elevated` + `AppRadius.large` (24pt)
+  - Skip buttons: quiet text style (`AppColor.Text.secondary`)
+  - All step transitions: `AppMotion.stepTransition` (respects Reduce Motion)
+  - Brand gradient is the Welcome background; all other screens use `AppColor.Background.appTint`
+- **Accessibility considerations:**
+  - All interactive elements ≥44pt (CTAs are 52pt, selection circles are 48pt)
+  - VoiceOver: container has "Onboarding, step X of N" label; selection cards have label + `.isSelected` trait; progress bar has "Step X of N" value
+  - Dynamic Type via ScrollView wrappers on screens 1-5
+  - Reduce Motion respected on all animations via `accessibilityReduceMotion` env value
+  - WCAG AA contrast on all text + colored elements
+- **Android adaptation note:** No Android changes in this feature. Token mapping for Android (Material Design 3) was completed in the design-system v2 closure. When onboarding ships on Android, all the new `AppSize` / `AppMotion` tokens need MD3 equivalents added.
+- **Follow-up gaps:**
+  - **Figma v2 build (V2-T5):** runner prompt ready at `docs/project/figma-runner-prompt.md`. Will create `I3.2 — Onboarding v2 (PRD-Aligned)` section on the Onboarding page in Figma file `0Ai7s3fCFqR5JXDW8JvgmD`, preserving the v1 `I3.1` section as history.
+  - **P2-01 Component consolidation:** Extract GoalCard, ExperienceCard, FrequencyCircle, HealthDataRow, FirstActionCard into `AppComponents.swift`.
+  - **P2-05 Additional accessibility hints**.
+  - **P2-06 Welcome caption contrast bump.**
+  - **P2-07 Pillar text size.**
+  - **Figma Code Connect mappings:** 13 component families.
+  - **First metrics review:** scheduled for 2026-04-14.
+- **Latent v1 bugs fixed during alignment** (unexpected high value):
+  - `analytics.logEvent()` called as public — actually private. Replaced with typed methods.
+  - `analytics.logScreenView(_:screenClass:)` overload didn't exist — added.
+  - `AppRadius.card` referenced but undefined — added as alias.
+  - `FitMeBrandIcon.swift` not in Xcode target — added.
+  - `Onboarding/*.swift` files not in Xcode target — added.
+- **References:**
+  - PRD v2: `.claude/features/onboarding/prd.md` → `# v2 — UX Alignment`
+  - UX research: `.claude/features/onboarding/ux-research.md`
+  - UX spec: `.claude/features/onboarding/ux-spec.md`
+  - Audit report: `.claude/features/onboarding/v2-audit-report.md`
+  - PM showcase: `docs/project/pm-workflow-showcase-onboarding.md`
+  - Merge timeline: `docs/project/onboarding-v2-merge-timeline.md`
+
+---
+
 ## 2026-03-30 — Full token migration across all views
 
 - Problem solved: after the TrainingPlanView deep migration, ~82 residual token violations remained across 11 other view files: raw `Color.white.opacity()` surface/border fills, `Color.secondary/primary` foreground roles, hardcoded `Font.system()` size calls, legacy brand alias colors (`Color.appOrange1/2`, `Color.appBlue1`), and raw `.shadow(color: .black.opacity(...))` calls.

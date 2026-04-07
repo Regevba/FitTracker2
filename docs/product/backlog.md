@@ -75,7 +75,7 @@
 - [ ] Push notifications — no notification system (training reminders, readiness alerts)
 - [ ] App icon + App Store assets — no 1024×1024 master icon, no screenshot templates
 - [ ] Password reset flow — protocol exists, not wired in UI
-- [ ] Onboarding flow — PRD defined (2.11), no code yet
+- [x] **Onboarding flow** — shipped 2026-04-07 (v2 UX alignment per ux-foundations.md, 6 screens including Consent, full GA4 instrumentation, PR #59)
 
 ### Medium Priority (UX Improvements)
 - [ ] Chart goal target lines — weight/BF goals not overlaid on stats charts

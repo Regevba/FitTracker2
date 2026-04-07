@@ -177,9 +177,58 @@ Single round was sufficient because findings were well-categorized and patches w
 
 ## Audit trail integrity
 
-State.json `transitions[]` array contains 8 transitions documenting every phase change with timestamp + approver + reason. Manual rollback (`testing → prd`) is recorded with `approved_by: "user-manual"` per skill spec.
+State.json `transitions[]` array contains 11 transitions documenting every phase change with timestamp + approver + reason. Manual rollback (`testing → prd`) is recorded with `approved_by: "user-manual"` per skill spec.
 
-GitHub issue regevba/fittracker2#51 has phase labels updated at every transition (`phase:research → phase:prd → ... → phase:review`).
+GitHub issue regevba/fittracker2#51 has phase labels updated at every transition (`phase:research → phase:prd → ... → phase:done`).
+
+---
+
+## Phase 7+8 closure (post-merge)
+
+### Merge details
+- **PR:** [regevba/fittracker2#59](https://github.com/Regevba/FitTracker2/pull/59)
+- **Squash commit on main:** `66e42cf` "feat: onboarding v2 UX alignment + 4-day branch consolidation (#59)"
+- **Method:** `gh pr merge 59 --squash --delete-branch`
+- **Date:** 2026-04-07 18:06
+- **Branch:** `feature/onboarding-ux-align` deleted from local + remote
+- **Build sanity post-merge:** ✅ `xcodebuild build` clean on main (iPhone 17 sim)
+
+### Phase 8 doc updates committed in single follow-up commit on main
+| File | Change |
+|------|--------|
+| `CHANGELOG.md` | Prepended "2026-04-07 — Onboarding v2 UX Alignment + 4-Day Branch Consolidation" entry covering shipped features, fixed latent bugs, verification, backwards compat, deferred items, first metrics review |
+| `docs/design-system/feature-memory.md` | Prepended full feature memory entry per repo template (date, problem, tokens, components, new primitives, wireframe, UI decisions, a11y, Android, follow-ups, latent bugs fixed, references) |
+| `docs/product/backlog.md` | Marked "Onboarding flow" as shipped (was unchecked since v1 PRD) with PR #59 reference |
+| `.claude/features/onboarding/state.json` | `current_phase = complete`, all phases approved, branch=main, 4 final transitions added, first_review_date set to 2026-04-14 |
+| `docs/project/pm-workflow-showcase-onboarding.md` | This closure section appended |
+
+### First metrics review
+- **Date:** 2026-04-14 (1 week post-merge)
+- **Primary metric:** onboarding completion rate, target >80%
+- **Secondary metrics:** HealthKit auth rate >85%, D1 retention >60%, time-to-first-session <24h
+- **Kill criteria:** redesign if completion rate <50% after 30 days
+- **Owner:** Regev (per PRD)
+
+### Change broadcast (per pm-workflow skill)
+On merge to main, the following downstream skills should be notified per the change broadcast protocol:
+- `/qa` — new code merged. Run regression check on next cycle. Onboarding flow + 4 days of consolidation work need full smoke pass.
+- `/cx` — onboarding shipped to user-facing flow. Monitor user feedback for confusion or completion drop-off in first week.
+- `/analytics` — verify 5 new GA4 events fire correctly in production: `permission_result`, `onboarding_step_viewed`, `onboarding_step_completed`, `onboarding_skipped`, `onboarding_goal_selected`. Verify in Firebase debug view.
+- `/ops` — deployment pending. Monitor crash-free rate post-launch (guardrail >99.5%).
+- `/design` — design system gained 4 new token groups (AppSize, AppMotion, AppShadow.ctaInverse*, AppRadius.card). Verify Figma library catches up via the runner prompt at `docs/project/figma-runner-prompt.md`.
+- `/marketing` — first launchable build of FitMe with full onboarding. Coordinate with marketing-website launch and TestFlight submission.
+
+### What this run proved about the enhanced /pm-workflow skill
+1. **Manual rollback works as designed** — `testing → prd` rollback preserved v1 phase audit trail under `v1_*` fields and produced a coherent v2 lane without losing state.
+2. **PRD versioning via append (not separate file) works** — single `prd.md` with `# v2 — UX Alignment` section keeps v1 + v2 history together and maintains a single approval gate.
+3. **Audit-driven implementation works** — Phase 3 audit produced concrete file:line findings that mapped 1:1 to Phase 4 patches with no scope creep.
+4. **Feature-by-feature alignment is feasible** — onboarding completed end-to-end in a single multi-session push. Sequence is now ready for the next feature.
+5. **Latent bug discovery is a bonus** — running an alignment audit on a "complete" feature surfaced 5 compile-blocking bugs that had been latent for days.
+6. **Manual confirm gates can be batched** — single "approve all" round was sufficient for 24 well-categorized findings. Save micro-gates for genuinely contested decisions.
+7. **GitHub issue label sync stays in lockstep** — every phase transition updated #51 labels automatically; the dashboard view stayed honest the whole time.
+
+### Next feature in alignment sequence
+Per user directive ("feature by feature"), the next target is **`home-today-screen`** — highest user-impact surface (Home tab is the launch screen), densest interaction, sets the tone for the rest of the alignment pass. Invoke with `/pm-workflow home-today-screen` to begin.
 
 ---
 

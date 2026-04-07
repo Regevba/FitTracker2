@@ -4,6 +4,54 @@ All notable FitTracker milestones are summarized here in human-readable form.
 
 This changelog is intentionally lightweight. It is not a commit dump and it is not a replacement for the README or the full walkthrough.
 
+## 2026-04-07 — Onboarding v2 UX Alignment + 4-Day Branch Consolidation
+
+PR #59 — squash-merged to main as `66e42cf`. Pilot run for the sequential UX alignment initiative; first feature in the feature-by-feature pass against `docs/design-system/ux-foundations.md`. Also consolidates 4 days of unmerged design system, UX foundations, marketing website, GDPR, GA4, and skills ecosystem work.
+
+### Added
+- **Onboarding flow shipped** — 6-screen onboarding (Welcome → Goals → Profile → HealthKit → Consent → First Action) with full GA4 instrumentation, back navigation, haptic feedback, Dynamic Type ScrollView wrappers, HealthKit loading + denial states, iPad fallback copy. v2 alignment per `ux-foundations.md`.
+- **UX Foundations doc** — `docs/design-system/ux-foundations.md` (1,533 lines, 10 parts): 8 core heuristics + 5 FitMe-specific principles, IA, interaction patterns, data viz, permission/trust, state patterns, accessibility, motion, content strategy, platform adaptations.
+- **5 new analytics events** — `permission_result`, `onboarding_step_viewed`, `onboarding_step_completed`, `onboarding_skipped`, `onboarding_goal_selected`. Plus 5 new screen tracking entries and 5 new params. All additive.
+- **New design system token groups** — `AppSize` (ctaHeight, touchTargetLarge, iconBadge, progressBarHeight), `AppMotion` (stepTransition, quickInteraction), `AppShadow.ctaInverse*` (white-CTA-on-orange shadow), `AppRadius.card` alias.
+- **`/ux` skill** — UX planning layer for the PM workflow hub.
+- **Marketing website** — Astro + Tailwind static site (66 files under `website/`).
+- **GDPR compliance feature complete** — account deletion + data export services, views, analytics taxonomy, Settings wiring, 6 GDPR analytics tests.
+- **Android Design System complete** — full token mapping (92 iOS tokens → MD3) + Style Dictionary config.
+- **Skills ecosystem v1** — 9 skills + 8 shared data files, parallel task hub with skill routing + priority queue + SSD storage.
+- **18 standalone PRDs** for all features.
+- **PM workflow showcase** — `docs/project/pm-workflow-showcase-onboarding.md` documenting onboarding v2 as the exemplar run for the enhanced `/pm-workflow` skill.
+
+### Fixed
+- **5 latent v1 onboarding compile bugs** discovered + fixed during v2 alignment audit. v1 onboarding had never built successfully:
+  1. `analytics.logEvent()` called as public — actually private. Replaced with typed `logTutorialBegin()` / `logTutorialComplete()`.
+  2. `analytics.logScreenView(_:screenClass:)` overload missing — added.
+  3. `AppRadius.card` referenced but undefined — added as alias.
+  4. `FitMeBrandIcon.swift` not in Xcode target — added.
+  5. `Onboarding/*.swift` files not in Xcode target — added.
+- **Sprint A**: eliminated all raw font/spacing literals across 11 view files (commit `8b16774`).
+- **Accessibility**: a11y labels on icon-only and custom buttons across views, #Preview blocks on AppComponents and ReadinessCard.
+- **Stabilization**: build, sync, privacy flows; force unwrap elimination; SSD home path migration.
+
+### Verified
+- `xcodebuild build` clean on iPhone 17 simulator
+- `xcodebuild test` — all tests pass
+- `make tokens-check` — DesignTokens.swift in sync with tokens.json
+- CI green on PR #59 and on main post-merge
+
+### Backwards Compatibility
+- Analytics taxonomy: **additive only** — zero removed/renamed events
+- Design tokens: **additive only** — zero removed/renamed tokens
+- Sync, encryption, auth: **untouched** beyond onboarding gate placement in `FitTrackerApp.swift`
+- New `@AppStorage("hasCompletedOnboarding")` — existing users see onboarding once on next launch (intentional v1 launch behavior)
+
+### Deferred to follow-up
+- Figma v2 build (V2-T5) — runner prompt ready at `docs/project/figma-runner-prompt.md`
+- P2-01 component consolidation, P2-05 a11y hints, P2-06 contrast bump, P2-07 pillar text size
+- Figma Code Connect mappings (13 components)
+
+### First metrics review
+Scheduled for 2026-04-14 (1 week post-merge). Primary metric: onboarding completion rate (target >80%). Kill criteria: redesign if completion rate <50% after 30 days.
+
 ## 2026-04-06 — Runtime Verification Checkpoint Before SSD Move
 
 ### Changed

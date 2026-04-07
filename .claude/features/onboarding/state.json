@@ -2,9 +2,9 @@
   "feature": "onboarding",
   "work_type": "feature",
   "created": "2026-04-05T09:00:00Z",
-  "updated": "2026-04-07T17:10:00Z",
-  "branch": "feature/onboarding-ux-align",
-  "current_phase": "review",
+  "updated": "2026-04-07T18:20:00Z",
+  "branch": "main",
+  "current_phase": "complete",
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": 51,
@@ -33,9 +33,9 @@
     "ux_or_integration": { "status": "approved", "approved_at": "2026-04-07T13:00:00Z", "type": "ux", "v1_status": "skipped", "v1_reason": "UX defined inline in PRD. No ux-spec.md created. This is the gap v2 closes.", "v2_started_at": "2026-04-07T12:10:00Z", "v2_substeps_done": ["audit (V2-T1+T2): v2-audit-report.md (24 findings)", "ux-research.md (V2-T3): created", "ux-spec.md (V2-T4): created", "compliance gateway (V2-T6): pass-after-patches"], "v2_substeps_deferred": ["Figma v2 build (V2-T5): deferred to follow-up session, prompt at docs/project/figma-onboarding-v2-prompt.md"], "compliance_decision": "patch (not rebuild) — all 24 findings tractable, 13 auto-applicable + 11 manually approved by user in single batch" },
     "implementation": { "status": "approved", "approved_at": "2026-04-07T13:30:00Z", "started_at": "2026-04-07T13:00:00Z", "v1_approved_at": "2026-04-06T15:45:00Z", "commits": ["e46788a"], "files_changed": 12, "lines_changed": "452+/185-", "note": "20 v2 patches applied: P0 (6) + P1 (11) + P2 (3). Commit e46788a touches 12 files. Discovered v1 likely had compile errors (analytics.logEvent private + logScreenView signature mismatch) — fixed in same commit. Deferred P2-01, P2-05, P2-06, P2-07 to follow-up enhancement." },
     "testing": { "status": "approved", "approved_at": "2026-04-07T17:10:00Z", "ci_passed": true, "tests_added": 6, "instrumentation_verified": true, "analytics_tests_added": 6, "analytics_verification_passed": true, "v2_note": "All v1 tests pass on iPhone 17 sim. tokens-check clean. Build clean (after fixing FitMeBrandIcon + Onboarding folder Xcode target membership + AppRadius.card token). v1 had 3 latent compile bugs that v2 also resolved.", "build_succeeded": true },
-    "review": { "status": "in_progress", "started_at": "2026-04-07T17:10:00Z", "risks": ["FitTrackerApp.swift modified (high-risk file)", "New @AppStorage property in app entry point", "AnalyticsService gained new logScreenView overload + 2 new typed methods", "AnalyticsProvider gained 2 new event constants", "AppTheme gained AppSize, AppMotion, AppShadow.ctaInverse* groups + AppRadius.card alias", "8 onboarding views modified with new behaviors (back nav, scroll, haptics, loading state, denial feedback, iPad fallback)", "pbxproj modified to add FitMeBrandIcon + Onboarding folder to target"], "ci_main": false, "ci_feature": true },
-    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
-    "documentation": { "status": "pending" },
+    "review": { "status": "approved", "approved_at": "2026-04-07T17:30:00Z", "started_at": "2026-04-07T17:10:00Z", "risks": ["FitTrackerApp.swift modified (high-risk file)", "New @AppStorage property in app entry point", "AnalyticsService gained new logScreenView overload + 2 new typed methods", "AnalyticsProvider gained 2 new event constants", "AppTheme gained AppSize, AppMotion, AppShadow.ctaInverse* groups + AppRadius.card alias", "8 onboarding views modified with new behaviors (back nav, scroll, haptics, loading state, denial feedback, iPad fallback)", "pbxproj modified to add FitMeBrandIcon + Onboarding folder to target"], "ci_main": true, "ci_feature": true, "merge_strategy": "Option A — single consolidation PR (#59) with 64 commits / 181 files / 4 days of unmerged work" },
+    "merge": { "status": "approved", "approved_at": "2026-04-07T18:06:00Z", "pr_number": 59, "merge_commit": "66e42cf", "merge_method": "squash", "branch_deleted": true, "analytics_regression_passed": true },
+    "documentation": { "status": "approved", "approved_at": "2026-04-07T18:20:00Z", "files_updated": ["CHANGELOG.md", "docs/design-system/feature-memory.md", "docs/product/backlog.md", "docs/project/pm-workflow-showcase-onboarding.md", ".claude/features/onboarding/state.json"] },
     "metrics": {
       "primary": { "name": "onboarding_completion_rate", "baseline": null, "target": 0.80, "current": null },
       "secondary": [
@@ -45,7 +45,7 @@
       ],
       "guardrails": ["crash_free_rate > 99.5%", "cold_start < 2s"],
       "instrumentation_ready": true,
-      "first_review_date": null,
+      "first_review_date": "2026-04-14",
       "kill_criteria": "If completion rate <50% after 30 days, redesign flow"
     }
   },
@@ -60,6 +60,9 @@
     { "from": "tasks", "to": "ux_or_integration", "timestamp": "2026-04-07T12:10:00Z", "approved_by": "user", "note": "v2 task list approved (12 new V2-T* tasks appended to tasks.md). Entering UX phase PROPERLY this time (v1 skipped it). Kicking off parallel audits V2-T1 + V2-T2." },
     { "from": "ux_or_integration", "to": "implementation", "timestamp": "2026-04-07T13:00:00Z", "approved_by": "user", "note": "Phase 3 complete. v2-audit-report.md (24 findings), ux-research.md, ux-spec.md created. User approved all 4 batches of manual confirm gate Round 1. Figma v2 build deferred to follow-up. Advancing to apply 20 code patches (P0+P1+select P2)." },
     { "from": "implementation", "to": "testing", "timestamp": "2026-04-07T13:30:00Z", "approved_by": "user", "note": "20 patches committed in e46788a. Discovered + fixed v1 compile errors (analytics.logEvent was private, logScreenView signature mismatch). Advancing to testing — Mac required for xcodebuild." },
-    { "from": "testing", "to": "review", "timestamp": "2026-04-07T17:10:00Z", "approved_by": "user", "note": "Build clean, tokens-check clean, all tests pass on iPhone 17 sim. Multi-step debugging: fixed FitMeBrandIcon target membership, Onboarding folder target membership, AppRadius.card alias, phantom Settings/Onboarding + Shared/Onboarding paths from misplaced Xcode add. v1 had 3 latent compile bugs that v2 alignment resolved as side effect." }
+    { "from": "testing", "to": "review", "timestamp": "2026-04-07T17:10:00Z", "approved_by": "user", "note": "Build clean, tokens-check clean, all tests pass on iPhone 17 sim. Multi-step debugging: fixed FitMeBrandIcon target membership, Onboarding folder target membership, AppRadius.card alias, phantom Settings/Onboarding + Shared/Onboarding paths from misplaced Xcode add. v1 had 3 latent compile bugs that v2 alignment resolved as side effect." },
+    { "from": "review", "to": "merge", "timestamp": "2026-04-07T17:30:00Z", "approved_by": "user", "note": "PR #59 created with full timeline + risk assessment. CI green on PR after Node 20 deprecation warning (benign) and concurrency-cancellation re-run." },
+    { "from": "merge", "to": "documentation", "timestamp": "2026-04-07T18:06:00Z", "approved_by": "user", "note": "Squash-merged as 66e42cf. Branch feature/onboarding-ux-align deleted from origin. Build sanity green on main." },
+    { "from": "documentation", "to": "complete", "timestamp": "2026-04-07T18:20:00Z", "approved_by": "user", "note": "CHANGELOG, feature-memory, backlog, showcase doc all updated. State.json closed. First metrics review scheduled for 2026-04-14. Onboarding v2 alignment complete. First feature in sequential UX alignment initiative shipped." }
   ]
 }
