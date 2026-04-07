@@ -265,3 +265,63 @@ struct AppProgressRing: View {
         .accessibilityLabel(accessibilityLabel ?? (label.map { "Progress: \($0)" } ?? "Progress: \(Int(value * 100))%"))
     }
 }
+
+// MARK: - Previews
+
+#if DEBUG
+#Preview("AppPickerChip") {
+    HStack(spacing: AppSpacing.xSmall) {
+        AppPickerChip(label: "Default", isSelected: false) {}
+        AppPickerChip(label: "Selected", isSelected: true) {}
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppFilterBar") {
+    AppFilterBar(
+        options: ["All", "Today", "Week", "Month"],
+        selection: .constant("Week")
+    )
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppSegmentedControl") {
+    VStack(spacing: AppSpacing.large) {
+        AppSegmentedControl(
+            options: ["Day", "Week", "Month"],
+            selection: .constant("Week")
+        )
+        AppSegmentedControl(
+            options: ["Push", "Pull", "Legs", "Rest"],
+            selection: .constant("Push")
+        )
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppProgressRing") {
+    HStack(spacing: AppSpacing.large) {
+        AppProgressRing(value: 0.25, color: AppColor.Brand.primary, label: "25%")
+            .frame(width: 64, height: 64)
+        AppProgressRing(value: 0.6, color: AppColor.Status.warning, label: "60%")
+            .frame(width: 64, height: 64)
+        AppProgressRing(value: 1.0, color: AppColor.Status.success, label: "Done")
+            .frame(width: 64, height: 64)
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppStatRow") {
+    VStack(spacing: AppSpacing.small) {
+        AppStatRow(label: "Volume", value: "12,450 kg")
+        AppStatRow(label: "Sets", value: "24")
+        AppStatRow(label: "Duration", value: "1h 15m")
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+#endif
