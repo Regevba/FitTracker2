@@ -881,5 +881,366 @@ This is enforced by `/ux validate {feature}` and `feature-design-checklist.md`.
 
 ---
 
+## Part 7: Accessibility Standards
+
+Accessibility is not optional. It is a baseline requirement, validated by `/ux audit` and the design system compliance gateway.
+
+### 7.1 Visual Accessibility
+
+#### Contrast Ratios
+
+FitMe uses semantic color tokens defined in `AppTheme.swift`. Contrast is verified by `ColorContrastValidator` (DEBUG mode).
+
+| Token | Use | Contrast Ratio | WCAG Level |
+|-------|-----|----------------|------------|
+| `AppColor.Text.primary` | Body, headings | 9.2:1 | AAA |
+| `AppColor.Text.secondary` | Subheads, captions | 5.4:1 | AA |
+| `AppColor.Text.tertiary` | Hints, metadata | 4.6:1 | AA |
+| `AppColor.Text.inversePrimary` | On dark backgrounds | 9.2:1 | AAA |
+
+**Rules:**
+- Minimum 4.5:1 for body text (WCAG AA)
+- Minimum 3:1 for large text (>18pt) and UI components
+- AAA (7:1) preferred for primary text
+- Validate with `ColorContrastValidator` in DEBUG builds
+
+#### Dynamic Type
+
+Every text token uses `Font.system(.<style>)` which scales with iOS Dynamic Type. Users with accessibility text sizes get larger text automatically.
+
+**Tokens that scale:**
+- `AppText.hero`, `pageTitle`, `titleStrong`, `titleMedium`, `sectionTitle`
+- `AppText.body`, `bodyRegular`, `callout`, `subheading`
+- `AppText.caption`, `captionStrong`, `eyebrow`, `chip`, `footnote`
+
+**Tokens that DON'T scale (intentional):**
+- `AppText.iconSmall/Medium/Large/Hero/Display` — SF Symbol icons (visual elements, not text)
+- `AppText.metricHero/Display` — hero numbers in `ReadinessCard` and Stats (use fixed size to maintain visual hierarchy)
+- Proportional fonts in `FitMeLogoLoader` and `FitMeBrandIcon` — scale with size parameter
+
+**QA requirement:** Test every screen at AX5 (largest accessibility size) before approval.
+
+#### Bold Text Support
+
+iOS users can enable Bold Text system-wide. SwiftUI's `.font(.system(.body, design: .rounded))` automatically respects this. No custom handling needed if AppText tokens are used.
+
+### 7.2 Motor Accessibility
+
+#### Tap Target Sizes
+
+Apple HIG minimum: **44×44pt**. FitMe enforces this for all interactive elements.
+
+| Element | Minimum Size | Recommended Size | FitMe Default |
+|---------|--------------|-------------------|---------------|
+| Primary CTA button | 44pt height | 48pt height | 52pt height (`AppButton` primary) |
+| Secondary button | 44pt height | 44pt height | 44pt height (`AppButton` secondary) |
+| Tab bar item | 44×44pt | 49pt (iOS standard) | 49pt |
+| Toggle | 44×44pt tap area (visible 51×31) | — | iOS native |
+| List row | 44pt height | 48pt height | 56pt+ (`AppMenuRow`) |
+| Icon button | 44×44pt tap area | — | 44×44pt with hit slop |
+
+**Hit slop pattern:** Visual icon may be 24×24, but the tap area extends to 44×44 via `.contentShape(Rectangle())` and frame expansion.
+
+#### Touch Target Spacing
+
+Minimum **8pt** between adjacent tappable targets to prevent mis-taps. Default: `AppSpacing.xSmall` (8pt) or larger.
+
+#### Time Limits
+
+**No time-limited interactions** in FitMe except:
+- Rest timer (user-controlled, can be paused)
+- Toast notifications (auto-dismiss after 2s, but content is also accessible elsewhere)
+
+Toasts must never be the only place critical information appears.
+
+#### Switch Control & VoiceOver Navigation
+
+- All interactive elements are reachable via Switch Control
+- Tab order follows visual reading order (top-to-bottom, left-to-right)
+- Custom navigation patterns (sliding cards, rotating pages) MUST have explicit Switch Control alternatives
+- `ReadinessCard`'s 6 rotating pages are accessible via swipe gestures AND a "Next page" custom action for VoiceOver
+
+#### Gym-Specific Considerations
+
+Users in gyms have:
+- Sweaty hands (reduced touch precision)
+- Sometimes gloves (reduced precision further)
+- Limited time between sets (30-90s decision windows)
+- Often one-handed interaction (other hand holding equipment)
+
+**Implications:**
+- Larger primary CTAs (52pt height, not 44pt)
+- Bottom-anchored primary actions (thumb reach)
+- Big inputs for set logging (full-row tap targets)
+- Auto-population to minimize typing during workouts
+
+### 7.3 Cognitive Accessibility
+
+#### Limited Choices Per Screen
+
+Apply Hick's Law strictly. Maximum **5-7 actionable items per view** (excluding navigation).
+
+**Examples:**
+- ✅ Onboarding goal screen: 4 cards
+- ✅ Settings home: 9 categories (grouped, not flat list)
+- ❌ Single screen with 15 toggles
+
+#### Consistent Placement
+
+| Element | Placement | Rule |
+|---------|-----------|------|
+| Primary CTA | Bottom-right (or full-width bottom on mobile) | Always |
+| Back button | Top-left toolbar | iOS standard |
+| Account/profile | Top-right toolbar | All screens (`RootTabView`) |
+| Save/done | Top-right of modal | iOS standard |
+| Cancel | Top-left of modal | iOS standard |
+
+#### Clear Hierarchy
+
+- One primary action per screen (visually dominant)
+- Maximum 2 levels of visual hierarchy on a single card
+- Use `AppText.hero` for one element only per screen
+
+#### Memory Aid
+
+**Auto-populate everything you can:**
+- Set logging: previous weight + reps from last session
+- Meal entry: recently used foods at top of list
+- Date pickers: default to "today"
+- Frequency selectors: default to user's profile setting
+
+This isn't laziness — it's removing the cognitive load of remembering what you did last time.
+
+#### Undo Support
+
+All destructive actions are reversible:
+- Account deletion: 30-day grace period (`AccountDeletionService`)
+- Workout deletion: undo toast for 5 seconds
+- Meal deletion: undo toast for 5 seconds
+- Sync conflict: explicit "keep mine" / "keep theirs" choice, not silent overwrite
+
+### 7.4 Screen Reader (VoiceOver) Strategy
+
+Every interactive element MUST have an `accessibilityLabel`. Every non-trivial component MUST have an `accessibilityHint` for the action it performs.
+
+#### Required for Every Interactive Element
+
+```swift
+Button { startWorkout() } label: {
+    Label("Start", systemImage: "play.fill")
+}
+.accessibilityLabel("Start workout")              // What it is
+.accessibilityHint("Begins your training session")  // What happens when tapped
+```
+
+#### Charts and Metrics
+
+Charts MUST have a text summary:
+
+```swift
+ChartCard(...)
+    .accessibilityLabel("Bench press one-rep max chart")
+    .accessibilityValue("Increased 5 percent over the last 4 weeks. Current value 100 kilograms.")
+```
+
+#### Custom Components
+
+Components like `ReadinessCard` (rotating pages) and `AppSegmentedControl` need custom accessibility:
+
+```swift
+ReadinessCard(...)
+    .accessibilityElement(children: .combine)
+    .accessibilityLabel("Readiness score: 72 out of 100")
+    .accessibilityHint("Swipe to see breakdown")
+    .accessibilityCustomActions([
+        UIAccessibilityCustomAction(name: "Next page") { ... },
+        UIAccessibilityCustomAction(name: "Previous page") { ... }
+    ])
+```
+
+#### Decorative Images
+
+Images that provide no information should be marked as decorative:
+
+```swift
+Image(systemName: "sparkle")
+    .accessibilityHidden(true)
+```
+
+#### Current Coverage
+
+As of 2026-04-06: **1.6%** (27 labels in ~1,600+ interactive elements). Sprint B (accessibility pass) is targeting **100%** coverage.
+
+---
+
+## Part 8: Micro-Interactions & Motion
+
+### 8.1 Animation Principles
+
+#### Purpose-Driven Motion
+
+Every animation must communicate something. No decoration for decoration's sake.
+
+| Purpose | Example | When |
+|---------|---------|------|
+| **State change** | Toggle flip, checkbox check | User changed something |
+| **Spatial transition** | Push navigation, sheet present | User moved between contexts |
+| **Feedback** | Button press, set completed | User performed an action |
+| **Attention** | Badge update, new notification | System wants user attention |
+| **Celebration** | PR achieved, streak milestone | User accomplished something significant |
+
+If an animation doesn't fall into one of these categories, **remove it**.
+
+#### Duration Tokens
+
+FitMe uses `AppDuration` tokens (defined in `AppMotion.swift`):
+
+| Token | Value | Use |
+|-------|-------|-----|
+| `instant` | 0.1s | Button press, opacity fade |
+| `micro` | 0.15s | Toggle flip, small state change |
+| `short` | 0.2s | Card hover, segment switch |
+| `standard` | 0.3s | Page transition, sheet appear |
+| `long` | 0.5s | Emphasis, glow effect |
+| `xLong` | 0.6s | Celebration animation |
+
+**Rule:** Anything over 0.6s feels slow. Anything under 0.1s is invisible.
+
+#### Spring Tokens
+
+For interactive elements, use `AppSpring` instead of linear easing:
+
+| Token | Use | Feel |
+|-------|-----|------|
+| `AppSpring.snappy` | Buttons, toggles, primary interactions | Quick, no overshoot |
+| `AppSpring.bouncy` | Celebrations, attention-getting | Playful overshoot |
+| `AppSpring.smooth` | Card transitions, sheet appearances | Calm, no overshoot |
+| `AppSpring.stiff` | Drag gestures, immediate feedback | Tight, responsive |
+
+#### Easing Tokens
+
+For non-interactive transitions:
+
+| Token | Use |
+|-------|-----|
+| `AppEasing.standard` | General-purpose ease in/out |
+| `AppEasing.short` | Quick fades |
+| `AppEasing.instant` | No-op (use for 0-duration "animations") |
+| `AppEasing.linear` | Progress bars, time-based animations |
+
+### 8.2 Reduce Motion
+
+iOS users can enable "Reduce Motion" system-wide. FitMe MUST respect this.
+
+**Implementation:** Use the `MotionSafe` modifier from `AppMotion.swift`:
+
+```swift
+.transition(.opacity.combined(with: .scale).motionSafe(.opacity))
+```
+
+When reduce motion is enabled, the scale is dropped and only opacity remains.
+
+**Required for all:**
+- Page transitions (use fade instead of slide)
+- Card appearances (use fade instead of scale)
+- Celebration animations (skip entirely or use a static badge)
+- Loading animations (`FitMeLogoLoader` automatically dims to a static state)
+
+**Check pattern:**
+```swift
+@Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+var animation: Animation {
+    reduceMotion ? .none : AppSpring.snappy
+}
+```
+
+### 8.3 Haptic Patterns (Detailed)
+
+Haptics are FitMe's signature feedback layer. Used correctly, they make the app feel responsive and physical.
+
+#### Single Impact
+
+Use `UIImpactFeedbackGenerator` for tactile responses:
+
+```swift
+let generator = UIImpactFeedbackGenerator(style: .medium)
+generator.prepare()  // Call before the action for instant feel
+generator.impactOccurred()
+```
+
+| Style | Use |
+|-------|-----|
+| `.light` | Button press, selection change |
+| `.medium` | Set completion, toggle |
+| `.heavy` | Important actions (rarely used) |
+| `.rigid` | Sharp tactile feedback |
+| `.soft` | Gentle confirmation |
+
+#### Notification Feedback
+
+Use `UINotificationFeedbackGenerator` for outcome-based feedback:
+
+```swift
+let generator = UINotificationFeedbackGenerator()
+generator.notificationOccurred(.success)
+```
+
+| Type | Use |
+|------|-----|
+| `.success` | Workout finished, PR achieved, save successful |
+| `.warning` | Approaching limit, unsaved changes warning |
+| `.error` | Validation error, sync failure |
+
+#### Selection Feedback
+
+Use `UISelectionFeedbackGenerator` for picker-style changes:
+
+```swift
+let generator = UISelectionFeedbackGenerator()
+generator.selectionChanged()
+```
+
+Use this for: tab switching, segmented control changes, picker wheel rotation.
+
+#### Custom Sequences
+
+For PR celebrations, use a custom sequence:
+
+```swift
+// PR achieved sequence
+let success = UINotificationFeedbackGenerator()
+success.notificationOccurred(.success)
+
+DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+    let impact = UIImpactFeedbackGenerator(style: .medium)
+    impact.impactOccurred()
+}
+```
+
+This creates a "double tap" feel that signals significance.
+
+### 8.4 Loading Animations
+
+`FitMeLogoLoader` provides 4 loading modes (defined in `FitMeLogoLoader.swift`):
+
+| Mode | Use | Duration |
+|------|-----|----------|
+| `.breathe` | Long async operations (sync, AI) | Continuous loop |
+| `.rotate` | Short operations (network request) | Continuous loop |
+| `.confirmPulse` | Success confirmation | Single pulse |
+| `.shimmer` | Data loading | Continuous loop |
+
+**Rule:** Use `breathe` for everything ≥1s. It's calm and won't induce anxiety.
+
+### 8.5 Sound
+
+**Sound is OFF by default.** Always.
+
+Reason: Users open FitMe in the gym. Beeps and chimes are inappropriate. The only exception is the rest timer alarm, which is opt-in and uses the iOS notification sound (which respects silent mode).
+
+---
+
+
 
 
