@@ -126,6 +126,49 @@ export function reconcile({ githubIssues = [], staticFeatures = [], stateFiles =
     }
   }
 
+  // Task-level alerts (for v2 state files with tasks[] arrays)
+  for (const state of stateFiles) {
+    if (!state.tasks || !Array.isArray(state.tasks)) continue;
+
+    // Stale task: in_progress longer than 2x effort estimate
+    for (const task of state.tasks) {
+      if (task.status === 'in_progress' && task.started_at && task.effort_days) {
+        const started = new Date(task.started_at);
+        const now = new Date();
+        const daysSinceStart = (now - started) / (1000 * 60 * 60 * 24);
+        if (daysSinceStart > task.effort_days * 2) {
+          alerts.push({
+            type: 'stale_task',
+            severity: 'amber',
+            message: `"${state.feature}" task ${task.id} "${task.title}" has been in progress for ${Math.round(daysSinceStart)}d (estimate: ${task.effort_days}d)`,
+            feature: state.feature,
+            source: 'state',
+          });
+          sources.state.alerts++;
+        }
+      }
+    }
+
+    // Skill overload: more than 5 tasks assigned to a single skill
+    const skillCounts = {};
+    for (const task of state.tasks.filter(t => t.status === 'in_progress' || t.status === 'ready')) {
+      const skill = task.skill || task.assigned_skill || 'dev';
+      skillCounts[skill] = (skillCounts[skill] || 0) + 1;
+    }
+    for (const [skill, count] of Object.entries(skillCounts)) {
+      if (count > 5) {
+        alerts.push({
+          type: 'skill_overload',
+          severity: 'amber',
+          message: `"${state.feature}": skill /${skill} has ${count} active tasks (consider redistributing)`,
+          feature: state.feature,
+          source: 'state',
+        });
+        sources.state.alerts++;
+      }
+    }
+  }
+
   sources.github.healthy = sources.github.alerts === 0;
   sources.static.healthy = sources.static.alerts === 0;
   sources.state.healthy = sources.state.alerts === 0;

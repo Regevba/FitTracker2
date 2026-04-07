@@ -361,4 +361,84 @@ final class AnalyticsTests: XCTestCase {
             XCTAssertFalse(screen.contains(" "))
         }
     }
+
+    // MARK: - Onboarding Event Tests
+
+    @MainActor
+    func testOnboardingStepViewedEvent() {
+        analyticsService.logOnboardingStepViewed(stepIndex: 1, stepName: "goals")
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingStepViewed)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.stepIndex] as? Int, 1)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.stepName] as? String, "goals")
+    }
+
+    @MainActor
+    func testOnboardingStepCompletedEvent() {
+        analyticsService.logOnboardingStepCompleted(stepIndex: 2, stepName: "profile")
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingStepCompleted)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.stepIndex] as? Int, 2)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.stepName] as? String, "profile")
+    }
+
+    @MainActor
+    func testOnboardingSkippedEvent() {
+        analyticsService.logOnboardingSkipped(stepIndex: 3, stepName: "healthkit")
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingSkipped)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.stepIndex] as? Int, 3)
+        XCTAssertEqual(event.parameters?[AnalyticsParam.stepName] as? String, "healthkit")
+    }
+
+    @MainActor
+    func testOnboardingCompletedUserProperty() {
+        analyticsService.setOnboardingCompleted(true)
+
+        XCTAssertEqual(mockAdapter.capturedUserProperties.count, 1)
+        XCTAssertEqual(mockAdapter.capturedUserProperties[AnalyticsUserProperty.onboardingCompleted], "true")
+    }
+
+    @MainActor
+    func testOnboardingConsentGating() {
+        // Deny consent
+        consentManager.denyConsent()
+
+        analyticsService.logOnboardingStepCompleted(stepIndex: 1, stepName: "goals")
+
+        // Should NOT fire when consent denied
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 0)
+
+        // Grant consent and retry
+        consentManager.grantConsent()
+        analyticsService.logOnboardingStepCompleted(stepIndex: 1, stepName: "goals")
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.onboardingStepCompleted)
+    }
+
+    @MainActor
+    func testOnboardingScreenNames() {
+        let screens = [
+            AnalyticsScreen.onboardingWelcome,
+            AnalyticsScreen.onboardingGoals,
+            AnalyticsScreen.onboardingProfile,
+            AnalyticsScreen.onboardingHealthkit,
+            AnalyticsScreen.onboardingFirstAction,
+        ]
+        for screen in screens {
+            // GA4 naming rules: snake_case, max 40 chars, no spaces
+            XCTAssertTrue(screen.count <= 40, "\(screen) exceeds 40 chars")
+            XCTAssertEqual(screen, screen.lowercased(), "\(screen) not lowercase")
+            XCTAssertFalse(screen.contains(" "), "\(screen) contains space")
+            XCTAssertFalse(screen.hasPrefix("ga_"), "\(screen) has reserved prefix")
+            XCTAssertFalse(screen.hasPrefix("firebase_"), "\(screen) has reserved prefix")
+        }
+    }
 }

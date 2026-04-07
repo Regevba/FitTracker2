@@ -228,7 +228,7 @@ struct TrainingPlanView: View {
             HStack(alignment: .top, spacing: AppSpacing.small) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(selectedDay.rawValue)
-                        .font(.title3.bold())
+                        .font(AppText.titleStrong)
                     Text(summaryText)
                         .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.secondary)
@@ -254,7 +254,7 @@ struct TrainingPlanView: View {
                     .tracking(1)
 
                 Text(focusedExercise?.name ?? "Recovery and movement")
-                    .font(.headline)
+                    .font(AppText.sectionTitle)
 
                 Text(sessionFocusSubtitle)
                     .font(AppText.caption)
@@ -330,6 +330,8 @@ struct TrainingPlanView: View {
             }
             .labelsHidden()
             .frame(width: 90)
+            .accessibilityLabel("Rest duration")
+            .accessibilityValue("\(restPresetSeconds) seconds")
         }
         .padding(.horizontal, AppSpacing.xxSmall)
         .padding(.vertical, AppSpacing.xxSmall)
@@ -354,6 +356,8 @@ struct TrainingPlanView: View {
                         Text(isDone ? "Done — tap to clear" : restTimeString(at: context.date))
                             .font(AppText.monoMetric)
                     }
+                    .accessibilityLabel(isDone ? "Rest timer done. Tap to clear." : "Rest timer running")
+                    .accessibilityHint("Clears the rest timer")
                     .padding(.horizontal, AppSpacing.small)
                     .padding(.vertical, AppSpacing.xxSmall)
                     .background(
@@ -417,6 +421,9 @@ struct TrainingPlanView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Exercise: \(exercise.name)")
+                    .accessibilityValue("Status: \(status.rawValue)")
+                    .accessibilityHint("Tap to focus this exercise")
                 }
             }
             .padding(.vertical, AppSpacing.micro)
@@ -1023,7 +1030,7 @@ struct LiftLogPanel: View {
             if exerciseLog.sets.isEmpty {
                 VStack(spacing: AppSpacing.xxSmall) {
                     Image(systemName: "plus.circle")
-                        .font(.title3)
+                        .font(AppText.titleMedium)
                         .foregroundStyle(AppColor.Text.secondary)
                     Text("Tap 'Add Set' to log your first set")
                         .font(AppText.caption)
@@ -1132,7 +1139,7 @@ struct SetRowView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             HStack(alignment: .center, spacing: AppSpacing.xxSmall) {
                 Text("Set \(setNum)")
-                    .font(.system(.caption, design: .monospaced, weight: .bold))
+                    .font(AppText.monoLabel)
                     .foregroundStyle(AppColor.Text.secondary)
 
                 if let previousSet {
@@ -1265,7 +1272,7 @@ struct SetRowView: View {
             }
 
             TextField(placeholder, text: text)
-                .font(.system(.body, design: .monospaced))
+                .font(AppText.monoMetric)
                 .keyboardType(keyboardType)
                 .multilineTextAlignment(.center)
                 .padding(.vertical, AppSpacing.xxSmall)
@@ -1398,9 +1405,11 @@ struct CardioLogPanel: View {
                                 cardioLog.summaryImageData = nil
                             } label: {
                                 Image(systemName: "xmark.circle.fill")
-                                    .font(.title3)
+                                    .font(AppText.titleMedium)
                                     .foregroundStyle(.white)
                                     .background(AppColor.Surface.inverse.opacity(0.5), in: Circle())
+                                    .accessibilityLabel("Remove photo")
+                                    .accessibilityHint("Removes the captured cardio photo")
                             }
                             .padding(AppSpacing.xxSmall)
                         }
@@ -1412,7 +1421,7 @@ struct CardioLogPanel: View {
                         .overlay {
                             VStack(spacing: AppSpacing.xxSmall) {
                                 Image(systemName: "camera.viewfinder")
-                                    .font(.title2).foregroundStyle(AppColor.Text.secondary)
+                                    .font(AppText.pageTitle).foregroundStyle(AppColor.Text.secondary)
                                 Text("No photo yet — tap camera to capture")
                                     .font(.caption2).foregroundStyle(AppColor.Text.tertiary)
                             }
@@ -1464,6 +1473,7 @@ struct CardioLogPanel: View {
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .font(.largeTitle).foregroundStyle(.white)
+                        .accessibilityLabel("Close expanded photo view")
                 }
                 .padding(40)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
@@ -1581,7 +1591,7 @@ struct CardioField: View {
                 .textCase(.uppercase)
                 .tracking(0.5)
             TextField(placeholder, text: $value)
-                .font(.system(.body, design: .monospaced))
+                .font(AppText.monoMetric)
                 .keyboardType(.decimalPad)
                 .padding(AppSpacing.xxSmall)
                 .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
@@ -1619,8 +1629,13 @@ struct RPETapBar: View {
                         )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("RPE \(v)")
+                .accessibilityValue(isSelected ? "Selected" : "Not selected")
+                .accessibilityHint("Set Rate of Perceived Exertion to \(v)")
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Rate of Perceived Exertion")
     }
 }
 
@@ -1679,10 +1694,10 @@ struct SessionCompletionSheet: View {
                     // Header
                     VStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: "checkmark.seal.fill")
-                            .font(.system(size: 48)) // intentional oversized icon — no AppText equivalent
+                            .font(AppText.iconLarge)
                             .foregroundStyle(Color.status.success)
                         Text("Session Complete!")
-                            .font(.title2.bold())
+                            .font(AppText.pageTitle)
                         Text(selectedDay.rawValue)
                             .font(.subheadline)
                             .foregroundStyle(AppColor.Text.secondary)
@@ -1746,7 +1761,7 @@ struct SessionCompletionSheet: View {
 
                         Button(action: onDone) {
                             Text("Done")
-                                .font(.headline)
+                                .font(AppText.sectionTitle)
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, AppSpacing.xSmall)
                                 .foregroundStyle(.black)
@@ -1891,7 +1906,7 @@ struct SessionCompletionSheet: View {
                     .foregroundStyle(AppColor.Text.secondary)
             }
             Text(value)
-                .font(.title3.bold())
+                .font(AppText.titleStrong)
             if let delta {
                 Text(delta)
                     .font(.caption2)
@@ -1915,7 +1930,7 @@ struct NotesEditorSheet: View {
     var body: some View {
         NavigationStack {
             TextEditor(text: $notes)
-                .font(.body)
+                .font(AppText.body)
                 .padding()
                 .navigationTitle("Session Notes")
                 .navigationBarTitleDisplayMode(.inline)
@@ -1956,7 +1971,7 @@ struct FocusModeView: View {
                     Spacer()
                     Button(action: onExit) {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.title2)
+                            .font(AppText.pageTitle)
                             .foregroundStyle(AppColor.Text.inverseTertiary)
                     }
                     .buttonStyle(.plain)
@@ -1991,7 +2006,7 @@ struct FocusModeView: View {
                     }
                 } else {
                     Text("All sets done ✓")
-                        .font(.title2.bold())
+                        .font(AppText.pageTitle)
                         .foregroundStyle(Color.status.success)
                 }
 
@@ -2083,7 +2098,7 @@ struct MilestoneModal: View {
 
             VStack(spacing: AppSpacing.medium) {
                 Text("🎉")
-                    .font(.system(size: 72)) // intentional oversized icon — no AppText equivalent
+                    .font(AppText.iconDisplay)
 
                 Text(title)
                     .font(AppText.metric)
@@ -2100,7 +2115,7 @@ struct MilestoneModal: View {
                     autoDismissTimer?.invalidate()
                     onDismiss()
                 }
-                .font(.headline)
+                .font(AppText.sectionTitle)
                 .padding(.horizontal, AppSpacing.xxLarge)
                 .padding(.vertical, AppSpacing.xSmall)
                 .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.large))

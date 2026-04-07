@@ -46,9 +46,9 @@ xcuserdata/
 !.claude/skills/**
 !.claude/shared/
 !.claude/shared/**
+!.claude/features/
+!.claude/features/**
 !.claude/settings.json
-# Feature state is runtime-only (not committed)
-# .claude/features/ stays gitignored via the .claude/ rule
 .superpowers/
 .worktrees/
 FitMe-GDPR-Docs/
@@ -64,3 +64,6 @@ __pycache__/
 dashboard/node_modules/
 dashboard/dist/
 dashboard/.vercel/
+
+# SSD-local build artifacts (caches, DerivedData, venvs, npm cache)
+.build/

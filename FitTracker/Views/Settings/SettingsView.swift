@@ -1116,6 +1116,9 @@ private struct SettingsChoiceGrid<Option: Hashable, Tile: View>: View {
                     tile(option)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("\(option)")
+                .accessibilityValue(option == selection ? "Selected" : "Not selected")
+                .accessibilityAddTraits(option == selection ? [.isSelected] : [])
             }
         }
     }

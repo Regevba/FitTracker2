@@ -149,7 +149,7 @@ struct ReadinessCard: View {
             .popover(isPresented: $showReadinessInfo) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("How Readiness Is Calculated")
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                     Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
                         .font(.subheadline)
                         .foregroundStyle(AppColor.Text.secondary)
@@ -365,7 +365,7 @@ struct ReadinessCard: View {
         // Steps: use biometrics.stepCount
         let stepsNow  = last7.compactMap { $0.biometrics.stepCount }.last
         let stepsPrev = prev7.compactMap { $0.biometrics.stepCount }.last
-        let stepsDelta: Double? = (stepsNow != nil && stepsPrev != nil) ? Double(stepsNow! - stepsPrev!) : nil
+        let stepsDelta: Double? = if let now = stepsNow, let prev = stepsPrev { Double(now - prev) } else { nil }
 
         return VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text("7-Day Trends")
@@ -498,7 +498,7 @@ struct ReadinessCard: View {
             HStack(alignment: .top, spacing: AppSpacing.xSmall) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     Text(recommendation.routine.title)
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                     Text(recommendation.routine.focus)
                         .font(AppText.caption)
@@ -552,3 +552,13 @@ struct ReadinessCard: View {
         .padding(.vertical, AppSpacing.xSmall)
     }
 }
+
+#if DEBUG
+#Preview("ReadinessCard") {
+    ReadinessCard()
+        .environmentObject(EncryptedDataStore())
+        .environmentObject(HealthKitService())
+        .padding()
+        .background(AppGradient.screenBackground)
+}
+#endif

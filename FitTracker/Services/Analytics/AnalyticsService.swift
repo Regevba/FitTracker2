@@ -72,6 +72,12 @@ final class AnalyticsService: ObservableObject {
         provider.logScreenView(screenName, screenClass: nil)
     }
 
+    /// Overload — accepts the SwiftUI view class name for richer GA4 reporting.
+    func logScreenView(_ screenName: String, screenClass: String?) {
+        guard consent.isAnalyticsAllowed else { return }
+        provider.logScreenView(screenName, screenClass: screenClass)
+    }
+
     // MARK: - GA4 Recommended Events
 
     /// GA4 recommended: "login"
@@ -112,6 +118,56 @@ final class AnalyticsService: ObservableObject {
     /// GA4 recommended: "tutorial_complete"
     func logTutorialComplete() {
         logEvent(AnalyticsEvent.tutorialComplete, parameters: nil)
+    }
+
+    // MARK: - Onboarding Events
+
+    /// User views an onboarding step
+    func logOnboardingStepViewed(stepIndex: Int, stepName: String) {
+        logEvent(AnalyticsEvent.onboardingStepViewed, parameters: [
+            AnalyticsParam.stepIndex: stepIndex,
+            AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// User completes an onboarding step
+    func logOnboardingStepCompleted(stepIndex: Int, stepName: String) {
+        logEvent(AnalyticsEvent.onboardingStepCompleted, parameters: [
+            AnalyticsParam.stepIndex: stepIndex,
+            AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// User skips onboarding from a given step
+    func logOnboardingSkipped(stepIndex: Int, stepName: String) {
+        logEvent(AnalyticsEvent.onboardingSkipped, parameters: [
+            AnalyticsParam.stepIndex: stepIndex,
+            AnalyticsParam.stepName: stepName,
+        ])
+    }
+
+    /// User selects a goal during onboarding
+    func logOnboardingGoalSelected(goalValue: String) {
+        logEvent(AnalyticsEvent.onboardingGoalSelected, parameters: [
+            AnalyticsParam.goalValue: goalValue,
+        ])
+    }
+
+    /// System permission result (HealthKit, notifications, etc.)
+    func logPermissionResult(type: String, granted: Bool) {
+        logEvent(AnalyticsEvent.permissionResult, parameters: [
+            AnalyticsParam.permissionType: type,
+            AnalyticsParam.permissionGranted: granted ? "true" : "false",
+        ])
+    }
+
+    /// Sets the onboarding_completed user property
+    func setOnboardingCompleted(_ completed: Bool) {
+        guard consent.isAnalyticsAllowed else { return }
+        provider.setUserProperty(
+            completed ? "true" : "false",
+            forName: AnalyticsUserProperty.onboardingCompleted
+        )
     }
 
     // MARK: - Workout Events

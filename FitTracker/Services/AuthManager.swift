@@ -150,7 +150,7 @@ struct LockScreenView: View {
                             .stroke(AppColor.Brand.primary.opacity(0.22), lineWidth: 1)
                             .frame(width: 86, height: 86)
                         Image(systemName: "lock.shield.fill")
-                            .font(.system(size: 36, weight: .semibold))
+                            .font(AppText.iconLarge)
                             .foregroundStyle(AppColor.Brand.primary)
                     }
 

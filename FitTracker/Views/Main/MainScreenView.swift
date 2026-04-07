@@ -328,6 +328,8 @@ struct MainScreenView: View {
                         .background(AppColor.Surface.tertiary, in: Circle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Manual biometric entry")
+                .accessibilityHint("Open form to enter weight, body fat, and other biometrics")
             }
         }
         .padding(cardPadding(compact: compact, tight: tight))
@@ -398,13 +400,15 @@ struct MainScreenView: View {
                             .fill(recommendationAccent)
                             .frame(width: tight ? 64 : (compact ? 76 : 88), height: tight ? 64 : (compact ? 76 : 88))
                         Image(systemName: primaryActionIcon)
-                            .font(.system(size: tight ? 22 : (compact ? 26 : 32), weight: .bold))
+                            .font(.system(size: tight ? 22 : (compact ? 26 : 32), weight: .bold)) // DS-exception: responsive sizing
                             .foregroundStyle(.white)
                     }
                 }
                 .buttonStyle(.plain)
                 .scaleEffect(highlightedActionID == "primary" ? 0.97 : 1)
                 .shadow(color: recommendationAccent.opacity(0.24), radius: 16, y: 10)
+                .accessibilityLabel("Primary action: \(primaryActionTitle)")
+                .accessibilityHint("Tap to begin your recommended action for today")
 
                 VStack(alignment: .leading, spacing: trainingTextSpacing(compact: compact, tight: tight)) {
                     Text(primaryActionTitle)
@@ -534,7 +538,7 @@ struct MainScreenView: View {
     private func metricTile(icon: String, value: String, label: String, tint: Color, compact: Bool) -> some View {
         VStack(spacing: compact ? 5 : 8) {
             Image(systemName: icon)
-                .font(.system(size: compact ? 15 : 18, weight: .semibold))
+                .font(.system(size: compact ? 15 : 18, weight: .semibold)) // DS-exception: responsive sizing
                 .foregroundStyle(tint)
             Text(value)
                 .font(.system(size: compact ? 17 : 19, weight: .bold, design: .rounded)) // responsive — no AppText equivalent
@@ -824,7 +828,7 @@ struct RecoveryRoutineSheet: View {
                 if !reasons.isEmpty {
                     VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                         Text("Why today")
-                            .font(.headline)
+                            .font(AppText.sectionTitle)
                         ForEach(reasons, id: \.self) { reason in
                             HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
                                 Image(systemName: "sparkles")
@@ -840,7 +844,7 @@ struct RecoveryRoutineSheet: View {
 
                 VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     Text("Flow")
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                     ForEach(Array(routine.steps.enumerated()), id: \.element.id) { index, step in
                         HStack(alignment: .top, spacing: AppSpacing.xSmall) {
                             ZStack {
@@ -873,7 +877,7 @@ struct RecoveryRoutineSheet: View {
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Coaching note")
-                        .font(.headline)
+                        .font(AppText.sectionTitle)
                     Text(routine.coachingNote)
                         .font(AppText.subheading)
                         .foregroundStyle(AppColor.Text.secondary)

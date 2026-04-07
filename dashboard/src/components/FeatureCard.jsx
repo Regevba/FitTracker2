@@ -32,8 +32,16 @@ const CATEGORY_BADGE = {
   process: 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300',
 };
 
+const WORK_TYPE_BADGE = {
+  fix: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+  bug: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300',
+  chore: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+  spike: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300',
+  refactor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300',
+};
+
 export default function FeatureCard({ feature, isDragging = false, onClick }) {
-  const { name, phase, priority, rice, category, shipped, eta } = feature;
+  const { name, phase, priority, rice, category, shipped, eta, workType, taskCount, tasksDone } = feature;
   const pStyle = priority ? PRIORITY_STYLES[priority] : null;
   const borderClass = STATUS_BORDER[phase] || 'border-l-gray-300';
   const catClass = CATEGORY_BADGE[category] || CATEGORY_BADGE.product;
@@ -62,11 +70,16 @@ export default function FeatureCard({ feature, isDragging = false, onClick }) {
         </h3>
       </div>
 
-      {/* Category + RICE */}
-      <div className="flex items-center gap-2 mb-2">
+      {/* Category + Work Type + RICE */}
+      <div className="flex items-center gap-2 mb-2 flex-wrap">
         {category && (
           <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-badge ${catClass}`}>
             {category}
+          </span>
+        )}
+        {workType && workType !== 'feature' && (
+          <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-badge ${WORK_TYPE_BADGE[workType] || 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
+            {workType}
           </span>
         )}
         {rice && (
@@ -75,6 +88,21 @@ export default function FeatureCard({ feature, isDragging = false, onClick }) {
           </span>
         )}
       </div>
+
+      {/* Task progress bar */}
+      {taskCount > 0 && (
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex-1 h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-green-500 rounded-full transition-all duration-300"
+              style={{ width: `${(tasksDone / taskCount) * 100}%` }}
+            />
+          </div>
+          <span className="text-[10px] font-mono text-gray-400 dark:text-gray-500 shrink-0">
+            {tasksDone}/{taskCount}
+          </span>
+        </div>
+      )}
 
       {/* Footer: date or ETA */}
       <div className="flex items-center justify-between text-[10px] text-gray-400 dark:text-gray-500">

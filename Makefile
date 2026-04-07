@@ -4,13 +4,20 @@
 
 .PHONY: tokens tokens-check install verify-local verify-web verify-ai verify-ios
 
-DEVELOPER_DIR ?= /Applications/Xcode.app/Contents/Developer
-SIMULATOR_ID ?= 87E96E30-350E-46AC-AB34-B87AF8D1AB1E
-AI_VENV ?= /tmp/FitTracker2-ai-venv
+# All build artifacts stay on the SSD alongside the project source.
+# Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
+PROJECT_ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+BUILD_DIR    ?= $(PROJECT_ROOT).build
+
+DEVELOPER_DIR           ?= /Applications/Xcode.app/Contents/Developer
+SIMULATOR_ID            ?= 87E96E30-350E-46AC-AB34-B87AF8D1AB1E
+AI_VENV                 ?= $(BUILD_DIR)/ai-venv
 ASTRO_TELEMETRY_DISABLED ?= 1
-SPM_CACHE ?= /tmp/FitTrackerDerivedData-review/SourcePackages
-BUILD_HOME ?= /tmp/FitTrackerBuildHome
-CLANG_MODULE_CACHE_PATH ?= /tmp/FitTrackerClangModuleCache
+SPM_CACHE               ?= $(BUILD_DIR)/spm-cache
+BUILD_HOME              ?= $(BUILD_DIR)/xcode-home
+CLANG_MODULE_CACHE_PATH ?= $(BUILD_DIR)/clang-cache
+DERIVED_DATA            ?= $(BUILD_DIR)/DerivedData
+TEST_DERIVED_DATA       ?= $(BUILD_DIR)/TestDerivedData
 
 # Regenerate DesignTokens.swift from tokens.json via Style Dictionary
 # Uses node to run sd.config.js directly (not CLI) because custom transforms
@@ -46,7 +53,7 @@ verify-ios:
 		-destination 'generic/platform=iOS' \
 		-clonedSourcePackagesDirPath $(SPM_CACHE) \
 		-disableAutomaticPackageResolution \
-		-derivedDataPath /tmp/FitTrackerDerivedData-verify \
+		-derivedDataPath $(DERIVED_DATA) \
 		CODE_SIGNING_ALLOWED=NO \
 		CODE_SIGNING_REQUIRED=NO
 	HOME=$(BUILD_HOME) CFFIXED_USER_HOME=$(BUILD_HOME) CLANG_MODULE_CACHE_PATH=$(CLANG_MODULE_CACHE_PATH) DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild test \
@@ -57,7 +64,7 @@ verify-ios:
 		-disableAutomaticPackageResolution \
 		-only-testing:FitTrackerTests/FitTrackerCoreTests \
 		-only-testing:FitTrackerTests/SyncMergeTests \
-		-derivedDataPath /tmp/FitTrackerTestsDD-verify \
+		-derivedDataPath $(TEST_DERIVED_DATA) \
 		CODE_SIGNING_ALLOWED=NO \
 		CODE_SIGNING_REQUIRED=NO
 

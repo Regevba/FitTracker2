@@ -110,6 +110,7 @@ enum AppRadius {
     static let xSmall:    CGFloat = 8
     static let small:     CGFloat = 12
     static let medium:    CGFloat = 16
+    static let card:      CGFloat = 16   // alias for card surfaces (used by ConsentView and other card components)
     /// Pill-style buttons and action tiles with a softer corner than medium.
     static let button:    CGFloat = 20
     static let large:     CGFloat = 24
@@ -127,6 +128,34 @@ enum AppShadow {
     static let ctaColor:    Color  = AppColor.Accent.primary.opacity(0.28)
     static let ctaRadius:   CGFloat = 12
     static let ctaYOffset:  CGFloat = 4
+
+    // Welcome screen CTA: white-on-orange shadow (subtler than the brand-tinted CTA shadow)
+    static let ctaInverseColor:   Color   = AppPalette.black.opacity(0.12)
+    static let ctaInverseRadius:  CGFloat = 8
+    static let ctaInverseYOffset: CGFloat = 4
+}
+
+// MARK: - Size
+// Semantic size tokens for fixed-dimension UI elements (introduced for onboarding v2 alignment).
+enum AppSize {
+    /// Standard CTA height (52pt) — used for all primary action buttons
+    static let ctaHeight: CGFloat = 52
+    /// Large touch target (48pt) — exceeds 44pt minimum, used for selection circles
+    static let touchTargetLarge: CGFloat = 48
+    /// Icon badge / inset element (26pt) — small overlay icons
+    static let iconBadge: CGFloat = 26
+    /// Progress bar segment height (4pt)
+    static let progressBarHeight: CGFloat = 4
+}
+
+// MARK: - Motion
+// Semantic animation tokens that respect Reduce Motion when consumed via SwiftUI's
+// `accessibilityReduceMotion` environment value.
+enum AppMotion {
+    /// Onboarding step transition — easeInOut 0.3s
+    static let stepTransition: Animation = .easeInOut(duration: 0.3)
+    /// Standard quick interaction — easeOut 0.2s
+    static let quickInteraction: Animation = .easeOut(duration: 0.2)
 }
 
 enum AppSheet {
@@ -162,6 +191,14 @@ enum AppText {
     static let monoMetric        = Font.system(.title3,       design: .monospaced).weight(.bold)
     static let monoLabel         = Font.system(.caption2,     design: .monospaced).weight(.semibold)
     static let button            = Font.system(.body,         design: .rounded).weight(.semibold)
+
+    // Icon sizes — for SF Symbol illustrations in onboarding, empty states, hero displays.
+    // These are intentionally fixed-size (icons don't scale with Dynamic Type).
+    static let iconSmall         = Font.system(size: 18, weight: .medium)
+    static let iconMedium        = Font.system(size: 28, weight: .medium)
+    static let iconLarge         = Font.system(size: 48, weight: .medium)
+    static let iconHero          = Font.system(size: 64, weight: .regular)
+    static let iconDisplay       = Font.system(size: 72, weight: .regular)
 }
 
 // MARK: - Legacy aliases (DEPRECATED — migrate call sites to AppText.*)

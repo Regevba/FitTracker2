@@ -1,25 +1,26 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-04",
+  "version": "1.1",
+  "updated": "2026-04-06",
+  "note": "Operational monitoring not yet wired. Values below reflect local verification only — runtime infrastructure checks require deployed services and credentials.",
   "infrastructure": {
     "railway": { "status": "unknown", "service": "AI Engine (FastAPI)", "url": null, "last_check": null },
-    "supabase": { "status": "unknown", "service": "PostgreSQL + Realtime + Storage", "last_check": null },
+    "supabase": { "status": "unknown", "service": "PostgreSQL + Realtime + Storage", "last_check": null, "note": "placeholder config in Info.plist — real credentials needed for runtime" },
     "cloudkit": { "status": "unknown", "service": "iCloud Private DB", "last_check": null },
-    "firebase": { "status": "unknown", "service": "Analytics (GA4)", "last_check": null },
+    "firebase": { "status": "unknown", "service": "Analytics (GA4)", "last_check": null, "note": "GoogleService-Info.plist not in repo — local file required" },
     "vercel_website": { "status": "unknown", "service": "Marketing Website", "url": "fitme.app", "last_check": null },
     "vercel_dashboard": { "status": "unknown", "service": "Development Dashboard", "last_check": null }
   },
   "ci": {
     "last_build": { "status": null, "branch": null, "timestamp": null },
-    "tokens_check": { "status": "passing", "last_run": null },
-    "xcode_build": { "status": null, "last_run": null },
-    "xcode_test": { "status": null, "last_run": null }
+    "tokens_check": { "status": "passing", "last_run": "2026-04-06" },
+    "xcode_build": { "status": "passing", "last_run": "2026-04-06", "note": "verified via make verify-local" },
+    "xcode_test": { "status": "passing", "tests": 40, "last_run": "2026-04-06", "note": "FitTrackerCoreTests(31) + SyncMergeTests(9)" }
   },
   "quality_gates": {
-    "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0 },
-    "cold_start_ms": { "current": null, "target": 2000, "alert_threshold": 3000 },
-    "sync_success_rate": { "current": null, "target": 99, "alert_threshold": 95 },
-    "ci_pass_rate": { "current": null, "target": 95, "alert_threshold": 85 }
+    "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0, "note": "requires Crashlytics or equivalent" },
+    "cold_start_ms": { "current": null, "target": 2000, "alert_threshold": 3000, "note": "requires instrumented launch" },
+    "sync_success_rate": { "current": null, "target": 99, "alert_threshold": 95, "note": "requires signed-in runtime" },
+    "ci_pass_rate": { "current": "100%", "target": 95, "alert_threshold": 85, "note": "local make verify-local passing" }
   },
   "incidents": [],
   "cost": {

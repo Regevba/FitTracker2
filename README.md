@@ -101,7 +101,7 @@ Design file: [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fC
 | AI — Cloud | FastAPI on Railway, JWT + JWKS validation, k>=50 anonymity |
 | AI — On-device | Apple Intelligence Foundation Models (iOS 26+) |
 | Analytics | Firebase Analytics (GA4) with GDPR consent |
-| Design System | ~120 semantic tokens, Style Dictionary pipeline, CI drift detection |
+| Design System | 125 semantic tokens, Style Dictionary pipeline, CI drift detection |
 | CI | GitHub Actions, Xcode 16+, `make tokens-check` gate |
 | Web | Astro + Tailwind v4 + Vercel (dashboard + marketing website) |
 
@@ -194,11 +194,24 @@ cd dashboard && npm install
 # Marketing site
 cd ../website && npm install
 
-# AI engine
+# AI engine (venv goes to .build/ on the SSD automatically)
 cd ../ai-engine
-python3.12 -m venv /tmp/FitTracker2-ai-venv
-source /tmp/FitTracker2-ai-venv/bin/activate
+python3.12 -m venv .build/ai-venv
+source .build/ai-venv/bin/activate
 pip install -e '.[dev]'
+```
+
+### SSD Development Environment
+
+All build artifacts (DerivedData, SPM cache, npm cache, Python venv) are stored in `.build/` alongside the project source, keeping your internal drive clean.
+
+**One-time Mac setup (optional):**
+```bash
+# Override Xcode default DerivedData to SSD
+defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation "/Volumes/DevSSD/FitTracker2/.build/DerivedData"
+
+# Redirect Homebrew cache to SSD (if Homebrew is used)
+echo 'export HOMEBREW_CACHE="/Volumes/DevSSD/.cache/homebrew"' >> ~/.zshrc
 ```
 
 ### One-Command Verification
@@ -207,7 +220,7 @@ pip install -e '.[dev]'
 make verify-local
 ```
 
-This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass.
+This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass. All output goes to `.build/` on the SSD.
 The current verified result is green end to end, including `40` passing XCTest cases across `FitTrackerCoreTests` and `SyncMergeTests`.
 
 ### iOS Build
@@ -217,11 +230,12 @@ cd /path/to/FitTracker2
 npm run tokens:check
 
 # Build with full Xcode selected
+# Note: All build artifacts go to .build/ on the SSD (NOT /tmp/)
 xcodebuild build \
   -project FitTracker.xcodeproj \
   -scheme FitTracker \
   -destination 'generic/platform=iOS' \
-  -derivedDataPath /tmp/FitTrackerDerivedData \
+  -derivedDataPath .build/DerivedData \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO
 
@@ -229,11 +243,14 @@ xcodebuild build \
 xcodebuild test \
   -project FitTracker.xcodeproj \
   -scheme FitTracker \
-  -destination 'platform=iOS Simulator,id=87E96E30-350E-46AC-AB34-B87AF8D1AB1E' \
+  -destination 'platform=iOS Simulator,id=$(SIMULATOR_ID)' \
   -only-testing:FitTrackerTests/FitTrackerCoreTests \
-  -derivedDataPath /tmp/FitTrackerTestsDD \
+  -derivedDataPath .build/TestDerivedData \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO
+
+# Easier: use the Makefile (uses .build/ automatically)
+make verify-ios
 ```
 
 ### Web Projects
@@ -250,7 +267,7 @@ cd ../website && npm run build
 
 ```bash
 cd ai-engine
-source /tmp/FitTracker2-ai-venv/bin/activate
+source .build/ai-venv/bin/activate
 pytest -q
 ```
 
@@ -283,7 +300,7 @@ Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/p
 
 ## Design System
 
-~120 semantic tokens across 7 categories, 13+ reusable components, WCAG AA contrast compliance.
+125 semantic tokens across 7 categories, 13+ reusable components, WCAG AA contrast compliance, full UX foundations layer in `docs/design-system/ux-foundations.md`.
 
 - **Figma:** [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
 - **Docs:** [`docs/design-system/`](docs/design-system/)

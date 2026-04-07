@@ -84,8 +84,10 @@ private struct AuthEntryScreen: View {
         VStack(alignment: .leading, spacing: AppSpacing.large) {
             Spacer(minLength: AppSpacing.xSmall)
 
-            VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
-                Text("FitTracker")
+            VStack(alignment: .leading, spacing: AppSpacing.small) {
+                FitMeBrandIcon.medium
+
+                Text(AppBrand.name)
                     .font(AppText.hero)
                     .foregroundStyle(AppColor.Text.primary)
 

@@ -229,3 +229,128 @@ Yes — 5 new screens in a dedicated onboarding flow.
 
 - **Total:** ~1 week
 - **Breakdown:** Research: 0.5d (done), PRD: 0.5d (this), UX: 0.5d, Implementation: 3d, Testing: 1d, Review+Merge: 0.5d
+
+---
+
+# v2 — UX Alignment
+
+> **Owner:** Regev
+> **Date:** 2026-04-07
+> **Phase:** Phase 1 — PRD v2 (in progress)
+> **Status:** Draft for approval
+> **Parent:** v1 PRD above (approved 2026-04-05, implemented 2026-04-06)
+> **Trigger:** v1 `ux_or_integration` phase was **skipped** ("UX defined inline in PRD and task descriptions"). No formal ux-spec, no Figma screens, no design compliance gate. v2 closes that gap as the first feature in the sequential UX alignment initiative.
+> **Showcase doc:** [`docs/project/pm-workflow-showcase-onboarding.md`](../../../docs/project/pm-workflow-showcase-onboarding.md)
+
+## v2 Purpose
+
+Retroactively validate and align the shipped v1 onboarding flow against [`docs/design-system/ux-foundations.md`](../../../docs/design-system/ux-foundations.md) (1,533 lines, 10 parts) — the canonical UX + behavioral layer of the FitMe design system. The v1 functional requirements remain valid; v2 adjusts how the requirements are *expressed* in UI, flow, copy, motion, and accessibility so every principle in the foundations doc is visibly satisfied.
+
+v2 also serves as the exemplar run for the enhanced `/pm-workflow` skill executing a retroactive alignment.
+
+## v2 Scope (what changes vs v1)
+
+| Dimension | v1 state | v2 target | Governed by |
+|-----------|----------|-----------|-------------|
+| **Screen count** | 5 (Welcome, Goals, Profile, HealthKit, First Action) | **6** — adds Consent screen (already integrated as step 5 in v1 code commit `d017a30`, but not in PRD v1) | Figma v2 prompt + v1 commit history |
+| **Principles compliance** | Not formally validated | Full audit against 8 core heuristics + 5 FitMe-specific principles | `ux-foundations.md` §1 |
+| **Information architecture** | Flat linear sequence | Same flat sequence, but progress bar reflects 6 steps; Consent has no progress bar (standalone decision) | `ux-foundations.md` §2 + Figma v2 prompt |
+| **Interaction patterns** | Not formally validated | Push navigation + bottom CTA + quiet skip pattern audited against foundations | `ux-foundations.md` §3 |
+| **Data viz** | N/A (no charts in onboarding) | N/A | — |
+| **Permission & trust** | HealthKit 3-step priming + Consent card | Validated against 3-step priming pattern; Consent copy audited for trust signals | `ux-foundations.md` §5 |
+| **State patterns** | Loading/error states not systematically documented | Empty, loading, error, success states defined per screen with copy formulas | `ux-foundations.md` §6 |
+| **Accessibility** | Not formally validated | WCAG AA minimum; Dynamic Type; VoiceOver labels; 44pt tap targets verified per screen | `ux-foundations.md` §7 |
+| **Motion** | Not formally validated | All animations via `AppMotion` presets; Reduce Motion compliance | `ux-foundations.md` §8 |
+| **Content & copy** | Inline in views | Validated against copy guidelines; encouraging, never judgmental; consistent terminology | `ux-foundations.md` §9 + `ux-copy-guidelines.md` |
+| **Platform patterns** | iPhone-first | iPhone primary; iPad layout validated; Watch/macOS out of scope | `ux-foundations.md` §10 |
+| **Figma source of truth** | Figma has only v1 "I3.1 — Onboarding Slides" (5 feature-showcase slides, NOT matching v1 code) | New "I3.2 — Onboarding v2 (PRD-Aligned)" section with 6 real screens; v1 preserved as history | `figma-onboarding-v2-prompt.md` |
+| **Design system compliance** | Not audited | All tokens map to `AppTheme.swift`; all components map to `AppComponents.swift` or documented as new primitives | Phase 3 compliance gateway |
+
+## Changelog — v1 → v2
+
+### Additions
+- **Consent screen** formally added to PRD as screen 5 of 6 (v1 code added it inline, PRD was not updated)
+- **`ux-research.md`** — new file, UX principles applicable to onboarding, iOS HIG references, research sources
+- **`ux-spec.md`** — new file, screen list, flows, states, copy, a11y, motion per feature-development-gateway.md
+- **Figma v2 section** — 6 screens in file `0Ai7s3fCFqR5JXDW8JvgmD`, page "Onboarding", section "I3.2 — Onboarding v2 (PRD-Aligned)"
+- **Design compliance report** — recorded in state.json after Phase 3 gateway
+
+### Changes (subject to audit findings in Phase 3)
+- **Progress bar:** may change from 5-segment to 6-segment to accommodate Consent screen
+- **Copy refinements:** any copy that violates `ux-copy-guidelines.md` will be adjusted
+- **Tap target sizing:** any interactive element below 44pt adjusted
+- **Motion:** any ad-hoc animations replaced with `AppMotion` presets
+- **Token compliance:** any raw hex / font literal replaced with semantic token
+
+### Manual Confirm Gate (mandatory per user directive)
+Every single UI change from current code must be presented to user with before/after + foundations principle reference + rationale BEFORE the change is applied to Figma or code. No unilateral visual changes.
+
+### Removals
+- None planned. All v1 features retained.
+
+## v2 Success Metrics (delta vs v1)
+
+No changes to primary, secondary, guardrail, leading, or lagging metrics. v1 metrics remain valid.
+
+**New v2-specific instrumentation-quality metrics** (to be reported alongside feature metrics):
+| Metric | Target | Source |
+|--------|--------|--------|
+| UX foundations compliance score | 100% pass on all 10 dimensions | Phase 3 audit report |
+| Design system token compliance | 100% (zero raw literals in onboarding views) | `/design audit onboarding` |
+| A11y compliance | WCAG AA minimum on all 6 screens | Phase 3 accessibility check |
+| Figma-to-code parity | Visual diff <5% per screen | Phase 5 testing |
+
+## v2 Acceptance Criteria
+
+In addition to v1 acceptance criteria:
+- [ ] `.claude/features/onboarding/ux-research.md` created and references ≥5 foundations principles
+- [ ] `.claude/features/onboarding/ux-spec.md` created with screen list, flows, states, copy, a11y, motion
+- [ ] Figma file `0Ai7s3fCFqR5JXDW8JvgmD` has section "I3.2 — Onboarding v2 (PRD-Aligned)" with 6 screens
+- [ ] Existing Figma "I3.1 — Onboarding Slides" section is UNCHANGED (history preserved)
+- [ ] Design compliance gateway report (5 checks) passes OR documented overrides with justification per CLAUDE.md evolution rules
+- [ ] Every UI change from v1 was manually confirmed by user before being applied
+- [ ] `.claude/features/onboarding/state.json` has `phases.ux_or_integration.status = "approved"` with timestamp
+- [ ] PR description links to ux-research, ux-spec, Figma section, and this v2 section
+- [ ] Showcase doc `docs/project/pm-workflow-showcase-onboarding.md` is updated with all phase outcomes
+
+## v2 Risks
+
+| Risk | Impact | Mitigation |
+|------|--------|-----------|
+| Phase 3 audit uncovers extensive gaps requiring >4 high-risk code files to change | Blocks merge, bloats scope | Kill criteria (see below); user may opt to defer gaps to enhancement tasks |
+| Figma v2 build via MCP exceeds session budget | Phase 3 stalls | Prior art at `figma-onboarding-v2-prompt.md` accelerates; chunk by screen if needed |
+| v1 code may have reasonable choices that conflict with foundations principles | Needs user judgment | Manual confirm gate surfaces each conflict for explicit decision |
+| Manual confirm gate creates many micro-decisions slowing the run | User fatigue | Batch similar deltas into groups of 3-5 per confirmation round |
+| FitTrackerApp.swift (high-risk) may need additional edits for v2 routing | Review risk ↑ | Keep changes minimal; wrap in feature flag if needed |
+
+## v2 Kill Criteria
+
+In addition to v1 kill criteria:
+- If Phase 3 audit reveals >4 high-risk code files need modification beyond v1 footprint → escalate to user for go/no-go (risk of scope creep)
+- If >8 manual confirm rounds are required → pause for user to review pattern of findings and decide scope cap
+- If Figma v2 build cannot complete within 2 sessions → fall back to code-only alignment (document the Figma gap as a follow-up)
+
+## v2 Review Cadence
+
+- **Phase-gate reviews:** After each of Phases 1-8 per pm-workflow skill
+- **Post-merge metrics review:** Unchanged from v1 (1 week post-launch, then weekly for 4 weeks, then monthly)
+- **Alignment initiative checkpoint:** Showcase doc reviewed after merge to confirm exemplar quality before running the next feature in sequence
+
+## v2 Inputs (references)
+
+| File | Role |
+|------|------|
+| `docs/design-system/ux-foundations.md` | Compliance target (1,533 lines, 10 parts) |
+| `docs/design-system/ux-copy-guidelines.md` | Copy validation |
+| `docs/design-system/component-contracts.md` | Interaction behavior validation |
+| `docs/design-system/feature-development-gateway.md` | Phase 3 procedure |
+| `docs/design-system/feature-design-checklist.md` | Per-decision validation |
+| `docs/project/figma-onboarding-v2-prompt.md` | Figma v2 build prompt (pre-authored) |
+| `FitTracker/Services/AppTheme.swift` | Token source of truth |
+| `FitTracker/DesignSystem/AppComponents.swift` | Component source of truth |
+| v1 code on `feature/onboarding-ux-align` | Drift baseline |
+
+## v2 Estimated Effort
+
+- **Total:** ~2-3 sessions (audit-driven; upper bound if many manual confirm rounds)
+- **Breakdown:** PRD v2 (this, 0.5s) → Tasks v2 (0.25s) → UX Research + Audit (0.5s) → UX Spec + Figma v2 (1-1.5s) → Implementation deltas (0.5s) → Test/Review/Merge (0.5s) → Docs (0.25s)

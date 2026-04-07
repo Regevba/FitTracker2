@@ -96,6 +96,19 @@ enum AnalyticsEvent {
     /// Data export generated successfully
     static let dataExportCompleted = "data_export_completed"
 
+    // ── Onboarding Events (custom) ─────────────────────────
+
+    /// User views an onboarding step
+    static let onboardingStepViewed    = "onboarding_step_viewed"
+    /// User completes an onboarding step
+    static let onboardingStepCompleted = "onboarding_step_completed"
+    /// User skips onboarding
+    static let onboardingSkipped       = "onboarding_skipped"
+    /// User selects a goal during onboarding
+    static let onboardingGoalSelected  = "onboarding_goal_selected"
+    /// System or user permission result (HealthKit, notifications, etc.)
+    static let permissionResult        = "permission_result"
+
     // ── Settings Events (custom) ────────────────────────────
 
     /// User changes a setting
@@ -156,6 +169,13 @@ enum AnalyticsParam {
     static let daysRemaining     = "days_remaining"   // 0-30 (grace period)
     static let sizeBytes         = "size_bytes"       // export file size
     static let recordCount       = "record_count"     // total records exported
+
+    // Onboarding parameters
+    static let stepIndex          = "step_index"       // 0-4
+    static let stepName           = "step_name"        // welcome/goals/profile/healthkit/first_action
+    static let goalValue          = "goal_value"       // build_muscle/lose_fat/maintain/general
+    static let permissionType     = "permission_type"  // healthkit
+    static let permissionGranted  = "permission_granted" // true/false
 }
 
 // MARK: - Screen Constants
@@ -185,6 +205,11 @@ enum AnalyticsScreen {
     static let readiness         = "readiness"
     static let consent           = "consent"
     static let onboarding        = "onboarding"
+    static let onboardingWelcome    = "onboarding_welcome"
+    static let onboardingGoals      = "onboarding_goals"
+    static let onboardingProfile    = "onboarding_profile"
+    static let onboardingHealthkit  = "onboarding_healthkit"
+    static let onboardingFirstAction = "onboarding_first_action"
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
 }
@@ -200,6 +225,7 @@ enum AnalyticsUserProperty {
     static let goalType          = "goal_type"           // weight_loss/strength/endurance/general
     static let workoutFrequency  = "workout_frequency"   // 1-7 (days per week)
     static let subscriptionStatus = "subscription_status" // free/premium/trial (future)
+    static let onboardingCompleted = "onboarding_completed" // true/false
 }
 
 // MARK: - Conversion Events

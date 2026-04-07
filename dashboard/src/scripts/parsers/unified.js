@@ -3,6 +3,7 @@ import { parseRoadmap } from './roadmap.js';
 import { parsePRD } from './prd.js';
 import { parseMetrics } from './metrics.js';
 import { parseStateFiles } from './state.js';
+import { computeReadySet, computeBlockedSet, groupBySkill } from './tasks.js';
 
 function slugify(name) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -96,6 +97,18 @@ export function getUnifiedFeatures() {
     const f = getOrCreate(state.feature.replace(/-/g, ' '));
     f.phase = state.current_phase;
     if (!f.sources.includes('state')) f.sources.push('state');
+
+    // Task-level metadata
+    const tasks = state.tasks || [];
+    if (tasks.length > 0) {
+      f.tasks = tasks;
+      f.taskCount = tasks.length;
+      f.tasksDone = tasks.filter(t => t.status === 'done').length;
+      f.tasksReady = computeReadySet(tasks).length;
+      f.tasksBlocked = computeBlockedSet(tasks).length;
+      f.workType = state.work_type || 'feature';
+      f.skillDistribution = Object.fromEntries(groupBySkill(tasks));
+    }
   }
 
   return {

@@ -11,7 +11,10 @@ private func makeAIEngineBaseURL() -> URL {
     let urlString = plistValue.isEmpty ? "https://fittracker-ai-production.up.railway.app" : plistValue
     guard let url = URL(string: urlString) else {
         // Fallback to hardcoded default — only reachable if Info.plist value is malformed
-        return URL(string: "https://fittracker-ai-production.up.railway.app")!
+        guard let fallback = URL(string: "https://fittracker-ai-production.up.railway.app") else {
+            fatalError("Hardcoded AI engine URL is invalid — infrastructure error")
+        }
+        return fallback
     }
     return url
 }
@@ -176,11 +179,20 @@ struct FitTrackerApp: App {
         )
     }
 
+    // ── Onboarding guard ─────────────────────────────────
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+
     // ── Auth state machine ────────────────────────────────
-    // welcome → signIn (sheet) → authenticated → biometricLock → app
+    // onboarding (first launch) → welcome → signIn (sheet) → authenticated → biometricLock → app
     @ViewBuilder
     private var rootView: some View {
-        if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
+        if !hasCompletedOnboarding, !isScreenReviewModeEnabled {
+            OnboardingView {
+                analytics.setOnboardingCompleted(true)
+            }
+            .environmentObject(healthService)
+            .environmentObject(analytics)
+        } else if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
             SettingsView()
                 .analyticsScreen(AnalyticsScreen.settings)
                 .environmentObject(signIn)
@@ -195,7 +207,9 @@ struct FitTrackerApp: App {
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
         } else if signIn.isAuthenticated {
-            if analytics.consent.gdprConsent == .pending {
+            if analytics.consent.gdprConsent == .pending && hasCompletedOnboarding {
+                // Fallback: user completed onboarding before consent was added,
+                // or consent state was reset. Show standalone consent screen.
                 ConsentView {
                     analytics.syncConsentToProvider()
                 }

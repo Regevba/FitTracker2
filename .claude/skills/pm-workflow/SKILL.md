@@ -32,6 +32,7 @@ Create `.claude/features/$0/state.json`:
   "updated": "{current ISO-8601 timestamp}",
   "branch": "feature/$0",
   "current_phase": "research",
+  "work_type": "feature",
   "has_ui": null,
   "requires_analytics": null,
   "phases": {
@@ -52,9 +53,82 @@ Create `.claude/features/$0/state.json`:
       "first_review_date": null,
       "kill_criteria": ""
     }
-  }
+  },
+  "tasks": []
 }
 ```
+
+---
+
+## Work Item Type Selection
+
+Before starting Phase 0, determine the work item type:
+
+Ask: **"Is this a Feature, Enhancement, Fix, or Chore?"**
+
+| Type | Phases | When to Use |
+|------|--------|-------------|
+| **Feature** | All 9 phases | New capabilities, new screens, new services |
+| **Enhancement** | Tasks → Implement → Test → Merge (4 phases) | Improvements to shipped features with existing PRDs |
+| **Fix** | Implement → Test (2 phases) | Bug fixes, error handling, security patches |
+| **Chore** | Implement only (1 phase) | Docs, config, refactoring, dependency updates |
+
+Set `work_type` in state.json. For non-Feature types:
+- **Enhancement:** Skip Research, PRD, UX. Start at Phase 2 (Tasks). Set `parent_feature` to the existing feature being enhanced.
+- **Fix:** Skip to Phase 4 (Implement). Auto-set first task with `skill: "dev"`. **Test + Review are still required** (Phase 5 + 6).
+- **Chore:** Skip to Phase 4 (Implement). Test gate is optional, but **review gate is still required** for any code change.
+
+All skipped phases get `status: "skipped"` with `reason: "work_type:{type}"` in the audit trail.
+
+### Review Gates (Non-Negotiable)
+
+**Every work item type that changes code MUST pass through Test + Review before merge.** The fast-track reduces _planning_ overhead, not _quality_ gates:
+
+| Type | Planning | Test | Review | Merge | Feedback |
+|------|----------|------|--------|-------|----------|
+| Feature | Full | Required | Required | Required | Full loop |
+| Enhancement | Partial | Required | Required | Required | Full loop |
+| Fix | None | Required | Required | Required | Full loop |
+| Chore (docs only) | None | Optional | Required | Required | Notify only |
+
+### Change Broadcast (Awareness Protocol)
+
+When ANY work item completes (merge to main), broadcast a change notification to ALL skills so the entire system stays aware:
+
+1. **Update `.claude/shared/feature-registry.json`** — record what changed, when, and why
+2. **Notify downstream skills:**
+   - `/qa` — "New code merged. Run regression check on next cycle."
+   - `/cx` — "Change shipped: {description}. Monitor user feedback for impact."
+   - `/analytics` — "Verify instrumentation still intact after merge."
+   - `/ops` — "Deployment pending. Check health after deploy."
+   - `/design` — "If UI changed, verify design system compliance."
+3. **Write a change event to `.claude/shared/change-log.json`:**
+   ```json
+   {
+     "timestamp": "ISO-8601",
+     "feature": "feature-name",
+     "work_type": "fix",
+     "description": "Eliminated force unwraps in production code",
+     "files_changed": 4,
+     "skills_notified": ["qa", "cx", "ops"],
+     "review_status": "approved",
+     "test_status": "passed"
+   }
+   ```
+
+### Upstream Feedback Loop
+
+When `/cx analyze` or `/qa regression` detects an issue post-merge:
+
+1. **Classify the signal:**
+   - Customer confusion → `/marketing` (messaging) + `/design` (UX)
+   - Regression → `/dev` (fix) + `/qa` (test gap)
+   - Performance degradation → `/ops` (infra) + `/dev` (optimization)
+   - Expectation mismatch → `/pm-workflow` (re-scope)
+
+2. **Create a new work item** (typically Fix or Enhancement) that links back to the original change
+3. **The new work item inherits context** from the original — no information is lost
+4. **Close the loop:** When the fix ships, `/cx` re-monitors to verify the issue is resolved
 
 ---
 
@@ -148,6 +222,33 @@ Create `.claude/features/$0/tasks.md` with:
 3. Classify each task: `ui`, `backend`, `data`, `test`, `docs`, `infra`
 4. Order by dependency graph
 5. Estimate total effort
+6. Assign each task a `skill` from: `dev`, `qa`, `design`, `analytics`, `ops`, `marketing`, `cx`, `research`, `release`
+7. Identify task dependencies — which tasks must complete before others can start
+8. Estimate effort in days for each task
+
+**Structured Task State:** After creating tasks.md, also write the tasks to `state.json.tasks[]`:
+
+```json
+{
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Task title from tasks.md",
+      "type": "ui|backend|analytics|test|design|docs|infra|research|marketing",
+      "skill": "dev|qa|design|analytics|ops|marketing|cx|research|release",
+      "status": "pending",
+      "priority": "critical|high|medium|low",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": null
+    }
+  ]
+}
+```
+
+Task status lifecycle: `pending` → `ready` (all depends_on are done) → `in_progress` → `done`
+
+If a task's dependencies cannot be met, set status to `blocked`.
 
 Present task list and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
@@ -272,6 +373,59 @@ Present spec and ask for approval. **On approval, execute the Phase Transition P
 **Goal:** Write the code on an isolated branch.
 
 1. Create branch: `git checkout -b feature/$0 main`
+
+### Parallel Task Dispatch
+
+When tasks exist in state.json, Phase 4 uses dependency-aware parallel execution instead of sequential implementation:
+
+1. **Compute the ready set** — tasks where ALL entries in `depends_on` have status `done`
+2. **Group by skill** — organize ready tasks by their `skill` field
+3. **Present to user:**
+   ```
+   Ready to run in parallel:
+     /dev:       T1 (container view), T2 (welcome screen), T3 (goals screen)
+     /design:    T9 (progress bar component)
+   Blocked (waiting on dependencies):
+     /analytics: T8 (GA4 events) — needs T1, T2
+     /qa:        T10 (unit tests) — needs T1-T9
+   ```
+4. **Execute ready tasks** — work on ready tasks, potentially across skills
+5. **On each task completion:**
+   - Set task `status: "done"` and `completed_at: timestamp`
+   - Recompute the ready set (completed task may unblock others)
+   - Present newly unblocked tasks
+6. **Rebuild cross-feature queue** — update `.claude/shared/task-queue.json`
+7. **Phase 4 is complete** when ALL tasks have status `done`
+
+### Cross-Feature Priority Queue
+
+After any task state change, rebuild `.claude/shared/task-queue.json`:
+
+```json
+{
+  "version": "1.0",
+  "updated": "{timestamp}",
+  "queue": [
+    {
+      "feature": "feature-name",
+      "task_id": "T1",
+      "title": "Task title",
+      "skill": "dev",
+      "work_type": "feature",
+      "priority_score": 8,
+      "status": "ready",
+      "effort_days": 0.5
+    }
+  ],
+  "scoring": {
+    "base": { "critical": 10, "high": 7, "medium": 4, "low": 1 },
+    "work_type_boost": { "fix": 3, "enhancement": 1, "feature": 0, "chore": -1 }
+  }
+}
+```
+
+Priority score = `base[priority] + work_type_boost[work_type]`. Fixes automatically jump the queue.
+
 2. Implement according to the approved task list
 3. Commit incrementally with descriptive messages
 4. Update state.json with commit hashes
