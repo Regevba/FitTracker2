@@ -316,7 +316,7 @@ FitMe uses a 4-tab bottom bar — iOS standard, matches Strava (Feed/Maps/Record
 | **Nutrition** | Today's macros, meal log, supplement tracking | Today |
 | **Stats** | Charts, metrics, trends, history | History |
 
-**Settings** is accessed via a profile icon (top-right of Home), not a 5th tab. This keeps the tab bar focused on daily use, with infrequent settings access pushed off the main path.
+**Settings & Account** are accessed via an **account avatar button in the top-right toolbar of every screen** (see `RootTabView.swift` line 141, `accountButton`). Tapping it presents `AccountPanelView` as a sheet, which contains profile, settings, and account actions. This is not a 5th tab — it's a global toolbar action available from any context, keeping the tab bar focused on daily use surfaces.
 
 **Why 4 tabs, not 5?**
 - Hick's Law: 4 options is the cognitive sweet spot
