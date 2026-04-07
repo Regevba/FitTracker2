@@ -1241,6 +1241,293 @@ Reason: Users open FitMe in the gym. Beeps and chimes are inappropriate. The onl
 
 ---
 
+## Part 9: Content Strategy
+
+### 9.1 Tone & Voice
+
+The full tone definition lives in `docs/design-system/ux-copy-guidelines.md`. The summary:
+
+**Voice attributes:** Calm, direct, secure, supportive, non-hype.
+
+**What we don't say:**
+- ❌ "Crush it" / "Beast mode" / "No excuses"
+- ❌ "You failed to log a workout"
+- ❌ "Don't break the chain!"
+- ❌ "Are you sure you want to give up?"
+
+**What we do say:**
+- ✅ "Great work today"
+- ✅ "You're on track"
+- ✅ "Nice progress"
+- ✅ "Recovery day — your body is rebuilding"
+
+### 9.2 Terminology Glossary
+
+Consistent terminology builds trust and reduces cognitive load. Define each term once, use it everywhere.
+
+| Term | Definition | Avoid |
+|------|------------|-------|
+| **Readiness** | Composite score (0-100) of how prepared you are for today's session, derived from HRV, sleep, recovery trend | "Recovery score", "Energy" |
+| **PR** | Personal Record — best ever performance for an exercise (weight, reps, or volume) | "Personal best", "PB", "Record" |
+| **Set** | A group of repetitions performed consecutively | "Round", "Group" |
+| **Rep** / **Reps** | Repetition(s) — single execution of an exercise | "Repetition" |
+| **Rest** | Pause between sets | "Break", "Recovery" |
+| **Session** | A single workout (one tab into Training and out) | "Workout", "Training" (use sparingly) |
+| **Volume** | Total weight × reps for an exercise or session | "Total lifted" |
+| **Macros** | Macronutrients: protein, carbs, fats | "Nutritional targets" |
+| **HRV** | Heart Rate Variability — define on first use per screen as "Heart Rate Variability" | — |
+| **RHR** | Resting Heart Rate — define on first use per screen | — |
+| **Day type** | Push / Pull / Legs / Upper / Lower / Cardio / Rest | "Workout type" |
+
+**Localization note:** "PR" is US convention. UK/AU users use "PB". Consider locale-based switching in v2.
+
+### 9.3 Number Formatting Rules
+
+Consistency in number formatting prevents misreading critical health data.
+
+| Data | Format | Example | Notes |
+|------|--------|---------|-------|
+| **Weight (kg)** | 1 decimal place | "75.5 kg" | User can switch to lbs in Settings |
+| **Weight (lbs)** | 1 decimal place | "166.5 lbs" | — |
+| **Reps** | Integer | "12 reps" | No decimals |
+| **Sets** | Integer | "4 sets" | No decimals |
+| **Calories** | Integer with comma separator | "2,150 cal" | No decimals |
+| **Macros (g)** | Integer | "150g protein" | No decimals |
+| **Body fat %** | 1 decimal place | "18.5%" | — |
+| **Percentages (progress)** | Integer | "75%" | No decimals for visual progress |
+| **Duration (workout)** | "Xh Ym" or "Y min" | "1h 15m", "45 min" | Never just minutes for >60 |
+| **Duration (rest timer)** | mm:ss | "01:30" | Always show seconds |
+| **HR / RHR** | Integer | "62 bpm" | Always include unit on first use |
+| **HRV** | Integer | "48 ms" | — |
+| **Time of day** | Locale-aware | "14:30" or "2:30 PM" | Use system formatter |
+| **Date (recent)** | Relative | "Today", "Yesterday", "3 days ago" | For past 7 days |
+| **Date (older)** | Locale absolute | "Mar 15", "Mar 15, 2025" | Year omitted if current year |
+
+### 9.4 Health Data Sensitivity
+
+Health data carries emotional weight. A "weight" number isn't just data — it can trigger anxiety, body image issues, or motivation collapse. Treat it accordingly.
+
+#### Rules
+
+1. **Never compare users to other users.** No leaderboards, no "X% of users have higher HRV than you."
+2. **Never frame missing data as failure.** "No data yet" not "You haven't logged anything."
+3. **Show context, not just numbers.** "75 kg, down 0.5 kg this week" not just "75 kg."
+4. **Respect rest as part of training.** "Recovery day" not "Day off."
+5. **Never trigger on body image.** Avoid words like "fat", "lose", "burn" in default copy. Use "body composition", "reduce", "energy used."
+6. **Allow data hiding.** Users can hide weight/body fat from the home screen via Settings.
+7. **Default to private.** No public profiles, no social features in v1.
+
+#### Example Reframings
+
+| Avoid | Use Instead |
+|-------|-------------|
+| "You missed your workout" | "Recovery day — pick up tomorrow" |
+| "You're 200 calories over your limit" | "200 calories above today's target" |
+| "Burn fat faster" | "Track energy balance over time" |
+| "Lose 10 pounds!" | "Track changes in body composition" |
+| "You broke your streak" | (silent — never notify) |
+| "Failed to lift" | "Set not completed — try again next session" |
+
+### 9.5 Microcopy Patterns
+
+Reusable copy snippets for common UI moments. Use these verbatim where applicable.
+
+| Moment | Copy |
+|--------|------|
+| Save success | "Saved" |
+| Sync success | "Synced" |
+| Delete confirmation | "Delete this {item}? This can be undone for the next 5 seconds." |
+| Account deletion | "Delete account? You can recover within 30 days by signing back in." |
+| Network error | "Couldn't connect. Your data is saved locally and will sync when you're back online." |
+| Empty list | "{Items} will appear here. {CTA hint}." |
+| Loading | "Loading…" or "Syncing…" or "Building your plan…" |
+| First-use guidance | "Tap {CTA} to {action}." |
+
+---
+
+## Part 10: Platform-Specific Patterns
+
+### 10.1 iPhone (Primary Platform)
+
+iPhone is FitMe's primary target. iOS 17+, SwiftUI, optimized for iPhone 14 Pro through iPhone 16 Pro Max.
+
+#### Thumb Zones
+
+The bottom third of the screen is the "easy" thumb zone for one-handed use. The top is "hard" zone (requires repositioning the phone).
+
+**Implications:**
+- Primary CTAs anchor to the bottom (52pt height, full-width)
+- Tab bar at bottom (iOS standard)
+- Navigation back button at top-left (acceptable — users use swipe-back instead)
+- Account avatar at top-right (low-frequency action, OK in hard zone)
+- Critical destructive actions in modals with bottom-anchored buttons
+
+#### Safe Area Compliance
+
+All screens respect:
+- Top safe area (status bar, Dynamic Island)
+- Bottom safe area (home indicator)
+- Left/right safe area (notch on landscape)
+
+`AppGradient.screenBackground` extends edge-to-edge under the safe area. Content respects it.
+
+#### Dynamic Island Awareness
+
+For features that benefit from Live Activities:
+- **Active workout** could surface in Dynamic Island (current set, rest timer)
+- **Sync in progress** could surface as a brief activity
+- **Rest timer** is a strong candidate for Live Activity in v2
+
+Dynamic Island is **not implemented in v1** but is a planned enhancement.
+
+#### iPhone Size Class Variants
+
+| Device Class | Width | Behavior |
+|--------------|-------|----------|
+| Compact (iPhone SE, iPhone 13 mini) | 375pt | Tighter padding, smaller hero metrics |
+| Baseline (iPhone 14 Pro, iPhone 15 Pro) | 393pt | Default design target |
+| Large (iPhone 14 Pro Max, iPhone 15 Pro Max) | 430pt | Slightly more padding, same content density |
+
+Tested at all 3 widths via responsive contract (`responsive-handoff-rules.md`).
+
+### 10.2 iPad (Secondary Platform)
+
+iPad support is functional but not the primary focus.
+
+#### Adaptive Layout
+
+`RootTabView` uses `horizontalSizeClass` to switch between:
+- **Compact** (iPhone): Bottom tab bar
+- **Regular** (iPad, large iPhone landscape): Sidebar navigation
+
+#### iPad-Specific Patterns
+
+- **Sidebar navigation** replacing bottom tabs
+- **Split view** for list/detail flows (e.g., exercise list + exercise detail)
+- **Larger tap targets** (iPad has more screen, can use 56pt CTAs)
+- **More information density** (cards can show more metrics per row)
+- **Keyboard shortcuts** for common actions (planned)
+
+#### Known iPad Gaps (v1)
+
+- No optimized split view for Stats
+- Settings doesn't use iPad's two-column pattern
+- Active workout uses iPhone layout (full-screen modal with single column)
+
+These are documented in `responsive-handoff-rules.md` as Phase 5 work.
+
+### 10.3 Apple Watch (Future Platform)
+
+Watch app is **not implemented in v1**. Planned for post-launch based on user demand.
+
+#### Planned Patterns (v2)
+
+| Feature | Watch Pattern |
+|---------|---------------|
+| **Today's readiness** | Complication on watch face |
+| **Rest timer** | Native Watch timer with haptic |
+| **Quick log: weight** | Crown-driven number wheel |
+| **Quick log: water** | Single-tap glass icon |
+| **Workout mirror** | Current set displayed from phone |
+
+The Watch app will use the same `AppTheme.swift` tokens via Style Dictionary watchOS output (planned).
+
+### 10.4 macOS (Mac Catalyst — Implemented)
+
+FitMe builds for macOS via Mac Catalyst. The macOS target is functional but not optimized.
+
+**What works:**
+- All views render
+- Settings opens in a separate window (`#if os(macOS)` branch in `FitTrackerApp.swift`)
+- Mouse-driven navigation (no gesture dependence)
+
+**Known macOS gaps:**
+- No keyboard shortcuts beyond system defaults
+- No menu bar customization
+- HealthKit data is read-only on macOS (Apple limitation)
+- Active workout layout assumes touch (mouse works but feels off)
+
+### 10.5 Android (Documented, Not Implemented)
+
+Android is mapped via `docs/design-system/android-token-mapping.md`. **Zero code written.** Deferred to a future phase per the master plan.
+
+The token mapping is complete:
+- 92 iOS tokens → MD3 equivalents
+- 13 components → MD3 composables
+- Dark mode strategy documented
+- Style Dictionary config ready (`design-tokens/config-android.json`)
+
+Implementation gate: iOS core stable, backend green, measurement live (Gate D in master plan).
+
+---
+
+## Sources & References
+
+This document synthesizes research from:
+
+### Apple Documentation
+- [Apple Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
+- [HealthKit HIG](https://developer.apple.com/design/human-interface-guidelines/healthkit)
+- [iOS Accessibility](https://developer.apple.com/accessibility/)
+
+### UX Research Foundations
+- [Nielsen Norman Group — Usability Heuristics](https://www.nngroup.com/articles/ten-usability-heuristics/)
+- [Nielsen Norman Group — Progressive Disclosure](https://www.nngroup.com/articles/progressive-disclosure/)
+- [Nielsen Norman Group — Empty States](https://www.nngroup.com/articles/empty-state-interface-design/)
+- [IxDF — Progressive Disclosure](https://ixdf.org/literature/topics/progressive-disclosure)
+- [IxDF — Hick's Law](https://www.interaction-design.org/literature/topics/hick-s-law)
+- [IxDF — Fitts's Law](https://www.interaction-design.org/literature/topics/fitts-s-law)
+
+### Fitness App UX Research
+- Best UX/UI Practices For Fitness Apps (Dataconomy 2025)
+- UX Design Principles From 5 Top Health and Fitness Apps (Superside)
+- How to Design a Fitness App: UX/UI Best Practices (Zfort)
+- Fitness App UX Design Patterns (Stormotion)
+
+### Accessibility
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- WCAG Guidelines for Digital Health Apps (Nozomi Health)
+- iOS Accessibility Guidelines Best Practices 2025
+
+### Competitor Analysis
+- Strava (iOS) — feed-driven, social, route-focused
+- MyFitnessPal (iOS) — food database, macro tracking
+- Hevy (iOS) — workout logging, routine builder
+- Strong (iOS) — minimalist set logger, PR detection
+- Apple Health (iOS) — data aggregation, summary cards
+- Fitbod (iOS) — AI-driven workout planning, body map
+
+### Internal Documents
+- `docs/design-system/ux-copy-guidelines.md` — tone, voice, copy patterns
+- `docs/design-system/component-contracts.md` — per-component interaction behavior
+- `docs/design-system/feature-design-checklist.md` — pre-implementation validation
+- `docs/design-system/feature-development-gateway.md` — 7-stage development workflow
+- `docs/design-system/responsive-handoff-rules.md` — responsive design contract
+- `docs/design-system/iphone-runtime-layout-spec.md` — iPhone layout specifications
+- `docs/design-system/android-token-mapping.md` — Android adaptation reference
+- `docs/design-system/feature-memory.md` — design system evolution log
+- `.claude/skills/ux/SKILL.md` — UX planning skill that consults this document
+- `.claude/skills/pm-workflow/SKILL.md` — PM workflow that integrates UX gates
+- `.claude/features/google-analytics/ux-spec.md` — example UX spec
+- `.claude/features/gdpr-compliance/ux-spec.md` — example UX spec
+
+---
+
+## Document Maintenance
+
+This is a **living document**. Update it when:
+- New UX patterns emerge from feature work
+- Apple HIG updates introduce new guidance
+- Competitive analysis reveals new patterns to adopt
+- User research surfaces new findings
+- A feature deviates from these patterns with justified reason (document the deviation)
+
+**Owner:** Whoever runs `/ux audit` or `/ux validate` is responsible for keeping this doc accurate.
+
+**Version:** 1.0 — 2026-04-06
+**Author:** Claude (Sonnet 4.6) via /ux skill, written segment-by-segment with checkpointing
+
+
 
 
 
