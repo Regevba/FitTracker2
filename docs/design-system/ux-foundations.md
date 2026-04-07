@@ -441,3 +441,223 @@ Decisions made about IA that aren't immediately obvious:
 
 ---
 
+## Part 3: Interaction Patterns
+
+### 3.1 Navigation Patterns
+
+| Pattern | When to Use | Example | Implementation |
+|---------|-------------|---------|----------------|
+| **Tab switch** | Top-level destination change | Home → Training | `TabView` with bottom bar |
+| **Push** | Drilling into existing content | Stats → Chart Detail | `NavigationLink` |
+| **Sheet** | Creating/editing content | Add meal | `.sheet(isPresented:)` |
+| **Full-screen modal** | Immersive flow, requires focus | Active workout, onboarding | `.fullScreenCover(isPresented:)` |
+| **Confirmation modal** | Destructive action verification | Delete account | `.alert(...)` or custom modal |
+
+**Transition timing:**
+- Tab switch: instant (no animation — Apple HIG)
+- Push: standard iOS push animation (~300ms)
+- Sheet: standard iOS sheet animation (~400ms)
+- Full-screen: standard iOS modal animation (~400ms)
+
+### 3.2 Input Patterns
+
+#### Numeric Entry
+
+| Use Case | Input Method | Example |
+|----------|--------------|---------|
+| Small range (1-30) | Stepper | Reps per set |
+| Large range with precision | Text field with `.decimalPad` | Weight (kg) |
+| Bounded continuous | Slider | Body fat % during onboarding |
+| Discrete options | Picker wheel or segmented | Workout duration estimate |
+
+**Auto-population is mandatory:** Set logging always pre-fills weight and reps from the most recent session for the same exercise. Users adjust if needed.
+
+#### Selection
+
+| # of Options | Pattern | Example |
+|--------------|---------|---------|
+| 2 | Toggle (`Toggle`) or 2 buttons | Imperial vs Metric |
+| 2-3 | Segmented control (`AppSegmentedControl`) | Beginner / Intermediate / Advanced |
+| 4-6 | Cards in grid (2x2 or 2x3) | Onboarding goal selection |
+| 7+ | Searchable list | Exercise picker, food database |
+
+**Hick's Law applied:** Never use a flat picker for 7+ options without search.
+
+#### Date & Time
+
+- **Native iOS pickers** for all date/time input (Jakob's Law)
+- Default to "today" for new entries
+- Show relative dates in display ("Today", "Yesterday", "3 days ago") for the past 7 days
+
+#### Search
+
+- Inline search bar at top of list (`.searchable(text:)`)
+- 300ms debounce on remote queries
+- Real-time filtering for local data
+- Show loading state during async search
+- Empty state with "No results for '{query}'" + clear filter CTA
+
+#### Barcode Scan
+
+- Camera sheet with overlay frame
+- Single barcode → fetch product → present pre-filled meal entry
+- Multiple barcodes detected → user picks one
+- Camera permission handled gracefully (Permission patterns, Part 5)
+
+### 3.3 Feedback Patterns
+
+#### Haptic Feedback Taxonomy
+
+| Event | Haptic Type | Intensity | API |
+|-------|-------------|-----------|-----|
+| Button press | `.impact(.light)` | Light | `UIImpactFeedbackGenerator(style: .light)` |
+| Selection change | `.selection` | Light | `UISelectionFeedbackGenerator()` |
+| Set completed | `.impact(.medium)` | Standard | `UIImpactFeedbackGenerator(style: .medium)` |
+| Workout finished | `.notification(.success)` | Standard + double tap | `UINotificationFeedbackGenerator()` |
+| Personal record | `.notification(.success)` + custom pattern | Strong | Custom sequence |
+| Rest timer complete | `.notification(.default)` | Standard | `UINotificationFeedbackGenerator()` |
+| Validation error | `.notification(.error)` | Standard | `UINotificationFeedbackGenerator()` |
+| Destructive confirmation | `.notification(.warning)` | Standard | `UINotificationFeedbackGenerator()` |
+
+**Rules:**
+- Haptics are **opt-out**, not opt-in (default: enabled in Settings)
+- Sound is **always off by default** (gym etiquette)
+- All haptics respect `UIAccessibility.isReduceMotionEnabled` (skip non-essential)
+
+#### Animation Feedback
+
+- **Button press:** brief opacity fade (0.1s, `AppDuration.instant`)
+- **Card tap:** scale down to 0.97 then back (0.2s, `AppSpring.snappy`)
+- **Save success:** checkmark fade-in over 0.3s, then toast slides up
+- **PR celebration:** brief glow + scale pulse on the metric, ~0.5s
+- **Streak increment:** number ticks up with spring (`AppSpring.bouncy`)
+
+#### Toast Notifications (Non-Blocking)
+
+Use for non-critical confirmations that shouldn't interrupt flow:
+
+- "Workout saved" (after completion)
+- "Meal added" (after meal entry)
+- "Synced" (after manual sync trigger)
+
+Toast spec:
+- Position: bottom-center, above tab bar
+- Duration: 2.0s default, 3.5s for actionable toasts (with undo)
+- Style: `AppCard` with `AppSpacing.medium` padding, slide up + fade
+- Single line, max 40 characters
+
+#### Alerts (Blocking)
+
+Use only for:
+- Destructive confirmations ("Delete this workout? This cannot be undone.")
+- Critical errors that require user decision
+- Permission denials with clear next steps
+
+Alert copy follows the format: **State the issue. State the consequence. State the next action.**
+
+### 3.4 Gesture Patterns
+
+| Gesture | Action | Example | Alternative |
+|---------|--------|---------|-------------|
+| Tap | Primary action | Log a set | — |
+| Long press | Context menu | Reorder exercises | Menu button |
+| Swipe left | Reveal destructive action | Delete a meal | Long-press menu |
+| Swipe right | Reveal positive action | Mark complete | Tap |
+| Swipe down (sheet) | Dismiss sheet | Close meal entry | Cancel button |
+| Pull down (list) | Pull to refresh | Refresh stats | Manual sync button |
+| Pinch | Zoom chart time range | Stats chart | Period selector |
+| Drag | Reorder list items | Reorder routine exercises | Long-press menu |
+
+**Rule (Motor Accessibility):** Every gesture must have a non-gesture alternative. Switch Control users and motor-impaired users cannot perform swipes or long-presses reliably.
+
+---
+
+## Part 4: Data Visualization Patterns
+
+### 4.1 Chart Type Selection Guide
+
+| Data Type | Chart Type | Component | FitMe Example |
+|-----------|------------|-----------|---------------|
+| Time-series trend | Line chart | `ChartCard` | Body weight over 30 days |
+| Discrete comparison | Bar chart | `ChartCard` | Weekly volume per muscle group |
+| Progress to goal | Ring/donut | `AppProgressRing` | Today's protein target (75/150g) |
+| Compact trend | Sparkline | inline in `MetricCard` | 7-day HRV trend next to current value |
+| Consistency over time | Heat calendar | (custom) | Workout frequency calendar (GitHub-style) |
+| Body region targeting | Body map overlay | (custom) | Volume distribution by muscle group |
+
+### 4.2 Metric Display Hierarchy
+
+Every metric has 4 levels of presentation. Use the right one for the context:
+
+| Level | Token | Use Case | Example |
+|-------|-------|----------|---------|
+| **Hero** | `AppText.metricHero` (largeTitle, bold, rounded) | Single dominant metric on a screen | Readiness score on `ReadinessCard` |
+| **Display** | `AppText.metricDisplay` (largeTitle, bold) | Standalone metric in detail view | Body weight on Stats page |
+| **Standard** | `AppText.metric` (title, bold, rounded) | Card metric with label | "75g" protein in macro card |
+| **Compact** | `AppText.metricCompact` (title2, bold) | Inline metric in dense lists | Set count in workout summary |
+
+**Always include the unit** with the value: "75g" not "75". Exception: hero metrics with separate unit label below ("75" / "grams of protein").
+
+### 4.3 Color Semantics in Data
+
+| Color | Token | Meaning in Data | Example |
+|-------|-------|-----------------|---------|
+| Brand orange | `AppColor.Brand.primary` (#FA8F40) | Active, in-progress, brand accent | Today's progress, current workout |
+| Success green | `AppColor.Status.success` (#34C759) | On target, positive trend, completed | Hit macro target, streak active |
+| Warning amber | `AppColor.Status.warning` | Approaching limit, attention needed | 90% of calorie target |
+| Error red | `AppColor.Status.error` (#FF3B30) | Over limit, missed, error | Exceeded sodium target |
+| Info blue | `AppColor.Brand.secondary` (#8AC7FF) | Informational, neutral, recovery | HRV reading, sleep duration |
+| Chart muted | `AppColor.Chart.*` | Multi-series chart colors | Volume by muscle group |
+
+**Trend direction colors:**
+- Up + good (strength gain) → green
+- Up + bad (body fat increase during cut) → red
+- Down + good (body fat decrease during cut) → green
+- Down + bad (HRV decline) → red
+
+**Rule:** Direction is contextual. Same value going up can be good or bad depending on the metric type and the user's goal.
+
+### 4.4 Chart Interaction Patterns
+
+- **Tap a data point:** show value tooltip + date
+- **Tap chart background:** show closest data point
+- **Drag horizontally on chart:** scrub through time, value updates
+- **Pinch:** zoom time range (week → month → year)
+- **Tap segment in bar chart:** filter detail view to that segment
+- **Long press on chart:** show full data table (accessibility)
+
+### 4.5 Empty Chart States
+
+When there's not enough data for a meaningful chart:
+
+```
+┌─────────────────────────┐
+│                         │
+│       📊                │
+│                         │
+│  Log a few more sessions│
+│  to see trends          │
+│                         │
+│  [Log Workout]          │
+│                         │
+└─────────────────────────┘
+```
+
+**Threshold rule:**
+- < 3 data points: show empty state with CTA to log more
+- 3-6 data points: show data with "More data = better insights" hint
+- 7+ data points: show normal chart
+
+### 4.6 Chart Accessibility
+
+Every chart MUST have a text alternative:
+
+- VoiceOver users hear a summary: "Bench press 1RM, increased 5% over the last 4 weeks, current value 100 kilograms"
+- The full data table is available via long-press or VoiceOver custom action
+- Color is never the only indicator — always paired with shape, label, or position
+
+This is non-negotiable. A chart that VoiceOver users can't understand is broken.
+
+---
+
+
