@@ -230,11 +230,12 @@ cd /path/to/FitTracker2
 npm run tokens:check
 
 # Build with full Xcode selected
+# Note: All build artifacts go to .build/ on the SSD (NOT /tmp/)
 xcodebuild build \
   -project FitTracker.xcodeproj \
   -scheme FitTracker \
   -destination 'generic/platform=iOS' \
-  -derivedDataPath /tmp/FitTrackerDerivedData \
+  -derivedDataPath .build/DerivedData \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO
 
@@ -242,11 +243,14 @@ xcodebuild build \
 xcodebuild test \
   -project FitTracker.xcodeproj \
   -scheme FitTracker \
-  -destination 'platform=iOS Simulator,id=87E96E30-350E-46AC-AB34-B87AF8D1AB1E' \
+  -destination 'platform=iOS Simulator,id=$(SIMULATOR_ID)' \
   -only-testing:FitTrackerTests/FitTrackerCoreTests \
-  -derivedDataPath /tmp/FitTrackerTestsDD \
+  -derivedDataPath .build/TestDerivedData \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO
+
+# Easier: use the Makefile (uses .build/ automatically)
+make verify-ios
 ```
 
 ### Web Projects
@@ -263,7 +267,7 @@ cd ../website && npm run build
 
 ```bash
 cd ai-engine
-source /tmp/FitTracker2-ai-venv/bin/activate
+source .build/ai-venv/bin/activate
 pytest -q
 ```
 
