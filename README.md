@@ -101,7 +101,7 @@ Design file: [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fC
 | AI — Cloud | FastAPI on Railway, JWT + JWKS validation, k>=50 anonymity |
 | AI — On-device | Apple Intelligence Foundation Models (iOS 26+) |
 | Analytics | Firebase Analytics (GA4) with GDPR consent |
-| Design System | ~120 semantic tokens, Style Dictionary pipeline, CI drift detection |
+| Design System | 125 semantic tokens, Style Dictionary pipeline, CI drift detection |
 | CI | GitHub Actions, Xcode 16+, `make tokens-check` gate |
 | Web | Astro + Tailwind v4 + Vercel (dashboard + marketing website) |
 
@@ -296,7 +296,7 @@ Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/p
 
 ## Design System
 
-~120 semantic tokens across 7 categories, 13+ reusable components, WCAG AA contrast compliance.
+125 semantic tokens across 7 categories, 13+ reusable components, WCAG AA contrast compliance, full UX foundations layer in `docs/design-system/ux-foundations.md`.
 
 - **Figma:** [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
 - **Docs:** [`docs/design-system/`](docs/design-system/)
