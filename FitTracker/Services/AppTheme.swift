@@ -110,6 +110,7 @@ enum AppRadius {
     static let xSmall:    CGFloat = 8
     static let small:     CGFloat = 12
     static let medium:    CGFloat = 16
+    static let card:      CGFloat = 16   // alias for card surfaces (used by ConsentView and other card components)
     /// Pill-style buttons and action tiles with a softer corner than medium.
     static let button:    CGFloat = 20
     static let large:     CGFloat = 24
