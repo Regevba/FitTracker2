@@ -16,7 +16,7 @@
 
 **Solution:** Hub-and-spoke architecture where each domain has its own skill, connected through a shared data layer.
 
-**Result:** 10 skills (1 hub + 9 spokes) + 8 shared data files.
+**Result:** 11 skills (1 hub + 10 spokes) + 8 shared data files. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5.
 
 **Key principle:** Every skill is a **Lego piece** (works alone) AND a **puzzle piece** (fits into the hub).
 
@@ -72,13 +72,15 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
                │   Reads/writes .claude/shared/*.json │
                └──┬──────┬──────┬──────┬──────┬──────┘
                   │      │      │      │      │
-          ┌───────┘  ┌───┘  ┌───┘  ┌───┘  ┌───┘
-          ▼          ▼      ▼      ▼      ▼
-     /design     /dev    /qa  /analytics  /release
-          │          │      │      │          │
-          └──────┬───┴──────┴──────┘          │
-                 │                            │
-                 ▼                            ▼
+          ┌───────┘   ┌──┘  ┌───┘  ┌───┘  ┌───┘
+          ▼           ▼     ▼      ▼      ▼
+        /ux ─→ /design /dev  /qa /analytics /release
+          │           │      │      │          │
+          │ (planning │      │      │          │
+          │  layer)   │      │      │          │
+          └──────┬────┴──────┴──────┘          │
+                 │                             │
+                 ▼                             ▼
           ┌─────────────┐            App Store / TestFlight
           │  App Build   │
           └──────┬──────┘
@@ -106,9 +108,10 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 
 ```
 .claude/
-├── skills/                         # Skill definitions (10 skills)
+├── skills/                         # Skill definitions (11 skills)
 │   ├── pm-workflow/SKILL.md        # Hub — orchestrates all phases
-│   ├── design/SKILL.md             # Design system, UX specs, Figma, accessibility
+│   ├── ux/SKILL.md                 # UX planning & validation — the What & Why layer
+│   ├── design/SKILL.md             # Design system, Figma, tokens, accessibility (visual)
 │   ├── dev/SKILL.md                # Branching, code review, CI, deps, perf
 │   ├── qa/SKILL.md                 # Test planning, coverage, regression, security
 │   ├── analytics/SKILL.md          # Taxonomy, instrumentation, dashboards, funnels
@@ -382,6 +385,76 @@ This IS the hub. Every other skill is dispatched FROM here.
 - Receives UX confusion signals from `/cx` (via `cx-signals.json`)
 - Feeds component specs to `/dev` (via `design-system.json`)
 - Receives personas and brand from `/pm-workflow` (via `context.json`)
+- **Receives UX research and specs from `/ux`** (via `ux-research.md` + `ux-spec.md` in `.claude/features/{name}/`)
+
+---
+
+## 7.5 /ux — UX Planning & Validation
+
+**What it does:** Ensures every UI feature is grounded in research-backed UX principles *before* visual design or code implementation begins. `/ux` is the planning layer that feeds `/design` and `/dev` — the What & Why before the How it Looks and How it's Built.
+
+**Added:** 2026-04-07 (PR #59) as the UX planning layer for the PM workflow hub. Pilot run was the Onboarding v2 UX Foundations alignment pass.
+
+### Boundary: /ux vs /design
+
+| Concern | `/ux` | `/design` |
+|---------|-------|-----------|
+| What & Why | User flows, behavior, heuristics, patterns | — |
+| How it Looks | — | Tokens, components, Figma, compliance |
+| Research | Principles, HIG, competitive UX | Market positioning, visual trends |
+| Validation | Heuristic evaluation, cognitive walkthrough | Token compliance, contrast, motion |
+| Accessibility | Usability (clarity, cognitive load, feedback) | Technical (WCAG AA, VoiceOver, tap targets) |
+
+**Handoff:** `/ux` produces `ux-research.md` + `ux-spec.md` → `/design` validates against the design system → `/dev` implements.
+
+### Sub-commands
+
+| Command | Purpose | Standalone Example | Hub Context |
+|---------|---------|-------------------|-------------|
+| `/ux research {feature}` | UX principle audit from the 13 ux-foundations heuristics (8 core + 5 FitMe-specific) | "Research UX principles for the training plan redesign" | Phase 3 (UX), **Phase 0 Research for v2 refactors** |
+| `/ux spec {feature}` | Generate `ux-spec.md` with Principle Application Table, screen flows, and state coverage | "Create ux-spec for the stats hub" | Phase 3 (UX) |
+| `/ux validate {feature}` | Heuristic evaluation of a proposed spec or shipped surface against ux-foundations.md | "Validate the current onboarding flow against Hick's Law" | Phase 3 (UX) and Phase 6 (Review) |
+| `/ux audit` | Full UX audit — walks a v1 surface against ux-foundations.md and produces `v2-audit-report.md` with P0/P1/P2 severity and tractability tags | "Audit MainScreenView.swift for UX Foundations compliance" | **Phase 0 for v2 refactors** |
+| `/ux patterns` | Surface existing FitMe interaction patterns for reuse before introducing new ones | "What existing patterns already handle a biometric entry flow?" | Phase 3 (UX) |
+
+### Shared Data
+
+| Reads | Writes |
+|-------|--------|
+| `context.json` (personas, positioning) | `ux-research.md` in `.claude/features/{name}/` |
+| `design-system.json` (current inventory) | `ux-spec.md` in `.claude/features/{name}/` |
+| `docs/design-system/ux-foundations.md` (the 13 principles) | `v2-audit-report.md` in `.claude/features/{name}/` (refactors) |
+| `.claude/features/{name}/research.md` (PRD research phase) | `docs/design-system/v2-refactor-checklist.md` Section A ticks |
+
+### Key References
+
+- `docs/design-system/ux-foundations.md` — 13 principles (8 core UX heuristics + 5 FitMe-specific) + IA + states + accessibility + motion + content strategy
+- `docs/design-system/v2-refactor-checklist.md` — Sections A/E/F/G/H owned by `/ux`
+- `docs/design-system/feature-development-gateway.md` — 7-stage workflow that `/ux` walks
+- `docs/design-system/feature-design-checklist.md` — per-feature design checklist
+- Apple HIG — external reference for iOS platform conventions
+
+### Standalone Usage Examples
+
+1. **Audit an existing screen before refactor:** `/ux audit` → "Audit `MainScreenView.swift` against `ux-foundations.md` and produce severity-graded findings for the v2 pass"
+2. **Research principles for a new feature:** `/ux research barcode-scanning` → Identifies which of the 13 principles apply, cites HIG sources, flags risks
+3. **Generate a ux-spec:** `/ux spec stats-hub-v2` → Creates `ux-spec.md` with Principle Application Table, 5-state coverage, and a11y requirements
+4. **Validate a shipped surface:** `/ux validate settings` → Heuristic evaluation with concrete fix suggestions
+5. **Find existing patterns:** `/ux patterns` → "Is there an existing inline-edit pattern I should reuse, or do I need a new one?"
+
+### Hub Integration
+
+- **Phase 0 (Research, v2 refactor only):** Hub dispatches `/ux audit` to produce `v2-audit-report.md` as the gap analysis that drives the rest of the lifecycle.
+- **Phase 3 (UX Definition):** Hub dispatches `/ux research` → `/ux spec` → `/ux validate` in sequence. The design system compliance gateway (Phase 3) is where `/ux` handoff to `/design` happens.
+- **Phase 6 (Review):** Hub dispatches `/ux validate` as a heuristic sanity check before merge approval, in parallel with `/design audit`.
+
+### Connections
+
+- **Feeds `/design`:** `ux-spec.md` is the input to `/design ux-spec` and `/design figma`. `/ux` defines the what; `/design` defines the how it looks.
+- **Feeds `/dev`:** The Principle Application Table in `ux-spec.md` becomes the acceptance criteria that `/dev` implements against.
+- **Receives from `/research`:** Competitive UX patterns surfaced by `/research narrow` feed `/ux research` as market context.
+- **Receives from `/cx`:** UX confusion signals from `cx-signals.json` surface existing pain points that inform `/ux audit` findings.
+- **Gates `/pm-workflow` Phase 3:** No UI feature advances from Phase 3 without an approved `ux-spec.md`. Non-skippable for new UI features (per the V2 Rule in CLAUDE.md).
 
 ---
 
@@ -854,18 +927,19 @@ This is what transforms FitMe's PM workflow from a "ship it and forget it" pipel
 
 Each cell shows the direction and type of information flow between skills.
 
-| From ↓ / To → | pm-workflow | design | dev | qa | analytics | cx | marketing | ops | research | release |
-|---------------|------------|--------|-----|-----|-----------|-----|-----------|------|----------|---------|
-| **pm-workflow** | — | dispatches (P3,P6) | dispatches (P4,P6,P7) | dispatches (P5) | dispatches (P1,P5,P8) | dispatches (P0,P8,P9) | dispatches (P0,P8) | — | dispatches (P0) | dispatches (P7) |
-| **design** | reports (P3) | — | tokens→code | — | — | — | — | — | — | — |
-| **dev** | reports (P4,P6) | — | — | — | — | — | — | CI status | — | CI status |
-| **qa** | reports (P5) | — | coverage | — | — | — | — | quality gates | — | quality gates |
-| **analytics** | reports (P1) | — | — | — | — | quant context | attribution | — | — | — |
-| **cx** | pain points, dispatch | UX problems | bugs | bugs | qual context | — | testimonials, messaging fixes | tech context | — | — |
-| **marketing** | reports (P8) | — | — | — | campaigns | user language | — | — | competitive | — |
-| **ops** | — | — | — | — | alert thresholds | — | — | — | — | health status |
-| **research** | reports (P0) | UX patterns | — | — | — | user needs | competitive | — | — | — |
-| **release** | reports (P7) | — | — | — | — | — | — | — | — | — |
+| From ↓ / To → | pm-workflow | ux | design | dev | qa | analytics | cx | marketing | ops | research | release |
+|---------------|------------|-----|--------|-----|-----|-----------|-----|-----------|------|----------|---------|
+| **pm-workflow** | — | dispatches (P0-v2,P3,P6) | dispatches (P3,P6) | dispatches (P4,P6,P7) | dispatches (P5) | dispatches (P1,P5,P8) | dispatches (P0,P8,P9) | dispatches (P0,P8) | — | dispatches (P0) | dispatches (P7) |
+| **ux** | reports (P0-v2,P3) | — | ux-spec→design-spec | principle checklist | — | — | — | — | — | — | — |
+| **design** | reports (P3) | compliance feedback | — | tokens→code | — | — | — | — | — | — | — |
+| **dev** | reports (P4,P6) | — | — | — | — | — | — | — | CI status | — | CI status |
+| **qa** | reports (P5) | — | — | coverage | — | — | — | — | quality gates | — | quality gates |
+| **analytics** | reports (P1) | — | — | — | — | — | quant context | attribution | — | — | — |
+| **cx** | pain points, dispatch | UX confusion signals | UX problems | bugs | bugs | qual context | — | testimonials, messaging fixes | tech context | — | — |
+| **marketing** | reports (P8) | — | — | — | — | campaigns | user language | — | — | competitive | — |
+| **ops** | — | — | — | — | — | alert thresholds | — | — | — | — | health status |
+| **research** | reports (P0) | UX patterns, HIG | UX patterns | — | — | — | user needs | competitive | — | — | — |
+| **release** | reports (P7) | — | — | — | — | — | — | — | — | — | — |
 
 ### Shared Data Connection Map
 
@@ -901,12 +975,13 @@ health-status.json ───────── /ops, /dev, /qa write
 
 ## 18. Quick Reference
 
-### All 10 Skills
+### All 11 Skills
 
 | # | Skill | Sub-commands | One-liner |
 |---|-------|-------------|-----------|
 | 0 | `/pm-workflow` | `{feature}` | Hub — orchestrates 10-phase lifecycle with skill dispatch |
 | 1 | `/design` | `audit`, `ux-spec`, `figma`, `tokens`, `accessibility` | Design system governance, UX specs, Figma prompts, WCAG AA |
+| 1.5 | `/ux` | `research`, `spec`, `validate`, `audit`, `patterns` | UX planning & validation — the What & Why layer that feeds `/design`. Added 2026-04-07, pilot run was Onboarding v2 |
 | 2 | `/dev` | `branch`, `review`, `deps`, `perf`, `ci-status` | Branching, code review, dependencies, performance, CI |
 | 3 | `/qa` | `plan`, `run`, `coverage`, `regression`, `security` | Test planning, execution, coverage, regression, OWASP audit |
 | 4 | `/analytics` | `spec`, `validate`, `dashboard`, `report`, `funnel` | Event taxonomy, instrumentation, dashboards, metric reports |
