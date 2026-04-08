@@ -136,6 +136,23 @@ When `/cx analyze` or `/qa regression` detects an issue post-merge:
 
 **Goal:** Understand what we're building, why, and validate the approach before committing to a PRD.
 
+### Phase 0 variant by work subtype
+
+| Subtype | Phase 0 primary output | Skills dispatched |
+|---|---|---|
+| **New feature** | `research.md` (market + competitive + alternatives) | `/research wide` → `/research narrow` → `/research feature` |
+| **V2 refactor** (`state.json.work_subtype == "v2_refactor"`) | `v2-audit-report.md` (numbered findings against `ux-foundations.md`, each with P0/P1/P2 severity + tractability tag: auto / decision / new-token / new-component) | `/ux audit` on the v1 file |
+| **Enhancement** | Skipped — parent feature's research already exists | — |
+| **Fix / Chore** | Skipped | — |
+
+For v2 refactors, the research phase is an **audit phase**, not a
+market-research phase. The output drives the rest of the lifecycle: every
+finding becomes a Phase 2 task, every P0/P1 finding becomes a required
+Phase 4 patch, and Section A of
+`docs/design-system/v2-refactor-checklist.md` is the completion gate.
+
+### New-feature research template
+
 Create `.claude/features/$0/research.md` using the research template. Fill in:
 
 1. **What is this solution?** — Plain-language description
@@ -273,9 +290,13 @@ Set `state.json.work_subtype` to either `"new_ui"` or `"v2_refactor"`. For `v2_r
 (`docs/design-system/v2-refactor-checklist.md`) to be referenced in
 `ux-spec.md`. Each checkbox the spec touches must be addressed in Phase 4.
 
-### Step 1: UX Research & Principles
+### Step 1: UX Research & Principles (dispatches `/ux research`)
 
-### Step 1: UX Research & Principles
+For v2 refactors, dispatch `/ux audit` first to produce
+`.claude/features/$0/v2-audit-report.md` as the gap-analysis driver.
+Then dispatch `/ux research $0` to consolidate the audit findings into
+applicable UX principles. For new UI features, go straight to
+`/ux research $0`.
 
 Before designing screens, research and document UX best practices relevant to this feature:
 
