@@ -273,7 +273,24 @@ Present task list and ask for approval. **On approval, execute the Phase Transit
 
 ## Phase 3: UX/UI Definition (if has_ui = true)
 
-**Goal:** Define screens, components, and design requirements before coding — grounded in UX research and validated against the design system.
+**Goal:** Define screens, components, and design requirements before coding — grounded in UX research and validated against the design system. The hub dispatches `/ux` and `/design` sub-commands in sequence, collects their artifacts, and presents the whole package for user approval before advancing.
+
+### Phase 3 dispatch chain
+
+| Step | Skill dispatch | Output | Gate |
+|---|---|---|---|
+| 3a | `/ux audit {feature}` *(v2 refactor only)* | `.claude/features/{f}/v2-audit-report.md` | User reviews audit findings |
+| 3b | `/ux research {feature}` | `.claude/features/{f}/ux-research.md` | Principles identified |
+| 3c | `/ux spec {feature}` | `.claude/features/{f}/ux-spec.md` | Spec covers all 5 states + a11y + principles |
+| 3d | `/ux validate {feature}` | heuristic validation report in chat | No unresolved P0 violations |
+| 3e | `/design audit` on the ux-spec | compliance report | Token, component, pattern, a11y, motion all pass |
+| 3f | `/ux prompt {feature}` | `docs/prompts/{date}-{f}-ux-build.md` | Handoff prompt ready |
+| 3g | `/design prompt {feature}` | `docs/prompts/{date}-{f}-design-build.md` | Handoff prompt ready |
+| 3h | Phase 3 approval | `state.json.phases.ux_or_integration.status = "approved"` | User approves; advance to Phase 4 |
+
+Steps 3a-3e produce the spec and its validation; steps 3f-3g produce the auto-generated build prompts for any downstream agent (Figma MCP, SwiftUI builder, etc.). Both prompt files land in `docs/prompts/` with matching date-prefixed filenames so they can be transferred together.
+
+**v2 refactor note:** For `state.json.work_subtype == "v2_refactor"`, step 3a is non-skippable and its output drives steps 3b-3e. For `new_ui`, step 3a is skipped (no v1 to audit) and step 3b starts from the PRD.
 
 ### V1 vs V2 — refactor or new feature?
 
@@ -389,7 +406,20 @@ Record the user's decision in state.json under `ux_or_integration.compliance_dec
 - Update `docs/design-system/feature-memory.md` with what changed and why
 - Run `make tokens-check` to verify token pipeline still passes
 
-Present UX spec + compliance report and ask for approval. **On approval, execute the Phase Transition Procedure.**
+### Step 4: Generate handoff prompts (auto)
+
+Once steps 1-3 are approved (ux-research.md, ux-spec.md, compliance gateway passed), dispatch both prompt-writer sub-commands in parallel:
+
+```
+/ux prompt $0       → writes docs/prompts/{YYYY-MM-DD}-$0-ux-build.md
+/design prompt $0   → writes docs/prompts/{YYYY-MM-DD}-$0-design-build.md
+```
+
+Both prompts are ready to hand off to downstream agents (Figma MCP, SwiftUI implementation agent, etc.). The `/ux` prompt carries the what-and-why; the `/design` prompt carries the how-it-looks. Matching filename prefixes so the two can be read together.
+
+**Verify both prompt files were written** before marking Phase 3 as approvable. If either file is missing, re-run the corresponding sub-command.
+
+Present UX spec + compliance report + both handoff prompts, and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ## Phase 3b: Integration Requirements (if has_ui = false)
 

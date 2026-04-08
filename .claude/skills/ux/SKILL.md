@@ -246,6 +246,38 @@ Each finding in `v2-audit-report.md` gets:
 
 **Output:** Formatted pattern reference.
 
+### `/ux prompt {feature}`
+
+**Purpose:** Auto-generate a handoff prompt for another agent (typically a Figma MCP agent or an implementation agent) once Phase 3 UX work is approved. The prompt bundles everything the receiving agent needs: user flows, principle application, state coverage, accessibility requirements, and references to the design system. No manual prompt writing.
+
+**Prerequisites:**
+- `.claude/features/{feature}/ux-research.md` exists and is approved
+- `.claude/features/{feature}/ux-spec.md` exists and is approved
+- Phase 3 design system compliance gateway passed
+- For v2 refactors: `.claude/features/{feature}/v2-audit-report.md` exists
+
+**Steps:**
+1. Read `ux-research.md`, `ux-spec.md`, and (if v2) `v2-audit-report.md`
+2. Read `state.json` to pull `work_subtype`, `v1_file_path`, `v2_file_path`, Figma node IDs, and acceptance criteria
+3. Read the relevant sections of `ux-foundations.md` cited in the spec
+4. Assemble a single prompt file with:
+   - **Header** — feature name, work subtype, target agent (Figma MCP / SwiftUI implementation / etc.), date, related GitHub issue
+   - **Context** — one-paragraph product framing from PRD
+   - **What to build** — screen inventory with wireframes or Figma node references
+   - **UX principles applied** — the Principle Application Table from the spec, copied verbatim
+   - **State coverage** — default / loading / empty / error / success for each screen
+   - **Accessibility requirements** — VoiceOver labels, tap targets, Dynamic Type, reduce-motion
+   - **Handoff checklist** — what the receiving agent should produce and return
+   - **References** — paths to ux-spec, ux-research, audit report, ux-foundations, design-system.json
+5. **Write the prompt** to `docs/prompts/{YYYY-MM-DD}-{feature}-ux-build.md`
+6. Announce: "UX handoff prompt written to `docs/prompts/…`. Ready to transfer to the receiving agent."
+
+**Output:** `docs/prompts/{YYYY-MM-DD}-{feature}-ux-build.md`
+
+**When to run:** Automatically dispatched by `/pm-workflow` after Phase 3 approval when `state.json.phases.ux_or_integration.status == "approved"`. Also invokable standalone when the spec is done but the hub wasn't running it.
+
+**Paired with:** `/design prompt {feature}` — `/ux` writes the what-and-why prompt, `/design` writes the how-it-looks prompt. Both land in `docs/prompts/` with matching filename prefixes so the receiving agent can read them together.
+
 ## PM Workflow Integration
 
 | PM Phase | Sub-command | When | Work subtype |
