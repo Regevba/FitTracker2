@@ -1,39 +1,133 @@
 {
   "feature": "home-today-screen",
   "created": "2026-04-06T14:00:00Z",
-  "updated": "2026-04-06T14:00:00Z",
-  "branch": null,
-  "current_phase": "complete",
+  "updated": "2026-04-08T05:00:00Z",
+  "branch": "feature/home-today-screen-v2",
+  "current_phase": "research",
+  "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
-  "github_issue_number": null,
-  "note": "Backfill record. Feature shipped before PM workflow enforcement. State created retroactively during 2026-04-06 audit.",
+  "github_issue_number": 60,
+  "version": "v2-ux-alignment",
+  "parent_version": {
+    "version": "v1",
+    "status": "shipped-pre-pm-workflow",
+    "note": "v1 MainScreenView.swift shipped 2026-03-14 before PM workflow enforcement. State file was a backfill record (2026-04-06 audit reconstruction). v2 is the first deliberate UX Foundations alignment pass on this surface.",
+    "backfill_phases": {
+      "research": "pre-pm-workflow",
+      "prd": "backfilled (docs/product/prd/18.4-home-today-screen.md)",
+      "tasks": "pre-pm-workflow",
+      "ux_or_integration": "pre-pm-workflow",
+      "implementation": "shipped",
+      "testing": "pre-pm-workflow",
+      "review": "pre-pm-workflow",
+      "merge": "done",
+      "documentation": "done"
+    },
+    "v2_partial_alignment_already_landed": [
+      {
+        "branch": "claude/fix-ios-signin-compilation-6kxKG",
+        "commit": "d09cd61",
+        "description": "Home background swapped from goal-progress orange/blue layer to saturated appBlue1 → appBlue2 2-stop gradient. Removed invisible color metaphor. NOT on this branch — will land via the iOS hardening PR."
+      }
+    ]
+  },
   "transitions": [
     {
       "from": "init",
       "to": "complete",
       "timestamp": "2026-04-06T14:00:00Z",
       "approved_by": "audit",
-      "note": "Retroactive backfill — feature was shipped pre-PM workflow."
+      "note": "v1 retroactive backfill — feature was shipped pre-PM workflow."
+    },
+    {
+      "from": "complete",
+      "to": "research",
+      "timestamp": "2026-04-08T05:00:00Z",
+      "approved_by": "user",
+      "note": "v2 UX alignment pass kickoff. Mirrors Onboarding v2 pilot pattern (audit → ux-research → ux-spec → compliance → patches). Tracking issue #60."
     }
   ],
   "phases": {
-    "research": { "status": "pre-pm-workflow" },
-    "prd": { "status": "backfilled", "prd_path": "docs/product/prd/18.4-home-today-screen.md" },
-    "tasks": { "status": "pre-pm-workflow" },
-    "ux_or_integration": { "status": "pre-pm-workflow" },
-    "implementation": { "status": "shipped" },
-    "testing": { "status": "pre-pm-workflow", "note": "Test coverage varies by feature" },
-    "review": { "status": "pre-pm-workflow" },
-    "merge": { "status": "done" },
-    "documentation": { "status": "done" },
+    "research": {
+      "status": "in_progress",
+      "started_at": "2026-04-08T05:00:00Z",
+      "approved_at": null,
+      "sources": [],
+      "v2_substeps": [
+        "v2-audit-report.md (walk MainScreenView.swift against ux-foundations.md)",
+        "ux-research.md (principles → applications for Today screen pattern)",
+        "compile severity-graded findings list (P0 / P1 / P2)"
+      ]
+    },
+    "prd": {
+      "status": "pending",
+      "v1_status": "backfilled",
+      "v1_path": "docs/product/prd/18.4-home-today-screen.md",
+      "v2_addendum_planned": true
+    },
+    "tasks": {
+      "status": "pending",
+      "v1_status": "pre-pm-workflow",
+      "v2_count_planned": null
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "v1_status": "pre-pm-workflow",
+      "type": "ux",
+      "v2_substeps_planned": [
+        "ux-spec.md (screens, components, tokens, a11y, motion)",
+        "design system compliance gateway",
+        "patch decision per finding (auto-apply / evolve DS / override)"
+      ]
+    },
+    "implementation": {
+      "status": "pending",
+      "v1_status": "shipped",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "v1_status": "pre-pm-workflow",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "v1_status": "pre-pm-workflow",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "v1_status": "done",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending",
+      "v1_status": "done"
+    },
     "metrics": {
-      "primary": { "name": "sessions_per_day", "baseline": 0, "target": 1.5, "current": null },
+      "primary": {
+        "name": "sessions_per_day",
+        "baseline": 0,
+        "target": 1.5,
+        "current": null
+      },
       "secondary": [],
-      "guardrails": [],
+      "guardrails": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s"
+      ],
       "instrumentation_ready": false,
       "first_review_date": null,
-      "kill_criteria": "Core screen, always active"
+      "kill_criteria": "Core screen — always active. v2 alignment only ships if no readiness/biometric flow regresses."
     }
-  }
+  },
+  "tasks": []
 }
