@@ -148,9 +148,32 @@ screens. Tracked in the per-screen UX alignment plan in `backlog.md`.
 
 ## Key Paths
 
+### Product
 - PRD: `docs/product/PRD.md`
+- Per-feature PRDs: `docs/product/prd/`
 - Metrics: `docs/product/metrics-framework.md`
 - Backlog: `docs/product/backlog.md`
-- Roadmap: `docs/project/master-backlog-roadmap.md`
 - Feature state: `.claude/features/{name}/state.json`
-- PM skill: `.claude/skills/pm-workflow/SKILL.md`
+
+### Master plan & handoffs
+- Master plan: `docs/master-plan/master-plan-2026-04-06.md` (current)
+- RICE roadmap: `docs/master-plan/master-backlog-roadmap.md`
+- Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
+
+### Skills ecosystem
+- Skills one-pager: `docs/skills/README.md`
+- Skills architecture: `docs/skills/architecture.md` (deep dive)
+- Per-skill docs: `docs/skills/{name}.md` (pm-workflow, ux, design, dev, qa, analytics, cx, marketing, research, ops, release)
+- Agent-facing prompts: `.claude/skills/{name}/SKILL.md`
+
+### Design system
+- UX foundations: `docs/design-system/ux-foundations.md` (13 principles)
+- V2 refactor checklist: `docs/design-system/v2-refactor-checklist.md`
+- Feature memory: `docs/design-system/feature-memory.md`
+- Feature development gateway: `docs/design-system/feature-development-gateway.md`
+- Tokens: `FitTracker/Services/AppTheme.swift` + `design-tokens/tokens.json`
+- Components: `FitTracker/DesignSystem/AppComponents.swift`
+
+### Handoff prompts
+- UX/UI build prompts (auto-generated + hand-authored): `docs/prompts/`
+- Auto-generation contracts: `/ux prompt {feature}` + `/design prompt {feature}` (see `docs/skills/ux.md` and `docs/skills/design.md`)
