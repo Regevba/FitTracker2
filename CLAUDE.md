@@ -70,6 +70,47 @@ The design system is a **living, evolving framework** — not a static constrain
 - Approved changes merge to main with the feature and become part of the system
 - All changes documented in `docs/design-system/feature-memory.md`
 
+## UI Refactoring & V2 Rule
+
+When a UI screen or feature needs a UX Foundations alignment pass (or any
+substantial refactor against `docs/design-system/ux-foundations.md`):
+
+1. **Create a new V2 Swift file** as a sibling of the existing one. Naming:
+   `{ScreenName}.swift` (v1, historical) → `{ScreenName}V2.swift` (v2,
+   the new source of truth). Example: `MainScreenView.swift` →
+   `MainScreenViewV2.swift`.
+2. **Build the V2 file bottom-up** from the design system foundations
+   (tokens, components, ux-foundations principles) — do **not** patch the
+   v1 file in place. v1 is read-only during the refactor.
+3. **Wire the V2 file in** at its parent (e.g. `RootTabView.swift` switches
+   from `MainScreenView()` to `MainScreenViewV2()`) once V2 is functionally
+   complete and passes the design system compliance gateway.
+4. **Keep the v1 file in the repository** with a header comment marking it
+   as historical (`// HISTORICAL — superseded by {ScreenName}V2.swift on
+   {date} per UX Foundations alignment pass.`). v1 stays in the Xcode build
+   target as compiled-but-unreferenced reference code so the diff is
+   reviewable. If a future change foundationally breaks v1, the choice at
+   that moment is "fix v1 to keep it compiling" or "remove v1 from build
+   target", recorded in `feature-memory.md`.
+5. **One V2 file per refactor pass.** A second alignment pass on the same
+   screen does not become V3 in this repo — it patches V2 in place. The
+   v1 → v2 split exists exactly to capture the *first* deliberate
+   foundations-aligned rewrite of a pre-PM-workflow surface.
+
+**For new UI features built from scratch** (no v1 to refactor):
+- The Phase 3 (UX) gateway is **non-skippable** — every new UI feature
+  must produce a `ux-spec.md` and pass the design system compliance
+  gateway before any view code is written.
+- Phase 4 (Implement) starts with the `ux-foundations.md` checklist
+  applied to the spec, then the view code. No "build first, audit later".
+
+**Backward compatibility note:** Onboarding v2 (PR #59) was the pilot
+alignment pass and shipped *before* this rule existed. It used the older
+"patch v1 in place" approach. It is intentionally inconsistent with this
+rule and is documented as a pre-rule v2 pass in
+`docs/design-system/feature-memory.md`. The rule applies prospectively
+from `home-today-screen` v2 onward.
+
 ## Key Paths
 
 - PRD: `docs/product/PRD.md`

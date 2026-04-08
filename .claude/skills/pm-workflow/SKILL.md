@@ -258,6 +258,19 @@ Present task list and ask for approval. **On approval, execute the Phase Transit
 
 **Goal:** Define screens, components, and design requirements before coding — grounded in UX research and validated against the design system.
 
+### V1 vs V2 — refactor or new feature?
+
+Before starting Phase 3, classify the work:
+
+| Classification | Trigger | Phase 3 expectation | Phase 4 file convention |
+|---|---|---|---|
+| **New UI feature** | No existing v1 file for this surface | Phase 3 is non-skippable. Must produce `ux-spec.md` and pass the design system compliance gateway before any view code is written. | Single Swift file at the canonical path (e.g. `Views/Home/HomeView.swift`). Bottom-up from foundations. |
+| **V2 refactor (UX Foundations alignment)** | An existing v1 Swift file for this surface needs alignment with `ux-foundations.md` | Phase 3 starts with a `v2-audit-report.md` walking the existing v1 file against `ux-foundations.md`, THEN produces `ux-spec.md` for the v2 file. | New sibling file `{ScreenName}V2.swift`. v1 file is **not** patched in place — it stays as a historical reference per the V2 Rule in CLAUDE.md. |
+
+Set `state.json.work_subtype` to either `"new_ui"` or `"v2_refactor"`. For `v2_refactor`, populate `state.json.v2_file_path` with the planned V2 file path before Phase 3 advances.
+
+### Step 1: UX Research & Principles
+
 ### Step 1: UX Research & Principles
 
 Before designing screens, research and document UX best practices relevant to this feature:
@@ -373,6 +386,32 @@ Present spec and ask for approval. **On approval, execute the Phase Transition P
 **Goal:** Write the code on an isolated branch.
 
 1. Create branch: `git checkout -b feature/$0 main`
+
+### V2 Refactor — file convention (per CLAUDE.md V2 Rule)
+
+If `state.json.work_subtype == "v2_refactor"`:
+
+1. **Do not modify the v1 file in place.** v1 stays read-only during the
+   refactor. The audit (`v2-audit-report.md` from Phase 3) is the gap
+   analysis; the v2 file is built bottom-up from the design system
+   foundations.
+2. **Create the V2 Swift file** at `state.json.v2_file_path` (typically
+   `{original_dir}/{ScreenName}V2.swift`).
+3. **Mark v1 as historical** with a header comment when v2 is functionally
+   complete:
+   ```swift
+   // HISTORICAL — superseded by {ScreenName}V2.swift on {date} per
+   // UX Foundations alignment pass. See .claude/features/{name}/v2-audit-report.md
+   // for the gap analysis. Kept compiled in the build target as a
+   // reviewable historical reference.
+   ```
+4. **Switch the parent view** to wire the new V2 file (typically
+   `RootTabView.swift` or whatever instantiates the screen). This is
+   the "go-live" moment for v2.
+5. v1 remains in the Xcode build target as compiled-but-unreferenced
+   reference code. If v1 fails to compile after a foundational change
+   later, the choice at that moment is to either fix v1 or remove it
+   from the target — record the decision in `feature-memory.md`.
 
 ### Parallel Task Dispatch
 
