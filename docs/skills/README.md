@@ -169,8 +169,11 @@ The hub never does inline work — it reads state, decides which skill to dispat
 
 ## Related documents
 
+- [`architecture.md`](architecture.md) — full ecosystem deep-dive (~1400 lines). Covers the hub-and-spoke architecture, shared data layer, per-skill sections, connection map, feature review, and a merged-in gap analysis snapshot from 2026-04-04 with current deltas.
+- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → current (+ `/ux`). Useful context for understanding why the current architecture looks the way it does.
+- [`pm-workflow.md`](pm-workflow.md) — hub skill deep-dive
 - [`.claude/skills/{name}/SKILL.md`](../../.claude/skills/) — agent-facing prompts the harness executes when a skill is invoked
-- [`docs/project/skills-ecosystem.md`](../project/skills-ecosystem.md) — the original long-form ecosystem doc (~1200 lines, kept as historical deep-dive; the per-skill docs here are the current source of truth)
-- [`docs/design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references
-- [`docs/design-system/v2-refactor-checklist.md`](../design-system/v2-refactor-checklist.md) — the checklist that every V2 refactor walks through
-- [`CLAUDE.md`](../../CLAUDE.md) — project rules, including the UI Refactoring & V2 Rule
+- [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references
+- [`../design-system/v2-refactor-checklist.md`](../design-system/v2-refactor-checklist.md) — the checklist that every V2 refactor walks through
+- [`../case-studies/`](../case-studies/) — concrete examples of the PM workflow running on real features
+- [`../../CLAUDE.md`](../../CLAUDE.md) — project rules, including the UI Refactoring & V2 Rule

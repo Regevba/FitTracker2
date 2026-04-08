@@ -1220,3 +1220,126 @@ These items from the roadmap are not tracked as features in `feature-registry.js
 4. **Phase 9 is continuous, not one-time:** Unlike Phases 0-8 which are sequential gates, Phase 9 (Learn) runs indefinitely. The hub re-enters the loop on every new feedback batch until the feature is assessed as "solved."
 
 5. **Every skill has standalone examples:** Not just "you can use this skill independently" but concrete invocations. This is critical for AI agents and new contributors who need to see exactly how to invoke a skill outside the hub.
+
+---
+
+## 21. Gap Analysis & Historical Snapshot
+
+> Merged in from the former `docs/project/skills-ecosystem-analysis.md`
+> (2026-04-04). That document was a bottom-up + top-down audit of every
+> functional area — what existed, what was missing, and how complete a
+> product org would compare. Many of its "Red" gaps have since been
+> closed, so the content is preserved here as a historical record plus
+> a running delta.
+
+### 21.1 What existed on 2026-04-04
+
+**Active skills + automations at snapshot time:**
+
+| ID | Name | Type | Status then |
+|---|---|---|---|
+| S1 | `/pm-workflow` | Claude Code Skill (v1.2) | Shipped |
+| H1 | SessionStart hook | Shell hook | Active |
+| H2 | Stop hook (git check) | Shell hook | Active |
+| A1 | Token pipeline (`make tokens`) | Makefile + Node | Active |
+| A2 | Token drift detection (`make tokens-check`) | CI gate | Active |
+| A3 | CI pipeline (build + test) | GitHub Actions | Active |
+| A4 | Feature state tracking | JSON state machine | Active |
+| A5 | Analytics instrumentation gate | PM Skill phase | Active |
+| A6 | Design system compliance gateway | PM Skill phase | Active |
+| A7 | GitHub Issue label sync | PM Skill automation | Active |
+
+**Hand-authored prompts at snapshot time:** 8 prompts covering Figma prototype builds, iteration 2 batches, prototype audits, and Notion/Dashboard setup. All of these moved to `docs/prompts/` on 2026-04-08 and are the "hand-authored" section of that folder.
+
+### 21.2 What's changed since 2026-04-04
+
+The 2026-04-04 snapshot showed 24% overall ecosystem coverage (8 Green / 11 Yellow / 39 Red across 58 functional areas). Since then:
+
+| Area | 2026-04-04 status | Current status | Delta |
+|---|---|---|---|
+| **Design & UX → UX research & principles** | Yellow (inline) | **Green** (`/ux` skill shipped 2026-04-07) | +1 skill |
+| **Development → Release management** | Red | **Green** (`/release` skill shipped) | +1 skill |
+| **QA → Unit testing** | Green | Green | — |
+| **Analytics → Event taxonomy** | Green | Green | — |
+| **CX → Review monitoring, NPS, sentiment, keyword analysis** | Red (10 items) | **Green** (`/cx` skill shipped with 7 sub-commands) | +1 skill covering 7 items |
+| **Marketing → SEO, content, social, email, referrals, ASO** | Red (mostly) | **Green** (`/marketing` skill shipped with 7 sub-commands) | +1 skill |
+| **Operations → Incident response, monitoring, cost** | Red | **Green** (`/ops` skill shipped) | +1 skill |
+| **Research → Cross-industry, competitive, market** | Not listed | **Green** (`/research` skill shipped) | +1 skill |
+| **Dashboard** | Red (no visibility) | **Green** (Development Dashboard shipped v1.1 on 2026-04-08 with live state.json + autonomous label sync) | +1 feature |
+
+The skill count went from **1** (just `/pm-workflow`) at snapshot time to **11** today (10 spokes + the hub). Most of the Red items in Part 2 of the original analysis are no longer Red — they're covered by one of the spokes.
+
+### 21.3 Still-open gaps (priority-ordered)
+
+These are the gaps from the 2026-04-04 analysis that remain as of the current review:
+
+| # | Area | Subarea | Current status | Why still open |
+|---|---|---|---|---|
+| 1 | Dev → Error tracking (Crashlytics/Sentry) | Red | Still Red | No crash reporting wired yet. High priority before App Store launch. |
+| 2 | QA → UI testing (XCUITest) | Red | Still Red | Unit tests cover logic but no screenshot or flow tests. |
+| 3 | Analytics → A/B testing framework | Red | Still Red | No feature-flag infra. Deferred to post-launch. |
+| 4 | Analytics → Funnel analysis | Red | Still Red | GA4 taxonomy is in place but dashboards haven't been built. |
+| 5 | PM → Sprint/iteration planning | Red | Still Red | `/pm-workflow` handles phases, not sprints. May never need sprint planning in this product. |
+| 6 | PM → Stakeholder updates | Red | Still Red | `/ops digest` is planned but not shipped. |
+| 7 | Design → Visual regression testing | Red | Still Red | Considered low priority for a solo-dev project. |
+| 8 | Marketing → Referral program | Red | Still Red | Depends on install base; premature. |
+
+The remaining items from the 2026-04-04 analysis are either addressed by an existing skill (just not wired to a feature yet) or intentionally deferred as "post-launch only".
+
+### 21.4 FitMe's unique advantages (benchmark vs fitness app peers)
+
+Industry benchmark from the 2026-04-04 analysis, with current delta:
+
+| Practice | Strava | MyFitnessPal | Hevy | FitMe (then) | FitMe (now) |
+|---|---|---|---|---|---|
+| CI/CD pipeline | Yes | Yes | Yes | **Yes** | **Yes** |
+| Automated testing | Yes | Yes | Yes | **Partial** | **Partial** (unit only) |
+| Feature flags | Yes | Yes | Yes | **No** | **No** |
+| A/B testing | Yes | Yes | No | **No** | **No** |
+| Crash monitoring | Yes | Yes | Yes | **No** | **No** |
+| Review monitoring | Yes | Yes | Yes | **No** | **Skill shipped** (`/cx reviews`) |
+| ASO automation | Yes | Yes | Yes | **No** | **Skill shipped** (`/marketing aso`) |
+| Email marketing | Yes | Yes | Yes | **No** | **Skill shipped** (`/marketing email`) |
+| NPS/CSAT | Yes | Yes | No | **No** | **Skill shipped** (`/cx nps`) |
+| Design system CI | No | No | No | **Yes** (unique) | **Yes** (unique) |
+| PM lifecycle skill | No | No | No | **Yes** (unique) | **Yes** (unique, now with 11-skill ecosystem) |
+| Analytics instrumentation gate | No | No | No | **Yes** (unique) | **Yes** (unique) |
+| **UX Foundations v2 refactor flow** | No | No | No | — | **Yes** (unique, shipped 2026-04-08) |
+
+**FitMe's unique advantages:** design system CI, PM lifecycle automation, analytics instrumentation gate, UX Foundations per-screen refactor pass. All four are genuinely novel.
+
+**FitMe's remaining gaps vs peers:** crash monitoring, feature flags, UI test automation. These are the pre-launch priorities.
+
+### 21.5 Historical system map (from the 2026-04-04 analysis)
+
+The original analysis drew the ecosystem as a single hub with missing side-layers. It's included here for comparison with the current hub-and-spoke architecture in §3:
+
+```
+            ┌─────────────────────────────────────┐
+            │         PRODUCT STRATEGY             │
+            │  PRD → Metrics → Roadmap → Backlog   │
+            └──────────────┬──────────────────────┘
+                           │
+            ┌──────────────▼──────────────────────┐
+            │      /pm-workflow SKILL (Hub)         │
+            │  Research → PRD → Tasks → UX →       │
+            │  Implement → Test → Review → Merge    │
+            └──┬───────┬────────┬──────┬──────────┘
+               │       │        │      │
+    ┌──────────▼┐  ┌──▼────┐ ┌─▼──┐ ┌─▼──────────┐
+    │Design System│ │  Dev  │ │ QA │ │  Analytics  │
+    │Token Pipeline│ │  CI   │ │Tests│ │GA4 Taxonomy │
+    │Figma Prompts │ │GitHub │ │Gate │ │Consent Gate │
+    │Compliance GW │ │Actions│ │    │ │Regression   │
+    └──────────────┘ └───────┘ └────┘ └────────────┘
+                                              │
+             ┌────────────────────────────────▼─────┐
+             │        MISSING LAYERS (at snapshot)   │
+             │                                        │
+             │  CX · Marketing · Ops · Growth        │
+             │  (all filled in by 2026-04-07 via     │
+             │  the v2.0 skill ecosystem)            │
+             └──────────────────────────────────────┘
+```
+
+Compare this to the current 11-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.

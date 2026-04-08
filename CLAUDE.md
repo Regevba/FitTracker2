@@ -162,7 +162,8 @@ screens. Tracked in the per-screen UX alignment plan in `backlog.md`.
 
 ### Skills ecosystem
 - Skills one-pager: `docs/skills/README.md`
-- Skills architecture: `docs/skills/architecture.md` (deep dive)
+- Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
+- Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → current)
 - Per-skill docs: `docs/skills/{name}.md` (pm-workflow, ux, design, dev, qa, analytics, cx, marketing, research, ops, release)
 - Agent-facing prompts: `.claude/skills/{name}/SKILL.md`
 
@@ -177,3 +178,13 @@ screens. Tracked in the per-screen UX alignment plan in `backlog.md`.
 ### Handoff prompts
 - UX/UI build prompts (auto-generated + hand-authored): `docs/prompts/`
 - Auto-generation contracts: `/ux prompt {feature}` + `/design prompt {feature}` (see `docs/skills/ux.md` and `docs/skills/design.md`)
+
+### Case studies
+- Narrative showcases of the PM workflow running on real features: `docs/case-studies/`
+- Pilot case study (Onboarding v2): `docs/case-studies/pm-workflow-showcase-onboarding.md`
+
+### Setup guides
+- One-time environment + service setup: `docs/setup/`
+- SSD layout: `docs/setup/ssd-setup-guide.md`
+- Firebase Analytics: `docs/setup/firebase-setup-guide.md`
+- Dashboard activation: `docs/setup/dashboard-activation.md`
