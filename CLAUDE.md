@@ -75,41 +75,76 @@ The design system is a **living, evolving framework** — not a static constrain
 When a UI screen or feature needs a UX Foundations alignment pass (or any
 substantial refactor against `docs/design-system/ux-foundations.md`):
 
-1. **Create a new V2 Swift file** as a sibling of the existing one. Naming:
-   `{ScreenName}.swift` (v1, historical) → `{ScreenName}V2.swift` (v2,
-   the new source of truth). Example: `MainScreenView.swift` →
-   `MainScreenViewV2.swift`.
-2. **Build the V2 file bottom-up** from the design system foundations
+1. **Create a `v2/` subdirectory next to the v1 file.** Each feature's v2
+   work lives in its own `v2/` subdirectory under the same parent group.
+   File names stay the same — only the directory differs:
+   - `FitTracker/Views/Main/MainScreenView.swift` (v1, historical)
+   - `FitTracker/Views/Main/v2/MainScreenView.swift` (v2, source of truth)
+   - `FitTracker/Views/Onboarding/OnboardingWelcomeView.swift` (v1)
+   - `FitTracker/Views/Onboarding/v2/OnboardingWelcomeView.swift` (v2)
+
+   This keeps v1 and v2 next to each other for diffing while preserving
+   the original file names so imports/types don't collide. Both files
+   define the same Swift type (e.g. `MainScreenView`) — the build target
+   only references one of them at a time.
+
+2. **Update `FitTracker.xcodeproj/project.pbxproj`** in the same commit
+   that creates the first v2 file in a new `v2/` subdirectory. The v2
+   directory becomes a new PBXGroup, the v2 file becomes a PBXFileReference
+   + PBXBuildFile, and the v1 file is REMOVED from the Sources build phase
+   (but stays as a PBXFileReference so it shows in the file navigator and
+   git history). v1 lives on as a reviewable historical artifact, not as
+   compiled dead code.
+
+3. **Build the v2 file bottom-up** from the design system foundations
    (tokens, components, ux-foundations principles) — do **not** patch the
-   v1 file in place. v1 is read-only during the refactor.
-3. **Wire the V2 file in** at its parent (e.g. `RootTabView.swift` switches
-   from `MainScreenView()` to `MainScreenViewV2()`) once V2 is functionally
-   complete and passes the design system compliance gateway.
-4. **Keep the v1 file in the repository** with a header comment marking it
-   as historical (`// HISTORICAL — superseded by {ScreenName}V2.swift on
-   {date} per UX Foundations alignment pass.`). v1 stays in the Xcode build
-   target as compiled-but-unreferenced reference code so the diff is
-   reviewable. If a future change foundationally breaks v1, the choice at
-   that moment is "fix v1 to keep it compiling" or "remove v1 from build
-   target", recorded in `feature-memory.md`.
-5. **One V2 file per refactor pass.** A second alignment pass on the same
-   screen does not become V3 in this repo — it patches V2 in place. The
-   v1 → v2 split exists exactly to capture the *first* deliberate
-   foundations-aligned rewrite of a pre-PM-workflow surface.
+   v1 file in place. v1 is read-only during the refactor. Use the
+   `docs/design-system/v2-refactor-checklist.md` to track what's been
+   verified.
+
+4. **Wire the v2 file in** at its parent (e.g. `RootTabView.swift` keeps
+   instantiating `MainScreenView()` — same type name — but the symbol now
+   resolves to the v2 file because v1 has been removed from the build
+   sources). No call-site change needed in parent views since the type
+   name is identical; the swap happens at the project.pbxproj layer.
+
+5. **Mark v1 as historical** with a header comment when the swap lands:
+   ```swift
+   // HISTORICAL — superseded by v2/{ScreenName}.swift on {date} per
+   // UX Foundations alignment pass. See
+   // .claude/features/{name}/v2-audit-report.md for the gap analysis.
+   // This file is no longer in the build target; it stays in the repo
+   // as a reviewable reference for the v1 → v2 diff.
+   ```
+
+6. **One v2 split per surface.** A second alignment pass on the same
+   screen does not become a `v3/` directory — it patches v2 in place.
+   The v1 → v2 split exists exactly to capture the *first* deliberate
+   foundations-aligned rewrite of a pre-PM-workflow surface. v3+ would
+   indicate the refactor methodology itself failed.
 
 **For new UI features built from scratch** (no v1 to refactor):
+- File lives at the canonical path (no `v2/` subdirectory — there's
+  nothing to refactor against).
 - The Phase 3 (UX) gateway is **non-skippable** — every new UI feature
   must produce a `ux-spec.md` and pass the design system compliance
   gateway before any view code is written.
 - Phase 4 (Implement) starts with the `ux-foundations.md` checklist
   applied to the spec, then the view code. No "build first, audit later".
 
+**Verification checklist:** Every v2 refactor walks through
+`docs/design-system/v2-refactor-checklist.md` before requesting Phase 5
+(Test) approval. The checklist covers token compliance, component reuse,
+state coverage, accessibility, motion, analytics, and project.pbxproj
+hygiene. State.json `phases.ux_or_integration.checklist_completed` must
+be `true` before Phase 4 advances.
+
 **Backward compatibility note:** Onboarding v2 (PR #59) was the pilot
 alignment pass and shipped *before* this rule existed. It used the older
-"patch v1 in place" approach. It is intentionally inconsistent with this
-rule and is documented as a pre-rule v2 pass in
-`docs/design-system/feature-memory.md`. The rule applies prospectively
-from `home-today-screen` v2 onward.
+"patch v1 in place" approach. It will be retroactively refactored into
+the `v2/` subdirectory convention as a follow-up to the Home v2 pass,
+mostly to validate that the rule scales to a feature with multiple
+screens. Tracked in the per-screen UX alignment plan in `backlog.md`.
 
 ## Key Paths
 
