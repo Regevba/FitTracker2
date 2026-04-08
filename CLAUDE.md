@@ -1,5 +1,22 @@
 # FitMe (FitTracker2) — Project Rules
 
+> **Canonical repo location:** `/Volumes/DevSSD/FitTracker2`
+>
+> The project lives on an external SSD at `/Volumes/DevSSD/FitTracker2`, not
+> on the Mac's internal storage. All build artifacts (Xcode DerivedData, SPM
+> cache, npm cache, Python venvs, clang module cache, simulator data) are
+> kept under `.build/` inside the repo, which is already on the SSD. Any
+> absolute paths in documentation, commit messages, handoffs, or scripts
+> should reference `/Volumes/DevSSD/FitTracker2` when pointing at the local
+> repo — never `/Users/{name}/` or `/tmp/`. Setup details live in
+> `docs/setup/ssd-setup-guide.md`.
+>
+> Agents running in sandboxed environments may see a different working
+> directory path (e.g. `/home/user/FitTracker2`). That's the sandbox mount
+> of the repo, not the real location. Files written inside the sandbox are
+> the user's real files, but human-readable paths in docs should always
+> point at the SSD.
+
 ## Product Management Lifecycle
 
 Every new feature MUST follow the PM workflow. Invoke with `/pm-workflow {feature-name}`.
