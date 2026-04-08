@@ -44,6 +44,8 @@ The current `MainScreenView` shipped pre-PM-workflow as an undocumented, un-audi
 
 **Recommended approach:** build a new `FitTracker/Views/Main/v2/MainScreenView.swift` from scratch, bottom-up from `ux-foundations.md`. Do NOT patch v1 in place per the [V2 Rule in `CLAUDE.md`](../../../CLAUDE.md).
 
+**Design system evolution queue:** All proposed new tokens and component promotions from this audit are tracked in [`docs/design-system/feature-memory.md` → Pending Evolution Queue](../../../docs/design-system/feature-memory.md). Future screen audits (Training Plan v2, Nutrition v2, Stats v2) should check the queue **first** and reference queued items instead of re-proposing the same primitives. When Phase 4 of this feature lands, the queued items move from "Pending" to the shipped memory entry for home-today-screen v2.
+
 ---
 
 ## Section A — Architecture & layout findings
