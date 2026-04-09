@@ -31,6 +31,18 @@ Onboarding,onboarding_step_completed,Custom,User taps Continue,step_index (0-5),
 Onboarding,onboarding_skipped,Custom,User taps Skip,step_index (0-5),step_name,,,,,event,Skip rate per step (v2)
 Onboarding,onboarding_goal_selected,Custom,Goals screen selection,goal_value (build_muscle/lose_fat/maintain/general_fitness),,,,,,event,Most popular goal (v2)
 Onboarding,permission_result,Custom,HealthKit auth response,permission_type (healthkit/notifications),permission_granted (true/false),,,,,event,Auth grant/deny rate (v2)
+Training,training_session_viewed,Custom,Active Training Screen,workout_type (push/pull/legs/cardio/rest),,,,,,event,Session screen impression
+Training,training_exercise_started,Custom,Active Training Screen,exercise_name (string),muscle_group (string),,,,,event,Exercise begin signal
+Training,training_exercise_completed,Custom,Active Training Screen,exercise_name (string),sets (int),,,,,event,All sets done for exercise
+Training,training_set_logged,Custom,Active Training Screen,exercise_name (string),set_index (int),reps (int),weight (float kg),,,event,Individual set completion
+Training,training_set_copied,Custom,Active Training Screen,exercise_name (string),set_index (int),,,,,event,Previous-set copy shortcut usage
+Training,training_weight_changed,Custom,Active Training Screen,exercise_name (string),weight (float kg),,,,,event,Weight adjustment signal
+Training,training_rest_timer_started,Custom,Active Training Screen,rest_duration_seconds (int),,,,,,event,Rest timer engagement
+Training,training_rest_timer_skipped,Custom,Active Training Screen,rest_duration_seconds (int),,,,,,event,Rest timer skip rate
+Training,training_activity_switched,Custom,Active Training Screen,activity_type (string),,,,,,event,Activity tab switch
+Training,training_session_completed,Custom,Active Training Screen,session_duration_seconds (int),total_sets (int),exercise_count (int),,,Yes,event,Mark as conversion. Full session completion.
+Training,training_focus_mode_entered,Custom,Active Training Screen,,,,,,,event,Focus mode adoption
+Training,training_camera_opened,Custom,Active Training Screen,exercise_name (string),,,,,,event,Form-check camera usage
 Home,home_action_tap,Custom,Home Screen,action_type (start_workout/log_meal),day_type (push/pull/legs/etc),has_recommendation (true/false),,,No,event,Primary engagement signal
 Home,home_action_completed,Custom,Home Screen,action_type (start_workout/log_meal),duration_seconds (int),source (home),,,Yes,event,Mark as conversion. Measures follow-through.
 Home,home_empty_state_shown,Custom,Home Screen,empty_reason (no_healthkit/no_data/first_launch),cta_shown (connect_health/log_manually/both),,,,No,event,Monitors data availability
@@ -89,3 +101,4 @@ workout_complete,First Workout,Training adoption,,,,,,,,
 meal_log,First Meal,Nutrition adoption,,,,,,,,
 cross_feature_engagement,Weekly Engagement,North Star metric proxy,,,,,,,,
 home_action_completed,Home Engagement,Home-to-action follow-through,,,,,,,,
+training_session_completed,Training,Full training session completion,,,,,,,,

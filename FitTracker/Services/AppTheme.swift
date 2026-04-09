@@ -153,6 +153,8 @@ enum AppSize {
     static let progressBarHeight: CGFloat = 4
     /// Small status/readiness indicator dot (8pt) — Home v2 (T1)
     static let indicatorDot: CGFloat = 8
+    /// Tab bar clearance padding (56pt) — Training v2 (T1)
+    static let tabBarClearance: CGFloat = 56
 }
 
 // MARK: - Motion
@@ -200,6 +202,8 @@ enum AppText {
     static let metricDisplayMono = Font.system(.title,        design: .monospaced).weight(.bold)
     static let monoMetric        = Font.system(.title3,       design: .monospaced).weight(.bold)
     static let monoLabel         = Font.system(.caption2,     design: .monospaced).weight(.semibold)
+    /// Monospaced caption — timer displays, set counters
+    static let monoCaption       = Font.system(.caption2,     design: .monospaced).weight(.semibold)
     static let button            = Font.system(.body,         design: .rounded).weight(.semibold)
 
     // Icon sizes — for SF Symbol illustrations in onboarding, empty states, hero displays.

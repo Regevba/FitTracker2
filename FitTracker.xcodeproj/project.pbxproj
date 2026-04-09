@@ -47,6 +47,12 @@
 		AC1000000000000000000009 /* ConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000009 /* ConsentView.swift */; };
 		AC1000000000000000000010 /* DeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000010 /* DeleteAccountView.swift */; };
 		AC1000000000000000000011 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000011 /* ExportDataView.swift */; };
+		TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA01 /* TrainingPlanView.swift */; };
+		TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA02 /* ExerciseRowView.swift */; };
+		TP100000000000000000AA03 /* SetRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA03 /* SetRowView.swift */; };
+		TP100000000000000000AA04 /* RestTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA04 /* RestTimerView.swift */; };
+		TP100000000000000000AA05 /* SessionCompletionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA05 /* SessionCompletionSheet.swift */; };
+		TP100000000000000000AA06 /* FocusModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA06 /* FocusModeView.swift */; };
 		AI100000000000000000AAA1 /* AITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA1 /* AITypes.swift */; };
 		AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA2 /* AIEngineClient.swift */; };
 		AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AAA3 /* FoundationModelService.swift */; };
@@ -91,6 +97,8 @@
 		HV100000000000000000AA04 /* ManualBiometricEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA04 /* ManualBiometricEntry.swift */; };
 		HV100000000000000000AA05 /* RecoveryRoutineSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA05 /* RecoveryRoutineSheet.swift */; };
 		HV100000000000000000AA06 /* SyncStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA06 /* SyncStatusIndicator.swift */; };
+		HV100000000000000000AA07 /* StatusDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA07 /* StatusDropdown.swift */; };
+		HV100000000000000000AA08 /* MilestoneModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA08 /* MilestoneModal.swift */; };
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA03 /* HomeRecommendationProvider.swift */; };
@@ -207,11 +215,19 @@
 		FB2000001000000000000006 /* EmailAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailAuthProvider.swift; sourceTree = "<group>"; };
 		FB2000001000000000000007 /* Date+Sync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Sync.swift"; sourceTree = "<group>"; };
 		FB2000001000000000000008 /* GoogleAuthProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleAuthProvider.swift; sourceTree = "<group>"; };
+		TP200000000000000000AA01 /* TrainingPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPlanView.swift; sourceTree = "<group>"; };
+		TP200000000000000000AA02 /* ExerciseRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseRowView.swift; sourceTree = "<group>"; };
+		TP200000000000000000AA03 /* SetRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetRowView.swift; sourceTree = "<group>"; };
+		TP200000000000000000AA04 /* RestTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestTimerView.swift; sourceTree = "<group>"; };
+		TP200000000000000000AA05 /* SessionCompletionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionCompletionSheet.swift; sourceTree = "<group>"; };
+		TP200000000000000000AA06 /* FocusModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusModeView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA01 /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA02 /* HomeEmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEmptyStateView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA04 /* ManualBiometricEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualBiometricEntry.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA05 /* RecoveryRoutineSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryRoutineSheet.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA06 /* SyncStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusIndicator.swift; sourceTree = "<group>"; };
+		HV200000000000000000AA07 /* StatusDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDropdown.swift; sourceTree = "<group>"; };
+		HV200000000000000000AA08 /* MilestoneModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneModal.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA03 /* HomeRecommendationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecommendationProvider.swift; sourceTree = "<group>"; };
@@ -418,8 +434,22 @@
 			isa = PBXGroup;
 			children = (
 				A2000001000000000000000D /* TrainingPlanView.swift */,
+				TP300000000000000000AA01 /* v2 */,
 			);
 			path = Training;
+			sourceTree = "<group>";
+		};
+		TP300000000000000000AA01 /* v2 */ = {
+			isa = PBXGroup;
+			children = (
+				TP200000000000000000AA01 /* TrainingPlanView.swift */,
+				TP200000000000000000AA02 /* ExerciseRowView.swift */,
+				TP200000000000000000AA03 /* SetRowView.swift */,
+				TP200000000000000000AA04 /* RestTimerView.swift */,
+				TP200000000000000000AA05 /* SessionCompletionSheet.swift */,
+				TP200000000000000000AA06 /* FocusModeView.swift */,
+			);
+			path = v2;
 			sourceTree = "<group>";
 		};
 		A4000001000000000000000D /* Nutrition */ = {
@@ -505,6 +535,8 @@
 				HV200000000000000000AA04 /* ManualBiometricEntry.swift */,
 				HV200000000000000000AA05 /* RecoveryRoutineSheet.swift */,
 				HV200000000000000000AA06 /* SyncStatusIndicator.swift */,
+				HV200000000000000000AA07 /* StatusDropdown.swift */,
+				HV200000000000000000AA08 /* MilestoneModal.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -694,11 +726,18 @@
 				HV100000000000000000AA04 /* ManualBiometricEntry.swift in Sources */,
 				HV100000000000000000AA05 /* RecoveryRoutineSheet.swift in Sources */,
 				HV100000000000000000AA06 /* SyncStatusIndicator.swift in Sources */,
+				HV100000000000000000AA07 /* StatusDropdown.swift in Sources */,
+				HV100000000000000000AA08 /* MilestoneModal.swift in Sources */,
 				BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */,
 				BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */,
 				HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */,
 				A1000001000000000000000C /* NutritionView.swift in Sources */,
-				A1000001000000000000000D /* TrainingPlanView.swift in Sources */,
+				TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */,
+				TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */,
+				TP100000000000000000AA03 /* SetRowView.swift in Sources */,
+				TP100000000000000000AA04 /* RestTimerView.swift in Sources */,
+				TP100000000000000000AA05 /* SessionCompletionSheet.swift in Sources */,
+				TP100000000000000000AA06 /* FocusModeView.swift in Sources */,
 				A1000001000000000000000E /* StatsView.swift in Sources */,
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
 				A10000010000000000000016 /* AuthHubView.swift in Sources */,
