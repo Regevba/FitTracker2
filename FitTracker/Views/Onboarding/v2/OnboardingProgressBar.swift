@@ -1,8 +1,3 @@
-// HISTORICAL — superseded by v2/ on 2026-04-09 per
-// UX Foundations alignment pass (retroactive v2/ subdirectory refactor).
-// See .claude/features/onboarding/v2-audit-report.md for the gap analysis.
-// This file is no longer in the build target; it stays in the repo
-// as a reviewable reference for the v1 → v2 diff.
 // FitTracker/Views/Onboarding/OnboardingProgressBar.swift
 // 6-segment horizontal progress indicator for onboarding flow.
 // Completed segments use brand primary, active segment uses brand gradient,
