@@ -122,6 +122,12 @@ enum AnalyticsEvent {
     static let homeActionCompleted = "home_action_completed"
     /// Home screen shows an empty state (no data available)
     static let homeEmptyStateShown = "home_empty_state_shown"
+    /// User taps the body composition card on the Home screen
+    static let homeBodyCompTap = "home_body_comp_tap"
+    /// User changes the period on the body composition card
+    static let homeBodyCompPeriodChanged = "home_body_comp_period_changed"
+    /// User taps the log CTA on the body composition card
+    static let homeBodyCompLogTap = "home_body_comp_log_tap"
 }
 
 // MARK: - Parameter Constants
@@ -185,6 +191,12 @@ enum AnalyticsParam {
     static let emptyReason        = "empty_reason"     // no_healthkit/no_data/first_launch
     static let ctaShown           = "cta_shown"        // connect_health/log_manually/both
 
+    // Body composition parameters
+    static let hasWeight          = "has_weight"         // true/false
+    static let hasBodyFat         = "has_body_fat"       // true/false
+    static let progressPercent    = "progress_percent"   // 0-100
+    static let period             = "period"             // week/month/quarter/year
+
     // Onboarding parameters
     static let stepIndex          = "step_index"       // 0-4
     static let stepName           = "step_name"        // welcome/goals/profile/healthkit/first_action
@@ -227,6 +239,7 @@ enum AnalyticsScreen {
     static let onboardingFirstAction = "onboarding_first_action"
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
+    static let bodyCompDetail    = "body_comp_detail"
 }
 
 // MARK: - User Property Constants

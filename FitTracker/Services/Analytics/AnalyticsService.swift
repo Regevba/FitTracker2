@@ -329,6 +329,27 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    /// User taps the body composition card on the Home screen
+    func logHomeBodyCompTap(hasWeight: Bool, hasBodyFat: Bool, progressPercent: Int) {
+        logEvent(AnalyticsEvent.homeBodyCompTap, parameters: [
+            AnalyticsParam.hasWeight: hasWeight ? "true" : "false",
+            AnalyticsParam.hasBodyFat: hasBodyFat ? "true" : "false",
+            AnalyticsParam.progressPercent: progressPercent,
+        ])
+    }
+
+    /// User changes the period on the body composition card
+    func logHomeBodyCompPeriodChanged(period: String) {
+        logEvent(AnalyticsEvent.homeBodyCompPeriodChanged, parameters: [
+            AnalyticsParam.period: period,
+        ])
+    }
+
+    /// User taps the log CTA on the body composition card
+    func logHomeBodyCompLogTap() {
+        logEvent(AnalyticsEvent.homeBodyCompLogTap, parameters: nil)
+    }
+
     // MARK: - Settings Events
 
     func logSettingsChanged(settingName: String, newValue: String) {

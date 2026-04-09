@@ -34,6 +34,9 @@ Onboarding,permission_result,Custom,HealthKit auth response,permission_type (hea
 Home,home_action_tap,Custom,Home Screen,action_type (start_workout/log_meal),day_type (push/pull/legs/etc),has_recommendation (true/false),,,No,event,Primary engagement signal
 Home,home_action_completed,Custom,Home Screen,action_type (start_workout/log_meal),duration_seconds (int),source (home),,,Yes,event,Mark as conversion. Measures follow-through.
 Home,home_empty_state_shown,Custom,Home Screen,empty_reason (no_healthkit/no_data/first_launch),cta_shown (connect_health/log_manually/both),,,,No,event,Monitors data availability
+Home,home_body_comp_tap,Custom,Home Screen,has_weight (true/false),has_body_fat (true/false),progress_percent (0-100),,,No,event,Body comp card drill-down signal
+Home,home_body_comp_period_changed,Custom,Home Screen,period (week/month/quarter/year),,,,,,No,event,Tracks preferred time-range
+Home,home_body_comp_log_tap,Custom,Home Screen,,,,,,,No,event,Log CTA engagement on body comp card
 ,,,,,,,,,,
 Screen Name,View Name,SwiftUI View,Category,,,,,,,,
 Home / Today,home,MainScreenView,core,,,,,,,,
@@ -58,6 +61,7 @@ Sign In,sign_in,SignInView,auth,,,,,,,,
 Sign Up,sign_up,SignUpView,auth,,,,,,,,
 Profile,profile,ProfileView,core,,,,,,,,
 Readiness,readiness,ReadinessCard,core,,,,,,,,
+Body Comp Detail,body_comp_detail,BodyCompDetailView,core,,,,,,,,
 Consent,consent,ConsentView,consent,,,,,,,,
 Onboarding,onboarding,OnboardingView,onboarding,,,,,,,,
 Onboarding Welcome,onboarding_welcome,OnboardingWelcomeView,onboarding,,,,,,,,
