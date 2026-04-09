@@ -301,6 +301,99 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Training Events
+
+    /// User views the active training session screen
+    func logTrainingSessionViewed(workoutType: String) {
+        logEvent(AnalyticsEvent.trainingSessionViewed, parameters: [
+            AnalyticsParam.workoutType: workoutType,
+        ])
+    }
+
+    /// User starts an exercise within a training session
+    func logTrainingExerciseStarted(exerciseName: String, muscleGroup: String) {
+        logEvent(AnalyticsEvent.trainingExerciseStarted, parameters: [
+            AnalyticsParam.exerciseName: exerciseName,
+            AnalyticsParam.muscleGroup: muscleGroup,
+        ])
+    }
+
+    /// User completes all sets for an exercise
+    func logTrainingExerciseCompleted(exerciseName: String, sets: Int) {
+        logEvent(AnalyticsEvent.trainingExerciseCompleted, parameters: [
+            AnalyticsParam.exerciseName: exerciseName,
+            AnalyticsParam.sets: sets,
+        ])
+    }
+
+    /// User logs a single set
+    func logTrainingSetLogged(exerciseName: String, setIndex: Int, reps: Int, weightKg: Double) {
+        logEvent(AnalyticsEvent.trainingSetLogged, parameters: [
+            AnalyticsParam.exerciseName: exerciseName,
+            AnalyticsParam.setIndex: setIndex,
+            AnalyticsParam.reps: reps,
+            AnalyticsParam.weight: weightKg,
+        ])
+    }
+
+    /// User copies previous set data
+    func logTrainingSetCopied(exerciseName: String, setIndex: Int) {
+        logEvent(AnalyticsEvent.trainingSetCopied, parameters: [
+            AnalyticsParam.exerciseName: exerciseName,
+            AnalyticsParam.setIndex: setIndex,
+        ])
+    }
+
+    /// User changes weight for a set
+    func logTrainingWeightChanged(exerciseName: String, weightKg: Double) {
+        logEvent(AnalyticsEvent.trainingWeightChanged, parameters: [
+            AnalyticsParam.exerciseName: exerciseName,
+            AnalyticsParam.weight: weightKg,
+        ])
+    }
+
+    /// User starts the rest timer between sets
+    func logTrainingRestTimerStarted(restDurationSeconds: Int) {
+        logEvent(AnalyticsEvent.trainingRestTimerStarted, parameters: [
+            AnalyticsParam.restDurationSeconds: restDurationSeconds,
+        ])
+    }
+
+    /// User skips the rest timer
+    func logTrainingRestTimerSkipped(restDurationSeconds: Int) {
+        logEvent(AnalyticsEvent.trainingRestTimerSkipped, parameters: [
+            AnalyticsParam.restDurationSeconds: restDurationSeconds,
+        ])
+    }
+
+    /// User switches between activities (e.g. exercise to cardio)
+    func logTrainingActivitySwitched(activityType: String) {
+        logEvent(AnalyticsEvent.trainingActivitySwitched, parameters: [
+            AnalyticsParam.activityType: activityType,
+        ])
+    }
+
+    /// User completes the full training session (conversion event)
+    func logTrainingSessionCompleted(sessionDurationSeconds: Int, totalSets: Int, exerciseCount: Int) {
+        logEvent(AnalyticsEvent.trainingSessionCompleted, parameters: [
+            AnalyticsParam.sessionDurationSeconds: sessionDurationSeconds,
+            AnalyticsParam.totalSets: totalSets,
+            AnalyticsParam.exerciseCount: exerciseCount,
+        ])
+    }
+
+    /// User enters focus mode during training
+    func logTrainingFocusModeEntered() {
+        logEvent(AnalyticsEvent.trainingFocusModeEntered, parameters: nil)
+    }
+
+    /// User opens camera for form check during training
+    func logTrainingCameraOpened(exerciseName: String) {
+        logEvent(AnalyticsEvent.trainingCameraOpened, parameters: [
+            AnalyticsParam.exerciseName: exerciseName,
+        ])
+    }
+
     // MARK: - Home Events
 
     /// User taps an action on the Home screen

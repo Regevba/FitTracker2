@@ -114,6 +114,33 @@ enum AnalyticsEvent {
     /// User changes a setting
     static let settingsChanged   = "settings_changed"
 
+    // ── Training Events (custom) ─────────────────────────────
+
+    /// User views the active training session screen
+    static let trainingSessionViewed     = "training_session_viewed"
+    /// User starts an exercise within a training session
+    static let trainingExerciseStarted   = "training_exercise_started"
+    /// User completes all sets for an exercise
+    static let trainingExerciseCompleted = "training_exercise_completed"
+    /// User logs a single set
+    static let trainingSetLogged         = "training_set_logged"
+    /// User copies previous set data
+    static let trainingSetCopied         = "training_set_copied"
+    /// User changes weight for a set
+    static let trainingWeightChanged     = "training_weight_changed"
+    /// User starts the rest timer between sets
+    static let trainingRestTimerStarted  = "training_rest_timer_started"
+    /// User skips the rest timer
+    static let trainingRestTimerSkipped  = "training_rest_timer_skipped"
+    /// User switches between activities (e.g. exercise ↔ cardio)
+    static let trainingActivitySwitched  = "training_activity_switched"
+    /// User completes the full training session (mark as conversion in GA4)
+    static let trainingSessionCompleted  = "training_session_completed"
+    /// User enters focus mode during training
+    static let trainingFocusModeEntered  = "training_focus_mode_entered"
+    /// User opens camera for form check during training
+    static let trainingCameraOpened      = "training_camera_opened"
+
     // ── Home Events (custom) ───────────────────────────────
 
     /// User taps an action on the Home screen (start workout, log meal, etc.)
@@ -201,6 +228,13 @@ enum AnalyticsParam {
     static let progressPercent    = "progress_percent"   // 0-100
     static let period             = "period"             // week/month/quarter/year
 
+    // Training parameters
+    static let setIndex              = "set_index"
+    static let activityType          = "activity_type"
+    static let restDurationSeconds   = "rest_duration_seconds"
+    static let sessionDurationSeconds = "session_duration_seconds"
+    static let totalSets             = "total_sets"
+
     // Onboarding parameters
     static let stepIndex          = "step_index"       // 0-4
     static let stepName           = "step_name"        // welcome/goals/profile/healthkit/first_action
@@ -215,6 +249,7 @@ enum AnalyticsScreen {
     static let home              = "home"
     static let trainingPlan      = "training_plan"
     static let activeWorkout     = "active_workout"
+    static let trainingSession   = "training_session"
     static let exerciseDetail    = "exercise_detail"
     static let nutrition         = "nutrition"
     static let mealEntry         = "meal_entry"
@@ -272,5 +307,6 @@ enum AnalyticsConversion {
         AnalyticsEvent.crossFeatureEngagement,
         AnalyticsEvent.accountDeleteCompleted,
         AnalyticsEvent.homeActionCompleted,
+        AnalyticsEvent.trainingSessionCompleted,
     ]
 }
