@@ -11,14 +11,14 @@
 		111A5E042F64641D006E7013 /* TrainingProgramStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E032F64641D006E7013 /* TrainingProgramStore.swift */; };
 		111A5E062F64641D006E7013 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E052F64641D006E7013 /* AppTheme.swift */; };
 		11B09D2B2F852AEF00DCB9A0 /* FitMeBrandIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2A2F852AEF00DCB9A0 /* FitMeBrandIcon.swift */; };
-		11B09D352F852BF900DCB9A0 /* OnboardingFirstActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2D2F852BF900DCB9A0 /* OnboardingFirstActionView.swift */; };
-		11B09D362F852BF900DCB9A0 /* OnboardingProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D302F852BF900DCB9A0 /* OnboardingProfileView.swift */; };
-		11B09D372F852BF900DCB9A0 /* OnboardingConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2C2F852BF900DCB9A0 /* OnboardingConsentView.swift */; };
-		11B09D382F852BF900DCB9A0 /* OnboardingHealthKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2F2F852BF900DCB9A0 /* OnboardingHealthKitView.swift */; };
-		11B09D392F852BF900DCB9A0 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D322F852BF900DCB9A0 /* OnboardingView.swift */; };
-		11B09D3A2F852BF900DCB9A0 /* OnboardingGoalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2E2F852BF900DCB9A0 /* OnboardingGoalsView.swift */; };
-		11B09D3B2F852BF900DCB9A0 /* OnboardingProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D312F852BF900DCB9A0 /* OnboardingProgressBar.swift */; };
-		11B09D3C2F852BF900DCB9A0 /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D332F852BF900DCB9A0 /* OnboardingWelcomeView.swift */; };
+		OB100000000000000000AA01 /* OnboardingConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA01 /* OnboardingConsentView.swift */; };
+		OB100000000000000000AA02 /* OnboardingFirstActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA02 /* OnboardingFirstActionView.swift */; };
+		OB100000000000000000AA03 /* OnboardingGoalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA03 /* OnboardingGoalsView.swift */; };
+		OB100000000000000000AA04 /* OnboardingHealthKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA04 /* OnboardingHealthKitView.swift */; };
+		OB100000000000000000AA05 /* OnboardingProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA05 /* OnboardingProfileView.swift */; };
+		OB100000000000000000AA06 /* OnboardingProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA06 /* OnboardingProgressBar.swift */; };
+		OB100000000000000000AA07 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA07 /* OnboardingView.swift */; };
+		OB100000000000000000AA08 /* OnboardingWelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA08 /* OnboardingWelcomeView.swift */; };
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
@@ -125,6 +125,14 @@
 		11B09D312F852BF900DCB9A0 /* OnboardingProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProgressBar.swift; sourceTree = "<group>"; };
 		11B09D322F852BF900DCB9A0 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		11B09D332F852BF900DCB9A0 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA01 /* OnboardingConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingConsentView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA02 /* OnboardingFirstActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFirstActionView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA03 /* OnboardingGoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingGoalsView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA04 /* OnboardingHealthKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingHealthKitView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA05 /* OnboardingProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProfileView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA06 /* OnboardingProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingProgressBar.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA07 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		OB200000000000000000AA08 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
@@ -234,6 +242,7 @@
 		11B09D342F852BF900DCB9A0 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				OB300000000000000000AA01 /* v2 */,
 				11B09D2C2F852BF900DCB9A0 /* OnboardingConsentView.swift */,
 				11B09D2D2F852BF900DCB9A0 /* OnboardingFirstActionView.swift */,
 				11B09D2E2F852BF900DCB9A0 /* OnboardingGoalsView.swift */,
@@ -244,6 +253,21 @@
 				11B09D332F852BF900DCB9A0 /* OnboardingWelcomeView.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		OB300000000000000000AA01 /* v2 */ = {
+			isa = PBXGroup;
+			children = (
+				OB200000000000000000AA01 /* OnboardingConsentView.swift */,
+				OB200000000000000000AA02 /* OnboardingFirstActionView.swift */,
+				OB200000000000000000AA03 /* OnboardingGoalsView.swift */,
+				OB200000000000000000AA04 /* OnboardingHealthKitView.swift */,
+				OB200000000000000000AA05 /* OnboardingProfileView.swift */,
+				OB200000000000000000AA06 /* OnboardingProgressBar.swift */,
+				OB200000000000000000AA07 /* OnboardingView.swift */,
+				OB200000000000000000AA08 /* OnboardingWelcomeView.swift */,
+			);
+			path = v2;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000001 = {
@@ -674,14 +698,14 @@
 				EE000001000000000000AA02 /* WelcomeView.swift in Sources */,
 				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
 				CC000001000000000000AA02 /* SectionHeader.swift in Sources */,
-				11B09D352F852BF900DCB9A0 /* OnboardingFirstActionView.swift in Sources */,
-				11B09D362F852BF900DCB9A0 /* OnboardingProfileView.swift in Sources */,
-				11B09D372F852BF900DCB9A0 /* OnboardingConsentView.swift in Sources */,
-				11B09D382F852BF900DCB9A0 /* OnboardingHealthKitView.swift in Sources */,
-				11B09D392F852BF900DCB9A0 /* OnboardingView.swift in Sources */,
-				11B09D3A2F852BF900DCB9A0 /* OnboardingGoalsView.swift in Sources */,
-				11B09D3B2F852BF900DCB9A0 /* OnboardingProgressBar.swift in Sources */,
-				11B09D3C2F852BF900DCB9A0 /* OnboardingWelcomeView.swift in Sources */,
+				OB100000000000000000AA01 /* OnboardingConsentView.swift in Sources */,
+				OB100000000000000000AA02 /* OnboardingFirstActionView.swift in Sources */,
+				OB100000000000000000AA03 /* OnboardingGoalsView.swift in Sources */,
+				OB100000000000000000AA04 /* OnboardingHealthKitView.swift in Sources */,
+				OB100000000000000000AA05 /* OnboardingProfileView.swift in Sources */,
+				OB100000000000000000AA06 /* OnboardingProgressBar.swift in Sources */,
+				OB100000000000000000AA07 /* OnboardingView.swift in Sources */,
+				OB100000000000000000AA08 /* OnboardingWelcomeView.swift in Sources */,
 				CC000001000000000000AA03 /* StatusBadge.swift in Sources */,
 				CC000001000000000000AA04 /* MetricCard.swift in Sources */,
 				CC000001000000000000AA05 /* TrendIndicator.swift in Sources */,
