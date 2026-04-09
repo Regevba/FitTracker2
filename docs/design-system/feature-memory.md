@@ -64,7 +64,9 @@ Tracking: [regevba/fittracker2#60](https://github.com/Regevba/2/issues/60)
 
 - Home-only `BlendedSectionStyle` ViewModifier (F4) — replace with existing `AppCard` from `AppComponents.swift`. No new component needed; the fix is to stop defining private modifiers that duplicate `AppCard`.
 
-**Status of each item:** `Proposed — awaiting Phase 4 implementation in home-today-screen v2`
+**Status of each item:** `Shipped — landed in PR #61 (2026-04-09), merged to main as bf3bd67`
+
+> **Note:** `AppText.metricL` was not needed — existing `AppText.metric` (.title, ~28pt) covers the goal percentage. `AppText.metricM` (25pt, `relativeTo: .title`) and `AppText.iconXL` (32pt) were added as planned.
 
 **What the next screen's audit should do:**
 
@@ -74,6 +76,25 @@ Tracking: [regevba/fittracker2#60](https://github.com/Regevba/2/issues/60)
 4. If the screen needs something *different*, propose a new token and append it here
 
 This keeps the design-system evolution coherent across the per-screen alignment passes instead of every audit re-proposing the same primitives in slightly different names.
+
+---
+
+## 2026-04-09 — Home Today Screen v2 UX Alignment (PR #61)
+
+- **Date:** 2026-04-09
+- **Feature:** home-today-screen v2
+- **Problem solved:** v1 MainScreenView (1029 lines) had 27 UX Foundations violations — root GeometryReader, no scroll, 12 raw fonts, 4 a11y labels, no empty/loading/error states, readiness principle violated
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** AppText.metric, metricCompact, subheading, captionStrong, eyebrow, callout, body, sectionTitle, titleMedium, iconMedium; AppSpacing.xxSmall/xSmall/small/medium; AppColor.Chart.body/sleep; AppRadius.card/button; AppSpring.snappy; AppEasing.short
+- **Reused components:** ReadinessCard, LiveInfoStrip, AppProgressRing, AppCard
+- **New primitives:**
+  - Tokens: `AppText.metricM` (25pt), `AppText.iconXL` (32pt), `AppSize.indicatorDot` (8pt), `AppColor.Chart.weight/hrv/heartRate/activity`
+  - Components: `AppMetricColumn`, `AppMetricTile` (promoted to AppComponents.swift)
+  - Service: `HomeRecommendationProvider` (readiness → recommendation mapping)
+- **Wireframe/UX:** 7-section scrollable stack (Toolbar → Greeting → ReadinessCard → Training & Nutrition → Status → Goal → Metrics). ReadinessCard hero. Side-by-side Start Workout + Log Meal CTAs. 5 explicit states.
+- **Final UI decisions:** No-scroll dropped, GeometryReader removed, LiveInfoStrip static, compact/tight props deleted, guilt-adjacent copy rewritten
+- **Accessibility:** ~30+ labels (was 4), all tap targets ≥44pt, Dynamic Type via relativeTo, reduce-motion on all animations
+- **Follow-up gaps:** Status+Goal merged card (own PM cycle), Metric Tile Deep Linking (own PM cycle), snapshot tests (T16), Onboarding v2 retroactive refactor
 
 ---
 

@@ -1,9 +1,9 @@
 {
   "feature": "home-today-screen",
   "created": "2026-04-06T14:00:00Z",
-  "updated": "2026-04-09T16:00:00Z",
+  "updated": "2026-04-09T17:00:00Z",
   "branch": "feature/home-today-screen-v2",
-  "current_phase": "merge",
+  "current_phase": "complete",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -186,20 +186,25 @@
       "analytics_verification_passed": true
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
+      "approved_at": "2026-04-09T15:30:00Z",
+      "approved_by": "user",
       "v1_status": "pre-pm-workflow",
-      "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "risks": ["zero high-risk files touched"],
+      "ci_main": true,
+      "ci_feature": true
     },
     "merge": {
-      "status": "pending",
+      "status": "approved",
+      "approved_at": "2026-04-09T16:00:00Z",
       "v1_status": "done",
-      "pr_number": null,
-      "analytics_regression_passed": null
+      "pr_number": 61,
+      "merge_commit": "bf3bd67",
+      "analytics_regression_passed": true
     },
     "documentation": {
-      "status": "pending",
+      "status": "approved",
+      "approved_at": "2026-04-09T17:00:00Z",
       "v1_status": "done"
     },
     "metrics": {
@@ -221,8 +226,8 @@
         "sync_success_rate > 99%",
         "ci_pass_rate > 95%"
       ],
-      "instrumentation_ready": false,
-      "first_review_date": null,
+      "instrumentation_ready": true,
+      "first_review_date": "2026-04-16",
       "kill_criteria": "Core screen — always active. v2 alignment only ships if no readiness/biometric flow regresses."
     }
   },
