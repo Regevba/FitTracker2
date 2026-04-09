@@ -1,3 +1,9 @@
+// HISTORICAL — superseded by v2/TrainingPlanView.swift on 2026-04-10 per
+// UX Foundations alignment pass. See
+// .claude/features/training-plan-v2/v2-audit-report.md for the gap analysis.
+// This file is no longer in the build target; it stays in the repo
+// as a reviewable reference for the v1 → v2 diff.
+
 // Views/Training/TrainingPlanView.swift
 // Tab 2: Training Plan
 //   - Today's session breakdown by section
