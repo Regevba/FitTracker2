@@ -350,6 +350,14 @@ final class AnalyticsService: ObservableObject {
         logEvent(AnalyticsEvent.homeBodyCompLogTap, parameters: nil)
     }
 
+    /// User taps a metric tile on the Home screen to deep-link into Stats
+    func logHomeMetricTileTap(metricType: String, hasValue: Bool) {
+        logEvent(AnalyticsEvent.homeMetricTileTap, parameters: [
+            AnalyticsParam.metricType: metricType,
+            AnalyticsParam.hasValue: hasValue ? "true" : "false",
+        ])
+    }
+
     // MARK: - Settings Events
 
     func logSettingsChanged(settingName: String, newValue: String) {

@@ -36,6 +36,7 @@ struct RootTabView: View {
 
     @State private var selectedTab:    AppTab
     @State private var showAccount             = false
+    @State private var pendingStatsMetric: StatsFocusMetric?
 
     init() {
         _selectedTab = State(initialValue: Self.reviewSelectedTab)
@@ -207,10 +208,12 @@ struct RootTabView: View {
     @ViewBuilder
     private func tabContent(_ tab: AppTab) -> some View {
         switch tab {
-        case .main:      MainScreenView(selectedTab: $selectedTab)
+        case .main:      MainScreenView(selectedTab: $selectedTab, statsMetric: $pendingStatsMetric)
         case .training:  TrainingPlanView().analyticsScreen(AnalyticsScreen.trainingPlan)
         case .nutrition: NutritionView().analyticsScreen(AnalyticsScreen.nutrition)
-        case .stats:     StatsView().analyticsScreen(AnalyticsScreen.stats)
+        case .stats:     StatsView(initialMetric: pendingStatsMetric)
+                            .analyticsScreen(AnalyticsScreen.stats)
+                            .onDisappear { pendingStatsMetric = nil }
         }
     }
 

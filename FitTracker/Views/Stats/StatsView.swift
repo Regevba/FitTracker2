@@ -246,6 +246,8 @@ private struct MetricSeriesPoint: Identifiable {
 }
 
 struct StatsView: View {
+    var initialMetric: StatsFocusMetric?
+
     @EnvironmentObject var dataStore: EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
 
@@ -329,7 +331,11 @@ struct StatsView: View {
         .navigationTitle("Stats")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            syncSelectedMetric()
+            if let initialMetric {
+                selectedMetric = initialMetric
+            } else {
+                syncSelectedMetric()
+            }
         }
         .onChange(of: period) { _, _ in
             chartSelection = nil

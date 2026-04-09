@@ -9,6 +9,7 @@ struct MainScreenView: View {
     // MARK: - External dependencies
 
     @Binding var selectedTab: AppTab
+    @Binding var statsMetric: StatsFocusMetric?
 
     @EnvironmentObject var dataStore:     EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
@@ -434,29 +435,47 @@ struct MainScreenView: View {
                 value: displayMetricNumber(hrvValue),
                 label: "HRV",
                 tintColor: AppColor.Chart.hrv,
-                onLogTap: { manualEntry = true }
+                onLogTap: { manualEntry = true },
+                onTileTap: { navigateToStats(metric: .hrv, label: "hrv") }
             )
             AppMetricTile(
                 icon: AppIcon.heart,
                 value: displayMetricNumber(restingHRValue),
                 label: "RHR",
                 tintColor: AppColor.Chart.heartRate,
-                onLogTap: { manualEntry = true }
+                onLogTap: { manualEntry = true },
+                onTileTap: { navigateToStats(metric: .restingHeartRate, label: "resting_heart_rate") }
             )
             AppMetricTile(
                 icon: AppIcon.sleep,
                 value: displaySleepValue,
                 label: "Sleep",
                 tintColor: AppColor.Chart.sleep,
-                onLogTap: { manualEntry = true }
+                onLogTap: { manualEntry = true },
+                onTileTap: { navigateToStats(metric: .sleep, label: "sleep") }
             )
             AppMetricTile(
                 icon: AppIcon.steps,
                 value: displayStepsValue,
                 label: "Steps",
-                tintColor: AppColor.Chart.activity
+                tintColor: AppColor.Chart.activity,
+                onTileTap: { navigateToStats(metric: .steps, label: "steps") }
             )
         }
+    }
+
+    private func navigateToStats(metric: StatsFocusMetric, label: String) {
+        let g = UIImpactFeedbackGenerator(style: .light)
+        g.prepare()
+        g.impactOccurred()
+
+        analytics.logHomeMetricTileTap(
+            metricType: label,
+            hasValue: true
+        )
+
+        statsMetric = metric
+        selectedTab = .stats
     }
 
     // ─────────────────────────────────────────────────────
@@ -613,7 +632,7 @@ private extension EmptyReason {
 #if DEBUG
 #Preview("Home v2 — Filled") {
     NavigationStack {
-        MainScreenView(selectedTab: .constant(.main))
+        MainScreenView(selectedTab: .constant(.main), statsMetric: .constant(nil))
             .environmentObject(EncryptedDataStore())
             .environmentObject(HealthKitService())
             .environmentObject(TrainingProgramStore())

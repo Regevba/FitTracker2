@@ -128,6 +128,8 @@ enum AnalyticsEvent {
     static let homeBodyCompPeriodChanged = "home_body_comp_period_changed"
     /// User taps the log CTA on the body composition card
     static let homeBodyCompLogTap = "home_body_comp_log_tap"
+    /// User taps a metric tile on the Home screen to deep-link into Stats
+    static let homeMetricTileTap = "home_metric_tile_tap"
 }
 
 // MARK: - Parameter Constants
@@ -190,6 +192,8 @@ enum AnalyticsParam {
     static let hasRecommendation  = "has_recommendation" // true/false
     static let emptyReason        = "empty_reason"     // no_healthkit/no_data/first_launch
     static let ctaShown           = "cta_shown"        // connect_health/log_manually/both
+
+    static let hasValue           = "has_value"           // true/false — metric tile has data
 
     // Body composition parameters
     static let hasWeight          = "has_weight"         // true/false

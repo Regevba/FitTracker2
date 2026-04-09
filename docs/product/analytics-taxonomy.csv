@@ -37,6 +37,7 @@ Home,home_empty_state_shown,Custom,Home Screen,empty_reason (no_healthkit/no_dat
 Home,home_body_comp_tap,Custom,Home Screen,has_weight (true/false),has_body_fat (true/false),progress_percent (0-100),,,No,event,Body comp card drill-down signal
 Home,home_body_comp_period_changed,Custom,Home Screen,period (week/month/quarter/year),,,,,,No,event,Tracks preferred time-range
 Home,home_body_comp_log_tap,Custom,Home Screen,,,,,,,No,event,Log CTA engagement on body comp card
+Home,home_metric_tile_tap,Custom,Home Screen,metric_type (hrv/resting_heart_rate/sleep/steps),has_value (true/false),,,,No,event,Metric tile deep-link to Stats tab
 ,,,,,,,,,,
 Screen Name,View Name,SwiftUI View,Category,,,,,,,,
 Home / Today,home,MainScreenView,core,,,,,,,,

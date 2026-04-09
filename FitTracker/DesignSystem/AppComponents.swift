@@ -343,9 +343,10 @@ struct AppMetricTile: View {
     let label: String          // e.g. "RHR", "HRV", "Sleep"
     let tintColor: Color
     var onLogTap: (() -> Void)?
+    var onTileTap: (() -> Void)?
 
     var body: some View {
-        VStack(spacing: AppSpacing.xxSmall) {
+        let tileContent = VStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
                 .font(AppText.iconMedium)
                 .foregroundStyle(tintColor)
@@ -378,10 +379,23 @@ struct AppMetricTile: View {
             tintColor.opacity(0.12),
             in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
         )
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(label)
-        .accessibilityValue(value ?? "Empty")
-        .accessibilityHint(value == nil ? "Tap to log" : "")
+
+        if value != nil, let onTileTap {
+            Button(action: onTileTap) {
+                tileContent
+            }
+            .buttonStyle(.plain)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(label)
+            .accessibilityValue(value ?? "Empty")
+            .accessibilityHint("Tap to view \(label) trends in Stats")
+        } else {
+            tileContent
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(label)
+                .accessibilityValue(value ?? "Empty")
+                .accessibilityHint(value == nil ? "Tap to log" : "")
+        }
     }
 }
 
