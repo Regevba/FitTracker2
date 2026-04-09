@@ -379,7 +379,59 @@ CLAUDE.md (rules)
 
 ---
 
-## 15. Migration Notes
+## 15. v3.0 — External Integrations, Screen Audits & Multi-Screen V2 (2026-04-09)
+
+### What Changed
+
+The ecosystem crossed two thresholds in a single session: **external tool integration** (Notion MCP, Figma MCP) and **scaled v2 refactoring** validated across multiple screens within one feature.
+
+### Session Accomplishments
+
+- **4 features shipped via PM workflow** — Home Today Screen v2, body composition card, metric deep linking, and the screen audit research mode itself all moved through the lifecycle end-to-end.
+- **First end-to-end Figma MCP integration** — design builds executed directly from Figma file references via MCP, closing the gap between design artifacts and implementation.
+- **Screen audit research mode** — a new Phase 0 variant that scopes a v2 refactor by auditing an existing screen against UX Foundations before any code is written. Produces a `v2-audit-report.md` with numbered findings and a decisions log.
+- **Parallel subagent execution across skills** — multiple skills dispatched simultaneously during implementation phases, with independent tasks running in parallel subagents and converging at review gates.
+
+### New Capabilities
+
+| Capability | Description |
+|---|---|
+| **Auto-sync to Notion/GitHub on phase transitions** | Phase advances in `state.json` trigger status updates to the Notion project board and GitHub Issue labels simultaneously. No manual dashboard sync needed. |
+| **Research-only audit mode** | `/ux audit` can now run in a scoping-only mode for screen refactors — produces findings and a decisions log without requiring a full UX spec upfront. Used for the Home v2 27-finding audit. |
+| **BodyCompositionDetailView drill-down pattern** | Established the reusable pattern for metric tile tap → detail view navigation with deep linking support. Available as a reference pattern for future metric screens. |
+| **v2/ subdirectory convention validated at scale** | The `v2/` split (introduced in CLAUDE.md for the Home screen) was validated across multiple views within one feature, confirming the convention scales beyond single-file refactors. |
+
+### Integration Expansion
+
+| Integration | Protocol | Direction | Purpose |
+|---|---|---|---|
+| **Notion MCP** | MCP (Model Context Protocol) | Bidirectional | Project status board updates on phase transitions, feature cards synced from `state.json` |
+| **Figma MCP** | MCP (Model Context Protocol) | Read + Write | Design context retrieval (`get_design_context`), screenshot capture, code connect mapping for design-to-code builds |
+
+### Updated Dependency Map
+
+```
+CLAUDE.md (rules)
+  └─→ SKILL.md (pm-workflow)
+        ├─→ /ux research → ux-research.md (Phase 0/3)
+        ├─→ /ux audit (screen scope) → v2-audit-report.md (Phase 0 v2)
+        ├─→ /ux spec → ux-spec.md (Phase 3)
+        ├─→ /ux validate → validation report (Phase 3/5)
+        ├─→ /design audit → compliance check (Phase 3)
+        ├─→ state.json (lifecycle + tasks[])
+        ├─→ skill-routing.json (task assignments)
+        ├─→ task-queue.json (priority queue)
+        ├─→ change-log.json (post-merge broadcast)
+        │     └─→ All skills notified
+        │           └─→ /cx analyze → /ux audit → Fix/Enhancement
+        │
+        ├─→ [NEW] Notion MCP ← phase transition sync
+        └─→ [NEW] Figma MCP ← design context + code connect
+```
+
+---
+
+## 16. Migration Notes
 
 - **Backwards compatible:** State.json files without `tasks[]` or `work_type` fields work as `type: "feature"` with feature-level tracking only
 - **New features should use `work_type`** — selected during `/pm-workflow` initialization

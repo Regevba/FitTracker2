@@ -102,6 +102,7 @@ When ANY work item completes (merge to main), broadcast a change notification to
    - `/analytics` — "Verify instrumentation still intact after merge."
    - `/ops` — "Deployment pending. Check health after deploy."
    - `/design` — "If UI changed, verify design system compliance."
+   - **Notion** — Update the feature's Notion page to `phase:done` via `notion-update-page`.
 3. **Write a change event to `.claude/shared/change-log.json`:**
    ```json
    {
@@ -721,6 +722,14 @@ On every phase approval, execute this procedure:
    - Add a comment: "Phase transition: {from} → {to} (approved {timestamp})"
 5. Announce: "✓ Phase {from} approved. Moving to Phase {next}: {description}."
 ```
+
+### External Tool Sync (Auto)
+
+After every Phase Transition Procedure completes (steps 1-5 above), execute these additional sync steps:
+
+4. **Notion sync** — Search for the feature's Notion page via `notion-search` (query: feature name). If found, update it with `notion-update-page`: set the phase/status property to the new `current_phase` and add a comment with the transition details.
+5. **Vercel notification** — No explicit action required. Merging to main auto-triggers a Vercel deploy. During the merge phase, remind the user that deploy will happen automatically on push.
+6. **Figma sync note** — If `has_ui = true` and the completed phase is `implement`, remind the user to update the Figma file with the final design using the `figma-generate-design` skill (`/figma generate-design`).
 
 ### Phase Order
 

@@ -27,6 +27,7 @@
 **Added history:**
 - 2026-04-02 — ecosystem v1 shipped with 10 skills (no `/ux`)
 - 2026-04-07 — `/ux` added (PR #59), split from `/design` to own the "what & why" layer. Pilot run: Onboarding v2 UX Foundations alignment pass
+- 2026-04-09 — v3.0: external integrations (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, v2/ convention validated at scale. 4 features shipped in one session.
 
 ---
 
@@ -46,6 +47,26 @@ Located under `.claude/shared/`:
 | `health-status.json` | Infrastructure services, CI, incidents, cost | `/ops` |
 
 Every skill reads `context.json` on startup. Most skills write to one primary file and read from the others for context.
+
+---
+
+## External integrations (MCP)
+
+| Integration | Protocol | What it does |
+|---|---|---|
+| **Notion MCP** | Model Context Protocol | Bidirectional project board sync — phase transitions in `state.json` push status updates to Notion automatically |
+| **Figma MCP** | Model Context Protocol | Design context retrieval, screenshot capture, code connect mapping — enables design-to-code builds without leaving the CLI |
+
+---
+
+## What's been built (as of 2026-04-09)
+
+- **4 features shipped via PM workflow in a single session** — Home Today Screen v2, body composition card, metric deep linking, screen audit research mode
+- **Home v2** — full UX Foundations alignment pass with 27-finding audit, v2/ subdirectory convention validated across multiple views
+- **Body composition card** — metric tile with BodyCompositionDetailView drill-down pattern, reusable for future metric screens
+- **Metric deep linking** — tap a metric tile on Home, navigate directly to the relevant detail view
+- **Screen audit workflow** — `/ux audit` scoping mode produces a `v2-audit-report.md` with numbered findings and decisions log before any code is written
+- **Parallel subagent execution** — independent implementation tasks dispatched to multiple skills simultaneously, converging at review gates
 
 ---
 
@@ -140,7 +161,7 @@ Every skill reads `context.json` on startup. Most skills write to one primary fi
 ## Where each skill sits in the PM workflow
 
 ```
-Phase 0  Research  ─────▶ /research (new feat) OR /ux audit (v2 refactor) · /cx (pain points)
+Phase 0  Research  ─────▶ /research (new feat) OR /ux audit (v2 refactor / screen scope) · /cx (pain points)
 Phase 1  PRD       ─────▶ /analytics spec (instrumentation plan)
 Phase 2  Tasks     ─────▶ /pm-workflow (internal — no dispatch)
 Phase 3  UX/Integ  ─────▶ /ux research → /ux spec → /ux validate → /design audit
@@ -170,7 +191,7 @@ The hub never does inline work — it reads state, decides which skill to dispat
 ## Related documents
 
 - [`architecture.md`](architecture.md) — full ecosystem deep-dive (~1400 lines). Covers the hub-and-spoke architecture, shared data layer, per-skill sections, connection map, feature review, and a merged-in gap analysis snapshot from 2026-04-04 with current deltas.
-- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → current (+ `/ux`). Useful context for understanding why the current architecture looks the way it does.
+- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → v3.0 (external integrations + screen audits + parallel execution). Useful context for understanding why the current architecture looks the way it does.
 - [`pm-workflow.md`](pm-workflow.md) — hub skill deep-dive
 - [`.claude/skills/{name}/SKILL.md`](../../.claude/skills/) — agent-facing prompts the harness executes when a skill is invoked
 - [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references
