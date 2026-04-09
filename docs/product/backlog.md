@@ -32,6 +32,7 @@
 | 21 | Status+Goal Merged Card (Body Composition) | PR #65 | 2026-04-09 | Unified card + drill-down with SwiftUI Charts, 3 analytics events |
 | 22 | Metric Tile Deep Linking | PR #67 | 2026-04-09 | Tap HRV/RHR/Sleep/Steps → Stats filtered, 1 analytics event |
 | 23 | Figma v2 Home Screen | Figma node 741:2 | 2026-04-09 | 7 sections using design system components + variables |
+| 24 | Training Plan v2 UX Alignment | PR #74 | 2026-04-10 | 533-line container + 6 extracted views, 12 analytics events, 16 tests |
 
 ---
 

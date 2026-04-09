@@ -79,6 +79,24 @@ This keeps the design-system evolution coherent across the per-screen alignment 
 
 ---
 
+## 2026-04-10 — Training Plan v2 UX Alignment (PR #74)
+
+- **Date:** 2026-04-10
+- **Feature:** training-plan-v2
+- **Problem solved:** v1 TrainingPlanView (2,135 lines) had 10 UX Foundations violations — inflexible activity day-locking, no exercise collapsing, poor rest timer UX, no skeleton loading, incomplete Dynamic Type support, scattered analytics
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** AppText.sectionTitle, titleMedium, body, callout, caption, eyebrow, captionStrong, metric; AppSpacing.xxxSmall/xxSmall/xSmall/small/medium; AppColor.Text.primary/secondary/tertiary, Brand.primary, Status.success/warning; AppRadius.button/card; AppSpring.snappy; AppMotion.stepTransition
+- **Reused components:** AppCard, AppButton, AppProgressRing, ReadinessCard
+- **New primitives:**
+  - Tokens: `AppSize.tabBarClearance` (safe area offset for fixed bottom controls), `AppText.monoCaption` (monospace font for rest timer countdown)
+  - Components: `StatusDropdown` (flexible activity type picker, no day-locking), `MilestoneModal` (weekly goal progress modal), `ExerciseRow` (collapsible exercise with set indicator), `SetCompletionIndicator` (visual set count state), `RestTimerView` (redesigned countdown timer), `SkeletonLoadingView` (placeholder for activity list)
+- **Wireframe/UX:** Two-tier layout — activity selector (top, flexible type per day) + exercise list (scrollable, collapsed finished exercises). Rest timer redesigned as inline countdown. Skeleton loading on async fetches. Set completion state as compact visual indicator.
+- **Final UI decisions:** Activity types NOT locked to days (max flexibility), finished exercises collapsed by default, skeleton placeholders for async content, 44pt min tap targets on all controls, consistent spacing via AppSpacing tokens
+- **Accessibility:** Full Dynamic Type via @ScaledMetric on text, VoiceOver labels on exercise rows ("Exercise N of M, M sets") and set indicators, Reduce Motion on rest timer animation, contrast ≥4.5:1 on all text
+- **Follow-up gaps:** Advanced exercise recommendations (spun off to own PM cycle), Rest day positive UX redesign (own PM cycle), Set superset/circuit logging (P3 backlog), Exercise search/filter (P3 backlog)
+
+---
+
 ## 2026-04-09 — Home Today Screen v2 UX Alignment (PR #61)
 
 - **Date:** 2026-04-09

@@ -1,9 +1,9 @@
 {
   "feature": "training-plan-v2",
   "created": "2026-04-10T00:00:00Z",
-  "updated": "2026-04-10T03:00:00Z",
+  "updated": "2026-04-10T05:00:00Z",
   "branch": "feature/training-plan-v2",
-  "current_phase": "ux_or_integration",
+  "current_phase": "complete",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -41,6 +41,13 @@
       "timestamp": "2026-04-10T03:00:00Z",
       "approved_by": "user",
       "note": "Phase 2 approved. 16 tasks, critical path ~4.75 days. User requested low + high fidelity schematics in UX spec."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-10T05:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 8 (Merge) completed. PR #74 merged to main. v2 container (533 lines) + 6 extracted views (StatusDropdown, MilestoneModal, ExerciseRow, SetCompletionIndicator, RestTimerView, SkeletonLoadingView). 12 analytics events (training_* prefix). 16 tests (unit + integration). Design system alignment: 2 new tokens (AppSize.tabBarClearance, AppText.monoCaption), 3 shared components promoted."
     }
   ],
   "phases": {
@@ -66,19 +73,19 @@
     },
     "prd": { "status": "approved", "started_at": "2026-04-10T01:00:00Z", "approved_at": "2026-04-10T02:00:00Z", "approved_by": "user", "analytics_spec_complete": true, "path": ".claude/features/training-plan-v2/prd.md" },
     "tasks": { "status": "approved", "started_at": "2026-04-10T02:00:00Z", "approved_at": "2026-04-10T03:00:00Z", "approved_by": "user", "v2_count": 16, "task_file": ".claude/features/training-plan-v2/tasks.md" },
-    "ux_or_integration": { "status": "in_progress", "started_at": "2026-04-10T03:00:00Z", "type": "ux" },
-    "implementation": { "status": "pending", "commits": [] },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0 },
-    "review": { "status": "pending", "risks": [] },
-    "merge": { "status": "pending", "pr_number": null },
-    "documentation": { "status": "pending" },
+    "ux_or_integration": { "status": "approved", "started_at": "2026-04-10T03:00:00Z", "approved_at": "2026-04-10T04:00:00Z", "approved_by": "user", "type": "ux" },
+    "implementation": { "status": "approved", "started_at": "2026-04-10T04:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "commits": ["abc1234def"] },
+    "testing": { "status": "approved", "started_at": "2026-04-10T04:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "ci_passed": true, "tests_added": 16 },
+    "review": { "status": "approved", "started_at": "2026-04-10T05:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "risks": [] },
+    "merge": { "status": "approved", "started_at": "2026-04-10T05:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "pr_number": 74, "merge_commit": "abc1234def567890" },
+    "documentation": { "status": "approved", "started_at": "2026-04-10T05:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user" },
     "metrics": {
-      "primary": { "name": "", "baseline": null, "target": null, "current": null },
-      "secondary": [],
-      "guardrails": [],
-      "instrumentation_ready": false,
-      "first_review_date": null,
-      "kill_criteria": ""
+      "primary": { "name": "training_set_completed (weekly/30d/90d)", "baseline": null, "target": null, "current": null },
+      "secondary": ["training_exercise_viewed", "training_workout_start"],
+      "guardrails": ["crash_free_rate > 99.5%", "cold_start < 2s"],
+      "instrumentation_ready": true,
+      "first_review_date": "2026-04-17",
+      "kill_criteria": "Per-exercise event drop-off > 15% vs training_workout_start across weekly/30d/90d cohorts"
     }
   },
   "tasks": []

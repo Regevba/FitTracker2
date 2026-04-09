@@ -1,6 +1,6 @@
 ---
 name: design
-description: "Design system governance, UX specs, Figma automation, accessibility audits, auto-generated build prompts. Sub-commands: /design audit, /design ux-spec {feature}, /design figma {feature}, /design tokens, /design accessibility, /design prompt {feature}."
+description: "Design system governance, UX specs, Figma automation, accessibility audits, auto-generated build prompts, Figma MCP build with fallback. Sub-commands: /design audit, /design ux-spec {feature}, /design figma {feature}, /design tokens, /design accessibility, /design prompt {feature}, /design build {feature}."
 ---
 
 # Design & UX Skill: $ARGUMENTS
@@ -112,6 +112,27 @@ Run WCAG AA accessibility audit.
 **Output:** `docs/prompts/{YYYY-MM-DD}-{feature}-design-build.md`
 
 **When to run:** Automatically dispatched by `/pm-workflow` after Phase 3 approval when both `/ux` and `/design` gates are passed. Also invokable standalone once the spec is done.
+
+### `/design build {feature}`
+
+**Purpose:** Build/update the feature's screens in Figma using the Figma MCP, with automatic fallback to a saved prompt if MCP fails.
+
+**Steps:**
+1. Read the feature's `ux-spec.md` for the visual specification
+2. Read the feature's design build prompt at `docs/prompts/{date}-{feature}-design-build.md` (if it exists from `/design prompt`)
+3. If no design build prompt exists, generate one now and save to `docs/prompts/{date}-{feature}-design-build.md`
+4. **Attempt Figma MCP build:**
+   - Load the `figma-use` skill (mandatory prerequisite)
+   - Load the `figma-generate-design` skill
+   - Follow the screen-building workflow: discover design system → create wrapper → build sections → validate with screenshots
+   - On success: announce completion with Figma node IDs
+5. **On Figma MCP failure** (connection error, timeout, API error):
+   - Announce: "Figma MCP build failed: {error}. Falling back to saved prompt."
+   - Verify the design build prompt exists at `docs/prompts/{date}-{feature}-design-build.md`
+   - Present the prompt path to the user: "Copy this prompt into Claude Console with Figma MCP access: `docs/prompts/{feature}-design-build.md`"
+6. **Always save the prompt** (even on MCP success) as a backup at `docs/prompts/{date}-{feature}-design-build.md` — this ensures every feature has a portable Figma build prompt regardless of MCP availability.
+
+**Output:** Figma screens (if MCP succeeds) + saved prompt file (always).
 
 ## Key References
 
