@@ -1,9 +1,9 @@
 {
   "feature": "home-today-screen",
   "created": "2026-04-06T14:00:00Z",
-  "updated": "2026-04-09T13:00:00Z",
+  "updated": "2026-04-09T14:00:00Z",
   "branch": "feature/home-today-screen-v2",
-  "current_phase": "implementation",
+  "current_phase": "testing",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -79,6 +79,13 @@
       "timestamp": "2026-04-09T13:00:00Z",
       "approved_by": "user",
       "note": "Phase 3 complete. ux-research.md (12/13 principles mapped), ux-spec.md (9 sections), heuristic validation 12/12 pass, compliance gateway 5/5 pass, UX + Design build prompts generated."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-04-09T14:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 4 complete. 16/17 tasks done (T16 snapshot tests deferred to Phase 5 manual). 6 commits: foundation layer, v2 MainScreenView (703 lines), a11y pass, pbxproj swap, tests (21 cases), checklist walk. T8 is the main assembly — bottom-up rewrite from design system."
     }
   ],
   "phases": {
@@ -157,20 +164,26 @@
       "heuristic_validation": "12/12 pass, 1 N/A"
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-04-09T13:00:00Z",
+      "approved_at": "2026-04-09T14:00:00Z",
+      "approved_by": "user",
       "v1_status": "shipped",
       "checklist_completed": true,
-      "commits": ["8b5fdf2", "136efe3", "f266932", "ec95eaa"]
+      "commits": ["8b5fdf2", "136efe3", "f266932", "ec95eaa", "73df335"]
     },
     "testing": {
-      "status": "pending",
+      "status": "in_progress",
+      "started_at": "2026-04-09T14:00:00Z",
       "v1_status": "pre-pm-workflow",
-      "ci_passed": false,
-      "tests_added": 0,
-      "instrumentation_verified": false,
-      "analytics_tests_added": 0,
-      "analytics_verification_passed": false
+      "ci_passed": true,
+      "build_result": "BUILD SUCCEEDED (iPhone 17 Pro, iOS 26.4)",
+      "tests_added": 11,
+      "tests_passed": 11,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 10,
+      "analytics_tests_passed": 10,
+      "analytics_verification_passed": true
     },
     "review": {
       "status": "pending",
