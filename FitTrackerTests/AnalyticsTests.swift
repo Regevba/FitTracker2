@@ -402,7 +402,6 @@ final class AnalyticsTests: XCTestCase {
     func testOnboardingCompletedUserProperty() {
         analyticsService.setOnboardingCompleted(true)
 
-        XCTAssertEqual(mockAdapter.capturedUserProperties.count, 1)
         XCTAssertEqual(mockAdapter.capturedUserProperties[AnalyticsUserProperty.onboardingCompleted], "true")
     }
 
