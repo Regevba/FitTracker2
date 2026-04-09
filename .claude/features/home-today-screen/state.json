@@ -160,7 +160,8 @@
       "status": "in_progress",
       "started_at": "2026-04-09T13:00:00Z",
       "v1_status": "shipped",
-      "commits": []
+      "checklist_completed": true,
+      "commits": ["8b5fdf2", "136efe3", "f266932", "ec95eaa"]
     },
     "testing": {
       "status": "pending",
