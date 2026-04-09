@@ -59,6 +59,7 @@ struct RestTimerView: View {
                 .foregroundStyle(AppColor.Text.primary)
                 .contentTransition(.numericText())
                 .motionSafe(AppSpring.snappy, value: remainingSeconds)
+                .accessibilityHidden(true)
 
             // Progress bar
             progressBar
@@ -70,7 +71,9 @@ struct RestTimerView: View {
                     .foregroundStyle(AppColor.Accent.primary)
             }
             .buttonStyle(.plain)
-            .accessibilityHint("Skips the rest timer")
+            .frame(minWidth: 44, minHeight: 44)
+            .accessibilityLabel("Skip rest timer")
+            .accessibilityHint("Skips the remaining \(formattedTime) rest")
         }
         .padding(AppSpacing.small)
         .background(AppColor.Surface.elevated)

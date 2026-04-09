@@ -208,6 +208,7 @@ struct TrainingPlanView: View {
                         Text(selectedDay.rawValue)
                             .font(AppText.sectionTitle)
                             .foregroundStyle(AppColor.Text.primary)
+                            .accessibilityAddTraits(.isHeader)
                         if selectedDay == suggestedDay { suggestedBadge }
                     }
                     Text(progressText)
@@ -269,6 +270,7 @@ struct TrainingPlanView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { showActivityPicker = false }
+                        .accessibilityLabel("Cancel activity selection")
                 }
             }
         }
@@ -306,6 +308,7 @@ struct TrainingPlanView: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel("\(dayType.rawValue)\(isSuggested ? ", suggested" : "")")
+        .accessibilityHint("Double tap to switch to \(dayType.rawValue)")
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 
@@ -348,6 +351,8 @@ struct TrainingPlanView: View {
         }
         .padding(.horizontal, AppSpacing.small)
         .padding(.top, AppSpacing.small)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Loading exercises")
     }
 
     // MARK: - Toolbar

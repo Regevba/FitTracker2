@@ -62,7 +62,9 @@ struct FocusModeView: View {
                     .foregroundStyle(AppColor.Text.inverseTertiary)
             }
             .buttonStyle(.plain)
+            .frame(minWidth: 44, minHeight: 44)
             .accessibilityLabel("Exit focus mode")
+            .accessibilityHint("Returns to the exercise list")
         }
         .padding(.horizontal, AppSpacing.large)
         .padding(.top, AppSpacing.small)
@@ -118,6 +120,7 @@ struct FocusModeView: View {
         HStack(spacing: AppSpacing.small) {
             focusField(placeholder: "kg", text: $weightStr)
                 .accessibilityLabel("Weight in kilograms")
+                .accessibilityValue(weightStr.isEmpty ? "empty" : "\(weightStr) kg")
 
             Text("\u{00D7}")
                 .font(AppText.metric)
@@ -126,6 +129,7 @@ struct FocusModeView: View {
 
             focusField(placeholder: "reps", text: $repsStr)
                 .accessibilityLabel("Repetitions completed")
+                .accessibilityValue(repsStr.isEmpty ? "empty" : "\(repsStr) reps")
         }
         .padding(.horizontal, AppSpacing.xLarge)
     }
@@ -169,6 +173,7 @@ struct FocusModeView: View {
         .padding(.horizontal, AppSpacing.xLarge)
         .disabled(allSetsDone)
         .accessibilityLabel(allSetsDone ? "Finish exercise" : "Log current set")
+        .accessibilityHint(allSetsDone ? "Exits focus mode" : "Records weight and reps for this set")
     }
 
     // MARK: - Input Field

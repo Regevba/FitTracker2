@@ -100,6 +100,7 @@ struct SetRowView: View {
                     currentWeight = Double(newValue)
                 }
                 .accessibilityLabel("Weight in kilograms")
+                .accessibilityValue(weightText.isEmpty ? "empty" : "\(weightText) kg")
 
             if let prev = previousWeightFormatted, weightText.isEmpty {
                 quickFillHint("Last \(prev) kg")
@@ -134,6 +135,7 @@ struct SetRowView: View {
                     currentReps = Int(newValue)
                 }
                 .accessibilityLabel("Repetitions")
+                .accessibilityValue(repsText.isEmpty ? "empty" : "\(repsText) reps")
 
             if let prev = previousRepsFormatted, repsText.isEmpty {
                 quickFillHint("Last \(prev)")
@@ -181,6 +183,7 @@ struct SetRowView: View {
                     .buttonStyle(.plain)
                     .frame(minHeight: 44)
                     .accessibilityLabel("Copy last session values")
+                    .accessibilityHint("Fills weight and reps from previous session")
                 }
 
                 Button(action: onLog) {
@@ -196,7 +199,8 @@ struct SetRowView: View {
                 }
                 .buttonStyle(.plain)
                 .frame(minHeight: 44)
-                .accessibilityLabel("Log set")
+                .accessibilityLabel("Log set \(setIndex)")
+                .accessibilityHint("Records the current weight and reps")
             }
         }
     }
@@ -212,6 +216,7 @@ struct SetRowView: View {
         .buttonStyle(.plain)
         .frame(minWidth: 44, minHeight: 44)
         .accessibilityLabel("Delete set \(setIndex)")
+        .accessibilityHint("Removes this set from the exercise")
     }
 
     // MARK: - Helpers

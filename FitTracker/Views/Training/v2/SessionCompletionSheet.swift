@@ -109,6 +109,7 @@ struct SessionCompletionSheet: View {
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Session statistics")
+        .accessibilityAddTraits(.isHeader)
     }
 
     // MARK: - Stat Tile
@@ -160,7 +161,9 @@ struct SessionCompletionSheet: View {
                     .foregroundStyle(AppColor.Text.primary)
             }
             .buttonStyle(.plain)
+            .frame(minHeight: 44)
             .accessibilityLabel("Share session summary")
+            .accessibilityHint("Opens share sheet with your workout results")
 
             Button(action: onDone) {
                 Text("Done")
@@ -174,7 +177,9 @@ struct SessionCompletionSheet: View {
                     )
             }
             .buttonStyle(.plain)
+            .frame(minHeight: 44)
             .accessibilityLabel("Dismiss session summary")
+            .accessibilityHint("Closes the completion sheet and returns to training")
         }
     }
 

@@ -116,6 +116,7 @@ struct ExerciseRowView: View {
                 .font(AppText.sectionTitle)
                 .strikethrough(isComplete, color: AppColor.Status.success)
                 .foregroundStyle(isComplete ? AppColor.Text.secondary : AppColor.Text.primary)
+                .accessibilityAddTraits(.isHeader)
 
             if isComplete {
                 Image(systemName: "checkmark.circle.fill")
@@ -143,6 +144,10 @@ struct ExerciseRowView: View {
                 metaPill("Rest \(exercise.restSeconds)s")
             }
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(exercise.category != .cardio
+            ? "\(exercise.targetSets) sets, \(exercise.targetReps) reps, \(exercise.restSeconds) seconds rest"
+            : "")
     }
 
     private func metaPill(_ text: String) -> some View {
@@ -161,6 +166,7 @@ struct ExerciseRowView: View {
             .font(AppText.caption)
             .foregroundStyle(AppColor.Accent.primary)
             .lineLimit(2)
+            .accessibilityLabel("Coaching cue: \(exercise.coachingCue)")
     }
 
     // MARK: - Expand Chevron
@@ -209,6 +215,7 @@ struct ExerciseRowView: View {
                     .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.tertiary)
                     .padding(.vertical, AppSpacing.xSmall)
+                    .accessibilityLabel("No sets recorded yet for \(exercise.name)")
             }
         }
         .padding(.horizontal, AppSpacing.xxSmall)
