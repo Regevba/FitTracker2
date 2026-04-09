@@ -1,5 +1,6 @@
 // FitTracker/Views/Shared/LiveInfoStrip.swift
-// Reusable animated info strip that cycles through contextual slides.
+// Static info strip that displays the highest-priority contextual slide.
+// Callers pass pre-prioritised slides; only the first element is shown.
 import SwiftUI
 
 struct InfoSlide: Identifiable {
@@ -12,41 +13,16 @@ struct InfoSlide: Identifiable {
 struct LiveInfoStrip: View {
 
     let slides: [InfoSlide]
-    var cycleDuration: UInt64 = 5
 
-    @State private var currentIndex = 0
-    @State private var isPaused = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Group {
-            if slides.isEmpty {
-                EmptyView()
-            } else if reduceMotion || slides.count == 1 {
-                slideView(slides[0])
+            if let slide = slides.first {
+                slideView(slide)
+                    .accessibilityLabel(slide.text)
             } else {
-                slideView(slides[currentIndex])
-                    .id(currentIndex)
-                    .transition(.opacity)
-                    .animation(.easeInOut(duration: AppDuration.standard), value: currentIndex)
-            }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            isPaused = true
-            Task {
-                try? await Task.sleep(nanoseconds: 10_000_000_000)
-                isPaused = false
-            }
-        }
-        .task {
-            guard slides.count > 1, !reduceMotion else { return }
-            while !Task.isCancelled {
-                try? await Task.sleep(nanoseconds: cycleDuration * 1_000_000_000)
-                guard !isPaused else { continue }
-                withAnimation {
-                    currentIndex = (currentIndex + 1) % slides.count
-                }
+                EmptyView()
             }
         }
     }
@@ -73,11 +49,20 @@ struct LiveInfoStrip: View {
 struct LiveInfoStrip_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: AppSpacing.large) {
+            // Multiple slides passed — only the first is displayed.
             LiveInfoStrip(slides: [
                 InfoSlide(text: "Good evening, Regev 🌙"),
                 InfoSlide(text: "78 — Ready to train", icon: "heart.fill", color: AppColor.Status.success),
                 InfoSlide(text: "🔥 7-day streak", color: AppColor.Brand.primary),
             ])
+
+            // Single slide.
+            LiveInfoStrip(slides: [
+                InfoSlide(text: "Welcome back!", icon: "hand.wave", color: AppColor.Brand.primary),
+            ])
+
+            // Empty slides — renders nothing.
+            LiveInfoStrip(slides: [])
         }
         .padding()
         .background(AppGradient.screenBackground)

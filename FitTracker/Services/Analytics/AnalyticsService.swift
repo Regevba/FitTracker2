@@ -301,6 +301,34 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Home Events
+
+    /// User taps an action on the Home screen
+    func logHomeActionTap(actionType: String, dayType: String, hasRecommendation: Bool) {
+        logEvent(AnalyticsEvent.homeActionTap, parameters: [
+            AnalyticsParam.actionType: actionType,
+            AnalyticsParam.workoutType: dayType,
+            AnalyticsParam.hasRecommendation: hasRecommendation ? "true" : "false",
+        ])
+    }
+
+    /// User completes a home-initiated action (conversion event)
+    func logHomeActionCompleted(actionType: String, durationSeconds: Int) {
+        logEvent(AnalyticsEvent.homeActionCompleted, parameters: [
+            AnalyticsParam.actionType: actionType,
+            AnalyticsParam.durationSeconds: durationSeconds,
+            AnalyticsParam.source: "home",
+        ])
+    }
+
+    /// Home screen shows an empty state
+    func logHomeEmptyStateShown(emptyReason: String, ctaShown: String) {
+        logEvent(AnalyticsEvent.homeEmptyStateShown, parameters: [
+            AnalyticsParam.emptyReason: emptyReason,
+            AnalyticsParam.ctaShown: ctaShown,
+        ])
+    }
+
     // MARK: - Settings Events
 
     func logSettingsChanged(settingName: String, newValue: String) {
