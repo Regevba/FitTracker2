@@ -471,4 +471,183 @@ These are the **needs-decision** findings that cannot be resolved auto-mechanica
 
 ---
 
-*Audit complete. Awaiting user approval on the 6 open questions in Section J before advancing to Phase 1.*
+## Decisions Log (Phase 0 closure — 2026-04-08)
+
+> Recorded after the user reviewed all 6 audit segments and answered every open question (OQ-1 through OQ-22 + Q9/Q10/Q11). This log is the canonical "why does Home v2 look the way it looks" reference and feeds Phase 1 PRD scope.
+
+### Layout decisions
+
+| # | Source | Decision |
+|---|---|---|
+| OQ-1 | F12, F25 | Card renamed from "Start Training" to **"Training & Nutrition"**. Same v1 card structure preserved. Card sits between stack items 3 (ReadinessCard) and 4 (Status). |
+| OQ-2 | F12 | Log Meal becomes a peer CTA inside Training & Nutrition card. |
+| OQ-15 | F12 | Two CTAs (Start Workout + Log Meal) lay out **side-by-side horizontally**, equal weight, 8pt gap. Mirrors onboarding goal-choice equality. |
+| OQ-16 | — | Context row above the buttons collapses to a **single inline line**: `"Lower Body · 45m · On plan"` (day type · estimated session · recommendation tone). |
+| OQ-5 | F2 | **Above-the-fold scroll constraint dropped.** Home v2 scrolls naturally. The 10-12 element target (F10) applies above the fold; rest scrolls. |
+
+### Stack order (final)
+
+```
+1. Toolbar
+2. Greeting line (static LiveInfoStrip)
+3. ReadinessCard
+4. Training & Nutrition
+5. Status (separate card, temporary — merged sub-feature ships later)
+6. Goal (separate card, temporary — merged sub-feature ships later)
+7. Metrics (4 tiles, read-only — deep-link sub-feature ships later)
+```
+
+### LiveInfoStrip behavior
+
+| # | Source | Decision |
+|---|---|---|
+| OQ-10 | — | Greeting includes user name: `"Good morning, Regev ☀️"` |
+| OQ-11 | — | Streak threshold stays at v1's `≥3 days` (warmth over milestone). |
+| Q9 | — | When both signals apply, **concatenate**: `"Good morning, Regev · 3-day streak 🔥"`. Single line, fits LiveInfoStrip width on iPhone 15+, gracefully truncates on smaller widths. |
+| F20 | — | **No auto-rotation** (replaces v1's 5-second cycling). Static line resolved by priority: greeting + streak (concat) > greeting alone > streak alone. |
+
+### ReadinessCard
+
+| # | Source | Decision |
+|---|---|---|
+| F9 | F9 | **Promote existing `ReadinessCard` to first card** (was unused before, lives at `FitTracker/Views/Shared/ReadinessCard.swift`). Status card demoted from hero position. |
+| OQ-12 | — | On tap = **cycle pages** (existing component behavior). No new view, no new sheet. |
+
+### Training & Nutrition card content
+
+Card structure:
+```
+┌──────────────────────────────────────────┐
+│ Lower Body · 45m · On plan                │   ← single inline context (OQ-16)
+│                                            │
+│  ┌────────────────┐  ┌────────────────┐  │
+│  │ Start Workout  │  │   Log Meal     │  │   ← side-by-side equal CTAs (OQ-15)
+│  └────────────────┘  └────────────────┘  │
+└──────────────────────────────────────────┘
+```
+
+### Status + Goal handling (temporary in Home v2)
+
+| # | Source | Decision |
+|---|---|---|
+| Q4-C | — | Home v2 ships with Status and Goal as **separate v1-style cards** (ports v1 layout, applies new tokens + accessibility fixes). |
+| OQ-3 (i) | — | Status+Goal merged card becomes its **own sub-feature** with full PM cycle. Runs **after Home v2 ships** (sequential, not parallel on the same branch). |
+| Q12 | — | The merged sub-feature is part of the overall Home v2 workstream. Reuses every learning from this audit + the Pending DS Evolution Queue in `feature-memory.md` to speed its dev cycle. |
+
+### Goal drill-down (separate from merged card)
+
+| # | Source | Decision |
+|---|---|---|
+| F11 | — | Goal drill-down (tap goal ring → goal detail view) is **deferred entirely from Home v2**. Becomes its own feature, defined and built independently before being added to Home or Stats. |
+| OQ-7-folded | — | Goal drill-down folds into the Status+Goal merged sub-feature (same PM cycle handles both merge + drill-down). |
+
+### Macro strip
+
+| # | Source | Decision |
+|---|---|---|
+| F13 | — | Not in Home v2. Pending design details. |
+| OQ-4 | — | When implemented, placement decided **semantically** (not arbitrary slot). Lands with the Status+Goal merged sub-feature, positioned based on body-data context. |
+
+### Metrics card
+
+| # | Source | Decision |
+|---|---|---|
+| F11-partial | — | 4 tiles always visible per Q3 = (a). Each tile is **read-only display** in Home v2 — no deep-link in this branch. |
+| OQ-13 | — | **New sub-feature spun off:** "Metric Tile Deep Linking" runs its own full PM cycle. Adds tap handlers + Stats `selectedMetric` filter parameter + navigation push. Ships after Home v2 + Stats screens have the necessary plumbing. Can run in parallel with the Status+Goal merged sub-feature since it touches different files. |
+
+### Token compliance (Section B / F5-F8)
+
+| # | Source | Decision |
+|---|---|---|
+| F5 | C1/C2 | All 12 raw `.font(.system(size: N))` calls map to existing `AppText.*` tokens (9 of 12) or to new tokens (3 of 12). New tokens already queued in `feature-memory.md` Pending Evolution Queue: `AppText.metricL`, `AppText.metricM`, `AppText.iconXL`. |
+| F6 | C3 | All 7 raw padding literals map to existing `AppSpacing.*` tokens. |
+| F7 | C/F17 | 9 of 11 raw frame literals map to tokens; the 2 hero sizes (goal ring, primary action) use Dynamic Type via `@ScaledMetric`. New token: `AppSize.indicatorDot` (8pt). |
+| F8 | C1/§4.3 | 4 raw `.blue/.brown/.purple/.gray` colors map to chart tokens. New tokens: `AppColor.Chart.weight`, `Chart.hrv`, `Chart.heartRate`, `Chart.activity`. |
+
+### Accessibility (Section E / F17-F20)
+
+| # | Source | Decision |
+|---|---|---|
+| F17 | G5 | 34pt edit button → **44pt** via `AppButton.iconOnly(.secondary)` or frame expansion + `.contentShape(Rectangle())`. |
+| F18 | G1/G2/G4 | Every interactive element gets `.accessibilityLabel`. Every non-trivial action gets `.accessibilityHint`. Every metric tile gets `.accessibilityValue` with units. Every section eyebrow gets `.accessibilityAddTraits(.isHeader)`. ~30 elements need labels added in Phase 4. |
+| F19 | G7 | New `AppText.metricL/M` + `iconXL` tokens use `Font.custom("SF Pro Rounded", size: N, relativeTo: .largeTitle)` so they scale with Dynamic Type. Tested at AX5 in Phase 5. |
+| F20 | §7.2 | LiveInfoStrip auto-rotation removed (see LiveInfoStrip section above). |
+
+### State coverage (Section D / F15-F16)
+
+| # | Source | Decision |
+|---|---|---|
+| F15 | F1-F5 | All 5 states implemented. |
+| OQ-6 | F3 | **Single empty state message** with two buttons: "Connect Health" + "Log manually". When HealthKit is denied, the Connect button deep-links to **Settings → Privacy → Health → FitMe** (iOS rules block re-prompting from in-app). |
+| F16 | F3 | Replace `—` dashes with tappable "Log" CTAs on empty metric tiles. |
+
+### Motion (Section F / F21-F23)
+
+| # | Source | Decision |
+|---|---|---|
+| F21 | H2/H3 | All 4 raw `.spring(...)` and `.easeOut(...)` calls map to `AppSpring.snappy` and `AppEasing.short` tokens. |
+| F22 | H4 | Every animation wrapped in `@Environment(\.accessibilityReduceMotion)` check. Scale effects degrade to opacity fades. LiveInfoStrip rotation removed entirely (was already addressed by F20). |
+| F23 | H5 | Haptics preserved verbatim. `performHomeAction()` helper carries over to v2 unchanged. |
+
+### Analytics (Section G / F24-F25)
+
+| # | Source | Decision |
+|---|---|---|
+| F24 | I4 | `.analyticsScreen(AnalyticsScreen.home)` modifier moves into the v2 view body. Removed from `RootTabView.swift:210` in the same commit. |
+| F25 | I1 | New events: `home_action_tap`, `home_action_completed`, `home_empty_state_shown`, `home_metric_tile_tap` (the last one fires when the Metric Tile Deep Linking sub-feature ships). All conform to the screen-prefix convention from OQ-9. Full schemas + GA4 validation defined in Phase 1 PRD addendum Analytics Spec. |
+| OQ-9 | F25 | **New project rule:** every analytics event tied to a specific screen MUST include the screen name as a prefix (`home_*`, `nutrition_*`, `training_*`, etc.). Documented in CLAUDE.md, analytics SKILL.md, and analytics-taxonomy.csv. |
+| OQ-20 | — | Analytics events ship **together** with the v2 layout. Baseline = day Home v2 ships. No 7-day pre-collection. |
+
+### Composition / architecture (Section H / F26-F27)
+
+| # | Source | Decision |
+|---|---|---|
+| F26 | D1/D2 | **Promote `statusValueColumn` and `metricTile`** from private helpers to `FitTracker/DesignSystem/AppComponents.swift` as `AppMetricColumn` and `AppMetricTile`. Done in Home v2 Phase 4 (Q10 confirmed). Already in the Pending DS Evolution Queue. |
+| F27 | — | **Extract recommendation logic** to a new `HomeRecommendationProvider` service file (OQ-14 = (b)). Cleaner boundaries than extending `ReadinessService`. Holds the readiness → copy/color/tone mapping. View consumes a single struct. |
+| F1, F3 | A1/A2 | Root `GeometryReader` removed. `compact`/`tight` props deleted from every helper. Dynamic Type handles sizing throughout. |
+| F4 | — | Custom `BlendedSectionStyle` ViewModifier replaced with existing `AppCard` from `AppComponents.swift`. |
+
+### Testing strategy
+
+| # | Source | Decision |
+|---|---|---|
+| OQ-19 | J | (c) — write **behavior tests for `HomeRecommendationProvider`** (the new service from F27) PLUS **snapshot tests for the v2 view's 5 states** (default / loading / empty / error / success). Service tests verify the readiness → recommendation mapping in isolation; snapshot tests catch view regressions across the state matrix. |
+
+### Branch + sequencing
+
+| # | Source | Decision |
+|---|---|---|
+| OQ-7 | — | v1 file fate: keep in repo with the standard CLAUDE.md "HISTORICAL" header comment template. Removed from Sources build phase (project.pbxproj surgery in Phase 4) but PBXFileReference stays. References to shared components (`LiveInfoStrip`, `ReadinessCard`, `ManualBiometricEntry`, etc.) stay unchanged in v1. |
+| OQ-8 | — | (iii) Whichever branch is ready first merges first. No hard ordering between Home v2 and the iOS hardening branch (`claude/fix-ios-signin-compilation-6kxKG`). Both are independent and don't share files. |
+
+### Kill criteria + review cadence (school-project context)
+
+| # | Source | Decision |
+|---|---|---|
+| OQ-21 | — | (d) — define a degradation threshold in PRD kill criteria. Below threshold → hotfix on the v2 file. Above threshold → swap project.pbxproj back to v1 (one-commit revert per V2 Rule). Project is a **schooling project** with no production users, so threshold can be loose — purpose is to learn the rollback mechanics, not protect revenue. |
+| OQ-22 | — | Review cadence: **1 week post-merge** matches Onboarding v2 pilot pattern. School-project context means this is a learning exercise — relax to 30-day or skip entirely if no signal. |
+
+### Items deferred to Phase 3 (UX spec)
+
+- **OQ-17** Figma node + file key for v2 build prompt — answered when `/design figma` runs in Phase 3
+- **OQ-18** Status+Goal merged sub-feature naming + GitHub issue + state.json folder — created when sub-feature work starts
+
+### Items deferred to follow-up sub-features
+
+- **F11** Goal drill-down → folds into Status+Goal merged sub-feature
+- **F13** Macro strip → Status+Goal merged sub-feature (semantically placed)
+- **F25 partial** `home_metric_tile_tap` event → Metric Tile Deep Linking sub-feature
+- **F26-followup** Onboarding v2 retroactive refactor will adopt the same `AppMetricColumn`/`AppMetricTile` (Q11 confirmed)
+
+### Sub-feature queue (post-Home-v2)
+
+In execution order:
+
+1. **Onboarding v2 retroactive refactor** — moves existing onboarding files into `v2/` subdirectory per the new V2 Rule. Reuses Pending DS Evolution Queue items where applicable.
+2. **Status+Goal merged card** — own PM cycle, slug TBD (proposal: `home-status-goal-card`). Includes goal drill-down + macro strip placement.
+3. **Metric Tile Deep Linking** — own PM cycle, slug TBD (proposal: `metric-tile-deep-linking`). Can run in parallel with #2 since they touch different files.
+4. **Training Plan v2** — next per-screen alignment after Onboarding retroactive completes.
+
+---
+
+*Phase 0 complete. Audit + decisions captured. Ready to advance to Phase 1 (PRD addendum).*
