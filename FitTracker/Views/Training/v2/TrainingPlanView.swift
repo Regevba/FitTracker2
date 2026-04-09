@@ -523,11 +523,4 @@ private struct ShimmerEffect: ViewModifier {
 
 // MARK: - Preview
 
-#if DEBUG
-#Preview("Training Plan v2") {
-    TrainingPlanView()
-        .environmentObject(EncryptedDataStore.preview)
-        .environmentObject(TrainingProgramStore())
-        .environmentObject(AnalyticsService.makeDefault())
-}
-#endif
+// Preview removed — requires full app environment (EncryptedDataStore, TrainingProgramStore)

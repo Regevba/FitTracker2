@@ -97,6 +97,8 @@
 		HV100000000000000000AA04 /* ManualBiometricEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA04 /* ManualBiometricEntry.swift */; };
 		HV100000000000000000AA05 /* RecoveryRoutineSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA05 /* RecoveryRoutineSheet.swift */; };
 		HV100000000000000000AA06 /* SyncStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA06 /* SyncStatusIndicator.swift */; };
+		HV100000000000000000AA07 /* StatusDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA07 /* StatusDropdown.swift */; };
+		HV100000000000000000AA08 /* MilestoneModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA08 /* MilestoneModal.swift */; };
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA03 /* HomeRecommendationProvider.swift */; };
@@ -224,6 +226,8 @@
 		HV200000000000000000AA04 /* ManualBiometricEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualBiometricEntry.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA05 /* RecoveryRoutineSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoveryRoutineSheet.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA06 /* SyncStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusIndicator.swift; sourceTree = "<group>"; };
+		HV200000000000000000AA07 /* StatusDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDropdown.swift; sourceTree = "<group>"; };
+		HV200000000000000000AA08 /* MilestoneModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneModal.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA03 /* HomeRecommendationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecommendationProvider.swift; sourceTree = "<group>"; };
@@ -531,6 +535,8 @@
 				HV200000000000000000AA04 /* ManualBiometricEntry.swift */,
 				HV200000000000000000AA05 /* RecoveryRoutineSheet.swift */,
 				HV200000000000000000AA06 /* SyncStatusIndicator.swift */,
+				HV200000000000000000AA07 /* StatusDropdown.swift */,
+				HV200000000000000000AA08 /* MilestoneModal.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -720,6 +726,8 @@
 				HV100000000000000000AA04 /* ManualBiometricEntry.swift in Sources */,
 				HV100000000000000000AA05 /* RecoveryRoutineSheet.swift in Sources */,
 				HV100000000000000000AA06 /* SyncStatusIndicator.swift in Sources */,
+				HV100000000000000000AA07 /* StatusDropdown.swift in Sources */,
+				HV100000000000000000AA08 /* MilestoneModal.swift in Sources */,
 				BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */,
 				BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */,
 				HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */,

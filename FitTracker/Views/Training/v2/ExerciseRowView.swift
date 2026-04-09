@@ -241,14 +241,14 @@ struct ExerciseRowView: View {
         targetReps: "8-12",
         restSeconds: 90,
         coachingCue: "Retract scapulae, drive feet into floor",
-        dayType: .push,
+        dayType: .upperPush,
         order: 1
     )
 
     VStack {
         ExerciseRowView(
             exercise: exercise,
-            selectedDay: .push,
+            selectedDay: .upperPush,
             exerciseLog: nil,
             previousSessionLog: nil,
             status: .pending,
