@@ -1,6 +1,6 @@
 ---
 name: ux
-description: "UX planning, research, and validation — ensures features are grounded in UX principles before visual design begins. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux validate {feature}, /ux audit, /ux patterns."
+description: "UX planning, research, and validation — ensures features are grounded in UX principles before visual design begins. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux wireframe {feature}, /ux validate {feature}, /ux audit, /ux patterns."
 ---
 
 # UX Specialist: $ARGUMENTS
@@ -102,10 +102,12 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
    - Skip/shortcut flow (what happens when user skips optional steps)
    - Error flow (what happens on failure at each step)
    - Edge cases (empty data, first use, returning user, offline)
-3. **Screen inventory:**
+3. **Screen inventory with schematics (mandatory):**
    - List every screen/view needed
    - For each: purpose, entry points, primary action, exit points
-   - ASCII wireframe showing layout hierarchy (not pixel-perfect, just structure)
+   - **Low-fidelity wireframes:** ASCII box diagrams showing layout structure, element placement, and content hierarchy. One per screen/state. Show all sections, buttons, inputs, and navigation elements.
+   - **High-fidelity schematics:** ASCII diagrams with exact token mappings (AppText.*, AppSpacing.*, AppColor.*, AppRadius.*), component names, accessibility modifiers, and animation tokens. One per major component/view.
+   - **Full-screen composite:** A single detailed ASCII rendering showing ALL elements assembled together as the user would see them — the complete screen from navigation bar to tab bar, with real sample data, showing the default state with at least one expanded/active section. This is the "hero" visual that communicates the design at a glance.
 4. **Interaction patterns per screen:**
    - Navigation type (push, sheet, modal, tab switch)
    - Input method (tap, swipe, type, pick, scan)
@@ -125,6 +127,41 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 8. Run the Feature Design Checklist (`docs/design-system/feature-design-checklist.md`)
 
 **Output:** Create `.claude/features/{feature}/ux-spec.md`
+
+### `/ux wireframe {feature}`
+
+**Purpose:** Generate visual schematics at three fidelity levels for a feature. Can be run standalone or as part of `/ux spec`. Produces ASCII wireframes that communicate the design before any Figma or code work.
+
+**Steps:**
+1. Read the feature's ux-spec.md and PRD
+2. Produce three deliverables:
+
+   **a) Low-fidelity wireframes** — one per screen/state:
+   - ASCII box diagrams showing layout structure
+   - Element placement and content hierarchy
+   - All sections, buttons, inputs, navigation elements
+   - Use `┌ ─ ┐ │ └ ┘` box-drawing characters
+   - Show real sample data (not "Lorem ipsum")
+   - Label each element with its role
+
+   **b) High-fidelity schematics** — one per major component/view:
+   - Exact token mappings: `AppText.*`, `AppSpacing.*`, `AppColor.*`, `AppRadius.*`
+   - Component names and SwiftUI view hierarchy
+   - Accessibility modifiers (`.accessibilityLabel`, `.accessibilityHint`)
+   - Animation tokens (`AppSpring.*`, `AppEasing.*`)
+   - State handling (if/else branches)
+
+   **c) Full-screen composite** — ONE complete rendering:
+   - Shows ALL elements assembled as the user sees them
+   - From navigation bar to tab bar
+   - Real sample data throughout
+   - Default state with at least one expanded/active section
+   - Legend explaining visual conventions (icons, stripes, indicators)
+   - This is the "hero" visual — the design at a glance
+
+3. Present all three to the user for approval
+
+**Output:** Wireframes embedded in ux-spec.md (Sections 2 and 3), or presented inline in chat if run standalone.
 
 ### `/ux validate {feature}`
 

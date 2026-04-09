@@ -1,9 +1,9 @@
 {
   "feature": "training-plan-v2",
   "created": "2026-04-10T00:00:00Z",
-  "updated": "2026-04-10T01:00:00Z",
+  "updated": "2026-04-10T03:00:00Z",
   "branch": "feature/training-plan-v2",
-  "current_phase": "prd",
+  "current_phase": "ux_or_integration",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -27,6 +27,20 @@
       "timestamp": "2026-04-10T01:00:00Z",
       "approved_by": "user",
       "note": "Phase 0 approved. 32 findings (8 P0, 16 P1, 8 P2). Key decisions: flexible activity switching (no day-locked types), rest timer redesign, collapsed finished exercises, skeleton loading, full AX5, per-exercise analytics. Rest day UX + AI recommendations deferred to own PM cycles."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-10T02:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 1 approved. PRD: 24 P0+P1 findings, 12 training_* analytics events, flexible activity switching, file decomposition to 7 files, ~8-9 day estimate."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-10T03:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 2 approved. 16 tasks, critical path ~4.75 days. User requested low + high fidelity schematics in UX spec."
     }
   ],
   "phases": {
@@ -50,9 +64,9 @@
         "Advanced data fusion + AI engine exercise recommendations (own PM cycle)"
       ]
     },
-    "prd": { "status": "in_progress", "started_at": "2026-04-10T01:00:00Z", "analytics_spec_complete": false },
-    "tasks": { "status": "pending" },
-    "ux_or_integration": { "status": "pending", "type": "ux" },
+    "prd": { "status": "approved", "started_at": "2026-04-10T01:00:00Z", "approved_at": "2026-04-10T02:00:00Z", "approved_by": "user", "analytics_spec_complete": true, "path": ".claude/features/training-plan-v2/prd.md" },
+    "tasks": { "status": "approved", "started_at": "2026-04-10T02:00:00Z", "approved_at": "2026-04-10T03:00:00Z", "approved_by": "user", "v2_count": 16, "task_file": ".claude/features/training-plan-v2/tasks.md" },
+    "ux_or_integration": { "status": "in_progress", "started_at": "2026-04-10T03:00:00Z", "type": "ux" },
     "implementation": { "status": "pending", "commits": [] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0 },
     "review": { "status": "pending", "risks": [] },
