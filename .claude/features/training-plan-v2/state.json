@@ -1,0 +1,71 @@
+{
+  "feature": "training-plan-v2",
+  "created": "2026-04-10T00:00:00Z",
+  "updated": "2026-04-10T01:00:00Z",
+  "branch": "feature/training-plan-v2",
+  "current_phase": "prd",
+  "work_type": "feature",
+  "work_subtype": "v2_refactor",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": 68,
+  "v1_file_path": "FitTracker/Views/Training/TrainingPlanView.swift",
+  "v2_file_path": "FitTracker/Views/Training/v2/TrainingPlanView.swift",
+  "v2_rule_compliant": true,
+  "checklist_path": "docs/design-system/v2-refactor-checklist.md",
+  "transitions": [
+    {
+      "from": "init",
+      "to": "research",
+      "timestamp": "2026-04-10T00:00:00Z",
+      "approved_by": "system",
+      "note": "v2 refactor initialized. v1 is 2,135 lines. Quick audit: 2 P0, 5 P1, 3 P2. Third per-screen alignment (after Home v2 PR #61, Onboarding v2 PR #59)."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-10T01:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 0 approved. 32 findings (8 P0, 16 P1, 8 P2). Key decisions: flexible activity switching (no day-locked types), rest timer redesign, collapsed finished exercises, skeleton loading, full AX5, per-exercise analytics. Rest day UX + AI recommendations deferred to own PM cycles."
+    }
+  ],
+  "phases": {
+    "research": {
+      "status": "approved",
+      "started_at": "2026-04-10T00:00:00Z",
+      "approved_at": "2026-04-10T01:00:00Z",
+      "approved_by": "user",
+      "sources": [".claude/features/training-plan-v2/v2-audit-report.md"],
+      "decisions": {
+        "Q1_decomposition": "Main container with flexible activity switching — day types NOT locked to specific days. Max flexibility.",
+        "Q2_rest_timer": "Redesign (not keep as-is)",
+        "Q3_completed_exercises": "Collapsed by default once marked finished",
+        "Q4_loading_state": "Skeleton placeholders",
+        "Q5_rest_day": "Keep as-is for now — spun off as own feature with full PM cycle",
+        "Q6_dynamic_type": "Full AX5 support",
+        "Q7_analytics": "Per-exercise granularity (weekly/30d/90d). Future: meta-analysis per session + AI engine recommendations (separate feature)"
+      },
+      "deferred_features": [
+        "Rest day positive experience redesign (own PM cycle)",
+        "Advanced data fusion + AI engine exercise recommendations (own PM cycle)"
+      ]
+    },
+    "prd": { "status": "in_progress", "started_at": "2026-04-10T01:00:00Z", "analytics_spec_complete": false },
+    "tasks": { "status": "pending" },
+    "ux_or_integration": { "status": "pending", "type": "ux" },
+    "implementation": { "status": "pending", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0 },
+    "review": { "status": "pending", "risks": [] },
+    "merge": { "status": "pending", "pr_number": null },
+    "documentation": { "status": "pending" },
+    "metrics": {
+      "primary": { "name": "", "baseline": null, "target": null, "current": null },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    }
+  },
+  "tasks": []
+}
