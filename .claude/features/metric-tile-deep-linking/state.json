@@ -1,0 +1,34 @@
+{
+  "feature": "metric-tile-deep-linking",
+  "created": "2026-04-09T23:30:00Z",
+  "updated": "2026-04-09T23:30:00Z",
+  "branch": "feature/metric-tile-deep-linking",
+  "current_phase": "tasks",
+  "work_type": "enhancement",
+  "parent_feature": "home-today-screen",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": 66,
+  "description": "Tap metric tiles (HRV, RHR, Sleep, Steps) on Home → navigate to Stats filtered to that metric. Deferred from Home v2 per OQ-13.",
+  "transitions": [
+    {
+      "from": "init",
+      "to": "tasks",
+      "timestamp": "2026-04-09T23:30:00Z",
+      "approved_by": "user",
+      "note": "Enhancement — skipped Research, PRD, UX. Parent: home-today-screen (PR #61). Deferred item: OQ-13, F11-partial, F25-partial (home_metric_tile_tap event)."
+    }
+  ],
+  "phases": {
+    "research": { "status": "skipped", "reason": "work_type:enhancement" },
+    "prd": { "status": "skipped", "reason": "work_type:enhancement" },
+    "tasks": { "status": "in_progress", "started_at": "2026-04-09T23:30:00Z" },
+    "ux_or_integration": { "status": "skipped", "reason": "work_type:enhancement" },
+    "implementation": { "status": "pending", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending", "pr_number": null },
+    "documentation": { "status": "pending" }
+  },
+  "tasks": []
+}
