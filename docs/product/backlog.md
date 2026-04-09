@@ -1,7 +1,7 @@
 # FitMe — Complete Backlog
 
 > Compiled from: README, CHANGELOG, feature-memory, gap-review, resume-handoff, master plan, PRD gaps, session work.  
-> Last updated: 2026-04-02
+> Last updated: 2026-04-09
 
 ---
 
@@ -26,6 +26,12 @@
 | 15 | Figma Interactive Prototype (28 screens) | Figma file | 2026-04-04 | Full flows wired: onboarding, auth, tabs, training, nutrition, settings |
 | 16 | GDPR Compliance (Account Deletion + Data Export) | feature/gdpr-compliance | 2026-04-04 | Articles 15/17/20, 30-day grace period, 9-store cascade, JSON export |
 | 17 | Android Design System (Token Mapping) | main | 2026-04-04 | 92 iOS tokens → MD3, Style Dictionary config, component parity audit |
+| 18 | Onboarding v2 UX Alignment (6 screens) | PR #59 | 2026-04-06 | First UX Foundations alignment pass, Figma v2, 13 principles validated |
+| 19 | Home Today Screen v2 UX Alignment | PR #61 | 2026-04-09 | 723-line rewrite, 27 findings fixed, ReadinessCard hero, dual CTAs, 21 tests |
+| 20 | Onboarding v2 Retroactive (v2/ subdirectory) | PR #63 | 2026-04-09 | 8 files moved to v2/ convention, validates multi-screen pattern |
+| 21 | Status+Goal Merged Card (Body Composition) | PR #65 | 2026-04-09 | Unified card + drill-down with SwiftUI Charts, 3 analytics events |
+| 22 | Metric Tile Deep Linking | PR #67 | 2026-04-09 | Tap HRV/RHR/Sleep/Steps → Stats filtered, 1 analytics event |
+| 23 | Figma v2 Home Screen | Figma node 741:2 | 2026-04-09 | 7 sections using design system components + variables |
 
 ---
 
@@ -33,8 +39,8 @@
 
 | # | Item | Owner | Branch | Status |
 |---|------|-------|--------|--------|
-| 1 | Phase 0 foundation docs (PRD, metrics, backlog) | Claude | `phase-0/foundation-docs` | Writing |
-| 2 | Notion MCP integration | User | — | Needs OAuth setup in claude.ai/code Settings |
+| 1 | UX Foundations Screen Audits (research-only) | Claude | main | Training Plan, Nutrition, Stats, Settings — Phase 0 audits queued |
+| 2 | Training Plan v2 UX Alignment | — | — | Next full Feature lifecycle after audits complete |
 
 ---
 
