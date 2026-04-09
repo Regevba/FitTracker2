@@ -1,9 +1,9 @@
 {
   "feature": "home-today-screen",
   "created": "2026-04-06T14:00:00Z",
-  "updated": "2026-04-09T14:00:00Z",
+  "updated": "2026-04-09T16:00:00Z",
   "branch": "feature/home-today-screen-v2",
-  "current_phase": "testing",
+  "current_phase": "merge",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
