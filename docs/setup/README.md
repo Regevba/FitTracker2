@@ -27,6 +27,7 @@ A setup guide is something you read once per environment. A workflow doc is some
 | `ssd-setup-guide.md` | Move build artifacts (DerivedData, SPM cache, npm cache, venv, homebrew) to the external SSD. Covers Xcode preferences, Homebrew env vars, Makefile overrides. | Once per machine, after attaching the SSD |
 | `firebase-setup-guide.md` | 20-step walkthrough for the Firebase Analytics (GA4) integration: console project, `GoogleService-Info.plist` placement, SDK linking, first event verification | Once per dev, before running analytics tests or release builds |
 | `dashboard-activation.md` | Wire up the Development Dashboard on Vercel: env vars (`GITHUB_TOKEN`, `DASHBOARD_WRITE_TOKEN`, `PUBLIC_DASHBOARD_WRITE_TOKEN`), deployment protection, first build verification | Once per Vercel project, before the dashboard goes live |
+| `integrations-setup-guide.md` | Comprehensive reference for ALL third-party integrations: GitHub, Supabase, Firebase/GA4, Vercel, Claude Code, Figma MCP, Notion MCP, Style Dictionary token pipeline, AI engine, CloudKit, SSD setup. Includes dependency map, secrets locations, and bootstrap checklist. | Once per machine, as a master reference alongside the individual guides |
 
 ## How to use this folder
 
