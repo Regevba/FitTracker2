@@ -20,6 +20,7 @@ struct MainScreenView: View {
 
     @State private var showExerciseSheet  = false
     @State private var manualEntry        = false
+    @State private var showBodyCompDetail = false
     @State private var selectedRecoveryRoutine: RecoveryRoutine?
     @State private var selectedDayType: DayType? = nil
 
@@ -186,6 +187,13 @@ struct MainScreenView: View {
             ManualBiometricEntry()
                 .presentationDetents([.medium])
         }
+        .sheet(isPresented: $showBodyCompDetail) {
+            NavigationStack {
+                BodyCompositionDetailView()
+            }
+            .presentationDetents([.medium, .large])
+            .presentationCornerRadius(AppRadius.large)
+        }
         .sheet(item: $selectedRecoveryRoutine) { routine in
             NavigationStack {
                 RecoveryRoutineSheet(
@@ -213,8 +221,7 @@ struct MainScreenView: View {
                 greetingSection
                 readinessSection
                 trainingNutritionCard
-                statusCard
-                goalCard
+                bodyCompositionCard
                 metricsRow
             }
             .padding(.horizontal, AppSpacing.medium)
@@ -385,133 +392,36 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: - Status card (Weight + Body Fat)
+    // MARK: - Body Composition Card (replaces statusCard + goalCard)
     // ─────────────────────────────────────────────────────
 
-    private var statusCard: some View {
-        HStack(alignment: .top, spacing: AppSpacing.small) {
-            AppMetricColumn(
-                icon: AppIcon.weight,
-                title: "WEIGHT",
-                value: currentWeight.map { settings.unitSystem.displayWeightValue($0) },
-                unit: settings.unitSystem.weightLabel(),
-                target: "Goal \(settings.unitSystem.displayWeightValue(profile.targetWeightMin))–\(settings.unitSystem.displayWeightValue(profile.targetWeightMax)) \(settings.unitSystem.weightLabel())",
-                tintColor: AppColor.Chart.weight,
-                onLogTap: { manualEntry = true }
-            )
-
-            Divider()
-                .overlay(AppColor.Surface.tertiary)
-                .padding(.vertical, AppSpacing.xxSmall)
-
-            AppMetricColumn(
-                icon: AppIcon.bodyFat,
-                title: "BODY FAT",
-                value: currentBF.map { String(format: "%.1f", $0) },
-                unit: "%",
-                target: "Goal \(Int(profile.targetBFMin))–\(Int(profile.targetBFMax))%",
-                tintColor: AppColor.Chart.body,
-                onLogTap: { manualEntry = true }
-            )
-        }
-        .padding(AppSpacing.small)
-        .background(
-            RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous)
-                .fill(AppColor.Surface.elevated)
+    private var bodyCompositionCard: some View {
+        BodyCompositionCard(
+            currentWeight: currentWeight,
+            currentBF: currentBF,
+            weightTarget: (min: profile.targetWeightMin, max: profile.targetWeightMax),
+            bfTarget: (min: profile.targetBFMin, max: profile.targetBFMax),
+            overallProgress: goalProgress,
+            proteinConsumed: nil, // TODO: wire protein from NutritionProfile when macro strip ships
+            proteinTarget: nil,
+            recommendation: HomeRecommendationProvider.recommendation(
+                readinessScore: readinessScore,
+                isRestDay: activeDayType == .restDay,
+                streakDays: dataStore.supplementStreak
+            ),
+            onTap: {
+                analytics.logHomeBodyCompTap(
+                    hasWeight: currentWeight != nil,
+                    hasBodyFat: currentBF != nil,
+                    progressPercent: Int(goalProgress * 100)
+                )
+                showBodyCompDetail = true
+            },
+            onLogTap: { manualEntry = true }
         )
-        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
-        .scaleEffect(statusPulse ? 1.01 : 1)
-        .motionSafe(AppSpring.snappy, value: statusPulse)
     }
 
-    // ─────────────────────────────────────────────────────
-    // MARK: - Goal card
-    // ─────────────────────────────────────────────────────
-
-    private var goalCard: some View {
-        HStack(alignment: .center, spacing: AppSpacing.medium) {
-            // Progress ring
-            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
-                Text("GOAL")
-                    .font(AppText.eyebrow)
-                    .tracking(2.1)
-                    .foregroundStyle(AppColor.Text.tertiary)
-                    .textCase(.uppercase)
-                    .accessibilityAddTraits(.isHeader)
-
-                AppProgressRing(
-                    value: goalProgress,
-                    color: AppColor.Accent.primary,
-                    label: "\(Int(goalProgress * 100))%",
-                    lineWidth: 10
-                )
-                .frame(width: 96, height: 96)
-                .accessibilityLabel("Overall goal progress")
-                .accessibilityValue("\(Int(goalProgress * 100)) percent")
-            }
-
-            // Goal breakdown
-            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
-                Text("GOAL PROGRESS")
-                    .font(AppText.eyebrow)
-                    .tracking(2.1)
-                    .foregroundStyle(AppColor.Text.tertiary)
-                    .textCase(.uppercase)
-                    .accessibilityAddTraits(.isHeader)
-
-                progressLine(
-                    title: "Weight",
-                    progress: profile.weightProgress(current: currentWeight),
-                    tint: AppColor.Chart.weight
-                )
-                progressLine(
-                    title: "Body Fat",
-                    progress: profile.bfProgress(current: currentBF),
-                    tint: AppColor.Chart.body
-                )
-
-                Text(essentialsSummary)
-                    .font(AppText.caption)
-                    .foregroundStyle(AppColor.Text.tertiary)
-                    .lineLimit(2)
-                    .accessibilityLabel(essentialsSummary)
-            }
-        }
-        .padding(AppSpacing.small)
-        .background(
-            RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous)
-                .fill(AppColor.Surface.elevated)
-        )
-        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
-    }
-
-    private func progressLine(title: String, progress: Double, tint: Color) -> some View {
-        VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
-            HStack {
-                Text(title)
-                    .font(AppText.callout)
-                    .foregroundStyle(AppColor.Text.secondary)
-                Spacer()
-                Text("\(Int(progress * 100))%")
-                    .font(AppText.callout)
-                    .monospacedDigit()
-                    .foregroundStyle(tint)
-            }
-            GeometryReader { proxy in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(AppColor.Surface.tertiary)
-                    Capsule()
-                        .fill(tint.opacity(0.95))
-                        .frame(width: max(8, proxy.size.width * CGFloat(progress)))
-                }
-            }
-            .frame(height: AppSize.progressBarHeight * 2)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title) progress")
-        .accessibilityValue("\(Int(progress * 100)) percent")
-    }
+    // statusCard + goalCard + progressLine removed — replaced by bodyCompositionCard (PR #65)
 
     // ─────────────────────────────────────────────────────
     // MARK: - Metrics row
@@ -595,13 +505,6 @@ struct MainScreenView: View {
         if loggedMealCount == 0 { count += 1 }
         if completedSupplementStacks < 2 { count += 1 }
         return count
-    }
-
-    private var essentialsSummary: String {
-        if essentialMissingCount == 0 {
-            return "Status is on track for today."
-        }
-        return "\(essentialMissingCount) core \(essentialMissingCount == 1 ? "item still needs" : "items still need") attention."
     }
 
     // ─────────────────────────────────────────────────────
