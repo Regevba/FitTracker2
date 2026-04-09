@@ -20,6 +20,7 @@ struct MainScreenView: View {
 
     @State private var showExerciseSheet  = false
     @State private var manualEntry        = false
+    @State private var showBodyCompDetail = false
     @State private var selectedRecoveryRoutine: RecoveryRoutine?
     @State private var selectedDayType: DayType? = nil
 
@@ -186,6 +187,13 @@ struct MainScreenView: View {
             ManualBiometricEntry()
                 .presentationDetents([.medium])
         }
+        .sheet(isPresented: $showBodyCompDetail) {
+            NavigationStack {
+                BodyCompositionDetailView()
+            }
+            .presentationDetents([.medium, .large])
+            .presentationCornerRadius(AppRadius.large)
+        }
         .sheet(item: $selectedRecoveryRoutine) { routine in
             NavigationStack {
                 RecoveryRoutineSheet(
@@ -213,8 +221,7 @@ struct MainScreenView: View {
                 greetingSection
                 readinessSection
                 trainingNutritionCard
-                statusCard
-                goalCard
+                bodyCompositionCard
                 metricsRow
             }
             .padding(.horizontal, AppSpacing.medium)
@@ -385,7 +392,36 @@ struct MainScreenView: View {
     }
 
     // ─────────────────────────────────────────────────────
-    // MARK: - Status card (Weight + Body Fat)
+    // MARK: - Body Composition Card (replaces statusCard + goalCard)
+    // ─────────────────────────────────────────────────────
+
+    private var bodyCompositionCard: some View {
+        BodyCompositionCard(
+            currentWeight: currentWeight,
+            currentBF: currentBF,
+            weightTarget: (min: profile.targetWeightMin, max: profile.targetWeightMax),
+            bfTarget: (min: profile.targetBFMin, max: profile.targetBFMax),
+            overallProgress: goalProgress,
+            proteinConsumed: nil, // TODO: wire protein from NutritionProfile when macro strip ships
+            proteinTarget: nil,
+            recommendation: HomeRecommendationProvider.recommendation(
+                readinessScore: readinessScore,
+                isRestDay: activeDayType == .restDay,
+                streakDays: dataStore.supplementStreak
+            ),
+            onTap: {
+                analytics.logHomeBodyCompTap(
+                    hasWeight: currentWeight != nil,
+                    hasBodyFat: currentBF != nil,
+                    progressPercent: Int(goalProgress * 100)
+                )
+                showBodyCompDetail = true
+            },
+            onLogTap: { manualEntry = true }
+        )
+    }
+
+    // MARK: - Status card (REPLACED by bodyCompositionCard — kept for reference)
     // ─────────────────────────────────────────────────────
 
     private var statusCard: some View {
