@@ -231,22 +231,26 @@ struct MainScreenView: View {
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     LiveInfoStrip(slides: greetingSlides)
+                        .accessibilityAddTraits(.isHeader)
 
                     Text(todayFormatted)
                         .font(AppText.callout)
                         .foregroundStyle(AppColor.Text.secondary)
+                        .accessibilityLabel("Today is \(todayFormatted)")
                 }
                 Spacer()
                 VStack(alignment: .trailing, spacing: AppSpacing.xxSmall) {
                     Text("Day \(profile.daysSinceStart)")
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.primary)
+                        .accessibilityLabel("Day \(profile.daysSinceStart) of program")
                     Text(profile.currentPhase.rawValue)
                         .font(AppText.caption)
                         .padding(.horizontal, AppSpacing.xSmall)
                         .padding(.vertical, AppSpacing.xxxSmall)
                         .background(AppColor.Surface.tertiary, in: Capsule())
                         .foregroundStyle(AppColor.Text.secondary)
+                        .accessibilityLabel("Current phase: \(profile.currentPhase.rawValue)")
                 }
             }
         }
@@ -273,6 +277,8 @@ struct MainScreenView: View {
 
     private var readinessSection: some View {
         ReadinessCard()
+            .accessibilityLabel(readinessScore.map { "Readiness score: \($0) out of 100" } ?? "Readiness score unavailable")
+            .accessibilityHint("Swipe to see training, nutrition, trends, achievements, and recovery details")
     }
 
     // ─────────────────────────────────────────────────────
@@ -286,6 +292,8 @@ struct MainScreenView: View {
                 .font(AppText.callout)
                 .foregroundStyle(AppColor.Text.secondary)
                 .lineLimit(2)
+                .accessibilityAddTraits(.isHeader)
+                .accessibilityLabel("Today's plan: \(trainingContextLine)")
 
             // Two equal-width CTA buttons
             HStack(spacing: AppSpacing.xSmall) {
@@ -428,6 +436,7 @@ struct MainScreenView: View {
                     .tracking(2.1)
                     .foregroundStyle(AppColor.Text.tertiary)
                     .textCase(.uppercase)
+                    .accessibilityAddTraits(.isHeader)
 
                 AppProgressRing(
                     value: goalProgress,
@@ -436,6 +445,8 @@ struct MainScreenView: View {
                     lineWidth: 10
                 )
                 .frame(width: 96, height: 96)
+                .accessibilityLabel("Overall goal progress")
+                .accessibilityValue("\(Int(goalProgress * 100)) percent")
             }
 
             // Goal breakdown
@@ -445,6 +456,7 @@ struct MainScreenView: View {
                     .tracking(2.1)
                     .foregroundStyle(AppColor.Text.tertiary)
                     .textCase(.uppercase)
+                    .accessibilityAddTraits(.isHeader)
 
                 progressLine(
                     title: "Weight",
@@ -461,6 +473,7 @@ struct MainScreenView: View {
                     .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.tertiary)
                     .lineLimit(2)
+                    .accessibilityLabel(essentialsSummary)
             }
         }
         .padding(AppSpacing.small)
@@ -494,6 +507,9 @@ struct MainScreenView: View {
             }
             .frame(height: AppSize.progressBarHeight * 2)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title) progress")
+        .accessibilityValue("\(Int(progress * 100)) percent")
     }
 
     // ─────────────────────────────────────────────────────
@@ -668,6 +684,10 @@ struct MainScreenView: View {
     private var toolbarItems: some ToolbarContent {
         ToolbarItem(placement: .navigationBarTrailing) {
             SyncStatusIndicator()
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Sync status")
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
         }
     }
 }
