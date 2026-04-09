@@ -601,6 +601,30 @@ This IS the hub. Every other skill is dispatched FROM here.
 - Reads attribution from `/marketing` (via `campaign-tracker.json`)
 - Feeds metric status to `/ops` for alert thresholds
 
+### Naming Convention (project rule, established 2026-04-08)
+
+Per the **Analytics Naming Convention** in `CLAUDE.md`, every event tied to a specific screen MUST start with that screen's prefix:
+
+| Screen | Prefix | Example events |
+|---|---|---|
+| Home | `home_` | `home_action_tap`, `home_metric_tile_tap`, `home_empty_state_shown` |
+| Nutrition | `nutrition_` | `nutrition_meal_logged`, `nutrition_macro_viewed`, `nutrition_scanner_opened` |
+| Training | `training_` | `training_workout_start`, `training_set_completed`, `training_exercise_viewed` |
+| Stats | `stats_` | `stats_period_changed`, `stats_chart_interaction`, `stats_metric_drill_down` |
+| Settings | `settings_` | `settings_consent_updated`, `settings_account_deleted` |
+| Onboarding | `onboarding_` | `onboarding_step_viewed`, `onboarding_step_completed` |
+| Auth | `auth_` | `auth_signin_started`, `auth_signin_completed` |
+
+**Exceptions:** Cross-screen lifecycle events (`app_open`, `session_start`, `sign_in`, `sign_up`) stay unprefixed. GA4-recommended events (`tutorial_begin`, `select_content`, `share`, `login`) keep their dictated names.
+
+**Enforcement:**
+- `/analytics spec` validates new events against the rule before writing the spec
+- `/analytics validate` audits existing events and reports violations
+- `analytics-taxonomy.csv` has a `screen_scope` column tracking the prefix scope per event
+- The PM workflow Phase 1 Analytics Spec gate blocks PRD approval if any new event tied to a screen lacks its prefix
+
+The rule lets anyone reading a GA4 dashboard or funnel report see the event's source screen at a glance — no source code lookup needed.
+
 ---
 
 ## 11. /cx — Customer Experience

@@ -163,6 +163,42 @@ the `v2/` subdirectory convention as a follow-up to the Home v2 pass,
 mostly to validate that the rule scales to a feature with multiple
 screens. Tracked in the per-screen UX alignment plan in `backlog.md`.
 
+## Analytics Naming Convention
+
+> Established 2026-04-08 as a project-wide rule during the home-today-screen v2 audit (see `.claude/features/home-today-screen/v2-audit-report.md` Decisions Log → OQ-9).
+
+**Every analytics event that tracks an action or interaction on a specific screen MUST include that screen name as a prefix in the event name.**
+
+The point: when looking at an event in GA4 or any analytics dashboard, the source screen should be obvious without checking the source code. Funnel analysis, regression isolation, and per-screen metric tracking all become dramatically faster.
+
+### Naming pattern
+
+| Screen | Event prefix | Example events |
+|---|---|---|
+| Home | `home_` | `home_action_tap`, `home_metric_tile_tap`, `home_empty_state_shown` |
+| Nutrition | `nutrition_` | `nutrition_meal_logged`, `nutrition_macro_viewed`, `nutrition_scanner_opened` |
+| Training | `training_` | `training_workout_start`, `training_set_completed`, `training_exercise_viewed` |
+| Stats | `stats_` | `stats_period_changed`, `stats_chart_interaction`, `stats_metric_drill_down` |
+| Settings | `settings_` | `settings_consent_updated`, `settings_account_deleted`, `settings_export_requested` |
+| Onboarding | `onboarding_` | `onboarding_step_viewed`, `onboarding_step_completed`, `onboarding_skipped` |
+| Auth | `auth_` | `auth_signin_started`, `auth_signin_completed`, `auth_passkey_registered` |
+
+### What this rule does NOT cover
+
+- **Cross-screen lifecycle events** stay unprefixed: `app_open`, `session_start`, `sign_in`, `sign_up`. These are global, not screen-scoped.
+- **GA4 recommended events** keep their dictated names: `tutorial_begin`, `tutorial_complete`, `select_content`, `share`, `login`. GA4 dashboards depend on these.
+
+### Enforcement
+
+1. **PM workflow Phase 1 Analytics Spec gate** validates every new event for screen-prefix compliance when the event is tied to a screen. Non-compliant events block the PRD from approval.
+2. **`/analytics spec`** sub-command checks for violations and refuses to write a spec that contains them.
+3. **`docs/product/analytics-taxonomy.csv`** has a `screen_scope` column. Either a screen name (`home`, `nutrition`, etc.) or `global` for cross-screen events.
+4. **`/analytics validate`** sub-command runs a periodic audit of existing events. Non-conforming events get flagged and renamed via a migration plan that preserves historical dashboards.
+
+### Backwards compatibility
+
+The rule applies prospectively from 2026-04-08. Existing events that pre-date the rule will be renamed during the next `/analytics validate` pass, with migration handled via GA4 event aliases (so historical dashboards keep working).
+
 ## Key Paths
 
 ### Product

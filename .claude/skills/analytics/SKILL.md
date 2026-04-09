@@ -28,6 +28,7 @@ Generate analytics instrumentation spec from PRD requirements.
 3. Read `docs/product/analytics-taxonomy.csv` for full taxonomy
 4. For each measurable action in the PRD, define:
    - Event name (snake_case, ≤40 chars, no reserved prefixes)
+   - **Screen prefix**: if the event is tied to a specific screen, the event name MUST start with that screen's prefix per the **Analytics Naming Convention** in `CLAUDE.md`
    - Category (engagement, conversion, feature, system)
    - GA4 type (custom or recommended)
    - Trigger screen
@@ -40,7 +41,14 @@ Generate analytics instrumentation spec from PRD requirements.
    - ≤25 parameters per event
    - Total custom user properties ≤25
    - No duplicates with existing enums
-6. Generate naming validation checklist (all must pass)
+6. **Validate against the screen-prefix rule:**
+   - If the event is tied to a specific screen → name MUST start with `{screen}_` (e.g. `home_action_tap`, `nutrition_meal_logged`)
+   - If the event is global / cross-screen → name should NOT have a screen prefix (e.g. `app_open`, `session_start`, `sign_in`)
+   - If the event is a GA4-recommended event → use the GA4 dictated name even if it doesn't match the prefix rule (`tutorial_begin`, `select_content`, `share`)
+   - Spec the `screen_scope` column for the analytics-taxonomy.csv: `home`, `nutrition`, `training`, `stats`, `settings`, `onboarding`, `auth`, or `global`
+7. Generate naming validation checklist (all must pass — including screen-prefix compliance)
+
+**The spec is NOT approvable if any event tied to a screen lacks the screen prefix.** This is a hard gate.
 
 Output: Analytics Spec section in `.claude/features/{feature}/prd.md`
 
@@ -54,10 +62,18 @@ Verify instrumentation matches taxonomy.
    - Every enum constant has a CSV row (and vice versa)
    - Every screen in `AnalyticsScreen` has a CSV row
    - Every user property in `AnalyticsUserProperty` has a CSV row
-4. Check test coverage in `FitTrackerTests/AnalyticsTests.swift`:
+4. **Validate the screen-prefix naming convention** (per `CLAUDE.md` → "Analytics Naming Convention"):
+   - Every event tied to a screen (`screen_scope` is not `global`) MUST start with that screen's prefix
+   - Compare each event name against its `screen_scope` column value
+   - Allowed prefixes: `home_`, `nutrition_`, `training_`, `stats_`, `settings_`, `onboarding_`, `auth_`
+   - Allowed exceptions: GA4-recommended event names (`tutorial_begin`, `tutorial_complete`, `select_content`, `share`, `login`, `sign_up`)
+   - Allowed unprefixed: events with `screen_scope: global` (e.g. `app_open`, `session_start`)
+   - Report any non-conforming events with rename suggestions
+5. Check test coverage in `FitTrackerTests/AnalyticsTests.swift`:
    - Every event has at least one test
    - Consent gating tested for representative events
-5. Report orphans, missing rows, untested events
+6. Report orphans, missing rows, untested events, AND naming convention violations
+7. For violations from before the rule landed (2026-04-08), produce a migration plan: GA4 event aliases preserve historical dashboards while the code-side names get corrected
 
 ### `/analytics dashboard {feature}`
 

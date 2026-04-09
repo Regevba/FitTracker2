@@ -1,6 +1,13 @@
+# ANALYTICS NAMING CONVENTION (project rule, established 2026-04-08)
+# Every event tied to a specific screen MUST start with that screen's prefix:
+#   home_*, nutrition_*, training_*, stats_*, settings_*, onboarding_*, auth_*
+# Cross-screen lifecycle events stay unprefixed: app_open, session_start, sign_in, sign_up
+# GA4 recommended events keep their dictated names: tutorial_begin, select_content, share, login
+# Full rule: CLAUDE.md → "Analytics Naming Convention"
+# Validated by /analytics spec (Phase 1 PRD gate) and /analytics validate (periodic audit)
 Category,Event Name,GA4 Type,Screen/Trigger,Parameter 1,Parameter 2,Parameter 3,Parameter 4,Parameter 5,Conversion,Scope,Notes
-Auth,login,Recommended,Sign In Screen,method (apple/email/passkey/biometric),,,,,,event,GA4 recommended event
-Auth,sign_up,Recommended,Sign Up Screen,method (apple/email),,,,,,event,GA4 recommended event. Mark as conversion.
+Auth,login,Recommended,Sign In Screen,method (apple/email/passkey/biometric),,,,,,event,GA4 recommended event (unprefixed — GA4 dictated)
+Auth,sign_up,Recommended,Sign Up Screen,method (apple/email),,,,,,event,GA4 recommended event. Mark as conversion. (unprefixed — GA4 dictated)
 Onboarding,tutorial_begin,Recommended,Onboarding Step 1,,,,,,,event,GA4 recommended event
 Onboarding,tutorial_complete,Recommended,Onboarding Final Step,,,,,,Yes,event,GA4 recommended event. Mark as conversion.
 Workout,workout_start,Custom,Active Workout,workout_type (push/pull/legs/cardio/rest),day_number (1-6),,,,,event,
