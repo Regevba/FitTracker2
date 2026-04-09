@@ -16,7 +16,7 @@
 
 **Solution:** Hub-and-spoke architecture where each domain has its own skill, connected through a shared data layer.
 
-**Result:** 10 skills (1 hub + 9 spokes) + 8 shared data files.
+**Result:** 11 skills (1 hub + 10 spokes) + 8 shared data files. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5.
 
 **Key principle:** Every skill is a **Lego piece** (works alone) AND a **puzzle piece** (fits into the hub).
 
@@ -72,13 +72,15 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
                │   Reads/writes .claude/shared/*.json │
                └──┬──────┬──────┬──────┬──────┬──────┘
                   │      │      │      │      │
-          ┌───────┘  ┌───┘  ┌───┘  ┌───┘  ┌───┘
-          ▼          ▼      ▼      ▼      ▼
-     /design     /dev    /qa  /analytics  /release
-          │          │      │      │          │
-          └──────┬───┴──────┴──────┘          │
-                 │                            │
-                 ▼                            ▼
+          ┌───────┘   ┌──┘  ┌───┘  ┌───┘  ┌───┘
+          ▼           ▼     ▼      ▼      ▼
+        /ux ─→ /design /dev  /qa /analytics /release
+          │           │      │      │          │
+          │ (planning │      │      │          │
+          │  layer)   │      │      │          │
+          └──────┬────┴──────┴──────┘          │
+                 │                             │
+                 ▼                             ▼
           ┌─────────────┐            App Store / TestFlight
           │  App Build   │
           └──────┬──────┘
@@ -106,9 +108,10 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 
 ```
 .claude/
-├── skills/                         # Skill definitions (10 skills)
+├── skills/                         # Skill definitions (11 skills)
 │   ├── pm-workflow/SKILL.md        # Hub — orchestrates all phases
-│   ├── design/SKILL.md             # Design system, UX specs, Figma, accessibility
+│   ├── ux/SKILL.md                 # UX planning & validation — the What & Why layer
+│   ├── design/SKILL.md             # Design system, Figma, tokens, accessibility (visual)
 │   ├── dev/SKILL.md                # Branching, code review, CI, deps, perf
 │   ├── qa/SKILL.md                 # Test planning, coverage, regression, security
 │   ├── analytics/SKILL.md          # Taxonomy, instrumentation, dashboards, funnels
@@ -382,6 +385,76 @@ This IS the hub. Every other skill is dispatched FROM here.
 - Receives UX confusion signals from `/cx` (via `cx-signals.json`)
 - Feeds component specs to `/dev` (via `design-system.json`)
 - Receives personas and brand from `/pm-workflow` (via `context.json`)
+- **Receives UX research and specs from `/ux`** (via `ux-research.md` + `ux-spec.md` in `.claude/features/{name}/`)
+
+---
+
+## 7.5 /ux — UX Planning & Validation
+
+**What it does:** Ensures every UI feature is grounded in research-backed UX principles *before* visual design or code implementation begins. `/ux` is the planning layer that feeds `/design` and `/dev` — the What & Why before the How it Looks and How it's Built.
+
+**Added:** 2026-04-07 (PR #59) as the UX planning layer for the PM workflow hub. Pilot run was the Onboarding v2 UX Foundations alignment pass.
+
+### Boundary: /ux vs /design
+
+| Concern | `/ux` | `/design` |
+|---------|-------|-----------|
+| What & Why | User flows, behavior, heuristics, patterns | — |
+| How it Looks | — | Tokens, components, Figma, compliance |
+| Research | Principles, HIG, competitive UX | Market positioning, visual trends |
+| Validation | Heuristic evaluation, cognitive walkthrough | Token compliance, contrast, motion |
+| Accessibility | Usability (clarity, cognitive load, feedback) | Technical (WCAG AA, VoiceOver, tap targets) |
+
+**Handoff:** `/ux` produces `ux-research.md` + `ux-spec.md` → `/design` validates against the design system → `/dev` implements.
+
+### Sub-commands
+
+| Command | Purpose | Standalone Example | Hub Context |
+|---------|---------|-------------------|-------------|
+| `/ux research {feature}` | UX principle audit from the 13 ux-foundations heuristics (8 core + 5 FitMe-specific) | "Research UX principles for the training plan redesign" | Phase 3 (UX), **Phase 0 Research for v2 refactors** |
+| `/ux spec {feature}` | Generate `ux-spec.md` with Principle Application Table, screen flows, and state coverage | "Create ux-spec for the stats hub" | Phase 3 (UX) |
+| `/ux validate {feature}` | Heuristic evaluation of a proposed spec or shipped surface against ux-foundations.md | "Validate the current onboarding flow against Hick's Law" | Phase 3 (UX) and Phase 6 (Review) |
+| `/ux audit` | Full UX audit — walks a v1 surface against ux-foundations.md and produces `v2-audit-report.md` with P0/P1/P2 severity and tractability tags | "Audit MainScreenView.swift for UX Foundations compliance" | **Phase 0 for v2 refactors** |
+| `/ux patterns` | Surface existing FitMe interaction patterns for reuse before introducing new ones | "What existing patterns already handle a biometric entry flow?" | Phase 3 (UX) |
+
+### Shared Data
+
+| Reads | Writes |
+|-------|--------|
+| `context.json` (personas, positioning) | `ux-research.md` in `.claude/features/{name}/` |
+| `design-system.json` (current inventory) | `ux-spec.md` in `.claude/features/{name}/` |
+| `docs/design-system/ux-foundations.md` (the 13 principles) | `v2-audit-report.md` in `.claude/features/{name}/` (refactors) |
+| `.claude/features/{name}/research.md` (PRD research phase) | `docs/design-system/v2-refactor-checklist.md` Section A ticks |
+
+### Key References
+
+- `docs/design-system/ux-foundations.md` — 13 principles (8 core UX heuristics + 5 FitMe-specific) + IA + states + accessibility + motion + content strategy
+- `docs/design-system/v2-refactor-checklist.md` — Sections A/E/F/G/H owned by `/ux`
+- `docs/design-system/feature-development-gateway.md` — 7-stage workflow that `/ux` walks
+- `docs/design-system/feature-design-checklist.md` — per-feature design checklist
+- Apple HIG — external reference for iOS platform conventions
+
+### Standalone Usage Examples
+
+1. **Audit an existing screen before refactor:** `/ux audit` → "Audit `MainScreenView.swift` against `ux-foundations.md` and produce severity-graded findings for the v2 pass"
+2. **Research principles for a new feature:** `/ux research barcode-scanning` → Identifies which of the 13 principles apply, cites HIG sources, flags risks
+3. **Generate a ux-spec:** `/ux spec stats-hub-v2` → Creates `ux-spec.md` with Principle Application Table, 5-state coverage, and a11y requirements
+4. **Validate a shipped surface:** `/ux validate settings` → Heuristic evaluation with concrete fix suggestions
+5. **Find existing patterns:** `/ux patterns` → "Is there an existing inline-edit pattern I should reuse, or do I need a new one?"
+
+### Hub Integration
+
+- **Phase 0 (Research, v2 refactor only):** Hub dispatches `/ux audit` to produce `v2-audit-report.md` as the gap analysis that drives the rest of the lifecycle.
+- **Phase 3 (UX Definition):** Hub dispatches `/ux research` → `/ux spec` → `/ux validate` in sequence. The design system compliance gateway (Phase 3) is where `/ux` handoff to `/design` happens.
+- **Phase 6 (Review):** Hub dispatches `/ux validate` as a heuristic sanity check before merge approval, in parallel with `/design audit`.
+
+### Connections
+
+- **Feeds `/design`:** `ux-spec.md` is the input to `/design ux-spec` and `/design figma`. `/ux` defines the what; `/design` defines the how it looks.
+- **Feeds `/dev`:** The Principle Application Table in `ux-spec.md` becomes the acceptance criteria that `/dev` implements against.
+- **Receives from `/research`:** Competitive UX patterns surfaced by `/research narrow` feed `/ux research` as market context.
+- **Receives from `/cx`:** UX confusion signals from `cx-signals.json` surface existing pain points that inform `/ux audit` findings.
+- **Gates `/pm-workflow` Phase 3:** No UI feature advances from Phase 3 without an approved `ux-spec.md`. Non-skippable for new UI features (per the V2 Rule in CLAUDE.md).
 
 ---
 
@@ -527,6 +600,30 @@ This IS the hub. Every other skill is dispatched FROM here.
 - Reads qualitative context from `/cx` (via `cx-signals.json`) to correlate quant + qual
 - Reads attribution from `/marketing` (via `campaign-tracker.json`)
 - Feeds metric status to `/ops` for alert thresholds
+
+### Naming Convention (project rule, established 2026-04-08)
+
+Per the **Analytics Naming Convention** in `CLAUDE.md`, every event tied to a specific screen MUST start with that screen's prefix:
+
+| Screen | Prefix | Example events |
+|---|---|---|
+| Home | `home_` | `home_action_tap`, `home_metric_tile_tap`, `home_empty_state_shown` |
+| Nutrition | `nutrition_` | `nutrition_meal_logged`, `nutrition_macro_viewed`, `nutrition_scanner_opened` |
+| Training | `training_` | `training_workout_start`, `training_set_completed`, `training_exercise_viewed` |
+| Stats | `stats_` | `stats_period_changed`, `stats_chart_interaction`, `stats_metric_drill_down` |
+| Settings | `settings_` | `settings_consent_updated`, `settings_account_deleted` |
+| Onboarding | `onboarding_` | `onboarding_step_viewed`, `onboarding_step_completed` |
+| Auth | `auth_` | `auth_signin_started`, `auth_signin_completed` |
+
+**Exceptions:** Cross-screen lifecycle events (`app_open`, `session_start`, `sign_in`, `sign_up`) stay unprefixed. GA4-recommended events (`tutorial_begin`, `select_content`, `share`, `login`) keep their dictated names.
+
+**Enforcement:**
+- `/analytics spec` validates new events against the rule before writing the spec
+- `/analytics validate` audits existing events and reports violations
+- `analytics-taxonomy.csv` has a `screen_scope` column tracking the prefix scope per event
+- The PM workflow Phase 1 Analytics Spec gate blocks PRD approval if any new event tied to a screen lacks its prefix
+
+The rule lets anyone reading a GA4 dashboard or funnel report see the event's source screen at a glance — no source code lookup needed.
 
 ---
 
@@ -854,18 +951,19 @@ This is what transforms FitMe's PM workflow from a "ship it and forget it" pipel
 
 Each cell shows the direction and type of information flow between skills.
 
-| From ↓ / To → | pm-workflow | design | dev | qa | analytics | cx | marketing | ops | research | release |
-|---------------|------------|--------|-----|-----|-----------|-----|-----------|------|----------|---------|
-| **pm-workflow** | — | dispatches (P3,P6) | dispatches (P4,P6,P7) | dispatches (P5) | dispatches (P1,P5,P8) | dispatches (P0,P8,P9) | dispatches (P0,P8) | — | dispatches (P0) | dispatches (P7) |
-| **design** | reports (P3) | — | tokens→code | — | — | — | — | — | — | — |
-| **dev** | reports (P4,P6) | — | — | — | — | — | — | CI status | — | CI status |
-| **qa** | reports (P5) | — | coverage | — | — | — | — | quality gates | — | quality gates |
-| **analytics** | reports (P1) | — | — | — | — | quant context | attribution | — | — | — |
-| **cx** | pain points, dispatch | UX problems | bugs | bugs | qual context | — | testimonials, messaging fixes | tech context | — | — |
-| **marketing** | reports (P8) | — | — | — | campaigns | user language | — | — | competitive | — |
-| **ops** | — | — | — | — | alert thresholds | — | — | — | — | health status |
-| **research** | reports (P0) | UX patterns | — | — | — | user needs | competitive | — | — | — |
-| **release** | reports (P7) | — | — | — | — | — | — | — | — | — |
+| From ↓ / To → | pm-workflow | ux | design | dev | qa | analytics | cx | marketing | ops | research | release |
+|---------------|------------|-----|--------|-----|-----|-----------|-----|-----------|------|----------|---------|
+| **pm-workflow** | — | dispatches (P0-v2,P3,P6) | dispatches (P3,P6) | dispatches (P4,P6,P7) | dispatches (P5) | dispatches (P1,P5,P8) | dispatches (P0,P8,P9) | dispatches (P0,P8) | — | dispatches (P0) | dispatches (P7) |
+| **ux** | reports (P0-v2,P3) | — | ux-spec→design-spec | principle checklist | — | — | — | — | — | — | — |
+| **design** | reports (P3) | compliance feedback | — | tokens→code | — | — | — | — | — | — | — |
+| **dev** | reports (P4,P6) | — | — | — | — | — | — | — | CI status | — | CI status |
+| **qa** | reports (P5) | — | — | coverage | — | — | — | — | quality gates | — | quality gates |
+| **analytics** | reports (P1) | — | — | — | — | — | quant context | attribution | — | — | — |
+| **cx** | pain points, dispatch | UX confusion signals | UX problems | bugs | bugs | qual context | — | testimonials, messaging fixes | tech context | — | — |
+| **marketing** | reports (P8) | — | — | — | — | campaigns | user language | — | — | competitive | — |
+| **ops** | — | — | — | — | — | alert thresholds | — | — | — | — | health status |
+| **research** | reports (P0) | UX patterns, HIG | UX patterns | — | — | — | user needs | competitive | — | — | — |
+| **release** | reports (P7) | — | — | — | — | — | — | — | — | — | — |
 
 ### Shared Data Connection Map
 
@@ -901,12 +999,13 @@ health-status.json ───────── /ops, /dev, /qa write
 
 ## 18. Quick Reference
 
-### All 10 Skills
+### All 11 Skills
 
 | # | Skill | Sub-commands | One-liner |
 |---|-------|-------------|-----------|
 | 0 | `/pm-workflow` | `{feature}` | Hub — orchestrates 10-phase lifecycle with skill dispatch |
 | 1 | `/design` | `audit`, `ux-spec`, `figma`, `tokens`, `accessibility` | Design system governance, UX specs, Figma prompts, WCAG AA |
+| 1.5 | `/ux` | `research`, `spec`, `validate`, `audit`, `patterns` | UX planning & validation — the What & Why layer that feeds `/design`. Added 2026-04-07, pilot run was Onboarding v2 |
 | 2 | `/dev` | `branch`, `review`, `deps`, `perf`, `ci-status` | Branching, code review, dependencies, performance, CI |
 | 3 | `/qa` | `plan`, `run`, `coverage`, `regression`, `security` | Test planning, execution, coverage, regression, OWASP audit |
 | 4 | `/analytics` | `spec`, `validate`, `dashboard`, `report`, `funnel` | Event taxonomy, instrumentation, dashboards, metric reports |
@@ -1145,3 +1244,126 @@ These items from the roadmap are not tracked as features in `feature-registry.js
 4. **Phase 9 is continuous, not one-time:** Unlike Phases 0-8 which are sequential gates, Phase 9 (Learn) runs indefinitely. The hub re-enters the loop on every new feedback batch until the feature is assessed as "solved."
 
 5. **Every skill has standalone examples:** Not just "you can use this skill independently" but concrete invocations. This is critical for AI agents and new contributors who need to see exactly how to invoke a skill outside the hub.
+
+---
+
+## 21. Gap Analysis & Historical Snapshot
+
+> Merged in from the former `docs/project/skills-ecosystem-analysis.md`
+> (2026-04-04). That document was a bottom-up + top-down audit of every
+> functional area — what existed, what was missing, and how complete a
+> product org would compare. Many of its "Red" gaps have since been
+> closed, so the content is preserved here as a historical record plus
+> a running delta.
+
+### 21.1 What existed on 2026-04-04
+
+**Active skills + automations at snapshot time:**
+
+| ID | Name | Type | Status then |
+|---|---|---|---|
+| S1 | `/pm-workflow` | Claude Code Skill (v1.2) | Shipped |
+| H1 | SessionStart hook | Shell hook | Active |
+| H2 | Stop hook (git check) | Shell hook | Active |
+| A1 | Token pipeline (`make tokens`) | Makefile + Node | Active |
+| A2 | Token drift detection (`make tokens-check`) | CI gate | Active |
+| A3 | CI pipeline (build + test) | GitHub Actions | Active |
+| A4 | Feature state tracking | JSON state machine | Active |
+| A5 | Analytics instrumentation gate | PM Skill phase | Active |
+| A6 | Design system compliance gateway | PM Skill phase | Active |
+| A7 | GitHub Issue label sync | PM Skill automation | Active |
+
+**Hand-authored prompts at snapshot time:** 8 prompts covering Figma prototype builds, iteration 2 batches, prototype audits, and Notion/Dashboard setup. All of these moved to `docs/prompts/` on 2026-04-08 and are the "hand-authored" section of that folder.
+
+### 21.2 What's changed since 2026-04-04
+
+The 2026-04-04 snapshot showed 24% overall ecosystem coverage (8 Green / 11 Yellow / 39 Red across 58 functional areas). Since then:
+
+| Area | 2026-04-04 status | Current status | Delta |
+|---|---|---|---|
+| **Design & UX → UX research & principles** | Yellow (inline) | **Green** (`/ux` skill shipped 2026-04-07) | +1 skill |
+| **Development → Release management** | Red | **Green** (`/release` skill shipped) | +1 skill |
+| **QA → Unit testing** | Green | Green | — |
+| **Analytics → Event taxonomy** | Green | Green | — |
+| **CX → Review monitoring, NPS, sentiment, keyword analysis** | Red (10 items) | **Green** (`/cx` skill shipped with 7 sub-commands) | +1 skill covering 7 items |
+| **Marketing → SEO, content, social, email, referrals, ASO** | Red (mostly) | **Green** (`/marketing` skill shipped with 7 sub-commands) | +1 skill |
+| **Operations → Incident response, monitoring, cost** | Red | **Green** (`/ops` skill shipped) | +1 skill |
+| **Research → Cross-industry, competitive, market** | Not listed | **Green** (`/research` skill shipped) | +1 skill |
+| **Dashboard** | Red (no visibility) | **Green** (Development Dashboard shipped v1.1 on 2026-04-08 with live state.json + autonomous label sync) | +1 feature |
+
+The skill count went from **1** (just `/pm-workflow`) at snapshot time to **11** today (10 spokes + the hub). Most of the Red items in Part 2 of the original analysis are no longer Red — they're covered by one of the spokes.
+
+### 21.3 Still-open gaps (priority-ordered)
+
+These are the gaps from the 2026-04-04 analysis that remain as of the current review:
+
+| # | Area | Subarea | Current status | Why still open |
+|---|---|---|---|---|
+| 1 | Dev → Error tracking (Crashlytics/Sentry) | Red | Still Red | No crash reporting wired yet. High priority before App Store launch. |
+| 2 | QA → UI testing (XCUITest) | Red | Still Red | Unit tests cover logic but no screenshot or flow tests. |
+| 3 | Analytics → A/B testing framework | Red | Still Red | No feature-flag infra. Deferred to post-launch. |
+| 4 | Analytics → Funnel analysis | Red | Still Red | GA4 taxonomy is in place but dashboards haven't been built. |
+| 5 | PM → Sprint/iteration planning | Red | Still Red | `/pm-workflow` handles phases, not sprints. May never need sprint planning in this product. |
+| 6 | PM → Stakeholder updates | Red | Still Red | `/ops digest` is planned but not shipped. |
+| 7 | Design → Visual regression testing | Red | Still Red | Considered low priority for a solo-dev project. |
+| 8 | Marketing → Referral program | Red | Still Red | Depends on install base; premature. |
+
+The remaining items from the 2026-04-04 analysis are either addressed by an existing skill (just not wired to a feature yet) or intentionally deferred as "post-launch only".
+
+### 21.4 FitMe's unique advantages (benchmark vs fitness app peers)
+
+Industry benchmark from the 2026-04-04 analysis, with current delta:
+
+| Practice | Strava | MyFitnessPal | Hevy | FitMe (then) | FitMe (now) |
+|---|---|---|---|---|---|
+| CI/CD pipeline | Yes | Yes | Yes | **Yes** | **Yes** |
+| Automated testing | Yes | Yes | Yes | **Partial** | **Partial** (unit only) |
+| Feature flags | Yes | Yes | Yes | **No** | **No** |
+| A/B testing | Yes | Yes | No | **No** | **No** |
+| Crash monitoring | Yes | Yes | Yes | **No** | **No** |
+| Review monitoring | Yes | Yes | Yes | **No** | **Skill shipped** (`/cx reviews`) |
+| ASO automation | Yes | Yes | Yes | **No** | **Skill shipped** (`/marketing aso`) |
+| Email marketing | Yes | Yes | Yes | **No** | **Skill shipped** (`/marketing email`) |
+| NPS/CSAT | Yes | Yes | No | **No** | **Skill shipped** (`/cx nps`) |
+| Design system CI | No | No | No | **Yes** (unique) | **Yes** (unique) |
+| PM lifecycle skill | No | No | No | **Yes** (unique) | **Yes** (unique, now with 11-skill ecosystem) |
+| Analytics instrumentation gate | No | No | No | **Yes** (unique) | **Yes** (unique) |
+| **UX Foundations v2 refactor flow** | No | No | No | — | **Yes** (unique, shipped 2026-04-08) |
+
+**FitMe's unique advantages:** design system CI, PM lifecycle automation, analytics instrumentation gate, UX Foundations per-screen refactor pass. All four are genuinely novel.
+
+**FitMe's remaining gaps vs peers:** crash monitoring, feature flags, UI test automation. These are the pre-launch priorities.
+
+### 21.5 Historical system map (from the 2026-04-04 analysis)
+
+The original analysis drew the ecosystem as a single hub with missing side-layers. It's included here for comparison with the current hub-and-spoke architecture in §3:
+
+```
+            ┌─────────────────────────────────────┐
+            │         PRODUCT STRATEGY             │
+            │  PRD → Metrics → Roadmap → Backlog   │
+            └──────────────┬──────────────────────┘
+                           │
+            ┌──────────────▼──────────────────────┐
+            │      /pm-workflow SKILL (Hub)         │
+            │  Research → PRD → Tasks → UX →       │
+            │  Implement → Test → Review → Merge    │
+            └──┬───────┬────────┬──────┬──────────┘
+               │       │        │      │
+    ┌──────────▼┐  ┌──▼────┐ ┌─▼──┐ ┌─▼──────────┐
+    │Design System│ │  Dev  │ │ QA │ │  Analytics  │
+    │Token Pipeline│ │  CI   │ │Tests│ │GA4 Taxonomy │
+    │Figma Prompts │ │GitHub │ │Gate │ │Consent Gate │
+    │Compliance GW │ │Actions│ │    │ │Regression   │
+    └──────────────┘ └───────┘ └────┘ └────────────┘
+                                              │
+             ┌────────────────────────────────▼─────┐
+             │        MISSING LAYERS (at snapshot)   │
+             │                                        │
+             │  CX · Marketing · Ops · Growth        │
+             │  (all filled in by 2026-04-07 via     │
+             │  the v2.0 skill ecosystem)            │
+             └──────────────────────────────────────┘
+```
+
+Compare this to the current 11-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.

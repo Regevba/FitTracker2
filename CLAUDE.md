@@ -1,5 +1,22 @@
 # FitMe (FitTracker2) — Project Rules
 
+> **Canonical repo location:** `/Volumes/DevSSD/FitTracker2`
+>
+> The project lives on an external SSD at `/Volumes/DevSSD/FitTracker2`, not
+> on the Mac's internal storage. All build artifacts (Xcode DerivedData, SPM
+> cache, npm cache, Python venvs, clang module cache, simulator data) are
+> kept under `.build/` inside the repo, which is already on the SSD. Any
+> absolute paths in documentation, commit messages, handoffs, or scripts
+> should reference `/Volumes/DevSSD/FitTracker2` when pointing at the local
+> repo — never `/Users/{name}/` or `/tmp/`. Setup details live in
+> `docs/setup/ssd-setup-guide.md`.
+>
+> Agents running in sandboxed environments may see a different working
+> directory path (e.g. `/home/user/FitTracker2`). That's the sandbox mount
+> of the repo, not the real location. Files written inside the sandbox are
+> the user's real files, but human-readable paths in docs should always
+> point at the SSD.
+
 ## Product Management Lifecycle
 
 Every new feature MUST follow the PM workflow. Invoke with `/pm-workflow {feature-name}`.
@@ -70,11 +87,157 @@ The design system is a **living, evolving framework** — not a static constrain
 - Approved changes merge to main with the feature and become part of the system
 - All changes documented in `docs/design-system/feature-memory.md`
 
+## UI Refactoring & V2 Rule
+
+When a UI screen or feature needs a UX Foundations alignment pass (or any
+substantial refactor against `docs/design-system/ux-foundations.md`):
+
+1. **Create a `v2/` subdirectory next to the v1 file.** Each feature's v2
+   work lives in its own `v2/` subdirectory under the same parent group.
+   File names stay the same — only the directory differs:
+   - `FitTracker/Views/Main/MainScreenView.swift` (v1, historical)
+   - `FitTracker/Views/Main/v2/MainScreenView.swift` (v2, source of truth)
+   - `FitTracker/Views/Onboarding/OnboardingWelcomeView.swift` (v1)
+   - `FitTracker/Views/Onboarding/v2/OnboardingWelcomeView.swift` (v2)
+
+   This keeps v1 and v2 next to each other for diffing while preserving
+   the original file names so imports/types don't collide. Both files
+   define the same Swift type (e.g. `MainScreenView`) — the build target
+   only references one of them at a time.
+
+2. **Update `FitTracker.xcodeproj/project.pbxproj`** in the same commit
+   that creates the first v2 file in a new `v2/` subdirectory. The v2
+   directory becomes a new PBXGroup, the v2 file becomes a PBXFileReference
+   + PBXBuildFile, and the v1 file is REMOVED from the Sources build phase
+   (but stays as a PBXFileReference so it shows in the file navigator and
+   git history). v1 lives on as a reviewable historical artifact, not as
+   compiled dead code.
+
+3. **Build the v2 file bottom-up** from the design system foundations
+   (tokens, components, ux-foundations principles) — do **not** patch the
+   v1 file in place. v1 is read-only during the refactor. Use the
+   `docs/design-system/v2-refactor-checklist.md` to track what's been
+   verified.
+
+4. **Wire the v2 file in** at its parent (e.g. `RootTabView.swift` keeps
+   instantiating `MainScreenView()` — same type name — but the symbol now
+   resolves to the v2 file because v1 has been removed from the build
+   sources). No call-site change needed in parent views since the type
+   name is identical; the swap happens at the project.pbxproj layer.
+
+5. **Mark v1 as historical** with a header comment when the swap lands:
+   ```swift
+   // HISTORICAL — superseded by v2/{ScreenName}.swift on {date} per
+   // UX Foundations alignment pass. See
+   // .claude/features/{name}/v2-audit-report.md for the gap analysis.
+   // This file is no longer in the build target; it stays in the repo
+   // as a reviewable reference for the v1 → v2 diff.
+   ```
+
+6. **One v2 split per surface.** A second alignment pass on the same
+   screen does not become a `v3/` directory — it patches v2 in place.
+   The v1 → v2 split exists exactly to capture the *first* deliberate
+   foundations-aligned rewrite of a pre-PM-workflow surface. v3+ would
+   indicate the refactor methodology itself failed.
+
+**For new UI features built from scratch** (no v1 to refactor):
+- File lives at the canonical path (no `v2/` subdirectory — there's
+  nothing to refactor against).
+- The Phase 3 (UX) gateway is **non-skippable** — every new UI feature
+  must produce a `ux-spec.md` and pass the design system compliance
+  gateway before any view code is written.
+- Phase 4 (Implement) starts with the `ux-foundations.md` checklist
+  applied to the spec, then the view code. No "build first, audit later".
+
+**Verification checklist:** Every v2 refactor walks through
+`docs/design-system/v2-refactor-checklist.md` before requesting Phase 5
+(Test) approval. The checklist covers token compliance, component reuse,
+state coverage, accessibility, motion, analytics, and project.pbxproj
+hygiene. State.json `phases.ux_or_integration.checklist_completed` must
+be `true` before Phase 4 advances.
+
+**Backward compatibility note:** Onboarding v2 (PR #59) was the pilot
+alignment pass and shipped *before* this rule existed. It used the older
+"patch v1 in place" approach. It will be retroactively refactored into
+the `v2/` subdirectory convention as a follow-up to the Home v2 pass,
+mostly to validate that the rule scales to a feature with multiple
+screens. Tracked in the per-screen UX alignment plan in `backlog.md`.
+
+## Analytics Naming Convention
+
+> Established 2026-04-08 as a project-wide rule during the home-today-screen v2 audit (see `.claude/features/home-today-screen/v2-audit-report.md` Decisions Log → OQ-9).
+
+**Every analytics event that tracks an action or interaction on a specific screen MUST include that screen name as a prefix in the event name.**
+
+The point: when looking at an event in GA4 or any analytics dashboard, the source screen should be obvious without checking the source code. Funnel analysis, regression isolation, and per-screen metric tracking all become dramatically faster.
+
+### Naming pattern
+
+| Screen | Event prefix | Example events |
+|---|---|---|
+| Home | `home_` | `home_action_tap`, `home_metric_tile_tap`, `home_empty_state_shown` |
+| Nutrition | `nutrition_` | `nutrition_meal_logged`, `nutrition_macro_viewed`, `nutrition_scanner_opened` |
+| Training | `training_` | `training_workout_start`, `training_set_completed`, `training_exercise_viewed` |
+| Stats | `stats_` | `stats_period_changed`, `stats_chart_interaction`, `stats_metric_drill_down` |
+| Settings | `settings_` | `settings_consent_updated`, `settings_account_deleted`, `settings_export_requested` |
+| Onboarding | `onboarding_` | `onboarding_step_viewed`, `onboarding_step_completed`, `onboarding_skipped` |
+| Auth | `auth_` | `auth_signin_started`, `auth_signin_completed`, `auth_passkey_registered` |
+
+### What this rule does NOT cover
+
+- **Cross-screen lifecycle events** stay unprefixed: `app_open`, `session_start`, `sign_in`, `sign_up`. These are global, not screen-scoped.
+- **GA4 recommended events** keep their dictated names: `tutorial_begin`, `tutorial_complete`, `select_content`, `share`, `login`. GA4 dashboards depend on these.
+
+### Enforcement
+
+1. **PM workflow Phase 1 Analytics Spec gate** validates every new event for screen-prefix compliance when the event is tied to a screen. Non-compliant events block the PRD from approval.
+2. **`/analytics spec`** sub-command checks for violations and refuses to write a spec that contains them.
+3. **`docs/product/analytics-taxonomy.csv`** has a `screen_scope` column. Either a screen name (`home`, `nutrition`, etc.) or `global` for cross-screen events.
+4. **`/analytics validate`** sub-command runs a periodic audit of existing events. Non-conforming events get flagged and renamed via a migration plan that preserves historical dashboards.
+
+### Backwards compatibility
+
+The rule applies prospectively from 2026-04-08. Existing events that pre-date the rule will be renamed during the next `/analytics validate` pass, with migration handled via GA4 event aliases (so historical dashboards keep working).
+
 ## Key Paths
 
+### Product
 - PRD: `docs/product/PRD.md`
+- Per-feature PRDs: `docs/product/prd/`
 - Metrics: `docs/product/metrics-framework.md`
 - Backlog: `docs/product/backlog.md`
-- Roadmap: `docs/project/master-backlog-roadmap.md`
 - Feature state: `.claude/features/{name}/state.json`
-- PM skill: `.claude/skills/pm-workflow/SKILL.md`
+
+### Master plan & handoffs
+- Master plan: `docs/master-plan/master-plan-2026-04-06.md` (current)
+- RICE roadmap: `docs/master-plan/master-backlog-roadmap.md`
+- Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
+
+### Skills ecosystem
+- Skills one-pager: `docs/skills/README.md`
+- Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
+- Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → current)
+- Per-skill docs: `docs/skills/{name}.md` (pm-workflow, ux, design, dev, qa, analytics, cx, marketing, research, ops, release)
+- Agent-facing prompts: `.claude/skills/{name}/SKILL.md`
+
+### Design system
+- UX foundations: `docs/design-system/ux-foundations.md` (13 principles)
+- V2 refactor checklist: `docs/design-system/v2-refactor-checklist.md`
+- Feature memory: `docs/design-system/feature-memory.md`
+- Feature development gateway: `docs/design-system/feature-development-gateway.md`
+- Tokens: `FitTracker/Services/AppTheme.swift` + `design-tokens/tokens.json`
+- Components: `FitTracker/DesignSystem/AppComponents.swift`
+
+### Handoff prompts
+- UX/UI build prompts (auto-generated + hand-authored): `docs/prompts/`
+- Auto-generation contracts: `/ux prompt {feature}` + `/design prompt {feature}` (see `docs/skills/ux.md` and `docs/skills/design.md`)
+
+### Case studies
+- Narrative showcases of the PM workflow running on real features: `docs/case-studies/`
+- Pilot case study (Onboarding v2): `docs/case-studies/pm-workflow-showcase-onboarding.md`
+
+### Setup guides
+- One-time environment + service setup: `docs/setup/`
+- SSD layout: `docs/setup/ssd-setup-guide.md`
+- Firebase Analytics: `docs/setup/firebase-setup-guide.md`
+- Dashboard activation: `docs/setup/dashboard-activation.md`

@@ -1,6 +1,6 @@
 ---
 name: design
-description: "Design system governance, UX specs, Figma automation, accessibility audits. Sub-commands: /design audit, /design ux-spec {feature}, /design figma {feature}, /design tokens, /design accessibility."
+description: "Design system governance, UX specs, Figma automation, accessibility audits, auto-generated build prompts. Sub-commands: /design audit, /design ux-spec {feature}, /design figma {feature}, /design tokens, /design accessibility, /design prompt {feature}."
 ---
 
 # Design & UX Skill: $ARGUMENTS
@@ -79,6 +79,39 @@ Run WCAG AA accessibility audit.
 3. Check Dynamic Type support
 4. Verify VoiceOver labels exist on all interactive elements
 5. Verify `AppMotion` respects `isReduceMotionEnabled`
+
+### `/design prompt {feature}`
+
+**Purpose:** Auto-generate a visual-build prompt for another agent (typically a Figma MCP agent) once Phase 3 design work is approved. Paired with `/ux prompt {feature}` — `/ux` writes the what-and-why prompt, `/design` writes the how-it-looks prompt. Both land in `docs/prompts/` so the receiving agent can read them together.
+
+**Prerequisites:**
+- `.claude/features/{feature}/ux-spec.md` exists and is approved
+- `/design audit` passed for the ux-spec (Phase 3 compliance gateway)
+- Figma library nodes identified (or flagged as "to be built")
+- `.claude/shared/design-system.json` current
+
+**Steps:**
+1. Read `ux-spec.md`, `state.json`, `design-system.json`, and (if v2 refactor) `v2-audit-report.md` to pull the design requirements
+2. Read relevant sections of `AppTheme.swift`, `AppComponents.swift`, `AppMotion.swift` to enumerate the exact tokens the feature will consume
+3. Read the Figma file key and target section node IDs from `state.json` or `figma-library-progress.md`
+4. Assemble a single prompt file with:
+   - **Header** — feature name, target agent (Figma MCP / SwiftUI builder), date, related GitHub issue, paired `/ux prompt` path
+   - **Visual target** — Figma file key + target section node ID + reference to v1 node IDs (for v2 refactors)
+   - **Screen inventory** — for each screen: purpose, primary content, primary CTA, modals/sheets
+   - **Token contract** — the exact `AppColor.*`, `AppText.*`, `AppSpacing.*`, `AppRadius.*`, `AppShadow.*`, `AppMotion.*` the agent must use. No raw literals.
+   - **Component contract** — the exact `AppComponents.swift` components to reuse. Any new components flagged with justification.
+   - **State coverage** — default / loading / empty / error / success, with the exact `EmptyStateView` copy and `FitMeLogoLoader` mode
+   - **Accessibility contract** — tap target minimums, Dynamic Type behavior, VoiceOver label template, reduce-motion alternatives
+   - **Motion contract** — the exact `AppSpring.*` / `AppEasing.*` / `AppDuration.*` tokens, with reduce-motion fallbacks
+   - **Figma node plan** — for each screen, the Figma node ID (existing or new) + position in the frame hierarchy
+   - **Handoff checklist** — what the receiving agent produces (PNG exports, node IDs, screenshots) and returns
+   - **References** — paths to ux-spec, design-system.json, AppTheme.swift, AppComponents.swift, feature-development-gateway
+5. **Write the prompt** to `docs/prompts/{YYYY-MM-DD}-{feature}-design-build.md`
+6. Announce: "Design handoff prompt written to `docs/prompts/…`. Pair with `/ux prompt` at the matching path. Ready to transfer to the receiving agent."
+
+**Output:** `docs/prompts/{YYYY-MM-DD}-{feature}-design-build.md`
+
+**When to run:** Automatically dispatched by `/pm-workflow` after Phase 3 approval when both `/ux` and `/design` gates are passed. Also invokable standalone once the spec is done.
 
 ## Key References
 

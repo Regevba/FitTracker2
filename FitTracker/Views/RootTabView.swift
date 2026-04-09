@@ -207,7 +207,7 @@ struct RootTabView: View {
     @ViewBuilder
     private func tabContent(_ tab: AppTab) -> some View {
         switch tab {
-        case .main:      MainScreenView(selectedTab: $selectedTab).analyticsScreen(AnalyticsScreen.home)
+        case .main:      MainScreenView(selectedTab: $selectedTab)
         case .training:  TrainingPlanView().analyticsScreen(AnalyticsScreen.trainingPlan)
         case .nutrition: NutritionView().analyticsScreen(AnalyticsScreen.nutrition)
         case .stats:     StatsView().analyticsScreen(AnalyticsScreen.stats)

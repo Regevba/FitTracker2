@@ -266,6 +266,125 @@ struct AppProgressRing: View {
     }
 }
 
+// MARK: - AppMetricColumn
+// Metric column: icon + title label, large value + unit, target line, missing-state CTA.
+// Promoted from private `statusValueColumn` in MainScreenView (v1).
+// Usage: AppMetricColumn(icon: "scalemass.fill", title: "WEIGHT", value: "82.5", unit: "kg", target: "Goal 80 kg", tintColor: .blue)
+struct AppMetricColumn: View {
+    let icon: String           // SF Symbol name
+    let title: String          // e.g. "WEIGHT", "BODY FAT"
+    let value: String?         // nil → empty / missing state
+    let unit: String           // e.g. "kg", "%"
+    let target: String?        // e.g. "Goal 80 kg"
+    let tintColor: Color
+    var onLogTap: (() -> Void)?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
+            // Icon + title row
+            HStack(spacing: AppSpacing.xxSmall) {
+                Image(systemName: icon)
+                    .font(AppText.caption.weight(.bold))
+                Text(title)
+                    .font(AppText.caption)
+            }
+            .foregroundStyle(tintColor)
+
+            if let value {
+                // Filled state: value + unit
+                HStack(alignment: .lastTextBaseline, spacing: AppSpacing.micro) {
+                    Text(value)
+                        .font(AppText.metricM)
+                        .monospacedDigit()
+                        .foregroundStyle(AppColor.Text.primary)
+                    Text(unit)
+                        .font(AppText.footnote.weight(.medium))
+                        .foregroundStyle(AppColor.Text.tertiary)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel(title)
+                .accessibilityValue("\(value) \(unit)")
+            } else {
+                // Empty / missing state: tappable Log CTA
+                Button {
+                    onLogTap?()
+                } label: {
+                    Text("Log")
+                        .font(AppText.button)
+                        .foregroundStyle(tintColor)
+                        .padding(.horizontal, AppSpacing.small)
+                        .padding(.vertical, AppSpacing.xxSmall)
+                        .background(tintColor.opacity(0.14), in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Log \(title)")
+                .accessibilityHint("Opens the logging screen for \(title.lowercased())")
+            }
+
+            // Target line
+            if let target {
+                Text(target)
+                    .font(AppText.footnote)
+                    .foregroundStyle(value != nil ? AppColor.Text.tertiary : tintColor.opacity(0.88))
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - AppMetricTile
+// Compact metric tile: tinted icon + value + label with tinted background.
+// Used in Home metrics row (HRV, RHR, Sleep, Steps).
+// Promoted from private `metricTile` in MainScreenView (v1).
+// Usage: AppMetricTile(icon: "heart.fill", value: "62", label: "RHR", tintColor: .red)
+struct AppMetricTile: View {
+    let icon: String           // SF Symbol name
+    let value: String?         // nil → empty / missing state with "Log" CTA
+    let label: String          // e.g. "RHR", "HRV", "Sleep"
+    let tintColor: Color
+    var onLogTap: (() -> Void)?
+
+    var body: some View {
+        VStack(spacing: AppSpacing.xxSmall) {
+            Image(systemName: icon)
+                .font(AppText.iconMedium)
+                .foregroundStyle(tintColor)
+
+            if let value {
+                Text(value)
+                    .font(AppText.metricCompact)
+                    .monospacedDigit()
+                    .foregroundStyle(AppColor.Text.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            } else {
+                Button {
+                    onLogTap?()
+                } label: {
+                    Text("Log")
+                        .font(AppText.footnote)
+                        .foregroundStyle(tintColor)
+                }
+                .buttonStyle(.plain)
+            }
+
+            Text(label)
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.tertiary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, AppSpacing.xSmall)
+        .background(
+            tintColor.opacity(0.12),
+            in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous)
+        )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(label)
+        .accessibilityValue(value ?? "Empty")
+        .accessibilityHint(value == nil ? "Tap to log" : "")
+    }
+}
+
 // MARK: - Previews
 
 #if DEBUG
@@ -310,6 +429,76 @@ struct AppProgressRing: View {
             .frame(width: 64, height: 64)
         AppProgressRing(value: 1.0, color: AppColor.Status.success, label: "Done")
             .frame(width: 64, height: 64)
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppMetricColumn – Filled") {
+    HStack(spacing: AppSpacing.small) {
+        AppMetricColumn(
+            icon: "scalemass.fill",
+            title: "WEIGHT",
+            value: "82.5",
+            unit: "kg",
+            target: "Goal 80 kg",
+            tintColor: .blue
+        )
+        AppMetricColumn(
+            icon: "percent",
+            title: "BODY FAT",
+            value: "18.2",
+            unit: "%",
+            target: "Goal 15%",
+            tintColor: .orange
+        )
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppMetricColumn – Missing") {
+    HStack(spacing: AppSpacing.small) {
+        AppMetricColumn(
+            icon: "scalemass.fill",
+            title: "WEIGHT",
+            value: nil,
+            unit: "kg",
+            target: "No data today",
+            tintColor: .blue,
+            onLogTap: {}
+        )
+        AppMetricColumn(
+            icon: "percent",
+            title: "BODY FAT",
+            value: nil,
+            unit: "%",
+            target: nil,
+            tintColor: .orange,
+            onLogTap: {}
+        )
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppMetricTile – Filled") {
+    HStack(spacing: AppSpacing.xSmall) {
+        AppMetricTile(icon: "waveform.path.ecg", value: "42", label: "HRV", tintColor: .purple)
+        AppMetricTile(icon: "heart.fill", value: "62", label: "RHR", tintColor: .red)
+        AppMetricTile(icon: "moon.fill", value: "7.5h", label: "Sleep", tintColor: .indigo)
+        AppMetricTile(icon: "figure.walk", value: "8,241", label: "Steps", tintColor: .green)
+    }
+    .padding()
+    .background(AppGradient.screenBackground)
+}
+
+#Preview("AppMetricTile – Empty") {
+    HStack(spacing: AppSpacing.xSmall) {
+        AppMetricTile(icon: "waveform.path.ecg", value: nil, label: "HRV", tintColor: .purple, onLogTap: {})
+        AppMetricTile(icon: "heart.fill", value: nil, label: "RHR", tintColor: .red, onLogTap: {})
+        AppMetricTile(icon: "moon.fill", value: "7.5h", label: "Sleep", tintColor: .indigo)
+        AppMetricTile(icon: "figure.walk", value: nil, label: "Steps", tintColor: .green, onLogTap: {})
     }
     .padding()
     .background(AppGradient.screenBackground)

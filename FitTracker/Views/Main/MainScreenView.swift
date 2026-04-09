@@ -1,3 +1,9 @@
+// HISTORICAL — superseded by v2/MainScreenView.swift on 2026-04-09 per
+// UX Foundations alignment pass. See
+// .claude/features/home-today-screen/v2-audit-report.md for the gap analysis.
+// This file is no longer in the build target; it stays in the repo
+// as a reviewable reference for the v1 → v2 diff.
+
 // Views/Main/MainScreenView.swift
 // Action-first Today screen — kept above the fold with no scroll on iPhone.
 

@@ -113,6 +113,15 @@ enum AnalyticsEvent {
 
     /// User changes a setting
     static let settingsChanged   = "settings_changed"
+
+    // ── Home Events (custom) ───────────────────────────────
+
+    /// User taps an action on the Home screen (start workout, log meal, etc.)
+    static let homeActionTap     = "home_action_tap"
+    /// User completes a home-initiated action (mark as conversion in GA4)
+    static let homeActionCompleted = "home_action_completed"
+    /// Home screen shows an empty state (no data available)
+    static let homeEmptyStateShown = "home_empty_state_shown"
 }
 
 // MARK: - Parameter Constants
@@ -169,6 +178,12 @@ enum AnalyticsParam {
     static let daysRemaining     = "days_remaining"   // 0-30 (grace period)
     static let sizeBytes         = "size_bytes"       // export file size
     static let recordCount       = "record_count"     // total records exported
+
+    // Home parameters
+    static let actionType         = "action_type"      // start_workout/log_meal
+    static let hasRecommendation  = "has_recommendation" // true/false
+    static let emptyReason        = "empty_reason"     // no_healthkit/no_data/first_launch
+    static let ctaShown           = "cta_shown"        // connect_health/log_manually/both
 
     // Onboarding parameters
     static let stepIndex          = "step_index"       // 0-4
@@ -239,5 +254,6 @@ enum AnalyticsConversion {
         AnalyticsEvent.tutorialComplete,
         AnalyticsEvent.crossFeatureEngagement,
         AnalyticsEvent.accountDeleteCompleted,
+        AnalyticsEvent.homeActionCompleted,
     ]
 }

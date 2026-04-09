@@ -1,39 +1,248 @@
 {
   "feature": "home-today-screen",
   "created": "2026-04-06T14:00:00Z",
-  "updated": "2026-04-06T14:00:00Z",
-  "branch": null,
-  "current_phase": "complete",
+  "updated": "2026-04-09T16:00:00Z",
+  "branch": "feature/home-today-screen-v2",
+  "current_phase": "merge",
+  "work_type": "feature",
+  "work_subtype": "v2_refactor",
   "has_ui": true,
   "requires_analytics": true,
-  "github_issue_number": null,
-  "note": "Backfill record. Feature shipped before PM workflow enforcement. State created retroactively during 2026-04-06 audit.",
+  "github_issue_number": 60,
+  "version": "v2-ux-alignment",
+  "v1_file_path": "FitTracker/Views/Main/MainScreenView.swift",
+  "v2_file_path": "FitTracker/Views/Main/v2/MainScreenView.swift",
+  "v2_rule_compliant": true,
+  "checklist_path": "docs/design-system/v2-refactor-checklist.md",
+  "parent_version": {
+    "version": "v1",
+    "status": "shipped-pre-pm-workflow",
+    "note": "v1 MainScreenView.swift shipped 2026-03-14 before PM workflow enforcement. State file was a backfill record (2026-04-06 audit reconstruction). v2 is the first deliberate UX Foundations alignment pass on this surface.",
+    "backfill_phases": {
+      "research": "pre-pm-workflow",
+      "prd": "backfilled (docs/product/prd/18.4-home-today-screen.md)",
+      "tasks": "pre-pm-workflow",
+      "ux_or_integration": "pre-pm-workflow",
+      "implementation": "shipped",
+      "testing": "pre-pm-workflow",
+      "review": "pre-pm-workflow",
+      "merge": "done",
+      "documentation": "done"
+    },
+    "v2_partial_alignment_already_landed": [
+      {
+        "branch": "claude/fix-ios-signin-compilation-6kxKG",
+        "commit": "d09cd61",
+        "description": "Home background swapped from goal-progress orange/blue layer to saturated appBlue1 → appBlue2 2-stop gradient. Removed invisible color metaphor. NOT on this branch — will land via the iOS hardening PR."
+      }
+    ]
+  },
   "transitions": [
     {
       "from": "init",
       "to": "complete",
       "timestamp": "2026-04-06T14:00:00Z",
       "approved_by": "audit",
-      "note": "Retroactive backfill — feature was shipped pre-PM workflow."
+      "note": "v1 retroactive backfill — feature was shipped pre-PM workflow."
+    },
+    {
+      "from": "complete",
+      "to": "research",
+      "timestamp": "2026-04-08T05:00:00Z",
+      "approved_by": "user",
+      "note": "v2 UX alignment pass kickoff. Mirrors Onboarding v2 pilot pattern (audit → ux-research → ux-spec → compliance → patches). Tracking issue #60."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-08T07:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 0 complete. v2-audit-report.md delivered with 27 findings (8 P0, 14 P1, 4 P2, 1 positive). User reviewed all 6 audit segments and answered every open question (OQ-1 through OQ-22 + Q9/Q10/Q11). Decisions Log appended to audit file (commit 844a2ba). New project rule established: analytics screen-prefix naming convention (commit ef201e7). Three sub-features queued post-Home-v2: Status+Goal merged card, Metric Tile Deep Linking, Onboarding v2 retroactive refactor."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-09T11:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 1 complete. v2 PRD addendum written at .claude/features/home-today-screen/prd.md. Covers: 22 P0+P1 findings in scope, 5 items deferred to sub-features, analytics spec (3 events + 1 deferred), success metrics, 35+ acceptance criteria, kill criteria, testing strategy. ~8-9 day estimate. Approved by user 2026-04-09."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-09T12:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 2 complete. 17 tasks in 4 layers: foundation (9 parallel), assembly (T8), post-assembly (T11-T13), verification (T14-T17). Critical path ~5 days with parallelism. Task file at .claude/features/home-today-screen/tasks.md."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-09T13:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 3 complete. ux-research.md (12/13 principles mapped), ux-spec.md (9 sections), heuristic validation 12/12 pass, compliance gateway 5/5 pass, UX + Design build prompts generated."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-04-09T14:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 4 complete. 16/17 tasks done (T16 snapshot tests deferred to Phase 5 manual). 6 commits: foundation layer, v2 MainScreenView (703 lines), a11y pass, pbxproj swap, tests (21 cases), checklist walk. T8 is the main assembly — bottom-up rewrite from design system."
     }
   ],
   "phases": {
-    "research": { "status": "pre-pm-workflow" },
-    "prd": { "status": "backfilled", "prd_path": "docs/product/prd/18.4-home-today-screen.md" },
-    "tasks": { "status": "pre-pm-workflow" },
-    "ux_or_integration": { "status": "pre-pm-workflow" },
-    "implementation": { "status": "shipped" },
-    "testing": { "status": "pre-pm-workflow", "note": "Test coverage varies by feature" },
-    "review": { "status": "pre-pm-workflow" },
-    "merge": { "status": "done" },
-    "documentation": { "status": "done" },
+    "research": {
+      "status": "approved",
+      "started_at": "2026-04-08T05:00:00Z",
+      "approved_at": "2026-04-08T07:00:00Z",
+      "approved_by": "user",
+      "sources": [
+        ".claude/features/home-today-screen/v2-audit-report.md (27 findings)",
+        "docs/design-system/ux-foundations.md (Parts 1-8)",
+        "docs/design-system/v2-refactor-checklist.md",
+        "FitTracker/Views/Main/MainScreenView.swift (1029 lines, full read)"
+      ],
+      "v2_substeps_completed": [
+        "v2-audit-report.md (27 findings: 8 P0, 14 P1, 4 P2, 1 positive)",
+        "Decisions Log appended (OQ-1 through OQ-22 + Q9/Q10/Q11)",
+        "Pending DS Evolution Queue updated in feature-memory.md (8 new tokens, 2 component promotions queued)"
+      ],
+      "decisions_summary": {
+        "stack_order": "7 items: Toolbar → Greeting → ReadinessCard → Training & Nutrition → Status → Goal → Metrics. Scrollable.",
+        "scroll_constraint": "dropped (was: above-the-fold no-scroll)",
+        "training_nutrition_card": "renamed from Start Training; side-by-side equal CTAs (Start Workout + Log Meal); single inline context line",
+        "live_info_strip": "static, no rotation, concat greeting + streak when both apply",
+        "readiness_card": "promote existing component to first card",
+        "status_goal": "ship as separate v1-style cards in Home v2; merged sub-feature ships later as own PM cycle",
+        "metrics": "read-only in Home v2; deep-link sub-feature spun off",
+        "f27_extraction": "new HomeRecommendationProvider service file (option b)",
+        "f26_promotions": "AppMetricColumn + AppMetricTile promoted in Home v2 Phase 4",
+        "testing": "behavior tests (HomeRecommendationProvider) + snapshot tests (5 states)",
+        "analytics": "4 new home_* events (screen-prefix rule), ship together with v2"
+      },
+      "subfeatures_queued": [
+        "Onboarding v2 retroactive refactor (next per-screen alignment)",
+        "Status+Goal merged sub-feature (own PM cycle, parent Home v2)",
+        "Metric Tile Deep Linking (own PM cycle, parent Home v2)"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "started_at": "2026-04-08T07:00:00Z",
+      "approved_at": "2026-04-09T11:00:00Z",
+      "approved_by": "user",
+      "v1_status": "backfilled",
+      "v1_path": "docs/product/prd/18.4-home-today-screen.md",
+      "v2_addendum_path": ".claude/features/home-today-screen/prd.md",
+      "scope": "22 P0+P1 findings (F1-F3, F5-F12, F14-F22, F24)",
+      "non_scope": "F11 goal drill-down, F13 macro strip, home_metric_tile_tap, metric deep-linking, Status+Goal merged card",
+      "analytics_events": ["home_action_tap", "home_action_completed", "home_empty_state_shown"],
+      "analytics_deferred": ["home_metric_tile_tap"],
+      "estimated_effort_days": 8.5
+    },
+    "tasks": {
+      "status": "approved",
+      "started_at": "2026-04-09T11:00:00Z",
+      "approved_at": "2026-04-09T12:00:00Z",
+      "approved_by": "user",
+      "v1_status": "pre-pm-workflow",
+      "v2_count": 17,
+      "task_file": ".claude/features/home-today-screen/tasks.md"
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "started_at": "2026-04-09T12:00:00Z",
+      "approved_at": "2026-04-09T13:00:00Z",
+      "approved_by": "user",
+      "v1_status": "pre-pm-workflow",
+      "type": "ux",
+      "deliverables": [
+        ".claude/features/home-today-screen/ux-research.md",
+        ".claude/features/home-today-screen/ux-spec.md",
+        "docs/prompts/2026-04-09-home-today-screen-ux-build.md",
+        "docs/prompts/2026-04-09-home-today-screen-design-build.md"
+      ],
+      "compliance_gateway": "5/5 pass (motion tokens = DS evolution)",
+      "heuristic_validation": "12/12 pass, 1 N/A"
+    },
+    "implementation": {
+      "status": "approved",
+      "started_at": "2026-04-09T13:00:00Z",
+      "approved_at": "2026-04-09T14:00:00Z",
+      "approved_by": "user",
+      "v1_status": "shipped",
+      "checklist_completed": true,
+      "commits": ["8b5fdf2", "136efe3", "f266932", "ec95eaa", "73df335"]
+    },
+    "testing": {
+      "status": "in_progress",
+      "started_at": "2026-04-09T14:00:00Z",
+      "v1_status": "pre-pm-workflow",
+      "ci_passed": true,
+      "build_result": "BUILD SUCCEEDED (iPhone 17 Pro, iOS 26.4)",
+      "tests_added": 11,
+      "tests_passed": 11,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 10,
+      "analytics_tests_passed": 10,
+      "analytics_verification_passed": true
+    },
+    "review": {
+      "status": "pending",
+      "v1_status": "pre-pm-workflow",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "v1_status": "done",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending",
+      "v1_status": "done"
+    },
     "metrics": {
-      "primary": { "name": "sessions_per_day", "baseline": 0, "target": 1.5, "current": null },
-      "secondary": [],
-      "guardrails": [],
+      "primary": {
+        "name": "sessions_per_day",
+        "baseline": 0,
+        "target": 1.5,
+        "current": null
+      },
+      "secondary": [
+        {"name": "home_action_tap_rate", "baseline": "N/A", "target": ">30% of sessions"},
+        {"name": "home_action_completion_rate", "baseline": "N/A", "target": ">50% of taps"},
+        {"name": "readiness_checkin_rate", "baseline": "N/A", "target": ">40% daily"},
+        {"name": "empty_state_rate", "baseline": "N/A", "target": "<20% of sessions"}
+      ],
+      "guardrails": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s",
+        "sync_success_rate > 99%",
+        "ci_pass_rate > 95%"
+      ],
       "instrumentation_ready": false,
       "first_review_date": null,
-      "kill_criteria": "Core screen, always active"
+      "kill_criteria": "Core screen — always active. v2 alignment only ships if no readiness/biometric flow regresses."
     }
-  }
+  },
+  "tasks": [
+    {"id": "T1", "title": "Add new AppText + AppSize tokens to AppTheme.swift", "type": "design", "skill": "design", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": [], "completed_at": null, "findings": ["F5","F7","F19"]},
+    {"id": "T2", "title": "Add motion tokens (AppSpring, AppEasing, motionSafe)", "type": "design", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "completed_at": null, "findings": ["F21","F22"]},
+    {"id": "T3", "title": "Add AppColor.Chart tokens (weight, hrv, heartRate, activity)", "type": "design", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.15, "depends_on": [], "completed_at": null, "findings": ["F8"]},
+    {"id": "T4", "title": "Create AppMetricColumn component in AppComponents.swift", "type": "ui", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F26","F16"]},
+    {"id": "T5", "title": "Create AppMetricTile component in AppComponents.swift", "type": "ui", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F26","F16"]},
+    {"id": "T6", "title": "Create HomeRecommendationProvider service", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.75, "depends_on": [], "completed_at": null, "findings": ["F27","F14"]},
+    {"id": "T7", "title": "Add analytics event/param enums + taxonomy CSV rows", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "completed_at": null, "findings": ["F24","F25"]},
+    {"id": "T8", "title": "Build v2 MainScreenView.swift (main assembly)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 3.0, "depends_on": ["T1","T2","T3","T4","T5","T6","T7","T9","T10"], "completed_at": null, "findings": ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F15","F22","F24"]},
+    {"id": "T9", "title": "Make LiveInfoStrip static (remove auto-rotation)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F20"]},
+    {"id": "T10", "title": "Create empty state view for Home", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F15","F16"]},
+    {"id": "T11", "title": "Accessibility pass on v2 view (~30+ labels)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.75, "depends_on": ["T8"], "completed_at": null, "findings": ["F17","F18"]},
+    {"id": "T12", "title": "Update project.pbxproj (v2 swap + remove v1 from Sources)", "type": "infra", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": ["T8"], "completed_at": null, "findings": []},
+    {"id": "T13", "title": "Mark v1 MainScreenView as HISTORICAL", "type": "docs", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": ["T12"], "completed_at": null, "findings": []},
+    {"id": "T14", "title": "Walk v2 refactor checklist (Sections A-K)", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T8","T11","T12"], "completed_at": null, "findings": []},
+    {"id": "T15", "title": "Write behavior tests for HomeRecommendationProvider", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T6"], "completed_at": null, "findings": []},
+    {"id": "T16", "title": "Write snapshot tests for v2 view (5 states x devices)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.75, "depends_on": ["T8","T12"], "completed_at": null, "findings": []},
+    {"id": "T17", "title": "Write analytics tests (event firing + consent gating)", "type": "test", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T7","T8"], "completed_at": null, "findings": []}
+  ]
 }

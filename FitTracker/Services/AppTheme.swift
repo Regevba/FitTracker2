@@ -74,6 +74,11 @@ enum AppColor {
         static let achievement  = Color("chart-achievement")
         static let progress     = Color("chart-progress")
         static let nutritionFat = Color("chart-nutrition-fat")
+        // Home v2 metric tints (T3)
+        static let weight       = Color("chart-weight")
+        static let hrv          = Color("chart-hrv")
+        static let heartRate    = Color("chart-heart-rate")
+        static let activity     = Color("chart-activity")
     }
 
     enum Focus {
@@ -146,6 +151,8 @@ enum AppSize {
     static let iconBadge: CGFloat = 26
     /// Progress bar segment height (4pt)
     static let progressBarHeight: CGFloat = 4
+    /// Small status/readiness indicator dot (8pt) — Home v2 (T1)
+    static let indicatorDot: CGFloat = 8
 }
 
 // MARK: - Motion
@@ -157,6 +164,7 @@ enum AppMotion {
     /// Standard quick interaction — easeOut 0.2s
     static let quickInteraction: Animation = .easeOut(duration: 0.2)
 }
+
 
 enum AppSheet {
     static let standardCornerRadius = AppRadius.sheet
@@ -180,6 +188,8 @@ enum AppText {
     static let chip              = Font.system(.footnote,     design: .rounded).weight(.semibold)
     static let footnote          = Font.system(.footnote,     design: .rounded)
     static let metric            = Font.system(.title,        design: .rounded).weight(.bold)
+    /// ~25pt rounded bold — Home v2 status card value hero (T1)
+    static let metricM           = Font.custom("SF Pro Rounded", size: 25, relativeTo: .title).weight(.bold)
     static let metricCompact     = Font.system(.title2,       design: .rounded).weight(.bold)
     // metricHero and metricDisplay are intentional semantic aliases of hero (largeTitle/bold/rounded).
     // metricHero: full-screen readiness score (ReadinessCard).
@@ -196,6 +206,8 @@ enum AppText {
     // These are intentionally fixed-size (icons don't scale with Dynamic Type).
     static let iconSmall         = Font.system(size: 18, weight: .medium)
     static let iconMedium        = Font.system(size: 28, weight: .medium)
+    /// Home v2 primary action button icon (32pt) — T1
+    static let iconXL            = Font.system(size: 32, weight: .medium)
     static let iconLarge         = Font.system(size: 48, weight: .medium)
     static let iconHero          = Font.system(size: 64, weight: .regular)
     static let iconDisplay       = Font.system(size: 72, weight: .regular)

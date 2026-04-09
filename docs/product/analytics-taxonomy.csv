@@ -1,6 +1,13 @@
+# ANALYTICS NAMING CONVENTION (project rule, established 2026-04-08)
+# Every event tied to a specific screen MUST start with that screen's prefix:
+#   home_*, nutrition_*, training_*, stats_*, settings_*, onboarding_*, auth_*
+# Cross-screen lifecycle events stay unprefixed: app_open, session_start, sign_in, sign_up
+# GA4 recommended events keep their dictated names: tutorial_begin, select_content, share, login
+# Full rule: CLAUDE.md → "Analytics Naming Convention"
+# Validated by /analytics spec (Phase 1 PRD gate) and /analytics validate (periodic audit)
 Category,Event Name,GA4 Type,Screen/Trigger,Parameter 1,Parameter 2,Parameter 3,Parameter 4,Parameter 5,Conversion,Scope,Notes
-Auth,login,Recommended,Sign In Screen,method (apple/email/passkey/biometric),,,,,,event,GA4 recommended event
-Auth,sign_up,Recommended,Sign Up Screen,method (apple/email),,,,,,event,GA4 recommended event. Mark as conversion.
+Auth,login,Recommended,Sign In Screen,method (apple/email/passkey/biometric),,,,,,event,GA4 recommended event (unprefixed — GA4 dictated)
+Auth,sign_up,Recommended,Sign Up Screen,method (apple/email),,,,,,event,GA4 recommended event. Mark as conversion. (unprefixed — GA4 dictated)
 Onboarding,tutorial_begin,Recommended,Onboarding Step 1,,,,,,,event,GA4 recommended event
 Onboarding,tutorial_complete,Recommended,Onboarding Final Step,,,,,,Yes,event,GA4 recommended event. Mark as conversion.
 Workout,workout_start,Custom,Active Workout,workout_type (push/pull/legs/cardio/rest),day_number (1-6),,,,,event,
@@ -24,6 +31,9 @@ Onboarding,onboarding_step_completed,Custom,User taps Continue,step_index (0-5),
 Onboarding,onboarding_skipped,Custom,User taps Skip,step_index (0-5),step_name,,,,,event,Skip rate per step (v2)
 Onboarding,onboarding_goal_selected,Custom,Goals screen selection,goal_value (build_muscle/lose_fat/maintain/general_fitness),,,,,,event,Most popular goal (v2)
 Onboarding,permission_result,Custom,HealthKit auth response,permission_type (healthkit/notifications),permission_granted (true/false),,,,,event,Auth grant/deny rate (v2)
+Home,home_action_tap,Custom,Home Screen,action_type (start_workout/log_meal),day_type (push/pull/legs/etc),has_recommendation (true/false),,,No,event,Primary engagement signal
+Home,home_action_completed,Custom,Home Screen,action_type (start_workout/log_meal),duration_seconds (int),source (home),,,Yes,event,Mark as conversion. Measures follow-through.
+Home,home_empty_state_shown,Custom,Home Screen,empty_reason (no_healthkit/no_data/first_launch),cta_shown (connect_health/log_manually/both),,,,No,event,Monitors data availability
 ,,,,,,,,,,
 Screen Name,View Name,SwiftUI View,Category,,,,,,,,
 Home / Today,home,MainScreenView,core,,,,,,,,
@@ -73,3 +83,4 @@ tutorial_complete,Onboarding,Onboarding completion rate,,,,,,,,
 workout_complete,First Workout,Training adoption,,,,,,,,
 meal_log,First Meal,Nutrition adoption,,,,,,,,
 cross_feature_engagement,Weekly Engagement,North Star metric proxy,,,,,,,,
+home_action_completed,Home Engagement,Home-to-action follow-through,,,,,,,,

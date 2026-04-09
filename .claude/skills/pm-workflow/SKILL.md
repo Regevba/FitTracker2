@@ -136,6 +136,23 @@ When `/cx analyze` or `/qa regression` detects an issue post-merge:
 
 **Goal:** Understand what we're building, why, and validate the approach before committing to a PRD.
 
+### Phase 0 variant by work subtype
+
+| Subtype | Phase 0 primary output | Skills dispatched |
+|---|---|---|
+| **New feature** | `research.md` (market + competitive + alternatives) | `/research wide` → `/research narrow` → `/research feature` |
+| **V2 refactor** (`state.json.work_subtype == "v2_refactor"`) | `v2-audit-report.md` (numbered findings against `ux-foundations.md`, each with P0/P1/P2 severity + tractability tag: auto / decision / new-token / new-component) | `/ux audit` on the v1 file |
+| **Enhancement** | Skipped — parent feature's research already exists | — |
+| **Fix / Chore** | Skipped | — |
+
+For v2 refactors, the research phase is an **audit phase**, not a
+market-research phase. The output drives the rest of the lifecycle: every
+finding becomes a Phase 2 task, every P0/P1 finding becomes a required
+Phase 4 patch, and Section A of
+`docs/design-system/v2-refactor-checklist.md` is the completion gate.
+
+### New-feature research template
+
 Create `.claude/features/$0/research.md` using the research template. Fill in:
 
 1. **What is this solution?** — Plain-language description
@@ -256,9 +273,47 @@ Present task list and ask for approval. **On approval, execute the Phase Transit
 
 ## Phase 3: UX/UI Definition (if has_ui = true)
 
-**Goal:** Define screens, components, and design requirements before coding — grounded in UX research and validated against the design system.
+**Goal:** Define screens, components, and design requirements before coding — grounded in UX research and validated against the design system. The hub dispatches `/ux` and `/design` sub-commands in sequence, collects their artifacts, and presents the whole package for user approval before advancing.
 
-### Step 1: UX Research & Principles
+### Phase 3 dispatch chain
+
+| Step | Skill dispatch | Output | Gate |
+|---|---|---|---|
+| 3a | `/ux audit {feature}` *(v2 refactor only)* | `.claude/features/{f}/v2-audit-report.md` | User reviews audit findings |
+| 3b | `/ux research {feature}` | `.claude/features/{f}/ux-research.md` | Principles identified |
+| 3c | `/ux spec {feature}` | `.claude/features/{f}/ux-spec.md` | Spec covers all 5 states + a11y + principles |
+| 3d | `/ux validate {feature}` | heuristic validation report in chat | No unresolved P0 violations |
+| 3e | `/design audit` on the ux-spec | compliance report | Token, component, pattern, a11y, motion all pass |
+| 3f | `/ux prompt {feature}` | `docs/prompts/{date}-{f}-ux-build.md` | Handoff prompt ready |
+| 3g | `/design prompt {feature}` | `docs/prompts/{date}-{f}-design-build.md` | Handoff prompt ready |
+| 3h | Phase 3 approval | `state.json.phases.ux_or_integration.status = "approved"` | User approves; advance to Phase 4 |
+
+Steps 3a-3e produce the spec and its validation; steps 3f-3g produce the auto-generated build prompts for any downstream agent (Figma MCP, SwiftUI builder, etc.). Both prompt files land in `docs/prompts/` with matching date-prefixed filenames so they can be transferred together.
+
+**v2 refactor note:** For `state.json.work_subtype == "v2_refactor"`, step 3a is non-skippable and its output drives steps 3b-3e. For `new_ui`, step 3a is skipped (no v1 to audit) and step 3b starts from the PRD.
+
+### V1 vs V2 — refactor or new feature?
+
+Before starting Phase 3, classify the work:
+
+| Classification | Trigger | Phase 3 expectation | Phase 4 file convention |
+|---|---|---|---|
+| **New UI feature** | No existing v1 file for this surface | Phase 3 is non-skippable. Must produce `ux-spec.md` and pass the design system compliance gateway before any view code is written. | Single Swift file at the canonical path (e.g. `Views/Home/HomeView.swift`). Bottom-up from foundations. |
+| **V2 refactor (UX Foundations alignment)** | An existing v1 Swift file for this surface needs alignment with `ux-foundations.md` | Phase 3 starts with a `v2-audit-report.md` walking the existing v1 file against `ux-foundations.md`, THEN produces `ux-spec.md` for the v2 file. | New file at `{originalDir}/v2/{SameFileName}.swift`. v1 file is **not** patched in place — it stays as a historical reference per the V2 Rule in CLAUDE.md. project.pbxproj is updated in the same commit that creates the v2 file: v2 added to Sources, v1 removed from Sources but kept as a PBXFileReference. |
+
+Set `state.json.work_subtype` to either `"new_ui"` or `"v2_refactor"`. For `v2_refactor`, populate `state.json.v2_file_path` with the planned v2 file path (using the `v2/` subdirectory convention) before Phase 3 advances.
+
+**Phase 3 also requires** the design system v2 refactor checklist
+(`docs/design-system/v2-refactor-checklist.md`) to be referenced in
+`ux-spec.md`. Each checkbox the spec touches must be addressed in Phase 4.
+
+### Step 1: UX Research & Principles (dispatches `/ux research`)
+
+For v2 refactors, dispatch `/ux audit` first to produce
+`.claude/features/$0/v2-audit-report.md` as the gap-analysis driver.
+Then dispatch `/ux research $0` to consolidate the audit findings into
+applicable UX principles. For new UI features, go straight to
+`/ux research $0`.
 
 Before designing screens, research and document UX best practices relevant to this feature:
 
@@ -351,7 +406,20 @@ Record the user's decision in state.json under `ux_or_integration.compliance_dec
 - Update `docs/design-system/feature-memory.md` with what changed and why
 - Run `make tokens-check` to verify token pipeline still passes
 
-Present UX spec + compliance report and ask for approval. **On approval, execute the Phase Transition Procedure.**
+### Step 4: Generate handoff prompts (auto)
+
+Once steps 1-3 are approved (ux-research.md, ux-spec.md, compliance gateway passed), dispatch both prompt-writer sub-commands in parallel:
+
+```
+/ux prompt $0       → writes docs/prompts/{YYYY-MM-DD}-$0-ux-build.md
+/design prompt $0   → writes docs/prompts/{YYYY-MM-DD}-$0-design-build.md
+```
+
+Both prompts are ready to hand off to downstream agents (Figma MCP, SwiftUI implementation agent, etc.). The `/ux` prompt carries the what-and-why; the `/design` prompt carries the how-it-looks. Matching filename prefixes so the two can be read together.
+
+**Verify both prompt files were written** before marking Phase 3 as approvable. If either file is missing, re-run the corresponding sub-command.
+
+Present UX spec + compliance report + both handoff prompts, and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
 ## Phase 3b: Integration Requirements (if has_ui = false)
 
@@ -373,6 +441,51 @@ Present spec and ask for approval. **On approval, execute the Phase Transition P
 **Goal:** Write the code on an isolated branch.
 
 1. Create branch: `git checkout -b feature/$0 main`
+
+### V2 Refactor — file convention (per CLAUDE.md V2 Rule)
+
+If `state.json.work_subtype == "v2_refactor"`:
+
+1. **Do not modify the v1 file in place.** v1 stays read-only during the
+   refactor. The audit (`v2-audit-report.md` from Phase 3) is the gap
+   analysis; the v2 file is built bottom-up from the design system
+   foundations.
+
+2. **Create the v2 file in a `v2/` subdirectory** next to v1, keeping the
+   original file name. Path is `state.json.v2_file_path` and follows the
+   pattern `{originalDir}/v2/{SameFileName}.swift`. Both files define
+   the same Swift type — only the directory differs.
+
+3. **Update `FitTracker.xcodeproj/project.pbxproj` in the same commit:**
+   - Add a new PBXGroup for the `v2/` directory under the parent group
+   - Add a PBXFileReference for the new v2 file under that PBXGroup
+   - Add a PBXBuildFile entry referencing the new v2 file
+   - Add the new PBXBuildFile to the Sources build phase
+   - **Remove** the v1 file's PBXBuildFile from the Sources build phase
+     (the v1 PBXFileReference and group entry stay so the file shows in
+     the navigator and git diffs cleanly)
+
+4. **Mark v1 as historical** with a header comment when v2 is functionally
+   complete:
+   ```swift
+   // HISTORICAL — superseded by v2/{ScreenName}.swift on {date} per
+   // UX Foundations alignment pass. See
+   // .claude/features/{name}/v2-audit-report.md for the gap analysis.
+   // This file is no longer in the build target; it stays in the repo
+   // as a reviewable reference for the v1 → v2 diff.
+   ```
+
+5. **Parent views need no call-site changes.** Both v1 and v2 declare the
+   same Swift type (e.g. `MainScreenView`) — RootTabView keeps writing
+   `MainScreenView()` but the symbol now resolves to the v2 file because
+   v1 is no longer in Sources. The swap happens entirely in
+   project.pbxproj.
+
+6. **Walk the v2 refactor checklist** at
+   `docs/design-system/v2-refactor-checklist.md` before requesting Phase 5
+   (Test) approval. Set
+   `state.json.phases.implementation.checklist_completed = true` when all
+   applicable boxes are ticked.
 
 ### Parallel Task Dispatch
 

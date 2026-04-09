@@ -26,8 +26,13 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 - `.claude/shared/design-system.json` — tokens, components available
 - `.claude/shared/cx-signals.json` — user confusion/friction signals
 - `.claude/shared/feature-registry.json` — feature status and pain points
+- `docs/design-system/ux-foundations.md` — the 13 principles + 10 parts
+- `docs/design-system/v2-refactor-checklist.md` — Sections A / E / F / G / H are the responsibility of `/ux`
 
 **Writes:**
+- `.claude/features/{feature}/ux-research.md` (from `/ux research`)
+- `.claude/features/{feature}/ux-spec.md` (from `/ux spec`)
+- `.claude/features/{feature}/v2-audit-report.md` (from `/ux audit` when invoked for a v2 refactor)
 - `.claude/shared/design-system.json` — `ux_coverage` field (% of features with ux-spec)
 
 ## UX Principles Reference (13 Total)
@@ -147,24 +152,81 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 
 ### `/ux audit`
 
-**Purpose:** Run a UX audit across the entire app or a specific screen.
+**Purpose:** Walk a v1 surface (or the whole app) against `ux-foundations.md` and produce a severity-graded findings list. This is the primary Phase 0 output for v2 refactors per the V2 Rule in `CLAUDE.md`.
 
-**Steps:**
-1. Read all view files in `FitTracker/Views/`
-2. Check for common UX issues:
-   - Screens without clear primary action
-   - Missing empty states (first-use guidance)
-   - Missing loading states (async operations without feedback)
-   - Missing error states (network/auth/data failures)
-   - Buttons without accessibility labels
-   - Navigation depth > 3 levels from tab
-   - Inconsistent patterns between similar screens
-   - Choices exceeding Hick's Law threshold (>6 options without grouping)
-   - Tap targets below 44pt
-   - Text that doesn't scale with Dynamic Type
-3. Cross-reference with cx-signals for user-reported confusion
+**Two invocation modes:**
 
-**Output:** Audit report with file:line references, severity levels, fix recommendations.
+| Mode | Trigger | Input | Output |
+|---|---|---|---|
+| **V2 refactor audit** | PM workflow Phase 0 with `state.json.work_subtype == "v2_refactor"` | One v1 Swift file (e.g. `FitTracker/Views/Main/MainScreenView.swift`) | `.claude/features/{feature}/v2-audit-report.md` with numbered findings |
+| **App-wide audit** | Standalone `/ux audit` | All view files under `FitTracker/Views/` | Audit report (no file written unless user asks) |
+
+**Steps (v2 refactor mode):**
+
+1. Read the target v1 Swift file end-to-end. Note line counts, private
+   functions, private types, modifiers, and state.
+2. Read the feature's PRD from `docs/product/prd/` if it exists.
+3. Read `docs/design-system/ux-foundations.md` in full (Parts 1-8 are all
+   relevant to a UI audit).
+4. Read `docs/design-system/v2-refactor-checklist.md` — Sections A / C / E
+   / F / G / H are the finding framework.
+5. **Walk the 13 UX Foundations principles** (8 core + 5 FitMe-specific).
+   For each principle that applies, document whether the v1 file honors
+   it, partially honors it, or violates it.
+6. **Walk the 5 states** (default / loading / empty / error / success) for
+   every screen in scope. Missing states are findings.
+7. **Count raw literals:**
+   - `.font(.system(size: ...))` outside `// DS-exception:` comments
+   - `.padding(...)` with numeric literals
+   - `.frame(width:/height:)` with numeric literals
+   - Raw `.spring(...)` / `.easeInOut(...)` / `.easeOut(...)` calls
+   - Hardcoded `Color(...)` literals
+   - Every count becomes a finding under Section C (token compliance).
+8. **Count accessibility labels:** grep `accessibilityLabel` and
+   `accessibilityHint`. If the count is << the number of interactive
+   elements, that's a P0 finding under Section G.
+9. **Check layout architecture** — root-level `GeometryReader`, inline
+   responsive sizing via `compact`/`tight` props, unused existing
+   components, private types that should live in `DesignSystem/`.
+10. **Cross-reference `.claude/shared/cx-signals.json`** for any
+    user-reported confusion about this surface.
+
+**Finding format:**
+
+Each finding in `v2-audit-report.md` gets:
+
+```
+### F{n} — {short title}
+- Severity: P0 | P1 | P2
+- Tractability: auto-applicable | needs-decision | needs-new-token | needs-new-component
+- Principle / checklist section: {e.g. "1.9 Readiness-First" or "Section G1"}
+- Location: {file:line}
+- Description: {what the v1 code does and why it's wrong}
+- Recommendation: {what the v2 code should do}
+```
+
+**Severity definitions:**
+- **P0** — blocks v2 ship (foundational principle violation, missing
+  critical state, broken accessibility baseline)
+- **P1** — should fix in v2 (token drift, minor principle miss,
+  inconsistent pattern with other screens)
+- **P2** — nice-to-have, can defer to follow-up (polish, edge cases,
+  optional enhancements)
+
+**Tractability definitions:**
+- **auto-applicable** — can be fixed mechanically without a product
+  decision (raw literal → token, missing accessibility label, wrong
+  animation easing)
+- **needs-decision** — requires the user to choose between options
+  (remove a feature vs evolve it, which pattern to use)
+- **needs-new-token** — the fix requires a new semantic token in
+  `AppTheme.swift`
+- **needs-new-component** — the fix requires a new shared component in
+  `DesignSystem/`
+
+**Output (v2 mode):** `.claude/features/{feature}/v2-audit-report.md`
+
+**Steps (app-wide mode):** Same process but across all view files, without writing a per-feature file. Output goes to the session chat as a summary.
 
 ### `/ux patterns`
 
@@ -184,34 +246,81 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 
 **Output:** Formatted pattern reference.
 
+### `/ux prompt {feature}`
+
+**Purpose:** Auto-generate a handoff prompt for another agent (typically a Figma MCP agent or an implementation agent) once Phase 3 UX work is approved. The prompt bundles everything the receiving agent needs: user flows, principle application, state coverage, accessibility requirements, and references to the design system. No manual prompt writing.
+
+**Prerequisites:**
+- `.claude/features/{feature}/ux-research.md` exists and is approved
+- `.claude/features/{feature}/ux-spec.md` exists and is approved
+- Phase 3 design system compliance gateway passed
+- For v2 refactors: `.claude/features/{feature}/v2-audit-report.md` exists
+
+**Steps:**
+1. Read `ux-research.md`, `ux-spec.md`, and (if v2) `v2-audit-report.md`
+2. Read `state.json` to pull `work_subtype`, `v1_file_path`, `v2_file_path`, Figma node IDs, and acceptance criteria
+3. Read the relevant sections of `ux-foundations.md` cited in the spec
+4. Assemble a single prompt file with:
+   - **Header** — feature name, work subtype, target agent (Figma MCP / SwiftUI implementation / etc.), date, related GitHub issue
+   - **Context** — one-paragraph product framing from PRD
+   - **What to build** — screen inventory with wireframes or Figma node references
+   - **UX principles applied** — the Principle Application Table from the spec, copied verbatim
+   - **State coverage** — default / loading / empty / error / success for each screen
+   - **Accessibility requirements** — VoiceOver labels, tap targets, Dynamic Type, reduce-motion
+   - **Handoff checklist** — what the receiving agent should produce and return
+   - **References** — paths to ux-spec, ux-research, audit report, ux-foundations, design-system.json
+5. **Write the prompt** to `docs/prompts/{YYYY-MM-DD}-{feature}-ux-build.md`
+6. Announce: "UX handoff prompt written to `docs/prompts/…`. Ready to transfer to the receiving agent."
+
+**Output:** `docs/prompts/{YYYY-MM-DD}-{feature}-ux-build.md`
+
+**When to run:** Automatically dispatched by `/pm-workflow` after Phase 3 approval when `state.json.phases.ux_or_integration.status == "approved"`. Also invokable standalone when the spec is done but the hub wasn't running it.
+
+**Paired with:** `/design prompt {feature}` — `/ux` writes the what-and-why prompt, `/design` writes the how-it-looks prompt. Both land in `docs/prompts/` with matching filename prefixes so the receiving agent can read them together.
+
 ## PM Workflow Integration
 
-| PM Phase | /ux Sub-command | When |
-|----------|----------------|------|
-| Phase 0 (Research) | `/ux research` | After feature research, before PRD |
-| Phase 3 (UX Definition) | `/ux spec` | After PRD approved, before design |
-| Phase 3 (UX Compliance) | `/ux validate` | After ux-spec written, before implementation |
-| Phase 5 (Testing) | `/ux validate` | Post-implementation verification |
-| Post-Launch | `/ux audit` | When CX signals indicate UX issues |
+| PM Phase | Sub-command | When | Work subtype |
+|---|---|---|---|
+| **Phase 0 (Research)** — v2 refactor only | `/ux audit {feature}` | First step of a v2 refactor — produces `v2-audit-report.md` as the gap-analysis driver | `v2_refactor` |
+| **Phase 0 (Research)** — new feature | `/ux research {feature}` | After competitive research, before PRD | `new_ui` |
+| **Phase 3 (UX Definition)** | `/ux research {feature}` → `/ux spec {feature}` → `/ux validate {feature}` | After PRD approved, before Phase 4 code | both |
+| **Phase 5 (Testing)** | `/ux validate {feature}` | Post-implementation verification | both |
+| **Phase 6 (Review)** | `/ux validate {feature}` | Heuristic sanity check in parallel with `/design audit` | both |
+| **Post-Launch** | `/ux audit` (app-wide) | When CX signals indicate UX issues | — |
 
 ### Phase 3 Choreography
 
-The full Phase 3 handoff:
-1. `/ux research {feature}` → produces ux-research.md
-2. `/ux spec {feature}` → produces ux-spec.md
-3. `/ux validate {feature}` → produces validation report
+The full Phase 3 handoff differs by work subtype:
+
+**New UI feature (`new_ui`):**
+1. `/ux research {feature}` → produces `ux-research.md`
+2. `/ux spec {feature}` → produces `ux-spec.md` (with Principle Application Table and all 5 states covered)
+3. `/ux validate {feature}` → heuristic evaluation, flags violations
 4. `/design audit` → validates against design system (tokens, components, motion)
 5. User approval → proceed to Phase 4 (Implementation)
+
+**V2 refactor (`v2_refactor`):**
+1. `/ux audit {feature}` (from Phase 0) → `v2-audit-report.md` is already in place
+2. `/ux research {feature}` → consolidates audit findings into the 13 ux-foundations principles (`ux-research.md`)
+3. `/ux spec {feature}` → `ux-spec.md` is written **for the v2 file**, using the audit findings as the gap list. Every P0/P1 finding must have a resolution in the spec (fix / evolve DS / override with justification)
+4. `/ux validate {feature}` → heuristic re-check of the v2 spec
+5. `/design audit` → design system compliance gateway
+6. Tick Section A of `docs/design-system/v2-refactor-checklist.md`
+7. User approval → proceed to Phase 4 (build the v2 file in the `v2/` subdirectory per the V2 Rule in `CLAUDE.md`)
 
 ## Key References
 
 | Document | Purpose |
 |----------|---------|
-| `docs/design-system/ux-foundations.md` | Complete UX pattern library (10 parts) |
+| `docs/design-system/ux-foundations.md` | Complete UX pattern library (13 principles + 10 parts) |
+| `docs/design-system/v2-refactor-checklist.md` | Phase 3-5 checklist — `/ux` owns Sections A, E, F, G, H |
 | `docs/design-system/ux-copy-guidelines.md` | Tone, voice, terminology |
 | `docs/design-system/feature-development-gateway.md` | 7-stage development workflow |
 | `docs/design-system/feature-design-checklist.md` | Pre-implementation validation |
 | `docs/design-system/component-contracts.md` | Component interaction behavior |
 | `docs/design-system/responsive-handoff-rules.md` | Responsive design contract |
-| `.claude/features/{feature}/ux-research.md` | Per-feature UX research |
-| `.claude/features/{feature}/ux-spec.md` | Per-feature UX specification |
+| `CLAUDE.md` — "UI Refactoring & V2 Rule" | V2 file convention (`v2/` subdirectory + pbxproj surgery) |
+| `.claude/features/{feature}/ux-research.md` | Per-feature UX research (from `/ux research`) |
+| `.claude/features/{feature}/ux-spec.md` | Per-feature UX specification (from `/ux spec`) |
+| `.claude/features/{feature}/v2-audit-report.md` | Per-feature v2 gap analysis (from `/ux audit` in v2 mode) |

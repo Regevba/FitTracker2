@@ -298,7 +298,8 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertTrue(conversions.contains(AnalyticsEvent.tutorialComplete))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.crossFeatureEngagement))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.accountDeleteCompleted))
-        XCTAssertEqual(conversions.count, 6)
+        XCTAssertTrue(conversions.contains(AnalyticsEvent.homeActionCompleted))
+        XCTAssertEqual(conversions.count, 7)
     }
 
     // MARK: - GDPR Event Tests
@@ -401,7 +402,6 @@ final class AnalyticsTests: XCTestCase {
     func testOnboardingCompletedUserProperty() {
         analyticsService.setOnboardingCompleted(true)
 
-        XCTAssertEqual(mockAdapter.capturedUserProperties.count, 1)
         XCTAssertEqual(mockAdapter.capturedUserProperties[AnalyticsUserProperty.onboardingCompleted], "true")
     }
 

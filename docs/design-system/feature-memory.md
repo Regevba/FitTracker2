@@ -23,6 +23,60 @@ For each feature, add:
 
 ---
 
+## Pending Evolution Queue
+
+> Changes to the design system that have been **proposed** by an in-flight
+> audit but **not yet implemented**. Future screens being audited should
+> check this queue first so they reference proposed tokens/components
+> instead of re-discovering the same gaps. When an item lands in Phase 4,
+> move it from "Pending" to the feature's shipped memory entry below and
+> delete the queue row.
+>
+> Format: `{source feature}` → `{proposed addition}` → `{what it solves}`
+> → `{status}`.
+
+### From `home-today-screen` v2 audit (2026-04-08, `fbc01e1`)
+
+Source: `.claude/features/home-today-screen/v2-audit-report.md`
+Tracking: [regevba/fittracker2#60](https://github.com/Regevba/2/issues/60)
+
+**Proposed new tokens (Swift: `FitTracker/Services/AppTheme.swift`):**
+
+| Token | Type | Size/value | Used by | Finding |
+|---|---|---|---|---|
+| `AppText.metricL` | Font | ~28pt rounded bold, Dynamic Type scaling via `relativeTo: .largeTitle` | Goal progress ring percentage label | F5 |
+| `AppText.metricM` | Font | ~25pt rounded bold, Dynamic Type scaling via `relativeTo: .title` | Status card value hero (weight, body fat) | F5 |
+| `AppText.iconXL` | Font | ~32pt medium | Primary action button icon inside circle | F5 |
+| `AppSize.indicatorDot` | CGFloat | 8pt | Small status / readiness dots | F7 |
+| `AppColor.Chart.weight` | Color | tbd — propose `Color("chart-weight")` in asset catalog | Weight metric tint on status + stats | F8 |
+| `AppColor.Chart.hrv` | Color | tbd — `Color("chart-hrv")` | HRV metric tint on home + stats | F8 |
+| `AppColor.Chart.heartRate` | Color | already exists? verify in `AppTheme.swift` | Resting HR metric tint | F8 |
+| `AppColor.Chart.activity` | Color | tbd — `Color("chart-activity")` | Steps metric tint | F8 |
+
+**Proposed component promotions (Swift: `FitTracker/DesignSystem/AppComponents.swift`):**
+
+| Component | From | Description | Finding |
+|---|---|---|---|
+| `AppMetricColumn` | `MainScreenView.swift:468-512` (`statusValueColumn` private helper) | Weight/body-fat column pattern: icon + title, value + unit, target line, missing-state capsule. Used on Home status, potentially on Stats body-composition section, potentially on Onboarding profile review. | F26 |
+| `AppMetricTile` | `MainScreenView.swift:538-555` (`metricTile` private helper) | Generic metric display: icon + value + label. Used on Home metrics row (HRV / RHR / Sleep / Steps), on Stats summary, on Recovery Studio. | F26 |
+
+**Proposed removals:**
+
+- Home-only `BlendedSectionStyle` ViewModifier (F4) — replace with existing `AppCard` from `AppComponents.swift`. No new component needed; the fix is to stop defining private modifiers that duplicate `AppCard`.
+
+**Status of each item:** `Proposed — awaiting Phase 4 implementation in home-today-screen v2`
+
+**What the next screen's audit should do:**
+
+1. Read this queue before starting the audit
+2. If a raw font/color/frame value in the screen maps to a queued token, reference the token in the audit finding (don't propose a duplicate)
+3. If the screen also needs the queued token, add a "also needed by: {this screen}" note in the table row above
+4. If the screen needs something *different*, propose a new token and append it here
+
+This keeps the design-system evolution coherent across the per-screen alignment passes instead of every audit re-proposing the same primitives in slightly different names.
+
+---
+
 ## 2026-04-07 — Onboarding v2 UX Alignment (PR #59)
 
 - **Date:** 2026-04-07

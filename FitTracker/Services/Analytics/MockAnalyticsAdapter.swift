@@ -12,6 +12,7 @@ final class MockAnalyticsAdapter: AnalyticsProvider {
     /// Captured events for unit testing
     private(set) var capturedEvents: [(name: String, parameters: [String: Any]?)] = []
     private(set) var capturedScreens: [String] = []
+    private(set) var capturedUserProperties: [String: String] = [:]
 
     func configure() {
         logger.info("MockAnalytics configured")
@@ -28,6 +29,7 @@ final class MockAnalyticsAdapter: AnalyticsProvider {
     }
 
     func setUserProperty(_ value: String?, forName name: String) {
+        capturedUserProperties[name] = value
         logger.debug("USER_PROP: \(name) = \(value ?? "nil")")
     }
 
@@ -43,5 +45,6 @@ final class MockAnalyticsAdapter: AnalyticsProvider {
     func reset() {
         capturedEvents.removeAll()
         capturedScreens.removeAll()
+        capturedUserProperties.removeAll()
     }
 }
