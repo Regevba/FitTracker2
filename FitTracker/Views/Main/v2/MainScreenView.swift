@@ -115,7 +115,7 @@ struct MainScreenView: View {
                 HomeEmptyStateView(
                     emptyReason: emptyReason,
                     onConnectHealth: {
-                        healthService.requestAuthorization()
+                        Task { try? await healthService.requestAuthorization() }
                     },
                     onLogManually: {
                         manualEntry = true
@@ -137,8 +137,9 @@ struct MainScreenView: View {
         .onChange(of: dataStore.userProfile.currentPhase) { _, _ in checkMilestones() }
         .onChange(of: readinessScore) { _, newScore in
             guard newScore != nil else { return }
-            let today = Calendar.current.startOfDay(for: Date())
-            guard readinessHapticDay.map({ Calendar.current.startOfDay(for: $0) }) != today else { return }
+            let today: Date = Calendar.current.startOfDay(for: Date())
+            let lastDay: Date? = readinessHapticDay.map { Calendar.current.startOfDay(for: $0) }
+            guard lastDay != today else { return }
             readinessHapticDay = today
             let g = UINotificationFeedbackGenerator()
             g.prepare()
