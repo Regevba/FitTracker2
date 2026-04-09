@@ -101,6 +101,13 @@ Ensures every UI feature is grounded in research-backed UX principles **before**
 4. **Validate a shipped surface:** `/ux validate settings` → heuristic evaluation with concrete fix suggestions
 5. **Find existing patterns:** `/ux patterns` → "Is there an existing inline-edit pattern I should reuse?"
 
+## Recent usage
+
+- **`/ux wireframe`** sub-command added (2026-04-09) — generates ASCII wireframes at three fidelity levels (low, medium, high). Used during Home v2 and Training v2 Phase 3 specs.
+- **Home v2 audit** — `/ux audit` produced a 27-finding `v2-audit-report.md` with P0/P1/P2 severity grading and tractability tags. First full-scale screen audit.
+- **Training v2 audit** — second `/ux audit` run, validating the screen audit workflow scales to a different feature surface.
+- **`/ux prompt`** — auto-generated handoff prompts for both Home v2 and Training v2 in `docs/prompts/`.
+
 ## Key references
 
 - [`docs/design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 principles + IA + states + a11y + motion + content strategy

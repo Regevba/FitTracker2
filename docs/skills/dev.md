@@ -46,6 +46,13 @@ Manages branching strategy, runs code review checklists (flagging high-risk file
 2. **Pre-PR review:** `/dev review` → Scans diff for high-risk file changes, security issues, perf problems
 3. **Dependency audit:** `/dev deps` → Checks SPM + npm for vulnerabilities and updates
 
+## Recent usage
+
+- **5 features branched and merged** through the PM lifecycle: Home v2 (#61), Onboarding retro (#63), Body Composition (#65), Metric Deep Link (#67), Training v2 (#74).
+- **v2/ subdirectory convention** validated at scale — multiple v2/ splits within one feature branch, project.pbxproj swaps automated.
+- **Parallel task dispatch** — `/dev branch` + implementation tasks ran concurrently with `/design` and `/analytics` tasks during Phase 4.
+- **Code review** ran on all 5 PRs via `/dev review`, flagging high-risk file changes in DomainModels.swift and AnalyticsProvider.swift.
+
 ## Key references
 
 - [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) — CI pipeline

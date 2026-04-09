@@ -52,6 +52,12 @@ Manages design system governance, creates UX specs from PRDs, generates Figma bu
 2. **Figma automation:** `/design figma onboarding` → generates a copy-paste prompt for Figma MCP
 3. **Token drift check:** `/design tokens` → runs `make tokens-check`, flags any raw literals in the current diff
 
+## Recent usage
+
+- **`/design build {feature}`** sub-command added (2026-04-09) — executes a Figma MCP design-to-code build with SwiftUI fallback. Reads Figma file context via `get_design_context`, adapts to the project's token system.
+- **Home v2 Figma screen** — first end-to-end Figma MCP integration. Design context retrieved from Figma, adapted to AppTheme tokens, implemented as v2/ SwiftUI views.
+- **`/design prompt`** — auto-generated visual-build prompts for Home v2 and Training v2 in `docs/prompts/`.
+
 ## Key references
 
 - [`FitTracker/Services/AppTheme.swift`](../../FitTracker/Services/AppTheme.swift) — semantic token layer

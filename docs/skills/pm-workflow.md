@@ -1,6 +1,6 @@
-# `/pm-workflow` — The Hub
+# `/pm-workflow` — The Hub (v3.0)
 
-> **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, and waits for user approval before advancing.
+> **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
 
 **Agent-facing prompt:** [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md)
 
@@ -8,11 +8,14 @@
 
 ## What it does
 
-Orchestrates a feature (or any work item) through a 10-phase lifecycle:
+Orchestrates a feature (or any work item) through a 9-phase lifecycle with external tool sync:
 
 ```
 0. Research   → 1. PRD → 2. Tasks → 3. UX/Integration → 4. Implement
             → 5. Test → 6. Review → 7. Merge → 8. Docs → 9. Learn
+                                    ↕               ↕
+                              Notion MCP        GitHub Labels
+                              Figma MCP         Vercel Deploy
 ```
 
 Each phase has gates (user approval, CI green, analytics regression passing) and produces artifacts (research.md, prd.md, tasks.md, ux-spec.md, commit hashes, test results, CHANGELOG entry). The hub never writes code or runs tests directly — it dispatches the right spoke skill for each concern.
@@ -26,7 +29,7 @@ Before the ecosystem, `/pm-workflow` was a single monolithic skill that did ever
 - Cross-domain information (e.g. CX signals informing UX decisions) stayed trapped in one workflow's context
 - Every phase was sequential — no parallelization of independent work
 
-The v2.0 ecosystem extracted 10 domain skills from the monolith, and `/pm-workflow` became the lightweight orchestrator that reads state and dispatches.
+The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management.
 
 ## Sub-commands
 
@@ -38,7 +41,7 @@ Single invocation: `/pm-workflow {feature-name}`. The hub's behavior depends on 
 | `current_phase: research` | Dispatches `/research` or `/ux audit` (for v2 refactors) |
 | `current_phase: prd` | Walks the PRD template, dispatches `/analytics spec` if `requires_analytics` |
 | `current_phase: tasks` | Breaks the PRD into subtasks, assigns each a `skill` |
-| `current_phase: ux` or `integration` | Dispatches `/ux research` → `/ux spec` → `/ux validate` → `/design audit` |
+| `current_phase: ux` or `integration` | Dispatches `/ux research` → `/ux spec` → `/ux wireframe` → `/ux validate` → `/design audit` |
 | `current_phase: implement` | Creates `feature/{name}` branch, dispatches tasks in parallel by skill |
 | `current_phase: testing` | Dispatches `/qa plan` → `/qa run` → `/analytics validate` → `/ux validate` |
 | `current_phase: review` | Dispatches `/dev review` + `/design audit` + `/ux validate` in parallel |
@@ -52,12 +55,12 @@ The user can override at any time: `Move to {phase}` or `Roll back to {phase}` �
 
 Not every work item walks all 10 phases. The hub supports four types:
 
-| Type | Phases | When to use |
+| Type | Phases (count) | When to use |
 |---|---|---|
 | **Feature** | All 9 + metrics (10) | New capability, requires research + PRD + design |
-| **Enhancement** | Tasks → Implement → Test → Merge | Improvement to a shipped feature that has a PRD |
-| **Fix** | Implement → Test → Review → Merge | Bug fix, security patch |
-| **Chore** | Implement → Review → Merge | Docs, config, refactoring |
+| **Enhancement** | Tasks → Implement → Test → Merge (4) | Improvement to a shipped feature that has a PRD |
+| **Fix** | Implement → Test (2) | Bug fix, security patch |
+| **Chore** | Implement only (1) | Docs, config, refactoring |
 
 Skipped phases get `status: "skipped"` with `reason: "work_type:{type}"` in the audit trail. **Review + Merge gates are non-negotiable for every type that changes code.**
 
@@ -65,13 +68,56 @@ Skipped phases get `status: "skipped"` with `reason: "work_type:{type}"` in the 
 
 Introduced 2026-04-08 for UI refactor passes against `ux-foundations.md`. `state.json.work_subtype: "v2_refactor"` triggers:
 
-- Phase 0 dispatches `/ux audit` (not `/research`)
+- Phase 0 dispatches `/ux audit` (not `/research`) — screen audit research mode
 - Phase 3 starts with `v2-audit-report.md` as the gap analysis
 - Phase 4 creates a new file at `{originalDir}/v2/{SameFileName}.swift` instead of patching v1 in place
 - project.pbxproj removes v1 from Sources build phase, adds v2
 - Must walk through `docs/design-system/v2-refactor-checklist.md` before Phase 5
 
 Full rule: `CLAUDE.md` → "UI Refactoring & V2 Rule".
+
+### Sub-feature queue pattern
+
+Validated with Home v2, which spawned 4 sub-features from the parent audit:
+
+1. Parent feature (Home v2, #61) runs Phase 0 audit → produces findings
+2. Findings that warrant their own lifecycle become sub-features with `parent_feature` links
+3. Sub-features inherit the parent's branch and PRD context
+4. Each sub-feature tracks independently in `state.json` but rolls up to the parent GitHub Issue
+
+Example: Home v2 (#61) → Body Composition (#65), Metric Deep Link (#67), Training v2 (#74), Onboarding retro (#63).
+
+## Phase transition procedure (6 steps)
+
+Every phase advance follows this exact sequence:
+
+1. **Verify gate** — all phase-specific gates are met (CI, tests, user approval)
+2. **Update `state.json`** — set `current_phase`, timestamp, approval record
+3. **Sync GitHub Issue** — update `phase:*` label via `gh` CLI
+4. **Sync Notion** — update the feature's Notion page status via `notion-update-page` MCP
+5. **Broadcast change** — write event to `change-log.json`, notify downstream skills
+6. **Announce** — tell the user what phase they're entering and what happens next
+
+## Dashboard sync automation
+
+Phase transitions auto-sync to three external systems:
+
+| System | Sync method | What updates |
+|---|---|---|
+| **GitHub Issues** | `gh` CLI | `phase:*` label, assignee, milestone |
+| **Notion** | `notion-update-page` MCP | Feature page status, phase field, last-updated timestamp |
+| **Vercel** | Deploy preview on PR | Preview URL attached to the GitHub Issue |
+
+Conflicts between `state.json` and GitHub Issue labels are resolved by asking the user.
+
+## Change broadcast protocol
+
+When ANY work item merges to main:
+
+1. Update `feature-registry.json` with what changed
+2. Notify downstream skills based on change type (code → `/qa`, `/cx`, `/ops`, `/analytics`; UI → add `/design`; analytics → `/qa`, `/cx`, `/analytics`)
+3. Sync Notion page to `phase:done`
+4. Write event to `change-log.json`
 
 ## Shared Data
 
@@ -96,7 +142,10 @@ Full rule: `CLAUDE.md` → "UI Refactoring & V2 Rule".
 - **`/ops incident`** — incidents can spawn urgent Fix work items
 
 **Downstream (who `/pm-workflow` dispatches):**
-- All 10 spoke skills at the appropriate phase. See the Phase dispatch table above.
+- All 11 spoke skills at the appropriate phase. See the Phase dispatch table above.
+- **Notion MCP** — phase status sync on every transition
+- **Figma MCP** — design context retrieval during Phase 3-4
+- **GitHub** — label sync, PR management during Phase 6-7
 
 ## Phase gate rules (non-negotiable)
 
@@ -104,8 +153,18 @@ Full rule: `CLAUDE.md` → "UI Refactoring & V2 Rule".
 2. No PRD without success metrics (primary + 2 secondary + guardrails + kill criteria)
 3. No merge without CI green on BOTH feature branch and main
 4. Post-launch metrics review is mandatory at the cadence the PRD defines
-5. Phase transitions auto-sync to GitHub Issue labels — the dashboard updates automatically
+5. Phase transitions auto-sync to GitHub Issue labels and Notion — the dashboard updates automatically
 6. Conflicts between `state.json` and GitHub Issue labels are resolved by asking the user
+
+## Features shipped through the hub
+
+| Feature | GitHub Issue | Work type | Key milestone |
+| --- | --- | --- | --- |
+| Home Today Screen v2 | #61 | Feature (v2_refactor) | 27-finding UX audit, v2/ convention validated |
+| Onboarding retro | #63 | Enhancement | Retroactive v2 alignment of pilot feature |
+| Body Composition card | #65 | Enhancement | Reusable metric tile drill-down pattern |
+| Metric Deep Link | #67 | Enhancement | Home tile → detail view navigation |
+| Training Plan v2 | #74 | Feature (v2_refactor) | Second full v2 refactor through the pipeline |
 
 ## Standalone usage
 
@@ -115,9 +174,14 @@ Full rule: `CLAUDE.md` → "UI Refactoring & V2 Rule".
 
 ```
 USER → /pm-workflow (HUB) → dispatches spokes → reads/writes shared/*.json
-              ▲                      │
-              └──── feedback loop ◀──┘
-                 (/cx, /ops)
+              ▲                      │                    │
+              │                      │              ┌─────┴─────┐
+              └──── feedback loop ◀──┘              │ External  │
+                 (/cx, /ops)                        │ GitHub    │
+                                                    │ Notion    │
+                                                    │ Figma     │
+                                                    │ Vercel    │
+                                                    └───────────┘
 ```
 
 It's the only skill the user normally types directly. Everything else is reachable through it (via phase dispatch) OR standalone (direct invocation).
@@ -125,6 +189,7 @@ It's the only skill the user normally types directly. Everything else is reachab
 ## Related documents
 
 - [README.md](README.md) — ecosystem overview
+- [architecture.md](architecture.md) — full ecosystem deep-dive
 - [ux.md](ux.md), [design.md](design.md), [dev.md](dev.md) — the three skills dispatched most during Phase 3-4
 - [`CLAUDE.md`](../../CLAUDE.md) — project-wide rules
 - [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md) — the agent-facing prompt

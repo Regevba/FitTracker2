@@ -55,6 +55,13 @@ Creates test plans from PRD acceptance criteria, executes test suites, measures 
 2. **Quick test run:** `/qa run` → executes `make tokens-check` + `xcodebuild build` + `xcodebuild test`
 3. **Security check:** `/qa security` → checks encryption (AES-256-GCM), Keychain ACL, JWT handling, PII exposure
 
+## Recent usage
+
+- **37+ analytics tests** written across 3 test files validating GA4 instrumentation for Home v2, Body Composition, and Training v2 features.
+- **v2-refactor-checklist Section J** (QA verification gate) completed for both Home v2 and Training v2 refactors.
+- **Regression checks** ran on main after each of the 5 feature merges (#61, #63, #65, #67, #74).
+- **Test plans** generated from PRD acceptance criteria for all Feature and Enhancement work items.
+
 ## Key references
 
 - [`FitTrackerTests/`](../../FitTrackerTests/) — XCTest suite

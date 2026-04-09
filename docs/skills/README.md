@@ -8,26 +8,28 @@
 
 ---
 
-## The 11 skills
+## The 12 skills (1 hub + 11 spokes)
 
-| # | Skill | One-liner | Phase it owns |
-|---|---|---|---|
-| 0 | [`/pm-workflow`](pm-workflow.md) | **The hub.** Orchestrates the 10-phase lifecycle and dispatches the other 10 skills at the right moments. | All phases (dispatch) |
-| 1 | [`/ux`](ux.md) | **What & Why.** UX research, principles, specs, v2 audits. Feeds `/design` and `/dev`. | Phase 0 (v2) + Phase 3 + Phase 6 |
-| 2 | [`/design`](design.md) | **How it Looks.** Design system governance, Figma automation, token pipeline, WCAG AA. | Phase 3 + Phase 6 |
-| 3 | [`/dev`](dev.md) | **How it's Built.** Branching, code review, CI, dependencies, performance. | Phase 4 + Phase 6 + Phase 7 |
-| 4 | [`/qa`](qa.md) | **Does it Work.** Test planning, coverage, regression, security. | Phase 5 |
-| 5 | [`/analytics`](analytics.md) | **Can We Measure It.** Event taxonomy, instrumentation, dashboards, funnels. | Phase 1 + Phase 5 + Phase 8 |
-| 6 | [`/cx`](cx.md) | **What Users Say.** Reviews, NPS, sentiment, post-deployment analysis, feedback loops. | Phase 0 + Phase 8 + Phase 9 |
-| 7 | [`/marketing`](marketing.md) | **How We Tell the World.** ASO, campaigns, content, email, launch comms. | Phase 0 + Phase 8 |
-| 8 | [`/research`](research.md) | **What's Out There.** Cross-industry → same-category → feature-specific research funnel. | Phase 0 |
-| 9 | [`/ops`](ops.md) | **Is It Up.** Infrastructure monitoring, incidents, cost, alerting. | Cross-phase |
-| 10 | [`/release`](release.md) | **Is It Ready.** Version bumps, changelogs, TestFlight, App Store submission. | Phase 7 |
+| # | Skill | One-liner | Sub-commands | Phase it owns |
+| --- | --- | --- | --- | --- |
+| 0 | [`/pm-workflow`](pm-workflow.md) | **The hub.** Orchestrates the 9-phase lifecycle, dispatches 11 spokes, syncs external tools. | `{feature-name}` | All phases (dispatch) |
+| 1 | [`/ux`](ux.md) | **What & Why.** UX research, principles, specs, wireframes, v2 audits. | `research`, `spec`, `wireframe`, `validate`, `audit`, `patterns`, `prompt` | Phase 0 (v2) + Phase 3 + Phase 6 |
+| 2 | [`/design`](design.md) | **How it Looks.** Design system governance, Figma MCP builds, token pipeline, WCAG AA. | `audit`, `ux-spec`, `figma`, `tokens`, `accessibility`, `prompt`, `build` | Phase 3 + Phase 6 |
+| 3 | [`/dev`](dev.md) | **How it's Built.** Branching, code review, CI, dependencies, performance. | `branch`, `review`, `deps`, `perf`, `ci-status` | Phase 4 + Phase 6 + Phase 7 |
+| 4 | [`/qa`](qa.md) | **Does it Work.** Test planning, coverage, regression, security. | `plan`, `run`, `coverage`, `regression`, `security` | Phase 5 |
+| 5 | [`/analytics`](analytics.md) | **Can We Measure It.** Event taxonomy, instrumentation, dashboards, funnels. | `spec`, `validate`, `dashboard`, `report`, `funnel` | Phase 1 + Phase 5 + Phase 8 |
+| 6 | [`/cx`](cx.md) | **What Users Say.** Reviews, NPS, sentiment, post-deployment analysis, feedback loops. | `reviews`, `nps`, `sentiment`, `testimonials`, `roadmap`, `digest`, `analyze` | Phase 0 + Phase 8 + Phase 9 |
+| 7 | [`/marketing`](marketing.md) | **How We Tell the World.** ASO, campaigns, content, email, launch comms. | `aso`, `campaign`, `competitive`, `content`, `email`, `launch`, `screenshots` | Phase 0 + Phase 8 |
+| 8 | [`/research`](research.md) | **What's Out There.** Cross-industry → same-category → feature-specific research funnel. | `wide`, `narrow`, `feature`, `competitive`, `market`, `ux-patterns`, `aso` | Phase 0 |
+| 9 | [`/ops`](ops.md) | **Is It Up.** Infrastructure monitoring, incidents, cost, alerting. | `health`, `incident`, `cost`, `alerts` | Cross-phase |
+| 10 | [`/release`](release.md) | **Is It Ready.** Version bumps, changelogs, TestFlight, App Store submission. | `prepare`, `checklist`, `notes`, `submit` | Phase 7 |
 
-**Added history:**
+**Evolution history:**
+
 - 2026-04-02 — ecosystem v1 shipped with 10 skills (no `/ux`)
 - 2026-04-07 — `/ux` added (PR #59), split from `/design` to own the "what & why" layer. Pilot run: Onboarding v2 UX Foundations alignment pass
-- 2026-04-09 — v3.0: external integrations (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, v2/ convention validated at scale. 4 features shipped in one session.
+- 2026-04-08 — screen audit research mode (`/ux audit`), v2 refactor subtype, sub-feature queue pattern
+- 2026-04-09 — v3.0: external integrations (Notion MCP, Figma MCP, Vercel), `/ux wireframe`, `/design build`, parallel subagent execution, 5 features shipped through the full lifecycle
 
 ---
 
@@ -36,7 +38,7 @@
 Located under `.claude/shared/`:
 
 | File | Purpose | Primary owner |
-|---|---|---|
+| --- | --- | --- |
 | `context.json` | Product identity, personas, brand, guardrails | `/pm-workflow` + `/research` |
 | `feature-registry.json` | All 16 features with status + metrics + pain points | `/pm-workflow` |
 | `metric-status.json` | 40 metrics with targets + instrumentation status | `/analytics` |
@@ -50,29 +52,43 @@ Every skill reads `context.json` on startup. Most skills write to one primary fi
 
 ---
 
-## External integrations (MCP)
+## External integrations
 
-| Integration | Protocol | What it does |
-|---|---|---|
-| **Notion MCP** | Model Context Protocol | Bidirectional project board sync — phase transitions in `state.json` push status updates to Notion automatically |
-| **Figma MCP** | Model Context Protocol | Design context retrieval, screenshot capture, code connect mapping — enables design-to-code builds without leaving the CLI |
+| Integration | Protocol | Direction | What it does |
+| --- | --- | --- | --- |
+| **GitHub** | `gh` CLI | Bidirectional | Issue labels, PR management, CI status, milestone tracking |
+| **Notion MCP** | Model Context Protocol | Bidirectional | Project board sync — phase transitions push status updates automatically |
+| **Figma MCP** | Model Context Protocol | Read + Write | Design context retrieval, screenshot capture, code connect, design-to-code builds |
+| **Vercel** | Deploy preview | Read | Preview URLs attached to PRs for visual review |
 
 ---
 
 ## What's been built (as of 2026-04-09)
 
-- **4 features shipped via PM workflow in a single session** — Home Today Screen v2, body composition card, metric deep linking, screen audit research mode
-- **Home v2** — full UX Foundations alignment pass with 27-finding audit, v2/ subdirectory convention validated across multiple views
-- **Body composition card** — metric tile with BodyCompositionDetailView drill-down pattern, reusable for future metric screens
-- **Metric deep linking** — tap a metric tile on Home, navigate directly to the relevant detail view
-- **Screen audit workflow** — `/ux audit` scoping mode produces a `v2-audit-report.md` with numbered findings and decisions log before any code is written
-- **Parallel subagent execution** — independent implementation tasks dispatched to multiple skills simultaneously, converging at review gates
+**5 features shipped through the full PM lifecycle:**
+
+| Feature | PR | Type | Key artifact |
+| --- | --- | --- | --- |
+| Home Today Screen v2 | #61 | Feature (v2_refactor) | 27-finding audit, v2/ convention at scale |
+| Onboarding retro | #63 | Enhancement | Retroactive v2 alignment of pilot feature |
+| Body Composition card | #65 | Enhancement | Reusable metric tile drill-down pattern |
+| Metric Deep Link | #67 | Enhancement | Home tile → detail view deep navigation |
+| Training Plan v2 | #74 | Feature (v2_refactor) | Second full v2 refactor pipeline run |
+
+**Ecosystem capabilities validated:**
+
+- **Screen audit workflow** — `/ux audit` produces `v2-audit-report.md` with numbered findings + decisions log before code
+- **Sub-feature queue** — parent audit (Home v2) spawned 4 child features, each tracked independently
+- **Parallel subagent execution** — independent tasks dispatched to multiple skills simultaneously, converging at review gates
+- **50+ analytics events** instrumented across all features (7 `home_*`, 3 `body_comp_*`, 12 `training_*`, plus onboarding/auth/global)
+- **37+ analytics tests** across 3 test files validating instrumentation
+- **4 screen research audits** completed (Home, Training, Body Comp, Onboarding)
 
 ---
 
 ## How they connect — Flow Chart
 
-```
+```text
                    ┌─────────────┐
                    │  WEB SEARCH  │
                    │  APP STORES  │
@@ -160,7 +176,7 @@ Every skill reads `context.json` on startup. Most skills write to one primary fi
 
 ## Where each skill sits in the PM workflow
 
-```
+```text
 Phase 0  Research  ─────▶ /research (new feat) OR /ux audit (v2 refactor / screen scope) · /cx (pain points)
 Phase 1  PRD       ─────▶ /analytics spec (instrumentation plan)
 Phase 2  Tasks     ─────▶ /pm-workflow (internal — no dispatch)

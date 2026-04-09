@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-06
-> **Status:** Implemented and pushed to `claude/review-code-changes-E7RH7`
+> **Date:** 2026-04-09 (v3.0 update)
+> **Status:** v3.0 shipped on `feature/home-today-screen-v2`
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -387,9 +387,11 @@ The ecosystem crossed two thresholds in a single session: **external tool integr
 
 ### Session Accomplishments
 
-- **4 features shipped via PM workflow** — Home Today Screen v2, body composition card, metric deep linking, and the screen audit research mode itself all moved through the lifecycle end-to-end.
+- **5 features shipped via PM workflow** — Home Today Screen v2 (#61), Onboarding retro (#63), Body Composition card (#65), Metric Deep Link (#67), Training Plan v2 (#74).
 - **First end-to-end Figma MCP integration** — design builds executed directly from Figma file references via MCP, closing the gap between design artifacts and implementation.
+- **New sub-commands** — `/ux wireframe` (ASCII wireframes at 3 fidelity levels) and `/design build` (Figma MCP design-to-code with SwiftUI fallback).
 - **Screen audit research mode** — a new Phase 0 variant that scopes a v2 refactor by auditing an existing screen against UX Foundations before any code is written. Produces a `v2-audit-report.md` with numbered findings and a decisions log.
+- **Sub-feature queue pattern** — parent audit (Home v2) spawned 4 child features, each tracked independently with `parent_feature` links in `state.json`.
 - **Parallel subagent execution across skills** — multiple skills dispatched simultaneously during implementation phases, with independent tasks running in parallel subagents and converging at review gates.
 
 ### New Capabilities
@@ -400,6 +402,9 @@ The ecosystem crossed two thresholds in a single session: **external tool integr
 | **Research-only audit mode** | `/ux audit` can now run in a scoping-only mode for screen refactors — produces findings and a decisions log without requiring a full UX spec upfront. Used for the Home v2 27-finding audit. |
 | **BodyCompositionDetailView drill-down pattern** | Established the reusable pattern for metric tile tap → detail view navigation with deep linking support. Available as a reference pattern for future metric screens. |
 | **v2/ subdirectory convention validated at scale** | The `v2/` split (introduced in CLAUDE.md for the Home screen) was validated across multiple views within one feature, confirming the convention scales beyond single-file refactors. |
+| **`/ux wireframe` sub-command** | Generates ASCII wireframes at three fidelity levels (low, medium, high) for a feature. Used during Home v2 and Training v2 Phase 3 specs. |
+| **`/design build` sub-command** | Executes a Figma MCP design-to-code build with SwiftUI fallback. Reads Figma context via `get_design_context`, adapts to project tokens. |
+| **Sub-feature queue** | Parent audit spawns child features with `parent_feature` links. Validated with Home v2 → 4 sub-features. |
 
 ### Integration Expansion
 
@@ -407,17 +412,21 @@ The ecosystem crossed two thresholds in a single session: **external tool integr
 |---|---|---|---|
 | **Notion MCP** | MCP (Model Context Protocol) | Bidirectional | Project status board updates on phase transitions, feature cards synced from `state.json` |
 | **Figma MCP** | MCP (Model Context Protocol) | Read + Write | Design context retrieval (`get_design_context`), screenshot capture, code connect mapping for design-to-code builds |
+| **GitHub** | `gh` CLI | Bidirectional | Issue labels, PR management, CI status, milestone tracking |
+| **Vercel** | Deploy preview | Read | Preview URLs attached to PRs for visual review |
 
 ### Updated Dependency Map
 
-```
+```text
 CLAUDE.md (rules)
   └─→ SKILL.md (pm-workflow)
         ├─→ /ux research → ux-research.md (Phase 0/3)
         ├─→ /ux audit (screen scope) → v2-audit-report.md (Phase 0 v2)
         ├─→ /ux spec → ux-spec.md (Phase 3)
+        ├─→ /ux wireframe → ASCII wireframes (Phase 3)
         ├─→ /ux validate → validation report (Phase 3/5)
         ├─→ /design audit → compliance check (Phase 3)
+        ├─→ /design build → Figma MCP → SwiftUI (Phase 4)
         ├─→ state.json (lifecycle + tasks[])
         ├─→ skill-routing.json (task assignments)
         ├─→ task-queue.json (priority queue)
@@ -425,8 +434,10 @@ CLAUDE.md (rules)
         │     └─→ All skills notified
         │           └─→ /cx analyze → /ux audit → Fix/Enhancement
         │
-        ├─→ [NEW] Notion MCP ← phase transition sync
-        └─→ [NEW] Figma MCP ← design context + code connect
+        ├─→ Notion MCP ← phase transition sync
+        ├─→ Figma MCP ← design context + code connect
+        ├─→ GitHub ← labels, PRs, CI
+        └─→ Vercel ← deploy previews
 ```
 
 ---

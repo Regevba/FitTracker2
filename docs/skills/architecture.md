@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 2.0 | **Updated:** 2026-04-05 | **Branch:** `claude/investigate-ci-failure-xP9kS`
+> **Version:** 3.0 | **Updated:** 2026-04-09 | **Branch:** `feature/home-today-screen-v2`
 >
 > A new contributor (human or AI) can read this single document to understand the entire skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 
@@ -16,7 +16,7 @@
 
 **Solution:** Hub-and-spoke architecture where each domain has its own skill, connected through a shared data layer.
 
-**Result:** 11 skills (1 hub + 10 spokes) + 8 shared data files. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5.
+**Result:** 12 skills (1 hub + 11 spokes) + 8 shared data files + 4 external integrations (GitHub, Notion MCP, Figma MCP, Vercel). Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern.
 
 **Key principle:** Every skill is a **Lego piece** (works alone) AND a **puzzle piece** (fits into the hub).
 
@@ -108,7 +108,7 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 
 ```
 .claude/
-├── skills/                         # Skill definitions (11 skills)
+├── skills/                         # Skill definitions (12 skills: 1 hub + 11 spokes)
 │   ├── pm-workflow/SKILL.md        # Hub — orchestrates all phases
 │   ├── ux/SKILL.md                 # UX planning & validation — the What & Why layer
 │   ├── design/SKILL.md             # Design system, Figma, tokens, accessibility (visual)
@@ -1366,4 +1366,76 @@ The original analysis drew the ecosystem as a single hub with missing side-layer
              └──────────────────────────────────────┘
 ```
 
-Compare this to the current 11-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.
+Compare this to the current 12-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.
+
+---
+
+## 22. v3.0 — Skill Dispatch Model, External Sync & V2 Pipeline (2026-04-09)
+
+### Skill dispatch model
+
+```text
+USER
+  │
+  ▼
+/pm-workflow (HUB)
+  │
+  ├──▶ Skill dispatch (spoke selection by phase)
+  │      ├──▶ /ux audit        (Phase 0 v2)
+  │      ├──▶ /ux spec         (Phase 3)
+  │      ├──▶ /ux wireframe    (Phase 3)
+  │      ├──▶ /design build    (Phase 4)
+  │      ├──▶ /dev branch      (Phase 4)
+  │      ├──▶ /qa plan         (Phase 5)
+  │      └──▶ /analytics spec  (Phase 1)
+  │
+  ├──▶ External tool sync (on every phase transition)
+  │      ├──▶ GitHub Labels    (gh CLI)
+  │      ├──▶ Notion MCP       (notion-update-page)
+  │      ├──▶ Figma MCP        (get_design_context)
+  │      └──▶ Vercel           (deploy preview)
+  │
+  └──▶ Shared data layer (.claude/shared/*.json)
+         └──▶ change-log.json broadcast → all skills notified
+```
+
+### V2 refactor pipeline
+
+The end-to-end pipeline for screen-level UX alignment passes:
+
+```text
+1. /ux audit (Phase 0)
+   └──▶ v2-audit-report.md (numbered findings, P0/P1/P2 severity)
+
+2. /ux spec + /ux wireframe (Phase 3)
+   └──▶ ux-spec.md with Principle Application Table + ASCII wireframes
+
+3. /design build (Phase 4)
+   └──▶ Figma MCP design context → SwiftUI implementation in v2/ subdirectory
+
+4. /qa plan + /analytics validate (Phase 5)
+   └──▶ 37+ analytics tests, functional tests, v2-refactor-checklist verification
+
+5. /dev review (Phase 6)
+   └──▶ project.pbxproj swap: v1 out of Sources, v2 in
+```
+
+### Parallel execution model
+
+During Phase 4, independent tasks dispatch to multiple subagents simultaneously:
+
+- Tasks grouped by skill (e.g., `/dev` tasks T1-T3 in parallel with `/design` task T9)
+- Dependency graph computed from `state.json.tasks[].depends_on`
+- Ready set recomputed after each task completion
+- All parallel streams converge at Phase 5 (Test) gate
+
+### Memory system integration
+
+The shared data layer (`.claude/shared/`) serves as the ecosystem's memory:
+
+- `feature-registry.json` — what exists and its status (read by all skills)
+- `change-log.json` — what happened and when (audit trail)
+- `context.json` — who we are and what we're building (product identity)
+- Per-feature `state.json` — where each feature is in its lifecycle
+
+Skills never call each other directly. All inter-skill communication flows through these shared files, making the system debuggable (inspect any JSON file to see the current state) and recoverable (restart from any `state.json` checkpoint).

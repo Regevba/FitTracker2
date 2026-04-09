@@ -66,6 +66,12 @@ FEATURE-SPECIFIC
 2. **Competitor check:** `/research narrow fitness-apps` → updates competitive landscape with latest pricing, features, ratings
 3. **Feature deep-dive:** `/research feature onboarding` → 5+ app teardowns with best/worst practices
 
+## Recent usage
+
+- **4 screen research audits completed** — Home Today Screen, Training Plan, Body Composition, Onboarding. Each produced structured findings feeding the v2 refactor pipeline.
+- **Home v2 Phase 0** — `/research feature home-today-screen` ran the wide-to-narrow funnel, comparing 6 fitness apps' home screen patterns before the UX audit.
+- **Training v2 Phase 0** — competitive research on workout logging flows across MyFitnessPal, Strong, Hevy, Fitbod.
+
 ## Key references
 
 - [`.claude/shared/context.json`](../../.claude/shared/context.json) — competitive landscape

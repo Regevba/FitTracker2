@@ -49,6 +49,16 @@ Manages the GA4 event taxonomy, generates instrumentation specs from PRDs, valid
 2. **Metric check:** `/analytics report` → weekly digest: active metrics, instrumentation coverage, gaps highlighted
 3. **Funnel definition:** `/analytics funnel onboarding` → defines steps: app_open → profile_setup → healthkit_connect → first_workout
 
+## Recent usage
+
+- **50+ analytics events** instrumented across shipped features:
+  - 7 `home_*` events (Home v2: tile taps, empty states, action interactions)
+  - 3 `body_comp_*` events (Body Composition card: detail view, metric updates)
+  - 12 `training_*` events (Training v2: workout start/complete, set logging, exercise views)
+  - Plus onboarding, auth, and global lifecycle events
+- **Screen-prefix naming convention** established as project rule (2026-04-08) — every screen-scoped event must include its screen name as a prefix. Enforced in PRD analytics spec gate.
+- **`/analytics validate`** run across all features during Phase 5 testing.
+
 ## Key references
 
 - [`FitTracker/Services/Analytics/AnalyticsProvider.swift`](../../FitTracker/Services/Analytics/AnalyticsProvider.swift) — event/param/screen enums
