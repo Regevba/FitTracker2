@@ -1,0 +1,68 @@
+{
+  "cache_key": "dev:v2_implementation:directory_convention_recipe",
+  "skill": "dev",
+  "level": "L1",
+  "created": "2026-04-10T22:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 5,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    "FitTracker.xcodeproj/project.pbxproj"
+  ],
+  "task_signature": {
+    "type": "v2_screen_implementation",
+    "inputs": ["screen_name", "v1_file_path", "v2_audit_report_path"],
+    "context": "Implement a v2/ screen refactor following CLAUDE.md v2 convention."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "v2/ directory recipe",
+      "decision": "4 steps: (1) create {parent}/v2/ directory, (2) create {parent}/v2/{SameFilename}.swift with same Swift type name as v1, (3) in pbxproj: add PBXGroup for v2/, add PBXFileReference+PBXBuildFile for v2 file, REMOVE v1 from Sources build phase (keep v1 as PBXFileReference for git history), (4) add HISTORICAL header comment to v1 file.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen v2 implementation",
+        "nutrition-v2 implementation",
+        "stats-v2 implementation",
+        "settings-v2 implementation",
+        "training-plan-v2 implementation"
+      ]
+    },
+    {
+      "pattern": "Extracted view pattern",
+      "decision": "When a v2 file exceeds ~400 lines, extract sub-views into the same v2/ directory as separate files. Training v2 extracted 6 sub-view files from a 2,135-line v1 screen.",
+      "confidence": "high",
+      "source_executions": [
+        "training-plan-v2 implementation (6 extracted views)"
+      ]
+    },
+    {
+      "pattern": "Commit strategy",
+      "decision": "One commit for v2 file + pbxproj swap together. Separate commits for analytics enum additions, test files, and docs/state updates. Mixing these into one commit makes review and revert harder.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen v2 implementation",
+        "nutrition-v2 implementation",
+        "training-plan-v2 implementation"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Patching v1 in place",
+      "what_went_wrong": "Onboarding v2 used 20+ patch commits on the original v1 file, making the diff hard to review and the historical baseline unclear. Always create a fresh v2 file in v2/ subdirectory.",
+      "source_execution": "Onboarding v2"
+    },
+    {
+      "pattern": "Forgetting pbxproj",
+      "what_went_wrong": "Onboarding v2 required 3 follow-up fix commits because the pbxproj was updated separately. The build breaks between those commits. Always update pbxproj in the same commit as the v2 file creation.",
+      "source_execution": "Onboarding v2"
+    },
+    {
+      "pattern": "Building top-down from v1",
+      "what_went_wrong": "Reading v1 first and copying its structure results in re-introducing its anti-patterns. Build bottom-up from AppTheme tokens and AppComponents, then assemble the screen. v1 is read-only reference for behavior spec, not structure.",
+      "source_execution": "CLAUDE.md v2 rule"
+    }
+  ],
+  "speedup_instructions": "Follow 4-step v2/ recipe. If v1 > 400 lines, plan extracted views. Update pbxproj in same commit. Build bottom-up from AppTheme+AppComponents."
+}

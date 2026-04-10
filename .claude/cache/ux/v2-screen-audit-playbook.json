@@ -1,0 +1,81 @@
+{
+  "cache_key": "ux:v2_screen_audit:audit_methodology",
+  "skill": "ux",
+  "level": "L1",
+  "created": "2026-04-10T22:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 5,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "docs/design-system/ux-foundations.md"
+  ],
+  "task_signature": {
+    "type": "v2_screen_audit",
+    "inputs": ["screen_name", "v1_file_path", "ux_foundations_path"],
+    "context": "Audit a v1 Swift screen against 13 UX Foundations principles. Produce v2-audit-report.md with P0/P1/P2 severity."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Principle-to-pattern mapping",
+      "decision": "Pre-loaded mapping of which principles apply to which UI patterns: nav depth → Hick's Law, data entry → Zero-Friction Logging, permission flow → Privacy by Default, first impression → Readiness-First, success states → Celebration Not Guilt.",
+      "confidence": "high",
+      "source_executions": [
+        "onboarding-v2 audit",
+        "home-today-screen audit",
+        "nutrition-v2 audit",
+        "stats-v2 audit",
+        "settings-v2 audit"
+      ]
+    },
+    {
+      "pattern": "Severity calibration",
+      "decision": "P0 = token violations + missing analytics + broken a11y. P1 = UX behavior gaps + missing states. P2 = copy + content + deferred.",
+      "confidence": "high",
+      "source_executions": [
+        "onboarding-v2 audit",
+        "home-today-screen audit",
+        "nutrition-v2 audit",
+        "stats-v2 audit",
+        "settings-v2 audit",
+        "training-plan-v2 audit"
+      ]
+    },
+    {
+      "pattern": "Diminishing returns awareness",
+      "decision": "Later screens have fewer findings (27→32→23→9→4). A lower finding count is genuine improvement from prior screen fixes, not audit degradation. Do not force-inflate finding counts.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen audit",
+        "nutrition-v2 audit",
+        "stats-v2 audit",
+        "settings-v2 audit",
+        "training-plan-v2 audit"
+      ]
+    },
+    {
+      "pattern": "Front-load anti-patterns",
+      "decision": "Check known violations first: raw Color literals, missing VoiceOver labels, hardcoded spacing. These are the fastest wins and consistently appear across screens.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen audit",
+        "nutrition-v2 audit",
+        "stats-v2 audit",
+        "settings-v2 audit",
+        "training-plan-v2 audit"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Re-deriving principle mappings",
+      "what_went_wrong": "Home v2 spent ~2h mapping principles from scratch. Nutrition took 30min with cache. Always load the principle-to-pattern mapping from L2 ux-foundations-map.json before starting any audit.",
+      "source_execution": "Home v2 audit"
+    },
+    {
+      "pattern": "Auditing already-fixed patterns",
+      "what_went_wrong": "Flagging patterns that were fixed in prior screen refactors wastes time unless they re-appear in the current screen's v1 file. Check git history of prior v2 screens to avoid re-reporting closed findings.",
+      "source_execution": "Settings v2 audit"
+    }
+  ],
+  "speedup_instructions": "Load L2 ux-foundations-map.json for principle mapping. Check anti-pattern library first. Only investigate novel patterns not covered by cache."
+}

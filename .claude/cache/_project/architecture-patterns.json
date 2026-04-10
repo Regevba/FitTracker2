@@ -1,0 +1,172 @@
+{
+  "cache_key": "project:architecture:hub_spoke_skill_ecosystem_patterns",
+  "skill": null,
+  "level": "L3",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 6,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    "docs/skills/architecture.md",
+    "docs/master-plan/master-plan-2026-04-06.md",
+    ".claude/skills/"
+  ],
+  "task_signature": {
+    "type": "project_architecture_reference",
+    "inputs": ["any feature or skill invocation"],
+    "context": "Project-wide architectural patterns. Used by all skills to understand how the FitMe system is organized. Hub-and-spoke skill ecosystem, shared JSON data layer, SKILL.md contracts, phase gating, reactive data mesh, validation gates, skill internal lifecycle (v4.1)."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Hub-and-spoke skill ecosystem",
+      "decision": "pm-workflow is the orchestrator hub. Domain skills are spokes: /ux, /design, /dev, /qa, /analytics, /research, /cx, /marketing, /ops, /release. pm-workflow invokes domain skills at the appropriate phase — never domain skills invoking each other. Each domain skill owns its phase output. Phase transitions are approved by the user and recorded in state.json.",
+      "skill_to_phase_mapping": {
+        "/research": "Phase 0 (Research) — market research, competitive analysis, audit reports",
+        "/ux": "Phase 3 (UX) — ux-research.md, ux-spec.md, compliance gateway, build prompts",
+        "/design": "Phase 3 (UX) + Phase 4 (Implement) — token selection, component promotion, DS governance",
+        "/dev": "Phase 4 (Implement) — branching, coding, pbxproj, CI",
+        "/qa": "Phase 5 (Test) — test planning, execution, coverage, regression",
+        "/analytics": "Phase 1 (PRD) gate + Phase 5 (Test) verification — event spec, taxonomy CSV, validate",
+        "/cx": "Post-launch — reviews, NPS, sentiment",
+        "/marketing": "Phase 8 (Docs) — ASO, campaigns",
+        "/ops": "CI/infra — health checks, incident response",
+        "/release": "Phase 8 (Merge) + Phase 9 (Docs) — version bumps, changelogs"
+      },
+      "confidence": "high",
+      "source_executions": [
+        "docs/skills/architecture.md",
+        "CLAUDE.md Product Management Lifecycle phases"
+      ]
+    },
+    {
+      "pattern": "SKILL.md contract — agent-facing prompt structure",
+      "decision": "Each skill has a SKILL.md at .claude/skills/{name}/SKILL.md. This is the agent-facing prompt that defines: what the skill does, when to invoke it, what inputs it needs, what outputs it produces, and how it interacts with state.json. Skills must NOT improvise outside their SKILL.md contract. Human-readable docs at docs/skills/{name}.md. Current skills: pm-workflow, ux, design, dev, qa, analytics, cx, marketing, research, ops, release.",
+      "skill_file_paths": {
+        "pm_workflow": ".claude/skills/pm-workflow/SKILL.md",
+        "ux": ".claude/skills/ux/SKILL.md",
+        "design": ".claude/skills/design/SKILL.md",
+        "dev": ".claude/skills/dev/SKILL.md",
+        "qa": ".claude/skills/qa/SKILL.md",
+        "analytics": ".claude/skills/analytics/SKILL.md"
+      },
+      "confidence": "high",
+      "source_executions": ["docs/skills/README.md", "CLAUDE.md Key Paths — Skills ecosystem"]
+    },
+    {
+      "pattern": "Shared JSON data layer — state.json as single source of truth",
+      "decision": "Each feature's lifecycle state lives at .claude/features/{name}/state.json. Fields: feature, created, updated, branch, current_phase, work_type (feature/enhancement/fix/chore), work_subtype, has_ui, requires_analytics, github_issue_number, v1_file_path, v2_file_path, v2_rule_compliant, checklist_path, transitions[], phases{}, tasks[]. All skill handoffs read/write state.json. GitHub Issue labels sync automatically from phase transitions.",
+      "canonical_state_examples": [
+        ".claude/features/home-today-screen/state.json (PR #61, complete)",
+        ".claude/features/training-plan-v2/state.json (PR #74, complete)"
+      ],
+      "confidence": "high",
+      "source_executions": [
+        ".claude/features/home-today-screen/state.json full structure",
+        ".claude/features/training-plan-v2/state.json full structure"
+      ]
+    },
+    {
+      "pattern": "Phase gating — explicit user approval between every phase",
+      "decision": "Every phase transition requires explicit user approval. Approval is recorded in state.json: phases.{phase}.approved_by = 'user', approved_at = ISO timestamp. Transitions array records from, to, timestamp, approved_by, note. Skills must HALT and present deliverables to the user — never auto-advance. Manual overrides allowed (skip forward or rollback) but recorded in audit trail.",
+      "gating_rule": "PM workflow non-negotiable rule 1: No phase is skipped. If the user skips, record reason = 'work_type:{type}' in transitions.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json transitions: 7 entries, each with approved_by = 'user'",
+        "CLAUDE.md non-negotiable rules 1-8"
+      ]
+    },
+    {
+      "pattern": "Work item type selection — determines phase count",
+      "decision": "Feature = 9-phase full lifecycle. Enhancement = 4-phase (Tasks → Implement → Test → Merge). Fix = 2-phase (Implement → Test). Chore = 1-phase (Implement). Work type selection happens at /pm-workflow invocation. Skipped phases recorded with reason 'work_type:{type}'. v2 refactors are always work_type=feature work_subtype=v2_refactor — never downgraded to Enhancement.",
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md Work Item Types section",
+        "home-today-screen/training-plan-v2: both work_type = 'feature', work_subtype = 'v2_refactor'"
+      ]
+    },
+    {
+      "pattern": "Reactive data mesh — iOS architecture layer",
+      "decision": "FitMe iOS architecture: SwiftUI views observe ViewModels via @StateObject/@ObservableObject. ViewModels coordinate Services (HomeRecommendationProvider, SupabaseSyncService, CloudKitSyncService, AIOrchestrator). Services read from DomainModels.swift. Analytics events fired from ViewModel layer (not View layer) to avoid re-rendering side effects. EncryptionService.swift wraps all data at rest.",
+      "high_risk_files": [
+        "DomainModels.swift — any change here ripples to all ViewModels",
+        "EncryptionService.swift — data security layer",
+        "SupabaseSyncService.swift — cloud sync",
+        "CloudKitSyncService.swift — iCloud sync",
+        "SignInService.swift — authentication",
+        "AuthManager.swift — auth state",
+        "AIOrchestrator.swift — AI feature coordination"
+      ],
+      "confidence": "high",
+      "source_executions": ["CLAUDE.md Branching Strategy — High-risk areas"]
+    },
+    {
+      "pattern": "Validation gate — CI pipeline as quality enforcer",
+      "decision": "Three CI checks: (1) make tokens-check (design system drift, catches raw literals), (2) xcodebuild build (iPhone 17 Pro, iOS 26.4 Simulator, no code signing — must produce BUILD SUCCEEDED), (3) xcodebuild test (XCTest suite). All three must pass on BOTH feature branch AND main before any merge. CI pass rate guardrail: > 95%.",
+      "ci_commands": {
+        "tokens_check": "make tokens-check",
+        "build": "xcodebuild build -scheme FitTracker -destination 'platform=iOS Simulator,name=iPhone 17 Pro'",
+        "test": "xcodebuild test -scheme FitTracker -destination 'platform=iOS Simulator,name=iPhone 17 Pro'"
+      },
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md CI Pipeline section",
+        "home-today-screen state.json testing.build_result = 'BUILD SUCCEEDED (iPhone 17 Pro, iOS 26.4)'"
+      ]
+    },
+    {
+      "pattern": "Key file paths — canonical project structure",
+      "decision": "Product docs: docs/product/PRD.md (master), docs/product/prd/{id}-{name}.md (per-feature). Feature state: .claude/features/{name}/state.json. Skills: .claude/skills/{name}/SKILL.md. Design system: FitTracker/Services/AppTheme.swift (tokens), FitTracker/DesignSystem/AppComponents.swift (components), design-tokens/tokens.json (source), docs/design-system/ux-foundations.md (principles). Analytics: docs/product/analytics-taxonomy.csv. Master plan: docs/master-plan/master-plan-2026-04-06.md. All paths relative to /Volumes/DevSSD/FitTracker2.",
+      "confidence": "high",
+      "source_executions": ["CLAUDE.md Key Paths section"]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Domain skill invoking another domain skill directly",
+      "what_went_wrong": "Skills must not call each other — pm-workflow is the only orchestrator. /dev should not invoke /qa directly. The hub-and-spoke pattern breaks if spokes connect to each other, leading to circular dependencies and undefined state transitions.",
+      "source_execution": "docs/skills/architecture.md hub-and-spoke pattern"
+    },
+    {
+      "pattern": "Writing feature deliverables outside .claude/features/{name}/",
+      "what_went_wrong": "All per-feature artifacts (state.json, prd.md, tasks.md, ux-spec.md, ux-research.md, v2-audit-report.md) must live under .claude/features/{name}/. Scattering files breaks the state machine and makes cross-skill handoffs unreliable.",
+      "source_execution": "CLAUDE.md Key Paths — Feature state: .claude/features/{name}/state.json"
+    },
+    {
+      "pattern": "Touching high-risk files without extra review flag",
+      "what_went_wrong": "High-risk files (DomainModels.swift, EncryptionService.swift, etc.) require explicit review mention in Phase 7 (Review). Sneaking changes to these files into a primarily-UI feature PR without flagging means the security/sync implications aren't reviewed.",
+      "source_execution": "CLAUDE.md Branching Strategy high-risk areas; home-today-screen review.risks = ['zero high-risk files touched'] — explicitly called out"
+    },
+    {
+      "pattern": "Skill skipping research phase on cache miss",
+      "what_went_wrong": "When a skill has no cached patterns for a task, it must enter research mode (Phase 2) — investigating tools, APIs, MCPs, methods, patterns relevant to its domain. Skipping research and guessing leads to suboptimal implementations that don't leverage the integration adapter layer or existing project patterns.",
+      "source_execution": "v4.1 Skill Internal Lifecycle — architecture.md §10.6"
+    },
+    {
+      "pattern": "Skill not writing back to cache after execution",
+      "what_went_wrong": "Phase 4 (Learn) is mandatory. Every skill invocation — even simple ones — should check if it learned something new. Skipping the write-back means the next similar task starts cold again, defeating the purpose of the cache hierarchy.",
+      "source_execution": "v4.1 Skill Internal Lifecycle — architecture.md §10.6"
+    }
+  ],
+  "learned_patterns": [
+    {
+      "pattern": "Skill Internal Lifecycle (v4.1) — 4-phase internal structure",
+      "decision": "Every skill follows: Phase 1 (Cache Check) → Phase 2 (Research, if cache miss) → Phase 3 (Execute) → Phase 4 (Learn). This mirrors the hub's macro lifecycle at the micro level. Phase 2 has 5 domain-specific research dimensions per skill + a source priority order (L1 cache → L2/L3 → shared layer → integration adapters → codebase → external docs). Phase 4 always writes back patterns and anti-patterns to L1 cache.",
+      "confidence": "high",
+      "source_executions": ["architecture.md §10.6", "all 11 SKILL.md files updated with Research Scope + Phase 1/Phase 4"]
+    },
+    {
+      "pattern": "v2 subdirectory convention — validated at scale",
+      "decision": "The v2/ subdirectory convention is a validated architectural pattern with 5 successful applications (Home, Training, Nutrition, Stats, Settings). Onboarding was the pilot pre-convention (patched v1 in place, later retroactively aligned). The convention scales to multi-file decomposition (Training: 7 files in v2/ dir). Same type name in v2/ means no call-site changes needed — the swap happens at pbxproj layer.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen (PR #61) — convention established",
+        "training-plan-v2 (PR #74) — scaled to 7 files",
+        "nutrition-v2 (PR #75) — applied cleanly",
+        "stats-v2 (PR #76) — applied cleanly",
+        "settings-v2 (PR #77) — applied cleanly"
+      ]
+    }
+  ],
+  "speedup_instructions": "This is the foundation reference for understanding how the entire FitMe project is organized. Any skill invocation should: (1) run Phase 1 — check L1/L2/L3 cache for matching task signature, (2) if miss, run Phase 2 — research using the 5 domain-specific dimensions + source priority, (3) Phase 3 — execute using cached + researched knowledge, (4) Phase 4 — write learned patterns back to L1 cache. Also check: what phase it's executing in (skill-to-phase mapping), what state.json fields it reads/writes, whether any high-risk files are in scope, that CI gate will pass before delivering. New features start with /pm-workflow {name} — the hub orchestrates all spokes from there."
+}
