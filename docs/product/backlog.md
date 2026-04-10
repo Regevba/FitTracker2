@@ -33,6 +33,10 @@
 | 22 | Metric Tile Deep Linking | PR #67 | 2026-04-09 | Tap HRV/RHR/Sleep/Steps → Stats filtered, 1 analytics event |
 | 23 | Figma v2 Home Screen | Figma node 741:2 | 2026-04-09 | 7 sections using design system components + variables |
 | 24 | Training Plan v2 UX Alignment | PR #74 | 2026-04-10 | 533-line container + 6 extracted views, 12 analytics events, 16 tests |
+| 25 | Nutrition v2 UX Alignment | PR #75 | 2026-04-10 | 580-line container + ProgressBar component + 4 new DS tokens, 5 analytics events, 7 tests |
+| 26 | Stats v2 UX Alignment | PR #76 | 2026-04-10 | AppLayout enum, chart accessibility, 4 analytics events, 6 tests |
+| 27 | Settings v2 UX Alignment | PR #77 | 2026-04-10 | 8 color tokens fixed, a11y on destructive actions, 3 analytics events, 5 tests |
+| 28 | Skills Ecosystem v4.1 | commit 32fe312 | 2026-04-10 | Reactive data mesh, 6 integration adapters, L1/L2/L3 learning cache, skill internal lifecycle |
 
 ---
 
@@ -40,8 +44,7 @@
 
 | # | Item | Owner | Branch | Status |
 |---|------|-------|--------|--------|
-| 1 | UX Foundations Screen Audits (research-only) | Claude | main | Training Plan, Nutrition, Stats, Settings — Phase 0 audits queued |
-| 2 | Training Plan v2 UX Alignment | — | — | Next full Feature lifecycle after audits complete |
+| — | *No active work items* | — | — | All 6 screen refactors complete |
 
 ---
 

@@ -107,9 +107,9 @@ Cache entries store: task signatures, learned patterns, anti-patterns, and speed
 
 ---
 
-## What's been built (as of 2026-04-09)
+## What's been built (as of 2026-04-10)
 
-**5 features shipped through the full PM lifecycle:**
+**8 features shipped through the full PM lifecycle (all 6 screens v2 aligned):**
 
 | Feature | PR | Type | Key artifact |
 | --- | --- | --- | --- |
@@ -117,16 +117,22 @@ Cache entries store: task signatures, learned patterns, anti-patterns, and speed
 | Onboarding retro | #63 | Enhancement | Retroactive v2 alignment of pilot feature |
 | Body Composition card | #65 | Enhancement | Reusable metric tile drill-down pattern |
 | Metric Deep Link | #67 | Enhancement | Home tile → detail view deep navigation |
-| Training Plan v2 | #74 | Feature (v2_refactor) | Second full v2 refactor pipeline run |
+| Training Plan v2 | #74 | Feature (v2_refactor) | 533-line container + 6 extracted views, 12 events, 16 tests |
+| Nutrition v2 | #75 | Feature (v2_refactor) | ProgressBar component, AppOpacity enum, 5 events, 7 tests |
+| Stats v2 | #76 | Feature (v2_refactor) | AppLayout enum, chart a11y, 4 events, 6 tests |
+| Settings v2 | #77 | Feature (v2_refactor) | Color tokenization, destructive action a11y, 3 events, 5 tests |
 
 **Ecosystem capabilities validated:**
 
+- **All 6 main screens v2 aligned** — Onboarding, Home, Training, Nutrition, Stats, Settings all pass UX Foundations
+- **119 audit findings** fixed across 6 screens (from v2-audit-report.md)
+- **33 screen-prefixed analytics events** instrumented (`home_*`, `training_*`, `nutrition_*`, `stats_*`, `settings_*`, `onboarding_*`)
+- **60+ analytics tests** across 6 test files validating instrumentation
 - **Screen audit workflow** — `/ux audit` produces `v2-audit-report.md` with numbered findings + decisions log before code
 - **Sub-feature queue** — parent audit (Home v2) spawned 4 child features, each tracked independently
 - **Parallel subagent execution** — independent tasks dispatched to multiple skills simultaneously, converging at review gates
-- **50+ analytics events** instrumented across all features (7 `home_*`, 3 `body_comp_*`, 12 `training_*`, plus onboarding/auth/global)
-- **37+ analytics tests** across 3 test files validating instrumentation
-- **4 screen research audits** completed (Home, Training, Body Comp, Onboarding)
+- **Learning cache validated** — Nutrition v2 (4th refactor) completed research→implementation in ~2h vs Home v2 (1st) at ~36h
+- **v4.1 Skill Internal Lifecycle** — Cache Check → Research → Execute → Learn validated across 3 refactors
 
 ---
 
