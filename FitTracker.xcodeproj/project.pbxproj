@@ -69,6 +69,7 @@
 		TA100000000000000000001 /* TrainingAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TA200000000000000000001 /* TrainingAnalyticsTests.swift */; };
 		NA100000000000000000001 /* NutritionAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NA200000000000000000001 /* NutritionAnalyticsTests.swift */; };
 		SA100000000000000000001 /* StatsAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SA200000000000000000001 /* StatsAnalyticsTests.swift */; };
+		SE100000000000000000AB01 /* SettingsAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -81,7 +82,7 @@
 		CC000001000000000000AA0A /* MealSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0A /* MealSectionView.swift */; };
 		CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0B /* MealEntrySheet.swift */; };
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
-		CC000001000000000000AA0D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0D /* SettingsView.swift */; };
+		SE100000000000000000AA01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA01 /* SettingsView.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
 		DS000001000000000000AA01 /* AppPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA01 /* AppPalette.swift */; };
@@ -199,6 +200,8 @@
 		TA200000000000000000001 /* TrainingAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingAnalyticsTests.swift; sourceTree = "<group>"; };
 		NA200000000000000000001 /* NutritionAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionAnalyticsTests.swift; sourceTree = "<group>"; };
 		SA200000000000000000001 /* StatsAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsAnalyticsTests.swift; sourceTree = "<group>"; };
+		SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAnalyticsTests.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
@@ -562,6 +565,7 @@
 				TA200000000000000000001 /* TrainingAnalyticsTests.swift */,
 				NA200000000000000000001 /* NutritionAnalyticsTests.swift */,
 				SA200000000000000000001 /* StatsAnalyticsTests.swift */,
+				SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */,
 				FT4000001000000000000001 /* SupabaseTests */,
 			);
 			path = FitTrackerTests;
@@ -596,8 +600,17 @@
 				DD000002000000000000AA02 /* DesignSystemCatalogView.swift */,
 				AC2000000000000000000011 /* ExportDataView.swift */,
 				CC000002000000000000AA0D /* SettingsView.swift */,
+				SE400000000000000000AA01 /* v2 */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		SE400000000000000000AA01 /* v2 */ = {
+			isa = PBXGroup;
+			children = (
+				SE200000000000000000AA01 /* SettingsView.swift */,
+			);
+			path = v2;
 			sourceTree = "<group>";
 		};
 		DS000000000000000000AA00 /* DesignSystem */ = {
@@ -818,7 +831,7 @@
 				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 				AC1000000000000000000010 /* DeleteAccountView.swift in Sources */,
 				AC1000000000000000000011 /* ExportDataView.swift in Sources */,
-				CC000001000000000000AA0D /* SettingsView.swift in Sources */,
+				SE100000000000000000AA01 /* SettingsView.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
 				DS000001000000000000AA01 /* AppPalette.swift in Sources */,
@@ -855,6 +868,7 @@
 				TA100000000000000000001 /* TrainingAnalyticsTests.swift in Sources */,
 				NA100000000000000000001 /* NutritionAnalyticsTests.swift in Sources */,
 				SA100000000000000000001 /* StatsAnalyticsTests.swift in Sources */,
+				SE100000000000000000AB01 /* SettingsAnalyticsTests.swift in Sources */,
 				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
 				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,

@@ -1,13 +1,11 @@
-// HISTORICAL — superseded by v2/SettingsView.swift on 2026-04-10 per
-// UX Foundations alignment pass. See
-// .claude/features/settings-v2/v2-audit-report.md for the gap analysis.
-// This file is no longer in the build target; it stays in the repo
-// as a reviewable reference for the v1 → v2 diff.
+// FitTracker/Views/Settings/v2/SettingsView.swift
+// Settings v2 — UX Foundations alignment pass (2026-04-10)
+// See .claude/features/settings-v2/v2-audit-report.md
 
 import SwiftUI
 import LocalAuthentication
 
-private enum SettingsCategory_V1_Historical: String, CaseIterable, Hashable, Identifiable {
+private enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
     case accountSecurity
     case healthDevices
     case goalsPreferences
@@ -49,10 +47,10 @@ private enum SettingsCategory_V1_Historical: String, CaseIterable, Hashable, Ide
     var tint: Color {
         switch self {
         case .accountSecurity: AppColor.Accent.primary
-        case .healthDevices: .accent.cyan
+        case .healthDevices: AppColor.Accent.recovery
         case .goalsPreferences: AppColor.Accent.achievement
-        case .trainingNutrition: .accent.purple
-        case .dataSync: .status.success
+        case .trainingNutrition: AppColor.Accent.sleep
+        case .dataSync: AppColor.Status.success
         }
     }
 }
@@ -69,7 +67,7 @@ private enum SettingsReviewDestination: String, Hashable {
     case exportData = "export-data"
 }
 
-struct SettingsView_V1_Historical: View {
+struct SettingsView: View {
     @EnvironmentObject var signIn: SignInService
     @EnvironmentObject var biometricAuth: AuthManager
     @EnvironmentObject var dataStore: EncryptedDataStore
@@ -218,26 +216,26 @@ struct SettingsView_V1_Historical: View {
                 SettingsSummaryBadge(title: provider, tint: AppColor.Accent.primary),
                 SettingsSummaryBadge(
                     title: biometric,
-                    tint: settings.requireBiometricUnlockOnReopen ? .status.success : .status.warning
+                    tint: settings.requireBiometricUnlockOnReopen ? AppColor.Status.success : AppColor.Status.warning
                 ),
             ]
         case .healthDevices:
             let health = healthService.isAuthorized ? "HealthKit On" : "HealthKit Off"
             return [
-                SettingsSummaryBadge(title: health, tint: healthService.isAuthorized ? .status.success : .status.warning),
+                SettingsSummaryBadge(title: health, tint: healthService.isAuthorized ? AppColor.Status.success : AppColor.Status.warning),
                 SettingsSummaryBadge(title: watchService.status.label, tint: watchService.status.dotColor),
             ]
         case .goalsPreferences:
             return [
                 SettingsSummaryBadge(title: settings.unitSystem.rawValue, tint: AppColor.Accent.achievement),
-                SettingsSummaryBadge(title: settings.appearance.rawValue, tint: .accent.purple),
+                SettingsSummaryBadge(title: settings.appearance.rawValue, tint: AppColor.Accent.sleep),
             ]
         case .trainingNutrition:
             return [
-                SettingsSummaryBadge(title: dataStore.userPreferences.nutritionGoalMode.shortLabel, tint: .accent.purple),
+                SettingsSummaryBadge(title: dataStore.userPreferences.nutritionGoalMode.shortLabel, tint: AppColor.Accent.sleep),
                 SettingsSummaryBadge(
                     title: "Zone 2 \(dataStore.userPreferences.zone2LowerHR)-\(dataStore.userPreferences.zone2UpperHR)",
-                    tint: .accent.cyan
+                    tint: AppColor.Accent.recovery
                 ),
             ]
         case .dataSync:
@@ -251,11 +249,11 @@ struct SettingsView_V1_Historical: View {
     private var syncTint: Color {
         switch cloudSync.status {
         case .idle:
-            return .status.success
+            return AppColor.Status.success
         case .syncing:
-            return .status.warning
+            return AppColor.Status.warning
         case .failed:
-            return .status.error
+            return AppColor.Status.error
         case .offline, .disabled:
             return AppColor.Text.secondary
         }
@@ -339,7 +337,7 @@ private struct AccountSecuritySettingsScreen: View {
                         title: signIn.currentSession?.provider == .passkey ? "Create Another Passkey" : "Add Passkey",
                         subtitle: signIn.isPasskeyConfigured ? "Register a passkey for quick passwordless sign in." : "Passkey setup requires a valid relying party configuration.",
                         icon: "key.fill",
-                        tint: .accent.purple,
+                        tint: AppColor.Accent.sleep,
                         trailing: signIn.isLoading ? .progress : .chevron
                     )
                 }
@@ -370,7 +368,7 @@ private struct AccountSecuritySettingsScreen: View {
                         title: "Delete Account",
                         subtitle: "Schedule permanent deletion of your account and all data.",
                         icon: "trash.fill",
-                        tint: .status.error
+                        tint: AppColor.Status.error
                     )
                 }
                 .buttonStyle(.plain)
@@ -424,7 +422,7 @@ private struct HealthDevicesSettingsScreen: View {
                         title: "Re-authorize HealthKit",
                         subtitle: "Refresh the current HealthKit permissions and reconnect read access.",
                         icon: "heart.text.square.fill",
-                        tint: .accent.cyan
+                        tint: AppColor.Accent.recovery
                     )
                 }
                 .buttonStyle(.plain)
@@ -494,7 +492,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                         title: mode.rawValue,
                         subtitle: mode == .system ? "Follow the device setting" : "Force \(mode.rawValue.lowercased()) mode",
                         isSelected: settings.appearance == mode,
-                        tint: .accent.purple
+                        tint: AppColor.Accent.sleep
                     )
                 }
             }
@@ -735,10 +733,12 @@ private struct DataSyncSettingsScreen: View {
                         title: "Sync Now",
                         subtitle: "Push local encrypted changes to your private iCloud database.",
                         icon: "icloud.and.arrow.up.fill",
-                        tint: .status.success
+                        tint: AppColor.Status.success
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Sync now")
+                .accessibilityHint("Push local changes to iCloud")
 
                 Button {
                     Task { await cloudSync.fetchChanges(dataStore: dataStore) }
@@ -747,10 +747,12 @@ private struct DataSyncSettingsScreen: View {
                         title: "Fetch from iCloud",
                         subtitle: "Download the latest encrypted changes from your account.",
                         icon: "icloud.and.arrow.down.fill",
-                        tint: .accent.cyan
+                        tint: AppColor.Accent.recovery
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Fetch from iCloud")
+                .accessibilityHint("Download latest data from your iCloud account")
             }
 
             SettingsSectionCard(title: "Local Storage", eyebrow: "Data") {
@@ -797,7 +799,7 @@ private struct DataSyncSettingsScreen: View {
                         title: "Export My Data",
                         subtitle: "Download all your data as a JSON file.",
                         icon: "square.and.arrow.up.fill",
-                        tint: .accent.primary
+                        tint: AppColor.Accent.primary
                     )
                 }
                 .buttonStyle(.plain)
@@ -813,10 +815,12 @@ private struct DataSyncSettingsScreen: View {
                         title: "Delete All Local Data",
                         subtitle: "Remove all daily logs and snapshots from this device.",
                         icon: "trash.fill",
-                        tint: .status.error
+                        tint: AppColor.Status.error
                     )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Delete all local data")
+                .accessibilityHint("Permanently removes all local logs and snapshots from this device. This action cannot be undone.")
             }
         }
         .navigationTitle(SettingsCategory.dataSync.title)
@@ -866,7 +870,7 @@ private struct SettingsCategoryCard: View {
                 Spacer(minLength: 12)
 
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                    .font(AppText.captionStrong)
                     .foregroundStyle(AppColor.Text.tertiary)
             }
 
@@ -1063,7 +1067,7 @@ private struct SettingsActionLabel: View {
             switch trailing {
             case .chevron:
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                    .font(AppText.captionStrong)
                     .foregroundStyle(AppColor.Text.tertiary)
             case .progress:
                 FitMeLogoLoader(mode: .rotate, size: .small)

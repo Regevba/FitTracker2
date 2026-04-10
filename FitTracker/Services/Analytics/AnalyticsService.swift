@@ -256,6 +256,27 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Settings v2 Events (screen-prefixed)
+
+    func logSettingsSyncTriggered(syncType: String) {
+        logEvent(AnalyticsEvent.settingsSyncTriggered, parameters: [
+            AnalyticsParam.syncType: syncType,
+        ])
+    }
+
+    func logSettingsConsentUpdated(consentType: String, granted: Bool) {
+        logEvent(AnalyticsEvent.settingsConsentUpdated, parameters: [
+            AnalyticsParam.consentType: consentType,
+            AnalyticsParam.settingValue: granted ? "granted" : "denied",
+        ])
+    }
+
+    func logSettingsDataDeleted(deleteScope: String) {
+        logEvent(AnalyticsEvent.settingsDataDeleted, parameters: [
+            AnalyticsParam.deleteScope: deleteScope,
+        ])
+    }
+
     // MARK: - Stats v2 Events (screen-prefixed)
 
     func logStatsPeriodChanged(period: String) {

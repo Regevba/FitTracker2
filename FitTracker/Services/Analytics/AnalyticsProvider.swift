@@ -136,6 +136,14 @@ enum AnalyticsEvent {
     /// User changes a setting
     static let settingsChanged   = "settings_changed"
 
+    // ── Settings v2 Events (screen-prefixed) ───────────────
+    /// User triggers a sync action
+    static let settingsSyncTriggered    = "settings_sync_triggered"
+    /// User updates consent/privacy preference
+    static let settingsConsentUpdated   = "settings_consent_updated"
+    /// User initiates destructive data action
+    static let settingsDataDeleted      = "settings_data_deleted"
+
     // ── Training Events (custom) ─────────────────────────────
 
     /// User views the active training session screen
@@ -217,6 +225,10 @@ enum AnalyticsParam {
     static let targetMl          = "target_ml"        // int — daily hydration target
     static let direction         = "direction"        // forward/backward — date navigation
     static let section           = "section"          // meals/supplements/hydration — empty state context
+
+    // Settings parameters (consentType already defined in Consent params)
+    static let syncType          = "sync_type"        // push/fetch
+    static let deleteScope       = "delete_scope"     // local/all
 
     // Stats parameters (period already defined in body composition params)
     static let metricName        = "metric_name"      // weight/bodyFat/readiness/etc
