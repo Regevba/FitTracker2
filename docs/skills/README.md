@@ -267,4 +267,5 @@ The hub never does inline work — it reads state, decides which skill to dispat
 - [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references
 - [`../design-system/v2-refactor-checklist.md`](../design-system/v2-refactor-checklist.md) — the checklist that every V2 refactor walks through
 - [`../case-studies/`](../case-studies/) — concrete examples of the PM workflow running on real features
+- [`../case-studies/pm-workflow-evolution-v1-to-v4.md`](../case-studies/pm-workflow-evolution-v1-to-v4.md) — comprehensive case study: PM hub evolution v1.0 → v4.1 with measurable efficiency data across 6 screen refactors
 - [`../../CLAUDE.md`](../../CLAUDE.md) — project rules, including the UI Refactoring & V2 Rule
