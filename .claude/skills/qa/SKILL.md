@@ -130,3 +130,39 @@ Sources checked in order: L1 cache → shared layer (test-coverage.json, health-
 **Phase 4 (Learn):** Extract new patterns (test types per feature category, coverage expectations, regression indicators). Write/update L1 cache.
 
 **Cache location:** `.claude/cache/qa/`
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+Read `.claude/cache/qa/_index.json`, match `analytics_test_planning`, check L2 for cross-skill test patterns. If hit: generate tests from template at 1.3-2.7x density. If miss: Phase 2.
+
+### Phase 4 — Learn (on skill complete)
+Extract new test categories, coverage gaps. Write L1. If applies to /analytics, flag L2.
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| axe | `.claude/integrations/axe/` | design-system.json, test-coverage.json | On `/qa plan` or `/qa security` |
+| security-audit | `.claude/integrations/security-audit/` | health-status.json | On `/qa security` |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. Test strategy patterns from L1
+2. Coverage gaps from test-coverage.json
+3. Analytics test density targets (1.3-2.7x)
+4. Regression risk from change-log.json
+5. Security checklist (OWASP Mobile Top 10)
+
+**Source priority:** L2 cache > L1 cache > shared layer (test-coverage.json) > axe adapter > security-audit adapter

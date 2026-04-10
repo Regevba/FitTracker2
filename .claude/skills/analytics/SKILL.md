@@ -165,3 +165,38 @@ Sources checked in order: L1 cache → shared layer (metric-status.json) → int
 **Phase 4 (Learn):** Extract new patterns (event naming, parameter structure, validation outcomes). Write/update L1 cache entry. If pattern overlaps with /qa or /cx cache, flag for L2 promotion.
 
 **Cache location:** `.claude/cache/analytics/`
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+Read `.claude/cache/analytics/_index.json`, match `analytics_event_spec`, check L2 for cross-skill event patterns. If hit: generate events mechanically from template. If miss: Phase 2.
+
+### Phase 4 — Learn (on skill complete)
+Extract new event categories, parameter formats. Write L1. If applies to /qa test generation, flag L2.
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| ga4 | `.claude/integrations/ga4/` | metric-status.json, feature-registry.json | On `/analytics validate` or `/analytics report` |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. Screen-prefix naming from CLAUDE.md
+2. Existing taxonomy from analytics-taxonomy.csv
+3. GA4 recommended events
+4. Funnel definitions from PRD
+5. Dashboard patterns from prior features
+
+**Source priority:** L2 cache > L1 cache > shared layer (metric-status.json) > ga4 adapter > analytics-taxonomy.csv

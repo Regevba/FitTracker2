@@ -125,3 +125,38 @@ Sources checked in order: L1 cache → L2 shared (screen-refactor-playbook) → 
 **Phase 4 (Learn):** Extract new patterns (implementation approaches, dependency decisions, CI fixes). Write/update L1 cache.
 
 **Cache location:** `.claude/cache/dev/`
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+Read `.claude/cache/dev/_index.json`, match `v2_screen_implementation`, check L2 `screen-refactor-playbook.json`. If hit: follow recipe directly. If miss: Phase 2.
+
+### Phase 4 — Learn (on skill complete)
+Extract new decomposition approaches, build fixes. Write L1. If applies to /design or /qa, flag L2.
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| security-audit | `.claude/integrations/security-audit/` | health-status.json, test-coverage.json | On `/dev deps` or `/dev review` |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. v2/ convention from CLAUDE.md
+2. Existing code patterns in target dir
+3. Build config (pbxproj, SPM)
+4. CI pipeline (make tokens-check, xcodebuild)
+5. Performance baselines
+
+**Source priority:** L2 cache > L1 cache > shared layer (health-status.json) > security-audit adapter > pbxproj direct read
