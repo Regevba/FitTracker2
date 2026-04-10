@@ -5,8 +5,9 @@
 import SwiftUI
 
 struct ReadinessCard: View {
-    @EnvironmentObject var dataStore: EncryptedDataStore
-    @EnvironmentObject var healthKit: HealthKitService
+    @EnvironmentObject var dataStore:  EncryptedDataStore
+    @EnvironmentObject var healthKit:  HealthKitService
+    @EnvironmentObject var analytics:  AnalyticsService
 
     @State private var currentPage = 0
     @State private var timer: Timer?
@@ -157,6 +158,18 @@ struct ReadinessCard: View {
             displayedScore = 0
             withAnimation(.interpolatingSpring(stiffness: 40, damping: 8)) {
                 displayedScore = target
+            }
+            if let result = readinessResult {
+                let goalMode = dataStore.userPreferences.nutritionGoalMode.rawValue
+                let componentCount = [result.hrvScore, result.sleepScore, result.trainingLoadScore, result.rhrScore]
+                    .filter { $0 > 0 }.count
+                analytics.logReadinessScoreComputed(
+                    score: target,
+                    confidence: result.confidence.rawValue,
+                    layer: 2,
+                    goalMode: goalMode,
+                    componentCount: componentCount
+                )
             }
         }
         .overlay(alignment: .topTrailing) {

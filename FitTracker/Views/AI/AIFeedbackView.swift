@@ -4,6 +4,7 @@
 import SwiftUI
 
 struct AIFeedbackView: View {
+    @EnvironmentObject private var analytics: AnalyticsService
     @State private var submitted = false
 
     var body: some View {
@@ -25,7 +26,7 @@ struct AIFeedbackView: View {
 
                     Button {
                         withAnimation(AppMotion.quickInteraction) { submitted = true }
-                        // TODO: Track analytics event home_ai_feedback_submitted rating:positive
+                        analytics.logAiFeedbackSubmitted(segment: "all", rating: "positive")
                     } label: {
                         Image(systemName: "hand.thumbsup.fill")
                             .foregroundStyle(AppColor.Status.success)
@@ -34,7 +35,7 @@ struct AIFeedbackView: View {
 
                     Button {
                         withAnimation(AppMotion.quickInteraction) { submitted = true }
-                        // TODO: Track analytics event home_ai_feedback_submitted rating:negative
+                        analytics.logAiFeedbackSubmitted(segment: "all", rating: "negative")
                     } label: {
                         Image(systemName: "hand.thumbsdown.fill")
                             .foregroundStyle(AppColor.Status.warning)

@@ -196,19 +196,19 @@ enum AnalyticsEvent {
     /// Training recommendation shown to user
     static let homeReadinessRecommendationShown = "home_readiness_recommendation_shown"
 
-    // ── AI Recommendation Events (screen-prefixed) ─────────
+    // ── AI Recommendation Events (screen-prefixed: home_) ──
     /// AI insight card shown on home screen
     static let homeAiInsightShown              = "home_ai_insight_shown"
     /// User taps AI insight card to expand
     static let homeAiInsightTap                = "home_ai_insight_tap"
-    /// AI intelligence sheet opened
-    static let aiSheetOpened                   = "ai_sheet_opened"
+    /// AI intelligence sheet opened from home screen
+    static let aiSheetOpened                   = "home_ai_sheet_opened"
     /// User views a recommendation in the AI sheet
-    static let aiRecommendationViewed          = "ai_recommendation_viewed"
+    static let aiRecommendationViewed          = "home_ai_recommendation_viewed"
     /// User submits feedback on a recommendation
-    static let aiFeedbackSubmitted             = "ai_feedback_submitted"
+    static let aiFeedbackSubmitted             = "home_ai_feedback_submitted"
     /// AI avatar animation state changes
-    static let aiAvatarStateChanged            = "ai_avatar_state_changed"
+    static let aiAvatarStateChanged            = "home_ai_avatar_state_changed"
 }
 
 // MARK: - Parameter Constants

@@ -4,8 +4,10 @@
 import SwiftUI
 
 struct AIIntelligenceSheet: View {
-    @EnvironmentObject private var orchestrator: AIOrchestrator
-    @EnvironmentObject private var dataStore:    EncryptedDataStore
+    @EnvironmentObject private var orchestrator:   AIOrchestrator
+    @EnvironmentObject private var dataStore:      EncryptedDataStore
+    @EnvironmentObject private var analytics:      AnalyticsService
+    @EnvironmentObject private var healthService:  HealthKitService
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -46,6 +48,7 @@ struct AIIntelligenceSheet: View {
                     }
                 }
             }
+            .onAppear { analytics.logAiSheetOpened(entryPoint: "insight_card") }
         }
     }
 
@@ -78,7 +81,7 @@ struct AIIntelligenceSheet: View {
 
     @ViewBuilder
     private var readinessSection: some View {
-        let result = dataStore.readinessResult(for: Date(), fallbackMetrics: nil)
+        let result = dataStore.readinessResult(for: Date(), fallbackMetrics: healthService.latest)
 
         VStack(alignment: .leading, spacing: AppSpacing.small) {
             Text("Your Readiness Breakdown")

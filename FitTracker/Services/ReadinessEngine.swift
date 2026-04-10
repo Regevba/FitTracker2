@@ -89,11 +89,11 @@ enum ReadinessEngine {
             weightedSum += score * (entry.2 / totalWeight)
         }
 
-        // Apply body comp flag suppression (up to -10 points)
-        let flagCount = Double(flags.flags.count)
-        let suppression = flagCount * 5.0
-        let rawScore = max(0, min(100, weightedSum - suppression))
-        let finalScore = Int(rawScore.rounded())
+        // Body comp flags are encoded in the bodyComp component score itself
+        // (100 = no flags, 50 = 1 flag, 0 = 2 flags). No external suppression
+        // needed — the weighted component already reduces the overall score.
+        // Previous version double-penalized by subtracting 5pts/flag externally.
+        let finalScore = Int(min(100, max(0, weightedSum)).rounded())
 
         // Build applied weights map (for UI transparency)
         var appliedWeights: [String: Double] = [:]
@@ -112,7 +112,7 @@ enum ReadinessEngine {
         if let h = hrv, h < 30 {
             warnings.append("HRV significantly below baseline — consider rest")
         }
-        if let r = rhr, r < 30 {
+        if let r = rhr, r <= 30 {
             warnings.append("Resting HR elevated >5 BPM above baseline")
         }
 
@@ -477,6 +477,7 @@ enum ReadinessEngine {
     }
 
     /// Extracts recent biometric values from daily logs, excluding the target date.
+    /// Uses day-granularity comparison to avoid boundary issues with timestamp offsets.
     private static func recentBiometricValues(
         from logs: [DailyLog],
         date: Date,
@@ -484,13 +485,18 @@ enum ReadinessEngine {
         extractor: (DailyBiometrics) -> Double?
     ) -> [Double] {
         let cal = Calendar.current
-        guard let start = cal.date(byAdding: .day, value: -days, to: date) else { return [] }
+        let startOfToday = cal.startOfDay(for: date)
+        guard let startBoundary = cal.date(byAdding: .day, value: -days, to: startOfToday) else { return [] }
         return logs
-            .filter { $0.date >= start && !cal.isDate($0.date, inSameDayAs: date) }
+            .filter {
+                let logDay = cal.startOfDay(for: $0.date)
+                return logDay >= startBoundary && logDay < startOfToday
+            }
             .compactMap { extractor($0.biometrics) }
     }
 
     /// Extracts recent values from daily logs using a custom extractor.
+    /// Uses day-granularity comparison to avoid boundary issues with timestamp offsets.
     private static func recentValues(
         from logs: [DailyLog],
         date: Date,
@@ -498,9 +504,13 @@ enum ReadinessEngine {
         extractor: (DailyLog) -> Double?
     ) -> [Double] {
         let cal = Calendar.current
-        guard let start = cal.date(byAdding: .day, value: -days, to: date) else { return [] }
+        let startOfToday = cal.startOfDay(for: date)
+        guard let startBoundary = cal.date(byAdding: .day, value: -days, to: startOfToday) else { return [] }
         return logs
-            .filter { $0.date >= start && !cal.isDate($0.date, inSameDayAs: date) }
+            .filter {
+                let logDay = cal.startOfDay(for: $0.date)
+                return logDay >= startBoundary && logDay < startOfToday
+            }
             .compactMap { extractor($0) }
     }
 

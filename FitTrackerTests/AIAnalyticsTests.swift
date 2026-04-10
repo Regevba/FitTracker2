@@ -95,7 +95,7 @@ final class AIAnalyticsTests: XCTestCase {
         XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
         let event = mockAdapter.capturedEvents[0]
         XCTAssertEqual(event.name, AnalyticsEvent.aiSheetOpened)
-        XCTAssertEqual(event.name, "ai_sheet_opened")
+        XCTAssertEqual(event.name, "home_ai_sheet_opened")
         XCTAssertEqual(event.parameters?[AnalyticsParam.entryPoint] as? String, "insight_card")
     }
 
@@ -105,7 +105,7 @@ final class AIAnalyticsTests: XCTestCase {
         XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
         let event = mockAdapter.capturedEvents[0]
         XCTAssertEqual(event.name, AnalyticsEvent.aiRecommendationViewed)
-        XCTAssertEqual(event.name, "ai_recommendation_viewed")
+        XCTAssertEqual(event.name, "home_ai_recommendation_viewed")
         XCTAssertEqual(event.parameters?[AnalyticsParam.segment] as? String, "nutrition")
         XCTAssertEqual(event.parameters?[AnalyticsParam.confidence] as? String, "medium")
     }
@@ -116,7 +116,7 @@ final class AIAnalyticsTests: XCTestCase {
         XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
         let event = mockAdapter.capturedEvents[0]
         XCTAssertEqual(event.name, AnalyticsEvent.aiFeedbackSubmitted)
-        XCTAssertEqual(event.name, "ai_feedback_submitted")
+        XCTAssertEqual(event.name, "home_ai_feedback_submitted")
         XCTAssertEqual(event.parameters?[AnalyticsParam.segment] as? String, "training")
         XCTAssertEqual(event.parameters?[AnalyticsParam.rating] as? String, "positive")
     }
@@ -127,7 +127,7 @@ final class AIAnalyticsTests: XCTestCase {
         XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
         let event = mockAdapter.capturedEvents[0]
         XCTAssertEqual(event.name, AnalyticsEvent.aiAvatarStateChanged)
-        XCTAssertEqual(event.name, "ai_avatar_state_changed")
+        XCTAssertEqual(event.name, "home_ai_avatar_state_changed")
         XCTAssertEqual(event.parameters?[AnalyticsParam.fromState] as? String, "breathe")
         XCTAssertEqual(event.parameters?[AnalyticsParam.toState] as? String, "pulse")
     }
@@ -143,10 +143,10 @@ final class AIAnalyticsTests: XCTestCase {
     func testAiEventsExistInEnum() {
         XCTAssertEqual(AnalyticsEvent.homeAiInsightShown, "home_ai_insight_shown")
         XCTAssertEqual(AnalyticsEvent.homeAiInsightTap, "home_ai_insight_tap")
-        XCTAssertEqual(AnalyticsEvent.aiSheetOpened, "ai_sheet_opened")
-        XCTAssertEqual(AnalyticsEvent.aiRecommendationViewed, "ai_recommendation_viewed")
-        XCTAssertEqual(AnalyticsEvent.aiFeedbackSubmitted, "ai_feedback_submitted")
-        XCTAssertEqual(AnalyticsEvent.aiAvatarStateChanged, "ai_avatar_state_changed")
+        XCTAssertEqual(AnalyticsEvent.aiSheetOpened, "home_ai_sheet_opened")
+        XCTAssertEqual(AnalyticsEvent.aiRecommendationViewed, "home_ai_recommendation_viewed")
+        XCTAssertEqual(AnalyticsEvent.aiFeedbackSubmitted, "home_ai_feedback_submitted")
+        XCTAssertEqual(AnalyticsEvent.aiAvatarStateChanged, "home_ai_avatar_state_changed")
     }
 
     func testReadinessParamsExistInEnum() {
