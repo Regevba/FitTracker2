@@ -80,22 +80,25 @@ enum ReadinessEngine {
         guard !available.isEmpty else { return nil }
 
         // Re-weight available components to sum to 1.0
-        let totalWeight = available.reduce(0.0) { $0 + $2 }
+        let totalWeight = available.reduce(0.0) { sum, entry in sum + entry.2 }
         guard totalWeight > 0 else { return nil }
 
-        let weightedSum = available.reduce(0.0) { acc, c in
-            acc + (c.1! * (c.2 / totalWeight))
+        var weightedSum = 0.0
+        for entry in available {
+            guard let score = entry.1 else { continue }
+            weightedSum += score * (entry.2 / totalWeight)
         }
 
         // Apply body comp flag suppression (up to -10 points)
-        let suppression = Double(flags.flags.count) * 5.0
+        let flagCount = Double(flags.flags.count)
+        let suppression = flagCount * 5.0
         let rawScore = max(0, min(100, weightedSum - suppression))
         let finalScore = Int(rawScore.rounded())
 
         // Build applied weights map (for UI transparency)
         var appliedWeights: [String: Double] = [:]
-        for c in available {
-            appliedWeights[c.0] = c.2 / totalWeight
+        for entry in available {
+            appliedWeights[entry.0] = entry.2 / totalWeight
         }
 
         // Warnings

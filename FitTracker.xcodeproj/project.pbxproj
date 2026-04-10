@@ -110,6 +110,7 @@
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA03 /* HomeRecommendationProvider.swift */; };
+		RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AA01 /* ReadinessEngine.swift */; };
 		FC1000000000000000000001 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = FC2000000000000000000001 /* FirebaseCore */; };
 		FC1000000000000000000002 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = FC2000000000000000000002 /* FirebaseAnalytics */; };
 		FF000001000000000000AA01 /* FitMeLogoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000002000000000000AA01 /* FitMeLogoLoader.swift */; };
@@ -250,6 +251,7 @@
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA03 /* HomeRecommendationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecommendationProvider.swift; sourceTree = "<group>"; };
+		RE200000000000000000AA01 /* ReadinessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngine.swift; sourceTree = "<group>"; };
 		FF000002000000000000AA01 /* FitMeLogoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitMeLogoLoader.swift; sourceTree = "<group>"; };
 		FF000002000000000000AA02 /* LiveInfoStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveInfoStrip.swift; sourceTree = "<group>"; };
 		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
@@ -371,6 +373,7 @@
 				FB4000001000000000000001 /* Supabase */,
 				A20000010000000000000008 /* AppSettings.swift */,
 				HV200000000000000000AA03 /* HomeRecommendationProvider.swift */,
+				RE200000000000000000AA01 /* ReadinessEngine.swift */,
 				NV200000000000000000AA05 /* HapticFeedback.swift */,
 			);
 			path = Services;
@@ -793,6 +796,7 @@
 				BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */,
 				BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */,
 				HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */,
+				RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */,
 				NV100000000000000000AA01 /* NutritionView.swift in Sources */,
 				NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */,
 				NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */,
