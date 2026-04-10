@@ -54,10 +54,22 @@ enum AnalyticsEvent {
 
     // ── Nutrition Events (custom) ───────────────────────────
 
-    /// User logs a meal (mark as conversion in GA4)
+    /// User logs a meal (mark as conversion in GA4) — legacy name, aliased
     static let mealLog           = "meal_log"
-    /// User checks off supplements
+    /// User checks off supplements — legacy name, aliased
     static let supplementLog     = "supplement_log"
+
+    // ── Nutrition v2 Events (screen-prefixed per CLAUDE.md rule) ───
+    /// User logs a meal — screen-prefixed replacement for meal_log
+    static let nutritionMealLogged       = "nutrition_meal_logged"
+    /// User toggles supplement status — screen-prefixed replacement for supplement_log
+    static let nutritionSupplementLogged = "nutrition_supplement_logged"
+    /// User adds water to hydration tracker
+    static let nutritionHydrationUpdated = "nutrition_hydration_updated"
+    /// User navigates to a different date
+    static let nutritionDateChanged      = "nutrition_date_changed"
+    /// Empty state shown (no meals, supplements, or hydration)
+    static let nutritionEmptyStateShown  = "nutrition_empty_state_shown"
 
     // ── Recovery Events (custom) ────────────────────────────
 
@@ -187,8 +199,14 @@ enum AnalyticsParam {
     // Nutrition parameters
     static let mealType          = "meal_type"        // breakfast/lunch/dinner/snack
     static let entryMethod       = "entry_method"     // manual/template/photo/barcode
-    static let timeOfDay         = "time_of_day"      // am/pm
+    static let timeOfDay         = "time_of_day"      // morning/evening
     static let count             = "count"
+    static let calories          = "calories"         // int — kcal
+    static let supplementCount   = "supplement_count" // int — number of supplements toggled
+    static let waterMl           = "water_ml"         // int — milliliters added
+    static let targetMl          = "target_ml"        // int — daily hydration target
+    static let direction         = "direction"        // forward/backward — date navigation
+    static let section           = "section"          // meals/supplements/hydration — empty state context
 
     // Recovery parameters
     static let metricType        = "metric_type"      // weight/hrv/rhr/sleep/body_fat

@@ -1,6 +1,12 @@
+// HISTORICAL — superseded by v2/NutritionView.swift on 2026-04-10 per
+// UX Foundations alignment pass. See
+// .claude/features/nutrition-v2/v2-audit-report.md for the gap analysis.
+// This file is no longer in the build target; it stays in the repo
+// as a reviewable reference for the v1 → v2 diff.
+
 import SwiftUI
 
-struct NutritionView: View {
+struct NutritionView_V1_Historical: View {
 
     @EnvironmentObject var dataStore: EncryptedDataStore
     @State private var activeDate: Date = Date()

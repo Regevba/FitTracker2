@@ -30,7 +30,11 @@
 		A10000010000000000000009 /* EncryptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* EncryptionService.swift */; };
 		A1000001000000000000000A /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* RootTabView.swift */; };
 		A1000001000000000000000B /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* MainScreenView.swift */; };
-		A1000001000000000000000C /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C /* NutritionView.swift */; };
+		NV100000000000000000AA01 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA01 /* NutritionView.swift */; };
+		NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA02 /* SupplementStackCard.swift */; };
+		NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA03 /* SupplementItemRow.swift */; };
+		NV100000000000000000AA04 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA04 /* ProgressBar.swift */; };
+		NV100000000000000000AA05 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA05 /* HapticFeedback.swift */; };
 		A1000001000000000000000D /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* TrainingPlanView.swift */; };
 		A1000001000000000000000E /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E /* StatsView.swift */; };
 		A1000001000000000000000F /* AccountPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AccountPanelView.swift */; };
@@ -154,6 +158,11 @@
 		A20000010000000000000008 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		A20000010000000000000009 /* EncryptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionService.swift; sourceTree = "<group>"; };
 		A2000001000000000000000A /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		NV200000000000000000AA01 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
+		NV200000000000000000AA02 /* SupplementStackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementStackCard.swift; sourceTree = "<group>"; };
+		NV200000000000000000AA03 /* SupplementItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementItemRow.swift; sourceTree = "<group>"; };
+		NV200000000000000000AA04 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		NV200000000000000000AA05 /* HapticFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticFeedback.swift; sourceTree = "<group>"; };
 		A2000001000000000000000B /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000C /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000D /* TrainingPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingPlanView.swift; sourceTree = "<group>"; };
@@ -354,6 +363,7 @@
 				FB4000001000000000000001 /* Supabase */,
 				A20000010000000000000008 /* AppSettings.swift */,
 				HV200000000000000000AA03 /* HomeRecommendationProvider.swift */,
+				NV200000000000000000AA05 /* HapticFeedback.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -461,8 +471,27 @@
 				CC000002000000000000AA09 /* MacroTargetBar.swift */,
 				CC000002000000000000AA0A /* MealSectionView.swift */,
 				CC000002000000000000AA0B /* MealEntrySheet.swift */,
+				NV400000000000000000AA01 /* v2 */,
+				NV400000000000000000AA02 /* Components */,
 			);
 			path = Nutrition;
+			sourceTree = "<group>";
+		};
+		NV400000000000000000AA01 /* v2 */ = {
+			isa = PBXGroup;
+			children = (
+				NV200000000000000000AA01 /* NutritionView.swift */,
+			);
+			path = v2;
+			sourceTree = "<group>";
+		};
+		NV400000000000000000AA02 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				NV200000000000000000AA02 /* SupplementStackCard.swift */,
+				NV200000000000000000AA03 /* SupplementItemRow.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		A4000001000000000000000E /* Stats */ = {
@@ -566,6 +595,7 @@
 				DS000002000000000000AA04 /* AppIcon.swift */,
 				DS000002000000000000AA05 /* AppViewModifiers.swift */,
 				DS000002000000000000AA06 /* AppComponents.swift */,
+				NV200000000000000000AA04 /* ProgressBar.swift */,
 			);
 			path = DesignSystem;
 			sourceTree = "<group>";
@@ -734,7 +764,11 @@
 				BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */,
 				BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */,
 				HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */,
-				A1000001000000000000000C /* NutritionView.swift in Sources */,
+				NV100000000000000000AA01 /* NutritionView.swift in Sources */,
+				NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */,
+				NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */,
+				NV100000000000000000AA04 /* ProgressBar.swift in Sources */,
+				NV100000000000000000AA05 /* HapticFeedback.swift in Sources */,
 				TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */,
 				TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */,
 				TP100000000000000000AA03 /* SetRowView.swift in Sources */,
