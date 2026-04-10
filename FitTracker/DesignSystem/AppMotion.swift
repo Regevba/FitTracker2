@@ -30,6 +30,8 @@ enum AppSpring {
     static let smooth   = Animation.spring(response: 0.40, dampingFraction: 0.85)
     /// Stiff: overlay/sheet dismiss
     static let stiff    = Animation.spring(response: 0.25, dampingFraction: 0.90)
+    /// Progress: animated progress bars — softer, slower spring for visual indicators
+    static let progress = Animation.spring(response: 0.55, dampingFraction: 0.80)
 }
 
 // MARK: - Easing

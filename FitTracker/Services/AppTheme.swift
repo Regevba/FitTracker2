@@ -59,6 +59,7 @@ enum AppColor {
         static let recovery    = Color("accent-recovery")
         static let sleep       = Color("accent-sleep")
         static let achievement = Color("accent-achievement")
+        static let nutrition   = Color("accent-recovery").opacity(0.9) // Cyan-tinted nutrition accent — distinct from recovery
     }
 
     enum Status {
@@ -105,6 +106,18 @@ enum AppSpacing {
     static let large:    CGFloat = 24
     static let xLarge:   CGFloat = 32
     static let xxLarge:  CGFloat = 40
+    /// Supplement detail row indent — checkbox (26) + surrounding padding. Nutrition v2 specific.
+    static let supplementDetailIndent: CGFloat = 54
+}
+
+// MARK: - Opacity
+enum AppOpacity {
+    /// Disabled/inactive state — use for dimmed backgrounds on toggled-off elements
+    static let disabled: Double = 0.15
+    /// Subtle background — use for tinted card backgrounds, hover states
+    static let subtle:   Double = 0.12
+    /// Hover/focus — lightest tint for interactive feedback
+    static let hover:    Double = 0.08
 }
 
 // MARK: - Radius
