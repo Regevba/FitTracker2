@@ -143,3 +143,45 @@ When `/cx analyze` identifies a **messaging problem** (users don't understand wh
 - `.claude/shared/campaign-tracker.json` — campaign tracking
 - `website/` — marketing website (Astro + Tailwind)
 - `docs/product/prd/marketing-website.md` — website PRD
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| ayrshare | REST (Tier 2) | Social media scheduling across 13+ platforms |
+| app-store-connect | MCP | ASO metadata, keyword rankings, download trends (shared with /cx) |
+| firecrawl | MCP | Competitor marketing page analysis (shared with /research) |
+
+**Adapter location:** `.claude/integrations/{app-store-connect,firecrawl}/`
+**Shared layer writes:** `campaign-tracker.json`
+
+### Validation Gate
+
+All incoming marketing data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /marketing + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /marketing + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a marketing task, research:
+
+1. **ASO strategy** — keyword rankings, competitor metadata, App Store listing optimization patterns
+2. **Campaign design** — channel selection, audience targeting, content formats, attribution setup
+3. **Messaging** — positioning against competitors, feature highlight strategy, testimonial selection
+4. **Tools & APIs** — Ayrshare social scheduling, App Store Connect metadata API, Firecrawl for competitor pages
+5. **Content patterns** — blog post formats, social media templates, email campaign structures
+
+Sources checked in order: L1 cache → shared layer (campaign-tracker.json, cx-signals.json) → integration adapters (app-store-connect, firecrawl) → codebase (website/) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/marketing/_index.json`. Check for cached ASO patterns, campaign templates, content strategies from prior features.
+
+**Phase 4 (Learn):** Extract new patterns (ASO keyword strategies, campaign performance, content formats). Write/update L1 cache.
+
+**Cache location:** `.claude/cache/marketing/`

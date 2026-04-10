@@ -124,3 +124,32 @@ Ensures every UI feature is grounded in research-backed UX principles **before**
 - [design.md](design.md) — handoff partner for visual work
 - [pm-workflow.md](pm-workflow.md) — hub skill that dispatches `/ux`
 - [`.claude/skills/ux/SKILL.md`](../../.claude/skills/ux/SKILL.md) — agent-facing prompt
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| axe | MCP (`@anthropic-ai/mcp-axe`) | Automated WCAG AA accessibility scanning, VoiceOver label validation, tap target analysis |
+
+**Adapter config:** `.claude/integrations/axe/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+### Learning Cache
+
+**Location:** `.claude/cache/ux/`
+
+Caches: UX spec patterns (Principle Application Table structures reused across features), wireframe templates (ASCII wireframe layouts at low/medium/high fidelity), a11y findings (recurring accessibility gaps and their resolutions per screen type).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

@@ -112,3 +112,44 @@ Configure monitoring alerts.
 - `.github/workflows/ci.yml` — CI configuration
 - `CLAUDE.md` — system guardrails
 - `.claude/shared/health-status.json` — health data store
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| sentry | MCP | Crash-free rate, error counts, issue trends, affected user counts |
+| datadog | MCP | Infrastructure metrics, cold start times, performance monitoring |
+
+**Adapter location:** `.claude/integrations/sentry/`
+**Shared layer writes:** `health-status.json`
+
+### Validation Gate
+
+All incoming ops data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /ops + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /ops + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for an ops task, research:
+
+1. **Health baselines** — current crash-free rate, cold start times, sync success rate, CI pass rate
+2. **Incident patterns** — similar past incidents, root cause categories, recovery procedures
+3. **Monitoring tools** — Sentry configuration, Datadog dashboard setup, alert threshold tuning
+4. **Infrastructure** — Xcode Cloud build configs, CI pipeline optimization, build artifact management
+5. **Threshold calibration** — when to alert (P0/P1/P2), escalation rules, notification channels
+
+Sources checked in order: L1 cache → shared layer (health-status.json) → integration adapters (sentry, datadog) → codebase (.github/workflows/) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/ops/_index.json`. Check for cached incident response patterns, threshold configurations, health check procedures from prior incidents.
+
+**Phase 4 (Learn):** Extract new patterns (incident classification, threshold tuning, recovery procedures). Write/update L1 cache.
+
+**Cache location:** `.claude/cache/ops/`

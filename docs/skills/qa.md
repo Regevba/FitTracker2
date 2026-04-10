@@ -75,3 +75,35 @@ Creates test plans from PRD acceptance criteria, executes test suites, measures 
 - [dev.md](dev.md), [analytics.md](analytics.md) — upstream/downstream partners
 - [pm-workflow.md](pm-workflow.md)
 - [`.claude/skills/qa/SKILL.md`](../../.claude/skills/qa/SKILL.md)
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| xcode | MCP | Test execution, build results, simulator control, code coverage data |
+| codecov | REST | Coverage reports, diff coverage, historical coverage trends per PR |
+| axe | MCP (shared with `/ux`) | Automated accessibility testing, WCAG AA violation detection |
+| sentry | MCP (shared with `/ops`) | Production error rates, crash-free session tracking, regression signals |
+
+**Adapter config:** `.claude/integrations/xcode/`, `.claude/integrations/codecov/`, `.claude/integrations/axe/`, and `.claude/integrations/sentry/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+### Learning Cache
+
+**Location:** `.claude/cache/qa/`
+
+Caches: test strategy patterns (which test types caught the most regressions per feature category), coverage baselines (per-module coverage history), regression indicators (symptom patterns that preceded prior regressions).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

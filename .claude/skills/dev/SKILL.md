@@ -84,3 +84,44 @@ Check current CI pipeline status.
 - `.github/workflows/ci.yml` — CI pipeline definition
 - `Makefile` — token pipeline targets
 - `CLAUDE.md` — branching strategy, high-risk files, CI requirements
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| github | CLI | PR status, CI results, issue tracking (already integrated via gh CLI) |
+| security-audit | MCP | CVE vulnerability scanning, dependency audit results |
+
+**Adapter location:** `.claude/integrations/security-audit/`
+**Shared layer writes:** `task-queue.json`
+
+### Validation Gate
+
+All incoming security/CI data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /dev + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /dev + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a dev task, research:
+
+1. **Implementation approach** — existing patterns in codebase, architecture conventions (MVVM, service layer), similar feature implementations
+2. **Dependencies** — SPM package availability, version compatibility, CVE status (via security-audit adapter)
+3. **Branching strategy** — feature branch vs direct, high-risk file list from CLAUDE.md, CI requirements
+4. **Tools & APIs** — GitHub CLI capabilities, Xcode build settings, CI pipeline configuration
+5. **Code quality** — Swift best practices, memory management patterns, concurrency approaches (async/await vs Combine)
+
+Sources checked in order: L1 cache → L2 shared (screen-refactor-playbook) → shared layer (task-queue.json, health-status.json) → integration adapters (security-audit) → codebase → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/dev/_index.json`. Check for cached branching patterns, code review outcomes, security scan baselines. Also read `.claude/cache/_shared/screen-refactor-playbook.json` when implementing UI.
+
+**Phase 4 (Learn):** Extract new patterns (implementation approaches, dependency decisions, CI fixes). Write/update L1 cache.
+
+**Cache location:** `.claude/cache/dev/`

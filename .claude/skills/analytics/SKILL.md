@@ -124,3 +124,44 @@ Define and track a conversion funnel.
 - `docs/product/analytics-taxonomy.csv` — full event taxonomy
 - `docs/product/metrics-framework.md` — metrics definitions
 - `FitTrackerTests/AnalyticsTests.swift` — analytics unit tests (23 tests)
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| ga4 | MCP | Real GA4 event data, user metrics, conversion rates, funnel analysis |
+| mixpanel | MCP | Alternative analytics source, event tracking, user segmentation |
+
+**Adapter location:** `.claude/integrations/{ga4,mixpanel}/`
+**Shared layer writes:** `metric-status.json`
+
+### Validation Gate
+
+All incoming analytics data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /analytics + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /analytics + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for an analytics task, research:
+
+1. **Event naming** — check GA4 recommended events list, project naming convention (screen_prefix rule in CLAUDE.md), existing taxonomy in `analytics-taxonomy.csv`
+2. **Instrumentation** — how similar features instrumented events, what parameters are standard, consent gating patterns
+3. **Dashboard patterns** — GA4 exploration configs, funnel definitions, cohort analysis setups
+4. **Tools & APIs** — GA4 Data API capabilities (via ga4 adapter), Mixpanel query patterns, new analytics features
+5. **Validation methods** — XCTest patterns for analytics verification, mock provider approaches
+
+Sources checked in order: L1 cache → shared layer (metric-status.json) → integration adapters (ga4) → codebase (AnalyticsProvider.swift) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/analytics/_index.json`. Check for matching task signature (e.g., `analytics:event-spec:{feature}`). If hit, load learned event naming patterns, parameter conventions, and skip boilerplate derivation.
+
+**Phase 4 (Learn):** Extract new patterns (event naming, parameter structure, validation outcomes). Write/update L1 cache entry. If pattern overlaps with /qa or /cx cache, flag for L2 promotion.
+
+**Cache location:** `.claude/cache/analytics/`

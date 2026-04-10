@@ -143,3 +143,44 @@ App Store keyword research and competitor rankings.
 - Industry reports (Grand View Research, Business of Apps, Sensor Tower)
 - Product teardowns (How They Grow, Lenny's Newsletter, Product School)
 - Design pattern libraries (Mobbin, UI8, Dribbble)
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| firecrawl | MCP | Structured web scraping, competitor page analysis, market data |
+| apify | MCP | App Store scraping, review mining, competitor feature extraction |
+
+**Adapter location:** `.claude/integrations/firecrawl/`
+**Shared layer writes:** `context.json`, `feature-registry.json`
+
+### Validation Gate
+
+All incoming research data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /research + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /research + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a research task, research:
+
+1. **Competitive landscape** — competitor features, pricing, positioning, user reviews, market share
+2. **Market data** — industry reports, growth trends, user demographics, TAM/SAM/SOM
+3. **UX patterns** — cross-industry interaction patterns, platform HIG, accessibility innovations
+4. **Tools & APIs** — Firecrawl for structured scraping, Apify for App Store mining, web search for reports
+5. **User needs** — pain point validation, behavioral signals, unmet needs from cx-signals.json
+
+Sources checked in order: L1 cache → shared layer (context.json, feature-registry.json) → integration adapters (firecrawl, apify) → web search → industry reports
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/research/_index.json`. Check for cached competitor analysis templates, market signal patterns, research methodology from prior features.
+
+**Phase 4 (Learn):** Extract new patterns (competitor analysis framework, market signal categories). Write/update L1 cache. If competitive patterns overlap with /marketing cache, flag for L2 promotion.
+
+**Cache location:** `.claude/cache/research/`

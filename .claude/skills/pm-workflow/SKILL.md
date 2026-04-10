@@ -858,3 +858,92 @@ When state.json and GitHub Issue disagree:
 | Both changed since last sync | Ask user to choose which source is correct |
 | state.json missing, GitHub exists | Create state.json from GitHub Issue data |
 | GitHub Issue missing, state.json exists | Offer to create GitHub Issue from state.json |
+
+---
+
+## External Data Sources (Reactive Data Mesh)
+
+The hub receives notifications from ALL integration adapters when new external data enters the system. The hub does NOT pull data itself — it is notified by the receiving skill and the validation gate.
+
+### How Data Flows to the Hub
+
+1. **Any entry point triggers data flow.** A user invokes a single skill (e.g., `/analytics validate`) or an MCP connects for the first time.
+2. **The adapter normalizes and validates.** Raw MCP data → `schema.json` → `mapping.json` → validation gate.
+3. **The validation gate scores consistency** against all existing shared layer state.
+4. **The hub is always notified.** Both the receiving skill and `/pm-workflow` are informed of the result.
+
+### Validation Gate Thresholds
+
+| Score | Alert | Data Written? | Hub Action |
+|-------|-------|---------------|------------|
+| >= 95% | GREEN | Yes | Log. No action needed. |
+| 90-95% | ORANGE | Yes | Log + surface advisory to user at next interaction. |
+| < 90% | RED | No | STOP. Present conflict details. User must resolve before data enters shared layer. |
+
+**Validation is automatic. Resolution is always manual.** The hub never silently resolves conflicts or auto-corrects data.
+
+### Integration Adapters Available
+
+| Adapter | Consuming Skills | Shared Layer Target |
+|---------|-----------------|-------------------|
+| ga4 | /analytics, /pm-workflow, /cx | metric-status.json |
+| app-store-connect | /cx, /release, /marketing | cx-signals.json, feature-registry.json |
+| sentry | /ops, /cx, /qa | health-status.json, cx-signals.json |
+| firecrawl | /research, /marketing | context.json, feature-registry.json |
+| axe | /ux, /qa, /design | design-system.json, test-coverage.json |
+| security-audit | /dev, /ops, /qa | health-status.json, test-coverage.json |
+| figma | /design | design-system.json |
+| linear | /pm-workflow | feature-registry.json, task-queue.json |
+| notion | /pm-workflow | feature-registry.json |
+
+### Adapter Configuration
+
+Adapters live in `.claude/integrations/{service}/` with:
+- `adapter.md` — how to call the MCP/API
+- `schema.json` — expected response shape
+- `mapping.json` — field mapping to shared layer
+
+If an adapter is not configured (no API keys), skills degrade gracefully — they use existing shared layer data.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for an orchestration task, research:
+
+1. **Phase gating** — which phases to include for this work type (Feature/Enhancement/Fix/Chore), gate requirements
+2. **Skill dispatch** — which skills to involve, task routing via skill-routing.json, parallel vs sequential execution
+3. **Cross-feature context** — related features in feature-registry.json, shared dependencies, potential conflicts
+4. **Tools & integrations** — Linear MCP for issue sync, Notion MCP for PRD sync, GitHub for CI/PR management
+5. **Process optimization** — what worked/failed in prior features of similar scope, phase duration baselines
+
+Sources checked in order: L1 cache → L2/L3 cache → shared layer (feature-registry.json, skill-routing.json) → integration adapters (linear, notion) → codebase → external docs
+
+## Cache Protocol
+
+### Phase 1 (Cache Check — Hub Invocation)
+
+1. **Read** `.claude/cache/pm-workflow/_index.json` for cached orchestration patterns.
+2. **Read** `.claude/cache/_shared/` for cross-skill patterns relevant to the current phase.
+3. **Read** `.claude/cache/_project/` for project-wide architectural decisions.
+4. If a cache hit matches the current task signature → load learned patterns and skip derivation.
+
+### Phase 4 (Learn — Hub Completion, phase transition)
+
+1. **Extract** any new patterns or anti-patterns discovered during the phase.
+2. **Write** or update the relevant L1 cache entry in `.claude/cache/pm-workflow/`.
+3. **Check** if any pattern was used by 2+ skills during this phase → promote to L2 (`_shared/`).
+4. **Log** the cache interaction in the phase's state.json entry.
+
+### Cache Location
+
+- L1 (hub-specific): `.claude/cache/pm-workflow/`
+- L2 (cross-skill): `.claude/cache/_shared/`
+- L3 (project-wide): `.claude/cache/_project/`
+
+## Cross-Skill Cache Promotion
+
+The hub is responsible for detecting cross-skill pattern convergence:
+
+1. After each phase completes, scan L1 caches of skills involved in that phase.
+2. If 2+ skills cached the same pattern (by `task_signature.type`) → create/update L2 entry.
+3. If an L2 entry is referenced by 5+ skills → promote to L3.
+4. Promotion is logged in `change-log.json` as a `cache_promotion` event.

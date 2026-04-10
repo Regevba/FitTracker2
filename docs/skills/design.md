@@ -73,3 +73,32 @@ Manages design system governance, creates UX specs from PRDs, generates Figma bu
 - [ux.md](ux.md) — handoff partner for the what-and-why layer
 - [pm-workflow.md](pm-workflow.md)
 - [`.claude/skills/design/SKILL.md`](../../.claude/skills/design/SKILL.md)
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| figma | MCP (already connected) | Design context, component specs, variable definitions, screenshots, Code Connect mappings |
+
+**Adapter config:** `.claude/integrations/figma/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+### Learning Cache
+
+**Location:** `.claude/cache/design/`
+
+Caches: token mappings (Figma variables → AppTheme semantic tokens), component selections (which AppComponent was chosen for which design pattern), v2 refactor patterns (recurring structural changes from v1 → v2 audits).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

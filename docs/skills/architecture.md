@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 3.0 | **Updated:** 2026-04-09 | **Branch:** `feature/home-today-screen-v2`
+> **Version:** 4.1 | **Updated:** 2026-04-10 | **Branch:** `main`
 >
 > A new contributor (human or AI) can read this single document to understand the entire skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 
@@ -16,7 +16,7 @@
 
 **Solution:** Hub-and-spoke architecture where each domain has its own skill, connected through a shared data layer.
 
-**Result:** 12 skills (1 hub + 11 spokes) + 8 shared data files + 4 external integrations (GitHub, Notion MCP, Figma MCP, Vercel). Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern.
+**Result:** 12 skills (1 hub + 11 spokes) + 11 shared data files + 6 integration adapters + 3-level learning cache + automatic validation gate. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern. v4.0 (2026-04-10) introduced the reactive data mesh, integration adapter layer, automatic validation gate (GREEN/ORANGE/RED), and L1/L2/L3 learning cache. v4.1 (2026-04-10) added the Skill Internal Lifecycle (Cache Check → Research → Execute → Learn) — every skill mirrors the hub's structure internally — see §9-§11.
 
 **Key principle:** Every skill is a **Lego piece** (works alone) AND a **puzzle piece** (fits into the hub).
 
@@ -1439,3 +1439,326 @@ The shared data layer (`.claude/shared/`) serves as the ecosystem's memory:
 - Per-feature `state.json` — where each feature is in its lifecycle
 
 Skills never call each other directly. All inter-skill communication flows through these shared files, making the system debuggable (inspect any JSON file to see the current state) and recoverable (restart from any `state.json` checkpoint).
+
+---
+
+## 9. Reactive Data Mesh (v4.0)
+
+> **Added:** 2026-04-10 | **Principle:** "Any entry point, any time, data flows."
+
+v3.0 was a closed loop — all data originated from manual work inside conversations. v4.0 opens the system to external data sources via MCPs and APIs, adds automatic validation, and introduces a learning cache that accelerates repeated tasks.
+
+### 9.1 Core Principle
+
+The system is NOT a batch pipeline where data is fetched once and consumed linearly. It is a **reactive mesh** where:
+
+1. **Every MCP/API is an open port.** The moment a new source is connected (e.g., Sentry MCP gets configured), data starts flowing into the shared layer immediately — not waiting for a PM workflow phase to "request" it.
+2. **Data enriches retroactively.** Plugging in App Store Connect doesn't just help the next `/cx` run — it backfills `cx-signals.json` with real reviews that validate (or contradict) assumptions already in `feature-registry.json`.
+3. **Any skill can be the trigger.** Running just `/analytics validate` (single skill, no hub) still pulls live GA4 data through the adapter. That data updates `metric-status.json`, which is read by `/qa`, `/cx`, `/ops`, and `/pm-workflow`.
+4. **The hub orchestrates, but doesn't gatekeep data.** `/pm-workflow` sequences phases and gates approvals, but data flows through the shared layer independently of phase progression.
+
+### 9.2 Integration Adapter Layer
+
+External data enters through adapters at `.claude/integrations/{service}/`:
+
+```
+.claude/integrations/
+├── _template/           ← boilerplate for new integrations
+│   ├── adapter.md       ← how to call the MCP/API
+│   ├── schema.json      ← expected response shape
+│   └── mapping.json     ← field mapping to shared layer
+├── ga4/                 ← GA4 Analytics MCP
+├── app-store-connect/   ← App Store Connect MCP (208 tools)
+├── sentry/              ← Sentry Error Tracking MCP
+├── firecrawl/           ← Web Scraping MCP
+├── axe/                 ← Accessibility Audit MCP
+└── security-audit/      ← Dependency Security MCP
+```
+
+**Why adapters?** Isolation. If GA4 MCP changes its response format, you update one `mapping.json`, not every skill that consumes analytics data. Skills never call MCPs directly — they go through the adapter contract.
+
+**Adapter contract:** `Raw MCP response → schema.json (validate shape) → mapping.json (normalize fields) → validation gate → shared layer`
+
+### 9.3 Integration Map
+
+| Adapter | MCP Package | Consuming Skills | Shared Layer Target |
+|---------|------------|-----------------|-------------------|
+| ga4 | `mcp-server-ga4` | /analytics, /pm-workflow, /cx | metric-status.json |
+| app-store-connect | `asc-mcp` | /cx, /release, /marketing | cx-signals.json, feature-registry.json |
+| sentry | `mcp.sentry.dev` | /ops, /cx, /qa | health-status.json, cx-signals.json |
+| firecrawl | `firecrawl-mcp` | /research, /marketing | context.json, feature-registry.json |
+| axe | `@anthropic-ai/mcp-axe` | /ux, /qa, /design | design-system.json, test-coverage.json |
+| security-audit | `mcp-security-audit` | /dev, /ops, /qa | health-status.json, test-coverage.json |
+| figma | (already connected) | /design | design-system.json |
+| linear | (official hosted) | /pm-workflow | feature-registry.json, task-queue.json |
+| notion | (already connected) | /pm-workflow | feature-registry.json |
+
+### 9.4 Automatic Validation Gate
+
+All data entering the shared layer passes through an automatic validation gate. The gate cross-references every field in the incoming data against existing shared layer state.
+
+**Validation score** = consistent fields / total comparable fields
+
+```
+         ┌────────────────────────────────────────────────────┐
+         │         AUTOMATIC VALIDATION GATE                  │
+         │                                                    │
+         │   ≥ 95%  GREEN   Write. Notify skill + hub.       │
+         │   90-95% ORANGE  Write + advisory. Review later.   │
+         │   < 90%  RED     DO NOT write. STOP. User resolves.│
+         └────────────────────────────────────────────────────┘
+```
+
+**Scoring rules:**
+
+| Check Type | Consistent? |
+|-----------|-------------|
+| Numeric within 5% tolerance | Yes |
+| Categorical exact match | Yes |
+| New field (null → value) | Always yes (gap fill) |
+| Measured superseding estimated | Always yes |
+| Two measured sources disagree | No (conflict) |
+
+**Notification recipients (always two):**
+1. **Receiving skill** — the skill whose data flow triggered ingestion
+2. **/pm-workflow** — always informed for project-level awareness
+
+**The validation is automatic. Resolution is always manual.** The system never silently resolves conflicts or auto-corrects data. It surfaces what happened, who's affected, and the options — then waits for the user.
+
+**Validation log entries** are written to `.claude/shared/change-log.json` with: timestamp, source, receiving_skill, validation_score, alert_level, action_taken, fields_checked, discrepancies, and notifications_sent_to.
+
+### 9.5 Configuration
+
+Integration sources and validation thresholds are declared in `.claude/shared/skill-routing.json` (v2.0):
+
+- `integration_sources` — maps each skill to its adapters, shared_reads, shared_writes
+- `validation_gate` — thresholds (green: 0.95, orange: 0.90), numeric tolerance (0.05), auto-write levels, manual resolution levels
+
+---
+
+## 10. Learning Cache (v4.0)
+
+> **Added:** 2026-04-10 | **Inspiration:** CPU cache hierarchy (L1/L2/L3) + browser cache (key/hit/TTL)
+
+### 10.1 Why
+
+When skills perform complex multi-step work (e.g., applying UX foundations across screens), each execution previously started from scratch. The 4th screen took as long as the 1st. The cache stores patterns, decisions, and outcomes so similar tasks accelerate over time.
+
+### 10.2 Cache Hierarchy
+
+```
+.claude/cache/
+├── _index.json              ← master index (schema, lifecycle rules)
+├── {skill}/                 ← L1: per-skill, hot
+│   ├── _index.json          ← skill-level index
+│   └── {pattern}.json       ← cached patterns
+├── _shared/                 ← L2: cross-skill, warm (2+ skills share)
+│   └── {pattern}.json
+└── _project/                ← L3: project-wide, cold (5+ skills share)
+    └── {pattern}.json
+```
+
+| Level | Scope | Promotion Rule | Example |
+|-------|-------|---------------|---------|
+| L1 | Single skill | Default home for new patterns | `/design` token mapping decisions |
+| L2 | 2+ skills | Promoted from L1 when pattern spans skills | UX foundations application playbook |
+| L3 | 5+ skills | Promoted from L2 when widely referenced | Hub-and-spoke architectural conventions |
+
+### 10.3 Cache Entry Structure
+
+```json
+{
+  "cache_key": "{skill}:{task_type}:{context}",
+  "skill": "string | null (L2/L3)",
+  "level": "L1 | L2 | L3",
+  "created": "ISO 8601",
+  "last_hit": "ISO 8601",
+  "hit_count": 0,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": ["file_path:sha256"],
+  "task_signature": { "type": "", "inputs": [], "context": "" },
+  "learned_patterns": [{ "pattern": "", "decision": "", "confidence": "", "source_executions": [] }],
+  "anti_patterns": [{ "pattern": "", "what_went_wrong": "", "source_execution": "" }],
+  "speedup_instructions": "How to use this cache to go faster"
+}
+```
+
+### 10.4 Cache Lifecycle
+
+| Event | Action |
+|-------|--------|
+| Skill execution starts | Check `_index.json` for matching `task_signature`. If hit → load patterns, skip derivation. |
+| Skill execution completes | Extract patterns + anti-patterns. Write/update cache entry. Increment `hit_count`. |
+| Source file changes | Check `invalidated_by` SHA256 hashes. Mismatch → mark stale, re-derive next use. |
+| Cross-skill pattern | 2+ L1 entries share pattern → promote to L2 (`_shared/`). |
+| Project-wide pattern | L2 entry referenced by 5+ skills → promote to L3 (`_project/`). |
+
+### 10.5 Speedup Example
+
+Applying UX foundations to 4 screens:
+
+| Screen | Cache State | Savings |
+|--------|------------|---------|
+| Home (1st) | Cold — full derivation | 0% |
+| Training (2nd) | Warm — token map + component selection cached | ~40% |
+| Nutrition (3rd) | Hot — anti-patterns from 2 prior screens loaded | ~55% |
+| Stats (4th) | Hot — only novel layout patterns need derivation | ~65% |
+
+### 10.6 Skill Internal Lifecycle
+
+> **Principle:** Every skill mirrors the hub's structure internally. The hub has 10 phases; each skill has 4 internal phases that run on every invocation.
+
+Every skill — whether invoked standalone (`/design audit`) or dispatched by the hub (`/pm-workflow` Phase 3 → `/design`) — follows this internal lifecycle:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                   SKILL INTERNAL LIFECYCLE                       │
+│                                                                  │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐  │
+│  │ 1. CACHE │───▶│2. RESEARCH│───▶│3. EXECUTE│───▶│ 4. LEARN │  │
+│  │  CHECK   │    │  (if     │    │          │    │          │  │
+│  │          │    │  needed) │    │          │    │          │  │
+│  └──────────┘    └──────────┘    └──────────┘    └──────────┘  │
+│       │               │               │               │        │
+│  Read L1/L2/L3   Investigate     Do the work      Write back   │
+│  for matching    tools, APIs,    using cached +    patterns,    │
+│  task signature  MCPs, methods   researched        anti-patterns│
+│                  if cache miss   knowledge         to L1 cache  │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+#### Phase 1: CACHE CHECK
+
+Before doing any work, the skill checks for prior learnings:
+
+1. Read `.claude/cache/{skill}/_index.json` — check for matching `task_signature`
+2. Read `.claude/cache/_shared/` — check for cross-skill patterns
+3. Read `.claude/cache/_project/` — check for project-wide conventions
+
+**If cache hit:** Load `learned_patterns`, `anti_patterns`, and `speedup_instructions`. Skip to Phase 3 (Execute), using cached knowledge as the foundation. This is why the 4th screen refactor is 65% faster than the 1st.
+
+**If cache miss:** Proceed to Phase 2 (Research).
+
+#### Phase 2: RESEARCH (if needed)
+
+When the cache doesn't have an answer, the skill enters research mode. What "research" means varies by skill domain:
+
+| Skill | What It Researches |
+|-------|-------------------|
+| `/design` | Token inventory, component catalog, Figma patterns, new design tools, foundation changes |
+| `/ux` | UX principles, accessibility standards, wireframe patterns, usability research methods |
+| `/dev` | Implementation approaches, dependency options, API changes, security best practices |
+| `/qa` | Test strategies, coverage tools, regression patterns, CI pipeline configurations |
+| `/analytics` | Event naming conventions, GA4 API capabilities, dashboard templates, funnel patterns |
+| `/research` | Competitor apps, market data, industry trends, user behavior patterns |
+| `/cx` | Review sentiment patterns, feedback classification, root-cause dispatch rules |
+| `/marketing` | ASO strategies, campaign templates, content formats, distribution channels |
+| `/ops` | Monitoring tools, incident patterns, threshold configurations, alert strategies |
+| `/release` | App Store submission rules, TestFlight configs, versioning patterns, fastlane setups |
+| `/pm-workflow` | Phase gating patterns, work type selection, cross-skill orchestration strategies |
+
+Research sources (checked in order):
+1. **Shared layer** — read `.claude/shared/*.json` for existing project state
+2. **Integration adapters** — pull live data from connected MCPs/APIs via `.claude/integrations/`
+3. **Codebase** — read source files, configs, existing implementations
+4. **External** — web search, documentation, API docs (only if above sources insufficient)
+
+Research outputs a set of **decisions** — which tool to use, which approach to take, which pattern to follow. These decisions become the inputs to Phase 3.
+
+#### Phase 3: EXECUTE
+
+Do the actual work using:
+- Cached patterns from Phase 1 (if cache hit)
+- Research decisions from Phase 2 (if cache miss)
+- Anti-patterns to avoid (from cache or research)
+
+This is where the skill's sub-command logic runs — the part that was there before v4.0. The difference: it now operates with pre-loaded context instead of deriving everything from scratch.
+
+#### Phase 4: LEARN
+
+After execution completes, the skill extracts what it learned:
+
+1. **Patterns** — what approach worked, what tools were used, what decisions were made
+2. **Anti-patterns** — what was tried and failed, what was caught in review
+3. **Speedup instructions** — how to skip steps next time for a similar task
+4. Write/update L1 cache entry in `.claude/cache/{skill}/`
+5. If a pattern overlaps with another skill's L1 cache → flag for L2 promotion
+
+**The learning step is mandatory.** Every skill invocation — even a simple one — should check if it learned something new. The cache only gets smarter if skills write back.
+
+#### Why This Matters
+
+Without the internal lifecycle, skills are stateless functions — they produce the same output but never get faster. With it:
+
+- **1st invocation** — full research, full execution, cold cache (slow)
+- **2nd similar invocation** — cache hit on patterns, skip research, faster execution
+- **Nth similar invocation** — hot cache, anti-patterns loaded, execution focused only on what's novel
+
+This is the same principle as the hub's Phase 9 (Learn) feedback loop, but applied at the individual skill level rather than the feature lifecycle level.
+
+### 10.7 Skill Contract Update
+
+Every SKILL.md now includes these sections:
+
+1. **External Data Sources** — which adapters to check, when to pull live data
+2. **Cache Protocol** — Phase 1 (cache check) and Phase 4 (learn) behavior
+3. **Research Scope** — what this skill investigates during Phase 2 when cache misses
+4. **Cross-Skill Cache Promotion** — when a pattern should be promoted to `_shared/`
+
+---
+
+## 11. Full System Diagram (v4.0)
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║              EXTERNAL SERVICES (MCPs / APIs)                ║
+║  GA4 │ App Store Connect │ Sentry │ Firecrawl │ Axe │ ...  ║
+╚════════════════════════════╤═════════════════════════════════╝
+                             │
+                             ▼
+╔══════════════════════════════════════════════════════════════╗
+║              INTEGRATION ADAPTERS                           ║
+║              .claude/integrations/{service}/                ║
+║              adapter.md + schema.json + mapping.json        ║
+╚════════════════════════════╤═════════════════════════════════╝
+                             │ normalized JSON
+                             ▼
+╔══════════════════════════════════════════════════════════════╗
+║              AUTOMATIC VALIDATION GATE                      ║
+║              GREEN (≥95%) │ ORANGE (90-95%) │ RED (<90%)    ║
+║              Notify: receiving skill + /pm-workflow          ║
+║              Validation = automatic. Resolution = manual.   ║
+╚════════════════════════════╤═════════════════════════════════╝
+                             │
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+╔═══════════════╗ ╔══════════════╗ ╔═══════════════╗
+║ SHARED LAYER  ║ ║ CHANGE LOG   ║ ║ LEARNING      ║
+║ .claude/      ║ ║ change-      ║ ║ CACHE         ║
+║ shared/*.json ║ ║ log.json     ║ ║ .claude/      ║
+║ (11 files)    ║ ║ (always)     ║ ║ cache/        ║
+╚══════╤════════╝ ╚══════════════╝ ║ L1→L2→L3      ║
+       │                           ╚═══════╤═══════╝
+       │                                   │
+       └──────────────┬────────────────────┘
+                      │
+                      ▼
+╔══════════════════════════════════════════════════════════════╗
+║                    SKILLS LAYER                             ║
+║                                                             ║
+║              ┌──────────────────────┐                       ║
+║              │    /pm-workflow      │                       ║
+║              │    (HUB)            │                       ║
+║              └──┬──┬──┬──┬──┬──┬──┘                       ║
+║     ┌───────────┘  │  │  │  │  └───────────┐              ║
+║     ▼     ▼     ▼     ▼     ▼     ▼        ▼              ║
+║  /research /ux /design /dev /qa /analytics /release        ║
+║                                                             ║
+║     ▼        ▼        ▼                                    ║
+║   /cx    /marketing  /ops                                  ║
+║     │        │        │                                    ║
+║     └────────┴────┬───┘                                    ║
+║                   ▼                                        ║
+║           /pm-workflow (Phase 9: Learn → back to hub)      ║
+╚══════════════════════════════════════════════════════════════╝
+```

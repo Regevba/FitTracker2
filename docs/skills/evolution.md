@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-09 (v3.0 update)
-> **Status:** v3.0 shipped on `feature/home-today-screen-v2`
+> **Date:** 2026-04-10 (v4.1 update)
+> **Status:** v4.1 — reactive data mesh + learning cache + integration adapters + skill internal lifecycle
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -448,3 +448,112 @@ CLAUDE.md (rules)
 - **New features should use `work_type`** — selected during `/pm-workflow` initialization
 - **Existing features can be upgraded** by adding a `tasks[]` array to their state.json
 - **Dashboard auto-detects** — shows task views only for features with structured tasks
+
+---
+
+## 17. v4.0 — Reactive Data Mesh + Learning Cache (2026-04-10)
+
+### What Changed: v3.0 → v4.0
+
+| Aspect | v3.0 | v4.0 |
+|--------|------|------|
+| **Data origin** | Manual (conversation only) | Manual + external (MCPs, APIs) |
+| **Data entry** | Only during active phases | Any time, any entry point |
+| **Validation** | None (trust what skills write) | Automatic gate (GREEN/ORANGE/RED) |
+| **Repeated work** | Full re-derivation every time | Learning cache (L1/L2/L3) accelerates |
+| **External services** | 4 (GitHub, Notion, Figma, Vercel) | 10+ (+ GA4, Sentry, ASC, Firecrawl, Axe, Security Audit) |
+| **Skill contract** | Read shared → work → write shared | Read shared + cache → work → write shared + cache |
+
+### New Architectural Layers
+
+**1. Integration Adapter Layer** (`.claude/integrations/{service}/`)
+- Each external service gets: `adapter.md` (how to call), `schema.json` (response shape), `mapping.json` (field normalization)
+- Isolates MCP format changes from skills — update one mapping, not every consumer
+- 6 adapters shipped: ga4, app-store-connect, sentry, firecrawl, axe, security-audit
+
+**2. Automatic Validation Gate**
+- All incoming data cross-referenced against existing shared layer state
+- Score = consistent fields / total comparable fields
+- GREEN (>= 95%): write + notify. ORANGE (90-95%): write + advisory. RED (< 90%): block + alert.
+- Two parties always notified: receiving skill + /pm-workflow
+- Validation is automatic. Resolution is always manual.
+
+**3. Learning Cache** (`.claude/cache/`)
+- L1 (per-skill): patterns from prior executions. Hot.
+- L2 (cross-skill, `_shared/`): patterns shared by 2+ skills. Warm.
+- L3 (project-wide, `_project/`): architectural conventions. Cold.
+- Cache entries: task_signature, learned_patterns, anti_patterns, speedup_instructions
+- Staleness via SHA256 hashes of source files
+- Demonstrated ~65% speedup by 4th similar task
+
+### Core Principle: Reactive Data Mesh
+
+> "Any entry point, any time, data flows."
+
+- MCPs are open ports — data flows the moment they connect
+- Any single skill invocation can trigger system-wide enrichment
+- Data enriches retroactively — existing features get smarter
+- Hub orchestrates but doesn't gatekeep data flow
+
+### File Tree (new in v4.0)
+
+```text
+.claude/
+├── cache/                    ← NEW: Learning cache
+│   ├── _index.json           ← master schema + lifecycle
+│   ├── {skill}/              ← L1: per-skill caches (11 dirs)
+│   │   ├── _index.json       ← skill-level index
+│   │   └── {pattern}.json    ← cached patterns
+│   ├── _shared/              ← L2: cross-skill (2+ skills)
+│   └── _project/             ← L3: project-wide (5+ skills)
+├── integrations/             ← NEW: Adapter layer
+│   ├── _template/            ← boilerplate for new adapters
+│   ├── ga4/                  ← GA4 Analytics MCP
+│   ├── app-store-connect/    ← App Store Connect MCP
+│   ├── sentry/               ← Sentry Error Tracking MCP
+│   ├── firecrawl/            ← Web Scraping MCP
+│   ├── axe/                  ← Accessibility Audit MCP
+│   └── security-audit/       ← Dependency Security MCP
+├── shared/                   ← UPDATED: +validation_gate config
+│   ├── change-log.json       ← v2.0: +validation_log, +validation_entry_schema
+│   └── skill-routing.json    ← v2.0: +integration_sources, +validation_gate
+└── skills/                   ← UPDATED: each SKILL.md gets 4 new sections
+    └── {skill}/SKILL.md      ← +External Data Sources, +Validation Gate, +Research Scope, +Cache Protocol
+```
+
+---
+
+## 18. v4.1 — Skill Internal Lifecycle (2026-04-10)
+
+### What Changed: v4.0 → v4.1
+
+v4.0 gave skills external data sources and a cache. v4.1 formalizes how skills USE them internally — every skill now mirrors the hub's structure with a 4-phase internal lifecycle.
+
+### The 4-Phase Skill Internal Lifecycle
+
+```text
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ 1. CACHE │───▶│2. RESEARCH│───▶│3. EXECUTE│───▶│ 4. LEARN │
+│  CHECK   │    │ (if miss)│    │          │    │          │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘
+```
+
+1. **Phase 1 — Cache Check:** Read L1/L2/L3 caches for matching task signature. If hit → skip to Phase 3 with cached patterns.
+2. **Phase 2 — Research (if needed):** When cache misses, investigate tools, APIs, MCPs, methods, patterns. Each skill has a domain-specific research scope (5 dimensions + source priority).
+3. **Phase 3 — Execute:** Do the work using cached + researched knowledge.
+4. **Phase 4 — Learn:** Extract patterns + anti-patterns, write to L1 cache, flag cross-skill patterns for L2 promotion.
+
+### Why This Matters
+
+Without the lifecycle, skills are stateless — they produce the same output but never get faster. With it:
+- 1st invocation: full research, cold cache (slow)
+- 2nd similar invocation: cache hit, skip research (faster)
+- Nth similar invocation: hot cache + anti-patterns, only novel work needed
+
+### SKILL.md Contract Update
+
+Every SKILL.md now has 4 sections (was 3 in v4.0):
+1. **External Data Sources** — adapters + validation gate
+2. **Research Scope (Phase 2)** — 5 domain-specific research dimensions + source priority
+3. **Cache Protocol** — Phase 1 (Cache Check) + Phase 4 (Learn) behavior
+4. **Cross-Skill Cache Promotion** — when to promote to L2 (hub only)

@@ -59,3 +59,34 @@ Manages everything outbound: ASO, paid campaigns, organic content, email drips, 
 - [cx.md](cx.md), [research.md](research.md), [analytics.md](analytics.md) — upstream/downstream partners
 - [pm-workflow.md](pm-workflow.md)
 - [`.claude/skills/marketing/SKILL.md`](../../.claude/skills/marketing/SKILL.md)
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| ayrshare | REST (Tier 2) | Social media publishing, scheduling, and cross-platform post management |
+| app-store-connect | MCP (shared with `/cx`) | ASO metadata, keyword rankings, conversion rate data, App Store creative assets |
+| firecrawl | MCP (shared with `/research`) | Competitor page scraping, ASO keyword research, content trend analysis |
+
+**Adapter config:** `.claude/integrations/ayrshare/`, `.claude/integrations/app-store-connect/`, and `.claude/integrations/firecrawl/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+### Learning Cache
+
+**Location:** `.claude/cache/marketing/`
+
+Caches: ASO patterns (keyword clusters, title/subtitle formulas that convert), campaign templates (UTM structures, channel mix by goal), content strategies (topic clusters, posting cadences that drove installs).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

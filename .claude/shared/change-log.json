@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-06T15:00:00Z",
+  "version": "2.0",
+  "updated": "2026-04-10T00:00:00Z",
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [],
   "notification_rules": {
@@ -8,6 +8,33 @@
     "ui_change": ["qa", "cx", "ops", "analytics", "design"],
     "analytics_change": ["qa", "cx", "analytics"],
     "infra_change": ["qa", "ops", "dev"],
-    "docs_change": ["cx", "marketing"]
+    "docs_change": ["cx", "marketing"],
+    "data_ingestion": ["pm-workflow"],
+    "validation_alert_red": ["pm-workflow"],
+    "validation_alert_orange": ["pm-workflow"]
+  },
+  "validation_log": [],
+  "validation_entry_schema": {
+    "timestamp": "ISO 8601",
+    "source": "integration adapter name (e.g., sentry-mcp, ga4-mcp)",
+    "receiving_skill": "skill that triggered the data flow",
+    "validation_score": "0.0 to 1.0",
+    "alert_level": "green | orange | red",
+    "action_taken": "written | written_with_advisory | blocked",
+    "fields_checked": "integer",
+    "fields_consistent": "integer",
+    "discrepancies": [
+      {
+        "shared_file": "which .claude/shared/*.json file",
+        "field": "specific field path",
+        "existing_value": "what was there",
+        "incoming_value": "what the new source claims",
+        "existing_data_type": "measured | estimated",
+        "incoming_data_type": "measured | estimated",
+        "resolution": "replaced_estimate | conflict_flagged | gap_filled | blocked_for_review",
+        "affected_skills": ["list of skills that read this field"]
+      }
+    ],
+    "notifications_sent_to": ["receiving_skill", "pm-workflow"]
   }
 }
