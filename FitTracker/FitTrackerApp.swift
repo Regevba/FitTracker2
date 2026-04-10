@@ -58,7 +58,19 @@ struct FitTrackerApp: App {
         return AIOrchestrator(
             engineClient:    client,
             foundationModel: foundationModel,
-            snapshot:        { LocalUserSnapshot() }
+            snapshot: {
+                // Fallback snapshot — used when process(segment:) is called
+                // without an explicit overrideSnapshot. Returns empty snapshot
+                // rather than crashing. The primary path (processAll in
+                // onChange(of: signIn.activeSession)) always passes
+                // overrideSnapshot via buildSnapshot(), so this fallback
+                // should rarely execute. If it does, the AI engine will
+                // produce localFallback recommendations (safe degradation).
+                #if DEBUG
+                print("[AIOrchestrator] WARNING: Using empty fallback snapshot — caller should pass overrideSnapshot")
+                #endif
+                return LocalUserSnapshot()
+            }
         )
     }()
 

@@ -141,9 +141,13 @@ enum ReadinessEngine {
     }
 
     // MARK: – Component 1: HRV (35% base)
-    // Scientific basis: Plews et al. 2013 — ln(rMSSD) weekly mean + CV
-    // as dual monitoring approach. Deviation from personal baseline is
-    // more meaningful than absolute value. PMC8507742 meta-analysis.
+    // Scientific basis: HealthKit provides SDNN (heartRateVariabilitySDNN).
+    // We apply ln() transform for normality (Shaffer & Ginsberg 2017,
+    // PMC5624990) and compare deviation from personal baseline.
+    // Note: Plews et al. 2013 recommends ln(rMSSD) which HealthKit does
+    // not expose directly. SDNN is the available proxy — less specific to
+    // parasympathetic tone but still validated for readiness monitoring
+    // (PMC8507742 meta-analysis uses both SDNN and rMSSD).
 
     static func hrvComponent(
         todayHRV: Double?,
@@ -153,13 +157,15 @@ enum ReadinessEngine {
     ) -> Double? {
         guard let todayHRV, todayHRV > 0 else { return nil }
 
-        // ln(SDNN) — HealthKit provides SDNN in ms
         let lnToday = log(todayHRV)
 
         if layer == 0 {
-            // Layer 0: no baseline yet, use absolute thresholds
-            // Population reference: ln(ms) of 3.0-4.5 is typical range
-            return min(100, max(0, (lnToday / 4.0) * 100))
+            // Layer 0: no baseline yet, use absolute thresholds.
+            // Population SDNN range: ~20-80ms for adults.
+            // ln(20)≈3.0, ln(50)≈3.9, ln(80)≈4.4.
+            // Map ln range [2.5, 4.5] → score [0, 100].
+            let score = (lnToday - 2.5) / 2.0 * 100
+            return min(100, max(0, score))
         }
 
         // Layer 1+: compare to 7-day EWMA baseline
@@ -168,19 +174,24 @@ enum ReadinessEngine {
         ) { $0.effectiveHRV }
 
         guard !baselineValues.isEmpty else {
-            return min(100, max(0, (lnToday / 4.0) * 100))
+            let score = (lnToday - 2.5) / 2.0 * 100
+            return min(100, max(0, score))
         }
 
         // EWMA with lambda = 2/(N+1) where N=7
         let ewma = exponentialWeightedAverage(baselineValues, lambda: 2.0 / 8.0)
         let lnBaseline = log(max(1, ewma))
 
-        // Score: 50 at baseline, scales linearly
-        // +50% above baseline → 100, -50% below → 0
-        let ratio = lnToday / lnBaseline
-        let score = min(100, max(0, ratio * 50))
-
-        return score
+        // Score: 50 at baseline. ±30% deviation in ln-space maps to 0-100.
+        // Daily HRV rarely deviates more than ~30% from personal baseline
+        // in ln-space (Plews et al. 2013). This gives the full score range
+        // physiological meaning:
+        //   lnToday == lnBaseline       → score = 50
+        //   lnToday == lnBaseline * 1.3 → score = 100
+        //   lnToday == lnBaseline * 0.7 → score = 0
+        let deviation = (lnToday - lnBaseline) / lnBaseline  // fractional deviation
+        let score = 50 + (deviation / 0.3) * 50              // ±30% maps to ±50 points
+        return min(100, max(0, score))
     }
 
     // MARK: – Component 2: Sleep Quality (25% base)
@@ -236,34 +247,48 @@ enum ReadinessEngine {
     ) -> Double? {
         let cal = Calendar.current
 
-        // Compute daily training loads for past 28 days
-        var dailyLoads: [Double] = []
-        for dayOffset in (1...28).reversed() {
-            guard let targetDate = cal.date(byAdding: .day, value: -dayOffset, to: date) else {
-                dailyLoads.append(0)
-                continue
-            }
-            let dayLog = logs.first { cal.isDate($0.date, inSameDayAs: targetDate) }
-            dailyLoads.append(sessionLoad(for: dayLog))
+        // Build daily training loads from ALL available history (not just 28 days).
+        // Williams et al. 2017 specifies chronic EWMA should use full history
+        // so the baseline is not biased by the oldest value in a truncated window.
+        // Acute window is still 7 days; chronic uses all available data.
+        let sortedLogs = logs
+            .filter { $0.date < cal.startOfDay(for: date) }
+            .sorted { $0.date < $1.date }
+
+        // Need meaningful training history — at least 7 days with some data
+        guard sortedLogs.count >= 7 else { return nil }
+
+        // Compute daily loads for the full history
+        var allDailyLoads: [Double] = []
+        for log in sortedLogs {
+            allDailyLoads.append(sessionLoad(for: log))
         }
 
-        // Need at least 7 days for acute load
-        let nonZeroDays = dailyLoads.suffix(7).filter { $0 > 0 }.count
-        guard nonZeroDays >= 2 else { return nil }
+        // Acute: last 7 days only. Need at least 1 non-zero day to be meaningful.
+        let acuteSlice = Array(allDailyLoads.suffix(7))
+        let hasRecentTraining = acuteSlice.contains { $0 > 0 }
 
-        // EWMA calculation
-        let acuteLambda = 2.0 / 8.0   // N=7
+        // If no training at all in the last 7 days but history exists,
+        // return a low (deloading) score rather than nil — user is on a rest week.
+        if !hasRecentTraining && allDailyLoads.contains(where: { $0 > 0 }) {
+            return 45.0  // Deloading — not nil, just below optimal
+        }
+        guard hasRecentTraining else { return nil }
+
+        // EWMA calculation — seed chronic with mean of all history per Williams et al.
+        let acuteLambda = 2.0 / 8.0    // N=7
         let chronicLambda = 2.0 / 29.0 // N=28
 
-        let acuteEWMA = exponentialWeightedAverage(
-            Array(dailyLoads.suffix(7)), lambda: acuteLambda
-        )
-        let chronicEWMA = exponentialWeightedAverage(
-            dailyLoads, lambda: chronicLambda
+        let acuteEWMA = exponentialWeightedAverage(acuteSlice, lambda: acuteLambda)
+
+        // Seed chronic EWMA with the mean of all loads (not first value)
+        // to avoid biasing toward the oldest data point.
+        let allMean = allDailyLoads.reduce(0, +) / Double(allDailyLoads.count)
+        let chronicEWMA = exponentialWeightedAverageSeeded(
+            allDailyLoads, lambda: chronicLambda, seed: allMean
         )
 
         guard chronicEWMA > 0 else {
-            // No chronic load — user just started, score neutral
             return 50.0
         }
 
@@ -489,6 +514,21 @@ enum ReadinessEngine {
         guard let first = values.first else { return 0 }
         var ewma = first
         for value in values.dropFirst() {
+            ewma = value * lambda + ewma * (1 - lambda)
+        }
+        return ewma
+    }
+
+    /// EWMA with explicit seed value (not seeded from first data point).
+    /// Used for chronic load where Williams et al. recommend seeding with
+    /// the mean of available prior data to avoid biasing toward the oldest value.
+    private static func exponentialWeightedAverageSeeded(
+        _ values: [Double],
+        lambda: Double,
+        seed: Double
+    ) -> Double {
+        var ewma = seed
+        for value in values {
             ewma = value * lambda + ewma * (1 - lambda)
         }
         return ewma
