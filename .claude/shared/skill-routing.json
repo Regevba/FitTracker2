@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-06T15:30:00Z",
+  "version": "2.0",
+  "updated": "2026-04-10T00:00:00Z",
   "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks.",
   "routing_rules": {
     "ui": { "primary": "dev", "secondary": ["design"] },
@@ -16,6 +16,76 @@
     "security": { "primary": "qa", "secondary": ["ops", "dev"] },
     "ux-research": { "primary": "research", "secondary": ["design"] },
     "release": { "primary": "release", "secondary": [] }
+  },
+  "integration_sources": {
+    "analytics": {
+      "adapters": ["ga4", "mixpanel"],
+      "shared_writes": ["metric-status.json"],
+      "shared_reads": ["metric-status.json", "feature-registry.json"]
+    },
+    "cx": {
+      "adapters": ["app-store-connect", "sentry"],
+      "shared_writes": ["cx-signals.json"],
+      "shared_reads": ["cx-signals.json", "feature-registry.json"]
+    },
+    "design": {
+      "adapters": ["figma"],
+      "shared_writes": ["design-system.json"],
+      "shared_reads": ["design-system.json", "context.json"]
+    },
+    "dev": {
+      "adapters": ["github", "security-audit"],
+      "shared_writes": ["task-queue.json"],
+      "shared_reads": ["task-queue.json", "health-status.json"]
+    },
+    "marketing": {
+      "adapters": ["ayrshare"],
+      "shared_writes": ["campaign-tracker.json"],
+      "shared_reads": ["campaign-tracker.json", "cx-signals.json"]
+    },
+    "ops": {
+      "adapters": ["sentry", "datadog"],
+      "shared_writes": ["health-status.json"],
+      "shared_reads": ["health-status.json", "test-coverage.json"]
+    },
+    "pm-workflow": {
+      "adapters": ["linear", "notion"],
+      "shared_writes": ["feature-registry.json", "task-queue.json", "change-log.json"],
+      "shared_reads": ["feature-registry.json", "skill-routing.json", "task-queue.json"]
+    },
+    "qa": {
+      "adapters": ["xcode", "codecov"],
+      "shared_writes": ["test-coverage.json", "health-status.json"],
+      "shared_reads": ["test-coverage.json", "health-status.json"]
+    },
+    "release": {
+      "adapters": ["app-store-connect", "fastlane"],
+      "shared_writes": ["feature-registry.json"],
+      "shared_reads": ["health-status.json", "feature-registry.json"]
+    },
+    "research": {
+      "adapters": ["firecrawl", "apify"],
+      "shared_writes": ["context.json", "feature-registry.json"],
+      "shared_reads": ["context.json", "feature-registry.json"]
+    },
+    "ux": {
+      "adapters": ["axe"],
+      "shared_writes": ["design-system.json"],
+      "shared_reads": ["design-system.json", "context.json"]
+    }
+  },
+  "validation_gate": {
+    "enabled": true,
+    "thresholds": {
+      "green": 0.95,
+      "orange": 0.90,
+      "red_below": 0.90
+    },
+    "numeric_tolerance": 0.05,
+    "auto_write": ["green", "orange"],
+    "requires_manual_resolution": ["red"],
+    "always_notify": ["pm-workflow"],
+    "notify_receiving_skill": true
   },
   "lifecycles": {
     "feature": {

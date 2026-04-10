@@ -154,3 +154,44 @@ The Feedback Loop:
 - `.claude/shared/cx-signals.json` — CX data store (includes keyword patterns and root cause dispatch rules)
 - `.claude/shared/feature-registry.json` — feature pain points and status
 - `.claude/shared/metric-status.json` — quantitative metrics for context
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| app-store-connect | MCP | Real App Store reviews, ratings, TestFlight feedback, download stats |
+| sentry | MCP | Crash reports feeding into user-impact analysis, error-driven complaints |
+
+**Adapter location:** `.claude/integrations/{app-store-connect,sentry}/`
+**Shared layer writes:** `cx-signals.json`
+
+### Validation Gate
+
+All incoming CX data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /cx + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /cx + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a CX task, research:
+
+1. **Review patterns** — sentiment classification rules, keyword detection thresholds, review volume baselines
+2. **Root-cause classification** — messaging vs UX vs functionality vs expectation mismatch dispatch rules
+3. **Feedback analysis** — NPS survey design, response rate optimization, promoter/detractor driver analysis
+4. **Tools & APIs** — App Store Connect API capabilities (via asc adapter), Sentry crash correlation, review aggregation methods
+5. **Competitive CX** — how competitors handle feedback, response templates, public roadmap formats
+
+Sources checked in order: L1 cache → shared layer (cx-signals.json) → integration adapters (app-store-connect, sentry) → codebase → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/cx/_index.json`. Check for cached review analysis patterns, sentiment classification rules, root-cause dispatch templates from prior features.
+
+**Phase 4 (Learn):** Extract new patterns (review themes, sentiment signals, confusion indicators, testimonial formats). Write/update L1 cache. If sentiment patterns overlap with /marketing cache, flag for L2 promotion.
+
+**Cache location:** `.claude/cache/cx/`

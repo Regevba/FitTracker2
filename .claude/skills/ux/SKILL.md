@@ -361,3 +361,43 @@ The full Phase 3 handoff differs by work subtype:
 | `.claude/features/{feature}/ux-research.md` | Per-feature UX research (from `/ux research`) |
 | `.claude/features/{feature}/ux-spec.md` | Per-feature UX specification (from `/ux spec`) |
 | `.claude/features/{feature}/v2-audit-report.md` | Per-feature v2 gap analysis (from `/ux audit` in v2 mode) |
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| axe | MCP | Live accessibility audits, WCAG compliance scores, violation details |
+
+**Adapter location:** `.claude/integrations/axe/`
+**Shared layer writes:** `design-system.json`
+
+### Validation Gate
+
+All incoming a11y data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /ux + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /ux + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a UX task, research:
+
+1. **UX principles** — which of the 13 ux-foundations.md principles apply, how they've been applied before
+2. **Accessibility** — WCAG AA requirements, VoiceOver patterns, Dynamic Type compliance, axe audit results
+3. **Spec patterns** — how similar features were specced, wireframe conventions, principle application tables
+4. **Tools & APIs** — Axe MCP for live a11y audits, Figma MCP for design context, platform HIG references
+5. **Interaction patterns** — gesture conventions, navigation patterns, state coverage (5 states), motion tokens
+
+Sources checked in order: L1 cache → L2 shared (ux-foundations-map) → shared layer (design-system.json, context.json) → integration adapters (axe) → codebase (ux-foundations.md) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/ux/_index.json`. Check for cached UX spec patterns, wireframe templates, a11y audit outcomes from prior features. Also read `.claude/cache/_shared/ux-foundations-map.json` for the cross-skill UX foundations application playbook.
+
+**Phase 4 (Learn):** Extract new patterns (spec structure, principle application, a11y findings). Write/update L1 cache. UX foundations patterns shared with /design should be promoted to L2.
+
+**Cache location:** `.claude/cache/ux/`

@@ -143,3 +143,43 @@ Run WCAG AA accessibility audit.
 - `docs/design-system/feature-development-gateway.md` — 7-stage workflow
 - `docs/design-system/design-system-governance.md` — governance rules
 - `docs/design-system/feature-design-checklist.md` — per-feature checklist
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| figma | MCP | Design context, screenshots, component metadata, code connect mappings |
+
+**Adapter location:** Already connected via Figma MCP in settings.
+**Shared layer writes:** `design-system.json`
+
+### Validation Gate
+
+All incoming design data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /design + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /design + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a design task, research:
+
+1. **Token inventory** — current AppTheme.swift tokens, which semantic token covers the use case, whether a new token is needed
+2. **Component catalog** — existing AppComponents.swift components, whether to reuse or extend, Figma component parity
+3. **Design foundations** — ux-foundations.md principles, feature-memory.md evolution queue, design system governance rules
+4. **Tools & integrations** — Figma MCP capabilities, code connect mappings, Style Dictionary pipeline
+5. **Visual patterns** — platform HIG updates, new SwiftUI APIs, accessibility compliance methods (WCAG AA)
+
+Sources checked in order: L1 cache → L2 shared (ux-foundations-map, design-system-decisions) → shared layer (design-system.json) → Figma MCP → codebase (AppTheme.swift, AppComponents.swift) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/design/_index.json`. Check for cached token mappings, component selections, v2 refactor patterns. Also read `.claude/cache/_shared/ux-foundations-map.json` and `.claude/cache/_shared/design-system-decisions.json` for cross-skill patterns.
+
+**Phase 4 (Learn):** Extract new patterns (token mapping decisions, component reuse, refactor methodology). Write/update L1 cache. Design system patterns shared with /ux should be promoted to L2.
+
+**Cache location:** `.claude/cache/design/`

@@ -100,3 +100,44 @@ App Store submission checklist.
 - `CHANGELOG.md` — release history
 - `.github/workflows/ci.yml` — CI pipeline
 - `.claude/shared/feature-registry.json` — feature tracking
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| app-store-connect | MCP | App versions, TestFlight builds, submission status, build processing |
+| fastlane | MCP | Automated build/sign/upload pipeline, certificate management |
+
+**Adapter location:** `.claude/integrations/app-store-connect/`
+**Shared layer writes:** `feature-registry.json`
+
+### Validation Gate
+
+All incoming release data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /release + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /release + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a release task, research:
+
+1. **Version strategy** — current version, what's changed since last release, semantic versioning rules
+2. **Release checklist** — CI gates, feature flag status, migration requirements, breaking changes
+3. **App Store requirements** — current review guidelines, metadata requirements, screenshot specs
+4. **Tools & APIs** — App Store Connect submission API, Fastlane lane configurations, TestFlight distribution
+5. **Rollback planning** — phased rollout percentage, crash monitoring thresholds, rollback triggers
+
+Sources checked in order: L1 cache → shared layer (feature-registry.json, health-status.json) → integration adapters (app-store-connect, fastlane) → codebase (CHANGELOG.md, xcodeproj) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/release/_index.json`. Check for cached release checklists, version bump patterns, TestFlight distribution lists from prior releases.
+
+**Phase 4 (Learn):** Extract new patterns (release timing, submission gotchas, review turnaround). Write/update L1 cache.
+
+**Cache location:** `.claude/cache/release/`

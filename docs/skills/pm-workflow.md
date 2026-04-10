@@ -193,3 +193,35 @@ It's the only skill the user normally types directly. Everything else is reachab
 - [ux.md](ux.md), [design.md](design.md), [dev.md](dev.md) — the three skills dispatched most during Phase 3-4
 - [`CLAUDE.md`](../../CLAUDE.md) — project-wide rules
 - [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md) — the agent-facing prompt
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| linear | MCP (official) | Issue tracking, sprint management, cycle progress, team velocity |
+| notion | MCP (already connected) | Feature page status sync, phase field updates, documentation workspace |
+
+**Adapter config:** `.claude/integrations/linear/` and `.claude/integrations/notion/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+**Special:** The hub receives ALL validation gate notifications from every spoke skill. Gate failures from any skill (analytics, QA, design compliance) are surfaced to the user via pm-workflow before phase advance is permitted.
+
+### Learning Cache
+
+**Location:** `.claude/cache/pm-workflow/`
+
+Caches: orchestration patterns (phase transition sequences that succeeded/failed per work type), phase transition decisions (user overrides, skip reasons, rollback triggers).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

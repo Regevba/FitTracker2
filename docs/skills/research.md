@@ -83,3 +83,33 @@ FEATURE-SPECIFIC
 - [marketing.md](marketing.md), [ux.md](ux.md), [cx.md](cx.md) — consumers of research output
 - [pm-workflow.md](pm-workflow.md)
 - [`.claude/skills/research/SKILL.md`](../../.claude/skills/research/SKILL.md)
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| firecrawl | MCP (`firecrawl-mcp`) | Web scraping, competitor page extraction, App Store listing analysis, content crawling |
+| apify | MCP (20k+ actors) | Large-scale web data collection, social listening, app review scraping, market signal harvesting |
+
+**Adapter config:** `.claude/integrations/firecrawl/` and `.claude/integrations/apify/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+### Learning Cache
+
+**Location:** `.claude/cache/research/`
+
+Caches: competitor analysis templates (structured teardown formats reused across features), market signal patterns (recurring themes from fitness app reviews and trends).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

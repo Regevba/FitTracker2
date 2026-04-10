@@ -2,7 +2,7 @@
 
 **Goal:** Give every domain of the product lifecycle its own first-class skill, so product management scales past a monolithic workflow without losing the connective tissue between domains.
 
-**Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 10 spokes + 8 shared data files. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
+**Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 11 spokes + 11 shared data files + 6 integration adapters + 3-level learning cache. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
 
 **Where to read more:** `docs/skills/{name}.md` for deep dives on each skill. The `SKILL.md` files under `.claude/skills/{name}/` are the agent-facing prompts the harness executes; the `docs/skills/` folder is the human-facing reference.
 
@@ -30,10 +30,12 @@
 - 2026-04-07 — `/ux` added (PR #59), split from `/design` to own the "what & why" layer. Pilot run: Onboarding v2 UX Foundations alignment pass
 - 2026-04-08 — screen audit research mode (`/ux audit`), v2 refactor subtype, sub-feature queue pattern
 - 2026-04-09 — v3.0: external integrations (Notion MCP, Figma MCP, Vercel), `/ux wireframe`, `/design build`, parallel subagent execution, 5 features shipped through the full lifecycle
+- 2026-04-10 — v4.0: reactive data mesh, integration adapter layer (6 adapters), automatic validation gate (GREEN/ORANGE/RED), L1/L2/L3 learning cache, per-skill cache + external data source sections in all SKILL.md files
+- 2026-04-10 — v4.1: Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). Every skill mirrors the hub internally — 4-phase lifecycle with domain-specific research scope. Skills learn from prior executions and get faster over time.
 
 ---
 
-## The 8 shared data files
+## The 11 shared data files
 
 Located under `.claude/shared/`:
 
@@ -47,6 +49,9 @@ Located under `.claude/shared/`:
 | `cx-signals.json` | Reviews, NPS, sentiment, keyword patterns | `/cx` |
 | `campaign-tracker.json` | Campaigns, UTM convention, channels, attribution | `/marketing` |
 | `health-status.json` | Infrastructure services, CI, incidents, cost | `/ops` |
+| `skill-routing.json` | Task→skill mapping + integration sources + validation gate config | `/pm-workflow` |
+| `task-queue.json` | Pending work items and priority queue | `/pm-workflow` |
+| `change-log.json` | Audit trail + validation log entries | `/pm-workflow` |
 
 Every skill reads `context.json` on startup. Most skills write to one primary file and read from the others for context.
 
@@ -54,12 +59,51 @@ Every skill reads `context.json` on startup. Most skills write to one primary fi
 
 ## External integrations
 
+### Existing (v3.0)
+
 | Integration | Protocol | Direction | What it does |
 | --- | --- | --- | --- |
 | **GitHub** | `gh` CLI | Bidirectional | Issue labels, PR management, CI status, milestone tracking |
 | **Notion MCP** | Model Context Protocol | Bidirectional | Project board sync — phase transitions push status updates automatically |
 | **Figma MCP** | Model Context Protocol | Read + Write | Design context retrieval, screenshot capture, code connect, design-to-code builds |
 | **Vercel** | Deploy preview | Read | Preview URLs attached to PRs for visual review |
+
+### New (v4.0) — Integration Adapters
+
+Each adapter lives in `.claude/integrations/{service}/` with `adapter.md` + `schema.json` + `mapping.json`. All data passes through the **automatic validation gate** before entering the shared layer.
+
+| Adapter | MCP Package | Consuming Skills | Shared Layer Target |
+| --- | --- | --- | --- |
+| **GA4** | `mcp-server-ga4` | /analytics, /pm-workflow, /cx | metric-status.json |
+| **App Store Connect** | `asc-mcp` (208 tools) | /cx, /release, /marketing | cx-signals.json, feature-registry.json |
+| **Sentry** | `mcp.sentry.dev` | /ops, /cx, /qa | health-status.json, cx-signals.json |
+| **Firecrawl** | `firecrawl-mcp` | /research, /marketing | context.json, feature-registry.json |
+| **Axe** | `@anthropic-ai/mcp-axe` | /ux, /qa, /design | design-system.json, test-coverage.json |
+| **Security Audit** | `mcp-security-audit` | /dev, /ops, /qa | health-status.json, test-coverage.json |
+
+### Validation Gate
+
+All incoming external data is automatically cross-referenced against existing shared layer state:
+
+- **GREEN (>= 95%)** — Data is clean. Write + notify receiving skill and hub.
+- **ORANGE (90-95%)** — Minor discrepancies. Write + advisory. Review when convenient.
+- **RED (< 90%)** — Significant contradictions. DO NOT write. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+---
+
+## Learning Cache
+
+Located under `.claude/cache/`:
+
+| Level | Location | Scope | Promotion |
+| --- | --- | --- | --- |
+| **L1** | `.claude/cache/{skill}/` | Per-skill patterns and decisions | Default home |
+| **L2** | `.claude/cache/_shared/` | Cross-skill patterns (2+ skills share) | Promoted from L1 |
+| **L3** | `.claude/cache/_project/` | Project-wide architectural conventions | Promoted from L2 (5+ skills) |
+
+Cache entries store: task signatures, learned patterns, anti-patterns, and speedup instructions. Staleness is tracked via SHA256 hashes of source files. Demonstrated ~65% speedup by 4th similar task (e.g., applying UX foundations across screens).
 
 ---
 
@@ -201,13 +245,17 @@ The hub never does inline work — it reads state, decides which skill to dispat
 4. **Every skill writes to at most one shared file.** Reads from many.
 5. **No skill auto-advances.** User approves every phase transition.
 6. **Change broadcasts.** When a work item completes, `/pm-workflow` writes to `change-log.json` and notifies downstream skills so the system stays aware.
+7. **Every skill follows the 4-phase internal lifecycle.** Cache Check → Research (if miss) → Execute → Learn. Skills mirror the hub's structure internally.
+8. **Every skill declares its external data sources.** Adapters, shared layer targets, and validation gate behavior documented in each SKILL.md.
+9. **Every skill has a domain-specific research scope.** 5 research dimensions + source priority order. When cache misses, the skill knows exactly what to investigate.
+10. **Data flows reactively.** Any entry point, any time. A single skill invocation can ripple through the entire shared layer.
 
 ---
 
 ## Related documents
 
 - [`architecture.md`](architecture.md) — full ecosystem deep-dive (~1400 lines). Covers the hub-and-spoke architecture, shared data layer, per-skill sections, connection map, feature review, and a merged-in gap analysis snapshot from 2026-04-04 with current deltas.
-- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → v3.0 (external integrations + screen audits + parallel execution). Useful context for understanding why the current architecture looks the way it does.
+- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → v3.0 (external integrations + screen audits + parallel execution) → v4.1 (reactive data mesh + learning cache + validation gate + skill internal lifecycle). Useful context for understanding why the current architecture looks the way it does.
 - [`pm-workflow.md`](pm-workflow.md) — hub skill deep-dive
 - [`.claude/skills/{name}/SKILL.md`](../../.claude/skills/) — agent-facing prompts the harness executes when a skill is invoked
 - [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references

@@ -216,9 +216,12 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 ### Skills ecosystem
 - Skills one-pager: `docs/skills/README.md`
 - Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
-- Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → current)
+- Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → v3.0 → v4.0 → v4.1)
 - Per-skill docs: `docs/skills/{name}.md` (pm-workflow, ux, design, dev, qa, analytics, cx, marketing, research, ops, release)
 - Agent-facing prompts: `.claude/skills/{name}/SKILL.md`
+- Integration adapters: `.claude/integrations/{service}/` (ga4, app-store-connect, sentry, firecrawl, axe, security-audit)
+- Learning cache: `.claude/cache/` (L1 per-skill, L2 `_shared/`, L3 `_project/`)
+- Validation gate config: `.claude/shared/skill-routing.json` (`validation_gate` section)
 
 ### Design system
 - UX foundations: `docs/design-system/ux-foundations.md` (13 principles)

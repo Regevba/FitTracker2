@@ -87,3 +87,46 @@ These must NEVER degrade:
 - `FitTracker/Services/Analytics/AnalyticsProvider.swift` — analytics event definitions
 - `docs/product/analytics-taxonomy.csv` — event taxonomy
 - `CLAUDE.md` — quality guardrails
+
+---
+
+## External Data Sources
+
+| Adapter | Type | What It Provides |
+|---------|------|-----------------|
+| xcode | MCP | Build results, test execution, coverage data from xcresult |
+| codecov | REST | Historical coverage trends, diff coverage analysis |
+| axe | MCP | Accessibility test results (shared with /ux) |
+| sentry | MCP | Crash data for regression testing (shared with /ops) |
+
+**Adapter location:** `.claude/integrations/{axe,sentry,security-audit}/`
+**Shared layer writes:** `test-coverage.json`, `health-status.json`
+
+### Validation Gate
+
+All incoming test/quality data passes through automatic validation before entering the shared layer:
+- Score >= 95% GREEN: Data is clean. Write to shared layer. Notify /qa + /pm-workflow.
+- Score 90-95% ORANGE: Minor discrepancies. Write + advisory. Review when convenient.
+- Score < 90% RED: DO NOT write. Alert /qa + /pm-workflow. User must resolve.
+
+Validation is automatic. Resolution is always manual.
+
+## Research Scope (Phase 2)
+
+When the cache doesn't have an answer for a QA task, research:
+
+1. **Test strategy** — what test types suit this feature (unit, analytics, UI state, integration), expected coverage
+2. **Existing patterns** — how similar features were tested, XCTest conventions, mock vs real data approaches
+3. **Coverage baselines** — current test counts, gap analysis, regression risk areas
+4. **Tools & APIs** — Xcode test runner configs, xcresult parsing, Codecov integration, axe a11y scanning
+5. **Quality gates** — CI pipeline checks (tokens-check, build, test), system guardrails from CLAUDE.md
+
+Sources checked in order: L1 cache → shared layer (test-coverage.json, health-status.json) → integration adapters (axe, sentry) → codebase (FitTrackerTests/) → external docs
+
+## Cache Protocol
+
+**Phase 1 (Cache Check):** Read `.claude/cache/qa/_index.json`. Check for cached test strategy patterns, coverage baselines, regression test outcomes from prior features.
+
+**Phase 4 (Learn):** Extract new patterns (test types per feature category, coverage expectations, regression indicators). Write/update L1 cache.
+
+**Cache location:** `.claude/cache/qa/`

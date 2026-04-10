@@ -66,3 +66,33 @@ Monitors infrastructure health across all services (Railway, Supabase, CloudKit,
 - [release.md](release.md), [qa.md](qa.md) — consumers of health status
 - [pm-workflow.md](pm-workflow.md)
 - [`.claude/skills/ops/SKILL.md`](../../.claude/skills/ops/SKILL.md)
+
+---
+
+## v4.0 — External Data + Learning Cache
+
+### Integration Adapters
+
+| Adapter | Type | What It Provides |
+| --- | --- | --- |
+| sentry | MCP (`mcp.sentry.dev`) | Error rates, crash reporting, performance traces, release health |
+| datadog | MCP (official) | Infrastructure metrics, APM traces, log aggregation, uptime monitoring |
+
+**Adapter config:** `.claude/integrations/sentry/` and `.claude/integrations/datadog/`
+
+All incoming data passes through the **automatic validation gate**:
+
+- GREEN (>= 95%): clean, auto-written
+- ORANGE (90-95%): minor discrepancies, written with advisory
+- RED (< 90%): blocked, user must resolve
+
+Validation is automatic. Resolution is always manual.
+
+### Learning Cache
+
+**Location:** `.claude/cache/ops/`
+
+Caches: incident patterns (symptom → root cause mappings from prior incidents), threshold configs (alert tuning history per service and metric), recovery procedures (runbook steps that resolved prior P0/P1 incidents).
+
+On start: check cache for matching task signature, load learned patterns.
+On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.

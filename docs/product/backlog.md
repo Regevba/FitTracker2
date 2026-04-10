@@ -84,6 +84,9 @@
 - [ ] Password reset flow — protocol exists, not wired in UI
 - [x] **Onboarding flow** — shipped 2026-04-07 (v2 UX alignment per ux-foundations.md, 6 screens including Consent, full GA4 instrumentation, PR #59)
 
+### High Priority (Architecture → AI Engine)
+- [ ] **AI Engine v2 — Adapt PM v4.0 Architecture for AIOrchestrator** — Study how the reactive data mesh (adapter layer → validation gate → shared layer → cache), pattern recognition (L1/L2/L3 learning cache), and cross-domain data flow architecture built for the PM skill ecosystem can enhance the in-app AI engine (AIOrchestrator). Investigate: (1) micro-analysis on-device (pattern recognition from local HealthKit/training/nutrition data using the same cache + validation principles), (2) macro-analysis via cloud (foundation model calls enriched by cached user patterns, similar to how skills use cached patterns to skip derivation), (3) adapter-style integration for health data sources (Garmin, Whoop, Oura → normalize → validate → feed AI), (4) validation gate concept for AI recommendations (confidence scoring before surfacing to user), (5) learning cache for AI — store what recommendations worked per user profile to improve over time. Goal: make the AI engine as data-driven and self-improving as the PM workflow.
+
 ### Medium Priority (UX Improvements)
 - [ ] Chart goal target lines — weight/BF goals not overlaid on stats charts
 - [ ] Chart tap-to-tooltip interaction — mentioned in v2 spec, unclear status

@@ -1,4 +1,49 @@
 {
+  "permissions": {
+    "allow": [
+      "Read(//Volumes/DevSSD/dev-home/dotfiles/.claude/projects/-Volumes-DevSSD-FitTracker2/**)",
+      "Read(//Volumes/DevSSD/dev-home/dotfiles/.claude/projects/**)",
+      "Bash(git fetch:*)",
+      "Bash(git rev-list:*)",
+      "Read(//Volumes/**)",
+      "Read(//Volumes/DevSSD/**)",
+      "Bash(diskutil list:*)",
+      "Bash(ls /Users/regevbarak/.claude/projects/*SSD*/)",
+      "Bash(python3 -c \"import sys,json; [print\\(json.dumps\\(json.loads\\(l\\),indent=2\\)[:500]\\) for l in sys.stdin]\")",
+      "Bash(git notes:*)",
+      "Bash(git log:*)",
+      "Bash(gh issue:*)",
+      "Bash(grep -E \"^#{1,4}\\\\s+[0-9.]+\\\\s+|^-\\\\s+\\\\*\\\\*|^Principle\")",
+      "Bash(xcodebuild build:*)",
+      "Bash(swift -typecheck FitTracker/Views/Main/v2/MainScreenView.swift)",
+      "Bash(gh pr create --title 'feat\\(home-v2\\): Home Today Screen v2 UX Foundations alignment' --body ':*)",
+      "Bash(gh pr:*)",
+      "mcp__claude_ai_Figma__get_metadata",
+      "mcp__claude_ai_Figma__search_design_system",
+      "Bash(ls FitTracker/Views/Onboarding/*.swift)",
+      "mcp__claude_ai_Notion__notion-search",
+      "mcp__claude_ai_Notion__notion-fetch",
+      "mcp__claude_ai_Notion__notion-update-page",
+      "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; cat \"{}\"')",
+      "Bash(ls /Volumes/DevSSD/FitTracker2/FitTracker/*.plist)",
+      "Bash(gh repo:*)",
+      "Edit(/.claude/skills/pm-workflow/**)",
+      "Edit(/.claude/skills/ux/**)",
+      "Edit(/.claude/skills/design/**)",
+      "Edit(/.claude/skills/analytics/**)",
+      "Edit(/.claude/skills/dev/**)",
+      "Edit(/.claude/skills/marketing/**)",
+      "Edit(/.claude/skills/ops/**)",
+      "Edit(/.claude/skills/release/**)",
+      "Edit(/.claude/skills/qa/**)",
+      "Edit(/.claude/skills/cx/**)"
+    ],
+    "additionalDirectories": [
+      "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",
+      "/Volumes/DevSSD/FitTracker2/.claude/features",
+      "/Volumes/DevSSD/FitTracker2/.claude/features/training-plan-v2"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {

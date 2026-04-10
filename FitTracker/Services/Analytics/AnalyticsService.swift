@@ -220,6 +220,42 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Nutrition v2 Events (screen-prefixed)
+
+    func logNutritionMealLogged(mealType: String, entryMethod: String, calories: Int) {
+        logEvent(AnalyticsEvent.nutritionMealLogged, parameters: [
+            AnalyticsParam.mealType: mealType,
+            AnalyticsParam.entryMethod: entryMethod,
+            AnalyticsParam.calories: calories,
+        ])
+    }
+
+    func logNutritionSupplementLogged(timeOfDay: String, supplementCount: Int) {
+        logEvent(AnalyticsEvent.nutritionSupplementLogged, parameters: [
+            AnalyticsParam.timeOfDay: timeOfDay,
+            AnalyticsParam.supplementCount: supplementCount,
+        ])
+    }
+
+    func logNutritionHydrationUpdated(waterMl: Int, targetMl: Int) {
+        logEvent(AnalyticsEvent.nutritionHydrationUpdated, parameters: [
+            AnalyticsParam.waterMl: waterMl,
+            AnalyticsParam.targetMl: targetMl,
+        ])
+    }
+
+    func logNutritionDateChanged(direction: String) {
+        logEvent(AnalyticsEvent.nutritionDateChanged, parameters: [
+            AnalyticsParam.direction: direction,
+        ])
+    }
+
+    func logNutritionEmptyStateShown(section: String) {
+        logEvent(AnalyticsEvent.nutritionEmptyStateShown, parameters: [
+            AnalyticsParam.section: section,
+        ])
+    }
+
     // MARK: - Recovery Events
 
     func logBiometricLogged(metricType: String, source: String) {

@@ -14,8 +14,13 @@ Workout,workout_start,Custom,Active Workout,workout_type (push/pull/legs/cardio/
 Workout,workout_complete,Custom,Workout Save,duration_seconds (int),exercise_count (int),set_count (int),,,Yes,event,Mark as conversion. SI unit: seconds.
 Workout,exercise_log,Custom,Exercise Detail,exercise_name (string),muscle_group (string),sets (int),reps (int),weight (float kg),,event,Weight always in kg (SI). No unit suffix.
 Workout,pr_achieved,Custom,PR Detection,exercise_name (string),pr_type (weight/reps/volume),,,,,event,System-detected event
-Nutrition,meal_log,Custom,Meal Entry Save,meal_type (breakfast/lunch/dinner/snack),entry_method (manual/template/photo/barcode),,,,Yes,event,Mark as conversion.
-Nutrition,supplement_log,Custom,Supplement Tracker,time_of_day (am/pm),count (int),,,,,event,
+Nutrition,meal_log,Custom,Meal Entry Save,meal_type (breakfast/lunch/dinner/snack),entry_method (manual/template/photo/barcode),,,,Yes,event,LEGACY — aliased to nutrition_meal_logged in v2
+Nutrition,supplement_log,Custom,Supplement Tracker,time_of_day (am/pm),count (int),,,,,event,LEGACY — aliased to nutrition_supplement_logged in v2
+Nutrition,nutrition_meal_logged,Custom,Nutrition Screen,meal_type (breakfast/lunch/dinner/snack),entry_method (manual/template),calories (int),,,Yes,nutrition,v2 screen-prefixed replacement for meal_log
+Nutrition,nutrition_supplement_logged,Custom,Nutrition Screen,time_of_day (morning/evening),supplement_count (int),,,,No,nutrition,v2 screen-prefixed replacement for supplement_log
+Nutrition,nutrition_hydration_updated,Custom,Nutrition Screen,water_ml (int),target_ml (int),,,,No,nutrition,New in v2 — tracks water logging
+Nutrition,nutrition_date_changed,Custom,Nutrition Screen,direction (forward/backward),,,,,No,nutrition,New in v2 — tracks date navigation
+Nutrition,nutrition_empty_state_shown,Custom,Nutrition Screen,section (meals/supplements/hydration),,,,,No,nutrition,New in v2 — tracks empty state visibility
 Recovery,biometric_log,Custom,Biometrics Entry,metric_type (weight/hrv/rhr/sleep/body_fat),source (manual/healthkit),,,,,event,
 Engagement,stats_view,Custom,Stats Screen,stat_type (string),time_period (week/month/quarter/year/all),,,,,event,
 Engagement,share,Recommended,Workout/Stats,content_type (workout/stats/achievement),item_id (string),,,,,event,GA4 recommended event
