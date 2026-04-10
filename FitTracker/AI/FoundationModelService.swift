@@ -106,6 +106,14 @@ public final class FoundationModelService: FoundationModelProtocol {
         if let stress = snapshot.stressLevel     { lines.append("Stress: \(stress)") }
         if let hr = snapshot.restingHeartRate    { lines.append("RHR: \(hr)bpm") }
 
+        if let score = snapshot.readinessScore {
+            lines.append("Readiness score: \(score)/100 (confidence: \(snapshot.readinessConfidence ?? "unknown"))")
+            lines.append("Recommended intensity: \(snapshot.readinessRecommendation ?? "unknown")")
+            if let flags = snapshot.fatigueFlags, !flags.isEmpty {
+                lines.append("Fatigue warnings: \(flags.joined(separator: ", "))")
+            }
+        }
+
         return lines.joined(separator: "\n")
     }
 
@@ -125,6 +133,14 @@ public final class FoundationModelService: FoundationModelProtocol {
         }
         if let hr = snapshot.restingHeartRate, hr > 80 {
             signals.append("local_elevated_rhr_monitor_recovery")
+        }
+
+        // Readiness-based signals
+        if let score = snapshot.readinessScore, score < 30 {
+            signals.append("readiness_critical_low")
+        }
+        if let flags = snapshot.fatigueFlags, flags.contains("hydrationWarning") {
+            signals.append("hydration_warning_active")
         }
 
         return AIRecommendation(

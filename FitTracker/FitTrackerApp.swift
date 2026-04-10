@@ -170,12 +170,15 @@ struct FitTrackerApp: App {
     }
 
     private func buildSnapshot() -> LocalUserSnapshot {
-        AISnapshotBuilder.build(
+        // Build snapshot with readiness data
+        let readiness = dataStore.readinessResult(for: Date(), fallbackMetrics: healthService.latest)
+        return AISnapshotBuilder.build(
             profile: dataStore.userProfile,
             preferences: dataStore.userPreferences,
             liveMetrics: healthService.latest,
             dailyLogs: dataStore.dailyLogs,
-            todayDayType: programStore.todayDayType
+            todayDayType: programStore.todayDayType,
+            readiness: readiness
         )
     }
 

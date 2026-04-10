@@ -7,7 +7,8 @@ enum AISnapshotBuilder {
         liveMetrics: LiveMetrics,
         dailyLogs: [DailyLog],
         todayDayType: DayType,
-        now: Date = Date()
+        now: Date = Date(),
+        readiness: ReadinessResult? = nil
     ) -> LocalUserSnapshot {
         let sortedLogs = dailyLogs
             .filter { $0.date <= now }
@@ -63,6 +64,18 @@ enum AISnapshotBuilder {
             completedSessions: weeklySessions,
             scheduledSessions: snapshot.trainingDaysPerWeek ?? 0
         )
+
+        // Readiness Engine v2 integration
+        if let r = readiness {
+            snapshot.readinessScore = r.overallScore
+            snapshot.readinessConfidence = r.confidence.rawValue
+            snapshot.readinessRecommendation = r.recommendation.rawValue
+            snapshot.hrvComponentScore = r.hrvScore
+            snapshot.sleepComponentScore = r.sleepScore
+            snapshot.trainingLoadComponentScore = r.trainingLoadScore
+            snapshot.rhrComponentScore = r.rhrScore
+            snapshot.fatigueFlags = r.bodyCompFlags.map { $0.rawValue }
+        }
 
         return snapshot
     }
