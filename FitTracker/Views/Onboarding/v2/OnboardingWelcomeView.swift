@@ -46,7 +46,7 @@ struct OnboardingWelcomeView: View {
                         .frame(maxWidth: .infinity)
                         .frame(height: AppSize.ctaHeight)
                 }
-                .background(.white, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
+                .background(AppColor.Surface.inverse, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
                 .shadow(
                     color: AppShadow.ctaInverseColor,
                     radius: AppShadow.ctaInverseRadius,

@@ -36,7 +36,7 @@ struct OnboardingConsentView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Status.success)
-                    .background(Circle().fill(Color.white).frame(width: AppSize.iconBadge, height: AppSize.iconBadge))
+                    .background(Circle().fill(AppColor.Surface.primary).frame(width: AppSize.iconBadge, height: AppSize.iconBadge))
                     .offset(x: 44, y: -44)
             }
             .padding(.bottom, AppSpacing.large)

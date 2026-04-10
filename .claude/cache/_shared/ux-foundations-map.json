@@ -1,0 +1,152 @@
+{
+  "cache_key": "shared:ux_foundations:cross_skill_application_playbook",
+  "skill": null,
+  "level": "L2",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 6,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "docs/design-system/ux-foundations.md",
+    "docs/design-system/feature-development-gateway.md",
+    "docs/design-system/v2-refactor-checklist.md"
+  ],
+  "task_signature": {
+    "type": "cross_skill_ux_foundations_reference",
+    "inputs": ["screen type", "feature type", "principles to apply"],
+    "context": "Cross-skill playbook for applying UX Foundations to any screen. Used by /design (token mapping), /ux (spec authoring), /qa (accessibility testing), /dev (implementation checklist). Single source of truth for the 13 principles."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "All 13 UX Foundations principles — quick reference",
+      "decision": "ux-foundations.md is organized in 10 Parts. The 13 measurable principles are: (1.1) Fitts's Law, (1.2) Hick's Law, (1.3) Visual Hierarchy / Signal-to-Noise, (1.4) Data Visualization Clarity, (1.5) Feedback & System Status, (1.6) Error Recovery, (1.7) Dark Mode & Adaptive Color, (1.8) Motion Safety, (2.x) Information Architecture, (3.x) Interaction Patterns, (4.x) Data Viz Patterns, (5.x) Permission & Trust, (6.x) State Patterns, (7.x) Accessibility Standards, (8.x) Micro-Interactions & Motion, (9.x) Content Strategy, (10.x) Platform-Specific Patterns. Home v2 mapped 12/13 (1 N/A). Training v2 applied all.",
+      "confidence": "high",
+      "source_executions": [
+        "docs/design-system/ux-foundations.md table of contents",
+        "home-today-screen state.json ux_or_integration note: 'ux-research.md (12/13 principles mapped)'",
+        "onboarding-v2 (PR #59)",
+        "home-today-screen (PR #61)",
+        "training-plan-v2 (PR #74)",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "How /design uses UX Foundations",
+      "decision": "/design uses principles to select tokens: Fitts's Law → AppSize.ctaHeight (52pt) + frame(maxWidth:.infinity). Hick's Law → AppColor.Brand.primary as sole accent. Visual Hierarchy → AppColor.Text.primary/.secondary/.tertiary layering. Data Viz → AppColor.Chart.* tokens. Motion Safety → AppSpring, AppEasing, motionSafe tokens (added Home v2 T2).",
+      "skill_application": "design",
+      "principle_to_token": {
+        "1.1 Fitts's Law": ["AppSize.ctaHeight", "AppSize.rowMinHeight", "AppCornerRadius.large"],
+        "1.2 Hick's Law": ["AppColor.Brand.primary (single accent)", "AppSpacing.cardPadding"],
+        "1.3 Visual Hierarchy": ["AppColor.Text.primary/secondary/tertiary", "AppColor.Surface.primary/elevated"],
+        "1.4 Data Viz": ["AppColor.Chart.* (all 9 chart tokens)"],
+        "1.5 Feedback": ["AppColor.Status.success/warning/error"],
+        "1.7 Dark Mode": ["All AppColor.* adaptive tokens — never raw hex"],
+        "1.8 Motion Safety": ["AppSpring", "AppEasing", "motionSafe flag"]
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen v2 T1-T3 (token additions tied to principle gaps)",
+        "onboarding-v2 (PR #59)",
+        "home-today-screen (PR #61)",
+        "training-plan-v2 (PR #74)",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "How /ux uses UX Foundations",
+      "decision": "/ux produces: (1) ux-research.md — maps each principle to the specific surface, (2) ux-spec.md — 9 sections including Principle Application Table, (3) compliance gateway check (5 dimensions), (4) heuristic validation (12/13 pass). The Principle Application Table in ux-spec.md Section 9 is the traceability matrix between principles and spec decisions.",
+      "skill_application": "ux",
+      "principle_application_table_format": "| Principle | Status | How honored in this feature |",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json ux_or_integration: '12/13 principles mapped', 'heuristic validation 12/12 pass'",
+        "ux-spec-patterns.json cache entry section 9",
+        "onboarding-v2 (PR #59)",
+        "home-today-screen (PR #61)",
+        "training-plan-v2 (PR #74)",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "How /qa uses UX Foundations",
+      "decision": "/qa verifies: (1) Fitts's Law — accessibilityFrame ≥ 44pt on all interactive elements, (2) State Patterns (6.x) — all states (empty/loading/error/partial/full) covered in tests, (3) Accessibility (7.x) — VoiceOver labels verified via XCUITest, Dynamic Type at AX5, (4) Motion Safety (1.8) — animations respect reduceMotion setting, (5) Analytics (H section of checklist) — event names match taxonomy CSV.",
+      "skill_application": "qa",
+      "qa_checks_by_principle": {
+        "1.1 Fitts's Law": "XCUITest: assert button frame height >= 44, assert CTA frame maxWidth == screen width",
+        "6.x State Patterns": "XCTest: test all 5 states (empty, loading, error, partial, full data)",
+        "7.x Accessibility": "XCUITest: accessibilityLabel not nil for all interactive elements, Dynamic Type AX5",
+        "1.8 Motion Safety": "XCTest: verify animations wrap in withAnimation only when !accessibilityReduceMotion",
+        "H Analytics": "XCTest: MockAnalyticsService captures correct event name + params"
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json testing: analytics_tests = 10, tests_added = 11",
+        "training-plan-v2: Full AX5 support, 16 tests",
+        "onboarding-v2 (PR #59)",
+        "home-today-screen (PR #61)",
+        "training-plan-v2 (PR #74)",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "How /dev uses UX Foundations",
+      "decision": "/dev uses foundations as implementation checklist in Phase 4. Bottom-up build order: tokens first (T1-T3) → components (T4-T5) → services (T6) → analytics enums (T7) → main view assembly (T8) → a11y pass (T11) → pbxproj swap (T12). Do NOT write view code before all token/component dependencies are added to AppTheme.swift and AppComponents.swift.",
+      "skill_application": "dev",
+      "implementation_checklist_by_principle": {
+        "1.1 Fitts's Law": "frame(maxWidth: .infinity).frame(height: AppSize.ctaHeight) on all primary CTAs",
+        "1.2 Hick's Law": "Single primary action surfaced per screen section. Progressive disclosure for advanced options.",
+        "1.3 Visual Hierarchy": "AppColor.Text.* layering: primary → secondary → tertiary, never raw Color.*",
+        "1.5 Feedback": "AppColor.Status.* for all feedback states. Empty state view for no-data condition.",
+        "1.7 Dark Mode": "Zero raw hex or Color(red:green:blue:) in any view. All AppColor.* tokens are adaptive.",
+        "6.x States": "Explicit ViewState enum: .loading, .empty, .error(String), .loaded(Data). Each state rendered by dedicated sub-view or conditional branch."
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen tasks T1-T17 sequence",
+        "training-plan-v2 7-file decomposition",
+        "onboarding-v2 (PR #59)",
+        "home-today-screen (PR #61)",
+        "training-plan-v2 (PR #74)",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "Principle gaps that require DS Evolution (new tokens/components)",
+      "decision": "When a principle is violated in v1 AND no token exists to fix it, the fix requires DS evolution: propose new token on feature branch, add to AppTheme.swift, run tokens-check. Home v2 DS evolution: AppText/AppSize tokens (T1), motion tokens AppSpring/AppEasing (T2), AppColor.Chart.weight/hrv/heartRate (T3). Training v2 DS evolution: AppSize.tabBarClearance, AppText.monoCaption. New tokens always proposed on feature branch, never directly on main.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen T1, T2, T3 — DS evolution tasks",
+        "training-plan-v2 state.json: '2 new tokens (AppSize.tabBarClearance, AppText.monoCaption), 3 shared components promoted'",
+        "onboarding-v2 (PR #59)",
+        "home-today-screen (PR #61)",
+        "training-plan-v2 (PR #74)",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Applying foundations only in /ux phase and forgetting in /dev phase",
+      "what_went_wrong": "Phase 3 compliance gateway passes but Phase 4 implementation re-introduces raw literals or skips state coverage. Each skill has its own checklist against foundations. The v2-refactor-checklist Sections C-K are the /dev+/qa verification that foundations were actually implemented.",
+      "source_execution": "v2-refactor-checklist.md Sections B-K — cover the full implementation stack"
+    },
+    {
+      "pattern": "Mapping 0 principles as N/A without justification",
+      "what_went_wrong": "Every principle must be Pass OR N/A WITH justification. 'N/A' without rationale is a shortcut. Home v2 had exactly 1 N/A — fully documented. If you're marking more than 2 principles N/A, the spec is probably incomplete.",
+      "source_execution": "home-today-screen ux_or_integration note: '12/13 principles mapped, 1 N/A'"
+    }
+  ],
+  "speedup_instructions": "This is the shared reference for all skills during any UI feature work. /ux reads the principle list and spec format. /design reads the principle_to_token mapping. /dev reads the implementation_checklist_by_principle. /qa reads the qa_checks_by_principle. Cross-reference with ux-spec-patterns.json (L1 ux cache) for the full 9-section spec structure and with ux-foundations-application.json (L1 design cache) for the token-level details."
+}

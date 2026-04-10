@@ -536,6 +536,82 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Readiness Events
+
+    /// Readiness score computed on home load
+    func logReadinessScoreComputed(score: Int, confidence: String, layer: Int, goalMode: String, componentCount: Int) {
+        logEvent(AnalyticsEvent.homeReadinessScoreComputed, parameters: [
+            AnalyticsParam.score: score,
+            AnalyticsParam.confidence: confidence,
+            AnalyticsParam.layer: layer,
+            AnalyticsParam.goalMode: goalMode,
+            AnalyticsParam.componentCount: componentCount,
+        ])
+    }
+
+    /// User taps a readiness component mini-bar
+    func logReadinessComponentTap(component: String) {
+        logEvent(AnalyticsEvent.homeReadinessComponentTap, parameters: [
+            AnalyticsParam.component: component,
+        ])
+    }
+
+    /// Training recommendation shown
+    func logReadinessRecommendationShown(recommendation: String) {
+        logEvent(AnalyticsEvent.homeReadinessRecommendationShown, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+        ])
+    }
+
+    // MARK: - AI Recommendation Events
+
+    /// AI insight shown on home screen
+    func logAiInsightShown(segment: String, confidence: String, sourceTier: String) {
+        logEvent(AnalyticsEvent.homeAiInsightShown, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.confidence: confidence,
+            AnalyticsParam.sourceTier: sourceTier,
+        ])
+    }
+
+    /// User taps AI insight card
+    func logAiInsightTap(segment: String) {
+        logEvent(AnalyticsEvent.homeAiInsightTap, parameters: [
+            AnalyticsParam.segment: segment,
+        ])
+    }
+
+    /// AI sheet opened
+    func logAiSheetOpened(entryPoint: String) {
+        logEvent(AnalyticsEvent.aiSheetOpened, parameters: [
+            AnalyticsParam.entryPoint: entryPoint,
+        ])
+    }
+
+    /// User views a recommendation
+    func logAiRecommendationViewed(segment: String, confidence: String) {
+        logEvent(AnalyticsEvent.aiRecommendationViewed, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.confidence: confidence,
+        ])
+    }
+
+    /// User submits feedback
+    func logAiFeedbackSubmitted(segment: String, rating: String) {
+        logEvent(AnalyticsEvent.aiFeedbackSubmitted, parameters: [
+            AnalyticsParam.segment: segment,
+            AnalyticsParam.rating: rating,
+        ])
+    }
+
+    /// AI avatar state changes
+    func logAiAvatarStateChanged(fromState: String, toState: String) {
+        logEvent(AnalyticsEvent.aiAvatarStateChanged, parameters: [
+            AnalyticsParam.fromState: fromState,
+            AnalyticsParam.toState: toState,
+        ])
+    }
+
     // MARK: - Settings Events
 
     func logSettingsChanged(settingName: String, newValue: String) {

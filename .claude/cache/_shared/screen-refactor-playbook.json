@@ -1,0 +1,168 @@
+{
+  "cache_key": "shared:refactor_methodology:complete_v2_screen_playbook",
+  "skill": null,
+  "level": "L2",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 6,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    "docs/design-system/v2-refactor-checklist.md",
+    "docs/design-system/ux-foundations.md",
+    "FitTracker.xcodeproj/project.pbxproj"
+  ],
+  "task_signature": {
+    "type": "complete_v2_refactor_methodology",
+    "inputs": ["screen name", "v1 file path", "feature state.json"],
+    "context": "Complete v2 refactor methodology spanning all phases. Used by /design (Phase 3 compliance), /dev (Phase 4 implementation), /qa (Phase 5 testing). Synthesizes the Home v2 (PR #61) and Training v2 (PR #74) execution patterns."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Phase sequence for v2 refactors — all 9 phases required",
+      "decision": "No phase skipped for a v2_refactor work_type. Phase sequence: Research (audit report + decisions log) → PRD (scope + analytics spec + metrics + kill criteria) → Tasks (task breakdown with critical path) → UX (ux-research.md + ux-spec.md + compliance gateway + build prompts) → Implement (bottom-up build) → Test (CI gate + test suite) → Review (parallel diff) → Merge (PR) → Docs. Each transition requires explicit user approval recorded in state.json.",
+      "typical_timeline": {
+        "home_screen_complexity": "8.5 days estimate (17 tasks)",
+        "training_screen_complexity": "8-9 days estimate (16 tasks, decomposed to 7 files)",
+        "critical_path": "4-5 days with parallelism in foundation layer tasks"
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json: 17 tasks, 8.5 day estimate",
+        "training-plan-v2 state.json: 16 tasks, ~8-9 days",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "Audit → Decision → Spec → Build pipeline (cross-skill flow)",
+      "decision": "The core pipeline is: /qa audit → /ux decisions + spec → /design tokens → /dev build → /qa test. Each hand-off has a deliverable: audit report (findings P0/P1/P2 with tractability tags) → decisions log (user-approved decisions on each 'needs-decision' finding) → ux-spec.md (9 sections, compliance gateway 5/5) → build prompts → implementation → test report.",
+      "cross_skill_handoffs": {
+        "research_to_prd": "Deliverable: v2-audit-report.md with Decisions Log. All 'needs-decision' items resolved by user.",
+        "prd_to_tasks": "Deliverable: prd.md with analytics spec, success metrics, kill criteria, acceptance criteria (35+ for complex features).",
+        "tasks_to_ux": "Deliverable: tasks.md with critical path analysis, parallel foundation layer tasks identified.",
+        "ux_to_implement": "Deliverables: ux-research.md, ux-spec.md (9 sections), ux-build.md prompt, design-build.md prompt.",
+        "implement_to_test": "Deliverables: v2 Swift file(s), pbxproj updated, v1 marked HISTORICAL, checklist.completed = true.",
+        "test_to_review": "Deliverables: CI green on feature branch, test counts in state.json.",
+        "review_to_merge": "Deliverable: PR created, parallel diff (feature vs main), high-risk file check.",
+        "merge_to_docs": "Deliverables: feature-memory.md updated, analytics-taxonomy.csv finalized."
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json transitions sequence",
+        "training-plan-v2 state.json transitions",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "High-risk file identification — extra review required",
+      "decision": "These files require extra review when touched: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift. Home v2 and Training v2 both had zero high-risk files touched (pure UI + service layer work). If a v2 refactor requires touching high-risk files, flag explicitly in Phase 7 (Review).",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json review.risks = ['zero high-risk files touched']",
+        "training-plan-v2 state.json review.risks = []",
+        "CLAUDE.md Branching Strategy — High-risk areas",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "Task layer architecture for v2 refactors",
+      "decision": "Tasks organized in 4 layers with explicit dependency management. Layer 1 (Foundation — all parallel): token additions (T1-T3), new components (T4-T5), service classes (T6), analytics enums (T7), supporting views (T9-T10). Layer 2 (Main Assembly — depends on all Layer 1): T8 main view file. Layer 3 (Post-Assembly): T11 a11y pass, T12 pbxproj swap, T13 v1 historical marker. Layer 4 (Verification): T14 checklist walk, T15-T17 test authoring.",
+      "task_count_patterns": {
+        "simple_screen_v2": "12-14 tasks, 3-4 day critical path",
+        "medium_screen_v2": "15-17 tasks (Home v2: 17), 4-5 day critical path",
+        "complex_screen_v2": "16-20 tasks (Training v2: 16 but decomposed to 7 files), 4-5 day critical path"
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json tasks T1-T17, 17 tasks in 4 layers",
+        "home-today-screen tasks note: 'Critical path ~5 days with parallelism'",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "PR structure for v2 refactors",
+      "decision": "v2 refactors ship as single PRs with all commits squashed or kept as logical units. Home v2 PR #61: 5 commits (foundation layer, v2 MainScreenView 703 lines, a11y pass, pbxproj swap, tests). Training v2 PR #74: container + 6 extracted views + 12 analytics events + 16 tests. PR description must list: lines added, components promoted, tokens added, test count, analytics events added.",
+      "commit_sequence": [
+        "1. Foundation layer (tokens + components + services)",
+        "2. Main v2 view file (the assembly — typically the largest commit)",
+        "3. Accessibility pass",
+        "4. pbxproj swap + v1 historical marker",
+        "5. Tests (analytics + functional)"
+      ],
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json implementation.commits: ['8b5fdf2', '136efe3', 'f266932', 'ec95eaa', '73df335']",
+        "training-plan-v2 state.json merge.pr_number = 74",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "Deferred features from v2 refactor — sub-feature spin-off process",
+      "decision": "Some v1 gaps are too large or complex to fix in the v2 pass. These are spun off as separate PM cycles with their own PRDs. Home v2 deferred: Status+Goal merged card, Metric Tile Deep Linking, home_metric_tile_tap analytics event. Training v2 deferred: Rest day positive experience redesign, Advanced AI engine exercise recommendations. Deferred items recorded in state.json prd.non_scope and research.deferred_features.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json phases.prd.non_scope and research.subfeatures_queued",
+        "training-plan-v2 state.json research.deferred_features",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "Metrics and kill criteria — required for every v2 refactor",
+      "decision": "state.json phases.metrics must have: primary metric (with baseline + target), secondary metrics array, guardrails (crash_free_rate > 99.5%, cold_start < 2s, sync_success_rate > 99%, ci_pass_rate > 95%), first_review_date, kill_criteria. Home v2 primary metric: sessions_per_day (target 1.5). Training v2 primary: training_set_completed (weekly/30d/90d). Kill criteria must be quantitative.",
+      "guardrails_always_required": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s",
+        "sync_success_rate > 99%",
+        "ci_pass_rate > 95%"
+      ],
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json phases.metrics",
+        "training-plan-v2 state.json phases.metrics.kill_criteria",
+        "nutrition-v2 (PR #75)",
+        "stats-v2 (PR #76)",
+        "settings-v2 (PR #77)"
+      ]
+    },
+    {
+      "pattern": "Cache-accelerated refactors (v4.1)",
+      "decision": "v4.1 refactors (Nutrition, Stats, Settings) completed in 1-2h each vs 5-36h for earlier screens. L2 cache hits on ux-foundations-map and design-system-decisions eliminated research phase re-derivation. Cache hit rates: Nutrition ~55%, Stats ~65%, Settings ~70%.",
+      "confidence": "high",
+      "source_executions": [
+        "nutrition-v2 state.json: research.sources includes 'L2 cache ux-foundations-map'",
+        "stats-v2 state.json: research.sources includes 'L2 cache ux-foundations-map' + 'L1 cache design/ux-foundations-application'",
+        "settings-v2 state.json: research.sources includes 'L2 cache' + 'screen-audits-apr9 memory'"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Treating v2 refactor as a simple 'cleanup' with no metrics or kill criteria",
+      "what_went_wrong": "v2 refactors are full 9-phase features. They require PRD with success metrics, kill criteria, and post-launch review cadence. 'It's just a refactor' is not a valid reason to skip metrics — every refactor changes user-facing behavior and must be measurable.",
+      "source_execution": "CLAUDE.md non-negotiable rule 2: No PRD without success metrics"
+    },
+    {
+      "pattern": "Running Phase 4 (Implement) before Phase 3 (UX) approval",
+      "what_went_wrong": "Home v2 Phase 3 took from 12:00 to 13:00 (one hour). Training v2 Phase 3 produced ux-spec with schematics (low + high fidelity). Starting implementation before the spec is approved means building against an unvalidated design — expensive to redo.",
+      "source_execution": "CLAUDE.md non-negotiable rule 1: No phase is skipped. home-today-screen transitions: ux_or_integration approved_at before implementation started_at"
+    },
+    {
+      "pattern": "Merging feature branch before main CI is also green",
+      "what_went_wrong": "CI must pass on BOTH the feature branch AND main. A green feature branch that merges into a red main causes a broken build state. Home v2 review: ci_main = true AND ci_feature = true before PR #61 was merged.",
+      "source_execution": "home-today-screen state.json review.ci_main = true, ci_feature = true"
+    }
+  ],
+  "speedup_instructions": "This is the master cross-skill reference for any v2 refactor. /design reads the token + component patterns. /dev reads the task layer architecture and commit sequence. /qa reads the test strategy embedded in the phase sequence. Start here when kicking off a new screen refactor — the Phase sequence, timeline estimates, and PR structure patterns all encode the lessons from Home v2 and Training v2 so the third and subsequent refactors are faster."
+}

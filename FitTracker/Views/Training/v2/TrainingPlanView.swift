@@ -170,7 +170,7 @@ struct TrainingPlanView: View {
                             Text("\(cal.component(.day, from: day))")
                                 .font(isToday ? AppText.body : AppText.subheading)
                                 .fontWeight(isToday ? .bold : .regular)
-                                .foregroundStyle(isToday ? Color.black : AppColor.Text.primary)
+                                .foregroundStyle(AppColor.Text.primary)
                         }
                         Circle()
                             .fill(hasLog ? AppColor.Status.success : Color.clear)

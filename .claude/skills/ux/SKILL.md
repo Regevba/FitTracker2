@@ -401,3 +401,38 @@ Sources checked in order: L1 cache → L2 shared (ux-foundations-map) → shared
 **Phase 4 (Learn):** Extract new patterns (spec structure, principle application, a11y findings). Write/update L1 cache. UX foundations patterns shared with /design should be promoted to L2.
 
 **Cache location:** `.claude/cache/ux/`
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+Read `.claude/cache/ux/_index.json`, match `v2_screen_audit`, check L2 `ux-foundations-map.json`. If hit: load patterns, skip principle derivation. If miss: Phase 2.
+
+### Phase 4 — Learn (on skill complete)
+Extract new principle mappings, anti-patterns. Write L1. If pattern applies to /design or /qa, flag L2.
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| axe | `.claude/integrations/axe/` | design-system.json, test-coverage.json | On `/ux validate` or `/ux audit` |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. UX principles from ux-foundations.md
+2. Apple HIG patterns
+3. Competitor UX from /research cache
+4. Accessibility heuristics (WCAG AA + cognitive)
+5. State coverage (empty/loading/error/success)
+
+**Source priority:** L2 cache > L1 cache > shared layer (cx-signals.json, design-system.json) > axe adapter > manual derivation

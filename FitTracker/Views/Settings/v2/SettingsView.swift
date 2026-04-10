@@ -1087,7 +1087,7 @@ private struct SettingsSelectionTile: View {
         VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
             Text(title)
                 .font(AppText.button)
-                .foregroundStyle(isSelected ? .white : AppColor.Text.primary)
+                .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.primary)
             Text(subtitle)
                 .font(AppText.caption)
                 .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.secondary)

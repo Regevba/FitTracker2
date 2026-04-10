@@ -89,9 +89,10 @@ struct ReadinessCard: View {
     // ─────────────────────────────────────────────────────
 
     private var scorePage: some View {
-        let score = dataStore.readinessScore(for: Date(), fallbackMetrics: healthKit.latest)
-        let today = dataStore.todayLog()
-        let live  = healthKit.latest
+        let score           = dataStore.readinessScore(for: Date(), fallbackMetrics: healthKit.latest)
+        let readinessResult = dataStore.readinessResult(for: Date(), fallbackMetrics: healthKit.latest)
+        let today           = dataStore.todayLog()
+        let live            = healthKit.latest
 
         let hrv    = live.hrv          ?? today?.biometrics.effectiveHRV
         let rhr    = live.restingHR    ?? today?.biometrics.effectiveRestingHR
@@ -110,6 +111,15 @@ struct ReadinessCard: View {
                 }
             }
 
+            if let result = readinessResult {
+                Text(result.confidence.rawValue.capitalized)
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+                    .padding(.horizontal, AppSpacing.small)
+                    .padding(.vertical, AppSpacing.xxxSmall)
+                    .background(AppColor.Surface.secondary, in: Capsule())
+            }
+
             if score == nil {
                 Text("Add 3+ days of data")
                     .font(AppText.caption)
@@ -121,12 +131,23 @@ struct ReadinessCard: View {
                 .foregroundStyle(AppColor.Text.inverseSecondary)
                 .multilineTextAlignment(.center)
 
-            Spacer(minLength: 4)
+            if let result = readinessResult {
+                VStack(spacing: AppSpacing.xxxSmall) {
+                    componentBar(label: "HRV",      score: result.hrvScore,          color: AppColor.Chart.hrv)
+                    componentBar(label: "Sleep",    score: result.sleepScore,        color: AppColor.Accent.sleep)
+                    componentBar(label: "Training", score: result.trainingLoadScore, color: AppColor.Brand.primary)
+                    componentBar(label: "RHR",      score: result.rhrScore,          color: AppColor.Chart.heartRate)
+                    componentBar(label: "Body",     score: Double(result.bodyCompFlags.isEmpty ? 100 : 50), color: AppColor.Chart.body)
+                }
+                .padding(.horizontal, AppSpacing.medium)
+            } else {
+                Spacer(minLength: 4)
 
-            HStack(spacing: AppSpacing.small) {
-                biometricRow(icon: "waveform.path.ecg", label: hrv.map { String(format: "%.0f ms", $0) } ?? "–", title: "HRV")
-                biometricRow(icon: "heart.fill", label: rhr.map { String(format: "%.0f bpm", $0) } ?? "–", title: "RHR")
-                biometricRow(icon: "moon.fill", label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
+                HStack(spacing: AppSpacing.small) {
+                    biometricRow(icon: "waveform.path.ecg", label: hrv.map { String(format: "%.0f ms", $0) } ?? "–", title: "HRV")
+                    biometricRow(icon: "heart.fill", label: rhr.map { String(format: "%.0f bpm", $0) } ?? "–", title: "RHR")
+                    biometricRow(icon: "moon.fill", label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
+                }
             }
         }
         .padding(.horizontal, AppSpacing.small)
@@ -150,7 +171,7 @@ struct ReadinessCard: View {
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("How Readiness Is Calculated")
                         .font(AppText.sectionTitle)
-                    Text("Readiness = 40% HRV + 30% Resting HR + 30% Sleep quality.\n\n80+ → Green light day\n60–79 → Steady, stay on plan\n40–59 → Trim load\nBelow 40 → Prioritize rest")
+                    Text("Readiness is computed from 5 components: HRV deviation from your 7-day baseline, sleep quality composite, training load (ACWR), resting heart rate trend, and body composition flags.\n\n85+ → Push hard\n70–84 → Full intensity\n50–69 → Moderate — reduce load ~20%\n30–49 → Light session only\nBelow 30 → Rest day")
                         .font(.subheadline)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
@@ -160,6 +181,31 @@ struct ReadinessCard: View {
             }
             .padding(.top, AppSpacing.xxSmall)
             .padding(.trailing, AppSpacing.small)
+        }
+    }
+
+    @ViewBuilder
+    private func componentBar(label: String, score: Double, color: Color) -> some View {
+        HStack(spacing: AppSpacing.xSmall) {
+            Text(label)
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
+                .frame(width: 52, alignment: .leading)
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: AppRadius.button)
+                        .fill(AppColor.Surface.secondary)
+                        .frame(height: 6)
+                    RoundedRectangle(cornerRadius: AppRadius.button)
+                        .fill(color)
+                        .frame(width: geo.size.width * min(1, score / 100), height: 6)
+                }
+            }
+            .frame(height: 6)
+            Text("\(Int(score))")
+                .font(AppText.monoCaption)
+                .foregroundStyle(AppColor.Text.tertiary)
+                .frame(width: 28, alignment: .trailing)
         }
     }
 

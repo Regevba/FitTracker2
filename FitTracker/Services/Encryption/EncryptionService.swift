@@ -441,46 +441,35 @@ final class EncryptedDataStore: ObservableObject {
     }
 
     /// Computes a 0–100 readiness score for the given date.
-    /// Returns `nil` if there is insufficient data (fewer than 3 logs with HRV,
-    /// no 30-day baseline, or today's HRV / resting HR not available).
+    /// Delegates to ReadinessEngine (v2 — 5-component, goal-aware, evidence-based).
+    /// Returns `nil` if there is insufficient data.
     func readinessScore(for date: Date, fallbackMetrics: LiveMetrics?) -> Int? {
-        // Need at least 3 biometric logs to establish baseline
-        let logsWithHRV = dailyLogs.filter { $0.biometrics.effectiveHRV != nil }
-        guard logsWithHRV.count >= 3 else { return nil }
+        readinessResult(for: date, fallbackMetrics: fallbackMetrics)?.overallScore
+    }
 
-        // Get today's biometrics — either from stored log or fallback metrics
+    /// Full readiness assessment with per-component breakdown.
+    /// Uses ReadinessEngine.compute() — see ReadinessEngine.swift for formula details.
+    func readinessResult(for date: Date, fallbackMetrics: LiveMetrics?) -> ReadinessResult? {
+        // Build today's metrics from stored log + live fallback
         let todayLog = self.log(for: date)
-        let todayHRV   = todayLog?.biometrics.effectiveHRV      ?? fallbackMetrics?.hrv
-        let todayHR    = todayLog?.biometrics.effectiveRestingHR ?? fallbackMetrics?.restingHR
-        let todaySleep = todayLog?.biometrics.effectiveSleep     ?? fallbackMetrics?.sleepHours
+        var metrics = fallbackMetrics ?? LiveMetrics()
 
-        guard let hrv = todayHRV, let hr = todayHR else { return nil }
-        let sleep = todaySleep ?? 7.0   // default if no sleep data
-
-        // 30-day baseline from stored logs (excluding today)
-        let cal = Calendar.current
-        let thirtyDaysAgo = cal.date(byAdding: .day, value: -30, to: date) ?? date
-        let baseline = dailyLogs.filter {
-            $0.date >= thirtyDaysAgo &&
-            !cal.isDate($0.date, inSameDayAs: date)
+        // Prefer stored values over live fallback where available
+        if let bio = todayLog?.biometrics {
+            metrics.hrv = bio.effectiveHRV ?? metrics.hrv
+            metrics.restingHR = bio.effectiveRestingHR ?? metrics.restingHR
+            metrics.sleepHours = bio.effectiveSleep ?? metrics.sleepHours
+            metrics.deepSleepMin = bio.deepSleepMinutes ?? metrics.deepSleepMin
+            metrics.remSleepMin = bio.remSleepMinutes ?? metrics.remSleepMin
+            metrics.weightKg = bio.weightKg ?? metrics.weightKg
         }
 
-        let baselineHRV = baseline.compactMap { $0.biometrics.effectiveHRV }
-        let baselineHR  = baseline.compactMap { $0.biometrics.effectiveRestingHR }
-
-        guard !baselineHRV.isEmpty, !baselineHR.isEmpty else { return nil }
-
-        let avgBaselineHRV = baselineHRV.reduce(0, +) / Double(baselineHRV.count)
-        let avgBaselineHR  = baselineHR.reduce(0, +)  / Double(baselineHR.count)
-
-        // Score components (each 0–100):
-        let hrvSignal   = min(100, max(0, (hrv / avgBaselineHRV) * 50))
-        let hrSignal    = min(100, max(0, 50 + (avgBaselineHR - hr) * 10))
-        let sleepSignal = min(100, max(0, (sleep / 8.0) * 100))
-
-        // Weighted average:
-        let score = Int(hrvSignal * 0.40 + hrSignal * 0.30 + sleepSignal * 0.30)
-        return score
+        return ReadinessEngine.compute(
+            todayMetrics: metrics,
+            dailyLogs: dailyLogs,
+            goalMode: userPreferences.nutritionGoalMode,
+            date: date
+        )
     }
 
     func saveProfile(_ p: UserProfile) {

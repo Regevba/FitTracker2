@@ -37,14 +37,19 @@
 | 26 | Stats v2 UX Alignment | PR #76 | 2026-04-10 | AppLayout enum, chart accessibility, 4 analytics events, 6 tests |
 | 27 | Settings v2 UX Alignment | PR #77 | 2026-04-10 | 8 color tokens fixed, a11y on destructive actions, 3 analytics events, 5 tests |
 | 28 | Skills Ecosystem v4.1 | commit 32fe312 | 2026-04-10 | Reactive data mesh, 6 integration adapters, L1/L2/L3 learning cache, skill internal lifecycle |
+| 29 | Skills Ecosystem v4.2 (health check + cache seeding) | commit 82f10a7 | 2026-04-10 | Phase 0 health check, 5 L1 + 5 L2/L3 cache entries seeded, 11 SKILL.md wired |
+| 30 | PM Evolution Case Study (v1→v4.1) | commit a8edb63 | 2026-04-10 | 751-line 3-level analysis: 6.5x speedup across 6 refactors, 20 scientific references |
+| 31 | Readiness Score Formula v2 | commit 3852ef8 | 2026-04-10 | 5-component evidence-based formula, goal-aware, 4-layer personalization, 9 tests |
+| 32 | AI Engine v2 (ReadinessResult integration) | commit 3f2151b | 2026-04-10 | AIOrchestrator consumes ReadinessResult, 8 new snapshot fields, recoveryBands + trainingBands |
+| 33 | AI Recommendation UI | commit bde97c0 | 2026-04-10 | Brand icon as AI avatar, 4 new views, AIInsightCard on Home, AIIntelligenceSheet modal |
 
 ---
 
 ## In Progress
 
-| # | Item | Owner | Branch | Status |
-|---|------|-------|--------|--------|
-| — | *No active work items* | — | — | All 6 screen refactors complete |
+| #     | Item                             | Owner | Branch                             | Status                                                                           |
+|-------|----------------------------------|-------|------------------------------------|----------------------------------------------------------------------------------|
+| 31-33 | Adaptive Intelligence Initiative | —     | fix/design-system-token-compliance | Implementation complete, pending analytics events + merge to main                |
 
 ---
 

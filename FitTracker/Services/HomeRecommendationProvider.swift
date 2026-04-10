@@ -92,7 +92,87 @@ struct HomeRecommendationProvider {
         return base
     }
 
+    // MARK: - ReadinessResult overload
+
+    /// Richer recommendation using the full `ReadinessResult` from ReadinessEngine v2.
+    /// When `readinessResult` is nil, falls back to `defaultRecommendation(streakDays:)`.
+    /// The existing `recommendation(readinessScore:isRestDay:streakDays:)` continues to
+    /// work unchanged for callers that only have the Int score.
+    static func recommendation(
+        readinessResult: ReadinessResult?,
+        isRestDay: Bool,
+        streakDays: Int
+    ) -> HomeRecommendation {
+
+        // Rest day takes priority — recovery is always celebrated.
+        if isRestDay {
+            let subtitle = streakSubtitle(
+                base: "Recovery is training too — enjoy the break",
+                streakDays: streakDays
+            )
+            return HomeRecommendation(
+                tone: .encouraging,
+                title: "Rest day",
+                subtitle: subtitle,
+                accentColor: AppColor.Accent.sleep
+            )
+        }
+
+        guard let result = readinessResult else {
+            return defaultRecommendation(streakDays: streakDays)
+        }
+
+        let (title, subtitle, tone, accent): (String, String, RecommendationTone, Color) = switch result.recommendation {
+        case .pushHard:
+            ("You're in great shape!", "Push it today — all systems go.", RecommendationTone.celebratory, AppColor.Status.success)
+        case .fullIntensity:
+            ("Good to go today", "Full session, normal intensity.", RecommendationTone.encouraging, AppColor.Accent.primary)
+        case .moderate:
+            ("Dial it back slightly", "Reduce intensity ~20% — your body is recovering.", RecommendationTone.encouraging, AppColor.Status.warning)
+        case .lightOnly:
+            ("Light session today", "Active recovery or Zone 2 only.", RecommendationTone.cautious, AppColor.Status.warning)
+        case .restDay:
+            ("Your body needs rest", "Skip training — recovery is the priority.", RecommendationTone.cautious, AppColor.Accent.sleep)
+        }
+
+        let base = HomeRecommendation(
+            tone: tone,
+            title: title,
+            subtitle: subtitle,
+            accentColor: accent
+        )
+
+        if streakDays >= 3 {
+            return HomeRecommendation(
+                tone: base.tone,
+                title: base.title,
+                subtitle: streakSubtitle(base: base.subtitle, streakDays: streakDays),
+                accentColor: base.accentColor
+            )
+        }
+
+        return base
+    }
+
     // MARK: - Private helpers
+
+    private static func defaultRecommendation(streakDays: Int) -> HomeRecommendation {
+        let base = HomeRecommendation(
+            tone: .encouraging,
+            title: "Ready to start?",
+            subtitle: "Log your first metrics to get personalized insights",
+            accentColor: AppColor.Accent.primary
+        )
+        if streakDays >= 3 {
+            return HomeRecommendation(
+                tone: base.tone,
+                title: base.title,
+                subtitle: streakSubtitle(base: base.subtitle, streakDays: streakDays),
+                accentColor: base.accentColor
+            )
+        }
+        return base
+    }
 
     private static func streakSubtitle(base: String, streakDays: Int) -> String {
         "\(base). \(streakDays)-day streak — keep it going!"

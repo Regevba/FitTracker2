@@ -1,0 +1,66 @@
+{
+  "cache_key": "analytics:event_spec:screen_prefix_convention",
+  "skill": "analytics",
+  "level": "L1",
+  "created": "2026-04-10T22:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 4,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    "docs/product/analytics-taxonomy.csv"
+  ],
+  "task_signature": {
+    "type": "analytics_event_spec",
+    "inputs": ["screen_name", "feature_name", "analytics_taxonomy_path"],
+    "context": "Define screen-prefixed analytics events for a feature, following the naming convention in CLAUDE.md."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Screen-prefix naming rule",
+      "decision": "Every screen-scoped event uses {screen}_ prefix. Established prefixes: home_, training_, nutrition_, stats_, settings_, onboarding_, auth_. Cross-screen lifecycle events stay unprefixed (app_open, session_start, sign_in, sign_up). GA4 recommended events keep their dictated names (tutorial_begin, tutorial_complete, login, share).",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen analytics spec",
+        "training-plan-v2 analytics spec",
+        "nutrition-v2 analytics spec",
+        "stats-v2 analytics spec"
+      ]
+    },
+    {
+      "pattern": "Event template per screen type",
+      "decision": "Typical screen event set: {screen}_action_tap, {screen}_metric_viewed, {screen}_empty_state_shown, {screen}_error_shown. Extend with screen-specific actions (e.g. training_workout_start, nutrition_scanner_opened).",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen analytics spec",
+        "training-plan-v2 analytics spec",
+        "nutrition-v2 analytics spec",
+        "stats-v2 analytics spec"
+      ]
+    },
+    {
+      "pattern": "Test pattern per event",
+      "decision": "Write 1-3 tests per event: (1) event fires on action, (2) event params are correct, (3) optional no-fire test in wrong state. Target density of 1.3-2.7 tests per event.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen analytics tests",
+        "training-plan-v2 analytics tests",
+        "nutrition-v2 analytics tests",
+        "stats-v2 analytics tests"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Ad hoc naming",
+      "what_went_wrong": "Pre-Training events (Onboarding, Home) were inconsistent — some had screen prefix, some did not. Always apply screen-prefix mechanically from day one.",
+      "source_execution": "Onboarding v2 and Home v2 analytics retrospective"
+    },
+    {
+      "pattern": "Over-testing events",
+      "what_went_wrong": "Home v2 had 5.25 tests/event, which was a one-time learning cost and not a target. Right-sized density is 1.3-2.7 tests/event. Anything above 3.0 is over-tested.",
+      "source_execution": "Home v2 analytics tests"
+    }
+  ],
+  "speedup_instructions": "Apply screen-prefix mechanically. For each action, generate {screen}_{action}. Cross-ref analytics-taxonomy.csv. Generate 2 tests per event."
+}

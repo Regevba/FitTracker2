@@ -70,6 +70,8 @@
 		NA100000000000000000001 /* NutritionAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NA200000000000000000001 /* NutritionAnalyticsTests.swift */; };
 		SA100000000000000000001 /* StatsAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SA200000000000000000001 /* StatsAnalyticsTests.swift */; };
 		SE100000000000000000AB01 /* SettingsAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */; };
+		RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AT01 /* ReadinessEngineTests.swift */; };
+		AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AT01 /* AIAnalyticsTests.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -110,6 +112,11 @@
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA03 /* HomeRecommendationProvider.swift */; };
+		RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AA01 /* ReadinessEngine.swift */; };
+		AI100000000000000000UI01 /* AIInsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000UI01 /* AIInsightCard.swift */; };
+		AI100000000000000000UI02 /* AIIntelligenceSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000UI02 /* AIIntelligenceSheet.swift */; };
+		AI100000000000000000UI03 /* AIRecommendationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000UI03 /* AIRecommendationCard.swift */; };
+		AI100000000000000000UI04 /* AIFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000UI04 /* AIFeedbackView.swift */; };
 		FC1000000000000000000001 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = FC2000000000000000000001 /* FirebaseCore */; };
 		FC1000000000000000000002 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = FC2000000000000000000002 /* FirebaseAnalytics */; };
 		FF000001000000000000AA01 /* FitMeLogoLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF000002000000000000AA01 /* FitMeLogoLoader.swift */; };
@@ -201,6 +208,8 @@
 		NA200000000000000000001 /* NutritionAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionAnalyticsTests.swift; sourceTree = "<group>"; };
 		SA200000000000000000001 /* StatsAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsAnalyticsTests.swift; sourceTree = "<group>"; };
 		SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsAnalyticsTests.swift; sourceTree = "<group>"; };
+		RE200000000000000000AT01 /* ReadinessEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngineTests.swift; sourceTree = "<group>"; };
+		AI200000000000000000AT01 /* AIAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalyticsTests.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
@@ -250,6 +259,12 @@
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA03 /* HomeRecommendationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecommendationProvider.swift; sourceTree = "<group>"; };
+		RE200000000000000000AA01 /* ReadinessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngine.swift; sourceTree = "<group>"; };
+		AI200000000000000000UI01 /* AIInsightCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightCard.swift; sourceTree = "<group>"; };
+		AI200000000000000000UI02 /* AIIntelligenceSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIIntelligenceSheet.swift; sourceTree = "<group>"; };
+		AI200000000000000000UI03 /* AIRecommendationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationCard.swift; sourceTree = "<group>"; };
+		AI200000000000000000UI04 /* AIFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackView.swift; sourceTree = "<group>"; };
+		AI300000000000000000GR01 /* AI */ = {isa = PBXGroup; children = (AI200000000000000000UI01 /* AIInsightCard.swift */, AI200000000000000000UI02 /* AIIntelligenceSheet.swift */, AI200000000000000000UI03 /* AIRecommendationCard.swift */, AI200000000000000000UI04 /* AIFeedbackView.swift */); path = AI; sourceTree = "<group>"; };
 		FF000002000000000000AA01 /* FitMeLogoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitMeLogoLoader.swift; sourceTree = "<group>"; };
 		FF000002000000000000AA02 /* LiveInfoStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveInfoStrip.swift; sourceTree = "<group>"; };
 		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
@@ -371,6 +386,7 @@
 				FB4000001000000000000001 /* Supabase */,
 				A20000010000000000000008 /* AppSettings.swift */,
 				HV200000000000000000AA03 /* HomeRecommendationProvider.swift */,
+				RE200000000000000000AA01 /* ReadinessEngine.swift */,
 				NV200000000000000000AA05 /* HapticFeedback.swift */,
 			);
 			path = Services;
@@ -389,6 +405,7 @@
 				CC000003000000000000AA0D /* Settings */,
 				CC000001000000000000AA00 /* Shared */,
 				11B09D342F852BF900DCB9A0 /* Onboarding */,
+				AI300000000000000000GR01 /* AI */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -566,6 +583,8 @@
 				NA200000000000000000001 /* NutritionAnalyticsTests.swift */,
 				SA200000000000000000001 /* StatsAnalyticsTests.swift */,
 				SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */,
+				RE200000000000000000AT01 /* ReadinessEngineTests.swift */,
+				AI200000000000000000AT01 /* AIAnalyticsTests.swift */,
 				FT4000001000000000000001 /* SupabaseTests */,
 			);
 			path = FitTrackerTests;
@@ -793,6 +812,11 @@
 				BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */,
 				BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */,
 				HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */,
+				RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */,
+				AI100000000000000000UI01 /* AIInsightCard.swift in Sources */,
+				AI100000000000000000UI02 /* AIIntelligenceSheet.swift in Sources */,
+				AI100000000000000000UI03 /* AIRecommendationCard.swift in Sources */,
+				AI100000000000000000UI04 /* AIFeedbackView.swift in Sources */,
 				NV100000000000000000AA01 /* NutritionView.swift in Sources */,
 				NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */,
 				NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */,
@@ -869,6 +893,8 @@
 				NA100000000000000000001 /* NutritionAnalyticsTests.swift in Sources */,
 				SA100000000000000000001 /* StatsAnalyticsTests.swift in Sources */,
 				SE100000000000000000AB01 /* SettingsAnalyticsTests.swift in Sources */,
+				RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */,
+				AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */,
 				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
 				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,

@@ -1,0 +1,64 @@
+{
+  "cache_key": "design:token_compliance:audit_and_evolve",
+  "skill": "design",
+  "level": "L1",
+  "created": "2026-04-10T22:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 5,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "FitTracker/Services/AppTheme.swift",
+    "FitTracker/DesignSystem/AppComponents.swift"
+  ],
+  "task_signature": {
+    "type": "token_compliance_audit",
+    "inputs": ["screen_name", "swift_file_path", "AppTheme_path"],
+    "context": "Check a SwiftUI file for raw color/spacing/font literals and propose semantic token replacements."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Token categories that fail first",
+      "decision": "Color literals fail most often (#1), followed by raw spacing values (#2), then raw font declarations (#3). Always check in this order to front-load the highest-yield fixes.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen token audit",
+        "nutrition-v2 token audit",
+        "stats-v2 token audit",
+        "settings-v2 token audit",
+        "training-plan-v2 token audit"
+      ]
+    },
+    {
+      "pattern": "DS evolution rate",
+      "decision": "v2.0 added 0 net new tokens. v4.0+ added 2-4 tokens per refactor (e.g. AppSize.tabBarClearance, AppText.monoCaption in Training v2). Propose a new token only when the same raw value pattern repeats 2+ times across screens.",
+      "confidence": "high",
+      "source_executions": [
+        "settings-v2 token audit (0 new tokens)",
+        "training-plan-v2 token audit (2 new tokens)"
+      ]
+    },
+    {
+      "pattern": "Compound reuse tracking",
+      "decision": "ProgressBar component from Nutrition is available for Stats. AppLayout component from Stats is available for Settings. Always search existing components in AppComponents.swift before extracting a new one.",
+      "confidence": "high",
+      "source_executions": [
+        "nutrition-v2 token audit",
+        "stats-v2 token audit",
+        "settings-v2 token audit"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Over-tokenizing",
+      "what_went_wrong": "One-off micro-adjustments (e.g. a single pixel nudge in one view) do not need a semantic token. Only tokenize patterns that appear in 2+ places across screens. Settings v2 correctly added 0 new tokens.",
+      "source_execution": "Settings v2 token audit"
+    },
+    {
+      "pattern": "Missing pbxproj update",
+      "what_went_wrong": "Onboarding v2 required 3 follow-up fix commits because the pbxproj was not updated in the same commit as the v2 file. Always update project.pbxproj in the same commit that introduces the v2 file.",
+      "source_execution": "Onboarding v2"
+    }
+  ],
+  "speedup_instructions": "Load L2 design-system-decisions.json for token inventory. Grep for Color.white, .black, hex values, hardcoded padding. Fix with existing tokens first."
+}

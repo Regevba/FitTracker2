@@ -221,6 +221,7 @@ struct MainScreenView: View {
             VStack(alignment: .leading, spacing: AppSpacing.medium) {
                 greetingSection
                 readinessSection
+                AIInsightCard()
                 trainingNutritionCard
                 bodyCompositionCard
                 metricsRow

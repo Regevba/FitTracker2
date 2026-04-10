@@ -153,3 +153,46 @@ Sources checked in order: L1 cache → shared layer (health-status.json) → int
 **Phase 4 (Learn):** Extract new patterns (incident classification, threshold tuning, recovery procedures). Write/update L1 cache.
 
 **Cache location:** `.claude/cache/ops/`
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+1. Read `.claude/cache/ops/_index.json` for L1 entries
+2. Match current task against `task_signature.type`
+3. Check L2 `.claude/cache/_shared/` for cross-skill patterns
+4. If hit: load `learned_patterns`, `anti_patterns`, `speedup_instructions`
+5. Apply loaded patterns — skip derivation steps covered by cache
+6. If miss: proceed to Phase 2 (Research)
+
+### Phase 4 — Learn (on skill complete)
+1. Extract new patterns and anti-patterns from this execution
+2. Write or update L1 cache entry in `.claude/cache/ops/`
+3. If pattern overlaps with an existing L2 entry, increment `hit_count`
+4. If a new pattern applies to 2+ skills, flag for L2 promotion
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| sentry | `.claude/integrations/sentry/` | health-status.json | On `/ops health` or `/ops incident` |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. Service health across all infrastructure
+2. Incident patterns and MTTR
+3. Cost trends per service
+4. Alert threshold calibration
+5. CI pipeline reliability
+
+**Source priority:** L2 cache > L1 cache > shared layer (health-status.json) > sentry adapter

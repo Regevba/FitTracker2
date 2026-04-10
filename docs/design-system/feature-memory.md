@@ -97,6 +97,57 @@ This keeps the design-system evolution coherent across the per-screen alignment 
 
 ---
 
+## 2026-04-10 — Settings v2 UX Alignment (PR #77)
+
+- **Date:** 2026-04-10
+- **Feature:** settings-v2
+- **Problem solved:** v1 SettingsView had 4 findings (0 P0, 2 P1, 2 P2) — raw color literals in selection tiles, incomplete VoiceOver coverage (13%), missing semantic token usage on selected states
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** AppText.button, caption, body, sectionTitle; AppColor.Text.primary/secondary/inversePrimary, Accent.primary/recovery/achievement/sleep, Status.success; AppSpacing.xxSmall/xSmall/small/medium; AppRadius.card
+- **Reused components:** AppCard, AppMenuRow, AppSelectionTile, AppStatRow, AppSegmentedControl
+- **New primitives:** None — best component architecture of all screens, fully served by existing design system
+- **Wireframe/UX:** Navigation hub with featured Account card + 2x2 category grid. Each category navigates to grouped detail screen with SettingsSectionCard containers. Summary badges on hub cards for at-a-glance status.
+- **Final UI decisions:** Featured card for Account & Security (most important), category-colored icon tints, summary badges using category tint at 12% opacity, slider rows for HR zone configuration
+- **Accessibility:** Full VoiceOver labels on all interactive elements, 44pt tap targets, Dynamic Type support, slider accessibility values
+- **Follow-up gaps:** None — lightest audit, best baseline compliance
+
+---
+
+## 2026-04-10 — Stats v2 UX Alignment (PR #76)
+
+- **Date:** 2026-04-10
+- **Feature:** stats-v2
+- **Problem solved:** v1 StatsView had 9 findings (2 P0, 3 P1, 4 P2) — missing AppLayout tokens for chart dimensions, hardcoded chip sizing, incomplete VoiceOver coverage (27%), no skeleton loading
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** AppText.sectionTitle, body, caption, captionStrong, metricCompact, metric; AppColor.Chart.weight/hrv/heartRate/activity, Accent.primary; AppSpacing.xxSmall/xSmall/small/medium; AppRadius.small/medium; AppLayout.chartHeight/chipMinWidth/chipIdeal/chipMax
+- **Reused components:** AppPickerChip (period selector adapted), ChartCard, MetricCard, TrendIndicator, EmptyStateView
+- **New primitives:**
+  - Tokens: `AppLayout.chipMinWidth` (128pt), `AppLayout.chipIdealWidth` (144pt), `AppLayout.chipMaxWidth` (168pt), `AppLayout.dotSize` (8pt)
+- **Wireframe/UX:** Period picker (D/W/M/3M/6M) → permanent body charts (Weight + Body Fat) → metric carousel ("Track More") → selected metric detail chart. Charts use bars for volume metrics, area+line for continuous metrics.
+- **Final UI decisions:** Segmented period picker with capsule highlight, metric chips as horizontal scroll with tinted selection, chart selection overlay on drag gesture, goal line as dashed RuleMark
+- **Accessibility:** Chart values announced via VoiceOver, metric chips labeled with current value, period picker buttons with role descriptions
+- **Follow-up gaps:** Chart interaction improvements (own PM cycle), export chart as image (P3 backlog)
+
+---
+
+## 2026-04-10 — Nutrition v2 UX Alignment (PR #75)
+
+- **Date:** 2026-04-10
+- **Feature:** nutrition-v2
+- **Problem solved:** v1 NutritionView (1,106 lines) had 23 findings (6 P0, 5 P1, 12 P2) — poor VoiceOver coverage (47%), no motion tokens, hardcoded spacing, missing skeleton loading, supplement UX confusion
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** AppText.pageTitle, sectionTitle, body, caption, monoLabel, monoMetric; AppColor.Text.primary/secondary, Accent.primary/secondary, Status.success/warning; AppSpacing.xxSmall/xSmall/small/medium/large; AppRadius.micro/small/card; AppSpring.snappy/progress; AppEasing.short
+- **Reused components:** AppCard, AppButton, AppFilterBar, MacroTargetBar, MealSectionView, EmptyStateView, SkeletonLoadingView
+- **New primitives:**
+  - Tokens: `AppColor.Accent.nutrition` (domain color), `AppOpacity` enum (disabled/subtle/hover)
+  - Components: `SupplementPillButton` (morning/evening toggle), `ProgressBar` (reusable bar with configurable height/color/radius)
+- **Wireframe/UX:** Date header with nav arrows → macro target card → command deck (Log Meal + Quick Protein CTAs) → logged meals feed → collapsible supplement section (morning/evening stacks) → hydration card with quick-add buttons → adherence progress bar
+- **Final UI decisions:** Date navigation with 48pt touch targets (Fitts's Law), collapsible supplement section with streak badge, hydration quick-add in +250/+500/+1000ml increments, "Repeat Last" CTA when recent meals exist
+- **Accessibility:** 15/15 elements labeled, progress bars with accessibilityValue, reduce-motion guards on all animations, macro bar percentages announced
+- **Follow-up gaps:** Barcode scanner improvements (own PM cycle), meal photo recognition (AI backlog), supplement reminder notifications (P3 backlog)
+
+---
+
 ## 2026-04-09 — Home Today Screen v2 UX Alignment (PR #61)
 
 - **Date:** 2026-04-09

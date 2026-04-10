@@ -947,3 +947,51 @@ The hub is responsible for detecting cross-skill pattern convergence:
 2. If 2+ skills cached the same pattern (by `task_signature.type`) → create/update L2 entry.
 3. If an L2 entry is referenced by 5+ skills → promote to L3.
 4. Promotion is logged in `change-log.json` as a `cache_promotion` event.
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+1. Read `.claude/cache/pm-workflow/_index.json` for L1 entries
+2. Match current task against `task_signature.type`
+3. Check L2 `.claude/cache/_shared/` for cross-skill patterns
+4. If hit: load `learned_patterns`, `anti_patterns`, `speedup_instructions`
+5. Apply loaded patterns — skip derivation steps covered by cache
+6. If miss: proceed to Phase 2 (Research)
+
+### Phase 4 — Learn (on skill complete)
+1. Extract new patterns and anti-patterns from this execution
+2. Write or update L1 cache entry in `.claude/cache/pm-workflow/`
+3. If pattern overlaps with an existing L2 entry, increment `hit_count`
+4. If a new pattern applies to 2+ skills, flag for L2 promotion
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| ga4 | `.claude/integrations/ga4/` | metric-status.json | On any phase transition or validation gate alert |
+| app-store-connect | `.claude/integrations/app-store-connect/` | cx-signals.json, feature-registry.json | On any phase transition or validation gate alert |
+| sentry | `.claude/integrations/sentry/` | health-status.json, cx-signals.json | On any phase transition or validation gate alert |
+| firecrawl | `.claude/integrations/firecrawl/` | context.json, feature-registry.json | On any phase transition or validation gate alert |
+| axe | `.claude/integrations/axe/` | design-system.json, test-coverage.json | On any phase transition or validation gate alert |
+| security-audit | `.claude/integrations/security-audit/` | health-status.json, test-coverage.json | On any phase transition or validation gate alert |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. Phase transition patterns from state.json history
+2. Work type selection heuristics
+3. Task decomposition patterns from prior features
+4. Priority scoring from task-queue.json
+5. Change broadcast and notification rules
+
+**Source priority:** L2 cache > L1 cache > shared layer (all files) > all adapters

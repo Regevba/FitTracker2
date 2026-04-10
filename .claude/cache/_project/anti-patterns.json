@@ -1,0 +1,172 @@
+{
+  "cache_key": "project:anti_patterns:project_wide_failure_modes",
+  "skill": null,
+  "level": "L3",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 6,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    "docs/design-system/v2-refactor-checklist.md",
+    "docs/design-system/ux-foundations.md"
+  ],
+  "task_signature": {
+    "type": "anti_pattern_registry",
+    "inputs": ["any feature, phase, or skill invocation"],
+    "context": "Project-wide anti-patterns derived from real feature executions. Used by all skills as a pre-flight check before delivering work. Each entry has a concrete consequence and the source that discovered/enforced it."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Raw color/font/spacing literals in Swift view files",
+      "category": "design_system",
+      "what_goes_wrong": "Raw literals (.font(.system(size: 14)), .padding(20), Color(hex: \"#FF6B35\"), Color.red) break dark mode, disable Dynamic Type scaling, fail make tokens-check in CI, and accumulate as technical debt that requires a full audit pass to unwind. Home v2 had 8 P0 findings traced to raw literals in v1. Training v1 was 2,135 lines partly because of accumulated raw values.",
+      "how_to_detect": "Run make tokens-check. Look for .padding(N), .frame(width: N), .frame(height: N), .font(.system()), Color(red:green:blue:), Color.red/green/blue/gray in any view file.",
+      "correct_pattern": "AppSpacing.cardPadding, AppSize.ctaHeight, AppText.body, AppColor.Status.error, AppColor.Chart.weight",
+      "enforced_by": ["make tokens-check CI gate", "v2-refactor-checklist B4", "Phase 3 compliance gateway"],
+      "severity": "P0 — blocks CI",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen v2-audit-report.md F1-F8 (8 P0 raw literal findings)",
+        "v2-refactor-checklist B4: 'zero raw literals'"
+      ]
+    },
+    {
+      "pattern": "Skipping Phase 3 (UX) for any UI feature",
+      "category": "pm_workflow",
+      "what_goes_wrong": "Phase 3 is non-skippable for UI features and v2 refactors per CLAUDE.md. Skipping it means: no principle-to-spec traceability, no compliance gateway, no build prompts. Phase 4 implementation without a spec leads to rework — building wrong states, missing accessibility, wrong token choices. Home v2 Phase 3 caught 5 compliance issues before any code was written.",
+      "how_to_detect": "Check state.json phases.ux_or_integration.status. If it's not 'approved' and Phase 4 has started, Phase 3 was skipped.",
+      "correct_pattern": "Phase 3 produces: ux-research.md (12/13 principles), ux-spec.md (9 sections), compliance gateway (5/5), heuristic validation (12/12), ux-build.md prompt, design-build.md prompt.",
+      "enforced_by": ["CLAUDE.md non-negotiable rule 1", "pm-workflow phase gate", "v2-refactor-checklist A2, A3"],
+      "severity": "P0 — phase gate violation",
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md: 'Phase 3 (UX) gateway is non-skippable'",
+        "home-today-screen transitions: ux_or_integration approved before implementation started"
+      ]
+    },
+    {
+      "pattern": "Patching v1 in place instead of creating v2/ subdirectory",
+      "category": "v2_refactor",
+      "what_goes_wrong": "Patching v1 in place mixes historical code with new aligned code, makes diffs unreadable, and prevents clean rollback. The v1→v2 split exists to preserve the historical reference while cleanly separating the new implementation. Onboarding v2 (PR #59) shipped with this error — retroactive refactor pending.",
+      "how_to_detect": "Check if state.json v2_file_path uses the v2/ subdirectory convention. If it's the same path as v1_file_path, the refactor was done wrong.",
+      "correct_pattern": "v1: FitTracker/Views/Main/MainScreenView.swift → v2: FitTracker/Views/Main/v2/MainScreenView.swift. Same type name, different directory.",
+      "enforced_by": ["CLAUDE.md UI Refactoring & V2 Rule", "v2-refactor-checklist A5, B1-B2"],
+      "severity": "P1 — methodology violation",
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md backward compatibility note: Onboarding v2 used older 'patch in place' approach",
+        "home-today-screen state.json v2_rule_compliant = true"
+      ]
+    },
+    {
+      "pattern": "Screen-scoped analytics events without screen prefix",
+      "category": "analytics",
+      "what_goes_wrong": "Events like 'action_tap' or 'empty_state_shown' without screen prefix are unidentifiable in GA4 dashboards. Funnel analysis breaks because events from different screens are indistinguishable. Pre-rule events (workout_start, exercise_log) are grandfathered but will be renamed via /analytics validate with GA4 event aliases. Any new event added after 2026-04-08 that is screen-scoped MUST have the prefix.",
+      "how_to_detect": "Run /analytics validate. Check analytics-taxonomy.csv Scope column — any row with a screen name in Screen/Trigger that does NOT have the screen prefix in Event Name is non-compliant.",
+      "correct_pattern": "home_action_tap, home_empty_state_shown, training_set_logged, onboarding_step_viewed, settings_changed",
+      "enforced_by": ["CLAUDE.md Analytics Naming Convention", "/analytics spec gate in Phase 1 PRD", "/analytics validate periodic audit", "analytics-taxonomy.csv screen_scope column"],
+      "severity": "P1 — blocks PRD approval",
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md Analytics Naming Convention (established 2026-04-08, OQ-9 in home-today-screen audit)",
+        "analytics-taxonomy.csv: all training_*, onboarding_*, home_* events post-rule"
+      ]
+    },
+    {
+      "pattern": "Silent error states — no visible feedback when something fails",
+      "category": "ux",
+      "what_goes_wrong": "UI screens that silently fail (no error message, no retry CTA, blank screen) violate UX Foundations 1.5 (Feedback & System Status) and 1.6 (Error Recovery). Users don't know if the app is loading, broken, or empty. Home v2 found F15/F16 (no empty state) as P0 — caused users to see a blank Home screen on first launch.",
+      "how_to_detect": "Audit state coverage in ux-spec.md Section 5. Missing: .loading (skeleton), .empty (with explanation + action), .error (with message + retry). Any state not explicitly handled is a silent failure.",
+      "correct_pattern": "enum ViewState { case loading, empty(reason: String), error(String), loaded(Data) }. Each case maps to a dedicated view branch. HomeEmptyStateView for Home screen. SkeletonLoadingView for Training screen.",
+      "enforced_by": ["UX Foundations 1.5 + 1.6", "v2-refactor-checklist E (state coverage)", "ux-spec.md Section 5 requirement"],
+      "severity": "P0 — user-facing failure",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen v2 F15, F16 (P0 findings: no empty state)",
+        "training-plan-v2 Q4_loading_state: 'Skeleton placeholders' (explicit loading state decision)"
+      ]
+    },
+    {
+      "pattern": "Merging without green CI on BOTH branches",
+      "category": "ci",
+      "what_goes_wrong": "Merging a feature branch that has green CI but main is red leaves main in a broken state. Or: merging a feature branch with red CI directly (skipping the gate entirely) introduces failing tests to main. Both scenarios violate the CI guardrail (pass rate > 95%) and may cascade to other features.",
+      "how_to_detect": "Check state.json phases.review.ci_main = true AND ci_feature = true before approving merge.",
+      "correct_pattern": "Phase 7 (Review) explicitly checks both. Home v2: ci_main = true, ci_feature = true. Training v2: ci_passed = true. Three checks required: make tokens-check + xcodebuild build + xcodebuild test.",
+      "enforced_by": ["CLAUDE.md non-negotiable rule 3", "CLAUDE.md CI Pipeline", "pm-workflow Phase 7 gate"],
+      "severity": "P0 — breaks main branch",
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md: 'Both feature branch AND main must be green'",
+        "home-today-screen state.json review.ci_main = true, ci_feature = true"
+      ]
+    },
+    {
+      "pattern": "Building UI before all token/component dependencies are added",
+      "category": "implementation",
+      "what_goes_wrong": "Writing the main view assembly (T8 equivalent) before tokens (T1-T3) and components (T4-T5) exist forces placeholder raw literals that must be cleaned up later. Missed in cleanup = raw literal in final file = CI failure. Home v2 avoided this by making T8 depend_on T1+T2+T3+T4+T5+T6+T7.",
+      "how_to_detect": "Check if task dependency graph has T8 (main assembly) depending on all foundation tasks. If T8 has no depends_on, the order is wrong.",
+      "correct_pattern": "T1 (tokens) → T2 (motion tokens) → T3 (chart tokens) → T4-T5 (components) → T6 (service) → T7 (analytics enums) → T8 (assembly). All foundation tasks in parallel, assembly depends on all.",
+      "enforced_by": ["home-today-screen tasks T8 depends_on T1-T7,T9,T10", "v2-refactor-checklist B4"],
+      "severity": "P1 — causes CI failure or rework",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json tasks T8: 'depends_on: [T1,T2,T3,T4,T5,T6,T7,T9,T10]'"
+      ]
+    },
+    {
+      "pattern": "pbxproj UUID reshuffling — surgical edit rule violated",
+      "category": "infra",
+      "what_goes_wrong": "Opening Xcode after making manual pbxproj edits causes Xcode to regenerate/reshuffle UUIDs, polluting the diff with hundreds of unrelated changes. This makes code review impossible and may silently break build settings. v2-refactor-checklist B7 requires the diff to show EXACTLY 4 changes: new PBXGroup, new PBXFileReference, new PBXBuildFile, and v1 removed from Sources.",
+      "how_to_detect": "Run git diff main..HEAD -- FitTracker.xcodeproj/project.pbxproj. Count the changed sections. If >4 logical changes, Xcode regenerated the file.",
+      "correct_pattern": "Edit project.pbxproj as plain text. Never open Xcode between the manual edit and the commit. Verify with git diff before committing.",
+      "enforced_by": ["v2-refactor-checklist B6, B7"],
+      "severity": "P1 — unreviable diff, potential build setting loss",
+      "confidence": "high",
+      "source_executions": [
+        "v2-refactor-checklist B7: 'git diff main..HEAD -- FitTracker.xcodeproj/project.pbxproj shows exactly the four edits above and nothing else'",
+        "home-today-screen T12 (pbxproj swap done in single commit ec95eaa)"
+      ]
+    },
+    {
+      "pattern": "Deferred features never tracked or spun off",
+      "category": "pm_workflow",
+      "what_goes_wrong": "Features deferred from a v2 scope (e.g. home_metric_tile_tap, Status+Goal merged card, AI recommendations) must be explicitly recorded in state.json prd.non_scope AND backlog.md. Features that are 'deferred' without a tracking entry get lost and never shipped. The Metric Tile Deep Linking feature from Home v2 and Rest Day redesign from Training v2 are both in the backlog with their own PM cycle ownership.",
+      "how_to_detect": "Check state.json phases.prd.non_scope for deferred items. Verify each item has a corresponding entry in docs/product/backlog.md or a GitHub Issue.",
+      "correct_pattern": "state.json prd.non_scope = ['home_metric_tile_tap', 'Metric Tile Deep Linking', 'Status+Goal merged card']. Each deferred feature gets its own /pm-workflow cycle when prioritized.",
+      "enforced_by": ["CLAUDE.md PM workflow post-launch metrics review", "state.json prd.non_scope field"],
+      "severity": "P2 — lost feature debt",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json prd.non_scope and research.subfeatures_queued",
+        "training-plan-v2 research.deferred_features: Rest day redesign, AI recommendations"
+      ]
+    },
+    {
+      "pattern": "patching_v1_in_place",
+      "category": "v2_refactor",
+      "what_goes_wrong": "Onboarding v2 used 20 inline patches to v1 instead of creating a fresh v2 file. Made diffing harder, missed structural improvements that a clean rewrite would have caught.",
+      "source_execution": "Onboarding PR #59 — later retroactively aligned to v2/ convention in PR #63"
+    },
+    {
+      "pattern": "forgetting_pbxproj_update",
+      "category": "infra",
+      "what_goes_wrong": "Onboarding v2 had 3 fix commits for Xcode target membership because v2 files weren't added to project.pbxproj. Fix: always update pbxproj in the same commit as v2 file creation.",
+      "source_execution": "Onboarding PR #59"
+    },
+    {
+      "pattern": "over_testing_analytics_events",
+      "category": "qa",
+      "what_goes_wrong": "Home v2 had 5.25 tests per analytics event (21 tests for 4 events). Right-sized density is 1.3-2.7x. Over-testing wastes time without improving defect detection.",
+      "source_execution": "Home PR #61 — test density normalized by Training v2 onward"
+    },
+    {
+      "pattern": "re_deriving_cached_patterns",
+      "category": "cache",
+      "what_goes_wrong": "Home v2 spent 2h deriving UX principle-to-pattern mappings from scratch. By Nutrition v2 (4th refactor), the L2 cache had the full mapping and research took 30min. Never re-derive what the cache already contains.",
+      "source_execution": "Home v2 (2h research) vs Nutrition v2 (30min research with L2 cache hit)"
+    }
+  ],
+  "anti_patterns": [],
+  "speedup_instructions": "Use this file as a pre-flight checklist before delivering any phase output. For Phase 3 (UX): check raw literals (design) + Phase 3 skip (pm_workflow) + silent error states (ux). For Phase 4 (Implement): check build order (implementation) + pbxproj surgical edit (infra) + v2 directory convention (v2_refactor). For Phase 5 (Test): check analytics prefix (analytics) + CI both branches (ci). For Phase 7 (Review): check deferred tracking (pm_workflow). Each anti-pattern here encodes a real failure mode from Home v2 or Training v2 — catching them pre-delivery is faster than catching them in CI or user review."
+}

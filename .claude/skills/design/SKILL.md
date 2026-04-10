@@ -183,3 +183,38 @@ Sources checked in order: L1 cache → L2 shared (ux-foundations-map, design-sys
 **Phase 4 (Learn):** Extract new patterns (token mapping decisions, component reuse, refactor methodology). Write/update L1 cache. Design system patterns shared with /ux should be promoted to L2.
 
 **Cache location:** `.claude/cache/design/`
+
+---
+
+## Cache Protocol
+
+### Phase 1 — Cache Check (on skill start)
+Read `.claude/cache/design/_index.json`, match `token_compliance_audit`, check L2 `design-system-decisions.json`. If hit: check known violation categories first. If miss: Phase 2.
+
+### Phase 4 — Learn (on skill complete)
+Extract new token/component patterns. Write L1. If cross-screen, flag L2.
+
+### Health Check (Phase 0 — random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If `random() < 0.25` AND `hours_since(last_check) > 2`: run 5 health checks, compute weighted score, append to history
+3. If score < 0.90: STOP and alert user with failing checks and rollback options
+4. Proceed to Phase 1 (Cache Check)
+
+## External Data Sources
+
+| Adapter | Location | Shared Layer Target | When to Pull |
+|---------|----------|-------------------|--------------|
+| (none directly) | — | Reads design-system.json populated by other skills | — |
+
+**Fallback:** If adapter unavailable, continue with existing shared data. Log to change-log.json.
+
+## Research Scope (Phase 2 — when cache misses)
+
+1. Token inventory from AppTheme.swift
+2. Component library from AppComponents.swift
+3. WCAG AA compliance (contrast, tap targets)
+4. Figma design context via MCP
+5. Motion specs from ux-foundations.md Part 8
+
+**Source priority:** L2 cache > L1 cache > shared layer (design-system.json) > Figma MCP > AppTheme.swift direct read

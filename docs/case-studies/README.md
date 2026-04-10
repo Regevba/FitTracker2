@@ -34,6 +34,7 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `pm-workflow-showcase-onboarding.md` | Onboarding v2 UX Foundations alignment | **Pilot case study** for the per-screen UX alignment initiative. First feature to run through the new /ux skill's full loop (audit → research → spec → compliance → patches). Reference implementation for future v2 refactors |
 | `fittracker-evolution-walkthrough.md` | FitMe product evolution (multi-release narrative) | High-level walkthrough of how the product evolved through major release cycles — broader than a single-feature case study but structurally similar |
 | `original-readme-redesign-casestudy.md` | The original README redesign | Historical case study of how the public-facing README was rewritten. Shows the design + content iteration loop in action |
+| `pm-workflow-evolution-v1-to-v4.md` | PM workflow evolution v1.0 → v4.1 | Comprehensive 3-level analysis (micro/meso/macro) of how the hub-and-spoke PM ecosystem evolved across 6 screen refactors — with measurable efficiency data at each version step |
 
 ## Upcoming case studies (queued)
 

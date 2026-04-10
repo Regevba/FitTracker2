@@ -182,6 +182,16 @@ public struct LocalUserSnapshot: Sendable {
     public var avgDailySteps:          Int?
     public var workoutConsistency:     String?  // "low" | "moderate" | "high"
 
+    // Readiness Engine v2 (evidence-based, goal-aware)
+    public var readinessScore: Int?
+    public var readinessConfidence: String?       // "low", "medium", "high"
+    public var readinessRecommendation: String?   // "restDay", "lightOnly", "moderate", "fullIntensity", "pushHard"
+    public var hrvComponentScore: Double?
+    public var sleepComponentScore: Double?
+    public var trainingLoadComponentScore: Double?
+    public var rhrComponentScore: Double?
+    public var fatigueFlags: [String]?            // ["hydrationWarning", "visceralTrend"]
+
     public init() {}
 }
 
@@ -205,7 +215,7 @@ extension LocalUserSnapshot {
             let goal    = primaryGoal
         else { return nil }
 
-        return [
+        var bands: [String: String] = [
             "age_band":                  age,
             "gender_band":               gender,
             "bmi_band":                  bmi,
@@ -215,6 +225,13 @@ extension LocalUserSnapshot {
             "avg_session_duration_band": duration,
             "primary_goal":              goal,
         ]
+
+        // Training load status from readiness engine
+        if let loadScore = trainingLoadComponentScore {
+            bands["training_load_status"] = loadScore >= 80 ? "optimal" : loadScore >= 50 ? "moderate" : "overreaching"
+        }
+
+        return bands
     }
 
     /// Returns the banded nutrition segment payload.
@@ -243,12 +260,24 @@ extension LocalUserSnapshot {
             let stress  = stressLevel
         else { return nil }
 
-        return [
+        var bands: [String: String] = [
             "sleep_duration_band": sleep,
             "sleep_quality_band":  quality,
             "resting_hr_band":     hr,
             "stress_level_band":   stress,
         ]
+
+        // Readiness bands
+        if let score = readinessScore {
+            bands["readiness_level"] = score >= 70 ? "high" : score >= 50 ? "moderate" : "low"
+        }
+        if let flags = fatigueFlags, !flags.isEmpty {
+            bands["fatigue_level"] = flags.count >= 2 ? "significant" : "mild"
+        } else {
+            bands["fatigue_level"] = "none"
+        }
+
+        return bands
     }
 
     /// Returns the banded stats segment payload.

@@ -75,17 +75,25 @@
     }
   },
   "validation_gate": {
-    "enabled": true,
+    "version": "1.0",
+    "description": "Automatic validation gate for incoming external data. Cross-references new data against shared layer state.",
     "thresholds": {
       "green": 0.95,
-      "orange": 0.90,
-      "red_below": 0.90
+      "orange": 0.90
     },
-    "numeric_tolerance": 0.05,
-    "auto_write": ["green", "orange"],
-    "requires_manual_resolution": ["red"],
-    "always_notify": ["pm-workflow"],
-    "notify_receiving_skill": true
+    "notification_targets": {
+      "green": ["receiving_skill", "pm-workflow"],
+      "orange": ["receiving_skill", "pm-workflow"],
+      "red": ["receiving_skill", "pm-workflow", "user"]
+    },
+    "log_target": ".claude/shared/change-log.json",
+    "scoring": {
+      "numeric_tolerance": 0.05,
+      "new_field_fills_gap": "always_consistent",
+      "measured_supersedes_estimated": "always_consistent",
+      "two_measured_disagree": "conflict"
+    },
+    "enforcement": "automatic_scoring_manual_resolution"
   },
   "lifecycles": {
     "feature": {

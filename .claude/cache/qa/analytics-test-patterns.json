@@ -1,0 +1,66 @@
+{
+  "cache_key": "qa:analytics_testing:right_sized_patterns",
+  "skill": "qa",
+  "level": "L1",
+  "created": "2026-04-10T22:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 5,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "FitTracker/Services/Analytics/AnalyticsService.swift"
+  ],
+  "task_signature": {
+    "type": "analytics_test_planning",
+    "inputs": ["screen_name", "analytics_events_list", "existing_test_file"],
+    "context": "Plan and write XCTest analytics tests for screen-prefixed events."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Right-sized test density",
+      "decision": "Target 1.3-2.7 tests per event. Below 1.0 is under-tested (missing param validation). Above 3.0 is over-tested (testing implementation details). This range covers fires-on-action + params-correct without waste.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen analytics tests",
+        "nutrition-v2 analytics tests",
+        "stats-v2 analytics tests",
+        "settings-v2 analytics tests",
+        "training-plan-v2 analytics tests"
+      ]
+    },
+    {
+      "pattern": "Test template",
+      "decision": "For each event write: (1) test_{screen}_{event}_firesOnAction — trigger the action, assert MockAnalyticsService captured the event name, (2) test_{screen}_{event}_hasCorrectParams — assert expected parameter keys/values. Add a (3) no-fire test only when there is a plausible false-positive scenario (e.g. event fires in wrong state).",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen analytics tests",
+        "training-plan-v2 analytics tests",
+        "nutrition-v2 analytics tests"
+      ]
+    },
+    {
+      "pattern": "Test file naming",
+      "decision": "One test file per screen named {Screen}AnalyticsTests.swift. Do not merge analytics tests into the main view test file — analytics tests grow over time and benefit from isolation.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen analytics tests",
+        "nutrition-v2 analytics tests",
+        "stats-v2 analytics tests",
+        "settings-v2 analytics tests",
+        "training-plan-v2 analytics tests"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Over-testing",
+      "what_went_wrong": "Home v2 achieved 5.25 tests/event as a one-time learning investment, not a repeatable target. Subsequent screens correctly dialed back to 1.3-2.7x. Do not use Home as the benchmark for test count.",
+      "source_execution": "Home v2 analytics tests"
+    },
+    {
+      "pattern": "Testing implementation details",
+      "what_went_wrong": "Tests that assert on AnalyticsService internals (call order, internal state, queue depth) are brittle and couple the test to the implementation. Test only that the correct event name and params were captured by the mock.",
+      "source_execution": "All 6 screen refactors (consistent guideline)"
+    }
+  ],
+  "speedup_instructions": "For each event, generate 2 tests (fires + params). Add 3rd only for plausible false-positive. Target 1.3-2.7x. File: {Screen}AnalyticsTests.swift."
+}

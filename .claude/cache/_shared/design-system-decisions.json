@@ -1,0 +1,120 @@
+{
+  "cache_key": "shared:design_system:token_selection_and_component_reuse",
+  "skill": null,
+  "level": "L2",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T22:00:00Z",
+  "hit_count": 6,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "FitTracker/Services/AppTheme.swift",
+    "FitTracker/DesignSystem/AppComponents.swift",
+    "design-tokens/tokens.json",
+    "docs/design-system/feature-memory.md"
+  ],
+  "task_signature": {
+    "type": "design_system_governance",
+    "inputs": ["visual requirement", "component need", "token need"],
+    "context": "Token selection rationale and component reuse patterns. Used by /design and /ux when selecting tokens and by /analytics when choosing event parameter value formats. Reflects Home v2 and Training v2 DS evolution decisions."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Token namespace selection — which AppColor.* enum for which use case",
+      "decision": "Use the most specific namespace. Priority: Status > Chart > Accent > Brand > Surface > Background > Text > Border. Never use Brand tokens for UI feedback (use Status). Never use raw Brand colors for data visualization (use Chart). Never use Surface tokens for typography (use Text).",
+      "namespace_guide": {
+        "AppColor.Brand.*": "Logo, primary action buttons, brand identity elements. Never for feedback states.",
+        "AppColor.Background.*": "Screen-level backgrounds (appPrimary, appSecondary, appTint, appWarmTint). Auth screens use authTop/authMiddle/authBottom (always dark).",
+        "AppColor.Surface.*": "Card backgrounds, sheet backgrounds, material overlays. Layering: primary < secondary < tertiary < elevated < materialLight < materialStrong.",
+        "AppColor.Text.*": "Typography only. primary=body, secondary=labels/captions, tertiary=metadata/timestamps (WCAG AA compliant). inverse* variants for dark surface text.",
+        "AppColor.Border.*": "Dividers and outlines only. strong=prominent, subtle=card edges, hairline=0.5pt pixel separators.",
+        "AppColor.Accent.*": "Domain-specific accents. recovery=recovery/readiness metric. sleep=sleep metrics. achievement=PRs/milestones. primary/secondary=interactive CTAs.",
+        "AppColor.Status.*": "System feedback ONLY. success=positive state, warning=caution, error=negative/destructive.",
+        "AppColor.Chart.*": "Data visualization ONLY. body=strength/body metrics, cardio=cardio metrics, sleep=sleep data, achievement=achievements, progress=goal progress, nutritionFat=nutrition fat macro, weight=weight tracking, hrv=HRV metric, heartRate=heart rate metric."
+      },
+      "confidence": "high",
+      "source_executions": [
+        "FitTracker/Services/AppTheme.swift full enum structure",
+        "home-today-screen v2 F8: chart tokens gap → T3 added weight/hrv/heartRate"
+      ]
+    },
+    {
+      "pattern": "When to add new tokens vs reuse existing",
+      "decision": "Add new token when: (1) no existing token semantically covers the need, (2) a raw literal would otherwise be required, (3) the value is domain-specific enough to warrant a named token. Propose on feature branch. Token additions in Home v2: AppText.monoCaption (monospaced numeric display), AppSize.tabBarClearance (bottom padding for tab bar overlap). Training v2: AppSize.tabBarClearance (same need, confirmed reuse), AppText.monoCaption (confirmed reuse). Pending DS Evolution Queue tracked in feature-memory.md.",
+      "new_token_process": "T1-style task: add to AppTheme.swift → run make tokens-check → confirm pipeline passes → then use in view code.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen T1 (AppText/AppSize tokens), T2 (motion tokens), T3 (Chart tokens)",
+        "training-plan-v2: '2 new tokens (AppSize.tabBarClearance, AppText.monoCaption)'",
+        "nutrition-v2: 4 tokens + AppOpacity enum",
+        "stats-v2: 3 tokens + AppLayout enum",
+        "settings-v2: 0 tokens (all existing covered)",
+        "PR #78: 4 raw color literals fixed for 100% compliance"
+      ]
+    },
+    {
+      "pattern": "Component promotion — AppComponents.swift additions from feature work",
+      "decision": "When a sub-view pattern is used in 2+ screens, promote to AppComponents.swift as a shared component. Home v2 promoted: AppMetricColumn (T4), AppMetricTile (T5). Training v2 promoted: 3 shared components. Promotion process: extract pattern → define in AppComponents.swift → replace in-feature usage → verify no duplicate definitions remain in view files.",
+      "promoted_components": {
+        "AppMetricColumn": "Vertical metric display with value + label. Added Home v2 T4. Use for dashboard-style metric columns.",
+        "AppMetricTile": "Tappable metric tile with tint color + icon + value. Added Home v2 T5. Use for Home screen metric grid.",
+        "training_shared_components_3": "3 components promoted in Training v2 (exact names in feature-memory.md). Use for exercise-related displays.",
+        "ProgressBar": "Reusable progress indicator. Added Nutrition v2. Used in Stats v2.",
+        "AppLayout": "Layout constants enum (chartHeight, emptyStateMinHeight, chipMin/Ideal/Max, dotSize). Added Stats v2."
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen tasks T4, T5",
+        "training-plan-v2 state.json: '3 shared components promoted'"
+      ]
+    },
+    {
+      "pattern": "Design token pipeline — tokens.json → Style Dictionary → DesignTokens.swift",
+      "decision": "Token pipeline: design-tokens/tokens.json is the source of truth → Style Dictionary transforms → DesignTokens.swift generated file → AppTheme.swift references DesignTokens.swift. The CI gate make tokens-check detects any drift (token referenced in AppTheme.swift but not in tokens.json, or vice versa). Adding a new token requires updating tokens.json first, then AppTheme.swift.",
+      "gotcha": "Never add a token to AppTheme.swift without a corresponding entry in design-tokens/tokens.json. tokens-check will fail in CI.",
+      "confidence": "high",
+      "source_executions": ["CLAUDE.md Design System section: token pipeline description", "v2-refactor-checklist B4: 'Run make tokens-check to verify nothing drifts the token pipeline'"]
+    },
+    {
+      "pattern": "DS Evolution Queue — tracking pending tokens and components",
+      "decision": "When an audit identifies a token or component gap that can't be resolved in the current feature (e.g. it needs broader discussion), add it to the Pending DS Evolution Queue in docs/design-system/feature-memory.md. Home v2 added 8 new tokens and 2 component promotions to the queue (commit 844a2ba). Items in the queue are addressed in the earliest feature branch that needs them.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json research.v2_substeps_completed: 'Pending DS Evolution Queue updated in feature-memory.md (8 new tokens, 2 component promotions queued)'"
+      ]
+    },
+    {
+      "pattern": "Component architecture for extracted views (Training v2 decomposition)",
+      "decision": "Large monolithic view files (>500 lines) MUST be decomposed in the v2 refactor. Training v2 decomposed 2,135-line TrainingPlanView into: TrainingPlanView (533-line container) + StatusDropdown + MilestoneModal + ExerciseRow + SetCompletionIndicator + RestTimerView + SkeletonLoadingView. Each extracted view is a private struct within the v2/ directory unless it has cross-feature reuse potential (then promote to AppComponents.swift).",
+      "decomposition_threshold": "v1 files >800 lines should be decomposed in v2. Each sub-view gets its own file in the v2/ directory. Container stays at v2/OriginalName.swift.",
+      "confidence": "high",
+      "source_executions": [
+        "training-plan-v2: 'container (533 lines) + 6 extracted views'",
+        "home-today-screen: v1 1029 lines → v2 703 lines (single file OK for simpler screen)"
+      ]
+    },
+    {
+      "pattern": "Analytics parameter value formats — DS-level consistency",
+      "decision": "Consistent value formats across all events: weight always float kg (SI), duration always int seconds (SI), enums use snake_case (build_muscle, lose_fat, maintain, general_fitness). Muscle groups: push/pull/legs/cardio/rest. Meal types: breakfast/lunch/dinner/snack. Entry methods: manual/template/photo/barcode. These are de-facto design system constraints enforced through the taxonomy CSV.",
+      "confidence": "high",
+      "source_executions": ["analytics-taxonomy.csv parameter columns for training_set_logged, meal_log, onboarding_goal_selected"]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Creating ad-hoc components inside v2 view files instead of promoting to AppComponents.swift",
+      "what_went_wrong": "Private sub-views that are genuinely reusable across screens bloat individual view files and cause duplicate patterns. The test is: 'would 2+ screens benefit from this?' If yes, promote. If no, private struct in the v2/ file is fine.",
+      "source_execution": "v2-refactor-checklist B3: 'no new ad-hoc components inside the v2 file unless declared as private types'"
+    },
+    {
+      "pattern": "Using AppColor.Brand.* for system feedback states",
+      "what_went_wrong": "Brand primary is a vivid blue — using it for both CTAs and error states creates semantic confusion. Error states must use AppColor.Status.error, success states use AppColor.Status.success. Brand color is reserved for brand identity and interactive affordance.",
+      "source_execution": "AppTheme.swift enum structure separates Brand, Status, Accent into distinct namespaces precisely for this reason"
+    },
+    {
+      "pattern": "Adding tokens directly to AppTheme.swift without updating tokens.json",
+      "what_went_wrong": "make tokens-check fails in CI because tokens.json is out of sync. Always update design-tokens/tokens.json first, then add the semantic alias to AppTheme.swift.",
+      "source_execution": "CLAUDE.md Design System token pipeline; v2-refactor-checklist B4"
+    }
+  ],
+  "speedup_instructions": "When /design or /ux needs to select a token: check namespace_guide first to identify the correct AppColor.* enum, then verify the token exists in FitTracker/Services/AppTheme.swift. When a new token is needed: follow the new_token_process (tokens.json → AppTheme.swift → make tokens-check). When a component may be promotable: check promoted_components list first — AppMetricColumn and AppMetricTile already exist and cover metric display patterns."
+}

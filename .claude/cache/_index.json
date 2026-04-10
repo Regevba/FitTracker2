@@ -1,0 +1,61 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-10T00:00:00Z",
+  "description": "Master cache index (v4.2). L1 = per-skill, L2 = cross-skill (_shared/), L3 = project-wide (_project/). Cache keys checked on skill execution start; entries updated on completion. Health check (Phase 0) verifies integrity before cache access. Staleness via SHA256 hashes.",
+  "cache_levels": {
+    "L1": {
+      "description": "Per-skill cache. Hot. Patterns and decisions from prior executions of a single skill.",
+      "location": ".claude/cache/{skill}/",
+      "promotion_rule": "When 2+ skills cache the same pattern, promote to L2."
+    },
+    "L2": {
+      "description": "Cross-skill cache. Warm. Patterns shared across multiple skills.",
+      "location": ".claude/cache/_shared/",
+      "promotion_rule": "When pattern is referenced by 5+ skills, promote to L3."
+    },
+    "L3": {
+      "description": "Project-wide cache. Cold. Architectural decisions and conventions.",
+      "location": ".claude/cache/_project/",
+      "promotion_rule": "None. L3 is the top level."
+    }
+  },
+  "lifecycle": {
+    "on_skill_start_health": "PHASE 0 (Health Check): Read .claude/shared/framework-health.json. If random() < probability AND hours_since(last_check) > min_interval_hours: run 5 weighted health checks (cache_staleness, cache_hit_accuracy, shared_layer_consistency, skill_routing_integrity, adapter_availability). Compute weighted score. Append result to history[]. If score < alert_threshold (0.90): STOP, alert user with failing checks and rollback options. If healthy: proceed to Phase 1 (Cache Check).",
+    "on_skill_start_cache": "PHASE 1 (Cache Check): Check _index.json for matching task_signature. If hit, load learned_patterns and anti_patterns. Skip derivation steps covered by cache.",
+    "on_skill_complete_learn": "PHASE 4 (Learn): Extract new patterns and anti-patterns. Write or update cache entry. Increment hit_count. Update last_hit timestamp.",
+    "on_source_change": "Check invalidated_by SHA256 hashes. If any mismatch, mark entry stale. Re-derive on next cache hit.",
+    "on_cross_skill_pattern": "When 2+ L1 entries share a pattern, create or update L2 entry in _shared/.",
+    "on_project_pattern": "When L2 entry is referenced by 5+ skills, create or update L3 entry in _project/."
+  },
+  "entry_schema": {
+    "cache_key": "string — unique identifier: {skill}:{task_type}:{context}",
+    "skill": "string — originating skill",
+    "created": "ISO 8601 timestamp",
+    "last_hit": "ISO 8601 timestamp",
+    "hit_count": "number",
+    "ttl_strategy": "until_invalidated | time_based",
+    "invalidated_by": ["array of file_path:sha256 pairs"],
+    "task_signature": {
+      "type": "string — category of task",
+      "inputs": ["array of input parameter names"],
+      "context": "string — human-readable description"
+    },
+    "learned_patterns": [
+      {
+        "pattern": "string — pattern name",
+        "decision": "string — what was decided",
+        "confidence": "high | medium | low",
+        "source_executions": ["array of feature/task names"]
+      }
+    ],
+    "anti_patterns": [
+      {
+        "pattern": "string — what to avoid",
+        "what_went_wrong": "string — description",
+        "source_execution": "string — where it happened"
+      }
+    ],
+    "speedup_instructions": "string — human-readable instructions for using this cache entry"
+  },
+  "entries": []
+}
