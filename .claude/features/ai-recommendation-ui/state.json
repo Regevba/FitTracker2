@@ -1,0 +1,61 @@
+{
+  "feature": "ai-recommendation-ui",
+  "created": "2026-04-10T21:00:00Z",
+  "updated": "2026-04-10T22:00:00Z",
+  "branch": "fix/design-system-token-compliance",
+  "current_phase": "prd",
+  "work_type": "feature",
+  "parent_feature": "adaptive-intelligence",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": 46,
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-10T20:00:00Z",
+      "approved_by": "user"
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-10T21:00:00Z",
+      "approved_by": "user"
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-10T22:00:00Z",
+      "approved_by": "user",
+      "note": "PRD approved. Tasks phase blocked on Child 1+2 completion."
+    }
+  ],
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-10T20:00:00Z",
+      "approved_by": "user",
+      "note": "Research done as part of parent initiative. AI UI gap analysis complete. Brand icon avatar concept approved."
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-04-10T22:00:00Z",
+      "approved_by": "user",
+      "note": "PRD written with 3 screens, 6 analytics events, brand icon avatar design."
+    },
+    "tasks": {
+      "status": "pending",
+      "note": "Blocked on Child 1 + Child 2 completion."
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "note": "Full UX spec required — new UI surface."
+    },
+    "implementation": { "status": "pending" },
+    "testing": { "status": "pending" },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending" },
+    "documentation": { "status": "pending" }
+  },
+  "tasks": []
+}

@@ -1,0 +1,31 @@
+{
+  "feature": "ai-engine-v2",
+  "created": "2026-04-10T21:00:00Z",
+  "updated": "2026-04-10T22:00:00Z",
+  "branch": "fix/design-system-token-compliance",
+  "current_phase": "tasks",
+  "work_type": "enhancement",
+  "parent_feature": "adaptive-intelligence",
+  "has_ui": false,
+  "requires_analytics": false,
+  "github_issue_number": null,
+  "transitions": [
+    {
+      "from": null,
+      "to": "tasks",
+      "timestamp": "2026-04-10T21:00:00Z",
+      "approved_by": "user",
+      "note": "Enhancement — parent PRD exists (ai-engine-v2.md). Blocked on Child 1 (readiness-score-v2)."
+    }
+  ],
+  "phases": {
+    "tasks": {
+      "status": "pending",
+      "note": "PRD written. Awaiting task breakdown. Depends on Child 1 completion."
+    },
+    "implementation": { "status": "pending" },
+    "testing": { "status": "pending" },
+    "merge": { "status": "pending" }
+  },
+  "tasks": []
+}

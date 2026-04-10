@@ -1,0 +1,47 @@
+{
+  "feature": "adaptive-intelligence",
+  "created": "2026-04-10T20:00:00Z",
+  "updated": "2026-04-10T22:00:00Z",
+  "branch": "fix/design-system-token-compliance",
+  "current_phase": "prd",
+  "work_type": "feature",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "children": ["readiness-score-v2", "ai-engine-v2", "ai-recommendation-ui"],
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-10T20:00:00Z",
+      "approved_by": "user",
+      "note": "Evidence-based formula research: 20 scientific references gathered, commercial systems compared"
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-10T21:00:00Z",
+      "approved_by": "user",
+      "note": "Parent PRD + 3 child PRDs written: readiness-score-v2, ai-engine-v2, ai-recommendation-ui"
+    }
+  ],
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-10T21:00:00Z",
+      "approved_by": "user"
+    },
+    "prd": {
+      "status": "in_progress",
+      "note": "Parent PRD + 3 child PRDs written: readiness-score-v2, ai-engine-v2, ai-recommendation-ui"
+    },
+    "tasks": { "status": "pending" },
+    "ux_or_integration": { "status": "pending" },
+    "implementation": { "status": "pending" },
+    "testing": { "status": "pending" },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending" },
+    "documentation": { "status": "pending" }
+  },
+  "tasks": []
+}
