@@ -305,6 +305,56 @@ struct DailyBiometrics: Codable, Sendable {
 }
 
 // ─────────────────────────────────────────────────────────
+// MARK: – Readiness Score (v2 — evidence-based, goal-aware)
+// ─────────────────────────────────────────────────────────
+
+/// Training readiness confidence based on available data depth.
+enum ReadinessConfidence: String, Codable, Sendable {
+    case low     // Layer 0: <7 days of data
+    case medium  // Layer 1-2: 7-89 days
+    case high    // Layer 3: 90+ days
+}
+
+/// Binary body-composition flags that can suppress readiness score.
+enum BodyCompFlag: String, Codable, Sendable {
+    case hydrationWarning  // overnight weight change >1%
+    case visceralTrend     // rising visceral fat over 7-day window
+}
+
+/// Training intensity recommendation derived from readiness score.
+enum TrainingRecommendation: String, Codable, Sendable {
+    case restDay        // score <30 or critical flags
+    case lightOnly      // score 30-49
+    case moderate       // score 50-69
+    case fullIntensity  // score 70-84
+    case pushHard       // score 85+
+}
+
+/// Full readiness assessment with per-component breakdown.
+/// Computed by `ReadinessEngine.compute(...)`.
+///
+/// Scientific basis:
+/// - HRV: ln(rMSSD) deviation from 7-day EWMA (Plews et al. 2013; PMC8507742)
+/// - Sleep: PSQI-adapted composite (Buysse et al. 1989; Apple sleep staging)
+/// - Training Load: ACWR via EWMA (Williams et al. 2017; Foster sRPE 1998)
+/// - RHR: deviation from 7-day baseline (PMC11235883)
+/// - Body Comp: binary suppressors (hydration + visceral fat trend)
+struct ReadinessResult: Codable, Sendable {
+    let overallScore: Int                       // 0-100
+    let hrvScore: Double                        // 0-100
+    let sleepScore: Double                      // 0-100
+    let trainingLoadScore: Double               // 0-100
+    let rhrScore: Double                        // 0-100
+    let bodyCompFlags: [BodyCompFlag]
+    let confidence: ReadinessConfidence
+    let personalizationLayer: Int               // 0-3
+    let goalMode: NutritionGoalMode
+    let appliedWeights: [String: Double]        // transparency: which weights were used
+    let warnings: [String]
+    let recommendation: TrainingRecommendation
+}
+
+// ─────────────────────────────────────────────────────────
 // MARK: – Exercise Definition (static)
 // ─────────────────────────────────────────────────────────
 
