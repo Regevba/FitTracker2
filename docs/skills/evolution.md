@@ -557,3 +557,87 @@ Every SKILL.md now has 4 sections (was 3 in v4.0):
 2. **Research Scope (Phase 2)** — 5 domain-specific research dimensions + source priority
 3. **Cache Protocol** — Phase 1 (Cache Check) + Phase 4 (Learn) behavior
 4. **Cross-Skill Cache Promotion** — when to promote to L2 (hub only)
+
+---
+
+## 19. v4.2 — Self-Healing Hub with Integrity Verification (2026-04-10)
+
+### What Changed: v4.1 → v4.2
+
+v4.1 gave skills a 4-phase internal lifecycle (Cache → Research → Execute → Learn). v4.2 adds **Phase 0 (Health Check)** — making the lifecycle 5 phases and introducing self-verification into the hub itself.
+
+| Aspect | v4.1 | v4.2 |
+| --- | --- | --- |
+| **Skill lifecycle phases** | 4 (Cache → Research → Execute → Learn) | 5 (Health → Cache → Research → Execute → Learn) |
+| **Self-monitoring** | None — trust that cache and shared layer are correct | Probabilistic integrity verification (25% trigger, 2h cooldown) |
+| **Cache accuracy tracking** | hit_count only | hit_count + correction_count (feeds back to health score) |
+| **Alert system** | Validation gate for external data only | Validation gate + internal health check with 3-tier alerts |
+| **Rollback protocol** | Manual | Structured (fix / rollback cache / rollback all) |
+
+### The 5-Phase Skill Internal Lifecycle (v4.2)
+
+```text
+┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
+│ 0. HEALTH│───▶│ 1. CACHE │───▶│2. RESEARCH│───▶│3. EXECUTE│───▶│ 4. LEARN │
+│  CHECK   │    │  CHECK   │    │ (if miss) │    │          │    │          │
+└──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
+```
+
+0. **Phase 0 — Health Check (random trigger):** On ~25% of skill invocations (with 2h cooldown), run 5 weighted integrity checks. If score < 90%, STOP and alert.
+1. **Phase 1 — Cache Check:** (unchanged from v4.1)
+2. **Phase 2 — Research:** (unchanged)
+3. **Phase 3 — Execute:** (unchanged)
+4. **Phase 4 — Learn:** (unchanged) + now also updates `correction_count` if a cached pattern was overridden during execution.
+
+### The 5 Health Checks
+
+| Check | Weight | What It Verifies |
+| --- | --- | --- |
+| Cache Staleness | 0.25 | SHA256 hashes of invalidated_by source files match. Stale entry = cache is lying. |
+| Cache Hit Accuracy | 0.25 | hit_count vs correction_count ratio. Low accuracy = cache patterns are wrong. |
+| Shared Layer Consistency | 0.20 | Cross-references between shared JSON files (feature status, metric instrumentation, token counts). |
+| Skill Routing Integrity | 0.15 | Task types in skill-routing.json map to existing SKILL.md files and cache dirs. |
+| Adapter Availability | 0.15 | Each adapter dir has adapter.md + schema.json + mapping.json. |
+
+### Alert Levels
+
+| Level | Score | Action |
+| --- | --- | --- |
+| Healthy | >= 0.95 | Silent. Log only. |
+| Warning | 0.90 - 0.95 | Log + advisory to user. Continue execution. |
+| Critical | < 0.90 | Log + STOP. Alert with failing checks. User chooses: fix, rollback cache, or rollback all. |
+
+### Why Self-Healing Matters
+
+Without self-verification, a corrupted cache or inconsistent shared layer silently degrades every skill invocation. The health check catches drift before it compounds — the same principle as CI catching code drift, applied to the framework's own data layer.
+
+### New Files
+
+- `.claude/shared/framework-health.json` — health check config, scoring weights, history log
+
+### Updated Files
+
+- `.claude/cache/_index.json` — lifecycle now 5 phases (Phase 0 added)
+- `.claude/shared/skill-routing.json` — validation_gate section added
+- All 11 SKILL.md files — Health Check (Phase 0) section added to Cache Protocol
+
+### SKILL.md Contract Update (v4.2)
+
+Every SKILL.md now has 5 sections (was 4 in v4.1):
+
+1. **Cache Protocol** — Phase 0 (Health Check) + Phase 1 (Cache Check) + Phase 4 (Learn) behavior
+2. **External Data Sources** — adapters + validation gate
+3. **Research Scope (Phase 2)** — 5 domain-specific research dimensions + source priority
+4. **Cross-Skill Cache Promotion** — when to promote to L2 (hub only)
+
+### Cache Seeding (shipped with v4.2)
+
+5 L1 cache entries seeded from 6 completed v2 refactors:
+
+- `/ux` — v2-screen-audit-playbook (audit methodology, severity calibration, anti-patterns)
+- `/design` — token-compliance-checker (violation categories, DS evolution, compound reuse)
+- `/analytics` — screen-prefix-convention (naming rule, event templates, test density)
+- `/dev` — v2-implementation-recipe (v2/ directory convention, extracted views, commit strategy)
+- `/qa` — analytics-test-patterns (right-sized density 1.3-2.7x, test templates)
+
+5 L2/L3 entries updated with data from all 6 refactors (hit_count = 6).

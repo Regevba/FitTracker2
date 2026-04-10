@@ -2,7 +2,7 @@
 
 **Goal:** Give every domain of the product lifecycle its own first-class skill, so product management scales past a monolithic workflow without losing the connective tissue between domains.
 
-**Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 11 spokes + 11 shared data files + 6 integration adapters + 3-level learning cache. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
+**Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 11 spokes + 11 shared data files + 6 integration adapters + 3-level learning cache + self-healing health check system. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
 
 **Where to read more:** `docs/skills/{name}.md` for deep dives on each skill. The `SKILL.md` files under `.claude/skills/{name}/` are the agent-facing prompts the harness executes; the `docs/skills/` folder is the human-facing reference.
 
@@ -32,6 +32,7 @@
 - 2026-04-09 — v3.0: external integrations (Notion MCP, Figma MCP, Vercel), `/ux wireframe`, `/design build`, parallel subagent execution, 5 features shipped through the full lifecycle
 - 2026-04-10 — v4.0: reactive data mesh, integration adapter layer (6 adapters), automatic validation gate (GREEN/ORANGE/RED), L1/L2/L3 learning cache, per-skill cache + external data source sections in all SKILL.md files
 - 2026-04-10 — v4.1: Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). Every skill mirrors the hub internally — 4-phase lifecycle with domain-specific research scope. Skills learn from prior executions and get faster over time.
+- 2026-04-10 — v4.2: Self-healing hub. Phase 0 (Health Check) added to Skill Internal Lifecycle — 5 weighted integrity checks at random intervals verify cache staleness, hit accuracy, shared layer consistency, routing integrity, and adapter availability. Alert if score drops below 90%. L1 cache seeded from 6 completed refactors. All 11 SKILL.md files wired with cache protocol, adapters, and research scope.
 
 ---
 
@@ -255,6 +256,7 @@ The hub never does inline work — it reads state, decides which skill to dispat
 8. **Every skill declares its external data sources.** Adapters, shared layer targets, and validation gate behavior documented in each SKILL.md.
 9. **Every skill has a domain-specific research scope.** 5 research dimensions + source priority order. When cache misses, the skill knows exactly what to investigate.
 10. **Data flows reactively.** Any entry point, any time. A single skill invocation can ripple through the entire shared layer.
+11. **Every skill runs Phase 0 (Health Check) on random trigger.** ~25% probability with 2h cooldown. 5 weighted checks verify cache, shared layer, routing, and adapter integrity. If score < 90%, execution halts until resolved.
 
 ---
 
