@@ -151,25 +151,37 @@ Internal PM dashboard. Astro + React + Tailwind with Kanban board (drag-drop), t
 
 ## Current Repo Status
 
-Verification snapshot as of `2026-04-06`:
+Verification snapshot as of `2026-04-10`:
 
-- iOS app builds again with full Xcode after Firebase/Xcode project recovery
-- targeted iOS core XCTest coverage passes on simulator (`FitTrackerTests/FitTrackerCoreTests`, `31` tests)
-- simulator settings review launch now reaches the live Settings screen
-- simulator nested delete-account review route now reaches the live GDPR deletion screen
-- simulator nested export-data review route now reaches the live portability/export screen
-- export generation is now covered in the targeted iOS core XCTest suite
-- sync merge coverage now verifies multiple dated daily logs and weekly snapshots coexist correctly
-- design-token drift check passes
-- dashboard tests pass (`9/9`) and the production build now passes
-- marketing website production build now passes
-- AI engine tests pass (`5/5`) with a self-contained test harness and stub settings override
-- Firebase bootstrap is now config-aware, so missing local plist no longer blocks unit tests or clean builds
-- Supabase runtime now degrades gracefully when local config is missing instead of crashing on placeholder values
-- Firebase runtime verification still requires a local `FitTracker/GoogleService-Info.plist`
-- live signed-in Supabase sync and deletion/export execution still require local runtime credentials and backend validation
+### V2 Screen Refactors (6/6 complete)
 
-Detailed recovery and verification notes live in [`docs/project/stabilization-report-2026-04-05.md`](docs/project/stabilization-report-2026-04-05.md).
+| Screen | PR | Tests | Analytics Events | Status |
+|--------|----|-------|-----------------|--------|
+| Onboarding v2 | #59 | 5 | 2 | Shipped 2026-04-06 |
+| Home Today v2 | #61 | 21 | 7 | Shipped 2026-04-09 |
+| Training Plan v2 | #74 | 16 | 12 | Shipped 2026-04-10 |
+| Nutrition v2 | #75 | 12 | 5 | Shipped 2026-04-10 |
+| Stats v2 | #76 | 10 | 4 | Shipped 2026-04-10 |
+| Settings v2 | #77 | 8 | 3 | Shipped 2026-04-10 |
+
+**Totals:** 119 findings addressed, 33 analytics events, 60+ tests across all screens.
+
+### Design System
+- 125+ semantic tokens (AppColor, AppText, AppSpacing, AppRadius, AppShadow, AppMotion)
+- 100% token compliance across all v2 files (PR #78 fixed last 4 raw literals)
+- Zero token drift (`make tokens-check` clean)
+- All 6 v2 screens built in Figma via MCP (file key: `0Ai7s3fCFqR5JXDW8JvgmD`)
+
+### Infrastructure
+- iOS app builds with full Xcode, targeted XCTest coverage passes
+- Design-token drift check passes
+- Dashboard tests pass (`9/9`), marketing website build passes
+- AI engine tests pass (`5/5`)
+- Firebase bootstrap config-aware, Supabase graceful degradation
+- Firebase runtime verification still requires local `FitTracker/GoogleService-Info.plist`
+- Live signed-in Supabase sync still requires local runtime credentials
+
+Detailed recovery notes: [`docs/project/stabilization-report-2026-04-05.md`](docs/project/stabilization-report-2026-04-05.md).
 
 ---
 
