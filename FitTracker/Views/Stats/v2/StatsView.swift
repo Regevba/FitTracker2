@@ -1,13 +1,12 @@
-// HISTORICAL — superseded by v2/StatsView.swift on 2026-04-10 per
-// UX Foundations alignment pass. See
-// .claude/features/stats-v2/v2-audit-report.md for the gap analysis.
-// This file is no longer in the build target; it stays in the repo
-// as a reviewable reference for the v1 → v2 diff.
+// FitTracker/Views/Stats/v2/StatsView.swift
+// Stats v2 — UX Foundations alignment pass (2026-04-10)
+// 9 findings fixed: motion tokens, frame tokenization, accessibility, type extraction
+// See .claude/features/stats-v2/v2-audit-report.md
 
 import SwiftUI
 import Charts
 
-enum StatsPeriod_V1_Historical: String, CaseIterable {
+enum StatsPeriod: String, CaseIterable {
     case daily = "D"
     case weekly = "W"
     case monthly = "M"
@@ -55,7 +54,7 @@ enum StatsPeriod_V1_Historical: String, CaseIterable {
     }
 }
 
-enum StatsFocusMetric_V1_Historical: String, CaseIterable, Identifiable {
+enum StatsFocusMetric: String, CaseIterable, Identifiable {
     case weight
     case bodyFat
     case readiness
@@ -242,14 +241,14 @@ enum StatsFocusMetric_V1_Historical: String, CaseIterable, Identifiable {
     }
 }
 
-private struct MetricSeriesPoint_V1_Historical: Identifiable {
+private struct MetricSeriesPoint: Identifiable {
     let date: Date
     let value: Double
 
     var id: Date { date }
 }
 
-struct StatsView_V1_Historical: View {
+struct StatsView: View {
     var initialMetric: StatsFocusMetric?
 
     @EnvironmentObject var dataStore: EncryptedDataStore
@@ -381,6 +380,8 @@ struct StatsView_V1_Historical: View {
                         )
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(option.periodLabel)
+                .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
         }
         .padding(AppSpacing.xSmall)
@@ -444,7 +445,7 @@ struct StatsView_V1_Historical: View {
                     ctaLabel: ctaLabel(for: metric),
                     ctaAction: ctaAction(for: metric)
                 )
-                .frame(height: 128)
+                .frame(height: AppLayout.emptyStateMinHeight)
             } else {
                 VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     metricHeader(for: metric, points: points)
@@ -460,7 +461,7 @@ struct StatsView_V1_Historical: View {
         let subtitle = metricChipSubtitle(for: metric)
 
         return Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
+            withAnimation(AppMotion.quickInteraction) {
                 selectedMetric = metric
                 chartSelection = nil
             }
@@ -473,7 +474,7 @@ struct StatsView_V1_Historical: View {
                         Spacer()
                         Circle()
                             .fill(metric.tint)
-                            .frame(width: 8, height: 8)
+                            .frame(width: AppLayout.dotSize, height: AppLayout.dotSize)
                     }
                     .foregroundStyle(selected ? metric.tint : AppColor.Text.secondary)
 
@@ -496,7 +497,7 @@ struct StatsView_V1_Historical: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(minWidth: 128, idealWidth: 144, maxWidth: 168, alignment: .leading)
+            .frame(minWidth: AppLayout.chipMinWidth, idealWidth: AppLayout.chipIdealWidth, maxWidth: AppLayout.chipMaxWidth, alignment: .leading)
         }
         .buttonStyle(.plain)
         .accessibilityLabel("\(metric.title) metric")
@@ -572,7 +573,7 @@ struct StatsView_V1_Historical: View {
                 }
             }
         }
-        .frame(height: 158)
+        .frame(height: AppLayout.chartHeight)
         .chartXAxis { statsXAxis() }
         .chartYAxis {
             AxisMarks { _ in
@@ -621,11 +622,16 @@ struct StatsView_V1_Historical: View {
             }
         }
 
+        let accessibleChart = chart
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(metric.title) chart for \(period.periodLabel)")
+            .accessibilityValue(points.isEmpty ? "No data" : "\(points.count) data points, latest value \(formattedValue(points.last?.value ?? 0, for: metric))")
+
         if metric == .readiness || metric == .supplementAdherence {
-            chart
+            accessibleChart
                 .chartYScale(domain: 0...100)
         } else {
-            chart
+            accessibleChart
         }
     }
 

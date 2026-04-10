@@ -120,6 +120,22 @@ enum AppOpacity {
     static let hover:    Double = 0.08
 }
 
+// MARK: - Layout (component sizing)
+enum AppLayout {
+    /// Standard chart canvas height (Swift Charts)
+    static let chartHeight:          CGFloat = 158
+    /// Empty state container minimum height
+    static let emptyStateMinHeight:  CGFloat = 128
+    /// Metric chip minimum width in carousel
+    static let chipMinWidth:         CGFloat = 128
+    /// Metric chip ideal width in carousel
+    static let chipIdealWidth:       CGFloat = 144
+    /// Metric chip maximum width in carousel
+    static let chipMaxWidth:         CGFloat = 168
+    /// Selection indicator dot size
+    static let dotSize:              CGFloat = 8
+}
+
 // MARK: - Radius
 enum AppRadius {
     /// Data-viz only — progress bars, chart bar segments, small inline indicators.

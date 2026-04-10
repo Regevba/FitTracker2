@@ -256,6 +256,34 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Stats v2 Events (screen-prefixed)
+
+    func logStatsPeriodChanged(period: String) {
+        logEvent(AnalyticsEvent.statsPeriodChanged, parameters: [
+            AnalyticsParam.period: period,
+        ])
+    }
+
+    func logStatsMetricSelected(metricName: String, category: String) {
+        logEvent(AnalyticsEvent.statsMetricSelected, parameters: [
+            AnalyticsParam.metricName: metricName,
+            AnalyticsParam.category: category,
+        ])
+    }
+
+    func logStatsChartInteraction(metricName: String, interactionType: String) {
+        logEvent(AnalyticsEvent.statsChartInteraction, parameters: [
+            AnalyticsParam.metricName: metricName,
+            AnalyticsParam.interactionType: interactionType,
+        ])
+    }
+
+    func logStatsEmptyStateShown(metricName: String) {
+        logEvent(AnalyticsEvent.statsEmptyStateShown, parameters: [
+            AnalyticsParam.metricName: metricName,
+        ])
+    }
+
     // MARK: - Recovery Events
 
     func logBiometricLogged(metricType: String, source: String) {

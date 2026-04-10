@@ -71,6 +71,16 @@ enum AnalyticsEvent {
     /// Empty state shown (no meals, supplements, or hydration)
     static let nutritionEmptyStateShown  = "nutrition_empty_state_shown"
 
+    // ── Stats v2 Events (screen-prefixed) ────────────────────
+    /// User changes the time period filter
+    static let statsPeriodChanged      = "stats_period_changed"
+    /// User selects a metric in the carousel
+    static let statsMetricSelected     = "stats_metric_selected"
+    /// User interacts with a chart (drag to scrub)
+    static let statsChartInteraction   = "stats_chart_interaction"
+    /// Empty state shown for a metric
+    static let statsEmptyStateShown    = "stats_empty_state_shown"
+
     // ── Recovery Events (custom) ────────────────────────────
 
     /// User logs a biometric entry
@@ -207,6 +217,11 @@ enum AnalyticsParam {
     static let targetMl          = "target_ml"        // int — daily hydration target
     static let direction         = "direction"        // forward/backward — date navigation
     static let section           = "section"          // meals/supplements/hydration — empty state context
+
+    // Stats parameters (period already defined in body composition params)
+    static let metricName        = "metric_name"      // weight/bodyFat/readiness/etc
+    static let category          = "category"         // body/recovery/training/nutrition
+    static let interactionType   = "interaction_type" // drag/tap
 
     // Recovery parameters
     static let metricType        = "metric_type"      // weight/hrv/rhr/sleep/body_fat
