@@ -187,6 +187,28 @@ enum AnalyticsEvent {
     static let homeBodyCompLogTap = "home_body_comp_log_tap"
     /// User taps a metric tile on the Home screen to deep-link into Stats
     static let homeMetricTileTap = "home_metric_tile_tap"
+
+    // ── Readiness Events (screen-prefixed) ─────────────────
+    /// Readiness score computed on home screen load
+    static let homeReadinessScoreComputed      = "home_readiness_score_computed"
+    /// User taps a readiness component mini-bar
+    static let homeReadinessComponentTap       = "home_readiness_component_tap"
+    /// Training recommendation shown to user
+    static let homeReadinessRecommendationShown = "home_readiness_recommendation_shown"
+
+    // ── AI Recommendation Events (screen-prefixed) ─────────
+    /// AI insight card shown on home screen
+    static let homeAiInsightShown              = "home_ai_insight_shown"
+    /// User taps AI insight card to expand
+    static let homeAiInsightTap                = "home_ai_insight_tap"
+    /// AI intelligence sheet opened
+    static let aiSheetOpened                   = "ai_sheet_opened"
+    /// User views a recommendation in the AI sheet
+    static let aiRecommendationViewed          = "ai_recommendation_viewed"
+    /// User submits feedback on a recommendation
+    static let aiFeedbackSubmitted             = "ai_feedback_submitted"
+    /// AI avatar animation state changes
+    static let aiAvatarStateChanged            = "ai_avatar_state_changed"
 }
 
 // MARK: - Parameter Constants
@@ -286,6 +308,23 @@ enum AnalyticsParam {
     static let goalValue          = "goal_value"       // build_muscle/lose_fat/maintain/general
     static let permissionType     = "permission_type"  // healthkit
     static let permissionGranted  = "permission_granted" // true/false
+
+    // Readiness parameters
+    static let score             = "score"              // int 0-100
+    static let confidence        = "confidence"         // low/medium/high
+    static let layer             = "layer"              // int 0-3
+    static let goalMode          = "goal_mode"          // fatLoss/maintain/gain
+    static let componentCount    = "component_count"    // int — how many components scored
+    static let component         = "component"          // hrv/sleep/training/rhr/bodycomp
+    static let recommendation    = "recommendation"     // restDay/lightOnly/moderate/fullIntensity/pushHard
+
+    // AI parameters
+    static let segment           = "segment"            // training/nutrition/recovery/stats
+    static let sourceTier        = "source_tier"        // local/cloud/foundation
+    static let entryPoint        = "entry_point"        // insight_card/readiness_tap/more_button
+    static let rating            = "rating"             // positive/negative
+    static let fromState         = "from_state"         // breathe/rotate/pulse/shimmer
+    static let toState           = "to_state"           // breathe/rotate/pulse/shimmer
 }
 
 // MARK: - Screen Constants
