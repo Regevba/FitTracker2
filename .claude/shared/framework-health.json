@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-10T00:00:00Z",
+  "description": "Hub-native framework health check — Phase 0 of the v4.2 Skill Internal Lifecycle. Runs at random intervals to verify cache, shared layer, routing, and adapter integrity. Alert if score drops below 90%.",
+  "check_config": {
+    "trigger": "random_on_skill_execution",
+    "probability": 0.25,
+    "min_interval_hours": 2,
+    "last_check": null,
+    "alert_threshold": 0.90
+  },
+  "checks": [
+    {
+      "id": "cache_staleness",
+      "name": "Cache Entry Staleness",
+      "description": "Verify invalidated_by SHA256 hashes still match source files. Stale entries = cache is lying.",
+      "weight": 0.25,
+      "implementation": "For each L1/L2/L3 cache entry with invalidated_by hashes, compute current SHA256 of source file. Mismatch = stale. Score = non-stale / total."
+    },
+    {
+      "id": "cache_hit_accuracy",
+      "name": "Cache Hit Accuracy",
+      "description": "When a cache hit is used, did the skill output match expectations? Track hit_count vs correction_count.",
+      "weight": 0.25,
+      "implementation": "Per cache entry: accuracy = 1 - (correction_count / hit_count). If no hits, score = 1.0. Overall = average across all entries with hits."
+    },
+    {
+      "id": "shared_layer_consistency",
+      "name": "Shared Layer Cross-Reference",
+      "description": "Spot-check 3 random fields across shared layer JSON files for internal consistency.",
+      "weight": 0.20,
+      "implementation": "Pick 3 random cross-references: (1) feature-registry.json status vs state.json current_phase, (2) metric-status.json instrumented flag vs analytics-taxonomy.csv, (3) design-system.json token count vs AppTheme.swift. Score = consistent / 3."
+    },
+    {
+      "id": "skill_routing_integrity",
+      "name": "Skill Routing Integrity",
+      "description": "Verify skill-routing.json task types map to existing SKILL.md files and cache directories.",
+      "weight": 0.15,
+      "implementation": "For each task type in routing_rules, verify: (a) assigned skill has .claude/skills/{skill}/SKILL.md, (b) skill has .claude/cache/{skill}/ dir. Score = valid / total."
+    },
+    {
+      "id": "adapter_availability",
+      "name": "Adapter Layer Health",
+      "description": "Check that each adapter dir has adapter.md + schema.json + mapping.json.",
+      "weight": 0.15,
+      "implementation": "For each dir in .claude/integrations/ (excluding _template/), verify 3 files exist. Score = complete / total."
+    }
+  ],
+  "scoring": {
+    "per_check": "pass (1.0) | degraded (0.5) | fail (0.0)",
+    "overall": "weighted_average of all checks",
+    "alert_levels": {
+      "healthy": ">= 0.95 — silent, log only",
+      "warning": "0.90 - 0.95 — log + advisory to user, continue execution",
+      "critical": "< 0.90 — log + STOP + alert with failing checks"
+    }
+  },
+  "rollback": {
+    "options": [
+      "fix — address specific failing checks",
+      "rollback_cache — reset to last known-good history entry (score >= 0.95)",
+      "rollback_all — git reset --hard phase-a-pre-seeding"
+    ],
+    "after_resolution": "Re-run health check to verify fix"
+  },
+  "history": []
+}
