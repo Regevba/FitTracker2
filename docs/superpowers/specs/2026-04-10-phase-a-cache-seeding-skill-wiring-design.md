@@ -267,6 +267,129 @@ Add a `validation_gate` section to `.claude/shared/skill-routing.json`:
 
 ---
 
+## Work Stream 4: Framework Health Check System
+
+A self-validating mechanism that runs at random intervals during skill execution to verify the learning cache and shared data layer remain consistent and credible. If success rate drops below 90%, it alerts immediately.
+
+### Health Check File
+
+**File:** `.claude/shared/framework-health.json`
+
+```json
+{
+  "version": "1.0",
+  "updated": "2026-04-10T00:00:00Z",
+  "check_config": {
+    "trigger": "random_on_skill_execution",
+    "probability": 0.25,
+    "min_interval_hours": 2,
+    "last_check": null,
+    "alert_threshold": 0.90
+  },
+  "checks": [
+    {
+      "id": "cache_staleness",
+      "name": "Cache Entry Staleness",
+      "description": "Verify invalidated_by SHA256 hashes still match source files. Stale entries = cache is lying.",
+      "weight": 0.25
+    },
+    {
+      "id": "cache_hit_accuracy",
+      "name": "Cache Hit Accuracy",
+      "description": "When a cache hit is used, did the skill's output match expectations? Track hit_count vs correction_count.",
+      "weight": 0.25
+    },
+    {
+      "id": "shared_layer_consistency",
+      "name": "Shared Layer Cross-Reference",
+      "description": "Spot-check 3 random fields across shared layer JSON files for internal consistency (e.g., feature status in feature-registry.json matches state.json).",
+      "weight": 0.20
+    },
+    {
+      "id": "skill_routing_integrity",
+      "name": "Skill Routing Integrity",
+      "description": "Verify skill-routing.json task types still map to existing SKILL.md files and cache directories.",
+      "weight": 0.15
+    },
+    {
+      "id": "adapter_availability",
+      "name": "Adapter Layer Health",
+      "description": "Check that each adapter dir has adapter.md + schema.json + mapping.json. Flag missing files.",
+      "weight": 0.15
+    }
+  ],
+  "history": [],
+  "scoring": {
+    "per_check": "pass (1.0) | degraded (0.5) | fail (0.0)",
+    "overall": "weighted_average of all checks",
+    "alert_levels": {
+      "healthy": ">= 0.95",
+      "warning": "0.90 - 0.95",
+      "critical": "< 0.90"
+    }
+  }
+}
+```
+
+### How It Works
+
+1. **Trigger:** On every skill execution start, roll a random number. If < 0.25 AND last check was > 2 hours ago, run the health check.
+2. **Execution:** Run all 5 checks. Each produces pass/degraded/fail.
+3. **Scoring:** Weighted average across all checks produces an overall score (0.0 - 1.0).
+4. **Logging:** Append result to `history[]` with timestamp, per-check scores, overall score, and any issues found.
+5. **Alerting:**
+   - **Healthy (>= 0.95):** Silent. Log only.
+   - **Warning (0.90 - 0.95):** Log + advisory message to user: "Framework health check: {score}. {issues}. Review when convenient."
+   - **Critical (< 0.90):** Log + STOP + alert: "Framework health below 90%: {score}. Issues: {list}. Resolve before continuing skill execution."
+
+### Check Implementations
+
+**cache_staleness:** For each L1/L2/L3 cache entry with `invalidated_by` hashes, compute current SHA256 of the source file. If any mismatch, the entry is stale. Score = non-stale entries / total entries.
+
+**cache_hit_accuracy:** Track in each cache entry: `hit_count` (times used) and `correction_count` (times the cached pattern was wrong and had to be overridden). Accuracy = 1 - (total corrections / total hits). If no hits yet, score = 1.0 (no data, assume healthy).
+
+**shared_layer_consistency:** Pick 3 random cross-references:
+
+- feature-registry.json feature status vs state.json current_phase
+- metric-status.json instrumented flag vs actual event presence in analytics-taxonomy.csv
+- design-system.json token count vs actual count in AppTheme.swift
+
+Score = consistent checks / 3.
+
+**skill_routing_integrity:** For each task type in skill-routing.json, verify: (a) the assigned skill has a SKILL.md, (b) the skill has a cache directory. Score = valid mappings / total mappings.
+
+**adapter_availability:** For each adapter dir in `.claude/integrations/` (excluding `_template/`), verify all 3 files exist (adapter.md, schema.json, mapping.json). Score = complete adapters / total adapters.
+
+### SKILL.md Integration
+
+Add to the Cache Protocol section of every SKILL.md:
+
+```markdown
+### Health Check (random trigger)
+On skill start, before cache check:
+1. Read `.claude/shared/framework-health.json`
+2. If random() < check_config.probability AND hours_since(last_check) > min_interval_hours:
+   - Run all 5 health checks
+   - Compute weighted score
+   - Append to history[]
+   - If score < alert_threshold: STOP and alert user
+   - Update last_check timestamp
+3. Proceed to cache check regardless of health check result (unless critical alert)
+```
+
+### Rollback Protocol
+
+If a critical alert fires:
+
+1. User is shown the specific failing checks with details
+2. Options presented:
+   - **Fix:** Address the specific issues (stale cache entries, missing files, inconsistencies)
+   - **Rollback cache:** Reset cache to last known-good state (prior history entry with score >= 0.95)
+   - **Rollback all:** `git reset --hard phase-a-pre-seeding` to restore pre-Phase-A state
+3. After fix or rollback, re-run health check to verify resolution
+
+---
+
 ## Out of Scope
 
 - Actually connecting MCP servers (needs API keys — Phase B)
@@ -292,6 +415,9 @@ Add a `validation_gate` section to `.claude/shared/skill-routing.json`:
 
 **Modified (11 SKILL.md files):**
 - `.claude/skills/{ux,design,analytics,dev,qa,cx,marketing,research,ops,release,pm-workflow}/SKILL.md`
+
+**Created (1 health check config):**
+- `.claude/shared/framework-health.json`
 
 **Modified (1 shared config):**
 - `.claude/shared/skill-routing.json`
