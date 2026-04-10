@@ -36,7 +36,17 @@
       "Edit(/.claude/skills/ops/**)",
       "Edit(/.claude/skills/release/**)",
       "Edit(/.claude/skills/qa/**)",
-      "Edit(/.claude/skills/cx/**)"
+      "Edit(/.claude/skills/cx/**)",
+      "Bash(xcode-select -p)",
+      "Bash(grep -r \"figma\" /Volumes/DevSSD/FitTracker2/.claude/features/*/state.json)",
+      "Bash(find /Volumes/DevSSD/FitTracker2/.claude/features -name \"state.json\" -exec grep -l \"figma\\\\|design_context\\\\|figma_file\" {} \\\\;)",
+      "Bash(python3)",
+      "Bash(make tokens-check:*)",
+      "Bash(grep -E \"raw color|hardcoded|0x[0-9A-F]\" FitTracker/Views/*/v2/*.swift)",
+      "Bash(grep -n \"Color\\\\.white\" FitTracker/Views/Onboarding/v2/*.swift FitTracker/Views/Training/v2/*.swift)",
+      "Bash(xargs -I {} dirname {})",
+      "Bash(xargs -I {} basename {})",
+      "Bash([ -f \"/Volumes/DevSSD/FitTracker2/.claude/features/$feature/state.json\" ])"
     ],
     "additionalDirectories": [
       "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",
