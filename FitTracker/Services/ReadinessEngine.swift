@@ -37,7 +37,9 @@ enum ReadinessEngine {
         todayMetrics: LiveMetrics,
         dailyLogs: [DailyLog],
         goalMode: NutritionGoalMode,
-        date: Date = Date()
+        date: Date = Date(),
+        sleepGoalHours: Double = 8.0,
+        userAge: Int = 35
     ) -> ReadinessResult? {
         let layer = personalizationLayer(logCount: dailyLogs.count)
         let weights = componentWeights(for: goalMode)
@@ -53,9 +55,9 @@ enum ReadinessEngine {
             totalHours: todayMetrics.sleepHours,
             deepMin: todayMetrics.deepSleepMin,
             remMin: todayMetrics.remSleepMin,
-            goalHours: 8.0
+            goalHours: sleepGoalHours
         )
-        let training = trainingLoadComponent(logs: dailyLogs, date: date)
+        let training = trainingLoadComponent(logs: dailyLogs, date: date, userAge: userAge)
         let rhr = rhrComponent(
             todayRHR: todayMetrics.restingHR,
             logs: dailyLogs,
@@ -243,7 +245,8 @@ enum ReadinessEngine {
 
     static func trainingLoadComponent(
         logs: [DailyLog],
-        date: Date
+        date: Date,
+        userAge: Int = 35
     ) -> Double? {
         let cal = Calendar.current
 
@@ -261,7 +264,7 @@ enum ReadinessEngine {
         // Compute daily loads for the full history
         var allDailyLoads: [Double] = []
         for log in sortedLogs {
-            allDailyLoads.append(sessionLoad(for: log))
+            allDailyLoads.append(sessionLoad(for: log, userAge: userAge))
         }
 
         // Acute: last 7 days only. Need at least 1 non-zero day to be meaningful.
@@ -451,7 +454,7 @@ enum ReadinessEngine {
 
     /// Computes session training load from a DailyLog.
     /// Uses session RPE × duration (Foster 1998 sRPE method).
-    private static func sessionLoad(for log: DailyLog?) -> Double {
+    private static func sessionLoad(for log: DailyLog?, userAge: Int = 35) -> Double {
         guard let log else { return 0 }
 
         var totalLoad = 0.0
@@ -466,13 +469,14 @@ enum ReadinessEngine {
         }
 
         // Cardio: RPE × duration, or HR-based estimate
+        // Max HR uses age-adjusted formula (220 - age). Default age 35 yields ~185.
+        let maxHR = max(120, 220 - Double(userAge))
         for (_, cardioLog) in log.cardioLogs {
             let duration = cardioLog.durationMinutes ?? 0
-            // Estimate RPE from HR if available, otherwise default 5
             let rpe: Double
             if let avgHR = cardioLog.avgHeartRate {
-                // Rough RPE estimation: HR% of max (220-age, default 177 for 43yo)
-                let hrPct = avgHR / 177.0
+                // Rough RPE estimation: HR% of age-predicted max
+                let hrPct = avgHR / maxHR
                 rpe = min(10, max(1, hrPct * 10))
             } else {
                 rpe = 5.0

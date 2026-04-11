@@ -145,9 +145,9 @@ struct ReadinessCard: View {
                 Spacer(minLength: 4)
 
                 HStack(spacing: AppSpacing.small) {
-                    biometricRow(icon: "waveform.path.ecg", label: hrv.map { String(format: "%.0f ms", $0) } ?? "–", title: "HRV")
-                    biometricRow(icon: "heart.fill", label: rhr.map { String(format: "%.0f bpm", $0) } ?? "–", title: "RHR")
-                    biometricRow(icon: "moon.fill", label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
+                    biometricRow(icon: AppIcon.hrv, label: hrv.map { String(format: "%.0f ms", $0) } ?? "–", title: "HRV")
+                    biometricRow(icon: AppIcon.heart, label: rhr.map { String(format: "%.0f bpm", $0) } ?? "–", title: "RHR")
+                    biometricRow(icon: AppIcon.sleep, label: sleep.map { String(format: "%.1f hrs", $0) } ?? "–", title: "Sleep")
                 }
             }
         }
@@ -185,7 +185,7 @@ struct ReadinessCard: View {
                     Text("How Readiness Is Calculated")
                         .font(AppText.sectionTitle)
                     Text("Readiness is computed from 5 components: HRV deviation from your 7-day baseline, sleep quality composite, training load (ACWR), resting heart rate trend, and body composition flags.\n\n85+ → Push hard\n70–84 → Full intensity\n50–69 → Moderate — reduce load ~20%\n30–49 → Light session only\nBelow 30 → Rest day")
-                        .font(.subheadline)
+                        .font(AppText.subheading)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
                 .padding(AppSpacing.small)
@@ -283,8 +283,8 @@ struct ReadinessCard: View {
                     let pct = log?.completionPct ?? 0
                     let barColor: Color = {
                         guard log != nil else { return AppColor.Text.secondary.opacity(0.2) }
-                        if pct >= 100 { return Color.status.success }
-                        if pct > 0    { return Color.accent.cyan }
+                        if pct >= 100 { return AppColor.Status.success }
+                        if pct > 0    { return AppColor.Accent.recovery }
                         return AppColor.Text.secondary.opacity(0.2)
                     }()
                     let maxBarHeight: CGFloat = 60
@@ -352,7 +352,7 @@ struct ReadinessCard: View {
                         RoundedRectangle(cornerRadius: AppRadius.micro)
                             .fill(AppColor.Surface.materialLight)
                         RoundedRectangle(cornerRadius: AppRadius.micro)
-                            .fill(Color.accent.cyan)
+                            .fill(AppColor.Accent.recovery)
                             .frame(width: geo.size.width * min(1, CGFloat(protein / max(proteinTarget, 1))))
                     }
                 }
@@ -361,7 +361,7 @@ struct ReadinessCard: View {
 
             // Supplements
             HStack(spacing: AppSpacing.xxSmall) {
-                Image(systemName: "pill.fill")
+                Image(systemName: AppIcon.supplement)
                     .font(AppText.captionStrong)
                     .foregroundStyle(AppColor.Text.inverseSecondary)
                 Text("Supplements")
@@ -374,9 +374,9 @@ struct ReadinessCard: View {
             // Water
             if waterML > 0 {
                 HStack(spacing: AppSpacing.xxSmall) {
-                    Image(systemName: "drop.fill")
+                    Image(systemName: AppIcon.water)
                         .font(AppText.captionStrong)
-                        .foregroundStyle(Color.accent.cyan.opacity(0.8))
+                        .foregroundStyle(AppColor.Accent.recovery.opacity(0.8))
                     Text(String(format: "%.0f mL water", waterML))
                         .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -390,7 +390,7 @@ struct ReadinessCard: View {
     private func supplementDot(label: String, done: Bool) -> some View {
         HStack(spacing: AppSpacing.micro) {
             Circle()
-                .fill(done ? Color.status.success : AppColor.Surface.materialStrong)
+                .fill(done ? AppColor.Status.success : AppColor.Surface.materialStrong)
                 .frame(width: 8, height: 8)
             Text(label)
                 .font(AppText.monoLabel)
@@ -578,9 +578,9 @@ struct ReadinessCard: View {
             VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                 ForEach(Array(recommendation.reasons.prefix(2)), id: \.self) { reason in
                     HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
-                        Image(systemName: "sparkles")
+                        Image(systemName: AppIcon.sparkles)
                             .font(AppText.caption)
-                            .foregroundStyle(Color.accent.cyan.opacity(0.9))
+                            .foregroundStyle(AppColor.Accent.recovery.opacity(0.9))
                             .padding(.top, 1)
                         Text(reason)
                             .font(AppText.caption)

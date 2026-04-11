@@ -12,6 +12,8 @@ enum AppIcon {
     static let settings   = "gearshape.fill"
 
     // MARK: - Actions
+    static let thumbsUp   = "hand.thumbsup.fill"
+    static let thumbsDown = "hand.thumbsdown.fill"
     static let add        = "plus"
     static let addCircle  = "plus.circle.fill"
     static let edit       = "pencil"

@@ -28,7 +28,7 @@ struct AIFeedbackView: View {
                         withAnimation(AppMotion.quickInteraction) { submitted = true }
                         analytics.logAiFeedbackSubmitted(segment: "all", rating: "positive")
                     } label: {
-                        Image(systemName: "hand.thumbsup.fill")
+                        Image(systemName: AppIcon.thumbsUp)
                             .foregroundStyle(AppColor.Status.success)
                             .frame(width: 44, height: 44)
                     }
@@ -37,7 +37,7 @@ struct AIFeedbackView: View {
                         withAnimation(AppMotion.quickInteraction) { submitted = true }
                         analytics.logAiFeedbackSubmitted(segment: "all", rating: "negative")
                     } label: {
-                        Image(systemName: "hand.thumbsdown.fill")
+                        Image(systemName: AppIcon.thumbsDown)
                             .foregroundStyle(AppColor.Status.warning)
                             .frame(width: 44, height: 44)
                     }

@@ -450,17 +450,22 @@ final class EncryptedDataStore: ObservableObject {
     /// Full readiness assessment with per-component breakdown.
     /// Uses ReadinessEngine.compute() — see ReadinessEngine.swift for formula details.
     func readinessResult(for date: Date, fallbackMetrics: LiveMetrics?) -> ReadinessResult? {
-        // Build today's metrics from stored log + live fallback
+        // Merge stored biometrics with live HealthKit metrics.
+        // Priority: live HealthKit data > stored biometrics (fresher wins).
+        // Only fall back to stored data if live is unavailable.
+        // Manual fallback values (manualHRV, manualRestingHR, manualSleepHours)
+        // are only used if BOTH live and auto-synced values are nil.
         let todayLog = self.log(for: date)
         var metrics = fallbackMetrics ?? LiveMetrics()
 
-        // Prefer stored values over live fallback where available
         if let bio = todayLog?.biometrics {
-            metrics.hrv = bio.effectiveHRV ?? metrics.hrv
-            metrics.restingHR = bio.effectiveRestingHR ?? metrics.restingHR
-            metrics.sleepHours = bio.effectiveSleep ?? metrics.sleepHours
-            metrics.deepSleepMin = bio.deepSleepMinutes ?? metrics.deepSleepMin
-            metrics.remSleepMin = bio.remSleepMinutes ?? metrics.remSleepMin
+            // Live wins over stored for sensor data (fresher reading)
+            metrics.hrv = metrics.hrv ?? bio.effectiveHRV
+            metrics.restingHR = metrics.restingHR ?? bio.effectiveRestingHR
+            metrics.sleepHours = metrics.sleepHours ?? bio.effectiveSleep
+            metrics.deepSleepMin = metrics.deepSleepMin ?? bio.deepSleepMinutes
+            metrics.remSleepMin = metrics.remSleepMin ?? bio.remSleepMinutes
+            // Weight is usually from scale (stored), not live — stored wins
             metrics.weightKg = bio.weightKg ?? metrics.weightKg
         }
 
@@ -468,7 +473,9 @@ final class EncryptedDataStore: ObservableObject {
             todayMetrics: metrics,
             dailyLogs: dailyLogs,
             goalMode: userPreferences.nutritionGoalMode,
-            date: date
+            date: date,
+            sleepGoalHours: 8.0,  // TODO: add sleepGoalHours to UserPreferences
+            userAge: userProfile.age
         )
     }
 
