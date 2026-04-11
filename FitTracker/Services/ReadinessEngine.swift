@@ -392,7 +392,14 @@ enum ReadinessEngine {
             }
         }
 
-        // Score: 100 if no flags, 50 per flag
+        // Score: 100 if no flags, 50 per flag, nil if no data to evaluate.
+        // Return nil when there's no weight data AND no visceral history —
+        // matches the other components' "data unavailable → nil" contract
+        // so bodyComp doesn't artificially keep `available` non-empty.
+        let hasAnyData = todayWeight != nil || !visceralValues.isEmpty
+        guard hasAnyData else {
+            return (nil, [])
+        }
         let baseScore: Double = flags.isEmpty ? 100 : max(0, 100 - Double(flags.count) * 50)
         return (baseScore, flags)
     }

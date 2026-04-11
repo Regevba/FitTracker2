@@ -299,7 +299,8 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertTrue(conversions.contains(AnalyticsEvent.crossFeatureEngagement))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.accountDeleteCompleted))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.homeActionCompleted))
-        XCTAssertEqual(conversions.count, 7)
+        XCTAssertTrue(conversions.contains(AnalyticsEvent.trainingSessionCompleted))
+        XCTAssertEqual(conversions.count, 8)
     }
 
     // MARK: - GDPR Event Tests

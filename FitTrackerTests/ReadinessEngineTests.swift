@@ -27,7 +27,8 @@ final class ReadinessEngineTests: XCTestCase {
         count: Int,
         hrvBase: Double = 50,
         rhrBase: Double = 65,
-        sleepBase: Double = 7.5
+        sleepBase: Double = 7.5,
+        includeTraining: Bool = true
     ) -> [DailyLog] {
         let cal = Calendar.current
         return (1...count).map { offset in
@@ -44,6 +45,16 @@ final class ReadinessEngineTests: XCTestCase {
             log.biometrics.deepSleepMinutes = 55 + Double.random(in: -10...10)
             log.biometrics.remSleepMinutes = 80 + Double.random(in: -15...15)
             log.biometrics.weightKg = 71.5
+            // Include basic training data so the ACWR component is computable
+            if includeTraining {
+                var exercise = ExerciseLog(exerciseID: "e1", exerciseName: "Bench")
+                exercise.sets = [
+                    SetLog(setNumber: 1, weightKg: 60, repsCompleted: 8, rpe: 7),
+                    SetLog(setNumber: 2, weightKg: 60, repsCompleted: 8, rpe: 7),
+                    SetLog(setNumber: 3, weightKg: 60, repsCompleted: 8, rpe: 7),
+                ]
+                log.exerciseLogs["e1"] = exercise
+            }
             return log
         }
     }
@@ -268,5 +279,225 @@ final class ReadinessEngineTests: XCTestCase {
                                     "Score must be within 0-100 range")
         XCTAssertLessThanOrEqual(result.overallScore, 100,
                                  "Score must be within 0-100 range")
+    }
+
+    // MARK: - HRV Formula Pinning (C1 regression tests)
+    // These tests pin the exact score values the HRV component produces
+    // for known inputs. They would have caught the pre-fix bug where
+    // ratio*50 capped scores at ~65 for healthy users.
+
+    func testHRVComponent_atBaseline_producesFifty() {
+        // Build 7 days of baseline with HRV=50ms (stable baseline)
+        let logs = (1...7).map { offset -> DailyLog in
+            let cal = Calendar.current
+            let date = cal.date(byAdding: .day, value: -offset, to: Date())!
+            var log = DailyLog(date: date, phase: .stage1, dayType: .cardioOnly, recoveryDay: offset)
+            log.biometrics.hrv = 50.0  // exact baseline, no noise
+            return log
+        }
+
+        let score = ReadinessEngine.hrvComponent(todayHRV: 50.0, logs: logs, date: Date(), layer: 1)
+        XCTAssertNotNil(score)
+        XCTAssertEqual(score!, 50.0, accuracy: 1.0,
+                       "At baseline (ratio=1.0), HRV score should be ~50")
+    }
+
+    func testHRVComponent_above30PercentBaseline_reachesHundred() {
+        // At +30% deviation in ln-space, score should reach 100
+        // ln(50)=3.912, +30% = 5.085, e^5.085 ≈ 161.6ms
+        let logs = (1...7).map { offset -> DailyLog in
+            let cal = Calendar.current
+            let date = cal.date(byAdding: .day, value: -offset, to: Date())!
+            var log = DailyLog(date: date, phase: .stage1, dayType: .cardioOnly, recoveryDay: offset)
+            log.biometrics.hrv = 50.0
+            return log
+        }
+
+        let score = ReadinessEngine.hrvComponent(todayHRV: 161.6, logs: logs, date: Date(), layer: 1)
+        XCTAssertNotNil(score)
+        XCTAssertGreaterThanOrEqual(score!, 95.0,
+                                    "At +30% deviation in ln-space, HRV score should reach ~100 (was capped at ~65 pre-fix)")
+    }
+
+    func testHRVComponent_healthyDeviation_producesRealisticScore() {
+        // Real-world case: user's HRV is 10% higher than baseline
+        // Should produce a meaningfully positive score (not stuck near 50)
+        let logs = (1...7).map { offset -> DailyLog in
+            let cal = Calendar.current
+            let date = cal.date(byAdding: .day, value: -offset, to: Date())!
+            var log = DailyLog(date: date, phase: .stage1, dayType: .cardioOnly, recoveryDay: offset)
+            log.biometrics.hrv = 50.0
+            return log
+        }
+
+        let score = ReadinessEngine.hrvComponent(todayHRV: 55.0, logs: logs, date: Date(), layer: 1)
+        XCTAssertNotNil(score)
+        // +10% in raw HRV ≈ +2.4% in ln-space / 0.3 * 50 ≈ 4 points above 50
+        XCTAssertGreaterThan(score!, 52.0,
+                             "Healthy HRV deviation should produce score >50")
+        XCTAssertLessThan(score!, 70.0,
+                          "Small deviation should not produce score near 100")
+    }
+
+    // MARK: - Sleep Component Composite Arithmetic (T5)
+
+    func testSleepComponent_targetValues_produceHundred() {
+        // 8h sleep, 84min deep (17.5% of 480min), 108min REM (22.5% of 480min)
+        // All at target values → should produce 100
+        let score = ReadinessEngine.sleepComponent(
+            totalHours: 8.0,
+            deepMin: 84.0,   // 17.5% of 480
+            remMin: 108.0,   // 22.5% of 480
+            goalHours: 8.0
+        )
+        XCTAssertNotNil(score)
+        XCTAssertEqual(score!, 100.0, accuracy: 1.0,
+                       "Target sleep values should score 100")
+    }
+
+    func testSleepComponent_durationOnly_fallsBackGracefully() {
+        // No deep/REM data — should use duration for all sub-scores
+        let score = ReadinessEngine.sleepComponent(
+            totalHours: 8.0,
+            deepMin: nil,
+            remMin: nil,
+            goalHours: 8.0
+        )
+        XCTAssertNotNil(score)
+        XCTAssertEqual(score!, 100.0, accuracy: 1.0,
+                       "Duration at goal with no stage data should score 100")
+    }
+
+    func testSleepComponent_halfSleep_producesFifty() {
+        // 4h sleep, no stage data — should score 50
+        let score = ReadinessEngine.sleepComponent(
+            totalHours: 4.0,
+            deepMin: nil,
+            remMin: nil,
+            goalHours: 8.0
+        )
+        XCTAssertNotNil(score)
+        XCTAssertEqual(score!, 50.0, accuracy: 1.0,
+                       "Half the goal sleep should score ~50")
+    }
+
+    // MARK: - Training Load ACWR Scoring Bands (T2)
+
+    func testTrainingLoad_sweetSpotACWR_producesHighScore() {
+        // Consistent daily training for 28 days → ACWR ≈ 1.0, sweet spot
+        // Each day: 1 exercise, 3 sets @ RPE 7, so load = 3*7*2 = 42
+        let cal = Calendar.current
+        let logs = (1...28).map { offset -> DailyLog in
+            let date = cal.date(byAdding: .day, value: -offset, to: Date())!
+            var log = DailyLog(date: date, phase: .stage1, dayType: .upperPush, recoveryDay: offset)
+            var exercise = ExerciseLog(exerciseID: "e1", exerciseName: "Bench")
+            exercise.sets = [
+                SetLog(setNumber: 1, weightKg: 60, repsCompleted: 8, rpe: 7),
+                SetLog(setNumber: 2, weightKg: 60, repsCompleted: 8, rpe: 7),
+                SetLog(setNumber: 3, weightKg: 60, repsCompleted: 8, rpe: 7),
+            ]
+            log.exerciseLogs["e1"] = exercise
+            return log
+        }
+
+        let score = ReadinessEngine.trainingLoadComponent(logs: logs, date: Date())
+        XCTAssertNotNil(score)
+        XCTAssertGreaterThanOrEqual(score!, 80.0,
+                                    "Consistent ACWR~1.0 should be in sweet spot (80-100)")
+    }
+
+    func testTrainingLoad_noHistory_returnsNil() {
+        // Empty logs → nil (insufficient data)
+        let score = ReadinessEngine.trainingLoadComponent(logs: [], date: Date())
+        XCTAssertNil(score, "No history should return nil")
+    }
+
+    // MARK: - RHR Component Deviation Scoring
+
+    func testRHRComponent_atBaseline_producesEighty() {
+        // RHR at baseline (7 logs with RHR=65)
+        let logs = (1...7).map { offset -> DailyLog in
+            let cal = Calendar.current
+            let date = cal.date(byAdding: .day, value: -offset, to: Date())!
+            var log = DailyLog(date: date, phase: .stage1, dayType: .cardioOnly, recoveryDay: offset)
+            log.biometrics.restingHeartRate = 65.0
+            return log
+        }
+
+        let score = ReadinessEngine.rhrComponent(todayRHR: 65.0, logs: logs, date: Date())
+        XCTAssertNotNil(score)
+        XCTAssertEqual(score!, 80.0, accuracy: 1.0,
+                       "RHR at baseline should score 80 (comment states '80 at baseline')")
+    }
+
+    func testRHRComponent_fivePBMAbove_scoresThirty() {
+        // +5 BPM should produce score = 80 - 50 = 30
+        let logs = (1...7).map { offset -> DailyLog in
+            let cal = Calendar.current
+            let date = cal.date(byAdding: .day, value: -offset, to: Date())!
+            var log = DailyLog(date: date, phase: .stage1, dayType: .cardioOnly, recoveryDay: offset)
+            log.biometrics.restingHeartRate = 65.0
+            return log
+        }
+
+        let score = ReadinessEngine.rhrComponent(todayRHR: 70.0, logs: logs, date: Date())
+        XCTAssertNotNil(score)
+        XCTAssertEqual(score!, 30.0, accuracy: 1.0,
+                       "+5 BPM above baseline should score exactly 30 (triggers warning at <= 30)")
+    }
+
+    // MARK: - Body Comp Flags (H1 regression test)
+
+    func testOverallScore_withBodyCompFlag_notDoublePenalized() {
+        // Control: no hydration flag. Treatment: hydration flag.
+        // The delta must equal ONE penalty hit, not two.
+        // Pre-fix: flag caused both a component reduction AND an external
+        // 5pt suppression, so the delta was ~7.5 (2.5 from component + 5
+        // from external). Post-fix: delta should be ~2.5 only.
+        let controlLogs = makeLogs(count: 10, includeTraining: false)
+            .map { log -> DailyLog in
+                var copy = log
+                copy.biometrics.weightKg = 72.0  // stable weight — no flag
+                return copy
+            }
+
+        let controlMetrics = makeMetrics(
+            hrv: 50.0, restingHR: 65.0, sleepHours: 8.0,
+            deepSleepMin: 84, remSleepMin: 108,
+            weightKg: 72.0  // matches yesterday → no flag
+        )
+
+        let treatmentMetrics = makeMetrics(
+            hrv: 50.0, restingHR: 65.0, sleepHours: 8.0,
+            deepSleepMin: 84, remSleepMin: 108,
+            weightKg: 70.5  // 1.5% drop → hydration flag
+        )
+
+        let controlResult = ReadinessEngine.compute(
+            todayMetrics: controlMetrics, dailyLogs: controlLogs, goalMode: .maintain
+        )
+        let treatmentResult = ReadinessEngine.compute(
+            todayMetrics: treatmentMetrics, dailyLogs: controlLogs, goalMode: .maintain
+        )
+
+        XCTAssertNotNil(controlResult)
+        XCTAssertNotNil(treatmentResult)
+        guard let control = controlResult, let treatment = treatmentResult else { return }
+
+        XCTAssertFalse(control.bodyCompFlags.contains(.hydrationWarning),
+                       "Control should have no hydration flag")
+        XCTAssertTrue(treatment.bodyCompFlags.contains(.hydrationWarning),
+                      "Treatment should have hydration flag")
+
+        // The delta should be small — only the body comp component weight * 50
+        // (because the component score drops from 100 to 50, and body comp
+        // has 5% weight in maintain mode, that's 0.05 * 50 = 2.5 points).
+        // Pre-fix, the external suppression would have added another 5pts,
+        // for a total delta of ~7.5 points.
+        let delta = control.overallScore - treatment.overallScore
+        XCTAssertLessThanOrEqual(delta, 5,
+                                 "Flag should cause ~2.5pt drop, not 7.5pt (would indicate double-penalty)")
+        XCTAssertGreaterThanOrEqual(delta, 1,
+                                    "Flag should cause some penalty (at least 1pt)")
     }
 }
