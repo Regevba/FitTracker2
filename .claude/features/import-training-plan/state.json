@@ -1,0 +1,87 @@
+{
+  "feature": "import-training-plan",
+  "created": "2026-04-11T00:00:00Z",
+  "updated": "2026-04-11T00:00:00Z",
+  "branch": null,
+  "current_phase": "research",
+  "work_type": "feature",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "v1_file_path": null,
+  "v2_file_path": null,
+  "parent_feature": null,
+  "phases": {
+    "research": {
+      "status": "pending",
+      "note": "New feature — needs full research phase. Scope: import training plans from external sources (CSV, JSON, PDF, OCR photos, share extension, paste-to-parse). Key unknowns: (1) which sources to support first, (2) exercise name mapping strategy to FitMe's 87-exercise library, (3) how to handle progression rules (linear, wave, percentage-based), (4) whether imported plans replace or supplement the default 6-day PPL split. Related: /research feature import-training-plan, /ux research, competitive analysis of Hevy/Strong/Fitbod import UX."
+    },
+    "prd": {
+      "status": "pending"
+    },
+    "tasks": {
+      "status": "pending"
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "note": "New UI surface — Phase 3 non-skippable per CLAUDE.md. Must produce ux-spec.md before any view code. Mapping confirmation UI needs careful UX design (auto-accept + manual review for ambiguous cases)."
+    },
+    "implementation": {
+      "status": "pending"
+    },
+    "testing": {
+      "status": "pending"
+    },
+    "review": {
+      "status": "pending"
+    },
+    "merge": {
+      "status": "pending"
+    },
+    "documentation": {
+      "status": "pending"
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-11T00:00:00Z",
+      "approved_by": "user",
+      "note": "New feature added to backlog. Scope: import training plans from external sources (Hevy, Strong, Fitbod, Jefit, spreadsheets, PDFs, photos, share extension, paste-to-parse). Research phase pending — awaiting prioritization."
+    }
+  ],
+  "tasks": [],
+  "source_investigation_areas": [
+    "CSV/JSON import — simplest format, used by Strong/Hevy export",
+    "PDF text extraction — reuse OCR from nutrition feature",
+    "Photo OCR — handwritten/printed whiteboard or printouts",
+    "Share extension — iOS native app-to-app sharing",
+    "Paste-to-parse — from chat/email, pattern-matched parsing",
+    "Exercise name mapping — ML or rule-based, 87-exercise target library",
+    "Progression rules — linear, wave, percentage-based, RPE-based",
+    "Program structure — day splits, phases, deload weeks"
+  ],
+  "success_criteria_draft": {
+    "primary_metric": "import_success_rate",
+    "target": ">80% of imports produce a usable training plan without manual fixes",
+    "secondary_metrics": [
+      "exercise_mapping_accuracy >90%",
+      "time_to_first_workout_after_import <2min",
+      "user_satisfaction_rating >=4/5 on import experience"
+    ],
+    "kill_criteria": [
+      "Exercise mapping accuracy <70% (unusable)",
+      "Import success rate <50%",
+      "Parse time >30s for any supported format"
+    ]
+  },
+  "competitive_research_targets": [
+    "Hevy — CSV export/import UX",
+    "Strong — iCloud backup/restore format",
+    "Fitbod — coach plan import",
+    "Jefit — workout plan sharing",
+    "MacroFactor — template library UX",
+    "Caliber — coach assignment flow"
+  ]
+}

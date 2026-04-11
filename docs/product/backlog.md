@@ -90,6 +90,7 @@
 - [ ] Push notifications — no notification system (training reminders, readiness alerts)
 - [ ] App icon + App Store assets — no 1024×1024 master icon, no screenshot templates
 - [ ] Password reset flow — protocol exists, not wired in UI
+- [ ] **Import Training Plan from External Sources** — allow users to bring existing training plans from other apps (Hevy, Strong, Fitbod, Jefit), spreadsheets (Google Sheets, Excel, Numbers), PDFs (coach programs, published programs like 531, PPL, nSuns), or photos (gym whiteboard, handwritten plan). Must parse exercises, sets, reps, rest periods, RPE targets, and program structure (day splits, phases, progression rules). Key challenge: map external exercise names to FitMe's 87-exercise library with a confirmation/mapping UI for ambiguous matches. Supports: (1) CSV/JSON import, (2) PDF text extraction (already have OCR for nutrition), (3) photo OCR for handwritten/printed plans, (4) direct app-to-app share extension, (5) paste-to-parse from chat/email. Mapping must be progressive — easy matches auto-accept, ambiguous ones prompt the user. Once imported, plan replaces or supplements the default 6-day PPL split. Feature work type with full 9-phase lifecycle required.
 - [x] **Onboarding flow** — shipped 2026-04-07 (v2 UX alignment per ux-foundations.md, 6 screens including Consent, full GA4 instrumentation, PR #59)
 
 ### High Priority (Architecture → AI Engine)
@@ -101,7 +102,7 @@
 - [ ] Readiness score formula — currently binary (ready/not), needs weighted 0-100
 - [ ] Trend alerts — no notification when HRV drops below threshold for 3+ days
 - [ ] Exercise search/filter — 87 exercises in fixed order, no search
-- [ ] Training program customization — fixed 6-day PPL split
+- [ ] Training program customization — fixed 6-day PPL split (partially addressed by "Import Training Plan from External Sources" above)
 - [ ] Notification settings — no push notification preferences in Settings
 - [ ] Data export from Settings — no CSV/JSON export UI
 - [ ] User feedback loop for AI — can't rate recommendation quality
