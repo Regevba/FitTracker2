@@ -20,9 +20,9 @@
       ]
     },
     "prd": {
-      "status": "pending",
+      "status": "in_progress",
       "approved_at": null,
-      "analytics_spec_complete": false
+      "analytics_spec_complete": true
     },
     "tasks": {
       "status": "pending",
@@ -62,16 +62,33 @@
     },
     "metrics": {
       "primary": {
-        "name": "",
-        "baseline": null,
-        "target": null,
+        "name": "profile_tab_visit_rate",
+        "baseline": 0,
+        "target": 50,
         "current": null
       },
-      "secondary": [],
-      "guardrails": [],
+      "secondary": [
+        {
+          "name": "goal_edit_rate",
+          "target": 15
+        },
+        {
+          "name": "settings_from_profile_rate",
+          "target": 35
+        },
+        {
+          "name": "readiness_check_from_profile",
+          "target": 25
+        }
+      ],
+      "guardrails": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s",
+        "home_engagement must not drop > 5%"
+      ],
       "instrumentation_ready": false,
-      "first_review_date": null,
-      "kill_criteria": ""
+      "first_review_date": "2026-05-01",
+      "kill_criteria": "Profile visit <10% after 2 weeks OR home engagement drops >10%"
     }
   },
   "tasks": [],
