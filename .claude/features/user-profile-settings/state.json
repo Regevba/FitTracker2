@@ -1,9 +1,9 @@
 {
   "feature": "user-profile-settings",
   "created": "2026-04-13T19:00:00Z",
-  "updated": "2026-04-13T19:15:00Z",
+  "updated": "2026-04-13T19:30:00Z",
   "branch": null,
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -20,13 +20,13 @@
       ]
     },
     "prd": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "approved",
+      "approved_at": "2026-04-13T19:30:00Z",
       "analytics_spec_complete": true
     },
     "tasks": {
-      "status": "pending",
-      "count": 0
+      "status": "in_progress",
+      "count": 13
     },
     "ux_or_integration": {
       "status": "pending",
@@ -91,7 +91,177 @@
       "kill_criteria": "Profile visit <10% after 2 weeks OR home engagement drops >10%"
     }
   },
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Add FitnessGoal + ExperienceLevel enums to DomainModels",
+      "type": "data",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T2",
+      "title": "Add 6 profile analytics events + parameters",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T3",
+      "title": "Create ProfileHeroSection view",
+      "type": "ui",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T4",
+      "title": "Create BodyCompositionCard view",
+      "type": "ui",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T5",
+      "title": "Create GoalEditorSheet view",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T6",
+      "title": "Create ProfileView (main tab view)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T1",
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T7",
+      "title": "Wire ProfileView into RootTabView as 5th tab",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T8",
+      "title": "Refactor SettingsView v2 for embedding",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T9",
+      "title": "Persist onboarding selections to UserProfile",
+      "type": "data",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T10",
+      "title": "Write analytics tests for 6 profile events",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T11",
+      "title": "Write eval tests (5 golden I/O + 4 quality)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T6",
+        "T7"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T12",
+      "title": "Accessibility pass",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T13",
+      "title": "pbxproj + build verification",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6",
+        "T7",
+        "T10",
+        "T11"
+      ],
+      "completed_at": null
+    }
+  ],
   "transitions": [
     {
       "from": null,
@@ -106,6 +276,13 @@
       "timestamp": "2026-04-13T19:15:00Z",
       "approved_by": "user",
       "note": "5th tab chosen. Profile as unified control center. Settings v2 embedded. Onboarding data persisted."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-13T19:30:00Z",
+      "approved_by": "user",
+      "note": "PRD approved. 6 analytics events, 9 eval definitions, success metrics with kill criteria."
     }
   ]
 }
