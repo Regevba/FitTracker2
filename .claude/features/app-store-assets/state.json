@@ -1,9 +1,9 @@
 {
   "feature": "app-store-assets",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-12T21:30:00Z",
+  "updated": "2026-04-13T17:45:00Z",
   "branch": null,
-  "current_phase": "research",
+  "current_phase": "prd",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": false,
@@ -11,17 +11,34 @@
   "parent_feature": null,
   "phases": {
     "research": {
-      "status": "in_progress",
-      "note": "High-priority maintenance research opened from the v4.3 cleanup program. Scope: app icon master asset, screenshot system, App Store visual package, and release-readiness evidence."
+      "status": "approved",
+      "note": "High-priority maintenance research opened from the v4.3 cleanup program. Scope: app icon master asset, screenshot system, App Store visual package, and release-readiness evidence.",
+      "approved_at": "2026-04-13T17:45:00Z"
     },
-    "prd": { "status": "pending" },
-    "tasks": { "status": "pending" },
-    "ux_or_integration": { "status": "pending" },
-    "implementation": { "status": "pending" },
-    "testing": { "status": "pending" },
-    "review": { "status": "pending" },
-    "merge": { "status": "pending" },
-    "documentation": { "status": "pending" }
+    "prd": {
+      "status": "pending"
+    },
+    "tasks": {
+      "status": "pending"
+    },
+    "ux_or_integration": {
+      "status": "pending"
+    },
+    "implementation": {
+      "status": "pending"
+    },
+    "testing": {
+      "status": "pending"
+    },
+    "review": {
+      "status": "pending"
+    },
+    "merge": {
+      "status": "pending"
+    },
+    "documentation": {
+      "status": "pending"
+    }
   },
   "transitions": [
     {
@@ -30,6 +47,13 @@
       "timestamp": "2026-04-12T21:30:00Z",
       "approved_by": "user",
       "note": "Research chapter opened after the maintenance prioritization pass kept app icon and App Store assets in the high-priority stack ahead of marketing launch work."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-13T17:45:00Z",
+      "approved_by": "user",
+      "note": "Research phase complete. All scope questions answered. Ready for PRD authoring."
     }
   ],
   "tasks": []
