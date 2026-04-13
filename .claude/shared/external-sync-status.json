@@ -1,31 +1,31 @@
 {
   "version": "1.0",
-  "updated": "2026-04-13T10:30:00Z",
+  "updated": "2026-04-13T17:30:00Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
     "healthy": false,
-    "alerts": 10,
-    "source_truth_score": 74
+    "alerts": 8,
+    "source_truth_score": 80
   },
   "sources": {
     "github": {
-      "healthy": false,
-      "alerts": 2,
+      "healthy": true,
+      "alerts": 0,
       "repo": "Regevba/FitTracker2",
       "repo_summary": {
         "current_branch": "main",
         "remote_branch": "origin/main",
         "remote_sync": "aligned",
-        "working_tree_changes": 65,
+        "working_tree_changes": 0,
         "local_branches": 8,
         "remote_branches": 7,
         "live_issue_api_connected": false
       },
       "findings": [
-        "The canonical repo is on main and aligned with origin/main, which keeps repo truth stable.",
-        "The working tree on main is intentionally dirty with active framework, auth, and control-center IA refresh changes, so local state still needs a deliberate commit or branch cut.",
-        "Dashboard GitHub issue hydration still depends on GITHUB_TOKEN at build time, so current GitHub truth is repo-local rather than live issue API data.",
-        "An elevated compile-only iOS simulator build succeeded on 2026-04-12, which materially improves confidence that the repo-side auth wiring is valid."
+        "Repo is on main, aligned with origin/main, working tree clean (all prior session work committed 2026-04-13).",
+        "3 commits landed: auth hardening (ece89bd), dashboard control room (c2c38fa), framework v4.3 + docs (2793b01).",
+        "Dashboard GitHub issue hydration still depends on GITHUB_TOKEN at build time — repo-local truth only.",
+        "iOS simulator build succeeded (iPhone 17 Pro, iOS 26.4) — auth wiring compile-verified."
       ]
     },
     "linear": {
