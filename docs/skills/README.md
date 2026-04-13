@@ -34,6 +34,7 @@
 - 2026-04-10 — v4.1: Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). Every skill mirrors the hub internally — 4-phase lifecycle with domain-specific research scope. Skills learn from prior executions and get faster over time.
 - 2026-04-10 — v4.2: Self-healing hub. Phase 0 (Health Check) added to Skill Internal Lifecycle — 5 weighted integrity checks at random intervals verify cache staleness, hit accuracy, shared layer consistency, routing integrity, and adapter availability. Alert if score drops below 90%. L1 cache seeded from 6 completed refactors. All 11 SKILL.md files wired with cache protocol, adapters, and research scope.
 - 2026-04-11 — v4.3: Operations control room + case-study monitoring + maintenance-program orchestration. The self-healing hub now has an operational layer for source-truth repair, cross-system monitoring, and showcase-ready evidence capture.
+- 2026-04-13 — v4.4: Eval-Driven Development. Phase 5 (Eval) added to Skill Internal Lifecycle — 20 deterministic evals across 3 categories (formula golden I/O, AI output quality heuristics, hybrid tier behavior). ai_quality_metrics block added to case study monitoring. Every feature now produces eval definitions during Phase 2 (Tasks) and runs them during Phase 5 (Test). The framework learns from eval failures via anti-pattern cache promotion.
 
 ---
 
@@ -266,6 +267,7 @@ The hub never does inline work — it reads state, decides which skill to dispat
 9. **Every skill has a domain-specific research scope.** 5 research dimensions + source priority order. When cache misses, the skill knows exactly what to investigate.
 10. **Data flows reactively.** Any entry point, any time. A single skill invocation can ripple through the entire shared layer.
 11. **Every skill runs Phase 0 (Health Check) on random trigger.** ~25% probability with 2h cooldown. 5 weighted checks verify cache, shared layer, routing, and adapter integrity. If score < 90%, execution halts until resolved.
+12. **Every feature defines eval cases.** During Phase 2 (Tasks), define golden input/output cases and quality heuristics. During Phase 5 (Test), run evals alongside unit tests. Eval results are recorded in case-study-monitoring.json and failed evals become anti-patterns in the L1 cache.
 
 ---
 

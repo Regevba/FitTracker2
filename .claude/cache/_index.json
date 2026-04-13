@@ -24,6 +24,7 @@
     "on_skill_start_cache": "PHASE 1 (Cache Check): Check _index.json for matching task_signature. If hit, load learned_patterns and anti_patterns. Skip derivation steps covered by cache.",
     "on_skill_complete_learn": "PHASE 4 (Learn): Extract new patterns and anti-patterns. Write or update cache entry. Increment hit_count. Update last_hit timestamp.",
     "on_source_change": "Check invalidated_by SHA256 hashes. If any mismatch, mark entry stale. Re-derive on next cache hit.",
+    "on_skill_complete_eval": "PHASE 5 (Eval): If eval definitions exist for the current task, run deterministic evals against the output. Record pass/fail counts and quality scores in case-study-monitoring.json. Failed evals become anti-patterns in L1 cache (feeds back to Phase 4). If no eval definitions exist, skip.",
     "on_cross_skill_pattern": "When 2+ L1 entries share a pattern, create or update L2 entry in _shared/.",
     "on_project_pattern": "When L2 entry is referenced by 5+ skills, create or update L3 entry in _project/."
   },

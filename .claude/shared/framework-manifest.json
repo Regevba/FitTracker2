@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "updated": "2026-04-11T16:05:53Z",
-  "framework_version": "4.3",
+  "framework_version": "4.4",
   "description": "Canonical framework manifest for the PM-flow ecosystem. Stores the current framework version, structural counts, source-of-truth metadata, and active operational capabilities so docs and dashboards can reference one shared definition.",
   "structure": {
     "hub_skills": 1,
@@ -39,6 +39,7 @@
     ]
   },
   "capabilities": {
+    "eval_driven_development": true,
     "self_healing_hub": true,
     "learning_cache": true,
     "validation_gate": true,

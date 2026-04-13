@@ -677,3 +677,63 @@ v4.2 made the framework self-healing. v4.3 adds the operational layer around tha
 ### Why v4.3 Matters
 
 The hub is no longer only a planning and dispatch system. With v4.3, the framework also operates as its own observability and storytelling layer: it can repair truth drift, monitor maintenance progress, and accumulate evidence that later becomes a credible case study.
+
+---
+
+## 21. v4.4 — Eval-Driven Development (2026-04-13)
+
+### What Changed: v4.3 → v4.4
+
+v4.3 gave the framework operational visibility. v4.4 closes the quality loop: AI output quality is now testable, not just code correctness. The Skill Internal Lifecycle gains Phase 5 (Eval) — making every skill execution verifiable against deterministic golden cases, quality heuristics, and tier behavior expectations.
+
+| Aspect | v4.3 | v4.4 |
+| --- | --- | --- |
+| **Lifecycle phases** | 5 (Health → Cache → Research → Execute → Learn) | 6 (Health → Cache → Research → Execute → Learn → Eval) |
+| **Output quality testing** | None — correctness only (unit tests, CI) | Deterministic evals: golden I/O, heuristics, tier behavior |
+| **Case study data** | Narrative + delivery metrics | Narrative + delivery metrics + eval pass/fail + quality scores |
+| **Eval definitions** | Not a framework concept | Defined in Phase 2 (Tasks), run in Phase 5 (Test), analyzed in Phase 9 (Learn) |
+| **Framework self-improvement** | Anti-patterns from Learn phase only | Anti-patterns from Learn + failed evals promoted to L1 anti-pattern cache |
+
+### The 6-Phase Skill Internal Lifecycle
+
+```text
+Phase 0 Health → 1 Cache → 2 Research → 3 Execute → 4 Learn → 5 Eval
+```
+
+### Phase 5 — Eval
+
+Runs after Phase 4 (Learn) when eval definitions exist for the current task. Checks golden input/output pairs, quality heuristics, and tier behavior expectations. Records pass/fail counts and quality scores in `case-study-monitoring.json`. Failed evals become anti-patterns and are promoted to the L1 cache, feeding back into Phase 4 on future executions. If no eval definitions exist for the task, Phase 5 is skipped silently.
+
+### Eval Categories
+
+| Category | Count | What It Checks |
+| --- | --- | --- |
+| **ReadinessFormulaEvals** | 7 golden I/O | Deterministic formula outputs for known input combinations (HRV, sleep, soreness, stress levels). Each case has a fixed expected readiness score and tier. |
+| **AIOutputQualityEvals** | 7 heuristic | Output quality properties: recommendation specificity, personalization signal use, explanation clarity, goal alignment, avoidance of generic advice, sensitivity to recovery context, actionability. |
+| **AITierBehaviorEvals** | 6 tier behavior | Correct tier assignment and tier-appropriate response behavior: green tier pushes, yellow tier modifies, red tier blocks, each with appropriate explanation and confidence bounds. |
+
+### New Schema: ai_quality_metrics in case-study-monitoring.json
+
+```json
+"ai_quality_metrics": {
+  "eval_run_id": "string — ISO 8601 timestamp of eval run",
+  "total_evals": "number",
+  "passed": "number",
+  "failed": "number",
+  "categories": {
+    "formula_golden_io": { "passed": "number", "failed": "number" },
+    "output_quality_heuristics": { "passed": "number", "failed": "number" },
+    "tier_behavior": { "passed": "number", "failed": "number" }
+  },
+  "failed_eval_ids": ["array of eval IDs promoted to anti-pattern cache"],
+  "quality_score": "number — passed / total (0.0–1.0)"
+}
+```
+
+### PM Workflow Integration
+
+| Phase | Eval Activity |
+| --- | --- |
+| **Phase 2 (Tasks)** | Define eval cases: golden I/O pairs, quality heuristics, tier behavior expectations. Store in `.claude/features/{name}/evals.json`. |
+| **Phase 5 (Test)** | Run evals alongside unit tests. Record results in `case-study-monitoring.json` under `ai_quality_metrics`. Failed evals block phase advancement (same as failing unit tests). |
+| **Phase 9 (Learn)** | Analyze eval results. Identify patterns in failures. Promote failed eval signatures to L1 anti-pattern cache. Update eval definitions if feature scope changed. |

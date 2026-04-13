@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "updated": "2026-04-11T15:50:25Z",
-  "description": "Hub-native framework health check — Phase 0 of the v4.3 Skill Internal Lifecycle. Runs at random intervals to verify cache, shared layer, routing, and adapter integrity. Alert if score drops below 90%.",
+  "description": "Hub-native framework health check — Phase 0 of the v4.4 Skill Internal Lifecycle. Runs at random intervals to verify cache, shared layer, routing, and adapter integrity. Alert if score drops below 90%.",
   "check_config": {
     "trigger": "random_on_skill_execution",
     "probability": 0.25,
