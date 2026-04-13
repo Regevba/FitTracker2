@@ -1,0 +1,29 @@
+---
+import DashboardLayout from '../layouts/DashboardLayout.astro';
+import CaseStudiesView from '../components/CaseStudiesView.jsx';
+import { buildDashboardData } from '../scripts/builders/controlCenter.js';
+
+const dashboardData = await buildDashboardData({ token: import.meta.env.GITHUB_TOKEN });
+---
+
+<DashboardLayout title="FitMe — Case Studies">
+  <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400 dark:text-white/38">Dedicated Route</div>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">Case Studies</h1>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-white/58">
+          Focused reading surface for PM-flow, maintenance, and control-center case studies without the rest of the operator dashboard around them.
+        </p>
+      </div>
+      <a
+        href="/?view=knowledge"
+        className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:text-slate-950 dark:border-white/10 dark:bg-white/[0.03] dark:text-white/70 dark:hover:text-white"
+      >
+        Back to Knowledge
+      </a>
+    </div>
+
+    <CaseStudiesView caseStudyFeed={dashboardData.caseStudyFeed} />
+  </div>
+</DashboardLayout>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 const STATUS_STYLES = {
   done: { dot: 'bg-green-500', text: 'text-green-600 dark:text-green-400', symbol: '\u2713' },

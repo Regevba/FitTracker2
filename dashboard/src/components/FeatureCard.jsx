@@ -1,3 +1,5 @@
+import React from 'react';
+
 const PRIORITY_STYLES = {
   critical: { dot: 'bg-priority-critical', text: 'text-priority-critical', label: 'P0' },
   high: { dot: 'bg-priority-high', text: 'text-priority-high', label: 'P1' },

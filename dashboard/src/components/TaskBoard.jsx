@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import TaskCard from './TaskCard';
 import DependencyGraph from './DependencyGraph';
 import { parseTasks } from '../scripts/parsers/tasks.js';

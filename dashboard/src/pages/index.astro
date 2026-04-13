@@ -1,54 +1,18 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro';
 import Dashboard from '../components/Dashboard.jsx';
-import featuresData from '../data/features.json';
-import { reconcile } from '../scripts/reconcile.js';
-import { fetchIssues } from '../scripts/github.js';
-import { parseStateFiles } from '../scripts/parsers/state.js';
+import { buildDashboardData, isPrimaryView, isSecondaryWorkspace } from '../scripts/builders/controlCenter.js';
 
-// Static features from features.json
-const allFeatures = [
-  ...featuresData.shipped.map(f => ({ ...f, source: 'shipped' })),
-  ...featuresData.planned.map(f => ({ ...f, source: 'planned' })),
-  ...featuresData.backlog.map(f => ({ ...f, source: 'backlog' })),
-];
-
-// Fetch live GitHub Issues (build-time only, requires GITHUB_TOKEN env var)
-const token = import.meta.env.GITHUB_TOKEN;
-let githubIssues = [];
-try {
-  if (token) {
-    githubIssues = await fetchIssues(token);
-  }
-} catch (e) {
-  console.warn('GitHub API unavailable:', e.message);
-}
-
-// Load PM workflow state files from .claude/features/*/state.json
-let stateFiles = [];
-try {
-  stateFiles = parseStateFiles();
-} catch {
-  // State files may not exist in CI/Vercel environment
-}
-
-// Reconcile across all three data sources
-const { alerts, sources } = reconcile({
-  githubIssues,
-  staticFeatures: allFeatures,
-  stateFiles,
-});
-
-// Determine if GitHub is connected
-const githubConnected = githubIssues.length > 0;
+const requestedView = Astro.url.searchParams.get('view') || 'control';
+const activeView = isPrimaryView(requestedView) || isSecondaryWorkspace(requestedView) ? requestedView : 'control';
+const dashboardData = await buildDashboardData({ token: import.meta.env.GITHUB_TOKEN });
 ---
 
 <DashboardLayout>
   <Dashboard
-    features={allFeatures}
-    alerts={alerts}
-    sources={sources}
-    githubConnected={githubConnected}
+    {...dashboardData}
+    activeView={activeView}
+    lastSync={dashboardData.externalSyncStatus.updated}
     client:load
   />
 </DashboardLayout>

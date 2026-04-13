@@ -6,6 +6,9 @@
   --color-brand-secondary: #8AC7FF;
   --color-brand-warm: #FFC78A;
   --color-brand-cool: #DFF3FF;
+  --color-ink-strong: #0f172a;
+  --color-ink-soft: #475569;
+  --color-shell: #f8fafc;
 
   --color-status-backlog: #9CA3AF;
   --color-status-research: #9CA3AF;
@@ -31,7 +34,13 @@
 
 @layer base {
   body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
     -webkit-font-smoothing: antialiased;
+    color: var(--color-ink-strong);
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-brand-primary) 28%, white);
+    color: #111827;
   }
 }

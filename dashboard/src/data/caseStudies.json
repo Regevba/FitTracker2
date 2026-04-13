@@ -1,0 +1,208 @@
+{
+  "cleanupControlRoom": {
+    "id": "cleanup-control-room-2026-04",
+    "title": "Maintenance Cleanup + Operations Control Room",
+    "status": "In Progress",
+    "started": "2026-04-11",
+    "framework_version": "4.3",
+    "why_it_matters": "This is the first maintenance cycle that treats source-of-truth repair, design/UX review, deployment reality, and PM-system sync as one integrated product operation.",
+    "summary": "The cleanup program reconciles repo truth, Notion, Linear, Vercel, design-system claims, and the dashboard itself while building an operator cockpit to keep the system honest going forward.",
+    "monitoring": {
+      "source_health": {
+        "repo_truth_confirmed": true,
+        "notion_status_realigned": true,
+        "linear_cleanup_started": true,
+        "dashboard_truth_gap_visible": true
+      },
+      "delivery_metrics": {
+        "linear_issues_closed": 3,
+        "linear_issues_created": 2,
+        "notion_pages_created": 4,
+        "notion_pages_updated": 2,
+        "dashboard_tests_passing": 30,
+        "dashboard_build_verified": true
+      },
+      "system_findings": {
+        "critical_findings": 2,
+        "high_findings": 4,
+        "medium_findings": 3
+      },
+      "timeline": [
+        {
+          "label": "Audit + truth alignment",
+          "date": "2026-04-11",
+          "summary": "Canonical repo truth established and obvious external drift corrected.",
+          "tests_passing": 0,
+          "build_verified": false
+        },
+        {
+          "label": "Control room shell",
+          "date": "2026-04-11",
+          "summary": "Dashboard upgraded into an operator cockpit for delivery, UX, source health, and planning intelligence.",
+          "tests_passing": 30,
+          "build_verified": true
+        },
+        {
+          "label": "Case study monitoring",
+          "date": "2026-04-11",
+          "summary": "Cleanup monitoring promoted into the PM shared layer so the process can become a showcase later on.",
+          "tests_passing": 30,
+          "build_verified": true
+        }
+      ],
+      "improvement_hypotheses": [
+        "Live source-truth scoring will reduce future dashboard/Notion/Linear drift.",
+        "A control-room UI should shorten the time between audit, decision, and follow-up action.",
+        "Case-study instrumentation should begin during maintenance cycles, not after they finish."
+      ]
+    },
+    "skills_framework": [
+      {
+        "skill": "pm-workflow",
+        "role": "Hub orchestration, phase logic, external sync, and shared-layer governance",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "research",
+        "role": "Cross-source inspection of repo docs, framework state, and external-tool claims",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "ux",
+        "role": "UI review framing, surface-level quality assessment, and audit logic",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "design",
+        "role": "Design-system governance, visual-token truth, and Figma handoff planning",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "dev",
+        "role": "Dashboard implementation, code review, and technical integration planning",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "qa",
+        "role": "Dashboard verification and maintenance-risk validation",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "analytics",
+        "role": "Process instrumentation model, KPI framing, and future dashboard telemetry plan",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "cx",
+        "role": "Failure-pattern framing and feedback-loop planning for future post-launch learning",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "marketing",
+        "role": "Launch-readiness review for website, App Store assets, and external-facing proof",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "ops",
+        "role": "Vercel topology review and system-health / source-health framing",
+        "used_in_cleanup": true
+      },
+      {
+        "skill": "release",
+        "role": "Readiness and launch-surface gap analysis",
+        "used_in_cleanup": true
+      }
+    ],
+    "success_cases": [
+      {
+        "title": "Cross-system truth moved closer to the codebase",
+        "evidence": "Linear and Notion were updated where repo truth was unambiguous, reducing obvious drift."
+      },
+      {
+        "title": "The dashboard gained a real control-room shell",
+        "evidence": "A new operator surface now presents delivery truth, UX review, planning intelligence, and case-study framing in one place."
+      },
+      {
+        "title": "The maintenance program is now itself documented as a tracked workstream",
+        "evidence": "The cleanup is represented in Linear, Notion, repo docs, and dashboard case-study data."
+      }
+    ],
+    "failure_cases": [
+      {
+        "title": "Status drift became systemic",
+        "evidence": "Repo, dashboard data, Notion, Linear, and public-facing docs all diverged enough to create false confidence."
+      },
+      {
+        "title": "Marketing and deployment claims outpaced reality",
+        "evidence": "The Vercel production surface is still the dashboard while docs describe the marketing site as live."
+      },
+      {
+        "title": "Design-system closure was overstated",
+        "evidence": "Governance docs claimed zero raw color literals despite remaining hardcoded brand UI surfaces."
+      }
+    ],
+    "next_checkpoints": [
+      "Hydrate the control room with live Notion, Linear, GitHub, and analytics data.",
+      "Replace narrative-only Claude/Figma zones with executable workflow integrations.",
+      "Track auth cleanup and marketing deployment cleanup as the next measurable before/after study."
+    ],
+    "artifacts": [
+      "docs/case-studies/cleanup-control-room-case-study.md",
+      "dashboard/src/components/ControlRoom.jsx",
+      "dashboard/src/data/caseStudies.json"
+    ]
+  },
+  "controlCenterAlignment": {
+    "id": "control-center-alignment-ia-refresh-2026-04",
+    "title": "Control Center Alignment + IA Refresh",
+    "status": "In Progress",
+    "started": "2026-04-13",
+    "framework_version": "4.3",
+    "why_it_matters": "This is the first control-center cycle that turns the dashboard into a routed, multi-workspace operating surface instead of a single long mixed-purpose screen.",
+    "summary": "The alignment program cleans stale roadmap truth, promotes shared PM data ahead of static fallback data, moves knowledge and case studies into dedicated spaces, and adds focused Claude, Codex, and Figma workspaces.",
+    "monitoring": {
+      "source_truth_score": 18,
+      "alert_count": 46,
+      "stale_doc_references_removed": 4,
+      "routed_workspaces_added": 4,
+      "research_consoles_added": 2,
+      "case_study_route_added": true,
+      "knowledge_groups_exposed": 13
+    },
+    "success_cases": [
+      {
+        "title": "Shared PM data becomes the first-class dashboard authority",
+        "evidence": "The new routed control center favors framework-manifest, feature-registry, task-queue, external-sync-status, and case-study-monitoring ahead of local fallback data."
+      },
+      {
+        "title": "Knowledge and case studies become explicit product surfaces",
+        "evidence": "Reading, research, and retrospective work are no longer buried inside the control room body."
+      }
+    ],
+    "failure_cases": [
+      {
+        "title": "The original control room mixed too many jobs in one view",
+        "evidence": "Operational signals, document reading, case studies, and future workflow surfaces all lived in one scroll, which made the system harder to read."
+      },
+      {
+        "title": "Static fallback data still carried stale planning truth",
+        "evidence": "The dashboard still relied on outdated roadmap paths and local feature metadata that had drifted from the shared PM layer."
+      }
+    ],
+    "next_checkpoints": [
+      "Sync the new production IA and route structure back into Notion and Linear.",
+      "Reconcile the updated dashboard truth into Notion and Linear so the new workspaces are reflected externally.",
+      "Decide when Claude, Codex, and Figma workspaces should evolve from action surfaces into executable integrations."
+    ],
+    "artifacts": [
+      "docs/case-studies/control-center-alignment-ia-refresh-case-study.md",
+      "dashboard/src/components/Dashboard.jsx",
+      "dashboard/src/components/KnowledgeHub.jsx",
+      "dashboard/src/components/ResearchConsole.jsx",
+      "dashboard/src/components/FigmaHandoffLab.jsx",
+      "dashboard/src/components/CaseStudiesView.jsx",
+      "dashboard/src/pages/case-studies.astro",
+      "dashboard/src/scripts/builders/controlCenter.js"
+    ]
+  }
+}

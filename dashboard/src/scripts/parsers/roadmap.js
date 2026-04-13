@@ -4,10 +4,10 @@ import { resolve } from 'node:path';
 const REPO_ROOT = resolve(import.meta.dirname, '../../../../');
 
 /**
- * Parse docs/project/master-backlog-roadmap.md RICE matrix.
+ * Parse docs/master-plan/master-backlog-roadmap.md RICE matrix.
  */
 export function parseRoadmap() {
-  const raw = readFileSync(resolve(REPO_ROOT, 'docs/project/master-backlog-roadmap.md'), 'utf-8');
+  const raw = readFileSync(resolve(REPO_ROOT, 'docs/master-plan/master-backlog-roadmap.md'), 'utf-8');
   const tasks = [];
   let inMatrix = false;
 

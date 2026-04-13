@@ -1,13 +1,14 @@
 ---
 import '../styles/global.css';
-const { title = 'FitMe — Development Dashboard' } = Astro.props;
+import SpeedInsights from '@vercel/speed-insights/astro';
+const { title = 'FitMe — Operations Control Room' } = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="FitMe development dashboard — track features, pipeline stages, and project health across all data sources." />
+  <meta name="description" content="FitMe operations control room — inspect delivery, system health, UX quality, product intelligence, and source-of-truth drift across the project." />
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>" />
   <style>
@@ -27,7 +28,8 @@ const { title = 'FitMe — Development Dashboard' } = Astro.props;
     }
   </style>
 </head>
-<body class="min-h-screen bg-white dark:bg-[#0F1419] transition-colors duration-200">
+<body class="min-h-screen bg-[linear-gradient(180deg,#f7efe7_0%,#f6f7fb_35%,#eef4fb_100%)] text-slate-950 transition-colors duration-200 dark:bg-[linear-gradient(180deg,#06080d_0%,#0b0d12_38%,#11141c_100%)] dark:text-white">
   <slot />
+  <SpeedInsights />
 </body>
 </html>

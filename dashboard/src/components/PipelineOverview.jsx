@@ -1,3 +1,5 @@
+import React from 'react';
+
 const PHASE_COLORS = {
   backlog: '#9CA3AF',
   research: '#9CA3AF',
