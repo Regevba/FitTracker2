@@ -1,5 +1,5 @@
 // Views/RootTabView.swift
-// 4-tab navigation: Main · Training Plan · Nutrition · Stats
+// 5-tab navigation: Main · Training Plan · Nutrition · Stats · Profile
 // Top bar: screen title (left) + account avatar button (right) on every screen
 // Adaptive: tab bar on iPhone, sidebar on iPad/macOS
 
@@ -10,6 +10,7 @@ enum AppTab: String, CaseIterable, Hashable {
     case training   = "Training Plan"
     case nutrition  = "Nutrition"
     case stats      = "Stats"
+    case profile    = "Profile"
 
     var icon: String {
         switch self {
@@ -17,6 +18,7 @@ enum AppTab: String, CaseIterable, Hashable {
         case .training:  "figure.strengthtraining.traditional"
         case .nutrition: "leaf.fill"
         case .stats:     "chart.bar.fill"
+        case .profile:   "person.circle.fill"
         }
     }
 }
@@ -214,6 +216,7 @@ struct RootTabView: View {
         case .stats:     StatsView(initialMetric: pendingStatsMetric)
                             .analyticsScreen(AnalyticsScreen.stats)
                             .onDisappear { pendingStatsMetric = nil }
+        case .profile:   ProfileView()
         }
     }
 

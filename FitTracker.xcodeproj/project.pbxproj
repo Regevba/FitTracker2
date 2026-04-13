@@ -276,7 +276,11 @@
 		AI300000000000000000GR01 /* AI */ = {isa = PBXGroup; children = (AI200000000000000000UI01 /* AIInsightCard.swift */, AI200000000000000000UI02 /* AIIntelligenceSheet.swift */, AI200000000000000000UI03 /* AIRecommendationCard.swift */, AI200000000000000000UI04 /* AIFeedbackView.swift */); path = AI; sourceTree = "<group>"; };
 		PF200000000000000000PV01 /* ProfileHeroSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeroSection.swift; sourceTree = "<group>"; };
 		PF200000000000000000PV02 /* ProfileBodyCompCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBodyCompCard.swift; sourceTree = "<group>"; };
-		PF300000000000000000GR01 /* Profile */ = {isa = PBXGroup; children = (PF200000000000000000PV01 /* ProfileHeroSection.swift */, PF200000000000000000PV02 /* ProfileBodyCompCard.swift */); path = Profile; sourceTree = "<group>"; };
+		PF300000000000000000GR01 /* Profile */ = {isa = PBXGroup; children = (PF200000000000000000PV01 /* ProfileHeroSection.swift */, PF200000000000000000PV02 /* ProfileBodyCompCard.swift */, PF200000000000000000PV03 /* ProfileView.swift */, PF200000000000000000PV04 /* GoalEditorSheet.swift */); path = Profile; sourceTree = "<group>"; };
+		PF200000000000000000PV03 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		PF200000000000000000PV04 /* GoalEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalEditorSheet.swift; sourceTree = "<group>"; };
+		PF100000000000000000PV03 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV03 /* ProfileView.swift */; };
+		PF100000000000000000PV04 /* GoalEditorSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV04 /* GoalEditorSheet.swift */; };
 		PF100000000000000000PV01 /* ProfileHeroSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV01 /* ProfileHeroSection.swift */; };
 		PF100000000000000000PV02 /* ProfileBodyCompCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV02 /* ProfileBodyCompCard.swift */; };
 		FF000002000000000000AA01 /* FitMeLogoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitMeLogoLoader.swift; sourceTree = "<group>"; };
@@ -838,6 +842,8 @@
 				AI100000000000000000UI04 /* AIFeedbackView.swift in Sources */,
 				PF100000000000000000PV01 /* ProfileHeroSection.swift in Sources */,
 				PF100000000000000000PV02 /* ProfileBodyCompCard.swift in Sources */,
+				PF100000000000000000PV03 /* ProfileView.swift in Sources */,
+				PF100000000000000000PV04 /* GoalEditorSheet.swift in Sources */,
 				NV100000000000000000AA01 /* NutritionView.swift in Sources */,
 				NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */,
 				NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */,
