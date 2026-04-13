@@ -1,0 +1,103 @@
+{
+  "cache_key": "ux:spec_structure:ux_spec_md_template",
+  "skill": "ux",
+  "level": "L1",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T00:00:00Z",
+  "hit_count": 1,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "docs/design-system/ux-foundations.md",
+    "docs/design-system/v2-refactor-checklist.md",
+    ".claude/features/home-today-screen/ux-spec.md",
+    ".claude/features/training-plan-v2/ux-spec.md"
+  ],
+  "task_signature": {
+    "type": "ux_spec_authoring",
+    "inputs": ["feature name", "audit findings", "decisions log", "screen list"],
+    "context": "What a complete ux-spec.md contains. Structure derived from Home v2 (9-section spec) and Training v2 UX deliverables. Used by /ux skill in Phase 3."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Required ux-spec.md sections (9-section structure from Home v2)",
+      "decision": "Every ux-spec.md must contain these 9 sections: (1) Overview & Scope, (2) Screen Inventory & Stack Order, (3) Component Catalogue, (4) Token Catalogue, (5) State Coverage, (6) Accessibility Requirements, (7) Motion & Animation, (8) Analytics Instrumentation, (9) Principle Application Table. Home v2 spec passed 5/5 compliance gateway and 12/12 heuristic validation.",
+      "section_details": {
+        "1_overview_scope": "Feature name, work_subtype (v2_refactor or new), audit finding count by priority (P0/P1/P2), in-scope vs deferred findings, estimated effort",
+        "2_screen_inventory": "Stack order for scrollable screens (e.g. Home v2: Toolbar → Greeting → ReadinessCard → Training & Nutrition → Status → Goal → Metrics). Decision rationale for scroll constraint.",
+        "3_component_catalogue": "Named components from AppComponents.swift that will be used. For v2 refactors: which existing components are reused, which new ones are being promoted (e.g. AppMetricColumn, AppMetricTile promoted in Home v2 T4/T5). Private sub-views declared in the v2 file.",
+        "4_token_catalogue": "Explicit list of AppColor.*, AppText.*, AppSpacing.*, AppSize.*, AppCornerRadius.*, AppMotion.* tokens used. New tokens being added to AppTheme.swift (e.g. Home v2 T1: AppText.monoCaption; Training v2: AppSize.tabBarClearance, AppText.monoCaption).",
+        "5_state_coverage": "Every UI state the screen can be in: loading (skeleton), empty, error, partial data, full data, offline. Spec must say which component/view handles each state. Home v2 had dedicated HomeEmptyStateView (T10).",
+        "6_accessibility": "VoiceOver labels for all interactive elements (minimum 30+ for complex screens). Dynamic Type scaling at AX5. Minimum 44pt tap targets. Home v2 T11: 30+ labels. Training v2: Full AX5 support.",
+        "7_motion_animation": "Which interactions have transitions. Tokens: AppSpring, AppEasing, motionSafe (added in Home v2 T2). Rest timer animation (Training v2 RestTimerView). Skeleton loading fade-in (Training v2 SkeletonLoadingView).",
+        "8_analytics": "List all events being added, their screen prefix, parameters, consent gating. Home v2: 3 events (home_action_tap, home_action_completed, home_empty_state_shown) + 1 deferred (home_metric_tile_tap). Training v2: 12 training_* events.",
+        "9_principle_application_table": "Two-column table: UX Foundations Principle | How honored in this spec. Must cover all 13 principles. 'N/A with justification' allowed. Home v2 ux-research.md covered 12/13 (1 N/A)."
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json ux_or_integration.deliverables",
+        "training-plan-v2 Phase 3 approval note"
+      ]
+    },
+    {
+      "pattern": "Compliance gateway — 5 dimensions, must be 5/5 pass",
+      "decision": "The Phase 3 compliance gateway checks: (1) Token compliance — all visual values resolve to AppTheme tokens; (2) Component reuse — no ad-hoc components when an AppComponents.swift equivalent exists; (3) Motion — animations use AppSpring/AppEasing or motionSafe; (4) Accessibility — all interactive elements have accessibilityLabel/Hint, Dynamic Type works at AX5; (5) Pattern compliance — no raw literals, no v1 patterns carried forward. Home v2 result: 5/5 pass (motion = DS evolution item accepted). Failed gateways block Phase 4.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json ux_or_integration.compliance_gateway = '5/5 pass (motion tokens = DS evolution)'"
+      ]
+    },
+    {
+      "pattern": "Heuristic validation — 12/12 pass (13th is N/A)",
+      "decision": "The heuristic validation checks all 13 UX Foundations principles: 1.1 Fitts's Law, 1.2 Hick's Law, 1.3 Visual Hierarchy, 1.4 Data Viz, 1.5 Feedback & Status, 1.6 Error Recovery, 1.7 Dark Mode, 1.8 Motion Safety, Parts 2-10 (IA, Interaction, Permission, State, A11y, Motion, Content, Platform). Each must be Pass or N/A with justification.",
+      "confidence": "high",
+      "source_executions": ["home-today-screen state.json ux_or_integration.heuristic_validation = '12/12 pass, 1 N/A'"]
+    },
+    {
+      "pattern": "ux-research.md — separate from ux-spec.md",
+      "decision": "ux-research.md documents WHICH of the 13 principles apply to this specific surface and HOW each is honored. It is the analysis document; ux-spec.md is the specification document. Both are required deliverables. Home v2: ux-research.md mapped 12/13 principles. Both go in .claude/features/{name}/.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json ux_or_integration.deliverables list",
+        "v2-refactor-checklist A2, A3"
+      ]
+    },
+    {
+      "pattern": "Build prompts — auto-generated deliverables from Phase 3",
+      "decision": "Phase 3 must also produce: docs/prompts/{date}-{feature}-ux-build.md and docs/prompts/{date}-{feature}-design-build.md. These are handoff prompts for build execution. Home v2 generated both on 2026-04-09. They contain the full component spec, token list, and acceptance criteria needed for Phase 4 build.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json ux_or_integration.deliverables: docs/prompts/2026-04-09-home-today-screen-ux-build.md, docs/prompts/2026-04-09-home-today-screen-design-build.md"
+      ]
+    },
+    {
+      "pattern": "Stack order decision for Home-style screens",
+      "decision": "Home v2 canonical stack order: Toolbar → Greeting (+ LiveInfoStrip) → ReadinessCard → Training & Nutrition CTA card → Status card → Goal card → Metrics row. Scrollable. Drop the above-the-fold no-scroll constraint from v1. The pattern: primary action first (workout/meal), then health signals, then progress tracking.",
+      "confidence": "high",
+      "source_executions": ["home-today-screen state.json research.decisions_summary.stack_order"]
+    },
+    {
+      "pattern": "New feature UX spec (non-refactor) — non-skippable Phase 3",
+      "decision": "For brand-new screens (no v1 to refactor), file lives at canonical path (no v2/ subdir). Phase 3 is non-skippable — must produce ux-spec.md and pass compliance gateway BEFORE any view code. Phase 4 starts with ux-foundations.md checklist applied to spec first, then view code. 'Build first, audit later' is forbidden.",
+      "confidence": "high",
+      "source_executions": ["CLAUDE.md V2 Rule — For new UI features built from scratch"]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Skipping ux-research.md and going straight to ux-spec.md",
+      "what_went_wrong": "ux-research.md is the analysis that justifies the spec decisions. Without it, the spec has no traceability to UX principles. Both documents are required by v2-refactor-checklist A2 and A3.",
+      "source_execution": "v2-refactor-checklist A2, A3 — both required before Phase 4"
+    },
+    {
+      "pattern": "Omitting state coverage section",
+      "what_went_wrong": "Missing empty, loading, and error states from the spec means they get omitted from Phase 4 implementation. Home v2 found F15/F16 (no empty state) as P0 findings — required dedicated HomeEmptyStateView (T10). Always spec all states explicitly.",
+      "source_execution": "home-today-screen v2 F15, F16 — P0 findings about empty state"
+    },
+    {
+      "pattern": "Analytics section with events missing screen prefix",
+      "what_went_wrong": "If the analytics section of ux-spec.md lists unprefixed screen-scoped events, the PRD approval gate will reject them. The /analytics spec sub-command validates prefix compliance and refuses to write a non-compliant spec.",
+      "source_execution": "CLAUDE.md Analytics Naming Convention — enforcement rule 1"
+    }
+  ],
+  "speedup_instructions": "When /ux is invoked for Phase 3: use the 9-section structure as the scaffold for ux-spec.md. Run compliance gateway (5 dimensions) and heuristic validation (12/13 principles + 1 N/A allowed). Check section 8 analytics events against the ga4-event-spec.json cache entry for prefix compliance. Produce both ux-build.md and design-build.md prompts as Phase 3 closing deliverables. state.json ux_or_integration.type = 'ux' when done."
+}

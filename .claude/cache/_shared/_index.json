@@ -1,0 +1,10 @@
+{
+  "skill": null,
+  "level": "L2",
+  "updated": "2026-04-10T00:00:00Z",
+  "description": "Cross-skill patterns shared by 2+ skills",
+  "data_sources": [],
+  "consumes_from_shared": [],
+  "writes_to_shared": [],
+  "entries": []
+}

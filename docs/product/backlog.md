@@ -1,7 +1,7 @@
 # FitMe — Complete Backlog
 
 > Compiled from: README, CHANGELOG, feature-memory, gap-review, resume-handoff, master plan, PRD gaps, session work.  
-> Last updated: 2026-04-09
+> Last updated: 2026-04-12
 
 ---
 
@@ -20,7 +20,7 @@
 | 9 | RICE-prioritized 18-task roadmap with phase gates | PR #19 | 2026-04-02 | Master backlog doc |
 | 10 | Phase 0 PRD + metrics + backlog | Current branch | 2026-04-02 | This document |
 | 11 | Development Dashboard (Astro + React + Tailwind v4) | feature/development-dashboard | 2026-04-02 | Kanban, table, reconciliation, dark mode |
-| 12 | PM Workflow Skill (/pm-workflow) | PR #21 | 2026-04-02 | 9-phase lifecycle, dashboard sync |
+| 12 | PM Workflow Skill (/pm-workflow) | PR #21 | 2026-04-02 | 10-phase lifecycle (0-9), dashboard sync |
 | 13 | Google Analytics (GA4) Integration | feature/google-analytics | 2026-04-04 | Firebase SDK, 20 events, consent flow, 17 tests |
 | 14 | PM Skill v1.2 (Analytics Gate) | feature/google-analytics | 2026-04-04 | Pre-code spec, testing verification, post-merge regression |
 | 15 | Figma Interactive Prototype (28 screens) | Figma file | 2026-04-04 | Full flows wired: onboarding, auth, tabs, training, nutrition, settings |
@@ -38,18 +38,23 @@
 | 27 | Settings v2 UX Alignment | PR #77 | 2026-04-10 | 8 color tokens fixed, a11y on destructive actions, 3 analytics events, 5 tests |
 | 28 | Skills Ecosystem v4.1 | commit 32fe312 | 2026-04-10 | Reactive data mesh, 6 integration adapters, L1/L2/L3 learning cache, skill internal lifecycle |
 | 29 | Skills Ecosystem v4.2 (health check + cache seeding) | commit 82f10a7 | 2026-04-10 | Phase 0 health check, 5 L1 + 5 L2/L3 cache entries seeded, 11 SKILL.md wired |
-| 30 | PM Evolution Case Study (v1→v4.1) | commit a8edb63 | 2026-04-10 | 751-line 3-level analysis: 6.5x speedup across 6 refactors, 20 scientific references |
+| 30 | PM Evolution Case Study (v1→v4.3) | repo state | 2026-04-11 | 751-line 3-level analysis extended through the v4.3 operational-layer promotion, with measurable efficiency data across 6 refactors |
 | 31 | Readiness Score Formula v2 | commit 3852ef8 | 2026-04-10 | 5-component evidence-based formula, goal-aware, 4-layer personalization, 9 tests |
 | 32 | AI Engine v2 (ReadinessResult integration) | commit 3f2151b | 2026-04-10 | AIOrchestrator consumes ReadinessResult, 8 new snapshot fields, recoveryBands + trainingBands |
 | 33 | AI Recommendation UI | commit bde97c0 | 2026-04-10 | Brand icon as AI avatar, 4 new views, AIInsightCard on Home, AIIntelligenceSheet modal |
+| 34 | Skills Ecosystem v4.3 (operations layer) | repo state | 2026-04-11 | Operations control room, case-study monitoring, and maintenance-program orchestration formalized on top of the self-healing hub |
+| 35 | Framework Manifest (canonical source of truth) | repo state | 2026-04-11 | Added framework-manifest.json to centralize framework version, counts, structure, and source-of-truth metadata |
+| 36 | External Sync Snapshot (Notion + Linear) | repo state | 2026-04-11 | Added external-sync-status.json and dashboard wiring so workspace drift is visible in source health and planning sync |
 
 ---
 
 ## In Progress
 
-| #     | Item                             | Owner | Branch                             | Status                                                                           |
-|-------|----------------------------------|-------|------------------------------------|----------------------------------------------------------------------------------|
-| 31-33 | Adaptive Intelligence Initiative | —     | fix/design-system-token-compliance | Implementation complete, pending analytics events + merge to main                |
+| # | Item | Owner | Branch | Status |
+|---|------|-------|--------|--------|
+| 6 | Authentication hardening | — | main | Real email auth, Google project wiring, compile verification, and password-reset UI are in place; end-to-end runtime validation remains the critical blocker before auth can be called production-ready |
+| 21 | Maintenance cleanup program | — | main | Framework v4.3 promotion, source-of-truth reconciliation, control-room sync, and documentation cleanup are actively in progress |
+| 22 | Operations control room | — | main | Live on fit-tracker2.vercel.app with shared-framework hydration, knowledge hub, GitHub/Notion/Linear/Vercel sync, and observability instrumentation |
 
 ---
 
@@ -83,23 +88,23 @@
 - [x] Data export (GDPR Article 20 — right to portability) ✅ Shipped 2026-04-04
 
 ### High Priority (Product Gaps)
-- [ ] AI recommendation UI — signals exist but no dedicated surface for users
-- [ ] Food database search — OpenFoodFacts stub exists, needs full integration
-- [ ] Barcode scanning — camera capture exists, macro extraction not connected
-- [ ] Google Sign In activation — mock provider exists, needs GoogleSignIn-iOS SDK
-- [ ] Push notifications — no notification system (training reminders, readiness alerts)
-- [ ] App icon + App Store assets — no 1024×1024 master icon, no screenshot templates
-- [ ] Password reset flow — protocol exists, not wired in UI
-- [ ] **Import Training Plan from External Sources** — allow users to bring existing training plans from other apps (Hevy, Strong, Fitbod, Jefit), spreadsheets (Google Sheets, Excel, Numbers), PDFs (coach programs, published programs like 531, PPL, nSuns), photos (gym whiteboard, handwritten plan), **or AI-generated plans from other assistants (ChatGPT, Claude, Gemini, Perplexity, custom GPTs, coach bots)**. Must parse exercises, sets, reps, rest periods, RPE targets, and program structure (day splits, phases, progression rules). Key challenge: map external exercise names to FitMe's 87-exercise library with a confirmation/mapping UI for ambiguous matches. Supports: (1) CSV/JSON import, (2) PDF text extraction (already have OCR for nutrition), (3) photo OCR for handwritten/printed plans, (4) direct app-to-app share extension, (5) paste-to-parse from chat/email, (6) **AI conversation paste** — user pastes a full ChatGPT/Claude conversation or just the training plan section, and the parser extracts the structured plan (handles markdown tables, numbered lists, prose descriptions, code blocks). Also supports importing the original **prompt** used to generate the plan so users can regenerate/iterate with FitMe's AI engine using their preferred structure. Mapping must be progressive — easy matches auto-accept, ambiguous ones prompt the user. Once imported, plan replaces or supplements the default 6-day PPL split. Feature work type with full 9-phase lifecycle required.
+- [x] AI recommendation UI — shipped 2026-04-10 (Home AIInsightCard + AIIntelligenceSheet) ✅
+- [x] Food database search — OpenFoodFacts text search is wired in MealEntrySheet ✅
+- [x] Barcode scanning — camera scanner is wired to OpenFoodFacts lookup in MealEntrySheet ✅
+- [ ] Auth runtime verification — Google project wiring and compile verification are done, but real local credentials and end-to-end Supabase/Google validation are still required
+- [ ] Push notifications — research active in `.claude/features/push-notifications/` and Linear `FIT-23`
+- [ ] App icon + App Store assets — research active in `.claude/features/app-store-assets/` and Linear `FIT-17`
+- [x] Password reset flow — reset action is available from email login when Supabase runtime credentials are configured ✅
+- [ ] **Import Training Plan from External Sources** — research active in `.claude/features/import-training-plan/` and Linear `FIT-24`. Allow users to bring existing training plans from other apps (Hevy, Strong, Fitbod, Jefit), spreadsheets (Google Sheets, Excel, Numbers), PDFs (coach programs, published programs like 531, PPL, nSuns), photos (gym whiteboard, handwritten plan), **or AI-generated plans from other assistants (ChatGPT, Claude, Gemini, Perplexity, custom GPTs, coach bots)**. Must parse exercises, sets, reps, rest periods, RPE targets, and program structure (day splits, phases, progression rules). Key challenge: map external exercise names to FitMe's 87-exercise library with a confirmation/mapping UI for ambiguous matches. Supports: (1) CSV/JSON import, (2) PDF text extraction (already have OCR for nutrition), (3) photo OCR for handwritten/printed plans, (4) direct app-to-app share extension, (5) paste-to-parse from chat/email, (6) **AI conversation paste** — user pastes a full ChatGPT/Claude conversation or just the training plan section, and the parser extracts the structured plan (handles markdown tables, numbered lists, prose descriptions, code blocks). Also supports importing the original **prompt** used to generate the plan so users can regenerate/iterate with FitMe's AI engine using their preferred structure. Mapping must be progressive — easy matches auto-accept, ambiguous ones prompt the user. Once imported, plan replaces or supplements the default 6-day PPL split. Feature work type with full 10-phase lifecycle (0-9) required.
 - [x] **Onboarding flow** — shipped 2026-04-07 (v2 UX alignment per ux-foundations.md, 6 screens including Consent, full GA4 instrumentation, PR #59)
 
 ### High Priority (Architecture → AI Engine)
-- [ ] **AI Engine v2 — Adapt PM v4.0 Architecture for AIOrchestrator** — Study how the reactive data mesh (adapter layer → validation gate → shared layer → cache), pattern recognition (L1/L2/L3 learning cache), and cross-domain data flow architecture built for the PM skill ecosystem can enhance the in-app AI engine (AIOrchestrator). Investigate: (1) micro-analysis on-device (pattern recognition from local HealthKit/training/nutrition data using the same cache + validation principles), (2) macro-analysis via cloud (foundation model calls enriched by cached user patterns, similar to how skills use cached patterns to skip derivation), (3) adapter-style integration for health data sources (Garmin, Whoop, Oura → normalize → validate → feed AI), (4) validation gate concept for AI recommendations (confidence scoring before surfacing to user), (5) learning cache for AI — store what recommendations worked per user profile to improve over time. Goal: make the AI engine as data-driven and self-improving as the PM workflow.
+- [ ] **AI Engine v2 — Adapt PM v4.0 Architecture for AIOrchestrator** — research active in `.claude/features/ai-engine-architecture-adaptation/` and Linear `FIT-25`. Study how the reactive data mesh (adapter layer → validation gate → shared layer → cache), pattern recognition (L1/L2/L3 learning cache), and cross-domain data flow architecture built for the PM skill ecosystem can enhance the in-app AI engine (AIOrchestrator). Investigate: (1) micro-analysis on-device (pattern recognition from local HealthKit/training/nutrition data using the same cache + validation principles), (2) macro-analysis via cloud (foundation model calls enriched by cached user patterns, similar to how skills use cached patterns to skip derivation), (3) adapter-style integration for health data sources (Garmin, Whoop, Oura → normalize → validate → feed AI), (4) validation gate concept for AI recommendations (confidence scoring before surfacing to user), (5) learning cache for AI — store what recommendations worked per user profile to improve over time. Goal: make the AI engine as data-driven and self-improving as the PM workflow.
 
 ### Medium Priority (UX Improvements)
 - [ ] Chart goal target lines — weight/BF goals not overlaid on stats charts
 - [ ] Chart tap-to-tooltip interaction — mentioned in v2 spec, unclear status
-- [ ] Readiness score formula — currently binary (ready/not), needs weighted 0-100
+- [x] Readiness score formula — shipped as v2 weighted scoring on 2026-04-10 ✅
 - [ ] Trend alerts — no notification when HRV drops below threshold for 3+ days
 - [ ] Exercise search/filter — 87 exercises in fixed order, no search
 - [ ] Training program customization — fixed 6-day PPL split (partially addressed by "Import Training Plan from External Sources" above)

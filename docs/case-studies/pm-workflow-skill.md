@@ -231,4 +231,4 @@ Built with Astro + React + Tailwind v4. Features:
 - **Dark mode** — system preference + localStorage toggle
 - **Responsive** — desktop, tablet, mobile breakpoints
 
-*The dashboard itself was the first feature built end-to-end using `/pm-workflow` — dogfooding the system through all 9 phases.*
+*The dashboard itself was the first feature built end-to-end using `/pm-workflow` — dogfooding the full lifecycle as it existed at that point in the framework’s evolution.*

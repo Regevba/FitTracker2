@@ -1,7 +1,58 @@
 {
   "version": "1.0",
-  "updated": "2026-04-06T15:00:00Z",
-  "queue": [],
+  "updated": "2026-04-12T21:30:00Z",
+  "queue": [
+    {
+      "id": "auth-runtime-verification",
+      "title": "Auth runtime verification",
+      "priority": "critical",
+      "work_type": "fix",
+      "phase": "verification",
+      "priority_score": 13,
+      "primary_skills": ["pm-workflow", "dev", "qa", "ops"],
+      "note": "Playbook-driven validation for real Supabase email auth, Google sign-in, and session restore."
+    },
+    {
+      "id": "push-notifications",
+      "title": "Push notifications research",
+      "priority": "high",
+      "work_type": "feature",
+      "phase": "research",
+      "priority_score": 7,
+      "primary_skills": ["pm-workflow", "research", "design", "analytics"],
+      "note": "Local notifications, permission timing, settings surface, and engagement instrumentation."
+    },
+    {
+      "id": "app-store-assets",
+      "title": "App icon + App Store assets research",
+      "priority": "high",
+      "work_type": "feature",
+      "phase": "research",
+      "priority_score": 7,
+      "primary_skills": ["pm-workflow", "design", "ux", "release"],
+      "note": "Truthful release-visual package after auth, before launch."
+    },
+    {
+      "id": "import-training-plan",
+      "title": "Import training plan research",
+      "priority": "high",
+      "work_type": "feature",
+      "phase": "research",
+      "priority_score": 7,
+      "primary_skills": ["pm-workflow", "research", "design", "dev"],
+      "note": "Parser, mapping, preview, and AI-conversation import strategy."
+    },
+    {
+      "id": "ai-engine-architecture-adaptation",
+      "title": "AI engine architecture adaptation research",
+      "priority": "high",
+      "work_type": "feature",
+      "phase": "research",
+      "priority_score": 7,
+      "primary_skills": ["pm-workflow", "research", "dev", "analytics"],
+      "note": "Adapt validation-gate, adapter, and learning-cache patterns to AIOrchestrator."
+    }
+  ],
   "scoring": {
     "base": { "critical": 10, "high": 7, "medium": 4, "low": 1 },
     "work_type_boost": { "fix": 3, "enhancement": 1, "feature": 0, "chore": -1 },

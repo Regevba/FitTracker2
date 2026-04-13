@@ -1,0 +1,46 @@
+{
+  "$schema": "mapping-v1",
+  "description": "Maps Firecrawl MCP response fields to shared layer fields. Source paths use dot notation into the schema.json data payload. All values are real scraped web data — never estimates.",
+  "service": "firecrawl",
+  "version": "1.0",
+  "target_shared_files": [
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/context.json",
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/feature-registry.json"
+  ],
+  "field_mappings": [
+    {
+      "source_path": "data.extractedData[]",
+      "target_file": "context.json",
+      "target_path": "competitiveLandscape.competitors[]",
+      "match_on": "competitiveLandscape.competitors[].sourceUrl == source.url",
+      "transform": "custom",
+      "transform_note": "Each extractedData entry maps to a competitor object. Fields mapped: appName → name, features → features, pricing → pricing, targetAudience → targetAudience, keyDifferentiators → differentiators. If competitor already exists (matched by sourceUrl), overwrite. If new, append.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.pageContent[]",
+      "target_file": "context.json",
+      "target_path": "competitiveLandscape.rawScrapes[]",
+      "match_on": "competitiveLandscape.rawScrapes[].url == source.url",
+      "transform": "custom",
+      "transform_note": "Store the structuredMarkdown and metadata for each scraped URL. Useful for /research to re-analyze without re-scraping. Cap at 20 most recent entries.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.extractedData[].features",
+      "target_file": "feature-registry.json",
+      "target_path": "competitorFeatureMatrix[].features",
+      "match_on": "competitorFeatureMatrix[].competitorName == source.appName",
+      "transform": "direct",
+      "transform_note": "Populate the competitor feature matrix with extracted feature lists. Used by /pm-workflow and /research to identify feature gaps and parity opportunities.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    }
+  ],
+  "validation_rules": {
+    "numeric_tolerance": 0.05,
+    "description": "Numeric fields are considered consistent if within 5% of the existing shared layer value. Categorical and text fields must match exactly. New fields (null → value) are always consistent. Measured data superseding estimated data is always consistent. Note: scraped web content is inherently variable — text field consistency checks are best-effort."
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Sentry Error Tracking Response Schema",
+  "description": "Expected shape of the normalized response from the Sentry hosted MCP (https://mcp.sentry.dev). Used to validate that the MCP returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this data pull",
+      "properties": {
+        "source": { "type": "string", "description": "Always 'sentry-mcp'", "const": "sentry-mcp" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this data was pulled" },
+        "raw_record_count": { "type": "integer", "description": "Number of issues/events in the response" },
+        "organization_slug": { "type": "string", "description": "Sentry organization slug used for this pull" },
+        "project_slug": { "type": "string", "description": "Sentry project slug used for this pull" }
+      },
+      "required": ["source", "timestamp", "organization_slug", "project_slug"]
+    },
+    "data": {
+      "type": "object",
+      "description": "Sentry error and crash tracking payload",
+      "properties": {
+        "crashFreeRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of sessions without a crash (0.0–1.0). Derived from session stats."
+        },
+        "errorCount": {
+          "type": "integer",
+          "description": "Total number of error events in the reported period"
+        },
+        "issueCount": {
+          "type": "integer",
+          "description": "Total number of unresolved issues (distinct error groups)"
+        },
+        "affectedUsers": {
+          "type": "integer",
+          "description": "Number of unique users affected by at least one error"
+        },
+        "topIssues": {
+          "type": "array",
+          "description": "Top unresolved issues sorted by event count descending",
+          "maxItems": 10,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "title": { "type": "string" },
+              "culprit": { "type": "string" },
+              "level": { "type": "string", "enum": ["fatal", "error", "warning", "info", "debug"] },
+              "eventCount": { "type": "integer" },
+              "userCount": { "type": "integer" },
+              "firstSeen": { "type": "string", "format": "date-time" },
+              "lastSeen": { "type": "string", "format": "date-time" },
+              "isRegression": { "type": "boolean" },
+              "permalink": { "type": "string", "format": "uri" }
+            },
+            "required": ["id", "title", "level", "eventCount", "userCount", "lastSeen"]
+          }
+        },
+        "errorRateTrend": {
+          "type": "array",
+          "description": "Hourly error rate trend for the reported period",
+          "items": {
+            "type": "object",
+            "properties": {
+              "timestamp": { "type": "string", "format": "date-time" },
+              "eventCount": { "type": "integer" }
+            },
+            "required": ["timestamp", "eventCount"]
+          }
+        }
+      },
+      "required": ["crashFreeRate", "errorCount", "issueCount", "affectedUsers", "topIssues"]
+    }
+  },
+  "required": ["_meta", "data"]
+}

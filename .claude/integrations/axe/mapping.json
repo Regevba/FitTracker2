@@ -1,0 +1,106 @@
+{
+  "$schema": "mapping-v1",
+  "description": "Maps Axe MCP audit response fields to shared layer fields. Source paths use dot notation into the schema.json data payload. All values are real accessibility audit results — never estimates.",
+  "service": "axe",
+  "version": "1.0",
+  "target_shared_files": [
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/design-system.json",
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/test-coverage.json"
+  ],
+  "field_mappings": [
+    {
+      "source_path": "data.impactSeverityCounts",
+      "target_file": "design-system.json",
+      "target_path": "a11yCompliance.violationsBySeverity",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Replace the violation counts object. Keys: critical, serious, moderate, minor. Used by /ux and /design to track a11y debt.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.totalViolations",
+      "target_file": "design-system.json",
+      "target_path": "a11yCompliance.totalViolations",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total violation count across all impact levels",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.wcagLevel",
+      "target_file": "design-system.json",
+      "target_path": "a11yCompliance.wcagLevelAchieved",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Highest WCAG level at which zero violations were found (A, AA, or AAA)",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.violations",
+      "target_file": "design-system.json",
+      "target_path": "a11yCompliance.openViolations",
+      "match_on": null,
+      "transform": "custom",
+      "transform_note": "Store only critical and serious violations here (filter by impact). Full violation list goes to test-coverage.json. Capped at 25 entries.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.totalViolations",
+      "target_file": "test-coverage.json",
+      "target_path": "a11y.latestAudit.violationCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total violations from the latest axe audit run",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.totalPasses",
+      "target_file": "test-coverage.json",
+      "target_path": "a11y.latestAudit.passCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total passing rules from the latest axe audit run",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.totalIncomplete",
+      "target_file": "test-coverage.json",
+      "target_path": "a11y.latestAudit.incompleteCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Rules requiring manual review — not automatic pass/fail",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.violations",
+      "target_file": "test-coverage.json",
+      "target_path": "a11y.latestAudit.violations",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Full violations array including all impact levels. Used by /qa for detailed remediation tracking.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.incomplete",
+      "target_file": "test-coverage.json",
+      "target_path": "a11y.latestAudit.incompleteRules",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Rules needing manual review, stored for /qa follow-up",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    }
+  ],
+  "validation_rules": {
+    "numeric_tolerance": 0.05,
+    "description": "Numeric fields are considered consistent if within 5% of the existing shared layer value. Categorical fields (wcagLevel, impact) must match exactly. New fields (null → value) are always consistent. Measured data superseding estimated data is always consistent."
+  }
+}

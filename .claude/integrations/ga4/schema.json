@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GA4 Analytics Response Schema",
+  "description": "Expected shape of the normalized response from mcp-server-ga4. Used to validate that the MCP returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this data pull",
+      "properties": {
+        "source": { "type": "string", "description": "Always 'ga4-mcp'", "const": "ga4-mcp" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this data was pulled" },
+        "raw_record_count": { "type": "integer", "description": "Number of rows in the GA4 report response" },
+        "property_id": { "type": "string", "description": "GA4 property ID used for this pull" },
+        "date_range": {
+          "type": "object",
+          "properties": {
+            "startDate": { "type": "string" },
+            "endDate": { "type": "string" }
+          },
+          "required": ["startDate", "endDate"]
+        }
+      },
+      "required": ["source", "timestamp", "property_id"]
+    },
+    "data": {
+      "type": "object",
+      "description": "GA4 metric and dimension payload",
+      "properties": {
+        "activeUsers": {
+          "type": "integer",
+          "description": "Number of distinct active users in the date range"
+        },
+        "eventCount": {
+          "type": "integer",
+          "description": "Total number of events fired across all event names"
+        },
+        "sessions": {
+          "type": "integer",
+          "description": "Total number of sessions"
+        },
+        "screenPageViews": {
+          "type": "integer",
+          "description": "Total screen/page views across all screens"
+        },
+        "crashFreeRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Fraction of sessions without a crash (0.0–1.0). Derived from crash event count vs. total sessions."
+        },
+        "conversionRates": {
+          "type": "array",
+          "description": "Per-funnel or per-event conversion rates",
+          "items": {
+            "type": "object",
+            "properties": {
+              "eventName": { "type": "string" },
+              "conversionRate": { "type": "number", "minimum": 0, "maximum": 1 },
+              "eventCount": { "type": "integer" }
+            },
+            "required": ["eventName", "conversionRate"]
+          }
+        },
+        "funnelData": {
+          "type": "array",
+          "description": "Step-by-step funnel breakdown",
+          "items": {
+            "type": "object",
+            "properties": {
+              "stepName": { "type": "string" },
+              "stepIndex": { "type": "integer" },
+              "activeUsers": { "type": "integer" },
+              "completionRate": { "type": "number", "minimum": 0, "maximum": 1 }
+            },
+            "required": ["stepName", "stepIndex", "activeUsers"]
+          }
+        },
+        "byScreen": {
+          "type": "array",
+          "description": "Per-screen breakdown of views and events",
+          "items": {
+            "type": "object",
+            "properties": {
+              "screenName": { "type": "string" },
+              "screenPageViews": { "type": "integer" },
+              "activeUsers": { "type": "integer" }
+            },
+            "required": ["screenName", "screenPageViews"]
+          }
+        }
+      },
+      "required": ["activeUsers", "eventCount", "sessions", "screenPageViews"]
+    }
+  },
+  "required": ["_meta", "data"]
+}

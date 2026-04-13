@@ -1,0 +1,118 @@
+{
+  "cache_key": "qa:test_strategy:feature_test_types_and_counts",
+  "skill": "qa",
+  "level": "L1",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T00:00:00Z",
+  "hit_count": 1,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    ".claude/features/home-today-screen/state.json",
+    ".claude/features/training-plan-v2/state.json",
+    "docs/design-system/v2-refactor-checklist.md"
+  ],
+  "task_signature": {
+    "type": "test_strategy_planning",
+    "inputs": ["feature type (v2_refactor/new)", "has_analytics", "has_service_layer", "has_ui"],
+    "context": "Test types, counts, and patterns for FitMe features. Derived from Home v2 (21 tests: 11 functional + 10 analytics) and Training v2 (16 tests: unit + integration). Used by /qa skill in Phase 5."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Analytics tests — XCTest event verification (highest priority)",
+      "decision": "Analytics tests verify: (1) event fires on the correct user action, (2) event has correct name (screen-prefixed), (3) event has correct parameters and values, (4) event does NOT fire when consent is denied (consent gating). Home v2 added 10 analytics tests (all 10 passed). Test names pattern: testHomeActionTapEventFires(), testHomeEmptyStateShownOnNoData(), testAnalyticsEventBlockedWithoutConsent().",
+      "typical_count": "3-4 analytics tests per event, scaled by event count. Home v2: 3 events → 10 tests. Training v2: 12 events → proportional.",
+      "test_structure": {
+        "given": "Set up MockAnalyticsService with event recording",
+        "when": "Trigger the user action (tap, navigation, state change)",
+        "then": "Assert MockAnalyticsService.capturedEvents.last?.name == 'home_action_tap' AND params match AND consent gate respected"
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json testing.analytics_tests_added = 10, analytics_tests_passed = 10",
+        "home-today-screen state.json testing.analytics_verification_passed = true"
+      ]
+    },
+    {
+      "pattern": "Functional/behavior tests — service layer and logic",
+      "decision": "XCTest unit tests for service classes and recommendation providers. Home v2 T15: behavior tests for HomeRecommendationProvider (logic: which action to surface, empty state trigger, ordering). Training v2: unit + integration tests for exercise state management, set completion, rest timer logic. Test count: typically 8-15 per service class.",
+      "typical_count": "Home v2: 11 functional tests total. Training v2: 16 tests (mix of unit + integration).",
+      "test_categories": {
+        "service_unit_tests": "Pure logic, no UI. Test HomeRecommendationProvider.recommendedAction(for:), TrainingSession state machine transitions.",
+        "integration_tests": "Service + ViewModel interaction. Verify ViewModel.load() triggers correct provider calls and state transitions.",
+        "state_machine_tests": "Empty → Loading → Loaded → Error transitions. Each state gets at least one test."
+      },
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen T15 (HomeRecommendationProvider behavior tests)",
+        "home-today-screen state.json testing.tests_added = 11, tests_passed = 11",
+        "training-plan-v2 state.json testing.tests_added = 16"
+      ]
+    },
+    {
+      "pattern": "Snapshot tests — deferred or Phase 5 manual verification",
+      "decision": "Snapshot tests for 5 UI states x device sizes. Home v2 T16 (snapshot tests) was deferred from Phase 4 to Phase 5 manual verification. States to cover: (1) full data / happy path, (2) empty state, (3) loading/skeleton, (4) error state, (5) partial data. Devices: iPhone SE (375pt), iPhone 17 Pro (393pt), iPhone 17 Pro Max (430pt).",
+      "typical_count": "5 states x 3 devices = 15 snapshot assertions minimum.",
+      "gotcha": "Snapshot tests are fragile to font/color rendering differences across OS versions. Pin simulator to specific iOS version in CI. Home v2 deferred T16 precisely because of CI snapshot flakiness risk.",
+      "confidence": "medium",
+      "source_executions": [
+        "home-today-screen tasks T16: 'Write snapshot tests for v2 view (5 states x devices)' — deferred to Phase 5",
+        "home-today-screen state.json testing.ci_passed = true (without snapshot tests)"
+      ]
+    },
+    {
+      "pattern": "CI gate — three required checks before merge",
+      "decision": "All three must pass before Phase 6 (Review) approval: (1) make tokens-check — design system drift detection; (2) xcodebuild build — iOS Simulator, no code signing, must produce BUILD SUCCEEDED; (3) xcodebuild test — XCTest suite. Home v2 build result: 'BUILD SUCCEEDED (iPhone 17 Pro, iOS 26.4)'. CI must pass on BOTH the feature branch AND main.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen state.json testing.ci_passed = true, build_result = 'BUILD SUCCEEDED (iPhone 17 Pro, iOS 26.4)'",
+        "home-today-screen state.json review.ci_main = true, ci_feature = true",
+        "CLAUDE.md CI Pipeline section"
+      ]
+    },
+    {
+      "pattern": "Accessibility test coverage — required for v2 refactors",
+      "decision": "AX/Accessibility pass is a separate implementation task (Home v2 T11: 'Accessibility pass on v2 view (~30+ labels)'). Testing verifies: accessibilityLabel on all interactive elements, accessibilityHint on non-obvious actions, accessibilityIdentifier on testable elements, VoiceOver traversal order. Minimum 30 labels for complex screens (Home, Training). Training v2: Full AX5 Dynamic Type support required.",
+      "typical_count": "30+ accessibilityLabel declarations for complex screens. Verify in XCTest via accessibility inspector or XCUITest accessibilityElement queries.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen T11 '~30+ labels', training-plan-v2 Q6_dynamic_type = 'Full AX5 support'",
+        "v2-refactor-checklist Section F (accessibility)"
+      ]
+    },
+    {
+      "pattern": "Test file naming and organization conventions",
+      "decision": "Test files mirror the source file structure. HomeRecommendationProvider.swift → HomeRecommendationProviderTests.swift. Analytics tests go in a separate test file: HomeAnalyticsTests.swift, TrainingAnalyticsTests.swift. Training v2 decomposition: 6 extracted views each get their own test consideration. analytics_tests separate from functional tests for clear separation of concerns.",
+      "confidence": "medium",
+      "source_executions": [
+        "home-today-screen T15 (HomeRecommendationProvider tests), T17 (analytics tests separate task)"
+      ]
+    },
+    {
+      "pattern": "v2-refactor-checklist walk — required test task",
+      "decision": "Walking Sections A-K of v2-refactor-checklist.md is itself a test task (Home v2 T14). This is done AFTER T8 (main assembly) + T11 (a11y pass) + T12 (pbxproj). state.json phases.implementation.checklist_completed must be true. Checklist sections: A (audit/spec), B (file convention), C (token compliance), D (component reuse), E (state coverage), F (accessibility), G (motion), H (analytics), I (pbxproj hygiene), J (CI), K (documentation).",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen T14: 'Walk v2 refactor checklist (Sections A-K)'",
+        "home-today-screen state.json implementation.checklist_completed = true"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Writing tests after merge instead of during Phase 5",
+      "what_went_wrong": "Tests written post-merge miss the CI gate requirement. Both branches (feature + main) must be green BEFORE merge approval. Tests are Phase 5 work, not cleanup.",
+      "source_execution": "CLAUDE.md CI requirement: both branches must pass before merge is approved"
+    },
+    {
+      "pattern": "Analytics tests that only check event name, not parameters",
+      "what_went_wrong": "Incomplete analytics tests pass when event fires with wrong parameters (e.g. weight in pounds instead of kg, missing exercise_name). Always assert BOTH the event name AND all expected parameters. Consent gating test is also mandatory.",
+      "source_execution": "home-today-screen state.json testing.analytics_verification_passed = true — requires full verification"
+    },
+    {
+      "pattern": "Running make tokens-check last instead of first",
+      "what_went_wrong": "If tokens-check fails, it means raw literals exist in the v2 file — this indicates a deeper problem that may require refactoring multiple views. Catch it early by running tokens-check after T1 (token additions) before T8 (main assembly).",
+      "source_execution": "v2-refactor-checklist B4 — run tokens-check to verify no drift"
+    }
+  ],
+  "speedup_instructions": "When /qa plans a test strategy for a v2 refactor: (1) analytics tests first (highest ROI — verify event names match taxonomy CSV), (2) service/provider unit tests (behavior tests for any new service classes), (3) CI gate validation (tokens-check + build + test suite), (4) checklist walk (T14 equivalent). Use test counts from Home v2 (21 total: 11 functional + 10 analytics) as the baseline for similar-complexity screens. Defer snapshot tests to Phase 5 if CI schedule is tight — they're valuable but fragile."
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dependency Security Audit Response Schema",
+  "description": "Expected shape of the normalized response from mcp-security-audit. Used to validate that the MCP returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this security scan",
+      "properties": {
+        "source": { "type": "string", "description": "Always 'security-audit-mcp'", "const": "security-audit-mcp" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this scan was run" },
+        "raw_record_count": { "type": "integer", "description": "Total number of dependencies scanned" },
+        "project_path": {
+          "type": "string",
+          "description": "Absolute path to the scanned project",
+          "const": "/Volumes/DevSSD/FitTracker2"
+        },
+        "manifest_files": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Dependency manifests that were scanned (e.g., ['Package.swift', 'Package.resolved'])"
+        },
+        "databases_checked": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "CVE/advisory databases consulted (e.g., ['OSV', 'GitHub Advisory'])"
+        }
+      },
+      "required": ["source", "timestamp", "project_path"]
+    },
+    "data": {
+      "type": "object",
+      "description": "Security audit results payload",
+      "properties": {
+        "vulnerabilities": {
+          "type": "array",
+          "description": "List of discovered vulnerabilities across all scanned dependencies",
+          "items": {
+            "type": "object",
+            "properties": {
+              "cveId": { "type": "string", "description": "CVE identifier (e.g., 'CVE-2024-12345')" },
+              "ghsaId": { "type": ["string", "null"], "description": "GitHub Security Advisory ID if available" },
+              "severity": {
+                "type": "string",
+                "enum": ["critical", "high", "medium", "low"],
+                "description": "CVSS-derived severity tier"
+              },
+              "cvssScore": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10,
+                "description": "CVSS base score (0.0–10.0)"
+              },
+              "affectedPackage": { "type": "string", "description": "Name of the vulnerable package" },
+              "affectedVersionRange": { "type": "string", "description": "Version range affected (semver notation)" },
+              "installedVersion": { "type": "string", "description": "Version currently installed in the project" },
+              "fixAvailable": { "type": "boolean", "description": "Whether a patched version exists" },
+              "fixedInVersion": { "type": ["string", "null"], "description": "First version with the fix applied" },
+              "advisoryUrl": { "type": "string", "format": "uri", "description": "Link to the full advisory" },
+              "summary": { "type": "string", "description": "Brief description of the vulnerability" }
+            },
+            "required": ["severity", "affectedPackage", "installedVersion", "fixAvailable", "advisoryUrl", "summary"]
+          }
+        },
+        "severityCounts": {
+          "type": "object",
+          "description": "Vulnerability counts grouped by severity",
+          "properties": {
+            "critical": { "type": "integer" },
+            "high": { "type": "integer" },
+            "medium": { "type": "integer" },
+            "low": { "type": "integer" }
+          },
+          "required": ["critical", "high", "medium", "low"]
+        },
+        "totalVulnerabilities": { "type": "integer" },
+        "totalDependenciesScanned": { "type": "integer" },
+        "cleanDependencies": { "type": "integer", "description": "Dependencies with no known vulnerabilities" },
+        "fixAvailableCount": {
+          "type": "integer",
+          "description": "Number of vulnerabilities that have a fix available"
+        },
+        "lastCleanScanDate": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp of the most recent scan that returned zero vulnerabilities, if any"
+        }
+      },
+      "required": ["vulnerabilities", "severityCounts", "totalVulnerabilities", "totalDependenciesScanned", "fixAvailableCount"]
+    }
+  },
+  "required": ["_meta", "data"]
+}

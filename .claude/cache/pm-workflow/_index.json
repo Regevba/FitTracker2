@@ -1,0 +1,9 @@
+{
+  "skill": "pm-workflow",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["linear-mcp", "notion-mcp"],
+  "consumes_from_shared": ["feature-registry.json", "skill-routing.json", "task-queue.json"],
+  "writes_to_shared": ["feature-registry.json", "task-queue.json", "change-log.json"],
+  "entries": []
+}

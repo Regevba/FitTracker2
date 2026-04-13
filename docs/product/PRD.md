@@ -294,8 +294,8 @@ Each feature section follows a consistent structure: purpose, business objective
 
 | Gap | Priority | Notes |
 |-----|----------|-------|
-| Food database search | High | OpenFoodFacts stub exists but not fully integrated |
-| Barcode scanning | High | Camera capture exists but macro extraction not connected |
+| Food database search | Medium | Text search is wired through OpenFoodFacts; remaining work is result quality, fallback behavior, and broader validation coverage |
+| Barcode scanning | Medium | Camera scanning is wired to OpenFoodFacts lookup; remaining work is validation depth and UX hardening |
 | Meal timing analysis | Low | Meals have timestamps but no timing recommendations |
 | Photo-based logging | Medium | No image recognition for food (could use Vision/ML) |
 | Meal planning / suggestions | Low | No AI-driven meal suggestions based on remaining macros |
@@ -478,7 +478,7 @@ Thresholds configurable via UserPreferences.
 | Passkey/WebAuthn | Shipped | Challenge-response biometric auth |
 | Email registration | Shipped | Name, birthday, email, password with OTP verification |
 | Email login | Shipped | Email + password |
-| Google Sign In | Dormant | Mock provider exists, requires GoogleSignIn-iOS SDK |
+| Google Sign In | In Progress | Project wiring, package resolution, Info.plist scaffolding, and compile verification are complete; real credentials and end-to-end runtime verification are still pending |
 | Facebook Sign In | Planned | Enum case exists, no implementation |
 | Biometric lock | Shipped | Face ID / Touch ID post-sign-in lock |
 | Auto-lock on background | Shipped | Configurable; clears crypto session |
@@ -501,10 +501,9 @@ Welcome → AuthHub → [Apple / Passkey / Email] → Authenticated
 
 | Gap | Priority | Notes |
 |-----|----------|-------|
-| Google Sign In not active | Medium | Mock exists, needs GoogleSignIn-iOS SDK |
+| Google Sign In runtime verification | High | Repo wiring and compile verification are complete, but local credentials and end-to-end validation are still pending |
 | Facebook Sign In not implemented | Low | Enum case only |
-| No account deletion | High | GDPR requirement — user can't delete account from within app |
-| No password reset flow | Medium | Protocol exists but not wired in UI |
+| Session refresh and recovery validation | Medium | Broader runtime auth QA is still required before auth can be called production-ready |
 | No passcode fallback | Low | Only biometric — no PIN/pattern alternative |
 | Phone OTP deferred | Low | Documented in `deferred-phone-otp-task.md` |
 
@@ -603,8 +602,8 @@ Welcome → AuthHub → [Apple / Passkey / Email] → Authenticated
 
 | Gap | Priority | Notes |
 |-----|----------|-------|
-| No data export for user | High | GDPR Article 20 — right to data portability |
-| No account deletion | High | GDPR Article 17 — right to erasure |
+| Data export UX from Settings | Medium | GDPR export exists, but there is still no dedicated Settings surface for initiating or tracking exports |
+| Account deletion UX polish | Medium | GDPR deletion exists, but the destructive flow still needs broader UX and runtime validation |
 | CloudKit unavailable on Simulator | Low | Known iOS limitation, Supabase covers sync |
 | No offline conflict UI | Low | Conflicts resolved silently (last-write-wins) |
 | No sync health indicator in UI | Low | Settings shows status but no persistent badge |
@@ -749,36 +748,33 @@ LocalUserSnapshot (on-device)
 
 ---
 
-### 2.11 Onboarding (Planned — Not Yet Built)
+### 2.11 Onboarding (Shipped)
 
-**Purpose:** First-run experience that introduces users to FitMe's key features, requests necessary permissions, and guides them to their first meaningful action.
+**Purpose:** First-run experience that introduces users to FitMe's key features, requests necessary permissions with context, and guides them to a meaningful first action.
 
-**Business objective:** Onboarding directly impacts D1 retention. Users who complete onboarding are 3x more likely to return on Day 2. A clear first-run flow reduces support requests and sets expectations.
+**Business objective:** Onboarding directly impacts D1 retention and first-run activation quality.
 
-**Planned requirements:**
+**Current implementation:** A shipped multi-step onboarding flow lives in the canonical repo and completed the full PM-flow lifecycle during the v2 UX alignment pass.
 
-| Requirement | Priority | Details |
-|-------------|----------|---------|
-| Welcome slide | Must Have | Brand introduction with FitMeLogoLoader animation |
-| Feature highlights | Must Have | 3-4 slides showing key features (training, nutrition, recovery, AI) |
-| HealthKit permission | Must Have | Explain why + request authorization |
-| Notification permission | Should Have | Training reminders, readiness alerts |
-| Goal setup | Should Have | Quick goal selection (lose fat, build muscle, maintain) |
-| Body composition entry | Could Have | Initial weight, height, body fat % |
-| First action CTA | Must Have | "Start your first workout" or "Log your first meal" |
-| Skip option | Must Have | Allow experienced users to skip |
+**Current requirements:**
 
-**Illustration style:** Hand-drawn sketching (warm, approachable) with brand colors (#FA8F40 orange, #8AC7FF blue accents). Consistent with empty states and feature highlights throughout the app.
+| Requirement | Status | Details |
+|-------------|--------|---------|
+| Welcome slide | Shipped | Brand introduction with FitMe identity and value framing |
+| Goal setup | Shipped | Captures user intent early |
+| Profile capture | Shipped | Lightweight context for personalization |
+| Consent framing | Shipped | Privacy-first context before deeper setup |
+| HealthKit permission | Shipped | Guided request rather than blind system prompt |
+| First action CTA | Shipped | Routes users into the product with direction |
+| Skip option | Shipped | Users can continue without a hard block |
 
-**Current state:** No code exists. PRD defines scope for implementation.
+**Current state:** Shipped on main; tracked as complete in `.claude/features/onboarding/state.json`.
 
 **Success metrics:**
 - Onboarding completion rate (target: >80%)
 - Permission grant rate (HealthKit, notifications)
 - Time to first meaningful action (target: <5 minutes after install)
 - D1 retention for users who complete vs skip onboarding
-
----
 
 ## Part 3: Non-Functional Requirements
 
@@ -790,8 +786,8 @@ LocalUserSnapshot (on-device)
 | Zero-knowledge sync | Shipped | Servers store only `.ftenc` ciphertext blobs |
 | Biometric-gated keys | Shipped | Secure Enclave P-256 keys with biometric ACL |
 | GDPR Article 5 compliance | Shipped | Data minimization — only banded values leave device |
-| GDPR Article 17 (erasure) | Gap | User cannot delete account from within app |
-| GDPR Article 20 (portability) | Gap | No data export functionality |
+| GDPR Article 17 (erasure) | Shipped | Account deletion flow shipped in GDPR compliance work |
+| GDPR Article 20 (portability) | Shipped | Data export flow shipped in GDPR compliance work |
 | Session token security | Shipped | Memory-only session token, never persisted to disk |
 | File protection | Shipped | `NSFileProtectionCompleteUnlessOpen` |
 
@@ -834,12 +830,12 @@ LocalUserSnapshot (on-device)
 |----------|----------|
 | **Must Have** | Training Tracking, Nutrition Logging, Home/Today, Authentication, Data & Sync |
 | **Should Have** | Stats/Progress, Recovery & Biometrics, AI Intelligence, Settings |
-| **Could Have** | Onboarding, Design System Catalog, FitMeLogoLoader animations |
-| **Won't Have (this release)** | Blood Test Reader, DEXA Import, Android, Marketing Website |
+| **Could Have** | Onboarding polish, Design System Catalog, FitMeLogoLoader animations |
+| **Won't Have (this maintenance cycle)** | Blood Test Reader, DEXA Import, Android, public marketing launch |
 
 ### RICE Roadmap Reference
 
-Full RICE-prioritized 18-task roadmap with phase gates: see [`docs/project/master-backlog-roadmap.md`](../project/master-backlog-roadmap.md)
+Full RICE-prioritized 18-task roadmap with phase gates: see [`docs/master-plan/master-backlog-roadmap.md`](../master-plan/master-backlog-roadmap.md)
 
 ---
 

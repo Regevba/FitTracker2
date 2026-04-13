@@ -1,4 +1,4 @@
-# `/pm-workflow` — The Hub (v3.0)
+# `/pm-workflow` — The Hub (v4.3)
 
 > **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
 
@@ -8,7 +8,7 @@
 
 ## What it does
 
-Orchestrates a feature (or any work item) through a 9-phase lifecycle with external tool sync:
+Orchestrates a feature (or any work item) through a 10-phase lifecycle (Phase 0 through Phase 9) with external tool sync:
 
 ```
 0. Research   → 1. PRD → 2. Tasks → 3. UX/Integration → 4. Implement
@@ -29,7 +29,7 @@ Before the ecosystem, `/pm-workflow` was a single monolithic skill that did ever
 - Cross-domain information (e.g. CX signals informing UX decisions) stayed trapped in one workflow's context
 - Every phase was sequential — no parallelization of independent work
 
-The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management.
+The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management. v4.0 added the adapter layer and L1/L2/L3 cache. v4.1 added the skill-internal lifecycle. v4.2 added self-healing health checks and framework integrity scoring. v4.3 adds the operational layer: control room visibility, case-study monitoring, and maintenance-program orchestration.
 
 ## Sub-commands
 
@@ -57,7 +57,7 @@ Not every work item walks all 10 phases. The hub supports four types:
 
 | Type | Phases (count) | When to use |
 |---|---|---|
-| **Feature** | All 9 + metrics (10) | New capability, requires research + PRD + design |
+| **Feature** | Full 10-phase lifecycle (0-9) | New capability, requires research + PRD + design |
 | **Enhancement** | Tasks → Implement → Test → Merge (4) | Improvement to a shipped feature that has a PRD |
 | **Fix** | Implement → Test (2) | Bug fix, security patch |
 | **Chore** | Implement only (1) | Docs, config, refactoring |
@@ -118,6 +118,7 @@ When ANY work item merges to main:
 2. Notify downstream skills based on change type (code → `/qa`, `/cx`, `/ops`, `/analytics`; UI → add `/design`; analytics → `/qa`, `/cx`, `/analytics`)
 3. Sync Notion page to `phase:done`
 4. Write event to `change-log.json`
+5. If the work is showcase-worthy, append or update the matching entry in `case-study-monitoring.json`
 
 ## Shared Data
 
@@ -131,6 +132,7 @@ When ANY work item merges to main:
 **Writes:**
 - `feature-registry.json` — updates feature status on phase transitions
 - `change-log.json` — appends an event for every work-item completion
+- `case-study-monitoring.json` — records measurable evidence for showcase-worthy features, cleanup programs, and major framework runs
 - `.claude/features/{name}/state.json` — the canonical phase tracker
 - `task-queue.json` — rebuilds the cross-feature priority queue after task changes
 
@@ -205,7 +207,7 @@ It's the only skill the user normally types directly. Everything else is reachab
 | linear | MCP (official) | Issue tracking, sprint management, cycle progress, team velocity |
 | notion | MCP (already connected) | Feature page status sync, phase field updates, documentation workspace |
 
-**Adapter config:** `.claude/integrations/linear/` and `.claude/integrations/notion/`
+**Adapter config:** Linear and Notion are MCP-backed external connectors used by the hub. The local adapter layer under `.claude/integrations/` currently covers `ga4`, `app-store-connect`, `sentry`, `firecrawl`, `axe`, and `security-audit`. The routing schema now distinguishes those local adapters from external connectors so the framework model matches the repo structure.
 
 All incoming data passes through the **automatic validation gate**:
 

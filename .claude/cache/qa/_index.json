@@ -1,0 +1,9 @@
+{
+  "skill": "qa",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["xcode-mcp", "codecov-api"],
+  "consumes_from_shared": ["test-coverage.json", "health-status.json"],
+  "writes_to_shared": ["test-coverage.json", "health-status.json"],
+  "entries": []
+}

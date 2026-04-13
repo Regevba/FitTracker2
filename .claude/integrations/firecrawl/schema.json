@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Firecrawl Web Scraping Response Schema",
+  "description": "Expected shape of the normalized response from firecrawl-mcp. Used to validate that the MCP returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this data pull",
+      "properties": {
+        "source": { "type": "string", "description": "Always 'firecrawl-mcp'", "const": "firecrawl-mcp" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this data was pulled" },
+        "raw_record_count": { "type": "integer", "description": "Number of pages scraped in this pull" },
+        "scrape_mode": {
+          "type": "string",
+          "enum": ["scrape", "crawl", "extract", "search"],
+          "description": "Which Firecrawl tool was used for this pull"
+        },
+        "source_urls": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" },
+          "description": "URLs that were scraped or crawled"
+        }
+      },
+      "required": ["source", "timestamp", "scrape_mode"]
+    },
+    "data": {
+      "type": "object",
+      "description": "Firecrawl scraped content payload",
+      "properties": {
+        "pageContent": {
+          "type": "array",
+          "description": "Array of scraped pages with their content",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "format": "uri" },
+              "title": { "type": "string" },
+              "structuredMarkdown": {
+                "type": "string",
+                "description": "Full page content converted to Markdown"
+              },
+              "statusCode": { "type": "integer" },
+              "metadata": {
+                "type": "object",
+                "properties": {
+                  "description": { "type": "string" },
+                  "keywords": { "type": "string" },
+                  "ogTitle": { "type": "string" }
+                }
+              }
+            },
+            "required": ["url", "structuredMarkdown", "statusCode"]
+          }
+        },
+        "extractedData": {
+          "type": "array",
+          "description": "Structured data extracted from pages via extraction prompt",
+          "items": {
+            "type": "object",
+            "properties": {
+              "url": { "type": "string", "format": "uri" },
+              "appName": { "type": "string" },
+              "features": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Competitor feature list"
+              },
+              "pricing": { "type": "string" },
+              "targetAudience": { "type": "string" },
+              "keyDifferentiators": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "rawExtract": {
+                "type": "object",
+                "description": "Freeform extracted fields from the extraction prompt"
+              }
+            },
+            "required": ["url"]
+          }
+        }
+      },
+      "required": ["pageContent"]
+    }
+  },
+  "required": ["_meta", "data"]
+}

@@ -1,7 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10T00:00:00Z",
-  "description": "Master cache index (v4.2). L1 = per-skill, L2 = cross-skill (_shared/), L3 = project-wide (_project/). Cache keys checked on skill execution start; entries updated on completion. Health check (Phase 0) verifies integrity before cache access. Staleness via SHA256 hashes.",
+  "updated": "2026-04-11T15:50:25Z",
+  "description": "Master cache index (v4.3). L1 = per-skill, L2 = cross-skill (_shared/), L3 = project-wide (_project/). Cache keys checked on skill execution start; entries updated on completion. Health check (Phase 0) verifies integrity before cache access. Staleness via SHA256 hashes.",
   "cache_levels": {
     "L1": {
       "description": "Per-skill cache. Hot. Patterns and decisions from prior executions of a single skill.",

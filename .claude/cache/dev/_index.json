@@ -1,0 +1,9 @@
+{
+  "skill": "dev",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["github-cli", "security-audit-mcp"],
+  "consumes_from_shared": ["task-queue.json", "health-status.json"],
+  "writes_to_shared": ["task-queue.json"],
+  "entries": []
+}

@@ -2,17 +2,17 @@
 
 **Goal:** Give every domain of the product lifecycle its own first-class skill, so product management scales past a monolithic workflow without losing the connective tissue between domains.
 
-**Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 11 spokes + 11 shared data files + 6 integration adapters + 3-level learning cache + self-healing health check system. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
+**Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 10 spokes + 15 shared data files + 6 local integration adapters + MCP-backed external tool integrations + 3-level learning cache + self-healing health check system. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
 
 **Where to read more:** `docs/skills/{name}.md` for deep dives on each skill. The `SKILL.md` files under `.claude/skills/{name}/` are the agent-facing prompts the harness executes; the `docs/skills/` folder is the human-facing reference.
 
 ---
 
-## The 12 skills (1 hub + 11 spokes)
+## The 11 skills (1 hub + 10 spokes)
 
 | # | Skill | One-liner | Sub-commands | Phase it owns |
 | --- | --- | --- | --- | --- |
-| 0 | [`/pm-workflow`](pm-workflow.md) | **The hub.** Orchestrates the 9-phase lifecycle, dispatches 11 spokes, syncs external tools. | `{feature-name}` | All phases (dispatch) |
+| 0 | [`/pm-workflow`](pm-workflow.md) | **The hub.** Orchestrates the 10-phase lifecycle (0-9), dispatches 10 spokes, syncs external tools. | `{feature-name}` | All phases (dispatch) |
 | 1 | [`/ux`](ux.md) | **What & Why.** UX research, principles, specs, wireframes, v2 audits. | `research`, `spec`, `wireframe`, `validate`, `audit`, `patterns`, `prompt` | Phase 0 (v2) + Phase 3 + Phase 6 |
 | 2 | [`/design`](design.md) | **How it Looks.** Design system governance, Figma MCP builds, token pipeline, WCAG AA. | `audit`, `ux-spec`, `figma`, `tokens`, `accessibility`, `prompt`, `build` | Phase 3 + Phase 6 |
 | 3 | [`/dev`](dev.md) | **How it's Built.** Branching, code review, CI, dependencies, performance. | `branch`, `review`, `deps`, `perf`, `ci-status` | Phase 4 + Phase 6 + Phase 7 |
@@ -33,10 +33,11 @@
 - 2026-04-10 — v4.0: reactive data mesh, integration adapter layer (6 adapters), automatic validation gate (GREEN/ORANGE/RED), L1/L2/L3 learning cache, per-skill cache + external data source sections in all SKILL.md files
 - 2026-04-10 — v4.1: Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). Every skill mirrors the hub internally — 4-phase lifecycle with domain-specific research scope. Skills learn from prior executions and get faster over time.
 - 2026-04-10 — v4.2: Self-healing hub. Phase 0 (Health Check) added to Skill Internal Lifecycle — 5 weighted integrity checks at random intervals verify cache staleness, hit accuracy, shared layer consistency, routing integrity, and adapter availability. Alert if score drops below 90%. L1 cache seeded from 6 completed refactors. All 11 SKILL.md files wired with cache protocol, adapters, and research scope.
+- 2026-04-11 — v4.3: Operations control room + case-study monitoring + maintenance-program orchestration. The self-healing hub now has an operational layer for source-truth repair, cross-system monitoring, and showcase-ready evidence capture.
 
 ---
 
-## The 11 shared data files
+## The 15 shared data files
 
 Located under `.claude/shared/`:
 
@@ -44,15 +45,19 @@ Located under `.claude/shared/`:
 | --- | --- | --- |
 | `context.json` | Product identity, personas, brand, guardrails | `/pm-workflow` + `/research` |
 | `feature-registry.json` | All 16 features with status + metrics + pain points | `/pm-workflow` |
+| `framework-health.json` | Health-check config, weighted integrity rules, and check history | `/pm-workflow` |
+| `framework-manifest.json` | Canonical framework version, counts, source-of-truth metadata, and active capabilities | `/pm-workflow` |
+| `external-sync-status.json` | Live Notion + Linear sync snapshot for dashboard truth checks and maintenance work | `/pm-workflow` + `/ops` |
 | `metric-status.json` | 40 metrics with targets + instrumentation status | `/analytics` |
 | `design-system.json` | Tokens, components, accessibility, Android mapping | `/design` |
 | `test-coverage.json` | Test suites, gaps, guardrail gates | `/qa` |
 | `cx-signals.json` | Reviews, NPS, sentiment, keyword patterns | `/cx` |
 | `campaign-tracker.json` | Campaigns, UTM convention, channels, attribution | `/marketing` |
 | `health-status.json` | Infrastructure services, CI, incidents, cost | `/ops` |
-| `skill-routing.json` | Task→skill mapping + integration sources + validation gate config | `/pm-workflow` |
+| `skill-routing.json` | Task→skill mapping + local adapters + external connectors + validation gate config | `/pm-workflow` |
 | `task-queue.json` | Pending work items and priority queue | `/pm-workflow` |
 | `change-log.json` | Audit trail + validation log entries | `/pm-workflow` |
+| `case-study-monitoring.json` | Cross-cycle evidence for showcase-worthy features, cleanup programs, and framework evolution | `/pm-workflow` + `/analytics` |
 
 Every skill reads `context.json` on startup. Most skills write to one primary file and read from the others for context.
 
@@ -133,7 +138,8 @@ Cache entries store: task signatures, learned patterns, anti-patterns, and speed
 - **Sub-feature queue** — parent audit (Home v2) spawned 4 child features, each tracked independently
 - **Parallel subagent execution** — independent tasks dispatched to multiple skills simultaneously, converging at review gates
 - **Learning cache validated** — Nutrition v2 (4th refactor) completed research→implementation in ~2h vs Home v2 (1st) at ~36h
-- **v4.1 Skill Internal Lifecycle** — Cache Check → Research → Execute → Learn validated across 3 refactors
+- **v4.2 Self-healing lifecycle** — Health Check → Cache Check → Research → Execute → Learn validated across the wired skill set
+- **v4.3 Operational layer** — control room workflow, case-study monitoring, and maintenance-program framing now sit on top of the self-healing hub
 
 ---
 
@@ -209,9 +215,12 @@ Cache entries store: task signatures, learned patterns, anti-patterns, and speed
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     SHARED DATA LAYER (.claude/shared/*.json)
 
-    context.json · feature-registry.json · metric-status.json
-    design-system.json · test-coverage.json · cx-signals.json
-    campaign-tracker.json · health-status.json
+    context.json · feature-registry.json · framework-health.json
+    framework-manifest.json · external-sync-status.json
+    metric-status.json · design-system.json · test-coverage.json
+    cx-signals.json · campaign-tracker.json · health-status.json
+    skill-routing.json · task-queue.json · change-log.json
+    case-study-monitoring.json
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -252,8 +261,8 @@ The hub never does inline work — it reads state, decides which skill to dispat
 4. **Every skill writes to at most one shared file.** Reads from many.
 5. **No skill auto-advances.** User approves every phase transition.
 6. **Change broadcasts.** When a work item completes, `/pm-workflow` writes to `change-log.json` and notifies downstream skills so the system stays aware.
-7. **Every skill follows the 4-phase internal lifecycle.** Cache Check → Research (if miss) → Execute → Learn. Skills mirror the hub's structure internally.
-8. **Every skill declares its external data sources.** Adapters, shared layer targets, and validation gate behavior documented in each SKILL.md.
+7. **Every skill follows the 5-phase internal lifecycle.** Health Check → Cache Check → Research (if miss) → Execute → Learn. Skills mirror the hub structure internally.
+8. **Every skill declares its external data sources.** Local adapters, external connectors, shared layer targets, and validation gate behavior are documented in each SKILL.md.
 9. **Every skill has a domain-specific research scope.** 5 research dimensions + source priority order. When cache misses, the skill knows exactly what to investigate.
 10. **Data flows reactively.** Any entry point, any time. A single skill invocation can ripple through the entire shared layer.
 11. **Every skill runs Phase 0 (Health Check) on random trigger.** ~25% probability with 2h cooldown. 5 weighted checks verify cache, shared layer, routing, and adapter integrity. If score < 90%, execution halts until resolved.
@@ -263,11 +272,11 @@ The hub never does inline work — it reads state, decides which skill to dispat
 ## Related documents
 
 - [`architecture.md`](architecture.md) — full ecosystem deep-dive (~1400 lines). Covers the hub-and-spoke architecture, shared data layer, per-skill sections, connection map, feature review, and a merged-in gap analysis snapshot from 2026-04-04 with current deltas.
-- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → v3.0 (external integrations + screen audits + parallel execution) → v4.1 (reactive data mesh + learning cache + validation gate + skill internal lifecycle). Useful context for understanding why the current architecture looks the way it does.
+- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → v3.0 (external integrations + screen audits + parallel execution) → v4.3 (reactive data mesh + learning cache + validation gate + self-healing hub + operational control room). Useful context for understanding why the current architecture looks the way it does.
 - [`pm-workflow.md`](pm-workflow.md) — hub skill deep-dive
 - [`.claude/skills/{name}/SKILL.md`](../../.claude/skills/) — agent-facing prompts the harness executes when a skill is invoked
 - [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references
 - [`../design-system/v2-refactor-checklist.md`](../design-system/v2-refactor-checklist.md) — the checklist that every V2 refactor walks through
 - [`../case-studies/`](../case-studies/) — concrete examples of the PM workflow running on real features
-- [`../case-studies/pm-workflow-evolution-v1-to-v4.md`](../case-studies/pm-workflow-evolution-v1-to-v4.md) — comprehensive case study: PM hub evolution v1.0 → v4.1 with measurable efficiency data across 6 screen refactors
+- [`../case-studies/pm-workflow-evolution-v1-to-v4.md`](../case-studies/pm-workflow-evolution-v1-to-v4.md) — comprehensive case study: PM hub evolution v1.0 → v4.3 with measurable efficiency data across 6 screen refactors plus the operational layer follow-through
 - [`../../CLAUDE.md`](../../CLAUDE.md) — project rules, including the UI Refactoring & V2 Rule

@@ -2,7 +2,7 @@
 
 > Date: 2026-04-05
 > Purpose: replace fragmented planning with one execution plan grounded in the current repo, build state, tests, and roadmap docs.
-> Inputs: `docs/project/master-backlog-roadmap.md`, `docs/superpowers/specs/2026-03-30-fittracker-master-plan-design.md`, `docs/product/PRD.md`, `docs/project/branch-review-2026-04-05.md`, current `main`, and fresh local verification.
+> Inputs: `docs/master-plan/master-backlog-roadmap.md`, `docs/superpowers/specs/2026-03-30-fittracker-master-plan-design.md`, `docs/product/PRD.md`, `docs/project/branch-review-2026-04-05.md`, current `main`, and fresh local verification.
 
 ---
 

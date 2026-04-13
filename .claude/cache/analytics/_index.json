@@ -1,0 +1,9 @@
+{
+  "skill": "analytics",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["ga4-mcp", "mixpanel-mcp"],
+  "consumes_from_shared": ["metric-status.json", "feature-registry.json"],
+  "writes_to_shared": ["metric-status.json"],
+  "entries": []
+}

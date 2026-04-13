@@ -572,7 +572,7 @@ In `docs/skills/README.md`, find the "Evolution history" bullet list and add:
 - 2026-04-10 — v4.2: Self-healing hub. Phase 0 (Health Check) added to Skill Internal Lifecycle — 5 health checks at random intervals verify cache staleness, hit accuracy, shared layer consistency, routing integrity, and adapter availability. Alert if score drops below 90%. L1 cache seeded from 6 completed refactors. All 11 SKILL.md files wired with cache protocol, adapters, and research scope.
 ```
 
-Also update the opening paragraph count: "12 skills (1 hub + 11 spokes) + 11 shared data files + 6 integration adapters + 3-level learning cache + automatic validation gate + **self-healing health check**"
+Also update the opening paragraph count: "11 skills (1 hub + 10 spokes) + 15 shared data files + 6 integration adapters + 3-level learning cache + automatic validation gate + **self-healing health check**"
 
 - [ ] **Step 3: Update rules count in README.md**
 

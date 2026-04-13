@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-10 (v4.1 update)
-> **Status:** v4.1 — reactive data mesh + learning cache + integration adapters + skill internal lifecycle
+> **Date:** 2026-04-11 (v4.3 update)
+> **Status:** v4.3 — reactive data mesh + learning cache + integration adapters + skill internal lifecycle + self-healing health checks + operational control room
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -32,7 +32,7 @@ Research → PRD → Tasks → UX → Implement → Test → Review → Merge �
                         │  /pm-workflow {name}                  │
                         │                                      │
                         │  Work Types:                         ���
-                        │  Feature → 9 phases (full funnel)    │
+                        │  Feature → 10 phases (0-9 full loop) │
                         │  Enhancement → 4 phases              │
                         │  Fix → 2 phases (fast-track)         │
                         │  Chore ��� 1 phase (minimal)           │
@@ -641,3 +641,39 @@ Every SKILL.md now has 5 sections (was 4 in v4.1):
 - `/qa` — analytics-test-patterns (right-sized density 1.3-2.7x, test templates)
 
 5 L2/L3 entries updated with data from all 6 refactors (hit_count = 6).
+
+---
+
+## 20. v4.3 — Operations Control Room + Case-Study Monitoring (2026-04-11)
+
+### What Changed: v4.2 → v4.3
+
+v4.2 made the framework self-healing. v4.3 adds the operational layer around that core: a control room surface, case-study monitoring as shared infrastructure, and maintenance cleanup programs as first-class framework work.
+
+| Aspect | v4.2 | v4.3 |
+| --- | --- | --- |
+| **Framework focus** | Internal integrity and self-healing | Integrity + operational visibility + showcase-ready monitoring |
+| **Primary operator surface** | Shared files and docs | Shared files + dashboard control room |
+| **Maintenance programs** | Possible but informal | Explicitly framed as framework-native work |
+| **Case-study capture** | Narrative after the fact | Structured monitoring during execution |
+| **Cross-system truth repair** | Manual audit exercise | Measured, repeatable operational loop |
+
+### New Capabilities
+
+- `dashboard/src/components/ControlRoom.jsx` gives the framework an operator cockpit for source health, delivery, UX and design review, and product intelligence.
+- `.claude/shared/case-study-monitoring.json` is now first-class shared infrastructure for monitoring showcase-worthy work while it is happening.
+- Maintenance cleanup programs are now treated as valid framework runs, not off-framework exceptions.
+- The framework can now tell the story of a cycle as it unfolds, not only after release retrospectives.
+
+### Updated Files
+
+- `dashboard/src/components/ControlRoom.jsx`
+- `dashboard/src/data/caseStudies.json`
+- `.claude/shared/case-study-monitoring.json`
+- `docs/case-studies/cleanup-control-room-case-study.md`
+- `docs/skills/README.md`
+- `docs/skills/architecture.md`
+
+### Why v4.3 Matters
+
+The hub is no longer only a planning and dispatch system. With v4.3, the framework also operates as its own observability and storytelling layer: it can repair truth drift, monitor maintenance progress, and accumulate evidence that later becomes a credible case study.

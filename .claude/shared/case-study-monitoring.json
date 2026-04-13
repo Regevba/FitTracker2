@@ -1,0 +1,423 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-13T10:30:00Z",
+  "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
+  "schema": {
+    "case_id": "stable slug",
+    "title": "human-readable case study title",
+    "status": "planned | in_progress | complete",
+    "work_type": "feature | enhancement | fix | chore | cleanup_program",
+    "started_at": "ISO 8601 date/time",
+    "updated_at": "ISO 8601 date/time",
+    "framework_version": "string — PM framework version active during the run",
+    "skills_used": ["pm-workflow", "research", "ux", "design", "dev", "qa", "analytics", "cx", "marketing", "ops", "release"],
+    "data_sources": ["repo", "notion", "linear", "vercel", "dashboard", "figma"],
+    "process_metrics": {
+      "linear_issues_closed": 0,
+      "linear_issues_created": 0,
+      "notion_pages_created": 0,
+      "notion_pages_updated": 0,
+      "repo_files_added": 0,
+      "repo_files_updated": 0,
+      "tests_passing": 0,
+      "build_verified": false
+    },
+    "quality_metrics": {
+      "critical_findings": 0,
+      "high_findings": 0,
+      "medium_findings": 0,
+      "source_truth_gap_detected": false,
+      "source_truth_gap_reduced": false
+    },
+    "success_cases": [{ "title": "string", "evidence": "string" }],
+    "failure_cases": [{ "title": "string", "evidence": "string" }],
+    "next_checkpoints": ["string"],
+    "artifacts": ["repo paths or external IDs"],
+    "snapshots": [
+      {
+        "timestamp": "ISO 8601 date/time",
+        "label": "checkpoint name",
+        "summary": "what changed at this checkpoint",
+        "metrics": {
+          "linear_issues_closed": 0,
+          "notion_pages_updated": 0,
+          "tests_passing": 0,
+          "build_verified": false
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "case_id": "cleanup-control-room-2026-04",
+      "title": "Maintenance Cleanup + Operations Control Room",
+      "status": "in_progress",
+      "work_type": "cleanup_program",
+      "started_at": "2026-04-11T10:00:00Z",
+      "updated_at": "2026-04-12T21:30:00Z",
+      "framework_version": "4.3",
+      "skills_used": [
+        "pm-workflow",
+        "research",
+        "ux",
+        "design",
+        "dev",
+        "qa",
+        "analytics",
+        "cx",
+        "marketing",
+        "ops",
+        "release"
+      ],
+      "data_sources": [
+        "repo",
+        "notion",
+        "linear",
+        "vercel",
+        "dashboard",
+        "figma"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 3,
+        "linear_issues_created": 5,
+        "notion_pages_created": 7,
+        "notion_pages_updated": 10,
+        "repo_files_added": 10,
+        "repo_files_updated": 65,
+        "tests_passing": 30,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 2,
+        "high_findings": 4,
+        "medium_findings": 3,
+        "source_truth_gap_detected": true,
+        "source_truth_gap_reduced": true
+      },
+      "success_cases": [
+        {
+          "title": "Cross-system truth moved closer to repo truth",
+          "evidence": "Notion and Linear were updated where code truth was unambiguous."
+        },
+        {
+          "title": "The dashboard became a richer operator surface",
+          "evidence": "A control-room view now exposes system pulse, UX/design review, product intelligence, and case-study framing."
+        },
+        {
+          "title": "The cleanup itself became visible work",
+          "evidence": "The maintenance cycle now exists in repo docs, dashboard data, Notion, and Linear."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Status drift became systemic",
+          "evidence": "Repo docs, dashboard data, Notion, Linear, and Vercel reality diverged enough to create false confidence."
+        },
+        {
+          "title": "Marketing and deployment claims outran reality",
+          "evidence": "The production Vercel surface still serves the dashboard while docs describe the marketing site as live."
+        },
+        {
+          "title": "Design-system closure was overstated",
+          "evidence": "Governance docs claimed zero raw color literals despite remaining hardcoded brand surfaces."
+        }
+      ],
+      "next_checkpoints": [
+        "Archive or remove the stray standalone dashboard Vercel project after confirming no workflows still depend on it.",
+        "Advance the auth-hardening chapter: replace mock Google and unavailable email providers with production-backed auth.",
+        "Replace workflow surfaces for Claude and Figma with executable integrations.",
+        "Turn the new knowledge hub from a document launcher into a deeper reading and diff-review surface.",
+        "Run the auth runtime verification playbook with real local Supabase and Google credentials so compile success turns into shipping confidence.",
+        "Sync the validated v4.3 repo truth into Notion and Linear after the documentation integrity pass.",
+        "Advance the new research chapters for push notifications, app-store assets, import training plans, and AI engine architecture adaptation.",
+        "Keep marketing deployment cleanup deferred until the critical and high-priority product-readiness stack is under control."
+      ],
+      "artifacts": [
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/pages/index.astro",
+        "dashboard/src/data/caseStudies.json",
+        ".claude/shared/external-sync-status.json",
+        ".claude/shared/change-log.json",
+        "docs/case-studies/cleanup-control-room-case-study.md",
+        "FIT-21",
+        "FIT-22",
+        "Notion: Maintenance Audit — 2026-04-11",
+        "Notion: Operations Control Room — Product Spec",
+        "Notion: Chapter 3 — Auth Hardening",
+        "Notion: Case Study — Maintenance Cleanup + Operations Control Room"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-11T10:30:00Z",
+          "label": "audit and truth alignment",
+          "summary": "Canonical repo truth was established and obvious Notion/Linear drift was corrected where evidence was unambiguous.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 2,
+            "tests_passing": 0,
+            "build_verified": false
+          }
+        },
+        {
+          "timestamp": "2026-04-11T13:10:00Z",
+          "label": "control room shell",
+          "summary": "The dashboard gained an operations control-room surface for delivery, UX, source health, and product intelligence.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 2,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-11T13:48:00Z",
+          "label": "case study monitoring layer",
+          "summary": "The cleanup became a tracked case study in shared PM data, dashboard data, repo docs, and Notion.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 2,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-11T16:05:53Z",
+          "label": "external sync telemetry",
+          "summary": "The control room now reads a canonical Notion + Linear sync snapshot from the shared layer, active Linear issues were moved into In Progress, and Notion status pages gained new integrity notes.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 4,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T16:15:00Z",
+          "label": "github + analytics sync expansion",
+          "summary": "The external sync layer expanded beyond Notion and Linear to include canonical GitHub repo truth and analytics instrumentation health, giving the control room a broader cross-system view.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 4,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T17:05:00Z",
+          "label": "vercel runtime + live github hydration",
+          "summary": "The control room now supports live GitHub issue hydration at build time when GITHUB_TOKEN is present, surfaces verified Vercel deployment/runtime status, and prepares the dashboard repo for Vercel Web Analytics.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 4,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T17:45:00Z",
+          "label": "live deployment + topology split",
+          "summary": "The control room was deployed live with Web Analytics, but the deploy landed on a separate Vercel project named dashboard, which surfaced a project-topology cleanup task for the maintenance program.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 4,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T18:00:00Z",
+          "label": "canonical vercel consolidation + speed insights",
+          "summary": "The control room was consolidated back into the canonical fit-tracker2 Vercel project, fit-tracker2.vercel.app now serves the live dashboard, and Speed Insights shipped alongside Web Analytics.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 4,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T18:10:00Z",
+          "label": "auth hardening chapter kickoff",
+          "summary": "FIT-6 moved into active work, a dedicated Notion chapter brief was created, and the cleanup program now has a concrete next execution block centered on production auth truth.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 4,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T18:45:00Z",
+          "label": "knowledge hub connected",
+          "summary": "The control room gained a dedicated knowledge hub that indexes repo docs, shared framework files, and synced external references, the supporting Notion/Linear surfaces were updated, and the docs-enabled dashboard was redeployed on the canonical fit-tracker2 Vercel project.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 5,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T19:05:00Z",
+          "label": "auth truth pass",
+          "summary": "The auth chapter now routes email through the real Supabase provider whenever runtime credentials are present, exposes password reset in the app UI, and removes mock Google from the live provider list while the SDK activation work remains pending.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 5,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T19:25:00Z",
+          "label": "google repo wiring",
+          "summary": "The Xcode project, Info.plist, and Google auth source were updated so Google Sign-In is now project-wired and runtime-gated instead of living as a dormant source-only path.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 5,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T20:05:00Z",
+          "label": "google compile verification",
+          "summary": "A canonical elevated iOS simulator build succeeded after resolving GoogleSignIn, which confirms the repo-side auth wiring compiles and narrows the remaining gap to local credentials plus end-to-end provider validation.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 6,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T20:40:00Z",
+          "label": "marketing truth cleanup kickoff",
+          "summary": "README, the marketing website PRD, and the external sync layer were corrected to show that the website exists in code but is not the canonical live surface while fit-tracker2 is still rooted at dashboard and website launch placeholders remain.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 6,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-12T21:30:00Z",
+          "label": "framework integrity + research kickoff",
+          "summary": "The PM-flow and skills docs were deep-validated around v4.3, a reusable auth runtime verification playbook was added, and the next high-priority research chapters were opened directly in the framework.",
+          "metrics": {
+            "linear_issues_closed": 3,
+            "notion_pages_updated": 10,
+            "tests_passing": 30,
+            "build_verified": true
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "control-center-alignment-ia-refresh-2026-04",
+      "title": "Control Center Alignment + IA Refresh",
+      "status": "in_progress",
+      "work_type": "cleanup_program",
+      "started_at": "2026-04-13T08:30:00Z",
+      "updated_at": "2026-04-13T10:30:00Z",
+      "framework_version": "4.3",
+      "skills_used": [
+        "pm-workflow",
+        "research",
+        "ux",
+        "design",
+        "dev",
+        "qa",
+        "analytics",
+        "ops",
+        "release"
+      ],
+      "data_sources": [
+        "repo",
+        "dashboard",
+        "notion",
+        "linear",
+        "vercel",
+        "figma"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 7,
+        "repo_files_updated": 11,
+        "tests_passing": 0,
+        "build_verified": false
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 3,
+        "medium_findings": 4,
+        "source_truth_gap_detected": true,
+        "source_truth_gap_reduced": true
+      },
+      "success_cases": [
+        {
+          "title": "The dashboard is being restructured around true workspaces instead of one long mixed-purpose surface",
+          "evidence": "Knowledge, research, Figma handoff, and case-study reading now have explicit destinations in the IA plan and implementation."
+        },
+        {
+          "title": "Current-truth docs and roadmap paths are being normalized before the next deployment pass",
+          "evidence": "README, the product PRD, and the roadmap parser are being aligned to the canonical master-plan path."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Knowledge and case-study content were buried inside the control-room body",
+          "evidence": "The previous layout mixed reading, monitoring, and future workflow surfaces in one place."
+        },
+        {
+          "title": "Fallback dashboard data still carried stale planning truth",
+          "evidence": "The roadmap parser and repo docs still referenced the old docs/project roadmap path at the start of the cycle."
+        }
+      ],
+      "next_checkpoints": [
+        "Finish the IA implementation and validate the new routes, tabs, and dropdown behavior.",
+        "Deploy the refreshed control center and capture a post-deploy snapshot for the case study.",
+        "Sync the new workspaces and updated current-truth posture into Notion and Linear."
+      ],
+      "artifacts": [
+        "docs/case-studies/control-center-alignment-ia-refresh-case-study.md",
+        "dashboard/src/scripts/builders/controlCenter.js",
+        "dashboard/src/components/Dashboard.jsx",
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/components/KnowledgeHub.jsx",
+        "dashboard/src/components/ResearchConsole.jsx",
+        "dashboard/src/components/FigmaHandoffLab.jsx",
+        "dashboard/src/components/CaseStudiesView.jsx",
+        "dashboard/src/pages/case-studies.astro"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-13T08:30:00Z",
+          "label": "pre-alignment baseline",
+          "summary": "The control center still relied on one large page builder, Knowledge lived inside the control room, case studies had no dedicated route, and the roadmap parser still pointed at the stale docs/project path.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": false
+          }
+        },
+        {
+          "timestamp": "2026-04-13T10:30:00Z",
+          "label": "builder split + IA implementation",
+          "summary": "Shared control-center builders, routed workspace surfaces, and a standalone case-studies page were introduced while stale current-truth doc references were cleaned up.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": false
+          }
+        }
+      ]
+    }
+  ]
+}

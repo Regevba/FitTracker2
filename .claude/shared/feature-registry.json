@@ -34,7 +34,7 @@
     },
     {
       "id": "auth", "name": "Authentication", "prd": "docs/product/prd/18.6-authentication.md",
-      "status": "shipped", "phase": "complete", "category": "infrastructure",
+      "status": "in_progress", "phase": "verification", "category": "infrastructure",
       "pain_point": "Auth friction causes abandonment",
       "metrics": { "signup_completion": { "target": 80, "current": null }, "apple_signin_usage": { "target": 60, "current": null } }
     },
@@ -64,7 +64,7 @@
     },
     {
       "id": "onboarding", "name": "Onboarding", "prd": "docs/product/prd/18.11-onboarding.md",
-      "status": "planned", "phase": "not_started", "category": "core",
+      "status": "shipped", "phase": "complete", "category": "core",
       "pain_point": "No guided first experience; users don't connect HealthKit or set goals",
       "metrics": { "completion_rate": { "target": 80, "current": null }, "d1_retention": { "target": 60, "current": null } }
     },
@@ -94,9 +94,33 @@
     },
     {
       "id": "marketing-website", "name": "Marketing Website", "prd": "docs/product/prd/marketing-website.md",
-      "status": "shipped", "phase": "complete", "category": "marketing",
+      "status": "in_progress", "phase": "implementation", "category": "marketing",
       "pain_point": "Zero web presence; no organic or paid acquisition funnel",
       "metrics": { "monthly_visitors": { "target": 500, "current": null }, "app_store_ctr": { "target": 5, "current": null } }
+    },
+    {
+      "id": "push-notifications", "name": "Push Notifications", "prd": null,
+      "status": "in_progress", "phase": "research", "category": "engagement",
+      "pain_point": "The app has no proactive reminder or readiness alert surface, so useful insight stops at the app boundary",
+      "metrics": { "notification_opt_in_rate": { "target": 40, "current": null }, "reminder_engagement_lift": { "target": 10, "current": null } }
+    },
+    {
+      "id": "app-store-assets", "name": "App Icon + App Store Assets", "prd": null,
+      "status": "in_progress", "phase": "research", "category": "release",
+      "pain_point": "The app is missing the release-visual package needed for truthful launch readiness",
+      "metrics": { "asset_pipeline_completeness": { "target": 100, "current": null }, "screenshot_refresh_time_hours": { "target": 2, "current": null } }
+    },
+    {
+      "id": "import-training-plan", "name": "Import Training Plan", "prd": null,
+      "status": "in_progress", "phase": "research", "category": "core",
+      "pain_point": "Users with coach plans, app exports, or AI-generated routines face high migration friction",
+      "metrics": { "import_success_rate": { "target": 80, "current": null }, "exercise_mapping_accuracy": { "target": 90, "current": null } }
+    },
+    {
+      "id": "ai-engine-architecture-adaptation", "name": "AI Engine Architecture Adaptation", "prd": null,
+      "status": "in_progress", "phase": "research", "category": "intelligence",
+      "pain_point": "The shipped AI engine predates the newer PM-flow architecture patterns and needs a more structured, inspectable evolution path",
+      "metrics": { "structured_recommendation_coverage": { "target": 80, "current": null }, "auditable_confidence_rate": { "target": 100, "current": null } }
     }
   ]
 }

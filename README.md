@@ -38,7 +38,7 @@ FitMe replaces your training log, meal tracker, and recovery dashboard with one 
 - Color-coded status dots with configurable thresholds
 
 ### Home / Today Screen
-- Action-first design — no scrolling required on iPhone
+- Action-first design with the most important daily decisions above the fold; the v2 screen now uses a purposeful scroll layout on iPhone
 - 6-page auto-cycling ReadinessCard (readiness, training chart, nutrition snapshot, 7-day trends, achievements, recovery recommendation)
 - Animated LiveInfoStrip cycling greeting, readiness score, and supplement streak
 - Start Training CTA with day type override and recovery context
@@ -51,7 +51,7 @@ FitMe replaces your training log, meal tracker, and recovery dashboard with one 
 - All-time PR records with estimated 1RM (Epley formula)
 
 ### AI Intelligence
-- Three-tier pipeline: local rules (always) → cloud cohort (banded data, k>=50) → Foundation Models (iOS 26+)
+- Three-tier pipeline: local rules (always) → cloud cohort (banded data, k>=50) → Foundation Models (iOS 26+) when the real on-device layer is available
 - Privacy-preserving bands — only categorical values leave the device (age "25-34", BMI "18.5-24.9")
 - Confidence-gated: discards low-confidence personalized results (threshold 0.4)
 - 4 recommendation segments: training, nutrition, recovery, stats
@@ -99,7 +99,7 @@ Design file: [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fC
 | Key Storage | Keychain with biometric ACL, Secure Enclave (P-256) |
 | Sync | CloudKit (iCloud Private DB) + Supabase (PostgreSQL + Realtime) |
 | AI — Cloud | FastAPI on Railway, JWT + JWKS validation, k>=50 anonymity |
-| AI — On-device | Apple Intelligence Foundation Models (iOS 26+) |
+| AI — On-device | Apple Intelligence Foundation Models (iOS 26+, currently placeholder-gated in repo) |
 | Analytics | Firebase Analytics (GA4) with GDPR consent |
 | Design System | 125 semantic tokens, Style Dictionary pipeline, CI drift detection |
 | CI | GitHub Actions, Xcode 16+, `make tokens-check` gate |
@@ -142,10 +142,10 @@ Design file: [FitMe Design System Library](https://www.figma.com/design/0Ai7s3fC
 ## Web Properties
 
 ### Marketing Website (`website/`)
-Public-facing marketing site at [fitme.app](https://fitme.app). Single-page Astro + Tailwind site with Hero, Features, Screenshots, How It Works, Privacy, FAQ sections. GA4 web analytics with 3 custom events (cta_click, section_view, faq_expand).
+Repo-built Astro + Tailwind marketing site with Hero, Features, Screenshots, How It Works, Privacy, FAQ sections. This codebase is not yet the canonical live surface: the `fit-tracker2` Vercel project is currently rooted at `dashboard/`, and the website still has launch blockers such as placeholder GA4/App Store data and unverified review metadata.
 
 ### Development Dashboard (`dashboard/`)
-Internal PM dashboard. Astro + React + Tailwind with Kanban board (drag-drop), table view (sort/filter), pipeline overview chart, reconciliation alerts. Tracks 37 features across 8 lifecycle phases.
+Internal PM dashboard and current canonical live web surface on `fit-tracker2.vercel.app`. Astro + React + Tailwind with Kanban board (drag-drop), table view (sort/filter), pipeline overview chart, reconciliation alerts, control-room monitoring, and knowledge-hub access to repo + PM docs.
 
 ---
 
@@ -175,7 +175,7 @@ Verification snapshot as of `2026-04-10`:
 ### Infrastructure
 - iOS app builds with full Xcode, targeted XCTest coverage passes
 - Design-token drift check passes
-- Dashboard tests pass (`9/9`), marketing website build passes
+- Dashboard tests pass and the control room is the canonical deployed web surface; the marketing website code exists but is not yet truthfully live as the primary public property
 - AI engine tests pass (`5/5`)
 - Firebase bootstrap config-aware, Supabase graceful degradation
 - Firebase runtime verification still requires local `FitTracker/GoogleService-Info.plist`
@@ -297,7 +297,7 @@ pytest -q
 
 ## Roadmap
 
-Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/project/master-backlog-roadmap.md)
+Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](docs/master-plan/master-backlog-roadmap.md)
 
 | Phase | Name | Status |
 |-------|------|--------|
@@ -306,7 +306,7 @@ Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/p
 | 2 | Measurement & CX (Analytics, NPS, reviews) | In progress (GA4 shipped) |
 | 3 | Platform Expansion (Android, health APIs, DEXA) | In progress (Android DS research shipped) |
 | 4 | Advanced Features (blood test reader, skills) | Locked |
-| 5 | Marketing & Launch (website, App Store assets) | In progress (website shipped) |
+| 5 | Marketing & Launch (website, App Store assets) | Deferred until critical and high-priority maintenance work is complete |
 
 ---
 
@@ -331,14 +331,14 @@ Full RICE-prioritized roadmap: [`docs/project/master-backlog-roadmap.md`](docs/p
 | [Feature PRDs](docs/product/prd/) | 18 standalone PRDs for every feature, system, and tool |
 | [Metrics Framework](docs/product/metrics-framework.md) | 40 metrics across 6 categories with instrumentation status |
 | [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
-| [Roadmap](docs/project/master-backlog-roadmap.md) | RICE-prioritized 19-task roadmap with phase gates |
+| [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized 19-task roadmap with phase gates |
 | [Stabilization Report](docs/project/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |
 | [Firebase Setup](docs/project/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
 | [Changelog](CHANGELOG.md) | Milestone history |
 | [Design System Docs](docs/design-system/) | Token architecture, components, review standards |
 | [Android Token Mapping](docs/design-system/android-token-mapping.md) | iOS → MD3 token mapping |
-| [PM Lifecycle](docs/process/product-management-lifecycle.md) | 9-phase product management workflow |
+| [PM Lifecycle](docs/process/product-management-lifecycle.md) | 10-phase product management workflow (0-9) |
 | [Redesign Case Study](docs/project/original-readme-redesign-casestudy.md) | How the app evolved from v1 to Apple-first design |
 
 ---

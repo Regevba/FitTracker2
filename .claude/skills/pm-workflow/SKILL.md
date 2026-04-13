@@ -1,6 +1,6 @@
 ---
 name: pm-workflow
-description: "Start or resume a product management lifecycle for a feature. Orchestrates: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs. Invoke with /pm-workflow {feature-name}."
+description: "Start or resume a v4.3 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. Invoke with /pm-workflow {feature-name}."
 ---
 
 # Product Management Lifecycle: $ARGUMENTS
@@ -68,7 +68,7 @@ Ask: **"Is this a Feature, Enhancement, Fix, or Chore?"**
 
 | Type | Phases | When to Use |
 |------|--------|-------------|
-| **Feature** | All 9 phases | New capabilities, new screens, new services |
+| **Feature** | Full 10-phase lifecycle (0-9) | New capabilities, new screens, new services |
 | **Enhancement** | Tasks → Implement → Test → Merge (4 phases) | Improvements to shipped features with existing PRDs |
 | **Fix** | Implement → Test (2 phases) | Bug fixes, error handling, security patches |
 | **Chore** | Implement only (1 phase) | Docs, config, refactoring, dependency updates |

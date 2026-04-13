@@ -1,0 +1,108 @@
+{
+  "cache_key": "design:refactor_playbook:v2_screen_rewrite",
+  "skill": "design",
+  "level": "L1",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T00:00:00Z",
+  "hit_count": 1,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    "docs/design-system/v2-refactor-checklist.md",
+    "FitTracker.xcodeproj/project.pbxproj"
+  ],
+  "task_signature": {
+    "type": "v2_refactor_methodology",
+    "inputs": ["v1 Swift file path", "feature name", "UX findings list"],
+    "context": "Step-by-step playbook for performing a UX Foundations-aligned v2 screen rewrite. Derived from Home v2 (PR #61) and Training v2 (PR #74) executions."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Phase 0 — Audit before any code",
+      "decision": "Always produce v2-audit-report.md FIRST. Rate each finding P0/P1/P2. Tag tractability: auto-applicable | needs-decision | needs-new-token | needs-new-component. Home v2 had 27 findings (8 P0, 14 P1, 4 P2). Training v2 had 32 findings (8 P0, 16 P1, 8 P2). Decisions on 'needs-decision' items go into a Decisions Log appended to the audit file.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen v2-audit-report.md (commit 844a2ba)",
+        "training-plan-v2 v2-audit-report.md"
+      ]
+    },
+    {
+      "pattern": "Step 1 — Create v2/ subdirectory at same level as v1",
+      "decision": "v2 dir goes NEXT to v1, not in a global folder. Examples: FitTracker/Views/Main/v2/ (Home), FitTracker/Views/Training/v2/ (Training). One v2/ per feature group — never a shared global v2/ folder. File name stays identical: MainScreenView.swift, TrainingPlanView.swift.",
+      "gotcha": "Do NOT rename the Swift type. Both v1 and v2 must declare the same struct (e.g. struct MainScreenView: View). The pbxproj swap is what makes one or the other compile — the type name identity means zero call-site changes in parent views.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen: v1=FitTracker/Views/Main/MainScreenView.swift, v2=FitTracker/Views/Main/v2/MainScreenView.swift",
+        "training-plan-v2: v1=FitTracker/Views/Training/TrainingPlanView.swift, v2=FitTracker/Views/Training/v2/TrainingPlanView.swift"
+      ]
+    },
+    {
+      "pattern": "Step 2 — Update project.pbxproj in the SAME commit as the first v2 file",
+      "decision": "Four required pbxproj edits: (1) new PBXGroup for v2/ directory, (2) PBXFileReference for v2 file under that group, (3) PBXBuildFile referencing v2 file, (4) v2 PBXBuildFile added to Sources build phase AND v1 PBXBuildFile REMOVED from Sources build phase. v1 PBXFileReference stays (shows in navigator, preserves git history).",
+      "gotcha": "git diff main..HEAD -- FitTracker.xcodeproj/project.pbxproj must show ONLY the four edits above. Any UUID reshuffles or unrelated build settings changes indicate a Xcode-regenerated pbxproj — revert and do it surgically. Home v2 completed this in commit ec95eaa (T12).",
+      "confidence": "high",
+      "source_executions": ["home-today-screen T12 (pbxproj swap)", "v2-refactor-checklist B6, B7"]
+    },
+    {
+      "pattern": "Step 3 — Build v2 file bottom-up from design system, never patch v1",
+      "decision": "v1 is read-only during refactor. Start from tokens/components, then assemble the full view. Home v2 bottom-up order: T1 (AppText/AppSize tokens) → T2 (motion tokens) → T3 (Chart tokens) → T4 (AppMetricColumn) → T5 (AppMetricTile) → T6 (HomeRecommendationProvider) → T7 (analytics enums) → T8 (main assembly). Training v2 decomposed to 7 files: container + StatusDropdown + MilestoneModal + ExerciseRow + SetCompletionIndicator + RestTimerView + SkeletonLoadingView.",
+      "gotcha": "Large v1 files MUST be decomposed. Training v1 was 2,135 lines; v2 container is 533 lines + 6 extracted views. Home v1 was 1,029 lines; v2 is 703 lines. Do not just move code — refactor the structure.",
+      "confidence": "high",
+      "source_executions": [
+        "home-today-screen T1-T8 critical path",
+        "training-plan-v2: 7-file decomposition, 533-line container"
+      ]
+    },
+    {
+      "pattern": "Step 4 — Mark v1 as HISTORICAL in same commit as pbxproj swap",
+      "decision": "Add header comment to v1 file: // HISTORICAL — superseded by v2/{ScreenName}.swift on {date} per UX Foundations alignment pass. See .claude/features/{name}/v2-audit-report.md for the gap analysis. This file is no longer in the build target; it stays in the repo as a reviewable reference for the v1 → v2 diff.",
+      "gotcha": "Do this in the same commit as T12/T13 (pbxproj + historical marker). Home v2 did this in commit ec95eaa.",
+      "confidence": "high",
+      "source_executions": ["home-today-screen T13 (mark v1 HISTORICAL)", "CLAUDE.md V2 Rule step 5"]
+    },
+    {
+      "pattern": "Step 5 — Walk v2-refactor-checklist.md Sections A-K before Phase 5",
+      "decision": "Checklist sections: A (audit/spec), B (file convention), C (token compliance), D (component reuse), E (state coverage), F (accessibility), G (motion), H (analytics), I (project.pbxproj hygiene), J (CI), K (documentation). state.json phases.implementation.checklist_completed must be true before Phase 5 approval. Home v2 completed T14 (checklist walk) after T8+T11+T12.",
+      "confidence": "high",
+      "source_executions": ["home-today-screen T14", "v2-refactor-checklist.md all sections"]
+    },
+    {
+      "pattern": "One v2 split per surface — no v3/ directories",
+      "decision": "A second alignment pass on the same screen patches v2 in place — NOT a new v3/ dir. The v1→v2 split exists exactly once per surface to capture the first deliberate foundations-aligned rewrite. Home v2 was the second such split (after Onboarding v2 pilot PR #59). Training v2 was the third.",
+      "confidence": "high",
+      "source_executions": ["CLAUDE.md UI Refactoring & V2 Rule step 6"]
+    },
+    {
+      "pattern": "state.json required fields for v2 refactor",
+      "decision": "Must set: work_subtype = 'v2_refactor', v1_file_path, v2_file_path (using v2/ convention), v2_rule_compliant = true, checklist_path = 'docs/design-system/v2-refactor-checklist.md'. See home-today-screen/state.json and training-plan-v2/state.json as canonical examples.",
+      "confidence": "high",
+      "source_executions": [
+        ".claude/features/home-today-screen/state.json",
+        ".claude/features/training-plan-v2/state.json"
+      ]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Patching v1 in place instead of creating v2/ dir",
+      "what_went_wrong": "Onboarding v2 (PR #59) used the older 'patch v1 in place' approach — shipped before this rule existed. Will be retroactively refactored to v2/ convention as a follow-up. Any new refactor that patches v1 directly violates CLAUDE.md and will be rejected in Phase 3 gateway.",
+      "source_execution": "CLAUDE.md backward compatibility note"
+    },
+    {
+      "pattern": "Regenerating full pbxproj with Xcode instead of surgical edits",
+      "what_went_wrong": "Xcode regeneration shuffles hundreds of UUIDs, making the diff unreviable and potentially breaking other settings. Always edit pbxproj surgically via text editor for exactly the 4 required changes. Verify with git diff.",
+      "source_execution": "v2-refactor-checklist B7"
+    },
+    {
+      "pattern": "Starting implementation before Phase 3 UX approval",
+      "what_went_wrong": "Phase 3 (ux_or_integration) must be approved before Phase 4 (implementation). The ux-spec.md and compliance gateway (5/5 pass) gate all code writes. Home v2 Phase 3 produced ux-research.md (12/13 principles mapped), ux-spec.md (9 sections), heuristic validation (12/12 pass).",
+      "source_execution": "home-today-screen state.json transitions ux_or_integration → implementation"
+    },
+    {
+      "pattern": "Keeping v1 in the build target alongside v2",
+      "what_went_wrong": "Two files declaring the same Swift type in the same build target causes 'redeclaration' compile errors. v1 MUST be removed from Sources build phase when v2 is added. v1 stays as PBXFileReference only.",
+      "source_execution": "v2-refactor-checklist B6 — v1 PBXBuildFile removed from Sources"
+    }
+  ],
+  "speedup_instructions": "When starting a v2 refactor: (1) check this file for the 7-step sequence, (2) use state.json fields pattern to set up the feature state correctly, (3) confirm pbxproj edits match exactly the 4-change pattern before committing. The gotchas in each step are the real time-savers — they encode the mistakes made in Home v2 and Training v2 so you don't repeat them."
+}

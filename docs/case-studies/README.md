@@ -34,7 +34,9 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `pm-workflow-showcase-onboarding.md` | Onboarding v2 UX Foundations alignment | **Pilot case study** for the per-screen UX alignment initiative. First feature to run through the new /ux skill's full loop (audit → research → spec → compliance → patches). Reference implementation for future v2 refactors |
 | `fittracker-evolution-walkthrough.md` | FitMe product evolution (multi-release narrative) | High-level walkthrough of how the product evolved through major release cycles — broader than a single-feature case study but structurally similar |
 | `original-readme-redesign-casestudy.md` | The original README redesign | Historical case study of how the public-facing README was rewritten. Shows the design + content iteration loop in action |
-| `pm-workflow-evolution-v1-to-v4.md` | PM workflow evolution v1.0 → v4.1 | Comprehensive 3-level analysis (micro/meso/macro) of how the hub-and-spoke PM ecosystem evolved across 6 screen refactors — with measurable efficiency data at each version step |
+| `pm-workflow-evolution-v1-to-v4.md` | PM workflow evolution v1.0 → v4.3 | Comprehensive 3-level analysis (micro/meso/macro) of how the hub-and-spoke PM ecosystem evolved across 6 screen refactors — now extended with the operational-layer promotion that followed |
+| `cleanup-control-room-case-study.md` | Maintenance cleanup + operations control room | First maintenance-focused case study and the launch story for v4.3: uses the PM framework to reconcile repo truth, design/UX review, planning sync, dashboard evolution, and process monitoring in one integrated cleanup cycle |
+| `control-center-alignment-ia-refresh-case-study.md` | Control center alignment + IA refresh | Follow-up operational case study focused on turning the dashboard into a clearer multi-workspace operating surface with routed knowledge, research, Figma handoff, and case-study views |
 
 ## Upcoming case studies (queued)
 
@@ -43,6 +45,8 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | Home (Today Screen) v2 | After v2 ships on `feature/home-today-screen-v2` | First case study of the **V2 Rule** (v1/v2 file + subdirectory convention, project.pbxproj surgery) + second run of `/ux audit` |
 | Training Plan v2 | After it ships | Biggest surface in the app — stress-test the per-screen alignment process |
 | Dashboard v1.1 automation pass | After the iOS hardening PR merges | Case study of an Enhancement work type running cross-cutting infra changes (Vercel serverless + GitHub Actions + CI additions) |
+| Cleanup control room hydration | After live data integrations land | Follow-up chapter showing whether the new operator cockpit actually improves throughput and reduces source-of-truth drift |
+| Control center alignment + IA refresh | After the new routed dashboard deploys | Case study of information architecture cleanup, truth-mode labeling, and turning PM research/design/documentation into first-class dashboard workspaces |
 
 ## How to write a new case study
 

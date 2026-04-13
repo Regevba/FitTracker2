@@ -1,0 +1,69 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-11T16:05:53Z",
+  "framework_version": "4.3",
+  "description": "Canonical framework manifest for the PM-flow ecosystem. Stores the current framework version, structural counts, source-of-truth metadata, and active operational capabilities so docs and dashboards can reference one shared definition.",
+  "structure": {
+    "hub_skills": 1,
+    "spoke_skills": 10,
+    "total_skills": 11,
+    "shared_files": 15,
+    "local_adapter_directories": 6,
+    "cache_levels": 3
+  },
+  "source_of_truth": {
+    "canonical_repo": "/Volumes/DevSSD/FitTracker2",
+    "branch_policy": "treat main as authoritative until external systems are resynced",
+    "framework_docs": [
+      "docs/skills/README.md",
+      "docs/skills/architecture.md",
+      "docs/skills/evolution.md",
+      "docs/skills/pm-workflow.md"
+    ],
+    "shared_state_files": [
+      ".claude/shared/context.json",
+      ".claude/shared/feature-registry.json",
+      ".claude/shared/framework-health.json",
+      ".claude/shared/framework-manifest.json",
+      ".claude/shared/external-sync-status.json",
+      ".claude/shared/metric-status.json",
+      ".claude/shared/design-system.json",
+      ".claude/shared/test-coverage.json",
+      ".claude/shared/cx-signals.json",
+      ".claude/shared/campaign-tracker.json",
+      ".claude/shared/health-status.json",
+      ".claude/shared/skill-routing.json",
+      ".claude/shared/task-queue.json",
+      ".claude/shared/change-log.json",
+      ".claude/shared/case-study-monitoring.json"
+    ]
+  },
+  "capabilities": {
+    "self_healing_hub": true,
+    "learning_cache": true,
+    "validation_gate": true,
+    "operations_control_room": true,
+    "case_study_monitoring": true,
+    "maintenance_programs": true,
+    "external_sync_monitoring": true
+  },
+  "integration_model": {
+    "local_adapters": [
+      "ga4",
+      "app-store-connect",
+      "sentry",
+      "firecrawl",
+      "axe",
+      "security-audit"
+    ],
+    "external_connectors_examples": [
+      "linear",
+      "notion",
+      "figma",
+      "github",
+      "xcode",
+      "codecov",
+      "fastlane"
+    ]
+  }
+}

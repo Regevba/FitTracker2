@@ -1,6 +1,6 @@
-# PM Workflow Evolution: v1.0 → v4.1
+# PM Workflow Evolution: v1.0 → v4.3
 
-**Subtitle:** How a monolithic PM skill evolved into a 12-skill hub-and-spoke ecosystem with a reactive data mesh and learning cache — and how that evolution measurably accelerated the development of 6 identical-scope UI refactors.
+**Subtitle:** How a monolithic PM skill evolved into an 11-skill hub-and-spoke ecosystem with a reactive data mesh and learning cache — and how that evolution measurably accelerated the development of 6 identical-scope UI refactors.
 
 | Field | Value |
 |---|---|
@@ -9,7 +9,7 @@
 | App | FitMe iOS |
 | Scope | 6-screen UX Foundations alignment pass |
 | Duration | 2026-04-05 → 2026-04-10 (6 days) |
-| PM Versions covered | v2.0, v3.0, v4.0, v4.1 |
+| PM Versions covered | v2.0, v3.0, v4.0, v4.1, plus the v4.3 operational extension |
 
 ---
 
@@ -553,11 +553,16 @@ The design system growth metric (0 → 2.3 tokens added per refactor) captures a
                     [REFACTORS: Nutrition (#75), Stats (#76), Settings (#77) — 36 findings
                      combined, 4.5h combined. Cache hit rates 55-70%. Phase compression
                      6.0 phases/hour average.]
+     |
+2026-04-11  v4.3 — Operations control room, case-study monitoring, and maintenance-program
+     |              orchestration formalized as the framework operational layer.
+     |              [MAINTENANCE: Cleanup + Control Room — source-truth repair, dashboard
+     |               operator cockpit, Notion/Linear sync, showcase-ready process evidence.]
 ```
 
 ---
 
-### 6.2 Architecture Comparison: v1.0 vs v4.1
+### 6.2 Architecture Comparison: v1.0 vs v4.3
 
 **v1.0 — Monolith:**
 
@@ -605,10 +610,10 @@ skill)  skill)  wide)
   Firecrawl, Axe, Security Audit
 ```
 
-| Dimension | v4.1 |
+| Dimension | v4.3 |
 | --- | --- |
-| Skills | 12 (1 hub + 11 spokes) |
-| Shared data files | 11 |
+| Skills | 11 (1 hub + 10 spokes) |
+| Shared data files | 15 |
 | External integrations | 10 |
 | Cache layers | 3 (L1 / L2 / L3) |
 | Validation gate | Automatic (GREEN / ORANGE / RED) |
@@ -637,7 +642,7 @@ Notes: The hub (/pm-workflow) is counted as skill 0. 11 spokes are listed as 1�
 
 ### 6.4 The Lego Principle
 
-The 12-skill ecosystem is designed around a single structural constraint: skills do not call each other. There is no direct dependency from /ux to /design, from /design to /dev, or from /qa back to /analytics. Every skill is both a standalone unit (it can be invoked independently, in any context, without requiring another skill to have run first) and a composable component (when run inside a PM workflow, it reads from and writes to the shared file layer, making its outputs available to every other skill automatically).
+The 11-skill ecosystem is designed around a single structural constraint: skills do not call each other. There is no direct dependency from /ux to /design, from /design to /dev, or from /qa back to /analytics. Every skill is both a standalone unit (it can be invoked independently, in any context, without requiring another skill to have run first) and a composable component (when run inside a PM workflow, it reads from and writes to the shared file layer, making its outputs available to every other skill automatically).
 
 The connector mechanism — the equivalent of Lego studs — is the 11 shared JSON files. Each skill declares what it reads and what it writes. /ux reads `state.json` and writes `ux-spec.md` and `v2-audit-report.md`. /design reads `ux-spec.md` and writes to the token system and `feature-memory.md`. /dev reads `ux-spec.md` and the pbxproj recipe from L3 cache and writes the v2 file and the updated `project.pbxproj`. /qa reads the test plan from `state.json` and writes `test-results` to the shared layer. No skill needs to know that the others exist — it only needs to know the schema of the files it reads and writes.
 
@@ -669,7 +674,7 @@ These are not independent efficiencies. A skill that runs faster but still hands
 
 ### 7.2 The Learning Cache as Inflection Point
 
-The single most impactful structural change across the entire v1.0 → v4.1 arc was the introduction of the L1/L2/L3 learning cache at v4.0. Prior versions improved the workflow by adding capabilities — more skills, more shared files, external integrations, parallel execution. These were additive improvements: each one reduced a specific friction point. The cache was different in kind, not just degree.
+The single most impactful structural change across the entire v1.0 → v4.3 arc was the introduction of the L1/L2/L3 learning cache at v4.0. Prior versions improved the workflow by adding capabilities — more skills, more shared files, external integrations, parallel execution. These were additive improvements: each one reduced a specific friction point. The cache was different in kind, not just degree.
 
 Before the cache (v2.0, v3.0), every skill invocation began from a cold start. The /ux skill read the file, applied the 13 UX foundations principles, and produced a finding list — the same derivation process it had performed on every prior screen. The /analytics skill deliberated on naming conventions that had already been deliberated on in prior sessions. The /dev skill determined the v2/ structure without reference to the prior runs that had already established it. Context that existed in prior session artifacts was technically available — the files persisted — but was not automatically loaded. Each skill started blank.
 
@@ -747,5 +752,5 @@ All quantitative claims in this case study are traceable to one of the following
 - [Pilot case study — Onboarding v2 UX Foundations alignment](pm-workflow-showcase-onboarding.md)
 - [Skills ecosystem one-pager](../skills/README.md)
 - [Skills architecture deep-dive](../skills/architecture.md)
-- [Skills ecosystem evolution history (v1.0 → v4.1)](../skills/evolution.md)
+- [Skills ecosystem evolution history (v1.0 → v4.3)](../skills/evolution.md)
 - [UX foundations — 13 principles](../design-system/ux-foundations.md)

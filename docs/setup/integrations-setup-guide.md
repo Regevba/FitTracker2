@@ -102,7 +102,8 @@ The checked-in `Info.plist` contains placeholder values (`YOUR_PROJECT_ID`, `YOU
    - Apple (requires Apple Developer account + Services ID)
    - Google (requires Google Cloud OAuth client)
    - Email/password (enabled by default)
-7. Set up the passkey relying party ID to match `PasskeyRelyingPartyID` in Info.plist (`fittracker.regev.app`)
+7. Replace `YOUR_GOOGLE_CLIENT_ID` and `YOUR_REVERSED_CLIENT_ID` in `GoogleClientID`, `GoogleReversedClientID`, and `CFBundleURLSchemes`
+8. Set up the passkey relying party ID to match `PasskeyRelyingPartyID` in Info.plist (`fittracker.regev.app`)
 
 ### Key source files
 
@@ -111,8 +112,8 @@ The checked-in `Info.plist` contains placeholder values (`YOUR_PROJECT_ID`, `YOU
 | `FitTracker/Services/Supabase/SupabaseClient.swift` | Client initialization, credential validation, stub fallback |
 | `FitTracker/Services/Supabase/SupabaseSyncService.swift` | Real-time data sync |
 | `FitTracker/Services/Auth/SupabaseAppleAuthProvider.swift` | Apple Sign-In via Supabase |
-| `FitTracker/Services/Auth/GoogleAuthProvider.swift` | Google Sign-In via Supabase |
-| `FitTracker/Services/Auth/EmailAuthProvider.swift` | Email/password auth |
+| `FitTracker/Services/Auth/GoogleAuthProvider.swift` | Google Sign-In adapter (project-wired, runtime-gated by Info.plist config) |
+| `FitTracker/Services/Auth/EmailAuthProvider.swift` | Email/password auth (used automatically when Supabase runtime config is present) |
 | `FitTracker/Services/Auth/SignInService.swift` | Auth orchestration |
 
 ### Credentials / config locations
@@ -120,8 +121,13 @@ The checked-in `Info.plist` contains placeholder values (`YOUR_PROJECT_ID`, `YOU
 | Item | Location |
 |------|----------|
 | Supabase URL + anon key | `FitTracker/Info.plist` (local only, placeholders in git) |
+| Google client ID + reversed client ID | `FitTracker/Info.plist` (local only, placeholders in git) |
 | Supabase Dashboard | https://supabase.com/dashboard |
-| SPM dependency | `Supabase` package in `FitTracker.xcodeproj` Package Dependencies |
+| SPM dependencies | `Supabase` + `GoogleSignIn` packages in `FitTracker.xcodeproj` Package Dependencies |
+
+Build note: a compile-only iOS simulator build succeeded on 2026-04-12 with the Google package resolved. The remaining work is local credential replacement plus real sign-in verification.
+
+For the safe step-by-step runtime flow, use [`auth-runtime-verification-playbook.md`](auth-runtime-verification-playbook.md). It documents how to inject local values temporarily, verify email + Google auth, capture evidence, and restore placeholders before commit.
 
 ---
 

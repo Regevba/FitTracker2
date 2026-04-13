@@ -1,0 +1,9 @@
+{
+  "skill": "marketing",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["ayrshare-api"],
+  "consumes_from_shared": ["campaign-tracker.json", "cx-signals.json"],
+  "writes_to_shared": ["campaign-tracker.json"],
+  "entries": []
+}

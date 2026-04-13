@@ -62,7 +62,7 @@ This task creates the document scaffold and populates Section 1 (Introduction) a
 ```markdown
 # PM Workflow Evolution: v1.0 → v4.1
 
-> How a monolithic PM skill evolved into a 12-skill hub-and-spoke ecosystem
+> How a monolithic PM skill evolved into an 11-skill hub-and-spoke ecosystem
 > with a reactive data mesh and learning cache — and how that evolution
 > measurably accelerated the development of 6 identical-scope UI refactors.
 
@@ -673,8 +673,8 @@ User → /pm-workflow (hub) → dispatches 11 spokes
         External: GitHub, Notion MCP, Figma MCP, Vercel
                   GA4, Sentry, ASC, Firecrawl, Axe, Security
 ```
-- Skills: 12 (1 hub + 11 spokes)
-- Shared files: 11
+- Skills: 11 (1 hub + 10 spokes)
+- Shared files: 15
 - External integrations: 10
 - Cache layers: 3 (L1 per-skill, L2 cross-skill, L3 project)
 - Validation gate: automatic (GREEN/ORANGE/RED)

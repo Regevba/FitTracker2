@@ -1,0 +1,10 @@
+{
+  "skill": null,
+  "level": "L3",
+  "updated": "2026-04-10T00:00:00Z",
+  "description": "Project-wide architectural patterns and conventions",
+  "data_sources": [],
+  "consumes_from_shared": [],
+  "writes_to_shared": [],
+  "entries": []
+}

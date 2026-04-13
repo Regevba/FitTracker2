@@ -6,7 +6,7 @@
 | **Status** | PRD |
 | **Priority** | P1 |
 | **Parent** | adaptive-intelligence-initiative |
-| **Work Type** | Feature (full 9-phase lifecycle — new UI surface) |
+| **Work Type** | Feature (full 10-phase lifecycle, 0-9 — new UI surface) |
 | **GitHub Issue** | #46 |
 | **Last Updated** | 2026-04-10 |
 

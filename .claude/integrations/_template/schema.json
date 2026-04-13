@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "{Service Name} Response Schema",
+  "description": "Expected shape of the normalized response from {service}. Used to validate that the MCP/API returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this data pull",
+      "properties": {
+        "source": { "type": "string", "description": "Integration name (e.g., 'ga4-mcp', 'sentry-mcp')" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this data was pulled" },
+        "raw_record_count": { "type": "integer", "description": "Number of records in the raw response" }
+      },
+      "required": ["source", "timestamp"]
+    },
+    "data": {
+      "type": "object",
+      "description": "The actual data payload. Structure varies per service — define per-adapter.",
+      "properties": {}
+    }
+  },
+  "required": ["_meta", "data"]
+}

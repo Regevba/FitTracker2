@@ -1,0 +1,86 @@
+{
+  "$schema": "mapping-v1",
+  "description": "Maps GA4 MCP response fields to shared layer fields. Source paths use dot notation into the schema.json data payload. All values are real telemetry from GA4 — never estimates.",
+  "service": "ga4",
+  "version": "1.0",
+  "target_shared_files": [
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/metric-status.json",
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/feature-registry.json"
+  ],
+  "field_mappings": [
+    {
+      "source_path": "data.activeUsers",
+      "target_file": "metric-status.json",
+      "target_path": "metrics[].current",
+      "match_on": "metrics[].id == 'wau'",
+      "transform": "direct",
+      "transform_note": "GA4 activeUsers over the selected date range maps directly to WAU when range is set to last 7 days",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.sessions",
+      "target_file": "metric-status.json",
+      "target_path": "metrics[].current",
+      "match_on": "metrics[].id == 'sessions'",
+      "transform": "direct",
+      "transform_note": "Total sessions in the date range",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.crashFreeRate",
+      "target_file": "metric-status.json",
+      "target_path": "metrics[].current",
+      "match_on": "metrics[].id == 'crash_free_rate'",
+      "transform": "percentage",
+      "transform_note": "Multiply by 100 to convert 0.0–1.0 fraction to 0–100 percent. System-wide guardrail: must remain > 99.5%.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.screenPageViews",
+      "target_file": "metric-status.json",
+      "target_path": "metrics[].current",
+      "match_on": "metrics[].id == 'screen_page_views'",
+      "transform": "direct",
+      "transform_note": "Total screen/page views across all screens in the date range",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.eventCount",
+      "target_file": "metric-status.json",
+      "target_path": "metrics[].current",
+      "match_on": "metrics[].id == 'event_count'",
+      "transform": "direct",
+      "transform_note": "Total event count across all event names in the date range",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.conversionRates[]",
+      "target_file": "feature-registry.json",
+      "target_path": "features[].metrics.conversionRate",
+      "match_on": "features[].analyticsEventName == source.eventName",
+      "transform": "percentage",
+      "transform_note": "Multiply by 100. Match feature registry entries by the feature's primary conversion event name.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.byScreen[]",
+      "target_file": "feature-registry.json",
+      "target_path": "features[].metrics.screenViews",
+      "match_on": "features[].screenName == source.screenName",
+      "transform": "direct",
+      "transform_note": "Per-screen view count mapped to the owning feature's metrics block",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    }
+  ],
+  "validation_rules": {
+    "numeric_tolerance": 0.05,
+    "description": "Numeric fields are considered consistent if within 5% of the existing shared layer value. Categorical fields must match exactly. New fields (null → value) are always consistent. Measured data superseding estimated data is always consistent."
+  }
+}

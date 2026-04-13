@@ -1,0 +1,25 @@
+{
+  "$schema": "mapping-v1",
+  "description": "Maps external service fields to shared layer fields. Each entry specifies: source field path (dot notation), target shared file + field path, and transformation rules.",
+  "service": "{service-name}",
+  "version": "1.0",
+  "target_shared_files": [
+    "List of .claude/shared/*.json files this adapter writes to"
+  ],
+  "field_mappings": [
+    {
+      "source_path": "data.example_field",
+      "target_file": "metric-status.json",
+      "target_path": "metrics[].current",
+      "match_on": "metrics[].id == '{metric_id}'",
+      "transform": "direct | percentage | timestamp | custom",
+      "transform_note": "Description of any transformation applied",
+      "data_type": "measured | estimated",
+      "overwrites_estimated": true
+    }
+  ],
+  "validation_rules": {
+    "numeric_tolerance": 0.05,
+    "description": "Numeric fields are considered consistent if within 5% of existing value. Categorical fields must match exactly. New fields (null → value) are always consistent. Measured data superseding estimated data is always consistent."
+  }
+}

@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 4.1 | **Updated:** 2026-04-10 | **Branch:** `main`
+> **Version:** 4.3 | **Updated:** 2026-04-11 | **Branch:** `main`
 >
 > A new contributor (human or AI) can read this single document to understand the entire skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 
@@ -16,7 +16,7 @@
 
 **Solution:** Hub-and-spoke architecture where each domain has its own skill, connected through a shared data layer.
 
-**Result:** 12 skills (1 hub + 11 spokes) + 11 shared data files + 6 integration adapters + 3-level learning cache + automatic validation gate. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern. v4.0 (2026-04-10) introduced the reactive data mesh, integration adapter layer, automatic validation gate (GREEN/ORANGE/RED), and L1/L2/L3 learning cache. v4.1 (2026-04-10) added the Skill Internal Lifecycle (Cache Check → Research → Execute → Learn) — every skill mirrors the hub's structure internally — see §9-§11.
+**Result:** 11 skills (1 hub + 10 spokes) + 15 shared data files + 6 local integration adapters + MCP-backed external tool integrations + 3-level learning cache + automatic validation gate + self-healing health checks. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern. v4.0 (2026-04-10) introduced the reactive data mesh, integration adapter layer, automatic validation gate (GREEN/ORANGE/RED), and L1/L2/L3 learning cache. v4.1 (2026-04-10) added the Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). v4.2 (2026-04-10) added the self-healing hub with Phase 0 health checks. v4.3 (2026-04-11) formalizes that operational extension: the control room, case-study monitoring, maintenance-program orchestration, and live external-sync monitoring are now part of the framework itself.
 
 **Key principle:** Every skill is a **Lego piece** (works alone) AND a **puzzle piece** (fits into the hub).
 
@@ -97,10 +97,12 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     SHARED DATA LAYER (.claude/shared/)
-    context.json │ feature-registry.json
-    metric-status.json │ design-system.json
-    test-coverage.json │ cx-signals.json
-    campaign-tracker.json │ health-status.json
+    context.json │ feature-registry.json │ framework-health.json
+    framework-manifest.json
+    metric-status.json │ design-system.json │ test-coverage.json
+    cx-signals.json │ campaign-tracker.json │ health-status.json
+    skill-routing.json │ task-queue.json │ change-log.json
+    case-study-monitoring.json
     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -108,7 +110,7 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 
 ```
 .claude/
-├── skills/                         # Skill definitions (12 skills: 1 hub + 11 spokes)
+├── skills/                         # Skill definitions (11 skills: 1 hub + 10 spokes)
 │   ├── pm-workflow/SKILL.md        # Hub — orchestrates all phases
 │   ├── ux/SKILL.md                 # UX planning & validation — the What & Why layer
 │   ├── design/SKILL.md             # Design system, Figma, tokens, accessibility (visual)
@@ -121,15 +123,22 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 │   ├── research/SKILL.md           # Cross-industry → same-category → feature-specific
 │   └── release/SKILL.md            # Version bumps, changelogs, submission
 │
-├── shared/                         # Shared data layer (8 JSON files)
+├── shared/                         # Shared data layer (15 JSON files)
 │   ├── context.json                # Global product context
 │   ├── feature-registry.json       # All 16 features with status + pain points
+│   ├── framework-health.json       # Health-check config and integrity history
+│   ├── framework-manifest.json     # Canonical framework version and structure
+│   ├── external-sync-status.json   # Live Notion + Linear sync snapshot
 │   ├── metric-status.json          # 40 metrics with targets + instrumentation
 │   ├── design-system.json          # ~120 tokens, components, accessibility
 │   ├── test-coverage.json          # Test suites, gaps, guardrail gates
 │   ├── cx-signals.json             # Reviews, NPS, sentiment, keyword patterns
 │   ├── campaign-tracker.json       # Campaigns, UTM convention, channels
-│   └── health-status.json          # Infrastructure, CI, incidents, cost
+│   ├── health-status.json          # Infrastructure, CI, incidents, cost
+│   ├── skill-routing.json          # Task→skill mapping + integration map
+│   ├── task-queue.json             # Cross-feature priority queue
+│   ├── change-log.json             # Broadcast log and audit trail
+│   └── case-study-monitoring.json  # Showcase-ready process evidence
 │
 ├── features/                       # Per-feature state (existing)
 │   └── {feature}/
@@ -1015,18 +1024,26 @@ health-status.json ───────── /ops, /dev, /qa write
 | 8 | `/research` | `wide`, `narrow`, `feature`, `competitive`, `market`, `ux-patterns`, `aso` | Cross-industry → same-category → feature-specific research |
 | 9 | `/release` | `prepare`, `checklist`, `notes`, `submit` | Version bumps, changelogs, readiness checks, App Store submission |
 
-### All 8 Shared Data Files
+### All 15 Shared Data Files
 
-| File | Purpose | Primary Owner |
-|------|---------|--------------|
-| `context.json` | Product identity, personas, brand, guardrails, competitive landscape | `/pm-workflow` + `/research` |
-| `feature-registry.json` | 16 features with status, pain points, metrics | `/pm-workflow` |
-| `metric-status.json` | 40 metrics across 6 categories, 35% instrumented | `/analytics` |
-| `design-system.json` | ~120 tokens, components, accessibility, Android mapping | `/design` |
-| `test-coverage.json` | Test suites, gaps (no integration/UI/perf/security tests), guardrail gates | `/qa` |
-| `cx-signals.json` | Reviews, NPS, sentiment, keyword patterns, root cause dispatch rules | `/cx` |
-| `campaign-tracker.json` | Campaigns, UTM convention, 8 channels, attribution model | `/marketing` |
-| `health-status.json` | 6 infrastructure services, CI, quality gates, incidents, cost | `/ops` |
+The current shared layer is maintained in Section 6 and in `.claude/shared/framework-manifest.json`. The live inventory is:
+
+- `context.json`
+- `feature-registry.json`
+- `metric-status.json`
+- `design-system.json`
+- `test-coverage.json`
+- `cx-signals.json`
+- `campaign-tracker.json`
+- `health-status.json`
+- `dependency-graph.json`
+- `task-queue.json`
+- `skill-routing.json`
+- `framework-health.json`
+- `framework-manifest.json`
+- `case-study-monitoring.json`
+- `external-sync-status.json`
+
 
 ---
 
@@ -1062,7 +1079,7 @@ For each of the 16 features in `feature-registry.json`, here is the skill chain 
 | 5 | `/qa plan nutrition` |
 | 9 | `/cx analyze nutrition` ("Did it solve 'no connection to training'?") |
 
-**Gap:** Food database search and barcode scanning are listed as critical gaps in the roadmap but not in the current feature registry as separate items. `/research feature food-database` would be needed.
+**Gap:** Nutrition ingestion is already wired for text search and barcode lookup. The remaining gaps are around recommendation quality, meal-timing analysis, and broader validation coverage.
 
 #### 3. Recovery & Biometrics (`recovery`) — SHIPPED
 
@@ -1134,11 +1151,11 @@ For each of the 16 features in `feature-registry.json`, here is the skill chain 
 |-------|---------------|
 | 0 | `/research wide federated-learning`, `/research feature ai-fitness-recommendations` |
 | 1 | `/analytics spec ai` (recommendation_acceptance, confidence_score, escalation_rate) |
-| 3 | `/design ux-spec ai` — **GAP: AI recommendation UI is listed as critical gap** |
+| 3 | `/design ux-spec ai` — AI insight surfaces are now shipped in Home and the full-sheet experience |
 | 5 | `/qa plan ai`, `/dev perf` (AI latency, fallback behavior) |
 | 9 | `/cx analyze ai` ("Are recommendations useful? Are users confused by AI suggestions?") |
 
-**Gap:** AI recommendation UI is a critical gap. The ecosystem would handle it via `/design ux-spec ai` + `/cx analyze ai` to monitor if users understand the AI output.
+**Gap:** The user-facing AI surface is shipped. The current AI gaps are recommendation analytics fidelity, feedback quality, and runtime validation of the on-device/cloud handoff.
 
 #### 10. Design System v2 (`design-system`) — SHIPPED
 
@@ -1176,7 +1193,7 @@ For each of the 16 features in `feature-registry.json`, here is the skill chain 
 |--------|---|
 | **Gap** | None — `design-system.json` already tracks 92 Android-mapped tokens. |
 
-#### 15. Marketing Website (`marketing-website`) — SHIPPED
+#### 15. Marketing Website (`marketing-website`) — IN PROGRESS
 
 | Skills | `/marketing aso`, `/marketing content`, `/marketing screenshots`, `/analytics spec` (cta_click, section_view events) |
 |--------|---|
@@ -1184,7 +1201,7 @@ For each of the 16 features in `feature-registry.json`, here is the skill chain 
 
 ### Planned Features (1 in registry)
 
-#### 16. Onboarding (`onboarding`) — PLANNED
+#### 16. Onboarding (`onboarding`) — SHIPPED
 
 | Phase | Skills Invoked | What Happens |
 |-------|---------------|-------------|
@@ -1204,7 +1221,7 @@ For each of the 16 features in `feature-registry.json`, here is the skill chain 
 | 8 | `/analytics dashboard onboarding` | Completion funnel, D1 retention chart |
 | 9 | `/cx analyze onboarding` | "Did it solve 'no guided first experience'?" |
 
-**Gap:** Push notifications (for onboarding reminders) are a critical gap not covered by any current skill. Would need to be handled by `/dev` implementation + `/design` permission UX.
+**Gap:** Core onboarding is shipped. The remaining adjacent gap is the broader push-notification system, which sits outside onboarding itself.
 
 ### Critical Gaps Not in Feature Registry
 
@@ -1214,12 +1231,10 @@ These items from the roadmap are not tracked as features in `feature-registry.js
 |-----|---------------------------|
 | **Account deletion (GDPR)** | `/qa security`, `/design ux-spec`, `/dev` |
 | **Data export (GDPR)** | `/qa security`, `/design ux-spec`, `/dev` |
-| **AI recommendation UI** | `/design ux-spec ai`, `/cx analyze ai` |
-| **Food database search** | `/research feature food-database`, `/design ux-spec`, `/dev` |
-| **Barcode scanning** | `/research feature barcode-scanning`, `/dev`, `/qa plan` |
+| **Auth runtime verification** | `/qa security`, `/dev`, `/ops health` |
 | **Push notifications** | `/research wide push-notification-patterns`, `/design ux-spec`, `/dev`, `/marketing email` |
-| **Onboarding flow** | Tracked in registry as `onboarding` |
-| **Google Sign In** | `/research feature social-signin`, `/qa security`, `/dev` |
+| **App icon + App Store assets** | `/design audit`, `/marketing screenshots`, `/release prepare` |
+| **Import training plan** | `/research feature import-training-plan`, `/design ux-spec`, `/dev`, `/qa plan` |
 
 ### Ecosystem Coverage Summary
 
@@ -1366,7 +1381,7 @@ The original analysis drew the ecosystem as a single hub with missing side-layer
              └──────────────────────────────────────┘
 ```
 
-Compare this to the current 12-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.
+Compare this to the current 11-skill hub-and-spoke in §3 — the "missing layers" have all been filled in.
 
 ---
 
@@ -1529,9 +1544,9 @@ All data entering the shared layer passes through an automatic validation gate. 
 
 ### 9.5 Configuration
 
-Integration sources and validation thresholds are declared in `.claude/shared/skill-routing.json` (v2.0):
+Integration sources and validation thresholds are declared in `.claude/shared/skill-routing.json` (v4.3 schema):
 
-- `integration_sources` — maps each skill to its adapters, shared_reads, shared_writes
+- `integration_sources` — maps each skill to `local_adapters`, `external_connectors`, `shared_reads`, and `shared_writes`
 - `validation_gate` — thresholds (green: 0.95, orange: 0.90), numeric tolerance (0.05), auto-write levels, manual resolution levels
 
 ---

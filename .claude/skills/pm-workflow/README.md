@@ -1,25 +1,31 @@
 # PM Workflow Skill — `/pm-workflow`
 
-A Claude Code skill that orchestrates the complete product management lifecycle for features in the FitMe app. Invoke with `/pm-workflow {feature-name}`.
+> Current framework version: **v4.3**
+> This README is the human-facing evolution summary for the PM hub. For the live agent behavior, treat [`SKILL.md`](./SKILL.md) and the shared framework files as canonical.
+
+A Claude Code skill that orchestrates the complete product management lifecycle for features and maintenance programs in the FitMe app. Invoke with `/pm-workflow {feature-name}`.
 
 ## What It Does
 
-Guides every feature through 9 sequential phases with explicit user approval gates:
+Guides work through the current **10-phase lifecycle (Phase 0 through Phase 9)** with explicit user approval gates:
 
 ```
-Research → PRD → Tasks → UX/Integration → Implement → Test → Review → Merge → Docs
+0 Research → 1 PRD → 2 Tasks → 3 UX/Integration → 4 Implement → 5 Test
+          → 6 Review → 7 Merge → 8 Docs → 9 Learn
 ```
 
-Each phase produces artifacts (research docs, PRDs, task lists, UX specs), updates a JSON state file, and syncs with GitHub Issues for dashboard tracking.
+The execution-state files still track the research-through-documentation path directly, while the Learn/feedback loop is maintained through shared monitoring, control-room state, and follow-on work items.
 
 ## Files
 
 | File | Purpose |
 |------|---------|
-| `SKILL.md` | Main workflow definition — all 9 phases, gates, transitions, overrides |
+| `SKILL.md` | Main workflow definition — current v4.3 hub behavior, gates, transitions, overrides |
 | `prd-template.md` | PRD template with mandatory metrics, analytics spec, kill criteria |
 | `research-template.md` | Research phase template (10 sections) |
 | `state-schema.json` | JSON Schema for feature state tracking |
+| `docs/skills/pm-workflow.md` | Human-facing hub reference in the v4.3 skills ecosystem |
+| `.claude/shared/framework-manifest.json` | Canonical framework version, counts, and structure |
 
 ## Key Concepts
 
@@ -41,6 +47,82 @@ Each phase produces artifacts (research docs, PRDs, task lists, UX specs), updat
 ---
 
 ## Version History
+
+### v4.3.0 — Operations Layer + Case-Study Monitoring (2026-04-11)
+
+**Problem:** The framework could orchestrate work, but it still lacked a live operator surface and a first-class way to capture maintenance-program evidence, cross-system truth drift, and showcase-ready process data.
+
+**What changed:**
+
+1. **Operations control room** became part of the framework surface
+   - canonical dashboard/control room on `fit-tracker2.vercel.app`
+   - source-health view for repo, Notion, Linear, Vercel, and analytics
+   - knowledge hub for PRDs, backlog, framework docs, and operating references
+
+2. **Case-study monitoring** became a shared framework primitive
+   - `case-study-monitoring.json` added to the shared layer
+   - cleanup and control-room work now produce measurable process evidence
+   - maintenance work is treated as a first-class showcase surface, not invisible toil
+
+3. **Maintenance-program orchestration** became explicit
+   - framework now supports source-of-truth cleanup, reconciliation, and operational chapters
+   - the PM hub is no longer only feature-delivery orchestration
+
+4. **Canonical framework truth** was centralized
+   - `framework-manifest.json` added
+   - shared counts, version, adapter model, and source-of-truth policy moved into one file
+
+### v4.2.0 — Self-Healing Hub (2026-04-10)
+
+**Problem:** The ecosystem had grown fast enough that stale cache, adapter drift, and shared-layer inconsistency could silently degrade the framework itself.
+
+**What changed:**
+
+1. **Phase 0 health checks** were added to the skill-internal lifecycle
+2. **Framework integrity scoring** was added via `framework-health.json`
+3. **Cache seeding** and validation were formalized across the 3-level cache system
+4. **All 11 SKILL.md files** were wired to the cache and validation protocol
+
+### v4.1.0 — Skill Internal Lifecycle (2026-04-10)
+
+**Problem:** Skills had become specialized, but they still behaved too statelessly from run to run.
+
+**What changed:**
+
+1. Every skill gained an internal lifecycle: **Cache Check → Research → Execute → Learn**
+2. Per-skill cache reads/writes became part of normal execution
+3. Repeated work started getting materially faster as patterns accumulated
+
+### v4.0.0 — Reactive Data Mesh + Adapter Layer (2026-04-10)
+
+**Problem:** Shared context existed, but cross-skill data movement and external integration structure were still too implicit.
+
+**What changed:**
+
+1. **Reactive shared layer** matured into a real data mesh
+2. **Integration adapter model** was introduced
+3. **Validation gate** (GREEN / ORANGE / RED) was formalized
+4. **L1 / L2 / L3 cache model** became part of the framework
+
+### v3.0.0 — External Sync + Parallel Execution (2026-04-09)
+
+**Problem:** The hub-and-spoke split existed, but external-tool sync and multi-skill execution were still too manual.
+
+**What changed:**
+
+1. Notion, Figma, and Vercel workflows became part of the operating model
+2. Parallel execution patterns were introduced for independent work
+3. Screen-audit and refactor workflows became repeatable instead of improvised
+
+### v2.0.0 — Hub-and-Spoke Extraction (2026-04-02)
+
+**Problem:** `/pm-workflow` was still monolithic.
+
+**What changed:**
+
+1. Domain work split into a hub + specialized spokes
+2. Shared JSON files became the system glue
+3. The framework moved from “one giant prompt” to an ecosystem
 
 ### v1.2.0 — Analytics Instrumentation Gate (2026-04-02)
 
@@ -118,7 +200,7 @@ Added `requires_analytics` conditional gate (mirrors `has_ui` pattern) with 3 to
 
 **What changed:**
 
-1. **9-phase lifecycle** with sequential gates and user approval at every transition:
+1. **Original 9-phase execution lifecycle** with sequential gates and user approval at every transition:
    - Phase 0: Research & Discovery
    - Phase 1: PRD (with mandatory success metrics)
    - Phase 2: Task Breakdown
@@ -158,7 +240,7 @@ Added `requires_analytics` conditional gate (mirrors `has_ui` pattern) with 3 to
 
 | Feature | Phases Completed | Analytics Gate? | Notes |
 |---------|-----------------|-----------------|-------|
-| `development-dashboard` | All 9 → complete | No | First feature through the full lifecycle |
-| `google-analytics` | All 9 → complete | N/A (this IS the analytics feature) | Drove v1.2.0 evolution. First feature with `requires_analytics` gate. |
-| `gdpr-compliance` | All 9 → complete | Yes (5 events, 4 params, 2 screens) | First feature using analytics gate end-to-end. CRITICAL legal requirement. |
-| `android-design-system` | All 9 → complete | No (docs-only) | Research deliverable. 92 tokens mapped, Style Dictionary config. |
+| `development-dashboard` | Full lifecycle completed | No | First feature through the original lifecycle |
+| `google-analytics` | Full lifecycle completed | N/A (this IS the analytics feature) | Drove v1.2.0 evolution. First feature with `requires_analytics` gate. |
+| `gdpr-compliance` | Full lifecycle completed | Yes (5 events, 4 params, 2 screens) | First feature using analytics gate end-to-end. CRITICAL legal requirement. |
+| `android-design-system` | Full lifecycle completed | No (docs-only) | Research deliverable. 92 tokens mapped, Style Dictionary config. |

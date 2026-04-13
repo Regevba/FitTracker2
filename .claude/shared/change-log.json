@@ -1,8 +1,454 @@
 {
   "version": "2.0",
-  "updated": "2026-04-10T00:00:00Z",
+  "updated": "2026-04-13T10:30:00Z",
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
-  "events": [],
+  "events": [
+    {
+      "timestamp": "2026-04-13T10:30:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "ui_change",
+      "title": "Control center alignment and IA refresh started",
+      "summary": "The dashboard is being reorganized into a multi-workspace operating surface with shared control-center builders, a dedicated Knowledge tab, routed research/Figma workspaces, a standalone case-studies page, and cleaned current-truth roadmap references.",
+      "artifacts": [
+        "dashboard/src/scripts/builders/controlCenter.js",
+        "dashboard/src/components/Dashboard.jsx",
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/components/KnowledgeHub.jsx",
+        "dashboard/src/components/ResearchConsole.jsx",
+        "dashboard/src/components/FigmaHandoffLab.jsx",
+        "dashboard/src/components/CaseStudiesView.jsx",
+        "dashboard/src/pages/case-studies.astro",
+        "README.md",
+        "docs/product/PRD.md"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": ["fit-tracker2"],
+        "figma": ["0Ai7s3fCFqR5JXDW8JvgmD"],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "knowledge_tab_added": true,
+        "case_study_route_added": true,
+        "research_workspaces_added": true,
+        "stale_roadmap_references_cleaned": true
+      },
+      "notifications_sent_to": ["pm-workflow", "research", "design", "ops", "analytics"]
+    },
+    {
+      "timestamp": "2026-04-12T21:30:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "docs_change",
+      "title": "Framework docs deep-validation and next research chapters initialized",
+      "summary": "The PM-flow and skills documentation were revalidated around the current v4.3 framework, a reusable auth runtime verification playbook was added, and new Phase 0 research chapters were opened for push notifications, app-store assets, import training plans, and AI engine architecture adaptation.",
+      "artifacts": [
+        ".claude/skills/pm-workflow/SKILL.md",
+        ".claude/skills/pm-workflow/README.md",
+        "docs/process/product-management-lifecycle.md",
+        "docs/setup/auth-runtime-verification-playbook.md",
+        ".claude/features/push-notifications/state.json",
+        ".claude/features/app-store-assets/state.json",
+        ".claude/features/import-training-plan/research.md",
+        ".claude/features/ai-engine-architecture-adaptation/state.json",
+        ".claude/shared/feature-registry.json",
+        ".claude/shared/task-queue.json"
+      ],
+      "external_sync": {
+        "linear": ["FIT-6", "FIT-21", "FIT-22"],
+        "notion": ["Project Context & Status", "Maintenance Audit — 2026-04-11", "Operations Control Room — Product Spec", "Chapter 3 — Auth Hardening"],
+        "vercel": ["fit-tracker2"],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "framework_docs_revalidated": true,
+        "auth_playbook_added": true,
+        "high_priority_research_started": true
+      },
+      "notifications_sent_to": ["pm-workflow", "research", "design", "qa", "release", "ops"]
+    },
+    {
+      "timestamp": "2026-04-12T20:40:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "docs_change",
+      "title": "Marketing and Vercel truth cleanup chapter started",
+      "summary": "README and the marketing website PRD were corrected to reflect that the website exists in code but is not truthfully launched as the canonical live surface, because the fit-tracker2 Vercel project is still rooted at dashboard and the site retains placeholder launch metadata.",
+      "artifacts": [
+        "README.md",
+        "docs/product/prd/marketing-website.md",
+        ".claude/shared/external-sync-status.json"
+      ],
+      "external_sync": {
+        "linear": ["FIT-21"],
+        "notion": ["Chapter 4 — Marketing + Vercel Truth Cleanup"],
+        "vercel": ["fit-tracker2", "dashboard"],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "marketing_truth_cleanup_started": true,
+        "canonical_live_surface_documented": true,
+        "website_launch_blockers_recorded": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "marketing", "analytics"]
+    },
+    {
+      "timestamp": "2026-04-12T20:05:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "verification",
+      "title": "Canonical iOS simulator build succeeded with GoogleSignIn resolved",
+      "summary": "An elevated compile-only Debug build for the FitTracker iOS simulator target completed successfully after resolving the GoogleSignIn package, which confirms the repo-side auth wiring compiles even though real Google credentials and end-to-end auth validation are still pending.",
+      "artifacts": [
+        "FitTracker.xcodeproj/project.pbxproj",
+        "FitTracker/Services/Auth/GoogleAuthProvider.swift",
+        "FitTracker/Services/Auth/SignInService.swift",
+        "docs/product/prd/18.6-authentication.md",
+        "docs/setup/integrations-setup-guide.md"
+      ],
+      "external_sync": {
+        "linear": ["FIT-6"],
+        "notion": ["Chapter 3 — Auth Hardening"],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "google_auth_compile_verified": true,
+        "simulator_build_succeeded": true,
+        "google_auth_real_validation_pending": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "qa", "dev"]
+    },
+    {
+      "timestamp": "2026-04-12T19:25:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "project_config",
+      "title": "Google auth moved from dormant source to repo-wired configuration gate",
+      "summary": "The Xcode project now includes the GoogleSignIn package reference and GoogleAuthProvider target membership, Info.plist now includes placeholder Google client ID keys and URL scheme scaffolding, and runtime gating keeps Google hidden until valid local configuration is present.",
+      "artifacts": [
+        "FitTracker.xcodeproj/project.pbxproj",
+        "FitTracker/Info.plist",
+        "FitTracker/Services/Auth/GoogleAuthProvider.swift",
+        "docs/product/prd/18.6-authentication.md",
+        "docs/setup/integrations-setup-guide.md"
+      ],
+      "external_sync": {
+        "linear": ["FIT-6"],
+        "notion": ["Chapter 3 — Auth Hardening"],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "google_auth_repo_wired": true,
+        "google_auth_runtime_gated": true,
+        "google_auth_real_validation_pending": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "qa", "cx"]
+    },
+    {
+      "timestamp": "2026-04-12T19:05:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "code_change",
+      "title": "Auth hardening switched email to the real provider gate and removed mock Google from the live UI",
+      "summary": "The auth chapter now activates the real Supabase email provider whenever runtime credentials are present, exposes password reset in the auth UI, and stops presenting Google sign-in as a live option until the SDK and target wiring are actually complete.",
+      "artifacts": [
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Views/Auth/AuthHubView.swift",
+        "FitTrackerTests/FitTrackerCoreTests.swift",
+        "docs/product/prd/18.6-authentication.md",
+        "docs/setup/integrations-setup-guide.md",
+        "Notion: Chapter 3 — Auth Hardening",
+        "Linear: FIT-6"
+      ],
+      "external_sync": {
+        "linear": ["FIT-6"],
+        "notion": ["Chapter 3 — Auth Hardening"],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "email_auth_runtime_gate_activated": true,
+        "mock_google_removed_from_live_ui": true,
+        "password_reset_exposed_in_ui": true,
+        "google_sdk_activation_still_pending": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "qa", "cx"]
+    },
+    {
+      "timestamp": "2026-04-12T18:45:00Z",
+      "event_type": "knowledge_hub",
+      "change_type": "ui_change",
+      "title": "Knowledge hub added to the control room and connected to canonical docs",
+      "summary": "The control room now includes a dedicated reading surface for repo docs, shared PM framework files, and synced Notion/Linear/Vercel references, so the operator dashboard can open the actual source material instead of relying on summaries alone.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        "dashboard/src/pages/index.astro",
+        "dashboard/src/components/Dashboard.jsx",
+        "dashboard/src/components/ControlRoom.jsx",
+        "Notion: Operations Control Room — Product Spec",
+        "Linear: FIT-22"
+      ],
+      "external_sync": {
+        "linear": ["FIT-22"],
+        "notion": ["Operations Control Room — Product Spec"],
+        "vercel": [
+          "fit-tracker2",
+          "dpl_3K8AjoYcejYQ2hKv8mtX7uu3fkJJ",
+          "https://fit-tracker2.vercel.app"
+        ],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "knowledge_hub_live_in_control_room": true,
+        "canonical_docs_connected": true,
+        "external_reference_surface_expanded": true
+      },
+      "notifications_sent_to": ["pm-workflow", "research", "ops", "design", "analytics"]
+    },
+    {
+      "timestamp": "2026-04-12T18:10:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "docs_change",
+      "title": "Auth hardening chapter started as the next cleanup block",
+      "summary": "FIT-6 is now in progress with a concrete execution brief, and a dedicated Notion chapter page now defines the scope for replacing mock or unavailable auth paths with production-backed Supabase auth.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        "Linear: FIT-6",
+        "Notion: Chapter 3 — Auth Hardening"
+      ],
+      "external_sync": {
+        "linear": ["FIT-6"],
+        "notion": ["Chapter 3 — Auth Hardening"],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "next_cleanup_chapter_started": true,
+        "auth_hardening_active": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "qa", "cx"]
+    },
+    {
+      "timestamp": "2026-04-12T18:00:00Z",
+      "event_type": "deployment",
+      "change_type": "ui_change",
+      "title": "Control room consolidated into fit-tracker2 and Speed Insights deployed",
+      "summary": "The operations control room is now live on the canonical fit-tracker2 Vercel project, with both Web Analytics and Speed Insights deployed. The accidental standalone dashboard project remains as cleanup debt but is no longer the canonical live surface.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        "dashboard/src/layouts/DashboardLayout.astro",
+        "dashboard/astro.config.mjs",
+        "dashboard/package.json"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [
+          "fit-tracker2",
+          "dpl_4DoZykJ8uPAHCvt3L3sGsy3dHC5p",
+          "https://fit-tracker2.vercel.app"
+        ],
+        "figma": [],
+        "github": [],
+        "analytics": [
+          "Vercel Web Analytics deployed",
+          "Vercel Speed Insights deployed"
+        ]
+      },
+      "impact": {
+        "control_room_live": true,
+        "canonical_vercel_project_restored": true,
+        "speed_insights_live": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa", "marketing"]
+    },
+    {
+      "timestamp": "2026-04-12T17:45:00Z",
+      "event_type": "deployment",
+      "change_type": "ui_change",
+      "title": "Operations control room deployed live on a separate dashboard Vercel project",
+      "summary": "The updated control room was deployed successfully, but the deploy created or targeted a separate Vercel project named dashboard rather than updating the older fit-tracker2 project. The monitoring layer now records that split explicitly.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        "dashboard/astro.config.mjs",
+        "dashboard/src/components/ControlRoom.jsx"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [
+          "dashboard project",
+          "dpl_8diRyigZwfNAqRN6rYJNQVaB1Cdq",
+          "https://dashboard-1kdtdqqi8-regevba-3729s-projects.vercel.app"
+        ],
+        "figma": [],
+        "github": [],
+        "analytics": ["Vercel Web Analytics deployed with dashboard project"]
+      },
+      "impact": {
+        "control_room_live": true,
+        "vercel_project_topology_split_detected": true,
+        "web_analytics_live": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa", "marketing"]
+    },
+    {
+      "timestamp": "2026-04-12T17:05:00Z",
+      "event_type": "external_sync_monitoring",
+      "change_type": "ui_change",
+      "title": "Live GitHub hydration and Vercel runtime visibility expanded in the control room",
+      "summary": "The dashboard now hydrates GitHub issue truth when GITHUB_TOKEN is available, surfaces verified Vercel deployment/runtime state, and enables Vercel Web Analytics in the dashboard repo configuration without pretending that full production observability is already complete.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        "dashboard/src/pages/index.astro",
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/components/SourceHealth.jsx",
+        "dashboard/astro.config.mjs"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": ["fit-tracker2 project", "latest production deployment", "runtime logs (7d)"],
+        "figma": [],
+        "github": ["build-time issue hydration when GITHUB_TOKEN is present"],
+        "analytics": ["Vercel Web Analytics adapter enabled in dashboard repo"]
+      },
+      "impact": {
+        "cross_system_truth_surface_expanded": true,
+        "live_github_hydration_supported": true,
+        "vercel_runtime_visibility_added": true,
+        "web_analytics_repo_ready": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa", "design"]
+    },
+    {
+      "timestamp": "2026-04-12T16:15:00Z",
+      "event_type": "external_sync_monitoring",
+      "change_type": "data_ingestion",
+      "title": "GitHub repo truth and analytics health added to the external sync layer",
+      "summary": "The shared external sync snapshot now includes canonical GitHub repo state and analytics instrumentation health, giving the control room a broader cross-system truth surface without faking live production telemetry.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        "dashboard/src/pages/index.astro",
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/components/SourceHealth.jsx"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": ["Regevba/FitTracker2 local repo state"],
+        "analytics": ["metric-status.json", "health-status.json"]
+      },
+      "impact": {
+        "cross_system_truth_surface_expanded": true,
+        "live_production_telemetry_claimed": false
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa"]
+    },
+    {
+      "timestamp": "2026-04-11T16:05:53Z",
+      "event_type": "external_sync_monitoring",
+      "change_type": "data_ingestion",
+      "title": "Live Notion + Linear sync snapshot added to shared layer and control room",
+      "summary": "The framework now records current Linear roadmap status and Notion status-page drift in a canonical shared file so the dashboard can show external-tool truth alongside repo truth.",
+      "artifacts": [
+        ".claude/shared/external-sync-status.json",
+        ".claude/shared/framework-manifest.json",
+        "dashboard/src/pages/index.astro",
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/components/SourceHealth.jsx"
+      ],
+      "external_sync": {
+        "linear": ["FitTracker Roadmap", "FIT-21", "FIT-22", "FIT-6"],
+        "notion": [
+          "Project Context & Status",
+          "Maintenance Audit — 2026-04-11",
+          "Operations Control Room — Product Spec",
+          "Case Study — Maintenance Cleanup + Operations Control Room"
+        ],
+        "vercel": [],
+        "figma": []
+      },
+      "impact": {
+        "framework_version": "4.3",
+        "shared_files": 15,
+        "external_sync_monitoring_promoted": true
+      },
+      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "cx"]
+    },
+    {
+      "timestamp": "2026-04-11T15:50:25Z",
+      "event_type": "framework_upgrade",
+      "change_type": "docs_change",
+      "title": "PM framework promoted to v4.3",
+      "summary": "The self-healing hub now formally includes the operations control room, case-study monitoring, and maintenance-program orchestration as part of the framework itself.",
+      "artifacts": [
+        ".claude/shared/framework-manifest.json",
+        "docs/skills/README.md",
+        "docs/skills/architecture.md",
+        "docs/skills/evolution.md",
+        ".claude/shared/case-study-monitoring.json",
+        "dashboard/src/data/caseStudies.json"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": []
+      },
+      "impact": {
+        "framework_version": "4.3",
+        "operational_layer_formalized": true,
+        "case_study_monitoring_promoted": true
+      },
+      "notifications_sent_to": ["pm-workflow", "analytics", "ops", "marketing"]
+    },
+    {
+      "timestamp": "2026-04-11T13:48:00Z",
+      "event_type": "cleanup_program",
+      "change_type": "ui_change",
+      "title": "Maintenance cleanup + operations control room initiated",
+      "summary": "Cross-system cleanup established as a tracked program. Added dashboard control-room UI, case-study monitoring, and synchronized obvious repo-truth updates to Notion and Linear.",
+      "artifacts": [
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/data/caseStudies.json",
+        ".claude/shared/case-study-monitoring.json",
+        "docs/case-studies/cleanup-control-room-case-study.md"
+      ],
+      "external_sync": {
+        "linear": ["FIT-21", "FIT-22", "FIT-5", "FIT-7", "FIT-13"],
+        "notion": [
+          "Maintenance Audit — 2026-04-11",
+          "Operations Control Room — Product Spec",
+          "Case Study — Maintenance Cleanup + Operations Control Room",
+          "Project Context & Status"
+        ],
+        "vercel": ["fit-tracker2 project reviewed"],
+        "figma": ["workflow surface planned, live dashboard integration pending"]
+      },
+      "impact": {
+        "source_truth_gap_reduced": true,
+        "operator_surface_added": true,
+        "case_study_monitoring_started": true
+      },
+      "notifications_sent_to": ["qa", "cx", "ops", "analytics", "design", "pm-workflow"]
+    }
+  ],
   "notification_rules": {
     "code_change": ["qa", "cx", "ops", "analytics"],
     "ui_change": ["qa", "cx", "ops", "analytics", "design"],

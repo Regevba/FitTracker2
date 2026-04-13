@@ -1,0 +1,86 @@
+{
+  "$schema": "mapping-v1",
+  "description": "Maps Sentry MCP response fields to shared layer fields. Source paths use dot notation into the schema.json data payload. All values are real crash/error data from Sentry — never estimates.",
+  "service": "sentry",
+  "version": "1.0",
+  "target_shared_files": [
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/health-status.json",
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/cx-signals.json"
+  ],
+  "field_mappings": [
+    {
+      "source_path": "data.crashFreeRate",
+      "target_file": "health-status.json",
+      "target_path": "stability.crashFreeRate",
+      "match_on": null,
+      "transform": "percentage",
+      "transform_note": "Multiply by 100 to convert 0.0–1.0 fraction to 0–100 percent. System-wide guardrail: must remain > 99.5%.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.errorCount",
+      "target_file": "health-status.json",
+      "target_path": "stability.errorCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total error events in the reported period",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.issueCount",
+      "target_file": "health-status.json",
+      "target_path": "stability.issueCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total distinct unresolved issue groups",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.affectedUsers",
+      "target_file": "health-status.json",
+      "target_path": "stability.affectedUsers",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Unique users affected by at least one error in the reported period",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.topIssues",
+      "target_file": "health-status.json",
+      "target_path": "stability.topIssues",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Replace the existing topIssues array with the freshly pulled top 10 unresolved issues",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.topIssues",
+      "target_file": "cx-signals.json",
+      "target_path": "crashSignals.topCrashIssues",
+      "match_on": null,
+      "transform": "custom",
+      "transform_note": "Filter topIssues where level == 'fatal'. These represent crash-class issues most relevant to CX analysis and review triage.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.affectedUsers",
+      "target_file": "cx-signals.json",
+      "target_path": "crashSignals.usersImpactedByErrors",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total users impacted — used by /cx to contextualize complaint volume relative to error exposure",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    }
+  ],
+  "validation_rules": {
+    "numeric_tolerance": 0.05,
+    "description": "Numeric fields are considered consistent if within 5% of the existing shared layer value. Categorical fields must match exactly. New fields (null → value) are always consistent. Measured data superseding estimated data is always consistent."
+  }
+}

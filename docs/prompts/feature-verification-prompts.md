@@ -419,14 +419,14 @@ Read and analyze:
 - .claude/features/*/state.json (all 5 features)
 
 Verify:
-1. 9 phases: research → prd → tasks → ux → implement → test → review → merge → docs?
+1. Lifecycle framing: does the current PM hub document the full 10-phase model (0-9) while keeping the execution-state phases and post-ship learn loop consistent?
 2. Analytics gate: requires_analytics flag enforces spec validation?
 3. Design system compliance gateway: validates tokens, components, accessibility?
 4. State.json: full transition audit trail for all 5 features?
 5. GitHub Issue sync: auto-label on phase transition?
 6. Manual override: skip and rollback work?
 7. Templates: research.md, prd.md, tasks.md, ux-spec.md all generated?
-8. All 5 features completed all 9 phases?
+8. Do the audited features show complete execution-state trails and post-ship documentation/learn evidence?
 
 Report: phase completeness, gate enforcement, audit trail integrity.
 ```

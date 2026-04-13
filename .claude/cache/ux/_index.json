@@ -1,0 +1,9 @@
+{
+  "skill": "ux",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["axe-mcp"],
+  "consumes_from_shared": ["design-system.json", "context.json"],
+  "writes_to_shared": ["design-system.json"],
+  "entries": []
+}

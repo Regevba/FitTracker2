@@ -1,7 +1,7 @@
 {
   "version": "2.0",
-  "updated": "2026-04-10T00:00:00Z",
-  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks.",
+  "updated": "2026-04-11T16:10:00Z",
+  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift.",
   "routing_rules": {
     "ui": { "primary": "dev", "secondary": ["design"] },
     "backend": { "primary": "dev", "secondary": ["ops"] },
@@ -19,57 +19,68 @@
   },
   "integration_sources": {
     "analytics": {
-      "adapters": ["ga4", "mixpanel"],
+      "local_adapters": ["ga4"],
+      "external_connectors": ["mixpanel"],
       "shared_writes": ["metric-status.json"],
       "shared_reads": ["metric-status.json", "feature-registry.json"]
     },
     "cx": {
-      "adapters": ["app-store-connect", "sentry"],
+      "local_adapters": ["app-store-connect", "sentry"],
+      "external_connectors": [],
       "shared_writes": ["cx-signals.json"],
       "shared_reads": ["cx-signals.json", "feature-registry.json"]
     },
     "design": {
-      "adapters": ["figma"],
+      "local_adapters": [],
+      "external_connectors": ["figma"],
       "shared_writes": ["design-system.json"],
       "shared_reads": ["design-system.json", "context.json"]
     },
     "dev": {
-      "adapters": ["github", "security-audit"],
+      "local_adapters": ["security-audit"],
+      "external_connectors": ["github"],
       "shared_writes": ["task-queue.json"],
       "shared_reads": ["task-queue.json", "health-status.json"]
     },
     "marketing": {
-      "adapters": ["ayrshare"],
+      "local_adapters": [],
+      "external_connectors": ["ayrshare"],
       "shared_writes": ["campaign-tracker.json"],
       "shared_reads": ["campaign-tracker.json", "cx-signals.json"]
     },
     "ops": {
-      "adapters": ["sentry", "datadog"],
+      "local_adapters": ["sentry"],
+      "external_connectors": ["datadog"],
       "shared_writes": ["health-status.json"],
       "shared_reads": ["health-status.json", "test-coverage.json"]
     },
     "pm-workflow": {
-      "adapters": ["linear", "notion"],
+      "local_adapters": [],
+      "external_connectors": ["linear", "notion"],
       "shared_writes": ["feature-registry.json", "task-queue.json", "change-log.json"],
       "shared_reads": ["feature-registry.json", "skill-routing.json", "task-queue.json"]
     },
     "qa": {
-      "adapters": ["xcode", "codecov"],
+      "local_adapters": [],
+      "external_connectors": ["xcode", "codecov"],
       "shared_writes": ["test-coverage.json", "health-status.json"],
       "shared_reads": ["test-coverage.json", "health-status.json"]
     },
     "release": {
-      "adapters": ["app-store-connect", "fastlane"],
+      "local_adapters": ["app-store-connect"],
+      "external_connectors": ["fastlane"],
       "shared_writes": ["feature-registry.json"],
       "shared_reads": ["health-status.json", "feature-registry.json"]
     },
     "research": {
-      "adapters": ["firecrawl", "apify"],
+      "local_adapters": ["firecrawl"],
+      "external_connectors": ["apify"],
       "shared_writes": ["context.json", "feature-registry.json"],
       "shared_reads": ["context.json", "feature-registry.json"]
     },
     "ux": {
-      "adapters": ["axe"],
+      "local_adapters": ["axe"],
+      "external_connectors": [],
       "shared_writes": ["design-system.json"],
       "shared_reads": ["design-system.json", "context.json"]
     }
@@ -99,7 +110,7 @@
     "feature": {
       "phases": ["research", "prd", "tasks", "ux_or_integration", "implementation", "testing", "review", "merge", "documentation"],
       "gates": ["research", "prd", "tasks", "ux_or_integration", "testing", "review"],
-      "description": "Full 9-phase lifecycle for new capabilities"
+      "description": "Full 10-phase lifecycle (0-9) for new capabilities"
     },
     "enhancement": {
       "phases": ["tasks", "implementation", "testing", "review", "merge"],

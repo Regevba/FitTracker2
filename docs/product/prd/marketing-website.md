@@ -1,7 +1,7 @@
 # PRD: Marketing Website
 
-> **ID:** Task 16 | **Status:** Shipped | **Priority:** HIGH (RICE 4.3)
-> **Last Updated:** 2026-04-04 | **Branch:** feature/marketing-website (merged to main)
+> **ID:** Task 16 | **Status:** In Progress | **Priority:** HIGH (RICE 4.3)
+> **Last Updated:** 2026-04-12 | **Branch:** feature/marketing-website (merged to main)
 
 ---
 
@@ -12,6 +12,13 @@ Build FitMe's public marketing website — the app's front door for organic sear
 ## Business Objective
 
 Establish web presence for FitMe. Currently zero organic traffic, zero SEO footprint, zero web-to-App Store conversion funnel. This site is the foundation for all future marketing.
+
+## Reality Check
+
+- The marketing website code exists in the repo, but it is not the canonical live surface today.
+- The canonical `fit-tracker2` Vercel project is currently rooted at `dashboard/`, which means `fit-tracker2.vercel.app` serves the operations control room rather than the public marketing site.
+- The marketing site still contains launch blockers such as placeholder GA4 IDs, placeholder App Store URLs, and unverified aggregate-rating metadata.
+- Treat this PRD as "implemented in code, not yet truthfully launched."
 
 ## What Was Built
 
@@ -72,3 +79,5 @@ Establish web presence for FitMe. Currently zero organic traffic, zero SEO footp
 - [ ] Connect custom domain (fitme.app)
 - [ ] Verify OG preview renders on social platforms
 - [ ] Submit sitemap to Google Search Console
+- [ ] Remove or verify aggregate rating / review metadata in JSON-LD
+- [ ] Decide whether marketing lives in the canonical `fit-tracker2` Vercel project or a separate production project/domain

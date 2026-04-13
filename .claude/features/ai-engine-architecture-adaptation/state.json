@@ -1,0 +1,36 @@
+{
+  "feature": "ai-engine-architecture-adaptation",
+  "created": "2026-04-12T21:30:00Z",
+  "updated": "2026-04-12T21:30:00Z",
+  "branch": null,
+  "current_phase": "research",
+  "work_type": "feature",
+  "has_ui": false,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "parent_feature": "adaptive-intelligence",
+  "phases": {
+    "research": {
+      "status": "in_progress",
+      "note": "High-priority architectural research opened from the maintenance program. Scope: adapt PM-flow v4.3 patterns such as validation gates, adapters, and learning cache to AIOrchestrator and its surrounding services."
+    },
+    "prd": { "status": "pending" },
+    "tasks": { "status": "pending" },
+    "ux_or_integration": { "status": "pending" },
+    "implementation": { "status": "pending" },
+    "testing": { "status": "pending" },
+    "review": { "status": "pending" },
+    "merge": { "status": "pending" },
+    "documentation": { "status": "pending" }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-12T21:30:00Z",
+      "approved_by": "user",
+      "note": "Research chapter opened after the maintenance prioritization pass kept AI engine architecture adaptation in the high-priority stack."
+    }
+  ],
+  "tasks": []
+}

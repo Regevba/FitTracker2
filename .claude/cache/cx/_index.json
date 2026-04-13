@@ -1,0 +1,9 @@
+{
+  "skill": "cx",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["app-store-connect-mcp", "sentry-mcp"],
+  "consumes_from_shared": ["cx-signals.json", "feature-registry.json"],
+  "writes_to_shared": ["cx-signals.json"],
+  "entries": []
+}

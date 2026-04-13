@@ -1,0 +1,9 @@
+{
+  "skill": "ops",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["sentry-mcp", "datadog-mcp"],
+  "consumes_from_shared": ["health-status.json", "test-coverage.json"],
+  "writes_to_shared": ["health-status.json"],
+  "entries": []
+}

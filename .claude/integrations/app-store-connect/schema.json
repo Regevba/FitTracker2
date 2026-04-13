@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "App Store Connect Response Schema",
+  "description": "Expected shape of the normalized response from asc-mcp. Used to validate that the MCP returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this data pull",
+      "properties": {
+        "source": { "type": "string", "description": "Always 'asc-mcp'", "const": "asc-mcp" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this data was pulled" },
+        "raw_record_count": { "type": "integer", "description": "Total number of records across all pulled resources" },
+        "app_id": { "type": "string", "description": "Apple App Store app ID used for this pull" }
+      },
+      "required": ["source", "timestamp", "app_id"]
+    },
+    "data": {
+      "type": "object",
+      "description": "App Store Connect data payload",
+      "properties": {
+        "averageRating": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "Current average star rating on the App Store (1.0–5.0)"
+        },
+        "reviewCount": {
+          "type": "integer",
+          "description": "Total number of published customer reviews"
+        },
+        "latestVersion": {
+          "type": "string",
+          "description": "Latest released version string (e.g., '2.1.0')"
+        },
+        "buildStatus": {
+          "type": "string",
+          "enum": ["PROCESSING", "READY_FOR_BETA_TESTING", "IN_BETA_TESTING", "READY_FOR_REVIEW", "IN_REVIEW", "READY_FOR_SALE", "DEVELOPER_REMOVED_FROM_SALE", "REJECTED", "INVALID_BINARY"],
+          "description": "Status of the latest TestFlight or App Store build"
+        },
+        "downloadCount": {
+          "type": "integer",
+          "description": "Total downloads in the reported period"
+        },
+        "recentReviews": {
+          "type": "array",
+          "description": "Most recent customer reviews",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "rating": { "type": "integer", "minimum": 1, "maximum": 5 },
+              "title": { "type": "string" },
+              "body": { "type": "string" },
+              "reviewerNickname": { "type": "string" },
+              "createdDate": { "type": "string", "format": "date-time" },
+              "territory": { "type": "string" }
+            },
+            "required": ["id", "rating", "body", "createdDate"]
+          }
+        },
+        "testflightBuilds": {
+          "type": "array",
+          "description": "Recent TestFlight builds",
+          "items": {
+            "type": "object",
+            "properties": {
+              "buildNumber": { "type": "string" },
+              "version": { "type": "string" },
+              "processingState": { "type": "string" },
+              "uploadedDate": { "type": "string", "format": "date-time" }
+            },
+            "required": ["buildNumber", "version", "processingState", "uploadedDate"]
+          }
+        },
+        "appStoreVersions": {
+          "type": "array",
+          "description": "App Store version history",
+          "items": {
+            "type": "object",
+            "properties": {
+              "versionString": { "type": "string" },
+              "appStoreState": { "type": "string" },
+              "releaseDate": { "type": ["string", "null"], "format": "date-time" }
+            },
+            "required": ["versionString", "appStoreState"]
+          }
+        }
+      },
+      "required": ["averageRating", "reviewCount", "latestVersion", "buildStatus"]
+    }
+  },
+  "required": ["_meta", "data"]
+}

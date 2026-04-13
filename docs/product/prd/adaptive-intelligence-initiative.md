@@ -1,7 +1,7 @@
 # PRD: Adaptive Intelligence Initiative
 
 > **ID:** adaptive-intelligence | **Status:** Implementation | **Priority:** P0
-> **Work Type:** Feature (full 9-phase lifecycle)
+> **Work Type:** Feature (full 10-phase lifecycle, 0-9)
 > **Children:** readiness-score-v2, ai-engine-v2, ai-recommendation-ui
 > **Last Updated:** 2026-04-10
 

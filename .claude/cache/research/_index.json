@@ -1,0 +1,9 @@
+{
+  "skill": "research",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["firecrawl-mcp", "apify-mcp"],
+  "consumes_from_shared": ["context.json", "feature-registry.json"],
+  "writes_to_shared": ["context.json", "feature-registry.json"],
+  "entries": []
+}

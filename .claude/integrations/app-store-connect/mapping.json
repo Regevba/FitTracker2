@@ -1,0 +1,97 @@
+{
+  "$schema": "mapping-v1",
+  "description": "Maps App Store Connect MCP response fields to shared layer fields. Source paths use dot notation into the schema.json data payload. All values are real App Store data — never estimates.",
+  "service": "app-store-connect",
+  "version": "1.0",
+  "target_shared_files": [
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/cx-signals.json",
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/feature-registry.json",
+    "/Volumes/DevSSD/FitTracker2/.claude/shared/health-status.json"
+  ],
+  "field_mappings": [
+    {
+      "source_path": "data.averageRating",
+      "target_file": "cx-signals.json",
+      "target_path": "appStore.averageRating",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Current average star rating (1.0–5.0) from App Store",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.reviewCount",
+      "target_file": "cx-signals.json",
+      "target_path": "appStore.reviewCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Total number of published customer reviews",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.recentReviews",
+      "target_file": "cx-signals.json",
+      "target_path": "appStore.recentReviews",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Replace the existing recentReviews array with the freshly pulled set. Keep the 50 most recent.",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.downloadCount",
+      "target_file": "cx-signals.json",
+      "target_path": "appStore.downloadCount",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Downloads in the reported period",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.latestVersion",
+      "target_file": "health-status.json",
+      "target_path": "appStore.latestVersion",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Latest released version string on the App Store",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.buildStatus",
+      "target_file": "health-status.json",
+      "target_path": "appStore.buildStatus",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Status of the most recent TestFlight or App Store submission build",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.testflightBuilds[0]",
+      "target_file": "health-status.json",
+      "target_path": "appStore.latestTestflightBuild",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Most recent TestFlight build (index 0 after sorting by uploadedDate descending)",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    },
+    {
+      "source_path": "data.appStoreVersions[0].versionString",
+      "target_file": "feature-registry.json",
+      "target_path": "releaseContext.currentVersion",
+      "match_on": null,
+      "transform": "direct",
+      "transform_note": "Latest App Store version string, used to determine which features are live",
+      "data_type": "measured",
+      "overwrites_estimated": true
+    }
+  ],
+  "validation_rules": {
+    "numeric_tolerance": 0.05,
+    "description": "Numeric fields are considered consistent if within 5% of the existing shared layer value. Categorical fields (buildStatus, versionString) must match exactly. New fields (null → value) are always consistent. Measured data superseding estimated data is always consistent."
+  }
+}

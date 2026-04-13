@@ -1,17 +1,18 @@
 # FitMe — Product Management Lifecycle
 
-> A data-driven, gated workflow that takes every feature from research to production.  
-> Built as a Claude Code skill (`/pm-workflow`) with automated state tracking and CI integration.
+> Current framework context: **PM-flow v4.3**
+> A data-driven, gated workflow that takes work from research to production and then into post-ship learning.
+> Built as a Claude Code skill (`/pm-workflow`) with shared-state tracking, external-tool sync, and operational monitoring.
 
 ---
 
 ## Philosophy
 
-Every feature in FitMe follows the same disciplined lifecycle — whether it's a 1-day fix or a 3-week feature. The core principles:
+FitMe now uses a **10-phase lifecycle (Phase 0 through Phase 9)** plus work-type shortcuts for enhancements, fixes, and chores. The core principles:
 
 1. **Research before building.** Understand what exists, why we're choosing this approach, and what alternatives we rejected.
 2. **Measure everything.** No feature ships without defined success metrics, baselines, targets, and kill criteria.
-3. **Gate every phase.** No phase is skipped. Explicit approval required before proceeding.
+3. **Gate every meaningful phase.** Feature work goes through the full lifecycle; lighter work types reduce planning overhead without skipping quality gates.
 4. **Isolate risk.** Large features get their own branch. Both branches must pass CI before merge.
 5. **Close the loop.** Post-launch metrics review is mandatory. Features that don't deliver value get iterated or killed.
 
@@ -23,99 +24,18 @@ Every feature in FitMe follows the same disciplined lifecycle — whether it's a
 /pm-workflow {feature-name}
          │
          ▼
-┌─────────────────────────────────────┐
-│  Phase 0: RESEARCH & DISCOVERY      │
-│  What? Why? Why this over others?   │
-│  Sources, competitors, data signals │
-│  If UI: design inspiration & mood   │
-│  ⏸ Approval Gate                   │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Phase 1: PRD                        │
-│  Requirements, user flows, personas │
-│  Success metrics (MANDATORY):       │
-│    Primary + secondary metrics      │
-│    Guardrails, leading/lagging      │
-│    Instrumentation, baseline, target│
-│    Review cadence, kill criteria    │
-│  ⏸ Approval Gate                   │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Phase 2: TASK BREAKDOWN             │
-│  Subtasks with effort estimates     │
-│  Dependency ordering                │
-│  UI vs non-UI classification        │
-│  ⏸ Approval Gate                   │
-└─────────────────────────────────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌────────┐ ┌──────────┐
-│Phase 3 │ │Phase 3b  │
-│UX/UI   │ │Integ.    │
-│Screens │ │API/Data  │
-│Tokens  │ │Contracts │
-│⏸ Gate │ │⏸ Gate   │
-└────┬───┘ └────┬─────┘
-     └────┬─────┘
-          ▼
-┌─────────────────────────────────────┐
-│  Phase 4: BRANCH & IMPLEMENT        │
-│  Create feature/{name} branch      │
-│  Code implementation                │
-│  Incremental commits                │
-│  ⏸ Approval Gate                   │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Phase 5: TESTING & MEASUREMENT     │
-│  Unit tests + regression suite     │
-│  CI must be GREEN                   │
-│  Verify metric instrumentation     │
-│  Record baseline values             │
-│  ⏸ Approval Gate                   │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Phase 6: CODE REVIEW               │
-│  Diff feature branch vs main       │
-│  Risk assessment (high-risk files) │
-│  CI GREEN on BOTH branches         │
-│  ⏸ Approval Gate                   │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Phase 7: MERGE                      │
-│  Create PR → squash merge to main  │
-│  Delete feature branch              │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  Phase 8: DOCUMENTATION & METRICS   │
-│  Update PRD with final state        │
-│  Record baselines                   │
-│  Set review cadence                 │
-│  Update CHANGELOG + backlog         │
-│  Archive feature state              │
-└─────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────┐
-│  POST-LAUNCH: METRICS REVIEW        │
-│  Review at defined cadence          │
-│  Compare current vs baseline/target │
-│  Check kill criteria                │
-│  Decision: keep / iterate / kill    │
-└─────────────────────────────────────┘
+0. Research → 1. PRD → 2. Tasks → 3. UX/Integration → 4. Implement
+             → 5. Test → 6. Review → 7. Merge → 8. Docs → 9. Learn
 ```
+
+### Work Types
+
+| Type | Lifecycle Shape | Notes |
+|------|-----------------|-------|
+| Feature | Full 10-phase lifecycle (0-9) | New capabilities and major initiatives |
+| Enhancement | Condensed planning + full quality gates | Improves shipped features |
+| Fix | Implement → Test → Review → Merge | Fast path without skipping verification |
+| Chore | Implement → Review → Merge | Minimal planning, still reviewed |
 
 ---
 
@@ -188,6 +108,15 @@ For UI features, Phase 3 has three steps:
 3. **Override** — Proceed with documented justification
 
 This reflects a core philosophy: **the design system is a living, evolving framework — not a static constraint.** Since every feature is on its own branch, there's zero risk to main. Design system changes proposed by a feature are reviewed alongside the code and merge together.
+
+### Phase 9: Learn
+
+Post-ship monitoring, source-truth reconciliation, and follow-on work-item creation now live in the formal framework. In v4.3 this includes:
+
+- control-room monitoring
+- case-study evidence capture
+- Notion / Linear / Vercel sync checks
+- feedback-driven follow-up fixes and enhancements
 
 ### Phases 4-5: Implementation & Testing
 

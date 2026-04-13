@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Axe Accessibility Audit Response Schema",
+  "description": "Expected shape of the normalized response from @anthropic-ai/mcp-axe (by Deque). Used to validate that the MCP returned what we expect before mapping to shared layer.",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "description": "Metadata about this audit run",
+      "properties": {
+        "source": { "type": "string", "description": "Always 'axe-mcp'", "const": "axe-mcp" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "When this audit was run" },
+        "raw_record_count": { "type": "integer", "description": "Total number of rules evaluated" },
+        "audited_url": { "type": "string", "description": "URL or identifier of the audited surface" },
+        "wcag_level": {
+          "type": "string",
+          "enum": ["A", "AA", "AAA"],
+          "description": "WCAG conformance level targeted in this audit"
+        },
+        "axe_version": { "type": "string", "description": "Version of the axe-core engine used" }
+      },
+      "required": ["source", "timestamp", "audited_url"]
+    },
+    "data": {
+      "type": "object",
+      "description": "Axe audit results payload",
+      "properties": {
+        "violations": {
+          "type": "array",
+          "description": "Rules that the page/component failed — must be fixed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "description": "Axe rule ID (e.g., 'color-contrast')" },
+              "impact": {
+                "type": "string",
+                "enum": ["critical", "serious", "moderate", "minor"],
+                "description": "Severity of this violation"
+              },
+              "description": { "type": "string" },
+              "help": { "type": "string", "description": "Short remediation guidance" },
+              "helpUrl": { "type": "string", "format": "uri" },
+              "wcagCriteria": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "WCAG success criteria violated (e.g., ['WCAG 2 AA', '1.4.3'])"
+              },
+              "nodes": {
+                "type": "array",
+                "description": "DOM/view nodes where the violation occurs",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "target": { "type": "array", "items": { "type": "string" } },
+                    "html": { "type": "string" },
+                    "failureSummary": { "type": "string" }
+                  }
+                }
+              }
+            },
+            "required": ["id", "impact", "description", "help", "helpUrl"]
+          }
+        },
+        "passes": {
+          "type": "array",
+          "description": "Rules that the page/component passed",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" }
+            },
+            "required": ["id"]
+          }
+        },
+        "incomplete": {
+          "type": "array",
+          "description": "Rules that require manual review — axe could not determine pass/fail automatically",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "impact": { "type": ["string", "null"] },
+              "description": { "type": "string" },
+              "help": { "type": "string" }
+            },
+            "required": ["id", "description"]
+          }
+        },
+        "wcagLevel": {
+          "type": "string",
+          "enum": ["A", "AA", "AAA"],
+          "description": "Highest WCAG level where zero violations were found"
+        },
+        "impactSeverityCounts": {
+          "type": "object",
+          "description": "Violation counts grouped by impact severity",
+          "properties": {
+            "critical": { "type": "integer" },
+            "serious": { "type": "integer" },
+            "moderate": { "type": "integer" },
+            "minor": { "type": "integer" }
+          },
+          "required": ["critical", "serious", "moderate", "minor"]
+        },
+        "totalViolations": { "type": "integer", "description": "Total count across all violations" },
+        "totalPasses": { "type": "integer", "description": "Total count of passing rules" },
+        "totalIncomplete": { "type": "integer", "description": "Total count of rules needing manual review" }
+      },
+      "required": ["violations", "passes", "incomplete", "impactSeverityCounts", "totalViolations", "totalPasses"]
+    }
+  },
+  "required": ["_meta", "data"]
+}

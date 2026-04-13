@@ -1,0 +1,129 @@
+{
+  "cache_key": "analytics:event_naming:ga4_screen_prefix_convention",
+  "skill": "analytics",
+  "level": "L1",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T00:00:00Z",
+  "hit_count": 1,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "docs/product/analytics-taxonomy.csv",
+    "CLAUDE.md"
+  ],
+  "task_signature": {
+    "type": "analytics_event_specification",
+    "inputs": ["screen name", "user action", "parameters needed"],
+    "context": "GA4 naming convention for FitMe. Rule established 2026-04-08. Used by /analytics spec to generate compliant event names and by /analytics validate to audit existing events."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Screen-prefix naming rule — all screen-scoped events",
+      "decision": "Every event tied to a specific screen MUST start with that screen's prefix. Pattern: {screen}_{action_noun}. The screen should be identifiable from the event name alone without reading source code.",
+      "prefix_map": {
+        "Home screen": "home_",
+        "Nutrition screen": "nutrition_",
+        "Training screen": "training_",
+        "Stats screen": "stats_",
+        "Settings screen": "settings_",
+        "Onboarding screens": "onboarding_",
+        "Auth / Sign In screens": "auth_"
+      },
+      "examples": {
+        "home_": ["home_action_tap", "home_action_completed", "home_empty_state_shown", "home_metric_tile_tap"],
+        "training_": ["training_session_viewed", "training_exercise_started", "training_exercise_completed", "training_set_logged", "training_set_copied", "training_weight_changed", "training_rest_timer_started", "training_workout_start", "training_workout_complete"],
+        "onboarding_": ["onboarding_step_viewed", "onboarding_step_completed", "onboarding_skipped", "onboarding_goal_selected"],
+        "settings_": ["settings_changed"],
+        "stats_": ["stats_view"]
+      },
+      "confidence": "high",
+      "source_executions": [
+        "CLAUDE.md Analytics Naming Convention (established 2026-04-08, OQ-9 in home-today-screen v2-audit-report.md)",
+        "analytics-taxonomy.csv rows 29-40 (training_*, onboarding_*)"
+      ]
+    },
+    {
+      "pattern": "GA4 recommended events — keep dictated names, no prefix",
+      "decision": "GA4 recommended events MUST keep their exact GA4 names even though they are tied to specific screens. Adding screen prefix breaks GA4 automatic dashboards. These are exempt from the screen-prefix rule.",
+      "ga4_recommended_exempt": {
+        "login": "Auth/Sign In screen — GA4 dictated, unprefixed",
+        "sign_up": "Sign Up screen — GA4 dictated, unprefixed. Mark as conversion.",
+        "tutorial_begin": "Onboarding Step 1 — GA4 dictated",
+        "tutorial_complete": "Onboarding Final Step — GA4 dictated. Mark as conversion.",
+        "share": "Workout/Stats sharing — GA4 dictated",
+        "select_content": "Filter/Search interactions — GA4 dictated"
+      },
+      "confidence": "high",
+      "source_executions": ["analytics-taxonomy.csv rows 9-10, 11-12, 21-22", "CLAUDE.md Analytics rule exemptions"]
+    },
+    {
+      "pattern": "Cross-screen lifecycle events — no prefix",
+      "decision": "Events that span screens or are global session-level signals stay unprefixed. These are app_open, session_start, sign_in, sign_up. Do NOT add home_ or training_ prefix to these.",
+      "cross_screen_events": ["app_open", "session_start", "sign_in", "sign_up", "streak_maintained", "goal_reached", "cross_feature_engagement", "consent_granted", "consent_denied"],
+      "confidence": "high",
+      "source_executions": ["CLAUDE.md Analytics rule — What this rule does NOT cover"]
+    },
+    {
+      "pattern": "Required parameters per event type",
+      "decision": "Standard parameter patterns by event category derived from analytics-taxonomy.csv.",
+      "parameter_patterns": {
+        "training_set_logged": ["exercise_name (string)", "set_index (int)", "reps (int)", "weight (float kg)"],
+        "training_exercise_started": ["exercise_name (string)", "muscle_group (string)"],
+        "training_exercise_completed": ["exercise_name (string)", "sets (int)"],
+        "training_set_copied": ["exercise_name (string)", "set_index (int)"],
+        "training_weight_changed": ["exercise_name (string)", "weight (float kg)"],
+        "training_rest_timer_started": ["rest_duration_seconds (int)"],
+        "home_action_tap": ["action_type (string)", "screen_section (string)"],
+        "home_action_completed": ["action_type (string)", "completion_time_seconds (int)"],
+        "home_empty_state_shown": ["reason (string)"],
+        "onboarding_step_viewed": ["step_index (0-5)", "step_name (welcome/goals/profile/healthkit/consent/first_action)"],
+        "onboarding_step_completed": ["step_index (0-5)", "step_name (string)"],
+        "onboarding_goal_selected": ["goal_value (build_muscle/lose_fat/maintain/general_fitness)"]
+      },
+      "units_rule": "Weight always in kg (SI). Duration always in seconds (SI). No unit suffixes in parameter names.",
+      "confidence": "high",
+      "source_executions": ["analytics-taxonomy.csv rows 9-40"]
+    },
+    {
+      "pattern": "Conversion event marking",
+      "decision": "Mark these events as conversions in GA4: sign_up, tutorial_complete, workout_complete, meal_log, cross_feature_engagement. Conversions map to the PRD's primary metric or kill criteria.",
+      "confidence": "high",
+      "source_executions": ["analytics-taxonomy.csv Conversion column: yes on sign_up, tutorial_complete, workout_complete, meal_log, cross_feature_engagement"]
+    },
+    {
+      "pattern": "Consent gating — always-log exceptions",
+      "decision": "consent_granted and consent_denied are always logged regardless of consent state (they are the consent signal itself). All other events are consent-gated. Analytics tests must verify: (1) event fires on action, (2) event does NOT fire when consent denied (except consent_* events).",
+      "confidence": "high",
+      "source_executions": ["analytics-taxonomy.csv consent rows", "home-today-screen state.json testing.analytics_verification_passed = true"]
+    },
+    {
+      "pattern": "Training v2 analytics spec — 12 training_* events",
+      "decision": "Training v2 (PR #74) shipped 12 analytics events, all training_* prefixed: training_session_viewed, training_exercise_started, training_exercise_completed, training_set_logged, training_set_copied, training_weight_changed, training_rest_timer_started, + 5 more. Per-exercise granularity at weekly/30d/90d cohorts. Kill criteria: per-exercise event drop-off > 15% vs training_workout_start.",
+      "confidence": "high",
+      "source_executions": ["training-plan-v2/state.json prd.analytics_spec_complete = true, 12 events"]
+    },
+    {
+      "pattern": "analytics-taxonomy.csv schema",
+      "decision": "CSV columns: Category, Event Name, GA4 Type, Screen/Trigger, Parameter 1-5, Conversion, Scope, Notes. screen_scope column values: screen name (home/nutrition/training/stats/settings/onboarding/auth) or 'global'. Every new event added to taxonomy CSV in same commit as the enum declaration in Swift.",
+      "confidence": "high",
+      "source_executions": ["analytics-taxonomy.csv header + first 40 rows", "home-today-screen T7 (analytics enum + CSV rows in same task)"]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Event name without screen prefix for screen-scoped events",
+      "what_went_wrong": "Pre-2026-04-08 events like workout_start, exercise_log, stats_view exist in the taxonomy without screen prefix. These are grandfathered — they will be renamed via /analytics validate with GA4 event aliases to preserve historical dashboards. ANY new event added after 2026-04-08 that is screen-scoped MUST have the prefix or it blocks PRD approval.",
+      "source_execution": "analytics-taxonomy.csv rows 13-16 (workout_* pre-rule), CLAUDE.md Backwards compatibility note"
+    },
+    {
+      "pattern": "Adding screen prefix to GA4 recommended events",
+      "what_went_wrong": "Writing 'auth_login' or 'onboarding_tutorial_begin' breaks GA4 automatic dashboards that depend on the exact recommended event names. Use 'login' and 'tutorial_begin' as-is.",
+      "source_execution": "CLAUDE.md Analytics exemptions list"
+    },
+    {
+      "pattern": "Weight in pounds or duration in minutes",
+      "what_went_wrong": "Weight parameters must be float kg (SI). Duration parameters must be int seconds (SI). No unit suffixes. Mixed units break cross-cohort analysis.",
+      "source_execution": "analytics-taxonomy.csv notes: 'Weight always in kg (SI). No unit suffix.'"
+    }
+  ],
+  "speedup_instructions": "When /analytics spec is invoked: (1) check event name against prefix_map — if screen-scoped, enforce prefix; (2) check if event is GA4 recommended — if so, keep dictated name; (3) use parameter_patterns for standard parameter sets; (4) add row to analytics-taxonomy.csv in same commit. When /analytics validate is invoked: compare all existing events against this prefix map, flag any screen-scoped event missing its prefix, generate migration plan with GA4 event aliases for legacy events."
+}

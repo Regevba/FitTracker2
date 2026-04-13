@@ -1,0 +1,187 @@
+{
+  "cache_key": "design:token_mapping:ux_foundations_principles",
+  "skill": "design",
+  "level": "L1",
+  "created": "2026-04-10T00:00:00Z",
+  "last_hit": "2026-04-10T00:00:00Z",
+  "hit_count": 1,
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "FitTracker/Services/AppTheme.swift",
+    "docs/design-system/ux-foundations.md",
+    "FitTracker/DesignSystem/AppComponents.swift"
+  ],
+  "task_signature": {
+    "type": "token_to_principle_mapping",
+    "inputs": ["AppTheme.swift token catalog", "ux-foundations.md 13 principles"],
+    "context": "Which semantic tokens implement which UX foundations principles. Used in Phase 3 compliance gateway checks."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Fitts's Law (1.1) — primary CTA sizing",
+      "decision": "Use AppSize.ctaHeight (52pt) + AppCornerRadius.large (20pt) + frame(maxWidth: .infinity). Full-row buttons in TrainingPlanView use AppSize.rowMinHeight (44pt). Tab bar targets: 44pt minimum per iOS HIG.",
+      "token_mapping": {
+        "principle": "1.1 Fitts's Law",
+        "tokens": ["AppSize.ctaHeight", "AppSize.rowMinHeight", "AppCornerRadius.large", "AppSpacing.screenHorizontal"],
+        "anti_token": "frame(width: 60, height: 28) — hardcoded small dimensions"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 audit F1", "training-plan-v2 audit set-logging rows"]
+    },
+    {
+      "pattern": "Hick's Law (1.2) — option count limiting",
+      "decision": "Home screen surfaces ONE primary action via AppPrimaryButton. Onboarding: exactly 4 goal options. Never >6 items in a flat list without grouping.",
+      "token_mapping": {
+        "principle": "1.2 Hick's Law",
+        "tokens": ["AppColor.Brand.primary (single accent to draw eye)", "AppColor.Surface.elevated (card separation)", "AppSpacing.cardPadding"],
+        "anti_token": "Multiple .foregroundStyle(Color.blue) items competing for attention"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 decisions: HOME ONE primary CTA", "onboarding 4 goals rule"]
+    },
+    {
+      "pattern": "Visual hierarchy — color tokens by semantic role",
+      "decision": "AppColor.Text.primary for body copy, AppColor.Text.secondary for captions/labels, AppColor.Text.tertiary for metadata (WCAG AA: ~4.6:1 light, ~5.1:1 dark). Never raw Color.gray or hex.",
+      "token_mapping": {
+        "principle": "1.3 Visual Hierarchy / Signal-to-Noise",
+        "tokens": [
+          "AppColor.Text.primary",
+          "AppColor.Text.secondary",
+          "AppColor.Text.tertiary",
+          "AppColor.Text.inversePrimary",
+          "AppColor.Text.inverseSecondary"
+        ],
+        "anti_token": "Color(red: 0.5, green: 0.5, blue: 0.5) or Color.gray"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 F7 (text hierarchy violations found in v1)"]
+    },
+    {
+      "pattern": "Surface layering — depth via surface tokens",
+      "decision": "AppColor.Background.appPrimary (base canvas) → AppColor.Surface.primary (cards) → AppColor.Surface.elevated (modal/sheet tops) → AppColor.Surface.materialStrong (blur overlays). Never mix raw Color.white or Color.black.",
+      "token_mapping": {
+        "principle": "1.3 Visual Hierarchy",
+        "tokens": [
+          "AppColor.Background.appPrimary",
+          "AppColor.Background.appSecondary",
+          "AppColor.Surface.primary",
+          "AppColor.Surface.secondary",
+          "AppColor.Surface.tertiary",
+          "AppColor.Surface.elevated",
+          "AppColor.Surface.materialLight",
+          "AppColor.Surface.materialStrong"
+        ],
+        "anti_token": ".background(Color.white) or .background(Color.black.opacity(0.1))"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 F3 (gradient background decision: appBlue1→appBlue2)"]
+    },
+    {
+      "pattern": "Status feedback — semantic status tokens",
+      "decision": "AppColor.Status.success / .warning / .error for all system feedback states. Never raw Color.green, Color.red, Color.yellow. Used in empty states, error banners, metric readiness indicators.",
+      "token_mapping": {
+        "principle": "1.5 Feedback & System Status",
+        "tokens": [
+          "AppColor.Status.success",
+          "AppColor.Status.warning",
+          "AppColor.Status.error"
+        ],
+        "anti_token": ".foregroundStyle(Color.red) for errors or .foregroundStyle(Color.green) for success"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 F15 (empty state needed status signaling)"]
+    },
+    {
+      "pattern": "Data visualization — chart tokens for metric tints",
+      "decision": "AppColor.Chart.* for all metric visualizations. Specific: .weight, .hrv, .heartRate, .activity (added in Home v2 T3). Also: .body, .cardio, .sleep, .achievement, .progress, .nutritionFat. Prevents competing tints.",
+      "token_mapping": {
+        "principle": "1.4 Data Visualization Clarity (Part 4)",
+        "tokens": [
+          "AppColor.Chart.weight",
+          "AppColor.Chart.hrv",
+          "AppColor.Chart.heartRate",
+          "AppColor.Chart.body",
+          "AppColor.Chart.cardio",
+          "AppColor.Chart.sleep",
+          "AppColor.Chart.achievement",
+          "AppColor.Chart.progress",
+          "AppColor.Chart.nutritionFat"
+        ],
+        "anti_token": "Color(hex: \"#FF6B35\") or arbitrary tint per metric"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 F8 (chart token gap → T3 added chart tokens)"]
+    },
+    {
+      "pattern": "Brand accent — primary vs accent distinction",
+      "decision": "AppColor.Brand.primary for main brand identity. AppColor.Accent.primary (= Brand.primary) for interactive CTAs. AppColor.Accent.recovery, .sleep, .achievement for domain-specific accents. AppColor.Brand.warmSoft / .coolSoft for soft tints on cards.",
+      "token_mapping": {
+        "principle": "1.1 + 1.3 combined — affordance + hierarchy",
+        "tokens": [
+          "AppColor.Brand.primary",
+          "AppColor.Brand.secondary",
+          "AppColor.Brand.warmSoft",
+          "AppColor.Brand.warm",
+          "AppColor.Brand.coolSoft",
+          "AppColor.Brand.cool",
+          "AppColor.Accent.primary",
+          "AppColor.Accent.secondary",
+          "AppColor.Accent.recovery",
+          "AppColor.Accent.sleep",
+          "AppColor.Accent.achievement"
+        ],
+        "anti_token": "Color(\"appBlue1\") directly in views — always go through AppColor.Brand.*"
+      },
+      "confidence": "high",
+      "source_executions": ["home-today-screen v2 F5 (AppText tokens), F8 (Chart tokens)", "training-plan-v2"]
+    },
+    {
+      "pattern": "Border delineation — semantic border tokens",
+      "decision": "AppColor.Border.strong for prominent dividers, .subtle for card edges, .hairline for 0.5pt pixel-level separators. Never .overlay(Rectangle().frame(height: 1).foregroundStyle(.gray)).",
+      "token_mapping": {
+        "principle": "1.3 Visual Hierarchy — separation",
+        "tokens": [
+          "AppColor.Border.strong",
+          "AppColor.Border.subtle",
+          "AppColor.Border.hairline"
+        ],
+        "anti_token": "Divider() with default color or Rectangle().fill(Color.gray.opacity(0.3))"
+      },
+      "confidence": "medium",
+      "source_executions": ["v2-refactor-checklist.md Section C"]
+    },
+    {
+      "pattern": "Auth surfaces — always-dark backgrounds",
+      "decision": "AppColor.Background.authTop / .authMiddle / .authBottom are always dark (same value in light and dark mode). Auth screens never use system adaptive backgrounds. This is intentional brand decision.",
+      "token_mapping": {
+        "principle": "1.7 Dark Mode & Adaptive Color",
+        "tokens": [
+          "AppColor.Background.authTop",
+          "AppColor.Background.authMiddle",
+          "AppColor.Background.authBottom"
+        ],
+        "anti_token": "Color.black or Color(\"darkBlue\") in auth views"
+      },
+      "confidence": "high",
+      "source_executions": ["AppTheme.swift authTop/authMiddle/authBottom comments"]
+    }
+  ],
+  "anti_patterns": [
+    {
+      "pattern": "Raw color literal in view file",
+      "what_went_wrong": "Home v1 used Color(red:green:blue:) for metric tints. Broke dark mode, failed tokens-check CI gate, required full audit in v2 pass. 8 P0 findings traced to raw literals.",
+      "source_execution": "home-today-screen v2-audit-report.md F1-F8"
+    },
+    {
+      "pattern": ".font(.system(size: 14)) instead of AppText.*",
+      "what_went_wrong": "Bypasses the type scale. Dynamic Type scaling breaks. Audit finding F5 in home-today-screen v2. tokens-check CI gate catches this.",
+      "source_execution": "home-today-screen v2 F5, v2-refactor-checklist B4"
+    },
+    {
+      "pattern": ".padding(20) hardcoded spacing",
+      "what_went_wrong": "Inconsistent with AppSpacing tokens. Fails make tokens-check. Should be AppSpacing.cardPadding or AppSpacing.screenHorizontal.",
+      "source_execution": "v2-refactor-checklist B4"
+    }
+  ],
+  "speedup_instructions": "When running Phase 3 compliance gateway, use this file to verify every color, typography, and spacing token against the principle it implements. The token_mapping fields in each learned_pattern tell you exactly which tokens satisfy each principle. Anti-patterns tell you what CI will catch — fix those before running make tokens-check."
+}

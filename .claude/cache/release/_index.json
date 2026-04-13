@@ -1,0 +1,9 @@
+{
+  "skill": "release",
+  "level": "L1",
+  "updated": "2026-04-10T00:00:00Z",
+  "data_sources": ["app-store-connect-mcp", "fastlane-mcp"],
+  "consumes_from_shared": ["health-status.json", "feature-registry.json"],
+  "writes_to_shared": ["feature-registry.json"],
+  "entries": []
+}
