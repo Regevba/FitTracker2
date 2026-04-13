@@ -77,6 +77,8 @@
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
 		EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET02 /* AIOutputQualityEvals.swift */; };
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
+		EV100000000000000000ET04 /* ProfileEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET04 /* ProfileEvals.swift */; };
+		EV200000000000000000ET04 /* ProfileEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEvals.swift; sourceTree = "<group>"; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -219,7 +221,7 @@
 		EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessFormulaEvals.swift; sourceTree = "<group>"; };
 		EV200000000000000000ET02 /* AIOutputQualityEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOutputQualityEvals.swift; sourceTree = "<group>"; };
 		EV200000000000000000ET03 /* AITierBehaviorEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITierBehaviorEvals.swift; sourceTree = "<group>"; };
-		EV300000000000000000GR01 /* EvalTests */ = {isa = PBXGroup; children = (EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */, EV200000000000000000ET02 /* AIOutputQualityEvals.swift */, EV200000000000000000ET03 /* AITierBehaviorEvals.swift */); path = EvalTests; sourceTree = "<group>"; };
+		EV300000000000000000GR01 /* EvalTests */ = {isa = PBXGroup; children = (EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */, EV200000000000000000ET02 /* AIOutputQualityEvals.swift */, EV200000000000000000ET03 /* AITierBehaviorEvals.swift */, EV200000000000000000ET04 /* ProfileEvals.swift */); path = EvalTests; sourceTree = "<group>"; };
 		AI200000000000000000AT01 /* AIAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalyticsTests.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -930,6 +932,7 @@
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
+				EV100000000000000000ET04 /* ProfileEvals.swift in Sources */,
 				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
 				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
