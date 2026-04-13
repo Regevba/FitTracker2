@@ -129,24 +129,32 @@ export default function Dashboard({
       </div>
 
       <div className="mb-8">
-        {selectedPrimaryView === 'control' && (
-          <ControlRoom
-            features={features}
-            alerts={alerts}
-            sources={sources}
-            frameworkManifest={frameworkManifest}
-            frameworkPulse={frameworkPulse}
-            externalSyncStatus={externalSyncStatus}
-            cleanupCaseStudy={cleanupCaseStudy}
-          />
+        {/* Secondary workspaces replace the primary view when active */}
+        {activeView === 'claude-research' ? (
+          <ResearchConsole workspace={researchWorkspaces.claudeResearch} />
+        ) : activeView === 'codex-research' ? (
+          <ResearchConsole workspace={researchWorkspaces.codexResearch} />
+        ) : activeView === 'figma-handoff' ? (
+          <FigmaHandoffLab workspace={researchWorkspaces.figmaHandoff} />
+        ) : (
+          <>
+            {selectedPrimaryView === 'control' && (
+              <ControlRoom
+                features={features}
+                alerts={alerts}
+                sources={sources}
+                frameworkManifest={frameworkManifest}
+                frameworkPulse={frameworkPulse}
+                externalSyncStatus={externalSyncStatus}
+                cleanupCaseStudy={cleanupCaseStudy}
+              />
+            )}
+            {selectedPrimaryView === 'board' && <KanbanBoard features={features} />}
+            {selectedPrimaryView === 'table' && <TableView features={features} />}
+            {selectedPrimaryView === 'tasks' && <TaskBoard features={features} />}
+            {selectedPrimaryView === 'knowledge' && <KnowledgeHub knowledgeHub={knowledgeHub} caseStudyFeed={caseStudyFeed} />}
+          </>
         )}
-        {selectedPrimaryView === 'board' && <KanbanBoard features={features} />}
-        {selectedPrimaryView === 'table' && <TableView features={features} />}
-        {selectedPrimaryView === 'tasks' && <TaskBoard features={features} />}
-        {selectedPrimaryView === 'knowledge' && <KnowledgeHub knowledgeHub={knowledgeHub} caseStudyFeed={caseStudyFeed} />}
-        {activeView === 'claude-research' && <ResearchConsole workspace={researchWorkspaces.claudeResearch} />}
-        {activeView === 'codex-research' && <ResearchConsole workspace={researchWorkspaces.codexResearch} />}
-        {activeView === 'figma-handoff' && <FigmaHandoffLab workspace={researchWorkspaces.figmaHandoff} />}
       </div>
 
       <div className="rounded-[28px] border border-slate-200 bg-white/90 p-4 shadow-[0_18px_50px_rgba(15,23,42,0.05)] dark:border-white/8 dark:bg-white/[0.03] dark:shadow-none">
