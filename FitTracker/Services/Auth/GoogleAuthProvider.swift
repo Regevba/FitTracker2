@@ -1,27 +1,55 @@
 // FitTracker/Services/Auth/GoogleAuthProvider.swift
-// DORMANT: MockGoogleAuthProvider is still wired in SignInService.
+// FitTracker/Services/Auth/GoogleAuthProvider.swift
+// Real Google Sign-In provider using the GoogleSignIn SDK + Supabase idToken exchange.
 //
-// To activate Google Sign In:
-//   1. Add GoogleSignIn-iOS package: https://github.com/google/GoogleSignIn-iOS
-//   2. Add the reversed client ID URL scheme to Info.plist (CFBundleURLSchemes)
-//   3. Add this file to the Xcode target (currently excluded — won't compile without the package)
-//   4. In SignInService.init(): swap MockGoogleAuthProvider() → GoogleAuthProvider()
+// Runtime activation still depends on:
+//   1. A valid Google client ID in Info.plist
+//   2. A valid reversed client ID URL scheme in Info.plist
+//   3. Google provider enabled in Supabase Auth
 //
-// This file is intentionally NOT added to the Xcode target until the package is present.
-// Keeping it in the repo means activation requires no new code — just the steps above.
+// SignInService uses GoogleRuntimeConfiguration to keep the live UI honest
+// until those runtime pieces are actually present.
 
 import Auth   // supabase-swift
+import GoogleSignIn
 import UIKit
 
-/// Real Google Sign-In provider using GIDSignIn SDK + Supabase idToken exchange.
-/// Requires the GoogleSignIn-iOS Swift package (https://github.com/google/GoogleSignIn-iOS).
+enum GoogleRuntimeConfiguration {
+    static func clientID(in bundle: Bundle = .main) -> String? {
+        let value = (bundle.object(forInfoDictionaryKey: "GoogleClientID") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty, !value.contains("YOUR_GOOGLE_CLIENT_ID") else { return nil }
+        return value
+    }
+
+    static func reversedClientID(in bundle: Bundle = .main) -> String? {
+        let value = (bundle.object(forInfoDictionaryKey: "GoogleReversedClientID") as? String ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty, !value.contains("YOUR_REVERSED_CLIENT_ID") else { return nil }
+        return value
+    }
+
+    static var isConfigured: Bool {
+        clientID() != nil && reversedClientID() != nil
+    }
+}
+
 struct GoogleAuthProvider: GoogleAuthProviding {
 
     func signIn() async throws -> UserSession {
+        guard let clientID = GoogleRuntimeConfiguration.clientID() else {
+            throw NSError(
+                domain: "FitTracker.Auth",
+                code: 503,
+                userInfo: [NSLocalizedDescriptionKey: "Google Sign-In is not configured. Add GoogleClientID to Info.plist."]
+            )
+        }
+
+        GIDSignIn.sharedInstance.configuration = GIDConfiguration(clientID: clientID)
+
         guard let rootVC = await rootViewController() else {
             throw FTAuthError.noRootViewController
         }
-        // GIDSignIn is available after GoogleSignIn-iOS package is added.
         let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: rootVC)
         guard let idToken = result.user.idToken?.tokenString else {
             throw FTAuthError.missingCredential

@@ -119,6 +119,18 @@ struct MockGoogleAuthProvider: GoogleAuthProviding {
     }
 }
 
+struct UnavailableGoogleAuthProvider: GoogleAuthProviding {
+    static let message = "Google Sign-In is not enabled in this build yet. Use Apple, Email, or Passkey."
+
+    func signIn() async throws -> UserSession {
+        throw NSError(
+            domain: "FitTracker.Auth",
+            code: 503,
+            userInfo: [NSLocalizedDescriptionKey: Self.message]
+        )
+    }
+}
+
 #if DEBUG
 struct LocalEmailAuthProvider: EmailAuthProviding {
     func register(_ draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge {
@@ -245,6 +257,8 @@ final class SignInService: NSObject, ObservableObject {
     private let appleProvider: AppleAuthProviding
     private let googleProvider: GoogleAuthProviding
     private let emailProvider: EmailAuthProviding
+    private let googleAuthAvailable: Bool
+    private let emailAuthAvailable: Bool
 
     private var currentChallenge: Data = Data()
     private var pendingUserHandle: String = ""
@@ -258,12 +272,26 @@ final class SignInService: NSObject, ObservableObject {
 
     override init() {
         self.appleProvider = SupabaseAppleAuthProvider()
-        self.googleProvider = MockGoogleAuthProvider()
-        #if DEBUG
-        self.emailProvider = LocalEmailAuthProvider()
-        #else
-        self.emailProvider = UnavailableEmailAuthProvider()
-        #endif
+        if SupabaseRuntimeConfiguration.isConfigured && GoogleRuntimeConfiguration.isConfigured {
+            self.googleProvider = GoogleAuthProvider()
+            self.googleAuthAvailable = true
+        } else {
+            self.googleProvider = UnavailableGoogleAuthProvider()
+            self.googleAuthAvailable = false
+        }
+
+        if SupabaseRuntimeConfiguration.isConfigured {
+            self.emailProvider = EmailAuthProvider()
+            self.emailAuthAvailable = true
+        } else {
+            #if DEBUG
+            self.emailProvider = LocalEmailAuthProvider()
+            self.emailAuthAvailable = true
+            #else
+            self.emailProvider = UnavailableEmailAuthProvider()
+            self.emailAuthAvailable = false
+            #endif
+        }
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
         applyReviewSessionIfNeeded()
@@ -272,11 +300,15 @@ final class SignInService: NSObject, ObservableObject {
     init(
         appleProvider: AppleAuthProviding,
         googleProvider: GoogleAuthProviding,
-        emailProvider: EmailAuthProviding
+        emailProvider: EmailAuthProviding,
+        googleAuthAvailable: Bool = true,
+        emailAuthAvailable: Bool = true
     ) {
         self.appleProvider = appleProvider
         self.googleProvider = googleProvider
         self.emailProvider = emailProvider
+        self.googleAuthAvailable = googleAuthAvailable
+        self.emailAuthAvailable = emailAuthAvailable
         self.hasRegisteredPasskey = UserDefaults.standard.bool(forKey: Self.passkeyRegisteredKey)
         super.init()
         applyReviewSessionIfNeeded()
@@ -302,6 +334,8 @@ final class SignInService: NSObject, ObservableObject {
     var isPasskeyConfigured: Bool { passkeyRelyingPartyIdentifier != nil }
     var canShowPasskeyLogin: Bool { hasRegisteredPasskey && isPasskeyConfigured }
     var isSupabaseConfigured: Bool { SupabaseRuntimeConfiguration.isConfigured }
+    var isGoogleAuthAvailable: Bool { googleAuthAvailable }
+    var isEmailAuthAvailable: Bool { emailAuthAvailable }
 
     /// Restores a previous session. Checks Supabase for a live/refreshable JWT;
     /// updates the stored token if valid. Call from within a Task block at app launch.
@@ -527,6 +561,13 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func signInWithGoogle() {
+        guard isGoogleAuthAvailable else {
+            authErrorMessage = UnavailableGoogleAuthProvider.message
+            statusMessage = nil
+            isLoading = false
+            return
+        }
+
         isLoading = true
         authErrorMessage = nil
         statusMessage = nil

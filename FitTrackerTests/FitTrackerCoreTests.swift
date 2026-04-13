@@ -223,6 +223,22 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertEqual(service.statusMessage, "If that email is registered, a password reset link is on the way.")
     }
 
+    func testDefaultServiceHidesGoogleSignInUntilItIsWired() {
+        setenv("FITTRACKER_SKIP_AUTO_LOGIN", "1", 1)
+
+        let service = SignInService()
+
+        XCTAssertFalse(service.isGoogleAuthAvailable)
+    }
+
+    func testDefaultServiceKeepsEmailAuthAvailableForDebugBuilds() {
+        setenv("FITTRACKER_SKIP_AUTO_LOGIN", "1", 1)
+
+        let service = SignInService()
+
+        XCTAssertTrue(service.isEmailAuthAvailable)
+    }
+
     func testUserSessionBackendAccessTokenOnlyExistsForJWTShape() {
         let localSession = UserSession(
             provider: .email,

@@ -183,30 +183,34 @@ private struct AuthMethodSelectionView: View {
                 AuthScreenHeader(title: mode.title, subtitle: mode.subtitle)
 
                 VStack(spacing: AppSpacing.xSmall) {
-                    Button {
-                        switch mode {
-                        case .register: signIn.showEmailRegistration()
-                        case .login: signIn.showEmailLogin()
+                    if signIn.isEmailAuthAvailable {
+                        Button {
+                            switch mode {
+                            case .register: signIn.showEmailRegistration()
+                            case .login: signIn.showEmailLogin()
+                            }
+                        } label: {
+                            AuthProviderRow(
+                                icon: "envelope.fill",
+                                title: mode == .register ? "Continue with Email" : "Log in with Email",
+                                subtitle: mode == .register ? "Register with your email address" : "Use your email and password",
+                                tint: .appBlue2
+                            )
                         }
-                    } label: {
-                        AuthProviderRow(
-                            icon: "envelope.fill",
-                            title: mode == .register ? "Continue with Email" : "Log in with Email",
-                            subtitle: mode == .register ? "Register with your email address" : "Use your email and password",
-                            tint: .appBlue2
-                        )
+                        .buttonStyle(AuthCardButtonStyle())
                     }
-                    .buttonStyle(AuthCardButtonStyle())
 
-                    Button {
-                        signIn.signInWithGoogle()
-                    } label: {
-                        GoogleProviderRow(
-                            title: mode == .register ? "Continue with Google" : "Log in with Google",
-                            subtitle: "Use your Google account"
-                        )
+                    if signIn.isGoogleAuthAvailable {
+                        Button {
+                            signIn.signInWithGoogle()
+                        } label: {
+                            GoogleProviderRow(
+                                title: mode == .register ? "Continue with Google" : "Log in with Google",
+                                subtitle: "Use your Google account"
+                            )
+                        }
+                        .buttonStyle(AuthCardButtonStyle(baseFill: .white, useDarkStroke: true))
                     }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: .white, useDarkStroke: true))
 
                     Button {
                         signIn.signInWithApple()
@@ -231,6 +235,19 @@ private struct AuthMethodSelectionView: View {
                         }
                         .buttonStyle(AuthCardButtonStyle())
                     }
+                }
+
+                if !signIn.isEmailAuthAvailable || !signIn.isGoogleAuthAvailable {
+                    VStack(alignment: .leading, spacing: AppSpacing.micro) {
+                        if !signIn.isEmailAuthAvailable {
+                            Text("Email sign-in appears after Supabase auth is configured for this build.")
+                        }
+                        if !signIn.isGoogleAuthAvailable {
+                            Text("Google sign-in stays hidden until the Google SDK and URL scheme are fully activated.")
+                        }
+                    }
+                    .font(AppText.subheading)
+                    .foregroundStyle(AppColor.Text.tertiary)
                 }
             }
         }
@@ -377,6 +394,21 @@ private struct EmailLoginView: View {
                 }
             }
             .buttonStyle(AuthPrimaryButtonStyle())
+            .disabled(signIn.isLoading)
+
+            Button(signIn.isLoading ? "Sending reset link..." : "Forgot password?") {
+                let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !trimmedEmail.isEmpty else {
+                    localError = "Enter your email address to reset your password."
+                    return
+                }
+
+                localError = nil
+                Task {
+                    await signIn.requestPasswordReset(email: trimmedEmail)
+                }
+            }
+            .buttonStyle(AuthSecondaryButtonStyle())
             .disabled(signIn.isLoading)
 
             Spacer()
