@@ -1,0 +1,11 @@
+# Large build artifacts (2.5GB Xcode derived data)
+.build/
+
+# iOS source (not needed for dashboard, ~10MB+ Swift files)
+FitTracker/
+FitTrackerTests/
+FitTracker.xcodeproj/
+*.xcworkspace
+
+# Design tokens build output
+design-tokens/node_modules/
