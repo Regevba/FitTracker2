@@ -429,6 +429,72 @@
           }
         }
       ]
+    },
+    {
+      "case_id": "eval-layer-v4.4-2026-04",
+      "title": "Eval Layer + Framework v4.4 — Eval-Driven Development",
+      "status": "in_progress",
+      "work_type": "feature",
+      "started_at": "2026-04-13T18:00:00Z",
+      "updated_at": "2026-04-13T18:00:00Z",
+      "framework_version": "4.3",
+      "skills_used": ["pm-workflow", "dev", "qa", "analytics"],
+      "data_sources": ["repo", "dashboard"],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 0,
+        "repo_files_updated": 0,
+        "tests_passing": 0,
+        "build_verified": false
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 0,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "ai_quality_metrics": {
+        "tier_distribution": { "local_fallback_pct": 0, "cloud_cohort_pct": 0, "foundation_model_pct": 0 },
+        "cache_hit_rate_pct": 0,
+        "signal_coverage_pct": 0,
+        "recommendation_adherence_rate": 0,
+        "readiness_score_distribution": { "push_hard_pct": 0, "full_intensity_pct": 0, "moderate_pct": 0, "light_only_pct": 0, "rest_day_pct": 0 },
+        "confidence_distribution": { "high_pct": 0, "medium_pct": 0, "low_pct": 0 },
+        "eval_pass_rate": 0,
+        "eval_total": 0,
+        "eval_failed": []
+      },
+      "success_cases": [],
+      "failure_cases": [],
+      "next_checkpoints": [
+        "Write 3 eval test files (20 eval cases total)",
+        "Build + test — all evals pass",
+        "Update framework docs to v4.4 (evolution, README, manifest, lifecycle)",
+        "Capture post-implementation snapshot with eval pass rate"
+      ],
+      "artifacts": [
+        "docs/superpowers/specs/2026-04-13-eval-layer-design.md",
+        "FitTrackerTests/EvalTests/ReadinessFormulaEvals.swift",
+        "FitTrackerTests/EvalTests/AIOutputQualityEvals.swift",
+        "FitTrackerTests/EvalTests/AITierBehaviorEvals.swift"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-13T18:00:00Z",
+          "label": "spec written + case study opened",
+          "summary": "Design spec committed. Case study entry opened with ai_quality_metrics block (first feature to use this schema). 20 eval cases defined across 3 test files. Framework advancement to v4.4 planned.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": false
+          }
+        }
+      ]
     }
   ]
 }
