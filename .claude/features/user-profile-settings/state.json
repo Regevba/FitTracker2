@@ -1,0 +1,94 @@
+{
+  "feature": "user-profile-settings",
+  "created": "2026-04-13T19:00:00Z",
+  "updated": "2026-04-13T19:15:00Z",
+  "branch": null,
+  "current_phase": "prd",
+  "work_type": "feature",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "parent_feature": null,
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-13T19:15:00Z",
+      "sources": [
+        "competitive-analysis",
+        "existing-code-audit",
+        "navigation-patterns"
+      ]
+    },
+    "prd": {
+      "status": "pending",
+      "approved_at": null,
+      "analytics_spec_complete": false
+    },
+    "tasks": {
+      "status": "pending",
+      "count": 0
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "type": "ux",
+      "checklist_completed": false
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": [],
+      "checklist_completed": false
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    }
+  },
+  "tasks": [],
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-13T19:00:00Z",
+      "approved_by": "user",
+      "note": "New feature: unified user profile as control center. Current Settings v2 screen folds into the profile. Full 10-phase lifecycle."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-13T19:15:00Z",
+      "approved_by": "user",
+      "note": "5th tab chosen. Profile as unified control center. Settings v2 embedded. Onboarding data persisted."
+    }
+  ]
+}
