@@ -118,13 +118,14 @@ struct ProfileView: View {
                             .foregroundStyle(AppColor.Text.tertiary)
                     }
 
-                    // Component mini-bars
+                    // Component mini-bars (decorative detail — parent button label covers readiness summary)
                     VStack(spacing: AppSpacing.xxxSmall) {
                         componentBar(label: "HRV", score: result.hrvScore, color: AppColor.Chart.hrv)
                         componentBar(label: "Sleep", score: result.sleepScore, color: AppColor.Accent.sleep)
                         componentBar(label: "Load", score: result.trainingLoadScore, color: AppColor.Brand.primary)
                         componentBar(label: "RHR", score: result.rhrScore, color: AppColor.Chart.heartRate)
                     }
+                    .accessibilityHidden(true)
                 } else {
                     Text("Log biometrics to see your readiness score")
                         .font(AppText.caption)
@@ -136,7 +137,8 @@ struct ProfileView: View {
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(result.map { "Today's readiness: \($0.overallScore) out of 100. \($0.recommendation.rawValue)" } ?? "Readiness not available")
+        .accessibilityLabel(result.map { "Today's readiness: \($0.overallScore) out of 100. \($0.recommendation.rawValue). HRV \(Int($0.hrvScore)), Sleep \(Int($0.sleepScore)), Load \(Int($0.trainingLoadScore)), RHR \(Int($0.rhrScore))." } ?? "Readiness not available. Log biometrics to see your score.")
+        .accessibilityHint("Double tap to view full readiness details")
     }
 
     // MARK: - Settings Button
@@ -161,7 +163,8 @@ struct ProfileView: View {
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Settings, double tap to open")
+        .accessibilityLabel("Settings")
+        .accessibilityHint("Double tap to open settings")
     }
 
     // MARK: - Sign Out
@@ -178,7 +181,8 @@ struct ProfileView: View {
                 .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Sign out, double tap to confirm")
+        .accessibilityLabel("Sign out")
+        .accessibilityHint("Double tap to confirm sign out")
     }
 
     // MARK: - Helpers

@@ -19,7 +19,7 @@ struct ProfileBodyCompCard: View {
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Text.primary)
 
-                // Current metrics row
+                // Current metrics row (detail hidden — parent button label provides the summary)
                 HStack(spacing: AppSpacing.large) {
                     metricColumn(
                         value: currentWeight.map { String(format: "%.1f", $0) } ?? "–",
@@ -37,13 +37,15 @@ struct ProfileBodyCompCard: View {
                         label: "Lean Mass"
                     )
                 }
+                .accessibilityHidden(true)
 
                 // Target row
                 Text("Target: \(Int(targetWeightMin))–\(Int(targetWeightMax)) kg · \(Int(targetBFMin))–\(Int(targetBFMax))% BF")
                     .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.secondary)
+                    .accessibilityHidden(true)
 
-                // Progress bar
+                // Progress bar (hidden from VoiceOver — parent button label covers body fat progress)
                 if let currentBF, startBF > 0 {
                     let targetMidpoint = (targetBFMin + targetBFMax) / 2
                     let totalRange = startBF - targetMidpoint
@@ -66,10 +68,12 @@ struct ProfileBodyCompCard: View {
                             .font(AppText.caption)
                             .foregroundStyle(AppColor.Text.tertiary)
                     }
+                    .accessibilityHidden(true)
                 } else {
                     Text("Log your first weigh-in to track progress")
                         .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.tertiary)
+                        .accessibilityHidden(true)
                 }
             }
             .padding(AppSpacing.medium)
@@ -77,7 +81,15 @@ struct ProfileBodyCompCard: View {
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Body composition. \(currentWeight.map { String(format: "%.1f kilograms", $0) } ?? "No data"). Tap to view stats.")
+        .accessibilityLabel({
+            var parts: [String] = ["Body composition."]
+            if let w = currentWeight { parts.append(String(format: "Weight: %.1f kilograms.", w)) }
+            if let bf = currentBF { parts.append(String(format: "Body fat: %.1f percent.", bf)) }
+            if let lm = currentLeanMass { parts.append(String(format: "Lean mass: %.1f kilograms.", lm)) }
+            if parts.count == 1 { parts.append("No data logged yet.") }
+            return parts.joined(separator: " ")
+        }())
+        .accessibilityHint("Double tap to view full body composition stats")
     }
 
     private func metricColumn(value: String, unit: String, label: String) -> some View {

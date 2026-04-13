@@ -80,6 +80,8 @@ struct GoalEditorSheet: View {
                         )
                         .font(AppText.body)
                         .foregroundStyle(AppColor.Text.primary)
+                        .accessibilityLabel("Training frequency: \(trainingDaysPerWeek) days per week")
+                        .accessibilityHint("Swipe up or down to adjust between 2 and 7 days")
                     } header: {
                         Text("Training")
                             .font(AppText.caption)
@@ -91,15 +93,19 @@ struct GoalEditorSheet: View {
                         TextField("Name", text: $name)
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
+                            .accessibilityLabel("Display name")
 
                         Stepper("Age: \(age)", value: $age, in: 15...99)
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
+                            .accessibilityLabel("Age: \(age) years")
+                            .accessibilityHint("Swipe up or down to adjust")
 
                         TextField("Height (cm)", text: $heightCm)
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
                             .keyboardType(.decimalPad)
+                            .accessibilityLabel("Height in centimetres")
                     } header: {
                         Text("Personal")
                             .font(AppText.caption)
@@ -112,21 +118,25 @@ struct GoalEditorSheet: View {
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
                             .keyboardType(.decimalPad)
+                            .accessibilityLabel("Minimum target weight in kilograms")
 
                         TextField("Max weight (kg)", text: $targetWeightMax)
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
                             .keyboardType(.decimalPad)
+                            .accessibilityLabel("Maximum target weight in kilograms")
 
                         TextField("Min body fat (%)", text: $targetBFMin)
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
                             .keyboardType(.decimalPad)
+                            .accessibilityLabel("Minimum target body fat percentage")
 
                         TextField("Max body fat (%)", text: $targetBFMax)
                             .font(AppText.body)
                             .foregroundStyle(AppColor.Text.primary)
                             .keyboardType(.decimalPad)
+                            .accessibilityLabel("Maximum target body fat percentage")
                     } header: {
                         Text("Targets")
                             .font(AppText.caption)
@@ -155,6 +165,8 @@ struct GoalEditorSheet: View {
                     }
                     .font(AppText.button)
                     .foregroundStyle(AppColor.Accent.primary)
+                    .accessibilityLabel("Save")
+                    .accessibilityHint("Saves your profile changes and closes this sheet")
                 }
             }
             .onAppear {

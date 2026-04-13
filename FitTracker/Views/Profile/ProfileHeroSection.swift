@@ -50,7 +50,8 @@ struct ProfileHeroSection: View {
                                     .padding(.vertical, AppSpacing.xxxSmall)
                                     .background(AppColor.Accent.primary, in: Capsule())
                             }
-                            .accessibilityLabel("\(goal.rawValue), double tap to edit")
+                            .accessibilityLabel("Fitness goal: \(goal.rawValue)")
+                            .accessibilityHint("Double tap to edit goal")
                         }
 
                         Text(programPhase.rawValue)
@@ -59,6 +60,7 @@ struct ProfileHeroSection: View {
                             .padding(.horizontal, AppSpacing.small)
                             .padding(.vertical, AppSpacing.xxxSmall)
                             .background(AppColor.Surface.secondary, in: Capsule())
+                            .accessibilityLabel("Program phase: \(programPhase.rawValue)")
                     }
                 }
 
@@ -75,6 +77,8 @@ struct ProfileHeroSection: View {
             }
             .font(AppText.caption)
             .foregroundStyle(AppColor.Text.tertiary)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Day \(daysSinceStart). \(streakDays)-day streak. \(totalWorkouts) total workouts.")
         }
         .padding(AppSpacing.medium)
         .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
