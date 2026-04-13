@@ -209,6 +209,20 @@ enum AnalyticsEvent {
     static let aiFeedbackSubmitted             = "home_ai_feedback_submitted"
     /// AI avatar animation state changes
     static let aiAvatarStateChanged            = "home_ai_avatar_state_changed"
+
+    // ── Profile Events (screen-prefixed) ───────────────────
+    /// User views the Profile tab
+    static let profileTabViewed              = "profile_tab_viewed"
+    /// User changes a profile goal or preference
+    static let profileGoalChanged            = "profile_goal_changed"
+    /// User opens a settings section within Profile
+    static let profileSettingsSectionOpened   = "profile_settings_section_opened"
+    /// User taps readiness snapshot in Profile
+    static let profileReadinessTap           = "profile_readiness_tap"
+    /// User taps body composition card in Profile
+    static let profileBodyCompTap            = "profile_body_comp_tap"
+    /// User taps their avatar in Profile
+    static let profileAvatarTap              = "profile_avatar_tap"
 }
 
 // MARK: - Parameter Constants
@@ -325,6 +339,11 @@ enum AnalyticsParam {
     static let rating            = "rating"             // positive/negative
     static let fromState         = "from_state"         // breathe/rotate/pulse/shimmer
     static let toState           = "to_state"           // breathe/rotate/pulse/shimmer
+
+    // Profile parameters
+    static let field             = "field"
+    static let oldValue          = "old_value"
+    static let newValue          = "new_value"
 }
 
 // MARK: - Screen Constants

@@ -274,6 +274,11 @@
 		AI200000000000000000UI03 /* AIRecommendationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationCard.swift; sourceTree = "<group>"; };
 		AI200000000000000000UI04 /* AIFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackView.swift; sourceTree = "<group>"; };
 		AI300000000000000000GR01 /* AI */ = {isa = PBXGroup; children = (AI200000000000000000UI01 /* AIInsightCard.swift */, AI200000000000000000UI02 /* AIIntelligenceSheet.swift */, AI200000000000000000UI03 /* AIRecommendationCard.swift */, AI200000000000000000UI04 /* AIFeedbackView.swift */); path = AI; sourceTree = "<group>"; };
+		PF200000000000000000PV01 /* ProfileHeroSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeroSection.swift; sourceTree = "<group>"; };
+		PF200000000000000000PV02 /* ProfileBodyCompCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBodyCompCard.swift; sourceTree = "<group>"; };
+		PF300000000000000000GR01 /* Profile */ = {isa = PBXGroup; children = (PF200000000000000000PV01 /* ProfileHeroSection.swift */, PF200000000000000000PV02 /* ProfileBodyCompCard.swift */); path = Profile; sourceTree = "<group>"; };
+		PF100000000000000000PV01 /* ProfileHeroSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV01 /* ProfileHeroSection.swift */; };
+		PF100000000000000000PV02 /* ProfileBodyCompCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV02 /* ProfileBodyCompCard.swift */; };
 		FF000002000000000000AA01 /* FitMeLogoLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitMeLogoLoader.swift; sourceTree = "<group>"; };
 		FF000002000000000000AA02 /* LiveInfoStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveInfoStrip.swift; sourceTree = "<group>"; };
 		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
@@ -416,6 +421,7 @@
 				CC000001000000000000AA00 /* Shared */,
 				11B09D342F852BF900DCB9A0 /* Onboarding */,
 				AI300000000000000000GR01 /* AI */,
+				PF300000000000000000GR01 /* Profile */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -830,6 +836,8 @@
 				AI100000000000000000UI02 /* AIIntelligenceSheet.swift in Sources */,
 				AI100000000000000000UI03 /* AIRecommendationCard.swift in Sources */,
 				AI100000000000000000UI04 /* AIFeedbackView.swift in Sources */,
+				PF100000000000000000PV01 /* ProfileHeroSection.swift in Sources */,
+				PF100000000000000000PV02 /* ProfileBodyCompCard.swift in Sources */,
 				NV100000000000000000AA01 /* NutritionView.swift in Sources */,
 				NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */,
 				NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */,

@@ -409,6 +409,23 @@ enum SupplementTiming: String, Codable, CaseIterable, Sendable {
 }
 
 // ─────────────────────────────────────────────────────────
+// MARK: – Fitness Goal & Experience Level
+// ─────────────────────────────────────────────────────────
+
+enum FitnessGoal: String, Codable, CaseIterable, Sendable {
+    case buildMuscle = "Build Muscle"
+    case loseFat = "Lose Fat"
+    case maintain = "Maintain"
+    case generalFitness = "General Fitness"
+}
+
+enum ExperienceLevel: String, Codable, CaseIterable, Sendable {
+    case beginner = "Beginner"
+    case intermediate = "Intermediate"
+    case advanced = "Advanced"
+}
+
+// ─────────────────────────────────────────────────────────
 // MARK: – User Profile
 // ─────────────────────────────────────────────────────────
 
@@ -425,6 +442,12 @@ struct UserProfile: Codable, Sendable {
     var startWeightKg:      Double          = 70.0
     var startBodyFatPct:    Double          = 20.0
     var mealSlotNames:      [String]        = ["Breakfast", "Lunch", "Dinner", "Snacks"]
+
+    // Profile (editable post-onboarding, persisted via EncryptedDataStore)
+    var fitnessGoal: FitnessGoal?
+    var experienceLevel: ExperienceLevel?
+    var trainingDaysPerWeek: Int?
+    var displayName: String?
 
     func recoveryDay(for date: Date, calendar: Calendar = .current) -> Int {
         let start = calendar.startOfDay(for: recoveryStart)

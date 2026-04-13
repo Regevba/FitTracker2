@@ -621,6 +621,46 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Profile Events
+
+    /// Profile tab viewed
+    func logProfileTabViewed(source: String) {
+        logEvent(AnalyticsEvent.profileTabViewed, parameters: [
+            AnalyticsParam.source: source,
+        ])
+    }
+
+    /// Profile goal or preference changed
+    func logProfileGoalChanged(field: String, oldValue: String, newValue: String) {
+        logEvent(AnalyticsEvent.profileGoalChanged, parameters: [
+            AnalyticsParam.field: field,
+            AnalyticsParam.oldValue: oldValue,
+            AnalyticsParam.newValue: newValue,
+        ])
+    }
+
+    /// Settings section opened within Profile
+    func logProfileSettingsSectionOpened(section: String) {
+        logEvent(AnalyticsEvent.profileSettingsSectionOpened, parameters: [
+            AnalyticsParam.section: section,
+        ])
+    }
+
+    /// Readiness snapshot tapped in Profile
+    func logProfileReadinessTap() {
+        logEvent(AnalyticsEvent.profileReadinessTap, parameters: nil)
+    }
+
+    /// Body composition card tapped in Profile
+    func logProfileBodyCompTap() {
+        logEvent(AnalyticsEvent.profileBodyCompTap, parameters: nil)
+    }
+
+    /// Avatar tapped in Profile
+    func logProfileAvatarTap() {
+        logEvent(AnalyticsEvent.profileAvatarTap, parameters: nil)
+    }
+
     // MARK: - User Identity & Properties
 
     func setUserID(_ id: String?) {
