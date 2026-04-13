@@ -207,6 +207,7 @@ struct FitTrackerApp: App {
             }
             .environmentObject(healthService)
             .environmentObject(analytics)
+            .environmentObject(dataStore)
         } else if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
             SettingsView()
                 .analyticsScreen(AnalyticsScreen.settings)

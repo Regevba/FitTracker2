@@ -16,6 +16,7 @@ struct OnboardingProfileView: View {
     let onSkip: () -> Void
 
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var dataStore: EncryptedDataStore
 
     @State private var selectedExperience: String?
     @State private var selectedFrequency: Int?
@@ -73,7 +74,16 @@ struct OnboardingProfileView: View {
             Spacer()
 
             VStack(spacing: AppSpacing.xSmall) {
-                Button(action: onContinue) {
+                Button(action: {
+                    if let level = selectedExperience,
+                       let experience = ExperienceLevel(rawValue: level) {
+                        dataStore.userProfile.experienceLevel = experience
+                    }
+                    if let frequency = selectedFrequency {
+                        dataStore.userProfile.trainingDaysPerWeek = frequency
+                    }
+                    onContinue()
+                }) {
                     Text("Continue")
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Text.inversePrimary)
@@ -187,6 +197,7 @@ struct OnboardingProfileView_Previews: PreviewProvider {
         ZStack {
             AppGradient.screenBackground.ignoresSafeArea()
             OnboardingProfileView(onContinue: {}, onSkip: {})
+                .environmentObject(EncryptedDataStore())
         }
     }
 }

@@ -72,6 +72,8 @@
 		SE100000000000000000AB01 /* SettingsAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */; };
 		RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AT01 /* ReadinessEngineTests.swift */; };
 		AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AT01 /* AIAnalyticsTests.swift */; };
+		PF100000000000000000AT01 /* ProfileAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */; };
+		PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAnalyticsTests.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
 		EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET02 /* AIOutputQualityEvals.swift */; };
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
@@ -605,6 +607,7 @@
 				SE200000000000000000AB01 /* SettingsAnalyticsTests.swift */,
 				RE200000000000000000AT01 /* ReadinessEngineTests.swift */,
 				AI200000000000000000AT01 /* AIAnalyticsTests.swift */,
+				PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 			);
@@ -923,6 +926,7 @@
 				SE100000000000000000AB01 /* SettingsAnalyticsTests.swift in Sources */,
 				RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */,
 				AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */,
+				PF100000000000000000AT01 /* ProfileAnalyticsTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,

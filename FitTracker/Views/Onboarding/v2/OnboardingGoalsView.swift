@@ -16,6 +16,7 @@ struct OnboardingGoalsView: View {
     let onSkip: () -> Void
 
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var dataStore: EncryptedDataStore
     @State private var selectedGoal: String?
 
     private let goals: [(label: String, icon: String, value: String)] = [
@@ -57,7 +58,13 @@ struct OnboardingGoalsView: View {
                 Spacer().frame(height: AppSpacing.large)
 
                 VStack(spacing: AppSpacing.xSmall) {
-                    Button(action: onContinue) {
+                    Button(action: {
+                        if let label = selectedGoal,
+                           let goal = FitnessGoal(rawValue: label) {
+                            dataStore.userProfile.fitnessGoal = goal
+                        }
+                        onContinue()
+                    }) {
                         Text("Continue")
                             .font(AppText.button)
                             .foregroundStyle(AppColor.Text.inversePrimary)
@@ -148,6 +155,7 @@ struct OnboardingGoalsView_Previews: PreviewProvider {
         ZStack {
             AppGradient.screenBackground.ignoresSafeArea()
             OnboardingGoalsView(onContinue: {}, onSkip: {})
+                .environmentObject(EncryptedDataStore())
         }
     }
 }
