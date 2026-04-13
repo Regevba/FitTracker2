@@ -200,3 +200,32 @@ On skill start, before cache check:
 5. Dashboard patterns from prior features
 
 **Source priority:** L2 cache > L1 cache > shared layer (metric-status.json) > ga4 adapter > analytics-taxonomy.csv
+
+---
+
+## v4.3 — Case-Study Instrumentation & Operations Layer
+
+Since v4.3, `/analytics` has an expanded role in the operations layer: it tracks instrumentation coverage as a system-health metric and feeds case-study monitoring during feature execution.
+
+### Case-study instrumentation tracking
+
+When a feature executes Phase 5 (Test) or Phase 8 (Docs), `/analytics validate` should verify:
+1. All screen-prefixed events defined in the feature's analytics spec are instrumented in code
+2. Each event has at least 1 analytics test (firing + correct params)
+3. The feature's event count is recorded in `case-study-monitoring.json` (if the feature is being tracked as a case study)
+
+This data feeds:
+- `.claude/shared/case-study-monitoring.json` — `process_metrics.tests_passing` and `quality_metrics` fields
+- `.claude/shared/external-sync-status.json` — `analytics.instrumentation_summary` (currently 14/40 metrics = 35% coverage)
+- Control room dashboard → Analytics source health panel
+
+### Instrumentation coverage as health metric
+
+The operations control room tracks analytics instrumentation as one of its 8 source health indicators. When `/analytics validate` runs, it should update:
+- `external-sync-status.json` → `sources.analytics.instrumentation_summary.available_now` count
+- `external-sync-status.json` → `sources.analytics.healthy` (true if coverage > 50%)
+
+### New shared files consumed by /analytics (v4.3)
+
+- `.claude/shared/framework-manifest.json` — canonical framework version and capability list. `/analytics` should verify its own instrumentation coverage is consistent with the manifest's declared capability count.
+- `.claude/shared/case-study-monitoring.json` — when a tracked case study is in execution, `/analytics` should ensure instrumentation metrics are captured in the snapshot.

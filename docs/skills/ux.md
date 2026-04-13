@@ -153,3 +153,13 @@ Caches: UX spec patterns (Principle Application Table structures reused across f
 
 On start: check cache for matching task signature, load learned patterns.
 On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.
+
+---
+
+## v4.3 Awareness
+
+Since v4.3, the PM framework includes an operations control room, case-study monitoring, and 15 shared state files (up from 11 in v4.2). `/ux` is not directly affected by the operations layer but should be aware that:
+
+- UX specs produced during Phase 3 are now tracked in `case-study-monitoring.json` when the parent feature is a monitored case study
+- The control room dashboard at `fit-tracker2.vercel.app` displays feature phase progression, which includes the ux_or_integration phase status
+- `/ux audit` findings may be referenced in case-study narratives (`docs/case-studies/`) as quality evidence

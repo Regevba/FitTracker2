@@ -95,3 +95,13 @@ Caches: branching patterns (feature vs. fix vs. chore naming, branch-from conven
 
 On start: check cache for matching task signature, load learned patterns.
 On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.
+
+---
+
+## v4.3 Awareness
+
+Since v4.3, the PM framework includes an operations control room, external sync tracking, and 15 shared state files. `/dev` should be aware that:
+
+- `external-sync-status.json` tracks GitHub repo health (working tree cleanliness, branch count, issue hydration). `/dev ci-status` should align with this data.
+- The operations control room displays build verification status from `case-study-monitoring.json` snapshots — `build_verified` and `tests_passing` fields reflect `/dev` and `/qa` CI outcomes.
+- Control room deployment is Astro SSG on Vercel — data from `.claude/shared/*.json` is baked at build time, not live-streamed. Changes only appear after `git push` triggers a Vercel auto-deploy.

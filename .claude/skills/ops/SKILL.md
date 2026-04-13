@@ -196,3 +196,35 @@ On skill start, before cache check:
 5. CI pipeline reliability
 
 **Source priority:** L2 cache > L1 cache > shared layer (health-status.json) > sentry adapter
+
+---
+
+## v4.3 — Operations Control Room Integration
+
+Since v4.3, `/ops` is the primary skill feeding the operations control room dashboard at `fit-tracker2.vercel.app`.
+
+### How /ops feeds the control room
+
+| /ops Output | Control Room Consumer | Shared File |
+|-------------|----------------------|-------------|
+| Service health checks | Source Health panel (GitHub/Linear/Notion/Vercel/Analytics) | `external-sync-status.json` |
+| Incident tracking | Blockers panel (critical + high priority items) | `health-status.json` |
+| CI pipeline status | System Pulse (build verification, test counts) | `health-status.json` |
+| Cost data | Not yet surfaced in control room (future) | `health-status.json` |
+| Alert configuration | Source Health alert counts + framework health score | `framework-health.json` |
+
+### New shared files consumed by /ops (v4.3)
+
+- `.claude/shared/framework-manifest.json` — canonical framework version, skill counts, capabilities. `/ops health` should verify the manifest version matches the SKILL.md version references.
+- `.claude/shared/external-sync-status.json` — cross-system drift tracking. `/ops health` should check aggregate health score and alert count. When score drops below 80, flag for investigation.
+- `.claude/shared/case-study-monitoring.json` — structured evidence capture for PM cycles. `/ops` does not own this file but should be aware that case-study snapshots include `build_verified` and `tests_passing` fields that reflect CI health.
+
+### Control room deployment
+
+The operations control room is deployed as a static Astro dashboard on Vercel. Data flows:
+1. `/ops` or other skills update `.claude/shared/*.json` files
+2. Changes are committed and pushed to main
+3. Vercel auto-deploys, Astro SSG reads shared files at build time
+4. Dashboard reflects updated data at `fit-tracker2.vercel.app`
+
+This means `/ops health` results are not live-streamed — they are snapshotted at deploy time. For real-time monitoring, external adapters (Sentry MCP, etc.) would need to be connected.
