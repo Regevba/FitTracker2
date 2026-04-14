@@ -5,6 +5,8 @@
   "created": "2026-04-10T22:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 5,
+  "compression_version": "1.0",
+  "compressed_view": "Token compliance audit: check order is color literals (#1 fail rate), raw spacing values (#2), raw font declarations (#3). DS evolution rate: v2.0 added 0 tokens, v4.0+ added 2-4 per refactor (e.g. AppSize.tabBarClearance, AppText.monoCaption). Propose new tokens only when same raw value repeats 2+ times across screens. Track compound component reuse: ProgressBar from Nutrition available for Stats, AppLayout from Stats available for Settings. Always search AppComponents.swift before extracting new components. Anti-patterns: over-tokenizing one-off micro-adjustments (Settings v2 correctly added 0 new tokens), forgetting pbxproj update in same commit as v2 file. Load L2 design-system-decisions.json for token inventory, grep for raw Color/hex/hardcoded padding.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "FitTracker/Services/AppTheme.swift",

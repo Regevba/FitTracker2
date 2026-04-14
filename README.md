@@ -151,7 +151,14 @@ Internal PM dashboard and current canonical live web surface on `fit-tracker2.ve
 
 ## Current Repo Status
 
-Verification snapshot as of `2026-04-10`:
+Verification snapshot as of `2026-04-14`:
+
+### PM Framework: v5.0
+- **Skill-on-demand loading** — loads only 1-2 phase-relevant skills per invocation instead of all 11 (~30K tokens saved)
+- **Cache compression** — 15/15 cache entries have `compressed_view` summaries (~24K tokens saved)
+- **Combined savings:** ~54K tokens (27% of context window) reclaimed per session
+- **Research:** SoC-on-Software architecture principles (7 chip→software optimizations mapped)
+- **Docs:** [`docs/architecture/soc-software-architecture-research.md`](docs/architecture/soc-software-architecture-research.md)
 
 ### V2 Screen Refactors (6/6 complete)
 

@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 6,
+  "compression_version": "1.0",
+  "compressed_view": "Design system token selection and component reuse patterns. Token namespace priority: Status > Chart > Accent > Brand > Surface > Background > Text > Border. Never use Brand for feedback (use Status), never use raw Brand for data viz (use Chart). New tokens only when no semantic match exists AND raw literal would be required AND value is domain-specific. Token pipeline: tokens.json (source) via Style Dictionary to DesignTokens.swift, referenced by AppTheme.swift. CI gate: make tokens-check detects drift. Component promotion: extract to AppComponents.swift when pattern used in 2+ screens (AppMetricColumn, AppMetricTile, ProgressBar, AppLayout promoted). Decomposition threshold: v1 files >800 lines must decompose in v2. Analytics parameter formats: weight float kg, duration int seconds, enums snake_case. DS Evolution Queue tracked in feature-memory.md for gaps needing broader discussion.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "FitTracker/Services/AppTheme.swift",

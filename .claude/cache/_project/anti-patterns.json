@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 6,
+  "compression_version": "1.0",
+  "compressed_view": "Project-wide anti-pattern registry with 13 failure modes: (1) Raw color/font/spacing literals — P0, breaks dark mode and CI tokens-check. (2) Skipping Phase 3 UX — P0, non-skippable for UI features. (3) Patching v1 in place instead of v2/ subdirectory — P1, Onboarding v2 mistake. (4) Screen-scoped events without prefix — P1, blocks PRD approval post-2026-04-08. (5) Silent error states — P0, violates Feedback principle, Home v2 F15/F16. (6) Merging without green CI on both branches — P0, breaks main. (7) Building UI before token/component dependencies — P1, forces raw literal placeholders. (8) pbxproj UUID reshuffling from Xcode — P1, diff must show exactly 4 changes. (9) Deferred features never tracked — P2, lost feature debt. (10) Patching v1 inline — Onboarding 20-patch mistake. (11) Forgetting pbxproj — 3 fix commits. (12) Over-testing analytics at 5.25x — right-sized is 1.3-2.7x. (13) Re-deriving cached patterns — Home 2h vs Nutrition 30min with L2 cache.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "CLAUDE.md",

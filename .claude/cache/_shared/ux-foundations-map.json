@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 6,
+  "compression_version": "1.0",
+  "compressed_view": "Cross-skill UX Foundations application playbook for 13 principles (Fitts's Law, Hick's Law, Visual Hierarchy, Data Viz, Feedback, Error Recovery, Dark Mode, Motion Safety, IA, Interaction, Permission, State, Accessibility, Motion, Content, Platform). /design maps principles to tokens: Fitts's Law to AppSize.ctaHeight, Hick's Law to single Brand.primary accent, Visual Hierarchy to Text.primary/secondary/tertiary, Data Viz to Chart.* tokens, Motion Safety to AppSpring/AppEasing/motionSafe. /ux produces ux-research.md (principle mapping) + ux-spec.md (9 sections) + compliance gateway (5/5) + heuristic validation (12/13). /qa verifies: button frames >=44pt, all 5 states tested, VoiceOver labels + Dynamic Type AX5, reduceMotion respected, event names match taxonomy. /dev builds bottom-up: tokens T1-T3, components T4-T5, services T6, analytics T7, assembly T8, a11y T11, pbxproj T12. Principle gaps requiring new tokens are DS evolution items proposed on feature branches.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "docs/design-system/ux-foundations.md",

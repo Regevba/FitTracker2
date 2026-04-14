@@ -5,6 +5,8 @@
   "created": "2026-04-10T22:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 5,
+  "compression_version": "1.0",
+  "compressed_view": "V2 screen audit methodology: pre-loaded principle-to-pattern mapping (nav depth to Hick's Law, data entry to Zero-Friction Logging, permission flow to Privacy by Default, first impression to Readiness-First, success states to Celebration Not Guilt). Severity calibration: P0 = token violations + missing analytics + broken a11y, P1 = UX behavior gaps + missing states, P2 = copy + content + deferred. Finding counts diminish across screens (27 to 32 to 23 to 9 to 4) reflecting genuine improvement, not audit degradation. Front-load anti-pattern checks: raw Color literals, missing VoiceOver labels, hardcoded spacing — fastest wins. Always load L2 ux-foundations-map.json before starting any audit to avoid re-deriving principle mappings (saved 1.5h from Home to Nutrition).",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "docs/design-system/ux-foundations.md"

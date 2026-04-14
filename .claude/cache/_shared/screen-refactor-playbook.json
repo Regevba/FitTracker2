@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 6,
+  "compression_version": "1.0",
+  "compressed_view": "Complete v2 refactor methodology across all phases: 9-phase sequence (Research through Docs) required for v2_refactor work type. Cross-skill pipeline: /qa audit produces findings, /ux produces decisions + 9-section spec + compliance gateway 5/5, /design governs tokens, /dev builds bottom-up in 4 task layers (Foundation parallel, Main Assembly, Post-Assembly, Verification), /qa tests with CI gate. Timeline: 8-9 days for complex screens (17 tasks), 4-5 day critical path with parallelism. PR structure: foundation layer commit, v2 view assembly, a11y pass, pbxproj swap, tests. High-risk files (DomainModels, EncryptionService, SyncServices, AuthManager, AIOrchestrator) require extra review flag. Metrics mandatory: primary metric with baseline/target, guardrails (crash-free >99.5%, cold start <2s, sync >99%, CI >95%), kill criteria. Cache-accelerated refactors: v4.1 screens completed in 1-2h vs 5-36h earlier (55-70% cache hit rates). Deferred features spin off as separate PM cycles.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "CLAUDE.md",

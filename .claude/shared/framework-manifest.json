@@ -1,7 +1,7 @@
 {
-  "version": "1.0",
-  "updated": "2026-04-11T16:05:53Z",
-  "framework_version": "4.4",
+  "version": "1.1",
+  "updated": "2026-04-14T03:35:00Z",
+  "framework_version": "5.0",
   "description": "Canonical framework manifest for the PM-flow ecosystem. Stores the current framework version, structural counts, source-of-truth metadata, and active operational capabilities so docs and dashboards can reference one shared definition.",
   "structure": {
     "hub_skills": 1,
@@ -46,7 +46,24 @@
     "operations_control_room": true,
     "case_study_monitoring": true,
     "maintenance_programs": true,
-    "external_sync_monitoring": true
+    "external_sync_monitoring": true,
+    "skill_on_demand_loading": true,
+    "cache_compression": true
+  },
+  "v5_soc_optimizations": {
+    "skill_on_demand": {
+      "description": "Load only phase-relevant SKILL.md files instead of all 11. Saves ~30K tokens/session.",
+      "config_key": "phase_skills",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "Apple LoRA adapter hot-swap"
+    },
+    "cache_compression": {
+      "description": "Each cache entry has a compressed_view (~200 words) loaded by default. Full expansion on demand. Saves ~24K tokens/session.",
+      "field": "compressed_view",
+      "version_field": "compression_version",
+      "inspiration": "Apple 3.7-bit palettization"
+    },
+    "combined_savings": "~54K tokens (27% of 200K context window)"
   },
   "integration_model": {
     "local_adapters": [

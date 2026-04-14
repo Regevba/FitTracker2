@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T00:00:00Z",
   "hit_count": 1,
+  "compression_version": "1.0",
+  "compressed_view": "UX spec structure: 9 required sections — Overview/Scope, Screen Inventory/Stack Order, Component Catalogue, Token Catalogue, State Coverage, Accessibility Requirements, Motion/Animation, Analytics Instrumentation, Principle Application Table. Compliance gateway checks 5 dimensions (token, component, motion, accessibility, pattern compliance) — must be 5/5 pass. Heuristic validation checks all 13 UX Foundations principles (12/12 pass + 1 N/A allowed). Separate ux-research.md documents principle analysis; ux-spec.md is the specification. Phase 3 also produces build prompts (ux-build.md + design-build.md). New features (no v1) still require non-skippable Phase 3 with ux-spec.md before any view code. Stack order pattern: primary action first, then health signals, then progress tracking.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "docs/design-system/ux-foundations.md",

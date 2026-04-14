@@ -5,6 +5,8 @@
   "created": "2026-04-10T22:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 5,
+  "compression_version": "1.0",
+  "compressed_view": "V2 screen refactor recipe: 4 steps — create v2/ subdirectory, create v2 Swift file with same type name, update pbxproj (add v2 PBXGroup+FileRef+BuildFile, remove v1 from Sources build phase), add HISTORICAL header to v1. When v1 exceeds 400 lines, plan extracted sub-views in v2/ directory. Commit strategy: v2 file + pbxproj swap together, separate commits for analytics enums, tests, docs. Build bottom-up from AppTheme tokens and AppComponents, never copy v1 structure. Anti-patterns: patching v1 in place (Onboarding mistake), forgetting pbxproj (3 fix commits), building top-down from v1 (re-introduces old patterns). Validated across Home, Nutrition, Stats, Settings, Training v2 refactors.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "CLAUDE.md",

@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 4.3 | **Updated:** 2026-04-11 | **Branch:** `main`
+> **Version:** 5.0 | **Updated:** 2026-04-14 | **Branch:** `main`
 >
 > A new contributor (human or AI) can read this single document to understand the entire skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 
@@ -16,7 +16,7 @@
 
 **Solution:** Hub-and-spoke architecture where each domain has its own skill, connected through a shared data layer.
 
-**Result:** 11 skills (1 hub + 10 spokes) + 15 shared data files + 6 local integration adapters + MCP-backed external tool integrations + 3-level learning cache + automatic validation gate + self-healing health checks. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern. v4.0 (2026-04-10) introduced the reactive data mesh, integration adapter layer, automatic validation gate (GREEN/ORANGE/RED), and L1/L2/L3 learning cache. v4.1 (2026-04-10) added the Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). v4.2 (2026-04-10) added the self-healing hub with Phase 0 health checks. v4.3 (2026-04-11) formalizes that operational extension: the control room, case-study monitoring, maintenance-program orchestration, and live external-sync monitoring are now part of the framework itself.
+**Result:** 11 skills (1 hub + 10 spokes) + 15 shared data files + 6 local integration adapters + MCP-backed external tool integrations + 3-level learning cache + automatic validation gate + self-healing health checks. Adding `/ux` in 2026-04-07 split the "what should this feature do?" planning concern out of `/design`, so `/design` now owns only the how-it-looks layer and `/ux` owns the what-and-why layer. The boundary is documented in §7.5. v3.0 (2026-04-09) added external tool sync, screen audit research mode, parallel subagent execution, and the sub-feature queue pattern. v4.0 (2026-04-10) introduced the reactive data mesh, integration adapter layer, automatic validation gate (GREEN/ORANGE/RED), and L1/L2/L3 learning cache. v4.1 (2026-04-10) added the Skill Internal Lifecycle (Cache Check → Research → Execute → Learn). v4.2 (2026-04-10) added the self-healing hub with Phase 0 health checks. v4.3 (2026-04-11) formalizes that operational extension: the control room, case-study monitoring, maintenance-program orchestration, and live external-sync monitoring are now part of the framework itself. v4.4 (2026-04-13) introduced eval-driven development — mandatory eval definitions for every feature, zero measurable overhead. v5.0 (2026-04-14) applies SoC-on-Software chip architecture principles: skill-on-demand loading (~30K tokens saved) and cache compression via compressed_view (~24K tokens saved), reclaiming ~54K tokens (27% of context window).
 
 **Key principle:** Every skill is a **Lego piece** (works alone) AND a **puzzle piece** (fits into the hub).
 

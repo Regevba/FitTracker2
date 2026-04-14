@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T00:00:00Z",
   "hit_count": 1,
+  "compression_version": "1.0",
+  "compressed_view": "V2 refactor playbook: Phase 0 audit (v2-audit-report.md with P0/P1/P2 severity + tractability tags). Step 1: create v2/ subdirectory next to v1 with identical filename and type name. Step 2: update pbxproj in SAME commit — 4 surgical edits only (new PBXGroup, PBXFileReference, PBXBuildFile, remove v1 from Sources). Step 3: build bottom-up from tokens/components, decompose large v1 files (Training 2135 lines became 533-line container + 6 extracted views). Step 4: mark v1 HISTORICAL in same commit as pbxproj swap. Step 5: walk v2-refactor-checklist Sections A-K. One v2 split per surface, no v3 directories. State.json requires work_subtype=v2_refactor, v2_rule_compliant=true. Anti-patterns: patching v1 in place, Xcode regenerating full pbxproj, starting implementation before Phase 3 UX approval, keeping both v1 and v2 in build target (redeclaration error).",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "CLAUDE.md",

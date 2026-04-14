@@ -1,7 +1,22 @@
 {
-  "version": "2.0",
-  "updated": "2026-04-11T16:10:00Z",
-  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift.",
+  "version": "3.0",
+  "updated": "2026-04-14T03:30:00Z",
+  "framework_version": "5.0",
+  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1) — hub loads only phase-relevant SKILL.md files instead of all 11.",
+  "load_mode": "on_demand",
+  "phase_skills": {
+    "_description": "Maps each lifecycle phase to the 1-2 skills whose SKILL.md should be loaded. Hub loads ONLY these files instead of all 11. Saves ~30K tokens/session. Inspired by Apple LoRA adapter hot-swap.",
+    "research": ["research", "cx"],
+    "prd": ["pm-workflow", "analytics"],
+    "tasks": ["pm-workflow"],
+    "ux_or_integration": ["ux", "design"],
+    "implementation": ["dev", "design"],
+    "testing": ["qa", "analytics"],
+    "review": ["dev", "qa"],
+    "merge": ["release", "dev"],
+    "documentation": ["marketing", "cx"],
+    "learn": ["cx", "analytics", "ops"]
+  },
   "routing_rules": {
     "ui": { "primary": "dev", "secondary": ["design"] },
     "backend": { "primary": "dev", "secondary": ["ops"] },

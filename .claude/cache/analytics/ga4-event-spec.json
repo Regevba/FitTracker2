@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T00:00:00Z",
   "hit_count": 1,
+  "compression_version": "1.0",
+  "compressed_view": "GA4 event specification: screen-scoped events MUST have screen prefix (home_, training_, nutrition_, stats_, settings_, onboarding_, auth_). GA4 recommended events exempt from prefix rule — login, sign_up, tutorial_begin, tutorial_complete, share, select_content keep dictated names. Cross-screen events unprefixed: app_open, session_start, consent_granted/denied. Standard parameter patterns: weight always float kg (SI), duration always int seconds, enums snake_case. Conversion events: sign_up, tutorial_complete, workout_complete, meal_log, cross_feature_engagement. Consent gating: consent_granted/denied always logged, all others consent-gated. Training v2 shipped 12 training_* events. Analytics-taxonomy.csv schema: Category, Event Name, GA4 Type, Screen/Trigger, Parameters, Conversion, Scope. New events added to taxonomy CSV in same commit as Swift enum declaration. Pre-rule events grandfathered with GA4 event alias migration.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "docs/product/analytics-taxonomy.csv",

@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-11 (v4.3 update)
-> **Status:** v4.3 — reactive data mesh + learning cache + integration adapters + skill internal lifecycle + self-healing health checks + operational control room
+> **Date:** 2026-04-14 (v5.0 update)
+> **Status:** v5.0 — SoC-on-Software optimizations (skill-on-demand + cache compression) + all prior capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -737,3 +737,76 @@ Runs after Phase 4 (Learn) when eval definitions exist for the current task. Che
 | **Phase 2 (Tasks)** | Define eval cases: golden I/O pairs, quality heuristics, tier behavior expectations. Store in `.claude/features/{name}/evals.json`. |
 | **Phase 5 (Test)** | Run evals alongside unit tests. Record results in `case-study-monitoring.json` under `ai_quality_metrics`. Failed evals block phase advancement (same as failing unit tests). |
 | **Phase 9 (Learn)** | Analyze eval results. Identify patterns in failures. Promote failed eval signatures to L1 anti-pattern cache. Update eval definitions if feature scope changed. |
+
+---
+
+## 22. v5.0 — SoC-on-Software: Skill-on-Demand + Cache Compression (2026-04-14)
+
+### What Changed: v4.4 → v5.0
+
+v4.4 closed the quality loop with evals. v5.0 tackles the **context budget bottleneck** — the hub was loading ~96K tokens per session (~48% of the 200K practical context window). By applying chip architecture principles from Apple's LoRA adapters and palettization, v5.0 reclaims ~54K tokens (27% of context) without any structural rebuild.
+
+| Aspect | v4.4 | v5.0 |
+| --- | --- | --- |
+| **Skill loading** | All 11 SKILL.md files loaded every session (~38K tokens) | On-demand: only 1-2 phase-relevant skills loaded (~4-8K tokens) |
+| **Cache loading** | Full cache entries loaded (~32K tokens) | Compressed views (~200 words each) loaded by default; full expansion on demand |
+| **Context budget** | ~96K tokens (48% of 200K) | ~42K tokens (21% of 200K) — ~54K reclaimed |
+| **Config** | `skill-routing.json` v2.0 | `skill-routing.json` v3.0 with `phase_skills` map and `load_mode: on_demand` |
+
+### SoC Principles Applied
+
+| # | Chip Principle | Software Implementation | Impact |
+| --- | --- | --- | --- |
+| 1 | Apple LoRA Hot-Swap | `phase_skills` map → load only listed skills | ~30K tokens saved |
+| 2 | Apple Palettization (3.7-bit) | `compressed_view` field on all cache entries | ~24K tokens saved |
+
+### How It Works
+
+**Skill-on-Demand Loading:**
+1. Hub reads `skill-routing.json` → `phase_skills[current_phase]`
+2. Gets skill list (e.g. `["ux", "design"]` for UX phase)
+3. Loads ONLY those SKILL.md files — others stay unloaded
+4. Fallback: if `load_mode` is not `on_demand`, loads all skills (v4.4 behavior)
+
+**Cache Compression:**
+1. Every L1/L2/L3 cache entry has a `compressed_view` field (~200 words)
+2. Hub loads compressed views by default
+3. Full cache entries expanded only when deeper investigation is needed
+4. `compression_version: "1.0"` tracks the compression schema
+
+### Phase-to-Skills Map
+
+```json
+{
+  "research": ["research", "cx"],
+  "prd": ["pm-workflow", "analytics"],
+  "tasks": ["pm-workflow"],
+  "ux_or_integration": ["ux", "design"],
+  "implementation": ["dev", "design"],
+  "testing": ["qa", "analytics"],
+  "review": ["dev", "qa"],
+  "merge": ["release", "dev"],
+  "documentation": ["marketing", "cx"],
+  "learn": ["cx", "analytics", "ops"]
+}
+```
+
+### Research Foundation
+
+This optimization is backed by academic research and industry practice:
+- Speculative Actions for LLM Agents (arxiv 2510.04371)
+- Pattern-Aware Speculative Tool Execution (arxiv 2603.18897)
+- Apple Foundation Models Tech Report (2025)
+- Google TPU Architecture documentation
+
+Full research: `docs/architecture/soc-software-architecture-research.md`
+
+### Future Items (v5.x roadmap)
+
+| # | Optimization | Effort | Expected Impact |
+| --- | --- | --- | --- |
+| 3 | Batch skill invocation (TPU weight-stationary) | Medium | 5x fewer dispatches |
+| 4 | Result forwarding (UMA zero-copy) | Medium | Eliminate write-read cycles |
+| 5 | Model tiering (ANE mixed precision) | Low | Cost savings |
+| 6 | Speculative pre-loading (branch prediction) | Medium | 30-40% latency reduction |
+| 7 | Systolic chain protocol (TPU systolic array) | High | Eliminate global reads |

@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T00:00:00Z",
   "hit_count": 1,
+  "compression_version": "1.0",
+  "compressed_view": "Token-to-principle mapping for all 13 UX Foundations: Fitts's Law maps to AppSize.ctaHeight (52pt) + AppCornerRadius.large + maxWidth infinity. Hick's Law maps to AppColor.Brand.primary as single accent. Visual hierarchy uses AppColor.Text.primary/secondary/tertiary (WCAG AA compliant). Surface layering: appPrimary < Surface.primary < elevated < materialStrong. Status feedback: AppColor.Status.success/warning/error only, never raw Color.red/green. Data viz: AppColor.Chart.* (weight, hrv, heartRate, body, cardio, sleep, achievement, progress, nutritionFat). Brand accent: Brand.primary for identity, Accent.primary for CTAs, domain-specific accents for recovery/sleep/achievement. Border tokens: strong/subtle/hairline. Auth surfaces always-dark (authTop/authMiddle/authBottom). Anti-patterns: raw hex in views (8 P0 findings in Home v1), .font(.system(size:)) bypasses Dynamic Type, hardcoded .padding(N) fails tokens-check.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "FitTracker/Services/AppTheme.swift",

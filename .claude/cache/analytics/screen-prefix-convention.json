@@ -5,6 +5,8 @@
   "created": "2026-04-10T22:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 4,
+  "compression_version": "1.0",
+  "compressed_view": "Screen-prefix naming convention: every screen-scoped analytics event uses {screen}_ prefix (home_, training_, nutrition_, stats_, settings_, onboarding_, auth_). Cross-screen lifecycle events stay unprefixed (app_open, session_start, sign_in, sign_up). GA4 recommended events keep dictated names (tutorial_begin, login, share). Event template per screen: {screen}_action_tap, {screen}_metric_viewed, {screen}_empty_state_shown, {screen}_error_shown plus screen-specific actions. Test pattern: 1-3 tests per event targeting 1.3-2.7x density. Anti-patterns: ad hoc naming without prefix (pre-Training inconsistency), over-testing at 5.25 tests/event (Home v2 learning cost). Established 2026-04-08, enforced by PRD approval gate and /analytics validate.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "CLAUDE.md",

@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T22:00:00Z",
   "hit_count": 6,
+  "compression_version": "1.0",
+  "compressed_view": "Project architecture: hub-and-spoke skill ecosystem with pm-workflow as orchestrator hub and 11 domain skill spokes (/ux, /design, /dev, /qa, /analytics, /research, /cx, /marketing, /ops, /release). Each skill has SKILL.md contract at .claude/skills/{name}/SKILL.md. Shared JSON data layer: state.json per feature at .claude/features/{name}/ tracks lifecycle, transitions, phases, tasks. Phase gating requires explicit user approval recorded in state.json. Work item types: Feature (9-phase), Enhancement (4-phase), Fix (2-phase), Chore (1-phase). iOS architecture: SwiftUI views observe ViewModels, ViewModels coordinate Services, analytics fired from ViewModel layer. High-risk files: DomainModels, EncryptionService, SyncServices, SignIn, AuthManager, AIOrchestrator. CI pipeline: tokens-check + xcodebuild build + test, must pass both branches. Skill Internal Lifecycle v4.1: Cache Check, Research (if miss), Execute, Learn (write back). V2 subdirectory convention validated across 5 screens. Key paths anchored to /Volumes/DevSSD/FitTracker2.",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     "CLAUDE.md",

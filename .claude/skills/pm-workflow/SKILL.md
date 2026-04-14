@@ -1,11 +1,24 @@
 ---
 name: pm-workflow
-description: "Start or resume a v4.3 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. Invoke with /pm-workflow {feature-name}."
+description: "Start or resume a v5.0 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. Invoke with /pm-workflow {feature-name}."
 ---
 
 # Product Management Lifecycle: $ARGUMENTS
 
 You are orchestrating the feature **"$ARGUMENTS"** through the complete product management lifecycle. Every phase requires explicit user approval before proceeding to the next.
+
+## Skill Loading Protocol (v5.0 — On-Demand)
+
+Before starting any phase, check `.claude/shared/skill-routing.json` → `phase_skills` for the current phase. Load ONLY the listed SKILL.md files — do NOT load all 11 skills.
+
+1. Read `skill-routing.json` → `phase_skills[current_phase]` → get skill list (e.g. `["ux", "design"]`)
+2. Load `.claude/skills/{skill}/SKILL.md` for each listed skill
+3. For cache: load `compressed_view` fields from `.claude/cache/` by default (≤200 words each)
+4. Only expand full cache entries when the compressed view is insufficient — set `expand_cache: true` mentally
+
+**Why:** Loading all 11 SKILL.md files costs ~38K tokens. Most phases need only 1-2 skills. On-demand loading saves ~30K tokens/session. Cache compression saves another ~24K tokens.
+
+**Fallback:** If `phase_skills` is missing or `load_mode` is not `on_demand`, fall back to loading all skills (v4.4 behavior).
 
 ## Setup
 

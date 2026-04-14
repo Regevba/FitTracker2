@@ -5,6 +5,8 @@
   "created": "2026-04-10T00:00:00Z",
   "last_hit": "2026-04-10T00:00:00Z",
   "hit_count": 1,
+  "compression_version": "1.0",
+  "compressed_view": "Feature test strategy: prioritize analytics tests (event fires + params + consent gating, 3-4 per event), then functional/behavior tests (service unit tests, integration tests, state machine transitions, 8-15 per service class), then snapshot tests (5 states x 3 devices, deferred if CI fragile). CI gate requires three checks: make tokens-check, xcodebuild build, xcodebuild test — all must pass on both feature and main branches. Accessibility tests verify 30+ labels for complex screens, Dynamic Type at AX5, 44pt minimum tap targets. V2-refactor-checklist walk (Sections A-K) is itself a required test task. Test file naming mirrors source: {Class}Tests.swift for functional, {Screen}AnalyticsTests.swift for analytics. Home v2 baseline: 21 total tests (11 functional + 10 analytics).",
   "ttl_strategy": "until_invalidated",
   "invalidated_by": [
     ".claude/features/home-today-screen/state.json",
