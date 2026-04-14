@@ -112,11 +112,24 @@ Each skill receives only upstream output + own L1 cache. No global reads mid-exe
 - Google TPU Architecture (cloud.google.com/tpu/docs)
 - Neural Engine internals (github.com/hollance/neural-engine)
 
+## Item 8 (Planned): ARM big.LITTLE → Hybrid Task Dispatch
+
+ARM big.LITTLE uses heterogeneous cores: P-cores (Performance) for heavy threads, E-cores (Efficiency) for light threads. OS scheduler classifies each thread and routes accordingly.
+
+Hub equivalent: classify each ready task by complexity before dispatch. Route lightweight tasks to a parallel lane (E-core) and heavyweight tasks to a serial lane (P-core).
+
+- **Saves:** Parallel execution of lightweight tasks clears backlog faster; heavyweight tasks get full attention without interference
+- **Effort:** Medium
+- **Mechanism:** `task_complexity_gate` in `skill-routing.json`. Classification heuristics: files_changed, new models/services, token budget estimate, cross-feature deps, judgment intensity. Threshold: any 2 heavyweight indicators → serial lane. Composes with model tiering (item 5) — lightweight→sonnet, heavyweight→opus.
+- **Execution order:** Parallel lane first (fast), then serial lane
+- **Status:** **Designed, not yet implemented** (concept from user discussion, implementation planned for next session)
+
 ## Next Steps
 
 1. ~~Implement item 1 (skill-on-demand)~~ — **Done (v5.0)**
 2. ~~Implement item 2 (cache compression)~~ — **Done (v5.0)**
 3. ~~Measure actual token savings after items 1+2~~ — **Done: ~54K tokens saved**
 4. ~~Implement items 3-7~~ — **Done (v5.1)**
-5. Measure combined savings from all 7 items
-6. Explore item 8+ if further optimizations are needed (tiling, sparsity, etc.)
+5. **Implement item 8 (big.LITTLE task dispatch)** — designed, ready to build
+6. Measure combined savings from all 8 items
+7. Explore item 9+ if further optimizations are needed (tiling, sparsity, etc.)

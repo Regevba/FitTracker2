@@ -810,6 +810,7 @@ Full research: `docs/architecture/soc-software-architecture-research.md`
 | 5 | Model tiering (ANE mixed precision) | Low | Cost savings | **v5.1** |
 | 6 | Speculative pre-loading (branch prediction) | Medium | 30-40% latency reduction | **v5.1** |
 | 7 | Systolic chain protocol (TPU systolic array) | High | Eliminate global reads | **v5.1** |
+| 8 | Hybrid task dispatch (ARM big.LITTLE) | Medium | Parallel lightweight + serial heavyweight | **Designed** |
 
 ---
 
