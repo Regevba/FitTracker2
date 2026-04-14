@@ -1,6 +1,6 @@
 # SoC-on-Software Architecture Research
 
-> **Status:** All 7 items IMPLEMENTED (Items 1+2 in v5.0, Items 3-7 in v5.1). Framework at v5.1.
+> **Status:** All 8 items IMPLEMENTED (Items 1+2 in v5.0, Items 3-8 in v5.1). Framework at v5.1.
 > **Context:** PM hub v4.2 → v5.0 → v5.1 acceleration path.
 > **Impact:** ~54K tokens reclaimed (items 1+2) + dispatch reduction, serialization elimination, cost optimization, latency reduction, bottleneck elimination (items 3-7).
 

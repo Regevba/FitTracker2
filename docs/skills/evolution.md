@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
 > **Date:** 2026-04-14 (v5.1 update)
-> **Status:** v5.1 — Complete SoC-on-Software suite (7/7 items: skill-on-demand, cache compression, model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains) + all prior capabilities
+> **Status:** v5.1 — Complete SoC-on-Software suite (8/8 items: skill-on-demand, cache compression, model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains, task complexity gate) + all prior capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
