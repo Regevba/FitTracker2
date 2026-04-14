@@ -2,7 +2,8 @@
 
 > **Version:** 5.0 | **Updated:** 2026-04-14 | **Branch:** `main`
 >
-> A new contributor (human or AI) can read this single document to understand the entire skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
+> This is the **full deep-dive guide** for the skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
+> For a quick-reference system overview with diagrams and tables, see the [Architecture One-Pager](architecture-one-pager.md).
 
 ---
 
