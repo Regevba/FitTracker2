@@ -99,8 +99,9 @@ Each skill receives only upstream output + own L1 cache. No global reads mid-exe
 | 5 | Model tiering | Cost savings | Low | **Implemented (v5.1)** |
 | 6 | Speculative pre-loading | 30-40% latency | Medium | **Implemented (v5.1)** |
 | 7 | Systolic chain protocol | Eliminate global reads | High | **Implemented (v5.1)** |
+| 8 | Hybrid task dispatch (big.LITTLE) | Complexity-aware parallel/serial | Medium | **Implemented (v5.1)** |
 
-**All 7 items implemented. Items 1+2 reclaim ~54K tokens (27% of context window). Items 3-7 add dispatch reduction, serialization elimination, cost optimization, latency reduction, and bottleneck elimination.**
+**All 8 items implemented. Items 1+2 reclaim ~54K tokens (27% of context window). Items 3-7 add dispatch reduction, serialization elimination, cost optimization, latency reduction, and bottleneck elimination. Item 8 adds complexity-aware lane routing.**
 
 ## Academic References
 
@@ -122,7 +123,7 @@ Hub equivalent: classify each ready task by complexity before dispatch. Route li
 - **Effort:** Medium
 - **Mechanism:** `task_complexity_gate` in `skill-routing.json`. Classification heuristics: files_changed, new models/services, token budget estimate, cross-feature deps, judgment intensity. Threshold: any 2 heavyweight indicators → serial lane. Composes with model tiering (item 5) — lightweight→sonnet, heavyweight→opus.
 - **Execution order:** Parallel lane first (fast), then serial lane
-- **Status:** **Designed, not yet implemented** (concept from user discussion, implementation planned for next session)
+- **Status:** **Implemented (v5.1)**
 
 ## Next Steps
 
@@ -130,6 +131,6 @@ Hub equivalent: classify each ready task by complexity before dispatch. Route li
 2. ~~Implement item 2 (cache compression)~~ — **Done (v5.0)**
 3. ~~Measure actual token savings after items 1+2~~ — **Done: ~54K tokens saved**
 4. ~~Implement items 3-7~~ — **Done (v5.1)**
-5. **Implement item 8 (big.LITTLE task dispatch)** — designed, ready to build
+5. ~~Implement item 8 (big.LITTLE task dispatch)~~ — **Done (v5.1)**
 6. Measure combined savings from all 8 items
 7. Explore item 9+ if further optimizations are needed (tiling, sparsity, etc.)

@@ -671,9 +671,76 @@ If `state.json.work_subtype == "v2_refactor"`:
    `state.json.phases.implementation.checklist_completed = true` when all
    applicable boxes are ticked.
 
-### Parallel Task Dispatch
+### Task Complexity Classifier (v5.1 — ARM big.LITTLE)
 
-When tasks exist in state.json, Phase 4 uses dependency-aware parallel execution instead of sequential implementation:
+Before dispatching ready tasks, classify each one as **lightweight** (E-core, parallel lane) or **heavyweight** (P-core, serial lane). This ensures small/simple tasks don't block behind large/complex ones, and heavyweight tasks get full dedicated attention.
+
+#### Classification Protocol
+
+1. **Compute the ready set** — tasks where ALL entries in `depends_on` have status `done`
+2. **For each ready task, score heavyweight indicators** from `skill-routing.json` → `task_complexity_gate.classification`:
+
+   | Indicator | Weight | How to detect |
+   |-----------|--------|--------------|
+   | `files_changed_gt_5` | 2 | Task description mentions 5+ files, new screens, or broad refactor |
+   | `new_model_or_service` | 3 | Task creates a new Swift model, service class, or manager |
+   | `token_budget_high` | 2 | Task requires architecture decisions, research synthesis, or deep reasoning |
+   | `cross_feature_deps` | 2 | Task's `depends_on` references tasks from a different feature |
+   | `requires_judgment` | 3 | Task involves UX heuristic evaluation, risk assessment, or kill criteria review |
+
+3. **Sum the weights** of all matched heavyweight indicators
+4. **Classify:**
+   - Score >= 4 → **Heavyweight** (P-core, serial lane)
+   - Score < 4 → **Lightweight** (E-core, parallel lane)
+
+#### Quick Classification Examples
+
+| Task | Indicators matched | Score | Lane |
+|------|--------------------|-------|------|
+| "Add GA4 event for button tap" | files_changed ≤2, mechanical | 0 | E-core (parallel) |
+| "Update analytics-taxonomy.csv" | config change, mechanical | 0 | E-core (parallel) |
+| "Build new ProfileEditor screen" | new_model(3) + files>5(2) + judgment(3) | 8 | P-core (serial) |
+| "Implement auth passkey flow" | new_service(3) + token_high(2) + cross_feature(2) | 7 | P-core (serial) |
+| "Rename token AppColor.old → .new" | files ≤2, mechanical | 0 | E-core (parallel) |
+| "Design ux-spec for new feature" | judgment(3) + token_high(2) | 5 | P-core (serial) |
+
+#### Lane Execution
+
+After classification, present both lanes to the user and execute:
+
+```
+Phase 4 — Task Dispatch (big.LITTLE)
+
+  E-core lane (parallel, sonnet):
+    T3 (add GA4 event)    — score 0, lightweight
+    T5 (update taxonomy)  — score 0, lightweight
+    T7 (rename token)     — score 0, lightweight
+
+  P-core lane (serial, opus):
+    T1 (build ProfileEditor) — score 8, heavyweight
+    T4 (auth passkey flow)   — score 7, heavyweight
+
+  Blocked:
+    T8 (unit tests) — needs T1, T4
+```
+
+1. **Execute E-core lane first** — all lightweight tasks in parallel (max 5 concurrent). Use model tier: **sonnet**. If multiple lightweight tasks match a `batch_dispatch` operation, batch them (Item 3 composition).
+2. **Then execute P-core lane** — heavyweight tasks one at a time with full context. Use model tier: **opus**.
+3. **On each task completion** — recompute ready set, re-classify newly unblocked tasks, add to appropriate lane.
+4. **Phase 4 is complete** when ALL tasks (both lanes) have status `done`.
+
+#### Composition with Other v5.1 Items
+
+- **Item 5 (Model Tiering):** E-core lane → sonnet, P-core lane → opus (overrides phase-level tier)
+- **Item 3 (Batch Dispatch):** Multiple E-core tasks targeting the same skill can batch (e.g., 3 analytics taxonomy updates → single batch)
+- **Item 4 (Result Forwarding):** P-core tasks in a chain forward results inline
+- **Item 7 (Systolic Chains):** P-core tasks that match a defined chain execute in systolic mode
+
+**Fallback:** If `task_complexity_gate` is missing or `enabled` is `false`, skip classification and use the standard parallel dispatch below (v5.1 behavior).
+
+### Parallel Task Dispatch (Legacy — used when complexity gate is disabled)
+
+When the Task Complexity Classifier above is disabled or missing, Phase 4 falls back to dependency-aware parallel execution without lane separation:
 
 1. **Compute the ready set** — tasks where ALL entries in `depends_on` have status `done`
 2. **Group by skill** — organize ready tasks by their `skill` field

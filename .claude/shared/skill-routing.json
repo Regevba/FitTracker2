@@ -1,8 +1,8 @@
 {
-  "version": "4.0",
-  "updated": "2026-04-14T05:00:00Z",
+  "version": "4.1",
+  "updated": "2026-04-14T06:00:00Z",
   "framework_version": "5.1",
-  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1). v4.0 adds model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), speculative preloading (item 6), and systolic chain protocol (item 7).",
+  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1). v4.0 adds model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), speculative preloading (item 6), and systolic chain protocol (item 7). v4.1 adds task complexity gate (item 8) — big.LITTLE hybrid dispatch.",
   "load_mode": "on_demand",
   "model_tiering": {
     "enabled": true,
@@ -195,6 +195,49 @@
       "6_update_shared_layer": "Batch-write all state changes that accumulated during chain execution"
     },
     "fallback": "If no defined_chain matches, use v5.0 behavior (per-stage global reads allowed)"
+  },
+  "task_complexity_gate": {
+    "enabled": true,
+    "version": "1.0",
+    "description": "ARM big.LITTLE analog: classify each ready task by complexity before dispatch. Lightweight tasks run in parallel (E-core lane), heavyweight tasks run serially with full attention (P-core lane). Parallel lane executes first to clear backlog quickly.",
+    "classification": {
+      "heavyweight_indicators": {
+        "files_changed_gt_5": { "description": "Task touches more than 5 files", "weight": 2 },
+        "new_model_or_service": { "description": "Task introduces a new data model, service, or manager", "weight": 3 },
+        "token_budget_high": { "description": "Task requires deep reasoning, architecture decisions, or research synthesis", "weight": 2 },
+        "cross_feature_deps": { "description": "Task depends on or affects another feature's state", "weight": 2 },
+        "requires_judgment": { "description": "Task involves UX heuristic evaluation, risk assessment, or kill criteria", "weight": 3 }
+      },
+      "lightweight_indicators": {
+        "files_changed_lte_2": { "description": "Task touches 1-2 files", "weight": 2 },
+        "config_or_label_change": { "description": "Task is a config edit, label update, or CSV sync", "weight": 3 },
+        "token_budget_low": { "description": "Task is mechanical: boilerplate, template application, file generation", "weight": 2 },
+        "no_cross_feature_deps": { "description": "Task is fully self-contained within one feature", "weight": 1 },
+        "mechanical_work": { "description": "Task is deterministic with a known pattern (token check, rename, migration)", "weight": 2 }
+      },
+      "scoring": {
+        "method": "weighted_sum",
+        "heavyweight_threshold": 4,
+        "description": "Sum heavyweight indicator weights for matched indicators. If score >= threshold, task is heavyweight. Otherwise lightweight."
+      }
+    },
+    "lanes": {
+      "parallel": {
+        "alias": "E-core",
+        "description": "Lightweight tasks. Batched and executed concurrently. Model tier: sonnet.",
+        "model_tier": "sonnet",
+        "max_concurrent": 5,
+        "batch_eligible": true
+      },
+      "serial": {
+        "alias": "P-core",
+        "description": "Heavyweight tasks. Executed one at a time with full context. Model tier: opus.",
+        "model_tier": "opus",
+        "batch_eligible": false
+      }
+    },
+    "execution_order": "parallel_first_then_serial",
+    "fallback": "If task_complexity_gate is missing or disabled, all ready tasks use existing dependency-aware parallel dispatch (v5.1 behavior)"
   },
   "routing_rules": {
     "ui": { "primary": "dev", "secondary": ["design"] },

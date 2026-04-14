@@ -53,7 +53,8 @@
     "batch_dispatch": true,
     "result_forwarding": true,
     "speculative_preload": true,
-    "systolic_chains": true
+    "systolic_chains": true,
+    "task_complexity_gate": true
   },
   "v5_soc_optimizations": {
     "skill_on_demand": {
@@ -98,7 +99,13 @@
       "config_file": ".claude/shared/skill-routing.json",
       "inspiration": "TPU systolic array pipeline execution"
     },
-    "combined_savings": "~54K tokens (items 1+2) + dispatch reduction (item 3) + serialization elimination (item 4) + cost optimization (item 5) + latency reduction (item 6) + bottleneck elimination (item 7)"
+    "task_complexity_gate": {
+      "description": "ARM big.LITTLE analog: classify tasks by complexity, route lightweight to parallel E-core lane (sonnet) and heavyweight to serial P-core lane (opus). Parallel-first execution clears backlog fast.",
+      "config_key": "task_complexity_gate",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "ARM big.LITTLE heterogeneous CPU cores"
+    },
+    "combined_savings": "~54K tokens (items 1+2) + dispatch reduction (item 3) + serialization elimination (item 4) + cost optimization (item 5) + latency reduction (item 6) + bottleneck elimination (item 7) + complexity-aware dispatch (item 8)"
   },
   "integration_model": {
     "local_adapters": [

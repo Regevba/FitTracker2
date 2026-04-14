@@ -810,7 +810,7 @@ Full research: `docs/architecture/soc-software-architecture-research.md`
 | 5 | Model tiering (ANE mixed precision) | Low | Cost savings | **v5.1** |
 | 6 | Speculative pre-loading (branch prediction) | Medium | 30-40% latency reduction | **v5.1** |
 | 7 | Systolic chain protocol (TPU systolic array) | High | Eliminate global reads | **v5.1** |
-| 8 | Hybrid task dispatch (ARM big.LITTLE) | Medium | Parallel lightweight + serial heavyweight | **Designed** |
+| 8 | Hybrid task dispatch (ARM big.LITTLE) | Medium | Parallel lightweight + serial heavyweight | **v5.1** |
 
 ---
 
@@ -870,6 +870,18 @@ Each skill in a defined chain receives ONLY upstream output + own L1 cache. No g
 
 Config: `skill-routing.json` → `systolic_chains` with `defined_chains` (3 chains, 2-5 stages each). Hub protocol: SKILL.md "Systolic Chain Protocol" section.
 
+### Item 8: Hybrid Task Dispatch (ARM big.LITTLE)
+
+ARM big.LITTLE uses heterogeneous cores: P-cores for heavy threads, E-cores for light threads. OS scheduler classifies each thread and routes accordingly.
+
+Hub equivalent: before dispatching ready tasks, a **task complexity classifier** scores each task against heavyweight indicators (files>5, new model/service, high token budget, cross-feature deps, requires judgment). Weighted scoring — threshold >= 4 → P-core (serial), < 4 → E-core (parallel).
+
+- Config: `skill-routing.json` → `task_complexity_gate` with `classification` (weighted indicators), `lanes` (parallel/serial), `execution_order: "parallel_first_then_serial"`
+- Hub protocol: SKILL.md "Task Complexity Classifier" section runs BEFORE "Parallel Task Dispatch"
+- E-core lane: lightweight tasks batched, concurrent (max 5), model tier sonnet
+- P-core lane: heavyweight tasks one-at-a-time, full context, model tier opus
+- Composes with: model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), systolic chains (item 7)
+
 ### Updated Dependency Map
 
 ```
@@ -880,6 +892,7 @@ CLAUDE.md (rules)
         ├─→ Result Forwarding: skill output → inline to next skill
         ├─→ Speculative Preload: current skill → pre-load next skill's cache
         ├─→ Systolic Chains: multi-skill pipeline → isolated execution
+        ├─→ Task Complexity Gate: ready tasks → classify → E-core/P-core lanes
         ├─→ /ux, /design, /dev, /qa (spoke skills)
         ├─→ state.json, skill-routing.json, task-queue.json
         └─→ change-log.json → all skills notified
@@ -889,6 +902,6 @@ CLAUDE.md (rules)
 
 | File | Version | Key additions |
 | --- | --- | --- |
-| `skill-routing.json` | 3.0 → 4.0 | `model_tiering`, `batch_dispatch`, `result_forwarding`, `speculative_preload`, `systolic_chains` |
-| `framework-manifest.json` | 1.1 → 1.2 | 5 capability flags, 5 optimization entries |
-| `pm-workflow/SKILL.md` | v5.0 → v5.1 | 5 new protocol sections (~150 lines) |
+| `skill-routing.json` | 3.0 → 4.1 | `model_tiering`, `batch_dispatch`, `result_forwarding`, `speculative_preload`, `systolic_chains`, `task_complexity_gate` |
+| `framework-manifest.json` | 1.1 → 1.2 | 6 capability flags, 6 optimization entries |
+| `pm-workflow/SKILL.md` | v5.0 → v5.1 | 6 new protocol sections (~200 lines) |
