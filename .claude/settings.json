@@ -75,12 +75,29 @@
       "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(f'PR#67 | {c[\\\\\"path\\\\\"]} | {c[\\\\\"body\\\\\"][:200]}'\\) for c in data]\")",
       "Bash(awk 'NR>=4055 && NR<=4075')",
       "Bash(cat /Volumes/DevSSD/FitTracker2/.build/DerivedData/Logs/Test/*.xcresult/*.log)",
-      "Bash(find /Volumes/DevSSD/FitTracker2/.build/DerivedData/Logs/Test -name \"*.xcresult\" -exec ls -la {} \\\\;)"
+      "Bash(find /Volumes/DevSSD/FitTracker2/.build/DerivedData/Logs/Test -name \"*.xcresult\" -exec ls -la {} \\\\;)",
+      "Bash(git rm:*)",
+      "Bash(npm run:*)",
+      "Bash(grep -o \"sourceTruthScore[^,}]*\" /Volumes/DevSSD/FitTracker2/dashboard/dist/_astro/*.js)",
+      "Bash(grep -l \"v4.3\\\\|operations\\\\|control room\\\\|case.study\\\\|maintenance\" /Volumes/DevSSD/FitTracker2/docs/skills/*.md)",
+      "Bash(npx vitest:*)",
+      "Bash(wc -l /Volumes/DevSSD/FitTracker2/dashboard/tests/*.js /Volumes/DevSSD/FitTracker2/dashboard/tests/*.jsx)",
+      "Bash(curl -s \"https://scholar.google.com/scholar?q=software+engineering+experiment+design+framework+improvement+measurement\")",
+      "Bash(vercel --version)",
+      "Bash(npm i:*)",
+      "Bash(vercel project:*)",
+      "Bash(vercel --prod)",
+      "Bash(vercel deploy:*)",
+      "Bash(vercel ls:*)",
+      "Bash(awk '{print $1}')",
+      "Bash(grep -l \"v5.0\\\\|v5.1\\\\|hub\\\\|orchestrat\" /Volumes/DevSSD/FitTracker2/docs/skills/*.md)",
+      "Read(//dev/**)"
     ],
     "additionalDirectories": [
       "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",
       "/Volumes/DevSSD/FitTracker2/.claude/features",
-      "/Volumes/DevSSD/FitTracker2/.claude/features/training-plan-v2"
+      "/Volumes/DevSSD/FitTracker2/.claude/features/training-plan-v2",
+      "/Volumes/DevSSD/FitTracker2"
     ]
   },
   "hooks": {
