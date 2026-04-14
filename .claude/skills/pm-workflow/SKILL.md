@@ -1,17 +1,19 @@
 ---
 name: pm-workflow
-description: "Start or resume a v5.0 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. Invoke with /pm-workflow {feature-name}."
+description: "Start or resume a v5.1 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. v5.1 adds model tiering, batch dispatch, result forwarding, speculative cache pre-loading, and systolic chain protocol. Invoke with /pm-workflow {feature-name}."
 ---
 
 # Product Management Lifecycle: $ARGUMENTS
 
 You are orchestrating the feature **"$ARGUMENTS"** through the complete product management lifecycle. Every phase requires explicit user approval before proceeding to the next.
 
-## Skill Loading Protocol (v5.0 — On-Demand)
+## Skill Loading Protocol (v5.1 — On-Demand + Model Tiering)
 
 Before starting any phase, check `.claude/shared/skill-routing.json` → `phase_skills` for the current phase. Load ONLY the listed SKILL.md files — do NOT load all 11 skills.
 
-1. Read `skill-routing.json` → `phase_skills[current_phase]` → get skill list (e.g. `["ux", "design"]`)
+1. Read `skill-routing.json` → `phase_skills[current_phase]`
+   - If the value is an **array**: use it as the skill list directly (v5.0 format, no tier)
+   - If the value is an **object**: read `.skills` for the skill list, `.model_tier` for the tier recommendation
 2. Load `.claude/skills/{skill}/SKILL.md` for each listed skill
 3. For cache: load `compressed_view` fields from `.claude/cache/` by default (≤200 words each)
 4. Only expand full cache entries when the compressed view is insufficient — set `expand_cache: true` mentally
@@ -19,6 +21,174 @@ Before starting any phase, check `.claude/shared/skill-routing.json` → `phase_
 **Why:** Loading all 11 SKILL.md files costs ~38K tokens. Most phases need only 1-2 skills. On-demand loading saves ~30K tokens/session. Cache compression saves another ~24K tokens.
 
 **Fallback:** If `phase_skills` is missing or `load_mode` is not `on_demand`, fall back to loading all skills (v4.4 behavior).
+
+## Model Tiering Protocol (v5.1 — ANE Mixed Precision)
+
+After loading phase skills, check `skill-routing.json` → `model_tiering` for the current phase's recommended model tier.
+
+1. Read the `model_tier` field from `phase_skills[current_phase]` (only present if value is an object)
+2. If `model_tiering.enabled` is `true` and a tier is found, announce: "Recommended model: **{tier}** ({reason})"
+3. **Opus phases** (judgment): research, prd, ux_or_integration, review
+4. **Sonnet phases** (mechanical): tasks, implementation, testing, merge, documentation, learn
+
+**User override:** The user can always override the tier recommendation. This is advisory, not enforced.
+
+**Fallback:** If `model_tiering` is missing or `enabled` is `false`, default to opus for all phases.
+
+## Batch Dispatch Protocol (v5.1 — TPU Weight-Stationary)
+
+When the user requests an operation that applies the same skill/command to multiple targets (e.g., "audit all screens", "validate analytics for all features"), use batch dispatch instead of individual invocations.
+
+### Detection
+
+Batch dispatch is appropriate when:
+- The user explicitly requests a multi-target operation ("audit screens X, Y, Z")
+- Phase 0 of a parent feature spawns multiple child audits
+- Analytics taxonomy sync needs to run across multiple features
+
+### Execution
+
+1. Check `skill-routing.json` → `batch_dispatch.supported_operations` for a matching operation
+2. If found:
+   a. **Load template once** — read the `template_source` file into context
+   b. **Iterate targets** — for each target, apply the template and collect results
+   c. **Aggregate** — produce a single report with per-target sections
+   d. **Write individual** — if `output_pattern` is set, write per-target files
+3. If not found in `supported_operations`, fall back to sequential individual dispatches
+
+### Supported Batch Operations
+
+| Operation | Skill | Template | Targets |
+|-----------|-------|----------|---------|
+| `audit` | /ux | ux-foundations.md | Screen files (Swift) |
+| `design_compliance` | /design | design-system.json | UX spec files |
+| `analytics_taxonomy_sync` | /analytics | analytics-taxonomy.csv | Feature PRD files |
+
+### Example: Batch Audit
+
+User: "Audit all 6 screens for v2 alignment"
+
+1. Load `docs/design-system/ux-foundations.md` (template — load ONCE)
+2. For each screen in [Home, Training, Nutrition, Stats, Settings, Onboarding]:
+   a. Read the current v1 Swift file
+   b. Apply UX foundations audit pattern
+   c. Collect findings (P0/P1/P2 with tractability tags)
+3. Produce aggregated report: `v2-batch-audit-report.md`
+4. Write individual: `.claude/features/{screen}/v2-audit-report.md` per screen
+
+**Savings:** 1 template load + N screen reads = N+1 reads. Without batch: N × (template + screen) = 2N reads. For N=6: 7 vs 12 reads + 5 fewer hub dispatch cycles.
+
+**Fallback:** If `batch_dispatch` config is missing from `skill-routing.json`, each target is dispatched individually (v5.0 behavior).
+
+## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
+
+When skills execute in a known chain (e.g., Phase 3 dispatch chain), pass the output of each skill inline to the next skill instead of writing to disk and re-reading.
+
+### When to Forward
+
+Check `skill-routing.json` → `result_forwarding.eligible_chains` for the current skill transition. If a matching chain exists and `result_forwarding.enabled` is `true`:
+
+1. Execute the source skill and capture its full output
+2. **Write to disk** (always — for audit trail and fallback)
+3. **Forward inline** — pass the output directly to the next skill in context
+4. **Tag the forwarded content** with `_forwarded_from: "{skill}:{command}"` so the receiving skill knows it does not need to read from disk
+
+### Receiving Skill Behavior
+
+When a skill detects `_forwarded_from` in its context:
+1. **Skip disk read** of the forwarded artifact
+2. Use the in-context content directly
+3. Log: "Using forwarded content from {source} — skipped disk read of {path}"
+
+### Phase 3 Dispatch Chain (Optimized)
+
+| Step | Dispatch | Output | Forwarded to |
+|------|----------|--------|-------------|
+| 3a | `/ux audit {feature}` | v2-audit-report | Step 3b (inline) |
+| 3b | `/ux research {feature}` | ux-research | Step 3c (inline) |
+| 3c | `/ux spec {feature}` | ux-spec | Steps 3d, 3e, 3f (inline) |
+| 3d | `/ux validate {feature}` | validation report | Step 3e (inline) |
+| 3e | `/design audit` | compliance report | Steps 3f, 3g (inline) |
+| 3f | `/ux prompt {feature}` | ux-build.md | disk only |
+| 3g | `/design prompt {feature}` | design-build.md | disk only |
+
+Each step writes to disk AND forwards inline. The receiving step skips its disk read.
+
+**Fallback:** If `result_forwarding` config is missing or `_forwarded_from` is absent, the receiving skill reads from disk (v5.0 behavior).
+
+## Speculative Cache Pre-loading (v5.1 — Branch Prediction)
+
+When a skill starts execution, speculatively pre-load the compressed cache views for the skill that is most likely to run next.
+
+### Protocol
+
+1. On skill start, read `skill-routing.json` → `speculative_preload.successor_map[current_skill]`
+2. If found and `speculative_preload.enabled` is `true`:
+   a. Read `likely_next` and `confidence` from the successor entry
+   b. If confidence >= 0.85: pre-load each cache entry in `preload[]` using `compressed_view` only
+   c. Tag pre-loaded entries as `_speculative: true`
+3. When the next skill actually starts:
+   a. If it matches `likely_next`: the speculative entries become the warm cache (Phase 1 cache check is instant)
+   b. If it does NOT match: discard speculative entries (cost: ~3K tokens, 1.5% of budget)
+
+### Misprediction Handling
+
+- Misprediction cost is bounded at `misprediction_budget_tokens` (3,000 tokens)
+- Only `compressed_view` fields are pre-loaded (never full cache entries)
+- Prediction accuracy is tracked in `change-log.json` as `speculative_prediction` events
+- If hit rate drops below `hit_rate_target` (0.85), the hub logs a warning and the user can disable speculative preloading
+
+### Successor Map Key Format
+
+Keys use `skill:command` format for sub-command-level prediction, or just `skill` for skill-level prediction:
+- `ux:spec` → predicts `design:audit` (Phase 3 chain)
+- `dev` → predicts `qa` (implementation → testing)
+
+**Fallback:** If `speculative_preload` config is missing, no pre-loading occurs (v5.0 behavior).
+
+## Systolic Chain Protocol (v5.1 — TPU Systolic Array)
+
+For defined multi-skill chains, execute in pipeline mode: each skill receives ONLY upstream output + its own L1 cache. No global shared-layer reads mid-execution.
+
+### When to Use
+
+Check `skill-routing.json` → `systolic_chains.defined_chains` for a matching chain based on the current phase and work type:
+- `v2_refactor_pipeline`: Phase 3 for v2 refactor work subtypes
+- `new_feature_ux_pipeline`: Phase 3 for new UI features
+- `implementation_pipeline`: Phase 4 → Phase 5
+
+### Full Isolation Mode
+
+For chains with `isolation_level: "full"` (UX/design pipelines):
+
+1. **Chain start:** Hub identifies the matching chain and loads the first stage's inputs
+2. **Per stage:**
+   a. Skill receives ONLY items listed in its `receives[]` (from upstream output or initial inputs)
+   b. Skill has access to its own L1 cache (`compressed_view` only)
+   c. Skill does NOT read from shared layer (`.claude/shared/*.json`)
+   d. Skill produces its `produces` artifact
+   e. Output is forwarded inline to the next stage (per Result Forwarding protocol)
+3. **Chain end:** After ALL stages complete:
+   a. All artifacts are batch-written to disk
+   b. Shared layer is updated with all accumulated state changes
+   c. `state.json` transitions are recorded
+
+### Partial Isolation Mode
+
+For chains with `isolation_level: "partial"` (implementation pipeline):
+
+1. Each stage receives upstream output + L1 cache (same as full)
+2. Each stage MAY read from shared layer when `reads_global: true` is set for that stage
+3. Write-back happens after each stage (not batched)
+
+### Isolation Guarantee
+
+The key invariant: in full isolation, the shared layer is NEVER read between chain start and chain end. This means:
+- No Amdahl's Law bottleneck on the shared-layer read path
+- Each stage's context window contains only what it needs
+- The shared layer is a write-back target, like a register file in hardware
+
+**Fallback:** If no matching chain exists in `systolic_chains.defined_chains`, use standard per-skill execution with shared-layer reads (v5.0 behavior).
 
 ## Setup
 

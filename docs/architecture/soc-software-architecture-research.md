@@ -1,8 +1,8 @@
 # SoC-on-Software Architecture Research
 
-> **Status:** Items 1+2 IMPLEMENTED (2026-04-14). Framework bumped to v5.0.
-> **Context:** PM hub v4.2 → v5.0 acceleration path.
-> **Impact:** ~54K tokens reclaimable (27% of context window) with low effort.
+> **Status:** All 7 items IMPLEMENTED (Items 1+2 in v5.0, Items 3-7 in v5.1). Framework at v5.1.
+> **Context:** PM hub v4.2 → v5.0 → v5.1 acceleration path.
+> **Impact:** ~54K tokens reclaimed (items 1+2) + dispatch reduction, serialization elimination, cost optimization, latency reduction, bottleneck elimination (items 3-7).
 
 ## Problem Statement
 
@@ -92,15 +92,15 @@ Each skill receives only upstream output + own L1 cache. No global reads mid-exe
 
 | # | Optimization | Tokens Saved | Effort | Status |
 |---|---|---|---|---|
-| 1 | Skill-on-demand loading | ~30K/session | Low | **Ready** |
-| 2 | Cache compression (compressed_view) | ~24K/session | Low | **Ready** |
-| 3 | Batch skill invocation | 5x fewer dispatches | Medium | Planned |
-| 4 | Result forwarding | Eliminates write-read cycle | Medium | Planned |
-| 5 | Model tiering | Cost savings | Low | Partially active |
-| 6 | Speculative pre-loading | 30-40% latency | Medium | Planned |
-| 7 | Systolic chain protocol | Eliminate global reads | High | Future |
+| 1 | Skill-on-demand loading | ~30K/session | Low | **Implemented (v5.0)** |
+| 2 | Cache compression (compressed_view) | ~24K/session | Low | **Implemented (v5.0)** |
+| 3 | Batch skill invocation | 5x fewer dispatches | Medium | **Implemented (v5.1)** |
+| 4 | Result forwarding | Eliminates write-read cycle | Medium | **Implemented (v5.1)** |
+| 5 | Model tiering | Cost savings | Low | **Implemented (v5.1)** |
+| 6 | Speculative pre-loading | 30-40% latency | Medium | **Implemented (v5.1)** |
+| 7 | Systolic chain protocol | Eliminate global reads | High | **Implemented (v5.1)** |
 
-**Items 1+2 reclaim ~54K tokens (27% of context window) with minimal effort.**
+**All 7 items implemented. Items 1+2 reclaim ~54K tokens (27% of context window). Items 3-7 add dispatch reduction, serialization elimination, cost optimization, latency reduction, and bottleneck elimination.**
 
 ## Academic References
 
@@ -114,7 +114,9 @@ Each skill receives only upstream output + own L1 cache. No global reads mid-exe
 
 ## Next Steps
 
-1. Implement item 1 (skill-on-demand) — add `load_skills` to `skill-routing.json` phases
-2. Implement item 2 (cache compression) — add `compressed_view` to cache entry schema
-3. Measure actual token savings after items 1+2
-4. Plan items 3+4 based on measured results
+1. ~~Implement item 1 (skill-on-demand)~~ — **Done (v5.0)**
+2. ~~Implement item 2 (cache compression)~~ — **Done (v5.0)**
+3. ~~Measure actual token savings after items 1+2~~ — **Done: ~54K tokens saved**
+4. ~~Implement items 3-7~~ — **Done (v5.1)**
+5. Measure combined savings from all 7 items
+6. Explore item 8+ if further optimizations are needed (tiling, sparsity, etc.)

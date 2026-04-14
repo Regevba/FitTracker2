@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-14 (v5.0 update)
-> **Status:** v5.0 — SoC-on-Software optimizations (skill-on-demand + cache compression) + all prior capabilities
+> **Date:** 2026-04-14 (v5.1 update)
+> **Status:** v5.1 — Complete SoC-on-Software suite (7/7 items: skill-on-demand, cache compression, model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains) + all prior capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -801,12 +801,93 @@ This optimization is backed by academic research and industry practice:
 
 Full research: `docs/architecture/soc-software-architecture-research.md`
 
-### Future Items (v5.x roadmap)
+### Completed Items (v5.x roadmap)
 
-| # | Optimization | Effort | Expected Impact |
-| --- | --- | --- | --- |
-| 3 | Batch skill invocation (TPU weight-stationary) | Medium | 5x fewer dispatches |
-| 4 | Result forwarding (UMA zero-copy) | Medium | Eliminate write-read cycles |
-| 5 | Model tiering (ANE mixed precision) | Low | Cost savings |
-| 6 | Speculative pre-loading (branch prediction) | Medium | 30-40% latency reduction |
-| 7 | Systolic chain protocol (TPU systolic array) | High | Eliminate global reads |
+| # | Optimization | Effort | Expected Impact | Status |
+| --- | --- | --- | --- | --- |
+| 3 | Batch skill invocation (TPU weight-stationary) | Medium | 5x fewer dispatches | **v5.1** |
+| 4 | Result forwarding (UMA zero-copy) | Medium | Eliminate write-read cycles | **v5.1** |
+| 5 | Model tiering (ANE mixed precision) | Low | Cost savings | **v5.1** |
+| 6 | Speculative pre-loading (branch prediction) | Medium | 30-40% latency reduction | **v5.1** |
+| 7 | Systolic chain protocol (TPU systolic array) | High | Eliminate global reads | **v5.1** |
+
+---
+
+## 23. v5.1 — SoC-on-Software: Batch Dispatch, Result Forwarding, Model Tiering, Speculative Preloading, Systolic Chains (2026-04-14)
+
+### What Changed: v5.0 → v5.1
+
+v5.0 reclaimed ~54K tokens via skill-on-demand loading and cache compression. v5.1 completes the SoC-on-Software optimization suite with five additional hardware-inspired optimizations targeting dispatch overhead, serialization waste, cost efficiency, latency, and pipeline bottlenecks.
+
+| Aspect | v5.0 | v5.1 |
+| --- | --- | --- |
+| **SoC items implemented** | 2 of 7 | 7 of 7 |
+| **Dispatch model** | Individual per-skill per-target | Batch dispatch for multi-target operations |
+| **Inter-skill data flow** | Write-to-disk-read-back | Inline forwarding (disk for audit trail only) |
+| **Model selection** | User choice | Advisory tier per phase (sonnet/opus) |
+| **Cache loading** | On-demand, on skill start | Speculative pre-load of likely-next-skill cache |
+| **Pipeline protocol** | Per-skill with global reads | Systolic chains with full/partial isolation |
+
+### Item 5: Model Tiering (ANE Mixed Precision)
+
+Sonnet for mechanical phases (tasks, implementation, testing, merge, documentation, learn). Opus for judgment phases (research, prd, ux_or_integration, review). Advisory recommendation — user can always override.
+
+- Config: `skill-routing.json` → `model_tiering` + `phase_skills` objects with `.model_tier`
+- Hub protocol: SKILL.md "Model Tiering Protocol" section
+- Backward compat: if `phase_skills` value is an array, treat as v5.0 (no tier)
+
+### Item 3: Batch Skill Invocation (TPU Weight-Stationary)
+
+Load a skill template once, iterate N targets as data. Reduces dispatch overhead by N-1 for N-target operations.
+
+- Config: `skill-routing.json` → `batch_dispatch` with `supported_operations` (audit, design_compliance, analytics_taxonomy_sync)
+- Hub protocol: SKILL.md "Batch Dispatch Protocol" section
+- Example: Audit 6 screens = 1 template load + 6 screen reads (7 ops vs 12 without batch)
+
+### Item 4: Result Forwarding (UMA Zero-Copy)
+
+Pass skill output inline in context to next skill instead of write-to-disk-read-back. Disk artifacts still written for audit trail.
+
+- Config: `skill-routing.json` → `result_forwarding` with `eligible_chains` (ux→design, research→prd, audit→spec, spec→prompt, tasks→implement)
+- Hub protocol: SKILL.md "Result Forwarding Protocol" section with optimized Phase 3 dispatch chain table
+- Context flag: `_forwarded_from` signals receiving skill to skip disk read
+
+### Item 6: Speculative Cache Pre-loading (Branch Prediction)
+
+Pre-load likely-next-skill cache (compressed_view only) when current skill starts. Misprediction cost bounded at ~3K tokens (1.5%).
+
+- Config: `skill-routing.json` → `speculative_preload` with `successor_map` (10 entries, confidence 0.85-0.98)
+- Hub protocol: SKILL.md "Speculative Cache Pre-loading" section
+- Metrics: prediction hit rate tracked in `change-log.json`, target 0.85
+
+### Item 7: Systolic Chain Protocol (TPU Systolic Array)
+
+Each skill in a defined chain receives ONLY upstream output + own L1 cache. No global shared-layer reads mid-execution. Hybrid isolation model:
+
+- **Full isolation**: UX/design pipelines (`v2_refactor_pipeline`, `new_feature_ux_pipeline`). Shared layer is write-back only. Batch write-back after all stages complete.
+- **Partial isolation**: Implementation pipeline. Dev/QA may read globals (`reads_global: true`). Per-stage write-back.
+
+Config: `skill-routing.json` → `systolic_chains` with `defined_chains` (3 chains, 2-5 stages each). Hub protocol: SKILL.md "Systolic Chain Protocol" section.
+
+### Updated Dependency Map
+
+```
+CLAUDE.md (rules)
+  └─→ SKILL.md (pm-workflow)
+        ├─→ Model Tiering: phase → sonnet/opus recommendation
+        ├─→ Batch Dispatch: multi-target → single template load
+        ├─→ Result Forwarding: skill output → inline to next skill
+        ├─→ Speculative Preload: current skill → pre-load next skill's cache
+        ├─→ Systolic Chains: multi-skill pipeline → isolated execution
+        ├─→ /ux, /design, /dev, /qa (spoke skills)
+        ├─→ state.json, skill-routing.json, task-queue.json
+        └─→ change-log.json → all skills notified
+```
+
+### Config Changes Summary
+
+| File | Version | Key additions |
+| --- | --- | --- |
+| `skill-routing.json` | 3.0 → 4.0 | `model_tiering`, `batch_dispatch`, `result_forwarding`, `speculative_preload`, `systolic_chains` |
+| `framework-manifest.json` | 1.1 → 1.2 | 5 capability flags, 5 optimization entries |
+| `pm-workflow/SKILL.md` | v5.0 → v5.1 | 5 new protocol sections (~150 lines) |

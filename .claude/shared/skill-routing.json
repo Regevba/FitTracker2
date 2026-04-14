@@ -1,21 +1,200 @@
 {
-  "version": "3.0",
-  "updated": "2026-04-14T03:30:00Z",
-  "framework_version": "5.0",
-  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1) — hub loads only phase-relevant SKILL.md files instead of all 11.",
+  "version": "4.0",
+  "updated": "2026-04-14T05:00:00Z",
+  "framework_version": "5.1",
+  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1). v4.0 adds model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), speculative preloading (item 6), and systolic chain protocol (item 7).",
   "load_mode": "on_demand",
+  "model_tiering": {
+    "enabled": true,
+    "version": "1.0",
+    "description": "ANE mixed-precision analog: use sonnet for mechanical tasks, opus for judgment tasks. Mechanical tasks include file generation, token checks, template application, boilerplate. Judgment tasks include architecture decisions, review, research synthesis, UX heuristic evaluation.",
+    "tiers": {
+      "sonnet": {
+        "description": "Fast, cost-efficient. For mechanical, deterministic, template-driven work.",
+        "use_when": ["file_generation", "token_checks", "template_application", "boilerplate_code", "csv_sync", "label_updates"]
+      },
+      "opus": {
+        "description": "Deep reasoning. For judgment, synthesis, architecture, review.",
+        "use_when": ["architecture_decisions", "code_review", "ux_heuristic_evaluation", "research_synthesis", "risk_assessment", "kill_criteria_evaluation"]
+      }
+    },
+    "fallback": "opus"
+  },
   "phase_skills": {
-    "_description": "Maps each lifecycle phase to the 1-2 skills whose SKILL.md should be loaded. Hub loads ONLY these files instead of all 11. Saves ~30K tokens/session. Inspired by Apple LoRA adapter hot-swap.",
-    "research": ["research", "cx"],
-    "prd": ["pm-workflow", "analytics"],
-    "tasks": ["pm-workflow"],
-    "ux_or_integration": ["ux", "design"],
-    "implementation": ["dev", "design"],
-    "testing": ["qa", "analytics"],
-    "review": ["dev", "qa"],
-    "merge": ["release", "dev"],
-    "documentation": ["marketing", "cx"],
-    "learn": ["cx", "analytics", "ops"]
+    "_description": "Maps each lifecycle phase to the 1-2 skills whose SKILL.md should be loaded. Hub loads ONLY these files instead of all 11. Saves ~30K tokens/session. Inspired by Apple LoRA adapter hot-swap. v4.0 adds model_tier per phase (SoC item 5). If value is an array, treat as v5.0 format (no tier). If an object, read .skills for the skill list and .model_tier for the tier recommendation.",
+    "research": { "skills": ["research", "cx"], "model_tier": "opus" },
+    "prd": { "skills": ["pm-workflow", "analytics"], "model_tier": "opus" },
+    "tasks": { "skills": ["pm-workflow"], "model_tier": "sonnet" },
+    "ux_or_integration": { "skills": ["ux", "design"], "model_tier": "opus" },
+    "implementation": { "skills": ["dev", "design"], "model_tier": "sonnet" },
+    "testing": { "skills": ["qa", "analytics"], "model_tier": "sonnet" },
+    "review": { "skills": ["dev", "qa"], "model_tier": "opus" },
+    "merge": { "skills": ["release", "dev"], "model_tier": "sonnet" },
+    "documentation": { "skills": ["marketing", "cx"], "model_tier": "sonnet" },
+    "learn": { "skills": ["cx", "analytics", "ops"], "model_tier": "sonnet" }
+  },
+  "batch_dispatch": {
+    "enabled": true,
+    "version": "1.0",
+    "description": "TPU weight-stationary analog: load a skill template once, iterate over multiple targets as data. Reduces dispatch overhead by N-1 for N-target operations.",
+    "supported_operations": {
+      "audit": {
+        "skill": "ux",
+        "command": "audit",
+        "template_source": "docs/design-system/ux-foundations.md",
+        "target_type": "screen_files",
+        "output_pattern": ".claude/features/{feature}/v2-audit-report.md",
+        "max_batch_size": 10
+      },
+      "design_compliance": {
+        "skill": "design",
+        "command": "audit",
+        "template_source": ".claude/shared/design-system.json",
+        "target_type": "ux_spec_files",
+        "output_pattern": ".claude/features/{feature}/compliance-report.md",
+        "max_batch_size": 10
+      },
+      "analytics_taxonomy_sync": {
+        "skill": "analytics",
+        "command": "validate",
+        "template_source": "docs/product/analytics-taxonomy.csv",
+        "target_type": "feature_prd_files",
+        "output_pattern": ".claude/features/{feature}/taxonomy-sync.md",
+        "max_batch_size": 20
+      }
+    },
+    "protocol": {
+      "1_load_template": "Load the template/pattern set once into context",
+      "2_iterate_targets": "For each target in the batch, apply template and collect results",
+      "3_aggregate_output": "Produce a single aggregated report with per-target sections",
+      "4_write_individual": "Optionally write per-target output files if output_pattern is set"
+    }
+  },
+  "result_forwarding": {
+    "enabled": true,
+    "version": "1.0",
+    "description": "M-series UMA zero-copy analog: pass skill output inline in context to the next skill instead of write-to-disk-read-back. Shared layer becomes write-back target only. Disk artifacts are still written for audit trail, but the next skill reads from context, not disk.",
+    "eligible_chains": {
+      "ux_to_design": {
+        "from": { "skill": "ux", "command": "spec" },
+        "to": { "skill": "design", "command": "audit" },
+        "forwarded_artifact": "ux-spec content",
+        "disk_write": true,
+        "disk_path": ".claude/features/{feature}/ux-spec.md"
+      },
+      "research_to_prd": {
+        "from": { "skill": "research", "command": "feature" },
+        "to": { "skill": "pm-workflow", "command": "prd" },
+        "forwarded_artifact": "research findings",
+        "disk_write": true,
+        "disk_path": ".claude/features/{feature}/research.md"
+      },
+      "audit_to_ux_spec": {
+        "from": { "skill": "ux", "command": "audit" },
+        "to": { "skill": "ux", "command": "spec" },
+        "forwarded_artifact": "v2-audit-report content",
+        "disk_write": true,
+        "disk_path": ".claude/features/{feature}/v2-audit-report.md"
+      },
+      "ux_spec_to_ux_prompt": {
+        "from": { "skill": "ux", "command": "spec" },
+        "to": { "skill": "ux", "command": "prompt" },
+        "forwarded_artifact": "ux-spec content",
+        "disk_write": true,
+        "disk_path": ".claude/features/{feature}/ux-spec.md"
+      },
+      "tasks_to_implement": {
+        "from": { "skill": "pm-workflow", "command": "tasks" },
+        "to": { "skill": "dev", "command": "implement" },
+        "forwarded_artifact": "task list with dependencies",
+        "disk_write": true,
+        "disk_path": ".claude/features/{feature}/tasks.md"
+      }
+    },
+    "context_flag": "_forwarded_from",
+    "protocol": {
+      "1_execute_source": "Execute the source skill, capture its output",
+      "2_write_to_disk": "Write artifact to disk for audit trail (always)",
+      "3_forward_inline": "Pass output directly to next skill in context instead of instructing next skill to read from disk",
+      "4_next_skill_skips_read": "Next skill detects _forwarded_from flag and skips disk read of that artifact"
+    },
+    "fallback": "If _forwarded_from is absent, next skill reads from disk (v5.0 behavior)"
+  },
+  "speculative_preload": {
+    "enabled": true,
+    "version": "1.0",
+    "description": "Branch prediction analog: pre-load likely-next-skill cache when current skill runs. Validated by arxiv 2510.04371 and 2603.18897.",
+    "misprediction_budget_tokens": 3000,
+    "misprediction_budget_percent": 1.5,
+    "successor_map": {
+      "research": { "likely_next": ["pm-workflow"], "confidence": 0.95, "preload": ["L1:pm-workflow"] },
+      "pm-workflow:prd": { "likely_next": ["pm-workflow:tasks"], "confidence": 0.98, "preload": ["L1:pm-workflow"] },
+      "pm-workflow:tasks": { "likely_next": ["ux", "dev"], "confidence": 0.85, "preload": ["L1:ux", "L1:dev"] },
+      "ux:research": { "likely_next": ["ux:spec"], "confidence": 0.95, "preload": ["L1:ux"] },
+      "ux:spec": { "likely_next": ["design:audit"], "confidence": 0.92, "preload": ["L1:design"] },
+      "ux:audit": { "likely_next": ["ux:spec"], "confidence": 0.90, "preload": ["L1:ux"] },
+      "design:audit": { "likely_next": ["ux:prompt", "design:prompt"], "confidence": 0.88, "preload": ["L1:ux", "L1:design"] },
+      "dev": { "likely_next": ["qa"], "confidence": 0.95, "preload": ["L1:qa"] },
+      "qa": { "likely_next": ["dev:review"], "confidence": 0.90, "preload": ["L1:dev"] },
+      "dev:review": { "likely_next": ["release"], "confidence": 0.85, "preload": ["L1:release"] }
+    },
+    "protocol": {
+      "1_on_skill_start": "Look up current skill in successor_map",
+      "2_if_found": "Load compressed_view of each entry listed in preload[]",
+      "3_tag_as_speculative": "Mark preloaded cache entries as _speculative: true",
+      "4_on_next_skill_start": "If next skill matches likely_next, preloaded entries become warm (skip disk read)",
+      "5_on_misprediction": "If next skill does NOT match, discard speculative entries (cost: ~3K tokens)"
+    },
+    "metrics": {
+      "track_predictions": true,
+      "hit_rate_target": 0.85,
+      "log_to": ".claude/shared/change-log.json"
+    }
+  },
+  "systolic_chains": {
+    "enabled": true,
+    "version": "1.0",
+    "description": "TPU systolic array analog: each skill in a chain receives ONLY upstream output + own L1 cache. No global shared-layer reads mid-execution. Shared layer is write-back only.",
+    "defined_chains": {
+      "v2_refactor_pipeline": {
+        "stages": [
+          { "skill": "ux", "command": "audit", "receives": ["v1_file_content"], "produces": "v2-audit-report", "reads_global": false },
+          { "skill": "ux", "command": "spec", "receives": ["v2-audit-report"], "produces": "ux-spec", "reads_global": false },
+          { "skill": "design", "command": "audit", "receives": ["ux-spec"], "produces": "compliance-report", "reads_global": false },
+          { "skill": "ux", "command": "prompt", "receives": ["ux-spec", "compliance-report"], "produces": "ux-build-prompt", "reads_global": false },
+          { "skill": "design", "command": "prompt", "receives": ["ux-spec", "compliance-report"], "produces": "design-build-prompt", "reads_global": false }
+        ],
+        "write_back_after": "all_stages_complete",
+        "isolation_level": "full"
+      },
+      "new_feature_ux_pipeline": {
+        "stages": [
+          { "skill": "ux", "command": "research", "receives": ["prd_content"], "produces": "ux-research", "reads_global": false },
+          { "skill": "ux", "command": "spec", "receives": ["ux-research", "prd_content"], "produces": "ux-spec", "reads_global": false },
+          { "skill": "ux", "command": "validate", "receives": ["ux-spec"], "produces": "validation-report", "reads_global": false },
+          { "skill": "design", "command": "audit", "receives": ["ux-spec"], "produces": "compliance-report", "reads_global": false }
+        ],
+        "write_back_after": "all_stages_complete",
+        "isolation_level": "full"
+      },
+      "implementation_pipeline": {
+        "stages": [
+          { "skill": "dev", "command": "implement", "receives": ["task_list", "ux-spec"], "produces": "implementation", "reads_global": true },
+          { "skill": "qa", "command": "test", "receives": ["implementation"], "produces": "test-results", "reads_global": true }
+        ],
+        "write_back_after": "each_stage",
+        "isolation_level": "partial"
+      }
+    },
+    "protocol": {
+      "1_chain_start": "Hub identifies which defined_chain matches the current phase sequence",
+      "2_load_inputs": "Load the chain's first stage inputs + that skill's L1 cache (compressed_view)",
+      "3_execute_stage": "Skill executes with ONLY its receives[] + L1 cache. No shared-layer reads.",
+      "4_forward_output": "Output flows to next stage's receives[] (inline, per result_forwarding protocol)",
+      "5_write_back": "After chain completes (or per-stage if partial), write all artifacts to disk and update shared layer",
+      "6_update_shared_layer": "Batch-write all state changes that accumulated during chain execution"
+    },
+    "fallback": "If no defined_chain matches, use v5.0 behavior (per-stage global reads allowed)"
   },
   "routing_rules": {
     "ui": { "primary": "dev", "secondary": ["design"] },

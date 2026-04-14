@@ -1,7 +1,7 @@
 {
-  "version": "1.1",
-  "updated": "2026-04-14T03:35:00Z",
-  "framework_version": "5.0",
+  "version": "1.2",
+  "updated": "2026-04-14T05:00:00Z",
+  "framework_version": "5.1",
   "description": "Canonical framework manifest for the PM-flow ecosystem. Stores the current framework version, structural counts, source-of-truth metadata, and active operational capabilities so docs and dashboards can reference one shared definition.",
   "structure": {
     "hub_skills": 1,
@@ -48,7 +48,12 @@
     "maintenance_programs": true,
     "external_sync_monitoring": true,
     "skill_on_demand_loading": true,
-    "cache_compression": true
+    "cache_compression": true,
+    "model_tiering": true,
+    "batch_dispatch": true,
+    "result_forwarding": true,
+    "speculative_preload": true,
+    "systolic_chains": true
   },
   "v5_soc_optimizations": {
     "skill_on_demand": {
@@ -63,7 +68,37 @@
       "version_field": "compression_version",
       "inspiration": "Apple 3.7-bit palettization"
     },
-    "combined_savings": "~54K tokens (27% of 200K context window)"
+    "model_tiering": {
+      "description": "ANE mixed-precision analog: sonnet for mechanical phases, opus for judgment phases. Advisory tier recommendation per phase.",
+      "config_key": "model_tiering",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "Apple ANE FP16/FP32 mixed precision"
+    },
+    "batch_dispatch": {
+      "description": "TPU weight-stationary analog: load template once, iterate N targets. 5x fewer dispatches for multi-target operations.",
+      "config_key": "batch_dispatch",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "TPU weight-stationary dataflow"
+    },
+    "result_forwarding": {
+      "description": "UMA zero-copy analog: pass skill output inline to next skill. Eliminates write-to-disk-read-back serialization overhead.",
+      "config_key": "result_forwarding",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "M-series Unified Memory Architecture zero-copy"
+    },
+    "speculative_preload": {
+      "description": "Branch prediction analog: pre-load likely-next-skill cache on skill start. 30-40% latency reduction on skill chains.",
+      "config_key": "speculative_preload",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "CPU branch prediction, validated by arxiv 2510.04371"
+    },
+    "systolic_chains": {
+      "description": "TPU systolic array analog: isolated pipeline execution. Each skill receives only upstream output + own L1 cache. No global reads mid-chain. Hybrid isolation: full for UX/design, partial for implementation.",
+      "config_key": "systolic_chains",
+      "config_file": ".claude/shared/skill-routing.json",
+      "inspiration": "TPU systolic array pipeline execution"
+    },
+    "combined_savings": "~54K tokens (items 1+2) + dispatch reduction (item 3) + serialization elimination (item 4) + cost optimization (item 5) + latency reduction (item 6) + bottleneck elimination (item 7)"
   },
   "integration_model": {
     "local_adapters": [
