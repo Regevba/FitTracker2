@@ -132,5 +132,5 @@ Hub equivalent: classify each ready task by complexity before dispatch. Route li
 3. ~~Measure actual token savings after items 1+2~~ — **Done: ~54K tokens saved**
 4. ~~Implement items 3-7~~ — **Done (v5.1)**
 5. ~~Implement item 8 (big.LITTLE task dispatch)~~ — **Done (v5.1)**
-6. Measure combined savings from all 8 items
+6. ~~Measure combined savings from all 8 items~~ — **Done. See `docs/architecture/soc-savings-report-v5.1.md`. Result: 63% framework overhead reduction (121K → 45K tokens per phase). Free context nearly doubled (78K → 155K).**
 7. Explore item 9+ if further optimizations are needed (tiling, sparsity, etc.)
