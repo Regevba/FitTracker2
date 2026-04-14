@@ -156,9 +156,14 @@ Remote: pushed to origin/claude/load-v5.1-plan-oApRG
 
 1. `git checkout claude/load-v5.1-plan-oApRG`
 2. Read this file for full context
-3. **Priority 1:** Implement Item 8 (big.LITTLE Task Dispatch) — the user's request from a previous session that wasn't saved
+3. **FIRST TASK — Task Complexity Classifier:** Build the classification engine that inspects each ready task and assigns it to a serial (P-core) or parallel (E-core) lane. This is the core mechanism of Item 8. Deliverables:
+   - Add `task_complexity_gate` to `skill-routing.json` with classification heuristics (files_changed, new_model_or_service, token_budget, cross_feature_deps, requires_judgment) and threshold rules
+   - Add "Task Complexity Classifier" section to `pm-workflow/SKILL.md` that runs BEFORE the existing "Parallel Task Dispatch" section (line 674). The classifier triages each ready task, then the dispatch section executes the two lanes (parallel-first, then serial)
+   - Compose with Item 5 (model tiering): lightweight→sonnet, heavyweight→opus
+   - Compose with Item 3 (batch dispatch): multiple lightweight tasks in parallel lane can batch
+   - Update `framework-manifest.json` capability flags + `evolution.md` status
 4. **Priority 2:** Merge v5.1 branch to main when ready
-5. **Priority 3:** Measure combined savings from all 7+1 items (Next Steps #5 in research doc)
+5. **Priority 3:** Measure combined savings from all 8 items (Next Steps #6 in research doc)
 
 ## Key File Paths (Quick Reference)
 
