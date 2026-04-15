@@ -1,9 +1,9 @@
 {
   "feature": "import-training-plan",
   "created": "2026-04-11T00:00:00Z",
-  "updated": "2026-04-11T00:00:00Z",
+  "updated": "2026-04-15T17:35:00Z",
   "branch": null,
-  "current_phase": "research",
+  "current_phase": "prd",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -13,8 +13,8 @@
   "parent_feature": null,
   "phases": {
     "research": {
-      "status": "pending",
-      "note": "New feature — needs full research phase. Scope: import training plans from external sources (CSV, JSON, PDF, OCR photos, share extension, paste-to-parse, AI agent conversations). Key unknowns: (1) which sources to support first, (2) exercise name mapping strategy to FitMe's 87-exercise library, (3) how to handle progression rules (linear, wave, percentage-based), (4) whether imported plans replace or supplement the default 6-day PPL split, (5) how to parse unstructured AI conversation output (markdown tables vs prose vs code blocks), (6) whether to preserve the original prompt for regeneration via FitMe's AI engine. Related: /research feature import-training-plan, /ux research, competitive analysis of Hevy/Strong/Fitbod import UX."
+      "status": "approved",
+      "approved_at": "2026-04-15T17:35:00Z"
     },
     "prd": {
       "status": "pending"
@@ -24,7 +24,7 @@
     },
     "ux_or_integration": {
       "status": "pending",
-      "note": "New UI surface — Phase 3 non-skippable per CLAUDE.md. Must produce ux-spec.md before any view code. Mapping confirmation UI needs careful UX design (auto-accept + manual review for ambiguous cases)."
+      "note": "New UI surface \u2014 Phase 3 non-skippable per CLAUDE.md. Must produce ux-spec.md before any view code. Mapping confirmation UI needs careful UX design (auto-accept + manual review for ambiguous cases)."
     },
     "implementation": {
       "status": "pending"
@@ -48,25 +48,32 @@
       "to": "research",
       "timestamp": "2026-04-11T00:00:00Z",
       "approved_by": "user",
-      "note": "New feature added to backlog. Scope: import training plans from external sources (Hevy, Strong, Fitbod, Jefit, spreadsheets, PDFs, photos, share extension, paste-to-parse). Research phase pending — awaiting prioritization."
+      "note": "New feature added to backlog. Scope: import training plans from external sources (Hevy, Strong, Fitbod, Jefit, spreadsheets, PDFs, photos, share extension, paste-to-parse). Research phase pending \u2014 awaiting prioritization."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-15T17:35:00Z",
+      "approved_by": "user",
+      "note": "Research complete \u2014 parser strategy, exercise mapping, AI paste support"
     }
   ],
   "tasks": [],
   "source_investigation_areas": [
-    "CSV/JSON import — simplest format, used by Strong/Hevy export",
-    "PDF text extraction — reuse OCR from nutrition feature",
-    "Photo OCR — handwritten/printed whiteboard or printouts",
-    "Share extension — iOS native app-to-app sharing",
-    "Paste-to-parse — from chat/email, pattern-matched parsing",
-    "AI conversation paste — ChatGPT/Claude/Gemini/Perplexity/custom GPTs full conversation or excerpt",
-    "AI prompt preservation — store the original prompt used to generate the plan, allow re-running via FitMe's AI engine",
-    "Exercise name mapping — ML or rule-based, 87-exercise target library",
-    "Progression rules — linear, wave, percentage-based, RPE-based",
-    "Program structure — day splits, phases, deload weeks",
-    "Format detection — auto-detect whether pasted text is markdown table, numbered list, prose, or code block"
+    "CSV/JSON import \u2014 simplest format, used by Strong/Hevy export",
+    "PDF text extraction \u2014 reuse OCR from nutrition feature",
+    "Photo OCR \u2014 handwritten/printed whiteboard or printouts",
+    "Share extension \u2014 iOS native app-to-app sharing",
+    "Paste-to-parse \u2014 from chat/email, pattern-matched parsing",
+    "AI conversation paste \u2014 ChatGPT/Claude/Gemini/Perplexity/custom GPTs full conversation or excerpt",
+    "AI prompt preservation \u2014 store the original prompt used to generate the plan, allow re-running via FitMe's AI engine",
+    "Exercise name mapping \u2014 ML or rule-based, 87-exercise target library",
+    "Progression rules \u2014 linear, wave, percentage-based, RPE-based",
+    "Program structure \u2014 day splits, phases, deload weeks",
+    "Format detection \u2014 auto-detect whether pasted text is markdown table, numbered list, prose, or code block"
   ],
   "ai_agent_sources": {
-    "description": "Users frequently ask ChatGPT/Claude/other assistants for training plans. These plans come in varied formats — markdown tables, numbered lists, prose, code blocks. FitMe should parse all common output styles and optionally preserve the original prompt for regeneration.",
+    "description": "Users frequently ask ChatGPT/Claude/other assistants for training plans. These plans come in varied formats \u2014 markdown tables, numbered lists, prose, code blocks. FitMe should parse all common output styles and optionally preserve the original prompt for regeneration.",
     "examples": [
       "ChatGPT: '6-day PPL split for hypertrophy, 4 sets per exercise, 8-12 reps, RPE 7-8'",
       "Claude: markdown table with exercises, sets, reps, notes per day",
@@ -83,7 +90,7 @@
       "Progression rules (add weight when RPE drops, etc.)",
       "Notes, cues, form reminders"
     ],
-    "regeneration_flow": "If user saves the original prompt, FitMe can re-run it via its own AI engine (AIOrchestrator/FoundationModelService) to produce variations — e.g., 'same plan but with dumbbell substitutions' or 'adapted for my current readiness score'. This turns FitMe into a personalized plan generator that learns from external prompts."
+    "regeneration_flow": "If user saves the original prompt, FitMe can re-run it via its own AI engine (AIOrchestrator/FoundationModelService) to produce variations \u2014 e.g., 'same plan but with dumbbell substitutions' or 'adapted for my current readiness score'. This turns FitMe into a personalized plan generator that learns from external prompts."
   },
   "success_criteria_draft": {
     "primary_metric": "import_success_rate",
@@ -100,15 +107,15 @@
     ]
   },
   "competitive_research_targets": [
-    "Hevy — CSV export/import UX",
-    "Strong — iCloud backup/restore format",
-    "Fitbod — coach plan import",
-    "Jefit — workout plan sharing",
-    "MacroFactor — template library UX",
-    "Caliber — coach assignment flow",
-    "ChatGPT fitness GPTs — output format patterns",
-    "Trainerize — coach-to-client plan handoff",
-    "Notion fitness templates — markdown table parsing patterns"
+    "Hevy \u2014 CSV export/import UX",
+    "Strong \u2014 iCloud backup/restore format",
+    "Fitbod \u2014 coach plan import",
+    "Jefit \u2014 workout plan sharing",
+    "MacroFactor \u2014 template library UX",
+    "Caliber \u2014 coach assignment flow",
+    "ChatGPT fitness GPTs \u2014 output format patterns",
+    "Trainerize \u2014 coach-to-client plan handoff",
+    "Notion fitness templates \u2014 markdown table parsing patterns"
   ],
-  "transitions_note_v2": "2026-04-11: Scope expanded to include AI agent prompt parsing. Users often generate plans via ChatGPT/Claude/other assistants — FitMe should parse these varied outputs and optionally preserve the original prompt for regeneration via its own AI engine."
+  "transitions_note_v2": "2026-04-11: Scope expanded to include AI agent prompt parsing. Users often generate plans via ChatGPT/Claude/other assistants \u2014 FitMe should parse these varied outputs and optionally preserve the original prompt for regeneration via its own AI engine."
 }
