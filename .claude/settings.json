@@ -97,7 +97,12 @@
       "Bash(grep \"Version.*Date\\\\|Updated.*2026\" /Volumes/DevSSD/FitTracker2/docs/skills/*.md)",
       "Bash(find /Volumes/DevSSD/FitTracker2/FitTracker -name \"*.swift\" -exec grep -l \"SupabaseRuntimeConfiguration\" {} \\\\;)",
       "Bash(git reset:*)",
-      "Bash(git merge feature/onboarding-v2-auth-flow --no-ff -m ':*)"
+      "Bash(git merge feature/onboarding-v2-auth-flow --no-ff -m ':*)",
+      "mcp__plugin_figma_figma__get_design_context",
+      "mcp__plugin_figma_figma__get_screenshot",
+      "Bash(curl -sL \"https://www.figma.com/api/mcp/asset/9aa00584-1c75-43f3-8a88-e2db650e1a02\" -o /tmp/figma_test.png)",
+      "mcp__plugin_figma_figma__use_figma",
+      "Read(//Users/regevbarak/Downloads/**)"
     ],
     "additionalDirectories": [
       "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",
