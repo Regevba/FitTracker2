@@ -67,37 +67,45 @@ struct ValidatedRecommendation: Sendable {
     // MARK: - Completeness
 
     private static func computeCompleteness(segment: AISegment, snapshot: LocalUserSnapshot) -> Double {
-        let fields: [Any?]
+        // Use explicit Bool checks instead of fragile Any?/string-interpolation approach
+        let checks: [Bool]
         switch segment {
         case .training:
-            fields = [
-                snapshot.ageYears, snapshot.genderIdentity, snapshot.bmiValue,
-                snapshot.activeWeeks, snapshot.programPhase, snapshot.trainingDaysPerWeek,
-                snapshot.avgSessionMinutes, snapshot.primaryGoal
+            checks = [
+                snapshot.ageYears != nil,
+                snapshot.genderIdentity != nil,
+                snapshot.bmiValue != nil,
+                snapshot.activeWeeks != nil,
+                snapshot.programPhase != nil,
+                snapshot.trainingDaysPerWeek != nil,
+                snapshot.avgSessionMinutes != nil,
+                snapshot.primaryGoal != nil
             ]
         case .nutrition:
-            fields = [
-                snapshot.caloricBalanceDelta, snapshot.dailyProteinGrams,
-                snapshot.proteinTargetGrams, snapshot.mealsPerDay, snapshot.dietPattern
+            checks = [
+                snapshot.caloricBalanceDelta != nil,
+                snapshot.dailyProteinGrams != nil,
+                snapshot.proteinTargetGrams != nil,
+                snapshot.mealsPerDay != nil,
+                snapshot.dietPattern != nil
             ]
         case .recovery:
-            fields = [
-                snapshot.avgSleepHours, snapshot.sleepQuality,
-                snapshot.restingHeartRate, snapshot.stressLevel
+            checks = [
+                snapshot.avgSleepHours != nil,
+                snapshot.sleepQuality != nil,
+                snapshot.restingHeartRate != nil,
+                snapshot.stressLevel != nil
             ]
         case .stats:
-            fields = [
-                snapshot.weeklySessionCount, snapshot.weeklyActiveMinutes,
-                snapshot.avgDailySteps, snapshot.workoutConsistency
+            checks = [
+                snapshot.weeklySessionCount != nil,
+                snapshot.weeklyActiveMinutes != nil,
+                snapshot.avgDailySteps != nil,
+                snapshot.workoutConsistency != nil
             ]
         }
-        let filled = fields.filter { value in
-            if let optional = value as? (any ExpressibleByNilLiteral) {
-                return "\(optional)" != "nil"
-            }
-            return true
-        }.count
-        return fields.isEmpty ? 0 : Double(filled) / Double(fields.count)
+        let filled = checks.filter { $0 }.count
+        return checks.isEmpty ? 0 : Double(filled) / Double(checks.count)
     }
 
     // MARK: - Freshness

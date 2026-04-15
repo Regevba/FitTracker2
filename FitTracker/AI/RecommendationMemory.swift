@@ -15,7 +15,8 @@ enum UserAction: String, Codable, Sendable {
 
 // MARK: - RecommendationOutcome
 
-struct RecommendationOutcome: Codable, Sendable {
+struct RecommendationOutcome: Codable, Sendable, Identifiable {
+    let id: UUID
     let segment: String          // AISegment raw value
     let signals: [String]
     let confidenceLevel: String  // "high", "medium", "low"
@@ -23,6 +24,17 @@ struct RecommendationOutcome: Codable, Sendable {
     let action: UserAction
     let dismissReason: String?   // only for dismissed
     let timestamp: Date
+
+    init(segment: String, signals: [String], confidenceLevel: String, source: String, action: UserAction, dismissReason: String? = nil, timestamp: Date = Date()) {
+        self.id = UUID()
+        self.segment = segment
+        self.signals = signals
+        self.confidenceLevel = confidenceLevel
+        self.source = source
+        self.action = action
+        self.dismissReason = dismissReason
+        self.timestamp = timestamp
+    }
 }
 
 // MARK: - RecommendationMemory
@@ -58,7 +70,9 @@ final class RecommendationMemory: @unchecked Sendable {
     }
 
     func acceptanceRate(for segment: AISegment) -> Double? {
-        let segmentOutcomes = outcomes(for: segment).filter { $0.action != .ignored }
+        lock.lock()
+        defer { lock.unlock() }
+        let segmentOutcomes = outcomes.filter { $0.segment == segment.rawValue && $0.action != .ignored }
         guard segmentOutcomes.count >= 5 else { return nil }
         let accepted = segmentOutcomes.filter { $0.action == .accepted }.count
         return Double(accepted) / Double(segmentOutcomes.count)
@@ -66,7 +80,9 @@ final class RecommendationMemory: @unchecked Sendable {
 
     /// Signals that were frequently dismissed — candidates for suppression or reframing.
     func frequentlyDismissedSignals(for segment: AISegment, threshold: Int = 3) -> [String] {
-        let dismissed = outcomes(for: segment).filter { $0.action == .dismissed }
+        lock.lock()
+        defer { lock.unlock() }
+        let dismissed = outcomes.filter { $0.segment == segment.rawValue && $0.action == .dismissed }
         var signalCounts: [String: Int] = [:]
         for outcome in dismissed {
             for signal in outcome.signals {
@@ -106,15 +122,14 @@ final class RecommendationMemory: @unchecked Sendable {
         outcomes = loaded
     }
 
+    /// LRU eviction using UUID-based identity (not timestamp matching).
     private func enforceLimit() {
         for segment in AISegment.allCases {
             let segmentOutcomes = outcomes.filter { $0.segment == segment.rawValue }
             if segmentOutcomes.count > maxEntriesPerSegment {
                 let excess = segmentOutcomes.count - maxEntriesPerSegment
-                let toRemove = segmentOutcomes.prefix(excess).map(\.timestamp)
-                outcomes.removeAll { outcome in
-                    outcome.segment == segment.rawValue && toRemove.contains(outcome.timestamp)
-                }
+                let idsToRemove = Set(segmentOutcomes.prefix(excess).map(\.id))
+                outcomes.removeAll { idsToRemove.contains($0.id) }
             }
         }
     }

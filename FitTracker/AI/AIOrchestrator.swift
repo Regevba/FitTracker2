@@ -29,7 +29,7 @@ public final class AIOrchestrator: ObservableObject {
     private let engineClient:   any AIEngineClientProtocol
     private let foundationModel: any FoundationModelProtocol
     private let snapshot:       () -> LocalUserSnapshot
-    let goalMode:               () -> NutritionGoalMode
+    var goalMode:               () -> NutritionGoalMode
 
     /// Minimum on-device confidence required to use personalised result.
     /// Below this threshold the unmodified cloud recommendation is used instead.

@@ -60,19 +60,16 @@ struct FitTrackerApp: App {
             engineClient:    client,
             foundationModel: foundationModel,
             snapshot: {
-                // Fallback snapshot — used when process(segment:) is called
-                // without an explicit overrideSnapshot. Returns empty snapshot
-                // rather than crashing. The primary path (processAll in
-                // onChange(of: signIn.activeSession)) always passes
-                // overrideSnapshot via buildSnapshot(), so this fallback
-                // should rarely execute. If it does, the AI engine will
-                // produce localFallback recommendations (safe degradation).
                 #if DEBUG
                 print("[AIOrchestrator] WARNING: Using empty fallback snapshot — caller should pass overrideSnapshot")
                 #endif
                 return LocalUserSnapshot()
             },
-            goalMode: { .fatLoss }
+            goalMode: {
+                // Default at init time. Updated to actual user preference
+                // when dataStore.loadFromDisk() completes in onChange(.active).
+                .fatLoss
+            }
         )
     }()
 
@@ -138,6 +135,10 @@ struct FitTrackerApp: App {
                             }
                             guard signIn.isAuthenticated else { return }
                             await dataStore.loadFromDisk()
+                            // Update AI engine with actual user goal (was default .fatLoss at init)
+                            aiOrchestrator.goalMode = { [weak dataStore] in
+                                dataStore?.userPreferences.nutritionGoalMode ?? .fatLoss
+                            }
                             // CloudKit (unchanged)
                             await cloudSync.fetchChanges(dataStore: dataStore)
                             // Supabase — incremental pull + realtime subscription

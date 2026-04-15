@@ -239,6 +239,7 @@ struct OnboardingAuthView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var confirmPassword = ""
+    @State private var birthday = Calendar.current.date(byAdding: .year, value: -25, to: Date()) ?? Date()
     @State private var formErrors: [String: String] = [:]
 
     private var emailRegistrationForm: some View {
@@ -264,6 +265,10 @@ struct OnboardingAuthView: View {
                 TextField("Last name", text: $lastName)
                     .textContentType(.familyName)
                 if let err = formErrors["lastName"] { Text(err).font(AppText.subheading).foregroundStyle(AppColor.Status.error) }
+
+                DatePicker("Birthday", selection: $birthday, displayedComponents: .date)
+                    .datePickerStyle(.compact)
+                    .font(AppText.body)
 
                 TextField("Email", text: $email)
                     .textContentType(.emailAddress)
@@ -293,7 +298,7 @@ struct OnboardingAuthView: View {
                         PendingEmailRegistration(
                             firstName: firstName.trimmingCharacters(in: .whitespaces),
                             lastName: lastName.trimmingCharacters(in: .whitespaces),
-                            birthday: Date(),
+                            birthday: birthday,
                             email: email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
                             password: password
                         )
