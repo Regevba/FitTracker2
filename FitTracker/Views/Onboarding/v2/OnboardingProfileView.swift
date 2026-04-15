@@ -140,6 +140,8 @@ private struct ExperienceCard: View {
             Text(label)
                 .font(AppText.callout)
                 .foregroundStyle(isSelected ? AppColor.Text.inversePrimary : AppColor.Text.secondary)
+                .minimumScaleFactor(0.8)
+                .lineLimit(1)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, AppSpacing.small)
                 .background(

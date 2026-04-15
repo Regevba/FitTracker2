@@ -199,17 +199,11 @@ struct FitTrackerApp: App {
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     // ── Auth state machine ────────────────────────────────
-    // onboarding (first launch) → welcome → signIn (sheet) → authenticated → biometricLock → app
+    // onboarding (includes auth at step 5) → authenticated → biometricLock → app
+    // Auth is embedded in onboarding — no separate AuthHubView.
     @ViewBuilder
     private var rootView: some View {
-        if !hasCompletedOnboarding, !isScreenReviewModeEnabled {
-            OnboardingView {
-                analytics.setOnboardingCompleted(true)
-            }
-            .environmentObject(healthService)
-            .environmentObject(analytics)
-            .environmentObject(dataStore)
-        } else if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
+        if isScreenReviewModeEnabled, isSettingsReviewModeEnabled {
             SettingsView()
                 .analyticsScreen(AnalyticsScreen.settings)
                 .environmentObject(signIn)
@@ -223,10 +217,17 @@ struct FitTrackerApp: App {
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
+        } else if !hasCompletedOnboarding, !isScreenReviewModeEnabled {
+            // First launch or signed out — onboarding includes auth at step 5
+            OnboardingView {
+                analytics.setOnboardingCompleted(true)
+            }
+            .environmentObject(healthService)
+            .environmentObject(signIn)
+            .environmentObject(analytics)
+            .environmentObject(dataStore)
         } else if signIn.isAuthenticated {
             if analytics.consent.gdprConsent == .pending && hasCompletedOnboarding {
-                // Fallback: user completed onboarding before consent was added,
-                // or consent state was reset. Show standalone consent screen.
                 ConsentView {
                     analytics.syncConsentToProvider()
                 }
@@ -246,16 +247,19 @@ struct FitTrackerApp: App {
                     .environmentObject(analytics)
             }
         } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
-            // Session exists but was locked for reopen — require biometric to resume
             LockScreenView()
                 .environmentObject(biometricAuth)
         } else {
-            AuthHubView()
-                .environmentObject(signIn)
-                .environmentObject(biometricAuth)
-                .environmentObject(settings)
-                .environmentObject(analytics)
-                .analyticsScreen(AnalyticsScreen.signIn)
+            // Not authenticated + onboarding complete = signed out.
+            // Reset onboarding to force re-auth via step 5.
+            OnboardingView {
+                analytics.setOnboardingCompleted(true)
+            }
+            .environmentObject(healthService)
+            .environmentObject(signIn)
+            .environmentObject(analytics)
+            .environmentObject(dataStore)
+            .onAppear { hasCompletedOnboarding = false }
         }
     }
 }

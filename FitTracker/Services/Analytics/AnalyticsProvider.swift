@@ -131,6 +131,18 @@ enum AnalyticsEvent {
     /// System or user permission result (HealthKit, notifications, etc.)
     static let permissionResult        = "permission_result"
 
+    // ── Onboarding Auth Events (custom) ────────────────────
+    /// User selects an auth method during onboarding
+    static let onboardingAuthMethodSelected = "onboarding_auth_method_selected"
+    /// User successfully creates account or logs in during onboarding
+    static let onboardingAuthCompleted      = "onboarding_auth_completed"
+    /// Auth attempt failed during onboarding
+    static let onboardingAuthFailed         = "onboarding_auth_failed"
+    /// Success animation shown after account creation
+    static let onboardingSuccessShown       = "onboarding_success_shown"
+    /// Session restore result on app launch
+    static let sessionRestoreResult         = "session_restore_result"
+
     // ── Settings Events (custom) ────────────────────────────
 
     /// User changes a setting
@@ -347,6 +359,13 @@ enum AnalyticsParam {
     // source already defined above — reuse for cloud/local/personalised pipeline source
     static let reason            = "reason"             // not_relevant/already_know/disagree/other — dismiss reason
 
+    // Onboarding auth parameters
+    // method already defined above — reuse for email/google/apple
+    static let isNewAccount      = "is_new_account"     // true/false — register vs login
+    static let errorType         = "error_type"         // cancelled/network/invalid_credentials/unknown
+    static let result            = "result"             // success/expired/failed/timeout — session restore
+    static let restoreTimeMs     = "restore_time_ms"    // int — session restore duration
+
     // Profile parameters
     static let field             = "field"
     static let oldValue          = "old_value"
@@ -386,6 +405,8 @@ enum AnalyticsScreen {
     static let onboardingProfile    = "onboarding_profile"
     static let onboardingHealthkit  = "onboarding_healthkit"
     static let onboardingFirstAction = "onboarding_first_action"
+    static let onboardingAuth        = "onboarding_auth"
+    static let onboardingSuccess     = "onboarding_success"
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
     static let bodyCompDetail    = "body_comp_detail"

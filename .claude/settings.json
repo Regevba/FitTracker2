@@ -94,7 +94,9 @@
       "Read(//dev/**)",
       "Bash(git merge feature/ai-engine-architecture-adaptation --no-ff -m ':*)",
       "Bash(grep -n \"^\\\\s*\\\\]$\" /Volumes/DevSSD/FitTracker2/.claude/shared/case-study-monitoring.json)",
-      "Bash(grep \"Version.*Date\\\\|Updated.*2026\" /Volumes/DevSSD/FitTracker2/docs/skills/*.md)"
+      "Bash(grep \"Version.*Date\\\\|Updated.*2026\" /Volumes/DevSSD/FitTracker2/docs/skills/*.md)",
+      "Bash(find /Volumes/DevSSD/FitTracker2/FitTracker -name \"*.swift\" -exec grep -l \"SupabaseRuntimeConfiguration\" {} \\\\;)",
+      "Bash(git reset:*)"
     ],
     "additionalDirectories": [
       "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",
