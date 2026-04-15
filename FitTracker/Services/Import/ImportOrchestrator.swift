@@ -6,7 +6,7 @@ final class ImportOrchestrator: ObservableObject {
     @Published var state: ImportState = .idle
     @Published var currentPlan: ImportedPlan?
 
-    private let parsers: [ImportParser] = [CSVImportParser()]
+    private let parsers: [ImportParser] = [JSONImportParser(), CSVImportParser()]
     private let mapper = ExerciseMapper()
 
     enum ImportState {

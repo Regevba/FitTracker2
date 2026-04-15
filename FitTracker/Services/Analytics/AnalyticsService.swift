@@ -654,6 +654,31 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Import Analytics
+
+    /// User initiates the import flow
+    func logImportStarted() {
+        logEvent(AnalyticsEvent.importStarted, parameters: nil)
+    }
+
+    /// User selects an import source (e.g. "paste", "file", "url")
+    func logImportSourceSelected(source: String) {
+        logEvent(AnalyticsEvent.importSourceSelected, parameters: [AnalyticsParam.itemCategory: source])
+    }
+
+    /// Training plan import completed; exerciseCount = total exercises, matchRate = 0-100
+    func logImportCompleted(exerciseCount: Int, matchRate: Int) {
+        logEvent(AnalyticsEvent.importCompleted, parameters: [
+            AnalyticsParam.quantity: exerciseCount,
+            "match_rate": matchRate,
+        ])
+    }
+
+    /// Import flow failed; reason is a short snake_case label (e.g. "unsupported_format", "network_error")
+    func logImportFailed(reason: String) {
+        logEvent(AnalyticsEvent.importFailed, parameters: [AnalyticsParam.itemCategory: reason])
+    }
+
     // MARK: - Profile Events
 
     /// Profile tab viewed
@@ -720,6 +745,24 @@ final class AnalyticsService: ObservableObject {
         if let freq = workoutFrequency {
             provider.setUserProperty(String(freq), forName: AnalyticsUserProperty.workoutFrequency)
         }
+    }
+
+    // MARK: - Notification Analytics
+
+    func logNotificationPermissionRequested() {
+        logEvent(AnalyticsEvent.notificationPermissionRequested, parameters: nil)
+    }
+
+    func logNotificationPermissionResult(granted: Bool) {
+        logEvent(granted ? AnalyticsEvent.notificationPermissionGranted : AnalyticsEvent.notificationPermissionDenied, parameters: nil)
+    }
+
+    func logNotificationScheduled(type: String) {
+        logEvent(AnalyticsEvent.notificationScheduled, parameters: [AnalyticsParam.itemCategory: type])
+    }
+
+    func logNotificationTapped(type: String) {
+        logEvent(AnalyticsEvent.notificationTapped, parameters: [AnalyticsParam.itemCategory: type])
     }
 
     // MARK: - Private

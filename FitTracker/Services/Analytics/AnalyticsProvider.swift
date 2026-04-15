@@ -226,6 +226,47 @@ enum AnalyticsEvent {
     /// User dismisses (thumbs-down) an AI recommendation
     static let aiRecommendationDismissed       = "ai_recommendation_dismissed"
 
+    // ── Import Events (custom) ─────────────────────────────
+
+    /// User initiates a training plan import flow
+    static let importStarted            = "import_started"
+    /// User selects an import source (paste/file/url)
+    static let importSourceSelected     = "import_source_selected"
+    /// Input successfully parsed into a plan structure
+    static let importParsed             = "import_parsed"
+    /// User confirms the exercise mapping and proceeds
+    static let importMappingConfirmed   = "import_mapping_confirmed"
+    /// Training plan import completed successfully (mark as conversion in GA4)
+    static let importCompleted          = "import_completed"
+    /// Import flow failed at any stage
+    static let importFailed             = "import_failed"
+
+    // MARK: - Notification Events
+    static let notificationPermissionRequested = "notification_permission_requested"
+    static let notificationPermissionGranted = "notification_permission_granted"
+    static let notificationPermissionDenied = "notification_permission_denied"
+    static let notificationScheduled = "notification_scheduled"
+    static let notificationDelivered = "notification_delivered"
+    static let notificationTapped = "notification_tapped"
+    static let notificationDismissed = "notification_dismissed"
+    static let notificationDisabled = "notification_disabled"
+    static let notificationPrimingShown = "notification_priming_shown"
+    static let notificationPrimingSkipped = "notification_priming_skipped"
+
+    // ── Smart Reminder Events (screen-prefixed: reminder_) ─
+    /// A smart reminder notification was scheduled by ReminderScheduler
+    static let reminderScheduled    = "reminder_scheduled"
+    /// A smart reminder notification was shown to the user
+    static let reminderShown        = "reminder_shown"
+    /// User tapped a smart reminder notification (deep-link fired)
+    static let reminderTapped       = "reminder_tapped"
+    /// User dismissed a smart reminder notification
+    static let reminderDismissed    = "reminder_dismissed"
+    /// User disabled a smart reminder type in settings
+    static let reminderDisabled     = "reminder_disabled"
+    /// A smart reminder was suppressed by frequency/quiet-hour guard
+    static let reminderSuppressed   = "reminder_suppressed"
+
     // ── Profile Events (screen-prefixed) ───────────────────
     /// User views the Profile tab
     static let profileTabViewed              = "profile_tab_viewed"
@@ -250,6 +291,10 @@ enum AnalyticsParam {
     static let method            = "method"           // login, sign_up
     static let contentType       = "content_type"     // share, select_content
     static let itemId            = "item_id"          // select_content
+
+    // Generic parameters
+    static let quantity          = "quantity"          // int — generic item count
+    static let itemCategory      = "item_category"     // string — generic category label
 
     // Workout parameters
     static let workoutType       = "workout_type"     // push/pull/legs/cardio/rest

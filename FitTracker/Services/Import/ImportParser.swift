@@ -60,6 +60,30 @@ struct CSVImportParser: ImportParser {
     }
 }
 
+// JSON Parser (T2)
+struct JSONImportParser: ImportParser {
+    func canParse(_ input: String) -> Bool {
+        guard let data = input.data(using: .utf8) else { return false }
+        return (try? JSONSerialization.jsonObject(with: data)) != nil
+    }
+
+    func parse(_ input: String) throws -> ImportedPlan {
+        guard let data = input.data(using: .utf8) else { throw ImportError.emptyInput }
+
+        // Try direct ImportedPlan decode first
+        if let plan = try? JSONDecoder().decode(ImportedPlan.self, from: data) {
+            return plan
+        }
+
+        // Try array-of-exercises format
+        if let exercises = try? JSONDecoder().decode([ImportedExercise].self, from: data) {
+            return ImportedPlan(name: "Imported Plan", days: [ImportedDay(name: "Day 1", exercises: exercises)])
+        }
+
+        throw ImportError.parsingFailed("JSON structure not recognized")
+    }
+}
+
 enum ImportError: Error, LocalizedError {
     case emptyInput
     case unsupportedFormat

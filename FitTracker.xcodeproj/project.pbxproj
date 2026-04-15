@@ -144,11 +144,14 @@
 		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
 		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
 		NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000003 /* NotificationContentBuilder.swift */; };
+		NT1000001000000000000004 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000004 /* DeepLinkHandler.swift */; };
 		RM1000001000000000000001 /* ReminderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000001 /* ReminderType.swift */; };
 		RM1000001000000000000002 /* ReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000002 /* ReminderScheduler.swift */; };
 		RM1000001000000000000003 /* ReminderTriggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000003 /* ReminderTriggers.swift */; };
 		IM100000000000000000AA01 /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA01 /* ImportParser.swift */; };
 		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
+		IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA03 /* ImportOrchestrator.swift */; };
+		IM100000000000000000AA04 /* ImportSourcePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA04 /* ImportSourcePickerView.swift */; };
 		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
 /* End PBXBuildFile section */
 
@@ -165,6 +168,8 @@
 /* Begin PBXFileReference section */
 		IM200000000000000000AA01 /* ImportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportParser.swift; sourceTree = "<group>"; };
 		IM200000000000000000AA02 /* ExerciseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseMapper.swift; sourceTree = "<group>"; };
+		IM200000000000000000AA03 /* ImportOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportOrchestrator.swift; sourceTree = "<group>"; };
+		IM200000000000000000AA04 /* ImportSourcePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSourcePickerView.swift; sourceTree = "<group>"; };
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
@@ -473,6 +478,7 @@
 				AI300000000000000000GR01 /* AI */,
 				PF300000000000000000GR01 /* Profile */,
 				NP300000000000000000GR01 /* Notifications */,
+				IM300000000000000000AA02 /* Import */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -547,6 +553,15 @@
 			children = (
 				IM200000000000000000AA01 /* ImportParser.swift */,
 				IM200000000000000000AA02 /* ExerciseMapper.swift */,
+				IM200000000000000000AA03 /* ImportOrchestrator.swift */,
+			);
+			path = Import;
+			sourceTree = "<group>";
+		};
+		IM300000000000000000AA02 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				IM200000000000000000AA04 /* ImportSourcePickerView.swift */,
 			);
 			path = Import;
 			sourceTree = "<group>";
@@ -1011,6 +1026,8 @@
 				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
 				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,
+				IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */,
+				IM100000000000000000AA04 /* ImportSourcePickerView.swift in Sources */,
 				NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

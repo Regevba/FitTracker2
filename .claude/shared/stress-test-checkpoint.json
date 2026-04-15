@@ -1,92 +1,39 @@
 {
   "experiment": "v5.1-parallel-stress-test",
-  "checkpoint": 5,
-  "timestamp": "2026-04-15T18:08:00Z",
-  "phases_completed": 5,
+  "checkpoint": 6,
+  "timestamp": "2026-04-15T18:12:00Z",
+  "phases_completed": 6,
   "total_transitions": 16,
-  "total_duration_minutes": 26,
-  "throughput_phases_per_minute": 0.62,
+  "total_duration_minutes": 30,
   "features": {
     "push-notifications": {
-      "current_phase": "implementation",
-      "tasks_done": "6/12",
-      "swift_files": 3,
-      "build": "SUCCEEDED"
+      "tasks_done": "7/12",
+      "swift_files": 4
     },
     "app-store-assets": {
-      "current_phase": "implementation",
-      "tasks_done": "4/10",
-      "deliverables": [
-        "script",
-        "metadata",
-        "xcassets"
-      ]
+      "tasks_done": "5/10",
+      "config_files": 3
     },
     "import-training-plan": {
-      "current_phase": "implementation",
-      "tasks_done": "2/13",
-      "swift_files": 2,
-      "build": "SUCCEEDED"
+      "tasks_done": "5/13",
+      "swift_files": 4
     },
     "smart-reminders": {
-      "current_phase": "implementation",
-      "tasks_done": "2/14",
-      "swift_files": 2,
-      "build": "SUCCEEDED"
+      "tasks_done": "4/14",
+      "swift_files": 3
     }
   },
   "code_stats": {
-    "total_swift_files": 9,
-    "total_swift_lines": 740,
-    "total_config_files": 3,
-    "total_doc_files": 16,
-    "builds_attempted": 2,
-    "builds_passed": 2,
-    "builds_failed": 0
-  },
-  "bottlenecks": [
-    {
-      "id": "B1",
-      "severity": "critical",
-      "description": ".claude/ write permissions",
-      "occurrences": 16,
-      "rate": "100%",
-      "status": "WORKAROUND (controller batches)"
-    },
-    {
-      "id": "B2",
-      "severity": "none",
-      "description": "pbxproj parallel edits",
-      "finding": "NO CONFLICTS \u2014 different ID prefixes"
-    },
-    {
-      "id": "B3",
-      "severity": "none",
-      "description": "Swift compilation under parallel load",
-      "finding": "BUILD SUCCEEDED 2/2"
-    },
-    {
-      "id": "B4",
-      "severity": "none",
-      "description": "Git merge conflicts",
-      "finding": "ZERO across all 5 phases"
-    }
-  ],
-  "research_ideas": [
-    "Pre-flight capability probe (v5.2)",
-    "Snapshot/rollback for code writes (v5.2)",
-    "Code region mirror pattern (v5.2)",
-    "Complexity-weighted adaptive dispatch (v5.2)"
-  ],
-  "quality": {
-    "prds_written": 4,
-    "tasks_files": 4,
-    "ux_specs": 4,
-    "swift_files": 9,
-    "scripts": 1,
-    "config_files": 2,
-    "rework_needed": 0,
+    "total_swift_files": 12,
+    "total_lines": 1100,
+    "builds_passed": 3,
+    "builds_failed": 0,
     "git_conflicts": 0,
-    "build_failures": 0
+    "pbxproj_concurrent_edits": 9,
+    "pbxproj_conflicts": 0
+  },
+  "new_findings": {
+    "agent_time_variance": "F3 took 561s (68 tool uses) vs F1 at 102s (15 tool uses) for similar complexity",
+    "tool_use_correlation": "More tool uses = longer execution but NOT better quality"
   }
 }

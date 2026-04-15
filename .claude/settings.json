@@ -146,7 +146,8 @@
       "Bash(open -a Simulator)",
       "Bash(defaults read *)",
       "Bash(/usr/libexec/PlistBuddy -c \"Print CFBundleIdentifier\" .build/DerivedData/Build/Products/Debug-iphonesimulator/FitTracker.app/Info.plist)",
-      "Bash(plutil -p .build/DerivedData/Build/Products/Debug-iphonesimulator/FitTracker.app/Info.plist)"
+      "Bash(plutil -p .build/DerivedData/Build/Products/Debug-iphonesimulator/FitTracker.app/Info.plist)",
+      "Read(//Volumes/DevSSD/FitTracker2/**)"
     ],
     "additionalDirectories": [
       "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",
