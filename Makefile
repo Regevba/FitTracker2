@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check install verify-local verify-web verify-ai verify-ios
+.PHONY: tokens tokens-check install verify-local verify-web verify-ai verify-ios app-icon
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -67,6 +67,17 @@ verify-ios:
 		-derivedDataPath $(TEST_DERIVED_DATA) \
 		CODE_SIGNING_ALLOWED=NO \
 		CODE_SIGNING_REQUIRED=NO
+
+app-icon:
+	@echo "Generating app icon sizes from 1024x1024 master..."
+	@sips -z 180 180 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-60@3x.png
+	@sips -z 120 120 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-60@2x.png
+	@sips -z 87 87 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-29@3x.png
+	@sips -z 80 80 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-40@2x.png
+	@sips -z 60 60 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-20@3x.png
+	@sips -z 58 58 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-29@2x.png
+	@sips -z 40 40 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-20@2x.png
+	@echo "Done. Verify in Xcode Assets catalog."
 
 # Auto-install on first run
 node_modules:
