@@ -12,14 +12,13 @@ describe('reconcile', () => {
 
   it('detects features in static data missing from GitHub', () => {
     const result = reconcile({
-      githubIssues: [],
+      githubIssues: [{ number: 99, title: 'Other Feature', labels: [], state: 'open' }],
       staticFeatures: [{ name: 'Training Tracking', phase: 'done' }],
       stateFiles: [],
     });
-    expect(result.alerts).toHaveLength(1);
-    expect(result.alerts[0].type).toBe('missing');
-    expect(result.alerts[0].severity).toBe('amber');
-    expect(result.alerts[0].message).toContain('Training Tracking');
+    const missing = result.alerts.filter(a => a.type === 'missing' && a.message.includes('Training Tracking'));
+    expect(missing).toHaveLength(1);
+    expect(missing[0].severity).toBe('amber');
     expect(result.sources.github.healthy).toBe(false);
   });
 
@@ -86,7 +85,7 @@ describe('reconcile', () => {
 
   it('detects state files without GitHub issues', () => {
     const result = reconcile({
-      githubIssues: [],
+      githubIssues: [{ number: 99, title: 'Other Feature', labels: [], state: 'open' }],
       staticFeatures: [],
       stateFiles: [{ feature: 'new-feature', current_phase: 'research' }],
     });

@@ -264,7 +264,8 @@ function buildFrameworkPulse(authoritativeFeatures, featureRegistry, taskQueue) 
     const sharedFeature = sharedMap.get(key);
     if (!sharedFeature) continue;
 
-    const staticStatus = staticFeature.phase === 'done' ? 'shipped' : 'planned';
+    const IN_PROGRESS_PHASES = new Set(['research', 'prd', 'tasks', 'ux', 'integration', 'implement', 'testing', 'review', 'merge', 'docs']);
+    const staticStatus = staticFeature.phase === 'done' ? 'shipped' : IN_PROGRESS_PHASES.has(staticFeature.phase) ? 'in_progress' : 'planned';
     const sharedStatus = sharedFeature.status || 'planned';
     if (staticStatus !== sharedStatus) {
       statusConflicts.push({

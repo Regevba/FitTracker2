@@ -5,37 +5,24 @@
     { "name": "Recovery & Biometrics", "slug": "recovery-biometrics", "phase": "done", "priority": null, "rice": null, "category": "product", "shipped": "2026-03-14", "prd": "2.3" },
     { "name": "Home / Today Screen", "slug": "home-today-screen", "phase": "done", "priority": null, "rice": null, "category": "product", "shipped": "2026-03-14", "prd": "2.4" },
     { "name": "Stats / Progress Hub", "slug": "stats-progress", "phase": "done", "priority": null, "rice": null, "category": "product", "shipped": "2026-03-14", "prd": "2.5" },
-    { "name": "Authentication", "slug": "authentication", "phase": "done", "priority": null, "rice": null, "category": "product", "shipped": "2026-03-25", "prd": "2.6" },
+    { "name": "Authentication", "slug": "authentication", "phase": "testing", "priority": null, "rice": null, "category": "product", "shipped": "2026-03-25", "prd": "2.6" },
     { "name": "Settings", "slug": "settings", "phase": "done", "priority": null, "rice": null, "category": "product", "shipped": "2026-03-25", "prd": "2.7" },
-    { "name": "Data & Sync (Encrypted)", "slug": "data-sync", "phase": "done", "priority": null, "rice": null, "category": "infra", "shipped": "2026-03-29", "prd": "2.8" },
+    { "name": "Data & Sync", "slug": "data-sync", "phase": "done", "priority": null, "rice": null, "category": "infra", "shipped": "2026-03-29", "prd": "2.8" },
     { "name": "AI / Cohort Intelligence", "slug": "ai-cohort-intelligence", "phase": "done", "priority": null, "rice": null, "category": "ai", "shipped": "2026-03-26", "prd": "2.9" },
     { "name": "Design System v2", "slug": "design-system-v2", "phase": "done", "priority": null, "rice": null, "category": "design", "shipped": "2026-04-01", "prd": "2.10" },
-    { "name": "PM Workflow Skill", "slug": "pm-workflow-skill", "phase": "done", "priority": null, "rice": null, "category": "process", "shipped": "2026-04-02", "prd": null },
+    { "name": "Onboarding", "slug": "onboarding", "phase": "done", "priority": "high", "rice": null, "category": "product", "shipped": "2026-04-07" },
     { "name": "Google Analytics (GA4)", "slug": "google-analytics", "phase": "done", "priority": "high", "rice": 8.0, "category": "measurement", "shipped": "2026-04-04" },
     { "name": "GDPR Compliance", "slug": "gdpr-compliance", "phase": "done", "priority": "critical", "rice": null, "category": "compliance", "shipped": "2026-04-04" },
-    { "name": "Android Design System", "slug": "android-design-system", "phase": "done", "priority": "medium", "rice": 4.8, "category": "platform", "shipped": "2026-04-04" },
     { "name": "Development Dashboard", "slug": "development-dashboard", "phase": "done", "priority": "high", "rice": null, "category": "process", "shipped": "2026-04-02" },
-    { "name": "Onboarding", "slug": "onboarding", "phase": "done", "priority": "high", "rice": null, "category": "product", "shipped": "2026-04-07" },
-    { "name": "AI Recommendation UI", "slug": "ai-recommendation-ui", "phase": "done", "priority": "high", "rice": null, "category": "product", "shipped": "2026-04-10" },
-    { "name": "Readiness Score Formula", "slug": "readiness-formula", "phase": "done", "priority": "medium", "rice": null, "category": "product", "shipped": "2026-04-10" },
-    { "name": "Marketing Website", "slug": "marketing-website", "phase": "done", "priority": "high", "rice": 4.3, "category": "marketing", "shipped": "2026-04-04" }
+    { "name": "Android Design System", "slug": "android-design-system", "phase": "done", "priority": "medium", "rice": 4.8, "category": "platform", "shipped": "2026-04-04" },
+    { "name": "Marketing Website", "slug": "marketing-website", "phase": "done", "priority": "high", "rice": 4.3, "category": "marketing", "shipped": "2026-04-04" },
+    { "name": "AI Engine Architecture Adaptation", "slug": "ai-engine-architecture-adaptation", "phase": "done", "priority": "high", "rice": null, "category": "intelligence", "shipped": "2026-04-15" }
   ],
   "planned": [
-    { "name": "Skills Operating System", "slug": "skills-os", "phase": "backlog", "priority": "high", "rice": 3.2, "category": "measurement", "eta": null, "task": 14 },
-    { "name": "CX System", "slug": "cx-system", "phase": "backlog", "priority": "high", "rice": 3.2, "category": "measurement", "eta": null, "task": 15 },
-    { "name": "Android Full App Research", "slug": "android-research", "phase": "backlog", "priority": "medium", "rice": 3.6, "category": "platform", "eta": null, "task": 3 },
-    { "name": "Health App API Connections", "slug": "health-apis", "phase": "backlog", "priority": "medium", "rice": 2.1, "category": "platform", "eta": null, "task": 10 },
-    { "name": "DEXA + Body Composition", "slug": "dexa-body-comp", "phase": "backlog", "priority": "medium", "rice": 2.0, "category": "product", "eta": null, "task": 11 },
-    { "name": "Blood Test Reader", "slug": "blood-test-reader", "phase": "backlog", "priority": "low", "rice": 1.3, "category": "product", "eta": null, "task": 9 },
-    { "name": "Skills Feature (In-App)", "slug": "skills-feature", "phase": "backlog", "priority": "low", "rice": 1.0, "category": "product", "eta": null, "task": 5 }
+    { "name": "Push Notifications", "slug": "push-notifications", "phase": "research", "priority": "high", "rice": null, "category": "engagement", "eta": null },
+    { "name": "App Icon + App Store Assets", "slug": "app-store-assets", "phase": "research", "priority": "high", "rice": null, "category": "release", "eta": null },
+    { "name": "Import Training Plan", "slug": "import-training-plan", "phase": "research", "priority": "high", "rice": null, "category": "product", "eta": null }
   ],
   "backlog": [
-    { "name": "Push Notifications", "slug": "push-notifications", "phase": "research", "priority": "high", "category": "engagement" },
-    { "name": "App Store Assets", "slug": "app-store-assets", "phase": "research", "priority": "high", "category": "marketing" },
-    { "name": "Import Training Plan", "slug": "import-training-plan", "phase": "research", "priority": "high", "category": "product" },
-    { "name": "Exercise Search/Filter", "slug": "exercise-search", "phase": "backlog", "priority": "medium", "category": "product" },
-    { "name": "Chart Goal Lines", "slug": "chart-goal-lines", "phase": "backlog", "priority": "medium", "category": "product" },
-    { "name": "Dark Mode Testing", "slug": "dark-mode-testing", "phase": "backlog", "priority": "medium", "category": "design" },
-    { "name": "Dynamic Type Compliance", "slug": "dynamic-type", "phase": "backlog", "priority": "medium", "category": "design" }
   ]
 }

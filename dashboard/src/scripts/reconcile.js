@@ -31,48 +31,51 @@ export function reconcile({ githubIssues = [], staticFeatures = [], stateFiles =
   const staticNames = new Set(staticFeatures.map(f => normalize(f.name)));
   const stateNames = new Set(stateFiles.map(s => normalize(s.feature)));
 
-  // Features in static data but not in GitHub
-  for (const feature of staticFeatures) {
-    const norm = normalize(feature.name);
-    if (!ghNames.has(norm)) {
-      alerts.push({
-        type: 'missing',
-        severity: 'amber',
-        message: `"${feature.name}" exists in repo data but has no GitHub Issue`,
-        feature: feature.name,
-        source: 'github',
-      });
-      sources.github.alerts++;
+  // Only check GitHub ↔ repo alignment when GitHub issues are available (GITHUB_TOKEN at build time)
+  if (githubIssues.length > 0) {
+    // Features in static data but not in GitHub
+    for (const feature of staticFeatures) {
+      const norm = normalize(feature.name);
+      if (!ghNames.has(norm)) {
+        alerts.push({
+          type: 'missing',
+          severity: 'amber',
+          message: `"${feature.name}" exists in repo data but has no GitHub Issue`,
+          feature: feature.name,
+          source: 'github',
+        });
+        sources.github.alerts++;
+      }
     }
-  }
 
-  // Features in GitHub but not in static data
-  for (const issue of githubIssues) {
-    const norm = normalize(issue.title);
-    if (!staticNames.has(norm)) {
-      alerts.push({
-        type: 'missing',
-        severity: 'info',
-        message: `GitHub Issue #${issue.number} "${issue.title}" not found in repo data files`,
-        feature: issue.title,
-        source: 'static',
-      });
-      sources.static.alerts++;
+    // Features in GitHub but not in static data
+    for (const issue of githubIssues) {
+      const norm = normalize(issue.title);
+      if (!staticNames.has(norm)) {
+        alerts.push({
+          type: 'missing',
+          severity: 'info',
+          message: `GitHub Issue #${issue.number} "${issue.title}" not found in repo data files`,
+          feature: issue.title,
+          source: 'static',
+        });
+        sources.static.alerts++;
+      }
     }
-  }
 
-  // State files without GitHub Issues
-  for (const state of stateFiles) {
-    const norm = normalize(state.feature);
-    if (!ghNames.has(norm)) {
-      alerts.push({
-        type: 'missing',
-        severity: 'amber',
-        message: `PM workflow "${state.feature}" (phase: ${state.current_phase}) has no GitHub Issue`,
-        feature: state.feature,
-        source: 'github',
-      });
-      sources.github.alerts++;
+    // State files without GitHub Issues
+    for (const state of stateFiles) {
+      const norm = normalize(state.feature);
+      if (!ghNames.has(norm)) {
+        alerts.push({
+          type: 'missing',
+          severity: 'amber',
+          message: `PM workflow "${state.feature}" (phase: ${state.current_phase}) has no GitHub Issue`,
+          feature: state.feature,
+          source: 'github',
+        });
+        sources.github.alerts++;
+      }
     }
   }
 
