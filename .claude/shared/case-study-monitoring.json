@@ -715,7 +715,7 @@
     {
       "case_id": "onboarding-v2-auth-flow-2026-04",
       "title": "Onboarding v2 Auth Flow — Embedded Account Creation",
-      "status": "in_progress",
+      "status": "complete",
       "work_type": "feature",
       "started_at": "2026-04-15T14:00:00Z",
       "updated_at": "2026-04-15T14:00:00Z",
@@ -739,16 +739,40 @@
         "source_truth_gap_detected": false,
         "source_truth_gap_reduced": false
       },
-      "success_cases": [],
+      "success_cases": [
+        { "title": "Full PM lifecycle in single session", "evidence": "Research → PRD → Tasks → UX → Implement → Test → Merge in one session. 8 phases, 12 tasks." },
+        { "title": "Session restore freeze resolved", "evidence": "Detached task + 5s timeout. No more UI freeze with real Supabase credentials." },
+        { "title": "Auth embedded in onboarding momentum", "evidence": "8-step flow follows Duolingo/Headspace pattern. Auth after consent = motivated ask." },
+        { "title": "Zero test regressions", "evidence": "198 tests pass (up from 197), 0 failures." }
+      ],
       "failure_cases": [],
-      "next_checkpoints": ["research_complete", "prd_approved", "tasks_approved", "ux_spec_approved"],
-      "artifacts": [],
+      "next_checkpoints": [],
+      "artifacts": [
+        ".claude/features/onboarding-v2-auth-flow/research.md",
+        ".claude/features/onboarding-v2-auth-flow/prd.md",
+        ".claude/features/onboarding-v2-auth-flow/tasks.md",
+        ".claude/features/onboarding-v2-auth-flow/ux-spec.md",
+        "FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift",
+        "FitTracker/Views/Onboarding/v2/OnboardingSuccessView.swift"
+      ],
       "snapshots": [
         {
           "timestamp": "2026-04-15T14:00:00Z",
           "label": "feature initiated",
           "summary": "Restructure onboarding: embed auth after consent, add success animation, fix app-wide layout issues, resolve session restore freeze.",
           "metrics": { "tests_passing": 197, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-15T15:00:00Z",
+          "label": "research + PRD + tasks + UX complete",
+          "summary": "4 phases completed: competitive analysis, PRD with 10 requirements + analytics spec, 12 tasks with dependency graph, UX spec for 2 new screens.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-15T16:00:00Z",
+          "label": "merged to main",
+          "summary": "PR #80 merged. 11 files, 627 insertions. 198 tests pass. 2 new views, session restore fixed, rootView simplified, 5 analytics events added.",
+          "metrics": { "tests_passing": 198, "build_verified": true }
         }
       ]
     }
