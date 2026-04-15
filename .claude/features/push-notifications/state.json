@@ -1,9 +1,9 @@
 {
   "feature": "push-notifications",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-15T17:42:00Z",
+  "updated": "2026-04-15T17:50:00Z",
   "branch": null,
-  "current_phase": "ux_or_integration",
+  "current_phase": "implementation",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -26,7 +26,9 @@
       "v2_count": 12
     },
     "ux_or_integration": {
-      "status": "pending"
+      "status": "approved",
+      "type": "ux",
+      "compliance_gateway": "6/6 pass"
     },
     "implementation": {
       "status": "pending"
@@ -72,6 +74,13 @@
       "timestamp": "2026-04-15T17:42:00Z",
       "approved_by": "user",
       "note": "12 tasks defined. Critical path: NotificationService \u2192 types \u2192 deep links \u2192 tests."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-15T17:50:00Z",
+      "approved_by": "user",
+      "note": "UX spec: permission priming, 3 notification types, timing rules, DS compliance."
     }
   ],
   "tasks": []

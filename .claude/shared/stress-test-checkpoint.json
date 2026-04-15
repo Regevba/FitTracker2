@@ -1,0 +1,51 @@
+{
+  "experiment": "v5.1-parallel-stress-test",
+  "checkpoint": 3,
+  "timestamp": "2026-04-15T17:50:00Z",
+  "phases_completed": 3,
+  "total_transitions": 12,
+  "total_duration_minutes": 14,
+  "throughput_phases_per_minute": 0.86,
+  "features": {
+    "push-notifications": {
+      "current_phase": "implementation",
+      "transitions": 5
+    },
+    "app-store-assets": {
+      "current_phase": "implementation",
+      "transitions": 5
+    },
+    "import-training-plan": {
+      "current_phase": "ux_or_integration",
+      "transitions": 4
+    },
+    "smart-reminders": {
+      "current_phase": "ux_or_integration",
+      "transitions": 5
+    }
+  },
+  "bottlenecks": [
+    {
+      "id": "B1",
+      "severity": "critical",
+      "description": ".claude/ write permissions denied for ALL subagents in ALL phases",
+      "occurrences": 12,
+      "rate": "100%",
+      "workaround": "controller batches all .claude/ writes",
+      "overhead_minutes": 6
+    },
+    {
+      "id": "B2",
+      "severity": "low",
+      "description": "new directory creation denied",
+      "occurrences": 1
+    }
+  ],
+  "quality": {
+    "prds_written": 4,
+    "tasks_written": 4,
+    "ux_specs_written": 2,
+    "rework_needed": 0,
+    "git_conflicts": 0
+  }
+}

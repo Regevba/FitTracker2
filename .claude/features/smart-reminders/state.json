@@ -1,8 +1,8 @@
 {
   "feature": "smart-reminders",
   "created": "2026-04-15T17:33:00Z",
-  "updated": "2026-04-15T17:42:00Z",
-  "current_phase": "tasks",
+  "updated": "2026-04-15T17:50:00Z",
+  "current_phase": "ux_or_integration",
   "work_type": "feature",
   "work_subtype": "new_capability",
   "has_ui": true,
@@ -29,6 +29,13 @@
       "timestamp": "2026-04-15T17:42:00Z",
       "approved_by": "user",
       "note": "PRD written. 5 reminder types, 20 requirements, phased rollout."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-15T17:50:00Z",
+      "approved_by": "user",
+      "note": "14 tasks. 5 reminder types, frequency caps, guest overlays, phased rollout."
     }
   ],
   "phases": {
@@ -42,7 +49,9 @@
       "approved_at": "2026-04-15T17:42:00Z"
     },
     "tasks": {
-      "status": "pending"
+      "status": "approved",
+      "task_file": ".claude/features/smart-reminders/tasks.md",
+      "v2_count": 14
     },
     "ux_or_integration": {
       "status": "pending"
