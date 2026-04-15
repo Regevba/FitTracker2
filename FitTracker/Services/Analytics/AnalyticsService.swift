@@ -612,6 +612,39 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Onboarding Auth Events
+
+    func logOnboardingAuthMethodSelected(method: String) {
+        logEvent(AnalyticsEvent.onboardingAuthMethodSelected, parameters: [
+            AnalyticsParam.method: method,
+        ])
+    }
+
+    func logOnboardingAuthCompleted(method: String, isNewAccount: Bool) {
+        logEvent(AnalyticsEvent.onboardingAuthCompleted, parameters: [
+            AnalyticsParam.method: method,
+            AnalyticsParam.isNewAccount: isNewAccount ? "true" : "false",
+        ])
+    }
+
+    func logOnboardingAuthFailed(method: String, errorType: String) {
+        logEvent(AnalyticsEvent.onboardingAuthFailed, parameters: [
+            AnalyticsParam.method: method,
+            AnalyticsParam.errorType: errorType,
+        ])
+    }
+
+    func logOnboardingSuccessShown() {
+        logEvent(AnalyticsEvent.onboardingSuccessShown, parameters: [:])
+    }
+
+    func logSessionRestoreResult(result: String, timeMs: Int) {
+        logEvent(AnalyticsEvent.sessionRestoreResult, parameters: [
+            AnalyticsParam.result: result,
+            AnalyticsParam.restoreTimeMs: "\(timeMs)",
+        ])
+    }
+
     // MARK: - Settings Events
 
     func logSettingsChanged(settingName: String, newValue: String) {

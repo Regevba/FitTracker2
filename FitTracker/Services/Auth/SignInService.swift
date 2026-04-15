@@ -339,6 +339,7 @@ final class SignInService: NSObject, ObservableObject {
 
     /// Restores a previous session. Checks Supabase for a live/refreshable JWT;
     /// updates the stored token if valid. Call from within a Task block at app launch.
+    /// Uses a 5-second timeout to prevent UI freeze if the network call hangs.
     func restoreSession(activateStoredSession: Bool = false) async {
         guard activeSession == nil else { return }
         guard SupabaseRuntimeConfiguration.isConfigured else {
@@ -346,12 +347,35 @@ final class SignInService: NSObject, ObservableObject {
             self.storedSession = nil
             return
         }
-        // 1. Ask Supabase if there's a live (or refreshable) session
-        if let supabaseSession = try? await supabase.auth.session {
+
+        // 1. Ask Supabase if there's a live (or refreshable) session — with 5s timeout
+        //    Uses a detached task so the network call doesn't block the main actor.
+        let sessionResult: String? = await withCheckedContinuation { continuation in
+            let work = Task.detached {
+                let session = try? await supabase.auth.session
+                return session?.accessToken
+            }
+            Task {
+                // Race: work vs 5-second timeout
+                let timeout = Task {
+                    try? await Task.sleep(for: .seconds(5))
+                    work.cancel()
+                    return nil as String?
+                }
+                if let token = await work.value {
+                    timeout.cancel()
+                    continuation.resume(returning: token)
+                } else {
+                    continuation.resume(returning: nil)
+                }
+            }
+        }
+
+        if let accessToken = sessionResult {
             // 2. Load UserSession metadata from Keychain and refresh the backend JWT
             if let data = KeychainHelper.load(key: Self.sessionKey),
                var stored = try? JSONDecoder().decode(UserSession.self, from: data) {
-                stored.backendAccessToken = supabaseSession.accessToken
+                stored.backendAccessToken = accessToken
                 self.storedSession = stored
                 if activateStoredSession {
                     self.activeSession = stored
@@ -359,7 +383,8 @@ final class SignInService: NSObject, ObservableObject {
                 return
             }
         }
-        // 3. No valid Supabase session -> clear Keychain
+
+        // 3. No valid Supabase session or timeout → clear Keychain
         KeychainHelper.delete(key: Self.sessionKey)
         self.storedSession = nil
     }
