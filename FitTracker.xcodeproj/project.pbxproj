@@ -143,6 +143,7 @@
 		74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */; };
 		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
 		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
+		NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000003 /* NotificationContentBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -317,6 +318,7 @@
 		CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift; sourceTree = "<group>"; };
 		NT2000001000000000000001 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		NT2000001000000000000002 /* NotificationPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferencesStore.swift; sourceTree = "<group>"; };
+		NT2000001000000000000003 /* NotificationContentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationContentBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -486,6 +488,7 @@
 			children = (
 				NT2000001000000000000001 /* NotificationService.swift */,
 				NT2000001000000000000002 /* NotificationPreferencesStore.swift */,
+				NT2000001000000000000003 /* NotificationContentBuilder.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -959,7 +962,8 @@
 				74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */,
 				3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */,
 				NT1000001000000000000001 /* NotificationService.swift in Sources */,
-				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,);
+				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
+				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B30000010000000000000002 /* Sources */ = {
