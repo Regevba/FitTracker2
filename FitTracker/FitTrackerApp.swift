@@ -226,8 +226,13 @@ struct FitTrackerApp: App {
             .environmentObject(signIn)
             .environmentObject(analytics)
             .environmentObject(dataStore)
-        } else if signIn.isAuthenticated {
-            if analytics.consent.gdprConsent == .pending && hasCompletedOnboarding {
+        } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
+            // Session exists but was locked for reopen — require biometric to resume
+            LockScreenView()
+                .environmentObject(biometricAuth)
+        } else {
+            // Onboarding complete — show the app (user may be authenticated or guest)
+            if analytics.consent.gdprConsent == .pending {
                 ConsentView {
                     analytics.syncConsentToProvider()
                 }
@@ -246,20 +251,6 @@ struct FitTrackerApp: App {
                     .environmentObject(aiOrchestrator)
                     .environmentObject(analytics)
             }
-        } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
-            LockScreenView()
-                .environmentObject(biometricAuth)
-        } else {
-            // Not authenticated + onboarding complete = signed out.
-            // Reset onboarding to force re-auth via step 5.
-            OnboardingView {
-                analytics.setOnboardingCompleted(true)
-            }
-            .environmentObject(healthService)
-            .environmentObject(signIn)
-            .environmentObject(analytics)
-            .environmentObject(dataStore)
-            .onAppear { hasCompletedOnboarding = false }
         }
     }
 }
