@@ -433,7 +433,7 @@
     {
       "case_id": "eval-layer-v4.4-2026-04",
       "title": "Eval Layer + Framework v4.4 — Eval-Driven Development",
-      "status": "in_progress",
+      "status": "complete",
       "work_type": "feature",
       "started_at": "2026-04-13T18:00:00Z",
       "updated_at": "2026-04-13T18:00:00Z",
@@ -480,7 +480,9 @@
         "docs/superpowers/specs/2026-04-13-eval-layer-design.md",
         "FitTrackerTests/EvalTests/ReadinessFormulaEvals.swift",
         "FitTrackerTests/EvalTests/AIOutputQualityEvals.swift",
-        "FitTrackerTests/EvalTests/AITierBehaviorEvals.swift"
+        "FitTrackerTests/EvalTests/AITierBehaviorEvals.swift",
+        "FitTrackerTests/EvalTests/ProfileEvals.swift",
+        "docs/case-studies/eval-layer-v4.4-case-study.md"
       ],
       "snapshots": [
         {
@@ -615,7 +617,8 @@
         "docs/architecture/soc-software-architecture-research.md",
         ".claude/shared/skill-routing.json",
         "FIT-26",
-        "Notion: SoC-on-Software Architecture Research"
+        "Notion: SoC-on-Software Architecture Research",
+        "docs/case-studies/soc-v5-framework-case-study.md"
       ],
       "snapshots": [
         {
