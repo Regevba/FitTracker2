@@ -1,6 +1,6 @@
 // FitTracker/Views/Onboarding/OnboardingWelcomeView.swift
 // Onboarding Step 0 — Welcome screen
-// Orange gradient bg, brand icon, tagline, pinned CTA at bottom.
+// Blue gradient bg, orange-tinted icon, tagline, pinned CTA at bottom.
 
 import SwiftUI
 
@@ -16,43 +16,48 @@ struct OnboardingWelcomeView: View {
             // Brand icon + text
             VStack(spacing: AppSpacing.medium) {
                 FitMeBrandIcon.hero
+                    .colorMultiply(AppColor.Brand.primary.opacity(0.85))
                     .padding(.bottom, AppSpacing.xSmall)
+
+                Text("FitMe")
+                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .foregroundStyle(AppGradient.brand)
 
                 Text("Your fitness command center")
                     .font(AppText.subheading)
-                    .foregroundStyle(AppColor.Text.inverseSecondary)
+                    .foregroundStyle(AppColor.Text.primary)
                     .multilineTextAlignment(.center)
 
                 Text("Training · Nutrition · Recovery · AI")
                     .font(AppText.caption)
-                    .foregroundStyle(AppColor.Text.inverseTertiary)
+                    .foregroundStyle(AppColor.Text.secondary)
             }
 
             Spacer()
 
-            // Pinned CTA at bottom
+            // Pinned CTA at bottom — orange gradient
             Button(action: onContinue) {
                 Text("Get Started")
                     .font(AppText.button)
-                    .foregroundStyle(AppColor.Brand.secondary)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                     .frame(maxWidth: .infinity)
                     .frame(height: AppSize.ctaHeight)
             }
             .background(
-                AppColor.Surface.primary.opacity(0.95),
+                AppGradient.brand,
                 in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
             )
             .shadow(
-                color: AppShadow.ctaInverseColor,
-                radius: AppShadow.ctaInverseRadius,
-                y: AppShadow.ctaInverseYOffset
+                color: AppShadow.ctaColor,
+                radius: AppShadow.ctaRadius,
+                y: AppShadow.ctaYOffset
             )
             .buttonStyle(.plain)
             .padding(.horizontal, AppSpacing.medium)
             .padding(.bottom, AppSpacing.large)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(AppGradient.brand.ignoresSafeArea())
+        .background(AppGradient.screenBackground.ignoresSafeArea())
         .onAppear {
             analytics.logScreenView(AnalyticsScreen.onboardingWelcome, screenClass: "OnboardingWelcomeView")
             analytics.logOnboardingStepViewed(stepIndex: 0, stepName: "welcome")

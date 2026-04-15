@@ -125,10 +125,8 @@ struct OnboardingView: View {
     }
 
     private var stepBackground: some ShapeStyle {
-        switch currentStep {
-        case 0: AnyShapeStyle(AppGradient.brand)
-        default: AnyShapeStyle(AppColor.Background.appTint)
-        }
+        // All steps use the same background — Welcome handles its own via screenBackground
+        AnyShapeStyle(AppColor.Background.appTint)
     }
 
     private func advance() {
