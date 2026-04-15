@@ -1,56 +1,67 @@
 // FitTracker/DesignSystem/FitMeBrandIcon.swift
-// FitMe app icon — 4 intertwined circles with gradient "FitMe" text.
-// Uses the app's blue gradient palette for visual consistency.
-// Updated 2026-04-15: switched from rainbow to blue gradient per brand direction.
+// FitMe app icon — 4 overlapping circles in a flower/petal pattern.
+// Figma ref: "App Icon — 1024×1024 Master" (node 635:2)
+// Circles: Blue (top-left), Teal (top-right, largest), Pink/Lavender (bottom-left), Orange (bottom-right)
+// Each circle has different size and position — NOT identical circles with tiny offsets.
+//
+// NOTE: For pixel-perfect accuracy, export the Figma icon as PDF and add to Assets.xcassets.
+// This SwiftUI approximation matches the Figma layout structurally.
 
 import SwiftUI
 
 struct FitMeBrandIcon: View {
     var size: CGFloat = 100
 
-    // Blue gradient palette — matches AppGradient.screenBackground
-    private let blue1 = Color(red: 0.875, green: 0.953, blue: 1.0)    // brand-cool-soft #DFF3FF
-    private let blue2 = Color(red: 0.729, green: 0.890, blue: 1.0)    // brand-cool #BAE3FF
-    private let blue3 = Color(red: 0.541, green: 0.780, blue: 1.0)    // brand-secondary #8AC7FF
-    private let blue4 = Color(red: 0.400, green: 0.680, blue: 0.950)  // deeper blue accent
+    // Figma colors from the master icon
+    private let circleBlue = Color(red: 0.52, green: 0.73, blue: 1.0)        // top-left circle
+    private let circleTeal = Color(red: 0.40, green: 0.85, blue: 0.78)       // top-right (largest)
+    private let circlePink = Color(red: 0.82, green: 0.68, blue: 0.88)       // bottom-left
+    private let circleOrange = Color(red: 0.95, green: 0.72, blue: 0.30)     // bottom-right
 
-    private var strokeWidth: CGFloat { size * 0.06 }
-    private var circleSize: CGFloat { size * 0.82 }
-    private var circleOffset: CGFloat { size * 0.06 }
+    // Text gradient — matches Figma: green-gold-orange
+    private let textGreen = Color(red: 0.40, green: 0.78, blue: 0.55)
+    private let textGold = Color(red: 0.95, green: 0.75, blue: 0.20)
+    private let textBlue = Color(red: 0.52, green: 0.73, blue: 1.0)
+
+    private var strokeWidth: CGFloat { size * 0.04 }
 
     var body: some View {
         ZStack {
-            // 4 offset circles — intertwined petal pattern
+            // Circle 1: Blue — top-left, medium size
             Circle()
-                .strokeBorder(blue1, lineWidth: strokeWidth)
-                .frame(width: circleSize, height: circleSize)
-                .offset(x: -circleOffset, y: -circleOffset)
+                .strokeBorder(circleBlue, lineWidth: strokeWidth)
+                .frame(width: size * 0.72, height: size * 0.72)
+                .offset(x: -size * 0.08, y: -size * 0.10)
 
+            // Circle 2: Teal — top-right, largest, dominant
             Circle()
-                .strokeBorder(blue2, lineWidth: strokeWidth)
-                .frame(width: circleSize, height: circleSize)
-                .offset(x: circleOffset, y: -circleOffset)
+                .strokeBorder(circleTeal, lineWidth: strokeWidth)
+                .frame(width: size * 0.90, height: size * 0.90)
+                .offset(x: size * 0.06, y: -size * 0.02)
 
+            // Circle 3: Pink/Lavender — bottom-left, medium
             Circle()
-                .strokeBorder(blue3, lineWidth: strokeWidth)
-                .frame(width: circleSize, height: circleSize)
-                .offset(x: -circleOffset, y: circleOffset)
+                .strokeBorder(circlePink, lineWidth: strokeWidth)
+                .frame(width: size * 0.78, height: size * 0.78)
+                .offset(x: -size * 0.12, y: size * 0.08)
 
+            // Circle 4: Orange — bottom-right, smaller
             Circle()
-                .strokeBorder(blue4, lineWidth: strokeWidth)
-                .frame(width: circleSize, height: circleSize)
-                .offset(x: circleOffset, y: circleOffset)
+                .strokeBorder(circleOrange, lineWidth: strokeWidth)
+                .frame(width: size * 0.65, height: size * 0.65)
+                .offset(x: size * 0.14, y: size * 0.14)
 
-            // Gradient "FitMe" text — blue gradient
+            // "FitMe" text with gradient
             Text("FitMe")
-                .font(.system(size: size * 0.2, weight: .bold, design: .rounded))
+                .font(.system(size: size * 0.18, weight: .bold, design: .rounded))
                 .foregroundStyle(
                     LinearGradient(
-                        colors: [blue3, blue4],
+                        colors: [textGreen, textGold, textBlue],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
                 )
+                .offset(x: size * 0.02, y: size * 0.02)
         }
         .frame(width: size, height: size)
         .accessibilityLabel("FitMe logo")
