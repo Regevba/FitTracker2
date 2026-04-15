@@ -640,6 +640,77 @@
           }
         }
       ]
+    },
+    {
+      "case_id": "ai-engine-architecture-2026-04",
+      "title": "AI Engine Architecture Adaptation (FIT-25)",
+      "status": "complete",
+      "work_type": "enhancement",
+      "started_at": "2026-04-15T00:00:00Z",
+      "updated_at": "2026-04-15T01:30:00Z",
+      "framework_version": "5.1",
+      "skills_used": ["pm-workflow", "dev", "qa", "analytics"],
+      "data_sources": ["repo"],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 8,
+        "repo_files_updated": 9,
+        "tests_passing": 197,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 3,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "success_cases": [
+        { "title": "PM-flow pattern reuse", "evidence": "Adapter, validation gate, learning cache all derived from PM-flow equivalents. Research was 15min." },
+        { "title": "Single-session end-to-end", "evidence": "Research → Merge in ~90min for 13 tasks, 17 files, 986 insertions." },
+        { "title": "Zero test regressions", "evidence": "197 tests pass, only 1 needed parameter update." },
+        { "title": "Mid-PRD scope expansion", "evidence": "User added goal-aware intelligence during PRD review — absorbed without rework." }
+      ],
+      "failure_cases": [
+        { "title": "No new unit tests", "evidence": "GoalProfile, ValidatedRecommendation, RecommendationMemory lack dedicated tests." },
+        { "title": "Type naming assumption", "evidence": "Used NutritionPlan instead of NutritionGoalPlan — caught on first build." }
+      ],
+      "next_checkpoints": [],
+      "artifacts": [
+        ".claude/features/ai-engine-architecture-adaptation/prd.md",
+        ".claude/features/ai-engine-architecture-adaptation/tasks.md",
+        ".claude/features/ai-engine-architecture-adaptation/research.md",
+        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-15T00:15:00Z",
+          "label": "research complete",
+          "summary": "5-layer architecture proposal with Swift protocols, PM-flow pattern mapping.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-15T00:30:00Z",
+          "label": "PRD + tasks complete",
+          "summary": "Full PRD with goal-aware intelligence, 13-task breakdown with dependency graph.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-15T01:15:00Z",
+          "label": "implementation complete",
+          "summary": "All 13 tasks done. 8 files created, 9 modified. 3 build errors fixed.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-15T01:30:00Z",
+          "label": "merged to main",
+          "summary": "PR #79 merged. Case study written.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
+        }
+      ]
     }
   ]
 }
