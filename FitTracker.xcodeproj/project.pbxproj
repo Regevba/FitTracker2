@@ -141,6 +141,8 @@
 		4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */; };
 		79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */; };
 		74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */; };
+		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
+		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -313,6 +315,8 @@
 		562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/ValidatedRecommendation.swift; sourceTree = "<group>"; };
 		1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationMemory.swift; sourceTree = "<group>"; };
 		CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift; sourceTree = "<group>"; };
+		NT2000001000000000000001 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		NT2000001000000000000002 /* NotificationPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferencesStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -425,6 +429,7 @@
 				AC2000000000000000000007 /* AccountDeletionService.swift */,
 				AC2000000000000000000008 /* DataExportService.swift */,
 				A40000010000000000000008 /* HealthKit */,
+				NT4000001000000000000001 /* Notifications */,
 				A40000010000000000000009 /* CloudKit */,
 				A4000001000000000000000A /* Encryption */,
 				FB4000001000000000000001 /* Supabase */,
@@ -474,6 +479,15 @@
 				A20000010000000000000006 /* HealthKitService.swift */,
 			);
 			path = HealthKit;
+			sourceTree = "<group>";
+		};
+		NT4000001000000000000001 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				NT2000001000000000000001 /* NotificationService.swift */,
+				NT2000001000000000000002 /* NotificationPreferencesStore.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000009 /* CloudKit */ = {
@@ -943,7 +957,9 @@
 				4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */,
 				79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */,
 				74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */,
-				3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */,);
+				3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */,
+				NT1000001000000000000001 /* NotificationService.swift in Sources */,
+				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B30000010000000000000002 /* Sources */ = {
