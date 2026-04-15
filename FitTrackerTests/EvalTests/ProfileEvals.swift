@@ -119,16 +119,16 @@ final class ProfileEvals: XCTestCase {
         XCTAssertTrue(rawValues.contains("General Fitness"), "Expected rawValue 'General Fitness'")
     }
 
-    /// Test 5 — AppTab has exactly 5 items and the profile tab has the correct SF Symbol icon.
-    func testEval_tabBarHasFiveItems() {
+    /// Test 5 — AppTab has exactly 4 items (Profile moved to hamburger menu).
+    func testEval_tabBarHasFourItems() {
         let tabs = AppTab.allCases
-        XCTAssertEqual(tabs.count, 5, "AppTab must have exactly 5 cases")
+        XCTAssertEqual(tabs.count, 4, "AppTab must have exactly 4 cases (Home, Training, Nutrition, Stats)")
 
-        // profile tab exists
-        let profileTab = tabs.first(where: { $0 == .profile })
-        XCTAssertNotNil(profileTab, "AppTab.profile must exist")
-        XCTAssertEqual(profileTab?.icon, "person.circle.fill",
-                       "AppTab.profile icon must be 'person.circle.fill'")
+        let tabNames = Set(tabs.map(\.rawValue))
+        XCTAssertTrue(tabNames.contains("Home"), "Home tab must exist")
+        XCTAssertTrue(tabNames.contains("Training Plan"), "Training tab must exist")
+        XCTAssertTrue(tabNames.contains("Nutrition"), "Nutrition tab must exist")
+        XCTAssertTrue(tabNames.contains("Stats"), "Stats tab must exist")
     }
 
     // MARK: - Quality Heuristics

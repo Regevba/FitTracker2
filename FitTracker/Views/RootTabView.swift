@@ -1,6 +1,6 @@
 // Views/RootTabView.swift
-// 5-tab navigation: Main · Training Plan · Nutrition · Stats · Profile
-// Top bar: screen title (left) + account avatar button (right) on every screen
+// 4-tab navigation: Main · Training Plan · Nutrition · Stats
+// Profile accessible via hamburger menu (top-left) on every screen
 // Adaptive: tab bar on iPhone, sidebar on iPad/macOS
 
 import SwiftUI
@@ -10,7 +10,6 @@ enum AppTab: String, CaseIterable, Hashable {
     case training   = "Training Plan"
     case nutrition  = "Nutrition"
     case stats      = "Stats"
-    case profile    = "Profile"
 
     var icon: String {
         switch self {
@@ -18,7 +17,6 @@ enum AppTab: String, CaseIterable, Hashable {
         case .training:  "figure.strengthtraining.traditional"
         case .nutrition: "leaf.fill"
         case .stats:     "chart.bar.fill"
-        case .profile:   "person.circle.fill"
         }
     }
 }
@@ -70,17 +68,9 @@ struct RootTabView: View {
             Text(dataStore.loadError ?? "")
         }
         .sheet(isPresented: $showAccount) {
-            AccountPanelView()
-                .environmentObject(signIn)
-                .environmentObject(biometricAuth)
-                .environmentObject(dataStore)
-                .environmentObject(healthService)
-                .environmentObject(cloudSync)
-                .environmentObject(supabaseSync)
-                .environmentObject(settings)
+            ProfileView()
                 .presentationDetents([.large])
                 .presentationCornerRadius(AppSheet.standardCornerRadius)
-                .analyticsScreen(AnalyticsScreen.settingsAccount)
         }
     }
 
@@ -216,7 +206,6 @@ struct RootTabView: View {
         case .stats:     StatsView(initialMetric: pendingStatsMetric)
                             .analyticsScreen(AnalyticsScreen.stats)
                             .onDisappear { pendingStatsMetric = nil }
-        case .profile:   ProfileView()
         }
     }
 

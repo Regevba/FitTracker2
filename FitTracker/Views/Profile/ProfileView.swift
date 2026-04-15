@@ -55,8 +55,8 @@ struct ProfileView: View {
                         // AI coaching insight
                         AIInsightCard()
 
-                        // Settings access
-                        settingsButton
+                        // Settings
+                        settingsRow
 
                         // Sign out
                         signOutButton
@@ -69,7 +69,7 @@ struct ProfileView: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {
-            analytics.logProfileTabViewed(source: "tab_bar")
+            analytics.logProfileTabViewed(source: "hamburger_menu")
         }
         .sheet(isPresented: $showGoalEditor) {
             GoalEditorSheet()
@@ -141,15 +141,15 @@ struct ProfileView: View {
         .accessibilityHint("Double tap to view full readiness details")
     }
 
-    // MARK: - Settings Button
+    // MARK: - Settings Row
 
-    private var settingsButton: some View {
+    private var settingsRow: some View {
         Button {
             analytics.logProfileSettingsSectionOpened(section: "all")
             showSettings = true
         } label: {
             HStack {
-                Image(systemName: AppIcon.settings)
+                Image(systemName: "gearshape.fill")
                     .foregroundStyle(AppColor.Text.secondary)
                 Text("Settings")
                     .font(AppText.body)
