@@ -209,6 +209,10 @@ enum AnalyticsEvent {
     static let aiFeedbackSubmitted             = "home_ai_feedback_submitted"
     /// AI avatar animation state changes
     static let aiAvatarStateChanged            = "home_ai_avatar_state_changed"
+    /// User accepts (thumbs-up) an AI recommendation
+    static let aiRecommendationAccepted        = "ai_recommendation_accepted"
+    /// User dismisses (thumbs-down) an AI recommendation
+    static let aiRecommendationDismissed       = "ai_recommendation_dismissed"
 
     // ── Profile Events (screen-prefixed) ───────────────────
     /// User views the Profile tab
@@ -339,6 +343,9 @@ enum AnalyticsParam {
     static let rating            = "rating"             // positive/negative
     static let fromState         = "from_state"         // breathe/rotate/pulse/shimmer
     static let toState           = "to_state"           // breathe/rotate/pulse/shimmer
+    static let confidenceLevel   = "confidence_level"   // high/medium/low — recommendation confidence
+    // source already defined above — reuse for cloud/local/personalised pipeline source
+    static let reason            = "reason"             // not_relevant/already_know/disagree/other — dismiss reason
 
     // Profile parameters
     static let field             = "field"

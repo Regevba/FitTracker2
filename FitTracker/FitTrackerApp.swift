@@ -70,7 +70,8 @@ struct FitTrackerApp: App {
                 print("[AIOrchestrator] WARNING: Using empty fallback snapshot — caller should pass overrideSnapshot")
                 #endif
                 return LocalUserSnapshot()
-            }
+            },
+            goalMode: { .fatLoss }
         )
     }()
 

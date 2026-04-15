@@ -106,28 +106,102 @@ public struct AIRecommendation: Codable, Sendable {
 }
 
 extension AIRecommendation {
-    static func localFallback(for segment: AISegment, snapshot: LocalUserSnapshot) -> AIRecommendation {
+
+    /// Goal-aware local fallback: generates signals weighted by the user's GoalProfile drivers.
+    /// Each driver checks the relevant snapshot field and generates a signal with magnitude context.
+    static func localFallback(
+        for segment: AISegment,
+        snapshot: LocalUserSnapshot,
+        goalProfile: GoalProfile? = nil
+    ) -> AIRecommendation {
         var signals: [String] = []
+        let profile = goalProfile ?? GoalProfile.forGoal(
+            NutritionGoalMode(rawValue: snapshot.primaryGoal ?? "Fat Loss") ?? .fatLoss
+        )
 
         switch segment {
         case .training:
-            if snapshot.programPhase == "recovery" { signals.append("local_recovery_phase_keep_intensity_in_check") }
-            if let days = snapshot.trainingDaysPerWeek, days >= 5 { signals.append("local_high_frequency_program_detected") }
-            if snapshot.primaryGoal == "weight_loss" { signals.append("local_goal_fat_loss_support") }
-        case .nutrition:
-            if let delta = snapshot.caloricBalanceDelta, delta < 0 { signals.append("local_calorie_deficit_active") }
-            if let actual = snapshot.dailyProteinGrams, let target = snapshot.proteinTargetGrams, actual < target {
-                signals.append("local_protein_below_target")
+            // Goal-aware training signals
+            if snapshot.programPhase == "recovery" {
+                signals.append("local_recovery_phase_keep_intensity_in_check")
             }
-            if let meals = snapshot.mealsPerDay, meals <= 2 { signals.append("local_low_meal_frequency") }
+            if let days = snapshot.trainingDaysPerWeek, days >= 5 {
+                signals.append("local_high_frequency_program_detected")
+            }
+            // Drive emphasis from goal profile
+            for driver in profile.primaryDrivers where driver.metric == "training_volume" || driver.metric == "training_progressive_overload" {
+                signals.append("local_goal_\(profile.goal.shortLabel.lowercased())_training_emphasis")
+            }
+            if profile.goal == .fatLoss {
+                signals.append("local_goal_preserve_muscle_during_deficit")
+            } else if profile.goal == .gain {
+                signals.append("local_goal_progressive_overload_priority")
+            }
+
+        case .nutrition:
+            // Caloric balance — goal-direction-aware
+            if let delta = snapshot.caloricBalanceDelta {
+                switch profile.goal {
+                case .fatLoss:
+                    if delta < 0 {
+                        signals.append("local_deficit_active_\(abs(delta))kcal")
+                    } else {
+                        signals.append("local_deficit_missed_surplus_\(delta)kcal")
+                    }
+                case .gain:
+                    if delta > 0 {
+                        signals.append("local_surplus_active_\(delta)kcal")
+                    } else {
+                        signals.append("local_surplus_missed_deficit_\(abs(delta))kcal")
+                    }
+                case .maintain:
+                    if abs(delta) <= 100 {
+                        signals.append("local_maintenance_on_target")
+                    } else {
+                        signals.append("local_maintenance_drift_\(delta)kcal")
+                    }
+                }
+            }
+            // Protein adequacy — universal but weighted differently per goal
+            if let actual = snapshot.dailyProteinGrams, let target = snapshot.proteinTargetGrams {
+                let gap = target - actual
+                if gap > 0 {
+                    signals.append("local_protein_below_target_\(Int(gap.rounded()))g")
+                } else {
+                    signals.append("local_protein_on_target")
+                }
+            }
+            if let meals = snapshot.mealsPerDay, meals <= 2 {
+                signals.append("local_low_meal_frequency")
+            }
+
         case .recovery:
-            if let sleep = snapshot.avgSleepHours, sleep < 6 { signals.append("local_sleep_debt_flag") }
-            if let restingHR = snapshot.restingHeartRate, restingHR > 80 { signals.append("local_elevated_resting_hr") }
-            if snapshot.stressLevel == "high" { signals.append("local_high_stress_detected") }
+            if let sleep = snapshot.avgSleepHours, sleep < 6 {
+                signals.append("local_sleep_debt_flag")
+            }
+            if let restingHR = snapshot.restingHeartRate, restingHR > 80 {
+                signals.append("local_elevated_resting_hr")
+            }
+            if snapshot.stressLevel == "high" {
+                signals.append("local_high_stress_detected")
+            }
+            // Goal context for recovery
+            if profile.goal == .fatLoss {
+                signals.append("local_recovery_cortisol_fat_loss_context")
+            } else if profile.goal == .gain {
+                signals.append("local_recovery_muscle_repair_context")
+            }
+
         case .stats:
-            if let sessions = snapshot.weeklySessionCount, sessions < 3 { signals.append("local_weekly_sessions_below_target") }
-            if let steps = snapshot.avgDailySteps, steps < 7_500 { signals.append("local_daily_steps_below_target") }
-            if snapshot.workoutConsistency == "high" { signals.append("local_consistency_strength") }
+            if let sessions = snapshot.weeklySessionCount, sessions < 3 {
+                signals.append("local_weekly_sessions_below_target")
+            }
+            if let steps = snapshot.avgDailySteps, steps < 7_500 {
+                signals.append("local_daily_steps_below_target")
+            }
+            if snapshot.workoutConsistency == "high" {
+                signals.append("local_consistency_strength")
+            }
         }
 
         if signals.isEmpty {

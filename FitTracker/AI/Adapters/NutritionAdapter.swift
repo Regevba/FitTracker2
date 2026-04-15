@@ -1,0 +1,40 @@
+// AI/Adapters/NutritionAdapter.swift
+// Contributes nutrition fields from DailyLog nutrition data + UserProfile nutrition plan.
+
+import Foundation
+
+struct NutritionAdapter: AIInputAdapter {
+    let sourceID = "nutrition"
+
+    private let latestLog: DailyLog?
+    private let goalPlan: NutritionGoalPlan
+    private let liveMetrics: LiveMetrics
+    private let profile: UserProfile
+
+    var lastUpdated: Date? { latestLog?.date }
+
+    init(latestLog: DailyLog?, goalPlan: NutritionGoalPlan, liveMetrics: LiveMetrics, profile: UserProfile) {
+        self.latestLog = latestLog
+        self.goalPlan = goalPlan
+        self.liveMetrics = liveMetrics
+        self.profile = profile
+    }
+
+    func contribute(to snapshot: inout LocalUserSnapshot) {
+        let latestNutrition = latestLog?.nutritionLog
+
+        snapshot.caloricBalanceDelta = Self.caloricBalanceDelta(
+            actualCalories: latestNutrition?.resolvedCalories,
+            targetCalories: goalPlan.calories
+        )
+        snapshot.dailyProteinGrams = latestNutrition?.resolvedProteinG
+        snapshot.proteinTargetGrams = goalPlan.proteinG
+        snapshot.mealsPerDay = latestNutrition?.meals.filter { $0.status == .completed }.count
+            ?? latestNutrition?.meals.count
+    }
+
+    private static func caloricBalanceDelta(actualCalories: Double?, targetCalories: Double) -> Int? {
+        guard let actualCalories else { return nil }
+        return Int(actualCalories.rounded() - targetCalories.rounded())
+    }
+}

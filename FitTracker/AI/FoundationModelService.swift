@@ -100,7 +100,18 @@ public final class FoundationModelService: FoundationModelProtocol {
         lines.append("Cloud signals: \(recommendation.signals.joined(separator: ", "))")
         lines.append("Cohort confidence: \(recommendation.confidence)")
 
-        if let goal = snapshot.primaryGoal       { lines.append("Goal: \(goal)") }
+        if let goal = snapshot.primaryGoal {
+            lines.append("Goal: \(goal)")
+            // Goal-aware emphasis: tell the LLM what to prioritize
+            let goalMode = NutritionGoalMode(rawValue: goal) ?? .fatLoss
+            let profile = GoalProfile.forGoal(goalMode)
+            if let segment = AISegment(rawValue: recommendation.segment),
+               let emphasis = profile.messagingEmphasis[segment] {
+                lines.append("Goal emphasis: \(emphasis)")
+            }
+            let drivers = profile.primaryDrivers.map { "\($0.metric) (\($0.direction.rawValue), weight \($0.weight))" }
+            lines.append("Primary drivers: \(drivers.joined(separator: "; "))")
+        }
         if let phase = snapshot.programPhase     { lines.append("Phase: \(phase)") }
         if let sleep = snapshot.avgSleepHours    { lines.append("Sleep: \(sleep)h avg") }
         if let stress = snapshot.stressLevel     { lines.append("Stress: \(stress)") }

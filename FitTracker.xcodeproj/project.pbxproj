@@ -134,6 +134,14 @@
 		FT1000001000000000000002 /* SyncMergeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000002 /* SyncMergeTests.swift */; };
 		FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FT2000001000000000000003 /* SupabaseClientTests.swift */; };
 		SUP0000001000000000000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = SUP0000002000000000000001 /* Supabase */; };
+		B6A594D637D8445F86E87597 /* AIInputAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E77CA00F68CB436B88D1CDB4 /* AIInputAdapter.swift */; };
+		8287618AAA1A42A6A6AC9EB9 /* ProfileAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DB1AB8240F41ADB9BB8927 /* ProfileAdapter.swift */; };
+		4402BE1063EE4A5EBF17F2A6 /* HealthKitAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEF25AB3A6544B718410CBC4 /* HealthKitAdapter.swift */; };
+		98DFF4A40C424A3E9B71560F /* TrainingAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656B9E0FD2FC47EB9F874958 /* TrainingAdapter.swift */; };
+		64DBA30CC1584CA6928F2F1C /* NutritionAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401017612EDA442EA7BFB2E4 /* NutritionAdapter.swift */; };
+		6CE2745F57FD4DE3B57B14A9 /* GoalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B52DF0A4443482E855B2DEE /* GoalProfile.swift */; };
+		4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */; };
+		79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -292,6 +300,14 @@
 		FT2000001000000000000001 /* UserSessionMappingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSessionMappingTests.swift; sourceTree = "<group>"; };
 		FT2000001000000000000002 /* SyncMergeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncMergeTests.swift; sourceTree = "<group>"; };
 		FT2000001000000000000003 /* SupabaseClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClientTests.swift; sourceTree = "<group>"; };
+		E77CA00F68CB436B88D1CDB4 /* AIInputAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/AIInputAdapter.swift; sourceTree = "<group>"; };
+		22DB1AB8240F41ADB9BB8927 /* ProfileAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/ProfileAdapter.swift; sourceTree = "<group>"; };
+		AEF25AB3A6544B718410CBC4 /* HealthKitAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/HealthKitAdapter.swift; sourceTree = "<group>"; };
+		656B9E0FD2FC47EB9F874958 /* TrainingAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/TrainingAdapter.swift; sourceTree = "<group>"; };
+		401017612EDA442EA7BFB2E4 /* NutritionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/NutritionAdapter.swift; sourceTree = "<group>"; };
+		1B52DF0A4443482E855B2DEE /* GoalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/GoalProfile.swift; sourceTree = "<group>"; };
+		562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/ValidatedRecommendation.swift; sourceTree = "<group>"; };
+		1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationMemory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -912,7 +928,15 @@
 				FB1000001000000000000006 /* EmailAuthProvider.swift in Sources */,
 				FB1000001000000000000007 /* Date+Sync.swift in Sources */,
 				GG1000001000000000000001 /* GoogleAuthProvider.swift in Sources */,
-			);
+			
+				B6A594D637D8445F86E87597 /* AIInputAdapter.swift in Sources */,
+				8287618AAA1A42A6A6AC9EB9 /* ProfileAdapter.swift in Sources */,
+				4402BE1063EE4A5EBF17F2A6 /* HealthKitAdapter.swift in Sources */,
+				98DFF4A40C424A3E9B71560F /* TrainingAdapter.swift in Sources */,
+				64DBA30CC1584CA6928F2F1C /* NutritionAdapter.swift in Sources */,
+				6CE2745F57FD4DE3B57B14A9 /* GoalProfile.swift in Sources */,
+				4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */,
+				79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B30000010000000000000002 /* Sources */ = {
