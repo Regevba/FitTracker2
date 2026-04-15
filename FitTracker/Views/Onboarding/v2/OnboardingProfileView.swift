@@ -25,54 +25,60 @@ struct OnboardingProfileView: View {
     private let frequencyRange = 2...6
 
     var body: some View {
-        ScrollView {
-        VStack(spacing: AppSpacing.large) {
-            Text("Tell us about you")
-                .font(AppText.pageTitle)
-                .foregroundStyle(AppColor.Text.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, AppSpacing.small)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: AppSpacing.large) {
+                    Text("Tell us about you")
+                        .font(AppText.pageTitle)
+                        .foregroundStyle(AppColor.Text.primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, AppSpacing.small)
 
-            // Training Experience
-            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
-                Text("Training experience")
-                    .font(AppText.sectionTitle)
-                    .foregroundStyle(AppColor.Text.primary)
+                    // Training Experience
+                    VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+                        Text("Training experience")
+                            .font(AppText.sectionTitle)
+                            .foregroundStyle(AppColor.Text.primary)
 
-                HStack(spacing: AppSpacing.xxSmall) {
-                    ForEach(experienceLevels, id: \.self) { level in
-                        ExperienceCard(
-                            label: level,
-                            isSelected: selectedExperience == level
-                        ) {
-                            selectedExperience = level
+                        HStack(spacing: AppSpacing.xxSmall) {
+                            ForEach(experienceLevels, id: \.self) { level in
+                                ExperienceCard(
+                                    label: level,
+                                    isSelected: selectedExperience == level
+                                ) {
+                                    selectedExperience = level
+                                }
+                            }
                         }
                     }
-                }
-            }
-            .padding(.horizontal, AppSpacing.small)
+                    .padding(.horizontal, AppSpacing.small)
 
-            // Weekly Frequency
-            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
-                Text("Days per week")
-                    .font(AppText.sectionTitle)
-                    .foregroundStyle(AppColor.Text.primary)
+                    // Weekly Frequency
+                    VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+                        Text("Days per week")
+                            .font(AppText.sectionTitle)
+                            .foregroundStyle(AppColor.Text.primary)
 
-                HStack(spacing: AppSpacing.xxSmall) {
-                    ForEach(Array(frequencyRange), id: \.self) { day in
-                        FrequencyCircle(
-                            value: day,
-                            isSelected: selectedFrequency == day
-                        ) {
-                            selectedFrequency = day
+                        HStack(spacing: AppSpacing.xxSmall) {
+                            ForEach(Array(frequencyRange), id: \.self) { day in
+                                FrequencyCircle(
+                                    value: day,
+                                    isSelected: selectedFrequency == day
+                                ) {
+                                    selectedFrequency = day
+                                }
+                            }
                         }
                     }
+                    .padding(.horizontal, AppSpacing.small)
                 }
+                .padding(.bottom, AppSpacing.medium)
+                .sensoryFeedback(.selection, trigger: selectedExperience)
+                .sensoryFeedback(.selection, trigger: selectedFrequency)
             }
-            .padding(.horizontal, AppSpacing.small)
+            .scrollBounceBehavior(.basedOnSize)
 
-            Spacer()
-
+            // Pinned CTA at bottom
             VStack(spacing: AppSpacing.xSmall) {
                 Button(action: {
                     if let level = selectedExperience,
@@ -88,7 +94,7 @@ struct OnboardingProfileView: View {
                         .font(AppText.button)
                         .foregroundStyle(AppColor.Text.inversePrimary)
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, AppSpacing.small)
+                        .frame(height: AppSize.ctaHeight)
                         .background(
                             AppGradient.brand,
                             in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
@@ -114,12 +120,8 @@ struct OnboardingProfileView: View {
                     .padding(.top, AppSpacing.xxxSmall)
             }
             .padding(.horizontal, AppSpacing.small)
-            .padding(.bottom, AppSpacing.xLarge)
+            .padding(.bottom, AppSpacing.large)
         }
-        .sensoryFeedback(.selection, trigger: selectedExperience)
-        .sensoryFeedback(.selection, trigger: selectedFrequency)
-        }
-        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onAppear {
             analytics.logScreenView(AnalyticsScreen.onboardingProfile, screenClass: "OnboardingProfileView")

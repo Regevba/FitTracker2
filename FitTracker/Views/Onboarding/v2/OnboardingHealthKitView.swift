@@ -42,96 +42,97 @@ struct OnboardingHealthKitView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: AppSpacing.large) {
-                Spacer().frame(height: AppSpacing.xLarge)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: AppSpacing.large) {
+                    Spacer().frame(height: AppSpacing.xLarge)
 
-                VStack(spacing: AppSpacing.medium) {
-                    Image(systemName: "heart.text.square")
-                        .font(AppText.iconHero)
-                        .foregroundStyle(AppColor.Brand.primary)
+                    VStack(spacing: AppSpacing.medium) {
+                        Image(systemName: "heart.text.square")
+                            .font(AppText.iconHero)
+                            .foregroundStyle(AppColor.Brand.primary)
 
-                    Text("Sync your Apple Health")
-                        .font(AppText.pageTitle)
-                        .foregroundStyle(AppColor.Text.primary)
+                        Text("Sync your Apple Health")
+                            .font(AppText.pageTitle)
+                            .foregroundStyle(AppColor.Text.primary)
 
-                    Text(isHealthAvailable
-                         ? "FitMe uses Apple Health to track your recovery and training readiness."
-                         : "Apple Health is not available on this device. You can connect it later from your iPhone.")
-                        .font(AppText.body)
-                        .foregroundStyle(AppColor.Text.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, AppSpacing.small)
-                }
-
-                // Data type rows
-                if isHealthAvailable {
-                    VStack(spacing: AppSpacing.xxSmall) {
-                        ForEach(dataTypes, id: \.label) { dataType in
-                            HealthDataRow(icon: dataType.icon, label: dataType.label)
-                        }
-                    }
-                    .padding(.horizontal, AppSpacing.small)
-                }
-
-                if let denial = lastDenialMessage {
-                    Text(denial)
-                        .font(AppText.caption)
-                        .foregroundStyle(AppColor.Status.warning)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, AppSpacing.medium)
-                        .transition(.opacity)
-                }
-
-                Spacer().frame(height: AppSpacing.large)
-
-                VStack(spacing: AppSpacing.xSmall) {
-                    Button {
-                        Task { await connect() }
-                    } label: {
-                        HStack(spacing: AppSpacing.xSmall) {
-                            if isRequestingAuthorization {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .tint(AppColor.Text.inversePrimary)
-                            }
-                            Text(isRequestingAuthorization ? "Connecting…" : (isHealthAvailable ? "Connect Apple Health" : "Continue"))
-                                .font(AppText.button)
-                                .foregroundStyle(AppColor.Text.inversePrimary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
-                        .background(
-                            AppGradient.brand,
-                            in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
-                        )
-                        .shadow(
-                            color: AppShadow.ctaColor,
-                            radius: AppShadow.ctaRadius,
-                            y: AppShadow.ctaYOffset
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(isRequestingAuthorization)
-                    .sensoryFeedback(.impact(weight: .light), trigger: isRequestingAuthorization)
-
-                    Button(action: onSkip) {
-                        Text("Skip")
-                            .font(AppText.button)
+                        Text(isHealthAvailable
+                             ? "FitMe uses Apple Health to track your recovery and training readiness."
+                             : "Apple Health is not available on this device. You can connect it later from your iPhone.")
+                            .font(AppText.body)
                             .foregroundStyle(AppColor.Text.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, AppSpacing.small)
                     }
-                    .buttonStyle(.plain)
 
-                    Text("You can enable Apple Health later in Settings.")
-                        .font(AppText.caption)
-                        .foregroundStyle(AppColor.Text.tertiary)
-                        .padding(.top, AppSpacing.xxxSmall)
+                    if isHealthAvailable {
+                        VStack(spacing: AppSpacing.xxSmall) {
+                            ForEach(dataTypes, id: \.label) { dataType in
+                                HealthDataRow(icon: dataType.icon, label: dataType.label)
+                            }
+                        }
+                        .padding(.horizontal, AppSpacing.small)
+                    }
+
+                    if let denial = lastDenialMessage {
+                        Text(denial)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Status.warning)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, AppSpacing.medium)
+                            .transition(.opacity)
+                    }
                 }
-                .padding(.horizontal, AppSpacing.small)
-                .padding(.bottom, AppSpacing.xLarge)
+                .padding(.bottom, AppSpacing.medium)
             }
+            .scrollBounceBehavior(.basedOnSize)
+
+            // Pinned CTA at bottom
+            VStack(spacing: AppSpacing.xSmall) {
+                Button {
+                    Task { await connect() }
+                } label: {
+                    HStack(spacing: AppSpacing.xSmall) {
+                        if isRequestingAuthorization {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(AppColor.Text.inversePrimary)
+                        }
+                        Text(isRequestingAuthorization ? "Connecting…" : (isHealthAvailable ? "Connect Apple Health" : "Continue"))
+                            .font(AppText.button)
+                            .foregroundStyle(AppColor.Text.inversePrimary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: AppSize.ctaHeight)
+                    .background(
+                        AppGradient.brand,
+                        in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
+                    )
+                    .shadow(
+                        color: AppShadow.ctaColor,
+                        radius: AppShadow.ctaRadius,
+                        y: AppShadow.ctaYOffset
+                    )
+                }
+                .buttonStyle(.plain)
+                .disabled(isRequestingAuthorization)
+                .sensoryFeedback(.impact(weight: .light), trigger: isRequestingAuthorization)
+
+                Button(action: onSkip) {
+                    Text("Skip")
+                        .font(AppText.button)
+                        .foregroundStyle(AppColor.Text.secondary)
+                }
+                .buttonStyle(.plain)
+
+                Text("You can enable Apple Health later in Settings.")
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+                    .padding(.top, AppSpacing.xxxSmall)
+            }
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.bottom, AppSpacing.large)
         }
-        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onAppear {
             analytics.logScreenView(AnalyticsScreen.onboardingHealthkit, screenClass: "OnboardingHealthKitView")

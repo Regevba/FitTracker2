@@ -32,75 +32,77 @@ struct OnboardingGoalsView: View {
     ]
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: AppSpacing.large) {
-                Text("What's your goal?")
-                    .font(AppText.pageTitle)
-                    .foregroundStyle(AppColor.Text.primary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: AppSpacing.large) {
+                    Text("What's your goal?")
+                        .font(AppText.pageTitle)
+                        .foregroundStyle(AppColor.Text.primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, AppSpacing.small)
+
+                    LazyVGrid(columns: columns, spacing: AppSpacing.xSmall) {
+                        ForEach(goals, id: \.label) { goal in
+                            GoalCard(
+                                label: goal.label,
+                                icon: goal.icon,
+                                isSelected: selectedGoal == goal.label
+                            ) {
+                                selectedGoal = goal.label
+                                analytics.logOnboardingGoalSelected(goalValue: goal.value)
+                            }
+                        }
+                    }
                     .padding(.horizontal, AppSpacing.small)
-
-                LazyVGrid(columns: columns, spacing: AppSpacing.xSmall) {
-                    ForEach(goals, id: \.label) { goal in
-                        GoalCard(
-                            label: goal.label,
-                            icon: goal.icon,
-                            isSelected: selectedGoal == goal.label
-                        ) {
-                            selectedGoal = goal.label
-                            analytics.logOnboardingGoalSelected(goalValue: goal.value)
-                        }
-                    }
+                    .sensoryFeedback(.selection, trigger: selectedGoal)
                 }
-                .padding(.horizontal, AppSpacing.small)
-                .sensoryFeedback(.selection, trigger: selectedGoal)
-
-                Spacer().frame(height: AppSpacing.large)
-
-                VStack(spacing: AppSpacing.xSmall) {
-                    Button(action: {
-                        if let label = selectedGoal,
-                           let goal = FitnessGoal(rawValue: label) {
-                            dataStore.userProfile.fitnessGoal = goal
-                        }
-                        onContinue()
-                    }) {
-                        Text("Continue")
-                            .font(AppText.button)
-                            .foregroundStyle(AppColor.Text.inversePrimary)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: AppSize.ctaHeight)
-                            .background(
-                                AppGradient.brand,
-                                in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
-                            )
-                            .shadow(
-                                color: AppShadow.ctaColor,
-                                radius: AppShadow.ctaRadius,
-                                y: AppShadow.ctaYOffset
-                            )
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(selectedGoal == nil)
-                    .opacity(selectedGoal == nil ? 0.5 : 1.0)
-
-                    Button(action: onSkip) {
-                        Text("Skip")
-                            .font(AppText.button)
-                            .foregroundStyle(AppColor.Text.secondary)
-                    }
-                    .buttonStyle(.plain)
-
-                    Text("You can set this later in Settings.")
-                        .font(AppText.caption)
-                        .foregroundStyle(AppColor.Text.tertiary)
-                        .padding(.top, AppSpacing.xxxSmall)
-                }
-                .padding(.horizontal, AppSpacing.small)
-                .padding(.bottom, AppSpacing.xLarge)
+                .padding(.bottom, AppSpacing.medium)
             }
+            .scrollBounceBehavior(.basedOnSize)
+
+            // Pinned CTA at bottom
+            VStack(spacing: AppSpacing.xSmall) {
+                Button(action: {
+                    if let label = selectedGoal,
+                       let goal = FitnessGoal(rawValue: label) {
+                        dataStore.userProfile.fitnessGoal = goal
+                    }
+                    onContinue()
+                }) {
+                    Text("Continue")
+                        .font(AppText.button)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: AppSize.ctaHeight)
+                        .background(
+                            AppGradient.brand,
+                            in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
+                        )
+                        .shadow(
+                            color: AppShadow.ctaColor,
+                            radius: AppShadow.ctaRadius,
+                            y: AppShadow.ctaYOffset
+                        )
+                }
+                .buttonStyle(.plain)
+                .disabled(selectedGoal == nil)
+                .opacity(selectedGoal == nil ? 0.5 : 1.0)
+
+                Button(action: onSkip) {
+                    Text("Skip")
+                        .font(AppText.button)
+                        .foregroundStyle(AppColor.Text.secondary)
+                }
+                .buttonStyle(.plain)
+
+                Text("You can set this later in Settings.")
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+                    .padding(.top, AppSpacing.xxxSmall)
+            }
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.bottom, AppSpacing.large)
         }
-        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onAppear {
             analytics.logScreenView(AnalyticsScreen.onboardingGoals, screenClass: "OnboardingGoalsView")

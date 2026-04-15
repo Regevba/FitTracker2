@@ -1,7 +1,7 @@
 // FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift
 // Onboarding Step 5 — Account creation embedded in onboarding flow.
-// Offers Email, Google, Apple sign-in. "Already have an account? Log In" shortcut.
-// Uses onboarding visual style (not AuthHubView dark style).
+// Offers Email, Google, Apple sign-in. "Log In" for returning users. "Skip for now" for guests.
+// Handles email verification inline (no navigation to AuthHubView).
 
 import SwiftUI
 import AuthenticationServices
@@ -9,72 +9,84 @@ import AuthenticationServices
 struct OnboardingAuthView: View {
     let onAuthenticated: () -> Void
     let onLogin: () -> Void
+    let onSkip: () -> Void
 
     @EnvironmentObject private var signIn: SignInService
     @EnvironmentObject private var analytics: AnalyticsService
     @State private var showEmailForm = false
     @State private var showLoginForm = false
+    @State private var showVerification = false
+    @State private var verificationCode = ""
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: AppSpacing.large) {
-                Spacer().frame(height: AppSpacing.xLarge)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: AppSpacing.large) {
+                    Spacer().frame(height: AppSpacing.xLarge)
 
-                // Hero icon
-                ZStack {
-                    Circle()
-                        .fill(AppColor.Brand.coolSoft.opacity(0.5))
-                        .frame(width: 120, height: 120)
+                    // Hero icon
+                    ZStack {
+                        Circle()
+                            .fill(AppColor.Brand.coolSoft.opacity(0.5))
+                            .frame(width: 120, height: 120)
 
-                    Image(systemName: "person.badge.plus")
-                        .font(AppText.iconHero)
-                        .foregroundStyle(AppColor.Brand.secondary)
-                }
-
-                // Title + subtitle
-                VStack(spacing: AppSpacing.xSmall) {
-                    Text("Save your progress")
-                        .font(AppText.titleStrong)
-                        .foregroundStyle(AppColor.Text.primary)
-                        .multilineTextAlignment(.center)
-
-                    Text("Create an account to keep your data safe and synced across devices.")
-                        .font(AppText.bodyRegular)
-                        .foregroundStyle(AppColor.Text.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, AppSpacing.small)
-                }
-
-                // Error banner
-                if let error = signIn.authErrorMessage {
-                    HStack(spacing: AppSpacing.xxSmall) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(AppColor.Status.error)
-                        Text(error)
-                            .font(AppText.subheading)
-                            .foregroundStyle(AppColor.Text.secondary)
-                        Spacer()
+                        Image(systemName: "person.badge.plus")
+                            .font(AppText.iconHero)
+                            .foregroundStyle(AppColor.Brand.secondary)
                     }
-                    .padding(.horizontal, AppSpacing.xSmall)
-                    .padding(.vertical, AppSpacing.xSmall)
-                    .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.medium))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: AppRadius.medium)
-                            .stroke(AppColor.Status.error.opacity(0.18), lineWidth: 1)
-                    )
-                    .padding(.horizontal, AppSpacing.small)
-                }
 
-                if showEmailForm {
-                    emailRegistrationForm
-                } else if showLoginForm {
-                    emailLoginForm
-                } else {
-                    providerButtons
-                }
+                    // Title + subtitle
+                    VStack(spacing: AppSpacing.xSmall) {
+                        Text("Save your progress")
+                            .font(AppText.titleStrong)
+                            .foregroundStyle(AppColor.Text.primary)
+                            .multilineTextAlignment(.center)
 
-                // Login link
-                if !showLoginForm && !showEmailForm {
+                        Text("Create an account to keep your data safe and synced across devices.")
+                            .font(AppText.bodyRegular)
+                            .foregroundStyle(AppColor.Text.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, AppSpacing.small)
+                    }
+
+                    // Error banner
+                    if let error = signIn.authErrorMessage {
+                        HStack(spacing: AppSpacing.xxSmall) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(AppColor.Status.error)
+                            Text(error)
+                                .font(AppText.subheading)
+                                .foregroundStyle(AppColor.Text.secondary)
+                            Spacer()
+                        }
+                        .padding(.horizontal, AppSpacing.xSmall)
+                        .padding(.vertical, AppSpacing.xSmall)
+                        .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppRadius.medium)
+                                .stroke(AppColor.Status.error.opacity(0.18), lineWidth: 1)
+                        )
+                        .padding(.horizontal, AppSpacing.small)
+                    }
+
+                    if showVerification {
+                        verificationForm
+                    } else if showEmailForm {
+                        emailRegistrationForm
+                    } else if showLoginForm {
+                        emailLoginForm
+                    } else {
+                        providerButtons
+                    }
+                }
+                .padding(.bottom, AppSpacing.medium)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+
+            // Pinned bottom actions
+            VStack(spacing: AppSpacing.xSmall) {
+                if !showEmailForm && !showLoginForm && !showVerification {
+                    // Login + Skip links
                     Button {
                         showLoginForm = true
                         showEmailForm = false
@@ -89,12 +101,18 @@ struct OnboardingAuthView: View {
                         .font(AppText.body)
                     }
                     .buttonStyle(.plain)
-                }
 
-                Spacer().frame(height: AppSpacing.xLarge)
+                    Button(action: onSkip) {
+                        Text("Skip for now")
+                            .font(AppText.body)
+                            .foregroundStyle(AppColor.Text.tertiary)
+                    }
+                    .buttonStyle(.plain)
+                }
             }
+            .padding(.horizontal, AppSpacing.small)
+            .padding(.bottom, AppSpacing.large)
         }
-        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onChange(of: signIn.activeSession) { _, session in
             guard session != nil else { return }
@@ -102,6 +120,12 @@ struct OnboardingAuthView: View {
                 onLogin()
             } else {
                 onAuthenticated()
+            }
+        }
+        .onChange(of: signIn.pendingEmailChallenge) { _, challenge in
+            if challenge != nil {
+                showVerification = true
+                showEmailForm = false
             }
         }
         .onAppear {
@@ -221,6 +245,7 @@ struct OnboardingAuthView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             Button {
                 showEmailForm = false
+                signIn.authErrorMessage = nil
             } label: {
                 HStack(spacing: AppSpacing.xxSmall) {
                     Image(systemName: "chevron.left")
@@ -278,7 +303,48 @@ struct OnboardingAuthView: View {
             .font(AppText.button)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.small)
+            .frame(height: AppSize.ctaHeight)
+            .background(AppColor.Surface.inverse.opacity(0.82), in: RoundedRectangle(cornerRadius: AppRadius.button))
+            .buttonStyle(.plain)
+            .disabled(signIn.isLoading)
+        }
+        .padding(.horizontal, AppSpacing.small)
+    }
+
+    // MARK: - Email Verification Form (inline)
+
+    private var verificationForm: some View {
+        VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+            Text("Verify your email")
+                .font(AppText.hero)
+                .foregroundStyle(AppColor.Text.primary)
+
+            Text("A confirmation code was sent to \(signIn.pendingEmailRegistration?.email ?? "your email").")
+                .font(AppText.body)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
+                TextField("5-digit code", text: $verificationCode)
+                    .keyboardType(.numberPad)
+                    .textContentType(.oneTimeCode)
+                    .font(AppText.titleMedium)
+                    .multilineTextAlignment(.center)
+            }
+            .padding(AppSpacing.large)
+            .background(AppColor.Surface.elevated, in: RoundedRectangle(cornerRadius: AppRadius.sheet))
+            .overlay(RoundedRectangle(cornerRadius: AppRadius.sheet).stroke(AppColor.Border.subtle, lineWidth: 1))
+
+            Button(signIn.isLoading ? "Verifying..." : "Verify") {
+                let code = verificationCode.filter(\.isNumber)
+                guard code.count == 5 else { return }
+                Task {
+                    await signIn.verifyEmailRegistrationCode(code)
+                }
+            }
+            .font(AppText.button)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: AppSize.ctaHeight)
             .background(AppColor.Surface.inverse.opacity(0.82), in: RoundedRectangle(cornerRadius: AppRadius.button))
             .buttonStyle(.plain)
             .disabled(signIn.isLoading)
@@ -295,6 +361,7 @@ struct OnboardingAuthView: View {
         VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
             Button {
                 showLoginForm = false
+                signIn.authErrorMessage = nil
             } label: {
                 HStack(spacing: AppSpacing.xxSmall) {
                     Image(systemName: "chevron.left")
@@ -336,7 +403,7 @@ struct OnboardingAuthView: View {
             .font(AppText.button)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, AppSpacing.small)
+            .frame(height: AppSize.ctaHeight)
             .background(AppColor.Surface.inverse.opacity(0.82), in: RoundedRectangle(cornerRadius: AppRadius.button))
             .buttonStyle(.plain)
             .disabled(signIn.isLoading)

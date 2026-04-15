@@ -88,6 +88,11 @@ struct OnboardingView: View {
                         // Returning user — skip success + first action, go to Home
                         analytics.logOnboardingAuthCompleted(method: "unknown", isNewAccount: false)
                         completeOnboarding()
+                    },
+                    onSkip: {
+                        // Guest mode — skip auth, enter app without account
+                        analytics.logOnboardingSkipped(stepIndex: 5, stepName: "auth")
+                        advance() // go to first action, then Home
                     }
                 )
                     .tag(5)
