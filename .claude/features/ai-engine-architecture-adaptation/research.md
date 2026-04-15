@@ -123,6 +123,28 @@ latestRecommendations[segment] = finalRecommendation
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
+## 4b. Goal-Aware Intelligence (added 2026-04-15)
+
+The user's chosen goal (fatLoss/maintain/gain from onboarding) should drive which metrics the AI engine prioritizes and how it frames recommendations. Today the AI treats all goals similarly — `localFallback()` has a single `primaryGoal == "weight_loss"` check that appends one signal. The adaptation adds a `GoalProfile` that maps each goal to its primary/secondary driver metrics, weights, and messaging emphasis.
+
+**Key insight:** Each goal has a different "primary equation":
+- **Fat Loss** → caloric deficit is the #1 driver. But not just kcal — *macro quality* matters (protein preserves muscle, carb/fat ratio affects satiety and hormones). The AI should lead with deficit adherence, then protein adequacy, then macro split.
+- **Muscle Gain** → caloric surplus + protein (≥1.6g/kg) are co-primary. Training volume progression is the stimulus. The AI should lead with surplus + protein, then progressive overload, then recovery.
+- **Maintain** → caloric balance (±100 kcal) + consistency are primary. The AI should lead with adherence stability, not push for change.
+
+**What exists today:**
+- `NutritionGoalMode` enum (fatLoss/maintain/gain) in `DomainModels.swift:540`
+- `primaryGoal` field on `LocalUserSnapshot` (set from preferences)
+- `ReadinessEngine.componentWeights(for:)` — already goal-aware for readiness scoring
+- `nutritionPlan()` in `UserProfile` — calculates kcal/protein/carb/fat targets per goal
+- `localFallback()` has scattered, binary goal checks
+
+**What's missing:**
+- Centralized `GoalProfile` that maps goal → prioritized metrics → messaging emphasis
+- AI pipeline weighting recommendations by driver importance
+- Foundation Model prompt context including goal-specific framing
+- Recommendation text that explains *why* a metric matters *for their specific goal*
+
 ## 5. Implementation plan (draft)
 
 ### Phase 1: Input Adapter Protocol (non-breaking)

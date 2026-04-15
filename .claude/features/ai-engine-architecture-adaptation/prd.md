@@ -39,8 +39,10 @@ Yes — Phase 4 adds thumbs up/down feedback on AI insight cards + confidence ba
 | 4 | Confidence-based UI rendering | Phase 2 | HIGH → full card, MEDIUM → "limited data" badge, LOW → subtle suggestion style |
 | 5 | RecommendationMemory persistence | Phase 3 | On-device encrypted store of (segment, signals, userAction, outcome). SwiftData or UserDefaults. |
 | 6 | Local fallback threshold tuning | Phase 3 | After N outcomes, adjust localFallback() signal thresholds based on acceptance patterns |
-| 7 | Thumbs up/down UI on AIInsightCard | Phase 4 | Two-button overlay on existing card. Writes to RecommendationMemory. |
-| 8 | Analytics events for recommendation lifecycle | Phase 4 | ai_recommendation_accepted, ai_recommendation_dismissed, ai_recommendation_confidence_level |
+| 7 | Goal-aware metric prioritization | Phase 2 | GoalProfile maps each NutritionGoalMode to primary/secondary driver metrics and messaging emphasis. AI engine weights recommendations by what matters for the user's goal. |
+| 8 | Goal-driven recommendation messaging | Phase 2 | Final recommendation text adapts tone and emphasis based on GoalProfile — fat loss user hears about deficit adherence first, muscle gain user hears about surplus + protein first. |
+| 9 | Thumbs up/down UI on AIInsightCard | Phase 4 | Two-button overlay on existing card. Writes to RecommendationMemory. |
+| 10 | Analytics events for recommendation lifecycle | Phase 4 | ai_recommendation_accepted, ai_recommendation_dismissed, ai_recommendation_confidence_level |
 
 ## Implementation Phases
 
@@ -74,7 +76,49 @@ struct ValidatedRecommendation {
 
 AIOrchestrator wraps final recommendation in validation. UI renders based on confidence.
 
-**Files changed:** `AIOrchestrator.swift` (add validation), new `ValidatedRecommendation.swift`, `AIInsightCard` views (conditional styling).
+#### Goal-Aware Metric Prioritization
+
+The user's chosen goal (from onboarding or settings) determines which metrics the AI engine emphasizes. Today `localFallback()` has scattered goal checks (e.g., `primaryGoal == "weight_loss"` → append one signal). The adaptation centralizes this into a `GoalProfile` that the entire recommendation pipeline uses.
+
+```swift
+struct GoalProfile {
+    let goal: NutritionGoalMode
+    let primaryDrivers: [MetricDriver]
+    let secondaryDrivers: [MetricDriver]
+    let messagingEmphasis: [AISegment: String]
+}
+
+struct MetricDriver {
+    let metric: String          // "caloric_balance", "protein_adequacy", etc.
+    let direction: Direction    // .lower, .higher, .maintain
+    let weight: Double          // 0-1, how much this metric matters for this goal
+    let explanation: String     // human-readable: "caloric deficit is the #1 driver of fat loss"
+}
+```
+
+**Goal → Driver Mapping:**
+
+| Goal | Primary Drivers | Secondary Drivers | Messaging Emphasis |
+|---|---|---|---|
+| **Fat Loss** | Caloric deficit (kcal in < out, weight 0.4), Protein adequacy (≥target, weight 0.25) | Macro split (carb/fat ratio, weight 0.15), Training volume (maintain muscle, weight 0.1), Sleep quality (cortisol/recovery, weight 0.1) | Nutrition: "you're X kcal from your deficit target". Training: "strength work preserves muscle during fat loss". Recovery: "poor sleep increases cortisol which fights fat loss". |
+| **Muscle Gain** | Caloric surplus (kcal in > out, weight 0.3), Protein adequacy (≥1.6g/kg, weight 0.3) | Training progressive overload (volume trending up, weight 0.2), Macro split (carb timing around training, weight 0.1), Recovery quality (muscle repair, weight 0.1) | Nutrition: "you need X more kcal to support growth". Training: "volume is progressing — surplus fuels this". Recovery: "muscle grows during rest, not during training". |
+| **Maintain** | Caloric balance (±100 kcal of target, weight 0.3), Consistency (workout adherence, weight 0.25) | Protein adequacy (maintain lean mass, weight 0.2), Recovery stability (HRV/RHR trending flat, weight 0.15), Macro variety (balanced nutrition, weight 0.1) | Nutrition: "you're right on target — keep it steady". Training: "consistency matters more than intensity at maintenance". Recovery: "stable HRV means your body is adapting well". |
+
+**How it works in the pipeline:**
+
+1. `AISnapshotBuilder` reads `preferences.nutritionGoalMode` → resolves `GoalProfile`
+2. `ValidatedRecommendation` includes the `GoalProfile` alongside confidence
+3. `localFallback()` uses `GoalProfile.primaryDrivers` to generate signals weighted by driver importance (not just binary threshold checks)
+4. `FoundationModel.adapt()` receives the `GoalProfile.messagingEmphasis[segment]` as system prompt context — the LLM knows what angle to emphasize
+5. Final recommendation text leads with the primary driver insight for that goal, not a generic signal list
+
+**Example — Fat Loss user, nutrition segment:**
+- Today: `"local_calorie_deficit_active"` (binary — deficit exists, no magnitude)
+- After: `"You're 280 kcal into your deficit target of 350 — on track. Protein is 12g below target (128g / 140g). Consider adding a protein-rich snack to protect lean mass during fat loss."`
+
+The message ties the specific numbers to the goal context, explains *why* each metric matters for *their* goal, and gives an actionable suggestion grounded in the data.
+
+**Files changed:** `AIOrchestrator.swift` (add validation + GoalProfile), new `ValidatedRecommendation.swift`, new `GoalProfile.swift`, `AIInsightCard` views (conditional styling), `FoundationModelService.swift` (goal-aware prompt context).
 
 ### Phase 3: Learning Cache
 
