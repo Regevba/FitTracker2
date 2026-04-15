@@ -1026,6 +1026,7 @@
 				NT1000001000000000000001 /* NotificationService.swift in Sources */,
 				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
 				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
+				NT1000001000000000000004 /* DeepLinkHandler.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
 				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,
 				IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */,
