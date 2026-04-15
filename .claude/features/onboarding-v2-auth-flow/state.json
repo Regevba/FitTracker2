@@ -1,9 +1,9 @@
 {
   "feature": "onboarding-v2-auth-flow",
   "created": "2026-04-15T14:00:00Z",
-  "updated": "2026-04-15T14:00:00Z",
+  "updated": "2026-04-15T15:00:00Z",
   "branch": "feature/onboarding-v2-auth-flow",
-  "current_phase": "prd",
+  "current_phase": "ux_or_integration",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -11,31 +11,45 @@
   "parent_feature": null,
   "phases": {
     "research": { "status": "approved", "approved_at": "2026-04-15T14:30:00Z", "sources": ["competitive_analysis", "simulator_testing", "ux_review"] },
-    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": true },
-    "tasks": { "status": "pending", "count": 0 },
-    "ux_or_integration": { "status": "pending", "type": "ux" },
+    "prd": { "status": "approved", "approved_at": "2026-04-15T14:45:00Z", "analytics_spec_complete": true },
+    "tasks": { "status": "approved", "approved_at": "2026-04-15T15:00:00Z", "count": 12 },
+    "ux_or_integration": { "status": "in_progress", "type": "ux" },
     "implementation": { "status": "pending", "commits": [] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
     "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
     "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
     "documentation": { "status": "pending" },
     "metrics": {
-      "primary": { "name": "", "baseline": null, "target": null, "current": null },
-      "secondary": [],
-      "guardrails": [],
+      "primary": { "name": "onboarding_completion_rate", "baseline": 0, "target": 70, "current": null },
+      "secondary": [
+        { "name": "auth_conversion_rate", "baseline": 0, "target": 60 },
+        { "name": "time_to_home_seconds", "baseline": null, "target": 90 },
+        { "name": "session_restore_success_rate", "baseline": 0, "target": 95 }
+      ],
+      "guardrails": ["crash_free_rate > 99.5%", "cold_start < 2s", "existing_tests_pass"],
       "instrumentation_ready": false,
       "first_review_date": null,
-      "kill_criteria": ""
+      "kill_criteria": "completion_rate < 40% after 14 days OR auth_conversion < 25%"
     }
   },
   "transitions": [
-    {
-      "from": null,
-      "to": "research",
-      "timestamp": "2026-04-15T14:00:00Z",
-      "approved_by": "user",
-      "note": "Feature initiated: restructure onboarding to embed auth flow (create account after consent, success animation, then first action)."
-    }
+    { "from": null, "to": "research", "timestamp": "2026-04-15T14:00:00Z", "approved_by": "user", "note": "Feature initiated." },
+    { "from": "research", "to": "prd", "timestamp": "2026-04-15T14:30:00Z", "approved_by": "user", "note": "Research approved." },
+    { "from": "prd", "to": "tasks", "timestamp": "2026-04-15T14:45:00Z", "approved_by": "user", "note": "PRD approved with analytics spec." },
+    { "from": "tasks", "to": "ux_or_integration", "timestamp": "2026-04-15T15:00:00Z", "approved_by": "user", "note": "12 tasks approved. Moving to UX phase." }
   ],
-  "tasks": []
+  "tasks": [
+    { "id": "T1", "title": "Fix session restore freeze", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "completed_at": null },
+    { "id": "T2", "title": "OnboardingAuthView", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "completed_at": null },
+    { "id": "T3", "title": "OnboardingSuccessView", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T2"], "completed_at": null },
+    { "id": "T4", "title": "Wire steps into OnboardingView", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": ["T2", "T3"], "completed_at": null },
+    { "id": "T5", "title": "Simplify rootView", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": ["T1", "T4"], "completed_at": null },
+    { "id": "T6", "title": "Persist profile on sign-up", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T4", "T5"], "completed_at": null },
+    { "id": "T7", "title": "Fix Intermediate truncation", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": [], "completed_at": null },
+    { "id": "T8", "title": "Update progress bar for 8 steps", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": [], "completed_at": null },
+    { "id": "T9", "title": "Analytics event constants + params", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.1, "depends_on": [], "completed_at": null },
+    { "id": "T10", "title": "Returning user shortcut", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T2", "T4"], "completed_at": null },
+    { "id": "T11", "title": "Analytics convenience methods + CSV", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T9"], "completed_at": null },
+    { "id": "T12", "title": "Build verification + regression", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T5", "T6", "T9", "T11"], "completed_at": null }
+  ]
 }
