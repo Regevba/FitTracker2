@@ -1,17 +1,14 @@
 ---
 import DashboardLayout from '../layouts/DashboardLayout.astro';
 import Dashboard from '../components/Dashboard.jsx';
-import { buildDashboardData, isPrimaryView, isSecondaryWorkspace } from '../scripts/builders/controlCenter.js';
+import { buildDashboardData } from '../scripts/builders/controlCenter.js';
 
-const requestedView = Astro.url.searchParams.get('view') || 'control';
-const activeView = isPrimaryView(requestedView) || isSecondaryWorkspace(requestedView) ? requestedView : 'control';
 const dashboardData = await buildDashboardData({ token: import.meta.env.GITHUB_TOKEN });
 ---
 
 <DashboardLayout>
   <Dashboard
     {...dashboardData}
-    activeView={activeView}
     lastSync={dashboardData.externalSyncStatus.updated}
     client:load
   />

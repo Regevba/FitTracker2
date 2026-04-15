@@ -12,7 +12,7 @@ describe('control center builders', () => {
   it('builds dashboard data from shared PM sources', async () => {
     const data = await buildDashboardData();
 
-    expect(data.frameworkManifest.framework_version).toBe('4.3');
+    expect(data.frameworkManifest.framework_version).toBe('5.1');
     expect(data.workspaceMeta.primaryViews.map(item => item.id)).toContain('knowledge');
     expect(data.workspaceMeta.secondaryWorkspaces.map(item => item.id)).toContain('case-studies');
     expect(data.caseStudyFeed.some(item => item.id === 'cleanup-control-room-2026-04')).toBe(true);

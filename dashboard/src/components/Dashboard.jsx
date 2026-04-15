@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import KanbanBoard from './KanbanBoard';
 import TableView from './TableView';
 import TaskBoard from './TaskBoard';
@@ -12,6 +12,13 @@ import ResearchConsole from './ResearchConsole';
 import FigmaHandoffLab from './FigmaHandoffLab';
 
 const PRIMARY_VIEW_SET = new Set(['control', 'board', 'table', 'tasks', 'knowledge']);
+const SECONDARY_VIEW_SET = new Set(['claude-research', 'codex-research', 'figma-handoff']);
+
+function getViewFromURL(fallback = 'control') {
+  if (typeof window === 'undefined') return fallback;
+  const params = new URLSearchParams(window.location.search);
+  return params.get('view') || 'control';
+}
 
 export default function Dashboard({
   features,
@@ -25,9 +32,23 @@ export default function Dashboard({
   caseStudyFeed,
   researchWorkspaces,
   workspaceMeta,
-  activeView = 'control',
+  activeView: initialView = 'control',
   lastSync,
 }) {
+  const [activeView, setActiveView] = useState(() => getViewFromURL(initialView));
+
+  useEffect(() => {
+    const onPopState = () => setActiveView(getViewFromURL());
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  function navigateTo(viewId) {
+    const url = viewId === 'control' ? '/' : `/?view=${viewId}`;
+    window.history.pushState({}, '', url);
+    setActiveView(viewId);
+  }
+
   const openCount = features.filter(feature => !['done'].includes(feature.phase)).length;
   const activeCount = features.filter(feature => !['backlog', 'research', 'prd', 'done'].includes(feature.phase)).length;
   const closedCount = features.filter(feature => feature.phase === 'done').length;
@@ -89,9 +110,9 @@ export default function Dashboard({
           {workspaceMeta.primaryViews.map(tab => (
             <WorkspaceLink
               key={tab.id}
-              href={`/?view=${tab.id}`}
               label={tab.label}
               active={selectedPrimaryView === tab.id}
+              onClick={() => navigateTo(tab.id)}
             />
           ))}
         </nav>
@@ -105,7 +126,8 @@ export default function Dashboard({
             <div className="absolute right-0 z-20 mt-2 min-w-[220px] rounded-2xl border border-slate-200 bg-white p-2 shadow-[0_18px_50px_rgba(15,23,42,0.1)] dark:border-white/10 dark:bg-[#10141d]">
               {workspaceMeta.secondaryWorkspaces.map(item => {
                 const active = activeView === item.id;
-                return (
+                const isRouteOnly = item.routeOnly;
+                return isRouteOnly ? (
                   <a
                     key={item.id}
                     href={item.href}
@@ -117,6 +139,18 @@ export default function Dashboard({
                   >
                     {item.label}
                   </a>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => navigateTo(item.id)}
+                    className={`block w-full rounded-xl px-3 py-2 text-left text-sm transition-colors ${
+                      active
+                        ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-white/68 dark:hover:bg-white/[0.05] dark:hover:text-white'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
                 );
               })}
             </div>
@@ -181,10 +215,10 @@ function StatPill({ label, value }) {
   );
 }
 
-function WorkspaceLink({ href, label, active }) {
+function WorkspaceLink({ label, active, onClick }) {
   return (
-    <a
-      href={href}
+    <button
+      onClick={onClick}
       className={`rounded-xl px-3 py-2 text-xs font-semibold transition-colors ${
         active
           ? 'bg-slate-950 text-white shadow-sm dark:bg-white dark:text-slate-950'
@@ -192,6 +226,6 @@ function WorkspaceLink({ href, label, active }) {
       }`}
     >
       {label}
-    </a>
+    </button>
   );
 }

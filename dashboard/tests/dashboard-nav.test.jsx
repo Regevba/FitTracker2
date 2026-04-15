@@ -108,7 +108,7 @@ const baseProps = {
       { id: 'knowledge', label: 'Knowledge' },
     ],
     secondaryWorkspaces: [
-      { id: 'case-studies', label: 'Case Studies', href: '/case-studies' },
+      { id: 'case-studies', label: 'Case Studies', href: '/case-studies', routeOnly: true },
       { id: 'claude-research', label: 'Claude Research', href: '/?view=claude-research' },
       { id: 'codex-research', label: 'Codex Research', href: '/?view=codex-research' },
       { id: 'figma-handoff', label: 'Figma Handoff', href: '/?view=figma-handoff' },
