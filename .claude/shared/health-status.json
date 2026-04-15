@@ -4,7 +4,7 @@
   "note": "Operational monitoring not yet wired. Values below reflect local verification only — runtime infrastructure checks require deployed services and credentials.",
   "infrastructure": {
     "railway": { "status": "unknown", "service": "AI Engine (FastAPI)", "url": null, "last_check": null },
-    "supabase": { "status": "unknown", "service": "PostgreSQL + Realtime + Storage", "last_check": null, "note": "placeholder config in Info.plist — real credentials needed for runtime" },
+    "supabase": { "status": "configured", "service": "PostgreSQL + Realtime + Storage", "project": "hwbbdzwaismlajtfsbed", "region": "ap-northeast-1 (Tokyo)", "region_note": "Will migrate to eu-west-1 (Ireland) before launch — region is permanent per project, requires new project + migration", "last_check": "2026-04-15", "project_name": "FitmeBe&AI engine15042026", "note": "Canonical project: cohort_stats + sync_records + cardio_assets + user_profiles + cardio-images bucket + Email/Google auth. Info.plist still has placeholders — local credential injection needed for runtime verification." },
     "cloudkit": { "status": "unknown", "service": "iCloud Private DB", "last_check": null },
     "firebase": { "status": "unknown", "service": "Analytics (GA4)", "last_check": null, "note": "GoogleService-Info.plist not in repo — local file required" },
     "vercel_website": { "status": "unknown", "service": "Marketing Website", "url": "fitme.app", "last_check": null },

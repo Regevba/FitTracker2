@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UILaunchScreen</key>
+	<dict/>
 	<key>AIEngineBaseURL</key>
 	<string>https://fittracker-ai-production.up.railway.app</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -21,7 +23,7 @@
 			<string>GoogleSignIn</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>YOUR_REVERSED_CLIENT_ID</string>
+				<string>apps.googleusercontent.com.881044848598-3lav013iveag86b27jckjpb7so6mf963</string>
 			</array>
 		</dict>
 	</array>
@@ -36,9 +38,9 @@
 	<key>FirebaseAutomaticScreenReportingEnabled</key>
 	<false/>
 	<key>GoogleClientID</key>
-	<string>YOUR_GOOGLE_CLIENT_ID</string>
+	<string> 881044848598-3lav013iveag86b27jckjpb7so6mf963.apps.googleusercontent.com</string>
 	<key>GoogleReversedClientID</key>
-	<string>YOUR_REVERSED_CLIENT_ID</string>
+	<string>apps.googleusercontent.com.881044848598-3lav013iveag86b27jckjpb7so6mf963</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.healthcare-fitness</string>
 	<key>NSFaceIDUsageDescription</key>
@@ -52,8 +54,13 @@
 	<key>PasskeyRelyingPartyID</key>
 	<string>fittracker.regev.app</string>
 	<key>SupabaseAnonKey</key>
-	<string>YOUR_SUPABASE_ANON_KEY</string>
+	<string>sb_publishable_kxgbH8ZJGAd-r_85JxEO5Q_JCkC2sKB</string>
 	<key>SupabaseURL</key>
-	<string>https://YOUR_PROJECT_ID.supabase.co</string>
+	<string>https://hwbbdzwaismlajtfsbed.supabase.co
+https://hwbbdzwaismlajtfsbed.supabase.co
+https://hwbbdzwaismlajtfsbed.supabase.co
+https://hwbbdzwaismlajtfsbed.supabase.co
+https://hwbbdzwaismlajtfsbed.supabase.co
+</string>
 </dict>
 </plist>

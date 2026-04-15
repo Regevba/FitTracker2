@@ -711,6 +711,46 @@
           "metrics": { "tests_passing": 197, "build_verified": true }
         }
       ]
+    },
+    {
+      "case_id": "onboarding-v2-auth-flow-2026-04",
+      "title": "Onboarding v2 Auth Flow — Embedded Account Creation",
+      "status": "in_progress",
+      "work_type": "feature",
+      "started_at": "2026-04-15T14:00:00Z",
+      "updated_at": "2026-04-15T14:00:00Z",
+      "framework_version": "5.1",
+      "skills_used": ["pm-workflow", "research", "ux", "design", "dev", "qa", "analytics"],
+      "data_sources": ["repo"],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 0,
+        "repo_files_updated": 0,
+        "tests_passing": 0,
+        "build_verified": false
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 0,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "success_cases": [],
+      "failure_cases": [],
+      "next_checkpoints": ["research_complete", "prd_approved", "tasks_approved", "ux_spec_approved"],
+      "artifacts": [],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-15T14:00:00Z",
+          "label": "feature initiated",
+          "summary": "Restructure onboarding: embed auth after consent, add success animation, fix app-wide layout issues, resolve session restore freeze.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
+        }
+      ]
     }
   ]
 }
