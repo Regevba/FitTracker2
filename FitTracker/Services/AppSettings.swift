@@ -101,7 +101,7 @@ final class AppSettings: ObservableObject {
     }
 
     // ── App lock behavior ───────────────────────────────
-    @Published var requireBiometricUnlockOnReopen: Bool = true {
+    @Published var requireBiometricUnlockOnReopen: Bool = false {
         didSet { UserDefaults.standard.set(requireBiometricUnlockOnReopen, forKey: "ft.requireBiometricUnlockOnReopen") }
     }
 
