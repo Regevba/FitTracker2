@@ -1,7 +1,7 @@
 // FitTracker/DesignSystem/FitMeBrandIcon.swift
 // FitMe app icon — rendered from Figma-exported PDF asset.
 // Figma ref: "App Icon — 1024×1024 Master" (node 635:2)
-// Asset: FitmeIcon (Assets.xcassets/FitmeIcon.imageset/FitmeIcon.pdf)
+// Asset: FitMeAppIcon (Assets.xcassets/Images/FitMeAppIcon.imageset/FitmeIcon.pdf)
 
 import SwiftUI
 
@@ -9,7 +9,7 @@ struct FitMeBrandIcon: View {
     var size: CGFloat = 100
 
     var body: some View {
-        Image("FitmeIcon")
+        Image("FitMeAppIcon")
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: size, height: size)
