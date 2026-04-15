@@ -144,6 +144,8 @@
 		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
 		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
 		NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000003 /* NotificationContentBuilder.swift */; };
+		IM100000000000000000AA01 /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA01 /* ImportParser.swift */; };
+		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -157,6 +159,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		IM200000000000000000AA01 /* ImportParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportParser.swift; sourceTree = "<group>"; };
+		IM200000000000000000AA02 /* ExerciseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseMapper.swift; sourceTree = "<group>"; };
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
@@ -319,6 +323,8 @@
 		NT2000001000000000000001 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		NT2000001000000000000002 /* NotificationPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferencesStore.swift; sourceTree = "<group>"; };
 		NT2000001000000000000003 /* NotificationContentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationContentBuilder.swift; sourceTree = "<group>"; };
+		RM2000001000000000000001 /* ReminderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderType.swift; sourceTree = "<group>"; };
+		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -435,6 +441,7 @@
 				A40000010000000000000009 /* CloudKit */,
 				A4000001000000000000000A /* Encryption */,
 				FB4000001000000000000001 /* Supabase */,
+				IM300000000000000000AA01 /* Import */,
 				A20000010000000000000008 /* AppSettings.swift */,
 				HV200000000000000000AA03 /* HomeRecommendationProvider.swift */,
 				RE200000000000000000AA01 /* ReadinessEngine.swift */,
@@ -507,6 +514,15 @@
 				A20000010000000000000009 /* EncryptionService.swift */,
 			);
 			path = Encryption;
+			sourceTree = "<group>";
+		};
+		IM300000000000000000AA01 /* Import */ = {
+			isa = PBXGroup;
+			children = (
+				IM200000000000000000AA01 /* ImportParser.swift */,
+				IM200000000000000000AA02 /* ExerciseMapper.swift */,
+			);
+			path = Import;
 			sourceTree = "<group>";
 		};
 		A4000001000000000000000B /* Main */ = {
@@ -963,7 +979,9 @@
 				3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */,
 				NT1000001000000000000001 /* NotificationService.swift in Sources */,
 				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
-				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,);
+				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
+				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
+				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B30000010000000000000002 /* Sources */ = {
