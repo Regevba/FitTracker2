@@ -715,7 +715,7 @@
     {
       "case_id": "onboarding-v2-auth-flow-2026-04",
       "title": "Onboarding v2 Auth Flow — Embedded Account Creation",
-      "status": "complete",
+      "status": "closed",
       "work_type": "feature",
       "started_at": "2026-04-15T14:00:00Z",
       "updated_at": "2026-04-15T14:00:00Z",
@@ -740,12 +740,16 @@
         "source_truth_gap_reduced": false
       },
       "success_cases": [
-        { "title": "Full PM lifecycle in single session", "evidence": "Research → PRD → Tasks → UX → Implement → Test → Merge in one session. 8 phases, 12 tasks." },
-        { "title": "Session restore freeze resolved", "evidence": "Detached task + 5s timeout. No more UI freeze with real Supabase credentials." },
-        { "title": "Auth embedded in onboarding momentum", "evidence": "8-step flow follows Duolingo/Headspace pattern. Auth after consent = motivated ask." },
-        { "title": "Zero test regressions", "evidence": "198 tests pass (up from 197), 0 failures." }
+        { "title": "Full PM lifecycle + design iterations in single session", "evidence": "Research → Merge + 3 design iterations + 6 bug fixes in ~100min." },
+        { "title": "Session restore freeze resolved", "evidence": "Detached task + 5s timeout. First successful real Supabase auth in the project." },
+        { "title": "Competitive research drove correct architecture", "evidence": "Auth mid-flow pattern from Duolingo/Headspace validated in manual testing." },
+        { "title": "Figma MCP integration for icon", "evidence": "Connected Figma, identified SwiftUI limitation, exported PDF — in-session." }
       ],
-      "failure_cases": [],
+      "failure_cases": [
+        { "title": "Email registration broken — invisible navigation bug", "evidence": "startEmailRegistration navigated to removed AuthHubView. Undetectable without runtime testing." },
+        { "title": "Icon invisible on orange bg — 3 iterations needed", "evidence": "SwiftUI strokes → Figma PDF → template mode. Color conflict required complete approach change." },
+        { "title": "No design iteration model in PM workflow", "evidence": "6 issues found post-merge, 3 design rounds. PM workflow treats implementation as single pass." }
+      ],
       "next_checkpoints": [],
       "artifacts": [
         ".claude/features/onboarding-v2-auth-flow/research.md",
