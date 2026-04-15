@@ -346,7 +346,8 @@ final class FitTrackerCoreTests: XCTestCase {
         let orchestrator = AIOrchestrator(
             engineClient: engine,
             foundationModel: PassthroughFoundationModel(),
-            snapshot: { LocalUserSnapshot() }
+            snapshot: { LocalUserSnapshot() },
+            goalMode: { .fatLoss }
         )
 
         await orchestrator.process(
