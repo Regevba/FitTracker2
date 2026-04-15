@@ -38,15 +38,18 @@ struct OnboardingWelcomeView: View {
 
                 Spacer().frame(height: AppSpacing.xxLarge)
 
-                // CTA — Figma: white bg, brand-primary text, 20px radius, 52pt height
+                // CTA — white bg with blue text, matching the app's blue palette
                 Button(action: onContinue) {
                     Text("Get Started")
                         .font(AppText.button)
-                        .foregroundStyle(AppColor.Brand.primary)
+                        .foregroundStyle(AppColor.Brand.secondary)
                         .frame(maxWidth: .infinity)
                         .frame(height: AppSize.ctaHeight)
                 }
-                .background(AppColor.Surface.inverse, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
+                .background(
+                    AppColor.Surface.primary.opacity(0.95),
+                    in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
+                )
                 .shadow(
                     color: AppShadow.ctaInverseColor,
                     radius: AppShadow.ctaInverseRadius,

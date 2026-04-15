@@ -143,7 +143,6 @@
 		4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */; };
 		79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */; };
 		74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */; };
-		3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06212BD54CCF43878BABFC5B /* OnboardingSuccessView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -311,7 +310,6 @@
 		562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/ValidatedRecommendation.swift; sourceTree = "<group>"; };
 		1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationMemory.swift; sourceTree = "<group>"; };
 		CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift; sourceTree = "<group>"; };
-		06212BD54CCF43878BABFC5B /* OnboardingSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/Views/Onboarding/v2/OnboardingSuccessView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

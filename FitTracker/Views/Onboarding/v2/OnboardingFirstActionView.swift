@@ -1,79 +1,110 @@
 // FitTracker/Views/Onboarding/OnboardingFirstActionView.swift
-// Onboarding Step 5 — First action selection to complete onboarding.
-//
-// v2 UX alignment (2026-04-07):
-//  - AnalyticsScreen.onboardingFirstAction enum [P1-01]
-//  - onboarding_step_viewed event [P0-02]
-//  - "Ready to maintain?" → "Ready to stay on track?" [P2-04]
-//  - sensoryFeedback haptic on tap [P0-05]
-//  - ScrollView wrapper for Dynamic Type [P1-06]
+// Onboarding final step — success confirmation + first action selection.
+// If user authenticated: shows "Account successfully created!" then action cards.
+// If user skipped auth: shows just the action cards.
 
 import SwiftUI
 
 struct OnboardingFirstActionView: View {
-    var selectedGoal: String?
+    var isAuthenticated: Bool = false
     let onComplete: () -> Void
 
+    @EnvironmentObject private var signIn: SignInService
     @EnvironmentObject private var analytics: AnalyticsService
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    @State private var showContent = false
     @State private var lastTappedAction: String?
 
-    private var title: String {
-        switch selectedGoal {
-        case "Build Muscle":    return "Ready to build muscle?"
-        case "Lose Fat":        return "Ready to lose fat?"
-        case "Maintain":        return "Ready to stay on track?"
-        case "General Fitness": return "Ready to get fit?"
-        default:                return "Let's get started!"
-        }
+    private var displayName: String {
+        let name = signIn.activeSession?.displayName ?? ""
+        let first = name.components(separatedBy: " ").first ?? ""
+        return first.isEmpty ? "" : ", \(first)"
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: AppSpacing.large) {
-                Spacer().frame(height: AppSpacing.xxLarge)
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(spacing: AppSpacing.large) {
+                    Spacer().frame(height: AppSpacing.xLarge)
 
-                Text(title)
-                    .font(AppText.pageTitle)
-                    .foregroundStyle(AppColor.Text.primary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, AppSpacing.small)
+                    if isAuthenticated {
+                        // Success confirmation
+                        VStack(spacing: AppSpacing.medium) {
+                            ZStack {
+                                Circle()
+                                    .fill(AppColor.Status.success.opacity(0.15))
+                                    .frame(width: 80, height: 80)
 
-                Text("Pick your first action to begin your journey.")
-                    .font(AppText.body)
-                    .foregroundStyle(AppColor.Text.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, AppSpacing.small)
+                                Image(systemName: "checkmark")
+                                    .font(.system(size: 36, weight: .bold))
+                                    .foregroundStyle(AppColor.Status.success)
+                            }
+                            .scaleEffect(showContent ? 1.0 : 0.5)
+                            .opacity(showContent ? 1.0 : 0.0)
 
-                HStack(spacing: AppSpacing.xSmall) {
-                    FirstActionCard(
-                        icon: "figure.strengthtraining.traditional",
-                        label: "Start Your First Workout"
-                    ) {
-                        lastTappedAction = "workout"
-                        analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "workout")
-                        onComplete()
+                            Text("Account successfully created!")
+                                .font(AppText.titleStrong)
+                                .foregroundStyle(AppColor.Text.primary)
+                                .multilineTextAlignment(.center)
+                                .opacity(showContent ? 1.0 : 0.0)
+                        }
                     }
 
-                    FirstActionCard(
-                        icon: "fork.knife",
-                        label: "Log Your First Meal"
-                    ) {
-                        lastTappedAction = "meal"
-                        analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "meal")
-                        onComplete()
+                    // Title
+                    Text(isAuthenticated ? "Let's get started\(displayName)" : "Let's get started!")
+                        .font(AppText.pageTitle)
+                        .foregroundStyle(AppColor.Text.primary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, AppSpacing.small)
+
+                    Text("Pick your first action to begin your journey.")
+                        .font(AppText.body)
+                        .foregroundStyle(AppColor.Text.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, AppSpacing.small)
+
+                    HStack(spacing: AppSpacing.xSmall) {
+                        FirstActionCard(
+                            icon: "figure.strengthtraining.traditional",
+                            label: "Start Your First Workout"
+                        ) {
+                            lastTappedAction = "workout"
+                            analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "workout")
+                            onComplete()
+                        }
+
+                        FirstActionCard(
+                            icon: "fork.knife",
+                            label: "Log Your First Meal"
+                        ) {
+                            lastTappedAction = "meal"
+                            analytics.logSelectContent(contentType: "onboarding_first_action", itemId: "meal")
+                            onComplete()
+                        }
                     }
+                    .padding(.horizontal, AppSpacing.small)
+                    .sensoryFeedback(.success, trigger: lastTappedAction)
+
+                    Spacer().frame(height: AppSpacing.xLarge)
                 }
-                .padding(.horizontal, AppSpacing.small)
-                .sensoryFeedback(.success, trigger: lastTappedAction)
-
-                Spacer().frame(height: AppSpacing.xLarge)
             }
+            .scrollBounceBehavior(.basedOnSize)
         }
-        .scrollBounceBehavior(.basedOnSize)
         .background(Color.clear)
         .onAppear {
             analytics.logScreenView(AnalyticsScreen.onboardingFirstAction, screenClass: "OnboardingFirstActionView")
-            analytics.logOnboardingStepViewed(stepIndex: 5, stepName: "first_action")
+            analytics.logOnboardingStepViewed(stepIndex: 6, stepName: "first_action")
+
+            if isAuthenticated {
+                if reduceMotion {
+                    showContent = true
+                } else {
+                    withAnimation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.2)) {
+                        showContent = true
+                    }
+                }
+            }
         }
     }
 }
@@ -125,7 +156,7 @@ struct OnboardingFirstActionView_Previews: PreviewProvider {
     static var previews: some View {
         ZStack {
             AppGradient.screenBackground.ignoresSafeArea()
-            OnboardingFirstActionView(selectedGoal: "Build Muscle", onComplete: {})
+            OnboardingFirstActionView(isAuthenticated: true, onComplete: {})
         }
     }
 }

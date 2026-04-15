@@ -1,6 +1,6 @@
 // FitTracker/Views/Onboarding/OnboardingView.swift
-// Main onboarding container — manages 8-step flow with progress tracking.
-// Steps: Welcome → Goals → Profile → HealthKit → Consent → Auth → Success → First Action
+// Main onboarding container — manages 7-step flow with progress tracking.
+// Steps: Welcome → Goals → Profile → HealthKit → Consent → Auth → First Action (with success)
 // Auth is embedded (step 5) — user creates account before entering the app.
 // Swipe is disabled; the user advances only via explicit button actions.
 
@@ -8,6 +8,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     @State private var currentStep = 0
+    @State private var didAuthenticate = false
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var signIn: SignInService
@@ -17,26 +18,24 @@ struct OnboardingView: View {
 
     let onComplete: () -> Void
 
-    private let totalSteps = 8
+    private let totalSteps = 7
 
     var body: some View {
         VStack(spacing: 0) {
-            // Top bar: Back button (steps 1-4, 7) + Progress bar
+            // Top bar: Back button + Progress bar
             HStack(spacing: AppSpacing.xSmall) {
                 if canGoBack {
                     Button(action: goBack) {
                         Image(systemName: "chevron.left")
                             .font(AppText.body)
-                            .foregroundStyle(AppColor.Text.secondary)
+                            .foregroundStyle(currentStep == 0 ? AppColor.Text.inverseSecondary : AppColor.Text.secondary)
                             .frame(width: AppSize.touchTargetLarge, height: AppSize.touchTargetLarge)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Back")
-                    .accessibilityHint("Returns to the previous step")
                     .transition(.opacity)
                 }
 
-                // Progress bar — hidden on welcome (0), auth (5), success (6)
                 if showProgressBar {
                     OnboardingProgressBar(currentStep: currentStep, totalSteps: totalSteps)
                         .padding(.trailing, AppSpacing.medium)
@@ -80,26 +79,27 @@ struct OnboardingView: View {
                     .tag(4)
                 OnboardingAuthView(
                     onAuthenticated: {
-                        // New account created — show success, then first action
+                        didAuthenticate = true
                         analytics.logOnboardingAuthCompleted(method: "unknown", isNewAccount: true)
                         advance()
                     },
                     onLogin: {
-                        // Returning user — skip success + first action, go to Home
+                        didAuthenticate = true
                         analytics.logOnboardingAuthCompleted(method: "unknown", isNewAccount: false)
                         completeOnboarding()
                     },
                     onSkip: {
-                        // Guest mode — skip auth, enter app without account
+                        didAuthenticate = false
                         analytics.logOnboardingSkipped(stepIndex: 5, stepName: "auth")
-                        advance() // go to first action, then Home
+                        advance()
                     }
                 )
                     .tag(5)
-                OnboardingSuccessView(onContinue: { advance() })
+                OnboardingFirstActionView(
+                    isAuthenticated: didAuthenticate,
+                    onComplete: { completeOnboarding() }
+                )
                     .tag(6)
-                OnboardingFirstActionView(onComplete: { completeOnboarding() })
-                    .tag(7)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .scrollDisabled(true)
@@ -117,20 +117,17 @@ struct OnboardingView: View {
     // MARK: - Navigation
 
     private var canGoBack: Bool {
-        // Back allowed on steps 1-4 and 7 (not welcome, auth, success)
-        [1, 2, 3, 4, 7].contains(currentStep)
+        [1, 2, 3, 4].contains(currentStep)
     }
 
     private var showProgressBar: Bool {
-        // Show on steps 1-4 and 7 (not welcome, auth, success)
-        [1, 2, 3, 4, 7].contains(currentStep)
+        [1, 2, 3, 4, 6].contains(currentStep)
     }
 
     private var stepBackground: some ShapeStyle {
         switch currentStep {
-        case 0: AnyShapeStyle(AppGradient.brand)         // Welcome — orange
-        case 6: AnyShapeStyle(AppGradient.brand)         // Success — orange (bookend)
-        default: AnyShapeStyle(AppColor.Background.appTint) // All other steps
+        case 0: AnyShapeStyle(AppGradient.brand)
+        default: AnyShapeStyle(AppColor.Background.appTint)
         }
     }
 
@@ -171,8 +168,7 @@ struct OnboardingView: View {
         case 3: return "healthkit"
         case 4: return "consent"
         case 5: return "auth"
-        case 6: return "success"
-        case 7: return "first_action"
+        case 6: return "first_action"
         default: return "unknown"
         }
     }

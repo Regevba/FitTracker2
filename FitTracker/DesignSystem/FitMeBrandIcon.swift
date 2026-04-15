@@ -1,58 +1,52 @@
 // FitTracker/DesignSystem/FitMeBrandIcon.swift
 // FitMe app icon — 4 intertwined circles with gradient "FitMe" text.
-// Figma ref: "App Icon — 1024×1024 Master" (node 635:2)
-// Colors: Pink #F5B8E8, Yellow #FFBD12, Blue #85D6FF, Teal #33E0C2
-// Use this for onboarding, auth, about screens, and anywhere the brand icon appears.
+// Uses the app's blue gradient palette for visual consistency.
+// Updated 2026-04-15: switched from rainbow to blue gradient per brand direction.
 
 import SwiftUI
 
 struct FitMeBrandIcon: View {
     var size: CGFloat = 100
 
-    // Figma icon colors
-    private let pink = Color(red: 0.96, green: 0.72, blue: 0.91)   // #F5B8E8
-    private let yellow = Color(red: 1.0, green: 0.74, blue: 0.07)  // #FFBD12
-    private let blue = Color(red: 0.52, green: 0.84, blue: 1.0)    // #85D6FF
-    private let teal = Color(red: 0.2, green: 0.88, blue: 0.76)    // #33E0C2
+    // Blue gradient palette — matches AppGradient.screenBackground
+    private let blue1 = Color(red: 0.875, green: 0.953, blue: 1.0)    // brand-cool-soft #DFF3FF
+    private let blue2 = Color(red: 0.729, green: 0.890, blue: 1.0)    // brand-cool #BAE3FF
+    private let blue3 = Color(red: 0.541, green: 0.780, blue: 1.0)    // brand-secondary #8AC7FF
+    private let blue4 = Color(red: 0.400, green: 0.680, blue: 0.950)  // deeper blue accent
 
-    private var strokeWidth: CGFloat { size * 0.035 }
-    private var circleSize: CGFloat { size * 0.96 }
-    private var offset: CGFloat { size * 0.012 }
+    private var strokeWidth: CGFloat { size * 0.06 }
+    private var circleSize: CGFloat { size * 0.82 }
+    private var circleOffset: CGFloat { size * 0.06 }
 
     var body: some View {
         ZStack {
-            // 4 slightly offset circles — creates the intertwined organic feel
+            // 4 offset circles — intertwined petal pattern
             Circle()
-                .strokeBorder(pink, lineWidth: strokeWidth)
+                .strokeBorder(blue1, lineWidth: strokeWidth)
                 .frame(width: circleSize, height: circleSize)
-                .offset(x: -offset, y: -offset)
+                .offset(x: -circleOffset, y: -circleOffset)
 
             Circle()
-                .strokeBorder(yellow, lineWidth: strokeWidth)
+                .strokeBorder(blue2, lineWidth: strokeWidth)
                 .frame(width: circleSize, height: circleSize)
-                .offset(x: offset, y: -offset)
+                .offset(x: circleOffset, y: -circleOffset)
 
             Circle()
-                .strokeBorder(blue, lineWidth: strokeWidth)
+                .strokeBorder(blue3, lineWidth: strokeWidth)
                 .frame(width: circleSize, height: circleSize)
-                .offset(x: -offset, y: offset)
+                .offset(x: -circleOffset, y: circleOffset)
 
             Circle()
-                .strokeBorder(teal, lineWidth: strokeWidth)
+                .strokeBorder(blue4, lineWidth: strokeWidth)
                 .frame(width: circleSize, height: circleSize)
-                .offset(x: offset, y: offset)
+                .offset(x: circleOffset, y: circleOffset)
 
-            // Gradient "FitMe" text
+            // Gradient "FitMe" text — blue gradient
             Text("FitMe")
                 .font(.system(size: size * 0.2, weight: .bold, design: .rounded))
                 .foregroundStyle(
                     LinearGradient(
-                        colors: [
-                            Color(red: 1.0, green: 0.55, blue: 0.0),   // Orange
-                            Color(red: 1.0, green: 0.74, blue: 0.07),  // Yellow
-                            Color(red: 0.2, green: 0.88, blue: 0.76),  // Teal
-                            Color(red: 0.52, green: 0.84, blue: 1.0),  // Blue
-                        ],
+                        colors: [blue3, blue4],
                         startPoint: .leading,
                         endPoint: .trailing
                     )
@@ -82,6 +76,7 @@ struct FitMeBrandIcon_Previews: PreviewProvider {
             FitMeBrandIcon.hero
         }
         .padding()
+        .background(AppGradient.brand)
     }
 }
 #endif
