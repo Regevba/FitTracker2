@@ -3,6 +3,7 @@
 //   1. Build a local baseline recommendation from on-device data
 //   2. Prefer cloud cohort insight when a valid backend JWT is available
 //   3. Apply on-device personalisation using private user data
+//   4. Validate confidence and attach goal context before surfacing
 //
 // Architecture:
 //   - PII never leaves the device — only banded categorical values are sent to cloud
@@ -21,25 +22,32 @@ public final class AIOrchestrator: ObservableObject {
 
     // Published state for SwiftUI bindings
     @Published public private(set) var latestRecommendations: [AISegment: AIRecommendation] = [:]
+    @Published private(set) var validatedRecommendations: [AISegment: ValidatedRecommendation] = [:]
     @Published public private(set) var isProcessing = false
     @Published public private(set) var lastError: AIError?
 
     private let engineClient:   any AIEngineClientProtocol
     private let foundationModel: any FoundationModelProtocol
     private let snapshot:       () -> LocalUserSnapshot
+    let goalMode:               () -> NutritionGoalMode
 
     /// Minimum on-device confidence required to use personalised result.
     /// Below this threshold the unmodified cloud recommendation is used instead.
     private let personalisationThreshold: Double = 0.4
 
-    public init(
+    /// Adapters used in the last build — retained for validation.
+    private var lastAdapters: [any AIInputAdapter] = []
+
+    init(
         engineClient: some AIEngineClientProtocol,
         foundationModel: some FoundationModelProtocol,
-        snapshot: @escaping @Sendable () -> LocalUserSnapshot
+        snapshot: @escaping @Sendable () -> LocalUserSnapshot,
+        goalMode: @escaping @Sendable () -> NutritionGoalMode
     ) {
         self.engineClient    = engineClient
         self.foundationModel = foundationModel
         self.snapshot        = snapshot
+        self.goalMode        = goalMode
     }
 
     // ─────────────────────────────────────────────────────
@@ -49,6 +57,7 @@ public final class AIOrchestrator: ObservableObject {
     /// Clear all cached recommendations (called on sign-out).
     public func clearRecommendations() {
         latestRecommendations = [:]
+        validatedRecommendations = [:]
         lastError = nil
     }
 
@@ -58,8 +67,9 @@ public final class AIOrchestrator: ObservableObject {
         defer { isProcessing = false }
 
         let userSnapshot = overrideSnapshot ?? snapshot()
+        let goalProfile = GoalProfile.forGoal(goalMode())
         let bands = extractBands(segment: segment, snapshot: userSnapshot)
-        let localRecommendation = AIRecommendation.localFallback(for: segment, snapshot: userSnapshot)
+        let localRecommendation = AIRecommendation.localFallback(for: segment, snapshot: userSnapshot, goalProfile: goalProfile)
         let baseRecommendation: AIRecommendation
         if let jwt, jwt.looksLikeJWT, let bands {
             do {
@@ -97,6 +107,15 @@ public final class AIOrchestrator: ObservableObject {
         }
 
         latestRecommendations[segment] = finalRecommendation
+
+        // Validate and attach goal context
+        let validated = ValidatedRecommendation.validate(
+            recommendation: finalRecommendation,
+            snapshot: userSnapshot,
+            adapters: lastAdapters,
+            goalProfile: goalProfile
+        )
+        validatedRecommendations[segment] = validated
     }
 
     /// Process all segments sequentially for a full refresh.
@@ -106,6 +125,11 @@ public final class AIOrchestrator: ObservableObject {
         for segment in AISegment.allCases {
             await process(segment: segment, jwt: jwt, overrideSnapshot: snapshot)
         }
+    }
+
+    /// Update the adapters list (called by AISnapshotBuilder after building).
+    func setAdapters(_ adapters: [any AIInputAdapter]) {
+        lastAdapters = adapters
     }
 
     // ─────────────────────────────────────────────────────

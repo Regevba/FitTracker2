@@ -8,6 +8,7 @@ struct AIInsightCard: View {
     @EnvironmentObject private var orchestrator: AIOrchestrator
     @EnvironmentObject private var analytics: AnalyticsService
     @State private var showSheet = false
+    @State private var feedbackGiven = false
 
     var body: some View {
         Button {
@@ -18,10 +19,21 @@ struct AIInsightCard: View {
                 FitMeLogoLoader(mode: hasInsight ? .breathe : .shimmer, size: .small)
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
-                    Text(insightTitle)
-                        .font(AppText.subheading)
-                        .foregroundStyle(AppColor.Text.primary)
-                        .lineLimit(2)
+                    HStack(spacing: AppSpacing.xxSmall) {
+                        Text(insightTitle)
+                            .font(AppText.subheading)
+                            .foregroundStyle(AppColor.Text.primary)
+                            .lineLimit(2)
+
+                        if let badge = confidenceBadge {
+                            Text(badge)
+                                .font(AppText.footnote)
+                                .foregroundStyle(AppColor.Text.tertiary)
+                                .padding(.horizontal, AppSpacing.xxSmall)
+                                .padding(.vertical, 2)
+                                .background(AppColor.Surface.secondary, in: Capsule())
+                        }
+                    }
 
                     Text(insightSubtitle)
                         .font(AppText.caption)
@@ -31,9 +43,13 @@ struct AIInsightCard: View {
 
                 Spacer(minLength: 0)
 
-                Image(systemName: AppIcon.forward)
-                    .font(AppText.caption)
-                    .foregroundStyle(AppColor.Text.tertiary)
+                if hasInsight && !feedbackGiven {
+                    feedbackButtons
+                } else {
+                    Image(systemName: AppIcon.forward)
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.tertiary)
+                }
             }
             .padding(AppSpacing.medium)
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
@@ -50,7 +66,7 @@ struct AIInsightCard: View {
         .onAppear {
             analytics.logAiInsightShown(
                 segment: primarySegment,
-                confidence: primaryRecommendation.map { _ in "medium" } ?? "none",
+                confidence: confidenceLevel,
                 sourceTier: "local"
             )
         }
@@ -95,6 +111,80 @@ struct AIInsightCard: View {
             return "Collecting data for personalized insights"
         }
         return "Tap to see all AI recommendations"
+    }
+
+    // MARK: - Confidence
+
+    private var primaryValidated: ValidatedRecommendation? {
+        for segment in [AISegment.recovery, .training, .nutrition, .stats] {
+            if let validated = orchestrator.validatedRecommendations[segment] {
+                return validated
+            }
+        }
+        return nil
+    }
+
+    private var confidenceLevel: String {
+        primaryValidated?.overallConfidence.rawValue ?? "none"
+    }
+
+    private var confidenceBadge: String? {
+        guard let validated = primaryValidated else { return nil }
+        switch validated.overallConfidence {
+        case .medium: return "Limited data"
+        case .low:    return "Suggestion"
+        case .high:   return nil  // no badge needed for high confidence
+        }
+    }
+
+    // MARK: - Feedback
+
+    private var feedbackButtons: some View {
+        HStack(spacing: AppSpacing.xSmall) {
+            Button {
+                recordFeedback(.accepted)
+            } label: {
+                Image(systemName: "hand.thumbsup")
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+            }
+            .buttonStyle(.plain)
+
+            Button {
+                recordFeedback(.dismissed)
+            } label: {
+                Image(systemName: "hand.thumbsdown")
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+            }
+            .buttonStyle(.plain)
+        }
+        .accessibilityLabel("Rate this recommendation")
+    }
+
+    private func recordFeedback(_ action: UserAction) {
+        feedbackGiven = true
+        guard let validated = primaryValidated else { return }
+
+        let outcome = RecommendationOutcome(
+            segment: validated.recommendation.segment,
+            signals: validated.recommendation.signals,
+            confidenceLevel: validated.overallConfidence.rawValue,
+            source: validated.evidenceChain.isEmpty ? "local" : "cloud",
+            action: action,
+            dismissReason: nil,
+            timestamp: Date()
+        )
+
+        // Log analytics — reuse existing feedback method with appropriate rating
+        if action == .accepted {
+            analytics.logAiFeedbackSubmitted(segment: validated.recommendation.segment, rating: "positive")
+        } else {
+            analytics.logAiFeedbackSubmitted(segment: validated.recommendation.segment, rating: "negative")
+        }
+
+        // TODO: Wire to RecommendationMemory singleton when DI is set up
+        _ = outcome
     }
 
     /// Maps internal signal keys to user-facing copy.
