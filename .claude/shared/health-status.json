@@ -17,10 +17,21 @@
     "xcode_test": { "status": "passing", "tests": 40, "last_run": "2026-04-06", "note": "FitTrackerCoreTests(31) + SyncMergeTests(9)" }
   },
   "quality_gates": {
-    "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0, "note": "requires Crashlytics or equivalent" },
+    "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0, "source": "sentry", "note": "requires Sentry SDK + MCP — see docs/setup/sentry-setup-guide.md" },
     "cold_start_ms": { "current": null, "target": 2000, "alert_threshold": 3000, "note": "requires instrumented launch" },
     "sync_success_rate": { "current": null, "target": 99, "alert_threshold": 95, "note": "requires signed-in runtime" },
     "ci_pass_rate": { "current": "100%", "target": 95, "alert_threshold": 85, "note": "local make verify-local passing" }
+  },
+  "error_tracking": {
+    "source": "sentry",
+    "status": "not_connected",
+    "setup_guide": "docs/setup/sentry-setup-guide.md",
+    "error_count": null,
+    "issue_count": null,
+    "affected_users": null,
+    "top_issues": [],
+    "last_pull": null,
+    "note": "Sentry adapter exists at .claude/integrations/sentry/ but MCP is not connected yet. Run setup guide to wire."
   },
   "incidents": [],
   "cost": {

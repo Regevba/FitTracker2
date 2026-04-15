@@ -161,36 +161,24 @@ Inspired by Apple's 3.7-bit palettization. Each cache entry has a `compressed_vi
 
 ---
 
-## 5. v5.1 Adaptive Batch Execution (DESIGN APPROVED)
+## 5. v5.1 SoC Items (IMPLEMENTED)
 
-Inspired by CPU out-of-order execution. Adds a **batch dispatcher** for running the same skill across multiple features/screens simultaneously:
+6 additional chip-architecture-inspired optimizations shipped on top of v5.0's 2 items:
 
-```
-BATCH DISPATCHER
-      │
-      ▼
-PREFLIGHT COST ESTIMATOR (per-item scoring)
-      │
-      ├─── Token Est. >15K or dependent ──→ SERIAL LANE (main stream)
-      │                                          │
-      ├─── Token Est. 5K-15K + independent ──→ PARALLEL LANE (if budget allows)
-      │                                          │
-      └─── Token Est. <5K + independent ───→ PARALLEL LANE (subagent)
-                                                 │
-                                          RESULT COLLECTOR
-                                          (merge + unified summary)
-```
+| # | Item | Inspiration | Config Key | What It Does |
+|---|---|---|---|---|
+| 3 | Batch Dispatch | TPU weight-stationary | `batch_dispatch` | Load skill template once, iterate over N targets as data. Saves N-1 dispatch cycles. |
+| 4 | Result Forwarding | UMA zero-copy | `result_forwarding` | Pass skill output inline to next skill instead of write-to-disk-read-back. |
+| 5 | Model Tiering | ANE mixed-precision | `model_tiering` | Sonnet for mechanical tasks, Opus for judgment tasks. Per-phase tier assignment. |
+| 6 | Speculative Preload | Branch prediction | `speculative_preload` | Pre-load likely-next-skill cache when current skill runs. 85% hit rate target. |
+| 7 | Systolic Chains | TPU systolic array | `systolic_chains` | Each skill in a chain receives ONLY upstream output + L1 cache. No global reads mid-chain. |
+| 8 | Task Complexity Gate | big.LITTLE hybrid | `task_complexity_gate` | Classify tasks as lightweight (E-core, parallel, sonnet) or heavyweight (P-core, serial, opus). |
 
-**Key constraints:**
-- Parallel budget cap: **30K tokens** (prevents eating v5.0 savings)
-- Max parallel agents: **3**
-- Serial is always the fallback — system never degrades below serial-only
-- Failed subagents move to serial fallback queue
+**Combined v5.0 + v5.1 savings:** ~63% framework overhead reduction.
 
-**Example:** `/design audit --batch` across 6 screens:
-- Home (18K est.) → serial
-- 5 other screens (2K-12K) → parallel (~24K total, under 30K cap)
-- Wall-clock time = Home audit time only
+**Batch dispatch example:** `/design audit --batch` across 6 screens loads UX foundations once, iterates 6 screen files, produces aggregated report + per-screen output files. 7 reads vs. 12 reads + 5 fewer hub dispatch cycles.
+
+**Task complexity gate example:** Phase 4 with 9 tasks — 5 lightweight (config edits, label updates) run in parallel on E-core lane (sonnet), then 4 heavyweight (architecture, new services) run serially on P-core lane (opus).
 
 ---
 
@@ -287,7 +275,7 @@ User ──→ /pm-workflow (hub)
 | v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance-program orchestration |
 | v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature |
 | **v5.0** | **2026-04-14** | **SoC-on-Software: on-demand skill loading + cache compression = 54K tokens saved** |
-| **v5.1** | **Design approved** | **Adaptive batch execution: serial backbone + opportunistic parallel offload** |
+| **v5.1** | **2026-04-14** | **8 SoC items: batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate** |
 
 ---
 
