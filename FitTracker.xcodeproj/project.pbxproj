@@ -144,6 +144,9 @@
 		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
 		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
 		NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000003 /* NotificationContentBuilder.swift */; };
+		RM1000001000000000000001 /* ReminderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000001 /* ReminderType.swift */; };
+		RM1000001000000000000002 /* ReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000002 /* ReminderScheduler.swift */; };
+		RM1000001000000000000003 /* ReminderTriggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000003 /* ReminderTriggers.swift */; };
 		IM100000000000000000AA01 /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA01 /* ImportParser.swift */; };
 		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
 /* End PBXBuildFile section */
@@ -438,6 +441,7 @@
 				AC2000000000000000000008 /* DataExportService.swift */,
 				A40000010000000000000008 /* HealthKit */,
 				NT4000001000000000000001 /* Notifications */,
+				RM4000001000000000000001 /* Reminders */,
 				A40000010000000000000009 /* CloudKit */,
 				A4000001000000000000000A /* Encryption */,
 				FB4000001000000000000001 /* Supabase */,
@@ -498,6 +502,15 @@
 				NT2000001000000000000003 /* NotificationContentBuilder.swift */,
 			);
 			path = Notifications;
+			sourceTree = "<group>";
+		};
+		RM4000001000000000000001 /* Reminders */ = {
+			isa = PBXGroup;
+			children = (
+				RM2000001000000000000001 /* ReminderType.swift */,
+				RM2000001000000000000002 /* ReminderScheduler.swift */,
+			);
+			path = Reminders;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000009 /* CloudKit */ = {
@@ -977,6 +990,8 @@
 				79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */,
 				74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */,
 				3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */,
+				RM1000001000000000000001 /* ReminderType.swift in Sources */,
+				RM1000001000000000000002 /* ReminderScheduler.swift in Sources */,
 				NT1000001000000000000001 /* NotificationService.swift in Sources */,
 				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
 				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
