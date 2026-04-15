@@ -10,6 +10,7 @@ struct ProfileView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var analytics: AnalyticsService
     @EnvironmentObject var cloudSync: CloudKitSyncService
+    @Environment(\.dismiss) var dismiss
 
     @State private var showGoalEditor = false
     @State private var showSettings = false
@@ -75,6 +76,17 @@ struct ProfileView: View {
             }
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button { dismiss() } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.system(size: 22))
+                            .symbolRenderingMode(.hierarchical)
+                            .foregroundStyle(AppColor.Text.tertiary)
+                    }
+                    .accessibilityLabel("Close profile")
+                }
+            }
         }
         .onAppear {
             analytics.logProfileTabViewed(source: "hamburger_menu")
