@@ -2,86 +2,85 @@ import SwiftUI
 
 struct ProfileHeroSection: View {
     let displayName: String
-    let email: String?
+    let age: Int
+    let heightCm: Double
+    let experienceLevel: ExperienceLevel?
     let fitnessGoal: FitnessGoal?
     let programPhase: ProgramPhase
     let daysSinceStart: Int
-    let streakDays: Int
-    let totalWorkouts: Int
     let onGoalTap: () -> Void
     let onAvatarTap: () -> Void
 
     var body: some View {
-        VStack(spacing: AppSpacing.medium) {
-            // Avatar + name row
-            HStack(spacing: AppSpacing.medium) {
-                // Avatar circle
-                Button(action: onAvatarTap) {
-                    ZStack {
-                        Circle()
-                            .fill(AppColor.Brand.primary)
-                            .frame(width: 64, height: 64)
-                        Text(initials)
-                            .font(AppText.sectionTitle)
-                            .foregroundStyle(.white)
-                    }
+        VStack(spacing: AppSpacing.small) {
+            // Avatar circle
+            Button(action: onAvatarTap) {
+                ZStack {
+                    Circle()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    AppColor.Accent.recovery.opacity(0.88),
+                                    AppColor.Brand.secondary.opacity(0.72)
+                                ],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .frame(width: 72, height: 72)
+                    Text(initials)
+                        .font(AppText.titleStrong)
+                        .foregroundStyle(.white)
                 }
-                .accessibilityLabel("Profile picture, \(displayName)")
+            }
+            .accessibilityLabel("Profile picture, \(displayName)")
 
-                VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
-                    Text(displayName)
-                        .font(AppText.sectionTitle)
-                        .foregroundStyle(AppColor.Text.primary)
+            // Name
+            Text(displayName)
+                .font(AppText.titleStrong)
+                .foregroundStyle(AppColor.Text.primary)
 
-                    if let email {
-                        Text(email)
+            // Personal details line
+            Text(personalDetailsLine)
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            // Badges row
+            HStack(spacing: AppSpacing.xSmall) {
+                if let goal = fitnessGoal {
+                    Button(action: onGoalTap) {
+                        Text(goal.rawValue)
                             .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.secondary)
-                    }
-
-                    // Badges row
-                    HStack(spacing: AppSpacing.xSmall) {
-                        if let goal = fitnessGoal {
-                            Button(action: onGoalTap) {
-                                Text(goal.rawValue)
-                                    .font(AppText.caption)
-                                    .foregroundStyle(.white)
-                                    .padding(.horizontal, AppSpacing.small)
-                                    .padding(.vertical, AppSpacing.xxxSmall)
-                                    .background(AppColor.Accent.primary, in: Capsule())
-                            }
-                            .accessibilityLabel("Fitness goal: \(goal.rawValue)")
-                            .accessibilityHint("Double tap to edit goal")
-                        }
-
-                        Text(programPhase.rawValue)
-                            .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.tertiary)
+                            .foregroundStyle(.white)
                             .padding(.horizontal, AppSpacing.small)
                             .padding(.vertical, AppSpacing.xxxSmall)
-                            .background(AppColor.Surface.secondary, in: Capsule())
-                            .accessibilityLabel("Program phase: \(programPhase.rawValue)")
+                            .background(AppColor.Accent.primary, in: Capsule())
                     }
+                    .accessibilityLabel("Fitness goal: \(goal.rawValue)")
+                    .accessibilityHint("Double tap to edit goal")
                 }
 
-                Spacer(minLength: 0)
+                Text("\(programPhase.rawValue) · Day \(daysSinceStart)")
+                    .font(AppText.caption)
+                    .foregroundStyle(AppColor.Text.tertiary)
+                    .padding(.horizontal, AppSpacing.small)
+                    .padding(.vertical, AppSpacing.xxxSmall)
+                    .background(AppColor.Surface.secondary, in: Capsule())
+                    .accessibilityLabel("Program phase: \(programPhase.rawValue), day \(daysSinceStart)")
             }
-
-            // Stat row
-            HStack(spacing: AppSpacing.xSmall) {
-                Text("Day \(daysSinceStart)")
-                Text("·")
-                Text("\(streakDays)-day streak")
-                Text("·")
-                Text("\(totalWorkouts) workouts")
-            }
-            .font(AppText.caption)
-            .foregroundStyle(AppColor.Text.tertiary)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Day \(daysSinceStart). \(streakDays)-day streak. \(totalWorkouts) total workouts.")
         }
+        .frame(maxWidth: .infinity)
         .padding(AppSpacing.medium)
         .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
+    }
+
+    private var personalDetailsLine: String {
+        var parts: [String] = ["\(age)"]
+        parts.append("\(Int(heightCm)) cm")
+        if let exp = experienceLevel {
+            parts.append(exp.rawValue)
+        }
+        return parts.joined(separator: " · ")
     }
 
     private var initials: String {
