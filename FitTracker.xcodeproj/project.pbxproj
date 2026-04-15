@@ -149,6 +149,7 @@
 		RM1000001000000000000003 /* ReminderTriggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000003 /* ReminderTriggers.swift */; };
 		IM100000000000000000AA01 /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA01 /* ImportParser.swift */; };
 		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
+		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -328,6 +329,8 @@
 		NT2000001000000000000003 /* NotificationContentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationContentBuilder.swift; sourceTree = "<group>"; };
 		RM2000001000000000000001 /* ReminderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderType.swift; sourceTree = "<group>"; };
 		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
+		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
+		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -469,8 +472,17 @@
 				11B09D342F852BF900DCB9A0 /* Onboarding */,
 				AI300000000000000000GR01 /* AI */,
 				PF300000000000000000GR01 /* Profile */,
+				NP300000000000000000GR01 /* Notifications */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		NP300000000000000000GR01 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000007 /* Auth */ = {
@@ -509,6 +521,7 @@
 			children = (
 				RM2000001000000000000001 /* ReminderType.swift */,
 				RM2000001000000000000002 /* ReminderScheduler.swift */,
+				RM2000001000000000000003 /* ReminderTriggers.swift */,
 			);
 			path = Reminders;
 			sourceTree = "<group>";
@@ -992,11 +1005,14 @@
 				3BBF99D4179A46DB8134FE2E /* OnboardingSuccessView.swift in Sources */,
 				RM1000001000000000000001 /* ReminderType.swift in Sources */,
 				RM1000001000000000000002 /* ReminderScheduler.swift in Sources */,
+				RM1000001000000000000003 /* ReminderTriggers.swift in Sources */,
 				NT1000001000000000000001 /* NotificationService.swift in Sources */,
 				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
 				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
-				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,);
+				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,
+				NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B30000010000000000000002 /* Sources */ = {
