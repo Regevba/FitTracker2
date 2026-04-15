@@ -1,51 +1,70 @@
 {
   "experiment": "v5.1-parallel-stress-test",
-  "checkpoint": 3,
-  "timestamp": "2026-04-15T17:50:00Z",
-  "phases_completed": 3,
-  "total_transitions": 12,
-  "total_duration_minutes": 14,
-  "throughput_phases_per_minute": 0.86,
+  "checkpoint": 4,
+  "timestamp": "2026-04-15T17:58:00Z",
+  "phases_completed": 4,
+  "total_transitions": 16,
+  "total_duration_minutes": 23,
+  "throughput_phases_per_minute": 0.7,
   "features": {
     "push-notifications": {
       "current_phase": "implementation",
-      "transitions": 5
+      "transitions": 6,
+      "swift_files": 2,
+      "build": "SUCCEEDED"
     },
     "app-store-assets": {
       "current_phase": "implementation",
-      "transitions": 5
+      "transitions": 6,
+      "deliverables": [
+        "script",
+        "metadata"
+      ]
     },
     "import-training-plan": {
-      "current_phase": "ux_or_integration",
-      "transitions": 4
+      "current_phase": "implementation",
+      "transitions": 5
     },
     "smart-reminders": {
-      "current_phase": "ux_or_integration",
-      "transitions": 5
+      "current_phase": "implementation",
+      "transitions": 6
     }
   },
   "bottlenecks": [
     {
       "id": "B1",
       "severity": "critical",
-      "description": ".claude/ write permissions denied for ALL subagents in ALL phases",
-      "occurrences": 12,
-      "rate": "100%",
-      "workaround": "controller batches all .claude/ writes",
-      "overhead_minutes": 6
+      "description": ".claude/ write permissions 100% failure rate for subagents",
+      "occurrences": 16,
+      "rate": "100%"
     },
     {
-      "id": "B2",
+      "id": "B3",
+      "severity": "none",
+      "description": "Swift code generation: BUILD SUCCEEDED on first try",
+      "finding": "positive"
+    },
+    {
+      "id": "B4",
+      "severity": "none",
+      "description": "No git merge conflicts across 4 parallel agents",
+      "finding": "positive"
+    },
+    {
+      "id": "B5",
       "severity": "low",
-      "description": "new directory creation denied",
-      "occurrences": 1
+      "description": "pbxproj edits by subagent worked but only partial (file refs without build phase)",
+      "finding": "minor"
     }
   ],
   "quality": {
     "prds_written": 4,
     "tasks_written": 4,
-    "ux_specs_written": 2,
+    "ux_specs_written": 4,
+    "swift_files": 2,
+    "scripts": 1,
     "rework_needed": 0,
-    "git_conflicts": 0
+    "git_conflicts": 0,
+    "build_failures": 0
   }
 }

@@ -1,9 +1,9 @@
 {
   "feature": "import-training-plan",
   "created": "2026-04-11T00:00:00Z",
-  "updated": "2026-04-15T17:50:00Z",
+  "updated": "2026-04-15T17:58:00Z",
   "branch": null,
-  "current_phase": "ux_or_integration",
+  "current_phase": "implementation",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -27,8 +27,8 @@
       "v2_count": 13
     },
     "ux_or_integration": {
-      "status": "pending",
-      "note": "New UI surface \u2014 Phase 3 non-skippable per CLAUDE.md. Must produce ux-spec.md before any view code. Mapping confirmation UI needs careful UX design (auto-accept + manual review for ambiguous cases)."
+      "status": "approved",
+      "type": "ux"
     },
     "implementation": {
       "status": "pending"
@@ -74,6 +74,12 @@
       "timestamp": "2026-04-15T17:50:00Z",
       "approved_by": "user",
       "note": "13 tasks. Parser protocol + exercise mapper + preview UI."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-15T17:58:00Z",
+      "approved_by": "user"
     }
   ],
   "tasks": [],

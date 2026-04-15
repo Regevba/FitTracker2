@@ -352,7 +352,7 @@
       "name": "Import Training Plan",
       "prd": "docs/product/prd/import-training-plan.md",
       "status": "in_progress",
-      "phase": "ux_or_integration",
+      "phase": "implementation",
       "category": "core",
       "pain_point": "Users with coach plans, app exports, or AI-generated routines face high migration friction",
       "metrics": {
@@ -390,7 +390,7 @@
       "name": "Smart Reminders",
       "prd": "docs/product/prd/smart-reminders.md",
       "status": "in_progress",
-      "phase": "ux_or_integration",
+      "phase": "implementation",
       "category": "engagement",
       "pain_point": "App is passive \u2014 users miss nutrition windows, skip training, guests never convert",
       "metrics": {

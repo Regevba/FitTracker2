@@ -1,8 +1,8 @@
 {
   "feature": "smart-reminders",
   "created": "2026-04-15T17:33:00Z",
-  "updated": "2026-04-15T17:50:00Z",
-  "current_phase": "ux_or_integration",
+  "updated": "2026-04-15T17:58:00Z",
+  "current_phase": "implementation",
   "work_type": "feature",
   "work_subtype": "new_capability",
   "has_ui": true,
@@ -36,6 +36,12 @@
       "timestamp": "2026-04-15T17:50:00Z",
       "approved_by": "user",
       "note": "14 tasks. 5 reminder types, frequency caps, guest overlays, phased rollout."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-15T17:58:00Z",
+      "approved_by": "user"
     }
   ],
   "phases": {
@@ -54,7 +60,8 @@
       "v2_count": 14
     },
     "ux_or_integration": {
-      "status": "pending"
+      "status": "approved",
+      "type": "ux"
     },
     "implementation": {
       "status": "pending"
