@@ -135,22 +135,43 @@ For each skill invoked during the feature:
 
 ---
 
-## 5. Cross-Version Comparison Table
+## 5. Normalized Velocity (mandatory)
 
-| Feature | Version | Type | Wall Time | Tasks | Tests | Events | Files | Cache% |
-|---------|---------|------|-----------|-------|-------|--------|-------|--------|
-| Onboarding v2 | v2.0 | refactor | 6.5h | 22 | 5 | 5 | 20 | 0% |
-| Home v2 | v3.0 | refactor | 36h* | 17 | 21 | 4 | 5 | 0% |
-| Training v2 | v4.0 | refactor | 5h | 16 | 16 | 12 | 7 | 40% |
-| Nutrition v2 | v4.1 | refactor | 2h | 14 | 7 | 5 | 5 | 55% |
-| Stats v2 | v4.1 | refactor | 1.5h | 10 | 10 | 4 | 4 | 65% |
-| Settings v2 | v4.1 | refactor | 1h | 6 | 8 | 3 | 3 | 70% |
-| Readiness v2 | v4.2 | enhancement | 2.5h | 7 | 25 | 9 | 7 | 35% |
-| AI Engine v2 | v4.2 | enhancement | 0.5h | 4 | 0 | 0 | 4 | 50% |
-| AI Rec UI | v4.2 | feature | 0.7h | 6 | 16 | 6 | 7 | 40% |
-| **{This Feature}** | **v{X.Y}** | **{type}** | **{time}** | **{tasks}** | **{tests}** | **{events}** | **{files}** | **{cache%}** |
+> See `docs/case-studies/normalization-framework.md` for the full methodology.
+> CU = Tasks × Work_Type_Weight × (1 + sum(Complexity_Factors))
 
-*Home v2 was an outlier — first full refactor, invented the v2 convention.
+### This Feature
+
+| Metric | Value |
+|---|---|
+| Tasks | {N} |
+| Work type weight | {0.3-1.0} |
+| Complexity factors | {list: UI +0.3, Auth +0.5, Runtime +0.4, New Model +0.2, Cross-Feat +0.2, Design Iter +0.15/round} |
+| **Complexity Units (CU)** | **{CU}** |
+| Wall time (min) | {min} |
+| **min/CU** | **{velocity}** |
+| Rank (of N features) | {rank} / {N} |
+| vs Baseline (v2.0 = 15.2 min/CU) | {+/-}% |
+
+### Cross-Version Comparison (Normalized)
+
+| Feature | Version | Type | Wall Time | CU | min/CU | vs Baseline |
+|---|---|---|---|---|---|---|
+| Onboarding v2 | v2.0 | refactor | 6.5h | 25.7 | 15.2 | Baseline |
+| Home v2 | v3.0 | refactor | 36h* | 23.0 | 93.9* | Outlier |
+| Training v2 | v4.0 | refactor | 5h | 18.7 | 16.0 | -5% |
+| Nutrition v2 | v4.1 | refactor | 2h | 16.4 | 7.3 | +52% |
+| Stats v2 | v4.1 | refactor | 1.5h | 11.7 | 7.7 | +49% |
+| Settings v2 | v4.1 | refactor | 1h | 7.0 | 8.6 | +43% |
+| Readiness v2 | v4.2 | enhancement | 2.5h | 8.4 | 17.9 | -18% |
+| AI Engine v2 | v4.2 | enhancement | 0.5h | 3.8 | 7.9 | +48% |
+| AI Rec UI | v4.2 | feature | 0.7h | 7.8 | 5.4 | +64% |
+| Profile | v4.4 | feature | 2h | 16.9 | 7.1 | +53% |
+| AI Engine Arch | v5.1 | enhancement | 1.5h | 17.7 | 5.1 | +66% |
+| Onboarding Auth | v5.1 | feature | 1.7h | 47.7 | 2.1 | +86% |
+| **{This Feature}** | **v{X.Y}** | **{type}** | **{time}** | **{CU}** | **{min/CU}** | **{delta}** |
+
+*Home v2 excluded from trend — outlier that invented the v2 convention.
 
 ### Effect Size (Hedges' g)
 

@@ -100,17 +100,33 @@
 
 ---
 
-## 4. Cross-Version Comparison
+## 4. Normalized Velocity
 
-| Feature | Version | Type | Wall Time | Tasks | Tests | Events | Files | Design Iterations |
-|---|---|---|---|---|---|---|---|---|
-| Onboarding v2 | v2.0 | refactor | 6.5h | 22 | 5 | 5 | 20 | 0 |
-| Home v2 | v3.0 | refactor | 36h* | 17 | 21 | 4 | 5 | 0 |
-| Training v2 | v4.0 | refactor | 5h | 16 | 16 | 12 | 7 | 0 |
-| AI Engine Arch | v5.1 | enhancement | 1.5h | 13 | 197* | 2 | 17 | 0 |
-| **Onboarding Auth** | **v5.1** | **feature** | **~1.7h** | **12+6** | **197** | **5** | **15** | **3** |
+> Methodology: `docs/case-studies/normalization-framework.md`
+> CU = Tasks × Work_Type_Weight × (1 + sum(Complexity_Factors))
 
-*Regression suite, not new tests.
+**This Feature:**
+- Tasks: 18 (12 planned + 6 post-merge fixes), Work type: feature (1.0)
+- Factors: UI (+0.3) + Auth (+0.5) + Runtime Testing (+0.4) + Design Iterations 3× (+0.45) = +1.65
+- **CU = 18 × 1.0 × 2.65 = 47.7**
+- Wall time: 100 min
+- **min/CU = 2.1**
+- **Rank: 1st (best ever)**
+- **vs Baseline (v2.0): +86% faster**
+
+### Cross-Version Comparison (Normalized)
+
+| Feature | Version | Type | Wall Time | CU | min/CU | vs Baseline |
+|---|---|---|---|---|---|---|
+| Onboarding v2 | v2.0 | refactor | 6.5h | 25.7 | 15.2 | Baseline |
+| Training v2 | v4.0 | refactor | 5h | 18.7 | 16.0 | -5% |
+| Nutrition v2 | v4.1 | refactor | 2h | 16.4 | 7.3 | +52% |
+| Stats v2 | v4.1 | refactor | 1.5h | 11.7 | 7.7 | +49% |
+| Settings v2 | v4.1 | refactor | 1h | 7.0 | 8.6 | +43% |
+| AI Rec UI | v4.2 | feature | 0.7h | 7.8 | 5.4 | +64% |
+| Profile | v4.4 | feature | 2h | 16.9 | 7.1 | +53% |
+| AI Engine Arch | v5.1 | enhancement | 1.5h | 17.7 | 5.1 | +66% |
+| **Onboarding Auth** | **v5.1** | **feature** | **~1.7h** | **47.7** | **2.1** | **+86%** |
 
 ---
 
