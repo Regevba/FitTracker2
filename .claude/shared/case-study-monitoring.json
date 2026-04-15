@@ -773,6 +773,12 @@
           "label": "merged to main",
           "summary": "PR #80 merged. 11 files, 627 insertions. 198 tests pass. 2 new views, session restore fixed, rootView simplified, 5 analytics events added.",
           "metrics": { "tests_passing": 198, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-15T17:00:00Z",
+          "label": "design polish — manual testing fixes",
+          "summary": "Post-merge fixes from manual testing: CTAs pinned to bottom on all screens, email registration inline verification, Skip for now on auth, Figma PDF icon asset (replaces SwiftUI approximation), blue bg + orange icon on Welcome, template rendering mode for icon shape.",
+          "metrics": { "tests_passing": 197, "build_verified": true }
         }
       ]
     }

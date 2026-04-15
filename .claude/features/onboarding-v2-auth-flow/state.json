@@ -1,7 +1,7 @@
 {
   "feature": "onboarding-v2-auth-flow",
   "created": "2026-04-15T14:00:00Z",
-  "updated": "2026-04-15T15:00:00Z",
+  "updated": "2026-04-15T17:00:00Z",
   "branch": "feature/onboarding-v2-auth-flow",
   "current_phase": "complete",
   "work_type": "feature",
@@ -14,7 +14,7 @@
     "prd": { "status": "approved", "approved_at": "2026-04-15T14:45:00Z", "analytics_spec_complete": true },
     "tasks": { "status": "approved", "approved_at": "2026-04-15T15:00:00Z", "count": 12 },
     "ux_or_integration": { "status": "in_progress", "type": "ux" },
-    "implementation": { "status": "pending", "commits": [] },
+    "implementation": { "status": "approved", "approved_at": "2026-04-15T17:00:00Z", "commits": ["0fab2c4", "99017da", "403a7e2", "d07c40a", "b144526", "01986e5", "70a91d0", "304252a"] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
     "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
     "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
