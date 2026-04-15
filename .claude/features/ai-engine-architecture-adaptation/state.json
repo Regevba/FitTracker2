@@ -1,9 +1,9 @@
 {
   "feature": "ai-engine-architecture-adaptation",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-15T12:00:00Z",
+  "updated": "2026-04-15T13:00:00Z",
   "branch": null,
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "work_type": "enhancement",
   "has_ui": true,
   "requires_analytics": true,
@@ -16,11 +16,19 @@
       "note": "5-layer architecture proposal grounded in actual AIOrchestrator code. Input adapters, validation gate, recommendation assembly, learning cache, feedback loop. PM-flow pattern mapping documented."
     },
     "prd": {
-      "status": "in_progress",
-      "note": "PRD drafted with 4 implementation phases, success metrics, kill criteria, analytics spec. Pending user approval."
+      "status": "completed",
+      "completed_at": "2026-04-15T13:00:00Z",
+      "note": "PRD with 10 functional requirements across 4 phases. Goal-aware intelligence added. Success metrics, kill criteria, analytics spec defined."
     },
-    "tasks": { "status": "pending" },
-    "ux_or_integration": { "status": "pending" },
+    "tasks": {
+      "status": "completed",
+      "completed_at": "2026-04-15T13:00:00Z",
+      "note": "13 tasks across 4 phases with dependency graph. 5 lightweight (E-core parallel), 6 heavyweight (P-core serial), 2 mixed. Parallel opportunities identified at T2-T5 and T9/T11."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "note": "Enhancement work type — UX changes are scoped within tasks (T10 confidence badge + goal messaging). No standalone UX spec needed."
+    },
     "implementation": { "status": "pending" },
     "testing": { "status": "pending" },
     "review": { "status": "pending" },
@@ -33,15 +41,43 @@
       "to": "research",
       "timestamp": "2026-04-12T21:30:00Z",
       "approved_by": "user",
-      "note": "Research chapter opened after the maintenance prioritization pass kept AI engine architecture adaptation in the high-priority stack."
+      "note": "Research chapter opened after the maintenance prioritization pass."
     },
     {
       "from": "research",
       "to": "prd",
       "timestamp": "2026-04-15T12:00:00Z",
       "approved_by": "user",
-      "note": "Research advanced with 5-layer architecture proposal, concrete Swift protocols, success metrics, PM-flow pattern mapping. PRD drafted."
+      "note": "Research advanced with 5-layer architecture proposal."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-15T13:00:00Z",
+      "approved_by": "user",
+      "note": "PRD approved with goal-aware intelligence addition. Tasks phase."
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-04-15T13:00:00Z",
+      "approved_by": "user",
+      "note": "13 tasks broken down with dependency graph. Ready for implementation."
     }
   ],
-  "tasks": []
+  "tasks": [
+    { "id": "T1", "title": "AIInputAdapter protocol", "status": "pending", "phase": 1, "complexity": "lightweight", "depends_on": [] },
+    { "id": "T2", "title": "ProfileAdapter", "status": "pending", "phase": 1, "complexity": "lightweight", "depends_on": ["T1"] },
+    { "id": "T3", "title": "HealthKitAdapter", "status": "pending", "phase": 1, "complexity": "lightweight", "depends_on": ["T1"] },
+    { "id": "T4", "title": "TrainingAdapter", "status": "pending", "phase": 1, "complexity": "lightweight", "depends_on": ["T1"] },
+    { "id": "T5", "title": "NutritionAdapter", "status": "pending", "phase": 1, "complexity": "lightweight", "depends_on": ["T1"] },
+    { "id": "T6", "title": "Refactor AISnapshotBuilder to use adapter registry", "status": "pending", "phase": 1, "complexity": "heavyweight", "depends_on": ["T2", "T3", "T4", "T5"] },
+    { "id": "T7", "title": "GoalProfile + MetricDriver models", "status": "pending", "phase": 2, "complexity": "lightweight", "depends_on": ["T6"] },
+    { "id": "T8", "title": "ValidatedRecommendation + confidence gate", "status": "pending", "phase": 2, "complexity": "heavyweight", "depends_on": ["T7"] },
+    { "id": "T9", "title": "Goal-aware localFallback rewrite", "status": "pending", "phase": 2, "complexity": "heavyweight", "depends_on": ["T7"] },
+    { "id": "T10", "title": "Confidence badge UI + goal messaging", "status": "pending", "phase": 2, "complexity": "heavyweight", "depends_on": ["T8"] },
+    { "id": "T11", "title": "FoundationModel goal-aware prompt", "status": "pending", "phase": 2, "complexity": "lightweight", "depends_on": ["T7"] },
+    { "id": "T12", "title": "RecommendationMemory + threshold tuning", "status": "pending", "phase": 3, "complexity": "heavyweight", "depends_on": ["T8"] },
+    { "id": "T13", "title": "Feedback UI + analytics events", "status": "pending", "phase": 4, "complexity": "heavyweight", "depends_on": ["T12"] }
+  ]
 }
