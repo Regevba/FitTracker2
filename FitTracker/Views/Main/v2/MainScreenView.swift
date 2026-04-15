@@ -89,50 +89,10 @@ struct MainScreenView: View {
         )
     }
 
-    /// True when no meaningful data exists (first launch / no HealthKit / no logs).
-    private var isEmpty: Bool {
-        currentWeight == nil
-            && currentBF == nil
-            && metrics.hrv == nil
-            && metrics.restingHR == nil
-            && metrics.sleepHours == nil
-            && metrics.stepCount == nil
-            && todayLog == nil
-    }
-
-    private var emptyReason: EmptyReason {
-        if dataStore.dailyLogs.isEmpty { return .firstLaunch }
-        // If HealthKit metrics are all nil, likely not connected
-        if metrics.hrv == nil && metrics.restingHR == nil && metrics.sleepHours == nil {
-            return .noHealthKit
-        }
-        return .noData
-    }
-
     // MARK: - Body
 
     var body: some View {
-        Group {
-            if isEmpty {
-                HomeEmptyStateView(
-                    emptyReason: emptyReason,
-                    onConnectHealth: {
-                        Task { try? await healthService.requestAuthorization() }
-                    },
-                    onLogManually: {
-                        manualEntry = true
-                    }
-                )
-                .onAppear {
-                    analytics.logHomeEmptyStateShown(
-                        emptyReason: emptyReason.analyticsKey,
-                        ctaShown: "both"
-                    )
-                }
-            } else {
-                scrollContent
-            }
-        }
+        scrollContent
         .analyticsScreen(AnalyticsScreen.home)
         .onAppear { checkMilestones() }
         .onChange(of: dataStore.supplementStreak) { _, _ in checkMilestones() }
@@ -612,18 +572,6 @@ struct MainScreenView: View {
                 .accessibilityLabel("Sync status")
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(Rectangle())
-        }
-    }
-}
-
-// MARK: - EmptyReason analytics key
-
-private extension EmptyReason {
-    var analyticsKey: String {
-        switch self {
-        case .firstLaunch: return "first_launch"
-        case .noHealthKit:  return "no_healthkit"
-        case .noData:       return "no_data"
         }
     }
 }
