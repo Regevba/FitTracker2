@@ -1,39 +1,46 @@
 {
   "experiment": "v5.1-parallel-stress-test",
-  "checkpoint": 6,
-  "timestamp": "2026-04-15T18:12:00Z",
-  "phases_completed": 6,
-  "total_transitions": 16,
-  "total_duration_minutes": 30,
+  "checkpoint": 7,
+  "timestamp": "2026-04-15T18:17:00Z",
+  "phases_completed": 7,
+  "total_duration_minutes": 35,
   "features": {
     "push-notifications": {
-      "tasks_done": "7/12",
-      "swift_files": 4
+      "tasks_done": "9/12",
+      "swift_files": 5
     },
     "app-store-assets": {
       "tasks_done": "5/10",
       "config_files": 3
     },
     "import-training-plan": {
-      "tasks_done": "5/13",
+      "tasks_done": "7/13",
       "swift_files": 4
     },
     "smart-reminders": {
-      "tasks_done": "4/14",
+      "tasks_done": "6/14",
       "swift_files": 3
     }
   },
   "code_stats": {
-    "total_swift_files": 12,
-    "total_lines": 1100,
-    "builds_passed": 3,
+    "total_swift_files": 15,
+    "total_lines": 1500,
+    "builds_passed": 4,
     "builds_failed": 0,
     "git_conflicts": 0,
-    "pbxproj_concurrent_edits": 9,
-    "pbxproj_conflicts": 0
+    "same_file_parallel_edits": {
+      "AnalyticsProvider.swift": 3,
+      "AnalyticsService.swift": 3,
+      "project.pbxproj": 9
+    },
+    "same_file_conflicts": 0
   },
-  "new_findings": {
-    "agent_time_variance": "F3 took 561s (68 tool uses) vs F1 at 102s (15 tool uses) for similar complexity",
-    "tool_use_correlation": "More tool uses = longer execution but NOT better quality"
-  }
+  "critical_finding_phase7": "3 agents edited AnalyticsProvider.swift AND AnalyticsService.swift simultaneously. 23 new events added (10+6+7). ZERO conflicts. BUILD SUCCEEDED. This validates that parallel code writes to shared files work when agents use different MARK sections.",
+  "research_ideas": [
+    "Pre-flight capability probe",
+    "Snapshot/rollback for code writes",
+    "Code region mirror pattern",
+    "Complexity-weighted adaptive dispatch",
+    "Agent execution time normalization (F3 took 9min vs F1 1.5min for similar work)"
+  ]
 }
