@@ -203,9 +203,8 @@ struct MainScreenView: View {
 
     private var sectionDivider: some View {
         Rectangle()
-            .fill(AppColor.Border.subtle)
+            .fill(AppColor.Text.tertiary.opacity(0.3))
             .frame(height: 0.5)
-            .padding(.horizontal, AppSpacing.xxSmall)
     }
 
     // ─────────────────────────────────────────────────────
