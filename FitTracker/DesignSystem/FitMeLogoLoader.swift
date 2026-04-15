@@ -1,6 +1,7 @@
 // FitTracker/DesignSystem/FitMeLogoLoader.swift
-// Branded loading indicator using the FitMe intertwined-circles logo.
+// Branded loading/status indicator using the Figma-exported FitMe icon.
 // Supports 4 animation modes × 3 sizes. Respects reduce-motion accessibility.
+// Uses Image("FitMeAppIcon") — the same PDF asset as FitMeBrandIcon.
 import SwiftUI
 
 struct FitMeLogoLoader: View {
@@ -10,16 +11,6 @@ struct FitMeLogoLoader: View {
         case small  = 24
         case medium = 44
         case large  = 72
-
-        var strokeWidth: CGFloat {
-            switch self {
-            case .small:  return 2
-            case .medium: return 3
-            case .large:  return 4
-            }
-        }
-
-        var showText: Bool { self == .large }
     }
 
     let mode: Mode
@@ -34,34 +25,13 @@ struct FitMeLogoLoader: View {
 
     var body: some View {
         VStack(spacing: size == .large ? AppSpacing.xSmall : AppSpacing.xxxSmall) {
-            ZStack {
-                // Outer ring (pink/magenta)
-                Circle()
-                    .stroke(
-                        Color(red: 0.90, green: 0.00, blue: 0.49), // #E6007E magenta
-                        lineWidth: size.strokeWidth
-                    )
-                    .frame(width: size.rawValue, height: size.rawValue)
-
-                // Inner ring with organic wave (brand orange gradient)
-                innerRing
-                    .frame(width: size.rawValue * 0.82, height: size.rawValue * 0.82)
-
-                // Center text (large size only)
-                if size.showText {
-                    VStack(spacing: 0) {
-                        Text("FIT")
-                            .font(.system(size: size.rawValue * 0.18, weight: .bold, design: .rounded))
-                            .foregroundStyle(Color(red: 0.90, green: 0.00, blue: 0.49))
-                        Text("ME")
-                            .font(.system(size: size.rawValue * 0.18, weight: .bold, design: .rounded))
-                            .foregroundStyle(AppColor.Brand.primary)
-                    }
-                }
-            }
-            .scaleEffect(scaleValue)
-            .rotationEffect(.degrees(rotationValue))
-            .opacity(opacityValue)
+            Image("FitMeAppIcon")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: size.rawValue, height: size.rawValue)
+                .scaleEffect(scaleValue)
+                .rotationEffect(.degrees(rotationValue))
+                .opacity(opacityValue)
 
             if let message {
                 Text(message)
@@ -69,37 +39,8 @@ struct FitMeLogoLoader: View {
                     .foregroundStyle(AppColor.Text.secondary)
             }
         }
+        .accessibilityLabel("FitMe")
         .onAppear { startAnimation() }
-    }
-
-    // MARK: - Inner ring (orange gradient with organic wave shape)
-
-    private var innerRing: some View {
-        ZStack {
-            // Base circle
-            Circle()
-                .stroke(
-                    LinearGradient(
-                        colors: [AppColor.Brand.primary, AppColor.Brand.warm],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    lineWidth: size.strokeWidth
-                )
-
-            // Organic wave overlay (simplified S-curve using an offset ellipse)
-            Ellipse()
-                .stroke(
-                    LinearGradient(
-                        colors: [AppColor.Brand.primary.opacity(0.6), AppColor.Brand.warm.opacity(0.3)],
-                        startPoint: .top,
-                        endPoint: .bottom
-                    ),
-                    lineWidth: size.strokeWidth * 0.8
-                )
-                .scaleEffect(x: 0.7, y: 1.1)
-                .rotationEffect(.degrees(25))
-        }
     }
 
     // MARK: - Animation values
@@ -124,7 +65,6 @@ struct FitMeLogoLoader: View {
 
     private func startAnimation() {
         guard !reduceMotion else {
-            // Reduce-motion fallback: subtle static opacity
             isAnimating = true
             return
         }
@@ -142,7 +82,6 @@ struct FitMeLogoLoader: View {
             withAnimation(AppLoadingAnimation.confirmPulse) {
                 isAnimating = true
             }
-            // Reset after pulse completes
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 isAnimating = false
             }
@@ -159,7 +98,7 @@ struct FitMeLogoLoader: View {
 #if DEBUG
 struct FitMeLogoLoader_Previews: PreviewProvider {
     static var previews: some View {
-        VStack(spacing: AppSpacing.xLarge) {
+        VStack(spacing: AppSpacing.large) {
             HStack(spacing: AppSpacing.large) {
                 FitMeLogoLoader(mode: .breathe, size: .small)
                 FitMeLogoLoader(mode: .rotate, size: .small)
