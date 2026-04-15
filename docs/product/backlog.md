@@ -50,6 +50,9 @@
 | 39 | AI Engine Architecture Adaptation | PR #79 | 2026-04-15 | Input adapters, confidence gate, goal-aware intelligence (GoalProfile), learning cache, feedback UI. 17 files, 986 insertions. [Case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
 | 40 | Sentry Setup Guide + Health Wiring | commit 6a2843f | 2026-04-15 | Setup guide at docs/setup/sentry-setup-guide.md, error_tracking section in health-status.json |
 | 41 | Funnel Definitions (6 funnels + templates) | commit 6a2843f | 2026-04-15 | Onboarding, training, nutrition, home engagement, AI recommendation, readiness funnels. GA4 setup checklist. |
+| 42 | Supabase Consolidation | commit 873ac3d | 2026-04-15 | Consolidated to single project `hwbbdzwaismlajtfsbed` (FitmeBe&AI engine15042026). Tokyo region. Email+Google auth. All tables + RPC + storage. |
+| 43 | Onboarding v2 Auth Flow | PR #80 + fixes | 2026-04-15 | 7-step onboarding with embedded auth, success animation, session restore fix, Figma PDF icon, pinned CTAs, skip-for-now. [Case study](../case-studies/onboarding-v2-auth-flow-v5.1-case-study.md) |
+| 44 | Normalization Framework | commit 8a8db72 | 2026-04-15 | CU formula for cross-feature velocity comparison. Retroactive analysis of all 12 features. Power law fit R²=0.82. |
 
 ---
 
@@ -96,7 +99,9 @@
 - [x] AI recommendation UI — shipped 2026-04-10 (Home AIInsightCard + AIIntelligenceSheet) ✅
 - [x] Food database search — OpenFoodFacts text search is wired in MealEntrySheet ✅
 - [x] Barcode scanning — camera scanner is wired to OpenFoodFacts lookup in MealEntrySheet ✅
-- [ ] Auth runtime verification — Google project wiring and compile verification are done, but real local credentials and end-to-end Supabase/Google validation are still required
+- [x] Auth runtime verification — Supabase consolidated to project `hwbbdzwaismlajtfsbed`, Google OAuth configured, email+Google auth providers enabled. Onboarding auth flow embedded (PR #80). Session restore fixed. Remaining: Apple Sign In (needs Services ID).
+- [x] **Onboarding v2 Auth Flow** — SHIPPED 2026-04-15 (PR #80 + post-merge fixes). 7-step onboarding with embedded auth, success animation, session restore fix, Figma PDF icon, pinned CTAs, skip-for-now. Case study: `docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md`
+- [ ] **Smart Reminders System** — AI-powered local notification system with 5 reminder types: HealthKit connect, account registration, goal-gap nutrition (computes real-time macro gaps), training/rest day, engagement. Wired into AIOrchestrator + ReadinessEngine + GoalProfile for personalized, state-aware messaging. Locked feature overlays for guest users. Future sub-task: behavioral learning layer. ~5 days. Parent: onboarding-v2-auth-flow.
 - [ ] Push notifications — research active in `.claude/features/push-notifications/` and Linear `FIT-23`
 - [ ] App icon + App Store assets — research active in `.claude/features/app-store-assets/` and Linear `FIT-17`
 - [x] Password reset flow — reset action is available from email login when Supabase runtime credentials are configured ✅
