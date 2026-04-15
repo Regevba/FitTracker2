@@ -1,6 +1,8 @@
-# `/pm-workflow` — The Hub (v4.3)
+# `/pm-workflow` — The Hub (v5.1)
 
 > **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
+>
+> **Updated:** 2026-04-15
 
 **Agent-facing prompt:** [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md)
 
@@ -29,7 +31,7 @@ Before the ecosystem, `/pm-workflow` was a single monolithic skill that did ever
 - Cross-domain information (e.g. CX signals informing UX decisions) stayed trapped in one workflow's context
 - Every phase was sequential — no parallelization of independent work
 
-The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management. v4.0 added the adapter layer and L1/L2/L3 cache. v4.1 added the skill-internal lifecycle. v4.2 added self-healing health checks and framework integrity scoring. v4.3 adds the operational layer: control room visibility, case-study monitoring, and maintenance-program orchestration.
+The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management. v4.0 added the adapter layer and L1/L2/L3 cache. v4.1 added the skill-internal lifecycle. v4.2 added self-healing health checks and framework integrity scoring. v4.3 added the operational layer: control room visibility, case-study monitoring, and maintenance-program orchestration. v4.4 added eval-driven development (mandatory evals per feature). v5.0 applied SoC-on-Software principles: skill-on-demand loading and cache compression, reclaiming ~54K tokens. v5.1 completed the SoC suite with 6 additional items: model tiering, batch dispatch, result forwarding, speculative preload, systolic chains, and task complexity gate — achieving ~63% framework overhead reduction. See the [evolution timeline](#version-history) below for the full progression.
 
 ## Sub-commands
 
@@ -160,13 +162,18 @@ When ANY work item merges to main:
 
 ## Features shipped through the hub
 
-| Feature | GitHub Issue | Work type | Key milestone |
-| --- | --- | --- | --- |
-| Home Today Screen v2 | #61 | Feature (v2_refactor) | 27-finding UX audit, v2/ convention validated |
-| Onboarding retro | #63 | Enhancement | Retroactive v2 alignment of pilot feature |
-| Body Composition card | #65 | Enhancement | Reusable metric tile drill-down pattern |
-| Metric Deep Link | #67 | Enhancement | Home tile → detail view navigation |
-| Training Plan v2 | #74 | Feature (v2_refactor) | Second full v2 refactor through the pipeline |
+| Feature | GitHub Issue | Work type | Framework ver. | Key milestone |
+| --- | --- | --- | --- | --- |
+| Onboarding v2 | #59 | Feature (v2_refactor) | v2.0 | Pilot UX Foundations alignment, 6 screens |
+| Home Today Screen v2 | #61 | Feature (v2_refactor) | v3.0 | 27-finding UX audit, v2/ convention validated |
+| Onboarding retro | #63 | Enhancement | v3.0 | Retroactive v2 alignment of pilot feature |
+| Body Composition card | #65 | Enhancement | v3.0 | Reusable metric tile drill-down pattern |
+| Metric Deep Link | #67 | Enhancement | v3.0 | Home tile → detail view navigation |
+| Training Plan v2 | #74 | Feature (v2_refactor) | v4.0 | First feature with 40% cache hit rate |
+| Nutrition v2 | #75 | Feature (v2_refactor) | v4.1 | 55% cache — 3.25x faster than Onboarding |
+| Stats v2 | #76 | Feature (v2_refactor) | v4.1 | 65% cache — 4.3x faster |
+| Settings v2 | #77 | Feature (v2_refactor) | v4.1 | 70% cache — 6.5x faster |
+| AI Engine Architecture | #79 | Enhancement | v5.1 | 13 tasks, 17 files, 45% cache, 1.5h |
 
 ## Standalone usage
 
@@ -190,11 +197,39 @@ It's the only skill the user normally types directly. Everything else is reachab
 
 ## Related documents
 
-- [README.md](README.md) — ecosystem overview
-- [architecture.md](architecture.md) — full ecosystem deep-dive
-- [ux.md](ux.md), [design.md](design.md), [dev.md](dev.md) — the three skills dispatched most during Phase 3-4
-- [`CLAUDE.md`](../../CLAUDE.md) — project-wide rules
+### Architecture & evolution
+- [Architecture One-Pager](architecture-one-pager.md) — quick-reference system schematics and information flow
+- [Architecture Deep-Dive](architecture.md) — full ecosystem guide with per-skill details, shared data layer, v5.0/v5.1 SoC sections
+- [Evolution History](evolution.md) — narrative v1.0 → v5.1 with rationale, consolidated timeline, and cumulative metrics
+- [SoC Savings Report](../architecture/soc-savings-report-v5.1.md) — token impact analysis for v5.0/v5.1 optimizations
+
+### Spoke skills (dispatched by the hub)
+- [/ux](ux.md) — UX planning & validation (What & Why)
+- [/design](design.md) — design system, Figma, tokens (How it Looks)
+- [/dev](dev.md) — branching, code review, CI, dependencies
+- [/qa](qa.md) — test planning, coverage, regression, security
+- [/analytics](analytics.md) — event taxonomy, instrumentation, dashboards, funnels
+- [/cx](cx.md) — reviews, NPS, sentiment, feedback loops
+- [/marketing](marketing.md) — ASO, campaigns, content, launches
+- [/ops](ops.md) — infrastructure, incidents, cost, alerts
+- [/research](research.md) — cross-industry → same-category → feature-specific
+- [/release](release.md) — version bumps, changelogs, App Store submission
+
+### Case studies (evidence of the hub in action)
+- [Onboarding v2 Showcase](../case-studies/pm-workflow-showcase-onboarding.md) — pilot v2.0 run
+- [PM Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) — 6-feature comparison, 6.5x speedup
+- [AI Engine Architecture](../case-studies/ai-engine-architecture-v5.1-case-study.md) — v5.1 in action (1.5h, 13 tasks)
+
+### Setup & integration
+- [Sentry Setup Guide](../setup/sentry-setup-guide.md) — error tracking integration for `/ops health`
+- [Firebase Setup Guide](../setup/firebase-setup-guide.md) — GA4 analytics for `/analytics`
+- [Funnel Definitions](../product/funnel-definitions.md) — 6 funnels + dashboard templates for `/analytics funnel`
+
+### Project rules
+- [`CLAUDE.md`](../../CLAUDE.md) — project-wide rules, branching strategy, v2 refactor convention
 - [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md) — the agent-facing prompt
+- [Skill Routing Config](../../.claude/shared/skill-routing.json) — phase→skill mapping, batch dispatch, model tiering, all v5.1 config
+- [Framework Manifest](../../.claude/shared/framework-manifest.json) — canonical version, structure, capabilities
 
 ---
 
@@ -227,3 +262,25 @@ Caches: orchestration patterns (phase transition sequences that succeeded/failed
 
 On start: check cache for matching task signature, load learned patterns.
 On complete: extract new patterns, write to L1 cache. Flag cross-skill patterns for L2 promotion.
+
+---
+
+## Version history
+
+Every version was tested through real feature work. The case study column links to evidence.
+
+| Version | Date | What Changed | Tested On | Case Study |
+|---|---|---|---|---|
+| v1.0 | 2026-04-02 | PM Skill created — 10-phase lifecycle | PM workflow itself | — |
+| v1.2 | 2026-04-04 | Analytics instrumentation gate | Google Analytics | — |
+| v2.0 | 2026-04-07 | Hub-and-spoke: 11 skills, shared data layer, Phase 9 | Onboarding v2 (#59) | [Showcase](../case-studies/pm-workflow-showcase-onboarding.md) |
+| v3.0 | 2026-04-09 | External sync, parallel dispatch, v2 pipeline | Home v2 (#61) | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.0 | 2026-04-10 | Reactive data mesh, adapters, validation gate, L1/L2/L3 cache | Training v2 (#74, 40% cache) | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.1 | 2026-04-10 | Skill Internal Lifecycle (Cache→Research→Execute→Learn) | Nutrition (#75, 55%), Stats (#76, 65%), Settings (#77, 70%) | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.2 | 2026-04-10 | Self-healing hub, Phase 0 health checks | Readiness v2, AI Engine v2, AI Rec UI | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance programs | Cleanup program | — |
+| v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature | Profile settings (9 evals) | — |
+| v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens) | Framework itself | [SoC Report](../architecture/soc-savings-report-v5.1.md) |
+| v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Arch (#79, 13 tasks, 1.5h) | [AI Engine CS](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
+
+For the full narrative behind each version, see [evolution.md](evolution.md). For system schematics, see [architecture-one-pager.md](architecture-one-pager.md). For the detailed deep-dive, see [architecture.md](architecture.md).

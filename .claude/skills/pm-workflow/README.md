@@ -1,6 +1,6 @@
 # PM Workflow Skill — `/pm-workflow`
 
-> Current framework version: **v4.3**
+> Current framework version: **v5.1**
 > This README is the human-facing evolution summary for the PM hub. For the live agent behavior, treat [`SKILL.md`](./SKILL.md) and the shared framework files as canonical.
 
 A Claude Code skill that orchestrates the complete product management lifecycle for features and maintenance programs in the FitMe app. Invoke with `/pm-workflow {feature-name}`.
@@ -20,11 +20,11 @@ The execution-state files still track the research-through-documentation path di
 
 | File | Purpose |
 |------|---------|
-| `SKILL.md` | Main workflow definition — current v4.3 hub behavior, gates, transitions, overrides |
+| `SKILL.md` | Main workflow definition — current v5.1 hub behavior, gates, transitions, overrides |
 | `prd-template.md` | PRD template with mandatory metrics, analytics spec, kill criteria |
 | `research-template.md` | Research phase template (10 sections) |
 | `state-schema.json` | JSON Schema for feature state tracking |
-| `docs/skills/pm-workflow.md` | Human-facing hub reference in the v4.3 skills ecosystem |
+| `docs/skills/pm-workflow.md` | Human-facing hub reference with version history + cross-links |
 | `.claude/shared/framework-manifest.json` | Canonical framework version, counts, and structure |
 
 ## Key Concepts
@@ -47,6 +47,44 @@ The execution-state files still track the research-through-documentation path di
 ---
 
 ## Version History
+
+### v5.1.0 — Complete SoC-on-Software Suite (2026-04-14)
+
+**Problem:** v5.0 reclaimed 54K tokens but dispatch overhead (hub ↔ skill round-trips, disk I/O, redundant context) still consumed cycles unnecessarily.
+
+**What changed:**
+
+1. **Model tiering** — sonnet for mechanical tasks, opus for judgment (ANE mixed-precision analog)
+2. **Batch dispatch** — load skill template once, iterate N targets as data (TPU weight-stationary)
+3. **Result forwarding** — pass output inline instead of write-to-disk-read-back (UMA zero-copy)
+4. **Speculative preload** — pre-load likely-next-skill cache (branch prediction, 85% hit target)
+5. **Systolic chains** — multi-skill pipelines receive only upstream output + L1 cache (TPU systolic array)
+6. **Task complexity gate** — classify tasks as lightweight/heavyweight, dispatch to parallel/serial lanes (big.LITTLE)
+
+**Tested on:** [AI Engine Architecture Adaptation](../../../docs/case-studies/ai-engine-architecture-v5.1-case-study.md) — 13 tasks, 17 files, 1.5h, 45% cache hit.
+
+### v5.0.0 — SoC-on-Software: Skill-on-Demand + Cache Compression (2026-04-14)
+
+**Problem:** Framework loaded all 11 SKILL.md files and all cache entries at session start, consuming ~54K tokens (27% of 200K context) before any work began.
+
+**What changed:**
+
+1. **Skill-on-demand loading** — load only phase-relevant SKILL.md files (~30K saved). Inspired by Apple LoRA adapter hot-swap.
+2. **Cache compression** — `compressed_view` (~200 words) loaded by default, full expansion on demand (~24K saved). Inspired by Apple 3.7-bit palettization.
+
+**Savings report:** [`docs/architecture/soc-savings-report-v5.1.md`](../../../docs/architecture/soc-savings-report-v5.1.md)
+
+### v4.4.0 — Eval-Driven Development (2026-04-13)
+
+**Problem:** Features shipped with tests but no evaluations of AI-specific behavior — confidence thresholds, tier assignment, golden input/output validation.
+
+**What changed:**
+
+1. **Mandatory eval definitions** for every feature during Phase 2 (Tasks)
+2. **Phase 5 (Test)** runs evals alongside unit tests, records results in `case-study-monitoring.json`
+3. **Failed evals** become anti-patterns in L1 cache, feeding Phase 4 (Learn) on future executions
+
+**Tested on:** User Profile Settings feature (9 evals: 5 golden I/O + 4 quality heuristics).
 
 ### v4.3.0 — Operations Layer + Case-Study Monitoring (2026-04-11)
 
@@ -238,9 +276,44 @@ Added `requires_analytics` conditional gate (mirrors `has_ui` pattern) with 3 to
 
 ## Features That Used This Skill
 
-| Feature | Phases Completed | Analytics Gate? | Notes |
-|---------|-----------------|-----------------|-------|
-| `development-dashboard` | Full lifecycle completed | No | First feature through the original lifecycle |
-| `google-analytics` | Full lifecycle completed | N/A (this IS the analytics feature) | Drove v1.2.0 evolution. First feature with `requires_analytics` gate. |
-| `gdpr-compliance` | Full lifecycle completed | Yes (5 events, 4 params, 2 screens) | First feature using analytics gate end-to-end. CRITICAL legal requirement. |
-| `android-design-system` | Full lifecycle completed | No (docs-only) | Research deliverable. 92 tokens mapped, Style Dictionary config. |
+| Feature | Phases Completed | Analytics Gate? | Framework Ver. | Notes |
+|---------|-----------------|-----------------|---|-------|
+| `development-dashboard` | Full lifecycle | No | v1.0 | First feature through the original lifecycle |
+| `google-analytics` | Full lifecycle | N/A (this IS analytics) | v1.2 | Drove v1.2 evolution |
+| `gdpr-compliance` | Full lifecycle | Yes | v1.2 | First feature using analytics gate end-to-end |
+| `android-design-system` | Full lifecycle | No (docs-only) | v1.2 | 92 tokens mapped |
+| `onboarding-v2` | Full lifecycle (v2_refactor) | Yes | v2.0 | Pilot UX Foundations alignment |
+| `home-today-screen` | Full lifecycle (v2_refactor) | Yes | v3.0 | 27-finding audit, v2/ convention |
+| `training-plan-v2` | Full lifecycle (v2_refactor) | Yes | v4.0 | First 40% cache hit |
+| `nutrition-v2` | Full lifecycle (v2_refactor) | Yes | v4.1 | 55% cache — 3.25x faster |
+| `stats-v2` | Full lifecycle (v2_refactor) | Yes | v4.1 | 65% cache — 4.3x faster |
+| `settings-v2` | Full lifecycle (v2_refactor) | Yes | v4.1 | 70% cache — 6.5x faster |
+| `ai-engine-architecture` | Enhancement | Yes | v5.1 | 13 tasks, 17 files, 1.5h, 45% cache |
+
+---
+
+## Related Documents
+
+### Architecture & evolution (start here to understand the system)
+
+- [Architecture One-Pager](../../../docs/skills/architecture-one-pager.md) — quick-reference diagrams and timeline
+- [Architecture Deep-Dive](../../../docs/skills/architecture.md) — full guide (~1900 lines)
+- [Evolution History](../../../docs/skills/evolution.md) — v1.0 → v5.1 narrative with cumulative metrics
+- [PM Workflow Hub Doc](../../../docs/skills/pm-workflow.md) — human-facing hub reference with version history
+
+### Spoke skill docs (what the hub dispatches)
+
+- [/ux](../../../docs/skills/ux.md) | [/design](../../../docs/skills/design.md) | [/dev](../../../docs/skills/dev.md) | [/qa](../../../docs/skills/qa.md) | [/analytics](../../../docs/skills/analytics.md)
+- [/cx](../../../docs/skills/cx.md) | [/marketing](../../../docs/skills/marketing.md) | [/ops](../../../docs/skills/ops.md) | [/research](../../../docs/skills/research.md) | [/release](../../../docs/skills/release.md)
+
+### Case studies (framework performance evidence)
+
+- [Onboarding v2 Showcase](../../../docs/case-studies/pm-workflow-showcase-onboarding.md) — pilot v2.0
+- [PM Evolution v1→v4](../../../docs/case-studies/pm-workflow-evolution-v1-to-v4.md) — 6.5x speedup across 6 refactors
+- [AI Engine Architecture](../../../docs/case-studies/ai-engine-architecture-v5.1-case-study.md) — v5.1 real-world test
+
+### Setup & integration
+
+- [Sentry Setup](../../../docs/setup/sentry-setup-guide.md) | [Firebase Setup](../../../docs/setup/firebase-setup-guide.md)
+- [Funnel Definitions](../../../docs/product/funnel-definitions.md) — 6 funnels + dashboard templates
+- [SoC Savings Report](../../../docs/architecture/soc-savings-report-v5.1.md)

@@ -275,12 +275,43 @@ The hub never does inline work — it reads state, decides which skill to dispat
 
 ## Related documents
 
-- [`architecture.md`](architecture.md) — full ecosystem deep-dive (~1400 lines). Covers the hub-and-spoke architecture, shared data layer, per-skill sections, connection map, feature review, and a merged-in gap analysis snapshot from 2026-04-04 with current deltas.
-- [`evolution.md`](evolution.md) — history of how the ecosystem evolved from `/pm-workflow` v1.0 (monolith) → v1.2 (shared data) → v2.0 (hub-and-spoke) → v3.0 (external integrations + screen audits + parallel execution) → v4.3 (reactive data mesh + learning cache + validation gate + self-healing hub + operational control room). Useful context for understanding why the current architecture looks the way it does.
-- [`pm-workflow.md`](pm-workflow.md) — hub skill deep-dive
-- [`.claude/skills/{name}/SKILL.md`](../../.claude/skills/) — agent-facing prompts the harness executes when a skill is invoked
-- [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — the 13 UX principles `/ux` references
-- [`../design-system/v2-refactor-checklist.md`](../design-system/v2-refactor-checklist.md) — the checklist that every V2 refactor walks through
-- [`../case-studies/`](../case-studies/) — concrete examples of the PM workflow running on real features
-- [`../case-studies/pm-workflow-evolution-v1-to-v4.md`](../case-studies/pm-workflow-evolution-v1-to-v4.md) — comprehensive case study: PM hub evolution v1.0 → v4.3 with measurable efficiency data across 6 screen refactors plus the operational layer follow-through
-- [`../../CLAUDE.md`](../../CLAUDE.md) — project rules, including the UI Refactoring & V2 Rule
+### Architecture & evolution
+
+- [`architecture-one-pager.md`](architecture-one-pager.md) — quick-reference system schematics, information flow, skill inventory, evolution timeline with case study links
+- [`architecture.md`](architecture.md) — full deep-dive (~1900 lines). Hub-and-spoke, shared data layer, per-skill sections, v5.0/v5.1 SoC deep-dives, AI engine cross-domain adaptation, gap analysis.
+- [`evolution.md`](evolution.md) — narrative v1.0 → v5.1 evolution. Consolidated timeline with case study links and cumulative metrics across all features.
+- [`pm-workflow.md`](pm-workflow.md) — hub skill deep-dive with version history, shipped features table, and links to all spokes
+
+### Agent-facing prompts
+
+- [`.claude/skills/{name}/SKILL.md`](../../.claude/skills/) — the prompts the harness executes when a skill is invoked
+
+### Case studies
+
+- [Onboarding v2 Showcase](../case-studies/pm-workflow-showcase-onboarding.md) — pilot v2.0 run
+- [PM Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) — 6-feature comparison, 6.5x speedup
+- [AI Engine Architecture](../case-studies/ai-engine-architecture-v5.1-case-study.md) — v5.1 in action (1.5h, 13 tasks, 45% cache)
+- [All case studies](../case-studies/) — complete collection
+
+### Setup & integration guides
+
+- [Sentry Setup](../setup/sentry-setup-guide.md) — error tracking for `/ops health`
+- [Firebase Setup](../setup/firebase-setup-guide.md) — GA4 analytics for `/analytics`
+- [SSD Layout](../setup/ssd-setup-guide.md) — build artifact paths
+
+### Product docs
+
+- [Funnel Definitions](../product/funnel-definitions.md) — 6 funnels + dashboard templates
+- [Metrics Framework](../product/metrics-framework.md) — 40 metric definitions
+- [SoC Savings Report](../architecture/soc-savings-report-v5.1.md) — v5.0/v5.1 token impact
+
+### Design system
+
+- [`../design-system/ux-foundations.md`](../design-system/ux-foundations.md) — 13 UX principles `/ux` references
+- [`../design-system/v2-refactor-checklist.md`](../design-system/v2-refactor-checklist.md) — checklist for V2 refactors
+
+### Config & rules
+
+- [`../../.claude/shared/framework-manifest.json`](../../.claude/shared/framework-manifest.json) — canonical version, structure, capabilities
+- [`../../.claude/shared/skill-routing.json`](../../.claude/shared/skill-routing.json) — phase→skill mapping, all v5.1 config
+- [`../../CLAUDE.md`](../../CLAUDE.md) — project rules, branching strategy, V2 Rule, analytics naming
