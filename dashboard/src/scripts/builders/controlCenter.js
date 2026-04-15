@@ -316,6 +316,17 @@ function buildFrameworkPulse(authoritativeFeatures, featureRegistry, taskQueue) 
   };
 }
 
+function findCaseStudyDoc(caseId) {
+  const caseStudyDir = resolve(REPO_ROOT, 'docs/case-studies');
+  try {
+    const files = readdirSync(caseStudyDir);
+    const slug = caseId.replace(/-\d{4}-\d{2}$/, '');
+    return files.find(file => file.includes(slug) && file.endsWith('.md')) || null;
+  } catch {
+    return null;
+  }
+}
+
 function buildCaseStudyFeed(caseStudyMonitoring) {
   const narrativeMap = {
     [caseStudiesData.cleanupControlRoom.id]: caseStudiesData.cleanupControlRoom,
@@ -327,7 +338,9 @@ function buildCaseStudyFeed(caseStudyMonitoring) {
   return caseStudyMonitoring.cases
     .map(caseItem => {
       const narrative = narrativeMap[caseItem.case_id] || {};
-      const docPath = caseItem.artifacts.find(item => item.startsWith('docs/case-studies/')) || null;
+      const artifactDoc = caseItem.artifacts.find(item => item.startsWith('docs/case-studies/')) || null;
+      const fallbackDoc = artifactDoc ? null : findCaseStudyDoc(caseItem.case_id);
+      const docPath = artifactDoc || (fallbackDoc ? `docs/case-studies/${fallbackDoc}` : null);
       const latestSnapshot = caseItem.snapshots[caseItem.snapshots.length - 1];
 
       return {

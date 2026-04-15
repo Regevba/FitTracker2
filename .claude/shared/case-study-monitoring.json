@@ -542,7 +542,8 @@
         "Write PRD with success metrics and eval definitions"
       ],
       "artifacts": [
-        ".claude/features/user-profile-settings/state.json"
+        ".claude/features/user-profile-settings/state.json",
+        "docs/case-studies/user-profile-v4.4-case-study.md"
       ],
       "snapshots": [
         {
@@ -757,7 +758,8 @@
         ".claude/features/onboarding-v2-auth-flow/tasks.md",
         ".claude/features/onboarding-v2-auth-flow/ux-spec.md",
         "FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift",
-        "FitTracker/Views/Onboarding/v2/OnboardingSuccessView.swift"
+        "FitTracker/Views/Onboarding/v2/OnboardingSuccessView.swift",
+        "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md"
       ],
       "snapshots": [
         {
