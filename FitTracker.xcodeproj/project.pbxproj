@@ -287,7 +287,9 @@
 		PF200000000000000000PV01 /* ProfileHeroSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeroSection.swift; sourceTree = "<group>"; };
 		PF200000000000000000PV02 /* ProfileBodyCompCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileBodyCompCard.swift; sourceTree = "<group>"; };
 		PF200000000000000000PV05 /* GoalsTrainingCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsTrainingCard.swift; sourceTree = "<group>"; };
-		PF300000000000000000GR01 /* Profile */ = {isa = PBXGroup; children = (PF200000000000000000PV01 /* ProfileHeroSection.swift */, PF200000000000000000PV02 /* ProfileBodyCompCard.swift */, PF200000000000000000PV03 /* ProfileView.swift */, PF200000000000000000PV04 /* GoalEditorSheet.swift */, PF200000000000000000PV05 /* GoalsTrainingCard.swift */); path = Profile; sourceTree = "<group>"; };
+		PF200000000000000000PV06 /* AccountDataCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDataCard.swift; sourceTree = "<group>"; };
+		PF100000000000000000PV06 /* AccountDataCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV06 /* AccountDataCard.swift */; };
+		PF300000000000000000GR01 /* Profile */ = {isa = PBXGroup; children = (PF200000000000000000PV01 /* ProfileHeroSection.swift */, PF200000000000000000PV02 /* ProfileBodyCompCard.swift */, PF200000000000000000PV03 /* ProfileView.swift */, PF200000000000000000PV04 /* GoalEditorSheet.swift */, PF200000000000000000PV05 /* GoalsTrainingCard.swift */, PF200000000000000000PV06 /* AccountDataCard.swift */); path = Profile; sourceTree = "<group>"; };
 		PF200000000000000000PV03 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		PF200000000000000000PV04 /* GoalEditorSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalEditorSheet.swift; sourceTree = "<group>"; };
 		PF100000000000000000PV03 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV03 /* ProfileView.swift */; };
@@ -865,6 +867,7 @@
 				PF100000000000000000PV03 /* ProfileView.swift in Sources */,
 				PF100000000000000000PV04 /* GoalEditorSheet.swift in Sources */,
 				PF100000000000000000PV05 /* GoalsTrainingCard.swift in Sources */,
+				PF100000000000000000PV06 /* AccountDataCard.swift in Sources */,
 				NV100000000000000000AA01 /* NutritionView.swift in Sources */,
 				NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */,
 				NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */,
