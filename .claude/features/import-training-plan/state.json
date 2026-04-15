@@ -1,9 +1,9 @@
 {
   "feature": "import-training-plan",
   "created": "2026-04-11T00:00:00Z",
-  "updated": "2026-04-15T17:35:00Z",
+  "updated": "2026-04-15T17:42:00Z",
   "branch": null,
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -17,7 +17,9 @@
       "approved_at": "2026-04-15T17:35:00Z"
     },
     "prd": {
-      "status": "pending"
+      "status": "approved",
+      "path": "docs/product/prd/import-training-plan.md",
+      "approved_at": "2026-04-15T17:42:00Z"
     },
     "tasks": {
       "status": "pending"
@@ -56,6 +58,13 @@
       "timestamp": "2026-04-15T17:35:00Z",
       "approved_by": "user",
       "note": "Research complete \u2014 parser strategy, exercise mapping, AI paste support"
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-15T17:42:00Z",
+      "approved_by": "user",
+      "note": "PRD written. Multi-source parser, exercise mapping, AI paste support."
     }
   ],
   "tasks": [],

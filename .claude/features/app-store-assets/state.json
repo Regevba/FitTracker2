@@ -1,9 +1,9 @@
 {
   "feature": "app-store-assets",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-15T17:35:00Z",
+  "updated": "2026-04-15T17:42:00Z",
   "branch": null,
-  "current_phase": "tasks",
+  "current_phase": "ux_or_integration",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": false,
@@ -21,7 +21,9 @@
       "approved_at": "2026-04-15T17:35:00Z"
     },
     "tasks": {
-      "status": "pending"
+      "status": "approved",
+      "task_file": ".claude/features/app-store-assets/tasks.md",
+      "v2_count": 10
     },
     "ux_or_integration": {
       "status": "pending"
@@ -63,6 +65,13 @@
       "timestamp": "2026-04-15T17:35:00Z",
       "approved_by": "user",
       "note": "PRD written with icon specs, screenshot pipeline, ASO metrics"
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-15T17:42:00Z",
+      "approved_by": "user",
+      "note": "10 tasks defined. Icon pipeline + screenshots + metadata + submission."
     }
   ],
   "tasks": []

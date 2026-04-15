@@ -314,7 +314,7 @@
       "name": "Push Notifications",
       "prd": "docs/product/prd/push-notifications.md",
       "status": "in_progress",
-      "phase": "tasks",
+      "phase": "ux_or_integration",
       "category": "engagement",
       "pain_point": "The app has no proactive reminder or readiness alert surface, so useful insight stops at the app boundary",
       "metrics": {
@@ -333,7 +333,7 @@
       "name": "App Icon + App Store Assets",
       "prd": "docs/product/prd/app-store-assets.md",
       "status": "in_progress",
-      "phase": "tasks",
+      "phase": "ux_or_integration",
       "category": "release",
       "pain_point": "The app is missing the release-visual package needed for truthful launch readiness",
       "metrics": {
@@ -350,9 +350,9 @@
     {
       "id": "import-training-plan",
       "name": "Import Training Plan",
-      "prd": null,
+      "prd": "docs/product/prd/import-training-plan.md",
       "status": "in_progress",
-      "phase": "prd",
+      "phase": "tasks",
       "category": "core",
       "pain_point": "Users with coach plans, app exports, or AI-generated routines face high migration friction",
       "metrics": {
@@ -381,6 +381,25 @@
         },
         "auditable_confidence_rate": {
           "target": 100,
+          "current": null
+        }
+      }
+    },
+    {
+      "id": "smart-reminders",
+      "name": "Smart Reminders",
+      "prd": "docs/product/prd/smart-reminders.md",
+      "status": "in_progress",
+      "phase": "tasks",
+      "category": "engagement",
+      "pain_point": "App is passive \u2014 users miss nutrition windows, skip training, guests never convert",
+      "metrics": {
+        "reminder_tap_through": {
+          "target": 25,
+          "current": null
+        },
+        "notification_disable_rate": {
+          "target": 10,
           "current": null
         }
       }

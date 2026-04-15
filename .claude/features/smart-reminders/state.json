@@ -1,8 +1,8 @@
 {
   "feature": "smart-reminders",
   "created": "2026-04-15T17:33:00Z",
-  "updated": "2026-04-15T17:35:00Z",
-  "current_phase": "prd",
+  "updated": "2026-04-15T17:42:00Z",
+  "current_phase": "tasks",
   "work_type": "feature",
   "work_subtype": "new_capability",
   "has_ui": true,
@@ -10,19 +10,58 @@
   "parent_feature": "onboarding-v2-auth-flow",
   "description": "AI-powered local notification system with 5 reminder types + locked feature overlays for guests",
   "transitions": [
-    {"from": "init", "to": "research", "timestamp": "2026-04-15T17:33:00Z", "approved_by": "system"},
-    {"from": "research", "to": "prd", "timestamp": "2026-04-15T17:35:00Z", "approved_by": "user", "note": "Research completed. 5 reminder types defined with trigger conditions, message templates, frequency caps. Competitive analysis done."}
+    {
+      "from": "init",
+      "to": "research",
+      "timestamp": "2026-04-15T17:33:00Z",
+      "approved_by": "system"
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-15T17:35:00Z",
+      "approved_by": "user",
+      "note": "Research completed. 5 reminder types defined with trigger conditions, message templates, frequency caps. Competitive analysis done."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-15T17:42:00Z",
+      "approved_by": "user",
+      "note": "PRD written. 5 reminder types, 20 requirements, phased rollout."
+    }
   ],
   "phases": {
-    "research": {"status": "approved", "approved_at": "2026-04-15T17:35:00Z"},
-    "prd": {"status": "pending"},
-    "tasks": {"status": "pending"},
-    "ux_or_integration": {"status": "pending"},
-    "implementation": {"status": "pending"},
-    "testing": {"status": "pending"},
-    "review": {"status": "pending"},
-    "merge": {"status": "pending"},
-    "documentation": {"status": "pending"}
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-15T17:35:00Z"
+    },
+    "prd": {
+      "status": "approved",
+      "path": "docs/product/prd/smart-reminders.md",
+      "approved_at": "2026-04-15T17:42:00Z"
+    },
+    "tasks": {
+      "status": "pending"
+    },
+    "ux_or_integration": {
+      "status": "pending"
+    },
+    "implementation": {
+      "status": "pending"
+    },
+    "testing": {
+      "status": "pending"
+    },
+    "review": {
+      "status": "pending"
+    },
+    "merge": {
+      "status": "pending"
+    },
+    "documentation": {
+      "status": "pending"
+    }
   },
   "tasks": []
 }
