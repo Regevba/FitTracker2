@@ -1,20 +1,20 @@
 {
   "version": "1.1",
-  "updated": "2026-04-06",
+  "updated": "2026-04-15",
   "note": "Operational monitoring not yet wired. Values below reflect local verification only — runtime infrastructure checks require deployed services and credentials.",
   "infrastructure": {
     "railway": { "status": "unknown", "service": "AI Engine (FastAPI)", "url": null, "last_check": null },
     "supabase": { "status": "configured", "service": "PostgreSQL + Realtime + Storage", "project": "hwbbdzwaismlajtfsbed", "region": "ap-northeast-1 (Tokyo)", "region_note": "Will migrate to eu-west-1 (Ireland) before launch — region is permanent per project, requires new project + migration", "last_check": "2026-04-15", "project_name": "FitmeBe&AI engine15042026", "note": "Canonical project: cohort_stats + sync_records + cardio_assets + user_profiles + cardio-images bucket + Email/Google auth. Info.plist still has placeholders — local credential injection needed for runtime verification." },
     "cloudkit": { "status": "unknown", "service": "iCloud Private DB", "last_check": null },
     "firebase": { "status": "unknown", "service": "Analytics (GA4)", "last_check": null, "note": "GoogleService-Info.plist not in repo — local file required" },
-    "vercel_website": { "status": "unknown", "service": "Marketing Website", "url": "fitme.app", "last_check": null },
-    "vercel_dashboard": { "status": "unknown", "service": "Development Dashboard", "last_check": null }
+    "vercel_website": { "status": "deployed", "service": "Marketing Website", "url": "fitme.app", "last_check": "2026-04-15", "note": "Built and deployed but has launch blockers (placeholder GA4 IDs, placeholder App Store links)" },
+    "vercel_dashboard": { "status": "live", "service": "Operations Control Room", "url": "https://fit-tracker2.vercel.app", "last_check": "2026-04-15", "note": "Live at fit-tracker2.vercel.app. Tab navigation and case study links fixed 2026-04-15." }
   },
   "ci": {
     "last_build": { "status": null, "branch": null, "timestamp": null },
-    "tokens_check": { "status": "passing", "last_run": "2026-04-06" },
-    "xcode_build": { "status": "passing", "last_run": "2026-04-06", "note": "verified via make verify-local" },
-    "xcode_test": { "status": "passing", "tests": 40, "last_run": "2026-04-06", "note": "FitTrackerCoreTests(31) + SyncMergeTests(9)" }
+    "tokens_check": { "status": "passing", "last_run": "2026-04-15" },
+    "xcode_build": { "status": "passing", "last_run": "2026-04-15", "note": "verified via xcodebuild build" },
+    "xcode_test": { "status": "passing", "tests": 197, "last_run": "2026-04-15", "note": "197 tests pass including 29 eval tests" }
   },
   "quality_gates": {
     "crash_free_rate": { "current": null, "target": 99.5, "alert_threshold": 99.0, "source": "sentry", "note": "requires Sentry SDK + MCP — see docs/setup/sentry-setup-guide.md" },

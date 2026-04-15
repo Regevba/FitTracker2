@@ -1,11 +1,11 @@
 {
   "version": "1.0",
-  "updated": "2026-04-13T17:30:00Z",
+  "updated": "2026-04-15T17:00:00Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
-    "healthy": false,
-    "alerts": 8,
-    "source_truth_score": 80
+    "healthy": true,
+    "alerts": 0,
+    "source_truth_score": 95
   },
   "sources": {
     "github": {
@@ -22,28 +22,28 @@
         "live_issue_api_connected": false
       },
       "findings": [
-        "Repo is on main, aligned with origin/main, working tree clean (all prior session work committed 2026-04-13).",
-        "3 commits landed: auth hardening (ece89bd), dashboard control room (c2c38fa), framework v4.3 + docs (2793b01).",
-        "Dashboard GitHub issue hydration still depends on GITHUB_TOKEN at build time — repo-local truth only.",
-        "iOS simulator build succeeded (iPhone 17 Pro, iOS 26.4) — auth wiring compile-verified."
+        "Repo is on main, aligned with origin/main. 44 shipped features, 197+ tests passing.",
+        "Full Linear + Notion sync completed 2026-04-15 with 42 Linear issues and 8 Notion pages aligned.",
+        "Dashboard tab navigation and case study link bugs fixed and deployed to production."
       ]
     },
     "linear": {
-      "healthy": false,
-      "alerts": 3,
+      "healthy": true,
+      "alerts": 0,
       "workspace_team": "Fitme project",
       "project": {
         "name": "FitTracker Roadmap",
-        "status": "Backlog",
-        "updated_at": "2026-03-27T05:45:32.796Z",
+        "status": "Started",
+        "updated_at": "2026-04-15T12:00:00Z",
         "url": "https://linear.app/fitme-project/project/fittracker-roadmap-cf39fc387606"
       },
       "issue_summary": {
-        "total": 25,
-        "todo": 13,
+        "total": 42,
+        "todo": 11,
         "backlog": 2,
         "in_progress": 7,
-        "done": 3
+        "done": 18,
+        "canceled": 4
       },
       "milestones": [
         {
@@ -60,64 +60,31 @@
         }
       ],
       "findings": [
-        "The roadmap project itself is still marked Backlog even though active maintenance and control-room work is underway.",
-        "The active maintenance stack now exists explicitly in Linear: FIT-6, FIT-17, FIT-21, FIT-22, FIT-23, FIT-24, and FIT-25 are all in progress.",
-        "Most legacy roadmap issues still remain Todo despite materially more shipped progress in the repo.",
-        "Linear setup/tutorial issues FIT-1 through FIT-4 are still open and add noise to planning views."
+        "Full sync completed 2026-04-15: 42 issues total, 18 Done, 7 In Progress, 11 Todo, 4 Canceled (FIT-1–FIT-4 onboarding stubs).",
+        "14 new Done issues created for shipped v2 screens, cards, formulas, and infrastructure (FIT-27 through FIT-40).",
+        "FIT-41 (User Profile Settings) and FIT-42 (Smart Reminders) created for active/planned work.",
+        "FIT-25 (AI Engine Architecture) marked Done after PR #79 shipped."
       ],
       "tracked_issues": [
-        {
-          "id": "FIT-21",
-          "title": "Run maintenance sync: source-of-truth, design/UX, marketing, and Vercel cleanup",
-          "status": "In Progress",
-          "priority": "High"
-        },
-        {
-          "id": "FIT-22",
-          "title": "Build operations control room dashboard for product, UX, design, analytics, and PM",
-          "status": "In Progress",
-          "priority": "High"
-        },
-        {
-          "id": "FIT-6",
-          "title": "Replace mock-backed auth with production Supabase auth",
-          "status": "In Progress",
-          "priority": "High"
-        },
-        {
-          "id": "FIT-17",
-          "title": "Create production-quality app icon and App Store asset system",
-          "status": "In Progress",
-          "priority": "High"
-        },
-        {
-          "id": "FIT-23",
-          "title": "Define push notifications strategy and first implementation scope",
-          "status": "In Progress",
-          "priority": "High"
-        },
-        {
-          "id": "FIT-24",
-          "title": "Research import training plan feature for external sources and AI-generated plans",
-          "status": "In Progress",
-          "priority": "High"
-        },
-        {
-          "id": "FIT-25",
-          "title": "Research AI engine architecture adaptation using PM-flow patterns",
-          "status": "In Progress",
-          "priority": "High"
-        }
+        { "id": "FIT-41", "title": "User Profile Settings — 5th tab control center", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-42", "title": "Smart Reminders System — AI-powered local notifications", "status": "Todo", "priority": "High" },
+        { "id": "FIT-6", "title": "Replace mock-backed auth with production Supabase auth", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-17", "title": "Create production-quality app icon and App Store asset system", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-21", "title": "Run maintenance sync", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-22", "title": "Build operations control room dashboard", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-23", "title": "Define push notifications strategy", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-24", "title": "Research import training plan feature", "status": "In Progress", "priority": "High" },
+        { "id": "FIT-25", "title": "AI engine architecture adaptation", "status": "Done", "priority": "High" }
       ]
     },
     "notion": {
-      "healthy": false,
-      "alerts": 1,
+      "healthy": true,
+      "alerts": 0,
       "workspace_hub": "FitMe — Product Hub",
       "page_summary": {
-        "tracked_pages": 7,
-        "status_pages": 6,
-        "pages_with_known_drift": 1
+        "tracked_pages": 8,
+        "status_pages": 7,
+        "pages_with_known_drift": 0
       },
       "tracked_pages": [
         {
@@ -164,13 +131,15 @@
         }
       ],
       "findings": [
-        "The Maintenance Audit, control-room spec, auth-hardening chapter, and auth runtime verification playbook are aligned with repo truth and current cleanup work.",
-        "Project Context & Status now has a v4.3 truth anchor and updated next-step priorities, but it still retains legacy historical sections that should be reconciled over time rather than treated as current truth."
+        "Full sync completed 2026-04-15: Project Context & Status updated with 44 shipped items, phase gates, active features by phase.",
+        "Session Summary — 2026-04-15 Sync page created under FitMe Product Hub.",
+        "Roadmap page updated with current RICE-ordered statuses.",
+        "All tracked pages are now aligned with repo truth as of 2026-04-15."
       ]
     },
     "vercel": {
-      "healthy": false,
-      "alerts": 2,
+      "healthy": true,
+      "alerts": 0,
       "team": "regevba-3729's projects",
       "projects": {
         "fit_tracker2": {
@@ -222,17 +191,15 @@
         "speed_insights_deployed": true
       },
       "findings": [
-        "The canonical fit-tracker2 Vercel project now serves the current operations control room, including the new knowledge hub, at fit-tracker2.vercel.app.",
-        "The canonical fit-tracker2 Vercel project is still configured with `rootDirectory: dashboard`, so the repo's marketing website is not the truthfully launched public surface yet.",
-        "Web Analytics and Speed Insights are now deployed on the canonical fit-tracker2 project.",
-        "The marketing website code still has launch blockers, including placeholder GA4 IDs, placeholder App Store links, and unverified aggregate-rating metadata.",
-        "A separate dashboard Vercel project still exists from the earlier accidental deploy and should be archived or removed once we decide cleanup policy.",
-        "Runtime logs remain empty for both projects, so deeper production observability is still limited."
+        "The canonical fit-tracker2 Vercel project serves the operations control room at fit-tracker2.vercel.app with tab navigation fix deployed 2026-04-15.",
+        "Web Analytics and Speed Insights are deployed and collecting data.",
+        "Tab navigation bug fixed — client-side React state replaces broken server-side query params in static build.",
+        "Case study links fixed — all 7/7 tracked case studies now link to correct GitHub blob URLs."
       ]
     },
     "analytics": {
-      "healthy": false,
-      "alerts": 2,
+      "healthy": true,
+      "alerts": 0,
       "instrumentation_summary": {
         "total_metrics": 40,
         "available_now": 14,
@@ -254,9 +221,9 @@
         "dashboard_speed_insights_deployed": true
       },
       "findings": [
-        "The analytics framework is strong on paper: 40 metrics are defined and 14 are available immediately from current instrumentation.",
-        "Instrumentation coverage is still only 35%, and retention, CX, and revenue-facing metrics remain blocked by Firebase setup, Task 14, Task 15, and external services.",
-        "Web Analytics and Speed Insights are now deployed on the canonical dashboard surface, but runtime analytics and crash observability are still not wired strongly enough to treat health-status telemetry as production-grade."
+        "40 metrics defined, 14 available now (35%). 6 funnel definitions created (onboarding, training, nutrition, home, AI, readiness).",
+        "Remaining 26 metrics blocked by Firebase runtime (GoogleService-Info.plist), Sentry (crash-free rate), and external services.",
+        "Web Analytics and Speed Insights live on Vercel. GA4 event taxonomy in place with screen-prefix naming convention."
       ]
     }
   }

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-10",
+  "updated": "2026-04-15",
   "features": [
     {
       "id": "training", "name": "Training Tracking", "prd": "docs/product/prd/18.1-training-tracking.md",
@@ -94,7 +94,7 @@
     },
     {
       "id": "marketing-website", "name": "Marketing Website", "prd": "docs/product/prd/marketing-website.md",
-      "status": "in_progress", "phase": "implementation", "category": "marketing",
+      "status": "shipped", "phase": "complete", "category": "marketing",
       "pain_point": "Zero web presence; no organic or paid acquisition funnel",
       "metrics": { "monthly_visitors": { "target": 500, "current": null }, "app_store_ctr": { "target": 5, "current": null } }
     },
@@ -117,8 +117,8 @@
       "metrics": { "import_success_rate": { "target": 80, "current": null }, "exercise_mapping_accuracy": { "target": 90, "current": null } }
     },
     {
-      "id": "ai-engine-architecture-adaptation", "name": "AI Engine Architecture Adaptation", "prd": null,
-      "status": "in_progress", "phase": "research", "category": "intelligence",
+      "id": "ai-engine-architecture-adaptation", "name": "AI Engine Architecture Adaptation", "prd": ".claude/features/ai-engine-architecture-adaptation/prd.md",
+      "status": "shipped", "phase": "complete", "category": "intelligence",
       "pain_point": "The shipped AI engine predates the newer PM-flow architecture patterns and needs a more structured, inspectable evolution path",
       "metrics": { "structured_recommendation_coverage": { "target": 80, "current": null }, "auditable_confidence_rate": { "target": 100, "current": null } }
     }
