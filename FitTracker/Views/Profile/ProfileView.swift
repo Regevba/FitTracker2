@@ -1,18 +1,19 @@
 // FitTracker/Views/Profile/ProfileView.swift
-// Unified profile tab — the user's personal control center.
-// Hero section + readiness + body comp + settings access + sign out.
+// Simplified profile — hero + summary cards + appearance + sign out.
+// Opened from hamburger menu on all screens.
 
 import SwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var dataStore: EncryptedDataStore
-    @EnvironmentObject var healthService: HealthKitService
     @EnvironmentObject var signIn: SignInService
+    @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var analytics: AnalyticsService
-    @EnvironmentObject var aiOrchestrator: AIOrchestrator
+    @EnvironmentObject var cloudSync: CloudKitSyncService
 
     @State private var showGoalEditor = false
     @State private var showSettings = false
+    @State private var showAppearance = false
     @State private var showSignOutAlert = false
 
     var body: some View {
@@ -23,43 +24,50 @@ struct ProfileView: View {
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: AppSpacing.medium) {
-                        // Hero
+                        // 1. Hero
                         ProfileHeroSection(
                             displayName: displayName,
-                            email: signIn.activeSession?.email,
+                            age: dataStore.userProfile.age,
+                            heightCm: dataStore.userProfile.heightCm,
+                            experienceLevel: dataStore.userProfile.experienceLevel,
                             fitnessGoal: dataStore.userProfile.fitnessGoal,
                             programPhase: dataStore.userProfile.currentPhase,
                             daysSinceStart: dataStore.userProfile.daysSinceStart,
-                            streakDays: dataStore.supplementStreak,
-                            totalWorkouts: workoutCount,
                             onGoalTap: { showGoalEditor = true },
                             onAvatarTap: { analytics.logProfileAvatarTap() }
                         )
 
-                        // Readiness snapshot
-                        readinessSection
-
-                        // Body composition
-                        ProfileBodyCompCard(
-                            currentWeight: latestBiometrics?.weightKg,
-                            currentBF: latestBiometrics?.bodyFatPercent,
-                            currentLeanMass: latestBiometrics?.leanBodyMassKg,
+                        // 2. Goals & Training card
+                        GoalsTrainingCard(
+                            fitnessGoal: dataStore.userProfile.fitnessGoal,
                             targetWeightMin: dataStore.userProfile.targetWeightMin,
                             targetWeightMax: dataStore.userProfile.targetWeightMax,
-                            targetBFMin: dataStore.userProfile.targetBFMin,
-                            targetBFMax: dataStore.userProfile.targetBFMax,
-                            startBF: dataStore.userProfile.startBodyFatPct,
-                            onTap: { analytics.logProfileBodyCompTap() }
+                            trainingDaysPerWeek: dataStore.userProfile.trainingDaysPerWeek,
+                            onTap: {
+                                analytics.logProfileSettingsSectionOpened(section: "goals_training")
+                                showGoalEditor = true
+                            }
                         )
 
-                        // AI coaching insight
-                        AIInsightCard()
+                        // 3. Account & Data card
+                        AccountDataCard(
+                            signInProvider: signIn.activeSession?.provider.rawValue,
+                            biometricEnabled: settings.requireBiometricUnlockOnReopen,
+                            syncStatus: cloudSync.status.rawValue,
+                            onTap: {
+                                analytics.logProfileSettingsSectionOpened(section: "account_data")
+                                showSettings = true
+                            }
+                        )
 
-                        // Settings
-                        settingsRow
+                        // 4. Appearance & Units row
+                        appearanceRow
 
-                        // Sign out
+                        // 5. Sign Out
                         signOutButton
+
+                        // 6. About footer
+                        aboutFooter
                     }
                     .padding(.horizontal, AppSpacing.medium)
                     .padding(.bottom, AppSpacing.xLarge)
@@ -77,6 +85,9 @@ struct ProfileView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $showAppearance) {
+            AppearanceUnitsSheet()
+        }
         .alert("Sign Out", isPresented: $showSignOutAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Sign Out", role: .destructive) {
@@ -87,84 +98,40 @@ struct ProfileView: View {
         }
     }
 
-    // MARK: - Readiness Section
+    // MARK: - Appearance Row
 
-    @ViewBuilder
-    private var readinessSection: some View {
-        let result = dataStore.readinessResult(for: Date(), fallbackMetrics: healthService.latest)
-
+    private var appearanceRow: some View {
         Button {
-            analytics.logProfileReadinessTap()
+            showAppearance = true
         } label: {
-            VStack(alignment: .leading, spacing: AppSpacing.small) {
-                Text("Today's Readiness")
-                    .font(AppText.subheading)
+            HStack(spacing: AppSpacing.small) {
+                Image(systemName: "paintpalette.fill")
+                    .font(AppText.titleMedium)
+                    .foregroundStyle(AppColor.Accent.sleep)
+                    .frame(width: 36, height: 36)
+                    .background(AppColor.Accent.sleep.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
+
+                Text("Appearance & Units")
+                    .font(AppText.callout)
                     .foregroundStyle(AppColor.Text.primary)
 
-                if let result {
-                    HStack {
-                        Text("\(result.overallScore)")
-                            .font(AppText.sectionTitle)
-                            .foregroundStyle(AppColor.Text.primary)
-                        Text(result.recommendation.rawValue)
-                            .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.secondary)
-                            .padding(.horizontal, AppSpacing.small)
-                            .padding(.vertical, AppSpacing.xxxSmall)
-                            .background(AppColor.Surface.secondary, in: Capsule())
-                        Spacer()
-                        Text(result.confidence.rawValue.capitalized)
-                            .font(AppText.caption)
-                            .foregroundStyle(AppColor.Text.tertiary)
-                    }
+                Spacer(minLength: 0)
 
-                    // Component mini-bars (decorative detail — parent button label covers readiness summary)
-                    VStack(spacing: AppSpacing.xxxSmall) {
-                        componentBar(label: "HRV", score: result.hrvScore, color: AppColor.Chart.hrv)
-                        componentBar(label: "Sleep", score: result.sleepScore, color: AppColor.Accent.sleep)
-                        componentBar(label: "Load", score: result.trainingLoadScore, color: AppColor.Brand.primary)
-                        componentBar(label: "RHR", score: result.rhrScore, color: AppColor.Chart.heartRate)
-                    }
-                    .accessibilityHidden(true)
-                } else {
-                    Text("Log biometrics to see your readiness score")
-                        .font(AppText.caption)
-                        .foregroundStyle(AppColor.Text.tertiary)
-                }
-            }
-            .padding(AppSpacing.medium)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(result.map { "Today's readiness: \($0.overallScore) out of 100. \($0.recommendation.rawValue). HRV \(Int($0.hrvScore)), Sleep \(Int($0.sleepScore)), Load \(Int($0.trainingLoadScore)), RHR \(Int($0.rhrScore))." } ?? "Readiness not available. Log biometrics to see your score.")
-        .accessibilityHint("Double tap to view full readiness details")
-    }
-
-    // MARK: - Settings Row
-
-    private var settingsRow: some View {
-        Button {
-            analytics.logProfileSettingsSectionOpened(section: "all")
-            showSettings = true
-        } label: {
-            HStack {
-                Image(systemName: "gearshape.fill")
+                Text(appearanceSummary)
+                    .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.secondary)
-                Text("Settings")
-                    .font(AppText.body)
-                    .foregroundStyle(AppColor.Text.primary)
-                Spacer()
-                Image(systemName: AppIcon.forward)
+
+                Image(systemName: "chevron.right")
                     .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.tertiary)
             }
             .padding(AppSpacing.medium)
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
+            .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Settings")
-        .accessibilityHint("Double tap to open settings")
+        .accessibilityLabel("Appearance and Units")
+        .accessibilityValue(appearanceSummary)
     }
 
     // MARK: - Sign Out
@@ -185,6 +152,27 @@ struct ProfileView: View {
         .accessibilityHint("Double tap to confirm sign out")
     }
 
+    // MARK: - About Footer
+
+    private var aboutFooter: some View {
+        VStack(spacing: AppSpacing.xxxSmall) {
+            Text("FitMe v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.tertiary)
+            HStack(spacing: AppSpacing.xSmall) {
+                Text("Terms")
+                Text("·")
+                Text("Privacy")
+                Text("·")
+                Text("Support")
+            }
+            .font(AppText.caption)
+            .foregroundStyle(AppColor.Text.tertiary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, AppSpacing.small)
+    }
+
     // MARK: - Helpers
 
     private var displayName: String {
@@ -194,35 +182,9 @@ struct ProfileView: View {
         return name.isEmpty ? "FitMe User" : name
     }
 
-    private var latestBiometrics: DailyBiometrics? {
-        dataStore.dailyLogs.last?.biometrics
-    }
-
-    private var workoutCount: Int {
-        dataStore.dailyLogs.filter { !$0.exerciseLogs.isEmpty || !$0.cardioLogs.isEmpty }.count
-    }
-
-    private func componentBar(label: String, score: Double, color: Color) -> some View {
-        HStack(spacing: AppSpacing.xSmall) {
-            Text(label)
-                .font(AppText.caption)
-                .foregroundStyle(AppColor.Text.secondary)
-                .frame(width: 40, alignment: .leading)
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: AppRadius.button)
-                        .fill(AppColor.Surface.secondary)
-                        .frame(height: 6)
-                    RoundedRectangle(cornerRadius: AppRadius.button)
-                        .fill(color)
-                        .frame(width: geo.size.width * min(1, score / 100), height: 6)
-                }
-            }
-            .frame(height: 6)
-            Text("\(Int(score))")
-                .font(AppText.monoCaption)
-                .foregroundStyle(AppColor.Text.tertiary)
-                .frame(width: 24, alignment: .trailing)
-        }
+    private var appearanceSummary: String {
+        let theme = settings.appearance.rawValue
+        let units = settings.unitSystem.rawValue
+        return "\(theme) · \(units)"
     }
 }
