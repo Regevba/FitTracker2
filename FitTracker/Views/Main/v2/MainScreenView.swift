@@ -93,6 +93,7 @@ struct MainScreenView: View {
 
     var body: some View {
         scrollContent
+        .background(AppGradient.screenBackground.ignoresSafeArea())
         .analyticsScreen(AnalyticsScreen.home)
         .onAppear { checkMilestones() }
         .onChange(of: dataStore.supplementStreak) { _, _ in checkMilestones() }

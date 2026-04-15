@@ -46,6 +46,7 @@ struct FitTrackerApp: App {
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
     @StateObject private var analytics     = AnalyticsService.makeDefault()
+    @State private var hasRestoredSession = false
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
@@ -123,9 +124,13 @@ struct FitTrackerApp: App {
                     switch phase {
                     case .active:
                         Task {
-                            await signIn.restoreSession(
-                                activateStoredSession: !settings.requireBiometricUnlockOnReopen
-                            )
+                            // Only restore session once at launch — not on every .active transition
+                            if !hasRestoredSession {
+                                hasRestoredSession = true
+                                await signIn.restoreSession(
+                                    activateStoredSession: !settings.requireBiometricUnlockOnReopen
+                                )
+                            }
                             // Check if a clear-crypto flag was set before a potential OS kill
                             if UserDefaults.standard.bool(forKey: "ft.clearCryptoOnNextLaunch") {
                                 UserDefaults.standard.removeObject(forKey: "ft.clearCryptoOnNextLaunch")
