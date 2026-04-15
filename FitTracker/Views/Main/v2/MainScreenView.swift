@@ -312,11 +312,7 @@ struct MainScreenView: View {
             }
         }
         .padding(AppSpacing.small)
-        .background(
-            RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous)
-                .fill(AppColor.Surface.elevated)
-        )
-        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous))
     }
 
     private var trainingContextLine: String {

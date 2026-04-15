@@ -52,12 +52,7 @@ struct AIInsightCard: View {
                 }
             }
             .padding(AppSpacing.medium)
-            .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
-            .shadow(
-                color: AppShadow.cardColor,
-                radius: AppShadow.cardRadius,
-                y: AppShadow.cardYOffset
-            )
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.card))
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $showSheet) {

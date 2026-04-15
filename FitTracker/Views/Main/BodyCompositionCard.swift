@@ -79,11 +79,7 @@ struct BodyCompositionCard: View {
                 .accessibilityLabel("Recommendation: \(recommendation.title)")
         }
         .padding(AppSpacing.small)
-        .background(
-            RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
-                .fill(AppColor.Surface.elevated)
-        )
-        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Body composition card")
         .accessibilityHint("Double-tap for details")
@@ -110,11 +106,7 @@ struct BodyCompositionCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.small)
-        .background(
-            RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
-                .fill(AppColor.Surface.elevated)
-        )
-        .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Body composition card, empty")
     }
