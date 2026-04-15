@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "routes": [
+    {
+      "handle": "error"
+    },
+    {
+      "status": 404,
+      "src": "^(?!/api).*$",
+      "dest": "/404.html"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/_astro/(.*)$",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      },
+      "continue": true
+    },
+    {
+      "src": "^/.*$",
+      "dest": "/404.html",
+      "status": 404
+    }
+  ],
+  "crons": []
+}

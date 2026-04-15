@@ -53,6 +53,11 @@
 | 42 | Supabase Consolidation | commit 873ac3d | 2026-04-15 | Consolidated to single project `hwbbdzwaismlajtfsbed` (FitmeBe&AI engine15042026). Tokyo region. Email+Google auth. All tables + RPC + storage. |
 | 43 | Onboarding v2 Auth Flow | PR #80 + fixes | 2026-04-15 | 7-step onboarding with embedded auth, success animation, session restore fix, Figma PDF icon, pinned CTAs, skip-for-now. [Case study](../case-studies/onboarding-v2-auth-flow-v5.1-case-study.md) |
 | 44 | Normalization Framework | commit 8a8db72 | 2026-04-15 | CU formula for cross-feature velocity comparison. Retroactive analysis of all 12 features. Power law fit R²=0.82. |
+| 45 | Profile v3 Redesign | commits 8e71f12–c59b79d | 2026-04-15 | Simplified hybrid: hero (centered avatar, age/height/exp) + GoalsTrainingCard + AccountDataCard + AppearanceUnitsSheet. 5→4 tabs, profile via hamburger menu. Close button for a11y. Figma page "Profile & Settings" with all inner screens. |
+| 46 | Home Screen Polish | commit dc80578–0d07913 | 2026-04-15 | Frosted glass removed, section dividers, HealthKit-aware body comp empty state, sample data (71.5 kg, 18.2%), AI avatar shimmer restored, profile icon replaces hamburger, sync indicator removed. |
+| 47 | Dashboard Tab Navigation Fix | commit 28dffcb | 2026-04-15 | Client-side React tab nav (was broken in static Astro build). Case study links fixed. All 22 shared-layer conflicts resolved. |
+| 48 | Full Documentation Sync | commits b6636cd–dddb3d3 | 2026-04-15 | Master plan 2026-04-15, README updates, dashboard + website READMEs, PRD v3.0, 2 missing case studies, Figma sync status doc, Prototype V2 page (22 screens). |
+| 49 | External Sync (Linear + Notion) | 2026-04-15 | 2026-04-15 | Linear: 42→44 issues, FIT-41 done, FIT-43 created+done. Notion: Project Context updated, Roadmap updated. All sources healthy, 0 alerts, truth score 100. |
 
 ---
 

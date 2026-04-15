@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_aCCP58UxwgxabzK7nXhan9nMkabo",
+  "orgId": "team_nWTAev1JObeqXiUVrCNFN2j7",
+  "projectName": "fit-tracker2",
+  "settings": {
+    "createdAt": 1775147505866,
+    "framework": "astro",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": "dashboard",
+    "directoryListing": false,
+    "nodeVersion": "24.x"
+  }
+}
