@@ -182,15 +182,30 @@ struct MainScreenView: View {
             VStack(alignment: .leading, spacing: AppSpacing.medium) {
                 greetingSection
                 readinessSection
+                sectionDivider
                 AIInsightCard()
+                sectionDivider
                 trainingNutritionCard
+                sectionDivider
                 bodyCompositionCard
+                sectionDivider
                 metricsRow
             }
             .padding(.horizontal, AppSpacing.medium)
             .padding(.vertical, AppSpacing.small)
         }
         .scrollBounceBehavior(.basedOnSize)
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: - Section divider
+    // ─────────────────────────────────────────────────────
+
+    private var sectionDivider: some View {
+        Rectangle()
+            .fill(AppColor.Border.subtle)
+            .frame(height: 0.5)
+            .padding(.horizontal, AppSpacing.xxSmall)
     }
 
     // ─────────────────────────────────────────────────────
@@ -312,7 +327,6 @@ struct MainScreenView: View {
             }
         }
         .padding(AppSpacing.small)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.card, style: .continuous))
     }
 
     private var trainingContextLine: String {

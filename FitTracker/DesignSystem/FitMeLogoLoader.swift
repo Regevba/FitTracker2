@@ -25,13 +25,25 @@ struct FitMeLogoLoader: View {
 
     var body: some View {
         VStack(spacing: size == .large ? AppSpacing.xSmall : AppSpacing.xxxSmall) {
-            Image("FitMeAppIcon")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: size.rawValue, height: size.rawValue)
-                .scaleEffect(scaleValue)
-                .rotationEffect(.degrees(rotationValue))
-                .opacity(opacityValue)
+            ZStack {
+                Circle()
+                    .fill(
+                        LinearGradient(
+                            colors: [AppColor.Brand.primary, AppColor.Brand.warm],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: size.rawValue, height: size.rawValue)
+
+                Image("FitMeAppIcon")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: size.rawValue * 0.6, height: size.rawValue * 0.6)
+            }
+            .scaleEffect(scaleValue)
+            .rotationEffect(.degrees(rotationValue))
+            .opacity(opacityValue)
 
             if let message {
                 Text(message)

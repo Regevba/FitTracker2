@@ -81,7 +81,6 @@ struct BodyCompositionCard: View {
                 .accessibilityLabel("Recommendation: \(recommendation.title)")
         }
         .padding(AppSpacing.small)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Body composition card")
         .accessibilityHint("Double-tap for details")
@@ -154,7 +153,6 @@ struct BodyCompositionCard: View {
         }
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.small)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         .accessibilityElement(children: .contain)
         .accessibilityLabel(isHealthKitAuthorized ? "Body composition, no data yet" : "Body composition, connect HealthKit")
     }

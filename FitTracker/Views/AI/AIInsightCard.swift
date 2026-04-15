@@ -52,7 +52,6 @@ struct AIInsightCard: View {
                 }
             }
             .padding(AppSpacing.medium)
-            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.card))
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $showSheet) {
