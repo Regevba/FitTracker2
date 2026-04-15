@@ -125,6 +125,24 @@ final class ReminderScheduler: ObservableObject {
         await center.pendingNotificationRequests().count
     }
 
+    // MARK: Global daily send count (actual sends, resets at midnight)
+
+    private func dateKey() -> String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        return fmt.string(from: Date())
+    }
+
+    private func todaySendCount() -> Int {
+        let key = "ft.reminder.dailyCount.\(dateKey())"
+        return UserDefaults.standard.integer(forKey: key)
+    }
+
+    private func incrementDailyCount() {
+        let key = "ft.reminder.dailyCount.\(dateKey())"
+        UserDefaults.standard.set(todaySendCount() + 1, forKey: key)
+    }
+
     // MARK: Daily cap (per-type, resets at midnight)
 
     private func dailyCapKey(for type: ReminderType) -> String {
