@@ -15,8 +15,8 @@ struct OnboardingWelcomeView: View {
 
             // Brand icon + text
             VStack(spacing: AppSpacing.medium) {
-                FitMeBrandIcon.hero
-                    .colorMultiply(AppColor.Brand.primary.opacity(0.85))
+                FitMeBrandIcon(size: 180, renderingMode: .template)
+                    .foregroundStyle(AppGradient.brand)
                     .padding(.bottom, AppSpacing.xSmall)
 
                 Text("FitMe")
