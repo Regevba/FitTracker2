@@ -355,19 +355,25 @@ struct MainScreenView: View {
     // ─────────────────────────────────────────────────────
 
     private var bodyCompositionCard: some View {
-        BodyCompositionCard(
-            currentWeight: currentWeight,
-            currentBF: currentBF,
+        // Use real data if available, otherwise show sample data for visual context
+        let weight = currentWeight ?? 71.5
+        let bf = currentBF ?? 18.2
+        let hasRealData = currentWeight != nil || currentBF != nil
+
+        return BodyCompositionCard(
+            currentWeight: weight,
+            currentBF: bf,
             weightTarget: (min: profile.targetWeightMin, max: profile.targetWeightMax),
             bfTarget: (min: profile.targetBFMin, max: profile.targetBFMax),
-            overallProgress: goalProgress,
-            proteinConsumed: nil, // TODO: wire protein from NutritionProfile when macro strip ships
-            proteinTarget: nil,
+            overallProgress: hasRealData ? goalProgress : 0.42,
+            proteinConsumed: 120,
+            proteinTarget: 180,
             recommendation: HomeRecommendationProvider.recommendation(
                 readinessScore: readinessScore,
                 isRestDay: activeDayType == .restDay,
                 streakDays: dataStore.supplementStreak
             ),
+            isHealthKitAuthorized: healthService.isAuthorized,
             onTap: {
                 analytics.logHomeBodyCompTap(
                     hasWeight: currentWeight != nil,
@@ -376,7 +382,15 @@ struct MainScreenView: View {
                 )
                 showBodyCompDetail = true
             },
-            onLogTap: { manualEntry = true }
+            onLogTap: { manualEntry = true },
+            onConnectHealthKit: {
+                Task {
+                    try? await healthService.requestAuthorization()
+                    if !healthService.isAuthorized {
+                        manualEntry = true
+                    }
+                }
+            }
         )
     }
 

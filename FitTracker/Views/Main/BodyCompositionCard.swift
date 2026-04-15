@@ -15,8 +15,10 @@ struct BodyCompositionCard: View {
     let proteinConsumed: Double?
     let proteinTarget: Double?
     let recommendation: HomeRecommendation
+    let isHealthKitAuthorized: Bool
     let onTap: () -> Void
     let onLogTap: () -> Void
+    let onConnectHealthKit: () -> Void
 
     // MARK: - State
 
@@ -88,27 +90,73 @@ struct BodyCompositionCard: View {
     // MARK: - Empty card
 
     private var emptyCard: some View {
-        VStack(spacing: AppSpacing.xSmall) {
+        VStack(spacing: AppSpacing.small) {
             eyebrowRow
 
-            Spacer()
+            if !isHealthKitAuthorized {
+                // HealthKit not connected — prompt to connect
+                VStack(spacing: AppSpacing.xSmall) {
+                    Image(systemName: "heart.text.square")
+                        .font(.system(size: 32))
+                        .foregroundStyle(AppColor.Accent.recovery)
+                    Text("Connect Apple Health")
+                        .font(AppText.callout)
+                        .foregroundStyle(AppColor.Text.primary)
+                    Text("Sync weight, body fat, and recovery data automatically")
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.vertical, AppSpacing.small)
 
-            Button(action: onLogTap) {
-                Text("Log your first metrics")
-                    .font(AppText.button)
-                    .foregroundStyle(AppColor.Accent.primary)
+                Button(action: onConnectHealthKit) {
+                    Text("Connect HealthKit")
+                        .font(AppText.button)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: AppSize.ctaHeight)
+                        .background(AppColor.Accent.recovery, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Connect Apple Health")
+                .accessibilityHint("Opens HealthKit authorization")
+            } else {
+                // HealthKit connected but no data yet — prompt manual entry
+                VStack(spacing: AppSpacing.xSmall) {
+                    Image(systemName: "scalemass")
+                        .font(.system(size: 28))
+                        .foregroundStyle(AppColor.Text.tertiary)
+                    Text("No metrics logged yet")
+                        .font(AppText.callout)
+                        .foregroundStyle(AppColor.Text.primary)
+                    Text("Log your weight and body fat to track progress")
+                        .font(AppText.caption)
+                        .foregroundStyle(AppColor.Text.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .padding(.vertical, AppSpacing.small)
+
+                Button(action: onLogTap) {
+                    Text("Log Metrics")
+                        .font(AppText.button)
+                        .foregroundStyle(AppColor.Accent.primary)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: AppSize.ctaHeight)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous)
+                                .strokeBorder(AppColor.Accent.primary, lineWidth: 1.5)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Log your first metrics")
+                .accessibilityHint("Opens the metrics logging screen")
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Log your first metrics")
-            .accessibilityHint("Opens the metrics logging screen")
-
-            Spacer()
         }
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.small)
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous))
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Body composition card, empty")
+        .accessibilityLabel(isHealthKitAuthorized ? "Body composition, no data yet" : "Body composition, connect HealthKit")
     }
 
     // MARK: - Subviews
@@ -211,67 +259,32 @@ struct BodyCompositionCard: View {
 #if DEBUG
 #Preview("Filled") {
     BodyCompositionCard(
-        currentWeight: 82.5,
-        currentBF: 18.2,
-        weightTarget: (min: 78, max: 82),
-        bfTarget: (min: 14, max: 16),
-        overallProgress: 0.64,
-        proteinConsumed: 120,
-        proteinTarget: 180,
-        recommendation: HomeRecommendation(
-            tone: .encouraging,
-            title: "Looking good — steady effort today",
-            subtitle: "",
-            accentColor: AppColor.Accent.primary
-        ),
-        onTap: {},
-        onLogTap: {}
+        currentWeight: 82.5, currentBF: 18.2,
+        weightTarget: (min: 78, max: 82), bfTarget: (min: 14, max: 16),
+        overallProgress: 0.64, proteinConsumed: 120, proteinTarget: 180,
+        recommendation: HomeRecommendation(tone: .encouraging, title: "Looking good — steady effort today", subtitle: "", accentColor: AppColor.Accent.primary),
+        isHealthKitAuthorized: true, onTap: {}, onLogTap: {}, onConnectHealthKit: {}
     )
-    .padding(AppSpacing.small)
-    .background(AppGradient.screenBackground)
+    .padding(AppSpacing.small).background(AppGradient.screenBackground)
 }
 
-#Preview("No Protein") {
+#Preview("Empty — HealthKit Not Connected") {
     BodyCompositionCard(
-        currentWeight: 82.5,
-        currentBF: nil,
-        weightTarget: (min: 78, max: 82),
-        bfTarget: nil,
-        overallProgress: 0.35,
-        proteinConsumed: nil,
-        proteinTarget: nil,
-        recommendation: HomeRecommendation(
-            tone: .cautious,
-            title: "Take it easy today",
-            subtitle: "",
-            accentColor: AppColor.Status.warning
-        ),
-        onTap: {},
-        onLogTap: {}
+        currentWeight: nil, currentBF: nil, weightTarget: nil, bfTarget: nil,
+        overallProgress: 0, proteinConsumed: nil, proteinTarget: nil,
+        recommendation: HomeRecommendation(tone: .encouraging, title: "Ready to start?", subtitle: "", accentColor: AppColor.Accent.primary),
+        isHealthKitAuthorized: false, onTap: {}, onLogTap: {}, onConnectHealthKit: {}
     )
-    .padding(AppSpacing.small)
-    .background(AppGradient.screenBackground)
+    .padding(AppSpacing.small).background(AppGradient.screenBackground)
 }
 
-#Preview("Empty State") {
+#Preview("Empty — HealthKit Connected") {
     BodyCompositionCard(
-        currentWeight: nil,
-        currentBF: nil,
-        weightTarget: nil,
-        bfTarget: nil,
-        overallProgress: 0,
-        proteinConsumed: nil,
-        proteinTarget: nil,
-        recommendation: HomeRecommendation(
-            tone: .encouraging,
-            title: "Ready to start?",
-            subtitle: "",
-            accentColor: AppColor.Accent.primary
-        ),
-        onTap: {},
-        onLogTap: {}
+        currentWeight: nil, currentBF: nil, weightTarget: nil, bfTarget: nil,
+        overallProgress: 0, proteinConsumed: nil, proteinTarget: nil,
+        recommendation: HomeRecommendation(tone: .encouraging, title: "Ready to start?", subtitle: "", accentColor: AppColor.Accent.primary),
+        isHealthKitAuthorized: true, onTap: {}, onLogTap: {}, onConnectHealthKit: {}
     )
-    .padding(AppSpacing.small)
-    .background(AppGradient.screenBackground)
+    .padding(AppSpacing.small).background(AppGradient.screenBackground)
 }
 #endif
