@@ -42,7 +42,7 @@ struct ProfileView: View {
                             fitnessGoal: dataStore.userProfile.fitnessGoal,
                             targetWeightMin: dataStore.userProfile.targetWeightMin,
                             targetWeightMax: dataStore.userProfile.targetWeightMax,
-                            trainingDaysPerWeek: dataStore.userProfile.trainingDaysPerWeek,
+                            trainingDaysPerWeek: dataStore.userProfile.trainingDaysPerWeek ?? 4,
                             onTap: {
                                 analytics.logProfileSettingsSectionOpened(section: "goals_training")
                                 showGoalEditor = true
