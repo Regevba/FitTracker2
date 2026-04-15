@@ -567,12 +567,9 @@ struct MainScreenView: View {
 
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
+        // Intentionally empty — sync indicator removed per UX simplification
         ToolbarItem(placement: .navigationBarTrailing) {
-            SyncStatusIndicator()
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel("Sync status")
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
+            EmptyView()
         }
     }
 }

@@ -615,30 +615,7 @@ private struct TrainingNutritionSettingsScreen: View {
             title: SettingsCategory.trainingNutrition.title,
             subtitle: "Tune the strategy that drives your nutrition recommendations and the thresholds used for training and readiness logic."
         ) {
-            SettingsSectionCard(title: "Nutrition Strategy", eyebrow: "Nutrition") {
-                Picker("Goal Mode", selection: nutritionGoalModeBinding) {
-                    ForEach(NutritionGoalMode.allCases, id: \.self) { mode in
-                        Text(mode.rawValue).tag(mode)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                ForEach(dataStore.userProfile.mealSlotNames.indices, id: \.self) { index in
-                    TextField(
-                        "Meal Slot \(index + 1)",
-                        text: Binding(
-                            get: { dataStore.userProfile.mealSlotNames[index] },
-                            set: {
-                                dataStore.userProfile.mealSlotNames[index] = $0
-                                Task { await dataStore.persistToDisk() }
-                            }
-                        )
-                    )
-                    .textFieldStyle(.roundedBorder)
-                }
-            }
-
-            SettingsSectionCard(title: "Cardio Targets", eyebrow: "Training") {
+            SettingsSectionCard(title: "HR & Intervals", eyebrow: "Training") {
                 SettingsSliderRow(
                     title: "Zone 2 Lower HR",
                     valueText: "\(dataStore.userPreferences.zone2LowerHR) bpm",

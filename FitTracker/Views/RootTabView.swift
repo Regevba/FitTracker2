@@ -175,24 +175,13 @@ struct RootTabView: View {
     private var accountButton: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
             Button { showAccount = true } label: {
-                Image(systemName: "line.3.horizontal")
-                    .font(AppText.titleMedium)
-                    .foregroundStyle(AppColor.Text.inversePrimary)
-                    .frame(width: 46, height: 46)
-                    .background(
-                        Circle()
-                            .fill(AppColor.Surface.materialStrong)
-                            .overlay(
-                                Circle()
-                                    .stroke(AppColor.Border.strong, lineWidth: 1)
-                            )
-                    )
-                    .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
-                    .contentShape(Circle())
+                Image(systemName: "person.circle.fill")
+                    .font(.system(size: 28))
+                    .foregroundStyle(AppColor.Text.primary)
             }
             .buttonStyle(.plain)
-            .tint(.clear)
-            .accessibilityLabel("Account")
+            .accessibilityLabel("Profile")
+            .accessibilityHint("Double tap to open profile")
         }
     }
 
