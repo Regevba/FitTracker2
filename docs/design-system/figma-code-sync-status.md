@@ -12,7 +12,7 @@
 | **Nutrition v2** | `768:2` | `NutritionView.swift` (v2/) | **Minor drift** | Same toolbar icon difference. Content matches. |
 | **Stats v2** | `771:2` | `StatsView.swift` (v2/) | **Minor drift** | Same toolbar icon difference. Content matches. |
 | **Settings v2** | `772:2` | `SettingsView.swift` (v2/) | **Synced** | Accessed from Profile → Account & Data card. Nutrition Strategy section removed, renamed to "HR & Intervals". |
-| **Profile v3** | `822:2` | `ProfileView.swift` | **Drift** | Figma shows old 10-section list. Code has simplified hybrid (hero + 2 summary cards + appearance + sign out). Profile is locked — Figma update deferred. |
+| **Profile v3 | `865:3` (page `865:2`) | `ProfileView.swift` | **Synced** | New Figma page "Profile & Settings" built 2026-04-15. Old pages archived. |
 | **Onboarding v2** | `688:2` | `OnboardingView.swift` (v2/) | **Synced** | 6 screens + 3 HealthKit variants. No changes since PR #59. |
 | **Login** | `25:7` | `SignInView.swift` | **Synced** | Auth screens match. |
 
