@@ -73,11 +73,15 @@
 		AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI200000000000000000AT01 /* AIAnalyticsTests.swift */; };
 		PF100000000000000000AT01 /* ProfileAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */; };
 		PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileAnalyticsTests.swift; sourceTree = "<group>"; };
+		RM100000000000000000AT01 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM200000000000000000AT01 /* ReminderTests.swift */; };
+		RM200000000000000000AT01 /* ReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTests.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
 		EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET02 /* AIOutputQualityEvals.swift */; };
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
 		EV100000000000000000ET04 /* ProfileEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET04 /* ProfileEvals.swift */; };
 		EV200000000000000000ET04 /* ProfileEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEvals.swift; sourceTree = "<group>"; };
+		NT100000000000000000T001 /* NotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT200000000000000000T001 /* NotificationTests.swift */; };
+		NT200000000000000000T001 /* NotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTests.swift; sourceTree = "<group>"; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -153,6 +157,7 @@
 		IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA03 /* ImportOrchestrator.swift */; };
 		IM100000000000000000AA04 /* ImportSourcePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA04 /* ImportSourcePickerView.swift */; };
 		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
+		IT100000000000000000TS01 /* ImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS01 /* ImportTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -337,6 +342,7 @@
 		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
 		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
+		IT200000000000000000TS01 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -706,8 +712,11 @@
 				RE200000000000000000AT01 /* ReadinessEngineTests.swift */,
 				AI200000000000000000AT01 /* AIAnalyticsTests.swift */,
 				PF200000000000000000AT01 /* ProfileAnalyticsTests.swift */,
+				RM200000000000000000AT01 /* ReminderTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
+				NT200000000000000000T001 /* NotificationTests.swift */,
+				IT200000000000000000TS01 /* ImportTests.swift */,
 			);
 			path = FitTrackerTests;
 			sourceTree = "<group>";
@@ -1049,6 +1058,7 @@
 				RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */,
 				AI100000000000000000AT01 /* AIAnalyticsTests.swift in Sources */,
 				PF100000000000000000AT01 /* ProfileAnalyticsTests.swift in Sources */,
+				RM100000000000000000AT01 /* ReminderTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
@@ -1056,6 +1066,8 @@
 				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
 				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
+				NT100000000000000000T001 /* NotificationTests.swift in Sources */,
+				IT100000000000000000TS01 /* ImportTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
