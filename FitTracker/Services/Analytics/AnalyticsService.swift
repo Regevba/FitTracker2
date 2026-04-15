@@ -765,6 +765,26 @@ final class AnalyticsService: ObservableObject {
         logEvent(AnalyticsEvent.notificationTapped, parameters: [AnalyticsParam.itemCategory: type])
     }
 
+    // MARK: - Reminder Analytics
+
+    /// Smart reminder notification was scheduled by ReminderScheduler
+    func logReminderScheduled(type: String) {
+        logEvent(AnalyticsEvent.reminderScheduled, parameters: [AnalyticsParam.itemCategory: type])
+    }
+
+    /// User tapped a smart reminder notification (deep-link fired)
+    func logReminderTapped(type: String) {
+        logEvent(AnalyticsEvent.reminderTapped, parameters: [AnalyticsParam.itemCategory: type])
+    }
+
+    /// Smart reminder was suppressed by a frequency/quiet-hour guard
+    func logReminderSuppressed(type: String, reason: String) {
+        logEvent(AnalyticsEvent.reminderSuppressed, parameters: [
+            AnalyticsParam.itemCategory: type,
+            "reason": reason,
+        ])
+    }
+
     // MARK: - Private
 
     private func logEvent(_ name: String, parameters: [String: Any]?) {

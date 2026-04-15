@@ -46,9 +46,8 @@ final class ReminderScheduler: ObservableObject {
         // 1. Quiet-hours guard
         guard !isQuietHour() else { return }
 
-        // 2. Global daily cap
-        let pending = await pendingCount()
-        guard pending < maxDailyGlobal else { return }
+        // 2. Global daily cap — use actual send count (more reliable than pending queue)
+        guard todaySendCount() < maxDailyGlobal else { return }
 
         // 3. Per-type daily cap (resets at midnight via key naming)
         guard !dailyCapReached(for: type) else { return }
@@ -90,6 +89,7 @@ final class ReminderScheduler: ObservableObject {
         do {
             try await center.add(request)
             recordScheduled(for: type)
+            incrementDailyCount()
             scheduledCount += 1
         } catch {
             // Notifications are best-effort; silent failure is intentional.
