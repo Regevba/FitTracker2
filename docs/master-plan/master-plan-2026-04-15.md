@@ -1,0 +1,225 @@
+# FitMe Master Plan — 2026-04-15
+
+> **Date:** 2026-04-15
+> **Purpose:** Updated master plan reflecting all work since the 2026-04-06 edition. Supersedes `master-plan-2026-04-06.md`.
+> **Context:** 28 additional items shipped, framework evolved v4.3 → v5.1, full external sync completed (Linear, Notion, Vercel), dashboard operational with zero alerts.
+
+---
+
+## Executive Summary
+
+FitMe is a production-grade iOS fitness app with **44 shipped features/improvements**, zero-knowledge encryption, GDPR compliance, GA4 analytics, a federated AI layer with goal-aware intelligence, and a mature PM framework (v5.1). The codebase scores **A-** on code quality with **197+ passing tests** including 29 eval tests.
+
+**All 6 main screens** have been through UX Foundations alignment (v2 refactors), all Figma screens are built, and the development dashboard is live at `fit-tracker2.vercel.app` with zero alerts and 100% source truth score.
+
+### What Changed Since 2026-04-06
+
+| Category | 2026-04-06 | 2026-04-15 |
+|---|---|---|
+| Shipped items | 16 | 44 |
+| Tests | 55 | 197+ (including 29 evals) |
+| Framework | v4.3 | v5.1 (SoC suite, 63% overhead reduction) |
+| V2 screens | 1 (Onboarding) | 6/6 complete |
+| Dashboard alerts | 22+ | 0 |
+| Source truth score | ~70 | 100 |
+| Linear issues | 25 | 42 (18 Done, 4 Canceled) |
+| Notion pages | ~6 | 8 (0 drift) |
+| Case studies | 2 | 7 (all with docs) |
+
+### Key Deliverables (2026-04-06 → 2026-04-15)
+
+- **6/6 v2 UX-aligned screens** — Home (#61), Training (#74), Nutrition (#75), Stats (#76), Settings (#77), Onboarding retroactive (#63)
+- **AI Engine v2 + Architecture Adaptation** — Input adapters, confidence gate, GoalProfile, learning cache, feedback UI (PR #79)
+- **Onboarding v2 Auth Flow** — 7-step embedded auth, success animation, session restore fix (PR #80)
+- **Readiness Score v2** — 5-component evidence-based formula, goal-aware, 4-layer personalization
+- **AI Recommendation UI** — Brand icon as AI avatar, AIInsightCard on Home, AIIntelligenceSheet modal
+- **Framework v5.0 → v5.1** — SoC-on-Software: skill-on-demand, cache compression, batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate
+- **Supabase Consolidation** — Single canonical project (Tokyo region), email + Google auth
+- **Normalization Framework** — CU formula for cross-feature velocity comparison
+- **7 case studies** — All tracked, all with docs on disk
+- **Full external sync** — Linear (42 issues), Notion (8 pages, 0 drift), Vercel dashboard live
+
+---
+
+## Current Verification Status
+
+| Component | Status | Count |
+|---|---|---|
+| iOS Build | Green | Compiles clean |
+| iOS Tests | Green | 197+ (Core + Sync + Eval) |
+| Token Pipeline | Green | `make tokens-check` clean |
+| Dashboard Build | Green | 2 pages, 35 tests |
+| Marketing Website | Green | Builds clean |
+| AI Engine | Green | 5/5 tests |
+| Full Verification | Green | `make verify-local` |
+
+### Runtime Verification (Still Blocked)
+- Firebase analytics: needs local `GoogleService-Info.plist`
+- Supabase runtime: needs real credentials in `Info.plist`
+- Sentry crash reporting: needs MCP connection
+- Apple Sign In: needs Apple Developer Services ID
+
+---
+
+## Phase Gates
+
+### Gate A — Foundation Stability: CLOSED
+All force unwraps eliminated, build green, sync schema corrected, auth/session fixed, AI tests green, dashboard tests fixed.
+
+### Gate B — Truth Alignment: CLOSED
+Docs match code, token pipeline verified, stale paths cleaned, all PRDs have state.json with metrics, features.json and feature-registry.json fully reconciled.
+
+### Gate C — Measurement: PARTIALLY CLOSED
+- GA4 instrumented (20 events, 6 funnels defined)
+- Sentry setup guide written, health wiring done
+- Firebase runtime blocked on `GoogleService-Info.plist`
+- Crash-free rate, cold start, sync success rate: unmeasured
+
+### Gate D — Platform Expansion: LOCKED
+Requires Gate C + iOS core stable + backend green + measurement live.
+
+---
+
+## Feature Status Map
+
+### Shipped (44 items)
+| # | Feature | PR/Date | Key Metric |
+|---|---------|---------|---|
+| 1-10 | Core app (Training, Nutrition, Recovery, Home, Stats, Auth, Settings, Data Sync, AI/Cohort, Design System v2) | 2026-02 → 2026-04 | Foundation |
+| 11 | PM Workflow Skill | PR #21 | 10-phase lifecycle |
+| 12 | Google Analytics (GA4) | 2026-04-04 | 20 events, 17 tests |
+| 13 | GDPR Compliance | 2026-04-04 | 100% deletion/export |
+| 14 | Android Design System | 2026-04-04 | 92 tokens mapped |
+| 15 | Development Dashboard | 2026-04-02 | Live at vercel.app |
+| 16 | Marketing Website | 2026-04-04 | Built (launch blockers remain) |
+| 17-18 | Onboarding v2 + Retroactive | PR #59, #63 | 6 screens, v2/ convention |
+| 19 | Home Today v2 | PR #61 | 723 lines, 21 tests |
+| 20 | Status+Goal Card | PR #65 | Body composition drill-down |
+| 21 | Metric Tile Deep Linking | PR #67 | Tap → Stats filtered |
+| 22-25 | Training v2, Nutrition v2, Stats v2, Settings v2 | PR #74-77 | 6/6 screens aligned |
+| 26 | Readiness Score v2 | commit 3852ef8 | 5-component formula |
+| 27 | AI Engine v2 | commit 3f2151b | ReadinessResult integration |
+| 28 | AI Recommendation UI | commit bde97c0 | Brand icon avatar |
+| 29-34 | Skills Ecosystem v4.1 → v4.3 | various | 11 skills, L1/L2/L3 cache |
+| 35-36 | Framework v5.0 + v5.1 | commit 7288faa+ | 63% overhead reduction |
+| 37 | AI Engine Architecture Adaptation | PR #79 | GoalProfile, learning cache |
+| 38 | Onboarding v2 Auth Flow | PR #80 | 7-step embedded auth |
+| 39-41 | Sentry Guide, Funnel Defs, Supabase Consolidation | 2026-04-15 | Infrastructure |
+| 42 | Normalization Framework | commit 8a8db72 | CU formula, R²=0.82 |
+| 43-44 | Dashboard bug fixes | 2026-04-15 | Tab nav, case study links |
+
+### In Progress
+| Feature | Phase | Next Step |
+|---|---|---|
+| User Profile Settings | Implementation (Layer 1: 4/13 tasks) | Layer 2-4 |
+| Authentication hardening | Verification | Runtime credentials needed |
+| Operations control room | Maintenance | Ongoing |
+
+### Research / PRD Phase
+| Feature | Phase | Linear |
+|---|---|---|
+| Push Notifications | PRD | FIT-23 |
+| App Store Assets | PRD | FIT-17 |
+| Import Training Plan | Research | FIT-24 |
+| Smart Reminders System | Planned | FIT-42 |
+
+### Planned (RICE-Prioritized)
+| RICE | Feature | Phase | Dependency |
+|---|---|---|---|
+| 3.6 | Android App Research | Backlog | Gate D |
+| 3.2 | Skills Operating System | Backlog | Gate C |
+| 3.2 | CX System | Backlog | Gate C |
+| 2.1 | Health API Connections | Backlog | Gate D |
+| 2.0 | DEXA + Body Composition | Backlog | Gate D |
+| 1.3 | Blood Test Reader | Backlog | Gate D |
+| 1.0 | Skills Feature (In-App) | Backlog | Gate D |
+
+---
+
+## Framework Status: v5.1
+
+**PM Workflow v5.1** with 8 SoC-on-Software optimizations:
+
+| # | Optimization | Savings |
+|---|---|---|
+| 1 | Skill-on-Demand Loading | ~35K tokens/phase |
+| 2 | Cache Compression | ~30.5K tokens |
+| 3 | Template-Stationary Batch Audits | ~50% fewer reads |
+| 4 | Result Forwarding (UMA zero-copy) | ~7.5K tokens/Phase 3 |
+| 5 | Model Tiering (sonnet/opus) | 60% phases on cheaper model |
+| 6 | Speculative Cache Pre-loading | ~7 reads eliminated/lifecycle |
+| 7 | Skill Chain Pipeline Protocol | Up to 29K tokens/stage |
+| 8 | Hybrid Task Dispatch (big.LITTLE) | ~2-3x throughput |
+
+**Net: 63% framework overhead reduction. Free context doubled (78K → 155K tokens).**
+
+---
+
+## External Sync Status
+
+| Source | Status | Details |
+|---|---|---|
+| Linear | Healthy (0 alerts) | 42 issues, 18 Done, project In Progress |
+| Notion | Healthy (0 alerts) | 8 pages, 0 drift |
+| Vercel | Healthy (0 alerts) | Dashboard live, Web Analytics + Speed Insights |
+| GitHub | Healthy (0 alerts) | 44 shipped, main aligned with origin |
+| Analytics | Healthy (0 alerts) | 40 metrics defined, 14 available, 6 funnels |
+
+**Source truth score: 100. Aggregate alerts: 0.**
+
+---
+
+## Next Priorities
+
+### Immediate (This Sprint)
+1. **User Profile Settings** — Complete Layers 2-4 (9 remaining tasks)
+2. **Smart Reminders System** — Define PRD, begin implementation (~5 days)
+3. **Push Notifications PRD** — Advance from research to PRD approval
+
+### Short-Term (Gate C Closure)
+4. Supply `GoogleService-Info.plist` → verify Firebase analytics runtime
+5. Connect Sentry MCP → establish crash-free rate baseline
+6. Run auth runtime verification playbook with real Supabase credentials
+7. Build GA4 funnel dashboards for the 6 defined funnels
+
+### Medium-Term (Product Gap Closure)
+8. App Store assets — icon, screenshots, preview video
+9. Import Training Plan — research → PRD → implementation
+10. Exercise search/filter UI
+11. Chart goal target lines
+
+### Long-Term (Gate D → Platform Expansion)
+12. Android app research (RICE 3.6)
+13. Health API connections — Garmin, Whoop, Oura (RICE 2.1)
+14. DEXA + body composition import (RICE 2.0)
+
+---
+
+## Code Quality Summary
+
+**Grade: A-**
+
+| Category | Score | Notes |
+|---|---|---|
+| Architecture | A | Clean DI, actor-based encryption, adapter pattern |
+| Security | A | AES-256-GCM + ChaCha20, Secure Enclave, GDPR |
+| Force Unwraps | A | 0 in production code |
+| Test Coverage | B+ | 197+ tests including 29 evals |
+| Error Handling | B | ~47 silent `try?` calls need categorization |
+| Accessibility | C | Limited `accessibilityLabel` coverage |
+| Documentation | A | 25 PRDs, 7 case studies, full backlog |
+
+---
+
+## Normalized Velocity
+
+Power law fit across 12 features: `Velocity(N) = 15.2 × N^(-0.68)`, R² = 0.82
+
+| Version | Avg min/CU | Best Feature |
+|---|---|---|
+| v2.0 (baseline) | 15.2 | Onboarding v2 |
+| v4.0 | 16.0 | (cache learning cost) |
+| v4.1 | 7.9 | Nutrition v2 (5.1) |
+| v5.1 | 3.6 | Onboarding Auth (2.1) |
+
+**Current velocity: 3.6 min/CU average (+76% vs baseline).**

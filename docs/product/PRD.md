@@ -1,7 +1,9 @@
 # FitMe — Product Requirements Document
 
 > **Living document** — updated as features evolve.  
-> Last updated: 2026-04-02 | Author: Regev Barak | Version: 2.0
+> Last updated: 2026-04-15 | Author: Regev Barak | Version: 3.0
+>
+> **What changed in v3.0:** Added User Profile Settings, Smart Reminders, Onboarding Auth Flow, AI Engine Architecture Adaptation, and Normalization Framework. Updated feature count to 44 shipped. Updated framework to v5.1. Added case study references.
 
 ---
 

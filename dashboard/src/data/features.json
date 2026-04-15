@@ -19,6 +19,7 @@
     { "name": "AI Engine Architecture Adaptation", "slug": "ai-engine-architecture-adaptation", "phase": "done", "priority": "high", "rice": null, "category": "intelligence", "shipped": "2026-04-15" }
   ],
   "planned": [
+    { "name": "User Profile Settings", "slug": "user-profile-settings", "phase": "implement", "priority": "high", "rice": null, "category": "product", "eta": null },
     { "name": "Push Notifications", "slug": "push-notifications", "phase": "research", "priority": "high", "rice": null, "category": "engagement", "eta": null },
     { "name": "App Icon + App Store Assets", "slug": "app-store-assets", "phase": "research", "priority": "high", "rice": null, "category": "release", "eta": null },
     { "name": "Import Training Plan", "slug": "import-training-plan", "phase": "research", "priority": "high", "rice": null, "category": "product", "eta": null }

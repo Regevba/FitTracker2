@@ -15,7 +15,7 @@ FitMe replaces your training log, meal tracker, and recovery dashboard with one 
 ## Features
 
 ### Training
-- 49 exercises across a 6-day push/pull/legs split (Upper Push, Lower Body, Upper Pull, Full Body, Cardio Only)
+- 87 exercises across a 6-day push/pull/legs split (Upper Push, Lower Body, Upper Pull, Full Body, Cardio Only)
 - Set-by-set logging with weight, reps, RPE (6-10), and per-set notes
 - Automatic PR detection and progressive overload tracking with 1RM estimation
 - Floating rest timer with haptic feedback (customizable presets)
@@ -151,13 +151,12 @@ Internal PM dashboard and current canonical live web surface on `fit-tracker2.ve
 
 ## Current Repo Status
 
-Verification snapshot as of `2026-04-14`:
+Verification snapshot as of `2026-04-15`:
 
-### PM Framework: v5.0
-- **Skill-on-demand loading** — loads only 1-2 phase-relevant skills per invocation instead of all 11 (~30K tokens saved)
-- **Cache compression** — 15/15 cache entries have `compressed_view` summaries (~24K tokens saved)
-- **Combined savings:** ~54K tokens (27% of context window) reclaimed per session
-- **Research:** SoC-on-Software architecture principles (7 chip→software optimizations mapped)
+### PM Framework: v5.1
+- **8 SoC-on-Software optimizations** — skill-on-demand, cache compression, batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate
+- **63% framework overhead reduction** — free context doubled (78K → 155K tokens)
+- **Normalized velocity:** 3.6 min/CU average (+76% vs baseline)
 - **Docs:** [`docs/architecture/soc-software-architecture-research.md`](docs/architecture/soc-software-architecture-research.md)
 
 ### V2 Screen Refactors (6/6 complete)
@@ -240,7 +239,7 @@ make verify-local
 ```
 
 This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass. All output goes to `.build/` on the SSD.
-The current verified result is green end to end, including `40` passing XCTest cases across `FitTrackerCoreTests` and `SyncMergeTests`.
+The current verified result is green end to end, including `197+` passing XCTest cases across Core, Sync, and Eval test suites.
 
 ### iOS Build
 
@@ -309,11 +308,11 @@ Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](do
 | Phase | Name | Status |
 |-------|------|--------|
 | 0 | Foundation (PRD, metrics, backlog, feature PRDs) | **Complete** |
-| 1 | Design & Prototype (Figma, public README) | **Active** |
-| 2 | Measurement & CX (Analytics, NPS, reviews) | In progress (GA4 shipped) |
-| 3 | Platform Expansion (Android, health APIs, DEXA) | In progress (Android DS research shipped) |
-| 4 | Advanced Features (blood test reader, skills) | Locked |
-| 5 | Marketing & Launch (website, App Store assets) | Deferred until critical and high-priority maintenance work is complete |
+| 1 | Design & Prototype (Figma, public README) | **Complete** (6/6 v2 screens + Figma) |
+| 2 | Measurement & CX (Analytics, NPS, reviews) | **Mostly Complete** (GA4 shipped, 6 funnels, Sentry guide) |
+| 3 | Platform Expansion (Android, health APIs, DEXA) | In progress (Android DS shipped) |
+| 4 | Advanced Features (blood test reader, skills) | Locked (Gate D) |
+| 5 | Marketing & Launch (website, App Store assets) | In progress (website built, assets in research) |
 
 ---
 
@@ -334,11 +333,13 @@ Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](do
 
 | Document | Description |
 |----------|-------------|
-| [PRD](docs/product/PRD.md) | Product requirements — strategy, 11 features, non-functional requirements |
-| [Feature PRDs](docs/product/prd/) | 18 standalone PRDs for every feature, system, and tool |
+| [PRD](docs/product/PRD.md) | Product requirements — strategy, features, non-functional requirements |
+| [Feature PRDs](docs/product/prd/) | 25 standalone PRDs for every feature, system, and tool |
 | [Metrics Framework](docs/product/metrics-framework.md) | 40 metrics across 6 categories with instrumentation status |
 | [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
-| [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized 19-task roadmap with phase gates |
+| [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized roadmap with phase gates |
+| [Master Plan](docs/master-plan/master-plan-2026-04-15.md) | Current master plan — 44 shipped items, gate status, priorities |
+| [Case Studies](docs/case-studies/) | 7 tracked case studies with normalized velocity analysis |
 | [Stabilization Report](docs/project/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |
 | [Firebase Setup](docs/project/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |

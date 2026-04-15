@@ -99,6 +99,12 @@
       "metrics": { "monthly_visitors": { "target": 500, "current": null }, "app_store_ctr": { "target": 5, "current": null } }
     },
     {
+      "id": "user-profile-settings", "name": "User Profile Settings", "prd": "docs/product/prd/user-profile-settings.md",
+      "status": "in_progress", "phase": "implementation", "category": "core",
+      "pain_point": "No unified control center for user identity, preferences, and account management",
+      "metrics": { "profile_completion_rate": { "target": 80, "current": null }, "settings_engagement": { "target": 3, "current": null } }
+    },
+    {
       "id": "push-notifications", "name": "Push Notifications", "prd": null,
       "status": "in_progress", "phase": "research", "category": "engagement",
       "pain_point": "The app has no proactive reminder or readiness alert surface, so useful insight stops at the app boundary",
