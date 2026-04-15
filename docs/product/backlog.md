@@ -1,7 +1,7 @@
 # FitMe — Complete Backlog
 
 > Compiled from: README, CHANGELOG, feature-memory, gap-review, resume-handoff, master plan, PRD gaps, session work.  
-> Last updated: 2026-04-12
+> Last updated: 2026-04-15
 
 ---
 
@@ -45,6 +45,11 @@
 | 34 | Skills Ecosystem v4.3 (operations layer) | repo state | 2026-04-11 | Operations control room, case-study monitoring, and maintenance-program orchestration formalized on top of the self-healing hub |
 | 35 | Framework Manifest (canonical source of truth) | repo state | 2026-04-11 | Added framework-manifest.json to centralize framework version, counts, structure, and source-of-truth metadata |
 | 36 | External Sync Snapshot (Notion + Linear) | repo state | 2026-04-11 | Added external-sync-status.json and dashboard wiring so workspace drift is visible in source health and planning sync |
+| 37 | Framework v5.0 SoC (skill-on-demand + cache compression) | commit 7288faa | 2026-04-14 | 54K tokens reclaimed (27% of context). Chip architecture principles applied to software framework. |
+| 38 | Framework v5.1 SoC (complete 8/8 items) | commits | 2026-04-14 | Model tiering, batch dispatch, result forwarding, speculative preload, systolic chains, task complexity gate. 63% overhead reduction. |
+| 39 | AI Engine Architecture Adaptation | PR #79 | 2026-04-15 | Input adapters, confidence gate, goal-aware intelligence (GoalProfile), learning cache, feedback UI. 17 files, 986 insertions. [Case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
+| 40 | Sentry Setup Guide + Health Wiring | commit 6a2843f | 2026-04-15 | Setup guide at docs/setup/sentry-setup-guide.md, error_tracking section in health-status.json |
+| 41 | Funnel Definitions (6 funnels + templates) | commit 6a2843f | 2026-04-15 | Onboarding, training, nutrition, home engagement, AI recommendation, readiness funnels. GA4 setup checklist. |
 
 ---
 

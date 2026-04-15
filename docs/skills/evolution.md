@@ -1,6 +1,6 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-14 (v5.1 update)
+> **Date:** 2026-04-15 (v5.1 update)
 > **Status:** v5.1 — Complete SoC-on-Software suite (8/8 items: skill-on-demand, cache compression, model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains, task complexity gate) + all prior capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
@@ -905,3 +905,38 @@ CLAUDE.md (rules)
 | `skill-routing.json` | 3.0 → 4.1 | `model_tiering`, `batch_dispatch`, `result_forwarding`, `speculative_preload`, `systolic_chains`, `task_complexity_gate` |
 | `framework-manifest.json` | 1.1 → 1.2 | 6 capability flags, 6 optimization entries |
 | `pm-workflow/SKILL.md` | v5.0 → v5.1 | 6 new protocol sections (~200 lines) |
+
+---
+
+## Consolidated Timeline with Case Studies
+
+Every version was tested through real feature work. The case study column links to the evidence.
+
+| Version | Date | Key Innovation | Tested On | Case Study |
+|---|---|---|---|---|
+| v1.0 | 2026-04-02 | PM Skill created — 10-phase lifecycle | PM workflow itself | — |
+| v1.2 | 2026-04-04 | Analytics instrumentation gate added | Google Analytics integration | — |
+| v2.0 | 2026-04-07 | Hub-and-spoke: 11 skills, shared data layer, Phase 9 | Onboarding v2 (6 screens, PR #59) | [Onboarding showcase](../case-studies/pm-workflow-showcase-onboarding.md) |
+| v3.0 | 2026-04-09 | External sync, parallel dispatch, v2 pipeline | Home v2 (723-line rewrite, PR #61) | [PM evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.0 | 2026-04-10 | Reactive data mesh, adapters, validation gate, L1/L2/L3 cache | Training v2 (40% cache hit, PR #74) | [PM evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.1 | 2026-04-10 | Skill Internal Lifecycle (Cache→Research→Execute→Learn) | Nutrition v2 (55%), Stats v2 (65%), Settings v2 (70%) | [PM evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.2 | 2026-04-10 | Self-healing hub, Phase 0 health checks | Readiness v2, AI Engine v2, AI Rec UI | [PM evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance programs | Cleanup program, dashboard | — |
+| v4.4 | 2026-04-13 | Eval-driven development | Profile settings (9 evals) | — |
+| v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens saved) | Framework itself | [SoC savings report](../architecture/soc-savings-report-v5.1.md) |
+| v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Architecture (13 tasks, PR #79) | [AI Engine case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
+
+### Cumulative Metrics Across Versions
+
+| Feature | Version | Wall Time | Tasks | Files | Cache% | Improvement vs Prior |
+|---|---|---|---|---|---|---|
+| Onboarding v2 | v2.0 | 6.5h | 22 | 20 | 0% | Baseline |
+| Home v2 | v3.0 | 36h* | 17 | 5 | 0% | Outlier (invented v2 convention) |
+| Training v2 | v4.0 | 5h | 16 | 7 | 40% | Cache hit: +40pp |
+| Nutrition v2 | v4.1 | 2h | 14 | 5 | 55% | 3.25x faster than Onboarding |
+| Stats v2 | v4.1 | 1.5h | 10 | 4 | 65% | 4.3x faster |
+| Settings v2 | v4.1 | 1h | 6 | 3 | 70% | 6.5x faster |
+| Readiness v2 | v4.2 | 2.5h | 7 | 7 | 35% | — (different work type) |
+| AI Engine v2 | v4.2 | 0.5h | 4 | 4 | 50% | — |
+| AI Rec UI | v4.2 | 0.7h | 6 | 7 | 40% | — |
+| **AI Engine Arch** | **v5.1** | **1.5h** | **13** | **17** | **45%** | **11.3 files/hr (best)** |

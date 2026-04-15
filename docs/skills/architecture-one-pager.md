@@ -1,13 +1,13 @@
 # FitMe Skills Ecosystem — Architecture One-Pager
 
-> **Version:** 5.1 | **Updated:** 2026-04-14
+> **Version:** 5.1 | **Updated:** 2026-04-15
 >
 > Quick-reference system schematics and information flow for the entire PM-flow ecosystem.
 > For the full deep-dive (per-skill sub-commands, shared data field descriptions, gap analysis, design decisions, evolution history), see [architecture.md](architecture.md).
 
 ---
 
-## 1. Top-Level System Diagram (v5.0)
+## 1. Top-Level System Diagram (v5.1)
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
@@ -264,18 +264,18 @@ User ──→ /pm-workflow (hub)
 
 ## 10. Evolution Timeline
 
-| Version | Date | Key Innovation |
-|---|---|---|
-| v1.2 | pre-April | Monolithic `/pm-workflow` — single skill does everything |
-| v2.0 | 2026-04-07 | Hub-and-spoke — 11 skills, shared data layer, Phase 9 feedback loop |
-| v3.0 | 2026-04-09 | External tool sync, parallel subagent dispatch, v2 refactor pipeline |
-| v4.0 | 2026-04-10 | Reactive data mesh, integration adapters, validation gate, L1/L2/L3 cache |
-| v4.1 | 2026-04-10 | Skill Internal Lifecycle (Cache Check → Research → Execute → Learn) |
-| v4.2 | 2026-04-10 | Self-healing hub with Phase 0 health checks |
-| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance-program orchestration |
-| v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature |
-| **v5.0** | **2026-04-14** | **SoC-on-Software: on-demand skill loading + cache compression = 54K tokens saved** |
-| **v5.1** | **2026-04-14** | **8 SoC items: batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate** |
+| Version | Date | Key Innovation | Case Study |
+|---|---|---|---|
+| v1.2 | pre-April 2026 | Monolithic `/pm-workflow` — single skill does everything | — |
+| v2.0 | 2026-04-07 | Hub-and-spoke — 11 skills, shared data layer, Phase 9 feedback loop | [Onboarding v2](../case-studies/pm-workflow-showcase-onboarding.md) |
+| v3.0 | 2026-04-09 | External tool sync, parallel subagent dispatch, v2 refactor pipeline | [Home v2](../case-studies/pm-workflow-showcase-onboarding.md) |
+| v4.0 | 2026-04-10 | Reactive data mesh, integration adapters, validation gate, L1/L2/L3 cache | [Training v2 (40% cache)](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.1 | 2026-04-10 | Skill Internal Lifecycle (Cache Check → Research → Execute → Learn) | [Nutrition v2 (55% cache), Stats v2 (65%), Settings v2 (70%)](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.2 | 2026-04-10 | Self-healing hub with Phase 0 health checks | [Readiness v2, AI Engine v2, AI Rec UI](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance-program orchestration | — |
+| v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature | — |
+| **v5.0** | **2026-04-14** | **SoC-on-Software: on-demand skill loading + cache compression = 54K tokens saved** | [SoC Savings Report](../architecture/soc-savings-report-v5.1.md) |
+| **v5.1** | **2026-04-14** | **8 SoC items: batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate** | [AI Engine Architecture](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
 
 ---
 

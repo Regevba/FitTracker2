@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 5.0 | **Updated:** 2026-04-14 | **Branch:** `main`
+> **Version:** 5.1 | **Updated:** 2026-04-15 | **Branch:** `main`
 >
 > This is the **full deep-dive guide** for the skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 > For a quick-reference system overview with diagrams and tables, see the [Architecture One-Pager](architecture-one-pager.md).
@@ -1723,7 +1723,7 @@ Every SKILL.md now includes these sections:
 
 ---
 
-## 11. Full System Diagram (v4.0)
+## 11. Full System Diagram (v5.1)
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
@@ -1752,7 +1752,7 @@ Every SKILL.md now includes these sections:
 ║ SHARED LAYER  ║ ║ CHANGE LOG   ║ ║ LEARNING      ║
 ║ .claude/      ║ ║ change-      ║ ║ CACHE         ║
 ║ shared/*.json ║ ║ log.json     ║ ║ .claude/      ║
-║ (11 files)    ║ ║ (always)     ║ ║ cache/        ║
+║ (15 files)    ║ ║ (always)     ║ ║ cache/        ║
 ╚══════╤════════╝ ╚══════════════╝ ║ L1→L2→L3      ║
        │                           ╚═══════╤═══════╝
        │                                   │
@@ -1778,3 +1778,145 @@ Every SKILL.md now includes these sections:
 ║           /pm-workflow (Phase 9: Learn → back to hub)      ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
+
+---
+
+## 12. v5.0 — SoC-on-Software: Skill-on-Demand Loading & Cache Compression (2026-04-14)
+
+> **Inspiration:** Apple silicon System-on-Chip (SoC) architecture principles applied to software framework design.
+> **Research:** `docs/architecture/soc-software-architecture-research.md`
+> **Savings report:** `docs/architecture/soc-savings-report-v5.1.md`
+
+### 12.1 The Problem
+
+By v4.3, the framework loaded all 11 SKILL.md files (~30K tokens) and all cache entries (~24K tokens) at session start, regardless of which phase was active. This consumed ~54K tokens (27% of a 200K context window) before any work began.
+
+### 12.2 Item 1: Skill-on-Demand Loading (~30K tokens saved)
+
+**Inspiration:** Apple's LoRA adapter hot-swap — load only the model weights needed for the current task.
+
+Instead of loading all 11 SKILL.md files, the hub loads only the 1-2 skills relevant to the current phase. Configuration lives in `skill-routing.json` → `phase_skills`:
+
+```json
+"phase_skills": {
+  "research":          { "skills": ["research", "cx"] },
+  "prd":               { "skills": ["pm-workflow", "analytics"] },
+  "implementation":    { "skills": ["dev", "design"] },
+  "testing":           { "skills": ["qa", "analytics"] },
+  ...
+}
+```
+
+### 12.3 Item 2: Cache Compression (~24K tokens saved)
+
+**Inspiration:** Apple's 3.7-bit palettization — reduce model weight precision for deployment.
+
+Each cache entry gains a `compressed_view` field (~200 words) loaded by default. Full cache expansion only happens on demand when the skill needs detailed patterns. The `compression_version` field tracks which version generated the compression.
+
+### 12.4 Combined Impact
+
+~54K tokens reclaimed (27% of 200K context window). The framework went from consuming 28% of context to ~1% for framework overhead.
+
+---
+
+## 13. v5.1 — Complete SoC Suite (2026-04-14)
+
+6 additional chip-architecture-inspired optimizations shipped on top of v5.0's 2 items:
+
+### 13.1 Item 3: Batch Dispatch (TPU Weight-Stationary)
+
+Load a skill template once, iterate over N targets as data. For a 6-screen audit, this means 7 reads instead of 12 reads + 5 fewer hub dispatch cycles.
+
+**Config:** `skill-routing.json` → `batch_dispatch.supported_operations`
+
+### 13.2 Item 4: Result Forwarding (UMA Zero-Copy)
+
+Pass skill output inline to the next skill instead of write-to-disk-then-read-back. Shared layer becomes write-back only (for audit trail). The next skill detects `_forwarded_from` flag and skips disk read.
+
+**Config:** `skill-routing.json` → `result_forwarding.eligible_chains`
+
+### 13.3 Item 5: Model Tiering (ANE Mixed-Precision)
+
+Use sonnet (fast, cheap) for mechanical tasks (file generation, label updates, CSV sync) and opus (deep reasoning) for judgment tasks (architecture decisions, code review, UX evaluation). Per-phase tier recommendations in `phase_skills`.
+
+**Config:** `skill-routing.json` → `model_tiering.tiers`
+
+### 13.4 Item 6: Speculative Preload (Branch Prediction)
+
+Pre-load likely-next-skill cache when the current skill runs. A `successor_map` defines prediction chains with confidence scores. Misprediction cost: ~3K tokens (1.5% budget).
+
+**Config:** `skill-routing.json` → `speculative_preload.successor_map`
+
+### 13.5 Item 7: Systolic Chains (TPU Systolic Array)
+
+In a defined chain (e.g., v2 refactor pipeline: audit → spec → compliance → prompt), each skill receives ONLY upstream output + its L1 cache. No global shared-layer reads mid-chain. Write-back happens after the entire chain completes.
+
+**Config:** `skill-routing.json` → `systolic_chains.defined_chains`
+
+### 13.6 Item 8: Task Complexity Gate (big.LITTLE Hybrid Dispatch)
+
+Classify each ready task as lightweight (E-core, parallel, sonnet) or heavyweight (P-core, serial, opus). Lightweight tasks run first to clear the backlog quickly, then heavyweight tasks run with full attention.
+
+**Config:** `skill-routing.json` → `task_complexity_gate.classification`
+
+### 13.7 Combined v5.0 + v5.1 Impact
+
+~63% framework overhead reduction. See `docs/architecture/soc-savings-report-v5.1.md` for detailed token impact analysis.
+
+---
+
+## 14. Evolution Timeline with Case Studies
+
+| Version | Date | Key Innovation | Case Study |
+|---|---|---|---|
+| v1.2 | pre-April | Monolithic `/pm-workflow` — single skill does everything | — |
+| v2.0 | 2026-04-07 | Hub-and-spoke — 11 skills, shared data layer, Phase 9 feedback loop | [Onboarding v2](../case-studies/pm-workflow-showcase-onboarding.md) |
+| v3.0 | 2026-04-09 | External tool sync, parallel subagent dispatch, v2 refactor pipeline | [Home v2](../case-studies/pm-workflow-showcase-onboarding.md) |
+| v4.0 | 2026-04-10 | Reactive data mesh, integration adapters, validation gate, L1/L2/L3 cache | [Training v2, Nutrition v2, Stats v2, Settings v2](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.1 | 2026-04-10 | Skill Internal Lifecycle (Cache Check → Research → Execute → Learn) | [Nutrition v2 (55% cache hit)](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.2 | 2026-04-10 | Self-healing hub with Phase 0 health checks | [Readiness v2, AI Engine v2, AI Rec UI](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
+| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance-program orchestration | — |
+| v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature | — |
+| **v5.0** | **2026-04-14** | **SoC-on-Software: skill-on-demand + cache compression = 54K tokens saved** | — |
+| **v5.1** | **2026-04-14** | **8 SoC items: batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate** | [AI Engine Architecture](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
+
+---
+
+## 15. Cross-Domain Application: AI Engine Architecture Adaptation
+
+The PM-flow framework patterns have been applied beyond the development workflow itself — to the product's in-app AI engine. This is documented in:
+
+- **PRD:** `.claude/features/ai-engine-architecture-adaptation/prd.md`
+- **Case study:** `docs/case-studies/ai-engine-architecture-v5.1-case-study.md`
+- **PR:** #79 (17 files, 986 insertions)
+
+The adaptation maps framework patterns to product architecture:
+
+| PM-flow Pattern | AI Engine Analog | File |
+|---|---|---|
+| Integration Adapter (`.claude/integrations/`) | `AIInputAdapter` protocol + 4 concrete adapters | `FitTracker/AI/Adapters/` |
+| Validation Gate (GREEN/ORANGE/RED) | `ValidatedRecommendation` with `ConfidenceLevel` (.high/.medium/.low) | `FitTracker/AI/ValidatedRecommendation.swift` |
+| Learning Cache (L1/L2/L3) | `RecommendationMemory` (on-device, encrypted, LRU) | `FitTracker/AI/RecommendationMemory.swift` |
+| Shared Data Layer | `LocalUserSnapshot` (already existed) | `FitTracker/AI/AITypes.swift` |
+| Hub orchestration | `AIOrchestrator` (already existed, now with GoalProfile) | `FitTracker/AI/AIOrchestrator.swift` |
+| Phase 9 Feedback Loop | Thumbs up/down → `RecommendationMemory` | `FitTracker/Views/AI/AIInsightCard.swift` |
+| Goal-aware weighting | `GoalProfile` maps `NutritionGoalMode` → `MetricDriver` weights | `FitTracker/AI/GoalProfile.swift` |
+
+This represents the first case where framework patterns crossed from "how we build" into "what we build."
+
+---
+
+## 16. Key References
+
+| Document | Purpose |
+|---|---|
+| [Architecture One-Pager](architecture-one-pager.md) | Quick-reference system overview with diagrams |
+| [Evolution History](evolution.md) | Narrative v1.2 → v5.1 evolution with rationale |
+| [README](README.md) | Skills ecosystem one-pager for new contributors |
+| [SoC Savings Report](../architecture/soc-savings-report-v5.1.md) | Token impact analysis for v5.0/v5.1 optimizations |
+| [AI Engine Case Study](../case-studies/ai-engine-architecture-v5.1-case-study.md) | v5.1 in action — 1.5h, 13 tasks, 17 files |
+| [PM Evolution Case Study](../case-studies/pm-workflow-evolution-v1-to-v4.md) | 6-feature comparison showing 6.5x speedup |
+| [Sentry Setup Guide](../setup/sentry-setup-guide.md) | Error tracking integration walkthrough |
+| [Funnel Definitions](../product/funnel-definitions.md) | 6 funnels + dashboard templates for shipped features |
+| [Framework Manifest](../../.claude/shared/framework-manifest.json) | Canonical version, structure counts, capability flags |
+| [Skill Routing](../../.claude/shared/skill-routing.json) | All v5.1 config: phase_skills, batch_dispatch, model_tiering, etc. |
