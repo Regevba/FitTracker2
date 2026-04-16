@@ -22,6 +22,12 @@
       "files": 21,
       "tokens": 9225,
       "pct_of_total": 0.1166
+    },
+    "hadf": {
+      "files": 4,
+      "tokens": 0,
+      "pct_of_total": 0.0,
+      "note": "chip-profiles.json + hardware-signature-table.json + chip-affinity-map.json + hadf-metrics-template.json. Measured on next token count run."
     }
   },
   "total_tokens": 79138,
