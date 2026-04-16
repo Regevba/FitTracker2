@@ -16,7 +16,9 @@
 | **Framework Version** | v{X.Y} |
 | **Work Type** | Feature / Enhancement / Fix / Chore |
 | **Complexity** | Files created: N, Files modified: N, Tasks: N |
-| **Wall Time** | {total hours} |
+| **Wall Time** | {total hours} ({measured/estimated}) |
+| **Active Work Time** | {hours excluding pauses} |
+| **Longest Phase** | {phase name}: {minutes} |
 | **Tests** | {count} ({analytics tests} + {eval tests}) |
 | **Analytics Events** | {count} |
 | **Cache Hit Rate** | {percentage} |
@@ -33,7 +35,7 @@
 ### Dependent Variables
 | DV | Unit | How Measured |
 |----|------|-------------|
-| Wall time | hours | Phase timestamps from state.json transitions[] |
+| Wall time | hours | timing.total_wall_time_minutes from state.json ({measured/estimated}) |
 | Planning velocity | phases/hour | Phases 0-3 time ÷ phase count |
 | Implementation velocity | files/hour | Files created+modified ÷ Phase 4 time |
 | Task completion rate | tasks/hour | Tasks completed ÷ total time |
@@ -41,6 +43,8 @@
 | Eval pass rate | % | Evals passing ÷ total evals defined |
 | Defect escape rate | count | Bugs found post-implementation (code review) |
 | Test density | tests/event | Analytics tests ÷ analytics events |
+| Serial improvement | multiplier | baseline_min_CU / this_feature_min_CU |
+| Parallel speedup | multiplier | parallel_CU_per_hour / serial_CU_per_hour |
 
 ### Complexity Proxy
 - Files created + modified (scope indicator)
@@ -65,18 +69,20 @@
 
 ### Phase Timing
 
-| Phase | Start | End | Duration | Notes |
-|-------|-------|-----|----------|-------|
-| 0. Research | | | | |
-| 1. PRD | | | | |
-| 2. Tasks | | | | |
-| 3. UX/Design | | | | |
-| 4. Implement | | | | |
-| 5. Test | | | | |
-| 6. Review | | | | |
-| 7. Merge | | | | |
-| 8. Docs | | | | |
-| **Total** | | | | |
+> Data source: `state.json → timing.phases`. Mark `(e)` for estimated, `(m)` for measured.
+
+| Phase | Started | Ended | Duration (min) | Paused (min) | Active (min) | Source |
+| ------- | --------- | ------- | ---------------- | -------------- | -------------- | -------- |
+| 0. Research | | | | 0 | | (m/e) |
+| 1. PRD | | | | 0 | | (m/e) |
+| 2. Tasks | | | | 0 | | (m/e) |
+| 3. UX/Design | | | | 0 | | (m/e) |
+| 4. Implement | | | | 0 | | (m/e) |
+| 5. Test | | | | 0 | | (m/e) |
+| 6. Review | | | | 0 | | (m/e) |
+| 7. Merge | | | | 0 | | (m/e) |
+| 8. Docs | | | | 0 | | (m/e) |
+| **Total** | | | **{sum}** | **{sum}** | **{sum}** | |
 
 ### Task Completion
 
