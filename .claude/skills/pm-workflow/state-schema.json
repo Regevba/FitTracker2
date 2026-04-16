@@ -137,6 +137,60 @@
           }
         }
       }
+    },
+    "timing": {
+      "type": "object",
+      "description": "Precise timing instrumentation. Added in v6.0. Optional — old features default to estimated.",
+      "properties": {
+        "session_start": { "type": ["string", "null"], "format": "date-time" },
+        "session_end": { "type": ["string", "null"], "format": "date-time" },
+        "total_wall_time_minutes": { "type": ["number", "null"] },
+        "time_source": {
+          "type": "string",
+          "enum": ["measured", "estimated"],
+          "default": "estimated",
+          "description": "Whether wall time comes from instrumented timestamps or narrative estimate"
+        },
+        "phases": {
+          "type": "object",
+          "description": "Per-phase start/end times. Keys are phase names (research, prd, tasks, etc.)",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "started_at": { "type": "string", "format": "date-time" },
+              "ended_at": { "type": ["string", "null"], "format": "date-time" },
+              "duration_minutes": { "type": ["number", "null"] },
+              "paused_minutes": {
+                "type": ["number", "null"],
+                "default": 0,
+                "description": "Practitioner-reported pause time. On session resume, PM workflow asks how long the break was."
+              }
+            }
+          }
+        },
+        "sessions": {
+          "type": "array",
+          "description": "For multi-session features. Each entry = one work session.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "started_at": { "type": "string", "format": "date-time" },
+              "ended_at": { "type": ["string", "null"], "format": "date-time" },
+              "duration_minutes": { "type": ["number", "null"] },
+              "phases_active": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "parallel_context": {
+          "type": "object",
+          "description": "Tracks concurrent features for serial vs parallel decomposition.",
+          "properties": {
+            "concurrent_features": { "type": "integer", "default": 1 },
+            "concurrent_feature_slugs": { "type": "array", "items": { "type": "string" } },
+            "is_stress_test": { "type": "boolean", "default": false }
+          }
+        }
+      }
     }
   }
 }
