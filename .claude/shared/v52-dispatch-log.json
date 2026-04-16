@@ -1,0 +1,89 @@
+{
+  "experiment": "v5.2-dispatch-intelligence-validation",
+  "framework_version": "5.2",
+  "started": "2026-04-16T04:48:00Z",
+  "dispatches": [
+    {
+      "dispatch_id": "v52-p1-f1",
+      "task_id": "F1-T8+T12",
+      "feature": "push-notifications",
+      "predicted_complexity": "standard",
+      "model_used": "sonnet",
+      "tool_budget": 25,
+      "actual_tool_uses": 6,
+      "actual_duration_seconds": 68,
+      "result": "DONE",
+      "quality": "no_rework",
+      "budget_utilization": 0.24,
+      "complexity_prediction_accurate": true,
+      "notes": "Well under budget. Lifecycle wiring + build verification."
+    },
+    {
+      "dispatch_id": "v52-p1-f2",
+      "task_id": "F2-T7",
+      "feature": "app-store-assets",
+      "predicted_complexity": "lightweight",
+      "model_used": "sonnet",
+      "tool_budget": 10,
+      "actual_tool_uses": 5,
+      "actual_duration_seconds": 61,
+      "result": "DONE",
+      "quality": "no_rework",
+      "budget_utilization": 0.5,
+      "complexity_prediction_accurate": true,
+      "notes": "Privacy policy + support docs. Perfect budget fit."
+    },
+    {
+      "dispatch_id": "v52-p1-f3",
+      "task_id": "F3-T3+T5",
+      "feature": "import-training-plan",
+      "predicted_complexity": "standard",
+      "model_used": "sonnet",
+      "tool_budget": 25,
+      "actual_tool_uses": 16,
+      "actual_duration_seconds": 240,
+      "result": "DONE_WITH_FIX",
+      "quality": "regex_fix_needed",
+      "budget_utilization": 0.64,
+      "complexity_prediction_accurate": true,
+      "notes": "MarkdownParser created but used Swift regex literal. Controller fixed to string check."
+    },
+    {
+      "dispatch_id": "v52-p1-f4",
+      "task_id": "F4-T5+T6+T7",
+      "feature": "smart-reminders",
+      "predicted_complexity": "lightweight",
+      "model_used": "sonnet",
+      "tool_budget": 10,
+      "actual_tool_uses": 11,
+      "actual_duration_seconds": 163,
+      "result": "DONE",
+      "quality": "no_rework",
+      "budget_utilization": 1.1,
+      "complexity_prediction_accurate": false,
+      "notes": "Exceeded 10-tool budget slightly (11 uses). Task was more complex than predicted \u2014 3 methods + evaluateAll param change."
+    },
+    {
+      "dispatch_id": "v52-p1-review",
+      "task_id": "F1-review",
+      "feature": "push-notifications",
+      "predicted_complexity": "standard",
+      "model_used": "sonnet",
+      "tool_budget": 25,
+      "actual_tool_uses": null,
+      "actual_duration_seconds": null,
+      "result": "PENDING",
+      "quality": null,
+      "notes": "Code review \u2014 mini test"
+    }
+  ],
+  "summary": {
+    "total_dispatches": 5,
+    "completed": 4,
+    "under_budget": 3,
+    "at_budget": 0,
+    "over_budget": 1,
+    "complexity_prediction_accuracy": 0.75,
+    "avg_budget_utilization": 0.62
+  }
+}
