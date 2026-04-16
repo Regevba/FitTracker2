@@ -1,0 +1,117 @@
+{
+  "feature": "hadf-infrastructure",
+  "display_name": "HADF — Hardware-Aware Dispatch Framework",
+  "work_type": "feature",
+  "framework_version": "6.0",
+  "phase": "implementation",
+  "status": "in_progress",
+  "created": "2026-04-16T00:00:00Z",
+  "branch": "feature/hadf-infrastructure",
+  "spec": "docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md",
+  "plan": "docs/superpowers/plans/2026-04-16-hadf-hardware-aware-dispatch.md",
+  "timing": {
+    "time_source": "measured",
+    "session_start": "2026-04-16T00:00:00Z",
+    "session_end": null,
+    "phases": {
+      "research": {
+        "started_at": "2026-04-16T00:00:00Z",
+        "ended_at": "2026-04-16T00:30:00Z",
+        "duration_minutes": 30,
+        "paused_minutes": 0,
+        "notes": "SoC hardware detection feasibility, 3 approaches evaluated"
+      },
+      "prd": {
+        "started_at": "2026-04-16T00:30:00Z",
+        "ended_at": "2026-04-16T01:30:00Z",
+        "duration_minutes": 60,
+        "paused_minutes": 0,
+        "notes": "9-section brainstorm: Layers 0-4, Composite Optimizer, v6.0 Integration, Validation Plan"
+      },
+      "tasks": {
+        "started_at": "2026-04-16T01:30:00Z",
+        "ended_at": "2026-04-16T02:00:00Z",
+        "duration_minutes": 30,
+        "paused_minutes": 0,
+        "notes": "9-task implementation plan written via writing-plans skill"
+      },
+      "ux_or_integration": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": 0,
+        "paused_minutes": 0,
+        "notes": "N/A — framework infrastructure, no UI"
+      },
+      "implementation": {
+        "started_at": "2026-04-16T02:00:00Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Subagent-driven: 9 tasks, feature/hadf-infrastructure branch"
+      },
+      "testing": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "review": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "merge": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "documentation": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      }
+    },
+    "parallel_context": {
+      "concurrent_features": 0,
+      "stress_test": false
+    }
+  },
+  "complexity": {
+    "cu_version": 2,
+    "view_count": 0,
+    "new_types_count": 0,
+    "design_iteration_rounds": 1,
+    "is_first_of_kind": true,
+    "architectural_novelty": true,
+    "computed_cu": 1.2,
+    "factors_applied": [
+      "base: 1.0",
+      "first_of_kind: +0.2 (no prior HADF implementation)"
+    ]
+  },
+  "tasks": {
+    "total": 9,
+    "completed": 0,
+    "in_progress": 0,
+    "task_list": [
+      { "id": "T1", "name": "Static Chip Profiles", "status": "pending" },
+      { "id": "T2", "name": "Cloud Hardware Signature Table", "status": "pending" },
+      { "id": "T3", "name": "Chip Affinity Map Structure", "status": "pending" },
+      { "id": "T4", "name": "HADF Metrics Template + README", "status": "pending" },
+      { "id": "T5", "name": "Dispatch Intelligence Integration", "status": "pending" },
+      { "id": "T6", "name": "Extend cache-metrics + token-budget", "status": "pending" },
+      { "id": "T7", "name": "Reference Implementations", "status": "pending" },
+      { "id": "T8", "name": "Token Budget Counter Update", "status": "pending" },
+      { "id": "T9", "name": "Final Validation", "status": "pending" }
+    ]
+  },
+  "cache_hits": [],
+  "transitions": [
+    { "from": "research", "to": "prd", "timestamp": "2026-04-16T00:30:00Z", "approved_by": "user" },
+    { "from": "prd", "to": "tasks", "timestamp": "2026-04-16T01:30:00Z", "approved_by": "user" },
+    { "from": "tasks", "to": "implementation", "timestamp": "2026-04-16T02:00:00Z", "approved_by": "user" }
+  ]
+}
