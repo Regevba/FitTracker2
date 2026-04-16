@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Top-Level System Diagram (v5.1)
+## 1. Top-Level System Diagram (v6.0)
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
@@ -276,6 +276,8 @@ User ──→ /pm-workflow (hub)
 | v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature | — |
 | **v5.0** | **2026-04-14** | **SoC-on-Software: on-demand skill loading + cache compression = 54K tokens saved** | [SoC Savings Report](../architecture/soc-savings-report-v5.1.md) |
 | **v5.1** | **2026-04-14** | **8 SoC items: batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate** | [AI Engine Architecture](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
+| v5.2 | 2026-04-16 | Dispatch Intelligence (3-stage pipeline) + Parallel Write Safety (snapshot/mirror) | [v5.1→v5.2 Evolution](../case-studies/v5.1-v5.2-framework-evolution-case-study.md) |
+| **v6.0** | **2026-04-16** | **Framework Measurement: deterministic phase timing, L1/L2/L3 cache tracking, eval gates, CU v2, rolling baselines, token counting (79K)** | [Framework Measurement v6.0](../case-studies/framework-measurement-v6-case-study.md) |
 
 ---
 

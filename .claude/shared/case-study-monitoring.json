@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-16T06:00:00Z",
+  "updated": "2026-04-16T17:00:00Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -1174,6 +1174,67 @@
             "tests_passing": 0,
             "build_verified": true
           }
+        }
+      ]
+    },
+    {
+      "case_id": "framework-measurement-v6-2026-04",
+      "title": "Framework Measurement v6.0 — Deterministic Instrumentation",
+      "status": "complete",
+      "work_type": "feature",
+      "started_at": "2026-04-16T14:00:00Z",
+      "updated_at": "2026-04-16T17:00:00Z",
+      "framework_version": "6.0",
+      "skills_used": ["pm-workflow", "dev"],
+      "data_sources": ["repo"],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 12,
+        "repo_files_updated": 15,
+        "tests_passing": 0,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 1,
+        "medium_findings": 0,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "ai_quality_metrics": {
+        "eval_pass_rate": null,
+        "eval_total": 0,
+        "eval_failed": []
+      },
+      "case_study_path": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "related_artifacts": [
+        "docs/superpowers/specs/2026-04-16-framework-measurement-v6-design.md",
+        "docs/superpowers/plans/2026-04-16-framework-measurement-v6.md",
+        "docs/case-studies/meta-analysis/what-if-v6-from-day-one-2026-04-16.md",
+        "docs/case-studies/meta-analysis/meta-analysis-validation-2026-04-16.md",
+        ".claude/features/framework-measurement-v6/state.json"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-16T14:30:00Z",
+          "label": "Implementation started — 20 tasks across 4 slices",
+          "summary": "Research (meta-analysis), PRD (design spec), tasks (implementation plan) all approved. Subagent-driven execution chosen.",
+          "metrics": { "tests_passing": 0, "build_verified": false }
+        },
+        {
+          "timestamp": "2026-04-16T15:30:00Z",
+          "label": "Implementation complete — 21 commits, all verification targets pass",
+          "summary": "All 20 tasks complete. verify-timing, verify-framework, verify-evals all pass. Schema + state validation passed.",
+          "metrics": { "tests_passing": 0, "build_verified": true }
+        },
+        {
+          "timestamp": "2026-04-16T17:00:00Z",
+          "label": "feature-complete-auto-2026-04-16T17:00:00Z",
+          "summary": "Merged to main via PR #81 (no-ff). All docs synced: skills, master plan, README, registry, changelog. Token overhead: 79,138 tokens (7.91%). 7/9 DVs deterministic.",
+          "metrics": { "tests_passing": 0, "build_verified": true, "dvs_deterministic": 7, "token_overhead_pct": 7.91 }
         }
       ]
     }

@@ -1,18 +1,18 @@
 {
   "feature": "framework-measurement-v6",
   "created": "2026-04-16T14:00:00Z",
-  "updated": "2026-04-16T15:30:00Z",
+  "updated": "2026-04-16T17:00:00Z",
   "branch": "feature/framework-measurement-v6",
-  "current_phase": "implement",
+  "current_phase": "complete",
   "work_type": "feature",
   "has_ui": false,
   "requires_analytics": false,
-  "github_issue_number": null,
+  "github_issue_number": 81,
   "phases": {
     "research": {
       "status": "approved",
       "approved_at": "2026-04-16T14:00:00Z",
-      "sources": ["docs/case-studies/meta-analysis-2026-04-16.md"]
+      "sources": ["docs/case-studies/meta-analysis/meta-analysis-validation-2026-04-16.md"]
     },
     "prd": {
       "status": "approved",
@@ -32,14 +32,19 @@
       "design_system_changes": []
     },
     "implementation": {
-      "status": "in_progress",
-      "commits": []
+      "status": "approved",
+      "commits": [
+        "8f860cf", "00494e3", "8870446", "c38e000", "261c774",
+        "c1a7104", "5a0808e", "d0aaa6f", "1af991e", "bd2993a",
+        "8bc3522", "a7c49e3", "8dec39e", "c733bbb", "8955f99",
+        "31b5d11", "5962525", "7ae9c31", "0236ec7", "419c580", "5b259ef"
+      ]
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
+      "status": "approved",
+      "ci_passed": true,
       "tests_added": 0,
-      "instrumentation_verified": false,
+      "instrumentation_verified": true,
       "analytics_tests_added": 0,
       "analytics_verification_passed": false,
       "eval_results": {
@@ -53,101 +58,66 @@
       "min_eval_coverage_met": true
     },
     "review": {
-      "status": "pending",
-      "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "status": "approved",
+      "risks": ["Token overhead 7.91% exceeds 5% target — may need target adjustment"],
+      "ci_main": true,
+      "ci_feature": true
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null,
+      "status": "done",
+      "pr_number": 81,
       "analytics_regression_passed": null
     },
     "documentation": {
-      "status": "pending"
+      "status": "done"
     },
     "metrics": {
       "primary": {
         "name": "measurement_precision_dvs_deterministic",
         "baseline": 2,
         "target": 8,
-        "current": null
+        "current": 7
       },
       "secondary": [
-        { "name": "case_study_writing_time", "baseline": null, "target": "no increase" },
-        { "name": "framework_token_overhead_pct", "baseline": null, "target": 0.05 },
-        { "name": "cu_v2_interrater_agreement", "baseline": null, "target": 0.90 }
+        { "name": "case_study_writing_time", "baseline": null, "target": "no increase", "current": "auto-monitoring saves ~30min/feature" },
+        { "name": "framework_token_overhead_pct", "baseline": null, "target": 0.05, "current": 0.0791 },
+        { "name": "cu_v2_interrater_agreement", "baseline": null, "target": 0.90, "current": null }
       ],
       "guardrails": [
-        { "name": "pm_workflow_latency", "threshold": "no added latency" },
-        { "name": "existing_case_study_validity", "threshold": "v1 data unchanged" },
-        { "name": "ci_pass_rate", "threshold": "soft gates only" }
+        { "name": "pm_workflow_latency", "threshold": "no added latency", "status": "pass" },
+        { "name": "existing_case_study_validity", "threshold": "v1 data unchanged", "status": "pass" },
+        { "name": "ci_pass_rate", "threshold": "soft gates only", "status": "pass" }
       ],
-      "instrumentation_ready": false,
-      "first_review_date": null,
+      "instrumentation_ready": true,
+      "first_review_date": "2026-04-16",
       "kill_criteria": "If < 5/9 DVs become deterministic after full implementation, instrumentation overhead exceeds value"
     }
   },
   "transitions": [
-    {
-      "from": null,
-      "to": "research",
-      "timestamp": "2026-04-16T14:00:00Z",
-      "approved_by": "user",
-      "note": "Meta-analysis identified 8 measurement gaps. Full feature lifecycle approved."
-    },
-    {
-      "from": "research",
-      "to": "prd",
-      "timestamp": "2026-04-16T14:00:00Z",
-      "approved_by": "user",
-      "note": "Research = meta-analysis document. PRD = design spec."
-    },
-    {
-      "from": "prd",
-      "to": "tasks",
-      "timestamp": "2026-04-16T14:15:00Z",
-      "approved_by": "user",
-      "note": "Spec approved. Approach C (vertical slices) selected."
-    },
-    {
-      "from": "tasks",
-      "to": "implementation",
-      "timestamp": "2026-04-16T14:30:00Z",
-      "approved_by": "user",
-      "note": "20 tasks across 3 slices + second pass. Subagent-driven execution."
-    }
+    { "from": null, "to": "research", "timestamp": "2026-04-16T14:00:00Z", "approved_by": "user", "note": "Meta-analysis identified 8 measurement gaps. Full feature lifecycle approved." },
+    { "from": "research", "to": "prd", "timestamp": "2026-04-16T14:00:00Z", "approved_by": "user", "note": "Research = meta-analysis document. PRD = design spec." },
+    { "from": "prd", "to": "tasks", "timestamp": "2026-04-16T14:15:00Z", "approved_by": "user", "note": "Spec approved. Approach C (vertical slices) selected." },
+    { "from": "tasks", "to": "implementation", "timestamp": "2026-04-16T14:30:00Z", "approved_by": "user", "note": "20 tasks across 3 slices + second pass. Subagent-driven execution." },
+    { "from": "implementation", "to": "testing", "timestamp": "2026-04-16T15:30:00Z", "approved_by": "user", "note": "21 commits. All 20 tasks complete. verify-timing, verify-framework, verify-evals all pass." },
+    { "from": "testing", "to": "review", "timestamp": "2026-04-16T15:35:00Z", "approved_by": "user", "note": "Schema validation passed. State validation passed. Non-AI feature: eval gate auto-pass." },
+    { "from": "review", "to": "merge", "timestamp": "2026-04-16T16:00:00Z", "approved_by": "user", "note": "PR #81 created. Case study + What-If meta-analysis written. Doc sync complete." },
+    { "from": "merge", "to": "documentation", "timestamp": "2026-04-16T16:30:00Z", "approved_by": "user", "note": "Merged to main via --no-ff. Pushed to remote." },
+    { "from": "documentation", "to": "complete", "timestamp": "2026-04-16T17:00:00Z", "approved_by": "user", "note": "All docs synced: skills, master plan, README, feature registry, changelog. Memory updated." }
   ],
   "timing": {
     "session_start": "2026-04-16T14:00:00Z",
-    "session_end": null,
-    "total_wall_time_minutes": null,
+    "session_end": "2026-04-16T17:00:00Z",
+    "total_wall_time_minutes": 180,
     "time_source": "measured",
     "phases": {
-      "research": {
-        "started_at": "2026-04-16T14:00:00Z",
-        "ended_at": "2026-04-16T14:00:00Z",
-        "duration_minutes": 0,
-        "paused_minutes": 0
-      },
-      "prd": {
-        "started_at": "2026-04-16T14:00:00Z",
-        "ended_at": "2026-04-16T14:15:00Z",
-        "duration_minutes": 15,
-        "paused_minutes": 0
-      },
-      "tasks": {
-        "started_at": "2026-04-16T14:15:00Z",
-        "ended_at": "2026-04-16T14:30:00Z",
-        "duration_minutes": 15,
-        "paused_minutes": 0
-      },
-      "implementation": {
-        "started_at": "2026-04-16T14:30:00Z",
-        "ended_at": null,
-        "duration_minutes": null,
-        "paused_minutes": 0
-      }
+      "research": { "started_at": "2026-04-16T14:00:00Z", "ended_at": "2026-04-16T14:00:00Z", "duration_minutes": 0, "paused_minutes": 0 },
+      "prd": { "started_at": "2026-04-16T14:00:00Z", "ended_at": "2026-04-16T14:15:00Z", "duration_minutes": 15, "paused_minutes": 0 },
+      "tasks": { "started_at": "2026-04-16T14:15:00Z", "ended_at": "2026-04-16T14:30:00Z", "duration_minutes": 15, "paused_minutes": 0 },
+      "implementation": { "started_at": "2026-04-16T14:30:00Z", "ended_at": "2026-04-16T15:30:00Z", "duration_minutes": 60, "paused_minutes": 0 },
+      "testing": { "started_at": "2026-04-16T15:30:00Z", "ended_at": "2026-04-16T15:35:00Z", "duration_minutes": 5, "paused_minutes": 0 },
+      "review": { "started_at": "2026-04-16T15:35:00Z", "ended_at": "2026-04-16T16:00:00Z", "duration_minutes": 25, "paused_minutes": 0 },
+      "merge": { "started_at": "2026-04-16T16:00:00Z", "ended_at": "2026-04-16T16:30:00Z", "duration_minutes": 30, "paused_minutes": 0 },
+      "documentation": { "started_at": "2026-04-16T16:30:00Z", "ended_at": "2026-04-16T17:00:00Z", "duration_minutes": 30, "paused_minutes": 0 }
     },
     "sessions": [],
     "parallel_context": {
@@ -162,7 +132,7 @@
     "new_types_count": 0,
     "design_iteration_details": [],
     "is_first_of_kind": true,
-    "computed_cu": null,
-    "factors_applied": []
+    "computed_cu": 28.0,
+    "factors_applied": ["cross_feature:0.20", "architectural_novelty:0.20"]
   }
 }
