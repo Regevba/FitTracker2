@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-15 (v5.1 update)
-> **Status:** v5.1 — Complete SoC-on-Software suite (8/8 items: skill-on-demand, cache compression, model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains, task complexity gate) + all prior capabilities
+> **Date:** 2026-04-16 (v5.2 update)
+> **Status:** v5.2 — Dispatch Intelligence (3-stage pipeline, tool budgets, complexity scoring) + Parallel Write Safety (snapshot/rollback, 3-tier mirror extraction, progressive markers) + all prior SoC-on-Software capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -908,6 +908,88 @@ CLAUDE.md (rules)
 
 ---
 
+## 24. v5.2 — Dispatch Intelligence + Parallel Write Safety (2026-04-16)
+
+### What Changed: v5.1 → v5.2
+
+v5.1 completed the SoC-on-Software optimization suite. v5.2 adds the **dispatch safety layer** — making parallel agent coordination deterministic rather than luck-dependent. Two sub-projects shipped:
+
+| Aspect | v5.1 | v5.2 |
+| --- | --- | --- |
+| **Agent dispatch model** | Direct dispatch, no pre-assessment | 3-stage pipeline: score complexity → probe capability → dispatch with budget |
+| **Tool use control** | Unconstrained (3-68 tool uses, 23x variance) | Budgeted: haiku=10, sonnet=25, opus=50 (3.7x variance, -84%) |
+| **Permission routing** | Discover failures at runtime | Permission table + hybrid probe (table lookup + micro-probe) |
+| **Parallel write safety** | Luck-dependent (0 conflicts in v5.1 stress test) | Deterministic: snapshot/rollback + 3-tier mirror extraction + progressive markers |
+| **Complexity assessment** | None | Static scoring (lightweight/standard/heavyweight) with validation flag |
+
+### Sub-Project A: Dispatch Intelligence
+
+3-stage pipeline that scores task complexity, probes agent capability, and dispatches with model routing + tool budgets.
+
+- **Config:** `.claude/shared/dispatch-intelligence.json` — permission_table, model_routing (3 tiers), probe config, validation flags, budget_tuning
+- **Protocol:** SKILL.md "Dispatch Intelligence Protocol" section (score → probe → dispatch)
+- **Validation:** 5 dispatches, 80% complexity prediction accuracy, 48% avg tool reduction, 84% variance reduction
+- **Key discovery:** settings.json permissions are controller-scoped only — subagents can't write to `.claude/` regardless of config. Reframed from "config fix" to "architectural constraint."
+
+### Sub-Project B: Parallel Write Safety
+
+2-layer safety system: snapshot/rollback + code region mirror pattern with progressive marker learning.
+
+- **Config:** `.claude/shared/dispatch-intelligence.json` → `mirror_pattern` section (enabled, snapshot_dir, marker_prefix, 3-tier detection, auto_add_markers)
+- **Protocol:** SKILL.md "Mirror Pattern" section (snapshot → extract → dispatch → reconstruct → rollback)
+- **3-Tier Region Detection:**
+  - Tier 1: `// BEGIN:agent-region:{name}` markers (fastest, deterministic)
+  - Tier 2: `// MARK: - {Section}` conventions (fast, convention-based)
+  - Tier 3: Full file (slow, first-time penalty — triggers marker addition)
+- **Progressive learning:** Each Tier 3 dispatch that succeeds adds markers. Next dispatch uses Tier 1 automatically.
+
+### New Files
+
+| File | Purpose |
+| --- | --- |
+| `.claude/shared/dispatch-intelligence.json` | Central config for 3-stage dispatch pipeline + mirror pattern |
+
+### Updated Files
+
+| File | Changes |
+| --- | --- |
+| `.claude/shared/skill-routing.json` | v4.1 → v5.0, added dispatch_intelligence reference |
+| `.claude/shared/framework-manifest.json` | v1.2 → v1.3, added dispatch_intelligence capability |
+| `.claude/skills/pm-workflow/SKILL.md` | Added Dispatch Intelligence Protocol + Mirror Pattern protocol |
+| `docs/architecture/subagent-preflight-probe-research.md` | Marked as implemented in v5.2 |
+| `docs/architecture/parallel-code-write-safety-research.md` | Marked as implemented in v5.2B |
+
+### Updated Dependency Map
+
+```
+CLAUDE.md (rules)
+  └─→ SKILL.md (pm-workflow)
+        ├─→ Dispatch Intelligence: score → probe → dispatch with budget
+        │     ├─→ Permission table (known_writable, known_readonly)
+        │     ├─→ Model routing (haiku/sonnet/opus per complexity tier)
+        │     └─→ Tool budgets (10/25/50 per tier)
+        ├─→ Mirror Pattern: snapshot → extract → dispatch → reconstruct → rollback
+        │     ├─→ 3-tier region detection (markers → MARKs → full file)
+        │     ├─→ Progressive marker learning (auto-add after Tier 3)
+        │     └─→ Snapshot dir (.build/snapshots/)
+        ├─→ Model Tiering, Batch Dispatch, Result Forwarding (v5.1)
+        ├─→ Speculative Preload, Systolic Chains, Task Complexity Gate (v5.1)
+        ├─→ /ux, /design, /dev, /qa (spoke skills)
+        ├─→ state.json, skill-routing.json, task-queue.json
+        └─→ change-log.json → all skills notified
+```
+
+### Config Changes Summary
+
+| File | Version | Key additions |
+| --- | --- | --- |
+| `dispatch-intelligence.json` | 1.0 (NEW) | permission_table, model_routing, probe, validation, budget_tuning, mirror_pattern |
+| `skill-routing.json` | 4.1 → 5.0 | dispatch_intelligence reference |
+| `framework-manifest.json` | 1.2 → 1.3 | dispatch_intelligence capability flag |
+| `pm-workflow/SKILL.md` | v5.1 → v5.2 | 2 new protocol sections (~50 lines) |
+
+---
+
 ## Consolidated Timeline with Case Studies
 
 Every version was tested through real feature work. The case study column links to the evidence.
@@ -925,6 +1007,7 @@ Every version was tested through real feature work. The case study column links 
 | v4.4 | 2026-04-13 | Eval-driven development | Profile settings (9 evals) | — |
 | v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens saved) | Framework itself | [SoC savings report](../architecture/soc-savings-report-v5.1.md) |
 | v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Architecture (13 tasks, PR #79) | [AI Engine case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
+| v5.2 | 2026-04-16 | Dispatch Intelligence + Parallel Write Safety: 3-stage dispatch pipeline, tool budgets, 3-tier mirror extraction, progressive markers | 4-feature continuation stress test | [v5.1→v5.2 evolution](../case-studies/v5.1-v5.2-framework-evolution-case-study.md), [Parallel Write Safety](../case-studies/parallel-write-safety-v5.2-case-study.md) |
 
 ### Cumulative Metrics Across Versions
 
@@ -940,3 +1023,4 @@ Every version was tested through real feature work. The case study column links 
 | AI Engine v2 | v4.2 | 0.5h | 4 | 4 | 50% | — |
 | AI Rec UI | v4.2 | 0.7h | 6 | 7 | 40% | — |
 | **AI Engine Arch** | **v5.1** | **1.5h** | **13** | **17** | **45%** | **11.3 files/hr (best)** |
+| **v5.1→v5.2 (parallel)** | **v5.2** | **~20 min** | **6** | **4** | **N/A** | **Dispatch intelligence + mirror pattern deployed** |

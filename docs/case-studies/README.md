@@ -37,6 +37,14 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `pm-workflow-evolution-v1-to-v4.md` | PM workflow evolution v1.0 → v4.3 | Comprehensive 3-level analysis (micro/meso/macro) of how the hub-and-spoke PM ecosystem evolved across 6 screen refactors — now extended with the operational-layer promotion that followed |
 | `cleanup-control-room-case-study.md` | Maintenance cleanup + operations control room | First maintenance-focused case study and the launch story for v4.3: uses the PM framework to reconcile repo truth, design/UX review, planning sync, dashboard evolution, and process monitoring in one integrated cleanup cycle |
 | `control-center-alignment-ia-refresh-case-study.md` | Control center alignment + IA refresh | Follow-up operational case study focused on turning the dashboard into a clearer multi-workspace operating surface with routed knowledge, research, Figma handoff, and case-study views |
+| `eval-layer-v4.4-case-study.md` | Eval-Driven Development (v4.4) | First eval layer case study — shows how 20 deterministic evals (golden I/O, quality heuristics, tier behavior) were added to the framework lifecycle |
+| `user-profile-v4.4-case-study.md` | User Profile Settings (v4.4) | Most comprehensive process case study — full experiment design with independent/dependent variables and complexity assessment |
+| `soc-v5-framework-case-study.md` | SoC-on-Software (v4.4 → v5.0 → v5.1) | Framework infrastructure case study — shows 7 chip architecture principles applied to reclaim 63% context overhead |
+| `ai-engine-architecture-v5.1-case-study.md` | AI Engine Architecture (v5.1) | First feature executed under v5.1 SoC optimizations — 13 tasks, 17 files at 5.1 min/CU (+66% vs baseline) |
+| `onboarding-v2-auth-flow-v5.1-case-study.md` | Onboarding v2 Auth Flow (v5.1) | Highest velocity case study — 47.7 CU at 2.1 min/CU (+86% vs baseline). Includes real-world issues found in manual testing |
+| `v5.1-parallel-stress-test-case-study.md` | v5.1 Parallel Stress Test | Flagship stress test — 4 features, 54 min, 35 tests, 0 failures. Proved parallel multi-agent PM lifecycle at scale |
+| `v5.1-v5.2-framework-evolution-case-study.md` | Framework v5.1 → v5.2 Evolution | Two-part case study: Part 1 documents stress test findings, Part 2 documents Dispatch Intelligence design and validation |
+| `parallel-write-safety-v5.2-case-study.md` | Parallel Write Safety (v5.2 Sub-Project B) | Framework safety infrastructure — snapshot/rollback + 3-tier mirror pattern. Deployed in 20 min, pure config/protocol (no Swift code) |
 
 ## Upcoming case studies (queued)
 
@@ -44,9 +52,6 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 |---|---|---|
 | Home (Today Screen) v2 | After v2 ships on `feature/home-today-screen-v2` | First case study of the **V2 Rule** (v1/v2 file + subdirectory convention, project.pbxproj surgery) + second run of `/ux audit` |
 | Training Plan v2 | After it ships | Biggest surface in the app — stress-test the per-screen alignment process |
-| Dashboard v1.1 automation pass | After the iOS hardening PR merges | Case study of an Enhancement work type running cross-cutting infra changes (Vercel serverless + GitHub Actions + CI additions) |
-| Cleanup control room hydration | After live data integrations land | Follow-up chapter showing whether the new operator cockpit actually improves throughput and reduces source-of-truth drift |
-| Control center alignment + IA refresh | After the new routed dashboard deploys | Case study of information architecture cleanup, truth-mode labeling, and turning PM research/design/documentation into first-class dashboard workspaces |
 
 ## How to write a new case study
 

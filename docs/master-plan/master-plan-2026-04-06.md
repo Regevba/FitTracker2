@@ -30,6 +30,20 @@ FitMe is a production-grade iOS fitness app with 11 shipped core features, zero-
 - **SSD storage redirect** — all build artifacts to `.build/` on `/Volumes/DevSSD`
 - **Full documentation** — `docs/project/pm-hub-evolution.md`
 
+### Framework Evolution (Post-Session Updates)
+
+- **v3.0** (2026-04-09) — External integrations (Notion, Figma MCP), parallel subagent execution
+- **v4.0** (2026-04-10) — Reactive data mesh, integration adapters, validation gate, L1/L2/L3 learning cache
+- **v4.1** (2026-04-10) — Skill Internal Lifecycle (Cache → Research → Execute → Learn)
+- **v4.2** (2026-04-10) — Self-healing hub, Phase 0 health checks, cache seeding
+- **v4.3** (2026-04-11) — Operations control room, case-study monitoring
+- **v4.4** (2026-04-13) — Eval-driven development, ai_quality_metrics
+- **v5.0** (2026-04-14) — SoC-on-Software: skill-on-demand + cache compression (54K tokens reclaimed)
+- **v5.1** (2026-04-14) — Complete SoC suite (8/8 items): model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains, task complexity gate
+- **v5.2** (2026-04-16) — Dispatch Intelligence (3-stage pipeline, tool budgets, complexity scoring) + Parallel Write Safety (snapshot/rollback, 3-tier mirror extraction, progressive markers)
+
+**Current framework version: v5.2.** Full evolution history: `docs/skills/evolution.md`
+
 ---
 
 ## Current Verification Status
