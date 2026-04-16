@@ -24,6 +24,8 @@
 | **Cache Hit Rate** | {percentage} (L1: {%}, L2: {%}, L3: {%}) — {measured/inferred} |
 | **Eval Pass Rate** | {N/N} ({N} behaviors, {M} evals) — {N uncovered} |
 | **Monitoring Sync** | auto / manual |
+| **Framework Token Overhead** | {N}K tokens ({X}% of context) |
+| **CU Version** | v1 / v2 |
 | **Headline** | "{Xh at vN vs Yh at vM = Z% improvement}" |
 
 ---
@@ -190,6 +192,9 @@ For each skill invoked during the feature:
 | **Complexity Units (CU)** | **{CU}** |
 | Wall time (min) | {min} |
 | **min/CU** | **{velocity}** |
+| CU version | v1 (binary) / v2 (continuous) |
+| Time source | measured / estimated |
+| Cache hit rate | {%} — {framework-attributable / partial cache / cold cache} |
 | Rank (of N features) | {rank} / {N} |
 | vs Baseline (v2.0 = 15.2 min/CU) | {+/-}% |
 
@@ -212,6 +217,25 @@ For each skill invoked during the feature:
 | **{This Feature}** | **v{X.Y}** | **{type}** | **{time}** | **{CU}** | **{min/CU}** | **{delta}** |
 
 *Home v2 excluded from trend — outlier that invented the v2 convention.
+
+### Velocity Decomposition (v6.0)
+
+| Metric | Value | How Computed |
+| ------ | ----- | ------------ |
+| Serial velocity (min/CU) | | This feature's min/CU |
+| Serial improvement vs baseline | | 15.2 / serial_velocity |
+| Parallel features in session | | Count of concurrent features (1 = serial only) |
+| Parallel throughput (CU/hour) | | Total CU across all features / wall time hours |
+| Parallel speedup factor | | parallel_throughput / serial_throughput (1.0x if serial) |
+| Combined improvement | | serial_improvement × parallel_speedup |
+
+### Baseline Comparisons (v6.0)
+
+| Comparison | Baseline Value | This Feature | Improvement |
+| ---------- | -------------- | ------------ | ----------- |
+| vs Historical (Onboarding v2) | 15.2 min/CU | {min/CU} | {+/-}% |
+| vs Rolling (last 5 features) | {X} min/CU | {min/CU} | {+/-}% |
+| vs Same-Type (last 3 {type}) | {X} min/CU | {min/CU} | {+/-}% |
 
 ### Effect Size (Hedges' g)
 
