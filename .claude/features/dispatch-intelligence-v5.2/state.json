@@ -1,0 +1,38 @@
+{
+  "feature": "dispatch-intelligence-v5.2",
+  "created": "2026-04-16T10:00:00Z",
+  "updated": "2026-04-16T10:00:00Z",
+  "current_phase": "tasks",
+  "work_type": "feature",
+  "work_subtype": "framework_infrastructure",
+  "has_ui": false,
+  "requires_analytics": false,
+  "parent_feature": null,
+  "description": "v5.2 Sub-Project A: Dispatch Intelligence — 3-stage pipeline (score → probe → dispatch) for smarter subagent routing",
+  "transitions": [
+    {"from": "init", "to": "research", "timestamp": "2026-04-15T18:00:00Z", "approved_by": "system", "note": "Research originated from v5.1 stress test findings"},
+    {"from": "research", "to": "prd", "timestamp": "2026-04-15T18:08:00Z", "approved_by": "user", "note": "3 research docs written during stress test"},
+    {"from": "prd", "to": "tasks", "timestamp": "2026-04-16T10:00:00Z", "approved_by": "user", "note": "Spec approved: dispatch-intelligence-design.md. 5 components, 5 files."}
+  ],
+  "phases": {
+    "research": {"status": "approved", "sources": ["docs/architecture/subagent-preflight-probe-research.md", "docs/architecture/parallel-code-write-safety-research.md", "docs/case-studies/v5.1-parallel-stress-test-case-study.md"]},
+    "prd": {"status": "approved", "path": "docs/superpowers/specs/2026-04-16-dispatch-intelligence-design.md"},
+    "tasks": {"status": "pending"},
+    "ux_or_integration": {"status": "skipped", "reason": "No UI — framework infrastructure only"},
+    "implementation": {"status": "pending"},
+    "testing": {"status": "pending"},
+    "review": {"status": "pending"},
+    "merge": {"status": "pending"},
+    "documentation": {"status": "pending"}
+  },
+  "metrics": {
+    "primary": {"name": "permission_failure_rate", "baseline": 1.0, "target": 0.05},
+    "secondary": [
+      {"name": "execution_time_variance", "baseline": 23, "target": 5},
+      {"name": "wasted_compute_rate", "baseline": 0.30, "target": 0.05},
+      {"name": "complexity_prediction_accuracy", "baseline": null, "target": 0.60}
+    ],
+    "kill_criteria": "If permission failure rate doesn't drop below 50% after implementation, revert to v5.1 manual dispatch"
+  },
+  "tasks": []
+}

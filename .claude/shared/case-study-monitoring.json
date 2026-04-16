@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-14T03:30:00Z",
+  "updated": "2026-04-16T10:00:00Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -9,9 +9,28 @@
     "work_type": "feature | enhancement | fix | chore | cleanup_program",
     "started_at": "ISO 8601 date/time",
     "updated_at": "ISO 8601 date/time",
-    "framework_version": "string — PM framework version active during the run",
-    "skills_used": ["pm-workflow", "research", "ux", "design", "dev", "qa", "analytics", "cx", "marketing", "ops", "release"],
-    "data_sources": ["repo", "notion", "linear", "vercel", "dashboard", "figma"],
+    "framework_version": "string \u2014 PM framework version active during the run",
+    "skills_used": [
+      "pm-workflow",
+      "research",
+      "ux",
+      "design",
+      "dev",
+      "qa",
+      "analytics",
+      "cx",
+      "marketing",
+      "ops",
+      "release"
+    ],
+    "data_sources": [
+      "repo",
+      "notion",
+      "linear",
+      "vercel",
+      "dashboard",
+      "figma"
+    ],
     "process_metrics": {
       "linear_issues_closed": 0,
       "linear_issues_created": 0,
@@ -29,10 +48,24 @@
       "source_truth_gap_detected": false,
       "source_truth_gap_reduced": false
     },
-    "success_cases": [{ "title": "string", "evidence": "string" }],
-    "failure_cases": [{ "title": "string", "evidence": "string" }],
-    "next_checkpoints": ["string"],
-    "artifacts": ["repo paths or external IDs"],
+    "success_cases": [
+      {
+        "title": "string",
+        "evidence": "string"
+      }
+    ],
+    "failure_cases": [
+      {
+        "title": "string",
+        "evidence": "string"
+      }
+    ],
+    "next_checkpoints": [
+      "string"
+    ],
+    "artifacts": [
+      "repo paths or external IDs"
+    ],
     "snapshots": [
       {
         "timestamp": "ISO 8601 date/time",
@@ -141,10 +174,10 @@
         "docs/case-studies/cleanup-control-room-case-study.md",
         "FIT-21",
         "FIT-22",
-        "Notion: Maintenance Audit — 2026-04-11",
-        "Notion: Operations Control Room — Product Spec",
-        "Notion: Chapter 3 — Auth Hardening",
-        "Notion: Case Study — Maintenance Cleanup + Operations Control Room"
+        "Notion: Maintenance Audit \u2014 2026-04-11",
+        "Notion: Operations Control Room \u2014 Product Spec",
+        "Notion: Chapter 3 \u2014 Auth Hardening",
+        "Notion: Case Study \u2014 Maintenance Cleanup + Operations Control Room"
       ],
       "snapshots": [
         {
@@ -432,14 +465,22 @@
     },
     {
       "case_id": "eval-layer-v4.4-2026-04",
-      "title": "Eval Layer + Framework v4.4 — Eval-Driven Development",
+      "title": "Eval Layer + Framework v4.4 \u2014 Eval-Driven Development",
       "status": "complete",
       "work_type": "feature",
       "started_at": "2026-04-13T18:00:00Z",
       "updated_at": "2026-04-13T18:00:00Z",
       "framework_version": "4.3",
-      "skills_used": ["pm-workflow", "dev", "qa", "analytics"],
-      "data_sources": ["repo", "dashboard"],
+      "skills_used": [
+        "pm-workflow",
+        "dev",
+        "qa",
+        "analytics"
+      ],
+      "data_sources": [
+        "repo",
+        "dashboard"
+      ],
       "process_metrics": {
         "linear_issues_closed": 0,
         "linear_issues_created": 0,
@@ -458,12 +499,26 @@
         "source_truth_gap_reduced": false
       },
       "ai_quality_metrics": {
-        "tier_distribution": { "local_fallback_pct": 0, "cloud_cohort_pct": 0, "foundation_model_pct": 0 },
+        "tier_distribution": {
+          "local_fallback_pct": 0,
+          "cloud_cohort_pct": 0,
+          "foundation_model_pct": 0
+        },
         "cache_hit_rate_pct": 0,
         "signal_coverage_pct": 0,
         "recommendation_adherence_rate": 0,
-        "readiness_score_distribution": { "push_hard_pct": 0, "full_intensity_pct": 0, "moderate_pct": 0, "light_only_pct": 0, "rest_day_pct": 0 },
-        "confidence_distribution": { "high_pct": 0, "medium_pct": 0, "low_pct": 0 },
+        "readiness_score_distribution": {
+          "push_hard_pct": 0,
+          "full_intensity_pct": 0,
+          "moderate_pct": 0,
+          "light_only_pct": 0,
+          "rest_day_pct": 0
+        },
+        "confidence_distribution": {
+          "high_pct": 0,
+          "medium_pct": 0,
+          "low_pct": 0
+        },
         "eval_pass_rate": 0,
         "eval_total": 0,
         "eval_failed": []
@@ -472,7 +527,7 @@
       "failure_cases": [],
       "next_checkpoints": [
         "Write 3 eval test files (20 eval cases total)",
-        "Build + test — all evals pass",
+        "Build + test \u2014 all evals pass",
         "Update framework docs to v4.4 (evolution, README, manifest, lifecycle)",
         "Capture post-implementation snapshot with eval pass rate"
       ],
@@ -506,8 +561,12 @@
       "started_at": "2026-04-13T19:00:00Z",
       "updated_at": "2026-04-13T19:00:00Z",
       "framework_version": "4.4",
-      "skills_used": ["pm-workflow"],
-      "data_sources": ["repo"],
+      "skills_used": [
+        "pm-workflow"
+      ],
+      "data_sources": [
+        "repo"
+      ],
       "process_metrics": {
         "linear_issues_closed": 0,
         "linear_issues_created": 0,
@@ -526,12 +585,26 @@
         "source_truth_gap_reduced": false
       },
       "ai_quality_metrics": {
-        "tier_distribution": { "local_fallback_pct": 0, "cloud_cohort_pct": 0, "foundation_model_pct": 0 },
+        "tier_distribution": {
+          "local_fallback_pct": 0,
+          "cloud_cohort_pct": 0,
+          "foundation_model_pct": 0
+        },
         "cache_hit_rate_pct": 0,
         "signal_coverage_pct": 0,
         "recommendation_adherence_rate": 0,
-        "readiness_score_distribution": { "push_hard_pct": 0, "full_intensity_pct": 0, "moderate_pct": 0, "light_only_pct": 0, "rest_day_pct": 0 },
-        "confidence_distribution": { "high_pct": 0, "medium_pct": 0, "low_pct": 0 },
+        "readiness_score_distribution": {
+          "push_hard_pct": 0,
+          "full_intensity_pct": 0,
+          "moderate_pct": 0,
+          "light_only_pct": 0,
+          "rest_day_pct": 0
+        },
+        "confidence_distribution": {
+          "high_pct": 0,
+          "medium_pct": 0,
+          "low_pct": 0
+        },
         "eval_pass_rate": 0,
         "eval_total": 0,
         "eval_failed": []
@@ -539,7 +612,7 @@
       "success_cases": [],
       "failure_cases": [],
       "next_checkpoints": [
-        "Complete Phase 0 research — competitive analysis of profile UX",
+        "Complete Phase 0 research \u2014 competitive analysis of profile UX",
         "Define how Settings v2 folds into the profile architecture",
         "Write PRD with success metrics and eval definitions"
       ],
@@ -550,7 +623,7 @@
       "snapshots": [
         {
           "timestamp": "2026-04-13T19:00:00Z",
-          "label": "PM workflow initialized — Phase 0 research",
+          "label": "PM workflow initialized \u2014 Phase 0 research",
           "summary": "Feature created as a full 10-phase lifecycle. Concept: user profile becomes the unified control center, absorbing the existing Settings v2 screen. Framework v4.4 with eval-driven development and mandatory case study tracking.",
           "metrics": {
             "linear_issues_closed": 0,
@@ -563,14 +636,22 @@
     },
     {
       "case_id": "soc-v5-framework-2026-04",
-      "title": "SoC-on-Software: Framework v4.4 → v5.0 (Skill-on-Demand + Cache Compression)",
+      "title": "SoC-on-Software: Framework v4.4 \u2192 v5.0 (Skill-on-Demand + Cache Compression)",
       "status": "complete",
       "work_type": "chore",
       "started_at": "2026-04-14T03:30:00Z",
       "updated_at": "2026-04-14T03:30:00Z",
       "framework_version": "4.4",
-      "skills_used": ["pm-workflow", "dev", "ops"],
-      "data_sources": ["repo", "notion", "linear"],
+      "skills_used": [
+        "pm-workflow",
+        "dev",
+        "ops"
+      ],
+      "data_sources": [
+        "repo",
+        "notion",
+        "linear"
+      ],
       "process_metrics": {
         "linear_issues_closed": 0,
         "linear_issues_created": 1,
@@ -653,8 +734,15 @@
       "started_at": "2026-04-15T00:00:00Z",
       "updated_at": "2026-04-15T01:30:00Z",
       "framework_version": "5.1",
-      "skills_used": ["pm-workflow", "dev", "qa", "analytics"],
-      "data_sources": ["repo"],
+      "skills_used": [
+        "pm-workflow",
+        "dev",
+        "qa",
+        "analytics"
+      ],
+      "data_sources": [
+        "repo"
+      ],
       "process_metrics": {
         "linear_issues_closed": 0,
         "linear_issues_created": 0,
@@ -673,14 +761,32 @@
         "source_truth_gap_reduced": false
       },
       "success_cases": [
-        { "title": "PM-flow pattern reuse", "evidence": "Adapter, validation gate, learning cache all derived from PM-flow equivalents. Research was 15min." },
-        { "title": "Single-session end-to-end", "evidence": "Research → Merge in ~90min for 13 tasks, 17 files, 986 insertions." },
-        { "title": "Zero test regressions", "evidence": "197 tests pass, only 1 needed parameter update." },
-        { "title": "Mid-PRD scope expansion", "evidence": "User added goal-aware intelligence during PRD review — absorbed without rework." }
+        {
+          "title": "PM-flow pattern reuse",
+          "evidence": "Adapter, validation gate, learning cache all derived from PM-flow equivalents. Research was 15min."
+        },
+        {
+          "title": "Single-session end-to-end",
+          "evidence": "Research \u2192 Merge in ~90min for 13 tasks, 17 files, 986 insertions."
+        },
+        {
+          "title": "Zero test regressions",
+          "evidence": "197 tests pass, only 1 needed parameter update."
+        },
+        {
+          "title": "Mid-PRD scope expansion",
+          "evidence": "User added goal-aware intelligence during PRD review \u2014 absorbed without rework."
+        }
       ],
       "failure_cases": [
-        { "title": "No new unit tests", "evidence": "GoalProfile, ValidatedRecommendation, RecommendationMemory lack dedicated tests." },
-        { "title": "Type naming assumption", "evidence": "Used NutritionPlan instead of NutritionGoalPlan — caught on first build." }
+        {
+          "title": "No new unit tests",
+          "evidence": "GoalProfile, ValidatedRecommendation, RecommendationMemory lack dedicated tests."
+        },
+        {
+          "title": "Type naming assumption",
+          "evidence": "Used NutritionPlan instead of NutritionGoalPlan \u2014 caught on first build."
+        }
       ],
       "next_checkpoints": [],
       "artifacts": [
@@ -694,38 +800,60 @@
           "timestamp": "2026-04-15T00:15:00Z",
           "label": "research complete",
           "summary": "5-layer architecture proposal with Swift protocols, PM-flow pattern mapping.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-15T00:30:00Z",
           "label": "PRD + tasks complete",
           "summary": "Full PRD with goal-aware intelligence, 13-task breakdown with dependency graph.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-15T01:15:00Z",
           "label": "implementation complete",
           "summary": "All 13 tasks done. 8 files created, 9 modified. 3 build errors fixed.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-15T01:30:00Z",
           "label": "merged to main",
           "summary": "PR #79 merged. Case study written.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
         }
       ]
     },
     {
       "case_id": "onboarding-v2-auth-flow-2026-04",
-      "title": "Onboarding v2 Auth Flow — Embedded Account Creation",
+      "title": "Onboarding v2 Auth Flow \u2014 Embedded Account Creation",
       "status": "closed",
       "work_type": "feature",
       "started_at": "2026-04-15T14:00:00Z",
       "updated_at": "2026-04-15T14:00:00Z",
       "framework_version": "5.1",
-      "skills_used": ["pm-workflow", "research", "ux", "design", "dev", "qa", "analytics"],
-      "data_sources": ["repo"],
+      "skills_used": [
+        "pm-workflow",
+        "research",
+        "ux",
+        "design",
+        "dev",
+        "qa",
+        "analytics"
+      ],
+      "data_sources": [
+        "repo"
+      ],
       "process_metrics": {
         "linear_issues_closed": 0,
         "linear_issues_created": 0,
@@ -744,15 +872,36 @@
         "source_truth_gap_reduced": false
       },
       "success_cases": [
-        { "title": "Full PM lifecycle + design iterations in single session", "evidence": "Research → Merge + 3 design iterations + 6 bug fixes in ~100min." },
-        { "title": "Session restore freeze resolved", "evidence": "Detached task + 5s timeout. First successful real Supabase auth in the project." },
-        { "title": "Competitive research drove correct architecture", "evidence": "Auth mid-flow pattern from Duolingo/Headspace validated in manual testing." },
-        { "title": "Figma MCP integration for icon", "evidence": "Connected Figma, identified SwiftUI limitation, exported PDF — in-session." }
+        {
+          "title": "Full PM lifecycle + design iterations in single session",
+          "evidence": "Research \u2192 Merge + 3 design iterations + 6 bug fixes in ~100min."
+        },
+        {
+          "title": "Session restore freeze resolved",
+          "evidence": "Detached task + 5s timeout. First successful real Supabase auth in the project."
+        },
+        {
+          "title": "Competitive research drove correct architecture",
+          "evidence": "Auth mid-flow pattern from Duolingo/Headspace validated in manual testing."
+        },
+        {
+          "title": "Figma MCP integration for icon",
+          "evidence": "Connected Figma, identified SwiftUI limitation, exported PDF \u2014 in-session."
+        }
       ],
       "failure_cases": [
-        { "title": "Email registration broken — invisible navigation bug", "evidence": "startEmailRegistration navigated to removed AuthHubView. Undetectable without runtime testing." },
-        { "title": "Icon invisible on orange bg — 3 iterations needed", "evidence": "SwiftUI strokes → Figma PDF → template mode. Color conflict required complete approach change." },
-        { "title": "No design iteration model in PM workflow", "evidence": "6 issues found post-merge, 3 design rounds. PM workflow treats implementation as single pass." }
+        {
+          "title": "Email registration broken \u2014 invisible navigation bug",
+          "evidence": "startEmailRegistration navigated to removed AuthHubView. Undetectable without runtime testing."
+        },
+        {
+          "title": "Icon invisible on orange bg \u2014 3 iterations needed",
+          "evidence": "SwiftUI strokes \u2192 Figma PDF \u2192 template mode. Color conflict required complete approach change."
+        },
+        {
+          "title": "No design iteration model in PM workflow",
+          "evidence": "6 issues found post-merge, 3 design rounds. PM workflow treats implementation as single pass."
+        }
       ],
       "next_checkpoints": [],
       "artifacts": [
@@ -769,25 +918,94 @@
           "timestamp": "2026-04-15T14:00:00Z",
           "label": "feature initiated",
           "summary": "Restructure onboarding: embed auth after consent, add success animation, fix app-wide layout issues, resolve session restore freeze.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-15T15:00:00Z",
           "label": "research + PRD + tasks + UX complete",
           "summary": "4 phases completed: competitive analysis, PRD with 10 requirements + analytics spec, 12 tasks with dependency graph, UX spec for 2 new screens.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-15T16:00:00Z",
           "label": "merged to main",
           "summary": "PR #80 merged. 11 files, 627 insertions. 198 tests pass. 2 new views, session restore fixed, rootView simplified, 5 analytics events added.",
-          "metrics": { "tests_passing": 198, "build_verified": true }
+          "metrics": {
+            "tests_passing": 198,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-15T17:00:00Z",
-          "label": "design polish — manual testing fixes",
+          "label": "design polish \u2014 manual testing fixes",
           "summary": "Post-merge fixes from manual testing: CTAs pinned to bottom on all screens, email registration inline verification, Skip for now on auth, Figma PDF icon asset (replaces SwiftUI approximation), blue bg + orange icon on Welcome, template rendering mode for icon shape.",
-          "metrics": { "tests_passing": 197, "build_verified": true }
+          "metrics": {
+            "tests_passing": 197,
+            "build_verified": true
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "dispatch-intelligence-v5.2-2026-04",
+      "title": "Dispatch Intelligence \u2014 v5.2 Sub-Project A",
+      "status": "in_progress",
+      "work_type": "feature",
+      "started_at": "2026-04-16T10:00:00Z",
+      "updated_at": "2026-04-16T10:00:00Z",
+      "framework_version": "5.2",
+      "skills_used": [
+        "pm-workflow",
+        "dev"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 0,
+        "repo_files_updated": 0,
+        "tests_passing": 0,
+        "build_verified": false
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 0,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "success_cases": [],
+      "failure_cases": [],
+      "next_checkpoints": [
+        "Write implementation plan (tasks.md)",
+        "Create dispatch-intelligence.json config",
+        "Update SKILL.md dispatch protocol",
+        "Run validation stress test"
+      ],
+      "artifacts": [
+        "docs/superpowers/specs/2026-04-16-dispatch-intelligence-design.md",
+        "docs/architecture/subagent-preflight-probe-research.md",
+        "docs/architecture/parallel-code-write-safety-research.md"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-16T10:00:00Z",
+          "label": "spec approved + case study opened",
+          "summary": "Design spec committed. 5 components: static scoring, hybrid probe, model routing, tool budgets, validation logging. PM workflow initiated.",
+          "metrics": {
+            "tests_passing": 0,
+            "build_verified": false
+          }
         }
       ]
     }
