@@ -1,0 +1,383 @@
+{
+  "version": "1.0",
+  "created": "2026-04-16T19:45:00Z",
+  "layer": 3,
+  "description": "Cross-referencing pass: case study pattern matching, UX compliance matrix, framework self-audit, and self-referential bias assessment.",
+
+  "case_study_patterns": {
+    "methodology": "Sampled 5 key case studies (v5.1-v5.2 evolution, AI engine architecture, onboarding auth flow, SoC v5, framework measurement v6) against 185 audit findings. Classified each matching finding into recurring, regression, predicted, or new_category.",
+    "recurring": [
+      {
+        "finding_id": "BE-001",
+        "case_study": "v5.1-v5.2-framework-evolution-case-study.md",
+        "pattern": "Permission/sandbox boundaries causing silent failures. Case study documented .claude/ write permission denials (52% of dispatches). BE-001/BE-002 show the same pattern: debug/review sessions bypass intended gates."
+      },
+      {
+        "finding_id": "AI-004",
+        "case_study": "ai-engine-architecture-v5.1-case-study.md",
+        "pattern": "Hardcoded fallback values suppressing real data. Case study noted NutritionPlan naming mismatch (used wrong type). AI-004/AI-005/AI-006 are the same class: ProfileAdapter hardcodes 3 fields instead of reading user preferences."
+      },
+      {
+        "finding_id": "AI-007",
+        "case_study": "ai-engine-architecture-v5.1-case-study.md",
+        "pattern": "Non-optional return types fabricating data. Case study identified access control mismatches. AI-007/AI-008 show adapters returning fabricated 'moderate' or stale values when nil would be correct."
+      },
+      {
+        "finding_id": "DS-001",
+        "case_study": "onboarding-v2-auth-flow-v5.1-case-study.md",
+        "pattern": "Token bypass in compiled v2 files. Case study documented icon rendering as SwiftUI limitation requiring Figma PDF. DS-001 shows 12 hardcoded font sizes in MainScreenView bypassing AppText — same class of DS exception."
+      },
+      {
+        "finding_id": "FW-005",
+        "case_study": "framework-measurement-v6-case-study.md",
+        "pattern": "Measurement infrastructure defined but never populated. v6 case study itself achieved 0% cache hit rate (cold cache). FW-005 shows cache-metrics.json has all zeros despite 8+ completed features — the measurement trigger never fires."
+      },
+      {
+        "finding_id": "FW-011",
+        "case_study": "soc-v5-framework-case-study.md",
+        "pattern": "Cache discovery protocol broken. SoC case study noted subagents hit write permission denials on cache files. FW-011 shows all _index.json files have empty entries[] — the entire cache discovery system is non-functional."
+      },
+      {
+        "finding_id": "DEEP-SYNC-001",
+        "case_study": "onboarding-v2-auth-flow-v5.1-case-study.md",
+        "pattern": "Dual sync paths without coordination. Auth flow case study documented Supabase consolidation confusion (two projects). DEEP-SYNC-001 shows CloudKit + Supabase pulls run concurrently with no merge coordination."
+      },
+      {
+        "finding_id": "TEST-001",
+        "case_study": "ai-engine-architecture-v5.1-case-study.md",
+        "pattern": "High-risk services with zero test coverage. Case study explicitly noted 'No new unit tests written' as a failure. TEST-001 through TEST-005 show 5 critical services (EncryptionService, AuthManager, CloudKitSyncService, SupabaseSyncService, HealthKitService) with zero tests."
+      },
+      {
+        "finding_id": "BE-005",
+        "case_study": "onboarding-v2-auth-flow-v5.1-case-study.md",
+        "pattern": "Session restore race conditions. Case study documented session restore freeze fixed with detached task + 5s timeout. BE-005/DEEP-AUTH-005 show the timeout race was fixed incompletely — continuation never resumed on timeout path."
+      }
+    ],
+    "regressions": [
+      {
+        "finding_id": "DEEP-AUTH-005",
+        "case_study": "onboarding-v2-auth-flow-v5.1-case-study.md",
+        "pattern": "Session restore freeze was 'fixed' in the auth flow case study (detached task + 5s timeout). But DEEP-AUTH-005 shows the fix introduced a new bug: the nil branch doesn't cancel the timeout, creating a double-resume crash risk. The fix regressed."
+      },
+      {
+        "finding_id": "DS-002",
+        "case_study": "soc-v5-framework-case-study.md",
+        "pattern": "SoC case study documented design-system closure being 'overstated' in prior cleanup. DS-002 shows 66 deprecated Color.status.*/Color.accent.* calls still active — the token migration that was claimed complete never finished."
+      }
+    ],
+    "predicted": [
+      {
+        "finding_id": "FW-005",
+        "case_study": "soc-v5-framework-case-study.md",
+        "pattern": "SoC case study section 7 explicitly called for 'token budget dashboard' and 'compression ratio monitoring'. FW-005 (cache-metrics all zeros) and FW-014 (no health checks ever run) validate this prediction — measurement infrastructure was needed but never built."
+      },
+      {
+        "finding_id": "TEST-025",
+        "case_study": "onboarding-v2-auth-flow-v5.1-case-study.md",
+        "pattern": "Auth flow case study section 6 explicitly identified 'runtime test gate for features with external service dependencies' as a framework gap. TEST-025 (zero XCUITests) confirms this prediction — no UI integration testing exists."
+      },
+      {
+        "finding_id": "FW-019",
+        "case_study": "v5.1-v5.2-framework-evolution-case-study.md",
+        "pattern": "v5.2 case study noted 80% prediction accuracy on 5 dispatches but acknowledged sample size too small for definitive conclusion. FW-019 found the raw log records 75% — denominator ambiguity in self-reported metrics was a predictable outcome."
+      },
+      {
+        "finding_id": "UI-017",
+        "case_study": "onboarding-v2-auth-flow-v5.1-case-study.md",
+        "pattern": "Auth flow case study section 6 recommended 'design review iteration' sub-phase for UI features. UI-017 (MealEntrySheet 17 @State, no ViewModel) and UI-006 (MainScreenView approaching threshold) confirm UI features accumulate state debt when there's no design-review gate."
+      }
+    ],
+    "new_categories": [
+      {
+        "finding_ids": ["DEEP-AUTH-001", "DEEP-AUTH-002", "DEEP-AUTH-003", "DEEP-AUTH-004"],
+        "category": "Authentication token type safety",
+        "description": "No case study previously identified the fundamental issue that sessionToken holds 5 different types of values (UUID, passkey sig, Supabase JWT, debug literal, Apple userID) with no type contract. This is a new finding category not predicted by any prior analysis."
+      },
+      {
+        "finding_ids": ["DEEP-SYNC-005"],
+        "category": "Cryptographic checksum invalidation",
+        "description": "AES-GCM random IV causing checksum comparisons to always fail is a new category. No case study addressed the interaction between encryption and change detection."
+      },
+      {
+        "finding_ids": ["DEEP-SYNC-013"],
+        "category": "Schema versioning for encrypted blobs",
+        "description": "DailyLog lacks schema version, making encrypted blob migration impossible. No case study addressed data model evolution within encrypted storage."
+      },
+      {
+        "finding_ids": ["DS-009"],
+        "category": "Dark mode token absence",
+        "description": "All surface tokens are light-mode only with no dark variants. No case study addressed theming or appearance mode support."
+      },
+      {
+        "finding_ids": ["BE-015"],
+        "category": "Biometric enrollment change data loss",
+        "description": ".biometryCurrentSet invalidates all encrypted data when a user adds a new fingerprint or face. No case study identified this catastrophic data loss scenario."
+      }
+    ]
+  },
+
+  "ux_compliance_matrix": {
+    "principles": [
+      "1.1 Fitts's Law",
+      "1.2 Hick's Law",
+      "1.3 Jakob's Law",
+      "1.4 Progressive Disclosure",
+      "1.5 Recognition Over Recall",
+      "1.6 Consistency",
+      "1.7 Feedback",
+      "1.8 Error Prevention",
+      "1.9 Readiness-First",
+      "1.10 Zero-Friction Logging",
+      "1.11 Privacy by Default",
+      "1.12 Progressive Profiling",
+      "1.13 Celebration Not Guilt"
+    ],
+    "screens": ["Home", "Training", "Nutrition", "Stats", "Settings", "Onboarding"],
+    "matrix": {
+      "1.1 Fitts's Law": {
+        "Home": "green",
+        "Training": "yellow",
+        "Nutrition": "yellow",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.2 Hick's Law": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "yellow",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.3 Jakob's Law": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.4 Progressive Disclosure": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "yellow",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.5 Recognition Over Recall": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.6 Consistency": {
+        "Home": "yellow",
+        "Training": "red",
+        "Nutrition": "red",
+        "Stats": "yellow",
+        "Settings": "green",
+        "Onboarding": "yellow"
+      },
+      "1.7 Feedback": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.8 Error Prevention": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "yellow",
+        "Onboarding": "green"
+      },
+      "1.9 Readiness-First": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.10 Zero-Friction Logging": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "yellow",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.11 Privacy by Default": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "yellow",
+        "Onboarding": "yellow"
+      },
+      "1.12 Progressive Profiling": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      },
+      "1.13 Celebration Not Guilt": {
+        "Home": "green",
+        "Training": "green",
+        "Nutrition": "green",
+        "Stats": "green",
+        "Settings": "green",
+        "Onboarding": "green"
+      }
+    },
+    "violation_evidence": {
+      "1.6 Consistency - Training (red)": "DS-002: 35 deprecated Color.status.*/Color.accent.* calls in TrainingPlanView. DS-003: deprecated Color.appOrange*/appBlue* aliases. DS-007: 10 ad-hoc .animation() literals bypassing AppMotion tokens. TrainingPlanView is the worst consistency offender.",
+      "1.6 Consistency - Nutrition (red)": "DS-008: 2 inline GeometryReader progress bars bypassing ProgressBar component. DS-002: 11 deprecated color calls in NutritionView. DS-011: inline opacity literals bypassing AppOpacity tokens.",
+      "1.6 Consistency - Home (yellow)": "DS-001: 12 hardcoded .font(.system(size:)) calls in MainScreenView bypassing AppText. DS-003: deprecated color aliases cached as private lets.",
+      "1.6 Consistency - Stats (yellow)": "DS-003: StatsView uses deprecated color aliases in chart helpers.",
+      "1.6 Consistency - Onboarding (yellow)": "DS-005: hardcoded 32pt hero in OnboardingWelcomeView. UI-008/UI-009: raw font sizes in v2 compiled files.",
+      "1.1 Fitts's Law - Training (yellow)": "DS-014: hardcoded 56pt padding instead of AppSize.tabBarClearance token — not a Fitts violation per se but indicates sloppy touch target management.",
+      "1.1 Fitts's Law - Nutrition (yellow)": "UI-004: MealEntrySheet 1155 lines with 4 tabs and 17 @State vars — complex entry surfaces may degrade tap precision under cognitive load.",
+      "1.2 Hick's Law - Nutrition (yellow)": "UI-004: 4-tab meal entry with camera, photo picker, food search, and label parsing exposes many choices simultaneously.",
+      "1.4 Progressive Disclosure - Nutrition (yellow)": "UI-017: 17 @State properties and async logic in view suggest excessive surface complexity.",
+      "1.8 Error Prevention - Settings (yellow)": "BE-023: Account deletion grace period stored only in UserDefaults, never synced. BE-024: executeDeletion doesn't delete Supabase Auth user — incomplete GDPR.",
+      "1.10 Zero-Friction Logging - Nutrition (yellow)": "UI-004: MealEntrySheet complexity may slow logging. 1155 lines suggest friction in the primary logging surface.",
+      "1.11 Privacy by Default - Settings (yellow)": "AI-003: RecommendationMemory header claims 'encrypted store' but uses plain UserDefaults. BE-021: Full UserSession JSON with live JWT stored as single unprotected Keychain item.",
+      "1.11 Privacy by Default - Onboarding (yellow)": "DEEP-AUTH-012: PendingEmailRegistration.password is plain String in Codable struct — exposed to serialization and crash reporters."
+    },
+    "zero_finding_principles": [
+      "1.3 Jakob's Law — All green. Suspicious: the audit focused on code-level issues. Jakob's Law violations (non-standard navigation, custom patterns violating iOS HIG) require runtime/visual inspection, which this audit did not perform. Likely missed, not perfect.",
+      "1.5 Recognition Over Recall — All green. Plausible: the v2 screens were explicitly built against this principle with badges, indicators, and progress bars. But absence of findings may also reflect that the audit didn't test for hidden state (e.g., do users know what day type they're on without opening Training?).",
+      "1.7 Feedback — All green. Suspicious: the audit found no haptic, animation, or toast issues. This is likely because the code-level scan can't detect MISSING feedback — it can only find wrong feedback. Runtime testing would likely surface gaps.",
+      "1.9 Readiness-First — All green. Plausible: this is the app's competitive moat and was explicitly prioritized in every v2 refactor.",
+      "1.12 Progressive Profiling — All green. Plausible: onboarding asks 4 questions, skip is allowed on 3 of 4. No profiling creep was found.",
+      "1.13 Celebration Not Guilt — All green. Plausible but unverified: no guilt-tripping copy was found in the audit, but the audit didn't exhaustively check all notification text, empty states, and error messages."
+    ]
+  },
+
+  "framework_self_audit": {
+    "token_budget_accurate": true,
+    "token_budget_details": {
+      "script_output": 99395,
+      "json_stored": 99395,
+      "drift_tokens": 0,
+      "drift_pct": 0.0,
+      "note": "Token budget was freshly regenerated during this audit. Previous measurement (79,138 in v6.0 case study) was 20K lower — shared layer grew from 19,587 to 36,626 tokens due to audit-findings.json and other new files."
+    },
+    "config_version_consistent": false,
+    "config_version_details": {
+      "dispatch_intelligence_framework_version": "6.0",
+      "cache_metrics_version": "1.0",
+      "audit_findings_framework_version": "6.1",
+      "framework_manifest_description": "Still says v5.2",
+      "inconsistencies": [
+        "audit-findings.json claims 6.1 while all others say 6.0",
+        "framework-manifest.json description references v5.2",
+        "cache-metrics.json lacks a framework_version field entirely"
+      ]
+    },
+    "hadf_integrity": true,
+    "hadf_details": {
+      "chip_profiles": 17,
+      "hardware_signatures": 7,
+      "hadf_enabled": false,
+      "confidence_gate": {"trust": 0.7, "blend": 0.4},
+      "verdict": "All HADF components match spec. Disabled by design until validation threshold reached."
+    },
+    "stale_monitoring_entries": [
+      {
+        "case_id": "cleanup-control-room-2026-04",
+        "status": "in_progress",
+        "framework_version": "4.3",
+        "last_updated": "2026-04-12T21:30:00Z",
+        "days_stale": 4,
+        "verdict": "4 major framework versions behind. Likely complete but never closed."
+      },
+      {
+        "case_id": "control-center-alignment-ia-refresh-2026-04",
+        "status": "in_progress",
+        "framework_version": "4.3",
+        "last_updated": "2026-04-13T17:30:00Z",
+        "days_stale": 3,
+        "verdict": "Same staleness pattern. Dashboard work likely shipped but monitoring entry never updated."
+      },
+      {
+        "case_id": "user-profile-settings-2026-04",
+        "status": "in_progress",
+        "framework_version": "4.4",
+        "last_updated": "2026-04-13T19:00:00Z",
+        "days_stale": 3,
+        "verdict": "Legitimately in progress — feature is mid-lifecycle per backlog."
+      }
+    ],
+    "findings": [
+      {
+        "id": "FW-META-001",
+        "description": "Token budget grew 25% (79K to 99K) between v6.0 case study and this audit, entirely from shared layer growth (19K to 37K). The audit itself is inflating the metric it claims to measure.",
+        "bias_risk": "high"
+      },
+      {
+        "id": "FW-META-002",
+        "description": "cache-metrics.json has all zeros despite 8+ completed features with documented cache hits in case studies. The measurement protocol exists in SKILL.md but has never actually executed. This means all cache performance claims in case studies are narrative, not measured.",
+        "bias_risk": "high"
+      },
+      {
+        "id": "FW-META-003",
+        "description": "Framework health check (25% probability trigger per Phase 0) has never fired. Either the probability trigger implementation is dead code, or Phase 0 is never reached in practice.",
+        "bias_risk": "medium"
+      },
+      {
+        "id": "FW-META-004",
+        "description": "Dispatch prediction accuracy discrepancy (80% in case study narrative vs 75% in raw log) suggests narrative-driven reporting optimism. Small sample size (5 dispatches) makes either number unreliable.",
+        "bias_risk": "high"
+      },
+      {
+        "id": "FW-META-005",
+        "description": "All _index.json cache files have empty entries[]. The entire cache discovery mechanism is non-functional. Skills only hit cache entries they hardcode by name, not by task_signature lookup. This undermines the SoC case study's claim of 'cache compression' — compressed entries exist but are not discoverable.",
+        "bias_risk": "high"
+      },
+      {
+        "id": "FW-META-006",
+        "description": "Version inconsistency across configs (6.1 vs 6.0 vs 5.2 in descriptions) suggests version bumps are not atomic. Each config is updated independently during framework upgrades, creating windows of inconsistency.",
+        "bias_risk": "low"
+      },
+      {
+        "id": "FW-META-007",
+        "description": "3 stale monitoring entries (2 at v4.3, 1 at v4.4) show that case study monitoring lifecycle management has no enforcement. Entries are opened but closing them requires manual action that is routinely skipped.",
+        "bias_risk": "medium"
+      },
+      {
+        "id": "FW-META-008",
+        "description": "Token budget uses word-count * 1.3 estimate (tiktoken not installed). The v6.0 case study reported 79,138 tokens using the same method. The measurement itself has ~15% error margin.",
+        "bias_risk": "medium"
+      }
+    ]
+  },
+
+  "bias_assessment": {
+    "framework_only_pct": 100,
+    "framework_only_detail": "All 185 findings have validation: 'framework-only'. Zero findings have external validation (runtime testing, user feedback, crash reports, analytics data, or third-party security audit). The entire audit is self-referential.",
+    "high_bias_risk_pct": 4.3,
+    "high_bias_risk_detail": "8 of 185 findings are tagged high bias_risk in the framework domain. But this understates the problem: the framework domain is the only one that tags bias_risk at all. The other 165 findings in ai/backend/design_system/tests/ui domains have no bias_risk assessment.",
+    "likely_blind_spots": [
+      "RUNTIME BEHAVIOR: The audit read source code only. It never ran the app. Bugs that require specific state sequences (e.g., sign out during sync, biometric re-enrollment, network timeout during key rotation) are described from code analysis but never verified. The onboarding auth case study proved this class of bug exists — the email registration was broken in a way only runtime testing could find.",
+      "PERFORMANCE: Zero performance profiling. No data on cold start time, sync latency, ReadinessEngine computation time, or EncryptedDataStore load time. The audit found no performance bugs because it didn't measure performance.",
+      "CONCURRENCY: Thread safety analysis is limited to what's visible in async/await patterns. Actor reentrancy, main-thread blocking, and deadlock scenarios require runtime analysis. DEEP-SYNC-007 (actor reentrancy) was identified from code reading but concurrency bugs are notoriously under-detected by static analysis.",
+      "UI/UX QUALITY: The UX compliance matrix scores are inferred from code structure and design system token usage. Actual user experience (gesture responsiveness, animation smoothness, cognitive load, discoverability) requires usability testing. Zero users were observed.",
+      "SECURITY: No penetration testing. Findings like DEEP-AUTH-001 (review mode in production) and DEEP-AUTH-002 (passkey not verified server-side) are identified from code, but actual exploitability depends on runtime conditions, network configuration, and App Store review behavior.",
+      "THIRD-PARTY DEPENDENCIES: The audit did not examine Supabase SDK version for known CVEs, GoogleSignIn SDK security advisories, or CryptoKit version-specific issues. Dependency security is a complete blind spot.",
+      "DATA MIGRATION: No analysis of what happens when app updates change model schemas. DEEP-SYNC-013 identified the missing schemaVersion on DailyLog, but the broader question of data migration strategy across app versions was not examined.",
+      "ACCESSIBILITY: The audit found TEST-028 (zero accessibility tests) and UI-019/UI-020 (missing labels) but did not systematically verify VoiceOver navigation, Dynamic Type at all sizes, or Switch Control compatibility across all screens."
+    ],
+    "honest_assessment": "This audit is a self-referential analysis performed by the same AI system that built the framework being audited. This creates three fundamental credibility problems. First, the audit is biased toward finding issues in categories the AI system already understands (code patterns, design system tokens, test coverage) and blind to categories it cannot observe (runtime behavior, real user experience, actual security exploitability). The UX compliance matrix, for example, is scored entirely from code structure — a human UX review would almost certainly find different and probably more severe issues. Second, the framework findings (FW-META-001 through FW-META-008) are the most credible section because they are self-critical — they identify cases where the framework's own claims are unsupported by evidence. But this self-criticism may itself be performative: an AI acknowledging its limits does not make those limits less real. Third, the 100% framework-only validation rate means every finding is an assertion, not a verified fact. The 12 critical findings, 49 high findings, and 90 medium findings are plausible based on code reading, but without runtime verification, some percentage of them are likely false positives (code paths that can never actually execute) or missing context (e.g., the debug gates in BE-001/BE-002 may be safe if Xcode's scheme configuration prevents FITTRACKER_REVIEW_AUTH from ever being set in release builds). The most honest statement is: this audit identifies 185 plausible issues, establishes useful cross-references to prior case studies, and exposes the framework's measurement gaps. But it should not be treated as ground truth. The next step must be external validation — either runtime testing, a human security review, or crash/analytics data from real users."
+  }
+}
