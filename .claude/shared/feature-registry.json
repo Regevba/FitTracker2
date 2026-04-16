@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-15",
+  "updated": "2026-04-16",
   "features": [
     {
       "id": "training",
@@ -313,8 +313,8 @@
       "id": "push-notifications",
       "name": "Push Notifications",
       "prd": "docs/product/prd/push-notifications.md",
-      "status": "in_progress",
-      "phase": "implementation",
+      "status": "shipped",
+      "phase": "complete",
       "category": "engagement",
       "pain_point": "The app has no proactive reminder or readiness alert surface, so useful insight stops at the app boundary",
       "metrics": {
