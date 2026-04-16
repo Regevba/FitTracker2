@@ -13,3 +13,34 @@ def test_speedup_ratio():
     baseline = 10.0
     orchid = 20.0
     assert speedup_ratio(orchid, baseline) == 2.0
+
+
+import json
+from pathlib import Path
+
+def test_replay_synthetic_burst_haiku():
+    from trace_replayer import TraceReplayer
+    trace_path = Path(__file__).parent.parent.parent / "traces" / "synthetic" / "burst_haiku.jsonl"
+    replayer = TraceReplayer()
+    results = replayer.replay(trace_path)
+    assert results.events_processed == 100
+    assert results.total_cycles > 0
+    assert results.composite_score > 0
+
+def test_replay_cold_to_warm_shows_improvement():
+    from trace_replayer import TraceReplayer
+    trace_path = Path(__file__).parent.parent.parent / "traces" / "synthetic" / "cold_to_warm.jsonl"
+    replayer = TraceReplayer()
+    results = replayer.replay(trace_path)
+    assert results.warm_hit_rate > results.cold_hit_rate
+
+def test_replay_produces_results_dict():
+    from trace_replayer import TraceReplayer
+    trace_path = Path(__file__).parent.parent.parent / "traces" / "synthetic" / "random_uniform.jsonl"
+    replayer = TraceReplayer()
+    results = replayer.replay(trace_path)
+    results_dict = results.to_dict()
+    assert "events_processed" in results_dict
+    assert "composite_score" in results_dict
+    assert "cache_hit_rate" in results_dict
+    assert "total_cycles" in results_dict
