@@ -185,6 +185,67 @@ When multiple features are being worked on concurrently (stress tests, parallel 
 2. Set `timing.parallel_context.concurrent_feature_slugs` = list of other feature slugs
 3. Set `timing.parallel_context.is_stress_test` = true if this is a deliberate parallel test
 
+## Cache Tracking Protocol (v6.0 — Deterministic Hit Logging)
+
+Replace probabilistic cache health checks with deterministic per-event logging. Every cache access is recorded in `.claude/features/{feature}/cache-hits.json`.
+
+### On Skill Load (reading from .claude/cache/{skill}/)
+
+1. Check if a cache entry exists for the current task type and context
+2. **HIT**: Append to `cache-hits.json → sessions[current].hits[]`:
+   ```json
+   {
+     "timestamp": "{ISO 8601}",
+     "cache_level": "L1|L2|L3",
+     "skill": "{skill-name}",
+     "cache_key": "{skill}:{task_type}:{context}",
+     "hit_type": "exact|adapted",
+     "task_context": "{task description from tasks list}"
+   }
+   ```
+3. **MISS**: Append to `cache-hits.json → sessions[current].misses[]`:
+   ```json
+   {
+     "timestamp": "{ISO 8601}",
+     "cache_level": "L1|L2|L3",
+     "skill": "{skill-name}",
+     "expected_key": "{key that was looked up}",
+     "miss_reason": "no_entry|stale|wrong_context",
+     "task_context": "{task description}"
+   }
+   ```
+4. **STALE** (SHA256 of source file doesn't match `invalidated_by` hash): Log as miss with `miss_reason: "stale"`
+
+### Hit Type Taxonomy
+
+- `exact`: Cache entry used directly without modification
+- `adapted`: Cache entry used as a starting point but modified for current context
+- `stale`: Entry existed but was outdated — counted as a miss
+
+### On Phase Completion
+
+1. Compute session summary: count L1/L2/L3 hits and misses
+2. Write `total_hit_rate = total_hits / (total_hits + total_misses)` to session summary
+
+### On Feature Completion
+
+1. Finalize `aggregate` section in `cache-hits.json` (totals across all sessions)
+2. Identify `most_valuable_hit` (entry that saved the most rework) and `costliest_miss` (pattern that had to be built from scratch)
+3. Update `.claude/shared/cache-metrics.json`:
+   - Increment `by_framework_version[current].features_measured`
+   - Recompute `avg_hit_rate` and `L1_avg/L2_avg/L3_avg`
+   - Add to `cache_health_trend[]` with date and hit rate
+4. Check promotion candidates: any L1 entry hit by 2+ different skills → add to `promotion_candidates[]`
+
+### Velocity Annotation
+
+When writing the case study, annotate velocity claims based on cache hit rate:
+- `hit_rate >= 0.6`: velocity is framework-attributable (no annotation needed)
+- `hit_rate 0.3–0.6`: annotate as "partial cache" — velocity partially reflects practitioner skill
+- `hit_rate < 0.3`: annotate as "cold cache" — velocity may significantly reflect practitioner skill over framework
+
+This annotation does NOT change the CU calculation. It adds interpretive context to min/CU comparisons.
+
 ## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
 
 When skills execute in a known chain (e.g., Phase 3 dispatch chain), pass the output of each skill inline to the next skill instead of writing to disk and re-reading.
