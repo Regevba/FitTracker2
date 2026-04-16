@@ -170,3 +170,58 @@ Add to `docs/case-studies/case-study-template.md` Section 5:
 | vs Baseline (v2.0) | {+/-}% |
 | Complexity factors applied | {list} |
 ```
+
+---
+
+## 7. v2 Normalization (Framework v6.0+)
+
+> Added 2026-04-16. v1 methodology (Sections 1-6) is preserved unchanged. v2 refines the inputs, not the formula.
+
+### CU Formula (unchanged)
+
+```text
+CU = Tasks × Work_Type_Weight × (1 + sum(Weighted_Factors))
+```
+
+### Changes from v1 — Complexity Factors
+
+| Factor | v1 (binary/flat) | v2 (continuous) | Signal Source |
+| --- | --- | --- | --- |
+| Has UI | +0.3 | +0.15 (1 view) / +0.30 (2-3) / +0.45 (4+) | `state.json → complexity.view_count` |
+| Design Iterations | +0.15 per round | +0.10 (text) / +0.15 (layout) / +0.20 (interaction) / +0.25 (full redesign) per round | `state.json → complexity.design_iteration_details` |
+| New Model/Service | +0.2 | +0.1 (1-2 types) / +0.2 (3-5) / +0.3 (6+) | `state.json → complexity.new_types_count` |
+| Auth/External | +0.5 | +0.5 (unchanged) | Same binary flag |
+| Runtime Testing | +0.4 | +0.4 (unchanged) | Same binary flag |
+| Cross-Feature | +0.2 | +0.2 (unchanged) | Same binary flag |
+| **Architectural Novelty** | Not tracked | **+0.2** | `state.json → complexity.is_first_of_kind` (no cache entry for this pattern) |
+
+### New Reporting Requirements
+
+1. **time_source flag**: Every velocity figure must note `(measured)` or `(estimated)`
+2. **cu_version field**: `state.json → complexity.cu_version` (1 or 2)
+3. **Velocity annotation**: Cache hit rate context (see Cache Tracking Protocol)
+4. **Three baselines**:
+
+| Comparison | Formula |
+| --- | --- |
+| vs Historical Baseline | `15.2 / this_min_cu` (Onboarding v2, always reported) |
+| vs Rolling Baseline | `mean(last 5 features min/CU) / this_min_cu` |
+| vs Same-Type Baseline | `mean(last 3 same work_type min/CU) / this_min_cu` |
+
+5. **Serial vs Parallel Decomposition** (for multi-feature sessions):
+
+| Metric | Formula |
+| --- | --- |
+| Serial velocity | This feature's min/CU (CU / active minutes on this feature alone) |
+| Serial improvement | `15.2 / serial_velocity` |
+| Parallel speedup | `parallel_CU_per_hour / serial_CU_per_hour` |
+| Combined improvement | `serial_improvement × parallel_speedup` |
+
+Single-feature runs: `parallel_speedup = 1.0x`, `combined = serial`.
+
+### Backward Compatibility
+
+- v1 CU values are **preserved unchanged**. No retroactive recomputation.
+- `cu_version` field distinguishes v1 (binary) from v2 (continuous) calculations.
+- Cross-version comparisons must note which formula was used.
+- Features without `complexity` object in state.json default to v1 calculation.
