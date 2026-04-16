@@ -48,6 +48,7 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `framework-measurement-v6-case-study.md` | Framework Measurement v6.0 | First feature with deterministic measurement instrumentation — measured (not estimated) wall time, CU v2 continuous factors, cache-hits.json, eval coverage gates. 28.0 CU at 3.21 min/CU (+79% vs baseline) |
 | `meta-analysis/` | Meta-analysis reports folder | Cross-case analyses: Nvidia validation of normalization model + What-If v6.0 retrospective experiment (CU v2 recalculation, rolling baselines, AI model cost comparison, ROI analysis) |
 | `hadf-hardware-aware-dispatch-case-study.md` | HADF — Hardware-Aware Dispatch Framework (v6.1) | First hardware-aware framework extension — 5-layer architecture (device detection → cloud fingerprinting → evolutionary learning), 17 chip profiles across 6 vendors, 7 cloud hardware signatures, zero-regression confidence gate. Novel contribution: cloud inference fingerprinting via Mahalanobis distance classification |
+| `meta-analysis-full-system-audit-v6.1-case-study.md` | Full-System Meta-Analysis Audit (v6.1) | First self-referential full-system audit — 4-layer risk-weighted sweep, 185 findings across 6 domains (12 critical, 49 high), external validation, framework self-audit with bias acknowledgment. Key discovery: fabrication-over-nil systemic pattern in AI adapters. Health scorecard: AI 0, Backend 0, Tests 0, UI 9, Framework 42, DS 46 |
 
 ## Upcoming case studies (queued)
 
