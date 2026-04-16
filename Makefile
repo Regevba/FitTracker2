@@ -114,7 +114,17 @@ verify-framework:
 	@echo "Cache index consistency:"
 	@test -f .claude/cache/_index.json && echo "  ✓ _index.json exists" || echo "  ⚠ _index.json MISSING"
 	@echo "Token budget:"
-	@test -f .claude/shared/token-budget.json && echo "  ✓ token-budget.json exists" || echo "  ⚠ token-budget.json not yet generated (run scripts/count-framework-tokens.sh)"
+	@if [ -f .claude/shared/token-budget.json ]; then \
+		age=$$(python3 -c "import json,datetime as dt; t=json.load(open('.claude/shared/token-budget.json'))['measured_at']; d=dt.datetime.now(dt.timezone.utc)-dt.datetime.fromisoformat(t.replace('Z','+00:00')); print(d.days)"); \
+		if [ "$$age" -gt 7 ]; then \
+			echo "  ⚠ token-budget.json is $$age days old — run: bash scripts/count-framework-tokens.sh"; \
+		else \
+			tokens=$$(python3 -c "import json; print(json.load(open('.claude/shared/token-budget.json'))['total_tokens'])"); \
+			echo "  ✓ token-budget.json current ($$tokens tokens)"; \
+		fi; \
+	else \
+		echo "  ⚠ token-budget.json not found — run: bash scripts/count-framework-tokens.sh"; \
+	fi
 	@echo "Done."
 
 verify-evals:
