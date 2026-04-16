@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check install verify-local verify-web verify-ai verify-ios app-icon app-store-check
+.PHONY: tokens tokens-check install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -34,7 +34,7 @@ tokens-check: node_modules
 install:
 	npm install
 
-verify-local: tokens-check verify-web verify-ai verify-ios
+verify-local: tokens-check verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
 
 verify-web:
 	cd dashboard && npm test
@@ -67,6 +67,63 @@ verify-ios:
 		-derivedDataPath $(TEST_DERIVED_DATA) \
 		CODE_SIGNING_ALLOWED=NO \
 		CODE_SIGNING_REQUIRED=NO
+
+# ── Framework Measurement v6.0 Verification ──────
+# Soft gates: warn but don't block. These become hard gates after validation.
+
+verify-timing:
+	@echo "=== Timing Instrumentation Check ==="
+	@for dir in .claude/features/*/; do \
+		state="$$dir/state.json"; \
+		if [ -f "$$state" ]; then \
+			phase=$$(python3 -c "import json; print(json.load(open('$$state')).get('current_phase',''))" 2>/dev/null); \
+			if [ "$$phase" = "complete" ]; then \
+				has_timing=$$(python3 -c "import json; d=json.load(open('$$state')); print('yes' if d.get('timing',{}).get('time_source')=='measured' else 'no')" 2>/dev/null); \
+				feature=$$(basename "$$dir"); \
+				if [ "$$has_timing" = "no" ]; then \
+					echo "  ⚠  $$feature: complete but timing.time_source != measured (estimated)"; \
+				else \
+					echo "  ✓  $$feature: timing instrumented"; \
+				fi; \
+			fi; \
+		fi; \
+	done
+	@echo "Done."
+
+verify-framework:
+	@echo "=== Framework Integrity Check ==="
+	@echo "Cache metrics:"
+	@test -f .claude/shared/cache-metrics.json && echo "  ✓ cache-metrics.json exists" || echo "  ⚠ cache-metrics.json MISSING"
+	@python3 -c "import json; json.load(open('.claude/shared/cache-metrics.json'))" 2>/dev/null && echo "  ✓ cache-metrics.json valid JSON" || echo "  ⚠ cache-metrics.json invalid JSON"
+	@echo "Per-feature cache tracking:"
+	@for dir in .claude/features/*/; do \
+		state="$$dir/state.json"; \
+		cache="$$dir/cache-hits.json"; \
+		if [ -f "$$state" ]; then \
+			phase=$$(python3 -c "import json; print(json.load(open('$$state')).get('current_phase',''))" 2>/dev/null); \
+			feature=$$(basename "$$dir"); \
+			if [ "$$phase" = "complete" ]; then \
+				if [ -f "$$cache" ]; then \
+					echo "  ✓  $$feature: cache-hits.json present"; \
+				else \
+					echo "  ⚠  $$feature: complete but no cache-hits.json"; \
+				fi; \
+			fi; \
+		fi; \
+	done
+	@echo "Cache index consistency:"
+	@test -f .claude/cache/_index.json && echo "  ✓ _index.json exists" || echo "  ⚠ _index.json MISSING"
+	@echo "Token budget:"
+	@test -f .claude/shared/token-budget.json && echo "  ✓ token-budget.json exists" || echo "  ⚠ token-budget.json not yet generated (run scripts/count-framework-tokens.sh)"
+	@echo "Done."
+
+verify-evals:
+	@echo "=== AI Eval Suite ==="
+	@if [ -d "ai-engine/evals" ]; then \
+		cd ai-engine && . $(AI_VENV)/bin/activate && pytest evals/ -v --tb=short; \
+	else \
+		echo "  ⚠ ai-engine/evals/ directory not found — skipping"; \
+	fi
 
 # ── App Store Assets ──────────────────────────────
 app-icon:
