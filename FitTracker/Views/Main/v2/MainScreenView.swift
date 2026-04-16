@@ -16,6 +16,11 @@ struct MainScreenView: View {
     @EnvironmentObject var programStore:  TrainingProgramStore
     @EnvironmentObject var settings:      AppSettings
     @EnvironmentObject var analytics:     AnalyticsService
+    @EnvironmentObject var signIn:        SignInService
+
+    // MARK: - Reminder trigger evaluator (T10)
+    // Owned here so it has access to all data context after the screen loads.
+    private let reminderEvaluator = ReminderTriggerEvaluator()
 
     // MARK: - Local state
 
@@ -96,6 +101,7 @@ struct MainScreenView: View {
         .background(AppGradient.screenBackground.ignoresSafeArea())
         .analyticsScreen(AnalyticsScreen.home)
         .onAppear { checkMilestones() }
+        .task { await evaluateReminders() }
         .onChange(of: dataStore.supplementStreak) { _, _ in checkMilestones() }
         .onChange(of: dataStore.userProfile.currentPhase) { _, _ in checkMilestones() }
         .onChange(of: readinessScore) { _, newScore in
@@ -582,6 +588,45 @@ struct MainScreenView: View {
         )
 
         action()
+    }
+
+    // ─────────────────────────────────────────────────────
+    // MARK: - Smart reminder evaluation (T10)
+    // Called once via .task{} when the screen loads and data is available.
+    // ─────────────────────────────────────────────────────
+
+    private func evaluateReminders() async {
+        let onboardingDate = UserDefaults.standard.object(forKey: "ft.onboardingCompletedDate") as? Date ?? Date()
+        let daysSinceOnboarding = Calendar.current.dateComponents([.day], from: onboardingDate, to: Date()).day ?? 0
+
+        let lastOpenDate = UserDefaults.standard.object(forKey: "ft.lastAppOpenDate") as? Date ?? Date()
+        let daysSinceLastOpen = Calendar.current.dateComponents([.day], from: lastOpenDate, to: Date()).day ?? 0
+        UserDefaults.standard.set(Date(), forKey: "ft.lastAppOpenDate")
+
+        let todayNutrition = todayLog?.nutritionLog
+        let currentProtein = todayNutrition?.resolvedProteinG ?? 0.0
+        let targetProtein = 180.0 // Fallback; UserPreferences does not yet expose a per-user protein target
+
+        let hasLoggedWorkout = !(todayLog?.exerciseLogs.isEmpty ?? true)
+
+        let dayType = activeDayType.rawValue
+        let exerciseCount = totalExerciseCount
+        let durationMinutes = estimatedSessionMinutes
+
+        await reminderEvaluator.evaluateAll(
+            currentProtein:       currentProtein,
+            targetProtein:        targetProtein > 0 ? targetProtein : 180,
+            isTrainingDay:        activeDayType.isTrainingDay,
+            hasLoggedWorkout:     hasLoggedWorkout,
+            readinessScore:       readinessScore,
+            dayType:              dayType,
+            exerciseCount:        exerciseCount,
+            durationMinutes:      durationMinutes,
+            isHealthKitAuthorized: healthService.isAuthorized,
+            isSignedIn:           signIn.isAuthenticated,
+            daysSinceLastOpen:    daysSinceLastOpen,
+            daysSinceOnboarding:  daysSinceOnboarding
+        )
     }
 
     // ─────────────────────────────────────────────────────

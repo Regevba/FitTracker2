@@ -4,6 +4,7 @@ struct ImportSourcePickerView: View {
     @StateObject private var orchestrator = ImportOrchestrator()
     @State private var pasteText = ""
     @State private var showPasteField = false
+    @State private var showPreview = false
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
@@ -31,6 +32,29 @@ struct ImportSourcePickerView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
+                }
+            }
+            .sheet(isPresented: $showPreview) {
+                if let plan = orchestrator.currentPlan {
+                    ImportPreviewView(
+                        plan: plan,
+                        onConfirm: {
+                            orchestrator.confirmImport()
+                            showPreview = false
+                            dismiss()
+                        },
+                        onCancel: {
+                            showPreview = false
+                            orchestrator.reset()
+                        }
+                    )
+                }
+            }
+            .onChange(of: orchestrator.currentPlan) { plan in
+                if plan != nil {
+                    if case .preview = orchestrator.state {
+                        showPreview = true
+                    }
                 }
             }
         }
@@ -109,24 +133,8 @@ struct ImportSourcePickerView: View {
         case .parsing, .mapping:
             ProgressView("Processing...")
                 .padding()
-        case .preview(let plan):
-            VStack(spacing: AppSpacing.small) {
-                Text("Found \(plan.days.flatMap(\.exercises).count) exercises")
-                    .font(AppText.callout)
-                    .foregroundStyle(AppColor.Text.primary)
-                Button {
-                    orchestrator.confirmImport()
-                    dismiss()
-                } label: {
-                    Text("Confirm & Import")
-                        .font(AppText.button)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: AppSize.ctaHeight)
-                        .background(AppColor.Status.success, in: RoundedRectangle(cornerRadius: AppRadius.button))
-                }
-                .buttonStyle(.plain)
-            }
+        case .preview:
+            EmptyView()
         case .success:
             Label("Plan imported!", systemImage: "checkmark.circle.fill")
                 .font(AppText.callout)

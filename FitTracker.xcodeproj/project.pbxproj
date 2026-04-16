@@ -119,6 +119,7 @@
 		HV100000000000000000AA06 /* SyncStatusIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA06 /* SyncStatusIndicator.swift */; };
 		HV100000000000000000AA07 /* StatusDropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA07 /* StatusDropdown.swift */; };
 		HV100000000000000000AA08 /* MilestoneModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA08 /* MilestoneModal.swift */; };
+		LF100000000000000000AA01 /* LockedFeatureOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = LF200000000000000000AA01 /* LockedFeatureOverlay.swift */; };
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = HV200000000000000000AA03 /* HomeRecommendationProvider.swift */; };
@@ -156,6 +157,7 @@
 		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
 		IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA03 /* ImportOrchestrator.swift */; };
 		IM100000000000000000AA04 /* ImportSourcePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA04 /* ImportSourcePickerView.swift */; };
+		IM100000000000000000AA05 /* ImportPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA05 /* ImportPreviewView.swift */; };
 		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
 		IT100000000000000000TS01 /* ImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS01 /* ImportTests.swift */; };
 /* End PBXBuildFile section */
@@ -175,6 +177,7 @@
 		IM200000000000000000AA02 /* ExerciseMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExerciseMapper.swift; sourceTree = "<group>"; };
 		IM200000000000000000AA03 /* ImportOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportOrchestrator.swift; sourceTree = "<group>"; };
 		IM200000000000000000AA04 /* ImportSourcePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportSourcePickerView.swift; sourceTree = "<group>"; };
+		IM200000000000000000AA05 /* ImportPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportPreviewView.swift; sourceTree = "<group>"; };
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
@@ -296,6 +299,7 @@
 		HV200000000000000000AA06 /* SyncStatusIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncStatusIndicator.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA07 /* StatusDropdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusDropdown.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA08 /* MilestoneModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneModal.swift; sourceTree = "<group>"; };
+		LF200000000000000000AA01 /* LockedFeatureOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockedFeatureOverlay.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		HV200000000000000000AA03 /* HomeRecommendationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRecommendationProvider.swift; sourceTree = "<group>"; };
@@ -570,6 +574,7 @@
 			isa = PBXGroup;
 			children = (
 				IM200000000000000000AA04 /* ImportSourcePickerView.swift */,
+				IM200000000000000000AA05 /* ImportPreviewView.swift */,
 			);
 			path = Import;
 			sourceTree = "<group>";
@@ -739,6 +744,7 @@
 				HV200000000000000000AA06 /* SyncStatusIndicator.swift */,
 				HV200000000000000000AA07 /* StatusDropdown.swift */,
 				HV200000000000000000AA08 /* MilestoneModal.swift */,
+				LF200000000000000000AA01 /* LockedFeatureOverlay.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -941,6 +947,7 @@
 				HV100000000000000000AA06 /* SyncStatusIndicator.swift in Sources */,
 				HV100000000000000000AA07 /* StatusDropdown.swift in Sources */,
 				HV100000000000000000AA08 /* MilestoneModal.swift in Sources */,
+				LF100000000000000000AA01 /* LockedFeatureOverlay.swift in Sources */,
 				BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */,
 				BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */,
 				HV100000000000000000AA03 /* HomeRecommendationProvider.swift in Sources */,
@@ -1040,6 +1047,7 @@
 				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,
 				IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */,
 				IM100000000000000000AA04 /* ImportSourcePickerView.swift in Sources */,
+				IM100000000000000000AA05 /* ImportPreviewView.swift in Sources */,
 				NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,17 +7,17 @@ protocol ImportParser {
 }
 
 // Imported plan model
-struct ImportedPlan: Codable {
+struct ImportedPlan: Codable, Equatable {
     let name: String
     var days: [ImportedDay]
 }
 
-struct ImportedDay: Codable {
+struct ImportedDay: Codable, Equatable {
     let name: String // e.g. "Day 1 — Push"
     var exercises: [ImportedExercise]
 }
 
-struct ImportedExercise: Codable {
+struct ImportedExercise: Codable, Equatable {
     let rawName: String
     let sets: Int
     let reps: String // "8" or "8-10"
