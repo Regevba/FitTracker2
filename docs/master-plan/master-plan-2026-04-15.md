@@ -18,7 +18,7 @@ FitMe is a production-grade iOS fitness app with **49+ shipped features/improvem
 |---|---|---|
 | Shipped items | 16 | 44 |
 | Tests | 55 | 197+ (including 29 evals) |
-| Framework | v4.3 | v5.1 (SoC suite, 63% overhead reduction) |
+| Framework | v4.3 | v6.0 (SoC suite, measurement instrumentation) |
 | V2 screens | 1 (Onboarding) | 6/6 complete |
 | Dashboard alerts | 22+ | 0 |
 | Source truth score | ~70 | 100 |
@@ -136,7 +136,7 @@ Requires Gate C + iOS core stable + backend green + measurement live.
 
 ---
 
-## Framework Status: v5.2 (Dispatch Intelligence)
+## Framework Status: v6.0 (Framework Measurement)
 
 **PM Workflow v5.1** with 8 SoC-on-Software optimizations:
 
