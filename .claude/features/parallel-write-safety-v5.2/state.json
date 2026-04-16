@@ -1,0 +1,75 @@
+{
+  "feature": "parallel-write-safety-v5.2",
+  "created": "2026-04-16T05:40:00Z",
+  "updated": "2026-04-16T05:40:00Z",
+  "current_phase": "research",
+  "work_type": "feature",
+  "work_subtype": "framework_infrastructure",
+  "has_ui": false,
+  "requires_analytics": false,
+  "parent_feature": null,
+  "description": "v5.2 Sub-Project B: Parallel Write Safety \u2014 Snapshot/Rollback + Code Region Mirror Pattern for safe concurrent code writes",
+  "transitions": [
+    {
+      "from": "init",
+      "to": "research",
+      "timestamp": "2026-04-16T05:40:00Z",
+      "approved_by": "system",
+      "note": "Research already done during v5.1 stress test. Docs: parallel-code-write-safety-research.md"
+    }
+  ],
+  "phases": {
+    "research": {
+      "status": "approved",
+      "sources": [
+        "docs/architecture/parallel-code-write-safety-research.md"
+      ]
+    },
+    "prd": {
+      "status": "pending"
+    },
+    "tasks": {
+      "status": "pending"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "reason": "No UI \u2014 framework infrastructure"
+    },
+    "implementation": {
+      "status": "pending"
+    },
+    "testing": {
+      "status": "pending"
+    },
+    "review": {
+      "status": "pending"
+    },
+    "merge": {
+      "status": "pending"
+    },
+    "documentation": {
+      "status": "pending"
+    }
+  },
+  "metrics": {
+    "primary": {
+      "name": "same_file_conflict_rate",
+      "baseline": "0 (luck-dependent)",
+      "target": "0 (by design)"
+    },
+    "secondary": [
+      {
+        "name": "token_savings_per_agent",
+        "baseline": 0,
+        "target": 50
+      },
+      {
+        "name": "rollback_success_rate",
+        "baseline": null,
+        "target": 100
+      }
+    ],
+    "kill_criteria": "If mirror pattern adds >20% overhead to dispatch cycle time, revert to direct writes"
+  },
+  "tasks": []
+}

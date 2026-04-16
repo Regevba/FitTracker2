@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-16T04:48:00Z",
+  "updated": "2026-04-16T05:40:00Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -1082,6 +1082,63 @@
           "metrics": {
             "tests_passing": 35,
             "build_verified": true
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "parallel-write-safety-v5.2-2026-04",
+      "title": "Parallel Write Safety \u2014 v5.2 Sub-Project B (Snapshot + Mirror)",
+      "status": "in_progress",
+      "work_type": "feature",
+      "started_at": "2026-04-16T05:40:00Z",
+      "updated_at": "2026-04-16T05:40:00Z",
+      "framework_version": "5.2",
+      "parent_case": "v5.2-stress-test-continuation-2026-04",
+      "skills_used": [
+        "pm-workflow",
+        "dev"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 0,
+        "repo_files_updated": 0,
+        "tests_passing": 0,
+        "build_verified": false
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 0,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "success_cases": [],
+      "failure_cases": [],
+      "next_checkpoints": [
+        "Design spec (brainstorming)",
+        "Implementation plan (tasks.md)",
+        "Snapshot/rollback system",
+        "Mirror pattern implementation",
+        "Validation stress test"
+      ],
+      "artifacts": [
+        "docs/architecture/parallel-code-write-safety-research.md"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-16T05:40:00Z",
+          "label": "Sub-Project B initiated \u2014 PM flow active",
+          "summary": "Research approved (from v5.1 stress test). PM flow started at research phase. Case study opened. Monitoring active.",
+          "metrics": {
+            "tests_passing": 0,
+            "build_verified": false
           }
         }
       ]
