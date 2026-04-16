@@ -246,6 +246,90 @@ When writing the case study, annotate velocity claims based on cache hit rate:
 
 This annotation does NOT change the CU calculation. It adds interpretive context to min/CU comparisons.
 
+## Eval Coverage Gate Protocol (v6.0 — AI Quality Assurance)
+
+Ensures AI-touching features have verifiable eval coverage before shipping. Non-AI features auto-pass.
+
+### During PRD Phase (AI-touching features only)
+
+1. Identify all **AI behaviors** in the PRD:
+   - Recommendations (nutrition, training, recovery)
+   - Scoring (readiness, confidence, tier assignment)
+   - Classification (cohort, goal-awareness, intensity selection)
+   - Any output that depends on AI/ML logic
+2. For each behavior, define minimum eval coverage:
+   - **Golden I/O evals**: >= 3 per behavior (known-good input → expected output)
+   - **Quality heuristic evals**: >= 2 per behavior (output meets quality bar)
+   - **Tier/edge case evals**: >= 1 per behavior (boundary conditions)
+3. Write the coverage plan to the PRD under `### Test & Eval Requirements`
+4. Store the full behavior list in `state.json → phases.testing.eval_results.uncovered_behaviors`
+
+### During Testing Phase
+
+1. Run evals: `cd ai-engine && pytest evals/ -v`
+2. Parse results and write to `state.json → phases.testing.eval_results`:
+   - `total_evals`, `passing`, `failing`, `eval_pass_rate`
+   - `categories` breakdown (golden_io, quality_heuristic, tier_behavior, etc.)
+   - Update `uncovered_behaviors` — remove behaviors that now have evals
+3. **Gate check**: `min_eval_coverage_met` = every behavior in the original list has >= 1 passing eval
+4. If **gate fails**: BLOCK transition to Review phase
+   - Display: "Eval gate failed: {N} behaviors still uncovered: {list}"
+   - User can override with justification → record in `transitions[].note`: "Eval gate overridden: {reason}"
+5. If **gate passes**: Set `min_eval_coverage_met = true`, proceed normally
+
+### Non-AI Features
+
+- `eval_results` stays at defaults (total_evals: 0, passing: 0)
+- `min_eval_coverage_met` auto-set to `true`
+- Gate does not block
+
+### How to Detect AI-Touching Features
+
+A feature touches AI if ANY of these are true:
+- PRD references AIOrchestrator, ReadinessEngine, NutritionRecommender, TrainingRecommender, or CohortIntelligence
+- `state.json → has_ui` is true AND the feature modifies views that display AI-generated content
+- The task list includes changes to `ai-engine/` directory
+- The PRD has a "### AI Behaviors" or "### Recommendation Logic" section
+
+## Monitoring Sync Protocol (v6.0 — Auto-Update Case Study Monitoring)
+
+Phase transitions automatically update `case-study-monitoring.json`. This replaces manual monitoring updates with structured, event-driven writes.
+
+### Phase Transition Triggers
+
+| Transition | Fields Updated in case-study-monitoring.json |
+|-----------|----------------------------------------------|
+| research → prd | `process_metrics.research_complete = true` |
+| prd → tasks | `process_metrics.prd_approved = true` |
+| tasks → implement | `process_metrics.tasks_defined = state.phases.tasks.count` |
+| implement → testing | `process_metrics.repo_files_added` and `repo_files_updated` from `git diff --stat` |
+| testing → review | `process_metrics.tests_passing`, `build_verified`, `ai_quality_metrics.eval_pass_rate`, `eval_total`, `eval_failed[]` |
+| review → merge | `quality_metrics.critical_findings`, `high_findings`, `medium_findings` from review |
+| merge → docs | `process_metrics.merged = true`, `pr_number` from state.json |
+| docs → complete | Add snapshot with label `"feature-complete-auto-{ISO 8601}"`, write `timing.total_wall_time_minutes` |
+
+### Snapshot Protocol
+
+Every auto-sync also adds a snapshot entry:
+```json
+{
+  "timestamp": "{ISO 8601}",
+  "label": "auto-sync-{from_phase}-to-{to_phase}",
+  "metrics": { "/* current metrics at time of transition */" }
+}
+```
+
+### Fallback
+
+If `case-study-monitoring.json` does not have an entry for the current feature:
+1. Create one with the feature slug as `case_id`
+2. Set `status: "in_progress"`, `framework_version`, `work_type` from state.json
+3. Then proceed with the sync
+
+### Manual Override
+
+The auto-sync writes structured fields only. Narrative notes, decisions, and custom metrics are still added manually. Auto-synced snapshots are labeled with `auto-sync-` prefix to distinguish them from manually written ones.
+
 ## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
 
 When skills execute in a known chain (e.g., Phase 3 dispatch chain), pass the output of each skill inline to the next skill instead of writing to disk and re-reading.
