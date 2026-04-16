@@ -1,34 +1,34 @@
 {
-  "measured_at": "2026-04-16T14:35:19Z",
+  "measured_at": "2026-04-16T19:48:10Z",
   "model": "claude-opus-4-6",
   "tokenizer": "word-count-estimate",
   "layers": {
     "skills": {
       "files": 11,
       "tokens": 32404,
-      "pct_of_total": 0.3935
+      "pct_of_total": 0.326
     },
     "cache": {
       "files": 29,
       "tokens": 20407,
-      "pct_of_total": 0.2478
+      "pct_of_total": 0.2053
     },
     "shared": {
-      "files": 22,
-      "tokens": 19587,
-      "pct_of_total": 0.2378
+      "files": 23,
+      "tokens": 36626,
+      "pct_of_total": 0.3685
     },
     "adapters": {
       "files": 21,
       "tokens": 9225,
-      "pct_of_total": 0.112
+      "pct_of_total": 0.0928
     },
     "hadf": {
       "files": 3,
       "tokens": 733,
-      "pct_of_total": 0.0089
+      "pct_of_total": 0.0074
     }
   },
-  "total_tokens": 82356,
-  "context_budget_pct": 0.082356
+  "total_tokens": 99395,
+  "context_budget_pct": 0.099395
 }

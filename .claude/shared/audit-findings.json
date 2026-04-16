@@ -32,7 +32,9 @@
       "ui": 25
     },
     "by_validation": {
-      "framework-only": 185
+      "framework-only": 146,
+      "cross-referenced": 18,
+      "external-automated": 21
     },
     "by_layer": {
       "surface": 140,
@@ -101,7 +103,7 @@
       "evidence": "snapshot.genderIdentity = \"prefer_not_to_say\"",
       "recommended_fix": "Read profile.genderIdentity and map to valid values, fallback to prefer_not_to_say only when nil",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -117,7 +119,7 @@
       "evidence": "DayType.allCases.filter(\\.isTrainingDay).count",
       "recommended_fix": "Source from user's actual program schedule or UserPreferences.trainingDaysPerWeek",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -133,7 +135,7 @@
       "evidence": "snapshot.dietPattern = \"standard\"",
       "recommended_fix": "Map from UserPreferences diet field, standard as nil fallback only",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -149,7 +151,7 @@
       "evidence": "Returns \"moderate\" when no recent log exists",
       "recommended_fix": "Return String? and nil when no log present. Propagate nil through contribute()",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -373,7 +375,7 @@
       "evidence": "sessionToken: \"simulator-debug-token\" saved to Keychain",
       "recommended_fix": "Gate behind explicit developer flag, not just #if DEBUG + Simulator check",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -389,7 +391,7 @@
       "evidence": "sessionToken: \"review-session-token\" with no DEBUG guard",
       "recommended_fix": "Wrap in #if DEBUG or use a build-configuration-specific flag",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -437,7 +439,7 @@
       "evidence": "Missing continuation.resume() in timeout path",
       "recommended_fix": "Resume continuation with nil or error in timeout path, cancel timeout on normal completion",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -453,7 +455,7 @@
       "evidence": "No server-side verification of WebAuthn assertion",
       "recommended_fix": "Send assertion to backend for verification, obtain proper backend token",
       "effort": "large",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -837,7 +839,7 @@
       "evidence": "No call sites found",
       "recommended_fix": "Remove dead code",
       "effort": "trivial",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -853,7 +855,7 @@
       "evidence": ".font(.system(size: tight ? 14 : 16.5, weight: .medium, design: .rounded))",
       "recommended_fix": "Add AppText scale variants using @ScaledMetric anchor, replace all 12 calls",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -869,7 +871,7 @@
       "evidence": "Color.status.success, Color.accent.cyan, Color.accent.gold throughout views",
       "recommended_fix": "Global rename to AppColor.Status.* and AppColor.Accent.*, delete deprecated extension block",
       "effort": "low",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -885,7 +887,7 @@
       "evidence": "private let bgOrange1 = Color.appOrange1",
       "recommended_fix": "Replace with AppColor.*: appOrange1\u2192Brand.warmSoft, appBlue2\u2192Brand.secondary, etc. Delete deprecated block.",
       "effort": "low",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -1093,7 +1095,7 @@
       "evidence": "audit-findings.json: 6.1, others: 6.0",
       "recommended_fix": "Align all configs to same version. If 6.1 is the HADF extension, update all configs.",
       "effort": "trivial",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "bias_risk": "low",
       "status": "open",
       "layer": 1
@@ -1161,7 +1163,7 @@
       "evidence": "All counters are 0",
       "recommended_fix": "Either run a backfill from existing case study data, or fix the measurement trigger in SKILL.md",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "bias_risk": "medium",
       "status": "open",
       "layer": 1
@@ -1263,7 +1265,7 @@
       "evidence": "All _index.json entries: []",
       "recommended_fix": "Fix cache indexing to populate _index.json on write, or switch to directory-scan discovery",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "bias_risk": "medium",
       "status": "open",
       "layer": 1
@@ -1399,7 +1401,7 @@
       "evidence": "80% vs 75% discrepancy",
       "recommended_fix": "Document denominator explicitly in case study",
       "effort": "trivial",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "bias_risk": "high",
       "status": "open",
       "layer": 1
@@ -1433,7 +1435,7 @@
       "evidence": "find FitTrackerTests -name '*.swift' | xargs grep -l 'EncryptionService' \u2192 zero results",
       "recommended_fix": "Add EncryptionServiceTests.swift covering: round-trip encrypt/decrypt, wrong-key rejection, IV uniqueness, empty-data edge, corrupted-ciphertext handling, keychain key regeneration",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1449,7 +1451,7 @@
       "evidence": "find FitTrackerTests -name '*.swift' | xargs grep -l 'AuthManager' \u2192 zero results",
       "recommended_fix": "Add AuthManagerTests.swift covering: initial state, authentication transition, lock/unlock cycle, session expiry, concurrent sign-in protection",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1465,7 +1467,7 @@
       "evidence": "No file in FitTrackerTests/ imports or tests CloudKitSyncService behaviour",
       "recommended_fix": "Add CloudKitSyncServiceTests.swift with mock CKDatabase. Cover: zone setup, record serialisation, conflict resolution, offline queue",
       "effort": "high",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1497,7 +1499,7 @@
       "evidence": "find FitTrackerTests -name '*.swift' | xargs grep -l 'HealthKitService' \u2192 zero results",
       "recommended_fix": "Add HealthKitServiceTests.swift with mock HKHealthStore. Cover: permission grant/deny, HRV mapping, nil-data degradation",
       "effort": "high",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1545,7 +1547,7 @@
       "evidence": "grep across FitTrackerTests for any adapter name \u2192 zero results",
       "recommended_fix": "Add AIAdaptersTests.swift with golden I/O per adapter. Focus on edge cases: zero meals, nil biometrics, no training logs",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1561,7 +1563,7 @@
       "evidence": "zero references in test files",
       "recommended_fix": "Add tests: store/retrieve round-trip, TTL expiry, segment isolation, clear()",
       "effort": "low",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1609,7 +1611,7 @@
       "evidence": "zero references in test files",
       "recommended_fix": "Add WatchConnectivityServiceTests.swift with mock WCSession",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1657,7 +1659,7 @@
       "evidence": "zero references in test files",
       "recommended_fix": "Add basic tests: defaults match spec, UserDefaults round-trip, migration",
       "effort": "low",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1689,7 +1691,7 @@
       "evidence": "zero references in test files",
       "recommended_fix": "Add tests: GoalProfile from each NutritionGoalMode, default when nil",
       "effort": "low",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1817,7 +1819,7 @@
       "evidence": "No FitTrackerUITests target found",
       "recommended_fix": "Add FitTrackerUITests: sign-in, onboarding, home readiness card, nutrition meal-log flow",
       "effort": "high",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -1913,7 +1915,7 @@
       "evidence": "wc -l: 2141 lines",
       "recommended_fix": "Archive to _historical/ directory",
       "effort": "trivial",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1929,7 +1931,7 @@
       "evidence": "wc -l: 1170 lines, actively compiled",
       "recommended_fix": "Extract each category destination to its own file; SettingsView becomes ~200-line router",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1945,7 +1947,7 @@
       "evidence": "wc -l: 1112 lines",
       "recommended_fix": "Archive to _historical/",
       "effort": "trivial",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1961,7 +1963,7 @@
       "evidence": "wc -l: 1155 lines, 17 @State properties",
       "recommended_fix": "Extract each tab into own view, create MealEntryViewModel",
       "effort": "large",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1977,7 +1979,7 @@
       "evidence": "wc -l: 1189 lines",
       "recommended_fix": "Archive to _historical/",
       "effort": "trivial",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -1993,7 +1995,7 @@
       "evidence": "wc -l: 660 lines, 12 @State properties",
       "recommended_fix": "Extract HomeViewModel for milestone detection and state management",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -2137,7 +2139,7 @@
       "evidence": "No references found outside the files themselves",
       "recommended_fix": "Remove or wire into import feature nav",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -2153,7 +2155,7 @@
       "evidence": "No navigation reference found",
       "recommended_fix": "Wire into notification permission flow or remove",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -2169,7 +2171,7 @@
       "evidence": "17 @State vars, async network calls in view body",
       "recommended_fix": "Extract MealEntryViewModel",
       "effort": "medium",
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open",
       "layer": 1
     },
@@ -2281,7 +2283,7 @@
       "evidence": "_ = outcome",
       "recommended_fix": "Wire to RecommendationMemory or remove dead construction",
       "effort": "small",
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open",
       "layer": 1
     },
@@ -2399,7 +2401,7 @@
         "BE-005"
       ],
       "confidence": 0.95,
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open"
     },
     {
@@ -2613,7 +2615,7 @@
         "BE-017"
       ],
       "confidence": 0.9,
-      "validation": "framework-only",
+      "validation": "cross-referenced",
       "status": "open"
     },
     {
@@ -2693,7 +2695,7 @@
         "BE-026"
       ],
       "confidence": 0.9,
-      "validation": "framework-only",
+      "validation": "external-automated",
       "status": "open"
     },
     {
@@ -3203,5 +3205,31 @@
     "skill_routing_valid": null,
     "hadf_integrity": null,
     "bias_risk_findings": []
+  },
+  "health_scorecard": {
+    "ai": 0,
+    "backend": 0,
+    "design_system": 46,
+    "framework": 42,
+    "tests": 0,
+    "ui": 9,
+    "overall": 16.2
+  },
+  "external_validation": {
+    "build": "SUCCEEDED",
+    "tests_passed": 231,
+    "tests_failed": 0,
+    "token_budget_measured": 99395,
+    "token_budget_previous": 79138,
+    "token_budget_drift_pct": 25.6,
+    "large_file_line_counts": {
+      "TrainingPlanView.swift": 2141,
+      "SettingsView_v1.swift": 1189,
+      "SettingsView_v2.swift": 1170,
+      "MealEntrySheet.swift": 1155,
+      "NutritionView_v1.swift": 1112,
+      "SignInService.swift": 965,
+      "EncryptionService.swift": 741
+    }
   }
 }
