@@ -403,6 +403,25 @@
           "current": null
         }
       }
+    },
+    {
+      "id": "framework-measurement-v6",
+      "name": "Framework Measurement v6.0",
+      "prd": "docs/superpowers/specs/2026-04-16-framework-measurement-v6-design.md",
+      "status": "shipped",
+      "phase": "complete",
+      "category": "tooling",
+      "pain_point": "Case study data relies on estimated wall times, narrative cache rates, and binary CU factors — limiting precision and external benchmarking",
+      "metrics": {
+        "dvs_deterministic": {
+          "target": 8,
+          "current": 7
+        },
+        "token_overhead_pct": {
+          "target": 5,
+          "current": 7.91
+        }
+      }
     }
   ]
 }

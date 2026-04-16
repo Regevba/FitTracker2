@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture & Usage Guide
 
-> **Version:** 5.2 | **Updated:** 2026-04-16 | **Branch:** `main`
+> **Version:** 6.0 | **Updated:** 2026-04-16 | **Branch:** `main`
 >
 > This is the **full deep-dive guide** for the skills ecosystem — how it was built, why each piece exists, how to use each skill independently, and how they all connect through the hub.
 > For a quick-reference system overview with diagrams and tables, see the [Architecture One-Pager](architecture-one-pager.md).

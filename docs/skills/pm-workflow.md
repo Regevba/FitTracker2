@@ -1,4 +1,4 @@
-# `/pm-workflow` — The Hub (v5.2)
+# `/pm-workflow` — The Hub (v6.0)
 
 > **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
 >
@@ -283,5 +283,6 @@ Every version was tested through real feature work. The case study column links 
 | v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens) | Framework itself | [SoC Report](../architecture/soc-savings-report-v5.1.md) |
 | v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Arch (#79, 13 tasks, 1.5h) | [AI Engine CS](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
 | v5.2 | 2026-04-16 | Dispatch Intelligence (3-stage pipeline, tool budgets, permission routing) + Parallel Write Safety (snapshot/rollback, region mirrors, progressive learning) | Stress test (18 Swift, 35 tests) | — |
+| v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | — |
 
 For the full narrative behind each version, see [evolution.md](evolution.md). For system schematics, see [architecture-one-pager.md](architecture-one-pager.md). For the detailed deep-dive, see [architecture.md](architecture.md).

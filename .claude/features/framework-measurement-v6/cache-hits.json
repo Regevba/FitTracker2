@@ -1,0 +1,27 @@
+{
+  "feature": "framework-measurement-v6",
+  "framework_version": "6.0",
+  "sessions": [
+    {
+      "session_id": "2026-04-16T14:00:00Z",
+      "hits": [],
+      "misses": [],
+      "summary": {
+        "L1_hits": 0, "L1_misses": 0,
+        "L2_hits": 0, "L2_misses": 0,
+        "L3_hits": 0, "L3_misses": 0,
+        "total_hit_rate": 0.0
+      }
+    }
+  ],
+  "aggregate": {
+    "total_hits": 0,
+    "total_misses": 0,
+    "hit_rate": 0.0,
+    "L1_hit_rate": 0.0,
+    "L2_hit_rate": 0.0,
+    "L3_hit_rate": 0.0,
+    "most_valuable_hit": null,
+    "costliest_miss": null
+  }
+}

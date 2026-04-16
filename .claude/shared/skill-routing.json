@@ -1,7 +1,7 @@
 {
   "version": "5.0",
   "updated": "2026-04-14T06:00:00Z",
-  "framework_version": "5.2",
+  "framework_version": "6.0",
   "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1). v4.0 adds model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), speculative preloading (item 6), and systolic chain protocol (item 7). v4.1 adds task complexity gate (item 8) \u2014 big.LITTLE hybrid dispatch.",
   "load_mode": "on_demand",
   "model_tiering": {

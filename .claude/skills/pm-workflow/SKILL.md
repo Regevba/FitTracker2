@@ -1,6 +1,6 @@
 ---
 name: pm-workflow
-description: "Start or resume a v5.1 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. v5.1 adds model tiering, batch dispatch, result forwarding, speculative cache pre-loading, systolic chain protocol, and task complexity gate (big.LITTLE hybrid dispatch). Invoke with /pm-workflow {feature-name}."
+description: "Start or resume a v6.0 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. v6.0 adds deterministic measurement instrumentation (phase timing, cache hit tracking, eval coverage gates, CU v2 continuous factors) on top of v5.1 model tiering, batch dispatch, result forwarding, speculative cache pre-loading, systolic chain protocol, and task complexity gate (big.LITTLE hybrid dispatch). Invoke with /pm-workflow {feature-name}."
 ---
 
 # Product Management Lifecycle: $ARGUMENTS
@@ -148,6 +148,187 @@ Add your code within this region. Return ONLY the modified region content.
 - project.pbxproj edits (use ID-prefix isolation instead — proven in stress test)
 - Files only one agent will touch (no contention risk)
 - Files under 50 lines (overhead exceeds benefit)
+
+## Phase Timing Protocol (v6.0 — Measurement Instrumentation)
+
+Every phase transition now records precise timestamps in `state.json → timing`. This replaces estimated wall times with measured durations.
+
+### On Phase Start (after user approves transition)
+
+1. Write `timing.phases[{phase}].started_at` = current ISO 8601 timestamp
+2. If this is the **first phase** of the feature, also write `timing.session_start` = now
+3. If resuming after a break, ask the user: "How long were you away?" and add the answer to the previous phase's `paused_minutes`
+
+### On Phase End (before requesting next transition approval)
+
+1. Write `timing.phases[{phase}].ended_at` = current ISO 8601 timestamp
+2. Compute `timing.phases[{phase}].duration_minutes` = `(ended_at - started_at)` in minutes
+3. Update `state.json → updated` timestamp
+
+### On Feature Completion (current_phase → "complete")
+
+1. Write `timing.session_end` = current ISO 8601 timestamp
+2. Compute `timing.total_wall_time_minutes` = sum of all `timing.phases[*].duration_minutes`
+3. Set `timing.time_source` = `"measured"`
+
+### Multi-Session Features
+
+If a feature spans multiple conversations/sessions:
+1. On session start: append a new entry to `timing.sessions[]` with `started_at` = now and `phases_active` = [current phase]
+2. On session end: write `ended_at` and compute `duration_minutes` for the current session entry
+3. `timing.total_wall_time_minutes` = sum of all `timing.sessions[*].duration_minutes`
+
+### Parallel Features
+
+When multiple features are being worked on concurrently (stress tests, parallel dispatch):
+1. Set `timing.parallel_context.concurrent_features` = count of active features
+2. Set `timing.parallel_context.concurrent_feature_slugs` = list of other feature slugs
+3. Set `timing.parallel_context.is_stress_test` = true if this is a deliberate parallel test
+
+## Cache Tracking Protocol (v6.0 — Deterministic Hit Logging)
+
+Replace probabilistic cache health checks with deterministic per-event logging. Every cache access is recorded in `.claude/features/{feature}/cache-hits.json`.
+
+### On Skill Load (reading from .claude/cache/{skill}/)
+
+1. Check if a cache entry exists for the current task type and context
+2. **HIT**: Append to `cache-hits.json → sessions[current].hits[]`:
+   ```json
+   {
+     "timestamp": "{ISO 8601}",
+     "cache_level": "L1|L2|L3",
+     "skill": "{skill-name}",
+     "cache_key": "{skill}:{task_type}:{context}",
+     "hit_type": "exact|adapted",
+     "task_context": "{task description from tasks list}"
+   }
+   ```
+3. **MISS**: Append to `cache-hits.json → sessions[current].misses[]`:
+   ```json
+   {
+     "timestamp": "{ISO 8601}",
+     "cache_level": "L1|L2|L3",
+     "skill": "{skill-name}",
+     "expected_key": "{key that was looked up}",
+     "miss_reason": "no_entry|stale|wrong_context",
+     "task_context": "{task description}"
+   }
+   ```
+4. **STALE** (SHA256 of source file doesn't match `invalidated_by` hash): Log as miss with `miss_reason: "stale"`
+
+### Hit Type Taxonomy
+
+- `exact`: Cache entry used directly without modification
+- `adapted`: Cache entry used as a starting point but modified for current context
+- `stale`: Entry existed but was outdated — counted as a miss
+
+### On Phase Completion
+
+1. Compute session summary: count L1/L2/L3 hits and misses
+2. Write `total_hit_rate = total_hits / (total_hits + total_misses)` to session summary
+
+### On Feature Completion
+
+1. Finalize `aggregate` section in `cache-hits.json` (totals across all sessions)
+2. Identify `most_valuable_hit` (entry that saved the most rework) and `costliest_miss` (pattern that had to be built from scratch)
+3. Update `.claude/shared/cache-metrics.json`:
+   - Increment `by_framework_version[current].features_measured`
+   - Recompute `avg_hit_rate` and `L1_avg/L2_avg/L3_avg`
+   - Add to `cache_health_trend[]` with date and hit rate
+4. Check promotion candidates: any L1 entry hit by 2+ different skills → add to `promotion_candidates[]`
+
+### Velocity Annotation
+
+When writing the case study, annotate velocity claims based on cache hit rate:
+- `hit_rate >= 0.6`: velocity is framework-attributable (no annotation needed)
+- `hit_rate 0.3–0.6`: annotate as "partial cache" — velocity partially reflects practitioner skill
+- `hit_rate < 0.3`: annotate as "cold cache" — velocity may significantly reflect practitioner skill over framework
+
+This annotation does NOT change the CU calculation. It adds interpretive context to min/CU comparisons.
+
+## Eval Coverage Gate Protocol (v6.0 — AI Quality Assurance)
+
+Ensures AI-touching features have verifiable eval coverage before shipping. Non-AI features auto-pass.
+
+### During PRD Phase (AI-touching features only)
+
+1. Identify all **AI behaviors** in the PRD:
+   - Recommendations (nutrition, training, recovery)
+   - Scoring (readiness, confidence, tier assignment)
+   - Classification (cohort, goal-awareness, intensity selection)
+   - Any output that depends on AI/ML logic
+2. For each behavior, define minimum eval coverage:
+   - **Golden I/O evals**: >= 3 per behavior (known-good input → expected output)
+   - **Quality heuristic evals**: >= 2 per behavior (output meets quality bar)
+   - **Tier/edge case evals**: >= 1 per behavior (boundary conditions)
+3. Write the coverage plan to the PRD under `### Test & Eval Requirements`
+4. Store the full behavior list in `state.json → phases.testing.eval_results.uncovered_behaviors`
+
+### During Testing Phase
+
+1. Run evals: `cd ai-engine && pytest evals/ -v`
+2. Parse results and write to `state.json → phases.testing.eval_results`:
+   - `total_evals`, `passing`, `failing`, `eval_pass_rate`
+   - `categories` breakdown (golden_io, quality_heuristic, tier_behavior, etc.)
+   - Update `uncovered_behaviors` — remove behaviors that now have evals
+3. **Gate check**: `min_eval_coverage_met` = every behavior in the original list has >= 1 passing eval
+4. If **gate fails**: BLOCK transition to Review phase
+   - Display: "Eval gate failed: {N} behaviors still uncovered: {list}"
+   - User can override with justification → record in `transitions[].note`: "Eval gate overridden: {reason}"
+5. If **gate passes**: Set `min_eval_coverage_met = true`, proceed normally
+
+### Non-AI Features
+
+- `eval_results` stays at defaults (total_evals: 0, passing: 0)
+- `min_eval_coverage_met` auto-set to `true`
+- Gate does not block
+
+### How to Detect AI-Touching Features
+
+A feature touches AI if ANY of these are true:
+- PRD references AIOrchestrator, ReadinessEngine, NutritionRecommender, TrainingRecommender, or CohortIntelligence
+- `state.json → has_ui` is true AND the feature modifies views that display AI-generated content
+- The task list includes changes to `ai-engine/` directory
+- The PRD has a "### AI Behaviors" or "### Recommendation Logic" section
+
+## Monitoring Sync Protocol (v6.0 — Auto-Update Case Study Monitoring)
+
+Phase transitions automatically update `case-study-monitoring.json`. This replaces manual monitoring updates with structured, event-driven writes.
+
+### Phase Transition Triggers
+
+| Transition | Fields Updated in case-study-monitoring.json |
+|-----------|----------------------------------------------|
+| research → prd | `process_metrics.research_complete = true` |
+| prd → tasks | `process_metrics.prd_approved = true` |
+| tasks → implement | `process_metrics.tasks_defined = state.phases.tasks.count` |
+| implement → testing | `process_metrics.repo_files_added` and `repo_files_updated` from `git diff --stat` |
+| testing → review | `process_metrics.tests_passing`, `build_verified`, `ai_quality_metrics.eval_pass_rate`, `eval_total`, `eval_failed[]` |
+| review → merge | `quality_metrics.critical_findings`, `high_findings`, `medium_findings` from review |
+| merge → docs | `process_metrics.merged = true`, `pr_number` from state.json |
+| docs → complete | Add snapshot with label `"feature-complete-auto-{ISO 8601}"`, write `timing.total_wall_time_minutes` |
+
+### Snapshot Protocol
+
+Every auto-sync also adds a snapshot entry:
+```json
+{
+  "timestamp": "{ISO 8601}",
+  "label": "auto-sync-{from_phase}-to-{to_phase}",
+  "metrics": { "/* current metrics at time of transition */" }
+}
+```
+
+### Fallback
+
+If `case-study-monitoring.json` does not have an entry for the current feature:
+1. Create one with the feature slug as `case_id`
+2. Set `status: "in_progress"`, `framework_version`, `work_type` from state.json
+3. Then proceed with the sync
+
+### Manual Override
+
+The auto-sync writes structured fields only. Narrative notes, decisions, and custom metrics are still added manually. Auto-synced snapshots are labeled with `auto-sync-` prefix to distinguish them from manually written ones.
 
 ## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
 

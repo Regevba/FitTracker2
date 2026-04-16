@@ -41,8 +41,9 @@ FitMe is a production-grade iOS fitness app with 11 shipped core features, zero-
 - **v5.0** (2026-04-14) — SoC-on-Software: skill-on-demand + cache compression (54K tokens reclaimed)
 - **v5.1** (2026-04-14) — Complete SoC suite (8/8 items): model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains, task complexity gate
 - **v5.2** (2026-04-16) — Dispatch Intelligence (3-stage pipeline, tool budgets, complexity scoring) + Parallel Write Safety (snapshot/rollback, 3-tier mirror extraction, progressive markers)
+- **v6.0** (2026-04-16) — Framework Measurement: deterministic phase timing, cache hit tracking, eval gates, CU v2, rolling baselines
 
-**Current framework version: v5.2.** Full evolution history: `docs/skills/evolution.md`
+**Current framework version: v6.0.** Full evolution history: `docs/skills/evolution.md`
 
 ---
 

@@ -91,7 +91,38 @@
             "tests_added": { "type": "integer" },
             "instrumentation_verified": { "type": "boolean" },
             "analytics_tests_added": { "type": "integer", "default": 0, "description": "Number of analytics-specific unit tests added" },
-            "analytics_verification_passed": { "type": "boolean", "default": false, "description": "Whether all analytics events, screens, and consent gating verified via MockAnalyticsAdapter" }
+            "analytics_verification_passed": { "type": "boolean", "default": false, "description": "Whether all analytics events, screens, and consent gating verified via MockAnalyticsAdapter" },
+            "eval_results": {
+              "type": "object",
+              "description": "Eval coverage for AI-touching features. Added in v6.0. Non-AI features: defaults (0/0), gate auto-passes.",
+              "properties": {
+                "total_evals": { "type": "integer", "default": 0 },
+                "passing": { "type": "integer", "default": 0 },
+                "failing": { "type": "integer", "default": 0 },
+                "eval_pass_rate": { "type": ["number", "null"] },
+                "categories": {
+                  "type": "object",
+                  "description": "Eval counts by category. Keys: golden_io, quality_heuristic, tier_behavior, edge_case, etc.",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "total": { "type": "integer" },
+                      "passing": { "type": "integer" }
+                    }
+                  }
+                },
+                "uncovered_behaviors": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "AI behaviors identified in PRD that have no eval coverage yet"
+                }
+              }
+            },
+            "min_eval_coverage_met": {
+              "type": "boolean",
+              "default": false,
+              "description": "Gate: true when every AI behavior has >= 1 eval. Non-AI features: auto-true."
+            }
           }
         },
         "review": {
@@ -135,6 +166,88 @@
             "first_review_date": { "type": ["string", "null"], "format": "date" },
             "kill_criteria": { "type": "string" }
           }
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "description": "Precise timing instrumentation. Added in v6.0. Optional — old features default to estimated.",
+      "properties": {
+        "session_start": { "type": ["string", "null"], "format": "date-time" },
+        "session_end": { "type": ["string", "null"], "format": "date-time" },
+        "total_wall_time_minutes": { "type": ["number", "null"] },
+        "time_source": {
+          "type": "string",
+          "enum": ["measured", "estimated"],
+          "default": "estimated",
+          "description": "Whether wall time comes from instrumented timestamps or narrative estimate"
+        },
+        "phases": {
+          "type": "object",
+          "description": "Per-phase start/end times. Keys are phase names (research, prd, tasks, etc.)",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "started_at": { "type": "string", "format": "date-time" },
+              "ended_at": { "type": ["string", "null"], "format": "date-time" },
+              "duration_minutes": { "type": ["number", "null"] },
+              "paused_minutes": {
+                "type": ["number", "null"],
+                "default": 0,
+                "description": "Practitioner-reported pause time. On session resume, PM workflow asks how long the break was."
+              }
+            }
+          }
+        },
+        "sessions": {
+          "type": "array",
+          "description": "For multi-session features. Each entry = one work session.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "started_at": { "type": "string", "format": "date-time" },
+              "ended_at": { "type": ["string", "null"], "format": "date-time" },
+              "duration_minutes": { "type": ["number", "null"] },
+              "phases_active": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "parallel_context": {
+          "type": "object",
+          "description": "Tracks concurrent features for serial vs parallel decomposition.",
+          "properties": {
+            "concurrent_features": { "type": "integer", "default": 1 },
+            "concurrent_feature_slugs": { "type": "array", "items": { "type": "string" } },
+            "is_stress_test": { "type": "boolean", "default": false }
+          }
+        }
+      }
+    },
+    "complexity": {
+      "type": "object",
+      "description": "Objective complexity signals for CU v2 calculation. Added in v6.0. Optional — old features use CU v1.",
+      "properties": {
+        "cu_version": { "type": "integer", "default": 2, "description": "1 = binary factors (v5.2 and earlier), 2 = continuous factors (v6.0+)" },
+        "view_count": { "type": "integer", "default": 0, "description": "Number of distinct views/screens created or modified. Maps to UI factor: 1=+0.15, 2-3=+0.30, 4+=+0.45" },
+        "new_types_count": { "type": "integer", "default": 0, "description": "New Swift structs/enums/classes/protocols. Maps to model factor: 1-2=+0.1, 3-5=+0.2, 6+=+0.3" },
+        "design_iteration_details": {
+          "type": "array",
+          "description": "Each design iteration round with its scope tier and computed weight.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "round": { "type": "integer" },
+              "scope": { "type": "string", "enum": ["text_only", "layout", "interaction", "full_redesign"], "description": "text_only=+0.10, layout=+0.15, interaction=+0.20, full_redesign=+0.25" },
+              "weight": { "type": "number" }
+            }
+          }
+        },
+        "is_first_of_kind": { "type": "boolean", "default": false, "description": "True if no cache entry exists for this pattern type. Adds +0.2 architectural novelty factor." },
+        "computed_cu": { "type": ["number", "null"], "description": "Final CU value after applying all factors" },
+        "factors_applied": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Human-readable list of factors, e.g. ['ui:0.30 (3 views)', 'new_model:0.20 (4 types)', 'first_of_kind:0.20']"
         }
       }
     }

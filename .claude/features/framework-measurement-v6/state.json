@@ -1,0 +1,168 @@
+{
+  "feature": "framework-measurement-v6",
+  "created": "2026-04-16T14:00:00Z",
+  "updated": "2026-04-16T15:30:00Z",
+  "branch": "feature/framework-measurement-v6",
+  "current_phase": "implement",
+  "work_type": "feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "github_issue_number": null,
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-16T14:00:00Z",
+      "sources": ["docs/case-studies/meta-analysis-2026-04-16.md"]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-04-16T14:15:00Z",
+      "analytics_spec_complete": false
+    },
+    "tasks": {
+      "status": "approved",
+      "count": 20
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "type": "integration",
+      "compliance_passed": null,
+      "compliance_violations": [],
+      "compliance_decision": null,
+      "design_system_changes": []
+    },
+    "implementation": {
+      "status": "in_progress",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false,
+      "eval_results": {
+        "total_evals": 0,
+        "passing": 0,
+        "failing": 0,
+        "eval_pass_rate": null,
+        "categories": {},
+        "uncovered_behaviors": []
+      },
+      "min_eval_coverage_met": true
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "measurement_precision_dvs_deterministic",
+        "baseline": 2,
+        "target": 8,
+        "current": null
+      },
+      "secondary": [
+        { "name": "case_study_writing_time", "baseline": null, "target": "no increase" },
+        { "name": "framework_token_overhead_pct", "baseline": null, "target": 0.05 },
+        { "name": "cu_v2_interrater_agreement", "baseline": null, "target": 0.90 }
+      ],
+      "guardrails": [
+        { "name": "pm_workflow_latency", "threshold": "no added latency" },
+        { "name": "existing_case_study_validity", "threshold": "v1 data unchanged" },
+        { "name": "ci_pass_rate", "threshold": "soft gates only" }
+      ],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": "If < 5/9 DVs become deterministic after full implementation, instrumentation overhead exceeds value"
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-16T14:00:00Z",
+      "approved_by": "user",
+      "note": "Meta-analysis identified 8 measurement gaps. Full feature lifecycle approved."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-16T14:00:00Z",
+      "approved_by": "user",
+      "note": "Research = meta-analysis document. PRD = design spec."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-16T14:15:00Z",
+      "approved_by": "user",
+      "note": "Spec approved. Approach C (vertical slices) selected."
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-04-16T14:30:00Z",
+      "approved_by": "user",
+      "note": "20 tasks across 3 slices + second pass. Subagent-driven execution."
+    }
+  ],
+  "timing": {
+    "session_start": "2026-04-16T14:00:00Z",
+    "session_end": null,
+    "total_wall_time_minutes": null,
+    "time_source": "measured",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-16T14:00:00Z",
+        "ended_at": "2026-04-16T14:00:00Z",
+        "duration_minutes": 0,
+        "paused_minutes": 0
+      },
+      "prd": {
+        "started_at": "2026-04-16T14:00:00Z",
+        "ended_at": "2026-04-16T14:15:00Z",
+        "duration_minutes": 15,
+        "paused_minutes": 0
+      },
+      "tasks": {
+        "started_at": "2026-04-16T14:15:00Z",
+        "ended_at": "2026-04-16T14:30:00Z",
+        "duration_minutes": 15,
+        "paused_minutes": 0
+      },
+      "implementation": {
+        "started_at": "2026-04-16T14:30:00Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      }
+    },
+    "sessions": [],
+    "parallel_context": {
+      "concurrent_features": 1,
+      "concurrent_feature_slugs": [],
+      "is_stress_test": false
+    }
+  },
+  "complexity": {
+    "cu_version": 2,
+    "view_count": 0,
+    "new_types_count": 0,
+    "design_iteration_details": [],
+    "is_first_of_kind": true,
+    "computed_cu": null,
+    "factors_applied": []
+  }
+}

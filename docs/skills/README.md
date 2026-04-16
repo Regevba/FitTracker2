@@ -39,6 +39,7 @@
 - 2026-04-14 — v5.1: Complete SoC-on-Software suite (8/8 items). Adds model tiering (sonnet/opus per phase), batch dispatch (template-once iterate-N), result forwarding (inline skill output), speculative cache pre-loading (successor map), systolic chain protocol (isolated pipelines), and task complexity gate (big.LITTLE parallel/serial lanes). Combined: 63% framework overhead reduction (121K → 45K tokens per phase). Savings report: `docs/architecture/soc-savings-report-v5.1.md`.
 - 2026-04-16 — v5.2 Sub-Project A: Dispatch Intelligence. 3-stage pipeline (score complexity → probe capability → dispatch with budget). Static complexity scoring with validation flag. Tool budgets (haiku=10, sonnet=25, opus=50) cut average tool usage by 48% and variance by 84%. Permission table hard-routes .claude/ paths to controller. Config: `.claude/shared/dispatch-intelligence.json`.
 - 2026-04-16 — v5.2 Sub-Project B: Parallel Write Safety. 2-layer system: snapshot/rollback + code region mirror pattern. 3-tier region detection (agent-region markers → MARK sections → full file). Progressive marker learning — system gets faster with every dispatch. Config: `dispatch-intelligence.json` mirror_pattern section.
+- 2026-04-16 — v6.0: Framework Measurement. Deterministic phase timing (measured wall time, not estimated), L1/L2/L3 cache hit tracking (cache-hits.json), eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition.
 
 ---
 

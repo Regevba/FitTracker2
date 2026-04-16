@@ -16,11 +16,16 @@
 | **Framework Version** | v{X.Y} |
 | **Work Type** | Feature / Enhancement / Fix / Chore |
 | **Complexity** | Files created: N, Files modified: N, Tasks: N |
-| **Wall Time** | {total hours} |
+| **Wall Time** | {total hours} ({measured/estimated}) |
+| **Active Work Time** | {hours excluding pauses} |
+| **Longest Phase** | {phase name}: {minutes} |
 | **Tests** | {count} ({analytics tests} + {eval tests}) |
 | **Analytics Events** | {count} |
-| **Cache Hit Rate** | {percentage} |
-| **Eval Pass Rate** | {N/N} |
+| **Cache Hit Rate** | {percentage} (L1: {%}, L2: {%}, L3: {%}) — {measured/inferred} |
+| **Eval Pass Rate** | {N/N} ({N} behaviors, {M} evals) — {N uncovered} |
+| **Monitoring Sync** | auto / manual |
+| **Framework Token Overhead** | {N}K tokens ({X}% of context) |
+| **CU Version** | v1 / v2 |
 | **Headline** | "{Xh at vN vs Yh at vM = Z% improvement}" |
 
 ---
@@ -33,7 +38,7 @@
 ### Dependent Variables
 | DV | Unit | How Measured |
 |----|------|-------------|
-| Wall time | hours | Phase timestamps from state.json transitions[] |
+| Wall time | hours | timing.total_wall_time_minutes from state.json ({measured/estimated}) |
 | Planning velocity | phases/hour | Phases 0-3 time ÷ phase count |
 | Implementation velocity | files/hour | Files created+modified ÷ Phase 4 time |
 | Task completion rate | tasks/hour | Tasks completed ÷ total time |
@@ -41,6 +46,8 @@
 | Eval pass rate | % | Evals passing ÷ total evals defined |
 | Defect escape rate | count | Bugs found post-implementation (code review) |
 | Test density | tests/event | Analytics tests ÷ analytics events |
+| Serial improvement | multiplier | baseline_min_CU / this_feature_min_CU |
+| Parallel speedup | multiplier | parallel_CU_per_hour / serial_CU_per_hour |
 
 ### Complexity Proxy
 - Files created + modified (scope indicator)
@@ -65,18 +72,20 @@
 
 ### Phase Timing
 
-| Phase | Start | End | Duration | Notes |
-|-------|-------|-----|----------|-------|
-| 0. Research | | | | |
-| 1. PRD | | | | |
-| 2. Tasks | | | | |
-| 3. UX/Design | | | | |
-| 4. Implement | | | | |
-| 5. Test | | | | |
-| 6. Review | | | | |
-| 7. Merge | | | | |
-| 8. Docs | | | | |
-| **Total** | | | | |
+> Data source: `state.json → timing.phases`. Mark `(e)` for estimated, `(m)` for measured.
+
+| Phase | Started | Ended | Duration (min) | Paused (min) | Active (min) | Source |
+| ------- | --------- | ------- | ---------------- | -------------- | -------------- | -------- |
+| 0. Research | | | | 0 | | (m/e) |
+| 1. PRD | | | | 0 | | (m/e) |
+| 2. Tasks | | | | 0 | | (m/e) |
+| 3. UX/Design | | | | 0 | | (m/e) |
+| 4. Implement | | | | 0 | | (m/e) |
+| 5. Test | | | | 0 | | (m/e) |
+| 6. Review | | | | 0 | | (m/e) |
+| 7. Merge | | | | 0 | | (m/e) |
+| 8. Docs | | | | 0 | | (m/e) |
+| **Total** | | | **{sum}** | **{sum}** | **{sum}** | |
 
 ### Task Completion
 
@@ -84,17 +93,50 @@
 |------|------|-------|--------|--------|------------|
 | T1 | | | | | |
 
-### Cache Hits During Execution
+### Cache Performance (v6.0)
 
-| Cache Entry | Level | What It Provided | Time Saved (est.) |
-|-------------|-------|-----------------|-------------------|
-| | | | |
+> Data source: `.claude/features/{name}/cache-hits.json`. Mark `(m)` for measured, `(i)` for inferred.
 
-### Eval Results (v4.4+)
+| Level     | Hits | Misses | Hit Rate | Most Valuable Hit | Costliest Miss | Source |
+|-----------|------|--------|----------|-------------------|----------------|--------|
+| L1        |      |        |          |                   |                | (m/i)  |
+| L2        |      |        |          |                   |                | (m/i)  |
+| L3        |      |        |          |                   |                | (m/i)  |
+| **Total** |      |        |          |                   |                |        |
 
-| Eval File | Tests | Pass | Fail | Notes |
-|-----------|-------|------|------|-------|
-| | | | | |
+### Cache Hit Detail Log
+
+| Timestamp | Level | Skill | Key | Type          | Task Context |
+|-----------|-------|-------|-----|---------------|--------------|
+|           |       |       |     | exact/adapted |              |
+
+### Cache Miss Detail Log
+
+| Timestamp | Level | Skill | Expected Key | Reason                        | Task Context |
+|-----------|-------|-------|--------------|-------------------------------|--------------|
+|           |       |       |              | no_entry/stale/wrong_context  |              |
+
+### Eval Results (v6.0)
+
+> Data source: `state.json → phases.testing.eval_results`
+
+#### Coverage by AI Behavior
+
+| Behavior | Golden I/O | Quality Heuristic | Tier/Edge | Total | Pass Rate | Covered? |
+|----------|------------|-------------------|-----------|-------|-----------|----------|
+|          |            |                   |           |       |           | ✓/✗      |
+
+#### Eval Detail
+
+| Eval File | Category                                  | Tests | Pass | Fail | Notes |
+|-----------|-------------------------------------------|-------|------|------|-------|
+|           | golden_io/quality_heuristic/tier_behavior |       |      |      |       |
+
+#### Gate Status
+
+- `min_eval_coverage_met`: {true/false}
+- Uncovered behaviors: {list or "none"}
+- Override: {yes — reason / no}
 
 ---
 
@@ -150,6 +192,9 @@ For each skill invoked during the feature:
 | **Complexity Units (CU)** | **{CU}** |
 | Wall time (min) | {min} |
 | **min/CU** | **{velocity}** |
+| CU version | v1 (binary) / v2 (continuous) |
+| Time source | measured / estimated |
+| Cache hit rate | {%} — {framework-attributable / partial cache / cold cache} |
 | Rank (of N features) | {rank} / {N} |
 | vs Baseline (v2.0 = 15.2 min/CU) | {+/-}% |
 
@@ -172,6 +217,25 @@ For each skill invoked during the feature:
 | **{This Feature}** | **v{X.Y}** | **{type}** | **{time}** | **{CU}** | **{min/CU}** | **{delta}** |
 
 *Home v2 excluded from trend — outlier that invented the v2 convention.
+
+### Velocity Decomposition (v6.0)
+
+| Metric | Value | How Computed |
+| ------ | ----- | ------------ |
+| Serial velocity (min/CU) | | This feature's min/CU |
+| Serial improvement vs baseline | | 15.2 / serial_velocity |
+| Parallel features in session | | Count of concurrent features (1 = serial only) |
+| Parallel throughput (CU/hour) | | Total CU across all features / wall time hours |
+| Parallel speedup factor | | parallel_throughput / serial_throughput (1.0x if serial) |
+| Combined improvement | | serial_improvement × parallel_speedup |
+
+### Baseline Comparisons (v6.0)
+
+| Comparison | Baseline Value | This Feature | Improvement |
+| ---------- | -------------- | ------------ | ----------- |
+| vs Historical (Onboarding v2) | 15.2 min/CU | {min/CU} | {+/-}% |
+| vs Rolling (last 5 features) | {X} min/CU | {min/CU} | {+/-}% |
+| vs Same-Type (last 3 {type}) | {X} min/CU | {min/CU} | {+/-}% |
 
 ### Effect Size (Hedges' g)
 

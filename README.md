@@ -153,8 +153,9 @@ Internal PM dashboard and current canonical live web surface on `fit-tracker2.ve
 
 Verification snapshot as of `2026-04-15`:
 
-### PM Framework: v5.2 (Dispatch Intelligence)
+### PM Framework: v6.0 (Framework Measurement)
 - **8 SoC optimizations + Dispatch Intelligence (v5.2)** — skill-on-demand, cache compression, batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate
+- **Deterministic measurement instrumentation (v6.0)** — phase timing, cache hit tracking, eval gates, CU v2, rolling baselines
 - **63% framework overhead reduction** — free context doubled (78K → 155K tokens)
 - **Normalized velocity:** 3.6 min/CU average (+76% vs baseline)
 - **Docs:** [`docs/architecture/soc-software-architecture-research.md`](docs/architecture/soc-software-architecture-research.md)
