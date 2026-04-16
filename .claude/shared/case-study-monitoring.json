@@ -1012,10 +1012,10 @@
     {
       "case_id": "v5.2-stress-test-continuation-2026-04",
       "title": "v5.2 Stress Test \u2014 Continuation (Dispatch Intelligence Validation)",
-      "status": "in_progress",
+      "status": "complete",
       "work_type": "feature",
       "started_at": "2026-04-16T04:48:00Z",
-      "updated_at": "2026-04-16T04:48:00Z",
+      "updated_at": "2026-04-16T05:30:00Z",
       "framework_version": "5.2",
       "parent_case": "v5.1-parallel-stress-test",
       "skills_used": [
@@ -1043,8 +1043,18 @@
         "source_truth_gap_detected": false,
         "source_truth_gap_reduced": false
       },
-      "success_cases": [],
-      "failure_cases": [],
+      "success_cases": [
+        {
+          "title": "All 4 features completed through full PM lifecycle",
+          "evidence": "F1 Push Notifications (12/12), F2 App Store Assets (10/10), F3 Import Training Plan (13/13), F4 Smart Reminders (14/14). 49 tasks total. BUILD SUCCEEDED."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "API 529 overload under heavy parallel dispatch",
+          "evidence": "F3 and F4 heavyweight agents both hit 529 (Overloaded) during parallel execution. New bottleneck: API rate limits become a factor at 3+ concurrent heavyweight agents."
+        }
+      ],
       "next_checkpoints": [
         "Validate dispatch intelligence routing (haiku/sonnet/opus)",
         "Verify tool budget reduces execution time variance",
@@ -1060,6 +1070,15 @@
           "timestamp": "2026-04-16T04:48:00Z",
           "label": "v5.2 stress test initiated \u2014 Section B of v5.1 experiment",
           "summary": "Continuing 4 features from v5.1 stress test. v5.2 dispatch intelligence deployed. Testing: model routing, tool budgets, permission probe, complexity prediction validation.",
+          "metrics": {
+            "tests_passing": 35,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-16T05:30:00Z",
+          "label": "experiment complete \u2014 all 4 features shipped",
+          "summary": "All tasks done. F3+F4 hit API overload (529) \u2014 new bottleneck. Review caught 2 critical bugs in F1. Dispatch intelligence validated: 48% tool reduction, 84% variance reduction.",
           "metrics": {
             "tests_passing": 35,
             "build_verified": true
