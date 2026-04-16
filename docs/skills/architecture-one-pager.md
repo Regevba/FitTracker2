@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture One-Pager
 
-> **Version:** 5.1 | **Updated:** 2026-04-15
+> **Version:** 6.1 | **Updated:** 2026-04-16
 >
 > Quick-reference system schematics and information flow for the entire PM-flow ecosystem.
 > For the full deep-dive (per-skill sub-commands, shared data field descriptions, gap analysis, design decisions, evolution history), see [architecture.md](architecture.md).
@@ -55,6 +55,31 @@
 ║                  └────────┴────┬───┘                        ║
 ║                                ▼                            ║
 ║                /pm-workflow (Phase 9: Learn → loop)         ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+### 1a. Hardware-Aware Dispatch Extension (v6.1)
+
+```text
+╔══════════════════════════════════════════════════════════════╗
+║           HADF — Hardware-Aware Dispatch (v6.1)              ║
+║                                                              ║
+║  Layer 0: Device Detection ──► Layer 1: Static Profiles      ║
+║  (iOS/Android/macOS/Web)        (17 chips, 6 vendors)        ║
+║           │                              │                   ║
+║           ▼                              ▼                   ║
+║  Layer 2: Cloud Fingerprint ──► Layer 3: Dynamic Adaptation  ║
+║  (TTFT/TPS → Mahalanobis)      (thermal/cloud/net/battery)  ║
+║           │                              │                   ║
+║           └──────────┬───────────────────┘                   ║
+║                      ▼                                       ║
+║  Layer 4: Evolutionary Learning (Chip Affinity Map, EMA)     ║
+║                      │                                       ║
+║                      ▼                                       ║
+║  Composite Optimizer ──► hardware_context                    ║
+║  (latency/cost/quality)   in dispatch-intelligence.json      ║
+║                                                              ║
+║  Confidence Gate: >0.7 trust │ 0.4-0.7 blend │ <0.4 ignore  ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
 

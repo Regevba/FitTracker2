@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-16 (v6.0 update)
-> **Status:** v6.0 — Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition + all prior v5.2 capabilities
+> **Date:** 2026-04-16 (v6.1 update)
+> **Status:** v6.1 — HADF Hardware-Aware Dispatch: 5-layer hardware detection (edge+cloud), 17 chip profiles, 7 cloud signatures, confidence-gated dispatch, composite optimizer + all prior v6.0 capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -1009,6 +1009,7 @@ Every version was tested through real feature work. The case study column links 
 | v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Architecture (13 tasks, PR #79) | [AI Engine case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
 | v5.2 | 2026-04-16 | Dispatch Intelligence + Parallel Write Safety: 3-stage dispatch pipeline, tool budgets, 3-tier mirror extraction, progressive markers | 4-feature continuation stress test | [v5.1→v5.2 evolution](../case-studies/v5.1-v5.2-framework-evolution-case-study.md), [Parallel Write Safety](../case-studies/parallel-write-safety-v5.2-case-study.md) |
 | v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | [Framework Measurement v6.0](../case-studies/framework-measurement-v6-case-study.md) |
+| v6.1 | 2026-04-16 | HADF Hardware-Aware Dispatch: 5-layer architecture (device detection → static profiles → cloud fingerprinting → dynamic adaptation → evolutionary learning), 17 chip profiles (6 vendors), 7 cloud hardware signatures, hardware_context in dispatch-intelligence.json, zero-regression confidence gate (0.4/0.7), composite optimizer (latency/cost/quality), reference implementations (Swift/Kotlin/Python) | — | [HADF case study](../case-studies/hadf-hardware-aware-dispatch-case-study.md) |
 
 ### Cumulative Metrics Across Versions
 
@@ -1025,3 +1026,4 @@ Every version was tested through real feature work. The case study column links 
 | AI Rec UI | v4.2 | 0.7h | 6 | 7 | 40% | — |
 | **AI Engine Arch** | **v5.1** | **1.5h** | **13** | **17** | **45%** | **11.3 files/hr (best)** |
 | **v5.1→v5.2 (parallel)** | **v5.2** | **~20 min** | **6** | **4** | **N/A** | **Dispatch intelligence + mirror pattern deployed** |
+| **HADF Infrastructure** | **v6.1** | **~120 min** | **9** | **11** | **0%** | **First hardware-aware dispatch, zero-regression gate** |

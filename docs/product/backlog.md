@@ -58,6 +58,7 @@
 | 47 | Dashboard Tab Navigation Fix | commit 28dffcb | 2026-04-15 | Client-side React tab nav (was broken in static Astro build). Case study links fixed. All 22 shared-layer conflicts resolved. |
 | 48 | Full Documentation Sync | commits b6636cd–dddb3d3 | 2026-04-15 | Master plan 2026-04-15, README updates, dashboard + website READMEs, PRD v3.0, 2 missing case studies, Figma sync status doc, Prototype V2 page (22 screens). |
 | 49 | External Sync (Linear + Notion) | 2026-04-15 | 2026-04-15 | Linear: 42→44 issues, FIT-41 done, FIT-43 created+done. Notion: Project Context updated, Roadmap updated. All sources healthy, 0 alerts, truth score 100. |
+| 50 | HADF Hardware-Aware Dispatch | PR #82 | 2026-04-16 | 5-layer hardware-aware dispatch extension: device detection, static profiles (17 chips), cloud fingerprinting (7 signatures), dynamic adaptation, evolutionary learning. Confidence-gated (0.4/0.7), zero regression. Spec: `docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md` |
 
 ---
 
@@ -116,6 +117,7 @@
 ### High Priority (Architecture & Framework)
 
 - [x] **v5.1 Adaptive Batch Execution** — IMPLEMENTED 2026-04-14. 8/8 SoC items shipped in skill-routing.json v4.1 + pm-workflow/SKILL.md: batch dispatch (TPU weight-stationary), model tiering (ANE mixed-precision), result forwarding (UMA zero-copy), speculative preload (branch prediction), systolic chains (TPU systolic array), task complexity gate (big.LITTLE hybrid). ~63% framework overhead reduction.
+- [x] **HADF Hardware-Aware Dispatch** (PR #82, 2026-04-16) — 5-layer hardware-aware dispatch extension: device detection, static profiles (17 chips), cloud fingerprinting (7 signatures), dynamic adaptation, evolutionary learning. Confidence-gated (0.4/0.7), zero regression. Spec: `docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md`
 - [ ] **Sentry Error Tracking Integration** — No crash reporting wired. High priority before App Store launch. Sentry adapter at `.claude/integrations/sentry/` exists but no MCP connected. Unlocks real crash-free rate for `/ops health`, crash correlation for `/cx analyze`, and live data for Phase 0 health check `shared_layer_consistency`.
 - [ ] **Funnel Analysis Dashboards** — GA4 event taxonomy is in place and `/analytics funnel` can define funnels, but no GA4 dashboards have been built. Blocks PRD kill criteria evaluation and Phase 9 (Learn) with real conversion data.
 - [ ] **`/ops digest` — Stakeholder Updates** — Weekly project health summary aggregating health-status.json, cx-signals.json, metric-status.json, and change-log.json. Automates Phase 9 monitoring cadence instead of manual `/cx analyze` + `/analytics report`.

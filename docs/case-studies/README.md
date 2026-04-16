@@ -47,6 +47,7 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `parallel-write-safety-v5.2-case-study.md` | Parallel Write Safety (v5.2 Sub-Project B) | Framework safety infrastructure — snapshot/rollback + 3-tier mirror pattern. Deployed in 20 min, pure config/protocol (no Swift code) |
 | `framework-measurement-v6-case-study.md` | Framework Measurement v6.0 | First feature with deterministic measurement instrumentation — measured (not estimated) wall time, CU v2 continuous factors, cache-hits.json, eval coverage gates. 28.0 CU at 3.21 min/CU (+79% vs baseline) |
 | `meta-analysis/` | Meta-analysis reports folder | Cross-case analyses: Nvidia validation of normalization model + What-If v6.0 retrospective experiment (CU v2 recalculation, rolling baselines, AI model cost comparison, ROI analysis) |
+| `hadf-hardware-aware-dispatch-case-study.md` | HADF — Hardware-Aware Dispatch Framework (v6.1) | First hardware-aware framework extension — 5-layer architecture (device detection → cloud fingerprinting → evolutionary learning), 17 chip profiles across 6 vendors, 7 cloud hardware signatures, zero-regression confidence gate. Novel contribution: cloud inference fingerprinting via Mahalanobis distance classification |
 
 ## Upcoming case studies (queued)
 
