@@ -91,7 +91,38 @@
             "tests_added": { "type": "integer" },
             "instrumentation_verified": { "type": "boolean" },
             "analytics_tests_added": { "type": "integer", "default": 0, "description": "Number of analytics-specific unit tests added" },
-            "analytics_verification_passed": { "type": "boolean", "default": false, "description": "Whether all analytics events, screens, and consent gating verified via MockAnalyticsAdapter" }
+            "analytics_verification_passed": { "type": "boolean", "default": false, "description": "Whether all analytics events, screens, and consent gating verified via MockAnalyticsAdapter" },
+            "eval_results": {
+              "type": "object",
+              "description": "Eval coverage for AI-touching features. Added in v6.0. Non-AI features: defaults (0/0), gate auto-passes.",
+              "properties": {
+                "total_evals": { "type": "integer", "default": 0 },
+                "passing": { "type": "integer", "default": 0 },
+                "failing": { "type": "integer", "default": 0 },
+                "eval_pass_rate": { "type": ["number", "null"] },
+                "categories": {
+                  "type": "object",
+                  "description": "Eval counts by category. Keys: golden_io, quality_heuristic, tier_behavior, edge_case, etc.",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "total": { "type": "integer" },
+                      "passing": { "type": "integer" }
+                    }
+                  }
+                },
+                "uncovered_behaviors": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "AI behaviors identified in PRD that have no eval coverage yet"
+                }
+              }
+            },
+            "min_eval_coverage_met": {
+              "type": "boolean",
+              "default": false,
+              "description": "Gate: true when every AI behavior has >= 1 eval. Non-AI features: auto-true."
+            }
           }
         },
         "review": {
