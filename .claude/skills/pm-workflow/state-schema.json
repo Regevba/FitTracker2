@@ -222,6 +222,34 @@
           }
         }
       }
+    },
+    "complexity": {
+      "type": "object",
+      "description": "Objective complexity signals for CU v2 calculation. Added in v6.0. Optional — old features use CU v1.",
+      "properties": {
+        "cu_version": { "type": "integer", "default": 2, "description": "1 = binary factors (v5.2 and earlier), 2 = continuous factors (v6.0+)" },
+        "view_count": { "type": "integer", "default": 0, "description": "Number of distinct views/screens created or modified. Maps to UI factor: 1=+0.15, 2-3=+0.30, 4+=+0.45" },
+        "new_types_count": { "type": "integer", "default": 0, "description": "New Swift structs/enums/classes/protocols. Maps to model factor: 1-2=+0.1, 3-5=+0.2, 6+=+0.3" },
+        "design_iteration_details": {
+          "type": "array",
+          "description": "Each design iteration round with its scope tier and computed weight.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "round": { "type": "integer" },
+              "scope": { "type": "string", "enum": ["text_only", "layout", "interaction", "full_redesign"], "description": "text_only=+0.10, layout=+0.15, interaction=+0.20, full_redesign=+0.25" },
+              "weight": { "type": "number" }
+            }
+          }
+        },
+        "is_first_of_kind": { "type": "boolean", "default": false, "description": "True if no cache entry exists for this pattern type. Adds +0.2 architectural novelty factor." },
+        "computed_cu": { "type": ["number", "null"], "description": "Final CU value after applying all factors" },
+        "factors_applied": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Human-readable list of factors, e.g. ['ui:0.30 (3 views)', 'new_model:0.20 (4 types)', 'first_of_kind:0.20']"
+        }
+      }
     }
   }
 }
