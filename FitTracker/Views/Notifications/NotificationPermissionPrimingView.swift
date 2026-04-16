@@ -83,19 +83,16 @@ struct NotificationPermissionPrimingView: View {
             return
         }
 
-        let center = UNUserNotificationCenter.current()
-        do {
-            let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
-            await MainActor.run {
-                if granted {
-                    permissionGranted = true
-                    dismiss()
-                } else {
-                    permissionDenied = true
-                }
+        // I1 fix: use NotificationService.shared instead of calling UNUserNotificationCenter directly
+        let service = NotificationService.shared
+        await service.requestAuthorization()
+        await MainActor.run {
+            if service.isAuthorized {
+                permissionGranted = true
+                dismiss()
+            } else {
+                permissionDenied = true
             }
-        } catch {
-            await MainActor.run { permissionDenied = true }
         }
     }
 }

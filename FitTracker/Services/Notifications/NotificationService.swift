@@ -29,10 +29,26 @@ final class NotificationService: ObservableObject {
     @Published var isAuthorized: Bool = false
 
     private let center = UNUserNotificationCenter.current()
+    private let preferences = NotificationPreferencesStore()
 
     // Quiet hours: 10 PM (22:00) – 7 AM (07:00)
     private let quietHourStart = 22
     private let quietHourEnd   = 7
+
+    // Daily frequency tracking
+    private var dailySendDateKey: String {
+        let fmt = DateFormatter()
+        fmt.dateFormat = "yyyy-MM-dd"
+        return "ft.notification.dailyCount.\(fmt.string(from: Date()))"
+    }
+
+    private var todaySendCount: Int {
+        UserDefaults.standard.integer(forKey: dailySendDateKey)
+    }
+
+    private func incrementDailyCount() {
+        UserDefaults.standard.set(todaySendCount + 1, forKey: dailySendDateKey)
+    }
 
     private init() {
         // Check authorization status on init without prompting
@@ -74,8 +90,13 @@ final class NotificationService: ObservableObject {
         content: UNMutableNotificationContent,
         trigger: UNNotificationTrigger
     ) async {
+        // C2 fix: check per-type preference before scheduling
         guard isAuthorized else { return }
+        guard preferences.isEnabled(for: type) else { return }
         guard !isQuietHour() else { return }
+
+        // C1 fix: enforce daily frequency cap
+        guard todaySendCount < preferences.maxDailyNotifications else { return }
 
         let identifier = "\(type.rawValue)_\(UUID().uuidString)"
         let request = UNNotificationRequest(
@@ -86,6 +107,7 @@ final class NotificationService: ObservableObject {
 
         do {
             try await center.add(request)
+            incrementDailyCount()
         } catch {
             // Scheduling failure is non-fatal; the caller can retry.
         }
