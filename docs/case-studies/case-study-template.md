@@ -21,7 +21,7 @@
 | **Longest Phase** | {phase name}: {minutes} |
 | **Tests** | {count} ({analytics tests} + {eval tests}) |
 | **Analytics Events** | {count} |
-| **Cache Hit Rate** | {percentage} |
+| **Cache Hit Rate** | {percentage} (L1: {%}, L2: {%}, L3: {%}) — {measured/inferred} |
 | **Eval Pass Rate** | {N/N} |
 | **Headline** | "{Xh at vN vs Yh at vM = Z% improvement}" |
 
@@ -90,11 +90,28 @@
 |------|------|-------|--------|--------|------------|
 | T1 | | | | | |
 
-### Cache Hits During Execution
+### Cache Performance (v6.0)
 
-| Cache Entry | Level | What It Provided | Time Saved (est.) |
-|-------------|-------|-----------------|-------------------|
-| | | | |
+> Data source: `.claude/features/{name}/cache-hits.json`. Mark `(m)` for measured, `(i)` for inferred.
+
+| Level     | Hits | Misses | Hit Rate | Most Valuable Hit | Costliest Miss | Source |
+|-----------|------|--------|----------|-------------------|----------------|--------|
+| L1        |      |        |          |                   |                | (m/i)  |
+| L2        |      |        |          |                   |                | (m/i)  |
+| L3        |      |        |          |                   |                | (m/i)  |
+| **Total** |      |        |          |                   |                |        |
+
+### Cache Hit Detail Log
+
+| Timestamp | Level | Skill | Key | Type          | Task Context |
+|-----------|-------|-------|-----|---------------|--------------|
+|           |       |       |     | exact/adapted |              |
+
+### Cache Miss Detail Log
+
+| Timestamp | Level | Skill | Expected Key | Reason                        | Task Context |
+|-----------|-------|-------|--------------|-------------------------------|--------------|
+|           |       |       |              | no_entry/stale/wrong_context  |              |
 
 ### Eval Results (v4.4+)
 
