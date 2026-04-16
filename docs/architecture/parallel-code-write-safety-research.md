@@ -1,7 +1,7 @@
 # Parallel Code Write Safety — Research
 
 > **Origin:** v5.1 parallel stress test, phase 5 — 3 agents edited project.pbxproj simultaneously
-> **Status:** Research idea — to be prototyped in v5.2
+> **Status:** Implemented in v5.2B — see `.claude/shared/dispatch-intelligence.json` (mirror_pattern section) and `.claude/skills/pm-workflow/SKILL.md` (Mirror Pattern protocol)
 > **Related:** `subagent-preflight-probe-research.md` (capability detection)
 
 ## Problem

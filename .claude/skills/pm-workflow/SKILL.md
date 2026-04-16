@@ -115,6 +115,40 @@ Every dispatch logs to the checkpoint file for validation analysis:
 {"task_id": "T1", "predicted_complexity": "standard", "model_used": "sonnet", "tool_budget": 25, "actual_tool_uses": 15, "actual_duration_seconds": 102, "result": "DONE", "quality": "no_rework"}
 ```
 
+### Mirror Pattern (v5.2B — Parallel Write Safety)
+
+When dispatching an agent to modify a SHARED file (one that other agents may also modify):
+
+**Pre-dispatch:**
+1. **SNAPSHOT** the target file to `.build/snapshots/{dispatch_id}/`
+2. **EXTRACT** the agent's region using 3-tier detection:
+   - Tier 1: `// BEGIN:agent-region:{name}` markers → extract between BEGIN/END (fastest)
+   - Tier 2: `// MARK: - {Section}` conventions → extract from MARK to next MARK (fast)
+   - Tier 3: Full file → give entire file, flag for marker addition (slow, first-time penalty)
+3. **DISPATCH** with region only + read-only type context (imports, signatures)
+
+**Agent prompt includes:**
+```
+You are modifying this code region:
+---
+[extracted region]
+---
+Add your code within this region. Return ONLY the modified region content.
+```
+
+**Post-return:**
+4. **RECONSTRUCT** the file by replacing the region at its boundaries
+5. **BUILD CHECK** — run xcodebuild
+6. If **PASS**: delete snapshot, add markers if Tier 3 was used, commit
+7. If **FAIL**: **ROLLBACK** from snapshot, log error, redispatch or escalate
+
+**Progressive learning:** Each Tier 3 dispatch that succeeds adds `// BEGIN:agent-region:{name}` / `// END:agent-region:{name}` markers. Next dispatch to the same region uses Tier 1 automatically. The system gets faster with every dispatch.
+
+**When NOT to use mirror pattern:**
+- project.pbxproj edits (use ID-prefix isolation instead — proven in stress test)
+- Files only one agent will touch (no contention risk)
+- Files under 50 lines (overhead exceeds benefit)
+
 ## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
 
 When skills execute in a known chain (e.g., Phase 3 dispatch chain), pass the output of each skill inline to the next skill instead of writing to disk and re-reading.
