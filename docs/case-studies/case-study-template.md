@@ -22,7 +22,8 @@
 | **Tests** | {count} ({analytics tests} + {eval tests}) |
 | **Analytics Events** | {count} |
 | **Cache Hit Rate** | {percentage} (L1: {%}, L2: {%}, L3: {%}) — {measured/inferred} |
-| **Eval Pass Rate** | {N/N} |
+| **Eval Pass Rate** | {N/N} ({N} behaviors, {M} evals) — {N uncovered} |
+| **Monitoring Sync** | auto / manual |
 | **Headline** | "{Xh at vN vs Yh at vM = Z% improvement}" |
 
 ---
@@ -113,11 +114,27 @@
 |-----------|-------|-------|--------------|-------------------------------|--------------|
 |           |       |       |              | no_entry/stale/wrong_context  |              |
 
-### Eval Results (v4.4+)
+### Eval Results (v6.0)
 
-| Eval File | Tests | Pass | Fail | Notes |
-|-----------|-------|------|------|-------|
-| | | | | |
+> Data source: `state.json → phases.testing.eval_results`
+
+#### Coverage by AI Behavior
+
+| Behavior | Golden I/O | Quality Heuristic | Tier/Edge | Total | Pass Rate | Covered? |
+|----------|------------|-------------------|-----------|-------|-----------|----------|
+|          |            |                   |           |       |           | ✓/✗      |
+
+#### Eval Detail
+
+| Eval File | Category                                  | Tests | Pass | Fail | Notes |
+|-----------|-------------------------------------------|-------|------|------|-------|
+|           | golden_io/quality_heuristic/tier_behavior |       |      |      |       |
+
+#### Gate Status
+
+- `min_eval_coverage_met`: {true/false}
+- Uncovered behaviors: {list or "none"}
+- Override: {yes — reason / no}
 
 ---
 
