@@ -1,0 +1,26 @@
+{
+  "feature": "{{FEATURE_NAME}}",
+  "hadf_version": "1.0",
+  "sessions": 0,
+  "device": {
+    "chip_id": null,
+    "detection_method": null,
+    "confidence": 0.0
+  },
+  "cloud": {
+    "classified_as": null,
+    "confidence_progression": [],
+    "reclassifications": 0
+  },
+  "adaptation_events": [],
+  "affinity": {
+    "warm_starts": 0,
+    "cold_starts": 0,
+    "hit_rate": 0.0
+  },
+  "impact": {
+    "avg_dispatch_overhead_ms": null,
+    "latency_improvement_pct": null,
+    "cost_savings_pct": null
+  }
+}
