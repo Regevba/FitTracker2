@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-16T00:00:00Z",
+  "description": "Rolling cache hit rate aggregate across features. Updated on feature completion. Added in v6.0.",
+  "by_framework_version": {
+    "v5.2": {
+      "features_measured": 0,
+      "avg_hit_rate": 0.0,
+      "L1_avg": 0.0,
+      "L2_avg": 0.0,
+      "L3_avg": 0.0,
+      "top_entries_by_hits": [],
+      "top_misses_by_cost": []
+    },
+    "v6.0": {
+      "features_measured": 0,
+      "avg_hit_rate": 0.0,
+      "L1_avg": 0.0,
+      "L2_avg": 0.0,
+      "L3_avg": 0.0,
+      "top_entries_by_hits": [],
+      "top_misses_by_cost": []
+    }
+  },
+  "promotion_candidates": [],
+  "cache_health_trend": [],
+  "rolling_baselines": {
+    "last_5_features": {
+      "avg_min_cu": 0.0,
+      "features": []
+    },
+    "by_work_type": {
+      "feature": { "last_3_avg": 0.0, "features": [] },
+      "enhancement": { "last_3_avg": 0.0, "features": [] },
+      "refactor": { "last_3_avg": 0.0, "features": [] },
+      "fix": { "last_3_avg": 0.0, "features": [] },
+      "chore": { "last_3_avg": 0.0, "features": [] }
+    }
+  }
+}
