@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "framework_version": "5.2",
+  "framework_version": "6.0",
   "updated": "2026-04-16",
   "description": "Dispatch Intelligence \u2014 3-stage pipeline for subagent routing: score complexity \u2192 probe capability \u2192 dispatch with budget.",
   "permission_table": {

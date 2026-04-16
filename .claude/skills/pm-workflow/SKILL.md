@@ -1,6 +1,6 @@
 ---
 name: pm-workflow
-description: "Start or resume a v5.1 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. v5.1 adds model tiering, batch dispatch, result forwarding, speculative cache pre-loading, systolic chain protocol, and task complexity gate (big.LITTLE hybrid dispatch). Invoke with /pm-workflow {feature-name}."
+description: "Start or resume a v6.0 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. v6.0 adds deterministic measurement instrumentation (phase timing, cache hit tracking, eval coverage gates, CU v2 continuous factors) on top of v5.1 model tiering, batch dispatch, result forwarding, speculative cache pre-loading, systolic chain protocol, and task complexity gate (big.LITTLE hybrid dispatch). Invoke with /pm-workflow {feature-name}."
 ---
 
 # Product Management Lifecycle: $ARGUMENTS

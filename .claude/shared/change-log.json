@@ -4,6 +4,16 @@
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [
     {
+      "timestamp": "2026-04-16T16:00:00Z",
+      "version": "6.0",
+      "type": "framework_upgrade",
+      "title": "Framework Measurement v6.0",
+      "description": "Deterministic measurement instrumentation: phase timing (start/end/pause), cache hit tracking (L1/L2/L3), eval coverage gates, monitoring auto-sync, token counting, CU v2 continuous factors, rolling baselines, serial/parallel decomposition.",
+      "files_changed": 10,
+      "breaking_changes": false,
+      "backward_compatible": true
+    },
+    {
       "timestamp": "2026-04-13T10:30:00Z",
       "event_type": "cleanup_program",
       "change_type": "ui_change",
