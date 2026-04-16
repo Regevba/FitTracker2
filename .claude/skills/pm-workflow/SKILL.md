@@ -149,6 +149,42 @@ Add your code within this region. Return ONLY the modified region content.
 - Files only one agent will touch (no contention risk)
 - Files under 50 lines (overhead exceeds benefit)
 
+## Phase Timing Protocol (v6.0 — Measurement Instrumentation)
+
+Every phase transition now records precise timestamps in `state.json → timing`. This replaces estimated wall times with measured durations.
+
+### On Phase Start (after user approves transition)
+
+1. Write `timing.phases[{phase}].started_at` = current ISO 8601 timestamp
+2. If this is the **first phase** of the feature, also write `timing.session_start` = now
+3. If resuming after a break, ask the user: "How long were you away?" and add the answer to the previous phase's `paused_minutes`
+
+### On Phase End (before requesting next transition approval)
+
+1. Write `timing.phases[{phase}].ended_at` = current ISO 8601 timestamp
+2. Compute `timing.phases[{phase}].duration_minutes` = `(ended_at - started_at)` in minutes
+3. Update `state.json → updated` timestamp
+
+### On Feature Completion (current_phase → "complete")
+
+1. Write `timing.session_end` = current ISO 8601 timestamp
+2. Compute `timing.total_wall_time_minutes` = sum of all `timing.phases[*].duration_minutes`
+3. Set `timing.time_source` = `"measured"`
+
+### Multi-Session Features
+
+If a feature spans multiple conversations/sessions:
+1. On session start: append a new entry to `timing.sessions[]` with `started_at` = now and `phases_active` = [current phase]
+2. On session end: write `ended_at` and compute `duration_minutes` for the current session entry
+3. `timing.total_wall_time_minutes` = sum of all `timing.sessions[*].duration_minutes`
+
+### Parallel Features
+
+When multiple features are being worked on concurrently (stress tests, parallel dispatch):
+1. Set `timing.parallel_context.concurrent_features` = count of active features
+2. Set `timing.parallel_context.concurrent_feature_slugs` = list of other feature slugs
+3. Set `timing.parallel_context.is_stress_test` = true if this is a deliberate parallel test
+
 ## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
 
 When skills execute in a known chain (e.g., Phase 3 dispatch chain), pass the output of each skill inline to the next skill instead of writing to disk and re-reading.
