@@ -153,7 +153,7 @@ Internal PM dashboard and current canonical live web surface on `fit-tracker2.ve
 
 Verification snapshot as of `2026-04-15`:
 
-### PM Framework: v5.2
+### PM Framework: v5.2 (Dispatch Intelligence)
 - **8 SoC optimizations + Dispatch Intelligence (v5.2)** — skill-on-demand, cache compression, batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate
 - **63% framework overhead reduction** — free context doubled (78K → 155K tokens)
 - **Normalized velocity:** 3.6 min/CU average (+76% vs baseline)
@@ -338,7 +338,7 @@ Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](do
 | [Metrics Framework](docs/product/metrics-framework.md) | 40 metrics across 6 categories with instrumentation status |
 | [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
 | [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized roadmap with phase gates |
-| [Master Plan](docs/master-plan/master-plan-2026-04-15.md) | Current master plan — 44 shipped items, gate status, priorities |
+| [Master Plan](docs/master-plan/master-plan-2026-04-15.md) | Current master plan — 49+ shipped features, gate status, priorities |
 | [Case Studies](docs/case-studies/) | 7 tracked case studies with normalized velocity analysis |
 | [Stabilization Report](docs/project/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |

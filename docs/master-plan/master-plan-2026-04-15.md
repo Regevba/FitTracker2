@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-FitMe is a production-grade iOS fitness app with **44 shipped features/improvements**, zero-knowledge encryption, GDPR compliance, GA4 analytics, a federated AI layer with goal-aware intelligence, and a mature PM framework (v5.1). The codebase scores **A-** on code quality with **197+ passing tests** including 29 eval tests.
+FitMe is a production-grade iOS fitness app with **49+ shipped features/improvements**, zero-knowledge encryption, GDPR compliance, GA4 analytics, a federated AI layer with goal-aware intelligence, and a mature PM framework (v5.1). The codebase scores **A-** on code quality with **197+ passing tests** including 29 eval tests.
 
 **All 6 main screens** have been through UX Foundations alignment (v2 refactors), all Figma screens are built, and the development dashboard is live at `fit-tracker2.vercel.app` with zero alerts and 100% source truth score.
 
@@ -136,7 +136,7 @@ Requires Gate C + iOS core stable + backend green + measurement live.
 
 ---
 
-## Framework Status: v5.1
+## Framework Status: v5.2 (Dispatch Intelligence)
 
 **PM Workflow v5.1** with 8 SoC-on-Software optimizations:
 
@@ -204,7 +204,7 @@ Requires Gate C + iOS core stable + backend green + measurement live.
 | Architecture | A | Clean DI, actor-based encryption, adapter pattern |
 | Security | A | AES-256-GCM + ChaCha20, Secure Enclave, GDPR |
 | Force Unwraps | A | 0 in production code |
-| Test Coverage | B+ | 197+ tests including 29 evals |
+| Test Coverage | B+ | 232+ tests including 29 evals |
 | Error Handling | B | ~47 silent `try?` calls need categorization |
 | Accessibility | C | Limited `accessibilityLabel` coverage |
 | Documentation | A | 25 PRDs, 7 case studies, full backlog |

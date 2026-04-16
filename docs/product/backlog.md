@@ -247,3 +247,8 @@
 | Unified PRD | This branch | ~620 lines, 11 features, business strategy |
 | Metrics framework | This branch | 40 metrics, instrumentation status |
 | This backlog | This branch | Complete compilation from all sources |
+| 50 | Push Notifications | v5.2 stress test | 2026-04-16 | NotificationService + PreferencesStore + ContentBuilder + DeepLinkHandler + PermissionPrimingView. 12 tasks, 10 tests, review-approved. First full v5.2 lifecycle. |
+| 51 | App Store Assets | v5.2 stress test | 2026-04-16 | Icon pipeline (xcassets + Makefile), screenshot guide, metadata, privacy policy, support page, submission checklist. 10 tasks. |
+| 52 | Import Training Plan | v5.2 stress test | 2026-04-16 | ImportParser protocol (CSV + JSON + Markdown), ExerciseMapper (37 aliases), ImportOrchestrator, ImportSourcePickerView, ImportPreviewView. 13 tasks, 15 tests. |
+| 53 | Smart Reminders | v5.2 stress test | 2026-04-16 | ReminderScheduler + ReminderType (6 types) + ReminderTriggerEvaluator (5 triggers) + LockedFeatureOverlay. 14 tasks, 10 tests. |
+| 54 | Dispatch Intelligence v5.2 | framework | 2026-04-16 | dispatch-intelligence.json, skill-routing v5.0, framework-manifest v1.3, SKILL.md dispatch protocol. 3-stage pipeline: score → probe → dispatch. |
