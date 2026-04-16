@@ -36,5 +36,13 @@
       "fix": { "last_3_avg": 0.0, "features": [] },
       "chore": { "last_3_avg": 0.0, "features": [] }
     }
+  },
+  "hadf_affinity": {
+    "total_entries": 0,
+    "warm_start_rate": 0.0,
+    "avg_cloud_confidence": 0.0,
+    "most_seen_cloud_class": null,
+    "adaptation_events_per_session": 0.0,
+    "note": "Populated by HADF Layer 4. Updated on feature completion alongside cache metrics."
   }
 }

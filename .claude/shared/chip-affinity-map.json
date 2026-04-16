@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-16",
+  "description": "Cross-session learned dispatch strategies per device+cloud hardware pair. Written by Layer 4 at session end. Never committed — local optimization cache only.",
+  "schema_note": "Entries are created automatically. This file ships empty. Populated by HADF Layer 4 evolutionary learning.",
+  "config": {
+    "max_entries": 200,
+    "expiry_days": 90,
+    "anomaly_rejection_sigma": 3.0,
+    "learning_rate": {
+      "sessions_1_to_10": 0.3,
+      "sessions_10_to_50": 0.1,
+      "sessions_50_plus": 0.05
+    }
+  },
+  "affinity_entries": []
+}

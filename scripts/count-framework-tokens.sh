@@ -61,6 +61,9 @@ layers["shared"] = {"files": files, "tokens": tokens}
 files, tokens = count_tokens_in_files(os.path.join(project_root, ".claude/integrations/**/*"))
 layers["adapters"] = {"files": files, "tokens": tokens}
 
+files, tokens = count_tokens_in_files(os.path.join(project_root, ".claude/shared/hadf/*"))
+layers["hadf"] = {"files": files, "tokens": tokens}
+
 total_tokens = sum(l["tokens"] for l in layers.values())
 for key in layers:
     layers[key]["pct_of_total"] = round(layers[key]["tokens"] / total_tokens, 4) if total_tokens > 0 else 0.0
@@ -83,5 +86,6 @@ print(f"  Skills:   {layers['skills']['tokens']:>8,} tokens ({layers['skills']['
 print(f"  Cache:    {layers['cache']['tokens']:>8,} tokens ({layers['cache']['files']} files)")
 print(f"  Shared:   {layers['shared']['tokens']:>8,} tokens ({layers['shared']['files']} files)")
 print(f"  Adapters: {layers['adapters']['tokens']:>8,} tokens ({layers['adapters']['files']} files)")
+print(f"  HADF:     {layers['hadf']['tokens']:>8,} tokens ({layers['hadf']['files']} files)")
 print(f"  TOTAL:    {total_tokens:>8,} tokens ({round(total_tokens/1000, 1)}K, {output['context_budget_pct']*100:.2f}% of 1M context)")
 PYEOF

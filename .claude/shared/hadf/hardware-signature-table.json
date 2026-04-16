@@ -1,0 +1,87 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-16",
+  "description": "Cloud inference hardware signatures for HADF Layer 2 classification. Values are illustrative ranges requiring empirical calibration via Phase 2 validation.",
+  "calibration_status": "uncalibrated",
+  "signatures": {
+    "nvidia_h100_class": {
+      "vendor": "nvidia",
+      "chip": "H100 SXM",
+      "generation": "hopper",
+      "ttft_per_1k_tokens_ms": { "min": 45, "max": 65 },
+      "tps_median": { "min": 80, "max": 120 },
+      "tps_cov": { "max": 0.08 },
+      "batch_scaling_factor": { "min": 0.92, "max": 0.98 },
+      "notes": "Dominant cloud GPU. High throughput, low variance, excellent batch scaling."
+    },
+    "nvidia_a100_class": {
+      "vendor": "nvidia",
+      "chip": "A100",
+      "generation": "ampere",
+      "ttft_per_1k_tokens_ms": { "min": 70, "max": 100 },
+      "tps_median": { "min": 55, "max": 80 },
+      "tps_cov": { "max": 0.10 },
+      "batch_scaling_factor": { "min": 0.88, "max": 0.95 },
+      "notes": "Previous gen cloud GPU. Still common in cost-optimized deployments."
+    },
+    "google_tpu_v5e_class": {
+      "vendor": "google",
+      "chip": "TPU v5e",
+      "generation": "v5e",
+      "ttft_per_1k_tokens_ms": { "min": 50, "max": 75 },
+      "tps_median": { "min": 70, "max": 100 },
+      "tps_cov": { "max": 0.12 },
+      "batch_scaling_factor": { "min": 0.95, "max": 0.99 },
+      "notes": "Anthropic primary inference hardware. Excellent batch scaling due to systolic array architecture."
+    },
+    "google_tpu_v4_class": {
+      "vendor": "google",
+      "chip": "TPU v4",
+      "generation": "v4",
+      "ttft_per_1k_tokens_ms": { "min": 60, "max": 90 },
+      "tps_median": { "min": 50, "max": 75 },
+      "tps_cov": { "max": 0.15 },
+      "batch_scaling_factor": { "min": 0.90, "max": 0.96 },
+      "notes": "Previous gen TPU. Higher variance than v5e."
+    },
+    "aws_trainium2_class": {
+      "vendor": "aws",
+      "chip": "Trainium 2",
+      "generation": "trn2",
+      "ttft_per_1k_tokens_ms": { "min": 55, "max": 80 },
+      "tps_median": { "min": 65, "max": 90 },
+      "tps_cov": { "max": 0.10 },
+      "batch_scaling_factor": { "min": 0.91, "max": 0.97 },
+      "notes": "AWS custom silicon. Used by Anthropic on AWS deployments."
+    },
+    "amd_mi300x_class": {
+      "vendor": "amd",
+      "chip": "MI300X",
+      "generation": "cdna3",
+      "ttft_per_1k_tokens_ms": { "min": 50, "max": 70 },
+      "tps_median": { "min": 75, "max": 105 },
+      "tps_cov": { "max": 0.09 },
+      "batch_scaling_factor": { "min": 0.93, "max": 0.98 },
+      "notes": "High memory bandwidth. Competitive with H100 on large models."
+    },
+    "cpu_fallback_class": {
+      "vendor": "generic",
+      "chip": "CPU",
+      "generation": "any",
+      "ttft_per_1k_tokens_ms": { "min": 200, "max": 999 },
+      "tps_median": { "min": 10, "max": 30 },
+      "tps_cov": { "max": 999 },
+      "batch_scaling_factor": { "min": 0.60, "max": 0.80 },
+      "notes": "Catch-all for non-accelerated inference. Very slow. Should trigger quality concerns."
+    }
+  },
+  "classification": {
+    "method": "mahalanobis_nearest",
+    "min_calls_to_classify": 5,
+    "confident_at_calls": 15,
+    "reclassify_trigger": {
+      "tps_drop_pct": 0.20,
+      "ttft_spike_multiplier": 2.0
+    }
+  }
+}
