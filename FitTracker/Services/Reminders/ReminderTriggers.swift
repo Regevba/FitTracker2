@@ -1,9 +1,8 @@
 // Services/Reminders/ReminderTriggers.swift
 // Evaluates app-state conditions and fires the appropriate smart reminders.
-// Currently implements T3 (nutrition gap) and T4 (training/rest day).
-// T1 (HealthKit), T2 (registration), and T5 (engagement) are stubbed as
-// Phase 2 / Phase 3 — see the UX spec at
-// .claude/features/smart-reminders/ux-spec.md for timing details.
+// Implements T3 (nutrition gap), T4 (training/rest day), T5 (HealthKit connect),
+// T6 (account registration), and T7 (engagement).
+// See the UX spec at .claude/features/smart-reminders/ux-spec.md for timing details.
 
 import Foundation
 
@@ -49,6 +48,48 @@ final class ReminderTriggerEvaluator {
         }
     }
 
+    // MARK: - T5: HealthKit connect reminder
+    // Fires on days 2, 5, and 10 post-onboarding if HealthKit is not yet authorised.
+
+    func evaluateHealthKitConnect(isAuthorized: Bool, daysSinceOnboarding: Int) async {
+        guard !isAuthorized else { return }
+        guard [2, 5, 10].contains(daysSinceOnboarding) else { return }
+
+        await scheduler.scheduleIfAllowed(
+            type: .healthKitConnect,
+            body: "Connect Apple Health to see your readiness score and recovery data."
+        )
+    }
+
+    // MARK: - T6: Account registration reminder
+    // Fires on days 3, 7, and 14 post-onboarding if the user has not signed in.
+
+    func evaluateAccountRegistration(isSignedIn: Bool, daysSinceOnboarding: Int) async {
+        guard !isSignedIn else { return }
+        guard [3, 7, 14].contains(daysSinceOnboarding) else { return }
+
+        await scheduler.scheduleIfAllowed(
+            type: .accountRegistration,
+            body: "Create your FitMe account to sync across devices and unlock AI coaching."
+        )
+    }
+
+    // MARK: - T7: Engagement reminder
+    // Fires when the user has not opened the app for 3 or more days.
+
+    func evaluateEngagement(daysSinceLastOpen: Int) async {
+        guard daysSinceLastOpen >= 3 else { return }
+
+        let body: String
+        if daysSinceLastOpen <= 4 {
+            body = "Haven't seen you in a bit. Your streak is waiting."
+        } else {
+            body = "Your body composition goals need consistency. Quick check-in?"
+        }
+
+        await scheduler.scheduleIfAllowed(type: .engagement, body: body)
+    }
+
     // MARK: - Evaluate all triggers (called from app lifecycle)
 
     func evaluateAll(
@@ -62,7 +103,8 @@ final class ReminderTriggerEvaluator {
         durationMinutes: Int,
         isHealthKitAuthorized: Bool,
         isSignedIn: Bool,
-        daysSinceLastOpen: Int
+        daysSinceLastOpen: Int,
+        daysSinceOnboarding: Int
     ) async {
         // Phase 1: nutrition + training (highest value)
         await evaluateNutritionGap(currentProtein: currentProtein, targetProtein: targetProtein)
@@ -75,7 +117,11 @@ final class ReminderTriggerEvaluator {
             durationMinutes: durationMinutes
         )
 
-        // Phase 2: HealthKit + registration (future)
-        // Phase 3: engagement (future)
+        // Phase 2: HealthKit + registration
+        await evaluateHealthKitConnect(isAuthorized: isHealthKitAuthorized, daysSinceOnboarding: daysSinceOnboarding)
+        await evaluateAccountRegistration(isSignedIn: isSignedIn, daysSinceOnboarding: daysSinceOnboarding)
+
+        // Phase 3: engagement
+        await evaluateEngagement(daysSinceLastOpen: daysSinceLastOpen)
     }
 }

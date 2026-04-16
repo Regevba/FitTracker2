@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-16T10:00:00Z",
+  "updated": "2026-04-16T04:48:00Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -1005,6 +1005,64 @@
           "metrics": {
             "tests_passing": 0,
             "build_verified": false
+          }
+        }
+      ]
+    },
+    {
+      "case_id": "v5.2-stress-test-continuation-2026-04",
+      "title": "v5.2 Stress Test \u2014 Continuation (Dispatch Intelligence Validation)",
+      "status": "in_progress",
+      "work_type": "feature",
+      "started_at": "2026-04-16T04:48:00Z",
+      "updated_at": "2026-04-16T04:48:00Z",
+      "framework_version": "5.2",
+      "parent_case": "v5.1-parallel-stress-test",
+      "skills_used": [
+        "pm-workflow",
+        "dev",
+        "qa"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 0,
+        "repo_files_updated": 0,
+        "tests_passing": 35,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 0,
+        "source_truth_gap_detected": false,
+        "source_truth_gap_reduced": false
+      },
+      "success_cases": [],
+      "failure_cases": [],
+      "next_checkpoints": [
+        "Validate dispatch intelligence routing (haiku/sonnet/opus)",
+        "Verify tool budget reduces execution time variance",
+        "Complete remaining tasks for all 4 features",
+        "Compare v5.2 metrics to v5.1 baseline"
+      ],
+      "artifacts": [
+        ".claude/shared/dispatch-intelligence.json",
+        "docs/case-studies/v5.1-parallel-stress-test-case-study.md"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-16T04:48:00Z",
+          "label": "v5.2 stress test initiated \u2014 Section B of v5.1 experiment",
+          "summary": "Continuing 4 features from v5.1 stress test. v5.2 dispatch intelligence deployed. Testing: model routing, tool budgets, permission probe, complexity prediction validation.",
+          "metrics": {
+            "tests_passing": 35,
+            "build_verified": true
           }
         }
       ]

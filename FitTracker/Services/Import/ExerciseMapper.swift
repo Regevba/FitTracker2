@@ -1,6 +1,12 @@
 import Foundation
 
 struct ExerciseMapper {
+    // Confidence tiers for UI display
+    static let autoAcceptThreshold: Double = 0.95
+    static let reviewThreshold: Double = 0.70
+    // >= 0.95: auto-accept (green check)
+    // 0.70-0.94: needs review (orange pencil)
+    // < 0.70: unmatched (red warning)
 
     // Map raw exercise name to FitMe exercise ID with confidence score
     func map(_ rawName: String) -> (exerciseId: String?, confidence: Double) {
