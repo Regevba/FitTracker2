@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-16 (v5.2 update)
-> **Status:** v5.2 — Dispatch Intelligence (3-stage pipeline, tool budgets, complexity scoring) + Parallel Write Safety (snapshot/rollback, 3-tier mirror extraction, progressive markers) + all prior SoC-on-Software capabilities
+> **Date:** 2026-04-16 (v6.0 update)
+> **Status:** v6.0 — Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition + all prior v5.2 capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -1008,6 +1008,7 @@ Every version was tested through real feature work. The case study column links 
 | v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens saved) | Framework itself | [SoC savings report](../architecture/soc-savings-report-v5.1.md) |
 | v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Architecture (13 tasks, PR #79) | [AI Engine case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
 | v5.2 | 2026-04-16 | Dispatch Intelligence + Parallel Write Safety: 3-stage dispatch pipeline, tool budgets, 3-tier mirror extraction, progressive markers | 4-feature continuation stress test | [v5.1→v5.2 evolution](../case-studies/v5.1-v5.2-framework-evolution-case-study.md), [Parallel Write Safety](../case-studies/parallel-write-safety-v5.2-case-study.md) |
+| v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | [Framework Measurement v6.0](../case-studies/framework-measurement-v6-case-study.md) |
 
 ### Cumulative Metrics Across Versions
 

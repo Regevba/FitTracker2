@@ -45,6 +45,8 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `v5.1-parallel-stress-test-case-study.md` | v5.1 Parallel Stress Test | Flagship stress test — 4 features, 54 min, 35 tests, 0 failures. Proved parallel multi-agent PM lifecycle at scale |
 | `v5.1-v5.2-framework-evolution-case-study.md` | Framework v5.1 → v5.2 Evolution | Two-part case study: Part 1 documents stress test findings, Part 2 documents Dispatch Intelligence design and validation |
 | `parallel-write-safety-v5.2-case-study.md` | Parallel Write Safety (v5.2 Sub-Project B) | Framework safety infrastructure — snapshot/rollback + 3-tier mirror pattern. Deployed in 20 min, pure config/protocol (no Swift code) |
+| `framework-measurement-v6-case-study.md` | Framework Measurement v6.0 | First feature with deterministic measurement instrumentation — measured (not estimated) wall time, CU v2 continuous factors, cache-hits.json, eval coverage gates. 28.0 CU at 3.21 min/CU (+79% vs baseline) |
+| `meta-analysis/` | Meta-analysis reports folder | Cross-case analyses: Nvidia validation of normalization model + What-If v6.0 retrospective experiment (CU v2 recalculation, rolling baselines, AI model cost comparison, ROI analysis) |
 
 ## Upcoming case studies (queued)
 
