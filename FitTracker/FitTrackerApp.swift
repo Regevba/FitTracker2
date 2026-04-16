@@ -139,6 +139,9 @@ struct FitTrackerApp: App {
                             aiOrchestrator.goalMode = { [weak dataStore] in
                                 dataStore?.userPreferences.nutritionGoalMode ?? .fatLoss
                             }
+                            // Ensure ReminderScheduler is initialised — actual trigger
+                            // evaluation happens in MainScreenView when data is available.
+                            _ = ReminderScheduler.shared
                             // CloudKit (unchanged)
                             await cloudSync.fetchChanges(dataStore: dataStore)
                             // Supabase — incremental pull + realtime subscription
