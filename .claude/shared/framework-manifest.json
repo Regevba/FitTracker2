@@ -1,7 +1,7 @@
 {
-  "version": "1.2",
+  "version": "1.3",
   "updated": "2026-04-14T05:00:00Z",
-  "framework_version": "5.1",
+  "framework_version": "5.2",
   "description": "Canonical framework manifest for the PM-flow ecosystem. Stores the current framework version, structural counts, source-of-truth metadata, and active operational capabilities so docs and dashboards can reference one shared definition.",
   "structure": {
     "hub_skills": 1,
@@ -54,7 +54,8 @@
     "result_forwarding": true,
     "speculative_preload": true,
     "systolic_chains": true,
-    "task_complexity_gate": true
+    "task_complexity_gate": true,
+    "dispatch_intelligence": true
   },
   "v5_soc_optimizations": {
     "skill_on_demand": {

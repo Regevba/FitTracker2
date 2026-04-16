@@ -1,7 +1,8 @@
 # Subagent Pre-Flight Capability Probe — Research
 
 > **Origin:** v5.1 parallel stress test, phase 4 observation
-> **Status:** Research idea — to be prototyped after experiment completes
+> **Status:** Implemented in v5.2 — see `.claude/shared/dispatch-intelligence.json`
+> **Finding:** settings.json permissions are controller-scoped. Subagents cannot write to `.claude/` regardless of config. The probe's permission_table must reflect this — `.claude/` paths route to controller, not subagent.
 
 ## Problem
 

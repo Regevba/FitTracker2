@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "framework_version": "5.2",
+  "updated": "2026-04-16",
+  "description": "Dispatch Intelligence — 3-stage pipeline for subagent routing: score complexity → probe capability → dispatch with budget.",
+  "permission_table": {
+    "known_writable": [
+      "FitTracker/**",
+      "FitTrackerTests/**",
+      "docs/**",
+      "dashboard/**",
+      "website/**",
+      "scripts/**",
+      ".claude/features/**",
+      ".claude/shared/**"
+    ],
+    "known_readonly": [
+      ".claude/skills/**",
+      ".claude/integrations/**",
+      ".claude/cache/**"
+    ],
+    "note": "settings.json permissions are controller-scoped only. Subagents cannot write to .claude/ regardless of config. Controller must handle all .claude/ writes."
+  },
+  "model_routing": {
+    "lightweight": {
+      "model": "haiku",
+      "tool_budget": 10,
+      "timeout_seconds": 60,
+      "review_required": false,
+      "escalation_on_budget": "DONE_WITH_CONCERNS"
+    },
+    "standard": {
+      "model": "sonnet",
+      "tool_budget": 25,
+      "timeout_seconds": 180,
+      "review_required": true,
+      "escalation_on_budget": "DONE_WITH_CONCERNS"
+    },
+    "heavyweight": {
+      "model": "opus",
+      "tool_budget": 50,
+      "timeout_seconds": 600,
+      "review_required": true,
+      "escalation_on_budget": "BLOCKED"
+    }
+  },
+  "probe": {
+    "model": "haiku",
+    "tool_budget": 5,
+    "timeout_seconds": 15,
+    "trigger": "path_not_in_permission_table"
+  },
+  "validation": {
+    "mode": "measure",
+    "switch_threshold": 0.6,
+    "min_sample_size": 20,
+    "flag_key": "complexity_prediction_needs_review",
+    "log_to": "stress-test-checkpoint.json"
+  },
+  "budget_tuning": {
+    "increase_trigger": 0.30,
+    "decrease_trigger": 0.05,
+    "adjustment_factor": 0.25
+  },
+  "escalation_path": ["lightweight", "standard", "heavyweight", "BLOCKED"],
+  "max_escalations_per_task": 1
+}

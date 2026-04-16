@@ -80,6 +80,41 @@ User: "Audit all 6 screens for v2 alignment"
 
 **Fallback:** If `batch_dispatch` config is missing from `skill-routing.json`, each target is dispatched individually (v5.0 behavior).
 
+## Dispatch Intelligence Protocol (v5.2 — Pre-Flight + Routing)
+
+Before dispatching any subagent, apply the 3-stage pipeline from `.claude/shared/dispatch-intelligence.json`:
+
+### Stage 1 — Score Complexity
+
+Read the task's `complexity` field from tasks.md (lightweight/standard/heavyweight). If missing, default to `standard`.
+
+### Stage 2 — Probe Capability
+
+Check target file paths against the `permission_table` in dispatch-intelligence.json:
+- Path matches `known_writable` → dispatch to subagent
+- Path matches `known_readonly` → controller handles directly
+- Unknown path → dispatch haiku micro-probe (5 tool budget, 15s timeout)
+
+**Critical note:** `.claude/` paths are in `known_writable` in the table but subagents CANNOT write to them regardless of settings.json permissions. The controller must always handle `.claude/` writes directly.
+
+### Stage 3 — Dispatch with Budget
+
+Use `model_routing` config for the task's complexity tier:
+- Include in prompt: `"BUDGET: You have {N} tool uses for this task."`
+- Set model parameter: haiku (lightweight), sonnet (standard), opus (heavyweight)
+- On budget hit: accept if usable, escalate if incomplete (max 1 escalation)
+
+### Escalation Path
+
+`lightweight (haiku) → standard (sonnet) → heavyweight (opus) → BLOCKED (report to user)`
+
+### Dispatch Logging
+
+Every dispatch logs to the checkpoint file for validation analysis:
+```json
+{"task_id": "T1", "predicted_complexity": "standard", "model_used": "sonnet", "tool_budget": 25, "actual_tool_uses": 15, "actual_duration_seconds": 102, "result": "DONE", "quality": "no_rework"}
+```
+
 ## Result Forwarding Protocol (v5.1 — UMA Zero-Copy)
 
 When skills execute in a known chain (e.g., Phase 3 dispatch chain), pass the output of each skill inline to the next skill instead of writing to disk and re-reading.

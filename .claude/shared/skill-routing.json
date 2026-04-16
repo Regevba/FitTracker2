@@ -1,8 +1,8 @@
 {
-  "version": "4.1",
+  "version": "5.0",
   "updated": "2026-04-14T06:00:00Z",
-  "framework_version": "5.1",
-  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1). v4.0 adds model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), speculative preloading (item 6), and systolic chain protocol (item 7). v4.1 adds task complexity gate (item 8) — big.LITTLE hybrid dispatch.",
+  "framework_version": "5.2",
+  "description": "Maps task types to primary and secondary skills. Used by PM workflow during parallel dispatch to auto-assign tasks, and separates local adapter directories from external connectors to reduce ecosystem drift. v3.0 adds on-demand skill loading (SoC item 1). v4.0 adds model tiering (item 5), batch dispatch (item 3), result forwarding (item 4), speculative preloading (item 6), and systolic chain protocol (item 7). v4.1 adds task complexity gate (item 8) \u2014 big.LITTLE hybrid dispatch.",
   "load_mode": "on_demand",
   "model_tiering": {
     "enabled": true,
@@ -11,27 +11,101 @@
     "tiers": {
       "sonnet": {
         "description": "Fast, cost-efficient. For mechanical, deterministic, template-driven work.",
-        "use_when": ["file_generation", "token_checks", "template_application", "boilerplate_code", "csv_sync", "label_updates"]
+        "use_when": [
+          "file_generation",
+          "token_checks",
+          "template_application",
+          "boilerplate_code",
+          "csv_sync",
+          "label_updates"
+        ]
       },
       "opus": {
         "description": "Deep reasoning. For judgment, synthesis, architecture, review.",
-        "use_when": ["architecture_decisions", "code_review", "ux_heuristic_evaluation", "research_synthesis", "risk_assessment", "kill_criteria_evaluation"]
+        "use_when": [
+          "architecture_decisions",
+          "code_review",
+          "ux_heuristic_evaluation",
+          "research_synthesis",
+          "risk_assessment",
+          "kill_criteria_evaluation"
+        ]
       }
     },
     "fallback": "opus"
   },
   "phase_skills": {
     "_description": "Maps each lifecycle phase to the 1-2 skills whose SKILL.md should be loaded. Hub loads ONLY these files instead of all 11. Saves ~30K tokens/session. Inspired by Apple LoRA adapter hot-swap. v4.0 adds model_tier per phase (SoC item 5). If value is an array, treat as v5.0 format (no tier). If an object, read .skills for the skill list and .model_tier for the tier recommendation.",
-    "research": { "skills": ["research", "cx"], "model_tier": "opus" },
-    "prd": { "skills": ["pm-workflow", "analytics"], "model_tier": "opus" },
-    "tasks": { "skills": ["pm-workflow"], "model_tier": "sonnet" },
-    "ux_or_integration": { "skills": ["ux", "design"], "model_tier": "opus" },
-    "implementation": { "skills": ["dev", "design"], "model_tier": "sonnet" },
-    "testing": { "skills": ["qa", "analytics"], "model_tier": "sonnet" },
-    "review": { "skills": ["dev", "qa"], "model_tier": "opus" },
-    "merge": { "skills": ["release", "dev"], "model_tier": "sonnet" },
-    "documentation": { "skills": ["marketing", "cx"], "model_tier": "sonnet" },
-    "learn": { "skills": ["cx", "analytics", "ops"], "model_tier": "sonnet" }
+    "research": {
+      "skills": [
+        "research",
+        "cx"
+      ],
+      "model_tier": "opus"
+    },
+    "prd": {
+      "skills": [
+        "pm-workflow",
+        "analytics"
+      ],
+      "model_tier": "opus"
+    },
+    "tasks": {
+      "skills": [
+        "pm-workflow"
+      ],
+      "model_tier": "sonnet"
+    },
+    "ux_or_integration": {
+      "skills": [
+        "ux",
+        "design"
+      ],
+      "model_tier": "opus"
+    },
+    "implementation": {
+      "skills": [
+        "dev",
+        "design"
+      ],
+      "model_tier": "sonnet"
+    },
+    "testing": {
+      "skills": [
+        "qa",
+        "analytics"
+      ],
+      "model_tier": "sonnet"
+    },
+    "review": {
+      "skills": [
+        "dev",
+        "qa"
+      ],
+      "model_tier": "opus"
+    },
+    "merge": {
+      "skills": [
+        "release",
+        "dev"
+      ],
+      "model_tier": "sonnet"
+    },
+    "documentation": {
+      "skills": [
+        "marketing",
+        "cx"
+      ],
+      "model_tier": "sonnet"
+    },
+    "learn": {
+      "skills": [
+        "cx",
+        "analytics",
+        "ops"
+      ],
+      "model_tier": "sonnet"
+    }
   },
   "batch_dispatch": {
     "enabled": true,
@@ -76,36 +150,66 @@
     "description": "M-series UMA zero-copy analog: pass skill output inline in context to the next skill instead of write-to-disk-read-back. Shared layer becomes write-back target only. Disk artifacts are still written for audit trail, but the next skill reads from context, not disk.",
     "eligible_chains": {
       "ux_to_design": {
-        "from": { "skill": "ux", "command": "spec" },
-        "to": { "skill": "design", "command": "audit" },
+        "from": {
+          "skill": "ux",
+          "command": "spec"
+        },
+        "to": {
+          "skill": "design",
+          "command": "audit"
+        },
         "forwarded_artifact": "ux-spec content",
         "disk_write": true,
         "disk_path": ".claude/features/{feature}/ux-spec.md"
       },
       "research_to_prd": {
-        "from": { "skill": "research", "command": "feature" },
-        "to": { "skill": "pm-workflow", "command": "prd" },
+        "from": {
+          "skill": "research",
+          "command": "feature"
+        },
+        "to": {
+          "skill": "pm-workflow",
+          "command": "prd"
+        },
         "forwarded_artifact": "research findings",
         "disk_write": true,
         "disk_path": ".claude/features/{feature}/research.md"
       },
       "audit_to_ux_spec": {
-        "from": { "skill": "ux", "command": "audit" },
-        "to": { "skill": "ux", "command": "spec" },
+        "from": {
+          "skill": "ux",
+          "command": "audit"
+        },
+        "to": {
+          "skill": "ux",
+          "command": "spec"
+        },
         "forwarded_artifact": "v2-audit-report content",
         "disk_write": true,
         "disk_path": ".claude/features/{feature}/v2-audit-report.md"
       },
       "ux_spec_to_ux_prompt": {
-        "from": { "skill": "ux", "command": "spec" },
-        "to": { "skill": "ux", "command": "prompt" },
+        "from": {
+          "skill": "ux",
+          "command": "spec"
+        },
+        "to": {
+          "skill": "ux",
+          "command": "prompt"
+        },
         "forwarded_artifact": "ux-spec content",
         "disk_write": true,
         "disk_path": ".claude/features/{feature}/ux-spec.md"
       },
       "tasks_to_implement": {
-        "from": { "skill": "pm-workflow", "command": "tasks" },
-        "to": { "skill": "dev", "command": "implement" },
+        "from": {
+          "skill": "pm-workflow",
+          "command": "tasks"
+        },
+        "to": {
+          "skill": "dev",
+          "command": "implement"
+        },
         "forwarded_artifact": "task list with dependencies",
         "disk_write": true,
         "disk_path": ".claude/features/{feature}/tasks.md"
@@ -127,16 +231,100 @@
     "misprediction_budget_tokens": 3000,
     "misprediction_budget_percent": 1.5,
     "successor_map": {
-      "research": { "likely_next": ["pm-workflow"], "confidence": 0.95, "preload": ["L1:pm-workflow"] },
-      "pm-workflow:prd": { "likely_next": ["pm-workflow:tasks"], "confidence": 0.98, "preload": ["L1:pm-workflow"] },
-      "pm-workflow:tasks": { "likely_next": ["ux", "dev"], "confidence": 0.85, "preload": ["L1:ux", "L1:dev"] },
-      "ux:research": { "likely_next": ["ux:spec"], "confidence": 0.95, "preload": ["L1:ux"] },
-      "ux:spec": { "likely_next": ["design:audit"], "confidence": 0.92, "preload": ["L1:design"] },
-      "ux:audit": { "likely_next": ["ux:spec"], "confidence": 0.90, "preload": ["L1:ux"] },
-      "design:audit": { "likely_next": ["ux:prompt", "design:prompt"], "confidence": 0.88, "preload": ["L1:ux", "L1:design"] },
-      "dev": { "likely_next": ["qa"], "confidence": 0.95, "preload": ["L1:qa"] },
-      "qa": { "likely_next": ["dev:review"], "confidence": 0.90, "preload": ["L1:dev"] },
-      "dev:review": { "likely_next": ["release"], "confidence": 0.85, "preload": ["L1:release"] }
+      "research": {
+        "likely_next": [
+          "pm-workflow"
+        ],
+        "confidence": 0.95,
+        "preload": [
+          "L1:pm-workflow"
+        ]
+      },
+      "pm-workflow:prd": {
+        "likely_next": [
+          "pm-workflow:tasks"
+        ],
+        "confidence": 0.98,
+        "preload": [
+          "L1:pm-workflow"
+        ]
+      },
+      "pm-workflow:tasks": {
+        "likely_next": [
+          "ux",
+          "dev"
+        ],
+        "confidence": 0.85,
+        "preload": [
+          "L1:ux",
+          "L1:dev"
+        ]
+      },
+      "ux:research": {
+        "likely_next": [
+          "ux:spec"
+        ],
+        "confidence": 0.95,
+        "preload": [
+          "L1:ux"
+        ]
+      },
+      "ux:spec": {
+        "likely_next": [
+          "design:audit"
+        ],
+        "confidence": 0.92,
+        "preload": [
+          "L1:design"
+        ]
+      },
+      "ux:audit": {
+        "likely_next": [
+          "ux:spec"
+        ],
+        "confidence": 0.9,
+        "preload": [
+          "L1:ux"
+        ]
+      },
+      "design:audit": {
+        "likely_next": [
+          "ux:prompt",
+          "design:prompt"
+        ],
+        "confidence": 0.88,
+        "preload": [
+          "L1:ux",
+          "L1:design"
+        ]
+      },
+      "dev": {
+        "likely_next": [
+          "qa"
+        ],
+        "confidence": 0.95,
+        "preload": [
+          "L1:qa"
+        ]
+      },
+      "qa": {
+        "likely_next": [
+          "dev:review"
+        ],
+        "confidence": 0.9,
+        "preload": [
+          "L1:dev"
+        ]
+      },
+      "dev:review": {
+        "likely_next": [
+          "release"
+        ],
+        "confidence": 0.85,
+        "preload": [
+          "L1:release"
+        ]
+      }
     },
     "protocol": {
       "1_on_skill_start": "Look up current skill in successor_map",
@@ -158,29 +346,121 @@
     "defined_chains": {
       "v2_refactor_pipeline": {
         "stages": [
-          { "skill": "ux", "command": "audit", "receives": ["v1_file_content"], "produces": "v2-audit-report", "reads_global": false },
-          { "skill": "ux", "command": "spec", "receives": ["v2-audit-report"], "produces": "ux-spec", "reads_global": false },
-          { "skill": "design", "command": "audit", "receives": ["ux-spec"], "produces": "compliance-report", "reads_global": false },
-          { "skill": "ux", "command": "prompt", "receives": ["ux-spec", "compliance-report"], "produces": "ux-build-prompt", "reads_global": false },
-          { "skill": "design", "command": "prompt", "receives": ["ux-spec", "compliance-report"], "produces": "design-build-prompt", "reads_global": false }
+          {
+            "skill": "ux",
+            "command": "audit",
+            "receives": [
+              "v1_file_content"
+            ],
+            "produces": "v2-audit-report",
+            "reads_global": false
+          },
+          {
+            "skill": "ux",
+            "command": "spec",
+            "receives": [
+              "v2-audit-report"
+            ],
+            "produces": "ux-spec",
+            "reads_global": false
+          },
+          {
+            "skill": "design",
+            "command": "audit",
+            "receives": [
+              "ux-spec"
+            ],
+            "produces": "compliance-report",
+            "reads_global": false
+          },
+          {
+            "skill": "ux",
+            "command": "prompt",
+            "receives": [
+              "ux-spec",
+              "compliance-report"
+            ],
+            "produces": "ux-build-prompt",
+            "reads_global": false
+          },
+          {
+            "skill": "design",
+            "command": "prompt",
+            "receives": [
+              "ux-spec",
+              "compliance-report"
+            ],
+            "produces": "design-build-prompt",
+            "reads_global": false
+          }
         ],
         "write_back_after": "all_stages_complete",
         "isolation_level": "full"
       },
       "new_feature_ux_pipeline": {
         "stages": [
-          { "skill": "ux", "command": "research", "receives": ["prd_content"], "produces": "ux-research", "reads_global": false },
-          { "skill": "ux", "command": "spec", "receives": ["ux-research", "prd_content"], "produces": "ux-spec", "reads_global": false },
-          { "skill": "ux", "command": "validate", "receives": ["ux-spec"], "produces": "validation-report", "reads_global": false },
-          { "skill": "design", "command": "audit", "receives": ["ux-spec"], "produces": "compliance-report", "reads_global": false }
+          {
+            "skill": "ux",
+            "command": "research",
+            "receives": [
+              "prd_content"
+            ],
+            "produces": "ux-research",
+            "reads_global": false
+          },
+          {
+            "skill": "ux",
+            "command": "spec",
+            "receives": [
+              "ux-research",
+              "prd_content"
+            ],
+            "produces": "ux-spec",
+            "reads_global": false
+          },
+          {
+            "skill": "ux",
+            "command": "validate",
+            "receives": [
+              "ux-spec"
+            ],
+            "produces": "validation-report",
+            "reads_global": false
+          },
+          {
+            "skill": "design",
+            "command": "audit",
+            "receives": [
+              "ux-spec"
+            ],
+            "produces": "compliance-report",
+            "reads_global": false
+          }
         ],
         "write_back_after": "all_stages_complete",
         "isolation_level": "full"
       },
       "implementation_pipeline": {
         "stages": [
-          { "skill": "dev", "command": "implement", "receives": ["task_list", "ux-spec"], "produces": "implementation", "reads_global": true },
-          { "skill": "qa", "command": "test", "receives": ["implementation"], "produces": "test-results", "reads_global": true }
+          {
+            "skill": "dev",
+            "command": "implement",
+            "receives": [
+              "task_list",
+              "ux-spec"
+            ],
+            "produces": "implementation",
+            "reads_global": true
+          },
+          {
+            "skill": "qa",
+            "command": "test",
+            "receives": [
+              "implementation"
+            ],
+            "produces": "test-results",
+            "reads_global": true
+          }
         ],
         "write_back_after": "each_stage",
         "isolation_level": "partial"
@@ -202,18 +482,48 @@
     "description": "ARM big.LITTLE analog: classify each ready task by complexity before dispatch. Lightweight tasks run in parallel (E-core lane), heavyweight tasks run serially with full attention (P-core lane). Parallel lane executes first to clear backlog quickly.",
     "classification": {
       "heavyweight_indicators": {
-        "files_changed_gt_5": { "description": "Task touches more than 5 files", "weight": 2 },
-        "new_model_or_service": { "description": "Task introduces a new data model, service, or manager", "weight": 3 },
-        "token_budget_high": { "description": "Task requires deep reasoning, architecture decisions, or research synthesis", "weight": 2 },
-        "cross_feature_deps": { "description": "Task depends on or affects another feature's state", "weight": 2 },
-        "requires_judgment": { "description": "Task involves UX heuristic evaluation, risk assessment, or kill criteria", "weight": 3 }
+        "files_changed_gt_5": {
+          "description": "Task touches more than 5 files",
+          "weight": 2
+        },
+        "new_model_or_service": {
+          "description": "Task introduces a new data model, service, or manager",
+          "weight": 3
+        },
+        "token_budget_high": {
+          "description": "Task requires deep reasoning, architecture decisions, or research synthesis",
+          "weight": 2
+        },
+        "cross_feature_deps": {
+          "description": "Task depends on or affects another feature's state",
+          "weight": 2
+        },
+        "requires_judgment": {
+          "description": "Task involves UX heuristic evaluation, risk assessment, or kill criteria",
+          "weight": 3
+        }
       },
       "lightweight_indicators": {
-        "files_changed_lte_2": { "description": "Task touches 1-2 files", "weight": 2 },
-        "config_or_label_change": { "description": "Task is a config edit, label update, or CSV sync", "weight": 3 },
-        "token_budget_low": { "description": "Task is mechanical: boilerplate, template application, file generation", "weight": 2 },
-        "no_cross_feature_deps": { "description": "Task is fully self-contained within one feature", "weight": 1 },
-        "mechanical_work": { "description": "Task is deterministic with a known pattern (token check, rename, migration)", "weight": 2 }
+        "files_changed_lte_2": {
+          "description": "Task touches 1-2 files",
+          "weight": 2
+        },
+        "config_or_label_change": {
+          "description": "Task is a config edit, label update, or CSV sync",
+          "weight": 3
+        },
+        "token_budget_low": {
+          "description": "Task is mechanical: boilerplate, template application, file generation",
+          "weight": 2
+        },
+        "no_cross_feature_deps": {
+          "description": "Task is fully self-contained within one feature",
+          "weight": 1
+        },
+        "mechanical_work": {
+          "description": "Task is deterministic with a known pattern (token check, rename, migration)",
+          "weight": 2
+        }
       },
       "scoring": {
         "method": "weighted_sum",
@@ -240,86 +550,245 @@
     "fallback": "If task_complexity_gate is missing or disabled, all ready tasks use existing dependency-aware parallel dispatch (v5.1 behavior)"
   },
   "routing_rules": {
-    "ui": { "primary": "dev", "secondary": ["design"] },
-    "backend": { "primary": "dev", "secondary": ["ops"] },
-    "data": { "primary": "dev", "secondary": ["analytics"] },
-    "analytics": { "primary": "analytics", "secondary": ["qa"] },
-    "test": { "primary": "qa", "secondary": ["dev"] },
-    "design": { "primary": "design", "secondary": ["research"] },
-    "docs": { "primary": "release", "secondary": ["marketing"] },
-    "infra": { "primary": "ops", "secondary": ["dev"] },
-    "research": { "primary": "research", "secondary": ["cx"] },
-    "marketing": { "primary": "marketing", "secondary": ["cx"] },
-    "security": { "primary": "qa", "secondary": ["ops", "dev"] },
-    "ux-research": { "primary": "research", "secondary": ["design"] },
-    "release": { "primary": "release", "secondary": [] }
+    "ui": {
+      "primary": "dev",
+      "secondary": [
+        "design"
+      ]
+    },
+    "backend": {
+      "primary": "dev",
+      "secondary": [
+        "ops"
+      ]
+    },
+    "data": {
+      "primary": "dev",
+      "secondary": [
+        "analytics"
+      ]
+    },
+    "analytics": {
+      "primary": "analytics",
+      "secondary": [
+        "qa"
+      ]
+    },
+    "test": {
+      "primary": "qa",
+      "secondary": [
+        "dev"
+      ]
+    },
+    "design": {
+      "primary": "design",
+      "secondary": [
+        "research"
+      ]
+    },
+    "docs": {
+      "primary": "release",
+      "secondary": [
+        "marketing"
+      ]
+    },
+    "infra": {
+      "primary": "ops",
+      "secondary": [
+        "dev"
+      ]
+    },
+    "research": {
+      "primary": "research",
+      "secondary": [
+        "cx"
+      ]
+    },
+    "marketing": {
+      "primary": "marketing",
+      "secondary": [
+        "cx"
+      ]
+    },
+    "security": {
+      "primary": "qa",
+      "secondary": [
+        "ops",
+        "dev"
+      ]
+    },
+    "ux-research": {
+      "primary": "research",
+      "secondary": [
+        "design"
+      ]
+    },
+    "release": {
+      "primary": "release",
+      "secondary": []
+    }
   },
   "integration_sources": {
     "analytics": {
-      "local_adapters": ["ga4"],
-      "external_connectors": ["mixpanel"],
-      "shared_writes": ["metric-status.json"],
-      "shared_reads": ["metric-status.json", "feature-registry.json"]
+      "local_adapters": [
+        "ga4"
+      ],
+      "external_connectors": [
+        "mixpanel"
+      ],
+      "shared_writes": [
+        "metric-status.json"
+      ],
+      "shared_reads": [
+        "metric-status.json",
+        "feature-registry.json"
+      ]
     },
     "cx": {
-      "local_adapters": ["app-store-connect", "sentry"],
+      "local_adapters": [
+        "app-store-connect",
+        "sentry"
+      ],
       "external_connectors": [],
-      "shared_writes": ["cx-signals.json"],
-      "shared_reads": ["cx-signals.json", "feature-registry.json"]
+      "shared_writes": [
+        "cx-signals.json"
+      ],
+      "shared_reads": [
+        "cx-signals.json",
+        "feature-registry.json"
+      ]
     },
     "design": {
       "local_adapters": [],
-      "external_connectors": ["figma"],
-      "shared_writes": ["design-system.json"],
-      "shared_reads": ["design-system.json", "context.json"]
+      "external_connectors": [
+        "figma"
+      ],
+      "shared_writes": [
+        "design-system.json"
+      ],
+      "shared_reads": [
+        "design-system.json",
+        "context.json"
+      ]
     },
     "dev": {
-      "local_adapters": ["security-audit"],
-      "external_connectors": ["github"],
-      "shared_writes": ["task-queue.json"],
-      "shared_reads": ["task-queue.json", "health-status.json"]
+      "local_adapters": [
+        "security-audit"
+      ],
+      "external_connectors": [
+        "github"
+      ],
+      "shared_writes": [
+        "task-queue.json"
+      ],
+      "shared_reads": [
+        "task-queue.json",
+        "health-status.json"
+      ]
     },
     "marketing": {
       "local_adapters": [],
-      "external_connectors": ["ayrshare"],
-      "shared_writes": ["campaign-tracker.json"],
-      "shared_reads": ["campaign-tracker.json", "cx-signals.json"]
+      "external_connectors": [
+        "ayrshare"
+      ],
+      "shared_writes": [
+        "campaign-tracker.json"
+      ],
+      "shared_reads": [
+        "campaign-tracker.json",
+        "cx-signals.json"
+      ]
     },
     "ops": {
-      "local_adapters": ["sentry"],
-      "external_connectors": ["datadog"],
-      "shared_writes": ["health-status.json"],
-      "shared_reads": ["health-status.json", "test-coverage.json"]
+      "local_adapters": [
+        "sentry"
+      ],
+      "external_connectors": [
+        "datadog"
+      ],
+      "shared_writes": [
+        "health-status.json"
+      ],
+      "shared_reads": [
+        "health-status.json",
+        "test-coverage.json"
+      ]
     },
     "pm-workflow": {
       "local_adapters": [],
-      "external_connectors": ["linear", "notion"],
-      "shared_writes": ["feature-registry.json", "task-queue.json", "change-log.json"],
-      "shared_reads": ["feature-registry.json", "skill-routing.json", "task-queue.json"]
+      "external_connectors": [
+        "linear",
+        "notion"
+      ],
+      "shared_writes": [
+        "feature-registry.json",
+        "task-queue.json",
+        "change-log.json"
+      ],
+      "shared_reads": [
+        "feature-registry.json",
+        "skill-routing.json",
+        "task-queue.json"
+      ]
     },
     "qa": {
       "local_adapters": [],
-      "external_connectors": ["xcode", "codecov"],
-      "shared_writes": ["test-coverage.json", "health-status.json"],
-      "shared_reads": ["test-coverage.json", "health-status.json"]
+      "external_connectors": [
+        "xcode",
+        "codecov"
+      ],
+      "shared_writes": [
+        "test-coverage.json",
+        "health-status.json"
+      ],
+      "shared_reads": [
+        "test-coverage.json",
+        "health-status.json"
+      ]
     },
     "release": {
-      "local_adapters": ["app-store-connect"],
-      "external_connectors": ["fastlane"],
-      "shared_writes": ["feature-registry.json"],
-      "shared_reads": ["health-status.json", "feature-registry.json"]
+      "local_adapters": [
+        "app-store-connect"
+      ],
+      "external_connectors": [
+        "fastlane"
+      ],
+      "shared_writes": [
+        "feature-registry.json"
+      ],
+      "shared_reads": [
+        "health-status.json",
+        "feature-registry.json"
+      ]
     },
     "research": {
-      "local_adapters": ["firecrawl"],
-      "external_connectors": ["apify"],
-      "shared_writes": ["context.json", "feature-registry.json"],
-      "shared_reads": ["context.json", "feature-registry.json"]
+      "local_adapters": [
+        "firecrawl"
+      ],
+      "external_connectors": [
+        "apify"
+      ],
+      "shared_writes": [
+        "context.json",
+        "feature-registry.json"
+      ],
+      "shared_reads": [
+        "context.json",
+        "feature-registry.json"
+      ]
     },
     "ux": {
-      "local_adapters": ["axe"],
+      "local_adapters": [
+        "axe"
+      ],
       "external_connectors": [],
-      "shared_writes": ["design-system.json"],
-      "shared_reads": ["design-system.json", "context.json"]
+      "shared_writes": [
+        "design-system.json"
+      ],
+      "shared_reads": [
+        "design-system.json",
+        "context.json"
+      ]
     }
   },
   "validation_gate": {
@@ -327,12 +796,22 @@
     "description": "Automatic validation gate for incoming external data. Cross-references new data against shared layer state.",
     "thresholds": {
       "green": 0.95,
-      "orange": 0.90
+      "orange": 0.9
     },
     "notification_targets": {
-      "green": ["receiving_skill", "pm-workflow"],
-      "orange": ["receiving_skill", "pm-workflow"],
-      "red": ["receiving_skill", "pm-workflow", "user"]
+      "green": [
+        "receiving_skill",
+        "pm-workflow"
+      ],
+      "orange": [
+        "receiving_skill",
+        "pm-workflow"
+      ],
+      "red": [
+        "receiving_skill",
+        "pm-workflow",
+        "user"
+      ]
     },
     "log_target": ".claude/shared/change-log.json",
     "scoring": {
@@ -345,26 +824,72 @@
   },
   "lifecycles": {
     "feature": {
-      "phases": ["research", "prd", "tasks", "ux_or_integration", "implementation", "testing", "review", "merge", "documentation"],
-      "gates": ["research", "prd", "tasks", "ux_or_integration", "testing", "review"],
+      "phases": [
+        "research",
+        "prd",
+        "tasks",
+        "ux_or_integration",
+        "implementation",
+        "testing",
+        "review",
+        "merge",
+        "documentation"
+      ],
+      "gates": [
+        "research",
+        "prd",
+        "tasks",
+        "ux_or_integration",
+        "testing",
+        "review"
+      ],
       "description": "Full 10-phase lifecycle (0-9) for new capabilities"
     },
     "enhancement": {
-      "phases": ["tasks", "implementation", "testing", "review", "merge"],
-      "gates": ["tasks", "testing", "review"],
+      "phases": [
+        "tasks",
+        "implementation",
+        "testing",
+        "review",
+        "merge"
+      ],
+      "gates": [
+        "tasks",
+        "testing",
+        "review"
+      ],
       "parent_required": true,
       "description": "Partial lifecycle for improvements to shipped features"
     },
     "fix": {
-      "phases": ["implementation", "testing", "review", "merge"],
-      "gates": ["testing", "review"],
+      "phases": [
+        "implementation",
+        "testing",
+        "review",
+        "merge"
+      ],
+      "gates": [
+        "testing",
+        "review"
+      ],
       "parent_required": true,
       "description": "Fast-track for bug fixes with mandatory test + review"
     },
     "chore": {
-      "phases": ["implementation", "review", "merge"],
-      "gates": ["review"],
+      "phases": [
+        "implementation",
+        "review",
+        "merge"
+      ],
+      "gates": [
+        "review"
+      ],
       "description": "Minimal lifecycle for docs, config, refactoring"
     }
+  },
+  "dispatch_intelligence": {
+    "version": "1.0",
+    "config_path": ".claude/shared/dispatch-intelligence.json",
+    "enabled": true
   }
 }
