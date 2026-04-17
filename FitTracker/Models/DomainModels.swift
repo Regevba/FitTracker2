@@ -49,6 +49,9 @@ struct DailyLog: Identifiable, Codable, Sendable {
     var energyLevel:    Int?                        // 1–5
     var cravingLevel:   Int?                        // 1–5
 
+    // Schema versioning for encrypted blob migration (nil for pre-versioned data)
+    var schemaVersion: Int?
+
     // CloudKit sync metadata
     var cloudRecordID: String?
     var lastModified:  Date = Date()
@@ -443,6 +446,9 @@ struct UserProfile: Codable, Sendable {
     var startBodyFatPct:    Double          = 20.0
     var mealSlotNames:      [String]        = ["Breakfast", "Lunch", "Dinner", "Snacks"]
 
+    // Conflict resolution timestamp — set on every mutation, nil for legacy data
+    var lastModified: Date?
+
     // Profile (editable post-onboarding, persisted via EncryptedDataStore)
     var fitnessGoal: FitnessGoal?
     var experienceLevel: ExperienceLevel?
@@ -501,6 +507,9 @@ struct UserPreferences: Codable, Equatable, Sendable {
     var nutritionGoalMode: NutritionGoalMode
     var preferredStatsCarouselMetrics: [String]
 
+    // Conflict resolution timestamp — set on every mutation, nil for legacy data
+    var lastModified: Date?
+
     init(
         zone2LowerHR: Int = 106,
         zone2UpperHR: Int = 124,
@@ -524,6 +533,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
         case hrvReadyThreshold
         case nutritionGoalMode
         case preferredStatsCarouselMetrics
+        case lastModified
     }
 
     init(from decoder: Decoder) throws {
@@ -534,6 +544,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
         hrvReadyThreshold = try container.decodeIfPresent(Double.self, forKey: .hrvReadyThreshold) ?? 28.0
         nutritionGoalMode = try container.decodeIfPresent(NutritionGoalMode.self, forKey: .nutritionGoalMode) ?? .fatLoss
         preferredStatsCarouselMetrics = try container.decodeIfPresent([String].self, forKey: .preferredStatsCarouselMetrics) ?? Self.defaultStatsCarouselMetrics
+        lastModified = try container.decodeIfPresent(Date.self, forKey: .lastModified)
     }
 }
 

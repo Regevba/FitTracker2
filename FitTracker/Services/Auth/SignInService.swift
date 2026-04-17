@@ -69,11 +69,12 @@ enum AuthRoute: Hashable {
     case emailLogin
 }
 
-struct PendingEmailRegistration: Codable, Hashable, Sendable {
+struct PendingEmailRegistration: Hashable, Sendable {
     var firstName: String
     var lastName: String
     var birthday: Date
     var email: String
+    /// Not included in Codable encoding to prevent accidental serialization.
     var password: String
 
     var fullName: String {
@@ -81,6 +82,34 @@ struct PendingEmailRegistration: Codable, Hashable, Sendable {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
             .joined(separator: " ")
+    }
+}
+
+// Codable conformance in extension to preserve memberwise init.
+// password is excluded from encoding/decoding to prevent serialization.
+extension PendingEmailRegistration: Codable {
+    private enum CodingKeys: String, CodingKey {
+        case firstName, lastName, birthday, email
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            firstName: try c.decode(String.self, forKey: .firstName),
+            lastName:  try c.decode(String.self, forKey: .lastName),
+            birthday:  try c.decode(Date.self, forKey: .birthday),
+            email:     try c.decode(String.self, forKey: .email),
+            password:  ""
+        )
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(firstName, forKey: .firstName)
+        try c.encode(lastName, forKey: .lastName)
+        try c.encode(birthday, forKey: .birthday)
+        try c.encode(email, forKey: .email)
+        // password intentionally omitted
     }
 }
 
@@ -448,12 +477,9 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func signOut() {
-        if SupabaseRuntimeConfiguration.isConfigured {
-            Task {
-                try? await supabase.auth.signOut(scope: .local)
-            }
-        }
+        // Clear local state first to prevent stale session usage
         KeychainHelper.delete(key: Self.sessionKey)
+        let wasActive = activeSession != nil
         activeSession = nil       // triggers FitTrackerApp.onChange to clear dataStore + AI
         storedSession = nil
         pendingEmailRegistration = nil
@@ -461,6 +487,17 @@ final class SignInService: NSObject, ObservableObject {
         navigationPath.removeAll()
         authErrorMessage = nil
         statusMessage = nil
+
+        // Sign out from Supabase after local state is cleared
+        if wasActive, SupabaseRuntimeConfiguration.isConfigured {
+            Task {
+                do {
+                    try await supabase.auth.signOut(scope: .local)
+                } catch {
+                    authLogger.error("Supabase signOut failed: \(error.localizedDescription)")
+                }
+            }
+        }
     }
 
     func openRegisterFlow() {
