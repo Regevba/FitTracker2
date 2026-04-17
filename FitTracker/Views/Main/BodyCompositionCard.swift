@@ -96,7 +96,7 @@ struct BodyCompositionCard: View {
                 // HealthKit not connected — prompt to connect
                 VStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "heart.text.square")
-                        .font(.system(size: 32))
+                        .font(AppText.iconXL)
                         .foregroundStyle(AppColor.Accent.recovery)
                     Text("Connect Apple Health")
                         .font(AppText.callout)
@@ -123,7 +123,7 @@ struct BodyCompositionCard: View {
                 // HealthKit connected but no data yet — prompt manual entry
                 VStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "scalemass")
-                        .font(.system(size: 28))
+                        .font(AppText.iconMedium)
                         .foregroundStyle(AppColor.Text.tertiary)
                     Text("No metrics logged yet")
                         .font(AppText.callout)

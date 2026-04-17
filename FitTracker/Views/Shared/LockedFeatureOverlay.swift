@@ -21,7 +21,7 @@ struct LockedFeatureOverlay: View {
             // Card
             VStack(spacing: AppSpacing.medium) {
                 Image(systemName: featureIcon)
-                    .font(.system(size: 40))
+                    .font(AppText.iconXL)
                     .foregroundStyle(AppColor.Accent.primary)
 
                 Text("Unlock \(featureTitle)")
@@ -46,6 +46,7 @@ struct LockedFeatureOverlay: View {
                 Button("Maybe later", action: onDismiss)
                     .font(AppText.caption)
                     .foregroundStyle(AppColor.Text.tertiary)
+                    .accessibilityHint("Dismisses the upgrade prompt")
             }
             .padding(AppSpacing.large)
             .frame(width: 300)

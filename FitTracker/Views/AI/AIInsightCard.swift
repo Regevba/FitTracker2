@@ -143,6 +143,7 @@ struct AIInsightCard: View {
                     .foregroundStyle(AppColor.Text.tertiary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Helpful")
 
             Button {
                 recordFeedback(.dismissed)
@@ -152,6 +153,7 @@ struct AIInsightCard: View {
                     .foregroundStyle(AppColor.Text.tertiary)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("Not helpful")
         }
         .accessibilityLabel("Rate this recommendation")
     }

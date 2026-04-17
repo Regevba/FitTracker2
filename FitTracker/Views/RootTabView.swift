@@ -176,7 +176,7 @@ struct RootTabView: View {
         ToolbarItem(placement: .topBarLeading) {
             Button { showAccount = true } label: {
                 Image(systemName: "person.circle.fill")
-                    .font(.system(size: 28))
+                    .font(AppText.iconMedium)
                     .foregroundStyle(AppColor.Text.primary)
             }
             .buttonStyle(.plain)
