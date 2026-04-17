@@ -16,6 +16,7 @@ extension UserSession {
             phone: session.user.phone,
             avatarURL: nil,
             sessionToken: session.accessToken,           // Supabase JWT (stable session token)
+            tokenType: .supabaseJWT,
             backendAccessToken: session.accessToken,   // Supabase JWT for AI engine
             credentialID: nil,
             signedInAt: Date()

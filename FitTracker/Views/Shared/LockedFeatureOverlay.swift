@@ -14,7 +14,7 @@ struct LockedFeatureOverlay: View {
     var body: some View {
         ZStack {
             // Backdrop
-            Color.black.opacity(0.4)
+            AppColor.Overlay.scrim
                 .ignoresSafeArea()
                 .onTapGesture(perform: onDismiss)
 

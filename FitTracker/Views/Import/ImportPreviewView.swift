@@ -1,3 +1,6 @@
+// HISTORICAL — only referenced by the dead ImportSourcePickerView. Audit UI-015
+// (2026-04-16) identified both as dead code. Retained for reference.
+
 import SwiftUI
 
 struct ImportPreviewView: View {

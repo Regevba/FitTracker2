@@ -38,6 +38,13 @@ enum AppColor {
         static let inverse        = Color("surface-inverse")
     }
 
+    /// Overlay tokens — semi-transparent layers placed above content.
+    /// Use `scrim` for backdrops behind modals, sheets, and locked-feature overlays.
+    enum Overlay {
+        /// Modal/sheet backdrop — black at 40% opacity. Provides ~7:1 contrast against content below.
+        static let scrim = Color.black.opacity(0.4)
+    }
+
     enum Text {
         static let primary          = Color("text-primary")
         static let secondary        = Color("text-secondary")

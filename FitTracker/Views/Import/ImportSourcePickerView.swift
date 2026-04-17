@@ -1,3 +1,8 @@
+// HISTORICAL — never wired into a tab/sheet. Audit UI-015 (2026-04-16) identified
+// this view + ImportPreviewView as dead code. Retained for reference; the
+// production import flow (if revived) should use ImportOrchestrator from a
+// new entry point built on current design system.
+
 import SwiftUI
 
 struct ImportSourcePickerView: View {
