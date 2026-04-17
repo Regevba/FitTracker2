@@ -1,3 +1,8 @@
+// HISTORICAL — never wired into navigation. Audit UI-016 (2026-04-16) identified
+// this view as dead code. Retained for reference but unreachable from any
+// view hierarchy. Future feature work that needs a permission priming UI
+// should rebuild from current design system rather than reviving this file.
+
 import SwiftUI
 import UserNotifications
 

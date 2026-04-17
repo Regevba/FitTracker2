@@ -13,14 +13,14 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **114** across Phases 1–8 + Sprints A–C4 |
-| Findings Deferred | 56 (Phase 9 large-effort + full sync I/O integration) |
+| Findings Resolved | **120** across Phases 1–8 + Sprints A–D |
+| Findings Deferred | 50 (Phase 9 backend infra + UI v2 refactors + dark mode pipeline) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 30 app + 19 test |
-| Commits | 16 (cumulative across PRs #84–92) |
-| New Test Suites | 15 suites, 105 test cases — adapters, memory, settings, goal profile, training, import, perf, a11y, account deletion, encryption, auth, HealthKit, debouncer, sync contract tests |
+| Files Changed | 32 app + 20 test |
+| Commits | 17 (cumulative across PRs #84–93) |
+| New Test Suites | 16 suites, 109 test cases |
 | Regression Caught | Sprint B HMAC timestamp validation crashed on unaligned Data slice — caught and fixed by new EncryptionService round-trip test |
-| Production Refactor | Extracted reusable `Debouncer` utility from SupabaseSyncService — improved testability without behavior change |
+| Production Refactors | (1) Extracted `Debouncer` utility from SupabaseSyncService. (2) Added `SessionTokenType` enum + `AppColor.Overlay.scrim` token. (3) Marked 3 dead views as HISTORICAL. |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
 | Test Suite | 231 pass / 0 fail at every stage |
 | Self-Referential | Yes — same AI system that built the code also audited and fixed it |
@@ -205,7 +205,7 @@ Supporting fixes:
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 114 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 120 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -272,7 +272,8 @@ This system finds what it knows how to look for (code patterns, token compliance
 | PR #89 (Sprint C1) | `fix/audit-sprint-c1` — merged 2026-04-17 |
 | PR #90 (Sprint C2) | `fix/audit-sprint-c2` — merged 2026-04-17 |
 | PR #91 (Sprint C3) | `fix/audit-sprint-c3` — merged 2026-04-17 |
-| PR #92 (Sprint C4) | `fix/audit-sprint-c4` — pending |
+| PR #92 (Sprint C4) | `fix/audit-sprint-c4` — merged 2026-04-17 |
+| PR #93 (Sprint D) | `fix/audit-sprint-d` — pending |
 
 ---
 
@@ -296,6 +297,7 @@ This system finds what it knows how to look for (code patterns, token compliance
 | Service tests: AccountDeletion, TrainingProgram, Import, Perf, a11y (30 cases) | TEST-011/016/024/027/028 | #90 |
 | Encryption/Auth/HealthKit tests (33 cases, caught Sprint B alignment bug) | TEST-001/002/005 | #91 |
 | Sync contract tests + Debouncer extraction (15 cases) | TEST-003/004 partial | #92 |
+| SessionTokenType enum + Overlay.scrim token + dead view archive | DEEP-AUTH-004, DS-013/014, UI-015/016 | #93 |
 
 ### Pending: 72 findings (3 categories)
 

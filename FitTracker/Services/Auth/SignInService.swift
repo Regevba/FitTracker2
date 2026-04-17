@@ -21,6 +21,21 @@ import AppKit
 // MARK: – Session model
 // ─────────────────────────────────────────────────────────
 
+/// Documents what kind of value `UserSession.sessionToken` holds.
+/// Added in audit Sprint D to address DEEP-AUTH-004 — sessionToken historically
+/// held 5 untyped value classes (UUID, passkey signature, Supabase JWT,
+/// debug literal, Apple userID) with no type contract.
+///
+/// Optional for backward compat — legacy decoded sessions have nil tokenType
+/// and callers must treat nil as "unknown legacy token".
+enum SessionTokenType: String, Codable, Sendable {
+    case supabaseJWT          // Supabase-issued JWT (parseable header.payload.signature)
+    case passkeySignature     // ASAuthorizationPlatformPublicKeyCredentialAssertion.signature base64
+    case appleUserID          // Apple ID token from Sign in with Apple
+    case debugSimulator       // Simulator/test build token — must never appear in release
+    case reviewMode           // App Store review build token — gated by #if DEBUG
+}
+
 struct UserSession: Codable, Sendable, Equatable {
     var provider:           AuthProvider
     var userID:             String
@@ -29,6 +44,8 @@ struct UserSession: Codable, Sendable, Equatable {
     var phone:              String?
     var avatarURL:          URL?
     var sessionToken:       String
+    /// What kind of value `sessionToken` holds. Optional for backward compat.
+    var tokenType:          SessionTokenType?
     var backendAccessToken: String?
     var credentialID:       Data?
     var signedInAt:         Date = Date()
@@ -145,7 +162,8 @@ struct MockGoogleAuthProvider: GoogleAuthProviding {
             userID: UUID().uuidString,
             displayName: "Google User",
             email: "user@gmail.com",
-            sessionToken: UUID().uuidString
+            sessionToken: UUID().uuidString,
+            tokenType: .debugSimulator
         )
     }
 }
@@ -199,6 +217,7 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
             displayName: draft.fullName,
             email: draft.email,
             sessionToken: UUID().uuidString,
+            tokenType: .debugSimulator,
             backendAccessToken: nil
         )
     }
@@ -224,6 +243,7 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
             displayName: inferredName,
             email: email,
             sessionToken: UUID().uuidString,
+            tokenType: .debugSimulator,
             backendAccessToken: nil
         )
     }
@@ -435,7 +455,8 @@ final class SignInService: NSObject, ObservableObject {
                 userID: "simulator@fitme.app",
                 displayName: "Simulator User",
                 email: "simulator@fitme.app",
-                sessionToken: "simulator-debug-token"
+                sessionToken: "simulator-debug-token",
+                tokenType: .debugSimulator
             )
             activeSession = session
             storedSession = session
@@ -451,7 +472,8 @@ final class SignInService: NSObject, ObservableObject {
             userID: "review@fitme.app",
             displayName: "Regev",
             email: "review@fitme.app",
-            sessionToken: "review-session-token"
+            sessionToken: "review-session-token",
+            tokenType: .reviewMode
         )
 
         activeSession = session
@@ -781,6 +803,7 @@ final class SignInService: NSObject, ObservableObject {
             displayName: "\(AppBrand.name) User",
             email: "test@simulator.local",
             sessionToken: UUID().uuidString,
+            tokenType: .debugSimulator,
             backendAccessToken: nil
         )
         finishSignIn(session)
@@ -857,6 +880,7 @@ extension SignInService: ASAuthorizationControllerDelegate {
                     displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     email: storedSession?.email,
                     sessionToken: cred.signature.base64EncodedString(),
+                    tokenType: .passkeySignature,
                     backendAccessToken: nil,
                     credentialID: cred.credentialID
                 )
@@ -875,6 +899,7 @@ extension SignInService: ASAuthorizationControllerDelegate {
                     displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     email: storedSession?.email,
                     sessionToken: cred.signature.base64EncodedString(),
+                    tokenType: .passkeySignature,
                     backendAccessToken: nil,
                     credentialID: cred.credentialID
                 )
@@ -960,6 +985,7 @@ extension SignInService {
             phone: existingAppleSession?.phone,
             avatarURL: existingAppleSession?.avatarURL,
             sessionToken: userID,
+            tokenType: .appleUserID,
             backendAccessToken: existingAppleSession?.backendAccessToken,
             credentialID: existingAppleSession?.credentialID
         )

@@ -103,6 +103,8 @@
 		SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncServiceTests.swift; sourceTree = "<group>"; };
 		CK100000000000000000AT01 /* CloudKitSyncServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */; };
 		CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSyncServiceTests.swift; sourceTree = "<group>"; };
+		ST100000000000000000AT01 /* SessionTokenTypeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ST200000000000000000AT01 /* SessionTokenTypeTests.swift */; };
+		ST200000000000000000AT01 /* SessionTokenTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTokenTypeTests.swift; sourceTree = "<group>"; };
 		DE100000000000000000SR01 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE200000000000000000SR01 /* Debouncer.swift */; };
 		DE200000000000000000SR01 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
@@ -763,6 +765,7 @@
 				DB200000000000000000AT01 /* DebouncerTests.swift */,
 				SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */,
 				CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */,
+				ST200000000000000000AT01 /* SessionTokenTypeTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
@@ -1135,6 +1138,7 @@
 				DB100000000000000000AT01 /* DebouncerTests.swift in Sources */,
 				SS100000000000000000AT01 /* SupabaseSyncServiceTests.swift in Sources */,
 				CK100000000000000000AT01 /* CloudKitSyncServiceTests.swift in Sources */,
+				ST100000000000000000AT01 /* SessionTokenTypeTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
