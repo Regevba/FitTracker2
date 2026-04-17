@@ -13,11 +13,11 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **82** across Phases 1–8 |
-| Findings Deferred | 88 (Phase 6 new test files + Phase 9 large-effort) |
+| Findings Resolved | **95** across Phases 1–8 + Sprint A |
+| Findings Deferred | 75 (Phase 6 new test files + Phase 9 large-effort) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 23 app + 4 test |
-| Commits | 10 (7 in PR #84, 2 in PR #85, 1 in PR #86) |
+| Files Changed | 26 app + 4 test |
+| Commits | 11 (7 in PR #84, 2 in PR #85, 1 in PR #86, 1 in PR #87) |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
 | Test Suite | 231 pass / 0 fail at every stage |
 | Self-Referential | Yes — same AI system that built the code also audited and fixed it |
@@ -202,7 +202,7 @@ Supporting fixes:
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 82 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 95 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -258,13 +258,14 @@ This system finds what it knows how to look for (code patterns, token compliance
 | Audit spec | `docs/superpowers/specs/2026-04-16-meta-analysis-full-system-audit-design.md` |
 | PR #84 (Phases 1–4, 8) | `fix/audit-remediation` — merged 2026-04-17 |
 | PR #85 (Phases 5, 7) | `fix/audit-remediation-phase-5-7` — merged 2026-04-17 |
-| PR #86 (Phase 6 partial) | `fix/audit-remediation-phase-6` — pending |
+| PR #86 (Phase 6 partial) | `fix/audit-remediation-phase-6` — merged 2026-04-17 |
+| PR #87 (Sprint A) | `fix/audit-sprint-a` — pending |
 
 ---
 
 ## 9. What Comes Next
 
-1. **Merge PR #86** — Phase 6 phantom test fixes ready
+1. **Merge PR #87** — Sprint A data integrity hardening ready
 2. **Phase 6 remainder: New test files** — Requires mock infrastructure sprint (URLProtocol stubs, mock Keychain, mock CKDatabase) before writing tests for the 5 high-risk zero-coverage services
 3. **Phase 9: Server-side WebAuthn** — Supabase Edge Function for passkey verification
 4. **Phase 9: Dual-sync coordinator** — Architectural decision needed before implementation
