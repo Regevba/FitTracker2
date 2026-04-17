@@ -148,8 +148,12 @@ actor EncryptionService {
         let expected   = HMAC<SHA512>.authenticationCode(for: toVerify, using: hmacKey)
         guard Data(expected) == mac else { throw FTCryptoError.integrityCheckFailed }
 
-        // Validate timestamp — reject data older than 2 years (stale/replayed)
-        let timestampBits = ts.withUnsafeBytes { $0.load(as: UInt64.self) }
+        // Validate timestamp — reject data older than 2 years (stale/replayed).
+        // Copy into aligned storage before reading — the Data slice may be unaligned.
+        var timestampBits: UInt64 = 0
+        withUnsafeMutableBytes(of: &timestampBits) { dst in
+            ts.copyBytes(to: dst)
+        }
         let timestamp = Date(timeIntervalSince1970: TimeInterval(bitPattern: timestampBits))
         let maxAge: TimeInterval = 2 * 365.25 * 24 * 3600  // ~2 years
         if abs(Date().timeIntervalSince(timestamp)) > maxAge {
