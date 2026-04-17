@@ -23,10 +23,9 @@ struct HealthKitAdapter: AIInputAdapter {
     func contribute(to snapshot: inout LocalUserSnapshot) {
         let recent7 = Array(recentLogs.prefix(7))
 
-        // BMI
+        // BMI — only from measured weight, never from startWeightKg (which may be stale)
         let currentWeight = liveMetrics.weightKg
             ?? recentLogs.first?.biometrics.weightKg
-            ?? profile.startWeightKg
         snapshot.bmiValue = Self.bmi(weightKg: currentWeight, heightCm: profile.heightCm)
 
         // Sleep
@@ -58,7 +57,8 @@ struct HealthKitAdapter: AIInputAdapter {
     // MARK: - Private helpers (extracted from AISnapshotBuilder)
 
     private static func bmi(weightKg: Double?, heightCm: Double) -> Double? {
-        guard let weightKg, heightCm > 0 else { return nil }
+        guard let weightKg, heightCm >= 100, heightCm <= 250,
+              weightKg >= 30, weightKg <= 300 else { return nil }
         let heightMeters = heightCm / 100
         return weightKg / (heightMeters * heightMeters)
     }
@@ -79,8 +79,10 @@ struct HealthKitAdapter: AIInputAdapter {
         return nil
     }
 
-    private static func stressLevel(from log: DailyLog?) -> String {
-        guard let log else { return "moderate" }
+    private static func stressLevel(from log: DailyLog?) -> String? {
+        guard let log else { return nil }
+        // Only infer stress when we have at least one subjective signal
+        guard log.mood != nil || log.energyLevel != nil || log.cravingLevel != nil else { return nil }
         if let mood = log.mood, mood <= 2 { return "high" }
         if let energy = log.energyLevel, energy <= 2 { return "high" }
         if let craving = log.cravingLevel, craving >= 4 { return "high" }

@@ -263,7 +263,8 @@ final class FitTrackerCoreTests: XCTestCase {
 
     func testAISnapshotBuilderPopulatesCoreBandsFromExistingData() {
         let now = Date()
-        let profile = UserProfile()
+        var profile = UserProfile()
+        profile.trainingDaysPerWeek = 4
         let preferences = UserPreferences(nutritionGoalMode: .fatLoss)
         let liveMetrics = LiveMetrics(
             restingHR: 58,

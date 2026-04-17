@@ -37,7 +37,10 @@ public struct AnyCodable: Codable, @unchecked Sendable, Equatable {
         } else if let dict = try? container.decode([String: AnyCodable].self) {
             value = dict
         } else {
-            value = ""
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "AnyCodable: unsupported value type"
+            )
         }
     }
 
@@ -116,7 +119,7 @@ extension AIRecommendation {
     ) -> AIRecommendation {
         var signals: [String] = []
         let profile = goalProfile ?? GoalProfile.forGoal(
-            NutritionGoalMode(rawValue: snapshot.primaryGoal ?? "Fat Loss") ?? .fatLoss
+            NutritionGoalMode(rawValue: snapshot.primaryGoal ?? "") ?? .fatLoss
         )
 
         switch segment {
@@ -280,7 +283,6 @@ extension LocalUserSnapshot {
     public func trainingBands() -> [String: String]? {
         guard
             let age     = ageBand(),
-            let gender  = genderBand(),
             let bmi     = bmiBand(),
             let weeks   = activeWeeksBand(),
             let phase   = programPhase,
@@ -291,7 +293,6 @@ extension LocalUserSnapshot {
 
         var bands: [String: String] = [
             "age_band":                  age,
-            "gender_band":               gender,
             "bmi_band":                  bmi,
             "active_weeks_band":         weeks,
             "program_phase":             phase,
@@ -299,6 +300,10 @@ extension LocalUserSnapshot {
             "avg_session_duration_band": duration,
             "primary_goal":              goal,
         ]
+        // Gender is optional — include only when user has provided it
+        if let gender = genderBand() {
+            bands["gender_band"] = gender
+        }
 
         // Training load status from readiness engine
         if let loadScore = trainingLoadComponentScore {
@@ -313,16 +318,19 @@ extension LocalUserSnapshot {
         guard
             let balance = caloricBalanceBand(),
             let protein = proteinAdequacyBand(),
-            let meals   = mealFrequencyBand(),
-            let diet    = dietPattern
+            let meals   = mealFrequencyBand()
         else { return nil }
 
-        return [
+        var bands: [String: String] = [
             "caloric_balance_band":  balance,
             "protein_adequacy_band": protein,
             "meal_frequency_band":   meals,
-            "diet_pattern":          diet,
         ]
+        // Diet pattern is optional — include only when user has set it
+        if let diet = dietPattern {
+            bands["diet_pattern"] = diet
+        }
+        return bands
     }
 
     /// Returns the banded recovery segment payload.
@@ -413,6 +421,7 @@ extension LocalUserSnapshot {
     private func trainingDaysWeekBand() -> String? {
         guard let days = trainingDaysPerWeek else { return nil }
         switch days {
+        case 0:     return "0"
         case 1...2: return "1-2"
         case 3...4: return "3-4"
         default:    return "5+"

@@ -29,8 +29,8 @@ struct NutritionAdapter: AIInputAdapter {
         )
         snapshot.dailyProteinGrams = latestNutrition?.resolvedProteinG
         snapshot.proteinTargetGrams = goalPlan.proteinG
-        snapshot.mealsPerDay = latestNutrition?.meals.filter { $0.status == .completed }.count
-            ?? latestNutrition?.meals.count
+        let completedMealCount = latestNutrition?.meals.filter { $0.status == .completed }.count
+        snapshot.mealsPerDay = (completedMealCount ?? 0) > 0 ? completedMealCount : nil
     }
 
     private static func caloricBalanceDelta(actualCalories: Double?, targetCalories: Double) -> Int? {

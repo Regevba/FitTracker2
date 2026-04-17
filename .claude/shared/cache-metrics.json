@@ -1,6 +1,7 @@
 {
   "version": "1.0",
-  "updated": "2026-04-16T00:00:00Z",
+  "updated": "2026-04-17T00:00:00Z",
+  "framework_version": "6.1",
   "description": "Rolling cache hit rate aggregate across features. Updated on feature completion. Added in v6.0.",
   "by_framework_version": {
     "v5.2": {

@@ -37,6 +37,7 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
         #if targetEnvironment(simulator)
         isAuthenticated = true
         authError = nil
+        await EncryptionService.shared.setSessionContext(LAContext())
         return true
         #else
         let ctx = LAContext()

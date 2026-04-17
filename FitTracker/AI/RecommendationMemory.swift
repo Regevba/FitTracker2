@@ -1,5 +1,5 @@
 // AI/RecommendationMemory.swift
-// On-device encrypted store of recommendation outcomes.
+// On-device store of recommendation outcomes (plain UserDefaults, not encrypted).
 // Tracks what the user accepted, dismissed, or ignored to improve future recommendations.
 // PII-free: only stores segment, signals, action, and timestamp.
 
@@ -108,7 +108,7 @@ final class RecommendationMemory: @unchecked Sendable {
         UserDefaults.standard.removeObject(forKey: storageKey)
     }
 
-    // MARK: - Persistence (encrypted UserDefaults)
+    // MARK: - Persistence (plain UserDefaults)
 
     private func save() {
         guard let data = try? JSONEncoder().encode(outcomes) else { return }
@@ -122,15 +122,19 @@ final class RecommendationMemory: @unchecked Sendable {
         outcomes = loaded
     }
 
-    /// LRU eviction using UUID-based identity (not timestamp matching).
+    /// LRU eviction: single pass to count per segment, then remove oldest excess entries.
     private func enforceLimit() {
-        for segment in AISegment.allCases {
-            let segmentOutcomes = outcomes.filter { $0.segment == segment.rawValue }
-            if segmentOutcomes.count > maxEntriesPerSegment {
-                let excess = segmentOutcomes.count - maxEntriesPerSegment
-                let idsToRemove = Set(segmentOutcomes.prefix(excess).map(\.id))
-                outcomes.removeAll { idsToRemove.contains($0.id) }
-            }
+        // Group indices by segment in one pass
+        var segmentIndices: [String: [Int]] = [:]
+        for (index, outcome) in outcomes.enumerated() {
+            segmentIndices[outcome.segment, default: []].append(index)
         }
+        var indicesToRemove: Set<Int> = []
+        for (_, indices) in segmentIndices where indices.count > maxEntriesPerSegment {
+            let excess = indices.count - maxEntriesPerSegment
+            indicesToRemove.formUnion(indices.prefix(excess))
+        }
+        guard !indicesToRemove.isEmpty else { return }
+        outcomes = outcomes.enumerated().compactMap { indicesToRemove.contains($0.offset) ? nil : $0.element }
     }
 }

@@ -1,9 +1,9 @@
 // FitTracker/Services/Auth/EmailAuthProvider.swift
-// DORMANT: MockEmailAuthProvider is still wired in SignInService.
+// DORMANT: LocalEmailAuthProvider (DEBUG-only) is wired in SignInService.
 //
-// To activate Email auth:
+// To activate real Email auth:
 //   1. Ensure Email provider is enabled in Supabase → Auth → Providers
-//   2. In SignInService.init(): swap MockEmailAuthProvider() → EmailAuthProvider()
+//   2. In SignInService.init(): swap LocalEmailAuthProvider() → EmailAuthProvider()
 //
 // No package changes needed — supabase-swift already provides Auth.
 

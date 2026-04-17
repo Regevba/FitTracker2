@@ -9,7 +9,10 @@
 
 import Foundation
 import CryptoKit
+import os.log
 import Supabase  // supabase-swift v2.x
+
+private let syncLogger = Logger(subsystem: "com.fitme.sync", category: "supabase")
 
 // MARK: - Sync Status
 
@@ -31,6 +34,9 @@ final class SupabaseSyncService: ObservableObject {
     // Realtime channel — held to keep the subscription alive and to allow unsubscribe.
     private var realtimeChannel: RealtimeChannelV2?
 
+    /// Debounce task for realtime events — prevents concurrent fetch storms.
+    private var realtimeDebounceTask: Task<Void, Never>?
+
     // MARK: - Record Type Constants
 
     private enum RT {
@@ -51,8 +57,15 @@ final class SupabaseSyncService: ObservableObject {
             return
         }
         guard case .idle = status else { return }
-        let session = try? await supabase.auth.session
-        guard let userID = session?.user.id else { return }
+        let session: Session
+        do {
+            session = try await supabase.auth.session
+        } catch {
+            syncLogger.error("Auth session expired during push: \(error.localizedDescription)")
+            status = .failed("Auth session expired")
+            return
+        }
+        let userID = session.user.id
         status = .syncing
         var anyFailed = false
 
@@ -74,6 +87,7 @@ final class SupabaseSyncService: ObservableObject {
                     .execute()
                 dataStore.markSynced(logID: log.id)
             } catch {
+                syncLogger.error("Push failed for daily log \(log.id): \(error.localizedDescription)")
                 anyFailed = true
             }
         }
@@ -96,6 +110,7 @@ final class SupabaseSyncService: ObservableObject {
                     .execute()
                 dataStore.markSnapshotSynced(id: snap.id)
             } catch {
+                syncLogger.error("Push failed for weekly snapshot \(snap.id): \(error.localizedDescription)")
                 anyFailed = true
             }
         }
@@ -124,6 +139,7 @@ final class SupabaseSyncService: ObservableObject {
     }
 
     /// Pull ALL records — used on first login to a new device.
+    /// On subsequent session refreshes, use `fetchChanges()` for incremental pull.
     func fetchAllRecords(dataStore: EncryptedDataStore) async {
         guard SupabaseRuntimeConfiguration.isConfigured else {
             status = .disabled
@@ -132,8 +148,16 @@ final class SupabaseSyncService: ObservableObject {
         guard case .idle = status else { return }
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else { return }
+
+        // Only do a full pull when no prior pull exists (first login).
+        // Session refreshes should use fetchChanges() for incremental pull.
+        let hasExistingPull = UserDefaults.standard.object(forKey: "supabase.lastPull") != nil
+        if hasExistingPull {
+            await fetchChanges(dataStore: dataStore)
+            return
+        }
+
         status = .syncing
-        UserDefaults.standard.removeObject(forKey: "supabase.lastPull")
         await pullRecords(since: .distantPast, userID: userID, dataStore: dataStore)
     }
 
@@ -164,7 +188,7 @@ final class SupabaseSyncService: ObservableObject {
             table: "sync_records"
         ) { [weak self] _ in
             guard let self else { return }
-            Task { await self.fetchChanges(dataStore: dataStore) }
+            Task { await self.debouncedFetchChanges(dataStore: dataStore) }
         }
 
         _ = channel.onPostgresChange(
@@ -173,7 +197,7 @@ final class SupabaseSyncService: ObservableObject {
             table: "sync_records"
         ) { [weak self] _ in
             guard let self else { return }
-            Task { await self.fetchChanges(dataStore: dataStore) }
+            Task { await self.debouncedFetchChanges(dataStore: dataStore) }
         }
 
         do {
@@ -181,6 +205,16 @@ final class SupabaseSyncService: ObservableObject {
             realtimeChannel = channel
         } catch {
             status = .failed(error.localizedDescription)
+        }
+    }
+
+    /// Debounce realtime events — coalesces rapid-fire notifications into a single fetch.
+    private func debouncedFetchChanges(dataStore: EncryptedDataStore) {
+        realtimeDebounceTask?.cancel()
+        realtimeDebounceTask = Task {
+            try? await Task.sleep(for: .milliseconds(500))
+            guard !Task.isCancelled else { return }
+            await fetchChanges(dataStore: dataStore)
         }
     }
 
@@ -317,6 +351,7 @@ private extension SupabaseSyncService {
                 .execute()
                 .value
 
+            var oldestFailure: Date?
             for row in rows {
                 guard let payloadData = Data(base64Encoded: row.encryptedPayload) else { continue }
                 do {
@@ -325,14 +360,21 @@ private extension SupabaseSyncService {
                                        checksum: row.checksum,
                                        dataStore: dataStore)
                 } catch {
-                    // Decryption failure for one row should not abort the full pull
+                    // Track failed row so we don't advance lastPull past it
+                    syncLogger.error("Decryption failed for \(row.recordType): \(error.localizedDescription)")
+                    oldestFailure = min(oldestFailure ?? row.lastModified, row.lastModified)
                 }
             }
 
             // Pull cardio asset metadata (images fetched lazily on display)
             try await fetchCardioAssetMetadata(userID: userID, since: lastPull, dataStore: dataStore)
 
-            UserDefaults.standard.set(Date(), forKey: "supabase.lastPull")
+            // Don't advance lastPull past decryption failures — re-fetch from before the oldest failure
+            if let oldest = oldestFailure {
+                UserDefaults.standard.set(oldest.addingTimeInterval(-1), forKey: "supabase.lastPull")
+            } else {
+                UserDefaults.standard.set(Date(), forKey: "supabase.lastPull")
+            }
             status = .idle
         } catch {
             status = .failed(error.localizedDescription)
@@ -387,11 +429,14 @@ private extension SupabaseSyncService {
 
         for (recordType, value, digestKey) in singletonJobs {
             do {
-                let blob = try await EncryptionService.shared.encrypt(value)
-                let checksum = SHA256.hash(data: blob).hexString
+                // Compute checksum from plaintext so identical data always produces the same hash,
+                // regardless of per-encryption IV differences in the ciphertext.
+                let plaintext = try JSONEncoder().encode(value)
+                let checksum = SHA256.hash(data: plaintext).hexString
                 let lastSyncedChecksum = UserDefaults.standard.string(forKey: digestKey) ?? ""
                 guard checksum != lastSyncedChecksum else { continue }  // unchanged — skip
 
+                let blob = try await EncryptionService.shared.encrypt(value)
                 try await supabase
                     .from("sync_records")
                     .upsert([
