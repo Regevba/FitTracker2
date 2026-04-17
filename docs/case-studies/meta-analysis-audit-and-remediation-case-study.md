@@ -13,12 +13,13 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **109** across Phases 1–8 + Sprints A–C2 |
-| Findings Deferred | 61 (Phase 6 mock-infra + Phase 9 large-effort) |
+| Findings Resolved | **112** across Phases 1–8 + Sprints A–C3 |
+| Findings Deferred | 58 (Sprint C4 CloudKit/Supabase mocks + Phase 9 large-effort) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 29 app + 13 test |
-| Commits | 14 (cumulative across PRs #84–90) |
-| New Test Suites | 9 suites, 57 test cases covering AI adapters, recommendation memory, app settings, goal profile, training program, import edge cases, performance, accessibility, account deletion |
+| Files Changed | 29 app + 16 test |
+| Commits | 15 (cumulative across PRs #84–91) |
+| New Test Suites | 12 suites, 90 test cases covering AI adapters, recommendation memory, app settings, goal profile, training program, import edge cases, performance, accessibility, account deletion, encryption service, auth manager, HealthKit metrics |
+| Regression Caught | Sprint B HMAC timestamp validation crashed on unaligned Data slice — caught and fixed by new EncryptionService round-trip test |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
 | Test Suite | 231 pass / 0 fail at every stage |
 | Self-Referential | Yes — same AI system that built the code also audited and fixed it |
@@ -203,7 +204,7 @@ Supporting fixes:
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 109 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 112 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -268,7 +269,8 @@ This system finds what it knows how to look for (code patterns, token compliance
 | PR #87 (Sprint A) | `fix/audit-sprint-a` — merged 2026-04-17 |
 | PR #88 (Sprint B) | `fix/audit-sprint-b` — merged 2026-04-17 |
 | PR #89 (Sprint C1) | `fix/audit-sprint-c1` — merged 2026-04-17 |
-| PR #90 (Sprint C2) | `fix/audit-sprint-c2` — pending |
+| PR #90 (Sprint C2) | `fix/audit-sprint-c2` — merged 2026-04-17 |
+| PR #91 (Sprint C3) | `fix/audit-sprint-c3` — pending |
 
 ---
 
@@ -290,6 +292,7 @@ This system finds what it knows how to look for (code patterns, token compliance
 | HMAC timestamp validation, test deduplication | DEEP-AUTH-008/009, BE-013, TEST-029 | #88 |
 | AI adapter golden I/O tests (27 new test cases) | TEST-006/008/015/017/019/022 | #89 |
 | Service tests: AccountDeletion, TrainingProgram, Import, Perf, a11y (30 cases) | TEST-011/016/024/027/028 | #90 |
+| Encryption/Auth/HealthKit tests (33 cases, caught Sprint B alignment bug) | TEST-001/002/005 | #91 |
 
 ### Pending: 72 findings (3 categories)
 

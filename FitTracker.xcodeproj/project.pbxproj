@@ -91,6 +91,12 @@
 		AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityBasicsTests.swift; sourceTree = "<group>"; };
 		AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */; };
 		AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDeletionServiceTests.swift; sourceTree = "<group>"; };
+		EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC200000000000000000AT01 /* EncryptionServiceTests.swift */; };
+		EC200000000000000000AT01 /* EncryptionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionServiceTests.swift; sourceTree = "<group>"; };
+		AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AM200000000000000000AT01 /* AuthManagerTests.swift */; };
+		AM200000000000000000AT01 /* AuthManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManagerTests.swift; sourceTree = "<group>"; };
+		HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HK200000000000000000AT01 /* HealthKitServiceTests.swift */; };
+		HK200000000000000000AT01 /* HealthKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitServiceTests.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
 		EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET02 /* AIOutputQualityEvals.swift */; };
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
@@ -742,6 +748,9 @@
 				PB200000000000000000AT01 /* PerformanceBenchmarkTests.swift */,
 				AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */,
 				AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */,
+				EC200000000000000000AT01 /* EncryptionServiceTests.swift */,
+				AM200000000000000000AT01 /* AuthManagerTests.swift */,
+				HK200000000000000000AT01 /* HealthKitServiceTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
@@ -1099,6 +1108,9 @@
 				PB100000000000000000AT01 /* PerformanceBenchmarkTests.swift in Sources */,
 				AB100000000000000000AT01 /* AccessibilityBasicsTests.swift in Sources */,
 				AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */,
+				EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */,
+				AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */,
+				HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
