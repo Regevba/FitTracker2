@@ -131,7 +131,7 @@ private struct AppHierarchyButtonStyle: ButtonStyle {
                 y: hierarchy == .primary ? AppShadow.ctaYOffset : 0
             )
             .scaleEffect(configuration.isPressed ? 0.985 : 1)
-            .animation(.easeOut(duration: 0.16), value: configuration.isPressed)
+            .animation(AppMotion.pressFeedback, value: configuration.isPressed)
     }
 
     private var backgroundColor: Color {
@@ -232,7 +232,7 @@ struct AppSelectionTile<Content: View>: View {
                     .stroke(borderColor, lineWidth: 1)
             )
             .shadow(color: isSelected ? tint.opacity(0.14) : .clear, radius: 10, y: 4)
-            .animation(.easeOut(duration: 0.18), value: isSelected)
+            .animation(AppMotion.selectionChange, value: isSelected)
     }
 
     private var background: Color {

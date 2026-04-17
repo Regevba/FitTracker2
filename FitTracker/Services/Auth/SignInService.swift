@@ -998,7 +998,11 @@ extension SignInService {
 enum KeychainHelper {
     private static let service = "com.fittracker.regev"
 
-    static func save(key: String, data: Data) {
+    /// Save data to the Keychain. Returns true on success, false if SecItemAdd
+    /// failed (e.g., out of disk space, permissions denied). Per audit BE-020 —
+    /// the return status was previously ignored, masking silent save failures.
+    @discardableResult
+    static func save(key: String, data: Data) -> Bool {
         let q: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -1007,7 +1011,12 @@ enum KeychainHelper {
             kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
         ]
         SecItemDelete(q as CFDictionary)
-        SecItemAdd(q as CFDictionary, nil)
+        let status = SecItemAdd(q as CFDictionary, nil)
+        if status != errSecSuccess {
+            authLogger.error("KeychainHelper.save failed for key '\(key)' with OSStatus \(status)")
+            return false
+        }
+        return true
     }
 
     static func load(key: String) -> Data? {
@@ -1023,12 +1032,15 @@ enum KeychainHelper {
         return result as? Data
     }
 
-    static func delete(key: String) {
+    @discardableResult
+    static func delete(key: String) -> Bool {
         let q: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: key,
         ]
-        SecItemDelete(q as CFDictionary)
+        let status = SecItemDelete(q as CFDictionary)
+        // errSecItemNotFound is acceptable — already absent
+        return status == errSecSuccess || status == errSecItemNotFound
     }
 }

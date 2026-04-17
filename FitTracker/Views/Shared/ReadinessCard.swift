@@ -80,7 +80,7 @@ struct ReadinessCard: View {
                 Circle()
                     .fill(i == currentPage ? AppColor.Selection.active : AppColor.Selection.inactive)
                     .frame(width: i == currentPage ? 7 : 5, height: i == currentPage ? 7 : 5)
-                    .animation(.easeInOut(duration: 0.2), value: currentPage)
+                    .animation(AppMotion.pageTransition, value: currentPage)
             }
         }
     }

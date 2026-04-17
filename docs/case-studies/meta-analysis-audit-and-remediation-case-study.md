@@ -13,12 +13,12 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **120** across Phases 1–8 + Sprints A–D |
-| Findings Deferred | 50 (Phase 9 backend infra + UI v2 refactors + dark mode pipeline) |
+| Findings Resolved | **123** across Phases 1–8 + Sprints A–E |
+| Findings Deferred | 47 (Phase 9 backend infra + UI v2 refactors + dark mode pipeline) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 32 app + 20 test |
-| Commits | 17 (cumulative across PRs #84–93) |
-| New Test Suites | 16 suites, 109 test cases |
+| Files Changed | 35 app + 21 test |
+| Commits | 18 (cumulative across PRs #84–94) |
+| New Test Suites | 17 suites, 116 test cases |
 | Regression Caught | Sprint B HMAC timestamp validation crashed on unaligned Data slice — caught and fixed by new EncryptionService round-trip test |
 | Production Refactors | (1) Extracted `Debouncer` utility from SupabaseSyncService. (2) Added `SessionTokenType` enum + `AppColor.Overlay.scrim` token. (3) Marked 3 dead views as HISTORICAL. |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
@@ -205,7 +205,7 @@ Supporting fixes:
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 120 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 123 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -273,7 +273,8 @@ This system finds what it knows how to look for (code patterns, token compliance
 | PR #90 (Sprint C2) | `fix/audit-sprint-c2` — merged 2026-04-17 |
 | PR #91 (Sprint C3) | `fix/audit-sprint-c3` — merged 2026-04-17 |
 | PR #92 (Sprint C4) | `fix/audit-sprint-c4` — merged 2026-04-17 |
-| PR #93 (Sprint D) | `fix/audit-sprint-d` — pending |
+| PR #93 (Sprint D) | `fix/audit-sprint-d` — merged 2026-04-17 |
+| PR #94 (Sprint E) | `fix/audit-sprint-e` — pending |
 
 ---
 
@@ -298,6 +299,7 @@ This system finds what it knows how to look for (code patterns, token compliance
 | Encryption/Auth/HealthKit tests (33 cases, caught Sprint B alignment bug) | TEST-001/002/005 | #91 |
 | Sync contract tests + Debouncer extraction (15 cases) | TEST-003/004 partial | #92 |
 | SessionTokenType enum + Overlay.scrim token + dead view archive | DEEP-AUTH-004, DS-013/014, UI-015/016 | #93 |
+| KeychainHelper return status + AppMotion tokens + system rounded font | BE-020, DS-007/012 | #94 |
 
 ### Pending: 72 findings (3 categories)
 

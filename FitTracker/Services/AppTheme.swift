@@ -209,6 +209,14 @@ enum AppMotion {
     static let stepTransition: Animation = .easeInOut(duration: 0.3)
     /// Standard quick interaction — easeOut 0.2s
     static let quickInteraction: Animation = .easeOut(duration: 0.2)
+    /// Tap/press feedback — easeOut 0.16s (just below perceptible delay threshold)
+    static let pressFeedback: Animation = .easeOut(duration: 0.16)
+    /// Selection state change — easeOut 0.18s
+    static let selectionChange: Animation = .easeOut(duration: 0.18)
+    /// Page/tab transition — easeInOut 0.2s
+    static let pageTransition: Animation = .easeInOut(duration: 0.2)
+    /// Progress bar fill — easeOut 0.6s (slower for hero metric reveals)
+    static let progressFill: Animation = .easeOut(duration: 0.6)
 }
 
 
@@ -235,7 +243,8 @@ enum AppText {
     static let footnote          = Font.system(.footnote,     design: .rounded)
     static let metric            = Font.system(.title,        design: .rounded).weight(.bold)
     /// ~25pt rounded bold — Home v2 status card value hero (T1)
-    static let metricM           = Font.custom("SF Pro Rounded", size: 25, relativeTo: .title).weight(.bold)
+    /// Uses Font.system(design:) so Dynamic Type scales relative to .title.
+    static let metricM           = Font.system(size: 25, weight: .bold, design: .rounded)
     static let metricCompact     = Font.system(.title2,       design: .rounded).weight(.bold)
     // metricHero and metricDisplay are intentional semantic aliases of hero (largeTitle/bold/rounded).
     // metricHero: full-screen readiness score (ReadinessCard).
