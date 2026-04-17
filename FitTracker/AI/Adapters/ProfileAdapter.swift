@@ -20,12 +20,12 @@ struct ProfileAdapter: AIInputAdapter {
 
     func contribute(to snapshot: inout LocalUserSnapshot) {
         snapshot.ageYears = profile.age
-        snapshot.genderIdentity = "prefer_not_to_say"
+        snapshot.genderIdentity = nil // no gender field in UserProfile — leave nil rather than fabricate
         snapshot.activeWeeks = max(0, Int(ceil(Double(profile.daysSinceStart) / 7.0)))
         snapshot.programPhase = todayDayType.aiProgramPhase
-        snapshot.trainingDaysPerWeek = DayType.allCases.filter(\.isTrainingDay).count
+        snapshot.trainingDaysPerWeek = profile.trainingDaysPerWeek
         snapshot.primaryGoal = Self.primaryGoal(for: preferences)
-        snapshot.dietPattern = "standard"
+        snapshot.dietPattern = nil // no diet pattern field in UserPreferences — leave nil rather than fabricate
     }
 
     private static func primaryGoal(for preferences: UserPreferences) -> String {

@@ -37,7 +37,10 @@ public struct AnyCodable: Codable, @unchecked Sendable, Equatable {
         } else if let dict = try? container.decode([String: AnyCodable].self) {
             value = dict
         } else {
-            value = ""
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "AnyCodable: unsupported value type"
+            )
         }
     }
 
@@ -116,7 +119,7 @@ extension AIRecommendation {
     ) -> AIRecommendation {
         var signals: [String] = []
         let profile = goalProfile ?? GoalProfile.forGoal(
-            NutritionGoalMode(rawValue: snapshot.primaryGoal ?? "Fat Loss") ?? .fatLoss
+            NutritionGoalMode(rawValue: snapshot.primaryGoal ?? "") ?? .fatLoss
         )
 
         switch segment {
@@ -413,6 +416,7 @@ extension LocalUserSnapshot {
     private func trainingDaysWeekBand() -> String? {
         guard let days = trainingDaysPerWeek else { return nil }
         switch days {
+        case 0:     return "0"
         case 1...2: return "1-2"
         case 3...4: return "3-4"
         default:    return "5+"

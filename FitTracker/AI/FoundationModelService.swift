@@ -81,10 +81,11 @@ public final class FoundationModelService: FoundationModelProtocol {
         //   let adapted = parseAdaptedRecommendation(from: response.content, base: recommendation)
         //   return (adapted, response.confidence ?? 0.8)
         //
-        // Placeholder until SDK ships:
+        // Placeholder until SDK ships — confidence 0.5 signals partial personalisation
+        #warning("Placeholder: replace with real FoundationModels API when iOS 26 SDK ships")
         _ = context
         let adapted = applyLocalAdjustments(recommendation: recommendation, snapshot: snapshot)
-        return (adapted, 0.8)
+        return (adapted, 0.5)
     }
 
     // ── Private helpers ────────────────────────────────────
