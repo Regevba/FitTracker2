@@ -212,6 +212,11 @@ Supporting fixes:
 | Security: review-mode auth in production | Exposed | Fenced | Fixed |
 | Sync: lastPull past failures | Advancing | Pinned | Fixed |
 | Encryption: biometric re-enrollment | Data loss | Survives | Fixed |
+| UserDefaults: multi-account isolation | Shared | Namespaced by userID | Fixed |
+| Password in Codable struct | Serialized | Excluded from encoding | Fixed |
+| HMAC timestamp validation | None | 2-year max-age check | Fixed |
+| Singleton conflict resolution | Last-write-wins | lastModified timestamps added | Fixed |
+| DailyLog schema versioning | None | schemaVersion field added | Fixed |
 
 ---
 
@@ -260,15 +265,71 @@ This system finds what it knows how to look for (code patterns, token compliance
 | PR #85 (Phases 5, 7) | `fix/audit-remediation-phase-5-7` — merged 2026-04-17 |
 | PR #86 (Phase 6 partial) | `fix/audit-remediation-phase-6` — merged 2026-04-17 |
 | PR #87 (Sprint A) | `fix/audit-sprint-a` — merged 2026-04-17 |
-| PR #88 (Sprint B) | `fix/audit-sprint-b` — pending |
+| PR #88 (Sprint B) | `fix/audit-sprint-b` — merged 2026-04-17 |
 
 ---
 
-## 9. What Comes Next
+## 9. Resolved vs Pending — Complete Inventory
 
-1. **Merge PR #87** — Sprint A data integrity hardening ready
-2. **Phase 6 remainder: New test files** — Requires mock infrastructure sprint (URLProtocol stubs, mock Keychain, mock CKDatabase) before writing tests for the 5 high-risk zero-coverage services
-3. **Phase 9: Server-side WebAuthn** — Supabase Edge Function for passkey verification
-4. **Phase 9: Dual-sync coordinator** — Architectural decision needed before implementation
-5. **Runtime validation** — The 146 framework-only findings need runtime testing to graduate from "plausible" to "confirmed"
-6. **Re-audit** — Run the same 4-layer sweep after Phase 6 + 9 to measure scorecard improvement
+### Resolved: 98 findings across 5 PRs
+
+| Category | Findings | PR |
+|---|---|---|
+| Critical security (review-mode auth, timeout crash) | DEEP-AUTH-001/005, BE-001/002/005/025/028/030 | #84 |
+| AI fabrication-over-nil (all 5 adapters) | DEEP-AI-001–005, AI-003/004/005/006/007/008/009/010/014/015/016/017/018/019 | #84 |
+| Sync data integrity (needsSync, lastPull, checksums, debounce) | DEEP-SYNC-002/003/004/005/007/008/015, BE-007/008/010/011/017/018/026 | #84 |
+| Auth hardening (simulator ctx, Keychain, biometry, continuation) | DEEP-AUTH-003/007/010, BE-015/022 | #84 |
+| Framework config (versions, timestamps, dead artifact) | FW-001/002/006/016/017/019 | #84 |
+| Design system tokens (27 deprecated calls, 3 icon fonts) | DS-001/002/003/005/006 | #85 |
+| Accessibility (AI feedback buttons, overlay dismiss) | UI-019/020 | #85 |
+| Phantom tests + deterministic helpers | TEST-018/020/021/030 | #86 |
+| UserDefaults namespacing, singleton timestamps, schema version | BE-004/009/012, DEEP-SYNC-006/009/012/013, DEEP-AUTH-012/014, BE-003 | #87 |
+| HMAC timestamp validation, test deduplication | DEEP-AUTH-008/009, BE-013, TEST-029 | #88 |
+
+### Pending: 72 findings (3 categories)
+
+**Sprint C — Mock infrastructure + test coverage (26 findings):**
+
+| Finding | What | Blocker |
+|---|---|---|
+| TEST-001 | EncryptionService tests | Mock Keychain needed |
+| TEST-002 | AuthManager tests | Mock LAContext needed |
+| TEST-003 | CloudKitSyncService tests | Mock CKDatabase needed |
+| TEST-004 | SupabaseSyncService tests | URLProtocol stubs needed |
+| TEST-005 | HealthKitService tests | Mock HKHealthStore needed |
+| TEST-006–010 | AI adapter + orchestrator tests | No blocker — can start |
+| TEST-011–017 | Remaining service tests | No blocker — can start |
+| TEST-019 | AppSpacing hardcoded array | Trivial — add new tokens to list |
+| TEST-022 | Same-timestamp tie-breaking | Write new test |
+| TEST-024 | Import edge-case tests | Write new test |
+| TEST-027 | Performance benchmarks | Write measure() tests |
+| TEST-028 | Accessibility minimum tests | Write new test |
+
+**Sprint D — Architectural decisions (7+ findings):**
+
+| Finding | What | Blocker |
+|---|---|---|
+| DEEP-AUTH-002, BE-006 | Server-side WebAuthn passkey verification | Supabase Edge Function deployment |
+| DEEP-SYNC-001 | Dual-sync coordinator (CloudKit + Supabase) | Architectural decision: sequence or merge? |
+| DEEP-AUTH-004 | Session token type safety enum | Design decision on token contract |
+| DEEP-AUTH-006, BE-021 | JWT Keychain separation | Keychain schema migration |
+| DEEP-AUTH-015 | Move checksums from UserDefaults to Keychain | Keychain schema migration |
+
+**Backlog — Low risk, optional (39 findings):**
+
+| Category | Findings | What |
+|---|---|---|
+| UI refactors | UI-001/002/003/004/005/006/015/016/017/018/024 | Archive HISTORICAL files, decompose large views, wire dead views |
+| Design system expansion | DS-004/007/008/009/010/011/012/013/014 | Dark mode, animation tokens, progress bar component, opacity tokens |
+| Test infrastructure | TEST-023/025/026 | URLProtocol mocks, XCUITest, snapshot tests |
+| Framework measurement | FW-005/011/012/014/020 | Cache indexing, metrics triggers, health checks |
+| Sync edge cases | DEEP-SYNC-010/011/014, BE-016/019/020/023/024/027 | CloudKit image forwarding, GDPR Supabase auth deletion, atomic writes |
+
+---
+
+## 10. What Comes Next
+
+1. **Sprint C: Test coverage** — Start with AI adapter tests (no mock blocker), then build mock infrastructure for sync/auth/encryption
+2. **Sprint D: Server-side WebAuthn** — Supabase Edge Function for passkey verification; dual-sync coordinator architectural decision
+3. **Runtime validation** — The 146 framework-only findings need runtime testing to graduate from "plausible" to "confirmed"
+4. **Re-audit** — Run the same 4-layer sweep after Sprint C + D to measure scorecard improvement from the F baseline
