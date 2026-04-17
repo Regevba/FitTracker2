@@ -13,11 +13,12 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **98** across Phases 1–8 + Sprints A–B |
-| Findings Deferred | 72 (Phase 6 new test files + Phase 9 large-effort) |
+| Findings Resolved | **104** across Phases 1–8 + Sprints A–C1 |
+| Findings Deferred | 66 (Phase 6 mock-infra test files + Phase 9 large-effort) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 28 app + 5 test |
-| Commits | 12 (7 in PR #84, 2 in PR #85, 1 in PR #86, 2 in PR #87, 1 in PR #88) |
+| Files Changed | 29 app + 8 test |
+| Commits | 13 (cumulative across PRs #84–89) |
+| New Test Suites | AIAdapterTests (10), RecommendationMemoryTests (9), AppSettingsTests (4), GoalProfileTests (5) |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
 | Test Suite | 231 pass / 0 fail at every stage |
 | Self-Referential | Yes — same AI system that built the code also audited and fixed it |
@@ -202,7 +203,7 @@ Supporting fixes:
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 98 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 104 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -266,6 +267,7 @@ This system finds what it knows how to look for (code patterns, token compliance
 | PR #86 (Phase 6 partial) | `fix/audit-remediation-phase-6` — merged 2026-04-17 |
 | PR #87 (Sprint A) | `fix/audit-sprint-a` — merged 2026-04-17 |
 | PR #88 (Sprint B) | `fix/audit-sprint-b` — merged 2026-04-17 |
+| PR #89 (Sprint C1) | `fix/audit-sprint-c1` — pending |
 
 ---
 
@@ -285,6 +287,7 @@ This system finds what it knows how to look for (code patterns, token compliance
 | Phantom tests + deterministic helpers | TEST-018/020/021/030 | #86 |
 | UserDefaults namespacing, singleton timestamps, schema version | BE-004/009/012, DEEP-SYNC-006/009/012/013, DEEP-AUTH-012/014, BE-003 | #87 |
 | HMAC timestamp validation, test deduplication | DEEP-AUTH-008/009, BE-013, TEST-029 | #88 |
+| AI adapter golden I/O tests (27 new test cases) | TEST-006/008/015/017/019/022 | #89 |
 
 ### Pending: 72 findings (3 categories)
 

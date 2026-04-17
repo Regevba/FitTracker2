@@ -757,13 +757,10 @@ final class FitTrackerCoreTests: XCTestCase {
     }
 
     func testSpacingScaleIsStrictly4ptGrid() {
-        // Every AppSpacing value must be a multiple of 4
-        let spacingValues: [CGFloat] = [
-            AppSpacing.xxxSmall, AppSpacing.xxSmall, AppSpacing.xSmall,
-            AppSpacing.small, AppSpacing.medium, AppSpacing.large,
-            AppSpacing.xLarge, AppSpacing.xxLarge
-        ]
-        for value in spacingValues {
+        // Iterate over the production gridValues array — any new token added
+        // to AppSpacing.gridValues is automatically tested.
+        XCTAssertFalse(AppSpacing.gridValues.isEmpty, "AppSpacing.gridValues must not be empty")
+        for value in AppSpacing.gridValues {
             XCTAssertEqual(
                 value.truncatingRemainder(dividingBy: 4), 0,
                 "AppSpacing value \(value) is not on the 4pt grid"

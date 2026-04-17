@@ -31,6 +31,20 @@ final class SyncMergeTests: XCTestCase {
         XCTAssertEqual(store.dailyLogs.first?.notes, "local")
     }
 
+    func testDailyLogMerge_sameTimestamp_keepsLocal() {
+        // Strict > comparison means equal timestamps don't replace local.
+        // This documents the tie-break contract: local wins on ties.
+        let store = EncryptedDataStore()
+        let logDate = Date()
+        let sharedTimestamp = Date()
+        let local  = makeDailyLog(date: logDate, notes: "local",  modifiedAt: sharedTimestamp)
+        let remote = makeDailyLog(date: logDate, notes: "remote", modifiedAt: sharedTimestamp)
+        store.dailyLogs = [local]
+        store.mergeDailyLog(remote)
+        XCTAssertEqual(store.dailyLogs.first?.notes, "local",
+                       "Same-timestamp tie-break: local wins (remote must be strictly newer)")
+    }
+
     func testDailyLogMerge_noLocal_insertsRemote() {
         let store = EncryptedDataStore()
         let remote = makeDailyLog(date: Date(), notes: "remote", modifiedAt: Date())
