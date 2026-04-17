@@ -141,12 +141,14 @@ final class CloudKitSyncService: ObservableObject {
                 }
             }
 
+            // Persist needsSync = false changes to disk before continuing
+            await dataStore.persistToDisk()
+
             // Upload user profile
             try await uploadUserProfile(dataStore.userProfile)
             try await uploadUserPreferences(dataStore.userPreferences)
             storeSingletonDigest(dataStore.userProfile, forKey: SyncStateKey.userProfileDigest)
             storeSingletonDigest(dataStore.userPreferences, forKey: SyncStateKey.userPreferencesDigest)
-            await dataStore.persistToDisk()
 
             lastSyncDate = Date()
             status = .idle
@@ -179,6 +181,8 @@ final class CloudKitSyncService: ObservableObject {
             for remote in remoteLogs {
                 let remoteKey = remote.resolvedLogicDayKey
                 if let local = dataStore.log(forLogicDayKey: remoteKey) {
+                    // Skip remote overwrite when local has unsaved edits
+                    guard !local.needsSync else { continue }
                     if remote.lastModified > local.lastModified {
                         dataStore.dailyLogs.removeAll { $0.resolvedLogicDayKey == remoteKey }
                         var r = remote
