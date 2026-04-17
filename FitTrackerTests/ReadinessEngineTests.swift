@@ -39,11 +39,13 @@ final class ReadinessEngineTests: XCTestCase {
                 dayType: .cardioOnly,
                 recoveryDay: offset
             )
-            log.biometrics.hrv = hrvBase + Double.random(in: -5...5)
-            log.biometrics.restingHeartRate = rhrBase + Double.random(in: -3...3)
-            log.biometrics.sleepHours = sleepBase + Double.random(in: -1...1)
-            log.biometrics.deepSleepMinutes = 55 + Double.random(in: -10...10)
-            log.biometrics.remSleepMinutes = 80 + Double.random(in: -15...15)
+            // Deterministic offsets instead of random — prevents flaky tests
+            let variation = Double(offset % 5) - 2.0  // cycles -2, -1, 0, 1, 2
+            log.biometrics.hrv = hrvBase + variation
+            log.biometrics.restingHeartRate = rhrBase + (variation * 0.6)
+            log.biometrics.sleepHours = sleepBase + (variation * 0.2)
+            log.biometrics.deepSleepMinutes = 55 + (variation * 2)
+            log.biometrics.remSleepMinutes = 80 + (variation * 3)
             log.biometrics.weightKg = 71.5
             // Include basic training data so the ACWR component is computable
             if includeTraining {

@@ -130,20 +130,29 @@ final class NotificationTests: XCTestCase {
 
     @MainActor
     func testQuietHourBoundaries() {
-        // isQuietHour() is true for hours in [22, 23] or [0, 6].
-        // We can't control the system clock, so we verify the pure logic
-        // by checking representative expected values against the real method's
-        // contract (documented in NotificationService.swift).
-        // Quiet window: hour >= 22 OR hour < 7
-        let quietHours   = [22, 23, 0, 1, 2, 3, 4, 5, 6]
-        let activeHours  = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+        // Test the real NotificationService.isQuietHour(at:) method with controlled dates.
+        let service = NotificationService.shared
+        let cal = Calendar.current
+
+        // Build a date at a specific hour today
+        func dateAtHour(_ hour: Int) -> Date {
+            cal.date(bySettingHour: hour, minute: 30, second: 0, of: Date())!
+        }
+
+        let quietHours  = [22, 23, 0, 1, 2, 3, 4, 5, 6]
+        let activeHours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
+
         for h in quietHours {
-            let isQuiet = h >= 22 || h < 7
-            XCTAssertTrue(isQuiet, "Hour \(h) should be within quiet hours")
+            XCTAssertTrue(
+                service.isQuietHour(at: dateAtHour(h)),
+                "Hour \(h) should be within quiet hours"
+            )
         }
         for h in activeHours {
-            let isQuiet = h >= 22 || h < 7
-            XCTAssertFalse(isQuiet, "Hour \(h) should NOT be within quiet hours")
+            XCTAssertFalse(
+                service.isQuietHour(at: dateAtHour(h)),
+                "Hour \(h) should NOT be within quiet hours"
+            )
         }
     }
 }
