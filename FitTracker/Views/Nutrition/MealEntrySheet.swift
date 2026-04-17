@@ -151,7 +151,7 @@ struct MealEntrySheet: View {
                     Text("Smart Nutrition Capture")
                         .font(AppText.sectionTitle)
                     Text("Scan a nutrition label, paste English or Hebrew nutrition text, then scale it to the weight you actually ate.")
-                        .font(.caption)
+                        .font(AppText.caption)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
 
@@ -175,7 +175,7 @@ struct MealEntrySheet: View {
                     Button {
                         showCameraCapture = true
                     } label: {
-                        smartActionLabel("Take Label Photo", systemImage: "camera.fill", tint: Color.accent.cyan)
+                        smartActionLabel("Take Label Photo", systemImage: "camera.fill", tint: AppColor.Accent.recovery)
                     }
                     .buttonStyle(.plain)
                     #endif
@@ -209,13 +209,13 @@ struct MealEntrySheet: View {
                 if let smartStatus {
                     Label(smartStatus, systemImage: "checkmark.circle.fill")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.status.success)
+                        .foregroundStyle(AppColor.Status.success)
                 }
 
                 if let smartError {
                     Label(smartError, systemImage: "exclamationmark.triangle.fill")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(Color.status.error)
+                        .foregroundStyle(AppColor.Status.error)
                 }
 
                 Button {
@@ -225,8 +225,8 @@ struct MealEntrySheet: View {
                         .font(AppText.button)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.xSmall)
-                        .background(Color.accent.cyan, in: RoundedRectangle(cornerRadius: AppRadius.small))
-                        .foregroundColor(.white)
+                        .background(AppColor.Accent.recovery, in: RoundedRectangle(cornerRadius: AppRadius.small))
+                        .foregroundStyle(.white)
                 }
                 .buttonStyle(.plain)
 
@@ -237,7 +237,7 @@ struct MealEntrySheet: View {
                             .foregroundStyle(AppColor.Text.secondary)
                         HStack(spacing: AppSpacing.xSmall) {
                             parsedMetric("kcal", parsedLabel.calories, tint: AppColor.Brand.warm)
-                            parsedMetric("Protein", parsedLabel.proteinG, tint: Color.accent.cyan)
+                            parsedMetric("Protein", parsedLabel.proteinG, tint: AppColor.Accent.recovery)
                             parsedMetric("Carbs", parsedLabel.carbsG, tint: AppColor.Brand.warmSoft)
                             parsedMetric("Fat", parsedLabel.fatG, tint: AppColor.Chart.nutritionFat)
                         }
@@ -451,17 +451,17 @@ struct MealEntrySheet: View {
                         VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                             Text(product.name.isEmpty ? "Unknown product" : product.name)
                                 .font(AppText.body)
-                                .foregroundColor(.primary)
+                                .foregroundStyle(AppColor.Text.primary)
                             HStack(spacing: AppSpacing.xxSmall) {
                                 if let cal = product.caloriesPer100g {
                                     Text("\(Int(cal)) kcal/100g")
                                         .font(AppText.caption)
-                                        .foregroundColor(Color.accent.gold)
+                                        .foregroundStyle(AppColor.Accent.achievement)
                                 }
                                 if let pro = product.proteinPer100g {
                                     Text("\(Int(pro))g prot")
                                         .font(AppText.caption)
-                                        .foregroundColor(Color.accent.cyan)
+                                        .foregroundColor(AppColor.Accent.recovery)
                                 }
                             }
                             Text(product.sourceDescription)

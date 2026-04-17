@@ -56,13 +56,13 @@ private struct AuthScaffold<Content: View>: View {
                     AuthBannerView(
                         icon: "exclamationmark.triangle.fill",
                         text: error,
-                        tint: .status.error
+                        tint: AppColor.Status.error
                     )
                 } else if let status = signIn.statusMessage {
                     AuthBannerView(
                         icon: "checkmark.circle.fill",
                         text: status,
-                        tint: .status.success
+                        tint: AppColor.Status.success
                     )
                 }
 
@@ -194,7 +194,7 @@ private struct AuthMethodSelectionView: View {
                                 icon: "envelope.fill",
                                 title: mode == .register ? "Continue with Email" : "Log in with Email",
                                 subtitle: mode == .register ? "Register with your email address" : "Use your email and password",
-                                tint: .appBlue2
+                                tint: AppColor.Brand.secondary
                             )
                         }
                         .buttonStyle(AuthCardButtonStyle())
@@ -230,7 +230,7 @@ private struct AuthMethodSelectionView: View {
                                 icon: "key.fill",
                                 title: "Use Passkey",
                                 subtitle: "Sign in with a saved passkey",
-                                tint: .accent.purple
+                                tint: AppColor.Accent.sleep
                             )
                         }
                         .buttonStyle(AuthCardButtonStyle())
@@ -443,10 +443,10 @@ private struct AuthFormCard<Content: View>: View {
             content
         }
         .padding(AppSpacing.large)
-        .background(Color.appSurface, in: RoundedRectangle(cornerRadius: AppRadius.sheet))
+        .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.sheet))
         .overlay(
             RoundedRectangle(cornerRadius: AppRadius.sheet)
-                .stroke(Color.appStroke, lineWidth: 1)
+                .stroke(AppColor.Border.strong, lineWidth: 1)
         )
     }
 }
@@ -612,7 +612,7 @@ private struct PasswordRulesTooltip: View {
     var body: some View {
         HStack(alignment: .top, spacing: AppSpacing.xxSmall) {
             Image(systemName: "info.circle.fill")
-                .foregroundStyle(Color.accent.cyan)
+                .foregroundStyle(AppColor.Accent.recovery)
                 .padding(.top, 1)
             Text("Use 6 to 14 characters with at least 1 capital letter, 1 number, and 1 special character.")
                 .font(AppText.subheading)
@@ -627,7 +627,7 @@ private struct AuthInlineError: View {
     var body: some View {
         Text(text)
             .font(AppText.subheading)
-            .foregroundStyle(Color.status.error)
+            .foregroundStyle(ColorAppColor.Status.error)
     }
 }
 
@@ -685,7 +685,7 @@ private struct AuthSecondaryButtonStyle: ButtonStyle {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.button)
-                    .stroke(Color.appStroke, lineWidth: 1)
+                    .stroke(AppColor.Border.strong, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
@@ -702,14 +702,14 @@ private struct AuthTertiaryButtonStyle: ButtonStyle {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.medium)
-                    .stroke(Color.appStroke, lineWidth: 1)
+                    .stroke(AppColor.Border.strong, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
 }
 
 private struct AuthCardButtonStyle: ButtonStyle {
-    var baseFill: Color = Color.appSurface
+    var baseFill: Color = AppColor.Surface.primary
     var foreground: Color = .black
     var useDarkStroke = false
 
@@ -724,7 +724,7 @@ private struct AuthCardButtonStyle: ButtonStyle {
             )
             .overlay(
                 RoundedRectangle(cornerRadius: AppRadius.medium)
-                    .stroke(useDarkStroke ? AppColor.Border.hairline : Color.appStroke, lineWidth: 1)
+                    .stroke(useDarkStroke ? AppColor.Border.hairline : AppColor.Border.strong, lineWidth: 1)
             )
             .scaleEffect(configuration.isPressed ? 0.99 : 1)
     }
@@ -817,7 +817,7 @@ private struct OTPCodeEntryField: View {
                         )
                         .overlay(
                             RoundedRectangle(cornerRadius: AppRadius.small)
-                                .stroke(index == code.count ? Color.appBlue2 : Color.clear, lineWidth: 1.5)
+                                .stroke(index == code.count ? ColorAppColor.Brand.secondary : Color.clear, lineWidth: 1.5)
                         )
                 }
             }

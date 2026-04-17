@@ -66,10 +66,10 @@ private struct MealCard: View {
 
     private var borderColor: Color {
         if entry?.status == .completed {
-            return Color.status.success
+            return AppColor.Status.success
         }
         if isSuggested {
-            return Color.accent.cyan.opacity(0.24)
+            return AppColor.Accent.recovery.opacity(0.24)
         }
         return Color.clear
     }
@@ -114,7 +114,7 @@ private struct MealCard: View {
                             if let protein = entry.proteinG {
                                 Text("\(Int(protein))g protein")
                                     .font(AppText.subheading)
-                                    .foregroundStyle(Color.accent.cyan)
+                                    .foregroundStyle(AppColor.Accent.recovery)
                             }
                             if let time = entry.eatenAt {
                                 Text(Self.timeFormatter.string(from: time))
@@ -125,7 +125,7 @@ private struct MealCard: View {
                     } else {
                         Text(isSuggested ? "Suggested next meal" : "Tap to log")
                             .font(AppText.subheading)
-                            .foregroundStyle(isSuggested ? Color.accent.cyan : AppColor.Text.secondary.opacity(0.6))
+                            .foregroundStyle(isSuggested ? AppColor.Accent.recovery : AppColor.Text.secondary.opacity(0.6))
                     }
                 }
 
@@ -133,7 +133,7 @@ private struct MealCard: View {
 
                 if entry?.status == .completed {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(Color.status.success)
+                        .foregroundStyle(AppColor.Status.success)
                         .font(AppText.body)
                 } else {
                     Image(systemName: "chevron.right")

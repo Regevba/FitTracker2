@@ -7,7 +7,7 @@ struct MetricCard: View {
     let value: String         // e.g. "67.3"
     let unit: String?         // e.g. "kg" — optional
     let trendDelta: String?   // e.g. "↓ 0.5" — optional
-    let statusColor: Color    // dot colour: Color.status.success / warning / error
+    let statusColor: Color    // dot colour: ColorAppColor.Status.success / warning / error
 
     var body: some View {
         AppCard(tone: .standard, contentPadding: AppSpacing.xSmall) {
@@ -79,7 +79,7 @@ struct MetricCard_Previews: PreviewProvider {
                 value: "67.3",
                 unit: "kg",
                 trendDelta: "↓ 0.5",
-                statusColor: .status.success
+                statusColor: AppColor.Status.success
             )
 
             MetricCard(
@@ -88,7 +88,7 @@ struct MetricCard_Previews: PreviewProvider {
                 value: "58",
                 unit: "bpm",
                 trendDelta: nil,
-                statusColor: .status.warning
+                statusColor: AppColor.Status.warning
             )
 
             MetricCard(
@@ -97,7 +97,7 @@ struct MetricCard_Previews: PreviewProvider {
                 value: "2400",
                 unit: nil,
                 trendDelta: "↑ 120",
-                statusColor: .status.error
+                statusColor: AppColor.Status.error
             )
         }
         .padding()
