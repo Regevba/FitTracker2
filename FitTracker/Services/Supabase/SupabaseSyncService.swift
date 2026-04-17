@@ -34,8 +34,9 @@ final class SupabaseSyncService: ObservableObject {
     // Realtime channel — held to keep the subscription alive and to allow unsubscribe.
     private var realtimeChannel: RealtimeChannelV2?
 
-    /// Debounce task for realtime events — prevents concurrent fetch storms.
-    private var realtimeDebounceTask: Task<Void, Never>?
+    /// Debouncer for realtime events — prevents concurrent fetch storms when
+    /// the server emits multiple INSERT/UPDATE notifications in quick succession.
+    private let realtimeDebouncer = Debouncer(delayMilliseconds: 500)
 
     // MARK: - User-scoped UserDefaults keys
 
@@ -239,11 +240,9 @@ final class SupabaseSyncService: ObservableObject {
 
     /// Debounce realtime events — coalesces rapid-fire notifications into a single fetch.
     private func debouncedFetchChanges(dataStore: EncryptedDataStore) {
-        realtimeDebounceTask?.cancel()
-        realtimeDebounceTask = Task {
-            try? await Task.sleep(for: .milliseconds(500))
-            guard !Task.isCancelled else { return }
-            await fetchChanges(dataStore: dataStore)
+        realtimeDebouncer.call { [weak self] in
+            guard let self else { return }
+            await self.fetchChanges(dataStore: dataStore)
         }
     }
 

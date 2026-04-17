@@ -97,6 +97,14 @@
 		AM200000000000000000AT01 /* AuthManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManagerTests.swift; sourceTree = "<group>"; };
 		HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HK200000000000000000AT01 /* HealthKitServiceTests.swift */; };
 		HK200000000000000000AT01 /* HealthKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitServiceTests.swift; sourceTree = "<group>"; };
+		DB100000000000000000AT01 /* DebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB200000000000000000AT01 /* DebouncerTests.swift */; };
+		DB200000000000000000AT01 /* DebouncerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebouncerTests.swift; sourceTree = "<group>"; };
+		SS100000000000000000AT01 /* SupabaseSyncServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */; };
+		SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncServiceTests.swift; sourceTree = "<group>"; };
+		CK100000000000000000AT01 /* CloudKitSyncServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */; };
+		CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitSyncServiceTests.swift; sourceTree = "<group>"; };
+		DE100000000000000000SR01 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE200000000000000000SR01 /* Debouncer.swift */; };
+		DE200000000000000000SR01 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
 		EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET02 /* AIOutputQualityEvals.swift */; };
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
@@ -487,6 +495,7 @@
 				A4000001000000000000000A /* Encryption */,
 				FB4000001000000000000001 /* Supabase */,
 				IM300000000000000000AA01 /* Import */,
+				DE300000000000000000UT01 /* Utilities */,
 				A20000010000000000000008 /* AppSettings.swift */,
 				HV200000000000000000AA03 /* HomeRecommendationProvider.swift */,
 				RE200000000000000000AA01 /* ReadinessEngine.swift */,
@@ -751,6 +760,9 @@
 				EC200000000000000000AT01 /* EncryptionServiceTests.swift */,
 				AM200000000000000000AT01 /* AuthManagerTests.swift */,
 				HK200000000000000000AT01 /* HealthKitServiceTests.swift */,
+				DB200000000000000000AT01 /* DebouncerTests.swift */,
+				SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */,
+				CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
@@ -825,6 +837,14 @@
 				FB2000001000000000000002 /* SupabaseSyncService.swift */,
 			);
 			path = Supabase;
+			sourceTree = "<group>";
+		};
+		DE300000000000000000UT01 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				DE200000000000000000SR01 /* Debouncer.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		FB4000001000000000000002 /* Extensions */ = {
@@ -972,6 +992,7 @@
 				AC1000000000000000000007 /* AccountDeletionService.swift in Sources */,
 				AC1000000000000000000008 /* DataExportService.swift in Sources */,
 				A10000010000000000000009 /* EncryptionService.swift in Sources */,
+				DE100000000000000000SR01 /* Debouncer.swift in Sources */,
 				AC1000000000000000000009 /* ConsentView.swift in Sources */,
 				A1000001000000000000000A /* RootTabView.swift in Sources */,
 				HV100000000000000000AA01 /* MainScreenView.swift in Sources */,
@@ -1111,6 +1132,9 @@
 				EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */,
 				AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */,
 				HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */,
+				DB100000000000000000AT01 /* DebouncerTests.swift in Sources */,
+				SS100000000000000000AT01 /* SupabaseSyncServiceTests.swift in Sources */,
+				CK100000000000000000AT01 /* CloudKitSyncServiceTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
