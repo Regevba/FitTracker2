@@ -8,7 +8,6 @@
 import Foundation
 import AuthenticationServices
 import SwiftUI
-import CryptoKit
 #if os(iOS)
 import UIKit
 #elseif os(macOS)
@@ -366,6 +365,7 @@ final class SignInService: NSObject, ObservableObject {
                     timeout.cancel()
                     continuation.resume(returning: token)
                 } else {
+                    timeout.cancel()
                     continuation.resume(returning: nil)
                 }
             }
@@ -411,6 +411,7 @@ final class SignInService: NSObject, ObservableObject {
         }
         #endif
 
+        #if DEBUG
         guard reviewMode == "authenticated" || reviewMode == "settings" else { return }
 
         let session = UserSession(
@@ -425,6 +426,7 @@ final class SignInService: NSObject, ObservableObject {
         storedSession = session
         statusMessage = nil
         authErrorMessage = nil
+        #endif
     }
 
     func lockForReopen() {
@@ -771,18 +773,7 @@ final class SignInService: NSObject, ObservableObject {
         UserDefaults.standard.set(value, forKey: Self.passkeyRegisteredKey)
     }
 
-    private func generateNonce() -> String {
-        let chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        return String((0..<32).compactMap { _ in chars.randomElement() })
-    }
-
-    private func sha256(_ input: String) -> String {
-        let data = Data(input.utf8)
-        let hashed = SHA256.hash(data: data)
-        return hashed.compactMap { String(format: "%02x", $0) }.joined()
-    }
-
-    private func generateRandomBytes(count: Int) -> Data {
+private func generateRandomBytes(count: Int) -> Data {
         var bytes = [UInt8](repeating: 0, count: count)
         _ = SecRandomCopyBytes(kSecRandomDefault, count, &bytes)
         return Data(bytes)
