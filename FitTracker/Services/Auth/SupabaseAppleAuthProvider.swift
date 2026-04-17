@@ -19,6 +19,8 @@ final class SupabaseAppleAuthProvider: NSObject, AppleAuthProviding {
 
     func startSignIn() async throws -> UserSession {
         try await withCheckedThrowingContinuation { continuation in
+            // Cancel any pending sign-in to prevent continuation leak
+            self.continuation?.resume(throwing: CancellationError())
             self.continuation = continuation
             let rawNonce = Self.randomNonceString()
             self.currentNonce = rawNonce

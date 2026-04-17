@@ -244,7 +244,9 @@ actor EncryptionService {
         let keyData = key.withUnsafeBytes { Data($0) }
 
         #if os(iOS) || os(macOS)
-        let accessFlags: SecAccessControlCreateFlags = [.biometryCurrentSet]
+        // .biometryAny survives biometric re-enrollment (new fingerprint/face).
+        // .biometryCurrentSet would invalidate keys on re-enrollment → data loss.
+        let accessFlags: SecAccessControlCreateFlags = [.biometryAny]
         #else
         let accessFlags: SecAccessControlCreateFlags = []
         #endif
@@ -264,9 +266,23 @@ actor EncryptionService {
             kSecValueData:         keyData,
             kSecAttrAccessControl: acl,
         ]
-        SecItemDelete(attrs as CFDictionary)
-        let status = SecItemAdd(attrs as CFDictionary, nil)
-        guard status == errSecSuccess else { throw FTCryptoError.keychainError(status) }
+        // Update-first pattern avoids the brief window of no key in delete-then-add.
+        let query: [CFString: Any] = [
+            kSecClass:       kSecClassGenericPassword,
+            kSecAttrService: keychainService,
+            kSecAttrAccount: tag,
+        ]
+        let update: [CFString: Any] = [
+            kSecValueData:         keyData,
+            kSecAttrAccessControl: acl,
+        ]
+        let updateStatus = SecItemUpdate(query as CFDictionary, update as CFDictionary)
+        if updateStatus == errSecItemNotFound {
+            let status = SecItemAdd(attrs as CFDictionary, nil)
+            guard status == errSecSuccess else { throw FTCryptoError.keychainError(status) }
+        } else if updateStatus != errSecSuccess {
+            throw FTCryptoError.keychainError(updateStatus)
+        }
     }
 
     // ── Key rotation: re-encrypt all blobs ───────────────

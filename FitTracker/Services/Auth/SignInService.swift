@@ -7,7 +7,10 @@
 
 import Foundation
 import AuthenticationServices
+import os.log
 import SwiftUI
+
+private let authLogger = Logger(subsystem: "com.fitme.auth", category: "signIn")
 #if os(iOS)
 import UIKit
 #elseif os(macOS)
@@ -807,7 +810,13 @@ extension SignInService: ASAuthorizationControllerDelegate {
             case let cred as ASAuthorizationPlatformPublicKeyCredentialAssertion:
                 let session = UserSession(
                     provider: .passkey,
-                    userID: String(data: cred.userID, encoding: .utf8) ?? pendingUserHandle,
+                    userID: {
+                        guard let decoded = String(data: cred.userID, encoding: .utf8) else {
+                            authLogger.error("Passkey cred.userID failed UTF-8 decode — falling back to pendingUserHandle")
+                            return pendingUserHandle
+                        }
+                        return decoded
+                    }(),
                     displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     email: storedSession?.email,
                     sessionToken: cred.signature.base64EncodedString(),
@@ -819,7 +828,13 @@ extension SignInService: ASAuthorizationControllerDelegate {
             case let cred as ASAuthorizationSecurityKeyPublicKeyCredentialAssertion:
                 let session = UserSession(
                     provider: .passkey,
-                    userID: String(data: cred.userID, encoding: .utf8) ?? pendingUserHandle,
+                    userID: {
+                        guard let decoded = String(data: cred.userID, encoding: .utf8) else {
+                            authLogger.error("Passkey cred.userID failed UTF-8 decode — falling back to pendingUserHandle")
+                            return pendingUserHandle
+                        }
+                        return decoded
+                    }(),
                     displayName: pendingDisplayName.isEmpty ? (currentSession?.displayName ?? "User") : pendingDisplayName,
                     email: storedSession?.email,
                     sessionToken: cred.signature.base64EncodedString(),
