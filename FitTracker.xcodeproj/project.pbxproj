@@ -81,6 +81,16 @@
 		RC200000000000000000AT01 /* RecommendationMemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryTests.swift; sourceTree = "<group>"; };
 		AS100000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */; };
 		AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsAndGoalProfileTests.swift; sourceTree = "<group>"; };
+		TP100000000000000000AT01 /* TrainingProgramStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */; };
+		TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStoreTests.swift; sourceTree = "<group>"; };
+		IE100000000000000000AT01 /* ImportEdgeCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */; };
+		IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportEdgeCaseTests.swift; sourceTree = "<group>"; };
+		PB100000000000000000AT01 /* PerformanceBenchmarkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PB200000000000000000AT01 /* PerformanceBenchmarkTests.swift */; };
+		PB200000000000000000AT01 /* PerformanceBenchmarkTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceBenchmarkTests.swift; sourceTree = "<group>"; };
+		AB100000000000000000AT01 /* AccessibilityBasicsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */; };
+		AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityBasicsTests.swift; sourceTree = "<group>"; };
+		AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */; };
+		AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDeletionServiceTests.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
 		EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET02 /* AIOutputQualityEvals.swift */; };
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
@@ -727,6 +737,11 @@
 				AD200000000000000000AT01 /* AIAdapterTests.swift */,
 				RC200000000000000000AT01 /* RecommendationMemoryTests.swift */,
 				AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */,
+				TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */,
+				IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */,
+				PB200000000000000000AT01 /* PerformanceBenchmarkTests.swift */,
+				AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */,
+				AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
@@ -1079,6 +1094,11 @@
 				AD100000000000000000AT01 /* AIAdapterTests.swift in Sources */,
 				RC100000000000000000AT01 /* RecommendationMemoryTests.swift in Sources */,
 				AS100000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift in Sources */,
+				TP100000000000000000AT01 /* TrainingProgramStoreTests.swift in Sources */,
+				IE100000000000000000AT01 /* ImportEdgeCaseTests.swift in Sources */,
+				PB100000000000000000AT01 /* PerformanceBenchmarkTests.swift in Sources */,
+				AB100000000000000000AT01 /* AccessibilityBasicsTests.swift in Sources */,
+				AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
