@@ -148,6 +148,14 @@ actor EncryptionService {
         let expected   = HMAC<SHA512>.authenticationCode(for: toVerify, using: hmacKey)
         guard Data(expected) == mac else { throw FTCryptoError.integrityCheckFailed }
 
+        // Validate timestamp — reject data older than 2 years (stale/replayed)
+        let timestampBits = ts.withUnsafeBytes { $0.load(as: UInt64.self) }
+        let timestamp = Date(timeIntervalSince1970: TimeInterval(bitPattern: timestampBits))
+        let maxAge: TimeInterval = 2 * 365.25 * 24 * 3600  // ~2 years
+        if abs(Date().timeIntervalSince(timestamp)) > maxAge {
+            throw FTCryptoError.decryptFailed("HMAC timestamp outside valid window")
+        }
+
         // Layer 2 decrypt: ChaCha20
         guard let chachaBox = try? ChaChaPoly.SealedBox(combined: Data(ciphertext)),
               let layer1 = try? ChaChaPoly.open(chachaBox, using: chachaKey) else {

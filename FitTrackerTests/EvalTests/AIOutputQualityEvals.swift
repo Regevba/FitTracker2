@@ -9,31 +9,9 @@ final class AIOutputQualityEvals: XCTestCase {
 
     // MARK: - Helpers
 
-    /// Replicates the humanReadableSignal mapping from AIInsightCard.
-    /// The original is a private SwiftUI view method, so we reproduce the
-    /// switch logic here as the testable surface. If the production mapping
-    /// changes, this must stay in sync.
+    /// Calls the production humanReadableSignal from AIInsightCard (now internal static).
     private func humanReadableSignal(_ signal: String) -> String {
-        switch signal {
-        case let s where s.contains("sleep_deprivation") || s.contains("sleep_debt"):
-            return "Your sleep quality could use a boost"
-        case let s where s.contains("elevated_resting_hr") || s.contains("elevated_hr"):
-            return "Your heart rate is a bit elevated today"
-        case let s where s.contains("recovery_phase") || s.contains("keep_intensity"):
-            return "Your body is in recovery mode"
-        case let s where s.contains("protein_below"):
-            return "You might want to up your protein today"
-        case let s where s.contains("high_frequency") || s.contains("overreaching"):
-            return "Consider dialing back intensity"
-        case let s where s.contains("readiness_critical"):
-            return "Your body needs rest today"
-        case let s where s.contains("hydration"):
-            return "Watch your hydration levels"
-        case let s where s.contains("consistency") || s.contains("streak"):
-            return "Great consistency — keep it up!"
-        default:
-            return "New insight available"
-        }
+        AIInsightCard.humanReadableSignal(signal)
     }
 
     /// Builds a minimal ReadinessResult with the given overall score and recommendation.
