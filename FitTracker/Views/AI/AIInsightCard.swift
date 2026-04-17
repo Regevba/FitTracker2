@@ -97,7 +97,7 @@ struct AIInsightCard: View {
             return "Analyzing your data..."
         }
         // Map internal signals to human-readable copy
-        return rec.signals.first.map(humanReadableSignal) ?? "Check your latest insights"
+        return rec.signals.first.map(Self.humanReadableSignal) ?? "Check your latest insights"
     }
 
     private var insightSubtitle: String {
@@ -185,7 +185,8 @@ struct AIInsightCard: View {
 
     /// Maps internal signal keys to user-facing copy.
     /// Follows "Celebration Not Guilt" principle — encouraging, never judgmental.
-    private func humanReadableSignal(_ signal: String) -> String {
+    /// Maps raw AI signal keys to user-facing copy. `internal static` for testability.
+    static func humanReadableSignal(_ signal: String) -> String {
         switch signal {
         case let s where s.contains("sleep_deprivation") || s.contains("sleep_debt"):
             return "Your sleep quality could use a boost"

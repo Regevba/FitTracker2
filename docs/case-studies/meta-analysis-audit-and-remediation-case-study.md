@@ -13,11 +13,11 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **95** across Phases 1–8 + Sprint A |
-| Findings Deferred | 75 (Phase 6 new test files + Phase 9 large-effort) |
+| Findings Resolved | **98** across Phases 1–8 + Sprints A–B |
+| Findings Deferred | 72 (Phase 6 new test files + Phase 9 large-effort) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 26 app + 4 test |
-| Commits | 11 (7 in PR #84, 2 in PR #85, 1 in PR #86, 1 in PR #87) |
+| Files Changed | 28 app + 5 test |
+| Commits | 12 (7 in PR #84, 2 in PR #85, 1 in PR #86, 2 in PR #87, 1 in PR #88) |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
 | Test Suite | 231 pass / 0 fail at every stage |
 | Self-Referential | Yes — same AI system that built the code also audited and fixed it |
@@ -202,7 +202,7 @@ Supporting fixes:
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 95 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 98 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -259,7 +259,8 @@ This system finds what it knows how to look for (code patterns, token compliance
 | PR #84 (Phases 1–4, 8) | `fix/audit-remediation` — merged 2026-04-17 |
 | PR #85 (Phases 5, 7) | `fix/audit-remediation-phase-5-7` — merged 2026-04-17 |
 | PR #86 (Phase 6 partial) | `fix/audit-remediation-phase-6` — merged 2026-04-17 |
-| PR #87 (Sprint A) | `fix/audit-sprint-a` — pending |
+| PR #87 (Sprint A) | `fix/audit-sprint-a` — merged 2026-04-17 |
+| PR #88 (Sprint B) | `fix/audit-sprint-b` — pending |
 
 ---
 
