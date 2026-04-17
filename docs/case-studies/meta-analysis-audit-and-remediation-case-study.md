@@ -1,6 +1,6 @@
 # Meta-Analysis: Full-System Audit & Remediation — Case Study
 
-> Framework v6.1 | Chore → Fix | Audit (2026-04-16) → Remediation (2026-04-17) | PRs #84, #85
+> Framework v6.1 | Chore → Fix | Audit (2026-04-16) → Remediation (2026-04-17) | PRs #84, #85, #86
 
 ---
 
@@ -13,11 +13,11 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **78** across Phases 1–5, 7–8 |
-| Findings Deferred | 92 (Phase 6 test coverage + Phase 9 large-effort) |
+| Findings Resolved | **82** across Phases 1–8 |
+| Findings Deferred | 88 (Phase 6 new test files + Phase 9 large-effort) |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 22 app + 1 test |
-| Commits | 9 (7 in PR #84, 2 in PR #85) |
+| Files Changed | 23 app + 4 test |
+| Commits | 10 (7 in PR #84, 2 in PR #85, 1 in PR #86) |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
 | Test Suite | 231 pass / 0 fail at every stage |
 | Self-Referential | Yes — same AI system that built the code also audited and fixed it |
@@ -174,9 +174,16 @@ Supporting fixes:
 
 ## 4. What Didn't Change (and Why)
 
-### Phase 6: Test Coverage (30 findings — deferred)
+### Phase 6: Test Coverage (30 findings — 4 resolved, 26 deferred)
 
-The audit identified 5 high-risk files with zero test coverage: `EncryptionService`, `AuthManager`, `CloudKitSyncService`, `SupabaseSyncService`, `HealthKitService`. Writing meaningful tests for these requires mock infrastructure (URLProtocol stubs, mock Keychain, mock CKDatabase) that doesn't exist yet. This is a separate sprint, not a token-migration-style mechanical fix.
+**Resolved (PR #86):**
+
+- **TEST-018**: WCAG opacity test now reads actual `AppColor.Text.tertiary` alpha via `UIColor` resolution instead of hardcoded local constant
+- **TEST-020**: Confidence gate test asserts `localFallback.confidence < 0.4` against production `AIRecommendation` instead of pure arithmetic
+- **TEST-021**: Quiet hours test calls production `isQuietHour(at:)` with controlled dates. `NotificationService.isQuietHour()` gained a testable `at:` parameter.
+- **TEST-030**: `ReadinessEngineTests.makeLogs()` replaced `Double.random()` with deterministic cyclic offsets
+
+**Deferred (26 findings):** 5 high-risk files with zero test coverage (`EncryptionService`, `AuthManager`, `CloudKitSyncService`, `SupabaseSyncService`, `HealthKitService`) require mock infrastructure (URLProtocol stubs, mock Keychain, mock CKDatabase) that doesn't exist yet. This is a separate sprint.
 
 ### Phase 9: Large-Effort Items (7+ findings — deferred)
 
@@ -195,7 +202,7 @@ The audit identified 5 high-risk files with zero test coverage: `EncryptionServi
 
 | Metric | Pre-Audit | Post-Remediation | Delta |
 |---|---|---|---|
-| Known findings | 0 | 185 identified, 78 resolved | +185 identified |
+| Known findings | 0 | 185 identified, 82 resolved | +185 identified |
 | Build | SUCCEEDED | SUCCEEDED | No regression |
 | Tests passing | 231 / 0 fail | 231 / 0 fail | No regression |
 | Deprecated Color calls (compiled) | 23 | 0 | -23 (100%) |
@@ -250,14 +257,15 @@ This system finds what it knows how to look for (code patterns, token compliance
 | Remediation plan (63 tasks, 9 phases) | `docs/superpowers/plans/2026-04-16-audit-remediation.md` |
 | Audit spec | `docs/superpowers/specs/2026-04-16-meta-analysis-full-system-audit-design.md` |
 | PR #84 (Phases 1–4, 8) | `fix/audit-remediation` — merged 2026-04-17 |
-| PR #85 (Phases 5, 7) | `fix/audit-remediation-phase-5-7` — pending |
+| PR #85 (Phases 5, 7) | `fix/audit-remediation-phase-5-7` — merged 2026-04-17 |
+| PR #86 (Phase 6 partial) | `fix/audit-remediation-phase-6` — pending |
 
 ---
 
 ## 9. What Comes Next
 
-1. **Merge PR #85** — Phase 5 + 7 fixes ready
-2. **Phase 6: Test coverage** — Requires mock infrastructure sprint first (URLProtocol stubs, mock Keychain)
+1. **Merge PR #86** — Phase 6 phantom test fixes ready
+2. **Phase 6 remainder: New test files** — Requires mock infrastructure sprint (URLProtocol stubs, mock Keychain, mock CKDatabase) before writing tests for the 5 high-risk zero-coverage services
 3. **Phase 9: Server-side WebAuthn** — Supabase Edge Function for passkey verification
 4. **Phase 9: Dual-sync coordinator** — Architectural decision needed before implementation
 5. **Runtime validation** — The 146 framework-only findings need runtime testing to graduate from "plausible" to "confirmed"
