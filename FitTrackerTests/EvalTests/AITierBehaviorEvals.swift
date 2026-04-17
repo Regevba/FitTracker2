@@ -38,28 +38,20 @@ final class AITierBehaviorEvals: XCTestCase {
     ///
     /// The two boundary values are 0.39 (just below) and 0.41 (just above).
     func testEval_confidenceGateBoundary() {
-        let threshold = 0.4
+        // The localFallback confidence (0.25) must be below the personalisation
+        // threshold (0.4). This ensures the fallback path is never "preferred"
+        // over a cloud result when both are available.
+        let snapshot = LocalUserSnapshot()
+        let fallback = AIRecommendation.localFallback(for: .training, snapshot: snapshot)
 
-        let belowThreshold = 0.39
-        let aboveThreshold = 0.41
-
-        // Below threshold: adapted result should NOT be preferred.
+        XCTAssertLessThan(
+            fallback.confidence, 0.4,
+            "localFallback confidence (\(fallback.confidence)) must be below the personalisation gate (0.4)"
+        )
+        // The fallback should not request LLM escalation
         XCTAssertFalse(
-            belowThreshold >= threshold,
-            "confidence 0.39 should not satisfy >= 0.4 gate"
-        )
-
-        // Above threshold: adapted result should be preferred.
-        XCTAssertTrue(
-            aboveThreshold >= threshold,
-            "confidence 0.41 should satisfy >= 0.4 gate"
-        )
-
-        // Exact boundary is inclusive — a result with exactly 0.4 confidence
-        // should be accepted (>= not >).
-        XCTAssertTrue(
-            threshold >= threshold,
-            "confidence exactly 0.4 should satisfy the inclusive >= gate"
+            fallback.escalateToLLM,
+            "localFallback must not escalate to LLM"
         )
     }
 

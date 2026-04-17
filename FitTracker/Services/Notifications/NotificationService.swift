@@ -136,8 +136,8 @@ final class NotificationService: ObservableObject {
 
     /// Returns `true` if the current local time is within the quiet-hours window
     /// (10 PM inclusive — 7 AM exclusive).
-    func isQuietHour() -> Bool {
-        let hour = Calendar.current.component(.hour, from: Date())
+    func isQuietHour(at date: Date = Date()) -> Bool {
+        let hour = Calendar.current.component(.hour, from: date)
         return hour >= quietHourStart || hour < quietHourEnd
     }
 }
