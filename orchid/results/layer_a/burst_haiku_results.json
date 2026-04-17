@@ -1,0 +1,9 @@
+{
+  "events_processed": 100,
+  "total_cycles": 203,
+  "total_energy_pj": 203.0,
+  "cache_hit_rate": 0.99,
+  "cold_hit_rate": 0.9,
+  "warm_hit_rate": 1.0,
+  "composite_score": 172413793.10665023
+}

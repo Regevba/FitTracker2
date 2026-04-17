@@ -67,3 +67,4 @@ dashboard/.vercel/
 
 # SSD-local build artifacts (caches, DerivedData, venvs, npm cache)
 .build/
+orchid/.venv/
