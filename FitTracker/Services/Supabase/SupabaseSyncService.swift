@@ -37,6 +37,28 @@ final class SupabaseSyncService: ObservableObject {
     /// Debounce task for realtime events — prevents concurrent fetch storms.
     private var realtimeDebounceTask: Task<Void, Never>?
 
+    // MARK: - User-scoped UserDefaults keys
+
+    /// Namespace UserDefaults keys by userID so multi-account usage doesn't leak state.
+    private var currentUserID: String?
+
+    private func userScopedKey(_ base: String) -> String {
+        guard let userID = currentUserID else { return base }
+        return "\(userID).\(base)"
+    }
+
+    /// Migrate un-namespaced keys to user-scoped keys on first use.
+    private func migrateUserDefaultsKeys(userID: String) {
+        let bases = ["supabase.lastPull", "supabase.user_profile", "supabase.user_preferences", "supabase.meal_templates"]
+        for base in bases {
+            let scoped = "\(userID).\(base)"
+            if UserDefaults.standard.object(forKey: scoped) == nil,
+               let old = UserDefaults.standard.object(forKey: base) {
+                UserDefaults.standard.set(old, forKey: scoped)
+            }
+        }
+    }
+
     // MARK: - Record Type Constants
 
     private enum RT {
@@ -66,6 +88,8 @@ final class SupabaseSyncService: ObservableObject {
             return
         }
         let userID = session.user.id
+        currentUserID = userID.uuidString
+        migrateUserDefaultsKeys(userID: userID.uuidString)
         status = .syncing
         var anyFailed = false
 
@@ -133,8 +157,10 @@ final class SupabaseSyncService: ObservableObject {
         guard case .idle = status else { return }
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else { return }
+        currentUserID = userID.uuidString
+        migrateUserDefaultsKeys(userID: userID.uuidString)
         status = .syncing
-        let lastPull = UserDefaults.standard.object(forKey: "supabase.lastPull") as? Date ?? .distantPast
+        let lastPull = UserDefaults.standard.object(forKey: userScopedKey("supabase.lastPull")) as? Date ?? .distantPast
         await pullRecords(since: lastPull, userID: userID, dataStore: dataStore)
     }
 
@@ -149,9 +175,12 @@ final class SupabaseSyncService: ObservableObject {
         let session = try? await supabase.auth.session
         guard let userID = session?.user.id else { return }
 
+        currentUserID = userID.uuidString
+        migrateUserDefaultsKeys(userID: userID.uuidString)
+
         // Only do a full pull when no prior pull exists (first login).
         // Session refreshes should use fetchChanges() for incremental pull.
-        let hasExistingPull = UserDefaults.standard.object(forKey: "supabase.lastPull") != nil
+        let hasExistingPull = UserDefaults.standard.object(forKey: userScopedKey("supabase.lastPull")) != nil
         if hasExistingPull {
             await fetchChanges(dataStore: dataStore)
             return
@@ -313,6 +342,13 @@ final class SupabaseSyncService: ObservableObject {
             .eq("user_id", value: userID)
             .execute()
 
+        // Clear all user-scoped UserDefaults keys
+        let digestKeys = ["supabase.lastPull", "supabase.user_profile", "supabase.user_preferences", "supabase.meal_templates"]
+        for key in digestKeys {
+            UserDefaults.standard.removeObject(forKey: userScopedKey(key))
+            UserDefaults.standard.removeObject(forKey: key) // also clear any un-migrated keys
+        }
+
         status = .idle
     }
 }
@@ -371,9 +407,9 @@ private extension SupabaseSyncService {
 
             // Don't advance lastPull past decryption failures — re-fetch from before the oldest failure
             if let oldest = oldestFailure {
-                UserDefaults.standard.set(oldest.addingTimeInterval(-1), forKey: "supabase.lastPull")
+                UserDefaults.standard.set(oldest.addingTimeInterval(-1), forKey: userScopedKey("supabase.lastPull"))
             } else {
-                UserDefaults.standard.set(Date(), forKey: "supabase.lastPull")
+                UserDefaults.standard.set(Date(), forKey: userScopedKey("supabase.lastPull"))
             }
             status = .idle
         } catch {
@@ -398,19 +434,19 @@ private extension SupabaseSyncService {
             let profile = try await EncryptionService.shared.decrypt(payload, as: UserProfile.self)
             dataStore.mergeProfile(profile,
                                    remoteChecksum: checksum,
-                                   digestKey: "supabase.user_profile")
+                                   digestKey: userScopedKey("supabase.user_profile"))
 
         case RT.userPreferences:
             let prefs = try await EncryptionService.shared.decrypt(payload, as: UserPreferences.self)
             dataStore.mergePreferences(prefs,
                                        remoteChecksum: checksum,
-                                       digestKey: "supabase.user_preferences")
+                                       digestKey: userScopedKey("supabase.user_preferences"))
 
         case RT.mealTemplates:
             let templates = try await EncryptionService.shared.decrypt(payload, as: [MealTemplate].self)
             dataStore.mergeMealTemplates(templates,
                                          remoteChecksum: checksum,
-                                         digestKey: "supabase.meal_templates")
+                                         digestKey: userScopedKey("supabase.meal_templates"))
 
         default:
             break
@@ -422,9 +458,9 @@ private extension SupabaseSyncService {
         var anyFailed = false
 
         let singletonJobs: [(String, any Encodable, String)] = [
-            (RT.userProfile,     dataStore.userProfile,     "supabase.user_profile"),
-            (RT.userPreferences, dataStore.userPreferences, "supabase.user_preferences"),
-            (RT.mealTemplates,   dataStore.mealTemplates,   "supabase.meal_templates")
+            (RT.userProfile,     dataStore.userProfile,     userScopedKey("supabase.user_profile")),
+            (RT.userPreferences, dataStore.userPreferences, userScopedKey("supabase.user_preferences")),
+            (RT.mealTemplates,   dataStore.mealTemplates,   userScopedKey("supabase.meal_templates"))
         ]
 
         for (recordType, value, digestKey) in singletonJobs {
