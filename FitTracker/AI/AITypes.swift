@@ -283,7 +283,6 @@ extension LocalUserSnapshot {
     public func trainingBands() -> [String: String]? {
         guard
             let age     = ageBand(),
-            let gender  = genderBand(),
             let bmi     = bmiBand(),
             let weeks   = activeWeeksBand(),
             let phase   = programPhase,
@@ -294,7 +293,6 @@ extension LocalUserSnapshot {
 
         var bands: [String: String] = [
             "age_band":                  age,
-            "gender_band":               gender,
             "bmi_band":                  bmi,
             "active_weeks_band":         weeks,
             "program_phase":             phase,
@@ -302,6 +300,10 @@ extension LocalUserSnapshot {
             "avg_session_duration_band": duration,
             "primary_goal":              goal,
         ]
+        // Gender is optional — include only when user has provided it
+        if let gender = genderBand() {
+            bands["gender_band"] = gender
+        }
 
         // Training load status from readiness engine
         if let loadScore = trainingLoadComponentScore {
@@ -316,16 +318,19 @@ extension LocalUserSnapshot {
         guard
             let balance = caloricBalanceBand(),
             let protein = proteinAdequacyBand(),
-            let meals   = mealFrequencyBand(),
-            let diet    = dietPattern
+            let meals   = mealFrequencyBand()
         else { return nil }
 
-        return [
+        var bands: [String: String] = [
             "caloric_balance_band":  balance,
             "protein_adequacy_band": protein,
             "meal_frequency_band":   meals,
-            "diet_pattern":          diet,
         ]
+        // Diet pattern is optional — include only when user has set it
+        if let diet = dietPattern {
+            bands["diet_pattern"] = diet
+        }
+        return bands
     }
 
     /// Returns the banded recovery segment payload.
