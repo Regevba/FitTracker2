@@ -108,6 +108,14 @@ enum AppSpacing {
     static let xxLarge:  CGFloat = 40
     /// Supplement detail row indent — checkbox (26) + surrounding padding. Nutrition v2 specific.
     static let supplementDetailIndent: CGFloat = 54
+
+    /// All spacing values that MUST be on the 4pt grid.
+    /// Exposed for compliance tests — add new tokens here when they belong to the grid.
+    /// Sub-grid (`micro`, 2pt) and feature-specific values (`supplementDetailIndent`, 54pt)
+    /// are intentionally excluded.
+    static let gridValues: [CGFloat] = [
+        xxxSmall, xxSmall, xSmall, small, medium, large, xLarge, xxLarge
+    ]
 }
 
 // MARK: - Opacity
