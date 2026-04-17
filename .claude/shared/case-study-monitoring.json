@@ -957,9 +957,9 @@
       "title": "Dispatch Intelligence \u2014 v5.2 Sub-Project A",
       "status": "complete",
       "work_type": "feature",
-      "started_at": "2026-04-16T10:00:00Z",
-      "updated_at": "2026-04-16T06:30:00Z",
-      "framework_version": "5.2",
+      "started_at": "2026-04-16T06:30:00Z",
+      "updated_at": "2026-04-16T10:00:00Z",
+      "framework_version": "6.1",
       "skills_used": [
         "pm-workflow",
         "dev"
@@ -1108,7 +1108,7 @@
       "work_type": "feature",
       "started_at": "2026-04-16T05:40:00Z",
       "updated_at": "2026-04-16T06:00:00Z",
-      "framework_version": "5.2",
+      "framework_version": "6.1",
       "parent_case": "v5.2-stress-test-continuation-2026-04",
       "skills_used": [
         "pm-workflow",
