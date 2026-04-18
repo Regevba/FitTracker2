@@ -80,7 +80,7 @@ struct ProfileView: View {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { dismiss() } label: {
                         Image(systemName: "xmark.circle.fill")
-                            .font(.system(size: 22))
+                            .font(AppText.iconCompact)
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(AppColor.Text.tertiary)
                     }

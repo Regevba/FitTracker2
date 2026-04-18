@@ -37,7 +37,7 @@ struct OnboardingFirstActionView: View {
                                     .frame(width: 80, height: 80)
 
                                 Image(systemName: "checkmark")
-                                    .font(.system(size: 36, weight: .bold))
+                                    .font(AppText.displayLarge)
                                     .foregroundStyle(AppColor.Status.success)
                             }
                             .scaleEffect(showContent ? 1.0 : 0.5)
