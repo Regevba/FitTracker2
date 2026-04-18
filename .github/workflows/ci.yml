@@ -77,23 +77,32 @@ jobs:
             -scheme "$SCHEME"
           echo "::endgroup::"
 
-          # Build
+          # Build — ad-hoc sign so entitlements (incl. the implicit
+          # keychain-access-group for the bundle ID) are applied. Without this
+          # the iOS Simulator keychain rejects ops with errSecMissingEntitlement
+          # (-34018), failing EncryptionServiceTests + KeychainHelperTests.
+          # CODE_SIGN_IDENTITY=- is ad-hoc signing — no Apple team needed,
+          # works on simulator.
           echo "::group::Build"
           xcodebuild build \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination 'generic/platform=iOS Simulator' \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/build.log
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=YES 2>&1 | tee /tmp/build.log
           echo "::endgroup::"
 
-          # Test
+          # Test — same signing flags so the test host can hit the keychain.
           echo "::group::Test"
           xcodebuild test \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination "$SIM_DEST" \
             -resultBundlePath TestResults.xcresult \
-            CODE_SIGNING_ALLOWED=NO 2>&1 | tee /tmp/test.log
+            CODE_SIGN_IDENTITY=- \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=YES 2>&1 | tee /tmp/test.log
           echo "::endgroup::"
 
       - name: Upload build log on failure
