@@ -2,16 +2,14 @@ import Foundation
 
 enum AISnapshotBuilder {
 
-    /// Build a LocalUserSnapshot using the adapter registry.
-    /// Each adapter contributes its disjoint set of fields to the snapshot.
+    /// Build a LocalUserSnapshot using the adapter registry. Each adapter
+    /// contributes its disjoint set of fields to the snapshot.
     ///
-    /// Note (audit AI-020): The adapter array constructed here is intentionally
-    /// discarded after `contribute(to:)` runs. Callers that need post-build
-    /// access to the adapters (e.g. `AIOrchestrator.lastAdapters`) must invoke
-    /// `orchestrator.setAdapters(...)` separately. A future refactor could
-    /// return `(snapshot, adapters)` as a tuple, but is deferred — see
-    /// AI-011 / DEEP-AI-007 for the related "lastAdapters never populated"
-    /// finding which tracks the full lifecycle issue.
+    /// Returns both the snapshot AND the adapter list so callers can wire the
+    /// adapters into `AIOrchestrator.setAdapters(_:)` for downstream
+    /// validation/evidence-chain use (audit DEEP-AI-007). Previously the
+    /// adapter array was constructed here and silently discarded, leaving
+    /// `AIOrchestrator.lastAdapters` permanently empty.
     static func build(
         profile: UserProfile,
         preferences: UserPreferences,
@@ -20,7 +18,7 @@ enum AISnapshotBuilder {
         todayDayType: DayType,
         now: Date = Date(),
         readiness: ReadinessResult? = nil
-    ) -> LocalUserSnapshot {
+    ) -> (snapshot: LocalUserSnapshot, adapters: [any AIInputAdapter]) {
         let sortedLogs = dailyLogs
             .filter { $0.date <= now }
             .sorted { $0.date > $1.date }
@@ -45,10 +43,19 @@ enum AISnapshotBuilder {
             NutritionAdapter(latestLog: sortedLogs.first, goalPlan: goalPlan, liveMetrics: liveMetrics, profile: profile),
         ]
 
+        // DEEP-AI-010: assert adapter sourceID disjointness in debug builds.
+        // Two adapters writing the same source ID would silently overwrite each
+        // other's contributions and corrupt validation evidence chains.
+        #if DEBUG
+        let ids = adapters.map(\.sourceID)
+        assert(Set(ids).count == ids.count,
+               "AIInputAdapter sourceIDs must be unique, got: \(ids)")
+        #endif
+
         var snapshot = LocalUserSnapshot()
         for adapter in adapters {
             adapter.contribute(to: &snapshot)
         }
-        return snapshot
+        return (snapshot, adapters)
     }
 }

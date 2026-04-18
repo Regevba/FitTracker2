@@ -382,9 +382,13 @@ extension LocalUserSnapshot {
     // ── Private band helpers ───────────────────────────────
 
     private func ageBand() -> String? {
+        // Audit DEEP-AI-013: distinguish "user is under 18 (excluded)" from
+        // "no age data on file" — the cohort backend can then opt to drop
+        // the under_18_excluded segment from its rollups instead of
+        // silently lumping it with missing-age users.
         guard let age = ageYears else { return nil }
         switch age {
-        case ..<18:  return nil          // under-18 excluded
+        case ..<18:  return "under_18_excluded"
         case 18...24: return "18-24"
         case 25...34: return "25-34"
         case 35...44: return "35-44"

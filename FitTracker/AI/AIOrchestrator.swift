@@ -62,9 +62,13 @@ public final class AIOrchestrator: ObservableObject {
     }
 
     public func process(segment: AISegment, jwt: String?, overrideSnapshot: LocalUserSnapshot? = nil) async {
-        isProcessing = true
+        // Audit AI-012 / DEEP-AI-008: when called standalone, manage the
+        // isProcessing flag here. When called from `processAll`, that wrapper
+        // owns the flag so the UI doesn't flicker per-segment.
+        let owns = !isProcessing
+        if owns { isProcessing = true }
         lastError = nil
-        defer { isProcessing = false }
+        defer { if owns { isProcessing = false } }
 
         let userSnapshot = overrideSnapshot ?? snapshot()
         let goalProfile = GoalProfile.forGoal(goalMode())
@@ -95,14 +99,23 @@ public final class AIOrchestrator: ObservableObject {
             }
         }
 
+        // Audit AI-001 + DEEP-AI-009: defensively check `isAvailable` before
+        // invoking the Foundation Model. The protocol abstracts iOS 26+
+        // gating (see FoundationModelService), but a runtime guard ensures
+        // we never attempt inference if the implementation reports it isn't
+        // ready — for example a future iOS where the model is downloading.
         let finalRecommendation: AIRecommendation
-        do {
-            let (adapted, confidence) = try await foundationModel.adapt(
-                recommendation: baseRecommendation,
-                snapshot: userSnapshot
-            )
-            finalRecommendation = confidence >= personalisationThreshold ? adapted : baseRecommendation
-        } catch {
+        if foundationModel.isAvailable {
+            do {
+                let (adapted, confidence) = try await foundationModel.adapt(
+                    recommendation: baseRecommendation,
+                    snapshot: userSnapshot
+                )
+                finalRecommendation = confidence >= personalisationThreshold ? adapted : baseRecommendation
+            } catch {
+                finalRecommendation = baseRecommendation
+            }
+        } else {
             finalRecommendation = baseRecommendation
         }
 
@@ -121,7 +134,13 @@ public final class AIOrchestrator: ObservableObject {
     /// Process all segments sequentially for a full refresh.
     /// - Parameter snapshot: Live snapshot built from stores (HealthKit, profile, training).
     ///   When nil, falls back to the closure provided at init time.
+    ///
+    /// Audit AI-012 / DEEP-AI-008: hold `isProcessing` for the full batch so
+    /// the UI shows a single in-flight indicator instead of flickering
+    /// between segments as each `process(...)` call toggles the flag.
     public func processAll(jwt: String?, snapshot: LocalUserSnapshot? = nil) async {
+        isProcessing = true
+        defer { isProcessing = false }
         for segment in AISegment.allCases {
             await process(segment: segment, jwt: jwt, overrideSnapshot: snapshot)
         }
