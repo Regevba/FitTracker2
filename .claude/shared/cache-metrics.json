@@ -2,7 +2,7 @@
   "version": "1.0",
   "updated": "2026-04-17T00:00:00Z",
   "framework_version": "6.1",
-  "description": "Rolling cache hit rate aggregate across features. Updated on feature completion. Added in v6.0.",
+  "description": "Rolling cache hit rate aggregate across features. Added in v6.0. PARTIAL (audit FW-005): schema is correct but values populate only as features complete and the framework writes here from PM workflow phase transitions. Empty/zero values are expected initial state, not a bug \u2014 the measurement protocol exists but requires runs to populate. See framework-bugs-from-stress-test.md for the broader instrumentation gap.",
   "by_framework_version": {
     "v5.2": {
       "features_measured": 0,
@@ -31,11 +31,26 @@
       "features": []
     },
     "by_work_type": {
-      "feature": { "last_3_avg": 0.0, "features": [] },
-      "enhancement": { "last_3_avg": 0.0, "features": [] },
-      "refactor": { "last_3_avg": 0.0, "features": [] },
-      "fix": { "last_3_avg": 0.0, "features": [] },
-      "chore": { "last_3_avg": 0.0, "features": [] }
+      "feature": {
+        "last_3_avg": 0.0,
+        "features": []
+      },
+      "enhancement": {
+        "last_3_avg": 0.0,
+        "features": []
+      },
+      "refactor": {
+        "last_3_avg": 0.0,
+        "features": []
+      },
+      "fix": {
+        "last_3_avg": 0.0,
+        "features": []
+      },
+      "chore": {
+        "last_3_avg": 0.0,
+        "features": []
+      }
     }
   },
   "hadf_affinity": {
@@ -45,5 +60,6 @@
     "most_seen_cloud_class": null,
     "adaptation_events_per_session": 0.0,
     "note": "Populated by HADF Layer 4. Updated on feature completion alongside cache metrics."
-  }
+  },
+  "initial_state_note": "All-zero values reflect that no PM workflow has yet written measurement data here. This is documentation, not code that needs fixing."
 }

@@ -1,7 +1,7 @@
 {
   "measured_at": "2026-04-16T19:48:10Z",
-  "model": "claude-opus-4-6",
   "tokenizer": "word-count-estimate",
+  "tokenizer_note": "Approximate via word-count × 1.3. Model field intentionally removed — different agents in the same session may run different models (e.g., parent on opus-4-7, subagents on sonnet); a single model field would be misleading. Audit FW-004.",
   "layers": {
     "skills": {
       "files": 11,

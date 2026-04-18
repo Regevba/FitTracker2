@@ -1,13 +1,13 @@
 {
   "version": "1.0",
   "updated": "2026-04-11T15:50:25Z",
-  "description": "Hub-native framework health check — Phase 0 of the v4.4 Skill Internal Lifecycle. Runs at random intervals to verify cache, shared layer, routing, and adapter integrity. Alert if score drops below 90%.",
+  "description": "Hub-native framework health check \u2014 Phase 0 of the v4.4 Skill Internal Lifecycle. Runs at random intervals to verify cache, shared layer, routing, and adapter integrity. Alert if score drops below 90%. PARTIAL (audit FW-014): last_check=null is expected initial state \u2014 the 25%-probability random trigger has not yet fired in any session that completed Phase 0. Schema and contract are complete; checks populate as the framework runs.",
   "check_config": {
     "trigger": "random_on_skill_execution",
     "probability": 0.25,
     "min_interval_hours": 2,
     "last_check": null,
-    "alert_threshold": 0.90
+    "alert_threshold": 0.9
   },
   "checks": [
     {
@@ -28,7 +28,7 @@
       "id": "shared_layer_consistency",
       "name": "Shared Layer Cross-Reference",
       "description": "Spot-check 3 random fields across shared layer JSON files for internal consistency.",
-      "weight": 0.20,
+      "weight": 0.2,
       "implementation": "Pick 3 random cross-references: (1) feature-registry.json status vs state.json current_phase, (2) metric-status.json instrumented flag vs analytics-taxonomy.csv, (3) design-system.json token count vs AppTheme.swift. Score = consistent / 3."
     },
     {
@@ -50,16 +50,16 @@
     "per_check": "pass (1.0) | degraded (0.5) | fail (0.0)",
     "overall": "weighted_average of all checks",
     "alert_levels": {
-      "healthy": ">= 0.95 — silent, log only",
-      "warning": "0.90 - 0.95 — log + advisory to user, continue execution",
-      "critical": "< 0.90 — log + STOP + alert with failing checks"
+      "healthy": ">= 0.95 \u2014 silent, log only",
+      "warning": "0.90 - 0.95 \u2014 log + advisory to user, continue execution",
+      "critical": "< 0.90 \u2014 log + STOP + alert with failing checks"
     }
   },
   "rollback": {
     "options": [
-      "fix — address specific failing checks",
-      "rollback_cache — reset to last known-good history entry (score >= 0.95)",
-      "rollback_all — git reset --hard phase-a-pre-seeding"
+      "fix \u2014 address specific failing checks",
+      "rollback_cache \u2014 reset to last known-good history entry (score >= 0.95)",
+      "rollback_all \u2014 git reset --hard phase-a-pre-seeding"
     ],
     "after_resolution": "Re-run health check to verify fix"
   },

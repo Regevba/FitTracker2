@@ -15,8 +15,10 @@ import Foundation
 public protocol FoundationModelProtocol: Sendable {
     /// Run on-device inference with the given prompt context.
     /// - Returns: (adaptedRecommendation, confidence) where confidence ∈ [0, 1].
-    ///            confidence == 0 signals that the model could not process the request
-    ///            and the caller must escalate to the cloud AI engine.
+    ///            confidence below `personalisationThreshold` (0.4) signals that the
+    ///            adapted result should NOT be preferred — `AIOrchestrator` keeps the
+    ///            baseline cloud/local recommendation instead. (Foundation Model is
+    ///            Tier 3 — post-cloud personalisation, not a cloud fallback.)
     func adapt(
         recommendation: AIRecommendation,
         snapshot: LocalUserSnapshot
@@ -42,7 +44,8 @@ public struct FallbackFoundationModel: FoundationModelProtocol {
         recommendation: AIRecommendation,
         snapshot: LocalUserSnapshot
     ) async throws -> (recommendation: AIRecommendation, confidence: Double) {
-        // Confidence 0 → orchestrator will escalate to cloud
+        // Confidence 0 → orchestrator keeps unpersonalised baseRecommendation
+        // (Foundation Model is post-cloud Tier 3, not a cloud fallback path.)
         return (recommendation, 0.0)
     }
 }
