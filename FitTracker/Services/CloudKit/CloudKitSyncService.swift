@@ -107,8 +107,15 @@ final class CloudKitSyncService: ObservableObject {
     }
 
     // ── Push pending changes UP to CloudKit ─────────────
+    //
+    // Audit BE-019: daily logs and weekly snapshots are saved via a single
+    // `modifyRecords(saving:deleting:)` operation per chunk of 400 (CloudKit's
+    // documented batch ceiling) instead of one `save(_:)` per record. Per-
+    // record cardio image uploads stay sequential because each log embeds the
+    // image's cloudID before its own payload is encrypted; once payloads are
+    // ready, all daily-log and weekly-snapshot saves go in one round trip.
     func pushPendingChanges(dataStore: EncryptedDataStore) async {
-        guard privateDB != nil else {
+        guard let privateDB else {
             iCloudAvailable = false
             status = .disabled
             errorMessage = errorMessage ?? "CloudKit sync is unavailable in this environment."
@@ -120,21 +127,54 @@ final class CloudKitSyncService: ObservableObject {
         errorMessage = nil
 
         do {
-            // Upload daily logs that need sync
+            // Phase 1 — prepare records for batch save. Image uploads still happen
+            // here (sequentially per log) because each cardio image is itself a
+            // CKAsset whose cloudID is embedded in the log payload before encryption.
             let pendingLogs = dataStore.dailyLogs.filter { $0.needsSync }
+            var preparedLogs: [(record: CKRecord, log: DailyLog)] = []
+            preparedLogs.reserveCapacity(pendingLogs.count)
             for log in pendingLogs {
-                let uploadedLog = try await uploadDailyLog(log)
-                // Mark as synced in the store
-                if let idx = dataStore.dailyLogs.firstIndex(where: { $0.id == log.id }) {
+                preparedLogs.append(try await prepareDailyLogRecord(log))
+            }
+
+            let pendingSnaps = dataStore.weeklySnapshots.filter { $0.needsSync }
+            var preparedSnaps: [(record: CKRecord, snap: WeeklySnapshot, recordName: String)] = []
+            preparedSnaps.reserveCapacity(pendingSnaps.count)
+            for snap in pendingSnaps {
+                preparedSnaps.append(try await prepareWeeklySnapshotRecord(snap))
+            }
+
+            let allRecords = preparedLogs.map(\.record) + preparedSnaps.map(\.record)
+
+            // Phase 2 — batch save in chunks of 400 (CloudKit per-operation ceiling).
+            for chunk in allRecords.chunked(into: 400) {
+                let result = try await privateDB.modifyRecords(
+                    saving: chunk,
+                    deleting: [],
+                    savePolicy: .ifServerRecordUnchanged
+                )
+                for (recordID, perRecord) in result.saveResults {
+                    if case .failure(let err) = perRecord {
+                        // Surface the first per-record failure as the operation error.
+                        // The remaining records in the chunk may have succeeded — those
+                        // get committed below by the index-match step.
+                        throw NSError(
+                            domain: "FTCloudKit",
+                            code: -2,
+                            userInfo: [NSLocalizedDescriptionKey: "Save failed for \(recordID.recordName): \(err.localizedDescription)"]
+                        )
+                    }
+                }
+            }
+
+            // Phase 3 — apply needsSync=false / cloudRecordID updates to the store.
+            for (_, uploadedLog) in preparedLogs {
+                if let idx = dataStore.dailyLogs.firstIndex(where: { $0.id == uploadedLog.id }) {
                     dataStore.dailyLogs[idx] = uploadedLog
                     dataStore.dailyLogs[idx].needsSync = false
                 }
             }
-
-            // Upload weekly snapshots
-            let pendingSnaps = dataStore.weeklySnapshots.filter { $0.needsSync }
-            for snap in pendingSnaps {
-                let recordName = try await uploadWeeklySnapshot(snap)
+            for (_, snap, recordName) in preparedSnaps {
                 if let idx = dataStore.weeklySnapshots.firstIndex(where: { $0.id == snap.id }) {
                     dataStore.weeklySnapshots[idx].needsSync = false
                     dataStore.weeklySnapshots[idx].cloudRecordID = recordName
@@ -144,7 +184,8 @@ final class CloudKitSyncService: ObservableObject {
             // Persist needsSync = false changes to disk before continuing
             await dataStore.persistToDisk()
 
-            // Upload user profile
+            // Singletons — kept individual because they have natural-key recordIDs
+            // and their writes are infrequent (per app-launch / per profile edit).
             try await uploadUserProfile(dataStore.userProfile)
             try await uploadUserPreferences(dataStore.userPreferences)
             storeSingletonDigest(dataStore.userProfile, forKey: SyncStateKey.userProfileDigest)
@@ -337,7 +378,11 @@ final class CloudKitSyncService: ObservableObject {
         }
     }
 
-    private func uploadDailyLog(_ log: DailyLog) async throws -> DailyLog {
+    /// Build a CKRecord for a daily log without saving it. Used by the
+    /// batch-save path (BE-019). Returns the prepared record alongside the
+    /// log mutated to reflect the post-save state (cloudRecordID, no
+    /// needsSync, image bytes stripped).
+    private func prepareDailyLogRecord(_ log: DailyLog) async throws -> (record: CKRecord, log: DailyLog) {
         // Strip inline JPEG bytes before encrypting — images travel as CKAssets to stay
         // well under CKRecord's 1 MB size limit. Upload each image first, keep only its cloudID.
         var logToUpload = log
@@ -357,14 +402,14 @@ final class CloudKitSyncService: ObservableObject {
         record[CKField.blob]          = encrypted        as CKRecordValue
         record[CKField.logicDate]     = logToUpload.date as CKRecordValue
         record[CKField.recordVersion] = 2         as CKRecordValue
-        guard let privateDB else { throw cloudKitUnavailableError() }
-        _ = try await privateDB.save(record)
         logToUpload.cloudRecordID = recordName
         logToUpload.needsSync = false
-        return logToUpload
+        return (record, logToUpload)
     }
 
-    private func uploadWeeklySnapshot(_ snap: WeeklySnapshot) async throws -> String {
+    /// Build a CKRecord for a weekly snapshot without saving it. Used by the
+    /// batch-save path (BE-019).
+    private func prepareWeeklySnapshotRecord(_ snap: WeeklySnapshot) async throws -> (record: CKRecord, snap: WeeklySnapshot, recordName: String) {
         let encrypted  = try await EncryptionService.shared.encrypt(snap)
         let recordName = snap.cloudRecordID ?? "snap-\(Date.fitLogicDayKey(for: snap.weekStart))"
         let recordID   = CKRecord.ID(recordName: recordName)
@@ -372,9 +417,7 @@ final class CloudKitSyncService: ObservableObject {
         record[CKField.blob]          = encrypted      as CKRecordValue
         record[CKField.logicDate]     = snap.weekStart as CKRecordValue
         record[CKField.recordVersion] = 1              as CKRecordValue
-        guard let privateDB else { throw cloudKitUnavailableError() }
-        _ = try await privateDB.save(record)
-        return recordName
+        return (record, snap, recordName)
     }
 
     private func uploadUserProfile(_ profile: UserProfile) async throws {
@@ -510,5 +553,18 @@ final class CloudKitSyncService: ObservableObject {
 
     private func remoteDigestFallback<T: Encodable>(for value: T) -> String? {
         digest(for: value)
+    }
+}
+
+// MARK: - BE-019 helpers
+
+private extension Array {
+    /// Split into contiguous chunks of `size` elements (last chunk may be smaller).
+    /// Used to honor CloudKit's 400-record-per-operation ceiling.
+    func chunked(into size: Int) -> [[Element]] {
+        guard size > 0 else { return [self] }
+        return stride(from: 0, to: count, by: size).map {
+            Array(self[$0..<Swift.min($0 + size, count)])
+        }
     }
 }

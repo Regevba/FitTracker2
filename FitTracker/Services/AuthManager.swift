@@ -51,8 +51,18 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
                     localizedReason: "Unlock \(AppBrand.name) to access your encrypted health data"
                 ) { ok, e in
                     Task { @MainActor [weak self] in
-                        self?.isAuthenticated = ok
-                        self?.authError = ok ? nil : e?.localizedDescription
+                        // Audit DEEP-AUTH-013: bail cleanly if AuthManager was
+                        // deallocated mid-flight. Otherwise we'd unlock the
+                        // encryption session for an instance that no longer
+                        // exists and report `true` to a caller whose published
+                        // state would never reflect it — a silent inconsistency
+                        // between auth state and crypto state.
+                        guard let self else {
+                            continuation.resume(returning: false)
+                            return
+                        }
+                        self.isAuthenticated = ok
+                        self.authError = ok ? nil : e?.localizedDescription
                         if ok {
                             await EncryptionService.shared.setSessionContext(ctx)
                         }

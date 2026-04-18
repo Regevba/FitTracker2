@@ -299,14 +299,23 @@ final class SupabaseSyncService: ObservableObject {
     }
 
     /// Delete all remote user data owned by the currently authenticated user.
+    ///
+    /// Audit DEEP-SYNC-011: each step is logged so a partial failure is
+    /// diagnosable from the device log. Steps that throw bubble up — the
+    /// caller (AccountDeletionService) treats the operation as atomic and
+    /// re-tries on next launch if any step failed.
     func deleteAllUserData() async throws {
         guard SupabaseRuntimeConfiguration.isConfigured else {
             status = .disabled
             throw SupabaseRuntimeConfiguration.missingConfigurationError
         }
-        guard let session = try? await supabase.auth.session else { return }
+        guard let session = try? await supabase.auth.session else {
+            syncLogger.notice("deleteAllUserData: no active session, nothing to delete")
+            return
+        }
         let userID = session.user.id.uuidString
         status = .syncing
+        syncLogger.notice("deleteAllUserData: starting for user \(userID, privacy: .private)")
 
         struct CardioAssetPathRow: Decodable {
             let storagePath: String
@@ -316,30 +325,57 @@ final class SupabaseSyncService: ObservableObject {
             }
         }
 
-        let assetRows: [CardioAssetPathRow] = try await supabase
-            .from("cardio_assets")
-            .select("storage_path")
-            .eq("user_id", value: userID)
-            .execute()
-            .value
-
-        if !assetRows.isEmpty {
-            _ = try await supabase.storage
-                .from("cardio-images")
-                .remove(paths: assetRows.map(\.storagePath))
+        let assetRows: [CardioAssetPathRow]
+        do {
+            assetRows = try await supabase
+                .from("cardio_assets")
+                .select("storage_path")
+                .eq("user_id", value: userID)
+                .execute()
+                .value
+            syncLogger.notice("deleteAllUserData: step 1/5 found \(assetRows.count) cardio asset(s)")
+        } catch {
+            syncLogger.error("deleteAllUserData: step 1/5 list cardio assets failed: \(error.localizedDescription)")
+            throw error
         }
 
-        try await supabase
-            .from("cardio_assets")
-            .delete()
-            .eq("user_id", value: userID)
-            .execute()
+        if !assetRows.isEmpty {
+            do {
+                _ = try await supabase.storage
+                    .from("cardio-images")
+                    .remove(paths: assetRows.map(\.storagePath))
+                syncLogger.notice("deleteAllUserData: step 2/5 removed \(assetRows.count) storage object(s)")
+            } catch {
+                syncLogger.error("deleteAllUserData: step 2/5 remove storage objects failed: \(error.localizedDescription)")
+                throw error
+            }
+        } else {
+            syncLogger.notice("deleteAllUserData: step 2/5 skipped (no assets)")
+        }
 
-        try await supabase
-            .from("sync_records")
-            .delete()
-            .eq("user_id", value: userID)
-            .execute()
+        do {
+            try await supabase
+                .from("cardio_assets")
+                .delete()
+                .eq("user_id", value: userID)
+                .execute()
+            syncLogger.notice("deleteAllUserData: step 3/5 deleted cardio_assets rows")
+        } catch {
+            syncLogger.error("deleteAllUserData: step 3/5 delete cardio_assets failed: \(error.localizedDescription)")
+            throw error
+        }
+
+        do {
+            try await supabase
+                .from("sync_records")
+                .delete()
+                .eq("user_id", value: userID)
+                .execute()
+            syncLogger.notice("deleteAllUserData: step 4/5 deleted sync_records rows")
+        } catch {
+            syncLogger.error("deleteAllUserData: step 4/5 delete sync_records failed: \(error.localizedDescription)")
+            throw error
+        }
 
         // Clear all user-scoped UserDefaults keys
         let digestKeys = ["supabase.lastPull", "supabase.user_profile", "supabase.user_preferences", "supabase.meal_templates"]
@@ -347,6 +383,7 @@ final class SupabaseSyncService: ObservableObject {
             UserDefaults.standard.removeObject(forKey: userScopedKey(key))
             UserDefaults.standard.removeObject(forKey: key) // also clear any un-migrated keys
         }
+        syncLogger.notice("deleteAllUserData: step 5/5 cleared \(digestKeys.count) digest cache key(s) — done")
 
         status = .idle
     }
