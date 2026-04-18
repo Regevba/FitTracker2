@@ -20,7 +20,7 @@ struct OnboardingWelcomeView: View {
                     .padding(.bottom, AppSpacing.xSmall)
 
                 Text("FitMe")
-                    .font(.system(size: 32, weight: .bold, design: .rounded))
+                    .font(AppText.displayHeadline)
                     .foregroundStyle(AppGradient.brand)
 
                 Text("Your fitness command center")

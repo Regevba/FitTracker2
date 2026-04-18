@@ -49,9 +49,10 @@ struct LockedFeatureOverlay: View {
                     .accessibilityHint("Dismisses the upgrade prompt")
             }
             .padding(AppSpacing.large)
-            .frame(width: 300)
+            .frame(maxWidth: 320)
+            .padding(.horizontal, AppSpacing.large)
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
-            .shadow(color: AppShadow.cardColor, radius: 20, y: 10)
+            .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Locked feature: \(featureTitle)")

@@ -162,25 +162,15 @@ struct AIInsightCard: View {
         feedbackGiven = true
         guard let validated = primaryValidated else { return }
 
-        let outcome = RecommendationOutcome(
-            segment: validated.recommendation.segment,
-            signals: validated.recommendation.signals,
-            confidenceLevel: validated.overallConfidence.rawValue,
-            source: validated.evidenceChain.isEmpty ? "local" : "cloud",
-            action: action,
-            dismissReason: nil,
-            timestamp: Date()
-        )
-
         // Log analytics — reuse existing feedback method with appropriate rating
-        if action == .accepted {
-            analytics.logAiFeedbackSubmitted(segment: validated.recommendation.segment, rating: "positive")
-        } else {
-            analytics.logAiFeedbackSubmitted(segment: validated.recommendation.segment, rating: "negative")
-        }
+        let rating = (action == .accepted) ? "positive" : "negative"
+        analytics.logAiFeedbackSubmitted(segment: validated.recommendation.segment, rating: rating)
 
-        // TODO: Wire to RecommendationMemory singleton when DI is set up
-        _ = outcome
+        // Note (audit UI-024): Local RecommendationMemory recording deferred —
+        // RecommendationMemory is owned per-AIOrchestrator instance, not a
+        // shared singleton. Wiring requires either an EnvironmentObject pattern
+        // or a dedicated DI container. Tracked separately; analytics signal
+        // already captures the feedback event server-side.
     }
 
     /// Maps internal signal keys to user-facing copy.

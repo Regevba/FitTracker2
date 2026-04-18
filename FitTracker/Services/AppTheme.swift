@@ -89,9 +89,9 @@ enum AppColor {
         static let activity     = Color("chart-activity")
     }
 
-    enum Focus {
-        static let ring = Brand.secondary
-    }
+    // Focus.ring removed in audit DS-015 — token had zero references in any view.
+    // If a focus-ring style is needed in the future, re-introduce here via
+    // Brand.secondary or a dedicated focus token.
 
     enum Selection {
         static let active   = Color("selection-active")
@@ -262,12 +262,20 @@ enum AppText {
     // Icon sizes — for SF Symbol illustrations in onboarding, empty states, hero displays.
     // These are intentionally fixed-size (icons don't scale with Dynamic Type).
     static let iconSmall         = Font.system(size: 18, weight: .medium)
+    /// Profile/inline action icon (22pt) — used for compact toolbar/list affordances. Audit UI-010.
+    static let iconCompact       = Font.system(size: 22, weight: .medium)
     static let iconMedium        = Font.system(size: 28, weight: .medium)
     /// Home v2 primary action button icon (32pt) — T1
     static let iconXL            = Font.system(size: 32, weight: .medium)
     static let iconLarge         = Font.system(size: 48, weight: .medium)
     static let iconHero          = Font.system(size: 64, weight: .regular)
     static let iconDisplay       = Font.system(size: 72, weight: .regular)
+
+    // Display headlines — bold + rounded, fixed size for hero onboarding/marketing surfaces.
+    /// Onboarding welcome hero headline (32pt bold rounded). Audit UI-008.
+    static let displayHeadline   = Font.system(size: 32, weight: .bold, design: .rounded)
+    /// Onboarding first-action headline (36pt bold). Audit UI-009.
+    static let displayLarge      = Font.system(size: 36, weight: .bold)
 }
 
 // MARK: - Legacy aliases (DEPRECATED — migrate call sites to AppText.*)

@@ -231,7 +231,7 @@ struct AppSelectionTile<Content: View>: View {
                 RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
                     .stroke(borderColor, lineWidth: 1)
             )
-            .shadow(color: isSelected ? tint.opacity(0.14) : .clear, radius: 10, y: 4)
+            .shadow(color: isSelected ? tint.opacity(0.14) : .clear, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
             .animation(AppMotion.selectionChange, value: isSelected)
     }
 
@@ -281,7 +281,7 @@ struct AppInputShell<Content: View>: View {
             RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous)
                 .stroke(isFocused ? tint.opacity(0.65) : AppColor.Border.subtle, lineWidth: isFocused ? 1.5 : 1)
         )
-        .shadow(color: isFocused ? tint.opacity(0.10) : .clear, radius: 10, y: 4)
+        .shadow(color: isFocused ? tint.opacity(0.10) : .clear, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)
     }
 }
 
