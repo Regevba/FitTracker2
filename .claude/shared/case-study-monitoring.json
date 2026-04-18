@@ -1005,21 +1005,21 @@
       ],
       "snapshots": [
         {
-          "timestamp": "2026-04-16T10:00:00Z",
-          "label": "spec approved + case study opened",
-          "summary": "Design spec committed. 5 components: static scoring, hybrid probe, model routing, tool budgets, validation logging. PM workflow initiated.",
-          "metrics": {
-            "tests_passing": 0,
-            "build_verified": false
-          }
-        },
-        {
           "timestamp": "2026-04-16T06:30:00Z",
           "label": "Sub-Project A complete \u2014 dispatch intelligence validated",
           "summary": "Config, protocol, and validation data deployed. 5 dispatches logged with 80% accuracy. Combined with Sub-Project B to form complete v5.2 dispatch system.",
           "metrics": {
             "tests_passing": 0,
             "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-16T10:00:00Z",
+          "label": "spec approved + case study opened",
+          "summary": "Design spec committed. 5 components: static scoring, hybrid probe, model routing, tool budgets, validation logging. PM workflow initiated.",
+          "metrics": {
+            "tests_passing": 0,
+            "build_verified": false
           }
         }
       ]
@@ -1179,14 +1179,19 @@
     },
     {
       "case_id": "framework-measurement-v6-2026-04",
-      "title": "Framework Measurement v6.0 — Deterministic Instrumentation",
+      "title": "Framework Measurement v6.0 \u2014 Deterministic Instrumentation",
       "status": "complete",
       "work_type": "feature",
       "started_at": "2026-04-16T14:00:00Z",
       "updated_at": "2026-04-16T17:00:00Z",
       "framework_version": "6.0",
-      "skills_used": ["pm-workflow", "dev"],
-      "data_sources": ["repo"],
+      "skills_used": [
+        "pm-workflow",
+        "dev"
+      ],
+      "data_sources": [
+        "repo"
+      ],
       "process_metrics": {
         "linear_issues_closed": 0,
         "linear_issues_created": 0,
@@ -1220,21 +1225,32 @@
       "snapshots": [
         {
           "timestamp": "2026-04-16T14:30:00Z",
-          "label": "Implementation started — 20 tasks across 4 slices",
+          "label": "Implementation started \u2014 20 tasks across 4 slices",
           "summary": "Research (meta-analysis), PRD (design spec), tasks (implementation plan) all approved. Subagent-driven execution chosen.",
-          "metrics": { "tests_passing": 0, "build_verified": false }
+          "metrics": {
+            "tests_passing": 0,
+            "build_verified": false
+          }
         },
         {
           "timestamp": "2026-04-16T15:30:00Z",
-          "label": "Implementation complete — 21 commits, all verification targets pass",
+          "label": "Implementation complete \u2014 21 commits, all verification targets pass",
           "summary": "All 20 tasks complete. verify-timing, verify-framework, verify-evals all pass. Schema + state validation passed.",
-          "metrics": { "tests_passing": 0, "build_verified": true }
+          "metrics": {
+            "tests_passing": 0,
+            "build_verified": true
+          }
         },
         {
           "timestamp": "2026-04-16T17:00:00Z",
           "label": "feature-complete-auto-2026-04-16T17:00:00Z",
           "summary": "Merged to main via PR #81 (no-ff). All docs synced: skills, master plan, README, registry, changelog. Token overhead: 79,138 tokens (7.91%). 7/9 DVs deterministic.",
-          "metrics": { "tests_passing": 0, "build_verified": true, "dvs_deterministic": 7, "token_overhead_pct": 7.91 }
+          "metrics": {
+            "tests_passing": 0,
+            "build_verified": true,
+            "dvs_deterministic": 7,
+            "token_overhead_pct": 7.91
+          }
         }
       ]
     }

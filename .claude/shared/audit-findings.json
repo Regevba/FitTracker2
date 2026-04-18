@@ -3199,12 +3199,34 @@
     "new_categories": []
   },
   "framework_self_audit": {
-    "config_consistency": null,
-    "cache_staleness": null,
-    "token_budget_accurate": null,
-    "skill_routing_valid": null,
-    "hadf_integrity": null,
-    "bias_risk_findings": []
+    "last_reviewed": "2026-04-18",
+    "config_consistency": "reviewed_2026-04-18",
+    "config_consistency_notes": "framework-manifest.json shared_files corrected 15\u219224 (FW-003 closed). token-budget.json model field removed (FW-004 closed). All version fields aligned at 6.1.",
+    "cache_staleness": "no_stale_in_sample",
+    "cache_staleness_notes": "All cache entries reference files that exist in tree. _index.json arrays empty by design (populates on cache writes \u2014 see FW-011 partial).",
+    "token_budget_accurate": false,
+    "token_budget_notes": "Word-count \u00d7 1.3 estimate; tiktoken not installed. Approximate only. Field removed model attribute since concurrent agents may run different models.",
+    "skill_routing_valid": true,
+    "skill_routing_notes": "All entries in skill-routing.json validated against actual SKILL.md files (FW-010 PASS).",
+    "hadf_integrity": "passed",
+    "hadf_integrity_notes": "17 chip profiles + 7 hardware signatures + correct confidence thresholds (FW-007/FW-008/FW-009 all PASS).",
+    "bias_risk_findings": [
+      {
+        "id": "FW-015",
+        "risk": "self-referential",
+        "note": "This very entry was populated by the framework auditing itself. Trust accordingly."
+      },
+      {
+        "id": "FW-019",
+        "risk": "small-sample",
+        "note": "Dispatch prediction accuracy claim of 80% rests on 5 dispatches; statistical confidence is low."
+      },
+      {
+        "id": "DEEP-AI-015",
+        "risk": "framework-only",
+        "note": "Fabrication-over-nil META finding identified by code reading; runtime confirmation pending."
+      }
+    ]
   },
   "health_scorecard": {
     "ai": 0,

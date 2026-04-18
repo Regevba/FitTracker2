@@ -1,13 +1,13 @@
 {
-  "version": "1.3",
-  "updated": "2026-04-14T05:00:00Z",
+  "version": "1.4",
+  "updated": "2026-04-18T00:00:00Z",
   "framework_version": "6.1",
   "description": "PM framework v6.1 with deterministic measurement instrumentation, meta-analysis audit, and remediation tracking.",
   "structure": {
     "hub_skills": 1,
     "spoke_skills": 10,
     "total_skills": 11,
-    "shared_files": 15,
+    "shared_files": 24,
     "local_adapter_directories": 6,
     "cache_levels": 3
   },

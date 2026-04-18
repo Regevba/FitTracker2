@@ -29,34 +29,41 @@
     "on_project_pattern": "When L2 entry is referenced by 5+ skills, create or update L3 entry in _project/."
   },
   "entry_schema": {
-    "cache_key": "string — unique identifier: {skill}:{task_type}:{context}",
-    "skill": "string — originating skill",
+    "cache_key": "string \u2014 unique identifier: {skill}:{task_type}:{context}",
+    "skill": "string \u2014 originating skill",
     "created": "ISO 8601 timestamp",
     "last_hit": "ISO 8601 timestamp",
     "hit_count": "number",
     "ttl_strategy": "until_invalidated | time_based",
-    "invalidated_by": ["array of file_path:sha256 pairs"],
+    "invalidated_by": [
+      "array of file_path:sha256 pairs"
+    ],
     "task_signature": {
-      "type": "string — category of task",
-      "inputs": ["array of input parameter names"],
-      "context": "string — human-readable description"
+      "type": "string \u2014 category of task",
+      "inputs": [
+        "array of input parameter names"
+      ],
+      "context": "string \u2014 human-readable description"
     },
     "learned_patterns": [
       {
-        "pattern": "string — pattern name",
-        "decision": "string — what was decided",
+        "pattern": "string \u2014 pattern name",
+        "decision": "string \u2014 what was decided",
         "confidence": "high | medium | low",
-        "source_executions": ["array of feature/task names"]
+        "source_executions": [
+          "array of feature/task names"
+        ]
       }
     ],
     "anti_patterns": [
       {
-        "pattern": "string — what to avoid",
-        "what_went_wrong": "string — description",
-        "source_execution": "string — where it happened"
+        "pattern": "string \u2014 what to avoid",
+        "what_went_wrong": "string \u2014 description",
+        "source_execution": "string \u2014 where it happened"
       }
     ],
-    "speedup_instructions": "string — human-readable instructions for using this cache entry"
+    "speedup_instructions": "string \u2014 human-readable instructions for using this cache entry"
   },
-  "entries": []
+  "entries": [],
+  "initial_state_note": "Per-skill _index.json files have empty entries[] arrays in the initial state. PARTIAL (audit FW-011/FW-012): cache discovery falls back to directory scan when entries[] is empty. The arrays populate as skills cache patterns; pm-workflow and dev caches will populate fastest as they're highest-frequency. This is not a broken protocol \u2014 it's a populate-on-write design."
 }
