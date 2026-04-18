@@ -1,6 +1,12 @@
 # Audit v2 — Concurrent 6-Group Stress Test (Case Study)
 
-> Framework v6.1 | Stress Test | 2026-04-18 | **Wave 1 only — concurrent dispatch aborted, methodology pivoted**
+> Framework v6.1 | Stress Test | 2026-04-18 | **CLOSED — Option C selected: stop and treat findings as the deliverable**
+
+## Decision (2026-04-18)
+
+User selected **Option C**: stop the stress test, document framework findings F1–F7, file F1 as a framework bug, treat the 7 findings as the deliverable. Remaining audit findings will be addressed via a new pragmatic serial plan, not via concurrent worktree dispatch.
+
+**Wave 2 and Wave 3 will not be run.** The methodology is blocked on F1, which requires a framework-level permission system fix that's out of scope for in-app audit work.
 
 ---
 
@@ -178,11 +184,11 @@ Treat wave 1's outcome as the answer: the framework's permission system has a st
 
 ---
 
-## My Recommendation
+## Final Decision (2026-04-18)
 
-**Option C** — close the case study here, file F1 as a framework bug, write up the 7 findings as the actual deliverable. The 47 audit findings are mostly low-stakes cleanup that the project can absorb piecemeal in future work. The framework findings are the rare and valuable output.
+**Option C selected.** Case study closed. Framework findings filed in `docs/superpowers/specs/2026-04-18-framework-bugs-from-stress-test.md`. Remaining audit findings continue under a new pragmatic plan (see `project_post_stress_test_plan.md` in memory).
 
-If the user disagrees, **Option A is doable but expensive**. **Option B is fastest** if the goal is finishing the audit, not validating the framework.
+The stress test as designed produced **no signal about concurrency** because of F1. The 7 framework findings are the rare and valuable output. The 43 remaining audit findings will be absorbed into normal future work using proven serial sprint patterns.
 
 ---
 

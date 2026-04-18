@@ -13,12 +13,14 @@
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
-| Findings Resolved | **123** across Phases 1–8 + Sprints A–E |
-| Findings Deferred | 47 (Phase 9 backend infra + UI v2 refactors + dark mode pipeline) |
+| Findings Resolved | **127** across Phases 1–8 + Sprints A–E + Wave 1 salvage (PR #95) |
+| Findings Open | 82 per audit-findings.json — ~55 doable in serial sprints, rest deferred |
 | Domains Covered | 6 (UI, Backend, AI, Design System, Tests, Framework) |
-| Files Changed | 35 app + 21 test |
-| Commits | 18 (cumulative across PRs #84–94) |
-| New Test Suites | 17 suites, 116 test cases |
+| Files Changed | 36 app + 25 test |
+| Commits | 19 (cumulative across PRs #84–95) |
+| New Test Suites | 21 suites, 162 test cases (PR #95 salvage added 4 suites / 46 cases) |
+| Concurrent Stress Test (2026-04-18) | Wave 1 aborted after framework bug F1 blocked worktree dispatch. See `audit-v2-concurrent-stress-test-case-study.md` and `framework-bugs-from-stress-test.md`. |
+| Forward Plan | `docs/superpowers/plans/2026-04-18-post-stress-test-remediation.md` — 5 serial sprints F–J |
 | Regression Caught | Sprint B HMAC timestamp validation crashed on unaligned Data slice — caught and fixed by new EncryptionService round-trip test |
 | Production Refactors | (1) Extracted `Debouncer` utility from SupabaseSyncService. (2) Added `SessionTokenType` enum + `AppColor.Overlay.scrim` token. (3) Marked 3 dead views as HISTORICAL. |
 | Build | SUCCEEDED (pre-audit, post-audit, post-remediation) |
