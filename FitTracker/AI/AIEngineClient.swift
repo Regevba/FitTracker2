@@ -40,6 +40,14 @@ public final class AIEngineClient: AIEngineClientProtocol {
         payload: [String: String],
         jwt: String
     ) async throws -> AIRecommendation {
+        // Audit AI-013 / DEEP-AI-006: lightweight JWT expiry pre-check. The
+        // server still validates signature + expiry — this just avoids a
+        // round-trip when the token is locally provably expired. A token
+        // we can't decode is treated as valid (server is the source of truth).
+        if Self.isExpired(jwt: jwt) {
+            throw AIEngineError.unauthorised
+        }
+
         let url = baseURL
             .appendingPathComponent("v1")
             .appendingPathComponent(segment.rawValue)
@@ -68,6 +76,33 @@ public final class AIEngineClient: AIEngineClientProtocol {
         default:
             throw AIEngineError.serverError(statusCode: http.statusCode)
         }
+    }
+}
+
+// MARK: - JWT helpers
+
+extension AIEngineClient {
+    /// Decode the unsigned middle segment of a JWT and return true if the
+    /// `exp` claim is in the past. Tokens we can't parse are treated as
+    /// non-expired (the server is the source of truth for signature + expiry).
+    static func isExpired(jwt: String, now: Date = Date()) -> Bool {
+        let parts = jwt.split(separator: ".")
+        guard parts.count == 3 else { return false }
+        let payloadSegment = String(parts[1])
+        // JWT uses base64url; pad to a multiple of 4 and translate URL-safe chars.
+        var padded = payloadSegment
+            .replacingOccurrences(of: "-", with: "+")
+            .replacingOccurrences(of: "_", with: "/")
+        let remainder = padded.count % 4
+        if remainder > 0 { padded += String(repeating: "=", count: 4 - remainder) }
+        guard
+            let data = Data(base64Encoded: padded),
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let exp = (json["exp"] as? NSNumber)?.doubleValue ?? (json["exp"] as? Double)
+        else {
+            return false
+        }
+        return Date(timeIntervalSince1970: exp) <= now
     }
 }
 

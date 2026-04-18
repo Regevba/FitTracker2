@@ -192,9 +192,12 @@ struct FitTrackerApp: App {
     }
 
     private func buildSnapshot() -> LocalUserSnapshot {
-        // Build snapshot with readiness data
+        // Build snapshot with readiness data. Audit DEEP-AI-007: also wire the
+        // adapter list into AIOrchestrator so `lastAdapters` is populated for
+        // the validation evidence chain — previously the adapters were built
+        // here and silently discarded.
         let readiness = dataStore.readinessResult(for: Date(), fallbackMetrics: healthService.latest)
-        return AISnapshotBuilder.build(
+        let (snapshot, adapters) = AISnapshotBuilder.build(
             profile: dataStore.userProfile,
             preferences: dataStore.userPreferences,
             liveMetrics: healthService.latest,
@@ -202,6 +205,8 @@ struct FitTrackerApp: App {
             todayDayType: programStore.todayDayType,
             readiness: readiness
         )
+        aiOrchestrator.setAdapters(adapters)
+        return snapshot
     }
 
     // ── Onboarding guard ─────────────────────────────────

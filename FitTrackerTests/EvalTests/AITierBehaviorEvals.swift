@@ -140,7 +140,7 @@ final class AITierBehaviorEvals: XCTestCase {
             recommendation: .fullIntensity
         )
 
-        let snapshot = AISnapshotBuilder.build(
+        let (snapshot, _) = AISnapshotBuilder.build(
             profile: UserProfile(),
             preferences: UserPreferences(),
             liveMetrics: LiveMetrics(),

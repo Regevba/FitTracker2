@@ -93,12 +93,17 @@ public final class FoundationModelService: FoundationModelProtocol {
 
     // ── Private helpers ────────────────────────────────────
 
+    /// Build the on-device prompt context. The full biometric payload is
+    /// inlined into the prompt for the inference engine — but if the caller
+    /// wants a string suitable for *logging* (audit DEEP-AI-012), it must use
+    /// `redactedForLogging: true` to scrub raw RHR/sleep/stress values.
+    /// Production code paths that touch the inference engine pass `false`;
+    /// any debug/diagnostic emission must pass `true`.
     private func buildPrivateContext(
         snapshot: LocalUserSnapshot,
-        recommendation: AIRecommendation
+        recommendation: AIRecommendation,
+        redactedForLogging: Bool = false
     ) -> String {
-        // Assembles a structured prompt from the user's private data.
-        // Not transmitted to any external service.
         var lines: [String] = ["[FitTracker on-device personalisation context]"]
         lines.append("Segment: \(recommendation.segment)")
         lines.append("Cloud signals: \(recommendation.signals.joined(separator: ", "))")
@@ -117,13 +122,26 @@ public final class FoundationModelService: FoundationModelProtocol {
             lines.append("Primary drivers: \(drivers.joined(separator: "; "))")
         }
         if let phase = snapshot.programPhase     { lines.append("Phase: \(phase)") }
-        if let sleep = snapshot.avgSleepHours    { lines.append("Sleep: \(sleep)h avg") }
-        if let stress = snapshot.stressLevel     { lines.append("Stress: \(stress)") }
-        if let hr = snapshot.restingHeartRate    { lines.append("RHR: \(hr)bpm") }
+
+        // Audit DEEP-AI-012: when this string is destined for a log sink,
+        // scrub raw biometric values — keep only a presence indicator.
+        if redactedForLogging {
+            if snapshot.avgSleepHours    != nil { lines.append("Sleep: <redacted>") }
+            if snapshot.stressLevel      != nil { lines.append("Stress: <redacted>") }
+            if snapshot.restingHeartRate != nil { lines.append("RHR: <redacted>") }
+        } else {
+            if let sleep = snapshot.avgSleepHours    { lines.append("Sleep: \(sleep)h avg") }
+            if let stress = snapshot.stressLevel     { lines.append("Stress: \(stress)") }
+            if let hr = snapshot.restingHeartRate    { lines.append("RHR: \(hr)bpm") }
+        }
 
         if let score = snapshot.readinessScore {
-            lines.append("Readiness score: \(score)/100 (confidence: \(snapshot.readinessConfidence ?? "unknown"))")
-            lines.append("Recommended intensity: \(snapshot.readinessRecommendation ?? "unknown")")
+            if redactedForLogging {
+                lines.append("Readiness score: <redacted>/100")
+            } else {
+                lines.append("Readiness score: \(score)/100 (confidence: \(snapshot.readinessConfidence ?? "unknown"))")
+                lines.append("Recommended intensity: \(snapshot.readinessRecommendation ?? "unknown")")
+            }
             if let flags = snapshot.fatigueFlags, !flags.isEmpty {
                 lines.append("Fatigue warnings: \(flags.joined(separator: ", "))")
             }

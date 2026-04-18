@@ -288,7 +288,7 @@ final class FitTrackerCoreTests: XCTestCase {
         today.mood = 4
         today.energyLevel = 4
 
-        let snapshot = AISnapshotBuilder.build(
+        let (snapshot, _) = AISnapshotBuilder.build(
             profile: profile,
             preferences: preferences,
             liveMetrics: liveMetrics,
