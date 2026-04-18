@@ -107,6 +107,10 @@
 		ST200000000000000000AT01 /* SessionTokenTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTokenTypeTests.swift; sourceTree = "<group>"; };
 		KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = KH200000000000000000AT01 /* KeychainHelperTests.swift */; };
 		KH200000000000000000AT01 /* KeychainHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
+		RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RS200000000000000000AT01 /* ReminderSchedulerTests.swift */; };
+		RS200000000000000000AT01 /* ReminderSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSchedulerTests.swift; sourceTree = "<group>"; };
+		OB100000000000000000AT01 /* OfflineBehaviourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AT01 /* OfflineBehaviourTests.swift */; };
+		OB200000000000000000AT01 /* OfflineBehaviourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineBehaviourTests.swift; sourceTree = "<group>"; };
 		OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OR200000000000000000AT01 /* AIOrchestratorTests.swift */; };
 		OR200000000000000000AT01 /* AIOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorTests.swift; sourceTree = "<group>"; };
 		VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */; };
@@ -777,6 +781,8 @@
 				CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */,
 				ST200000000000000000AT01 /* SessionTokenTypeTests.swift */,
 				KH200000000000000000AT01 /* KeychainHelperTests.swift */,
+				RS200000000000000000AT01 /* ReminderSchedulerTests.swift */,
+				OB200000000000000000AT01 /* OfflineBehaviourTests.swift */,
 				OR200000000000000000AT01 /* AIOrchestratorTests.swift */,
 				VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */,
 				WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */,
@@ -1155,6 +1161,8 @@
 				CK100000000000000000AT01 /* CloudKitSyncServiceTests.swift in Sources */,
 				ST100000000000000000AT01 /* SessionTokenTypeTests.swift in Sources */,
 				KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */,
+				RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */,
+				OB100000000000000000AT01 /* OfflineBehaviourTests.swift in Sources */,
 				OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */,
 				VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */,
 				WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */,
