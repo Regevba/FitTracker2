@@ -107,6 +107,14 @@
 		ST200000000000000000AT01 /* SessionTokenTypeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionTokenTypeTests.swift; sourceTree = "<group>"; };
 		KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = KH200000000000000000AT01 /* KeychainHelperTests.swift */; };
 		KH200000000000000000AT01 /* KeychainHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
+		OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OR200000000000000000AT01 /* AIOrchestratorTests.swift */; };
+		OR200000000000000000AT01 /* AIOrchestratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorTests.swift; sourceTree = "<group>"; };
+		VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */; };
+		VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedRecommendationTests.swift; sourceTree = "<group>"; };
+		WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */; };
+		WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityServiceTests.swift; sourceTree = "<group>"; };
+		NS100000000000000000AT01 /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS200000000000000000AT01 /* NotificationServiceTests.swift */; };
+		NS200000000000000000AT01 /* NotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
 		DE100000000000000000SR01 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE200000000000000000SR01 /* Debouncer.swift */; };
 		DE200000000000000000SR01 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
 		EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */; };
@@ -769,6 +777,10 @@
 				CK200000000000000000AT01 /* CloudKitSyncServiceTests.swift */,
 				ST200000000000000000AT01 /* SessionTokenTypeTests.swift */,
 				KH200000000000000000AT01 /* KeychainHelperTests.swift */,
+				OR200000000000000000AT01 /* AIOrchestratorTests.swift */,
+				VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */,
+				WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */,
+				NS200000000000000000AT01 /* NotificationServiceTests.swift */,
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
@@ -1143,6 +1155,10 @@
 				CK100000000000000000AT01 /* CloudKitSyncServiceTests.swift in Sources */,
 				ST100000000000000000AT01 /* SessionTokenTypeTests.swift in Sources */,
 				KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */,
+				OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */,
+				VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */,
+				WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */,
+				NS100000000000000000AT01 /* NotificationServiceTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
