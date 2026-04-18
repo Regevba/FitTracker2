@@ -58,8 +58,20 @@ actor EncryptionService {
     // the system never shows more than one biometric prompt per session.
     private var sessionContext: LAContext?
 
+    /// Set true by `deleteStoredKeys()`. Forces `encryptRaw`/`rotateKeys` to
+    /// throw rather than silently regenerate keys for a user whose keys were
+    /// explicitly deleted (audit BE-027). Cleared on `setSessionContext`
+    /// (next legitimate auth event implies the user re-onboarded).
+    private var keysDeleted: Bool = false
+
+    /// Re-enable rotation guard explicitly — used internally when `rotateKeys`
+    /// finishes successfully. Audit BE-014.
+    private var isRotating: Bool = false
+
     func setSessionContext(_ ctx: LAContext) {
         sessionContext = ctx
+        // Re-auth implies the user re-onboarded after deletion; clear the flag.
+        keysDeleted = false
     }
 
     func clearSessionContext() {
@@ -71,6 +83,7 @@ actor EncryptionService {
         try deleteKeyFromKeychain(tag: chachaKeyTag)
         try deleteKeyFromKeychain(tag: hmacKeyTag)
         sessionContext = nil
+        keysDeleted = true
     }
 
     /// Returns the cached session context if set; falls back to authenticating a new one.
@@ -94,6 +107,11 @@ actor EncryptionService {
 
     // ── Public raw
     func encryptRaw(_ plaintext: Data) async throws -> Data {
+        // Audit BE-027: refuse to silently regenerate keys after explicit deletion.
+        // setSessionContext() clears this flag (re-auth = user re-onboarded).
+        if keysDeleted {
+            throw FTCryptoError.encryptFailed("Keys were explicitly deleted; re-authenticate to regenerate")
+        }
         // Use cached session context (set by AuthManager) or fall back to a fresh auth.
         let ctx       = try await currentContext()
         let aesKey    = try getOrCreateSymmetricKey(tag: aesKeyTag,    context: ctx)
@@ -302,6 +320,21 @@ actor EncryptionService {
     // Old keys are only removed after ALL new blobs are successfully produced.
 
     func rotateKeys(blobs: [Data]) async throws -> [Data] {
+        // Audit BE-014: explicit re-entry guard. The actor already serializes
+        // calls, but an awaited authentication step inside this function could
+        // overlap with a second rotation request that arrives before the first
+        // completes; this flag makes the "no concurrent rotation" contract
+        // observable instead of relying solely on actor serialization.
+        guard !isRotating else {
+            throw FTCryptoError.encryptFailed("Key rotation already in progress")
+        }
+        // Audit BE-027: refuse rotation after explicit deletion.
+        if keysDeleted {
+            throw FTCryptoError.encryptFailed("Keys were explicitly deleted; re-authenticate to regenerate")
+        }
+        isRotating = true
+        defer { isRotating = false }
+
         // Authenticate once for the entire rotation operation.
         let ctx = try await authenticatedContext()
 
