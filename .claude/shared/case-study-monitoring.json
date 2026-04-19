@@ -1587,6 +1587,157 @@
         "Concurrent case study tracking eliminates retroactive synthesis cost (vs K-series which paid this cost via PR #117)",
         "make tokens-check CI gate caught sync drift immediately \u2014 Style Dictionary regeneration is fast feedback"
       ]
+    },
+    {
+      "case_id": "m-1-settings-decomposition-2026-04-19",
+      "title": "M-1 \u2014 SettingsView (v2) Decomposition",
+      "status": "complete",
+      "work_type": "cleanup_program",
+      "started_at": "2026-04-19T20:00:00Z",
+      "updated_at": "2026-04-19T22:00:00Z",
+      "framework_version": "6.1",
+      "skills_used": [
+        "pm-workflow",
+        "dev"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 9,
+        "repo_files_updated": 4,
+        "tests_passing": 0,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 1,
+        "medium_findings": 0,
+        "low_findings": 0,
+        "audit_findings_closed_total_after_arc": 181,
+        "audit_findings_total": 185,
+        "audit_closure_rate_pct": 97.8,
+        "settings_view_lines_before": 1170,
+        "settings_view_lines_after": 294,
+        "settings_view_reduction_pct": 75,
+        "files_in_settings_v2_before": 1,
+        "files_in_settings_v2_after": 9,
+        "lines_moved_total": 876,
+        "behaviour_change": false
+      },
+      "success_cases": [
+        {
+          "title": "Plan doc with line-level inventory before starting",
+          "evidence": "docs/superpowers/plans/2026-04-19-m1-settings-v3-decomposition.md mapped every section of the 1170-line file to either 'Stay' or 'Extract \u2192 file'. Each of 4 phases shipped within \u00b150% of estimate (M-1a 30 min, M-1b 25 min, M-1c 20 min, M-1d 30 min)."
+        },
+        {
+          "title": "Original file was already well-structured for extraction",
+          "evidence": "5 detail screens were 54-155 line `private struct` blocks with @EnvironmentObject deps. No interfaces had to be redesigned. Pure mechanical extraction \u2014 no behaviour change risk."
+        },
+        {
+          "title": "Sequential phases isolate risk",
+          "evidence": "Each PR was a single-direction structural change (5 files, then 2, then 1). Could revert any single PR without losing the others. Build green at every PR."
+        },
+        {
+          "title": "Visibility bump is a one-line cost per dependency",
+          "evidence": "9 visibility bumps total across 3 PRs (SettingsCategory, SettingsActionTrailing, 5 form components, SettingsHomeHeader, SettingsSummaryBadge). Each was a single `private` deletion. No fan-out."
+        },
+        {
+          "title": "Case study tracking concurrent with feature (second time)",
+          "evidence": "M-1d ships in same session as M-1a/b/c. Confirms M-3's 'concurrent tracking' pattern is reproducible. Schema-conformant entry from inception (no amend needed like PR #117 entry)."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Pre-existing EncryptionService + KeychainHelper test failures",
+          "evidence": "9 tests fail on clean main due to simulator keychain environment quirks. Verified via `git stash` + re-run before any M-1 changes \u2014 same 9 failures. Not introduced by M-1."
+        },
+        {
+          "title": "No manual visual QA across all 5 detail screens",
+          "evidence": "Build green and behaviour preserved at the type level (same *SettingsScreen types, same coordinator wiring), but full tap-through unverified. Deferred to next QA pass."
+        },
+        {
+          "title": "CI billing block continues",
+          "evidence": "PRs #122-#124 hit GitHub Actions account spending limit. Local build + (most) tests green; admin-overridden the merges. Same infrastructure friction since Sprint K."
+        },
+        {
+          "title": "Coordinator still does more than pure routing",
+          "evidence": "294-line SettingsView includes summaryBadges() helpers (50+ lines computing badge contents per category) + deep-link routing. Not warranted by audit \u2014 UI-002 is closed at file-size layer. Future M-1e could extract a SettingsBadgeProvider service if needed."
+        }
+      ],
+      "next_checkpoints": [
+        "M-2: UI-004 MealEntrySheet decomposition (next multi-session feature)",
+        "M-4: TEST-025 XCUITest infrastructure (next multi-session feature)",
+        "Manual visual QA pass across the 5 detail screens",
+        "BE-024: Supabase Edge Function for delete-account (external blocker)",
+        "DEEP-SYNC-010: CK\u2192Supabase Storage cardio image bridge (external multi-PR)"
+      ],
+      "artifacts": [
+        "docs/superpowers/plans/2026-04-19-m1-settings-v3-decomposition.md",
+        "docs/case-studies/m-1-settings-decomposition-case-study.md",
+        "FitTracker/Views/Settings/v2/SettingsView.swift",
+        "FitTracker/Views/Settings/v2/Screens/",
+        "FitTracker/Views/Settings/v2/Components/",
+        ".claude/shared/audit-findings.json"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-19T20:30:00Z",
+          "label": "M-1a shipped (PR #122)",
+          "summary": "5 detail screens extracted to Settings/v2/Screens/. SettingsView.swift: 1170 \u2192 649 lines (-44%). Visibility bumped on SettingsCategory + 5 form components + SettingsActionTrailing.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T21:00:00Z",
+          "label": "M-1b shipped (PR #123)",
+          "summary": "Shared scaffolds + form components extracted to Settings/v2/Components/. SettingsView.swift: 649 \u2192 401 lines (-38%). SettingsHomeHeader bumped private \u2192 internal.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T21:30:00Z",
+          "label": "M-1c shipped (PR #124)",
+          "summary": "Home-view sub-components extracted to Components/SettingsHomeViews.swift. SettingsView.swift: 401 \u2192 294 lines (-27%). Total reduction since M-1a start: 1170 \u2192 294 (~75%).",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T22:00:00Z",
+          "label": "M-1d shipped (this PR)",
+          "summary": "Case study + monitoring entry + UI-002 closure. M-1 closed. Audit total: 181/185 (97.8%). 4 findings remain \u2014 all multi-session features (M-2, M-4) or external blockers (BE-024, DEEP-SYNC-010).",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        }
+      ],
+      "case_study_path": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "key_learnings": [
+        "Phased plan doc with line-level inventory reduced execution variance to \u00b150% of estimates across 4 phases",
+        "Pure structural refactors are mechanical-but-careful: pbxproj hygiene + visibility audits dominate over code thinking",
+        "Visibility bumps cascade: extracting 1 type often forces N visibility changes on its dependencies (M-1 hit 9 bumps total)",
+        "Sequential phase shipping isolates risk \u2014 each PR is independently revertable",
+        "Concurrent case study tracking is now a reproducible pattern (M-3 first, M-1 second)"
+      ]
     }
   ]
 }
