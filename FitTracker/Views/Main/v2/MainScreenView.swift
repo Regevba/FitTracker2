@@ -32,10 +32,11 @@ struct MainScreenView: View {
 
     @State private var readinessHapticDay: Date? = nil
     @State private var statusPulse = false
-    @State private var shownMilestoneStreak: Int = 0
-    @State private var shownMilestonePhase: ProgramPhase? = nil
-    @State private var milestoneTitle: String? = nil
-    @State private var milestoneMessage: String? = nil
+    // Audit UI-006 + UI-018: milestone state + detection logic moved to
+    // MilestoneDetector (in Services/). The view holds only the @StateObject;
+    // the detector owns the "have we shown this milestone yet" memory and
+    // the presentation state. Removes 4 @State vars from this view (12 → 8).
+    @StateObject private var milestoneDetector = MilestoneDetector()
 
     // MARK: - Derived data
 
@@ -134,13 +135,12 @@ struct MainScreenView: View {
             }
         }
         .fullScreenCover(isPresented: Binding(
-            get: { milestoneTitle != nil },
-            set: { if !$0 { milestoneTitle = nil; milestoneMessage = nil } }
+            get: { milestoneDetector.presentedMilestone != nil },
+            set: { if !$0 { milestoneDetector.dismissPresented() } }
         )) {
-            if let title = milestoneTitle, let msg = milestoneMessage {
-                MilestoneModal(title: title, message: msg) {
-                    milestoneTitle = nil
-                    milestoneMessage = nil
+            if let m = milestoneDetector.presentedMilestone {
+                MilestoneModal(title: m.title, message: m.message) {
+                    milestoneDetector.dismissPresented()
                 }
             }
         }
@@ -545,24 +545,17 @@ struct MainScreenView: View {
     // MARK: - Milestones
     // ─────────────────────────────────────────────────────
 
+    /// Audit UI-006 + UI-018: thin shim over MilestoneDetector.evaluate().
+    /// Detection + state memory now live in the service; the view only
+    /// triggers haptic feedback for phase transitions (UI concern).
     private func checkMilestones() {
-        // Supplement streak
-        if let milestone = streakMilestone, milestone != shownMilestoneStreak {
-            shownMilestoneStreak = milestone
-            milestoneTitle = "\(milestone)-Day Streak!"
-            milestoneMessage = "\(milestone) days straight. Consistency beats intensity every time."
-            return
-        }
-        // Phase transition
-        let phase = dataStore.userProfile.currentPhase
-        if shownMilestonePhase == nil {
-            shownMilestonePhase = phase
-            return
-        }
-        if phase != shownMilestonePhase {
-            shownMilestonePhase = phase
-            milestoneTitle = "Phase Complete!"
-            milestoneMessage = "Welcome to \(phase.rawValue). A new chapter begins."
+        let phaseBefore = dataStore.userProfile.currentPhase
+        let presented = milestoneDetector.evaluate(
+            streakMilestone: streakMilestone,
+            currentPhase: phaseBefore
+        )
+        // Phase-transition haptic stays in the view (UI concern, not business logic)
+        if presented, let m = milestoneDetector.presentedMilestone, m.title == "Phase Complete!" {
             let ng = UINotificationFeedbackGenerator()
             ng.prepare()
             ng.notificationOccurred(.success)
