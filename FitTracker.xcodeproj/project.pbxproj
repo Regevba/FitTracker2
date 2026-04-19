@@ -143,6 +143,11 @@
 		CC000001000000000000AA0B /* MealEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0B /* MealEntrySheet.swift */; };
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 		SE100000000000000000AA01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA01 /* SettingsView.swift */; };
+		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
+		SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */; };
+		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
+		SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */; };
+		SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
 		DS000001000000000000AA01 /* AppPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA01 /* AppPalette.swift */; };
@@ -305,6 +310,11 @@
 		EV300000000000000000GR01 /* EvalTests */ = {isa = PBXGroup; children = (EV200000000000000000ET01 /* ReadinessFormulaEvals.swift */, EV200000000000000000ET02 /* AIOutputQualityEvals.swift */, EV200000000000000000ET03 /* AITierBehaviorEvals.swift */, EV200000000000000000ET04 /* ProfileEvals.swift */); path = EvalTests; sourceTree = "<group>"; };
 		AI200000000000000000AT01 /* AIAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAnalyticsTests.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA01 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSecuritySettingsScreen.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthDevicesSettingsScreen.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsPreferencesSettingsScreen.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingNutritionSettingsScreen.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncSettingsScreen.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
@@ -840,8 +850,21 @@
 			isa = PBXGroup;
 			children = (
 				SE200000000000000000AA01 /* SettingsView.swift */,
+				SE400000000000000000AA02 /* Screens */,
 			);
 			path = v2;
+			sourceTree = "<group>";
+		};
+		SE400000000000000000AA02 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */,
+				SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */,
+				SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */,
+				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
+				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
+			);
+			path = Screens;
 			sourceTree = "<group>";
 		};
 		DS000000000000000000AA00 /* DesignSystem */ = {
@@ -1087,6 +1110,11 @@
 				AC1000000000000000000010 /* DeleteAccountView.swift in Sources */,
 				AC1000000000000000000011 /* ExportDataView.swift in Sources */,
 				SE100000000000000000AA01 /* SettingsView.swift in Sources */,
+				SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */,
+				SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */,
+				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
+				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
+				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
 				DS000001000000000000AA01 /* AppPalette.swift in Sources */,
