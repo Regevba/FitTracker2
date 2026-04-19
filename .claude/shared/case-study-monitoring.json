@@ -1738,6 +1738,181 @@
         "Sequential phase shipping isolates risk \u2014 each PR is independently revertable",
         "Concurrent case study tracking is now a reproducible pattern (M-3 first, M-1 second)"
       ]
+    },
+    {
+      "case_id": "m-2-mealentrysheet-decomposition-2026-04-19",
+      "title": "M-2 \u2014 MealEntrySheet (UI-004) Decomposition",
+      "status": "complete",
+      "work_type": "cleanup_program",
+      "started_at": "2026-04-19T22:30:00Z",
+      "updated_at": "2026-04-20T01:00:00Z",
+      "framework_version": "6.1",
+      "skills_used": [
+        "pm-workflow",
+        "dev"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 10,
+        "repo_files_updated": 4,
+        "tests_passing": 0,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 1,
+        "medium_findings": 0,
+        "low_findings": 0,
+        "audit_findings_closed_total_after_arc": 182,
+        "audit_findings_total": 185,
+        "audit_closure_rate_pct": 98.4,
+        "mealentry_sheet_lines_before": 1104,
+        "mealentry_sheet_lines_after": 140,
+        "mealentry_sheet_reduction_pct": 87,
+        "files_in_nutrition_dir_before": 4,
+        "files_in_nutrition_dir_after": 14,
+        "lines_moved_total": 964,
+        "state_vars_in_main_view_before": 17,
+        "state_vars_in_main_view_after": 0,
+        "behaviour_change": false
+      },
+      "success_cases": [
+        {
+          "title": "Phased plan doc with line-level inventory before starting",
+          "evidence": "docs/superpowers/plans/2026-04-19-m2-mealentrysheet-decomposition.md mapped every section. Each phase shipped within \u00b150% of estimate (M-2a 30 min, M-2c 45 min, M-2b 40 min, M-2d 30 min)."
+        },
+        {
+          "title": "Conservative phase ordering: leaves \u2192 VM \u2192 tabs",
+          "evidence": "Leaf extractions (low risk) shipped first. VM extracted before per-tab views so tabs reference @ObservedObject vm cleanly. M-2b first would have meant tabs taking 10+ @Binding params each, then refactoring."
+        },
+        {
+          "title": "Callback injection avoids Binding-on-ObservableObject",
+          "evidence": "VM exposes onSourceChange: (MealEntrySource) -> Void instead of holding Binding<MealEntry>. View wires it in .onAppear. Avoids the awkward Binding lifecycle on @Published types."
+        },
+        {
+          "title": "Single source of truth for formatMealValue",
+          "evidence": "Originally vm.formatNum. M-2b extracted to free helper in MealEntrySharedComponents.swift. Both VM (state mutations) and ParsedMetricView (metric tile) use the same function. No duplication."
+        },
+        {
+          "title": "[weak self] in Vision OCR closures",
+          "evidence": "Long-running detached tasks in processNutritionImage could outlive the VM. Weak capture prevents retain cycles."
+        },
+        {
+          "title": "Concurrent case study tracking (third time)",
+          "evidence": "M-2d shipped in same session as M-2a/c/b. M-3 was first, M-1 second, M-2 third. Pattern proven across content-additive (M-3) AND structural-refactor (M-1, M-2) work shapes."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Stacked PR misfire on M-2c + M-2b",
+          "evidence": "PRs #127 (M-2c) and #128 (M-2b) opened with stacked bases (--base feature/...). When merged, they merged into stacked predecessor branches, NOT main. Recovered via PR #129 (resubmit from m2b branch \u2192 main) bundling both phases. Lesson: retarget downstream PRs to main BEFORE merging when upstream lands."
+        },
+        {
+          "title": "Pre-existing EncryptionService + KeychainHelper test failures",
+          "evidence": "Same 9 environmental failures present on clean main since pre-M-1. Verified not introduced by M-2."
+        },
+        {
+          "title": "No manual visual QA across all 4 tabs",
+          "evidence": "Build green and behaviour preserved at type level (same VM API surface, same SwiftUI render tree per tab), but full tap-through unverified. Deferred to next QA pass."
+        },
+        {
+          "title": "CI billing block continues",
+          "evidence": "PRs #126-#129 hit GitHub Actions account spending limit. Local build green; admin-overridden. Same infrastructure friction since Sprint K."
+        },
+        {
+          "title": "Coordinator still has 5 bridge methods",
+          "evidence": "saveAsTemplate, logMeal, deleteTemplates, runTextSearch, fetchProduct stay on MealEntrySheet because they touch entry/onSave/dismiss/dataStore/foodSearch which the VM doesn't own. Trade-off accepted vs. expanding VM init signature."
+        }
+      ],
+      "next_checkpoints": [
+        "M-4: TEST-025 XCUITest infrastructure (last in-project multi-session feature)",
+        "BE-024: Supabase Edge Function for delete-account (external blocker)",
+        "DEEP-SYNC-010: CK\u2192Supabase Storage cardio image bridge (external multi-PR)",
+        "Manual visual QA pass across the 4 Meal Entry tabs",
+        "Document the stacked-PR misfire methodology lesson in framework docs"
+      ],
+      "artifacts": [
+        "docs/superpowers/plans/2026-04-19-m2-mealentrysheet-decomposition.md",
+        "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+        "FitTracker/Views/Nutrition/MealEntrySheet.swift",
+        "FitTracker/Views/Nutrition/MealEntryViewModel.swift",
+        "FitTracker/Views/Nutrition/Models/",
+        "FitTracker/Views/Nutrition/Parsing/",
+        "FitTracker/Views/Nutrition/Camera/",
+        "FitTracker/Views/Nutrition/Tabs/",
+        ".claude/shared/audit-findings.json"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-19T23:00:00Z",
+          "label": "M-2a shipped (PR #126)",
+          "summary": "4 leaf type extractions (OFF DTOs, parser, camera, barcode). MealEntrySheet.swift: 1104 \u2192 694 lines (-37%). 3 visibility bumps on parser internals.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T23:45:00Z",
+          "label": "M-2c shipped (PR #127, later resubmitted in #129)",
+          "summary": "MealEntryViewModel extraction. 17 @State vars \u2192 16 @Published. MealEntrySheet.swift: 694 \u2192 506 lines (-27%). Callback injection pattern for entry.source mutations.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-20T00:30:00Z",
+          "label": "M-2b shipped (PR #128, later resubmitted in #129)",
+          "summary": "Per-tab view extractions. 5 new files in Tabs/. MealEntrySheet.swift: 506 \u2192 140 lines (-72%). Bridge action callbacks injected from coordinator.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-20T00:50:00Z",
+          "label": "M-2 resubmit (PR #129)",
+          "summary": "Stacked-PR misfire recovery. Single PR from m2b branch \u2192 main bundling M-2c + M-2b commits onto main as one merge.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-20T01:00:00Z",
+          "label": "M-2d shipped (this PR)",
+          "summary": "Case study + monitoring entry + UI-004 closure. M-2 closed. Audit total: 182/185 (98.4%). 3 findings remain \u2014 M-4 (multi-session) + BE-024 + DEEP-SYNC-010 (external).",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        }
+      ],
+      "case_study_path": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "key_learnings": [
+        "Phased plan doc with line-level inventory reduced execution variance to \u00b150% of estimates across 4 phases (now consistent across M-3, M-1, M-2)",
+        "Callback injection (onSourceChange closure) is cleaner than Binding<T> on ObservableObject for parent-owned mutations",
+        "VM-first then per-tab is the right ordering for ViewModel + sub-view decomposition (avoids @Binding param explosion)",
+        "Stacked PR workflow on GitHub merges into the stacked base, NOT main \u2014 must retarget downstream PRs to main before merging upstream",
+        "Concurrent case study tracking pattern is now reproducible across 3 work shapes: content-additive (M-3), pure structural (M-1), VM/architectural refactor (M-2)"
+      ]
     }
   ]
 }

@@ -2445,8 +2445,16 @@
       "recommended_fix": "Extract each tab into own view, create MealEntryViewModel",
       "effort": "large",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        126,
+        127,
+        128,
+        129,
+        130
+      ],
+      "closed_via": "M-2 multi-PR decomposition (PR #126 M-2a leaf types + PR #127 M-2c ViewModel + PR #128 M-2b per-tab views + PR #129 M-2 resubmit-to-main + PR #130 M-2d). MealEntrySheet.swift: 1104 \u2192 140 lines (~87% reduction). 17 @State vars \u2192 0 (consolidated into MealEntryViewModel). 9 new files: 4 leaf types in Models/Parsing/Camera, 1 VM, 1 shared components, 4 tab views in Tabs/. Pure structural refactor, zero behaviour change. See docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md."
     },
     {
       "id": "UI-005",
