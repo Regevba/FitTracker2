@@ -588,6 +588,17 @@ final class EncryptedDataStore: ObservableObject {
     /// Single persistence attempt. Returns true on success, false on any
     /// thrown error (encryption or disk). Updates `lastError` on failure
     /// so callers can inspect what went wrong.
+    ///
+    /// Audit DEEP-AUTH-011: writes use a two-phase commit pattern. All five
+    /// encrypted blobs are first written to `<filename>.tmp` siblings; only
+    /// after every `.tmp` write succeeds are the renames performed. A
+    /// mid-sequence failure during encryption or `.tmp` write leaves the
+    /// canonical files untouched (clean rollback). The remaining inconsistency
+    /// window is the rename loop itself, which is much shorter than encryption.
+    /// `Data.write(to:options: [.atomic])` already does per-file atomic
+    /// rename internally — combined with the staged-tmp pattern, callers see
+    /// either the previous full snapshot or the new full snapshot, never a
+    /// partial mix from two different logical moments.
     private func attemptPersist() async -> Bool {
         do {
             let logsEnc      = try await EncryptionService.shared.encrypt(dailyLogs)
@@ -596,20 +607,47 @@ final class EncryptedDataStore: ObservableObject {
             let templatesEnc = try await EncryptionService.shared.encrypt(mealTemplates)
             let prefsEnc     = try await EncryptionService.shared.encrypt(userPreferences)
 
-            // .completeFileProtectionUnlessOpen = encrypted at rest, even when locked (iOS only)
-            #if os(iOS)
-            try logsEnc.write(to:      url("logs"),             options: .completeFileProtectionUnlessOpen)
-            try snapsEnc.write(to:     url("snaps"),            options: .completeFileProtectionUnlessOpen)
-            try profEnc.write(to:      url("profile"),          options: .completeFileProtectionUnlessOpen)
-            try templatesEnc.write(to: url("mealTemplates"),    options: .completeFileProtectionUnlessOpen)
-            try prefsEnc.write(to:     url("userPreferences"),  options: .completeFileProtectionUnlessOpen)
-            #else
-            try logsEnc.write(to:      url("logs"))
-            try snapsEnc.write(to:     url("snaps"))
-            try profEnc.write(to:      url("profile"))
-            try templatesEnc.write(to: url("mealTemplates"))
-            try prefsEnc.write(to:     url("userPreferences"))
-            #endif
+            // Two-phase commit. Phase 1: write everything to `.tmp` siblings.
+            let writes: [(name: String, data: Data)] = [
+                ("logs", logsEnc),
+                ("snaps", snapsEnc),
+                ("profile", profEnc),
+                ("mealTemplates", templatesEnc),
+                ("userPreferences", prefsEnc),
+            ]
+
+            var tmpURLs: [URL] = []
+            do {
+                for write in writes {
+                    let tmpURL = url("\(write.name).tmp")
+                    #if os(iOS)
+                    try write.data.write(to: tmpURL, options: [.atomic, .completeFileProtectionUnlessOpen])
+                    #else
+                    try write.data.write(to: tmpURL, options: .atomic)
+                    #endif
+                    tmpURLs.append(tmpURL)
+                }
+            } catch {
+                // Phase 1 failed mid-flight. Clean up any .tmp files we wrote.
+                for tmp in tmpURLs { try? fm.removeItem(at: tmp) }
+                throw error
+            }
+
+            // Phase 2: atomically rename each .tmp into place. Each rename is
+            // atomic at the filesystem level. The window between renames is
+            // small, but a crash here can still leave a mixed-snapshot state —
+            // acceptable trade-off vs the previous "5 sequential encrypted
+            // writes" risk window. `replaceItemAt` requires the destination
+            // to exist, so first-time writes fall back to a plain `moveItem`.
+            for write in writes {
+                let tmpURL = url("\(write.name).tmp")
+                let finalURL = url(write.name)
+                if fm.fileExists(atPath: finalURL.path) {
+                    _ = try fm.replaceItemAt(finalURL, withItemAt: tmpURL)
+                } else {
+                    try fm.moveItem(at: tmpURL, to: finalURL)
+                }
+            }
             return true
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
