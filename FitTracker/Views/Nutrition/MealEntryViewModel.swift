@@ -58,9 +58,8 @@ final class MealEntryViewModel: ObservableObject {
     // MARK: – Helpers
     // ─────────────────────────────────────────────────────
 
-    func formatNum(_ v: Double) -> String {
-        v == v.rounded() ? String(Int(v)) : String(format: "%.1f", v)
-    }
+    // formatMealValue is a free helper in Tabs/MealEntrySharedComponents.swift —
+    // both the VM and the parsed-metric tile call the same function.
 
     func loadFromEntry(_ entry: MealEntry) {
         name     = entry.name
@@ -68,8 +67,8 @@ final class MealEntryViewModel: ObservableObject {
         proteinG = entry.proteinG.map  { String($0) } ?? ""
         carbsG   = entry.carbsG.map    { String($0) } ?? ""
         fatG     = entry.fatG.map      { String($0) } ?? ""
-        servingGrams = entry.servingGrams.map { formatNum($0) } ?? ""
-        referenceGrams = entry.labelReferenceGrams.map { formatNum($0) } ?? "100"
+        servingGrams = entry.servingGrams.map { formatMealValue($0) } ?? ""
+        referenceGrams = entry.labelReferenceGrams.map { formatMealValue($0) } ?? "100"
         sourceDetails = entry.sourceDetails
         rawLabelText = entry.source == .photoLabel ? entry.sourceDetails : ""
     }
@@ -101,10 +100,10 @@ final class MealEntryViewModel: ObservableObject {
 
     func fillFromTemplate(_ template: MealTemplate) {
         name     = template.name
-        calories = template.calories.map { formatNum($0) } ?? ""
-        proteinG = template.proteinG.map  { formatNum($0) } ?? ""
-        carbsG   = template.carbsG.map    { formatNum($0) } ?? ""
-        fatG     = template.fatG.map      { formatNum($0) } ?? ""
+        calories = template.calories.map { formatMealValue($0) } ?? ""
+        proteinG = template.proteinG.map  { formatMealValue($0) } ?? ""
+        carbsG   = template.carbsG.map    { formatMealValue($0) } ?? ""
+        fatG     = template.fatG.map      { formatMealValue($0) } ?? ""
         sourceDetails = "Saved template"
         activeTab = .manual
         onSourceChange(.template)
@@ -112,12 +111,12 @@ final class MealEntryViewModel: ObservableObject {
 
     func fillFromProduct(_ product: FoodProduct) {
         name     = product.name.isEmpty ? searchQuery : product.name
-        calories = product.caloriesPer100g.map { formatNum($0) } ?? ""
-        proteinG = product.proteinPer100g.map   { formatNum($0) } ?? ""
-        carbsG   = product.carbsPer100g.map     { formatNum($0) } ?? ""
-        fatG     = product.fatPer100g.map       { formatNum($0) } ?? ""
-        referenceGrams = formatNum(product.referenceGrams)
-        servingGrams = servingGrams.isEmpty ? formatNum(product.referenceGrams) : servingGrams
+        calories = product.caloriesPer100g.map { formatMealValue($0) } ?? ""
+        proteinG = product.proteinPer100g.map   { formatMealValue($0) } ?? ""
+        carbsG   = product.carbsPer100g.map     { formatMealValue($0) } ?? ""
+        fatG     = product.fatPer100g.map       { formatMealValue($0) } ?? ""
+        referenceGrams = formatMealValue(product.referenceGrams)
+        servingGrams = servingGrams.isEmpty ? formatMealValue(product.referenceGrams) : servingGrams
         sourceDetails = product.sourceDescription
         activeTab = .manual
         onSourceChange(product.source)
@@ -137,7 +136,7 @@ final class MealEntryViewModel: ObservableObject {
         }
 
         parsedLabel = parsed
-        referenceGrams = formatNum(parsed.referenceGrams)
+        referenceGrams = formatMealValue(parsed.referenceGrams)
         applyParsedLabel(parsed)
         sourceDetails = rawLabelText
         smartStatus = parsed.detectedLanguageHint == .hebrew
@@ -149,17 +148,17 @@ final class MealEntryViewModel: ObservableObject {
 
     private func applyParsedLabel(_ parsed: ParsedNutritionLabel) {
         let consumedGrams = Double(servingGrams) ?? parsed.referenceGrams
-        servingGrams = formatNum(consumedGrams)
+        servingGrams = formatMealValue(consumedGrams)
         let scale = max(consumedGrams, 1) / max(parsed.referenceGrams, 1)
 
         if name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             name = parsed.nameHint ?? name
         }
 
-        calories = parsed.calories.map { formatNum($0 * scale) } ?? calories
-        proteinG = parsed.proteinG.map { formatNum($0 * scale) } ?? proteinG
-        carbsG = parsed.carbsG.map { formatNum($0 * scale) } ?? carbsG
-        fatG = parsed.fatG.map { formatNum($0 * scale) } ?? fatG
+        calories = parsed.calories.map { formatMealValue($0 * scale) } ?? calories
+        proteinG = parsed.proteinG.map { formatMealValue($0 * scale) } ?? proteinG
+        carbsG = parsed.carbsG.map { formatMealValue($0 * scale) } ?? carbsG
+        fatG = parsed.fatG.map { formatMealValue($0 * scale) } ?? fatG
     }
 
     // ─────────────────────────────────────────────────────
