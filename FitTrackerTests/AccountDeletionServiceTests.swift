@@ -41,7 +41,7 @@ final class AccountDeletionServiceTests: XCTestCase {
         await service.requestDeletion(authMethod: "apple")
         XCTAssertTrue(service.isDeletionPending)
 
-        service.cancelDeletion()
+        await service.cancelDeletion()
 
         XCTAssertNil(service.deletionScheduledAt)
         XCTAssertFalse(service.isDeletionPending)
@@ -49,22 +49,22 @@ final class AccountDeletionServiceTests: XCTestCase {
                        "Deletion timestamp must be removed from UserDefaults")
     }
 
-    func testCheckGracePeriod_restoresPendingDeletionFromDefaults() {
+    func testCheckGracePeriod_restoresPendingDeletionFromDefaults() async {
         // Simulate an app relaunch: write directly to UserDefaults, then check
         let twoDaysAgo = Date().addingTimeInterval(-2 * 86_400)
         UserDefaults.standard.set(twoDaysAgo.timeIntervalSince1970, forKey: deletionKey)
 
         let service = makeService()
         XCTAssertNil(service.deletionScheduledAt, "Fresh service shouldn't auto-load")
-        service.checkGracePeriod()
+        await service.checkGracePeriod()
         XCTAssertNotNil(service.deletionScheduledAt)
         XCTAssertEqual(service.deletionScheduledAt?.timeIntervalSince1970 ?? 0,
                        twoDaysAgo.timeIntervalSince1970, accuracy: 1.0)
     }
 
-    func testCheckGracePeriod_noStoredValue_leavesStateNil() {
+    func testCheckGracePeriod_noStoredValue_leavesStateNil() async {
         let service = makeService()
-        service.checkGracePeriod()
+        await service.checkGracePeriod()
         XCTAssertNil(service.deletionScheduledAt)
     }
 
@@ -85,12 +85,12 @@ final class AccountDeletionServiceTests: XCTestCase {
         XCTAssertFalse(service.isGracePeriodExpired)
     }
 
-    func testIsGracePeriodExpired_35DaysAgo_true() {
+    func testIsGracePeriodExpired_35DaysAgo_true() async {
         let thirtyFiveDaysAgo = Date().addingTimeInterval(-35 * 86_400)
         UserDefaults.standard.set(thirtyFiveDaysAgo.timeIntervalSince1970, forKey: deletionKey)
 
         let service = makeService()
-        service.checkGracePeriod()
+        await service.checkGracePeriod()
         XCTAssertTrue(service.isGracePeriodExpired,
                       "Deletion scheduled 35 days ago should be past the 30-day grace window")
     }

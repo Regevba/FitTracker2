@@ -168,6 +168,13 @@ final class CloudKitSyncService: ObservableObject {
             }
 
             // Phase 3 — apply needsSync=false / cloudRecordID updates to the store.
+            // Audit DEEP-SYNC-014: this Phase-3 block + persistToDisk MUST stay
+            // contiguous with no awaits between the mutations and persist.
+            // If an `await` is added between the for-loops and persistToDisk,
+            // the cloudRecordID can be set in memory but never reach disk if
+            // the app is suspended/killed in that window — defeating CloudKit
+            // changeTag conflict detection on the next launch (we'd create a
+            // new record instead of updating the existing one).
             for (_, uploadedLog) in preparedLogs {
                 if let idx = dataStore.dailyLogs.firstIndex(where: { $0.id == uploadedLog.id }) {
                     dataStore.dailyLogs[idx] = uploadedLog
@@ -181,7 +188,8 @@ final class CloudKitSyncService: ObservableObject {
                 }
             }
 
-            // Persist needsSync = false changes to disk before continuing
+            // Persist needsSync = false + cloudRecordID changes to disk before
+            // any further operation that could fail. (DEEP-SYNC-014 invariant.)
             await dataStore.persistToDisk()
 
             // Singletons — kept individual because they have natural-key recordIDs

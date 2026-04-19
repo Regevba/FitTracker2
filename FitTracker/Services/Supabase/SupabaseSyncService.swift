@@ -298,6 +298,37 @@ final class SupabaseSyncService: ObservableObject {
         return try await EncryptionService.shared.decryptRaw(encrypted)
     }
 
+    /// Audit BE-023: persist the account-deletion grace-period start time to
+    /// Supabase user_metadata so a reinstall during the grace period restores
+    /// the deletion intent (instead of silently cancelling it). Pass `nil` to
+    /// clear (e.g. on `cancelDeletion`).
+    func setRemoteDeletionScheduledAt(_ date: Date?) async throws {
+        guard SupabaseRuntimeConfiguration.isConfigured else {
+            throw SupabaseRuntimeConfiguration.missingConfigurationError
+        }
+        let value: AnyJSON = if let date {
+            .string(ISO8601DateFormatter().string(from: date))
+        } else {
+            .null
+        }
+        let attributes = UserAttributes(data: ["deletionScheduledAt": value])
+        _ = try await supabase.auth.update(user: attributes)
+        syncLogger.notice("setRemoteDeletionScheduledAt: \(date?.description ?? "cleared", privacy: .public)")
+    }
+
+    /// Audit BE-023: read the deletion grace-period start time from Supabase
+    /// user_metadata. Returns nil if no metadata is set or no session exists.
+    /// Used on launch to detect a reinstall during the grace period.
+    func fetchRemoteDeletionScheduledAt() async -> Date? {
+        guard SupabaseRuntimeConfiguration.isConfigured,
+              let session = try? await supabase.auth.session,
+              case .string(let isoString) = session.user.userMetadata["deletionScheduledAt"] ?? .null,
+              let date = ISO8601DateFormatter().date(from: isoString) else {
+            return nil
+        }
+        return date
+    }
+
     /// Delete all remote user data owned by the currently authenticated user.
     ///
     /// Audit DEEP-SYNC-011: each step is logged so a partial failure is
