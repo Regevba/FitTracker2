@@ -1,9 +1,12 @@
 {
   "skill": "pm-workflow",
   "level": "L1",
-  "updated": "2026-04-10T00:00:00Z",
+  "updated": "2026-04-19T00:00:00Z",
   "data_sources": ["linear-mcp", "notion-mcp"],
   "consumes_from_shared": ["feature-registry.json", "skill-routing.json", "task-queue.json"],
   "writes_to_shared": ["feature-registry.json", "task-queue.json", "change-log.json"],
-  "entries": []
+  "entries": [
+    "work-type-decision.json"
+  ],
+  "audit_closure": "FW-012 — entries list populated; previously empty despite pm-workflow being a highest-frequency skill."
 }
