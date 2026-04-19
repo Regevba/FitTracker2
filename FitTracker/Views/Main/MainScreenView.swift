@@ -73,10 +73,10 @@ struct MainScreenView: View {
     }
 
     // Background palette — defined centrally in AppTheme.swift
-    private let bgOrange1 = Color.appOrange1
-    private let bgOrange2 = Color.appOrange2
-    private let bgBlue1   = Color.appBlue1
-    private let bgBlue2   = Color.appBlue2
+    private let bgOrange1 = AppColor.Brand.warmSoft
+    private let bgOrange2 = AppColor.Brand.warm
+    private let bgBlue1   = AppColor.Brand.cool
+    private let bgBlue2   = AppColor.Brand.secondary
     private let bodyFatTint = AppColor.Chart.nutritionFat
 
     private func checkMilestones() {
@@ -329,7 +329,7 @@ struct MainScreenView: View {
                 } label: {
                     Image(systemName: "square.and.pencil")
                         .font(AppText.body)
-                        .foregroundStyle(Color.appBlue1)
+                        .foregroundStyle(AppColor.Brand.cool)
                         .frame(width: 34, height: 34)
                         .background(AppColor.Surface.tertiary, in: Circle())
                 }
@@ -353,7 +353,7 @@ struct MainScreenView: View {
                     Circle()
                         .trim(from: 0, to: max(goalProgress, 0.02))
                         .stroke(
-                            AngularGradient(colors: [.appBlue1, bodyFatTint, .appBlue1], center: .center),
+                            AngularGradient(colors: [AppColor.Brand.cool, bodyFatTint, AppColor.Brand.cool], center: .center),
                             style: StrokeStyle(lineWidth: 12, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -374,7 +374,7 @@ struct MainScreenView: View {
                 progressLine(
                     title: "Weight",
                     progress: profile.weightProgress(current: currentWeight),
-                    tint: .appBlue1,
+                    tint: AppColor.Brand.cool,
                     compact: tight
                 )
                 progressLine(
@@ -436,7 +436,7 @@ struct MainScreenView: View {
                                 .font(.caption.weight(.bold))
                         }
                         .font(.system(size: tight ? 14 : 15.5, weight: .medium, design: .rounded)) // responsive — no AppText equivalent
-                        .foregroundStyle(Color.appBlue1)
+                        .foregroundStyle(AppColor.Brand.cool)
                     }
 
                     Text("\(estimatedSessionLength) • \(recommendationTone)")
@@ -622,10 +622,10 @@ struct MainScreenView: View {
 
     private var recommendationAccent: Color {
         switch readinessScore ?? 65 {
-        case 80...: Color.status.success
-        case 60..<80: Color.accent.cyan
-        case 40..<60: Color.status.warning
-        default: Color.status.error
+        case 80...: AppColor.Status.success
+        case 60..<80: AppColor.Accent.recovery
+        case 40..<60: AppColor.Status.warning
+        default: AppColor.Status.error
         }
     }
 

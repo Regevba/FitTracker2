@@ -49,10 +49,10 @@ private enum SettingsCategory_V1_Historical: String, CaseIterable, Hashable, Ide
     var tint: Color {
         switch self {
         case .accountSecurity: AppColor.Accent.primary
-        case .healthDevices: .accent.cyan
+        case .healthDevices: AppColor.Accent.recovery
         case .goalsPreferences: AppColor.Accent.achievement
-        case .trainingNutrition: .accent.purple
-        case .dataSync: .status.success
+        case .trainingNutrition: AppColor.Accent.sleep
+        case .dataSync: AppColor.Status.success
         }
     }
 }
@@ -218,26 +218,26 @@ struct SettingsView_V1_Historical: View {
                 SettingsSummaryBadge(title: provider, tint: AppColor.Accent.primary),
                 SettingsSummaryBadge(
                     title: biometric,
-                    tint: settings.requireBiometricUnlockOnReopen ? .status.success : .status.warning
+                    tint: settings.requireBiometricUnlockOnReopen ? AppColor.Status.success : AppColor.Status.warning
                 ),
             ]
         case .healthDevices:
             let health = healthService.isAuthorized ? "HealthKit On" : "HealthKit Off"
             return [
-                SettingsSummaryBadge(title: health, tint: healthService.isAuthorized ? .status.success : .status.warning),
+                SettingsSummaryBadge(title: health, tint: healthService.isAuthorized ? AppColor.Status.success : AppColor.Status.warning),
                 SettingsSummaryBadge(title: watchService.status.label, tint: watchService.status.dotColor),
             ]
         case .goalsPreferences:
             return [
                 SettingsSummaryBadge(title: settings.unitSystem.rawValue, tint: AppColor.Accent.achievement),
-                SettingsSummaryBadge(title: settings.appearance.rawValue, tint: .accent.purple),
+                SettingsSummaryBadge(title: settings.appearance.rawValue, tint: AppColor.Accent.sleep),
             ]
         case .trainingNutrition:
             return [
-                SettingsSummaryBadge(title: dataStore.userPreferences.nutritionGoalMode.shortLabel, tint: .accent.purple),
+                SettingsSummaryBadge(title: dataStore.userPreferences.nutritionGoalMode.shortLabel, tint: AppColor.Accent.sleep),
                 SettingsSummaryBadge(
                     title: "Zone 2 \(dataStore.userPreferences.zone2LowerHR)-\(dataStore.userPreferences.zone2UpperHR)",
-                    tint: .accent.cyan
+                    tint: AppColor.Accent.recovery
                 ),
             ]
         case .dataSync:
@@ -251,11 +251,11 @@ struct SettingsView_V1_Historical: View {
     private var syncTint: Color {
         switch cloudSync.status {
         case .idle:
-            return .status.success
+            return AppColor.Status.success
         case .syncing:
-            return .status.warning
+            return AppColor.Status.warning
         case .failed:
-            return .status.error
+            return AppColor.Status.error
         case .offline, .disabled:
             return AppColor.Text.secondary
         }
@@ -339,7 +339,7 @@ private struct AccountSecuritySettingsScreen: View {
                         title: signIn.currentSession?.provider == .passkey ? "Create Another Passkey" : "Add Passkey",
                         subtitle: signIn.isPasskeyConfigured ? "Register a passkey for quick passwordless sign in." : "Passkey setup requires a valid relying party configuration.",
                         icon: "key.fill",
-                        tint: .accent.purple,
+                        tint: AppColor.Accent.sleep,
                         trailing: signIn.isLoading ? .progress : .chevron
                     )
                 }
@@ -370,7 +370,7 @@ private struct AccountSecuritySettingsScreen: View {
                         title: "Delete Account",
                         subtitle: "Schedule permanent deletion of your account and all data.",
                         icon: "trash.fill",
-                        tint: .status.error
+                        tint: AppColor.Status.error
                     )
                 }
                 .buttonStyle(.plain)
@@ -424,7 +424,7 @@ private struct HealthDevicesSettingsScreen: View {
                         title: "Re-authorize HealthKit",
                         subtitle: "Refresh the current HealthKit permissions and reconnect read access.",
                         icon: "heart.text.square.fill",
-                        tint: .accent.cyan
+                        tint: AppColor.Accent.recovery
                     )
                 }
                 .buttonStyle(.plain)
@@ -494,7 +494,7 @@ private struct GoalsPreferencesSettingsScreen: View {
                         title: mode.rawValue,
                         subtitle: mode == .system ? "Follow the device setting" : "Force \(mode.rawValue.lowercased()) mode",
                         isSelected: settings.appearance == mode,
-                        tint: .accent.purple
+                        tint: AppColor.Accent.sleep
                     )
                 }
             }
@@ -735,7 +735,7 @@ private struct DataSyncSettingsScreen: View {
                         title: "Sync Now",
                         subtitle: "Push local encrypted changes to your private iCloud database.",
                         icon: "icloud.and.arrow.up.fill",
-                        tint: .status.success
+                        tint: AppColor.Status.success
                     )
                 }
                 .buttonStyle(.plain)
@@ -747,7 +747,7 @@ private struct DataSyncSettingsScreen: View {
                         title: "Fetch from iCloud",
                         subtitle: "Download the latest encrypted changes from your account.",
                         icon: "icloud.and.arrow.down.fill",
-                        tint: .accent.cyan
+                        tint: AppColor.Accent.recovery
                     )
                 }
                 .buttonStyle(.plain)
@@ -797,7 +797,7 @@ private struct DataSyncSettingsScreen: View {
                         title: "Export My Data",
                         subtitle: "Download all your data as a JSON file.",
                         icon: "square.and.arrow.up.fill",
-                        tint: .accent.primary
+                        tint: AppColor.Accent.primary
                     )
                 }
                 .buttonStyle(.plain)
@@ -813,7 +813,7 @@ private struct DataSyncSettingsScreen: View {
                         title: "Delete All Local Data",
                         subtitle: "Remove all daily logs and snapshots from this device.",
                         icon: "trash.fill",
-                        tint: .status.error
+                        tint: AppColor.Status.error
                     )
                 }
                 .buttonStyle(.plain)

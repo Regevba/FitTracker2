@@ -161,41 +161,41 @@ enum StatsFocusMetric: String, CaseIterable, Identifiable {
     var tint: Color {
         switch self {
         case .weight:
-            return .appOrange2
+            return AppColor.Brand.warm
         case .bodyFat:
-            return .status.warning
+            return AppColor.Status.warning
         case .readiness:
-            return .accent.cyan
+            return AppColor.Accent.recovery
         case .sleep:
-            return .accent.purple
+            return AppColor.Accent.sleep
         case .hrv:
-            return .accent.cyan
+            return AppColor.Accent.recovery
         case .restingHeartRate:
-            return .status.error
+            return AppColor.Status.error
         case .trainingVolume:
-            return .accent.cyan
+            return AppColor.Accent.recovery
         case .zone2:
-            return .status.success
+            return AppColor.Status.success
         case .steps:
-            return .appBlue2
+            return AppColor.Brand.secondary
         case .activeCalories:
-            return .appOrange1
+            return AppColor.Brand.warmSoft
         case .vo2Max:
-            return .status.success
+            return AppColor.Status.success
         case .leanMass:
-            return .accent.cyan
+            return AppColor.Accent.recovery
         case .muscleMass:
-            return .status.success
+            return AppColor.Status.success
         case .bodyWater:
-            return .appBlue2
+            return AppColor.Brand.secondary
         case .visceralFat:
-            return .accent.purple
+            return AppColor.Accent.sleep
         case .protein:
-            return .status.success
+            return AppColor.Status.success
         case .calories:
-            return .appOrange1
+            return AppColor.Brand.warmSoft
         case .supplementAdherence:
-            return .accent.gold
+            return AppColor.Accent.achievement
         }
     }
 

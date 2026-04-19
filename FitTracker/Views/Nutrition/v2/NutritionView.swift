@@ -303,7 +303,7 @@ struct NutritionView: View {
         .padding(.top, AppSpacing.xxxSmall)
     }
 
-    // F7 fix: AppColor.Status.success instead of Color.status.success
+    // F7 fix: AppColor.Status.success instead of AppColor.Status.success
     private var overallBadge: some View {
         let total  = morning.count + evening.count
         let taken  = individualStatus.filter { $0.value }.count

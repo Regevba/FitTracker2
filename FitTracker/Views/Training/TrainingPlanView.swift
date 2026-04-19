@@ -179,7 +179,7 @@ struct TrainingPlanView: View {
 
                     // Completion dot
                     Circle()
-                        .fill(hasLog ? Color.status.success : Color.clear)
+                        .fill(hasLog ? AppColor.Status.success : Color.clear)
                         .frame(width: 5, height: 5)
                 }
                 .opacity(isRest && !hasLog ? 0.4 : 1.0)
@@ -284,7 +284,7 @@ struct TrainingPlanView: View {
                 trainingActionButton(
                     title: "Jump To Next",
                     systemImage: "arrow.down.circle.fill",
-                    fill: Color.accent.cyan,
+                    fill: AppColor.Accent.recovery,
                     foreground: .white
                 ) {
                     if let next = nextExercise {
@@ -367,7 +367,7 @@ struct TrainingPlanView: View {
                     .padding(.horizontal, AppSpacing.small)
                     .padding(.vertical, AppSpacing.xxSmall)
                     .background(
-                        isDone ? Color.status.success : AppColor.Text.primary,
+                        isDone ? AppColor.Status.success : AppColor.Text.primary,
                         in: Capsule()
                     )
                     .foregroundStyle(AppColor.Text.inversePrimary)
@@ -618,9 +618,9 @@ struct TrainingPlanView: View {
 
     private func queueColor(for status: TaskStatus) -> Color {
         switch status {
-        case .completed: Color.status.success
-        case .partial: Color.status.warning
-        case .missed: Color.status.error
+        case .completed: AppColor.Status.success
+        case .partial: AppColor.Status.warning
+        case .missed: AppColor.Status.error
         case .pending: AppColor.Text.secondary
         }
     }
@@ -830,7 +830,7 @@ struct ExerciseRowView: View {
             HStack(spacing: AppSpacing.xxSmall) {
                 Text(exercise.name)
                     .font(.subheadline.weight(.semibold))
-                    .strikethrough(status == .completed, color: Color.status.success)
+                    .strikethrough(status == .completed, color: AppColor.Status.success)
                     .foregroundStyle(status == .completed ? AppColor.Text.secondary : AppColor.Text.primary)
                 if isFocused {
                     Text("LIVE")
@@ -896,15 +896,15 @@ struct ExerciseRowView: View {
 
     private var accentColor: Color {
         switch status {
-        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: AppColor.Text.secondary
+        case .completed: AppColor.Status.success; case .partial: AppColor.Status.warning; case .missed: AppColor.Status.error; case .pending: AppColor.Text.secondary
         }
     }
 
     private var rowBG: Color {
         switch status {
-        case .completed: Color.status.success.opacity(0.08)
-        case .partial: Color.status.warning.opacity(0.06)
-        case .missed: Color.status.error.opacity(0.06)
+        case .completed: AppColor.Status.success.opacity(0.08)
+        case .partial: AppColor.Status.warning.opacity(0.06)
+        case .missed: AppColor.Status.error.opacity(0.06)
         default: isFocused ? AppColor.Surface.materialStrong : Color.clear
         }
     }
@@ -954,13 +954,13 @@ struct LiftLogPanel: View {
                 HStack {
                     Text(isFocused ? "LIVE SET LOG" : "SET LOG")
                         .font(.caption2.monospaced())
-                        .foregroundStyle(isFocused ? AppColor.Brand.secondary : Color.status.success)
+                        .foregroundStyle(isFocused ? AppColor.Brand.secondary : AppColor.Status.success)
                         .tracking(1)
                     Spacer()
                     if exerciseLog.totalVolume > 0 {
                         Text("Total: \(Int(exerciseLog.totalVolume)) kg")
                             .font(.caption2.monospaced())
-                            .foregroundStyle(Color.status.success.opacity(0.82))
+                            .foregroundStyle(AppColor.Status.success.opacity(0.82))
                     }
                 }
 
@@ -984,7 +984,7 @@ struct LiftLogPanel: View {
                    let orm = estimated1RM(weightKg: weight, reps: reps) {
                     Text("Est. 1RM ~\(Int(orm.rounded())) kg")
                         .font(AppText.caption)
-                        .foregroundStyle(Color.accent.cyan)
+                        .foregroundStyle(AppColor.Accent.recovery)
                         .padding(.horizontal, AppSpacing.xSmall)
                         .padding(.top, 2)
                 }
@@ -992,7 +992,7 @@ struct LiftLogPanel: View {
                 if let suggestion = overloadSuggestion {
                     Text(suggestion)
                         .font(AppText.captionStrong)
-                        .foregroundStyle(Color.accent.cyan)
+                        .foregroundStyle(AppColor.Accent.recovery)
                 }
 
                 HStack(spacing: AppSpacing.xxSmall) {
@@ -1008,7 +1008,7 @@ struct LiftLogPanel: View {
                         } label: {
                             Label("Copy Last", systemImage: "bolt.fill")
                                 .font(AppText.captionStrong)
-                                .foregroundStyle(Color.accent.cyan)
+                                .foregroundStyle(AppColor.Accent.recovery)
                         }
                     }
                     Button {
@@ -1018,7 +1018,7 @@ struct LiftLogPanel: View {
                         ))
                     } label: {
                         Label("Add Set", systemImage: "plus.circle.fill")
-                            .font(AppText.captionStrong).foregroundStyle(Color.status.success)
+                            .font(AppText.captionStrong).foregroundStyle(AppColor.Status.success)
                     }
                     Spacer()
                     Button {
@@ -1169,10 +1169,10 @@ struct SetRowView: View {
                         Text(setIsComplete ? "Done" : "Log")
                             .font(AppText.captionStrong)
                     }
-                    .foregroundStyle(setIsComplete ? Color.status.success : AppColor.Brand.warm)
+                    .foregroundStyle(setIsComplete ? AppColor.Status.success : AppColor.Brand.warm)
                     .padding(.horizontal, AppSpacing.xxSmall)
                     .padding(.vertical, AppSpacing.xxxSmall)
-                    .background((setIsComplete ? Color.status.success : AppColor.Brand.warm).opacity(0.12), in: Capsule())
+                    .background((setIsComplete ? AppColor.Status.success : AppColor.Brand.warm).opacity(0.12), in: Capsule())
                 }
                 .buttonStyle(.plain)
 
@@ -1233,7 +1233,7 @@ struct SetRowView: View {
             .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
         }
         .padding(AppSpacing.xSmall)
-        .background(flashGreen ? Color.status.success.opacity(0.16) : (setIsComplete ? Color.status.success.opacity(0.08) : AppColor.Surface.materialLight), in: RoundedRectangle(cornerRadius: AppRadius.small))
+        .background(flashGreen ? AppColor.Status.success.opacity(0.16) : (setIsComplete ? AppColor.Status.success.opacity(0.08) : AppColor.Surface.materialLight), in: RoundedRectangle(cornerRadius: AppRadius.small))
         .onAppear {
             weightStr = setLog.weightKg.map(formattedWeight) ?? ""
             repsStr   = setLog.repsCompleted.map { String($0) } ?? ""
@@ -1273,7 +1273,7 @@ struct SetRowView: View {
                         onUsePrevious()
                     }
                     .font(.caption2.weight(.medium))
-                    .foregroundStyle(Color.accent.cyan)
+                    .foregroundStyle(AppColor.Accent.recovery)
                 }
             }
 
@@ -1321,13 +1321,13 @@ struct CardioLogPanel: View {
             HStack {
                 Text(cardioType == .rowing ? "ROWING LOG" : "ELLIPTICAL LOG")
                     .font(.caption2.monospaced())
-                    .foregroundStyle(Color.status.success)
+                    .foregroundStyle(AppColor.Status.success)
                     .tracking(1)
                 Spacer()
                 if let zone = cardioLog.wasInZone2(lower: dataStore.userPreferences.zone2LowerHR, upper: dataStore.userPreferences.zone2UpperHR) {
                     Text(zone ? "✓ Zone 2" : "↑ Above Zone 2")
                         .font(.caption2.monospaced())
-                        .foregroundStyle(zone ? Color.status.success : Color.status.warning)
+                        .foregroundStyle(zone ? AppColor.Status.success : AppColor.Status.warning)
                 }
             }
 
@@ -1377,8 +1377,8 @@ struct CardioLogPanel: View {
                         }
                         .font(AppText.captionStrong)
                         .padding(.horizontal, AppSpacing.xxSmall).padding(.vertical, AppSpacing.xxxSmall)
-                        .background(Color.status.success.opacity(0.1), in: Capsule())
-                        .foregroundStyle(Color.status.success)
+                        .background(AppColor.Status.success.opacity(0.1), in: Capsule())
+                        .foregroundStyle(AppColor.Status.success)
                     }
                     #endif
 
@@ -1670,7 +1670,7 @@ struct StatusDropdown: View {
 
     private var color: Color {
         switch status {
-        case .completed: Color.status.success; case .partial: Color.status.warning; case .missed: Color.status.error; case .pending: AppColor.Text.secondary
+        case .completed: AppColor.Status.success; case .partial: AppColor.Status.warning; case .missed: AppColor.Status.error; case .pending: AppColor.Text.secondary
         }
     }
 }
@@ -1701,7 +1701,7 @@ struct SessionCompletionSheet: View {
                     VStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: "checkmark.seal.fill")
                             .font(AppText.iconLarge)
-                            .foregroundStyle(Color.status.success)
+                            .foregroundStyle(AppColor.Status.success)
                         Text("Session Complete!")
                             .font(AppText.pageTitle)
                         Text(selectedDay.rawValue)
@@ -1725,7 +1725,7 @@ struct SessionCompletionSheet: View {
                             label: "Volume",
                             value: totalVolumeStr,
                             delta: volumeDeltaStr,
-                            color: Color.accent.cyan
+                            color: AppColor.Accent.recovery
                         )
                         // Exercises done
                         statTile(
@@ -1733,7 +1733,7 @@ struct SessionCompletionSheet: View {
                             label: "Exercises",
                             value: exerciseSummaryStr,
                             delta: nil,
-                            color: Color.status.success
+                            color: AppColor.Status.success
                         )
                         // Session duration
                         statTile(
@@ -1741,7 +1741,7 @@ struct SessionCompletionSheet: View {
                             label: "Duration",
                             value: durationStr,
                             delta: nil,
-                            color: Color.accent.purple
+                            color: AppColor.Accent.sleep
                         )
                         // PRs this session (from exerciseLogs bestSet vs previous)
                         statTile(
@@ -1749,7 +1749,7 @@ struct SessionCompletionSheet: View {
                             label: "PRs",
                             value: prCountStr,
                             delta: nil,
-                            color: Color.accent.gold
+                            color: AppColor.Accent.achievement
                         )
                     }
 
@@ -1772,7 +1772,7 @@ struct SessionCompletionSheet: View {
                                 .padding(.vertical, AppSpacing.xSmall)
                                 .foregroundStyle(.black)
                                 .background(
-                                    LinearGradient(colors: [Color.status.success, Color.status.success.opacity(0.8)],
+                                    LinearGradient(colors: [AppColor.Status.success, AppColor.Status.success.opacity(0.8)],
                                                    startPoint: .leading, endPoint: .trailing),
                                     in: RoundedRectangle(cornerRadius: AppRadius.small)
                                 )
@@ -1916,7 +1916,7 @@ struct SessionCompletionSheet: View {
             if let delta {
                 Text(delta)
                     .font(.caption2)
-                    .foregroundStyle(delta.hasPrefix("+") ? Color.status.success : Color.status.error)
+                    .foregroundStyle(delta.hasPrefix("+") ? AppColor.Status.success : AppColor.Status.error)
             }
         }
         .frame(maxWidth: .infinity)
@@ -2013,7 +2013,7 @@ struct FocusModeView: View {
                 } else {
                     Text("All sets done ✓")
                         .font(AppText.pageTitle)
-                        .foregroundStyle(Color.status.success)
+                        .foregroundStyle(AppColor.Status.success)
                 }
 
                 // Weight + Reps fields
@@ -2053,7 +2053,7 @@ struct FocusModeView: View {
                         .foregroundStyle(.black)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.medium)
-                        .background(Color.status.success, in: RoundedRectangle(cornerRadius: AppRadius.large))
+                        .background(AppColor.Status.success, in: RoundedRectangle(cornerRadius: AppRadius.large))
                 }
                 .buttonStyle(.plain)
                 .padding(.horizontal, AppSpacing.xLarge)

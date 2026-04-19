@@ -8,13 +8,13 @@ struct TrendIndicator: View {
 
     var statusColor: Color {
         if delta > 0 && positiveIsGood {
-            return .status.success
+            return AppColor.Status.success
         } else if delta < 0 && !positiveIsGood {
-            return .status.success
+            return AppColor.Status.success
         } else if delta == 0 {
-            return .status.warning
+            return AppColor.Status.warning
         } else {
-            return .status.error
+            return AppColor.Status.error
         }
     }
 

@@ -278,7 +278,7 @@ struct NutritionView_V1_Historical: View {
         return VStack(spacing: AppSpacing.micro) {
             Text("\(pct)%")
                 .font(AppText.monoMetric)
-                .foregroundStyle(Color.status.success)
+                .foregroundStyle(AppColor.Status.success)
             Text("supps")
                 .font(AppText.caption)
                 .foregroundStyle(AppColor.Text.secondary)
@@ -317,7 +317,7 @@ struct NutritionView_V1_Historical: View {
                 quickActionButton(
                     title: "Repeat Last",
                     icon: "clock.arrow.circlepath",
-                    tint: Color.status.success
+                    tint: AppColor.Status.success
                 ) {
                     if let recent = recentMeals.first {
                         openPrefilledMeal(recent)
@@ -326,7 +326,7 @@ struct NutritionView_V1_Historical: View {
             }
 
             HStack(spacing: AppSpacing.medium) {
-                nutritionMetric(title: "Protein left", value: "\(Int(remainingProteinG))g", color: Color.accent.cyan)
+                nutritionMetric(title: "Protein left", value: "\(Int(remainingProteinG))g", color: AppColor.Accent.recovery)
                 nutritionMetric(title: "Fat floor", value: "\(Int(max(targetFatG, 0)))g", color: AppColor.Chart.nutritionFat)
                 nutritionMetric(title: "Meals logged", value: "\(nutritionLog.meals.filter { $0.status == .completed }.count)", color: AppColor.Brand.warm)
             }
@@ -375,7 +375,7 @@ struct NutritionView_V1_Historical: View {
                     RoundedRectangle(cornerRadius: AppRadius.micro)
                         .fill(AppColor.Text.secondary.opacity(0.15)).frame(height: 6)
                     RoundedRectangle(cornerRadius: AppRadius.micro)
-                        .fill(LinearGradient(colors: [Color.status.success, Color.status.success], startPoint: .leading, endPoint: .trailing))
+                        .fill(LinearGradient(colors: [AppColor.Status.success, AppColor.Status.success], startPoint: .leading, endPoint: .trailing))
                         .frame(width: geo.size.width * frac, height: 6)
                         .animation(.spring(response: 0.6), value: frac)
                 }
@@ -563,7 +563,7 @@ struct NutritionView_V1_Historical: View {
                 } label: {
                     Label(log?.nutritionLog.alluloseTaken == true ? "Allulose done" : "Allulose", systemImage: log?.nutritionLog.alluloseTaken == true ? "checkmark.circle.fill" : "circle")
                         .font(AppText.captionStrong)
-                        .foregroundStyle(log?.nutritionLog.alluloseTaken == true ? Color.status.success : AppColor.Text.secondary)
+                        .foregroundStyle(log?.nutritionLog.alluloseTaken == true ? AppColor.Status.success : AppColor.Text.secondary)
                         .padding(.horizontal, AppSpacing.xSmall)
                         .padding(.vertical, AppSpacing.xxSmall)
                         .background(AppColor.Surface.elevated, in: Capsule())
@@ -676,19 +676,19 @@ struct NutritionView_V1_Historical: View {
                                         .font(.caption2.weight(.bold))
                                 }
                             }
-                            .foregroundStyle(morningStatus == .completed ? Color.status.success : AppColor.Text.secondary)
+                            .foregroundStyle(morningStatus == .completed ? AppColor.Status.success : AppColor.Text.secondary)
                             .padding(.horizontal, AppSpacing.xxSmall)
                             .padding(.vertical, AppSpacing.xxxSmall)
                             .background(
                                 morningStatus == .completed
-                                    ? Color.status.success.opacity(0.15)
+                                    ? AppColor.Status.success.opacity(0.15)
                                     : AppColor.Surface.elevated.opacity(0.8)
                             )
                             .overlay(
                                 Capsule()
                                     .stroke(
                                         morningStatus == .completed
-                                            ? Color.status.success
+                                            ? AppColor.Status.success
                                             : AppColor.Border.subtle,
                                         lineWidth: 1
                                     )
@@ -719,19 +719,19 @@ struct NutritionView_V1_Historical: View {
                                         .font(.caption2.weight(.bold))
                                 }
                             }
-                            .foregroundStyle(eveningStatus == .completed ? Color.status.success : AppColor.Text.secondary)
+                            .foregroundStyle(eveningStatus == .completed ? AppColor.Status.success : AppColor.Text.secondary)
                             .padding(.horizontal, AppSpacing.xxSmall)
                             .padding(.vertical, AppSpacing.xxxSmall)
                             .background(
                                 eveningStatus == .completed
-                                    ? Color.status.success.opacity(0.15)
+                                    ? AppColor.Status.success.opacity(0.15)
                                     : AppColor.Surface.elevated.opacity(0.8)
                             )
                             .overlay(
                                 Capsule()
                                     .stroke(
                                         eveningStatus == .completed
-                                            ? Color.status.success
+                                            ? AppColor.Status.success
                                             : AppColor.Border.subtle,
                                         lineWidth: 1
                                     )
