@@ -145,6 +145,7 @@
 		MS100000000000000000AA02 /* NutritionLabelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = MS200000000000000000AA02 /* NutritionLabelParser.swift */; };
 		MS100000000000000000AA03 /* NutritionCameraSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = MS200000000000000000AA03 /* NutritionCameraSheet.swift */; };
 		MS100000000000000000AA04 /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = MS200000000000000000AA04 /* BarcodeScanner.swift */; };
+		MS100000000000000000AA05 /* MealEntryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = MS200000000000000000AA05 /* MealEntryViewModel.swift */; };
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 		SE100000000000000000AA01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA01 /* SettingsView.swift */; };
 		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
@@ -341,6 +342,7 @@
 		MS200000000000000000AA02 /* NutritionLabelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionLabelParser.swift; sourceTree = "<group>"; };
 		MS200000000000000000AA03 /* NutritionCameraSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionCameraSheet.swift; sourceTree = "<group>"; };
 		MS200000000000000000AA04 /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
+		MS200000000000000000AA05 /* MealEntryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealEntryViewModel.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0C /* RecoverySupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecoverySupport.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA0D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		DD000002000000000000AA01 /* AppDesignSystemComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDesignSystemComponents.swift; sourceTree = "<group>"; };
@@ -704,6 +706,7 @@
 				CC000002000000000000AA09 /* MacroTargetBar.swift */,
 				CC000002000000000000AA0A /* MealSectionView.swift */,
 				CC000002000000000000AA0B /* MealEntrySheet.swift */,
+				MS200000000000000000AA05 /* MealEntryViewModel.swift */,
 				NV400000000000000000AA01 /* v2 */,
 				NV400000000000000000AA02 /* Components */,
 				MS400000000000000000AA01 /* Models */,
@@ -1163,6 +1166,7 @@
 				MS100000000000000000AA02 /* NutritionLabelParser.swift in Sources */,
 				MS100000000000000000AA03 /* NutritionCameraSheet.swift in Sources */,
 				MS100000000000000000AA04 /* BarcodeScanner.swift in Sources */,
+				MS100000000000000000AA05 /* MealEntryViewModel.swift in Sources */,
 				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 				AC1000000000000000000010 /* DeleteAccountView.swift in Sources */,
 				AC1000000000000000000011 /* ExportDataView.swift in Sources */,
