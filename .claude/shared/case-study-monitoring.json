@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-19T16:00:00Z",
+  "updated": "2026-04-19T19:30:00Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -1430,6 +1430,162 @@
         "BE-024: Supabase Edge Function for delete-account (external blocker)",
         "DEEP-SYNC-010: CK\u2192Supabase Storage cardio image bridge (multi-PR cross-sync)",
         "F8 + F9: upstream Claude Code framework changes for concurrent dispatch (out of project control)"
+      ]
+    },
+    {
+      "case_id": "m-3-design-system-completion-2026-04-19",
+      "title": "M-3 \u2014 Design System Completion + Dark Mode Foundation",
+      "status": "complete",
+      "work_type": "cleanup_program",
+      "started_at": "2026-04-19T17:00:00Z",
+      "updated_at": "2026-04-19T19:30:00Z",
+      "framework_version": "6.1",
+      "skills_used": [
+        "pm-workflow",
+        "design",
+        "dev"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 3,
+        "repo_files_updated": 11,
+        "tests_passing": 0,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 1,
+        "medium_findings": 2,
+        "low_findings": 0,
+        "audit_findings_closed_total_after_arc": 180,
+        "audit_findings_total": 185,
+        "audit_closure_rate_pct": 97.3,
+        "token_pipeline_coverage_before_pct": 60,
+        "token_pipeline_coverage_after_pct": 100,
+        "colorsets_with_dark_variant_before": 29,
+        "colorsets_with_dark_variant_after": 38,
+        "colorsets_intentionally_light_only": 3,
+        "source_truth_gap_detected": true,
+        "source_truth_gap_reduced": true
+      },
+      "success_cases": [
+        {
+          "title": "Phased plan doc written before Phase M-3a started",
+          "evidence": "docs/superpowers/plans/2026-04-19-m3-design-system-completion.md defined 4 phases. Each phase shipped within \u00b150% of estimate (M-3a 30 min vs 30-45 min, M-3b 20 min vs 30-45 min, M-3c 45 min vs '4-6h biggest commit')."
+        },
+        {
+          "title": "Asset catalog inventory before changes",
+          "evidence": "Found 29/41 colorsets already had dark variants. Surgical 9-colorset diff instead of 'update everything'. Identified 3 intentionally-light-only colorsets that should NOT get dark variants (selection-*, bg-auth-*)."
+        },
+        {
+          "title": "Matched-tone defaults match Apple's system color pattern",
+          "evidence": "Vivid colors (status, accent, chart) keep similar hues across light/dark \u2014 Apple's systemBlue, systemRed, systemYellow do this. Avoided over-engineering tonal adjustments without designer review."
+        },
+        {
+          "title": "Style Dictionary auto-regeneration kept Swift in sync",
+          "evidence": "make tokens regenerated DesignTokens.swift after every JSON change. make tokens-check CI gate caught M-3a sync drift immediately. No manual Swift edits required."
+        },
+        {
+          "title": "Case study tracking concurrent with feature (first time)",
+          "evidence": "M-3d shipped in same session as M-3a/b/c. Eliminates the 'retroactive synthesis' cost the K-series paid (PR #117 had to cover 22 PRs after the fact)."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Style Dictionary codegen for motion/opacity/size/layout deferred",
+          "evidence": "Current sd.config.js only emits color/spacing/borderRadius. New categories' values still in AppTheme.swift (CGFloat/Animation literals). tokens.json is now source of truth, but Swift codegen for these types is a separate config sprint."
+        },
+        {
+          "title": "Tonal refinement of dark-mode colors deferred",
+          "evidence": "Matched-tone defaults are structurally correct but may not be visually optimal for chart series legibility. Pattern for chart-nutrition-fat (#996025 \u2192 #C07A30 in dark) suggests some chart colors will eventually want luminosity lift. Designer review needed."
+        },
+        {
+          "title": "No visual QA across all screens in dark mode",
+          "evidence": "Relying on asset catalog correctness. Corner cases (gradients, blends, specific compositions) unverified. Designer review needed."
+        },
+        {
+          "title": "4 unbacked chart asset references (chart-weight, chart-hrv, chart-heart-rate, chart-activity)",
+          "evidence": "AppColor.Chart.weight etc. reference Color('chart-weight') but no .colorset exists. Declared in Home v2 (T3) without backing assets \u2014 runtime references silently render placeholder. Documented in tokens.json as follow-up."
+        },
+        {
+          "title": "CI billing block on PRs #118-#120",
+          "evidence": "Same GitHub Actions account spending limit hit during K-9/K-10/K-11. Local build + tests + tokens-check all green; admin-overridden the merges. Infrastructure friction, not M-3-specific."
+        }
+      ],
+      "next_checkpoints": [
+        "M-3 designer review pass \u2014 tonal refinement of new dark variants + visual QA across screens",
+        "Style Dictionary config expansion to emit motion/opacity/size/layout to DesignTokens.swift",
+        "Add backing .colorset files for chart-weight, chart-hrv, chart-heart-rate, chart-activity",
+        "M-1: UI-002 SettingsView v3 decomposition (next multi-session feature)",
+        "M-2: UI-004 MealEntrySheet decomposition (next multi-session feature)",
+        "M-4: TEST-025 XCUITest infrastructure"
+      ],
+      "artifacts": [
+        "docs/superpowers/plans/2026-04-19-m3-design-system-completion.md",
+        "docs/case-studies/m-3-design-system-completion-case-study.md",
+        "design-tokens/tokens.json",
+        "FitTracker/DesignSystem/DesignTokens.swift",
+        ".claude/shared/audit-findings.json"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-19T17:00:00Z",
+          "label": "M-3a shipped (PR #118)",
+          "summary": "Non-color token categories added \u2014 motion (6), opacity (3), size (6), layout (6) + borderRadius parity (3 new entries). Pipeline coverage 60% \u2192 80%.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T17:30:00Z",
+          "label": "M-3b shipped (PR #119)",
+          "summary": "Chart (6), selection (2), appWarmTint colors added to tokens.json. Pipeline coverage 80% \u2192 85%. Documented 4 unbacked chart asset references.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T18:30:00Z",
+          "label": "M-3c shipped (PR #120)",
+          "summary": "Dark-mode foundation: 9 colorsets gain dark-luminosity variants (3 Accent + 1 Brand + 5 Chart). 38/41 colorsets now adaptive. DS-009 closed at structural layer.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T19:30:00Z",
+          "label": "M-3d shipped (this PR)",
+          "summary": "Case study + monitoring entry. First feature with concurrent case study tracking. M-3 closed \u2014 3 audit findings (DS-004, DS-009, DS-010) cleared. Audit total: 180/185 (97.3%).",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        }
+      ],
+      "case_study_path": "docs/case-studies/m-3-design-system-completion-case-study.md",
+      "key_learnings": [
+        "Phased plan doc before starting reduced execution variance to \u00b150% of estimates across 4 phases",
+        "Asset catalog inventory before changes turned a '41-colorset update' into a surgical 9-colorset diff",
+        "Matched-tone defaults satisfy structural audit requirements without committing to designer-review-needed aesthetic choices",
+        "Concurrent case study tracking eliminates retroactive synthesis cost (vs K-series which paid this cost via PR #117)",
+        "make tokens-check CI gate caught sync drift immediately \u2014 Style Dictionary regeneration is fast feedback"
       ]
     }
   ]
