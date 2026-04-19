@@ -507,6 +507,11 @@ struct UserPreferences: Codable, Equatable, Sendable {
     var nutritionGoalMode: NutritionGoalMode
     var preferredStatsCarouselMetrics: [String]
 
+    /// User's nightly sleep target. Audit BE-029 — was hardcoded 8.0 throughout.
+    /// 6.0–10.0h range covers reasonable physiology; reads from this default
+    /// for legacy users (decode init below uses 8.0 fallback).
+    var sleepGoalHours: Double
+
     // Conflict resolution timestamp — set on every mutation, nil for legacy data
     var lastModified: Date?
 
@@ -516,7 +521,8 @@ struct UserPreferences: Codable, Equatable, Sendable {
         hrReadyThreshold: Int = 60,
         hrvReadyThreshold: Double = 28.0,
         nutritionGoalMode: NutritionGoalMode = .fatLoss,
-        preferredStatsCarouselMetrics: [String] = UserPreferences.defaultStatsCarouselMetrics
+        preferredStatsCarouselMetrics: [String] = UserPreferences.defaultStatsCarouselMetrics,
+        sleepGoalHours: Double = 8.0
     ) {
         self.zone2LowerHR = zone2LowerHR
         self.zone2UpperHR = zone2UpperHR
@@ -524,6 +530,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
         self.hrvReadyThreshold = hrvReadyThreshold
         self.nutritionGoalMode = nutritionGoalMode
         self.preferredStatsCarouselMetrics = preferredStatsCarouselMetrics
+        self.sleepGoalHours = sleepGoalHours
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -533,6 +540,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
         case hrvReadyThreshold
         case nutritionGoalMode
         case preferredStatsCarouselMetrics
+        case sleepGoalHours
         case lastModified
     }
 
@@ -544,6 +552,7 @@ struct UserPreferences: Codable, Equatable, Sendable {
         hrvReadyThreshold = try container.decodeIfPresent(Double.self, forKey: .hrvReadyThreshold) ?? 28.0
         nutritionGoalMode = try container.decodeIfPresent(NutritionGoalMode.self, forKey: .nutritionGoalMode) ?? .fatLoss
         preferredStatsCarouselMetrics = try container.decodeIfPresent([String].self, forKey: .preferredStatsCarouselMetrics) ?? Self.defaultStatsCarouselMetrics
+        sleepGoalHours = try container.decodeIfPresent(Double.self, forKey: .sleepGoalHours) ?? 8.0
         lastModified = try container.decodeIfPresent(Date.self, forKey: .lastModified)
     }
 }

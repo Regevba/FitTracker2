@@ -421,6 +421,11 @@ final class EncryptedDataStore: ObservableObject {
     @Published var lastError:        String?
     /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
     @Published var loadError:       String?
+    /// Audit BE-016: set when `persistToDisk` fails after retry. UI / scenePhase
+    /// observers can call `retryPersistIfFailed()` to attempt recovery, otherwise
+    /// data may be lost on next launch. Distinct from `lastError` (which is
+    /// transient) so consumers can show a persistent "save failed" indicator.
+    @Published var persistenceFailed: Bool = false
 
     private let fm  = FileManager.default
     private var dir: URL { fm.urls(for: .documentDirectory, in: .userDomainMask)[0] }
@@ -535,7 +540,7 @@ final class EncryptedDataStore: ObservableObject {
             dailyLogs: dailyLogs,
             goalMode: userPreferences.nutritionGoalMode,
             date: date,
-            sleepGoalHours: 8.0,  // TODO: add sleepGoalHours to UserPreferences
+            sleepGoalHours: userPreferences.sleepGoalHours,
             userAge: userProfile.age
         )
     }
@@ -547,7 +552,43 @@ final class EncryptedDataStore: ObservableObject {
 
     // ── Persist / Load ───────────────────────────────────
 
+    /// Persist the in-memory store to disk. Audit BE-016: a single transient
+    /// failure (encryption hiccup, momentary disk pressure) used to silently
+    /// strand data in memory until the next launch. Now: one retry on failure,
+    /// then `persistenceFailed = true` so the UI / scenePhase observers can
+    /// surface or attempt recovery via `retryPersistIfFailed()`.
+    ///
+    /// Existing call sites (30+) use fire-and-forget `Task { await persistToDisk() }`
+    /// — that pattern is preserved by keeping the function `async -> Void` and
+    /// signalling failure via published state instead of return value.
     func persistToDisk() async {
+        if await attemptPersist() {
+            await MainActor.run { persistenceFailed = false }
+            return
+        }
+        // First write failed — try once more after a short backoff. Disk-full
+        // and transient encryption errors often recover on the second attempt.
+        try? await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+        if await attemptPersist() {
+            await MainActor.run { persistenceFailed = false }
+            return
+        }
+        await MainActor.run { persistenceFailed = true }
+    }
+
+    /// Re-attempt persistence if the last `persistToDisk` call left the
+    /// store in a failed state. Safe no-op when there's nothing to retry.
+    /// Call this from `scenePhase == .active` and after surfacing a
+    /// "save failed" UI affordance.
+    func retryPersistIfFailed() async {
+        guard persistenceFailed else { return }
+        await persistToDisk()
+    }
+
+    /// Single persistence attempt. Returns true on success, false on any
+    /// thrown error (encryption or disk). Updates `lastError` on failure
+    /// so callers can inspect what went wrong.
+    private func attemptPersist() async -> Bool {
         do {
             let logsEnc      = try await EncryptionService.shared.encrypt(dailyLogs)
             let snapsEnc     = try await EncryptionService.shared.encrypt(weeklySnapshots)
@@ -569,8 +610,10 @@ final class EncryptedDataStore: ObservableObject {
             try templatesEnc.write(to: url("mealTemplates"))
             try prefsEnc.write(to:     url("userPreferences"))
             #endif
+            return true
         } catch {
             await MainActor.run { lastError = error.localizedDescription }
+            return false
         }
     }
 

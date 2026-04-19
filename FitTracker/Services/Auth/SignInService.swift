@@ -366,6 +366,11 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     static let sessionKey = "ft.session"
+    /// Audit BE-021: live Supabase JWT lives in its own Keychain item with a
+    /// stricter ACL (`kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly`) so it
+    /// won't restore via iCloud Keychain or backup, requires the user have a
+    /// passcode set, and is separable from the session metadata.
+    static let jwtKey = "ft.session.jwt"
     private static let passkeyRegisteredKey = "ft.passkeyRegistered"
     private static let reviewAuthKey = "FITTRACKER_REVIEW_AUTH"
 
@@ -395,6 +400,7 @@ final class SignInService: NSObject, ObservableObject {
         guard activeSession == nil else { return }
         guard SupabaseRuntimeConfiguration.isConfigured else {
             KeychainHelper.delete(key: Self.sessionKey)
+            KeychainHelper.delete(key: Self.jwtKey)
             self.storedSession = nil
             return
         }
@@ -424,7 +430,11 @@ final class SignInService: NSObject, ObservableObject {
         }
 
         if let accessToken = sessionResult {
-            // 2. Load UserSession metadata from Keychain and refresh the backend JWT
+            // 2. Load UserSession metadata from Keychain and apply the live JWT.
+            // BE-021: metadata and JWT live in separate Keychain items now.
+            // For legacy single-item sessions, the embedded JWT (if any) was
+            // already cleared by the next saveSession call after this fix
+            // landed; the live `accessToken` from Supabase is authoritative.
             if let data = KeychainHelper.load(key: Self.sessionKey),
                var stored = try? JSONDecoder().decode(UserSession.self, from: data) {
                 stored.backendAccessToken = accessToken
@@ -432,12 +442,16 @@ final class SignInService: NSObject, ObservableObject {
                 if activateStoredSession {
                     self.activeSession = stored
                 }
+                // Re-persist so the JWT is kicked into its dedicated tighter-ACL item
+                // even for legacy sessions where it was embedded in the metadata.
+                saveSession(stored)
                 return
             }
         }
 
-        // 3. No valid Supabase session or timeout → clear Keychain
+        // 3. No valid Supabase session or timeout → clear Keychain (both items)
         KeychainHelper.delete(key: Self.sessionKey)
+        KeychainHelper.delete(key: Self.jwtKey)
         self.storedSession = nil
     }
 
@@ -499,8 +513,10 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func signOut() {
-        // Clear local state first to prevent stale session usage
+        // Clear local state first to prevent stale session usage.
+        // BE-021: clear both the metadata and the JWT items.
         KeychainHelper.delete(key: Self.sessionKey)
+        KeychainHelper.delete(key: Self.jwtKey)
         let wasActive = activeSession != nil
         activeSession = nil       // triggers FitTrackerApp.onChange to clear dataStore + AI
         storedSession = nil
@@ -825,9 +841,31 @@ final class SignInService: NSObject, ObservableObject {
         }
     }
 
+    /// Persist the session split into two Keychain items (audit BE-021):
+    ///   - `sessionKey` holds the metadata (provider, email, IDs, etc.) with
+    ///     the standard `WhenUnlockedThisDeviceOnly` ACL.
+    ///   - `jwtKey` holds *only* the live `backendAccessToken` JWT with the
+    ///     stricter `WhenPasscodeSetThisDeviceOnly` ACL — won't restore from
+    ///     backup, requires a passcode be set on the device.
+    /// The metadata payload has its `backendAccessToken` field cleared before
+    /// encoding so a single Keychain compromise of the metadata item alone
+    /// can't yield a usable JWT.
     private func saveSession(_ session: UserSession) {
-        if let encoded = try? JSONEncoder().encode(session) {
+        var metadata = session
+        metadata.backendAccessToken = nil
+        if let encoded = try? JSONEncoder().encode(metadata) {
             KeychainHelper.save(key: Self.sessionKey, data: encoded)
+        }
+        if let jwt = session.backendAccessToken,
+           let jwtData = jwt.data(using: .utf8) {
+            KeychainHelper.save(
+                key: Self.jwtKey,
+                data: jwtData,
+                accessible: kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly
+            )
+        } else {
+            // No JWT to save (e.g. anonymous review session) — clear any stale value
+            KeychainHelper.delete(key: Self.jwtKey)
         }
     }
 
@@ -1001,14 +1039,25 @@ enum KeychainHelper {
     /// Save data to the Keychain. Returns true on success, false if SecItemAdd
     /// failed (e.g., out of disk space, permissions denied). Per audit BE-020 —
     /// the return status was previously ignored, masking silent save failures.
+    ///
+    /// `accessible` defaults to `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`
+    /// for backward compatibility. Audit BE-021: callers storing live JWTs or
+    /// other sensitive credentials should pass
+    /// `kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly` to require a passcode
+    /// be configured and prevent the item from migrating via iCloud Keychain
+    /// or backup restore.
     @discardableResult
-    static func save(key: String, data: Data) -> Bool {
+    static func save(
+        key: String,
+        data: Data,
+        accessible: CFString = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+    ) -> Bool {
         let q: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: key,
             kSecValueData: data,
-            kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+            kSecAttrAccessible: accessible,
         ]
         SecItemDelete(q as CFDictionary)
         let status = SecItemAdd(q as CFDictionary, nil)
