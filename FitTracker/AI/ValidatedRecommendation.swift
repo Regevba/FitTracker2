@@ -110,16 +110,34 @@ struct ValidatedRecommendation: Sendable {
 
     // MARK: - Freshness
 
+    /// Audit DEEP-AI-011: average each adapter's freshness score instead of
+    /// computing a single score from the newest adapter date. Previously one
+    /// fresh adapter (e.g., a synced ProfileAdapter) masked stale others
+    /// (e.g., a HealthKitAdapter that hadn't fetched in 48h). Now: each
+    /// adapter contributes its own freshness score, and the result is the
+    /// mean. Adapters with no `lastUpdated` (always-fresh sources like
+    /// ProfileAdapter) are excluded so they don't pull the mean up.
     private static func computeFreshness(adapters: [any AIInputAdapter]) -> Double {
-        let dates = adapters.compactMap(\.lastUpdated)
-        guard let newest = dates.max() else { return 0 }
-        let ageHours = Date().timeIntervalSince(newest) / 3600
+        let scores = adapters.compactMap { adapter -> Double? in
+            guard let lastUpdated = adapter.lastUpdated else { return nil }
+            return scoreFor(date: lastUpdated)
+        }
+        guard !scores.isEmpty else { return 0 }
+        return scores.reduce(0, +) / Double(scores.count)
+    }
+
+    /// Bucketed freshness score (0.0 – 1.0) for a single adapter's
+    /// `lastUpdated` timestamp. Same buckets as the previous implementation
+    /// to preserve the absolute scale; the change is per-adapter scoring
+    /// rather than per-fleet-newest scoring.
+    private static func scoreFor(date: Date) -> Double {
+        let ageHours = Date().timeIntervalSince(date) / 3600
         switch ageHours {
-        case ..<1:   return 1.0   // < 1 hour old
-        case ..<6:   return 0.9   // < 6 hours
-        case ..<24:  return 0.7   // < 1 day
-        case ..<72:  return 0.4   // < 3 days
-        default:     return 0.1   // stale
+        case ..<1:   return 1.0
+        case ..<6:   return 0.9
+        case ..<24:  return 0.7
+        case ..<72:  return 0.4
+        default:     return 0.1
         }
     }
 }
