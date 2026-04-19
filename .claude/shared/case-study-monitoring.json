@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-16T17:00:00Z",
+  "updated": "2026-04-19T16:00:00Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -1252,6 +1252,184 @@
             "token_overhead_pct": 7.91
           }
         }
+      ]
+    },
+    {
+      "case_id": "post-stress-test-audit-remediation-2026-04-19",
+      "title": "Post-Stress-Test Audit Remediation \u2014 From 127 to 177 + 9 Framework Bugs",
+      "status": "complete",
+      "work_type": "cleanup_program",
+      "started_at": "2026-04-18T00:00:00Z",
+      "updated_at": "2026-04-19T15:30:00Z",
+      "framework_version": "6.1",
+      "skills_used": [
+        "pm-workflow",
+        "dev",
+        "qa"
+      ],
+      "data_sources": [
+        "repo"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 8,
+        "repo_files_updated": 80,
+        "prs_shipped": 21,
+        "tests_passing": 0,
+        "build_verified": true
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings_closed_in_this_arc": 13,
+        "medium_findings_closed_in_this_arc": 30,
+        "low_findings_closed_in_this_arc": 7,
+        "framework_bugs_filed": 9,
+        "framework_bugs_fixed_or_documented": 6,
+        "audit_findings_closed_total_after_arc": 177,
+        "audit_findings_total": 185,
+        "audit_closure_rate_pct": 95.7,
+        "source_truth_gap_detected": true,
+        "source_truth_gap_reduced": true,
+        "high_findings": 13,
+        "medium_findings": 30
+      },
+      "ai_quality_metrics": {
+        "eval_pass_rate": null,
+        "eval_total": 0,
+        "eval_failed": []
+      },
+      "case_study_path": "docs/case-studies/post-stress-test-audit-remediation-case-study.md",
+      "snapshots": [
+        {
+          "timestamp": "2026-04-18T12:12:00Z",
+          "label": "Wave-1 stress test aborted on F1",
+          "summary": "5 of 6 worktree-isolated agents aborted in ~12 min on framework bug F1 (worktree path not in additionalDirectories whitelist). Forced pivot to serial sprints.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-18T18:00:00Z",
+          "label": "Sprints F-J shipped (PRs #96-#100)",
+          "summary": "33 audit findings closed across 5 serial sprints (F, I, J, G, H) over ~4.5 hours.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 13,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T00:00:00Z",
+          "label": "Framework bugs F1-F5 + F8/F9 documented",
+          "summary": "PRs #102-#104 closed F1 (partial) + F2-F5 (full) and documented F8/F9 from wave-2 retry. Concurrent dispatch confirmed blocked at upstream framework layer.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T05:00:00Z",
+          "label": "Audit JSON live-synced (PR #105)",
+          "summary": "Python script cross-references commits + code refs to set status/closed_via_prs per finding. First sync: 129 of 185 marked closed.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        },
+        {
+          "timestamp": "2026-04-19T15:00:00Z",
+          "label": "K-1 through K-11 shipped (PRs #106-#116)",
+          "summary": "42 findings closed across 11 K-series sprints. Final state: 177/185 (95.7%). Includes 2 service extractions (MilestoneDetector, FoodSearchService) and 100+ call-site DS rename.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 0,
+            "build_verified": true
+          }
+        }
+      ],
+      "key_learnings": [
+        "Concurrent worktree dispatch is blocked at upstream Claude Code framework layer (F8 + F9)",
+        "Serial dispatch (30-90 min sprints, 1 PR each) had 21/21 success rate",
+        "F2 contract validated 10/10 in wave-2 \u2014 agents follow the 'never escape worktree on block' rule under realistic concurrent failure",
+        "Verified-fixed pattern: ~20 audit findings were already correct in code; closure markers + live-sync converts them to closed without touching production",
+        "Live-sync script (sync_audit_json.py) became single source of truth for audit state",
+        "CI keychain entitlement gap (PR #101) unblocked main green for the first time in 5+ sprints",
+        "Two-phase commit pattern for cross-file atomicity (DEEP-AUTH-011) is the standard for multi-file persist operations",
+        "Restart-the-session is the only consumer-side workaround for F9 permission-snapshot-at-spawn"
+      ],
+      "artifacts": [
+        "docs/superpowers/specs/2026-04-18-framework-bugs-from-stress-test.md",
+        "docs/superpowers/plans/2026-04-18-post-stress-test-remediation.md",
+        "docs/superpowers/plans/2026-04-19-audit-completion-plan.md",
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
+        ".claude/shared/audit-findings.json",
+        ".claude/shared/dispatch-intelligence.json"
+      ],
+      "success_cases": [
+        {
+          "title": "Serial dispatch with 30-90 min sprints",
+          "evidence": "21/21 PRs shipped (#96-#116). Per-sprint estimates matched actual time within \u00b115 min."
+        },
+        {
+          "title": "Verified-fixed pattern (audit closure markers)",
+          "evidence": "~20 audit findings closed without code change by adding closure markers + re-running live-sync. K-4 (8 findings) and K-5 (12 findings) both shipped in <60 min as a result."
+        },
+        {
+          "title": "Live-sync script as single source of truth",
+          "evidence": "/tmp/sync_audit_json.py (80 lines Python) became the canonical 'what's the actual audit state' tool. Re-runnable after every PR merge."
+        },
+        {
+          "title": "F2 contract validated 10/10 in wave-2 stress test",
+          "evidence": "10 worktree-isolated agents across 2 wave-2 attempts all followed the F2 'never escape on block' contract \u2014 read succeeded, write blocked, FAILURE verbatim, no canonical-path escape."
+        },
+        {
+          "title": "CI keychain entitlement fix unblocked main",
+          "evidence": "PR #101 (30 min) replaced CODE_SIGNING_ALLOWED=NO with ad-hoc signing. First time main was green in 5+ sprints."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Wave-1 concurrent dispatch (F1)",
+          "evidence": "5 of 6 agents aborted in ~12 min. G2 escaped worktree and contaminated main. Forced pivot to serial sprints F-J."
+        },
+        {
+          "title": "Wave-2 retry (F8 + F9)",
+          "evidence": "After F1 supposedly fixed, 5 concurrent agents got Edit/Write denied identically. Concurrent worktree dispatch is blocked at upstream Claude Code framework layer."
+        },
+        {
+          "title": "GitHub Actions billing wall",
+          "evidence": "PRs #99, #100, #114, #115, #116 hit account spending limit after 5 macOS runs in one session. 3 sprints (K-9 onward) merged via admin override because local build+tests were green."
+        },
+        {
+          "title": "Audit '92 call-sites' estimate off by ~10%",
+          "evidence": "K-7 DS-002/003 mass-rename actually touched ~100 call-sites across 10 files (vs audit's 92 across 4). Three sed iterations needed because leading-dot inferred-context usages were missed."
+        },
+        {
+          "title": "Meta: K-series shipped 11 PRs without formal case studies",
+          "evidence": "Honored 'every feature gets a case study' rule in PR descriptions but not formal case studies until this synthesis (PR #117). Closes the gap retroactively."
+        }
+      ],
+      "next_checkpoints": [
+        "M-1: UI-002 SettingsView v3 decomposition (~3 sessions)",
+        "M-2: UI-004 MealEntrySheet decomposition (~3-4 sessions)",
+        "M-3: DS-004 + DS-009 + DS-010 \u2014 token pipeline 60% \u2192 100% + dark mode (~4-6 sessions)",
+        "M-4: TEST-025 XCUITest infrastructure (~3 sessions)",
+        "BE-024: Supabase Edge Function for delete-account (external blocker)",
+        "DEEP-SYNC-010: CK\u2192Supabase Storage cardio image bridge (multi-PR cross-sync)",
+        "F8 + F9: upstream Claude Code framework changes for concurrent dispatch (out of project control)"
       ]
     }
   ]
