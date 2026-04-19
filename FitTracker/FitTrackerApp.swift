@@ -134,6 +134,9 @@ struct FitTrackerApp: App {
                                 await EncryptionService.shared.clearSessionContext()
                             }
                             guard signIn.isAuthenticated else { return }
+                            // Audit BE-016: if a previous persistToDisk failed, retry on foreground
+                            // before any further reads/writes — recovers transient disk-pressure cases.
+                            await dataStore.retryPersistIfFailed()
                             await dataStore.loadFromDisk()
                             // Update AI engine with actual user goal (was default .fatLoss at init)
                             aiOrchestrator.goalMode = { [weak dataStore] in
