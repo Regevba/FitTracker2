@@ -366,6 +366,10 @@ final class CloudKitSyncService: ObservableObject {
             } while cursor != nil
         }
 
+        // Audit DEEP-AUTH-015: digests live in Keychain (with UserDefaults
+        // fallback for legacy data) — clear both backing stores on cleanup.
+        KeychainHelper.delete(key: SyncStateKey.userProfileDigest)
+        KeychainHelper.delete(key: SyncStateKey.userPreferencesDigest)
         defaults.removeObject(forKey: SyncStateKey.userProfileDigest)
         defaults.removeObject(forKey: SyncStateKey.userPreferencesDigest)
         lastSyncDate = nil
@@ -525,20 +529,20 @@ final class CloudKitSyncService: ObservableObject {
             let remoteDigest = digest(for: remote)
         else {
             apply(remote)
-            defaults.set(remoteDigestFallback(for: remote), forKey: digestKey)
+            storeDigest(remoteDigestFallback(for: remote), forKey: digestKey)
             return
         }
 
-        let lastSyncedDigest = defaults.string(forKey: digestKey)
+        let lastSyncedDigest = loadDigest(forKey: digestKey)
 
         if localDigest == remoteDigest {
-            defaults.set(remoteDigest, forKey: digestKey)
+            storeDigest(remoteDigest, forKey: digestKey)
             return
         }
 
         if lastSyncedDigest == nil || localDigest == lastSyncedDigest {
             apply(remote)
-            defaults.set(remoteDigest, forKey: digestKey)
+            storeDigest(remoteDigest, forKey: digestKey)
             return
         }
 
@@ -549,7 +553,7 @@ final class CloudKitSyncService: ObservableObject {
 
     private func storeSingletonDigest<T: Encodable>(_ value: T, forKey key: String) {
         guard let digest = digest(for: value) else { return }
-        defaults.set(digest, forKey: key)
+        storeDigest(digest, forKey: key)
     }
 
     private func digest<T: Encodable>(for value: T) -> String? {
@@ -561,6 +565,37 @@ final class CloudKitSyncService: ObservableObject {
 
     private func remoteDigestFallback<T: Encodable>(for value: T) -> String? {
         digest(for: value)
+    }
+
+    /// Audit DEEP-AUTH-015: store/load three-way merge digests in the Keychain
+    /// instead of UserDefaults so they're not tamperable on jailbroken devices
+    /// (an attacker who could write to Preferences could otherwise force the
+    /// merge to treat any remote payload as authoritative). Falls back to
+    /// UserDefaults for legacy data so a single migration window keeps existing
+    /// digests valid; reads write-through to Keychain on first hit.
+    private func storeDigest(_ digest: String?, forKey key: String) {
+        guard let digest, let data = digest.data(using: .utf8) else { return }
+        KeychainHelper.save(key: key, data: data)
+        // Cleanup: remove any legacy UserDefaults copy so future reads don't
+        // see a stale value if Keychain delete fails for some reason.
+        defaults.removeObject(forKey: key)
+    }
+
+    private func loadDigest(forKey key: String) -> String? {
+        if let data = KeychainHelper.load(key: key),
+           let str = String(data: data, encoding: .utf8) {
+            return str
+        }
+        // Legacy fallback: existing installs may still have the digest in
+        // UserDefaults. Promote to Keychain on first read.
+        if let legacy = defaults.string(forKey: key) {
+            if let data = legacy.data(using: .utf8) {
+                KeychainHelper.save(key: key, data: data)
+            }
+            defaults.removeObject(forKey: key)
+            return legacy
+        }
+        return nil
     }
 }
 
