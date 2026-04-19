@@ -19,6 +19,9 @@ struct OnboardingWelcomeView: View {
                     .foregroundStyle(AppGradient.brand)
                     .padding(.bottom, AppSpacing.xSmall)
 
+                // Audit DS-005 / UI-008: hero title uses AppText.displayHeadline
+                // (32pt bold rounded) instead of a hardcoded `.system(size:)`,
+                // so Dynamic Type and the design-system font scale apply.
                 Text("FitMe")
                     .font(AppText.displayHeadline)
                     .foregroundStyle(AppGradient.brand)

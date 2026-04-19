@@ -858,10 +858,17 @@ final class SignInService: NSObject, ObservableObject {
         }
         if let jwt = session.backendAccessToken,
            let jwtData = jwt.data(using: .utf8) {
+            // Audit DEEP-AUTH-006: require biometric/passcode auth on every
+            // load — matches the security level of the encryption keys (which
+            // already require Face ID via Secure Enclave). Currently no code
+            // path reads `jwtKey` (the live JWT comes fresh from Supabase on
+            // restoreSession), so the biometric prompt would only appear if a
+            // future fallback path is added.
             KeychainHelper.save(
                 key: Self.jwtKey,
                 data: jwtData,
-                accessible: kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly
+                accessible: kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly,
+                requireBiometric: true
             )
         } else {
             // No JWT to save (e.g. anonymous review session) — clear any stale value
@@ -1046,19 +1053,44 @@ enum KeychainHelper {
     /// `kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly` to require a passcode
     /// be configured and prevent the item from migrating via iCloud Keychain
     /// or backup restore.
+    ///
+    /// `requireBiometric` (audit DEEP-AUTH-006): when true, the item is
+    /// stored under a SecAccessControl with `.userPresence` flag so that
+    /// every load requires interactive biometric or passcode authentication.
+    /// Use this for credentials whose mere "device unlocked" exposure is
+    /// stronger than necessary — e.g. live API JWTs whose value should
+    /// match the security level of the encryption keys (which already
+    /// require Face ID via Secure Enclave). Defaults to false.
     @discardableResult
     static func save(
         key: String,
         data: Data,
-        accessible: CFString = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        accessible: CFString = kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+        requireBiometric: Bool = false
     ) -> Bool {
-        let q: [CFString: Any] = [
+        var q: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
             kSecAttrAccount: key,
             kSecValueData: data,
-            kSecAttrAccessible: accessible,
         ]
+        if requireBiometric {
+            // SecAccessControl with .userPresence requires interactive auth at every read.
+            // The accessibility class still applies — pass in the strictest one.
+            var error: Unmanaged<CFError>?
+            guard let access = SecAccessControlCreateWithFlags(
+                kCFAllocatorDefault,
+                accessible,
+                .userPresence,
+                &error
+            ) else {
+                authLogger.error("KeychainHelper.save failed to create SecAccessControl for '\(key)'")
+                return false
+            }
+            q[kSecAttrAccessControl] = access
+        } else {
+            q[kSecAttrAccessible] = accessible
+        }
         SecItemDelete(q as CFDictionary)
         let status = SecItemAdd(q as CFDictionary, nil)
         if status != errSecSuccess {

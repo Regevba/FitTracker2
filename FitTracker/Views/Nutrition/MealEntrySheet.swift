@@ -226,7 +226,8 @@ struct MealEntrySheet: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.xSmall)
                         .background(AppColor.Accent.recovery, in: RoundedRectangle(cornerRadius: AppRadius.small))
-                        .foregroundStyle(.white)
+                        // Audit UI-012: token instead of raw .white literal
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                 }
                 .buttonStyle(.plain)
 

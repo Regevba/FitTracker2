@@ -446,7 +446,9 @@ struct UserProfile: Codable, Sendable {
     var startBodyFatPct:    Double          = 20.0
     var mealSlotNames:      [String]        = ["Breakfast", "Lunch", "Dinner", "Snacks"]
 
-    // Conflict resolution timestamp — set on every mutation, nil for legacy data
+    // Conflict resolution timestamp — set on every mutation, nil for legacy data.
+    // Audit DEEP-SYNC-012: required so singleton sync (UserProfile, UserPreferences)
+    // can resolve last-write-wins instead of always-overwriting.
     var lastModified: Date?
 
     // Profile (editable post-onboarding, persisted via EncryptedDataStore)
@@ -567,6 +569,20 @@ enum NutritionGoalMode: String, Codable, CaseIterable, Sendable {
         case .fatLoss: "Deficit"
         case .maintain: "Maintain"
         case .gain: "Build"
+        }
+    }
+
+    /// Audit AI-014: parse the snake_case strings emitted by ProfileAdapter
+    /// (`weight_loss` / `maintenance` / `muscle_gain`) into the enum. The
+    /// rawValue init never matched these values, so every fallback path
+    /// silently degraded to `.fatLoss`. Use this initializer when reading
+    /// `LocalUserSnapshot.primaryGoal`.
+    init?(primaryGoalString: String?) {
+        switch primaryGoalString {
+        case "weight_loss":   self = .fatLoss
+        case "maintenance":   self = .maintain
+        case "muscle_gain":   self = .gain
+        default:              return nil
         }
     }
 }
