@@ -555,7 +555,7 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertNotNil(deletionService.deletionDateFormatted)
         XCTAssertNotNil(deletionService.daysRemaining)
 
-        deletionService.cancelDeletion()
+        await deletionService.cancelDeletion()
 
         XCTAssertFalse(deletionService.isDeletionPending)
         XCTAssertNil(deletionService.deletionScheduledAt)
@@ -567,7 +567,7 @@ final class FitTrackerCoreTests: XCTestCase {
         XCTAssertTrue(eventNames.contains(AnalyticsEvent.accountDeleteCancelled))
     }
 
-    func testAccountDeletionCheckGracePeriodRestoresStoredSchedule() {
+    func testAccountDeletionCheckGracePeriodRestoresStoredSchedule() async {
         let mockAdapter = MockAnalyticsAdapter()
         let consentManager = ConsentManager()
         consentManager.grantConsent()
@@ -582,7 +582,7 @@ final class FitTrackerCoreTests: XCTestCase {
         let scheduledAt = Date(timeIntervalSince1970: 1_775_404_800) // 2026-04-05T00:00:00Z
 
         UserDefaults.standard.set(scheduledAt.timeIntervalSince1970, forKey: "ft.deletion.scheduledAt")
-        deletionService.checkGracePeriod()
+        await deletionService.checkGracePeriod()
 
         XCTAssertTrue(deletionService.isDeletionPending)
         guard let restoredScheduledAt = deletionService.deletionScheduledAt else {

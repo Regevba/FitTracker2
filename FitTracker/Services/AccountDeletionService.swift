@@ -64,31 +64,60 @@ final class AccountDeletionService: ObservableObject {
 
     // MARK: - Grace Period Management
 
-    /// Request account deletion — starts 30-day grace period
+    /// Request account deletion — starts 30-day grace period.
+    /// Audit BE-023: also persisted to Supabase user_metadata so a reinstall
+    /// during the grace period restores the deletion intent rather than
+    /// silently cancelling it. Local write is the source of truth for UI;
+    /// remote write is best-effort and logged on failure.
     func requestDeletion(authMethod: String) async {
         let now = Date()
         deletionScheduledAt = now
-
-        // Store in UserDefaults (local) + will be synced to Supabase metadata
         UserDefaults.standard.set(now.timeIntervalSince1970, forKey: "ft.deletion.scheduledAt")
-
+        do {
+            try await supabaseSync.setRemoteDeletionScheduledAt(now)
+        } catch {
+            // Local copy stands; remote sync will retry on next launch via checkGracePeriod
+            deletionError = "Saved locally; remote sync failed: \(error.localizedDescription)"
+        }
         analytics.logAccountDeleteRequested(method: authMethod)
     }
 
-    /// Cancel pending deletion — restores account
-    func cancelDeletion() {
+    /// Cancel pending deletion — restores account. Audit BE-023: also clears
+    /// the remote user_metadata flag so a fresh install doesn't see a stale
+    /// deletion request.
+    func cancelDeletion() async {
         let remaining = daysRemaining ?? 0
         deletionScheduledAt = nil
         UserDefaults.standard.removeObject(forKey: "ft.deletion.scheduledAt")
-
+        do {
+            try await supabaseSync.setRemoteDeletionScheduledAt(nil)
+        } catch {
+            deletionError = "Cleared locally; remote sync failed: \(error.localizedDescription)"
+        }
         analytics.logAccountDeleteCancelled(daysRemaining: remaining)
     }
 
-    /// Check if there's a pending deletion on launch
-    func checkGracePeriod() {
-        let stored = UserDefaults.standard.double(forKey: "ft.deletion.scheduledAt")
-        if stored > 0 {
-            deletionScheduledAt = Date(timeIntervalSince1970: stored)
+    /// Check if there's a pending deletion on launch. Audit BE-023: in
+    /// addition to UserDefaults, fetch the remote `deletionScheduledAt` from
+    /// Supabase user_metadata. The earlier of the two timestamps wins —
+    /// that's the original deletion request, even if the local copy was
+    /// wiped by a reinstall. Sync the result back to local so UI is consistent.
+    func checkGracePeriod() async {
+        let storedTs = UserDefaults.standard.double(forKey: "ft.deletion.scheduledAt")
+        let local: Date? = storedTs > 0 ? Date(timeIntervalSince1970: storedTs) : nil
+        let remote = await supabaseSync.fetchRemoteDeletionScheduledAt()
+
+        let resolved: Date? = switch (local, remote) {
+        case (nil, nil): nil
+        case (nil, .some(let r)): r
+        case (.some(let l), nil): l
+        case (.some(let l), .some(let r)): min(l, r)  // earlier wins — the original deletion intent
+        }
+
+        deletionScheduledAt = resolved
+        if let resolved, local != resolved {
+            // Remote was earlier (or local was missing) — restore local cache.
+            UserDefaults.standard.set(resolved.timeIntervalSince1970, forKey: "ft.deletion.scheduledAt")
         }
     }
 

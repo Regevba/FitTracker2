@@ -33,7 +33,7 @@ struct DeleteAccountView: View {
             Text(authErrorMessage)
         }
         .task {
-            deletionService.checkGracePeriod()
+            await deletionService.checkGracePeriod()
         }
         .analyticsScreen(AnalyticsScreen.deleteAccount)
     }
@@ -110,7 +110,7 @@ struct DeleteAccountView: View {
             }
 
             Button {
-                deletionService.cancelDeletion()
+                Task { await deletionService.cancelDeletion() }
             } label: {
                 Text("Cancel Deletion")
                     .font(AppText.button)
