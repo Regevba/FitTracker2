@@ -2,7 +2,7 @@
 
 > Source: `docs/case-studies/audit-v2-concurrent-stress-test-case-study.md`
 > Date filed: 2026-04-18
-> Status: Open. None fixed. F1 is a blocker for any future concurrent worktree dispatch.
+> Status: F1 fixed via Option A on 2026-04-19 (verified end-to-end with a worktree-isolated probe agent that successfully wrote `.claude/shared/` from inside its worktree). F2/F3/F4/F5/F7 still open. F6 is a positive finding (no action required).
 
 This document is the actionable extract of the wave-1 stress test. Each bug has reproduction, severity, and a concrete suggested fix. These are framework-layer issues — not audit findings, not app code.
 
