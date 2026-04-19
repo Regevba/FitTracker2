@@ -1,8 +1,17 @@
 {
-  "version": "1.4",
-  "updated": "2026-04-18T00:00:00Z",
+  "version": "1.5",
+  "updated": "2026-04-19T00:00:00Z",
   "framework_version": "6.1",
   "description": "PM framework v6.1 with deterministic measurement instrumentation, meta-analysis audit, and remediation tracking.",
+  "audit_closures": {
+    "FW-002": "Description string updated from v5.2 to v6.1 — closed.",
+    "FW-007": "chip-profiles.json verified at 17 profiles matching spec — see chip-profiles.json.",
+    "FW-008": "hardware-signature-table.json verified at 7 signatures matching spec — see hadf/hardware-signature-table.json.",
+    "FW-009": "HADF hardware_context settings verified (enabled=false, blend=0.4, trust=0.7) — see dispatch-intelligence.json hardware_context section.",
+    "FW-010": "Skill routing entries verified against actual SKILL.md files — see skill-routing.json.",
+    "FW-013": "Cache freshness check verified — referenced files exist for sampled cache entries.",
+    "FW-018": "Chip Affinity Map empty by design (HADF Layer 4 not yet active) — see chip-affinity-map.json."
+  },
   "structure": {
     "hub_skills": 1,
     "spoke_skills": 10,

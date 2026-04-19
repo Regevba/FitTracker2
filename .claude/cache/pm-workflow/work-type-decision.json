@@ -1,0 +1,35 @@
+{
+  "cache_key": "pm-workflow:work_type_routing:decision_tree",
+  "skill": "pm-workflow",
+  "level": "L1",
+  "created": "2026-04-19T00:00:00Z",
+  "last_hit": "2026-04-19T00:00:00Z",
+  "hit_count": 1,
+  "compression_version": "1.0",
+  "compressed_view": "Work-type decision tree: Feature (full 9-phase: Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs) when new capability needs research, PRD, design. Enhancement (4-phase: Tasks → Implement → Test → Merge) for improvements to shipped features whose parent already has a PRD. Fix (2-phase: Implement → Test) for bug fixes, error handling, security patches. Chore (1-phase: Implement) for docs, config, refactoring, dependency updates. Skipped phases recorded in audit trail with reason `work_type:{type}`. Phase transitions auto-sync to GitHub Issue labels.",
+  "ttl_strategy": "until_invalidated",
+  "invalidated_by": [
+    "CLAUDE.md",
+    ".claude/skills/pm-workflow/SKILL.md",
+    ".claude/skills/pm-workflow/state-schema.json"
+  ],
+  "task_signature": {
+    "type": "feature_lifecycle_initiation",
+    "inputs": ["feature_name", "scope_description"],
+    "context": "Decide which work-type and phase set applies when a user invokes /pm-workflow."
+  },
+  "learned_patterns": [
+    {
+      "pattern": "Work-type matching",
+      "decision": "Feature = new capability requiring PRD + UX. Enhancement = improvement to shipped feature with existing PRD. Fix = bug/security patch (no PRD needed). Chore = config/docs/refactor (no test required if framework-only). Validated across audit Sprints A-K, framework bug fixes (F1-F5), and CI infrastructure work.",
+      "confidence": "high",
+      "source_executions": [
+        "audit Sprint G (5 backend findings, work_type=fix)",
+        "audit Sprint H (8 AI findings, work_type=fix)",
+        "framework bug F1 (PR #102, work_type=chore)",
+        "audit JSON live-sync (PR #105, work_type=chore)"
+      ]
+    }
+  ],
+  "audit_closure": "FW-012 — pm-workflow L1 cache seeded with canonical decision-tree entry."
+}
