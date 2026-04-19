@@ -148,6 +148,8 @@
 		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
 		SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */; };
 		SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */; };
+		SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC01 /* SettingsScaffolds.swift */; };
+		SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC02 /* SettingsFormComponents.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
 		DS000001000000000000AA01 /* AppPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA01 /* AppPalette.swift */; };
@@ -315,6 +317,8 @@
 		SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalsPreferencesSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingNutritionSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncSettingsScreen.swift; sourceTree = "<group>"; };
+		SE200000000000000000AC01 /* SettingsScaffolds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScaffolds.swift; sourceTree = "<group>"; };
+		SE200000000000000000AC02 /* SettingsFormComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormComponents.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
@@ -851,8 +855,18 @@
 			children = (
 				SE200000000000000000AA01 /* SettingsView.swift */,
 				SE400000000000000000AA02 /* Screens */,
+				SE400000000000000000AC03 /* Components */,
 			);
 			path = v2;
+			sourceTree = "<group>";
+		};
+		SE400000000000000000AC03 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				SE200000000000000000AC01 /* SettingsScaffolds.swift */,
+				SE200000000000000000AC02 /* SettingsFormComponents.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		SE400000000000000000AA02 /* Screens */ = {
@@ -1115,6 +1129,8 @@
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
+				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
+				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
 				DS000001000000000000AA01 /* AppPalette.swift in Sources */,
