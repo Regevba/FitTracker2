@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E012F64641D006E7013 /* WatchConnectivityService.swift */; };
 		111A5E042F64641D006E7013 /* TrainingProgramStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E032F64641D006E7013 /* TrainingProgramStore.swift */; };
+		MD000001000000000000AA01 /* MilestoneDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = MD000002000000000000AA01 /* MilestoneDetector.swift */; };
 		111A5E062F64641D006E7013 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111A5E052F64641D006E7013 /* AppTheme.swift */; };
 		11B09D2B2F852AEF00DCB9A0 /* FitMeBrandIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B09D2A2F852AEF00DCB9A0 /* FitMeBrandIcon.swift */; };
 		OB100000000000000000AA01 /* OnboardingConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AA01 /* OnboardingConsentView.swift */; };
@@ -226,6 +227,7 @@
 		IM200000000000000000AA05 /* ImportPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportPreviewView.swift; sourceTree = "<group>"; };
 		111A5E012F64641D006E7013 /* WatchConnectivityService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityService.swift; sourceTree = "<group>"; };
 		111A5E032F64641D006E7013 /* TrainingProgramStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramStore.swift; sourceTree = "<group>"; };
+		MD000002000000000000AA01 /* MilestoneDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MilestoneDetector.swift; sourceTree = "<group>"; };
 		111A5E052F64641D006E7013 /* AppTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		11B09D2A2F852AEF00DCB9A0 /* FitMeBrandIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitMeBrandIcon.swift; sourceTree = "<group>"; };
 		11B09D2C2F852BF900DCB9A0 /* OnboardingConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingConsentView.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 			children = (
 				111A5E012F64641D006E7013 /* WatchConnectivityService.swift */,
 				111A5E032F64641D006E7013 /* TrainingProgramStore.swift */,
+				MD000002000000000000AA01 /* MilestoneDetector.swift */,
 				111A5E052F64641D006E7013 /* AppTheme.swift */,
 				AC3000000000000000000001 /* Analytics */,
 				A40000010000000000000007 /* Auth */,
@@ -1006,6 +1009,7 @@
 				A10000010000000000000008 /* AppSettings.swift in Sources */,
 				111A5E022F64641D006E7013 /* WatchConnectivityService.swift in Sources */,
 				111A5E042F64641D006E7013 /* TrainingProgramStore.swift in Sources */,
+				MD000001000000000000AA01 /* MilestoneDetector.swift in Sources */,
 				111A5E062F64641D006E7013 /* AppTheme.swift in Sources */,
 				AC1000000000000000000001 /* AnalyticsProvider.swift in Sources */,
 				AC1000000000000000000002 /* AnalyticsScreenModifier.swift in Sources */,
