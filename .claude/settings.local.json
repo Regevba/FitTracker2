@@ -104,7 +104,18 @@
       "Bash(wc -l /Volumes/DevSSD/FitTracker2/docs/prompts/*.md /Volumes/DevSSD/FitTracker2/docs/skills/*.md /Volumes/DevSSD/FitTracker2/docs/setup/*.md)",
       "Bash(wc -l /Volumes/DevSSD/FitTracker2/docs/architecture/*.md /Volumes/DevSSD/FitTracker2/docs/superpowers/plans/*.md /Volumes/DevSSD/FitTracker2/docs/superpowers/specs/*.md)",
       "Bash(wc -l /Volumes/DevSSD/FitTracker2/docs/superpowers/templates/*.md /Volumes/DevSSD/FitTracker2/docs/archive/*.md /Volumes/DevSSD/FitTracker2/docs/archive/superpowers/*.md /Volumes/DevSSD/FitTracker2/docs/process/*.md /Volumes/DevSSD/FitTracker2/docs/legal/*.md /Volumes/DevSSD/FitTracker2/docs/reviews/*.md /Volumes/DevSSD/FitTracker2/docs/release/*.md)",
-      "Bash(git worktree *)"
+      "Bash(git worktree *)",
+      "Bash(cd /Volumes/DevSSD/FitTracker2/.claude/worktrees/* && git *)",
+      "Bash(git -C /Volumes/DevSSD/FitTracker2/.claude/worktrees/* *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); cases=d.get\\('cases',[]\\); print\\(f'{len\\(cases\\)} existing cases'\\); print\\('Last case_id:', cases[-1]['case_id'] if cases else 'none'\\); print\\('Top-level keys:', list\\(d.keys\\(\\)\\)\\)\")",
+      "Bash(gh auth *)",
+      "Bash(npx --yes create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack --use-npm --yes)",
+      "Bash(npm run *)",
+      "Bash(echo \"PID=$!\")",
+      "Bash(curl -sf -o /dev/null http://localhost:3000)",
+      "Bash(kill 79821)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/Volumes/DevSSD/FitTracker2/.claude/shared/dispatch-intelligence.json'\\)\\); print\\('Valid JSON. Keys:', list\\(d.keys\\(\\)\\)\\); assert 'worktree_isolation_contract' in d; print\\('worktree_isolation_contract rules:', list\\(d['worktree_isolation_contract']['rules'].keys\\(\\)\\)\\)\")",
+      "Bash(python3 -c 'import json,sys; d=json.load\\(sys.stdin\\); print\\(\"next:\", d[\"dependencies\"].get\\(\"next\"\\)\\)')"
     ],
     "additionalDirectories": [
       "/Volumes/DevSSD/FitTracker2/.claude/features",

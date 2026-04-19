@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "framework_version": "6.0",
-  "updated": "2026-04-16",
+  "updated": "2026-04-19",
   "description": "Dispatch Intelligence — 3-stage pipeline for subagent routing with HADF hardware-aware extension: score complexity → probe capability → dispatch with budget + hardware context.",
   "permission_table": {
     "known_writable": [
@@ -83,6 +83,40 @@
     "max_region_lines": 200,
     "include_read_only_context": true,
     "context_lines": 10
+  },
+  "worktree_isolation_contract": {
+    "version": "1.0",
+    "added": "2026-04-19",
+    "source_findings": ["F2", "F3", "F4"],
+    "spec": "docs/superpowers/specs/2026-04-18-framework-bugs-from-stress-test.md",
+    "applies_when": "agent dispatched with isolation: \"worktree\"",
+    "rules": {
+      "blocked_write_response": {
+        "F2": "When a write/edit is blocked by the permission system, the agent MUST NOT write to any absolute path outside its worktree root. Writing to the canonical repo path defeats worktree isolation and contaminates the parent working tree (G2 wave-1 incident).",
+        "acceptable_fallbacks": [
+          "Write to /tmp/ for diagnostic output",
+          "Exit with a documented FAILURE summary (file the failure mode in the agent's final message)",
+          "Request permission expansion via the parent (do not self-modify worktree settings — see F3)"
+        ],
+        "forbidden": [
+          "Writing to /Volumes/DevSSD/FitTracker2/<anything> when running from /Volumes/DevSSD/FitTracker2/.claude/worktrees/<id>/<path>",
+          "Editing the worktree's .claude/settings.local.json to grant self more permissions (no runtime effect — F3)"
+        ]
+      },
+      "settings_inheritance_F3": {
+        "rule": "The worktree's copy of .claude/settings.local.json is read-only at runtime. The parent process's settings are authoritative for tool calls. Edits to the worktree copy are visible on disk but have no permission effect.",
+        "implication": "Permission expansion must happen on the parent's settings, not the worktree's. If the parent can't be reached, exit with FAILURE rather than self-modify."
+      },
+      "write_boundary_F4": {
+        "rule": "The framework does not currently enforce a kernel-level sandbox on worktree-isolated agents. Worktree isolation is a directory recommendation, not a write boundary. Agents are bound by this contract, not by the OS.",
+        "future_hardening": "Layer 1 (framework permission temporary scope reduction during worktree dispatch) and Layer 2 (sandbox-exec/unshare) are deferred — see spec F4."
+      }
+    },
+    "salvage_protocol": {
+      "source_finding": "F6",
+      "rule": "When an agent dies mid-write with uncommitted work, the salvage protocol applies: snapshot the agent's output to .build/snapshots/{operation}/, branch off main, verify each file compiles/tests, then either salvage (commit + PR) or quarantine.",
+      "evidence": "G2 wave-1 produced 4 working test files (1041 lines, 46 cases) salvaged via PR #95 — byte-identical to baseline, zero modifications needed."
+    }
   },
   "hardware_context": {
     "hadf_version": "1.0",

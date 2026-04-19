@@ -2,7 +2,10 @@
 
 > Source: `docs/case-studies/audit-v2-concurrent-stress-test-case-study.md`
 > Date filed: 2026-04-18
-> Status: F1 fixed via Option A on 2026-04-19 (verified end-to-end with a worktree-isolated probe agent that successfully wrote `.claude/shared/` from inside its worktree). F2/F3/F4/F5/F7 still open. F6 is a positive finding (no action required).
+> Status (2026-04-19): **F1 + F2 + F3 + F4 + F5 fixed.** F6 positive (no action). F7 unblocked by F1 — concurrent stress test methodology can resume.
+> - F1: glob expansion to `additionalDirectories` (PR #102, end-to-end verified)
+> - F2/F3/F4: documented as `worktree_isolation_contract` in `.claude/shared/dispatch-intelligence.json`
+> - F5: pre-granted `cd <worktree>/...` and `git -C <worktree> *` Bash patterns in `.claude/settings.local.json`
 
 This document is the actionable extract of the wave-1 stress test. Each bug has reproduction, severity, and a concrete suggested fix. These are framework-layer issues — not audit findings, not app code.
 
