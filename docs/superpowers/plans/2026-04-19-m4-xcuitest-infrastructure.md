@@ -151,3 +151,83 @@ This is the first M-series phase that **adds a build target** rather than restru
 If M-4a goes smoothly, M-4b/c/d are straightforward. If M-4a hits an unrecoverable pbxproj issue, the documented fallback is to ship the test source files in a `FitTrackerUITests/` directory (not in the build) + a follow-up plan that asks the user to add the target via Xcode UI. Lossy but recoverable.
 
 The pattern of **bootstrap test first, real coverage later** mirrors how production XCUITest setups work in practice — "make the harness compile" is its own deliverable, distinct from "make tests pass for X feature".
+
+---
+
+## Addendum — M-4a attempt 1 (2026-04-20, aborted + rolled back)
+
+**Status**: M-4a was attempted on branch `feature/m4a-xcuitest-target-setup` (now deleted). Rolled back per the "if anything fails, stop and rollback" instruction the user gave at the start of execution. Main is unaffected.
+
+### What worked
+
+The pbxproj surgery completed without corruption. 12 edits across 11 sections produced a working configuration:
+
+| Section | New entries | IDs used |
+|---|---|---|
+| `PBXBuildFile` | `AppLaunchUITests.swift in Sources` | `UI100000000000000000UT01` |
+| `PBXContainerItemProxy` | dependency proxy → FitTracker app target | `UI600000000000000000UT01` |
+| `PBXFileReference` | `FitTrackerUITests.xctest` (product) + `AppLaunchUITests.swift` (source) | `UI200000000000000000XT01`, `UI200000000000000000UT01` |
+| `PBXGroup` | new `FitTrackerUITests` group + added to mainGroup + Products | `UI400000000000000000UT01` |
+| `PBXFrameworksBuildPhase` | empty Frameworks phase for UI target | `UI300000000000000000UT02` |
+| `PBXNativeTarget` | `FitTrackerUITests` target (productType `com.apple.product-type.bundle.ui-testing`) | `UI500000000000000000UT01` |
+| `PBXProject` | added to `targets` + `TargetAttributes` (with `TestTargetID = A50000010000000000000001`) | edits to existing |
+| `PBXResourcesBuildPhase` | empty Resources phase | `UI300000000000000000UT03` |
+| `PBXSourcesBuildPhase` | Sources phase containing the bootstrap test | `UI300000000000000000UT01` |
+| `PBXTargetDependency` | UI target depends on FitTracker app | `UI700000000000000000UT01` |
+| `XCBuildConfiguration` | Debug + Release configs (`TEST_TARGET_NAME = FitTracker`, `PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.uitests`, no `TEST_HOST`/`BUNDLE_LOADER`) | `UI800000000000000000UT01`, `UI800000000000000000UT02` |
+| `XCConfigurationList` | configuration list pointing at the 2 configs | `UI900000000000000000UT01` |
+
+**Plus 2 scheme edits** in `FitTracker.xcscheme`:
+
+- New `<BuildActionEntry>` for the UI test target
+- New `<TestableReference>` in `<Testables>`
+
+Both `xcodebuild build` and `xcodebuild build-for-testing` succeeded. The output bundle `FitTrackerUITests-Runner.app/PlugIns/FitTrackerUITests.xctest/FitTrackerUITests` was produced. The harness IS working.
+
+### What broke
+
+The bootstrap test `AppLaunchUITests.testAppLaunches()` ran end-to-end (~20s, app launched, test executed) but the assertion failed.
+
+**Root cause**: the test code used:
+
+```swift
+let result = XCTWaiter.wait(for: [homeExpectation, signInExpectation, onboardingExpectation], timeout: 10.0)
+XCTAssertNotEqual(result, .timedOut, ...)
+```
+
+This is wrong. `XCTWaiter.wait(for:timeout:)` requires **ALL** expectations to fulfill, not ANY. Since the app only ever lands on one root surface at a time (home OR sign-in OR onboarding), at most one of the three expectations can ever fulfill within the timeout. The other two always time out. Result: always `.timedOut`, always fails.
+
+**This is a test logic bug, not an infrastructure bug.**
+
+### Lesson for the next M-4a attempt
+
+Use a simpler post-launch assertion that doesn't require predicate matching against unknown launch state:
+
+```swift
+func testAppLaunches() throws {
+    let app = XCUIApplication()
+    app.launch()
+
+    // Just confirm the app reached foreground state. Predicate-on-content
+    // assertions belong in M-4b/c where we own the launch fixture state.
+    let foregrounded = app.wait(for: .runningForeground, timeout: 10.0)
+    XCTAssertTrue(foregrounded, "App did not reach .runningForeground within 10s")
+}
+```
+
+This decouples "is the harness working?" from "does the app's first screen match an expected layout?" — the latter is M-4b/c's job.
+
+### Recovery
+
+- Branch `feature/m4a-xcuitest-target-setup` deleted
+- All pbxproj + scheme edits reverted via `git restore`
+- `FitTrackerUITests/` directory removed (was untracked)
+- Main builds green, no residue from the attempt
+
+### What this means for M-4 (status: FROZEN)
+
+- M-4 stays at "planned" state. PR #131 (this plan) remains the canonical reference + execution map.
+- The pbxproj recipe (12 edits + 2 scheme edits) above is now known-good. Next M-4a attempt copies it.
+- The `XCTWaiter` gotcha is captured here so the next attempt doesn't trip on it.
+- Audit total stays at **182/185 (98.4%)** until M-4 retries.
+- Status frozen pending user direction.
