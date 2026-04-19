@@ -1,5 +1,13 @@
 {
   "version": "1.0",
+  "meta": {
+    "last_sync": "2026-04-19T09:27:23Z",
+    "sync_method": "cross-reference of git log commit messages + in-code finding ID comments",
+    "closed_count": 129,
+    "open_count": 56,
+    "open_by_category_breakdown_at_sync": "see project_post_stress_test_plan.md and project_audit_v2_wave_2_outcome.md memory entries for the disposition of remaining open findings",
+    "note": "PRs #84-#100 closed audit findings via Sprints A-J; PRs #101-#103 closed framework bugs F1-F5 (separate track); PR #104 documented F8/F9 (upstream Claude Code bugs)."
+  },
   "audit_date": "2026-04-16",
   "framework_version": "6.1",
   "methodology": "risk-weighted-parallel-sweep",
@@ -56,8 +64,13 @@
       "recommended_fix": "Add guard foundationModel.isAvailable else { ... } before every adapt() call, or wrap in #available(iOS 26, *)",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-002",
@@ -72,8 +85,12 @@
       "recommended_fix": "Correct both to say confidence 0 \u2192 orchestrator keeps unpersonalised baseRecommendation",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-003",
@@ -88,8 +105,12 @@
       "recommended_fix": "Use Keychain-backed store or NSFileProtection.completeUnlessOpen, or remove 'encrypted' from header",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-004",
@@ -232,8 +253,13 @@
       "recommended_fix": "Lift isProcessing lifecycle to processAll(), suppress in individual process() calls",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-013",
@@ -248,8 +274,13 @@
       "recommended_fix": "Add lightweight local expiry check on exp claim",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-014",
@@ -280,8 +311,12 @@
       "recommended_fix": "Add case 0: return \"0\" or \"rest_week\"",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-016",
@@ -296,8 +331,12 @@
       "recommended_fix": "Use dictionary keyed by segment, O(1) eviction",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-017",
@@ -328,8 +367,12 @@
       "recommended_fix": "Add #warning and use lower placeholder confidence like 0.5",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-019",
@@ -344,8 +387,12 @@
       "recommended_fix": "Throw DecodingError.dataCorruptedError to surface malformed payloads",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "AI-020",
@@ -360,8 +407,12 @@
       "recommended_fix": "Return (snapshot, adapters) tuple from build()",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-001",
@@ -376,8 +427,12 @@
       "recommended_fix": "Gate behind explicit developer flag, not just #if DEBUG + Simulator check",
       "effort": "small",
       "validation": "cross-referenced",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-002",
@@ -392,8 +447,12 @@
       "recommended_fix": "Wrap in #if DEBUG or use a build-configuration-specific flag",
       "effort": "small",
       "validation": "cross-referenced",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-003",
@@ -408,8 +467,12 @@
       "recommended_fix": "Handle signOut error, consider using .global scope for complete logout",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-004",
@@ -424,8 +487,12 @@
       "recommended_fix": "Namespace by userID or clear on sign-out",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-005",
@@ -440,8 +507,12 @@
       "recommended_fix": "Resume continuation with nil or error in timeout path, cancel timeout on normal completion",
       "effort": "medium",
       "validation": "cross-referenced",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-006",
@@ -472,8 +543,12 @@
       "recommended_fix": "Log errors, identify failed records, schedule retry",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-008",
@@ -520,8 +595,12 @@
       "recommended_fix": "Track failed rows, don't advance lastPull past failures, schedule retry",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-011",
@@ -536,8 +615,12 @@
       "recommended_fix": "Add debounce (e.g., 500ms) to batch realtime events",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-012",
@@ -568,8 +651,12 @@
       "recommended_fix": "Validate timestamp within acceptable range during decryption",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        88
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-014",
@@ -584,8 +671,12 @@
       "recommended_fix": "Use transaction-like approach: save new keys first, then re-encrypt, then delete old keys",
       "effort": "large",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        99
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-015",
@@ -600,8 +691,12 @@
       "recommended_fix": "Use .biometryAny or implement key recovery mechanism",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-016",
@@ -632,8 +727,12 @@
       "recommended_fix": "Use markSynced() API to ensure persistence is triggered",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-018",
@@ -648,8 +747,12 @@
       "recommended_fix": "Check needsSync before overwriting with remote data",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-019",
@@ -664,8 +767,12 @@
       "recommended_fix": "Use CKModifyRecordsOperation with batch size 400",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        99
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-020",
@@ -680,8 +787,12 @@
       "recommended_fix": "Check SecItemAdd status, handle failures",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        94
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-021",
@@ -712,8 +823,12 @@
       "recommended_fix": "Resume previous continuation with cancellation error before overwriting",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-023",
@@ -760,8 +875,12 @@
       "recommended_fix": "Ensure this never ships to production, add #if DEBUG guard",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-026",
@@ -776,8 +895,12 @@
       "recommended_fix": "Add server-side existence check or track push confirmation",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-027",
@@ -792,8 +915,12 @@
       "recommended_fix": "Make encrypt() fail if keys were explicitly deleted",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        99
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-028",
@@ -808,8 +935,12 @@
       "recommended_fix": "Remove stale comment",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "BE-029",
@@ -840,8 +971,12 @@
       "recommended_fix": "Remove dead code",
       "effort": "trivial",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-001",
@@ -936,8 +1071,12 @@
       "recommended_fix": "Map to AppText.icon* tokens: 28=iconMedium, 32=iconXL, etc.",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        85
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-007",
@@ -952,8 +1091,12 @@
       "recommended_fix": "Map to AppSpring/AppEasing tokens: 0.35s\u2192snappy, 0.5s\u2192smooth, 0.6s\u2192progress",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        94
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-008",
@@ -968,8 +1111,12 @@
       "recommended_fix": "Replace with ProgressBar component",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-009",
@@ -1016,8 +1163,12 @@
       "recommended_fix": "Replace 0.12\u2192subtle, 0.15\u2192disabled, 0.08\u2192hover. Document remaining non-token values.",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-012",
@@ -1032,8 +1183,12 @@
       "recommended_fix": "Replace with @ScaledMetric + Font.system(size:weight:.bold, design:.rounded)",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        94
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-013",
@@ -1048,8 +1203,12 @@
       "recommended_fix": "Add AppColor.Overlay.scrim token",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        93
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-014",
@@ -1064,8 +1223,12 @@
       "recommended_fix": "Replace 56 with AppSize.tabBarClearance",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        93
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DS-015",
@@ -1080,8 +1243,12 @@
       "recommended_fix": "Wire to interactive elements or document/remove",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-001",
@@ -1097,8 +1264,12 @@
       "effort": "trivial",
       "validation": "external-automated",
       "bias_risk": "low",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-002",
@@ -1131,8 +1302,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "low",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-004",
@@ -1148,8 +1323,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "low",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-005",
@@ -1165,8 +1344,12 @@
       "effort": "medium",
       "validation": "cross-referenced",
       "bias_risk": "medium",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-006",
@@ -1182,8 +1365,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "low",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-007",
@@ -1267,8 +1454,12 @@
       "effort": "medium",
       "validation": "cross-referenced",
       "bias_risk": "medium",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-012",
@@ -1318,8 +1509,12 @@
       "effort": "small",
       "validation": "framework-only",
       "bias_risk": "medium",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-015",
@@ -1335,8 +1530,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "high",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-016",
@@ -1352,8 +1551,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "medium",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-017",
@@ -1369,8 +1572,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "low",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-018",
@@ -1403,8 +1610,12 @@
       "effort": "trivial",
       "validation": "cross-referenced",
       "bias_risk": "high",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "FW-020",
@@ -1420,8 +1631,12 @@
       "effort": "trivial",
       "validation": "framework-only",
       "bias_risk": "medium",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-001",
@@ -1436,8 +1651,12 @@
       "recommended_fix": "Add EncryptionServiceTests.swift covering: round-trip encrypt/decrypt, wrong-key rejection, IV uniqueness, empty-data edge, corrupted-ciphertext handling, keychain key regeneration",
       "effort": "medium",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        91
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-002",
@@ -1452,8 +1671,12 @@
       "recommended_fix": "Add AuthManagerTests.swift covering: initial state, authentication transition, lock/unlock cycle, session expiry, concurrent sign-in protection",
       "effort": "medium",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        91
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-003",
@@ -1468,8 +1691,12 @@
       "recommended_fix": "Add CloudKitSyncServiceTests.swift with mock CKDatabase. Cover: zone setup, record serialisation, conflict resolution, offline queue",
       "effort": "high",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        92
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-004",
@@ -1484,8 +1711,12 @@
       "recommended_fix": "Add SupabaseSyncServiceTests.swift with mock URLSession. Cover: successful pull, 401 retry, network timeout, empty-delta, merge dispatch",
       "effort": "high",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        92
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-005",
@@ -1500,8 +1731,12 @@
       "recommended_fix": "Add HealthKitServiceTests.swift with mock HKHealthStore. Cover: permission grant/deny, HRV mapping, nil-data degradation",
       "effort": "high",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        91
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-006",
@@ -1516,8 +1751,12 @@
       "recommended_fix": "Add tests for: expired JWT, token refresh success/failure, OTP wrong-code, rate-limit surfacing",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        89
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-007",
@@ -1532,8 +1771,12 @@
       "recommended_fix": "Add AIOrchestratorTests.swift: cloud call with complete bands, adaptation above/below 0.4 threshold, error recovery",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        95
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-008",
@@ -1548,8 +1791,12 @@
       "recommended_fix": "Add AIAdaptersTests.swift with golden I/O per adapter. Focus on edge cases: zero meals, nil biometrics, no training logs",
       "effort": "medium",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        89
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-009",
@@ -1564,8 +1811,12 @@
       "recommended_fix": "Add tests: store/retrieve round-trip, TTL expiry, segment isolation, clear()",
       "effort": "low",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        98
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-010",
@@ -1580,8 +1831,12 @@
       "recommended_fix": "Add tests: valid passes, below-threshold fails, empty signals fails, segment mismatch fails",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        95
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-011",
@@ -1596,8 +1851,12 @@
       "recommended_fix": "Add mock-based tests for full deletion, partial failure, grace period enforcement",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        90
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-012",
@@ -1612,8 +1871,12 @@
       "recommended_fix": "Add WatchConnectivityServiceTests.swift with mock WCSession",
       "effort": "medium",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        95
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-013",
@@ -1628,8 +1891,12 @@
       "recommended_fix": "Add tests with mock UNUserNotificationCenter for scheduling, caps, quiet hours",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        95
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-014",
@@ -1644,8 +1911,12 @@
       "recommended_fix": "Add ReminderSchedulerTests.swift for lifetime limits, scheduling logic, trigger evaluation",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        98
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-015",
@@ -1660,8 +1931,12 @@
       "recommended_fix": "Add basic tests: defaults match spec, UserDefaults round-trip, migration",
       "effort": "low",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        89
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-016",
@@ -1676,8 +1951,12 @@
       "recommended_fix": "Add tests for phase advancement, exercise list, set templates",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        90
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-017",
@@ -1692,8 +1971,12 @@
       "recommended_fix": "Add tests: GoalProfile from each NutritionGoalMode, default when nil",
       "effort": "low",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        89
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-018",
@@ -1708,8 +1991,12 @@
       "recommended_fix": "Expose opacity as testable constant and assert against it",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        86
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-019",
@@ -1724,8 +2011,12 @@
       "recommended_fix": "Expose AppSpacing.allValues and iterate, or CI gate on tokens.json",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        89
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-020",
@@ -1740,8 +2031,12 @@
       "recommended_fix": "Write black-box test: AIOrchestrator with confidence 0.39 (no adaptation) and 0.41 (adaptation applied)",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        86
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-021",
@@ -1756,8 +2051,12 @@
       "recommended_fix": "Make isQuietHour() internal and test against production code",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        86
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-022",
@@ -1772,8 +2071,12 @@
       "recommended_fix": "Add tie-breaking, nil-timestamp, and nil-field-overwrite tests",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        89
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-023",
@@ -1788,8 +2091,12 @@
       "recommended_fix": "Introduce URLProtocol-based network stub. Add offline sync queuing, auth error, reconnect retry tests",
       "effort": "high",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        98
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-024",
@@ -1804,8 +2111,12 @@
       "recommended_fix": "Add malformed CSV, non-numeric, unknown field, and measure() performance tests",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        90
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-025",
@@ -1852,8 +2163,12 @@
       "recommended_fix": "Add performance tests: ReadinessEngine with 90 logs (<50ms), EncryptedDataStore load/save (<100ms)",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        90
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-028",
@@ -1868,8 +2183,12 @@
       "recommended_fix": "Add accessibility tests: all interactive elements have labels, min 44x44pt, Dynamic Type XXL no clip",
       "effort": "medium",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        90
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-029",
@@ -1884,8 +2203,12 @@
       "recommended_fix": "Extract as internal static function, test calls production code directly",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        88
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "TEST-030",
@@ -1900,8 +2223,12 @@
       "recommended_fix": "Replace with deterministic offsets or fixed seed",
       "effort": "low",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        86
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-001",
@@ -2012,8 +2339,12 @@
       "recommended_fix": "If archived, no action. If token variants needed, add AppText.metricResponsive",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-008",
@@ -2028,8 +2359,12 @@
       "recommended_fix": "Add AppText.brandWordmark token and use it",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-009",
@@ -2044,8 +2379,12 @@
       "recommended_fix": "Use appropriate AppText token",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-010",
@@ -2060,8 +2399,12 @@
       "recommended_fix": "Use AppText.iconMedium or appropriate token",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-011",
@@ -2076,8 +2419,12 @@
       "recommended_fix": "Use token + responsive layout (maxWidth instead of fixed width)",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-012",
@@ -2108,8 +2455,12 @@
       "recommended_fix": "Use AppText tokens",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-014",
@@ -2124,8 +2475,12 @@
       "recommended_fix": "Use AppShadow tokens",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-015",
@@ -2140,8 +2495,12 @@
       "recommended_fix": "Remove or wire into import feature nav",
       "effort": "small",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        93
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-016",
@@ -2156,8 +2515,12 @@
       "recommended_fix": "Wire into notification permission flow or remove",
       "effort": "small",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        93
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-017",
@@ -2204,8 +2567,12 @@
       "recommended_fix": "Add .accessibilityLabel(\"Helpful\") and .accessibilityLabel(\"Not helpful\")",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        85
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-020",
@@ -2220,8 +2587,12 @@
       "recommended_fix": "Add .accessibilityHint(\"Dismisses the upgrade prompt\")",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        85
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-021",
@@ -2236,8 +2607,12 @@
       "recommended_fix": "Use token if view is kept; remove with view if dead",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-022",
@@ -2252,8 +2627,12 @@
       "recommended_fix": "Use AppText.iconLarge token",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-023",
@@ -2268,8 +2647,12 @@
       "recommended_fix": "Add .disabled(true) with visual state, or implement functionality",
       "effort": "small",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-024",
@@ -2284,8 +2667,12 @@
       "recommended_fix": "Wire to RecommendationMemory or remove dead construction",
       "effort": "small",
       "validation": "external-automated",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        97
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "UI-025",
@@ -2300,8 +2687,12 @@
       "recommended_fix": "Batch archival when convenient \u2014 not blocking",
       "effort": "trivial",
       "validation": "framework-only",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        96
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-001",
@@ -2322,7 +2713,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-002",
@@ -2362,7 +2757,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-004",
@@ -2382,7 +2781,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        93
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-005",
@@ -2402,7 +2805,11 @@
       ],
       "confidence": 0.95,
       "validation": "cross-referenced",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-006",
@@ -2443,7 +2850,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-008",
@@ -2463,7 +2874,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        88
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-009",
@@ -2483,7 +2898,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        88
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-010",
@@ -2501,7 +2920,11 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-011",
@@ -2539,7 +2962,11 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-013",
@@ -2557,7 +2984,11 @@
       "root_cause_of": [],
       "confidence": 0.8,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-014",
@@ -2577,7 +3008,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AUTH-015",
@@ -2636,7 +3071,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-003",
@@ -2656,7 +3095,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-004",
@@ -2676,7 +3119,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-005",
@@ -2696,7 +3143,11 @@
       ],
       "confidence": 0.9,
       "validation": "external-automated",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-006",
@@ -2714,7 +3165,11 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-007",
@@ -2734,7 +3189,11 @@
       ],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-008",
@@ -2752,7 +3211,11 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-009",
@@ -2770,7 +3233,11 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-010",
@@ -2806,7 +3273,11 @@
       "root_cause_of": [],
       "confidence": 0.8,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-012",
@@ -2844,7 +3315,11 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        87
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-SYNC-014",
@@ -2883,7 +3358,11 @@
       ],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-001",
@@ -2905,7 +3384,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-002",
@@ -2925,7 +3408,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-003",
@@ -2966,7 +3453,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-005",
@@ -2986,7 +3477,11 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        84
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-006",
@@ -3006,7 +3501,12 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-007",
@@ -3027,7 +3527,12 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-008",
@@ -3047,7 +3552,12 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-009",
@@ -3067,7 +3577,12 @@
       ],
       "confidence": 0.9,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-010",
@@ -3085,7 +3600,12 @@
       "root_cause_of": [],
       "confidence": 0.85,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-011",
@@ -3121,7 +3641,12 @@
       "root_cause_of": [],
       "confidence": 0.8,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-013",
@@ -3139,7 +3664,12 @@
       "root_cause_of": [],
       "confidence": 0.8,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        99,
+        100
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     },
     {
       "id": "DEEP-AI-014",
@@ -3188,7 +3718,11 @@
       ],
       "confidence": 0.95,
       "validation": "framework-only",
-      "status": "open"
+      "status": "closed",
+      "closed_via_prs": [
+        83
+      ],
+      "closed_via": "Cross-referenced from git log + code grep (2026-04-19T09:27:23Z)"
     }
   ],
   "ux_compliance_matrix": {},
