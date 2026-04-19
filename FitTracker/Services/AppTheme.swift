@@ -331,39 +331,13 @@ enum AppGradient {
     )
 }
 
-// MARK: - Legacy compatibility aliases (DEPRECATED — migrate call sites to AppColor.*)
-// These exist only for backward compatibility with older view code.
-// Do not use in new code. Removal tracked for next cleanup pass.
-extension Color {
-    static let appOrange1 = AppColor.Brand.warmSoft
-    static let appOrange2 = AppColor.Brand.warm
-    static let appOrange3 = AppColor.Brand.primary
-    static let appBlue1   = AppColor.Brand.cool
-    static let appBlue2   = AppColor.Brand.secondary
-    static let appBlue3   = AppColor.Brand.coolSoft
-    static let appBlue4   = AppColor.Background.appSecondary
-
-    static let appSurface      = AppColor.Surface.primary
-    static let appStroke       = AppColor.Border.strong
-    static let appTextPrimary  = AppColor.Text.inversePrimary
-    static let appTextSecondary = AppColor.Text.inverseSecondary
-    static let appTextTertiary = AppColor.Text.inverseTertiary
-    static let appAccentPrimary = AppColor.Accent.primary
-    static let appAccentSoft   = AppColor.Brand.warmSoft.opacity(0.34)
-
-    enum status {
-        static let success = AppColor.Status.success
-        static let warning = AppColor.Status.warning
-        static let error   = AppColor.Status.error
-    }
-
-    enum accent {
-        static let primary = AppColor.Accent.primary
-        static let cyan   = AppColor.Accent.recovery
-        static let purple = AppColor.Accent.sleep
-        static let gold   = AppColor.Accent.achievement
-    }
-}
+// Audit DS-002 + DS-003 (Sprint K-7): the deprecated `Color.appOrange*` /
+// `appBlue*` / `appSurface` / `appStroke` / `appText*` / `appAccent*` /
+// `Color.status.*` / `Color.accent.*` aliases were removed here. All 57
+// call-sites across TrainingPlanView, NutritionView (v1+v2), and
+// MainScreenView were migrated to `AppColor.*` semantic tokens in the
+// same commit. Re-introducing any of these aliases would constitute a
+// design-system regression — use the `AppColor.*` namespace instead.
 
 // MARK: - Contrast validation (DEBUG only)
 #if DEBUG

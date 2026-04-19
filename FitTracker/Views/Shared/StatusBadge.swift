@@ -27,15 +27,15 @@ struct StatusBadge_Previews: PreviewProvider {
     static var previews: some View {
         VStack(spacing: AppSpacing.xSmall) {
             HStack(spacing: AppSpacing.xxSmall) {
-                StatusBadge(text: "Active", color: .status.success)
-                StatusBadge(text: "Pending", color: .status.warning)
-                StatusBadge(text: "Error", color: .status.error)
+                StatusBadge(text: "Active", color: AppColor.Status.success)
+                StatusBadge(text: "Pending", color: AppColor.Status.warning)
+                StatusBadge(text: "Error", color: AppColor.Status.error)
             }
 
             HStack(spacing: AppSpacing.xxSmall) {
-                StatusBadge(text: "Completed", color: .accent.cyan)
-                StatusBadge(text: "Premium", color: .accent.gold)
-                StatusBadge(text: "Featured", color: .accent.purple)
+                StatusBadge(text: "Completed", color: AppColor.Accent.recovery)
+                StatusBadge(text: "Premium", color: AppColor.Accent.achievement)
+                StatusBadge(text: "Featured", color: AppColor.Accent.sleep)
             }
         }
         .padding()
