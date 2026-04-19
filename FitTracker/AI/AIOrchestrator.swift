@@ -121,7 +121,16 @@ public final class AIOrchestrator: ObservableObject {
 
         latestRecommendations[segment] = finalRecommendation
 
-        // Validate and attach goal context
+        // Validate and attach goal context.
+        // Audit AI-011: if `setAdapters` hasn't been called yet (e.g., a test
+        // path that calls `process` directly without going through the
+        // app-wide `buildSnapshot` wrapper), bootstrap an empty-data adapter
+        // list so the freshness/evidence chain doesn't crash on an empty
+        // input. The empty adapters report `lastUpdated: nil`, which the
+        // freshness computation already handles as a "no data" signal.
+        if lastAdapters.isEmpty {
+            lastAdapters = Self.bootstrapEmptyAdapters()
+        }
         let validated = ValidatedRecommendation.validate(
             recommendation: finalRecommendation,
             snapshot: userSnapshot,
@@ -129,6 +138,32 @@ public final class AIOrchestrator: ObservableObject {
             goalProfile: goalProfile
         )
         validatedRecommendations[segment] = validated
+    }
+
+    /// Build a default-state adapter list for the AI-011 bootstrap path.
+    /// Each adapter is constructed with empty/default inputs and reports
+    /// `lastUpdated: nil` so the validation evidence chain has at least one
+    /// node per source even before the app wires the real adapter list via
+    /// `setAdapters`.
+    private static func bootstrapEmptyAdapters() -> [any AIInputAdapter] {
+        let emptyProfile = UserProfile()
+        let emptyPreferences = UserPreferences()
+        return [
+            ProfileAdapter(profile: emptyProfile, preferences: emptyPreferences, todayDayType: .restDay),
+            HealthKitAdapter(liveMetrics: LiveMetrics(), recentLogs: [], profile: emptyProfile, readiness: nil),
+            TrainingAdapter(recentLogs: [], todayDayType: .restDay),
+            NutritionAdapter(
+                latestLog: nil,
+                goalPlan: emptyProfile.nutritionPlan(
+                    currentWeightKg: emptyProfile.startWeightKg,
+                    currentBodyFatPercent: emptyProfile.startBodyFatPct,
+                    isTrainingDay: false,
+                    preferences: emptyPreferences
+                ),
+                liveMetrics: LiveMetrics(),
+                profile: emptyProfile
+            ),
+        ]
     }
 
     /// Process all segments sequentially for a full refresh.

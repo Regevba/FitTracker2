@@ -33,15 +33,18 @@ struct TrainingAdapter: AIInputAdapter {
 
     // MARK: - Private helpers (extracted from AISnapshotBuilder)
 
+    /// Audit AI-017: improved from the original 10min/exercise heuristic to
+    /// 15min/exercise with a 20min floor (covers rest between sets). True
+    /// session duration would require a `sessionMinutes` field on DailyLog
+    /// (model change, deferred). When no workout data exists at all, returns
+    /// nil — don't fabricate a fallback.
     private static func averageSessionMinutes(from logs: [DailyLog], fallbackDayType: DayType) -> Int? {
         let durations = logs.compactMap { log -> Int? in
             let cardioMinutes = Int(log.cardioLogs.values.compactMap(\.durationMinutes).reduce(0, +).rounded())
-            // ~15 min per exercise is a better heuristic than 10 (includes rest between sets)
             let strengthMinutes = log.exerciseLogs.isEmpty ? 0 : max(20, log.exerciseLogs.count * 15)
             let estimated = cardioMinutes + strengthMinutes
             return estimated > 0 ? estimated : nil
         }
-        // Return nil when no workout data exists — don't fabricate a fallback
         return durations.averageRounded
     }
 
@@ -59,6 +62,11 @@ struct TrainingAdapter: AIInputAdapter {
         return Int(total.rounded())
     }
 
+    /// Audit DEEP-AI-014: `scheduledSessions` is now sourced from
+    /// `snapshot.trainingDaysPerWeek` (set by ProfileAdapter from the user's
+    /// real `UserProfile.trainingDaysPerWeek` value — see AI-005), not a
+    /// hardcoded constant. When the user hasn't configured a target, returns
+    /// nil rather than fabricating a "high"/"low"/"moderate" classification.
     private static func workoutConsistency(completedSessions: Int, scheduledSessions: Int) -> String? {
         guard scheduledSessions > 0 else { return nil }
         let ratio = Double(completedSessions) / Double(scheduledSessions)

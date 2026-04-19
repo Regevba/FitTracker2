@@ -20,12 +20,18 @@ struct ProfileAdapter: AIInputAdapter {
 
     func contribute(to snapshot: inout LocalUserSnapshot) {
         snapshot.ageYears = profile.age
-        snapshot.genderIdentity = nil // no gender field in UserProfile — leave nil rather than fabricate
+        // Audit AI-004: gender stays nil until UserProfile gains a `gender` field.
+        // Better to surface insufficientData than fabricate "prefer_not_to_say".
+        snapshot.genderIdentity = nil
         snapshot.activeWeeks = max(0, Int(ceil(Double(profile.daysSinceStart) / 7.0)))
         snapshot.programPhase = todayDayType.aiProgramPhase
+        // Audit AI-005: pass the real user value (Int? — nil if not configured).
+        // No compile-time constant fallback; the snapshot honestly reports "not set".
         snapshot.trainingDaysPerWeek = profile.trainingDaysPerWeek
         snapshot.primaryGoal = Self.primaryGoal(for: preferences)
-        snapshot.dietPattern = nil // no diet pattern field in UserPreferences — leave nil rather than fabricate
+        // Audit AI-006: dietPattern stays nil until UserPreferences gains a
+        // `dietPattern` field. Same reasoning as AI-004.
+        snapshot.dietPattern = nil
     }
 
     private static func primaryGoal(for preferences: UserPreferences) -> String {

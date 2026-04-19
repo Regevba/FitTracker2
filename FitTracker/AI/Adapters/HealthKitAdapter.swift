@@ -23,7 +23,9 @@ struct HealthKitAdapter: AIInputAdapter {
     func contribute(to snapshot: inout LocalUserSnapshot) {
         let recent7 = Array(recentLogs.prefix(7))
 
-        // BMI — only from measured weight, never from startWeightKg (which may be stale)
+        // BMI — only from measured weight, never from startWeightKg (which may be stale).
+        // Audit AI-008 / DEEP-AI-003: source order is liveMetrics → most-recent log → nil.
+        // No fallback to profile.startWeightKg.
         let currentWeight = liveMetrics.weightKg
             ?? recentLogs.first?.biometrics.weightKg
         snapshot.bmiValue = Self.bmi(weightKg: currentWeight, heightCm: profile.heightCm)
@@ -56,6 +58,9 @@ struct HealthKitAdapter: AIInputAdapter {
 
     // MARK: - Private helpers (extracted from AISnapshotBuilder)
 
+    /// Audit AI-009 / DEEP-AI-003: enforce plausibility bounds before computing
+    /// BMI. Heights outside 100-250cm and weights outside 30-300kg return nil
+    /// instead of producing nonsense bands ("underweight" for a 1cm subject).
     private static func bmi(weightKg: Double?, heightCm: Double) -> Double? {
         guard let weightKg, heightCm >= 100, heightCm <= 250,
               weightKg >= 30, weightKg <= 300 else { return nil }
@@ -81,13 +86,21 @@ struct HealthKitAdapter: AIInputAdapter {
 
     private static func stressLevel(from log: DailyLog?) -> String? {
         guard let log else { return nil }
-        // Only infer stress when we have at least one subjective signal
+        // At least one subjective signal must be present.
         guard log.mood != nil || log.energyLevel != nil || log.cravingLevel != nil else { return nil }
+        // Audit AI-007: only emit a classification when there's STRONG evidence.
+        // Previously we returned "moderate" as a default whenever any signal
+        // was present — that fabricated a confidence level (and suppressed the
+        // orchestrator's `insufficientData` UX path) from one weak data point.
+        // New rule:
+        //   - Any extreme signal (mood ≤2, energy ≤2, craving ≥4) → "high"
+        //   - Both mood AND energy ≥4 → "low" (need two corroborating signals)
+        //   - Otherwise → nil (do not fabricate "moderate" from weak data)
         if let mood = log.mood, mood <= 2 { return "high" }
         if let energy = log.energyLevel, energy <= 2 { return "high" }
         if let craving = log.cravingLevel, craving >= 4 { return "high" }
         if let mood = log.mood, mood >= 4, let energy = log.energyLevel, energy >= 4 { return "low" }
-        return "moderate"
+        return nil
     }
 
     private static func sleepQuality(for hours: Double?) -> String? {

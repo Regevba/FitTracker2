@@ -29,6 +29,9 @@ struct NutritionAdapter: AIInputAdapter {
         )
         snapshot.dailyProteinGrams = latestNutrition?.resolvedProteinG
         snapshot.proteinTargetGrams = goalPlan.proteinG
+        // Audit AI-010: count only `.completed` meal entries — never planned-
+        // but-uneaten meals. Returns nil rather than 0 so the orchestrator
+        // surfaces "no meals logged today" instead of "user ate 0 meals".
         let completedMealCount = latestNutrition?.meals.filter { $0.status == .completed }.count
         snapshot.mealsPerDay = (completedMealCount ?? 0) > 0 ? completedMealCount : nil
     }

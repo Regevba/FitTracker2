@@ -211,8 +211,11 @@ final class ValidatedRecommendationTests: XCTestCase {
         XCTAssertEqual(result.sourceFreshness, 0.1, "200h-old adapter → stale floor 0.1")
     }
 
-    func testValidate_picksNewestAdapterForFreshness() {
-        // Mix of stale + fresh — must use the newest
+    func testValidate_averagesPerAdapterFreshness() {
+        // Audit DEEP-AI-011: freshness now averages per-adapter scores instead
+        // of taking the newest adapter's score. One fresh adapter (1.0) and one
+        // stale adapter (0.1, 200h old → "stale" band) → mean = 0.55.
+        // Previous behavior (newest-only) returned 1.0, masking the stale source.
         let stale = TestAdapter(sourceID: "old", lastUpdated: Date().addingTimeInterval(-200 * 3600))
         let fresh = TestAdapter(sourceID: "new", lastUpdated: Date())
 
@@ -222,8 +225,8 @@ final class ValidatedRecommendationTests: XCTestCase {
             adapters: [stale, fresh],
             goalProfile: .muscleGain
         )
-        XCTAssertEqual(result.sourceFreshness, 1.0,
-                       "Freshness must use the newest adapter, not the average or oldest")
+        XCTAssertEqual(result.sourceFreshness, 0.55, accuracy: 0.001,
+                       "Freshness must be the mean of per-adapter scores, not just the newest (DEEP-AI-011)")
     }
 
     // ── Combined confidence ──────────────────────────────
