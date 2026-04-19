@@ -111,8 +111,10 @@ public final class FoundationModelService: FoundationModelProtocol {
 
         if let goal = snapshot.primaryGoal {
             lines.append("Goal: \(goal)")
-            // Goal-aware emphasis: tell the LLM what to prioritize
-            let goalMode = NutritionGoalMode(rawValue: goal) ?? .fatLoss
+            // Goal-aware emphasis: tell the LLM what to prioritize.
+            // Audit AI-014: parse the snake_case primaryGoal via the
+            // dedicated initializer (rawValue init never matched).
+            let goalMode = NutritionGoalMode(primaryGoalString: goal) ?? .fatLoss
             let profile = GoalProfile.forGoal(goalMode)
             if let segment = AISegment(rawValue: recommendation.segment),
                let emphasis = profile.messagingEmphasis[segment] {

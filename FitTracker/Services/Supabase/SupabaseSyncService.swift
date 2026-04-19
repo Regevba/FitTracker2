@@ -43,6 +43,11 @@ final class SupabaseSyncService: ObservableObject {
     /// Namespace UserDefaults keys by userID so multi-account usage doesn't leak state.
     private var currentUserID: String?
 
+    /// Namespace UserDefaults keys by userID. Audit BE-009 (lastPull) and
+    /// BE-012 (singleton sync digests for user_profile / user_preferences /
+    /// meal_templates) — both classes of keys are wrapped at every read/write
+    /// site in this service via `userScopedKey`, and `migrateUserDefaultsKeys`
+    /// transparently migrates legacy un-namespaced data on first use.
     private func userScopedKey(_ base: String) -> String {
         guard let userID = currentUserID else { return base }
         return "\(userID).\(base)"
@@ -156,8 +161,17 @@ final class SupabaseSyncService: ObservableObject {
             return
         }
         guard case .idle = status else { return }
-        let session = try? await supabase.auth.session
-        guard let userID = session?.user.id else { return }
+        // Audit BE-008: distinguish "no session" (skip silently) from
+        // "auth expired / network error" (surface as failed status).
+        let session: Session
+        do {
+            session = try await supabase.auth.session
+        } catch {
+            syncLogger.error("fetchChanges: auth session unavailable: \(error.localizedDescription)")
+            status = .failed("Auth session expired")
+            return
+        }
+        let userID = session.user.id
         currentUserID = userID.uuidString
         migrateUserDefaultsKeys(userID: userID.uuidString)
         status = .syncing
@@ -173,8 +187,16 @@ final class SupabaseSyncService: ObservableObject {
             return
         }
         guard case .idle = status else { return }
-        let session = try? await supabase.auth.session
-        guard let userID = session?.user.id else { return }
+        // BE-008: explicit error vs no-session distinction.
+        let session: Session
+        do {
+            session = try await supabase.auth.session
+        } catch {
+            syncLogger.error("fetchAllRecords: auth session unavailable: \(error.localizedDescription)")
+            status = .failed("Auth session expired")
+            return
+        }
+        let userID = session.user.id
 
         currentUserID = userID.uuidString
         migrateUserDefaultsKeys(userID: userID.uuidString)
@@ -204,7 +226,16 @@ final class SupabaseSyncService: ObservableObject {
             return
         }
         guard realtimeChannel == nil else { return }   // already subscribed
-        guard let session = try? await supabase.auth.session else { return }
+        // BE-008: realtime subscription is best-effort — log auth errors but
+        // don't fail the whole service (the channel will be retried on next
+        // app foreground).
+        let session: Session
+        do {
+            session = try await supabase.auth.session
+        } catch {
+            syncLogger.error("subscribeRealtime: auth session unavailable: \(error.localizedDescription)")
+            return
+        }
         let userID = session.user.id.uuidString
 
         let channel = supabase.realtimeV2.channel("sync_records:\(userID)")
@@ -260,10 +291,10 @@ final class SupabaseSyncService: ObservableObject {
             status = .disabled
             throw SupabaseRuntimeConfiguration.missingConfigurationError
         }
-        let session = try? await supabase.auth.session
-        guard let userID = session?.user.id else {
-            throw FTAuthError.unknown
-        }
+        // BE-008: throw the underlying auth error rather than masking it as
+        // "unknown" — callers can distinguish "no session" from "auth expired".
+        let session = try await supabase.auth.session
+        let userID = session.user.id
         let encrypted = try await EncryptionService.shared.encryptRaw(imageData)
         let path = "\(userID.uuidString)/\(log.date.isoDateString)/\(cardioType.lowercased()).ftenc"
 
@@ -340,9 +371,18 @@ final class SupabaseSyncService: ObservableObject {
             status = .disabled
             throw SupabaseRuntimeConfiguration.missingConfigurationError
         }
-        guard let session = try? await supabase.auth.session else {
+        // BE-008: surface auth errors so the deletion cascade retries. Only
+        // a truly missing session (sessionMissing) silently no-ops — any
+        // other error (network, expired refresh token) bubbles up.
+        let session: Session
+        do {
+            session = try await supabase.auth.session
+        } catch AuthError.sessionMissing {
             syncLogger.notice("deleteAllUserData: no active session, nothing to delete")
             return
+        } catch {
+            syncLogger.error("deleteAllUserData: auth error: \(error.localizedDescription)")
+            throw error
         }
         let userID = session.user.id.uuidString
         status = .syncing

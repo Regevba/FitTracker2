@@ -118,8 +118,12 @@ extension AIRecommendation {
         goalProfile: GoalProfile? = nil
     ) -> AIRecommendation {
         var signals: [String] = []
+        // Audit AI-014: snapshot.primaryGoal stores snake_case ("weight_loss")
+        // emitted by ProfileAdapter, NOT the enum's display rawValue ("Fat Loss").
+        // Parse via the dedicated initializer so the goal-aware paths actually
+        // fire instead of silently defaulting to .fatLoss.
         let profile = goalProfile ?? GoalProfile.forGoal(
-            NutritionGoalMode(rawValue: snapshot.primaryGoal ?? "") ?? .fatLoss
+            NutritionGoalMode(primaryGoalString: snapshot.primaryGoal) ?? .fatLoss
         )
 
         switch segment {
