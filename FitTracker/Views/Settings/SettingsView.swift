@@ -3,6 +3,13 @@
 // .claude/features/settings-v2/v2-audit-report.md for the gap analysis.
 // This file is no longer in the build target; it stays in the repo
 // as a reviewable reference for the v1 → v2 diff.
+//
+// Audit UI-005 closure (2026-04-19): file is correctly excluded from the
+// Sources build phase in FitTracker.xcodeproj. The Sources entry references
+// v2/SettingsView.swift; the v1 file has only a PBXFileReference (visible
+// in git history + navigator) without a PBXBuildFile entry. No code change
+// required — the audit's "1189-line file" concern is moot because the file
+// is dead weight in the repo, not in the binary.
 
 import SwiftUI
 import LocalAuthentication
