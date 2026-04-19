@@ -55,10 +55,11 @@ struct MealEntrySheet: View {
     @State private var savedTemplate = false
 
     // Search tab
+    // Audit UI-017: search state + async network logic moved to
+    // FoodSearchService (in Services/). Only the user-input text binding
+    // (searchQuery) stays in the view — that's pure UI state.
     @State private var searchQuery: String = ""
-    @State private var searchResults: [FoodProduct] = []
-    @State private var isSearching: Bool = false
-    @State private var searchError: String? = nil
+    @StateObject private var foodSearch = FoodSearchService()
 
     // Barcode scanner
     @State private var showScanner: Bool = false
@@ -394,13 +395,13 @@ struct MealEntrySheet: View {
 
                     AppButton(
                         title: "",
-                        systemImage: isSearching ? "clock" : "magnifyingglass",
+                        systemImage: foodSearch.isSearching ? "clock" : "magnifyingglass",
                         hierarchy: .primary,
                         isFullWidth: false
                     ) {
                         runTextSearch()
                     }
-                    .disabled(searchQuery.trimmingCharacters(in: .whitespaces).isEmpty || isSearching)
+                    .disabled(searchQuery.trimmingCharacters(in: .whitespaces).isEmpty || foodSearch.isSearching)
                 }
 
                 #if os(iOS)
@@ -413,7 +414,7 @@ struct MealEntrySheet: View {
                 }
                 #endif
 
-                if let error = searchError {
+                if let error = foodSearch.searchError {
                     HStack(spacing: AppSpacing.xxSmall) {
                         Image(systemName: "exclamationmark.triangle.fill")
                             .foregroundStyle(AppColor.Status.error)
@@ -431,7 +432,7 @@ struct MealEntrySheet: View {
             Divider()
 
             // Results
-            if searchResults.isEmpty && !isSearching {
+            if foodSearch.searchResults.isEmpty && !foodSearch.isSearching {
                 Spacer()
                 EmptyStateView(
                     icon: "magnifyingglass",
@@ -439,13 +440,13 @@ struct MealEntrySheet: View {
                     subtitle: "Type a food name above or scan a barcode to find nutrition data."
                 )
                 Spacer()
-            } else if isSearching {
+            } else if foodSearch.isSearching {
                 Spacer()
                 ProgressView("Searching…")
                     .font(AppText.subheading)
                 Spacer()
             } else {
-                List(searchResults) { product in
+                List(foodSearch.searchResults) { product in
                     Button {
                         fillFromProduct(product)
                     } label: {
@@ -673,78 +674,21 @@ struct MealEntrySheet: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private func matchingLocalFoods(for query: String) -> [FoodProduct] {
-        let normalized = query.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
-        return FoodProduct.referenceFoods.filter { product in
-            product.searchAliases.contains {
-                $0.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current).contains(normalized)
-            }
-        }
-    }
-
-    private func deduplicatedProducts(_ products: [FoodProduct]) -> [FoodProduct] {
-        var seen = Set<String>()
-        return products.filter { product in
-            seen.insert(product.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()).inserted
-        }
-    }
-
     // ─────────────────────────────────────────────────────
-    // MARK: – Networking
+    // MARK: – Networking — thin shims over FoodSearchService
+    // Audit UI-017: actual implementation lives in
+    // Services/FoodSearchService.swift. The view only triggers + observes.
     // ─────────────────────────────────────────────────────
 
     private func runTextSearch() {
-        let query = searchQuery.trimmingCharacters(in: .whitespaces)
-        guard !query.isEmpty else { return }
-        searchError = nil
-        isSearching = true
-        searchResults = matchingLocalFoods(for: query)
-
-        Task {
-            defer { isSearching = false }
-            guard let encoded = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
-                  let url = URL(string: "https://world.openfoodfacts.org/cgi/search.pl?search_terms=\(encoded)&search_simple=1&action=process&json=1&page_size=10")
-            else {
-                searchError = "Invalid search query."
-                return
-            }
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                let decoded = try JSONDecoder().decode(OFFSearchResponse.self, from: data)
-                let remoteResults = decoded.products.compactMap { FoodProduct(from: $0) }
-                searchResults = deduplicatedProducts(searchResults + remoteResults)
-                if searchResults.isEmpty {
-                    searchError = "No results found."
-                }
-            } catch {
-                if searchResults.isEmpty {
-                    searchError = "Search failed: \(error.localizedDescription)"
-                }
-            }
-        }
+        Task { await foodSearch.search(query: searchQuery) }
     }
 
     private func fetchProduct(barcode: String) {
-        searchError = nil
-        isSearching = true
         activeTab = .search
-
         Task {
-            defer { isSearching = false }
-            guard let url = URL(string: "https://world.openfoodfacts.org/api/v0/product/\(barcode).json") else {
-                searchError = "Invalid barcode."
-                return
-            }
-            do {
-                let (data, _) = try await URLSession.shared.data(from: url)
-                let decoded = try JSONDecoder().decode(OFFProductResponse.self, from: data)
-                if let raw = decoded.product, let product = FoodProduct(from: raw) {
-                    fillFromProduct(product)
-                } else {
-                    searchError = "Product not found for barcode \(barcode)."
-                }
-            } catch {
-                searchError = "Barcode lookup failed: \(error.localizedDescription)"
+            if let product = await foodSearch.fetchProduct(barcode: barcode) {
+                fillFromProduct(product)
             }
         }
     }
@@ -754,15 +698,17 @@ struct MealEntrySheet: View {
 // MARK: – OpenFoodFacts response models
 // ─────────────────────────────────────────────────────────
 
-private struct OFFSearchResponse: Decodable {
+// Audit UI-017: visibility bumped from `private` to internal so
+// FoodSearchService can decode these. Otherwise unchanged.
+struct OFFSearchResponse: Decodable {
     var products: [OFFProduct]
 }
 
-private struct OFFProductResponse: Decodable {
+struct OFFProductResponse: Decodable {
     var product: OFFProduct?
 }
 
-private struct OFFProduct: Decodable {
+struct OFFProduct: Decodable {
     var product_name: String?
 
     struct Nutriments: Decodable {
@@ -785,7 +731,9 @@ private struct OFFProduct: Decodable {
 // MARK: – Parsed food product (view model)
 // ─────────────────────────────────────────────────────────
 
-private struct FoodProduct: Identifiable {
+// Audit UI-017: visibility bumped from `private` to internal so
+// FoodSearchService can produce these. Otherwise unchanged.
+struct FoodProduct: Identifiable {
     let id = UUID()
     var name:             String
     var caloriesPer100g:  Double?
