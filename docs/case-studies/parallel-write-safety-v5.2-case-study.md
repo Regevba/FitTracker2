@@ -1,5 +1,7 @@
 # Case Study: Parallel Write Safety — Framework v5.2 Sub-Project B
 
+**Date written:** 2026-04-16
+
 > **Core question:** Can deterministic file-level isolation (snapshot/rollback + region-based mirror pattern) eliminate the luck dependency from parallel multi-agent writes to shared files?
 
 ## 1. Summary Card

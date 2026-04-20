@@ -1,5 +1,7 @@
 # Six Features Roundup — Honest Backlog Accounting
 
+**Date written:** 2026-04-20
+
 > **Subtitle:** Six features that shipped before the "every feature gets a case study" rule landed, or slipped through it — consolidated into one roundup so the record is honest rather than padded with six thin fabrications.
 
 ## Why This Roundup Exists

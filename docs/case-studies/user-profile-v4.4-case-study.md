@@ -1,5 +1,7 @@
 # User Profile Settings — v4.4 Case Study
 
+**Date written:** 2026-04-13
+
 > Framework v4.4 (Eval-Driven Development) executing a **new UI feature**
 > through the full 10-phase PM lifecycle. First feature to use mandatory
 > case study tracking, eval definitions, and the 6-phase skill lifecycle.

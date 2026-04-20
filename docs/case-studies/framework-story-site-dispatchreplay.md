@@ -1,5 +1,7 @@
 # Watching the Framework Build the Site That's Replaying It — The DispatchReplay Component
 
+**Date written:** 2026-04-20
+
 > ⚙️ **Developer deep-dive.** React + Framer Motion · IntersectionObserver scroll-sync · meta-recursive trace design · Next.js 16 client components in MDX. PM/HR readers: this one is about how the animated demo on `/framework/dispatch` was designed and built — skip unless you want the motion-grammar rationale.
 
 > Static blueprint diagrams tell you *what* a system is. They don't tell you whether it's running. Here's what changed when we made the framework visually execute in front of the reader — and why one of the two traces had to be the build of the site itself.

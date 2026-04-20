@@ -1,5 +1,7 @@
 # FitTracker Evolution Walkthrough
 
+**Date written:** 2026-04-01
+
 This document explains the project in plain language: where it started, why it changed, how the product and design system evolved, and what is approved today.
 
 It is written for contributors, reviewers, design collaborators, and anyone who needs to understand the project without reading raw git history first.

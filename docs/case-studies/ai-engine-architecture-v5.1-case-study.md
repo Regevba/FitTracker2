@@ -1,5 +1,7 @@
 # Case Study: AI Engine Architecture Adaptation — v5.1
 
+**Date written:** 2026-04-15
+
 > **Core question:** How did framework v5.1 affect development speed and quality for a cross-cutting architectural enhancement?
 
 ---

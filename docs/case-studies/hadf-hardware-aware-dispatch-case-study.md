@@ -1,5 +1,7 @@
 # HADF Case Study: Hardware-Aware Dispatch Framework
 
+**Date written:** 2026-04-16
+
 > **Framework Version:** v6.0 (HADF extends v6.0 with hardware awareness)
 > **Date:** 2026-04-16
 > **Author:** PM Workflow (subagent-driven execution)

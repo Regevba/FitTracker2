@@ -1,5 +1,7 @@
 # M-2 — MealEntrySheet Decomposition — Case Study
 
+**Date written:** 2026-04-19
+
 > Framework v6.1 | cleanup_program | 2026-04-19 | PRs #126 + #127 + #128 + #129 + this PR
 >
 > **Predecessor:** `m-1-settings-decomposition-case-study.md` ended with 4 audit findings open. After M-2 closes UI-004, **3 remain** — all in pre-classified multi-session feature (M-4) or external blocker (BE-024, DEEP-SYNC-010) buckets.

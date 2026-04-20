@@ -1,5 +1,7 @@
 # Post-Stress-Test Audit Remediation — Case Study
 
+**Date written:** 2026-04-19
+
 > Framework v6.1 | Chore (audit + framework hardening) → Fix (multi-sprint cleanup) | 2026-04-18 → 2026-04-19 | PRs #96-#116 (21 PRs)
 >
 > **Predecessor:** `meta-analysis-audit-and-remediation-case-study.md` ended at PR #94 with 127/170 actionable findings closed (74.7%) and 5 audit Sprints A-E complete.

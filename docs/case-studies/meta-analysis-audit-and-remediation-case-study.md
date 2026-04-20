@@ -1,5 +1,7 @@
 # Meta-Analysis: Full-System Audit & Remediation — Case Study
 
+**Date written:** 2026-04-17
+
 > Framework v6.1 | Chore → Fix | Audit (2026-04-16) → Remediation (2026-04-17) | PRs #84, #85, #86
 
 ---

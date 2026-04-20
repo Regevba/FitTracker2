@@ -1,5 +1,7 @@
 # Case Study Normalization Framework
 
+**Date written:** 2026-04-15
+
 > **Purpose:** Ensure all PM workflow case studies are comparable regardless of feature complexity. Raw metrics (wall time, files, tasks) are meaningless without normalization because a 22-task UI refactor with auth is fundamentally different from a 4-task backend enhancement.
 >
 > **Updated:** 2026-04-15

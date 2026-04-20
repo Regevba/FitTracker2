@@ -1,5 +1,7 @@
 # Audit v2 — Concurrent 6-Group Stress Test (Case Study)
 
+**Date written:** 2026-04-18
+
 > Framework v6.1 | Stress Test | 2026-04-18 | **CLOSED — Option C selected: stop and treat findings as the deliverable**
 
 ## Decision (2026-04-18)

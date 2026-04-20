@@ -1,5 +1,7 @@
 # M-3 — Design System Completion + Dark Mode — Case Study
 
+**Date written:** 2026-04-19
+
 > Framework v6.1 | cleanup_program | 2026-04-19 | PRs #118 + #119 + #120 + this PR
 >
 > **Predecessor:** `post-stress-test-audit-remediation-case-study.md` ended with 8 audit findings open. After M-3, 5 remain — all in pre-classified multi-session feature (M-1, M-2, M-4) or external blocker (BE-024, DEEP-SYNC-010) buckets.

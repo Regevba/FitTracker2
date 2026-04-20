@@ -2,6 +2,8 @@
 
 # PM-Flow Hub Showcase — Onboarding v2 UX Alignment
 
+**Date written:** 2026-04-07
+
 > **Purpose:** Exemplar walkthrough of the enhanced `/pm-workflow` skill running a **retroactive UX alignment** on a feature whose UX phase was skipped. Documents every phase, gate, decision, and hook invocation so future alignment runs have a reference.
 >
 > **Companion to:** `.claude/skills/pm-workflow/SKILL.md`, `docs/design-system/ux-foundations.md`, `docs/project/figma-onboarding-v2-prompt.md`

@@ -1,5 +1,7 @@
 # Maintenance Cleanup + Operations Control Room
 
+**Date written:** 2026-04-13
+
 > **Work type:** Enhancement + cleanup program  
 > **Status:** In progress  
 > **Started:** 2026-04-11  

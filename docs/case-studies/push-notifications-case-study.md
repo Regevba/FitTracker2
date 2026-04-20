@@ -1,5 +1,7 @@
 # Push Notifications — Case Study
 
+**Date written:** 2026-04-20
+
 > Framework v5.2 | feature | 2026-04-12 → 2026-04-16 | Commits `8d7d2d5` → `b07eb5a`
 >
 > **Headline:** The first feature to complete a full v5.2 PM lifecycle end-to-end — research through merge in 3.5 calendar days, 12 tasks, 18 tests, 10 analytics events, 2 critical review findings caught and fixed before close.

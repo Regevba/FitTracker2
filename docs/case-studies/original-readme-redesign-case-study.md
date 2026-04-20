@@ -2,6 +2,8 @@
 
 # FitTracker — Redesign Case Study
 
+**Date written:** 2026-02-28
+
 FitTracker is an iPhone-first fitness command center designed to help a user understand today, act quickly, and stay consistent across training, nutrition, recovery, and body-composition goals.
 
 This repository is both a product build and a redesign case study. It shows how the app evolved from a capable but visually inconsistent SwiftUI project into a more unified Apple-first experience with a real design system, screen-by-screen review process, and live Figma assets.

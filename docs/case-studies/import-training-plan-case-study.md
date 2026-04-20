@@ -1,5 +1,7 @@
 # Import Training Plan — Case Study
 
+**Date written:** 2026-04-20
+
 > **Subtitle:** The v5.1 parallel-stress-test feature that shipped a working parser + mapper + 23 unit tests in one sprint — then had its UI archived as dead code three days later when the audit proved it was never wired in.
 
 | Field | Value |

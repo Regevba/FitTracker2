@@ -1,5 +1,7 @@
 # Meta-Analysis Full-System Audit — Case Study
 
+**Date written:** 2026-04-16
+
 > Framework v6.1 | Chore | 4-Layer Risk-Weighted Parallel Sweep | 2026-04-16
 
 ---

@@ -1,5 +1,7 @@
 # FitMe — Product Management Lifecycle Skill
 
+**Date written:** 2026-04-02
+
 > A data-driven, AI-orchestrated product management system built as a Claude Code skill.  
 > Automates the full feature lifecycle from research to production with gated approvals, UX research, design system compliance, and post-launch metrics review.
 

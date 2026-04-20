@@ -1,5 +1,7 @@
 # Smart Reminders — Case Study
 
+**Date written:** 2026-04-20
+
 > Framework v5.1 | feature (new_capability) | 2026-04-15 → 2026-04-16 | surfaced retroactively 2026-04-20
 >
 > **Headline:** Six reminder types, a reusable guest-lock overlay, and a frequency-cap engine — all designed, specified, implemented, and test-covered during a parallel stress test that advanced four features simultaneously. No dedicated PR, no feature branch: the work landed through the v5.1 stress-test phase commits, and this case study is the first time it is documented end-to-end.

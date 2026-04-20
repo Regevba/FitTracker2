@@ -2,6 +2,8 @@
 
 # Control Center Alignment + IA Refresh
 
+**Date written:** 2026-04-13
+
 ## Why this case study exists
 
 The first operations control room proved that the dashboard could act as a real PM-flow operator surface, but it still mixed too many jobs into one long page. Knowledge reading, case-study browsing, future research zones, and operational monitoring all lived together, which made the system harder to scan and easier to misread.

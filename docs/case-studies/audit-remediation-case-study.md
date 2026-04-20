@@ -1,5 +1,7 @@
 # Audit Remediation — Case Study
 
+**Date written:** 2026-04-17
+
 > Framework v6.1 | Fix | 9-Phase Severity-Ordered Remediation | 2026-04-17
 
 ---

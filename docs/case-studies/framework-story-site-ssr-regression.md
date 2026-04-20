@@ -1,5 +1,7 @@
 # The Blank-Main Bug — Catching a Production SSR Regression After Promoting
 
+**Date written:** 2026-04-20
+
 > ⚙️ **Developer deep-dive.** Next.js 16 · `useSearchParams` · Suspense · static generation. PM/HR readers: this one's for the engineering side of the house — skip unless you want the code-level debug story.
 
 > What does it look like when every page on a freshly-deployed site ships 251 characters of HTML? Here's the production incident nobody saw coming, because nobody looked past HTTP 200.

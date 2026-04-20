@@ -1,5 +1,7 @@
 # M-4 — XCUITest Infrastructure — Case Study
 
+**Date written:** 2026-04-20
+
 > Framework v6.1 | cleanup_program | 2026-04-20 | PRs #131 + #132 + this PR
 >
 > **Predecessor:** `m-2-mealentrysheet-decomposition-case-study.md` ended with 3 audit findings open. After M-4 closes TEST-025, **2 remain** — both external blockers (BE-024, DEEP-SYNC-010).

@@ -1,5 +1,7 @@
 # M-1 — SettingsView (v2) Decomposition — Case Study
 
+**Date written:** 2026-04-19
+
 > Framework v6.1 | cleanup_program | 2026-04-19 | PRs #122 + #123 + #124 + this PR
 >
 > **Predecessor:** `m-3-design-system-completion-case-study.md` ended with 5 audit findings open. After M-1 closes UI-002, **4 remain** — all in pre-classified multi-session feature (M-2, M-4) or external blocker (BE-024, DEEP-SYNC-010) buckets.

@@ -1,5 +1,7 @@
 # Case Study: Onboarding v2 Auth Flow — v5.1
 
+**Date written:** 2026-04-15
+
 > **Core question:** How did framework v5.1 handle a feature that required full PM lifecycle + multiple design iteration cycles from manual testing?
 
 ---

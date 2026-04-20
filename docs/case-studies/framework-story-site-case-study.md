@@ -1,5 +1,7 @@
 # Building the Site That Tells the Story — A Two-Hour Meta-Build
 
+**Date written:** 2026-04-20
+
 > How the PM framework built the website that would host its own case studies.
 > 37 commits, 2 hours of wall clock, zero rollbacks — but the interesting parts are the failures.
 
