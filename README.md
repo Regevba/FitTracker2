@@ -341,7 +341,7 @@ Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](do
 | [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
 | [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized roadmap with phase gates |
 | [Master Plan](docs/master-plan/master-plan-2026-04-15.md) | Current master plan — 49+ shipped features, gate status, priorities |
-| [Case Studies](docs/case-studies/) | 7 tracked case studies with normalized velocity analysis |
+| [Case Studies](docs/case-studies/) | 16 tracked case studies with normalized velocity analysis |
 | [Stabilization Report](docs/master-plan/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |
 | [Firebase Setup](docs/setup/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
