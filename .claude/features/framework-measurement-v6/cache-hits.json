@@ -1,4 +1,7 @@
 {
+  "_status": "template_awaiting_first_instrumented_run",
+  "_status_note": "This file is an intentionally-empty template (all hit_rate fields = 0.0) pre-HADF. The v6.0 measurement instrumentation was scoped to the standard 9-phase PM lifecycle, which had not been exercised on a dedicated feature since measurement landed. HADF will be the first feature to populate this ledger with real L1/L2/L3 cache hit rates as its 9 tasks run. Approved 2026-04-20 per open-items audit \u00a7 #3.",
+  "_last_reviewed": "2026-04-20",
   "feature": "framework-measurement-v6",
   "framework_version": "6.0",
   "sessions": [
@@ -7,9 +10,12 @@
       "hits": [],
       "misses": [],
       "summary": {
-        "L1_hits": 0, "L1_misses": 0,
-        "L2_hits": 0, "L2_misses": 0,
-        "L3_hits": 0, "L3_misses": 0,
+        "L1_hits": 0,
+        "L1_misses": 0,
+        "L2_hits": 0,
+        "L2_misses": 0,
+        "L3_hits": 0,
+        "L3_misses": 0,
         "total_hit_rate": 0.0
       }
     }

@@ -3,9 +3,9 @@
   "case_study": "docs/case-studies/import-training-plan-case-study.md",
   "case_study_showcase": "04-case-studies/23-import-training-plan.md",
   "created": "2026-04-11T00:00:00Z",
-  "updated": "2026-04-16T05:30:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": null,
-  "current_phase": "complete",
+  "current_phase": "implementation",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -89,6 +89,13 @@
       "timestamp": "2026-04-16T05:30:00Z",
       "approved_by": "user",
       "note": "All tasks implemented. BUILD SUCCEEDED. Feature complete."
+    },
+    {
+      "from": "complete",
+      "to": "implementation",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_audit",
+      "note": "Reopened 2026-04-20 per UI-015: feature shipped infra + tests but no entry point exists. Partial ship flagged per open-items review \u00a7 #12."
     }
   ],
   "tasks": [],
@@ -150,5 +157,17 @@
     "Trainerize \u2014 coach-to-client plan handoff",
     "Notion fitness templates \u2014 markdown table parsing patterns"
   ],
-  "transitions_note_v2": "2026-04-11: Scope expanded to include AI agent prompt parsing. Users often generate plans via ChatGPT/Claude/other assistants \u2014 FitMe should parse these varied outputs and optionally preserve the original prompt for regeneration via its own AI engine."
+  "transitions_note_v2": "2026-04-11: Scope expanded to include AI agent prompt parsing. Users often generate plans via ChatGPT/Claude/other assistants \u2014 FitMe should parse these varied outputs and optionally preserve the original prompt for regeneration via its own AI engine.",
+  "partial_ship": true,
+  "known_gaps": {
+    "audit_finding": "UI-015",
+    "summary": "Parser / mapper / orchestrator stack + 23 tests shipped cleanly. Entry-point views (ImportSourcePickerView, ImportPreviewView) were built and tested but never wired into any tab, sheet, or navigation destination. ImportOrchestrator transitions state correctly but confirmImport() does NOT persist to TrainingProgramData. Annotated HISTORICAL 2026-04-17 (commit 0831f60) per audit UI-015.",
+    "open_tasks": [
+      "Wire ImportSourcePickerView into Settings or Training tab navigation",
+      "Wire ImportPreviewView as destination from picker",
+      "Implement confirmImport() persistence to TrainingProgramData",
+      "Remove HISTORICAL header from both views once wired",
+      "Fire the 6 import_* analytics events (constants exist, track() never called)"
+    ]
+  }
 }

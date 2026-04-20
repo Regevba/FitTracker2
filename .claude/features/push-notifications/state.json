@@ -3,9 +3,9 @@
   "case_study": "docs/case-studies/push-notifications-case-study.md",
   "case_study_showcase": "04-case-studies/22-push-notifications.md",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-16T05:15:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": null,
-  "current_phase": "complete",
+  "current_phase": "implementation",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -112,7 +112,25 @@
       "timestamp": "2026-04-16T05:15:00Z",
       "approved_by": "user",
       "note": "C1+C2+I1 fixed. Review re-approved. First feature to complete full v5.2 PM lifecycle."
+    },
+    {
+      "from": "complete",
+      "to": "implementation",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_audit",
+      "note": "Reopened 2026-04-20 per UI-016: priming view shipped tested + merged but never wired into navigation. Partial ship flagged per open-items review \u00a7 #12."
     }
   ],
-  "tasks": []
+  "tasks": [],
+  "partial_ship": true,
+  "known_gaps": {
+    "audit_finding": "UI-016",
+    "summary": "Local-notification substrate + scheduler + 2 critical-bug fixes + 18 tests shipped cleanly. NotificationPermissionPrimingView was built, tested, and merged but was never wired into navigation \u2014 the first-workout-completed trigger was never implemented, so zero entry points exist. No user has seen the priming surface.",
+    "open_tasks": [
+      "Implement first-workout-completed trigger that launches NotificationPermissionPrimingView",
+      "Build Settings preferences UI (explicitly deferred to Phase 2 at ship time)",
+      "APNs remote push integration (deferred to Phase 2)",
+      "Verify 5 PRD primary metrics have data after wire-up (currently 0 data)"
+    ]
+  }
 }

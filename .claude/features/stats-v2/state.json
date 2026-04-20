@@ -4,9 +4,9 @@
   "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
   "case_study_type": "roundup",
   "created": "2026-04-10T15:00:00Z",
-  "updated": "2026-04-10T17:00:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": "feature/stats-v2",
-  "current_phase": "complete",
+  "current_phase": "tasks",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -16,42 +16,264 @@
   "v2_rule_compliant": true,
   "github_issue_number": null,
   "phases": {
-    "research": { "status": "approved", "approved_at": "2026-04-10T15:10:00Z", "sources": ["v2-audit-report.md", "L2 cache ux-foundations-map", "L1 cache design/ux-foundations-application"] },
-    "prd": { "status": "approved", "approved_at": "2026-04-10T15:15:00Z", "analytics_spec_complete": true },
-    "tasks": { "status": "approved", "approved_at": "2026-04-10T15:20:00Z", "count": 10 },
-    "ux_or_integration": { "status": "approved", "approved_at": "2026-04-10T15:25:00Z", "type": "ux", "checklist_completed": false },
-    "implementation": { "status": "in_progress", "commits": [], "checklist_completed": false },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
-    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
-    "documentation": { "status": "pending" },
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-10T15:10:00Z",
+      "sources": [
+        "v2-audit-report.md",
+        "L2 cache ux-foundations-map",
+        "L1 cache design/ux-foundations-application"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-04-10T15:15:00Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-04-10T15:20:00Z",
+      "count": 10
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "approved_at": "2026-04-10T15:25:00Z",
+      "type": "ux",
+      "checklist_completed": false
+    },
+    "implementation": {
+      "status": "in_progress",
+      "commits": [],
+      "checklist_completed": false
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
     "metrics": {
-      "primary": { "name": "stats_voiceover_coverage", "baseline": 0.27, "target": 0.90, "current": null },
+      "primary": {
+        "name": "stats_voiceover_coverage",
+        "baseline": 0.27,
+        "target": 0.9,
+        "current": null
+      },
       "secondary": [
-        { "name": "motion_token_compliance", "baseline": 0.0, "target": 1.0 }
+        {
+          "name": "motion_token_compliance",
+          "baseline": 0.0,
+          "target": 1.0
+        }
       ],
-      "guardrails": ["crash_free_rate > 99.5%", "cold_start < 2s"],
+      "guardrails": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s"
+      ],
       "instrumentation_ready": false,
       "first_review_date": "2026-04-17",
       "kill_criteria": "Accessibility coverage drops below 70% after merge"
     }
   },
   "transitions": [
-    { "from": "research", "to": "prd", "timestamp": "2026-04-10T15:10:00Z", "approved_by": "user", "note": "9 findings (2 P0, 3 P1, 4 P2). Lightest audit — best baseline compliance." },
-    { "from": "prd", "to": "tasks", "timestamp": "2026-04-10T15:15:00Z", "approved_by": "user", "note": "4 analytics events, AppLayout enum" },
-    { "from": "tasks", "to": "ux_or_integration", "timestamp": "2026-04-10T15:20:00Z", "approved_by": "user", "note": "10 tasks, 4 waves" },
-    { "from": "ux_or_integration", "to": "implementation", "timestamp": "2026-04-10T15:25:00Z", "approved_by": "user", "note": "A11y + frame tokenization pass — screen architecture already solid" }
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-10T15:10:00Z",
+      "approved_by": "user",
+      "note": "9 findings (2 P0, 3 P1, 4 P2). Lightest audit \u2014 best baseline compliance."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-10T15:15:00Z",
+      "approved_by": "user",
+      "note": "4 analytics events, AppLayout enum"
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-10T15:20:00Z",
+      "approved_by": "user",
+      "note": "10 tasks, 4 waves"
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-10T15:25:00Z",
+      "approved_by": "user",
+      "note": "A11y + frame tokenization pass \u2014 screen architecture already solid"
+    },
+    {
+      "from": "complete",
+      "to": "tasks",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_audit",
+      "note": "2026-04-20 open-items audit detected inconsistency: top-level current_phase=complete but all 10 implementation tasks still pending. No v2 code shipped. Downgraded to match reality. Six-feature roundup case study context updated accordingly."
+    }
   ],
   "tasks": [
-    { "id": "T1", "title": "Create AppLayout enum", "type": "design", "skill": "design", "status": "pending", "priority": "critical", "effort_days": 0.1, "depends_on": [], "completed_at": null },
-    { "id": "T2", "title": "Extract nested types to Models/Stats/", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.25, "depends_on": [], "completed_at": null },
-    { "id": "T3", "title": "Build v2/StatsView.swift", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T1", "T2"], "completed_at": null },
-    { "id": "T4", "title": "Update project.pbxproj", "type": "infra", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.1, "depends_on": ["T3"], "completed_at": null },
-    { "id": "T5", "title": "Instrument 4 analytics events", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.2, "depends_on": ["T3"], "completed_at": null },
-    { "id": "T6", "title": "Full accessibility pass", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.2, "depends_on": ["T3"], "completed_at": null },
-    { "id": "T7", "title": "Analytics tests", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.2, "depends_on": ["T5"], "completed_at": null },
-    { "id": "T8", "title": "V2 refactor checklist", "type": "docs", "skill": "qa", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": ["T3", "T4", "T6"], "completed_at": null },
-    { "id": "T9", "title": "CI verification", "type": "test", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.1, "depends_on": ["T7"], "completed_at": null },
-    { "id": "T10", "title": "Mark v1 historical", "type": "docs", "skill": "dev", "status": "pending", "priority": "low", "effort_days": 0.05, "depends_on": ["T4"], "completed_at": null }
-  ]
+    {
+      "id": "T1",
+      "title": "Create AppLayout enum",
+      "type": "design",
+      "skill": "design",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T2",
+      "title": "Extract nested types to Models/Stats/",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T3",
+      "title": "Build v2/StatsView.swift",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T4",
+      "title": "Update project.pbxproj",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T3"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T5",
+      "title": "Instrument 4 analytics events",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T3"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T6",
+      "title": "Full accessibility pass",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T3"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T7",
+      "title": "Analytics tests",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T5"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T8",
+      "title": "V2 refactor checklist",
+      "type": "docs",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T3",
+        "T4",
+        "T6"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T9",
+      "title": "CI verification",
+      "type": "test",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T7"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T10",
+      "title": "Mark v1 historical",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "low",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    }
+  ],
+  "partial_ship": false,
+  "known_gaps": {
+    "status": "not_shipped",
+    "summary": "v2 refactor planned but never executed. Top-level current_phase was incorrectly marked 'complete' on 2026-04-10. 2026-04-20 audit found all 10 implementation tasks (T1-T10) still pending, no code changes shipped. Downgraded to 'tasks' to match reality.",
+    "open_tasks": [
+      "T1",
+      "T2",
+      "T3",
+      "T4",
+      "T5",
+      "T6",
+      "T7",
+      "T8",
+      "T9",
+      "T10"
+    ]
+  }
 }
