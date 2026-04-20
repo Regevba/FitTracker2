@@ -81,6 +81,30 @@ This keeps the design-system evolution coherent across the per-screen alignment 
 
 ---
 
+## 2026-04-20 — Design System Verification Layer (branch `claude/review-ui-consistency-zSkvJ`)
+
+- **Date:** 2026-04-20
+- **Feature:** design-system-v2 (verification layer to prevent future code↔Figma↔pixel drift)
+- **Problem solved:** Until now the design system relied on per-PR review and the `tokens-check` CI gate, both of which only catch token-definition drift. There was no automated check for the more common failure modes — raw Color literals slipped into views, magic spacing values, raw animations, missing accessibility labels, and the Gap-A class bug where `Color("name")` referenced a non-existent colorset and silently fell back to clear at runtime. The feature-memory survey on 2026-04-20 found 27 P0 + 103 P1 violations across the merged main branch that no existing tool would catch.
+- **Primary platform:** iOS (SwiftUI) — tooling is Python 3 + bash, no SwiftUI dependency
+- **Reused tokens:** None added — this layer enforces the existing token namespace
+- **Reused components:** None
+- **New primitives:**
+  - `scripts/ui-audit.py` — dependency-free Python scanner that walks every `.swift` file under `FitTracker/Views` and `FitTracker/DesignSystem` (skipping HISTORICAL v1 files and token-definition files), checking for: raw SwiftUI color references (`Color.white`, `.foregroundStyle(.blue)`, `Color(.systemBackground)`), raw `Color(red:green:blue:)` literals, raw animation literals (`.easeInOut(duration:...)`), raw `Font.system(...)` calls, raw `.font(.body/.caption)` shorthands, magic padding/frame numbers off the AppSpacing/AppSize token grids, and icon-only Buttons without `accessibilityLabel`. Also performs **Gap-A asset-reference verification**: every `Color("name")` in `AppTheme.swift` must have a matching `.colorset` in `Assets.xcassets`.
+  - `make ui-audit` Makefile target — runs the scanner, exits 1 on any P0 finding, wired into `verify-local`
+  - `make ui-audit-baseline` — regenerates `docs/design-system/ui-audit-baseline.md` without failing the build (used after intentional fixes)
+  - `docs/design-system/ui-audit-baseline.md` — committed compliance snapshot listing every finding by file/line; PRs that touch views should keep P0 at 0 going forward
+  - **Verification Contract** section in `docs/design-system/figma-code-sync-status.md` — defines what is automatically verified vs manually verified, with concrete plans for closing the snapshot-test and Figma-API gaps
+- **Wireframe/UX:** No UI surface — this is tooling that protects the existing UI surface
+- **Final UI decisions:** N/A
+- **Accessibility:** Scanner flags `Button { ... } label: { Image(...) }` patterns without `accessibilityLabel` or `accessibilityHidden(true)` as P1 warnings — found 5 instances at baseline, none of which sit on critical user paths
+- **Follow-up gaps:**
+  - 27 P0 violations exist at baseline (raw `.white` / `.blue` foregroundStyle, raw spring/easeOut animations, `Color(.systemBackground)` UIKit bridges). These don't break shipping UI but block the long-term invariant. Plan: each future PR that touches one of the affected files fixes the file's findings as part of the change.
+  - Snapshot tests against Figma frame exports — deferred, see `figma-code-sync-status.md` Verification Contract
+  - 2 orphan PBXBuildFile entries in `FitTracker.xcodeproj/project.pbxproj` for v1 MainScreenView and v1 TrainingPlanView — not in any Sources phase, dead weight only. Cleanup tracked separately.
+
+---
+
 ## 2026-04-20 — Design System Alignment Sweep (branch `claude/review-ui-consistency-zSkvJ`)
 
 - **Date:** 2026-04-20

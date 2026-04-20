@@ -36,3 +36,71 @@ All screens are locked as of 2026-04-15. The code is the source of truth. Figma 
 - When a screen gets a redesign or polish pass
 - When the Profile v3 simplified design is finalized for Figma
 - When push notifications or smart reminders UI ships (new screens)
+
+---
+
+## Verification Contract (added 2026-04-20)
+
+The Figma↔code matrix above is a manual snapshot. It tells you which screen
+matches and which has drift, but it does not catch new drift automatically.
+The verification layer below closes that loop.
+
+### What is automatically verified (every CI run)
+
+| Layer | Check | Tool | Failure mode |
+|---|---|---|---|
+| `tokens.json` ↔ `DesignTokens.swift` | Generated Swift matches the JSON source | `make tokens-check` | CI fails if codegen output differs from committed file |
+| `AppColor.*` references ↔ `Assets.xcassets` colorsets | Every `Color("name")` resolves to a real asset | (planned — see "Gap A" below) | Today: silent fallback to clear at runtime |
+| Every view ↔ design-system tokens | No raw colors / animations / fonts / magic spacing in any view file | `make ui-audit` (P0 = blocking) | CI fails on any P0 finding; current baseline 27 P0 + 103 P1 (see `ui-audit-baseline.md`) |
+| Token-definition file integrity | `AppTheme.swift` enums mirror tokens.json categories | `make tokens-check` (color/spacing/radius/typography only) | CI fails on category drift |
+
+### What is NOT yet automatically verified
+
+| Layer | Why it's hard | Workaround | Owner |
+|---|---|---|---|
+| **Asset name ↔ AppTheme reference** | SwiftUI `Color("name")` returns transparent on miss; no compile error | Manual: `grep 'Color("' AppTheme.swift` and verify each name has a `.colorset` directory. Closed once for chart-* tokens on 2026-04-20. **Gap A** below | Design-system maintainer |
+| **Figma node values ↔ tokens.json** | Requires Figma API access + Tokens Studio export with consistent token names | Manual: when designer updates Figma, they re-export Tokens Studio → tokens.json → `make tokens` → commit | Designer + maintainer pair |
+| **Figma frame layout ↔ rendered SwiftUI** | Requires snapshot tests against Figma exports (no MCP/API today) | Manual: per-screen audit on a real device (the matrix above) | Per-feature owner during PM workflow Phase 3 (UX) |
+| **Component prop API ↔ Figma component variants** | Requires reading Figma component definitions programmatically | Manual: when adding a new variant to a component, update Figma in same PR | Designer |
+
+### Plan: closing Gap A (asset-name verification)
+
+Goal: when someone writes `Color("foo-bar")` in `AppTheme.swift` and forgets
+to add `Assets.xcassets/Colors/.../foo-bar.colorset`, CI fails.
+
+Implementation sketch (~30-line addition to `scripts/ui-audit.py`):
+
+1. Parse every `Color("…")` literal out of `AppTheme.swift`.
+2. Walk `FitTracker/Assets.xcassets` for every `*.colorset` directory.
+3. Diff: any name in the Swift side without a colorset → P0 finding.
+4. Wire into `make ui-audit` so the existing CI gate covers it.
+
+Tracked as a follow-up to the M-3b chart-color closure (2026-04-20).
+
+### Plan: closing the Figma-snapshot gap
+
+Two paths, in order of pragmatism:
+
+1. **Per-screen UX checklist signed-off in PRD Phase 3.** Already exists in
+   `docs/design-system/v2-refactor-checklist.md`. Make signature mandatory
+   before Phase 4 (Implement) starts.
+2. **Snapshot tests against Figma frame exports.** Designer exports a PNG
+   per locked screen, committed under `docs/design-system/figma-snapshots/`.
+   A Swift Snapshot Testing target diffs against rendered SwiftUI views.
+   Deferred — adds CI cost and a maintenance burden (snapshots break on
+   every Dynamic Type or color tweak). Only pursue if Gap-A class bugs
+   keep landing despite the manual checklist.
+
+### Definition of "synced"
+
+A screen is **Synced** in the matrix above when ALL of:
+
+- [ ] No P0 findings in `make ui-audit` for that screen's view files
+- [ ] All `AppColor.*` tokens used by the screen exist in `Assets.xcassets`
+- [ ] The screen's row in this matrix has a recent `Last verified` date
+      (within 90 days, refreshed on any merged PR touching the file)
+- [ ] The PR that last touched the screen referenced the matching Figma
+      node ID in the description (so future readers can re-open the spec)
+
+Anything less is **Minor drift** or **Major drift**, with the gap noted
+in the Notes column.
