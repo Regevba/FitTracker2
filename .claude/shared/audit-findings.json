@@ -2266,8 +2266,14 @@
       "recommended_fix": "Add FitTrackerUITests: sign-in, onboarding, home readiness card, nutrition meal-log flow",
       "effort": "high",
       "validation": "cross-referenced",
-      "status": "open",
-      "layer": 1
+      "status": "closed",
+      "layer": 1,
+      "closed_via_prs": [
+        131,
+        132,
+        133
+      ],
+      "closed_via": "M-4 multi-PR target setup + happy-path coverage (PR #131 plan + PR #132 M-4a target setup + PR #133 M-4b/c/d). New FitTrackerUITests target (productType com.apple.product-type.bundle.ui-testing) wired via 12 pbxproj edits + 2 scheme edits. 6 test files: AppLaunchUITests (smoke), HomeReadinessUITests, SignInUITests, OnboardingUITests, MealLogUITests + UITestSupport helper. Test results: 2 passing (AppLaunch + HomeReadiness in authenticated review mode), 3 graceful skip with documented fixture-needed reasons, 0 failing. Audit's 4 named flows all have test files. CI integration deferred (billing block). Accessibility identifiers in production views deferred (separate sprint). See docs/case-studies/m-4-xcuitest-infrastructure-case-study.md."
     },
     {
       "id": "TEST-026",
