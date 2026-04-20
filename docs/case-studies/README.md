@@ -49,13 +49,22 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 | `meta-analysis/` | Meta-analysis reports folder | Cross-case analyses: Nvidia validation of normalization model + What-If v6.0 retrospective experiment (CU v2 recalculation, rolling baselines, AI model cost comparison, ROI analysis) |
 | `hadf-hardware-aware-dispatch-case-study.md` | HADF — Hardware-Aware Dispatch Framework (v6.1) | First hardware-aware framework extension — 5-layer architecture (device detection → cloud fingerprinting → evolutionary learning), 17 chip profiles across 6 vendors, 7 cloud hardware signatures, zero-regression confidence gate. Novel contribution: cloud inference fingerprinting via Mahalanobis distance classification |
 | `meta-analysis-full-system-audit-v6.1-case-study.md` | Full-System Meta-Analysis Audit (v6.1) | First self-referential full-system audit — 4-layer risk-weighted sweep, 185 findings across 6 domains (12 critical, 49 high), external validation, framework self-audit with bias acknowledgment. Key discovery: fabrication-over-nil systemic pattern in AI adapters. Health scorecard: AI 0, Backend 0, Tests 0, UI 9, Framework 42, DS 46 |
+| `home-today-screen-v2-case-study.md` | Home Today Screen v2 (v3.0) | **V2 Rule pilot** — first feature to apply the `v2/` subdirectory + pbxproj-swap convention after it was codified. Also the feature where OQ-9 of the audit produced the project-wide **screen-prefixed analytics naming rule** (`home_*`, `training_*`, etc.). 27 findings, 17 tasks, 3 sub-features spawned (Onboarding retro, Status+Goal merged card, Metric Tile Deep Linking) |
+| `training-plan-v2-case-study.md` | Training Plan v2 (v4.0) | Biggest surface in the app — 2,135 lines → 6 extracted views. First v2 refactor under the L1 cache; shipped in 5h with ~40% cache hit rate. Achieved the best complexity-normalized velocity (0.23 h/100 lines) of any v2 pass despite being the largest file. 32 findings, 16 tasks, 12 analytics events (highest of any screen) |
 
 ## Upcoming case studies (queued)
 
-| Feature | When to write | What it would showcase |
+| Feature | Status | What it would showcase |
 |---|---|---|
-| Home (Today Screen) v2 | After v2 ships on `feature/home-today-screen-v2` | First case study of the **V2 Rule** (v1/v2 file + subdirectory convention, project.pbxproj surgery) + second run of `/ux audit` |
-| Training Plan v2 | After it ships | Biggest surface in the app — stress-test the per-screen alignment process |
+| Dispatch Intelligence v5.2 | **pending ship** — currently `phase=testing`; partially covered by `v5.1-v5.2-framework-evolution-case-study.md` Part 2 | Dedicated post-ship narrative of the 3-stage dispatch pipeline, tool budgets, and permission routing once stress-test validation completes |
+| Onboarding v2 Retroactive | **pending ship** — currently `phase=tasks`; feature still in planning | Validation that the V2 Rule scales backward to a pre-rule feature with multiple screens. Short mini-study planned after the retro refactor merges |
+
+## Features covered elsewhere (no dedicated case study planned)
+
+| Feature | Why not | Existing coverage |
+|---|---|---|
+| hadf-infrastructure | Rolls up into the HADF case study | `hadf-hardware-aware-dispatch-case-study.md` |
+| meta-analysis-audit | Rolls up into the audit case study | `meta-analysis-full-system-audit-v6.1-case-study.md` + `meta-analysis/` folder |
 
 ## How to write a new case study
 
