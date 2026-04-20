@@ -35,6 +35,20 @@
                ReferencedContainer = "container:FitTracker.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "UI500000000000000000UT01"
+               BuildableName = "FitTrackerUITests.xctest"
+               BlueprintName = "FitTrackerUITests"
+               ReferencedContainer = "container:FitTracker.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -61,6 +75,17 @@
                BlueprintIdentifier = "B50000010000000000000001"
                BuildableName = "FitTrackerTests.xctest"
                BlueprintName = "FitTrackerTests"
+               ReferencedContainer = "container:FitTracker.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "UI500000000000000000UT01"
+               BuildableName = "FitTrackerUITests.xctest"
+               BlueprintName = "FitTrackerUITests"
                ReferencedContainer = "container:FitTracker.xcodeproj">
             </BuildableReference>
          </TestableReference>
