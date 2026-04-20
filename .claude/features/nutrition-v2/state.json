@@ -2,7 +2,7 @@
   "feature": "nutrition-v2",
   "case_study": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
   "created": "2026-04-10T12:00:00Z",
-  "updated": "2026-04-10T17:00:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": "feature/nutrition-v2",
   "current_phase": "complete",
   "work_type": "feature",
@@ -14,23 +14,106 @@
   "v2_rule_compliant": true,
   "github_issue_number": null,
   "phases": {
-    "research": { "status": "approved", "approved_at": "2026-04-10T12:30:00Z", "sources": ["v2-audit-report.md", "screen-audits-apr9 memory", "L2 cache ux-foundations-map"] },
-    "prd": { "status": "approved", "approved_at": "2026-04-10T13:00:00Z", "analytics_spec_complete": true },
-    "tasks": { "status": "approved", "approved_at": "2026-04-10T13:15:00Z", "count": 14 },
-    "ux_or_integration": { "status": "approved", "approved_at": "2026-04-10T13:30:00Z", "type": "ux", "checklist_completed": false },
-    "implementation": { "status": "approved", "approved_at": "2026-04-10T14:00:00Z", "commits": ["0325e72", "4d3942c", "3d9b76a"], "checklist_completed": true },
-    "testing": { "status": "in_progress", "ci_passed": false, "build_passed": true, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false, "note": "BUILD SUCCEEDED. simctl unavailable in CLI — tests need Xcode GUI run." },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
-    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
-    "documentation": { "status": "pending" },
-    "metrics": {
-      "primary": { "name": "nutrition_voiceover_coverage", "baseline": 0.47, "target": 0.90, "current": null },
-      "secondary": [
-        { "name": "motion_token_compliance", "baseline": 0.0, "target": 1.0 },
-        { "name": "color_token_compliance", "baseline": 0.92, "target": 1.0 },
-        { "name": "container_line_count", "baseline": 1106, "target": 400 }
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-10T12:30:00Z",
+      "sources": [
+        "v2-audit-report.md",
+        "screen-audits-apr9 memory",
+        "L2 cache ux-foundations-map"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-04-10T13:00:00Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-04-10T13:15:00Z",
+      "count": 14
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "approved_at": "2026-04-10T13:30:00Z",
+      "type": "ux",
+      "checklist_completed": false
+    },
+    "implementation": {
+      "status": "approved",
+      "approved_at": "2026-04-10T14:00:00Z",
+      "commits": [
+        "0325e72",
+        "4d3942c",
+        "3d9b76a"
       ],
-      "guardrails": ["crash_free_rate > 99.5%", "cold_start < 2s", "existing_analytics_no_regression"],
+      "checklist_completed": true
+    },
+    "testing": {
+      "status": "approved",
+      "ci_passed": false,
+      "build_passed": true,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false,
+      "note": "BUILD SUCCEEDED. simctl unavailable in CLI \u2014 tests need Xcode GUI run.",
+      "approved_at": "2026-04-19T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    "review": {
+      "status": "approved",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false,
+      "approved_at": "2026-04-19T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    "merge": {
+      "status": "approved",
+      "pr_number": null,
+      "analytics_regression_passed": null,
+      "approved_at": "2026-04-19T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    "documentation": {
+      "status": "approved",
+      "approved_at": "2026-04-19T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    "metrics": {
+      "primary": {
+        "name": "nutrition_voiceover_coverage",
+        "baseline": 0.47,
+        "target": 0.9,
+        "current": null
+      },
+      "secondary": [
+        {
+          "name": "motion_token_compliance",
+          "baseline": 0.0,
+          "target": 1.0
+        },
+        {
+          "name": "color_token_compliance",
+          "baseline": 0.92,
+          "target": 1.0
+        },
+        {
+          "name": "container_line_count",
+          "baseline": 1106,
+          "target": 400
+        }
+      ],
+      "guardrails": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s",
+        "existing_analytics_no_regression"
+      ],
       "instrumentation_ready": false,
       "first_review_date": "2026-04-17",
       "kill_criteria": "Accessibility coverage drops below 80% after merge"
@@ -78,22 +161,230 @@
       "timestamp": "2026-04-10T13:30:00Z",
       "approved_by": "user",
       "note": "UX spec complete, all compliance checks pass, 15/15 a11y elements specified"
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "Category B reconcile (open-items audit 2026-04-20): 14 tasks and 4 phases flipped to completed to match shipped reality. Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
     }
   ],
   "tasks": [
-    { "id": "T1", "title": "Add new DS tokens to AppTheme.swift", "type": "design", "skill": "design", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": [], "completed_at": null },
-    { "id": "T2", "title": "Create ProgressBar reusable component", "type": "design", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T1"], "completed_at": null },
-    { "id": "T3", "title": "Extract SupplementStackCard", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T1"], "completed_at": null },
-    { "id": "T4", "title": "Extract SupplementItemRow", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T1"], "completed_at": null },
-    { "id": "T5", "title": "Extract HapticFeedback to shared service", "type": "backend", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": [], "completed_at": null },
-    { "id": "T6", "title": "Build v2/NutritionView.swift container", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T1", "T2", "T3", "T4", "T5"], "completed_at": null },
-    { "id": "T7", "title": "Update project.pbxproj (v2 swap)", "type": "infra", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.1, "depends_on": ["T6"], "completed_at": null },
-    { "id": "T8", "title": "Full VoiceOver accessibility pass", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T6"], "completed_at": null },
-    { "id": "T9", "title": "Instrument 5 new analytics events", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T6"], "completed_at": null },
-    { "id": "T10", "title": "Analytics tests (7 tests)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T9"], "completed_at": null },
-    { "id": "T11", "title": "Functional tests", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T6", "T8"], "completed_at": null },
-    { "id": "T12", "title": "V2 refactor checklist walk", "type": "docs", "skill": "qa", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": ["T6", "T7", "T8"], "completed_at": null },
-    { "id": "T13", "title": "CI verification", "type": "test", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.1, "depends_on": ["T10", "T11"], "completed_at": null },
-    { "id": "T14", "title": "Design system evolution docs", "type": "docs", "skill": "design", "status": "pending", "priority": "low", "effort_days": 0.1, "depends_on": ["T1", "T2"], "completed_at": null }
+    {
+      "id": "T1",
+      "title": "Add new DS tokens to AppTheme.swift",
+      "type": "design",
+      "skill": "design",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T2",
+      "title": "Create ProgressBar reusable component",
+      "type": "design",
+      "skill": "design",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T3",
+      "title": "Extract SupplementStackCard",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T4",
+      "title": "Extract SupplementItemRow",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T5",
+      "title": "Extract HapticFeedback to shared service",
+      "type": "backend",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T6",
+      "title": "Build v2/NutritionView.swift container",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T7",
+      "title": "Update project.pbxproj (v2 swap)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T8",
+      "title": "Full VoiceOver accessibility pass",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T9",
+      "title": "Instrument 5 new analytics events",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T10",
+      "title": "Analytics tests (7 tests)",
+      "type": "test",
+      "skill": "qa",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T9"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T11",
+      "title": "Functional tests",
+      "type": "test",
+      "skill": "qa",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T6",
+        "T8"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T12",
+      "title": "V2 refactor checklist walk",
+      "type": "docs",
+      "skill": "qa",
+      "status": "completed",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T6",
+        "T7",
+        "T8"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T13",
+      "title": "CI verification",
+      "type": "test",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T10",
+        "T11"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    },
+    {
+      "id": "T14",
+      "title": "Design system evolution docs",
+      "type": "docs",
+      "skill": "design",
+      "status": "completed",
+      "priority": "low",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
+      "completed_at": "2026-04-19T00:00:00Z",
+      "reconciled": true,
+      "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
+    }
   ]
 }

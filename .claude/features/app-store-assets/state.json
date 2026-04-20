@@ -1,9 +1,9 @@
 {
   "feature": "app-store-assets",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-16T05:30:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": null,
-  "current_phase": "complete",
+  "current_phase": "implementation",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": false,
@@ -92,7 +92,25 @@
       "timestamp": "2026-04-16T05:30:00Z",
       "approved_by": "user",
       "note": "All tasks implemented. BUILD SUCCEEDED. Feature complete."
+    },
+    {
+      "from": "complete",
+      "to": "implementation",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "Downgraded 2026-04-20 open-items audit: state.json claimed complete but no evidence of shipping. Implementation phase marked in_progress and downstream phases pending \u2014 feature is planned, not shipped."
     }
   ],
-  "tasks": []
+  "tasks": [],
+  "known_gaps": {
+    "status": "not_shipped",
+    "summary": "Top-level phase was incorrectly marked 'complete' but phase.implementation=in_progress, testing/review/merge/documentation all pending, no branch, no tasks defined, no commits found. No dedicated case study exists. Downgraded to 'implementation' to match reality. Feature is PLANNED but not yet shipped.",
+    "open_phases": [
+      "implementation",
+      "testing",
+      "review",
+      "merge",
+      "documentation"
+    ]
+  }
 }

@@ -3,14 +3,14 @@
   "case_study": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
   "case_study_showcase": "04-case-studies/10-parallel-write-safety.md",
   "created": "2026-04-16T05:40:00Z",
-  "updated": "2026-04-16T06:00:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "current_phase": "complete",
   "work_type": "feature",
   "work_subtype": "framework_infrastructure",
   "has_ui": false,
   "requires_analytics": false,
   "parent_feature": null,
-  "description": "v5.2 Sub-Project B: Parallel Write Safety — Snapshot/Rollback + Code Region Mirror Pattern for safe concurrent code writes",
+  "description": "v5.2 Sub-Project B: Parallel Write Safety \u2014 Snapshot/Rollback + Code Region Mirror Pattern for safe concurrent code writes",
   "transitions": [
     {
       "from": "init",
@@ -25,6 +25,13 @@
       "timestamp": "2026-04-16T06:00:00Z",
       "approved_by": "user",
       "note": "Spec approved. Config deployed. Protocol added to SKILL.md. Research doc updated. All tasks complete."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "Category B reconcile (open-items audit 2026-04-20): 1 tasks and 0 phases flipped to completed to match shipped reality. Shipped per docs/case-studies/parallel-write-safety-v5.2-case-study.md. T6 ('Push + update case study') was the final step and the case study DOES exist on main \u2014 just state.json's T6 was never flipped. Reconciling T6 to completed. Also normalizing T1-T5 status from 'complete' \u2192 'completed' for schema consistency."
     }
   ],
   "phases": {
@@ -45,7 +52,7 @@
     },
     "ux_or_integration": {
       "status": "skipped",
-      "reason": "No UI — framework infrastructure"
+      "reason": "No UI \u2014 framework infrastructure"
     },
     "implementation": {
       "status": "complete"
@@ -84,11 +91,38 @@
     "kill_criteria": "If mirror pattern adds >20% overhead to dispatch cycle time, revert to direct writes"
   },
   "tasks": [
-    {"id": "T1", "title": "Add mirror_pattern config", "status": "complete"},
-    {"id": "T2", "title": "Add mirror pattern protocol to SKILL.md", "status": "complete"},
-    {"id": "T3", "title": "Update research docs status", "status": "complete"},
-    {"id": "T4", "title": "Create tasks.md + advance state", "status": "complete"},
-    {"id": "T5", "title": "Validation checks", "status": "complete"},
-    {"id": "T6", "title": "Push + update case study", "status": "pending"}
+    {
+      "id": "T1",
+      "title": "Add mirror_pattern config",
+      "status": "completed"
+    },
+    {
+      "id": "T2",
+      "title": "Add mirror pattern protocol to SKILL.md",
+      "status": "completed"
+    },
+    {
+      "id": "T3",
+      "title": "Update research docs status",
+      "status": "completed"
+    },
+    {
+      "id": "T4",
+      "title": "Create tasks.md + advance state",
+      "status": "completed"
+    },
+    {
+      "id": "T5",
+      "title": "Validation checks",
+      "status": "completed"
+    },
+    {
+      "id": "T6",
+      "title": "Push + update case study",
+      "status": "completed",
+      "completed_at": "2026-04-16T00:00:00Z",
+      "reconciled": true,
+      "note": "Shipped per docs/case-studies/parallel-write-safety-v5.2-case-study.md. T6 ('Push + update case study') was the final step and the case study DOES exist on main \u2014 just state.json's T6 was never flipped. Reconciling T6 to completed. Also normalizing T1-T5 status from 'complete' \u2192 'completed' for schema consistency."
+    }
   ]
 }

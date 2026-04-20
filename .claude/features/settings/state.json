@@ -1,5 +1,7 @@
 {
   "feature": "settings",
+  "case_study_type": "pre_pm_workflow_backfill",
+  "backfill_note": "Shipped before 2026-04-06 PM workflow enforcement. Sub-phase statuses use pre-pm-workflow / backfilled / shipped as terminal states — not lies, just legacy vocabulary. No dedicated case study is expected; feature is captured in the collective pre-PM-workflow baseline that the post-2026-04-06 program builds on.",
   "created": "2026-04-06T14:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": null,

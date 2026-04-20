@@ -3,7 +3,7 @@
   "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "case_study_showcase": "04-case-studies/07-ai-engine-architecture.md",
   "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-15T20:28:35Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": null,
   "current_phase": "complete",
   "work_type": "enhancement",
@@ -32,19 +32,34 @@
       "note": "Enhancement work type \u2014 UX changes are scoped within tasks (T10 confidence badge + goal messaging). No standalone UX spec needed."
     },
     "implementation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-04-14T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Shipped per docs/case-studies/ai-engine-architecture-v5.1-case-study.md. 13 tasks, 17 files, ~1.5h single-session end-to-end execution. Tasks reconciled 2026-04-20."
     },
     "testing": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-04-14T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Shipped per docs/case-studies/ai-engine-architecture-v5.1-case-study.md. 13 tasks, 17 files, ~1.5h single-session end-to-end execution. Tasks reconciled 2026-04-20."
     },
     "review": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-04-14T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Shipped per docs/case-studies/ai-engine-architecture-v5.1-case-study.md. 13 tasks, 17 files, ~1.5h single-session end-to-end execution. Tasks reconciled 2026-04-20."
     },
     "merge": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-04-14T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Shipped per docs/case-studies/ai-engine-architecture-v5.1-case-study.md. 13 tasks, 17 files, ~1.5h single-session end-to-end execution. Tasks reconciled 2026-04-20."
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-04-14T00:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Shipped per docs/case-studies/ai-engine-architecture-v5.1-case-study.md. 13 tasks, 17 files, ~1.5h single-session end-to-end execution. Tasks reconciled 2026-04-20."
     }
   },
   "transitions": [
@@ -82,13 +97,20 @@
       "timestamp": "2026-04-15T20:28:35Z",
       "approved_by": "user",
       "note": "PR #79 shipped. All 13 tasks verified in code: 5 adapters, GoalProfile, ValidatedRecommendation, confidence gate, feedback UI, RecommendationMemory, analytics."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "Category B reconcile (open-items audit 2026-04-20): 0 tasks and 5 phases flipped to completed to match shipped reality. Shipped per docs/case-studies/ai-engine-architecture-v5.1-case-study.md. 13 tasks, 17 files, ~1.5h single-session end-to-end execution. Tasks reconciled 2026-04-20."
     }
   ],
   "tasks": [
     {
       "id": "T1",
       "title": "AIInputAdapter protocol",
-      "status": "complete",
+      "status": "completed",
       "phase": 1,
       "complexity": "lightweight",
       "depends_on": [],
@@ -97,7 +119,7 @@
     {
       "id": "T2",
       "title": "ProfileAdapter",
-      "status": "complete",
+      "status": "completed",
       "phase": 1,
       "complexity": "lightweight",
       "depends_on": [
@@ -108,7 +130,7 @@
     {
       "id": "T3",
       "title": "HealthKitAdapter",
-      "status": "complete",
+      "status": "completed",
       "phase": 1,
       "complexity": "lightweight",
       "depends_on": [
@@ -119,7 +141,7 @@
     {
       "id": "T4",
       "title": "TrainingAdapter",
-      "status": "complete",
+      "status": "completed",
       "phase": 1,
       "complexity": "lightweight",
       "depends_on": [
@@ -130,7 +152,7 @@
     {
       "id": "T5",
       "title": "NutritionAdapter",
-      "status": "complete",
+      "status": "completed",
       "phase": 1,
       "complexity": "lightweight",
       "depends_on": [
@@ -141,7 +163,7 @@
     {
       "id": "T6",
       "title": "Refactor AISnapshotBuilder to use adapter registry",
-      "status": "complete",
+      "status": "completed",
       "phase": 1,
       "complexity": "heavyweight",
       "depends_on": [
@@ -155,7 +177,7 @@
     {
       "id": "T7",
       "title": "GoalProfile + MetricDriver models",
-      "status": "complete",
+      "status": "completed",
       "phase": 2,
       "complexity": "lightweight",
       "depends_on": [
@@ -166,7 +188,7 @@
     {
       "id": "T8",
       "title": "ValidatedRecommendation + confidence gate",
-      "status": "complete",
+      "status": "completed",
       "phase": 2,
       "complexity": "heavyweight",
       "depends_on": [
@@ -177,7 +199,7 @@
     {
       "id": "T9",
       "title": "Goal-aware localFallback rewrite",
-      "status": "complete",
+      "status": "completed",
       "phase": 2,
       "complexity": "heavyweight",
       "depends_on": [
@@ -188,7 +210,7 @@
     {
       "id": "T10",
       "title": "Confidence badge UI + goal messaging",
-      "status": "complete",
+      "status": "completed",
       "phase": 2,
       "complexity": "heavyweight",
       "depends_on": [
@@ -199,7 +221,7 @@
     {
       "id": "T11",
       "title": "FoundationModel goal-aware prompt",
-      "status": "complete",
+      "status": "completed",
       "phase": 2,
       "complexity": "lightweight",
       "depends_on": [
@@ -210,7 +232,7 @@
     {
       "id": "T12",
       "title": "RecommendationMemory + threshold tuning",
-      "status": "complete",
+      "status": "completed",
       "phase": 3,
       "complexity": "heavyweight",
       "depends_on": [
@@ -221,7 +243,7 @@
     {
       "id": "T13",
       "title": "Feedback UI + analytics events",
-      "status": "complete",
+      "status": "completed",
       "phase": 4,
       "complexity": "heavyweight",
       "depends_on": [

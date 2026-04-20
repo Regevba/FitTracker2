@@ -1,7 +1,7 @@
 {
   "feature": "home-today-screen",
   "created": "2026-04-06T14:00:00Z",
-  "updated": "2026-04-09T17:00:00Z",
+  "updated": "2026-04-20T00:00:00Z",
   "branch": "feature/home-today-screen-v2",
   "current_phase": "complete",
   "work_type": "feature",
@@ -35,7 +35,7 @@
       {
         "branch": "claude/fix-ios-signin-compilation-6kxKG",
         "commit": "d09cd61",
-        "description": "Home background swapped from goal-progress orange/blue layer to saturated appBlue1 → appBlue2 2-stop gradient. Removed invisible color metaphor. NOT on this branch — will land via the iOS hardening PR."
+        "description": "Home background swapped from goal-progress orange/blue layer to saturated appBlue1 \u2192 appBlue2 2-stop gradient. Removed invisible color metaphor. NOT on this branch \u2014 will land via the iOS hardening PR."
       }
     ]
   },
@@ -45,14 +45,14 @@
       "to": "complete",
       "timestamp": "2026-04-06T14:00:00Z",
       "approved_by": "audit",
-      "note": "v1 retroactive backfill — feature was shipped pre-PM workflow."
+      "note": "v1 retroactive backfill \u2014 feature was shipped pre-PM workflow."
     },
     {
       "from": "complete",
       "to": "research",
       "timestamp": "2026-04-08T05:00:00Z",
       "approved_by": "user",
-      "note": "v2 UX alignment pass kickoff. Mirrors Onboarding v2 pilot pattern (audit → ux-research → ux-spec → compliance → patches). Tracking issue #60."
+      "note": "v2 UX alignment pass kickoff. Mirrors Onboarding v2 pilot pattern (audit \u2192 ux-research \u2192 ux-spec \u2192 compliance \u2192 patches). Tracking issue #60."
     },
     {
       "from": "research",
@@ -87,7 +87,14 @@
       "to": "testing",
       "timestamp": "2026-04-09T14:00:00Z",
       "approved_by": "user",
-      "note": "Phase 4 complete. 16/17 tasks done (T16 snapshot tests deferred to Phase 5 manual). 6 commits: foundation layer, v2 MainScreenView (703 lines), a11y pass, pbxproj swap, tests (21 cases), checklist walk. T8 is the main assembly — bottom-up rewrite from design system."
+      "note": "Phase 4 complete. 16/17 tasks done (T16 snapshot tests deferred to Phase 5 manual). 6 commits: foundation layer, v2 MainScreenView (703 lines), a11y pass, pbxproj swap, tests (21 cases), checklist walk. T8 is the main assembly \u2014 bottom-up rewrite from design system."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "Category B reconcile (open-items audit 2026-04-20): 17 tasks and 1 phases flipped to completed to match shipped reality. Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
     }
   ],
   "phases": {
@@ -108,7 +115,7 @@
         "Pending DS Evolution Queue updated in feature-memory.md (8 new tokens, 2 component promotions queued)"
       ],
       "decisions_summary": {
-        "stack_order": "7 items: Toolbar → Greeting → ReadinessCard → Training & Nutrition → Status → Goal → Metrics. Scrollable.",
+        "stack_order": "7 items: Toolbar \u2192 Greeting \u2192 ReadinessCard \u2192 Training & Nutrition \u2192 Status \u2192 Goal \u2192 Metrics. Scrollable.",
         "scroll_constraint": "dropped (was: above-the-fold no-scroll)",
         "training_nutrition_card": "renamed from Start Training; side-by-side equal CTAs (Start Workout + Log Meal); single inline context line",
         "live_info_strip": "static, no rotation, concat greeting + streak when both apply",
@@ -136,8 +143,14 @@
       "v2_addendum_path": ".claude/features/home-today-screen/prd.md",
       "scope": "22 P0+P1 findings (F1-F3, F5-F12, F14-F22, F24)",
       "non_scope": "F11 goal drill-down, F13 macro strip, home_metric_tile_tap, metric deep-linking, Status+Goal merged card",
-      "analytics_events": ["home_action_tap", "home_action_completed", "home_empty_state_shown"],
-      "analytics_deferred": ["home_metric_tile_tap"],
+      "analytics_events": [
+        "home_action_tap",
+        "home_action_completed",
+        "home_empty_state_shown"
+      ],
+      "analytics_deferred": [
+        "home_metric_tile_tap"
+      ],
       "estimated_effort_days": 8.5
     },
     "tasks": {
@@ -172,10 +185,16 @@
       "approved_by": "user",
       "v1_status": "shipped",
       "checklist_completed": true,
-      "commits": ["8b5fdf2", "136efe3", "f266932", "ec95eaa", "73df335"]
+      "commits": [
+        "8b5fdf2",
+        "136efe3",
+        "f266932",
+        "ec95eaa",
+        "73df335"
+      ]
     },
     "testing": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-04-09T14:00:00Z",
       "v1_status": "pre-pm-workflow",
       "ci_passed": true,
@@ -185,14 +204,19 @@
       "instrumentation_verified": true,
       "analytics_tests_added": 10,
       "analytics_tests_passed": 10,
-      "analytics_verification_passed": true
+      "analytics_verification_passed": true,
+      "approved_at": "2026-04-09T17:00:00Z",
+      "reconciled_at": "2026-04-20T00:00:00Z",
+      "reconciliation_note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
     },
     "review": {
       "status": "approved",
       "approved_at": "2026-04-09T15:30:00Z",
       "approved_by": "user",
       "v1_status": "pre-pm-workflow",
-      "risks": ["zero high-risk files touched"],
+      "risks": [
+        "zero high-risk files touched"
+      ],
       "ci_main": true,
       "ci_feature": true
     },
@@ -217,10 +241,26 @@
         "current": null
       },
       "secondary": [
-        {"name": "home_action_tap_rate", "baseline": "N/A", "target": ">30% of sessions"},
-        {"name": "home_action_completion_rate", "baseline": "N/A", "target": ">50% of taps"},
-        {"name": "readiness_checkin_rate", "baseline": "N/A", "target": ">40% daily"},
-        {"name": "empty_state_rate", "baseline": "N/A", "target": "<20% of sessions"}
+        {
+          "name": "home_action_tap_rate",
+          "baseline": "N/A",
+          "target": ">30% of sessions"
+        },
+        {
+          "name": "home_action_completion_rate",
+          "baseline": "N/A",
+          "target": ">50% of taps"
+        },
+        {
+          "name": "readiness_checkin_rate",
+          "baseline": "N/A",
+          "target": ">40% daily"
+        },
+        {
+          "name": "empty_state_rate",
+          "baseline": "N/A",
+          "target": "<20% of sessions"
+        }
       ],
       "guardrails": [
         "crash_free_rate > 99.5%",
@@ -230,26 +270,320 @@
       ],
       "instrumentation_ready": true,
       "first_review_date": "2026-04-16",
-      "kill_criteria": "Core screen — always active. v2 alignment only ships if no readiness/biometric flow regresses."
+      "kill_criteria": "Core screen \u2014 always active. v2 alignment only ships if no readiness/biometric flow regresses."
     }
   },
   "tasks": [
-    {"id": "T1", "title": "Add new AppText + AppSize tokens to AppTheme.swift", "type": "design", "skill": "design", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": [], "completed_at": null, "findings": ["F5","F7","F19"]},
-    {"id": "T2", "title": "Add motion tokens (AppSpring, AppEasing, motionSafe)", "type": "design", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "completed_at": null, "findings": ["F21","F22"]},
-    {"id": "T3", "title": "Add AppColor.Chart tokens (weight, hrv, heartRate, activity)", "type": "design", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.15, "depends_on": [], "completed_at": null, "findings": ["F8"]},
-    {"id": "T4", "title": "Create AppMetricColumn component in AppComponents.swift", "type": "ui", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F26","F16"]},
-    {"id": "T5", "title": "Create AppMetricTile component in AppComponents.swift", "type": "ui", "skill": "design", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F26","F16"]},
-    {"id": "T6", "title": "Create HomeRecommendationProvider service", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.75, "depends_on": [], "completed_at": null, "findings": ["F27","F14"]},
-    {"id": "T7", "title": "Add analytics event/param enums + taxonomy CSV rows", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "completed_at": null, "findings": ["F24","F25"]},
-    {"id": "T8", "title": "Build v2 MainScreenView.swift (main assembly)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 3.0, "depends_on": ["T1","T2","T3","T4","T5","T6","T7","T9","T10"], "completed_at": null, "findings": ["F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F15","F22","F24"]},
-    {"id": "T9", "title": "Make LiveInfoStrip static (remove auto-rotation)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F20"]},
-    {"id": "T10", "title": "Create empty state view for Home", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "completed_at": null, "findings": ["F15","F16"]},
-    {"id": "T11", "title": "Accessibility pass on v2 view (~30+ labels)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.75, "depends_on": ["T8"], "completed_at": null, "findings": ["F17","F18"]},
-    {"id": "T12", "title": "Update project.pbxproj (v2 swap + remove v1 from Sources)", "type": "infra", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": ["T8"], "completed_at": null, "findings": []},
-    {"id": "T13", "title": "Mark v1 MainScreenView as HISTORICAL", "type": "docs", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.1, "depends_on": ["T12"], "completed_at": null, "findings": []},
-    {"id": "T14", "title": "Walk v2 refactor checklist (Sections A-K)", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T8","T11","T12"], "completed_at": null, "findings": []},
-    {"id": "T15", "title": "Write behavior tests for HomeRecommendationProvider", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T6"], "completed_at": null, "findings": []},
-    {"id": "T16", "title": "Write snapshot tests for v2 view (5 states x devices)", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.75, "depends_on": ["T8","T12"], "completed_at": null, "findings": []},
-    {"id": "T17", "title": "Write analytics tests (event firing + consent gating)", "type": "test", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T7","T8"], "completed_at": null, "findings": []}
+    {
+      "id": "T1",
+      "title": "Add new AppText + AppSize tokens to AppTheme.swift",
+      "type": "design",
+      "skill": "design",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F5",
+        "F7",
+        "F19"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T2",
+      "title": "Add motion tokens (AppSpring, AppEasing, motionSafe)",
+      "type": "design",
+      "skill": "design",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F21",
+        "F22"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T3",
+      "title": "Add AppColor.Chart tokens (weight, hrv, heartRate, activity)",
+      "type": "design",
+      "skill": "design",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.15,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F8"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T4",
+      "title": "Create AppMetricColumn component in AppComponents.swift",
+      "type": "ui",
+      "skill": "design",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F26",
+        "F16"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T5",
+      "title": "Create AppMetricTile component in AppComponents.swift",
+      "type": "ui",
+      "skill": "design",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F26",
+        "F16"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T6",
+      "title": "Create HomeRecommendationProvider service",
+      "type": "backend",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.75,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F27",
+        "F14"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T7",
+      "title": "Add analytics event/param enums + taxonomy CSV rows",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F24",
+        "F25"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T8",
+      "title": "Build v2 MainScreenView.swift (main assembly)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 3.0,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T9",
+        "T10"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8",
+        "F9",
+        "F10",
+        "F11",
+        "F12",
+        "F15",
+        "F22",
+        "F24"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T9",
+      "title": "Make LiveInfoStrip static (remove auto-rotation)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F20"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T10",
+      "title": "Create empty state view for Home",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F15",
+        "F16"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T11",
+      "title": "Accessibility pass on v2 view (~30+ labels)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T8"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [
+        "F17",
+        "F18"
+      ],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T12",
+      "title": "Update project.pbxproj (v2 swap + remove v1 from Sources)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T8"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T13",
+      "title": "Mark v1 MainScreenView as HISTORICAL",
+      "type": "docs",
+      "skill": "dev",
+      "status": "completed",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T12"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T14",
+      "title": "Walk v2 refactor checklist (Sections A-K)",
+      "type": "test",
+      "skill": "qa",
+      "status": "completed",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T8",
+        "T11",
+        "T12"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T15",
+      "title": "Write behavior tests for HomeRecommendationProvider",
+      "type": "test",
+      "skill": "qa",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T16",
+      "title": "Write snapshot tests for v2 view (5 states x devices)",
+      "type": "test",
+      "skill": "qa",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T8",
+        "T12"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    },
+    {
+      "id": "T17",
+      "title": "Write analytics tests (event firing + consent gating)",
+      "type": "test",
+      "skill": "analytics",
+      "status": "completed",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T7",
+        "T8"
+      ],
+      "completed_at": "2026-04-09T17:00:00Z",
+      "findings": [],
+      "reconciled": true,
+      "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
+    }
   ]
 }
