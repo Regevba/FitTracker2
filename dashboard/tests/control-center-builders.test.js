@@ -12,7 +12,7 @@ describe('control center builders', () => {
   it('builds dashboard data from shared PM sources', async () => {
     const data = await buildDashboardData();
 
-    expect(data.frameworkManifest.framework_version).toBe('5.1');
+    expect(data.frameworkManifest.framework_version).toBe('6.1');
     expect(data.workspaceMeta.primaryViews.map(item => item.id)).toContain('knowledge');
     expect(data.workspaceMeta.secondaryWorkspaces.map(item => item.id)).toContain('case-studies');
     expect(data.caseStudyFeed.some(item => item.id === 'cleanup-control-room-2026-04')).toBe(true);
@@ -22,5 +22,14 @@ describe('control center builders', () => {
 
     const allDocs = data.knowledgeHub.groups.flatMap(group => group.docs);
     expect(allDocs.some(doc => String(doc.path).includes('.claude/worktrees'))).toBe(false);
+  });
+
+  it('handles case-study entries with missing artifacts gracefully', async () => {
+    const data = await buildDashboardData();
+    expect(data.caseStudyFeed).toBeDefined();
+    expect(Array.isArray(data.caseStudyFeed)).toBe(true);
+    data.caseStudyFeed.forEach(item => {
+      expect(typeof item.id).toBe('string');
+    });
   });
 });

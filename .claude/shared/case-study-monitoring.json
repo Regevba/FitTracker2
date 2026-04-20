@@ -1215,7 +1215,7 @@
         "eval_failed": []
       },
       "case_study_path": "docs/case-studies/framework-measurement-v6-case-study.md",
-      "related_artifacts": [
+      "artifacts": [
         "docs/superpowers/specs/2026-04-16-framework-measurement-v6-design.md",
         "docs/superpowers/plans/2026-04-16-framework-measurement-v6.md",
         "docs/case-studies/meta-analysis/what-if-v6-from-day-one-2026-04-16.md",
@@ -1252,7 +1252,10 @@
             "token_overhead_pct": 7.91
           }
         }
-      ]
+      ],
+      "success_cases": [],
+      "failure_cases": [],
+      "next_checkpoints": []
     },
     {
       "case_id": "post-stress-test-audit-remediation-2026-04-19",
