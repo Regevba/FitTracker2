@@ -1,8 +1,8 @@
-# `/pm-workflow` — The Hub (v6.0)
+# `/pm-workflow` — The Hub (v6.1)
 
 > **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
 >
-> **Updated:** 2026-04-15
+> **Updated:** 2026-04-16
 
 **Agent-facing prompt:** [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md)
 
@@ -31,7 +31,7 @@ Before the ecosystem, `/pm-workflow` was a single monolithic skill that did ever
 - Cross-domain information (e.g. CX signals informing UX decisions) stayed trapped in one workflow's context
 - Every phase was sequential — no parallelization of independent work
 
-The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management. v4.0 added the adapter layer and L1/L2/L3 cache. v4.1 added the skill-internal lifecycle. v4.2 added self-healing health checks and framework integrity scoring. v4.3 added the operational layer: control room visibility, case-study monitoring, and maintenance-program orchestration. v4.4 added eval-driven development (mandatory evals per feature). v5.0 applied SoC-on-Software principles: skill-on-demand loading and cache compression, reclaiming ~54K tokens. v5.1 completed the SoC suite with 6 additional items: model tiering, batch dispatch, result forwarding, speculative preload, systolic chains, and task complexity gate — achieving ~63% framework overhead reduction. See the [evolution timeline](#version-history) below for the full progression.
+The v2.0 ecosystem extracted 10 domain skills from the monolith. v3.0 added external tool sync (Notion MCP, Figma MCP), screen audit research mode, parallel subagent execution, and sub-feature queue management. v4.0 added the adapter layer and L1/L2/L3 cache. v4.1 added the skill-internal lifecycle. v4.2 added self-healing health checks and framework integrity scoring. v4.3 added the operational layer: control room visibility, case-study monitoring, and maintenance-program orchestration. v4.4 added eval-driven development (mandatory evals per feature). v5.0 applied SoC-on-Software principles: skill-on-demand loading and cache compression, reclaiming ~54K tokens. v5.1 completed the SoC suite with 6 additional items: model tiering, batch dispatch, result forwarding, speculative preload, systolic chains, and task complexity gate — achieving ~63% framework overhead reduction. v5.2 added Dispatch Intelligence (3-stage pipeline, tool budgets, permission routing) and Parallel Write Safety (snapshot/rollback, region mirrors, progressive learning). v6.0 added deterministic Framework Measurement: phase timing, cache hit tracking, eval coverage gates, token counting, CU v2 continuous factors, and rolling baselines. v6.1 added HADF — Hardware-Aware Dispatch: 5-layer hardware detection (edge + cloud), 17 chip profiles across 6 vendors, 7 cloud fingerprints, confidence-gated dispatch, and a composite optimizer. See the [evolution timeline](#version-history) below for the full progression.
 
 ## Sub-commands
 
@@ -200,7 +200,7 @@ It's the only skill the user normally types directly. Everything else is reachab
 ### Architecture & evolution
 - [Architecture One-Pager](architecture-one-pager.md) — quick-reference system schematics and information flow
 - [Architecture Deep-Dive](architecture.md) — full ecosystem guide with per-skill details, shared data layer, v5.0/v5.1 SoC sections
-- [Evolution History](evolution.md) — narrative v1.0 → v5.1 with rationale, consolidated timeline, and cumulative metrics
+- [Evolution History](evolution.md) — narrative v1.0 → v6.1 with rationale, consolidated timeline, and cumulative metrics
 - [SoC Savings Report](../architecture/soc-savings-report-v5.1.md) — token impact analysis for v5.0/v5.1 optimizations
 
 ### Spoke skills (dispatched by the hub)
@@ -278,11 +278,12 @@ Every version was tested through real feature work. The case study column links 
 | v4.0 | 2026-04-10 | Reactive data mesh, adapters, validation gate, L1/L2/L3 cache | Training v2 (#74, 40% cache) | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
 | v4.1 | 2026-04-10 | Skill Internal Lifecycle (Cache→Research→Execute→Learn) | Nutrition (#75, 55%), Stats (#76, 65%), Settings (#77, 70%) | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
 | v4.2 | 2026-04-10 | Self-healing hub, Phase 0 health checks | Readiness v2, AI Engine v2, AI Rec UI | [Evolution v1→v4](../case-studies/pm-workflow-evolution-v1-to-v4.md) |
-| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance programs | Cleanup program | — |
-| v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature | Profile settings (9 evals) | — |
-| v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens) | Framework itself | [SoC Report](../architecture/soc-savings-report-v5.1.md) |
+| v4.3 | 2026-04-11 | Control room, case-study monitoring, maintenance programs | Cleanup program | [Cleanup Control Room CS](../case-studies/cleanup-control-room-case-study.md), [Control Center IA CS](../case-studies/control-center-alignment-ia-refresh-case-study.md) |
+| v4.4 | 2026-04-13 | Eval-driven development — mandatory evals per feature | Profile settings (9 evals) | [Eval Layer CS](../case-studies/eval-layer-v4.4-case-study.md), [User Profile CS](../case-studies/user-profile-v4.4-case-study.md) |
+| v5.0 | 2026-04-14 | SoC: skill-on-demand + cache compression (54K tokens) | Framework itself | [SoC v5 CS](../case-studies/soc-v5-framework-case-study.md) |
 | v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Arch (#79, 13 tasks, 1.5h) | [AI Engine CS](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
-| v5.2 | 2026-04-16 | Dispatch Intelligence (3-stage pipeline, tool budgets, permission routing) + Parallel Write Safety (snapshot/rollback, region mirrors, progressive learning) | Stress test (18 Swift, 35 tests) | — |
-| v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | — |
+| v5.2 | 2026-04-16 | Dispatch Intelligence (3-stage pipeline, tool budgets, permission routing) + Parallel Write Safety (snapshot/rollback, region mirrors, progressive learning) | Stress test (18 Swift, 35 tests) | [Parallel Write Safety CS](../case-studies/parallel-write-safety-v5.2-case-study.md), [v5.1→v5.2 Evolution CS](../case-studies/v5.1-v5.2-framework-evolution-case-study.md) |
+| v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | [Framework Measurement CS](../case-studies/framework-measurement-v6-case-study.md) |
+| v6.1 | 2026-04-16 | HADF — Hardware-Aware Dispatch: 5-layer hardware detection (edge + cloud), 17 chip profiles across 6 vendors, 7 cloud fingerprints, confidence-gated dispatch, composite optimizer | HADF rollout + full-system meta-analysis audit (185 findings) | [HADF CS](../case-studies/hadf-hardware-aware-dispatch-case-study.md), [Meta-Analysis Audit CS](../case-studies/meta-analysis-full-system-audit-v6.1-case-study.md) |
 
 For the full narrative behind each version, see [evolution.md](evolution.md). For system schematics, see [architecture-one-pager.md](architecture-one-pager.md). For the detailed deep-dive, see [architecture.md](architecture.md).
