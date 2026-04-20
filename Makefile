@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -30,10 +30,29 @@ tokens: node_modules
 tokens-check: node_modules
 	node scripts/check-tokens.js
 
+# Design-system compliance scan across every SwiftUI view + component.
+# Walks FitTracker/Views and FitTracker/DesignSystem, flags raw colors,
+# animations, fonts, magic spacing/frame numbers, and missing
+# accessibility annotations on icon-only buttons.
+# Exits 1 if any P0 violations exist. Use `make ui-audit-baseline` to
+# regenerate docs/design-system/ui-audit-baseline.md without failing.
+ui-audit:
+	python3 scripts/ui-audit.py
+
+# Regenerate the compliance baseline doc without failing the build.
+# Commit the resulting ui-audit-baseline.md alongside any new DS fixes.
+ui-audit-baseline:
+	python3 scripts/ui-audit.py --baseline --no-fail
+
 # Install npm dependencies (style-dictionary)
 install:
 	npm install
 
+# Note: ui-audit is intentionally NOT in verify-local yet — the existing
+# baseline has 27 P0 violations (see docs/design-system/ui-audit-baseline.md).
+# Run `make ui-audit` separately to see drift introduced by your branch.
+# Once the baseline reaches 0 P0, add ui-audit to this chain so it gates
+# every local + CI verify pass.
 verify-local: tokens-check verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
 
 verify-web:

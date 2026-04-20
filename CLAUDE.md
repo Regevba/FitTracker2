@@ -54,9 +54,10 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 ## CI Pipeline
 
 - Token check: `make tokens-check` (design system drift detection)
+- UI audit: `make ui-audit` (per-view design-system compliance scanner — see "Design System" section)
 - Build: `xcodebuild build` (iOS Simulator, no code signing)
 - Test: `xcodebuild test` (XCTest suite)
-- All three must pass before any merge to main.
+- All four must pass before any merge to main once the UI-audit baseline reaches 0 P0. Today `ui-audit` runs separately; the existing 27 P0 baseline is being burned down "fix-as-you-touch" per `docs/design-system/ui-audit-baseline.md`.
 
 ## Data-Driven Development
 
@@ -86,6 +87,43 @@ The design system is a **living, evolving framework** — not a static constrain
 - If a feature needs to deviate, the user chooses: fix, evolve the system, or override with justification
 - Approved changes merge to main with the feature and become part of the system
 - All changes documented in `docs/design-system/feature-memory.md`
+
+### Verification Layer (added 2026-04-20)
+
+Per-PR review and `tokens-check` only catch token-definition drift. The
+verification layer below catches the more common failure modes — raw
+literals slipped into views, magic numbers, missing accessibility, and
+the silent-fallback bug where `Color("name")` references a non-existent
+colorset.
+
+- **`make ui-audit`** — runs `scripts/ui-audit.py` across every `.swift`
+  file under `FitTracker/Views` and `FitTracker/DesignSystem`. Skips
+  HISTORICAL v1 files and token-definition files automatically. Exits 1
+  on any P0 finding.
+- **Rules:** `DS-RAW-COLOR-{MEMBER,SHORTHAND,LITERAL,UIKIT}`,
+  `DS-RAW-ANIMATION`, `DS-RAW-FONT-{SYSTEM,SHORTHAND}`,
+  `DS-MAGIC-{PADDING,FRAME}`, `DS-A11Y-BUTTON`, `DS-MISSING-ASSET`
+  (Gap-A: `Color("name")` in AppTheme without a backing colorset).
+- **Baseline:** `docs/design-system/ui-audit-baseline.md` (regenerate
+  with `make ui-audit-baseline`). Current snapshot: 27 P0 + 103 P1.
+- **Fix-as-you-touch rule:** any PR touching a file with findings should
+  clear that file's findings as part of the change. Once baseline P0
+  reaches 0, add `ui-audit` to `verify-local` to make it a hard gate.
+- **Verification contract:** `docs/design-system/figma-code-sync-status.md`
+  Verification Contract section defines what is automatically vs
+  manually verified, plus plans for closing the snapshot-test and
+  Figma-API gaps.
+- **Definition of "Synced"** for any screen in the Figma↔code matrix:
+  no P0 findings + all assets resolve + recent verification date +
+  Figma node ID referenced in the merging PR's description.
+
+**When introducing a new `Color("name")` token in `AppTheme.swift`:**
+add the matching `.colorset` directory under
+`FitTracker/Assets.xcassets/Colors/...` AND a corresponding entry in
+`design-tokens/tokens.json` AND the generated line in
+`FitTracker/DesignSystem/DesignTokens.swift` IN THE SAME COMMIT. The
+`make ui-audit` `DS-MISSING-ASSET` rule + `make tokens-check`
+together enforce this; both must pass.
 
 ## UI Refactoring & V2 Rule
 
@@ -230,6 +268,9 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Feature development gateway: `docs/design-system/feature-development-gateway.md`
 - Tokens: `FitTracker/Services/AppTheme.swift` + `design-tokens/tokens.json`
 - Components: `FitTracker/DesignSystem/AppComponents.swift`
+- UI audit scanner: `scripts/ui-audit.py` (run via `make ui-audit`)
+- UI audit baseline: `docs/design-system/ui-audit-baseline.md`
+- Figma↔code matrix + Verification Contract: `docs/design-system/figma-code-sync-status.md`
 
 ### Handoff prompts
 - UX/UI build prompts (auto-generated + hand-authored): `docs/prompts/`

@@ -81,6 +81,54 @@ This keeps the design-system evolution coherent across the per-screen alignment 
 
 ---
 
+## 2026-04-20 — Design System Verification Layer (branch `claude/review-ui-consistency-zSkvJ`)
+
+- **Date:** 2026-04-20
+- **Feature:** design-system-v2 (verification layer to prevent future code↔Figma↔pixel drift)
+- **Problem solved:** Until now the design system relied on per-PR review and the `tokens-check` CI gate, both of which only catch token-definition drift. There was no automated check for the more common failure modes — raw Color literals slipped into views, magic spacing values, raw animations, missing accessibility labels, and the Gap-A class bug where `Color("name")` referenced a non-existent colorset and silently fell back to clear at runtime. The feature-memory survey on 2026-04-20 found 27 P0 + 103 P1 violations across the merged main branch that no existing tool would catch.
+- **Primary platform:** iOS (SwiftUI) — tooling is Python 3 + bash, no SwiftUI dependency
+- **Reused tokens:** None added — this layer enforces the existing token namespace
+- **Reused components:** None
+- **New primitives:**
+  - `scripts/ui-audit.py` — dependency-free Python scanner that walks every `.swift` file under `FitTracker/Views` and `FitTracker/DesignSystem` (skipping HISTORICAL v1 files and token-definition files), checking for: raw SwiftUI color references (`Color.white`, `.foregroundStyle(.blue)`, `Color(.systemBackground)`), raw `Color(red:green:blue:)` literals, raw animation literals (`.easeInOut(duration:...)`), raw `Font.system(...)` calls, raw `.font(.body/.caption)` shorthands, magic padding/frame numbers off the AppSpacing/AppSize token grids, and icon-only Buttons without `accessibilityLabel`. Also performs **Gap-A asset-reference verification**: every `Color("name")` in `AppTheme.swift` must have a matching `.colorset` in `Assets.xcassets`.
+  - `make ui-audit` Makefile target — runs the scanner, exits 1 on any P0 finding, wired into `verify-local`
+  - `make ui-audit-baseline` — regenerates `docs/design-system/ui-audit-baseline.md` without failing the build (used after intentional fixes)
+  - `docs/design-system/ui-audit-baseline.md` — committed compliance snapshot listing every finding by file/line; PRs that touch views should keep P0 at 0 going forward
+  - **Verification Contract** section in `docs/design-system/figma-code-sync-status.md` — defines what is automatically verified vs manually verified, with concrete plans for closing the snapshot-test and Figma-API gaps
+- **Wireframe/UX:** No UI surface — this is tooling that protects the existing UI surface
+- **Final UI decisions:** N/A
+- **Accessibility:** Scanner flags `Button { ... } label: { Image(...) }` patterns without `accessibilityLabel` or `accessibilityHidden(true)` as P1 warnings — found 5 instances at baseline, none of which sit on critical user paths
+- **Follow-up gaps:**
+  - 27 P0 violations exist at baseline (raw `.white` / `.blue` foregroundStyle, raw spring/easeOut animations, `Color(.systemBackground)` UIKit bridges). These don't break shipping UI but block the long-term invariant. Plan: each future PR that touches one of the affected files fixes the file's findings as part of the change.
+  - Snapshot tests against Figma frame exports — deferred, see `figma-code-sync-status.md` Verification Contract
+  - 2 orphan PBXBuildFile entries in `FitTracker.xcodeproj/project.pbxproj` for v1 MainScreenView and v1 TrainingPlanView — not in any Sources phase, dead weight only. Cleanup tracked separately.
+
+---
+
+## 2026-04-20 — Design System Alignment Sweep (branch `claude/review-ui-consistency-zSkvJ`)
+
+- **Date:** 2026-04-20
+- **Feature:** design-system-v2 (post-merge alignment pass covering PRs #118–#130)
+- **Problem solved:** After the M-3 design-system completion work and the M-1/M-2 decomposition PRs, a review of merged main surfaced two concrete gaps: (1) `AppColor.Chart.weight`, `.hrv`, `.heartRate`, `.activity` were declared in `AppTheme.swift` and used by Home v2 (T3), AI Intelligence Sheet, and ReadinessCard but had no backing `.colorset` in `Assets.xcassets` and no `tokens.json` entries — the pipeline had run backwards; (2) the Stats Carousel metric toggles in `GoalsPreferencesSettingsScreen` lacked VoiceOver labels/values/hints despite being interactive controls that change an observable preference.
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** `AppColor.Chart.*` (extended with weight/hrv/heartRate/activity); accessibility modifiers reuse existing SwiftUI primitives
+- **Reused components:** No new components — fixes are token-and-a11y-only
+- **New primitives:**
+  - Assets: `chart-weight.colorset` (#FFA94D / dark #FFB966), `chart-hrv.colorset` (#32D74B / dark #4DE066), `chart-heart-rate.colorset` (#FF6961 / dark #FF857D), `chart-activity.colorset` (#FFCE5C / dark #FFD978) — each with light + dark variants
+  - Tokens: corresponding `chart.weight`, `chart.hrv`, `chart.heartRate`, `chart.activity` entries in `design-tokens/tokens.json`, closing the code → tokens → asset loop
+- **Wireframe/UX:** No visual redesign — existing Home v2 status metrics, ReadinessCard HRV/RHR bars, and BodyCompositionDetailView now render with their intended tints instead of falling back to clear/system default
+- **Final UI decisions:**
+  - Weight tint = amber orange (distinct from pale `chart-body`) so body-weight trend charts stay readable next to body-composition series
+  - HRV = system green (recovery/parasympathetic association)
+  - Heart Rate = coral red (cardiovascular association, legible against both light and dark surface tokens)
+  - Activity = golden yellow (distinct from `chart-achievement` gold and brand orange)
+- **Accessibility:** Added `.accessibilityLabel`, `.accessibilityValue` ("Shown in carousel" / "Hidden from carousel"), and `.accessibilityHint` to each Stats Carousel metric toggle button. Added matching label + hint to the "Reset Recommended Metrics" button. The destructive "Delete All Local Data" action in `DataSyncSettingsScreen` was already properly labeled and is left unchanged.
+- **Follow-up gaps:**
+  - Nutrition v1 (`FitTracker/Views/Nutrition/NutritionView.swift`) remains the shipping surface while the compliant v2 lives at `Views/Nutrition/v2/`. A `project.pbxproj` source-ref swap is still required to cut over — tracked separately.
+  - Style Dictionary codegen for motion/opacity/size/layout categories remains deferred (values continue to be replicated in `AppTheme.swift`); tokens.json is the source of truth.
+
+---
+
 ## 2026-04-10 — Training Plan v2 UX Alignment (PR #74)
 
 - **Date:** 2026-04-10

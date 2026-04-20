@@ -82,7 +82,7 @@ enum AppColor {
         static let achievement  = Color("chart-achievement")
         static let progress     = Color("chart-progress")
         static let nutritionFat = Color("chart-nutrition-fat")
-        // Home v2 metric tints (T3)
+        // Home v2 metric tints (T3) — colorsets added 2026-04-20 alongside tokens.json entries.
         static let weight       = Color("chart-weight")
         static let hrv          = Color("chart-hrv")
         static let heartRate    = Color("chart-heart-rate")
