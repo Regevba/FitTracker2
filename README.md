@@ -181,9 +181,9 @@ Verification snapshot as of `2026-04-15`:
 - All 6 v2 screens built in Figma via MCP (file key: `0Ai7s3fCFqR5JXDW8JvgmD`)
 
 ### Infrastructure
-- iOS app builds with full Xcode, targeted XCTest coverage passes
-- Design-token drift check passes
-- Dashboard tests pass and the control room is the canonical deployed web surface; the marketing website code exists but is not yet truthfully live as the primary public property
+- iOS app builds with full Xcode; XCTest coverage last known passing 2026-04-15, rerun required to re-verify
+- Design-token drift check passes (`make tokens-check`)
+- Dashboard is the canonical deployed web surface (control room); marketing website code exists but is not yet live as the primary public property
 - AI engine tests pass (`5/5`)
 - Firebase bootstrap config-aware, Supabase graceful degradation
 - Firebase runtime verification still requires local `FitTracker/GoogleService-Info.plist`
@@ -241,7 +241,7 @@ make verify-local
 ```
 
 This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass. All output goes to `.build/` on the SSD.
-The current verified result is green end to end, including `197+` passing XCTest cases across Core, Sync, and Eval test suites.
+Last verified green on 2026-04-15 (commit 45b5b33). Re-verification required after each merge. Run `make verify-local` and check output before claiming green status.
 
 ### iOS Build
 
