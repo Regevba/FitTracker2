@@ -2,7 +2,7 @@
   "feature": "hadf-infrastructure",
   "case_study": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
   "case_study_showcase": "04-case-studies/12-hadf.md",
-  "display_name": "HADF — Hardware-Aware Dispatch Framework",
+  "display_name": "HADF \u2014 Hardware-Aware Dispatch Framework",
   "work_type": "feature",
   "framework_version": "6.0",
   "phase": "implementation",
@@ -42,7 +42,7 @@
         "ended_at": null,
         "duration_minutes": 0,
         "paused_minutes": 0,
-        "notes": "N/A — framework infrastructure, no UI"
+        "notes": "N/A \u2014 framework infrastructure, no UI"
       },
       "implementation": {
         "started_at": "2026-04-16T02:00:00Z",
@@ -96,24 +96,86 @@
   },
   "tasks": {
     "total": 9,
-    "completed": 0,
+    "completed": 1,
     "in_progress": 0,
     "task_list": [
-      { "id": "T1", "name": "Static Chip Profiles", "status": "pending" },
-      { "id": "T2", "name": "Cloud Hardware Signature Table", "status": "pending" },
-      { "id": "T3", "name": "Chip Affinity Map Structure", "status": "pending" },
-      { "id": "T4", "name": "HADF Metrics Template + README", "status": "pending" },
-      { "id": "T5", "name": "Dispatch Intelligence Integration", "status": "pending" },
-      { "id": "T6", "name": "Extend cache-metrics + token-budget", "status": "pending" },
-      { "id": "T7", "name": "Reference Implementations", "status": "pending" },
-      { "id": "T8", "name": "Token Budget Counter Update", "status": "pending" },
-      { "id": "T9", "name": "Final Validation", "status": "pending" }
+      {
+        "id": "T1",
+        "name": "Static Chip Profiles",
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "7478a8e",
+        "note": "Static chip profiles shipped retroactively in commit 7478a8e (2026-04-20) as .claude/shared/chip-profiles.json with 17 profiles across 6 vendors (Apple A + M series, Google Tensor, Qualcomm Snapdragon, Samsung Exynos, MediaTek Dimensity, + 3 unknown/fallback). Schema is dispatch-oriented (compute_budget, dispatch_hints, thermal_profile, memory_constraints, composite_baseline). Grounded hardware metadata (cores, GPU, bandwidth, TDP, year, typical devices) deferred to future v1.1 if needed by downstream tasks. State reconciled 2026-04-20 after HADF T1 subagent dispatch reproduced F9 and surfaced the out-of-sync state."
+      },
+      {
+        "id": "T2",
+        "name": "Cloud Hardware Signature Table",
+        "status": "pending"
+      },
+      {
+        "id": "T3",
+        "name": "Chip Affinity Map Structure",
+        "status": "pending"
+      },
+      {
+        "id": "T4",
+        "name": "HADF Metrics Template + README",
+        "status": "pending"
+      },
+      {
+        "id": "T5",
+        "name": "Dispatch Intelligence Integration",
+        "status": "pending"
+      },
+      {
+        "id": "T6",
+        "name": "Extend cache-metrics + token-budget",
+        "status": "pending"
+      },
+      {
+        "id": "T7",
+        "name": "Reference Implementations",
+        "status": "pending"
+      },
+      {
+        "id": "T8",
+        "name": "Token Budget Counter Update",
+        "status": "pending"
+      },
+      {
+        "id": "T9",
+        "name": "Final Validation",
+        "status": "pending"
+      }
     ]
   },
   "cache_hits": [],
   "transitions": [
-    { "from": "research", "to": "prd", "timestamp": "2026-04-16T00:30:00Z", "approved_by": "user" },
-    { "from": "prd", "to": "tasks", "timestamp": "2026-04-16T01:30:00Z", "approved_by": "user" },
-    { "from": "tasks", "to": "implementation", "timestamp": "2026-04-16T02:00:00Z", "approved_by": "user" }
-  ]
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-16T00:30:00Z",
+      "approved_by": "user"
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-16T01:30:00Z",
+      "approved_by": "user"
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-04-16T02:00:00Z",
+      "approved_by": "user"
+    },
+    {
+      "from": "implementation",
+      "to": "implementation",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "T1 marked completed (artifact was shipped 2026-04-20 in commit 7478a8e but state.json was never reconciled). tasks.completed: 0 -> 1. Subagent dispatch for T1 reproduced F9 in practice \u2014 evidence for upstream ticket #51289."
+    }
+  ],
+  "updated": "2026-04-20T00:00:00Z"
 }
