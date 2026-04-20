@@ -263,7 +263,7 @@ All build artifacts stay on the SSD alongside the project:
 | `dashboard/src/components/DependencyGraph.jsx` | SVG DAG visualization |
 | `dashboard/src/scripts/parsers/tasks.js` | Task parser (6 exports) |
 | `dashboard/tests/tasks.test.js` | 21 parser tests |
-| `docs/project/pm-hub-evolution.md` | This document |
+| `docs/skills/evolution.md` | This document |
 
 ### Modified Files
 | File | Changes |
