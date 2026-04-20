@@ -218,7 +218,7 @@ Day 5:  T10 (tests) + polish
 - **Effort:** 1 day (multi-session if needed)
 - **Priority:** critical
 - **Dependencies:** V2-T4
-- **Description:** Execute `docs/project/figma-onboarding-v2-prompt.md` via Figma MCP. Target file `0Ai7s3fCFqR5JXDW8JvgmD`, page "Onboarding", new section `I3.2 — Onboarding v2 (PRD-Aligned)` with 6 screens. **Existing `I3.1` section MUST remain unchanged.**
+- **Description:** Execute `docs/prompts/figma-onboarding-v2-prompt.md` via Figma MCP. Target file `0Ai7s3fCFqR5JXDW8JvgmD`, page "Onboarding", new section `I3.2 — Onboarding v2 (PRD-Aligned)` with 6 screens. **Existing `I3.1` section MUST remain unchanged.**
 - **Manual confirm gate:** For each screen delta vs v1 code appearance, present before/after + ux-foundations rationale to user before populating Figma.
 - **Output:** 6 Figma frames with node IDs recorded in ux-spec.md
 - **Acceptance:** Section created, 6 screens built, v1 section untouched, node IDs documented, screenshots captured
@@ -273,7 +273,7 @@ Day 5:  T10 (tests) + polish
 - **Effort:** 0.25 day
 - **Priority:** medium
 - **Dependencies:** V2-T8, V2-T9
-- **Description:** Fill in `docs/project/pm-workflow-showcase-onboarding.md` with: actual phase timings, decisions made, manual confirm rounds count, audit findings summary, lessons learned.
+- **Description:** Fill in `docs/case-studies/pm-workflow-showcase-onboarding.md` with: actual phase timings, decisions made, manual confirm rounds count, audit findings summary, lessons learned.
 - **Output:** Updated showcase doc
 - **Acceptance:** Every Phase section has a completion note; Lessons section has ≥3 entries
 

@@ -9,9 +9,9 @@ This repository is both a product build and a redesign case study. It shows how 
 ## Quick Links
 
 - Figma design system and live app file: [FitTracker Design System Library](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD)
-- Full project story: [FitTracker Evolution Walkthrough](docs/project/fittracker-evolution-walkthrough.md)
+- Full project story: [FitTracker Evolution Walkthrough](docs/case-studies/fittracker-evolution-walkthrough.md)
 - Milestone summary: [CHANGELOG.md](CHANGELOG.md)
-- Merge brief: [UI Integration PR Draft](docs/project/ui-integration-pr-draft.md)
+- Merge brief: [UI Integration PR Draft](docs/master-plan/ui-integration-pr-draft.md)
 - Design-system docs: [docs/design-system](docs/design-system)
 
 ## Project Snapshot
@@ -72,7 +72,7 @@ The project then introduced:
 ### 5. Apple-first integration phase
 Approved screens were consolidated into one integration branch and synchronized into a shared, editable design system file so the app could be reviewed as one coherent product.
 
-For the full phase-by-phase story, read [FitTracker Evolution Walkthrough](docs/project/fittracker-evolution-walkthrough.md).
+For the full phase-by-phase story, read [FitTracker Evolution Walkthrough](docs/case-studies/fittracker-evolution-walkthrough.md).
 
 ## Current Approved Product State
 
@@ -169,7 +169,7 @@ Important merge guidance:
 - do not separately merge older per-screen UI branches if their approved work is already integrated here
 - confirm runtime, Figma, and docs are aligned before calling the phase complete
 
-For the full merge brief, read [UI Integration PR Draft](docs/project/ui-integration-pr-draft.md).
+For the full merge brief, read [UI Integration PR Draft](docs/master-plan/ui-integration-pr-draft.md).
 
 ## Build
 
@@ -202,6 +202,6 @@ After the Apple-first phase is fully closed, the next major work is:
 
 ## Additional Reading
 
-- [FitTracker Evolution Walkthrough](docs/project/fittracker-evolution-walkthrough.md)
+- [FitTracker Evolution Walkthrough](docs/case-studies/fittracker-evolution-walkthrough.md)
 - [CHANGELOG.md](CHANGELOG.md)
-- [UI Integration PR Draft](docs/project/ui-integration-pr-draft.md)
+- [UI Integration PR Draft](docs/master-plan/ui-integration-pr-draft.md)

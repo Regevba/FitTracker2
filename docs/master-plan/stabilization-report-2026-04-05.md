@@ -349,8 +349,8 @@ Primary docs updated:
 
 - [`README.md`](../../README.md)
 - [`CHANGELOG.md`](../../CHANGELOG.md)
-- [`docs/project/firebase-setup-guide.md`](./firebase-setup-guide.md)
-- [`docs/project/master-plan-reconciled-2026-04-05.md`](./master-plan-reconciled-2026-04-05.md)
+- [`docs/setup/firebase-setup-guide.md`](../setup/firebase-setup-guide.md)
+- [`docs/master-plan/master-plan-reconciled-2026-04-05.md`](./master-plan-reconciled-2026-04-05.md)
 
 ---
 

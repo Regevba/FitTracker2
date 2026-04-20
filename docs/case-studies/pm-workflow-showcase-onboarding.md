@@ -1,3 +1,5 @@
+> ⚠️ Historical document. References to `docs/project/` paths are from before the April 2026 reorganization. See `docs/master-plan/`, `docs/setup/`, and `docs/case-studies/` for current locations.
+
 # PM-Flow Hub Showcase — Onboarding v2 UX Alignment
 
 > **Purpose:** Exemplar walkthrough of the enhanced `/pm-workflow` skill running a **retroactive UX alignment** on a feature whose UX phase was skipped. Documents every phase, gate, decision, and hook invocation so future alignment runs have a reference.

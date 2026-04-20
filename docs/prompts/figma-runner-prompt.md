@@ -32,11 +32,11 @@ content alongside existing content as history is preserved.
 1. docs/design-system/ux-foundations.md (1,533 lines, 10 parts)
    This is the canonical UX + behavioral layer. Job 1 mirrors it into Figma.
 
-2. docs/project/figma-ux-foundations-prompt.md (255 lines)
+2. docs/prompts/figma-ux-foundations-prompt.md (255 lines)
    Detailed Figma build instructions for Job 1. Layout, colors, frame structure,
    page positioning rules, semantic variable usage. Follow it precisely.
 
-3. docs/project/figma-onboarding-v2-prompt.md (208 lines)
+3. docs/prompts/figma-onboarding-v2-prompt.md (208 lines)
    Detailed Figma build instructions for Job 2. 6 screens, exact tokens, SF Symbol
    icons, layout dimensions, gradient backgrounds. Follow it precisely.
 

@@ -240,7 +240,7 @@ Yes — 5 new screens in a dedicated onboarding flow.
 > **Status:** Draft for approval
 > **Parent:** v1 PRD above (approved 2026-04-05, implemented 2026-04-06)
 > **Trigger:** v1 `ux_or_integration` phase was **skipped** ("UX defined inline in PRD and task descriptions"). No formal ux-spec, no Figma screens, no design compliance gate. v2 closes that gap as the first feature in the sequential UX alignment initiative.
-> **Showcase doc:** [`docs/project/pm-workflow-showcase-onboarding.md`](../../../docs/project/pm-workflow-showcase-onboarding.md)
+> **Showcase doc:** [`docs/case-studies/pm-workflow-showcase-onboarding.md`](../../../docs/case-studies/pm-workflow-showcase-onboarding.md)
 
 ## v2 Purpose
 
@@ -311,7 +311,7 @@ In addition to v1 acceptance criteria:
 - [ ] Every UI change from v1 was manually confirmed by user before being applied
 - [ ] `.claude/features/onboarding/state.json` has `phases.ux_or_integration.status = "approved"` with timestamp
 - [ ] PR description links to ux-research, ux-spec, Figma section, and this v2 section
-- [ ] Showcase doc `docs/project/pm-workflow-showcase-onboarding.md` is updated with all phase outcomes
+- [ ] Showcase doc `docs/case-studies/pm-workflow-showcase-onboarding.md` is updated with all phase outcomes
 
 ## v2 Risks
 
@@ -345,7 +345,7 @@ In addition to v1 kill criteria:
 | `docs/design-system/component-contracts.md` | Interaction behavior validation |
 | `docs/design-system/feature-development-gateway.md` | Phase 3 procedure |
 | `docs/design-system/feature-design-checklist.md` | Per-decision validation |
-| `docs/project/figma-onboarding-v2-prompt.md` | Figma v2 build prompt (pre-authored) |
+| `docs/prompts/figma-onboarding-v2-prompt.md` | Figma v2 build prompt (pre-authored) |
 | `FitTracker/Services/AppTheme.swift` | Token source of truth |
 | `FitTracker/DesignSystem/AppComponents.swift` | Component source of truth |
 | v1 code on `feature/onboarding-ux-align` | Drift baseline |

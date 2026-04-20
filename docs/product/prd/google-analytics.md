@@ -49,7 +49,7 @@ Without analytics, product decisions are based on assumptions. GA4 provides: DAU
 | `FitTracker/Services/Analytics/AnalyticsEvents.swift` | Typed event definitions |
 | `FitTracker/Views/Auth/ConsentView.swift` | GDPR consent screen |
 | `docs/product/analytics-taxonomy.csv` | Full taxonomy spreadsheet |
-| `docs/project/firebase-setup-guide.md` | 20-step setup guide |
+| `docs/setup/firebase-setup-guide.md` | 20-step setup guide |
 
 ## Success Metrics
 

@@ -211,7 +211,7 @@ This document specifies the v2 onboarding UX after audit findings are applied. I
 - Research: ux-research.md
 - PRD v2: prd.md → `# v2 — UX Alignment`
 - Foundations: docs/design-system/ux-foundations.md
-- Figma target: docs/project/figma-onboarding-v2-prompt.md
+- Figma target: docs/prompts/figma-onboarding-v2-prompt.md
 
 ## Figma v2 build — node IDs
 

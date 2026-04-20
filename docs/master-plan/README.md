@@ -1,6 +1,6 @@
 # Master Plan & Handoffs
 
-> The master plan for FitMe's overall direction and the handoff documents that capture state-of-repo checkpoints between sessions. Kept in one folder so anyone resuming work (human or agent) can find the current plan and the most recent handoff without hunting through `docs/project/`.
+> The master plan for FitMe's overall direction and the handoff documents that capture state-of-repo checkpoints between sessions. Kept in one folder so anyone resuming work (human or agent) can find the current plan and the most recent handoff without hunting through scattered folders.
 
 ---
 
@@ -16,7 +16,7 @@
 - Skill documentation — that lives in `docs/skills/`
 - Design system docs — `docs/design-system/`
 - Build prompts for other agents — `docs/prompts/`
-- Setup guides (SSD, Firebase, etc.) — stay in `docs/project/`
+- Setup guides (SSD, Firebase, etc.) — live in `docs/setup/`
 - Session summaries that are diary-style — those are handoffs only if they include "next session picks up X" actionables
 
 ## Current contents
