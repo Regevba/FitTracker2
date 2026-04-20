@@ -1,3 +1,5 @@
+> **Status:** DEPRECATED — superseded by [`master-plan-2026-04-15.md`](master-plan-2026-04-15.md) (current as of 2026-04-20). Kept in the repo as a historical snapshot.
+>
 > ⚠️ Historical document. References to `docs/project/` paths are from before the April 2026 reorganization. See `docs/master-plan/`, `docs/setup/`, and `docs/case-studies/` for current locations.
 
 # FitMe Master Plan — 2026-04-06 (SSD Home Edition)

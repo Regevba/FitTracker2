@@ -1,8 +1,11 @@
 # FitMe Master Plan — 2026-04-15
 
-> **Date:** 2026-04-15
+> **Status:** CURRENT · Last updated 2026-04-20 (after v6.1 audit remediation program closed 183/185 findings)
+> **Date opened:** 2026-04-15
 > **Purpose:** Updated master plan reflecting all work since the 2026-04-06 edition. Supersedes `master-plan-2026-04-06.md`.
 > **Context:** 28 additional items shipped, framework evolved v4.3 → v5.1, full external sync completed (Linear, Notion, Vercel), dashboard operational with zero alerts.
+>
+> **Post-2026-04-15 additions:** v5.1 → v5.2 dispatch intelligence + parallel write safety; v5.2 → v6.0 framework measurement; v6.0 → v6.1 HADF + full-system audit; M-1/M-2/M-3/M-4 decomposition sprints; case-study linkage rollout across all 40 feature directories.
 
 ---
 

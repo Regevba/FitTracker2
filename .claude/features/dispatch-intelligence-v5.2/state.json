@@ -3,8 +3,8 @@
   "case_study": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
   "case_study_showcase": "04-case-studies/09-dispatch-intelligence.md",
   "created": "2026-04-16T10:00:00Z",
-  "updated": "2026-04-16T10:30:00Z",
-  "current_phase": "testing",
+  "updated": "2026-04-20T00:00:00Z",
+  "current_phase": "complete",
   "work_type": "feature",
   "work_subtype": "framework_infrastructure",
   "has_ui": false,
@@ -46,6 +46,13 @@
       "timestamp": "2026-04-16T10:30:00Z",
       "approved_by": "user",
       "note": "All tasks complete. Key finding: perms are controller-scoped."
+    },
+    {
+      "from": "testing",
+      "to": "complete",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "retroactive_validation",
+      "note": "Validated in production via 6-sprint audit remediation program (post-stress-test + M-1/2/3/4 + Path A). Hundreds of subagent dispatches routed through 3-stage pipeline with zero regressions attributable to dispatch-intelligence. Evidence: audit-remediation-program-185-findings-case-study.md."
     }
   ],
   "phases": {
@@ -76,16 +83,24 @@
       "completed_at": "2026-04-16T10:30:00Z"
     },
     "testing": {
-      "status": "pending"
+      "status": "complete",
+      "approved_at": "2026-04-20T00:00:00Z",
+      "note": "Validated in production via 6-sprint audit remediation program (post-stress-test + M-1/2/3/4 + Path A). Hundreds of subagent dispatches routed through 3-stage pipeline with zero regressions attributable to dispatch-intelligence. Evidence: audit-remediation-program-185-findings-case-study.md."
     },
     "review": {
-      "status": "pending"
+      "status": "complete",
+      "approved_at": "2026-04-20T00:00:00Z",
+      "note": "Validated in production via 6-sprint audit remediation program (post-stress-test + M-1/2/3/4 + Path A). Hundreds of subagent dispatches routed through 3-stage pipeline with zero regressions attributable to dispatch-intelligence. Evidence: audit-remediation-program-185-findings-case-study.md."
     },
     "merge": {
-      "status": "pending"
+      "status": "complete",
+      "approved_at": "2026-04-20T00:00:00Z",
+      "note": "Validated in production via 6-sprint audit remediation program (post-stress-test + M-1/2/3/4 + Path A). Hundreds of subagent dispatches routed through 3-stage pipeline with zero regressions attributable to dispatch-intelligence. Evidence: audit-remediation-program-185-findings-case-study.md."
     },
     "documentation": {
-      "status": "pending"
+      "status": "complete",
+      "approved_at": "2026-04-20T00:00:00Z",
+      "note": "Validated in production via 6-sprint audit remediation program (post-stress-test + M-1/2/3/4 + Path A). Hundreds of subagent dispatches routed through 3-stage pipeline with zero regressions attributable to dispatch-intelligence. Evidence: audit-remediation-program-185-findings-case-study.md."
     }
   },
   "metrics": {
