@@ -1,5 +1,8 @@
 {
   "feature": "android-design-system",
+  "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+  "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
+  "case_study_type": "roundup",
   "created": "2026-04-04T14:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": "feature/android-design-system",
