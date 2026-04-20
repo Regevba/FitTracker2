@@ -1,5 +1,7 @@
 {
   "feature": "import-training-plan",
+  "case_study": "docs/case-studies/import-training-plan-case-study.md",
+  "case_study_showcase": "04-case-studies/23-import-training-plan.md",
   "created": "2026-04-11T00:00:00Z",
   "updated": "2026-04-16T05:30:00Z",
   "branch": null,

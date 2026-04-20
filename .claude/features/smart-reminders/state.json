@@ -1,5 +1,7 @@
 {
   "feature": "smart-reminders",
+  "case_study": "docs/case-studies/smart-reminders-case-study.md",
+  "case_study_showcase": "04-case-studies/21-smart-reminders.md",
   "created": "2026-04-15T17:33:00Z",
   "updated": "2026-04-16T05:30:00Z",
   "current_phase": "complete",

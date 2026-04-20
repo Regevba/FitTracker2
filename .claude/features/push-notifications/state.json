@@ -1,5 +1,7 @@
 {
   "feature": "push-notifications",
+  "case_study": "docs/case-studies/push-notifications-case-study.md",
+  "case_study_showcase": "04-case-studies/22-push-notifications.md",
   "created": "2026-04-12T21:30:00Z",
   "updated": "2026-04-16T05:15:00Z",
   "branch": null,
