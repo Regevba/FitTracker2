@@ -154,6 +154,11 @@
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 		SE100000000000000000AA01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA01 /* SettingsView.swift */; };
 		UI100000000000000000UT01 /* AppLaunchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT01 /* AppLaunchUITests.swift */; };
+		UI100000000000000000UT02 /* UITestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT02 /* UITestSupport.swift */; };
+		UI100000000000000000UT03 /* HomeReadinessUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT03 /* HomeReadinessUITests.swift */; };
+		UI100000000000000000UT04 /* SignInUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT04 /* SignInUITests.swift */; };
+		UI100000000000000000UT05 /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT05 /* OnboardingUITests.swift */; };
+		UI100000000000000000UT06 /* MealLogUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT06 /* MealLogUITests.swift */; };
 		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
 		SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */; };
 		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
@@ -342,6 +347,11 @@
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UI200000000000000000XT01 /* FitTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UI200000000000000000UT01 /* AppLaunchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLaunchUITests.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT02 /* UITestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestSupport.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT03 /* HomeReadinessUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReadinessUITests.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT04 /* SignInUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInUITests.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT05 /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT06 /* MealLogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealLogUITests.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA03 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
@@ -902,6 +912,11 @@
 			isa = PBXGroup;
 			children = (
 				UI200000000000000000UT01 /* AppLaunchUITests.swift */,
+				UI200000000000000000UT02 /* UITestSupport.swift */,
+				UI200000000000000000UT03 /* HomeReadinessUITests.swift */,
+				UI200000000000000000UT04 /* SignInUITests.swift */,
+				UI200000000000000000UT05 /* OnboardingUITests.swift */,
+				UI200000000000000000UT06 /* MealLogUITests.swift */,
 			);
 			path = FitTrackerUITests;
 			sourceTree = "<group>";
@@ -1369,6 +1384,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				UI100000000000000000UT01 /* AppLaunchUITests.swift in Sources */,
+				UI100000000000000000UT02 /* UITestSupport.swift in Sources */,
+				UI100000000000000000UT03 /* HomeReadinessUITests.swift in Sources */,
+				UI100000000000000000UT04 /* SignInUITests.swift in Sources */,
+				UI100000000000000000UT05 /* OnboardingUITests.swift in Sources */,
+				UI100000000000000000UT06 /* MealLogUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
