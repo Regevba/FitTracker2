@@ -1,5 +1,7 @@
 {
   "feature": "meta-analysis-audit",
+  "case_study": "docs/case-studies/meta-analysis-full-system-audit-v6.1-case-study.md",
+  "case_study_showcase": "04-case-studies/13-full-system-audit.md",
   "display_name": "Meta-Analysis Full-System Audit",
   "work_type": "chore",
   "framework_version": "6.1",

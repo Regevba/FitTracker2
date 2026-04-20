@@ -1,5 +1,7 @@
 {
   "feature": "parallel-write-safety-v5.2",
+  "case_study": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+  "case_study_showcase": "04-case-studies/10-parallel-write-safety.md",
   "created": "2026-04-16T05:40:00Z",
   "updated": "2026-04-16T06:00:00Z",
   "current_phase": "complete",

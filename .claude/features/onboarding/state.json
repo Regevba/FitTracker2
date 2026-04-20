@@ -1,5 +1,7 @@
 {
   "feature": "onboarding",
+  "case_study": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+  "case_study_showcase": "04-case-studies/01-onboarding-pilot.md",
   "work_type": "feature",
   "created": "2026-04-05T09:00:00Z",
   "updated": "2026-04-07T18:20:00Z",

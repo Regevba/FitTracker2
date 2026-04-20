@@ -1,5 +1,7 @@
 {
   "feature": "framework-measurement-v6",
+  "case_study": "docs/case-studies/framework-measurement-v6-case-study.md",
+  "case_study_showcase": "04-case-studies/11-measurement-v6.md",
   "created": "2026-04-16T14:00:00Z",
   "updated": "2026-04-16T17:00:00Z",
   "branch": "feature/framework-measurement-v6",

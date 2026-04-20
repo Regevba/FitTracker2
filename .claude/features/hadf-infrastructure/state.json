@@ -1,5 +1,7 @@
 {
   "feature": "hadf-infrastructure",
+  "case_study": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+  "case_study_showcase": "04-case-studies/12-hadf.md",
   "display_name": "HADF — Hardware-Aware Dispatch Framework",
   "work_type": "feature",
   "framework_version": "6.0",

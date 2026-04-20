@@ -1,5 +1,7 @@
 {
   "feature": "dispatch-intelligence-v5.2",
+  "case_study": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+  "case_study_showcase": "04-case-studies/09-dispatch-intelligence.md",
   "created": "2026-04-16T10:00:00Z",
   "updated": "2026-04-16T10:30:00Z",
   "current_phase": "testing",

@@ -1,5 +1,7 @@
 {
   "feature": "onboarding-v2-auth-flow",
+  "case_study": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+  "case_study_showcase": "04-case-studies/06-auth-flow-velocity.md",
   "created": "2026-04-15T14:00:00Z",
   "updated": "2026-04-15T17:00:00Z",
   "branch": "feature/onboarding-v2-auth-flow",

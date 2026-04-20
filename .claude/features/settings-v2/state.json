@@ -1,5 +1,6 @@
 {
   "feature": "settings-v2",
+  "case_study": "docs/case-studies/m-1-settings-decomposition-case-study.md",
   "created": "2026-04-10T16:00:00Z",
   "updated": "2026-04-10T17:00:00Z",
   "branch": "feature/settings-v2",

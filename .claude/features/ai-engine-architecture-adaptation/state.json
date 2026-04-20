@@ -1,5 +1,7 @@
 {
   "feature": "ai-engine-architecture-adaptation",
+  "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+  "case_study_showcase": "04-case-studies/07-ai-engine-architecture.md",
   "created": "2026-04-12T21:30:00Z",
   "updated": "2026-04-15T20:28:35Z",
   "branch": null,

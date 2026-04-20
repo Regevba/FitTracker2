@@ -1,5 +1,7 @@
 {
   "feature": "user-profile-settings",
+  "case_study": "docs/case-studies/user-profile-v4.4-case-study.md",
+  "case_study_showcase": "04-case-studies/04-user-profile.md",
   "created": "2026-04-13T19:00:00Z",
   "updated": "2026-04-15T20:28:35Z",
   "branch": null,
