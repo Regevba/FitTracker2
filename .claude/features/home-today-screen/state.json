@@ -14,6 +14,8 @@
   "v2_file_path": "FitTracker/Views/Main/v2/MainScreenView.swift",
   "v2_rule_compliant": true,
   "checklist_path": "docs/design-system/v2-refactor-checklist.md",
+  "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+  "case_study_showcase": "04-case-studies/18-home-today-screen.md",
   "parent_version": {
     "version": "v1",
     "status": "shipped-pre-pm-workflow",

@@ -13,6 +13,8 @@
   "v2_file_path": "FitTracker/Views/Training/v2/TrainingPlanView.swift",
   "v2_rule_compliant": true,
   "checklist_path": "docs/design-system/v2-refactor-checklist.md",
+  "case_study": "docs/case-studies/training-plan-v2-case-study.md",
+  "case_study_showcase": "04-case-studies/19-training-plan-v2.md",
   "transitions": [
     {
       "from": "init",
