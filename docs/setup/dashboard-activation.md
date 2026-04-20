@@ -11,7 +11,7 @@ The dashboard reads from GitHub Issues as its primary live data source. Currentl
 ### Option A: Claude Console (recommended)
 
 1. Open [claude.ai](https://claude.ai) in a session that has **GitHub MCP** connected
-2. Paste the prompt from: `docs/project/github-issues-prompt.md` (or use the one generated in the PM workflow session)
+2. Paste the prompt from the PM workflow session (the original `docs/project/github-issues-prompt.md` was removed during the April 2026 docs reorganization)
 3. Claude will create:
    - 26 labels (11 phase + 4 priority + 9 category + 2 spare)
    - 6 milestones (Phase 0–5)

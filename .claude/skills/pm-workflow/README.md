@@ -1,6 +1,6 @@
 # PM Workflow Skill — `/pm-workflow`
 
-> Current framework version: **v5.1**
+> Current framework version: **v6.1** (HADF — Hardware-Aware Dispatch Framework)
 > This README is the human-facing evolution summary for the PM hub. For the live agent behavior, treat [`SKILL.md`](./SKILL.md) and the shared framework files as canonical.
 
 A Claude Code skill that orchestrates the complete product management lifecycle for features and maintenance programs in the FitMe app. Invoke with `/pm-workflow {feature-name}`.

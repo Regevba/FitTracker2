@@ -1,3 +1,5 @@
+> ⚠️ Historical document. References to `docs/project/` paths are from before the April 2026 reorganization. See `docs/master-plan/`, `docs/setup/`, and `docs/case-studies/` for current locations.
+
 # Complete Branch & Code Review Report
 
 > **Date:** 2026-04-05

@@ -416,5 +416,5 @@ After completing this setup, **EVERYTHING related to FitTracker2 development liv
 - `Makefile` — verifies project paths use `.build/`
 - `.npmrc` — npm cache redirect
 - `.gitignore` — excludes `.build/` from git
-- `docs/project/session-summary-2026-04-06.md` — session summary
+- `docs/master-plan/session-summary-2026-04-06.md` — session summary
 - `docs/design-system/closure-summary-2026-04-06.md` — design system closure

@@ -1,7 +1,7 @@
 # Feature PRDs — Index
 
 > Individual PRDs for every core feature, system, and operating layer in FitMe.
-> Maintained against the canonical repo and PM-flow v4.3 shared truth.
+> Maintained against the canonical repo and PM-flow v6.1 shared truth.
 > Last updated: 2026-04-12
 
 ---
@@ -38,7 +38,7 @@
 |--------|--------|-----|
 | [AI Engine Backend](ai-engine-backend.md) | Shipped | Complete |
 | [CI Pipeline](ci-pipeline.md) | Shipped | Complete |
-| [PM Workflow Skill](pm-workflow-skill.md) | Shipped (v4.3) | Complete |
+| [PM Workflow Skill](pm-workflow-skill.md) | Shipped (v6.1) | Complete |
 
 ---
 

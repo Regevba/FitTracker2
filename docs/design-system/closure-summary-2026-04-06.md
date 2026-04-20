@@ -1,3 +1,5 @@
+> ⚠️ Historical document. References to `docs/project/` paths are from before the April 2026 reorganization. See `docs/master-plan/`, `docs/setup/`, and `docs/case-studies/` for current locations.
+
 # Design System Closure Summary — 2026-04-06
 
 > **Status:** ALL SPRINTS COMPLETE ✅

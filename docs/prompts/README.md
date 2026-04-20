@@ -28,7 +28,15 @@ The auto-generated prompts always come in pairs — `/ux prompt` and `/design pr
 
 ### Auto-generated (pm-workflow Phase 3 output)
 
-*None yet* — the `/ux prompt` and `/design prompt` sub-commands were added 2026-04-08. The first features to use them will be `home-today-screen` v2 and the subsequent per-screen UX alignment passes.
+| File | Feature | Date |
+|---|---|---|
+| `2026-04-09-home-today-screen-ux-build.md` | Home Today Screen v2 | 2026-04-09 |
+| `2026-04-09-home-today-screen-design-build.md` | Home Today Screen v2 | 2026-04-09 |
+
+Additional non-template prompts:
+| File | Purpose |
+|---|---|
+| `feature-verification-prompts.md` | Verification prompt templates for feature acceptance |
 
 ### Hand-authored prompts (pre-automation)
 

@@ -181,15 +181,15 @@ Verification snapshot as of `2026-04-15`:
 - All 6 v2 screens built in Figma via MCP (file key: `0Ai7s3fCFqR5JXDW8JvgmD`)
 
 ### Infrastructure
-- iOS app builds with full Xcode, targeted XCTest coverage passes
-- Design-token drift check passes
-- Dashboard tests pass and the control room is the canonical deployed web surface; the marketing website code exists but is not yet truthfully live as the primary public property
+- iOS app builds with full Xcode; XCTest coverage last known passing 2026-04-15, rerun required to re-verify
+- Design-token drift check passes (`make tokens-check`)
+- Dashboard is the canonical deployed web surface (control room); marketing website code exists but is not yet live as the primary public property
 - AI engine tests pass (`5/5`)
 - Firebase bootstrap config-aware, Supabase graceful degradation
 - Firebase runtime verification still requires local `FitTracker/GoogleService-Info.plist`
 - Live signed-in Supabase sync still requires local runtime credentials
 
-Detailed recovery notes: [`docs/project/stabilization-report-2026-04-05.md`](docs/project/stabilization-report-2026-04-05.md).
+Detailed recovery notes: [`docs/master-plan/stabilization-report-2026-04-05.md`](docs/master-plan/stabilization-report-2026-04-05.md).
 
 ---
 
@@ -241,7 +241,7 @@ make verify-local
 ```
 
 This runs the token check, dashboard test/build, marketing-site build, AI engine tests, and the targeted iOS simulator verification pass. All output goes to `.build/` on the SSD.
-The current verified result is green end to end, including `197+` passing XCTest cases across Core, Sync, and Eval test suites.
+Last verified green on 2026-04-15 (commit 45b5b33). Re-verification required after each merge. Run `make verify-local` and check output before claiming green status.
 
 ### iOS Build
 
@@ -341,15 +341,15 @@ Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](do
 | [Backlog](docs/product/backlog.md) | Complete backlog: done, planned, unscheduled, icebox |
 | [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized roadmap with phase gates |
 | [Master Plan](docs/master-plan/master-plan-2026-04-15.md) | Current master plan — 49+ shipped features, gate status, priorities |
-| [Case Studies](docs/case-studies/) | 7 tracked case studies with normalized velocity analysis |
-| [Stabilization Report](docs/project/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
+| [Case Studies](docs/case-studies/) | 16 tracked case studies with normalized velocity analysis |
+| [Stabilization Report](docs/master-plan/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |
-| [Firebase Setup](docs/project/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
+| [Firebase Setup](docs/setup/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
 | [Changelog](CHANGELOG.md) | Milestone history |
 | [Design System Docs](docs/design-system/) | Token architecture, components, review standards |
 | [Android Token Mapping](docs/design-system/android-token-mapping.md) | iOS → MD3 token mapping |
 | [PM Lifecycle](docs/process/product-management-lifecycle.md) | 10-phase product management workflow (0-9) |
-| [Redesign Case Study](docs/project/original-readme-redesign-casestudy.md) | How the app evolved from v1 to Apple-first design |
+| [Redesign Case Study](docs/case-studies/original-readme-redesign-casestudy.md) | How the app evolved from v1 to Apple-first design |
 
 ---
 

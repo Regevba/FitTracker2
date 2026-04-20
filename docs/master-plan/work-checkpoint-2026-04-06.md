@@ -1,3 +1,5 @@
+> ⚠️ Historical document. References to `docs/project/` paths are from before the April 2026 reorganization. See `docs/master-plan/`, `docs/setup/`, and `docs/case-studies/` for current locations.
+
 # Work Progress Checkpoint — 2026-04-06
 
 > **Purpose:** Detailed checkpoint of work in progress so any future agent (or session) can resume cleanly. Save this whenever a long task is interrupted.

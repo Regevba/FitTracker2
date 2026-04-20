@@ -1,3 +1,5 @@
+> ⚠️ Historical document. References to `docs/project/` paths are from before the April 2026 reorganization. See `docs/master-plan/`, `docs/setup/`, and `docs/case-studies/` for current locations.
+
 # FitTracker Feature Memory
 
 This file is the persistent in-repo memory for future feature development.

@@ -68,3 +68,6 @@ dashboard/.vercel/
 # SSD-local build artifacts (caches, DerivedData, venvs, npm cache)
 .build/
 orchid/.venv/
+
+# Firebase credentials (local only, contains secrets)
+GoogleService-Info.plist

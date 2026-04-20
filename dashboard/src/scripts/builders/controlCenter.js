@@ -339,7 +339,8 @@ function buildCaseStudyFeed(caseStudyMonitoring) {
   return caseStudyMonitoring.cases
     .map(caseItem => {
       const narrative = narrativeMap[caseItem.case_id] || {};
-      const artifactDoc = caseItem.artifacts.find(item => item.startsWith('docs/case-studies/')) || null;
+      const artifacts = Array.isArray(caseItem.artifacts) ? caseItem.artifacts : [];
+      const artifactDoc = artifacts.find(item => item.startsWith('docs/case-studies/')) || null;
       const fallbackDoc = artifactDoc ? null : findCaseStudyDoc(caseItem.case_id);
       const docPath = artifactDoc || (fallbackDoc ? `docs/case-studies/${fallbackDoc}` : null);
       const latestSnapshot = caseItem.snapshots[caseItem.snapshots.length - 1];
@@ -380,10 +381,10 @@ function buildCaseStudyFeed(caseStudyMonitoring) {
           buildVerified: snapshot.metrics.build_verified,
         })),
         skillsFramework: narrative.skills_framework || [],
-        successCases: caseItem.success_cases,
-        failureCases: caseItem.failure_cases,
-        nextCheckpoints: caseItem.next_checkpoints,
-        artifacts: caseItem.artifacts,
+        successCases: caseItem.success_cases || [],
+        failureCases: caseItem.failure_cases || [],
+        nextCheckpoints: caseItem.next_checkpoints || [],
+        artifacts: artifacts,
         docPath,
         href: docPath ? `${GITHUB_BLOB_BASE}${docPath}` : null,
         truthMode: 'shared-layer',
