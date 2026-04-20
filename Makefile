@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -43,6 +43,26 @@ ui-audit:
 # Commit the resulting ui-audit-baseline.md alongside any new DS fixes.
 ui-audit-baseline:
 	python3 scripts/ui-audit.py --baseline --no-fail
+
+# State.json integrity audit — findings-only (no file writes).
+# Also runs as a 72h GitHub Actions cycle (.github/workflows/integrity-cycle.yml).
+# See .claude/integrity/README.md for the full cycle design.
+integrity-check:
+	python3 scripts/integrity-check.py --findings-only
+
+# Write a snapshot + diff vs the previous one. Used locally when you want to
+# review what a cycle run would record before the next scheduled cycle fires.
+integrity-snapshot:
+	@mkdir -p .claude/integrity/snapshots
+	@ts=$$(date -u +%Y-%m-%dT%H-%M-%SZ); \
+	new=".claude/integrity/snapshots/$${ts}.json"; \
+	prev=$$(ls -1 .claude/integrity/snapshots/*.json 2>/dev/null | grep -v "$${ts}" | tail -1 || true); \
+	if [ -n "$${prev}" ]; then \
+		python3 scripts/integrity-check.py --snapshot "$${new}" --compare-to "$${prev}"; \
+	else \
+		python3 scripts/integrity-check.py --snapshot "$${new}"; \
+	fi; \
+	echo "Snapshot: $${new}"
 
 # Install npm dependencies (style-dictionary)
 install:

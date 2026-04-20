@@ -51,6 +51,17 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
+## Integrity Cycle
+
+Every 72 hours, a GitHub Actions workflow runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and emits a snapshot in `.claude/integrity/snapshots/`. Snapshots accumulate as a historical ledger; each cycle diffs vs the previous one and opens an issue (`integrity-cycle` label) if regressions are detected.
+
+- **Checks:** `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`.
+- **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"` or `"roundup"` bypass the sub-phase vocabulary check.
+- **Local usage:** `make integrity-check` (findings only) or `make integrity-snapshot` (write + diff vs previous).
+- **Full docs:** [`.claude/integrity/README.md`](.claude/integrity/README.md).
+
+This cycle exists because we empirically observed 7+ features sit in "shipped but state.json unreconciled" limbo for 3–14 days before the 2026-04-20 audit caught them. A 72-hour rhythm would flag most of those the morning after they shipped.
+
 ## Concurrent Dispatch Hygiene
 
 Parallel subagent dispatch is **currently blocked** at the framework layer (F6–F9). Serial dispatch is the working pattern until upstream patches land.

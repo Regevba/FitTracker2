@@ -48,6 +48,8 @@ xcuserdata/
 !.claude/shared/**
 !.claude/features/
 !.claude/features/**
+!.claude/integrity/
+!.claude/integrity/**
 !.claude/settings.json
 .superpowers/
 .worktrees/

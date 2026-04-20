@@ -1,10 +1,9 @@
 {
   "feature": "ai-cohort-intelligence",
-  "case_study_type": "pre_pm_workflow_backfill",
-  "backfill_note": "Shipped before 2026-04-06 PM workflow enforcement. Sub-phase statuses use pre-pm-workflow / backfilled / shipped as terminal states — not lies, just legacy vocabulary. No dedicated case study is expected; feature is captured in the collective pre-PM-workflow baseline that the post-2026-04-06 program builds on.",
+  "case_study_type": "roundup",
+  "backfill_note": "Shipped before 2026-04-06 PM workflow enforcement. Sub-phase statuses use pre-pm-workflow / backfilled / shipped as terminal states \u2014 not lies, just legacy vocabulary. No dedicated case study is expected; feature is captured in the collective pre-PM-workflow baseline that the post-2026-04-06 program builds on.",
   "case_study": "docs/case-studies/six-features-roundup-case-study.md",
   "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
-  "case_study_type": "roundup",
   "created": "2026-04-06T14:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": null,
@@ -19,26 +18,52 @@
       "to": "complete",
       "timestamp": "2026-04-06T14:00:00Z",
       "approved_by": "audit",
-      "note": "Retroactive backfill — feature was shipped pre-PM workflow."
+      "note": "Retroactive backfill \u2014 feature was shipped pre-PM workflow."
     }
   ],
   "phases": {
-    "research": { "status": "pre-pm-workflow" },
-    "prd": { "status": "backfilled", "prd_path": "docs/product/prd/18.9-ai-cohort-intelligence.md" },
-    "tasks": { "status": "pre-pm-workflow" },
-    "ux_or_integration": { "status": "pre-pm-workflow" },
-    "implementation": { "status": "shipped" },
-    "testing": { "status": "pre-pm-workflow", "note": "Test coverage varies by feature" },
-    "review": { "status": "pre-pm-workflow" },
-    "merge": { "status": "done" },
-    "documentation": { "status": "done" },
+    "research": {
+      "status": "pre-pm-workflow"
+    },
+    "prd": {
+      "status": "backfilled",
+      "prd_path": "docs/product/prd/18.9-ai-cohort-intelligence.md"
+    },
+    "tasks": {
+      "status": "pre-pm-workflow"
+    },
+    "ux_or_integration": {
+      "status": "pre-pm-workflow"
+    },
+    "implementation": {
+      "status": "shipped"
+    },
+    "testing": {
+      "status": "pre-pm-workflow",
+      "note": "Test coverage varies by feature"
+    },
+    "review": {
+      "status": "pre-pm-workflow"
+    },
+    "merge": {
+      "status": "done"
+    },
+    "documentation": {
+      "status": "done"
+    },
     "metrics": {
-      "primary": { "name": "recommendation_acceptance_rate", "baseline": 0, "target": 30, "current": null },
+      "primary": {
+        "name": "recommendation_acceptance_rate",
+        "baseline": 0,
+        "target": 30,
+        "current": null
+      },
       "secondary": [],
       "guardrails": [],
       "instrumentation_ready": false,
       "first_review_date": null,
-      "kill_criteria": "<10% acceptance after 6 months → simplify to rules"
+      "kill_criteria": "<10% acceptance after 6 months \u2192 simplify to rules"
     }
-  }
+  },
+  "classification_note": "Both roundup (six-features-roundup) and pre-PM-workflow backfill \u2014 roundup is authoritative; backfill_note retained as legacy-status context."
 }

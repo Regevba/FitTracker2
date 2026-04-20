@@ -1,0 +1,139 @@
+name: Integrity Cycle
+
+# 72-hour recurring integrity check on .claude/features/*/state.json.
+# - Produces a snapshot JSON in .claude/integrity/snapshots/ every cycle
+# - Diffs vs the most recent prior snapshot
+# - Commits the new snapshot to main (historical ledger)
+# - Opens a tracking issue if regressions or new findings appear
+
+on:
+  schedule:
+    # Every 3 days at 04:00 UTC (~72h cycle)
+    - cron: "0 4 */3 * *"
+  workflow_dispatch:
+    inputs:
+      strict:
+        description: "Exit 1 on any findings (default false)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Resolve snapshot paths
+        id: paths
+        run: |
+          ts=$(date -u +%Y-%m-%dT%H-%M-%SZ)
+          new=".claude/integrity/snapshots/${ts}.json"
+          prev=$(ls -1 .claude/integrity/snapshots/*.json 2>/dev/null | tail -1 || true)
+          {
+            echo "new=${new}"
+            echo "prev=${prev}"
+            echo "timestamp=${ts}"
+          } >> "$GITHUB_OUTPUT"
+          echo "New snapshot path: ${new}"
+          echo "Previous snapshot path: ${prev:-<none>}"
+
+      - name: Run integrity check
+        id: check
+        continue-on-error: true
+        env:
+          NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
+          PREV_SNAPSHOT: ${{ steps.paths.outputs.prev }}
+        run: |
+          if [ -n "$PREV_SNAPSHOT" ]; then
+            python3 scripts/integrity-check.py \
+              --snapshot "$NEW_SNAPSHOT" \
+              --compare-to "$PREV_SNAPSHOT" \
+              | tee /tmp/integrity-report.txt
+            echo "status=$?" >> "$GITHUB_OUTPUT"
+          else
+            python3 scripts/integrity-check.py \
+              --snapshot "$NEW_SNAPSHOT" \
+              | tee /tmp/integrity-report.txt
+            echo "status=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit snapshot
+        env:
+          TIMESTAMP: ${{ steps.paths.outputs.timestamp }}
+        run: |
+          git config --local user.email "integrity-cycle@actions"
+          git config --local user.name "Integrity Cycle Bot"
+          git add .claude/integrity/snapshots/
+          if git diff --staged --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            git commit -m "chore(integrity): cycle snapshot ${TIMESTAMP}" \
+                       -m "Automated 72h integrity cycle. Diff vs prior snapshot in the workflow run."
+            git push origin main
+          fi
+
+      - name: Package report for issue body
+        if: steps.check.outputs.status == '1'
+        run: |
+          # Trim report to 12KB and pass as multi-line env var to github-script.
+          # Passing via env keeps the script step free of filesystem reads.
+          head -c 12000 /tmp/integrity-report.txt > /tmp/integrity-report-trim.txt
+          {
+            echo "REPORT<<INTEGRITY_EOF"
+            cat /tmp/integrity-report-trim.txt
+            echo "INTEGRITY_EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Open issue on regression
+        if: steps.check.outputs.status == '1'
+        uses: actions/github-script@v7
+        env:
+          NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
+          TIMESTAMP: ${{ steps.paths.outputs.timestamp }}
+        with:
+          script: |
+            const report = process.env.REPORT || '';
+            const timestamp = process.env.TIMESTAMP;
+            const snapshot = process.env.NEW_SNAPSHOT;
+            const title = `Integrity cycle ${timestamp}: regression detected`;
+            const body = [
+              `The 72h integrity cycle detected a regression vs the prior snapshot.`,
+              ``,
+              `- Snapshot: \`${snapshot}\``,
+              `- Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              ``,
+              `## Report`,
+              '```',
+              report,
+              '```',
+              ``,
+              `Triage: inspect the "## Diff vs previous" section. New findings appear under \`findings.new\`; resolved findings are in \`findings.resolved\`.`,
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['integrity-cycle', 'regression']
+            });
+
+      - name: Summary
+        run: |
+          {
+            echo "## Integrity Cycle Report"
+            echo '```'
+            cat /tmp/integrity-report.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
