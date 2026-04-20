@@ -12,12 +12,12 @@ Four upstream bugs in the Claude Code runtime prevent parallel subagent dispatch
 
 | Bug | Symptom | Upstream ticket |
 |---|---|---|
-| F6 | `additionalDirectories` glob doesn't propagate to child | (pending — ticket draft at `docs/framework-bugs/upstream-ticket-drafts-f6-f9.md`) |
-| F7 | Edit/Write re-prompts on child despite parent allow-entries | (pending) |
-| F8 | Parallel subagents get asymmetric permission snapshots | (pending — umbrella bug) |
-| F9 | Mid-session UI grants don't propagate to children | (pending) |
+| F6 | `additionalDirectories` glob doesn't propagate to child | [anthropics/claude-code#51286](https://github.com/anthropics/claude-code/issues/51286) |
+| F7 | Edit/Write re-prompts on child despite parent allow-entries | [anthropics/claude-code#51287](https://github.com/anthropics/claude-code/issues/51287) |
+| F8 | Parallel subagents get asymmetric permission snapshots (umbrella bug) | [anthropics/claude-code#51288](https://github.com/anthropics/claude-code/issues/51288) |
+| F9 | Mid-session UI grants don't propagate to children | [anthropics/claude-code#51289](https://github.com/anthropics/claude-code/issues/51289) |
 
-Issue URLs will be filled in once the tickets are posted to `anthropics/claude-code`.
+Filed 2026-04-20.
 
 ## What this blocks
 

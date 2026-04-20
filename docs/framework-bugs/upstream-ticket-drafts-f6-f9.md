@@ -2,7 +2,12 @@
 
 **Date:** 2026-04-20
 **Target repo:** [github.com/anthropics/claude-code](https://github.com/anthropics/claude-code)
-**Status:** DRAFT — awaiting user approval before posting
+**Status:** POSTED 2026-04-20
+
+- F6 → [#51286](https://github.com/anthropics/claude-code/issues/51286)
+- F7 → [#51287](https://github.com/anthropics/claude-code/issues/51287)
+- F8 → [#51288](https://github.com/anthropics/claude-code/issues/51288)
+- F9 → [#51289](https://github.com/anthropics/claude-code/issues/51289)
 
 These 4 drafts will be posted as separate GitHub issues once approved. Each ticket is grounded in the Phase 0 classification at `docs/superpowers/plans/f6-f9-reproducer/classification-template.md` and the wave-2 case-study evidence in `docs/case-studies/post-stress-test-audit-remediation-case-study.md` § "Framework Bug Saga".
 
@@ -196,5 +201,5 @@ Likely the same root cause as F8, just exposed by a different mutation-timing pa
 
 | Date | Author | Action |
 |---|---|---|
-| 2026-04-20 | Phase 0 agent + this session | Drafts composed from `classification-template.md` + case-study evidence. Awaiting user approval to post. |
-| (future) | — | Post each ticket, record URL, update `docs/framework-bugs/concurrent-dispatch-blockers.md` with live issue links. |
+| 2026-04-20 | Phase 0 agent + this session | Drafts composed from `classification-template.md` + case-study evidence. |
+| 2026-04-20 | user approved | All 4 tickets posted to `anthropics/claude-code` as #51286 (F6), #51287 (F7), #51288 (F8), #51289 (F9). Blocker doc backfilled. |
