@@ -132,8 +132,8 @@
 - [ ] Trend alerts — no notification when HRV drops below threshold for 3+ days
 - [ ] Exercise search/filter — 87 exercises in fixed order, no search
 - [ ] Training program customization — fixed 6-day PPL split (partially addressed by "Import Training Plan from External Sources" above)
-- [ ] Notification settings — no push notification preferences in Settings
-- [ ] Data export from Settings — no CSV/JSON export UI
+- [ ] Notification settings — backend `NotificationPreferencesStore` exists but no user-facing Settings screen to edit preferences
+- [ ] Data export from Settings — JSON export UI exists (`ExportDataView`); CSV format not yet implemented
 - [ ] User feedback loop for AI — can't rate recommendation quality
 - [ ] Dark Mode end-to-end testing — asset catalog has values but not verified
 - [ ] Dynamic Type full compliance — @ScaledMetric not on all text tokens
