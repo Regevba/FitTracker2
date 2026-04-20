@@ -5,8 +5,8 @@
   "display_name": "HADF \u2014 Hardware-Aware Dispatch Framework",
   "work_type": "feature",
   "framework_version": "6.0",
-  "phase": "implementation",
-  "status": "in_progress",
+  "phase": "complete",
+  "status": "complete",
   "created": "2026-04-16T00:00:00Z",
   "branch": "feature/hadf-infrastructure",
   "spec": "docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md",
@@ -96,7 +96,7 @@
   },
   "tasks": {
     "total": 9,
-    "completed": 1,
+    "completed": 9,
     "in_progress": 0,
     "task_list": [
       {
@@ -110,42 +110,66 @@
       {
         "id": "T2",
         "name": "Cloud Hardware Signature Table",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "0a6896b",
+        "note": "Shipped in main (commit 0a6896b, part of PR #82 chain). Cloud hardware signature table with 7 classes (NVIDIA H100/A100, Google TPU v5e/v4, AWS Trainium2, AMD MI300X, CPU fallback) at .claude/shared/hadf/hardware-signature-table.json. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T3",
         "name": "Chip Affinity Map Structure",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "c2e7fd7",
+        "note": "Shipped in main (commit c2e7fd7, part of PR #82 chain). Empty Chip Affinity Map with learning config at .claude/shared/chip-affinity-map.json \u2014 Layer 4 placeholder ready for runtime population. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T4",
         "name": "HADF Metrics Template + README",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "75615a2",
+        "note": "Shipped in main (commit 75615a2, part of PR #82 chain). HADF metrics template + agent README at .claude/shared/hadf/hadf-metrics-template.json + .claude/shared/hadf/README.md. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T5",
         "name": "Dispatch Intelligence Integration",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "13401d9",
+        "note": "Shipped in main (commit 13401d9, part of PR #82 chain). Dispatch intelligence integration \u2014 hardware_context, confidence gate, weight presets, adaptation config merged into .claude/shared/dispatch-intelligence.json. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T6",
         "name": "Extend cache-metrics + token-budget",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "c414140",
+        "note": "Shipped in main (commit c414140, part of PR #82 chain). Extended cache-metrics.json with hadf_affinity field, added hadf layer to token-budget. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T7",
         "name": "Reference Implementations",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "a923c07",
+        "note": "Shipped in main (commit a923c07, part of PR #82 chain). Reference implementations (pseudocode) \u2014 Layer 0 device detection (Swift/Kotlin), Layer 2 Python classifier, Layer 3 adaptation, Composite helper. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T8",
         "name": "Token Budget Counter Update",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "6fa8ca6",
+        "note": "Shipped in main (commit 6fa8ca6, part of PR #82 chain). Token counter update + final validation. Part of the PR #82 close-out chain. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       },
       {
         "id": "T9",
         "name": "Final Validation",
-        "status": "pending"
+        "status": "completed",
+        "completed_at": "2026-04-20T00:00:00Z",
+        "shipped_in_commit": "a5faa4f",
+        "note": "Shipped in main (commit a5faa4f, part of PR #82 chain). Final validation + case study (hadf-hardware-aware-dispatch-case-study.md) + evolution v6.1 documentation + architecture one-pager + README + backlog update. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       }
     ]
   },
@@ -175,6 +199,13 @@
       "timestamp": "2026-04-20T00:00:00Z",
       "approved_by": "integrity_reconcile",
       "note": "T1 marked completed (artifact was shipped 2026-04-20 in commit 7478a8e but state.json was never reconciled). tasks.completed: 0 -> 1. Subagent dispatch for T1 reproduced F9 in practice \u2014 evidence for upstream ticket #51289."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_reconcile",
+      "note": "Full HADF T2\u2013T9 reconcile. All 9 tasks' artifacts had been shipped in PR #82 (2026-04-16 \u2192 2026-04-17) but state.json was never updated \u2014 the feature sat at phase=implementation / 1 of 9 completed for 3-4 days until today's reconciliation. Case study (hadf-hardware-aware-dispatch-case-study.md) already exists and is linked at top-level case_study + case_study_showcase fields. Feature transitioning implementation \u2192 complete at actual delivery truth."
     }
   ],
   "updated": "2026-04-20T00:00:00Z"
