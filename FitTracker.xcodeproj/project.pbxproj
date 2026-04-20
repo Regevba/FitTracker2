@@ -153,6 +153,7 @@
 		MS100000000000000000AA0A /* SearchTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = MS200000000000000000AA0A /* SearchTabView.swift */; };
 		CC000001000000000000AA0C /* RecoverySupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA0C /* RecoverySupport.swift */; };
 		SE100000000000000000AA01 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA01 /* SettingsView.swift */; };
+		UI100000000000000000UT01 /* AppLaunchUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT01 /* AppLaunchUITests.swift */; };
 		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
 		SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */; };
 		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
@@ -230,6 +231,13 @@
 
 /* Begin PBXContainerItemProxy section */
 		B60000010000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A60000010000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A50000010000000000000001;
+			remoteInfo = FitTracker;
+		};
+		UI600000000000000000UT01 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = A60000010000000000000001 /* Project object */;
 			proxyType = 1;
@@ -332,6 +340,8 @@
 		SE200000000000000000AC02 /* SettingsFormComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormComponents.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC04 /* SettingsHomeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHomeViews.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		UI200000000000000000XT01 /* FitTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		UI200000000000000000UT01 /* AppLaunchUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLaunchUITests.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA03 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
@@ -454,6 +464,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		UI300000000000000000UT02 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -493,6 +510,7 @@
 			children = (
 				A40000010000000000000002 /* FitTracker */,
 				B40000010000000000000001 /* FitTrackerTests */,
+				UI400000000000000000UT01 /* FitTrackerUITests */,
 				A40000010000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -519,6 +537,7 @@
 			children = (
 				A20000010000000000000014 /* FitTracker.app */,
 				B20000010000000000000002 /* FitTrackerTests.xctest */,
+				UI200000000000000000XT01 /* FitTrackerUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -879,6 +898,14 @@
 			path = FitTrackerTests;
 			sourceTree = "<group>";
 		};
+		UI400000000000000000UT01 /* FitTrackerUITests */ = {
+			isa = PBXGroup;
+			children = (
+				UI200000000000000000UT01 /* AppLaunchUITests.swift */,
+			);
+			path = FitTrackerUITests;
+			sourceTree = "<group>";
+		};
 		CC000001000000000000AA00 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
@@ -1041,6 +1068,24 @@
 			productReference = B20000010000000000000002 /* FitTrackerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		UI500000000000000000UT01 /* FitTrackerUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = UI900000000000000000UT01 /* Build configuration list for PBXNativeTarget "FitTrackerUITests" */;
+			buildPhases = (
+				UI300000000000000000UT01 /* Sources */,
+				UI300000000000000000UT02 /* Frameworks */,
+				UI300000000000000000UT03 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				UI700000000000000000UT01 /* PBXTargetDependency */,
+			);
+			name = FitTrackerUITests;
+			productName = FitTrackerUITests;
+			productReference = UI200000000000000000XT01 /* FitTrackerUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1053,6 +1098,10 @@
 				TargetAttributes = {
 					A50000010000000000000001 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					UI500000000000000000UT01 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = A50000010000000000000001;
 					};
 				};
 			};
@@ -1076,6 +1125,7 @@
 			targets = (
 				A50000010000000000000001 /* FitTracker */,
 				B50000010000000000000001 /* FitTrackerTests */,
+				UI500000000000000000UT01 /* FitTrackerUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -1090,6 +1140,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B30000010000000000000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		UI300000000000000000UT03 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1307,6 +1364,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		UI300000000000000000UT01 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				UI100000000000000000UT01 /* AppLaunchUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1314,6 +1379,11 @@
 			isa = PBXTargetDependency;
 			target = A50000010000000000000001 /* FitTracker */;
 			targetProxy = B60000010000000000000001 /* PBXContainerItemProxy */;
+		};
+		UI700000000000000000UT01 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A50000010000000000000001 /* FitTracker */;
+			targetProxy = UI600000000000000000UT01 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1519,6 +1589,54 @@
 			};
 			name = Release;
 		};
+		UI800000000000000000UT01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = FitTracker;
+			};
+			name = Debug;
+		};
+		UI800000000000000000UT02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = FitTracker;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1545,6 +1663,15 @@
 			buildConfigurations = (
 				B90000010000000000000001 /* Debug */,
 				B90000010000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		UI900000000000000000UT01 /* Build configuration list for PBXNativeTarget "FitTrackerUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				UI800000000000000000UT01 /* Debug */,
+				UI800000000000000000UT02 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
