@@ -1,5 +1,7 @@
 {
   "feature": "home-status-goal-card",
+  "parent_case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+  "parent_case_study_showcase": "04-case-studies/18-home-today-screen.md",
   "created": "2026-04-09T19:00:00Z",
   "updated": "2026-04-15T17:30:00Z",
   "branch": "feature/home-status-goal-card",
