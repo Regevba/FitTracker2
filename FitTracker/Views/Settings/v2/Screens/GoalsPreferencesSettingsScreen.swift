@@ -75,6 +75,9 @@ struct GoalsPreferencesSettingsScreen: View {
                         .padding(.vertical, AppSpacing.xxxSmall)
                     }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(metric.title)
+                    .accessibilityValue(isStatsMetricVisible(metric) ? "Shown in carousel" : "Hidden from carousel")
+                    .accessibilityHint("Double tap to toggle whether \(metric.title) appears in the stats carousel.")
                 }
 
                 Button("Reset Recommended Metrics") {
@@ -83,6 +86,8 @@ struct GoalsPreferencesSettingsScreen: View {
                 }
                 .font(AppText.chip)
                 .foregroundStyle(AppColor.Accent.primary)
+                .accessibilityLabel("Reset recommended metrics")
+                .accessibilityHint("Restore the default set of metrics shown in the stats carousel.")
             }
         }
         .navigationTitle(SettingsCategory.goalsPreferences.title)

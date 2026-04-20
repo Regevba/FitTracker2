@@ -81,6 +81,30 @@ This keeps the design-system evolution coherent across the per-screen alignment 
 
 ---
 
+## 2026-04-20 — Design System Alignment Sweep (branch `claude/review-ui-consistency-zSkvJ`)
+
+- **Date:** 2026-04-20
+- **Feature:** design-system-v2 (post-merge alignment pass covering PRs #118–#130)
+- **Problem solved:** After the M-3 design-system completion work and the M-1/M-2 decomposition PRs, a review of merged main surfaced two concrete gaps: (1) `AppColor.Chart.weight`, `.hrv`, `.heartRate`, `.activity` were declared in `AppTheme.swift` and used by Home v2 (T3), AI Intelligence Sheet, and ReadinessCard but had no backing `.colorset` in `Assets.xcassets` and no `tokens.json` entries — the pipeline had run backwards; (2) the Stats Carousel metric toggles in `GoalsPreferencesSettingsScreen` lacked VoiceOver labels/values/hints despite being interactive controls that change an observable preference.
+- **Primary platform:** iOS (SwiftUI)
+- **Reused tokens:** `AppColor.Chart.*` (extended with weight/hrv/heartRate/activity); accessibility modifiers reuse existing SwiftUI primitives
+- **Reused components:** No new components — fixes are token-and-a11y-only
+- **New primitives:**
+  - Assets: `chart-weight.colorset` (#FFA94D / dark #FFB966), `chart-hrv.colorset` (#32D74B / dark #4DE066), `chart-heart-rate.colorset` (#FF6961 / dark #FF857D), `chart-activity.colorset` (#FFCE5C / dark #FFD978) — each with light + dark variants
+  - Tokens: corresponding `chart.weight`, `chart.hrv`, `chart.heartRate`, `chart.activity` entries in `design-tokens/tokens.json`, closing the code → tokens → asset loop
+- **Wireframe/UX:** No visual redesign — existing Home v2 status metrics, ReadinessCard HRV/RHR bars, and BodyCompositionDetailView now render with their intended tints instead of falling back to clear/system default
+- **Final UI decisions:**
+  - Weight tint = amber orange (distinct from pale `chart-body`) so body-weight trend charts stay readable next to body-composition series
+  - HRV = system green (recovery/parasympathetic association)
+  - Heart Rate = coral red (cardiovascular association, legible against both light and dark surface tokens)
+  - Activity = golden yellow (distinct from `chart-achievement` gold and brand orange)
+- **Accessibility:** Added `.accessibilityLabel`, `.accessibilityValue` ("Shown in carousel" / "Hidden from carousel"), and `.accessibilityHint` to each Stats Carousel metric toggle button. Added matching label + hint to the "Reset Recommended Metrics" button. The destructive "Delete All Local Data" action in `DataSyncSettingsScreen` was already properly labeled and is left unchanged.
+- **Follow-up gaps:**
+  - Nutrition v1 (`FitTracker/Views/Nutrition/NutritionView.swift`) remains the shipping surface while the compliant v2 lives at `Views/Nutrition/v2/`. A `project.pbxproj` source-ref swap is still required to cut over — tracked separately.
+  - Style Dictionary codegen for motion/opacity/size/layout categories remains deferred (values continue to be replicated in `AppTheme.swift`); tokens.json is the source of truth.
+
+---
+
 ## 2026-04-10 — Training Plan v2 UX Alignment (PR #74)
 
 - **Date:** 2026-04-10
