@@ -189,7 +189,7 @@ Verification snapshot as of `2026-04-15`:
 - Firebase runtime verification still requires local `FitTracker/GoogleService-Info.plist`
 - Live signed-in Supabase sync still requires local runtime credentials
 
-Detailed recovery notes: [`docs/project/stabilization-report-2026-04-05.md`](docs/project/stabilization-report-2026-04-05.md).
+Detailed recovery notes: [`docs/master-plan/stabilization-report-2026-04-05.md`](docs/master-plan/stabilization-report-2026-04-05.md).
 
 ---
 
@@ -342,14 +342,14 @@ Full RICE-prioritized roadmap: [`docs/master-plan/master-backlog-roadmap.md`](do
 | [Roadmap](docs/master-plan/master-backlog-roadmap.md) | RICE-prioritized roadmap with phase gates |
 | [Master Plan](docs/master-plan/master-plan-2026-04-15.md) | Current master plan — 49+ shipped features, gate status, priorities |
 | [Case Studies](docs/case-studies/) | 7 tracked case studies with normalized velocity analysis |
-| [Stabilization Report](docs/project/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
+| [Stabilization Report](docs/master-plan/stabilization-report-2026-04-05.md) | Build recovery, verification results, setup requirements, and remaining gaps |
 | [Analytics Taxonomy](docs/product/analytics-taxonomy.csv) | GA4 event taxonomy (CSV) |
-| [Firebase Setup](docs/project/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
+| [Firebase Setup](docs/setup/firebase-setup-guide.md) | 20-step Firebase Analytics setup guide |
 | [Changelog](CHANGELOG.md) | Milestone history |
 | [Design System Docs](docs/design-system/) | Token architecture, components, review standards |
 | [Android Token Mapping](docs/design-system/android-token-mapping.md) | iOS → MD3 token mapping |
 | [PM Lifecycle](docs/process/product-management-lifecycle.md) | 10-phase product management workflow (0-9) |
-| [Redesign Case Study](docs/project/original-readme-redesign-casestudy.md) | How the app evolved from v1 to Apple-first design |
+| [Redesign Case Study](docs/case-studies/original-readme-redesign-casestudy.md) | How the app evolved from v1 to Apple-first design |
 
 ---
 
