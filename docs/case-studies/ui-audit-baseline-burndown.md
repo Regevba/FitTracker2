@@ -4,7 +4,7 @@
 **Started:** 2026-04-21
 **Code completed:** 2026-04-21
 **Parent feature:** design-system-v2
-**Plan:** [docs/superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md](../../../docs/superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md)
+**Plan:** [docs/superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md](../superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md)
 **Branches:**
 - `claude/review-ui-consistency-zSkvJ` — 20 commits over pushed tip `573fe8a` (unpushed): AppMotion tokens, scanner `--file` flag, Phase 0 infra, 12 file migrations, baseline regenerations, gate promotion, scanner hardening, drift check
 - `chore/pbxproj-orphan-cleanup` — 1 commit over `origin/main` (unpushed): 2-line orphan deletion
