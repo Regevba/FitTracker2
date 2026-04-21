@@ -156,7 +156,7 @@ struct ReadinessCard: View {
         .onAppear {
             guard let target = score else { return }
             displayedScore = 0
-            withAnimation(.interpolatingSpring(stiffness: 40, damping: 8)) {
+            withAnimation(AppSpring.dialPulse) {
                 displayedScore = target
             }
             if let result = readinessResult {
