@@ -48,12 +48,12 @@ ui-audit-baseline:
 install:
 	npm install
 
-# Note: ui-audit is intentionally NOT in verify-local yet — the existing
-# baseline has 27 P0 violations (see docs/design-system/ui-audit-baseline.md).
-# Run `make ui-audit` separately to see drift introduced by your branch.
-# Once the baseline reaches 0 P0, add ui-audit to this chain so it gates
-# every local + CI verify pass.
-verify-local: tokens-check verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
+# ui-audit is a hard gate as of 2026-04-21 (baseline P0 driven from 27 → 0).
+# It runs right after tokens-check because both are fast source-level checks —
+# either failing should abort before the heavier verify-ios build cost.
+# Any new P0 (raw Color literal, raw animation, raw font, missing colorset)
+# introduced by a PR fails the local + CI verify pass.
+verify-local: tokens-check ui-audit verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
 
 verify-web:
 	cd dashboard && npm test
