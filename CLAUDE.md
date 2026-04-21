@@ -90,6 +90,7 @@ This app is data-driven at every level:
   - Cross-feature WAU (North Star) trending up or flat
 - **Every feature** has a metrics section in its PRD with kill criteria
 - **Post-launch** reviews happen at the cadence defined in the PRD
+- **Every quantitative metric is tiered** — T1 (Instrumented), T2 (Declared), or T3 (Narrative). Case studies, PRDs, and meta-analyses must tag each reported number with its tier. A T3 metric quoted as if it were T1 is a bug. Full convention: [`docs/case-studies/data-quality-tiers.md`](docs/case-studies/data-quality-tiers.md). Introduced 2026-04-21 per Gemini independent audit Tier 2.3.
 
 ## Design System (Living Framework)
 

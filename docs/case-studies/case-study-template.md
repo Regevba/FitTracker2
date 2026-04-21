@@ -5,6 +5,15 @@
 > **Core question:** How did the framework version affect development speed and quality?
 >
 > **Usage:** Copy this template to `docs/case-studies/{feature}-v{version}-case-study.md` and fill in each section. Data sources: `state.json`, `case-study-monitoring.json`, `git log`, session timing.
+>
+> **Data quality tiers:** Every quantitative metric below must be tagged
+> **T1** (Instrumented), **T2** (Declared), or **T3** (Narrative). The
+> existing `(m/e/i)` markers on phase-timing and cache-detail rows are a
+> valid shorthand — `(m)` = T1, `(e)` / `(i)` = T3 (or T2 if derived from
+> a structured declaration). See
+> [`data-quality-tiers.md`](./data-quality-tiers.md) for the full
+> convention. Reader trust in a metric is directly indexed on its tier;
+> a T3 number quoted as if it were T1 is a bug, not a stylistic choice.
 
 ---
 
