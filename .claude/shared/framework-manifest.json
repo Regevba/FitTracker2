@@ -1,8 +1,8 @@
 {
-  "version": "1.5",
-  "updated": "2026-04-19T00:00:00Z",
-  "framework_version": "6.1",
-  "description": "PM framework v6.1 with deterministic measurement instrumentation, meta-analysis audit, and remediation tracking.",
+  "version": "1.6",
+  "updated": "2026-04-21T00:00:00Z",
+  "framework_version": "6.2",
+  "description": "PM framework v6.2 adds the 72-hour integrity cycle — automated detection of the 'shipped but state.json unreconciled' drift pattern. Extends v6.1 (HADF hardware-aware dispatch + full-system meta-analysis audit + remediation tracking).",
   "audit_closures": {
     "FW-002": "Description string updated from v5.2 to v6.1 — closed.",
     "FW-007": "chip-profiles.json verified at 17 profiles matching spec — see chip-profiles.json.",
@@ -64,7 +64,19 @@
     "speculative_preload": true,
     "systolic_chains": true,
     "task_complexity_gate": true,
-    "dispatch_intelligence": true
+    "dispatch_intelligence": true,
+    "integrity_cycle": true
+  },
+  "v6_2_integrity_cycle": {
+    "description": "72-hour recurring audit of .claude/features/*/state.json. Catches 'shipped but unreconciled' drift within 72h of occurrence instead of weeks later.",
+    "script": "scripts/integrity-check.py",
+    "workflow": ".github/workflows/integrity-cycle.yml",
+    "snapshots_dir": ".claude/integrity/snapshots/",
+    "docs": ".claude/integrity/README.md",
+    "cadence": "every 3 days at 04:00 UTC",
+    "failure_modes_detected": ["PHASE_LIE", "TASK_LIE", "NO_CS_LINK", "V2_FILE_MISSING", "PARTIAL_SHIP_TERMINAL", "NO_STATE", "INVALID_JSON", "NO_PHASE"],
+    "bypass_markers": ["case_study_type: pre_pm_workflow_backfill", "case_study_type: roundup"],
+    "initial_baseline_2026_04_20": {"features": 40, "case_studies": 44, "findings": 0}
   },
   "v5_soc_optimizations": {
     "skill_on_demand": {
