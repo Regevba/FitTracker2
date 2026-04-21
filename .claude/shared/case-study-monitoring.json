@@ -959,7 +959,7 @@
       "work_type": "feature",
       "started_at": "2026-04-16T06:30:00Z",
       "updated_at": "2026-04-16T10:00:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "skills_used": [
         "pm-workflow",
         "dev"
@@ -1108,7 +1108,7 @@
       "work_type": "feature",
       "started_at": "2026-04-16T05:40:00Z",
       "updated_at": "2026-04-16T06:00:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "parent_case": "v5.2-stress-test-continuation-2026-04",
       "skills_used": [
         "pm-workflow",
@@ -1264,7 +1264,7 @@
       "work_type": "cleanup_program",
       "started_at": "2026-04-18T00:00:00Z",
       "updated_at": "2026-04-19T15:30:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "skills_used": [
         "pm-workflow",
         "dev",
@@ -1442,7 +1442,7 @@
       "work_type": "cleanup_program",
       "started_at": "2026-04-19T17:00:00Z",
       "updated_at": "2026-04-19T19:30:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "skills_used": [
         "pm-workflow",
         "design",
@@ -1598,7 +1598,7 @@
       "work_type": "cleanup_program",
       "started_at": "2026-04-19T20:00:00Z",
       "updated_at": "2026-04-19T22:00:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "skills_used": [
         "pm-workflow",
         "dev"
@@ -1749,7 +1749,7 @@
       "work_type": "cleanup_program",
       "started_at": "2026-04-19T22:30:00Z",
       "updated_at": "2026-04-20T01:00:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "skills_used": [
         "pm-workflow",
         "dev"
@@ -1924,7 +1924,7 @@
       "work_type": "cleanup_program",
       "started_at": "2026-04-19T22:30:00Z",
       "updated_at": "2026-04-20T07:00:00Z",
-      "framework_version": "6.1",
+      "framework_version": "7.0",
       "skills_used": [
         "pm-workflow",
         "qa",

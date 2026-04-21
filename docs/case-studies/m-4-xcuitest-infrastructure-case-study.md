@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-20
 
-> Framework v6.1 | cleanup_program | 2026-04-20 | PRs #131 + #132 + this PR
+> Framework v7.0 | cleanup_program | 2026-04-20 | PRs #131 + #132 + this PR
 >
 > **Predecessor:** `m-2-mealentrysheet-decomposition-case-study.md` ended with 3 audit findings open. After M-4 closes TEST-025, **2 remain** — both external blockers (BE-024, DEEP-SYNC-010).
 >
@@ -15,7 +15,7 @@
 | Field | Value |
 |---|---|
 | Feature | M-4 — XCUITest Infrastructure (TEST-025) |
-| Framework Version | v6.1 |
+| Framework Version | v7.0 |
 | Work Type | cleanup_program (multi-PR feature) |
 | Audit Findings Closed | TEST-025 (1) |
 | Audit Closure Rate (cumulative after M-4) | 183 / 185 (98.9%) |

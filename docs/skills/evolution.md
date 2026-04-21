@@ -1,7 +1,7 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-21 (v6.2 update)
-> **Status:** v6.2 — Integrity Cycle: 72-hour recurring audit of every feature state.json, catching "shipped but unreconciled" drift within 72h of occurrence via GitHub Actions + snapshot ledger + auto-issue on regression. Extends v6.1 (HADF Hardware-Aware Dispatch) + all prior v6.0 capabilities
+> **Date:** 2026-04-21 (v7.1 update)
+> **Status:** v7.1 — Integrity Cycle: 72-hour recurring audit of every feature state.json, catching "shipped but unreconciled" drift within 72h of occurrence via GitHub Actions + snapshot ledger + auto-issue on regression. Extends v7.0 (HADF Hardware-Aware Dispatch) + all prior v6.0 capabilities
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -990,7 +990,7 @@ CLAUDE.md (rules)
 
 ---
 
-## 25. v6.2 — Integrity Cycle (2026-04-21)
+## 25. v7.1 — Integrity Cycle (2026-04-21)
 
 **Problem:** the 2026-04-20 open-items audit surfaced a systemic "shipped but state.json unreconciled" drift pattern. Seven features (HADF, home-today-screen, nutrition-v2, onboarding-v2-auth-flow, settings-v2, user-profile-settings, parallel-write-safety-v5.2, ai-engine-architecture-adaptation) had their code shipped to main weeks before state.json caught up — in one case (HADF) 3-4 days, in another (home-today-screen) 11 days. The drift was invisible until an explicit audit ran because nothing in the framework pulled on that thread automatically.
 
@@ -1037,7 +1037,7 @@ Each snapshot records (1) feature summaries — phase, case-study link, task com
 
 **Initial baseline (2026-04-20):** 40 features, 44 case studies, **0 findings** — snapshot at `.claude/integrity/snapshots/2026-04-20T20-45-00Z.json` after the Category A + B + C remediation batch landed.
 
-**What v6.2 does NOT do:**
+**What v7.1 does NOT do:**
 
 - Does not prevent drift from being introduced — it detects it after the fact
 - Does not enforce state.json hygiene on feature creation — Phase 0 still owns that responsibility
@@ -1045,7 +1045,7 @@ Each snapshot records (1) feature summaries — phase, case-study link, task com
 
 The integrity cycle is a **smoke detector**, not a fire-prevention system. It trades off false negatives (detects drift only 72h after it happens) for low false-positive rate (bypass markers keep the signal-to-noise ratio manageable).
 
-**Why it earned a version bump:** v6.2 adds a recurring automated background process that wasn't in any prior version. This is structurally different from a one-time audit script; it changes the framework's steady-state from "drift until audit catches up" to "drift for at most 72h before detection." That's a capability change, not a point improvement on v6.1.
+**Why it earned a version bump:** v7.1 adds a recurring automated background process that wasn't in any prior version. This is structurally different from a one-time audit script; it changes the framework's steady-state from "drift until audit catches up" to "drift for at most 72h before detection." That's a capability change, not a point improvement on v7.0.
 
 ---
 
@@ -1068,8 +1068,8 @@ Every version was tested through real feature work. The case study column links 
 | v5.1 | 2026-04-14 | 8 SoC items: batch, tiering, forwarding, preload, systolic, complexity gate | AI Engine Architecture (13 tasks, PR #79) | [AI Engine case study](../case-studies/ai-engine-architecture-v5.1-case-study.md) |
 | v5.2 | 2026-04-16 | Dispatch Intelligence + Parallel Write Safety: 3-stage dispatch pipeline, tool budgets, 3-tier mirror extraction, progressive markers | 4-feature continuation stress test | [v5.1→v5.2 evolution](../case-studies/v5.1-v5.2-framework-evolution-case-study.md), [Parallel Write Safety](../case-studies/parallel-write-safety-v5.2-case-study.md) |
 | v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | [Framework Measurement v6.0](../case-studies/framework-measurement-v6-case-study.md) |
-| v6.1 | 2026-04-16 | HADF Hardware-Aware Dispatch: 5-layer architecture (device detection → static profiles → cloud fingerprinting → dynamic adaptation → evolutionary learning), 17 chip profiles (6 vendors), 7 cloud hardware signatures, hardware_context in dispatch-intelligence.json, zero-regression confidence gate (0.4/0.7), composite optimizer (latency/cost/quality), reference implementations (Swift/Kotlin/Python) | — | [HADF case study](../case-studies/hadf-hardware-aware-dispatch-case-study.md) |
-| v6.2 | 2026-04-21 | Integrity Cycle: 72-hour recurring audit of every `.claude/features/*/state.json` via GitHub Actions cron (`0 4 */3 * *`). 7 failure-mode detectors (PHASE_LIE, TASK_LIE, NO_CS_LINK, V2_FILE_MISSING, PARTIAL_SHIP_TERMINAL, NO_STATE, INVALID_JSON, NO_PHASE). Snapshot ledger at `.claude/integrity/snapshots/` committed per cycle. Diff vs previous snapshot emits regressions as auto-opened issues. Bypass markers suppress false positives for pre-PM-workflow backfills and roundup-consolidated features. | 2026-04-20 audit baseline: 40 features, 44 case studies, 0 findings after remediation of 7 "shipped but unreconciled" features. | [Integrity Cycle v6.2](../case-studies/integrity-cycle-v6.2-case-study.md) |
+| v7.0 | 2026-04-16 | HADF Hardware-Aware Dispatch: 5-layer architecture (device detection → static profiles → cloud fingerprinting → dynamic adaptation → evolutionary learning), 17 chip profiles (6 vendors), 7 cloud hardware signatures, hardware_context in dispatch-intelligence.json, zero-regression confidence gate (0.4/0.7), composite optimizer (latency/cost/quality), reference implementations (Swift/Kotlin/Python) | — | [HADF case study](../case-studies/hadf-hardware-aware-dispatch-case-study.md) |
+| v7.1 | 2026-04-21 | Integrity Cycle: 72-hour recurring audit of every `.claude/features/*/state.json` via GitHub Actions cron (`0 4 */3 * *`). 7 failure-mode detectors (PHASE_LIE, TASK_LIE, NO_CS_LINK, V2_FILE_MISSING, PARTIAL_SHIP_TERMINAL, NO_STATE, INVALID_JSON, NO_PHASE). Snapshot ledger at `.claude/integrity/snapshots/` committed per cycle. Diff vs previous snapshot emits regressions as auto-opened issues. Bypass markers suppress false positives for pre-PM-workflow backfills and roundup-consolidated features. | 2026-04-20 audit baseline: 40 features, 44 case studies, 0 findings after remediation of 7 "shipped but unreconciled" features. | [Integrity Cycle v7.1](../case-studies/integrity-cycle-v7.1-case-study.md) |
 
 ### Cumulative Metrics Across Versions
 
@@ -1086,4 +1086,4 @@ Every version was tested through real feature work. The case study column links 
 | AI Rec UI | v4.2 | 0.7h | 6 | 7 | 40% | — |
 | **AI Engine Arch** | **v5.1** | **1.5h** | **13** | **17** | **45%** | **11.3 files/hr (best)** |
 | **v5.1→v5.2 (parallel)** | **v5.2** | **~20 min** | **6** | **4** | **N/A** | **Dispatch intelligence + mirror pattern deployed** |
-| **HADF Infrastructure** | **v6.1** | **~120 min** | **9** | **11** | **0%** | **First hardware-aware dispatch, zero-regression gate** |
+| **HADF Infrastructure** | **v7.0** | **~120 min** | **9** | **11** | **0%** | **First hardware-aware dispatch, zero-regression gate** |

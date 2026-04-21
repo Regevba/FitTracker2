@@ -1553,7 +1553,7 @@ def generate_full_case_study(data: dict) -> str:
 |---|---|
 | **Feature** | Orchid — AI Agent Orchestration Accelerator |
 | **Type** | Research (theoretical experiment) |
-| **Framework Version** | v6.0 → v6.1 |
+| **Framework Version** | v6.0 → v7.0 |
 | **CU** | N/A (research, not a shipped feature) |
 | **Total Benchmark Runs** | {total_runs:,} |
 | **Invariant Violations** | {violations} |

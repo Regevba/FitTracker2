@@ -19,7 +19,7 @@ The 185-finding audit remediation program surfaced nine framework bugs F1–F9 d
 | F8 | Permissions do not propagate to parallel subagents — each subagent starts with default perms instead of the parent's | Wave 2 of audit-v2 stress test (2026-04-18) |
 | F9 | Parent's `Read` permission does not cover subagent `Read` — each child re-prompts on first read | Same wave |
 
-**Why it matters:** the framework's largest performance lever (parallel subagent dispatch) is currently un-usable. Serial execution works but throws away the 2x–6x throughput gain that parallel was designed for. Fixing these four bugs unblocks the feature that the HADF, Orchid, and v6.2 work assumes.
+**Why it matters:** the framework's largest performance lever (parallel subagent dispatch) is currently un-usable. Serial execution works but throws away the 2x–6x throughput gain that parallel was designed for. Fixing these four bugs unblocks the feature that the HADF, Orchid, and v7.1 work assumes.
 
 ---
 

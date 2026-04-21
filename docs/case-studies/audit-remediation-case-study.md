@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-17
 
-> Framework v6.1 | Fix | 9-Phase Severity-Ordered Remediation | 2026-04-17
+> Framework v7.0 | Fix | 9-Phase Severity-Ordered Remediation | 2026-04-17
 
 ---
 
@@ -11,7 +11,7 @@
 | Field | Value |
 |---|---|
 | Feature | Audit Remediation (Meta-Analysis Follow-Up) |
-| Framework Version | v6.1 |
+| Framework Version | v7.0 |
 | Work Type | Fix (multi-phase remediation) |
 | Source Audit | 185 findings, 12 critical, 49 high, 90 medium, 25 low, 9 info |
 | Actionable Findings | 170 (15 info/pass — no code change needed) |

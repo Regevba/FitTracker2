@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-19
 
-> Framework v6.1 | Chore (audit + framework hardening) → Fix (multi-sprint cleanup) | 2026-04-18 → 2026-04-19 | PRs #96-#116 (21 PRs)
+> Framework v7.0 | Chore (audit + framework hardening) → Fix (multi-sprint cleanup) | 2026-04-18 → 2026-04-19 | PRs #96-#116 (21 PRs)
 >
 > **Predecessor:** `meta-analysis-audit-and-remediation-case-study.md` ended at PR #94 with 127/170 actionable findings closed (74.7%) and 5 audit Sprints A-E complete.
 >
@@ -15,7 +15,7 @@
 | Field | Value |
 |---|---|
 | Feature | Post-stress-test audit remediation + framework bug hardening |
-| Framework Version | v6.1 |
+| Framework Version | v7.0 |
 | Work Type | Chore (audit-tooling) → Fix (per-finding) — repeated 21 times |
 | Predecessor Findings Closed | 127 / 170 actionable (74.7%) at start |
 | **Findings Closed (this arc)** | **+50 audit findings + 6 framework bugs** |
@@ -45,7 +45,7 @@
 
 After Sprint E shipped (PR #94, 2026-04-17), the predecessor case study left an honest "what's still open" table: ~55 audit findings reachable via serial sprints, ~7 deferred to architectural sprints. The natural next move was Sprint F.
 
-But there was a tempting alternative. The framework had grown to v6.1 with HADF (hardware-aware dispatch), parallel write safety, mirror snapshots, and worktree-isolated agent dispatch. None of that had been stress-tested under load. **Could the framework run 6 audit-remediation groups concurrently, each in its own worktree, each landing its own PR?**
+But there was a tempting alternative. The framework had grown to v7.0 with HADF (hardware-aware dispatch), parallel write safety, mirror snapshots, and worktree-isolated agent dispatch. None of that had been stress-tested under load. **Could the framework run 6 audit-remediation groups concurrently, each in its own worktree, each landing its own PR?**
 
 The plan: divide the remaining audit work into 6 groups (G1 UI, G2 Tests, G3 AI, G4 Backend, G5 DS, G6 Config), dispatch 6 agents in parallel via `Agent({isolation: "worktree"})`, and let them race to completion. Wave 1 of 3.
 

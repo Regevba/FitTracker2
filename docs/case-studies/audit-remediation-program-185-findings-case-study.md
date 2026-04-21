@@ -2,12 +2,12 @@
 
 **Date written:** 2026-04-20
 
-**Subtitle:** The full-arc synthesis of the v6.1 meta-analysis audit and the remediation program that followed it — from "185 findings surfaced in a single 4-layer sweep" to "183 / 185 closed, 2 deferred on genuine external blockers" across 6 coordinated sprints.
+**Subtitle:** The full-arc synthesis of the v7.0 meta-analysis audit and the remediation program that followed it — from "185 findings surfaced in a single 4-layer sweep" to "183 / 185 closed, 2 deferred on genuine external blockers" across 6 coordinated sprints.
 
 | Field | Value |
 |---|---|
 | Date range | 2026-04-16 (audit) → 2026-04-20 (M-4 closure) |
-| Framework version | v6.1 (meta-analysis audit), v6.1 (all remediation) |
+| Framework version | v7.0 (meta-analysis audit), v7.0 (all remediation) |
 | Total findings | 185 |
 | Closed in-project | 183 (98.9%) |
 | Deferred on external blockers | 2 (BE-024 + DEEP-SYNC-010) |
@@ -21,7 +21,7 @@
 
 ## 1. Why This Case Study Exists
 
-The v6.1 meta-analysis audit produced 185 findings across 6 domains in a single 4-layer risk-weighted sweep. That was the easy part. The hard part — and the part no PM framework had previously been asked to run end-to-end — was driving those 185 findings through a disciplined remediation program until every actionable item was closed and every deferred item was classified with a reason a reviewer could audit.
+The v7.0 meta-analysis audit produced 185 findings across 6 domains in a single 4-layer risk-weighted sweep. That was the easy part. The hard part — and the part no PM framework had previously been asked to run end-to-end — was driving those 185 findings through a disciplined remediation program until every actionable item was closed and every deferred item was classified with a reason a reviewer could audit.
 
 This case study is the top-level synthesis of that program. It does not re-derive any individual sprint's findings (each sprint has its own case study). It traces the full arc: how the 185 findings were surfaced, how they were triaged into six remediation sprints, which sprint closed which findings, what framework bugs the program itself exposed, and what the final state looks like.
 
@@ -33,7 +33,7 @@ The program is the largest single remediation effort this project has run. It is
 
 | Metric | Value | Source |
 |---|---|---|
-| Audit methodology | 4-layer risk-weighted sweep, parallel domain dispatch, cross-reference against 18 prior case studies, external validation protocol | `meta-analysis-full-system-audit-v6.1-case-study.md` |
+| Audit methodology | 4-layer risk-weighted sweep, parallel domain dispatch, cross-reference against 18 prior case studies, external validation protocol | `meta-analysis-full-system-audit-v7.0-case-study.md` |
 | Domains audited | 6 (UI, Backend, AI, Design System, Framework, Tests) | audit report |
 | Findings by severity | 12 critical / 49 high / 90 medium / 34 low | audit report |
 | Findings by domain (health scorecard at audit completion) | AI 0 / Backend 0 / Tests 0 / UI 9 / Framework 42 / DS 46 (lower = more findings) | audit report |
@@ -245,7 +245,7 @@ This program is the first time the PM framework was used to close findings produ
 
 ## 11. Links
 
-- **Audit case study:** [`meta-analysis-full-system-audit-v6.1-case-study.md`](./meta-analysis-full-system-audit-v6.1-case-study.md)
+- **Audit case study:** [`meta-analysis-full-system-audit-v7.0-case-study.md`](./meta-analysis-full-system-audit-v7.0-case-study.md)
 - **Sprint 1 (bulk remediation):** [`post-stress-test-audit-remediation-case-study.md`](./post-stress-test-audit-remediation-case-study.md)
 - **Sprint 2 (M-3):** [`m-3-design-system-completion-case-study.md`](./m-3-design-system-completion-case-study.md)
 - **Sprint 3 (M-1):** [`m-1-settings-decomposition-case-study.md`](./m-1-settings-decomposition-case-study.md)

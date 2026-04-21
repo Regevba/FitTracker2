@@ -140,7 +140,7 @@ Path: `docs/case-studies/orchid-ai-accelerator-case-study.md`
 1. Summary Card
    - Feature: Orchid AI Orchestration Accelerator
    - Type: Research (theoretical experiment)
-   - Framework version: v6.0 → v6.1
+   - Framework version: v6.0 → v7.0
    - CU: N/A (research, not a shipped feature)
    - Wall time: measured via v6.0 timing
    - Key metric: 6 experiments, N real traces, 25,000 stress runs
@@ -155,7 +155,7 @@ Path: `docs/case-studies/orchid-ai-accelerator-case-study.md`
    - Layer A behavioral models (Python)
    - 7 functional units mapped from framework components
    - Progressive verification ladder (A → B → C)
-   - v6.0/v6.1 integration as data source
+   - v6.0/v7.0 integration as data source
 
 4. Experiment Results (6 sub-sections)
    4.1 Real trace dataset — N features, baseline scores

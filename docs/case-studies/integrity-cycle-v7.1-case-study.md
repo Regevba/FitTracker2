@@ -1,4 +1,4 @@
-# Integrity Cycle — v6.2 Case Study
+# Integrity Cycle — v7.1 Case Study
 
 **Date written:** 2026-04-21
 
@@ -6,10 +6,10 @@
 
 | Field | Value |
 |---|---|
-| Framework version | v6.2 |
+| Framework version | v7.1 |
 | Work type | Framework infrastructure (not a product feature) |
 | Trigger date | 2026-04-20 open-items audit |
-| Ship date | 2026-04-20 (infra) + 2026-04-21 (v6.2 docs) |
+| Ship date | 2026-04-20 (infra) + 2026-04-21 (v7.1 docs) |
 | Wall time | ~3 hours (design + script + workflow + docs + initial snapshot) |
 | Commits shipping the cycle | `993be3a` (infra), `c21ab15` (upstream tickets), `f8a7e82` (Category A+B+C remediation) |
 | Snapshot ledger | `.claude/integrity/snapshots/` — `2026-04-20T20-45-00Z.json` is the baseline |
@@ -36,7 +36,7 @@ The surfaced drift:
 
 Median drift: 4 days. Max: 11. These features had working code, merged PRs, and existing case studies — the state.json was just *wrong*. A reader looking at the framework's feature registry saw 7 items marked `complete` that weren't reconciled and 7 items marked `implementation` that were done.
 
-The fix for those 7 features landed in `f8a7e82` (batch reconcile). That closed the one-time problem. **v6.2 is the fix for the systemic problem.**
+The fix for those 7 features landed in `f8a7e82` (batch reconcile). That closed the one-time problem. **v7.1 is the fix for the systemic problem.**
 
 ---
 
@@ -144,11 +144,11 @@ The asymmetry is deliberate: the cycle only pages on *newly introduced drift*, n
 | `f8a7e82` | Category A (10 backfill markers) + Category B (7-feature task/phase reconcile) + Category C (app-store-assets downgrade) — 30 of 31 audit findings |
 | `63a216d` | HADF T2-T9 reconcile (closed before the integrity-cycle commit) |
 | `bf77705` | HADF T1 reconcile (closed before the integrity-cycle commit) |
-| `993be3a` | **v6.2 integrity-cycle infrastructure itself** |
+| `993be3a` | **v7.1 integrity-cycle infrastructure itself** |
 
 ### Framework-manifest capability flag
 
-`.claude/shared/framework-manifest.json` now declares `capabilities.integrity_cycle: true` and a `v6_2_integrity_cycle` sub-object with the full config surface. This is how other skills discover the capability at dispatch time.
+`.claude/shared/framework-manifest.json` now declares `capabilities.integrity_cycle: true` and a `v7_1_integrity_cycle` sub-object with the full config surface. This is how other skills discover the capability at dispatch time.
 
 ---
 
@@ -166,18 +166,18 @@ The scope is deliberately narrow: **detect drift between reality and state.json'
 ## 6. Why It Earned a Version Bump
 
 v6.0 added **measurement** (phase timing, cache hit rates).
-v6.1 added **hardware awareness** (HADF 5-layer dispatch).
-v6.2 adds **self-observation** — a recurring background process that checks the framework's own bookkeeping for consistency.
+v7.0 added **hardware awareness** (HADF 5-layer dispatch).
+v7.1 adds **self-observation** — a recurring background process that checks the framework's own bookkeeping for consistency.
 
-This is structurally different from every prior version. All prior versions added capabilities that run when a feature is dispatched (skill-on-demand loading, cache compression, batch dispatch, parallel safety, hardware fingerprinting). v6.2 adds a capability that runs *without* a feature being dispatched — it runs because 72h elapsed. That's a steady-state change to the framework's behavior, which is the version-bump bar.
+This is structurally different from every prior version. All prior versions added capabilities that run when a feature is dispatched (skill-on-demand loading, cache compression, batch dispatch, parallel safety, hardware fingerprinting). v7.1 adds a capability that runs *without* a feature being dispatched — it runs because 72h elapsed. That's a steady-state change to the framework's behavior, which is the version-bump bar.
 
-It's also the first framework capability whose design was driven **entirely by empirical observation of drift** rather than by design theory. The 2026-04-20 audit made the case for the cycle's existence; the 3 data points (median / max / accumulation rate) made the case for the specific 72h cadence. Every prior version had some theoretical design argument ("SoC reclaims context," "HADF routes to hardware"). v6.2 has a pure-measurement argument: here's the drift we saw; here's the cycle that would have caught it.
+It's also the first framework capability whose design was driven **entirely by empirical observation of drift** rather than by design theory. The 2026-04-20 audit made the case for the cycle's existence; the 3 data points (median / max / accumulation rate) made the case for the specific 72h cadence. Every prior version had some theoretical design argument ("SoC reclaims context," "HADF routes to hardware"). v7.1 has a pure-measurement argument: here's the drift we saw; here's the cycle that would have caught it.
 
 ---
 
 ## 7. Lessons
 
-1. **A one-time audit that finds a systemic drift pattern should convert to an automated cycle, not stay as a one-off.** The 2026-04-20 audit found 7 drifted features. Without v6.2, the 8th, 9th, and 10th would accumulate unseen until the next explicit audit — which is when and how this pattern was originally missed.
+1. **A one-time audit that finds a systemic drift pattern should convert to an automated cycle, not stay as a one-off.** The 2026-04-20 audit found 7 drifted features. Without v7.1, the 8th, 9th, and 10th would accumulate unseen until the next explicit audit — which is when and how this pattern was originally missed.
 
 2. **Empirical cadence beats theoretical cadence.** 72h wasn't picked because it felt nice. It was picked because the drift-accumulation rate (1 per 2 days), the median drift duration (4 days), and the max tolerated backlog (1 cycle) converged on it. Other projects would find a different cadence from their own data.
 
@@ -185,7 +185,7 @@ It's also the first framework capability whose design was driven **entirely by e
 
 4. **Framework-level regressions should auto-open issues, not fail CI.** CI gates PR merges; the integrity cycle gates the steady state. These are different authority loops. A state.json drift isn't a merge-blocker (the code is fine); it's a hygiene event. An auto-opened issue with the `regression` label gets the right humans' attention without blocking the delivery pipeline.
 
-5. **Version bumps should require a capability change, not a point improvement.** v6.2 isn't "better measurement" or "better dispatch" — it's a new class of behavior (recurring self-observation) that didn't exist in any prior version. The bar for the bump is "would a reader of the version table understand this as a new kind of thing?" Answer here: yes — prior versions' cadence was "per-dispatch," v6.2's is "per-72h-wall-clock," and that's structurally different.
+5. **Version bumps should require a capability change, not a point improvement.** v7.1 isn't "better measurement" or "better dispatch" — it's a new class of behavior (recurring self-observation) that didn't exist in any prior version. The bar for the bump is "would a reader of the version table understand this as a new kind of thing?" Answer here: yes — prior versions' cadence was "per-dispatch," v7.1's is "per-72h-wall-clock," and that's structurally different.
 
 ---
 
@@ -199,6 +199,6 @@ It's also the first framework capability whose design was driven **entirely by e
 - **Infrastructure commit:** `993be3a`
 - **Evolution narrative:** [`docs/skills/evolution.md` § 25](../skills/evolution.md#25-v62--integrity-cycle-2026-04-21)
 - **Version-history row:** [`docs/skills/pm-workflow.md#version-history`](../skills/pm-workflow.md#version-history)
-- **Framework manifest entry:** `v6_2_integrity_cycle` in [`.claude/shared/framework-manifest.json`](../../.claude/shared/framework-manifest.json)
+- **Framework manifest entry:** `v7_1_integrity_cycle` in [`.claude/shared/framework-manifest.json`](../../.claude/shared/framework-manifest.json)
 - **Upstream framework bugs surfaced in the related 2026-04-20 work:** [F6 #51286](https://github.com/anthropics/claude-code/issues/51286), [F7 #51287](https://github.com/anthropics/claude-code/issues/51287), [F8 #51288](https://github.com/anthropics/claude-code/issues/51288), [F9 #51289](https://github.com/anthropics/claude-code/issues/51289)
 - **Showcase version:** [`fitme-showcase/04-case-studies/25-integrity-cycle.md`](../../../fitme-showcase/04-case-studies/25-integrity-cycle.md)

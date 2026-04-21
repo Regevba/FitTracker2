@@ -58,11 +58,11 @@
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-### 1a. Hardware-Aware Dispatch Extension (v6.1)
+### 1a. Hardware-Aware Dispatch Extension (v7.0)
 
 ```text
 ╔══════════════════════════════════════════════════════════════╗
-║           HADF — Hardware-Aware Dispatch (v6.1)              ║
+║           HADF — Hardware-Aware Dispatch (v7.0)              ║
 ║                                                              ║
 ║  Layer 0: Device Detection ──► Layer 1: Static Profiles      ║
 ║  (iOS/Android/macOS/Web)        (17 chips, 6 vendors)        ║

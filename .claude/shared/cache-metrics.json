@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "updated": "2026-04-17T00:00:00Z",
-  "framework_version": "6.1",
+  "framework_version": "7.0",
   "description": "Rolling cache hit rate aggregate across features. Added in v6.0. PARTIAL (audit FW-005): schema is correct but values populate only as features complete and the framework writes here from PM workflow phase transitions. Empty/zero values are expected initial state, not a bug \u2014 the measurement protocol exists but requires runs to populate. See framework-bugs-from-stress-test.md for the broader instrumentation gap.",
   "by_framework_version": {
     "v5.2": {

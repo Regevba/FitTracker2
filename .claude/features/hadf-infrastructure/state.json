@@ -169,7 +169,7 @@
         "status": "completed",
         "completed_at": "2026-04-20T00:00:00Z",
         "shipped_in_commit": "a5faa4f",
-        "note": "Shipped in main (commit a5faa4f, part of PR #82 chain). Final validation + case study (hadf-hardware-aware-dispatch-case-study.md) + evolution v6.1 documentation + architecture one-pager + README + backlog update. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
+        "note": "Shipped in main (commit a5faa4f, part of PR #82 chain). Final validation + case study (hadf-hardware-aware-dispatch-case-study.md) + evolution v7.0 documentation + architecture one-pager + README + backlog update. State reconciled 2026-04-20 after HADF T1 reconcile exposed the same out-of-sync pattern across T2-T9."
       }
     ]
   },

@@ -36,7 +36,7 @@ fitme-showcase/
 │   ├── skills-architecture.md         # From skills/architecture.md + architecture-one-pager.md
 │   ├── skills-ecosystem.md            # From skills/README.md
 │   ├── pm-workflow-hub.md             # From skills/pm-workflow.md
-│   ├── framework-evolution.md         # From skills/evolution.md — v1.0 → v6.1 timeline
+│   ├── framework-evolution.md         # From skills/evolution.md — v1.0 → v7.0 timeline
 │   └── project-governance.md          # From CLAUDE.md — rules, branching, CI, design system
 │
 ├── 03-design-system/
@@ -51,8 +51,8 @@ fitme-showcase/
 │   ├── 02-framework-evolution.md      # From pm-workflow-evolution-v1-to-v4.md (6.5x speedup)
 │   ├── 03-parallel-stress-test.md     # From v5.1-parallel-stress-test-case-study.md
 │   ├── 04-measurement-v6.md           # From framework-measurement-v6-case-study.md
-│   ├── 05-hadf-v6.1.md               # From hadf-hardware-aware-dispatch-case-study.md
-│   ├── 06-full-system-audit.md        # From meta-analysis-full-system-audit-v6.1-case-study.md
+│   ├── 05-hadf-v7.0.md               # From hadf-hardware-aware-dispatch-case-study.md
+│   ├── 06-full-system-audit.md        # From meta-analysis-full-system-audit-v7.0-case-study.md
 │   ├── 07-auth-flow-velocity.md       # From onboarding-v2-auth-flow-v5.1-case-study.md
 │   ├── 08-ai-engine-architecture.md   # From ai-engine-architecture-v5.1-case-study.md
 │   ├── normalization-model.md         # From normalization-framework.md
@@ -141,7 +141,7 @@ hypotheticals.]
 | README.md | 01-product-vision/README.md | Strip tech stack details, focus on product story |
 | CLAUDE.md | 02-process-framework/project-governance.md | Reframe as "how we enforce quality" |
 | docs/product/PRD.md | 01-product-vision/master-prd.md | Keep vision/personas/metrics, drop internal tracking |
-| docs/skills/evolution.md | 02-process-framework/framework-evolution.md | Highlight the v1→v6.1 arc, trim per-feature tables |
+| docs/skills/evolution.md | 02-process-framework/framework-evolution.md | Highlight the v1→v7.0 arc, trim per-feature tables |
 | docs/skills/architecture.md | 02-process-framework/skills-architecture.md | Heavy trim from 1900 → ~800 lines, keep diagrams |
 | docs/design-system/ux-foundations.md | 03-design-system/ux-foundations.md | Light trim, already external-quality |
 | 8 case studies | 04-case-studies/01-08 | Full heavy curation per rules above |

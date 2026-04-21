@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-17
 
-> Framework v6.1 | Chore → Fix | Audit (2026-04-16) → Remediation (2026-04-17) | PRs #84, #85, #86
+> Framework v7.0 | Chore → Fix | Audit (2026-04-16) → Remediation (2026-04-17) | PRs #84, #85, #86
 
 ---
 
@@ -11,7 +11,7 @@
 | Field | Value |
 |---|---|
 | Feature | Full-System Audit + Multi-Phase Remediation |
-| Framework Version | v6.1 |
+| Framework Version | v7.0 |
 | Work Type | Chore (audit) → Fix (remediation) |
 | Total Findings | 185 (12 critical · 49 high · 90 medium · 25 low · 9 info) |
 | Actionable Findings | 170 |
@@ -35,7 +35,7 @@
 
 ### Act I — The Audit (2026-04-16)
 
-After 18 case studies, 6 v2 screen refactors, and a framework that had grown from v1.0 to v6.1, we asked a question that hadn't been asked before: *what's actually broken?*
+After 18 case studies, 6 v2 screen refactors, and a framework that had grown from v1.0 to v7.0, we asked a question that hadn't been asked before: *what's actually broken?*
 
 The answer came from a 4-layer risk-weighted parallel sweep:
 

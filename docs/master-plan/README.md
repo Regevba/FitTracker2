@@ -25,7 +25,7 @@
 
 | File | Date | Purpose |
 |---|---|---|
-| `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-04-20 | **CURRENT master plan.** Adds all v4.3 → v6.1 work, M-series decomposition sprints, and the 185-finding audit remediation program. |
+| `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-04-20 | **CURRENT master plan.** Adds all v4.3 → v7.0 work, M-series decomposition sprints, and the 185-finding audit remediation program. |
 | `master-plan-2026-04-06.md` | 2026-04-06 | DEPRECATED — superseded by 2026-04-15. Kept as a historical snapshot. |
 | `master-plan-reconciled-2026-04-05.md` | 2026-04-05 | DEPRECATED — superseded by 2026-04-06, then 2026-04-15. |
 | `master-backlog-roadmap.md` | living | RICE-prioritized 19-task roadmap. Updated continuously. Referenced by `docs/product/backlog.md`. |

@@ -70,7 +70,7 @@ Eight routes, 36 pre-rendered pages, 12 unit tests, deployed to a public Vercel 
 | Case study | Visual | Anchor metaphor |
 |------------|--------|-----------------|
 | SoC-on-Software (v5.0) | `<BlueprintOverlay interactive />` | 6-floor building; floors light up on hover |
-| HADF (v6.1) | `<ChipAffinityMap />` | 17×7 heatmap, hover/focus shows readout |
+| HADF (v7.0) | `<ChipAffinityMap />` | 17×7 heatmap, hover/focus shows readout |
 | Onboarding Pilot (v2.0) | `<PhaseTimingChart />` | 9-phase Gantt bar, stagger-in on scroll |
 
 ### Content sync pipeline
@@ -146,7 +146,7 @@ Total: 12 tests, written before their implementations, green throughout. These t
 
 ### 6. Tiered polish kept scope honest
 
-The plan committed to 3 flagship / 7 standard / 3 light — with only the 3 flagship getting bespoke interactive visuals. This was the right bound. Building one flagship visual (BlueprintOverlay) took ~15 minutes including its MDX mount. Building three: ~40 minutes. Building 13 would have either doubled the session length or produced a wall of half-finished interactivity. The tiered approach shipped the three that matter (the arc-defining studies: v2.0 pilot, v5.0 pivot, v6.1 research peak) and left the standard tier visually confident but not expensive.
+The plan committed to 3 flagship / 7 standard / 3 light — with only the 3 flagship getting bespoke interactive visuals. This was the right bound. Building one flagship visual (BlueprintOverlay) took ~15 minutes including its MDX mount. Building three: ~40 minutes. Building 13 would have either doubled the session length or produced a wall of half-finished interactivity. The tiered approach shipped the three that matter (the arc-defining studies: v2.0 pilot, v5.0 pivot, v7.0 research peak) and left the standard tier visually confident but not expensive.
 
 ---
 
@@ -308,7 +308,7 @@ A new `/pm-flow` page — the biggest post-original feature. Zooms into Floor 2 
 - **Hero** with 6 anchor chips
 - **Lifecycle Loop** — concentric 2-ring SVG. Inner ring has 10 phases arranged clockwise (P0 Research at 12 o'clock, continuing through P9 Learn). Each phase is a colored pip tinted by its owning skill. A coral feedback arc curves from P9 back to P0 with a 4-second breathing pulse — the "this loops forever" signal. Outer ring has 3 arc segments for cx, ops, and marketing — the feedback-layer skills that continuously feed information into the cycle rather than owning a single phase.
 - **Lego Wall** — 11 colored bricks representing the skills. Toggle "Scattered ↔ Assembled" triggers a framer-motion `layout` animation: bricks fly from a loose grid into 10 phase columns (+ an "always-on row" below for cross-phase skills). Click any brick → rotateY flip to a detail panel showing purpose, sub-commands, invokes/invoked-by chips (clickable to flip to that skill), standalone example, and full docs link.
-- **Evolution strip** — 6 milestones (v1 monolith → v6.1 HADF), each tinted by the skills added.
+- **Evolution strip** — 6 milestones (v1 monolith → v7.0 HADF), each tinted by the skills added.
 - **Shared Data Layer** — 15-tile grid of the JSON files in `.claude/shared/`, each tile showing colored dots for the skills that read it and the skills that write it. Readers see ownership at a glance.
 - **Cache tiers** — L1/L2/L3 with the CPU-cache analogy.
 - **Build your own** — 3 bullets + 3 related-page cards.

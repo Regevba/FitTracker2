@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-18
 
-> Framework v6.1 | Stress Test | 2026-04-18 | **CLOSED — Option C selected: stop and treat findings as the deliverable**
+> Framework v7.0 | Stress Test | 2026-04-18 | **CLOSED — Option C selected: stop and treat findings as the deliverable**
 
 ## Decision (2026-04-18)
 

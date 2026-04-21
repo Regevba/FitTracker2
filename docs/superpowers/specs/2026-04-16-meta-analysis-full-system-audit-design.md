@@ -3,24 +3,24 @@
 > **Type:** Full-system code review / stress test / meta-analysis
 > **Date:** 2026-04-16
 > **Status:** Design Complete
-> **Framework Version:** v6.1
-> **Builds on:** All 18 case studies, v6.0 measurement protocols, v6.1 HADF infrastructure
+> **Framework Version:** v7.0
+> **Builds on:** All 18 case studies, v6.0 measurement protocols, v7.0 HADF infrastructure
 > **Methodology:** Risk-Weighted Parallel Sweep with External Validation
 
 ---
 
 ## 1. Problem Statement
 
-The FitMe codebase has grown to 143 Swift files, 37 services, 13 AI engine files, 21 test files, and a v6.1 PM framework with 69 config/cache/skill files. Eighteen case studies document individual features, but no comprehensive audit has ever examined the entire system as a whole.
+The FitMe codebase has grown to 143 Swift files, 37 services, 13 AI engine files, 21 test files, and a v7.0 PM framework with 69 config/cache/skill files. Eighteen case studies document individual features, but no comprehensive audit has ever examined the entire system as a whole.
 
 **Three goals:**
 1. **Ship readiness** — catch anything that would block App Store release
 2. **Technical debt inventory** — structured, severity-ranked list of every problem
-3. **Framework self-validation** — prove the v6.1 framework can audit the codebase it helped build, while honestly documenting where self-referential analysis breaks down
+3. **Framework self-validation** — prove the v7.0 framework can audit the codebase it helped build, while honestly documenting where self-referential analysis breaks down
 
 ## 2. Self-Referential Bias Acknowledgment
 
-This audit is conducted by the v6.1 PM framework auditing the codebase it helped build. This creates inherent bias:
+This audit is conducted by the v7.0 PM framework auditing the codebase it helped build. This creates inherent bias:
 
 **What the framework CAN'T reliably detect:**
 - Its own blind spots (if it systematically misses X, the audit misses X too)
@@ -52,7 +52,7 @@ Layer 3: Cross-Reference & Meta (sequential, coordinator)
 Layer 4: External Validation (Xcode build, make tokens-check, manual spot-check)
     | validated findings database + narrative case study
     v
-Deliverables: audit-findings.json + case study + v6.1 measurement
+Deliverables: audit-findings.json + case study + v7.0 measurement
 ```
 
 **Key principle:** Each layer only receives what the previous layer found. Layer 2 doesn't re-scan clean files. Layer 3 connects dots. Layer 4 validates.
@@ -272,7 +272,7 @@ Structured database at `.claude/shared/audit-findings.json` with:
 
 ### Deliverable 2: Case Study
 
-At `docs/case-studies/meta-analysis-full-system-audit-v6.1-case-study.md`:
+At `docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md`:
 
 1. Summary Card
 2. Methodology (4-layer architecture, bias acknowledgment)
@@ -284,7 +284,7 @@ At `docs/case-studies/meta-analysis-full-system-audit-v6.1-case-study.md`:
 8. Recommendations (prioritized action list)
 9. Lessons Learned
 
-### Deliverable 3: v6.1 Measured Feature
+### Deliverable 3: v7.0 Measured Feature
 
 `.claude/features/meta-analysis-audit/state.json` with:
 - Phase timing (measured, not estimated)

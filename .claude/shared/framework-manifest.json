@@ -1,10 +1,10 @@
 {
   "version": "1.6",
   "updated": "2026-04-21T00:00:00Z",
-  "framework_version": "6.2",
-  "description": "PM framework v6.2 adds the 72-hour integrity cycle — automated detection of the 'shipped but state.json unreconciled' drift pattern. Extends v6.1 (HADF hardware-aware dispatch + full-system meta-analysis audit + remediation tracking).",
+  "framework_version": "7.1",
+  "description": "PM framework v7.1 adds the 72-hour integrity cycle — automated detection of the 'shipped but state.json unreconciled' drift pattern. Extends v7.0 (HADF hardware-aware dispatch + full-system meta-analysis audit + remediation tracking).",
   "audit_closures": {
-    "FW-002": "Description string updated from v5.2 to v6.1 — closed.",
+    "FW-002": "Description string updated from v5.2 to v7.0 — closed.",
     "FW-007": "chip-profiles.json verified at 17 profiles matching spec — see chip-profiles.json.",
     "FW-008": "hardware-signature-table.json verified at 7 signatures matching spec — see hadf/hardware-signature-table.json.",
     "FW-009": "HADF hardware_context settings verified (enabled=false, blend=0.4, trust=0.7) — see dispatch-intelligence.json hardware_context section.",
@@ -67,7 +67,7 @@
     "dispatch_intelligence": true,
     "integrity_cycle": true
   },
-  "v6_2_integrity_cycle": {
+  "v7_1_integrity_cycle": {
     "description": "72-hour recurring audit of .claude/features/*/state.json. Catches 'shipped but unreconciled' drift within 72h of occurrence instead of weeks later.",
     "script": "scripts/integrity-check.py",
     "workflow": ".github/workflows/integrity-cycle.yml",

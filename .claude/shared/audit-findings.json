@@ -9,7 +9,7 @@
     "note": "PRs #84-#100 closed audit findings via Sprints A-J; PRs #101-#103 closed framework bugs F1-F5 (separate track); PR #104 documented F8/F9 (upstream Claude Code bugs)."
   },
   "audit_date": "2026-04-16",
-  "framework_version": "6.1",
+  "framework_version": "7.0",
   "methodology": "risk-weighted-parallel-sweep",
   "self_referential": true,
   "baseline": {
@@ -1360,8 +1360,8 @@
       "category": "framework",
       "file": ".claude/shared/audit-findings.json",
       "line": null,
-      "title": "Version mismatch: audit-findings.json says framework_version 6.1, all other configs say 6.0",
-      "description": "audit-findings.json claims framework_version 6.1 while dispatch-intelligence.json, cache-metrics.json, and token-budget.json all say 6.0. Inconsistency in the version story.",
+      "title": "Version mismatch: audit-findings.json says framework_version 7.0, all other configs say 6.0",
+      "description": "audit-findings.json claims framework_version 7.0 while dispatch-intelligence.json, cache-metrics.json, and token-budget.json all say 6.0. Inconsistency in the version story.",
       "evidence": "audit-findings.json: 6.1, others: 6.0",
       "recommended_fix": "Align all configs to same version. If 6.1 is the HADF extension, update all configs.",
       "effort": "trivial",

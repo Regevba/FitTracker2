@@ -19,11 +19,11 @@ I'm continuing case study work from a prior session. Here's the full context.
 - Branch: claude/analyze-case-studies-obJan
 - Open PR: https://github.com/Regevba/FitTracker2/pull/136 (title:
   "docs(case-studies): write Home v2 + Training Plan v2, sync pm-workflow
-  hub to v6.1")
+  hub to v7.0")
 - Commits on branch:
-  - c8a918c — pm-workflow.md hub doc synced v6.0 → v6.1 (added v5.2/v6.0/v6.1
+  - c8a918c — pm-workflow.md hub doc synced v6.0 → v7.0 (added v5.2/v6.0/v7.0
     sections, backfilled case study links on v4.3/v4.4/v5.0/v5.2/v6.0,
-    added v6.1 HADF row)
+    added v7.0 HADF row)
   - 8a1d553 — two new case studies + README reclassification
 
 ## What the prior session accomplished
@@ -31,7 +31,7 @@ I'm continuing case study work from a prior session. Here's the full context.
 1. Analyzed all 36 case studies in docs/case-studies/ plus 2 in
    meta-analysis/ (38 total).
 2. Found that pm-workflow-evolution-v1-to-v4.md is stale — covers v1.0 →
-   v4.3 but framework is at v6.1. Decided against rewriting it; it's
+   v4.3 but framework is at v7.0. Decided against rewriting it; it's
    accurate for its window. Individual v4.4/v5.x/v6.x case studies exist
    separately.
 3. Cross-referenced open/queued case studies against .claude/features/
@@ -41,7 +41,7 @@ I'm continuing case study work from a prior session. Here's the full context.
    - HOLD: dispatch-intelligence-v5.2 (phase=testing),
      onboarding-v2-retroactive (phase=tasks) — not yet shipped.
    - COVERED: hadf-infrastructure (hadf-hardware-aware-dispatch CS),
-     meta-analysis-audit (meta-analysis-full-system-audit-v6.1 CS).
+     meta-analysis-audit (meta-analysis-full-system-audit-v7.0 CS).
 4. Wrote two new case studies, grounded in real state.json / PRD / audit
    report data with no fabrication:
    - docs/case-studies/home-today-screen-v2-case-study.md
@@ -49,7 +49,7 @@ I'm continuing case study work from a prior session. Here's the full context.
 5. Updated docs/case-studies/README.md:
    - Moved Home v2 + Training v2 to "current contents"
    - Reclassified the other 4 as "pending ship" or "covered elsewhere"
-6. Synced docs/skills/pm-workflow.md to v6.1 (title, version history,
+6. Synced docs/skills/pm-workflow.md to v7.0 (title, version history,
    missing case study links).
 
 ## What still needs to happen — YOUR TASK
@@ -146,7 +146,7 @@ Features flagged as pending/unknown in the active list:
 - `hadf-infrastructure` — `phase=unknown` (covered by
   hadf-hardware-aware-dispatch-case-study.md)
 - `meta-analysis-audit` — `phase=unknown` (covered by
-  meta-analysis-full-system-audit-v6.1-case-study.md)
+  meta-analysis-full-system-audit-v7.0-case-study.md)
 - `onboarding-v2-retroactive` — `phase=tasks` (case study pending ship)
 
 All other 34 features in the hook are `phase=complete`.

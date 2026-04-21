@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-19
 
-> Framework v6.1 | cleanup_program | 2026-04-19 | PRs #122 + #123 + #124 + this PR
+> Framework v7.0 | cleanup_program | 2026-04-19 | PRs #122 + #123 + #124 + this PR
 >
 > **Predecessor:** `m-3-design-system-completion-case-study.md` ended with 5 audit findings open. After M-1 closes UI-002, **4 remain** — all in pre-classified multi-session feature (M-2, M-4) or external blocker (BE-024, DEEP-SYNC-010) buckets.
 >
@@ -15,7 +15,7 @@
 | Field | Value |
 |---|---|
 | Feature | M-1 — SettingsView v2 → v3 Decomposition |
-| Framework Version | v6.1 |
+| Framework Version | v7.0 |
 | Work Type | cleanup_program (multi-PR feature) |
 | Audit Findings Closed | UI-002 (1) |
 | Audit Closure Rate (cumulative after M-1) | 181 / 185 (97.8%) |

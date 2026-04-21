@@ -353,7 +353,7 @@ The 3.21 min/CU result is 3rd-best in the dataset (after Onboarding Auth at 2.1 
 
 - **Eval gate untested on AI feature:** Deploying a gate protocol via a non-AI feature means the gate has never fired in anger. The first AI feature post-v6.0 should treat the eval gate as a first-time exercise and document any gap between the protocol spec and what actually happens. Source: this feature (Slice 3 finding).
 
-### Recommended Framework Changes for v6.1
+### Recommended Framework Changes for v7.0
 
 - **Adjust token overhead guardrail from 5% to 8-10%** based on first measured data point (7.91%). The 5% target was set before any measurement infrastructure existed. With tiktoken now running, re-baseline after 3 more measurements.
 - **Add framework self-test protocol:** A lightweight check that validates the v6.0 protocols are actually being followed (not just defined) — e.g., confirm `timing.phases` is populated, `cache-hits.json` exists, `eval_results` is populated when AI behaviors were identified. Could run as part of `verify-framework`.

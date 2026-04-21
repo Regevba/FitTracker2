@@ -423,9 +423,9 @@ ORCHID           software->chip: close the loop   = "what if we built the chip
 
 ---
 
-## Section 10: v6.0/v6.1 Integration — Framework Measurement as Hardware Data Source
+## Section 10: v6.0/v7.0 Integration — Framework Measurement as Hardware Data Source
 
-> Added 2026-04-16 after v6.0 (measurement instrumentation) and v6.1 (meta-analysis audit) shipped.
+> Added 2026-04-16 after v6.0 (measurement instrumentation) and v7.0 (meta-analysis audit) shipped.
 
 ### 10.1 The Key Insight
 
@@ -496,9 +496,9 @@ v6.0's `cache-hits.json` provides real L1/L2/L3 access sequences with miss reaso
 
 This data trains U5's prediction table with real-world accuracy — not synthetic estimates.
 
-### 10.7 Validation Taxonomy — v6.1 Trust Tags
+### 10.7 Validation Taxonomy — v7.0 Trust Tags
 
-Orchid adopts v6.1's 5-tier validation taxonomy for all test results:
+Orchid adopts v7.0's 5-tier validation taxonomy for all test results:
 
 | Tag | Orchid Application | Trust Level |
 |---|---|---|
@@ -512,7 +512,7 @@ Every Orchid validation result is tagged. The final case study reports the distr
 
 ### 10.8 Future Extension — Audit Accelerator Mode
 
-v6.1's 4-layer audit architecture (Surface Sweep -> Deep Dive -> Cross-Reference -> External Validation) maps to a second operating mode for Orchid:
+v7.0's 4-layer audit architecture (Surface Sweep -> Deep Dive -> Cross-Reference -> External Validation) maps to a second operating mode for Orchid:
 
 ```
 Finding arrives -> U1 scores (severity x effort x bias_risk)
@@ -522,7 +522,7 @@ Finding arrives -> U1 scores (severity x effort x bias_risk)
                -> U7 runs AI-powered deep analysis on flagged code
 ```
 
-This is a v2 ambition — Orchid v1 focuses on dispatch acceleration. But the v6.1 finding schema (`severity`, `effort`, `bias_risk`, `confidence`) fits U1's scoring interface so naturally that the extension is architecturally free.
+This is a v2 ambition — Orchid v1 focuses on dispatch acceleration. But the v7.0 finding schema (`severity`, `effort`, `bias_risk`, `confidence`) fits U1's scoring interface so naturally that the extension is architecturally free.
 
 ### 10.9 Updated OrchidConfig Defaults
 
@@ -557,6 +557,6 @@ case class OrchidConfig(
 | v2.0-v4.4 | Case study narratives only | Low — estimated, no counters |
 | v5.0-v5.2 | Case studies + config files | Medium — structured but not instrumented |
 | v6.0+ | state.json timing + cache-hits.json + CU v2 | High — deterministic, counter-based |
-| v6.1+ | Above + audit findings + validation tags | Highest — externally validated |
+| v7.0+ | Above + audit findings + validation tags | Highest — externally validated |
 
 Orchid's primary validation uses v6.0+ traces. Pre-v6.0 data serves as historical context only.

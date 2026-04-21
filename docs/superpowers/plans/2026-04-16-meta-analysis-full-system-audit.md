@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Run a 4-layer risk-weighted parallel audit of the entire FitMe codebase (143 Swift files, 37 services, 13 AI files, 21 test files, 69 framework configs), producing a structured findings database, a narrative case study, and a system health scorecard — all measured under v6.1 protocols.
+**Goal:** Run a 4-layer risk-weighted parallel audit of the entire FitMe codebase (143 Swift files, 37 services, 13 AI files, 21 test files, 69 framework configs), producing a structured findings database, a narrative case study, and a system health scorecard — all measured under v7.0 protocols.
 
 **Architecture:** Layer 1 dispatches 6 domain agents in parallel for surface sweep. Layer 2 deep-dives flagged areas + high-risk files. Layer 3 cross-references findings against 18 case studies, UX foundations, and the framework itself. Layer 4 runs external validation (Xcode build/test already confirmed: BUILD SUCCEEDED, 231/231 pass, 0 failures).
 
@@ -21,7 +21,7 @@
 ├── audit-findings.json              (CREATE — structured findings database)
 
 .claude/features/meta-analysis-audit/
-├── state.json                       (CREATE — v6.1 case study measurement)
+├── state.json                       (CREATE — v7.0 case study measurement)
 ├── layer1-ui.json                   (CREATE — Layer 1 UI agent findings)
 ├── layer1-backend.json              (CREATE — Layer 1 Backend agent findings)
 ├── layer1-ai.json                   (CREATE — Layer 1 AI agent findings)
@@ -32,7 +32,7 @@
 └── layer3-cross-reference.json      (CREATE — Layer 3 cross-reference + meta analysis)
 
 docs/case-studies/
-└── meta-analysis-full-system-audit-v6.1-case-study.md  (CREATE — narrative case study)
+└── meta-analysis-full-system-audit-v7.0-case-study.md  (CREATE — narrative case study)
 ```
 
 ---
@@ -54,7 +54,7 @@ Run: `mkdir -p .claude/features/meta-analysis-audit`
   "feature": "meta-analysis-audit",
   "display_name": "Meta-Analysis Full-System Audit",
   "work_type": "chore",
-  "framework_version": "6.1",
+  "framework_version": "7.0",
   "phase": "implementation",
   "status": "in_progress",
   "created": "2026-04-16T00:00:00Z",
@@ -135,7 +135,7 @@ Run: `mkdir -p .claude/features/meta-analysis-audit`
 {
   "version": "1.0",
   "audit_date": "2026-04-16",
-  "framework_version": "6.1",
+  "framework_version": "7.0",
   "methodology": "risk-weighted-parallel-sweep",
   "self_referential": true,
   "baseline": {
@@ -486,7 +486,7 @@ git commit -m "feat(audit): Layer 4 — external validation, git cross-check, he
 ### Task 7: Case Study — Narrative Write-Up
 
 **Files:**
-- Create: `docs/case-studies/meta-analysis-full-system-audit-v6.1-case-study.md`
+- Create: `docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md`
 
 - [ ] **Step 1: Write the case study**
 
@@ -508,7 +508,7 @@ Pull all data from `audit-findings.json` and produce the narrative with these se
 - [ ] **Step 2: Commit**
 
 ```bash
-git add docs/case-studies/meta-analysis-full-system-audit-v6.1-case-study.md
+git add docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md
 git commit -m "docs(audit): full-system audit case study — methodology, findings, health scorecard, bias report"
 ```
 
@@ -529,7 +529,7 @@ Set `implementation.ended_at` and `documentation.ended_at` with actual timestamp
 Add the new case study to the table:
 
 ```
-| `meta-analysis-full-system-audit-v6.1-case-study.md` | Full-System Meta-Analysis Audit (v6.1) | First self-referential full-system audit — 4-layer risk-weighted sweep, N findings across 6 domains, external validation, framework self-audit with bias acknowledgment |
+| `meta-analysis-full-system-audit-v7.0-case-study.md` | Full-System Meta-Analysis Audit (v7.0) | First self-referential full-system audit — 4-layer risk-weighted sweep, N findings across 6 domains, external validation, framework self-audit with bias acknowledgment |
 ```
 
 - [ ] **Step 3: Final validation**

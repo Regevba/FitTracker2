@@ -2,7 +2,7 @@
 
 **Date written:** 2026-04-16
 
-> Framework v6.1 | Chore | 4-Layer Risk-Weighted Parallel Sweep | 2026-04-16
+> Framework v7.0 | Chore | 4-Layer Risk-Weighted Parallel Sweep | 2026-04-16
 
 ---
 
@@ -11,7 +11,7 @@
 | Field | Value |
 |---|---|
 | Feature | Meta-Analysis Full-System Audit |
-| Framework Version | v6.1 |
+| Framework Version | v7.0 |
 | Work Type | Chore (audit) |
 | Methodology | 4-layer risk-weighted parallel sweep |
 | Total Findings | 185 |

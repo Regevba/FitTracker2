@@ -8,7 +8,7 @@
 
 **Tech Stack:** Swift, SwiftUI, XCTest, Keychain, CloudKit, Supabase, AES-GCM encryption
 
-**Source:** `.claude/shared/audit-findings.json` (185 findings) + `docs/case-studies/meta-analysis-full-system-audit-v6.1-case-study.md`
+**Source:** `.claude/shared/audit-findings.json` (185 findings) + `docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md`
 
 ---
 
@@ -1342,7 +1342,7 @@ git commit -m "refactor(ui): extract HomeViewModel from MainScreenView — UI-00
 - Modify: `.claude/shared/cache-metrics.json`
 
 - [ ] **Step 1: Align all `framework_version` fields to `6.1`**
-- [ ] **Step 2: Update `framework-manifest.json` description to say v6.1**
+- [ ] **Step 2: Update `framework-manifest.json` description to say v7.0**
 - [ ] **Step 3: Update `structure.shared_files` count to 25**
 - [ ] **Step 4: Fix or remove misleading `model` field in token-budget.json**
 - [ ] **Step 5: Add `framework_version` field to cache-metrics.json**
