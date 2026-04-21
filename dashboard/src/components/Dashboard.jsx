@@ -26,6 +26,7 @@ export default function Dashboard({
   sources,
   frameworkManifest,
   frameworkPulse,
+  documentationDebt,
   externalSyncStatus,
   cleanupCaseStudy,
   knowledgeHub,
@@ -179,6 +180,7 @@ export default function Dashboard({
                 sources={sources}
                 frameworkManifest={frameworkManifest}
                 frameworkPulse={frameworkPulse}
+                documentationDebt={documentationDebt}
                 externalSyncStatus={externalSyncStatus}
                 cleanupCaseStudy={cleanupCaseStudy}
               />

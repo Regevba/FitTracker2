@@ -686,7 +686,7 @@ function buildResearchWorkspaces(taskQueue, featureRegistry, externalSyncStatus)
   };
 }
 
-function buildDashboardSources(reconcileResult, externalSyncStatus, frameworkPulse, githubIssues) {
+function buildDashboardSources(reconcileResult, externalSyncStatus, frameworkPulse, githubIssues, documentationDebt) {
   const { sources } = reconcileResult;
 
   return {
@@ -740,6 +740,12 @@ function buildDashboardSources(reconcileResult, externalSyncStatus, frameworkPul
       alerts: externalSyncStatus.sources.vercel.alerts,
       mode: 'live',
     },
+    docs: {
+      count: documentationDebt.summary.case_studies_scanned,
+      healthy: documentationDebt.summary.open_debt_items === 0,
+      alerts: documentationDebt.summary.open_debt_items,
+      mode: 'shared-layer',
+    },
     archive: {
       count: 1,
       healthy: true,
@@ -761,6 +767,7 @@ export async function buildDashboardData({ token } = {}) {
   const frameworkManifest = readSharedJson('../.claude/shared/framework-manifest.json');
   const baseExternalSyncStatus = readSharedJson('../.claude/shared/external-sync-status.json');
   const caseStudyMonitoring = readSharedJson('../.claude/shared/case-study-monitoring.json');
+  const documentationDebt = readSharedJson('../.claude/shared/documentation-debt.json');
   const featureRegistry = readSharedJson('../.claude/shared/feature-registry.json');
   const taskQueue = readSharedJson('../.claude/shared/task-queue.json');
 
@@ -796,9 +803,10 @@ export async function buildDashboardData({ token } = {}) {
   return {
     features: authoritativeFeatures,
     alerts: reconcileResult.alerts,
-    sources: buildDashboardSources(reconcileResult, externalSyncStatus, frameworkPulse, githubIssues),
+    sources: buildDashboardSources(reconcileResult, externalSyncStatus, frameworkPulse, githubIssues, documentationDebt),
     frameworkManifest,
     frameworkPulse,
+    documentationDebt,
     externalSyncStatus,
     cleanupCaseStudy,
     knowledgeHub,

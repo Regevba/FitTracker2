@@ -9,6 +9,7 @@ const SOURCE_META = {
   notion: { label: 'Notion', icon: '○' },
   vercel: { label: 'Vercel', icon: '◍' },
   analytics: { label: 'Analytics', icon: '●' },
+  docs: { label: 'Docs Debt', icon: '◌' },
 };
 
 export default function SourceHealth({ sources = {}, lastSync = null }) {

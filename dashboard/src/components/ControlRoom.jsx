@@ -80,11 +80,14 @@ function formatStatusLabel(value) {
   return formatPhaseLabel(value || 'unknown');
 }
 
-export default function ControlRoom({ features, alerts, sources, frameworkManifest, frameworkPulse, externalSyncStatus }) {
+export default function ControlRoom({ features, alerts, sources, frameworkManifest, frameworkPulse, documentationDebt, externalSyncStatus }) {
   const summary = summarizeFeatures(features);
   const blockers = collectBlockers(features, alerts);
   const sourceSummary = getSourceSummary(sources);
   const externalSources = externalSyncStatus?.sources || {};
+  const docsSummary = documentationDebt?.summary || {};
+  const docsDebtItems = documentationDebt?.debt_items || [];
+  const docsCoverage = documentationDebt?.coverage || {};
   const topCategories = Object.entries(summary.categories)
     .sort((left, right) => right[1] - left[1])
     .slice(0, 5);
@@ -270,6 +273,64 @@ export default function ControlRoom({ features, alerts, sources, frameworkManife
           />
         </div>
       </section>
+
+      <Panel
+        eyebrow="Documentation debt"
+        title="Baseline corpus debt and audit readiness"
+        description="This is the first-pass documentation-debt inventory: point-in-time coverage is live now, while trend analysis waits for multiple integrity-cycle snapshots."
+      >
+        <div className="grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
+          <div className="grid gap-4 md:grid-cols-2">
+            <MetricList
+              title="Coverage"
+              items={[
+                { label: 'Case studies scanned', value: docsSummary.case_studies_scanned ?? 0 },
+                { label: 'Features scanned', value: docsSummary.features_scanned ?? 0 },
+                { label: 'Open debt items', value: docsSummary.open_debt_items ?? 0 },
+              ]}
+            />
+            <MetricList
+              title="Integrity cycle"
+              items={[
+                { label: 'Snapshots', value: docsSummary.integrity_snapshots ?? 0 },
+                { label: 'Trend ready', value: docsSummary.trend_ready ? 'Yes' : 'No' },
+              ]}
+            />
+            <MetricList
+              title="Metadata"
+              items={[
+                { label: 'Date written', value: `${docsCoverage.date_written?.percent ?? 0}%` },
+                { label: 'Work type', value: `${docsCoverage.work_type?.percent ?? 0}%` },
+                { label: 'Dispatch pattern', value: `${docsCoverage.dispatch_pattern?.percent ?? 0}%` },
+              ]}
+            />
+            <MetricList
+              title="Evidence restatement"
+              items={[
+                { label: 'Success metrics', value: `${docsCoverage.success_metrics?.percent ?? 0}%` },
+                { label: 'Kill criteria', value: `${docsCoverage.kill_criteria?.percent ?? 0}%` },
+                { label: 'State linkage', value: `${docsCoverage.state_case_study_linkage?.percent ?? 0}%` },
+              ]}
+            />
+          </div>
+
+          <DriftList
+            title="Debt buckets"
+            description="These are the current documentation gaps the dashboard can already see before trend lines become meaningful."
+            tone="warning"
+            items={docsDebtItems.map(item => ({
+              key: item.id,
+              title: `${item.title} (${item.count})`,
+              detail: [
+                `${formatStatusLabel(item.severity)} severity`,
+                item.examples?.length ? `Examples: ${item.examples.join(', ')}` : null,
+                item.recommended_next_step,
+              ].filter(Boolean).join(' · '),
+            }))}
+            emptyMessage="No documentation debt buckets are currently open."
+          />
+        </div>
+      </Panel>
 
       <Panel
         eyebrow="Planning sync"

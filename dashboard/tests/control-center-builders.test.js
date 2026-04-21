@@ -12,13 +12,15 @@ describe('control center builders', () => {
   it('builds dashboard data from shared PM sources', async () => {
     const data = await buildDashboardData();
 
-    expect(data.frameworkManifest.framework_version).toBe('6.1');
+    expect(data.frameworkManifest.framework_version).toBe('7.1');
+    expect(data.documentationDebt.summary.case_studies_scanned).toBeGreaterThan(0);
     expect(data.workspaceMeta.primaryViews.map(item => item.id)).toContain('knowledge');
     expect(data.workspaceMeta.secondaryWorkspaces.map(item => item.id)).toContain('case-studies');
     expect(data.caseStudyFeed.some(item => item.id === 'cleanup-control-room-2026-04')).toBe(true);
     expect(data.caseStudyFeed.some(item => item.id === 'control-center-alignment-ia-refresh-2026-04')).toBe(true);
     expect(data.knowledgeHub.groups.some(group => group.id === 'tracked-case-studies')).toBe(true);
     expect(data.features.some(feature => feature.truthMode === 'shared-layer')).toBe(true);
+    expect(data.sources.docs).toBeDefined();
 
     const allDocs = data.knowledgeHub.groups.flatMap(group => group.docs);
     expect(allDocs.some(doc => String(doc.path).includes('.claude/worktrees'))).toBe(false);

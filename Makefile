@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot schema-check install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot schema-check documentation-debt runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -68,6 +68,20 @@ integrity-snapshot:
 # canonical `current_phase` key instead of the legacy `phase` key).
 schema-check:
 	python3 scripts/check-state-schema.py
+
+# Generate the baseline documentation-debt report used by the control room.
+documentation-debt:
+	python3 scripts/documentation-debt-report.py --output .claude/shared/documentation-debt.json
+
+# Run a local runtime smoke-gate profile built on the shipped XCUITest harness.
+# Examples:
+#   make runtime-smoke PROFILE=app_launch DRY_RUN=1
+#   make runtime-smoke PROFILE=authenticated_home MODE=local
+PROFILE ?= app_launch
+MODE ?= local
+DRY_RUN ?= 1
+runtime-smoke:
+	python3 scripts/runtime-smoke-gate.py --profile "$(PROFILE)" --mode "$(MODE)" $(if $(filter 1,$(DRY_RUN)),--dry-run,)
 
 # Install git hooks into .git/hooks/ by pointing core.hooksPath at .githooks/.
 # Idempotent — run after clone to activate the pre-commit schema check.

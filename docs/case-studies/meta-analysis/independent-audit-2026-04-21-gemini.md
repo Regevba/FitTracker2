@@ -212,6 +212,20 @@ framework v6.0, 2026-04-16).
 
 Items that cannot be done solo (Tier 3.3 — external replication) remain open.
 
+### Recommendation implementation status (as of 2026-04-21)
+
+| Tier | Recommendation | Status | Notes |
+|---|---|---|---|
+| Tier 1.1 | Automated time/event metrics | ✓ v6.0 | Landed with framework v6.0 on 2026-04-16. |
+| Tier 1.2 | Integrate with sources of truth (GitHub API) | ✓ subset shipped | `PR_NUMBER_UNRESOLVED` + `BROKEN_PR_CITATION` checks shipped; full on-transition API linking deferred. |
+| Tier 1.3 | Enforce `state.json` schema on write | ✓ shipped | Implemented via pre-commit hook. |
+| Tier 2.1 | Gated phase transitions with runtime smoke tests | Backlog | Needs a staging environment to run smoke tests against. The M-4 XCUITest infrastructure just shipped and could be extended in parallel with runtime verification work. |
+| Tier 2.2 | Contemporaneous logging | Backlog | Biggest single uplift in audit trustworthiness because it removes the "95% written in 3 weeks" critique, but also the most invasive process change. Requires multi-session design + implementation. |
+| Tier 2.3 | Data quality tiers (T1/T2/T3) | ✓ shipped | Landed as a documented convention plus `CLAUDE.md` policy. |
+| Tier 3.1 | Independent Auditor Agent | ✓ shipped | Current auditor layer ships 6 finding codes and runs every 72h plus on demand. |
+| Tier 3.2 | Documentation debt dashboard | Backlog | Waits on the Auditor Agent accumulating multiple 72h cycles of data. The cycle started on 2026-04-21, so the first meaningful dashboard window is after 2-3 cycles, roughly 2026-04-27 through 2026-04-30. |
+| Tier 3.3 | External replication | Backlog | Cannot self-execute. A separate human or AI operator must run a feature through the PM workflow independently. |
+
 ---
 
 ## 9. What this audit does NOT do

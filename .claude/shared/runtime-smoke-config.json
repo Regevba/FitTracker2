@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-21T00:00:00Z",
+  "description": "Local-first runtime smoke configuration that extends the M-4 XCUITest harness toward future phase-transition gates.",
+  "policy": {
+    "target_transition": "review_to_merge",
+    "current_enforcement": "advisory",
+    "full_enforcement_blocker": "A staging-grade runtime environment is not yet available.",
+    "evidence_ttl_hours": 72
+  },
+  "staging_prerequisites": {
+    "required_paths": [
+      "FitTracker/GoogleService-Info.plist"
+    ],
+    "notes": [
+      "Firebase runtime verification still depends on a local GoogleService-Info.plist.",
+      "Signed-in Supabase verification still depends on non-placeholder local runtime credentials."
+    ]
+  },
+  "profiles": {
+    "app_launch": {
+      "description": "Bootstrap smoke test proving the app reaches foreground state.",
+      "only_testing": [
+        "FitTrackerUITests/AppLaunchUITests/testAppLaunches"
+      ]
+    },
+    "authenticated_home": {
+      "description": "Authenticated review-mode launch that confirms the Home tab renders.",
+      "only_testing": [
+        "FitTrackerUITests/HomeReadinessUITests/testHomeTabRendersInAuthenticatedReviewMode"
+      ]
+    },
+    "sign_in_surface": {
+      "description": "Sign-in surface smoke test with auto-login disabled.",
+      "only_testing": [
+        "FitTrackerUITests/SignInUITests/testSignInScreenRendersWhenAutoLoginDisabled"
+      ]
+    },
+    "onboarding_surface": {
+      "description": "First-launch onboarding surface smoke test.",
+      "only_testing": [
+        "FitTrackerUITests/OnboardingUITests/testOnboardingFirstStepRendersIfNotComplete"
+      ]
+    },
+    "meal_log_surface": {
+      "description": "Authenticated Nutrition-tab path that reaches the meal-log affordance.",
+      "only_testing": [
+        "FitTrackerUITests/MealLogUITests/testNutritionTabOpensMealEntryPath"
+      ]
+    }
+  }
+}

@@ -4,6 +4,58 @@
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [
     {
+      "timestamp": "2026-04-21T16:00:00Z",
+      "event_type": "framework_scaffolding",
+      "change_type": "docs_change",
+      "title": "Runtime smoke gates, contemporaneous logs, and documentation-debt baseline added",
+      "summary": "Tier-2/Tier-3 Gemini audit follow-up groundwork landed: local-first runtime smoke profiles and runner, append-only contemporaneous feature logs, a generated documentation-debt report, and a control-room dashboard surface for baseline corpus debt.",
+      "artifacts": [
+        ".claude/logs/README.md",
+        ".claude/shared/change-log.json",
+        ".claude/shared/documentation-debt.json",
+        ".claude/shared/runtime-smoke-config.json",
+        "Makefile",
+        "dashboard/src/components/ControlRoom.jsx",
+        "dashboard/src/components/Dashboard.jsx",
+        "dashboard/src/components/SourceHealth.jsx",
+        "dashboard/src/scripts/builders/controlCenter.js",
+        "dashboard/tests/control-center-builders.test.js",
+        "docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md",
+        "docs/process/contemporaneous-logging.md",
+        "docs/process/documentation-debt-dashboard.md",
+        "docs/process/runtime-smoke-gates.md",
+        "project_framework_v7_1_integrity_cycle.md",
+        "project_gemini_audit_2026_04_21.md",
+        "scripts/append-feature-log.py",
+        "scripts/documentation-debt-report.py",
+        "scripts/runtime-smoke-gate.py",
+        "trust/audits/2026-04-21-gemini/README.md"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [
+          "fit-tracker2"
+        ],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "runtime_smoke_scaffolding_added": true,
+        "contemporaneous_logging_scaffolding_added": true,
+        "documentation_debt_baseline_generated": true,
+        "dashboard_docs_debt_surface_added": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "analytics",
+        "release"
+      ]
+    },
+    {
       "timestamp": "2026-04-16T16:00:00Z",
       "version": "6.0",
       "type": "framework_upgrade",

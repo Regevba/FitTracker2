@@ -42,6 +42,7 @@ xcuserdata/
 
 # Local Codex / workspace artifacts
 .claude/
+!.claude/
 !.claude/skills/
 !.claude/skills/**
 !.claude/shared/
@@ -50,6 +51,8 @@ xcuserdata/
 !.claude/features/**
 !.claude/integrity/
 !.claude/integrity/**
+!.claude/logs/
+!.claude/logs/**
 !.claude/settings.json
 .superpowers/
 .worktrees/
