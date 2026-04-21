@@ -44,7 +44,36 @@ Three-layer safety model:
 
 ## Per-file burndown log
 
-_Populated during Phase 1 + Phase 2._
+### Phase 1 — color cluster (8 files, 21 P0 closed)
+
+| Commit | File | P0 | Key mappings |
+|---|---|---:|---|
+| `748de4c` | — | — | (Phase 0.1) 3 new AppSpring + AppEasing + AppLoadingAnimation tokens |
+| `82112b3` | OnboardingAuthView.swift | 8 | `.blue` → `Brand.secondary`; `Color.white` → `AppPalette.white` (Google brand); 5× `.foregroundStyle(.white)` → `Text.inversePrimary` |
+| `3b6102d` | AuthHubView.swift | 3 | `.fill(Color.white)` → `AppPalette.white`; 2× `.white` → `Text.inversePrimary` |
+| `41baab3` | SignInView.swift | 2 | `Color(.systemBackground)` → `Background.appPrimary`; Apple labelColor → `Text.inversePrimary` (fixes latent dark-mode contrast bug) |
+| `141b13c` | ConsentView.swift | 2 | `Color.white` → `AppPalette.white`; `.white` → `Text.inversePrimary` |
+| `9954381` | ProfileHeroSection.swift | 2 | 2× `.white` → `Text.inversePrimary` |
+| `80ab383` | MilestoneModal.swift | 2 | 2× `.white` → `Text.inversePrimary` |
+| `67fb3c8` | AccountPanelView.swift | 1 | `.white` → `Text.inversePrimary` |
+| `834d91b` | BodyCompositionCard.swift | 1 | `.white` → `Text.inversePrimary` |
+
+**Three distinct patterns emerged:**
+
+1. **Standard inverse-primary** (17 of 21 sites) — `.white` text on any colored/inverse surface → `AppColor.Text.inversePrimary`. No ambiguity.
+2. **Google-brand pure white** (4 sites) — `Color.white` discs/cards on Google auth buttons → `AppPalette.white`. Surface.elevated would shift to 20%-alpha in dark mode and break Google brand identity; palette-level pure white preserves brand compliance in both modes. Re-discovered a dormant token (`AppPalette.white` was declared but unused in views).
+3. **Semantic blue** (1 site — email icon) — `.blue` → `AppColor.Brand.secondary`. Shifts iOS system blue (#007AFF) to lighter brand blue (#8AC7FF); consistent with the Google "G" letter already using Brand.secondary. Visible change; flagged for mirror verification.
+
+**Phase 1 metrics:**
+- P0 closed: 21
+- P0 remaining: 6 (all animation, Phase 2)
+- Commits: 8 (one per file) + 1 baseline regeneration
+- Swift-parse: all clean
+- Mirror diffs: **PENDING user verification**
+
+### Phase 2 — animation cluster
+
+_Not yet started._
 
 ## Metrics
 

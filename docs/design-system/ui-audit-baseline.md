@@ -7,9 +7,9 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 
 ## Summary
 
-- **P0 (blocking):** 27
+- **P0 (blocking):** 6
 - **P1 (warning):**  103
-- **Files with findings:** 44
+- **Files with findings:** 42
 - **Files scanned:** 82
 - **Files skipped:** 24 (historical v1 + token-definition files)
 
@@ -18,15 +18,15 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | Area | P0 | P1 | Files |
 |---|---:|---:|---:|
 | `AI` | 0 | 6 | 2 |
-| `Auth` | 9 | 14 | 4 |
-| `ConsentView.swift` | 2 | 1 | 1 |
-| `Main` | 1 | 4 | 3 |
+| `Auth` | 3 | 14 | 4 |
+| `ConsentView.swift` | 0 | 1 | 1 |
+| `Main` | 0 | 4 | 2 |
 | `Nutrition` | 0 | 15 | 6 |
-| `Onboarding` | 9 | 7 | 4 |
-| `Profile` | 2 | 4 | 4 |
+| `Onboarding` | 1 | 7 | 4 |
+| `Profile` | 0 | 4 | 4 |
 | `RootTabView.swift` | 0 | 1 | 1 |
 | `Settings` | 0 | 4 | 3 |
-| `Shared` | 3 | 30 | 9 |
+| `Shared` | 1 | 30 | 8 |
 | `Stats` | 0 | 1 | 1 |
 | `Training` | 1 | 16 | 6 |
 
@@ -48,36 +48,30 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 138 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 60, alignment: .leading)` |
 | 155 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28, alignment: .trailing)` |
 
-### `FitTracker/Views/Auth/AccountPanelView.swift` — P0=1, P1=2
+### `FitTracker/Views/Auth/AccountPanelView.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 146 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline.weight(.semibold))` |
-| 203 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 | 243 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline)` |
 
-### `FitTracker/Views/Auth/AuthHubView.swift` — P0=3, P1=6
+### `FitTracker/Views/Auth/AuthHubView.swift` — P0=0, P1=6
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 501 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 516 | P0 | `DS-RAW-COLOR-MEMBER` | `.fill(Color.white)` |
 | 534 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 | 548 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28, height: 28)` |
-| 553 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 | 561 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 664 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 | 698 | P1 | `DS-MAGIC-PADDING` | `.padding(.vertical, 13)` |
 | 812 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 58)` |
 
-### `FitTracker/Views/Auth/SignInView.swift` — P0=2, P1=3
+### `FitTracker/Views/Auth/SignInView.swift` — P0=0, P1=3
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 21 | P0 | `DS-RAW-COLOR-UIKIT` | `Color(.systemBackground).ignoresSafeArea()` |
 | 53 | P1 | `DS-A11Y-BUTTON` | `Button { errorBanner = nil } label: {` |
 | 183 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
-| 243 | P0 | `DS-RAW-COLOR-UIKIT` | `case .apple:              return Color(.systemBackground)` |
 | 287 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
 
 ### `FitTracker/Views/Auth/WelcomeView.swift` — P0=3, P1=3
@@ -91,19 +85,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 140 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.easeOut(duration: 0.6).delay(0.4)) {` |
 | 143 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.easeOut(duration: 0.6).delay(0.7)) {` |
 
-### `FitTracker/Views/ConsentView.swift` — P0=2, P1=1
+### `FitTracker/Views/ConsentView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 21 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 160, height: 160)` |
-| 32 | P0 | `DS-RAW-COLOR-MEMBER` | `.background(Circle().fill(Color.white).frame(width: 26, height: 26))` |
-| 95 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
-
-### `FitTracker/Views/Main/BodyCompositionCard.swift` — P0=1, P1=0
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 114 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 
 ### `FitTracker/Views/Main/BodyCompositionDetailView.swift` — P0=0, P1=3
 
@@ -164,22 +150,14 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 776 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 260)` |
 | 939 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 160, idealWidth: 180, maxWidth: 220, alignment: .leading)` |
 
-### `FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift` — P0=8, P1=4
+### `FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift` — P0=0, P1=4
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 31 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 120, height: 120)` |
-| 149 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.blue)` |
 | 161 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 179 | P0 | `DS-RAW-COLOR-MEMBER` | `Circle().fill(Color.white).frame(width: 26, height: 26)` |
 | 192 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 197 | P0 | `DS-RAW-COLOR-MEMBER` | `.background(Color.white, in: RoundedRectangle(cornerRadius: AppRadius.medium))` |
-| 211 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
-| 216 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 | 223 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 309 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
-| 350 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
-| 409 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 
 ### `FitTracker/Views/Onboarding/v2/OnboardingConsentView.swift` — P0=0, P1=1
 
@@ -212,13 +190,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 17 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 36, height: 36)` |
 
-### `FitTracker/Views/Profile/ProfileHeroSection.swift` — P0=2, P1=1
+### `FitTracker/Views/Profile/ProfileHeroSection.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 30 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 72, height: 72)` |
-| 33 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
-| 54 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 
 ### `FitTracker/Views/Profile/ProfileView.swift` — P0=0, P1=1
 
@@ -278,13 +254,6 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 37 | P1 | `DS-MAGIC-FRAME` | `TextField("bpm", text: $hrText).keyboardType(.numberPad).multilineTextAlignment(.trailing).frame(width: 80)` |
 | 42 | P1 | `DS-MAGIC-FRAME` | `TextField("ms", text: $hrvText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
 | 47 | P1 | `DS-MAGIC-FRAME` | `TextField("hrs", text: $sleepText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
-
-### `FitTracker/Views/Shared/MilestoneModal.swift` — P0=2, P1=0
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 24 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
-| 41 | P0 | `DS-RAW-COLOR-SHORTHAND` | `.foregroundStyle(.white)` |
 
 ### `FitTracker/Views/Shared/ReadinessCard.swift` — P0=1, P1=11
 
