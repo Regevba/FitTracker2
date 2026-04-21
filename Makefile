@@ -44,6 +44,22 @@ ui-audit:
 ui-audit-baseline:
 	python3 scripts/ui-audit.py --baseline --no-fail
 
+# Drift check: fails if the committed ui-audit-baseline.md doesn't match
+# what the scanner would regenerate today. Backs up + restores the file so
+# the working tree is never left polluted (safe inside verify-local).
+# If this fails: run `make ui-audit-baseline` and commit the resulting diff.
+ui-audit-drift:
+	@_baseline=docs/design-system/ui-audit-baseline.md; \
+	 _tmp=$$(mktemp); cp $$_baseline $$_tmp; \
+	 python3 scripts/ui-audit.py --baseline --no-fail > /dev/null; \
+	 if diff -q $$_tmp $$_baseline > /dev/null 2>&1; then \
+	   rm -f $$_tmp; \
+	 else \
+	   cp $$_tmp $$_baseline; rm -f $$_tmp; \
+	   echo "ERROR: ui-audit-baseline.md is stale. Run 'make ui-audit-baseline' and commit."; \
+	   exit 1; \
+	 fi
+
 # Install npm dependencies (style-dictionary)
 install:
 	npm install
@@ -53,7 +69,7 @@ install:
 # either failing should abort before the heavier verify-ios build cost.
 # Any new P0 (raw Color literal, raw animation, raw font, missing colorset)
 # introduced by a PR fails the local + CI verify pass.
-verify-local: tokens-check ui-audit verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
+verify-local: tokens-check ui-audit ui-audit-drift verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
 
 verify-web:
 	cd dashboard && npm test
