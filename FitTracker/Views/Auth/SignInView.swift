@@ -18,7 +18,7 @@ struct SignInView: View {
             ZStack(alignment: .top) {
 
                 // Background
-                Color(.systemBackground).ignoresSafeArea()
+                AppColor.Background.appPrimary.ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: AppSpacing.large) {
@@ -240,7 +240,7 @@ struct SocialSignInButton: View {
 
     private var labelColor: Color {
         switch provider {
-        case .apple:              return Color(.systemBackground)
+        case .apple:              return AppColor.Text.inversePrimary
         case .google, .facebook:  return AppColor.Brand.warm
         case .passkey:            return AppColor.Accent.sleep
         case .email:              return AppColor.Accent.secondary
