@@ -154,7 +154,7 @@ struct SignInView: View {
                     dismiss()
                 case .error(let msg):
                     errorBanner = msg
-                    withAnimation(.default.repeatCount(3, autoreverses: true)) {
+                    withAnimation(AppEasing.short.repeatCount(3, autoreverses: true)) {
                         shakeOffset = 6
                     }
                     Task { try? await Task.sleep(for: .milliseconds(300)); shakeOffset = 0 }

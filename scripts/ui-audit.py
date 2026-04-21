@@ -112,6 +112,12 @@ RE_RAW_ANIMATION = re.compile(
     r"\.(?:easeInOut|easeIn|easeOut|linear|spring|interpolatingSpring|interactiveSpring)"
     r"\(\s*(?:duration|response|dampingFraction|blendDuration|stiffness|damping|initialVelocity)\s*:"
 )
+# Bare animations inside withAnimation(...) or .animation(...) — e.g. .easeInOut
+# with no duration argument. Scoped to these two call sites to avoid false
+# positives on unrelated .easeInOut enum-case uses.
+RE_RAW_ANIMATION_BARE = re.compile(
+    r"(?:\bwithAnimation|\.animation)\s*\(\s*\.(?:easeInOut|easeIn|easeOut|linear|default)(?![\w(])"
+)
 
 # Raw Font.system(...) outside AppTheme — should use AppText.* tokens
 RE_RAW_FONT = re.compile(r"\bFont\.system\(")
@@ -227,8 +233,8 @@ def scan_file(path: Path, bypass_skip: bool = False) -> FileReport:
                     snippet=stripped[:140],
                 ))
 
-        # ── P0: raw animations
-        if RE_RAW_ANIMATION.search(line):
+        # ── P0: raw animations (with or without parenthesized args)
+        if RE_RAW_ANIMATION.search(line) or RE_RAW_ANIMATION_BARE.search(line):
             report.findings.append(Finding(
                 file=rel, line=i, severity="P0", rule="DS-RAW-ANIMATION",
                 message="raw animation literal — use AppMotion.* / AppSpring.* / AppEasing.*",

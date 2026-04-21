@@ -19,7 +19,7 @@ struct ReadinessCard: View {
     private func startTimer() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-            withAnimation(.easeInOut) {
+            withAnimation(AppEasing.standard) {
                 currentPage = (currentPage + 1) % 6
             }
         }
