@@ -30,7 +30,7 @@ struct ProfileHeroSection: View {
                         .frame(width: 72, height: 72)
                     Text(initials)
                         .font(AppText.titleStrong)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                 }
             }
             .accessibilityLabel("Profile picture, \(displayName)")
@@ -51,7 +51,7 @@ struct ProfileHeroSection: View {
                     Button(action: onGoalTap) {
                         Text(goal.rawValue)
                             .font(AppText.caption)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppColor.Text.inversePrimary)
                             .padding(.horizontal, AppSpacing.small)
                             .padding(.vertical, AppSpacing.xxxSmall)
                             .background(AppColor.Accent.primary, in: Capsule())
