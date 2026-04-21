@@ -100,7 +100,7 @@ struct OnboardingFirstActionView: View {
                 if reduceMotion {
                     showContent = true
                 } else {
-                    withAnimation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.2)) {
+                    withAnimation(AppSpring.stepAdvance.delay(0.2)) {
                         showContent = true
                     }
                 }
