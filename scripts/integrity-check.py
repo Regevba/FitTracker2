@@ -220,7 +220,28 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
             "message": "uses legacy `phase` key; canonical is `current_phase`",
         })
 
+    # Check #7: merge-phase pr_number must resolve via gh pr view
+    # (Tier 1.2 subset — prevents state.json from retaining dead PR links).
+    # pr_cache is injected by build_snapshot; skipped gracefully if unavailable.
+    merge_obj = (d.get("phases") or {}).get("merge")
+    if isinstance(merge_obj, dict):
+        pr_number = merge_obj.get("pr_number")
+        if isinstance(pr_number, int) and _PR_CACHE is not None:
+            if pr_number not in _PR_CACHE:
+                findings.append({
+                    "feature": feat,
+                    "severity": "INCONSISTENT",
+                    "code": "PR_NUMBER_UNRESOLVED",
+                    "message": f"phases.merge.pr_number = {pr_number} "
+                               f"does not resolve on GitHub",
+                })
+
     return summary, findings
+
+
+# Module-level PR cache. Populated by build_snapshot() once per run so
+# per-feature audit_feature() calls can reuse it without repeated gh invocations.
+_PR_CACHE: set[int] | None = None
 
 
 # -- Case-study citation checks (Auditor Agent extensions, 2026-04-21) ------
@@ -303,6 +324,12 @@ def discover_case_studies() -> list[dict]:
 
 
 def build_snapshot() -> dict:
+    # Load PR cache ONCE, before the per-feature loop, so audit_feature()
+    # and audit_case_study_citations() share the same gh call result.
+    global _PR_CACHE
+    _PR_CACHE = load_pr_cache()
+    citation_check_ran = _PR_CACHE is not None
+
     feature_summaries = []
     findings = []
     for d in sorted(FEATURES_DIR.iterdir()) if FEATURES_DIR.exists() else []:
@@ -313,9 +340,7 @@ def build_snapshot() -> dict:
         findings.extend(feat_findings)
 
     # Auditor Agent case-study citation checks
-    pr_cache = load_pr_cache()
-    findings.extend(audit_case_study_citations(pr_cache))
-    citation_check_ran = pr_cache is not None
+    findings.extend(audit_case_study_citations(_PR_CACHE))
 
     return {
         "timestamp": now_iso(),
@@ -329,7 +354,7 @@ def build_snapshot() -> dict:
         },
         "auditor_agent": {
             "citation_check_ran": citation_check_ran,
-            "known_pr_count": len(pr_cache) if pr_cache is not None else None,
+            "known_pr_count": len(_PR_CACHE) if _PR_CACHE is not None else None,
         },
         "features": feature_summaries,
         "case_studies": discover_case_studies(),
