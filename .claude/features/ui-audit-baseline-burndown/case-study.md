@@ -71,9 +71,36 @@ Three-layer safety model:
 - Swift-parse: all clean
 - Mirror diffs: **PENDING user verification**
 
-### Phase 2 — animation cluster
+### Phase 2 — animation cluster (4 files, 6 P0 closed)
 
-_Not yet started._
+| Commit | File | P0 | Mapping |
+|---|---|---:|---|
+| `ee1c15b` | WelcomeView.swift | 3 | `AppSpring.hero`, `AppEasing.heroEntry` ×2 |
+| `14f7c10` | OnboardingFirstActionView.swift | 1 | `AppSpring.stepAdvance` |
+| `d70c00b` | ReadinessCard.swift | 1 | `AppSpring.dialPulse` |
+| `ab651ca` | TrainingPlanView.swift | 1 | `AppLoadingAnimation.fastShimmer` |
+
+**All six animation mappings are 1:1 semantic** — the new AppMotion tokens added in Phase 0.1 were deliberately declared with values identical to the raw call sites (hero = spring 0.80/0.70, stepAdvance = spring 0.50/0.70, dialPulse = interpolatingSpring 40/8, heroEntry = easeOut 0.60, fastShimmer = linear 1.2 repeatForever). No feel change expected.
+
+**Phase 2 metrics:**
+- P0 closed: 6
+- P0 remaining: **0**
+- Commits: 4 (one per file)
+- Swift-parse: all clean
+- Mirror diffs: **PENDING user verification**
+
+## Final baseline state (post-Phase 2)
+
+- **P0: 0** (was 27) — scanner exits 0 with no `--no-fail` flag; gate is ready for promotion
+- **P1: 103** (unchanged) — deferred to follow-on plan
+  - DS-MAGIC-FRAME: 71
+  - DS-RAW-FONT-SHORTHAND: 23
+  - DS-A11Y-BUTTON: 5
+  - DS-MAGIC-PADDING: 4
+
+Phase 3 (gate-the-gate) is unblocked.
+
+
 
 ## Metrics
 

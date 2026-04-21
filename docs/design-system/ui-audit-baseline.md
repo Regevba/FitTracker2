@@ -7,7 +7,7 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 
 ## Summary
 
-- **P0 (blocking):** 6
+- **P0 (blocking):** 0
 - **P1 (warning):**  103
 - **Files with findings:** 42
 - **Files scanned:** 82
@@ -18,17 +18,17 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | Area | P0 | P1 | Files |
 |---|---:|---:|---:|
 | `AI` | 0 | 6 | 2 |
-| `Auth` | 3 | 14 | 4 |
+| `Auth` | 0 | 14 | 4 |
 | `ConsentView.swift` | 0 | 1 | 1 |
 | `Main` | 0 | 4 | 2 |
 | `Nutrition` | 0 | 15 | 6 |
-| `Onboarding` | 1 | 7 | 4 |
+| `Onboarding` | 0 | 7 | 4 |
 | `Profile` | 0 | 4 | 4 |
 | `RootTabView.swift` | 0 | 1 | 1 |
 | `Settings` | 0 | 4 | 3 |
-| `Shared` | 1 | 30 | 8 |
+| `Shared` | 0 | 30 | 8 |
 | `Stats` | 0 | 1 | 1 |
-| `Training` | 1 | 16 | 6 |
+| `Training` | 0 | 16 | 6 |
 
 ## Per-file findings
 
@@ -74,16 +74,13 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 183 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
 | 287 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
 
-### `FitTracker/Views/Auth/WelcomeView.swift` — P0=3, P1=3
+### `FitTracker/Views/Auth/WelcomeView.swift` — P0=0, P1=3
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 54 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 120, height: 120)` |
 | 69 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 96, height: 96)` |
 | 102 | P1 | `DS-MAGIC-FRAME` | `Spacer().frame(height: 36)` |
-| 137 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.spring(response: 0.8, dampingFraction: 0.7).delay(0.1)) {` |
-| 140 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.easeOut(duration: 0.6).delay(0.4)) {` |
-| 143 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.easeOut(duration: 0.6).delay(0.7)) {` |
 
 ### `FitTracker/Views/ConsentView.swift` — P0=0, P1=1
 
@@ -165,12 +162,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 30 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 160, height: 160)` |
 
-### `FitTracker/Views/Onboarding/v2/OnboardingFirstActionView.swift` — P0=1, P1=1
+### `FitTracker/Views/Onboarding/v2/OnboardingFirstActionView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 37 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 80, height: 80)` |
-| 103 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.spring(response: 0.5, dampingFraction: 0.7).delay(0.2)) {` |
 
 ### `FitTracker/Views/Onboarding/v2/OnboardingHealthKitView.swift` — P0=0, P1=1
 
@@ -255,14 +251,13 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 42 | P1 | `DS-MAGIC-FRAME` | `TextField("ms", text: $hrvText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
 | 47 | P1 | `DS-MAGIC-FRAME` | `TextField("hrs", text: $sleepText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
 
-### `FitTracker/Views/Shared/ReadinessCard.swift` — P0=1, P1=11
+### `FitTracker/Views/Shared/ReadinessCard.swift` — P0=0, P1=11
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 45 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 180)` |
 | 49 | P1 | `DS-MAGIC-PADDING` | `.padding(.bottom, 6)` |
 | 51 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 180)` |
-| 159 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.interpolatingSpring(stiffness: 40, damping: 8)) {` |
 | 192 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 260)` |
 | 211 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 6)` |
 | 217 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 6)` |
@@ -342,12 +337,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 201 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
 | 217 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, minHeight: 44)` |
 
-### `FitTracker/Views/Training/v2/TrainingPlanView.swift` — P0=1, P1=3
+### `FitTracker/Views/Training/v2/TrainingPlanView.swift` — P0=0, P1=3
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 166 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(AppColor.Brand.warmSoft).frame(width: 28, height: 28)` |
 | 168 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(AppColor.Surface.materialStrong).frame(width: 28, height: 28)` |
 | 348 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 72)` |
-| 524 | P0 | `DS-RAW-ANIMATION` | `withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) { phase = 300 }` |
 
