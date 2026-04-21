@@ -196,7 +196,7 @@ A follow-up turn supplied Gemini with `meta-analysis-2026-04-21.md` (the structu
 
 ## 8. How this audit is being acted on
 
-**Transparent accounting rather than concealment.** The three PR citations Gemini flagged (#51, #69, #70) are tracked in GitHub issue [#138](https://github.com/Regevba/FitTracker2/issues/138) for root-cause investigation (typo, deleted PR, or misremembered number). The audit is being published before that investigation concludes; corrections will be appended here and in the cited case studies as they land.
+**Transparent accounting rather than concealment.** The three PR citations Gemini flagged (#51, #69, #70) are tracked in GitHub issue [#138](https://github.com/Regevba/FitTracker2/issues/138). Investigation concluded same-day: **the finding was a false positive propagated from the input meta-analysis** — see §10 below.
 
 **Improvement backlog.** Gemini's Tier 1/2/3 recommendations have been prioritized in the project's own backlog. The order of execution (high ROI × reversibility first):
 
@@ -220,6 +220,79 @@ Items that cannot be done solo (Tier 3.3 — external replication) remain open.
 - It does not investigate the root cause of the 3 non-existent PR citations — only that they don't resolve.
 - It does not validate runtime correctness of any shipped feature — only the documentation of that shipping.
 - It does not constitute external replication. Gemini reviewed artifacts provided in a prompt; it did not run the framework on an independent task.
+
+---
+
+## 10. Corrections (appended 2026-04-21 after initial publication)
+
+**The "three PR citations don't resolve" finding is wrong.** Gemini
+correctly flagged it based on what it was told, but the underlying claim
+came from a false positive in the structural meta-analysis Gemini was
+supplied with (`meta-analysis-2026-04-21.md` §9).
+
+### What actually exists
+
+All three numbers are real **GitHub issues**, not PRs:
+
+- [Issue #51](https://github.com/Regevba/FitTracker2/issues/51) "Onboarding Flow" (CLOSED) — cited in `pm-workflow-showcase-onboarding.md` as `regevba/fittracker2#51`
+- [Issue #69](https://github.com/Regevba/FitTracker2/issues/69) "Rest Day — Positive Experience Redesign" (OPEN) — cited in `training-plan-v2-case-study.md` as `issue #69`
+- [Issue #70](https://github.com/Regevba/FitTracker2/issues/70) "Advanced Data Fusion + AI Exercise Recommendations" (OPEN) — cited in `training-plan-v2-case-study.md` as `issue #70`
+
+`gh issue view` confirms all three resolve. No case-study correction is
+needed for the three citations themselves.
+
+### Who was wrong, and what this means for the audit
+
+- **Claude's structural meta-analysis was the source of the error.** Its
+  mechanical PR extraction used a liberal `#\d+` regex and checked every
+  match against `gh pr list`, conflating issue citations with PR citations.
+- **Gemini's audit faithfully reproduced the error** because that
+  meta-analysis was fed to it as input. Gemini did not independently
+  re-verify the `gh pr view` results — it cited the meta-analysis's
+  finding as evidence.
+- **Gemini's meta-evaluation of that finding was still correct:** it
+  noted that "demonstrating factual errors in the evidence cited for at
+  least two case studies (S01, S19)" weakens the original claims. If the
+  finding had been real, that critique would stand. Because the finding
+  itself was flawed, the claim is instead that the meta-analysis has a
+  precision gap — which Gemini could not have detected without re-running
+  the `gh` queries, and which it had no instruction or authority to do.
+
+### What was actually verified vs. what wasn't
+
+Gemini's other structural findings — state.json schema drift, the
+audit-v2-gN stub cluster, the dispatch-pattern gap, the 95%-in-three-weeks
+observation, the showcase ↔ main-repo mapping — were **not re-verified**
+by the author. Those findings are propagated from the meta-analysis with
+the same epistemic status: they could be correct, or they could contain
+similar precision gaps. The Auditor Agent (see below) is the forward
+defense.
+
+### Tooling response
+
+The Auditor Agent extension shipped in `scripts/integrity-check.py`
+(2026-04-21) uses a tighter regex requiring `PR` or `pull/` context:
+
+```python
+_PR_CITATION_PAT = re.compile(
+    r'(?:[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/)(\d+)'
+)
+```
+
+Running this check against the same corpus produces **zero**
+`BROKEN_PR_CITATION` findings on the original case studies. This is how
+the false positive was caught: cross-checking the new Auditor Agent's
+output against the original meta-analysis revealed the discrepancy.
+
+### Policy precedent
+
+This correction was **appended**, not substituted for the original text.
+Sections 1–9 above still contain the original statement. GitHub issue
+[#138](https://github.com/Regevba/FitTracker2/issues/138) is closed with
+a full explanation, not deleted. Every subsequent audit will follow the
+same pattern: the initial finding stays visible, the correction appears
+as a time-stamped append, and the chain of reasoning is preserved for
+future reviewers (human or AI) to retrace.
 
 ---
 

@@ -3,8 +3,18 @@
 State.json integrity check + snapshot + cross-cycle diff.
 
 Scans .claude/features/*/state.json for inconsistencies (phase lies, task lies,
-missing case-study linkage) and produces a snapshot JSON. When run with
---compare-to, also emits a diff vs a previous snapshot.
+missing case-study linkage, schema drift) and produces a snapshot JSON. Also
+runs Auditor Agent checks on case-study .md files (broken PR citations).
+When run with --compare-to, also emits a diff vs a previous snapshot.
+
+Checks:
+    Feature-level (from state.json):
+        PHASE_LIE, TASK_LIE, NO_CS_LINK, V2_FILE_MISSING,
+        PARTIAL_SHIP_TERMINAL, SCHEMA_DRIFT, NO_PHASE, NO_STATE, INVALID_JSON
+
+    Case-study-level (Auditor Agent, added 2026-04-21):
+        BROKEN_PR_CITATION — PR number cited in a .md does not resolve via `gh pr view`.
+        Skipped gracefully if `gh` is unavailable or unauthenticated.
 
 Usage:
     scripts/integrity-check.py --snapshot .claude/integrity/snapshots/2026-04-20T04-00Z.json
@@ -24,6 +34,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -200,7 +211,79 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
             "message": "partial_ship=true with terminal phase — should be downgraded OR flag removed",
         })
 
+    # Check #6: state.json schema drift (phase vs current_phase)
+    # Canonical is `current_phase`. Legacy `phase`-only files must be migrated
+    # so downstream tooling only has to read one key.
+    if "phase" in d and "current_phase" not in d:
+        findings.append({
+            "feature": feat, "severity": "WARN", "code": "SCHEMA_DRIFT",
+            "message": "uses legacy `phase` key; canonical is `current_phase`",
+        })
+
     return summary, findings
+
+
+# -- Case-study citation checks (Auditor Agent extensions, 2026-04-21) ------
+
+# Match PR citations with high-precision context:
+#   "PR #123", "PR 123", "pr #123", "pr 123"
+#   "github.com/owner/repo/pull/123"
+# Avoids raw "#123" (too many false positives from list numbers, issues, etc.).
+_PR_CITATION_PAT = re.compile(
+    r'(?:[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/)(\d+)'
+)
+
+
+def load_pr_cache() -> set[int] | None:
+    """Load all PR numbers via `gh pr list`. Return None if gh is unavailable.
+
+    Used by the Auditor Agent's BROKEN_PR_CITATION check. Graceful degradation:
+    if `gh` is missing or unauthenticated (e.g., CI without GH_TOKEN), the
+    check is skipped rather than failing the whole integrity cycle.
+    """
+    try:
+        out = subprocess.check_output(
+            ["gh", "pr", "list", "--state", "all", "--limit", "500",
+             "--json", "number"],
+            text=True, stderr=subprocess.DEVNULL,
+        )
+        return {p["number"] for p in json.loads(out)}
+    except (subprocess.CalledProcessError, FileNotFoundError,
+            json.JSONDecodeError):
+        return None
+
+
+def audit_case_study_citations(pr_cache: set[int] | None) -> list[dict]:
+    """Scan every case study .md for PR citations; flag broken ones.
+
+    If pr_cache is None, skip gracefully (gh not available). Returns findings
+    with code=BROKEN_PR_CITATION and feature=<relative-path-to-md>.
+
+    Excludes files under `docs/case-studies/meta-analysis/`: those documents
+    discuss citations (including false positives), so any PR number appearing
+    in their prose is meta-reference, not a real evidentiary claim.
+    """
+    if pr_cache is None or not CASE_STUDIES_DIR.exists():
+        return []
+    findings: list[dict] = []
+    for f in sorted(CASE_STUDIES_DIR.rglob("*.md")):
+        if f.name in SKIP_CASE_STUDY_FILES:
+            continue
+        if "meta-analysis" in f.relative_to(CASE_STUDIES_DIR).parts:
+            continue
+        try:
+            text = f.read_text()
+        except Exception:
+            continue
+        cited = {int(m.group(1)) for m in _PR_CITATION_PAT.finditer(text)}
+        for n in sorted(n for n in cited if n not in pr_cache):
+            findings.append({
+                "feature": str(f.relative_to(REPO_ROOT)),
+                "severity": "INCONSISTENT",
+                "code": "BROKEN_PR_CITATION",
+                "message": f"cites PR #{n} which does not resolve on GitHub",
+            })
+    return findings
 
 
 def discover_case_studies() -> list[dict]:
@@ -228,6 +311,12 @@ def build_snapshot() -> dict:
         summary, feat_findings = audit_feature(d)
         feature_summaries.append(summary)
         findings.extend(feat_findings)
+
+    # Auditor Agent case-study citation checks
+    pr_cache = load_pr_cache()
+    findings.extend(audit_case_study_citations(pr_cache))
+    citation_check_ran = pr_cache is not None
+
     return {
         "timestamp": now_iso(),
         "commit_head": git_head(),
@@ -237,6 +326,10 @@ def build_snapshot() -> dict:
         "findings_by_severity": {
             sev: sum(1 for x in findings if x["severity"] == sev)
             for sev in ["CRITICAL", "INCONSISTENT", "MISSING", "WARN"]
+        },
+        "auditor_agent": {
+            "citation_check_ran": citation_check_ran,
+            "known_pr_count": len(pr_cache) if pr_cache is not None else None,
         },
         "features": feature_summaries,
         "case_studies": discover_case_studies(),

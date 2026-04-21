@@ -384,6 +384,45 @@ Case studies referencing formal framework-bug identifiers (F1–F9): 11 / 41.
 12. 2 case studies lack a date-of-writing in-body: `home-today-screen-v2`
     and `soc-v5-framework`.
 
+## 14.1 Corrections (appended 2026-04-21 after initial publication)
+
+**Finding #7 ("3 of 64 cited PRs do not exist on GitHub") is wrong as stated.**
+
+Subsequent verification against `gh issue view` shows that #51, #69, #70 are
+**GitHub issue** citations, not PR citations. All three resolve:
+
+- [Issue #51](https://github.com/Regevba/FitTracker2/issues/51) "Onboarding Flow" (CLOSED) — cited in `pm-workflow-showcase-onboarding.md` as `regevba/fittracker2#51`
+- [Issue #69](https://github.com/Regevba/FitTracker2/issues/69) "Rest Day — Positive Experience Redesign" (OPEN) — cited in `training-plan-v2-case-study.md` as `issue #69`
+- [Issue #70](https://github.com/Regevba/FitTracker2/issues/70) "Advanced Data Fusion + AI Exercise Recommendations" (OPEN) — cited in `training-plan-v2-case-study.md` as `issue #70`
+
+**Root cause.** The mechanical extraction in §9 used a liberal pattern that
+matched any `#\d+` and checked it against `gh pr list`. It did not
+distinguish PR-context from issue-context citations. `#51` in
+`pm-workflow-showcase-onboarding.md` is surrounded by the text
+"GitHub issue: regevba/fittracker2#51"; `#69` and `#70` in
+`training-plan-v2-case-study.md` are explicitly labeled "issue #69" and
+"issue #70". A narrower regex requiring `PR #` or `pull/` context would
+have produced zero false positives on this corpus.
+
+**Downstream impact.** Gemini's independent audit at
+`independent-audit-2026-04-21-gemini.md` faithfully reproduced this false
+positive because it was supplied this meta-analysis as input. A parallel
+"Corrections" section has been appended there.
+
+**Policy decision.** This correction is **appended**, not substituted for
+the original §9 text. The flawed finding stays visible on the record.
+That is the "publish verbatim, then remediate" policy in action — silent
+edits would have erased the learning that this meta-analysis has a
+precision gap in its mechanical checks.
+
+**Tooling remediation.** The Auditor Agent extension in
+`scripts/integrity-check.py` (2026-04-21) uses a tighter regex:
+`(?:PR\s*#?|github\.com/[^/]+/[^/]+/pull/)(\d+)` — requires "PR" or a
+`/pull/` URL as context. Running this check against the same corpus
+produces **zero** `BROKEN_PR_CITATION` findings on the original case
+studies, confirming the false-positive diagnosis above. GitHub
+issue #138, which tracked the broken-PR investigation, has been closed.
+
 ## 15. Phase 6 — Comparison against prior meta-analyses
 
 Two prior meta-analyses exist in this folder:
