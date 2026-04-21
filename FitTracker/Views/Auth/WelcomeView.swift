@@ -134,13 +134,13 @@ struct WelcomeView: View {
         }
         // ── Entry animations ──────────────────────────────
         .onAppear {
-            withAnimation(.spring(response: 0.8, dampingFraction: 0.7).delay(0.1)) {
+            withAnimation(AppSpring.hero.delay(0.1)) {
                 logoScale = 1.0; logoOpacity = 1.0
             }
-            withAnimation(.easeOut(duration: 0.6).delay(0.4)) {
+            withAnimation(AppEasing.heroEntry.delay(0.4)) {
                 textOffset = 0; textOpacity = 1.0
             }
-            withAnimation(.easeOut(duration: 0.6).delay(0.7)) {
+            withAnimation(AppEasing.heroEntry.delay(0.7)) {
                 buttonsOffset = 0; buttonsOpacity = 1.0
             }
         }
