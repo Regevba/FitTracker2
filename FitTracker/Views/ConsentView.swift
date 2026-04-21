@@ -29,7 +29,7 @@ struct ConsentView: View {
                 Image(systemName: "checkmark.circle.fill")
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Status.success)
-                    .background(Circle().fill(Color.white).frame(width: 26, height: 26))
+                    .background(Circle().fill(AppPalette.white).frame(width: 26, height: 26))
                     .offset(x: 44, y: -44)
             }
             .padding(.bottom, AppSpacing.large)
@@ -92,7 +92,7 @@ struct ConsentView: View {
             } label: {
                 Text("Accept & Continue")
                     .font(AppText.button)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, AppSpacing.small)
             }
