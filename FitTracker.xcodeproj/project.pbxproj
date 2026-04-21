@@ -31,13 +31,11 @@
 		A10000010000000000000008 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000008 /* AppSettings.swift */; };
 		A10000010000000000000009 /* EncryptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000009 /* EncryptionService.swift */; };
 		A1000001000000000000000A /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000A /* RootTabView.swift */; };
-		A1000001000000000000000B /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B /* MainScreenView.swift */; };
 		NV100000000000000000AA01 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA01 /* NutritionView.swift */; };
 		NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA02 /* SupplementStackCard.swift */; };
 		NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA03 /* SupplementItemRow.swift */; };
 		NV100000000000000000AA04 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA04 /* ProgressBar.swift */; };
 		NV100000000000000000AA05 /* HapticFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA05 /* HapticFeedback.swift */; };
-		A1000001000000000000000D /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D /* TrainingPlanView.swift */; };
 		SV100000000000000000AA01 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SV200000000000000000AA01 /* StatsView.swift */; };
 		A1000001000000000000000F /* AccountPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AccountPanelView.swift */; };
 		A10000010000000000000015 /* AuthValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* AuthValidation.swift */; };
