@@ -5,7 +5,7 @@
   "display_name": "HADF \u2014 Hardware-Aware Dispatch Framework",
   "work_type": "feature",
   "framework_version": "6.0",
-  "phase": "complete",
+  "current_phase": "complete",
   "status": "complete",
   "created": "2026-04-16T00:00:00Z",
   "branch": "feature/hadf-infrastructure",

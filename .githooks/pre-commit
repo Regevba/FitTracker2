@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Git pre-commit hook — part of the Tier 1.3 schema enforcement introduced
+# 2026-04-21. Blocks commits that would introduce state.json schema drift.
+#
+# Enable with: make install-hooks
+# Bypass (emergency only): git commit --no-verify
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+checker="$repo_root/scripts/check-state-schema.py"
+
+if [[ ! -x "$checker" ]]; then
+  # Checker script not present — skip silently (e.g. older branches).
+  exit 0
+fi
+
+if ! "$checker" --staged; then
+  echo ""
+  echo "Pre-commit rejected: state.json schema violations in staged files."
+  echo "Rename \`phase\` to \`current_phase\` (value stays the same), restage, recommit."
+  echo "Emergency bypass: git commit --no-verify"
+  exit 1
+fi

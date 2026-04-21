@@ -5,7 +5,7 @@
   "display_name": "Meta-Analysis Full-System Audit",
   "work_type": "chore",
   "framework_version": "7.0",
-  "phase": "documentation",
+  "current_phase": "documentation",
   "status": "complete",
   "created": "2026-04-16T00:00:00Z",
   "branch": "main",
@@ -35,7 +35,7 @@
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0,
-        "notes": "4-layer audit: surface sweep → deep dive → cross-reference → external validation"
+        "notes": "4-layer audit: surface sweep \u2192 deep dive \u2192 cross-reference \u2192 external validation"
       },
       "documentation": {
         "started_at": null,

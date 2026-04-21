@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot schema-check install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -64,6 +64,19 @@ integrity-snapshot:
 	fi; \
 	echo "Snapshot: $${new}"
 
+# Validate state.json schema across all features (pass if every file uses the
+# canonical `current_phase` key instead of the legacy `phase` key).
+schema-check:
+	python3 scripts/check-state-schema.py
+
+# Install git hooks into .git/hooks/ by pointing core.hooksPath at .githooks/.
+# Idempotent — run after clone to activate the pre-commit schema check.
+install-hooks:
+	git config core.hooksPath .githooks
+	@echo "Git hooks installed (core.hooksPath = .githooks)."
+	@echo "Pre-commit will reject state.json files with legacy \`phase\` key."
+	@echo "Emergency bypass: git commit --no-verify"
+
 # Install npm dependencies (style-dictionary)
 install:
 	npm install
@@ -73,7 +86,7 @@ install:
 # Run `make ui-audit` separately to see drift introduced by your branch.
 # Once the baseline reaches 0 P0, add ui-audit to this chain so it gates
 # every local + CI verify pass.
-verify-local: tokens-check verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
+verify-local: tokens-check schema-check verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
 
 verify-web:
 	cd dashboard && npm test

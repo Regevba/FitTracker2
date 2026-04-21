@@ -15,8 +15,12 @@ Every 72 hours, a GitHub Actions workflow runs `scripts/integrity-check.py` agai
    - `NO_CS_LINK` — terminal phase but no `case_study`, `parent_case_study`, or `case_study_type` linkage
    - `V2_FILE_MISSING` — state declares a `v2_file_path` that doesn't exist on disk
    - `PARTIAL_SHIP_TERMINAL` — `partial_ship: true` alongside a terminal phase (should be downgraded)
+   - `SCHEMA_DRIFT` — state.json uses legacy `phase` key instead of canonical `current_phase`. Added 2026-04-21 after the structural meta-analysis surfaced 2 violators (since migrated). Pre-commit hook now blocks new occurrences — see **Pre-commit enforcement** below.
    - `NO_STATE` / `INVALID_JSON` — critical structural failures
    - `NO_PHASE` — missing phase field entirely
+
+   **Auditor Agent case-study checks** (added 2026-04-21 per Gemini audit Tier 3.1):
+   - `BROKEN_PR_CITATION` — case study cites a PR via `PR #NNN` or `/pull/NNN` context that does not resolve via `gh pr list`. Narrow regex by design — avoids conflating issue citations (`issue #NNN`, `repo#NNN`) with PR citations. Skipped gracefully if `gh` is unavailable. Files under `docs/case-studies/meta-analysis/` are excluded since they discuss citations rather than make them.
 
 2. **Inventories** every case study under `docs/case-studies/` — path, size, first-commit date.
 
@@ -56,7 +60,34 @@ Or via the Makefile:
 ```bash
 make integrity-check       # findings-only, non-strict
 make integrity-snapshot    # full snapshot + diff + commit (locally)
+make schema-check          # state.json schema validator (all 40 files)
 ```
+
+---
+
+## Pre-commit enforcement (added 2026-04-21)
+
+`SCHEMA_DRIFT` is now enforced **on write**, not just detected on the 72-hour cycle. A git pre-commit hook at `.githooks/pre-commit` invokes `scripts/check-state-schema.py --staged` on every commit. Any staged `state.json` file using the legacy `phase` key fails the commit before it lands.
+
+**Install once after cloning:**
+
+```bash
+make install-hooks
+```
+
+This sets `git config core.hooksPath .githooks` — idempotent. The hook then runs on every `git commit` automatically. The script has three invocation modes:
+
+```bash
+python3 scripts/check-state-schema.py              # scan all 40 files
+python3 scripts/check-state-schema.py <path>...    # validate specific paths
+python3 scripts/check-state-schema.py --staged     # git-staged files only (what the hook uses)
+```
+
+`make schema-check` runs the "scan all" variant and is part of `make verify-local`, so CI catches drift even when a developer hasn't installed the hook.
+
+**Emergency bypass:** `git commit --no-verify` skips the hook. The 72-hour cycle will still catch the drift post-facto, so bypass is recoverable.
+
+**Why both layers?** Pre-commit is local-only. The cycle still runs in CI so a bypass or an unhooked contributor can't quietly introduce drift.
 
 ---
 
