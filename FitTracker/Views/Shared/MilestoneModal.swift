@@ -21,7 +21,7 @@ struct MilestoneModal: View {
 
                 Text(title)
                     .font(AppText.metric)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                     .multilineTextAlignment(.center)
 
                 Text(message)
@@ -38,7 +38,7 @@ struct MilestoneModal: View {
                 .padding(.horizontal, AppSpacing.xxLarge)
                 .padding(.vertical, AppSpacing.xSmall)
                 .background(AppColor.Surface.materialLight, in: RoundedRectangle(cornerRadius: AppRadius.large))
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColor.Text.inversePrimary)
             }
             .padding(AppSpacing.xLarge)
         }
