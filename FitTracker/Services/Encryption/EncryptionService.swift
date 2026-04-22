@@ -40,6 +40,370 @@ enum FTCryptoError: LocalizedError {
     }
 }
 
+#if DEBUG
+extension EncryptedDataStore {
+    func applyReviewSeedData(named datasetName: String, referenceDate: Date) {
+        guard datasetName == "demo" else { return }
+
+        let profile = ReviewSeedFactory.makeProfile(referenceDate: referenceDate)
+        userProfile = profile
+        userPreferences = ReviewSeedFactory.makePreferences(referenceDate: referenceDate)
+        mealTemplates = ReviewSeedFactory.makeMealTemplates()
+        weeklySnapshots = []
+        dailyLogs = ReviewSeedFactory.makeDailyLogs(referenceDate: referenceDate, profile: profile)
+        lastError = nil
+        loadError = nil
+        persistenceFailed = false
+    }
+}
+
+private enum ReviewSeedFactory {
+    static func makeProfile(referenceDate: Date) -> UserProfile {
+        var profile = UserProfile()
+        profile.name = "Regev"
+        profile.displayName = "Regev"
+        profile.age = 30
+        profile.heightCm = 178
+        profile.recoveryStart = Calendar.current.date(byAdding: .day, value: -84, to: referenceDate) ?? referenceDate
+        profile.currentPhase = .stage1
+        profile.targetWeightMin = 65
+        profile.targetWeightMax = 68
+        profile.targetBFMin = 13
+        profile.targetBFMax = 15
+        profile.startWeightKg = 71.5
+        profile.startBodyFatPct = 20.4
+        profile.mealSlotNames = ["Breakfast", "Lunch", "Dinner", "Snack"]
+        profile.fitnessGoal = .loseFat
+        profile.experienceLevel = .intermediate
+        profile.trainingDaysPerWeek = 5
+        profile.lastModified = referenceDate
+        return profile
+    }
+
+    static func makePreferences(referenceDate: Date) -> UserPreferences {
+        var preferences = UserPreferences(
+            zone2LowerHR: 108,
+            zone2UpperHR: 126,
+            hrReadyThreshold: 60,
+            hrvReadyThreshold: 30,
+            nutritionGoalMode: .fatLoss,
+            preferredStatsCarouselMetrics: [
+                "readiness",
+                "sleep",
+                "hrv",
+                "steps",
+                "trainingVolume",
+                "protein",
+            ],
+            sleepGoalHours: 8.0
+        )
+        preferences.lastModified = referenceDate
+        return preferences
+    }
+
+    static func makeMealTemplates() -> [MealTemplate] {
+        [
+            MealTemplate(name: "Greek Yogurt Bowl", calories: 420, proteinG: 34, carbsG: 36, fatG: 12),
+            MealTemplate(name: "Chicken Rice Plate", calories: 690, proteinG: 52, carbsG: 64, fatG: 18),
+            MealTemplate(name: "Salmon Dinner", calories: 710, proteinG: 44, carbsG: 42, fatG: 28),
+        ]
+    }
+
+    static func makeDailyLogs(referenceDate: Date, profile: UserProfile) -> [DailyLog] {
+        let calendar = Calendar.current
+        let anchor = calendar.startOfDay(for: referenceDate)
+
+        return (0..<28).compactMap { dayOffset in
+            guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: anchor) else {
+                return nil
+            }
+            return makeLog(for: date, dayOffset: dayOffset, anchor: anchor, profile: profile)
+        }
+        .sorted { $0.date > $1.date }
+    }
+
+    private static func makeLog(for date: Date, dayOffset: Int, anchor: Date, profile: UserProfile) -> DailyLog {
+        let calendar = Calendar.current
+        let dayType = reviewDayType(forWeekday: calendar.component(.weekday, from: date))
+        var log = DailyLog.scheduled(for: date, profile: profile, dayType: dayType)
+        let isToday = calendar.isDate(date, inSameDayAs: anchor)
+
+        let weight = 67.2 + min(Double(dayOffset) * 0.08, 2.2)
+        let bodyFat = 18.2 + min(Double(dayOffset) * 0.04, 1.4)
+        let leanMass = weight * (1 - bodyFat / 100.0)
+        let muscleMass = leanMass * 0.56
+        let bodyWater = 56.8 - min(Double(dayOffset) * 0.05, 1.0)
+        let steps = max(7_000, 12_400 - (dayOffset * 115) + ((dayOffset % 3) * 240))
+        let sleepHours = max(6.8, 7.9 - Double(dayOffset % 5) * 0.12)
+        let activeCalories = max(420.0, 690.0 - Double(dayOffset % 6) * 34.0)
+        let restingHR = 58.0 + Double(dayOffset % 4) * 0.6
+        let hrv = 43.0 - Double(dayOffset % 5) * 0.8
+        let vo2Max = 41.8 - Double(dayOffset % 6) * 0.1
+
+        log.logicDayKey = Date.fitLogicDayKey(for: date)
+        log.lastModified = anchor.addingTimeInterval(-Double(dayOffset) * 3600)
+        log.needsSync = false
+        log.mood = 4 + ((dayOffset + 1) % 2)
+        log.energyLevel = isToday ? 4 : 3 + ((dayOffset + 2) % 2)
+        log.cravingLevel = dayOffset % 5 == 0 ? 3 : 2
+        log.notes = dayType.isTrainingDay ? "Completed core work and recovery walk." : "Focused on recovery, hydration, and sleep."
+        log.biometrics = DailyBiometrics(
+            weightKg: weight,
+            bodyFatPercent: bodyFat,
+            leanBodyMassKg: leanMass,
+            muscleMassKg: muscleMass,
+            boneMassKg: 3.1,
+            visceralFatRating: 7,
+            bodyWaterPercent: bodyWater,
+            bmi: weight / pow(profile.heightCm / 100.0, 2),
+            metabolicAge: 27,
+            basalMetabolicRate: 1685,
+            restingHeartRate: restingHR,
+            hrv: hrv,
+            vo2Max: vo2Max,
+            activeCalories: activeCalories,
+            stepCount: steps,
+            sleepHours: sleepHours,
+            deepSleepMinutes: 92,
+            remSleepMinutes: 108,
+            manualRestingHR: nil,
+            manualHRV: nil,
+            manualSleepHours: nil
+        )
+
+        log.supplementLog = SupplementLog(
+            morningStatus: dayOffset <= 10 ? .completed : .pending,
+            eveningStatus: dayOffset <= 10 ? .completed : (dayOffset % 4 == 0 ? .completed : .pending),
+            morningTime: calendar.date(bySettingHour: 8, minute: 15, second: 0, of: date),
+            eveningTime: calendar.date(bySettingHour: 21, minute: 10, second: 0, of: date),
+            individualOverrides: [
+                "creatine": dayOffset <= 10,
+                "glycine": dayOffset <= 10,
+                "omega3": dayOffset % 4 != 1,
+            ]
+        )
+
+        let breakfast = makeMeal(
+            number: 1,
+            name: "Greek yogurt, berries, and oats",
+            calories: 430,
+            protein: 34,
+            carbs: 41,
+            fat: 11,
+            at: calendar.date(bySettingHour: 8, minute: 30, second: 0, of: date)
+        )
+        let lunch = makeMeal(
+            number: 2,
+            name: "Chicken rice plate",
+            calories: 690,
+            protein: 52,
+            carbs: 63,
+            fat: 18,
+            at: calendar.date(bySettingHour: 13, minute: 10, second: 0, of: date)
+        )
+        let dinner = makeMeal(
+            number: 3,
+            name: "Salmon, potatoes, and salad",
+            calories: 720,
+            protein: 44,
+            carbs: 46,
+            fat: 29,
+            at: calendar.date(bySettingHour: 19, minute: 15, second: 0, of: date)
+        )
+        let snack = makeMeal(
+            number: 4,
+            name: "Protein shake",
+            calories: 180,
+            protein: 30,
+            carbs: 7,
+            fat: 3,
+            at: calendar.date(bySettingHour: 16, minute: 45, second: 0, of: date)
+        )
+
+        log.nutritionLog = NutritionLog(
+            meals: dayOffset % 3 == 0 ? [breakfast, lunch, dinner] : [breakfast, lunch, dinner, snack],
+            totalCalories: nil,
+            totalProteinG: nil,
+            totalCarbsG: nil,
+            totalFatG: nil,
+            waterML: 2_800,
+            alluloseTaken: dayOffset % 2 == 0
+        )
+
+        if dayType.isTrainingDay {
+            let exercises = TrainingProgramData.exercises(for: dayType)
+            for exercise in exercises {
+                if exercise.category == .cardio {
+                    log.taskStatuses[exercise.id] = .completed
+                    log.cardioLogs[exercise.id] = makeCardioLog(for: exercise, dayOffset: dayOffset)
+                    continue
+                }
+
+                let completedToday = !isToday || exercise.order <= 3
+                log.taskStatuses[exercise.id] = completedToday ? .completed : .pending
+                if completedToday {
+                    log.exerciseLogs[exercise.id] = makeExerciseLog(for: exercise, dayOffset: dayOffset, date: date)
+                }
+            }
+        } else if dayOffset % 6 == 0 {
+            log.cardioLogs["recovery_walk"] = CardioLog(
+                cardioType: .walk,
+                durationMinutes: 38,
+                avgHeartRate: 112,
+                maxHeartRate: 121,
+                caloriesBurned: 240,
+                notes: "Recovery walk to keep Zone 2 minutes consistent.",
+                resistance: nil,
+                strideLevel: nil,
+                distanceKm: 3.4,
+                pacePer500m: nil,
+                strokesPerMinute: nil,
+                damperSetting: nil,
+                summaryImageData: nil,
+                summaryImageCloudID: nil
+            )
+        }
+
+        return log
+    }
+
+    private static func makeMeal(
+        number: Int,
+        name: String,
+        calories: Double,
+        protein: Double,
+        carbs: Double,
+        fat: Double,
+        at: Date?
+    ) -> MealEntry {
+        MealEntry(
+            mealNumber: number,
+            name: name,
+            calories: calories,
+            proteinG: protein,
+            carbsG: carbs,
+            fatG: fat,
+            servingGrams: nil,
+            labelReferenceGrams: nil,
+            source: .manual,
+            sourceDetails: "Review seed dataset",
+            eatenAt: at,
+            status: .completed
+        )
+    }
+
+    private static func makeExerciseLog(for exercise: ExerciseDefinition, dayOffset: Int, date: Date) -> ExerciseLog {
+        let baseWeight = baseWeightKg(for: exercise)
+        let workingWeight = max(12, baseWeight - Double(dayOffset % 5) * 1.5)
+        let repRange = parseFirstRepValue(exercise.targetReps)
+        let setCount = min(exercise.targetSets, 4)
+        var sets: [SetLog] = []
+        sets.reserveCapacity(setCount)
+        for setNumber in 1...setCount {
+            let loggedWeight: Double? = exercise.equipment == .bodyweight ? nil : workingWeight + Double(setNumber - 1) * 1.25
+            let repsCompleted = repRange - (setNumber % 2)
+            let timestamp = date.addingTimeInterval(Double(setNumber) * 300)
+            sets.append(
+                SetLog(
+                    setNumber: setNumber,
+                    weightKg: loggedWeight,
+                    repsCompleted: repsCompleted,
+                    rpe: 7.0 + Double(setNumber) * 0.3,
+                    isWarmup: false,
+                    notes: "",
+                    timestamp: timestamp
+                )
+            )
+        }
+
+        return ExerciseLog(
+            exerciseID: exercise.id,
+            exerciseName: exercise.name,
+            sets: sets,
+            notes: "Controlled tempo, clean reps.",
+            timestamp: date.addingTimeInterval(900)
+        )
+    }
+
+    private static func makeCardioLog(for exercise: ExerciseDefinition, dayOffset: Int) -> CardioLog {
+        let duration: Double
+        switch exercise.equipment {
+        case .elliptical:
+            duration = exercise.dayType == .cardioOnly ? 48 : 28
+        case .rowingMachine:
+            duration = exercise.dayType == .cardioOnly ? 24 : 16
+        default:
+            duration = 30
+        }
+
+        return CardioLog(
+            cardioType: cardioType(for: exercise.equipment),
+            durationMinutes: duration,
+            avgHeartRate: 116 + Double(dayOffset % 4),
+            maxHeartRate: 128 + Double(dayOffset % 5),
+            caloriesBurned: duration * 8.5,
+            notes: "Zone 2 steady-state work.",
+            resistance: exercise.equipment == .elliptical ? 8 : nil,
+            strideLevel: exercise.equipment == .elliptical ? "11" : nil,
+            distanceKm: exercise.equipment == .elliptical ? max(3.8, duration / 8.0) : nil,
+            pacePer500m: exercise.equipment == .rowingMachine ? "2:28" : nil,
+            strokesPerMinute: exercise.equipment == .rowingMachine ? 25 : nil,
+            damperSetting: exercise.equipment == .rowingMachine ? 5 : nil,
+            summaryImageData: nil,
+            summaryImageCloudID: nil
+        )
+    }
+
+    private static func cardioType(for equipment: Equipment) -> CardioType {
+        switch equipment {
+        case .elliptical:
+            return .elliptical
+        case .rowingMachine:
+            return .rowing
+        default:
+            return .other
+        }
+    }
+
+    private static func reviewDayType(forWeekday weekday: Int) -> DayType {
+        switch weekday {
+        case 2:
+            return .upperPush
+        case 3:
+            return .lowerBody
+        case 5:
+            return .upperPull
+        case 6:
+            return .fullBody
+        case 7:
+            return .cardioOnly
+        default:
+            return .restDay
+        }
+    }
+
+    private static func parseFirstRepValue(_ targetReps: String) -> Int {
+        let digits = targetReps.split(whereSeparator: { !$0.isNumber }).compactMap { Int($0) }
+        return digits.first ?? 8
+    }
+
+    private static func baseWeightKg(for exercise: ExerciseDefinition) -> Double {
+        switch exercise.equipment {
+        case .barbell:
+            return 50
+        case .dumbbell:
+            return 22
+        case .cable:
+            return 27
+        case .machine:
+            return 45
+        case .bodyweight, .elliptical, .rowingMachine, .resistanceBand, .other:
+            return 0
+        }
+    }
+}
+#endif
+
 // ─────────────────────────────────────────────────────────
 // MARK: – Encryption Service (actor — thread-safe)
 // ─────────────────────────────────────────────────────────

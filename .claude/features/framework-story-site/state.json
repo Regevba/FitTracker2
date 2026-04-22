@@ -1,0 +1,130 @@
+{
+  "feature": "framework-story-site",
+  "created": "2026-04-19T00:00:00Z",
+  "updated": "2026-04-20T00:00:00Z",
+  "branch": "main",
+  "current_phase": "closed",
+  "work_type": "feature",
+  "has_ui": true,
+  "requires_analytics": false,
+  "repo_scope": "new-external",
+  "external_repo": "fitme-story",
+  "external_repo_url": "https://github.com/Regevba/fitme-story",
+  "preview_url": "https://fitme-story-jvseva16d-regevba-3729s-projects.vercel.app",
+  "alias_url": "https://fitme-story.vercel.app",
+  "production_promoted": true,
+  "production_url": "https://fitme-story.vercel.app",
+  "notes": "CLOSED 2026-04-20. Next.js 16 public site \u2014 third public artifact after FitTracker2 and fitme-showcase. Shipped in one session (2h) via superpowers brainstorming \u2192 writing-plans \u2192 subagent-driven-development, followed by two iterative tweak sessions (SSR regression fix, /pm-flow + DispatchReplay + glossary additions, visual polish, animation timing hunt, case-studies index redesign, 7 standard-tier studies promoted to Flagship with a shared chart library). 89 commits, 44 pre-rendered routes, 45 MDX content files, 10 Flagship case studies, Lighthouse 100 a11y maintained. Open items (external audit content, ai-product-patterns URL) are blocked on external input, not framework work.",
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-19T00:00:00Z",
+      "sources": [
+        "docs/case-studies/fittracker-evolution-walkthrough.md",
+        "docs/skills/framework-overlay-example-sprint-i.md",
+        "github.com/Regevba/fitme-showcase"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-04-19T00:00:00Z",
+      "analytics_spec_complete": false,
+      "spec_path": "docs/superpowers/specs/2026-04-19-framework-story-site-design.md"
+    },
+    "tasks": {
+      "status": "approved",
+      "count": 37,
+      "plan_path": "docs/superpowers/plans/2026-04-19-framework-story-site.md"
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "type": "ux",
+      "compliance_passed": true,
+      "compliance_violations": [],
+      "compliance_decision": "editorial base + FitMe accents \u2014 editorial typography, FitMe palette",
+      "design_system_changes": []
+    },
+    "implementation": {
+      "status": "approved",
+      "approved_at": "2026-04-19T10:00:00Z",
+      "repo": "github.com/Regevba/fitme-story",
+      "commits_on_main": 89,
+      "subagent_dispatches": 45,
+      "cumulative_insertions": 24200,
+      "cumulative_deletions": 3550,
+      "src_loc": 4600,
+      "content_mdx_files": 45,
+      "shared_chart_components": 6,
+      "flagship_case_studies": 10,
+      "pre_rendered_routes": 44
+    },
+    "testing": {
+      "status": "approved",
+      "approved_at": "2026-04-19T10:00:00Z",
+      "ci_passed": true,
+      "unit_tests_added": 12,
+      "unit_tests_passing": 12,
+      "production_build_passed": true,
+      "pre_rendered_routes": 44,
+      "static_audit_passed": true,
+      "static_audit_checks": 11,
+      "static_audit_failures": 0,
+      "lighthouse_real_run": "100 a11y maintained on homepage and /pm-flow; 96 perf mobile homepage"
+    },
+    "review": {
+      "status": "approved",
+      "approved_at": "2026-04-19T10:00:00Z",
+      "spec_reviews_dispatched": 2,
+      "code_quality_reviews_dispatched": 1,
+      "review_issues_found": 3,
+      "review_issues_fixed_commit": "83e244a",
+      "review_mode": "pragmatic \u2014 formal code-quality review on substantive code only, inline verification on mechanical tasks"
+    },
+    "merge": {
+      "status": "approved",
+      "approved_at": "2026-04-19T10:00:00Z",
+      "merge_strategy": "direct commits to main on new external repo (no feature branches \u2014 solo dev, fresh repo, bootstrap context)"
+    },
+    "docs": {
+      "status": "approved",
+      "approved_at": "2026-04-20T00:00:00Z",
+      "case_study_fittracker_path": "docs/case-studies/framework-story-site-case-study.md",
+      "case_study_showcase_path": "04-case-studies/14-framework-story-site.md",
+      "case_study_showcase_repo": "github.com/Regevba/fitme-showcase",
+      "additional_deep_dives": [
+        "docs/case-studies/framework-story-site-ssr-regression.md",
+        "docs/case-studies/framework-story-site-dispatchreplay.md",
+        "fitme-showcase/04-case-studies/15-ssr-regression.md",
+        "fitme-showcase/04-case-studies/16-dispatchreplay.md",
+        "fitme-showcase/04-case-studies/17-lego-pmflow.md"
+      ]
+    },
+    "learn": {
+      "status": "approved",
+      "approved_at": "2026-04-20T00:00:00Z",
+      "closed_at": "2026-04-20T00:00:00Z",
+      "outcomes": [
+        "Third public artifact shipped \u2014 Next.js 16 site with 44 pre-rendered routes and 10 Flagship case studies",
+        "Production deploy stable at https://fitme-story.vercel.app with Vercel auto-deploy on push to main",
+        "Lighthouse a11y 100 maintained on homepage and /pm-flow through iterative fix passes",
+        "Shared chart-component library (6 components) validated across 10 case studies \u2014 pattern replicable for future content",
+        "Framework timing/animation behavior characterized across 5 LegoBrick iterations \u2014 layout='position' + two-stage state is the pattern for 'expand-in-place' grid cells",
+        "Case studies index condensed from 17 entries / 4 tiers to 6 milestones + 11 compact + 3 appendix \u2014 better signal-to-noise",
+        "SSR regression caught and resolved in the same session with a two-layer persona hook split \u2014 now a canonical reference for useSearchParams + Suspense + SSG interactions"
+      ],
+      "blocked_on_external": [
+        "/trust page placeholders \u2014 which AI models audit, cadence, first audit results link (awaiting user content)",
+        "Meta-audit case study \u2014 awaits external audit completion",
+        "ai-product-patterns/SKILL.md URL \u2014 awaiting upstream URL from user"
+      ],
+      "backlog": [
+        "Live filtering on /pm-flow Lego Wall (phase pip click \u2192 filter wall)",
+        "Per-brick sparklines showing skill activity over time (needs live data pipeline)",
+        "PM-workflow-led variant of /pm-flow that leads with phases instead of skills",
+        "Revisit desktop perf on /case-studies/full-system-audit (94, 1 below target)"
+      ]
+    }
+  },
+  "case_study": "docs/case-studies/framework-story-site-case-study.md",
+  "case_study_showcase": "04-case-studies/14-framework-story-site.md"
+}

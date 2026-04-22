@@ -1,0 +1,5 @@
+#include "Base.xcconfig"
+#include? "Local/Debug.xcconfig"
+
+FITTRACKER_APP_ENVIRONMENT = debug
+FITTRACKER_RUNTIME_CONFIG_SOURCE = debug-overlay

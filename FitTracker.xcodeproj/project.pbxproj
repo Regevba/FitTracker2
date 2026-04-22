@@ -453,6 +453,14 @@
 		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
 		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
 		IT200000000000000000TS01 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
+		CFG000000000000000000001 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+		CFG000000000000000000002 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
+		CFG000000000000000000003 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		CFG000000000000000000004 /* Staging.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Staging.xcconfig; sourceTree = "<group>"; };
+		CFG000000000000000000005 /* Debug.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Debug.example.xcconfig"; sourceTree = "<group>"; };
+		CFG000000000000000000006 /* Release.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Release.example.xcconfig"; sourceTree = "<group>"; };
+		CFG000000000000000000007 /* Staging.example.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Staging.example.xcconfig"; sourceTree = "<group>"; };
+		CFG000000000000000000008 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -519,6 +527,7 @@
 			isa = PBXGroup;
 			children = (
 				A40000010000000000000002 /* FitTracker */,
+				CFG100000000000000000001 /* Config */,
 				B40000010000000000000001 /* FitTrackerTests */,
 				UI400000000000000000UT01 /* FitTrackerUITests */,
 				A40000010000000000000003 /* Products */,
@@ -550,6 +559,29 @@
 				UI200000000000000000XT01 /* FitTrackerUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CFG100000000000000000001 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				CFG000000000000000000001 /* Base.xcconfig */,
+				CFG000000000000000000002 /* Debug.xcconfig */,
+				CFG000000000000000000003 /* Release.xcconfig */,
+				CFG000000000000000000004 /* Staging.xcconfig */,
+				CFG100000000000000000002 /* Local */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		CFG100000000000000000002 /* Local */ = {
+			isa = PBXGroup;
+			children = (
+				CFG000000000000000000008 /* README.md */,
+				CFG000000000000000000005 /* Debug.example.xcconfig */,
+				CFG000000000000000000006 /* Release.example.xcconfig */,
+				CFG000000000000000000007 /* Staging.example.xcconfig */,
+			);
+			path = Local;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000004 /* Models */ = {
@@ -1410,6 +1442,7 @@
 /* Begin XCBuildConfiguration section */
 		A80000010000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000002 /* Debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
@@ -1462,6 +1495,7 @@
 		};
 		A80000010000000000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000003 /* Release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_MODULES = YES;
@@ -1505,8 +1539,63 @@
 			};
 			name = Release;
 		};
+		A80000010000000000000005 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000004 /* Staging.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"STAGING=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG STAGING";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Staging;
+		};
 		A80000010000000000000003 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000002 /* Debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = FitTracker/FitTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -1534,6 +1623,7 @@
 		};
 		A80000010000000000000004 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000003 /* Release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = FitTracker/FitTracker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -1559,8 +1649,37 @@
 			};
 			name = Release;
 		};
+		A80000010000000000000006 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000004 /* Staging.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FitTracker/FitTracker.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = FitTracker/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Staging;
+		};
 		B90000010000000000000001 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000002 /* Debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -1586,6 +1705,7 @@
 		};
 		B90000010000000000000002 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000003 /* Release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
@@ -1609,8 +1729,35 @@
 			};
 			name = Release;
 		};
+		B90000010000000000000003 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000004 /* Staging.xcconfig */;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/FitTracker.app/FitTracker";
+			};
+			name = Staging;
+		};
 		UI800000000000000000UT01 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000002 /* Debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1635,6 +1782,7 @@
 		};
 		UI800000000000000000UT02 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000003 /* Release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1657,6 +1805,31 @@
 			};
 			name = Release;
 		};
+		UI800000000000000000UT03 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = CFG000000000000000000004 /* Staging.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = FitTracker;
+			};
+			name = Staging;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1665,6 +1838,7 @@
 			buildConfigurations = (
 				A80000010000000000000003 /* Debug */,
 				A80000010000000000000004 /* Release */,
+				A80000010000000000000006 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1674,6 +1848,7 @@
 			buildConfigurations = (
 				A80000010000000000000001 /* Debug */,
 				A80000010000000000000002 /* Release */,
+				A80000010000000000000005 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1683,6 +1858,7 @@
 			buildConfigurations = (
 				B90000010000000000000001 /* Debug */,
 				B90000010000000000000002 /* Release */,
+				B90000010000000000000003 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1692,6 +1868,7 @@
 			buildConfigurations = (
 				UI800000000000000000UT01 /* Debug */,
 				UI800000000000000000UT02 /* Release */,
+				UI800000000000000000UT03 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

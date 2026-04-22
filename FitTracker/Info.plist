@@ -5,7 +5,7 @@
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>AIEngineBaseURL</key>
-	<string>https://fittracker-ai-production.up.railway.app</string>
+	<string>$(FITTRACKER_AI_ENGINE_BASE_URL)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -23,7 +23,7 @@
 			<string>GoogleSignIn</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>apps.googleusercontent.com.881044848598-3lav013iveag86b27jckjpb7so6mf963</string>
+				<string>$(FITTRACKER_GOOGLE_REVERSED_CLIENT_ID)</string>
 			</array>
 		</dict>
 	</array>
@@ -37,10 +37,14 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FirebaseAutomaticScreenReportingEnabled</key>
 	<false/>
+	<key>FitTrackerEnvironmentName</key>
+	<string>$(FITTRACKER_APP_ENVIRONMENT)</string>
+	<key>FitTrackerRuntimeConfigSource</key>
+	<string>$(FITTRACKER_RUNTIME_CONFIG_SOURCE)</string>
 	<key>GoogleClientID</key>
-	<string> 881044848598-3lav013iveag86b27jckjpb7so6mf963.apps.googleusercontent.com</string>
+	<string>$(FITTRACKER_GOOGLE_CLIENT_ID)</string>
 	<key>GoogleReversedClientID</key>
-	<string>apps.googleusercontent.com.881044848598-3lav013iveag86b27jckjpb7so6mf963</string>
+	<string>$(FITTRACKER_GOOGLE_REVERSED_CLIENT_ID)</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.healthcare-fitness</string>
 	<key>NSFaceIDUsageDescription</key>
@@ -52,15 +56,10 @@
 	<key>NSUserTrackingUsageDescription</key>
 	<string>FitMe uses this to understand how the app is used and improve your experience. No health data is shared.</string>
 	<key>PasskeyRelyingPartyID</key>
-	<string>fittracker.regev.app</string>
+	<string>$(FITTRACKER_PASSKEY_RELYING_PARTY_ID)</string>
 	<key>SupabaseAnonKey</key>
-	<string>sb_publishable_kxgbH8ZJGAd-r_85JxEO5Q_JCkC2sKB</string>
+	<string>$(FITTRACKER_SUPABASE_ANON_KEY)</string>
 	<key>SupabaseURL</key>
-	<string>https://hwbbdzwaismlajtfsbed.supabase.co
-https://hwbbdzwaismlajtfsbed.supabase.co
-https://hwbbdzwaismlajtfsbed.supabase.co
-https://hwbbdzwaismlajtfsbed.supabase.co
-https://hwbbdzwaismlajtfsbed.supabase.co
-</string>
+	<string>$(FITTRACKER_SUPABASE_URL)</string>
 </dict>
 </plist>

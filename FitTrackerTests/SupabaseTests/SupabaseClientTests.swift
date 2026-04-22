@@ -6,7 +6,7 @@ final class SupabaseClientTests: XCTestCase {
     func testSupabaseClientURLMatchesInfoPlist() throws {
         guard
             let urlStr = Bundle.main.object(forInfoDictionaryKey: "SupabaseURL") as? String,
-            !urlStr.contains("YOUR_PROJECT_ID"),
+            !urlStr.contains("YOUR_"),
             let expectedURL = URL(string: urlStr)
         else {
             throw XCTSkip("SupabaseURL not configured in Info.plist — skipped in CI")

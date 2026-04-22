@@ -13,7 +13,7 @@ private var isRunningTests: Bool {
 
 enum SupabaseRuntimeConfiguration {
     static let missingConfigurationMessage =
-        "Supabase is not configured in this build. Set SupabaseURL and SupabaseAnonKey in Info.plist to enable sign-in and sync."
+        "Supabase is not configured in this build. Set FITTRACKER_SUPABASE_URL and FITTRACKER_SUPABASE_ANON_KEY in the xcconfig layer to enable sign-in and sync."
 
     static func credentials(
         urlString: String?,
@@ -23,10 +23,10 @@ enum SupabaseRuntimeConfiguration {
             let urlString,
             let url = URL(string: urlString),
             !urlString.isEmpty,
-            !urlString.contains("YOUR_PROJECT_ID"),
+            !urlString.contains("YOUR_"),
             let key,
             !key.isEmpty,
-            !key.contains("YOUR_SUPABASE")
+            !key.contains("YOUR_")
         else {
             return nil
         }

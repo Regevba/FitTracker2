@@ -723,7 +723,7 @@ final class SignInService: NSObject, ObservableObject {
 
         guard let relyingPartyID = passkeyRelyingPartyIdentifier else {
             isLoading = false
-            authErrorMessage = "Passkey is not configured. Add PasskeyRelyingPartyID to Info.plist."
+            authErrorMessage = "Passkey is not configured. Set FITTRACKER_PASSKEY_RELYING_PARTY_ID in the xcconfig layer."
             return
         }
 
@@ -759,7 +759,7 @@ final class SignInService: NSObject, ObservableObject {
 
         guard let relyingPartyID = passkeyRelyingPartyIdentifier else {
             isLoading = false
-            authErrorMessage = "Passkey is not configured. Add PasskeyRelyingPartyID to Info.plist."
+            authErrorMessage = "Passkey is not configured. Set FITTRACKER_PASSKEY_RELYING_PARTY_ID in the xcconfig layer."
             return
         }
 
@@ -890,7 +890,7 @@ private func generateRandomBytes(count: Int) -> Data {
     private var passkeyRelyingPartyIdentifier: String? {
         let value = (Bundle.main.object(forInfoDictionaryKey: "PasskeyRelyingPartyID") as? String ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !value.isEmpty, value.contains(".") else { return nil }
+        guard !value.isEmpty, !value.contains("YOUR_"), value.contains(".") else { return nil }
         return value
     }
 }

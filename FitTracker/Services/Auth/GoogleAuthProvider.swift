@@ -18,14 +18,14 @@ enum GoogleRuntimeConfiguration {
     static func clientID(in bundle: Bundle = .main) -> String? {
         let value = (bundle.object(forInfoDictionaryKey: "GoogleClientID") as? String ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !value.isEmpty, !value.contains("YOUR_GOOGLE_CLIENT_ID") else { return nil }
+        guard !value.isEmpty, !value.contains("YOUR_") else { return nil }
         return value
     }
 
     static func reversedClientID(in bundle: Bundle = .main) -> String? {
         let value = (bundle.object(forInfoDictionaryKey: "GoogleReversedClientID") as? String ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !value.isEmpty, !value.contains("YOUR_REVERSED_CLIENT_ID") else { return nil }
+        guard !value.isEmpty, !value.contains("YOUR_") else { return nil }
         return value
     }
 
@@ -41,7 +41,7 @@ struct GoogleAuthProvider: GoogleAuthProviding {
             throw NSError(
                 domain: "FitTracker.Auth",
                 code: 503,
-                userInfo: [NSLocalizedDescriptionKey: "Google Sign-In is not configured. Add GoogleClientID to Info.plist."]
+                userInfo: [NSLocalizedDescriptionKey: "Google Sign-In is not configured. Set FITTRACKER_GOOGLE_CLIENT_ID in the xcconfig layer."]
             )
         }
 

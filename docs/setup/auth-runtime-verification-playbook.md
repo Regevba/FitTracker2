@@ -2,7 +2,7 @@
 
 > Purpose: safely validate FitMe's real Supabase-backed email and Google auth flows without polluting the repo with local secrets or overstating production readiness.
 > Status: active maintenance playbook
-> Last updated: 2026-04-12
+> Last updated: 2026-04-21
 
 ---
 
@@ -21,7 +21,7 @@ This playbook keeps that work repeatable and safe.
 
 1. Never commit real secrets, client IDs, or downloaded provider files.
 2. Keep the checked-in `Info.plist` placeholders intact in git.
-3. Prefer local-only replacements during the verification window, then restore the placeholders before commit.
+3. Put real local values in `Config/Local/*.xcconfig`, not in tracked plist files.
 4. Record evidence in docs, Notion, Linear, and the shared PM files only after a real validation step passes.
 5. If any step is only compile-verified, say `compile-verified`, not `runtime-verified`.
 
@@ -29,32 +29,31 @@ This playbook keeps that work repeatable and safe.
 
 | Item | Where it comes from | Where it is used |
 |---|---|---|
-| `SupabaseURL` | Supabase Dashboard > Settings > API | `FitTracker/Info.plist` |
-| `SupabaseAnonKey` | Supabase Dashboard > Settings > API | `FitTracker/Info.plist` |
-| `GoogleClientID` | Google Cloud / Firebase iOS OAuth client | `FitTracker/Info.plist` |
-| `GoogleReversedClientID` | Google Cloud / Firebase iOS OAuth client | `FitTracker/Info.plist` + `CFBundleURLSchemes` |
+| `FITTRACKER_SUPABASE_URL` | Supabase Dashboard > Settings > API | `Config/Local/Debug.xcconfig` or `Config/Local/Staging.xcconfig` |
+| `FITTRACKER_SUPABASE_ANON_KEY` | Supabase Dashboard > Settings > API | `Config/Local/Debug.xcconfig` or `Config/Local/Staging.xcconfig` |
+| `FITTRACKER_GOOGLE_CLIENT_ID` | Google Cloud / Firebase iOS OAuth client | `Config/Local/Debug.xcconfig` or `Config/Local/Staging.xcconfig` |
+| `FITTRACKER_GOOGLE_REVERSED_CLIENT_ID` | Google Cloud / Firebase iOS OAuth client | `Config/Local/Debug.xcconfig` or `Config/Local/Staging.xcconfig` |
 | `GoogleService-Info.plist` | Firebase console | local app bundle only if Firebase runtime validation is also needed |
 
 ## Recommended safe setup flow
 
 ### Option A — current project-compatible flow
 
-Use the checked-in placeholders as the stable repo baseline, then replace them locally only for the verification session:
+Use the checked-in placeholders as the stable repo baseline, then inject local values through the untracked xcconfig overlay:
 
-1. Confirm the current repo has placeholder values in `FitTracker/Info.plist`.
-2. Copy the real local values into:
-   - `SupabaseURL`
-   - `SupabaseAnonKey`
-   - `GoogleClientID`
-   - `GoogleReversedClientID`
-   - the matching `CFBundleURLSchemes` entry
-3. Run the verification sequence below.
-4. Capture evidence.
-5. Restore placeholder values before committing anything.
-
-### Option B — safer future hardening
-
-The longer-term improvement is to move local auth secrets into an untracked xcconfig or build-configuration overlay so validation never requires editing a tracked plist. That is not the current project path yet, so use Option A carefully until the config model is improved.
+1. Confirm the current repo has placeholder-backed values in `FitTracker/Info.plist`.
+2. Copy `Config/Local/Debug.example.xcconfig` or `Config/Local/Staging.example.xcconfig` to the matching non-example filename.
+3. Fill in the real local values for:
+   - `FITTRACKER_SUPABASE_URL`
+   - `FITTRACKER_SUPABASE_ANON_KEY`
+   - `FITTRACKER_GOOGLE_CLIENT_ID`
+   - `FITTRACKER_GOOGLE_REVERSED_CLIENT_ID`
+   - `FITTRACKER_PASSKEY_RELYING_PARTY_ID` if passkey verification is needed
+   - `FITTRACKER_AI_ENGINE_BASE_URL` if a staging AI endpoint is part of the smoke path
+4. Select the matching Xcode configuration (`Debug` or `Staging`).
+5. Run the verification sequence below.
+6. Capture evidence.
+7. Confirm the local xcconfig remains untracked before committing anything.
 
 ## Provider configuration checklist
 
@@ -149,10 +148,9 @@ Minimum evidence for a truthful status change:
 
 After local verification:
 
-1. Restore placeholder values in `FitTracker/Info.plist`.
-2. Remove any local-only downloaded provider files that should not remain in the repo.
-3. Confirm `git diff` contains only intended code/doc changes, not secrets.
-4. Update:
+1. Remove any local-only downloaded provider files that should not remain in the repo.
+2. Confirm `git diff` contains only intended code/doc changes, not secrets.
+3. Update:
    - `docs/product/prd/18.6-authentication.md`
    - `FIT-6`
    - `Chapter 3 — Auth Hardening`
@@ -170,6 +168,5 @@ Use these exact labels in docs and planning:
 
 ## Follow-on improvements
 
-- Move auth runtime config out of tracked plist editing and into an untracked local config layer.
 - Add an auth verification checklist to the control room knowledge hub.
 - Add a small regression checklist for every future auth-related change so this playbook stays reusable.

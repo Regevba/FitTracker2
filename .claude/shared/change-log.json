@@ -1,8 +1,159 @@
 {
   "version": "2.0",
-  "updated": "2026-04-13T10:30:00Z",
+  "updated": "2026-04-22T10:20:17Z",
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [
+    {
+      "timestamp": "2026-04-22T10:20:17Z",
+      "event_type": "verification",
+      "change_type": "build_infra",
+      "title": "Runtime smoke auto-resolves simulators and staging app-launch now passes",
+      "summary": "The runtime smoke gate no longer depends on a single stale simulator UUID. It resolves a valid iOS Simulator destination at runtime, falls back to a named latest-OS device when CoreSimulator discovery is unavailable, and the real staging app_launch smoke now passes against iPhone 17 Pro. In parallel, DEBUG review mode now injects a seeded demo dataset so Home, Stats, Nutrition, Training, and Settings can render populated screenshot-friendly state without editing screenshots by hand.",
+      "artifacts": [
+        ".claude/shared/change-log.json",
+        ".claude/shared/runtime-smoke-latest.json",
+        "scripts/runtime-smoke-gate.py",
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Services/Encryption/EncryptionService.swift"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "staging_app_launch_smoke_passed": true,
+        "dead_simulator_uuid_dependency_removed": true,
+        "review_mode_demo_dataset_added": true,
+        "screenshot_regeneration_path_unblocked": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "qa",
+        "design",
+        "release"
+      ]
+    },
+    {
+      "timestamp": "2026-04-22T04:13:31Z",
+      "event_type": "verification",
+      "change_type": "build_validation",
+      "title": "Staging build path verified after CoreSimulator reset",
+      "summary": "After restarting the user-domain CoreSimulatorService, the Staging iOS build succeeded end-to-end with the new xcconfig layer and opaque AppIcon catalog. The runtime smoke gate now fails only on the expected missing local prerequisite Config/Local/Staging.xcconfig, which confirms the remaining Tier 2.1 blocker is staging credentials rather than build infrastructure.",
+      "artifacts": [
+        ".claude/shared/change-log.json",
+        ".claude/shared/runtime-smoke-latest.json",
+        "Makefile",
+        "scripts/runtime-smoke-gate.py",
+        ".build/staging-build-realhome3.log"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "staging_build_succeeds": true,
+        "asset_catalog_blocker_cleared": true,
+        "runtime_smoke_now_blocked_only_by_staging_overlay": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "qa",
+        "release"
+      ]
+    },
+    {
+      "timestamp": "2026-04-22T04:09:24Z",
+      "event_type": "build_infra",
+      "change_type": "verification_flow",
+      "title": "App icon renderer added and verify-ios HOME override removed",
+      "summary": "The App Store icon pipeline now renders an opaque 1024x1024 marketing master from the checked-in FitMe PDF source, regenerates the full AppIcon catalog from that master, and the canonical verify-ios flow no longer redirects HOME/CFFIXED_USER_HOME into .build/xcode-home because Xcode asset catalogs and SwiftUI preview linking need the real CoreSimulator device set.",
+      "artifacts": [
+        ".claude/shared/change-log.json",
+        "AppStore/AppIcon-1024.png",
+        "FitTracker/Assets.xcassets/AppIcon.appiconset",
+        "Makefile",
+        "docs/design-system/app-store-assets.md",
+        "docs/skills/evolution.md",
+        "docs/skills/pm-hub-evolution.md",
+        "scripts/render_app_icon.swift"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "opaque_app_store_icon_master_added": true,
+        "app_icon_catalog_reproducible_from_pdf": true,
+        "verify_ios_home_override_removed": true,
+        "remaining_blocker_is_local_coresimulator_state": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "qa",
+        "release"
+      ]
+    },
+    {
+      "timestamp": "2026-04-22T09:30:00Z",
+      "event_type": "project_config",
+      "change_type": "build_infra",
+      "title": "Staging xcconfig layer added and app-icon build blocker cleared",
+      "summary": "The iOS target now reads runtime service configuration through tracked xcconfig files with untracked local overlays, a real Staging build configuration exists across app and test targets, staging smoke mode resolves to that configuration, and the missing AppIcon.appiconset PNG set was regenerated from the checked-in FitMe PDF source so builds no longer stop on the asset catalog.",
+      "artifacts": [
+        "Config/Base.xcconfig",
+        "Config/Debug.xcconfig",
+        "Config/Release.xcconfig",
+        "Config/Staging.xcconfig",
+        "Config/Local/README.md",
+        "Config/Local/Debug.example.xcconfig",
+        "Config/Local/Release.example.xcconfig",
+        "Config/Local/Staging.example.xcconfig",
+        "FitTracker.xcodeproj/project.pbxproj",
+        "FitTracker/Info.plist",
+        "FitTracker/Services/Supabase/SupabaseClient.swift",
+        "FitTracker/Services/Auth/GoogleAuthProvider.swift",
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Assets.xcassets/AppIcon.appiconset",
+        "Makefile",
+        "scripts/runtime-smoke-gate.py",
+        "docs/process/runtime-smoke-gates.md",
+        "docs/setup/auth-runtime-verification-playbook.md",
+        "docs/setup/integrations-setup-guide.md",
+        "docs/design-system/app-store-assets.md"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "staging_xcconfig_layer_added": true,
+        "staging_build_configuration_added": true,
+        "runtime_smoke_staging_mode_wired": true,
+        "app_icon_asset_catalog_unblocked": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "release"
+      ]
+    },
     {
       "timestamp": "2026-04-21T16:00:00Z",
       "event_type": "framework_scaffolding",

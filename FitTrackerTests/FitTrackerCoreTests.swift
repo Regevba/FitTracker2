@@ -456,8 +456,8 @@ final class FitTrackerCoreTests: XCTestCase {
     func testSupabaseRuntimeConfigurationRejectsPlaceholderCredentials() {
         XCTAssertNil(
             SupabaseRuntimeConfiguration.credentials(
-                urlString: "https://YOUR_PROJECT_ID.supabase.co",
-                key: "YOUR_SUPABASE_ANON_KEY"
+                urlString: "https://YOUR_STAGING_PROJECT_ID.supabase.co",
+                key: "YOUR_STAGING_SUPABASE_ANON_KEY"
             )
         )
         XCTAssertNil(

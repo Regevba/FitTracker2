@@ -78,14 +78,17 @@ Backend-as-a-service providing authentication (Apple Sign-In, Google Sign-In, em
 
 ### How it connects
 
-The iOS app reads Supabase credentials from `Info.plist` at runtime:
+The iOS app reads Supabase credentials from `Info.plist` at runtime, but
+`Info.plist` now receives those values from the selected `.xcconfig` build
+configuration:
 
 | Info.plist key | Purpose |
 |---|---|
 | `SupabaseURL` | `https://<PROJECT_ID>.supabase.co` |
 | `SupabaseAnonKey` | Public anon key for client-side auth |
 
-The checked-in `Info.plist` contains placeholder values (`YOUR_PROJECT_ID`, `YOUR_SUPABASE_ANON_KEY`). Real values are set locally and never committed.
+The checked-in `Info.plist` contains build-setting placeholders. Real values are
+set locally in `Config/Local/*.xcconfig` and never committed.
 
 ### Graceful degradation
 
@@ -95,15 +98,15 @@ The checked-in `Info.plist` contains placeholder values (`YOUR_PROJECT_ID`, `YOU
 
 1. Go to https://supabase.com/dashboard and create a new project
 2. Note the **Project URL** and **anon/public key** from Settings > API
-3. Open `FitTracker/Info.plist` in Xcode
-4. Replace `YOUR_PROJECT_ID` in `SupabaseURL` with your actual project ID
-5. Replace `YOUR_SUPABASE_ANON_KEY` in `SupabaseAnonKey` with the anon key
+3. Copy `Config/Local/Debug.example.xcconfig` to `Config/Local/Debug.xcconfig`
+4. Replace `FITTRACKER_SUPABASE_URL` with your actual project URL
+5. Replace `FITTRACKER_SUPABASE_ANON_KEY` with the anon key
 6. Configure auth providers in Supabase Dashboard > Authentication > Providers:
    - Apple (requires Apple Developer account + Services ID)
    - Google (requires Google Cloud OAuth client)
    - Email/password (enabled by default)
-7. Replace `YOUR_GOOGLE_CLIENT_ID` and `YOUR_REVERSED_CLIENT_ID` in `GoogleClientID`, `GoogleReversedClientID`, and `CFBundleURLSchemes`
-8. Set up the passkey relying party ID to match `PasskeyRelyingPartyID` in Info.plist (`fittracker.regev.app`)
+7. Replace `FITTRACKER_GOOGLE_CLIENT_ID` and `FITTRACKER_GOOGLE_REVERSED_CLIENT_ID`
+8. Set `FITTRACKER_PASSKEY_RELYING_PARTY_ID` to the relying-party ID you want to validate against
 
 ### Key source files
 
@@ -120,8 +123,8 @@ The checked-in `Info.plist` contains placeholder values (`YOUR_PROJECT_ID`, `YOU
 
 | Item | Location |
 |------|----------|
-| Supabase URL + anon key | `FitTracker/Info.plist` (local only, placeholders in git) |
-| Google client ID + reversed client ID | `FitTracker/Info.plist` (local only, placeholders in git) |
+| Supabase URL + anon key | `Config/Local/Debug.xcconfig` or `Config/Local/Staging.xcconfig` |
+| Google client ID + reversed client ID | `Config/Local/Debug.xcconfig` or `Config/Local/Staging.xcconfig` |
 | Supabase Dashboard | https://supabase.com/dashboard |
 | SPM dependencies | `Supabase` + `GoogleSignIn` packages in `FitTracker.xcodeproj` Package Dependencies |
 

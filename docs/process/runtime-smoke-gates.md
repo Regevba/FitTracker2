@@ -14,8 +14,8 @@ touch user-facing or external-service flows.
 The full recommendation requires a staging-grade environment. Today the project
 still has known runtime dependencies that are local-only:
 
+- `Config/Local/Staging.xcconfig`
 - `FitTracker/GoogleService-Info.plist`
-- real Supabase runtime credentials
 
 Because that environment is not yet standardized, enforcement remains
 **advisory**, not blocking.
@@ -57,8 +57,9 @@ All current profiles are built on the shipped M-4 XCUITest harness.
 When staging exists:
 
 1. switch mode from `local` to `staging`
-2. satisfy staging prerequisites
-3. require a passing report within the configured TTL before transition
+2. build with the `Staging` Xcode configuration
+3. satisfy staging prerequisites
+4. require a passing report within the configured TTL before transition
 
 At that point the runner stops being advisory and becomes the runtime-gate
 evidence source for phase transitions.

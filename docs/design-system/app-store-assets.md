@@ -2,9 +2,11 @@
 
 ## Current repo state
 
-- The project currently has no `Assets.xcassets` catalog checked in.
-- There is no `AppIcon.appiconset` in the repository yet.
-- App icon and App Store submission assets should therefore be treated as required new deliverables, not existing assets to refine.
+- The project has a checked-in `Assets.xcassets` catalog.
+- `FitTracker/Assets.xcassets/Images/FitMeAppIcon.imageset/FitmeIcon.pdf` exists as the canonical icon source asset.
+- `FitTracker/Assets.xcassets/AppIcon.appiconset/` now exists and can be regenerated from that PDF via `make app-icon`.
+- `AppStore/AppIcon-1024.png` is the generated opaque marketing-icon master used for both App Store export and the Xcode icon catalog.
+- App Store submission assets are still incomplete overall because screenshots, metadata, and release validation are still open.
 
 ## Required App Store marketing icon
 
@@ -53,8 +55,8 @@ Source: [Screenshot specifications - App Store Connect Help](https://developer.a
    - iPad `13"`
 4. Create fallback validation templates for:
    - iPad `11"`
-5. Add a checked-in `Assets.xcassets/AppIcon.appiconset`.
-6. Store final marketing exports in a shared design-system or marketing-assets location.
+5. Keep `Assets.xcassets/AppIcon.appiconset` reproducible from the checked-in PDF source.
+6. Store the final opaque marketing export at `AppStore/AppIcon-1024.png`.
 
 ## FitTracker-specific next step
 

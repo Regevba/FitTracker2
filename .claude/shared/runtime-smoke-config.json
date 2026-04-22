@@ -8,13 +8,18 @@
     "full_enforcement_blocker": "A staging-grade runtime environment is not yet available.",
     "evidence_ttl_hours": 72
   },
+  "xcode_configuration_by_mode": {
+    "local": "Debug",
+    "staging": "Staging"
+  },
   "staging_prerequisites": {
     "required_paths": [
+      "Config/Local/Staging.xcconfig",
       "FitTracker/GoogleService-Info.plist"
     ],
     "notes": [
       "Firebase runtime verification still depends on a local GoogleService-Info.plist.",
-      "Signed-in Supabase verification still depends on non-placeholder local runtime credentials."
+      "Signed-in Supabase verification now expects the untracked Config/Local/Staging.xcconfig overlay to supply real staging credentials."
     ]
   },
   "profiles": {

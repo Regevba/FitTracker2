@@ -47,6 +47,7 @@ struct FitTrackerApp: App {
     @StateObject private var watchService  = WatchConnectivityService()
     @StateObject private var analytics     = AnalyticsService.makeDefault()
     @State private var hasRestoredSession = false
+    @State private var hasAppliedReviewFixtures = false
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
@@ -89,6 +90,9 @@ struct FitTrackerApp: App {
             rootView
                 // Apply appearance preference from settings
                 .preferredColorScheme(settings.appearance.colorScheme)
+                .task {
+                    applyReviewFixturesIfNeeded()
+                }
                 .onChange(of: signIn.activeSession) { _, session in
                     if session != nil {
                         Task {
@@ -210,6 +214,46 @@ struct FitTrackerApp: App {
         )
         aiOrchestrator.setAdapters(adapters)
         return snapshot
+    }
+
+    private var reviewDatasetName: String? {
+        guard isScreenReviewModeEnabled else { return nil }
+        let rawValue = ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_DATASET"]?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+        return rawValue?.isEmpty == false ? rawValue : "demo"
+    }
+
+    @MainActor
+    private func applyReviewFixturesIfNeeded() {
+        guard let reviewDatasetName, !hasAppliedReviewFixtures else { return }
+        guard reviewDatasetName == "demo" else { return }
+
+        hasAppliedReviewFixtures = true
+        dataStore.applyReviewSeedData(named: reviewDatasetName, referenceDate: Date())
+        settings.unitSystem = .metric
+        settings.appearance = .light
+        settings.requireBiometricUnlockOnReopen = false
+        analytics.consent.grantConsent()
+        analytics.syncConsentToProvider()
+        watchService.status = .connected
+        healthService.isAuthorized = true
+        healthService.lastSyncDate = Date()
+        healthService.latest = LiveMetrics(
+            heartRate: 72,
+            restingHR: 58,
+            hrv: 43,
+            vo2Max: 41.8,
+            weightKg: 67.2,
+            bodyFatPct: 0.182,
+            leanMassKg: 55.0,
+            stepCount: 12_487,
+            activeCalories: 689,
+            sleepHours: 7.8,
+            deepSleepMin: 94,
+            remSleepMin: 107,
+            lastUpdated: Date()
+        )
     }
 
     // ── Onboarding guard ─────────────────────────────────

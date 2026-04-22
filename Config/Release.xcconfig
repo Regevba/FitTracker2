@@ -1,0 +1,5 @@
+#include "Base.xcconfig"
+#include? "Local/Release.xcconfig"
+
+FITTRACKER_APP_ENVIRONMENT = production
+FITTRACKER_RUNTIME_CONFIG_SOURCE = release-overlay

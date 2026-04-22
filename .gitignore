@@ -76,3 +76,8 @@ orchid/.venv/
 
 # Firebase credentials (local only, contains secrets)
 GoogleService-Info.plist
+
+# Local Xcode runtime overlays (real staging/debug credentials stay out of git)
+Config/Local/*.xcconfig
+!Config/Local/*.example.xcconfig
+!Config/Local/README.md

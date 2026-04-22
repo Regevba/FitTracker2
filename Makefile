@@ -14,7 +14,6 @@ SIMULATOR_ID            ?= 87E96E30-350E-46AC-AB34-B87AF8D1AB1E
 AI_VENV                 ?= $(BUILD_DIR)/ai-venv
 ASTRO_TELEMETRY_DISABLED ?= 1
 SPM_CACHE               ?= $(BUILD_DIR)/spm-cache
-BUILD_HOME              ?= $(BUILD_DIR)/xcode-home
 CLANG_MODULE_CACHE_PATH ?= $(BUILD_DIR)/clang-cache
 DERIVED_DATA            ?= $(BUILD_DIR)/DerivedData
 TEST_DERIVED_DATA       ?= $(BUILD_DIR)/TestDerivedData
@@ -80,8 +79,9 @@ documentation-debt:
 PROFILE ?= app_launch
 MODE ?= local
 DRY_RUN ?= 1
+XCODE_CONFIGURATION ?=
 runtime-smoke:
-	python3 scripts/runtime-smoke-gate.py --profile "$(PROFILE)" --mode "$(MODE)" $(if $(filter 1,$(DRY_RUN)),--dry-run,)
+	python3 scripts/runtime-smoke-gate.py --profile "$(PROFILE)" --mode "$(MODE)" $(if $(XCODE_CONFIGURATION),--configuration "$(XCODE_CONFIGURATION)",) $(if $(filter 1,$(DRY_RUN)),--dry-run,)
 
 # Install git hooks into .git/hooks/ by pointing core.hooksPath at .githooks/.
 # Idempotent — run after clone to activate the pre-commit schema check.
@@ -111,9 +111,11 @@ verify-ai:
 	cd ai-engine && . $(AI_VENV)/bin/activate && pytest -q
 
 verify-ios:
-	mkdir -p $(BUILD_HOME)/Library/Caches/org.swift.swiftpm/manifests/ManifestLoading
 	mkdir -p $(CLANG_MODULE_CACHE_PATH)
-	HOME=$(BUILD_HOME) CFFIXED_USER_HOME=$(BUILD_HOME) CLANG_MODULE_CACHE_PATH=$(CLANG_MODULE_CACHE_PATH) DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild build \
+	# Keep SwiftPM/module artifacts on the SSD, but let Xcode use the real
+	# user-home CoreSimulator device set. Asset catalogs and preview linking
+	# fail when HOME/CFFIXED_USER_HOME are redirected into `.build/xcode-home`.
+	CLANG_MODULE_CACHE_PATH=$(CLANG_MODULE_CACHE_PATH) DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild build \
 		-project FitTracker.xcodeproj \
 		-scheme FitTracker \
 		-destination 'generic/platform=iOS' \
@@ -122,7 +124,7 @@ verify-ios:
 		-derivedDataPath $(DERIVED_DATA) \
 		CODE_SIGNING_ALLOWED=NO \
 		CODE_SIGNING_REQUIRED=NO
-	HOME=$(BUILD_HOME) CFFIXED_USER_HOME=$(BUILD_HOME) CLANG_MODULE_CACHE_PATH=$(CLANG_MODULE_CACHE_PATH) DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild test \
+	CLANG_MODULE_CACHE_PATH=$(CLANG_MODULE_CACHE_PATH) DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild test \
 		-project FitTracker.xcodeproj \
 		-scheme FitTracker \
 		-destination 'platform=iOS Simulator,id=$(SIMULATOR_ID)' \
@@ -203,20 +205,42 @@ verify-evals:
 
 # ── App Store Assets ──────────────────────────────
 app-icon:
-	@echo "Generating app icon sizes from 1024x1024 master..."
+	@echo "Generating opaque app icon master and Xcode sizes from checked-in FitMe PDF source..."
 	@mkdir -p FitTracker/Assets.xcassets/AppIcon.appiconset
-	@sips -z 180 180 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-60@3x.png 2>/dev/null || echo "  icon-1024.png not found — export from Figma first"
-	@sips -z 120 120 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-60@2x.png 2>/dev/null
-	@sips -z 87 87 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-29@3x.png 2>/dev/null
-	@sips -z 80 80 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-40@2x.png 2>/dev/null
-	@sips -z 60 60 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-20@3x.png 2>/dev/null
-	@sips -z 58 58 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-29@2x.png 2>/dev/null
-	@sips -z 40 40 FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png --out FitTracker/Assets.xcassets/AppIcon.appiconset/icon-20@2x.png 2>/dev/null
+	@mkdir -p AppStore
+	@test -f FitTracker/Assets.xcassets/Images/FitMeAppIcon.imageset/FitmeIcon.pdf || (echo "  FitmeIcon.pdf missing — restore the source asset first" && exit 1)
+	@swift scripts/render_app_icon.swift \
+		--input FitTracker/Assets.xcassets/Images/FitMeAppIcon.imageset/FitmeIcon.pdf \
+		--output AppStore/AppIcon-1024.png
+	@cp AppStore/AppIcon-1024.png FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png
+	@for spec in \
+		"icon-20@2x.png:40" \
+		"icon-20@3x.png:60" \
+		"icon-29@2x.png:58" \
+		"icon-29@3x.png:87" \
+		"icon-40@2x.png:80" \
+		"icon-40@3x.png:120" \
+		"icon-60@2x.png:120" \
+		"icon-60@3x.png:180" \
+		"icon-20-ipad@1x.png:20" \
+		"icon-20-ipad@2x.png:40" \
+		"icon-29-ipad@1x.png:29" \
+		"icon-29-ipad@2x.png:58" \
+		"icon-40-ipad@1x.png:40" \
+		"icon-40-ipad@2x.png:80" \
+		"icon-76@1x.png:76" \
+		"icon-76@2x.png:152" \
+		"icon-83.5@2x.png:167"; do \
+		name=$${spec%%:*}; \
+		size=$${spec##*:}; \
+		sips -z "$$size" "$$size" AppStore/AppIcon-1024.png --out "FitTracker/Assets.xcassets/AppIcon.appiconset/$$name" >/dev/null; \
+	done
 	@echo "Done. Verify in Xcode Assets catalog."
 
 app-store-check:
 	@echo "=== App Store Submission Checklist ==="
 	@echo "Icon:"
+	@test -f AppStore/AppIcon-1024.png && echo "  ✓ App Store master exists" || echo "  ✗ App Store master MISSING — run make app-icon"
 	@test -f FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png && echo "  ✓ 1024x1024 master exists" || echo "  ✗ 1024x1024 master MISSING"
 	@test -f FitTracker/Assets.xcassets/AppIcon.appiconset/icon-60@3x.png && echo "  ✓ 60@3x exists" || echo "  ✗ 60@3x MISSING — run make app-icon"
 	@echo "Metadata:"

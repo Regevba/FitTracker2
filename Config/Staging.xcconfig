@@ -1,0 +1,15 @@
+#include "Base.xcconfig"
+
+FITTRACKER_APP_ENVIRONMENT = staging
+FITTRACKER_RUNTIME_CONFIG_SOURCE = staging-overlay
+
+// Safe defaults: staging builds must opt into real runtime services via the
+// local overlay before auth-backed smoke tests can pass.
+FITTRACKER_AI_ENGINE_BASE_URL = https://staging-config-required.invalid
+FITTRACKER_SUPABASE_URL = https://YOUR_STAGING_PROJECT_ID.supabase.co
+FITTRACKER_SUPABASE_ANON_KEY = YOUR_STAGING_SUPABASE_ANON_KEY
+FITTRACKER_GOOGLE_CLIENT_ID = YOUR_STAGING_GOOGLE_CLIENT_ID
+FITTRACKER_GOOGLE_REVERSED_CLIENT_ID = YOUR_STAGING_REVERSED_CLIENT_ID
+FITTRACKER_PASSKEY_RELYING_PARTY_ID = YOUR_STAGING_PASSKEY_RP_ID
+
+#include? "Local/Staging.xcconfig"

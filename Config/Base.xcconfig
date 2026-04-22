@@ -1,0 +1,12 @@
+// Shared runtime configuration placeholders.
+// Real local values belong in Config/Local/*.xcconfig, which is gitignored.
+
+FITTRACKER_APP_ENVIRONMENT = local
+FITTRACKER_RUNTIME_CONFIG_SOURCE = tracked-defaults
+
+FITTRACKER_AI_ENGINE_BASE_URL = https://fittracker-ai-production.up.railway.app
+FITTRACKER_SUPABASE_URL = https://YOUR_PROJECT_ID.supabase.co
+FITTRACKER_SUPABASE_ANON_KEY = YOUR_SUPABASE_ANON_KEY
+FITTRACKER_GOOGLE_CLIENT_ID = YOUR_GOOGLE_CLIENT_ID
+FITTRACKER_GOOGLE_REVERSED_CLIENT_ID = YOUR_REVERSED_CLIENT_ID
+FITTRACKER_PASSKEY_RELYING_PARTY_ID = fittracker.regev.app

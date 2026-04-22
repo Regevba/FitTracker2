@@ -241,13 +241,14 @@ All build artifacts stay on the SSD alongside the project:
 | `BUILD_DIR` | `$(PROJECT_ROOT).build` | Root for all artifacts |
 | `AI_VENV` | `.build/ai-venv` | Python virtual environment |
 | `SPM_CACHE` | `.build/spm-cache` | Swift Package Manager cache |
-| `BUILD_HOME` | `.build/xcode-home` | Xcode HOME override |
 | `CLANG_MODULE_CACHE_PATH` | `.build/clang-cache` | Clang module cache |
 | `DERIVED_DATA` | `.build/DerivedData` | Xcode build products |
 | `TEST_DERIVED_DATA` | `.build/TestDerivedData` | Test products |
 | `npm cache` | `.build/npm-cache` | npm package cache |
 
 **Mac setup:** `defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation "/Volumes/DevSSD/FitTracker2/.build/DerivedData"`
+
+Note: `verify-ios` no longer overrides `HOME` / `CFFIXED_USER_HOME` into `.build/xcode-home` because Xcode asset catalogs and SwiftUI preview linking require the real CoreSimulator device set under the user home directory.
 
 ---
 
