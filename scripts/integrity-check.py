@@ -323,7 +323,7 @@ def discover_case_studies() -> list[dict]:
     return results
 
 
-def build_snapshot() -> dict:
+def build_snapshot(snapshot_trigger: str) -> dict:
     # Load PR cache ONCE, before the per-feature loop, so audit_feature()
     # and audit_case_study_citations() share the same gh call result.
     global _PR_CACHE
@@ -345,6 +345,10 @@ def build_snapshot() -> dict:
     return {
         "timestamp": now_iso(),
         "commit_head": git_head(),
+        "snapshot_context": {
+            "trigger": snapshot_trigger,
+            "counts_for_trend": snapshot_trigger == "scheduled_cycle",
+        },
         "feature_count": len(feature_summaries),
         "case_study_count": len(discover_case_studies()),
         "finding_count": len(findings),
@@ -430,9 +434,15 @@ def main():
                    help="Print findings to stdout, no file writes")
     p.add_argument("--strict", action="store_true",
                    help="Exit 1 on ANY findings (default: only on regressions)")
+    p.add_argument(
+        "--snapshot-trigger",
+        choices=["manual", "scheduled_cycle", "local_baseline"],
+        default="manual",
+        help="Annotate the snapshot source so downstream tools can distinguish cycle data from ad hoc runs.",
+    )
     args = p.parse_args()
 
-    snapshot = build_snapshot()
+    snapshot = build_snapshot(args.snapshot_trigger)
     print(f"Features scanned: {snapshot['feature_count']}")
     print(f"Case studies: {snapshot['case_study_count']}")
     print(f"Findings: {snapshot['finding_count']} "

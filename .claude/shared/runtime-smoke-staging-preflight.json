@@ -1,0 +1,55 @@
+{
+  "timestamp": "2026-04-23T04:59:34Z",
+  "profile": "app_launch",
+  "mode": "staging",
+  "dry_run": true,
+  "description": "Bootstrap smoke test proving the app reaches foreground state.",
+  "configuration": "Staging",
+  "only_testing": [
+    "FitTrackerUITests/AppLaunchUITests/testAppLaunches"
+  ],
+  "requested_simulator_id": "87E96E30-350E-46AC-AB34-B87AF8D1AB1E",
+  "resolved_simulator_id": "",
+  "resolved_simulator_name": "iPhone 17 Pro",
+  "resolved_destination": "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest",
+  "command": [
+    "xcodebuild",
+    "test",
+    "-project",
+    "FitTracker.xcodeproj",
+    "-scheme",
+    "FitTracker",
+    "-configuration",
+    "Staging",
+    "-destination",
+    "platform=iOS Simulator,name=iPhone 17 Pro,OS=latest",
+    "-derivedDataPath",
+    ".build/RuntimeSmokeDerivedData",
+    "CODE_SIGNING_ALLOWED=NO",
+    "CODE_SIGNING_REQUIRED=NO",
+    "-only-testing:FitTrackerUITests/AppLaunchUITests/testAppLaunches"
+  ],
+  "missing_prerequisites": [],
+  "invalid_prerequisites": [
+    "Config/Local/Staging.xcconfig:FITTRACKER_SUPABASE_URL:placeholder-looking",
+    "Config/Local/Staging.xcconfig:FITTRACKER_SUPABASE_ANON_KEY:placeholder-looking",
+    "Config/Local/Staging.xcconfig:FITTRACKER_GOOGLE_CLIENT_ID:placeholder-looking",
+    "Config/Local/Staging.xcconfig:FITTRACKER_GOOGLE_REVERSED_CLIENT_ID:placeholder-looking"
+  ],
+  "staging_overlay_validation": {
+    "path": "Config/Local/Staging.xcconfig",
+    "required_keys": {
+      "FITTRACKER_SUPABASE_URL": "placeholder-looking",
+      "FITTRACKER_SUPABASE_ANON_KEY": "placeholder-looking",
+      "FITTRACKER_GOOGLE_CLIENT_ID": "placeholder-looking",
+      "FITTRACKER_GOOGLE_REVERSED_CLIENT_ID": "placeholder-looking"
+    },
+    "optional_keys": {
+      "FITTRACKER_AI_ENGINE_BASE_URL": "valid-looking",
+      "FITTRACKER_PASSKEY_RELYING_PARTY_ID": "valid-looking"
+    }
+  },
+  "status": "blocked",
+  "stdout_tail": [],
+  "stderr_tail": []
+}

@@ -107,7 +107,33 @@ def feature_case_study_linkage() -> dict[str, object]:
     }
 
 
-def build_debt_items(case_studies: list[dict[str, object]], coverage: dict[str, object], linkage: dict[str, object], snapshot_count: int) -> list[dict[str, object]]:
+def load_snapshot_inventory() -> dict[str, int]:
+    total_files = 0
+    cycle_eligible = 0
+    legacy_without_context = 0
+
+    for path in sorted(SNAPSHOT_ROOT.glob("*.json")):
+        total_files += 1
+        try:
+            payload = json.loads(path.read_text())
+        except json.JSONDecodeError:
+            continue
+
+        context = payload.get("snapshot_context")
+        if isinstance(context, dict):
+            if context.get("counts_for_trend") is True:
+                cycle_eligible += 1
+        else:
+            legacy_without_context += 1
+
+    return {
+        "total_files": total_files,
+        "cycle_eligible": cycle_eligible,
+        "legacy_without_context": legacy_without_context,
+    }
+
+
+def build_debt_items(case_studies: list[dict[str, object]], coverage: dict[str, object], linkage: dict[str, object], cycle_snapshot_count: int) -> list[dict[str, object]]:
     total = len(case_studies)
     items = []
 
@@ -142,14 +168,14 @@ def build_debt_items(case_studies: list[dict[str, object]], coverage: dict[str, 
             "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched.",
         })
 
-    if snapshot_count < 3:
+    if cycle_snapshot_count < 3:
         items.append({
             "id": "integrity_trend_window",
             "title": "Integrity-cycle history is too short for trustworthy documentation-debt trends",
             "severity": "medium",
-            "count": 3 - snapshot_count,
+            "count": 3 - cycle_snapshot_count,
             "examples": [],
-            "recommended_next_step": "Wait for at least 2-3 full 72h cycles before treating dashboard trend lines as meaningful.",
+            "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful.",
         })
 
     return items
@@ -166,7 +192,8 @@ def main() -> int:
 
     scanned = [scan_case_study(path) for path in candidate_case_studies()]
     linkage = feature_case_study_linkage()
-    snapshot_count = len(list(SNAPSHOT_ROOT.glob("*.json")))
+    snapshot_inventory = load_snapshot_inventory()
+    snapshot_count = snapshot_inventory["cycle_eligible"]
 
     coverage = {
         "date_written": build_coverage(scanned, "has_date_written"),
@@ -190,16 +217,19 @@ def main() -> int:
         "summary": {
             "case_studies_scanned": len(scanned),
             "features_scanned": linkage["total"],
-            "integrity_snapshots": snapshot_count,
+            "integrity_snapshot_files": snapshot_inventory["total_files"],
+            "integrity_cycle_snapshots": snapshot_count,
             "trend_ready": snapshot_count >= 3,
             "open_debt_items": len(debt_items),
         },
         "coverage": coverage,
         "integrity_cycle": {
+            "snapshot_files_available": snapshot_inventory["total_files"],
             "snapshots_available": snapshot_count,
+            "legacy_snapshot_files_without_context": snapshot_inventory["legacy_without_context"],
             "trend_ready": snapshot_count >= 3,
             "status": "baseline_only" if snapshot_count < 3 else "trend_ready",
-            "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple 72h cycles.",
+            "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple scheduled 72h cycle snapshots; ad hoc local snapshots do not unlock trend mode.",
         },
         "debt_items": debt_items,
     }

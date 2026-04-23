@@ -1,11 +1,12 @@
 {
   "version": "1.0",
-  "updated": "2026-04-21T15:50:34Z",
+  "updated": "2026-04-23T04:59:34Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 41,
     "features_scanned": 40,
-    "integrity_snapshots": 1,
+    "integrity_snapshot_files": 1,
+    "integrity_cycle_snapshots": 0,
     "trend_ready": false,
     "open_debt_items": 7
   },
@@ -79,10 +80,12 @@
     }
   },
   "integrity_cycle": {
-    "snapshots_available": 1,
+    "snapshot_files_available": 1,
+    "snapshots_available": 0,
+    "legacy_snapshot_files_without_context": 1,
     "trend_ready": false,
     "status": "baseline_only",
-    "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple 72h cycles."
+    "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple scheduled 72h cycle snapshots; ad hoc local snapshots do not unlock trend mode."
   },
   "debt_items": [
     {
@@ -168,9 +171,9 @@
       "id": "integrity_trend_window",
       "title": "Integrity-cycle history is too short for trustworthy documentation-debt trends",
       "severity": "medium",
-      "count": 2,
+      "count": 3,
       "examples": [],
-      "recommended_next_step": "Wait for at least 2-3 full 72h cycles before treating dashboard trend lines as meaningful."
+      "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful."
     }
   ]
 }

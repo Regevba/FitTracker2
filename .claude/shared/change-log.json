@@ -1,8 +1,54 @@
 {
   "version": "2.0",
-  "updated": "2026-04-22T10:20:17Z",
+  "updated": "2026-04-23T04:59:34Z",
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [
+    {
+      "timestamp": "2026-04-23T04:59:34Z",
+      "event_type": "audit_remediation",
+      "change_type": "trust_hardening",
+      "title": "Gemini follow-up automation hardened and staging-credentials plan documented",
+      "summary": "The integrity-cycle workflow now preserves the real integrity-check exit code, strict manual runs no longer masquerade as regressions, documentation-debt trend readiness counts only scheduled cycle snapshots, the contemporaneous logger now requires explicit retroactive markers, and the audit/trust docs now reflect the real status of Tier 1.1, Tier 2.1, Tier 2.2, Tier 3.1, and Tier 3.2. The staging preflight also records the exact remaining local auth-secret blockers without exposing their values.",
+      "artifacts": [
+        ".claude/logs/meta-analysis-audit.log.json",
+        ".claude/shared/change-log.json",
+        ".claude/shared/documentation-debt.json",
+        ".claude/shared/runtime-smoke-staging-preflight.json",
+        ".github/workflows/integrity-cycle.yml",
+        "docs/process/contemporaneous-logging.md",
+        "docs/process/documentation-debt-dashboard.md",
+        "docs/process/runtime-smoke-gates.md",
+        "docs/setup/auth-runtime-verification-playbook.md",
+        "docs/skills/evolution.md",
+        "project_gemini_audit_2026_04_21.md",
+        "scripts/append-feature-log.py",
+        "scripts/documentation-debt-report.py",
+        "scripts/integrity-check.py",
+        "trust/audits/2026-04-21-gemini/README.md",
+        "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": [],
+        "analytics": []
+      },
+      "impact": {
+        "integrity_cycle_exit_status_fixed": true,
+        "strict_manual_runs_no_longer_open_regression_issues": true,
+        "documentation_debt_trend_readiness_hardened": true,
+        "tier_2_2_logger_pilot_started": true,
+        "staging_auth_remaining_blockers_enumerated": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "release"
+      ]
+    },
     {
       "timestamp": "2026-04-22T10:20:17Z",
       "event_type": "verification",

@@ -2,6 +2,7 @@
 
 > **Date:** 2026-04-21 (v7.1 update)
 > **Status:** v7.1 — Integrity Cycle: 72-hour recurring audit of every feature state.json, catching "shipped but unreconciled" drift within 72h of occurrence via GitHub Actions + snapshot ledger + auto-issue on regression. Extends v7.0 (HADF Hardware-Aware Dispatch) + all prior v6.0 capabilities
+> **2026-04-23 note:** Gemini follow-up hardening corrected the workflow's regression detection path, tightened trend-readiness rules to count only scheduled cycle snapshots, and kept Tier 2.1/Tier 2.2/Tier 3.2 framed as groundwork or pilot work rather than fully complete.
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---

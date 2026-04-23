@@ -56,18 +56,37 @@ jobs:
           NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
           PREV_SNAPSHOT: ${{ steps.paths.outputs.prev }}
         run: |
+          set -o pipefail
+          strict_flag=""
+          snapshot_trigger="manual"
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            snapshot_trigger="scheduled_cycle"
+          fi
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.strict }}" = "true" ]; then
+            strict_flag="--strict"
+          fi
+
           if [ -n "$PREV_SNAPSHOT" ]; then
             python3 scripts/integrity-check.py \
               --snapshot "$NEW_SNAPSHOT" \
               --compare-to "$PREV_SNAPSHOT" \
+              --snapshot-trigger "$snapshot_trigger" \
+              $strict_flag \
               | tee /tmp/integrity-report.txt
-            echo "status=$?" >> "$GITHUB_OUTPUT"
           else
             python3 scripts/integrity-check.py \
               --snapshot "$NEW_SNAPSHOT" \
+              --snapshot-trigger "$snapshot_trigger" \
+              $strict_flag \
               | tee /tmp/integrity-report.txt
-            echo "status=0" >> "$GITHUB_OUTPUT"
           fi
+          status=${PIPESTATUS[0]}
+          regression=false
+          if grep -q "REGRESSION detected vs previous snapshot" /tmp/integrity-report.txt; then
+            regression=true
+          fi
+          echo "status=${status}" >> "$GITHUB_OUTPUT"
+          echo "regression=${regression}" >> "$GITHUB_OUTPUT"
 
       - name: Commit snapshot
         env:
@@ -85,7 +104,7 @@ jobs:
           fi
 
       - name: Package report for issue body
-        if: steps.check.outputs.status == '1'
+        if: steps.check.outputs.regression == 'true'
         run: |
           # Trim report to 12KB and pass as multi-line env var to github-script.
           # Passing via env keeps the script step free of filesystem reads.
@@ -97,7 +116,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Open issue on regression
-        if: steps.check.outputs.status == '1'
+        if: steps.check.outputs.regression == 'true'
         uses: actions/github-script@v7
         env:
           NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}

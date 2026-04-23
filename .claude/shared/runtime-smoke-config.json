@@ -22,6 +22,19 @@
       "Signed-in Supabase verification now expects the untracked Config/Local/Staging.xcconfig overlay to supply real staging credentials."
     ]
   },
+  "staging_overlay_validation": {
+    "path": "Config/Local/Staging.xcconfig",
+    "required_keys": [
+      "FITTRACKER_SUPABASE_URL",
+      "FITTRACKER_SUPABASE_ANON_KEY",
+      "FITTRACKER_GOOGLE_CLIENT_ID",
+      "FITTRACKER_GOOGLE_REVERSED_CLIENT_ID"
+    ],
+    "optional_keys": [
+      "FITTRACKER_AI_ENGINE_BASE_URL",
+      "FITTRACKER_PASSKEY_RELYING_PARTY_ID"
+    ]
+  },
   "profiles": {
     "app_launch": {
       "description": "Bootstrap smoke test proving the app reaches foreground state.",

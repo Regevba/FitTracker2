@@ -103,6 +103,22 @@ def list_available_simulators() -> list[dict[str, object]]:
     return simulators
 
 
+def load_xcconfig_settings(path: Path) -> dict[str, str]:
+    settings: dict[str, str] = {}
+    if not path.exists():
+        return settings
+
+    for raw_line in path.read_text().splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("//") or line.startswith("#"):
+            continue
+        if "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        settings[key.strip()] = value.strip().strip('"')
+    return settings
+
+
 def resolve_simulator(preferred_id: str) -> dict[str, str]:
     available = list_available_simulators()
     if not available:
@@ -142,13 +158,79 @@ def resolve_simulator(preferred_id: str) -> dict[str, str]:
     }
 
 
-def check_staging_prerequisites(config: dict[str, object]) -> list[str]:
-    missing = []
+def classify_overlay_value(key: str, value: str) -> str:
+    trimmed = value.strip()
+    if not trimmed:
+        return "missing"
+
+    lower = trimmed.lower()
+    placeholder_markers = (
+        "your-",
+        "your_",
+        "placeholder",
+        "example.com",
+        ".invalid",
+        "required",
+    )
+    if any(marker in lower for marker in placeholder_markers):
+        return "placeholder-looking"
+
+    if key == "FITTRACKER_SUPABASE_URL":
+        if trimmed.startswith("https://") and ".supabase.co" in trimmed:
+            return "valid-looking"
+        return "format-mismatch"
+
+    if key == "FITTRACKER_SUPABASE_ANON_KEY":
+        return "valid-looking" if len(trimmed) >= 20 else "too-short"
+
+    if key == "FITTRACKER_GOOGLE_CLIENT_ID":
+        return "valid-looking" if trimmed.endswith(".apps.googleusercontent.com") else "format-mismatch"
+
+    if key == "FITTRACKER_GOOGLE_REVERSED_CLIENT_ID":
+        return "valid-looking" if trimmed.startswith("com.googleusercontent.apps.") else "format-mismatch"
+
+    if key == "FITTRACKER_AI_ENGINE_BASE_URL":
+        return "valid-looking" if trimmed.startswith("https://") else "format-mismatch"
+
+    if key == "FITTRACKER_PASSKEY_RELYING_PARTY_ID":
+        return "valid-looking" if "." in trimmed and " " not in trimmed else "format-mismatch"
+
+    return "present"
+
+
+def check_staging_prerequisites(config: dict[str, object]) -> dict[str, object]:
+    missing_paths: list[str] = []
+    invalid_items: list[str] = []
+    overlay_validation: dict[str, object] = {"path": None, "required_keys": {}, "optional_keys": {}}
+
     prerequisites = config.get("staging_prerequisites", {})
     for relative_path in prerequisites.get("required_paths", []):
         if not (REPO_ROOT / relative_path).exists():
-            missing.append(relative_path)
-    return missing
+            missing_paths.append(relative_path)
+
+    overlay_config = config.get("staging_overlay_validation", {})
+    overlay_relative_path = overlay_config.get("path")
+    if isinstance(overlay_relative_path, str):
+        overlay_path = REPO_ROOT / overlay_relative_path
+        overlay_validation["path"] = overlay_relative_path
+        settings = load_xcconfig_settings(overlay_path)
+
+        for key in overlay_config.get("required_keys", []):
+            status = classify_overlay_value(key, settings.get(key, ""))
+            overlay_validation["required_keys"][key] = status
+            if status != "valid-looking":
+                invalid_items.append(f"{overlay_relative_path}:{key}:{status}")
+
+        for key in overlay_config.get("optional_keys", []):
+            raw_value = settings.get(key, "")
+            status = classify_overlay_value(key, raw_value) if raw_value else "missing-optional"
+            overlay_validation["optional_keys"][key] = status
+
+    return {
+        "missing_paths": missing_paths,
+        "invalid_items": invalid_items,
+        "overlay_validation": overlay_validation,
+    }
 
 
 def main() -> int:
@@ -173,7 +255,13 @@ def main() -> int:
     configuration = args.configuration or configuration_by_mode.get(args.mode, "Debug")
     simulator = resolve_simulator(args.simulator_id)
     command = build_command(simulator["destination"], only_testing, configuration)
-    missing_prereqs = check_staging_prerequisites(config) if args.mode == "staging" else []
+    staging_checks = check_staging_prerequisites(config) if args.mode == "staging" else {
+        "missing_paths": [],
+        "invalid_items": [],
+        "overlay_validation": None,
+    }
+    missing_prereqs = staging_checks["missing_paths"]
+    invalid_prereqs = staging_checks["invalid_items"]
 
     report = {
         "timestamp": utc_now(),
@@ -189,12 +277,14 @@ def main() -> int:
         "resolved_destination": simulator["destination"],
         "command": command,
         "missing_prerequisites": missing_prereqs,
+        "invalid_prerequisites": invalid_prereqs,
+        "staging_overlay_validation": staging_checks["overlay_validation"],
         "status": "planned",
         "stdout_tail": [],
         "stderr_tail": [],
     }
 
-    if missing_prereqs:
+    if missing_prereqs or invalid_prereqs:
         report["status"] = "blocked"
     elif args.dry_run:
         report["status"] = "planned"

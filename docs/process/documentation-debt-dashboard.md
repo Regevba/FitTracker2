@@ -1,7 +1,7 @@
 # Documentation Debt Dashboard
 
 > Groundwork for Gemini audit Tier 3.2.
-> Status: **baseline dashboard shipped; trend view waits on multiple integrity cycles**.
+> Status: **baseline dashboard shipped; trend view waits on scheduled cycle history**.
 
 ## Purpose
 
@@ -43,12 +43,18 @@ The report is intentionally split into:
 
 ## Why it is only a baseline today
 
+Trend readiness is intentionally conservative. As of **2026-04-23**, the report
+only counts snapshots that were explicitly marked as scheduled 72-hour cycle
+artifacts. Ad hoc local/manual snapshots remain useful evidence, but they do
+not unlock trend mode.
+
 The Integrity Cycle began on **2026-04-21** and the repo currently has only its
-baseline snapshot. That means:
+baseline snapshot file, with zero scheduled cycle snapshots carrying the new
+trend-readiness marker. That means:
 
 - point-in-time debt metrics are valid
 - trend charts are **not** yet valid
-- the first meaningful trend window appears after roughly 2-3 cycles
+- the first meaningful trend window appears after three scheduled cycle snapshots
 
 Until then, the dashboard should be read as "baseline debt inventory", not
 "documentation trend analysis".

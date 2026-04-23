@@ -1,7 +1,7 @@
 # Contemporaneous Logging
 
 > Groundwork for Gemini audit Tier 2.2.
-> Status: **scaffolding shipped, full process migration not yet complete**.
+> Status: **pilot active; logger hardened, full process migration not yet complete**.
 
 ## Why this exists
 
@@ -25,6 +25,13 @@ artifact:
 
 The long-term target is: the case study is generated from, or at least grounded
 by, the structured log rather than from memory alone.
+
+As of **2026-04-23**, the logger is no longer purely permissive:
+
+- timestamps must stay monotonic by default
+- older events require explicit `--retroactive`
+- retroactive entries must include `--retroactive-reason`
+- each event records whether it was logged `contemporaneous` or `retroactive`
 
 ## Storage
 
@@ -76,6 +83,19 @@ python3 scripts/append-feature-log.py \
 The tool auto-creates the log if it does not already exist and copies basic
 metadata from `.claude/features/<feature>/state.json` when present.
 
+If you need to backfill an older event deliberately:
+
+```bash
+python3 scripts/append-feature-log.py \
+  --feature meta-analysis-audit \
+  --event-type docs_published \
+  --phase documentation \
+  --summary "Retroactive note for a document published before the logger hardened." \
+  --timestamp 2026-04-21T16:00:00Z \
+  --retroactive \
+  --retroactive-reason "Capturing a pre-hardening milestone from the Gemini follow-up batch."
+```
+
 ## Rollout plan
 
 ### Phase 1 — scaffolding
@@ -88,6 +108,7 @@ metadata from `.claude/features/<feature>/state.json` when present.
 
 - every multi-session feature starts a log at Phase 0/1
 - major checkpoints append events during work, not after merge
+- at least one real log exists in `.claude/logs/` for the active audit/remediation stream
 
 ### Phase 3 — case-study grounding
 

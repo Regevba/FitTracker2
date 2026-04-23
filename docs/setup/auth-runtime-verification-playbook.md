@@ -2,7 +2,7 @@
 
 > Purpose: safely validate FitMe's real Supabase-backed email and Google auth flows without polluting the repo with local secrets or overstating production readiness.
 > Status: active maintenance playbook
-> Last updated: 2026-04-21
+> Last updated: 2026-04-23
 
 ---
 
@@ -16,6 +16,18 @@ Repo wiring is no longer the main auth problem. The remaining gap is runtime pro
 - session restore after relaunch
 
 This playbook keeps that work repeatable and safe.
+
+## Current status on 2026-04-23
+
+- `repo-wired`: yes
+- `compile-verified`: yes
+- staging `app_launch` smoke path: passed previously
+- staging auth preflight: now blocks truthfully until the local staging overlay contains real auth values
+- remaining required local secrets:
+  - `FITTRACKER_SUPABASE_URL`
+  - `FITTRACKER_SUPABASE_ANON_KEY`
+  - `FITTRACKER_GOOGLE_CLIENT_ID`
+  - `FITTRACKER_GOOGLE_REVERSED_CLIENT_ID`
 
 ## Safety rules
 
@@ -54,6 +66,28 @@ Use the checked-in placeholders as the stable repo baseline, then inject local v
 5. Run the verification sequence below.
 6. Capture evidence.
 7. Confirm the local xcconfig remains untracked before committing anything.
+
+### Staging preflight check
+
+Before a real staging smoke run, use the runner itself as a secret-safe preflight:
+
+```bash
+make runtime-smoke PROFILE=app_launch MODE=staging DRY_RUN=1
+```
+
+The generated report blocks if `Config/Local/Staging.xcconfig` is missing, if
+`FitTracker/GoogleService-Info.plist` is missing, or if the required staging
+auth keys still look like placeholders. It records only statuses like
+`valid-looking` or `placeholder-looking`, not the underlying secret values.
+
+### Current unblock sequence
+
+1. Open `Config/Local/Staging.xcconfig`.
+2. Replace the four placeholder auth values with real staging values.
+3. Re-run the staging preflight command above.
+4. Run the real staging app-launch smoke again.
+5. Continue through the email, Google, reset, and session-restore checks below.
+6. Only after those pass, promote auth status language from `compile-verified` to `runtime-verified`.
 
 ## Provider configuration checklist
 
