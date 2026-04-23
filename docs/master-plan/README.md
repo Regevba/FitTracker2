@@ -34,6 +34,7 @@
 
 | File | Date | What it captures |
 |---|---|---|
+| `work-checkpoint-2026-04-23-staging-auth.md` | 2026-04-23 | Current staging-auth/runtime-verification handoff, including remote baseline vs local-only checkpoint state |
 | `work-checkpoint-2026-04-06.md` | 2026-04-06 | Runtime verification checkpoint before SSD move |
 | `session-summary-2026-04-06.md` | 2026-04-06 | Session summary covering the branch state at that snapshot |
 | `onboarding-v2-merge-timeline.md` | 2026-04-07 | Timeline of the 4-day branch consolidation that shipped PR #59 |

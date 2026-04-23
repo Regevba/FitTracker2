@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "feature": "staging-auth-runtime",
+  "title": "staging auth runtime verification",
+  "work_type": "verification",
+  "current_phase": "runtime_verification",
+  "framework_version": "7.0",
+  "started_at": "2026-04-23T13:28:07Z",
+  "updated_at": "2026-04-23T13:44:08Z",
+  "events": [
+    {
+      "timestamp": "2026-04-23T13:28:07Z",
+      "event_type": "runtime_verification",
+      "phase": "runtime_verification",
+      "summary": "Real staging app_launch smoke passed once local staging overlay credentials were valid and the simulator destination resolved cleanly.",
+      "artifacts": [
+        ".claude/shared/runtime-smoke-staging-app-launch.json"
+      ],
+      "metrics": {
+        "status": "passed",
+        "returncode": 0
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-23T13:35:14Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "runtime_verification",
+      "summary": "Staging preflight turned clean after restoring tracked config to placeholders, keeping Info.plist on build-setting references, and validating the real local overlay only.",
+      "artifacts": [
+        ".claude/shared/runtime-smoke-staging-preflight.json",
+        "Config/Staging.xcconfig",
+        "FitTracker/Info.plist"
+      ],
+      "metrics": {
+        "missing_prerequisites": 0,
+        "invalid_prerequisites": 0
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-23T13:39:30Z",
+      "event_type": "blocked",
+      "phase": "runtime_verification",
+      "summary": "The staging sign_in_surface smoke now fails for a real product-flow reason: auth actions are embedded in onboarding step 5, but the current test still asserts too early after launch.",
+      "artifacts": [
+        ".claude/shared/runtime-smoke-staging-sign-in-surface.json",
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Views/Onboarding/v2/OnboardingView.swift",
+        "FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift",
+        "FitTrackerUITests/SignInUITests.swift"
+      ],
+      "metrics": {
+        "status": "failed",
+        "returncode": 65
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

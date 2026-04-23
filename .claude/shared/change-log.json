@@ -1,8 +1,47 @@
 {
   "version": "2.0",
-  "updated": "2026-04-23T04:59:34Z",
+  "updated": "2026-04-23T13:44:08Z",
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [
+    {
+      "timestamp": "2026-04-23T13:44:08Z",
+      "event_type": "resume_checkpoint",
+      "change_type": "runtime_verification",
+      "title": "Staging auth checkpoint recorded with remote baseline and local-only verification state",
+      "summary": "Shared repo memory now captures the exact staging-auth checkpoint after the Gemini remediation push. The checkpoint records that origin/main remained at commit 2415475 while newer local work restored tracked config safety, validated the local staging overlay, passed the real staging app-launch smoke, and identified the remaining sign-in smoke failure as an onboarding-path mismatch rather than a credential problem.",
+      "artifacts": [
+        ".claude/logs/staging-auth-runtime.log.json",
+        ".claude/shared/change-log.json",
+        ".claude/shared/runtime-smoke-staging-app-launch.json",
+        ".claude/shared/runtime-smoke-staging-preflight.json",
+        ".claude/shared/runtime-smoke-staging-sign-in-surface.json",
+        "docs/master-plan/work-checkpoint-2026-04-23-staging-auth.md",
+        "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md"
+      ],
+      "external_sync": {
+        "linear": [],
+        "notion": [],
+        "vercel": [],
+        "figma": [],
+        "github": [
+          "origin/main"
+        ],
+        "analytics": []
+      },
+      "impact": {
+        "remote_baseline_commit_recorded": true,
+        "tracked_staging_config_restored_to_placeholders": true,
+        "staging_preflight_passed_locally": true,
+        "staging_app_launch_passed_locally": true,
+        "sign_in_surface_blocker_reframed_as_onboarding_path_issue": true
+      },
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "release"
+      ]
+    },
     {
       "timestamp": "2026-04-23T04:59:34Z",
       "event_type": "audit_remediation",

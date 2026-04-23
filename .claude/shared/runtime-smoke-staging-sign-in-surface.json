@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-04-23T13:28:07Z",
-  "profile": "app_launch",
+  "timestamp": "2026-04-23T13:39:30Z",
+  "profile": "sign_in_surface",
   "mode": "staging",
   "dry_run": false,
-  "description": "Bootstrap smoke test proving the app reaches foreground state.",
+  "description": "Sign-in surface smoke test with auto-login disabled.",
   "configuration": "Staging",
   "only_testing": [
-    "FitTrackerUITests/AppLaunchUITests/testAppLaunches"
+    "FitTrackerUITests/SignInUITests/testSignInScreenRendersWhenAutoLoginDisabled"
   ],
   "requested_simulator_id": "87E96E30-350E-46AC-AB34-B87AF8D1AB1E",
   "resolved_simulator_id": "939943D6-5249-431B-9D73-304BD1E17EAC",
@@ -27,7 +27,7 @@
     ".build/RuntimeSmokeDerivedData",
     "CODE_SIGNING_ALLOWED=NO",
     "CODE_SIGNING_REQUIRED=NO",
-    "-only-testing:FitTrackerUITests/AppLaunchUITests/testAppLaunches"
+    "-only-testing:FitTrackerUITests/SignInUITests/testSignInScreenRendersWhenAutoLoginDisabled"
   ],
   "missing_prerequisites": [],
   "invalid_prerequisites": [],
@@ -44,9 +44,11 @@
       "FITTRACKER_PASSKEY_RELYING_PARTY_ID": "valid-looking"
     }
   },
-  "status": "passed",
+  "status": "failed",
   "stdout_tail": [
-    "    builtin-validationUtility /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app -shallow-bundle -infoplist-subpath Info.plist",
+    "    cd /Volumes/DevSSD/FitTracker2",
+    "    builtin-swiftStdLibTool --copy --verbose --scan-executable /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app/PlugIns/FitTrackerTests.xctest/FitTrackerTests --scan-folder /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app/PlugIns/FitTrackerTests.xctest/Frameworks --scan-folder /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app/PlugIns/FitTrackerTests.xctest/PlugIns --scan-folder /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app/PlugIns/FitTrackerTests.xctest/SystemExtensions --scan-folder /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app/PlugIns/FitTrackerTests.xctest/Extensions --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTracker.app/PlugIns/FitTrackerTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Intermediates.noindex/FitTracker.build/Staging-iphonesimulator/FitTrackerTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os",
+    "Ignoring --strip-bitcode because --sign was not passed",
     "",
     "ProcessInfoPlistFile /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Products/Staging-iphonesimulator/FitTrackerUITests-Runner.app/PlugIns/FitTrackerUITests.xctest/Info.plist /Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Build/Intermediates.noindex/FitTracker.build/Staging-iphonesimulator/FitTrackerUITests.build/empty-FitTrackerUITests.plist (in target 'FitTrackerUITests' from project 'FitTracker')",
     "    cd /Volumes/DevSSD/FitTracker2",
@@ -59,20 +61,22 @@
     "",
     "",
     "Test session results, code coverage, and logs:",
-    "\t/Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Logs/Test/Test-FitTracker-2026.04.23_16-28-13-+0300.xcresult",
-    "",
-    "** TEST SUCCEEDED **",
+    "\t/Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Logs/Test/Test-FitTracker-2026.04.23_16-39-41-+0300.xcresult",
     "",
     "Testing started",
-    "Test suite 'AppLaunchUITests' started on 'Clone 1 of iPhone 17 Pro - FitTrackerUITests-Runner (25245)'",
-    "Test case 'AppLaunchUITests.testAppLaunches()' passed on 'Clone 1 of iPhone 17 Pro - FitTrackerUITests-Runner (25245)' (36.965 seconds)"
+    "Test suite 'SignInUITests' started on 'Clone 1 of iPhone 17 Pro - FitTrackerUITests-Runner (28663)'",
+    "Test case 'SignInUITests.testSignInScreenRendersWhenAutoLoginDisabled()' failed on 'Clone 1 of iPhone 17 Pro - FitTrackerUITests-Runner (28663)' (28.321 seconds)"
   ],
   "stderr_tail": [
-    "2026-04-23 16:29:49.882 xcodebuild[24737:4987828] [MT] IDELaunchParametersSnapshot: The operation couldn\u2019t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)",
-    "2026-04-23 16:29:49.882 xcodebuild[24737:4987828] [MT] IDELaunchParametersSnapshot: no debugger version",
-    "2026-04-23 16:30:26.592 xcodebuild[24737:4987828] [MT] IDETestOperationsObserverDebug: 88.391 elapsed -- Testing started completed.",
-    "2026-04-23 16:30:26.592 xcodebuild[24737:4987828] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start",
-    "2026-04-23 16:30:26.592 xcodebuild[24737:4987828] [MT] IDETestOperationsObserverDebug: 88.391 sec, +88.391 sec -- end"
+    "2026-04-23 16:40:39.717 xcodebuild[27933:5018656] [MT] IDELaunchParametersSnapshot: The operation couldn\u2019t be completed. (DebuggerLLDB.DebuggerVersionStore.StoreError error 0.)",
+    "2026-04-23 16:40:39.717 xcodebuild[27933:5018656] [MT] IDELaunchParametersSnapshot: no debugger version",
+    "2026-04-23 16:41:11.463 xcodebuild[27933:5023672]  IDETestOperationsObserverDebug: Failure collecting diagnostics from simulator: Process exited with error 72:",
+    " xcrun: error: unable to find utility \"simctl\", not a developer tool or in PATH",
+    "",
+    "2026-04-23 16:41:11.559 xcodebuild[27933:5018656] [MT] IDETestOperationsObserverDebug: 74.475 elapsed -- Testing started completed.",
+    "2026-04-23 16:41:11.559 xcodebuild[27933:5018656] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start",
+    "2026-04-23 16:41:11.559 xcodebuild[27933:5018656] [MT] IDETestOperationsObserverDebug: 74.475 sec, +74.475 sec -- end",
+    "** TEST FAILED **"
   ],
-  "returncode": 0
+  "returncode": 65
 }

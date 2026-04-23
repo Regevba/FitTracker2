@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-23T04:59:34Z",
+  "timestamp": "2026-04-23T13:35:14Z",
   "profile": "app_launch",
   "mode": "staging",
   "dry_run": true,
@@ -30,26 +30,21 @@
     "-only-testing:FitTrackerUITests/AppLaunchUITests/testAppLaunches"
   ],
   "missing_prerequisites": [],
-  "invalid_prerequisites": [
-    "Config/Local/Staging.xcconfig:FITTRACKER_SUPABASE_URL:placeholder-looking",
-    "Config/Local/Staging.xcconfig:FITTRACKER_SUPABASE_ANON_KEY:placeholder-looking",
-    "Config/Local/Staging.xcconfig:FITTRACKER_GOOGLE_CLIENT_ID:placeholder-looking",
-    "Config/Local/Staging.xcconfig:FITTRACKER_GOOGLE_REVERSED_CLIENT_ID:placeholder-looking"
-  ],
+  "invalid_prerequisites": [],
   "staging_overlay_validation": {
     "path": "Config/Local/Staging.xcconfig",
     "required_keys": {
-      "FITTRACKER_SUPABASE_URL": "placeholder-looking",
-      "FITTRACKER_SUPABASE_ANON_KEY": "placeholder-looking",
-      "FITTRACKER_GOOGLE_CLIENT_ID": "placeholder-looking",
-      "FITTRACKER_GOOGLE_REVERSED_CLIENT_ID": "placeholder-looking"
+      "FITTRACKER_SUPABASE_URL": "valid-looking",
+      "FITTRACKER_SUPABASE_ANON_KEY": "valid-looking",
+      "FITTRACKER_GOOGLE_CLIENT_ID": "valid-looking",
+      "FITTRACKER_GOOGLE_REVERSED_CLIENT_ID": "valid-looking"
     },
     "optional_keys": {
       "FITTRACKER_AI_ENGINE_BASE_URL": "valid-looking",
       "FITTRACKER_PASSKEY_RELYING_PARTY_ID": "valid-looking"
     }
   },
-  "status": "blocked",
+  "status": "planned",
   "stdout_tail": [],
   "stderr_tail": []
 }

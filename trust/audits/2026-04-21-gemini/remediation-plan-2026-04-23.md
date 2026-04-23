@@ -8,8 +8,9 @@ audit gaps without overstating what is already true.
 - Tier 1.1 is still partial: the measurement protocol shipped, but system-wide
   measured adoption is incomplete.
 - Tier 2.1 groundwork is real: the staging smoke runner exists, staging app
-  launch has already passed once, and preflight now truthfully blocks if local
-  staging auth values still look like placeholders.
+  launch has already passed, preflight now passes with a valid local staging
+  overlay, and the remaining auth-runtime gap is the onboarding-aware
+  `sign_in_surface` smoke path plus real provider verification.
 - Tier 2.2 is now in pilot mode: the logger exists, rejects silent backdating by
   default, and has its first live adoption entry.
 - Tier 3.1 is real and hardened: the 72h workflow now preserves the integrity
@@ -36,41 +37,35 @@ audit gaps without overstating what is already true.
 
 ### A. Finish the staging credentials
 
-1. Open `Config/Local/Staging.xcconfig`.
-2. Replace the placeholder values for:
-   - `FITTRACKER_SUPABASE_URL`
-   - `FITTRACKER_SUPABASE_ANON_KEY`
-   - `FITTRACKER_GOOGLE_CLIENT_ID`
-   - `FITTRACKER_GOOGLE_REVERSED_CLIENT_ID`
-3. Keep the file untracked.
-4. Re-run:
+Status: complete locally.
 
-```bash
-make runtime-smoke PROFILE=app_launch MODE=staging DRY_RUN=1
-```
-
-5. Confirm the generated report no longer lists `invalid_prerequisites`.
+1. Keep real staging values only in `Config/Local/Staging.xcconfig`.
+2. Keep tracked `Config/Staging.xcconfig` placeholder-safe.
+3. Preserve `FitTracker/Info.plist` as build-setting references only.
+4. Use `.claude/shared/runtime-smoke-staging-preflight.json` as the current
+   proof that all required staging keys are `valid-looking`.
 
 ### B. Re-run the staging runtime gate
 
-1. Run:
+Status: app launch complete locally.
 
-```bash
-make runtime-smoke PROFILE=app_launch MODE=staging
-```
-
-2. Save the report in `.claude/shared/runtime-smoke-staging-app-launch.json`.
-3. If that passes, continue to auth-specific verification.
+1. Keep `.claude/shared/runtime-smoke-staging-app-launch.json` as the baseline
+   proof that staging `app_launch` passed.
+2. Continue from auth-specific verification rather than repeating credential
+   setup.
 
 ### C. Complete auth runtime verification
 
-1. Email sign-up
-2. Email verification / resend
-3. Email login
-4. Password reset
-5. Google sign-in
-6. Relaunch / session restore
-7. Negative cases
+1. Fix `FitTrackerUITests/SignInUITests.swift` so `sign_in_surface` drives
+   onboarding step 5 before asserting auth buttons.
+2. Re-run `make runtime-smoke PROFILE=sign_in_surface MODE=staging`.
+3. Email sign-up
+4. Email verification / resend
+5. Email login
+6. Password reset
+7. Google sign-in
+8. Relaunch / session restore
+9. Negative cases
 
 Use [docs/setup/auth-runtime-verification-playbook.md](/Volumes/DevSSD/FitTracker2/docs/setup/auth-runtime-verification-playbook.md)
 as the exact checklist. Do not promote auth to `runtime-verified` until the real
