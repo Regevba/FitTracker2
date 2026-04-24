@@ -6,7 +6,7 @@
   "current_phase": "runtime_verification",
   "framework_version": "7.0",
   "started_at": "2026-04-23T13:28:07Z",
-  "updated_at": "2026-04-23T13:56:40Z",
+  "updated_at": "2026-04-24T03:09:01Z",
   "events": [
     {
       "timestamp": "2026-04-23T13:28:07Z",
@@ -79,6 +79,26 @@
         "returncode": 0
       },
       "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-24T03:09:01Z",
+      "event_type": "harness_closure",
+      "phase": "runtime_verification",
+      "summary": "Tier 2.1 harness closure committed as e74604e: 16 files including FITTRACKER_FORCE_ONBOARDING=1 flag, auth.hub.* + auth.signin.* accessibility identifiers, SignInUITests onboarding-aware flow, URL-quoted placeholder xcconfigs. Harness green; sign_in_surface passed 2026-04-23T13:55:00Z. Next blocker is real-provider verification (manual-driven 7-step playbook).",
+      "artifacts": [
+        "e74604e",
+        ".claude/shared/runtime-smoke-staging-sign-in-surface.json",
+        "docs/setup/auth-runtime-verification-playbook.md"
+      ],
+      "metrics": {
+        "smoke_status": "passed",
+        "files_committed": 16,
+        "tier": 2.1,
+        "tier_status": "groundwork_shipped"
+      },
+      "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
