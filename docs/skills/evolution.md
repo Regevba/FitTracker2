@@ -1,8 +1,9 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-21 (v7.1 update)
-> **Status:** v7.1 — Integrity Cycle: 72-hour recurring audit of every feature state.json, catching "shipped but unreconciled" drift within 72h of occurrence via GitHub Actions + snapshot ledger + auto-issue on regression. Extends v7.0 (HADF Hardware-Aware Dispatch) + all prior v6.0 capabilities
+> **Date:** 2026-04-24 (v7.5 update)
+> **Status:** v7.5 — **Data Integrity Framework**: eight cooperating defenses catching broken data at write-time, cycle-time, and readout-time. Extends v7.1 (72-hour integrity cycle) + v7.0 (HADF Hardware-Aware Dispatch) with (1) pre-commit schema + PR-resolution gates, (2) runtime smoke gates, (3) contemporaneous logging, (4) data-quality tiers, (5) documentation-debt dashboard, (6) measurement-adoption ledger, (7) 3 new Auditor Agent check codes. Triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit.
 > **2026-04-23 note:** Gemini follow-up hardening corrected the workflow's regression detection path, tightened trend-readiness rules to count only scheduled cycle snapshots, and kept Tier 2.1/Tier 2.2/Tier 3.2 framed as groundwork or pilot work rather than fully complete.
+> **2026-04-24 note:** v7.5 shipped. 7 of Gemini's 9 Tier 1/2/3 items fully or effectively shipped; 2 partial/pilot with measured known deltas; 1 external-blocked. Integrity baseline at ship: 0 findings across 40 features + 46 case studies. See `docs/case-studies/data-integrity-framework-v7.5-case-study.md` for the full narrative.
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---

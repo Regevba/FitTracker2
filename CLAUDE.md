@@ -51,16 +51,32 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Integrity Cycle
+## Data Integrity Framework (v7.5, shipped 2026-04-24)
 
-Every 72 hours, a GitHub Actions workflow runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and emits a snapshot in `.claude/integrity/snapshots/`. Snapshots accumulate as a historical ledger; each cycle diffs vs the previous one and opens an issue (`integrity-cycle` label) if regressions are detected.
+The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. Every new feature's data flows through write-time gates, a 72h cycle, and readout-time dashboards.
 
-- **Checks:** `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`.
+**Write-time gates (fire on `git commit`):**
+- `SCHEMA_DRIFT` — pre-commit hook rejects legacy `phase` key; canonical is `current_phase`. Install via `make install-hooks`.
+- `PR_NUMBER_UNRESOLVED` — pre-commit hook verifies `phases.merge.pr_number` resolves via `gh pr view` before state.json can record it.
+
+**Cycle-time gates (fire every 72h via GitHub Actions):**
+Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. 11 check codes (10 feature-level + 1 case-study-level): `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`.
+
 - **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"` or `"roundup"` bypass the sub-phase vocabulary check.
 - **Local usage:** `make integrity-check` (findings only) or `make integrity-snapshot` (write + diff vs previous).
 - **Full docs:** [`.claude/integrity/README.md`](.claude/integrity/README.md).
 
-This cycle exists because we empirically observed 7+ features sit in "shipped but state.json unreconciled" limbo for 3–14 days before the 2026-04-20 audit caught them. A 72-hour rhythm would flag most of those the morning after they shipped.
+**Readout-time dashboards (any time):**
+- `make documentation-debt` — Tier 3.2 baseline ledger (7 open items); trend mode unlocks after 3 scheduled cycle snapshots.
+- `make measurement-adoption` — Tier 1.1 ledger; surfaces `cache_hits 0/40` known delta tracked at [issue #140](https://github.com/Regevba/FitTracker2/issues/140).
+- `make runtime-smoke PROFILE=<id> MODE=<local|staging>` — Tier 2.1 smoke-gate runner; 5 profiles incl. `sign_in_surface`.
+- `.claude/logs/<feature>.log.json` — Tier 2.2 contemporaneous feature logs; append via `scripts/append-feature-log.py`.
+
+**Data quality tiers (Tier 2.3):** every quantitative metric in a case study, PRD, or meta-analysis must carry a T1 (Instrumented) / T2 (Declared) / T3 (Narrative) label. See [`docs/case-studies/data-quality-tiers.md`](docs/case-studies/data-quality-tiers.md).
+
+**v7.5 case study:** [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](docs/case-studies/data-integrity-framework-v7.5-case-study.md). **Remediation status:** [`trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`](trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md).
+
+This framework exists because we empirically observed 7+ features sit in "shipped but state.json unreconciled" limbo for 3–14 days before the 2026-04-20 audit caught them, and because the 2026-04-21 Gemini audit surfaced that the project had shipped extensive measurement infrastructure without a measurement of its own measurement adoption. v7.5 closes both loops: data is gated at write, audited on cycle, and surfaced on demand.
 
 ## Concurrent Dispatch Hygiene
 

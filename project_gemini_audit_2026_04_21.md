@@ -1,7 +1,12 @@
-# Project Gemini Audit — 2026-04-21 (updated 2026-04-24)
+# Project Gemini Audit — 2026-04-21 (v7.5 ship 2026-04-24)
 
 This file is a lightweight entrypoint to the canonical Gemini audit and its
 current implementation status.
+
+**Framework version bump:** v7.1 → **v7.5 (Data Integrity Framework)** on
+2026-04-24. See [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](/Volumes/DevSSD/FitTracker2/docs/case-studies/data-integrity-framework-v7.5-case-study.md)
+for the full narrative of how Gemini's 9 tier recommendations became eight
+cooperating defenses.
 
 ## Canonical sources
 

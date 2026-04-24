@@ -2,6 +2,8 @@
 
 > Automated ledger of the feature state.json truth over time.
 > Catches the "shipped but state.json never reconciled" pattern that we've seen across HADF, home-today-screen, nutrition-v2, and 5+ others.
+>
+> **Part of the v7.5 Data Integrity Framework** (shipped 2026-04-24). Tier 3.1 of the [Google Gemini 2.5 Pro independent audit remediation](../../trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md). See the [v7.5 case study](../../docs/case-studies/data-integrity-framework-v7.5-case-study.md) for the full eight-defense picture — write-time schema gates, PR-resolution checks, runtime smoke gates, contemporaneous logging, data-quality tiers, documentation-debt dashboard, and measurement-adoption ledger are the sibling defenses to this cycle.
 
 ---
 
