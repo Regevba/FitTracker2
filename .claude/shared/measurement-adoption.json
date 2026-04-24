@@ -1,0 +1,821 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-24T03:58:24Z",
+  "v6_ship_date": "2026-04-16",
+  "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
+  "summary": {
+    "features_total": 40,
+    "features_post_v6": 6,
+    "features_pre_v6": 34,
+    "fully_adopted": 0,
+    "partial_adopted": 3,
+    "zero_adopted": 37,
+    "fully_adopted_post_v6": 0,
+    "tier_1_1_status": "not_adopted"
+  },
+  "dimension_coverage": {
+    "timing_wall_time": {
+      "overall_present": 1,
+      "overall_percent": 2.5,
+      "post_v6_present": 1,
+      "post_v6_percent": 16.7
+    },
+    "per_phase_timing": {
+      "overall_present": 3,
+      "overall_percent": 7.5,
+      "post_v6_present": 3,
+      "post_v6_percent": 50.0
+    },
+    "cache_hits": {
+      "overall_present": 0,
+      "overall_percent": 0.0,
+      "post_v6_present": 0,
+      "post_v6_percent": 0.0
+    },
+    "cu_v2": {
+      "overall_present": 3,
+      "overall_percent": 7.5,
+      "post_v6_present": 3,
+      "post_v6_percent": 50.0
+    }
+  },
+  "fully_adopted_features": [],
+  "partial_adopted_features": [
+    {
+      "feature": "framework-measurement-v6",
+      "adoption": {
+        "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      }
+    },
+    {
+      "feature": "hadf-infrastructure",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      }
+    },
+    {
+      "feature": "meta-analysis-audit",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      }
+    }
+  ],
+  "zero_adopted_features": [
+    {
+      "feature": "adaptive-intelligence",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "ai-cohort-intelligence",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "ai-engine-architecture-adaptation",
+      "created": "2026-04-12",
+      "post_v6": false
+    },
+    {
+      "feature": "ai-engine-v2",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "ai-recommendation-ui",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "android-design-system",
+      "created": "2026-04-04",
+      "post_v6": false
+    },
+    {
+      "feature": "app-store-assets",
+      "created": "2026-04-12",
+      "post_v6": false
+    },
+    {
+      "feature": "authentication",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "data-sync",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "design-system-v2",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "development-dashboard",
+      "created": "2026-04-02",
+      "post_v6": false
+    },
+    {
+      "feature": "dispatch-intelligence-v5.2",
+      "created": "2026-04-16",
+      "post_v6": true
+    },
+    {
+      "feature": "framework-story-site",
+      "created": "2026-04-19",
+      "post_v6": true
+    },
+    {
+      "feature": "gdpr-compliance",
+      "created": "2026-04-04",
+      "post_v6": false
+    },
+    {
+      "feature": "google-analytics",
+      "created": "2026-04-02",
+      "post_v6": false
+    },
+    {
+      "feature": "home-status-goal-card",
+      "created": "2026-04-09",
+      "post_v6": false
+    },
+    {
+      "feature": "home-today-screen",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "import-training-plan",
+      "created": "2026-04-11",
+      "post_v6": false
+    },
+    {
+      "feature": "marketing-website",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "metric-tile-deep-linking",
+      "created": "2026-04-09",
+      "post_v6": false
+    },
+    {
+      "feature": "nutrition-logging",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "nutrition-v2",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "onboarding",
+      "created": "2026-04-05",
+      "post_v6": false
+    },
+    {
+      "feature": "onboarding-v2-auth-flow",
+      "created": "2026-04-15",
+      "post_v6": false
+    },
+    {
+      "feature": "onboarding-v2-retroactive",
+      "created": "2026-04-09",
+      "post_v6": false
+    },
+    {
+      "feature": "parallel-write-safety-v5.2",
+      "created": "2026-04-16",
+      "post_v6": true
+    },
+    {
+      "feature": "push-notifications",
+      "created": "2026-04-12",
+      "post_v6": false
+    },
+    {
+      "feature": "readiness-score-v2",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "recovery-biometrics",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "settings",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "settings-v2",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "smart-reminders",
+      "created": "2026-04-15",
+      "post_v6": false
+    },
+    {
+      "feature": "stats-progress-hub",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "stats-v2",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "training-plan-v2",
+      "created": "2026-04-10",
+      "post_v6": false
+    },
+    {
+      "feature": "training-tracking",
+      "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "user-profile-settings",
+      "created": "2026-04-13",
+      "post_v6": false
+    }
+  ],
+  "features": [
+    {
+      "feature": "adaptive-intelligence",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "ai-cohort-intelligence",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "ai-engine-architecture-adaptation",
+      "created": "2026-04-12",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "ai-engine-v2",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "ai-recommendation-ui",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "android-design-system",
+      "created": "2026-04-04",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "app-store-assets",
+      "created": "2026-04-12",
+      "post_v6": false,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "authentication",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "data-sync",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "design-system-v2",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "development-dashboard",
+      "created": "2026-04-02",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "dispatch-intelligence-v5.2",
+      "created": "2026-04-16",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-measurement-v6",
+      "created": "2026-04-16",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "framework-story-site",
+      "created": "2026-04-19",
+      "post_v6": true,
+      "current_phase": "closed",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "gdpr-compliance",
+      "created": "2026-04-04",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "google-analytics",
+      "created": "2026-04-02",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "hadf-infrastructure",
+      "created": "2026-04-16",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "home-status-goal-card",
+      "created": "2026-04-09",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "home-today-screen",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "import-training-plan",
+      "created": "2026-04-11",
+      "post_v6": false,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "marketing-website",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "meta-analysis-audit",
+      "created": "2026-04-16",
+      "post_v6": true,
+      "current_phase": "documentation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "metric-tile-deep-linking",
+      "created": "2026-04-09",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "nutrition-logging",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "nutrition-v2",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "onboarding",
+      "created": "2026-04-05",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "onboarding-v2-auth-flow",
+      "created": "2026-04-15",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "onboarding-v2-retroactive",
+      "created": "2026-04-09",
+      "post_v6": false,
+      "current_phase": "tasks",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "parallel-write-safety-v5.2",
+      "created": "2026-04-16",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "push-notifications",
+      "created": "2026-04-12",
+      "post_v6": false,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "readiness-score-v2",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "recovery-biometrics",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "settings",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "settings-v2",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "smart-reminders",
+      "created": "2026-04-15",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "stats-progress-hub",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "stats-v2",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "tasks",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "training-plan-v2",
+      "created": "2026-04-10",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "training-tracking",
+      "created": "2026-04-06",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "user-profile-settings",
+      "created": "2026-04-13",
+      "post_v6": false,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    }
+  ]
+}
