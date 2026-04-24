@@ -46,7 +46,10 @@ Earlier pushed work before that also established:
 
 - [FitTracker/Views/Auth/AuthHubView.swift](/Volumes/DevSSD/FitTracker2/FitTracker/Views/Auth/AuthHubView.swift) gained stable accessibility identifiers for passkey, email, Google, and Apple auth actions.
 - [FitTracker/Views/Auth/SignInView.swift](/Volumes/DevSSD/FitTracker2/FitTracker/Views/Auth/SignInView.swift) gained provider-specific accessibility identifiers (`auth.signin.*`).
-- [FitTrackerUITests/SignInUITests.swift](/Volumes/DevSSD/FitTracker2/FitTrackerUITests/SignInUITests.swift) was tightened so the smoke test now fails loudly instead of silently skipping when the expected auth surface is missing.
+- [FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift](/Volumes/DevSSD/FitTracker2/FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift) gained stable onboarding-auth accessibility identifiers.
+- [FitTracker/FitTrackerApp.swift](/Volumes/DevSSD/FitTracker2/FitTracker/FitTrackerApp.swift) now supports a launch-only `FITTRACKER_FORCE_ONBOARDING=1` override so the sign-in smoke can verify the embedded auth step deterministically without depending on prior simulator onboarding state.
+- [FitTrackerUITests/UITestSupport.swift](/Volumes/DevSSD/FitTracker2/FitTrackerUITests/UITestSupport.swift) now pairs `FITTRACKER_SKIP_AUTO_LOGIN=1` with `FITTRACKER_FORCE_ONBOARDING=1` for `forcedSignIn`.
+- [FitTrackerUITests/SignInUITests.swift](/Volumes/DevSSD/FitTracker2/FitTrackerUITests/SignInUITests.swift) now drives the onboarding path through step 5 before asserting auth controls, so the smoke reflects the real product flow instead of a stale direct-to-auth assumption.
 
 ## Verified Results
 
@@ -76,65 +79,37 @@ Verified state from timestamp `2026-04-23T13:28:07Z`:
 - result bundle:
   `/Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Logs/Test/Test-FitTracker-2026.04.23_16-28-13-+0300.xcresult`
 
-### 3. Sign-in surface smoke is now a real failure
+### 3. Staging sign-in surface smoke passed
 
 Report:
 [.claude/shared/runtime-smoke-staging-sign-in-surface.json](/Volumes/DevSSD/FitTracker2/.claude/shared/runtime-smoke-staging-sign-in-surface.json)
 
-Verified state from timestamp `2026-04-23T13:39:30Z`:
+Verified state from timestamp `2026-04-23T13:55:00Z`:
 
 - profile: `sign_in_surface`
 - mode: `staging`
-- status: `failed`
-- return code: `65`
+- status: `passed`
+- return code: `0`
+- result bundle:
+  `/Volumes/DevSSD/FitTracker2/.build/RuntimeSmokeDerivedData/Logs/Test/Test-FitTracker-2026.04.23_16-55-04-+0300.xcresult`
 
-This is not a credential failure. It is a test-path mismatch.
+The key fix was not credentials. It was harness alignment:
 
-## Root Cause Of The Remaining Failure
-
-The current sign-in smoke still assumes auth actions should appear immediately after launch under `FITTRACKER_SKIP_AUTO_LOGIN=1`. In the real app flow, signed-out first-launch users are routed into onboarding first.
-
-Key code facts:
-
-- [FitTracker/FitTrackerApp.swift](/Volumes/DevSSD/FitTracker2/FitTracker/FitTrackerApp.swift) routes users into `OnboardingView` when onboarding is incomplete.
-- [FitTracker/Views/Onboarding/v2/OnboardingView.swift](/Volumes/DevSSD/FitTracker2/FitTracker/Views/Onboarding/v2/OnboardingView.swift) places auth at onboarding step 5.
-- [FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift](/Volumes/DevSSD/FitTracker2/FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift) is the real auth surface containing:
-  - `Continue with Email`
-  - `Continue with Google`
-  - `Continue with Apple`
-  - `Already have an account? Log In`
-  - `Skip for now`
-
-Relevant onboarding labels already confirmed for UI-driving:
-
-- `Get Started`
-- `Build Muscle`
-- `Beginner`
-- `2 days per week` / `3 days per week` accessibility labels
-- `Skip`
-- `Continue Without`
+- `FITTRACKER_SKIP_AUTO_LOGIN=1` only disables session restore; it does not reset onboarding completion.
+- on a simulator that already completed onboarding, the old smoke could not truthfully assume `Get Started` would appear.
+- the new `FITTRACKER_FORCE_ONBOARDING=1` launch override makes the embedded auth step deterministic for this smoke without changing default product behavior.
 
 ## Exact Next Runnable
 
-Update [FitTrackerUITests/SignInUITests.swift](/Volumes/DevSSD/FitTracker2/FitTrackerUITests/SignInUITests.swift) so the smoke test advances through onboarding before asserting auth controls.
+Run the real provider checklist from [docs/setup/auth-runtime-verification-playbook.md](/Volumes/DevSSD/FitTracker2/docs/setup/auth-runtime-verification-playbook.md):
 
-Suggested path:
-
-1. Tap `Get Started`
-2. Select `Build Muscle`
-3. Tap `Continue`
-4. Pick one profile option such as `Beginner`
-5. Pick a training-frequency button such as `3 days per week`
-6. Tap `Continue`
-7. Use `Skip` or `Continue` on HealthKit depending on device state
-8. Tap `Continue Without` on consent
-9. Assert one of the onboarding auth controls exists
-
-After patching, rerun:
-
-```bash
-make runtime-smoke PROFILE=sign_in_surface MODE=staging
-```
+1. Email sign-up
+2. Email verification / resend
+3. Email login
+4. Password reset
+5. Google sign-in
+6. Relaunch / session restore
+7. Negative auth cases
 
 ## Working Tree Snapshot At Checkpoint Time
 
@@ -151,7 +126,10 @@ These files had local changes when this checkpoint was written:
 - `FitTracker/Info.plist`
 - `FitTracker/Views/Auth/AuthHubView.swift`
 - `FitTracker/Views/Auth/SignInView.swift`
+- `FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift`
+- `FitTracker/FitTrackerApp.swift`
 - `FitTrackerUITests/SignInUITests.swift`
+- `FitTrackerUITests/UITestSupport.swift`
 
 There was also an unrelated pre-existing deletion left untouched:
 
@@ -161,6 +139,5 @@ There was also an unrelated pre-existing deletion left untouched:
 
 1. Read this checkpoint.
 2. Read the auth verification checklist in [docs/setup/auth-runtime-verification-playbook.md](/Volumes/DevSSD/FitTracker2/docs/setup/auth-runtime-verification-playbook.md).
-3. Patch the sign-in smoke to drive onboarding step 5 instead of asserting too early.
-4. Rerun `sign_in_surface` in staging.
-5. If it passes, continue to the real auth provider runtime checks from the playbook.
+3. Use the now-green staging smoke reports as the baseline runtime proof for harness readiness.
+4. Continue to the real auth provider runtime checks from the playbook.

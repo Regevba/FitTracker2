@@ -167,6 +167,7 @@ struct OnboardingAuthView: View {
                 .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.subtle, lineWidth: 1))
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("onboarding.auth.email")
 
             // Google
             if signIn.isGoogleAuthAvailable {
@@ -198,6 +199,7 @@ struct OnboardingAuthView: View {
                     .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.hairline, lineWidth: 1))
                 }
                 .buttonStyle(.plain)
+                .accessibilityIdentifier("onboarding.auth.google")
             }
 
             // Apple
@@ -228,6 +230,7 @@ struct OnboardingAuthView: View {
                 .background(AppColor.Surface.inverse, in: RoundedRectangle(cornerRadius: AppRadius.medium))
             }
             .buttonStyle(.plain)
+            .accessibilityIdentifier("onboarding.auth.apple")
         }
         .padding(.horizontal, AppSpacing.small)
     }

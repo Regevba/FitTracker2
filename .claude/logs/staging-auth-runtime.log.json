@@ -6,7 +6,7 @@
   "current_phase": "runtime_verification",
   "framework_version": "7.0",
   "started_at": "2026-04-23T13:28:07Z",
-  "updated_at": "2026-04-23T13:44:08Z",
+  "updated_at": "2026-04-23T13:56:40Z",
   "events": [
     {
       "timestamp": "2026-04-23T13:28:07Z",
@@ -57,6 +57,26 @@
       "metrics": {
         "status": "failed",
         "returncode": 65
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-23T13:55:00Z",
+      "event_type": "runtime_verification",
+      "phase": "runtime_verification",
+      "summary": "The staging sign_in_surface smoke passed after the harness was aligned to real app routing: forcedSignIn now also forces onboarding, the test drives onboarding step 5, and the onboarding auth buttons have stable accessibility identifiers.",
+      "artifacts": [
+        ".claude/shared/runtime-smoke-staging-sign-in-surface.json",
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift",
+        "FitTrackerUITests/SignInUITests.swift",
+        "FitTrackerUITests/UITestSupport.swift"
+      ],
+      "metrics": {
+        "status": "passed",
+        "returncode": 0
       },
       "actor": "human_or_agent",
       "status": "recorded",

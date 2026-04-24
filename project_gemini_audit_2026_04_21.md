@@ -17,7 +17,7 @@ current implementation status.
 | Tier 1.1 | Partial | v6.0 measurement protocols shipped, but repo-wide adoption is still partial and the shared cache aggregate is not yet a live system-wide ledger. |
 | Tier 1.2 | ✓ subset shipped | `PR_NUMBER_UNRESOLVED` + `BROKEN_PR_CITATION`; full on-transition API linking deferred. |
 | Tier 1.3 | ✓ shipped | `state.json` schema enforced on write via pre-commit hook. |
-| Tier 2.1 | Groundwork shipped, locally gated | Staging smoke runner and secret-safe overlay validation ship now; full auth runtime proof still waits on real local staging credentials. |
+| Tier 2.1 | Groundwork shipped, staging smoke green locally | Staging preflight, `app_launch`, and `sign_in_surface` now pass locally against real staging credentials. Full provider auth runtime proof is still the remaining gap. |
 | Tier 2.2 | Pilot active | The structured logger exists, now enforces explicit retroactive markers, and the first real remediation log is seeded; PM-wide migration is still pending. |
 | Tier 2.3 | ✓ shipped | Data quality tiers shipped as convention + `CLAUDE.md` rule. |
 | Tier 3.1 | ✓ shipped, hardened | Independent Auditor Agent runs every 72h and on demand; the 2026-04-23 hardening fixed workflow exit-code capture and separated strict/manual findings from real regressions. |

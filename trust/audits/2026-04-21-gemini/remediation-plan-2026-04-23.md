@@ -9,8 +9,8 @@ audit gaps without overstating what is already true.
   measured adoption is incomplete.
 - Tier 2.1 groundwork is real: the staging smoke runner exists, staging app
   launch has already passed, preflight now passes with a valid local staging
-  overlay, and the remaining auth-runtime gap is the onboarding-aware
-  `sign_in_surface` smoke path plus real provider verification.
+  overlay, and the onboarding-aware `sign_in_surface` smoke now also passes.
+  The remaining Tier 2.1 gap is real provider verification, not harness setup.
 - Tier 2.2 is now in pilot mode: the logger exists, rejects silent backdating by
   default, and has its first live adoption entry.
 - Tier 3.1 is real and hardened: the 72h workflow now preserves the integrity
@@ -56,16 +56,15 @@ Status: app launch complete locally.
 
 ### C. Complete auth runtime verification
 
-1. Fix `FitTrackerUITests/SignInUITests.swift` so `sign_in_surface` drives
-   onboarding step 5 before asserting auth buttons.
-2. Re-run `make runtime-smoke PROFILE=sign_in_surface MODE=staging`.
-3. Email sign-up
-4. Email verification / resend
-5. Email login
-6. Password reset
-7. Google sign-in
-8. Relaunch / session restore
-9. Negative cases
+1. Keep `.claude/shared/runtime-smoke-staging-sign-in-surface.json` as the
+   harness proof that the embedded auth surface is reachable in staging.
+2. Email sign-up
+3. Email verification / resend
+4. Email login
+5. Password reset
+6. Google sign-in
+7. Relaunch / session restore
+8. Negative cases
 
 Use [docs/setup/auth-runtime-verification-playbook.md](/Volumes/DevSSD/FitTracker2/docs/setup/auth-runtime-verification-playbook.md)
 as the exact checklist. Do not promote auth to `runtime-verified` until the real

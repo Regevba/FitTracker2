@@ -202,6 +202,7 @@ struct SocialSignInButton: View {
             )
             .shadow(color: shadowColor, radius: 6, y: 2)
         }
+        .accessibilityIdentifier("auth.signin.\(provider.accessibilitySlug)")
         .buttonStyle(.plain)
         .disabled(isLoading)
         .opacity(isLoading ? 0.7 : 1.0)
@@ -262,6 +263,23 @@ struct SocialSignInButton: View {
         case .google, .facebook:  return AppColor.Brand.warm.opacity(0.1)
         case .passkey:            return AppColor.Accent.sleep.opacity(0.1)
         case .email:              return AppColor.Accent.secondary.opacity(0.14)
+        }
+    }
+}
+
+private extension AuthProvider {
+    var accessibilitySlug: String {
+        switch self {
+        case .apple:
+            return "apple"
+        case .google:
+            return "google"
+        case .facebook:
+            return "facebook"
+        case .passkey:
+            return "passkey"
+        case .email:
+            return "email"
         }
     }
 }

@@ -1,7 +1,8 @@
 // FitTrackerUITests/UITestSupport.swift
 // Shared launch helpers for UI tests. Wraps XCUIApplication with the
 // FitTracker-specific environment knobs (FITTRACKER_REVIEW_AUTH,
-// FITTRACKER_SKIP_AUTO_LOGIN) discovered in FitTrackerApp.swift +
+// FITTRACKER_SKIP_AUTO_LOGIN, FITTRACKER_FORCE_ONBOARDING) discovered in
+// FitTrackerApp.swift +
 // SignInService.swift.
 // Audit M-4 (TEST-025).
 
@@ -10,7 +11,7 @@ import XCTest
 enum LaunchMode {
     case authenticated      // FITTRACKER_REVIEW_AUTH=authenticated → app skips auth, opens to home
     case settingsReview     // FITTRACKER_REVIEW_AUTH=settings → app opens to settings tab
-    case forcedSignIn       // FITTRACKER_SKIP_AUTO_LOGIN=1 → no session restore, sign-in screen
+    case forcedSignIn       // Skip auto-login + force onboarding so the embedded auth step is deterministic
     case standard           // No env overrides — app launches as a real first-time user would
 }
 
@@ -40,7 +41,10 @@ enum UITestSupport {
         case .settingsReview:
             return ["FITTRACKER_REVIEW_AUTH": "settings"]
         case .forcedSignIn:
-            return ["FITTRACKER_SKIP_AUTO_LOGIN": "1"]
+            return [
+                "FITTRACKER_SKIP_AUTO_LOGIN": "1",
+                "FITTRACKER_FORCE_ONBOARDING": "1",
+            ]
         case .standard:
             return [:]
         }

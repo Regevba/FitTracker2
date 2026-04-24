@@ -139,6 +139,7 @@ private struct AuthEntryScreen: View {
                                 subtitle: "Sign in with a saved passkey or hardware key"
                             )
                         }
+                        .accessibilityIdentifier("auth.hub.passkey.quick")
                         .buttonStyle(AuthTertiaryButtonStyle())
                     }
                 }
@@ -197,6 +198,7 @@ private struct AuthMethodSelectionView: View {
                                 tint: AppColor.Brand.secondary
                             )
                         }
+                        .accessibilityIdentifier(mode == .register ? "auth.hub.email.register" : "auth.hub.email.login")
                         .buttonStyle(AuthCardButtonStyle())
                     }
 
@@ -209,18 +211,20 @@ private struct AuthMethodSelectionView: View {
                                 subtitle: "Use your Google account"
                             )
                         }
+                        .accessibilityIdentifier(mode == .register ? "auth.hub.google.register" : "auth.hub.google.login")
                         .buttonStyle(AuthCardButtonStyle(baseFill: .white, useDarkStroke: true))
                     }
 
                     Button {
                         signIn.signInWithApple()
-                    } label: {
-                        AppleProviderRow(
-                            title: mode == .register ? "Continue with Apple" : "Log in with Apple",
-                            subtitle: "Use your Apple Account"
-                        )
-                    }
-                    .buttonStyle(AuthCardButtonStyle(baseFill: AppColor.Surface.inverse, foreground: .white))
+                        } label: {
+                            AppleProviderRow(
+                                title: mode == .register ? "Continue with Apple" : "Log in with Apple",
+                                subtitle: "Use your Apple Account"
+                            )
+                        }
+                        .accessibilityIdentifier(mode == .register ? "auth.hub.apple.register" : "auth.hub.apple.login")
+                        .buttonStyle(AuthCardButtonStyle(baseFill: AppColor.Surface.inverse, foreground: .white))
 
                     if mode == .login && signIn.canShowPasskeyLogin {
                         Button {
@@ -233,6 +237,7 @@ private struct AuthMethodSelectionView: View {
                                 tint: AppColor.Accent.sleep
                             )
                         }
+                        .accessibilityIdentifier("auth.hub.passkey.login")
                         .buttonStyle(AuthCardButtonStyle())
                     }
                 }

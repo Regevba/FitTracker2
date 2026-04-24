@@ -1,9 +1,9 @@
 // Copy to Config/Local/Debug.xcconfig and replace the placeholder values.
 // This file stays secret-free on purpose.
 
-FITTRACKER_SUPABASE_URL = https://your-project-id.supabase.co
+FITTRACKER_SUPABASE_URL = "https://your-project-id.supabase.co"
 FITTRACKER_SUPABASE_ANON_KEY = your-supabase-anon-key
 FITTRACKER_GOOGLE_CLIENT_ID = your-google-client-id.apps.googleusercontent.com
 FITTRACKER_GOOGLE_REVERSED_CLIENT_ID = your-google-reversed-client-id
-FITTRACKER_AI_ENGINE_BASE_URL = https://fittracker-ai-production.up.railway.app
+FITTRACKER_AI_ENGINE_BASE_URL = "https://fittracker-ai-production.up.railway.app"
 FITTRACKER_PASSKEY_RELYING_PARTY_ID = fittracker.regev.app

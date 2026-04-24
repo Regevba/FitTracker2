@@ -32,6 +32,10 @@ private var isSettingsReviewModeEnabled: Bool {
         || ProcessInfo.processInfo.arguments.contains("--review-settings")
 }
 
+private var isForcedOnboardingModeEnabled: Bool {
+    ProcessInfo.processInfo.environment["FITTRACKER_FORCE_ONBOARDING"] == "1"
+}
+
 @main
 struct FitTrackerApp: App {
 
@@ -278,8 +282,8 @@ struct FitTrackerApp: App {
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
-        } else if !hasCompletedOnboarding, !isScreenReviewModeEnabled {
-            // First launch or signed out — onboarding includes auth at step 5
+        } else if (!hasCompletedOnboarding || isForcedOnboardingModeEnabled), !isScreenReviewModeEnabled {
+            // First launch or sign-in smoke override — onboarding includes auth at step 5.
             OnboardingView {
                 analytics.setOnboardingCompleted(true)
             }

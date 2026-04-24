@@ -2,9 +2,9 @@
 // Optional if your staging OAuth client uses a distinct bundle identifier:
 // PRODUCT_BUNDLE_IDENTIFIER = com.fittracker.regev.staging
 
-FITTRACKER_SUPABASE_URL = https://your-staging-project-id.supabase.co
+FITTRACKER_SUPABASE_URL = "https://your-staging-project-id.supabase.co"
 FITTRACKER_SUPABASE_ANON_KEY = your-staging-supabase-anon-key
 FITTRACKER_GOOGLE_CLIENT_ID = your-staging-google-client-id.apps.googleusercontent.com
 FITTRACKER_GOOGLE_REVERSED_CLIENT_ID = your-staging-google-reversed-client-id
-FITTRACKER_AI_ENGINE_BASE_URL = https://your-staging-ai-engine.example.com
+FITTRACKER_AI_ENGINE_BASE_URL = "https://your-staging-ai-engine.example.com"
 FITTRACKER_PASSKEY_RELYING_PARTY_ID = your.staging.passkey.domain
