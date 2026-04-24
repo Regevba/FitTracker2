@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status test-v7-5-pipeline runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -93,6 +93,20 @@ documentation-debt:
 # at .claude/shared/measurement-adoption.json and prints a summary.
 measurement-adoption:
 	python3 scripts/measurement-adoption-report.py
+
+# v7.5 Data Integrity Framework — one-command health snapshot.
+# Reads all existing ledgers + runs integrity-check, prints a single summary
+# of framework version, open tier items, findings, coverage, and logs.
+framework-status:
+	@bash scripts/framework-status.sh
+
+# v7.5 pipeline regression test — verifies all 8 defenses fire correctly
+# against synthetic bad inputs. Run this locally before any change to the
+# integrity-check.py, check-state-schema.py, append-feature-log.py,
+# measurement-adoption-report.py, documentation-debt-report.py, or
+# runtime-smoke-gate.py scripts.
+test-v7-5-pipeline:
+	@bash scripts/test-v7-5-pipeline.sh
 
 # Run a local runtime smoke-gate profile built on the shipped XCUITest harness.
 # Examples:

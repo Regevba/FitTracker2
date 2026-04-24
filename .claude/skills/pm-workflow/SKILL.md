@@ -246,6 +246,101 @@ When writing the case study, annotate velocity claims based on cache hit rate:
 
 This annotation does NOT change the CU calculation. It adds interpretive context to min/CU comparisons.
 
+## Contemporaneous Logging Protocol (v7.5 — Tier 2.2 Auto-Emission)
+
+**This protocol supersedes the v6.0 Cache Tracking Protocol's separate
+`.claude/features/{feature}/cache-hits.json` writer path.** The canonical
+Tier 2.2 writer is `scripts/append-feature-log.py`, which writes to
+`.claude/logs/{feature}.log.json` AND mirrors cache events into
+`state.json.cache_hits[]` so `make measurement-adoption` counts them.
+Filed as issue #140; shipped 2026-04-24. If the v6.0 instructions above
+conflict with this section, this section wins.
+
+### On every phase transition (auto-emit, not voluntary)
+
+When the user approves a phase transition (Research → PRD, PRD → Tasks, etc.),
+the skill MUST append an event to the feature's log before any other write:
+
+```bash
+python3 scripts/append-feature-log.py \
+  --feature {feature-slug} \
+  --event-type phase_started \
+  --phase {new-phase} \
+  --summary "Phase {new-phase} opened after user approval of the {old-phase} exit criteria." \
+  --actor claude_opus_4_7
+```
+
+Then, on phase end (before requesting the next transition):
+
+```bash
+python3 scripts/append-feature-log.py \
+  --feature {feature-slug} \
+  --event-type phase_approved \
+  --phase {phase} \
+  --summary "Phase {phase} complete. {1-sentence of what landed.}" \
+  --artifact {list of files touched} \
+  --metric tests_passing=N \
+  --actor claude_opus_4_7
+```
+
+### On any cache hit during work (Tier 1.1 writer path)
+
+When the skill loads a cache entry (L1 per-skill, L2 shared, or L3 project)
+and the entry materially influenced the output, emit a cache-hit event:
+
+```bash
+python3 scripts/append-feature-log.py \
+  --feature {feature-slug} \
+  --event-type cache_hit \
+  --phase {current-phase} \
+  --summary "Reused {cache-key} for {task description}. {What it saved.}" \
+  --cache-hit L1|L2|L3 \
+  --cache-key {entry-id} \
+  --cache-hit-type exact|adapted \
+  --cache-skill {skill-name}
+```
+
+This single call appends to the log AND to `state.json.cache_hits[]`. No
+separate write needed.
+
+### On runtime verification events (Tier 2.1)
+
+When `make runtime-smoke PROFILE=<id> MODE=<local|staging>` produces a
+`passed` or `failed` status, emit a `runtime_verification` event:
+
+```bash
+python3 scripts/append-feature-log.py \
+  --feature {feature-slug} \
+  --event-type runtime_verification \
+  --phase test \
+  --summary "Staging {profile} smoke {passed|failed}. {xcresult bundle link.}" \
+  --artifact .claude/shared/runtime-smoke-staging-{profile}.json \
+  --metric status={passed|failed} \
+  --metric returncode={0|N}
+```
+
+### Why auto-emit?
+
+v7.5 Tier 2.2 shipped as "pilot active" specifically because adoption
+was voluntary — contributors had to remember to invoke the logger. This
+protocol makes emission automatic on the PM workflow's own transition
+events, eliminating the adoption gap.
+
+The retroactive policy still applies: if the skill needs to append an
+event older than the most recent entry, it must use `--retroactive
+--retroactive-reason "..."`. The logger enforces this.
+
+### What this does NOT do
+
+- It does not auto-generate the narrative case study. That's still a
+  Phase 9 deliverable written after merge.
+- It does not replace `state.json → timing` instrumentation. Both
+  coexist: `timing` is the measured-duration ledger; `.claude/logs/`
+  is the narrative event trail.
+- It does not backfill the v6.0-era `.claude/features/{feature}/cache-hits.json`
+  files — those are frozen as-is. Going forward, the log + state.json
+  path is canonical.
+
 ## Eval Coverage Gate Protocol (v6.0 — AI Quality Assurance)
 
 Ensures AI-touching features have verifiable eval coverage before shipping. Non-AI features auto-pass.

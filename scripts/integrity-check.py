@@ -307,6 +307,63 @@ def audit_case_study_citations(pr_cache: set[int] | None) -> list[dict]:
     return findings
 
 
+# Data-quality tiers convention came in on 2026-04-21 (Gemini audit Tier 2.3).
+# Forward-only by policy: case studies dated before this date are exempt.
+_TIER_CONVENTION_DATE = "2026-04-21"
+_DATE_WRITTEN_PAT = re.compile(
+    r"(?im)^\*\*Date written:\*\*\s*(\d{4}-\d{2}-\d{2})|^>\s*\*\*Date:\*\*\s*(\d{4}-\d{2}-\d{2})"
+)
+# Match T1/T2/T3 labels in their canonical forms:
+#   "(T1)", "(T2)", "(T3)", "T1 — ...", "T2: ...", etc.
+_TIER_TAG_PAT = re.compile(r"\bT[123]\b[\s—:.\)\(]")
+
+
+def audit_case_study_tier_tags() -> list[dict]:
+    """Flag post-2026-04-21 case studies that lack any T1/T2/T3 tier tag.
+
+    Added 2026-04-24 per Gemini audit Tier 2.3 enforcement follow-through.
+    The data-quality-tiers convention requires every quantitative metric in a
+    case study dated on or after the convention's introduction to carry a
+    tier label. This check counts presence, not exhaustiveness — a single
+    T1/T2/T3 mention is enough to pass. Exhaustive enforcement would produce
+    too many false positives on legitimate non-metric prose.
+
+    Exempt: files under `docs/case-studies/meta-analysis/`, the template,
+    README, data-quality-tiers.md itself, and any case study whose extracted
+    "Date written:" header is older than 2026-04-21 (forward-only policy).
+    """
+    if not CASE_STUDIES_DIR.exists():
+        return []
+    findings: list[dict] = []
+    for f in sorted(CASE_STUDIES_DIR.rglob("*.md")):
+        if f.name in SKIP_CASE_STUDY_FILES or f.name == "data-quality-tiers.md":
+            continue
+        if "meta-analysis" in f.relative_to(CASE_STUDIES_DIR).parts:
+            continue
+        try:
+            text = f.read_text()
+        except Exception:
+            continue
+        # Extract date_written from the header (same regex family as
+        # documentation-debt-report.py uses, plus explicit capture).
+        date_match = _DATE_WRITTEN_PAT.search(text)
+        if not date_match:
+            continue  # No date extracted — can't determine if post-convention
+        date_written = date_match.group(1) or date_match.group(2)
+        if not date_written or date_written < _TIER_CONVENTION_DATE:
+            continue  # Pre-convention — grandfathered by the forward-only policy
+        if not _TIER_TAG_PAT.search(text):
+            findings.append({
+                "feature": str(f.relative_to(REPO_ROOT)),
+                "severity": "WARN",
+                "code": "CASE_STUDY_MISSING_TIER_TAGS",
+                "message": f"dated {date_written} (>= {_TIER_CONVENTION_DATE}) "
+                           f"but contains no T1/T2/T3 tier tag; see "
+                           f"docs/case-studies/data-quality-tiers.md",
+            })
+    return findings
+
+
 def discover_case_studies() -> list[dict]:
     results = []
     if not CASE_STUDIES_DIR.exists():
@@ -341,6 +398,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
 
     # Auditor Agent case-study citation checks
     findings.extend(audit_case_study_citations(_PR_CACHE))
+    findings.extend(audit_case_study_tier_tags())
 
     return {
         "timestamp": now_iso(),

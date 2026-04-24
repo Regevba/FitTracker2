@@ -23,6 +23,7 @@ Every 72 hours, a GitHub Actions workflow runs `scripts/integrity-check.py` agai
 
    **Auditor Agent case-study checks** (added 2026-04-21 per Gemini audit Tier 3.1):
    - `BROKEN_PR_CITATION` — case study cites a PR via `PR #NNN` or `/pull/NNN` context that does not resolve via `gh pr list`. Narrow regex by design — avoids conflating issue citations (`issue #NNN`, `repo#NNN`) with PR citations. Skipped gracefully if `gh` is unavailable. Files under `docs/case-studies/meta-analysis/` are excluded since they discuss citations rather than make them.
+   - `CASE_STUDY_MISSING_TIER_TAGS` (added 2026-04-24) — case study dated on or after 2026-04-21 (when the Tier 2.3 data-quality-tiers convention shipped) contains no `T1`/`T2`/`T3` tier tags. Severity: WARN. Pre-convention case studies are exempt per the forward-only policy in [`docs/case-studies/data-quality-tiers.md`](../../docs/case-studies/data-quality-tiers.md). Files without an extractable `**Date written:**` header are also skipped (the check can't classify them).
 
    **Feature-level PR resolution check** (added 2026-04-21 per Gemini audit Tier 1.2):
    - `PR_NUMBER_UNRESOLVED` — `state.json → phases.merge.pr_number` points to a PR that does not resolve on GitHub. Catches the failure mode where a PR was recorded in state.json before the PR actually opened, or where the PR was deleted after recording. Uses the same cached `gh pr list` results as `BROKEN_PR_CITATION` (single `gh` call per cycle). Skipped gracefully if `gh` is unavailable.
