@@ -300,9 +300,22 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 ### Case studies
 - Narrative showcases of the PM workflow running on real features: `docs/case-studies/`
 - Pilot case study (Onboarding v2): `docs/case-studies/pm-workflow-showcase-onboarding.md`
+- Data quality tiers convention: `docs/case-studies/data-quality-tiers.md` (T1/T2/T3 labeling, est. 2026-04-21)
+- Meta-analyses + independent audits: `docs/case-studies/meta-analysis/`
+
+### Process docs (Gemini audit Tier groundwork)
+- Index: `docs/process/README.md`
+- Runtime smoke gates (Tier 2.1): `docs/process/runtime-smoke-gates.md` + `make runtime-smoke PROFILE=<id> MODE=<local|staging>`
+- Contemporaneous logging (Tier 2.2): `docs/process/contemporaneous-logging.md` + `scripts/append-feature-log.py` + `.claude/logs/<feature>.log.json`
+- Documentation-debt dashboard (Tier 3.2): `docs/process/documentation-debt-dashboard.md` + `make documentation-debt` + `.claude/shared/documentation-debt.json`
+- Auth-runtime verification playbook: `docs/setup/auth-runtime-verification-playbook.md`
+- Pre-commit state.json schema enforcement (Tier 1.3): `.githooks/pre-commit` + `make install-hooks` + `scripts/check-state-schema.py`
+- Independent-audit remediation tracker: `trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`
 
 ### Setup guides
 - One-time environment + service setup: `docs/setup/`
 - SSD layout: `docs/setup/ssd-setup-guide.md`
 - Firebase Analytics: `docs/setup/firebase-setup-guide.md`
 - Dashboard activation: `docs/setup/dashboard-activation.md`
+- Integrations setup: `docs/setup/integrations-setup-guide.md`
+- Auth runtime verification: `docs/setup/auth-runtime-verification-playbook.md`

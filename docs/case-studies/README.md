@@ -81,11 +81,17 @@ A case study is a **story about a completed (or in-flight) feature**, not the fe
 3. **Structure:** Context → PRD summary → Phase walkthrough → Decisions → Metrics → Lessons.
 4. **Link back to artifacts.** Don't inline the whole PRD or ux-spec; link to `docs/product/prd/` and `.claude/features/` for the source files.
 5. **Link forward from the feature's `state.json`.** Add the case study path to `state.json.documentation_path` so the feature row can find it.
+6. **Tag every metric with its data-quality tier.** See [`data-quality-tiers.md`](./data-quality-tiers.md) — T1 (Instrumented), T2 (Declared), T3 (Narrative). A T3 number quoted as if it were T1 is a bug. Convention established 2026-04-21 per Gemini audit Tier 2.3.
+7. **Declare dispatch_pattern, success_metrics, kill_criteria explicitly.** The documentation-debt dashboard (`make documentation-debt`) reports missing fields; new case studies must not add to that backlog.
 
 ## Related documents
 
+- [`data-quality-tiers.md`](./data-quality-tiers.md) — T1/T2/T3 metric provenance convention
+- [`meta-analysis/`](./meta-analysis/) — structural meta-analyses + independent audits (incl. Gemini 2.5 Pro 2026-04-21)
 - [`../skills/README.md`](../skills/README.md) — ecosystem one-pager
 - [`../skills/architecture.md`](../skills/architecture.md) — deep-dive architecture
 - [`../skills/pm-workflow.md`](../skills/pm-workflow.md) — the hub skill
+- [`../process/README.md`](../process/README.md) — Tier process groundwork (runtime smoke gates, contemporaneous logging, documentation-debt dashboard)
 - [`../product/backlog.md`](../product/backlog.md) — Done/In Progress/Planned tracker
 - [`../../.claude/features/`](../../.claude/features/) — per-feature state.json + supporting artifacts
+- [`../../trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`](../../trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md) — current Tier status

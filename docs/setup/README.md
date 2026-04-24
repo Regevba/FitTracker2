@@ -28,6 +28,7 @@ A setup guide is something you read once per environment. A workflow doc is some
 | `firebase-setup-guide.md` | 20-step walkthrough for the Firebase Analytics (GA4) integration: console project, `GoogleService-Info.plist` placement, SDK linking, first event verification | Once per dev, before running analytics tests or release builds |
 | `dashboard-activation.md` | Wire up the Development Dashboard on Vercel: env vars (`GITHUB_TOKEN`, `DASHBOARD_WRITE_TOKEN`, `PUBLIC_DASHBOARD_WRITE_TOKEN`), deployment protection, first build verification | Once per Vercel project, before the dashboard goes live |
 | `integrations-setup-guide.md` | Comprehensive reference for ALL third-party integrations: GitHub, Supabase, Firebase/GA4, Vercel, Claude Code, Figma MCP, Notion MCP, Style Dictionary token pipeline, AI engine, CloudKit, SSD setup. Includes dependency map, secrets locations, and bootstrap checklist. | Once per machine, as a master reference alongside the individual guides |
+| `auth-runtime-verification-playbook.md` | 7-step manual checklist for validating real Supabase + Google auth flows against the Staging build path. Pairs with `Config/Local/Staging.xcconfig` + `make runtime-smoke PROFILE=sign_in_surface MODE=staging`. Required to promote auth from `compile-verified` to `runtime-verified`. | Before any release that touches auth; last-mile of Gemini audit Tier 2.1 |
 
 ## How to use this folder
 
