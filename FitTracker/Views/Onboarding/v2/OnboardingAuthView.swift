@@ -146,7 +146,7 @@ struct OnboardingAuthView: View {
                 HStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "envelope.fill")
                         .font(AppText.sectionTitle)
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(AppColor.Brand.secondary)
                         .frame(width: 26)
                     VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         Text("Continue with Email")
@@ -177,7 +177,7 @@ struct OnboardingAuthView: View {
                 } label: {
                     HStack(spacing: AppSpacing.xSmall) {
                         ZStack {
-                            Circle().fill(Color.white).frame(width: 26, height: 26)
+                            Circle().fill(AppPalette.white).frame(width: 26, height: 26)
                             Text("G").font(AppText.callout).foregroundStyle(AppColor.Brand.secondary)
                         }
                         VStack(alignment: .leading, spacing: AppSpacing.micro) {
@@ -195,7 +195,7 @@ struct OnboardingAuthView: View {
                     }
                     .padding(.horizontal, AppSpacing.small)
                     .padding(.vertical, AppSpacing.small)
-                    .background(Color.white, in: RoundedRectangle(cornerRadius: AppRadius.medium))
+                    .background(AppPalette.white, in: RoundedRectangle(cornerRadius: AppRadius.medium))
                     .overlay(RoundedRectangle(cornerRadius: AppRadius.medium).stroke(AppColor.Border.hairline, lineWidth: 1))
                 }
                 .buttonStyle(.plain)
@@ -210,12 +210,12 @@ struct OnboardingAuthView: View {
                 HStack(spacing: AppSpacing.xSmall) {
                     Image(systemName: "apple.logo")
                         .font(AppText.sectionTitle)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                         .frame(width: 26)
                     VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         Text("Continue with Apple")
                             .font(AppText.button)
-                            .foregroundStyle(.white)
+                            .foregroundStyle(AppColor.Text.inversePrimary)
                         Text("Use your Apple Account")
                             .font(AppText.subheading)
                             .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -309,7 +309,7 @@ struct OnboardingAuthView: View {
                 }
             }
             .font(AppText.button)
-            .foregroundStyle(.white)
+            .foregroundStyle(AppColor.Text.inversePrimary)
             .frame(maxWidth: .infinity)
             .frame(height: AppSize.ctaHeight)
             .background(AppColor.Surface.inverse.opacity(0.82), in: RoundedRectangle(cornerRadius: AppRadius.button))
@@ -350,7 +350,7 @@ struct OnboardingAuthView: View {
                 }
             }
             .font(AppText.button)
-            .foregroundStyle(.white)
+            .foregroundStyle(AppColor.Text.inversePrimary)
             .frame(maxWidth: .infinity)
             .frame(height: AppSize.ctaHeight)
             .background(AppColor.Surface.inverse.opacity(0.82), in: RoundedRectangle(cornerRadius: AppRadius.button))
@@ -409,7 +409,7 @@ struct OnboardingAuthView: View {
                 }
             }
             .font(AppText.button)
-            .foregroundStyle(.white)
+            .foregroundStyle(AppColor.Text.inversePrimary)
             .frame(maxWidth: .infinity)
             .frame(height: AppSize.ctaHeight)
             .background(AppColor.Surface.inverse.opacity(0.82), in: RoundedRectangle(cornerRadius: AppRadius.button))

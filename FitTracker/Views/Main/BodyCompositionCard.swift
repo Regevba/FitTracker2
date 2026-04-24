@@ -111,7 +111,7 @@ struct BodyCompositionCard: View {
                 Button(action: onConnectHealthKit) {
                     Text("Connect HealthKit")
                         .font(AppText.button)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(AppColor.Text.inversePrimary)
                         .frame(maxWidth: .infinity)
                         .frame(height: AppSize.ctaHeight)
                         .background(AppColor.Accent.recovery, in: RoundedRectangle(cornerRadius: AppRadius.button, style: .continuous))

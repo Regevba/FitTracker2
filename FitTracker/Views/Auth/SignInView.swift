@@ -18,7 +18,7 @@ struct SignInView: View {
             ZStack(alignment: .top) {
 
                 // Background
-                Color(.systemBackground).ignoresSafeArea()
+                AppColor.Background.appPrimary.ignoresSafeArea()
 
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: AppSpacing.large) {
@@ -154,7 +154,7 @@ struct SignInView: View {
                     dismiss()
                 case .error(let msg):
                     errorBanner = msg
-                    withAnimation(.default.repeatCount(3, autoreverses: true)) {
+                    withAnimation(AppEasing.short.repeatCount(3, autoreverses: true)) {
                         shakeOffset = 6
                     }
                     Task { try? await Task.sleep(for: .milliseconds(300)); shakeOffset = 0 }
@@ -241,7 +241,7 @@ struct SocialSignInButton: View {
 
     private var labelColor: Color {
         switch provider {
-        case .apple:              return Color(.systemBackground)
+        case .apple:              return AppColor.Text.inversePrimary
         case .google, .facebook:  return AppColor.Brand.warm
         case .passkey:            return AppColor.Accent.sleep
         case .email:              return AppColor.Accent.secondary

@@ -1,0 +1,57 @@
+{
+  "feature": "ui-audit-baseline-burndown",
+  "type": "enhancement",
+  "parent_feature": "design-system-v2",
+  "started": "2026-04-21",
+  "current_phase": "implement",
+  "branch": "claude/review-ui-consistency-zSkvJ",
+  "phases": {
+    "research": {
+      "skipped": true,
+      "reason": "covered by handoff + committed baseline at docs/design-system/ui-audit-baseline.md"
+    },
+    "prd": {
+      "skipped": true,
+      "reason": "work_type:enhancement; parent design-system-v2 PRD covers scope"
+    },
+    "tasks": {
+      "completed": true,
+      "plan": "docs/superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md"
+    },
+    "ux_or_integration": {
+      "skipped": true,
+      "reason": "no new UI; token-migration only; v2-refactor-checklist not applicable"
+    },
+    "implement": {
+      "status": "in_progress",
+      "started": "2026-04-21"
+    },
+    "test": {
+      "status": "pending"
+    },
+    "review": {
+      "status": "pending"
+    },
+    "merge": {
+      "status": "pending"
+    },
+    "docs": {
+      "status": "pending"
+    }
+  },
+  "metrics": {
+    "primary": "baseline_p0_count",
+    "baseline": 27,
+    "target": 0,
+    "kill_criteria": "visual regressions reported post-merge > 2 within 7 days"
+  },
+  "case_study": ".claude/features/ui-audit-baseline-burndown/case-study.md",
+  "risks": {
+    "R1_visual_regression": "mitigated via mirror-diff per file",
+    "R2_animation_gaps": "mitigated via Phase 0.1 token additions",
+    "R3_advisory_gate": "closed by Phase 3.2",
+    "R4_scanner_gaps": "closed by Phase 4.1",
+    "R5_baseline_drift": "closed by Phase 4.2",
+    "R6_pbxproj_volatility": "isolated to separate PR in Phase 4.3"
+  }
+}

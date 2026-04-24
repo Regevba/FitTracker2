@@ -518,7 +518,7 @@ private struct GoogleProviderRow: View {
         HStack(spacing: AppSpacing.xSmall) {
             ZStack {
                 Circle()
-                    .fill(Color.white)
+                    .fill(AppPalette.white)
                     .frame(width: 26, height: 26)
                 Text("G")
                     .font(AppText.callout)
@@ -555,7 +555,7 @@ private struct AppleProviderRow: View {
             VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)
                     .font(AppText.button)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(AppColor.Text.inversePrimary)
                 Text(subtitle)
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Text.inverseSecondary)
@@ -666,7 +666,7 @@ private struct AuthPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(AppText.button)
-            .foregroundStyle(.white)
+            .foregroundStyle(AppColor.Text.inversePrimary)
             .frame(maxWidth: .infinity)
             .padding(.vertical, AppSpacing.small)
             .background(

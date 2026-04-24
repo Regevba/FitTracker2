@@ -521,7 +521,7 @@ private struct ShimmerEffect: ViewModifier {
             .offset(x: phase).mask(content)
         )
         .onAppear {
-            withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: false)) { phase = 300 }
+            withAnimation(AppLoadingAnimation.fastShimmer) { phase = 300 }
         }
     }
 }

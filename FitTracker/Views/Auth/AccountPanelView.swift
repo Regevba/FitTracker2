@@ -200,7 +200,7 @@ struct AccountPanelView: View {
 
             Text(session?.initials ?? "—")
                 .font(AppText.pageTitle)
-                .foregroundStyle(.white)
+                .foregroundStyle(AppColor.Text.inversePrimary)
         }
     }
 

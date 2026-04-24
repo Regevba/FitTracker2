@@ -112,6 +112,12 @@ RE_RAW_ANIMATION = re.compile(
     r"\.(?:easeInOut|easeIn|easeOut|linear|spring|interpolatingSpring|interactiveSpring)"
     r"\(\s*(?:duration|response|dampingFraction|blendDuration|stiffness|damping|initialVelocity)\s*:"
 )
+# Bare animations inside withAnimation(...) or .animation(...) — e.g. .easeInOut
+# with no duration argument. Scoped to these two call sites to avoid false
+# positives on unrelated .easeInOut enum-case uses.
+RE_RAW_ANIMATION_BARE = re.compile(
+    r"(?:\bwithAnimation|\.animation)\s*\(\s*\.(?:easeInOut|easeIn|easeOut|linear|default)(?![\w(])"
+)
 
 # Raw Font.system(...) outside AppTheme — should use AppText.* tokens
 RE_RAW_FONT = re.compile(r"\bFont\.system\(")
@@ -179,11 +185,14 @@ def is_historical(path: Path) -> bool:
     return False
 
 
-def scan_file(path: Path) -> FileReport:
-    rel = str(path.relative_to(REPO_ROOT))
+def scan_file(path: Path, bypass_skip: bool = False) -> FileReport:
+    try:
+        rel = str(path.relative_to(REPO_ROOT))
+    except ValueError:
+        rel = str(path)
     report = FileReport(path=path, relative=rel)
 
-    if path.name in SKIP_FILES:
+    if not bypass_skip and path.name in SKIP_FILES:
         report.skipped = "token-definition file"
         return report
     if is_historical(path):
@@ -224,8 +233,8 @@ def scan_file(path: Path) -> FileReport:
                     snippet=stripped[:140],
                 ))
 
-        # ── P0: raw animations
-        if RE_RAW_ANIMATION.search(line):
+        # ── P0: raw animations (with or without parenthesized args)
+        if RE_RAW_ANIMATION.search(line) or RE_RAW_ANIMATION_BARE.search(line):
             report.findings.append(Finding(
                 file=rel, line=i, severity="P0", rule="DS-RAW-ANIMATION",
                 message="raw animation literal — use AppMotion.* / AppSpring.* / AppEasing.*",
@@ -482,20 +491,36 @@ def main() -> int:
                         help="write docs/design-system/ui-audit-baseline.md")
     parser.add_argument("--no-fail", action="store_true",
                         help="exit 0 even if P0 findings exist (baseline mode)")
+    parser.add_argument("--file", action="append", default=None,
+                        help="scan only these files (repeatable); bypasses SKIP_FILES")
     args = parser.parse_args()
 
-    files = collect_swift_files()
-    reports = [scan_file(f) for f in files]
+    if args.file:
+        if args.baseline:
+            print("ERROR: --baseline and --file are mutually exclusive", file=sys.stderr)
+            return 2
+        reports = []
+        for p in args.file:
+            path = Path(p)
+            if not path.is_absolute():
+                path = (REPO_ROOT / p).resolve()
+            if not path.exists():
+                print(f"ERROR: {p} not found", file=sys.stderr)
+                return 2
+            reports.append(scan_file(path, bypass_skip=True))
+    else:
+        files = collect_swift_files()
+        reports = [scan_file(f) for f in files]
 
-    # Gap A — asset-reference integrity (AppTheme.swift ↔ Assets.xcassets)
-    asset_findings = check_color_assets()
-    if asset_findings:
-        synthetic = FileReport(
-            path=REPO_ROOT / "FitTracker" / "Services" / "AppTheme.swift",
-            relative="FitTracker/Services/AppTheme.swift",
-            findings=asset_findings,
-        )
-        reports.append(synthetic)
+        # Gap A — asset-reference integrity (AppTheme.swift ↔ Assets.xcassets)
+        asset_findings = check_color_assets()
+        if asset_findings:
+            synthetic = FileReport(
+                path=REPO_ROOT / "FitTracker" / "Services" / "AppTheme.swift",
+                relative="FitTracker/Services/AppTheme.swift",
+                findings=asset_findings,
+            )
+            reports.append(synthetic)
 
     if args.baseline:
         out_path = REPO_ROOT / "docs" / "design-system" / "ui-audit-baseline.md"

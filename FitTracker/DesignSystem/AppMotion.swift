@@ -32,6 +32,12 @@ enum AppSpring {
     static let stiff    = Animation.spring(response: 0.25, dampingFraction: 0.90)
     /// Progress: animated progress bars — softer, slower spring for visual indicators
     static let progress = Animation.spring(response: 0.55, dampingFraction: 0.80)
+    /// Hero entry: welcome screen title + brand icon (slow, gentle)
+    static let hero        = Animation.spring(response: 0.80, dampingFraction: 0.70)
+    /// Step advance: onboarding step transitions
+    static let stepAdvance = Animation.spring(response: 0.50, dampingFraction: 0.70)
+    /// Dial pulse: readiness physics — interpolating for continuous physics feel
+    static let dialPulse   = Animation.interpolatingSpring(stiffness: 40, damping: 8)
 }
 
 // MARK: - Easing
@@ -40,6 +46,8 @@ enum AppEasing {
     static let short     = Animation.easeInOut(duration: AppDuration.short)
     static let instant   = Animation.easeOut(duration: AppDuration.instant)
     static let linear    = Animation.linear(duration: AppDuration.standard)
+    /// Hero caption: slow easeOut for staggered hero text entry
+    static let heroEntry = Animation.easeOut(duration: AppDuration.xLong)
 }
 
 // MARK: - Reduce-motion helpers
@@ -89,4 +97,8 @@ enum AppLoadingAnimation {
     /// Shimmer: opacity oscillates 0.4→1.0, 0.8s cycle.
     /// Use for: waiting, background refresh.
     static let shimmer = Animation.easeInOut(duration: 0.8).repeatForever(autoreverses: true)
+
+    /// Fast shimmer: progress bar indeterminate gradient, 1.2s linear loop.
+    /// Use for: progress bar scrolling gradient, skeleton shimmer.
+    static let fastShimmer = Animation.linear(duration: 1.2).repeatForever(autoreverses: false)
 }
