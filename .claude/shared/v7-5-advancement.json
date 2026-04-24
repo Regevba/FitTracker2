@@ -1,0 +1,285 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-04-24T18:21:32Z",
+  "description": "Consolidated before/after advancement data across the Gemini audit remediation (2026-04-21 \u2192 2026-04-24). Every number is tagged with its T1/T2/T3 data-quality tier. This file is derived from framework-manifest.json, measurement-adoption.json, documentation-debt.json, change-log.json, .claude/logs/, and `git log`.",
+  "canonical_case_study": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+  "remediation_plan": "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md",
+  "audit_archive": "docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md",
+  "window": {
+    "start": "2026-04-21",
+    "end": "2026-04-24"
+  },
+  "before": {
+    "framework_version": "7.1",
+    "auditor_check_codes": 8,
+    "active_feature_logs": 0,
+    "runtime_smoke_profiles": 0,
+    "pre_commit_hook_installed": false,
+    "cache_hits_populated": {
+      "value": "0/40",
+      "tier": "T1 (Instrumented)"
+    },
+    "data_quality_tiers_convention": false,
+    "measurement_adoption_ledger_exists": false,
+    "documentation_debt_ledger_exists": false,
+    "open_gemini_items": 9
+  },
+  "after": {
+    "framework_version": "7.5",
+    "auditor_check_codes": 12,
+    "active_feature_logs": 5,
+    "runtime_smoke_profiles": 5,
+    "pre_commit_hook_installed": true,
+    "cache_hits_populated": {
+      "value": "1/41",
+      "tier": "T1 (Instrumented)"
+    },
+    "data_quality_tiers_convention": true,
+    "measurement_adoption_ledger_exists": true,
+    "documentation_debt_ledger_exists": true,
+    "open_gemini_items": {
+      "fully_or_effectively_shipped": 7,
+      "partial_or_pilot": 2,
+      "external_blocked": 1,
+      "tier": "T2 (Declared)"
+    }
+  },
+  "tier_by_tier": [
+    {
+      "tier": "1.1",
+      "label": "Automated time/event metrics",
+      "status": "partial_measured",
+      "notes": {
+        "script": "scripts/measurement-adoption-report.py",
+        "make_target": "measurement-adoption",
+        "output": ".claude/shared/measurement-adoption.json",
+        "known_delta": "cache_hits populated in 0/40 features (issue #140)"
+      }
+    },
+    {
+      "tier": "1.2",
+      "label": "Integrate with sources of truth (GitHub API)",
+      "status": "shipped",
+      "notes": {
+        "script": "scripts/check-state-schema.py",
+        "enforcement": "pre-commit hook blocks bogus phases.merge.pr_number on state.json write",
+        "also_runs": "72h integrity cycle (PR_NUMBER_UNRESOLVED + BROKEN_PR_CITATION)"
+      }
+    },
+    {
+      "tier": "1.3",
+      "label": "Enforce state.json schema on write",
+      "status": "shipped",
+      "notes": {
+        "script": "scripts/check-state-schema.py",
+        "hook": ".githooks/pre-commit",
+        "install": "make install-hooks",
+        "enforces": "SCHEMA_DRIFT \u2014 rejects legacy `phase` key in favor of `current_phase`"
+      }
+    },
+    {
+      "tier": "2.1",
+      "label": "Gated phase transitions w/ runtime smoke tests",
+      "status": "groundwork_shipped",
+      "notes": {
+        "script": "scripts/runtime-smoke-gate.py",
+        "make_target": "runtime-smoke",
+        "profiles": [
+          "app_launch",
+          "authenticated_home",
+          "sign_in_surface",
+          "onboarding_surface",
+          "meal_log_surface"
+        ],
+        "last_mile": "docs/setup/auth-runtime-verification-playbook.md \u2014 7-step manual real-provider checklist"
+      }
+    },
+    {
+      "tier": "2.2",
+      "label": "Contemporaneous logging",
+      "status": "pilot_active",
+      "notes": {
+        "script": "scripts/append-feature-log.py",
+        "log_dir": ".claude/logs/",
+        "active_logs": 5,
+        "hardening": "rejects silent backdating; --retroactive requires --retroactive-reason"
+      }
+    },
+    {
+      "tier": "2.3",
+      "label": "Data quality tiers T1/T2/T3",
+      "status": "shipped",
+      "notes": {
+        "convention": "docs/case-studies/data-quality-tiers.md",
+        "rule_codified_in": "CLAUDE.md",
+        "tiers": [
+          "T1 Instrumented",
+          "T2 Declared",
+          "T3 Narrative"
+        ]
+      }
+    },
+    {
+      "tier": "3.1",
+      "label": "Independent Auditor Agent",
+      "status": "shipped_hardened",
+      "notes": {
+        "extends": "v7_1_integrity_cycle",
+        "new_check_codes": [
+          "SCHEMA_DRIFT",
+          "BROKEN_PR_CITATION",
+          "PR_NUMBER_UNRESOLVED"
+        ],
+        "total_check_codes": 11,
+        "workflow_hardening_2026_04_23": [
+          "pipefail + PIPESTATUS[0] captures real integrity-check.py exit",
+          "snapshot_context metadata distinguishes scheduled_cycle from manual runs",
+          "regression detection uses grep-for-token on piped report"
+        ]
+      }
+    },
+    {
+      "tier": "3.2",
+      "label": "Documentation debt dashboard",
+      "status": "baseline_shipped",
+      "notes": {
+        "script": "scripts/documentation-debt-report.py",
+        "make_target": "documentation-debt",
+        "output": ".claude/shared/documentation-debt.json",
+        "trend_mode_unlocks_after": "3 scheduled 72h cycle snapshots with counts_for_trend=true"
+      }
+    },
+    {
+      "tier": "3.3",
+      "label": "External replication",
+      "status": "backlog_external_blocked",
+      "notes": {
+        "requires": "independent human or AI operator running a feature through /pm-workflow"
+      }
+    }
+  ],
+  "effort_data": {
+    "tier": "T3 (Narrative)",
+    "reconstruction_source": "git log + canonical commit list",
+    "window_start": "2026-04-21",
+    "window_end": "2026-04-24",
+    "commits_in_window": 15,
+    "canonical_commits_identified": 14,
+    "known_gap": "Tier 2.2 contemporaneous logger shipped 2026-04-21 but was not dogfooded on the remediation work itself. Per-tier wall-time, session count, and token cost are NOT available. Option 2 (retroactive backfill via append-feature-log.py --retroactive) is planned for the meta-analysis-audit log."
+  },
+  "commits": [
+    {
+      "sha": "9227085",
+      "sha_full": "9227085ec6a8cd6ca29fbd216574a64cdfc240b6",
+      "date": "2026-04-24 21:10:53 +0300",
+      "subject": "fix(makefile): auto-resolve test simulator instead of hardcoded UUID",
+      "canonical_tag": "Makefile auto-resolve simulator"
+    },
+    {
+      "sha": "b491e53",
+      "sha_full": "b491e53da2548a1cd8fd33ce1f20113bde260a22",
+      "date": "2026-04-24 13:02:03 +0300",
+      "subject": "feat(framework): post-v7.5 hardening \u2014 auto-emission, regression test, tier-tag check, status snapshot",
+      "canonical_tag": "post-v7.5 hardening (auto-emit, regression test, tier-tag, framework-status)"
+    },
+    {
+      "sha": "c7191fc",
+      "sha_full": "c7191fc2d679301dce4d78a1510d289b9e30dcca",
+      "date": "2026-04-24 12:32:31 +0300",
+      "subject": "feat(tier1.1): close cache_hits writer-path gap \u2014 issue #140",
+      "canonical_tag": "Tier 1.1 cache_hits writer path (issue #140)"
+    },
+    {
+      "sha": "c4b7893",
+      "sha_full": "c4b78931a52b92afb413b65340bc32fbabbcf98d",
+      "date": "2026-04-24 12:08:55 +0300",
+      "subject": "Merge PR #139 (claude/review-ui-consistency-zSkvJ): UI-audit P0 27\u21920 burndown",
+      "canonical_tag": "merge PR #139 UI-audit burndown (P0 27\u21920)"
+    },
+    {
+      "sha": "bea6c59",
+      "sha_full": "bea6c5975007c6d70bb3c01a0a0ac0dcf09d7b08",
+      "date": "2026-04-24 11:49:55 +0300",
+      "subject": "feat(framework): v7.1 -> v7.5 \u2014 Data Integrity Framework",
+      "canonical_tag": "v7.1 \u2192 v7.5 framework version bump"
+    },
+    {
+      "sha": "c174c01",
+      "sha_full": "c174c01fb5d29511e5af49215827d0a80aa5d740",
+      "date": "2026-04-24 07:14:13 +0300",
+      "subject": "docs(audit): reflect 2026-04-24 Tier advancement across remediation surfaces",
+      "canonical_tag": "status doc sync across trust/mirror/memory"
+    },
+    {
+      "sha": "28cbd44",
+      "sha_full": "28cbd44f3be71e61bbace358324c571e81da61a5",
+      "date": "2026-04-24 07:01:02 +0300",
+      "subject": "chore(shared): commit first measurement-adoption baseline",
+      "canonical_tag": "measurement-adoption baseline ledger"
+    },
+    {
+      "sha": "223a1b4",
+      "sha_full": "223a1b4e8869708ca0fe3d35e458e24480c9dca9",
+      "date": "2026-04-24 07:00:42 +0300",
+      "subject": "feat(integrity): Tier 1.2 full PR-on-write + Tier 1.1 adoption inventory + Tier 2.2 log scaffolds",
+      "canonical_tag": "Tier 1.2 full + Tier 1.1 inventory + Tier 2.2 scaffolds"
+    },
+    {
+      "sha": "e892ce3",
+      "sha_full": "e892ce3934454957e26a7ec6917690c2476405d1",
+      "date": "2026-04-24 07:00:09 +0300",
+      "subject": "Merge chore/pbxproj-orphan-cleanup: remove 2 orphan PBXBuildFile entries",
+      "canonical_tag": "merge pbxproj-orphan-cleanup"
+    },
+    {
+      "sha": "0a38af7",
+      "sha_full": "0a38af748faa8f995551b49d2adc80b0be3ff0bf",
+      "date": "2026-04-24 06:46:59 +0300",
+      "subject": "docs: wire Gemini-audit Tier groundwork into CLAUDE.md + index READMEs",
+      "canonical_tag": "doc discoverability wiring"
+    },
+    {
+      "sha": "4ff953e",
+      "sha_full": "4ff953ed538f6462c619adffc89cc9fa0a94cbd8",
+      "date": "2026-04-24 06:22:08 +0300",
+      "subject": "chore(logs): Tier 2.2 log entries for Tier 2.1 harness closure session",
+      "canonical_tag": "Tier 2.2 log entries seeded"
+    },
+    {
+      "sha": "e74604e",
+      "sha_full": "e74604e1d638c1171bdd6a16b7f9b602c077282e",
+      "date": "2026-04-24 06:07:22 +0300",
+      "subject": "feat(auth): Tier 2.1 harness closure \u2014 staging sign-in surface smoke green",
+      "canonical_tag": "Tier 2.1 harness closure (sign-in-surface green)"
+    },
+    {
+      "sha": "d986d74",
+      "sha_full": "d986d7486d7d826906522a2a4694830af60fc9e8",
+      "date": "2026-04-23 16:45:30 +0300",
+      "subject": "docs(handoff): record staging auth checkpoint",
+      "canonical_tag": "staging-auth checkpoint handoff"
+    },
+    {
+      "sha": "2415475",
+      "sha_full": "2415475ae26a289a6e2a437d8a960d2481cebf03",
+      "date": "2026-04-23 08:00:45 +0300",
+      "subject": "chore(audit): harden gemini follow-up status and gates",
+      "canonical_tag": "2026-04-23 hardening (workflow exit-code, snapshot metadata)"
+    },
+    {
+      "sha": "1405f89",
+      "sha_full": "1405f894e5a03bddc31fe4d481f42fc30f8c1cb3",
+      "date": "2026-04-22 13:41:01 +0300",
+      "subject": "chore: checkpoint workspace changes",
+      "canonical_tag": ""
+    }
+  ],
+  "active_feature_logs": [
+    "app-store-assets",
+    "import-training-plan",
+    "meta-analysis-audit",
+    "push-notifications",
+    "staging-auth-runtime"
+  ],
+  "change_log_event_count": 23
+}

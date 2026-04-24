@@ -6,7 +6,7 @@
   "current_phase": "documentation",
   "framework_version": "7.0",
   "started_at": "2026-04-23T04:59:34Z",
-  "updated_at": "2026-04-24T09:25:30Z",
+  "updated_at": "2026-04-24T18:20:36Z",
   "events": [
     {
       "timestamp": "2026-04-23T04:59:34Z",
@@ -60,6 +60,230 @@
         "type": "exact",
         "skill": "integrity-check"
       }
+    },
+    {
+      "timestamp": "2026-04-22T10:41:01Z",
+      "event_type": "checkpoint",
+      "phase": "documentation",
+      "summary": "Workspace checkpoint: staging xcconfig, AppIcon, encryption scaffolding. Commit: 1405f89 (chore: checkpoint workspace changes).",
+      "artifacts": [
+        "1405f89"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (1405f894e5a03bddc31fe4d481f42fc30f8c1cb3)."
+    },
+    {
+      "timestamp": "2026-04-21T16:22:18Z",
+      "event_type": "framework_scaffolding",
+      "phase": "documentation",
+      "summary": "[Tier 2.1/2.2/3.2] Shipped runtime-smoke + contemporaneous logging + docs-debt baseline (initial scaffolding). Commit: 066ad18 (docs(audit): add runtime smoke, logging, and docs debt baseline).",
+      "artifacts": [
+        "066ad18"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (066ad18571b7c94affe466bd4ef88ab4d252f2b6)."
+    },
+    {
+      "timestamp": "2026-04-23T05:00:45Z",
+      "event_type": "audit_hardening",
+      "phase": "documentation",
+      "summary": "[Tier 3.1] Hardened 72h workflow exit-code + snapshot metadata + trend-readiness rules. Commit: 2415475 (chore(audit): harden gemini follow-up status and gates).",
+      "artifacts": [
+        "2415475"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (2415475ae26a289a6e2a437d8a960d2481cebf03)."
+    },
+    {
+      "timestamp": "2026-04-23T13:45:30Z",
+      "event_type": "handoff_checkpoint",
+      "phase": "documentation",
+      "summary": "Staging-auth runtime checkpoint recorded for next-session resume. Commit: d986d74 (docs(handoff): record staging auth checkpoint).",
+      "artifacts": [
+        "d986d74"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (d986d7486d7d826906522a2a4694830af60fc9e8)."
+    },
+    {
+      "timestamp": "2026-04-24T03:07:22Z",
+      "event_type": "tier_closure",
+      "phase": "documentation",
+      "summary": "[Tier 2.1] Harness closure \u2014 staging sign_in_surface smoke green locally. Commit: e74604e (feat(auth): Tier 2.1 harness closure \u2014 staging sign-in surface smoke green).",
+      "artifacts": [
+        "e74604e"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (e74604e1d638c1171bdd6a16b7f9b602c077282e)."
+    },
+    {
+      "timestamp": "2026-04-24T03:22:08Z",
+      "event_type": "tier_closure",
+      "phase": "documentation",
+      "summary": "[Tier 2.2] Tier 2.2 contemporaneous log entries seeded for Tier 2.1 harness session. Commit: 4ff953e (chore(logs): Tier 2.2 log entries for Tier 2.1 harness closure session).",
+      "artifacts": [
+        "4ff953e"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (4ff953ed538f6462c619adffc89cc9fa0a94cbd8)."
+    },
+    {
+      "timestamp": "2026-04-24T03:46:59Z",
+      "event_type": "docs_discoverability",
+      "phase": "documentation",
+      "summary": "Wired Gemini-audit Tier groundwork into CLAUDE.md + process/setup/case-study READMEs. Commit: 0a38af7 (docs: wire Gemini-audit Tier groundwork into CLAUDE.md + index READMEs).",
+      "artifacts": [
+        "0a38af7"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (0a38af748faa8f995551b49d2adc80b0be3ff0bf)."
+    },
+    {
+      "timestamp": "2026-04-24T04:00:09Z",
+      "event_type": "merge",
+      "phase": "documentation",
+      "summary": "Merged chore/pbxproj-orphan-cleanup (2-line project cleanup, xcodebuild-verified). Commit: e892ce3 (Merge chore/pbxproj-orphan-cleanup: remove 2 orphan PBXBuildFile entries).",
+      "artifacts": [
+        "e892ce3"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (e892ce3934454957e26a7ec6917690c2476405d1)."
+    },
+    {
+      "timestamp": "2026-04-24T04:00:42Z",
+      "event_type": "tier_closure",
+      "phase": "documentation",
+      "summary": "[Tier 1.1/1.2/2.2] Tier 1.2 PR-on-write shipped, Tier 1.1 adoption inventory, Tier 2.2 scaffolds for 3 active features. Commit: 223a1b4 (feat(integrity): Tier 1.2 full PR-on-write + Tier 1.1 adoption inventory + Tier 2.2 log scaffolds).",
+      "artifacts": [
+        "223a1b4"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (223a1b4e8869708ca0fe3d35e458e24480c9dca9)."
+    },
+    {
+      "timestamp": "2026-04-24T04:01:02Z",
+      "event_type": "ledger_baseline",
+      "phase": "documentation",
+      "summary": "[Tier 1.1] First measurement-adoption baseline committed (0/40 cache_hits delta made visible). Commit: 28cbd44 (chore(shared): commit first measurement-adoption baseline).",
+      "artifacts": [
+        "28cbd44"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (28cbd44f3be71e61bbace358324c571e81da61a5)."
+    },
+    {
+      "timestamp": "2026-04-24T04:14:13Z",
+      "event_type": "status_sync",
+      "phase": "documentation",
+      "summary": "Synced 2026-04-24 Tier advancement across trust README, remediation plan, repo-root mirror. Commit: c174c01 (docs(audit): reflect 2026-04-24 Tier advancement across remediation surfaces).",
+      "artifacts": [
+        "c174c01"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (c174c01fb5d29511e5af49215827d0a80aa5d740)."
+    },
+    {
+      "timestamp": "2026-04-24T09:08:55Z",
+      "event_type": "merge",
+      "phase": "documentation",
+      "summary": "Merged PR #139 UI-audit burndown (21 commits, P0 27\u21920, hard gate in verify-local). Commit: c4b7893 (Merge PR #139 (claude/review-ui-consistency-zSkvJ): UI-audit P0 27\u21920 burndown).",
+      "artifacts": [
+        "c4b7893"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (c4b78931a52b92afb413b65340bc32fbabbcf98d)."
+    },
+    {
+      "timestamp": "2026-04-24T08:49:55Z",
+      "event_type": "version_bump",
+      "phase": "documentation",
+      "summary": "[Framework v7.5] Framework version 7.1 \u2192 7.5 \u2014 Data Integrity Framework. Commit: bea6c59 (feat(framework): v7.1 -> v7.5 \u2014 Data Integrity Framework).",
+      "artifacts": [
+        "bea6c59"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (bea6c5975007c6d70bb3c01a0a0ac0dcf09d7b08)."
+    },
+    {
+      "timestamp": "2026-04-24T09:32:31Z",
+      "event_type": "tier_closure",
+      "phase": "documentation",
+      "summary": "[Tier 1.1] cache_hits writer path shipped via --cache-hit flag (closes issue #140). Commit: c7191fc (feat(tier1.1): close cache_hits writer-path gap \u2014 issue #140).",
+      "artifacts": [
+        "c7191fc"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (c7191fc2d679301dce4d78a1510d289b9e30dcca)."
+    },
+    {
+      "timestamp": "2026-04-24T10:02:03Z",
+      "event_type": "framework_hardening",
+      "phase": "documentation",
+      "summary": "Post-v7.5 hardening: PM auto-emission, regression test, CASE_STUDY_MISSING_TIER_TAGS check, framework-status. Commit: b491e53 (feat(framework): post-v7.5 hardening \u2014 auto-emission, regression test, tier-tag check, status snapshot).",
+      "artifacts": [
+        "b491e53"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (b491e53da2548a1cd8fd33ce1f20113bde260a22)."
+    },
+    {
+      "timestamp": "2026-04-24T18:10:53Z",
+      "event_type": "build_infra",
+      "phase": "documentation",
+      "summary": "Makefile auto-resolve test simulator (removes stale UUID dependency). Commit: 9227085 (fix(makefile): auto-resolve test simulator instead of hardcoded UUID).",
+      "artifacts": [
+        "9227085"
+      ],
+      "metrics": {},
+      "actor": "retroactive_backfill_2026_04_24",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (9227085ec6a8cd6ca29fbd216574a64cdfc240b6)."
     }
   ]
 }
