@@ -1,22 +1,39 @@
-# Gemini Audit Remediation Plan — 2026-04-23
+# Gemini Audit Remediation Plan — 2026-04-23 (updated 2026-04-24)
 
 This is the current step-by-step operating plan for closing the remaining Gemini
 audit gaps without overstating what is already true.
 
-## Current truth snapshot
+## Current truth snapshot (2026-04-24)
 
-- Tier 1.1 is still partial: the measurement protocol shipped, but system-wide
-  measured adoption is incomplete.
+- Tier 1.1 is **partial, now measured**: `measurement-adoption-report.py`
+  inventory shows 0/40 features fully adopt v6.0 measurement fields, and 0/40
+  have `cache_hits` populated. Partial status is preserved but is now
+  auditable via `make measurement-adoption` rather than narrative.
+- Tier 1.2 is now **shipped** (promoted from "subset shipped" on 2026-04-24):
+  the pre-commit hook now also verifies `phases.merge.pr_number` resolves on
+  GitHub. Gate fires at write-time; the 72h integrity cycle still catches
+  drift post-hoc. Both on-write and on-cycle paths covered.
 - Tier 2.1 groundwork is real: the staging smoke runner exists, staging app
   launch has already passed, preflight now passes with a valid local staging
   overlay, and the onboarding-aware `sign_in_surface` smoke now also passes.
   The remaining Tier 2.1 gap is real provider verification, not harness setup.
-- Tier 2.2 is now in pilot mode: the logger exists, rejects silent backdating by
-  default, and has its first live adoption entry.
+- Tier 2.2 pilot **expanded to 5 live logs** on 2026-04-24: scaffolds seeded
+  for the 3 features currently in `phase=implementation`
+  (`app-store-assets`, `import-training-plan`, `push-notifications`) alongside
+  the existing `staging-auth-runtime` and `meta-analysis-audit` logs. Full
+  process migration still incomplete until PM-workflow usage becomes routine.
 - Tier 3.1 is real and hardened: the 72h workflow now preserves the integrity
   checker's exit status and distinguishes regressions from strict/manual runs.
 - Tier 3.2 is baseline-only: the dashboard exists, but trend mode now waits for
   three scheduled cycle snapshots.
+
+## New finding (2026-04-24): `cache_hits` is 0/40 across the corpus
+
+The v6.0 measurement protocol defined a `cache_hits[]` field on state.json but
+no feature session actually writes to it. Tier 1.1 inventory surfaced this as
+separate from "slow adoption" — the writer path is not being exercised at all.
+Filed as an explicit known-delta in the Tier 1.1 status table; see
+`.claude/shared/measurement-adoption.json` for the per-dimension breakdown.
 
 ## What was fixed in this session
 
