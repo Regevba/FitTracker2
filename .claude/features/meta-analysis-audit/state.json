@@ -75,5 +75,17 @@
     "tests_failed": 0,
     "tests_skipped": 1,
     "baseline_date": "2026-04-16"
-  }
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-04-24T09:25:30Z",
+      "level": "L1",
+      "key": "gh_pr_list_all_500",
+      "type": "exact",
+      "skill": "integrity-check",
+      "event_type": "cache_hit",
+      "phase": "documentation"
+    }
+  ],
+  "updated": "2026-04-24T09:25:30Z"
 }

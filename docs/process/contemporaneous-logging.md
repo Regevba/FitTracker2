@@ -96,6 +96,31 @@ python3 scripts/append-feature-log.py \
   --retroactive-reason "Capturing a pre-hardening milestone from the Gemini follow-up batch."
 ```
 
+### Recording a cache hit (added 2026-04-24 for issue #140)
+
+The Tier 1.1 writer path: `--cache-hit LEVEL` records a cache event to both
+the contemporaneous log AND `state.json.cache_hits[]`, so
+`make measurement-adoption` actually has data to count.
+
+```bash
+python3 scripts/append-feature-log.py \
+  --feature user-profile-settings \
+  --event-type cache_hit \
+  --phase implement \
+  --summary "Reused cached screen-refactor-playbook L2 entry for the Profile v2 hero section scaffolding." \
+  --cache-hit L2 \
+  --cache-key "screen-refactor-playbook" \
+  --cache-hit-type exact \
+  --cache-skill design
+```
+
+- `--cache-hit` accepts `L1`, `L2`, or `L3` (matches the framework's 3-level cache hierarchy).
+- `--cache-hit-type` is `exact` (entry matched verbatim), `adapted` (entry applied with modification), or `miss` (lookup ran but no entry found — records the miss reason).
+- `--cache-key` is required whenever `--cache-hit` is set.
+- `--cache-skill` is optional but recommended — which skill made the lookup (pm-workflow / design / qa / etc.).
+
+The state.json mirror closes the gap flagged at [issue #140](https://github.com/Regevba/FitTracker2/issues/140): before 2026-04-24, `cache_hits` was populated in 0/40 features despite the v6.0 protocol defining the field. After this flag ships, any contributor recording a cache hit contemporaneously also populates the measurement ledger — no separate step.
+
 ## Rollout plan
 
 ### Phase 1 — scaffolding

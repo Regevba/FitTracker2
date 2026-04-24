@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Append an event to a per-feature contemporaneous log."""
+"""Append an event to a per-feature contemporaneous log.
+
+Tier 2.2 structured logger. Events land in `.claude/logs/<feature>.log.json`
+as append-only entries. The `--cache-hit LEVEL` mode (added 2026-04-24)
+also writes to `state.json.cache_hits[]` — closing the Tier 1.1 writer-path
+gap filed as issue #140.
+"""
 
 from __future__ import annotations
 
@@ -12,6 +18,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_LOG_DIR = REPO_ROOT / ".claude" / "logs"
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
+
+VALID_CACHE_LEVELS = {"L1", "L2", "L3"}
+VALID_CACHE_HIT_TYPES = {"exact", "adapted", "miss"}
 
 
 def utc_now() -> str:
@@ -59,6 +68,26 @@ def load_state(feature: str) -> dict[str, object]:
     return json.loads(state_path.read_text())
 
 
+def append_cache_hit_to_state(feature: str, cache_entry: dict) -> str | None:
+    """Append a cache-hit event to state.json.cache_hits[].
+
+    Returns the state.json path on success, None if the feature's state.json
+    doesn't exist (caller may still have logged to the contemporaneous log).
+    """
+    state_path = FEATURES_DIR / feature / "state.json"
+    if not state_path.exists():
+        return None
+    d = json.loads(state_path.read_text())
+    existing = d.get("cache_hits")
+    if not isinstance(existing, list):
+        # Replace None or any non-list sentinel with a fresh list.
+        d["cache_hits"] = []
+    d["cache_hits"].append(cache_entry)
+    d["updated"] = utc_now()
+    state_path.write_text(json.dumps(d, indent=2) + "\n")
+    return str(state_path)
+
+
 def scaffold_log(feature: str, state: dict[str, object]) -> dict[str, object]:
     return {
         "version": "1.0",
@@ -87,7 +116,23 @@ def main() -> int:
     parser.add_argument("--retroactive", action="store_true", help="Allow appending an older timestamped event and mark it as retroactive.")
     parser.add_argument("--retroactive-reason", help="Why a retroactive event is being recorded after the fact.")
     parser.add_argument("--output", help="Override output file path (default: .claude/logs/<feature>.log.json)")
+    parser.add_argument("--cache-hit", choices=sorted(VALID_CACHE_LEVELS),
+                        help="Record a cache hit at the given level (L1/L2/L3). "
+                             "In addition to appending a cache_hit event to the "
+                             "contemporaneous log, the level + key + type are also "
+                             "appended to state.json.cache_hits[] — closes the Tier 1.1 "
+                             "writer-path gap tracked at GitHub issue #140.")
+    parser.add_argument("--cache-key", help="Cache entry key (required with --cache-hit)")
+    parser.add_argument("--cache-hit-type", choices=sorted(VALID_CACHE_HIT_TYPES),
+                        default="exact",
+                        help="exact (entry matched verbatim) / adapted (entry applied with "
+                             "modification) / miss (lookup ran but no entry found — records "
+                             "the miss reason instead of a hit)")
+    parser.add_argument("--cache-skill", help="Skill that made the cache lookup (optional)")
     args = parser.parse_args()
+
+    if args.cache_hit and not args.cache_key:
+        raise SystemExit("--cache-key is required when --cache-hit is set.")
 
     state = load_state(args.feature)
     log_path = Path(args.output) if args.output else DEFAULT_LOG_DIR / f"{args.feature}.log.json"
@@ -126,11 +171,34 @@ def main() -> int:
     }
     if args.retroactive:
         event["retroactive_reason"] = args.retroactive_reason
+    if args.cache_hit:
+        event["cache_hit"] = {
+            "level": args.cache_hit,
+            "key": args.cache_key,
+            "type": args.cache_hit_type,
+            "skill": args.cache_skill,
+        }
     events.append(event)
     log["updated_at"] = utc_now()
 
     log_path.write_text(json.dumps(log, indent=2) + "\n")
     print(str(log_path))
+
+    # Tier 1.1 writer-path: mirror cache-hit data to state.json.cache_hits[]
+    # so `make measurement-adoption` can count it. Issue #140.
+    if args.cache_hit:
+        cache_entry = {
+            "timestamp": event["timestamp"],
+            "level": args.cache_hit,
+            "key": args.cache_key,
+            "type": args.cache_hit_type,
+            "skill": args.cache_skill,
+            "event_type": args.event_type,
+            "phase": event["phase"],
+        }
+        state_path = append_cache_hit_to_state(args.feature, cache_entry)
+        if state_path:
+            print(state_path)
     return 0
 
 

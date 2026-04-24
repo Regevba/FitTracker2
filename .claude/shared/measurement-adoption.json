@@ -1,40 +1,40 @@
 {
   "version": "1.0",
-  "updated": "2026-04-24T03:58:24Z",
+  "updated": "2026-04-24T09:25:43Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 40,
+    "features_total": 41,
     "features_post_v6": 6,
-    "features_pre_v6": 34,
+    "features_pre_v6": 35,
     "fully_adopted": 0,
     "partial_adopted": 3,
-    "zero_adopted": 37,
+    "zero_adopted": 38,
     "fully_adopted_post_v6": 0,
     "tier_1_1_status": "not_adopted"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 1,
-      "overall_percent": 2.5,
+      "overall_percent": 2.4,
       "post_v6_present": 1,
       "post_v6_percent": 16.7
     },
     "per_phase_timing": {
       "overall_present": 3,
-      "overall_percent": 7.5,
+      "overall_percent": 7.3,
       "post_v6_present": 3,
       "post_v6_percent": 50.0
     },
     "cache_hits": {
-      "overall_present": 0,
-      "overall_percent": 0.0,
-      "post_v6_present": 0,
-      "post_v6_percent": 0.0
+      "overall_present": 1,
+      "overall_percent": 2.4,
+      "post_v6_present": 1,
+      "post_v6_percent": 16.7
     },
     "cu_v2": {
       "overall_present": 3,
-      "overall_percent": 7.5,
+      "overall_percent": 7.3,
       "post_v6_present": 3,
       "post_v6_percent": 50.0
     }
@@ -64,7 +64,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": true
       }
     }
@@ -248,6 +248,11 @@
     {
       "feature": "training-tracking",
       "created": "2026-04-06",
+      "post_v6": false
+    },
+    {
+      "feature": "ui-audit-baseline-burndown",
+      "created": null,
       "post_v6": false
     },
     {
@@ -559,7 +564,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": true
       },
       "fully_adopted": false,
@@ -794,6 +799,20 @@
       "created": "2026-04-06",
       "post_v6": false,
       "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "ui-audit-baseline-burndown",
+      "created": null,
+      "post_v6": false,
+      "current_phase": "implement",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": false,
