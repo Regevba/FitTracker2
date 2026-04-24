@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "push-notifications",
+  "title": "push notifications",
+  "work_type": "feature",
+  "current_phase": "implementation",
+  "framework_version": null,
+  "started_at": "2026-04-24T03:59:17Z",
+  "updated_at": "2026-04-24T03:59:17Z",
+  "events": [
+    {
+      "timestamp": "2026-04-24T03:59:17Z",
+      "event_type": "log_scaffold_seeded",
+      "phase": "implementation",
+      "summary": "Tier 2.2 pilot expansion: log initialized for in-flight feature (phase=implementation). Future multi-session events should be appended contemporaneously via scripts/append-feature-log.py rather than reconstructed from memory.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

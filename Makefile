@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot schema-check documentation-debt runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -71,6 +71,12 @@ schema-check:
 # Generate the baseline documentation-debt report used by the control room.
 documentation-debt:
 	python3 scripts/documentation-debt-report.py --output .claude/shared/documentation-debt.json
+
+# Gemini audit Tier 1.1 — inventory which features have v6.0 measurement
+# fields populated in their state.json. Produces a machine-readable report
+# at .claude/shared/measurement-adoption.json and prints a summary.
+measurement-adoption:
+	python3 scripts/measurement-adoption-report.py
 
 # Run a local runtime smoke-gate profile built on the shipped XCUITest harness.
 # Examples:
