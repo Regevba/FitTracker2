@@ -10,7 +10,17 @@ PROJECT_ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 BUILD_DIR    ?= $(PROJECT_ROOT).build
 
 DEVELOPER_DIR           ?= /Applications/Xcode.app/Contents/Developer
-SIMULATOR_ID            ?= 87E96E30-350E-46AC-AB34-B87AF8D1AB1E
+# SIMULATOR_ID is an OPTIONAL override for `make verify-ios` (and other
+# simulator-bound targets). When left empty, TEST_DESTINATION below resolves
+# to "the newest available iPhone 17 Pro" by name — avoiding the hardcoded-UUID
+# drift problem where Xcode refreshes invalidate the UUID. Pass a specific
+# UUID with `make verify-ios SIMULATOR_ID=<uuid>` to target a specific device.
+SIMULATOR_ID            ?=
+ifneq ($(SIMULATOR_ID),)
+TEST_DESTINATION        ?= platform=iOS Simulator,id=$(SIMULATOR_ID)
+else
+TEST_DESTINATION        ?= platform=iOS Simulator,name=iPhone 17 Pro,OS=latest
+endif
 AI_VENV                 ?= $(BUILD_DIR)/ai-venv
 ASTRO_TELEMETRY_DISABLED ?= 1
 SPM_CACHE               ?= $(BUILD_DIR)/spm-cache
@@ -165,7 +175,7 @@ verify-ios:
 	CLANG_MODULE_CACHE_PATH=$(CLANG_MODULE_CACHE_PATH) DEVELOPER_DIR=$(DEVELOPER_DIR) xcodebuild test \
 		-project FitTracker.xcodeproj \
 		-scheme FitTracker \
-		-destination 'platform=iOS Simulator,id=$(SIMULATOR_ID)' \
+		-destination '$(TEST_DESTINATION)' \
 		-clonedSourcePackagesDirPath $(SPM_CACHE) \
 		-disableAutomaticPackageResolution \
 		-only-testing:FitTrackerTests/FitTrackerCoreTests \
