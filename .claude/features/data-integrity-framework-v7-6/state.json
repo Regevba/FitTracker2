@@ -4,10 +4,10 @@
   "display_name": "Data Integrity Framework v7.6 \u2014 Mechanical Enforcement",
   "work_type": "framework",
   "framework_version": "7.6",
-  "current_phase": "implement",
-  "status": "in_progress",
+  "current_phase": "complete",
+  "status": "complete",
   "created": "2026-04-25T04:03:43Z",
-  "updated": "2026-04-25T04:49:28Z",
+  "updated": "2026-04-25T08:21:50Z",
   "branch": "main",
   "spec": "docs/case-studies/data-integrity-framework-v7.5-case-study.md (Phase 1 plan section)",
   "phases": {
@@ -28,15 +28,31 @@
       "skipped_reason": "Framework infrastructure, no UI"
     },
     "implement": {
-      "status": "in_progress"
+      "status": "complete"
+    },
+    "complete": {
+      "status": "complete",
+      "completed_at": "2026-04-25T08:21:50Z",
+      "note": "v7.6 code/docs merged to origin/main; pending-fixes branch opened for reconciliation and handoff cleanup."
     }
   },
   "timing": {
     "session_start": "2026-04-25T04:03:43Z",
+    "session_end": "2026-04-25T08:21:50Z",
+    "total_wall_time_minutes": 258,
     "time_source": "measured",
     "phases": {
       "implement": {
-        "started_at": "2026-04-25T04:03:43Z"
+        "started_at": "2026-04-25T04:03:43Z",
+        "ended_at": "2026-04-25T08:21:50Z",
+        "duration_minutes": 258,
+        "paused_minutes": 0
+      },
+      "complete": {
+        "started_at": "2026-04-25T08:21:50Z",
+        "ended_at": "2026-04-25T08:21:50Z",
+        "duration_minutes": 0,
+        "paused_minutes": 0
       }
     }
   },
@@ -97,6 +113,13 @@
       "to": "implement",
       "by": "claude_opus_4_7",
       "note": "Resume from 2026-04-24 paused Phase 1 work; user approved all 4 sub-questions on 2026-04-25"
+    },
+    {
+      "timestamp": "2026-04-25T08:21:50Z",
+      "from": "implement",
+      "to": "complete",
+      "by": "codex",
+      "note": "Reconciled state after v7.6 commits were confirmed on origin/main; remaining cleanup is tracked on framework-v7.6-pending-fixes."
     }
   ]
 }
