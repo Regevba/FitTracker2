@@ -310,6 +310,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
 
 ### Skills ecosystem
+- **DEV-only framework guide (v1.0 → v7.6):** [`docs/architecture/dev-guide-v1-to-v7-6.md`](docs/architecture/dev-guide-v1-to-v7-6.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes, and operational walkthroughs (adding a feature, extending a check code, bumping the framework version).
 - Skills one-pager: `docs/skills/README.md`
 - Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
 - Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → v3.0 → v4.0 → v4.1)

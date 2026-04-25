@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "7.6",
   "started_at": "2026-04-25T04:03:43Z",
-  "updated_at": "2026-04-25T05:22:14Z",
+  "updated_at": "2026-04-25T05:35:23Z",
   "events": [
     {
       "timestamp": "2026-04-25T04:03:43Z",
@@ -134,6 +134,20 @@
         ".claude/integrity/README.md",
         "project_gemini_audit_2026_04_21.md",
         "project_framework_v7_1_integrity_cycle.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-25T05:35:23Z",
+      "event_type": "docs_change",
+      "phase": "implement",
+      "summary": "Added DEV-only framework guide per user request 2026-04-25. docs/architecture/dev-guide-v1-to-v7-6.md (745 lines, 16 sections) \u2014 covers 4 enforcement layers, state.json schema, phase lifecycle (9 phases x 4 work types), dispatch model, cache architecture (L1/L2/L3), measurement protocol (CU formula + cache_hits + timing + T1/T2/T3 tiers), 12 integrity check codes mapped to layer + script, pre-commit hooks + GitHub Actions inventory with security note, compressed v1.0->v7.6 evolution timeline, 3 operational walkthroughs (adding a feature, extending a check code, bumping the framework version), full cross-link index. Linked from CLAUDE.md '## Key Paths > Skills ecosystem' as the canonical dev onboarding entry.",
+      "artifacts": [
+        "docs/architecture/dev-guide-v1-to-v7-6.md",
+        "CLAUDE.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",
