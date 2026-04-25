@@ -104,7 +104,7 @@ documentation-debt:
 measurement-adoption:
 	python3 scripts/measurement-adoption-report.py
 
-# v7.5 Data Integrity Framework — one-command health snapshot.
+# v7.5/v7.6 Data Integrity Framework — one-command health snapshot.
 # Reads all existing ledgers + runs integrity-check, prints a single summary
 # of framework version, open tier items, findings, coverage, and logs.
 framework-status:
@@ -116,7 +116,8 @@ framework-status:
 advancement-report:
 	python3 scripts/v7-5-advancement-report.py
 
-# v7.5 pipeline regression test — verifies all 8 defenses fire correctly
+# v7.5/v7.6 pipeline regression test — verifies the 8-defense baseline plus
+# v7.6 mechanical-enforcement assertions.
 # against synthetic bad inputs. Run this locally before any change to the
 # integrity-check.py, check-state-schema.py, append-feature-log.py,
 # measurement-adoption-report.py, documentation-debt-report.py, or

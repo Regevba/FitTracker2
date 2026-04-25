@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
-# Integration test for the v7.5 Data Integrity Framework pipeline.
+# Integration test for the v7.5/v7.6 Data Integrity Framework pipeline.
 #
-# Exercises each of the eight defenses against synthetic bad inputs, verifies
-# the gate fires as expected, then cleans up. Zero permanent writes to the
-# real corpus — everything happens against throwaway fixtures in /tmp.
+# Exercises the v7.5 eight-defense baseline plus the v7.6 write-time
+# mechanical-enforcement assertions against synthetic bad inputs, verifies the
+# gates fire as expected, then cleans up. Most fixtures live in /tmp; the v7.6
+# transition checks briefly create throwaway repo paths and remove them before
+# exit.
 #
 # Run locally:      scripts/test-v7-5-pipeline.sh
-# Exit codes:       0 = all 8 defenses fire correctly; non-zero = regression
+# Exit codes:       0 = all assertions pass; non-zero = regression
 #
-# This is a regression guard for the v7.5 framework itself. If a future
-# change silently breaks the pre-commit hook, the cycle check, or the
-# readout ledgers, this script fails loudly.
+# This is a regression guard for the v7.5/v7.6 framework itself. If a future
+# change silently breaks the pre-commit hook, the cycle check, the readout
+# ledgers, or the v7.6 mechanical gates, this script fails loudly.
 
 set -euo pipefail
 
@@ -26,8 +28,8 @@ FAIL=0
 pass() { echo "  ✓ $1"; PASS=$((PASS+1)); }
 fail() { echo "  ✗ $1" >&2; FAIL=$((FAIL+1)); }
 
-echo "v7.5 Data Integrity Framework — pipeline integration test"
-echo "========================================================="
+echo "v7.5/v7.6 Data Integrity Framework — pipeline integration test"
+echo "============================================================="
 
 # -- Defense 1: Tier 1.3 SCHEMA_DRIFT rejects legacy `phase` key -----------
 echo ""
@@ -264,7 +266,7 @@ echo ""
 echo "========================================================="
 echo "Pass: $PASS  Fail: $FAIL"
 if [[ "$FAIL" -eq 0 ]]; then
-  echo "✅ All 8 defenses of the v7.5 Data Integrity Framework are operational."
+  echo "✅ All v7.5/v7.6 framework regression assertions are operational."
   exit 0
 else
   echo "✗ $FAIL defense(s) regressed. Investigate before merging."
