@@ -2,6 +2,13 @@
 
 > Real examples of the `/pm-workflow` skill running a feature through its full lifecycle. Each case study is a narrative showcase — it shows how the 10-phase lifecycle + the 11-skill ecosystem actually played out on a live feature, what worked, what was deferred, and what the end state looked like.
 
+> **Latest at v7.6 (Mechanical Enforcement, shipped 2026-04-25):**
+> - Canonical v7.6 narrative: [`mechanical-enforcement-v7-6-case-study.md`](mechanical-enforcement-v7-6-case-study.md) — 616 lines covering the full T1/T2/T3 sub-work arc + comprehensive CU + workload analysis with explicit outlier framing.
+> - Companion v7.5 case study: [`data-integrity-framework-v7.5-case-study.md`](data-integrity-framework-v7.5-case-study.md).
+> - Mechanically unclosable Class B gaps inventory: [`meta-analysis/unclosable-gaps.md`](meta-analysis/unclosable-gaps.md).
+> - Developer-only framework guide (v1.0 → v7.6): [`../architecture/dev-guide-v1-to-v7-6.md`](../architecture/dev-guide-v1-to-v7-6.md).
+> - External-replication invitation (Tier 3.3, Phase 3c — explicit final v7.6 deliverable): [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142) (pinned).
+
 ---
 
 ## What goes here

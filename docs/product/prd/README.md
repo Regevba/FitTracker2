@@ -1,8 +1,8 @@
 # Feature PRDs — Index
 
 > Individual PRDs for every core feature, system, and operating layer in FitMe.
-> Maintained against the canonical repo and PM-flow v7.0 shared truth.
-> Last updated: 2026-04-12
+> Maintained against the canonical repo and PM-flow **v7.6 (Mechanical Enforcement)** shared truth — see [`docs/architecture/dev-guide-v1-to-v7-6.md`](../../architecture/dev-guide-v1-to-v7-6.md) for the developer-onboarding entry.
+> Last updated: 2026-04-25 (v7.6 ship); the case-study + manifest carry the canonical version since 2026-04-25.
 
 ---
 

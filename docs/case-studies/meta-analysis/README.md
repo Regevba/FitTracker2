@@ -8,6 +8,10 @@
 |--------|------|--------|---------|
 | [Meta-Analysis Validation](meta-analysis-validation-2026-04-16.md) | 2026-04-16 | Nemotron 3 Super (Nvidia) | External validation of the normalization model, arithmetic consistency check, identification of 8 measurement gaps, and 8 concrete recommendations for improvement |
 | [What-If: V6.0 From Day One](what-if-v6-from-day-one-2026-04-16.md) | 2026-04-16 | Claude Opus 4.6 (Anthropic) | Counterfactual experiment: retroactive application of v6.0 measurement to all 24 features. Covers precision gains, CU v2 recalculation, rolling baseline plateau detection, parallel decomposition, AI model cost comparison, and full effort/ROI analysis |
+| [Meta-Analysis 2026-04-21](meta-analysis-2026-04-21.md) | 2026-04-21 | Internal (Claude Opus 4.7) | Structural meta-analysis of all case studies + framework state immediately before the Gemini independent audit. Source corpus that Gemini reviewed |
+| [Independent Audit — Gemini 2.5 Pro](independent-audit-2026-04-21-gemini.md) | 2026-04-21 | Google Gemini 2.5 Pro | Verbatim text of the independent audit covering 65 case studies + 3 internal meta-analyses. Different vendor, different model family, artifact-only access. **Trigger** for v7.5 + v7.6 framework rework. Same-day correction appended for the false-positive PR-vs-issue mix-up |
+| [v7.5 Advancement Report](v7-5-advancement-report.md) | 2026-04-24 | Internal (Claude Opus 4.7) | Before/after measurement of every Gemini Tier item across the v7.1 → v7.5 transition. Every quantitative claim T1/T2/T3 tagged |
+| [Unclosable Gaps Inventory (v7.6)](unclosable-gaps.md) | 2026-04-25 | Internal (Claude Opus 4.7) | The 5 mechanically unclosable Class B gaps remaining after v7.6 promoted 7 silent agent-attention checks to Class A. Each gap has a 4-section format: technical reason / observability / human action / tracking. Includes the v7.5 → v7.6 Class A vs Class B promotion table |
 
 ## How These Relate
 

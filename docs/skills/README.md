@@ -1,5 +1,8 @@
 # FitMe Skills Ecosystem — One-pager
 
+> **Status: v7.6 — Mechanical Enforcement (shipped 2026-04-25).**
+> Developer onboarding starts at [`docs/architecture/dev-guide-v1-to-v7-6.md`](../architecture/dev-guide-v1-to-v7-6.md) (745-line technical guide). v7.6 case study: [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md). Class B inventory: [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md). Tier 3.3 external invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142).
+
 **Goal:** Give every domain of the product lifecycle its own first-class skill, so product management scales past a monolithic workflow without losing the connective tissue between domains.
 
 **Why it exists:** v1 of `/pm-workflow` did everything inline — research, PRDs, UX specs, code review, testing, deployment, docs all in one file. Adding a new domain meant bloating it; using a design audit or analytics validation meant running the whole pipeline. The ecosystem replaces that monolith with a **hub-and-spoke architecture**: 1 hub + 10 spokes + 15 shared data files + 6 local integration adapters + MCP-backed external tool integrations + 3-level learning cache + self-healing health check system. Every skill is a **Lego piece** (works alone on a single task) AND a **puzzle piece** (fits into the hub's 10-phase lifecycle).
