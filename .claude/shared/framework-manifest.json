@@ -1,8 +1,8 @@
 {
-  "version": "1.7",
-  "updated": "2026-04-24T00:00:00Z",
-  "framework_version": "7.5",
-  "description": "PM framework v7.5 \u2014 Data Integrity Framework. Eight cooperating defenses catching broken data at write-time, cycle-time, and readout-time. Extends v7.1 (72-hour integrity cycle) + v7.0 (HADF) with write-time schema + PR-resolution gates, runtime smoke gates, contemporaneous logging, data-quality tiers, documentation-debt dashboard, and measurement-adoption ledger. Triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit.",
+  "version": "1.8",
+  "updated": "2026-04-25T00:00:00Z",
+  "framework_version": "7.6",
+  "description": "PM framework v7.6 \u2014 Mechanical Enforcement. Promotes 4 silent agent-attention checks to write-time pre-commit failures (PHASE_TRANSITION_NO_LOG, PHASE_TRANSITION_NO_TIMING, BROKEN_PR_CITATION at write-time, CASE_STUDY_MISSING_TIER_TAGS), adds a per-PR review bot that fails the pm-framework/pr-integrity status check on new findings vs main, ships a weekly framework-status cron that watches for measurement-adoption regression, and explicitly enumerates the 5 mechanically unclosable Class B gaps. Builds on v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), and v7.0 (HADF). Triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit; v7.5 closed the 9 Tier 1/2/3 items as policy and tooling, v7.6 closes the residual Class B \u2192 Class A gap by making the policy mechanically enforced.",
   "audit_closures": {
     "FW-002": "Description string updated from v5.2 to v7.0 \u2014 closed.",
     "FW-007": "chip-profiles.json verified at 17 profiles matching spec \u2014 see chip-profiles.json.",
@@ -73,7 +73,12 @@
     "data_quality_tiers": true,
     "auditor_agent": true,
     "documentation_debt_dashboard": true,
-    "measurement_adoption_ledger": true
+    "measurement_adoption_ledger": true,
+    "pr_review_bot": true,
+    "weekly_status_cron": true,
+    "unclosable_gaps_documented": true,
+    "mechanical_phase_transition_enforcement": true,
+    "mechanical_case_study_preflight": true
   },
   "v7_1_integrity_cycle": {
     "description": "72-hour recurring audit of .claude/features/*/state.json. Catches 'shipped but unreconciled' drift within 72h of occurrence instead of weeks later.",
@@ -197,6 +202,145 @@
     },
     "remediation_plan": "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md",
     "audit_archive": "docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md"
+  },
+  "v7_6_mechanical_enforcement": {
+    "description": "Promotes 4 silent agent-attention checks to write-time pre-commit failures, adds per-PR + weekly CI defenses, and explicitly enumerates 5 mechanically unclosable Class B gaps. Closes the residual Class B → Class A gap left by v7.5.",
+    "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+    "shipped": "2026-04-25",
+    "extends": "v7_5_data_integrity_framework",
+    "write_time_defenses": {
+      "phase_1a_phase_transition_no_log": {
+        "status": "shipped",
+        "check_code": "PHASE_TRANSITION_NO_LOG",
+        "script": "scripts/check-state-schema.py",
+        "hook": ".githooks/pre-commit",
+        "rule": "current_phase change in staged state.json must have a corresponding event in .claude/logs/<feature>.log.json within the last 15 minutes (PHASE_EVENT_FRESHNESS_MIN=15). Bypass for testing: FORCE_TRANSITION_CHECKS=1."
+      },
+      "phase_1b_phase_transition_no_timing": {
+        "status": "shipped",
+        "check_code": "PHASE_TRANSITION_NO_TIMING",
+        "script": "scripts/check-state-schema.py",
+        "hook": ".githooks/pre-commit",
+        "rule": "current_phase change in staged state.json must include a phases.<new_phase>.started_at update in the same commit."
+      },
+      "phase_1c_broken_pr_citation_write_time": {
+        "status": "shipped",
+        "check_code": "BROKEN_PR_CITATION",
+        "script": "scripts/check-case-study-preflight.py",
+        "hook": ".githooks/pre-commit",
+        "regex": "[Pp][Rr]\\s*#?|github\\.com/[^/\\s]+/[^/\\s]+/pull/(\\d+)",
+        "rule": "Pre-commit rejects any case-study commit citing PR #N or pull/N if the number does not resolve via gh pr view. Cycle-level BROKEN_PR_CITATION still runs as safety net."
+      },
+      "phase_1d_case_study_missing_tier_tags": {
+        "status": "shipped",
+        "check_code": "CASE_STUDY_MISSING_TIER_TAGS",
+        "script": "scripts/check-case-study-preflight.py",
+        "hook": ".githooks/pre-commit",
+        "scope": "forward-only — dates >= 2026-04-21",
+        "exempt_files": [
+          "README*",
+          "template*",
+          "normalization-framework*",
+          "meta-analysis/ subfolder"
+        ],
+        "rule": "Pre-commit rejects post-2026-04-21 case study commits containing quantitative claims without a T1/T2/T3 tier tag."
+      }
+    },
+    "per_pr_and_weekly_defenses": {
+      "phase_2a_pr_review_bot": {
+        "status": "shipped",
+        "workflow": ".github/workflows/pr-integrity-check.yml",
+        "trigger": "pull_request: [opened, synchronize, reopened]",
+        "status_check": "pm-framework/pr-integrity",
+        "rule": "Runs schema-check + integrity-check + measurement-adoption against PR HEAD. Captures origin/main baseline via worktree. Status = failure when delta > 0 (PR introduces new findings vs main). Sticky comment with marker <!-- pm-framework-pr-integrity-bot --> updates in place on each push."
+      },
+      "phase_2b_measurement_adoption_history": {
+        "status": "shipped",
+        "script": "scripts/measurement-adoption-report.py",
+        "history_file": ".claude/shared/measurement-adoption-history.json",
+        "cli_flags": [
+          "--history-output PATH",
+          "--snapshot-trigger {manual,scheduled_cycle,pr_bot,weekly_status}"
+        ],
+        "rule": "Append-only dated snapshots. Dedup-by-date. Atomic write via temp file + rename. Unlocks Tier 1.1 trend mode after 3 snapshots accumulate."
+      },
+      "phase_2c_weekly_framework_status_cron": {
+        "status": "shipped",
+        "workflow": ".github/workflows/framework-status-weekly.yml",
+        "schedule": "Mondays 05:00 UTC",
+        "regression_rule": "fully_adopted decreased OR any_adopted decreased vs prior history snapshot",
+        "issue_labels": [
+          "framework-status",
+          "regression"
+        ],
+        "rule": "Observational-only — never blocks merges. The 72h cycle owns blocking; this owns the weekly trend."
+      }
+    },
+    "unclosable_gaps_class_b": {
+      "documentation": "docs/case-studies/meta-analysis/unclosable-gaps.md",
+      "count": 5,
+      "gaps": [
+        {
+          "id": "gap_1_cache_hits_writer_path",
+          "tier_link": "1.1",
+          "reason": "Agent-attention — deciding what counts as a cache hit is itself the judgment we cannot mechanize.",
+          "tracking": "GitHub issue #140",
+          "observability": "make measurement-adoption (cache_hits dimension)"
+        },
+        {
+          "id": "gap_2_cu_v2_factor_correctness",
+          "tier_link": "2.3 / 1.1",
+          "reason": "Judgment-based magnitudes; we check presence, not whether 'novelty: 0.2' is the right number.",
+          "tracking": "no issue — accepted as Class B by design",
+          "observability": "make measurement-adoption (cu_v2 dimension)"
+        },
+        {
+          "id": "gap_3_tier_tag_correctness",
+          "tier_link": "2.3",
+          "reason": "Preflight checks tag PRESENCE on post-2026-04-21 case studies. Whether the tag is the RIGHT tag (T1 vs T2 vs T3) requires reading prose in context.",
+          "tracking": "scripts/check-case-study-preflight.py for presence; correctness handled in code review",
+          "observability": "spot-check during code review"
+        },
+        {
+          "id": "gap_4_tier_2_1_real_provider_auth",
+          "tier_link": "2.1",
+          "reason": "Apple/Google sign-in handshake on a real device cannot be driven by an automated test runner without crossing into the mocking-pattern v7.5 was built to avoid.",
+          "tracking": "docs/setup/auth-runtime-verification-playbook.md (manual quarterly cadence)",
+          "observability": ".claude/features/authentication/state.json.runtime_verifications[]"
+        },
+        {
+          "id": "gap_5_tier_3_3_external_replication",
+          "tier_link": "3.3",
+          "reason": "No pre-commit hook can simulate 'an external operator on an unrelated product succeeded with the framework'.",
+          "tracking": "Public GitHub issue (filed as the LAST v7.6 deliverable)",
+          "observability": "docs/case-studies/external/ directory — created on first external submission"
+        }
+      ]
+    },
+    "aggregate": {
+      "promotions_class_b_to_class_a": 7,
+      "promotions_breakdown": {
+        "write_time_pre_commit": 4,
+        "per_pr_status_check": 1,
+        "weekly_regression_watcher": 1,
+        "append_only_history": 1
+      },
+      "remaining_class_b_gaps": 5,
+      "all_class_b_gaps_explicitly_documented": true
+    },
+    "policy_decisions_continued": [
+      "Publish-verbatim-then-remediate: every audit finding stays visible; corrections are appended.",
+      "Honest-status labels (partial / pilot / groundwork / backlog) over rounded-up ship-claims.",
+      "Tier 3.3 external invitation filed as the LAST v7.6 deliverable, only after every other piece is on main."
+    ],
+    "tooling_attribution": {
+      "claude_opus_4_7": "Framework rework, plan execution, code authoring, case study (Phase 1–4).",
+      "google_gemini_2_5_pro": "Independent audit on 2026-04-21 that triggered v7.5 → v7.6 (different vendor, different model family, artifact-only access).",
+      "openai_codex": "SSD audit on 2026-04-19 (docs/master-plan/codex-ssd-audit-2026-04-19.md). Identified the dashboard build break + SSD sprawl that motivated several pre-v7.5 hardening commits. Did not contribute v7.5/v7.6 commits per git log evidence; if additional Codex work in the v7.5+ window is identified later, this attribution will be appended (publish-verbatim policy)."
+    },
+    "remediation_plan": "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md",
+    "audit_archive": "docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md",
+    "implementation_plan": "docs/superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md"
   },
   "v5_soc_optimizations": {
     "skill_on_demand": {

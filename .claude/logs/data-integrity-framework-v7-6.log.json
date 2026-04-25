@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "7.6",
   "started_at": "2026-04-25T04:03:43Z",
-  "updated_at": "2026-04-25T04:55:01Z",
+  "updated_at": "2026-04-25T05:22:14Z",
   "events": [
     {
       "timestamp": "2026-04-25T04:03:43Z",
@@ -116,6 +116,24 @@
       "artifacts": [
         "docs/case-studies/meta-analysis/unclosable-gaps.md",
         "CLAUDE.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-25T05:22:14Z",
+      "event_type": "docs_change",
+      "phase": "implement",
+      "summary": "Phase 4a-4e: bumped framework-manifest.json to v7.6 (1.7\u21921.8) with full v7_6_mechanical_enforcement block (write_time_defenses, per_pr_and_weekly_defenses, unclosable_gaps_class_b, aggregate, policy_decisions_continued, tooling_attribution); wrote 616-line Dev-style case study (mechanical-enforcement-v7-6-case-study.md) covering full T1/T2/T3 arc, comprehensive CU+workload analysis with explicit outlier caveat, Codex tooling attribution; updated evolution.md (header + table row), .claude/integrity/README.md, repo-root mirrors (project_gemini_audit_2026_04_21.md, project_framework_v7_1_integrity_cycle.md), MEMORY.md index, created project_mechanical_enforcement_v7_6.md memory entry, appended v7.6 hand-off to project_data_integrity_framework_v7_5.md memory.",
+      "artifacts": [
+        ".claude/shared/framework-manifest.json",
+        "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+        "docs/skills/evolution.md",
+        ".claude/integrity/README.md",
+        "project_gemini_audit_2026_04_21.md",
+        "project_framework_v7_1_integrity_cycle.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",

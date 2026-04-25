@@ -3,7 +3,7 @@
 > Automated ledger of the feature state.json truth over time.
 > Catches the "shipped but state.json never reconciled" pattern that we've seen across HADF, home-today-screen, nutrition-v2, and 5+ others.
 >
-> **Part of the v7.5 Data Integrity Framework** (shipped 2026-04-24). Tier 3.1 of the [Google Gemini 2.5 Pro independent audit remediation](../../trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md). See the [v7.5 case study](../../docs/case-studies/data-integrity-framework-v7.5-case-study.md) for the full eight-defense picture — write-time schema gates, PR-resolution checks, runtime smoke gates, contemporaneous logging, data-quality tiers, documentation-debt dashboard, and measurement-adoption ledger are the sibling defenses to this cycle.
+> **Part of the v7.5 → v7.6 Data Integrity Framework** (v7.5 shipped 2026-04-24, v7.6 shipped 2026-04-25). Tier 3.1 of the [Google Gemini 2.5 Pro independent audit remediation](../../trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md). See the [v7.5 case study](../../docs/case-studies/data-integrity-framework-v7.5-case-study.md) for the full eight-defense picture and the [v7.6 case study](../../docs/case-studies/mechanical-enforcement-v7-6-case-study.md) for the mechanical-enforcement layer (4 new write-time check codes — `PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` write-time, `CASE_STUDY_MISSING_TIER_TAGS` — plus per-PR review bot, weekly framework-status cron, and 5 explicit Class B gaps in [`unclosable-gaps.md`](../../docs/case-studies/meta-analysis/unclosable-gaps.md)).
 
 ---
 

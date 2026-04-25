@@ -1,12 +1,17 @@
-# Project Gemini Audit — 2026-04-21 (v7.5 ship 2026-04-24)
+# Project Gemini Audit — 2026-04-21 (v7.5 ship 2026-04-24, v7.6 ship 2026-04-25)
 
 This file is a lightweight entrypoint to the canonical Gemini audit and its
 current implementation status.
 
 **Framework version bump:** v7.1 → **v7.5 (Data Integrity Framework)** on
-2026-04-24. See [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](/Volumes/DevSSD/FitTracker2/docs/case-studies/data-integrity-framework-v7.5-case-study.md)
-for the full narrative of how Gemini's 9 tier recommendations became eight
-cooperating defenses.
+2026-04-24, then v7.5 → **v7.6 (Mechanical Enforcement)** on 2026-04-25. See
+[`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](/Volumes/DevSSD/FitTracker2/docs/case-studies/data-integrity-framework-v7.5-case-study.md)
+for the full v7.5 narrative (how Gemini's 9 tier recommendations became eight
+cooperating defenses) and
+[`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](/Volumes/DevSSD/FitTracker2/docs/case-studies/mechanical-enforcement-v7-6-case-study.md)
+for the v7.6 mechanical-enforcement layer (4 new write-time check codes +
+per-PR review bot + weekly cron + 5 explicit Class B gaps in
+[`unclosable-gaps.md`](/Volumes/DevSSD/FitTracker2/docs/case-studies/meta-analysis/unclosable-gaps.md)).
 
 ## Canonical sources
 
@@ -30,6 +35,18 @@ cooperating defenses.
 | Tier 3.2 | Baseline shipped | The generator and dashboard surface exist, but trend mode waits on three scheduled cycle snapshots rather than any three JSON files. |
 | Tier 3.3 | Backlog | Requires an independent operator to run the PM workflow on a feature. |
 
-**Aggregate: 7 of 9 fully or effectively shipped, 2 partial/pilot, 1 external-blocked.**
+**Aggregate: 7 of 9 fully or effectively shipped, 2 partial/pilot, 1 external-blocked at v7.5 ship.**
 
-Use the canonical audit for narrative detail, evidence, and correction history.
+## v7.6 follow-up (2026-04-25)
+
+v7.6 closed the residual Class B → Class A gap left by v7.5:
+- **4 new write-time pre-commit check codes**: `PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` (write-time, narrow regex), `CASE_STUDY_MISSING_TIER_TAGS` (forward-only, ≥ 2026-04-21).
+- **Per-PR review bot** (`pm-framework/pr-integrity` status check via `.github/workflows/pr-integrity-check.yml`) — fails the status check when a PR introduces NEW findings vs main.
+- **Weekly framework-status cron** (`.github/workflows/framework-status-weekly.yml`) — Mondays 05:00 UTC; opens regression issues.
+- **Append-only adoption history** (`.claude/shared/measurement-adoption-history.json` with dedup-by-date).
+- **5 mechanically unclosable Class B gaps** explicitly enumerated in [`unclosable-gaps.md`](/Volumes/DevSSD/FitTracker2/docs/case-studies/meta-analysis/unclosable-gaps.md).
+- **Tier 3.3 public invitation issue** filed as the explicit final v7.6 deliverable per user instruction.
+
+**v7.6 aggregate:** 7 Class B → Class A promotions + 5 documented Class B gaps. Pipeline regression test 8 → 15 assertions, all passing.
+
+Use the canonical audit for narrative detail, evidence, and correction history. Use the v7.5 + v7.6 case studies for the implementation arc.
