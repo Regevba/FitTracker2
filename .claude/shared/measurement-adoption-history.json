@@ -1,0 +1,48 @@
+{
+  "version": "1.0",
+  "description": "Append-only daily snapshots of Tier 1.1 measurement adoption. Dedup by date \u2014 at most one snapshot per day. Mirrors the documentation-debt history pattern; enables Tier 1.1 trend analysis after 3+ daily snapshots accumulate.",
+  "snapshots": [
+    {
+      "date": "2026-04-25",
+      "generated_at": "2026-04-25T04:41:30Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 42,
+        "features_post_v6": 7,
+        "features_pre_v6": 35,
+        "fully_adopted": 0,
+        "partial_adopted": 4,
+        "zero_adopted": 38,
+        "fully_adopted_post_v6": 0,
+        "tier_1_1_status": "not_adopted"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 1,
+          "overall_percent": 2.4,
+          "post_v6_present": 1,
+          "post_v6_percent": 14.3
+        },
+        "per_phase_timing": {
+          "overall_present": 3,
+          "overall_percent": 7.1,
+          "post_v6_present": 3,
+          "post_v6_percent": 42.9
+        },
+        "cache_hits": {
+          "overall_present": 2,
+          "overall_percent": 4.8,
+          "post_v6_present": 2,
+          "post_v6_percent": 28.6
+        },
+        "cu_v2": {
+          "overall_present": 4,
+          "overall_percent": 9.5,
+          "post_v6_present": 4,
+          "post_v6_percent": 57.1
+        }
+      }
+    }
+  ],
+  "updated": "2026-04-25T04:41:30Z"
+}

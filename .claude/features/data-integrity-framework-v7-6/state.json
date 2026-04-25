@@ -7,7 +7,7 @@
   "current_phase": "implement",
   "status": "in_progress",
   "created": "2026-04-25T04:03:43Z",
-  "updated": "2026-04-25T04:07:47Z",
+  "updated": "2026-04-25T04:49:28Z",
   "branch": "main",
   "spec": "docs/case-studies/data-integrity-framework-v7.5-case-study.md (Phase 1 plan section)",
   "phases": {
@@ -69,6 +69,24 @@
       "type": "adapted",
       "skill": "pm-workflow",
       "event_type": "implementation_checkpoint",
+      "phase": "implement"
+    },
+    {
+      "timestamp": "2026-04-25T04:43:49Z",
+      "level": "L2",
+      "key": "dated_snapshot_with_dedup_by_date",
+      "type": "adapted",
+      "skill": "v7.5 documentation-debt-history pattern: same dedup-by-date rule, same atomic-write idiom",
+      "event_type": "code_change",
+      "phase": "implement"
+    },
+    {
+      "timestamp": "2026-04-25T04:49:28Z",
+      "level": "L2",
+      "key": "github_actions_cron_with_regression_issue",
+      "type": "adapted",
+      "skill": "Reused integrity-cycle.yml shape: cron + workflow_dispatch, env-routed dynamic values, github-script for issue creation, GITHUB_STEP_SUMMARY block. Adapted regression detection from integer-delta comparison instead of grep on report text.",
+      "event_type": "code_change",
       "phase": "implement"
     }
   ],

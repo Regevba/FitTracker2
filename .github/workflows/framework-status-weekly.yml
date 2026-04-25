@@ -1,0 +1,243 @@
+name: Framework Status — Weekly
+
+# v7.6 Phase 2c (shipped 2026-04-25). Weekly readout-time snapshot of the
+# v7.5 measurement-adoption ledger and a regression watcher. Complements:
+#   - integrity-cycle.yml (every 72h, gates state.json health)
+#   - pr-integrity-check.yml (per-PR, blocks new findings vs main)
+# This workflow is purely observational: it appends a dated snapshot to the
+# measurement-adoption history (one per week) and opens an issue if the
+# fully-adopted count or any dimension coverage regresses vs the prior
+# snapshot. It never blocks merges. The 72h cycle owns blocking; this owns
+# the weekly trend.
+#
+# Security note (per github.blog injection guide): all dynamic values used
+# inside `run:` blocks are routed through the `env:` block, never via
+# `${{ }}` interpolation directly into shell. Step outputs we set ourselves
+# (regression flag, current/prior counts) are integers or hex-safe text we
+# control. The only direct `${{ }}` usages outside env: blocks are in `if:`
+# conditions, which evaluate in GitHub's expression engine, not in a shell.
+
+on:
+  schedule:
+    # Every Monday at 05:00 UTC. Spaced 1h after the integrity cycle so the
+    # two cron workflows don't queue against each other on the same runner
+    # pool.
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+    inputs:
+      open_issue_on_no_regression:
+        description: "Open the weekly digest issue even when no regression (default false)"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  weekly-status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Capture prior measurement-adoption snapshot count
+        id: prior
+        run: |
+          set +e
+          history=".claude/shared/measurement-adoption-history.json"
+          if [ ! -f "$history" ]; then
+            echo "prior_count=0" >> "$GITHUB_OUTPUT"
+            echo "prior_fully=0" >> "$GITHUB_OUTPUT"
+            echo "prior_any=0" >> "$GITHUB_OUTPUT"
+            echo "prior_date=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          python3 - "$history" <<'PY' >> "$GITHUB_OUTPUT"
+          import json, sys
+          h = json.load(open(sys.argv[1]))
+          snaps = h.get("snapshots", [])
+          if not snaps:
+              print("prior_count=0")
+              print("prior_fully=0")
+              print("prior_any=0")
+              print("prior_date=")
+          else:
+              last = snaps[-1]
+              s = last.get("summary", {})
+              fully = int(s.get("fully_adopted", 0))
+              partial = int(s.get("partial_adopted", 0))
+              print(f"prior_count={len(snaps)}")
+              print(f"prior_fully={fully}")
+              print(f"prior_any={fully + partial}")
+              print(f"prior_date={last.get('date','')}")
+          PY
+
+      - name: Run weekly measurement-adoption snapshot
+        id: adoption
+        run: |
+          set -o pipefail
+          python3 scripts/measurement-adoption-report.py \
+            --snapshot-trigger weekly_status \
+            2>&1 | tee /tmp/weekly-adoption.txt
+
+      - name: Run documentation-debt readout
+        id: debt
+        continue-on-error: true
+        run: |
+          set +e
+          python3 scripts/documentation-debt-report.py 2>&1 | tee /tmp/weekly-debt.txt
+          echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
+
+      - name: Compare current vs prior, set regression flag
+        id: compare
+        env:
+          PRIOR_FULLY: ${{ steps.prior.outputs.prior_fully }}
+          PRIOR_ANY: ${{ steps.prior.outputs.prior_any }}
+          PRIOR_DATE: ${{ steps.prior.outputs.prior_date }}
+        run: |
+          set +e
+          current=".claude/shared/measurement-adoption.json"
+          python3 - "$current" "$PRIOR_FULLY" "$PRIOR_ANY" "$PRIOR_DATE" <<'PY' >> "$GITHUB_OUTPUT"
+          import json, sys
+          report = json.load(open(sys.argv[1]))
+          prior_fully = int(sys.argv[2] or 0)
+          prior_any = int(sys.argv[3] or 0)
+          prior_date = sys.argv[4]
+          s = report["summary"]
+          cur_fully = int(s.get("fully_adopted", 0))
+          cur_partial = int(s.get("partial_adopted", 0))
+          cur_any = cur_fully + cur_partial
+          regression = cur_fully < prior_fully or cur_any < prior_any
+          print(f"current_fully={cur_fully}")
+          print(f"current_any={cur_any}")
+          print(f"prior_fully={prior_fully}")
+          print(f"prior_any={prior_any}")
+          print(f"prior_date={prior_date}")
+          print(f"regression={'true' if regression else 'false'}")
+          delta_fully = cur_fully - prior_fully
+          delta_any = cur_any - prior_any
+          print(f"delta_fully={delta_fully}")
+          print(f"delta_any={delta_any}")
+          PY
+
+      - name: Commit history snapshot if changed
+        env:
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+        run: |
+          git config --local user.email "framework-status@actions"
+          git config --local user.name "Framework Status Bot"
+          git add .claude/shared/measurement-adoption-history.json \
+                  .claude/shared/measurement-adoption.json \
+                  .claude/shared/documentation-debt.json 2>/dev/null || true
+          if git diff --staged --quiet; then
+            echo "No snapshot changes to commit."
+          else
+            today=$(date -u +%Y-%m-%d)
+            git commit -m "chore(framework-status): weekly snapshot ${today}" \
+                       -m "Automated weekly framework-status cycle. Regression=${REGRESSION}."
+            git push origin main
+          fi
+
+      - name: Package digest body
+        if: always()
+        env:
+          CURRENT_FULLY: ${{ steps.compare.outputs.current_fully }}
+          CURRENT_ANY: ${{ steps.compare.outputs.current_any }}
+          PRIOR_FULLY: ${{ steps.compare.outputs.prior_fully }}
+          PRIOR_ANY: ${{ steps.compare.outputs.prior_any }}
+          PRIOR_DATE: ${{ steps.compare.outputs.prior_date }}
+          DELTA_FULLY: ${{ steps.compare.outputs.delta_fully }}
+          DELTA_ANY: ${{ steps.compare.outputs.delta_any }}
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+        run: |
+          {
+            echo "DIGEST<<DIGEST_EOF"
+            echo "## Weekly framework-status digest"
+            echo ""
+            echo "**Regression:** ${REGRESSION}"
+            echo ""
+            echo "### Tier 1.1 measurement adoption"
+            echo "- Fully adopted: ${CURRENT_FULLY} (Δ ${DELTA_FULLY} vs ${PRIOR_DATE:-baseline})"
+            echo "- Any adoption: ${CURRENT_ANY} (Δ ${DELTA_ANY} vs ${PRIOR_DATE:-baseline})"
+            echo ""
+            echo "### Adoption report (head)"
+            echo '```'
+            head -c 4000 /tmp/weekly-adoption.txt 2>/dev/null || echo "(no output)"
+            echo '```'
+            echo ""
+            echo "### Documentation-debt report (head)"
+            echo '```'
+            head -c 4000 /tmp/weekly-debt.txt 2>/dev/null || echo "(no output)"
+            echo '```'
+            echo "DIGEST_EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Open digest issue
+        if: steps.compare.outputs.regression == 'true' || inputs.open_issue_on_no_regression == 'true'
+        uses: actions/github-script@v7
+        env:
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+        with:
+          script: |
+            const regression = process.env.REGRESSION === 'true';
+            const digest = process.env.DIGEST || '(empty)';
+            const today = new Date().toISOString().slice(0, 10);
+            const title = regression
+              ? `Framework status ${today}: regression in measurement adoption`
+              : `Framework status ${today}: weekly digest`;
+            const labels = regression
+              ? ['framework-status', 'regression']
+              : ['framework-status'];
+            const body = [
+              digest,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels,
+            });
+
+      - name: Workflow summary
+        if: always()
+        env:
+          CURRENT_FULLY: ${{ steps.compare.outputs.current_fully }}
+          CURRENT_ANY: ${{ steps.compare.outputs.current_any }}
+          PRIOR_FULLY: ${{ steps.compare.outputs.prior_fully }}
+          PRIOR_ANY: ${{ steps.compare.outputs.prior_any }}
+          DELTA_FULLY: ${{ steps.compare.outputs.delta_fully }}
+          DELTA_ANY: ${{ steps.compare.outputs.delta_any }}
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+        run: |
+          {
+            echo "## Weekly framework-status summary"
+            echo ""
+            echo "| Metric | Current | Prior | Delta |"
+            echo "|---|---|---|---|"
+            printf '| Fully adopted | %s | %s | %s |\n' "$CURRENT_FULLY" "$PRIOR_FULLY" "$DELTA_FULLY"
+            printf '| Any adoption | %s | %s | %s |\n' "$CURRENT_ANY" "$PRIOR_ANY" "$DELTA_ANY"
+            echo ""
+            echo "**Regression:** $REGRESSION"
+            echo ""
+            echo "### Adoption report"
+            echo '```'
+            cat /tmp/weekly-adoption.txt 2>/dev/null || echo "(no output)"
+            echo '```'
+            echo ""
+            echo "### Documentation-debt report"
+            echo '```'
+            cat /tmp/weekly-debt.txt 2>/dev/null || echo "(no output)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

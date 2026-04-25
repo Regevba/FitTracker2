@@ -182,12 +182,67 @@ def build_report() -> dict:
     }
 
 
+def append_history_snapshot(history_path: Path, report: dict, trigger: str) -> tuple[bool, str]:
+    """Append a dated snapshot to the append-only history file.
+
+    Dedup rule: at most one snapshot per date. Subsequent runs the same day
+    are no-ops (returns False, "already exists for today"). This keeps the
+    history idempotent under multiple PR-bot runs and weekly-cron retries.
+
+    Returns (appended, message).
+    """
+    today = report["updated"][:10]
+    if history_path.exists():
+        try:
+            history = json.loads(history_path.read_text())
+        except json.JSONDecodeError:
+            history = {"version": "1.0", "snapshots": []}
+    else:
+        history = {
+            "version": "1.0",
+            "description": (
+                "Append-only daily snapshots of Tier 1.1 measurement adoption. "
+                "Dedup by date — at most one snapshot per day. Mirrors the "
+                "documentation-debt history pattern; enables Tier 1.1 trend "
+                "analysis after 3+ daily snapshots accumulate."
+            ),
+            "snapshots": [],
+        }
+    snapshots = history.setdefault("snapshots", [])
+    if any(snap.get("date") == today for snap in snapshots):
+        return False, f"snapshot for {today} already exists, skipped"
+    snapshots.append({
+        "date": today,
+        "generated_at": report["updated"],
+        "trigger": trigger,
+        "summary": report["summary"],
+        "dimension_coverage": report["dimension_coverage"],
+    })
+    history["updated"] = report["updated"]
+    # Atomic write via temp file + rename (POSIX guarantees atomicity within fs).
+    tmp_path = history_path.with_suffix(history_path.suffix + ".tmp")
+    tmp_path.write_text(json.dumps(history, indent=2) + "\n")
+    tmp_path.replace(history_path)
+    return True, f"appended snapshot for {today} ({trigger})"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--output",
         default=str(REPO_ROOT / ".claude" / "shared" / "measurement-adoption.json"),
         help="Where to write the JSON report (default: .claude/shared/measurement-adoption.json).",
+    )
+    parser.add_argument(
+        "--history-output",
+        default=str(REPO_ROOT / ".claude" / "shared" / "measurement-adoption-history.json"),
+        help="Where to append the daily history snapshot.",
+    )
+    parser.add_argument(
+        "--snapshot-trigger",
+        choices=["manual", "scheduled_cycle", "pr_bot", "weekly_status"],
+        default="manual",
+        help="Annotates the history snapshot with what fired this run.",
     )
     parser.add_argument("--stdout", action="store_true", help="Also print a summary to stdout.")
     args = parser.parse_args()
@@ -200,6 +255,11 @@ def main() -> int:
     output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(report, indent=2) + "\n")
+
+    # Append to dated history (Phase 2b — enables trend analysis).
+    history_path = Path(args.history_output)
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    appended, history_msg = append_history_snapshot(history_path, report, args.snapshot_trigger)
 
     s = report["summary"]
     print(f"Tier 1.1 measurement-adoption inventory — {report['updated']}")
@@ -215,6 +275,7 @@ def main() -> int:
               f"{v['post_v6_present']}/{s['features_post_v6']} post-v6 ({v['post_v6_percent']}%)")
     print()
     print(f"Report written to: {output_path}")
+    print(f"History: {history_msg}")
     return 0
 
 

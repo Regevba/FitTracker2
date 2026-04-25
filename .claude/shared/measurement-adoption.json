@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "updated": "2026-04-24T09:25:43Z",
+  "updated": "2026-04-25T04:41:43Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 41,
-    "features_post_v6": 6,
+    "features_total": 42,
+    "features_post_v6": 7,
     "features_pre_v6": 35,
     "fully_adopted": 0,
-    "partial_adopted": 3,
+    "partial_adopted": 4,
     "zero_adopted": 38,
     "fully_adopted_post_v6": 0,
     "tier_1_1_status": "not_adopted"
@@ -18,29 +18,38 @@
       "overall_present": 1,
       "overall_percent": 2.4,
       "post_v6_present": 1,
-      "post_v6_percent": 16.7
+      "post_v6_percent": 14.3
     },
     "per_phase_timing": {
       "overall_present": 3,
-      "overall_percent": 7.3,
+      "overall_percent": 7.1,
       "post_v6_present": 3,
-      "post_v6_percent": 50.0
+      "post_v6_percent": 42.9
     },
     "cache_hits": {
-      "overall_present": 1,
-      "overall_percent": 2.4,
-      "post_v6_present": 1,
-      "post_v6_percent": 16.7
+      "overall_present": 2,
+      "overall_percent": 4.8,
+      "post_v6_present": 2,
+      "post_v6_percent": 28.6
     },
     "cu_v2": {
-      "overall_present": 3,
-      "overall_percent": 7.3,
-      "post_v6_present": 3,
-      "post_v6_percent": 50.0
+      "overall_present": 4,
+      "overall_percent": 9.5,
+      "post_v6_present": 4,
+      "post_v6_percent": 57.1
     }
   },
   "fully_adopted_features": [],
   "partial_adopted_features": [
+    {
+      "feature": "data-integrity-framework-v7-6",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": true,
+        "cu_v2": true
+      }
+    },
     {
       "feature": "framework-measurement-v6",
       "adoption": {
@@ -373,6 +382,20 @@
       },
       "fully_adopted": false,
       "any_adopted": false
+    },
+    {
+      "feature": "data-integrity-framework-v7-6",
+      "created": "2026-04-25",
+      "post_v6": true,
+      "current_phase": "implement",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": true,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
     },
     {
       "feature": "data-sync",

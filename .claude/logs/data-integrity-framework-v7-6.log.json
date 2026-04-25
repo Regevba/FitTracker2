@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "7.6",
   "started_at": "2026-04-25T04:03:43Z",
-  "updated_at": "2026-04-25T04:29:10Z",
+  "updated_at": "2026-04-25T04:49:28Z",
   "events": [
     {
       "timestamp": "2026-04-25T04:03:43Z",
@@ -68,6 +68,45 @@
       "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-25T04:43:49Z",
+      "event_type": "code_change",
+      "phase": "implement",
+      "summary": "Phase 2b: extended scripts/measurement-adoption-report.py with append_history_snapshot() \u2014 dedup-by-date, atomic write, --history-output + --snapshot-trigger CLI flags. Verified: first run appends, second run on same date skips.",
+      "artifacts": [
+        "scripts/measurement-adoption-report.py",
+        ".claude/shared/measurement-adoption-history.json"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L2",
+        "key": "dated_snapshot_with_dedup_by_date",
+        "type": "adapted",
+        "skill": "v7.5 documentation-debt-history pattern: same dedup-by-date rule, same atomic-write idiom"
+      }
+    },
+    {
+      "timestamp": "2026-04-25T04:49:28Z",
+      "event_type": "code_change",
+      "phase": "implement",
+      "summary": "Phase 2c: created .github/workflows/framework-status-weekly.yml \u2014 weekly cron (Mondays 05:00 UTC) that snapshots measurement-adoption history, runs documentation-debt readout, compares vs prior snapshot, opens issue on regression. Observational-only; never blocks merges. Mirrors integrity-cycle.yml structure for consistency.",
+      "artifacts": [
+        ".github/workflows/framework-status-weekly.yml"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L2",
+        "key": "github_actions_cron_with_regression_issue",
+        "type": "adapted",
+        "skill": "Reused integrity-cycle.yml shape: cron + workflow_dispatch, env-routed dynamic values, github-script for issue creation, GITHUB_STEP_SUMMARY block. Adapted regression detection from integer-delta comparison instead of grep on report text."
+      }
     }
   ]
 }
