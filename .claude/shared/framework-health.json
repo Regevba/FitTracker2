@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "updated": "2026-04-11T15:50:25Z",
+  "updated": "2026-04-25T08:21:50Z",
   "description": "Hub-native framework health check \u2014 Phase 0 of the v4.4 Skill Internal Lifecycle. Runs at random intervals to verify cache, shared layer, routing, and adapter integrity. Alert if score drops below 90%. PARTIAL (audit FW-014): last_check=null is expected initial state \u2014 the 25%-probability random trigger has not yet fired in any session that completed Phase 0. Schema and contract are complete; checks populate as the framework runs.",
   "check_config": {
     "trigger": "random_on_skill_execution",
     "probability": 0.25,
     "min_interval_hours": 2,
-    "last_check": null,
+    "last_check": "2026-04-25T08:21:50Z",
     "alert_threshold": 0.9
   },
   "checks": [
@@ -63,5 +63,19 @@
     ],
     "after_resolution": "Re-run health check to verify fix"
   },
-  "history": []
+  "history": [
+    {
+      "timestamp": "2026-04-25T08:21:50Z",
+      "trigger": "manual_v7_6_pending_fixes_reconciliation",
+      "framework_version": "7.6",
+      "overall_score": 1.0,
+      "status": "healthy",
+      "summary": "Manual v7.6 reconciliation check: integrity baseline reported 42 features, 49 case studies, 0 findings; schema and case-study preflight passed; full regression suite passed with permissions (15/15).",
+      "artifacts": [
+        "docs/superpowers/plans/2026-04-25-v7-6-pending-fixes-handoff.md",
+        ".claude/features/data-integrity-framework-v7-6/state.json",
+        ".claude/shared/framework-manifest.json"
+      ]
+    }
+  ]
 }

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-19T19:30:00Z",
+  "updated": "2026-04-25T08:21:50Z",
   "description": "Cross-cycle monitoring for showcase-worthy PM workflow runs, maintenance programs, and major feature initiatives. Stores measurable evidence so a case study can be assembled from first-party process data instead of memory.",
   "schema": {
     "case_id": "stable slug",
@@ -2103,6 +2103,102 @@
         "Re-using existing production review-mode env vars (FITTRACKER_REVIEW_AUTH) was cheaper than adding test-only env knobs to production code.",
         "XCTSkip with documented remediation messages is honest output when fixtures aren't yet available. Audit asked for tests to exist, not for them to pass without fixtures.",
         "After M-4: in-project audit closure is 100%. Remaining 2 findings are pre-classified external blockers (BE-024, DEEP-SYNC-010) that aren't actionable without cross-project work."
+      ]
+    },
+    {
+      "case_id": "mechanical-enforcement-v7-6",
+      "title": "Mechanical Enforcement — v7.6",
+      "status": "complete",
+      "work_type": "framework",
+      "started_at": "2026-04-25T04:03:43Z",
+      "updated_at": "2026-04-25T08:21:50Z",
+      "framework_version": "7.6",
+      "skills_used": [
+        "pm-workflow",
+        "dev",
+        "qa",
+        "ops"
+      ],
+      "data_sources": [
+        "repo",
+        "github"
+      ],
+      "process_metrics": {
+        "linear_issues_closed": 0,
+        "linear_issues_created": 0,
+        "notion_pages_created": 0,
+        "notion_pages_updated": 0,
+        "repo_files_added": 5,
+        "repo_files_updated": 8,
+        "tests_passing": 15,
+        "build_verified": false
+      },
+      "quality_metrics": {
+        "critical_findings": 0,
+        "high_findings": 0,
+        "medium_findings": 0,
+        "source_truth_gap_detected": true,
+        "source_truth_gap_reduced": true
+      },
+      "success_cases": [
+        {
+          "title": "Four write-time checks shipped",
+          "evidence": "PHASE_TRANSITION_NO_LOG, PHASE_TRANSITION_NO_TIMING, BROKEN_PR_CITATION, and CASE_STUDY_MISSING_TIER_TAGS are wired through .githooks/pre-commit."
+        },
+        {
+          "title": "Recurring enforcement added",
+          "evidence": ".github/workflows/pr-integrity-check.yml and framework-status-weekly.yml are merged to origin/main."
+        },
+        {
+          "title": "Known unclosable gaps documented",
+          "evidence": "docs/case-studies/meta-analysis/unclosable-gaps.md lists five Class B gaps with tracking/observability notes."
+        }
+      ],
+      "failure_cases": [
+        {
+          "title": "Bookkeeping lagged shipped artifacts",
+          "evidence": "The v7.6 state.json remained implement/in_progress after the code/docs were already merged to main; fixed on framework-v7.6-pending-fixes."
+        },
+        {
+          "title": "Documentation overstated some guarantees",
+          "evidence": "Some docs described PR checks as gh pr view hard-blocks and tier-tag checks as quantitative-claim scans, while code uses gh pr list cache with graceful skip and file-level tag presence."
+        }
+      ],
+      "next_checkpoints": [
+        "Tighten or document PR workflow status semantics for schema/adoption failures.",
+        "Align README, pm-workflow README, manifest, case study, and DEV guide wording with actual implementation guarantees.",
+        "Clarify regression-suite naming now that v7.6 assertions live in scripts/test-v7-5-pipeline.sh."
+      ],
+      "artifacts": [
+        "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+        "docs/case-studies/meta-analysis/unclosable-gaps.md",
+        "docs/architecture/dev-guide-v1-to-v7-6.md",
+        "docs/superpowers/plans/2026-04-25-v7-6-pending-fixes-handoff.md",
+        ".claude/shared/framework-manifest.json",
+        ".github/workflows/pr-integrity-check.yml",
+        ".github/workflows/framework-status-weekly.yml",
+        "scripts/check-state-schema.py",
+        "scripts/check-case-study-preflight.py",
+        "scripts/test-v7-5-pipeline.sh"
+      ],
+      "snapshots": [
+        {
+          "timestamp": "2026-04-25T08:21:50Z",
+          "label": "pending-fixes reconciliation checkpoint",
+          "summary": "Confirmed v7.6 commit series is merged to origin/main, reconciled state/log to complete, and opened rollbackable branch for remaining docs/workflow cleanup.",
+          "metrics": {
+            "linear_issues_closed": 0,
+            "notion_pages_updated": 0,
+            "tests_passing": 15,
+            "build_verified": false
+          }
+        }
+      ],
+      "case_study_path": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "key_learnings": [
+        "Mechanical enforcement needs its own bookkeeping enforcement; shipped docs/code can still outrun shared state.",
+        "A framework-level feature should be registered in the same shared surfaces as product features when the manifest treats it as shipped.",
+        "Rollbackability is easiest when handoff, state reconciliation, workflow semantics, and docs alignment land as separate commits."
       ]
     }
   ]
