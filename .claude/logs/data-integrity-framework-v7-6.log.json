@@ -6,7 +6,7 @@
   "current_phase": "implement",
   "framework_version": "7.6",
   "started_at": "2026-04-25T04:03:43Z",
-  "updated_at": "2026-04-25T04:49:28Z",
+  "updated_at": "2026-04-25T04:55:01Z",
   "events": [
     {
       "timestamp": "2026-04-25T04:03:43Z",
@@ -107,6 +107,20 @@
         "type": "adapted",
         "skill": "Reused integrity-cycle.yml shape: cron + workflow_dispatch, env-routed dynamic values, github-script for issue creation, GITHUB_STEP_SUMMARY block. Adapted regression detection from integer-delta comparison instead of grep on report text."
       }
+    },
+    {
+      "timestamp": "2026-04-25T04:55:01Z",
+      "event_type": "docs_change",
+      "phase": "implement",
+      "summary": "Phase 3a+3b: created docs/case-studies/meta-analysis/unclosable-gaps.md (5 Class B gaps, 4-section format each, Class A vs B promotion table). Updated CLAUDE.md with v7.6 write-time gates (4 new check codes), per-PR + weekly defenses block, and Known Mechanical Limits section linking to unclosable-gaps.md.",
+      "artifacts": [
+        "docs/case-studies/meta-analysis/unclosable-gaps.md",
+        "CLAUDE.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
     }
   ]
 }

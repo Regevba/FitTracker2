@@ -51,13 +51,17 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5, shipped 2026-04-24)
+## Data Integrity Framework (v7.5 → v7.6, shipped 2026-04-24 → 2026-04-25)
 
-The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. Every new feature's data flows through write-time gates, a 72h cycle, and readout-time dashboards.
+The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
 **Write-time gates (fire on `git commit`):**
 - `SCHEMA_DRIFT` — pre-commit hook rejects legacy `phase` key; canonical is `current_phase`. Install via `make install-hooks`.
 - `PR_NUMBER_UNRESOLVED` — pre-commit hook verifies `phases.merge.pr_number` resolves via `gh pr view` before state.json can record it.
+- `PHASE_TRANSITION_NO_LOG` (v7.6) — pre-commit hook rejects a `current_phase` change in a state.json without a corresponding event in `.claude/logs/<feature>.log.json` within the last 15 minutes.
+- `PHASE_TRANSITION_NO_TIMING` (v7.6) — pre-commit hook rejects a `current_phase` change without a `phases.<new_phase>.started_at` update in the same commit.
+- `BROKEN_PR_CITATION` (v7.6, write-time) — pre-commit hook rejects case-study commits that cite `PR #N` or `pull/N` if the number does not resolve via `gh pr view`. Cycle-level `BROKEN_PR_CITATION` still runs as a safety net.
+- `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) — pre-commit hook rejects case-study commits (forward-only, dated ≥ 2026-04-21) that contain quantitative claims without a T1/T2/T3 tier tag.
 
 **Cycle-time gates (fire every 72h via GitHub Actions):**
 Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. 11 check codes (10 feature-level + 1 case-study-level): `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`.
@@ -77,6 +81,23 @@ Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.
 **v7.5 case study:** [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](docs/case-studies/data-integrity-framework-v7.5-case-study.md). **Remediation status:** [`trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`](trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md).
 
 This framework exists because we empirically observed 7+ features sit in "shipped but state.json unreconciled" limbo for 3–14 days before the 2026-04-20 audit caught them, and because the 2026-04-21 Gemini audit surfaced that the project had shipped extensive measurement infrastructure without a measurement of its own measurement adoption. v7.5 closes both loops: data is gated at write, audited on cycle, and surfaced on demand.
+
+**Per-PR + weekly defenses (v7.6, shipped 2026-04-25):**
+- **Per-PR review bot** — [`.github/workflows/pr-integrity-check.yml`](.github/workflows/pr-integrity-check.yml) runs schema-check + integrity-check + measurement-adoption against every PR HEAD, captures the `origin/main` baseline via worktree, and sets the `pm-framework/pr-integrity` commit status. `failure` if the PR introduces NEW findings vs main. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place.
+- **Weekly framework-status cron** — [`.github/workflows/framework-status-weekly.yml`](.github/workflows/framework-status-weekly.yml) fires Mondays 05:00 UTC. Appends a snapshot to [`.claude/shared/measurement-adoption-history.json`](.claude/shared/measurement-adoption-history.json) (dedup by date). Opens `framework-status` issue on regression (decrease in `fully_adopted` or `any_adopted`).
+- **Append-only adoption history** — `make measurement-adoption` now writes a dated snapshot to the history ledger; trend mode unlocks after 3 snapshots accumulate.
+
+## Known Mechanical Limits
+
+v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. Five gaps remain mechanically unclosable:
+
+1. `cache_hits[]` writer-path adoption — agent must remember to log it (issue #140).
+2. `cu_v2` factor *correctness* — judgment-based; we check presence, not magnitude.
+3. T1/T2/T3 tag *correctness* — preflight checks presence on post-2026-04-21 case studies, not whether the tag is right.
+4. Tier 2.1 real-provider auth checklist — requires a human at a simulator.
+5. Tier 3.3 external replication — requires an external operator.
+
+Authoritative reference: [`docs/case-studies/meta-analysis/unclosable-gaps.md`](docs/case-studies/meta-analysis/unclosable-gaps.md). A system that knows what it cannot check is more trustworthy than one that pretends every check is a check.
 
 ## Concurrent Dispatch Hygiene
 
