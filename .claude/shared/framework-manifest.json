@@ -221,7 +221,7 @@
         "check_code": "PHASE_TRANSITION_NO_TIMING",
         "script": "scripts/check-state-schema.py",
         "hook": ".githooks/pre-commit",
-        "rule": "current_phase change in staged state.json must include a phases.<new_phase>.started_at update in the same commit."
+        "rule": "current_phase change in staged state.json must include timing.phases.<new_phase>.started_at and, when there was a previous phase, timing.phases.<old_phase>.ended_at in the same commit."
       },
       "phase_1c_broken_pr_citation_write_time": {
         "status": "shipped",
@@ -229,7 +229,7 @@
         "script": "scripts/check-case-study-preflight.py",
         "hook": ".githooks/pre-commit",
         "regex": "[Pp][Rr]\\s*#?|github\\.com/[^/\\s]+/[^/\\s]+/pull/(\\d+)",
-        "rule": "Pre-commit rejects any case-study commit citing PR #N or pull/N if the number does not resolve via gh pr view. Cycle-level BROKEN_PR_CITATION still runs as safety net."
+        "rule": "Pre-commit rejects any case-study commit citing PR #N or pull/N if the number does not resolve in the cached gh pr list result. Skipped gracefully when gh is unavailable; cycle-level BROKEN_PR_CITATION still runs as safety net."
       },
       "phase_1d_case_study_missing_tier_tags": {
         "status": "shipped",
@@ -243,7 +243,7 @@
           "normalization-framework*",
           "meta-analysis/ subfolder"
         ],
-        "rule": "Pre-commit rejects post-2026-04-21 case study commits containing quantitative claims without a T1/T2/T3 tier tag."
+        "rule": "Pre-commit rejects scoped post-2026-04-21 case study commits when the file contains no T1/T2/T3 tier tag at all. Presence-only; tag exhaustiveness/correctness remains a Class B review gap."
       }
     },
     "per_pr_and_weekly_defenses": {
@@ -252,7 +252,7 @@
         "workflow": ".github/workflows/pr-integrity-check.yml",
         "trigger": "pull_request: [opened, synchronize, reopened]",
         "status_check": "pm-framework/pr-integrity",
-        "rule": "Runs schema-check + integrity-check + measurement-adoption against PR HEAD. Captures origin/main baseline via worktree. Status = failure when delta > 0 (PR introduces new findings vs main). Sticky comment with marker <!-- pm-framework-pr-integrity-bot --> updates in place on each push."
+        "rule": "Runs schema-check + integrity-check + measurement-adoption against PR HEAD. Captures origin/main baseline via worktree. Status = failure when any required command exits non-zero or when delta > 0 (PR introduces new findings vs main). Sticky comment with marker <!-- pm-framework-pr-integrity-bot --> updates in place on each push."
       },
       "phase_2b_measurement_adoption_history": {
         "status": "shipped",

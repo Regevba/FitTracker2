@@ -87,7 +87,7 @@ The audit produced **9 Tier 1/2/3 recommendations**:
 | 2.1 | Runtime smoke gates | Groundwork shipped (5 profiles incl. `sign_in_surface`) | Unchanged — Class B by physical necessity (Gap 4) |
 | 2.2 | Contemporaneous logging | Pilot active (5 logs) | Used end-to-end in v7.6's own session (6 events; cache_hits writer-path closed via `--cache-hit` flag in `append-feature-log.py`) |
 | 2.3 | Data quality tiers convention | Shipped (T1/T2/T3 codified in CLAUDE.md) | Tag *presence* promoted to Class A (Phase 1d preflight); tag *correctness* stays Class B (Gap 3) |
-| 3.1 | Independent Auditor Agent | Shipped, hardened (12 check codes including 4 new in v7.6) | Per-PR enforcement layer added (Phase 2a); 72h cycle now redundant safety net |
+| 3.1 | Independent Auditor Agent | Shipped, hardened (12 cycle-time check codes, plus staged v7.6 write-time checks) | Per-PR enforcement layer added (Phase 2a); 72h cycle remains redundant safety net |
 | 3.2 | Documentation-debt dashboard | Baseline shipped (7 open items) | Unchanged — trend mode unlocks after 3 cycle snapshots |
 | 3.3 | External replication | Backlog (external-blocked) | Public invitation issue **filed last** as the explicit final v7.6 deliverable (Gap 5) |
 
@@ -211,7 +211,7 @@ A `current_phase` change must include a `phases.<new_phase>.started_at` update i
 
 ### 5.3 `BROKEN_PR_CITATION` at write-time (1c)
 
-A new script `scripts/check-case-study-preflight.py` (222 lines) runs at pre-commit on staged case studies. It uses a narrow regex requiring `PR` or `pull/` context: `[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/(\d+)`. For each match, it shells out to `gh pr view <N>`. Any unresolvable number blocks the commit.
+A new script `scripts/check-case-study-preflight.py` (222 lines) runs at pre-commit on staged case studies. It uses a narrow regex requiring `PR` or `pull/` context: `[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/(\d+)`. It checks each match against a cached `gh pr list --state all` result. Any unresolvable number blocks the commit when `gh` is available; when `gh` is unavailable or unauthenticated, the check skips gracefully and the 72h cycle remains the safety net.
 
 **Why narrow regex:** the original meta-analysis used a liberal `#\d+` regex which matched issue numbers and produced the false positives Gemini faithfully repeated. The narrow regex makes the error class structurally impossible to ship.
 
@@ -219,7 +219,7 @@ A new script `scripts/check-case-study-preflight.py` (222 lines) runs at pre-com
 
 ### 5.4 `CASE_STUDY_MISSING_TIER_TAGS` (1d)
 
-Same script. Forward-only — only fires on case studies dated `>= 2026-04-21` (the day the convention shipped). Exempt files include README, template, normalization-framework, and the entire `meta-analysis/` subfolder (audit history is read-only). For each case study in scope, scans for quantitative claims (numbers in tables, prose claims like "shipped 7 features", percentages) and verifies a T1/T2/T3 tag is present.
+Same script. Forward-only — only fires on case studies dated `>= 2026-04-21` (the day the convention shipped). Exempt files include README, template, normalization-framework, and the entire `meta-analysis/` subfolder (audit history is read-only). For each case study in scope, it verifies that at least one T1/T2/T3 tag is present. It does not prove every quantitative claim is tagged or that the tag is correct; that remains the documented Class B review gap.
 
 **Why forward-only:** retroactive enforcement on pre-2026-04-21 case studies would conflict with the publish-verbatim policy — historical case studies are evidence, not editable artifacts.
 
@@ -251,7 +251,7 @@ All 15 assertions pass at commit `0a23922`.
 
 ### 6.1 Per-PR review bot (2a — `.github/workflows/pr-integrity-check.yml`)
 
-Fires on `pull_request: [opened, synchronize, reopened]`. Runs schema-check + integrity-check + measurement-adoption against PR HEAD. Captures the `origin/main` baseline via `git worktree add /tmp/main-tree origin/main` (worktree to avoid dirty-tree side effects in the PR workspace). Computes `delta = pr_findings - main_findings`. Sets `pm-framework/pr-integrity` commit status to `failure` if `delta > 0`. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place on every push (no comment spam). Concurrency group `pr-integrity-${{ github.event.pull_request.number }}` cancels superseded runs.
+Fires on `pull_request: [opened, synchronize, reopened]`. Runs schema-check + integrity-check + measurement-adoption against PR HEAD. Captures the `origin/main` baseline via `git worktree add /tmp/main-tree origin/main` (worktree to avoid dirty-tree side effects in the PR workspace). Computes `delta = pr_findings - main_findings`. Sets `pm-framework/pr-integrity` commit status to `failure` if any required command exits non-zero or if `delta > 0`. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place on every push and reports command exit codes. Concurrency group `pr-integrity-${{ github.event.pull_request.number }}` cancels superseded runs.
 
 **Security hardening:** all dynamic values routed through `env:` blocks. The pre-commit hook for workflow files (`security_reminder_hook.py`) initially blocked the write because `${{ }}` interpolation in `run:` blocks is the GitHub Actions injection vector ([github.blog reference](https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/)). Re-wrote the workflow with all dynamic text as env vars; pre-commit then accepted it. Documented in the workflow file's security note.
 

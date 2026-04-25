@@ -66,7 +66,9 @@ jobs:
         run: |
           set +e
           python3 scripts/measurement-adoption-report.py \
-            --output /tmp/pr-adoption.json 2>&1 | tee /tmp/pr-adoption.txt
+            --output /tmp/pr-adoption.json \
+            --history-output /tmp/pr-adoption-history.json \
+            --snapshot-trigger pr_bot 2>&1 | tee /tmp/pr-adoption.txt
           echo "exit=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
 
       - name: Capture main baseline via worktree
@@ -93,11 +95,20 @@ jobs:
         env:
           PR_FINDINGS: ${{ steps.integrity.outputs.pr_findings }}
           MAIN_FINDINGS: ${{ steps.baseline.outputs.main_findings }}
+          SCHEMA_EXIT: ${{ steps.schema.outputs.exit }}
+          INTEGRITY_EXIT: ${{ steps.integrity.outputs.exit }}
+          ADOPTION_EXIT: ${{ steps.adoption.outputs.exit }}
         run: |
           pr=${PR_FINDINGS:-0}
           main=${MAIN_FINDINGS:-0}
+          schema_exit=${SCHEMA_EXIT:-0}
+          integrity_exit=${INTEGRITY_EXIT:-0}
+          adoption_exit=${ADOPTION_EXIT:-0}
           delta=$((pr - main))
-          if [ "$delta" -le 0 ]; then
+          if [ "$schema_exit" != "0" ] || [ "$integrity_exit" != "0" ] || [ "$adoption_exit" != "0" ]; then
+            status=failure
+            summary="FAIL — required command failed (schema=${schema_exit}, integrity=${integrity_exit}, adoption=${adoption_exit})"
+          elif [ "$delta" -le 0 ]; then
             status=success
             summary="PASS — no new findings vs main (${pr} findings, ${main} on main)"
           else
@@ -109,6 +120,9 @@ jobs:
             echo "delta=${delta}"
             echo "pr_findings=${pr}"
             echo "main_findings=${main}"
+            echo "schema_exit=${schema_exit}"
+            echo "integrity_exit=${integrity_exit}"
+            echo "adoption_exit=${adoption_exit}"
             echo "summary=${summary}"
           } >> "$GITHUB_OUTPUT"
 
@@ -149,6 +163,9 @@ jobs:
           PR_FINDINGS: ${{ steps.delta.outputs.pr_findings }}
           MAIN_FINDINGS: ${{ steps.delta.outputs.main_findings }}
           DELTA: ${{ steps.delta.outputs.delta }}
+          SCHEMA_EXIT: ${{ steps.delta.outputs.schema_exit }}
+          INTEGRITY_EXIT: ${{ steps.delta.outputs.integrity_exit }}
+          ADOPTION_EXIT: ${{ steps.delta.outputs.adoption_exit }}
           BASELINE_UNAVAILABLE: ${{ steps.baseline.outputs.baseline_unavailable }}
         with:
           script: |
@@ -158,6 +175,9 @@ jobs:
             const pr = process.env.PR_FINDINGS || '0';
             const main = process.env.MAIN_FINDINGS || '0';
             const delta = process.env.DELTA || '0';
+            const schemaExit = process.env.SCHEMA_EXIT || '0';
+            const integrityExit = process.env.INTEGRITY_EXIT || '0';
+            const adoptionExit = process.env.ADOPTION_EXIT || '0';
             const baselineWarning = process.env.BASELINE_UNAVAILABLE === 'true'
               ? '\n> Could not capture main baseline — treating as 0 findings.\n'
               : '';
@@ -169,6 +189,8 @@ jobs:
               `**Status:** ${status === 'success' ? 'PASS' : 'FAIL'} — ${summary}`,
               ``,
               `**Findings delta vs main:** ${pr} − ${main} = **${delta}** new findings.`,
+              ``,
+              `**Required command exits:** schema=${schemaExit}, integrity=${integrityExit}, measurement-adoption=${adoptionExit}.`,
               baselineWarning,
               `<details><summary>Full integrity check output</summary>`,
               ``,
@@ -216,6 +238,9 @@ jobs:
           PR_FINDINGS: ${{ steps.delta.outputs.pr_findings }}
           MAIN_FINDINGS: ${{ steps.delta.outputs.main_findings }}
           DELTA: ${{ steps.delta.outputs.delta }}
+          SCHEMA_EXIT: ${{ steps.delta.outputs.schema_exit }}
+          INTEGRITY_EXIT: ${{ steps.delta.outputs.integrity_exit }}
+          ADOPTION_EXIT: ${{ steps.delta.outputs.adoption_exit }}
         run: |
           {
             echo "## PR Integrity Check Summary"
@@ -223,6 +248,8 @@ jobs:
             printf '%s\n' "**Status:** $SUMMARY"
             echo ""
             printf '**Delta:** PR %s − main %s = %s\n' "$PR_FINDINGS" "$MAIN_FINDINGS" "$DELTA"
+            echo ""
+            printf '**Required command exits:** schema=%s, integrity=%s, measurement-adoption=%s\n' "$SCHEMA_EXIT" "$INTEGRITY_EXIT" "$ADOPTION_EXIT"
             echo ""
             echo "### Integrity check output"
             echo '```'
