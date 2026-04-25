@@ -1,0 +1,73 @@
+{
+  "version": "1.0",
+  "feature": "data-integrity-framework-v7-6",
+  "title": "data integrity framework v7 6",
+  "work_type": "framework",
+  "current_phase": "implement",
+  "framework_version": "7.6",
+  "started_at": "2026-04-25T04:03:43Z",
+  "updated_at": "2026-04-25T04:29:10Z",
+  "events": [
+    {
+      "timestamp": "2026-04-25T04:03:43Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "v7.6 Mechanical Enforcement implementation begins. User approved all 4 sub-questions: (A) hard-block from day 1, (All) ship 1a+1b+1c+1d together, (V7.6) framework version bump, (After live) public Tier 3.3 issue. Resume from 2026-04-24 paused work \u2014 1a+1b drafted in check-state-schema.py working tree.",
+      "artifacts": [
+        ".claude/features/data-integrity-framework-v7-6/state.json",
+        "scripts/check-state-schema.py"
+      ],
+      "metrics": {
+        "cu_v2_factors": 2,
+        "tasks_planned": 10
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-25T04:07:47Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "implement",
+      "summary": "1a (PHASE_TRANSITION_NO_LOG) and 1b (PHASE_TRANSITION_NO_TIMING) implemented in scripts/check-state-schema.py. Helpers added: _feature_slug_from_path, _load_committed_state, _parse_iso, _load_feature_log, _recent_phase_event. validate_file() gained enforce_transition kwarg; main() passes True only in --staged mode. 1a verified end-to-end: synthetic phase advance without log event fires the check with clear remediation message.",
+      "artifacts": [
+        "scripts/check-state-schema.py"
+      ],
+      "metrics": {
+        "checks_implemented": 2,
+        "loc_added": 200
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L1",
+        "key": "tier_2_2_logger_pattern_from_v7_5",
+        "type": "adapted",
+        "skill": "pm-workflow"
+      }
+    },
+    {
+      "timestamp": "2026-04-25T04:29:10Z",
+      "event_type": "tier_closure",
+      "phase": "implement",
+      "summary": "Phase 1 (Class B \u2192 A) complete: 4 new write-time defenses shipped \u2014 PHASE_TRANSITION_NO_LOG (1a) + PHASE_TRANSITION_NO_TIMING (1b) in check-state-schema.py; BROKEN_PR_CITATION (1c) + CASE_STUDY_MISSING_TIER_TAGS (1d) in new check-case-study-preflight.py. Pre-commit hook updated to invoke both checkers. Pipeline regression test extended from 11 to 15 assertions, all green. Phase 2-4 detailed plan archived for execution.",
+      "artifacts": [
+        "scripts/check-state-schema.py",
+        "scripts/check-case-study-preflight.py",
+        ".githooks/pre-commit",
+        "scripts/test-v7-5-pipeline.sh",
+        "docs/superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md"
+      ],
+      "metrics": {
+        "pipeline_assertions": 15,
+        "pipeline_passing": 15,
+        "defenses_added": 4,
+        "class_b_to_a_promotions": 4
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

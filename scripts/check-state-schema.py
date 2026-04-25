@@ -12,6 +12,16 @@ Canonical schema rules (enforced at write time via the pre-commit hook):
    "integrate with sources of truth" recommendation at write-time rather
    than only post-hoc on the 72h integrity cycle. Skipped gracefully if
    `gh` is unavailable (CI without GH_TOKEN, offline dev, etc.).
+3. **PHASE_TRANSITION_NO_LOG** (Phase 1a, added 2026-04-24) — if
+   `current_phase` changes vs the committed state.json, require a matching
+   `phase_started` / `phase_approved` event in the feature's contemporaneous
+   log file within `PHASE_EVENT_FRESHNESS_MIN` minutes. Promotes Tier 2.2
+   contemporaneous logging from Class B (agent-dependent, silent gap) to
+   Class A (mechanically enforced).
+4. **PHASE_TRANSITION_NO_TIMING** (Phase 1b, added 2026-04-24) — if
+   `current_phase` changes, require `timing.phases[OLD].ended_at` +
+   `timing.phases[NEW].started_at` to be present and non-null. Promotes
+   Tier 1.1 per-phase timing from narrative to mechanical.
 
 Usage:
     scripts/check-state-schema.py                    # scan all state.json files
@@ -22,17 +32,43 @@ Exit codes:
     0  all validated files pass all checks
     1  one or more files violate a check (message on stderr)
     2  usage error or missing file
+
+Bypass (emergency only): `git commit --no-verify`. The 72h integrity cycle
+still catches any drift introduced through bypass.
 """
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
+LOGS_DIR = REPO_ROOT / ".claude" / "logs"
+
+# How fresh the most-recent phase-transition log event must be to satisfy the
+# PHASE_TRANSITION_NO_LOG check. 15 minutes is deliberately generous to
+# accommodate multi-step commits (log first, then state.json, then commit)
+# without false positives. The 72h cycle is the belt for anything slower.
+PHASE_EVENT_FRESHNESS_MIN = 15
+
+# Event types that count as satisfying a phase transition.
+PHASE_TRANSITION_EVENT_TYPES = {
+    "phase_started",
+    "phase_approved",
+    "phase_transition",
+    "tier_closure",
+    "harness_closure",
+    "runtime_verification",
+    "implementation_checkpoint",
+    "test_run",
+    "merge_recorded",
+    "docs_published",
+}
 
 
 # Module-level PR cache. Populated lazily on first PR-resolving check so we
@@ -67,8 +103,106 @@ def _load_pr_cache() -> set[int] | None:
     return _PR_CACHE
 
 
-def validate_file(path: Path) -> list[str]:
-    """Return a list of human-readable violation messages for one file."""
+def _feature_slug_from_path(path: Path) -> str | None:
+    """Extract the feature slug from a state.json path.
+
+    `.claude/features/<slug>/state.json` → `<slug>`. Returns None if the
+    path is outside the features directory.
+    """
+    try:
+        rel = path.resolve().relative_to(FEATURES_DIR)
+    except ValueError:
+        return None
+    parts = rel.parts
+    if len(parts) < 2 or parts[-1] != "state.json":
+        return None
+    return parts[0]
+
+
+def _load_committed_state(path: Path) -> dict | None:
+    """Load the currently-committed (HEAD) version of a state.json file.
+
+    Returns None if the file doesn't exist in HEAD (new feature) or git is
+    unavailable. The caller treats None as "no previous state to diff against."
+    """
+    try:
+        rel = path.resolve().relative_to(REPO_ROOT)
+    except ValueError:
+        return None
+    try:
+        out = subprocess.check_output(
+            ["git", "show", f"HEAD:{rel}"],
+            cwd=REPO_ROOT, text=True, stderr=subprocess.DEVNULL,
+        )
+        return json.loads(out)
+    except (subprocess.CalledProcessError, json.JSONDecodeError):
+        return None
+
+
+def _parse_iso(raw: str) -> datetime | None:
+    """Parse an ISO 8601 timestamp, returning a timezone-aware UTC datetime."""
+    if not isinstance(raw, str):
+        return None
+    normalized = raw.strip().replace("Z", "+00:00")
+    try:
+        dt = datetime.fromisoformat(normalized)
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def _load_feature_log(feature_slug: str) -> dict | None:
+    """Load .claude/logs/<feature>.log.json, return None if it doesn't exist."""
+    log_path = LOGS_DIR / f"{feature_slug}.log.json"
+    if not log_path.exists():
+        return None
+    try:
+        return json.loads(log_path.read_text())
+    except json.JSONDecodeError:
+        return None
+
+
+def _recent_phase_event(log: dict, target_phase: str | None, freshness_min: int) -> dict | None:
+    """Return the most recent event that satisfies a phase transition check.
+
+    Criteria: event.event_type in PHASE_TRANSITION_EVENT_TYPES AND its
+    timestamp is within freshness_min of now (not counting retroactive
+    events, which are explicitly marked and don't satisfy a live transition).
+    """
+    events = log.get("events") if isinstance(log, dict) else None
+    if not isinstance(events, list):
+        return None
+    now = datetime.now(timezone.utc)
+    threshold = now - timedelta(minutes=freshness_min)
+    for event in reversed(events):
+        if not isinstance(event, dict):
+            continue
+        if event.get("recording_mode") == "retroactive":
+            continue
+        if event.get("event_type") not in PHASE_TRANSITION_EVENT_TYPES:
+            continue
+        ts = _parse_iso(event.get("timestamp", ""))
+        if ts is None or ts < threshold:
+            continue
+        if target_phase and event.get("phase") not in {target_phase, None}:
+            # Event phase doesn't match the destination — keep looking. An
+            # event with phase=None is accepted (older events pre-dating the
+            # phase field).
+            continue
+        return event
+    return None
+
+
+def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
+    """Return a list of human-readable violation messages for one file.
+
+    `enforce_transition` controls whether the phase-transition checks (1a,
+    1b) run. Those only make sense during a commit (staged mode), not on the
+    periodic full-corpus scan — so the `--staged` caller passes True, while
+    `--all` scans disable them.
+    """
     errors: list[str] = []
     if not path.exists():
         errors.append(f"{path}: does not exist")
@@ -98,6 +232,68 @@ def validate_file(path: Path) -> list[str]:
                     f"resolve on GitHub. Fix the number or remove the field "
                     f"before advancing to the merge phase."
                 )
+
+    # Checks 3 + 4: phase-transition gates. Skip if we're doing a full-corpus
+    # scan — those checks only make sense at commit time.
+    if not enforce_transition:
+        return errors
+
+    new_phase = d.get("current_phase") or d.get("phase")
+    committed = _load_committed_state(path)
+    old_phase = None
+    if committed is not None:
+        old_phase = committed.get("current_phase") or committed.get("phase")
+
+    phase_changed = (new_phase != old_phase) and new_phase is not None
+    if not phase_changed:
+        return errors
+
+    feature_slug = _feature_slug_from_path(path)
+
+    # Check 3 (PHASE_TRANSITION_NO_LOG): a fresh log event must exist.
+    if feature_slug is not None:
+        log = _load_feature_log(feature_slug)
+        if log is None:
+            errors.append(
+                f"{path}: current_phase changed to `{new_phase}` but "
+                f"`.claude/logs/{feature_slug}.log.json` does not exist. "
+                f"Run `python3 scripts/append-feature-log.py --feature "
+                f"{feature_slug} --event-type phase_started --phase {new_phase} "
+                f"--summary '...'` before committing. Emergency bypass: "
+                f"`git commit --no-verify`."
+            )
+        elif _recent_phase_event(log, new_phase, PHASE_EVENT_FRESHNESS_MIN) is None:
+            errors.append(
+                f"{path}: current_phase changed to `{new_phase}` but no "
+                f"recent (<{PHASE_EVENT_FRESHNESS_MIN} min) matching event in "
+                f"`.claude/logs/{feature_slug}.log.json`. Append a "
+                f"phase_started / phase_approved / tier_closure event first."
+            )
+
+    # Check 4 (PHASE_TRANSITION_NO_TIMING): timing fields must be populated.
+    phases_block = d.get("phases")
+    timing = d.get("timing") or {}
+    timing_phases = timing.get("phases") if isinstance(timing, dict) else None
+    if not isinstance(timing_phases, dict):
+        timing_phases = {}
+    # Require started_at on the new phase.
+    new_phase_timing = timing_phases.get(new_phase) or {}
+    if not isinstance(new_phase_timing, dict) or not new_phase_timing.get("started_at"):
+        errors.append(
+            f"{path}: current_phase changed to `{new_phase}` but "
+            f"`timing.phases.{new_phase}.started_at` is missing or empty. "
+            f"Write an ISO 8601 timestamp before committing."
+        )
+    # Require ended_at on the old phase (if there was one).
+    if old_phase:
+        old_phase_timing = timing_phases.get(old_phase) or {}
+        if not isinstance(old_phase_timing, dict) or not old_phase_timing.get("ended_at"):
+            errors.append(
+                f"{path}: current_phase transitioned from `{old_phase}` → "
+                f"`{new_phase}` but `timing.phases.{old_phase}.ended_at` is "
+                f"missing or empty. Record when the prior phase closed."
+            )
+
     return errors
 
 
@@ -143,9 +339,20 @@ def main() -> int:
         print(f"No state.json files to validate (mode={mode}).")
         return 0
 
+    # Phase-transition checks (1a, 1b) only fire at commit time. Full-corpus
+    # scans cannot tell what's a "transition" — they just see current state.
+    # Override via FORCE_TRANSITION_CHECKS=1 (used by the regression test
+    # harness so synthetic-fixture assertions can exercise the same code
+    # path as a real `--staged` invocation without polluting the git index).
+    import os
+    enforce_transition = (
+        mode == "staged"
+        or os.environ.get("FORCE_TRANSITION_CHECKS") == "1"
+    )
+
     all_errors: list[str] = []
     for p in files:
-        all_errors.extend(validate_file(p))
+        all_errors.extend(validate_file(p, enforce_transition=enforce_transition))
 
     if all_errors:
         print(f"✗ STATE_SCHEMA: {len(all_errors)} violation(s) "

@@ -1,0 +1,84 @@
+{
+  "feature": "data-integrity-framework-v7-6",
+  "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+  "display_name": "Data Integrity Framework v7.6 \u2014 Mechanical Enforcement",
+  "work_type": "framework",
+  "framework_version": "7.6",
+  "current_phase": "implement",
+  "status": "in_progress",
+  "created": "2026-04-25T04:03:43Z",
+  "updated": "2026-04-25T04:07:47Z",
+  "branch": "main",
+  "spec": "docs/case-studies/data-integrity-framework-v7.5-case-study.md (Phase 1 plan section)",
+  "phases": {
+    "research": {
+      "status": "complete",
+      "skipped_reason": "Inherited from v7.5 plan presentation 2026-04-24 evening"
+    },
+    "prd": {
+      "status": "complete",
+      "skipped_reason": "v7.5 advancement plan already enumerated 4 sub-questions; user approved all on 2026-04-25"
+    },
+    "tasks": {
+      "status": "complete",
+      "skipped_reason": "Plan items 1a/1b/1c/1d/manifest/case-study/docs are explicit"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skipped_reason": "Framework infrastructure, no UI"
+    },
+    "implement": {
+      "status": "in_progress"
+    }
+  },
+  "timing": {
+    "session_start": "2026-04-25T04:03:43Z",
+    "time_source": "measured",
+    "phases": {
+      "implement": {
+        "started_at": "2026-04-25T04:03:43Z"
+      }
+    }
+  },
+  "complexity": {
+    "cu_version": 2,
+    "view_count": 0,
+    "new_types_count": 4,
+    "design_iteration_details": [],
+    "is_first_of_kind": false,
+    "factors_applied": [
+      {
+        "factor": "Cross-feature",
+        "value": 0.2,
+        "reason": "Touches integrity-check.py, append-feature-log.py, .githooks/pre-commit, Makefile, framework-manifest.json"
+      },
+      {
+        "factor": "Novelty",
+        "value": 0.2,
+        "reason": "First implementation of phase-transition log+timing pre-commit enforcement; first write-time tier-tag check"
+      }
+    ],
+    "computed_cu": null,
+    "computed_cu_note": "Will be computed at session_end based on tasks count + factors"
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-04-25T04:07:47Z",
+      "level": "L1",
+      "key": "tier_2_2_logger_pattern_from_v7_5",
+      "type": "adapted",
+      "skill": "pm-workflow",
+      "event_type": "implementation_checkpoint",
+      "phase": "implement"
+    }
+  ],
+  "transitions": [
+    {
+      "timestamp": "2026-04-25T04:03:43Z",
+      "from": null,
+      "to": "implement",
+      "by": "claude_opus_4_7",
+      "note": "Resume from 2026-04-24 paused Phase 1 work; user approved all 4 sub-questions on 2026-04-25"
+    }
+  ]
+}

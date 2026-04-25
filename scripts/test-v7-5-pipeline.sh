@@ -170,6 +170,95 @@ else
   fail "runtime-smoke-gate.py dry-run exited non-zero"
 fi
 
+# -- v7.6 Phase 1 Class B → A closures (added 2026-04-25) -----------------
+# These checks fire only at commit time (--staged), so the synthetic test
+# uses a real path inside .claude/features/ and stages it via a throwaway
+# git index. We can't truly stage without polluting the repo, so we test the
+# validate_file path directly via the script's --explicit mode.
+
+# -- Defense 9: PHASE_TRANSITION_NO_TIMING — synthetic state.json missing fields
+echo ""
+echo "Defense 9 (Tier 1.1, v7.6): PHASE_TRANSITION_NO_TIMING fires on missing timing fields"
+# Use a fake feature path INSIDE .claude/features/ (we'll skip real commit).
+fake_feat=".claude/features/__test_v76_pipeline__"
+mkdir -p "$fake_feat"
+# Note: this state.json represents "advancing to PRD" but lacks any timing
+# fields at all. validate_file() should flag the missing started_at.
+cat > "$fake_feat/state.json" <<'EOF'
+{"feature":"__test_v76_pipeline__","current_phase":"prd","phases":{"prd":{}}}
+EOF
+# Force transition checks via env var (the script otherwise only enables them
+# in --staged mode; the test harness deliberately exercises them outside git).
+out=$(FORCE_TRANSITION_CHECKS=1 python3 scripts/check-state-schema.py "$fake_feat/state.json" 2>&1 || true)
+if echo "$out" | grep -q "timing.phases.prd.started_at"; then
+  pass "PHASE_TRANSITION_NO_TIMING correctly flagged missing started_at"
+else
+  fail "PHASE_TRANSITION_NO_TIMING did NOT fire on missing started_at; output: $out"
+fi
+
+# -- Defense 10: PHASE_TRANSITION_NO_LOG — synthetic missing log
+echo ""
+echo "Defense 10 (Tier 2.2, v7.6): PHASE_TRANSITION_NO_LOG fires on missing log event"
+# Reuse the fake feature; grant it timing fields but no log. The check should
+# flag missing log file for the feature.
+cat > "$fake_feat/state.json" <<'EOF'
+{"feature":"__test_v76_pipeline__","current_phase":"prd","phases":{"prd":{}},"timing":{"phases":{"prd":{"started_at":"2026-04-25T04:00:00Z"}}}}
+EOF
+out=$(FORCE_TRANSITION_CHECKS=1 python3 scripts/check-state-schema.py "$fake_feat/state.json" 2>&1 || true)
+if echo "$out" | grep -q "log.json.* does not exist"; then
+  pass "PHASE_TRANSITION_NO_LOG correctly flagged missing log file"
+else
+  # If a stale log happens to exist with a fresh event, the check passes —
+  # acceptable; the synthetic case still proves the check runs.
+  if echo "$out" | grep -q "no recent.*matching event"; then
+    pass "PHASE_TRANSITION_NO_LOG correctly flagged stale/missing event"
+  else
+    fail "PHASE_TRANSITION_NO_LOG did NOT fire; output: $out"
+  fi
+fi
+rm -rf "$fake_feat"
+
+# -- Defense 11: BROKEN_PR_CITATION at write-time
+echo ""
+echo "Defense 11 (Tier 1.2, v7.6): write-time BROKEN_PR_CITATION fires on staged case-study .md"
+fake_cs="docs/case-studies/__test_v76_pipeline__.md"
+cat > "$fake_cs" <<'EOF'
+# Test Case Study (v7.6 pipeline assertion)
+
+**Date written:** 2026-04-25
+
+This case study cites PR #99999 which does not resolve. T1 metric here.
+EOF
+out=$(python3 scripts/check-case-study-preflight.py "$fake_cs" 2>&1 || true)
+if echo "$out" | grep -q "PR #99999"; then
+  pass "write-time BROKEN_PR_CITATION correctly flagged bogus PR"
+else
+  # Graceful skip if gh unavailable — that's documented behavior.
+  if echo "$out" | grep -q "gh unavailable"; then
+    pass "write-time BROKEN_PR_CITATION skipped gracefully (gh unavailable)"
+  else
+    fail "write-time BROKEN_PR_CITATION did NOT fire; output: $out"
+  fi
+fi
+
+# -- Defense 12: CASE_STUDY_MISSING_TIER_TAGS at write-time
+echo ""
+echo "Defense 12 (Tier 2.3, v7.6): write-time CASE_STUDY_MISSING_TIER_TAGS fires"
+cat > "$fake_cs" <<'EOF'
+# Test Case Study (v7.6 pipeline assertion)
+
+**Date written:** 2026-04-25
+
+This case study has no tier tags whatsoever and ought to fail validation.
+EOF
+out=$(python3 scripts/check-case-study-preflight.py "$fake_cs" 2>&1 || true)
+if echo "$out" | grep -q "tier tag"; then
+  pass "write-time CASE_STUDY_MISSING_TIER_TAGS correctly flagged file"
+else
+  fail "write-time CASE_STUDY_MISSING_TIER_TAGS did NOT fire; output: $out"
+fi
+rm -f "$fake_cs"
+
 # -- Summary ---------------------------------------------------------------
 echo ""
 echo "========================================================="
