@@ -76,7 +76,7 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Layer 3 — 72h CYCLE (GitHub Actions cron, every 3 days at 04:00Z)  │
 │  Workflow: .github/workflows/integrity-cycle.yml                    │
-│  Script: scripts/integrity-check.py (12 check codes)                │
+│  Script: scripts/integrity-check.py (12 cycle-time check codes)     │
 │  Snapshots ledger to .claude/integrity/snapshots/.                  │
 │  Opens issue on regression vs prior snapshot.                       │
 └─────────────────────────────────────────────────────────────────────┘
@@ -236,7 +236,7 @@ Each entered phase typically also has:
 - `NO_PHASE` — neither `current_phase` nor `phase` present
 - `INVALID_JSON` — file does not parse
 - `PHASE_TRANSITION_NO_LOG` (v7.6) — phase changed but no log entry within last 15 min
-- `PHASE_TRANSITION_NO_TIMING` (v7.6) — phase changed but no `phases.<new>.started_at` update
+- `PHASE_TRANSITION_NO_TIMING` (v7.6) — phase changed but no `timing.phases.<new>.started_at` and/or old-phase `ended_at` update
 
 The `--staged` flag scopes the check to staged files (used by the pre-commit hook). The `FORCE_TRANSITION_CHECKS=1` env var unscopes for testing.
 
@@ -391,12 +391,12 @@ After phase completion, `state.json.timing.total_wall_time_minutes` should be se
 
 ### 9.3 Tier tags (T1/T2/T3)
 
-Every quantitative claim in a case study, PRD, or meta-analysis must carry a tier tag:
+Every quantitative claim in a case study, PRD, or meta-analysis should carry a tier tag:
 - **T1 (Instrumented)** — pulled from a JSON file or deterministic command output.
 - **T2 (Declared)** — declared by the author from a non-instrumented source (e.g., human-counted from `git log`).
 - **T3 (Narrative)** — narrative inference; should be avoided in v7.6+ case studies.
 
-Forward-only: case studies dated `>= 2026-04-21` get tag-presence enforcement at write-time (`CASE_STUDY_MISSING_TIER_TAGS`). Tag *correctness* is Class B Gap 3 — preflight checks that a tag exists, not that it's the right tag.
+Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enforcement at write-time (`CASE_STUDY_MISSING_TIER_TAGS`). The preflight checks that at least one T1/T2/T3 tag exists in the scoped file. Tag exhaustiveness and correctness are Class B Gap 3 — code review still checks whether each metric has the right tag.
 
 ---
 
@@ -409,9 +409,9 @@ Forward-only: case studies dated `>= 2026-04-21` get tag-presence enforcement at
 | `SCHEMA_DRIFT` | Write + cycle | `check-state-schema.py` | Legacy `phase` key present (canonical is `current_phase`) |
 | `NO_PHASE` | Write + cycle | `check-state-schema.py` | Neither `current_phase` nor `phase` present |
 | `INVALID_JSON` | Write + cycle | `check-state-schema.py` | File does not parse |
-| `PR_NUMBER_UNRESOLVED` | Write + cycle | `check-state-schema.py` | `phases.merge.pr_number` does not resolve via `gh pr view` |
-| `PHASE_TRANSITION_NO_LOG` (v7.6) | Write + cycle | `check-state-schema.py` | Phase change without log entry within 15 min |
-| `PHASE_TRANSITION_NO_TIMING` (v7.6) | Write + cycle | `check-state-schema.py` | Phase change without `phases.<new>.started_at` update |
+| `PR_NUMBER_UNRESOLVED` | Write + cycle | `check-state-schema.py` + `integrity-check.py` | `phases.merge.pr_number` does not resolve in the cached `gh pr list` result (skipped gracefully when `gh` is unavailable) |
+| `PHASE_TRANSITION_NO_LOG` (v7.6) | Write | `check-state-schema.py` | Staged phase change without log entry within 15 min |
+| `PHASE_TRANSITION_NO_TIMING` (v7.6) | Write | `check-state-schema.py` | Staged phase change without `timing.phases.<new>.started_at` and old-phase `ended_at` fields |
 | `PHASE_LIE` | Cycle | `integrity-check.py` | `current_phase=complete` but state.json contradicts |
 | `TASK_LIE` | Cycle | `integrity-check.py` | Tasks marked complete that contradict commits |
 | `NO_CS_LINK` | Cycle | `integrity-check.py` | Shipped feature has no case-study link |
@@ -419,7 +419,7 @@ Forward-only: case studies dated `>= 2026-04-21` get tag-presence enforcement at
 | `PARTIAL_SHIP_TERMINAL` | Cycle | `integrity-check.py` | Marked shipped but only some sub-tasks done |
 | `NO_STATE` | Cycle | `integrity-check.py` | Feature in registry has no state.json |
 | `BROKEN_PR_CITATION` (v7.6 write-time, v7.5 cycle) | Write + cycle | `check-case-study-preflight.py` (write) + `integrity-check.py` (cycle) | PR # in case study does not resolve |
-| `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) | Write | `check-case-study-preflight.py` | Quantitative claim without T1/T2/T3 tag (forward-only ≥ 2026-04-21) |
+| `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) | Write + cycle | `check-case-study-preflight.py` (write) + `integrity-check.py` (cycle) | Scoped case study has no T1/T2/T3 tag at all (forward-only ≥ 2026-04-21); presence only, not exhaustiveness |
 
 ### 10.2 The 72h cycle
 
@@ -436,8 +436,8 @@ Defined in `.github/workflows/pr-integrity-check.yml` (v7.6 Phase 2a). Steps:
 2. Run schema check + integrity check + measurement-adoption against PR HEAD.
 3. Capture `origin/main` baseline via `git worktree add /tmp/main-tree origin/main`.
 4. Compute `delta = pr_findings - main_findings`.
-5. Set `pm-framework/pr-integrity` commit status to `failure` if `delta > 0`.
-6. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place.
+5. Set `pm-framework/pr-integrity` commit status to `failure` if any required command exits non-zero or if `delta > 0`.
+6. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place and reports command exit codes.
 
 ### 10.4 The weekly cycle
 
@@ -574,14 +574,14 @@ Update `state.json.complexity.factors_applied[]` as factors become known (e.g., 
 
 1. PR opens. The per-PR bot fires automatically.
 2. If the bot fails the `pm-framework/pr-integrity` status check, fix the new findings before requesting review.
-3. After merge, set `state.json.phases.merge.pr_number` to the merged PR number. The pre-commit will run `gh pr view` to verify (`PR_NUMBER_UNRESOLVED`).
+3. After merge, set `state.json.phases.merge.pr_number` to the merged PR number. The pre-commit verifies it against a cached `gh pr list` result when `gh` is available (`PR_NUMBER_UNRESOLVED`).
 
 ### 13.5 Docs phase + close
 
 1. Write `docs/case-studies/widget-customization-case-study.md`.
 2. The pre-commit will scan it for:
    - PR citations (`PR #N` or `pull/N`) — `BROKEN_PR_CITATION`.
-   - Quantitative claims without tier tags — `CASE_STUDY_MISSING_TIER_TAGS`.
+   - Missing file-level T1/T2/T3 tag in scoped post-2026-04-21 case studies — `CASE_STUDY_MISSING_TIER_TAGS`.
 3. Set `current_phase = "complete"`. Set `phases.docs.completed_at`. Set `timing.total_wall_time_minutes` (sum of per-phase elapsed).
 4. Add the case study to `feature-registry.json` and to fitme-story `content/04-case-studies/<NN>-<slug>.mdx` if it's showcase-worthy.
 
