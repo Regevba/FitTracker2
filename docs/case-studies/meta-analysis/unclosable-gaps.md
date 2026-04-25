@@ -168,7 +168,7 @@ No pre-commit hook can simulate "did an external operator succeed with this." We
 
 ### Tracking
 
-- Public issue: **filed last per Phase 3c** in [`docs/superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md`](../../superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md). Issue number to be inserted here once filed.
+- Public issue: **[#142](https://github.com/Regevba/FitTracker2/issues/142)** — filed and pinned 2026-04-25 as the explicit final v7.6 deliverable, per [Phase 3c sequencing](../../superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md). Labels: `tier-3-3`, `external-replication`, `help wanted`.
 - Closes when: at least one external case study lands in [`docs/case-studies/external/`](../external/) (directory does not exist yet — created on first external submission).
 
 ---

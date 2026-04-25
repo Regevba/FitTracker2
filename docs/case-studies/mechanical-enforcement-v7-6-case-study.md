@@ -609,7 +609,7 @@ The user asked v7.6 to "address the additional work done by Codex honestly." My 
 - [Trust page — Gemini audit](https://fitme-story.vercel.app/trust/audits/2026-04-21-gemini)
 - [GitHub issue #140 — `cache_hits` writer-path](https://github.com/Regevba/FitTracker2/issues/140)
 - [GitHub issue #138 — PR-vs-issue correction (closed)](https://github.com/Regevba/FitTracker2/issues/138)
-- [Tier 3.3 external invitation issue](https://github.com/Regevba/FitTracker2/issues) — to be filed last; number inserted here once filed
+- [Tier 3.3 external invitation issue #142](https://github.com/Regevba/FitTracker2/issues/142) — filed and pinned 2026-04-25 as the explicit final v7.6 deliverable; closes when at least one external case study lands in `docs/case-studies/external/`
 
 ---
 
