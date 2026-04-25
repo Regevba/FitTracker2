@@ -5,6 +5,32 @@
 **Base commit:** `805daab505083c8a44c2cb28e59f855cce81c729` (`origin/main` at branch creation)  
 **Purpose:** Finish the remaining framework v7.6 reconciliation work without disturbing ongoing parallel-agent work.
 
+## Progress Update — 2026-04-25T08:33:49Z
+
+Codex continued the plan on `framework-v7.6-pending-fixes` and landed the planned work as separate rollbackable commits:
+
+- `761dc97` — reconciled `.claude/features/data-integrity-framework-v7-6/state.json` and `.claude/logs/data-integrity-framework-v7-6.log.json` to `complete`.
+- `9d3c64f` — registered v7.6 in shared tracking surfaces (`feature-registry`, `case-study-monitoring`, `task-queue`, `framework-health`).
+- `765f0f7` — tightened `.github/workflows/pr-integrity-check.yml` so command failures affect `pm-framework/pr-integrity`; also moved PR-bot measurement history output to `/tmp`.
+- `2e15af4` — aligned README/framework docs/manifest/case study wording with actual implementation guarantees.
+- `682d88b` — clarified the regression suite as v7.5/v7.6 while preserving the existing script name for compatibility.
+
+Checks run during this pass:
+
+- `python3 -m json.tool` on edited JSON files.
+- `python3 scripts/check-state-schema.py .claude/features/data-integrity-framework-v7-6/state.json`.
+- `python3 scripts/integrity-check.py --findings-only` — 0 findings.
+- `bash scripts/framework-status.sh` — framework `7.6`, 0 findings.
+- `ruby -e 'require "yaml"; YAML.load_file(".github/workflows/pr-integrity-check.yml")'`.
+- `bash scripts/test-v7-5-pipeline.sh` — 15 pass, 0 fail.
+
+Remaining before merge:
+
+- Review the branch diff against `main`.
+- Confirm no other agent has made conflicting edits.
+- Push/open PR if desired.
+- Keep `.claude/scheduled_tasks.lock` and `.claude/settings.local.json` out of framework commits unless the user explicitly asks.
+
 ## Current Snapshot
 
 At branch creation, `main`, `origin/main`, and `HEAD` all pointed to:
