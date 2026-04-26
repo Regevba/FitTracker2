@@ -7,7 +7,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created": "2026-04-26T05:30:00Z",
-  "updated": "2026-04-26T11:30:00Z",
+  "updated": "2026-04-26T14:30:00Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -102,9 +102,10 @@
       "lane": "E-core",
       "effort_days": 0.5,
       "depends_on": [],
-      "status": "in_progress",
+      "status": "done",
       "priority": "critical",
-      "started_at": "2026-04-26T11:30:00Z"
+      "started_at": "2026-04-26T11:30:00Z",
+      "completed_at": "2026-04-26T12:00:00Z"
     },
     {
       "id": "T2",
@@ -117,8 +118,9 @@
       "depends_on": [
         "T1"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "in_progress",
+      "priority": "critical",
+      "started_at": "2026-04-26T12:00:00Z"
     },
     {
       "id": "T3",
@@ -129,8 +131,10 @@
       "lane": "P-core",
       "effort_days": 1.0,
       "depends_on": [],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "started_at": "2026-04-26T12:00:00Z",
+      "completed_at": "2026-04-26T14:30:00Z"
     },
     {
       "id": "T4",
@@ -143,8 +147,9 @@
       "depends_on": [
         "T3"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-04-26T14:30:00Z"
     },
     {
       "id": "T5",
@@ -199,8 +204,10 @@
       "lane": "P-core",
       "effort_days": 0.5,
       "depends_on": [],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "started_at": "2026-04-26T12:00:00Z",
+      "completed_at": "2026-04-26T14:30:00Z"
     },
     {
       "id": "T9",
@@ -211,8 +218,10 @@
       "lane": "E-core",
       "effort_days": 0.25,
       "depends_on": [],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "started_at": "2026-04-26T12:00:00Z",
+      "completed_at": "2026-04-26T14:30:00Z"
     },
     {
       "id": "T10",
@@ -223,8 +232,10 @@
       "lane": "P-core",
       "effort_days": 0.5,
       "depends_on": [],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "started_at": "2026-04-26T12:00:00Z",
+      "completed_at": "2026-04-26T14:30:00Z"
     },
     {
       "id": "T11",
@@ -265,8 +276,10 @@
       "lane": "E-core",
       "effort_days": 0.25,
       "depends_on": [],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "started_at": "2026-04-26T12:00:00Z",
+      "completed_at": "2026-04-26T14:30:00Z"
     },
     {
       "id": "T14",

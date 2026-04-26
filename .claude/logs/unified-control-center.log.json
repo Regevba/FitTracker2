@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.6",
   "started_at": "2026-04-26T05:02:44Z",
-  "updated_at": "2026-04-26T06:02:48Z",
+  "updated_at": "2026-04-26T11:15:32Z",
   "events": [
     {
       "timestamp": "2026-04-26T05:02:44Z",
@@ -138,6 +138,54 @@
       "metrics": {
         "task_id": "T1",
         "task_lane": "E-core"
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T06:11:54Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "summary": "T1 SHIPPED: Astro dashboard instrumented with TTC events. analytics.js helper + gtag in DashboardLayout (async, defer per react-best-practices) + Dashboard.jsx mount fires dashboard_load + AlertsBanner onClick fires dashboard_blocker_acknowledged with time_since_load_ms. Build green. Pushed as commit 19b0411. Vercel auto-deploys. PUBLIC_GA_ID env var needed in Vercel project to activate event collection.",
+      "artifacts": [],
+      "metrics": {
+        "task_id": "T1",
+        "commit": "19b0411",
+        "build_passed": true,
+        "files_changed": 4
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T10:59:50Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "summary": "T1 done (T1 marked done; PUBLIC_GA_ID set in fit-tracker2 Vercel project per user). T2 baseline window OPEN \u2014 passive 7-day collection until ~2026-05-03. Starting parallel work: T3 (sync script), T8/T9/T10 (blind-switch 3 layers), T13 (ESLint reverse-import rule).",
+      "artifacts": [],
+      "metrics": {
+        "task_t1_status": "done",
+        "task_t2_status": "in_progress_passive",
+        "parallel_tasks_started": 5
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T11:15:32Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "summary": "Block B (sync infra) + Block C (blind-switch + ESLint) + most of Block D shipped to fitme-story main as commit 441f531. Tasks done this session: T1, T3, T4, T8, T9, T10, T13. T2 baseline window passively collecting. Sync script verified working (33 shared + 43 features in ~80ms). All 3 blind-switch layers in place. proxy.ts uses Next.js 16 pattern (NOT middleware.ts) with no runtime declaration. ESLint reverse-import rule active. Build green. Next: T11 verify-blind-switch.sh + T12 CI job; then wait for T2 to close before unblocking T18+.",
+      "artifacts": [],
+      "metrics": {
+        "tasks_done_this_commit": 6,
+        "tasks_done_total": 7,
+        "commit_fitme_story": "441f531",
+        "build_passed": true,
+        "sync_files": 76
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
