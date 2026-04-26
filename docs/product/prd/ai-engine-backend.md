@@ -3,6 +3,8 @@
 > **ID:** Backend | **Status:** Shipped | **Priority:** P1
 > **Last Updated:** 2026-04-04
 
+> **Status note (2026-04-26):** No standalone `.claude/features/` directory exists for this PRD. This is intentional — the work is bundled under the `adaptive-intelligence-initiative` parent feature (specifically the `ai-engine-v2` enhancement, which is the iOS-side consumer of this Railway-hosted backend) and the AI cohort intelligence surface (`18.9-ai-cohort-intelligence.md`). State tracking happens at the parent level. The backend code itself is hosted in a separate repository.
+
 ---
 
 ## Purpose
@@ -43,12 +45,13 @@ The AI Engine enables population-level insights ("users like you who train 4x/we
 
 ## Success Metrics
 
-| Metric | Target | Instrumentation |
-|--------|--------|-----------------|
-| API latency (p50) | <500ms | Railway metrics |
-| API latency (p95) | <2s | Railway metrics |
-| Uptime | >99.5% | Railway monitoring |
-| k-anonymity compliance | 100% | Server-side validation |
+| Metric | Baseline | Target | Instrumentation |
+|--------|----------|--------|-----------------|
+| API latency (p50) | N/A — pre-launch (T2 — Declared, 2026-04-26) | <500ms (T2 — Declared) | Railway metrics |
+| API latency (p95) | N/A — pre-launch (T2 — Declared, 2026-04-26) | <2s (T2 — Declared) | Railway metrics |
+| Uptime | N/A — pre-launch (T2 — Declared, 2026-04-26) | >99.5% (T2 — Declared) | Railway monitoring |
+| k-anonymity compliance | N/A — pre-launch (T2 — Declared, 2026-04-26) | 100% (T2 — Declared) | Server-side validation |
+| Kill criteria | API uptime <97% sustained for 30 days OR p95 latency >5s sustained for 14 days OR ANY confirmed PII leak in transit/at-rest → backend is considered failed and the cohort tier is disabled while the API is rebuilt or replaced (T2 — Declared, 2026-04-26) | — | Railway metrics + server logs |
 
 ## Gaps & Improvements
 

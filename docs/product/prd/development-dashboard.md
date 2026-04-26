@@ -58,9 +58,10 @@ Replace manual tracking (markdown files, GitHub issues) with a unified dashboard
 
 ## Success Metrics
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| All features tracked | 37/37 | Shipped |
-| Data source reconciliation | Working | Shipped |
-| Responsive layout | 3 breakpoints | Shipped |
-| 9 reconciliation tests | 9/9 pass | Shipped |
+| Metric | Baseline | Target | Status |
+|--------|----------|--------|--------|
+| All features tracked | 0 (no instrumentation existed before) (T2 — Declared, 2026-04-26) | 37/37 (T2 — Declared) | Shipped |
+| Data source reconciliation | N/A — pre-launch (T2 — Declared, 2026-04-26) | Working (T2 — Declared) | Shipped |
+| Responsive layout | N/A — pre-launch (T2 — Declared, 2026-04-26) | 3 breakpoints (T2 — Declared) | Shipped |
+| 9 reconciliation tests | 0/9 (T2 — Declared, 2026-04-26) | 9/9 pass (T2 — Declared) | Shipped |
+| Kill criteria | Dashboard usage <1 visit/week by the maintainer for 30 days OR data source reconciliation drift >25% sustained 30 days OR build broken >7 days → dashboard is considered failed and the feature-status surface is folded back into local CLI commands (T2 — Declared, 2026-04-26) | — | Vercel analytics + reconciliation engine logs |

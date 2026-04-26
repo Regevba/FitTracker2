@@ -3,6 +3,8 @@
 > **ID:** CI | **Status:** Shipped | **Priority:** P0
 > **Last Updated:** 2026-04-04
 
+> **Status note (2026-04-26):** No standalone `.claude/features/` directory exists for this PRD. This is intentional — CI is framework-internal infrastructure, not a product feature. State tracking happens at the framework version level (`docs/architecture/dev-guide-v1-to-v7-6.md` — the v7.6 Mechanical Enforcement bump shipped 2026-04-25 added per-PR review bot + weekly framework-status cron on top of this pipeline). Changes here are governed by the framework versioning lifecycle, not the PM workflow.
+
 ---
 
 ## Purpose
@@ -52,11 +54,12 @@ CI prevents regression, enforces design system governance, and enables confident
 
 ## Success Metrics
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| CI pass rate | >95% | Active |
-| Token drift incidents | 0 | Enforced by CI gate |
-| Build time | <5 min | Monitored |
+| Metric | Baseline | Target | Status |
+|--------|----------|--------|--------|
+| CI pass rate | 0% (no instrumentation existed before) (T2 — Declared, 2026-04-26) | >95% (T2 — Declared) | Active |
+| Token drift incidents | N/A — pre-launch (T2 — Declared, 2026-04-26) | 0 (T2 — Declared) | Enforced by CI gate |
+| Build time | N/A — pre-launch (T2 — Declared, 2026-04-26) | <5 min (T2 — Declared) | Monitored |
+| Kill criteria | CI pass rate <80% sustained for 14 days OR build time >15 min p95 sustained 14 days OR token drift incidents >2/month sustained 60 days → CI pipeline is considered failed and the workflow is rebuilt (potential split into faster sub-jobs) (T2 — Declared, 2026-04-26) | — | GitHub Actions runs |
 
 ## Guardrails
 - CI pass rate >95% is a system-wide guardrail (CLAUDE.md)

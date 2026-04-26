@@ -131,9 +131,10 @@ Add signal rules applied at context-build time:
 
 | Metric | Baseline | Target |
 |---|---|---|
-| Recommendation specificity (qualitative) | Generic ("train hard" / "train easy") | Goal + readiness specific (e.g. "Zone 2 for 45 min — sleep was excellent but ACWR is elevated") |
-| Cloud cohort match rate | N/A | >30% of users placed in same readiness band |
-| Foundation Model confidence | 0.0 (stub) | >0.4 on iOS 26+ devices |
+| Recommendation specificity (qualitative) | Generic ("train hard" / "train easy") (T2 — Declared, 2026-04-26) | Goal + readiness specific (e.g. "Zone 2 for 45 min — sleep was excellent but ACWR is elevated") (T2 — Declared) |
+| Cloud cohort match rate | N/A — pre-launch (T2 — Declared, 2026-04-26) | >30% of users placed in same readiness band (T2 — Declared) |
+| Foundation Model confidence | 0.0 (stub) (T2 — Declared, 2026-04-26) | >0.4 on iOS 26+ devices (T2 — Declared) |
+| Kill criteria | Recommendations override rate >70% sustained for 30 days post-launch OR Foundation Model confidence remains <0.2 on iOS 26+ devices for 60 days OR cloud cohort match rate <10% sustained 30 days → readiness-aware orchestration is considered failed and the engine reverts to the v1 generic flow (T2 — Declared, 2026-04-26) | — |
 
 ---
 

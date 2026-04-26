@@ -67,11 +67,12 @@ Establish web presence for FitMe. Currently zero organic traffic, zero SEO footp
 
 | Metric | Baseline | Target | Timeframe |
 |--------|----------|--------|-----------|
-| Monthly unique visitors | 0 | 500 | 90 days post-launch |
-| App Store CTR | 0% | >5% | 90 days |
-| Bounce rate | N/A | <60% | 90 days |
-| Avg time on page | N/A | >45 seconds | 90 days |
-| Lighthouse score | N/A | >90 all categories | At launch |
+| Monthly unique visitors | 0 (T2 — Declared, 2026-04-26) | 500 (T2 — Declared) | 90 days post-launch |
+| App Store CTR | 0% (T2 — Declared, 2026-04-26) | >5% (T2 — Declared) | 90 days |
+| Bounce rate | N/A — pre-launch (T2 — Declared, 2026-04-26) | <60% (T2 — Declared) | 90 days |
+| Avg time on page | N/A — pre-launch (T2 — Declared, 2026-04-26) | >45 seconds (T2 — Declared) | 90 days |
+| Lighthouse score | N/A — pre-launch (T2 — Declared, 2026-04-26) | >90 all categories (T2 — Declared) | At launch |
+| Kill criteria | Monthly unique visitors <50 sustained for 90 days post-launch OR App Store CTR <0.5% sustained 90 days OR Lighthouse score drops below 70 in any category sustained 30 days → marketing site is considered failed and replaced with a static App Store redirect (T2 — Declared, 2026-04-26) | — | — |
 
 ## Pre-Launch Checklist
 - [ ] Replace `G-XXXXXXXXXX` with real GA4 Measurement ID

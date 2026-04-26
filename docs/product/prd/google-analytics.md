@@ -55,10 +55,11 @@ Without analytics, product decisions are based on assumptions. GA4 provides: DAU
 
 | Metric | Baseline | Target | Status |
 |--------|----------|--------|--------|
-| Events flowing in GA4 | 0 | All 20 events | Instrumented |
-| Screen tracking | 0 | 9 primary views | Shipped |
-| Consent opt-in rate | 0 | >60% | ConsentManager |
-| Test coverage | 0 | 23 tests | 23 tests passing |
+| Events flowing in GA4 | 0 (T2 — Declared, 2026-04-26) | All 20 events (T2 — Declared) | Instrumented |
+| Screen tracking | 0 (T2 — Declared, 2026-04-26) | 9 primary views (T2 — Declared) | Shipped |
+| Consent opt-in rate | 0 (T2 — Declared, 2026-04-26) | >60% (T2 — Declared) | ConsentManager |
+| Test coverage | 0 (T2 — Declared, 2026-04-26) | 23 tests (T2 — Declared) | 23 tests passing |
+| Kill criteria | Consent opt-in rate <30% sustained for 30 days OR >5 of the 20 typed events not arriving in GA4 BigQuery export sustained 14 days OR ANY confirmed PII leak via analytics → analytics surface is considered failed and the event taxonomy + consent gate are rebuilt before any growth analysis is acted on (T2 — Declared, 2026-04-26) | — | GA4 BigQuery + ConsentManager logs |
 
 ## Dependencies
 - Firebase Analytics SDK (SPM)

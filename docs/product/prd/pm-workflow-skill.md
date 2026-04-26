@@ -3,6 +3,8 @@
 > **ID:** PM Skill | **Status:** Shipped (v1.2) | **Priority:** HIGH
 > **Last Updated:** 2026-04-04 | **Branch:** pm-workflow-skill
 
+> **Status note (2026-04-26):** No standalone `.claude/features/` directory exists for this PRD. This is intentional — the PM workflow skill is framework-internal infrastructure. Its lifecycle is governed by the framework version timeline (v1.2 → v4.x → v5.x → v6.0 → v7.1 → v7.5 → v7.6) and is documented in [`docs/architecture/dev-guide-v1-to-v7-6.md`](../../architecture/dev-guide-v1-to-v7-6.md) and `docs/skills/evolution.md`. State tracking happens at the framework version level, not as an individual product feature.
+
 ---
 
 ## Purpose

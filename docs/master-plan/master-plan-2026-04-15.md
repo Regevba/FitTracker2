@@ -1,11 +1,16 @@
 # FitMe Master Plan — 2026-04-15
 
-> **Status:** CURRENT · Last updated 2026-04-20 (after v7.0 audit remediation program closed 183/185 findings)
+> **Status:** CURRENT · Last updated 2026-04-26 (post v7.6 closure)
 > **Date opened:** 2026-04-15
 > **Purpose:** Updated master plan reflecting all work since the 2026-04-06 edition. Supersedes `master-plan-2026-04-06.md`.
-> **Context:** 28 additional items shipped, framework evolved v4.3 → v5.1, full external sync completed (Linear, Notion, Vercel), dashboard operational with zero alerts.
+> **Context:** 28 additional items shipped through 2026-04-15, framework evolved v4.3 → v5.1, full external sync completed (Linear, Notion, Vercel), dashboard operational with zero alerts.
 >
 > **Post-2026-04-15 additions:** v5.1 → v5.2 dispatch intelligence + parallel write safety; v5.2 → v6.0 framework measurement; v6.0 → v7.0 HADF + full-system audit; M-1/M-2/M-3/M-4 decomposition sprints; case-study linkage rollout across all 40 feature directories; v7.0 → v7.1 Integrity Cycle (72h recurring state.json audit via GitHub Actions, baseline 40 features / 44 case studies / 0 findings).
+>
+> **Post-2026-04-21 additions (Gemini audit + v7.5 + v7.6):** 2026-04-21 Google Gemini 2.5 Pro independent audit triggered v7.5 → v7.6 framework rework. v7.5 (Data Integrity Framework, shipped 2026-04-24) introduced 8 cooperating defenses across write-time / 72h cycle / readout-time. v7.6 (Mechanical Enforcement, shipped 2026-04-25) added 4 write-time pre-commit check codes (`PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` write-time, `CASE_STUDY_MISSING_TIER_TAGS`), per-PR review bot (`pm-framework/pr-integrity` status check), weekly framework-status cron, and explicit Class B inventory of 5 mechanically-unclosable gaps. PR #141 (Codex pending fixes) merged 2026-04-26. Tier 3.3 public external-replication invitation filed as [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142) (pinned). Developer guide (745 lines) published at [`docs/architecture/dev-guide-v1-to-v7-6.md`](../architecture/dev-guide-v1-to-v7-6.md) and mirrored at [/framework/dev-guide](https://fitme-story.vercel.app/framework/dev-guide). Full audit-response narrative on the trust page: https://fitme-story.vercel.app/trust/audits/2026-04-21-gemini.
+>
+> **Linear backfill (2026-04-26):** FIT-44 (v7.5), FIT-45 (v7.6, parent), FIT-46 (PR #141), FIT-47 (DEV guide), FIT-48 (Tier 3.3 #142). FIT-22 + FIT-6 marked Done in same pass.
+> **Notion backfill (2026-04-26):** new sub-page under FitMe Product Hub: "Framework v7.5 + v7.6 — Audit Response (2026-04-21 → 2026-04-26)". Project Context & Status updated v5.1 → v7.6.
 
 ---
 

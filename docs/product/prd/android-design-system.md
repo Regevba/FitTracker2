@@ -62,3 +62,15 @@ Android represents ~45% of the global smartphone market. Before committing to an
 - Supabase Android SDK integration
 - Health Connect integration
 - Effort estimate: 8-12 weeks
+
+## Success Metrics
+
+> **Status note (2026-04-26):** This PRD is "Research Complete; Implementation Deferred" — Android client work has not started. Metrics below are pre-launch placeholders to satisfy CLAUDE.md rule #2 (no PRD without metrics). Re-tier to T1 (Instrumented) once the Android build ships and Style Dictionary outputs are exercised in a real Android project.
+
+| Metric | Baseline | Target | Instrumentation |
+|--------|----------|--------|-----------------|
+| iOS tokens mapped to MD3 | 0 (T2 — Declared, 2026-04-26) | 92/92 (T2 — Declared) | docs/design-system/android-token-mapping.md row count |
+| Style Dictionary Android targets | 0 (T2 — Declared, 2026-04-26) | Kotlin/Compose + XML resources both generated (T2 — Declared) | sd.config.js platforms |
+| Component parity (iOS → MD3) | 0 (T2 — Declared, 2026-04-26) | 13/13 components mapped (T2 — Declared) | docs/design-system/android-adaptation.md |
+| Dark mode strategy documented | N/A — pre-launch (T2 — Declared, 2026-04-26) | One-page tonal-elevation strategy (T2 — Declared) | android-adaptation.md |
+| Kill criteria | Style Dictionary Android output cannot generate clean Kotlin/Compose tokens without manual edits OR component parity gaps exceed 30% on first Android sprint OR business decision shifts away from Android within 12 months → Android adaptation strategy is considered failed and the mapping doc is archived (research-only artifact) (T2 — Declared, 2026-04-26) | — | sd.config.js build + Android project import test |

@@ -56,13 +56,14 @@ GDPR compliance is a legal requirement for any app handling EU user data. Non-co
 
 ## Success Metrics
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| Delete flow completes without error | 100% | Shipped |
-| Export includes all 9 data stores | 100% | Shipped |
-| Grace period cancellation works | 100% | Shipped |
-| Analytics events fire correctly | 5/5 | Shipped |
-| Test coverage | 6 tests | Passing |
+| Metric | Baseline | Target | Status |
+|--------|----------|--------|--------|
+| Delete flow completes without error | 0% (no instrumentation existed before) (T2 — Declared, 2026-04-26) | 100% (T2 — Declared) | Shipped |
+| Export includes all 9 data stores | 0% (T2 — Declared, 2026-04-26) | 100% (T2 — Declared) | Shipped |
+| Grace period cancellation works | 0% (T2 — Declared, 2026-04-26) | 100% (T2 — Declared) | Shipped |
+| Analytics events fire correctly | 0/5 (T2 — Declared, 2026-04-26) | 5/5 (T2 — Declared) | Shipped |
+| Test coverage | 0 tests (T2 — Declared, 2026-04-26) | 6 tests (T2 — Declared) | Passing |
+| Kill criteria | ANY data-loss incident during the deletion cascade OR delete flow error rate >1% sustained 7 days OR export missing any of the 9 data stores in shipped builds → GDPR surface is considered failed and the deletion + export pipelines are rebuilt before any further EU launch (T2 — Declared, 2026-04-26) | — | Sentry + AccountDeletionService logs + DataExportService manifest |
 
 ## GDPR Compliance Matrix
 
