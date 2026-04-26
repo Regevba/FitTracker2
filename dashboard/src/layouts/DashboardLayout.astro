@@ -2,6 +2,10 @@
 import '../styles/global.css';
 import SpeedInsights from '@vercel/speed-insights/astro';
 const { title = 'FitMe — Operations Control Room' } = Astro.props;
+// PUBLIC_GA_ID enables TTC baseline capture for the unified-control-center
+// migration (feature task T1). Set in Vercel project env vars; reuse the
+// same GA property the fitme-story showcase uses.
+const GA_ID = import.meta.env.PUBLIC_GA_ID;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +15,21 @@ const { title = 'FitMe — Operations Control Room' } = Astro.props;
   <meta name="description" content="FitMe operations control room — inspect delivery, system health, UX quality, product intelligence, and source-of-truth drift across the project." />
   <title>{title}</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💪</text></svg>" />
+  {GA_ID && (
+    <>
+      {/* GA4 loaded async per `bundle-defer-third-party` + `rendering-script-defer-async` */}
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
+      <script is:inline define:vars={{ GA_ID }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){ dataLayer.push(arguments); }
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', GA_ID, { send_page_view: true });
+        // TTC anchor — capture page-load time as early as possible (before React hydrates).
+        window.__dashboardLoadAt = Date.now();
+      </script>
+    </>
+  )}
   <style>
     /* Kanban horizontal scroll on tablet */
     @media (max-width: 1024px) {

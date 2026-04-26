@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { trackBlockerAcknowledged } from '../scripts/analytics.js';
 
 const SEVERITY_STYLES = {
   red: { bg: 'bg-red-50 dark:bg-red-900/20', text: 'text-red-700 dark:text-red-300', icon: '✗' },
@@ -19,7 +20,19 @@ export default function AlertsBanner({ alerts = [] }) {
   return (
     <div className="bg-white dark:bg-[#1A1F2E] rounded-card shadow-card overflow-hidden">
       <button
-        onClick={() => setExpanded(!expanded)}
+        onClick={() => {
+          // T1 — fire dashboard_blocker_acknowledged ONLY on first expansion
+          // (the moment the operator engages with alerts = "acknowledged the blocker").
+          // Per `rerender-move-effect-to-event`: interaction logic in onClick, not useEffect.
+          if (!expanded) {
+            const top = alerts[0] || {};
+            trackBlockerAcknowledged({
+              featureId: top.feature || top.id || 'multi',
+              alertSeverity: top.severity || 'info',
+            });
+          }
+          setExpanded(!expanded);
+        }}
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors"
       >
         <div className="flex items-center gap-2 text-sm">

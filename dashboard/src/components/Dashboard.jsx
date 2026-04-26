@@ -10,6 +10,7 @@ import ControlRoom from './ControlRoom';
 import KnowledgeHub from './KnowledgeHub';
 import ResearchConsole from './ResearchConsole';
 import FigmaHandoffLab from './FigmaHandoffLab';
+import { trackDashboardLoad } from '../scripts/analytics.js';
 
 const PRIMARY_VIEW_SET = new Set(['control', 'board', 'table', 'tasks', 'knowledge']);
 const SECONDARY_VIEW_SET = new Set(['claude-research', 'codex-research', 'figma-handoff']);
@@ -42,6 +43,15 @@ export default function Dashboard({
     const onPopState = () => setActiveView(getViewFromURL());
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  // T1 — fire dashboard_load once on mount for TTC baseline capture (unified-control-center).
+  // Idempotent guard inside helper. Uses initial view from URL/state.
+  useEffect(() => {
+    trackDashboardLoad(activeView);
+    // Intentionally empty deps — fire once per mount, not on view switch.
+    // Per `rerender-dependencies`: keep deps primitive and stable.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function navigateTo(viewId) {

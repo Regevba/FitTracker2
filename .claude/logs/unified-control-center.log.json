@@ -1,0 +1,147 @@
+{
+  "version": "1.0",
+  "feature": "unified-control-center",
+  "title": "unified control center",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "7.6",
+  "started_at": "2026-04-26T05:02:44Z",
+  "updated_at": "2026-04-26T06:02:48Z",
+  "events": [
+    {
+      "timestamp": "2026-04-26T05:02:44Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 (Research) opened. User selected Option C from the rebuild brainstorm: migrate dashboard to Next.js + share fitme-story design system + components. Full PM cycle per v7.6 framework rules; case study tracked from day one. work_subtype=new_ui (stack migration, not v2 in-place refactor).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T05:25:41Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved. User selected Arch A (dashboard as route in fitme-story) + Pattern 4.b (pre-build sync). User added critical new requirement: blind-switch so dashboard becomes invisible to outside sources when product goes live, AND architecture must allow future extraction of dashboard back to internal-only access. PRD must commit to: 3-layer visibility control (route-level auth gate, sitemap+robots exclusion, build-time inclusion flag) + extraction-ready code layout (everything under control-room/ prefix, no reverse imports from showcase).",
+      "artifacts": [
+        ".claude/features/unified-control-center/research.md"
+      ],
+      "metrics": {
+        "duration_minutes_research": 120
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T05:26:11Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened. Drafting against v7.6 mandatory PRD sections (primary metric, baseline, target, kill criteria, secondary, guardrails \u2014 all T1/T2/T3 tagged). Must include Analytics Spec (requires_analytics=true) and now also a Visibility Control Spec for the blind-switch requirement.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T05:36:09Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) approved with all 4 \u00a715 open-question defaults locked: Q1=B (Next.js middleware basic-auth, dashboard-only \u2014 showcase stays public per user explicit), Q2=A (inline sync script), Q3=A (localStorage view persistence), Q4=A (no preview route). PRD has 16 sections, all rule #2 gates filled, Analytics Spec checklist complete, blind-switch 3-layer design + extraction-ready architecture committed.",
+      "artifacts": [
+        ".claude/features/unified-control-center/prd.md"
+      ],
+      "metrics": {
+        "duration_minutes_prd": 120
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T05:36:38Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened. Breaking PRD into dependency-ordered, skill-tagged subtasks per CLAUDE.md task structure. Lane assignment via v5.1 task-complexity gate (E-core lightweight vs P-core heavyweight).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T05:42:44Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved. 42 tasks across 9 work blocks; ~5-week calendar estimate; ~96 CU. All 3 Phase 3 open-questions answered: (1) KanbanBoard+TableView get full UX spec treatment, (2) reuse fitme-story Hero verbatim, (3) yes Linear-style command palette.",
+      "artifacts": [
+        ".claude/features/unified-control-center/tasks.md"
+      ],
+      "metrics": {
+        "duration_minutes_tasks": 60,
+        "task_count": 42,
+        "e_core_count": 23,
+        "p_core_count": 19
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T05:44:04Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX) opened. Will produce: ux-research.md, ux-spec.md (full spec for all routes incl. KanbanBoard + TableView), design-system compliance gateway report, 2 handoff prompts (ux-build + design-build). Reuses fitme-story Hero verbatim. Adds Cmd+K command palette (T30.5).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T06:02:14Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX) approved. Spec deliverables: ux-research.md (10KB), ux-spec.md (26KB, full spec for 4 routes + Cmd+K palette), design-compliance-gateway.md (PASS conditional on T16), 2 handoff prompts (ux-build + design-build). 6 components verbatim from fitme-story, 9 ported+restyled, 8 new. Compliance: tokens/components/patterns/motion all PASS; a11y PASS conditional on T16 axe audit.",
+      "artifacts": [
+        ".claude/features/unified-control-center/ux-spec.md",
+        ".claude/features/unified-control-center/design-compliance-gateway.md",
+        "docs/prompts/2026-04-26-unified-control-center-ux-build.md",
+        "docs/prompts/2026-04-26-unified-control-center-design-build.md"
+      ],
+      "metrics": {
+        "duration_minutes_ux": 180
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T06:02:46Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implement) opened. Starting T1 (instrument current Astro dashboard with dashboard_load + dashboard_blocker_acknowledged GA4 events) immediately so the 7-day TTC baseline clock starts NOW. T2 baseline capture is the explicit hard gate before T18+ component port can begin (~7 days from now).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T06:02:48Z",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "summary": "T1 started: adding dashboard_load + dashboard_blocker_acknowledged GA4 events to Astro dashboard (fit-tracker2.vercel.app).",
+      "artifacts": [],
+      "metrics": {
+        "task_id": "T1",
+        "task_lane": "E-core"
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
