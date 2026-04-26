@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-15T20:00:00Z",
+  "updated": "2026-04-26T05:00:00Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
     "healthy": true,
@@ -24,7 +24,13 @@
       "findings": [
         "Repo is on main, aligned with origin/main. 44 shipped features, 197+ tests passing.",
         "Full Linear + Notion sync completed 2026-04-15 with 42 Linear issues and 8 Notion pages aligned.",
-        "Dashboard tab navigation and case study link bugs fixed and deployed to production."
+        "Dashboard tab navigation and case study link bugs fixed and deployed to production.",
+        "2026-04-21: Google Gemini 2.5 Pro independent audit published verbatim on /trust.",
+        "2026-04-24: Framework v7.5 (Data Integrity Framework) shipped (commit bea6c59).",
+        "2026-04-25: Framework v7.6 (Mechanical Enforcement) shipped (commits 0a23922 + c0be8ea + ecb172d + 58b82b5 + 805daab).",
+        "2026-04-25: Tier 3.3 public external-replication invitation filed as issue #142 (pinned).",
+        "2026-04-26: PR #141 merged (Codex pending fixes — 5 fix groups).",
+        "2026-04-26: 19 PRDs remediated for CLAUDE.md rule #2 + readiness-score-v2.md created (commit 1492ec0)."
       ]
     },
     "linear": {
@@ -34,15 +40,15 @@
       "project": {
         "name": "FitTracker Roadmap",
         "status": "Started",
-        "updated_at": "2026-04-15T12:00:00Z",
+        "updated_at": "2026-04-26T05:00:00Z",
         "url": "https://linear.app/fitme-project/project/fittracker-roadmap-cf39fc387606"
       },
       "issue_summary": {
-        "total": 42,
-        "todo": 11,
+        "total": 48,
+        "todo": 9,
         "backlog": 2,
-        "in_progress": 7,
-        "done": 18,
+        "in_progress": 5,
+        "done": 28,
         "canceled": 4
       },
       "milestones": [
@@ -63,35 +69,123 @@
         "Full sync completed 2026-04-15: 42 issues total, 18 Done, 7 In Progress, 11 Todo, 4 Canceled (FIT-1–FIT-4 onboarding stubs).",
         "14 new Done issues created for shipped v2 screens, cards, formulas, and infrastructure (FIT-27 through FIT-40).",
         "FIT-41 (User Profile Settings) and FIT-42 (Smart Reminders) created for active/planned work.",
-        "FIT-25 (AI Engine Architecture) marked Done after PR #79 shipped."
+        "FIT-25 (AI Engine Architecture) marked Done after PR #79 shipped.",
+        "2026-04-26 backfill: FIT-22 (Operations control room) + FIT-6 (production Supabase auth) marked Done after verifying state.json shows complete.",
+        "2026-04-26 backfill: created FIT-44 (Data Integrity Framework v7.5), FIT-45 (Mechanical Enforcement v7.6, parent), FIT-46 (PR #141 Codex pending fixes), FIT-47 (DEV guide v1.0->v7.6), FIT-48 (Tier 3.3 invitation #142). Linear was 11 days behind reality before this sync.",
+        "Linear MCP wired into Claude Code CLI for live read/write (https://mcp.linear.app/mcp)."
       ],
       "tracked_issues": [
-        { "id": "FIT-41", "title": "User Profile Settings — 5th tab control center", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-42", "title": "Smart Reminders System — AI-powered local notifications", "status": "Todo", "priority": "High" },
-        { "id": "FIT-6", "title": "Replace mock-backed auth with production Supabase auth", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-17", "title": "Create production-quality app icon and App Store asset system", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-21", "title": "Run maintenance sync", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-22", "title": "Build operations control room dashboard", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-23", "title": "Define push notifications strategy", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-24", "title": "Research import training plan feature", "status": "In Progress", "priority": "High" },
-        { "id": "FIT-25", "title": "AI engine architecture adaptation", "status": "Done", "priority": "High" }
-      ]
+        {
+          "id": "FIT-48",
+          "title": "Tier 3.3 external replication invitation — GitHub issue #142 (Phase 3c)",
+          "status": "In Progress",
+          "priority": "Medium"
+        },
+        {
+          "id": "FIT-47",
+          "title": "Developer Guide v1.0 → v7.6 — 745-line technical onboarding doc",
+          "status": "Done",
+          "priority": "Medium"
+        },
+        {
+          "id": "FIT-46",
+          "title": "PR #141 — v7.6 pending fixes (Codex)",
+          "status": "Done",
+          "priority": "Medium"
+        },
+        {
+          "id": "FIT-45",
+          "title": "Mechanical Enforcement v7.6 — write-time hooks + per-PR bot + weekly cron + 5 Class B gaps",
+          "status": "Done",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-44",
+          "title": "Data Integrity Framework v7.5 — 8 cooperating defenses (Gemini audit response)",
+          "status": "Done",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-22",
+          "title": "Build operations control room dashboard",
+          "status": "Done",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-6",
+          "title": "Replace mock-backed auth with production Supabase auth",
+          "status": "Done",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-23",
+          "title": "Define push notifications strategy and first implementation scope",
+          "status": "In Progress",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-17",
+          "title": "Create production-quality app icon and App Store asset system",
+          "status": "In Progress",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-24",
+          "title": "Research import training plan feature for external sources",
+          "status": "In Progress",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-21",
+          "title": "Run maintenance sync: source-of-truth, design/UX, marketing, and Vercel cleanup",
+          "status": "In Progress",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-42",
+          "title": "Smart Reminders System — AI-powered local notifications",
+          "status": "Todo",
+          "priority": "High"
+        },
+        {
+          "id": "FIT-41",
+          "title": "User Profile Settings — 5th tab control center",
+          "status": "Done",
+          "priority": "High"
+        }
+      ],
+      "mcp": {
+        "connected": true,
+        "url": "https://mcp.linear.app/mcp"
+      }
     },
     "notion": {
       "healthy": true,
       "alerts": 0,
       "workspace_hub": "FitMe — Product Hub",
       "page_summary": {
-        "tracked_pages": 8,
+        "tracked_pages": 9,
         "status_pages": 7,
         "pages_with_known_drift": 0
       },
       "tracked_pages": [
         {
+          "title": "Framework v7.5 + v7.6 — Audit Response (2026-04-21 → 2026-04-26)",
+          "role": "Audit response narrative",
+          "updated_at": "2026-04-26T05:00:00Z",
+          "url": "https://www.notion.so/34e0e7a0eace81b385acffbfeb060f4b"
+        },
+        {
           "title": "Project Context & Status",
           "role": "Status narrative",
-          "updated_at": "2026-04-11T10:39:38.413Z",
+          "updated_at": "2026-04-26T05:00:00Z",
           "url": "https://www.notion.so/3360e7a0eace818fb48edb40b9bc547e"
+        },
+        {
+          "title": "FitMe — Product Hub",
+          "role": "Workspace hub",
+          "updated_at": "2026-04-26T05:00:00Z",
+          "url": "https://www.notion.so/3360e7a0eace81109123e11f3ff4ddd3"
         },
         {
           "title": "Maintenance Audit — 2026-04-11",
@@ -124,18 +218,25 @@
           "url": "https://www.notion.so/3400e7a0eace811790cfd1c0d8358d4e"
         },
         {
-          "title": "Auth Runtime Verification Playbook",
-          "role": "Operational setup guide",
-          "updated_at": "2026-04-12T16:03:30.000Z",
-          "url": "https://www.notion.so/3400e7a0eace8187b170f4b5dcdff8bc"
+          "title": "Session Summary — 2026-04-15 Sync",
+          "role": "Session log",
+          "updated_at": "2026-04-15T12:02:00Z",
+          "url": "https://www.notion.so/3430e7a0eace8176a16ed359e8fd4c91"
         }
       ],
       "findings": [
         "Full sync completed 2026-04-15: Project Context & Status updated with Profile v3 redesign, Home polish, Figma Prototype V2.",
         "Session Summary — 2026-04-15 Sync page created under FitMe Product Hub.",
         "Roadmap page updated with Profile v3 + Home polish as DONE.",
-        "All tracked pages aligned with repo truth. Figma synced: Home v3 Code Truth, Profile & Settings page, Prototype V2 (22 screens)."
-      ]
+        "All tracked pages aligned with repo truth. Figma synced: Home v3 Code Truth, Profile & Settings page, Prototype V2 (22 screens).",
+        "2026-04-26 backfill: created new sub-page 'Framework v7.5 + v7.6 — Audit Response (2026-04-21 → 2026-04-26)' under FitMe Product Hub.",
+        "2026-04-26 backfill: 'Project Context & Status' updated v5.1 → v7.6, added 11 new shipped rows (50-60), refreshed Framework section with v7.5/v7.6/dev-guide/Tier 3.3 #142 cross-links.",
+        "Notion MCP wired into Claude Code CLI for live read/write (https://mcp.notion.com/mcp)."
+      ],
+      "mcp": {
+        "connected": true,
+        "url": "https://mcp.notion.com/mcp"
+      }
     },
     "vercel": {
       "healthy": true,

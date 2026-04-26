@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "updated": "2026-04-23T13:44:08Z",
+  "updated": "2026-04-26T05:00:00Z",
   "description": "Change broadcast log. Every merge to main creates an entry here so ALL skills stay aware of changes across the system.",
   "events": [
     {
@@ -322,8 +322,12 @@
       "external_sync": {
         "linear": [],
         "notion": [],
-        "vercel": ["fit-tracker2"],
-        "figma": ["0Ai7s3fCFqR5JXDW8JvgmD"],
+        "vercel": [
+          "fit-tracker2"
+        ],
+        "figma": [
+          "0Ai7s3fCFqR5JXDW8JvgmD"
+        ],
         "github": [],
         "analytics": []
       },
@@ -333,7 +337,13 @@
         "research_workspaces_added": true,
         "stale_roadmap_references_cleaned": true
       },
-      "notifications_sent_to": ["pm-workflow", "research", "design", "ops", "analytics"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "research",
+        "design",
+        "ops",
+        "analytics"
+      ]
     },
     {
       "timestamp": "2026-04-12T21:30:00Z",
@@ -354,9 +364,20 @@
         ".claude/shared/task-queue.json"
       ],
       "external_sync": {
-        "linear": ["FIT-6", "FIT-21", "FIT-22"],
-        "notion": ["Project Context & Status", "Maintenance Audit — 2026-04-11", "Operations Control Room — Product Spec", "Chapter 3 — Auth Hardening"],
-        "vercel": ["fit-tracker2"],
+        "linear": [
+          "FIT-6",
+          "FIT-21",
+          "FIT-22"
+        ],
+        "notion": [
+          "Project Context & Status",
+          "Maintenance Audit — 2026-04-11",
+          "Operations Control Room — Product Spec",
+          "Chapter 3 — Auth Hardening"
+        ],
+        "vercel": [
+          "fit-tracker2"
+        ],
         "figma": [],
         "github": [],
         "analytics": []
@@ -366,7 +387,14 @@
         "auth_playbook_added": true,
         "high_priority_research_started": true
       },
-      "notifications_sent_to": ["pm-workflow", "research", "design", "qa", "release", "ops"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "research",
+        "design",
+        "qa",
+        "release",
+        "ops"
+      ]
     },
     {
       "timestamp": "2026-04-12T20:40:00Z",
@@ -380,9 +408,16 @@
         ".claude/shared/external-sync-status.json"
       ],
       "external_sync": {
-        "linear": ["FIT-21"],
-        "notion": ["Chapter 4 — Marketing + Vercel Truth Cleanup"],
-        "vercel": ["fit-tracker2", "dashboard"],
+        "linear": [
+          "FIT-21"
+        ],
+        "notion": [
+          "Chapter 4 — Marketing + Vercel Truth Cleanup"
+        ],
+        "vercel": [
+          "fit-tracker2",
+          "dashboard"
+        ],
         "figma": [],
         "github": [],
         "analytics": []
@@ -392,7 +427,12 @@
         "canonical_live_surface_documented": true,
         "website_launch_blockers_recorded": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "marketing", "analytics"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "marketing",
+        "analytics"
+      ]
     },
     {
       "timestamp": "2026-04-12T20:05:00Z",
@@ -408,8 +448,12 @@
         "docs/setup/integrations-setup-guide.md"
       ],
       "external_sync": {
-        "linear": ["FIT-6"],
-        "notion": ["Chapter 3 — Auth Hardening"],
+        "linear": [
+          "FIT-6"
+        ],
+        "notion": [
+          "Chapter 3 — Auth Hardening"
+        ],
         "vercel": [],
         "figma": [],
         "github": [],
@@ -420,7 +464,12 @@
         "simulator_build_succeeded": true,
         "google_auth_real_validation_pending": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "qa", "dev"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "dev"
+      ]
     },
     {
       "timestamp": "2026-04-12T19:25:00Z",
@@ -436,8 +485,12 @@
         "docs/setup/integrations-setup-guide.md"
       ],
       "external_sync": {
-        "linear": ["FIT-6"],
-        "notion": ["Chapter 3 — Auth Hardening"],
+        "linear": [
+          "FIT-6"
+        ],
+        "notion": [
+          "Chapter 3 — Auth Hardening"
+        ],
         "vercel": [],
         "figma": [],
         "github": [],
@@ -448,7 +501,12 @@
         "google_auth_runtime_gated": true,
         "google_auth_real_validation_pending": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "qa", "cx"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "cx"
+      ]
     },
     {
       "timestamp": "2026-04-12T19:05:00Z",
@@ -466,8 +524,12 @@
         "Linear: FIT-6"
       ],
       "external_sync": {
-        "linear": ["FIT-6"],
-        "notion": ["Chapter 3 — Auth Hardening"],
+        "linear": [
+          "FIT-6"
+        ],
+        "notion": [
+          "Chapter 3 — Auth Hardening"
+        ],
         "vercel": [],
         "figma": [],
         "github": [],
@@ -479,7 +541,12 @@
         "password_reset_exposed_in_ui": true,
         "google_sdk_activation_still_pending": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "qa", "cx"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "cx"
+      ]
     },
     {
       "timestamp": "2026-04-12T18:45:00Z",
@@ -496,8 +563,12 @@
         "Linear: FIT-22"
       ],
       "external_sync": {
-        "linear": ["FIT-22"],
-        "notion": ["Operations Control Room — Product Spec"],
+        "linear": [
+          "FIT-22"
+        ],
+        "notion": [
+          "Operations Control Room — Product Spec"
+        ],
         "vercel": [
           "fit-tracker2",
           "dpl_3K8AjoYcejYQ2hKv8mtX7uu3fkJJ",
@@ -512,7 +583,13 @@
         "canonical_docs_connected": true,
         "external_reference_surface_expanded": true
       },
-      "notifications_sent_to": ["pm-workflow", "research", "ops", "design", "analytics"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "research",
+        "ops",
+        "design",
+        "analytics"
+      ]
     },
     {
       "timestamp": "2026-04-12T18:10:00Z",
@@ -526,8 +603,12 @@
         "Notion: Chapter 3 — Auth Hardening"
       ],
       "external_sync": {
-        "linear": ["FIT-6"],
-        "notion": ["Chapter 3 — Auth Hardening"],
+        "linear": [
+          "FIT-6"
+        ],
+        "notion": [
+          "Chapter 3 — Auth Hardening"
+        ],
         "vercel": [],
         "figma": [],
         "github": [],
@@ -537,7 +618,12 @@
         "next_cleanup_chapter_started": true,
         "auth_hardening_active": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "qa", "cx"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "qa",
+        "cx"
+      ]
     },
     {
       "timestamp": "2026-04-12T18:00:00Z",
@@ -571,7 +657,13 @@
         "canonical_vercel_project_restored": true,
         "speed_insights_live": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa", "marketing"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "analytics",
+        "qa",
+        "marketing"
+      ]
     },
     {
       "timestamp": "2026-04-12T17:45:00Z",
@@ -594,14 +686,22 @@
         ],
         "figma": [],
         "github": [],
-        "analytics": ["Vercel Web Analytics deployed with dashboard project"]
+        "analytics": [
+          "Vercel Web Analytics deployed with dashboard project"
+        ]
       },
       "impact": {
         "control_room_live": true,
         "vercel_project_topology_split_detected": true,
         "web_analytics_live": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa", "marketing"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "analytics",
+        "qa",
+        "marketing"
+      ]
     },
     {
       "timestamp": "2026-04-12T17:05:00Z",
@@ -619,10 +719,18 @@
       "external_sync": {
         "linear": [],
         "notion": [],
-        "vercel": ["fit-tracker2 project", "latest production deployment", "runtime logs (7d)"],
+        "vercel": [
+          "fit-tracker2 project",
+          "latest production deployment",
+          "runtime logs (7d)"
+        ],
         "figma": [],
-        "github": ["build-time issue hydration when GITHUB_TOKEN is present"],
-        "analytics": ["Vercel Web Analytics adapter enabled in dashboard repo"]
+        "github": [
+          "build-time issue hydration when GITHUB_TOKEN is present"
+        ],
+        "analytics": [
+          "Vercel Web Analytics adapter enabled in dashboard repo"
+        ]
       },
       "impact": {
         "cross_system_truth_surface_expanded": true,
@@ -630,7 +738,13 @@
         "vercel_runtime_visibility_added": true,
         "web_analytics_repo_ready": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa", "design"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "analytics",
+        "qa",
+        "design"
+      ]
     },
     {
       "timestamp": "2026-04-12T16:15:00Z",
@@ -649,14 +763,24 @@
         "notion": [],
         "vercel": [],
         "figma": [],
-        "github": ["Regevba/FitTracker2 local repo state"],
-        "analytics": ["metric-status.json", "health-status.json"]
+        "github": [
+          "Regevba/FitTracker2 local repo state"
+        ],
+        "analytics": [
+          "metric-status.json",
+          "health-status.json"
+        ]
       },
       "impact": {
         "cross_system_truth_surface_expanded": true,
         "live_production_telemetry_claimed": false
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "qa"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "analytics",
+        "qa"
+      ]
     },
     {
       "timestamp": "2026-04-11T16:05:53Z",
@@ -672,7 +796,12 @@
         "dashboard/src/components/SourceHealth.jsx"
       ],
       "external_sync": {
-        "linear": ["FitTracker Roadmap", "FIT-21", "FIT-22", "FIT-6"],
+        "linear": [
+          "FitTracker Roadmap",
+          "FIT-21",
+          "FIT-22",
+          "FIT-6"
+        ],
         "notion": [
           "Project Context & Status",
           "Maintenance Audit — 2026-04-11",
@@ -687,7 +816,12 @@
         "shared_files": 15,
         "external_sync_monitoring_promoted": true
       },
-      "notifications_sent_to": ["pm-workflow", "ops", "analytics", "cx"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "ops",
+        "analytics",
+        "cx"
+      ]
     },
     {
       "timestamp": "2026-04-11T15:50:25Z",
@@ -714,7 +848,12 @@
         "operational_layer_formalized": true,
         "case_study_monitoring_promoted": true
       },
-      "notifications_sent_to": ["pm-workflow", "analytics", "ops", "marketing"]
+      "notifications_sent_to": [
+        "pm-workflow",
+        "analytics",
+        "ops",
+        "marketing"
+      ]
     },
     {
       "timestamp": "2026-04-11T13:48:00Z",
@@ -729,33 +868,138 @@
         "docs/case-studies/cleanup-control-room-case-study.md"
       ],
       "external_sync": {
-        "linear": ["FIT-21", "FIT-22", "FIT-5", "FIT-7", "FIT-13"],
+        "linear": [
+          "FIT-21",
+          "FIT-22",
+          "FIT-5",
+          "FIT-7",
+          "FIT-13"
+        ],
         "notion": [
           "Maintenance Audit — 2026-04-11",
           "Operations Control Room — Product Spec",
           "Case Study — Maintenance Cleanup + Operations Control Room",
           "Project Context & Status"
         ],
-        "vercel": ["fit-tracker2 project reviewed"],
-        "figma": ["workflow surface planned, live dashboard integration pending"]
+        "vercel": [
+          "fit-tracker2 project reviewed"
+        ],
+        "figma": [
+          "workflow surface planned, live dashboard integration pending"
+        ]
       },
       "impact": {
         "source_truth_gap_reduced": true,
         "operator_surface_added": true,
         "case_study_monitoring_started": true
       },
-      "notifications_sent_to": ["qa", "cx", "ops", "analytics", "design", "pm-workflow"]
+      "notifications_sent_to": [
+        "qa",
+        "cx",
+        "ops",
+        "analytics",
+        "design",
+        "pm-workflow"
+      ]
+    },
+    {
+      "timestamp": "2026-04-21T08:00:00Z",
+      "title": "Google Gemini 2.5 Pro independent audit published verbatim on /trust",
+      "category": "audit",
+      "description": "Different vendor, different model family, artifact-only access. Reviewed 65 case studies + 3 internal meta-analyses. Same-day correction appended for false-positive PR-vs-issue mix-up."
+    },
+    {
+      "timestamp": "2026-04-21T20:00:00Z",
+      "title": "PM framework promoted to v7.1 (72h Integrity Cycle)",
+      "category": "framework",
+      "description": "Recurring state.json audit via GitHub Actions cron. Baseline 40 features / 44 case studies / 0 findings."
+    },
+    {
+      "timestamp": "2026-04-24T18:00:00Z",
+      "title": "PM framework promoted to v7.5 (Data Integrity Framework)",
+      "category": "framework",
+      "description": "8 cooperating defenses: write-time pre-commit (SCHEMA_DRIFT, PR_NUMBER_UNRESOLVED), 72h cycle (12 check codes), runtime smoke gates, contemporaneous logging, data-quality tiers, documentation-debt + measurement-adoption ledgers. 7 of 9 Gemini Tier items shipped."
+    },
+    {
+      "timestamp": "2026-04-25T05:00:00Z",
+      "title": "PM framework promoted to v7.6 (Mechanical Enforcement)",
+      "category": "framework",
+      "description": "4 new write-time pre-commit check codes (PHASE_TRANSITION_NO_LOG, PHASE_TRANSITION_NO_TIMING, BROKEN_PR_CITATION write-time, CASE_STUDY_MISSING_TIER_TAGS) + per-PR review bot (pm-framework/pr-integrity status check) + weekly framework-status cron + 5 documented Class B gaps. 7 Class B → Class A promotions."
+    },
+    {
+      "timestamp": "2026-04-25T05:30:00Z",
+      "title": "Developer Guide v1.0 → v7.6 published (745 lines)",
+      "category": "docs",
+      "description": "Technical onboarding doc at docs/architecture/dev-guide-v1-to-v7-6.md. 16 sections covering 4 enforcement layers, state.json schema, phase lifecycle, dispatch, cache, measurement protocol, 12 integrity check codes, 3 operational walkthroughs. Mirrored at https://fitme-story.vercel.app/framework/dev-guide."
+    },
+    {
+      "timestamp": "2026-04-25T08:00:00Z",
+      "title": "Tier 3.3 public external-replication invitation filed as GitHub issue #142",
+      "category": "audit",
+      "description": "Pinned. The explicit final v7.6 deliverable per Phase 3c sequencing. Closes when at least one external case study lands at docs/case-studies/external/<handle>-<date>.md."
+    },
+    {
+      "timestamp": "2026-04-26T03:00:00Z",
+      "title": "PR #141 merged (Codex v7.6 pending fixes)",
+      "category": "framework",
+      "description": "5 fix groups: state reconciliation + shared tracking + PR-bot tightening + doc alignment + test naming. Self-test on the PR exercised the new tightened semantics for the first time — passed (0/0 findings, all required exits 0)."
+    },
+    {
+      "timestamp": "2026-04-26T04:30:00Z",
+      "title": "Linear backfill (FIT-22 + FIT-6 → Done; FIT-44/45/46/47/48 created)",
+      "category": "external_sync",
+      "description": "Linear MCP brought online. 5 new issues for v7.5, v7.6, PR #141, DEV guide, Tier 3.3 #142. 2 stale 'In Progress' issues marked Done after verifying state.json complete."
+    },
+    {
+      "timestamp": "2026-04-26T04:35:00Z",
+      "title": "Notion backfill (new Framework v7.5+v7.6 sub-page + Project Context & Status v5.1→v7.6)",
+      "category": "external_sync",
+      "description": "Notion MCP brought online. New sub-page under FitMe Product Hub captures full v7.5/v7.6 audit-response narrative. Project Context & Status updated from v5.1 framework + 44 features to v7.6 framework + 60 features (rows 50-60 added)."
+    },
+    {
+      "timestamp": "2026-04-26T04:50:00Z",
+      "title": "19 PRDs remediated for CLAUDE.md rule #2 + readiness-score-v2.md created",
+      "category": "docs",
+      "description": "Closes the 14 PRDs that previously failed rule #2 (no kill criteria). Adds concrete kill criteria + baselines with (T2 — Declared, 2026-04-26) tags. Adds v2 sections to 4 parent 18.x PRDs. Creates readiness-score-v2.md as standalone feature PRD. Documents 3 orphan PRDs with status banners. Commit 1492ec0."
     }
   ],
   "notification_rules": {
-    "code_change": ["qa", "cx", "ops", "analytics"],
-    "ui_change": ["qa", "cx", "ops", "analytics", "design"],
-    "analytics_change": ["qa", "cx", "analytics"],
-    "infra_change": ["qa", "ops", "dev"],
-    "docs_change": ["cx", "marketing"],
-    "data_ingestion": ["pm-workflow"],
-    "validation_alert_red": ["pm-workflow"],
-    "validation_alert_orange": ["pm-workflow"]
+    "code_change": [
+      "qa",
+      "cx",
+      "ops",
+      "analytics"
+    ],
+    "ui_change": [
+      "qa",
+      "cx",
+      "ops",
+      "analytics",
+      "design"
+    ],
+    "analytics_change": [
+      "qa",
+      "cx",
+      "analytics"
+    ],
+    "infra_change": [
+      "qa",
+      "ops",
+      "dev"
+    ],
+    "docs_change": [
+      "cx",
+      "marketing"
+    ],
+    "data_ingestion": [
+      "pm-workflow"
+    ],
+    "validation_alert_red": [
+      "pm-workflow"
+    ],
+    "validation_alert_orange": [
+      "pm-workflow"
+    ]
   },
   "validation_log": [],
   "validation_entry_schema": {
@@ -776,9 +1020,14 @@
         "existing_data_type": "measured | estimated",
         "incoming_data_type": "measured | estimated",
         "resolution": "replaced_estimate | conflict_flagged | gap_filled | blocked_for_review",
-        "affected_skills": ["list of skills that read this field"]
+        "affected_skills": [
+          "list of skills that read this field"
+        ]
       }
     ],
-    "notifications_sent_to": ["receiving_skill", "pm-workflow"]
+    "notifications_sent_to": [
+      "receiving_skill",
+      "pm-workflow"
+    ]
   }
 }
