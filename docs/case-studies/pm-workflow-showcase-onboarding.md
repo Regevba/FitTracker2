@@ -3,6 +3,13 @@
 # PM-Flow Hub Showcase — Onboarding v2 UX Alignment
 
 **Date written:** 2026-04-07
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Feature |
+| Dispatch Pattern | serial |
+
 
 > **Purpose:** Exemplar walkthrough of the enhanced `/pm-workflow` skill running a **retroactive UX alignment** on a feature whose UX phase was skipped. Documents every phase, gate, decision, and hook invocation so future alignment runs have a reference.
 >

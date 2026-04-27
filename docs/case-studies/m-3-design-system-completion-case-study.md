@@ -1,6 +1,16 @@
 # M-3 — Design System Completion + Dark Mode — Case Study
 
 **Date written:** 2026-04-19
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > Framework v7.0 | cleanup_program | 2026-04-19 | PRs #118 + #119 + #120 + this PR
 >

@@ -1,6 +1,16 @@
 # Case Study: Parallel Write Safety — Framework v5.2 Sub-Project B
 
 **Date written:** 2026-04-16
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | parallel |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > **Core question:** Can deterministic file-level isolation (snapshot/rollback + region-based mirror pattern) eliminate the luck dependency from parallel multi-agent writes to shared files?
 

@@ -1,6 +1,17 @@
 # The Blank-Main Bug — Catching a Production SSR Regression After Promoting
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Enhancement |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > ⚙️ **Developer deep-dive.** Next.js 16 · `useSearchParams` · Suspense · static generation. PM/HR readers: this one's for the engineering side of the house — skip unless you want the code-level debug story.
 

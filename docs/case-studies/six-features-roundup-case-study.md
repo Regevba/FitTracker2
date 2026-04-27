@@ -1,6 +1,14 @@
 # Six Features Roundup — Honest Backlog Accounting
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
 
 > **Subtitle:** Six features that shipped before the "every feature gets a case study" rule landed, or slipped through it — consolidated into one roundup so the record is honest rather than padded with six thin fabrications.
 

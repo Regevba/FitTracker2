@@ -1,4 +1,11 @@
 # Case Study: auth-polish-v2
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Enhancement |
+| Dispatch Pattern | serial |
+
 
 > **Status:** Live, Phase 1 (PRD draft approved-pending)
 > **Framework version:** v7.6 (Mechanical Enforcement)

@@ -1,6 +1,14 @@
 # HADF Case Study: Hardware-Aware Dispatch Framework
 
 **Date written:** 2026-04-16
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Kill Criteria:** WAU drops ≥ 3% in HADF cohort at 90% confidence. Expected duration: 2 sprints
+
 
 > **Framework Version:** v6.0 (HADF extends v6.0 with hardware awareness)
 > **Date:** 2026-04-16

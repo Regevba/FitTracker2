@@ -1,6 +1,16 @@
 # Case Study: Eval Layer + Framework v4.4 — Eval-Driven Development
 
 **Date written:** 2026-04-15
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > **Core question:** Can a formal eval layer — golden I/O tests and heuristic quality checks — be added to the PM framework without disrupting the existing skill lifecycle, and does it measurably improve AI output quality visibility?
 

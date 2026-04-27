@@ -1,6 +1,17 @@
 # Audit v2 — Concurrent 6-Group Stress Test (Case Study)
 
 **Date written:** 2026-04-18
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Chore |
+| Dispatch Pattern | parallel |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > Framework v7.0 | Stress Test | 2026-04-18 | **CLOSED — Option C selected: stop and treat findings as the deliverable**
 

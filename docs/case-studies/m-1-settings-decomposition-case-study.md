@@ -1,6 +1,16 @@
 # M-1 — SettingsView (v2) Decomposition — Case Study
 
 **Date written:** 2026-04-19
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > Framework v7.0 | cleanup_program | 2026-04-19 | PRs #122 + #123 + #124 + this PR
 >

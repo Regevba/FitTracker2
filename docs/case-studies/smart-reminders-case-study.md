@@ -1,6 +1,12 @@
 # Smart Reminders — Case Study
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
 
 > Framework v5.1 | feature (new_capability) | 2026-04-15 → 2026-04-16 | surfaced retroactively 2026-04-20
 >

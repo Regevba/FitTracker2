@@ -1,4 +1,15 @@
 # UI-Audit Baseline Burndown — Case Study
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Chore |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 **Status:** **Shipped — merged to main 2026-04-24.** Hard gate live in `verify-local`. State.json retroactively closed 2026-04-27 (commit `a8e3f2f`).
 **Started:** 2026-04-21

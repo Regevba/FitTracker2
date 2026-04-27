@@ -3,6 +3,17 @@
 # FitTracker — Redesign Case Study
 
 **Date written:** 2026-02-28
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Feature <!-- TODO: review --> |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 FitTracker is an iPhone-first fitness command center designed to help a user understand today, act quickly, and stay consistent across training, nutrition, recovery, and body-composition goals.
 

@@ -1,4 +1,14 @@
 # Orchid AI Accelerator — Full Case Study
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > **Generated:** 2026-04-17T04:40:44.811337+00:00
 > **Source data:** `results/case-study-data.json` (Orchid repo)
