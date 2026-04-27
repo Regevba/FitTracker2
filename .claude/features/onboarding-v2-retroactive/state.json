@@ -70,6 +70,7 @@
       "status": "pending"
     }
   },
+  "case_study": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
   "tasks": [],
   "paused": {
     "at": "2026-04-27T14:00:00Z",
