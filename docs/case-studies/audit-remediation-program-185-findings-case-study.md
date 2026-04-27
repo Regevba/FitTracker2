@@ -1,6 +1,17 @@
 # Audit Remediation Program — 185 Findings, 100% In-Project Closure
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Chore |
+| Dispatch Pattern | parallel |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 **Subtitle:** The full-arc synthesis of the v7.0 meta-analysis audit and the remediation program that followed it — from "185 findings surfaced in a single 4-layer sweep" to "183 / 185 closed, 2 deferred on genuine external blockers" across 6 coordinated sprints.
 
