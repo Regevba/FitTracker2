@@ -113,6 +113,8 @@
       "documentation"
     ]
   },
+  "case_study_type": "no_case_study_required",
+  "case_study_exempt_reason": "App Store assets (screenshots, ASO copy, metadata) are operational artifacts; no case-study narrative warranted. Approved 2026-04-27 during v7.7 M2 T9.",
   "paused": {
     "at": "2026-04-27T14:00:00Z",
     "reason": "v7.7 Validity Closure full-priority freeze",
