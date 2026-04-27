@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "updated": "2026-04-23T04:59:34Z",
+  "updated": "2026-04-27T07:37:37Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 41,
-    "features_scanned": 40,
+    "case_studies_scanned": 44,
+    "features_scanned": 43,
     "integrity_snapshot_files": 1,
     "integrity_cycle_snapshots": 0,
     "trend_ready": false,
@@ -12,19 +12,20 @@
   },
   "coverage": {
     "date_written": {
-      "present": 38,
-      "missing": 3,
-      "percent": 92.7,
+      "present": 40,
+      "missing": 4,
+      "percent": 90.9,
       "examples": [
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
-        "docs/case-studies/training-plan-v2-case-study.md"
+        "docs/case-studies/training-plan-v2-case-study.md",
+        "docs/case-studies/ui-audit-baseline-burndown.md"
       ]
     },
     "work_type": {
-      "present": 26,
-      "missing": 15,
-      "percent": 63.4,
+      "present": 27,
+      "missing": 17,
+      "percent": 61.4,
       "examples": [
         "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
         "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
@@ -34,9 +35,9 @@
       ]
     },
     "dispatch_pattern": {
-      "present": 1,
-      "missing": 40,
-      "percent": 2.4,
+      "present": 2,
+      "missing": 42,
+      "percent": 4.5,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/audit-remediation-case-study.md",
@@ -46,9 +47,9 @@
       ]
     },
     "success_metrics": {
-      "present": 8,
-      "missing": 33,
-      "percent": 19.5,
+      "present": 9,
+      "missing": 35,
+      "percent": 20.5,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/audit-remediation-case-study.md",
@@ -58,9 +59,9 @@
       ]
     },
     "kill_criteria": {
-      "present": 11,
-      "missing": 30,
-      "percent": 26.8,
+      "present": 12,
+      "missing": 32,
+      "percent": 27.3,
       "examples": [
         "docs/case-studies/audit-remediation-case-study.md",
         "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
@@ -70,9 +71,9 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 38,
+      "present": 41,
       "missing": 2,
-      "percent": 95.0,
+      "percent": 95.3,
       "examples": [
         "app-store-assets",
         "onboarding-v2-retroactive"
@@ -92,11 +93,12 @@
       "id": "date_written",
       "title": "Case studies missing a written-date marker",
       "severity": "low",
-      "count": 3,
+      "count": 4,
       "examples": [
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
-        "docs/case-studies/training-plan-v2-case-study.md"
+        "docs/case-studies/training-plan-v2-case-study.md",
+        "docs/case-studies/ui-audit-baseline-burndown.md"
       ],
       "recommended_next_step": "Touch the missing files opportunistically and add the missing date written field explicitly."
     },
@@ -104,7 +106,7 @@
       "id": "work_type",
       "title": "Case studies missing explicit work-type metadata",
       "severity": "medium",
-      "count": 15,
+      "count": 17,
       "examples": [
         "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
         "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
@@ -118,7 +120,7 @@
       "id": "dispatch_pattern",
       "title": "Case studies missing explicit dispatch-pattern declaration",
       "severity": "high",
-      "count": 40,
+      "count": 42,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/audit-remediation-case-study.md",
@@ -132,7 +134,7 @@
       "id": "success_metrics",
       "title": "Case studies missing success-metric restatement",
       "severity": "high",
-      "count": 33,
+      "count": 35,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/audit-remediation-case-study.md",
@@ -146,7 +148,7 @@
       "id": "kill_criteria",
       "title": "Case studies missing kill-criteria restatement",
       "severity": "high",
-      "count": 30,
+      "count": 32,
       "examples": [
         "docs/case-studies/audit-remediation-case-study.md",
         "docs/case-studies/audit-remediation-program-185-findings-case-study.md",

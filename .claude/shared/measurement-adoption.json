@@ -1,55 +1,48 @@
 {
   "version": "1.0",
-  "updated": "2026-04-25T04:41:43Z",
+  "updated": "2026-04-27T07:37:37Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 42,
-    "features_post_v6": 7,
+    "features_total": 43,
+    "features_post_v6": 8,
     "features_pre_v6": 35,
-    "fully_adopted": 0,
+    "fully_adopted": 1,
     "partial_adopted": 4,
     "zero_adopted": 38,
-    "fully_adopted_post_v6": 0,
-    "tier_1_1_status": "not_adopted"
+    "fully_adopted_post_v6": 1,
+    "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
-      "overall_present": 1,
-      "overall_percent": 2.4,
-      "post_v6_present": 1,
-      "post_v6_percent": 14.3
+      "overall_present": 2,
+      "overall_percent": 4.7,
+      "post_v6_present": 2,
+      "post_v6_percent": 25.0
     },
     "per_phase_timing": {
-      "overall_present": 3,
-      "overall_percent": 7.1,
-      "post_v6_present": 3,
-      "post_v6_percent": 42.9
+      "overall_present": 5,
+      "overall_percent": 11.6,
+      "post_v6_present": 5,
+      "post_v6_percent": 62.5
     },
     "cache_hits": {
       "overall_present": 2,
-      "overall_percent": 4.8,
+      "overall_percent": 4.7,
       "post_v6_present": 2,
-      "post_v6_percent": 28.6
+      "post_v6_percent": 25.0
     },
     "cu_v2": {
-      "overall_present": 4,
-      "overall_percent": 9.5,
-      "post_v6_present": 4,
-      "post_v6_percent": 57.1
+      "overall_present": 5,
+      "overall_percent": 11.6,
+      "post_v6_present": 5,
+      "post_v6_percent": 62.5
     }
   },
-  "fully_adopted_features": [],
+  "fully_adopted_features": [
+    "data-integrity-framework-v7-6"
+  ],
   "partial_adopted_features": [
-    {
-      "feature": "data-integrity-framework-v7-6",
-      "adoption": {
-        "timing_wall_time": false,
-        "per_phase_timing": false,
-        "cache_hits": true,
-        "cu_v2": true
-      }
-    },
     {
       "feature": "framework-measurement-v6",
       "adoption": {
@@ -74,6 +67,15 @@
         "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
+        "cu_v2": true
+      }
+    },
+    {
+      "feature": "unified-control-center",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
         "cu_v2": true
       }
     }
@@ -387,14 +389,14 @@
       "feature": "data-integrity-framework-v7-6",
       "created": "2026-04-25",
       "post_v6": true,
-      "current_phase": "implement",
+      "current_phase": "complete",
       "adoption": {
-        "timing_wall_time": false,
-        "per_phase_timing": false,
+        "timing_wall_time": true,
+        "per_phase_timing": true,
         "cache_hits": true,
         "cu_v2": true
       },
-      "fully_adopted": false,
+      "fully_adopted": true,
       "any_adopted": true
     },
     {
@@ -844,6 +846,20 @@
       },
       "fully_adopted": false,
       "any_adopted": false
+    },
+    {
+      "feature": "unified-control-center",
+      "created": "2026-04-26",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
     },
     {
       "feature": "user-profile-settings",
