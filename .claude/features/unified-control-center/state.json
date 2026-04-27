@@ -900,5 +900,14 @@
     "future_extraction_ready": "Architecture must allow clean extraction of dashboard back to internal-only access. Co-locate all dashboard code under control-room/ prefix; no reverse imports from showcase.",
     "added_at": "2026-04-26T07:30:00Z",
     "added_by": "user"
+  },
+  "tasks_migrated_to": {
+    "T43-T54": {
+      "to_feature": "framework-v7-7-validity-closure",
+      "to_milestone": "M4",
+      "to_tasks": "T21-T28",
+      "migrated_at": "2026-04-27T14:00:00Z",
+      "rationale": "Framework-health dashboard naturally surfaces v7.7 outputs (Tier 1.1/3.2 trends, automation map, human-action checklist). Absorption avoids parallel track."
+    }
   }
 }
