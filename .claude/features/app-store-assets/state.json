@@ -112,5 +112,19 @@
       "merge",
       "documentation"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "implementation",
+      "next_action_when_resumed": "Resume implementation; case_study link already resolved by v7.7 T9 (exempt tag applied during v7.7)",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/app-store-assets/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_app_store_assets.md"
+      ]
+    }
   }
 }

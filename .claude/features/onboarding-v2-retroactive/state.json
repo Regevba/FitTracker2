@@ -28,19 +28,61 @@
       "to": "tasks",
       "timestamp": "2026-04-09T18:00:00Z",
       "approved_by": "user",
-      "note": "Enhancement work type — skipped Research, PRD, UX. Parent feature: onboarding (PR #59, shipped 2026-04-06). Starting at Phase 2 (Tasks)."
+      "note": "Enhancement work type \u2014 skipped Research, PRD, UX. Parent feature: onboarding (PR #59, shipped 2026-04-06). Starting at Phase 2 (Tasks)."
     }
   ],
   "phases": {
-    "research": { "status": "skipped", "reason": "work_type:enhancement" },
-    "prd": { "status": "skipped", "reason": "work_type:enhancement", "parent_prd": ".claude/features/onboarding/prd.md" },
-    "tasks": { "status": "in_progress", "started_at": "2026-04-09T18:00:00Z" },
-    "ux_or_integration": { "status": "skipped", "reason": "work_type:enhancement" },
-    "implementation": { "status": "pending", "commits": [] },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0 },
-    "review": { "status": "pending", "risks": [] },
-    "merge": { "status": "pending", "pr_number": null },
-    "documentation": { "status": "pending" }
+    "research": {
+      "status": "skipped",
+      "reason": "work_type:enhancement"
+    },
+    "prd": {
+      "status": "skipped",
+      "reason": "work_type:enhancement",
+      "parent_prd": ".claude/features/onboarding/prd.md"
+    },
+    "tasks": {
+      "status": "in_progress",
+      "started_at": "2026-04-09T18:00:00Z"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "reason": "work_type:enhancement"
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0
+    },
+    "review": {
+      "status": "pending",
+      "risks": []
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "pending"
+    }
   },
-  "tasks": []
+  "tasks": [],
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "tasks",
+      "next_action_when_resumed": "Complete tasks phase; case_study link resolved by v7.7 T10 (stub case study created during v7.7)",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/onboarding-v2-retroactive/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_onboarding_v2_retroactive.md"
+      ]
+    }
+  }
 }

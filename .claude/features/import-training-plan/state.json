@@ -169,5 +169,19 @@
       "Remove HISTORICAL header from both views once wired",
       "Fire the 6 import_* analytics events (constants exist, track() never called)"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "implementation",
+      "next_action_when_resumed": "Resume implementation; v7.7 M2 T15 will have backfilled timing.phases pre-resume",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/import-training-plan/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_import_training_plan.md"
+      ]
+    }
   }
 }

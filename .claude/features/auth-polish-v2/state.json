@@ -9,22 +9,86 @@
   "framework_version": "v7.6",
   "has_ui": true,
   "requires_analytics": true,
-  "parent_features": ["authentication", "onboarding-v2-auth-flow"],
+  "parent_features": [
+    "authentication",
+    "onboarding-v2-auth-flow"
+  ],
   "scope_summary": "Polish bundle for the existing auth surface: (1) forgot-email/password recovery flow, (2) refined biometric (FaceID/TouchID) unlock UI + post-sign-in activation prompt, (3) Google Sign In SDK + URL scheme activation (UI is already wired), (4) reserved follow-up: smart reminder management UI tracked separately.",
   "case_study_required": true,
   "case_study_type": "live_pm_workflow",
   "phases": {
-    "research": { "status": "approved", "approved_at": "2026-04-27T05:09:15Z", "sources": ["supabase.com/docs/guides/auth/native-mobile-deep-linking", "supabase.com/docs/reference/swift/auth-signinwithidtoken", "developer.apple.com/documentation/localauthentication", "github.com/google/GoogleSignIn-iOS", "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md"] },
-    "prd": { "status": "in_progress", "approved_at": null, "analytics_spec_complete": true, "events_added": 9, "params_added": 6, "screens_added": 5, "user_properties_added": 0 },
-    "tasks": { "status": "pending", "count": 0 },
-    "ux_or_integration": { "status": "pending", "type": "ux", "compliance_decision": null, "checklist_completed": false },
-    "implementation": { "status": "pending", "commits": [], "checklist_completed": false },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false, "eval_results": { "total_evals": 0, "passing": 0, "failing": 0, "eval_pass_rate": null, "min_eval_coverage_met": true, "uncovered_behaviors": [] } },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
-    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
-    "documentation": { "status": "pending" },
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-27T05:09:15Z",
+      "sources": [
+        "supabase.com/docs/guides/auth/native-mobile-deep-linking",
+        "supabase.com/docs/reference/swift/auth-signinwithidtoken",
+        "developer.apple.com/documentation/localauthentication",
+        "github.com/google/GoogleSignIn-iOS",
+        "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md"
+      ]
+    },
+    "prd": {
+      "status": "in_progress",
+      "approved_at": null,
+      "analytics_spec_complete": true,
+      "events_added": 9,
+      "params_added": 6,
+      "screens_added": 5,
+      "user_properties_added": 0
+    },
+    "tasks": {
+      "status": "pending",
+      "count": 0
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "type": "ux",
+      "compliance_decision": null,
+      "checklist_completed": false
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": [],
+      "checklist_completed": false
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false,
+      "eval_results": {
+        "total_evals": 0,
+        "passing": 0,
+        "failing": 0,
+        "eval_pass_rate": null,
+        "min_eval_coverage_met": true,
+        "uncovered_behaviors": []
+      }
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
     "metrics": {
-      "primary": { "name": "", "baseline": null, "target": null, "current": null },
+      "primary": {
+        "name": "",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
       "secondary": [],
       "guardrails": [],
       "instrumentation_ready": false,
@@ -39,13 +103,35 @@
     "time_source": "measured",
     "total_wall_time_note": "Sum of completed phase durations (research only). Updated as later phases close.",
     "phases": {
-      "research": { "started_at": "2026-04-27T05:00:38Z", "ended_at": "2026-04-27T05:09:15Z", "duration_minutes": 8.6, "paused_minutes": 0 },
-      "prd": { "started_at": "2026-04-27T05:09:15Z", "ended_at": null, "duration_minutes": null, "paused_minutes": 0 }
+      "research": {
+        "started_at": "2026-04-27T05:00:38Z",
+        "ended_at": "2026-04-27T05:09:15Z",
+        "duration_minutes": 8.6,
+        "paused_minutes": 0
+      },
+      "prd": {
+        "started_at": "2026-04-27T05:09:15Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      }
     },
     "sessions": [
-      { "started_at": "2026-04-27T05:00:38Z", "ended_at": null, "duration_minutes": null, "phases_active": ["research", "prd"] }
+      {
+        "started_at": "2026-04-27T05:00:38Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "phases_active": [
+          "research",
+          "prd"
+        ]
+      }
     ],
-    "parallel_context": { "concurrent_features": 1, "concurrent_feature_slugs": [], "is_stress_test": false }
+    "parallel_context": {
+      "concurrent_features": 1,
+      "concurrent_feature_slugs": [],
+      "is_stress_test": false
+    }
   },
   "complexity": {
     "cu_version": 2,
@@ -54,7 +140,11 @@
     "design_iteration_details": [],
     "is_first_of_kind": false,
     "factors_applied": [
-      { "factor": "Cross-feature", "value": 0.2, "reason": "Touches AuthManager, SignInService, BiometricService, GoogleSignIn integration, deep-link handler" }
+      {
+        "factor": "Cross-feature",
+        "value": 0.2,
+        "reason": "Touches AuthManager, SignInService, BiometricService, GoogleSignIn integration, deep-link handler"
+      }
     ],
     "computed_cu": null,
     "computed_cu_note": "Will be computed at session_end based on tasks count + factors"
@@ -62,7 +152,27 @@
   "cache_hits": [],
   "tasks": [],
   "transitions": [
-    { "from": "research", "to": "prd", "timestamp": "2026-04-27T05:09:15Z", "approved_by": "user", "note": "Phase 0 research approved. Open questions on activation timing, redirect URL scheme, and GIDClientID source defaulted to Claude's recommendations and surfaced explicitly in the PRD for confirmation." }
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-27T05:09:15Z",
+      "approved_by": "user",
+      "note": "Phase 0 research approved. Open questions on activation timing, redirect URL scheme, and GIDClientID source defaulted to Claude's recommendations and surfaced explicitly in the PRD for confirmation."
+    }
   ],
-  "github_issue_number": 143
+  "github_issue_number": 143,
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "prd",
+      "next_action_when_resumed": "Continue PRD phase; cache_hits will populate automatically from v7.7 M1 writer-path instrumentation when this feature resumes work",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/auth-polish-v2/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_auth_polish_v2.md"
+      ]
+    }
+  }
 }

@@ -275,5 +275,19 @@
       "T9",
       "T10"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "tasks",
+      "next_action_when_resumed": "Reconcile current_phase=tasks vs phases.implementation field; resume tasks phase",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/stats-v2/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_stats_v2.md"
+      ]
+    }
   }
 }

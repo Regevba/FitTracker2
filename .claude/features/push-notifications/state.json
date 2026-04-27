@@ -132,5 +132,19 @@
       "APNs remote push integration (deferred to Phase 2)",
       "Verify 5 PRD primary metrics have data after wire-up (currently 0 data)"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "implementation",
+      "next_action_when_resumed": "Resume implementation; coordinate with smart-reminders if both resume close in time",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/push-notifications/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_push_notifications.md"
+      ]
+    }
   }
 }
