@@ -280,6 +280,31 @@ v7.7 closed every gap that was mechanically or heuristically closable on 2026-04
 
 A `/schedule` run at 2026-05-04 will (a) verify B1 and append a journal entry, (b) verify B2 if it has fired, (c) flag any production-data gap that needs the snapshot-bundle fix.
 
+### 2026-04-27 21:30 UTC — M5 complete: v7.7 ready for merge
+- **Trigger:** T29-T35 prepared (with B1/B2 verification deferred to post-merge cron firings); all propagation systems updated to "ready for merge" status
+- **What changed:**
+  - T31 (`78c84fc`) — Section 99 Synthesis written (this section was the largest single edit of the session, ~150 lines covering metrics deltas + gated/advisory/human breakdown + 5-unclosable-gaps carry-forward + predecessor chain + tier-tag self-audit + commit-level summary + pre-mortem honesty re-statement + 8-item post-merge checklist)
+  - T32 (in `78c84fc`) — CLAUDE.md v7.7 stub replaced with comprehensive "ready-for-merge" section. Banner stays IN-PROGRESS until merge.
+  - T33 (in `78c84fc`) — master-plan-2026-04-15.md banner updated to "READY FOR MERGE" with cross-links to both PRs and Linear epic.
+  - T34 — Linear FIT-49 got a comprehensive closing comment via MCP. Status stays In Progress until merge.
+  - T35 — Notion v7.7 sub-page status updated from "In Progress" to "READY FOR MERGE" via MCP. Final-status section populated with the same metrics table + honest disclosures.
+- **Ledger delta:** none (no code changes in T31-T35; all documentation + external system propagation)
+- **Surprises / discoveries:**
+  - **Two-phase ship discipline [T3]:** the spec said T32-T35 mark v7.7 "shipped" — but PR #144 isn't merged yet (user action). Honest path: split T32-T35 into "ready-for-merge" preparation NOW + a "shipped" flip POST-MERGE. CLAUDE.md banner, master plan banner, Linear epic, and Notion page all carry "ready for merge" today; a follow-up commit + Linear status update + Notion edit flips them after merge.
+  - **B1/B2 time-gating decision [T3]:** the spec correctly anticipated cron-gated verifications. Synthesis honestly notes both as "earliest 2026-05-XX" with a +7d /schedule recommended. The framework's known mechanical limits include "pre-registered + measured" — verifying the cron firings is part of that contract.
+  - **post-v6 fully-adopted ratio [T1]:** stayed at 2/9 (22.2%) at synthesis time vs target ≥8/11 (72.7%). The metric requires post-v6 features to *actually `complete`* with populated cache_hits, which is forward-only behavior. Synthesis §6 / 99.1 notes this honestly. The gate is in place; the metric uplifts as natural framework usage continues.
+- **Tier tags applied:** synthesis content T1 (every metric traces to ledger reads, frozen 2026-04-27); deferred-verification predictions T2; design-decision rationale T3.
+
+### v7.7 IS READY FOR MERGE.
+
+**Awaiting:**
+- PR #144 merge (FitTracker2)
+- PR #7 merge (fitme-story)
+- B1 cron firing ~2026-05-04
+- B2 cron firing ~2026-05-03 to -06
+
+**Resume signals fire on PR #144 merge:** 6 paused features (app-store-assets, auth-polish-v2, import-training-plan, onboarding-v2-retroactive, push-notifications, stats-v2) become unblocked.
+
 ## Section 100 — 90-day Retrospective (written +90 days post-merge)
 
 <!-- Populate via /schedule agent at +90 days. See plan §M5 / T35.7. -->
