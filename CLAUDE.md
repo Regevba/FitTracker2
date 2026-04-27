@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6, shipped 2026-04-24 → 2026-04-25)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7-IN-PROGRESS, shipped 2026-04-24 → 2026-04-25 → ___)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -86,6 +86,9 @@ This framework exists because we empirically observed 7+ features sit in "shippe
 - **Per-PR review bot** — [`.github/workflows/pr-integrity-check.yml`](.github/workflows/pr-integrity-check.yml) runs schema-check + integrity-check + measurement-adoption against every PR HEAD, captures the `origin/main` baseline via worktree, and sets the `pm-framework/pr-integrity` commit status. `failure` if any required command exits non-zero or if the PR introduces NEW findings vs main. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place.
 - **Weekly framework-status cron** — [`.github/workflows/framework-status-weekly.yml`](.github/workflows/framework-status-weekly.yml) fires Mondays 05:00 UTC. Appends a snapshot to [`.claude/shared/measurement-adoption-history.json`](.claude/shared/measurement-adoption-history.json) (dedup by date). Opens `framework-status` issue on regression (decrease in `fully_adopted` or `any_adopted`).
 - **Append-only adoption history** — `make measurement-adoption` now writes a dated snapshot to the history ledger; trend mode unlocks after 3 snapshots accumulate.
+
+**v7.7 Validity Closure (in progress, started 2026-04-27):**
+Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory. Adds 4 new write-time hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) plus one cycle-time advisory check (`TIER_TAG_LIKELY_INCORRECT`). Ships a framework-health dashboard at fitme-story `/control-room/framework` that surfaces every check, the human-action checklist (D1+D2 deferred items), and trend lines once Tier 1.1 + 3.2 trend modes unlock. Spec at [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md). Live case study at [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md). Final v7.7 section will replace this stub at merge.
 
 ## Known Mechanical Limits
 
