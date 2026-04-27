@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.6",
   "started_at": "2026-04-26T05:02:44Z",
-  "updated_at": "2026-04-26T11:15:32Z",
+  "updated_at": "2026-04-27T04:49:52Z",
   "events": [
     {
       "timestamp": "2026-04-26T05:02:44Z",
@@ -190,6 +190,40 @@
       "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-26T13:10:22Z",
+      "event_type": "cache_hit",
+      "phase": "implementation",
+      "summary": "Blind-switch verification: 4/5 curls green on production fitme-story.vercel.app. /control-room returns 401 with WWW-Authenticate Basic realm; robots.txt Disallow present; sitemap.xml has 0 control-room URLs; / showcase remains 200 public.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L3",
+        "key": "project:vercel-deployment-verification",
+        "type": "adapted",
+        "skill": "pm-workflow"
+      }
+    },
+    {
+      "timestamp": "2026-04-27T04:49:52Z",
+      "event_type": "cache_hit",
+      "phase": "implementation",
+      "summary": "T11 + T12 shipped to fitme-story (commit 8edc96f). verify-blind-switch.sh + GitHub Action via deployment_status event (no VERCEL_TOKEN needed). 5/5 assertions pass against production. Also marking T5 + T7 done in state.json (Option B vercel.json + local-dev sync verified earlier this session).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L3",
+        "key": "project:gha-deployment-status-pattern",
+        "type": "adapted",
+        "skill": "pm-workflow"
+      }
     }
   ]
 }
