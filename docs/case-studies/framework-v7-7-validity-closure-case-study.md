@@ -122,6 +122,29 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
   - **Validator factored cleanly into existing patterns [T3]:** T7 mirrored T3's `check_cache_hits_empty_post_v6` pattern exactly; integrity-check.py's check-aggregator accepted CU_V2_INVALID with a single new dispatch entry. No structural refactor needed.
 - **Tier tags applied:** check-code count delta + test count + live-tree-clean T1; PR train architecture decision T3.
 
+### 2026-04-27 19:30 UTC — M2 complete: linkage + doc-debt + active backfill
+- **Trigger:** PR-3 + PR-4 + PR-5 logical milestones all merged into the train (8 commits: T9-T16)
+- **What changed:**
+  - **PR-3 (T9-T11):** `app-store-assets` exempt-tagged; `onboarding-v2-retroactive` linked to stub case study; new `STATE_NO_CASE_STUDY_LINK` write-time hook with 4 unit tests + symmetry-fix for `parent_case_study` field that v7.6 cycle-time check accepts but the new write-time hook initially didn't (caught by implementer at live-tree scan).
+  - **PR-4 (T12-T14):** new `CASE_STUDY_MISSING_FIELDS` write-time hook (forward-only ≥ 2026-04-28); `scripts/backfill-case-study-fields.py` inference script; bulk backfill applied to 40 case studies. Side-fix: `documentation-debt-report.py` updated to detect YAML frontmatter keys alongside body patterns (closed a separate gap).
+  - **PR-5 (T15-T16):** `timing.phases` backfilled for push-notifications/import-training-plan/stats-v2 from `transitions[]` arrays + git log corroboration; CLAUDE.md T16 note explaining v7.6's `PHASE_TRANSITION_NO_TIMING` hook prevents recurrence.
+- **Ledger delta [T1]:**
+  - State↔case-study linkage: 95.5% → **100%** (gated)
+  - work_type coverage: 60% → **100%** (gated forward via T12 hook)
+  - dispatch_pattern: 8.9% → **95.7%** (33 TODO markers reflect genuinely-absent pre-PRD-structure data; not a heuristic failure)
+  - success_metrics: 22.2% → **95.7%** (same)
+  - kill_criteria: 28.9% → **95.7%** (same)
+  - per_phase_timing overall: 7/45 (15.6%) → **10/45 (22.2%)**; post-v6 ratio unchanged at 6/9 because the 3 backfilled features are all pre-v6
+  - Total framework write-time gates: 21 → **23** (+`STATE_NO_CASE_STUDY_LINK`, +`CASE_STUDY_MISSING_FIELDS`)
+  - Total framework gates (write + cycle): 23 → **25**
+- **Surprises / discoveries:**
+  - **PR-3 symmetry-fix [T3]:** the v7.6 cycle-time `NO_CS_LINK` accepted `parent_case_study` as a valid link, but the new write-time `STATE_NO_CASE_STUDY_LINK` initially didn't. 5 features (ai-engine-v2, ai-recommendation-ui, home-status-goal-card, metric-tile-deep-linking, readiness-score-v2) tripped the new gate on first scan. Implementer mirrored the cycle-time logic; integrity-check.py also got `no_case_study_required` parity. **Lesson [T3]:** when adding a write-time mirror of a cycle-time check, ALWAYS audit the cycle-time check for special cases first — symmetry is a value, not a default.
+  - **PR-4 backfill heuristic accuracy [T1]:** work_type 1 TODO out of 40 (97.5% inference accuracy); dispatch_pattern 0 TODOs out of 40 (100%); success_metrics + kill_criteria 33 TODOs out of 40 (82.5% genuinely absent in pre-PRD audit/chore documents). Heuristics work; the 33 TODOs reflect data debt the heuristics correctly identify rather than a heuristic failure.
+  - **PR-4 silent doc-debt-report fix [T3]:** the implementer noticed during dogfooding that `documentation-debt-report.py` was scanning case-study body for fields rather than frontmatter, missing fields that were in YAML frontmatter only. Fixed inline. Independent of the v7.7 spec but an honest improvement.
+  - **PR-5 transitions[] is more reliable than git log [T3]:** state.json `transitions[]` array proved a better source for phase-boundary timestamps than git log alone — git commits don't cleanly map to phase transitions, but transitions[] does. Implementer used transitions[] as primary source with git log as corroboration. All 3 features carry `time_source: "git-backfill"` to distinguish from live-measured data.
+  - **PR-5 measurement uplift smaller than expected [T2]:** post-v6 per_phase_timing stayed at 6/9 because all 3 backfilled features predate the v6 ship date 2026-04-16 (push-notifications 2026-04-12, import-training-plan 2026-04-11, stats-v2 2026-04-10). They're in the pre-v6 bucket by definition. Overall per_phase_timing did rise 7→10. The post-v6 ratio uplift was a misprediction in the spec.
+- **Tier tags applied:** ledger numbers + check-code count + heuristic accuracy T1; symmetry-fix lesson + transitions[] discovery + silent fix T3; corrected post-v6 ratio prediction T2.
+
 ## Section 99 — Synthesis (written at v7.7 merge)
 
 <!-- Populate at M5. See plan §M5 / T31. -->
