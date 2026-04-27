@@ -1,6 +1,14 @@
 # Case Study: Framework Measurement v6.0 — Instrumentation Infrastructure
 
 **Date written:** 2026-04-16
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
 
 > **Core question:** Can the PM framework measure itself precisely enough to produce reproducible, deterministic performance data across features — and does self-referential measurement work (the feature measuring itself being built)?
 

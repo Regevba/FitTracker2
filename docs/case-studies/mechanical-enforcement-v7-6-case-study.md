@@ -5,6 +5,17 @@
 **Trigger:** Residual Class B → Class A gap left by v7.5; explicit user approval to "close the gap" on 2026-04-25
 **Audit predecessor:** Google Gemini 2.5 Pro independent audit, 2026-04-21 ([archive](meta-analysis/independent-audit-2026-04-21-gemini.md), [trust-page mirror](https://fitme-story.vercel.app/trust/audits/2026-04-21-gemini))
 **Companion docs:** [v7.5 case study](data-integrity-framework-v7.5-case-study.md), [unclosable-gaps inventory](meta-analysis/unclosable-gaps.md), [Phase 2–4 implementation plan](../superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md)
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Enhancement |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > **Outlier flag (read me first):** This case study describes a single-session, dogfooded framework rework whose own measurement infrastructure (v6.0 forward instrumentation) was **applied retroactively** to data that pre-dated the instrumentation. See §10 *"Outlier Limitations"* for why the numbers reported here cannot be compared apples-to-apples with feature case studies built under organic v6.0+ measurement. This case study is itself an outlier in the corpus and is labeled as such.
 

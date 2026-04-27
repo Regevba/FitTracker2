@@ -12,7 +12,9 @@
   "spec": "docs/superpowers/specs/2026-04-16-meta-analysis-full-system-audit-design.md",
   "plan": "docs/superpowers/plans/2026-04-16-meta-analysis-full-system-audit.md",
   "timing": {
-    "time_source": "measured",
+    "time_source": "measured-incomplete",
+    "total_wall_time_minutes": 60,
+    "total_wall_time_note": "Sum of phases with both started_at and ended_at (research+tasks). Implementation phase started 2026-04-16T01:00:00Z but ended_at was never recorded; documentation phase had no timing instrumentation. 60 is the floor, not the actual wall time.",
     "session_start": "2026-04-16T00:00:00Z",
     "session_end": null,
     "phases": {

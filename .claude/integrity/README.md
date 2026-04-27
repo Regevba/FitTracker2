@@ -28,6 +28,9 @@ Every 72 hours, a GitHub Actions workflow runs `scripts/integrity-check.py` agai
    **Feature-level PR resolution check** (added 2026-04-21 per Gemini audit Tier 1.2):
    - `PR_NUMBER_UNRESOLVED` — `state.json → phases.merge.pr_number` points to a PR that does not resolve on GitHub. Catches the failure mode where a PR was recorded in state.json before the PR actually opened, or where the PR was deleted after recording. Uses the same cached `gh pr list` results as `BROKEN_PR_CITATION` (single `gh` call per cycle). Skipped gracefully if `gh` is unavailable.
 
+   **Feature-level cu_v2 schema check** (added 2026-04-27 per v7.7 Validity Closure / M1 / T7):
+   - `CU_V2_INVALID` — `state.json → cu_v2` violates the schema: missing one of the 4 expected factors (`complexity`, `blast_radius`, `novelty`, `verification_difficulty`); a factor outside [0, 1]; `total` not within tolerance 0.01 of `sum(factors.values())`; or `tier_class` not in `{A_high, B_medium, C_low}`. Pre-v6 features without a `cu_v2` field are exempt. Pairs with the v7.7 write-time pre-commit gate of the same name. Catches structural / arithmetic errors only — does NOT validate factor *magnitude* correctness, which stays a v7.6 Class B gap (judgment-based).
+
 2. **Inventories** every case study under `docs/case-studies/` — path, size, first-commit date.
 
 3. **Produces a snapshot JSON** at `.claude/integrity/snapshots/<timestamp>.json` with the full feature + case-study inventory and all findings.

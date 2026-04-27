@@ -50,11 +50,38 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 LOGS_DIR = REPO_ROOT / ".claude" / "logs"
 
+# Path to the T6 cu_v2 validator (hyphen prevents a direct import; we use
+# importlib.util — same pattern used in test_check_state_schema.py to load
+# check-state-schema.py itself).  The module is loaded once at first call and
+# cached so the import overhead is paid only once per script invocation.
+_VALIDATE_CU_V2_PATH = Path(__file__).resolve().parent / "validate-cu-v2.py"
+_validate_cu_v2_module = None
+
+
+def _get_validate_cu_v2():
+    """Lazily load validate-cu-v2.py and return the module."""
+    global _validate_cu_v2_module
+    if _validate_cu_v2_module is None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "_validate_cu_v2", _VALIDATE_CU_V2_PATH
+        )
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _validate_cu_v2_module = mod
+    return _validate_cu_v2_module
+
 # How fresh the most-recent phase-transition log event must be to satisfy the
 # PHASE_TRANSITION_NO_LOG check. 15 minutes is deliberately generous to
 # accommodate multi-step commits (log first, then state.json, then commit)
 # without false positives. The 72h cycle is the belt for anything slower.
 PHASE_EVENT_FRESHNESS_MIN = 15
+
+# v6.0 shipped 2026-04-16. Post-v6 features are expected to have at least one
+# cache_hits[] entry recorded by the M1 instrumentation (scripts/log-cache-hit.py)
+# before reaching current_phase=complete. Features created before this date are
+# exempt — they predate the adoption requirement.
+V6_SHIP_DATE = "2026-04-16"
 
 # Event types that count as satisfying a phase transition.
 PHASE_TRANSITION_EVENT_TYPES = {
@@ -195,6 +222,121 @@ def _recent_phase_event(log: dict, target_phase: str | None, freshness_min: int)
     return None
 
 
+def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
+    """Reject current_phase=complete when post-v6 feature has empty cache_hits[].
+
+    Closes the writer-path adoption gap (issue #140). v7.6 hooks check key
+    presence; v7.7 this hook checks for non-empty content on post-v6 features
+    at completion. M1 instrumentation (scripts/log-cache-hit.py) is expected
+    to populate cache_hits[] on every cache read; an empty array at completion
+    means either the instrumentation is missing for this feature's cache calls,
+    or the cache was never read.
+
+    Returns a list with one finding dict (code=CACHE_HITS_EMPTY_POST_V6) if the
+    check fails, or an empty list if the check passes or is not applicable.
+    """
+    findings: list[dict] = []
+    created = state.get("created_at", "")
+    current_phase = state.get("current_phase", "")
+    cache_hits = state.get("cache_hits", None)
+
+    # Pre-v6 features are exempt from the adoption requirement.
+    if not created or created < V6_SHIP_DATE:
+        return findings
+    # Gate only fires at completion — in-progress features are not yet blocked.
+    if current_phase != "complete":
+        return findings
+    # If cache_hits key is absent entirely or has entries, no finding.
+    if cache_hits is None or len(cache_hits) > 0:
+        return findings
+
+    findings.append({
+        "code": "CACHE_HITS_EMPTY_POST_V6",
+        "feature": state.get("feature_name", "unknown"),
+        "message": (
+            "Post-v6 feature reached current_phase=complete with empty "
+            "cache_hits[]. M1 instrumentation should populate this on "
+            "every cache read; an empty array at completion means either "
+            "the instrumentation is missing for this feature's cache "
+            "calls, or the cache was never read. See "
+            "scripts/log-cache-hit.py and issue #140."
+        ),
+        "severity": "failure",
+    })
+    return findings
+
+
+EXEMPT_CASE_STUDY_TYPES = {"no_case_study_required", "pre_pm_workflow_backfill", "roundup"}
+
+
+def check_state_no_case_study_link(state: dict) -> list[dict]:
+    """Reject current_phase=complete without case_study link or exempt tag.
+
+    Closes the write-time linkage gate (STATE_NO_CASE_STUDY_LINK). A feature
+    reaching completion without a case study link (direct or via
+    parent_case_study) or an explicit exempt tag is a process violation:
+    every shipped feature either has a narrative or a recorded reason why
+    one was waived.
+
+    Exempt tags (EXEMPT_CASE_STUDY_TYPES):
+      - no_case_study_required  (new in v7.7 — operational artifacts)
+      - pre_pm_workflow_backfill (v7.6 — pre-PM-workflow features)
+      - roundup                  (v7.6 — covered by consolidation case study)
+
+    Returns a list with one finding dict (code=STATE_NO_CASE_STUDY_LINK) if the
+    check fails, or an empty list if the check passes or is not applicable.
+    """
+    findings: list[dict] = []
+    if state.get("current_phase") != "complete":
+        return findings
+    has_link = bool(state.get("case_study") or state.get("parent_case_study"))
+    is_exempt = state.get("case_study_type") in EXEMPT_CASE_STUDY_TYPES
+    if has_link or is_exempt:
+        return findings
+    findings.append({
+        "code": "STATE_NO_CASE_STUDY_LINK",
+        "feature": state.get("feature_name", "unknown"),
+        "message": (
+            "Feature reached current_phase=complete without case_study / "
+            "parent_case_study link or case_study_type exempt tag. Add a "
+            "case_study field pointing to "
+            "docs/case-studies/<feature>-case-study.md, or a "
+            "parent_case_study field pointing to the parent case study, OR "
+            "add case_study_type: 'no_case_study_required' (or "
+            "'pre_pm_workflow_backfill' / 'roundup') with "
+            "case_study_exempt_reason."
+        ),
+        "severity": "failure",
+    })
+    return findings
+
+
+def check_cu_v2_schema(state: dict) -> list[dict]:
+    """Validate the cu_v2 field in a state dict using the T6 validator.
+
+    Delegates to validate-cu-v2.py's `validate()` function (importlib.util
+    import — no rename needed; same pattern used by tests). Pre-v6 features
+    that lack the cu_v2 key are exempt and pass immediately.
+
+    Returns a list with one finding dict per violation (code=CU_V2_INVALID),
+    or an empty list when the state passes or is exempt.
+    """
+    mod = _get_validate_cu_v2()
+    raw_errors: list[str] = mod.validate(state)
+    if not raw_errors:
+        return []
+    feature = state.get("feature_name", "unknown")
+    return [
+        {
+            "code": "CU_V2_INVALID",
+            "feature": feature,
+            "message": err,
+            "severity": "failure",
+        }
+        for err in raw_errors
+    ]
+
+
 def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     """Return a list of human-readable violation messages for one file.
 
@@ -232,6 +374,32 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
                     f"resolve on GitHub. Fix the number or remove the field "
                     f"before advancing to the merge phase."
                 )
+
+    # Check 5: CACHE_HITS_EMPTY_POST_V6 — post-v6 features must have at least
+    # one cache_hits[] entry recorded before reaching current_phase=complete.
+    # This runs on both staged and full-corpus scans (unlike the phase-transition
+    # checks it doesn't need a diff — it inspects current state only).
+    for finding in check_cache_hits_empty_post_v6(d):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
+
+    # Check 7: STATE_NO_CASE_STUDY_LINK — current_phase=complete requires a
+    # case_study link or an EXEMPT_CASE_STUDY_TYPES tag. Closes the v7.7 M2
+    # linkage gate (T11). Runs on both staged and full-corpus scans.
+    for finding in check_state_no_case_study_link(d):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
+
+    # Check 6: CU_V2_INVALID — validates the cu_v2 field schema when present.
+    # Pre-v6 features that lack the cu_v2 key are exempt (validator returns []).
+    # Runs on both staged and full-corpus scans (no diff needed — checks content
+    # only).
+    for finding in check_cu_v2_schema(d):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
 
     # Checks 3 + 4: phase-transition gates. Skip if we're doing a full-corpus
     # scan — those checks only make sense at commit time.

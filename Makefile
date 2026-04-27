@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -88,6 +88,14 @@ integrity-snapshot:
 		python3 scripts/integrity-check.py --snapshot "$${new}"; \
 	fi; \
 	echo "Snapshot: $${new}"
+
+# v7.7 M3 heuristic tier-tag correctness checker (advisory).
+# Extracts T1-tagged quantitative claims from case studies and cross-references
+# against measurement-adoption.json + documentation-debt.json within 5% tolerance.
+# T2/T3 claims pass through. Pre-2026-04-21 case studies exempt.
+# Advisory: exits 0 even when findings are emitted. Promotion to gate at +7d review (T20).
+validate-tier-tags:
+	@python3 scripts/validate-tier-tags.py --all
 
 # Validate state.json schema across all features (pass if every file uses the
 # canonical `current_phase` key instead of the legacy `phase` key).

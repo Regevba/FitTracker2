@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6, shipped 2026-04-24 → 2026-04-25)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7-IN-PROGRESS, shipped 2026-04-24 → 2026-04-25 → ___)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -59,12 +59,12 @@ The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defens
 - `SCHEMA_DRIFT` — pre-commit hook rejects legacy `phase` key; canonical is `current_phase`. Install via `make install-hooks`.
 - `PR_NUMBER_UNRESOLVED` — pre-commit hook verifies `phases.merge.pr_number` against a cached `gh pr list` result before state.json can record it; skipped gracefully when `gh` is unavailable.
 - `PHASE_TRANSITION_NO_LOG` (v7.6) — pre-commit hook rejects a `current_phase` change in a state.json without a corresponding event in `.claude/logs/<feature>.log.json` within the last 15 minutes.
-- `PHASE_TRANSITION_NO_TIMING` (v7.6) — pre-commit hook rejects a `current_phase` change without `timing.phases.<new_phase>.started_at` and, when there was a previous phase, `timing.phases.<old_phase>.ended_at`.
+- `PHASE_TRANSITION_NO_TIMING` (v7.6) — pre-commit hook rejects a `current_phase` change without `timing.phases.<new_phase>.started_at` and, when there was a previous phase, `timing.phases.<old_phase>.ended_at`. **T16 note (v7.7):** this hook means the timing-backfill scenario resolved by v7.7 T15 (push-notifications, import-training-plan, stats-v2 had zero timing coverage because they predated mechanical enforcement) will not recur for any feature created post-v7.6. The v7.7 T15 pass addresses pre-existing data debt only — no further backfill is required for features that advanced phases after 2026-04-25.
 - `BROKEN_PR_CITATION` (v7.6, write-time) — pre-commit hook rejects case-study commits that cite `PR #N` or `pull/N` if the number does not resolve in the cached `gh pr list` result; skipped gracefully when `gh` is unavailable. Cycle-level `BROKEN_PR_CITATION` still runs as a safety net.
 - `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) — pre-commit hook rejects scoped case-study commits (forward-only, dated ≥ 2026-04-21) when the file has no T1/T2/T3 tier tag at all. It checks tag presence, not every quantitative claim.
 
 **Cycle-time gates (fire every 72h via GitHub Actions):**
-Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. 12 cycle-time check codes: `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`.
+Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. 13 cycle-time check codes: `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `CU_V2_INVALID` (v7.7).
 
 - **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"` or `"roundup"` bypass the sub-phase vocabulary check.
 - **Local usage:** `make integrity-check` (findings only) or `make integrity-snapshot` (write + diff vs previous).
@@ -86,6 +86,33 @@ This framework exists because we empirically observed 7+ features sit in "shippe
 - **Per-PR review bot** — [`.github/workflows/pr-integrity-check.yml`](.github/workflows/pr-integrity-check.yml) runs schema-check + integrity-check + measurement-adoption against every PR HEAD, captures the `origin/main` baseline via worktree, and sets the `pm-framework/pr-integrity` commit status. `failure` if any required command exits non-zero or if the PR introduces NEW findings vs main. Sticky comment with marker `<!-- pm-framework-pr-integrity-bot -->` updates in place.
 - **Weekly framework-status cron** — [`.github/workflows/framework-status-weekly.yml`](.github/workflows/framework-status-weekly.yml) fires Mondays 05:00 UTC. Appends a snapshot to [`.claude/shared/measurement-adoption-history.json`](.claude/shared/measurement-adoption-history.json) (dedup by date). Opens `framework-status` issue on regression (decrease in `fully_adopted` or `any_adopted`).
 - **Append-only adoption history** — `make measurement-adoption` now writes a dated snapshot to the history ledger; trend mode unlocks after 3 snapshots accumulate.
+
+**v7.7 Validity Closure (ready for merge as of 2026-04-27):**
+Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
+
+- **FitTracker2 PR #144** — 5 new gates: 4 write-time pre-commit hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) + 1 cycle-time check code (`CU_V2_INVALID`) + 1 cycle-time advisory (`TIER_TAG_LIKELY_INCORRECT`, kill criterion 2 fired at baseline so it ships **advisory permanent**). Plus bulk-backfill of 32 case-study frontmatters and timing.phases backfill on 3 paused features.
+- **fitme-story PR #7** — framework-health dashboard at `/control-room/framework` surfacing all 19 mechanical gates + 1 advisory + the D1/D2 human-action checklist + Tier 1.1/3.2 trend charts (charts unlock as cron snapshots accumulate).
+
+**Outcome at synthesis time (2026-04-27):**
+
+| Dimension | Pre-v7.7 | Post-v7.7 |
+|---|---|---|
+| state↔case-study linkage | 95.5% | **100%** (gated) |
+| doc-debt: work_type | 60% | **100%** (gated forward) |
+| doc-debt: success_metrics / kill_criteria / dispatch_pattern | 8.9–28.9% | **95.7%** (33 TODO markers reflect genuinely-absent pre-PRD data) |
+| `cache_hits[]` post-v6 | 33.3% | gated to 100% on next write (issue #140 closed) |
+| `cu_v2` schema | unchecked | 100% schema-validated |
+| Total framework mechanisms | 18 (12 cycle + 6 write-time) | **25 gates + 1 advisory** |
+
+**Cron-gated post-merge verifications (B1+B2):**
+- Tier 1.1 trend mode unlocks at 3 history snapshots — earliest **2026-05-04** (Monday cron appends snapshot #3).
+- Tier 3.2 trend mode unlocks at 3 cycle snapshots — earliest **~2026-05-03 to -06** (72h cycle accumulates 3rd snapshot).
+
+A scheduled +7d agent will append the verification + journal entry once both fire, and flip this section's banner from "ready for merge" to "shipped 2026-05-XX".
+
+Spec: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
+Plan: [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
+Live case study with the full live append-only journal + Section 99 synthesis: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md).
 
 ## Known Mechanical Limits
 

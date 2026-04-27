@@ -10,11 +10,13 @@ When run with --compare-to, also emits a diff vs a previous snapshot.
 Checks:
     Feature-level (from state.json):
         PHASE_LIE, TASK_LIE, NO_CS_LINK, V2_FILE_MISSING,
-        PARTIAL_SHIP_TERMINAL, SCHEMA_DRIFT, NO_PHASE, NO_STATE, INVALID_JSON
+        PARTIAL_SHIP_TERMINAL, SCHEMA_DRIFT, NO_PHASE, NO_STATE, INVALID_JSON,
+        PR_NUMBER_UNRESOLVED, CU_V2_INVALID
 
     Case-study-level (Auditor Agent, added 2026-04-21):
         BROKEN_PR_CITATION — PR number cited in a .md does not resolve via `gh pr view`.
         Skipped gracefully if `gh` is unavailable or unauthenticated.
+        CASE_STUDY_MISSING_TIER_TAGS — post-2026-04-21 case study lacks T1/T2/T3 tags.
 
 Usage:
     scripts/integrity-check.py --snapshot .claude/integrity/snapshots/2026-04-20T04-00Z.json
@@ -44,6 +46,23 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
+
+# T7: load validate-cu-v2.py (importlib.util — hyphen prevents direct import).
+# Cached at module level so the load happens once per integrity-check run.
+_validate_cu_v2_module = None
+
+
+def _get_validate_cu_v2():
+    """Lazily load validate-cu-v2.py and return the module (cached)."""
+    global _validate_cu_v2_module
+    if _validate_cu_v2_module is None:
+        import importlib.util
+        _path = REPO_ROOT / "scripts" / "validate-cu-v2.py"
+        spec = importlib.util.spec_from_file_location("_validate_cu_v2", _path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _validate_cu_v2_module = mod
+    return _validate_cu_v2_module
 
 COMPLETE_PHASE_STATUSES = {"approved", "complete", "completed", "done", "skipped", "closed"}
 OPEN_TASK_STATUSES = {"pending", "in_progress", "open", "blocked"}
@@ -185,10 +204,14 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
                            + (",…" if len(open_tasks) > 10 else ""),
             })
 
-    # Check #3: missing case-study linkage (excluding roundup + backfill)
+    # Check #3: missing case-study linkage (excluding roundup + backfill +
+    # no_case_study_required). Note: is_phase_check_exempt covers
+    # pre_pm_workflow_backfill and roundup; no_case_study_required is a v7.7
+    # addition for operational artifacts that warrant no narrative.
+    _NO_CS_EXEMPT_TYPES = {"roundup", "no_case_study_required"}
     if is_terminal and not is_phase_check_exempt:
         has_cs = bool(d.get("case_study") or d.get("parent_case_study"))
-        if not has_cs and d.get("case_study_type") != "roundup":
+        if not has_cs and d.get("case_study_type") not in _NO_CS_EXEMPT_TYPES:
             findings.append({
                 "feature": feat, "severity": "MISSING", "code": "NO_CS_LINK",
                 "message": "terminal phase but no case_study / parent_case_study / case_study_type linkage",
@@ -235,6 +258,29 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
                     "message": f"phases.merge.pr_number = {pr_number} "
                                f"does not resolve on GitHub",
                 })
+
+    # Check #8: CU_V2_INVALID — validate the cu_v2 field when present.
+    # (T7, added 2026-04-27). Pre-v6 features without the cu_v2 key are
+    # exempt; the validator returns [] for them. Uses the same importlib.util
+    # loader as check-state-schema.py to avoid subprocess overhead.
+    try:
+        cu_v2_errors = _get_validate_cu_v2().validate(d)
+        for err_msg in cu_v2_errors:
+            findings.append({
+                "feature": feat,
+                "severity": "INCONSISTENT",
+                "code": "CU_V2_INVALID",
+                "message": err_msg,
+            })
+    except Exception as exc:
+        # If the validator itself errors (e.g. missing file), emit a WARN
+        # rather than crashing the whole integrity-check run.
+        findings.append({
+            "feature": feat,
+            "severity": "WARN",
+            "code": "CU_V2_INVALID",
+            "message": f"validator raised exception: {exc}",
+        })
 
     return summary, findings
 
@@ -316,6 +362,40 @@ _DATE_WRITTEN_PAT = re.compile(
 # Match T1/T2/T3 labels in their canonical forms:
 #   "(T1)", "(T2)", "(T3)", "T1 — ...", "T2: ...", etc.
 _TIER_TAG_PAT = re.compile(r"\bT[123]\b[\s—:.\)\(]")
+
+
+def check_tier_tags_advisory() -> list[dict]:
+    """Run validate-tier-tags.py; emit findings as ADVISORY (not failure).
+
+    Added v7.7 M3 T18. This is the 14th cycle-time check code.
+    Advisory severity: appears in output but does NOT cause non-zero exit
+    and is NOT counted in finding_count (to preserve regression baseline).
+    Promotion to gating decided +7 days based on FP-rate baseline (T19).
+    """
+    try:
+        result = subprocess.run(
+            ["python3", str(REPO_ROOT / "scripts" / "validate-tier-tags.py"),
+             "--all"],
+            capture_output=True, text=True,
+            cwd=str(REPO_ROOT),
+        )
+        findings = []
+        for line in result.stdout.strip().split("\n"):
+            if line:
+                findings.append({
+                    "feature": line.split(":")[1].strip() if ":" in line else "unknown",
+                    "severity": "ADVISORY",
+                    "code": "TIER_TAG_LIKELY_INCORRECT",
+                    "message": line,
+                })
+        return findings
+    except Exception as exc:
+        return [{
+            "feature": "validate-tier-tags",
+            "severity": "ADVISORY",
+            "code": "TIER_TAG_LIKELY_INCORRECT",
+            "message": f"heuristic checker raised exception: {exc}",
+        }]
 
 
 def audit_case_study_tier_tags() -> list[dict]:
@@ -400,6 +480,15 @@ def build_snapshot(snapshot_trigger: str) -> dict:
     findings.extend(audit_case_study_citations(_PR_CACHE))
     findings.extend(audit_case_study_tier_tags())
 
+    # v7.7 M3 T18: advisory tier-tag correctness heuristic (14th check code).
+    # Advisory findings are included in findings[] for observability, but are
+    # NOT counted in finding_count so they don't trigger regression detection
+    # or non-zero exit. Promotion to gating at +7d T20 review.
+    advisory_findings = check_tier_tags_advisory()
+    all_findings = findings + advisory_findings
+
+    non_advisory_count = len(findings)
+
     return {
         "timestamp": now_iso(),
         "commit_head": git_head(),
@@ -409,10 +498,11 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         },
         "feature_count": len(feature_summaries),
         "case_study_count": len(discover_case_studies()),
-        "finding_count": len(findings),
+        "finding_count": non_advisory_count,
+        "advisory_finding_count": len(advisory_findings),
         "findings_by_severity": {
-            sev: sum(1 for x in findings if x["severity"] == sev)
-            for sev in ["CRITICAL", "INCONSISTENT", "MISSING", "WARN"]
+            sev: sum(1 for x in all_findings if x["severity"] == sev)
+            for sev in ["CRITICAL", "INCONSISTENT", "MISSING", "WARN", "ADVISORY"]
         },
         "auditor_agent": {
             "citation_check_ran": citation_check_ran,
@@ -420,7 +510,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         },
         "features": feature_summaries,
         "case_studies": discover_case_studies(),
-        "findings": findings,
+        "findings": all_findings,
     }
 
 
@@ -468,9 +558,12 @@ def diff_snapshots(current: dict, previous: dict) -> dict:
 
 
 def render_findings(findings: list[dict]) -> str:
+    non_advisory = [f for f in findings if f.get("severity") != "ADVISORY"]
+    advisory = [f for f in findings if f.get("severity") == "ADVISORY"]
     if not findings:
         return "✅ No findings."
-    lines = [f"{len(findings)} findings:\n"]
+    lines = [f"{len(non_advisory)} findings"
+             + (f" + {len(advisory)} advisory:" if advisory else ":") + "\n"]
     by_sev: dict[str, list] = {}
     for f in findings:
         by_sev.setdefault(f["severity"], []).append(f)
@@ -480,6 +573,11 @@ def render_findings(findings: list[dict]) -> str:
         lines.append(f"## {sev} ({len(by_sev[sev])})")
         for f in sorted(by_sev[sev], key=lambda x: x["feature"]):
             lines.append(f"  - {f['feature']} [{f['code']}]: {f['message']}")
+        lines.append("")
+    if "ADVISORY" in by_sev:
+        lines.append(f"## ADVISORY (not gating) ({len(by_sev['ADVISORY'])})")
+        for f in sorted(by_sev["ADVISORY"], key=lambda x: x["feature"]):
+            lines.append(f"  - [{f['code']}]: {f['message']}")
         lines.append("")
     return "\n".join(lines)
 
@@ -503,8 +601,12 @@ def main():
     snapshot = build_snapshot(args.snapshot_trigger)
     print(f"Features scanned: {snapshot['feature_count']}")
     print(f"Case studies: {snapshot['case_study_count']}")
-    print(f"Findings: {snapshot['finding_count']} "
-          f"({', '.join(f'{k}={v}' for k, v in snapshot['findings_by_severity'].items() if v)})")
+    advisory_count = snapshot.get("advisory_finding_count", 0)
+    advisory_suffix = f" + {advisory_count} advisory" if advisory_count else ""
+    non_advisory_sevs = {k: v for k, v in snapshot['findings_by_severity'].items()
+                         if v and k != "ADVISORY"}
+    print(f"Findings: {snapshot['finding_count']}{advisory_suffix} "
+          f"({', '.join(f'{k}={v}' for k, v in non_advisory_sevs.items())})")
     print()
     print(render_findings(snapshot["findings"]))
 

@@ -1,14 +1,25 @@
 # UI-Audit Baseline Burndown — Case Study
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
 
-**Status:** Code complete (all 20 commits on branch); mirror verification + PRs pending user
+| Field | Value |
+|---|---|
+| Work Type | Chore |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
+
+**Status:** **Shipped — merged to main 2026-04-24.** Hard gate live in `verify-local`. State.json retroactively closed 2026-04-27 (commit `a8e3f2f`).
 **Started:** 2026-04-21
 **Code completed:** 2026-04-21
+**Merged:** 2026-04-24
 **Parent feature:** design-system-v2
 **Plan:** [docs/superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md](../superpowers/plans/2026-04-20-ui-audit-baseline-burndown.md)
-**Branches:**
-- `claude/review-ui-consistency-zSkvJ` — 20 commits over pushed tip `573fe8a` (unpushed): AppMotion tokens, scanner `--file` flag, Phase 0 infra, 12 file migrations, baseline regenerations, gate promotion, scanner hardening, drift check
-- `chore/pbxproj-orphan-cleanup` — 1 commit over `origin/main` (unpushed): 2-line orphan deletion
-**PRs:** TBD (not yet opened)
+**Merges:**
+- PR #139 (`claude/review-ui-consistency-zSkvJ` → `main`) merged 2026-04-24T09:09:11Z via merge commit `c4b78931a52b92afb413b65340bc32fbabbcf98d`. 21 commits: AppMotion tokens, scanner `--file` flag, Phase 0 infra, 12 file migrations, baseline regenerations, gate promotion, scanner hardening, drift check, case study publication.
+- `chore/pbxproj-orphan-cleanup` merged via direct commit `e892ce3` on 2026-04-24T04:00:09Z (no PR; 2-line surgical cleanup).
 
 ## Context
 

@@ -1,0 +1,16 @@
+{
+  "events": [
+    {
+      "timestamp": "2026-04-27T12:35:21Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "v7.7 bootstrap: feature directory, case-study skeleton, log file. Spec commit 1057144; plan commit 360e9dd.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ],
+  "updated_at": "2026-04-27T12:35:21Z"
+}

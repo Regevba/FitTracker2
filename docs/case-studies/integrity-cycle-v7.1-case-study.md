@@ -1,6 +1,16 @@
 # Integrity Cycle — v7.1 Case Study
 
 **Date written:** 2026-04-21
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 **Subtitle:** How a single multi-hour audit that surfaced 7 "shipped but unreconciled" features became a 72-hour automated background process — and why that counts as a framework version bump.
 

@@ -1,6 +1,17 @@
 # Watching the Framework Build the Site That's Replaying It — The DispatchReplay Component
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Enhancement |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > ⚙️ **Developer deep-dive.** React + Framer Motion · IntersectionObserver scroll-sync · meta-recursive trace design · Next.js 16 client components in MDX. PM/HR readers: this one is about how the animated demo on `/framework/dispatch` was designed and built — skip unless you want the motion-grammar rationale.
 

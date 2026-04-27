@@ -259,6 +259,32 @@
       "completed_at": null
     }
   ],
+  "timing": {
+    "time_source": "git-backfill",
+    "backfill_note": "Phase boundaries inferred from state.json transitions[] array; timestamps from git log. T15 / PR-5 (2026-04-27). Note: original complete state was a false positive (2026-04-20 audit downgraded to tasks). Timing reflects the phases that actually ran.",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-10T15:00:00Z",
+        "ended_at": "2026-04-10T15:10:00Z"
+      },
+      "prd": {
+        "started_at": "2026-04-10T15:10:00Z",
+        "ended_at": "2026-04-10T15:15:00Z"
+      },
+      "tasks_first": {
+        "started_at": "2026-04-10T15:15:00Z",
+        "ended_at": "2026-04-10T15:20:00Z",
+        "note": "First tasks pass. Feature was falsely marked complete; downgraded by integrity audit 2026-04-20."
+      },
+      "ux_or_integration": {
+        "started_at": "2026-04-10T15:20:00Z",
+        "ended_at": "2026-04-10T15:25:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-04-20T00:00:00Z"
+      }
+    }
+  },
   "partial_ship": false,
   "known_gaps": {
     "status": "not_shipped",
@@ -275,5 +301,19 @@
       "T9",
       "T10"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "tasks",
+      "next_action_when_resumed": "Reconcile current_phase=tasks vs phases.implementation field; resume tasks phase",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/stats-v2/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_stats_v2.md"
+      ]
+    }
   }
 }

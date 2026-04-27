@@ -1,13 +1,13 @@
 {
   "feature": "unified-control-center",
-  "display_name": "Unified Control Center — Migrate dashboard to Next.js, share fitme-story design system",
+  "display_name": "Unified Control Center \u2014 Migrate dashboard to Next.js, share fitme-story design system",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "7.6",
   "current_phase": "implementation",
   "status": "in_progress",
   "created": "2026-04-26T05:30:00Z",
-  "updated": "2026-04-26T14:30:00Z",
+  "updated": "2026-04-27T05:17:58Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -20,7 +20,7 @@
       "ended_at": "2026-04-26T07:30:00Z",
       "duration_minutes": 120,
       "sources": [
-        "Explore subagent — fitme-story stack inventory + dashboard inventory + 3 architectures",
+        "Explore subagent \u2014 fitme-story stack inventory + dashboard inventory + 3 architectures",
         "fitme-story src/app/globals.css (design tokens)",
         "dashboard/src/components/* + dashboard/src/scripts/*",
         ".claude/shared/external-sync-status.json (post-v7.6 sync schema)",
@@ -109,7 +109,7 @@
     },
     {
       "id": "T2",
-      "title": "Capture 7 days of TTC baseline data → baseline-ttc.json",
+      "title": "Capture 7 days of TTC baseline data \u2192 baseline-ttc.json",
       "block": "A",
       "skill": "analytics",
       "type": "data",
@@ -163,8 +163,9 @@
         "T3",
         "T4"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-04-27T04:50:21Z"
     },
     {
       "id": "T6",
@@ -177,12 +178,13 @@
       "depends_on": [
         "T3"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T05:17:57Z"
     },
     {
       "id": "T7",
-      "title": "Local-dev verification: prebuild + dev → all data appears",
+      "title": "Local-dev verification: prebuild + dev \u2192 all data appears",
       "block": "B",
       "skill": "qa",
       "type": "test",
@@ -192,12 +194,13 @@
         "T3",
         "T4"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T04:50:21Z"
     },
     {
       "id": "T8",
-      "title": "middleware.ts Layer 1 — basic-auth gate matcher /control-room/:path*",
+      "title": "middleware.ts Layer 1 \u2014 basic-auth gate matcher /control-room/:path*",
       "block": "C",
       "skill": "dev",
       "type": "infra",
@@ -211,7 +214,7 @@
     },
     {
       "id": "T9",
-      "title": "Layer 2 — sitemap.ts excludes + robots.ts disallow",
+      "title": "Layer 2 \u2014 sitemap.ts excludes + robots.ts disallow",
       "block": "C",
       "skill": "dev",
       "type": "infra",
@@ -225,7 +228,7 @@
     },
     {
       "id": "T10",
-      "title": "Layer 3 — next.config.ts DASHBOARD_BUILD env var + IgnorePlugin",
+      "title": "Layer 3 \u2014 next.config.ts DASHBOARD_BUILD env var + IgnorePlugin",
       "block": "C",
       "skill": "dev",
       "type": "infra",
@@ -239,7 +242,7 @@
     },
     {
       "id": "T11",
-      "title": "verify-blind-switch.sh — 5 acceptance assertions",
+      "title": "verify-blind-switch.sh \u2014 5 acceptance assertions",
       "block": "C",
       "skill": "qa",
       "type": "test",
@@ -250,8 +253,9 @@
         "T9",
         "T10"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-04-27T04:50:21Z"
     },
     {
       "id": "T12",
@@ -264,8 +268,9 @@
       "depends_on": [
         "T11"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T04:50:21Z"
     },
     {
       "id": "T13",
@@ -293,20 +298,22 @@
         "T8",
         "T10"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-04-27T05:13:37Z"
     },
     {
       "id": "T15",
-      "title": "Map dashboard tailwind palette → fitme-story tokens; produce mapping table",
+      "title": "Map dashboard tailwind palette \u2192 fitme-story tokens; produce mapping table",
       "block": "D",
       "skill": "design",
       "type": "docs",
       "lane": "P-core",
       "effort_days": 0.5,
       "depends_on": [],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T04:55:05Z"
     },
     {
       "id": "T16",
@@ -319,8 +326,9 @@
       "depends_on": [
         "T15"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T05:05:37Z"
     },
     {
       "id": "T17",
@@ -333,12 +341,13 @@
       "depends_on": [
         "T16"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T05:05:37Z"
     },
     {
       "id": "T18",
-      "title": "Port Dashboard.jsx → src/app/control-room/layout.tsx",
+      "title": "Port Dashboard.jsx \u2192 src/app/control-room/layout.tsx",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -353,7 +362,7 @@
     },
     {
       "id": "T19",
-      "title": "Port controlCenterPrimitives → src/components/control-room/primitives.tsx",
+      "title": "Port controlCenterPrimitives \u2192 src/components/control-room/primitives.tsx",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -367,7 +376,7 @@
     },
     {
       "id": "T20",
-      "title": "Port ControlRoom → src/app/control-room/page.tsx with Hero + NumbersPanel verbatim",
+      "title": "Port ControlRoom \u2192 src/app/control-room/page.tsx with Hero + NumbersPanel verbatim",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -382,7 +391,7 @@
     },
     {
       "id": "T21",
-      "title": "Port KanbanBoard → src/app/control-room/board/page.tsx (full UX spec)",
+      "title": "Port KanbanBoard \u2192 src/app/control-room/board/page.tsx (full UX spec)",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -397,7 +406,7 @@
     },
     {
       "id": "T22",
-      "title": "Port TableView → src/app/control-room/table/page.tsx (full UX spec)",
+      "title": "Port TableView \u2192 src/app/control-room/table/page.tsx (full UX spec)",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -412,7 +421,7 @@
     },
     {
       "id": "T23",
-      "title": "Port KnowledgeHub → src/app/control-room/knowledge/page.tsx",
+      "title": "Port KnowledgeHub \u2192 src/app/control-room/knowledge/page.tsx",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -486,7 +495,7 @@
     },
     {
       "id": "T28",
-      "title": "Remove CaseStudiesView; nav link → /case-studies",
+      "title": "Remove CaseStudiesView; nav link \u2192 /case-studies",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -529,7 +538,7 @@
     },
     {
       "id": "T30.5",
-      "title": "Command palette (Cmd+K) — global keyboard shortcuts (Linear-style)",
+      "title": "Command palette (Cmd+K) \u2014 global keyboard shortcuts (Linear-style)",
       "block": "E",
       "skill": "dev",
       "type": "ui",
@@ -545,7 +554,7 @@
     },
     {
       "id": "T31",
-      "title": "Port controlCenter.js builder + 7 parsers → src/lib/control-room/builder.ts (TS)",
+      "title": "Port controlCenter.js builder + 7 parsers \u2192 src/lib/control-room/builder.ts (TS)",
       "block": "F",
       "skill": "dev",
       "type": "data",
@@ -560,7 +569,7 @@
     },
     {
       "id": "T32",
-      "title": "Port github.js → src/lib/control-room/github.ts",
+      "title": "Port github.js \u2192 src/lib/control-room/github.ts",
       "block": "F",
       "skill": "dev",
       "type": "data",
@@ -574,7 +583,7 @@
     },
     {
       "id": "T33",
-      "title": "Port dashboard tests → vitest suite under src/lib/control-room/__tests__/",
+      "title": "Port dashboard tests \u2192 vitest suite under src/lib/control-room/__tests__/",
       "block": "F",
       "skill": "qa",
       "type": "test",
@@ -602,7 +611,7 @@
     },
     {
       "id": "T35",
-      "title": "Configure fit-tracker2.vercel.app → fitme-story.vercel.app/control-room redirect",
+      "title": "Configure fit-tracker2.vercel.app \u2192 fitme-story.vercel.app/control-room redirect",
       "block": "G",
       "skill": "ops",
       "type": "infra",
@@ -734,7 +743,7 @@
       "to": "tasks",
       "timestamp": "2026-04-26T09:30:00Z",
       "approved_by": "user",
-      "note": "All 4 PRD §15 open questions answered with defaults (B/A/A/A). Showcase stays publicly accessible — only /control-room/* is gated."
+      "note": "All 4 PRD \u00a715 open questions answered with defaults (B/A/A/A). Showcase stays publicly accessible \u2014 only /control-room/* is gated."
     },
     {
       "from": "tasks",
@@ -748,7 +757,7 @@
       "to": "implementation",
       "timestamp": "2026-04-26T11:30:00Z",
       "approved_by": "user",
-      "note": "User said continue. Starting T1 (instrument current Astro dashboard) immediately so 7-day baseline clock starts. T15 + T8/T9/T10/T13 (parallelizable infra) can also proceed — none block on T2 baseline data."
+      "note": "User said continue. Starting T1 (instrument current Astro dashboard) immediately so 7-day baseline clock starts. T15 + T8/T9/T10/T13 (parallelizable infra) can also proceed \u2014 none block on T2 baseline data."
     }
   ],
   "metrics": {
@@ -824,7 +833,62 @@
       }
     }
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "timestamp": "2026-04-26T13:10:22Z",
+      "level": "L3",
+      "key": "project:vercel-deployment-verification",
+      "type": "adapted",
+      "skill": "pm-workflow",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T04:49:52Z",
+      "level": "L3",
+      "key": "project:gha-deployment-status-pattern",
+      "type": "adapted",
+      "skill": "pm-workflow",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T04:55:05Z",
+      "level": "L1",
+      "key": "design:tailwind-token-mapping",
+      "type": "adapted",
+      "skill": "design",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T05:05:37Z",
+      "level": "L2",
+      "key": "shared:wcag-contrast-resolution-pattern",
+      "type": "adapted",
+      "skill": "design",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T05:13:38Z",
+      "level": "L2",
+      "key": "shared:vercel-env-setup-pattern",
+      "type": "adapted",
+      "skill": "release",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T05:17:58Z",
+      "level": "L1",
+      "key": "qa:tmp-dir-fs-fixture-pattern",
+      "type": "adapted",
+      "skill": "qa",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    }
+  ],
   "case_study": {
     "started_at": "2026-04-26T05:30:00Z",
     "log_path": ".claude/logs/unified-control-center.log.json",
@@ -836,5 +900,14 @@
     "future_extraction_ready": "Architecture must allow clean extraction of dashboard back to internal-only access. Co-locate all dashboard code under control-room/ prefix; no reverse imports from showcase.",
     "added_at": "2026-04-26T07:30:00Z",
     "added_by": "user"
+  },
+  "tasks_migrated_to": {
+    "T43-T54": {
+      "to_feature": "framework-v7-7-validity-closure",
+      "to_milestone": "M4",
+      "to_tasks": "T21-T28",
+      "migrated_at": "2026-04-27T14:00:00Z",
+      "rationale": "Framework-health dashboard naturally surfaces v7.7 outputs (Tier 1.1/3.2 trends, automation map, human-action checklist). Absorption avoids parallel track."
+    }
   }
 }

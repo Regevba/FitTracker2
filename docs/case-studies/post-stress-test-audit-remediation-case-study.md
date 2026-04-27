@@ -1,6 +1,16 @@
 # Post-Stress-Test Audit Remediation — Case Study
 
 **Date written:** 2026-04-19
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | parallel |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > Framework v7.0 | Chore (audit + framework hardening) → Fix (multi-sprint cleanup) | 2026-04-18 → 2026-04-19 | PRs #96-#116 (21 PRs)
 >

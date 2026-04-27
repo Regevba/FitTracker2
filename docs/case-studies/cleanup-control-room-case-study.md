@@ -1,6 +1,16 @@
 # Maintenance Cleanup + Operations Control Room
 
 **Date written:** 2026-04-13
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > **Work type:** Enhancement + cleanup program  
 > **Status:** In progress  

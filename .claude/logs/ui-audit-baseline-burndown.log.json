@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "feature": "ui-audit-baseline-burndown",
+  "title": "ui audit baseline burndown",
+  "work_type": null,
+  "current_phase": "implement",
+  "framework_version": null,
+  "started_at": "2026-04-27T05:52:02Z",
+  "updated_at": "2026-04-27T05:52:02Z",
+  "events": [
+    {
+      "timestamp": "2026-04-27T05:52:02Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Retroactive close: PR #139 (burndown) merged 2026-04-24T09:09:11Z (commit c4b7893) and chore/pbxproj-orphan-cleanup merged via direct commit e892ce3 on 2026-04-24T04:00:09Z. P0 27 \u2192 0 verified live in main. Hard gate active in verify-local. State.json was left at phase=implement at end of 2026-04-21 session; this closes the loop 6 days post-merge.",
+      "artifacts": [
+        "https://github.com/Regevba/FitTracker2/pull/139",
+        "docs/case-studies/ui-audit-baseline-burndown.md"
+      ],
+      "metrics": {
+        "p0_baseline": 27,
+        "p0_final": 0,
+        "files_migrated": 13
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

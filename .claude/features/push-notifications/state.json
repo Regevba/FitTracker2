@@ -121,6 +121,44 @@
       "note": "Reopened 2026-04-20 per UI-016: priming view shipped tested + merged but never wired into navigation. Partial ship flagged per open-items review \u00a7 #12."
     }
   ],
+  "timing": {
+    "time_source": "git-backfill",
+    "backfill_note": "Phase boundaries inferred from state.json transitions[] array; timestamps from git log. T15 / PR-5 (2026-04-27).",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-12T21:30:00Z",
+        "ended_at": "2026-04-13T17:45:00Z"
+      },
+      "prd": {
+        "started_at": "2026-04-13T17:45:00Z",
+        "ended_at": "2026-04-15T17:35:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-04-15T17:35:00Z",
+        "ended_at": "2026-04-15T17:42:00Z"
+      },
+      "ux_or_integration": {
+        "started_at": "2026-04-15T17:42:00Z",
+        "ended_at": "2026-04-15T17:50:00Z"
+      },
+      "implementation_first": {
+        "started_at": "2026-04-15T17:50:00Z",
+        "ended_at": "2026-04-16T04:50:00Z",
+        "note": "First implementation pass (pre-audit). Completed, then reopened for partial-ship fix."
+      },
+      "testing": {
+        "started_at": "2026-04-16T04:50:00Z",
+        "ended_at": "2026-04-16T05:00:00Z"
+      },
+      "review": {
+        "started_at": "2026-04-16T05:00:00Z",
+        "ended_at": "2026-04-16T05:15:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-04-20T00:00:00Z"
+      }
+    }
+  },
   "tasks": [],
   "partial_ship": true,
   "known_gaps": {
@@ -132,5 +170,19 @@
       "APNs remote push integration (deferred to Phase 2)",
       "Verify 5 PRD primary metrics have data after wire-up (currently 0 data)"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "implementation",
+      "next_action_when_resumed": "Resume implementation; coordinate with smart-reminders if both resume close in time",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/push-notifications/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_push_notifications.md"
+      ]
+    }
   }
 }

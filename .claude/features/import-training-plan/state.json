@@ -98,6 +98,36 @@
       "note": "Reopened 2026-04-20 per UI-015: feature shipped infra + tests but no entry point exists. Partial ship flagged per open-items review \u00a7 #12."
     }
   ],
+  "timing": {
+    "time_source": "git-backfill",
+    "backfill_note": "Phase boundaries inferred from state.json transitions[] array; timestamps from git log. T15 / PR-5 (2026-04-27).",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-11T00:00:00Z",
+        "ended_at": "2026-04-15T17:35:00Z"
+      },
+      "prd": {
+        "started_at": "2026-04-15T17:35:00Z",
+        "ended_at": "2026-04-15T17:42:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-04-15T17:42:00Z",
+        "ended_at": "2026-04-15T17:50:00Z"
+      },
+      "ux_or_integration": {
+        "started_at": "2026-04-15T17:50:00Z",
+        "ended_at": "2026-04-15T17:58:00Z"
+      },
+      "implementation_first": {
+        "started_at": "2026-04-15T17:58:00Z",
+        "ended_at": "2026-04-16T05:30:00Z",
+        "note": "First implementation pass (pre-audit). Completed, then reopened for partial-ship fix."
+      },
+      "implementation": {
+        "started_at": "2026-04-20T00:00:00Z"
+      }
+    }
+  },
   "tasks": [],
   "source_investigation_areas": [
     "CSV/JSON import \u2014 simplest format, used by Strong/Hevy export",
@@ -169,5 +199,19 @@
       "Remove HISTORICAL header from both views once wired",
       "Fire the 6 import_* analytics events (constants exist, track() never called)"
     ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "implementation",
+      "next_action_when_resumed": "Resume implementation; v7.7 M2 T15 will have backfilled timing.phases pre-resume",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/import-training-plan/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_import_training_plan.md"
+      ]
+    }
   }
 }

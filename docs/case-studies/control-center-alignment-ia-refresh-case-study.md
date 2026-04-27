@@ -3,6 +3,17 @@
 # Control Center Alignment + IA Refresh
 
 **Date written:** 2026-04-13
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Feature |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 ## Why this case study exists
 

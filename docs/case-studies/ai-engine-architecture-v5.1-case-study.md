@@ -1,6 +1,14 @@
 # Case Study: AI Engine Architecture Adaptation — v5.1
 
 **Date written:** 2026-04-15
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
 
 > **Core question:** How did framework v5.1 affect development speed and quality for a cross-cutting architectural enhancement?
 

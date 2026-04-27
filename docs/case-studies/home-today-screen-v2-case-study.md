@@ -1,4 +1,10 @@
 # Home Today Screen v2 — Case Study
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
 
 **Subtitle:** The V2 Rule pilot — first deliberate UX Foundations alignment pass on the Home screen, and the project where the `home_*` screen-prefixed analytics naming convention was born.
 

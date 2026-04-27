@@ -1,6 +1,17 @@
 # Building the Site That Tells the Story — A Two-Hour Meta-Build
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Work Type | Enhancement |
+| Dispatch Pattern | serial |
+
+**Success Metrics:** TODO: review <!-- TODO: review -->
+
+**Kill Criteria:** TODO: review <!-- TODO: review -->
+
 
 > How the PM framework built the website that would host its own case studies.
 > 37 commits, 2 hours of wall clock, zero rollbacks — but the interesting parts are the failures.

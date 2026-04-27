@@ -1,6 +1,12 @@
 # Push Notifications — Case Study
 
 **Date written:** 2026-04-20
+<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+
+| Field | Value |
+|---|---|
+| Dispatch Pattern | serial |
+
 
 > Framework v5.2 | feature | 2026-04-12 → 2026-04-16 | Commits `8d7d2d5` → `b07eb5a`
 >

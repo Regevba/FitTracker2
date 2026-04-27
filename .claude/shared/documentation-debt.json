@@ -1,21 +1,22 @@
 {
   "version": "1.0",
-  "updated": "2026-04-27T07:37:37Z",
+  "updated": "2026-04-27T17:15:47Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 44,
-    "features_scanned": 43,
+    "case_studies_scanned": 47,
+    "features_scanned": 45,
     "integrity_snapshot_files": 1,
     "integrity_cycle_snapshots": 0,
     "trend_ready": false,
-    "open_debt_items": 7
+    "open_debt_items": 5
   },
   "coverage": {
     "date_written": {
-      "present": 40,
-      "missing": 4,
-      "percent": 90.9,
+      "present": 42,
+      "missing": 5,
+      "percent": 89.4,
       "examples": [
+        "docs/case-studies/auth-polish-v2-case-study.md",
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
         "docs/case-studies/training-plan-v2-case-study.md",
@@ -23,61 +24,43 @@
       ]
     },
     "work_type": {
-      "present": 27,
-      "missing": 17,
-      "percent": 61.4,
-      "examples": [
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md",
-        "docs/case-studies/audit-v2-g2-tests-case-study.md",
-        "docs/case-studies/audit-v2-g3-ai-case-study.md"
-      ]
+      "present": 47,
+      "missing": 0,
+      "percent": 100.0,
+      "examples": []
     },
     "dispatch_pattern": {
-      "present": 2,
-      "missing": 42,
-      "percent": 4.5,
+      "present": 45,
+      "missing": 2,
+      "percent": 95.7,
       "examples": [
-        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md"
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "success_metrics": {
-      "present": 9,
-      "missing": 35,
-      "percent": 20.5,
+      "present": 45,
+      "missing": 2,
+      "percent": 95.7,
       "examples": [
-        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md"
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "kill_criteria": {
-      "present": 12,
-      "missing": 32,
-      "percent": 27.3,
+      "present": 45,
+      "missing": 2,
+      "percent": 95.7,
       "examples": [
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md",
-        "docs/case-studies/audit-v2-g2-tests-case-study.md"
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "state_case_study_linkage": {
-      "present": 41,
-      "missing": 2,
-      "percent": 95.3,
-      "examples": [
-        "app-store-assets",
-        "onboarding-v2-retroactive"
-      ]
+      "present": 45,
+      "missing": 0,
+      "percent": 100.0,
+      "examples": []
     }
   },
   "integrity_cycle": {
@@ -93,8 +76,9 @@
       "id": "date_written",
       "title": "Case studies missing a written-date marker",
       "severity": "low",
-      "count": 4,
+      "count": 5,
       "examples": [
+        "docs/case-studies/auth-polish-v2-case-study.md",
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
         "docs/case-studies/training-plan-v2-case-study.md",
@@ -103,71 +87,37 @@
       "recommended_next_step": "Touch the missing files opportunistically and add the missing date written field explicitly."
     },
     {
-      "id": "work_type",
-      "title": "Case studies missing explicit work-type metadata",
-      "severity": "medium",
-      "count": 17,
-      "examples": [
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md",
-        "docs/case-studies/audit-v2-g2-tests-case-study.md",
-        "docs/case-studies/audit-v2-g3-ai-case-study.md"
-      ],
-      "recommended_next_step": "Touch the missing files opportunistically and add the missing work type field explicitly."
-    },
-    {
       "id": "dispatch_pattern",
       "title": "Case studies missing explicit dispatch-pattern declaration",
-      "severity": "high",
-      "count": 42,
+      "severity": "low",
+      "count": 2,
       "examples": [
-        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md"
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
       "recommended_next_step": "Touch the missing files opportunistically and add the missing dispatch pattern field explicitly."
     },
     {
       "id": "success_metrics",
       "title": "Case studies missing success-metric restatement",
-      "severity": "high",
-      "count": 35,
+      "severity": "low",
+      "count": 2,
       "examples": [
-        "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md"
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
       "recommended_next_step": "Touch the missing files opportunistically and add the missing success metrics field explicitly."
     },
     {
       "id": "kill_criteria",
       "title": "Case studies missing kill-criteria restatement",
-      "severity": "high",
-      "count": 32,
-      "examples": [
-        "docs/case-studies/audit-remediation-case-study.md",
-        "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
-        "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
-        "docs/case-studies/audit-v2-g1-ui-case-study.md",
-        "docs/case-studies/audit-v2-g2-tests-case-study.md"
-      ],
-      "recommended_next_step": "Touch the missing files opportunistically and add the missing kill criteria field explicitly."
-    },
-    {
-      "id": "state_case_study_linkage",
-      "title": "Features missing case-study linkage in state.json",
       "severity": "low",
       "count": 2,
       "examples": [
-        "app-store-assets",
-        "onboarding-v2-retroactive"
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
-      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
+      "recommended_next_step": "Touch the missing files opportunistically and add the missing kill criteria field explicitly."
     },
     {
       "id": "integrity_trend_window",

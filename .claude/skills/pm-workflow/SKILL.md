@@ -286,7 +286,30 @@ python3 scripts/append-feature-log.py \
 ### On any cache hit during work (Tier 1.1 writer path)
 
 When the skill loads a cache entry (L1 per-skill, L2 shared, or L3 project)
-and the entry materially influenced the output, emit a cache-hit event:
+and the entry materially influenced the output, emit a cache-hit event using
+the v7.7 auto-discovering wrapper (added T2 / commit `448d989` branch):
+
+```bash
+python3 scripts/log-cache-hit.py \
+  --key <cache-key> \
+  --layer <L1|L2|L3> \
+  [--hit-type <adapted|exact|miss>] \
+  [--skill <skill-name>]
+```
+
+The wrapper auto-discovers the active feature by scanning
+`.claude/features/*/state.json` by mtime (most-recently-modified non-paused
+feature wins), so `--feature` is not required. It dual-writes: first to
+`state.json.cache_hits[]` directly, then delegates to
+`scripts/append-feature-log.py` for Tier 2.2 narrative logging. It is
+fail-soft — any error exits 0 with a warning to stderr so logging never
+breaks cache reads. The v7.7 T3 hook (`CACHE_HITS_EMPTY_POST_V6`, commit
+`448d989`) gates `current_phase: complete` on at least one `cache_hits[]`
+entry, so this call is now required before a feature can be marked complete.
+
+If you need to supply the feature name explicitly (e.g. the active-feature
+auto-discovery would resolve to the wrong feature), fall back to the direct
+invocation:
 
 ```bash
 python3 scripts/append-feature-log.py \
@@ -300,8 +323,9 @@ python3 scripts/append-feature-log.py \
   --cache-skill {skill-name}
 ```
 
-This single call appends to the log AND to `state.json.cache_hits[]`. No
-separate write needed.
+Both calls append to the log AND to `state.json.cache_hits[]`. Prefer the
+wrapper for the normal case (no `--feature` arg needed = less friction =
+higher adoption).
 
 ### On runtime verification events (Tier 2.1)
 

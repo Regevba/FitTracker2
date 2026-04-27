@@ -62,11 +62,16 @@ def scan_case_study(path: Path) -> dict[str, object]:
     text = path.read_text()
     return {
         "path": path.relative_to(REPO_ROOT).as_posix(),
-        "has_date_written": bool(re.search(r"(?im)(^\*\*Date written:\*\*|^>\s*\*\*Date:\*\*|^\|\s*Date written\s*\|)", text)),
-        "has_work_type": bool(re.search(r"(?im)(^\|\s*Work Type\s*\||\bWork Type\b)", text)),
-        "has_dispatch_pattern": bool(re.search(r"(?i)dispatch pattern", text)),
-        "has_success_metrics": bool(re.search(r"(?i)(success metrics?|primary metric)", text)),
-        "has_kill_criteria": bool(re.search(r"(?i)kill criteria", text)),
+        # date_written: body format OR YAML frontmatter key
+        "has_date_written": bool(re.search(r"(?im)(^\*\*Date written:\*\*|^>\s*\*\*Date:\*\*|^\|\s*Date written\s*\||^date_written\s*:)", text)),
+        # work_type: body text OR YAML frontmatter key
+        "has_work_type": bool(re.search(r"(?im)(^\|\s*Work Type\s*\||\bWork Type\b|^work_type\s*:)", text)),
+        # dispatch_pattern: body phrase OR YAML frontmatter key
+        "has_dispatch_pattern": bool(re.search(r"(?im)(dispatch pattern|^dispatch_pattern\s*:)", text)),
+        # success_metrics: body phrase OR YAML frontmatter key
+        "has_success_metrics": bool(re.search(r"(?im)(success metrics?|primary metric|^success_metrics\s*:)", text)),
+        # kill_criteria: body phrase OR YAML frontmatter key
+        "has_kill_criteria": bool(re.search(r"(?im)(kill criteria|^kill_criteria\s*:)", text)),
     }
 
 
