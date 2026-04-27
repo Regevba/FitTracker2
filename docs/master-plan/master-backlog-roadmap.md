@@ -5,6 +5,8 @@ Complete project roadmap with 18 tasks across 6 phases. Prioritized using the RI
 
 **Added 2026-04-02:** Task 18 — Create PRD for every existing shipped feature before building new ones.
 
+> **2026-04-27 — framework v7.7 freeze:** RICE-prioritized product work below is **paused** for ~2-3 weeks while v7.7 (Validity Closure) lands. v7.7 is framework-infrastructure work (data integrity gates), not a RICE-tracked product feature. Resume of paused features (`app-store-assets`, `auth-polish-v2`, `import-training-plan`, `onboarding-v2-retroactive`, `push-notifications`, `stats-v2`) is gated on v7.7 phase=complete. See [`docs/master-plan/master-plan-2026-04-15.md`](master-plan-2026-04-15.md) for the v7.7 banner and [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](../superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md) for scope.
+
 ---
 
 ## RICE Scoring Legend

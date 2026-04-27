@@ -1,6 +1,6 @@
 # FitMe Master Plan — 2026-04-15
 
-> **Status:** CURRENT · Last updated 2026-04-26 (post v7.6 closure)
+> **Status:** CURRENT · Last updated 2026-04-27 (v7.7 in progress — full-priority freeze)
 > **Date opened:** 2026-04-15
 > **Purpose:** Updated master plan reflecting all work since the 2026-04-06 edition. Supersedes `master-plan-2026-04-06.md`.
 > **Context:** 28 additional items shipped through 2026-04-15, framework evolved v4.3 → v5.1, full external sync completed (Linear, Notion, Vercel), dashboard operational with zero alerts.
@@ -11,6 +11,8 @@
 >
 > **Linear backfill (2026-04-26):** FIT-44 (v7.5), FIT-45 (v7.6, parent), FIT-46 (PR #141), FIT-47 (DEV guide), FIT-48 (Tier 3.3 #142). FIT-22 + FIT-6 marked Done in same pass.
 > **Notion backfill (2026-04-26):** new sub-page under FitMe Product Hub: "Framework v7.5 + v7.6 — Audit Response (2026-04-21 → 2026-04-26)". Project Context & Status updated v5.1 → v7.6.
+>
+> **v7.7 Validity Closure (ACTIVE — full-priority freeze, started 2026-04-27):** A 2026-04-27 ledger pull surfaced that v7.6's "Known Mechanical Limits" included three items still mechanically or heuristically closable. v7.7 closes them: A1 (`cache_hits[]` writer-path, closes [#140](https://github.com/Regevba/FitTracker2/issues/140)), A2 (`cu_v2` schema validator), A3 (documentation-debt field gates + bulk backfill of 32 case studies), A4 (state↔case-study linkage 95.5% → 100%), A5 (active-feature timing backfill), B1+B2 (passive trend-mode unlocks via cron), C1 (tier-tag heuristic checker, advisory at ship). Absorbs UCC T43–T54 as M4 (framework-health dashboard at `/control-room/framework`). 6 features hard-paused for the duration: app-store-assets, auth-polish-v2, import-training-plan, onboarding-v2-retroactive, push-notifications, stats-v2. meta-analysis-audit completes its docs phase normally. Spec at [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](../superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md). Plan at [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](../superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md). Live case study at [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md). 42 tasks, 8 PRs, 6 milestones. Primary metric: post-v6 fully-adopted ratio 2/9 → ≥8/11. ETA ~2-3 weeks; partly gated by passive cron firings (B1 ~2026-05-04, B2 ~2026-05-03 to -06). D1 (Tier 2.1 auth playbook) and D2 (Tier 3.3 external replication) deferred to a post-v7.7 follow-on track surfaced as a human-action checklist at v7.7 merge.
 
 ---
 
