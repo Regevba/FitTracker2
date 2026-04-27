@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.6",
   "started_at": "2026-04-26T05:02:44Z",
-  "updated_at": "2026-04-27T04:49:52Z",
+  "updated_at": "2026-04-27T04:55:05Z",
   "events": [
     {
       "timestamp": "2026-04-26T05:02:44Z",
@@ -223,6 +223,23 @@
         "key": "project:gha-deployment-status-pattern",
         "type": "adapted",
         "skill": "pm-workflow"
+      }
+    },
+    {
+      "timestamp": "2026-04-27T04:55:05Z",
+      "event_type": "cache_hit",
+      "phase": "implementation",
+      "summary": "T15 shipped \u2014 token-map.md (commit 749bedc). 27 dashboard tokens mapped to fitme-story; 2 exact hex matches (skill-release, skill-research), 4 scoped --cr-* additions for radii/shadows/medium-priority, 6 pairs flagged for T16 axe audit.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L1",
+        "key": "design:tailwind-token-mapping",
+        "type": "adapted",
+        "skill": "design"
       }
     }
   ]

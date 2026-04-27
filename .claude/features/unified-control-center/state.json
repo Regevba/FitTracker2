@@ -7,7 +7,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created": "2026-04-26T05:30:00Z",
-  "updated": "2026-04-27T04:50:21Z",
+  "updated": "2026-04-27T04:55:05Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -309,8 +309,9 @@
       "lane": "P-core",
       "effort_days": 0.5,
       "depends_on": [],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T04:55:05Z"
     },
     {
       "id": "T16",
@@ -844,6 +845,15 @@
       "key": "project:gha-deployment-status-pattern",
       "type": "adapted",
       "skill": "pm-workflow",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T04:55:05Z",
+      "level": "L1",
+      "key": "design:tailwind-token-mapping",
+      "type": "adapted",
+      "skill": "design",
       "event_type": "cache_hit",
       "phase": "implementation"
     }
