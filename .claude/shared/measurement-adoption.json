@@ -1,40 +1,40 @@
 {
   "version": "1.0",
-  "updated": "2026-04-27T06:34:57Z",
+  "updated": "2026-04-27T17:15:47Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 44,
+    "features_total": 45,
     "features_post_v6": 9,
-    "features_pre_v6": 35,
+    "features_pre_v6": 36,
     "fully_adopted": 2,
-    "partial_adopted": 5,
-    "zero_adopted": 37,
+    "partial_adopted": 8,
+    "zero_adopted": 35,
     "fully_adopted_post_v6": 2,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 5,
-      "overall_percent": 11.4,
+      "overall_percent": 11.1,
       "post_v6_present": 5,
       "post_v6_percent": 55.6
     },
     "per_phase_timing": {
-      "overall_present": 7,
-      "overall_percent": 15.9,
+      "overall_present": 10,
+      "overall_percent": 22.2,
       "post_v6_present": 6,
       "post_v6_percent": 66.7
     },
     "cache_hits": {
       "overall_present": 3,
-      "overall_percent": 6.8,
+      "overall_percent": 6.7,
       "post_v6_present": 3,
       "post_v6_percent": 33.3
     },
     "cu_v2": {
       "overall_present": 6,
-      "overall_percent": 13.6,
+      "overall_percent": 13.3,
       "post_v6_present": 6,
       "post_v6_percent": 66.7
     }
@@ -69,6 +69,33 @@
         "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": true
+      }
+    },
+    {
+      "feature": "import-training-plan",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "push-notifications",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "stats-v2",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
       }
     },
     {
@@ -157,6 +184,11 @@
       "post_v6": true
     },
     {
+      "feature": "framework-v7-7-validity-closure",
+      "created": null,
+      "post_v6": false
+    },
+    {
       "feature": "gdpr-compliance",
       "created": "2026-04-04",
       "post_v6": false
@@ -174,11 +206,6 @@
     {
       "feature": "home-today-screen",
       "created": "2026-04-06",
-      "post_v6": false
-    },
-    {
-      "feature": "import-training-plan",
-      "created": "2026-04-11",
       "post_v6": false
     },
     {
@@ -222,11 +249,6 @@
       "post_v6": true
     },
     {
-      "feature": "push-notifications",
-      "created": "2026-04-12",
-      "post_v6": false
-    },
-    {
       "feature": "readiness-score-v2",
       "created": "2026-04-10",
       "post_v6": false
@@ -254,11 +276,6 @@
     {
       "feature": "stats-progress-hub",
       "created": "2026-04-06",
-      "post_v6": false
-    },
-    {
-      "feature": "stats-v2",
-      "created": "2026-04-10",
       "post_v6": false
     },
     {
@@ -503,6 +520,20 @@
       "any_adopted": false
     },
     {
+      "feature": "framework-v7-7-validity-closure",
+      "created": null,
+      "post_v6": false,
+      "current_phase": "research",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
       "feature": "gdpr-compliance",
       "created": "2026-04-04",
       "post_v6": false,
@@ -579,12 +610,12 @@
       "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "marketing-website",
@@ -719,12 +750,12 @@
       "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "readiness-score-v2",
@@ -817,12 +848,12 @@
       "current_phase": "tasks",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "training-plan-v2",
