@@ -9,20 +9,50 @@
 > cd /Volumes/DevSSD/fitme-story && node scripts/audit-token-contrast.mjs
 > ```
 >
-> Last audit: 2026-04-27 — **12 of 19 pairs pass; 7 fail** (script exit 1).
+> Last audit (post-T17): 2026-04-27 — **23 of 23 pairs pass; 0 fail** (script exit 0). ✅
+>
+> First audit (pre-T17, kept for history): **12 of 19 pairs pass; 7 fail** — see "First-pass failures" section below.
 
-## Results summary
+## Results summary (post-T17)
+
+23 pairs across 5 categories. **0 failing.** Script exit 0.
 
 | Category | Pass | Fail | Pass rate |
 |---|---:|---:|---:|
-| sanity | 2 | **1** | 67% |
-| brand | 3 | **1** | 75% |
-| status (chip text) | 4 | **2** | 67% |
-| priority (chip text) | 3 | **2** | 60% |
-| icon (status dot) | 0 | **1** | 0% |
-| **Total** | **12** | **7** | **63%** |
+| sanity | 3 | 0 | 100% |
+| brand | 3 | 0 | 100% |
+| status-text | 6 | 0 | 100% |
+| priority-text | 5 | 0 | 100% |
+| bg-fill | 6 | 0 | 100% |
+| **Total** | **23** | **0** | **100%** |
 
-## Failures (sorted by severity)
+The audit covers what the dashboard ACTUALLY uses post-T17 — the
+deprecated `--skill-*` foreground patterns are documented as forbidden
+in `token-map.md` and not re-audited here. Asserting "this combination
+still fails" would be redundant with the docs.
+
+## First-pass failures (kept for history)
+
+The pre-T17 audit flagged 7 of 19 pairs failing. All 7 are now resolved:
+
+### Resolution mapping (first-pass failures → T17 fix)
+
+| First-pass failure | T17 resolution | Pattern |
+|---|---|---|
+| `--cr-priority-medium` (#FBBF24) text on white (1.67:1) | Use `--cr-priority-medium-text-light` (#92400E) → 6.79:1 | A |
+| `--skill-research` (#F59E0B) text on neutral-50 (2.06:1) | Use `--cr-priority-high-text-light` (#B45309) → 4.81:1 | A |
+| `--skill-release` (#10B981) text on neutral-50 (2.43:1) | Use `--cr-status-done-text-light` (#047857) → 5.25:1 | A |
+| `--skill-dev` (#0EA5E9) text on neutral-50 (2.65:1) | Use `--cr-status-implementing-text-light` (#0369A1) → 5.68:1 | A |
+| `--skill-dev` (#0EA5E9) icon dot on neutral-50 (2.65:1) | Same — use `--cr-status-implementing-text-light` for icon stroke | A |
+| `--color-brand-coral` (#F97066) text on neutral-50 (2.67:1) | Usage constraint — coral reserved for buttons/headlines, never body text | B |
+| `--color-neutral-500` (#78716C) muted text on neutral-100 (4.40:1) | Reroute — control-room uses `--color-neutral-700` (#44403C) → 9.42:1 | C |
+
+The new `--cr-*-text-light` tokens also serve double-duty as chip
+BACKGROUND fills (with white text on top) — verified by 4 new bg-fill
+audit pairs (sky-700 5.93:1, emerald-700 5.48:1, amber-700 5.02:1,
+amber-800 7.09:1).
+
+## Failures (first-pass, kept for history)
 
 | # | Pair | Ratio | Target | Gap | Severity |
 |---|---|---:|---:|---:|---|

@@ -105,17 +105,49 @@ the top of `src/app/control-room/layout.tsx`'s CSS, so they're invisible
 to the showcase. Pattern keeps fitme-story's `@theme` block clean and
 preserves the dashboard's specific UX details that don't generalize.
 
+The `*-on-light` text-grade variants (added per T17 contrast audit
+resolutions) exist because the shared `--skill-*` tokens are -500
+saturation chosen for the orbital diagram FILL use case. When a chip
+uses the skill color as TEXT on a light background (no fill), the -500
+shade fails AA-large 3:1. The -700 / -800 variants below pass AA or
+AAA. Background-fill chip use (skill color background + white text)
+keeps using the shared `--skill-*` tokens unchanged.
+
 ```css
 [data-cr-root] {
-  --cr-priority-medium: #FBBF24;
+  /* Decorative + structural */
+  --cr-priority-medium: #FBBF24;          /* chip BACKGROUND fill only */
   --cr-font-mono: 'SF Mono', Menlo, monospace;
   --cr-radius-card: 12px;
   --cr-radius-badge: 6px;
   --cr-shadow-card: 0 4px 10px rgba(0, 0, 0, 0.08);
   --cr-shadow-card-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
   --cr-shadow-card-drag: 0 12px 28px rgba(0, 0, 0, 0.18);
+
+  /* Text-grade variants (T17 resolutions for Pattern A failures).
+     Use these when a status/priority value renders as TEXT or ICON
+     on a light background, NOT as a filled chip. Dark mode keeps the
+     shared --skill-* tokens — they pass on dark surfaces. */
+  --cr-status-implementing-text-light: #0369A1; /* sky-700  (was --skill-dev #0EA5E9) */
+  --cr-status-done-text-light:         #047857; /* emerald-700 (was --skill-release #10B981) */
+  --cr-priority-high-text-light:       #B45309; /* amber-700 (was --skill-research #F59E0B) */
+  --cr-priority-medium-text-light:     #92400E; /* amber-800 (was --cr-priority-medium #FBBF24) */
 }
 ```
+
+### Usage constraints (T17 resolution Pattern B)
+
+- **`--color-brand-coral` is reserved for buttons, headlines, and
+  decorative graphics — NEVER body or paragraph text.** Coral has a
+  2.67:1 ratio against `--color-neutral-50`, well below AA's 4.5:1 for
+  text. Use `--color-brand-indigo` for inline links and text accents
+  in the control-room. (For coral-on-coral white text, use `bg-brand-coral text-white` — that pair passes.)
+
+- **`--color-neutral-500` for muted text:** the showcase's existing
+  pair `--color-neutral-500` on `--color-neutral-100` misses AA by
+  0.10 (4.40:1 vs 4.50:1). For the control-room, prefer
+  `--color-neutral-700` (~10:1) for muted secondary text. The
+  showcase-wide bump is tracked separately and out of scope here.
 
 ## Open questions for T16 (WCAG audit)
 
