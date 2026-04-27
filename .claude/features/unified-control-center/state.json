@@ -7,7 +7,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created": "2026-04-26T05:30:00Z",
-  "updated": "2026-04-27T05:05:37Z",
+  "updated": "2026-04-27T05:13:38Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -297,8 +297,9 @@
         "T8",
         "T10"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-04-27T05:13:37Z"
     },
     {
       "id": "T15",
@@ -865,6 +866,15 @@
       "key": "shared:wcag-contrast-resolution-pattern",
       "type": "adapted",
       "skill": "design",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T05:13:38Z",
+      "level": "L2",
+      "key": "shared:vercel-env-setup-pattern",
+      "type": "adapted",
+      "skill": "release",
       "event_type": "cache_hit",
       "phase": "implementation"
     }

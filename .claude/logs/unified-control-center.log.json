@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.6",
   "started_at": "2026-04-26T05:02:44Z",
-  "updated_at": "2026-04-27T05:05:37Z",
+  "updated_at": "2026-04-27T05:13:38Z",
   "events": [
     {
       "timestamp": "2026-04-26T05:02:44Z",
@@ -257,6 +257,23 @@
         "key": "shared:wcag-contrast-resolution-pattern",
         "type": "adapted",
         "skill": "design"
+      }
+    },
+    {
+      "timestamp": "2026-04-27T05:13:38Z",
+      "event_type": "cache_hit",
+      "phase": "implementation",
+      "summary": "T14 shipped \u2014 EXTRACTION-RECIPE.md skeleton with env-var setup section (commit 1d4b5da in fitme-story). Captures all session learnings: 5 env vars, fine-grained PAT generation, secure local-staging, Vercel CLI v51.6.1 Preview/Dev quirk workaround, Option A fallback, 90-day rotation playbook. T39 placeholders marked.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L2",
+        "key": "shared:vercel-env-setup-pattern",
+        "type": "adapted",
+        "skill": "release"
       }
     }
   ]
