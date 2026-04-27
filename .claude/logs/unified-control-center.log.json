@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.6",
   "started_at": "2026-04-26T05:02:44Z",
-  "updated_at": "2026-04-27T05:13:38Z",
+  "updated_at": "2026-04-27T05:17:58Z",
   "events": [
     {
       "timestamp": "2026-04-26T05:02:44Z",
@@ -274,6 +274,23 @@
         "key": "shared:vercel-env-setup-pattern",
         "type": "adapted",
         "skill": "release"
+      }
+    },
+    {
+      "timestamp": "2026-04-27T05:17:58Z",
+      "event_type": "cache_hit",
+      "phase": "implementation",
+      "summary": "T6 shipped \u2014 sync script unit tests (commit 798a957). Lightweight refactor: syncDashboardData now accepts optional SyncPaths arg; production call site unchanged. 7 tests cover happy path, subdir nesting, feature filtering, JSON validation fail-fast, Option A fallback (both write + preserve), and hard error. All pass; pre-existing timeline.test.ts failure unrelated. With T6 done, all parallel-safe tasks (T6/T11/T12/T14/T15/T16/T17) complete.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous",
+      "cache_hit": {
+        "level": "L1",
+        "key": "qa:tmp-dir-fs-fixture-pattern",
+        "type": "adapted",
+        "skill": "qa"
       }
     }
   ]
