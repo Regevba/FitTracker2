@@ -7,7 +7,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created": "2026-04-26T05:30:00Z",
-  "updated": "2026-04-27T04:55:05Z",
+  "updated": "2026-04-27T05:05:37Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -324,8 +324,9 @@
       "depends_on": [
         "T15"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T05:05:37Z"
     },
     {
       "id": "T17",
@@ -338,8 +339,9 @@
       "depends_on": [
         "T16"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-04-27T05:05:37Z"
     },
     {
       "id": "T18",
@@ -852,6 +854,15 @@
       "timestamp": "2026-04-27T04:55:05Z",
       "level": "L1",
       "key": "design:tailwind-token-mapping",
+      "type": "adapted",
+      "skill": "design",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T05:05:37Z",
+      "level": "L2",
+      "key": "shared:wcag-contrast-resolution-pattern",
       "type": "adapted",
       "skill": "design",
       "event_type": "cache_hit",
