@@ -107,6 +107,21 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
   - **T4 protocol-only churn [T3]:** instead of the predicted "1-5 distinct call sites" of code edits, T4 was 0 mirroring file changes. The single canonical protocol document propagates to all 11 skills automatically. Spec assumption was wrong about call-site multiplication.
 - **Tier tags applied:** kill-criterion result + performance number + check-code count delta T1; design-decision rationale T3; predicted post-merge cache_hits adoption uplift T2.
 
+### 2026-04-27 18:35 UTC — PR-2 milestone (cu_v2 schema validator) merged into train
+- **Trigger:** T6, T7, T8 complete on the same feature branch (PR-2 is a logical milestone within PR #144's chain — v7.7 ships as one PR train, not 8 separate GitHub PRs)
+- **What changed:**
+  - T6 (`e5e2dd7`) — `scripts/validate-cu-v2.py` standalone validator + 6 unit tests. Pre-v6 features exempt. Live tree: 0 failures across 45 state.jsons.
+  - T7 (`f305656`) — wired into both `scripts/check-state-schema.py` (write-time, as 6th check) and `scripts/integrity-check.py` (cycle-time, as 13th code). Used `importlib.util` lazy load (matches existing test pattern); kept hyphenated filename to avoid doc/CI churn. Synthetic dogfood confirmed pre-commit blocks tampered cu_v2.
+  - T8 (`c1a707a`) — CLAUDE.md cycle-codes count 12 → 13; integrity README new "Feature-level cu_v2 schema check" subsection.
+- **Ledger delta [T1]:**
+  - Cycle-time check codes: 12 → 13
+  - Total framework gates (write + cycle): 19 → 20
+  - All 18 v7.7 unit tests pass (T2:5, T3:4, T6:6, T7:3)
+- **Surprises / discoveries:**
+  - **PR train architecture decision [T3]:** the original plan envisioned 8 separate GitHub PRs (one per logical milestone). In practice, all v7.7 work flows into a single feature branch and a single PR (#144). PR-N labels become bookkeeping for the case study, not GitHub PR boundaries. This is more pragmatic given session continuity — waiting for human merge between each PR-N would fragment the train.
+  - **Validator factored cleanly into existing patterns [T3]:** T7 mirrored T3's `check_cache_hits_empty_post_v6` pattern exactly; integrity-check.py's check-aggregator accepted CU_V2_INVALID with a single new dispatch entry. No structural refactor needed.
+- **Tier tags applied:** check-code count delta + test count + live-tree-clean T1; PR train architecture decision T3.
+
 ## Section 99 — Synthesis (written at v7.7 merge)
 
 <!-- Populate at M5. See plan §M5 / T31. -->
