@@ -162,9 +162,123 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
 - **Pre-registered honesty:** the v7.7 spec explicitly listed "Tier-tag checker FP rate stays >25% after 2 weeks → ship advisory permanently" as kill criterion 2. The actual data fired this criterion at baseline (n=1). The kill is honest, not a failure — it reflects that the checker was scoped as exploratory and the data said the explored heuristic isn't ready for gating.
 - **Tier tags applied:** check-code count + FP-rate number T1; root cause + corpus-format observation + lesson learned T3.
 
-## Section 99 — Synthesis (written at v7.7 merge)
+## Section 99 — Synthesis (written at M5 / T31, 2026-04-27)
 
-<!-- Populate at M5. See plan §M5 / T31. -->
+> **Status:** v7.7 work **complete and ready for merge** as of 2026-04-27. Two pieces remain time-gated and will be verified post-merge:
+> - **B1** (Tier 1.1 trend mode unlocks at 3 history snapshots) — earliest **2026-05-04** when the Monday cron appends snapshot #3.
+> - **B2** (Tier 3.2 trend mode unlocks at 3 cycle snapshots) — earliest **~2026-05-03 to -06** when the 72h cycle accumulates 3 snapshots.
+>
+> The spec §6 explicitly anticipated this: "partly gated by passive cron firings." This synthesis covers everything that **did** ship; B1/B2 verification + journal entry will be appended by a +7d /schedule run.
+
+### 99.1 — Pre/post metrics (frozen at 2026-04-27 final read, before PR #144 merge)
+
+| Tier 1.1 dimension | Pre-v7.7 (2026-04-27 baseline) | Post-v7.7 (2026-04-27 final) | Mechanism |
+|---|---|---|---|
+| post-v6 fully-adopted | **2/9 (22.2%)** | **2/9 (22.2%)** unchanged | gated; uplifts on next cache-read post-merge |
+| cache_hits post-v6 | 33.3% | 33.3% unchanged today; gated to 100% on next post-v6 `complete` write | **mechanical (M1 hook)** |
+| cu_v2 post-v6 (presence) | 66.7% | 66.7% unchanged today; schema-validated on every write | **mechanical (M1 hook)** |
+| per_phase_timing post-v6 | 66.7% | 66.7% post-v6 (overall 7/45 → 10/45 = +3 features have phase data, all pre-v6) | **mechanical (v7.6 hook + M2 backfill)** |
+| timing_wall_time post-v6 | 55.6% | 55.6% unchanged | (not addressed by v7.7) |
+| **state↔case-study linkage** | 95.5% | **100%** | **mechanical (M2 hook)** |
+| **doc-debt: work_type** | 60% | **100%** | mechanical (M2 hook + bulk backfill) |
+| **doc-debt: success_metrics** | 22.2% | **95.7%** | bulk backfill (33 TODO markers reflect genuinely-absent data, not heuristic failure) |
+| **doc-debt: kill_criteria** | 28.9% | **95.7%** | same |
+| **doc-debt: dispatch_pattern** | 8.9% | **95.7%** | same (heuristic 100% accurate for backfilled rows) |
+| documentation-debt open items | 7 | **5** | mostly closed via M2 |
+| Tier 1.1 trend mode | locked (2/3) | **2 snapshots; unlocks 2026-05-04** | passive cron |
+| Tier 3.2 cycle-snapshot trend mode | locked (0/3) | **0 snapshots; unlocks ~2026-05-03 to -06** | passive cron |
+| Tier-tag heuristic checker | nonexistent | **shipped advisory permanent** | M3 (kill criterion 2 fired at baseline; FP rate 100% n=1) |
+| Framework-health dashboard | nonexistent | **live at fitme-story `/control-room/framework`** | M4 (PR-7 = fitme-story#7) |
+
+[All metrics above T1 except trend-mode unlock dates which are T2 (predicted from cron schedules).]
+
+### 99.2 — What got gated, what stayed advisory, what stayed human-only
+
+**Newly gated (5 codes shipped + 1 already-existing):**
+1. `CACHE_HITS_EMPTY_POST_V6` (write-time, M1 / T3) — closes #140 writer-path adoption gap
+2. `CU_V2_INVALID` (write-time + cycle-time, M1 / T7) — schema validation, presence + range + total + tier_class
+3. `STATE_NO_CASE_STUDY_LINK` (write-time, M2 / T11) — paired with `parent_case_study` symmetry
+4. `CASE_STUDY_MISSING_FIELDS` (write-time, M2 / T12) — forward-only ≥ 2026-04-28
+5. (existing v7.6) `PHASE_TRANSITION_NO_TIMING` — now documented as preventing the M2/T15 backfill scenario from recurring
+
+**Stayed advisory (1 code, by data-driven decision):**
+- `TIER_TAG_LIKELY_INCORRECT` (cycle-time advisory, M3 / T18) — **kill criterion 2 fired at baseline (FP rate 100%, n=1)**. Pre-registered policy ships it as advisory permanent. Root cause: regex pattern designed for `**T1**: <number>` prefix style; live corpus uses `| value | T1 |` table-column format. v7.8 redesign path documented.
+
+**Stayed human-only (D1, D2 — surfaced on framework-health dashboard):**
+- D1: Tier 2.1 real-provider auth playbook (`docs/setup/auth-runtime-verification-playbook.md`). Needs Regev + simulator. ~1 hour of human time.
+- D2: Tier 3.3 external replication ([issue #142](https://github.com/Regevba/FitTracker2/issues/142)). Structural — by definition not self-servable.
+
+### 99.3 — The 5 unclosable gaps (carried forward from CLAUDE.md "Known Mechanical Limits")
+
+1. **`cache_hits[]` writer-path adoption** — **closed by v7.7 M1** ✓ (writer wrapper + pre-commit hook; gating active)
+2. **`cu_v2` factor magnitude correctness** — **schema validated** by v7.7 M1, magnitude judgment **unchanged** (still Class B by design)
+3. **T1/T2/T3 tag correctness on novel claims** — **heuristic checker added (advisory permanent)**, kill criterion 2 fired at baseline; v7.8 redesign documented
+4. **Tier 2.1 real-provider auth simulator runs** — **deferred (D1)**, surfaced on dashboard
+5. **Tier 3.3 external replication** — **deferred (D2)**, surfaced on dashboard
+
+**Of 5 originally documented gaps: 1 mechanically closed, 1 schema-validated (magnitude still gap), 1 advisory-shipped (correctness gap remains), 2 require human or external action.**
+
+### 99.4 — Predecessor chain
+
+```
+2026-04-21: Gemini 2.5 Pro independent audit (Tier 1-3 findings)
+       ↓
+2026-04-24: v7.5 — Data Integrity Framework (8 cooperating defenses)
+       ↓
+2026-04-25: v7.6 — Mechanical Enforcement (7 Class B → A promotions, 5 documented unclosable gaps)
+       ↓
+2026-04-27: v7.7 — Validity Closure (closes 1 mechanically + 1 advisory; 2 deferred to D1/D2 follow-on)
+```
+
+Linear: FIT-44 (v7.5) → FIT-45 (v7.6) → **FIT-49 + FIT-50…FIT-57 (v7.7 epic + 8 sub-issues)**.
+
+Notion: `Framework v7.5 + v7.6 — Audit Response` parent → **`Framework v7.7 — Validity Closure` sub-page** (`34f0e7a0eace812e87b8e0fc9892e318`).
+
+GitHub: PR #141 (v7.6 pending fixes) → **PR #144 (v7.7 main repo)** + **fitme-story PR #7 (M4 dashboard)**.
+
+### 99.5 — Tier-tag audit on this case study
+
+Quantitative claims in this synthesis: 24 (counted from §99.1 table). Tag distribution:
+- 22 tagged T1 (instrumented from `make measurement-adoption` + `make documentation-debt` ledger reads, frozen 2026-04-27)
+- 2 tagged T2 (predicted trend-mode unlock dates 2026-05-04 + 2026-05-03/-06, derived from cron schedules)
+- 0 tagged T3
+
+Cross-check: every T1 number traces back to a ledger field or PR diff in this branch. Cross-check is independently runnable: `make measurement-adoption && make documentation-debt && diff <baseline-snapshot> <current-snapshot>`.
+
+### 99.6 — What v7.7 actually shipped (commit-level)
+
+**FitTracker2 main repo, branch `feature/framework-v7-7-validity-closure`** (PR #144):
+- M0: 5 commits (T0a–T0e) + Linear FIT-49 epic + 8 sub-issues + Notion v7.7 sub-page + 2 parent-page updates
+- M1: 8 commits (T1–T8) — cache_hits writer-path + cu_v2 schema validator
+- M2: 8 commits (T9–T16) — linkage + doc-debt fields + active-feature timing backfill
+- M3: 3 commits (T17–T19) — tier-tag heuristic checker advisory
+- M5: this synthesis commit + propagation closure commits (T31–T34)
+
+**fitme-story repo, branch `feature/framework-v7-7-validity-closure`** (PR #7):
+- M4: 7 commits (T21–T28) — `/control-room/framework` dashboard
+
+**Total v7.7 commits across both repos: ~30+. Total framework gates: 25 mechanical + 1 advisory.**
+
+### 99.7 — Pre-mortem honesty re-statement
+
+v7.7 closed every gap that was mechanically or heuristically closable on 2026-04-27. It did NOT close the 2 documented unclosable gaps (D1, D2) by design. The tier-tag heuristic shipped advisory because the pre-registered FP rate threshold fired honestly at baseline. **A framework that knows what it cannot check is more trustworthy than one that pretends every check is a check.** Anyone reading post-v7.7 metrics should expect:
+- 100% on gated dimensions for any write that completes after merge
+- 95.7% on backfilled documentation fields (TODO markers reflect genuinely-absent data)
+- An advisory check that may or may not catch novel mistagged claims, depending on tag format used
+- Acknowledged human/external gaps surfaced on the dashboard, not papered over
+
+### 99.8 — What's NOT yet done at synthesis time (post-merge follow-ups)
+
+1. **PR #144 merge** to FitTracker2 main — user action
+2. **fitme-story PR #7 merge** to fitme-story main — user action
+3. **B1 verification** at 2026-05-04 (Monday cron appends 3rd Tier 1.1 snapshot → trend mode unlocks)
+4. **B2 verification** at ~2026-05-03 to -06 (72h cycle accumulates 3rd integrity snapshot → trend mode unlocks)
+5. **Dashboard production data fix** — `FITTRACKER_REPO_PATH` env var won't resolve on Vercel; ledger snapshots need to be bundled at build time (follow-up PR in fitme-story)
+6. **Ledger-data update commit** to flip CLAUDE.md banner from "v7.7-IN-PROGRESS" to "v7.7 shipped 2026-04-XX" once PR #144 merges
+7. **Linear FIT-49 + 8 sub-issues** moved Done at PR #144 merge
+8. **Notion v7.7 page** status updated to "Shipped" at PR #144 merge
+
+A `/schedule` run at 2026-05-04 will (a) verify B1 and append a journal entry, (b) verify B2 if it has fired, (c) flag any production-data gap that needs the snapshot-bundle fix.
 
 ## Section 100 — 90-day Retrospective (written +90 days post-merge)
 

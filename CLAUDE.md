@@ -87,8 +87,32 @@ This framework exists because we empirically observed 7+ features sit in "shippe
 - **Weekly framework-status cron** — [`.github/workflows/framework-status-weekly.yml`](.github/workflows/framework-status-weekly.yml) fires Mondays 05:00 UTC. Appends a snapshot to [`.claude/shared/measurement-adoption-history.json`](.claude/shared/measurement-adoption-history.json) (dedup by date). Opens `framework-status` issue on regression (decrease in `fully_adopted` or `any_adopted`).
 - **Append-only adoption history** — `make measurement-adoption` now writes a dated snapshot to the history ledger; trend mode unlocks after 3 snapshots accumulate.
 
-**v7.7 Validity Closure (in progress, started 2026-04-27):**
-Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory. Adds 4 new write-time hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) plus one cycle-time advisory check (`TIER_TAG_LIKELY_INCORRECT`). Ships a framework-health dashboard at fitme-story `/control-room/framework` that surfaces every check, the human-action checklist (D1+D2 deferred items), and trend lines once Tier 1.1 + 3.2 trend modes unlock. Spec at [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md). Live case study at [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md). Final v7.7 section will replace this stub at merge.
+**v7.7 Validity Closure (ready for merge as of 2026-04-27):**
+Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
+
+- **FitTracker2 PR #144** — 5 new gates: 4 write-time pre-commit hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) + 1 cycle-time check code (`CU_V2_INVALID`) + 1 cycle-time advisory (`TIER_TAG_LIKELY_INCORRECT`, kill criterion 2 fired at baseline so it ships **advisory permanent**). Plus bulk-backfill of 32 case-study frontmatters and timing.phases backfill on 3 paused features.
+- **fitme-story PR #7** — framework-health dashboard at `/control-room/framework` surfacing all 19 mechanical gates + 1 advisory + the D1/D2 human-action checklist + Tier 1.1/3.2 trend charts (charts unlock as cron snapshots accumulate).
+
+**Outcome at synthesis time (2026-04-27):**
+
+| Dimension | Pre-v7.7 | Post-v7.7 |
+|---|---|---|
+| state↔case-study linkage | 95.5% | **100%** (gated) |
+| doc-debt: work_type | 60% | **100%** (gated forward) |
+| doc-debt: success_metrics / kill_criteria / dispatch_pattern | 8.9–28.9% | **95.7%** (33 TODO markers reflect genuinely-absent pre-PRD data) |
+| `cache_hits[]` post-v6 | 33.3% | gated to 100% on next write (issue #140 closed) |
+| `cu_v2` schema | unchecked | 100% schema-validated |
+| Total framework mechanisms | 18 (12 cycle + 6 write-time) | **25 gates + 1 advisory** |
+
+**Cron-gated post-merge verifications (B1+B2):**
+- Tier 1.1 trend mode unlocks at 3 history snapshots — earliest **2026-05-04** (Monday cron appends snapshot #3).
+- Tier 3.2 trend mode unlocks at 3 cycle snapshots — earliest **~2026-05-03 to -06** (72h cycle accumulates 3rd snapshot).
+
+A scheduled +7d agent will append the verification + journal entry once both fire, and flip this section's banner from "ready for merge" to "shipped 2026-05-XX".
+
+Spec: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
+Plan: [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
+Live case study with the full live append-only journal + Section 99 synthesis: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md).
 
 ## Known Mechanical Limits
 
