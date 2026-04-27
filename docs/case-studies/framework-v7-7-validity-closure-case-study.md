@@ -68,6 +68,28 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
 - **Surprises / discoveries:** Pre-commit hooks didn't refuse the empty `cache_hits: []` array on auth-polish-v2 — confirms the v7.6 hook checks presence of the key, not non-empty content. This is the exact gap M1 closes [T3].
 - **Tier tags applied:** Section 1 baseline numbers all T1 (instrumented from `make measurement-adoption` + `make documentation-debt` ledger output, frozen 2026-04-27). 5-unclosable-gaps assertion is T2 (predicted before M1/M3 measurement).
 
+### 2026-04-27 14:42 UTC — M0 complete
+- **Trigger:** T0a–T0g all closed; 5 v7.7 commits on `feature/framework-v7-7-validity-closure` (`f867525` T0a, `971a5e9` T0b, `c4e2c3a` T0c, `b7a98e1` T0d, `9ceed6c` T0e); 2 MCP propagations (T0f Linear, T0g Notion).
+- **What changed:**
+  - v7.7 feature directory created at `.claude/features/framework-v7-7-validity-closure/`
+  - 6 features paused atomically with snapshot fields: app-store-assets, auth-polish-v2, import-training-plan, onboarding-v2-retroactive, push-notifications, stats-v2
+  - UCC state.json annotated with `tasks_migrated_to` for T43–T54 → v7.7 M4
+  - CLAUDE.md banner: "v7.5 → v7.6 → v7.7-IN-PROGRESS" + stub section
+  - Master plan banner updated; RICE roadmap freeze note added
+  - Linear: epic **FIT-49** + 8 sub-issues **FIT-50…FIT-57** (status `In Progress`, parent set, all assigned to Regev)
+  - Notion: new v7.7 sub-page under "FitMe — Product Hub" (`34f0e7a0eace812e87b8e0fc9892e318`); v7.5+v7.6 page got forward-link footer; "Project Context & Status" page updated in 3 places (callout + In Progress + Framework sections)
+- **Ledger delta [T1]:**
+  - `features_total`: 44 → 45 (v7.7 itself)
+  - `fully_adopted_post_v6`: 2 → 2 (unchanged; v7.7 NOT counted because `cache_hits: []` is empty — exactly the gap M1 closes)
+  - `cache_hits post_v6`: 33.3% (3/9) — unchanged; counter is fractionally diluted (3/9 → 3/9 since v7.7 doesn't count toward numerator OR denominator post_v6 group rules unchanged)
+  - All other dimensions unchanged
+- **Surprises / discoveries:**
+  - The `append-feature-log.py` script expects `{"events": []}` not `[]` — initial bootstrap with `[]` errored. Fixed by writing `{"events": []}` then re-running. **[T3 — narrative observation worth carrying into M1 design]**
+  - The v7.6 pre-commit hooks accepted v7.7's state.json on initial creation despite empty `cache_hits[]` — confirms again that the v7.6 hook is presence-check only. This is the gap M1's `CACHE_HITS_EMPTY_POST_V6` hook closes.
+  - Master-plan path inconsistency: CLAUDE.md still references the deprecated 2026-04-06 plan as "current", but the actual current plan is 2026-04-15. T32 (CLAUDE.md final v7.7 section) will fix this. **[T3]**
+  - Linear's `labels` parameter expected label IDs not names — labels didn't apply on epic/sub-issue creation. Non-blocking; can backfill later if needed. **[T3]**
+- **Tier tags applied:** ledger numbers T1; design observations T3; predicted M1 closure T2.
+
 ## Section 99 — Synthesis (written at v7.7 merge)
 
 <!-- Populate at M5. See plan §M5 / T31. -->
