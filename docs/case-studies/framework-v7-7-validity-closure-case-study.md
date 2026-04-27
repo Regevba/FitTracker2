@@ -145,6 +145,23 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
   - **PR-5 measurement uplift smaller than expected [T2]:** post-v6 per_phase_timing stayed at 6/9 because all 3 backfilled features predate the v6 ship date 2026-04-16 (push-notifications 2026-04-12, import-training-plan 2026-04-11, stats-v2 2026-04-10). They're in the pre-v6 bucket by definition. Overall per_phase_timing did rise 7→10. The post-v6 ratio uplift was a misprediction in the spec.
 - **Tier tags applied:** ledger numbers + check-code count + heuristic accuracy T1; symmetry-fix lesson + transitions[] discovery + silent fix T3; corrected post-v6 ratio prediction T2.
 
+### 2026-04-27 20:30 UTC — M3 complete: tier-tag heuristic shipped (advisory permanent — kill criterion 2 fired)
+- **Trigger:** PR-6 logical milestone (T17-T20) merged into the train
+- **What changed:**
+  - T17 (`2a03d66`) — `scripts/validate-tier-tags.py` + 5 unit tests + `make validate-tier-tags` target. Regex `\*?\*?\[?T(?P<tier>[123])\]?\*?\*?\s*[:.]?` looks for prefix-style T-tags adjacent to quantitative claims.
+  - T18 (`31e890e`) — `TIER_TAG_LIKELY_INCORRECT` wired into `integrity-check.py` as 14th code, advisory severity (does not gate).
+  - T19 (`3851128`) — FP-rate baseline doc at `docs/case-studies/meta-analysis/tier-tag-checker-baseline.md`.
+- **Ledger delta [T1]:**
+  - Cycle-time check codes: 13 → 14 (+`TIER_TAG_LIKELY_INCORRECT` advisory)
+  - Total framework gates: 25 → **25 gates + 1 advisory** = 26 mechanisms total
+- **Surprises / discoveries — kill criterion 2 fired at baseline [T1]:**
+  - Baseline scan found exactly **1 finding** across all post-cutoff (≥ 2026-04-21) case studies. The single finding is an unambiguous false positive: the regex matched `3.2` from the section identifier "Tier 3.2" plus `d` from the next word "documentation" (interpreted as a `d` time unit).
+  - **FP rate = 1/1 = 100%, exceeding the 25% kill threshold.** Per the pre-registered decision policy in spec §8 / kill criterion 2, the checker ships **advisory permanently**. No +7d promotion review is warranted.
+  - **Root cause [T3]:** the regex is mismatched with how T1 tags actually appear in the live corpus. It was designed for the `**T1**: <number><unit>` prefix-style convention, but case studies in this repo predominantly use `| <value> | T1 |` table-column format (or `<number> [T1]` postfix). The regex simultaneously over-detects on section references (`Tier 3.2`) and under-detects on legitimate T1 claims.
+  - **Lesson [T3]:** before designing a heuristic checker, audit the actual corpus's tag format. The spec assumed prefix-style matching corpus convention; it didn't. v7.8 redesign would extend regex to cover table-column + postfix formats AND add a Tier-X.Y section-reference exclusion.
+- **Pre-registered honesty:** the v7.7 spec explicitly listed "Tier-tag checker FP rate stays >25% after 2 weeks → ship advisory permanently" as kill criterion 2. The actual data fired this criterion at baseline (n=1). The kill is honest, not a failure — it reflects that the checker was scoped as exploratory and the data said the explored heuristic isn't ready for gating.
+- **Tier tags applied:** check-code count + FP-rate number T1; root cause + corpus-format observation + lesson learned T3.
+
 ## Section 99 — Synthesis (written at v7.7 merge)
 
 <!-- Populate at M5. See plan §M5 / T31. -->
