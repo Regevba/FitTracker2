@@ -35,6 +35,7 @@ _mod = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_mod)
 
 check_cache_hits_empty_post_v6 = _mod.check_cache_hits_empty_post_v6
+check_cu_v2_schema = _mod.check_cu_v2_schema
 
 
 # ---------------------------------------------------------------------------
@@ -109,4 +110,57 @@ def test_cache_hits_post_v6_complete_with_entries_passes():
     assert findings == [], (
         f"Post-v6 complete feature with non-empty cache_hits must not trigger "
         f"CACHE_HITS_EMPTY_POST_V6. Got: {findings}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# T7 — check_cu_v2_schema wiring tests
+# ---------------------------------------------------------------------------
+
+def test_check_cu_v2_schema_passes_valid():
+    """Valid cu_v2 → no findings."""
+    state = {
+        "cu_v2": {
+            "factors": {
+                "complexity": 0.5,
+                "blast_radius": 0.5,
+                "novelty": 0.5,
+                "verification_difficulty": 0.5,
+            },
+            "total": 2.0,
+            "tier_class": "B_medium",
+        }
+    }
+    findings = check_cu_v2_schema(state)
+    assert findings == [], (
+        f"Valid cu_v2 must not trigger any findings. Got: {findings}"
+    )
+
+
+def test_check_cu_v2_schema_blocks_invalid():
+    """Factor out of [0,1] → CU_V2_INVALID finding."""
+    state = {
+        "cu_v2": {
+            "factors": {
+                "complexity": 99.0,  # out of [0,1]
+                "blast_radius": 0.5,
+                "novelty": 0.5,
+                "verification_difficulty": 0.5,
+            },
+            "total": 100.0,
+            "tier_class": "A_high",
+        }
+    }
+    findings = check_cu_v2_schema(state)
+    assert any("CU_V2_INVALID" in str(f) for f in findings), (
+        f"Expected CU_V2_INVALID finding for out-of-range factor. Got: {findings}"
+    )
+
+
+def test_check_cu_v2_schema_passes_pre_v6_no_field():
+    """Pre-v6 state without cu_v2 key → exempt, no findings."""
+    state = {"feature_name": "old"}
+    findings = check_cu_v2_schema(state)
+    assert findings == [], (
+        f"Pre-v6 state without cu_v2 must not trigger any findings. Got: {findings}"
     )

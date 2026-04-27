@@ -50,6 +50,27 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 LOGS_DIR = REPO_ROOT / ".claude" / "logs"
 
+# Path to the T6 cu_v2 validator (hyphen prevents a direct import; we use
+# importlib.util — same pattern used in test_check_state_schema.py to load
+# check-state-schema.py itself).  The module is loaded once at first call and
+# cached so the import overhead is paid only once per script invocation.
+_VALIDATE_CU_V2_PATH = Path(__file__).resolve().parent / "validate-cu-v2.py"
+_validate_cu_v2_module = None
+
+
+def _get_validate_cu_v2():
+    """Lazily load validate-cu-v2.py and return the module."""
+    global _validate_cu_v2_module
+    if _validate_cu_v2_module is None:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "_validate_cu_v2", _VALIDATE_CU_V2_PATH
+        )
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _validate_cu_v2_module = mod
+    return _validate_cu_v2_module
+
 # How fresh the most-recent phase-transition log event must be to satisfy the
 # PHASE_TRANSITION_NO_LOG check. 15 minutes is deliberately generous to
 # accommodate multi-step commits (log first, then state.json, then commit)
@@ -245,6 +266,32 @@ def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
     return findings
 
 
+def check_cu_v2_schema(state: dict) -> list[dict]:
+    """Validate the cu_v2 field in a state dict using the T6 validator.
+
+    Delegates to validate-cu-v2.py's `validate()` function (importlib.util
+    import — no rename needed; same pattern used by tests). Pre-v6 features
+    that lack the cu_v2 key are exempt and pass immediately.
+
+    Returns a list with one finding dict per violation (code=CU_V2_INVALID),
+    or an empty list when the state passes or is exempt.
+    """
+    mod = _get_validate_cu_v2()
+    raw_errors: list[str] = mod.validate(state)
+    if not raw_errors:
+        return []
+    feature = state.get("feature_name", "unknown")
+    return [
+        {
+            "code": "CU_V2_INVALID",
+            "feature": feature,
+            "message": err,
+            "severity": "failure",
+        }
+        for err in raw_errors
+    ]
+
+
 def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     """Return a list of human-readable violation messages for one file.
 
@@ -288,6 +335,15 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     # This runs on both staged and full-corpus scans (unlike the phase-transition
     # checks it doesn't need a diff — it inspects current state only).
     for finding in check_cache_hits_empty_post_v6(d):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
+
+    # Check 6: CU_V2_INVALID — validates the cu_v2 field schema when present.
+    # Pre-v6 features that lack the cu_v2 key are exempt (validator returns []).
+    # Runs on both staged and full-corpus scans (no diff needed — checks content
+    # only).
+    for finding in check_cu_v2_schema(d):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )

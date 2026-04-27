@@ -10,11 +10,13 @@ When run with --compare-to, also emits a diff vs a previous snapshot.
 Checks:
     Feature-level (from state.json):
         PHASE_LIE, TASK_LIE, NO_CS_LINK, V2_FILE_MISSING,
-        PARTIAL_SHIP_TERMINAL, SCHEMA_DRIFT, NO_PHASE, NO_STATE, INVALID_JSON
+        PARTIAL_SHIP_TERMINAL, SCHEMA_DRIFT, NO_PHASE, NO_STATE, INVALID_JSON,
+        PR_NUMBER_UNRESOLVED, CU_V2_INVALID
 
     Case-study-level (Auditor Agent, added 2026-04-21):
         BROKEN_PR_CITATION — PR number cited in a .md does not resolve via `gh pr view`.
         Skipped gracefully if `gh` is unavailable or unauthenticated.
+        CASE_STUDY_MISSING_TIER_TAGS — post-2026-04-21 case study lacks T1/T2/T3 tags.
 
 Usage:
     scripts/integrity-check.py --snapshot .claude/integrity/snapshots/2026-04-20T04-00Z.json
@@ -44,6 +46,23 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 CASE_STUDIES_DIR = REPO_ROOT / "docs" / "case-studies"
+
+# T7: load validate-cu-v2.py (importlib.util — hyphen prevents direct import).
+# Cached at module level so the load happens once per integrity-check run.
+_validate_cu_v2_module = None
+
+
+def _get_validate_cu_v2():
+    """Lazily load validate-cu-v2.py and return the module (cached)."""
+    global _validate_cu_v2_module
+    if _validate_cu_v2_module is None:
+        import importlib.util
+        _path = REPO_ROOT / "scripts" / "validate-cu-v2.py"
+        spec = importlib.util.spec_from_file_location("_validate_cu_v2", _path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        _validate_cu_v2_module = mod
+    return _validate_cu_v2_module
 
 COMPLETE_PHASE_STATUSES = {"approved", "complete", "completed", "done", "skipped", "closed"}
 OPEN_TASK_STATUSES = {"pending", "in_progress", "open", "blocked"}
@@ -235,6 +254,29 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
                     "message": f"phases.merge.pr_number = {pr_number} "
                                f"does not resolve on GitHub",
                 })
+
+    # Check #8: CU_V2_INVALID — validate the cu_v2 field when present.
+    # (T7, added 2026-04-27). Pre-v6 features without the cu_v2 key are
+    # exempt; the validator returns [] for them. Uses the same importlib.util
+    # loader as check-state-schema.py to avoid subprocess overhead.
+    try:
+        cu_v2_errors = _get_validate_cu_v2().validate(d)
+        for err_msg in cu_v2_errors:
+            findings.append({
+                "feature": feat,
+                "severity": "INCONSISTENT",
+                "code": "CU_V2_INVALID",
+                "message": err_msg,
+            })
+    except Exception as exc:
+        # If the validator itself errors (e.g. missing file), emit a WARN
+        # rather than crashing the whole integrity-check run.
+        findings.append({
+            "feature": feat,
+            "severity": "WARN",
+            "code": "CU_V2_INVALID",
+            "message": f"validator raised exception: {exc}",
+        })
 
     return summary, findings
 
