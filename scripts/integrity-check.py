@@ -364,6 +364,40 @@ _DATE_WRITTEN_PAT = re.compile(
 _TIER_TAG_PAT = re.compile(r"\bT[123]\b[\s—:.\)\(]")
 
 
+def check_tier_tags_advisory() -> list[dict]:
+    """Run validate-tier-tags.py; emit findings as ADVISORY (not failure).
+
+    Added v7.7 M3 T18. This is the 14th cycle-time check code.
+    Advisory severity: appears in output but does NOT cause non-zero exit
+    and is NOT counted in finding_count (to preserve regression baseline).
+    Promotion to gating decided +7 days based on FP-rate baseline (T19).
+    """
+    try:
+        result = subprocess.run(
+            ["python3", str(REPO_ROOT / "scripts" / "validate-tier-tags.py"),
+             "--all"],
+            capture_output=True, text=True,
+            cwd=str(REPO_ROOT),
+        )
+        findings = []
+        for line in result.stdout.strip().split("\n"):
+            if line:
+                findings.append({
+                    "feature": line.split(":")[1].strip() if ":" in line else "unknown",
+                    "severity": "ADVISORY",
+                    "code": "TIER_TAG_LIKELY_INCORRECT",
+                    "message": line,
+                })
+        return findings
+    except Exception as exc:
+        return [{
+            "feature": "validate-tier-tags",
+            "severity": "ADVISORY",
+            "code": "TIER_TAG_LIKELY_INCORRECT",
+            "message": f"heuristic checker raised exception: {exc}",
+        }]
+
+
 def audit_case_study_tier_tags() -> list[dict]:
     """Flag post-2026-04-21 case studies that lack any T1/T2/T3 tier tag.
 
@@ -446,6 +480,15 @@ def build_snapshot(snapshot_trigger: str) -> dict:
     findings.extend(audit_case_study_citations(_PR_CACHE))
     findings.extend(audit_case_study_tier_tags())
 
+    # v7.7 M3 T18: advisory tier-tag correctness heuristic (14th check code).
+    # Advisory findings are included in findings[] for observability, but are
+    # NOT counted in finding_count so they don't trigger regression detection
+    # or non-zero exit. Promotion to gating at +7d T20 review.
+    advisory_findings = check_tier_tags_advisory()
+    all_findings = findings + advisory_findings
+
+    non_advisory_count = len(findings)
+
     return {
         "timestamp": now_iso(),
         "commit_head": git_head(),
@@ -455,10 +498,11 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         },
         "feature_count": len(feature_summaries),
         "case_study_count": len(discover_case_studies()),
-        "finding_count": len(findings),
+        "finding_count": non_advisory_count,
+        "advisory_finding_count": len(advisory_findings),
         "findings_by_severity": {
-            sev: sum(1 for x in findings if x["severity"] == sev)
-            for sev in ["CRITICAL", "INCONSISTENT", "MISSING", "WARN"]
+            sev: sum(1 for x in all_findings if x["severity"] == sev)
+            for sev in ["CRITICAL", "INCONSISTENT", "MISSING", "WARN", "ADVISORY"]
         },
         "auditor_agent": {
             "citation_check_ran": citation_check_ran,
@@ -466,7 +510,7 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         },
         "features": feature_summaries,
         "case_studies": discover_case_studies(),
-        "findings": findings,
+        "findings": all_findings,
     }
 
 
@@ -514,9 +558,12 @@ def diff_snapshots(current: dict, previous: dict) -> dict:
 
 
 def render_findings(findings: list[dict]) -> str:
+    non_advisory = [f for f in findings if f.get("severity") != "ADVISORY"]
+    advisory = [f for f in findings if f.get("severity") == "ADVISORY"]
     if not findings:
         return "✅ No findings."
-    lines = [f"{len(findings)} findings:\n"]
+    lines = [f"{len(non_advisory)} findings"
+             + (f" + {len(advisory)} advisory:" if advisory else ":") + "\n"]
     by_sev: dict[str, list] = {}
     for f in findings:
         by_sev.setdefault(f["severity"], []).append(f)
@@ -526,6 +573,11 @@ def render_findings(findings: list[dict]) -> str:
         lines.append(f"## {sev} ({len(by_sev[sev])})")
         for f in sorted(by_sev[sev], key=lambda x: x["feature"]):
             lines.append(f"  - {f['feature']} [{f['code']}]: {f['message']}")
+        lines.append("")
+    if "ADVISORY" in by_sev:
+        lines.append(f"## ADVISORY (not gating) ({len(by_sev['ADVISORY'])})")
+        for f in sorted(by_sev["ADVISORY"], key=lambda x: x["feature"]):
+            lines.append(f"  - [{f['code']}]: {f['message']}")
         lines.append("")
     return "\n".join(lines)
 
@@ -549,8 +601,12 @@ def main():
     snapshot = build_snapshot(args.snapshot_trigger)
     print(f"Features scanned: {snapshot['feature_count']}")
     print(f"Case studies: {snapshot['case_study_count']}")
-    print(f"Findings: {snapshot['finding_count']} "
-          f"({', '.join(f'{k}={v}' for k, v in snapshot['findings_by_severity'].items() if v)})")
+    advisory_count = snapshot.get("advisory_finding_count", 0)
+    advisory_suffix = f" + {advisory_count} advisory" if advisory_count else ""
+    non_advisory_sevs = {k: v for k, v in snapshot['findings_by_severity'].items()
+                         if v and k != "ADVISORY"}
+    print(f"Findings: {snapshot['finding_count']}{advisory_suffix} "
+          f"({', '.join(f'{k}={v}' for k, v in non_advisory_sevs.items())})")
     print()
     print(render_findings(snapshot["findings"]))
 
