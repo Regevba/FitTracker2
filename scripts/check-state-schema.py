@@ -266,6 +266,51 @@ def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
     return findings
 
 
+EXEMPT_CASE_STUDY_TYPES = {"no_case_study_required", "pre_pm_workflow_backfill", "roundup"}
+
+
+def check_state_no_case_study_link(state: dict) -> list[dict]:
+    """Reject current_phase=complete without case_study link or exempt tag.
+
+    Closes the write-time linkage gate (STATE_NO_CASE_STUDY_LINK). A feature
+    reaching completion without a case study link (direct or via
+    parent_case_study) or an explicit exempt tag is a process violation:
+    every shipped feature either has a narrative or a recorded reason why
+    one was waived.
+
+    Exempt tags (EXEMPT_CASE_STUDY_TYPES):
+      - no_case_study_required  (new in v7.7 — operational artifacts)
+      - pre_pm_workflow_backfill (v7.6 — pre-PM-workflow features)
+      - roundup                  (v7.6 — covered by consolidation case study)
+
+    Returns a list with one finding dict (code=STATE_NO_CASE_STUDY_LINK) if the
+    check fails, or an empty list if the check passes or is not applicable.
+    """
+    findings: list[dict] = []
+    if state.get("current_phase") != "complete":
+        return findings
+    has_link = bool(state.get("case_study") or state.get("parent_case_study"))
+    is_exempt = state.get("case_study_type") in EXEMPT_CASE_STUDY_TYPES
+    if has_link or is_exempt:
+        return findings
+    findings.append({
+        "code": "STATE_NO_CASE_STUDY_LINK",
+        "feature": state.get("feature_name", "unknown"),
+        "message": (
+            "Feature reached current_phase=complete without case_study / "
+            "parent_case_study link or case_study_type exempt tag. Add a "
+            "case_study field pointing to "
+            "docs/case-studies/<feature>-case-study.md, or a "
+            "parent_case_study field pointing to the parent case study, OR "
+            "add case_study_type: 'no_case_study_required' (or "
+            "'pre_pm_workflow_backfill' / 'roundup') with "
+            "case_study_exempt_reason."
+        ),
+        "severity": "failure",
+    })
+    return findings
+
+
 def check_cu_v2_schema(state: dict) -> list[dict]:
     """Validate the cu_v2 field in a state dict using the T6 validator.
 
@@ -335,6 +380,14 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     # This runs on both staged and full-corpus scans (unlike the phase-transition
     # checks it doesn't need a diff — it inspects current state only).
     for finding in check_cache_hits_empty_post_v6(d):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
+
+    # Check 7: STATE_NO_CASE_STUDY_LINK — current_phase=complete requires a
+    # case_study link or an EXEMPT_CASE_STUDY_TYPES tag. Closes the v7.7 M2
+    # linkage gate (T11). Runs on both staged and full-corpus scans.
+    for finding in check_state_no_case_study_link(d):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )

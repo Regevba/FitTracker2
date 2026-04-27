@@ -204,10 +204,14 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
                            + (",…" if len(open_tasks) > 10 else ""),
             })
 
-    # Check #3: missing case-study linkage (excluding roundup + backfill)
+    # Check #3: missing case-study linkage (excluding roundup + backfill +
+    # no_case_study_required). Note: is_phase_check_exempt covers
+    # pre_pm_workflow_backfill and roundup; no_case_study_required is a v7.7
+    # addition for operational artifacts that warrant no narrative.
+    _NO_CS_EXEMPT_TYPES = {"roundup", "no_case_study_required"}
     if is_terminal and not is_phase_check_exempt:
         has_cs = bool(d.get("case_study") or d.get("parent_case_study"))
-        if not has_cs and d.get("case_study_type") != "roundup":
+        if not has_cs and d.get("case_study_type") not in _NO_CS_EXEMPT_TYPES:
             findings.append({
                 "feature": feat, "severity": "MISSING", "code": "NO_CS_LINK",
                 "message": "terminal phase but no case_study / parent_case_study / case_study_type linkage",

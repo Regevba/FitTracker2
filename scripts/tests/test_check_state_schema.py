@@ -164,3 +164,75 @@ def test_check_cu_v2_schema_passes_pre_v6_no_field():
     assert findings == [], (
         f"Pre-v6 state without cu_v2 must not trigger any findings. Got: {findings}"
     )
+
+
+# ---------------------------------------------------------------------------
+# T11 — check_state_no_case_study_link tests
+# ---------------------------------------------------------------------------
+
+check_state_no_case_study_link = _mod.check_state_no_case_study_link
+
+
+def test_state_no_case_study_link_blocks_when_complete():
+    """current_phase=complete + missing case_study + missing exempt tag → REJECT."""
+    state = {
+        "feature_name": "test",
+        "current_phase": "complete"
+    }
+    findings = check_state_no_case_study_link(state)
+    assert any(f["code"] == "STATE_NO_CASE_STUDY_LINK" for f in findings), (
+        f"Expected STATE_NO_CASE_STUDY_LINK for complete feature without link "
+        f"or exempt tag. Got: {findings}"
+    )
+
+
+def test_state_no_case_study_link_passes_with_link():
+    state = {
+        "feature_name": "test",
+        "current_phase": "complete",
+        "case_study": "docs/case-studies/x.md"
+    }
+    findings = check_state_no_case_study_link(state)
+    assert findings == [], (
+        f"Complete feature with case_study link must not trigger "
+        f"STATE_NO_CASE_STUDY_LINK. Got: {findings}"
+    )
+
+
+def test_state_no_case_study_link_passes_with_parent_link():
+    """parent_case_study is an accepted alternative to direct case_study."""
+    state = {
+        "feature_name": "test",
+        "current_phase": "complete",
+        "parent_case_study": "docs/case-studies/parent.md"
+    }
+    findings = check_state_no_case_study_link(state)
+    assert findings == [], (
+        f"Complete feature with parent_case_study link must not trigger "
+        f"STATE_NO_CASE_STUDY_LINK. Got: {findings}"
+    )
+
+
+def test_state_no_case_study_link_passes_with_exempt():
+    for tag in ("no_case_study_required", "pre_pm_workflow_backfill", "roundup"):
+        state = {
+            "feature_name": "test",
+            "current_phase": "complete",
+            "case_study_type": tag
+        }
+        findings = check_state_no_case_study_link(state)
+        assert findings == [], (
+            f"exempt tag {tag} should pass STATE_NO_CASE_STUDY_LINK. Got: {findings}"
+        )
+
+
+def test_state_no_case_study_link_passes_pre_complete():
+    state = {
+        "feature_name": "test",
+        "current_phase": "implementation"
+    }
+    findings = check_state_no_case_study_link(state)
+    assert findings == [], (
+        f"Non-complete feature must not trigger STATE_NO_CASE_STUDY_LINK. "
+        f"Got: {findings}"
+    )
