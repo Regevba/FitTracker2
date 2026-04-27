@@ -90,6 +90,23 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
   - Linear's `labels` parameter expected label IDs not names — labels didn't apply on epic/sub-issue creation. Non-blocking; can backfill later if needed. **[T3]**
 - **Tier tags applied:** ledger numbers T1; design observations T3; predicted M1 closure T2.
 
+### 2026-04-27 17:50 UTC — PR-1 opened
+- **Trigger:** T1–T4 complete; PR-1 opened at https://github.com/Regevba/FitTracker2/pull/144
+- **What changed:**
+  - T1 (`95ac393`) — cache read-paths audit; kill-criterion-1 PROCEED. 11 sites, single canonical protocol.
+  - T2 (`a6f3943`) — `scripts/log-cache-hit.py` auto-discovery wrapper + 5 unit tests. Per T1 recommendation, extends `append-feature-log.py` rather than duplicating cache-hit logic. Dual-write to state.json + events log. Paused-feature skip + fail-soft.
+  - T3 (`448d989`) — `CACHE_HITS_EMPTY_POST_V6` pre-commit hook + 4 unit tests. V6_SHIP_DATE = 2026-04-16. Live tree: 0 findings.
+  - T4 (`6c1c23d`) — `pm-workflow/SKILL.md` Cache Tracking Protocol updated to invoke the wrapper. 0 mirroring SKILL.md changes needed (10 of the 11 sites had no invocation text — protocol text lives only in pm-workflow's canonical doc). Performance: 90ms per call.
+- **Ledger delta [T1]:**
+  - Total framework write-time check codes: 5 → 6 (added `CACHE_HITS_EMPTY_POST_V6`)
+  - Total framework gates (write + cycle): 18 → 19
+  - Issue #140: writer path was declared (v6.0) but never invoked. Now invoked AND gated.
+- **Surprises / discoveries:**
+  - **T1 finding that reshaped T2's design [T3]:** the 11 cache read "sites" are SKILL.md protocol text instructing the agent to invoke `append-feature-log.py --cache-hit`, NOT Python function calls. Plus, `append-feature-log.py` already had the `--cache-hit/--cache-key/--cache-hit-type/--cache-skill` flags all along — used 10 times manually, never auto-invoked. T2 became a thin wrapper rather than a from-scratch helper.
+  - **T2 implementer refinement [T3]:** the implementer chose to bypass `append-feature-log.py --cache-hit` (which would double-write to state.json) and own the state.json write directly while delegating only the events-log entry. This is cleaner than the spec's original design.
+  - **T4 protocol-only churn [T3]:** instead of the predicted "1-5 distinct call sites" of code edits, T4 was 0 mirroring file changes. The single canonical protocol document propagates to all 11 skills automatically. Spec assumption was wrong about call-site multiplication.
+- **Tier tags applied:** kill-criterion result + performance number + check-code count delta T1; design-decision rationale T3; predicted post-merge cache_hits adoption uplift T2.
+
 ## Section 99 — Synthesis (written at v7.7 merge)
 
 <!-- Populate at M5. See plan §M5 / T31. -->
