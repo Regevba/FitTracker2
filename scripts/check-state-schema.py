@@ -56,6 +56,12 @@ LOGS_DIR = REPO_ROOT / ".claude" / "logs"
 # without false positives. The 72h cycle is the belt for anything slower.
 PHASE_EVENT_FRESHNESS_MIN = 15
 
+# v6.0 shipped 2026-04-16. Post-v6 features are expected to have at least one
+# cache_hits[] entry recorded by the M1 instrumentation (scripts/log-cache-hit.py)
+# before reaching current_phase=complete. Features created before this date are
+# exempt — they predate the adoption requirement.
+V6_SHIP_DATE = "2026-04-16"
+
 # Event types that count as satisfying a phase transition.
 PHASE_TRANSITION_EVENT_TYPES = {
     "phase_started",
@@ -195,6 +201,50 @@ def _recent_phase_event(log: dict, target_phase: str | None, freshness_min: int)
     return None
 
 
+def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
+    """Reject current_phase=complete when post-v6 feature has empty cache_hits[].
+
+    Closes the writer-path adoption gap (issue #140). v7.6 hooks check key
+    presence; v7.7 this hook checks for non-empty content on post-v6 features
+    at completion. M1 instrumentation (scripts/log-cache-hit.py) is expected
+    to populate cache_hits[] on every cache read; an empty array at completion
+    means either the instrumentation is missing for this feature's cache calls,
+    or the cache was never read.
+
+    Returns a list with one finding dict (code=CACHE_HITS_EMPTY_POST_V6) if the
+    check fails, or an empty list if the check passes or is not applicable.
+    """
+    findings: list[dict] = []
+    created = state.get("created_at", "")
+    current_phase = state.get("current_phase", "")
+    cache_hits = state.get("cache_hits", None)
+
+    # Pre-v6 features are exempt from the adoption requirement.
+    if not created or created < V6_SHIP_DATE:
+        return findings
+    # Gate only fires at completion — in-progress features are not yet blocked.
+    if current_phase != "complete":
+        return findings
+    # If cache_hits key is absent entirely or has entries, no finding.
+    if cache_hits is None or len(cache_hits) > 0:
+        return findings
+
+    findings.append({
+        "code": "CACHE_HITS_EMPTY_POST_V6",
+        "feature": state.get("feature_name", "unknown"),
+        "message": (
+            "Post-v6 feature reached current_phase=complete with empty "
+            "cache_hits[]. M1 instrumentation should populate this on "
+            "every cache read; an empty array at completion means either "
+            "the instrumentation is missing for this feature's cache "
+            "calls, or the cache was never read. See "
+            "scripts/log-cache-hit.py and issue #140."
+        ),
+        "severity": "failure",
+    })
+    return findings
+
+
 def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     """Return a list of human-readable violation messages for one file.
 
@@ -232,6 +282,15 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
                     f"resolve on GitHub. Fix the number or remove the field "
                     f"before advancing to the merge phase."
                 )
+
+    # Check 5: CACHE_HITS_EMPTY_POST_V6 — post-v6 features must have at least
+    # one cache_hits[] entry recorded before reaching current_phase=complete.
+    # This runs on both staged and full-corpus scans (unlike the phase-transition
+    # checks it doesn't need a diff — it inspects current state only).
+    for finding in check_cache_hits_empty_post_v6(d):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
 
     # Checks 3 + 4: phase-transition gates. Skip if we're doing a full-corpus
     # scan — those checks only make sense at commit time.
