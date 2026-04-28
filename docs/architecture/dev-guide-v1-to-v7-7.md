@@ -144,7 +144,7 @@ FitTracker2/
 │   └── framework-status-weekly.yml           ← weekly cron (v7.6 Phase 2c)
 ├── docs/
 │   ├── architecture/
-│   │   └── dev-guide-v1-to-v7-6.md          ← THIS FILE
+│   │   └── dev-guide-v1-to-v7-7.md          ← THIS FILE
 │   ├── skills/
 │   │   ├── architecture.md                   ← skill-by-skill anatomy
 │   │   ├── evolution.md                      ← full version-by-version history
