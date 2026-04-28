@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.6",
   "started_at": "2026-04-27T05:01:13Z",
-  "updated_at": "2026-04-28T03:04:44Z",
+  "updated_at": "2026-04-28T03:07:34Z",
   "events": [
     {
       "timestamp": "2026-04-27T05:01:13Z",
@@ -91,6 +91,28 @@
       "event_type": "phase_started",
       "phase": "tasks",
       "summary": "Phase 2 (Tasks) opened 2026-04-28T17:30:00Z immediately after PRD approval. PRD's Phase 1 close documented Files-touched estimate of 26, flagging mandatory feature/auth-polish-v2 branch (already created). Next: enumerate Phase 2 task list with parallel-block grouping per the PRD's 3 sub-bundles (forgot-password, biometric, Google Sign-In) + cross-cutting test/eval tasks.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "started",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-28T03:07:34Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved by user 2026-04-28. 17 tasks enumerated across 4 blocks: A/forgot-password (5), B/biometric (4), C/google-signin (4), D/cross-cutting (4). Dispatch: serial within blocks; blocks A/B/C serial across (per F6-F9 concurrent-dispatch blockers); D parallel-safe at end. Total file paths touched: ~24 (PRD estimate was 26).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human-regev",
+      "status": "approved",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-28T03:07:34Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX/Integration) opened 2026-04-28T17:35:00Z. Required deliverable per CLAUDE.md: docs/case-studies/auth-polish-v2-ux-spec.md OR equivalent passing design-system compliance gateway before any view code is written. Scope: 5 new SwiftUI screens (3 ForgotPassword* + BiometricActivationSheet + GoogleRuntimeConfiguration UI), plus AuthHubView edits (kill the ColorAppColor typos found in Phase 0).",
       "artifacts": [],
       "metrics": {},
       "actor": "claude-opus-4-7",

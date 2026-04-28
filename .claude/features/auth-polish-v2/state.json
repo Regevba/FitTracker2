@@ -1,9 +1,9 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-28T17:30:00Z",
+  "updated": "2026-04-28T17:35:00Z",
   "branch": "feature/auth-polish-v2",
-  "current_phase": "tasks",
+  "current_phase": "ux_or_integration",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "v7.6",
@@ -38,15 +38,17 @@
       "user_properties_added": 0
     },
     "tasks": {
-      "status": "in_progress",
-      "count": 0,
-      "started_at": "2026-04-28T17:30:00Z"
+      "status": "approved",
+      "count": 17,
+      "started_at": "2026-04-28T17:30:00Z",
+      "approved_at": "2026-04-28T17:35:00Z"
     },
     "ux_or_integration": {
-      "status": "pending",
+      "status": "in_progress",
       "type": "ux",
       "compliance_decision": null,
-      "checklist_completed": false
+      "checklist_completed": false,
+      "started_at": "2026-04-28T17:35:00Z"
     },
     "implementation": {
       "status": "pending",
@@ -100,7 +102,7 @@
   "timing": {
     "session_start": "2026-04-27T05:00:38Z",
     "session_end": null,
-    "total_wall_time_minutes": 572.6,
+    "total_wall_time_minutes": 577.6,
     "time_source": "measured",
     "total_wall_time_note": "Sum of research (8.6 min) + PRD active time (564 min net of v7.7 freeze pause).",
     "phases": {
@@ -119,6 +121,13 @@
       },
       "tasks": {
         "started_at": "2026-04-28T17:30:00Z",
+        "ended_at": "2026-04-28T17:35:00Z",
+        "duration_minutes": 5.0,
+        "paused_minutes": 0,
+        "note": "Tasks enumeration and user approval. 17 tasks across 4 blocks; structure inherited from PRD Appendix C."
+      },
+      "ux_or_integration": {
+        "started_at": "2026-04-28T17:35:00Z",
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0
@@ -158,7 +167,224 @@
     "computed_cu_note": "Will be computed at session_end based on tasks count + factors"
   },
   "cache_hits": [],
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "A1",
+      "block": "A",
+      "title": "Add fitme://reset-password URL scheme + Info.plist + AppDelegate routing",
+      "status": "pending",
+      "files": [
+        "FitTracker/Info.plist",
+        "FitTracker/App/FitMeApp.swift"
+      ],
+      "deps": []
+    },
+    {
+      "id": "A2",
+      "block": "A",
+      "title": "Implement SignInService.requestPasswordReset(email:) with 60s cooldown + Supabase redirectTo",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/SignInService.swift",
+        "FitTracker/Services/AuthManager.swift"
+      ],
+      "deps": [
+        "A1"
+      ]
+    },
+    {
+      "id": "A3",
+      "block": "A",
+      "title": "Build ForgotPasswordRequestView + ForgotPasswordCooldownView + SetNewPasswordView (3 SwiftUI screens)",
+      "status": "pending",
+      "files": [
+        "FitTracker/Views/Auth/ForgotPasswordRequestView.swift",
+        "FitTracker/Views/Auth/ForgotPasswordCooldownView.swift",
+        "FitTracker/Views/Auth/SetNewPasswordView.swift"
+      ],
+      "deps": [
+        "A2"
+      ]
+    },
+    {
+      "id": "A4",
+      "block": "A",
+      "title": "Wire deep-link return path in RootView \u2192 push SetNewPasswordView",
+      "status": "pending",
+      "files": [
+        "FitTracker/Views/Root/RootView.swift"
+      ],
+      "deps": [
+        "A1",
+        "A3"
+      ]
+    },
+    {
+      "id": "A5",
+      "block": "A",
+      "title": "Analytics: fire 4 forgot-password events (requested/completed/resend/resend_blocked)",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/AnalyticsService.swift",
+        "FitTracker/Views/Auth/ForgotPassword*.swift"
+      ],
+      "deps": [
+        "A3"
+      ]
+    },
+    {
+      "id": "B1",
+      "block": "B",
+      "title": "BiometricActivationSheet SwiftUI component (immediate-after-first-sign-in trigger per OQ-1)",
+      "status": "pending",
+      "files": [
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift"
+      ],
+      "deps": []
+    },
+    {
+      "id": "B2",
+      "block": "B",
+      "title": "BiometricService extension: isFirstSignIn, requestActivationFromUser, activate(biometricType:) + Keychain integration",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/BiometricService.swift",
+        "FitTracker/Services/KeychainService.swift"
+      ],
+      "deps": []
+    },
+    {
+      "id": "B3",
+      "block": "B",
+      "title": "Trigger sheet from OnboardingViewModel.onSignInSuccess + post-relaunch unlock flow in RootView",
+      "status": "pending",
+      "files": [
+        "FitTracker/ViewModels/OnboardingViewModel.swift",
+        "FitTracker/Views/Root/RootView.swift"
+      ],
+      "deps": [
+        "B1",
+        "B2"
+      ]
+    },
+    {
+      "id": "B4",
+      "block": "B",
+      "title": "Analytics: 5 biometric events (offered/activated/declined/unlock_completed/unlock_failed)",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/AnalyticsService.swift",
+        "FitTracker/Services/BiometricService.swift",
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift"
+      ],
+      "deps": [
+        "B1",
+        "B2",
+        "B3"
+      ]
+    },
+    {
+      "id": "C1",
+      "block": "C",
+      "title": "Add GoogleSignIn-iOS@8.x SPM dep + URL scheme + Info.plist update",
+      "status": "pending",
+      "files": [
+        "FitTracker.xcodeproj/project.pbxproj",
+        "FitTracker/Info.plist"
+      ],
+      "deps": []
+    },
+    {
+      "id": "C2",
+      "block": "C",
+      "title": "GoogleSignInService wrapper: signIn(presentingFrom:) + GIDClientID from GoogleService-Info.plist (per OQ-3)",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/GoogleSignInService.swift",
+        "FitTracker/Services/SignInService.swift"
+      ],
+      "deps": [
+        "C1"
+      ]
+    },
+    {
+      "id": "C3",
+      "block": "C",
+      "title": "GoogleRuntimeConfiguration (remote-config flag for kill criterion 2)",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/GoogleRuntimeConfiguration.swift",
+        "FitTracker/Views/Root/RootView.swift"
+      ],
+      "deps": [
+        "C2"
+      ]
+    },
+    {
+      "id": "C4",
+      "block": "C",
+      "title": "Wire Google rows in AuthHubView + flag-driven UI hide + fix ColorAppColor typos found in Phase 0",
+      "status": "pending",
+      "files": [
+        "FitTracker/Views/Auth/AuthHubView.swift"
+      ],
+      "deps": [
+        "C2",
+        "C3"
+      ]
+    },
+    {
+      "id": "D1",
+      "block": "D",
+      "title": "Update analytics-taxonomy.csv with 9 new events (transcribe PRD Appendix A)",
+      "status": "pending",
+      "files": [
+        "docs/product/analytics-taxonomy.csv"
+      ],
+      "deps": []
+    },
+    {
+      "id": "D2",
+      "block": "D",
+      "title": "Eval test cases: mock-Supabase forgot-password, mock-biometric activation/unlock, mock-Google sign-in",
+      "status": "pending",
+      "files": [
+        "FitTrackerCoreTests/Auth/AuthPolishV2Tests.swift"
+      ],
+      "deps": [
+        "A2",
+        "B2",
+        "C2"
+      ]
+    },
+    {
+      "id": "D3",
+      "block": "D",
+      "title": "UI snapshot tests for 5 new screens",
+      "status": "pending",
+      "files": [
+        "FitTrackerUITests/Auth/AuthPolishV2UITests.swift"
+      ],
+      "deps": [
+        "A3",
+        "B1"
+      ]
+    },
+    {
+      "id": "D4",
+      "block": "D",
+      "title": "Update AnalyticsEvent enum + add unit tests for screen-prefix naming convention",
+      "status": "pending",
+      "files": [
+        "FitTracker/Services/AnalyticsService.swift",
+        "FitTrackerCoreTests/Auth/AnalyticsEventNamingTests.swift"
+      ],
+      "deps": [
+        "A5",
+        "B4"
+      ]
+    }
+  ],
   "transitions": [
     {
       "from": "research",
