@@ -173,6 +173,7 @@
 		DS000001000000000000AA04 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA04 /* AppIcon.swift */; };
 		DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA05 /* AppViewModifiers.swift */; };
 		DS000001000000000000AA06 /* AppComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA06 /* AppComponents.swift */; };
+		DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA07 /* AuthSharedComponents.swift */; };
 		EE000001000000000000AA01 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA01 /* SignInView.swift */; };
 		EE000001000000000000AA02 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA02 /* WelcomeView.swift */; };
 		FB1000001000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000001 /* SupabaseClient.swift */; };
@@ -381,6 +382,7 @@
 		DS000002000000000000AA04 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA05 /* AppViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModifiers.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA06 /* AppComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponents.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA07 /* AuthSharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSharedComponents.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA01 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA02 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
 		FB2000001000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
@@ -1029,6 +1031,7 @@
 				DS000002000000000000AA04 /* AppIcon.swift */,
 				DS000002000000000000AA05 /* AppViewModifiers.swift */,
 				DS000002000000000000AA06 /* AppComponents.swift */,
+				DS000002000000000000AA07 /* AuthSharedComponents.swift */,
 				NV200000000000000000AA04 /* ProgressBar.swift */,
 			);
 			path = DesignSystem;
@@ -1319,6 +1322,7 @@
 				DS000001000000000000AA04 /* AppIcon.swift in Sources */,
 				DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */,
 				DS000001000000000000AA06 /* AppComponents.swift in Sources */,
+				DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */,
 				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
 				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,

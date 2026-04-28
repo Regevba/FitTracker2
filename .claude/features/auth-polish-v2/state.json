@@ -1,9 +1,9 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-28T17:35:00Z",
+  "updated": "2026-04-28T19:00:00Z",
   "branch": "feature/auth-polish-v2",
-  "current_phase": "ux_or_integration",
+  "current_phase": "implementation",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "v7.6",
@@ -39,21 +39,29 @@
     },
     "tasks": {
       "status": "approved",
-      "count": 17,
+      "count": 18,
       "started_at": "2026-04-28T17:30:00Z",
       "approved_at": "2026-04-28T17:35:00Z"
     },
     "ux_or_integration": {
-      "status": "in_progress",
+      "status": "approved",
       "type": "ux",
-      "compliance_decision": null,
-      "checklist_completed": false,
-      "started_at": "2026-04-28T17:35:00Z"
+      "compliance_decision": "5/5 PASS \u2014 all dimensions cleared with no new tokens needed; 88pt biometric icon takes documented DS-exception",
+      "checklist_completed": true,
+      "started_at": "2026-04-28T17:35:00Z",
+      "approved_at": "2026-04-28T19:00:00Z",
+      "heuristic_validation": "12/12 PASS + 1 N/A (Principle 1.9 Readiness-First N/A for auth surface, justified)",
+      "deliverables": [
+        ".claude/features/auth-polish-v2/ux-research.md",
+        ".claude/features/auth-polish-v2/ux-spec.md",
+        "docs/prompts/2026-04-28-auth-polish-v2-ux-build.md"
+      ]
     },
     "implementation": {
-      "status": "pending",
+      "status": "in_progress",
       "commits": [],
-      "checklist_completed": false
+      "checklist_completed": false,
+      "started_at": "2026-04-28T19:00:00Z"
     },
     "testing": {
       "status": "pending",
@@ -102,7 +110,7 @@
   "timing": {
     "session_start": "2026-04-27T05:00:38Z",
     "session_end": null,
-    "total_wall_time_minutes": 577.6,
+    "total_wall_time_minutes": 592.6,
     "time_source": "measured",
     "total_wall_time_note": "Sum of research (8.6 min) + PRD active time (564 min net of v7.7 freeze pause).",
     "phases": {
@@ -128,6 +136,13 @@
       },
       "ux_or_integration": {
         "started_at": "2026-04-28T17:35:00Z",
+        "ended_at": "2026-04-28T19:00:00Z",
+        "duration_minutes": 15.0,
+        "paused_minutes": 0,
+        "note": "UX research + spec + build-prompt authored by /ux skill via subagent dispatch."
+      },
+      "implementation": {
+        "started_at": "2026-04-28T19:00:00Z",
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0
@@ -168,6 +183,19 @@
   },
   "cache_hits": [],
   "tasks": [
+    {
+      "id": "T0",
+      "block": "T0-prereq",
+      "title": "Extract AuthScaffold/AuthFormCard/AuthPrimaryButtonStyle/AuthBannerView/PasswordRulesSecureField/PasswordRulesTooltip from AuthHubView.swift to AuthSharedComponents.swift; fix 2 ColorAppColor typos (FR-18)",
+      "status": "complete",
+      "completed_at": "2026-04-28T19:00:00Z",
+      "files": [
+        "FitTracker/DesignSystem/AuthSharedComponents.swift",
+        "FitTracker/Views/Auth/AuthHubView.swift"
+      ],
+      "deps": [],
+      "blocks_for": "All A/B/C tasks (5 new screens depend on shared auth components)"
+    },
     {
       "id": "A1",
       "block": "A",
