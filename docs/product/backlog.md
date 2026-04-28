@@ -97,7 +97,7 @@
 | Import training plan (resumed post-v7.7) | implementation | Linear FIT-24. Pause lifted 2026-04-28. |
 | Onboarding v2 retroactive (resumed post-v7.7) | tasks | v2/ subdirectory convention validation pilot. Pause lifted 2026-04-28. |
 | Stats v2 (resumed post-v7.7) | tasks | Pause lifted 2026-04-28. |
-| Case-study presentation refactor (NEW 2026-04-28) | enhancement / discovery | Presentation/readability refactor across 47+ case studies. Research + 2 alternatives in flight. Branch `feature/case-study-presentation` (off main). |
+| Case-study presentation refactor (NEW 2026-04-28) | enhancement / **design locked** | **Alternative A locked 2026-04-28.** Component order: SummaryCard → DataKey → KeyNumbersChart (visual aid, **required**) → KillCriterionBanner → DeferredItemsList → narrative. New project rule: every case study must include at least one visual aid (graph or indicator). Default = `<KeyNumbersChart />` (auto from frontmatter); `visual_aid:` frontmatter field overrides with named component. Branch `feature/case-study-presentation` (FitTracker2). Preview: fitme-story `preview/case-study-presentation`. Production rollout pending /pm-workflow Tasks. |
 
 ---
 

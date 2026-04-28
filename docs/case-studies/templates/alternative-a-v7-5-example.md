@@ -43,9 +43,17 @@ kill_criteria:
 kill_criterion_fired: false
 ---
 
-{/* === CARD HEADER (rendered by fitme-story; degrades to readable text in raw .md) === */}
+{/* === LOCKED DESIGN — Alternative A (2026-04-28) ===
+     Order: SummaryCard → DataKey → KeyNumbersChart (visual aid, REQUIRED)
+            → KillCriterionFired → DeferredItems → narrative body
+     The visual aid (KeyNumbersChart, or an explicit `visual_aid:` override
+     in frontmatter) is mandatory on every case study. */}
 
 <SummaryCard />
+
+<DataKey />
+
+<KeyNumbersChart />  {/* required visual aid — auto-renders from frontmatter.key_numbers */}
 
 <KillCriterionFired status="none" />
 
