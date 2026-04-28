@@ -10,7 +10,26 @@
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-28T16:21:48Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "from_phase": "research",
+      "summary": "Retroactive reconciliation: v7.7 shipped via PR #144 on 2026-04-27 (merge commit 01b9e11) but state.json was never updated past `research`. Surfaced 2026-04-28 when the fit-tracker2 dashboard build crashed in reconcile.js because the orphan state.json lacked a `feature` field. Populated phases (research/implementation/merge/complete) from git history, set merge.pr_number=144, transitioned current_phase research→complete. Log entry recorded retroactively (recording_mode=after_the_fact).",
+      "artifacts": [
+        ".claude/features/framework-v7-7-validity-closure/state.json",
+        "docs/case-studies/framework-v7-7-validity-closure-case-study.md"
+      ],
+      "metrics": {
+        "merge_pr": 144,
+        "merge_commit": "01b9e11",
+        "wall_time_minutes": 220
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "after_the_fact"
     }
   ],
-  "updated_at": "2026-04-27T12:35:21Z"
+  "updated_at": "2026-04-28T16:21:48Z"
 }
