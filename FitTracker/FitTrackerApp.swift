@@ -124,6 +124,14 @@ struct FitTrackerApp: App {
                     // Biometric lock screen succeeded — resume the stored session
                     if unlocked { signIn.resumeStoredSession() }
                 }
+                .onOpenURL { url in
+                    // Deep-link return for forgot-password flow (auth-polish-v2 A1).
+                    // URL scheme `fitme://reset-password?...` is registered in
+                    // Info.plist (CFBundleURLTypes/PasswordReset) and handled by
+                    // SignInService.handleIncomingURL — A4 will observe
+                    // signIn.pendingPasswordResetURL to push SetNewPasswordView.
+                    signIn.handleIncomingURL(url)
+                }
                 .onChange(of: scenePhase) { _, phase in
                     guard !isScreenReviewModeEnabled else { return }
                     switch phase {

@@ -304,6 +304,10 @@ final class SignInService: NSObject, ObservableObject {
     @Published private(set) var pendingEmailRegistration: PendingEmailRegistration?
     @Published private(set) var pendingEmailChallenge: EmailRegistrationChallenge?
     @Published private(set) var hasRegisteredPasskey: Bool
+    /// Forgot-password deep-link return — set by `handleIncomingURL(_:)` from
+    /// `FitTrackerApp.onOpenURL`. A4 will observe this to push `SetNewPasswordView`.
+    /// URL scheme is `fitme://reset-password?...` (PRD-locked OQ-2 from auth-polish-v2).
+    @Published var pendingPasswordResetURL: URL?
 
     private let appleProvider: AppleAuthProviding
     private let googleProvider: GoogleAuthProviding
@@ -892,6 +896,21 @@ private func generateRandomBytes(count: Int) -> Data {
             .trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty, !value.contains("YOUR_"), value.contains(".") else { return nil }
         return value
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // MARK: – Deep-link return (forgot-password)
+    // ─────────────────────────────────────────────────────────
+
+    /// Handle `fitme://reset-password?...` deep-link return after the user taps
+    /// the password-reset email link from Supabase. Called from
+    /// `FitTrackerApp.onOpenURL`. Stores the URL in `pendingPasswordResetURL`
+    /// for A4 to observe and push `SetNewPasswordView`. URL scheme is
+    /// PRD-locked OQ-2 (auth-polish-v2 PRD §Decisions Log).
+    func handleIncomingURL(_ url: URL) {
+        guard url.scheme == "fitme" else { return }
+        guard url.host == "reset-password" else { return }
+        pendingPasswordResetURL = url
     }
 }
 

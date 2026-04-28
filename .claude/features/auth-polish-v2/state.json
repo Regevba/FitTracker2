@@ -1,7 +1,7 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-28T19:00:00Z",
+  "updated": "2026-04-28T19:30:00Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "implementation",
   "work_type": "feature",
@@ -200,12 +200,14 @@
       "id": "A1",
       "block": "A",
       "title": "Add fitme://reset-password URL scheme + Info.plist + AppDelegate routing",
-      "status": "pending",
+      "status": "complete",
       "files": [
         "FitTracker/Info.plist",
-        "FitTracker/App/FitMeApp.swift"
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Services/Auth/SignInService.swift"
       ],
-      "deps": []
+      "deps": [],
+      "completed_at": "2026-04-28T19:30:00Z"
     },
     {
       "id": "A2",

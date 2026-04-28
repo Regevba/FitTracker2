@@ -26,6 +26,14 @@
 				<string>$(FITTRACKER_GOOGLE_REVERSED_CLIENT_ID)</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>PasswordReset</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fitme</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
