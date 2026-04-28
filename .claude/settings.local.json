@@ -375,7 +375,18 @@
       "Bash(grep -E '\\\\.py$|\\\\.sh$')",
       "Bash(awk -F= '/^DASHBOARD_USER=/{val=$2; gsub\\(/^\"|\"$/,\"\",val\\); print \"DASHBOARD_USER length:\", length\\(val\\), \"first char ASCII:\", \\(length\\(val\\)>0\\)?sprintf\\(\"%d\", $0\\)+0:\"-\"} /^DASHBOARD_PASS=/{val=$2; gsub\\(/^\"|\"$/,\"\",val\\); printf \"DASHBOARD_PASS length: %d\\\\n\", length\\(val\\)}' /tmp/.fmsenv)",
       "Bash(awk -F= '{print $2}')",
-      "Bash([ -f \".claude/features/$f/state.json\" ])"
+      "Bash([ -f \".claude/features/$f/state.json\" ])",
+      "Bash(xcodebuild -scheme FitTracker -sdk iphonesimulator -configuration Debug build CODE_SIGNING_ALLOWED=NO -quiet)",
+      "Bash(xcodebuild -scheme FitTracker -sdk iphonesimulator -configuration Debug build CODE_SIGNING_ALLOWED=NO)",
+      "Bash(xcodebuild -scheme FitTrackerCoreTests -sdk iphonesimulator -configuration Debug test CODE_SIGNING_ALLOWED=NO -quiet)",
+      "Bash(xcodebuild -list -project /Volumes/DevSSD/FitTracker2/FitTracker.xcodeproj)",
+      "Bash(xcodebuild -scheme FitTracker -sdk iphonesimulator -configuration Debug test -testPlan FitTrackerTests CODE_SIGNING_ALLOWED=NO -quiet)",
+      "Bash(xcodebuild -scheme FitTracker -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 16e,OS=26.0' -configuration Debug test CODE_SIGNING_ALLOWED=NO -quiet)",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/Volumes/DevSSD/FitTracker2/.claude/features/auth-polish-v2/state.json'\\)\\); print\\('T0 tasks:', [t for t in d.get\\('tasks',[]\\) if t.get\\('id'\\)=='T0']\\)\")",
+      "Bash(npx eslint *)",
+      "Bash(git restore *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(npx --package typescript tsc --noEmit)"
     ],
     "additionalDirectories": [
       "/Volumes/DevSSD/FitTracker2/.claude/features",
