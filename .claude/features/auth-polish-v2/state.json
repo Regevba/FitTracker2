@@ -1,7 +1,7 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-28T19:30:00Z",
+  "updated": "2026-04-28T19:45:00Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "implementation",
   "work_type": "feature",
@@ -454,5 +454,42 @@
     "tier_class": "A_high",
     "rationale": "3 sub-bundles (forgot-password / biometric / Google Sign-In) across 8 user flows. Auth = high-risk per CLAUDE.md (SignInService, AuthManager, Supabase). Mostly extends prior art. Auth flows need real-provider testing (Tier 2.1 area)."
   },
-  "case_study": "docs/case-studies/auth-polish-v2-case-study.md"
+  "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+  "paused": {
+    "at": "2026-04-28T19:45:00Z",
+    "reason": "User-requested pause after A1 completion. Foundation in place; A2-A5 + Blocks B/C/D + tests pending.",
+    "resume_signal": "User-driven (no external gate)",
+    "snapshot": {
+      "current_phase": "implementation",
+      "tasks_progress": "2 of 18 complete (T0 + A1)",
+      "next_action_when_resumed": "A2 \u2014 Implement SignInService.requestPasswordReset(email:) with 60s cooldown + Supabase redirectTo. PRD-locked OQ-2 says fitme://reset-password URL scheme. Touch only SignInService.swift; the URL scheme + onOpenURL handler already in place from A1.",
+      "follow_up_actions": [
+        "A3: build 3 ForgotPassword* SwiftUI screens (uses extracted AuthSharedComponents)",
+        "A4: wire deep-link return path in RootView, observe signIn.pendingPasswordResetURL",
+        "A5: 4 forgot-password analytics events",
+        "Block B: Biometric (B1-B4)",
+        "Block C: Google Sign-In runtime activation (C1-C4)",
+        "Block D: Cross-cutting (D1-D4)"
+      ],
+      "blockers": [],
+      "context_links": [
+        ".claude/features/auth-polish-v2/state.json",
+        ".claude/features/auth-polish-v2/prd.md",
+        ".claude/features/auth-polish-v2/ux-spec.md",
+        ".claude/features/auth-polish-v2/ux-research.md",
+        "docs/case-studies/auth-polish-v2-case-study.md",
+        "docs/prompts/2026-04-28-auth-polish-v2-ux-build.md"
+      ],
+      "recent_commits": [
+        "56fedd8 \u2014 A1: fitme:// URL scheme + deep-link handler",
+        "7bfe470 \u2014 Phase 3\u21924 transition + T0 component extraction",
+        "dc3678a \u2014 Phase 3 UX deliverables",
+        "f4562c2 \u2014 Phase 1\u21922 PRD approval",
+        "53f8cf6 \u2014 Phase 0\u21921 research approval",
+        "1725aa6 \u2014 resume from v7.7 freeze + cu_v2"
+      ],
+      "branch": "feature/auth-polish-v2",
+      "note_on_path_drift": "PRD task spec listed FitMeApp.swift / Services/SignInService.swift but actual paths are FitTrackerApp.swift / Services/Auth/SignInService.swift. A1 was corrected on commit; A2-A5 + Blocks files[] still have old paths and will need correction at start of each task."
+    }
+  }
 }
