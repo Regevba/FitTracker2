@@ -92,8 +92,13 @@ jobs:
         env:
           TIMESTAMP: ${{ steps.paths.outputs.timestamp }}
         run: |
-          git config --local user.email "integrity-cycle@actions"
-          git config --local user.name "Integrity Cycle Bot"
+          # Commit as the project owner so Vercel's committer-association
+          # check passes on Hobby tier (otherwise every cycle deploy is
+          # blocked because the bot identity can't be mapped to a Vercel
+          # team member). Email must match a verified address on the
+          # Regevba GitHub account.
+          git config --local user.email "regvash21@gmail.com"
+          git config --local user.name "Regevba"
           git add .claude/integrity/snapshots/
           if git diff --staged --quiet; then
             echo "No snapshot changes to commit."

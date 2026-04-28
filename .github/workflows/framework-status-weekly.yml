@@ -133,8 +133,12 @@ jobs:
         env:
           REGRESSION: ${{ steps.compare.outputs.regression }}
         run: |
-          git config --local user.email "framework-status@actions"
-          git config --local user.name "Framework Status Bot"
+          # Commit as the project owner so Vercel's committer-association
+          # check passes on Hobby tier (otherwise every weekly status
+          # deploy is blocked). Email must match a verified address on
+          # the Regevba GitHub account.
+          git config --local user.email "regvash21@gmail.com"
+          git config --local user.name "Regevba"
           git add .claude/shared/measurement-adoption-history.json \
                   .claude/shared/measurement-adoption.json \
                   .claude/shared/documentation-debt.json 2>/dev/null || true
