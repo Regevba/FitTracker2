@@ -1,7 +1,7 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-27T05:09:15Z",
+  "updated": "2026-04-28T17:00:00Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "prd",
   "work_type": "feature",
@@ -161,18 +161,33 @@
     }
   ],
   "github_issue_number": 143,
-  "paused": {
-    "at": "2026-04-27T14:00:00Z",
-    "reason": "v7.7 Validity Closure full-priority freeze",
-    "resume_signal": "framework-v7-7-validity-closure phase=complete",
-    "snapshot": {
-      "current_phase": "prd",
-      "next_action_when_resumed": "Continue PRD phase; cache_hits will populate automatically from v7.7 M1 writer-path instrumentation when this feature resumes work",
-      "blockers": [],
-      "context_links": [
-        ".claude/features/auth-polish-v2/state.json",
-        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_auth_polish_v2.md"
-      ]
+  "paused_history": [
+    {
+      "at": "2026-04-27T14:00:00Z",
+      "reason": "v7.7 Validity Closure full-priority freeze",
+      "resume_signal": "framework-v7-7-validity-closure phase=complete",
+      "snapshot": {
+        "current_phase": "prd",
+        "next_action_when_resumed": "Continue PRD phase; cache_hits will populate automatically from v7.7 M1 writer-path instrumentation when this feature resumes work",
+        "blockers": [],
+        "context_links": [
+          ".claude/features/auth-polish-v2/state.json",
+          "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_auth_polish_v2.md"
+        ]
+      },
+      "lifted_at": "2026-04-28T17:00:00Z",
+      "lifted_reason": "v7.7 freeze ended; v7.7 merged 2026-04-27 (PR #144)"
     }
+  ],
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.6,
+      "blast_radius": 0.7,
+      "novelty": 0.4,
+      "verification_difficulty": 0.6
+    },
+    "total": 2.3,
+    "tier_class": "A_high",
+    "rationale": "3 sub-bundles (forgot-password / biometric / Google Sign-In) across 8 user flows. Auth = high-risk per CLAUDE.md (SignInService, AuthManager, Supabase). Mostly extends prior art. Auth flows need real-provider testing (Tier 2.1 area)."
   }
 }

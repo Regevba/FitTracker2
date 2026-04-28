@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.6",
   "started_at": "2026-04-27T05:01:13Z",
-  "updated_at": "2026-04-27T07:01:35Z",
+  "updated_at": "2026-04-28T02:58:34Z",
   "events": [
     {
       "timestamp": "2026-04-27T05:01:13Z",
@@ -61,6 +61,17 @@
         "phase_count": 2
       },
       "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-28T02:58:34Z",
+      "event_type": "resumed_from_pause",
+      "phase": "prd",
+      "summary": "Resumed from v7.7 priority freeze (paused 2026-04-27, resumed 2026-04-28). Continuing PRD phase. Spec auth-polish-v2 was the v7.7 canary; now exits the freeze with v7.7's hooks live on main.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
