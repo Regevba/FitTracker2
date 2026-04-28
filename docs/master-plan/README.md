@@ -2,11 +2,12 @@
 
 > The master plan for FitMe's overall direction and the handoff documents that capture state-of-repo checkpoints between sessions. Kept in one folder so anyone resuming work (human or agent) can find the current plan and the most recent handoff without hunting through scattered folders.
 
-> **Framework state at last update:** PM Framework v7.6 (Mechanical Enforcement, shipped 2026-04-25). Canonical entry points:
-> - Developer guide (v1.0 → v7.6 technical reference): [`../architecture/dev-guide-v1-to-v7-6.md`](../architecture/dev-guide-v1-to-v7-6.md)
+> **Framework state at last update:** PM Framework v7.7 (Validity Closure, shipped 2026-04-27). Canonical entry points:
+> - Developer guide (v1.0 → v7.7 technical reference): [`../architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md)
+> - **v7.7 case study (current):** [`../case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md) — 5 new check codes, framework-health dashboard, cache_hits writer-path closed (5 → 4 unclosable gaps)
 > - v7.6 case study: [`../case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md)
 > - v7.5 case study: [`../case-studies/data-integrity-framework-v7.5-case-study.md`](../case-studies/data-integrity-framework-v7.5-case-study.md)
-> - Class B mechanically-unclosable gaps: [`../case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
+> - Class B mechanically-unclosable gaps (4 remain after v7.7): [`../case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
 > - Tier 3.3 external-replication invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142) (pinned, the explicit final v7.6 deliverable)
 > - Pre-v7.5 Codex SSD audit (foundational input): [`codex-ssd-audit-2026-04-19.md`](codex-ssd-audit-2026-04-19.md)
 

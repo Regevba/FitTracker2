@@ -151,13 +151,13 @@ Internal PM dashboard and current canonical live web surface on `fit-tracker2.ve
 
 ## Current Repo Status
 
-Verification snapshot as of `2026-04-25`:
+Verification snapshot as of `2026-04-27`:
 
-### PM Framework: v7.6 (Mechanical Enforcement)
+### PM Framework: v7.7 (Validity Closure)
 - **8 SoC optimizations + Dispatch Intelligence (v5.2)** — skill-on-demand, cache compression, batch dispatch, model tiering, result forwarding, speculative preload, systolic chains, task complexity gate
 - **Deterministic measurement instrumentation (v6.0)** — phase timing, cache hit tracking, eval gates, CU v2, rolling baselines
 - **HADF Hardware-Aware Dispatch (v7.0, PR #82)** — 5-layer architecture: device detection → static profiles (17 chips, 6 vendors) → cloud fingerprinting (7 signatures, Mahalanobis distance) → dynamic adaptation → evolutionary learning. Confidence-gated (0.4/0.7), zero regression.
-- **Mechanical enforcement (v7.6)** — pre-commit state/case-study gates, per-PR integrity status, weekly framework-status cron, explicit Class B gap inventory.
+- **Mechanical enforcement (v7.6) → Validity Closure (v7.7)** — pre-commit state/case-study gates, per-PR integrity status, weekly framework-status cron, explicit Class B gap inventory. v7.7 adds 5 new check codes (4 gating + 1 advisory permanent), framework-health dashboard, and reduces unclosable gaps from 5 to 4.
 - **63% framework overhead reduction** — free context doubled (78K → 155K tokens)
 - **Normalized velocity:** 3.6 min/CU average (+76% vs baseline)
 - **Docs:** [`docs/architecture/soc-software-architecture-research.md`](docs/architecture/soc-software-architecture-research.md)

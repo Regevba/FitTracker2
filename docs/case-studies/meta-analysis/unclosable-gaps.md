@@ -1,21 +1,24 @@
-# Mechanically Unclosable Gaps — v7.6 Class B Inventory
+# Mechanically Unclosable Gaps — v7.7 Class B Inventory (1 closed by v7.7 M1)
 
-> **Generated:** 2026-04-25
-> **Framework version at publication:** 7.6 (Mechanical Enforcement)
-> **Authoritative companion:** [docs/case-studies/mechanical-enforcement-v7-6-case-study.md](/docs/case-studies/mechanical-enforcement-v7-6-case-study.md)
+> **Generated:** 2026-04-25; **updated:** 2026-04-27 at v7.7 ship
+> **Framework version at publication:** 7.7 (Validity Closure)
+> **Authoritative companion:** [docs/case-studies/framework-v7-7-validity-closure-case-study.md](/docs/case-studies/framework-v7-7-validity-closure-case-study.md)
+> **v7.6 companion:** [docs/case-studies/mechanical-enforcement-v7-6-case-study.md](/docs/case-studies/mechanical-enforcement-v7-6-case-study.md)
 > **Policy precedent:** [`feedback_publish_verbatim_then_remediate.md`](../../.claude/feedback/) — gaps stay visible; we do not collapse them silently.
 
-The v7.6 work promoted **4 silent gaps** (Class B → Class A) into write-time pre-commit failures and added **3 recurring per-PR / weekly checks**. After that promotion, **5 gaps remain mechanically unclosable** by physical or policy necessity. This document enumerates them so the gap is visible in the audit trail rather than buried in agent behavior.
+The v7.6 work promoted **4 silent gaps** (Class B → Class A) into write-time pre-commit failures and added **3 recurring per-PR / weekly checks**. After that promotion, **5 gaps remained mechanically unclosable** by physical or policy necessity. **v7.7 (shipped 2026-04-27) closed 1: the cache_hits writer-path adoption gap** via the `CACHE_HITS_EMPTY_POST_V6` pre-commit hook and `scripts/log-cache-hit.py` wrapper (M1). **4 gaps remain mechanically unclosable** by physical or policy necessity. This document enumerates them so the gap is visible in the audit trail rather than buried in agent behavior.
 
 A gap is "Class A" when a deterministic check (pre-commit, CI, status check) blocks the failing state from reaching `main`. A gap is "Class B" when only narrative discipline, agent attention, or post-hoc human review can catch it. **Class B is not a bug per se** — some gaps cannot be Class A without lying about what the system can verify. The purpose of this document is to make Class B status explicit and tracked.
 
 ---
 
-## Gap 1 — `cache_hits[]` writer-path adoption
+## Gap 1 — `cache_hits[]` writer-path adoption — **CLOSED 2026-04-27 by v7.7 M1**
 
 **Tier:** 1.1 sub-gap
-**Class:** B (agent-attention)
-**Tracked by:** [GitHub issue #140](https://github.com/Regevba/FitTracker2/issues/140)
+**Class:** ~~B (agent-attention)~~ → **Class A (pre-commit)** as of v7.7
+**Tracked by:** [GitHub issue #140](https://github.com/Regevba/FitTracker2/issues/140) — **closed by v7.7 M1**
+
+> **v7.7 closure detail:** v7.7 M1 ships `scripts/log-cache-hit.py` wrapper that auto-discovers the active feature and dual-writes `state.json cache_hits[]` and the events log in one command. The pre-commit hook `CACHE_HITS_EMPTY_POST_V6` rejects `current_phase=complete` on post-v6 features whose `cache_hits[]` is empty. This means the writer-path is now mechanically enforced: an agent cannot advance a post-v6 feature to `complete` without at least one logged cache-hit event (or an explicit empty-acknowledgment override). Current observed adoption value is still 33.3% post-v6 (2/6 at v7.7 ship) because no post-v6 feature reached `complete` during the v7.7 session — adoption will tick upward on the first such write. Issue #140 closed.
 
 ### Why it cannot be mechanically closed
 
@@ -42,9 +45,9 @@ What we *cannot* check: whether the agent *should have* logged a cache hit on co
 
 ### Tracking
 
-- Issue: [#140](https://github.com/Regevba/FitTracker2/issues/140) — open until writer-path adoption climbs to ≥80% post-v6 features.
+- Issue: [#140](https://github.com/Regevba/FitTracker2/issues/140) — **closed by v7.7 M1**.
 - Manifest field: `framework-manifest.json` → `tier_1_1_status.cache_hits_post_v6`.
-- Closes when: not closeable mechanically. Best long-term mitigation is making `--cache-hit` so easy that agents reach for it reflexively (already partially achieved by adding it to the `append-feature-log.py` invocation in the standard PM workflow).
+- **Status: CLOSED.** The writer-path is now mechanically enforced via `CACHE_HITS_EMPTY_POST_V6` pre-commit hook. Observed adoption (33.3% post-v6 at v7.7 ship) will tick upward on the first post-v6 feature that reaches `complete` post-v7.7.
 
 ---
 
@@ -102,10 +105,15 @@ Distinguishing "T1 (from JSON file)" from "T2 (from a transient command)" requir
 1. During code review, spot-check 1–2 quantitative claims per case study and verify the tag matches the actual provenance.
 2. If a tag is wrong, prefer **append a correction** over silent edit (per `feedback_publish_verbatim_then_remediate`). Add an "Updated 2026-MM-DD" footnote with the corrected tag and reason.
 
+### v7.7 advisory heuristic
+
+v7.7 M5 shipped `TIER_TAG_LIKELY_INCORRECT` — a cycle-time advisory (not a gate) that uses regex heuristics to flag quantitative claims whose tier tags appear mismatched (e.g., a number claimed as T1 that is not traceable to a JSON file). **Kill criterion 2 fired at baseline: FP rate was 100% on n=1 (root cause: regex matched inside code blocks and pre-existing prose that predated the convention).** The check ships advisory permanent rather than as a blocking gate. It surfaces suspicion for human review; it does not block commits. Gap 3 correctness therefore remains Class B — the advisory is a human-attention signal, not a mechanical enforcement.
+
 ### Tracking
 
 - Convention doc: [`docs/case-studies/data-quality-tiers.md`](../data-quality-tiers.md).
 - Preflight code: [`scripts/check-case-study-preflight.py`](../../../scripts/check-case-study-preflight.py).
+- v7.7 advisory: `TIER_TAG_LIKELY_INCORRECT` in `scripts/integrity-check.py` (cycle-time, advisory permanent).
 
 ---
 
@@ -192,7 +200,19 @@ No pre-commit hook can simulate "did an external operator succeed with this." We
 | Tier 2.1 real-provider auth | Class B | Class B | — Gap 4 |
 | Tier 3.3 external replication | Class B | Class B | — Gap 5 |
 
-**Aggregate:** v7.6 promoted 7 concerns from Class B to Class A (4 write-time pre-commit, 1 per-PR status check, 1 weekly regression watcher, 1 append-only history). 5 concerns remain genuinely Class B. The Class B set is now exhaustively documented and individually justified, which is itself a v7.6 deliverable: a system that knows what it cannot check is more trustworthy than one that pretends every check is a check.
+**v7.5 → v7.6 aggregate:** v7.6 promoted 7 concerns from Class B to Class A (4 write-time pre-commit, 1 per-PR status check, 1 weekly regression watcher, 1 append-only history). 5 concerns remained genuinely Class B. The Class B set is now exhaustively documented and individually justified, which is itself a v7.6 deliverable: a system that knows what it cannot check is more trustworthy than one that pretends every check is a check.
+
+## Class A vs Class B — v7.6 → v7.7 promotions
+
+| Concern | v7.6 status | v7.7 status | Promoted? |
+|---|---|---|---|
+| `cache_hits[]` writer-path adoption | Class B (agent-attention) | **Class A (pre-commit)** | ✅ v7.7 M1 |
+| `cu_v2` factor magnitudes | Class B | Class B | — Gap 2 |
+| T1/T2/T3 tag *correctness* | Class B | Class B (advisory heuristic: `TIER_TAG_LIKELY_INCORRECT`, kill-2 fired) | — Gap 3 |
+| Tier 2.1 real-provider auth | Class B | Class B | — Gap 4 |
+| Tier 3.3 external replication | Class B | Class B | — Gap 5 |
+
+**v7.6 → v7.7 aggregate:** v7.7 promoted 1 concern from Class B to Class A (cache_hits writer-path via `CACHE_HITS_EMPTY_POST_V6` pre-commit hook). **4 concerns remain genuinely Class B.** The Class B set remains exhaustively documented and individually justified.
 
 ---
 

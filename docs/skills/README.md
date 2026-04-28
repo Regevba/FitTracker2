@@ -1,7 +1,7 @@
 # FitMe Skills Ecosystem — One-pager
 
-> **Status: v7.6 — Mechanical Enforcement (shipped 2026-04-25).**
-> Developer onboarding starts at [`docs/architecture/dev-guide-v1-to-v7-6.md`](../architecture/dev-guide-v1-to-v7-6.md) (745-line technical guide). v7.6 case study: [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md). Class B inventory: [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md). Tier 3.3 external invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142).
+> **Status: v7.7 — Validity Closure (shipped 2026-04-27).**
+> Developer onboarding starts at [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (745-line technical guide). v7.7 case study: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md). v7.6 case study: [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md). Class B inventory (4 remain): [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md). Tier 3.3 external invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142).
 
 **Goal:** Give every domain of the product lifecycle its own first-class skill, so product management scales past a monolithic workflow without losing the connective tissue between domains.
 

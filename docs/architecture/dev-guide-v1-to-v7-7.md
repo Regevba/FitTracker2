@@ -1,8 +1,8 @@
-# PM Framework — Developer Guide (v1.0 → v7.6)
+# PM Framework — Developer Guide (v1.0 → v7.7)
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Last updated:** 2026-04-25 at v7.6 ship.
+> **Last updated:** 2026-04-27 at v7.7 ship.
 > **Companion docs:** [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
 > **Reading order:** §§ 1–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs.
 
@@ -11,7 +11,7 @@
 ## Table of Contents
 
 1. [Audience and how to read](#1-audience-and-how-to-read)
-2. [Big picture (current state — v7.6)](#2-big-picture-current-state--v76)
+2. [Big picture (current state — v7.7)](#2-big-picture-current-state--v77)
 3. [Where the code lives](#3-where-the-code-lives)
 4. [The skill ecosystem (hub + 10 spokes)](#4-the-skill-ecosystem-hub--10-spokes)
 5. [`state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
@@ -21,7 +21,7 @@
 9. [Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
 10. [Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
 11. [Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
-12. [Compressed evolution timeline (v1.0 → v7.6)](#12-compressed-evolution-timeline-v10--v76)
+12. [Compressed evolution timeline (v1.0 → v7.7)](#12-compressed-evolution-timeline-v10--v77)
 13. [Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
 14. [Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
 15. [Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
@@ -44,13 +44,13 @@ There is **no compiled binary**. The framework is the union of the conventions a
 
 ---
 
-## 2. Big picture (current state — v7.6)
+## 2. Big picture (current state — v7.7)
 
 ### 2.1 What the framework does, in one sentence
 
 It enforces that every feature passes through a defined lifecycle (Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs), records its state and timing in a machine-readable file, and is gated by automated checks at write-time, per-PR, and on a 72h schedule so that drift between code and documentation is caught fast.
 
-### 2.2 The four enforcement layers (v7.6)
+### 2.2 The four enforcement layers (v7.7)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -76,7 +76,7 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 ┌─────────────────────────────────────────────────────────────────────┐
 │  Layer 3 — 72h CYCLE (GitHub Actions cron, every 3 days at 04:00Z)  │
 │  Workflow: .github/workflows/integrity-cycle.yml                    │
-│  Script: scripts/integrity-check.py (12 cycle-time check codes)     │
+│  Script: scripts/integrity-check.py (13 cycle-time + 1 advisory)    │
 │  Snapshots ledger to .claude/integrity/snapshots/.                  │
 │  Opens issue on regression vs prior snapshot.                       │
 └─────────────────────────────────────────────────────────────────────┘
@@ -90,7 +90,7 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.3 The 5 mechanically unclosable Class B gaps
+### 2.3 The 4 mechanically unclosable Class B gaps (v7.7 closed 1)
 
 The four layers above catch what a deterministic script can catch. Five gaps remain Class B (agent-attention, judgment, or external-dependency). They are documented in [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md):
 
@@ -130,7 +130,7 @@ FitTracker2/
 ├── scripts/
 │   ├── check-state-schema.py                 ← write-time + cycle (10+ check codes)
 │   ├── check-case-study-preflight.py         ← write-time (case studies)
-│   ├── integrity-check.py                    ← cycle-time (12 check codes)
+│   ├── integrity-check.py                    ← cycle-time (13 check codes + 1 advisory)
 │   ├── measurement-adoption-report.py        ← Tier 1.1 ledger generator
 │   ├── append-feature-log.py                 ← contemporaneous log writer
 │   ├── documentation-debt-report.py          ← Tier 3.2 ledger generator
@@ -402,7 +402,7 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 
 ## 10. Integrity layer — write-time + per-PR + cycle-time + weekly
 
-### 10.1 Check codes (12 in v7.6)
+### 10.1 Check codes (13 cycle-time + 1 advisory in v7.7)
 
 | Code | Layer | Script | What it checks |
 |---|---|---|---|
@@ -420,6 +420,11 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 | `NO_STATE` | Cycle | `integrity-check.py` | Feature in registry has no state.json |
 | `BROKEN_PR_CITATION` (v7.6 write-time, v7.5 cycle) | Write + cycle | `check-case-study-preflight.py` (write) + `integrity-check.py` (cycle) | PR # in case study does not resolve |
 | `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) | Write + cycle | `check-case-study-preflight.py` (write) + `integrity-check.py` (cycle) | Scoped case study has no T1/T2/T3 tag at all (forward-only ≥ 2026-04-21); presence only, not exhaustiveness |
+| `CACHE_HITS_EMPTY_POST_V6` (v7.7) | Write | `check-state-schema.py` | Post-v6 feature reaches `current_phase=complete` with empty `cache_hits[]`. Pairs with `scripts/log-cache-hit.py` wrapper that auto-discovers the active feature and dual-writes state.json + events log. Closes #140 (the v6 writer-path adoption gap). |
+| `CU_V2_INVALID` (v7.7) | Write + cycle | `check-state-schema.py` + `integrity-check.py` | `cu_v2` schema invalid: missing factor (complexity/blast_radius/novelty/verification_difficulty), out-of-range value, total mismatch with sum(factors), or invalid tier_class. Pre-v6 features without `cu_v2` are exempt. Validates STRUCTURE only — magnitude correctness stays a documented Class B gap. |
+| `STATE_NO_CASE_STUDY_LINK` (v7.7) | Write | `check-state-schema.py` | `current_phase=complete` without `case_study` link OR `parent_case_study` link OR `case_study_type` exempt tag (`no_case_study_required` / `pre_pm_workflow_backfill` / `roundup`). Mirrors the cycle-time `NO_CS_LINK` at write-time. |
+| `CASE_STUDY_MISSING_FIELDS` (v7.7) | Write | `check-case-study-preflight.py` | Forward-only ≥ 2026-04-28: case study missing one or more of `work_type`, `success_metrics`, `kill_criteria`, `dispatch_pattern` in frontmatter. |
+| **`TIER_TAG_LIKELY_INCORRECT` (v7.7 advisory)** | Cycle (advisory) | `validate-tier-tags.py` + `integrity-check.py` | Heuristic regex extracts T1-tagged quantitative claims and cross-references against ledger numbers. **Advisory severity — does not gate.** Kill criterion 2 fired at baseline (FP rate 100% n=1; root cause: regex pattern designed for `**T1**:` prefix style, live corpus uses `\| value \| T1 \|` table-column format). Ships advisory permanent. v7.8 redesign documented in `docs/case-studies/meta-analysis/tier-tag-checker-baseline.md`. |
 
 ### 10.2 The 72h cycle
 
@@ -481,7 +486,7 @@ All dynamic values used inside `run:` blocks **MUST** be routed through the `env
 
 ---
 
-## 12. Compressed evolution timeline (v1.0 → v7.6)
+## 12. Compressed evolution timeline (v1.0 → v7.7)
 
 Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). This section is the compressed dev-only summary — what each version changed structurally.
 
@@ -502,11 +507,12 @@ Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). T
 | v7.0 | 2026-04-16 | HADF (Hardware-Aware Dispatch). 5-layer architecture, 17 chip profiles, 7 cloud signatures, hardware_context block in dispatch-intelligence.json, zero-regression gate (0.4/0.7), composite optimizer. | If you see `hardware_context` in dispatch logs, this is why. Layer 4 (chip-affinity-map) is empty by design — it activates when a workload meets thresholds. |
 | v7.1 | 2026-04-21 | 72h Integrity Cycle. First framework capability whose trigger is wall-clock elapsed (cron). 7 failure-mode detectors. | The `integrity-cycle.yml` workflow + `.claude/integrity/snapshots/` ledger. |
 | v7.5 | 2026-04-24 | Data Integrity Framework (8 cooperating defenses). Pre-commit schema gates, PR-resolution check, runtime smoke gates, contemporaneous logging, T1/T2/T3 data quality tiers, documentation-debt + measurement-adoption ledgers, 3 new Auditor Agent check codes. Triggered by Gemini 2.5 Pro audit. | 7 of Gemini's 9 Tier 1/2/3 items shipped fully or effectively, 2 partial/pilot, 1 deferred to v7.6. The pre-commit hook and the `make` targets (`integrity-check`, `measurement-adoption`, `documentation-debt`, `runtime-smoke`) date from here. |
-| v7.6 | 2026-04-25 | Mechanical Enforcement. 4 new write-time check codes (`PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` write-time, `CASE_STUDY_MISSING_TIER_TAGS`). Per-PR review bot with `pm-framework/pr-integrity` status check. Weekly framework-status cron. Append-only adoption history. 5 explicit Class B gaps documented in `unclosable-gaps.md`. | The current state. Writing code today: expect the pre-commit hook to fire, expect the per-PR bot to comment, expect the weekly cron to surface adoption regressions. The 5 Class B gaps are the documented exceptions. |
+| v7.6 | 2026-04-25 | Mechanical Enforcement. 4 new write-time check codes (`PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` write-time, `CASE_STUDY_MISSING_TIER_TAGS`). Per-PR review bot with `pm-framework/pr-integrity` status check. Weekly framework-status cron. Append-only adoption history. 5 explicit Class B gaps documented in `unclosable-gaps.md`. | The point where mechanical enforcement reached steady-state. The Class B inventory crystallized here. |
+| v7.7 | 2026-04-27 | Validity Closure. 5 new check codes (4 gating + 1 advisory): `CACHE_HITS_EMPTY_POST_V6` (write — closes #140 writer-path), `CU_V2_INVALID` (write+cycle — schema validator), `STATE_NO_CASE_STUDY_LINK` (write — mirrors cycle-time `NO_CS_LINK`), `CASE_STUDY_MISSING_FIELDS` (write — forward-only ≥ 2026-04-28), `TIER_TAG_LIKELY_INCORRECT` (cycle advisory permanent — kill-2 fired at baseline). Cycle-time codes 12 → 13. Linkage 95.5% → 100% (gated). Doc-debt fields 4–61% → 95.7–100% (gated forward). Framework-health dashboard live at fitme-story `/control-room/framework`. Reduces unclosable Class B gaps from 5 to 4. | **The current state.** Writing code today: expect the pre-commit hook to gate cache_hits population, cu_v2 schema, linkage, and case-study fields. The cycle still accepts advisory findings. 4 Class B gaps remain (cu_v2 magnitude, T1/T2/T3 tag correctness, real-provider auth playbook, external replication) — documented in `unclosable-gaps.md`. |
 
 ### 12.1 Version-bump policy
 
-A major-version bump (e.g., v7.5 → v7.6) requires:
+A major-version bump (e.g., v7.6 → v7.7) requires:
 1. **A new structural capability** — not just code changes within an existing capability.
 2. **A propagated update across surfaces** — manifest, CLAUDE.md, evolution doc, case study, and trust-page integration where relevant.
 3. **A measurement that the change is real** — pipeline test, integrity check, or instrumented data.
