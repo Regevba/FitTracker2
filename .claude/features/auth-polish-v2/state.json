@@ -1,9 +1,9 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-28T17:00:00Z",
+  "updated": "2026-04-28T17:30:00Z",
   "branch": "feature/auth-polish-v2",
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "v7.6",
@@ -29,8 +29,8 @@
       ]
     },
     "prd": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "approved",
+      "approved_at": "2026-04-28T17:30:00Z",
       "analytics_spec_complete": true,
       "events_added": 9,
       "params_added": 6,
@@ -38,8 +38,9 @@
       "user_properties_added": 0
     },
     "tasks": {
-      "status": "pending",
-      "count": 0
+      "status": "in_progress",
+      "count": 0,
+      "started_at": "2026-04-28T17:30:00Z"
     },
     "ux_or_integration": {
       "status": "pending",
@@ -99,9 +100,9 @@
   "timing": {
     "session_start": "2026-04-27T05:00:38Z",
     "session_end": null,
-    "total_wall_time_minutes": 8.6,
+    "total_wall_time_minutes": 572.6,
     "time_source": "measured",
-    "total_wall_time_note": "Sum of completed phase durations (research only). Updated as later phases close.",
+    "total_wall_time_note": "Sum of research (8.6 min) + PRD active time (564 min net of v7.7 freeze pause).",
     "phases": {
       "research": {
         "started_at": "2026-04-27T05:00:38Z",
@@ -111,6 +112,13 @@
       },
       "prd": {
         "started_at": "2026-04-27T05:09:15Z",
+        "ended_at": "2026-04-28T17:30:00Z",
+        "duration_minutes": 564.0,
+        "paused_minutes": 1620,
+        "note": "Drafted 2026-04-27 05:09\u219214:00 (~8.9h), paused for v7.7 freeze ~27h, resumed + approved 2026-04-28 17:00\u219217:30 (~0.5h). Net active ~9.4h."
+      },
+      "tasks": {
+        "started_at": "2026-04-28T17:30:00Z",
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0
@@ -189,5 +197,6 @@
     "total": 2.3,
     "tier_class": "A_high",
     "rationale": "3 sub-bundles (forgot-password / biometric / Google Sign-In) across 8 user flows. Auth = high-risk per CLAUDE.md (SignInService, AuthManager, Supabase). Mostly extends prior art. Auth flows need real-provider testing (Tier 2.1 area)."
-  }
+  },
+  "case_study": "docs/case-studies/auth-polish-v2-case-study.md"
 }
