@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "case-study-presentation",
+  "title": "case study presentation",
+  "work_type": "feature",
+  "current_phase": "implementation",
+  "framework_version": "7.7",
+  "started_at": "2026-04-28T18:28:43Z",
+  "updated_at": "2026-04-28T18:28:43Z",
+  "events": [
+    {
+      "timestamp": "2026-04-28T18:28:43Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Implementation phase started: chrome shipped on fitme-story preview/case-study-presentation (4 commits), FT2 visual-aid catalog + Alt-A/B worked-example templates committed (3 commits), state.json adding now to make the feature visible to dashboard + integrity-check + doc-debt ledger.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

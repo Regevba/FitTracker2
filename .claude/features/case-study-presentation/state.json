@@ -1,0 +1,137 @@
+{
+  "feature": "case-study-presentation",
+  "feature_name": "case-study-presentation",
+  "display_name": "Case-Study Presentation Refactor (Alternative A)",
+  "case_study": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+  "work_type": "feature",
+  "framework_version": "7.7",
+  "current_phase": "implementation",
+  "status": "in_progress",
+  "created": "2026-04-28T04:00:00Z",
+  "created_at": "2026-04-28T04:00:00Z",
+  "updated": "2026-04-28T18:30:00Z",
+  "branch": "feature/case-study-presentation",
+  "predecessor_features": [
+    "framework-v7-7-validity-closure"
+  ],
+  "linked_repos": {
+    "fitme-story_branch": "preview/case-study-presentation",
+    "fitme-story_status": "4 commits ahead of main; production chrome (alt-a-chrome/{VisualAidResolver,index}.tsx) + 25 backfilled case studies + build-time validator (scripts/validate-frontmatter.ts) pushed; demo preview routes (case-studies-preview/{,alternative-a,alternative-b}) still on branch pending cleanup before merge"
+  },
+  "success_metrics": [
+    "100% of case studies (22 timeline + 3 appendix) carry locked Alt-A frontmatter (tldr + key_numbers OR visual_aid + kill_criteria + kill_criterion_fired)",
+    "Build-time validator (fitme-story/scripts/validate-frontmatter.ts) refuses any new case study missing tldr or missing both visual_aid and key_numbers",
+    "≤30% of shipped case studies fall back to KeyNumbersChart; ≥70% declare a specialised visual_aid component",
+    "Visual-aid catalog (docs/design-system/case-study-visual-aid-catalog.md) and Alt-A worked example (docs/case-studies/templates/alternative-a-v7-5-example.md) documented at canonical FT2 paths and cross-linked from fitme-story content schema"
+  ],
+  "kill_criteria": [
+    "Frontmatter validator false-positive rate >5% on legitimate frontmatter in week-1 dogfooding (would force the gate to be disabled or weakened).",
+    "Reader 60-second comprehension test fails on 3+ of 5 randomly sampled case studies (SummaryCard not doing its job).",
+    "Case-study route first-paint regresses >100ms after chrome rollout (chrome too heavy)."
+  ],
+  "kill_criterion_fired": false,
+  "dispatch_pattern": "serial",
+  "phases": {
+    "research": {
+      "status": "complete",
+      "started_at": "2026-04-28T04:00:00Z",
+      "ended_at": "2026-04-28T07:00:00Z",
+      "skipped_reason": null,
+      "note": "Two presentation alternatives (Web-First Card + Anthology) explored on fitme-story preview branch (commits 2e61cf0, 36ee470, b884869). Worked-example templates for both alternatives committed to FT2 at docs/case-studies/templates/."
+    },
+    "prd": {
+      "status": "skipped",
+      "skipped_reason": "Locked-design memory (project_case_study_presentation_locked.md, 2026-04-28) served as PRD: design decision (Alternative A), component order, visual-aid rule, and rejected alternative all captured. The 'Lock Alt A + visual-aid rule' commit (991b5f7) on this branch contains the equivalent of a written PRD."
+    },
+    "tasks": {
+      "status": "complete",
+      "started_at": "2026-04-28T07:00:00Z",
+      "ended_at": "2026-04-28T09:00:00Z",
+      "skipped_reason": null,
+      "note": "Rollout plan: (1) build chrome components in fitme-story, (2) wire Standard/Light/Flagship templates to call them, (3) backfill 25 case studies with Alt-A frontmatter, (4) add build-time validator, (5) write FT2 visual-aid catalog + Alt-A/B worked examples, (6) cleanup demo preview routes, (7) open fitme-story PR, (8) write completion case study."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skipped_reason": "Presentation refactor reuses existing fitme-story Standard/Light/Flagship templates and the existing design system; no new UI surface beyond the chrome components, which were specced inside the locked-design memory."
+    },
+    "implementation": {
+      "status": "in_progress",
+      "started_at": "2026-04-28T09:00:00Z",
+      "ended_at": null,
+      "skipped_reason": null,
+      "note": "fitme-story preview/case-study-presentation: VisualAidResolver + alt-a-chrome/index.tsx + 25 case-study backfills + validate-frontmatter.ts + content-schema.ts refinements (commits 9c8fba7, af6bc75, 56f6e30, 23d37de, 656ed55). FitTracker2 feature/case-study-presentation: visual-aid catalog (commit 38aa5ec), Alt-A + Alt-B worked-example templates (commit 991b5f7), preview alt-a visual-aid rule (commit 34dd38b), and this state.json. Pending: delete demo preview routes from fitme-story branch, open fitme-story PR preview/case-study-presentation -> main, open FT2 PR feature/case-study-presentation -> main."
+    },
+    "test": {
+      "status": "not_started",
+      "skipped_reason": null,
+      "note": "Validator runs in fitme-story CI on PR open; visual review is editorial."
+    },
+    "review": {
+      "status": "not_started",
+      "skipped_reason": null
+    },
+    "merge": {
+      "status": "not_started",
+      "pr_number": null,
+      "merged_at": null,
+      "merge_commit": null
+    },
+    "documentation": {
+      "status": "not_started",
+      "skipped_reason": null,
+      "note": "Case study writeup planned at docs/case-studies/case-study-presentation-refactor-case-study.md after merge."
+    },
+    "complete": {
+      "status": "not_started"
+    }
+  },
+  "timing": {
+    "session_start": "2026-04-28T04:00:00Z",
+    "session_end": null,
+    "total_wall_time_minutes": null,
+    "time_source": "estimated_from_git",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-28T04:00:00Z",
+        "ended_at": "2026-04-28T07:00:00Z",
+        "duration_minutes": 180,
+        "paused_minutes": 0
+      },
+      "tasks": {
+        "started_at": "2026-04-28T07:00:00Z",
+        "ended_at": "2026-04-28T09:00:00Z",
+        "duration_minutes": 120,
+        "paused_minutes": 0
+      },
+      "implementation": {
+        "started_at": "2026-04-28T09:00:00Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      }
+    }
+  },
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.4,
+      "blast_radius": 0.55,
+      "novelty": 0.35,
+      "verification_difficulty": 0.3
+    },
+    "total": 1.6,
+    "tier_class": "B_medium"
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-04-28T18:30:00Z",
+      "level": "L1",
+      "key": "alt_a_frontmatter_pattern",
+      "type": "applied",
+      "skill": "pm-workflow",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "note": "Reused the locked Alt-A frontmatter shape from the v7.7 case study (preview branch) when writing the FT2 worked-example templates and this state.json."
+    }
+  ],
+  "notes": "State.json created retroactively to track work largely complete on fitme-story preview/case-study-presentation branch (4 commits ahead of main) and FitTracker2 feature/case-study-presentation branch (3 commits ahead of main: 34dd38b, 991b5f7, 38aa5ec). Remaining: delete demo preview routes from fitme-story branch, open both PRs, write completion case study after merge. NB: the same branch name was previously reused locally for an unrelated dashboard schema-drift fix (commit a53d10b); that commit is preserved on fix/dashboard-feature-key-v7-7 (commit de1770b) and is NOT part of this feature."
+}
