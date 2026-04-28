@@ -2,6 +2,8 @@
 
 > **Status: v7.7 — Validity Closure (shipped 2026-04-27).**
 > Developer onboarding starts at [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (745-line technical guide). v7.7 case study: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md). v7.6 case study: [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md). Class B inventory (4 remain): [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md). Tier 3.3 external invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142).
+>
+> **For non-dev readers:** the [dev-process basics glossary](../glossary-dev-basics.md) explains the underlying git/CI/shell vocabulary (commit, push, PR, grep, pre-commit hook, …) used throughout the framework docs. Framework-specific vocabulary (T1/T2/T3 tiers, Class A/B/C gates, validity closure, etc.) is rendered at [fitme-story.vercel.app/glossary](https://fitme-story.vercel.app/glossary).
 
 **Goal:** Give every domain of the product lifecycle its own first-class skill, so product management scales past a monolithic workflow without losing the connective tissue between domains.
 

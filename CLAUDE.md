@@ -324,6 +324,11 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 
 ## Key Paths
 
+### Glossaries
+
+- **Dev-process basics (for non-developers):** [`docs/glossary-dev-basics.md`](docs/glossary-dev-basics.md) — plain-English definitions of git / CI / shell terms (commit, push, PR, grep, pre-commit hook, etc.) plus a "how a feature reaches Done" walkthrough.
+- **Framework vocabulary (T1/T2/T3 tiers, Class A/B/C gates, validity closure, integrity check codes, …):** rendered at [fitme-story.vercel.app/glossary](https://fitme-story.vercel.app/glossary), source at `fitme-story/src/lib/glossary.ts`.
+
 ### Product
 - PRD: `docs/product/PRD.md`
 - Per-feature PRDs: `docs/product/prd/`
