@@ -295,7 +295,37 @@ A `/schedule` run at 2026-05-04 will (a) verify B1 and append a journal entry, (
   - **post-v6 fully-adopted ratio [T1]:** stayed at 2/9 (22.2%) at synthesis time vs target ≥8/11 (72.7%). The metric requires post-v6 features to *actually `complete`* with populated cache_hits, which is forward-only behavior. Synthesis §6 / 99.1 notes this honestly. The gate is in place; the metric uplifts as natural framework usage continues.
 - **Tier tags applied:** synthesis content T1 (every metric traces to ledger reads, frozen 2026-04-27); deferred-verification predictions T2; design-decision rationale T3.
 
-### v7.7 IS READY FOR MERGE.
+### 2026-04-28 — Post-merge house-cleaning milestone
+
+**Trigger:** Both PRs merged 2026-04-27 (FitTracker2 #144 at 17:39 UTC, fitme-story #7 at 17:18 UTC). User requested a comprehensive cleanup + documentation refresh + status report before resuming any paused feature work. Captured as a deliberate milestone rather than a free-form cleanup so the actions are auditable.
+
+**What changed [T1]:**
+
+- **Git hygiene (both repos)** — reset to `main`, deleted both merged feature branches locally + remotely (via `gh api -X DELETE`), removed the stale `feature/framework-health-dashboard` worktree (its content fully absorbed into v7.7 M4), pruned remote-tracking refs, dropped the v7.7 session stash. Pre-session stash `pre-verify-test` preserved as user data. Both repos now have only `main` local + remote.
+- **Mid-merge conflict heal** — the 2026-04-27 weekly framework-status cron (commit `7fe7692`) ran on `main` between our branch creation and merge time and rewrote `.claude/shared/measurement-adoption.json` with `—` JSON encoding vs our literal `—`. Resolved at merge by accepting "ours" then regenerating via `make measurement-adoption`. Healing the conflict was idempotent on the actual feature inventory (same 45 features, same 2/9 post-v6 fully-adopted; encoding-only difference).
+- **Vercel token rotation** — pre-existing `FITTRACKER2_DEPLOY_TOKEN` had expired between PR #6 (2026-04-24, build passed) and PR #7 (2026-04-27, build failed). User regenerated a GitHub fine-grained PAT (Contents: Read on FitTracker2) and updated Vercel env vars across Production/Preview/Development. Empty redeploy commit `233a24d` triggered a fresh build with the new token; build passed; PR #7 merged.
+- **Documentation sweep (both repos, ~28 references across 18 files)** — propagates v7.7 across every banner, README, dev-guide reference, and version-string surface that was still pinned to v7.6. Includes a file rename (`docs/architecture/dev-guide-v1-to-v7-6.md` → `dev-guide-v1-to-v7-7.md`) with all 12 cross-references updated. FitTracker2 commit `b21ccc4` (10 files); follow-up `e2067a0` (THIS FILE comment fix); fitme-story commit `4484c75` (9 files).
+- **fitme-story slot 22 added** — `content/04-case-studies/22-validity-closure-v7-7.mdx` is the public-facing v7.7 case study (slug `framework-v7-7-validity-closure`) with summary card + outlier flag carried forward from v7.6 + trust-page connection + 5-codes breakdown + the "1 closed, 4 remain" arc. Linked from the Act-4 README's timeline table.
+- **SSD health verified** — 118G/931G used (13%), well within budget. Largest occupants per CLAUDE.md SSD setup: `dev-cache` 52G (Xcode + simulator + Claude caches), `dev-home` 37G (snapshots + app-support), `FitTracker2/.build` 15G. All intentional per the SSD setup guide; no garbage to clean.
+
+**Ledger delta [T1]:**
+
+- Both repos: branch count 2-3 → 1 (only `main`)
+- FitTracker2 commits since v7.7 merge: `01b9e11` (PR #144) → `97b7e04` (merge) → `b21ccc4` (doc sweep) → `e2067a0` (dev-guide self-reference fix). 4 commits.
+- fitme-story commits since v7.7 merge: `ab1518d` (PR #7) → `462eb17` (data sync) → `4484c75` (doc sweep). 3 commits.
+- Documentation references to `dev-guide-v1-to-v7-6` outside historical change-log JSON: 0 remaining.
+- v7.7 sub-page on Notion + Linear FIT-49 + 8 sub-issues: still status `Ready for Merge` / `In Progress`. Status flip to `Shipped` is gated on the 2026-05-04 routine firing (B1+B2 verifications + automated propagation + manual-action block for Linear/Notion).
+
+**Surprises / discoveries [T3]:**
+
+- **The conflict that wasn't, mostly.** When the user pasted the merge-conflict view of `measurement-adoption.json`, the worry was a real divergence in tracked features. After resolving, `make measurement-adoption` regenerated the file to the same content as before — confirming the conflict was purely encoding-level (`—` vs `—`). Auto-generated JSON files SHOULD always declare `ensure_ascii=False` if the goal is human-readable diffs, OR `ensure_ascii=True` consistently if the goal is encoding-stable diffs. Inconsistency between local generation and cron generation was the actual bug, not the merge conflict itself.
+- **The "PR doesn't show up" moment.** User reported PR #7 wasn't visible on GitHub. `gh pr view 7 --repo Regevba/fitme-story` confirmed it existed and was OPEN. Most likely UX cause: viewing the wrong account's pulls page, or a private-repo visibility setting. The CLI is the ground truth; the web UI sometimes filters silently.
+- **Stale worktree → stale branch chain.** `feature/framework-health-dashboard` existed as both a local branch AND a worktree. `git branch -d` refused with "not fully merged" because its single unique commit (`78a1cf2`, a 5,106-line plan for the dashboard work) was never landed verbatim — that work was *absorbed* into the v7.7 plan's M4 section, not cherry-picked. Force-deleted with `-D` after confirming the spec content is preserved at `docs/superpowers/specs/2026-04-27-framework-health-dashboard-design.md` and the implementation shipped via fitme-story PR #7.
+- **The 33 doc-debt TODO markers stay TODO.** v7.7 M2 backfilled 4 frontmatter fields across 32 case studies. Of those, 33 fields ended up with `TODO: review` markers because the source material genuinely doesn't contain `success_metrics` / `kill_criteria` for pre-PRD-structure audit/chore documents. Heuristic was 97.5–100% accurate where data existed; absent-data flagging is the correct outcome, not a failure mode. Revisited during this housekeeping pass — confirmed they should remain TODOs (filling them in would be fabricating data).
+
+**Tier tags applied:** all "Ledger delta" numbers T1; design-decision rationale + git-state observations T3; predicted post-2026-05-04 status flip T2.
+
+### v7.7 IS READY FOR MERGE → MERGED 2026-04-27 → POST-MERGE HOUSE-CLEANING COMPLETE 2026-04-28.
 
 **Awaiting:**
 - PR #144 merge (FitTracker2)
