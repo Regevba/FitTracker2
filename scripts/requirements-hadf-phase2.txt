@@ -1,0 +1,14 @@
+# HADF Phase 2 cloud-fingerprinting study dependencies.
+# Pinned to versions current as of 2026-04-29 for reproducibility.
+# Install:
+#   python3 -m venv /Volumes/DevSSD/FitTracker2/.venv-hadf-phase2
+#   source /Volumes/DevSSD/FitTracker2/.venv-hadf-phase2/bin/activate
+#   pip install -r scripts/requirements-hadf-phase2.txt
+
+# Provider SDKs — both required for the cloud half of the study.
+openai>=1.50,<2.0
+anthropic>=0.40,<1.0
+
+# Clustering + numerical core.
+numpy>=1.26,<3.0
+scikit-learn>=1.4,<2.0

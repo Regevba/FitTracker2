@@ -67,3 +67,10 @@ GoogleService-Info.plist
 Config/Local/*.xcconfig
 !Config/Local/*.example.xcconfig
 !Config/Local/README.md
+
+# HADF Phase 2 raw observational data — gitignored per pre-registration
+# (the committed summary derives from this; raw stays local to preserve the
+# pre-registered "verdict is a pure function of (prereg, summary)" contract)
+.claude/shared/hadf/phase2-fingerprint-raw.jsonl
+.claude/shared/hadf/logs/
+.venv-hadf-phase2/
