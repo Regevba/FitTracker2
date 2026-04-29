@@ -260,7 +260,7 @@ ENDPOINTS = {
 
 # ---------- Run loop ----------
 
-def run_one(endpoint: str, run_id: str, tag: str, max_tokens: int, temperature: float) -> dict:
+def run_one(endpoint: str, run_id: str, tag: str, max_tokens: int, temperature: float, call_idx: int = 0, total: int = 0) -> dict:
     nonce = random_nonce()
     prompt = PROMPT_TEMPLATE.format(nonce=nonce)
     record_base = {
@@ -271,11 +271,20 @@ def run_one(endpoint: str, run_id: str, tag: str, max_tokens: int, temperature: 
         "prompt_nonce": nonce,
         "timestamp_utc": now_iso(),
     }
+    progress = f"[{call_idx}/{total}]" if total else ""
+    print(f"  -> {progress} {endpoint:10s} ...", file=sys.stderr, flush=True, end="")
+    t_start = time.perf_counter()
     try:
         timing = ENDPOINTS[endpoint](prompt, max_tokens, temperature)
         record = {**record_base, "ok": True, **timing}
+        elapsed = time.perf_counter() - t_start
+        print(f"\r  <- {progress} {endpoint:10s} OK   {elapsed:5.2f}s ttft={timing.get('ttft_ms', 0):.0f}ms tps={timing.get('tps', 0):.1f}",
+              file=sys.stderr, flush=True)
     except Exception as e:
         record = {**record_base, "ok": False, "error": str(e)}
+        elapsed = time.perf_counter() - t_start
+        print(f"\r  <- {progress} {endpoint:10s} ERR  {elapsed:5.2f}s {str(e)[:80]}",
+              file=sys.stderr, flush=True)
     append_raw(record)
     return record
 
@@ -319,12 +328,18 @@ def main() -> int:
     total_calls = 0
     total_errors = 0
     started_at = time.perf_counter()
+    grand_total = args.runs * len(requested) * args.calls_per_run
+    print(f"running {grand_total} calls ({args.runs} runs x {len(requested)} endpoints x {args.calls_per_run} calls)",
+          file=sys.stderr, flush=True)
 
+    call_idx = 0
     for run_idx in range(args.runs):
         run_id = f"{now_iso()}--{uuid.uuid4().hex[:8]}"
         for endpoint in requested:
             for _ in range(args.calls_per_run):
-                rec = run_one(endpoint, run_id, args.tag, args.max_tokens, args.temperature)
+                call_idx += 1
+                rec = run_one(endpoint, run_id, args.tag, args.max_tokens, args.temperature,
+                              call_idx=call_idx, total=grand_total)
                 total_calls += 1
                 if not rec.get("ok"):
                     total_errors += 1
