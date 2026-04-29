@@ -24,20 +24,7 @@ Carthage/Build/
 # macOS
 .DS_Store
 
-# Xcode build artifacts
-DerivedData/
-build/
-
-# User-specific Xcode state
-xcuserdata/
-*.xcuserstate
-
-# Swift Package Manager
-.build/
-
-# macOS junk
-.DS_Store
-
+# VS Code workspace files
 *.code-workspace
 
 # Local Codex / workspace artifacts
@@ -70,8 +57,7 @@ dashboard/node_modules/
 dashboard/dist/
 dashboard/.vercel/
 
-# SSD-local build artifacts (caches, DerivedData, venvs, npm cache)
-.build/
+# SSD-local build artifacts (caches, DerivedData, venvs, npm cache; .build/ also covered above)
 orchid/.venv/
 
 # Firebase credentials (local only, contains secrets)
