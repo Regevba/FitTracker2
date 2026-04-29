@@ -1,0 +1,83 @@
+{
+  "feature": "smart-reminders-behavioral-learning",
+  "feature_name": "smart-reminders-behavioral-learning",
+  "display_name": "Smart Reminders — Behavioral Learning Layer",
+  "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+  "work_type": "feature",
+  "framework_version": "7.7",
+  "current_phase": "research",
+  "status": "in_progress",
+  "created": "2026-04-29T18:55:00Z",
+  "created_at": "2026-04-29T18:55:00Z",
+  "updated": "2026-04-29T18:55:00Z",
+  "branch": "feature/smart-reminders-behavioral-learning",
+  "parent_feature": "smart-reminders",
+  "predecessor_features": [
+    "smart-reminders"
+  ],
+  "depends_on": [
+    "PR #158 — six lifecycle analytics events shipped (must merge first; behavioral learning consumes the per-type tap-through signal)"
+  ],
+  "success_metrics": null,
+  "kill_criteria": null,
+  "dispatch_pattern": null,
+  "phases": {
+    "research": {
+      "status": "in_progress",
+      "started_at": "2026-04-29T18:55:00Z",
+      "skipped_reason": null,
+      "note": "Open questions documented in research/open-questions.md. Awaiting user brainstorming to lock scope before PRD."
+    },
+    "prd": {
+      "status": "not_started"
+    },
+    "tasks": {
+      "status": "not_started"
+    },
+    "ux_or_integration": {
+      "status": "not_started"
+    },
+    "implementation": {
+      "status": "not_started"
+    },
+    "test": {
+      "status": "not_started"
+    },
+    "review": {
+      "status": "not_started"
+    },
+    "merge": {
+      "status": "not_started",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "not_started"
+    },
+    "complete": {
+      "status": "not_started"
+    }
+  },
+  "timing": {
+    "session_start": "2026-04-29T18:55:00Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-29T18:55:00Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      }
+    }
+  },
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.65,
+      "blast_radius": 0.4,
+      "novelty": 0.55,
+      "verification_difficulty": 0.55
+    },
+    "total": 2.15,
+    "tier_class": "B_medium"
+  },
+  "cache_hits": [],
+  "notes": "Scaffolded 2026-04-29 to track the deferred behavioral-learning sub-feature flagged by the smart-reminders parent feature ('Future sub-task: behavioral learning layer'). Research phase explicitly captures open questions rather than pre-baked decisions; brainstorming with user required before PRD. CU v2 estimate is provisional — will be revisited at PRD lock."
+}
