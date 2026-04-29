@@ -74,7 +74,12 @@ def append_raw(record: dict) -> None:
 # ---------- Endpoint adapters ----------
 
 def call_openai(prompt: str, max_tokens: int, temperature: float) -> dict:
-    """Returns timing dict or raises."""
+    """Returns timing dict or raises.
+
+    Uses `with OpenAI(...)` and `with ...stream` to guarantee socket cleanup
+    after each call. Without these, openai-python issue #763 leaves the TCP
+    socket in CLOSE_WAIT and the next streaming call hangs on socket.recv_into.
+    """
     try:
         from openai import OpenAI  # type: ignore
     except ImportError as e:
@@ -85,31 +90,29 @@ def call_openai(prompt: str, max_tokens: int, temperature: float) -> dict:
         raise RuntimeError("OPENAI_API_KEY not set")
 
     model = "gpt-4o-mini"
-    client = OpenAI(api_key=api_key)
-
-    request_sent = time.perf_counter()
-    stream = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        max_tokens=max_tokens,
-        temperature=temperature,
-        stream=True,
-    )
-
     first_token_at: float | None = None
     output_tokens = 0
     full_text_parts: list[str] = []
-    for chunk in stream:
-        if not chunk.choices:
-            continue
-        delta = chunk.choices[0].delta
-        content = getattr(delta, "content", None)
-        if content:
-            if first_token_at is None:
-                first_token_at = time.perf_counter()
-            full_text_parts.append(content)
-            output_tokens += 1  # chunk-token approximation; refined below if usage given
 
+    request_sent = time.perf_counter()
+    with OpenAI(api_key=api_key) as client:
+        with client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=temperature,
+            stream=True,
+        ) as stream:
+            for chunk in stream:
+                if not chunk.choices:
+                    continue
+                delta = chunk.choices[0].delta
+                content = getattr(delta, "content", None)
+                if content:
+                    if first_token_at is None:
+                        first_token_at = time.perf_counter()
+                    full_text_parts.append(content)
+                    output_tokens += 1
     end_at = time.perf_counter()
 
     # OpenAI streaming does not return final usage by default; approximate via word count.
@@ -142,25 +145,24 @@ def call_anthropic(prompt: str, max_tokens: int, temperature: float) -> dict:
         raise RuntimeError("ANTHROPIC_API_KEY not set")
 
     model = "claude-haiku-4-5-20251001"
-    client = anthropic.Anthropic(api_key=api_key)
-
-    request_sent = time.perf_counter()
     first_token_at: float | None = None
     output_tokens = 0
+    final_message = None
 
-    with client.messages.stream(
-        model=model,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        messages=[{"role": "user", "content": prompt}],
-    ) as stream:
-        for chunk in stream.text_stream:
-            if chunk:
-                if first_token_at is None:
-                    first_token_at = time.perf_counter()
-                output_tokens += 1  # chunk approximation
-        final_message = stream.get_final_message()
-
+    request_sent = time.perf_counter()
+    with anthropic.Anthropic(api_key=api_key) as client:
+        with client.messages.stream(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            messages=[{"role": "user", "content": prompt}],
+        ) as stream:
+            for chunk in stream.text_stream:
+                if chunk:
+                    if first_token_at is None:
+                        first_token_at = time.perf_counter()
+                    output_tokens += 1  # chunk approximation
+            final_message = stream.get_final_message()
     end_at = time.perf_counter()
 
     # Anthropic returns usage in the final message — prefer real count.
