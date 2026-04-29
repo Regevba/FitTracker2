@@ -109,6 +109,8 @@
 		KH200000000000000000AT01 /* KeychainHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelperTests.swift; sourceTree = "<group>"; };
 		RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RS200000000000000000AT01 /* ReminderSchedulerTests.swift */; };
 		RS200000000000000000AT01 /* ReminderSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSchedulerTests.swift; sourceTree = "<group>"; };
+		RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */; };
+		RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAnalyticsTests.swift; sourceTree = "<group>"; };
 		OB100000000000000000AT01 /* OfflineBehaviourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OB200000000000000000AT01 /* OfflineBehaviourTests.swift */; };
 		OB200000000000000000AT01 /* OfflineBehaviourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineBehaviourTests.swift; sourceTree = "<group>"; };
 		OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OR200000000000000000AT01 /* AIOrchestratorTests.swift */; };
@@ -223,6 +225,7 @@
 		RM1000001000000000000001 /* ReminderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000001 /* ReminderType.swift */; };
 		RM1000001000000000000002 /* ReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000002 /* ReminderScheduler.swift */; };
 		RM1000001000000000000003 /* ReminderTriggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000003 /* ReminderTriggers.swift */; };
+		RM1000001000000000000004 /* ReminderNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000004 /* ReminderNotificationDelegate.swift */; };
 		IM100000000000000000AA01 /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA01 /* ImportParser.swift */; };
 		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
 		IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA03 /* ImportOrchestrator.swift */; };
@@ -449,6 +452,7 @@
 		RM2000001000000000000001 /* ReminderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderType.swift; sourceTree = "<group>"; };
 		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
+		RM2000001000000000000004 /* ReminderNotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationDelegate.swift; sourceTree = "<group>"; };
 		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
 		IT200000000000000000TS01 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
 		CFG000000000000000000001 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
@@ -688,6 +692,7 @@
 				RM2000001000000000000001 /* ReminderType.swift */,
 				RM2000001000000000000002 /* ReminderScheduler.swift */,
 				RM2000001000000000000003 /* ReminderTriggers.swift */,
+				RM2000001000000000000004 /* ReminderNotificationDelegate.swift */,
 			);
 			path = Reminders;
 			sourceTree = "<group>";
@@ -925,6 +930,7 @@
 				ST200000000000000000AT01 /* SessionTokenTypeTests.swift */,
 				KH200000000000000000AT01 /* KeychainHelperTests.swift */,
 				RS200000000000000000AT01 /* ReminderSchedulerTests.swift */,
+				RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */,
 				OB200000000000000000AT01 /* OfflineBehaviourTests.swift */,
 				OR200000000000000000AT01 /* AIOrchestratorTests.swift */,
 				VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */,
@@ -1347,6 +1353,7 @@
 				RM1000001000000000000001 /* ReminderType.swift in Sources */,
 				RM1000001000000000000002 /* ReminderScheduler.swift in Sources */,
 				RM1000001000000000000003 /* ReminderTriggers.swift in Sources */,
+				RM1000001000000000000004 /* ReminderNotificationDelegate.swift in Sources */,
 				NT1000001000000000000001 /* NotificationService.swift in Sources */,
 				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
 				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
@@ -1392,6 +1399,7 @@
 				ST100000000000000000AT01 /* SessionTokenTypeTests.swift in Sources */,
 				KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */,
 				RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */,
+				RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */,
 				OB100000000000000000AT01 /* OfflineBehaviourTests.swift in Sources */,
 				OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */,
 				VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */,

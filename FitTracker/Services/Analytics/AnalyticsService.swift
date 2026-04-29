@@ -785,6 +785,25 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    /// Smart reminder banner was presented (foreground or lock-screen)
+    func logReminderShown(type: String) {
+        logEvent(AnalyticsEvent.reminderShown, parameters: [AnalyticsParam.itemCategory: type])
+    }
+
+    /// User dismissed a smart reminder without tapping into the app
+    func logReminderDismissed(type: String) {
+        logEvent(AnalyticsEvent.reminderDismissed, parameters: [AnalyticsParam.itemCategory: type])
+    }
+
+    /// A reminder type was disabled (user cancelled the type, or scheduler
+    /// hit a permanent-stop / lifetime cap and removed pending requests)
+    func logReminderDisabled(type: String, reason: String) {
+        logEvent(AnalyticsEvent.reminderDisabled, parameters: [
+            AnalyticsParam.itemCategory: type,
+            "reason": reason,
+        ])
+    }
+
     // MARK: - Private
 
     private func logEvent(_ name: String, parameters: [String: Any]?) {
