@@ -14,5 +14,8 @@
     "autoprefixer": "^10.4.27",
     "postcss": "^8.5.12",
     "tailwindcss": "^4.2.2"
+  },
+  "overrides": {
+    "path-to-regexp": "^6.3.0"
   }
 }

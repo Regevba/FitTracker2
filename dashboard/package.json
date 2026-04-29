@@ -31,5 +31,8 @@
   },
   "devDependencies": {
     "vitest": "^4.1.2"
+  },
+  "overrides": {
+    "path-to-regexp": "^6.3.0"
   }
 }
