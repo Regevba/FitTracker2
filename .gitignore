@@ -69,3 +69,14 @@ GoogleService-Info.plist
 Config/Local/*.xcconfig
 !Config/Local/*.example.xcconfig
 !Config/Local/README.md
+
+# Auth-polish-v2 / Sentry / HADF / Vercel local artifacts (never commit)
+.env.local
+.sentryclirc
+.venv-hadf-phase2/
+.vercel/
+.claude/shared/hadf/logs/
+.claude/shared/hadf/pre-merge-backup-*/
+.claude/shared/hadf/*.pre-isolation-archive
+.claude/shared/hadf/phase2-fingerprint-*.json
+.claude/shared/sentry-recovery/
