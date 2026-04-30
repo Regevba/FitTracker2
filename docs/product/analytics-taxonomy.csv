@@ -8,6 +8,15 @@
 Category,Event Name,GA4 Type,Screen/Trigger,Parameter 1,Parameter 2,Parameter 3,Parameter 4,Parameter 5,Conversion,Scope,Notes
 Auth,login,Recommended,Sign In Screen,method (apple/email/passkey/biometric),,,,,,event,GA4 recommended event (unprefixed — GA4 dictated)
 Auth,sign_up,Recommended,Sign Up Screen,method (apple/email),,,,,,event,GA4 recommended event. Mark as conversion. (unprefixed — GA4 dictated)
+Auth,auth_password_reset_requested,Custom,forgot_password,email_provided (bool),,,,,No,auth,auth-polish-v2 A5 — funnel denominator for password recovery
+Auth,auth_password_reset_completed,Custom,set_new_password,time_to_complete_seconds (int 0..86400),,,,,Yes,auth,auth-polish-v2 A5 — conversion. Funnel numerator. Email hashed at GA4 ingest.
+Auth,auth_password_reset_resend,Custom,email_sent_confirmation,attempt_number (int 2..10),,,,,No,auth,auth-polish-v2 A5 — fired when user re-requests after 60s cooldown
+Auth,auth_password_reset_resend_blocked,Custom,email_sent_confirmation,cooldown_remaining_seconds (int 0..60),,,,,No,auth,auth-polish-v2 A5 — guardrail metric: rate < 5%
+Auth,auth_biometric_activation_offered,Custom,biometric_activation_sheet,biometric_type (face_id/touch_id/none),,,,,No,auth,auth-polish-v2 B4 — fires when activation sheet appears on first sign-in
+Auth,auth_biometric_activated,Custom,biometric_activation_sheet,biometric_type (face_id/touch_id/none),provider (apple/google/email/passkey),,,,Yes,auth,auth-polish-v2 B4 — conversion. Primary metric numerator.
+Auth,auth_biometric_activation_declined,Custom,biometric_activation_sheet,biometric_type (face_id/touch_id/none),,,,,No,auth,auth-polish-v2 B4 — Not now tap or scan failure
+Auth,auth_biometric_unlock_completed,Custom,biometric_unlock,biometric_type (face_id/touch_id/none),duration_ms (int 0..30000),,,,No,auth,auth-polish-v2 B4 — duration drives PRD guardrail P95 < 1500ms
+Auth,auth_biometric_unlock_failed,Custom,biometric_unlock,biometric_type (face_id/touch_id/none),reason (user_cancel/biometry_failed/system_cancel/passcode_not_set/other),,,,No,auth,auth-polish-v2 B4 — LAError-classified failure
 Onboarding,tutorial_begin,Recommended,Onboarding Step 1,,,,,,,event,GA4 recommended event
 Onboarding,tutorial_complete,Recommended,Onboarding Final Step,,,,,,Yes,event,GA4 recommended event. Mark as conversion.
 Workout,workout_start,Custom,Active Workout,workout_type (push/pull/legs/cardio/rest),day_number (1-6),,,,,event,
@@ -77,6 +86,11 @@ Notifications,settings_notifications,NotificationSettingsView,settings,,,,,,,,
 About,settings_about,AboutView,settings,,,,,,,,
 Sign In,sign_in,SignInView,auth,,,,,,,,
 Sign Up,sign_up,SignUpView,auth,,,,,,,,
+Forgot Password,forgot_password,ForgotPasswordRequestView,auth,,,,,,,,
+Email Sent Confirmation,email_sent_confirmation,ForgotPasswordCooldownView,auth,,,,,,,,
+Set New Password,set_new_password,SetNewPasswordView,auth,,,,,,,,
+Biometric Activation Sheet,biometric_activation_sheet,BiometricActivationSheet,auth,,,,,,,,
+Biometric Unlock,biometric_unlock,BiometricUnlockView,auth,,,,,,,,
 Profile,profile,ProfileView,core,,,,,,,,
 Readiness,readiness,ReadinessCard,core,,,,,,,,
 Body Comp Detail,body_comp_detail,BodyCompDetailView,core,,,,,,,,
@@ -107,3 +121,5 @@ meal_log,First Meal,Nutrition adoption,,,,,,,,
 cross_feature_engagement,Weekly Engagement,North Star metric proxy,,,,,,,,
 home_action_completed,Home Engagement,Home-to-action follow-through,,,,,,,,
 training_session_completed,Training,Full training session completion,,,,,,,,
+auth_password_reset_completed,Auth Recovery,Password reset completion rate (auth-polish-v2 A5),,,,,,,,
+auth_biometric_activated,Auth Activation,Biometric adoption (post-sign-in offer; auth-polish-v2 B4),,,,,,,,
