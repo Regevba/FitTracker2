@@ -257,15 +257,15 @@
       "title": "CI verification",
       "type": "test",
       "skill": "dev",
-      "status": "pending",
-      "partial_status": "build_clean_local",
+      "status": "completed",
+      "partial_status": "build_clean_infra_flake_accepted",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [
         "T7"
       ],
-      "completed_at": null,
-      "partial_note": "Local xcodebuild build clean (verified twice: post-T5/T6 commit 027abf0 + post-T2 commit 47f8bd5, iOS Simulator arm64+x86_64). xcodebuild test NOT runnable locally — no iOS simulators installed on this machine; xcrun simctl list shows zero devices. Targeted StatsAnalyticsTests run aborted with 'Unable to find a device matching the provided destination specifier'. Full CI verification will run on PR push via GitHub Actions Build-and-Test workflow. T9 status will move to completed when CI green on PR."
+      "completed_at": "2026-04-30T18:30:00Z",
+      "partial_note": "Local xcodebuild build clean (verified twice: post-T5/T6 commit 027abf0 + post-T2 commit 47f8bd5, iOS Simulator arm64+x86_64). xcodebuild test not runnable locally — no iOS simulators installed on this machine. CI verification on PR #164: 9 of 10 checks green (Analyze x3, CodeQL, GitGuardian, Vercel x2, integrity, pm-framework/pr-integrity). Build-and-Test failed twice on UNRELATED UI test infra flake — first run on OnboardingUITests (74s timeout), rerun on HomeReadinessUITests (194s timeout). Root cause: parallel-clone sim hang affecting random tests each run; secondary cause: PR #160's GITHUB_ACTIONS env-var quarantine doesn't propagate to simulator XCTRunner process. Quarantine fix shipping in PR #165 (chore/ci-quarantine-fix, NSUserName-based detection). User accepted stats-v2 merge despite Build-and-Test red because: (a) all stats-v2 code verified clean (compile + non-flaky tests pass), (b) failure is unrelated UI test infra, (c) quarantine fix is in flight, (d) parallel-clone hang root cause is filed as separate backlog task. T9 marked completed with caveat for ledger honesty."
     },
     {
       "id": "T10",
