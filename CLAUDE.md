@@ -379,6 +379,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Integration adapters: `.claude/integrations/{service}/` (ga4, app-store-connect, sentry, firecrawl, axe, security-audit)
 - Learning cache: `.claude/cache/` (L1 per-skill, L2 `_shared/`, L3 `_project/`)
 - Validation gate config: `.claude/shared/skill-routing.json` (`validation_gate` section)
+- **Operations control room (in-flight migration, UCC):** the operator dashboard that surfaces every framework gate, every cycle snapshot, every measurement-adoption ledger, and the case-study feed. Currently lives at `dashboard/` (Astro 6 + React 19, deployed at `fit-tracker2.vercel.app`); migrating to `fitme-story/src/{app,components,lib}/control-room/` (Next.js 16, deployed at `fitme-story.vercel.app/control-room/*`, basic-auth gated). Pre-build sync at `fitme-story/scripts/sync-from-fittracker2.ts` mirrors `.claude/shared/*.json`, `.claude/features/*/state.json`, and the canonical doc tree. Migration is extraction-ready: see [`fitme-story/EXTRACTION-RECIPE.md`](https://github.com/Regevba/fitme-story/blob/main/EXTRACTION-RECIPE.md) for the 7-step playbook. Per-feature state for the migration: `.claude/features/unified-control-center/`. The framework-health page at `/control-room/framework` (PR #7, fitme-story) is the first UCC route shipped; remaining UCC tasks tracked in `state.json.tasks[]`.
 
 ### Design system
 - UX foundations: `docs/design-system/ux-foundations.md` (13 principles)
