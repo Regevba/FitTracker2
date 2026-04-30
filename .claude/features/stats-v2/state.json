@@ -4,9 +4,9 @@
   "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
   "case_study_type": "roundup",
   "created": "2026-04-10T15:00:00Z",
-  "updated": "2026-04-20T00:00:00Z",
+  "updated": "2026-04-30T16:00:00Z",
   "branch": "feature/stats-v2",
-  "current_phase": "tasks",
+  "current_phase": "implementation",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -42,10 +42,10 @@
       "checklist_completed": false
     },
     "implementation": {
-      "status": "pending",
-      "commits": [],
+      "status": "in_progress",
+      "commits": ["e93d6e8"],
       "checklist_completed": false,
-      "reconciliation_note": "2026-04-30 — downgraded from in_progress to pending. Residue from 2026-04-10 false-positive 'complete' state; current_phase=tasks since 2026-04-20 audit, all T1-T10 pending, zero commits."
+      "reconciliation_note": "2026-04-30 — second reconciliation. Initial 2026-04-30 lift downgraded status to pending (correcting 2026-04-10 false-positive). Audit during this resume found T3/T4/T7/T10 actually shipped on 2026-04-10 via PR #76 (commit e93d6e8) but never logged in state.json. T1 was already on main pre-feature. Real remaining work: T2 type extraction, T5 wire analytics calls in v2/StatsView.swift (constants + service methods exist; view does not call them), T6 a11y from 9 → 14+, T8 v2 checklist, T9 CI verify."
     },
     "testing": {
       "status": "pending",
@@ -127,6 +127,13 @@
       "timestamp": "2026-04-20T00:00:00Z",
       "approved_by": "integrity_audit",
       "note": "2026-04-20 open-items audit detected inconsistency: top-level current_phase=complete but all 10 implementation tasks still pending. No v2 code shipped. Downgraded to match reality. Six-feature roundup case study context updated accordingly."
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-04-30T16:00:00Z",
+      "approved_by": "reconciliation_audit",
+      "note": "2026-04-30 second reconciliation during stats-v2 resume. Discovered T3 (build v2/StatsView.swift), T4 (project.pbxproj v2 swap), T7 (StatsAnalyticsTests.swift, 93 lines), T10 (mark v1 historical) actually shipped 2026-04-10 via PR #76 / commit e93d6e8 — the original 'complete' status downgraded by the 2026-04-20 audit was over-corrected. Real state: implementation in_progress, with T2/T5(partial)/T6(partial)/T8/T9 outstanding. T1 was already on main pre-feature. Net: 5/10 tasks complete, 2 partial, 3 pending."
     }
   ],
   "tasks": [
@@ -158,27 +165,29 @@
       "title": "Build v2/StatsView.swift",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
         "T1",
         "T2"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "Shipped via PR #76 / commit e93d6e8 on 2026-04-10. v2/StatsView.swift = 899 lines. F1 (AppMotion.quickInteraction at line 464), F2 partial (chart accessibilityLabel/Value at line 627–628; AXChartDescriptorRepresentable not added — pragmatic fix accepted), F3-F5 (AppLayout tokens used). T2 dependency NOT satisfied at time of completion: 3 nested types still inline at lines 9, 57, 244. Marker recorded retroactively at 2026-04-30 reconciliation."
     },
     {
       "id": "T4",
       "title": "Update project.pbxproj",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "Shipped via PR #76 / commit e93d6e8. pbxproj has v2 group entry at line 861 (StatsView.swift in v2/ folder), build phase entry at line 1273. v1 file kept as PBXFileReference (line 851) per v2 convention. Marker recorded retroactively."
     },
     {
       "id": "T5",
@@ -186,12 +195,14 @@
       "type": "analytics",
       "skill": "analytics",
       "status": "pending",
+      "partial_status": "constants_only",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": null,
+      "partial_note": "Event constants defined in FitTracker/Services/Analytics/AnalyticsProvider.swift:76-82 (statsPeriodChanged, statsMetricSelected, statsChartInteraction, statsEmptyStateShown). AnalyticsService has logStats* methods (per StatsAnalyticsTests.swift). But ZERO Analytics calls in FitTracker/Views/Stats/v2/StatsView.swift — events never fire in production. Real wiring still owed."
     },
     {
       "id": "T6",
@@ -199,25 +210,28 @@
       "type": "ui",
       "skill": "dev",
       "status": "pending",
+      "partial_status": "9_of_14_target",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": null,
+      "partial_note": "9 a11y annotations in v2/StatsView.swift (accessibilityLabel/Value/Element/Hint). Audit target was 14/15+ (from v2-audit-report.md a11y baseline 27% → target 90%). Period picker labeled (line 383), metric chip labeled (lines 503-506), chart container labeled+valued (lines 626-628). Still missing: granular per-data-point a11y, empty-state a11y, axis labels."
     },
     {
       "id": "T7",
       "title": "Analytics tests",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "completed",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T5"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "FitTrackerTests/StatsAnalyticsTests.swift exists, 93 lines, tests AnalyticsService.logStats* methods emit correct events. NOTE: tests pass independently of T5's view-wiring gap — they exercise the service layer directly, not view → service integration. So green T7 does not validate that T5 events actually fire from the view. Marker recorded retroactively."
     },
     {
       "id": "T8",
@@ -252,13 +266,14 @@
       "title": "Mark v1 historical",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "low",
       "effort_days": 0.05,
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "v1 file FitTracker/Views/Stats/StatsView.swift has historical header (lines 1-5) and types renamed *_V1_Historical (StatsPeriod_V1_Historical, StatsFocusMetric_V1_Historical, MetricSeriesPoint_V1_Historical, StatsView_V1_Historical). Shipped via PR #76 / commit e93d6e8. Marker recorded retroactively."
     }
   ],
   "timing": {
@@ -283,7 +298,13 @@
         "ended_at": "2026-04-10T15:25:00Z"
       },
       "tasks": {
-        "started_at": "2026-04-20T00:00:00Z"
+        "started_at": "2026-04-20T00:00:00Z",
+        "ended_at": "2026-04-10T06:39:22Z",
+        "ended_at_note": "Backfilled at 2026-04-30 reconciliation. Anomaly: ended_at < started_at because 2026-04-20 'tasks' entry was an integrity-audit downgrade from a false-positive 'complete' state — actual implementation work (T3/T4/T7/T10) had already shipped 2026-04-10 via PR #76. Real linear timeline: tasks_first 04-10 15:15→15:20Z, ux 15:20→15:25Z, implementation began 06:39Z (PR #76 commit, predates approval timestamps because PR was opened earlier and the state.json approvals were typed in retroactively)."
+      },
+      "implementation": {
+        "started_at": "2026-04-10T06:39:22Z",
+        "started_at_note": "Backfilled at 2026-04-30 reconciliation from PR #76 / commit e93d6e8. T3+T4+T7+T10 shipped that commit; T2/T5/T6/T8/T9 remain."
       }
     }
   },
