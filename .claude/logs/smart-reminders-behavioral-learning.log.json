@@ -6,13 +6,24 @@
   "current_phase": "research",
   "framework_version": "7.7",
   "started_at": "2026-04-29T15:52:34Z",
-  "updated_at": "2026-04-29T15:52:34Z",
+  "updated_at": "2026-04-30T13:20:14Z",
   "events": [
     {
       "timestamp": "2026-04-29T15:52:34Z",
       "event_type": "phase_started",
       "phase": "research",
       "summary": "Behavioral learning sub-feature scaffolded 2026-04-29: state.json + research/open-questions.md document 6 open questions (OQ-1 OQ-6). Brainstorming with user required before PRD.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-30T13:20:14Z",
+      "event_type": "research_checkpoint",
+      "phase": "research",
+      "summary": "Brainstorm session 2026-04-30 paused after locking OQ-1 through OQ-5. State.json populated with success_metrics + kill_criteria + dispatch_pattern. Sequencing approach (A/B/C), design sections, spec doc, and writing-plans still pending. See research/open-questions.md 'Decisions locked 2026-04-30' section for the full lock record.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
