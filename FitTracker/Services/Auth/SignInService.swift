@@ -151,6 +151,7 @@ protocol EmailAuthProviding {
     func resendRegistrationCode(challenge: EmailRegistrationChallenge, draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge
     func requestPasswordReset(email: String) async throws
     func updatePassword(newPassword: String) async throws
+    func processRecoveryURL(_ url: URL) async throws
 }
 
 // SupabaseAppleAuthProvider is defined in SupabaseAppleAuthProvider.swift.
@@ -279,6 +280,10 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
             )
         }
     }
+
+    func processRecoveryURL(_ url: URL) async throws {
+        try await Task.sleep(for: .milliseconds(120))
+    }
 }
 #else
 // Release builds: email auth requires a real Supabase backend.
@@ -302,6 +307,9 @@ struct UnavailableEmailAuthProvider: EmailAuthProviding {
         throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
     }
     func updatePassword(newPassword: String) async throws {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+    func processRecoveryURL(_ url: URL) async throws {
         throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
     }
 }
@@ -329,6 +337,16 @@ final class SignInService: NSObject, ObservableObject {
     @Published private(set) var passwordResetCooldownRemaining: TimeInterval = 0
     private static let passwordResetCooldownSeconds: TimeInterval = 60
     private var passwordResetCooldownTimer: Timer?
+
+    /// Timestamp of the first successful `requestPasswordReset` in the current
+    /// recovery flow. Drives the `time_to_complete_seconds` analytics param
+    /// (auth-polish-v2 A5). Cleared on `setNewPassword` success.
+    @Published private(set) var passwordResetRequestedAt: Date?
+
+    /// Count of successful `requestPasswordReset` calls in the current recovery
+    /// flow. 1 after the initial request, 2+ after each successful resend.
+    /// Drives the `attempt_number` analytics param (auth-polish-v2 A5).
+    @Published private(set) var passwordResetAttemptCount: Int = 0
 
     private let appleProvider: AppleAuthProviding
     private let googleProvider: GoogleAuthProviding
@@ -689,6 +707,10 @@ final class SignInService: NSObject, ObservableObject {
             try await emailProvider.requestPasswordReset(email: email)
             statusMessage = "If that email is registered, a password reset link is on the way."
             startPasswordResetCooldown()
+            passwordResetAttemptCount += 1
+            if passwordResetRequestedAt == nil {
+                passwordResetRequestedAt = Date()
+            }
             isLoading = false
         } catch {
             isLoading = false
@@ -707,6 +729,8 @@ final class SignInService: NSObject, ObservableObject {
         do {
             try await emailProvider.updatePassword(newPassword: newPassword)
             statusMessage = "Password updated. You're signed in."
+            passwordResetRequestedAt = nil
+            passwordResetAttemptCount = 0
             isLoading = false
         } catch {
             isLoading = false
@@ -972,13 +996,19 @@ private func generateRandomBytes(count: Int) -> Data {
 
     /// Handle `fitme://reset-password?...` deep-link return after the user taps
     /// the password-reset email link from Supabase. Called from
-    /// `FitTrackerApp.onOpenURL`. Stores the URL in `pendingPasswordResetURL`
-    /// for A4 to observe and push `SetNewPasswordView`. URL scheme is
-    /// PRD-locked OQ-2 (auth-polish-v2 PRD §Decisions Log).
-    func handleIncomingURL(_ url: URL) {
-        guard url.scheme == "fitme" else { return }
-        guard url.host == "reset-password" else { return }
-        pendingPasswordResetURL = url
+    /// `FitTrackerApp.onOpenURL`. Exchanges the URL for a Supabase recovery
+    /// session via `EmailAuthProviding.processRecoveryURL`, then stores the URL
+    /// in `pendingPasswordResetURL` so the app-level `.fullScreenCover` (A4)
+    /// can present `SetNewPasswordView`. URL scheme is PRD-locked OQ-2
+    /// (auth-polish-v2 PRD §Decisions Log).
+    func handleIncomingURL(_ url: URL) async {
+        guard url.scheme == "fitme", url.host == "reset-password" else { return }
+        do {
+            try await emailProvider.processRecoveryURL(url)
+            pendingPasswordResetURL = url
+        } catch {
+            authErrorMessage = (error as NSError).localizedDescription
+        }
     }
 }
 

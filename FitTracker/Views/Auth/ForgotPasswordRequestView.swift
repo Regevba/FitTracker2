@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ForgotPasswordRequestView: View {
     @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var analytics: AnalyticsService
     @Environment(\.dismiss) private var dismiss
 
     @State private var email: String
@@ -98,6 +99,7 @@ struct ForgotPasswordRequestView: View {
         Task {
             await signIn.requestPasswordReset(email: trimmed)
             if signIn.authErrorMessage == nil {
+                analytics.logAuthPasswordResetRequested(emailProvided: !trimmed.isEmpty)
                 onSent(trimmed)
             }
         }

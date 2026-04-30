@@ -74,4 +74,8 @@ extension EmailAuthProvider {
     func updatePassword(newPassword: String) async throws {
         try await supabase.auth.update(user: UserAttributes(password: newPassword))
     }
+
+    func processRecoveryURL(_ url: URL) async throws {
+        _ = try await supabase.auth.session(from: url)
+    }
 }

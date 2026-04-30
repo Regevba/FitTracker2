@@ -143,6 +143,16 @@ enum AnalyticsEvent {
     /// Session restore result on app launch
     static let sessionRestoreResult         = "session_restore_result"
 
+    // ── Auth Password Reset Events (auth-polish-v2 A5) ─────
+    /// User taps "Send reset link" on `forgot_password` and the request succeeds
+    static let authPasswordResetRequested     = "auth_password_reset_requested"
+    /// User updates their password successfully on `set_new_password` (mark as conversion in GA4)
+    static let authPasswordResetCompleted     = "auth_password_reset_completed"
+    /// User taps Resend on `email_sent_confirmation` after cooldown elapsed
+    static let authPasswordResetResend        = "auth_password_reset_resend"
+    /// User taps Resend on `email_sent_confirmation` while cooldown still active
+    static let authPasswordResetResendBlocked = "auth_password_reset_resend_blocked"
+
     // ── Settings Events (custom) ────────────────────────────
 
     /// User changes a setting
@@ -411,6 +421,12 @@ enum AnalyticsParam {
     static let result            = "result"             // success/expired/failed/timeout — session restore
     static let restoreTimeMs     = "restore_time_ms"    // int — session restore duration
 
+    // Auth password reset parameters (auth-polish-v2 A5)
+    static let emailProvided           = "email_provided"             // bool — non-empty email at submit
+    static let timeToCompleteSeconds   = "time_to_complete_seconds"   // int 0..86400 — request → completed delta
+    static let cooldownRemainingSeconds = "cooldown_remaining_seconds" // int 0..60 — seconds left when blocked
+    static let attemptNumber           = "attempt_number"             // int 2..10 — resend attempt index
+
     // Profile parameters
     static let field             = "field"
     static let oldValue          = "old_value"
@@ -455,6 +471,11 @@ enum AnalyticsScreen {
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
     static let bodyCompDetail    = "body_comp_detail"
+
+    // Auth password reset screens (auth-polish-v2 A5)
+    static let forgotPassword         = "forgot_password"
+    static let emailSentConfirmation  = "email_sent_confirmation"
+    static let setNewPassword         = "set_new_password"
 }
 
 // MARK: - User Property Constants
@@ -484,5 +505,6 @@ enum AnalyticsConversion {
         AnalyticsEvent.accountDeleteCompleted,
         AnalyticsEvent.homeActionCompleted,
         AnalyticsEvent.trainingSessionCompleted,
+        AnalyticsEvent.authPasswordResetCompleted,
     ]
 }

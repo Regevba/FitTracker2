@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ForgotPasswordCooldownView: View {
     @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var analytics: AnalyticsService
 
     let email: String
 
@@ -37,9 +38,7 @@ struct ForgotPasswordCooldownView: View {
 
                 VStack(spacing: AppSpacing.small) {
                     Button {
-                        Task {
-                            await signIn.requestPasswordReset(email: email)
-                        }
+                        resendTapped()
                     } label: {
                         if signIn.isLoading {
                             ProgressView()
@@ -53,7 +52,7 @@ struct ForgotPasswordCooldownView: View {
                         }
                     }
                     .buttonStyle(AuthPrimaryButtonStyle())
-                    .disabled(cooldownActive || signIn.isLoading)
+                    .disabled(signIn.isLoading)
                     .opacity(cooldownActive ? 0.6 : 1.0)
                     .frame(minHeight: 44)
                     .accessibilityLabel(
@@ -89,5 +88,25 @@ struct ForgotPasswordCooldownView: View {
 
     private var cooldownActive: Bool {
         signIn.passwordResetCooldownRemaining > 0
+    }
+
+    private func resendTapped() {
+        // Snapshot at-tap state so analytics reflects what the user actually
+        // saw, not the post-call state.
+        let blocked = cooldownActive
+        let remainingAtTap = remainingSeconds
+        let intendedAttempt = signIn.passwordResetAttemptCount + 1
+        if blocked {
+            analytics.logAuthPasswordResetResendBlocked(cooldownRemainingSeconds: remainingAtTap)
+            // Still call the service so its statusMessage informs the user.
+            Task { await signIn.requestPasswordReset(email: email) }
+        } else {
+            Task {
+                await signIn.requestPasswordReset(email: email)
+                if signIn.authErrorMessage == nil {
+                    analytics.logAuthPasswordResetResend(attemptNumber: intendedAttempt)
+                }
+            }
+        }
     }
 }

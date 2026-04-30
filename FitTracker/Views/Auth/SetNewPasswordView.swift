@@ -7,6 +7,7 @@ import SwiftUI
 
 struct SetNewPasswordView: View {
     @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var analytics: AnalyticsService
 
     @State private var newPassword: String = ""
     @State private var confirmPassword: String = ""
@@ -107,9 +108,17 @@ struct SetNewPasswordView: View {
 
     private func submit() {
         guard canSubmit, !signIn.isLoading else { return }
+        // Snapshot before SignInService clears it on success.
+        let requestedAt = signIn.passwordResetRequestedAt
         Task {
             await signIn.setNewPassword(newPassword)
             if signIn.authErrorMessage == nil {
+                if let requestedAt {
+                    let elapsed = Int(Date().timeIntervalSince(requestedAt))
+                    analytics.logAuthPasswordResetCompleted(
+                        timeToCompleteSeconds: max(0, min(elapsed, 86_400))
+                    )
+                }
                 onSuccess()
             }
         }

@@ -125,12 +125,25 @@ struct FitTrackerApp: App {
                     if unlocked { signIn.resumeStoredSession() }
                 }
                 .onOpenURL { url in
-                    // Deep-link return for forgot-password flow (auth-polish-v2 A1).
+                    // Deep-link return for forgot-password flow (auth-polish-v2 A1+A4).
                     // URL scheme `fitme://reset-password?...` is registered in
-                    // Info.plist (CFBundleURLTypes/PasswordReset) and handled by
-                    // SignInService.handleIncomingURL — A4 will observe
-                    // signIn.pendingPasswordResetURL to push SetNewPasswordView.
-                    signIn.handleIncomingURL(url)
+                    // Info.plist (CFBundleURLTypes/PasswordReset). The async call
+                    // exchanges the URL for a Supabase recovery session and then
+                    // sets `pendingPasswordResetURL`, which the .fullScreenCover
+                    // below observes to present SetNewPasswordView.
+                    Task { await signIn.handleIncomingURL(url) }
+                }
+                .fullScreenCover(isPresented: Binding(
+                    get: { signIn.pendingPasswordResetURL != nil },
+                    set: { if !$0 { signIn.pendingPasswordResetURL = nil } }
+                )) {
+                    // auth-polish-v2 A4 — present at the app entry so the cover
+                    // works from any auth state (onboarding, lock, app).
+                    SetNewPasswordView {
+                        signIn.pendingPasswordResetURL = nil
+                    }
+                    .environmentObject(signIn)
+                    .environmentObject(analytics)
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard !isScreenReviewModeEnabled else { return }

@@ -785,6 +785,41 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Auth Password Reset Events (auth-polish-v2 A5)
+
+    /// Fired when the user successfully submits the "Send reset link" form on
+    /// `forgot_password`. Drives the funnel denominator for password recovery.
+    func logAuthPasswordResetRequested(emailProvided: Bool) {
+        logEvent(AnalyticsEvent.authPasswordResetRequested, parameters: [
+            AnalyticsParam.emailProvided: emailProvided,
+        ])
+    }
+
+    /// Fired when the user successfully updates their password on
+    /// `set_new_password`. Conversion event — funnel numerator.
+    func logAuthPasswordResetCompleted(timeToCompleteSeconds: Int) {
+        logEvent(AnalyticsEvent.authPasswordResetCompleted, parameters: [
+            AnalyticsParam.timeToCompleteSeconds: timeToCompleteSeconds,
+        ])
+    }
+
+    /// Fired when the user taps Resend on `email_sent_confirmation` after the
+    /// 60s cooldown elapsed. `attemptNumber` is 2 for the first resend, 3 for
+    /// the second, etc.
+    func logAuthPasswordResetResend(attemptNumber: Int) {
+        logEvent(AnalyticsEvent.authPasswordResetResend, parameters: [
+            AnalyticsParam.attemptNumber: attemptNumber,
+        ])
+    }
+
+    /// Fired when the user taps Resend on `email_sent_confirmation` while the
+    /// cooldown is still active. PRD guardrail metric: rate < 5%.
+    func logAuthPasswordResetResendBlocked(cooldownRemainingSeconds: Int) {
+        logEvent(AnalyticsEvent.authPasswordResetResendBlocked, parameters: [
+            AnalyticsParam.cooldownRemainingSeconds: cooldownRemainingSeconds,
+        ])
+    }
+
     // MARK: - Private
 
     private func logEvent(_ name: String, parameters: [String: Any]?) {
