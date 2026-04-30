@@ -346,3 +346,103 @@ Add Type 5 (engagement re-activation) and P2 behavioral learning foundation.
 | OQ-2 | Should locked feature overlays also appear for logged-in users who lack a specific entitlement (e.g., free tier)? | PM | Out of scope for this feature; tracked in backlog for monetization feature |
 | OQ-3 | Type 5 body copy escalates across 3 days of inactivity — should day 7 copy be more urgent or maintain the same tone? | Design | Decision deferred to UX phase; flag for A/B test in Phase 3 |
 | OQ-4 | Should `reminder_suppressed` events fire if the user has disabled that type in preferences (to distinguish user intent from cap suppression)? | Analytics | Yes — use `reason: user_disabled` to distinguish from automatic suppression |
+
+---
+
+## Enhancements
+
+Tracked here per CLAUDE.md "Enhancement" work-type rule (4-phase: Tasks → Implement → Test → Merge — parent PRD already exists, no new PRD required).
+
+### E-1: Readiness-Aware Training Alert (Smart Reminders v2 layer)
+
+| Field | Value |
+|---|---|
+| Status | Backlog |
+| Added | 2026-04-30 |
+| Parent | smart-reminders (this PRD) |
+| Work type | Enhancement (4-phase) |
+| Linear | _to be filed when scheduled_ |
+| Backlog entry | `docs/product/backlog.md` → "High Priority (Product Gaps)" |
+
+**Rationale.** The current Type 4 reminder ("Forgot to log training — is this a rest day?") is **post-facto** — it fires after the user fails to log a workout by evening. There is no reminder type that fires **proactively** based on yesterday's recovery signals + today's planned session intensity. With ReadinessEngine v2 + AIOrchestrator + Training Plan v2 all shipped, the data is now in place to give the user a pre-training recommendation that prevents overexertion when readiness is low.
+
+**Scope — three recommendation paths, one of which fires per training day:**
+
+| Path | Trigger | UI state | Body copy (illustrative) |
+|---|---|---|---|
+| (1) Continue as planned | readiness ≥ session-intensity threshold (e.g. ≥ 60 for heavy compound day; ≥ 50 for accessory day) | AI avatar `.breathe` + glow | "You're ready — your {Push/Pull/Legs} session is fueled and your body is recovered." |
+| (2) Rest day swap | readiness < 40 OR critical recovery flags (poor sleep + elevated RHR + low HRV trend) | AI avatar `.shimmer` + Home AIInsightCard CTA "Mark today rest" | "Your body needs recovery today. Rest is part of the plan, not a setback." |
+| (3) Adapt to easier load | readiness 40–60 OR mixed signals | AI avatar `.pulse` + Home AIInsightCard CTA "Adjust today's plan" | "Today is fine to train but lighten the load — drop one set per exercise, lighter top-set, or swap heavy compounds for accessory volume." |
+
+Path (3) stages a concrete plan adjustment (drop one set per exercise, drop top-set %1RM by 10pp, or swap heavy compound → mobility/accessory). Adjustment surfaces in `TrainingDayView` so the user accepts/edits before the first set.
+
+**Inputs (all from existing shipped systems):**
+
+| Input | Source |
+|---|---|
+| Yesterday's HRV trend, RHR, sleep duration + quality | HealthKit via `ReadinessEngine v2` |
+| Yesterday's nutrition (logged vs target, protein adequacy, calorie balance) | `EncryptedDataStore.dailyLog` + `NutritionGoalPlan` |
+| Recovery flags (hydrationWarning, sleepShortage, etc.) | `ReadinessResult.fatigueFlags` |
+| Today's DayType + planned exercises + target volume/intensity | `TrainingPlanV2.todaySession()` |
+| User's typical training-start time (for notification timing) | Learned from `TrainingLog` timestamps; fallback 18:00 |
+
+**Output surfaces (all three must fire for one alert event):**
+
+1. **Home `AIInsightCard`** on app-open if today is a training day and a recommendation has been computed for the day. Two-path response affordance: primary CTA (accept the recommendation) + secondary CTA "Why?" → opens `AIIntelligenceSheet` with the readiness component breakdown that drove the call.
+2. **Local notification** at user's learned typical training-start time minus 1 hour (clamped between 14:00 and 21:00, suppressed during quiet hours 22:00–07:00). Wraps `UNUserNotificationCenter.add` via the existing `ReminderScheduler` so global daily cap (3) and 4-hour minimum interval are respected.
+3. **AI avatar state** on Home reflects the current recommendation passively — `.breathe` (continue), `.pulse` (adapt), `.shimmer` (rest swap). User sees the avatar before they read the notification, matching the existing AI-as-coach voice rule.
+
+**Decision logic (sketch):**
+
+```text
+if today.isTrainingDay && readiness.confidence >= 0.7:
+  if readiness.score < 40 OR criticalRecoveryFlags.any:
+    → Path 2 (Rest swap)
+  elif readiness.score < 60 OR mixedSignals:
+    → Path 3 (Adapt to easier load)
+  else:
+    → Path 1 (Continue)
+elif today.isTrainingDay && readiness.confidence < 0.7:
+  → no proactive alert (avoid low-confidence false alarm); fall back to existing Type 4 post-facto reminder
+```
+
+**Dependencies (all shipped — no upstream blockers):**
+
+- `ReadinessEngine v2` — readiness score with confidence + component breakdown
+- `AIOrchestrator` — `ValidatedRecommendation` envelope + `RecommendationMemory` (for learning whether the user accepted/dismissed)
+- Smart Reminders core (`ReminderScheduler` + `ReminderTriggerEvaluator`)
+- `TrainingPlanV2.todaySession()` — DayType + exercises + targets
+- AI avatar state machine on Home (`.breathe`/`.pulse`/`.shimmer`)
+- Home `AIInsightCard` + `AIIntelligenceSheet`
+
+**Out of scope (deferred):**
+
+- A/B testing alternate copy for Path 2 vs Path 3 (deferred until behavioral-learning sub-feature lands; that sub-feature can also tune the 40/60 thresholds per-user from observed accept/dismiss patterns).
+- Push notifications (remote, server-triggered) — local notifications are the v1 vehicle; remote push is tracked separately under the push-notifications feature.
+- Coaching tone variants beyond the current "Celebration Not Guilt" rule (no new tone work needed; existing rule applies).
+
+**Success criteria (graduates from "Backlog" to "Tasks" when):**
+
+- Recommendation accept rate ≥ 40% across all three paths combined (measured via `recommendation_accepted` analytics event)
+- Path 2 (Rest swap) accept rate ≥ 60% when fired (high specificity expected — only fires when signals are unambiguous)
+- Path 3 (Adapt) accept rate ≥ 35% (some users will reject and train as planned; that's fine)
+- Average dismissal rate < 25% across all paths (above this → re-tune thresholds)
+
+**Kill criteria:**
+
+- < 20% combined accept rate after 30 days of post-launch data → revert to Type 4 post-facto reminder only
+- Any path's dismiss rate > 60% → suppress that path and surface OQ to PM/Design
+
+**Open questions (to resolve in Tasks phase):**
+
+| # | Question | Owner |
+|---|---|---|
+| E1-OQ-1 | Should Path 3 adjustments be pre-confirmed by the user (one-tap accept) or auto-applied to TrainingDayView with an "undo" affordance? | UX |
+| E1-OQ-2 | If a user has disabled the existing Type 4 reminder, should this proactive alert respect that (suppress) or treat it as a different event class (still fire)? | Product |
+| E1-OQ-3 | What's the minimum HealthKit data window for `confidence >= 0.7` — 7 days of HRV? 14? Tied to ReadinessEngine v2's existing confidence formula? | Eng |
+| E1-OQ-4 | Should the recommendation persist if the user opens the app in the morning (before the notification fires) — i.e. is the AIInsightCard the source of truth or is the notification? | Eng + UX |
+
+**Linkage to other backlog items:**
+
+- **Partially supersedes** the Medium Priority "Trend alerts — no notification when HRV drops below threshold for 3+ days" entry — that ask is delivered as a side effect of Path 2.
+- **Synergistic with** the Smart Reminders behavioral-learning sub-feature (already deferred): once that ships, it can personalize the 40/60 thresholds per user from observed acceptance behavior.
