@@ -4,9 +4,9 @@
   "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
   "case_study_type": "roundup",
   "created": "2026-04-10T15:00:00Z",
-  "updated": "2026-04-20T00:00:00Z",
+  "updated": "2026-04-30T16:30:00Z",
   "branch": "feature/stats-v2",
-  "current_phase": "tasks",
+  "current_phase": "implementation",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -39,12 +39,17 @@
       "status": "approved",
       "approved_at": "2026-04-10T15:25:00Z",
       "type": "ux",
-      "checklist_completed": false
+      "checklist_completed": true,
+      "checklist_completed_at": "2026-04-30T16:30:00Z",
+      "checklist_artifact": ".claude/features/stats-v2/v2-refactor-checklist.md"
     },
     "implementation": {
       "status": "in_progress",
-      "commits": [],
-      "checklist_completed": false
+      "commits": ["e93d6e8", "71bac5a", "fca1ece", "027abf0", "47f8bd5"],
+      "checklist_completed": true,
+      "checklist_completed_at": "2026-04-30T16:30:00Z",
+      "checklist_artifact": ".claude/features/stats-v2/v2-refactor-checklist.md",
+      "reconciliation_note": "2026-04-30 — second reconciliation. Initial 2026-04-30 lift downgraded status to pending (correcting 2026-04-10 false-positive). Audit during this resume found T3/T4/T7/T10 actually shipped on 2026-04-10 via PR #76 (commit e93d6e8) but never logged in state.json. T1 was already on main pre-feature. Resume work commits: 71bac5a (resume + T1 marker), fca1ece (reconciliation), 027abf0 (T5 + T6), 47f8bd5 (T2). T9 CI verify pending real CI on PR push."
     },
     "testing": {
       "status": "pending",
@@ -126,6 +131,13 @@
       "timestamp": "2026-04-20T00:00:00Z",
       "approved_by": "integrity_audit",
       "note": "2026-04-20 open-items audit detected inconsistency: top-level current_phase=complete but all 10 implementation tasks still pending. No v2 code shipped. Downgraded to match reality. Six-feature roundup case study context updated accordingly."
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-04-30T16:00:00Z",
+      "approved_by": "reconciliation_audit",
+      "note": "2026-04-30 second reconciliation during stats-v2 resume. Discovered T3 (build v2/StatsView.swift), T4 (project.pbxproj v2 swap), T7 (StatsAnalyticsTests.swift, 93 lines), T10 (mark v1 historical) actually shipped 2026-04-10 via PR #76 / commit e93d6e8 — the original 'complete' status downgraded by the 2026-04-20 audit was over-corrected. Real state: implementation in_progress, with T2/T5(partial)/T6(partial)/T8/T9 outstanding. T1 was already on main pre-feature. Net: 5/10 tasks complete, 2 partial, 3 pending."
     }
   ],
   "tasks": [
@@ -134,95 +146,102 @@
       "title": "Create AppLayout enum",
       "type": "design",
       "skill": "design",
-      "status": "pending",
+      "status": "completed",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-04-30T00:00:00Z",
+      "completion_note": "AppLayout enum was already shipped on main at FitTracker/Services/AppTheme.swift:139-152 prior to stats-v2 resume. All 6 values present (chartHeight 158, emptyStateMinHeight 128, chipMinWidth 128, chipIdealWidth 144, chipMaxWidth 168, dotSize 8). No code change required from this feature; marker recorded retroactively at resume time."
     },
     {
       "id": "T2",
       "title": "Extract nested types to Models/Stats/",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "medium",
       "effort_days": 0.25,
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-04-30T16:25:00Z",
+      "completion_note": "Shipped via commit 47f8bd5. 3 files at FitTracker/Models/Stats/ (StatsPeriod.swift 47 lines, StatsFocusMetric.swift 210 lines, MetricSeriesPoint.swift 8 lines). v2/StatsView.swift 899 → 673 lines. project.pbxproj wired (5 surgical edits, no UUID reshuffles). MetricSeriesPoint promoted from `private` to internal since it now lives in its own file. xcodebuild build clean both arm64 + x86_64 simulator targets."
     },
     {
       "id": "T3",
       "title": "Build v2/StatsView.swift",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
         "T1",
         "T2"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "Shipped via PR #76 / commit e93d6e8 on 2026-04-10. v2/StatsView.swift = 899 lines. F1 (AppMotion.quickInteraction at line 464), F2 partial (chart accessibilityLabel/Value at line 627–628; AXChartDescriptorRepresentable not added — pragmatic fix accepted), F3-F5 (AppLayout tokens used). T2 dependency NOT satisfied at time of completion: 3 nested types still inline at lines 9, 57, 244. Marker recorded retroactively at 2026-04-30 reconciliation."
     },
     {
       "id": "T4",
       "title": "Update project.pbxproj",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "Shipped via PR #76 / commit e93d6e8. pbxproj has v2 group entry at line 861 (StatsView.swift in v2/ folder), build phase entry at line 1273. v1 file kept as PBXFileReference (line 851) per v2 convention. Marker recorded retroactively."
     },
     {
       "id": "T5",
       "title": "Instrument 4 analytics events",
       "type": "analytics",
       "skill": "analytics",
-      "status": "pending",
+      "status": "completed",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-30T16:15:00Z",
+      "completion_note": "Wired all 4 events in v2/StatsView.swift via commit 027abf0: stats_period_changed (.onChange), stats_metric_selected (chip tap), stats_chart_interaction (drag .onEnded), stats_empty_state_shown (EmptyStateView .onAppear). Added @EnvironmentObject AnalyticsService. Added `category: String` computed property on StatsFocusMetric (body/recovery/training/activity/nutrition) for the second arg of logStatsMetricSelected. T7 footnote: existing StatsAnalyticsTests.swift exercises service layer; view-integration coverage owed (rolled into T9)."
     },
     {
       "id": "T6",
       "title": "Full accessibility pass",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-30T16:15:00Z",
+      "completion_note": "9 → 18 a11y annotations in v2/StatsView.swift via commit 027abf0. Exceeds audit target of 14+. Additions: period picker container label ('Time period'), 'Track More' isHeader trait, EmptyStateView combine+composite label, metricHeader VStack combine+composite label, chartSelection overlay combine+label. G4 (custom rotor for chart points) deferred — pragmatic accessibilityValue summary accepted. G8 contrast and AX5 manual tests deferred to manual QA cycle (school-project context, see v2-refactor-checklist.md Section J ⚠️ entries)."
     },
     {
       "id": "T7",
       "title": "Analytics tests",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "completed",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T5"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "FitTrackerTests/StatsAnalyticsTests.swift exists, 93 lines, tests AnalyticsService.logStats* methods emit correct events. NOTE: tests pass independently of T5's view-wiring gap — they exercise the service layer directly, not view → service integration. So green T7 does not validate that T5 events actually fire from the view. Marker recorded retroactively."
     },
     {
       "id": "T8",
       "title": "V2 refactor checklist",
       "type": "docs",
       "skill": "qa",
-      "status": "pending",
+      "status": "completed",
       "priority": "medium",
       "effort_days": 0.1,
       "depends_on": [
@@ -230,33 +249,37 @@
         "T4",
         "T6"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-30T16:30:00Z",
+      "completion_note": "Filled checklist at .claude/features/stats-v2/v2-refactor-checklist.md. 46 verified + 11 N/A + 10 partial (mostly K=docs phase, not yet entered) + 6 deferred to manual QA (color contrast, AX5, VoiceOver simulator testing — school-project context). Boxes verified-or-N/A: 57 of 73 applicable."
     },
     {
       "id": "T9",
       "title": "CI verification",
       "type": "test",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
+      "partial_status": "build_clean_infra_flake_accepted",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [
         "T7"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-30T18:30:00Z",
+      "partial_note": "Local xcodebuild build clean (verified twice: post-T5/T6 commit 027abf0 + post-T2 commit 47f8bd5, iOS Simulator arm64+x86_64). xcodebuild test not runnable locally — no iOS simulators installed on this machine. CI verification on PR #164: 9 of 10 checks green (Analyze x3, CodeQL, GitGuardian, Vercel x2, integrity, pm-framework/pr-integrity). Build-and-Test failed twice on UNRELATED UI test infra flake — first run on OnboardingUITests (74s timeout), rerun on HomeReadinessUITests (194s timeout). Root cause: parallel-clone sim hang affecting random tests each run; secondary cause: PR #160's GITHUB_ACTIONS env-var quarantine doesn't propagate to simulator XCTRunner process. Quarantine fix shipping in PR #165 (chore/ci-quarantine-fix, NSUserName-based detection). User accepted stats-v2 merge despite Build-and-Test red because: (a) all stats-v2 code verified clean (compile + non-flaky tests pass), (b) failure is unrelated UI test infra, (c) quarantine fix is in flight, (d) parallel-clone hang root cause is filed as separate backlog task. T9 marked completed with caveat for ledger honesty."
     },
     {
       "id": "T10",
       "title": "Mark v1 historical",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "low",
       "effort_days": 0.05,
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-10T06:39:22Z",
+      "completion_note": "v1 file FitTracker/Views/Stats/StatsView.swift has historical header (lines 1-5) and types renamed *_V1_Historical (StatsPeriod_V1_Historical, StatsFocusMetric_V1_Historical, MetricSeriesPoint_V1_Historical, StatsView_V1_Historical). Shipped via PR #76 / commit e93d6e8. Marker recorded retroactively."
     }
   ],
   "timing": {
@@ -281,7 +304,13 @@
         "ended_at": "2026-04-10T15:25:00Z"
       },
       "tasks": {
-        "started_at": "2026-04-20T00:00:00Z"
+        "started_at": "2026-04-20T00:00:00Z",
+        "ended_at": "2026-04-10T06:39:22Z",
+        "ended_at_note": "Backfilled at 2026-04-30 reconciliation. Anomaly: ended_at < started_at because 2026-04-20 'tasks' entry was an integrity-audit downgrade from a false-positive 'complete' state — actual implementation work (T3/T4/T7/T10) had already shipped 2026-04-10 via PR #76. Real linear timeline: tasks_first 04-10 15:15→15:20Z, ux 15:20→15:25Z, implementation began 06:39Z (PR #76 commit, predates approval timestamps because PR was opened earlier and the state.json approvals were typed in retroactively)."
+      },
+      "implementation": {
+        "started_at": "2026-04-10T06:39:22Z",
+        "started_at_note": "Backfilled at 2026-04-30 reconciliation from PR #76 / commit e93d6e8. T3+T4+T7+T10 shipped that commit; T2/T5/T6/T8/T9 remain."
       }
     }
   },
@@ -306,13 +335,20 @@
     "at": "2026-04-27T14:00:00Z",
     "reason": "v7.7 Validity Closure full-priority freeze",
     "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "lifted_at": "2026-04-30T00:00:00Z",
+    "lifted_reason": "User explicit override — lift pause for stats-v2 only while v7.7 remains in research phase. Other paused features stay paused.",
+    "lift_method": "manual_user_override",
+    "corrigendum": {
+      "at": "2026-04-30T00:00:00Z",
+      "note": "Lift_reason above is incorrect: v7.7 had already SHIPPED 2026-04-27 via PR #144 (merge 01b9e11) at the time of this lift; state.json reconciled in PR #158. Resume signal had naturally fired. Original wording preserved per 'publish verbatim, append corrections' rule. Effective classification: natural resume after v7.7 completion, not user override."
+    },
     "snapshot": {
       "current_phase": "tasks",
       "next_action_when_resumed": "Reconcile current_phase=tasks vs phases.implementation field; resume tasks phase",
       "blockers": [],
       "context_links": [
         ".claude/features/stats-v2/state.json",
-        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_stats_v2.md"
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_stats_v2.md"
       ]
     }
   }
