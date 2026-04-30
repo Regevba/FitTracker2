@@ -32,14 +32,20 @@
     <key>Label</key>
     <string>com.fitme.hadf.phase2.collect</string>
 
+    <!-- Points at the dedicated git-worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/
+         (created via `git worktree add`). The campaign runs from this isolated
+         worktree so the user can switch branches in the main repo
+         /Volumes/DevSSD/FitTracker2/ without breaking the wrapper script
+         resolution. The wrapper auto-detects its own REPO location, so it works
+         regardless of which path it's invoked from. -->
     <key>ProgramArguments</key>
     <array>
         <string>/bin/bash</string>
-        <string>/Volumes/DevSSD/FitTracker2/scripts/hadf-phase2-collect.sh</string>
+        <string>/Volumes/DevSSD/FitTracker2-hadf-campaign/scripts/hadf-phase2-collect.sh</string>
     </array>
 
     <key>WorkingDirectory</key>
-    <string>/Volumes/DevSSD/FitTracker2</string>
+    <string>/Volumes/DevSSD/FitTracker2-hadf-campaign</string>
 
     <key>StartCalendarInterval</key>
     <array>

@@ -15,7 +15,11 @@
 
 set -euo pipefail
 
-REPO="/Volumes/DevSSD/FitTracker2"
+# Resolve REPO from this script's location so the wrapper works whether it
+# runs from the main repo (/Volumes/DevSSD/FitTracker2) or a git worktree
+# (e.g. /Volumes/DevSSD/FitTracker2-hadf-campaign for the 3-day campaign).
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+REPO="$( cd "$SCRIPT_DIR/.." && pwd )"
 cd "$REPO"
 
 # ---------- env / API keys ----------
