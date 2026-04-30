@@ -1,7 +1,7 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-30T19:40:00Z",
+  "updated": "2026-04-30T20:50:00Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "implementation",
   "work_type": "feature",
@@ -60,17 +60,69 @@
     "implementation": {
       "status": "in_progress",
       "commits": [
-        {"sha": "7bfe470", "task": "T0", "at": "2026-04-28T07:47:02Z", "title": "Phase 3→4 transition + T0 extract auth shared components"},
-        {"sha": "56fedd8", "task": "A1", "at": "2026-04-28T07:53:37Z", "title": "A1 register fitme:// URL scheme + deep-link return handler"},
-        {"sha": "958036b", "task": "A2", "at": "2026-04-30T15:44:46Z", "title": "A2 — 60s cooldown + Supabase redirectTo on password reset"},
-        {"sha": "52e3e9a", "task": "A3", "at": "2026-04-30T16:06:24Z", "title": "A3 — 3 forgot-password / reset SwiftUI screens"},
-        {"sha": "382a68f", "task": "A4+A5", "at": "2026-04-30T16:34:20Z", "title": "A4 + A5 — wire forgot-password recovery + 4 analytics events"}
+        {
+          "sha": "7bfe470",
+          "task": "T0",
+          "at": "2026-04-28T07:47:02Z",
+          "title": "Phase 3\u21924 transition + T0 extract auth shared components"
+        },
+        {
+          "sha": "56fedd8",
+          "task": "A1",
+          "at": "2026-04-28T07:53:37Z",
+          "title": "A1 register fitme:// URL scheme + deep-link return handler"
+        },
+        {
+          "sha": "958036b",
+          "task": "A2",
+          "at": "2026-04-30T15:44:46Z",
+          "title": "A2 \u2014 60s cooldown + Supabase redirectTo on password reset"
+        },
+        {
+          "sha": "52e3e9a",
+          "task": "A3",
+          "at": "2026-04-30T16:06:24Z",
+          "title": "A3 \u2014 3 forgot-password / reset SwiftUI screens"
+        },
+        {
+          "sha": "382a68f",
+          "task": "A4+A5",
+          "at": "2026-04-30T16:34:20Z",
+          "title": "A4 + A5 \u2014 wire forgot-password recovery + 4 analytics events"
+        },
+        {
+          "sha": "e8fc4b8",
+          "task": "B1",
+          "at": "2026-04-30T17:35:00Z",
+          "title": "B1 \u2014 BiometricActivationSheet SwiftUI component"
+        },
+        {
+          "sha": "e124f49",
+          "task": "B2",
+          "at": "2026-04-30T17:50:00Z",
+          "title": "B2 \u2014 biometric activation in AuthManager + AppSettings flag"
+        },
+        {
+          "sha": "2f131e1",
+          "task": "B3",
+          "at": "2026-04-30T18:05:00Z",
+          "title": "B3 \u2014 wire biometric activation sheet + replace LockScreenView"
+        },
+        {
+          "sha": "d477ef4",
+          "task": "B4",
+          "at": "2026-04-30T18:20:00Z",
+          "title": "B4 \u2014 5 biometric analytics events + duration/reason instrumentation"
+        }
       ],
-      "tasks_complete": 6,
+      "tasks_complete": 14,
       "tasks_total": 18,
       "block_a_status": "complete",
       "checklist_completed": false,
-      "started_at": "2026-04-28T19:00:00Z"
+      "started_at": "2026-04-28T19:00:00Z",
+      "block_b_status": "complete",
+      "block_c_status": "complete_preexisting",
+      "block_c_note": "Audit at 2026-04-30T20:30Z confirmed C1-C4 wiring shipped in a prior PR before auth-polish-v2 began. Verification: Staging xcodebuild succeeded; produced .app Info.plist contains real OAuth client ID \"881044848598-3lav013iveag86b27jckjpb7so6mf963.apps.googleusercontent.com\" substituted from FITTRACKER_GOOGLE_CLIENT_ID xcconfig var, and CFBundleURLTypes contains the reversed-client-id URL scheme. GoogleAuthProvider, GoogleRuntimeConfiguration, and AuthMethodSelectionView gating all already in place. Only remaining Block C work is out-of-code (xcconfig OAuth IDs in Debug+Release local files; Supabase dashboard Google provider toggle)."
     },
     "testing": {
       "status": "pending",
@@ -294,102 +346,125 @@
       "id": "B1",
       "block": "B",
       "title": "BiometricActivationSheet SwiftUI component (immediate-after-first-sign-in trigger per OQ-1)",
-      "status": "pending",
+      "status": "complete",
       "files": [
-        "FitTracker/Views/Auth/BiometricActivationSheet.swift"
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
       ],
-      "deps": []
+      "deps": [],
+      "completed_at": "2026-04-30T17:35:00Z",
+      "implementation_note": "Pure View, owns isLoading + errorMessage state. Two callbacks (onEnable async->Bool, onDecline). Layout per ux-spec \u00a75.4 default state. All 7 a11y labels (#29-35) per ux-spec \u00a76.1. presentationDetents([.medium]) + presentationDragIndicator(.visible) + presentationCornerRadius(AppRadius.authSheet). biometricLabel composed by stripping \"Use \" prefix from AuthManager.biometricLabel."
     },
     {
       "id": "B2",
       "block": "B",
       "title": "BiometricService extension: isFirstSignIn, requestActivationFromUser, activate(biometricType:) + Keychain integration",
-      "status": "pending",
+      "status": "complete",
       "files": [
-        "FitTracker/Services/BiometricService.swift",
-        "FitTracker/Services/KeychainService.swift"
+        "FitTracker/Services/AppSettings.swift",
+        "FitTracker/Services/AuthManager.swift"
       ],
-      "deps": []
+      "deps": [],
+      "completed_at": "2026-04-30T17:50:00Z",
+      "files_correction_note": "Spec listed BiometricService.swift + KeychainService.swift. Reality: no BiometricService.swift \u2014 AuthManager.swift IS the biometric service (BiometricQuickUnlockProviding protocol; LAContext wrapping; biometricLabel/Name/Icon/Type already there). Skipped Keychain integration \u2014 Supabase already owns session storage; activation surface is purely flag-based with no secret to store.",
+      "implementation_note": "AppSettings: hasAskedForBiometricActivation Bool persisted to UserDefaults under \"ft.hasAskedForBiometricActivation\"; never reset by sign-out per FR-11. AuthManager: shouldOfferActivation(settings:) FR-9 trigger predicate; requestActivation(settings:) async->Bool runs LAContext evaluatePolicy and flips both flags on success / only hasAsked on failure (FR-10)."
     },
     {
       "id": "B3",
       "block": "B",
       "title": "Trigger sheet from OnboardingViewModel.onSignInSuccess + post-relaunch unlock flow in RootView",
-      "status": "pending",
+      "status": "complete",
       "files": [
-        "FitTracker/ViewModels/OnboardingViewModel.swift",
-        "FitTracker/Views/Root/RootView.swift"
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Views/Auth/BiometricUnlockView.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
       ],
       "deps": [
         "B1",
         "B2"
-      ]
+      ],
+      "completed_at": "2026-04-30T18:05:00Z",
+      "files_correction_note": "Spec listed FitTracker/ViewModels/OnboardingViewModel.swift + FitTracker/Views/Root/RootView.swift. Reality: no OnboardingViewModel exists; trigger logic lives at FitTrackerApp.onChange(of: signIn.activeSession) which fires for any sign-in path (onboarding, AuthHubView, deep-link return). RootView.swift doesn't exist \u2014 rootView is a @ViewBuilder property on FitTrackerApp where the routing branches live.",
+      "implementation_note": "Two pieces: (1) post-sign-in activation offer \u2014 @State showBiometricActivation in FitTrackerApp; .sheet wired with BiometricActivationSheet (B1) + AuthManager.requestActivation (B2). (2) post-relaunch unlock \u2014 new BiometricUnlockView per ux-spec \u00a75.5 (full-screen authBackground, FitMeBrandIcon 72pt, \"Welcome back, {firstName}\" hero, 88pt biometric icon, AuthPrimaryButtonStyle CTA, optional \"Use password\" tertiary, error banner, auto-trigger auth on appear). rootView swap: BiometricUnlockView replaces inline LockScreenView. firstName derived from displayName whitespace split (UserSession has no firstName field)."
     },
     {
       "id": "B4",
       "block": "B",
       "title": "Analytics: 5 biometric events (offered/activated/declined/unlock_completed/unlock_failed)",
-      "status": "pending",
+      "status": "complete",
       "files": [
-        "FitTracker/Services/AnalyticsService.swift",
-        "FitTracker/Services/BiometricService.swift",
-        "FitTracker/Views/Auth/BiometricActivationSheet.swift"
+        "FitTracker/Services/Analytics/AnalyticsProvider.swift",
+        "FitTracker/Services/Analytics/AnalyticsService.swift",
+        "FitTracker/Services/AuthManager.swift",
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift",
+        "FitTracker/Views/Auth/BiometricUnlockView.swift",
+        "FitTracker/FitTrackerApp.swift"
       ],
       "deps": [
         "B1",
         "B2",
         "B3"
-      ]
+      ],
+      "completed_at": "2026-04-30T18:20:00Z",
+      "implementation_note": "5 events + 3 params + 2 screens + conversion entry. AuthManager.attemptUnlock() async->BiometricUnlockOutcome captures duration_ms + LAError-derived reason (\"user_cancel\"|\"biometry_failed\"|\"system_cancel\"|\"passcode_not_set\"|\"other\"). BiometricActivationSheet fires _offered on appear, _activated on enable success (with provider from signIn.activeSession.provider), _activation_declined on Not now / enable failure. BiometricUnlockView refactored to call attemptUnlock() instead of fire-and-forget authenticate(); fires _unlock_completed/_unlock_failed."
     },
     {
       "id": "C1",
       "block": "C",
       "title": "Add GoogleSignIn-iOS@8.x SPM dep + URL scheme + Info.plist update",
-      "status": "pending",
+      "status": "complete_preexisting",
       "files": [
         "FitTracker.xcodeproj/project.pbxproj",
         "FitTracker/Info.plist"
       ],
-      "deps": []
+      "deps": [],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. GoogleSignIn-iOS@8.0.0 SPM dep in pbxproj line 1909 (XCRemoteSwiftPackageReference). Info.plist URL scheme \"GoogleSignIn\" present (lines 22-27) bound to $(FITTRACKER_GOOGLE_REVERSED_CLIENT_ID); GoogleClientID + GoogleReversedClientID keys present (lines 52-55). Staging xcconfig at Config/Local/Staging.xcconfig has real OAuth IDs; Staging build successfully substitutes them into the produced .app Info.plist."
     },
     {
       "id": "C2",
       "block": "C",
       "title": "GoogleSignInService wrapper: signIn(presentingFrom:) + GIDClientID from GoogleService-Info.plist (per OQ-3)",
-      "status": "pending",
+      "status": "complete_preexisting",
       "files": [
         "FitTracker/Services/GoogleSignInService.swift",
         "FitTracker/Services/SignInService.swift"
       ],
       "deps": [
         "C1"
-      ]
+      ],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. FitTracker/Services/Auth/GoogleAuthProvider.swift:39 wraps GIDSignIn.sharedInstance.signIn(withPresenting:) and exchanges the idToken via supabase.auth.signInWithIdToken(provider: .google). GIDClientID sourced from Info.plist via GoogleRuntimeConfiguration.clientID() per PRD OQ-3. SignInService selects GoogleAuthProvider when SupabaseRuntimeConfiguration.isConfigured && GoogleRuntimeConfiguration.isConfigured."
     },
     {
       "id": "C3",
       "block": "C",
       "title": "GoogleRuntimeConfiguration (remote-config flag for kill criterion 2)",
-      "status": "pending",
+      "status": "complete_preexisting",
       "files": [
         "FitTracker/Services/GoogleRuntimeConfiguration.swift",
         "FitTracker/Views/Root/RootView.swift"
       ],
       "deps": [
         "C2"
-      ]
+      ],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. GoogleRuntimeConfiguration enum at FitTracker/Services/Auth/GoogleAuthProvider.swift:17-35 exposes clientID(in:) / reversedClientID(in:) (each rejecting empty strings + \"YOUR_\" placeholders) and isConfigured Bool. Acts as the kill-criterion-2 flag for the live UI path."
     },
     {
       "id": "C4",
       "block": "C",
       "title": "Wire Google rows in AuthHubView + flag-driven UI hide + fix ColorAppColor typos found in Phase 0",
-      "status": "pending",
+      "status": "complete_preexisting",
       "files": [
         "FitTracker/Views/Auth/AuthHubView.swift"
       ],
       "deps": [
         "C2",
         "C3"
-      ]
+      ],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. AuthMethodSelectionView.swift:172 gates GoogleProviderRow on signIn.isGoogleAuthAvailable; line 217-218 shows \"Google sign-in stays hidden until the Google SDK and URL scheme are fully activated.\" copy when unavailable. signIn.isGoogleAuthAvailable resolves to googleAuthAvailable which is true iff both Supabase + GoogleRuntimeConfiguration are configured (SignInService.swift:369)."
     },
     {
       "id": "D1",
@@ -477,7 +552,7 @@
       "snapshot": {
         "current_phase": "implementation",
         "tasks_progress": "2 of 18 complete (T0 + A1)",
-        "next_action_when_resumed": "A2 — Implement SignInService.requestPasswordReset(email:) with 60s cooldown + Supabase redirectTo. PRD-locked OQ-2 says fitme://reset-password URL scheme. Touch only SignInService.swift; the URL scheme + onOpenURL handler already in place from A1.",
+        "next_action_when_resumed": "A2 \u2014 Implement SignInService.requestPasswordReset(email:) with 60s cooldown + Supabase redirectTo. PRD-locked OQ-2 says fitme://reset-password URL scheme. Touch only SignInService.swift; the URL scheme + onOpenURL handler already in place from A1.",
         "blockers": []
       },
       "lifted_at": "2026-04-30T17:55:00Z",

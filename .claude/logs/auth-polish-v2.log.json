@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.6",
   "started_at": "2026-04-27T05:01:13Z",
-  "updated_at": "2026-04-30T19:40:00Z",
+  "updated_at": "2026-04-30T20:50:00Z",
   "events": [
     {
       "timestamp": "2026-04-27T05:01:13Z",
@@ -217,6 +217,44 @@
         "tasks_total": 18,
         "block_a_complete": true,
         "build_status": "succeeded"
+      },
+      "actor": "claude_code_opus_4_7_1m",
+      "status": "completed",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-30T20:50:00Z",
+      "event_type": "block_completed",
+      "phase": "implementation",
+      "summary": "Block B (B1+B2+B3+B4) shipped + Block C (C1+C2+C3+C4) confirmed pre-existing via Staging end-to-end audit. B1 commit e8fc4b8 (BiometricActivationSheet pure View). B2 commit e124f49 (AppSettings.hasAskedForBiometricActivation flag + AuthManager.shouldOfferActivation/requestActivation; Keychain integration intentionally skipped \u2014 Supabase already owns session storage; no BiometricService.swift exists, AuthManager IS the biometric service). B3 commit 2f131e1 (FitTrackerApp .sheet trigger + new BiometricUnlockView replacing inline LockScreenView; OnboardingViewModel.swift doesn't exist so trigger logic lives at FitTrackerApp.onChange(of: signIn.activeSession); RootView.swift doesn't exist either \u2014 rootView is a @ViewBuilder on FitTrackerApp). B4 commit d477ef4 (5 events + 3 params + 2 screens + conversion; AuthManager.attemptUnlock() captures duration_ms + LAError-derived reason). Block C audit at 20:30Z confirmed: GoogleSignIn-iOS@8.0.0 SPM dep present in pbxproj (line 1909), Info.plist URL scheme + GoogleClientID/GoogleReversedClientID keys present (lines 22-55) bound to xcconfig vars, GoogleAuthProvider wraps GIDSignIn + supabase.auth.signInWithIdToken, GoogleRuntimeConfiguration.isConfigured gates UI. Verified end-to-end: Staging xcodebuild succeeded; produced .app/Info.plist contains real OAuth client ID 881044848598-3lav013iveag86b27jckjpb7so6mf963.apps.googleusercontent.com substituted from FITTRACKER_GOOGLE_CLIENT_ID xcconfig var (Config/Local/Staging.xcconfig). AuthManagerTests 8/8 passed (B2 changes did not regress biometric test suite). Tasks: 14 of 18 complete; only Block D (D1-D4 cross-cutting analytics-taxonomy + tests) remains.",
+      "artifacts": [
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift",
+        "FitTracker/Services/AppSettings.swift",
+        "FitTracker/Services/AuthManager.swift",
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Views/Auth/BiometricUnlockView.swift",
+        "FitTracker/Services/Analytics/AnalyticsProvider.swift",
+        "FitTracker/Services/Analytics/AnalyticsService.swift",
+        "FitTracker/Services/Auth/GoogleAuthProvider.swift",
+        "FitTracker/Views/Auth/AuthMethodSelectionView.swift",
+        "FitTracker/Info.plist",
+        "Config/Local/Staging.xcconfig",
+        "https://github.com/Regevba/FitTracker2/pull/163"
+      ],
+      "metrics": {
+        "files_changed_block_b": 9,
+        "events_added_block_b": 5,
+        "params_added_block_b": 3,
+        "screens_added_block_b": 2,
+        "tasks_complete": 14,
+        "tasks_total": 18,
+        "block_a_complete": true,
+        "block_b_complete": true,
+        "block_c_complete_preexisting": true,
+        "build_status_b4": "succeeded",
+        "build_status_staging": "succeeded",
+        "tests_run": 8,
+        "tests_passed": 8
       },
       "actor": "claude_code_opus_4_7_1m",
       "status": "completed",
