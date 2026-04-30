@@ -150,6 +150,7 @@ protocol EmailAuthProviding {
     func login(email: String, password: String) async throws -> UserSession
     func resendRegistrationCode(challenge: EmailRegistrationChallenge, draft: PendingEmailRegistration) async throws -> EmailRegistrationChallenge
     func requestPasswordReset(email: String) async throws
+    func updatePassword(newPassword: String) async throws
 }
 
 // SupabaseAppleAuthProvider is defined in SupabaseAppleAuthProvider.swift.
@@ -267,6 +268,17 @@ struct LocalEmailAuthProvider: EmailAuthProviding {
             )
         }
     }
+
+    func updatePassword(newPassword: String) async throws {
+        try await Task.sleep(for: .milliseconds(450))
+        guard !newPassword.isEmpty else {
+            throw NSError(
+                domain: "FitTracker.Auth",
+                code: 400,
+                userInfo: [NSLocalizedDescriptionKey: "Enter a new password to continue."]
+            )
+        }
+    }
 }
 #else
 // Release builds: email auth requires a real Supabase backend.
@@ -287,6 +299,9 @@ struct UnavailableEmailAuthProvider: EmailAuthProviding {
         throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
     }
     func requestPasswordReset(email: String) async throws {
+        throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
+    }
+    func updatePassword(newPassword: String) async throws {
         throw NSError(domain: "FitTracker.Auth", code: 503, userInfo: [NSLocalizedDescriptionKey: Self.msg])
     }
 }
@@ -674,6 +689,24 @@ final class SignInService: NSObject, ObservableObject {
             try await emailProvider.requestPasswordReset(email: email)
             statusMessage = "If that email is registered, a password reset link is on the way."
             startPasswordResetCooldown()
+            isLoading = false
+        } catch {
+            isLoading = false
+            authErrorMessage = error.localizedDescription
+        }
+    }
+
+    /// Updates the user's password using the active Supabase session
+    /// (set on the recovery deep-link return). Called by SetNewPasswordView.
+    /// On success, the user remains signed in (no re-auth needed).
+    func setNewPassword(_ newPassword: String) async {
+        isLoading = true
+        authErrorMessage = nil
+        statusMessage = nil
+
+        do {
+            try await emailProvider.updatePassword(newPassword: newPassword)
+            statusMessage = "Password updated. You're signed in."
             isLoading = false
         } catch {
             isLoading = false

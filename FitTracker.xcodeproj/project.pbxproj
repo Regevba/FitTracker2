@@ -176,6 +176,9 @@
 		DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA07 /* AuthSharedComponents.swift */; };
 		EE000001000000000000AA01 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA01 /* SignInView.swift */; };
 		EE000001000000000000AA02 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA02 /* WelcomeView.swift */; };
+		AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A301 /* ForgotPasswordRequestView.swift */; };
+		AP100001000000000001A302 /* ForgotPasswordCooldownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */; };
+		AP100001000000000001A303 /* SetNewPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A303 /* SetNewPasswordView.swift */; };
 		FB1000001000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000001 /* SupabaseClient.swift */; };
 		FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000002 /* SupabaseSyncService.swift */; };
 		FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000003 /* UserSession+Supabase.swift */; };
@@ -385,6 +388,9 @@
 		DS000002000000000000AA07 /* AuthSharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSharedComponents.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA01 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA02 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A301 /* ForgotPasswordRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordRequestView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordCooldownView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A303 /* SetNewPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNewPasswordView.swift; sourceTree = "<group>"; };
 		FB2000001000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		FB2000001000000000000002 /* SupabaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncService.swift; sourceTree = "<group>"; };
 		FB2000001000000000000003 /* UserSession+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSession+Supabase.swift"; sourceTree = "<group>"; };
@@ -867,6 +873,9 @@
 				A20000010000000000000016 /* AuthHubView.swift */,
 				EE000002000000000000AA01 /* SignInView.swift */,
 				EE000002000000000000AA02 /* WelcomeView.swift */,
+				AP200002000000000001A301 /* ForgotPasswordRequestView.swift */,
+				AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */,
+				AP200002000000000001A303 /* SetNewPasswordView.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -1271,6 +1280,9 @@
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
 				EE000001000000000000AA01 /* SignInView.swift in Sources */,
 				EE000001000000000000AA02 /* WelcomeView.swift in Sources */,
+				AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */,
+				AP100001000000000001A302 /* ForgotPasswordCooldownView.swift in Sources */,
+				AP100001000000000001A303 /* SetNewPasswordView.swift in Sources */,
 				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
 				CC000001000000000000AA02 /* SectionHeader.swift in Sources */,
 				OB100000000000000000AA01 /* OnboardingConsentView.swift in Sources */,

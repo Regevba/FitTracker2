@@ -70,4 +70,8 @@ extension EmailAuthProvider {
             redirectTo: URL(string: "fitme://reset-password")
         )
     }
+
+    func updatePassword(newPassword: String) async throws {
+        try await supabase.auth.update(user: UserAttributes(password: newPassword))
+    }
 }

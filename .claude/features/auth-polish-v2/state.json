@@ -1,7 +1,7 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-30T17:55:00Z",
+  "updated": "2026-04-30T18:25:00Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "implementation",
   "work_type": "feature",
@@ -228,15 +228,20 @@
       "id": "A3",
       "block": "A",
       "title": "Build ForgotPasswordRequestView + ForgotPasswordCooldownView + SetNewPasswordView (3 SwiftUI screens)",
-      "status": "pending",
+      "status": "complete",
+      "completed_at": "2026-04-30T18:25:00Z",
       "files": [
         "FitTracker/Views/Auth/ForgotPasswordRequestView.swift",
         "FitTracker/Views/Auth/ForgotPasswordCooldownView.swift",
-        "FitTracker/Views/Auth/SetNewPasswordView.swift"
+        "FitTracker/Views/Auth/SetNewPasswordView.swift",
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Services/Auth/EmailAuthProvider.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
       ],
       "deps": [
         "A2"
-      ]
+      ],
+      "implementation_note": "Also extended EmailAuthProviding protocol with updatePassword(newPassword:) and added SignInService.setNewPassword(_:) so SetNewPasswordView has a working call path. Three impls updated (Supabase EmailAuthProvider via supabase.auth.update(user: UserAttributes(password:)), LocalEmailAuthProvider DEBUG mock, UnavailableEmailAuthProvider release fallback)."
     },
     {
       "id": "A4",
