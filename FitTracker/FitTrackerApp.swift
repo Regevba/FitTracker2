@@ -64,6 +64,8 @@ struct FitTrackerApp: App {
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
     @State private var showBiometricActivation = false
+    // Strong reference; iOS only retains the delegate weakly via the center.
+    private let reminderNotificationDelegate = ReminderNotificationDelegate()
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
@@ -99,6 +101,10 @@ struct FitTrackerApp: App {
         #if DEBUG
         ColorContrastValidator.validate()
         #endif
+        // Set the smart-reminder notification delegate before iOS delivers
+        // any notification — must happen in init per Apple's docs. Analytics
+        // is injected later in `.task` once the @StateObject has resolved.
+        UNUserNotificationCenter.current().delegate = reminderNotificationDelegate
     }
 
     var body: some Scene {
@@ -113,6 +119,11 @@ struct FitTrackerApp: App {
                         // first frame so UI tests can assert + screenshot.
                         showBiometricActivation = true
                     }
+                    // Inject analytics into smart-reminder hooks once the
+                    // @StateObject has resolved. Both stay set for the
+                    // lifetime of the app.
+                    reminderNotificationDelegate.setAnalytics(analytics)
+                    ReminderScheduler.shared.analytics = analytics
                 }
                 .onChange(of: signIn.activeSession) { _, session in
                     if session != nil {

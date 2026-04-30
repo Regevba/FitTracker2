@@ -6,7 +6,7 @@
   "current_phase": "documentation",
   "framework_version": "7.0",
   "started_at": "2026-04-23T04:59:34Z",
-  "updated_at": "2026-04-24T18:20:36Z",
+  "updated_at": "2026-04-30T06:09:09Z",
   "events": [
     {
       "timestamp": "2026-04-23T04:59:34Z",
@@ -284,6 +284,17 @@
       "status": "recorded",
       "recording_mode": "retroactive",
       "retroactive_reason": "Pre-logger remediation work (shipped before Tier 2.2 auto-emission protocol). Reconstructed from git log on 2026-04-24 via scripts/v7-5-advancement-report.py. Source of truth: the commit itself (9227085ec6a8cd6ca29fbd216574a64cdfc240b6)."
+    },
+    {
+      "timestamp": "2026-04-30T06:09:09Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Closed: source case study (431 lines) shipped 2026-04-16; showcase MDX live at slot 13 since well before today; data collection finished 2026-04-17. Phase advance documentation -> complete is artifact closure, not new work.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude",
+      "status": "complete",
+      "recording_mode": "contemporaneous"
     }
   ]
 }

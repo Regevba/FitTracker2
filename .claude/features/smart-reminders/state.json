@@ -1,9 +1,9 @@
 {
   "feature": "smart-reminders",
   "case_study": "docs/case-studies/smart-reminders-case-study.md",
-  "case_study_showcase": "04-case-studies/21-smart-reminders.md",
+  "case_study_showcase": "04-case-studies/08a-smart-reminders.mdx",
   "created": "2026-04-15T17:33:00Z",
-  "updated": "2026-04-20T00:00:00Z",
+  "updated": "2026-04-30T00:00:00Z",
   "current_phase": "complete",
   "work_type": "feature",
   "work_subtype": "new_capability",
@@ -103,7 +103,9 @@
       "status": "complete",
       "approved_at": "2026-04-18T00:00:00Z",
       "pr_number": 98,
-      "note": "Test PR #98 merged 2026-04-18. Feature code merged earlier via direct stress-test commits to main."
+      "merged_at": "2026-04-18T07:26:48Z",
+      "merge_commit": "11db1960ecec601b88f08050ac8eb894f6aadaa2",
+      "note": "Test PR #98 merged 2026-04-18T07:26:48Z (merge commit 11db1960). Feature code merged earlier via direct stress-test commits to main (bbbcd66, d62741c, fe1295a, 33b4e72, 2910762)."
     },
     "documentation": {
       "status": "complete",

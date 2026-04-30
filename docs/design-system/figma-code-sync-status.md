@@ -1,6 +1,6 @@
 # Figma ↔ Code Sync Status
 
-> **Last synced:** 2026-04-15
+> **Last synced:** 2026-04-29
 > **Figma file:** `0Ai7s3fCFqR5JXDW8JvgmD`
 
 ## Screen Sync Matrix
@@ -15,6 +15,7 @@
 | **Profile v3 | `865:3` (page `865:2`) | `ProfileView.swift` | **Synced** | New Figma page "Profile & Settings" built 2026-04-15. Old pages archived. |
 | **Onboarding v2** | `688:2` | `OnboardingView.swift` (v2/) | **Synced** | 6 screens + 3 HealthKit variants. No changes since PR #59. |
 | **Login** | `25:7` | `SignInView.swift` | **Synced** | Auth screens match. |
+| **Smart Reminders — Notification States** | `907:3` (page `907:2`) | `Services/Reminders/{ReminderType,ReminderScheduler,ReminderTriggers}.swift` + `Views/Shared/LockedFeatureOverlay.swift` | **Synced** | Built 2026-04-29 from PRD `docs/product/prd/smart-reminders.md`. Three sections: 6 iOS notification banners (one per reminder type with PRD-verbatim title + body + trigger / cap / suppress / deep link), 3 locked-feature overlays (AI coaching / sync / export per SR-13), 4 scheduler-guard callouts (global cap 3/day, quiet hours 22:00–07:00, min interval ≥ 4 h, permanent stop). Matches `ReminderType.swift` titles (6 cases). |
 
 ## Global Differences (apply to all screens)
 
@@ -35,7 +36,7 @@ All screens are locked as of 2026-04-15. The code is the source of truth. Figma 
 
 - When a screen gets a redesign or polish pass
 - When the Profile v3 simplified design is finalized for Figma
-- When push notifications or smart reminders UI ships (new screens)
+- ~~When push notifications or smart reminders UI ships (new screens)~~ → **Smart Reminders shipped 2026-04-29 (page `907:2`)**; Push Notifications still pending
 
 ---
 

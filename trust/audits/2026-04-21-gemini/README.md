@@ -5,8 +5,8 @@ independent audit and the follow-up implementation work.
 
 ## Entry points
 
-- Project audit entrypoint: [project_gemini_audit_2026_04_21.md](/Volumes/DevSSD/FitTracker2/project_gemini_audit_2026_04_21.md)
-- Framework v7.1 entrypoint: [project_framework_v7_1_integrity_cycle.md](/Volumes/DevSSD/FitTracker2/project_framework_v7_1_integrity_cycle.md)
+- Project audit entrypoint: [.claude/entrypoints/project_gemini_audit_2026_04_21.md](/Volumes/DevSSD/FitTracker2/.claude/entrypoints/project_gemini_audit_2026_04_21.md)
+- Framework v7.1 entrypoint: [.claude/entrypoints/project_framework_v7_1_integrity_cycle.md](/Volumes/DevSSD/FitTracker2/.claude/entrypoints/project_framework_v7_1_integrity_cycle.md)
 - Canonical independent audit: [docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md](/Volumes/DevSSD/FitTracker2/docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md)
 - Canonical v7.1 case study: [docs/case-studies/integrity-cycle-v7.1-case-study.md](/Volumes/DevSSD/FitTracker2/docs/case-studies/integrity-cycle-v7.1-case-study.md)
 - **Canonical v7.5 case study**: [docs/case-studies/data-integrity-framework-v7.5-case-study.md](/Volumes/DevSSD/FitTracker2/docs/case-studies/data-integrity-framework-v7.5-case-study.md)

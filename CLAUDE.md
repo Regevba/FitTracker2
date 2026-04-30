@@ -78,7 +78,7 @@ Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.
 
 **Data quality tiers (Tier 2.3):** every quantitative metric in a case study, PRD, or meta-analysis must carry a T1 (Instrumented) / T2 (Declared) / T3 (Narrative) label. See [`docs/case-studies/data-quality-tiers.md`](docs/case-studies/data-quality-tiers.md).
 
-**v7.5 case study:** [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](docs/case-studies/data-integrity-framework-v7.5-case-study.md). **Remediation status:** [`trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`](trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md).
+**v7.5 case study:** [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](docs/case-studies/data-integrity-framework-v7.5-case-study.md). **Remediation status:** [`trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`](trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md). **Cold-start entrypoints** (one-page framework-version + Gemini audit summaries): [`.claude/entrypoints/`](.claude/entrypoints/).
 
 This framework exists because we empirically observed 7+ features sit in "shipped but state.json unreconciled" limbo for 3–14 days before the 2026-04-20 audit caught them, and because the 2026-04-21 Gemini audit surfaced that the project had shipped extensive measurement infrastructure without a measurement of its own measurement adoption. v7.5 closes both loops: data is gated at write, audited on cycle, and surfaced on demand.
 
@@ -367,6 +367,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Pilot case study (Onboarding v2): `docs/case-studies/pm-workflow-showcase-onboarding.md`
 - Data quality tiers convention: `docs/case-studies/data-quality-tiers.md` (T1/T2/T3 labeling, est. 2026-04-21)
 - Meta-analyses + independent audits: `docs/case-studies/meta-analysis/`
+- **Publication + chronological-order rule (est. 2026-04-30):** every feature that transitions to `complete` MUST have BOTH a source case study at `docs/case-studies/<feature>-case-study.md` AND a published showcase MDX at `fitme-story/content/04-case-studies/`. The showcase's slot-number filename prefix AND `timeline_position.order` MUST reflect the framework version under which the feature shipped — not the publication date. A v5.1 feature published retroactively still slots in chronologically: use a fractional `order` (e.g. `8.5`) and an intercalating filename prefix (e.g. `08a-`) so existing slots don't get renumbered. At PR review, a showcase MDX claiming `version: '5.1'` placed below a `version: '6.0'` slot is a review block. Publication is verified via the `case_study_showcase` field in `state.json` pointing at a real MDX in fitme-story (the existing `STATE_NO_CASE_STUDY_LINK` write-time gate enforces the source case study; chronological position is enforced at PR review for now).
 
 ### Process docs (Gemini audit Tier groundwork)
 - Index: `docs/process/README.md`
