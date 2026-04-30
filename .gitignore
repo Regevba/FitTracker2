@@ -40,6 +40,8 @@ Carthage/Build/
 !.claude/integrity/**
 !.claude/logs/
 !.claude/logs/**
+!.claude/entrypoints/
+!.claude/entrypoints/**
 !.claude/settings.json
 .superpowers/
 .worktrees/

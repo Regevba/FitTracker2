@@ -1,28 +1,155 @@
 {
+  "feature": "framework-v7-7-validity-closure",
   "feature_name": "framework-v7-7-validity-closure",
-  "current_phase": "research",
+  "display_name": "Framework v7.7 — Validity Closure",
+  "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+  "work_type": "framework",
+  "framework_version": "7.7",
+  "current_phase": "complete",
+  "status": "complete",
+  "created": "2026-04-27T14:00:00Z",
   "created_at": "2026-04-27T14:00:00Z",
-  "work_type": "Feature",
+  "updated": "2026-04-28T16:21:48Z",
+  "branch": "main",
+  "spec_path": "docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md",
+  "plan_path": "docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md",
+  "predecessor_features": [
+    "data-integrity-framework-v7-5",
+    "mechanical-enforcement-v7-6",
+    "gemini-audit-2026-04-21",
+    "meta-analysis-audit"
+  ],
   "phases": {
     "research": {
-      "status": "in_progress",
-      "started_at": "2026-04-27T14:00:00Z"
+      "status": "complete",
+      "started_at": "2026-04-27T14:00:00Z",
+      "ended_at": "2026-04-27T14:35:00Z",
+      "skipped_reason": "Inherited gap inventory from v7.6 case study + Gemini audit follow-up; A1–A5 + B1–B2 + C1 enumerated upfront."
     },
-    "prd": {"status": "not_started"},
-    "tasks": {"status": "not_started"},
-    "ux_or_integration": {"status": "not_started"},
-    "implementation": {"status": "not_started"},
-    "test": {"status": "not_started"},
-    "review": {"status": "not_started"},
-    "merge": {"status": "not_started"},
-    "documentation": {"status": "not_started"}
-  },
-  "timing": {
-    "phases": {
-      "research": {"started_at": "2026-04-27T14:00:00Z"}
+    "prd": {
+      "status": "complete",
+      "skipped_reason": "Spec doc 2026-04-27-framework-v7-7-validity-closure-design.md served as PRD (kill criterion 2 fired at baseline → TIER_TAG_LIKELY_INCORRECT shipped advisory permanent)."
+    },
+    "tasks": {
+      "status": "complete",
+      "skipped_reason": "42-task plan committed in docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skipped_reason": "Framework infrastructure plus dashboard data-source updates; no new UI surfaces beyond fitme-story PR #7 framework-health page."
+    },
+    "implementation": {
+      "status": "complete",
+      "started_at": "2026-04-27T14:35:00Z",
+      "ended_at": "2026-04-27T17:00:00Z"
+    },
+    "test": {
+      "status": "complete",
+      "skipped_reason": "Verified by integrity-check cycle + per-PR PR-integrity bot + 8 new gates exercised on commit."
+    },
+    "review": {
+      "status": "complete",
+      "skipped_reason": "Single-author sprint; reviewed via PR #144 description self-review + GitHub status checks."
+    },
+    "merge": {
+      "status": "complete",
+      "pr_number": 144,
+      "merged_at": "2026-04-27T17:39:51Z",
+      "merge_commit": "01b9e11"
+    },
+    "documentation": {
+      "status": "complete",
+      "skipped_reason": "Post-merge sweep on 2026-04-28 landed CLAUDE.md, master plan, journal entries, and case-study Section 99 synthesis."
+    },
+    "complete": {
+      "status": "complete",
+      "completed_at": "2026-04-28T16:21:48Z",
+      "note": "v7.7 shipped via PR #144 (FitTracker2) plus PR #7 (fitme-story framework-health page). 5 new gates + 1 advisory + bulk frontmatter backfill. State.json reconciled retroactively after the dashboard build surfaced the missing `feature` field."
     }
   },
-  "cache_hits": [],
+  "timing": {
+    "session_start": "2026-04-27T14:00:00Z",
+    "session_end": "2026-04-27T17:39:51Z",
+    "total_wall_time_minutes": 220,
+    "time_source": "estimated_from_git",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-27T14:00:00Z",
+        "ended_at": "2026-04-27T14:35:00Z",
+        "duration_minutes": 35,
+        "paused_minutes": 0
+      },
+      "implementation": {
+        "started_at": "2026-04-27T14:35:00Z",
+        "ended_at": "2026-04-27T17:00:00Z",
+        "duration_minutes": 145,
+        "paused_minutes": 0
+      },
+      "merge": {
+        "started_at": "2026-04-27T17:00:00Z",
+        "ended_at": "2026-04-27T17:39:51Z",
+        "duration_minutes": 40,
+        "paused_minutes": 0
+      },
+      "complete": {
+        "started_at": "2026-04-28T16:21:48Z",
+        "ended_at": "2026-04-28T16:21:48Z",
+        "duration_minutes": 0,
+        "paused_minutes": 0
+      }
+    }
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-04-27T14:35:00Z",
+      "level": "L1",
+      "key": "v7_6_pre_commit_gate_pattern",
+      "type": "adapted",
+      "skill": "pm-workflow",
+      "event_type": "implementation_checkpoint",
+      "phase": "implementation",
+      "note": "Reused the v7.6 pre-commit-hook pattern (4 hooks promoted from silent to mechanical) as the template for v7.7's 4 new write-time gates."
+    },
+    {
+      "timestamp": "2026-04-27T14:50:00Z",
+      "level": "L2",
+      "key": "tiered_metric_label_v7_5_convention",
+      "type": "adapted",
+      "skill": "T1/T2/T3 tier-tag presence check from v7.5 advanced into a write-time hook for case-study commits.",
+      "event_type": "code_change",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-04-27T15:30:00Z",
+      "level": "L3",
+      "key": "framework_status_weekly_cron_pattern",
+      "type": "adapted",
+      "skill": "Reused v7.6 framework-status-weekly.yml shape for the v7.7 cu_v2 schema validator + history-snapshot extension.",
+      "event_type": "code_change",
+      "phase": "implementation"
+    }
+  ],
+  "complexity": {
+    "cu_version": 2,
+    "view_count": 0,
+    "new_types_count": 6,
+    "design_iteration_details": [],
+    "is_first_of_kind": false,
+    "factors_applied": [
+      {
+        "factor": "Cross-feature",
+        "value": 0.25,
+        "reason": "Touches integrity-check.py, .githooks/pre-commit, framework-manifest.json, 32 case-study frontmatters, 3 paused-feature timing.phases backfills, fitme-story dashboard."
+      },
+      {
+        "factor": "Novelty",
+        "value": 0.15,
+        "reason": "First time a kill-criterion firing at baseline shipped a check as advisory-permanent (TIER_TAG_LIKELY_INCORRECT)."
+      }
+    ],
+    "computed_cu": null,
+    "computed_cu_note": "Estimated CU 2.65 at plan time; actual computed later from manifest."
+  },
   "cu_v2": {
     "factors": {
       "complexity": 0.85,
@@ -33,13 +160,20 @@
     "total": 2.65,
     "tier_class": "A_high"
   },
-  "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
-  "predecessor_features": [
-    "data-integrity-framework-v7-5",
-    "mechanical-enforcement-v7-6",
-    "gemini-audit-2026-04-21",
-    "meta-analysis-audit"
-  ],
-  "spec_path": "docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md",
-  "plan_path": "docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md"
+  "transitions": [
+    {
+      "timestamp": "2026-04-27T14:00:00Z",
+      "from": null,
+      "to": "research",
+      "by": "claude_opus_4_7",
+      "note": "v7.7 bootstrap: feature directory, case-study skeleton, log file. Spec commit 1057144; plan commit 360e9dd."
+    },
+    {
+      "timestamp": "2026-04-28T16:21:48Z",
+      "from": "research",
+      "to": "complete",
+      "by": "claude_opus_4_7",
+      "note": "Retroactive reconciliation: v7.7 shipped via PR #144 on 2026-04-27, but the state.json was never updated past `research`. The dashboard build surfaced this when reconcile.js crashed on the missing `feature` field (Apr 28). Populated phase data from git history; transitioned directly to `complete` since intermediate phases were one continuous sprint."
+    }
+  ]
 }

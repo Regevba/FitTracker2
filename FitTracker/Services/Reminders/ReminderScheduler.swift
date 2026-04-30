@@ -23,6 +23,11 @@ final class ReminderScheduler: ObservableObject {
 
     @Published var scheduledCount: Int = 0
 
+    // ── Analytics ────────────────────────────────────────
+    // Set by FitTrackerApp at launch. When nil (test harnesses without
+    // analytics), instrumentation no-ops without affecting scheduling.
+    weak var analytics: AnalyticsService?
+
     // ── Init ─────────────────────────────────────────────
 
     private init() {}
@@ -44,22 +49,38 @@ final class ReminderScheduler: ObservableObject {
         delayMinutes: Int = 0
     ) async {
         // 1. Quiet-hours guard
-        guard !isQuietHour() else { return }
+        guard !isQuietHour() else {
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: "quiet_hours")
+            return
+        }
 
         // 2. Global daily cap — use actual send count (more reliable than pending queue)
-        guard todaySendCount() < maxDailyGlobal else { return }
+        guard todaySendCount() < maxDailyGlobal else {
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: "global_daily_cap")
+            return
+        }
 
         // 3. Per-type daily cap (resets at midnight via key naming)
-        guard !dailyCapReached(for: type) else { return }
+        guard !dailyCapReached(for: type) else {
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: "per_type_daily_cap")
+            return
+        }
 
         // 4. Per-type lifetime cap
         if let maxLifetime = type.maxLifetime {
             let sent = lifetimeSentCount(for: type)
-            guard sent < maxLifetime else { return }
+            guard sent < maxLifetime else {
+                analytics?.logReminderSuppressed(type: type.rawValue, reason: "lifetime_cap")
+                analytics?.logReminderDisabled(type: type.rawValue, reason: "lifetime_cap_reached")
+                return
+            }
         }
 
         // 5. Minimum interval since last reminder of any type
-        guard minimumIntervalElapsed() else { return }
+        guard minimumIntervalElapsed() else {
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: "min_interval")
+            return
+        }
 
         // Build content
         let content = UNMutableNotificationContent()
@@ -91,8 +112,10 @@ final class ReminderScheduler: ObservableObject {
             recordScheduled(for: type)
             incrementDailyCount()
             scheduledCount += 1
+            analytics?.logReminderScheduled(type: type.rawValue)
         } catch {
             // Notifications are best-effort; silent failure is intentional.
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: "system_add_failed")
         }
     }
 
@@ -101,10 +124,12 @@ final class ReminderScheduler: ObservableObject {
     func cancelAll() {
         center.removeAllPendingNotificationRequests()
         scheduledCount = 0
+        analytics?.logReminderDisabled(type: "all", reason: "cancel_all")
     }
 
     /// Removes all pending notifications belonging to a specific `ReminderType`.
     func cancel(type: ReminderType) {
+        analytics?.logReminderDisabled(type: type.rawValue, reason: "cancel_type")
         Task {
             let pending = await center.pendingNotificationRequests()
             let ids = pending
