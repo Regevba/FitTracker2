@@ -78,6 +78,12 @@
     <dict>
         <key>PATH</key>
         <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin</string>
+        <!-- HADF_ENDPOINTS: skip 'local' for the 2026-04-30 campaign; Ollama on this MacBook Air
+             runs llama3.2:3b at ~0.7 tps which is far below the harness's 60s urllib timeout.
+             Pre-registration explicitly allows the 2-endpoint fallback path. Re-add 'local' if
+             Ollama performance is fixed before campaign end. -->
+        <key>HADF_ENDPOINTS</key>
+        <string>openai,anthropic</string>
     </dict>
 </dict>
 </plist>
