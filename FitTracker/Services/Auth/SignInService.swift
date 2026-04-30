@@ -309,6 +309,12 @@ final class SignInService: NSObject, ObservableObject {
     /// URL scheme is `fitme://reset-password?...` (PRD-locked OQ-2 from auth-polish-v2).
     @Published var pendingPasswordResetURL: URL?
 
+    /// Seconds remaining before the user can resend a password-reset email.
+    /// Drives the disabled state + countdown on the resend button (PRD FR-3).
+    @Published private(set) var passwordResetCooldownRemaining: TimeInterval = 0
+    private static let passwordResetCooldownSeconds: TimeInterval = 60
+    private var passwordResetCooldownTimer: Timer?
+
     private let appleProvider: AppleAuthProviding
     private let googleProvider: GoogleAuthProviding
     private let emailProvider: EmailAuthProviding
@@ -655,6 +661,11 @@ final class SignInService: NSObject, ObservableObject {
     }
 
     func requestPasswordReset(email: String) async {
+        if passwordResetCooldownRemaining > 0 {
+            statusMessage = "You can resend in \(Int(passwordResetCooldownRemaining))s."
+            return
+        }
+
         isLoading = true
         authErrorMessage = nil
         statusMessage = nil
@@ -662,10 +673,34 @@ final class SignInService: NSObject, ObservableObject {
         do {
             try await emailProvider.requestPasswordReset(email: email)
             statusMessage = "If that email is registered, a password reset link is on the way."
+            startPasswordResetCooldown()
             isLoading = false
         } catch {
             isLoading = false
             authErrorMessage = error.localizedDescription
+        }
+    }
+
+    private func startPasswordResetCooldown() {
+        passwordResetCooldownTimer?.invalidate()
+        passwordResetCooldownRemaining = Self.passwordResetCooldownSeconds
+        passwordResetCooldownTimer = Timer.scheduledTimer(
+            withTimeInterval: 1.0,
+            repeats: true
+        ) { [weak self] timer in
+            Task { @MainActor in
+                guard let self else {
+                    timer.invalidate()
+                    return
+                }
+                if self.passwordResetCooldownRemaining > 1 {
+                    self.passwordResetCooldownRemaining -= 1
+                } else {
+                    self.passwordResetCooldownRemaining = 0
+                    timer.invalidate()
+                    self.passwordResetCooldownTimer = nil
+                }
+            }
         }
     }
 

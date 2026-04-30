@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.6",
   "started_at": "2026-04-27T05:01:13Z",
-  "updated_at": "2026-04-28T07:46:42Z",
+  "updated_at": "2026-04-30T18:05:00Z",
   "events": [
     {
       "timestamp": "2026-04-27T05:01:13Z",
@@ -139,6 +139,34 @@
       "metrics": {},
       "actor": "claude-opus-4-7",
       "status": "started",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-30T17:55:00Z",
+      "event_type": "resumed_from_pause",
+      "phase": "implementation",
+      "summary": "Resumed from post-A1 user-requested pause (paused 2026-04-28T19:45:00Z, lifted 2026-04-30T17:55:00Z). Continuing implementation phase at A2 (SignInService.requestPasswordReset cooldown + Supabase redirectTo). State unchanged: 2 of 18 tasks complete (T0+A1).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-04-30T18:05:00Z",
+      "event_type": "task_completed",
+      "phase": "implementation",
+      "summary": "A2 complete: added redirectTo: URL(string: \"fitme://reset-password\") to EmailAuthProvider.requestPasswordReset (Supabase call) + 60s cooldown on SignInService.requestPasswordReset (passwordResetCooldownRemaining published, Timer-driven decrement, short-circuits with status when active). xcodebuild iOS Simulator Debug exit 0, no errors/warnings. Refreshed stale DORMANT comment on EmailAuthProvider.swift header.",
+      "artifacts": [
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Services/Auth/EmailAuthProvider.swift"
+      ],
+      "metrics": {
+        "task_id": "A2",
+        "tasks_progress": "3 of 18 complete (T0 + A1 + A2)"
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
       "recording_mode": "contemporaneous"
     }
   ]
