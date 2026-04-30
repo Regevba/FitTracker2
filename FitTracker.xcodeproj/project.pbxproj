@@ -94,7 +94,9 @@
 		EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC200000000000000000AT01 /* EncryptionServiceTests.swift */; };
 		EC200000000000000000AT01 /* EncryptionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionServiceTests.swift; sourceTree = "<group>"; };
 		AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AM200000000000000000AT01 /* AuthManagerTests.swift */; };
+		AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200000000000000000AT02 /* AuthPolishV2Tests.swift */; };
 		AM200000000000000000AT01 /* AuthManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManagerTests.swift; sourceTree = "<group>"; };
+		AP200000000000000000AT02 /* AuthPolishV2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPolishV2Tests.swift; sourceTree = "<group>"; };
 		HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HK200000000000000000AT01 /* HealthKitServiceTests.swift */; };
 		HK200000000000000000AT01 /* HealthKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitServiceTests.swift; sourceTree = "<group>"; };
 		DB100000000000000000AT01 /* DebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB200000000000000000AT01 /* DebouncerTests.swift */; };
@@ -935,6 +937,7 @@
 				AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */,
 				EC200000000000000000AT01 /* EncryptionServiceTests.swift */,
 				AM200000000000000000AT01 /* AuthManagerTests.swift */,
+				AP200000000000000000AT02 /* AuthPolishV2Tests.swift */,
 				HK200000000000000000AT01 /* HealthKitServiceTests.swift */,
 				DB200000000000000000AT01 /* DebouncerTests.swift */,
 				SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */,
@@ -1409,6 +1412,7 @@
 				AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */,
 				EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */,
 				AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */,
+				AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */,
 				HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */,
 				DB100000000000000000AT01 /* DebouncerTests.swift in Sources */,
 				SS100000000000000000AT01 /* SupabaseSyncServiceTests.swift in Sources */,
