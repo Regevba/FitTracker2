@@ -239,6 +239,21 @@ enum StatsFocusMetric: String, CaseIterable, Identifiable {
             return "Log nutrition and supplements to populate this chart."
         }
     }
+
+    var category: String {
+        switch self {
+        case .weight, .bodyFat, .leanMass, .muscleMass, .bodyWater, .visceralFat:
+            return "body"
+        case .readiness, .sleep, .hrv, .restingHeartRate:
+            return "recovery"
+        case .trainingVolume, .zone2:
+            return "training"
+        case .steps, .activeCalories, .vo2Max:
+            return "activity"
+        case .protein, .calories, .supplementAdherence:
+            return "nutrition"
+        }
+    }
 }
 
 private struct MetricSeriesPoint: Identifiable {
@@ -253,6 +268,7 @@ struct StatsView: View {
 
     @EnvironmentObject var dataStore: EncryptedDataStore
     @EnvironmentObject var healthService: HealthKitService
+    @EnvironmentObject private var analytics: AnalyticsService
 
     @State private var period: StatsPeriod = .monthly
     @State private var selectedMetric: StatsFocusMetric = .readiness
@@ -340,8 +356,9 @@ struct StatsView: View {
                 syncSelectedMetric()
             }
         }
-        .onChange(of: period) { _, _ in
+        .onChange(of: period) { _, newValue in
             chartSelection = nil
+            analytics.logStatsPeriodChanged(period: newValue.rawValue)
         }
         .onChange(of: dataStore.userPreferences.preferredStatsCarouselMetrics) { _, _ in
             syncSelectedMetric()
@@ -393,6 +410,8 @@ struct StatsView: View {
             Capsule(style: .continuous)
                 .stroke(AppColor.Border.subtle, lineWidth: 1)
         )
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Time period")
     }
 
     private var permanentBodyCharts: some View {
@@ -408,6 +427,7 @@ struct StatsView: View {
                 Text("Track More")
                     .font(AppText.sectionTitle)
                     .foregroundStyle(AppColor.Text.primary)
+                    .accessibilityAddTraits(.isHeader)
                 Text("Choose what appears here in Settings, then tap a metric to update the chart below.")
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Text.secondary)
@@ -446,6 +466,11 @@ struct StatsView: View {
                     ctaAction: ctaAction(for: metric)
                 )
                 .frame(height: AppLayout.emptyStateMinHeight)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("\(metric.emptyStateTitle). \(metric.emptyStateSubtitle)")
+                .onAppear {
+                    analytics.logStatsEmptyStateShown(metricName: metric.rawValue)
+                }
             } else {
                 VStack(alignment: .leading, spacing: AppSpacing.xSmall) {
                     metricHeader(for: metric, points: points)
@@ -465,6 +490,7 @@ struct StatsView: View {
                 selectedMetric = metric
                 chartSelection = nil
             }
+            analytics.logStatsMetricSelected(metricName: metric.rawValue, category: metric.category)
         } label: {
             AppSelectionTile(isSelected: selected, tint: metric.tint, cornerRadius: AppRadius.large) {
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
@@ -524,6 +550,8 @@ struct StatsView: View {
                 .font(AppText.caption)
                 .foregroundStyle(AppColor.Text.secondary)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(metric.title): \(metricPrimaryValue(for: metric)), \(metricChipSubtitle(for: metric)). \(metricSummaryText(for: metric, points: points))")
     }
 
     @ViewBuilder
@@ -602,6 +630,7 @@ struct StatsView: View {
                             }
                             .onEnded { _ in
                                 chartSelection = nil
+                                analytics.logStatsChartInteraction(metricName: metric.rawValue, interactionType: "drag")
                             }
                     )
             }
@@ -619,6 +648,8 @@ struct StatsView: View {
                 .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
                 .padding(.top, AppSpacing.xxxSmall)
                 .padding(.leading, AppSpacing.xxxSmall)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Selected \(selection.date.formatted(.dateTime.month(.abbreviated).day())): \(selection.label)")
             }
         }
 
