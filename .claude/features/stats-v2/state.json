@@ -42,9 +42,10 @@
       "checklist_completed": false
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "pending",
       "commits": [],
-      "checklist_completed": false
+      "checklist_completed": false,
+      "reconciliation_note": "2026-04-30 — downgraded from in_progress to pending. Residue from 2026-04-10 false-positive 'complete' state; current_phase=tasks since 2026-04-20 audit, all T1-T10 pending, zero commits."
     },
     "testing": {
       "status": "pending",
@@ -134,11 +135,12 @@
       "title": "Create AppLayout enum",
       "type": "design",
       "skill": "design",
-      "status": "pending",
+      "status": "completed",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-04-30T00:00:00Z",
+      "completion_note": "AppLayout enum was already shipped on main at FitTracker/Services/AppTheme.swift:139-152 prior to stats-v2 resume. All 6 values present (chartHeight 158, emptyStateMinHeight 128, chipMinWidth 128, chipIdealWidth 144, chipMaxWidth 168, dotSize 8). No code change required from this feature; marker recorded retroactively at resume time."
     },
     {
       "id": "T2",
@@ -306,13 +308,20 @@
     "at": "2026-04-27T14:00:00Z",
     "reason": "v7.7 Validity Closure full-priority freeze",
     "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "lifted_at": "2026-04-30T00:00:00Z",
+    "lifted_reason": "User explicit override — lift pause for stats-v2 only while v7.7 remains in research phase. Other paused features stay paused.",
+    "lift_method": "manual_user_override",
+    "corrigendum": {
+      "at": "2026-04-30T00:00:00Z",
+      "note": "Lift_reason above is incorrect: v7.7 had already SHIPPED 2026-04-27 via PR #144 (merge 01b9e11) at the time of this lift; state.json reconciled in PR #158. Resume signal had naturally fired. Original wording preserved per 'publish verbatim, append corrections' rule. Effective classification: natural resume after v7.7 completion, not user override."
+    },
     "snapshot": {
       "current_phase": "tasks",
       "next_action_when_resumed": "Reconcile current_phase=tasks vs phases.implementation field; resume tasks phase",
       "blockers": [],
       "context_links": [
         ".claude/features/stats-v2/state.json",
-        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_stats_v2.md"
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_stats_v2.md"
       ]
     }
   }
