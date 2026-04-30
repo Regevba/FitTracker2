@@ -86,26 +86,23 @@ defaults write com.apple.dt.Xcode IDECustomDistributionArchivesLocation -string 
 defaults write com.apple.dt.Xcode IDEUseCustomDistributionArchivesLocation -bool YES
 ```
 
-### Step 6: Override iOS Simulator Data Location
+### Step 6: iOS Simulator Data — KEEP ON INTERNAL DISK
 
-iOS Simulator stores all app installs, screenshots, and preferences under `~/Library/Developer/CoreSimulator`. This can grow to 10+ GB. Move it to the SSD:
+> **DO NOT redirect `~/Library/Developer/CoreSimulator` to the SSD on macOS 26+.**
+> Earlier versions of this guide instructed a symlink to `/Volumes/DevSSD/.xcode-shared/CoreSimulator`. That approach is broken on macOS 26: `CoreSimulatorService` is denied write access (TCC `Operation not permitted`) when the device set lives on an external `noowners` volume, and every device creation fails with *"Device was allocated but was stuck in creation state."*
+>
+> If you have an existing symlink from before, check it: run `ls -la ~/Library/Developer/CoreSimulator`. If the entry starts with `l` and points at `/Volumes/DevSSD/...`, it's the broken setup. Repair steps are in [`coresimulator-stuck-in-creation.md`](coresimulator-stuck-in-creation.md).
+
+Keep the simulator data on the internal disk where macOS expects it. Simulator data is not part of the project's build pipeline (the `.build/` directory holds everything that matters), so the disk-space win from moving it is small and the friction is large.
+
+If your internal disk is genuinely tight, prune simulator data instead of moving it:
 
 ```bash
-# Stop all simulators first
-xcrun simctl shutdown all
-
-# Move existing CoreSimulator data to SSD
-mv ~/Library/Developer/CoreSimulator /Volumes/DevSSD/.xcode-shared/CoreSimulator
-
-# Create symlink so Xcode still finds it
-ln -s /Volumes/DevSSD/.xcode-shared/CoreSimulator ~/Library/Developer/CoreSimulator
-
-# Verify
-ls -la ~/Library/Developer/CoreSimulator
-# Should show: lrwxr-xr-x ... CoreSimulator -> /Volumes/DevSSD/.xcode-shared/CoreSimulator
+xcrun simctl delete unavailable        # remove sims with no matching runtime
+xcrun simctl erase all                  # wipe app data from every sim, keep the devices
 ```
 
-**WARNING:** If the SSD is unplugged, Xcode and simulators will fail. Always plug the SSD in before launching Xcode.
+A typical FitTracker dev box ends up with 5–8 active sims totalling 5–10 GB. That fits comfortably on internal storage.
 
 ### Step 7: Override npm Global Cache
 
@@ -255,11 +252,13 @@ cat .npmrc
 # Expected: cache=.build/npm-cache
 ```
 
-### Check 5: Simulator Symlink
+### Check 5: Simulator Path Is A Real Directory (Not A Symlink)
 
 ```bash
 ls -la ~/Library/Developer/CoreSimulator
-# Expected: symlink → /Volumes/DevSSD/.xcode-shared/CoreSimulator
+# Expected: a regular directory entry (drwxr-xr-x ...).
+# NOT acceptable: a symlink (lrwxr-xr-x ... -> /Volumes/DevSSD/...).
+# If you see a symlink, follow coresimulator-stuck-in-creation.md.
 ```
 
 ### Check 6: After a Full Build
@@ -302,14 +301,11 @@ Some macOS system files MUST remain on the internal disk:
 
 The SSD got unplugged. Plug it back in and restart Xcode.
 
-### "Simulator won't launch"
+### "Simulator won't launch" / "Device was allocated but was stuck in creation state"
 
-The CoreSimulator symlink is broken (SSD missing). Re-create the symlink:
+Almost always caused by a leftover symlink from an older version of this guide that pointed `~/Library/Developer/CoreSimulator` at the SSD. macOS 26 blocks `CoreSimulatorService` from writing to external `noowners` volumes, so device creation fails with TCC `Operation not permitted`.
 
-```bash
-xcrun simctl shutdown all
-ln -sfn /Volumes/DevSSD/.xcode-shared/CoreSimulator ~/Library/Developer/CoreSimulator
-```
+Full diagnostic and repair playbook: [`coresimulator-stuck-in-creation.md`](coresimulator-stuck-in-creation.md).
 
 ### "make verify-local fails with permission errors"
 
@@ -348,9 +344,10 @@ If you ever want to undo the SSD redirects:
 defaults delete com.apple.dt.Xcode IDECustomDerivedDataLocation
 defaults delete com.apple.dt.Xcode IDEUseCustomDerivedDataLocation
 
-# Remove CoreSimulator symlink (but you'll lose simulator data!)
-rm ~/Library/Developer/CoreSimulator
-mkdir ~/Library/Developer/CoreSimulator
+# If a leftover symlink exists from an older version of this guide, replace it
+# with a real directory (does not apply to fresh setups — Step 6 is now no-op):
+[ -L ~/Library/Developer/CoreSimulator ] && rm ~/Library/Developer/CoreSimulator
+mkdir -p ~/Library/Developer/CoreSimulator/Devices
 
 # Remove npm global cache override
 npm config delete cache
@@ -371,7 +368,7 @@ After completing this setup, **EVERYTHING related to FitTracker2 development liv
 | Project build artifacts | `/Volumes/DevSSD/FitTracker2/.build/` |
 | Xcode DerivedData (global) | `/Volumes/DevSSD/.xcode-shared/DerivedData/` |
 | Xcode Archives | `/Volumes/DevSSD/.xcode-shared/Archives/` |
-| iOS Simulators | `/Volumes/DevSSD/.xcode-shared/CoreSimulator/` |
+| iOS Simulators | **`~/Library/Developer/CoreSimulator/`** (internal — see Step 6) |
 | npm global cache | `/Volumes/DevSSD/.npm-cache/` |
 | Project npm cache | `/Volumes/DevSSD/FitTracker2/.build/npm-cache/` |
 | Homebrew cache | `/Volumes/DevSSD/.homebrew-cache/` |

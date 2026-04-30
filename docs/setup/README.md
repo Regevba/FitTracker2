@@ -29,6 +29,7 @@ A setup guide is something you read once per environment. A workflow doc is some
 | `dashboard-activation.md` | Wire up the Development Dashboard on Vercel: env vars (`GITHUB_TOKEN`, `DASHBOARD_WRITE_TOKEN`, `PUBLIC_DASHBOARD_WRITE_TOKEN`), deployment protection, first build verification | Once per Vercel project, before the dashboard goes live |
 | `integrations-setup-guide.md` | Comprehensive reference for ALL third-party integrations: GitHub, Supabase, Firebase/GA4, Vercel, Claude Code, Figma MCP, Notion MCP, Style Dictionary token pipeline, AI engine, CloudKit, SSD setup. Includes dependency map, secrets locations, and bootstrap checklist. | Once per machine, as a master reference alongside the individual guides |
 | `auth-runtime-verification-playbook.md` | 7-step manual checklist for validating real Supabase + Google auth flows against the Staging build path. Pairs with `Config/Local/Staging.xcconfig` + `make runtime-smoke PROFILE=sign_in_surface MODE=staging`. Required to promote auth from `compile-verified` to `runtime-verified`. | Before any release that touches auth; last-mile of Gemini audit Tier 2.1 |
+| `coresimulator-stuck-in-creation.md` | Diagnose and fix the *"Device was allocated but was stuck in creation state"* error on macOS 26. Caused by a leftover `~/Library/Developer/CoreSimulator` symlink to the SSD (TCC blocks writes to `noowners` external volumes). | When the simulator refuses to create or boot devices and the log mentions `/Volumes/DevSSD/...` paths |
 
 ## How to use this folder
 
