@@ -8,3 +8,4 @@ FITTRACKER_GOOGLE_CLIENT_ID = your-staging-google-client-id.apps.googleuserconte
 FITTRACKER_GOOGLE_REVERSED_CLIENT_ID = your-staging-google-reversed-client-id
 FITTRACKER_AI_ENGINE_BASE_URL = "https://your-staging-ai-engine.example.com"
 FITTRACKER_PASSKEY_RELYING_PARTY_ID = your.staging.passkey.domain
+FITTRACKER_SENTRY_DSN = https://your-staging-key@oXXX.ingest.sentry.io/YYY

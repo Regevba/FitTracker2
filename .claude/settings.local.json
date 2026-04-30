@@ -386,7 +386,15 @@
       "Bash(npx eslint *)",
       "Bash(git restore *)",
       "Bash(./node_modules/.bin/tsc --noEmit)",
-      "Bash(npx --package typescript tsc --noEmit)"
+      "Bash(npx --package typescript tsc --noEmit)",
+      "Bash(python3 /Volumes/DevSSD/FitTracker2/scripts/check-state-schema.py /Volumes/DevSSD/FitTracker2/.claude/features/smart-reminders-behavioral-learning/state.json)",
+      "Bash(python3 /Volumes/DevSSD/FitTracker2/scripts/validate-cu-v2.py --state /Volumes/DevSSD/FitTracker2/.claude/features/smart-reminders-behavioral-learning/state.json)",
+      "Bash(python3 /Volumes/DevSSD/FitTracker2/scripts/append-feature-log.py --feature smart-reminders-behavioral-learning --event-type phase_started --phase research --summary \"Behavioral learning sub-feature scaffolded 2026-04-29: state.json + research/open-questions.md document 6 open questions \\(OQ-1 OQ-6\\). Brainstorming with user required before PRD.\")",
+      "Bash(xcodebuild -resolvePackageDependencies -project FitTracker.xcodeproj -scheme FitTracker -configuration Debug)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); deps={**d.get\\('dependencies',{}\\),**d.get\\('devDependencies',{}\\)}; print\\('vitest:', deps.get\\('vitest','NOT INSTALLED'\\)\\); print\\('@vitest/ui:', deps.get\\('@vitest/ui','NOT INSTALLED'\\)\\); print\\('test script:', d.get\\('scripts',{}\\).get\\('test','NOT DEFINED'\\)\\)\")",
+      "Bash(awk -F= '/^[A-Z_]+=/ {printf \"line %2d: %-30s \\(len=%d\\)\\\\n\", NR, $1, length\\($2\\)}' /Volumes/DevSSD/FitTracker2/.env.local)",
+      "Bash(awk '!/^[A-Z_]+=/ {printf \"line %2d: %s\\\\n\", NR, $0}' /Volumes/DevSSD/FitTracker2/.env.local)",
+      "Bash(time /Volumes/DevSSD/FitTracker2/.venv-hadf-phase2/bin/python3 -c \"import openai, anthropic, json, time; print\\(f'openai={openai.__version__} anthropic={anthropic.__version__}'\\)\")"
     ],
     "additionalDirectories": [
       "/Volumes/DevSSD/FitTracker2/.claude/features",
@@ -397,7 +405,8 @@
       "/Volumes/DevSSD/fitme-story",
       "/Volumes/DevSSD/FitTracker2/.claude/features/ui-audit-baseline-burndown",
       "/Volumes/DevSSD/FitTracker2/.build/worktrees/ui-audit-review/.claude/features/ui-audit-baseline-burndown",
-      "/Volumes/DevSSD/FitTracker2/.claude/features/home-today-screen"
+      "/Volumes/DevSSD/FitTracker2/.claude/features/home-today-screen",
+      "/Volumes/DevSSD/FitTracker2/.claude"
     ]
   }
 }

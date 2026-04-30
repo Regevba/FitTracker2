@@ -4,6 +4,7 @@
 
 import SwiftUI
 import FirebaseCore
+import Sentry
 
 // AI engine base URL — override via Info.plist key "AIEngineBaseURL" for staging/prod
 private func makeAIEngineBaseURL() -> URL {
@@ -83,6 +84,7 @@ struct FitTrackerApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        startSentryIfConfigured()
         if AnalyticsRuntimeConfiguration.canUseFirebase {
             FirebaseApp.configure()
         }
@@ -93,6 +95,27 @@ struct FitTrackerApp: App {
         // any notification — must happen in init per Apple's docs. Analytics
         // is injected later in `.task` once the @StateObject has resolved.
         UNUserNotificationCenter.current().delegate = reminderNotificationDelegate
+    }
+
+    private func startSentryIfConfigured() {
+        guard
+            let dsn = Bundle.main.object(forInfoDictionaryKey: "SentryDSN") as? String,
+            !dsn.isEmpty
+        else { return }
+        SentrySDK.start { options in
+            options.dsn = dsn
+            options.tracesSampleRate = 1.0
+            options.profilesSampleRate = 1.0
+            options.enableAutoSessionTracking = true
+            options.attachScreenshot = true
+            options.enableUserInteractionTracing = true
+            #if DEBUG
+            options.debug = true
+            options.environment = "development"
+            #else
+            options.environment = "production"
+            #endif
+        }
     }
 
     var body: some Scene {

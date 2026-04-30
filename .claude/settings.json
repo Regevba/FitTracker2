@@ -170,7 +170,8 @@
       "Bash(sed -i '' 's/44 shipped features/49+ shipped features/' docs/master-plan/master-plan-2026-04-15.md)",
       "Bash(sed -i '' 's/197+ tests/232+ tests/' docs/master-plan/master-plan-2026-04-15.md)",
       "Bash(sed -i '' 's/Framework Status: v5.1/Framework Status: v5.2 \\(Dispatch Intelligence\\)/' docs/master-plan/master-plan-2026-04-15.md)",
-      "Bash(sed -i '' 's/PM Workflow v5.1 with 8 SoC/PM Workflow v5.2 with 8 SoC + Dispatch Intelligence \\(3-stage pipeline\\)/' docs/master-plan/master-plan-2026-04-15.md)"
+      "Bash(sed -i '' 's/PM Workflow v5.1 with 8 SoC/PM Workflow v5.2 with 8 SoC + Dispatch Intelligence \\(3-stage pipeline\\)/' docs/master-plan/master-plan-2026-04-15.md)",
+      "Bash(awk '{print $NF}')"
     ],
     "additionalDirectories": [
       "/Users/regevbarak/.claude/projects/-Volumes-DevSSD-FitTracker2",

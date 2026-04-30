@@ -57,6 +57,8 @@
 	<string>FitMe uses this to understand how the app is used and improve your experience. No health data is shared.</string>
 	<key>PasskeyRelyingPartyID</key>
 	<string>$(FITTRACKER_PASSKEY_RELYING_PARTY_ID)</string>
+	<key>SentryDSN</key>
+	<string>$(FITTRACKER_SENTRY_DSN)</string>
 	<key>SupabaseAnonKey</key>
 	<string>$(FITTRACKER_SUPABASE_ANON_KEY)</string>
 	<key>SupabaseURL</key>

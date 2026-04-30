@@ -11,6 +11,7 @@
 
 import Foundation
 import SwiftUI
+import Sentry
 
 enum AnalyticsRuntimeConfiguration {
     static var isRunningTests: Bool {
@@ -70,12 +71,20 @@ final class AnalyticsService: ObservableObject {
     func logScreenView(_ screenName: String) {
         guard consent.isAnalyticsAllowed else { return }
         provider.logScreenView(screenName, screenClass: nil)
+        addSentryBreadcrumb(category: "navigation", message: screenName, data: nil)
     }
 
     /// Overload — accepts the SwiftUI view class name for richer GA4 reporting.
     func logScreenView(_ screenName: String, screenClass: String?) {
         guard consent.isAnalyticsAllowed else { return }
         provider.logScreenView(screenName, screenClass: screenClass)
+        var data: [String: Any] = [:]
+        if let screenClass { data["screen_class"] = screenClass }
+        addSentryBreadcrumb(
+            category: "navigation",
+            message: screenName,
+            data: data.isEmpty ? nil : data
+        )
     }
 
     // MARK: - GA4 Recommended Events
@@ -809,5 +818,13 @@ final class AnalyticsService: ObservableObject {
     private func logEvent(_ name: String, parameters: [String: Any]?) {
         guard consent.isAnalyticsAllowed else { return }
         provider.logEvent(name, parameters: parameters)
+        addSentryBreadcrumb(category: "analytics", message: name, data: parameters)
+    }
+
+    private func addSentryBreadcrumb(category: String, message: String?, data: [String: Any]?) {
+        let crumb = Breadcrumb(level: .info, category: category)
+        crumb.message = message
+        crumb.data = data
+        SentrySDK.addBreadcrumb(crumb)
     }
 }
