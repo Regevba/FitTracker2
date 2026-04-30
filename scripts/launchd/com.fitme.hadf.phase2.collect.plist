@@ -68,11 +68,16 @@
     <key>RunAtLoad</key>
     <false/>
 
+    <!-- StandardOut/ErrorPath must NOT be on /Volumes/ — launchd's gui session
+         hits EX_CONFIG (78) when trying to open log files on external volumes
+         due to macOS Full Disk Access restrictions. The wrapper script itself
+         still writes per-fire logs to /Volumes/DevSSD/.../logs/collect-*.log
+         (the wrapper runs as the user, which has full SSD access). -->
     <key>StandardOutPath</key>
-    <string>/Volumes/DevSSD/FitTracker2/.claude/shared/hadf/logs/launchd-stdout.log</string>
+    <string>/tmp/com.fitme.hadf.phase2.stdout.log</string>
 
     <key>StandardErrorPath</key>
-    <string>/Volumes/DevSSD/FitTracker2/.claude/shared/hadf/logs/launchd-stderr.log</string>
+    <string>/tmp/com.fitme.hadf.phase2.stderr.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
