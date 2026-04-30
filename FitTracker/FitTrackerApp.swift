@@ -36,6 +36,17 @@ private var isForcedOnboardingModeEnabled: Bool {
     ProcessInfo.processInfo.environment["FITTRACKER_FORCE_ONBOARDING"] == "1"
 }
 
+// auth-polish-v2 D3 — UI test fixtures that mount the new auth screens
+// directly so XCUITest can drive them without needing a real sign-in
+// round-trip. Only consumed by the rootView + onAppear branches below.
+private var isBiometricActivationReviewModeEnabled: Bool {
+    ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_BIOMETRIC_OFFER"] == "1"
+}
+
+private var isBiometricLockReviewModeEnabled: Bool {
+    ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_BIOMETRIC_LOCK"] == "1"
+}
+
 @main
 struct FitTrackerApp: App {
 
@@ -97,6 +108,11 @@ struct FitTrackerApp: App {
                 .preferredColorScheme(settings.appearance.colorScheme)
                 .task {
                     applyReviewFixturesIfNeeded()
+                    if isBiometricActivationReviewModeEnabled {
+                        // D3 fixture — surface BiometricActivationSheet on
+                        // first frame so UI tests can assert + screenshot.
+                        showBiometricActivation = true
+                    }
                 }
                 .onChange(of: signIn.activeSession) { _, session in
                     if session != nil {
@@ -336,10 +352,12 @@ struct FitTrackerApp: App {
             .environmentObject(signIn)
             .environmentObject(analytics)
             .environmentObject(dataStore)
-        } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
+        } else if (signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen) || isBiometricLockReviewModeEnabled {
             // Session exists but was locked for reopen — require biometric to resume.
             // auth-polish-v2 B3 — replaces inline LockScreenView with the
             // foundations-aligned BiometricUnlockView per FR-7..8 + ux-spec §5.5.
+            // D3 fixture — FITTRACKER_REVIEW_BIOMETRIC_LOCK=1 surfaces this view
+            // unconditionally so UI tests can assert + screenshot it.
             BiometricUnlockView()
                 .environmentObject(biometricAuth)
                 .environmentObject(signIn)

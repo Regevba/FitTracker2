@@ -330,6 +330,8 @@ private struct EmailLoginView: View {
     @State private var email = ""
     @State private var password = ""
     @State private var localError: String?
+    @State private var showForgotPassword = false
+    @State private var sentToEmail: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.large) {
@@ -368,24 +370,37 @@ private struct EmailLoginView: View {
             .buttonStyle(AuthPrimaryButtonStyle())
             .disabled(signIn.isLoading)
 
-            Button(signIn.isLoading ? "Sending reset link..." : "Forgot password?") {
-                let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
-                guard !trimmedEmail.isEmpty else {
-                    localError = "Enter your email address to reset your password."
-                    return
-                }
-
+            Button("Forgot password?") {
                 localError = nil
-                Task {
-                    await signIn.requestPasswordReset(email: trimmedEmail)
-                }
+                sentToEmail = nil
+                showForgotPassword = true
             }
             .buttonStyle(AuthSecondaryButtonStyle())
-            .disabled(signIn.isLoading)
+            .accessibilityIdentifier("auth.email.forgot_password")
 
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .sheet(isPresented: $showForgotPassword) {
+            // auth-polish-v2 — opens the v2 forgot-password recovery flow
+            // (ForgotPasswordRequestView → ForgotPasswordCooldownView).
+            // The v1 inline path that called signIn.requestPasswordReset
+            // directly was bypassing both new screens; wiring them through
+            // a NavigationStack lets onSent push from request to cooldown.
+            NavigationStack {
+                if let sentToEmail {
+                    ForgotPasswordCooldownView(
+                        email: sentToEmail,
+                        onUseDifferentEmail: { self.sentToEmail = nil }
+                    )
+                } else {
+                    ForgotPasswordRequestView(initialEmail: email) { newEmail in
+                        sentToEmail = newEmail
+                    }
+                }
+            }
+            .presentationDetents([.large])
+        }
     }
 }
 
