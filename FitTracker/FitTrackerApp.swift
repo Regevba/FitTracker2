@@ -166,6 +166,8 @@ struct FitTrackerApp: App {
                         }
                     )
                     .environmentObject(biometricAuth)
+                    .environmentObject(signIn)
+                    .environmentObject(analytics)
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard !isScreenReviewModeEnabled else { return }
@@ -341,6 +343,7 @@ struct FitTrackerApp: App {
             BiometricUnlockView()
                 .environmentObject(biometricAuth)
                 .environmentObject(signIn)
+                .environmentObject(analytics)
         } else {
             // Onboarding complete — show the app (user may be authenticated or guest)
             if analytics.consent.gdprConsent == .pending {

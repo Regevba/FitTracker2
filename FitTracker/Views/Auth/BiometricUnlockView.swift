@@ -12,6 +12,7 @@ import SwiftUI
 struct BiometricUnlockView: View {
     @EnvironmentObject private var auth: AuthManager
     @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var analytics: AnalyticsService
 
     /// Optional fallback when the user opts out of biometric unlock for this
     /// session. Parent should transition to the email login surface.
@@ -56,7 +57,7 @@ struct BiometricUnlockView: View {
                 }
 
                 Button {
-                    auth.authenticate()
+                    Task { await attemptUnlock() }
                 } label: {
                     Text("Unlock with \(biometricName)")
                 }
@@ -87,8 +88,27 @@ struct BiometricUnlockView: View {
             hasAttemptedAutoUnlock = true
             Task {
                 try? await Task.sleep(for: .seconds(0.3))
-                auth.authenticate()
+                await attemptUnlock()
             }
+        }
+    }
+
+    private func attemptUnlock() async {
+        let outcome = await auth.attemptUnlock()
+        if outcome.succeeded {
+            // B4 — _unlock_completed. duration_ms drives PRD §guardrail
+            // "P95 < 1500ms".
+            analytics.logAuthBiometricUnlockCompleted(
+                biometricType: auth.biometricTypeAnalytics,
+                durationMs: outcome.durationMs
+            )
+        } else {
+            // B4 — _unlock_failed. reason classified from the LAError code
+            // by AuthManager.classifyLAError; "other" when no error / unknown.
+            analytics.logAuthBiometricUnlockFailed(
+                biometricType: auth.biometricTypeAnalytics,
+                reason: outcome.reason ?? "other"
+            )
         }
     }
 

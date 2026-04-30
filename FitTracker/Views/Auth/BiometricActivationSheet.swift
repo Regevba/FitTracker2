@@ -15,6 +15,8 @@ import SwiftUI
 
 struct BiometricActivationSheet: View {
     @EnvironmentObject private var auth: AuthManager
+    @EnvironmentObject private var signIn: SignInService
+    @EnvironmentObject private var analytics: AnalyticsService
 
     /// Performed when the user taps "Enable {biometricLabel}". Returns true
     /// when the LAContext scan succeeded and the activation flag was set
@@ -80,6 +82,9 @@ struct BiometricActivationSheet: View {
 
             Button {
                 guard !isLoading else { return }
+                analytics.logAuthBiometricActivationDeclined(
+                    biometricType: auth.biometricTypeAnalytics
+                )
                 onDecline()
             } label: {
                 Text("Not now")
@@ -101,6 +106,14 @@ struct BiometricActivationSheet: View {
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(AppRadius.authSheet)
         .background(AppColor.Surface.elevated)
+        .onAppear {
+            // B4 — _offered fires once when the sheet first appears. Sheet
+            // dismissal flips presentation off, so .onAppear is single-shot
+            // per modal lifecycle (not per state change).
+            analytics.logAuthBiometricActivationOffered(
+                biometricType: auth.biometricTypeAnalytics
+            )
+        }
     }
 
     private var biometricLabel: String {
@@ -116,9 +129,30 @@ struct BiometricActivationSheet: View {
         Task {
             let succeeded = await onEnable()
             isLoading = false
-            if !succeeded {
+            if succeeded {
+                // B4 — _activated. provider is the auth method that brought
+                // the user here (PRD Yes-conversion event needs both params).
+                analytics.logAuthBiometricActivated(
+                    biometricType: auth.biometricTypeAnalytics,
+                    provider: providerString
+                )
+            } else {
+                // B4 — _activation_declined fires for any non-success path
+                // (system-cancel, biometry-failed, etc). The sheet itself
+                // stays open with the error banner; "Not now" tap is a
+                // separate decline path handled by onDecline.
+                analytics.logAuthBiometricActivationDeclined(
+                    biometricType: auth.biometricTypeAnalytics
+                )
                 errorMessage = "\(biometricLabel) didn't work. Try again or tap 'Not now'."
             }
         }
+    }
+
+    private var providerString: String {
+        // AuthProvider rawValues are capitalised ("Apple", "Google", ...);
+        // PRD analytics enum is lowercase. Lowercase pass-through is safe
+        // for current cases.
+        signIn.activeSession?.provider.rawValue.lowercased() ?? "unknown"
     }
 }

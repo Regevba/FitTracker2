@@ -820,6 +820,50 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - Auth Biometric Events (auth-polish-v2 B4)
+
+    /// Fired when BiometricActivationSheet appears on first sign-in.
+    func logAuthBiometricActivationOffered(biometricType: String) {
+        logEvent(AnalyticsEvent.authBiometricActivationOffered, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+        ])
+    }
+
+    /// Fired when the user successfully completes the activation scan.
+    /// Conversion event — primary metric numerator.
+    func logAuthBiometricActivated(biometricType: String, provider: String) {
+        logEvent(AnalyticsEvent.authBiometricActivated, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+            AnalyticsParam.provider: provider,
+        ])
+    }
+
+    /// Fired when the user taps "Not now" or cancels the activation scan.
+    func logAuthBiometricActivationDeclined(biometricType: String) {
+        logEvent(AnalyticsEvent.authBiometricActivationDeclined, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+        ])
+    }
+
+    /// Fired when BiometricUnlockView completes an unlock scan successfully.
+    /// `durationMs` measured from scan start to result, drives PRD §guardrail
+    /// "P95 < 1500ms".
+    func logAuthBiometricUnlockCompleted(biometricType: String, durationMs: Int) {
+        logEvent(AnalyticsEvent.authBiometricUnlockCompleted, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+            AnalyticsParam.durationMs: durationMs,
+        ])
+    }
+
+    /// Fired when BiometricUnlockView's scan fails. `reason` enum:
+    /// "user_cancel" | "biometry_failed" | "system_cancel" | "passcode_not_set" | "other".
+    func logAuthBiometricUnlockFailed(biometricType: String, reason: String) {
+        logEvent(AnalyticsEvent.authBiometricUnlockFailed, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+            AnalyticsParam.reason: reason,
+        ])
+    }
+
     // MARK: - Private
 
     private func logEvent(_ name: String, parameters: [String: Any]?) {

@@ -133,6 +133,89 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
         }
     }
 
+    /// Stable analytics-safe label for the device's biometric sensor (B4).
+    /// Maps LABiometryType to the GA4-locked enum from PRD §Analytics Spec.
+    var biometricTypeAnalytics: String {
+        switch biometricType {
+        case .faceID: "face_id"
+        case .touchID: "touch_id"
+        default: "none"
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // MARK: – Instrumented unlock (auth-polish-v2 B4)
+    // ─────────────────────────────────────────────────────────
+
+    struct BiometricUnlockOutcome {
+        let succeeded: Bool
+        let durationMs: Int
+        /// Failure classification for analytics. nil when `succeeded == true`.
+        /// Enum (PRD §Analytics Spec): "user_cancel" | "biometry_failed" |
+        /// "system_cancel" | "passcode_not_set" | "other".
+        let reason: String?
+    }
+
+    /// Like `authenticateForQuickUnlock` but returns timing + LAError-derived
+    /// reason for analytics consumption (B4). Side effects identical to
+    /// `authenticateForQuickUnlock`: sets `isAuthenticated`, primes the
+    /// EncryptionService session context on success.
+    func attemptUnlock() async -> BiometricUnlockOutcome {
+        let start = Date()
+        #if targetEnvironment(simulator)
+        isAuthenticated = true
+        authError = nil
+        await EncryptionService.shared.setSessionContext(LAContext())
+        let durationMs = Int(Date().timeIntervalSince(start) * 1000)
+        return BiometricUnlockOutcome(succeeded: true, durationMs: durationMs, reason: nil)
+        #else
+        let ctx = LAContext()
+        ctx.localizedFallbackTitle = ""
+        var err: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &err) else {
+            isAuthenticated = false
+            let reason = Self.classifyLAError(err)
+            authError = "Face ID or Touch ID is required to unlock \(AppBrand.name). Set up biometrics in device settings, then try again."
+            let durationMs = Int(Date().timeIntervalSince(start) * 1000)
+            return BiometricUnlockOutcome(succeeded: false, durationMs: durationMs, reason: reason)
+        }
+        let result: (Bool, NSError?) = await withCheckedContinuation { continuation in
+            ctx.evaluatePolicy(
+                .deviceOwnerAuthenticationWithBiometrics,
+                localizedReason: "Unlock \(AppBrand.name) to access your encrypted health data"
+            ) { ok, e in
+                continuation.resume(returning: (ok, e as NSError?))
+            }
+        }
+        let (ok, error) = result
+        isAuthenticated = ok
+        authError = ok ? nil : error?.localizedDescription
+        if ok {
+            await EncryptionService.shared.setSessionContext(ctx)
+        }
+        let durationMs = Int(Date().timeIntervalSince(start) * 1000)
+        return BiometricUnlockOutcome(
+            succeeded: ok,
+            durationMs: durationMs,
+            reason: ok ? nil : Self.classifyLAError(error)
+        )
+        #endif
+    }
+
+    /// Map LAError code → PRD-locked analytics reason enum.
+    private static func classifyLAError(_ error: NSError?) -> String {
+        guard let error else { return "other" }
+        switch LAError.Code(rawValue: error.code) {
+        case .userCancel:        return "user_cancel"
+        case .systemCancel:      return "system_cancel"
+        case .authenticationFailed: return "biometry_failed"
+        case .passcodeNotSet:    return "passcode_not_set"
+        case .biometryNotEnrolled, .biometryLockout, .biometryNotAvailable:
+            return "biometry_failed"
+        default:                 return "other"
+        }
+    }
+
     // ─────────────────────────────────────────────────────────
     // MARK: – Activation (auth-polish-v2 B2)
     // ─────────────────────────────────────────────────────────
