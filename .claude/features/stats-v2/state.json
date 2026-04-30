@@ -4,7 +4,7 @@
   "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
   "case_study_type": "roundup",
   "created": "2026-04-10T15:00:00Z",
-  "updated": "2026-04-30T16:00:00Z",
+  "updated": "2026-04-30T16:30:00Z",
   "branch": "feature/stats-v2",
   "current_phase": "implementation",
   "work_type": "feature",
@@ -39,13 +39,17 @@
       "status": "approved",
       "approved_at": "2026-04-10T15:25:00Z",
       "type": "ux",
-      "checklist_completed": false
+      "checklist_completed": true,
+      "checklist_completed_at": "2026-04-30T16:30:00Z",
+      "checklist_artifact": ".claude/features/stats-v2/v2-refactor-checklist.md"
     },
     "implementation": {
       "status": "in_progress",
-      "commits": ["e93d6e8"],
-      "checklist_completed": false,
-      "reconciliation_note": "2026-04-30 — second reconciliation. Initial 2026-04-30 lift downgraded status to pending (correcting 2026-04-10 false-positive). Audit during this resume found T3/T4/T7/T10 actually shipped on 2026-04-10 via PR #76 (commit e93d6e8) but never logged in state.json. T1 was already on main pre-feature. Real remaining work: T2 type extraction, T5 wire analytics calls in v2/StatsView.swift (constants + service methods exist; view does not call them), T6 a11y from 9 → 14+, T8 v2 checklist, T9 CI verify."
+      "commits": ["e93d6e8", "71bac5a", "fca1ece", "027abf0", "47f8bd5"],
+      "checklist_completed": true,
+      "checklist_completed_at": "2026-04-30T16:30:00Z",
+      "checklist_artifact": ".claude/features/stats-v2/v2-refactor-checklist.md",
+      "reconciliation_note": "2026-04-30 — second reconciliation. Initial 2026-04-30 lift downgraded status to pending (correcting 2026-04-10 false-positive). Audit during this resume found T3/T4/T7/T10 actually shipped on 2026-04-10 via PR #76 (commit e93d6e8) but never logged in state.json. T1 was already on main pre-feature. Resume work commits: 71bac5a (resume + T1 marker), fca1ece (reconciliation), 027abf0 (T5 + T6), 47f8bd5 (T2). T9 CI verify pending real CI on PR push."
     },
     "testing": {
       "status": "pending",
@@ -154,11 +158,12 @@
       "title": "Extract nested types to Models/Stats/",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "completed",
       "priority": "medium",
       "effort_days": 0.25,
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-04-30T16:25:00Z",
+      "completion_note": "Shipped via commit 47f8bd5. 3 files at FitTracker/Models/Stats/ (StatsPeriod.swift 47 lines, StatsFocusMetric.swift 210 lines, MetricSeriesPoint.swift 8 lines). v2/StatsView.swift 899 → 673 lines. project.pbxproj wired (5 surgical edits, no UUID reshuffles). MetricSeriesPoint promoted from `private` to internal since it now lives in its own file. xcodebuild build clean both arm64 + x86_64 simulator targets."
     },
     {
       "id": "T3",
@@ -194,30 +199,28 @@
       "title": "Instrument 4 analytics events",
       "type": "analytics",
       "skill": "analytics",
-      "status": "pending",
-      "partial_status": "constants_only",
+      "status": "completed",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null,
-      "partial_note": "Event constants defined in FitTracker/Services/Analytics/AnalyticsProvider.swift:76-82 (statsPeriodChanged, statsMetricSelected, statsChartInteraction, statsEmptyStateShown). AnalyticsService has logStats* methods (per StatsAnalyticsTests.swift). But ZERO Analytics calls in FitTracker/Views/Stats/v2/StatsView.swift — events never fire in production. Real wiring still owed."
+      "completed_at": "2026-04-30T16:15:00Z",
+      "completion_note": "Wired all 4 events in v2/StatsView.swift via commit 027abf0: stats_period_changed (.onChange), stats_metric_selected (chip tap), stats_chart_interaction (drag .onEnded), stats_empty_state_shown (EmptyStateView .onAppear). Added @EnvironmentObject AnalyticsService. Added `category: String` computed property on StatsFocusMetric (body/recovery/training/activity/nutrition) for the second arg of logStatsMetricSelected. T7 footnote: existing StatsAnalyticsTests.swift exercises service layer; view-integration coverage owed (rolled into T9)."
     },
     {
       "id": "T6",
       "title": "Full accessibility pass",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
-      "partial_status": "9_of_14_target",
+      "status": "completed",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
         "T3"
       ],
-      "completed_at": null,
-      "partial_note": "9 a11y annotations in v2/StatsView.swift (accessibilityLabel/Value/Element/Hint). Audit target was 14/15+ (from v2-audit-report.md a11y baseline 27% → target 90%). Period picker labeled (line 383), metric chip labeled (lines 503-506), chart container labeled+valued (lines 626-628). Still missing: granular per-data-point a11y, empty-state a11y, axis labels."
+      "completed_at": "2026-04-30T16:15:00Z",
+      "completion_note": "9 → 18 a11y annotations in v2/StatsView.swift via commit 027abf0. Exceeds audit target of 14+. Additions: period picker container label ('Time period'), 'Track More' isHeader trait, EmptyStateView combine+composite label, metricHeader VStack combine+composite label, chartSelection overlay combine+label. G4 (custom rotor for chart points) deferred — pragmatic accessibilityValue summary accepted. G8 contrast and AX5 manual tests deferred to manual QA cycle (school-project context, see v2-refactor-checklist.md Section J ⚠️ entries)."
     },
     {
       "id": "T7",
@@ -238,7 +241,7 @@
       "title": "V2 refactor checklist",
       "type": "docs",
       "skill": "qa",
-      "status": "pending",
+      "status": "completed",
       "priority": "medium",
       "effort_days": 0.1,
       "depends_on": [
@@ -246,7 +249,8 @@
         "T4",
         "T6"
       ],
-      "completed_at": null
+      "completed_at": "2026-04-30T16:30:00Z",
+      "completion_note": "Filled checklist at .claude/features/stats-v2/v2-refactor-checklist.md. 46 verified + 11 N/A + 10 partial (mostly K=docs phase, not yet entered) + 6 deferred to manual QA (color contrast, AX5, VoiceOver simulator testing — school-project context). Boxes verified-or-N/A: 57 of 73 applicable."
     },
     {
       "id": "T9",
@@ -254,12 +258,14 @@
       "type": "test",
       "skill": "dev",
       "status": "pending",
+      "partial_status": "build_clean_local",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [
         "T7"
       ],
-      "completed_at": null
+      "completed_at": null,
+      "partial_note": "Local xcodebuild build clean (verified twice: post-T5/T6 commit 027abf0 + post-T2 commit 47f8bd5, iOS Simulator arm64+x86_64). xcodebuild test NOT runnable locally — no iOS simulators installed on this machine; xcrun simctl list shows zero devices. Targeted StatsAnalyticsTests run aborted with 'Unable to find a device matching the provided destination specifier'. Full CI verification will run on PR push via GitHub Actions Build-and-Test workflow. T9 status will move to completed when CI green on PR."
     },
     {
       "id": "T10",
