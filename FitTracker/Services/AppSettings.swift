@@ -105,6 +105,13 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(requireBiometricUnlockOnReopen, forKey: "ft.requireBiometricUnlockOnReopen") }
     }
 
+    // ── Biometric activation prompt (auth-polish-v2 B2) ──
+    // FR-11: persisted, defaults false, never reset by sign-out. Once true,
+    // the post-sign-in BiometricActivationSheet (B1) won't be offered again.
+    @Published var hasAskedForBiometricActivation: Bool = false {
+        didSet { UserDefaults.standard.set(hasAskedForBiometricActivation, forKey: "ft.hasAskedForBiometricActivation") }
+    }
+
     init() {
         if let raw = UserDefaults.standard.string(forKey: "ft.unitSystem"),
            let v = UnitSystem(rawValue: raw) { unitSystem = v }
@@ -112,6 +119,9 @@ final class AppSettings: ObservableObject {
            let v = AppAppearance(rawValue: raw) { appearance = v }
         if UserDefaults.standard.object(forKey: "ft.requireBiometricUnlockOnReopen") != nil {
             requireBiometricUnlockOnReopen = UserDefaults.standard.bool(forKey: "ft.requireBiometricUnlockOnReopen")
+        }
+        if UserDefaults.standard.object(forKey: "ft.hasAskedForBiometricActivation") != nil {
+            hasAskedForBiometricActivation = UserDefaults.standard.bool(forKey: "ft.hasAskedForBiometricActivation")
         }
     }
 }

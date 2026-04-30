@@ -132,6 +132,58 @@ final class AuthManager: ObservableObject, BiometricQuickUnlockProviding {
         default: "lock.open.fill"
         }
     }
+
+    // ─────────────────────────────────────────────────────────
+    // MARK: – Activation (auth-polish-v2 B2)
+    // ─────────────────────────────────────────────────────────
+
+    /// FR-9 trigger condition for the post-sign-in `BiometricActivationSheet`.
+    /// Returns true when biometrics are usable on the device, the user hasn't
+    /// already opted in to require unlock on reopen, and we haven't asked them
+    /// before. The two flags are inspected from the passed `settings` to avoid
+    /// coupling AuthManager to AppSettings ownership.
+    func shouldOfferActivation(settings: AppSettings) -> Bool {
+        isAvailable
+            && !settings.requireBiometricUnlockOnReopen
+            && !settings.hasAskedForBiometricActivation
+    }
+
+    /// FR-10: Run a biometric scan to confirm the user owns this device, then
+    /// flip the activation flags. The scan IS the consent — no extra "are you
+    /// sure?" step. On success: both `requireBiometricUnlockOnReopen` AND
+    /// `hasAskedForBiometricActivation` are set true. On user cancel / system
+    /// failure: only `hasAskedForBiometricActivation` is set true (so we
+    /// don't pester them again this install). Returns true on success.
+    func requestActivation(settings: AppSettings) async -> Bool {
+        #if targetEnvironment(simulator)
+        settings.requireBiometricUnlockOnReopen = true
+        settings.hasAskedForBiometricActivation = true
+        return true
+        #else
+        let ctx = LAContext()
+        ctx.localizedFallbackTitle = ""
+        var err: NSError?
+        guard ctx.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &err) else {
+            settings.hasAskedForBiometricActivation = true
+            return false
+        }
+        let succeeded: Bool = await withCheckedContinuation { continuation in
+            ctx.evaluatePolicy(
+                .deviceOwnerAuthenticationWithBiometrics,
+                localizedReason: "Confirm to enable \(biometricName) for \(AppBrand.name)"
+            ) { ok, _ in
+                continuation.resume(returning: ok)
+            }
+        }
+        if succeeded {
+            settings.requireBiometricUnlockOnReopen = true
+            settings.hasAskedForBiometricActivation = true
+        } else {
+            settings.hasAskedForBiometricActivation = true
+        }
+        return succeeded
+        #endif
+    }
 }
 
 // ─────────────────────────────────────────────────────────
