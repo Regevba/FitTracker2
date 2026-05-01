@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7-IN-PROGRESS, shipped 2026-04-24 → 2026-04-25 → ___)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7, shipped 2026-04-24 → 2026-04-25 → 2026-04-27)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -87,7 +87,7 @@ This framework exists because we empirically observed 7+ features sit in "shippe
 - **Weekly framework-status cron** — [`.github/workflows/framework-status-weekly.yml`](.github/workflows/framework-status-weekly.yml) fires Mondays 05:00 UTC. Appends a snapshot to [`.claude/shared/measurement-adoption-history.json`](.claude/shared/measurement-adoption-history.json) (dedup by date). Opens `framework-status` issue on regression (decrease in `fully_adopted` or `any_adopted`).
 - **Append-only adoption history** — `make measurement-adoption` now writes a dated snapshot to the history ledger; trend mode unlocks after 3 snapshots accumulate.
 
-**v7.7 Validity Closure (ready for merge as of 2026-04-27):**
+**v7.7 Validity Closure (shipped 2026-04-27 via PR #144 [merge `01b9e11`]; state.json reconciled in PR #158):**
 Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
 
 - **FitTracker2 PR #144** — 5 new gates: 4 write-time pre-commit hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) + 1 cycle-time check code (`CU_V2_INVALID`) + 1 cycle-time advisory (`TIER_TAG_LIKELY_INCORRECT`, kill criterion 2 fired at baseline so it ships **advisory permanent**). Plus bulk-backfill of 32 case-study frontmatters and timing.phases backfill on 3 paused features.
@@ -108,7 +108,9 @@ Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
 - Tier 1.1 trend mode unlocks at 3 history snapshots — earliest **2026-05-04** (Monday cron appends snapshot #3).
 - Tier 3.2 trend mode unlocks at 3 cycle snapshots — earliest **~2026-05-03 to -06** (72h cycle accumulates 3rd snapshot).
 
-A scheduled +7d agent will append the verification + journal entry once both fire, and flip this section's banner from "ready for merge" to "shipped 2026-05-XX".
+A scheduled +7d agent will append the verification + journal entry once both fire.
+
+**Known gap (2026-04-30 audit, inputs to v7.8):** the `CACHE_HITS_EMPTY_POST_V6` write-time gate is implemented in `scripts/check-state-schema.py:225-266` but cannot fire on 0 of 46 features in the repo because (a) the gate reads `state.get("created_at", "")` and 43 of 46 state.json files use the legacy `created` field instead, and (b) of the 2 files that use `created_at`, neither has `current_phase: complete`. Effective gate coverage = **0%**. Issue #140 is closed in spec but open in practice. Full audit + closure plan in agent memory at `project_framework_gaps_audit_2026_04_30.md` and `project_framework_v7_8_research_plan.md`.
 
 Spec: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
 Plan: [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
