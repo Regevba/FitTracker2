@@ -1,6 +1,6 @@
 {
   "feature": "auth-polish-v2",
-  "created": "2026-04-27T05:00:38Z",
+  "created_at": "2026-04-27T05:00:38Z",
   "updated": "2026-04-30T21:30:00Z",
   "branch": "feature/auth-polish-v2",
   "current_phase": "implementation",

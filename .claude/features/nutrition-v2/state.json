@@ -1,7 +1,7 @@
 {
   "feature": "nutrition-v2",
   "case_study": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
-  "created": "2026-04-10T12:00:00Z",
+  "created_at": "2026-04-10T12:00:00Z",
   "updated": "2026-04-20T00:00:00Z",
   "branch": "feature/nutrition-v2",
   "current_phase": "complete",
