@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Git pre-commit hook — gates the v7.5/v7.6 Data Integrity Framework's
+# Git pre-commit hook — gates the v7.5/v7.6/v7.7 Data Integrity Framework's
 # write-time defenses. Blocks commits that would introduce:
 #
 #   v7.5 (shipped 2026-04-21):
@@ -14,6 +14,19 @@
 #     - BROKEN_PR_CITATION (case study cites a PR that doesn't resolve)
 #     - CASE_STUDY_MISSING_TIER_TAGS (post-2026-04-21 case study without
 #       T1/T2/T3 tier tags)
+#
+#   v7.7 (shipped 2026-04-27 via PR #144 [merge `01b9e11`]):
+#     - CACHE_HITS_EMPTY_POST_V6 (post-v6 feature reaches current_phase=complete
+#       with empty cache_hits[]). KNOWN GAP per 2026-04-30 audit: the gate
+#       reads state.get("created_at", "") and 43 of 46 features use the
+#       legacy "created" field, so effective coverage is currently 0%.
+#       Closure tracked in v7.8 plan.
+#     - CU_V2_INVALID (state.json.cu_v2 schema malformed or missing required
+#       factor keys: complexity / blast_radius / novelty / verification_difficulty)
+#     - STATE_NO_CASE_STUDY_LINK (terminal state.json missing case_study link
+#       AND not tagged with EXEMPT_CASE_STUDY_TYPES)
+#     - CASE_STUDY_MISSING_FIELDS (case-study frontmatter missing required
+#       fields per v7.7 schema validator)
 #
 # Enable with: make install-hooks
 # Bypass (emergency only): git commit --no-verify
