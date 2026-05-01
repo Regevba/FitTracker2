@@ -43,7 +43,7 @@ else
   pass "legacy phase key correctly rejected"
 fi
 cat > "$FIXTURE_DIR/canonical-phase.json" <<'EOF'
-{"feature":"test-canonical","current_phase":"complete","status":"complete"}
+{"feature":"test-canonical","current_phase":"complete","status":"complete","case_study_type":"no_case_study_required","case_study_exempt_reason":"synthetic test fixture for SCHEMA_DRIFT regression"}
 EOF
 if python3 scripts/check-state-schema.py "$FIXTURE_DIR/canonical-phase.json" > /dev/null 2>&1; then
   pass "canonical current_phase key correctly accepted"
