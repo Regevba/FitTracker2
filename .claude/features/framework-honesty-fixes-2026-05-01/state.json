@@ -1,0 +1,35 @@
+{
+  "feature": "framework-honesty-fixes-2026-05-01",
+  "feature_name": "framework-honesty-fixes-2026-05-01",
+  "display_name": "Framework Honesty Fixes (2026-05-01)",
+  "case_study": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+  "work_type": "chore",
+  "work_subtype": "framework_correction",
+  "framework_version": "v7.7",
+  "current_phase": "implementation",
+  "status": "implementation",
+  "created_at": "2026-05-01T04:00:00Z",
+  "updated": "2026-05-01T04:45:00Z",
+  "branch": "chore/framework-honesty-fixes-2026-05-01",
+  "predecessor_features": [
+    "framework-v7-7-validity-closure"
+  ],
+  "scope_summary": "Closes the v7.7 silent-pass surface (43/46 state.json used legacy `created` field, gate read `created_at`, 0/46 effective coverage). Migrates schema, adds SCHEMA_DRIFT regression check, adds FRAMEWORK_VERSION_FORMAT check, fixes one broken downstream consumer (measurement-adoption-report.py), fixes one pre-existing v7.5 pipeline test regression. Documents 3 near-misses caught by user-requested end-to-end verification.",
+  "phases": {
+    "implementation": {
+      "status": "in_progress",
+      "started_at": "2026-05-01T04:00:00Z",
+      "checklist_completed": true
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-05-01T04:00:00Z"
+      }
+    }
+  },
+  "case_study_required": true,
+  "case_study_type": "live_pm_workflow",
+  "parent_case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md"
+}

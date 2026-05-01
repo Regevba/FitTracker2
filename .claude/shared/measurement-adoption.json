@@ -1,42 +1,42 @@
 {
   "version": "1.0",
-  "updated": "2026-04-30T19:23:02Z",
+  "updated": "2026-05-01T06:18:33Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 46,
-    "features_post_v6": 11,
+    "features_total": 47,
+    "features_post_v6": 12,
     "features_pre_v6": 35,
     "fully_adopted": 3,
     "partial_adopted": 9,
-    "zero_adopted": 34,
+    "zero_adopted": 35,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 7,
-      "overall_percent": 15.2,
+      "overall_percent": 14.9,
       "post_v6_present": 7,
-      "post_v6_percent": 63.6
+      "post_v6_percent": 58.3
     },
     "per_phase_timing": {
       "overall_present": 12,
-      "overall_percent": 26.1,
+      "overall_percent": 25.5,
       "post_v6_present": 8,
-      "post_v6_percent": 72.7
+      "post_v6_percent": 66.7
     },
     "cache_hits": {
       "overall_present": 5,
-      "overall_percent": 10.9,
+      "overall_percent": 10.6,
       "post_v6_present": 5,
-      "post_v6_percent": 45.5
+      "post_v6_percent": 41.7
     },
     "cu_v2": {
       "overall_present": 7,
-      "overall_percent": 15.2,
+      "overall_percent": 14.9,
       "post_v6_present": 7,
-      "post_v6_percent": 63.6
+      "post_v6_percent": 58.3
     }
   },
   "fully_adopted_features": [
@@ -186,6 +186,11 @@
     {
       "feature": "dispatch-intelligence-v5.2",
       "created": "2026-04-16",
+      "post_v6": true
+    },
+    {
+      "feature": "framework-honesty-fixes-2026-05-01",
+      "created": "2026-05-01",
       "post_v6": true
     },
     {
@@ -501,6 +506,20 @@
       "created": "2026-04-16",
       "post_v6": true,
       "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-honesty-fixes-2026-05-01",
+      "created": "2026-05-01",
+      "post_v6": true,
+      "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": false,
