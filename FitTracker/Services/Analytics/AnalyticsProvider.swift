@@ -143,6 +143,28 @@ enum AnalyticsEvent {
     /// Session restore result on app launch
     static let sessionRestoreResult         = "session_restore_result"
 
+    // ── Auth Password Reset Events (auth-polish-v2 A5) ─────
+    /// User taps "Send reset link" on `forgot_password` and the request succeeds
+    static let authPasswordResetRequested     = "auth_password_reset_requested"
+    /// User updates their password successfully on `set_new_password` (mark as conversion in GA4)
+    static let authPasswordResetCompleted     = "auth_password_reset_completed"
+    /// User taps Resend on `email_sent_confirmation` after cooldown elapsed
+    static let authPasswordResetResend        = "auth_password_reset_resend"
+    /// User taps Resend on `email_sent_confirmation` while cooldown still active
+    static let authPasswordResetResendBlocked = "auth_password_reset_resend_blocked"
+
+    // ── Auth Biometric Events (auth-polish-v2 B4) ──────────
+    /// BiometricActivationSheet appeared on first sign-in
+    static let authBiometricActivationOffered  = "auth_biometric_activation_offered"
+    /// User completed the biometric activation scan (mark as conversion in GA4)
+    static let authBiometricActivated          = "auth_biometric_activated"
+    /// User tapped "Not now" or cancelled the activation scan
+    static let authBiometricActivationDeclined = "auth_biometric_activation_declined"
+    /// BiometricUnlockView completed an unlock scan successfully
+    static let authBiometricUnlockCompleted    = "auth_biometric_unlock_completed"
+    /// BiometricUnlockView's unlock scan failed (cancel/biometry/system/passcode)
+    static let authBiometricUnlockFailed       = "auth_biometric_unlock_failed"
+
     // ── Settings Events (custom) ────────────────────────────
 
     /// User changes a setting
@@ -411,6 +433,17 @@ enum AnalyticsParam {
     static let result            = "result"             // success/expired/failed/timeout — session restore
     static let restoreTimeMs     = "restore_time_ms"    // int — session restore duration
 
+    // Auth password reset parameters (auth-polish-v2 A5)
+    static let emailProvided           = "email_provided"             // bool — non-empty email at submit
+    static let timeToCompleteSeconds   = "time_to_complete_seconds"   // int 0..86400 — request → completed delta
+    static let cooldownRemainingSeconds = "cooldown_remaining_seconds" // int 0..60 — seconds left when blocked
+    static let attemptNumber           = "attempt_number"             // int 2..10 — resend attempt index
+
+    // Auth biometric parameters (auth-polish-v2 B4)
+    static let biometricType    = "biometric_type"  // string — "face_id" | "touch_id" | "optic_id" | "none"
+    static let provider         = "provider"        // string — "apple" | "google" | "facebook" | "passkey" | "email"
+    static let durationMs       = "duration_ms"     // int 0..30000 — unlock latency (ms)
+
     // Profile parameters
     static let field             = "field"
     static let oldValue          = "old_value"
@@ -455,6 +488,15 @@ enum AnalyticsScreen {
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
     static let bodyCompDetail    = "body_comp_detail"
+
+    // Auth password reset screens (auth-polish-v2 A5)
+    static let forgotPassword         = "forgot_password"
+    static let emailSentConfirmation  = "email_sent_confirmation"
+    static let setNewPassword         = "set_new_password"
+
+    // Auth biometric screens (auth-polish-v2 B4)
+    static let biometricActivationSheet  = "biometric_activation_sheet"
+    static let biometricUnlock           = "biometric_unlock"
 }
 
 // MARK: - User Property Constants
@@ -484,5 +526,7 @@ enum AnalyticsConversion {
         AnalyticsEvent.accountDeleteCompleted,
         AnalyticsEvent.homeActionCompleted,
         AnalyticsEvent.trainingSessionCompleted,
+        AnalyticsEvent.authPasswordResetCompleted,
+        AnalyticsEvent.authBiometricActivated,
     ]
 }

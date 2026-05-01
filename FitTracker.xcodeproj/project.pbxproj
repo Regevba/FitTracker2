@@ -97,7 +97,11 @@
 		EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC200000000000000000AT01 /* EncryptionServiceTests.swift */; };
 		EC200000000000000000AT01 /* EncryptionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionServiceTests.swift; sourceTree = "<group>"; };
 		AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AM200000000000000000AT01 /* AuthManagerTests.swift */; };
+		AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200000000000000000AT02 /* AuthPolishV2Tests.swift */; };
+		AN100000000000000000AT01 /* AnalyticsEventNamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */; };
 		AM200000000000000000AT01 /* AuthManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManagerTests.swift; sourceTree = "<group>"; };
+		AP200000000000000000AT02 /* AuthPolishV2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPolishV2Tests.swift; sourceTree = "<group>"; };
+		AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEventNamingTests.swift; sourceTree = "<group>"; };
 		HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HK200000000000000000AT01 /* HealthKitServiceTests.swift */; };
 		HK200000000000000000AT01 /* HealthKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitServiceTests.swift; sourceTree = "<group>"; };
 		DB100000000000000000AT01 /* DebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB200000000000000000AT01 /* DebouncerTests.swift */; };
@@ -162,6 +166,7 @@
 		UI100000000000000000UT04 /* SignInUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT04 /* SignInUITests.swift */; };
 		UI100000000000000000UT05 /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT05 /* OnboardingUITests.swift */; };
 		UI100000000000000000UT06 /* MealLogUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT06 /* MealLogUITests.swift */; };
+		UI100000000000000000UT07 /* AuthPolishV2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT07 /* AuthPolishV2UITests.swift */; };
 		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
 		SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */; };
 		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
@@ -178,8 +183,14 @@
 		DS000001000000000000AA04 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA04 /* AppIcon.swift */; };
 		DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA05 /* AppViewModifiers.swift */; };
 		DS000001000000000000AA06 /* AppComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA06 /* AppComponents.swift */; };
+		DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA07 /* AuthSharedComponents.swift */; };
 		EE000001000000000000AA01 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA01 /* SignInView.swift */; };
 		EE000001000000000000AA02 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA02 /* WelcomeView.swift */; };
+		AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A301 /* ForgotPasswordRequestView.swift */; };
+		AP100001000000000001A302 /* ForgotPasswordCooldownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */; };
+		AP100001000000000001A303 /* SetNewPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A303 /* SetNewPasswordView.swift */; };
+		AP100001000000000001B101 /* BiometricActivationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001B101 /* BiometricActivationSheet.swift */; };
+		AP100001000000000001B301 /* BiometricUnlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001B301 /* BiometricUnlockView.swift */; };
 		FB1000001000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000001 /* SupabaseClient.swift */; };
 		FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000002 /* SupabaseSyncService.swift */; };
 		FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000003 /* UserSession+Supabase.swift */; };
@@ -359,6 +370,7 @@
 		UI200000000000000000UT04 /* SignInUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInUITests.swift; sourceTree = "<group>"; };
 		UI200000000000000000UT05 /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
 		UI200000000000000000UT06 /* MealLogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealLogUITests.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT07 /* AuthPolishV2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPolishV2UITests.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA03 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
@@ -390,8 +402,14 @@
 		DS000002000000000000AA04 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA05 /* AppViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModifiers.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA06 /* AppComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponents.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA07 /* AuthSharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSharedComponents.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA01 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA02 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A301 /* ForgotPasswordRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordRequestView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordCooldownView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A303 /* SetNewPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNewPasswordView.swift; sourceTree = "<group>"; };
+		AP200002000000000001B101 /* BiometricActivationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricActivationSheet.swift; sourceTree = "<group>"; };
+		AP200002000000000001B301 /* BiometricUnlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricUnlockView.swift; sourceTree = "<group>"; };
 		FB2000001000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		FB2000001000000000000002 /* SupabaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncService.swift; sourceTree = "<group>"; };
 		FB2000001000000000000003 /* UserSession+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSession+Supabase.swift"; sourceTree = "<group>"; };
@@ -887,6 +905,11 @@
 				A20000010000000000000016 /* AuthHubView.swift */,
 				EE000002000000000000AA01 /* SignInView.swift */,
 				EE000002000000000000AA02 /* WelcomeView.swift */,
+				AP200002000000000001A301 /* ForgotPasswordRequestView.swift */,
+				AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */,
+				AP200002000000000001A303 /* SetNewPasswordView.swift */,
+				AP200002000000000001B101 /* BiometricActivationSheet.swift */,
+				AP200002000000000001B301 /* BiometricUnlockView.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -940,6 +963,8 @@
 				AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */,
 				EC200000000000000000AT01 /* EncryptionServiceTests.swift */,
 				AM200000000000000000AT01 /* AuthManagerTests.swift */,
+				AP200000000000000000AT02 /* AuthPolishV2Tests.swift */,
+				AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */,
 				HK200000000000000000AT01 /* HealthKitServiceTests.swift */,
 				DB200000000000000000AT01 /* DebouncerTests.swift */,
 				SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */,
@@ -970,6 +995,7 @@
 				UI200000000000000000UT04 /* SignInUITests.swift */,
 				UI200000000000000000UT05 /* OnboardingUITests.swift */,
 				UI200000000000000000UT06 /* MealLogUITests.swift */,
+				UI200000000000000000UT07 /* AuthPolishV2UITests.swift */,
 			);
 			path = FitTrackerUITests;
 			sourceTree = "<group>";
@@ -1052,6 +1078,7 @@
 				DS000002000000000000AA04 /* AppIcon.swift */,
 				DS000002000000000000AA05 /* AppViewModifiers.swift */,
 				DS000002000000000000AA06 /* AppComponents.swift */,
+				DS000002000000000000AA07 /* AuthSharedComponents.swift */,
 				NV200000000000000000AA04 /* ProgressBar.swift */,
 			);
 			path = DesignSystem;
@@ -1294,6 +1321,11 @@
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
 				EE000001000000000000AA01 /* SignInView.swift in Sources */,
 				EE000001000000000000AA02 /* WelcomeView.swift in Sources */,
+				AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */,
+				AP100001000000000001A302 /* ForgotPasswordCooldownView.swift in Sources */,
+				AP100001000000000001A303 /* SetNewPasswordView.swift in Sources */,
+				AP100001000000000001B101 /* BiometricActivationSheet.swift in Sources */,
+				AP100001000000000001B301 /* BiometricUnlockView.swift in Sources */,
 				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
 				CC000001000000000000AA02 /* SectionHeader.swift in Sources */,
 				OB100000000000000000AA01 /* OnboardingConsentView.swift in Sources */,
@@ -1345,6 +1377,7 @@
 				DS000001000000000000AA04 /* AppIcon.swift in Sources */,
 				DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */,
 				DS000001000000000000AA06 /* AppComponents.swift in Sources */,
+				DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */,
 				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
 				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
@@ -1412,6 +1445,8 @@
 				AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */,
 				EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */,
 				AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */,
+				AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */,
+				AN100000000000000000AT01 /* AnalyticsEventNamingTests.swift in Sources */,
 				HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */,
 				DB100000000000000000AT01 /* DebouncerTests.swift in Sources */,
 				SS100000000000000000AT01 /* SupabaseSyncServiceTests.swift in Sources */,
@@ -1447,6 +1482,7 @@
 				UI100000000000000000UT04 /* SignInUITests.swift in Sources */,
 				UI100000000000000000UT05 /* OnboardingUITests.swift in Sources */,
 				UI100000000000000000UT06 /* MealLogUITests.swift in Sources */,
+				UI100000000000000000UT07 /* AuthPolishV2UITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

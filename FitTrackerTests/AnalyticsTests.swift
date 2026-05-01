@@ -300,7 +300,10 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertTrue(conversions.contains(AnalyticsEvent.accountDeleteCompleted))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.homeActionCompleted))
         XCTAssertTrue(conversions.contains(AnalyticsEvent.trainingSessionCompleted))
-        XCTAssertEqual(conversions.count, 8)
+        // auth-polish-v2 A5 + B4 — 2 new conversion events
+        XCTAssertTrue(conversions.contains(AnalyticsEvent.authPasswordResetCompleted))
+        XCTAssertTrue(conversions.contains(AnalyticsEvent.authBiometricActivated))
+        XCTAssertEqual(conversions.count, 10)
     }
 
     // MARK: - GDPR Event Tests

@@ -1,9 +1,9 @@
 {
   "feature": "auth-polish-v2",
   "created": "2026-04-27T05:00:38Z",
-  "updated": "2026-04-27T05:09:15Z",
+  "updated": "2026-04-30T21:30:00Z",
   "branch": "feature/auth-polish-v2",
-  "current_phase": "prd",
+  "current_phase": "implementation",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "v7.6",
@@ -29,8 +29,8 @@
       ]
     },
     "prd": {
-      "status": "in_progress",
-      "approved_at": null,
+      "status": "approved",
+      "approved_at": "2026-04-28T17:30:00Z",
       "analytics_spec_complete": true,
       "events_added": 9,
       "params_added": 6,
@@ -38,19 +38,131 @@
       "user_properties_added": 0
     },
     "tasks": {
-      "status": "pending",
-      "count": 0
+      "status": "approved",
+      "count": 18,
+      "started_at": "2026-04-28T17:30:00Z",
+      "approved_at": "2026-04-28T17:35:00Z"
     },
     "ux_or_integration": {
-      "status": "pending",
+      "status": "approved",
       "type": "ux",
-      "compliance_decision": null,
-      "checklist_completed": false
+      "compliance_decision": "5/5 PASS \u2014 all dimensions cleared with no new tokens needed; 88pt biometric icon takes documented DS-exception",
+      "checklist_completed": true,
+      "started_at": "2026-04-28T17:35:00Z",
+      "approved_at": "2026-04-28T19:00:00Z",
+      "heuristic_validation": "12/12 PASS + 1 N/A (Principle 1.9 Readiness-First N/A for auth surface, justified)",
+      "deliverables": [
+        ".claude/features/auth-polish-v2/ux-research.md",
+        ".claude/features/auth-polish-v2/ux-spec.md",
+        "docs/prompts/2026-04-28-auth-polish-v2-ux-build.md"
+      ]
     },
     "implementation": {
-      "status": "pending",
-      "commits": [],
-      "checklist_completed": false
+      "status": "in_progress",
+      "commits": [
+        {
+          "sha": "7bfe470",
+          "task": "T0",
+          "at": "2026-04-28T07:47:02Z",
+          "title": "Phase 3\u21924 transition + T0 extract auth shared components"
+        },
+        {
+          "sha": "56fedd8",
+          "task": "A1",
+          "at": "2026-04-28T07:53:37Z",
+          "title": "A1 register fitme:// URL scheme + deep-link return handler"
+        },
+        {
+          "sha": "958036b",
+          "task": "A2",
+          "at": "2026-04-30T15:44:46Z",
+          "title": "A2 \u2014 60s cooldown + Supabase redirectTo on password reset"
+        },
+        {
+          "sha": "52e3e9a",
+          "task": "A3",
+          "at": "2026-04-30T16:06:24Z",
+          "title": "A3 \u2014 3 forgot-password / reset SwiftUI screens"
+        },
+        {
+          "sha": "382a68f",
+          "task": "A4+A5",
+          "at": "2026-04-30T16:34:20Z",
+          "title": "A4 + A5 \u2014 wire forgot-password recovery + 4 analytics events"
+        },
+        {
+          "sha": "e8fc4b8",
+          "task": "B1",
+          "at": "2026-04-30T17:35:00Z",
+          "title": "B1 \u2014 BiometricActivationSheet SwiftUI component"
+        },
+        {
+          "sha": "e124f49",
+          "task": "B2",
+          "at": "2026-04-30T17:50:00Z",
+          "title": "B2 \u2014 biometric activation in AuthManager + AppSettings flag"
+        },
+        {
+          "sha": "2f131e1",
+          "task": "B3",
+          "at": "2026-04-30T18:05:00Z",
+          "title": "B3 \u2014 wire biometric activation sheet + replace LockScreenView"
+        },
+        {
+          "sha": "d477ef4",
+          "task": "B4",
+          "at": "2026-04-30T18:20:00Z",
+          "title": "B4 \u2014 5 biometric analytics events + duration/reason instrumentation"
+        },
+        {
+          "sha": "8dc648b",
+          "task": "D1",
+          "at": "2026-04-30T18:55:00Z",
+          "title": "D1 \u2014 taxonomy.csv += 9 events + 5 screens + 2 conversions"
+        },
+        {
+          "sha": "e64bffb",
+          "task": "D2",
+          "at": "2026-04-30T19:10:00Z",
+          "title": "D2 \u2014 eval test cases for password reset + biometric activation/unlock (15 cases passed)"
+        },
+        {
+          "sha": "c97f9f5",
+          "task": "D4",
+          "at": "2026-04-30T19:25:00Z",
+          "title": "D4 \u2014 naming-convention unit tests for auth analytics constants (5 cases passed)"
+        },
+        {
+          "sha": "1626e72",
+          "task": "D3",
+          "at": "2026-04-30T21:25:00Z",
+          "title": "D3 \u2014 UI tests + wire v2 forgot-password into EmailLoginView + 2 review fixtures"
+        }
+      ],
+      "tasks_complete": 18,
+      "tasks_total": 18,
+      "block_a_status": "complete",
+      "checklist_completed": false,
+      "started_at": "2026-04-28T19:00:00Z",
+      "block_b_status": "complete",
+      "block_c_status": "complete_preexisting",
+      "block_c_note": "Audit at 2026-04-30T20:30Z confirmed C1-C4 wiring shipped in a prior PR before auth-polish-v2 began. Verification: Staging xcodebuild succeeded; produced .app Info.plist contains real OAuth client ID \"881044848598-3lav013iveag86b27jckjpb7so6mf963.apps.googleusercontent.com\" substituted from FITTRACKER_GOOGLE_CLIENT_ID xcconfig var, and CFBundleURLTypes contains the reversed-client-id URL scheme. GoogleAuthProvider, GoogleRuntimeConfiguration, and AuthMethodSelectionView gating all already in place. Only remaining Block C work is out-of-code (xcconfig OAuth IDs in Debug+Release local files; Supabase dashboard Google provider toggle).",
+      "block_d_status": "complete",
+      "block_d_note": "D1: 9 auth events + 5 screens + 2 conversions added to docs/product/analytics-taxonomy.csv. D2: 15 XCTest cases (FitTrackerTests/AuthPolishV2Tests.swift) all passing \u2014 covers SignInService password reset state, AppSettings.hasAskedForBiometricActivation, AuthManager activation predicate and simulator-path activation, attemptUnlock outcome, biometricTypeAnalytics mapping. D3: 5 XCUI tests (FitTrackerUITests/AuthPolishV2UITests.swift) \u2014 gap #1 fixed (real product gap; EmailLoginView \"Forgot password?\" was bypassing v2 screens, now opens .sheet hosting ForgotPasswordRequestView with NavigationStack push to ForgotPasswordCooldownView), gaps #4+#5 fixed via FITTRACKER_REVIEW_BIOMETRIC_OFFER and FITTRACKER_REVIEW_BIOMETRIC_LOCK env var fixtures, gaps #2+#3 documented as XCTSkip with follow-up paths (Supabase stub seam for cooldown view, .onOpenURL injector for SetNewPasswordView). D4: 5 XCTest cases (FitTrackerTests/AnalyticsEventNamingTests.swift) all passing \u2014 guards auth_ prefix compliance, GA4 snake_case + 40-char limit on the 9 new events, and conversion-event registration in AnalyticsConversion.events.",
+      "known_followups": [
+        {
+          "id": "D3-gap-2",
+          "title": "ForgotPasswordCooldownView XCUI fixture",
+          "status": "deferred",
+          "note": "Cooldown view requires successful Supabase requestPasswordReset to push from request \u2192 cooldown via NavigationStack. UI tests cannot stub Supabase. Resolve by adding env-var-gated DI seam that swaps in LocalEmailAuthProvider for FITTRACKER_REVIEW_FORCE_LOCAL_EMAIL=1, then drive request \u2192 assert cooldown."
+        },
+        {
+          "id": "D3-gap-3",
+          "title": "SetNewPasswordView XCUI fixture",
+          "status": "deferred",
+          "note": "SetNewPasswordView is presented by .fullScreenCover bound to signIn.pendingPasswordResetURL \u2014 XCUITest cannot deliver fitme://reset-password URL into .onOpenURL. Resolve by adding FITTRACKER_REVIEW_PENDING_PASSWORD_RESET=1 env var that pre-populates pendingPasswordResetURL on launch."
+        }
+      ]
     },
     "testing": {
       "status": "pending",
@@ -99,9 +211,9 @@
   "timing": {
     "session_start": "2026-04-27T05:00:38Z",
     "session_end": null,
-    "total_wall_time_minutes": 8.6,
+    "total_wall_time_minutes": 592.6,
     "time_source": "measured",
-    "total_wall_time_note": "Sum of completed phase durations (research only). Updated as later phases close.",
+    "total_wall_time_note": "Sum of research (8.6 min) + PRD active time (564 min net of v7.7 freeze pause).",
     "phases": {
       "research": {
         "started_at": "2026-04-27T05:00:38Z",
@@ -111,6 +223,27 @@
       },
       "prd": {
         "started_at": "2026-04-27T05:09:15Z",
+        "ended_at": "2026-04-28T17:30:00Z",
+        "duration_minutes": 564.0,
+        "paused_minutes": 1620,
+        "note": "Drafted 2026-04-27 05:09\u219214:00 (~8.9h), paused for v7.7 freeze ~27h, resumed + approved 2026-04-28 17:00\u219217:30 (~0.5h). Net active ~9.4h."
+      },
+      "tasks": {
+        "started_at": "2026-04-28T17:30:00Z",
+        "ended_at": "2026-04-28T17:35:00Z",
+        "duration_minutes": 5.0,
+        "paused_minutes": 0,
+        "note": "Tasks enumeration and user approval. 17 tasks across 4 blocks; structure inherited from PRD Appendix C."
+      },
+      "ux_or_integration": {
+        "started_at": "2026-04-28T17:35:00Z",
+        "ended_at": "2026-04-28T19:00:00Z",
+        "duration_minutes": 15.0,
+        "paused_minutes": 0,
+        "note": "UX research + spec + build-prompt authored by /ux skill via subagent dispatch."
+      },
+      "implementation": {
+        "started_at": "2026-04-28T19:00:00Z",
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0
@@ -150,7 +283,297 @@
     "computed_cu_note": "Will be computed at session_end based on tasks count + factors"
   },
   "cache_hits": [],
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T0",
+      "block": "T0-prereq",
+      "title": "Extract AuthScaffold/AuthFormCard/AuthPrimaryButtonStyle/AuthBannerView/PasswordRulesSecureField/PasswordRulesTooltip from AuthHubView.swift to AuthSharedComponents.swift; fix 2 ColorAppColor typos (FR-18)",
+      "status": "complete",
+      "completed_at": "2026-04-28T19:00:00Z",
+      "files": [
+        "FitTracker/DesignSystem/AuthSharedComponents.swift",
+        "FitTracker/Views/Auth/AuthHubView.swift"
+      ],
+      "deps": [],
+      "blocks_for": "All A/B/C tasks (5 new screens depend on shared auth components)"
+    },
+    {
+      "id": "A1",
+      "block": "A",
+      "title": "Add fitme://reset-password URL scheme + Info.plist + AppDelegate routing",
+      "status": "complete",
+      "files": [
+        "FitTracker/Info.plist",
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Services/Auth/SignInService.swift"
+      ],
+      "deps": [],
+      "completed_at": "2026-04-28T19:30:00Z"
+    },
+    {
+      "id": "A2",
+      "block": "A",
+      "title": "Implement SignInService.requestPasswordReset(email:) with 60s cooldown + Supabase redirectTo",
+      "status": "complete",
+      "completed_at": "2026-04-30T17:55:00Z",
+      "files": [
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Services/Auth/EmailAuthProvider.swift"
+      ],
+      "deps": [
+        "A1"
+      ],
+      "files_correction_note": "PRD listed FitTracker/Services/SignInService.swift + AuthManager.swift; actuals are FitTracker/Services/Auth/SignInService.swift + Auth/EmailAuthProvider.swift. AuthManager.swift not touched (cooldown lives at SignInService layer)."
+    },
+    {
+      "id": "A3",
+      "block": "A",
+      "title": "Build ForgotPasswordRequestView + ForgotPasswordCooldownView + SetNewPasswordView (3 SwiftUI screens)",
+      "status": "complete",
+      "completed_at": "2026-04-30T18:25:00Z",
+      "files": [
+        "FitTracker/Views/Auth/ForgotPasswordRequestView.swift",
+        "FitTracker/Views/Auth/ForgotPasswordCooldownView.swift",
+        "FitTracker/Views/Auth/SetNewPasswordView.swift",
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Services/Auth/EmailAuthProvider.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ],
+      "deps": [
+        "A2"
+      ],
+      "implementation_note": "Also extended EmailAuthProviding protocol with updatePassword(newPassword:) and added SignInService.setNewPassword(_:) so SetNewPasswordView has a working call path. Three impls updated (Supabase EmailAuthProvider via supabase.auth.update(user: UserAttributes(password:)), LocalEmailAuthProvider DEBUG mock, UnavailableEmailAuthProvider release fallback)."
+    },
+    {
+      "id": "A4",
+      "block": "A",
+      "title": "Wire deep-link return path in RootView \u2192 push SetNewPasswordView",
+      "status": "complete",
+      "completed_at": "2026-04-30T19:34:20Z",
+      "files": [
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Services/Auth/EmailAuthProvider.swift"
+      ],
+      "deps": [
+        "A1",
+        "A3"
+      ],
+      "files_correction_note": "PRD listed FitTracker/Views/Root/RootView.swift; cover lives at FitTracker/FitTrackerApp.swift entry instead so it works from any auth state (onboarding, lock, app). Also extended EmailAuthProviding with processRecoveryURL(_:) so handleIncomingURL exchanges the URL for a Supabase recovery session before SetNewPasswordView's update call has session context. Bundled with A5 in commit 382a68f.",
+      "implementation_note": "EmailAuthProvider.processRecoveryURL calls supabase.auth.session(from: url). LocalEmailAuthProvider DEBUG no-op; UnavailableEmailAuthProvider release 503. SignInService.handleIncomingURL is now async; wrapped at call site via Task { await ... } in FitTrackerApp.onOpenURL."
+    },
+    {
+      "id": "A5",
+      "block": "A",
+      "title": "Analytics: fire 4 forgot-password events (requested/completed/resend/resend_blocked)",
+      "status": "complete",
+      "completed_at": "2026-04-30T19:34:20Z",
+      "files": [
+        "FitTracker/Services/Analytics/AnalyticsProvider.swift",
+        "FitTracker/Services/Analytics/AnalyticsService.swift",
+        "FitTracker/Services/Auth/SignInService.swift",
+        "FitTracker/Views/Auth/ForgotPasswordRequestView.swift",
+        "FitTracker/Views/Auth/ForgotPasswordCooldownView.swift",
+        "FitTracker/Views/Auth/SetNewPasswordView.swift"
+      ],
+      "deps": [
+        "A3"
+      ],
+      "files_correction_note": "PRD listed FitTracker/Services/AnalyticsService.swift; actuals are FitTracker/Services/Analytics/AnalyticsService.swift + AnalyticsProvider.swift (event/param/screen constants live there). Bundled with A4 in commit 382a68f.",
+      "implementation_note": "4 events + 4 params + 3 screens added; auth_password_reset_completed marked as conversion. SignInService gains passwordResetRequestedAt + passwordResetAttemptCount published state. Resend button now tappable during cooldown (visually dimmed) so _resend_blocked can fire as a real friction signal \u2014 was a contradiction in A3 (button disabled but PRD \u00a7Flow B wanted the event)."
+    },
+    {
+      "id": "B1",
+      "block": "B",
+      "title": "BiometricActivationSheet SwiftUI component (immediate-after-first-sign-in trigger per OQ-1)",
+      "status": "complete",
+      "files": [
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ],
+      "deps": [],
+      "completed_at": "2026-04-30T17:35:00Z",
+      "implementation_note": "Pure View, owns isLoading + errorMessage state. Two callbacks (onEnable async->Bool, onDecline). Layout per ux-spec \u00a75.4 default state. All 7 a11y labels (#29-35) per ux-spec \u00a76.1. presentationDetents([.medium]) + presentationDragIndicator(.visible) + presentationCornerRadius(AppRadius.authSheet). biometricLabel composed by stripping \"Use \" prefix from AuthManager.biometricLabel."
+    },
+    {
+      "id": "B2",
+      "block": "B",
+      "title": "BiometricService extension: isFirstSignIn, requestActivationFromUser, activate(biometricType:) + Keychain integration",
+      "status": "complete",
+      "files": [
+        "FitTracker/Services/AppSettings.swift",
+        "FitTracker/Services/AuthManager.swift"
+      ],
+      "deps": [],
+      "completed_at": "2026-04-30T17:50:00Z",
+      "files_correction_note": "Spec listed BiometricService.swift + KeychainService.swift. Reality: no BiometricService.swift \u2014 AuthManager.swift IS the biometric service (BiometricQuickUnlockProviding protocol; LAContext wrapping; biometricLabel/Name/Icon/Type already there). Skipped Keychain integration \u2014 Supabase already owns session storage; activation surface is purely flag-based with no secret to store.",
+      "implementation_note": "AppSettings: hasAskedForBiometricActivation Bool persisted to UserDefaults under \"ft.hasAskedForBiometricActivation\"; never reset by sign-out per FR-11. AuthManager: shouldOfferActivation(settings:) FR-9 trigger predicate; requestActivation(settings:) async->Bool runs LAContext evaluatePolicy and flips both flags on success / only hasAsked on failure (FR-10)."
+    },
+    {
+      "id": "B3",
+      "block": "B",
+      "title": "Trigger sheet from OnboardingViewModel.onSignInSuccess + post-relaunch unlock flow in RootView",
+      "status": "complete",
+      "files": [
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Views/Auth/BiometricUnlockView.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ],
+      "deps": [
+        "B1",
+        "B2"
+      ],
+      "completed_at": "2026-04-30T18:05:00Z",
+      "files_correction_note": "Spec listed FitTracker/ViewModels/OnboardingViewModel.swift + FitTracker/Views/Root/RootView.swift. Reality: no OnboardingViewModel exists; trigger logic lives at FitTrackerApp.onChange(of: signIn.activeSession) which fires for any sign-in path (onboarding, AuthHubView, deep-link return). RootView.swift doesn't exist \u2014 rootView is a @ViewBuilder property on FitTrackerApp where the routing branches live.",
+      "implementation_note": "Two pieces: (1) post-sign-in activation offer \u2014 @State showBiometricActivation in FitTrackerApp; .sheet wired with BiometricActivationSheet (B1) + AuthManager.requestActivation (B2). (2) post-relaunch unlock \u2014 new BiometricUnlockView per ux-spec \u00a75.5 (full-screen authBackground, FitMeBrandIcon 72pt, \"Welcome back, {firstName}\" hero, 88pt biometric icon, AuthPrimaryButtonStyle CTA, optional \"Use password\" tertiary, error banner, auto-trigger auth on appear). rootView swap: BiometricUnlockView replaces inline LockScreenView. firstName derived from displayName whitespace split (UserSession has no firstName field)."
+    },
+    {
+      "id": "B4",
+      "block": "B",
+      "title": "Analytics: 5 biometric events (offered/activated/declined/unlock_completed/unlock_failed)",
+      "status": "complete",
+      "files": [
+        "FitTracker/Services/Analytics/AnalyticsProvider.swift",
+        "FitTracker/Services/Analytics/AnalyticsService.swift",
+        "FitTracker/Services/AuthManager.swift",
+        "FitTracker/Views/Auth/BiometricActivationSheet.swift",
+        "FitTracker/Views/Auth/BiometricUnlockView.swift",
+        "FitTracker/FitTrackerApp.swift"
+      ],
+      "deps": [
+        "B1",
+        "B2",
+        "B3"
+      ],
+      "completed_at": "2026-04-30T18:20:00Z",
+      "implementation_note": "5 events + 3 params + 2 screens + conversion entry. AuthManager.attemptUnlock() async->BiometricUnlockOutcome captures duration_ms + LAError-derived reason (\"user_cancel\"|\"biometry_failed\"|\"system_cancel\"|\"passcode_not_set\"|\"other\"). BiometricActivationSheet fires _offered on appear, _activated on enable success (with provider from signIn.activeSession.provider), _activation_declined on Not now / enable failure. BiometricUnlockView refactored to call attemptUnlock() instead of fire-and-forget authenticate(); fires _unlock_completed/_unlock_failed."
+    },
+    {
+      "id": "C1",
+      "block": "C",
+      "title": "Add GoogleSignIn-iOS@8.x SPM dep + URL scheme + Info.plist update",
+      "status": "complete_preexisting",
+      "files": [
+        "FitTracker.xcodeproj/project.pbxproj",
+        "FitTracker/Info.plist"
+      ],
+      "deps": [],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. GoogleSignIn-iOS@8.0.0 SPM dep in pbxproj line 1909 (XCRemoteSwiftPackageReference). Info.plist URL scheme \"GoogleSignIn\" present (lines 22-27) bound to $(FITTRACKER_GOOGLE_REVERSED_CLIENT_ID); GoogleClientID + GoogleReversedClientID keys present (lines 52-55). Staging xcconfig at Config/Local/Staging.xcconfig has real OAuth IDs; Staging build successfully substitutes them into the produced .app Info.plist."
+    },
+    {
+      "id": "C2",
+      "block": "C",
+      "title": "GoogleSignInService wrapper: signIn(presentingFrom:) + GIDClientID from GoogleService-Info.plist (per OQ-3)",
+      "status": "complete_preexisting",
+      "files": [
+        "FitTracker/Services/GoogleSignInService.swift",
+        "FitTracker/Services/SignInService.swift"
+      ],
+      "deps": [
+        "C1"
+      ],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. FitTracker/Services/Auth/GoogleAuthProvider.swift:39 wraps GIDSignIn.sharedInstance.signIn(withPresenting:) and exchanges the idToken via supabase.auth.signInWithIdToken(provider: .google). GIDClientID sourced from Info.plist via GoogleRuntimeConfiguration.clientID() per PRD OQ-3. SignInService selects GoogleAuthProvider when SupabaseRuntimeConfiguration.isConfigured && GoogleRuntimeConfiguration.isConfigured."
+    },
+    {
+      "id": "C3",
+      "block": "C",
+      "title": "GoogleRuntimeConfiguration (remote-config flag for kill criterion 2)",
+      "status": "complete_preexisting",
+      "files": [
+        "FitTracker/Services/GoogleRuntimeConfiguration.swift",
+        "FitTracker/Views/Root/RootView.swift"
+      ],
+      "deps": [
+        "C2"
+      ],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. GoogleRuntimeConfiguration enum at FitTracker/Services/Auth/GoogleAuthProvider.swift:17-35 exposes clientID(in:) / reversedClientID(in:) (each rejecting empty strings + \"YOUR_\" placeholders) and isConfigured Bool. Acts as the kill-criterion-2 flag for the live UI path."
+    },
+    {
+      "id": "C4",
+      "block": "C",
+      "title": "Wire Google rows in AuthHubView + flag-driven UI hide + fix ColorAppColor typos found in Phase 0",
+      "status": "complete_preexisting",
+      "files": [
+        "FitTracker/Views/Auth/AuthHubView.swift"
+      ],
+      "deps": [
+        "C2",
+        "C3"
+      ],
+      "completed_at": "preexisting",
+      "preexisting_note": "Verified at 2026-04-30T20:30Z. AuthMethodSelectionView.swift:172 gates GoogleProviderRow on signIn.isGoogleAuthAvailable; line 217-218 shows \"Google sign-in stays hidden until the Google SDK and URL scheme are fully activated.\" copy when unavailable. signIn.isGoogleAuthAvailable resolves to googleAuthAvailable which is true iff both Supabase + GoogleRuntimeConfiguration are configured (SignInService.swift:369)."
+    },
+    {
+      "id": "D1",
+      "block": "D",
+      "title": "Update analytics-taxonomy.csv with 9 new events (transcribe PRD Appendix A)",
+      "status": "complete",
+      "files": [
+        "docs/product/analytics-taxonomy.csv"
+      ],
+      "deps": [],
+      "completed_at": "2026-04-30T18:55:00Z",
+      "implementation_note": "9 events added to existing Auth category (auth_ prefix). 5 screens added to Auth scope. 2 conversion entries added (auth_password_reset_completed, auth_biometric_activated). Each event row tags its source task (A5/B4) in Notes for provenance."
+    },
+    {
+      "id": "D2",
+      "block": "D",
+      "title": "Eval test cases: mock-Supabase forgot-password, mock-biometric activation/unlock, mock-Google sign-in",
+      "status": "complete",
+      "files": [
+        "FitTrackerTests/AuthPolishV2Tests.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ],
+      "deps": [
+        "A2",
+        "B2",
+        "C2"
+      ],
+      "completed_at": "2026-04-30T19:10:00Z",
+      "files_correction_note": "Spec listed FitTrackerCoreTests/Auth/AuthPolishV2Tests.swift. Reality: no FitTrackerCoreTests/ target; tests live flat in FitTrackerTests/. File at FitTrackerTests/AuthPolishV2Tests.swift.",
+      "implementation_note": "15 XCTest cases. Inline stubs (StubAppleAuthProvider, StubEmailAuthProvider, ThrowingEmailAuthProvider) keep tests deterministic without real Supabase. xcodebuild test ** TEST SUCCEEDED **; all 15 cases pass."
+    },
+    {
+      "id": "D3",
+      "block": "D",
+      "title": "UI snapshot tests for 5 new screens",
+      "status": "complete",
+      "files": [
+        "FitTrackerUITests/AuthPolishV2UITests.swift",
+        "FitTrackerUITests/UITestSupport.swift",
+        "FitTracker/FitTrackerApp.swift",
+        "FitTracker/Views/Auth/AuthHubView.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ],
+      "deps": [
+        "A3",
+        "B1"
+      ],
+      "completed_at": "2026-04-30T21:25:00Z",
+      "files_correction_note": "Spec listed FitTrackerUITests/Auth/AuthPolishV2UITests.swift. Reality: existing UI tests live flat in FitTrackerUITests/.",
+      "implementation_note": "5 XCUITest cases + real product gap fix + 2 env-var review fixtures. Real fix: EmailLoginView \"Forgot password?\" was bypassing v2 screens (called signIn.requestPasswordReset directly with no UI); now opens .sheet hosting ForgotPasswordRequestView with NavigationStack push to ForgotPasswordCooldownView via local @State. Fixtures: FITTRACKER_REVIEW_BIOMETRIC_OFFER=1 (mounts BiometricActivationSheet), FITTRACKER_REVIEW_BIOMETRIC_LOCK=1 (routes rootView into BiometricUnlockView). 3 of 5 tests drive real screens; 2 (cooldown + SetNewPassword) remain XCTSkip pending deeper test infra (see implementation.known_followups)."
+    },
+    {
+      "id": "D4",
+      "block": "D",
+      "title": "Update AnalyticsEvent enum + add unit tests for screen-prefix naming convention",
+      "status": "complete",
+      "files": [
+        "FitTrackerTests/AnalyticsEventNamingTests.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ],
+      "deps": [
+        "A5",
+        "B4"
+      ],
+      "completed_at": "2026-04-30T19:25:00Z",
+      "files_correction_note": "Spec listed FitTrackerCoreTests/Auth/AnalyticsEventNamingTests.swift. Reality: file at FitTrackerTests/AnalyticsEventNamingTests.swift. Spec also implied modifying AnalyticsService.swift to add events \u2014 events were already added in A5 (382a68f) + B4 (d477ef4); D4 is purely test coverage.",
+      "implementation_note": "5 XCTest cases enforcing CLAUDE.md Analytics Naming Convention + GA4 character/length rules. Coverage: all 9 auth-polish-v2 events carry auth_ prefix; events/params/screens snake_case + \u226440 chars; 2 conversion events registered. Custom isSnakeCase helper avoids NSRegularExpression. xcodebuild test ** TEST SUCCEEDED **; all 5 cases pass."
+    }
+  ],
   "transitions": [
     {
       "from": "research",
@@ -161,18 +584,47 @@
     }
   ],
   "github_issue_number": 143,
-  "paused": {
-    "at": "2026-04-27T14:00:00Z",
-    "reason": "v7.7 Validity Closure full-priority freeze",
-    "resume_signal": "framework-v7-7-validity-closure phase=complete",
-    "snapshot": {
-      "current_phase": "prd",
-      "next_action_when_resumed": "Continue PRD phase; cache_hits will populate automatically from v7.7 M1 writer-path instrumentation when this feature resumes work",
-      "blockers": [],
-      "context_links": [
-        ".claude/features/auth-polish-v2/state.json",
-        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_auth_polish_v2.md"
-      ]
+  "paused_history": [
+    {
+      "at": "2026-04-27T14:00:00Z",
+      "reason": "v7.7 Validity Closure full-priority freeze",
+      "resume_signal": "framework-v7-7-validity-closure phase=complete",
+      "snapshot": {
+        "current_phase": "prd",
+        "next_action_when_resumed": "Continue PRD phase; cache_hits will populate automatically from v7.7 M1 writer-path instrumentation when this feature resumes work",
+        "blockers": [],
+        "context_links": [
+          ".claude/features/auth-polish-v2/state.json",
+          "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_auth_polish_v2.md"
+        ]
+      },
+      "lifted_at": "2026-04-28T17:00:00Z",
+      "lifted_reason": "v7.7 freeze ended; v7.7 merged 2026-04-27 (PR #144)"
+    },
+    {
+      "at": "2026-04-28T19:45:00Z",
+      "reason": "User-requested pause after A1 completion. Foundation in place; A2-A5 + Blocks B/C/D + tests pending.",
+      "resume_signal": "User-driven (no external gate)",
+      "snapshot": {
+        "current_phase": "implementation",
+        "tasks_progress": "2 of 18 complete (T0 + A1)",
+        "next_action_when_resumed": "A2 \u2014 Implement SignInService.requestPasswordReset(email:) with 60s cooldown + Supabase redirectTo. PRD-locked OQ-2 says fitme://reset-password URL scheme. Touch only SignInService.swift; the URL scheme + onOpenURL handler already in place from A1.",
+        "blockers": []
+      },
+      "lifted_at": "2026-04-30T17:55:00Z",
+      "lifted_reason": "User directed resume to start A2 work. Branch state already current (PRD/Tasks/UX approved; T0+A1 complete)."
     }
-  }
+  ],
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.6,
+      "blast_radius": 0.7,
+      "novelty": 0.4,
+      "verification_difficulty": 0.6
+    },
+    "total": 2.3,
+    "tier_class": "A_high",
+    "rationale": "3 sub-bundles (forgot-password / biometric / Google Sign-In) across 8 user flows. Auth = high-risk per CLAUDE.md (SignInService, AuthManager, Supabase). Mostly extends prior art. Auth flows need real-provider testing (Tier 2.1 area)."
+  },
+  "case_study": "docs/case-studies/auth-polish-v2-case-study.md"
 }
