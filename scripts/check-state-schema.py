@@ -83,6 +83,14 @@ PHASE_EVENT_FRESHNESS_MIN = 15
 # exempt — they predate the adoption requirement.
 V6_SHIP_DATE = "2026-04-16"
 
+# Canonical `framework_version` form. Accepts `v<major>.<minor>` and
+# `pre-v<major>.<minor>` (for features that predate framework versioning
+# but want to record their lineage). Bare numbers like "7.6" are rejected
+# so that downstream consumers (measurement-adoption-report.py) can rely
+# on a single canonical form. Added 2026-05-01 per Gap B in the audit.
+_FRAMEWORK_VERSION_RE = re.compile(r"^(pre-)?v\d+\.\d+(\.\d+)?$")
+
+
 # Event types that count as satisfying a phase transition.
 PHASE_TRANSITION_EVENT_TYPES = {
     "phase_started",
@@ -360,6 +368,36 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
         errors.append(
             f"{path}: uses legacy `phase` key; canonical is `current_phase`. "
             f"Rename the key (value stays the same)."
+        )
+
+    # Check 1b (added 2026-05-01): SCHEMA_DRIFT — legacy `created` key.
+    # Surfaced by the 2026-04-30 framework gaps audit: 43 of 46 state.json
+    # files used `created` while the v7.7 CACHE_HITS_EMPTY_POST_V6 gate read
+    # `created_at`, producing 0/46 effective gate coverage (silent-pass).
+    # Migration done in chore/framework-honesty-fixes-2026-05-01; this check
+    # blocks regression. Same pattern as the legacy-`phase` check above.
+    if "created" in d and "created_at" not in d:
+        errors.append(
+            f"{path}: uses legacy `created` key; canonical is `created_at`. "
+            f"Rename the key (value stays the same)."
+        )
+
+    # Check 1c (added 2026-05-01): FRAMEWORK_VERSION_FORMAT — when set, the
+    # `framework_version` field must use the canonical `vX.Y` form (e.g.
+    # `v7.7`, `v6.0`, `pre-v5.0`). Surfaced by the 2026-04-30 audit: 6 of 46
+    # files stored unprefixed numbers ("7.6", "6.0") and 39 omitted the field
+    # entirely, leaving the measurement-adoption-report.py heuristic to
+    # *guess* which features are post-v6. This check enforces format only —
+    # absence is allowed pending the backfill PR. Once the field is
+    # backfilled across all 46 features, a follow-up will promote this from
+    # format-only to presence-required.
+    fv = d.get("framework_version")
+    if fv is not None and not _FRAMEWORK_VERSION_RE.match(str(fv)):
+        errors.append(
+            f"{path}: framework_version = {fv!r} is not in canonical "
+            f"`vX.Y` form (e.g. `v7.7`, `v6.0`, `pre-v5.0`). Rewrite with "
+            f"the `v` prefix so the measurement-adoption report can "
+            f"categorize this feature deterministically."
         )
 
     # Check 2: PR_NUMBER_UNRESOLVED — phases.merge.pr_number must resolve

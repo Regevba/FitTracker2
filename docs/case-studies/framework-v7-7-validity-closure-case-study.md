@@ -335,6 +335,40 @@ A `/schedule` run at 2026-05-04 will (a) verify B1 and append a journal entry, (
 
 **Resume signals fire on PR #144 merge:** 6 paused features (app-store-assets, auth-polish-v2, import-training-plan, onboarding-v2-retroactive, push-notifications, stats-v2) become unblocked.
 
+## Section 99B — Correction Note (appended 2026-05-01)
+
+> Per the project's "publish verbatim, append corrections" rule
+> (`memory: feedback_publish_verbatim_then_remediate.md`), prior sections
+> of this case study are preserved unchanged. This note records what the
+> 2026-04-30 framework gaps audit subsequently established.
+
+**Original claim (Section 99 / "Outcome at synthesis time" table):**
+
+| Dimension | Pre-v7.7 | Post-v7.7 |
+|---|---|---|
+| `cache_hits[]` post-v6 | 33.3% | **gated to 100% on next write (issue #140 closed)** |
+
+**What the 2026-04-30 audit found** (T1, instrumented via Python sweep against `.claude/features/*/state.json`):
+
+- The v7.7 `CACHE_HITS_EMPTY_POST_V6` gate reads `state.get("created_at", "")` for its post-v6 cutoff comparison. **43 of 46 features (93%)** stored the timestamp under the legacy key `created` instead. The gate's first conditional (`created_at < V6_SHIP_DATE`) evaluated `"" < "2026-04-16"` → `True` → early return without finding for those 43.
+- The remaining 3 features either (a) had `created_at` set but were not yet at `current_phase=complete` or (b) had no `cache_hits` key at all (gated by `if cache_hits is None`).
+- **Effective gate coverage at the time the v7.7 case study claimed "100% gated" was 0 / 46 features.**
+
+**Closure status** (this PR, `chore/framework-honesty-fixes-2026-05-01`):
+
+- The 43 legacy-`created` files were renamed to `created_at` in a single migration commit.
+- A new `SCHEMA_DRIFT` check rejects regression to the legacy key, mirroring the existing check for legacy `phase`.
+- The gate now fires on **1 feature** at corpus scan: `hadf-infrastructure` (post-v6, complete, `cache_hits: []`). Kept as a violation, not silently fixed — it is exactly the adoption-debt finding the gate was designed to catch.
+- **8 of 11 post-v6 features have `current_phase=complete`.** Of those 8: gate fires on 1 (`hadf-infrastructure`), passes legitimately on 4 (populated `cache_hits[]`), is bypassed on 3 (`cache_hits` key absent — `dispatch-intelligence-v5.2`, `framework-measurement-v6`, `parallel-write-safety-v5.2`). The "key absent → bypass" branch (`scripts/check-state-schema.py:250`) is a deliberate exemption in the original v7.7 design but remains a silent-pass surface that a follow-up can close by requiring the field at feature-creation time.
+
+**What the v7.7 case study got right:** the gate is implemented, the pre-commit hook does invoke it, and the integrity-check workflow runs it on the 72h cycle. The plumbing was real. **What it got wrong:** asserting effective coverage without verifying the data the gate would read existed in the schema the gate expected.
+
+**Tier tags:** all numerical claims in this correction note are T1 (live Python sweep against the corpus, output captured in the PR description). The 2026-04-30 audit memo and this correction are part of `memory: project_bug_retrospective_2026_05_01.md`.
+
+**Lesson for future cases:** before claiming a write-time gate has "100% coverage," verify it can fire by sweeping the corpus through the gate's exact read path (not the script's pass/fail summary). v7.8 research is scoped specifically around silent-pass prevention patterns — see `memory: project_framework_v7_8_research_plan.md`, Topic 1 (Bazel/Nix/Sigstore probes).
+
+---
+
 ## Section 100 — 90-day Retrospective (written +90 days post-merge)
 
 <!-- Populate via /schedule agent at +90 days. See plan §M5 / T35.7. -->

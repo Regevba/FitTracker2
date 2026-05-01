@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Git pre-commit hook — gates the v7.5/v7.6/v7.7 Data Integrity Framework's
-# write-time defenses. Blocks commits that would introduce:
+# Git pre-commit hook — gates the Data Integrity Framework's write-time
+# defenses (v7.5 → v7.6 → v7.7 → 2026-05-01 honesty fixes). Blocks commits
+# that would introduce:
 #
 #   v7.5 (shipped 2026-04-21):
 #     - SCHEMA_DRIFT (legacy `phase` key on state.json)
@@ -15,18 +16,24 @@
 #     - CASE_STUDY_MISSING_TIER_TAGS (post-2026-04-21 case study without
 #       T1/T2/T3 tier tags)
 #
-#   v7.7 (shipped 2026-04-27 via PR #144 [merge `01b9e11`]):
+#   v7.7 (shipped 2026-04-27 via PR #144 [merge `01b9e11`], Validity Closure):
 #     - CACHE_HITS_EMPTY_POST_V6 (post-v6 feature reaches current_phase=complete
-#       with empty cache_hits[]). KNOWN GAP per 2026-04-30 audit: the gate
-#       reads state.get("created_at", "") and 43 of 46 features use the
-#       legacy "created" field, so effective coverage is currently 0%.
-#       Closure tracked in v7.8 plan.
-#     - CU_V2_INVALID (state.json.cu_v2 schema malformed or missing required
-#       factor keys: complexity / blast_radius / novelty / verification_difficulty)
-#     - STATE_NO_CASE_STUDY_LINK (terminal state.json missing case_study link
-#       AND not tagged with EXEMPT_CASE_STUDY_TYPES)
-#     - CASE_STUDY_MISSING_FIELDS (case-study frontmatter missing required
-#       fields per v7.7 schema validator)
+#       with empty cache_hits[]; closes issue #140 writer-path adoption gap.
+#       Effective coverage was 0/46 until 2026-05-01 honesty-fixes migrated
+#       43 state.json files from legacy `created` to canonical `created_at`.)
+#     - CU_V2_INVALID (cu_v2 field, when present, must satisfy the T6 schema —
+#       missing required factor keys: complexity / blast_radius / novelty /
+#       verification_difficulty)
+#     - STATE_NO_CASE_STUDY_LINK (current_phase=complete requires case_study /
+#       parent_case_study link OR an exempt case_study_type tag)
+#     - CASE_STUDY_MISSING_FIELDS (frontmatter required-fields check)
+#
+#   2026-05-01 honesty-fixes patch (PR #169):
+#     - SCHEMA_DRIFT for legacy `created` key (parallel to legacy-`phase` check;
+#       closes the silent-pass that left v7.7 CACHE_HITS_EMPTY_POST_V6 at 0/46
+#       effective coverage when 43/46 features used the legacy field name)
+#     - FRAMEWORK_VERSION_FORMAT (when set, must match `(pre-)?v<major>.<minor>`;
+#       presence-required deferred to backfill PR)
 #
 # Enable with: make install-hooks
 # Bypass (emergency only): git commit --no-verify
@@ -56,7 +63,7 @@ fi
 
 if [[ "$failed" -ne 0 ]]; then
   echo ""
-  echo "Pre-commit rejected: one or more v7.5/v7.6 framework gates failed."
+  echo "Pre-commit rejected: one or more framework gates failed (v7.5 → 2026-05-01)."
   echo "Address each violation listed above, restage, and recommit."
   echo "Emergency bypass: git commit --no-verify (the 72h cycle will still flag the issue)."
   exit 1

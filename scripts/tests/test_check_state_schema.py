@@ -36,6 +36,7 @@ _spec.loader.exec_module(_mod)
 
 check_cache_hits_empty_post_v6 = _mod.check_cache_hits_empty_post_v6
 check_cu_v2_schema = _mod.check_cu_v2_schema
+validate_file = _mod.validate_file
 
 
 # ---------------------------------------------------------------------------
@@ -236,3 +237,119 @@ def test_state_no_case_study_link_passes_pre_complete():
         f"Non-complete feature must not trigger STATE_NO_CASE_STUDY_LINK. "
         f"Got: {findings}"
     )
+
+
+# ---------------------------------------------------------------------------
+# F-4b — SCHEMA_DRIFT for legacy `created` key (added 2026-05-01)
+# Surfaced by 2026-04-30 audit: 43 of 46 state.json used `created` while gate
+# read `created_at` → 0% effective coverage. These tests use validate_file
+# (not a separate check function) because the check is inline in validate_file
+# matching the pattern of the existing legacy-`phase` SCHEMA_DRIFT check.
+# ---------------------------------------------------------------------------
+
+def _write_tmp_state(tmp_path, payload: dict):
+    p = tmp_path / "state.json"
+    import json
+    p.write_text(json.dumps(payload))
+    return p
+
+
+def test_schema_drift_created_blocks_legacy_key(tmp_path):
+    """`created` without `created_at` → REJECT (matches legacy-phase pattern)."""
+    p = _write_tmp_state(tmp_path, {
+        "feature_name": "test",
+        "created": "2026-04-20T00:00:00Z",
+    })
+    errors = validate_file(p, enforce_transition=False)
+    assert any("legacy `created` key" in e for e in errors), (
+        f"Expected legacy-`created` SCHEMA_DRIFT finding. Got: {errors}"
+    )
+
+
+def test_schema_drift_created_passes_canonical(tmp_path):
+    """`created_at` only → PASS."""
+    p = _write_tmp_state(tmp_path, {
+        "feature_name": "test",
+        "created_at": "2026-04-20T00:00:00Z",
+    })
+    errors = validate_file(p, enforce_transition=False)
+    assert not any("legacy `created` key" in e for e in errors), (
+        f"Canonical `created_at` must not trigger SCHEMA_DRIFT. Got: {errors}"
+    )
+
+
+def test_schema_drift_created_passes_when_both_present(tmp_path):
+    """Both keys → PASS the SCHEMA_DRIFT check (presence of `created_at` satisfies).
+
+    Rationale: matches the legacy-`phase` pattern, which also passes when
+    both `phase` and `current_phase` are present. Migration tools may produce
+    a transient both-keys state; downstream consumers read `created_at`.
+    """
+    p = _write_tmp_state(tmp_path, {
+        "feature_name": "test",
+        "created": "2026-04-20T00:00:00Z",
+        "created_at": "2026-04-20T00:00:00Z",
+    })
+    errors = validate_file(p, enforce_transition=False)
+    assert not any("legacy `created` key" in e for e in errors), (
+        f"Both-keys state must not trigger SCHEMA_DRIFT. Got: {errors}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# F-5 — FRAMEWORK_VERSION_FORMAT (added 2026-05-01)
+# Surfaced by 2026-04-30 audit: 6 of 46 state.json had unprefixed numeric
+# values ("7.6", "6.0"). Format-only check; absence is allowed pending
+# backfill PR.
+# ---------------------------------------------------------------------------
+
+def test_framework_version_format_blocks_unprefixed_numeric(tmp_path):
+    p = _write_tmp_state(tmp_path, {
+        "feature_name": "test",
+        "framework_version": "7.6",
+    })
+    errors = validate_file(p, enforce_transition=False)
+    assert any("framework_version" in e and "canonical" in e for e in errors), (
+        f"Expected FRAMEWORK_VERSION_FORMAT finding for unprefixed '7.6'. "
+        f"Got: {errors}"
+    )
+
+
+def test_framework_version_format_passes_canonical_v_prefix(tmp_path):
+    for valid in ["v7.7", "v6.0", "v1.0", "v10.20", "v7.7.1", "pre-v5.0"]:
+        p = _write_tmp_state(tmp_path, {
+            "feature_name": "test",
+            "framework_version": valid,
+        })
+        errors = validate_file(p, enforce_transition=False)
+        assert not any("framework_version" in e and "canonical" in e
+                       for e in errors), (
+            f"Canonical {valid!r} must pass FRAMEWORK_VERSION_FORMAT. "
+            f"Got: {errors}"
+        )
+
+
+def test_framework_version_format_passes_when_absent(tmp_path):
+    """Absence allowed pending backfill PR — only format is enforced."""
+    p = _write_tmp_state(tmp_path, {
+        "feature_name": "test",
+    })
+    errors = validate_file(p, enforce_transition=False)
+    assert not any("framework_version" in e and "canonical" in e
+                   for e in errors), (
+        f"Absent framework_version must not trigger format check. Got: {errors}"
+    )
+
+
+def test_framework_version_format_blocks_garbage_strings(tmp_path):
+    for invalid in ["7", "v7", "version-7.6", "7.6-beta", "latest", ""]:
+        p = _write_tmp_state(tmp_path, {
+            "feature_name": "test",
+            "framework_version": invalid,
+        })
+        errors = validate_file(p, enforce_transition=False)
+        assert any("framework_version" in e and "canonical" in e
+                   for e in errors), (
+            f"Invalid {invalid!r} must trigger FRAMEWORK_VERSION_FORMAT. "
+            f"Got: {errors}"
+        )
