@@ -118,9 +118,9 @@ Live case study with the full live append-only journal + Section 99 synthesis: [
 
 ## Known Mechanical Limits
 
-v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. Five gaps remain mechanically unclosable:
+v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:
 
-1. `cache_hits[]` writer-path adoption — agent must remember to log it (issue #140).
+1. ~~`cache_hits[]` writer-path adoption — agent must remember to log it (issue #140).~~ **Auto-collected in v7.8 advisory** via `PostToolUse:Read` hook (`.claude/settings.json`) → `scripts/observe-cache-hit.py` → `.claude/logs/_session-<id>.events.jsonl`. v7.9 promotes to enforced. Pre-Mechanism-C features (`created_at < 2026-05-02`) are exempt from `CACHE_HITS_EMPTY_POST_V6` — the auto-instrumentation didn't exist for them.
 2. `cu_v2` factor *correctness* — judgment-based; we check presence, not magnitude.
 3. T1/T2/T3 tag *correctness* — preflight checks presence on post-2026-04-21 case studies, not whether the tag is right.
 4. Tier 2.1 real-provider auth checklist — requires a human at a simulator.
