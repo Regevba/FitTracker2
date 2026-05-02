@@ -78,6 +78,7 @@ Config/Local/*.xcconfig
 .vercel/
 .claude/shared/hadf/logs/
 .claude/shared/hadf/pre-merge-backup-*/
+.claude/shared/hadf/incident-*-recovery/
 .claude/shared/hadf/*.pre-isolation-archive
 .claude/shared/hadf/phase2-fingerprint-*.json
 .claude/shared/sentry-recovery/
