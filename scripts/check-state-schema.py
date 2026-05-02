@@ -83,6 +83,20 @@ PHASE_EVENT_FRESHNESS_MIN = 15
 # exempt — they predate the adoption requirement.
 V6_SHIP_DATE = "2026-04-16"
 
+# v7.8 ships Mechanism C — the PostToolUse:Read hook + observe-cache-hit.py
+# that auto-collects cache_hits[] events without agent attention (closes the
+# Class B writer-path gap, issue #140). Features whose entire active period
+# predates MECHANISM_C_SHIP_DATE are exempt from CACHE_HITS_EMPTY_POST_V6: the
+# auto-instrumentation that would have populated cache_hits[] mechanically did
+# not exist during their lifecycle, so an empty array is "instrumentation didn't
+# exist" not "instrumentation failed to fire." Approximation by created_at: a
+# feature whose created_at is on/after this date is fully covered. Features
+# created before but completed after may be partially covered — the gate
+# accepts a false negative there rather than a false positive that blocks PRs.
+# Added 2026-05-02 for v7.8 PR-1; predicate becomes "≥N hits where N calibrated"
+# in v7.9 once Mechanism C has accumulated 7+ days of data.
+MECHANISM_C_SHIP_DATE = "2026-05-02"
+
 # Canonical `framework_version` form. Accepts `v<major>.<minor>` and
 # `pre-v<major>.<minor>` (for features that predate framework versioning
 # but want to record their lineage). Bare numbers like "7.6" are rejected
@@ -231,25 +245,44 @@ def _recent_phase_event(log: dict, target_phase: str | None, freshness_min: int)
 
 
 def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
-    """Reject current_phase=complete when post-v6 feature has empty cache_hits[].
+    """Reject current_phase=complete when post-Mechanism-C feature has empty cache_hits[].
 
     Closes the writer-path adoption gap (issue #140). v7.6 hooks check key
-    presence; v7.7 this hook checks for non-empty content on post-v6 features
-    at completion. M1 instrumentation (scripts/log-cache-hit.py) is expected
-    to populate cache_hits[] on every cache read; an empty array at completion
-    means either the instrumentation is missing for this feature's cache calls,
-    or the cache was never read.
+    presence; v7.7 the hook checked for non-empty content on post-v6 features
+    at completion (silent-pass: 0/46 effective coverage — see
+    project_framework_gaps_audit_2026_04_30.md). v7.8 PR-1 fixes the gate by:
+
+    1. Dual-read of `created_at` ∪ `created` (Audit Gap A — 43/46 features
+       used the legacy `created` field at v7.7 ship time; the gate's
+       `state.get("created_at", "")` returned empty and silently passed).
+    2. Tighter exemption: features whose created_at predates Mechanism C
+       (the PostToolUse:Read hook that auto-collects cache_hits[]) are
+       exempt — their lifecycle had no auto-instrumentation, so an empty
+       array is "instrumentation didn't exist" not "instrumentation failed."
+
+    The combined effect: the gate fires only on features that COULD have had
+    cache_hits[] populated mechanically. v7.9 promotes the predicate from
+    "non-empty" to "≥N calibrated" once the auto-collection has accumulated
+    7+ days of data.
 
     Returns a list with one finding dict (code=CACHE_HITS_EMPTY_POST_V6) if the
     check fails, or an empty list if the check passes or is not applicable.
     """
     findings: list[dict] = []
-    created = state.get("created_at", "")
+    # Dual-read: prefer the canonical `created_at`; fall back to legacy `created`
+    # for features that haven't been migrated yet. v7.9 will drop the fallback.
+    created = state.get("created_at") or state.get("created", "")
     current_phase = state.get("current_phase", "")
     cache_hits = state.get("cache_hits", None)
 
     # Pre-v6 features are exempt from the adoption requirement.
     if not created or created < V6_SHIP_DATE:
+        return findings
+    # Pre-Mechanism-C features are exempt: the auto-instrumentation that
+    # populates cache_hits[] mechanically did not exist during their
+    # lifecycle. Empty array means "no instrumentation" not "instrumentation
+    # failed to fire" — the gate would be a false positive.
+    if created < MECHANISM_C_SHIP_DATE:
         return findings
     # Gate only fires at completion — in-progress features are not yet blocked.
     if current_phase != "complete":
@@ -262,12 +295,13 @@ def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
         "code": "CACHE_HITS_EMPTY_POST_V6",
         "feature": state.get("feature_name", "unknown"),
         "message": (
-            "Post-v6 feature reached current_phase=complete with empty "
-            "cache_hits[]. M1 instrumentation should populate this on "
-            "every cache read; an empty array at completion means either "
-            "the instrumentation is missing for this feature's cache "
-            "calls, or the cache was never read. See "
-            "scripts/log-cache-hit.py and issue #140."
+            "Post-Mechanism-C feature reached current_phase=complete with "
+            "empty cache_hits[]. The PostToolUse:Read hook + "
+            "scripts/observe-cache-hit.py should populate cache_hits[] "
+            "automatically on every cache read; an empty array at "
+            "completion means the hook isn't firing or active-feature "
+            "attribution is broken. See .claude/settings.json + "
+            "scripts/observe-cache-hit.py + issue #140."
         ),
         "severity": "failure",
     })

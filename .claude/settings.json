@@ -190,6 +190,17 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 scripts/observe-cache-hit.py"
+          }
+        ]
+      }
     ]
   }
 }

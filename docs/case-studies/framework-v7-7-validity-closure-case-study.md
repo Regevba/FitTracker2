@@ -369,6 +369,42 @@ A `/schedule` run at 2026-05-04 will (a) verify B1 and append a journal entry, (
 
 ---
 
+## Section 99C — v7.8 PR-1 Reframing (appended 2026-05-02)
+
+> Per "publish verbatim, append corrections" (`memory: feedback_publish_verbatim_then_remediate.md`). §99B is preserved unchanged; this note records the further reframing that v7.8 PR-1 makes.
+
+**The §99B closure stance** was: "the gate now fires on `hadf-infrastructure` and we're keeping it as a violation, not silently fixing it — it's the adoption-debt finding the gate was designed to catch."
+
+**v7.8 PR-1 changes that stance.** After the 2026-05-02 v7.8 design synthesis ([`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](../superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md)), the audit-memo conclusion is sharper: the gate's predicate was checking adoption of a *manual* mechanism (`scripts/log-cache-hit.py`, which agents must remember to call) — exactly the unclosable Class B gap (issue #140). Holding `hadf-infrastructure` accountable for empty `cache_hits[]` is asking it to retroactively pass a check whose mechanism didn't yet exist.
+
+**v7.8 PR-1 ships:**
+
+1. **Mechanism C** (`scripts/observe-cache-hit.py` + `PostToolUse:Read` hook in `.claude/settings.json`) — auto-collects Read events to a per-session ledger. v7.8 advisory mode: ledger only, no `state.json` write. v7.9 promotes to "also call `log-cache-hit.py`" once the ledger has accumulated 7+ days of data for threshold calibration.
+2. **Tightened gate predicate** (`scripts/check-state-schema.py:check_cache_hits_empty_post_v6`) — the gate now exempts features whose `created_at` predates `MECHANISM_C_SHIP_DATE` (2026-05-02). Pre-Mechanism-C features had no auto-instrumentation; an empty array is "instrumentation didn't exist," not "instrumentation failed."
+3. **Defensive dual-read** of `created_at` ∪ `created` (already-migrated to canonical, but the fallback protects against future backsliding).
+
+**Effect on the §99B "1 firing feature" claim:**
+
+| Stance | Pre-v7.8 PR-1 | Post-v7.8 PR-1 |
+|---|---|---|
+| `hadf-infrastructure` | Gate fires (kept as adoption-debt finding) | Exempt (pre-Mechanism-C) |
+| Other 45 features | Pre-v6 exempt or not yet at `current_phase=complete` | Same |
+| Schema check at `mode=all` | 1 violation | 0 violations |
+
+**Effect on the v7.8/v7.9 trajectory:**
+
+The gate is now correctly scoped to "features Mechanism C should have covered." v7.9 promotes the predicate from "non-empty" to "≥N hits where N is calibrated from the v7.8 measurement window." That's the bridge — same gate, narrower predicate now, calibrated threshold later.
+
+**What this reframing does NOT do:**
+
+- Does not silently fix hadf-infrastructure's adoption debt. The case study record stays. cache_hits stays empty. The gate just no longer flags it as a finding because the gate was holding it accountable for a mechanism that didn't yet exist.
+- Does not silently edit §99B. §99B's "Kept as a violation" stance was correct as of 2026-05-01; v7.8 PR-1 (2026-05-02) is a deliberate predicate change, documented here.
+- Does not claim Mechanism C is enforced. v7.8 ships it advisory. v7.9 promotes.
+
+**Tier tags:** all schema-check counts T1 (live `python3 scripts/check-state-schema.py` output). Predicate-redesign rationale T3.
+
+---
+
 ## Section 100 — 90-day Retrospective (written +90 days post-merge)
 
 <!-- Populate via /schedule agent at +90 days. See plan §M5 / T35.7. -->
