@@ -7,7 +7,8 @@
     "memory_topology_enum": ["discrete", "soc_unified", "in_package_unified", "rack_scale_pooled"],
     "vendor_status_format": "independent | acquired_by:<vendor> | defunct | rebranded",
     "compute_axes_optional": "Present only for hybrid/multi-axis SoCs (Intel Lunar/Panther Lake, AMD Strix Halo, Apple M5 family). Single-axis NPU chips omit this field.",
-    "built_in_networking_optional": "Present only for chips with on-package datacenter NICs (Gaudi 3, Jaguar Shores). Schema: {ports, lanes_per_port_gbps, total_gbps}."
+    "built_in_networking_optional": "Present only for chips with on-package datacenter NICs (Gaudi 3, Jaguar Shores). Schema: {ports, lanes_per_port_gbps, total_gbps}.",
+    "tops_source_optional": "compute_budget.tops_source enum: vendor_published | estimated | secondary. Absent = vendor_published (default). 'estimated' is used when the vendor does not publish an NPU TOPS figure (Apple A19/M5 family, Tensor G5) and the value is the prior-generation floor. 'secondary' is used when only third-party benchmarks (e.g. Geekbench AI) substantiate the number."
   },
   "profiles": {
     "apple_a18_pro": {
@@ -665,6 +666,362 @@
         "cost_score": 0.80,
         "quality_score": 0.70,
         "overall": 0.75
+      }
+    },
+    "apple_a19_pro": {
+      "vendor": "Apple",
+      "vendor_status": "independent",
+      "family": "A-series",
+      "generation": 19,
+      "tier": "flagship",
+      "arch": "arm64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 38,
+        "tops_source": "estimated",
+        "max_model_size_mb": 6000,
+        "supported_precisions": ["float16", "int8"],
+        "peak_precision": "float16",
+        "concurrent_ml_tasks": 2
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning"
+        ],
+        "prefer_cloud": [
+          "long_context",
+          "multi_step_planning",
+          "code_generation"
+        ],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 30,
+        "throttle_risk": "moderate",
+        "battery_sensitivity": "high"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 6000,
+        "memory_topology": "soc_unified",
+        "swap_penalty": "none"
+      },
+      "composite_baseline": {
+        "latency_score": 0.87,
+        "cost_score": 0.91,
+        "quality_score": 0.82,
+        "overall": 0.84
+      }
+    },
+    "apple_m5": {
+      "vendor": "Apple",
+      "vendor_status": "independent",
+      "family": "M-series",
+      "generation": 5,
+      "tier": "desktop",
+      "arch": "arm64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 38,
+        "tops_source": "estimated",
+        "max_model_size_mb": 30000,
+        "supported_precisions": ["float16", "int8"],
+        "peak_precision": "float16",
+        "concurrent_ml_tasks": 6
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning",
+          "long_context",
+          "multi_step_planning"
+        ],
+        "prefer_cloud": [
+          "code_generation"
+        ],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 300,
+        "throttle_risk": "low",
+        "battery_sensitivity": "low"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 28000,
+        "memory_topology": "soc_unified",
+        "swap_penalty": "none"
+      },
+      "composite_baseline": {
+        "latency_score": 0.90,
+        "cost_score": 0.85,
+        "quality_score": 0.88,
+        "overall": 0.88
+      }
+    },
+    "apple_m5_max": {
+      "vendor": "Apple",
+      "vendor_status": "independent",
+      "family": "M-series",
+      "generation": 5,
+      "tier": "desktop",
+      "arch": "arm64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 45,
+        "tops_source": "estimated",
+        "max_model_size_mb": 120000,
+        "supported_precisions": ["float16", "int8"],
+        "peak_precision": "float16",
+        "concurrent_ml_tasks": 12
+      },
+      "compute_axes": {
+        "npu_tops": 45,
+        "gpu_matmul_tops": null,
+        "cpu_matmul_tops": null,
+        "platform_tops": null,
+        "memory_bandwidth_gbps": 614
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning",
+          "long_context",
+          "multi_step_planning",
+          "code_generation"
+        ],
+        "prefer_cloud": [],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 600,
+        "throttle_risk": "low",
+        "battery_sensitivity": "none"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 110000,
+        "memory_topology": "soc_unified",
+        "swap_penalty": "none"
+      },
+      "composite_baseline": {
+        "latency_score": 0.97,
+        "cost_score": 0.86,
+        "quality_score": 0.99,
+        "overall": 0.95
+      }
+    },
+    "qualcomm_snapdragon_8_elite_gen5": {
+      "vendor": "Qualcomm",
+      "vendor_status": "independent",
+      "family": "Snapdragon",
+      "generation": 8,
+      "tier": "flagship",
+      "arch": "arm64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 80,
+        "tops_source": "vendor_published",
+        "max_model_size_mb": 6000,
+        "supported_precisions": ["int2", "int8", "fp8", "float16"],
+        "peak_precision": "int2",
+        "concurrent_ml_tasks": 3
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning",
+          "long_context"
+        ],
+        "prefer_cloud": [
+          "multi_step_planning",
+          "code_generation"
+        ],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 30,
+        "throttle_risk": "moderate",
+        "battery_sensitivity": "high"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 6000,
+        "memory_topology": "discrete",
+        "swap_penalty": "moderate"
+      },
+      "composite_baseline": {
+        "latency_score": 0.88,
+        "cost_score": 0.87,
+        "quality_score": 0.80,
+        "overall": 0.85
+      }
+    },
+    "mediatek_dimensity_9500": {
+      "vendor": "MediaTek",
+      "vendor_status": "independent",
+      "family": "Dimensity",
+      "generation": 9500,
+      "tier": "flagship",
+      "arch": "arm64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 80,
+        "tops_source": "vendor_published",
+        "max_model_size_mb": 6000,
+        "supported_precisions": ["bitnet_1_58", "int8", "float16"],
+        "peak_precision": "bitnet_1_58",
+        "concurrent_ml_tasks": 3
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning",
+          "long_context"
+        ],
+        "prefer_cloud": [
+          "multi_step_planning",
+          "code_generation"
+        ],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 28,
+        "throttle_risk": "moderate",
+        "battery_sensitivity": "high"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 6000,
+        "memory_topology": "discrete",
+        "swap_penalty": "moderate"
+      },
+      "composite_baseline": {
+        "latency_score": 0.85,
+        "cost_score": 0.85,
+        "quality_score": 0.78,
+        "overall": 0.82
+      }
+    },
+    "intel_panther_lake_npu5": {
+      "vendor": "Intel",
+      "vendor_status": "independent",
+      "family": "Core Ultra",
+      "generation": 5,
+      "tier": "flagship",
+      "arch": "x86_64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 50,
+        "tops_source": "vendor_published",
+        "max_model_size_mb": 16000,
+        "supported_precisions": ["int8", "fp8", "float16", "bfloat16"],
+        "peak_precision": "fp8",
+        "concurrent_ml_tasks": 4
+      },
+      "compute_axes": {
+        "npu_tops": 50,
+        "gpu_matmul_tops": 120,
+        "cpu_matmul_tops": 10,
+        "platform_tops": 180,
+        "memory_bandwidth_gbps": 120
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning",
+          "long_context"
+        ],
+        "prefer_cloud": [
+          "multi_step_planning",
+          "code_generation"
+        ],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 60,
+        "throttle_risk": "moderate",
+        "battery_sensitivity": "moderate"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 14000,
+        "memory_topology": "discrete",
+        "swap_penalty": "low"
+      },
+      "composite_baseline": {
+        "latency_score": 0.88,
+        "cost_score": 0.83,
+        "quality_score": 0.82,
+        "overall": 0.85
+      }
+    },
+    "amd_strix_halo_xdna2": {
+      "vendor": "AMD",
+      "vendor_status": "independent",
+      "family": "Ryzen AI",
+      "generation": 2,
+      "tier": "desktop",
+      "arch": "x86_64",
+      "compute_budget": {
+        "on_device_ml_capable": true,
+        "npu_tops": 50,
+        "tops_source": "vendor_published",
+        "max_model_size_mb": 110000,
+        "supported_precisions": ["int8", "block_fp16", "float16", "bfloat16"],
+        "peak_precision": "int8",
+        "concurrent_ml_tasks": 8
+      },
+      "compute_axes": {
+        "npu_tops": 50,
+        "gpu_matmul_tops": null,
+        "cpu_matmul_tops": null,
+        "platform_tops": null,
+        "memory_bandwidth_gbps": 256
+      },
+      "dispatch_hints": {
+        "prefer_on_device": [
+          "text_classification",
+          "embedding",
+          "tokenization",
+          "lightweight_inference",
+          "complex_reasoning",
+          "long_context",
+          "multi_step_planning"
+        ],
+        "prefer_cloud": [
+          "code_generation"
+        ],
+        "hybrid_capable": true
+      },
+      "thermal_profile": {
+        "sustained_workload_seconds": 300,
+        "throttle_risk": "low",
+        "battery_sensitivity": "low"
+      },
+      "memory_constraints": {
+        "available_for_ml_mb": 110000,
+        "memory_topology": "in_package_unified",
+        "swap_penalty": "none"
+      },
+      "composite_baseline": {
+        "latency_score": 0.92,
+        "cost_score": 0.86,
+        "quality_score": 0.94,
+        "overall": 0.91
       }
     },
     "arm64_mobile_unknown": {
