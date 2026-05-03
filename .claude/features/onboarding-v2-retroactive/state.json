@@ -4,6 +4,7 @@
   "updated": "2026-04-09T18:00:00Z",
   "branch": "feature/onboarding-v2-retroactive",
   "current_phase": "tasks",
+  "framework_version": "v5.0",
   "work_type": "enhancement",
   "parent_feature": "onboarding",
   "has_ui": true,

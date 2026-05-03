@@ -6,6 +6,7 @@
   "updated": "2026-04-14T03:24:00Z",
   "branch": "feature/metric-tile-deep-linking",
   "current_phase": "complete",
+  "framework_version": "v5.0",
   "work_type": "enhancement",
   "parent_feature": "home-today-screen",
   "has_ui": true,

@@ -4,6 +4,7 @@
   "updated": "2026-04-20T00:00:00Z",
   "branch": "feature/home-today-screen-v2",
   "current_phase": "complete",
+  "framework_version": "pre-v5.0",
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,

@@ -6,6 +6,7 @@
   "updated": "2026-04-15T17:30:00Z",
   "branch": "feature/home-status-goal-card",
   "current_phase": "complete",
+  "framework_version": "v5.0",
   "work_type": "feature",
   "work_subtype": "new_ui",
   "has_ui": true,

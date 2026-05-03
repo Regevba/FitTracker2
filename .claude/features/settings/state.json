@@ -6,6 +6,7 @@
   "updated": "2026-04-06T14:00:00Z",
   "branch": null,
   "current_phase": "complete",
+  "framework_version": "pre-v5.0",
   "has_ui": true,
   "requires_analytics": false,
   "github_issue_number": null,
