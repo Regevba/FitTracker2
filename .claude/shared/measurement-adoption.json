@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-01T06:18:33Z",
+  "updated": "2026-05-03T04:10:14Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -8,8 +8,8 @@
     "features_post_v6": 12,
     "features_pre_v6": 35,
     "fully_adopted": 3,
-    "partial_adopted": 9,
-    "zero_adopted": 35,
+    "partial_adopted": 10,
+    "zero_adopted": 34,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
@@ -21,10 +21,10 @@
       "post_v6_percent": 58.3
     },
     "per_phase_timing": {
-      "overall_present": 12,
-      "overall_percent": 25.5,
-      "post_v6_present": 8,
-      "post_v6_percent": 66.7
+      "overall_present": 13,
+      "overall_percent": 27.7,
+      "post_v6_present": 9,
+      "post_v6_percent": 75.0
     },
     "cache_hits": {
       "overall_present": 5,
@@ -60,6 +60,15 @@
         "timing_wall_time": true,
         "per_phase_timing": true,
         "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "framework-honesty-fixes-2026-05-01",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
         "cu_v2": false
       }
     },
@@ -186,11 +195,6 @@
     {
       "feature": "dispatch-intelligence-v5.2",
       "created": "2026-04-16",
-      "post_v6": true
-    },
-    {
-      "feature": "framework-honesty-fixes-2026-05-01",
-      "created": "2026-05-01",
       "post_v6": true
     },
     {
@@ -407,7 +411,7 @@
       "feature": "auth-polish-v2",
       "created": "2026-04-27",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": true,
         "per_phase_timing": true,
@@ -519,15 +523,15 @@
       "feature": "framework-honesty-fixes-2026-05-01",
       "created": "2026-05-01",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "framework-measurement-v6",
@@ -883,7 +887,7 @@
       "feature": "stats-v2",
       "created": "2026-04-10",
       "post_v6": false,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,

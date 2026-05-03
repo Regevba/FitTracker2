@@ -1,71 +1,73 @@
 {
   "version": "1.0",
-  "updated": "2026-04-27T17:15:47Z",
+  "updated": "2026-05-03T04:11:19Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 47,
-    "features_scanned": 45,
-    "integrity_snapshot_files": 1,
-    "integrity_cycle_snapshots": 0,
+    "case_studies_scanned": 53,
+    "features_scanned": 47,
+    "integrity_snapshot_files": 2,
+    "integrity_cycle_snapshots": 1,
     "trend_ready": false,
     "open_debt_items": 5
   },
   "coverage": {
     "date_written": {
-      "present": 42,
-      "missing": 5,
-      "percent": 89.4,
+      "present": 47,
+      "missing": 6,
+      "percent": 88.7,
       "examples": [
-        "docs/case-studies/auth-polish-v2-case-study.md",
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
-        "docs/case-studies/training-plan-v2-case-study.md",
-        "docs/case-studies/ui-audit-baseline-burndown.md"
+        "docs/case-studies/stats-v2-case-study.md",
+        "docs/case-studies/training-plan-v2-case-study.md"
       ]
     },
     "work_type": {
-      "present": 47,
+      "present": 53,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 45,
-      "missing": 2,
-      "percent": 95.7,
+      "present": 50,
+      "missing": 3,
+      "percent": 94.3,
       "examples": [
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "success_metrics": {
-      "present": 45,
-      "missing": 2,
-      "percent": 95.7,
+      "present": 50,
+      "missing": 3,
+      "percent": 94.3,
       "examples": [
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "kill_criteria": {
-      "present": 45,
+      "present": 51,
       "missing": 2,
-      "percent": 95.7,
+      "percent": 96.2,
       "examples": [
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "state_case_study_linkage": {
-      "present": 45,
+      "present": 47,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 1,
-    "snapshots_available": 0,
+    "snapshot_files_available": 2,
+    "snapshots_available": 1,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": false,
     "status": "baseline_only",
@@ -76,13 +78,13 @@
       "id": "date_written",
       "title": "Case studies missing a written-date marker",
       "severity": "low",
-      "count": 5,
+      "count": 6,
       "examples": [
-        "docs/case-studies/auth-polish-v2-case-study.md",
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
-        "docs/case-studies/training-plan-v2-case-study.md",
-        "docs/case-studies/ui-audit-baseline-burndown.md"
+        "docs/case-studies/stats-v2-case-study.md",
+        "docs/case-studies/training-plan-v2-case-study.md"
       ],
       "recommended_next_step": "Touch the missing files opportunistically and add the missing date written field explicitly."
     },
@@ -90,8 +92,9 @@
       "id": "dispatch_pattern",
       "title": "Case studies missing explicit dispatch-pattern declaration",
       "severity": "low",
-      "count": 2,
+      "count": 3,
       "examples": [
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
@@ -101,8 +104,9 @@
       "id": "success_metrics",
       "title": "Case studies missing success-metric restatement",
       "severity": "low",
-      "count": 2,
+      "count": 3,
       "examples": [
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
@@ -123,7 +127,7 @@
       "id": "integrity_trend_window",
       "title": "Integrity-cycle history is too short for trustworthy documentation-debt trends",
       "severity": "medium",
-      "count": 3,
+      "count": 2,
       "examples": [],
       "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful."
     }

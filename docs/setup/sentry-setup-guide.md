@@ -3,6 +3,7 @@
 > **Priority:** High (pre-launch blocker)
 > **Adapter location:** `.claude/integrations/sentry/`
 > **Consuming skills:** /ops, /cx, /qa
+> **Last revised:** 2026-04-29 — added Step 0 (CLI tooling), corrected MCP transport from SSE → HTTP, added `claude mcp add` form
 
 ## Why Sentry?
 
@@ -10,6 +11,25 @@ The `crash_free_rate` guardrail (>99.5%) in `health-status.json` currently shows
 - `/ops health` — crash-free rate, error counts, top issues
 - `/cx analyze` — crash-correlated user impact signals
 - `/qa security` — error regression detection
+
+## Step 0: Install CLI Tooling (added 2026-04-29)
+
+Two CLIs sit alongside the SDK and are required for source-map upload, release tagging, and the wizard-driven SDK bootstrap. As of 2026-04-29 both are installed on this machine at the latest stable.
+
+```bash
+# sentry-cli — release tagging, source-map / dSYM upload, debug symbols
+# Installed via Sentry's official script (NOT Homebrew); lands at /usr/local/bin
+curl -sL https://sentry.io/get-cli/ | bash
+
+# sentry-wizard — interactive SDK bootstrapper for iOS / Apple platforms
+brew install getsentry/tools/sentry-wizard
+
+# Verify
+sentry-cli --version       # expected: 3.4.x or newer (current: 3.4.1)
+sentry-wizard --version    # expected: 6.12.x or newer (current: 6.12.0)
+```
+
+> **Update behaviour:** `sentry-cli` is NOT brew-managed even on Apple Silicon — `brew outdated` will not flag it. Re-run the same `curl` command to update. `sentry-wizard` is brew-managed and updates with `brew upgrade getsentry/tools/sentry-wizard`.
 
 ## Step 1: Create Sentry Project
 
@@ -71,20 +91,24 @@ export SENTRY_PROJECT_SLUG="fitme"
 
 ## Step 4: Connect Sentry MCP
 
-The Sentry hosted MCP is available at `https://mcp.sentry.dev`. Add to Claude Code MCP config:
+The Sentry hosted MCP is available at `https://mcp.sentry.dev/mcp` (HTTP transport — the older `/sse` SSE endpoint is deprecated). Register it once at user scope via the Claude CLI:
 
-```json
-{
-  "mcpServers": {
-    "sentry": {
-      "url": "https://mcp.sentry.dev/sse",
-      "env": {
-        "SENTRY_AUTH_TOKEN": "sntrys_YOUR_TOKEN_HERE"
-      }
-    }
-  }
-}
+```bash
+claude mcp add --transport http --scope user sentry https://mcp.sentry.dev/mcp
 ```
+
+This appends an entry to `~/.claude.json` (or `~/.config/claude/...` on some setups). The first call from any session will trigger an OAuth handshake — authenticate with your Sentry account; the token is stored locally and reused.
+
+Verify with:
+
+```bash
+claude mcp list | grep sentry
+# Expected: "sentry: https://mcp.sentry.dev/mcp (HTTP) - ✓ Connected"  (after first auth)
+```
+
+If you prefer to wire the auth token explicitly (e.g. for CI), use `-H "Authorization: Bearer $SENTRY_AUTH_TOKEN"` instead of relying on the OAuth flow.
+
+> **As of 2026-04-29:** the Sentry MCP server is registered (user scope) on this machine and shows up in `claude mcp list`. First-call OAuth has not yet been completed; that happens automatically the first time a skill consults the adapter.
 
 ## Step 5: Verify Integration
 
