@@ -45,10 +45,19 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+# Mechanism A (v7.8 §4.1): per-gate coverage tracking. Imported at module
+# level so test_check_state_schema.py keeps working — gate functions accept
+# an optional `coverage` kwarg defaulting to None (no behavior change when
+# absent), and `validate_file` instantiates a tracker that persists across
+# all the per-file calls within one validation run.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gate_coverage import GateCoverage  # noqa: E402
+
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FEATURES_DIR = REPO_ROOT / ".claude" / "features"
 LOGS_DIR = REPO_ROOT / ".claude" / "logs"
+GATE_COVERAGE_LEDGER = LOGS_DIR / "gate-coverage.jsonl"
 
 # Path to the T6 cu_v2 validator (hyphen prevents a direct import; we use
 # importlib.util — same pattern used in test_check_state_schema.py to load
@@ -244,7 +253,9 @@ def _recent_phase_event(log: dict, target_phase: str | None, freshness_min: int)
     return None
 
 
-def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
+def check_cache_hits_empty_post_v6(
+    state: dict, *, coverage: GateCoverage | None = None
+) -> list[dict]:
     """Reject current_phase=complete when post-Mechanism-C feature has empty cache_hits[].
 
     Closes the writer-path adoption gap (issue #140). v7.6 hooks check key
@@ -269,6 +280,9 @@ def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
     check fails, or an empty list if the check passes or is not applicable.
     """
     findings: list[dict] = []
+    GATE = "CACHE_HITS_EMPTY_POST_V6"
+    if coverage is not None:
+        coverage.candidate(GATE)
     # Dual-read: prefer the canonical `created_at`; fall back to legacy `created`
     # for features that haven't been migrated yet. v7.9 will drop the fallback.
     created = state.get("created_at") or state.get("created", "")
@@ -277,16 +291,25 @@ def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
 
     # Pre-v6 features are exempt from the adoption requirement.
     if not created or created < V6_SHIP_DATE:
+        if coverage is not None:
+            coverage.skip(GATE, "no_created_at" if not created else "pre_v6")
         return findings
     # Pre-Mechanism-C features are exempt: the auto-instrumentation that
     # populates cache_hits[] mechanically did not exist during their
     # lifecycle. Empty array means "no instrumentation" not "instrumentation
     # failed to fire" — the gate would be a false positive.
     if created < MECHANISM_C_SHIP_DATE:
+        if coverage is not None:
+            coverage.skip(GATE, "pre_mechanism_c")
         return findings
     # Gate only fires at completion — in-progress features are not yet blocked.
     if current_phase != "complete":
+        if coverage is not None:
+            coverage.skip(GATE, "not_complete")
         return findings
+    # Past every early-return gate now — the predicate is actually evaluated.
+    if coverage is not None:
+        coverage.checked(GATE)
     # If cache_hits key is absent entirely or has entries, no finding.
     if cache_hits is None or len(cache_hits) > 0:
         return findings
@@ -311,7 +334,9 @@ def check_cache_hits_empty_post_v6(state: dict) -> list[dict]:
 EXEMPT_CASE_STUDY_TYPES = {"no_case_study_required", "pre_pm_workflow_backfill", "roundup"}
 
 
-def check_state_no_case_study_link(state: dict) -> list[dict]:
+def check_state_no_case_study_link(
+    state: dict, *, coverage: GateCoverage | None = None
+) -> list[dict]:
     """Reject current_phase=complete without case_study link or exempt tag.
 
     Closes the write-time linkage gate (STATE_NO_CASE_STUDY_LINK). A feature
@@ -329,8 +354,15 @@ def check_state_no_case_study_link(state: dict) -> list[dict]:
     check fails, or an empty list if the check passes or is not applicable.
     """
     findings: list[dict] = []
+    GATE = "STATE_NO_CASE_STUDY_LINK"
+    if coverage is not None:
+        coverage.candidate(GATE)
     if state.get("current_phase") != "complete":
+        if coverage is not None:
+            coverage.skip(GATE, "not_complete")
         return findings
+    if coverage is not None:
+        coverage.checked(GATE)
     has_link = bool(state.get("case_study") or state.get("parent_case_study"))
     is_exempt = state.get("case_study_type") in EXEMPT_CASE_STUDY_TYPES
     if has_link or is_exempt:
@@ -353,7 +385,9 @@ def check_state_no_case_study_link(state: dict) -> list[dict]:
     return findings
 
 
-def check_cu_v2_schema(state: dict) -> list[dict]:
+def check_cu_v2_schema(
+    state: dict, *, coverage: GateCoverage | None = None
+) -> list[dict]:
     """Validate the cu_v2 field in a state dict using the T6 validator.
 
     Delegates to validate-cu-v2.py's `validate()` function (importlib.util
@@ -363,6 +397,15 @@ def check_cu_v2_schema(state: dict) -> list[dict]:
     Returns a list with one finding dict per violation (code=CU_V2_INVALID),
     or an empty list when the state passes or is exempt.
     """
+    GATE = "CU_V2_INVALID"
+    if coverage is not None:
+        coverage.candidate(GATE)
+    if "cu_v2" not in state:
+        if coverage is not None:
+            coverage.skip(GATE, "field_absent")
+        return []
+    if coverage is not None:
+        coverage.checked(GATE)
     mod = _get_validate_cu_v2()
     raw_errors: list[str] = mod.validate(state)
     if not raw_errors:
@@ -379,13 +422,24 @@ def check_cu_v2_schema(state: dict) -> list[dict]:
     ]
 
 
-def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
+def validate_file(
+    path: Path,
+    *,
+    enforce_transition: bool = True,
+    coverage: GateCoverage | None = None,
+) -> list[str]:
     """Return a list of human-readable violation messages for one file.
 
     `enforce_transition` controls whether the phase-transition checks (1a,
     1b) run. Those only make sense during a commit (staged mode), not on the
     periodic full-corpus scan — so the `--staged` caller passes True, while
     `--all` scans disable them.
+
+    `coverage` (Mechanism A, v7.8 §4.1) is an optional accumulator. When
+    provided, every gate records candidate / checked / skipped(reason)
+    stats so a downstream meta-check can detect silent-pass failures (a
+    gate that runs every commit but never exercises real data). Default
+    None preserves backward-compat for existing tests.
     """
     errors: list[str] = []
     if not path.exists():
@@ -398,6 +452,9 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
         return errors
 
     # Check 1: SCHEMA_DRIFT — legacy `phase` key
+    if coverage is not None:
+        coverage.candidate("SCHEMA_DRIFT_LEGACY_PHASE")
+        coverage.checked("SCHEMA_DRIFT_LEGACY_PHASE")
     if "phase" in d and "current_phase" not in d:
         errors.append(
             f"{path}: uses legacy `phase` key; canonical is `current_phase`. "
@@ -410,6 +467,9 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     # `created_at`, producing 0/46 effective gate coverage (silent-pass).
     # Migration done in chore/framework-honesty-fixes-2026-05-01; this check
     # blocks regression. Same pattern as the legacy-`phase` check above.
+    if coverage is not None:
+        coverage.candidate("SCHEMA_DRIFT_LEGACY_CREATED")
+        coverage.checked("SCHEMA_DRIFT_LEGACY_CREATED")
     if "created" in d and "created_at" not in d:
         errors.append(
             f"{path}: uses legacy `created` key; canonical is `created_at`. "
@@ -426,6 +486,12 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     # backfilled across all 46 features, a follow-up will promote this from
     # format-only to presence-required.
     fv = d.get("framework_version")
+    if coverage is not None:
+        coverage.candidate("FRAMEWORK_VERSION_FORMAT")
+        if fv is None:
+            coverage.skip("FRAMEWORK_VERSION_FORMAT", "field_absent")
+        else:
+            coverage.checked("FRAMEWORK_VERSION_FORMAT")
     if fv is not None and not _FRAMEWORK_VERSION_RE.match(str(fv)):
         errors.append(
             f"{path}: framework_version = {fv!r} is not in canonical "
@@ -435,23 +501,37 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
         )
 
     # Check 2: PR_NUMBER_UNRESOLVED — phases.merge.pr_number must resolve
+    if coverage is not None:
+        coverage.candidate("PR_NUMBER_UNRESOLVED")
     merge_obj = (d.get("phases") or {}).get("merge")
     if isinstance(merge_obj, dict):
         pr_number = merge_obj.get("pr_number")
         if isinstance(pr_number, int):
             pr_cache = _load_pr_cache()
-            if pr_cache is not None and pr_number not in pr_cache:
-                errors.append(
-                    f"{path}: phases.merge.pr_number = {pr_number} does not "
-                    f"resolve on GitHub. Fix the number or remove the field "
-                    f"before advancing to the merge phase."
-                )
+            if pr_cache is None:
+                if coverage is not None:
+                    coverage.skip("PR_NUMBER_UNRESOLVED", "gh_unavailable")
+            else:
+                if coverage is not None:
+                    coverage.checked("PR_NUMBER_UNRESOLVED")
+                if pr_number not in pr_cache:
+                    errors.append(
+                        f"{path}: phases.merge.pr_number = {pr_number} does not "
+                        f"resolve on GitHub. Fix the number or remove the field "
+                        f"before advancing to the merge phase."
+                    )
+        else:
+            if coverage is not None:
+                coverage.skip("PR_NUMBER_UNRESOLVED", "field_absent")
+    else:
+        if coverage is not None:
+            coverage.skip("PR_NUMBER_UNRESOLVED", "field_absent")
 
     # Check 5: CACHE_HITS_EMPTY_POST_V6 — post-v6 features must have at least
     # one cache_hits[] entry recorded before reaching current_phase=complete.
     # This runs on both staged and full-corpus scans (unlike the phase-transition
     # checks it doesn't need a diff — it inspects current state only).
-    for finding in check_cache_hits_empty_post_v6(d):
+    for finding in check_cache_hits_empty_post_v6(d, coverage=coverage):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )
@@ -459,7 +539,7 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     # Check 7: STATE_NO_CASE_STUDY_LINK — current_phase=complete requires a
     # case_study link or an EXEMPT_CASE_STUDY_TYPES tag. Closes the v7.7 M2
     # linkage gate (T11). Runs on both staged and full-corpus scans.
-    for finding in check_state_no_case_study_link(d):
+    for finding in check_state_no_case_study_link(d, coverage=coverage):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )
@@ -468,14 +548,20 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
     # Pre-v6 features that lack the cu_v2 key are exempt (validator returns []).
     # Runs on both staged and full-corpus scans (no diff needed — checks content
     # only).
-    for finding in check_cu_v2_schema(d):
+    for finding in check_cu_v2_schema(d, coverage=coverage):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )
 
     # Checks 3 + 4: phase-transition gates. Skip if we're doing a full-corpus
     # scan — those checks only make sense at commit time.
+    if coverage is not None:
+        coverage.candidate("PHASE_TRANSITION_NO_LOG")
+        coverage.candidate("PHASE_TRANSITION_NO_TIMING")
     if not enforce_transition:
+        if coverage is not None:
+            coverage.skip("PHASE_TRANSITION_NO_LOG", "not_staged_mode")
+            coverage.skip("PHASE_TRANSITION_NO_TIMING", "not_staged_mode")
         return errors
 
     new_phase = d.get("current_phase") or d.get("phase")
@@ -486,11 +572,16 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
 
     phase_changed = (new_phase != old_phase) and new_phase is not None
     if not phase_changed:
+        if coverage is not None:
+            coverage.skip("PHASE_TRANSITION_NO_LOG", "no_phase_change")
+            coverage.skip("PHASE_TRANSITION_NO_TIMING", "no_phase_change")
         return errors
 
     feature_slug = _feature_slug_from_path(path)
 
     # Check 3 (PHASE_TRANSITION_NO_LOG): a fresh log event must exist.
+    if coverage is not None:
+        coverage.checked("PHASE_TRANSITION_NO_LOG")
     if feature_slug is not None:
         log = _load_feature_log(feature_slug)
         if log is None:
@@ -511,6 +602,8 @@ def validate_file(path: Path, *, enforce_transition: bool = True) -> list[str]:
             )
 
     # Check 4 (PHASE_TRANSITION_NO_TIMING): timing fields must be populated.
+    if coverage is not None:
+        coverage.checked("PHASE_TRANSITION_NO_TIMING")
     phases_block = d.get("phases")
     timing = d.get("timing") or {}
     timing_phases = timing.get("phases") if isinstance(timing, dict) else None
@@ -590,9 +683,32 @@ def main() -> int:
         or os.environ.get("FORCE_TRANSITION_CHECKS") == "1"
     )
 
+    # Mechanism A (v7.8 §4.1): instantiate per-run gate-coverage tracker.
+    # Pass to validate_file so each gate records candidate / checked /
+    # skipped(reason) stats. Ledger gets one event per gate at the end of
+    # the run. Skip ledger writes in CI ($GITHUB_ACTIONS=true) so PR-bot
+    # noise stays out — local + scheduled runs are the data source.
+    coverage = GateCoverage(mode=mode)
+
     all_errors: list[str] = []
     for p in files:
-        all_errors.extend(validate_file(p, enforce_transition=enforce_transition))
+        all_errors.extend(
+            validate_file(p, enforce_transition=enforce_transition, coverage=coverage)
+        )
+
+    # Persist the coverage ledger. Failure to write must not affect the
+    # exit code — Mechanism A is advisory in v7.8; the gate verdict is
+    # what gates the commit. Tests opt out via GATE_COVERAGE_LEDGER_DISABLED=1.
+    # The ledger path is gitignored — CI writes are no-ops as far as git is
+    # concerned, but the longitudinal data accumulates on local + scheduled
+    # cron runs (the data source for the v7.9 GATE_COVERAGE_ZERO meta-check).
+    skip_ledger = os.environ.get("GATE_COVERAGE_LEDGER_DISABLED") == "1"
+    if not skip_ledger:
+        try:
+            coverage.write_jsonl(GATE_COVERAGE_LEDGER)
+        except OSError as e:
+            print(f"warning: gate-coverage ledger write failed ({e})",
+                  file=sys.stderr)
 
     if all_errors:
         print(f"✗ STATE_SCHEMA: {len(all_errors)} violation(s) "
