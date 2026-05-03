@@ -1,0 +1,11 @@
+# Custom merge drivers (v7.8 Mechanism E — bridge design §4.5)
+#
+# Append-only ledgers use union-dedup-by-key to resolve cross-branch /
+# cross-worktree conflicts automatically. Install the driver in this
+# clone with: make install-hooks (or directly: scripts/install-merge-drivers.sh).
+#
+# Without the driver installed, these files fall back to git's default
+# 3-way merge (which produces conflict markers requiring manual resolution
+# — that's the failure mode HADF Phase 2 surfaced).
+.claude/shared/measurement-adoption-history.json merge=union-dedup-by-key
+.claude/shared/documentation-debt.json merge=union-dedup-by-key

@@ -145,12 +145,15 @@ runtime-smoke:
 	python3 scripts/runtime-smoke-gate.py --profile "$(PROFILE)" --mode "$(MODE)" $(if $(XCODE_CONFIGURATION),--configuration "$(XCODE_CONFIGURATION)",) $(if $(filter 1,$(DRY_RUN)),--dry-run,)
 
 # Install git hooks into .git/hooks/ by pointing core.hooksPath at .githooks/.
-# Idempotent — run after clone to activate the pre-commit schema check.
+# Also installs custom merge drivers (v7.8 Mechanism E) so append-only
+# ledger conflicts auto-resolve via union-dedup-by-key.
+# Idempotent — run after clone to activate both layers.
 install-hooks:
 	git config core.hooksPath .githooks
 	@echo "Git hooks installed (core.hooksPath = .githooks)."
 	@echo "Pre-commit will reject state.json files with legacy \`phase\` key."
 	@echo "Emergency bypass: git commit --no-verify"
+	@bash scripts/install-merge-drivers.sh
 
 # Install npm dependencies (style-dictionary)
 install:
