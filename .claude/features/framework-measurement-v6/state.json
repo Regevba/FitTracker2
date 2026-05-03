@@ -7,6 +7,7 @@
   "branch": "feature/framework-measurement-v6",
   "current_phase": "complete",
   "work_type": "feature",
+  "framework_version": "v6.0",
   "has_ui": false,
   "requires_analytics": false,
   "github_issue_number": 81,
