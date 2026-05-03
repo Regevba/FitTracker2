@@ -1,10 +1,16 @@
-"""Trace Replayer — feeds .jsonl traces through the Orchid pipeline."""
+"""Trace Replayer — feeds .jsonl traces through the Orchid pipeline.
+
+v1.5 extension (per docs/superpowers/specs/2026-05-03-orchid-v1-5-design.md §3):
+trace events may carry an optional ``tier`` field on the ``task`` object.
+Missing fields default to ``T2`` (Declared) so v1 traces continue to replay
+unchanged.
+"""
 from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from orchestrator import Orchestrator
-from units.types import TaskDescriptor, WorkType, DesignScope
+from units.types import DesignScope, TaskDescriptor, Tier, WorkType
 from metrics import composite_score
 
 _WORK_TYPE_MAP = {
@@ -19,6 +25,25 @@ _SCOPE_MAP = {
     "interaction": DesignScope.INTERACTION,
     "full_redesign": DesignScope.FULL_REDESIGN,
 }
+# v1.5 — string label → Tier mapping. Unknown labels fall back to T2 (default).
+_TIER_MAP = {
+    "T1": Tier.T1,
+    "T2": Tier.T2,
+    "T3": Tier.T3,
+    "t1": Tier.T1,
+    "t2": Tier.T2,
+    "t3": Tier.T3,
+    1: Tier.T1,
+    2: Tier.T2,
+    3: Tier.T3,
+}
+
+
+def _parse_tier(value) -> Tier:
+    """Tolerant tier parser (string label, integer code, or missing)."""
+    if value is None:
+        return Tier.T2
+    return _TIER_MAP.get(value, Tier.T2)
 
 
 @dataclass
@@ -102,4 +127,5 @@ class TraceReplayer:
             scope_tier=_SCOPE_MAP.get(task_data.get("scope_tier", "text_only"), DesignScope.TEXT_ONLY),
             novelty_flag=task_data.get("novelty_flag", False),
             phase=task_data.get("phase", "implementation"),
+            data_tier=_parse_tier(task_data.get("tier")),  # v1.5 — defaults to T2 when absent
         )
