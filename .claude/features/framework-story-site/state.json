@@ -6,6 +6,11 @@
   "current_phase": "closed",
   "work_type": "feature",
   "framework_version": "v6.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": true,
   "requires_analytics": false,
   "repo_scope": "new-external",
@@ -127,5 +132,8 @@
     }
   },
   "case_study": "docs/case-studies/framework-story-site-case-study.md",
-  "case_study_showcase": "04-case-studies/14-framework-story-site.md"
+  "case_study_showcase": "04-case-studies/14-framework-story-site.md",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

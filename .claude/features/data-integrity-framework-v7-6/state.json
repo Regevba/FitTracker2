@@ -4,6 +4,11 @@
   "display_name": "Data Integrity Framework v7.6 \u2014 Mechanical Enforcement",
   "work_type": "framework",
   "framework_version": "v7.6",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "current_phase": "complete",
   "status": "complete",
   "created_at": "2026-04-25T04:03:43Z",
@@ -121,5 +126,8 @@
       "by": "codex",
       "note": "Reconciled state after v7.6 commits were confirmed on origin/main; remaining cleanup is tracked on framework-v7.6-pending-fixes."
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

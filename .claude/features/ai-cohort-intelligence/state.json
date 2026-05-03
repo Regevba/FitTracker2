@@ -9,6 +9,11 @@
   "branch": null,
   "current_phase": "complete",
   "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": null,
@@ -66,5 +71,8 @@
       "kill_criteria": "<10% acceptance after 6 months \u2192 simplify to rules"
     }
   },
-  "classification_note": "Both roundup (six-features-roundup) and pre-PM-workflow backfill \u2014 roundup is authoritative; backfill_note retained as legacy-status context."
+  "classification_note": "Both roundup (six-features-roundup) and pre-PM-workflow backfill \u2014 roundup is authoritative; backfill_note retained as legacy-status context.",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

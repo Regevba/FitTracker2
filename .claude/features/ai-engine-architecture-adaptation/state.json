@@ -7,6 +7,11 @@
   "branch": null,
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "enhancement",
   "has_ui": true,
   "requires_analytics": true,
@@ -252,5 +257,8 @@
       ],
       "completed_at": "2026-04-15T20:28:35Z"
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

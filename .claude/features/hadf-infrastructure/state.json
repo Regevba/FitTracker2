@@ -5,6 +5,11 @@
   "display_name": "HADF \u2014 Hardware-Aware Dispatch Framework",
   "work_type": "feature",
   "framework_version": "v6.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "current_phase": "complete",
   "status": "complete",
   "created_at": "2026-04-16T00:00:00Z",
@@ -210,5 +215,8 @@
       "note": "Full HADF T2\u2013T9 reconcile. All 9 tasks' artifacts had been shipped in PR #82 (2026-04-16 \u2192 2026-04-17) but state.json was never updated \u2014 the feature sat at phase=implementation / 1 of 9 completed for 3-4 days until today's reconciliation. Case study (hadf-hardware-aware-dispatch-case-study.md) already exists and is linked at top-level case_study + case_study_showcase fields. Feature transitioning implementation \u2192 complete at actual delivery truth."
     }
   ],
-  "updated": "2026-04-20T00:00:00Z"
+  "updated": "2026-04-20T00:00:00Z",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

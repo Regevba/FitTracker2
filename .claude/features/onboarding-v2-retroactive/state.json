@@ -5,6 +5,11 @@
   "branch": "feature/onboarding-v2-retroactive",
   "current_phase": "tasks",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "enhancement",
   "parent_feature": "onboarding",
   "has_ui": true,
@@ -86,5 +91,8 @@
         "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_onboarding_v2_retroactive.md"
       ]
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

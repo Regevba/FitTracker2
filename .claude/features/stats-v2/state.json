@@ -10,6 +10,11 @@
   "branch": "feature/stats-v2",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -369,5 +374,8 @@
         "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_stats_v2.md"
       ]
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

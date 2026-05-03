@@ -6,6 +6,11 @@
   "branch": "feature/settings-v2",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -133,5 +138,8 @@
       "note": "Category B reconcile (open-items audit 2026-04-20): 0 tasks and 5 phases flipped to completed to match shipped reality. Covered by M-1 SettingsView decomposition case study (docs/case-studies/m-1-settings-decomposition-case-study.md). SettingsView 1170 \u2192 294 lines. PRs #122-#125. Tasks reconciled 2026-04-20."
     }
   ],
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

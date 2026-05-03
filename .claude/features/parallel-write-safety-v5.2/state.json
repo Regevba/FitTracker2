@@ -8,6 +8,11 @@
   "work_type": "feature",
   "work_subtype": "framework_infrastructure",
   "framework_version": "v5.2",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": false,
   "requires_analytics": false,
   "parent_feature": null,
@@ -125,5 +130,8 @@
       "reconciled": true,
       "note": "Shipped per docs/case-studies/parallel-write-safety-v5.2-case-study.md. T6 ('Push + update case study') was the final step and the case study DOES exist on main \u2014 just state.json's T6 was never flipped. Reconciling T6 to completed. Also normalizing T1-T5 status from 'complete' \u2192 'completed' for schema consistency."
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }
