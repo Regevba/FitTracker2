@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -154,6 +154,19 @@ install-hooks:
 	@echo "Pre-commit will reject state.json files with legacy \`phase\` key."
 	@echo "Emergency bypass: git commit --no-verify"
 	@bash scripts/install-merge-drivers.sh
+
+# Mechanism D (v7.8 §4.4) — assert that every gate listed in the
+# .githooks/pre-commit header is implemented in scripts/check-state-schema.py
+# or scripts/check-case-study-preflight.py. Catches header-vs-code drift.
+pre-commit-self-test:
+	python3 scripts/pre-commit-self-test.py
+
+# Mechanism F (v7.8 §4.6) — read-only smartlog of in-flight feature work.
+# Joins .claude/features/*/state.json + .claude/shared/agent-leases.json +
+# `git for-each-ref refs/heads/feature/*` into one ASCII table (default)
+# or JSON (--format=json) for the UCC dashboard.
+membrane-status:
+	python3 scripts/membrane-status.py
 
 # Install npm dependencies (style-dictionary)
 install:
