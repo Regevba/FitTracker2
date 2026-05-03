@@ -49,6 +49,10 @@ struct GoalsPreferencesSettingsScreen: View {
                 }
             }
 
+            // smart-reminders-behavioral-learning PR 1 (Task 12).
+            // Self-contained section; defaults OFF, no consumer wired yet.
+            BehavioralLearningSettingsView()
+
             SettingsSectionCard(title: "Stats Carousel", eyebrow: "Preferences") {
                 SettingsSupportingText("Weight and Body Fat stay pinned on the stats screen. Choose which extra metrics appear in Track More.")
 

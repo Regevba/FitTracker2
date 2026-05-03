@@ -53,6 +53,7 @@
 		AC1000000000000000000009 /* ConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000009 /* ConsentView.swift */; };
 		AC1000000000000000000010 /* DeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000010 /* DeleteAccountView.swift */; };
 		AC1000000000000000000011 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000011 /* ExportDataView.swift */; };
+		BL1000002000000000000001 /* BehavioralLearningSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */; };
 		TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA01 /* TrainingPlanView.swift */; };
 		TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA02 /* ExerciseRowView.swift */; };
 		TP100000000000000000AA03 /* SetRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA03 /* SetRowView.swift */; };
@@ -340,6 +341,7 @@
 		AC2000000000000000000009 /* ConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentView.swift; sourceTree = "<group>"; };
 		AC2000000000000000000010 /* DeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountView.swift; sourceTree = "<group>"; };
 		AC2000000000000000000011 /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
+		BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningSettingsView.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA1 /* AITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITypes.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA2 /* AIEngineClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEngineClient.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA3 /* FoundationModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationModelService.swift; sourceTree = "<group>"; };
@@ -1045,6 +1047,7 @@
 			isa = PBXGroup;
 			children = (
 				AC2000000000000000000010 /* DeleteAccountView.swift */,
+				BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */,
 				DD000002000000000000AA02 /* DesignSystemCatalogView.swift */,
 				AC2000000000000000000011 /* ExportDataView.swift */,
 				CC000002000000000000AA0D /* SettingsView.swift */,
@@ -1376,6 +1379,7 @@
 				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 				AC1000000000000000000010 /* DeleteAccountView.swift in Sources */,
 				AC1000000000000000000011 /* ExportDataView.swift in Sources */,
+				BL1000002000000000000001 /* BehavioralLearningSettingsView.swift in Sources */,
 				SE100000000000000000AA01 /* SettingsView.swift in Sources */,
 				SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */,
 				SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */,
