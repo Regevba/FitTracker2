@@ -1,7 +1,7 @@
 # SSD-Only Development Setup Guide
 
 > **Goal:** Make sure 100% of FitTracker2 development work happens on the external SSD (`/Volumes/DevSSD`) so the local machine's internal disk stays clean.
-> **Date:** 2026-04-06
+> **Date:** 2026-04-06 (last revised 2026-04-29 — paths aligned to actual `XcodeData/` layout, added Sentry CLI tools and dev-env audit playbook)
 > **Audience:** You, on your Mac, after pulling the latest commits.
 
 ---
@@ -24,8 +24,10 @@ This guide ensures that **every other tool you use** (Xcode, Homebrew, Python, n
 
 1. External SSD mounted at `/Volumes/DevSSD` (verify with `ls /Volumes/DevSSD`)
 2. FitTracker2 repo cloned to `/Volumes/DevSSD/FitTracker2`
-3. macOS with Xcode 26.x installed
-4. Node 20+ and Python 3.12+ available
+3. macOS with Xcode 26.x installed (current confirmed: 26.4 / Swift 6.3)
+4. Node 20+ and Python 3.12+ available (current confirmed: Node 24.14 via nvm, Python 3.12.13 via Homebrew)
+5. Homebrew on Apple Silicon path `/opt/homebrew` (current confirmed: 5.1.x)
+6. CLI fleet installed: `gh`, `vercel`, `supabase`, `claude`, `sentry-cli`, `sentry-wizard` (see Step 12 below for the Sentry CLIs)
 
 ---
 
@@ -66,10 +68,10 @@ This redirects ALL Xcode DerivedData (not just FitTracker2) to the SSD:
 
 ```bash
 # Create the directory
-mkdir -p /Volumes/DevSSD/.xcode-shared/DerivedData
+mkdir -p /Volumes/DevSSD/XcodeData/DerivedData
 
 # Tell Xcode to use it as the default location
-defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation -string "/Volumes/DevSSD/.xcode-shared/DerivedData"
+defaults write com.apple.dt.Xcode IDECustomDerivedDataLocation -string "/Volumes/DevSSD/XcodeData/DerivedData"
 defaults write com.apple.dt.Xcode IDEUseCustomDerivedDataLocation -bool YES
 
 # Verify
@@ -81,38 +83,41 @@ defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation
 ### Step 5: Override Xcode Archives Location
 
 ```bash
-mkdir -p /Volumes/DevSSD/.xcode-shared/Archives
-defaults write com.apple.dt.Xcode IDECustomDistributionArchivesLocation -string "/Volumes/DevSSD/.xcode-shared/Archives"
+mkdir -p /Volumes/DevSSD/XcodeData/Archives
+defaults write com.apple.dt.Xcode IDECustomDistributionArchivesLocation -string "/Volumes/DevSSD/XcodeData/Archives"
 defaults write com.apple.dt.Xcode IDEUseCustomDistributionArchivesLocation -bool YES
 ```
 
-### Step 6: iOS Simulator Data — KEEP ON INTERNAL DISK
+### Step 6: Override iOS Simulator Data Location
 
-> **DO NOT redirect `~/Library/Developer/CoreSimulator` to the SSD on macOS 26+.**
-> Earlier versions of this guide instructed a symlink to `/Volumes/DevSSD/.xcode-shared/CoreSimulator`. That approach is broken on macOS 26: `CoreSimulatorService` is denied write access (TCC `Operation not permitted`) when the device set lives on an external `noowners` volume, and every device creation fails with *"Device was allocated but was stuck in creation state."*
->
-> If you have an existing symlink from before, check it: run `ls -la ~/Library/Developer/CoreSimulator`. If the entry starts with `l` and points at `/Volumes/DevSSD/...`, it's the broken setup. Repair steps are in [`coresimulator-stuck-in-creation.md`](coresimulator-stuck-in-creation.md).
-
-Keep the simulator data on the internal disk where macOS expects it. Simulator data is not part of the project's build pipeline (the `.build/` directory holds everything that matters), so the disk-space win from moving it is small and the friction is large.
-
-If your internal disk is genuinely tight, prune simulator data instead of moving it:
+iOS Simulator stores all app installs, screenshots, and preferences under `~/Library/Developer/CoreSimulator`. This can grow to 10+ GB. Move it to the SSD:
 
 ```bash
-xcrun simctl delete unavailable        # remove sims with no matching runtime
-xcrun simctl erase all                  # wipe app data from every sim, keep the devices
+# Stop all simulators first
+xcrun simctl shutdown all
+
+# Move existing CoreSimulator data to SSD
+mv ~/Library/Developer/CoreSimulator /Volumes/DevSSD/XcodeData/CoreSimulator
+
+# Create symlink so Xcode still finds it
+ln -s /Volumes/DevSSD/XcodeData/CoreSimulator ~/Library/Developer/CoreSimulator
+
+# Verify
+ls -la ~/Library/Developer/CoreSimulator
+# Should show: lrwxr-xr-x ... CoreSimulator -> /Volumes/DevSSD/XcodeData/CoreSimulator
 ```
 
-A typical FitTracker dev box ends up with 5–8 active sims totalling 5–10 GB. That fits comfortably on internal storage.
+**WARNING:** If the SSD is unplugged, Xcode and simulators will fail. Always plug the SSD in before launching Xcode.
 
 ### Step 7: Override npm Global Cache
 
 ```bash
 # Set the global npm cache location
-npm config set cache /Volumes/DevSSD/.npm-cache
+npm config set cache /Volumes/DevSSD/XcodeData/npm-cache
 
 # Verify
 npm config get cache
-# Expected: /Volumes/DevSSD/.npm-cache
+# Expected: /Volumes/DevSSD/XcodeData/npm-cache
 ```
 
 The project-local `.npmrc` already points npm cache to `.build/npm-cache`, but this global override catches any tools that bypass the project setting.
@@ -121,15 +126,15 @@ The project-local `.npmrc` already points npm cache to `.build/npm-cache`, but t
 
 ```bash
 # Add to your shell profile (~/.zshrc or ~/.bash_profile)
-echo 'export HOMEBREW_CACHE="/Volumes/DevSSD/.homebrew-cache"' >> ~/.zshrc
-echo 'export HOMEBREW_TEMP="/Volumes/DevSSD/.homebrew-temp"' >> ~/.zshrc
+echo 'export HOMEBREW_CACHE="/Volumes/DevSSD/XcodeData/homebrew-cache"' >> ~/.zshrc
+echo 'export HOMEBREW_TEMP="/Volumes/DevSSD/XcodeData/homebrew-temp"' >> ~/.zshrc
 
 # Reload shell
 source ~/.zshrc
 
 # Verify
 echo $HOMEBREW_CACHE
-# Expected: /Volumes/DevSSD/.homebrew-cache
+# Expected: /Volumes/DevSSD/XcodeData/homebrew-cache
 ```
 
 ### Step 9: Override Python pip Cache
@@ -139,22 +144,43 @@ echo $HOMEBREW_CACHE
 mkdir -p ~/.pip
 cat > ~/.pip/pip.conf <<EOF
 [global]
-cache-dir = /Volumes/DevSSD/.pip-cache
+cache-dir = /Volumes/DevSSD/XcodeData/pip-cache
 EOF
 
 # Verify
 pip config list
-# Expected: global.cache-dir='/Volumes/DevSSD/.pip-cache'
+# Expected: global.cache-dir='/Volumes/DevSSD/XcodeData/pip-cache'
 ```
 
 ### Step 10: Override CocoaPods Cache (if you use CocoaPods)
 
 ```bash
 # CocoaPods cache (FitTracker2 doesn't use Pods, but if you have other projects)
-mkdir -p /Volumes/DevSSD/.cocoapods-cache
-echo 'export CP_HOME_DIR="/Volumes/DevSSD/.cocoapods-cache"' >> ~/.zshrc
+mkdir -p /Volumes/DevSSD/XcodeData/cocoapods-cache
+echo 'export CP_HOME_DIR="/Volumes/DevSSD/XcodeData/cocoapods-cache"' >> ~/.zshrc
 source ~/.zshrc
 ```
+
+### Step 11.5: Install Sentry CLI Tooling (added 2026-04-29)
+
+Two Sentry tools sit alongside the SDK and are required for source-map upload, release tagging, and the wizard-driven SDK bootstrap:
+
+```bash
+# sentry-cli — release tagging, source-map upload, debug-symbol upload
+# Installed via Sentry's official script (NOT Homebrew); lands at /usr/local/bin
+curl -sL https://sentry.io/get-cli/ | bash
+
+# sentry-wizard — interactive SDK bootstrapper (we'll use this in the Sentry guide)
+brew install getsentry/tools/sentry-wizard
+
+# Verify
+sentry-cli --version       # expected: 3.4.x or newer
+sentry-wizard --version    # expected: 6.12.x or newer
+```
+
+> **Note:** `sentry-cli` is NOT brew-managed even on Apple Silicon — the official installer lands it at `/usr/local/bin/sentry-cli`. Update with the same `curl` command; `brew outdated` will not flag it.
+
+The full Sentry SDK + MCP wiring (DSN, auth token, MCP server, app `SentrySDK.start(...)` call) lives in [`docs/setup/sentry-setup-guide.md`](sentry-setup-guide.md).
 
 ### Step 11: Initial Project Build (Creates `.build/` on SSD)
 
@@ -198,10 +224,10 @@ Once setup is complete, daily development is normal:
 ```bash
 cd /Volumes/DevSSD/FitTracker2
 make verify-local           # Runs all checks, output goes to .build/
-xcodebuild build ...        # DerivedData goes to /Volumes/DevSSD/.xcode-shared/DerivedData
-npm install                 # Cache goes to /Volumes/DevSSD/.npm-cache (global) or .build/npm-cache (project)
-brew install <package>      # Cache goes to /Volumes/DevSSD/.homebrew-cache
-pip install <package>       # Cache goes to /Volumes/DevSSD/.pip-cache
+xcodebuild build ...        # DerivedData goes to /Volumes/DevSSD/XcodeData/DerivedData
+npm install                 # Cache goes to /Volumes/DevSSD/XcodeData/npm-cache (global) or .build/npm-cache (project)
+brew install <package>      # Cache goes to /Volumes/DevSSD/XcodeData/homebrew-cache
+pip install <package>       # Cache goes to /Volumes/DevSSD/XcodeData/pip-cache
 ```
 
 **Nothing should write to your internal disk except:**
@@ -235,7 +261,7 @@ grep -rn "/tmp/FitTracker\|/tmp/fittracker" --include="Makefile" --include="*.sw
 
 ```bash
 defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation
-# Expected: /Volumes/DevSSD/.xcode-shared/DerivedData
+# Expected: /Volumes/DevSSD/XcodeData/DerivedData
 
 defaults read com.apple.dt.Xcode IDEUseCustomDerivedDataLocation
 # Expected: 1
@@ -245,20 +271,18 @@ defaults read com.apple.dt.Xcode IDEUseCustomDerivedDataLocation
 
 ```bash
 npm config get cache
-# Expected: /Volumes/DevSSD/.npm-cache
+# Expected: /Volumes/DevSSD/XcodeData/npm-cache
 
 # In project directory:
 cat .npmrc
 # Expected: cache=.build/npm-cache
 ```
 
-### Check 5: Simulator Path Is A Real Directory (Not A Symlink)
+### Check 5: Simulator Symlink
 
 ```bash
 ls -la ~/Library/Developer/CoreSimulator
-# Expected: a regular directory entry (drwxr-xr-x ...).
-# NOT acceptable: a symlink (lrwxr-xr-x ... -> /Volumes/DevSSD/...).
-# If you see a symlink, follow coresimulator-stuck-in-creation.md.
+# Expected: symlink → /Volumes/DevSSD/XcodeData/CoreSimulator
 ```
 
 ### Check 6: After a Full Build
@@ -271,7 +295,7 @@ make verify-local
 du -sh .build/
 # Expected: hundreds of MB to several GB (build artifacts, all on SSD)
 
-du -sh /Volumes/DevSSD/.xcode-shared/DerivedData
+du -sh /Volumes/DevSSD/XcodeData/DerivedData
 # Expected: hundreds of MB (Xcode build cache, on SSD)
 
 # Internal disk should NOT have grown:
@@ -301,11 +325,14 @@ Some macOS system files MUST remain on the internal disk:
 
 The SSD got unplugged. Plug it back in and restart Xcode.
 
-### "Simulator won't launch" / "Device was allocated but was stuck in creation state"
+### "Simulator won't launch"
 
-Almost always caused by a leftover symlink from an older version of this guide that pointed `~/Library/Developer/CoreSimulator` at the SSD. macOS 26 blocks `CoreSimulatorService` from writing to external `noowners` volumes, so device creation fails with TCC `Operation not permitted`.
+The CoreSimulator symlink is broken (SSD missing). Re-create the symlink:
 
-Full diagnostic and repair playbook: [`coresimulator-stuck-in-creation.md`](coresimulator-stuck-in-creation.md).
+```bash
+xcrun simctl shutdown all
+ln -sfn /Volumes/DevSSD/XcodeData/CoreSimulator ~/Library/Developer/CoreSimulator
+```
 
 ### "make verify-local fails with permission errors"
 
@@ -344,10 +371,9 @@ If you ever want to undo the SSD redirects:
 defaults delete com.apple.dt.Xcode IDECustomDerivedDataLocation
 defaults delete com.apple.dt.Xcode IDEUseCustomDerivedDataLocation
 
-# If a leftover symlink exists from an older version of this guide, replace it
-# with a real directory (does not apply to fresh setups — Step 6 is now no-op):
-[ -L ~/Library/Developer/CoreSimulator ] && rm ~/Library/Developer/CoreSimulator
-mkdir -p ~/Library/Developer/CoreSimulator/Devices
+# Remove CoreSimulator symlink (but you'll lose simulator data!)
+rm ~/Library/Developer/CoreSimulator
+mkdir ~/Library/Developer/CoreSimulator
 
 # Remove npm global cache override
 npm config delete cache
@@ -366,13 +392,13 @@ After completing this setup, **EVERYTHING related to FitTracker2 development liv
 |------|----------|
 | Source code | `/Volumes/DevSSD/FitTracker2/` |
 | Project build artifacts | `/Volumes/DevSSD/FitTracker2/.build/` |
-| Xcode DerivedData (global) | `/Volumes/DevSSD/.xcode-shared/DerivedData/` |
-| Xcode Archives | `/Volumes/DevSSD/.xcode-shared/Archives/` |
-| iOS Simulators | **`~/Library/Developer/CoreSimulator/`** (internal — see Step 6) |
-| npm global cache | `/Volumes/DevSSD/.npm-cache/` |
+| Xcode DerivedData (global) | `/Volumes/DevSSD/XcodeData/DerivedData/` |
+| Xcode Archives | `/Volumes/DevSSD/XcodeData/Archives/` |
+| iOS Simulators | `/Volumes/DevSSD/XcodeData/CoreSimulator/` |
+| npm global cache | `/Volumes/DevSSD/XcodeData/npm-cache/` |
 | Project npm cache | `/Volumes/DevSSD/FitTracker2/.build/npm-cache/` |
-| Homebrew cache | `/Volumes/DevSSD/.homebrew-cache/` |
-| Python pip cache | `/Volumes/DevSSD/.pip-cache/` |
+| Homebrew cache | `/Volumes/DevSSD/XcodeData/homebrew-cache/` |
+| Python pip cache | `/Volumes/DevSSD/XcodeData/pip-cache/` |
 | AI engine venv | `/Volumes/DevSSD/FitTracker2/.build/ai-venv/` |
 | SPM cache | `/Volumes/DevSSD/FitTracker2/.build/spm-cache/` |
 | Clang module cache | `/Volumes/DevSSD/FitTracker2/.build/clang-cache/` |
@@ -385,7 +411,7 @@ After completing this setup, **EVERYTHING related to FitTracker2 development liv
 
 - **Periodically clean Xcode caches:**
   ```bash
-  rm -rf /Volumes/DevSSD/.xcode-shared/DerivedData/*
+  rm -rf /Volumes/DevSSD/XcodeData/DerivedData/*
   ```
   Xcode will rebuild on next launch.
 
@@ -408,10 +434,95 @@ After completing this setup, **EVERYTHING related to FitTracker2 development liv
 
 ---
 
+## Dev Environment Audit Playbook (added 2026-04-29)
+
+Run this after a fresh clone, after macOS / Xcode upgrades, or any time you suspect drift from the SSD layout. The whole sweep is non-destructive read-only until the final two fix commands.
+
+### 1. Read-only audit (safe — no writes)
+
+```bash
+# Versions of every required CLI
+xcodebuild -version
+swift --version | head -2
+brew --version | head -1
+git --version
+node --version && npm --version
+python3.12 --version
+gh --version | head -1
+vercel --version
+supabase --version
+claude --version
+sentry-cli --version
+sentry-wizard --version
+
+# SSD redirects in effect
+defaults read com.apple.dt.Xcode IDECustomDerivedDataLocation
+defaults read com.apple.dt.Xcode IDEUseCustomDerivedDataLocation        # must be 1
+defaults read com.apple.dt.Xcode IDECustomDistributionArchivesLocation
+defaults read com.apple.dt.Xcode IDEUseCustomDistributionArchivesLocation  # must be 1
+ls -la ~/Library/Developer/CoreSimulator | head -1                       # must be a symlink → SSD
+npm config get cache                                                     # must be on /Volumes/DevSSD
+echo "$HOMEBREW_CACHE"                                                   # must be on /Volumes/DevSSD
+pip config list | grep cache-dir                                         # must be on /Volumes/DevSSD
+
+# Project state
+ls -d ai-engine/.build/ai-venv && ai-engine/.build/ai-venv/bin/python --version
+for d in . dashboard website; do [ -d "$d/node_modules" ] && echo "$d: present" || echo "$d: missing"; done
+
+# Update budget
+brew outdated
+npm outdated -g
+```
+
+### 2. Apply updates (writes)
+
+```bash
+brew update && brew upgrade            # all formulae
+npm update -g                          # all node globals (claude, vercel, npm, etc.)
+curl -sL https://sentry.io/get-cli/ | bash   # sentry-cli (NOT brew-managed)
+```
+
+### 3. Repair common drift (writes)
+
+```bash
+# Re-enable the "use custom location" toggles if they were cleared
+defaults write com.apple.dt.Xcode IDEUseCustomDerivedDataLocation -bool YES
+defaults write com.apple.dt.Xcode IDEUseCustomDistributionArchivesLocation -bool YES
+
+# Restore the CoreSimulator symlink if it ever becomes a real directory again
+xcrun simctl shutdown all
+mv ~/Library/Developer/CoreSimulator /Volumes/DevSSD/XcodeData/CoreSimulator.recovered
+ln -sfn /Volumes/DevSSD/XcodeData/CoreSimulator ~/Library/Developer/CoreSimulator
+```
+
+### 4. Most recent audit baseline
+
+| Component | Version (2026-04-29) |
+|---|---|
+| Xcode | 26.4 (build 17E192) |
+| Swift | 6.3 |
+| Homebrew | 5.1.8 |
+| Git | 2.50.1 (Apple) |
+| Node (active via nvm) | 24.14.0 |
+| Node (brew, shadowed) | 25.9.0 |
+| npm | 11.13.0 |
+| Python (brew) | 3.12.13 |
+| gh | 2.88.1 |
+| vercel | 52.0.0 |
+| supabase | 2.95.4 |
+| claude | 2.1.123 |
+| sentry-cli | 3.4.1 |
+| sentry-wizard | 6.12.0 |
+
+If any version drops below these, the "Apply updates" step above brings it forward.
+
+---
+
 ## See Also
 
 - `Makefile` — verifies project paths use `.build/`
 - `.npmrc` — npm cache redirect
 - `.gitignore` — excludes `.build/` from git
+- [`docs/setup/sentry-setup-guide.md`](sentry-setup-guide.md) — Sentry SDK + MCP wiring
 - `docs/master-plan/session-summary-2026-04-06.md` — session summary
 - `docs/design-system/closure-summary-2026-04-06.md` — design system closure
