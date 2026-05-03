@@ -110,11 +110,34 @@ Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
 
 A scheduled +7d agent will append the verification + journal entry once both fire.
 
-**Known gap (2026-04-30 audit, inputs to v7.8):** the `CACHE_HITS_EMPTY_POST_V6` write-time gate is implemented in `scripts/check-state-schema.py:225-266` but cannot fire on 0 of 46 features in the repo because (a) the gate reads `state.get("created_at", "")` and 43 of 46 state.json files use the legacy `created` field instead, and (b) of the 2 files that use `created_at`, neither has `current_phase: complete`. Effective gate coverage = **0%**. Issue #140 is closed in spec but open in practice. Full audit + closure plan in agent memory at `project_framework_gaps_audit_2026_04_30.md` and `project_framework_v7_8_research_plan.md`.
+**Known gap (2026-04-30 audit) — RESOLVED in v7.8:** the `CACHE_HITS_EMPTY_POST_V6` write-time gate had 0% effective coverage at v7.7 ship because 43/46 state.json files used the legacy `created` key while the gate read `created_at`. Closed by:
 
-Spec: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
-Plan: [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
-Live case study with the full live append-only journal + Section 99 synthesis: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md).
+- PR #169 (2026-05-01) migrated 43 files from `created` → `created_at`.
+- PR #173 (2026-05-02) added a defensive dual-read parser + Mechanism C scaffolding.
+- PRs #185 + #186 (2026-05-03) backfilled `framework_version` to canonical `vX.Y` on all 46 features.
+- PR #187 + #188 + #189 (2026-05-03) shipped Mechanism A coverage-asserting gates, Mechanism C session attribution wiring, and Mechanism E git merge driver. Effective gate coverage now visible in `.claude/logs/gate-coverage.jsonl`.
+
+## v7.8 Bridge (advisory mode, shipped 2026-05-02 → 2026-05-03)
+
+v7.8 closes the v7.7 silent-pass via two surfaces specified jointly with v7.9:
+
+**Surface 1 — Silent-pass prevention (Mechanisms A, B, C, D):**
+
+- **Mechanism A — Coverage-asserting gates** (PR #187): every write-time gate emits `{candidates, checked, skipped, skip_reasons}` to `.claude/logs/gate-coverage.jsonl`. v7.9 will promote a `GATE_COVERAGE_ZERO` meta-check to enforced once ≥7 days of stats accumulate.
+- **Mechanism B — Schema field-rename detection + dual-read** (PR #173 + #185 + #186): `created` ∪ `created_at` dual-read for the migration window; canonical `framework_version` field on 46/46 features.
+- **Mechanism C — PostToolUse:Read hook** (PR #173 + #188): `scripts/observe-cache-hit.py` auto-captures Read events → `.claude/logs/_session-<id>.events.jsonl`. `/pm-workflow` now writes `.claude/active-feature` on entry; SessionStart hook surfaces it; new advisory check `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (15th cycle-time check code) flags features where session events show Reads but state.json::cache_hits[] is empty.
+- **Mechanism D — Pre-commit hook header self-audit** (deferred to M3 PR-6).
+
+**Surface 2 — Inter-agent awareness (Mechanisms E, F):**
+
+- **Mechanism E — Custom git merge driver** (PR #189): `scripts/merge-driver-dedup.py` auto-resolves merge conflicts on append-only ledgers (`measurement-adoption-history.json`, `documentation-debt.json`) via union-dedup-by-key. `make install-hooks` registers the driver; `.gitattributes` opts the ledgers in.
+- **Mechanism F — Membrane status advisory** (deferred to M3 PR-6).
+
+**Spec:** [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md).
+**Predecessor v7.7 spec:** [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
+**Predecessor v7.7 plan:** [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
+**v7.7 case study:** [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md).
+**v7.8 case study (live append-only journal):** [`docs/case-studies/framework-v7-8-bridge-case-study.md`](docs/case-studies/framework-v7-8-bridge-case-study.md).
 
 ## Known Mechanical Limits
 
@@ -339,7 +362,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
 
 ### Skills ecosystem
-- **DEV-only framework guide (v1.0 → v7.6):** [`docs/architecture/dev-guide-v1-to-v7-6.md`](docs/architecture/dev-guide-v1-to-v7-6.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes, and operational walkthroughs (adding a feature, extending a check code, bumping the framework version).
+- **DEV-only framework guide (v1.0 → v7.7 → v7.8):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](docs/architecture/dev-guide-v1-to-v7-7.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes, and operational walkthroughs (adding a feature, extending a check code, bumping the framework version). v7.8 mechanisms (A coverage gates, C session attribution, E ledger merge driver) appended in [`framework-v7-8-bridge-case-study.md`](../case-studies/framework-v7-8-bridge-case-study.md) until the dev-guide is bumped to v7-8.
 - Skills one-pager: `docs/skills/README.md`
 - Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
 - Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → v3.0 → v4.0 → v4.1)
