@@ -83,21 +83,26 @@
 | 72 | PM Artifacts Audit (full sync) | sync | 2026-04-26 | Linear (5 backfill FIT-44/45/46/47/48 + FIT-22/FIT-6 Done) + Notion (v7.5+v7.6 sub-page + Project Context & Status v5.1→v7.6) synced live via MCP. 19 PRDs remediated for rule #2 + readiness-score-v2.md created. |
 | 73 | Post-v6 Measurement Backfill | commit a0deb3a | 2026-04-27 | Lifted 1/9 → 2/9 fully-adopted post-v6. 3 zero-adopted features intentionally left untouched (no source data; impartiality rule). `cache_hits` Class B gap unchanged. |
 | 74 | Framework v7.7 Validity Closure | shipped | 2026-04-28 | Closes A1-A5+B1-B2+C1 from post-v7.6 gap inventory. 5 new gates: 4 write-time pre-commit hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) + 1 cycle-time check + 1 advisory (`TIER_TAG_LIKELY_INCORRECT`). Framework reaches **25 mechanical gates + 1 advisory**. state↔case-study linkage 95.5% → 100%. Pause on 6 dependent features lifted. |
+| 75 | Case-Study Presentation Refactor | fitme-story PR #8 + FT2 PR #146 | 2026-04-28 | Alternative A shipped: SummaryCard → DataKey → KeyNumbersChart → KillCriterionBanner → DeferredItemsList → narrative. New project rule: every case study includes a visual aid. 25 case studies backfilled, validator gates 51/51 MDX. Completion case study at `docs/case-studies/case-study-presentation-refactor-case-study.md`. |
+| 76 | Stats v2 — final ship | PR #164 | 2026-04-30 | Resumed post-v7.7. T2/T5/T6/T8/T9 shipped via 47f8bd5/027abf0/checklist-fill (T1/T3/T4/T7/T10 had shipped 2026-04-10 via PR #76). Admin-merge despite Build-and-Test red on parallel-clone sim env-flake (Bug FIT-59); pm-framework + 8 other checks green. Quarantine fix shipped via PR #165. |
+| 77 | Auth Polish v2 | PR #163 | 2026-05-01 | 18/18 PRD tasks: forgot-password recovery (Block A), biometric activation/unlock (Block B), Google Sign-In (Block C, confirmed pre-existing), analytics + tests (Block D). 25 tests added; D3-gap-2 / D3-gap-3 (Cooldown + SetNewPassword XCUI fixtures) deferred behind DI seam. Build-and-Test env-flake accepted. Case study `docs/case-studies/auth-polish-v2-case-study.md`. |
+| 78 | Framework Honesty Fixes (v7.7 silent-pass closure) | PR #168 + #169 | 2026-05-01 | 43 state.json files migrated `created` → `created_at` so `CACHE_HITS_EMPTY_POST_V6` actually fires. Added SCHEMA_DRIFT and FRAMEWORK_VERSION_FORMAT regression checks. Fixed broken downstream consumer `measurement-adoption-report.py`. 3 near-misses caught by user-requested end-to-end verification. Case study `framework-honesty-fixes-2026-05-01-case-study.md`. |
+| 79 | Framework v7.8 PR-1 — Mechanism C scaffolding | PR #173 | 2026-05-02 | First v7.8 mechanism: PostToolUse:Read hook + `scripts/observe-cache-hit.py` writes session-ledger events. Advisory mode (capture only); v7.9 promotes to enforced after ≥7d calibration. Plus gate-predicate fix that lifts effective coverage of `CACHE_HITS_EMPTY_POST_V6` from 0/46 to all post-2026-05-02 features. |
+| 80 | State.json reconciliation pass (3 features) | PR #174 | 2026-05-02 | 3 features (auth-polish-v2, stats-v2, framework-honesty-fixes) flipped `current_phase: implementation` → `complete` with full timing/log/PR-number backfill. Closes the "ship via PR + never transition state.json" silent-pass surface for these features (separate from the v7.7 created-field gate; this was non-transition silent-pass). All 47/47 state.json now schema-clean. |
+| 81 | Untrack `.claude/settings.local.json` | PR #175 | 2026-05-02 | Stop perpetual cross-branch drift. File already gitignored by user-global + repo `.claude/` rule but had been orphan-tracked in the index since first commit. `git rm --cached`; file stays in working trees. Eliminates the per-rebase stash dance. |
 
 ---
 
 ## In Progress
 
-| Item | Phase | Notes |
+| Item | state.json phase | Notes |
 |------|-------|-------|
-| Unified Control Center | implementation | Astro→Next.js `/control-room/*` in fitme-story. T1-T17 done; T18+ blocked on T2 baseline. T43-T54 framework-health enhancement designed (spec 5f1775f). |
-| Auth runtime polish v2 (resumed post-v7.7) | implementation | Phase 3 UX research/spec/build prompt delivered. E2E runtime validation pending. Branch `feature/auth-polish-v2`. |
-| Push notifications (resumed post-v7.7) | implementation | Linear FIT-23. Pause lifted 2026-04-28. |
-| App Store assets (resumed post-v7.7) | implementation | Linear FIT-17. Pause lifted 2026-04-28. |
-| Import training plan (resumed post-v7.7) | implementation | Linear FIT-24. Pause lifted 2026-04-28. |
-| Onboarding v2 retroactive (resumed post-v7.7) | tasks | v2/ subdirectory convention validation pilot. Pause lifted 2026-04-28. |
-| Stats v2 (resumed post-v7.7) | tasks | Pause lifted 2026-04-28. |
-| Case-study presentation refactor (NEW 2026-04-28) | enhancement / **design locked** | **Alternative A locked 2026-04-28.** Component order: SummaryCard → DataKey → KeyNumbersChart (visual aid, **required**) → KillCriterionBanner → DeferredItemsList → narrative. New project rule: every case study must include at least one visual aid (graph or indicator). Default = `<KeyNumbersChart />` (auto from frontmatter); `visual_aid:` frontmatter field overrides with named component. Branch `feature/case-study-presentation` (FitTracker2). Preview: fitme-story `preview/case-study-presentation`. Production rollout pending /pm-workflow Tasks. |
+| Unified Control Center | implementation | Astro→Next.js `/control-room/*` in fitme-story. T1-T17 done; T18+ blocked on T2 baseline (≥7 days TTC data — earliest unblock 2026-05-05). T43-T54 framework-health enhancement designed (spec 5f1775f). |
+| Push notifications | implementation (paused) | Linear FIT-23. v7.7 freeze still recorded as active in `state.json.paused.lifted_at = None` despite eligibility — never formally lifted. 4 open tasks: first-workout-completed trigger, Settings UI (Phase 2), APNs (Phase 2), 5 PRD primary metrics still 0. |
+| App Store assets | implementation (paused) | Linear FIT-17. `state.json.paused.lifted_at = None` — never formally lifted. Pipeline scaffolding shipped; no specific open_tasks listed in state.json. |
+| Import training plan | implementation (paused) | Linear FIT-24. `state.json.paused.lifted_at = None` — never formally lifted. **5 explicit wire-up tasks**: ImportSourcePickerView/PreviewView not wired into Settings/Training nav; `confirmImport()` persistence missing; HISTORICAL header still in place; 6 `import_*` analytics events declared but never `track()`'d. |
+| Onboarding v2 retroactive | tasks (paused) | `state.json.paused.lifted_at = None` — never formally lifted. Phase never advanced past task enumeration. v2/ subdirectory convention validation pilot. |
+| Smart Reminders Behavioral Learning (sub-feature) | spec + PR-1 plan committed | Branch `feature/smart-reminders-behavioral-learning` at `1959d4f`. Spec at `docs/superpowers/specs/2026-05-01-smart-reminders-behavioral-learning-design.md`; plan at `docs/superpowers/plans/2026-05-01-smart-reminders-behavioral-learning-pr1.md` (15 tasks). Awaiting execution-mode pick before Task 1. |
 
 ---
 
