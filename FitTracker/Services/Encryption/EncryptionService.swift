@@ -819,6 +819,11 @@ final class EncryptedDataStore: ObservableObject {
                 try fm.removeItem(at: fileURL)
             }
         }
+        // smart-reminders-behavioral-learning Task 11 — extend GDPR Article 17
+        // wipe to the behavioural-learning posterior + cohort prior cache.
+        // Both surfaces are UserDefaults-backed; they don't share fileURLs above.
+        BehavioralLearningStore().deleteAllUserData()
+        CohortPriorCache().deleteAllUserData()
     }
 
     // ── CRUD ─────────────────────────────────────────────

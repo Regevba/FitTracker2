@@ -121,6 +121,27 @@ final class BehavioralLearningStoreTests: XCTestCase {
         }
     }
 
+    // MARK: - 5) EncryptedDataStore.deletePersistedData wipes behavioral-learning state (Task 11)
+
+    func testEncryptedDataStore_deletePersistedData_wipesBehavioralLearning() throws {
+        // Seed observation data on the standalone store.
+        let store = BehavioralLearningStore()
+        store.recordObservation(type: .nutritionGap, hour: 16, tapped: true)
+        XCTAssertEqual(store.observationCount(type: .nutritionGap), 1)
+
+        // Trigger the GDPR Article 17 path through EncryptedDataStore.
+        // deletePersistedData() now also wipes BehavioralLearningStore +
+        // CohortPriorCache (smart-reminders-behavioral-learning Task 11).
+        let dataStore = EncryptedDataStore()
+        try dataStore.deletePersistedData()
+
+        XCTAssertEqual(
+            store.observationCount(type: .nutritionGap),
+            0,
+            "GDPR Article 17 — deletePersistedData() must wipe BehavioralLearningStore"
+        )
+    }
+
     // MARK: - Helpers
 
     private func clearAllStoreDefaults() {
