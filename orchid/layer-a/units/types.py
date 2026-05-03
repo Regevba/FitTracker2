@@ -46,15 +46,45 @@ class MESIState(IntEnum):
     INVALID = 3
 
 
+# v1.5 — define Tier early so TaskDescriptor can default it (spec §3).
+class Tier(IntEnum):
+    """Data-quality tier propagated across TileLink user[1:0] (v1.5 spec §3).
+
+    Wire encoding (immutable from v1.5 onward):
+        00 -> reserved (must-be-zero on transmit, ignore on receive)
+        01 -> T1 Instrumented (high confidence)
+        10 -> T2 Declared (medium confidence) — default for v1 backward compat
+        11 -> T3 Narrative (low confidence)
+
+    Worst-case-on-output: max(Tier) returns the LOWEST confidence
+    (T3 > T2 > T1) per spec §3.
+    """
+    T1 = 1
+    T2 = 2
+    T3 = 3
+
+    @classmethod
+    def reserved(cls) -> int:
+        return 0
+
+
 @dataclass(frozen=True)
 class TaskDescriptor:
-    """13-bit input bus to U1 Dispatch Scorer (Section 10.3)."""
+    """13-bit input bus to U1 Dispatch Scorer (Section 10.3).
+
+    v1.5 extension: `data_tier` is a 2-bit data-quality tier (T1/T2/T3)
+    that propagates across TileLink `user[1:0]` (v1.5 spec §3). It is
+    independent of `scope_tier` (DesignScope) and `tier` in
+    DispatchDecision (ModelTier). The default is T2 (Declared) so existing
+    v1 traces without an explicit tier replay correctly.
+    """
     view_count: int = 0          # 4 bits (0-15)
     new_types_count: int = 0     # 4 bits (0-15)
     scope_tier: DesignScope = DesignScope.TEXT_ONLY  # 2 bits
     novelty_flag: bool = False   # 1 bit
     work_type: WorkType = WorkType.FEATURE  # 2 bits
     phase: str = "implementation"  # not part of U1 bus, used by U2
+    data_tier: Tier = Tier.T2   # 2 bits — v1.5 spec §3
 
 
 @dataclass(frozen=True)
@@ -109,29 +139,8 @@ class CycleCount:
 
 # ============================================================================
 # v1.5 additions — per spec §3, §5, §6, §2.2, Appendix A
+# (Tier defined earlier in the file so TaskDescriptor can default it.)
 # ============================================================================
-
-
-class Tier(IntEnum):
-    """Data-quality tier propagated across TileLink user[1:0] (spec §3).
-
-    The 2-bit wire encoding matches Appendix C bit 4:
-        00 -> reserved (must-be-zero on transmit, ignore on receive)
-        01 -> T1 Instrumented (high confidence)
-        10 -> T2 Declared (medium confidence)
-        11 -> T3 Narrative (low confidence)
-
-    Worst-case-on-output rule (U7 systolic array): output tier = max(input tiers).
-    Note: max(Tier) corresponds to the LOWEST confidence (T3 > T2 > T1).
-    """
-    T1 = 1
-    T2 = 2
-    T3 = 3
-
-    @classmethod
-    def reserved(cls) -> int:
-        """The 00 wire encoding — never a valid Tier value."""
-        return 0
 
 
 class AssertionMode(IntEnum):
