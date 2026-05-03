@@ -6,6 +6,7 @@
   "updated": "2026-04-20T00:00:00Z",
   "branch": null,
   "current_phase": "complete",
+  "framework_version": "v5.0",
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
