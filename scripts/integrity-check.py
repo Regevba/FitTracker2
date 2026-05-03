@@ -364,6 +364,75 @@ _DATE_WRITTEN_PAT = re.compile(
 _TIER_TAG_PAT = re.compile(r"\bT[123]\b[\s—:.\)\(]")
 
 
+def check_cache_hits_auto_instrumentation_inactive() -> list[dict]:
+    """Advisory: features with attributed Read events but empty cache_hits[].
+
+    v7.8 Mechanism C wiring (T11 — bridge design §4.3, item 6). The
+    PostToolUse:Read hook (`scripts/observe-cache-hit.py`) appends Read
+    events to `.claude/logs/_session-<id>.events.jsonl` tagged with the
+    `.claude/active-feature` lockfile value. This advisory aggregates
+    those attributions and flags features where session events show Reads
+    but `state.json::cache_hits[]` is empty — an early warning that
+    Mechanism C's auto-collection isn't propagating to state.json (which
+    is what v7.9 will promote to enforced via the dual-write contract).
+
+    Severity: ADVISORY only — doesn't affect exit code or finding_count.
+    Silent on a fresh install with no session events yet.
+    """
+    findings: list[dict] = []
+    logs_dir = REPO_ROOT / ".claude" / "logs"
+    features_dir = REPO_ROOT / ".claude" / "features"
+    if not logs_dir.exists() or not features_dir.exists():
+        return findings
+
+    reads_by_feature: dict[str, int] = {}
+    for ledger in logs_dir.glob("_session-*.events.jsonl"):
+        try:
+            text = ledger.read_text()
+        except OSError:
+            continue
+        for line in text.splitlines():
+            if not line.strip():
+                continue
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if event.get("tool_name") != "Read":
+                continue
+            feature = (event.get("active_feature") or "").strip()
+            if not feature:
+                continue
+            reads_by_feature[feature] = reads_by_feature.get(feature, 0) + 1
+
+    for feature, count in sorted(reads_by_feature.items()):
+        state_path = features_dir / feature / "state.json"
+        if not state_path.exists():
+            continue
+        try:
+            state = json.loads(state_path.read_text())
+        except json.JSONDecodeError:
+            continue
+        cache_hits = state.get("cache_hits")
+        if isinstance(cache_hits, list) and len(cache_hits) > 0:
+            continue
+        findings.append({
+            "feature": feature,
+            "severity": "ADVISORY",
+            "code": "CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE",
+            "message": (
+                f"{feature}: session ledgers attribute {count} Read "
+                f"event(s) to this feature, but state.json::cache_hits[] "
+                f"is empty/absent. v7.8 Mechanism C captures session "
+                f"events; state.json::cache_hits requires manual "
+                f"scripts/log-cache-hit.py until v7.9 promotes "
+                f"observe-cache-hit.py to dual-write. See bridge design "
+                f"§4.3 + .claude/active-feature lockfile."
+            ),
+        })
+    return findings
+
+
 def check_tier_tags_advisory() -> list[dict]:
     """Run validate-tier-tags.py; emit findings as ADVISORY (not failure).
 
@@ -481,10 +550,14 @@ def build_snapshot(snapshot_trigger: str) -> dict:
     findings.extend(audit_case_study_tier_tags())
 
     # v7.7 M3 T18: advisory tier-tag correctness heuristic (14th check code).
-    # Advisory findings are included in findings[] for observability, but are
-    # NOT counted in finding_count so they don't trigger regression detection
-    # or non-zero exit. Promotion to gating at +7d T20 review.
-    advisory_findings = check_tier_tags_advisory()
+    # v7.8 M2 PR-3 T11: advisory cache_hits auto-instrumentation early-warning
+    # (15th check code). Both are ADVISORY severity — included in findings[]
+    # for observability but NOT counted in finding_count (preserves regression
+    # detection / exit code).
+    advisory_findings = (
+        check_tier_tags_advisory()
+        + check_cache_hits_auto_instrumentation_inactive()
+    )
     all_findings = findings + advisory_findings
 
     non_advisory_count = len(findings)
