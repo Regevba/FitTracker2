@@ -79,7 +79,14 @@
     "weekly_status_cron": true,
     "unclosable_gaps_documented": true,
     "mechanical_phase_transition_enforcement": true,
-    "mechanical_case_study_preflight": true
+    "mechanical_case_study_preflight": true,
+    "mechanical_cache_hits_post_v6_gate": true,
+    "mechanical_cu_v2_validation": true,
+    "mechanical_state_case_study_linkage": true,
+    "mechanical_case_study_field_validation": true,
+    "advisory_tier_tag_correctness": true,
+    "post_tool_use_observation_hooks": true,
+    "auto_cache_hit_instrumentation_advisory": true
   },
   "v7_1_integrity_cycle": {
     "description": "72-hour recurring audit of .claude/features/*/state.json. Catches 'shipped but unreconciled' drift within 72h of occurrence instead of weeks later.",
