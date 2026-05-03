@@ -565,14 +565,19 @@ The key invariant: in full isolation, the shared layer is NEVER read between cha
    - If yes: resume from `current_phase`
    - If no: create the directory and initialize state.json from the schema below
 
-2. Read the current state and announce: "Feature **$0** — currently in Phase {N}: {name}. Here's what needs to happen next."
+2. **Write the active-feature lockfile** (v7.8 Mechanism C wiring): write `$0` to `.claude/active-feature`. The PostToolUse:Read hook (`scripts/observe-cache-hit.py`) reads this file to attribute auto-collected cache events to the correct feature in `.claude/logs/_session-<id>.events.jsonl`. Without it, session events accumulate with empty `active_feature` strings and the v7.9 attribution-based gates won't see them.
+   ```bash
+   echo "$0" > .claude/active-feature
+   ```
 
-3. **GitHub Issue sync check:**
+3. Read the current state and announce: "Feature **$0** — currently in Phase {N}: {name}. Here's what needs to happen next."
+
+4. **GitHub Issue sync check:**
    - If `github_issue_number` is set in state.json: verify the issue exists and check its `phase:*` label
    - If no `github_issue_number`: search GitHub Issues for this feature by title. If found, store the number. If not found, offer to create one.
    - If state.json `current_phase` doesn't match the GitHub Issue's `phase:*` label: ask the user which source is correct and reconcile (see Conflict Resolution in Dashboard Sync Automation)
 
-4. If the user says "Move to {phase}" or "Roll back to {phase}": execute the Manual Override procedure (see Dashboard Sync Automation) instead of the normal phase workflow.
+5. If the user says "Move to {phase}" or "Roll back to {phase}": execute the Manual Override procedure (see Dashboard Sync Automation) instead of the normal phase workflow.
 
 ## State Initialization
 
