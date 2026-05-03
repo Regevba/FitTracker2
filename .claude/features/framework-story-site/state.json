@@ -5,6 +5,7 @@
   "branch": "main",
   "current_phase": "closed",
   "work_type": "feature",
+  "framework_version": "v6.0",
   "has_ui": true,
   "requires_analytics": false,
   "repo_scope": "new-external",
