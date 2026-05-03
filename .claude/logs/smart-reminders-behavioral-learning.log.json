@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.7",
   "started_at": "2026-04-29T15:52:34Z",
-  "updated_at": "2026-04-30T13:20:14Z",
+  "updated_at": "2026-05-03T06:08:40Z",
   "events": [
     {
       "timestamp": "2026-04-29T15:52:34Z",
@@ -24,6 +24,17 @@
       "event_type": "research_checkpoint",
       "phase": "research",
       "summary": "Brainstorm session 2026-04-30 paused after locking OQ-1 through OQ-5. State.json populated with success_metrics + kill_criteria + dispatch_pattern. Sequencing approach (A/B/C), design sections, spec doc, and writing-plans still pending. See research/open-questions.md 'Decisions locked 2026-04-30' section for the full lock record.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-03T06:08:40Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks phase started 2026-05-03. Spec at docs/superpowers/specs/2026-05-01-smart-reminders-behavioral-learning-design.md. Plan at docs/superpowers/plans/2026-05-01-smart-reminders-behavioral-learning-pr1.md (15 tasks).",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

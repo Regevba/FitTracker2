@@ -1,22 +1,22 @@
 {
   "feature": "smart-reminders-behavioral-learning",
   "feature_name": "smart-reminders-behavioral-learning",
-  "display_name": "Smart Reminders — Behavioral Learning Layer",
+  "display_name": "Smart Reminders \u2014 Behavioral Learning Layer",
   "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
   "work_type": "feature",
-  "framework_version": "7.7",
-  "current_phase": "research",
+  "framework_version": "v7.7",
+  "current_phase": "tasks",
   "status": "in_progress",
   "created": "2026-04-29T18:55:00Z",
   "created_at": "2026-04-29T18:55:00Z",
-  "updated": "2026-04-30T00:00:00Z",
+  "updated": "2026-05-03T06:08:40Z",
   "branch": "feature/smart-reminders-behavioral-learning",
   "parent_feature": "smart-reminders",
   "predecessor_features": [
     "smart-reminders"
   ],
   "depends_on": [
-    "PR #158 — six lifecycle analytics events (MERGED 2026-04-30; ready)",
+    "PR #158 \u2014 six lifecycle analytics events (MERGED 2026-04-30; ready)",
     "Existing Supabase cohort_stats table + increment_cohort_frequency RPC (migrations 000001-000003); new read RPC + segment values to be added by this feature"
   ],
   "success_metrics": [
@@ -32,16 +32,18 @@
   "dispatch_pattern": "serial",
   "phases": {
     "research": {
-      "status": "in_progress",
+      "status": "complete",
       "started_at": "2026-04-29T18:55:00Z",
       "skipped_reason": null,
-      "note": "Brainstorm session 2026-04-30 locked OQ-1 through OQ-5; sequencing approach (A/B/C) + design sections still open. See research/open-questions.md 'Decisions locked 2026-04-30' section for the full lock record."
+      "note": "Brainstorm session 2026-04-30 locked OQ-1 through OQ-5; sequencing approach (A/B/C) + design sections still open. See research/open-questions.md 'Decisions locked 2026-04-30' section for the full lock record.",
+      "ended_at": "2026-05-03T06:08:40Z"
     },
     "prd": {
       "status": "not_started"
     },
     "tasks": {
-      "status": "not_started"
+      "status": "in_progress",
+      "started_at": "2026-05-03T06:08:40Z"
     },
     "ux_or_integration": {
       "status": "not_started"
@@ -71,6 +73,12 @@
     "phases": {
       "research": {
         "started_at": "2026-04-29T18:55:00Z",
+        "ended_at": "2026-05-03T06:08:40Z",
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "tasks": {
+        "started_at": "2026-05-03T06:08:40Z",
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0
