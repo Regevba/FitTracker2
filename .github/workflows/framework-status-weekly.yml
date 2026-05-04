@@ -33,6 +33,7 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   weekly-status:
@@ -129,23 +130,48 @@ jobs:
           print(f"delta_any={delta_any}")
           PY
 
-      - name: Commit history snapshot if changed
-        env:
-          REGRESSION: ${{ steps.compare.outputs.regression }}
+      - name: Stage history snapshot
+        id: stage
         run: |
-          git config --local user.email "framework-status@actions"
-          git config --local user.name "Framework Status Bot"
           git add .claude/shared/measurement-adoption-history.json \
                   .claude/shared/measurement-adoption.json \
                   .claude/shared/documentation-debt.json 2>/dev/null || true
           if git diff --staged --quiet; then
-            echo "No snapshot changes to commit."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No snapshot changes to stage."
           else
             today=$(date -u +%Y-%m-%d)
-            git commit -m "chore(framework-status): weekly snapshot ${today}" \
-                       -m "Automated weekly framework-status cycle. Regression=${REGRESSION}."
-            git push origin main
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "today=${today}" >> "$GITHUB_OUTPUT"
+            echo "Snapshot staged for ${today}."
           fi
+
+      - name: Open PR with weekly snapshot
+        if: steps.stage.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        env:
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore(framework-status): weekly snapshot ${{ steps.stage.outputs.today }}
+
+            Automated weekly framework-status cycle. Regression=${{ steps.compare.outputs.regression }}.
+          title: "chore(framework-status): weekly snapshot ${{ steps.stage.outputs.today }}"
+          body: |
+            Automated weekly framework-status snapshot.
+
+            - Snapshot date: `${{ steps.stage.outputs.today }}`
+            - Regression detected: `${{ steps.compare.outputs.regression }}`
+            - Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Branch protection on `main` blocks direct cron push, so the snapshot is opened as a PR.
+            Merging this PR persists the cron-tagged snapshot — required for Tier 1.1 trend mode unlock (3 cron snapshots needed).
+          branch: framework-status/${{ steps.stage.outputs.today }}
+          base: main
+          committer: Framework Status Bot <framework-status@actions>
+          author: Framework Status Bot <framework-status@actions>
+          labels: framework-status,automated
 
       - name: Package digest body
         if: always()
