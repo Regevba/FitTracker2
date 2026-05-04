@@ -162,6 +162,23 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
 - **Pre-registered honesty:** the v7.7 spec explicitly listed "Tier-tag checker FP rate stays >25% after 2 weeks → ship advisory permanently" as kill criterion 2. The actual data fired this criterion at baseline (n=1). The kill is honest, not a failure — it reflects that the checker was scoped as exploratory and the data said the explored heuristic isn't ready for gating.
 - **Tier tags applied:** check-code count + FP-rate number T1; root cause + corpus-format observation + lesson learned T3.
 
+### 2026-05-04 09:01 UTC — B1 verified (Tier 1.1 trend mode unlocked); B2 still pending
+- **Trigger:** +7d post-merge follow-up agent run (cron-gated verification). PR #144 merged 2026-04-27; PR #7 merged 2026-04-27.
+- **B1 — Tier 1.1 trend mode: VERIFIED [T1]**
+  - `make measurement-adoption` snapshot appended for 2026-05-04; history ledger now has **6 snapshots [T1]** (threshold: ≥3). Dates: 2026-04-25, 2026-04-27, 2026-04-30, 2026-05-01, 2026-05-03, 2026-05-04. Trend mode is unlocked.
+  - Per-dimension post-v6 adoption trajectory (all 6 snapshots) [T1]:
+    - `timing_wall_time`: 14.3% → 25.0% → 63.6% → 58.3% → 58.3% → **50.0%** (mixed; dip reflects feature-count denominator growth as new post-v6 features added without yet populating timing_wall_time)
+    - `per_phase_timing`: 42.9% → 62.5% → 72.7% → 66.7% → 75.0% → **78.6%** (consistent upward trend — strongest dimension)
+    - `cache_hits`: 28.6% → 25.0% → 45.5% → 41.7% → 41.7% → **42.9%** (mixed; v7.7 M1 `CACHE_HITS_EMPTY_POST_V6` gate will drive this to 100% as features complete)
+    - `cu_v2`: 57.1% → 62.5% → 63.6% → 58.3% → 58.3% → **50.0%** (mixed; same denominator-growth pattern as timing_wall_time)
+  - Merge-conflict artifact on `measurement-adoption.json` healed via `make measurement-adoption` regeneration. `unified-control-center` duplicate confirmed absent post-regeneration.
+- **B2 — Tier 3.2 trend mode: PENDING [T1]**
+  - `integrity_cycle_snapshots`: **1** (threshold: ≥3; `integrity_snapshot_files`: 2 on disk — script counted 1 valid cycle snapshot). `trend_ready: false`.
+  - 2 snapshot files exist: `2026-04-20T20-45-00Z.json`, `2026-04-28T06-32-43Z.json`. Need a 3rd 72h cycle (next expected: ~2026-05-01 to -07). B2 is still accumulating.
+- **Ledger delta [T1]:** `measurement-adoption.json`, `measurement-adoption-history.json`, `documentation-debt.json` all regenerated; commit `53f2e91` on branch `chore/framework-v7-7-post-merge-cleanup`.
+- **Status flip [T1]:** CLAUDE.md banner already updated to `v7.7, shipped 2026-04-27` by v7.8 sessions (no re-edit needed). `master-plan-2026-04-15.md` updated from "READY FOR MERGE" → "SHIPPED 2026-04-27" in this session.
+- **Tier tags applied:** snapshot count + adoption percentages + ledger commit ref T1; denominator-growth explanation T3.
+
 ## Section 99 — Synthesis (written at M5 / T31, 2026-04-27)
 
 > **Status:** v7.7 work **complete and ready for merge** as of 2026-04-27. Two pieces remain time-gated and will be verified post-merge:
