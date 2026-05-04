@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
 from app.config import Settings, get_settings
-from app.routers import training, nutrition, recovery, stats
+from app.routers import training, nutrition, recovery, reminder_cohort, stats
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,6 +30,13 @@ def create_app() -> FastAPI:
     app.include_router(nutrition.router, prefix="/v1/nutrition", tags=["nutrition"])
     app.include_router(recovery.router, prefix="/v1/recovery", tags=["recovery"])
     app.include_router(stats.router,    prefix="/v1/stats",    tags=["stats"])
+
+    # smart-reminders behavioral-learning PR-1 (FT2 PR #190 backend half).
+    # No /v1 prefix — the iOS client (FitTracker/Services/Reminders/
+    # CohortPriorClient.swift) calls `<baseURL>/reminder-cohort-event`
+    # directly with no version segment. Both endpoints are unauthenticated
+    # by design (anonymous cohort writes per spec §6 GDPR posture).
+    app.include_router(reminder_cohort.router, tags=["reminder_cohort"])
 
     @app.get("/health", tags=["infra"])
     async def health() -> dict:
