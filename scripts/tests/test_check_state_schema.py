@@ -48,7 +48,7 @@ def test_cache_hits_empty_post_v6_blocks_when_complete():
     state = {
         "feature_name": "test-feature",
         "current_phase": "complete",
-        "created_at": "2026-04-20T00:00:00Z",  # post-v6 ship date 2026-04-16
+        "created_at": "2026-05-03T00:00:00Z",  # post-Mechanism-C (2026-05-02)
         "cache_hits": []
     }
     findings = check_cache_hits_empty_post_v6(state)
@@ -104,8 +104,8 @@ def test_cache_hits_post_v6_complete_with_entries_passes():
     state = {
         "feature_name": "ok",
         "current_phase": "complete",
-        "created_at": "2026-04-20T00:00:00Z",
-        "cache_hits": [{"key": "x", "layer": "L1", "ts": "2026-04-27T00:00:00Z"}]
+        "created_at": "2026-05-03T00:00:00Z",
+        "cache_hits": [{"key": "x", "layer": "L1", "ts": "2026-05-03T00:00:00Z"}]
     }
     findings = check_cache_hits_empty_post_v6(state)
     assert findings == [], (

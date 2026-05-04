@@ -7,6 +7,11 @@
   "branch": null,
   "current_phase": "complete",
   "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": false,
   "requires_analytics": false,
   "github_issue_number": null,
@@ -38,5 +43,8 @@
       "first_review_date": null,
       "kill_criteria": "Core infrastructure"
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

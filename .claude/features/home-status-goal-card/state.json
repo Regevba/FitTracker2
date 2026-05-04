@@ -7,6 +7,11 @@
   "branch": "feature/home-status-goal-card",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "new_ui",
   "has_ui": true,
@@ -59,5 +64,8 @@
     {"id": "T7", "title": "Accessibility pass on card + detail view", "status": "complete", "completed_at": "2026-04-09T23:25:00Z"},
     {"id": "T8", "title": "Analytics tests + build verification", "status": "complete", "completed_at": "2026-04-09T23:28:00Z"},
     {"id": "T9", "title": "Full build + CI verification", "status": "complete", "completed_at": "2026-04-09T23:30:00Z"}
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

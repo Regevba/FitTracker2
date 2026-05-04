@@ -77,14 +77,39 @@ def append_cache_hit_to_state(feature: str, cache_entry: dict) -> str | None:
     state_path = FEATURES_DIR / feature / "state.json"
     if not state_path.exists():
         return None
-    d = json.loads(state_path.read_text())
-    existing = d.get("cache_hits")
-    if not isinstance(existing, list):
-        # Replace None or any non-list sentinel with a fresh list.
-        d["cache_hits"] = []
-    d["cache_hits"].append(cache_entry)
-    d["updated"] = utc_now()
-    state_path.write_text(json.dumps(d, indent=2) + "\n")
+
+    # v7.8 Mechanism I scaffolding: serialize concurrent state.json writes
+    # via fcntl.flock(LOCK_EX). flock_writer is colocated under scripts/
+    # and falls through to an unlocked write on import / lock failure.
+    import sys as _sys
+    _sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        from flock_writer import flocked  # noqa: E402
+    except ImportError:
+        flocked = None
+
+    def _do_write() -> None:
+        d = json.loads(state_path.read_text())
+        existing = d.get("cache_hits")
+        if not isinstance(existing, list):
+            d["cache_hits"] = []
+        d["cache_hits"].append(cache_entry)
+        d["updated"] = utc_now()
+        state_path.write_text(json.dumps(d, indent=2) + "\n")
+
+    if flocked is None:
+        _do_write()
+    else:
+        try:
+            with flocked(state_path):
+                _do_write()
+        except OSError as exc:
+            print(
+                f"append-feature-log: flock failed on {state_path} ({exc}); "
+                f"falling through to unlocked write",
+                file=__import__("sys").stderr,
+            )
+            _do_write()
     return str(state_path)
 
 
@@ -181,7 +206,18 @@ def main() -> int:
     events.append(event)
     log["updated_at"] = utc_now()
 
-    log_path.write_text(json.dumps(log, indent=2) + "\n")
+    # v7.8 Mechanism I scaffolding: flock-protect the log write too.
+    import sys as _sys
+    _sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        from flock_writer import flocked  # noqa: E402
+        try:
+            with flocked(log_path):
+                log_path.write_text(json.dumps(log, indent=2) + "\n")
+        except OSError:
+            log_path.write_text(json.dumps(log, indent=2) + "\n")
+    except ImportError:
+        log_path.write_text(json.dumps(log, indent=2) + "\n")
     print(str(log_path))
 
     # Tier 1.1 writer-path: mirror cache-hit data to state.json.cache_hits[]

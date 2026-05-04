@@ -7,6 +7,11 @@
   "branch": null,
   "current_phase": "implementation",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -214,5 +219,8 @@
         "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_import_training_plan.md"
       ]
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

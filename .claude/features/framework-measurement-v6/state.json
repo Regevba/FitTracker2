@@ -8,6 +8,11 @@
   "current_phase": "complete",
   "work_type": "feature",
   "framework_version": "v6.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": false,
   "requires_analytics": false,
   "github_issue_number": 81,
@@ -137,5 +142,8 @@
     "is_first_of_kind": true,
     "computed_cu": 28.0,
     "factors_applied": ["cross_feature:0.20", "architectural_novelty:0.20"]
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

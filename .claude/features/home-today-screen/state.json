@@ -5,6 +5,11 @@
   "branch": "feature/home-today-screen-v2",
   "current_phase": "complete",
   "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -586,5 +591,8 @@
       "reconciled": true,
       "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

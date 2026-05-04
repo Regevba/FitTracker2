@@ -5,6 +5,11 @@
   "branch": "feature/training-plan-v2",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -91,5 +96,8 @@
       "kill_criteria": "Per-exercise event drop-off > 15% vs training_workout_start across weekly/30d/90d cohorts"
     }
   },
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

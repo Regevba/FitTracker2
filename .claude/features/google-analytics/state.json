@@ -8,6 +8,11 @@
   "branch": "feature/google-analytics",
   "current_phase": "complete",
   "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": true,
   "github_issue_number": null,
   "transitions": [
@@ -44,5 +49,8 @@
       "first_review_date": null,
       "kill_criteria": "Data-driven foundation — cannot be killed. If consent rate <5%, simplify consent flow."
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

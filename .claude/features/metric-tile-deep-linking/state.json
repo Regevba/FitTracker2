@@ -7,6 +7,11 @@
   "branch": "feature/metric-tile-deep-linking",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "enhancement",
   "parent_feature": "home-today-screen",
   "has_ui": true,
@@ -40,5 +45,8 @@
     "merge": { "status": "complete", "pr_number": 67 },
     "documentation": { "status": "complete" }
   },
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

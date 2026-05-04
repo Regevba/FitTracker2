@@ -7,6 +7,11 @@
   "branch": "feature/onboarding-v2-auth-flow",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -336,5 +341,8 @@
       "reconciled": true,
       "note": "Shipped per docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md. 12 tasks reconciled 2026-04-20 \u2014 task\u2192commit breakdown in the case study's Phase 4 section."
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

@@ -6,6 +6,11 @@
   "branch": "feature/nutrition-v2",
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -387,5 +392,8 @@
       "reconciled": true,
       "note": "Covered by M-2 MealEntrySheet decomposition case study (docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md). MealEntrySheet 1104 \u2192 140 lines. PRs #126-#130. Tasks reconciled 2026-04-20."
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

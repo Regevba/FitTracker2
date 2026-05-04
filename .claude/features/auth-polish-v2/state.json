@@ -7,6 +7,11 @@
   "work_type": "feature",
   "work_subtype": "new_ui",
   "framework_version": "v7.6",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": true,
   "requires_analytics": true,
   "parent_features": [
@@ -645,5 +650,8 @@
     "tier_class": "A_high",
     "rationale": "3 sub-bundles (forgot-password / biometric / Google Sign-In) across 8 user flows. Auth = high-risk per CLAUDE.md (SignInService, AuthManager, Supabase). Mostly extends prior art. Auth flows need real-provider testing (Tier 2.1 area)."
   },
-  "case_study": "docs/case-studies/auth-polish-v2-case-study.md"
+  "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

@@ -7,6 +7,11 @@
   "branch": null,
   "current_phase": "complete",
   "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -333,5 +338,8 @@
       "note": "Category B reconcile (open-items audit 2026-04-20): 0 tasks and 5 phases flipped to completed to match shipped reality. Shipped per docs/case-studies/user-profile-v4.4-case-study.md \u2014 most comprehensive v4.4 process case study. Tasks reconciled 2026-04-20."
     }
   ],
-  "work_subtype": "new_ui"
+  "work_subtype": "new_ui",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }
