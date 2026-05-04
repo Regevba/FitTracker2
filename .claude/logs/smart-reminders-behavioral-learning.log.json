@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "7.7",
   "started_at": "2026-04-29T15:52:34Z",
-  "updated_at": "2026-05-03T12:55:34Z",
+  "updated_at": "2026-05-04T06:58:43Z",
   "events": [
     {
       "timestamp": "2026-04-29T15:52:34Z",
@@ -46,6 +46,17 @@
       "event_type": "phase_started",
       "phase": "implementation",
       "summary": "iOS PR-1 data layer complete: T1-T5 (state.json + ReminderType + 3 new services) + T9-T12 (delegate wiring + app bootstrap + GDPR extension + Settings toggle) + T13 (full test pass: 23/23 + UI audit P0=0). Backend T6/T7/T8 deferred \u2014 tracked in known_followups.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-04T06:58:43Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "PR-1 fully complete: iOS half shipped 2026-05-04 via FT2 PR #190; backend half shipped 2026-05-04 via this PR (T6+T7 AI-engine endpoints with 14/14 pytest, T8 Supabase migration 000009). Spec \u00a7Approach B PR-1 = data-collection foundation done. PR 2 (resolver + A/B test) starts after ~5-7d cohort data accumulates.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

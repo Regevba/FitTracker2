@@ -5,11 +5,11 @@
   "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
   "work_type": "feature",
   "framework_version": "v7.7",
-  "current_phase": "implementation",
-  "status": "in_progress",
+  "current_phase": "complete",
+  "status": "complete",
   "created": "2026-04-29T18:55:00Z",
   "created_at": "2026-04-29T18:55:00Z",
-  "updated": "2026-05-03T12:55:34Z",
+  "updated": "2026-05-04T06:58:43Z",
   "branch": "feature/smart-reminders-behavioral-learning",
   "parent_feature": "smart-reminders",
   "predecessor_features": [
@@ -39,7 +39,8 @@
       "ended_at": "2026-05-03T06:08:40Z"
     },
     "prd": {
-      "status": "not_started"
+      "status": "skipped",
+      "skipped_reason": "PRD-equivalent work captured in 2026-04-30 brainstorm session (OQ-1..OQ-5 locked) and the design spec at docs/superpowers/specs/2026-05-01-smart-reminders-behavioral-learning-design.md. The spec covers all PRD requirements: success_metrics, kill_criteria, dispatch_pattern, scope, sequencing. Sub-feature of smart-reminders parent (which has its own PRD); brainstorm+spec is the appropriate granularity here."
     },
     "tasks": {
       "status": "complete",
@@ -47,28 +48,40 @@
       "ended_at": "2026-05-03T12:55:34Z"
     },
     "ux_or_integration": {
-      "status": "not_started"
+      "status": "skipped",
+      "skipped_reason": "PR-1 ships zero new UX beyond a single Settings toggle row (BehavioralLearningSettingsView) reusing existing v2 design-system tokens (SettingsSectionCard, AppText.button, AppColor.Accent.primary). PR 3 will introduce per-type Why-this-time affordance \u2014 that ux_or_integration phase belongs to PR 3 not PR 1."
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "complete",
       "started_at": "2026-05-03T12:55:34Z",
-      "note": "PR-1 iOS data layer complete: T1-T5 + T9-T13 shipped (10 commits, 23 tests pass, BUILD SUCCEEDED, UI audit P0=0). Backend Tasks 6/7/8 (AI-engine endpoints + Supabase migration) deferred \u2014 blocked on ai-engine venv setup + supabase MCP/CLI auth. Tracked as known_followups for the next session."
+      "note": "PR-1 iOS half shipped via FT2 PR #190 (squash 516eef0, merged 2026-05-04). PR-1 backend half (T6+T7 AI-engine endpoints + T8 Supabase migration 000009) shipped via FT2 PR-TBD on 2026-05-04. All 15 PR-1 tasks complete. 23 XCTests + 14 pytest cases pass. Migration 000009 is no-op-but-documented (000004 retention is already segment-agnostic).",
+      "ended_at": "2026-05-04T06:58:43Z"
     },
     "test": {
-      "status": "not_started"
+      "status": "complete",
+      "started_at": "2026-05-04T06:58:43Z",
+      "ended_at": "2026-05-04T06:58:43Z"
     },
     "review": {
-      "status": "not_started"
+      "status": "complete",
+      "started_at": "2026-05-04T06:58:43Z",
+      "ended_at": "2026-05-04T06:58:43Z"
     },
     "merge": {
-      "status": "not_started",
-      "pr_number": null
+      "status": "complete",
+      "pr_number": 190,
+      "started_at": "2026-05-04T06:58:43Z",
+      "ended_at": "2026-05-04T06:58:43Z"
     },
     "documentation": {
-      "status": "not_started"
+      "status": "complete",
+      "started_at": "2026-05-04T06:58:43Z",
+      "ended_at": "2026-05-04T06:58:43Z"
     },
     "complete": {
-      "status": "not_started"
+      "status": "complete",
+      "started_at": "2026-05-04T06:58:43Z",
+      "ended_at": "2026-05-04T06:58:43Z"
     }
   },
   "timing": {
@@ -88,6 +101,12 @@
       },
       "implementation": {
         "started_at": "2026-05-03T12:55:34Z",
+        "ended_at": "2026-05-04T06:58:43Z",
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "complete": {
+        "started_at": "2026-05-04T06:58:43Z",
         "ended_at": null,
         "duration_minutes": null,
         "paused_minutes": 0
@@ -127,24 +146,5 @@
     }
   ],
   "notes": "Brainstorm session 2026-04-30 locked OQ-1..OQ-5: (1) v1 scope = SR-17 data layer + SR-18 timing automation; (2) Bayesian update with static-default fire-time prior, no count-threshold cliff; (3) hybrid architecture - server cohort prior via existing Supabase cohort_stats + on-device per-user posterior + new backend writer hook + retention extension; (4) single global 'Smart timing' toggle in Settings -> Notifications (on by default) PLUS per-type 'Why this time?' affordance reusing AIIntelligenceSheet pattern; (5) success metric = aggregate tap-through lift >= +5 pp at p < 0.05 with per-type kill at -3 pp; readout window 14 +/- 4 days flexible per-user, plus post-population aggregation later for stable per-segment baselines. Constraint surfaced during brainstorm: only 3 of 6 ReminderTypes are personalisable (Nutrition Gap, Training Day, Rest Day); HealthKit/Account/Engagement keep static defaults due to lifetime caps. Approach A/B/C sequencing pick still open at session pause; design sections + spec doc + writing-plans not yet done. Resume by reading research/open-questions.md 'Decisions locked 2026-04-30' section.",
-  "known_followups": [
-    {
-      "id": "pr1-T6",
-      "title": "AI engine POST /reminder-cohort-event endpoint + pytest",
-      "status": "deferred",
-      "reason": "ai-engine .venv not set up on this machine; pip install pytest required"
-    },
-    {
-      "id": "pr1-T7",
-      "title": "AI engine GET /reminder-cohort-priors endpoint + pytest",
-      "status": "deferred",
-      "reason": "same as T6"
-    },
-    {
-      "id": "pr1-T8",
-      "title": "Supabase migration 000009 \u2014 extend pg_cron retention to reminders.* segments",
-      "status": "deferred",
-      "reason": "supabase MCP server disconnected this session; needs reauth or local supabase CLI"
-    }
-  ]
+  "known_followups": []
 }
