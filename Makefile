@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -167,6 +167,15 @@ pre-commit-self-test:
 # or JSON (--format=json) for the UCC dashboard.
 membrane-status:
 	python3 scripts/membrane-status.py
+
+# v7.9 measurement-window snapshot (spec §7.2) — read the v7.8 advisory
+# ledgers (gate-coverage.jsonl, _session-*.events.jsonl, reducer-misses.json)
+# and produce the +7d / +14d / +21d decision-input report. Run any time;
+# meaningful from first commit forward, design-actionable at +7d (2026-05-11).
+# Pass OUTPUT=path.md to write Markdown to a file.
+OUTPUT ?=
+v7-9-snapshot:
+	python3 scripts/v7-9-measurement-snapshot.py $(if $(OUTPUT),--output $(OUTPUT),)
 
 # Install npm dependencies (style-dictionary)
 install:
