@@ -39,7 +39,8 @@
       "ended_at": "2026-05-03T06:08:40Z"
     },
     "prd": {
-      "status": "not_started"
+      "status": "skipped",
+      "skipped_reason": "PRD-equivalent work captured in 2026-04-30 brainstorm session (OQ-1..OQ-5 locked) and the design spec at docs/superpowers/specs/2026-05-01-smart-reminders-behavioral-learning-design.md. The spec covers all PRD requirements: success_metrics, kill_criteria, dispatch_pattern, scope, sequencing. Sub-feature of smart-reminders parent (which has its own PRD); brainstorm+spec is the appropriate granularity here."
     },
     "tasks": {
       "status": "complete",
@@ -47,7 +48,8 @@
       "ended_at": "2026-05-03T12:55:34Z"
     },
     "ux_or_integration": {
-      "status": "not_started"
+      "status": "skipped",
+      "skipped_reason": "PR-1 ships zero new UX beyond a single Settings toggle row (BehavioralLearningSettingsView) reusing existing v2 design-system tokens (SettingsSectionCard, AppText.button, AppColor.Accent.primary). PR 3 will introduce per-type Why-this-time affordance \u2014 that ux_or_integration phase belongs to PR 3 not PR 1."
     },
     "implementation": {
       "status": "complete",
