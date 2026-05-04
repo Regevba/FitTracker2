@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7, shipped 2026-04-24 → 2026-04-25 → 2026-04-27)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
