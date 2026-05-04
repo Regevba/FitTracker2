@@ -126,12 +126,14 @@ v7.8 closes the v7.7 silent-pass via two surfaces specified jointly with v7.9:
 - **Mechanism A — Coverage-asserting gates** (PR #187): every write-time gate emits `{candidates, checked, skipped, skip_reasons}` to `.claude/logs/gate-coverage.jsonl`. v7.9 will promote a `GATE_COVERAGE_ZERO` meta-check to enforced once ≥7 days of stats accumulate.
 - **Mechanism B — Schema field-rename detection + dual-read** (PR #173 + #185 + #186): `created` ∪ `created_at` dual-read for the migration window; canonical `framework_version` field on 46/46 features.
 - **Mechanism C — PostToolUse:Read hook** (PR #173 + #188): `scripts/observe-cache-hit.py` auto-captures Read events → `.claude/logs/_session-<id>.events.jsonl`. `/pm-workflow` now writes `.claude/active-feature` on entry; SessionStart hook surfaces it; new advisory check `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (15th cycle-time check code) flags features where session events show Reads but state.json::cache_hits[] is empty.
-- **Mechanism D — Pre-commit hook header self-audit** (deferred to M3 PR-6).
+- **Mechanism D — Pre-commit hook header self-audit** (PR #193): pre-commit hook validates its own header on each run; mismatch raises an advisory finding instead of failing silently.
 
 **Surface 2 — Inter-agent awareness (Mechanisms E, F):**
 
 - **Mechanism E — Custom git merge driver** (PR #189): `scripts/merge-driver-dedup.py` auto-resolves merge conflicts on append-only ledgers (`measurement-adoption-history.json`, `documentation-debt.json`) via union-dedup-by-key. `make install-hooks` registers the driver; `.gitattributes` opts the ledgers in.
-- **Mechanism F — Membrane status advisory** (deferred to M3 PR-6).
+- **Mechanism F — Membrane status advisory** (PR #193): `scripts/membrane-status.py` reports active feature + recent gate firings + dispatch-blocker state in a single readout. Surfaced via SessionStart and `make membrane-status`. Closes the inter-agent context-handoff gap.
+
+**v7.8 fully shipped 2026-05-04** via 9 PRs: #173 (M-C scaffold) + #185 (PR-2 schema bridges A) + #186 (PR-3 framework_version backfill) + #187 (PR-4 Mechanism A coverage gates) + #188 (PR-5 M-C session attribution) + #189 (PR-6 Mechanism E merge driver) + #193 (PR-6 Mechanisms D + F) + #194 (PR-7 cold-start entrypoint + honesty ledger FT2-FH-001) + #195 (CI fix). Six mechanisms (A–F) all in advisory mode; v7.9 measurement window opens **2026-05-11** (+7d). Schema bridges populated on 47/47 features.
 
 **Spec:** [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md).
 **Predecessor v7.7 spec:** [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
