@@ -1,10 +1,10 @@
 {
   "version": "1.0",
-  "updated": "2026-05-03T04:11:19Z",
+  "updated": "2026-05-04T09:01:23Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 53,
-    "features_scanned": 47,
+    "case_studies_scanned": 56,
+    "features_scanned": 48,
     "integrity_snapshot_files": 2,
     "integrity_cycle_snapshots": 1,
     "trend_ready": false,
@@ -12,54 +12,57 @@
   },
   "coverage": {
     "date_written": {
-      "present": 47,
-      "missing": 6,
-      "percent": 88.7,
+      "present": 48,
+      "missing": 8,
+      "percent": 85.7,
       "examples": [
         "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
-        "docs/case-studies/stats-v2-case-study.md",
-        "docs/case-studies/training-plan-v2-case-study.md"
+        "docs/case-studies/orchid-v1-5-additive-units-case-study.md"
       ]
     },
     "work_type": {
-      "present": 53,
+      "present": 56,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 50,
-      "missing": 3,
-      "percent": 94.3,
+      "present": 52,
+      "missing": 4,
+      "percent": 92.9,
       "examples": [
         "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "success_metrics": {
-      "present": 50,
-      "missing": 3,
-      "percent": 94.3,
+      "present": 52,
+      "missing": 4,
+      "percent": 92.9,
       "examples": [
         "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "kill_criteria": {
-      "present": 51,
-      "missing": 2,
-      "percent": 96.2,
+      "present": 53,
+      "missing": 3,
+      "percent": 94.6,
       "examples": [
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ]
     },
     "state_case_study_linkage": {
-      "present": 47,
+      "present": 48,
       "missing": 0,
       "percent": 100.0,
       "examples": []
@@ -78,13 +81,13 @@
       "id": "date_written",
       "title": "Case studies missing a written-date marker",
       "severity": "low",
-      "count": 6,
+      "count": 8,
       "examples": [
         "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/home-today-screen-v2-case-study.md",
         "docs/case-studies/orchid-ai-accelerator-case-study.md",
-        "docs/case-studies/stats-v2-case-study.md",
-        "docs/case-studies/training-plan-v2-case-study.md"
+        "docs/case-studies/orchid-v1-5-additive-units-case-study.md"
       ],
       "recommended_next_step": "Touch the missing files opportunistically and add the missing date written field explicitly."
     },
@@ -92,9 +95,10 @@
       "id": "dispatch_pattern",
       "title": "Case studies missing explicit dispatch-pattern declaration",
       "severity": "low",
-      "count": 3,
+      "count": 4,
       "examples": [
         "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
@@ -104,9 +108,10 @@
       "id": "success_metrics",
       "title": "Case studies missing success-metric restatement",
       "severity": "low",
-      "count": 3,
+      "count": 4,
       "examples": [
         "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
@@ -116,8 +121,9 @@
       "id": "kill_criteria",
       "title": "Case studies missing kill-criteria restatement",
       "severity": "low",
-      "count": 2,
+      "count": 3,
       "examples": [
+        "docs/case-studies/framework-honesty-ledger.md",
         "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
         "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
       ],
