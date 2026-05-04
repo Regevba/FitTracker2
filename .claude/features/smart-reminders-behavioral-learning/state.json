@@ -3,6 +3,7 @@
   "feature_name": "smart-reminders-behavioral-learning",
   "display_name": "Smart Reminders \u2014 Behavioral Learning Layer",
   "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/23-smart-reminders-behavioral.mdx",
   "work_type": "feature",
   "framework_version": "v7.7",
   "current_phase": "complete",

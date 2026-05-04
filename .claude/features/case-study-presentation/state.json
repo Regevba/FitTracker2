@@ -3,6 +3,7 @@
   "feature_name": "case-study-presentation",
   "display_name": "Case-Study Presentation Refactor (Alternative A)",
   "case_study": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/21a-case-study-presentation.mdx",
   "work_type": "feature",
   "framework_version": "v7.7",
   "agent_manifest": {

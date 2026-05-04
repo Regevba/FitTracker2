@@ -9,7 +9,7 @@ status: shipped
 case_study_type: shipped
 tier_tags_required: true
 case_study: docs/case-studies/stats-v2-case-study.md
-case_study_showcase: fitme-story/content/04-case-studies/<TODO-slot>-stats-v2.mdx
+case_study_showcase: fitme-story/content/04-case-studies/22c-stats-v2.mdx
 predecessor_case_studies:
   - docs/case-studies/six-features-roundup-case-study.md
 related_prs:

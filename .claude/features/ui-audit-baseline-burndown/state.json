@@ -1,5 +1,6 @@
 {
   "feature": "ui-audit-baseline-burndown",
+  "work_type": "chore",
   "type": "enhancement",
   "parent_feature": "design-system-v2",
   "created_at": "2026-04-21T07:14:00Z",
@@ -91,6 +92,7 @@
     "kill_criteria": "visual regressions reported post-merge > 2 within 7 days"
   },
   "case_study": ".claude/features/ui-audit-baseline-burndown/case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/20a-ui-audit-burndown.mdx",
   "risks": {
     "R1_visual_regression": "mitigated via mirror-diff per file",
     "R2_animation_gaps": "mitigated via Phase 0.1 token additions",

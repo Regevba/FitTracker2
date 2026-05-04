@@ -7,9 +7,9 @@
 |---|---|
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > Framework v7.0 | cleanup_program | 2026-04-19 | PRs #122 + #123 + #124 + this PR

@@ -1,10 +1,10 @@
 {
   "feature": "stats-v2",
   "case_study": "docs/case-studies/stats-v2-case-study.md",
-  "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/22c-stats-v2.mdx",
   "case_study_type": "shipped",
   "case_study_predecessor": "docs/case-studies/six-features-roundup-case-study.md",
-  "case_study_predecessor_note": "stats-v2 was originally one of six paused features in the roundup case study. After 2026-04-30 ship, replaced by dedicated case study at the canonical case_study path. case_study_showcase still points at the roundup MDX slot pending fitme-story PR with a dedicated stats-v2 showcase.",
+  "case_study_predecessor_note": "stats-v2 was originally one of six paused features in the roundup case study. After 2026-04-30 ship, replaced by dedicated case study at the canonical case_study path. Dedicated showcase published to fitme-story 22c-stats-v2.mdx 2026-05-04.",
   "created_at": "2026-04-10T15:00:00Z",
   "updated": "2026-05-02T08:56:10Z",
   "branch": "feature/stats-v2",
@@ -94,7 +94,7 @@
       "status": "complete",
       "completed_at": "2026-04-30T21:56:00Z",
       "case_study": "docs/case-studies/stats-v2-case-study.md",
-      "showcase_pending": "Standalone showcase MDX not yet published; case_study_showcase points at roundup MDX 04-case-studies/24-backlog-features-roundup.md per case_study_predecessor convention."
+      "showcase_published": "Dedicated showcase published 2026-05-04 at fitme-story/content/04-case-studies/22c-stats-v2.mdx (slot 22c, order 22.4)."
     },
     "metrics": {
       "primary": {

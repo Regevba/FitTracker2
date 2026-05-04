@@ -8,9 +8,9 @@
 | Work Type | Enhancement |
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > ⚙️ **Developer deep-dive.** Next.js 16 · `useSearchParams` · Suspense · static generation. PM/HR readers: this one's for the engineering side of the house — skip unless you want the code-level debug story.
