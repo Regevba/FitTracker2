@@ -4,6 +4,12 @@
 
 > Framework v7.0 | Chore | 4-Layer Risk-Weighted Parallel Sweep | 2026-04-16
 
+**Success Metrics:** N/A — chore audit document. The audit's "success" is finding-density and validation-tier coverage (185 findings · 21 externally-automated · 18 cross-referenced · 146 framework-only), not a single primary metric.
+
+**Kill Criteria:** N/A — chore document type. Audits do not have kill criteria; they have validation tiers and finding-state taxonomies.
+
+**Dispatch Pattern:** 4-layer risk-weighted parallel sweep (domain agents for UI / Backend / AI / Tests / Design System / Framework dispatched concurrently; results synthesised serially).
+
 ---
 
 ## 1. Summary Card

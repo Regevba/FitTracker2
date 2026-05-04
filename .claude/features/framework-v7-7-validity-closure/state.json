@@ -3,6 +3,7 @@
   "feature_name": "framework-v7-7-validity-closure",
   "display_name": "Framework v7.7 — Validity Closure",
   "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/22-validity-closure-v7-7.mdx",
   "work_type": "framework",
   "framework_version": "v7.7",
   "agent_manifest": {

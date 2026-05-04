@@ -1,6 +1,7 @@
 {
   "feature": "data-integrity-framework-v7-6",
   "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/21-mechanical-enforcement-v7-6.mdx",
   "display_name": "Data Integrity Framework v7.6 \u2014 Mechanical Enforcement",
   "work_type": "framework",
   "framework_version": "v7.6",

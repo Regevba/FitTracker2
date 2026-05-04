@@ -7,7 +7,7 @@
 |---|---|
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > **Core question:** How did framework v5.1 handle a feature that required full PM lifecycle + multiple design iteration cycles from manual testing?

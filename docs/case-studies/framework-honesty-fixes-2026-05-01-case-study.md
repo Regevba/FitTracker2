@@ -36,6 +36,16 @@ kill_criteria:
   - The migration corrupts content beyond the intended `created` rename (semantic-equivalence check fails on any of 46 files)
   - The new schema gates produce a false-positive on any current state.json (would block legitimate commits)
   - A downstream consumer of state.json data silently breaks and is missed by the verification sweep
+success_metrics:
+  - name: state_json_field_drift_rate
+    baseline: 0.93  # 43/46 files used legacy `created` key
+    target: 0.0
+    tier: T1
+  - name: cache_hits_gate_effective_coverage
+    baseline: 0.0   # 0/46 features pre-fix
+    target: 1.0
+    tier: T1
+dispatch_pattern: serial (framework correction; F6-F9 concurrent-dispatch hygiene block)
 ---
 
 # Framework Honesty Fixes (2026-05-01)

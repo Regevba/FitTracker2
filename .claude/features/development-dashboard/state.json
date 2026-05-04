@@ -1,5 +1,6 @@
 {
   "feature": "development-dashboard",
+  "work_type": "chore",
   "case_study": "docs/case-studies/six-features-roundup-case-study.md",
   "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
   "case_study_type": "roundup",

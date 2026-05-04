@@ -62,8 +62,11 @@ def scan_case_study(path: Path) -> dict[str, object]:
     text = path.read_text()
     return {
         "path": path.relative_to(REPO_ROOT).as_posix(),
-        # date_written: body format OR YAML frontmatter key
-        "has_date_written": bool(re.search(r"(?im)(^\*\*Date written:\*\*|^>\s*\*\*Date:\*\*|^\|\s*Date written\s*\||^date_written\s*:)", text)),
+        # date_written: body format OR YAML frontmatter key (accepts the
+        # several equivalent date conventions case studies use in practice:
+        # "Date written:", "Date:" (table OR blockquote), "Generated:",
+        # plus YAML keys date / date_written / date_created).
+        "has_date_written": bool(re.search(r"(?im)(^\*\*Date written:\*\*|^>\s*\*\*Date:\*\*|^\|\s*Date(?:\s+written)?\s*\||^\*\*Generated:\*\*|^>\s*\*\*Generated:\*\*|^\s*>\s*\*\*Generated:\*\*|^date(?:_written|_created)?\s*:)", text)),
         # work_type: body text OR YAML frontmatter key
         "has_work_type": bool(re.search(r"(?im)(^\|\s*Work Type\s*\||\bWork Type\b|^work_type\s*:)", text)),
         # dispatch_pattern: body phrase OR YAML frontmatter key
