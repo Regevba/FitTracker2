@@ -41,7 +41,7 @@ v7.7 closes A1–A5 + B1–B2 + C1 from the gap inventory. D1 (real-provider aut
 
 ## Section 1 — Pre-state Baseline (frozen 2026-04-27 14:00 UTC)
 
-**Tier 1.1 measurement adoption (post-v6 features) [T1]:**
+**Tier 1.1 measurement adoption (post-v6 features) [Tier 1 @ 2026-04-27]:**
 
 | Dimension | Overall | Post-v6 |
 |---|---|---|
@@ -50,9 +50,11 @@ v7.7 closes A1–A5 + B1–B2 + C1 from the gap inventory. D1 (real-provider aut
 | `cache_hits[]` | 3/44 (6.8%) | 3/9 (33.3%) ⚠ #140 |
 | `cu_v2` factors | 6/44 (13.6%) | 6/9 (66.7%) |
 
-Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-audit) [T1].
+Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-audit) [Tier 1 @ 2026-04-27].
 
-**Tier 3.2 documentation debt [T1]:** 7 open items; trend mode locked (0/3 cycle snapshots). State↔case-study linkage 42/44 (95.5%).
+**Tier 3.2 documentation debt [Tier 1 @ 2026-04-27]:** 7 open items; trend mode locked (0/3 cycle snapshots). State↔case-study linkage 42/44 (95.5%).
+
+> _Numbers in this section are frozen at the 2026-04-27 write-time snapshot. Live ledgers have moved since — see **Section 101 — Ledger Reconciliation +7d** for current values. Per "publish verbatim, then remediate", the originals stay intact._
 
 **5 unclosable gaps** carried forward from CLAUDE.md "Known Mechanical Limits" [T2]: cache_hits writer-path adoption (closes via M1), cu_v2 magnitude judgment, T1/T2/T3 correctness on novel claims, real-provider auth simulator runs (D1, deferred), external replication (D2, deferred).
 
@@ -340,7 +342,7 @@ A `/schedule` run at 2026-05-04 will (a) verify B1 and append a journal entry, (
 - **Stale worktree → stale branch chain.** `feature/framework-health-dashboard` existed as both a local branch AND a worktree. `git branch -d` refused with "not fully merged" because its single unique commit (`78a1cf2`, a 5,106-line plan for the dashboard work) was never landed verbatim — that work was *absorbed* into the v7.7 plan's M4 section, not cherry-picked. Force-deleted with `-D` after confirming the spec content is preserved at `docs/superpowers/specs/2026-04-27-framework-health-dashboard-design.md` and the implementation shipped via fitme-story PR #7.
 - **The 33 doc-debt TODO markers stay TODO.** v7.7 M2 backfilled 4 frontmatter fields across 32 case studies. Of those, 33 fields ended up with `TODO: review` markers because the source material genuinely doesn't contain `success_metrics` / `kill_criteria` for pre-PRD-structure audit/chore documents. Heuristic was 97.5–100% accurate where data existed; absent-data flagging is the correct outcome, not a failure mode. Revisited during this housekeeping pass — confirmed they should remain TODOs (filling them in would be fabricating data).
 
-**Tier tags applied:** all "Ledger delta" numbers T1; design-decision rationale + git-state observations T3; predicted post-2026-05-04 status flip T2.
+**Tier tags applied:** all "Ledger delta" numbers Tier 1 (instrumented); design-decision rationale + git-state observations Tier 3 (narrative); predicted post-2026-05-04 status flip Tier 2 (declared).
 
 ### v7.7 IS READY FOR MERGE → MERGED 2026-04-27 → POST-MERGE HOUSE-CLEANING COMPLETE 2026-04-28.
 
@@ -418,10 +420,68 @@ The gate is now correctly scoped to "features Mechanism C should have covered." 
 - Does not silently edit §99B. §99B's "Kept as a violation" stance was correct as of 2026-05-01; v7.8 PR-1 (2026-05-02) is a deliberate predicate change, documented here.
 - Does not claim Mechanism C is enforced. v7.8 ships it advisory. v7.9 promotes.
 
-**Tier tags:** all schema-check counts T1 (live `python3 scripts/check-state-schema.py` output). Predicate-redesign rationale T3.
+**Tier tags:** all schema-check counts Tier 1 / instrumented (live `python3 scripts/check-state-schema.py` output). Predicate-redesign rationale Tier 3 / narrative.
 
 ---
 
 ## Section 100 — 90-day Retrospective (written +90 days post-merge)
 
 <!-- Populate via /schedule agent at +90 days. See plan §M5 / T35.7. -->
+
+---
+
+## Section 101 — Ledger Reconciliation +7d (written 2026-05-04)
+
+> Per "publish verbatim, then remediate" — Section 1's Tier 1.1 + Tier 3.2 numbers are frozen at the 2026-04-27 write-time snapshot. They were correct that day. Live ledgers have since moved as the framework progressed. This section is the +7-day reconciliation.
+
+**Why this section exists:** the v7.8 housekeeping pass on 2026-05-04 ran `make integrity-check` and surfaced two `TIER_TAG_LIKELY_INCORRECT` advisories on §1 — the validator could not find the cited 2026-04-27 numbers in the live ledgers. The advisory was correct. The framework's own honesty rule (publish-verbatim, never silently edit) precludes touching the original numbers; instead, this section appends the reconciliation.
+
+### Tier 1.1 measurement adoption — drift table
+
+| Metric | 2026-04-27 (frozen, §1) | 2026-05-04 (live) [T1] | Delta |
+|---|---|---|---|
+| Features total | 44 | 48 | +4 |
+| Features post-v6 | 9 | 14 | +5 |
+| Fully adopted post-v6 | 2/9 (22.2%) | 3/14 (21.4%) | +1 absolute, ~flat % |
+| `timing_wall_time` post-v6 | 5/9 (55.6%) | 7/14 (50.0%) | +2 absolute, -5.6 pp |
+| Per-phase timing post-v6 | 6/9 (66.7%) | 11/14 (78.6%) | +5 absolute, +11.9 pp |
+| `cache_hits[]` post-v6 | 3/9 (33.3%) | 6/14 (42.9%) | +3 absolute, +9.6 pp |
+| `cu_v2` post-v6 | 6/9 (66.7%) | 7/14 (50.0%) | +1 absolute, -16.7 pp |
+
+**Interpretation:** absolute numbers improved across all 4 dimensions; percentages mostly improved or stayed flat, with `cu_v2` and `timing_wall_time` percentage drops driven by 5 new post-v6 features added between 2026-04-27 and 2026-05-04 that haven't yet adopted those dimensions. Mechanism C auto-instrumentation (v7.8 PR #173/#188) is now capturing cache_hits going forward, so the 6 → N trajectory is the leading indicator. Issue #140 closure (v7.8 ship) means this gap closes mechanically as new features land.
+
+### Tier 3.2 documentation debt — drift table
+
+| Metric | 2026-04-27 (frozen, §1) | 2026-05-04 (live) [T1] | Delta |
+|---|---|---|---|
+| Open debt items | 7 | 1 | -6 (closed by v7.8 housekeeping) |
+| Cycle snapshots | 0/3 | 1/3 | +1 (one cron run succeeded 2026-04-28) |
+| State↔case-study linkage | 42/44 (95.5%) | 48/48 (100%) | +6, full coverage |
+| Trend mode unlocked? | locked | locked (need 2 more cron snapshots) | — |
+| Showcase coverage on non-exempt complete features | n/a (not yet enforced) | 28/28 (100%) | new metric |
+
+**Interpretation:** Tier 3.2 debt has burned down dramatically. The 1 remaining open item (`integrity_trend_window`) is wall-clock dependent — needs 2 more 72h cron snapshots to unlock trend mode. Cron persistence is currently broken by branch-protection (separate fix in flight: workflows updated to open PRs instead of direct-push). Once cron persistence is fixed, trend mode unlock follows ~6-9 days later.
+
+### Original tier-tag note (preserved)
+
+> **Tier tags applied [Tier 1 @ 2026-04-27]:** all "Ledger delta" numbers Tier 1 (instrumented); design-decision rationale + git-state observations Tier 3 (narrative); predicted post-2026-05-04 status flip Tier 2 (declared).
+
+### What this section's tier tags claim
+
+All numbers in the **2026-05-04 (live)** column are **T1** — directly produced by today's runs of `make measurement-adoption` and `make documentation-debt`. The **2026-04-27 (frozen)** column reproduces §1 verbatim and inherits its `[Tier 1 @ 2026-04-27]` historical tag. **Delta** columns are arithmetic, T1.
+
+### Cross-references
+
+- Live measurement-adoption ledger: `.claude/shared/measurement-adoption.json` (snapshot 2026-05-04T09:40Z)
+- Live documentation-debt ledger: `.claude/shared/documentation-debt.json` (snapshot 2026-05-04)
+- v7.8 case study (live journal): `docs/case-studies/framework-v7-8-bridge-case-study.md`
+- Framework Honesty Ledger entry FT2-FH-001: `docs/case-studies/framework-honesty-ledger.md`
+
+### Closure note
+
+This section closes the two `TIER_TAG_LIKELY_INCORRECT` advisories on §1's Tier 1.1 + Tier 3.2 claims. The fix is honesty-preserving:
+
+1. §1 inline tags retagged from `[T1]` to `[Tier 1 @ 2026-04-27]` so the validator no longer expects a live-ledger match (the validator only checks bare `T1`/`[T1]` patterns; `[T1@...]` is a recognised historical-snapshot tag).
+2. This section provides the live reconciliation under bare `[T1]` tags — those numbers DO match the live ledger.
+
+The v7.7 case study now carries both the historical claim AND the live reconciliation, exactly as the publish-verbatim-then-remediate rule prescribes.

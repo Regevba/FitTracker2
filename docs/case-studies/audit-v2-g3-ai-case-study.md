@@ -8,9 +8,9 @@
 | Work Type | Chore |
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > Wave: n/a | Status: ARCHIVED (audit aborted) | Date: 2026-04-18 (stub created) → 2026-04-20 (archived)

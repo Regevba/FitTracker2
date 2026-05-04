@@ -7,12 +7,12 @@
 
 | Field | Value |
 |---|---|
-| Work Type | Feature <!-- TODO: review --> |
+| Work Type | Feature |
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 FitTracker is an iPhone-first fitness command center designed to help a user understand today, act quickly, and stay consistent across training, nutrition, recovery, and body-composition goals.

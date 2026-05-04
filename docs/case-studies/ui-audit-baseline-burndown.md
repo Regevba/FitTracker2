@@ -6,10 +6,12 @@
 | Work Type | Chore |
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
+
+**Date written:** 2026-04-21
 
 **Status:** **Shipped — merged to main 2026-04-24.** Hard gate live in `verify-local`. State.json retroactively closed 2026-04-27 (commit `a8e3f2f`).
 **Started:** 2026-04-21
@@ -137,8 +139,10 @@ Phase 3 (gate-the-gate) is unblocked.
 
 ## Final metrics
 
-- **P0: 27 → 0** (hard gate active in verify-local)
-- **P1: 103** (unchanged; deferred)
+> Tier tags follow `docs/case-studies/data-quality-tiers.md`. Counts in this section are **T1 (Instrumented)** — produced directly by `scripts/ui-audit.py` against the codebase.
+
+- **P0: 27 → 0** [T1] (hard gate active in verify-local)
+- **P1: 103** [T1] (unchanged; deferred)
 - **AppMotion tokens added**: 5 (`AppSpring.hero`, `AppSpring.stepAdvance`, `AppSpring.dialPulse`, `AppEasing.heroEntry`, `AppLoadingAnimation.fastShimmer`)
 - **Scanner rules added**: 1 (`RE_RAW_ANIMATION_BARE`)
 - **Scanner flags added**: 1 (`--file PATH`)

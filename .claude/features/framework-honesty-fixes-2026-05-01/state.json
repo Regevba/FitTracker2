@@ -3,6 +3,7 @@
   "feature_name": "framework-honesty-fixes-2026-05-01",
   "display_name": "Framework Honesty Fixes (2026-05-01)",
   "case_study": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/22a-framework-honesty-fixes.mdx",
   "work_type": "chore",
   "work_subtype": "framework_correction",
   "framework_version": "v7.7",

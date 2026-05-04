@@ -6,6 +6,9 @@ work_type: chore
 description: Append-only ledger of "we got this wrong + here's how" entries about the framework itself. Pattern from curl monthly reports + Postgres release notes ("broken in N.M, fixed in N.M+1") + Tailscale release notes' explicit "we got this wrong" sections. Each entry is FT2-FH-NNN, immutable once published, augmented only by appending new entries.
 tier_tags_required: false
 status: live
+success_metrics: N/A — this is an append-only ledger, not a measurable feature. Per-entry success criteria live inside each FT2-FH-NNN entry.
+kill_criteria: N/A — ledger format precludes a single closure criterion. Each entry's individual closure path is recorded inline.
+dispatch_pattern: serial (chore; ledger entries appended one at a time)
 ---
 
 # Framework Honesty Ledger

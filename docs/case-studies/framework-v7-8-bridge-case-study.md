@@ -76,7 +76,7 @@ T11 (advisory cycle-time check `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE`) NOT i
 | #185 | post-v6 backfill (4 features missing fv + meta-analysis-audit `v7.0` → `v6.0` correction + ui-audit-baseline-burndown missing `created_at`) | 6 state.json | schema-check 47/47 [T1]; integrity-check 0+2 advisories [T1] |
 | #186 | pre-v6 backfill (34 features by created_at era: 15 → `pre-v5.0`, 19 → `v5.0`) | 34 state.json | schema-check 47/47 [T1] |
 
-After both merge: **`framework_version` 100% canonical** [T1] — the v7.8 ship criterion 3 from §9 is hit.
+After both merge: **`framework_version` 100% canonical** [T1]. Ship criterion 3 from spec section 9 is hit.
 
 Mechanical insertion pattern: regex-matched anchor on `"current_phase":` line, inserted `"framework_version": "<value>",` with matching indentation. Each post-edit file individually JSON-parse-validated. 0 modifications to existing content. **Diff is 34 files × 1 line each + 6 files × 1-2 lines each.** [T1]
 

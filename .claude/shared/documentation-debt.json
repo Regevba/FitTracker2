@@ -105,17 +105,12 @@
       "recommended_next_step": "Touch the missing files opportunistically and add the missing dispatch pattern field explicitly."
     },
     {
-      "id": "success_metrics",
-      "title": "Case studies missing success-metric restatement",
-      "severity": "low",
-      "count": 4,
-      "examples": [
-        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
-        "docs/case-studies/framework-honesty-ledger.md",
-        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
-        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
-      ],
-      "recommended_next_step": "Touch the missing files opportunistically and add the missing success metrics field explicitly."
+      "id": "integrity_trend_window",
+      "title": "Integrity-cycle history is too short for trustworthy documentation-debt trends",
+      "severity": "medium",
+      "count": 2,
+      "examples": [],
+      "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful."
     },
     {
       "id": "kill_criteria",
@@ -130,12 +125,17 @@
       "recommended_next_step": "Touch the missing files opportunistically and add the missing kill criteria field explicitly."
     },
     {
-      "id": "integrity_trend_window",
-      "title": "Integrity-cycle history is too short for trustworthy documentation-debt trends",
-      "severity": "medium",
-      "count": 2,
-      "examples": [],
-      "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful."
+      "id": "success_metrics",
+      "title": "Case studies missing success-metric restatement",
+      "severity": "low",
+      "count": 4,
+      "examples": [
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+        "docs/case-studies/framework-honesty-ledger.md",
+        "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+        "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md"
+      ],
+      "recommended_next_step": "Touch the missing files opportunistically and add the missing success metrics field explicitly."
     }
   ]
 }

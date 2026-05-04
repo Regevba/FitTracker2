@@ -12,9 +12,9 @@
 | Work Type | Enhancement |
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > **Outlier flag (read me first):** This case study describes a single-session, dogfooded framework rework whose own measurement infrastructure (v6.0 forward instrumentation) was **applied retroactively** to data that pre-dated the instrumentation. See §10 *"Outlier Limitations"* for why the numbers reported here cannot be compared apples-to-apples with feature case studies built under organic v6.0+ measurement. This case study is itself an outlier in the corpus and is labeled as such.

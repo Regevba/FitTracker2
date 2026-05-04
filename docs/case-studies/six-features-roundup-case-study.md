@@ -7,7 +7,7 @@
 |---|---|
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > **Subtitle:** Six features that shipped before the "every feature gets a case study" rule landed, or slipped through it — consolidated into one roundup so the record is honest rather than padded with six thin fabrications.

@@ -212,6 +212,7 @@
       "status": "complete",
       "completed_at": "2026-05-01T06:14:30Z",
       "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+      "case_study_showcase": "fitme-story/content/04-case-studies/22d-auth-polish-v2.mdx",
       "showcase_pending": "fitme-story showcase MDX not yet published; auth-polish-v2 lives within 06-auth-flow-velocity.mdx for now (predecessor onboarding-v2-auth-flow case study). Standalone showcase deferred."
     },
     "metrics": {
@@ -651,6 +652,7 @@
     "rationale": "3 sub-bundles (forgot-password / biometric / Google Sign-In) across 8 user flows. Auth = high-risk per CLAUDE.md (SignInService, AuthManager, Supabase). Mostly extends prior art. Auth flows need real-provider testing (Tier 2.1 area)."
   },
   "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/22d-auth-polish-v2.mdx",
   "_meta": {
     "deprecation_warnings": []
   }
