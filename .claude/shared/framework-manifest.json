@@ -1,8 +1,7 @@
 {
-  "version": "1.9",
-  "updated": "2026-05-03T08:00:00Z",
-  "framework_version": "7.7",
-  "framework_version_pr1_advisory": "v7.8 PR-1 (Mechanism C scaffolding) shipped 2026-05-02 in PR #173; advisory mode. Manifest stays at 7.7 until v7.8 enforcement flip.",
+  "version": "1.10",
+  "updated": "2026-05-04T08:30:00Z",
+  "framework_version": "7.8",
   "description": "PM framework v7.7 \u2014 Validity Closure. Closes A1\u2013A5 + B1\u2013B2 + C1 from the post-v7.6 gap inventory across two PRs (FT2 #144 + fitme-story #7). Adds 5 new gates: 4 write-time pre-commit hooks (CACHE_HITS_EMPTY_POST_V6, CU_V2_INVALID, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS) + 1 cycle-time check code + 1 advisory permanent (TIER_TAG_LIKELY_INCORRECT). Bulk-backfills 32 case-study frontmatters and timing.phases on 3 paused features. Plus framework-health dashboard at fitme-story /control-room/framework. Framework reaches 25 mechanical gates + 1 advisory. state\u2194case-study linkage 95.5% \u2192 100%. Builds on v7.6 (Mechanical Enforcement), v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), and v7.0 (HADF). 2026-05-01 follow-on PR #169 closed the v7.7 silent-pass surface: 43 state.json files migrated created \u2192 created_at so CACHE_HITS_EMPTY_POST_V6 actually fires. 2026-05-02 v7.8 PR-1 (#173) shipped Mechanism C in advisory mode (PostToolUse:Read hook + observe-cache-hit.py). v7.8 enforcement and v7.9 are downstream.",
   "audit_closures": {
     "FW-002": "Description string updated from v5.2 to v7.0 \u2014 closed.",
@@ -212,7 +211,7 @@
     "audit_archive": "docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md"
   },
   "v7_6_mechanical_enforcement": {
-    "description": "Promotes 4 silent agent-attention checks to write-time pre-commit failures, adds per-PR + weekly CI defenses, and explicitly enumerates 5 mechanically unclosable Class B gaps. Closes the residual Class B → Class A gap left by v7.5.",
+    "description": "Promotes 4 silent agent-attention checks to write-time pre-commit failures, adds per-PR + weekly CI defenses, and explicitly enumerates 5 mechanically unclosable Class B gaps. Closes the residual Class B \u2192 Class A gap left by v7.5.",
     "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
     "shipped": "2026-04-25",
     "extends": "v7_5_data_integrity_framework",
@@ -244,7 +243,7 @@
         "check_code": "CASE_STUDY_MISSING_TIER_TAGS",
         "script": "scripts/check-case-study-preflight.py",
         "hook": ".githooks/pre-commit",
-        "scope": "forward-only — dates >= 2026-04-21",
+        "scope": "forward-only \u2014 dates >= 2026-04-21",
         "exempt_files": [
           "README*",
           "template*",
@@ -281,7 +280,7 @@
           "framework-status",
           "regression"
         ],
-        "rule": "Observational-only — never blocks merges. The 72h cycle owns blocking; this owns the weekly trend."
+        "rule": "Observational-only \u2014 never blocks merges. The 72h cycle owns blocking; this owns the weekly trend."
       }
     },
     "unclosable_gaps_class_b": {
@@ -291,7 +290,7 @@
         {
           "id": "gap_1_cache_hits_writer_path",
           "tier_link": "1.1",
-          "reason": "Agent-attention — deciding what counts as a cache hit is itself the judgment we cannot mechanize.",
+          "reason": "Agent-attention \u2014 deciding what counts as a cache hit is itself the judgment we cannot mechanize.",
           "tracking": "GitHub issue #140",
           "observability": "make measurement-adoption (cache_hits dimension)"
         },
@@ -299,7 +298,7 @@
           "id": "gap_2_cu_v2_factor_correctness",
           "tier_link": "2.3 / 1.1",
           "reason": "Judgment-based magnitudes; we check presence, not whether 'novelty: 0.2' is the right number.",
-          "tracking": "no issue — accepted as Class B by design",
+          "tracking": "no issue \u2014 accepted as Class B by design",
           "observability": "make measurement-adoption (cu_v2 dimension)"
         },
         {
@@ -321,7 +320,7 @@
           "tier_link": "3.3",
           "reason": "No pre-commit hook can simulate 'an external operator on an unrelated product succeeded with the framework'.",
           "tracking": "Public GitHub issue (filed as the LAST v7.6 deliverable)",
-          "observability": "docs/case-studies/external/ directory — created on first external submission"
+          "observability": "docs/case-studies/external/ directory \u2014 created on first external submission"
         }
       ]
     },
@@ -342,8 +341,8 @@
       "Tier 3.3 external invitation filed as the LAST v7.6 deliverable, only after every other piece is on main."
     ],
     "tooling_attribution": {
-      "claude_opus_4_7": "Framework rework, plan execution, code authoring, case study (Phase 1–4).",
-      "google_gemini_2_5_pro": "Independent audit on 2026-04-21 that triggered v7.5 → v7.6 (different vendor, different model family, artifact-only access).",
+      "claude_opus_4_7": "Framework rework, plan execution, code authoring, case study (Phase 1\u20134).",
+      "google_gemini_2_5_pro": "Independent audit on 2026-04-21 that triggered v7.5 \u2192 v7.6 (different vendor, different model family, artifact-only access).",
       "openai_codex": "SSD audit on 2026-04-19 (docs/master-plan/codex-ssd-audit-2026-04-19.md). Identified the dashboard build break + SSD sprawl that motivated several pre-v7.5 hardening commits. Did not contribute v7.5/v7.6 commits per git log evidence; if additional Codex work in the v7.5+ window is identified later, this attribution will be appended (publish-verbatim policy)."
     },
     "remediation_plan": "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md",
@@ -351,7 +350,7 @@
     "implementation_plan": "docs/superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md"
   },
   "v7_7_validity_closure": {
-    "description": "Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory. 5 new gates (4 write-time + 1 cycle-time) + 1 advisory permanent. Bulk-backfills 32 case-study frontmatters. Plus framework-health dashboard at fitme-story /control-room/framework. Reaches 25 mechanical gates + 1 advisory.",
+    "description": "Closes A1\u2013A5 + B1\u2013B2 + C1 from the post-v7.6 gap inventory. 5 new gates (4 write-time + 1 cycle-time) + 1 advisory permanent. Bulk-backfills 32 case-study frontmatters. Plus framework-health dashboard at fitme-story /control-room/framework. Reaches 25 mechanical gates + 1 advisory.",
     "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
     "shipped": "2026-04-27",
     "merged_via": "PR #144 (FT2, merge 01b9e11) + fitme-story PR #7",
@@ -385,11 +384,11 @@
       "tier_tag_likely_incorrect": {
         "kind": "advisory_permanent",
         "check_code": "TIER_TAG_LIKELY_INCORRECT",
-        "rule": "Heuristically flags T1 quantitative claims that have no ledger match. Permanent advisory — kill criterion 2 fired at baseline so it ships advisory-only."
+        "rule": "Heuristically flags T1 quantitative claims that have no ledger match. Permanent advisory \u2014 kill criterion 2 fired at baseline so it ships advisory-only."
       }
     },
     "honesty_fixes_2026_05_01": {
-      "description": "Closed v7.7 silent-pass surface. 43/46 state.json migrated created → created_at so CACHE_HITS_EMPTY_POST_V6 actually fires. Added SCHEMA_DRIFT regression check + FRAMEWORK_VERSION_FORMAT check. Fixed broken downstream consumer measurement-adoption-report.py.",
+      "description": "Closed v7.7 silent-pass surface. 43/46 state.json migrated created \u2192 created_at so CACHE_HITS_EMPTY_POST_V6 actually fires. Added SCHEMA_DRIFT regression check + FRAMEWORK_VERSION_FORMAT check. Fixed broken downstream consumer measurement-adoption-report.py.",
       "case_study": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
       "shipped": "2026-05-01",
       "merged_via": "PR #168 (chore-hygiene) + PR #169 (honesty-fixes)",
@@ -403,7 +402,7 @@
     }
   },
   "v7_8_pr1_advisory": {
-    "description": "Mechanism C scaffolding — auto-instrumentation for cache_hits[] writer-path (closes Class B gap #1 in advisory mode). PostToolUse:Read hook + scripts/observe-cache-hit.py write session-ledger events to .claude/logs/_session-<id>.events.jsonl. Plus the gate-predicate fix that lifted CACHE_HITS_EMPTY_POST_V6 effective coverage from 0/46 to all post-2026-05-02 features.",
+    "description": "Mechanism C scaffolding \u2014 auto-instrumentation for cache_hits[] writer-path (closes Class B gap #1 in advisory mode). PostToolUse:Read hook + scripts/observe-cache-hit.py write session-ledger events to .claude/logs/_session-<id>.events.jsonl. Plus the gate-predicate fix that lifted CACHE_HITS_EMPTY_POST_V6 effective coverage from 0/46 to all post-2026-05-02 features.",
     "shipped": "2026-05-02",
     "merged_via": "PR #173 (squash 0f3761f)",
     "design_spec": "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md",
@@ -412,7 +411,7 @@
       "docs/research/2026-05-02-framework-v7-9-implementation-safety-research.md",
       "docs/research/2026-05-01-framework-v7-8-branch-isolation-survey.md"
     ],
-    "advisory_mode_until": "v7.9 enforcement flip — earliest data-justified date: 2026-05-09 (≥7 days post-shipment for calibration)",
+    "advisory_mode_until": "v7.9 enforcement flip \u2014 earliest data-justified date: 2026-05-09 (\u22657 days post-shipment for calibration)",
     "MECHANISM_C_SHIP_DATE_constant": "2026-05-02"
   },
   "v5_soc_optimizations": {
@@ -484,5 +483,6 @@
       "codecov",
       "fastlane"
     ]
-  }
+  },
+  "v7_9_measurement_window_opens": "2026-05-11"
 }

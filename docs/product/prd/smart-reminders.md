@@ -1,7 +1,9 @@
 # PRD: Smart Reminders
 
-> **ID:** smart-reminders | **Status:** Approved | **Priority:** HIGH
-> **Last Updated:** 2026-04-15 | **Branch:** feature/smart-reminders (pending)
+> **ID:** smart-reminders | **Status:** SHIPPED 2026-04-16 | **Priority:** HIGH
+> **Last Updated:** 2026-05-04 | **Branch:** feature/smart-reminders (merged)
+> **Children:**
+> - [smart-reminders-behavioral-learning](smart-reminders-behavioral-learning.md) — adaptive timing via Bayesian per-user posterior + cohort prior. PR-1 (data layer + Settings toggle) shipped 2026-05-04 via FT2 PR #190 (iOS) + #198 (backend). PR-2 (SmartTimingResolver + A/B test) plan landed 2026-05-04 via #199; execution gated on +5 days cohort data window (earliest 2026-05-09).
 
 ---
 
