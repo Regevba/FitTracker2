@@ -199,4 +199,24 @@ final class ReminderAnalyticsTests: XCTestCase {
         delegate.setAnalytics(nil)
         XCTAssertNil(delegate.analytics)
     }
+
+    // MARK: - ReminderNotificationDelegate — behavioral learning store wiring (PR 1, Task 9)
+
+    func testWillPresent_recordsObservationOnStore() async {
+        // Per plan §Task 9 step 1: clean slate, wire a store, drive the
+        // willPresent recording path via the test seam, assert obs counts up.
+        let store = BehavioralLearningStore()
+        store.deleteAllUserData()  // clean slate (in case previous tests left state)
+
+        let delegate = ReminderNotificationDelegate(analytics: nil, store: store)
+        delegate.recordObservationFromNotification(type: .nutritionGap, hour: 16)
+
+        // The seam dispatches to a Task { @MainActor in ... }; await a tick
+        // so the store write completes before we assert. ~50ms is generous.
+        try? await Task.sleep(nanoseconds: 50_000_000)
+        XCTAssertEqual(store.observationCount(type: .nutritionGap), 1)
+
+        // Cleanup
+        store.deleteAllUserData()
+    }
 }

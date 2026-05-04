@@ -66,6 +66,14 @@ struct FitTrackerApp: App {
     @State private var showBiometricActivation = false
     // Strong reference; iOS only retains the delegate weakly via the center.
     private let reminderNotificationDelegate = ReminderNotificationDelegate()
+    // Behavioural learning sub-feature (PR 1 ships data-collection only).
+    // Store is @MainActor — App struct itself is @MainActor in SwiftUI 6, so
+    // the init runs on the right actor. Cache + client are non-isolated.
+    @MainActor private let behavioralLearningStore = BehavioralLearningStore()
+    private let cohortPriorCache = CohortPriorCache()
+    // `let` (not `lazy var`) so the `.task` closure can capture by value.
+    // `makeAIEngineBaseURL()` is a pure function — safe to evaluate eagerly.
+    private let cohortPriorClient = CohortPriorClient(baseURL: makeAIEngineBaseURL())
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
@@ -124,6 +132,30 @@ struct FitTrackerApp: App {
                     // lifetime of the app.
                     reminderNotificationDelegate.setAnalytics(analytics)
                     ReminderScheduler.shared.analytics = analytics
+
+                    // smart-reminders-behavioral-learning Task 10:
+                    // wire the behavioral-learning store + cohort client
+                    // into the delegate. Then fire-and-forget cohort prior
+                    // fetch if the on-device cache is stale or cold.
+                    reminderNotificationDelegate.setStore(behavioralLearningStore)
+                    reminderNotificationDelegate.setCohortClient(cohortPriorClient)
+                    if cohortPriorCache.isStale {
+                        let client = cohortPriorClient
+                        let cache = cohortPriorCache
+                        Task {
+                            do {
+                                let response = try await client.fetchPriors()
+                                cache.persist(response)
+                            } catch {
+                                // Silent fallback — the resolver (PR 2) uses
+                                // static defaults when cache is empty. The
+                                // next app launch retries.
+                                #if DEBUG
+                                print("[smart-reminders] cohort prior fetch failed: \(error)")
+                                #endif
+                            }
+                        }
+                    }
                 }
                 .onChange(of: signIn.activeSession) { _, session in
                     if session != nil {

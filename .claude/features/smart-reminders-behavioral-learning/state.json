@@ -1,0 +1,150 @@
+{
+  "feature": "smart-reminders-behavioral-learning",
+  "feature_name": "smart-reminders-behavioral-learning",
+  "display_name": "Smart Reminders \u2014 Behavioral Learning Layer",
+  "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+  "work_type": "feature",
+  "framework_version": "v7.7",
+  "current_phase": "implementation",
+  "status": "in_progress",
+  "created": "2026-04-29T18:55:00Z",
+  "created_at": "2026-04-29T18:55:00Z",
+  "updated": "2026-05-03T12:55:34Z",
+  "branch": "feature/smart-reminders-behavioral-learning",
+  "parent_feature": "smart-reminders",
+  "predecessor_features": [
+    "smart-reminders"
+  ],
+  "depends_on": [
+    "PR #158 \u2014 six lifecycle analytics events (MERGED 2026-04-30; ready)",
+    "Existing Supabase cohort_stats table + increment_cohort_frequency RPC (migrations 000001-000003); new read RPC + segment values to be added by this feature"
+  ],
+  "success_metrics": [
+    "Aggregate tap-through (treatment vs control) lifts by >= +5 pp at p < 0.05 over the per-user readout window (14 days +/- 4)",
+    "Post-population aggregation (later, once corpus volume supports stable per-segment baselines) confirms the per-user signal at the cohort level",
+    "Of the three personalisable types (Nutrition Gap, Training Day, Rest Day) none regresses below its static-baseline tap-through by >= -3 pp"
+  ],
+  "kill_criteria": [
+    "Aggregate tap-through lift < +0 pp at end of per-user readout window AND post-population aggregate also fails",
+    "Any single personalised type regresses by >= -3 pp vs its static baseline -> per-type rollback to static fire time",
+    "Disable rate increases >= +3 pp from baseline OR dismiss rate increases >= +5 pp from baseline (advisory composite, parent PRD already gates disable rate at +25 pp/month)"
+  ],
+  "dispatch_pattern": "serial",
+  "phases": {
+    "research": {
+      "status": "complete",
+      "started_at": "2026-04-29T18:55:00Z",
+      "skipped_reason": null,
+      "note": "Brainstorm session 2026-04-30 locked OQ-1 through OQ-5; sequencing approach (A/B/C) + design sections still open. See research/open-questions.md 'Decisions locked 2026-04-30' section for the full lock record.",
+      "ended_at": "2026-05-03T06:08:40Z"
+    },
+    "prd": {
+      "status": "not_started"
+    },
+    "tasks": {
+      "status": "complete",
+      "started_at": "2026-05-03T06:08:40Z",
+      "ended_at": "2026-05-03T12:55:34Z"
+    },
+    "ux_or_integration": {
+      "status": "not_started"
+    },
+    "implementation": {
+      "status": "in_progress",
+      "started_at": "2026-05-03T12:55:34Z",
+      "note": "PR-1 iOS data layer complete: T1-T5 + T9-T13 shipped (10 commits, 23 tests pass, BUILD SUCCEEDED, UI audit P0=0). Backend Tasks 6/7/8 (AI-engine endpoints + Supabase migration) deferred \u2014 blocked on ai-engine venv setup + supabase MCP/CLI auth. Tracked as known_followups for the next session."
+    },
+    "test": {
+      "status": "not_started"
+    },
+    "review": {
+      "status": "not_started"
+    },
+    "merge": {
+      "status": "not_started",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "not_started"
+    },
+    "complete": {
+      "status": "not_started"
+    }
+  },
+  "timing": {
+    "session_start": "2026-04-29T18:55:00Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-29T18:55:00Z",
+        "ended_at": "2026-05-03T06:08:40Z",
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "tasks": {
+        "started_at": "2026-05-03T06:08:40Z",
+        "ended_at": "2026-05-03T12:55:34Z",
+        "duration_minutes": null,
+        "paused_minutes": 0
+      },
+      "implementation": {
+        "started_at": "2026-05-03T12:55:34Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0
+      }
+    }
+  },
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.65,
+      "blast_radius": 0.4,
+      "novelty": 0.55,
+      "verification_difficulty": 0.55
+    },
+    "total": 2.15,
+    "tier_class": "B_medium"
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-04-30T00:00:00Z",
+      "level": "L1",
+      "key": "smart_reminders_prd_phase_3_sequencing",
+      "type": "applied",
+      "skill": "brainstorming",
+      "event_type": "research_checkpoint",
+      "phase": "research",
+      "note": "Reused the parent PRD's existing Phase 3 wording ('SR-17 data collection only, no UI; begin collecting data for SR-18') as the OQ-1 frame, narrowing the brainstorm from generic 'what does it adapt' to a concrete pick between SR-17 alone, SR-17+SR-18, or SR-17 + non-PRD automation."
+    },
+    {
+      "timestamp": "2026-04-30T00:05:00Z",
+      "level": "L2",
+      "key": "supabase_cohort_stats_existing_table",
+      "type": "adapted",
+      "skill": "brainstorming",
+      "event_type": "research_checkpoint",
+      "phase": "research",
+      "note": "Discovered existing Supabase cohort_stats table + increment_cohort_frequency RPC (migrations 000001-000003) used by AI engine for cohort intelligence. OQ-3 'hybrid backend' shrinks from 'new schema + new endpoint' to 'reuse table with new segment values + +1 read RPC + AI-engine writer hook'."
+    }
+  ],
+  "notes": "Brainstorm session 2026-04-30 locked OQ-1..OQ-5: (1) v1 scope = SR-17 data layer + SR-18 timing automation; (2) Bayesian update with static-default fire-time prior, no count-threshold cliff; (3) hybrid architecture - server cohort prior via existing Supabase cohort_stats + on-device per-user posterior + new backend writer hook + retention extension; (4) single global 'Smart timing' toggle in Settings -> Notifications (on by default) PLUS per-type 'Why this time?' affordance reusing AIIntelligenceSheet pattern; (5) success metric = aggregate tap-through lift >= +5 pp at p < 0.05 with per-type kill at -3 pp; readout window 14 +/- 4 days flexible per-user, plus post-population aggregation later for stable per-segment baselines. Constraint surfaced during brainstorm: only 3 of 6 ReminderTypes are personalisable (Nutrition Gap, Training Day, Rest Day); HealthKit/Account/Engagement keep static defaults due to lifetime caps. Approach A/B/C sequencing pick still open at session pause; design sections + spec doc + writing-plans not yet done. Resume by reading research/open-questions.md 'Decisions locked 2026-04-30' section.",
+  "known_followups": [
+    {
+      "id": "pr1-T6",
+      "title": "AI engine POST /reminder-cohort-event endpoint + pytest",
+      "status": "deferred",
+      "reason": "ai-engine .venv not set up on this machine; pip install pytest required"
+    },
+    {
+      "id": "pr1-T7",
+      "title": "AI engine GET /reminder-cohort-priors endpoint + pytest",
+      "status": "deferred",
+      "reason": "same as T6"
+    },
+    {
+      "id": "pr1-T8",
+      "title": "Supabase migration 000009 \u2014 extend pg_cron retention to reminders.* segments",
+      "status": "deferred",
+      "reason": "supabase MCP server disconnected this session; needs reauth or local supabase CLI"
+    }
+  ]
+}
