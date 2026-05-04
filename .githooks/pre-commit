@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 # Git pre-commit hook — gates the Data Integrity Framework's write-time
-# defenses (v7.5 → v7.6 → v7.7 → 2026-05-01 honesty fixes). Blocks commits
-# that would introduce:
+# defenses (v7.5 → v7.6 → v7.7 → 2026-05-01 honesty fixes → v7.8 bridge).
+# Self-audited: every gate named here is asserted to be implemented in
+# scripts/check-state-schema.py or scripts/check-case-study-preflight.py
+# via `make pre-commit-self-test` (v7.8 Mechanism D, spec §4.4).
+#
+# Blocks commits that would introduce:
 #
 #   v7.5 (shipped 2026-04-21):
 #     - SCHEMA_DRIFT (legacy `phase` key on state.json)
@@ -35,7 +39,20 @@
 #     - FRAMEWORK_VERSION_FORMAT (when set, must match `(pre-)?v<major>.<minor>`;
 #       presence-required deferred to backfill PR)
 #
-# Enable with: make install-hooks
+#   v7.8 (shipped 2026-05-02 → 2026-05-03 via PRs #173 + #185 → #189 + #192):
+#     Bridge mechanisms — most ship advisory in v7.8, enforced in v7.9.
+#     The following are ADVISORY (cycle-time, non-blocking) — listed
+#     here for the self-audit's information; they are NOT pre-commit gates:
+#       - GATE_COVERAGE_ZERO (Mechanism A meta-check; v7.9 enforces)
+#       - CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE (Mechanism C T11 advisory)
+#     Schema bridge fields ship populated but un-validated:
+#       - state.json::agent_manifest        (v7.9 Mechanism G enforces)
+#       - state.json::_meta.deprecation_warnings  (v7.9 Mechanism B enforces)
+#       - .claude/shared/path-reducers.json (v7.9 reducer enforcement)
+#       - .claude/shared/agent-leases.json  (v7.9 lease + epoch enforcement)
+#
+# Enable with: make install-hooks  (also installs custom merge drivers per Mechanism E)
+# Self-audit: make pre-commit-self-test  (asserts no header drift)
 # Bypass (emergency only): git commit --no-verify
 #   (The 72h integrity cycle still catches anything introduced via bypass.)
 
