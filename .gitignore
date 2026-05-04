@@ -42,6 +42,7 @@ Carthage/Build/
 !.claude/logs/**
 .claude/logs/_session-*.events.jsonl
 .claude/active-feature
+.claude/logs/gate-coverage.jsonl
 !.claude/entrypoints/
 !.claude/entrypoints/**
 !.claude/settings.json

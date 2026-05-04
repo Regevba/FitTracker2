@@ -44,7 +44,14 @@ validate_file = _mod.validate_file
 # ---------------------------------------------------------------------------
 
 def test_cache_hits_empty_post_v6_blocks_when_complete():
-    """current_phase=complete + post-v6 + cache_hits=[] → REJECT."""
+    """current_phase=complete + post-Mechanism-C + cache_hits=[] → REJECT.
+
+    Post-v6 (2026-04-16) is necessary but not sufficient — the date must
+    also be ≥ MECHANISM_C_SHIP_DATE (2026-05-02). Features whose lifecycle
+    predates Mechanism C (the PostToolUse:Read auto-instrumentation) are
+    exempt: empty cache_hits[] then means "no instrumentation existed,"
+    not "instrumentation failed to fire." Per PR #173 (v7.8 PR-1).
+    """
     state = {
         "feature_name": "test-feature",
         "current_phase": "complete",
@@ -53,8 +60,8 @@ def test_cache_hits_empty_post_v6_blocks_when_complete():
     }
     findings = check_cache_hits_empty_post_v6(state)
     assert any(f["code"] == "CACHE_HITS_EMPTY_POST_V6" for f in findings), (
-        f"Expected CACHE_HITS_EMPTY_POST_V6 finding for post-v6 complete feature "
-        f"with empty cache_hits[]. Got: {findings}"
+        f"Expected CACHE_HITS_EMPTY_POST_V6 finding for post-Mechanism-C "
+        f"complete feature with empty cache_hits[]. Got: {findings}"
     )
 
 
@@ -81,11 +88,11 @@ def test_cache_hits_empty_post_v6_passes_pre_v6():
 # ---------------------------------------------------------------------------
 
 def test_cache_hits_empty_post_v6_passes_non_complete():
-    """Post-v6 but not complete → empty array still allowed."""
+    """Post-Mechanism-C but not complete → empty array still allowed."""
     state = {
         "feature_name": "wip",
         "current_phase": "implementation",
-        "created_at": "2026-04-20T00:00:00Z",
+        "created_at": "2026-05-03T00:00:00Z",  # post-Mechanism-C
         "cache_hits": []
     }
     findings = check_cache_hits_empty_post_v6(state)
@@ -100,11 +107,11 @@ def test_cache_hits_empty_post_v6_passes_non_complete():
 # ---------------------------------------------------------------------------
 
 def test_cache_hits_post_v6_complete_with_entries_passes():
-    """Post-v6 + complete + cache_hits non-empty → PASS (the happy path)."""
+    """Post-Mechanism-C + complete + cache_hits non-empty → PASS (happy path)."""
     state = {
         "feature_name": "ok",
         "current_phase": "complete",
-        "created_at": "2026-05-03T00:00:00Z",
+        "created_at": "2026-05-03T00:00:00Z",  # post-Mechanism-C
         "cache_hits": [{"key": "x", "layer": "L1", "ts": "2026-05-03T00:00:00Z"}]
     }
     findings = check_cache_hits_empty_post_v6(state)
