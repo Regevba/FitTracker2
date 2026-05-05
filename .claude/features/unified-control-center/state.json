@@ -12,7 +12,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-05T12:05:43Z",
+  "updated": "2026-05-05T13:30:00Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -483,8 +483,12 @@
         "T18",
         "T19"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T13:30:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/27",
+      "commit": "d356553",
+      "note": "Wave 2 supporting components ported with re-skin to fitme-story tokens per token-map.md. AlertsBanner decoupled from direct analytics import via onAcknowledge callback (T36 will wire GA4). ThemeToggle uses useSyncExternalStore (React 19 set-state-in-effect compliant). SourceHealth is RSC-compatible; the other 4 are 'use client'. tsc + eslint clean. Layout/page wiring intentionally deferred to T25/T26/T27/T29/T36."
     },
     {
       "id": "T25",
