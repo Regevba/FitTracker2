@@ -14,23 +14,6 @@ final class OnboardingUITests: XCTestCase {
     }
 
     func testOnboardingFirstStepRendersIfNotComplete() throws {
-        // Quarantined on hosted CI since 2026-04-30: same parallel-clone
-        // simulator hang signature as HomeReadinessUITests — the
-        // `app.buttons.matching(NSPredicate(...))` query stalls at 74-117s
-        // instead of returning false at the 5s waitForExistence timeout, so
-        // the graceful XCTSkip path below never fires. See PR #164 CI runs:
-        // first run failed this test (74s), rerun passed it but failed
-        // HomeReadinessUITests (194s) — the flake picks a random parallel
-        // clone each run.
-        // Detection uses NSUserName() == "runner" because GITHUB_ACTIONS env
-        // var doesn't propagate to the simulator's XCTRunner process. See
-        // HomeReadinessUITests for the full caveat.
-        // Tracked in memory: project_ci_ui_test_investigation_2026_04_29.md
-        try XCTSkipIf(
-            NSUserName() == "runner",
-            "Quarantined on hosted GitHub Actions runner — parallel-clone sim hang"
-        )
-
         let app = UITestSupport.launch(mode: .standard)
 
         // Onboarding screens expose a primary advance button labelled

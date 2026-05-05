@@ -32,6 +32,19 @@ final class AuthPolishV2UITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    override func tearDownWithError() throws {
+        // Force-terminate any app instance left over from this test before the
+        // next test's setUp tries to launch a fresh one. Without this, the
+        // FITTRACKER_REVIEW_BIOMETRIC_LOCK / _OFFER fixtures leave the app in
+        // a state where back-to-back tests can hit
+        //   "Failed to terminate com.fittracker.regev:<pid>"
+        // at UITestSupport.launch() — surfaced post-PR-#225-scheme-fix as the
+        // next layer of CI flake (Run 5/5 of the validation chain, 2026-05-05).
+        // Calling terminate() unconditionally is a no-op when the app isn't
+        // running, so it's safe even on tests that early-exited via XCTSkip.
+        XCUIApplication().terminate()
+    }
+
     // MARK: - A3: ForgotPasswordRequestView
 
     func testForgotPasswordRequestView_isReachableFromEmailLoginIfWired() throws {
