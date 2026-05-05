@@ -331,7 +331,12 @@ def check_cache_hits_empty_post_v6(
     return findings
 
 
-EXEMPT_CASE_STUDY_TYPES = {"no_case_study_required", "pre_pm_workflow_backfill", "roundup"}
+EXEMPT_CASE_STUDY_TYPES = {
+    "no_case_study_required",
+    "pre_pm_workflow_backfill",
+    "roundup",
+    "framework_meta_retroactive",
+}
 
 
 def check_state_no_case_study_link(
@@ -346,9 +351,14 @@ def check_state_no_case_study_link(
     one was waived.
 
     Exempt tags (EXEMPT_CASE_STUDY_TYPES):
-      - no_case_study_required  (new in v7.7 — operational artifacts)
-      - pre_pm_workflow_backfill (v7.6 — pre-PM-workflow features)
-      - roundup                  (v7.6 — covered by consolidation case study)
+      - no_case_study_required    (new in v7.7 — operational artifacts)
+      - pre_pm_workflow_backfill  (v7.6 — pre-PM-workflow features)
+      - roundup                   (v7.6 — covered by consolidation case study)
+      - framework_meta_retroactive (v7.8 — framework-version meta features
+                                    where the framework version itself shipped
+                                    before spec discipline was established;
+                                    case study + git history are the source of
+                                    truth, no spec/plan/PRD chain to backfill)
 
     Returns a list with one finding dict (code=STATE_NO_CASE_STUDY_LINK) if the
     check fails, or an empty list if the check passes or is not applicable.
@@ -377,8 +387,8 @@ def check_state_no_case_study_link(
             "docs/case-studies/<feature>-case-study.md, or a "
             "parent_case_study field pointing to the parent case study, OR "
             "add case_study_type: 'no_case_study_required' (or "
-            "'pre_pm_workflow_backfill' / 'roundup') with "
-            "case_study_exempt_reason."
+            "'pre_pm_workflow_backfill' / 'roundup' / "
+            "'framework_meta_retroactive') with case_study_exempt_reason."
         ),
         "severity": "failure",
     })

@@ -222,7 +222,7 @@ def test_state_no_case_study_link_passes_with_parent_link():
 
 
 def test_state_no_case_study_link_passes_with_exempt():
-    for tag in ("no_case_study_required", "pre_pm_workflow_backfill", "roundup"):
+    for tag in ("no_case_study_required", "pre_pm_workflow_backfill", "roundup", "framework_meta_retroactive"):
         state = {
             "feature_name": "test",
             "current_phase": "complete",

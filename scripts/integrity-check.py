@@ -172,8 +172,11 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
     # Phase-lie exemptions:
     # - pre-PM-workflow backfills (use legacy phase vocabulary)
     # - roundup-classified features (covered by consolidation CS, sub-phase granularity not meaningful)
+    # - framework_meta_retroactive (v7.8) — framework-version meta features
+    #   whose framework version itself shipped before spec discipline; sub-phase
+    #   granularity not meaningful since the work predates the phase model
     cs_type = d.get("case_study_type")
-    is_phase_check_exempt = cs_type in ("pre_pm_workflow_backfill", "roundup")
+    is_phase_check_exempt = cs_type in ("pre_pm_workflow_backfill", "roundup", "framework_meta_retroactive")
 
     # Check #1: phase lie
     if is_terminal and not is_phase_check_exempt:
@@ -205,10 +208,13 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
             })
 
     # Check #3: missing case-study linkage (excluding roundup + backfill +
-    # no_case_study_required). Note: is_phase_check_exempt covers
-    # pre_pm_workflow_backfill and roundup; no_case_study_required is a v7.7
-    # addition for operational artifacts that warrant no narrative.
-    _NO_CS_EXEMPT_TYPES = {"roundup", "no_case_study_required"}
+    # no_case_study_required + framework_meta_retroactive). Note:
+    # is_phase_check_exempt covers pre_pm_workflow_backfill and roundup;
+    # no_case_study_required is a v7.7 addition for operational artifacts
+    # that warrant no narrative; framework_meta_retroactive is a v7.8
+    # addition for framework-version meta features whose framework version
+    # itself shipped before spec discipline was established.
+    _NO_CS_EXEMPT_TYPES = {"roundup", "no_case_study_required", "framework_meta_retroactive"}
     if is_terminal and not is_phase_check_exempt:
         has_cs = bool(d.get("case_study") or d.get("parent_case_study"))
         if not has_cs and d.get("case_study_type") not in _NO_CS_EXEMPT_TYPES:
