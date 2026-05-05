@@ -168,7 +168,7 @@ Parallel subagent dispatch is **currently blocked** at the framework layer (F6�
 - UI audit: `make ui-audit` (per-view design-system compliance scanner — see "Design System" section)
 - Build: `xcodebuild build` (iOS Simulator, no code signing)
 - Test: `xcodebuild test` (XCTest suite)
-- All four must pass before any merge to main once the UI-audit baseline reaches 0 P0. Today `ui-audit` runs separately; the existing 27 P0 baseline is being burned down "fix-as-you-touch" per `docs/design-system/ui-audit-baseline.md`.
+- All four must pass before any merge to main. The original 27-P0 baseline burndown completed (verified 2026-05-05: `make ui-audit` reports P0=0). `ui-audit` is now a hard gate within `verify-local` alongside tokens-check, build, and test. Fix-as-you-touch policy continues for P1 findings (current drift: +5 from 103 baseline → 108).
 
 ## Data-Driven Development
 
@@ -217,10 +217,13 @@ colorset.
   `DS-MAGIC-{PADDING,FRAME}`, `DS-A11Y-BUTTON`, `DS-MISSING-ASSET`
   (Gap-A: `Color("name")` in AppTheme without a backing colorset).
 - **Baseline:** `docs/design-system/ui-audit-baseline.md` (regenerate
-  with `make ui-audit-baseline`). Current snapshot: 27 P0 + 103 P1.
+  with `make ui-audit-baseline`). Baseline snapshot: 0 P0 + 103 P1
+  (P0 burndown completed 2026-05-05); current live: 0 P0 + 108 P1
+  (P1 drift +5 since baseline, fix-as-you-touch active).
 - **Fix-as-you-touch rule:** any PR touching a file with findings should
-  clear that file's findings as part of the change. Once baseline P0
-  reaches 0, add `ui-audit` to `verify-local` to make it a hard gate.
+  clear that file's findings as part of the change. `ui-audit` is now a
+  hard gate within `verify-local` (achieved 2026-05-05 once P0 baseline
+  reached 0).
 - **Verification contract:** `docs/design-system/figma-code-sync-status.md`
   Verification Contract section defines what is automatically vs
   manually verified, plus plans for closing the snapshot-test and
