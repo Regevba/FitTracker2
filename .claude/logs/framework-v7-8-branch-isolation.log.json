@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "feature": "framework-v7-8-branch-isolation",
+  "title": "framework v7 8 branch isolation",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "framework_version": null,
+  "started_at": "2026-04-30T18:41:53Z",
+  "updated_at": "2026-05-05T04:17:25.828455Z",
+  "events": [
+    {
+      "timestamp": "2026-04-30T18:41:53Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "v7.8 bootstrap: feature stub created at .claude/features/framework-v7-8-branch-isolation/state.json. Backlog entry added to docs/product/backlog.md High Priority (Architecture & Framework). Trigger incident: HADF Phase 2 fingerprinting campaign (2026-04-30) \u2014 long-running launchd-driven background job anchored to canonical repo path instead of an isolated feature/ worktree; wrapper relative writes resolved against launchd WorkingDirectory; canonical jsonl landed in wrong tree; required mid-flight isolation + restart + remerge. Primary deliverable: write-time + cycle-time gate BRANCH_ISOLATION_VIOLATION.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/state.json"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "phase": "research",
+      "timestamp": "2026-05-05T04:17:25.828455Z",
+      "event_type": "phase_started",
+      "summary": "State.json + log.json landed on main via PR-I (full-repair-mode plan, Decision 4 = A) on 2026-05-05. Original capture date was 2026-04-30 (kept in state.json::created_at + first log event); this event is the on-main landing event so the PHASE_TRANSITION_NO_LOG gate sees a fresh entry within the 15-min freshness window.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/state.json"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
