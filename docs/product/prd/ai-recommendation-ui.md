@@ -5,7 +5,7 @@
 | **ID** | ai-recommendation-ui |
 | **Status** | PRD |
 | **Priority** | P1 |
-| **Parent** | adaptive-intelligence-initiative |
+| **Parent** | adaptive-intelligence |
 | **Work Type** | Feature (full 10-phase lifecycle, 0-9 — new UI surface) |
 | **GitHub Issue** | #46 |
 | **Last Updated** | 2026-04-10 |
