@@ -169,6 +169,7 @@ Parallel subagent dispatch is **currently blocked** at the framework layer (F6�
 - Build: `xcodebuild build` (iOS Simulator, no code signing)
 - Test: `xcodebuild test` (XCTest suite)
 - All four must pass before any merge to main. The original 27-P0 baseline burndown completed (verified 2026-05-05: `make ui-audit` reports P0=0). `ui-audit` is now a hard gate within `verify-local` alongside tokens-check, build, and test. Fix-as-you-touch policy continues for P1 findings (current drift: +5 from 103 baseline → 108).
+- **UI test coverage strategy (codified 2026-05-08 per iOS audit finding E-2):** UI test coverage is **intentionally thin** (~7 UI test files vs. 49 unit test files / 440 test methods total). Reason: the parallel-clone simulator hang env-flake (per `docs/case-studies/m-4-xcuitest-infrastructure-case-study.md`) makes UI tests a high-cost, high-flake surface on hosted CI. Unit + analytics tests carry the load instead. Expansion is **deferred** until the env-flake root cause is resolved (tracked in `docs/product/backlog.md` under "CI parallel-clone simulator hang"). Two surgical XCTSkipIf quarantines (`HomeReadinessUITests`, `OnboardingUITests`) remain in place as the live workaround.
 
 ## Data-Driven Development
 
@@ -286,6 +287,8 @@ substantial refactor against `docs/design-system/ux-foundations.md`):
    // This file is no longer in the build target; it stays in the repo
    // as a reviewable reference for the v1 → v2 diff.
    ```
+
+   **Retention policy (codified 2026-05-08 per iOS audit finding F-1):** HISTORICAL v1 files are retained **indefinitely by default**. The V2 Rule's first anniversary (**2027-04-09**) is the scheduled review point for whether to introduce a year+1 prune policy (e.g., "drop HISTORICAL files older than 1 year; rely on git history"). Until then, all HISTORICAL files stay in the repo as on-disk reviewable references. As of 2026-05-05, 16 HISTORICAL files (~5K LoC) sit alongside their v2 counterparts.
 
 6. **One v2 split per surface.** A second alignment pass on the same
    screen does not become a `v3/` directory — it patches v2 in place.
