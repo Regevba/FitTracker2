@@ -1,0 +1,73 @@
+{
+  "$schema": "feature-baseline-metric/v1",
+  "feature": "unified-control-center",
+  "metric": "time-to-confidence-ttc",
+  "definition": "Seconds from /control-room (legacy: /dashboard) page paint to operator identifying the next high-priority blocker. Measured via GA4 event sequence: dashboard_load → dashboard_blocker_acknowledged.",
+  "instrumentation": {
+    "load_event": "dashboard_load",
+    "load_event_source": "dashboard/src/components/Dashboard.jsx (T1 done 2026-04-26)",
+    "ack_event": "dashboard_blocker_acknowledged",
+    "ack_event_source": "dashboard/src/components/AlertsBanner.jsx (T1 done 2026-04-26)",
+    "ga_id_env": "GA_ID (set in Vercel project env vars for fit-tracker2)",
+    "scripts_module": "dashboard/src/scripts/analytics.js"
+  },
+  "baseline": {
+    "p50_seconds": 8.0,
+    "p90_seconds": null,
+    "sample_size": null,
+    "tier": "T2 (Declared)",
+    "data_source": "ga4_pending_extraction_pre_merge",
+    "captured_at": "2026-05-08T00:00:00Z",
+    "captured_by": "PR-T2-baseline-placeholder (chore/ucc-t2-baseline-placeholder-2026-05-08)",
+    "note": "PROVISIONAL placeholder per PRD §5.1 acceptance allowance: 'T2 (Declared) at PRD draft, MUST become T1 (Instrumented) before merge.' Implementation work T18+ proceeds in parallel; this baseline must be replaced with real GA4 data extraction before Block G (decommission) ships."
+  },
+  "target": {
+    "p50_seconds": 6.0,
+    "tier": "T2 (Declared, 2026-04-26)",
+    "review_date": "2026-05-26 (30d post-merge per PRD §5.7 first review)",
+    "note": "≤6s p50 in steady state at 30 days post-launch."
+  },
+  "kill_criteria": {
+    "p50_sustained_seconds": 15.0,
+    "duration_weeks": 2,
+    "tier": "T2 (Declared, 2026-04-26)",
+    "rollback_plan": "PRD §13",
+    "note": "TTC p50 sustained > 15s for any 2 consecutive weeks → revert to Astro dashboard."
+  },
+  "todo_before_final_merge": {
+    "status": "OPEN",
+    "owner": "user (GA4 access required)",
+    "blocking_task": "T2",
+    "gates_blocked": [
+      "T34 (mark dashboard/ historical) — should not ship without verified T1 baseline",
+      "T35 (Vercel redirect) — should not ship without verified T1 baseline",
+      "T42 (case study) — case study should report T1 baseline numbers honestly"
+    ],
+    "extraction_steps": [
+      "1. Authenticate GA4 access for fit-tracker2 property (Vercel team member with viewer role)",
+      "2. Query GA4 Reporting API or Explore for events 'dashboard_load' + 'dashboard_blocker_acknowledged' over last 7+ days (data has been collecting since T1 instrumentation landed 2026-04-26)",
+      "3. For each user session, compute TTC = ack_timestamp - load_timestamp (only sessions with both events)",
+      "4. Aggregate: p50_seconds, p90_seconds, sample_size, sessions_dropped (no ack)",
+      "5. Update this file: bump tier to 'T1 (Instrumented)', fill in real numbers, set data_source to 'ga4_query_<timestamp>', clear todo_before_final_merge.status to 'CLOSED'"
+    ],
+    "alternative_if_ga4_unavailable": "If GA4 data extraction is genuinely blocked, document the constraint in the UCC case study (T42) with explicit T2 (Declared) tagging on every TTC reference. The case study honesty norm permits this provided the limitation is clearly disclosed."
+  },
+  "history": [
+    {
+      "date": "2026-04-26",
+      "event": "T1 instrumentation shipped — analytics.js + Dashboard.jsx mount + AlertsBanner.jsx click handler",
+      "tier": "T1 (Instrumented)"
+    },
+    {
+      "date": "2026-04-26",
+      "event": "T2 started — 7-day data collection window opens",
+      "tier": "T2 (Declared)"
+    },
+    {
+      "date": "2026-05-08",
+      "event": "T2 placeholder shipped per PRD §5.1 allowance to unblock T18+ implementation. Real GA4 extraction outstanding.",
+      "tier": "T2 (Declared)",
+      "pr": "T2-baseline-placeholder PR (this commit)"
+    }
+  ]
+}
