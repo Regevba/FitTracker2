@@ -1,0 +1,62 @@
+{
+  "feature": "framework-v7-1-integrity-cycle",
+  "feature_name": "framework-v7-1-integrity-cycle",
+  "current_phase": "complete",
+  "framework_version": "v7.1",
+  "work_type": "Feature",
+  "case_study_type": "framework_meta_retroactive",
+  "case_study": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+  "spec_path": null,
+  "plan_path": null,
+  "created": "2026-04-21T00:00:00Z",
+  "created_at": "2026-04-21T00:00:00Z",
+  "updated": "2026-05-05T08:00:00Z",
+  "branch": "main",
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive — backfill, no live PM workflow"
+    },
+    "prd": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "tasks": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "implementation": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "test": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "review": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "merge": {
+      "status": "skipped",
+      "note": "framework_meta_retroactive"
+    },
+    "documentation": {
+      "status": "complete",
+      "note": "Case study + spec/plan (where applicable) documented post-ship"
+    }
+  },
+  "case_study_exempt_reason": "framework_meta_retroactive: framework-v7-1-integrity-cycle is a framework-version meta feature whose framework version itself shipped before formal spec discipline. Case study + git history are the source of truth.",
+  "timing": {
+    "phases": {
+      "complete": {
+        "started_at": "2026-05-05T08:00:00Z",
+        "note": "framework_meta_retroactive backfill — wrapper landed via PR-GJ"
+      }
+    }
+  }
+}
