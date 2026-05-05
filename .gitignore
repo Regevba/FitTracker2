@@ -46,6 +46,10 @@ Carthage/Build/
 !.claude/entrypoints/
 !.claude/entrypoints/**
 !.claude/settings.json
+# Session-specific lock files (regenerated per session, never commit)
+.claude/scheduled_tasks.lock
+.claude/logs/*.lock
+.claude/logs/*.lock.json
 .superpowers/
 .worktrees/
 FitMe-GDPR-Docs/
