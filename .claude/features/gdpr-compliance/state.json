@@ -1,9 +1,9 @@
 {
   "feature": "gdpr-compliance",
   "work_type": "chore",
-  "case_study": "docs/case-studies/six-features-roundup-case-study.md",
-  "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
-  "case_study_type": "roundup",
+  "case_study": "docs/case-studies/gdpr-compliance-case-study.md",
+  "parent_case_study": "docs/case-studies/six-features-roundup-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/24b-gdpr-compliance.mdx",
   "created_at": "2026-04-04T11:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": "feature/gdpr-compliance",

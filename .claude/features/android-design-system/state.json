@@ -1,9 +1,9 @@
 {
   "feature": "android-design-system",
   "work_type": "feature",
-  "case_study": "docs/case-studies/six-features-roundup-case-study.md",
-  "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
-  "case_study_type": "roundup",
+  "case_study": "docs/case-studies/android-design-system-case-study.md",
+  "parent_case_study": "docs/case-studies/six-features-roundup-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/24a-android-design-system.mdx",
   "created_at": "2026-04-04T14:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": "feature/android-design-system",

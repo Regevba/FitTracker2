@@ -21,7 +21,7 @@
   "v2_rule_compliant": true,
   "checklist_path": "docs/design-system/v2-refactor-checklist.md",
   "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
-  "case_study_showcase": "04-case-studies/18-home-today-screen.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/18a-home-today-screen.mdx",
   "parent_version": {
     "version": "v1",
     "status": "shipped-pre-pm-workflow",
