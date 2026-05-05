@@ -1,9 +1,9 @@
 {
   "feature": "onboarding-v2-retroactive",
   "created_at": "2026-04-09T18:00:00Z",
-  "updated": "2026-04-09T18:00:00Z",
+  "updated": "2026-05-05T05:46:24Z",
   "branch": "feature/onboarding-v2-retroactive",
-  "current_phase": "tasks",
+  "current_phase": "complete",
   "framework_version": "v5.0",
   "agent_manifest": {
     "reads": [],
@@ -34,7 +34,14 @@
       "to": "tasks",
       "timestamp": "2026-04-09T18:00:00Z",
       "approved_by": "user",
-      "note": "Enhancement work type \u2014 skipped Research, PRD, UX. Parent feature: onboarding (PR #59, shipped 2026-04-06). Starting at Phase 2 (Tasks)."
+      "note": "Enhancement work type — skipped Research, PRD, UX. Parent feature: onboarding (PR #59, shipped 2026-04-06). Starting at Phase 2 (Tasks)."
+    },
+    {
+      "from": "tasks",
+      "to": "complete",
+      "timestamp": "2026-05-05T05:46:24Z",
+      "approved_by": "user",
+      "note": "State.json reconciliation: PR #63 (2026-04-09 file-move-only enhancement) shipped without state.json phase advancement. Reconciled retroactively to match shipped reality. Closes iOS audit finding H-2."
     }
   ],
   "phases": {
@@ -48,32 +55,43 @@
       "parent_prd": ".claude/features/onboarding/prd.md"
     },
     "tasks": {
-      "status": "in_progress",
-      "started_at": "2026-04-09T18:00:00Z"
+      "status": "approved",
+      "started_at": "2026-04-09T18:00:00Z",
+      "note": "Tasks were the file-move plan; executed within the single PR #63 commit."
     },
     "ux_or_integration": {
       "status": "skipped",
       "reason": "work_type:enhancement"
     },
     "implementation": {
-      "status": "pending",
-      "commits": []
+      "status": "complete",
+      "note": "Single commit on feature branch shipped 8 file moves + pbxproj surgery + HISTORICAL annotations.",
+      "commits": [
+        "6f38ee9"
+      ],
+      "started_at": "2026-04-09T12:33:44Z",
+      "ended_at": "2026-04-09T12:33:44Z"
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
-      "tests_added": 0
+      "status": "skipped",
+      "reason": "No functional changes — existing onboarding tests cover behavior. Build verified via xcodebuild."
     },
     "review": {
-      "status": "pending",
-      "risks": []
+      "status": "complete",
+      "note": "PR #63 review approved + merged.",
+      "started_at": "2026-04-09T12:33:44Z",
+      "ended_at": "2026-04-09T12:33:44Z"
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null
+      "status": "complete",
+      "pr_number": 63,
+      "merged_at": "2026-04-09T12:33:44Z",
+      "merge_commit": "e500360c73237b2ca2db828152411a8c1936051d"
     },
     "documentation": {
-      "status": "pending"
+      "status": "complete",
+      "note": "V2 Rule documented in CLAUDE.md and validated by this multi-screen application.",
+      "ended_at": "2026-04-09T12:33:44Z"
     }
   },
   "case_study": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
@@ -94,5 +112,20 @@
   },
   "_meta": {
     "deprecation_warnings": []
+  },
+  "case_study_type": "pre_pm_workflow_backfill",
+  "case_study_exempt_reason": "Enhancement work_type — retroactive v2/ subdirectory move shipped via PR #63 (2026-04-09). No functional changes (file move + project.pbxproj surgery only). Existing onboarding-v2-auth-flow case study + onboarding case study cover the user-facing surface.",
+  "timing": {
+    "phases": {
+      "complete": {
+        "started_at": "2026-05-05T05:46:24Z",
+        "note": "State reconciliation 2026-05-08 via PR-T1-H2 (iOS audit finding H-2). Original PR #63 shipped 2026-04-09; state.json was never advanced past phases.tasks=in_progress."
+      },
+      "tasks": {
+        "started_at": "2026-04-09T18:00:00Z",
+        "ended_at": "2026-05-05T05:48:10Z",
+        "note": "Tasks phase opened retroactively after PR #63 merged; closed via PR-T1-H2 reconciliation (iOS audit finding H-2)."
+      }
+    }
   }
 }

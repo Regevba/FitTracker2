@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "feature": "onboarding-v2-retroactive",
+  "title": "Onboarding v2 — Retroactive subdirectory refactor",
+  "work_type": "enhancement",
+  "current_phase": "complete",
+  "framework_version": "v5.0",
+  "started_at": "2026-04-09T18:00:00Z",
+  "updated_at": "2026-05-05T05:46:41Z",
+  "events": [
+    {
+      "timestamp": "2026-04-09T18:00:00Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "State.json initialized (retroactively, after PR #63 had already merged at 12:33:44Z). Enhancement work type — Research/PRD/UX skipped per parent feature linkage.",
+      "actor": "claude",
+      "status": "recorded",
+      "recording_mode": "retroactive"
+    },
+    {
+      "timestamp": "2026-05-05T05:46:41Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "State reconciliation via PR-T1-H2 (iOS audit finding H-2, 2026-05-05 read-only audit). PR #63 shipped 2026-04-09T12:33:44Z (commit e500360c) but state.json was never advanced past phases.tasks=in_progress. Reconciliation flips state to match shipped reality: 8 v1 files moved to FitTracker/Views/Onboarding/v2/ + project.pbxproj surgery + HISTORICAL header annotations on v1. No functional changes; existing onboarding-v2-auth-flow tests cover behavior.",
+      "artifacts": [
+        ".claude/features/onboarding-v2-retroactive/state.json",
+        "FitTracker/Views/Onboarding/v2/"
+      ],
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
