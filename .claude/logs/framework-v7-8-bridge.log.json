@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "feature": "framework-v7-8-bridge",
+  "title": "Framework v7.8 Bridge to v7.9 (6 mechanisms A-F)",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v7.8",
+  "started_at": "2026-05-04T00:00:00Z",
+  "updated_at": "2026-05-05T05:00:36Z",
+  "events": [
+    {
+      "timestamp": "2026-05-05T05:00:36Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Retroactive framework-meta state.json wrapper landed via PR-GJ (full-repair-mode plan, 2026-05-05). Original framework version shipped 2026-05-04. Case study at docs/case-studies/framework-v7-8-bridge-case-study.md. Wrapper exists to give the orphan case study chain-of-custody.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
