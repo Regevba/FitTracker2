@@ -111,6 +111,14 @@ workout_frequency,string,1-7,No,Updated weekly based on actual usage,,,,,,,
 subscription_status,string,free/premium/trial,No,Future: after StoreKit integration,,,,,,,
 app_version,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
 device_model,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
+Dashboard,dashboard_load,Custom,/control-room (any route),route (overview/board/table/tasks/knowledge/framework),data_freshness_minutes (int),auth_method (basic/public/extracted),,,No,event,UCC T36 — fires once per route mount via TrackPageView client island
+Dashboard,dashboard_blocker_acknowledged,Custom,AlertsBanner first expansion,feature_id (string),alert_severity (red/amber/blue/purple/info),time_since_load_ms (int),,,Yes,event,UCC T36 — TTC primary metric numerator. Conversion. Fires once on first banner expansion per session.
+Dashboard,dashboard_view_change,Custom,PRIMARY_NAV link click,from_view (overview/board/table/tasks/knowledge/external),to_view (same enum),,,,No,event,UCC T36 — operator navigation graph. Phase 2 (post-#32 merge).
+Dashboard,dashboard_filter_apply,Custom,TableViewClient search/sort,filter_field (search/sort_phase/sort_priority/...),filter_value_count (int),,,,No,event,UCC T36 — Phase 2 (after #31 lands TableViewClient).
+Dashboard,dashboard_kanban_drag,Custom,KanbanBoard drag-drop (NOT YET IMPLEMENTED),feature_id (string),from_phase (string),to_phase (string),,,No,event,UCC T36 — STUB. Helper shipped for future drag-to-update; current Wave 1 Kanban port is read-only.
+Dashboard,dashboard_knowledge_open,Custom,KnowledgeHub doc click,doc_path (string),doc_group (string),,,,No,event,UCC T36 — Phase 2.
+Dashboard,dashboard_external_link,Custom,Layout/palette external link click,link_type (github/linear/notion/vercel),target_id (string),,,,No,event,UCC T36 — Phase 2 (after #32 merges to wire layout link).
+Dashboard,dashboard_sync_warning_shown,Custom,DataFreshnessFooter staleness > 6h,staleness_hours (number),source (string),,,,No,event,UCC T36 — fires from TrackPageView when freshness.json syncedAt is > 6h old.
 os_version,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
 ,,,,,,,,,,
 Conversion Event,Funnel,Purpose,,,,,,,,
@@ -123,3 +131,4 @@ home_action_completed,Home Engagement,Home-to-action follow-through,,,,,,,,
 training_session_completed,Training,Full training session completion,,,,,,,,
 auth_password_reset_completed,Auth Recovery,Password reset completion rate (auth-polish-v2 A5),,,,,,,,
 auth_biometric_activated,Auth Activation,Biometric adoption (post-sign-in offer; auth-polish-v2 B4),,,,,,,,
+dashboard_blocker_acknowledged,Dashboard TTC,Time-To-Comprehension primary metric (UCC T36 — operator engages with first alert),,,,,,,,
