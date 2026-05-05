@@ -1,7 +1,7 @@
 {
   "feature": "ai-engine-architecture-adaptation",
   "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
-  "case_study_showcase": "04-case-studies/07-ai-engine-architecture.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/07-ai-engine-architecture.mdx",
   "created_at": "2026-04-12T21:30:00Z",
   "updated": "2026-04-20T00:00:00Z",
   "branch": null,
