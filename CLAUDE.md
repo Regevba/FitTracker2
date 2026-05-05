@@ -66,7 +66,7 @@ The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defens
 **Cycle-time gates (fire every 72h via GitHub Actions):**
 Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. 13 cycle-time check codes: `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `CU_V2_INVALID` (v7.7).
 
-- **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"` or `"roundup"` bypass the sub-phase vocabulary check.
+- **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"`, `"roundup"`, `"no_case_study_required"`, or `"framework_meta_retroactive"` bypass the sub-phase vocabulary check. The `framework_meta_retroactive` tag (added v7.8) is for framework-version meta features whose framework version itself shipped before spec discipline was established (v5.0 SoC, v5.2 dispatch intelligence, v6.0 measurement, v7.0 meta-analysis, v7.1 integrity cycle); the case study + git history are the source of truth — no spec/plan/PRD chain to backfill. Going forward (v7.9+), all new framework versions carry full chain-of-custody and CANNOT use this exemption.
 - **Local usage:** `make integrity-check` (findings only) or `make integrity-snapshot` (write + diff vs previous).
 - **Full docs:** [`.claude/integrity/README.md`](.claude/integrity/README.md).
 

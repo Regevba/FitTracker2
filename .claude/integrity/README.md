@@ -162,7 +162,9 @@ The `state_hash` field is a truncated SHA-256 of the state.json content — dete
 
 2. **Roundup-classified features** bypass the no-cs-link check via `case_study_type: "roundup"` (pointing at a shared roundup case study).
 
-3. **Features with `partial_ship: true`** are flagged via `PARTIAL_SHIP_TERMINAL` if they ALSO have a terminal phase — the policy is either "downgrade phase from complete" or "remove the partial_ship flag", pick one.
+3. **Framework-meta-retroactive features** (added v7.8) bypass phase-lie + no-cs-link checks via `case_study_type: "framework_meta_retroactive"`. Used for framework-version meta features (e.g. v5.0 SoC, v5.2 Dispatch Intelligence) whose framework version itself shipped before spec discipline was established. The case study + git history are the source of truth; there is no spec/plan/PRD chain to backfill, and the legacy phase model doesn't apply. Pairs with the v7.8 chain-of-custody initiative — going forward, all new framework versions (v7.9+) carry full spec→plan→PRD→PR→case-study→showcase chains and CANNOT use this exemption.
+
+4. **Features with `partial_ship: true`** are flagged via `PARTIAL_SHIP_TERMINAL` if they ALSO have a terminal phase — the policy is either "downgrade phase from complete" or "remove the partial_ship flag", pick one.
 
 ---
 
