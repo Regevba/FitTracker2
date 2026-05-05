@@ -12,7 +12,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-05T11:45:45Z",
+  "updated": "2026-05-05T12:05:43Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -368,8 +368,15 @@
         "T7",
         "T15"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:05:43Z",
+      "commits": [
+        "9c8c6d4"
+      ],
+      "pr_number": 22,
+      "pr_repo": "fitme-story",
+      "note": "Ported Dashboard.jsx chrome to layout.tsx \u2014 header (brand icon + title + 2 badges) + 5-tab primary nav (Overview built, Board/Table/Tasks/Knowledge as 'soon' placeholders) + Framework Health secondary nav. Stat pills + workspaces dropdown + AlertsBanner + PipelineOverview deferred to T20+T24+T27."
     },
     {
       "id": "T19",
@@ -382,8 +389,15 @@
       "depends_on": [
         "T15"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:05:43Z",
+      "commits": [
+        "97b18c2"
+      ],
+      "pr_number": 21,
+      "pr_repo": "fitme-story",
+      "note": "Ported 8 primitives (Panel, MetricList, InfoTile, DriftList, ModeBadge, DocumentCard, DocumentGroupCard, EmptyState) to TypeScript with explicit prop interfaces. ~280 lines incl. JSDoc. Tailwind classes preserved verbatim \u2014 re-skin to fitme-story tokens deferred to post-T20-T28 visual review per token-map.md."
     },
     {
       "id": "T20",
