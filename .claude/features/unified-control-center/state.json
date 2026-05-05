@@ -12,7 +12,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-05T13:30:00Z",
+  "updated": "2026-05-05T13:55:00Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -502,8 +502,12 @@
         "T7",
         "T19"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T13:55:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
+      "commit": "d17855f",
+      "note": "DataFreshnessFooter RSC reads src/data/freshness.json; renders 'Last synced N ago · counts' under every /control-room/* page via layout.tsx; flips to red-warning state when staleness > 6h per PRD FR-8."
     },
     {
       "id": "T26",
@@ -531,8 +535,12 @@
       "depends_on": [
         "T19"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T13:55:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
+      "commit": "d17855f",
+      "note": "PhaseLegendAndActivity RSC composes PhaseLegend (4 buckets matching FeatureCard accent colors) + RecentActivityStrip (top-5 events from src/data/shared/change-log.json, sorted desc). Wired into Overview page between Live modules and migration paragraph."
     },
     {
       "id": "T28",
@@ -545,8 +553,12 @@
       "depends_on": [
         "T18"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T13:55:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
+      "commit": "d17855f",
+      "note": "Added 'Case studies \u2192' to SECONDARY_NAV in layout.tsx; trailing arrow signals leaving /control-room. Dashboard's CaseStudiesView.jsx was already absent from Wave 1 layout port."
     },
     {
       "id": "T29",
