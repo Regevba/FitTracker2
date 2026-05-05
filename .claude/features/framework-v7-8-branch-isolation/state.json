@@ -1,0 +1,67 @@
+{
+  "feature_name": "framework-v7-8-branch-isolation",
+  "current_phase": "research",
+  "created_at": "2026-04-30T18:38:40Z",
+  "work_type": "Feature",
+  "phases": {
+    "research": {
+      "status": "in_progress",
+      "started_at": "2026-04-30T18:38:40Z",
+      "note": "Idea captured in docs/product/backlog.md High Priority (Architecture & Framework). Triggered by the HADF Phase 2 fingerprinting campaign (2026-04-30): a long-running launchd-driven background job was anchored to the canonical repo path instead of an isolated feature/ worktree; the wrapper's relative writes resolved against launchd's WorkingDirectory, canonical jsonl landed in the wrong tree, and the campaign required mid-flight isolation + restart + remerge."
+    },
+    "prd": {"status": "not_started"},
+    "tasks": {"status": "not_started"},
+    "ux_or_integration": {"status": "not_started"},
+    "implementation": {"status": "not_started"},
+    "test": {"status": "not_started"},
+    "review": {"status": "not_started"},
+    "merge": {"status": "not_started"},
+    "documentation": {"status": "not_started"}
+  },
+  "timing": {
+    "phases": {
+      "research": {"started_at": "2026-04-30T18:38:40Z"}
+    }
+  },
+  "cache_hits": [],
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.6,
+      "blast_radius": 0.75,
+      "novelty": 0.5,
+      "verification_difficulty": 0.7
+    },
+    "total": 2.55,
+    "tier_class": "A_high"
+  },
+  "case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
+  "predecessor_features": [
+    "framework-v7-7-validity-closure",
+    "data-integrity-framework-v7-6",
+    "data-integrity-framework-v7-5",
+    "hadf-infrastructure"
+  ],
+  "trigger_incident": {
+    "feature": "hadf-infrastructure",
+    "phase": "phase-2-fingerprinting",
+    "date": "2026-04-30",
+    "summary": "Long-running launchd-driven fingerprint campaign was anchored to the canonical repo path instead of a feature/ worktree. Wrapper's relative writes resolved against launchd's WorkingDirectory; canonical jsonl landed in the wrong tree; required mid-flight isolation + restart + remerge before clean data resumed.",
+    "memory_link": "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_hadf_phase2_in_progress.md"
+  },
+  "deliverables": {
+    "primary": "v7.8 write-time + cycle-time gate `BRANCH_ISOLATION_VIOLATION`",
+    "supporting": [
+      "Extension to `superpowers:using-git-worktrees` skill: auto-detect when a feature with an active branch is being touched from main and prompt/auto-create the worktree",
+      "Pre-state.json-mutation guard for scheduled jobs: verify `branch + cwd + WorkingDirectory` resolve to the expected `.worktrees/<name>` (or sibling `/Volumes/DevSSD/FitTracker2-*`) tree before any write",
+      "`make verify-isolation` readout listing every active feature with its expected branch + worktree path + actual git/launchd state",
+      "Documentation of which jobs/skills are exempt (e.g. framework-level meta-work that legitimately runs on main)"
+    ]
+  },
+  "open_questions": [
+    "Should the gate fire on uncommitted edits to a feature's files when on main, or only on `current_phase` mutations?",
+    "How does the auto-create flow interact with `superpowers:using-git-worktrees` smart-directory selection?",
+    "What's the right escape hatch for legitimately-on-main work (e.g. integrity-check.py edits, framework-version bumps)? `BRANCH_ISOLATION_EXEMPT` allowlist? Per-feature opt-out?",
+    "Do we need to inspect `~/Library/LaunchAgents/*.plist` (and equivalent on Linux/CI) WorkingDirectory values, or is checking the running process cwd sufficient?",
+    "Should the cycle-time check audit `.claude/features/*/state.json` against `git log --all` to detect features whose entire history happened on main?"
+  ]
+}
