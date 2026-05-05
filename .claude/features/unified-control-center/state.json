@@ -12,7 +12,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-05T13:55:00Z",
+  "updated": "2026-05-05T21:30:00Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -521,8 +521,12 @@
         "T19",
         "T21"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/29",
+      "commit": "21d8678",
+      "note": "New /control-room/tasks server component using parseStateFiles() to flatten tasks across all features into 4 status buckets (in_progress/ready/blocked/done). PRIMARY_NAV Tasks flipped from soon-placeholder to active link. Required fix(build) PR #34 (fitme-story) to land first because the chain page.tsx → parsers/state.ts → types.ts surfaced a Turbopack new-URL resolution bug."
     },
     {
       "id": "T27",
@@ -572,8 +576,12 @@
         "T19",
         "T21"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/30",
+      "commit": "b4c92e0",
+      "note": "TaskTree component replaces dashboard's 207-line SVG DependencyGraph with topologically-sorted indented list + critical-path emphasis. Component shipped as reusable primitive without an immediate consumer (per task description's omission allowance); future hosts include per-feature drill-down + Cmd+K palette."
     },
     {
       "id": "T30",
@@ -586,8 +594,12 @@
       "depends_on": [
         "T22"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/31",
+      "commit": "70346a2",
+      "note": "useViewPrefs<T> hook (useSyncExternalStore-backed for hydration + cross-tab sync + lint compliance) + TableViewClient client island with sortable column headers + global search + Reset View button. ?reset=true URL param clears storage and replaces URL via history.replaceState."
     },
     {
       "id": "T30.5",
@@ -602,8 +614,12 @@
         "T19",
         "T22"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/32",
+      "commit": "607e298",
+      "note": "Hand-rolled (no cmdk/kbar dep) modal palette mounted in layout.tsx. Three command groups: Navigate (7 routes), Actions (Reset prefs / Toggle dark mode / Open GitHub), Features (50+ entries from seed pointing at FT2 state.json on GitHub). Full a11y (role=dialog, role=listbox, aria-activedescendant). Lint-safe via onQueryChange handler resetting selectedIndex (avoids React 19 set-state-in-effect)."
     },
     {
       "id": "T31",
@@ -676,8 +692,12 @@
       "depends_on": [
         "T20"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T21:30:00Z",
+      "pr_ref": "https://github.com/Regevba/FitTracker2/pull/227",
+      "commit": "f864c55",
+      "note": "Prepended HISTORICAL banner to dashboard/README.md pointing at fitme-story/src/{app,components,lib}/control-room/. References the V2 Rule retention policy (indefinite) + extraction recipe + future T35 redirect. Original Stack/Features/etc content preserved below a (Historical context follows) delimiter."
     },
     {
       "id": "T35",
@@ -707,8 +727,12 @@
         "T22",
         "T23"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "in_progress",
+      "priority": "critical",
+      "phase_1_completed_at": "2026-05-05T20:35:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/33",
+      "commit": "bb9b31a",
+      "note": "Phase 1 SHIPPED: typed analytics helpers (8 events wrapped) + TrackPageView client island wired into Overview/Board/Knowledge pages firing dashboard_load + dashboard_sync_warning_shown. Phase 2 PENDING: wire dashboard_view_change (layout PRIMARY_NAV), dashboard_filter_apply (TableViewClient), dashboard_blocker_acknowledged (page-level AlertsBanner consumer), dashboard_knowledge_open (KnowledgeHub doc handler), dashboard_external_link (layout GitHub + palette external cmds), plus add TrackPageView to /tasks + /table pages. Phase 2 deferred as a separate PR."
     },
     {
       "id": "T37",
@@ -721,8 +745,12 @@
       "depends_on": [
         "T36"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T21:30:00Z",
+      "pr_ref": "https://github.com/Regevba/FitTracker2/pull/226",
+      "commit": "829f135",
+      "note": "8 dashboard_* event rows added (Dashboard category) + 1 conversion event (dashboard_blocker_acknowledged → TTC funnel). All comply with CLAUDE.md Analytics Naming Convention (snake_case + screen-prefix + ≤40 char + PII-free + 1 conversion flagged)."
     },
     {
       "id": "T38",
