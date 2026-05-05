@@ -3,7 +3,7 @@
 > **ID:** Backend | **Status:** Shipped | **Priority:** P1
 > **Last Updated:** 2026-04-04
 
-> **Status note (2026-04-26):** No standalone `.claude/features/` directory exists for this PRD. This is intentional — the work is bundled under the `adaptive-intelligence-initiative` parent feature (specifically the `ai-engine-v2` enhancement, which is the iOS-side consumer of this Railway-hosted backend) and the AI cohort intelligence surface (`18.9-ai-cohort-intelligence.md`). State tracking happens at the parent level. The backend code itself is hosted in a separate repository.
+> **Status note (2026-04-26):** No standalone `.claude/features/` directory exists for this PRD. This is intentional — the work is bundled under the `adaptive-intelligence` parent feature (specifically the `ai-engine-v2` enhancement, which is the iOS-side consumer of this Railway-hosted backend) and the AI cohort intelligence surface (`18.9-ai-cohort-intelligence.md`). State tracking happens at the parent level. The backend code itself is hosted in a separate repository.
 
 ---
 

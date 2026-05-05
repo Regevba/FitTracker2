@@ -16,7 +16,11 @@
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": null,
-  "children": ["readiness-score-v2", "ai-engine-v2", "ai-recommendation-ui"],
+  "children": [
+    "readiness-score-v2",
+    "ai-engine-v2",
+    "ai-recommendation-ui"
+  ],
   "transitions": [
     {
       "from": null,
@@ -138,5 +142,6 @@
   "tasks": [],
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "prd_path": "docs/product/prd/adaptive-intelligence.md"
 }

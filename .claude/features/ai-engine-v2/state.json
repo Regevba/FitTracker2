@@ -104,7 +104,7 @@
     "documentation": {
       "status": "approved",
       "approved_at": "2026-04-11T01:00:00Z",
-      "note": "PRD: docs/product/prd/ai-engine-v2.md. Integration documented in adaptive-intelligence-initiative.md."
+      "note": "PRD: docs/product/prd/ai-engine-v2.md. Integration documented in adaptive-intelligence.md."
     }
   },
   "tasks": [],

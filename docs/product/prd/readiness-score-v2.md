@@ -71,7 +71,7 @@ Goal modes: `general`, `fatLoss`, `muscleGain`, `maintain` — each with its own
 ## Cross-References
 
 - **Scientific foundation (the why):** [`docs/product/prd/readiness-score-formula-v2.md`](./readiness-score-formula-v2.md)
-- **Parent feature initiative:** [`docs/product/prd/adaptive-intelligence-initiative.md`](./adaptive-intelligence-initiative.md)
+- **Parent feature initiative:** [`docs/product/prd/adaptive-intelligence.md`](./adaptive-intelligence.md)
 - **Downstream consumer:** [`docs/product/prd/ai-engine-v2.md`](./ai-engine-v2.md) (AIOrchestrator now consumes `ReadinessResult`)
 - **State tracking:** [`.claude/features/readiness-score-v2/state.json`](../../../.claude/features/readiness-score-v2/state.json)
 - **GitHub:** issue #71, FIT-34, PR #78
