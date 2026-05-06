@@ -176,6 +176,8 @@
 		SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */; };
 		SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC01 /* SettingsScaffolds.swift */; };
 		SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC02 /* SettingsFormComponents.swift */; };
+		SE100000000000000000AC03 /* ImportedPlanRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC03 /* ImportedPlanRow.swift */; };
+		SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA07 /* ImportedPlansListScreen.swift */; };
 		SE100000000000000000AC04 /* SettingsHomeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC04 /* SettingsHomeViews.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
@@ -371,6 +373,8 @@
 		SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC01 /* SettingsScaffolds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScaffolds.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC02 /* SettingsFormComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormComponents.swift; sourceTree = "<group>"; };
+		SE200000000000000000AC03 /* ImportedPlanRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlanRow.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA07 /* ImportedPlansListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlansListScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC04 /* SettingsHomeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHomeViews.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UI200000000000000000XT01 /* FitTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1074,6 +1078,7 @@
 			children = (
 				SE200000000000000000AC01 /* SettingsScaffolds.swift */,
 				SE200000000000000000AC02 /* SettingsFormComponents.swift */,
+				SE200000000000000000AC03 /* ImportedPlanRow.swift */,
 				SE200000000000000000AC04 /* SettingsHomeViews.swift */,
 			);
 			path = Components;
@@ -1087,6 +1092,7 @@
 				SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */,
 				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
+				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1390,8 +1396,10 @@
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
+				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
+				SE100000000000000000AC03 /* ImportedPlanRow.swift in Sources */,
 				SE100000000000000000AC04 /* SettingsHomeViews.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
