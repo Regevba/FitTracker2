@@ -61,7 +61,8 @@
         "ux",
         "design"
       ],
-      "model_tier": "opus"
+      "model_tier": "opus",
+      "v4_x_chain_note": "Phase 3 dispatch chain v4.X (added 2026-05-06): /ux audit (v2 only) → /ux research → /ux spec → /ux validate → /ux preflight (P0 gate, NEW) → /design preflight (P0 gate, NEW, includes Figma MCP liveness) → /design audit → /ux prompt (→ docs/prompts/ux/) → /design prompt (→ docs/prompts/ui/) → /design build (NEW auto-dispatch — Figma MCP build with prompt-fallback; writes figma_node_ids back to state.json) → user approval"
     },
     "implementation": {
       "skills": [
@@ -80,9 +81,12 @@
     "review": {
       "skills": [
         "dev",
-        "qa"
+        "qa",
+        "ux",
+        "design"
       ],
-      "model_tier": "opus"
+      "model_tier": "opus",
+      "v4_x_chain_note": "Phase 6 dispatch chain v4.X (added 2026-05-06): /dev review (generic diff) → /ux pre-merge-review (NEW — heuristic re-check vs ux-spec; sets state.json.pre_merge_review.ux) → /design pre-merge-review (NEW — ui-audit P0=0 + figma_node_ids present + PR description references node IDs; sets state.json.pre_merge_review.design) → CI status check both branches → user approval. Phase 7 (Merge) is BLOCKED unless both pre_merge_review.ux AND pre_merge_review.design are passed/passed_with_notes."
     },
     "merge": {
       "skills": [

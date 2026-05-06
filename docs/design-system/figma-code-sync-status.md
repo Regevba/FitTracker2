@@ -2,6 +2,8 @@
 
 > **Last synced:** 2026-04-29
 > **Figma file:** `0Ai7s3fCFqR5JXDW8JvgmD`
+>
+> **As of 2026-05-06 (skill-layer v4.X):** rows in this matrix are **auto-updated by `/design build`** during Phase 3.j of the PM workflow. The auto-update writes the Figma node ID, code-file path, and a status of "Synced (auto-built)" for any newly built feature. Manual rows (the historical entries below) remain valid; the auto-update does not modify them. See `docs/skills/design.md` for the auto-update contract.
 
 ## Screen Sync Matrix
 

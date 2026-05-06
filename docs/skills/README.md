@@ -19,8 +19,8 @@
 | # | Skill | One-liner | Sub-commands | Phase it owns |
 | --- | --- | --- | --- | --- |
 | 0 | [`/pm-workflow`](pm-workflow.md) | **The hub.** Orchestrates the 10-phase lifecycle (0-9), dispatches 10 spokes, syncs external tools. | `{feature-name}` | All phases (dispatch) |
-| 1 | [`/ux`](ux.md) | **What & Why.** UX research, principles, specs, wireframes, v2 audits. | `research`, `spec`, `wireframe`, `validate`, `audit`, `patterns`, `prompt` | Phase 0 (v2) + Phase 3 + Phase 6 |
-| 2 | [`/design`](design.md) | **How it Looks.** Design system governance, Figma MCP builds, token pipeline, WCAG AA. | `audit`, `ux-spec`, `figma`, `tokens`, `accessibility`, `prompt`, `build` | Phase 3 + Phase 6 |
+| 1 | [`/ux`](ux.md) | **What & Why.** UX research, principles, specs, wireframes, v2 audits, **preflight (P0 gate)**, **pre-merge review (P0 gate)**. | `research`, `spec`, `wireframe`, `validate`, **`preflight`**, **`pre-merge-review`**, `audit`, `patterns`, `prompt` | Phase 0 (v2) + Phase 3 (incl. preflight) + Phase 6 (incl. pre-merge-review) |
+| 2 | [`/design`](design.md) | **How it Looks.** Design system governance, **auto Figma MCP builds**, token pipeline, WCAG AA, **preflight (DS + Figma MCP liveness)**, **pre-merge review (ui-audit + Figma node IDs)**. | `audit`, `tokens`, `accessibility`, **`preflight`**, **`pre-merge-review`**, `prompt`, `build` (auto-dispatched) | Phase 3 (incl. preflight + auto build) + Phase 6 (incl. pre-merge-review) |
 | 3 | [`/dev`](dev.md) | **How it's Built.** Branching, code review, CI, dependencies, performance. | `branch`, `review`, `deps`, `perf`, `ci-status` | Phase 4 + Phase 6 + Phase 7 |
 | 4 | [`/qa`](qa.md) | **Does it Work.** Test planning, coverage, regression, security. | `plan`, `run`, `coverage`, `regression`, `security` | Phase 5 |
 | 5 | [`/analytics`](analytics.md) | **Can We Measure It.** Event taxonomy, instrumentation, dashboards, funnels. | `spec`, `validate`, `dashboard`, `report`, `funnel` | Phase 1 + Phase 5 + Phase 8 |
@@ -46,6 +46,7 @@
 - 2026-04-16 — v5.2 Sub-Project A: Dispatch Intelligence. 3-stage pipeline (score complexity → probe capability → dispatch with budget). Static complexity scoring with validation flag. Tool budgets (haiku=10, sonnet=25, opus=50) cut average tool usage by 48% and variance by 84%. Permission table hard-routes .claude/ paths to controller. Config: `.claude/shared/dispatch-intelligence.json`.
 - 2026-04-16 — v5.2 Sub-Project B: Parallel Write Safety. 2-layer system: snapshot/rollback + code region mirror pattern. 3-tier region detection (agent-region markers → MARK sections → full file). Progressive marker learning — system gets faster with every dispatch. Config: `dispatch-intelligence.json` mirror_pattern section.
 - 2026-04-16 — v6.0: Framework Measurement. Deterministic phase timing (measured wall time, not estimated), L1/L2/L3 cache hit tracking (cache-hits.json), eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition.
+- 2026-05-06 — v4.X (skill layer): **UX/Design preflight + auto Figma build + pre-merge UI review.** 4 new sub-commands: `/ux preflight` + `/ux pre-merge-review` + `/design preflight` (combines DS + Figma MCP liveness) + `/design pre-merge-review`. `/design build` auto-dispatched at Phase 3.j with Figma node ID write-back to state.json. Phase 3 chain extended 7→11 steps; Phase 6 chain 4→5 steps; Phase 7 BLOCKED unless both pre-merge reviews pass. `docs/prompts/` split into `ux/`, `ui/`, `_legacy/`. Trigger: import-training-plan resume audit caught 4 P0 spec errors that would have hit "no such symbol" at compile time. See [`evolution.md`](evolution.md) §26.
 
 ---
 
@@ -252,10 +253,13 @@ Cache entries store: task signatures, learned patterns, anti-patterns, and speed
 Phase 0  Research  ─────▶ /research (new feat) OR /ux audit (v2 refactor / screen scope) · /cx (pain points)
 Phase 1  PRD       ─────▶ /analytics spec (instrumentation plan)
 Phase 2  Tasks     ─────▶ /pm-workflow (internal — no dispatch)
-Phase 3  UX/Integ  ─────▶ /ux research → /ux spec → /ux validate → /design audit
+Phase 3  UX/Integ  ─────▶ /ux research → /ux spec → /ux validate → /ux preflight* →
+                          /design preflight* → /design audit → /ux prompt (→ ux/) →
+                          /design prompt (→ ui/) → /design build* (auto Figma)
 Phase 4  Implement ─────▶ /dev branch · parallel task dispatch to {skill}
 Phase 5  Test      ─────▶ /qa plan · /qa run · /analytics validate · /ux validate
-Phase 6  Review    ─────▶ /dev review · /design audit · /ux validate
+Phase 6  Review    ─────▶ /dev review · /ux pre-merge-review* · /design pre-merge-review*
+                          (* = v4.X gates, 2026-05-06; both must pass before Phase 7)
 Phase 7  Merge     ─────▶ /release checklist · /analytics regression
 Phase 8  Docs      ─────▶ /marketing launch · /analytics dashboard
 Phase 9  Learn     ─────▶ /cx analyze · /analytics report · root cause dispatch

@@ -1,6 +1,6 @@
 ---
 name: ux
-description: "UX planning, research, and validation — ensures features are grounded in UX principles before visual design begins. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux wireframe {feature}, /ux validate {feature}, /ux audit, /ux patterns."
+description: "UX planning, research, validation, and preflight/pre-merge gates — ensures features are grounded in UX principles before visual design begins AND that the spec references real codebase symbols before code is written AND that shipped UI matches the spec before merge. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux wireframe {feature}, /ux validate {feature}, /ux preflight {feature}, /ux pre-merge-review {feature}, /ux audit, /ux patterns, /ux prompt {feature}."
 ---
 
 # UX Specialist: $ARGUMENTS
@@ -187,6 +187,72 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
 
 **Output:** Validation report with pass/fail per heuristic and principle, severity ratings, fix recommendations.
 
+### `/ux preflight {feature}`
+
+**Purpose:** Pre-Phase-4 gate — verify the spec's named tokens, components, and patterns actually exist in the codebase BEFORE any code is written. Catches the silent-pass error where a spec invokes `AppRadius.pill` (doesn't exist) or `SettingsActionLabel` with a custom badge slot (component doesn't accept it). Pairs with `/design preflight` (which adds the Figma MCP + library check).
+
+**Trigger:** Auto-dispatched by `/pm-workflow` after `/ux spec` lands but before Phase 3 approval. Also invokable standalone.
+
+**Steps:**
+1. Read `.claude/features/{feature}/ux-spec.md`
+2. Extract every token reference (`AppColor.*`, `AppText.*`, `AppSpacing.*`, `AppRadius.*`, `AppMotion.*`, `AppEasing.*`, `AppDuration.*`, `AppSpring.*`, `AppShadow.*`, `AppSize.*`, `AppGradient.*`)
+3. Extract every component reference (`Settings*`, `App*Card`, custom-named SwiftUI structs)
+4. Extract every interaction pattern (`.swipeActions`, `.contextMenu`, `.alert`, `.confirmationDialog`, custom toast/snackbar names)
+5. **For each token:** grep `FitTracker/Services/AppTheme.swift` and `FitTracker/DesignSystem/`. If absent → P0 finding.
+6. **For each component:** grep `FitTracker/Views/` and `FitTracker/DesignSystem/`. If absent OR signature doesn't accept what the spec asks for → P0 finding.
+7. **For each pattern:** grep the codebase for any usage. If absent → P2 finding (new-to-codebase, document as design-system evolution; not blocking).
+8. Append a record to `.claude/cache/_shared/ux-spec-preflight.json`:
+   ```json
+   {
+     "feature": "{feature}",
+     "spec_path": "...",
+     "checked_at": "{ISO 8601}",
+     "tokens_referenced": [...],
+     "components_referenced": [...],
+     "patterns_referenced": [...],
+     "findings": { "p0": [...], "p1": [...], "p2": [...] }
+   }
+   ```
+9. Write a human-readable audit at `.claude/features/{feature}/ux-preflight-audit-{date}.md`
+10. Return findings to the user.
+
+**Gate behavior:**
+- **P0 unresolved → spec is NOT approvable.** User must fix the spec OR add the missing token/component to the design system on this feature's branch (per CLAUDE.md design-system evolution rule).
+- **P2 net-new patterns** are surfaced for documentation in `docs/design-system/feature-memory.md` but don't block.
+
+**Output:** `.claude/features/{feature}/ux-preflight-audit-{date}.md` + `.claude/cache/_shared/ux-spec-preflight.json` entry.
+
+### `/ux pre-merge-review {feature}`
+
+**Purpose:** Phase 6 (Review) UI-specific layer — heuristic re-check of the SHIPPED implementation against the original `ux-spec.md`. Catches drift where the code mostly matches the spec but key UX decisions silently shifted during implementation. Pairs with `/design pre-merge-review` (token compliance + Figma node ID validation).
+
+**Trigger:** Auto-dispatched by `/pm-workflow` Phase 6, after Phase 5 (Testing) approval but before Phase 7 (Merge). Also invokable standalone.
+
+**Prerequisites:**
+- `state.json.phases.testing.status == "approved"`
+- `ux-spec.md` exists and was approved
+- A feature branch exists with the implementation
+
+**Steps:**
+1. Read `.claude/features/{feature}/ux-spec.md` (the approved contract)
+2. For each surface in the spec, locate the corresponding view file via `state.json.v2_file_path` or grep for the Swift type name
+3. Walk the spec's UX heuristic checklist (13 ux-foundations principles) against the actual implementation
+4. **Spot-check the persistence claims** — if the spec names a file:line touch point ("`EncryptionService.swift:779`"), open that line and verify the change matches
+5. **Spot-check the analytics events** — for each event listed in the spec, grep the implementation to confirm `analytics.log{Event}(...)` is wired
+6. Heuristic re-check:
+   - Fitts/Hick/Jakob compliance still holds
+   - All 5 states (default/loading/empty/error/success) covered in code
+   - VoiceOver labels present where spec required
+   - Reduce-motion alternatives present
+7. Write a review at `.claude/features/{feature}/ux-pre-merge-review-{date}.md` with: spec-vs-code matrix; drift findings; verdict (PASS / PASS_WITH_NOTES / BLOCK)
+8. Set `state.json.pre_merge_review.ux = "passed"` (or "blocked")
+
+**Gate behavior:**
+- **BLOCK verdict → Phase 7 (Merge) is NOT approvable.** User must fix the drift OR re-approve the spec to match shipped code (the latter requires PRD addendum).
+- **PASS_WITH_NOTES** is allowed; notes appear in PR description.
+
+**Output:** `.claude/features/{feature}/ux-pre-merge-review-{date}.md` + `state.json.pre_merge_review.ux` field.
+
 ### `/ux audit`
 
 **Purpose:** Walk a v1 surface (or the whole app) against `ux-foundations.md` and produce a severity-graded findings list. This is the primary Phase 0 output for v2 refactors per the V2 Rule in `CLAUDE.md`.
@@ -306,10 +372,10 @@ Each finding in `v2-audit-report.md` gets:
    - **Accessibility requirements** — VoiceOver labels, tap targets, Dynamic Type, reduce-motion
    - **Handoff checklist** — what the receiving agent should produce and return
    - **References** — paths to ux-spec, ux-research, audit report, ux-foundations, design-system.json
-5. **Write the prompt** to `docs/prompts/{YYYY-MM-DD}-{feature}-ux-build.md`
-6. Announce: "UX handoff prompt written to `docs/prompts/…`. Ready to transfer to the receiving agent."
+5. **Write the prompt** to `docs/prompts/ux/{YYYY-MM-DD}-{feature}-ux-build.md` (folder split established 2026-05-06: UX prompts land in `docs/prompts/ux/`, design/UI prompts land in `docs/prompts/ui/`, legacy flat files migrated to `docs/prompts/_legacy/`)
+6. Announce: "UX handoff prompt written to `docs/prompts/ux/…`. Ready to transfer to the receiving agent."
 
-**Output:** `docs/prompts/{YYYY-MM-DD}-{feature}-ux-build.md`
+**Output:** `docs/prompts/ux/{YYYY-MM-DD}-{feature}-ux-build.md`
 
 **When to run:** Automatically dispatched by `/pm-workflow` after Phase 3 approval when `state.json.phases.ux_or_integration.status == "approved"`. Also invokable standalone when the spec is done but the hub wasn't running it.
 
@@ -321,9 +387,9 @@ Each finding in `v2-audit-report.md` gets:
 |---|---|---|---|
 | **Phase 0 (Research)** — v2 refactor only | `/ux audit {feature}` | First step of a v2 refactor — produces `v2-audit-report.md` as the gap-analysis driver | `v2_refactor` |
 | **Phase 0 (Research)** — new feature | `/ux research {feature}` | After competitive research, before PRD | `new_ui` |
-| **Phase 3 (UX Definition)** | `/ux research {feature}` → `/ux spec {feature}` → `/ux validate {feature}` | After PRD approved, before Phase 4 code | both |
+| **Phase 3 (UX Definition)** | `/ux research {feature}` → `/ux spec {feature}` → `/ux validate {feature}` → **`/ux preflight {feature}` (P0 gate)** → `/ux prompt {feature}` | After PRD approved, before Phase 4 code | both |
 | **Phase 5 (Testing)** | `/ux validate {feature}` | Post-implementation verification | both |
-| **Phase 6 (Review)** | `/ux validate {feature}` | Heuristic sanity check in parallel with `/design audit` | both |
+| **Phase 6 (Review)** | **`/ux pre-merge-review {feature}` (gate)** | Heuristic re-check of shipped code vs spec; runs alongside `/design pre-merge-review` | both |
 | **Post-Launch** | `/ux audit` (app-wide) | When CX signals indicate UX issues | — |
 
 ### Phase 3 Choreography
@@ -334,17 +400,36 @@ The full Phase 3 handoff differs by work subtype:
 1. `/ux research {feature}` → produces `ux-research.md`
 2. `/ux spec {feature}` → produces `ux-spec.md` (with Principle Application Table and all 5 states covered)
 3. `/ux validate {feature}` → heuristic evaluation, flags violations
-4. `/design audit` → validates against design system (tokens, components, motion)
-5. User approval → proceed to Phase 4 (Implementation)
+4. **`/ux preflight {feature}` → P0 gate: token/component/pattern existence check. Spec is NOT approvable with unresolved P0**
+5. **`/design preflight {feature}` → P0 gate: DS compliance + Figma MCP liveness + Figma library accessibility check**
+6. `/design audit` → validates against design system (tokens, components, motion)
+7. `/ux prompt {feature}` → handoff prompt to `docs/prompts/ux/`
+8. `/design prompt {feature}` → handoff prompt to `docs/prompts/ui/`
+9. **`/design build {feature}` → builds Figma screens via MCP (or persists prompt for manual handoff if MCP unreachable). Writes Figma node IDs back to `state.json.figma_node_ids` and `figma-code-sync-status.md`**
+10. User approval → proceed to Phase 4 (Implementation)
 
 **V2 refactor (`v2_refactor`):**
 1. `/ux audit {feature}` (from Phase 0) → `v2-audit-report.md` is already in place
 2. `/ux research {feature}` → consolidates audit findings into the 13 ux-foundations principles (`ux-research.md`)
 3. `/ux spec {feature}` → `ux-spec.md` is written **for the v2 file**, using the audit findings as the gap list. Every P0/P1 finding must have a resolution in the spec (fix / evolve DS / override with justification)
 4. `/ux validate {feature}` → heuristic re-check of the v2 spec
-5. `/design audit` → design system compliance gateway
-6. Tick Section A of `docs/design-system/v2-refactor-checklist.md`
-7. User approval → proceed to Phase 4 (build the v2 file in the `v2/` subdirectory per the V2 Rule in `CLAUDE.md`)
+5. **`/ux preflight {feature}` → P0 gate (same as new_ui)**
+6. **`/design preflight {feature}` → P0 gate (same as new_ui)**
+7. `/design audit` → design system compliance gateway
+8. Tick Section A of `docs/design-system/v2-refactor-checklist.md`
+9. `/ux prompt {feature}` → `docs/prompts/ux/`
+10. `/design prompt {feature}` → `docs/prompts/ui/`
+11. `/design build {feature}` → Figma update reflecting v2 file changes
+12. User approval → proceed to Phase 4 (build the v2 file in the `v2/` subdirectory per the V2 Rule in `CLAUDE.md`)
+
+### Phase 6 Choreography (UI-specific layer added v4.X)
+
+Phase 6 was a generic code-review step before the v4.X skill upgrade. It now adds a UI-specific layer that runs in parallel with the generic review:
+
+1. **`/dev review`** (existing) — diff main…feature, risk surface, high-risk areas
+2. **`/ux pre-merge-review {feature}`** (new) — heuristic re-check of shipped code vs `ux-spec.md`; spot-checks file:line touch points named in the spec; verifies all 5 states covered; verdict PASS / PASS_WITH_NOTES / BLOCK
+3. **`/design pre-merge-review {feature}`** (new) — `make ui-audit` clean (P0=0); Figma node IDs present in `state.json.figma_node_ids`; PR description references those node IDs; screenshot diff Figma↔code (manual or auto via MCP)
+4. Phase 7 (Merge) is NOT approvable until `state.json.pre_merge_review.ux == "passed"` AND `state.json.pre_merge_review.design == "passed"` (or "passed_with_notes")
 
 ## Key References
 

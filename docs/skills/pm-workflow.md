@@ -89,6 +89,50 @@ Validated with Home v2, which spawned 4 sub-features from the parent audit:
 
 Example: Home v2 (#61) → Body Composition (#65), Metric Deep Link (#67), Training v2 (#74), Onboarding retro (#63).
 
+## v4.X — Phase 3 + Phase 6 chain expansions (added 2026-05-06)
+
+Phase 3 dispatch chain extended from 7 steps to 11. Phase 6 dispatch chain extended from 4 steps to 5. Both add explicit gates that catch silent-pass errors the framework was missing:
+
+### Phase 3 chain (10 dispatch steps + user approval)
+
+| Step | Dispatches | Output | Gate |
+| --- | --- | --- | --- |
+| 3a | `/ux audit {feature}` *(v2 only)* | `v2-audit-report.md` | User reviews |
+| 3b | `/ux research {feature}` | `ux-research.md` | Principles identified |
+| 3c | `/ux spec {feature}` | `ux-spec.md` | Spec covers all 5 states + a11y + principles |
+| 3d | `/ux validate {feature}` | heuristic report | No P0 violations |
+| **3e** | **`/ux preflight {feature}`** *(v4.X)* | **`ux-preflight-audit-{date}.md`** | **P0 unresolved → spec NOT approvable** |
+| **3f** | **`/design preflight {feature}`** *(v4.X)* | **`design-preflight-{date}.md` + `figma-bridge-status.json`** | **DS P0=0; Figma MCP liveness recorded; library accessibility recorded** |
+| 3g | `/design audit` | compliance report | Tokens, components, a11y, motion all pass |
+| 3h | `/ux prompt {feature}` | `docs/prompts/ux/{date}-...ux-build.md` | UX-build prompt ready |
+| 3i | `/design prompt {feature}` | `docs/prompts/ui/{date}-...design-build.md` | UI-build prompt ready |
+| **3j** | **`/design build {feature}`** *(v4.X — auto-dispatched)* | **Figma screens (or saved prompt fallback) + `state.json.figma_node_ids` + row added to `figma-code-sync-status.md`** | **MCP build OR `figma_build_status: "deferred_to_prompt"`** |
+| 3k | User approval | `phases.ux_or_integration.status = "approved"` | Advance to Phase 4 |
+
+### Phase 6 chain (4 dispatch steps + user approval)
+
+| Step | Dispatches | Output | Gate |
+| --- | --- | --- | --- |
+| 6a | Generic diff + risk surface | risk report | High-risk areas listed |
+| **6b** | **`/ux pre-merge-review {feature}`** *(v4.X)* | **`ux-pre-merge-review-{date}.md` + `state.json.pre_merge_review.ux`** | **Heuristic re-check vs spec; verdict PASS / PASS_WITH_NOTES / BLOCK** |
+| **6c** | **`/design pre-merge-review {feature}`** *(v4.X)* | **`design-pre-merge-review-{date}.md` + `state.json.pre_merge_review.design`** | **`make ui-audit` P0=0; `figma_node_ids` populated; PR description references node IDs** |
+| 6d | CI check on both branches | CI status | Both branches green |
+| 6e | User approval | `phases.review.status = "approved"` | **Phase 7 BLOCKED unless both `pre_merge_review.ux` AND `pre_merge_review.design` are passed/passed_with_notes** |
+
+### Why these gates exist
+
+- **3e + 3f (preflight gates):** Caught 4 P0 spec errors during the import-training-plan resume (2026-05-06): `AppRadius.pill`, `AppMotion.standardEase`, `SettingsActionLabel` with custom badge slot, toast component — all referenced by the spec, none existed in the codebase. Manual user-ordered audit caught them; v4.X promotes the audit to a mechanical gate. Saved 2-4 hours of Phase 4 rework on this feature alone.
+- **3j (Figma build auto-dispatch):** Smart Reminders (2026-04-29) and Push Notifications shipped code-first with Figma sync deferred manually for weeks. Import-Training-Plan was missed entirely until user flagged it post-Phase-5. Auto-dispatching `/design build` ensures Figma sync happens IN Phase 3 (or is explicitly deferred with a written prompt) so Phase 6 has ground truth.
+- **6b + 6c (pre-merge UI review):** Phase 6 was generic code review only. UI drift between spec and shipped code, plus Figma↔code drift, were caught by manual eyeballing during Phase 5 — and missed entirely on import-training-plan. Mechanical gate at merge time, paired with the Phase 3 preflight gates so the spec-vs-code contract holds across both surfaces.
+
+### state.json schema additions (v4.X)
+
+- `phases.ux_or_integration.preflight_passed` — set by `/ux preflight` + `/design preflight` aggregate result
+- `figma_node_ids` — `{ "screen_name": "node_id" }`, populated by `/design build`
+- `figma_build_status` — `"completed"` | `"deferred_to_prompt"` | `null`
+- `pre_merge_review.ux` — `"passed"` | `"passed_with_notes"` | `"blocked"` | `null`
+- `pre_merge_review.design` — same shape
+
 ## Phase transition procedure (6 steps)
 
 Every phase advance follows this exact sequence:
