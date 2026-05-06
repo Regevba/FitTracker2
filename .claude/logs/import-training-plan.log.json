@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": null,
   "started_at": "2026-04-24T03:59:17Z",
-  "updated_at": "2026-05-06T16:14:23Z",
+  "updated_at": "2026-05-06T17:57:24Z",
   "events": [
     {
       "timestamp": "2026-04-24T03:59:17Z",
@@ -200,6 +200,17 @@
         "tests_passing": 49
       },
       "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T17:57:24Z",
+      "event_type": "phase_approved",
+      "phase": "complete",
+      "summary": "Feature FORMALLY CLOSED. Phase 8 documentation done: source case study at docs/case-studies/import-training-plan-case-study.md; showcase MDX at fitme-story 23b-import-training-plan.mdx. 4 PRs landed (FT2 #234 + #235 + #236 + fitme-story #48). 18/18 tasks. 33 new tests. 4 Figma frames auto-built (v4.X first run). 0 P0 ui-audit. 4 P0 spec errors caught pre-code. Two case studies in one: surface (persistence + active-plan + GDPR closing audit UI-015) + deep (v4.X skill-layer upgrade as meta-byproduct).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "user",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
