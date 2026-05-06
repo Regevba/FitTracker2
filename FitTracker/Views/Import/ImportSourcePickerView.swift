@@ -1,11 +1,13 @@
-// HISTORICAL — never wired into a tab/sheet. Audit UI-015 (2026-04-16) identified
-// this view + ImportPreviewView as dead code. Retained for reference; the
-// production import flow (if revived) should use ImportOrchestrator from a
-// new entry point built on current design system.
+// FitTracker/Views/Import/ImportSourcePickerView.swift
+// Source-picker entry point for the import-training-plan flow.
+// Wired from Settings → Data → Imported Plans (T15) and Training tab toolbar (T16).
+// Persists via ImportOrchestrator.confirmImport(into:) → EncryptedDataStore.
 
 import SwiftUI
 
 struct ImportSourcePickerView: View {
+    @EnvironmentObject private var dataStore: EncryptedDataStore
+    @EnvironmentObject private var analytics: AnalyticsService
     @StateObject private var orchestrator = ImportOrchestrator()
     @State private var pasteText = ""
     @State private var showPasteField = false
@@ -32,11 +34,17 @@ struct ImportSourcePickerView: View {
                     .padding(.vertical, AppSpacing.small)
                 }
             }
+            .onAppear { orchestrator.analytics = analytics }
             .navigationTitle("Import Training Plan")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        analytics.logImportFailed(source: orchestrator.sourceUsed.rawValue,
+                                                   step: "user_cancelled",
+                                                   reason: "user_dismissed_picker")
+                        dismiss()
+                    }
                 }
             }
             .sheet(isPresented: $showPreview) {
@@ -44,9 +52,13 @@ struct ImportSourcePickerView: View {
                     ImportPreviewView(
                         plan: plan,
                         onConfirm: {
-                            orchestrator.confirmImport()
-                            showPreview = false
-                            dismiss()
+                            Task {
+                                await orchestrator.confirmImport(into: dataStore)
+                                if case .success = orchestrator.state {
+                                    showPreview = false
+                                    dismiss()
+                                }
+                            }
                         },
                         onCancel: {
                             showPreview = false
@@ -68,10 +80,12 @@ struct ImportSourcePickerView: View {
     private var sourceOptions: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: AppSpacing.small) {
             sourceCard(icon: "doc.text", title: "Paste Text", subtitle: "AI chat, notes, email") {
+                analytics.logImportSourceSelected(source: "markdown_paste")
                 showPasteField = true
             }
             sourceCard(icon: "folder", title: "Choose File", subtitle: "CSV or JSON file") {
-                // File picker — future implementation
+                analytics.logImportSourceSelected(source: "csv")
+                // File picker — Phase 2 implementation. For now: no-op.
             }
         }
     }
@@ -137,6 +151,9 @@ struct ImportSourcePickerView: View {
             EmptyView()
         case .parsing, .mapping:
             ProgressView("Processing...")
+                .padding()
+        case .persisting:
+            ProgressView("Saving plan...")
                 .padding()
         case .preview:
             EmptyView()

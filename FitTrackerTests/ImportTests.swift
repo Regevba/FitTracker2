@@ -1,10 +1,19 @@
 import XCTest
+import LocalAuthentication
 @testable import FitTracker
 
 // MARK: - Import Training Plan Tests
 // T11: CSV parser, JSON parser, ExerciseMapper, ImportOrchestrator state machine.
 
 final class ImportTests: XCTestCase {
+
+    override func setUp() async throws {
+        try await super.setUp()
+        // Enable encrypt/decrypt without biometric prompt in the simulator.
+        // Required for tests that hit EncryptedDataStore.persistToDisk via
+        // ImportOrchestrator.confirmImport(into:).
+        await EncryptionService.shared.setSessionContext(LAContext())
+    }
 
     // MARK: - T11-1: CSV parser detects CSV format
 
@@ -165,9 +174,10 @@ final class ImportTests: XCTestCase {
     @MainActor
     func testOrchestratorConfirmImport() async {
         let orchestrator = ImportOrchestrator()
+        let dataStore = EncryptedDataStore()
         let csv = "Exercise,Sets,Reps,Rest\nSquat,4,6,120"
         await orchestrator.importFromText(csv)
-        orchestrator.confirmImport()
+        await orchestrator.confirmImport(into: dataStore)
         if case .success(let plan) = orchestrator.state {
             XCTAssertFalse(plan.days.isEmpty)
         } else {

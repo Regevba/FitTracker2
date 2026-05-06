@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": null,
   "started_at": "2026-04-24T03:59:17Z",
-  "updated_at": "2026-04-24T03:59:17Z",
+  "updated_at": "2026-05-06T16:14:23Z",
   "events": [
     {
       "timestamp": "2026-04-24T03:59:17Z",
@@ -15,6 +15,190 @@
       "summary": "Tier 2.2 pilot expansion: log initialized for in-flight feature (phase=implementation). Future multi-session events should be appended contemporaneously via scripts/append-feature-log.py rather than reconstructed from memory.",
       "artifacts": [],
       "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:39:15Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Manual rollback (user-approved): implementation \u2192 research. Audit UI-015 surfaced a structural PRD gap \u2014 the documented persistence target TrainingProgramData has no write path (it is a static struct). Reopening from research to redesign persistence + active-plan switching + sync + GDPR integration before any further code work.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "user_manual_override",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:43:35Z",
+      "event_type": "research_note_added",
+      "phase": "research",
+      "summary": "Persistence + active-plan + GDPR + sync architecture research complete. Output: research-persistence-2026-05-06.md (12 sections, 8 PRD gaps catalogued, 11 risks registered, Phase 1 PRD outline pre-written). Decisions locked: EncryptedDataStore.importedTrainingPlans (6th encrypted .ftenc), ImportedTrainingPlan domain model, TrainingProgramStore as routing layer for active-plan switching, on-device-only sync (CloudKit/Supabase deferred to Phase 2), GDPR Art 17 free via deletePersistedData, GDPR Art 20 via DataExportService extension, 2 missing analytics constants added, 2 entry points (Settings + Training tab) + 1 new list view + 1 new detail view.",
+      "artifacts": [
+        ".claude/features/import-training-plan/research-persistence-2026-05-06.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:45:01Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Research phase approved by user. research-persistence-2026-05-06.md closes the structural gap from audit UI-015. 8 PRD gaps catalogued, 11 risks registered, Phase 1 PRD outline pre-written, decisions locked in \u00a79.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "user",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:45:02Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "PRD phase opened after Research approval. Goal: rewrite docs/product/prd/import-training-plan.md against the \u00a79 decision matrix and \u00a711 outline from research-persistence-2026-05-06.md.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:50:23Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "PRD v2 approved by user. Closes 8 v1 gaps, includes 14 P0 requirements grounded in file:line touch-points, Analytics Spec Gate passed (9 events validated), 7 risks registered with mitigation, primary conversion flipped from import_completed to import_plan_activated.",
+      "artifacts": [
+        "docs/product/prd/import-training-plan.md"
+      ],
+      "metrics": {},
+      "actor": "user",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:50:23Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks phase opened. Goal: re-decompose tasks.md against PRD v2 architecture (data model + persistence + 3 GDPR + active-plan + 4 UI surfaces + 9 analytics + 8 unit tests + 1 UI smoke); apply v5.1 complexity classifier for E-core/P-core lanes.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:55:40Z",
+      "event_type": "tasks_decomposed",
+      "phase": "tasks",
+      "summary": "18-task v2 breakdown ready for approval. 15 E-core + 3 P-core (T5 TrainingProgramStore routing, T13 ImportedPlansListScreen, T14 ImportPreviewView day-assignment editor). 7.10 total effort days. Critical path 7 hops: T1\u2192T2\u2192T5\u2192T13\u2192T15\u2192T17\u2192T18.",
+      "artifacts": [
+        ".claude/features/import-training-plan/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:57:33Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Tasks v2 approved by user. 18-task breakdown (15 E-core + 3 P-core), 7.10 effort-days, 7-hop critical path.",
+      "artifacts": [
+        ".claude/features/import-training-plan/tasks.md"
+      ],
+      "metrics": {},
+      "actor": "user",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T14:57:33Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX) opened. Three new UX surfaces to spec: ImportedPlansListScreen (Settings \u2192 Data \u2192 Imported Plans), day-assignment editor (extension to ImportPreviewView), active-plan badge wherever the active plan is referenced. Existing ux-spec.md covers picker + preview only; needs extension.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T15:03:59Z",
+      "event_type": "artifacts_complete",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 deliverables ready. ux-spec.md extended with 3 new surfaces (ImportedPlansListScreen, day-assignment editor, active-plan badge). UX heuristic self-validation: PASS (13 principles). Design system compliance self-audit: PASS (no new tokens, no new components). UX-build + design-build handoff prompts written to docs/prompts/.",
+      "artifacts": [
+        ".claude/features/import-training-plan/ux-spec.md",
+        "docs/prompts/2026-05-06-import-training-plan-ux-build.md",
+        "docs/prompts/2026-05-06-import-training-plan-design-build.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T15:13:15Z",
+      "event_type": "preflight_audit",
+      "phase": "ux_or_integration",
+      "summary": "User-ordered pre-Phase-4 UX/UI audit complete. Found 4 P0 spec errors (AppRadius.pill doesn't exist, AppMotion.standardEase doesn't exist, SettingsActionLabel can't carry inline badge, toast/snackbar component doesn't exist) + 3 P1 semantic mismatches (font weights, icon container shape) + 3 net-new app patterns required (swipe actions, context menu, ImportedPlanRow component). Verdict: APPROVED with corrections. Zero timeline cost \u2014 corrections absorbed into T13. New backlog task added: '/ux + /design skills pre-flight existence check'.",
+      "artifacts": [
+        ".claude/features/import-training-plan/ux-preflight-audit-2026-05-06.md",
+        "docs/product/backlog.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T15:15:02Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "UX phase approved by user with all 10 pre-flight audit corrections (C1\u2013C10). Spec verbal corrections will land as code-level decisions during Phase 4 \u2014 no spec rewrite needed.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "user",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T15:15:02Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) opened. Branching feature/import-training-plan-resume off main. Executing 18 tasks per lane split (15 E-core sequential where deps require + 3 P-core: T5 routing, T13 list screen, T14 preview mode). Audit corrections applied: Capsule() not AppRadius.pill, AppEasing.short not AppMotion.standardEase, new ImportedPlanRow component, no toast (rely on ACTIVE pill cross-fade).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T16:14:23Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "All 18 tasks done. 3 commits on feature/import-training-plan-resume: a2e757c (T1-T11+T16-T17 architecture+analytics), 54f8b26 (T13-T15 UI surfaces), 6f71ad8 (T12 finish + tests). xcodebuild build green; ui-audit P0=0.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "user",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-06T16:14:23Z",
+      "event_type": "phase_started",
+      "phase": "testing",
+      "summary": "Testing phase entered. 33 new tests added across persistence + active-plan routing + orchestrator + GDPR Article 17/20 + 9 analytics events. 49/49 tests in the import-related suites pass. analytics_verification_passed=true.",
+      "artifacts": [],
+      "metrics": {
+        "tests_added": 33,
+        "analytics_tests_added": 11,
+        "tests_passing": 49
+      },
       "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"

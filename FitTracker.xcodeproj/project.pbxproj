@@ -24,6 +24,7 @@
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
+		A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* ImportedTrainingPlan.swift */; };
 		SP100000000000000000AA01 /* StatsPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = SP200000000000000000AA01 /* StatsPeriod.swift */; };
 		SF100000000000000000AA01 /* StatsFocusMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = SF200000000000000000AA01 /* StatsFocusMetric.swift */; };
 		MP100000000000000000AA01 /* MetricSeriesPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = MP200000000000000000AA01 /* MetricSeriesPoint.swift */; };
@@ -175,6 +176,8 @@
 		SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */; };
 		SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC01 /* SettingsScaffolds.swift */; };
 		SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC02 /* SettingsFormComponents.swift */; };
+		SE100000000000000000AC03 /* ImportedPlanRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC03 /* ImportedPlanRow.swift */; };
+		SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA07 /* ImportedPlansListScreen.swift */; };
 		SE100000000000000000AC04 /* SettingsHomeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC04 /* SettingsHomeViews.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
@@ -254,6 +257,7 @@
 		IM100000000000000000AA05 /* ImportPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA05 /* ImportPreviewView.swift */; };
 		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
 		IT100000000000000000TS01 /* ImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS01 /* ImportTests.swift */; };
+		IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -304,6 +308,7 @@
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
+		A20000010000000000000017 /* ImportedTrainingPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedTrainingPlan.swift; sourceTree = "<group>"; };
 		SP200000000000000000AA01 /* StatsPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsPeriod.swift; sourceTree = "<group>"; };
 		SF200000000000000000AA01 /* StatsFocusMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsFocusMetric.swift; sourceTree = "<group>"; };
 		MP200000000000000000AA01 /* MetricSeriesPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricSeriesPoint.swift; sourceTree = "<group>"; };
@@ -369,6 +374,8 @@
 		SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC01 /* SettingsScaffolds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScaffolds.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC02 /* SettingsFormComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormComponents.swift; sourceTree = "<group>"; };
+		SE200000000000000000AC03 /* ImportedPlanRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlanRow.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA07 /* ImportedPlansListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlansListScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC04 /* SettingsHomeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHomeViews.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UI200000000000000000XT01 /* FitTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -493,6 +500,7 @@
 		CP200000000000000000AT01 /* CohortPriorCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortPriorCacheTests.swift; sourceTree = "<group>"; };
 		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
 		IT200000000000000000TS01 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
+		IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportPersistenceAndAnalyticsTests.swift; sourceTree = "<group>"; };
 		CFG000000000000000000001 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		CFG000000000000000000002 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		CFG000000000000000000003 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
@@ -629,6 +637,7 @@
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
+				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
 				FB2000001000000000000003 /* UserSession+Supabase.swift */,
 				SS400000000000000000AA01 /* Stats */,
 			);
@@ -1002,6 +1011,7 @@
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
 				IT200000000000000000TS01 /* ImportTests.swift */,
+				IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */,
 			);
 			path = FitTrackerTests;
 			sourceTree = "<group>";
@@ -1071,6 +1081,7 @@
 			children = (
 				SE200000000000000000AC01 /* SettingsScaffolds.swift */,
 				SE200000000000000000AC02 /* SettingsFormComponents.swift */,
+				SE200000000000000000AC03 /* ImportedPlanRow.swift */,
 				SE200000000000000000AC04 /* SettingsHomeViews.swift */,
 			);
 			path = Components;
@@ -1084,6 +1095,7 @@
 				SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */,
 				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
+				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1279,6 +1291,7 @@
 				A10000010000000000000001 /* FitTrackerApp.swift in Sources */,
 				A10000010000000000000002 /* DomainModels.swift in Sources */,
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
+				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
 				SP100000000000000000AA01 /* StatsPeriod.swift in Sources */,
 				SF100000000000000000AA01 /* StatsFocusMetric.swift in Sources */,
 				MP100000000000000000AA01 /* MetricSeriesPoint.swift in Sources */,
@@ -1386,8 +1399,10 @@
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
+				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
+				SE100000000000000000AC03 /* ImportedPlanRow.swift in Sources */,
 				SE100000000000000000AC04 /* SettingsHomeViews.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
@@ -1497,6 +1512,7 @@
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
 				NT100000000000000000T001 /* NotificationTests.swift in Sources */,
 				IT100000000000000000TS01 /* ImportTests.swift in Sources */,
+				IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

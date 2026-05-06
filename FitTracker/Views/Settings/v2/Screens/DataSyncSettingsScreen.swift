@@ -7,6 +7,7 @@ import SwiftUI
 struct DataSyncSettingsScreen: View {
     @EnvironmentObject private var dataStore: EncryptedDataStore
     @EnvironmentObject private var cloudSync: CloudKitSyncService
+    @EnvironmentObject private var programStore: TrainingProgramStore
     @EnvironmentObject private var analytics: AnalyticsService
     @Binding var showResetAlert: Bool
 
@@ -101,6 +102,23 @@ struct DataSyncSettingsScreen: View {
                 .buttonStyle(.plain)
             }
 
+            SettingsSectionCard(title: "Imported Training Plans", eyebrow: "Imports") {
+                NavigationLink {
+                    ImportedPlansListScreen()
+                        .environmentObject(dataStore)
+                        .environmentObject(programStore)
+                        .environmentObject(analytics)
+                } label: {
+                    SettingsActionLabel(
+                        title: importedPlansActionTitle,
+                        subtitle: importedPlansActionSubtitle,
+                        icon: "square.and.arrow.down.on.square",
+                        tint: AppColor.Accent.primary
+                    )
+                }
+                .buttonStyle(.plain)
+            }
+
             SettingsSectionCard(title: "Danger Zone", eyebrow: "Data") {
                 SettingsSupportingText("Delete local logs only if you understand they will repopulate from iCloud on the next fetch. Permanent deletion requires removing the data from your iCloud account as well.")
 
@@ -121,6 +139,23 @@ struct DataSyncSettingsScreen: View {
         }
         .navigationTitle(SettingsCategory.dataSync.title)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var importedPlansActionTitle: String {
+        let count = dataStore.importedTrainingPlans.count
+        switch count {
+        case 0: return "No imported plans yet"
+        case 1: return "1 imported plan"
+        default: return "\(count) imported plans"
+        }
+    }
+
+    private var importedPlansActionSubtitle: String {
+        let active = dataStore.importedTrainingPlans.first(where: { $0.isActive })
+        if let active {
+            return "Active: \(active.name)"
+        }
+        return "Bring training plans from Hevy, Strong, AI assistants, or coach docs."
     }
 
     private static let lastSyncFormatter: DateFormatter = {
