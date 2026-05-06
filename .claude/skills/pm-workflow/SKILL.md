@@ -596,7 +596,7 @@ Create `.claude/features/$0/state.json`:
     "research": { "status": "in_progress", "approved_at": null, "sources": [] },
     "prd": { "status": "pending", "approved_at": null, "analytics_spec_complete": false },
     "tasks": { "status": "pending", "count": 0 },
-    "ux_or_integration": { "status": "pending", "type": null },
+    "ux_or_integration": { "status": "pending", "type": null, "preflight_passed": null },
     "implementation": { "status": "pending", "commits": [] },
     "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false },
     "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
@@ -611,9 +611,20 @@ Create `.claude/features/$0/state.json`:
       "kill_criteria": ""
     }
   },
-  "tasks": []
+  "tasks": [],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": { "ux": null, "design": null }
 }
 ```
+
+**Field reference (v4.X additions, 2026-05-06):**
+
+- `phases.ux_or_integration.preflight_passed` — set by `/ux preflight` + `/design preflight` aggregate result. `true` when both gates pass; `false` if any P0 unresolved.
+- `figma_node_ids` — populated by `/design build`. Keys are screen names from `ux-spec.md`, values are Figma node IDs (e.g. `{"imported_plans_list": "1234:567"}`). Read by `/design pre-merge-review`.
+- `figma_build_status` — `"completed"` (MCP build succeeded), `"deferred_to_prompt"` (MCP unreachable, prompt saved for manual handoff), or `null` (not yet attempted).
+- `pre_merge_review.ux` — `"passed" | "passed_with_notes" | "blocked" | null`. Set by `/ux pre-merge-review`. Phase 7 gate.
+- `pre_merge_review.design` — `"passed" | "passed_with_notes" | "blocked" | null`. Set by `/design pre-merge-review`. Phase 7 gate.
 
 ---
 
@@ -841,14 +852,21 @@ Present task list and ask for approval. **On approval, execute the Phase Transit
 | 3b | `/ux research {feature}` | `.claude/features/{f}/ux-research.md` | Principles identified |
 | 3c | `/ux spec {feature}` | `.claude/features/{f}/ux-spec.md` | Spec covers all 5 states + a11y + principles |
 | 3d | `/ux validate {feature}` | heuristic validation report in chat | No unresolved P0 violations |
-| 3e | `/design audit` on the ux-spec | compliance report | Token, component, pattern, a11y, motion all pass |
-| 3f | `/ux prompt {feature}` | `docs/prompts/{date}-{f}-ux-build.md` | Handoff prompt ready |
-| 3g | `/design prompt {feature}` | `docs/prompts/{date}-{f}-design-build.md` | Handoff prompt ready |
-| 3h | Phase 3 approval | `state.json.phases.ux_or_integration.status = "approved"` | User approves; advance to Phase 4 |
+| **3e** | **`/ux preflight {feature}`** *(v4.X — NEW)* | **`.claude/features/{f}/ux-preflight-audit-{date}.md` + `.claude/cache/_shared/ux-spec-preflight.json` entry** | **P0 unresolved → spec NOT approvable** |
+| **3f** | **`/design preflight {feature}`** *(v4.X — NEW)* | **`.claude/features/{f}/design-preflight-{date}.md` + `.claude/shared/figma-bridge-status.json`** | **DS P0=0; Figma MCP liveness recorded; library accessibility recorded** |
+| 3g | `/design audit` on the ux-spec | compliance report | Token, component, pattern, a11y, motion all pass |
+| 3h | `/ux prompt {feature}` | `docs/prompts/ux/{date}-{f}-ux-build.md` | Handoff prompt ready |
+| 3i | `/design prompt {feature}` | `docs/prompts/ui/{date}-{f}-design-build.md` | Handoff prompt ready |
+| **3j** | **`/design build {feature}`** *(v4.X — auto-dispatched)* | **Figma screens (or saved prompt fallback) + `state.json.figma_node_ids` populated + row added to `figma-code-sync-status.md`** | **Either MCP build succeeds OR `state.json.figma_build_status = "deferred_to_prompt"` is set with the prompt ready for manual handoff** |
+| 3k | Phase 3 approval | `state.json.phases.ux_or_integration.status = "approved"` | User approves; advance to Phase 4 |
 
-Steps 3a-3e produce the spec and its validation; steps 3f-3g produce the auto-generated build prompts for any downstream agent (Figma MCP, SwiftUI builder, etc.). Both prompt files land in `docs/prompts/` with matching date-prefixed filenames so they can be transferred together.
+Steps 3a-3d produce the spec; **steps 3e-3f are the v4.X preflight gates that prevent silent-pass errors (token/component/pattern existence + Figma MCP liveness)**; step 3g validates against the design system; steps 3h-3i produce the auto-generated build prompts; **step 3j auto-builds Figma frames** (or saves a portable prompt for manual handoff if MCP is down). UX prompts land in `docs/prompts/ux/`, design/UI prompts land in `docs/prompts/ui/`. Legacy flat files migrated to `docs/prompts/_legacy/`.
 
-**v2 refactor note:** For `state.json.work_subtype == "v2_refactor"`, step 3a is non-skippable and its output drives steps 3b-3e. For `new_ui`, step 3a is skipped (no v1 to audit) and step 3b starts from the PRD.
+**v2 refactor note:** For `state.json.work_subtype == "v2_refactor"`, step 3a is non-skippable and its output drives steps 3b-3d. For `new_ui`, step 3a is skipped (no v1 to audit) and step 3b starts from the PRD.
+
+**Why steps 3e + 3f exist (added v4.X, 2026-05-06):** During the import-training-plan resume, the v2 ux-spec.md was drafted referencing 4 tokens/components that didn't exist in the codebase (`AppRadius.pill`, `AppMotion.standardEase`, `SettingsActionLabel` with custom badge slot, toast component). The user-ordered pre-Phase-4 audit caught all 4 before code was written; without it, Phase 4 would have hit "no such symbol" errors. Steps 3e + 3f are that audit promoted from manual-on-request to a mechanical gate.
+
+**Why step 3j exists (added v4.X):** Smart Reminders shipped 2026-04-29 with code-first; Figma followed manually. Push Notifications still pending Figma weeks later. Import-Training-Plan was missed entirely until the user flagged it post-Phase-5. Auto-dispatching `/design build` ensures Figma sync happens in Phase 3 (or is explicitly deferred with a written prompt) so Phase 6 (`/design pre-merge-review`) has ground truth.
 
 ### V1 vs V2 — refactor or new feature?
 
@@ -1223,21 +1241,48 @@ Present test results and ask for approval. **On approval, execute the Phase Tran
 
 ---
 
-## Phase 6: Code Review
+## Phase 6: Code Review + UI Review
 
-**Goal:** Parallel review of feature branch vs main to assess risk.
+**Goal:** Parallel code-review + UI-specific review of the feature branch vs main to catch risk before merge.
 
-1. Generate diff: `git diff main...feature/$0 --stat`
-2. Identify high-risk areas:
-   - Changes to models (DomainModels.swift)
-   - Changes to encryption (EncryptionService.swift)
-   - Changes to sync (SupabaseSyncService.swift, CloudKitSyncService.swift)
-   - Changes to auth (SignInService.swift, AuthManager.swift)
-   - Changes to AI (AIOrchestrator.swift)
-3. Verify CI passes on BOTH branches:
+### Phase 6 dispatch chain (v4.X — UI review layer added)
+
+| Step | Skill / step | Output | Gate |
+|---|---|---|---|
+| 6a | Generic diff + risk surface | risk report in chat | High-risk areas surfaced |
+| **6b** | **`/ux pre-merge-review {feature}`** *(v4.X — NEW)* | **`.claude/features/{f}/ux-pre-merge-review-{date}.md` + `state.json.pre_merge_review.ux`** | **Heuristic re-check vs ux-spec.md; spec drift catalogued; verdict PASS / PASS_WITH_NOTES / BLOCK** |
+| **6c** | **`/design pre-merge-review {feature}`** *(v4.X — NEW)* | **`.claude/features/{f}/design-pre-merge-review-{date}.md` + `state.json.pre_merge_review.design`** | **`make ui-audit` P0=0; Figma node IDs present in `state.json.figma_node_ids`; PR description references those IDs; optional screenshot diff via Figma MCP** |
+| 6d | CI status check on both branches | green status on feature + main | Both branches CI-green |
+| 6e | Phase 6 approval | `state.json.phases.review.status = "approved"` | User approves; both `pre_merge_review.ux` AND `pre_merge_review.design` must be `passed` (or `passed_with_notes`); BLOCK on either prevents Phase 7 |
+
+### Detailed steps
+
+1. **6a — Generic diff + risk surface:**
+   - `git diff main...feature/$0 --stat`
+   - Identify high-risk areas:
+     - Changes to models (`DomainModels.swift`)
+     - Changes to encryption (`EncryptionService.swift`)
+     - Changes to sync (`SupabaseSyncService.swift`, `CloudKitSyncService.swift`)
+     - Changes to auth (`SignInService.swift`, `AuthManager.swift`)
+     - Changes to AI (`AIOrchestrator.swift`)
+2. **6b — UX pre-merge review:**
+   - Dispatch `/ux pre-merge-review {feature}` (loads `/ux` skill)
+   - Skill reads `ux-spec.md`, walks the heuristic checklist against the actual implementation, spot-checks file:line touch points named in the spec, verifies all 5 states are covered in code
+   - Verdict written to `state.json.pre_merge_review.ux`. BLOCK halts the chain.
+3. **6c — Design pre-merge review:**
+   - Dispatch `/design pre-merge-review {feature}` (loads `/design` skill)
+   - Skill verifies `make ui-audit` is clean against the feature's view files, that `state.json.figma_node_ids` is populated, that the PR description references those IDs, and (optionally) does a screenshot diff via `mcp__claude_ai_Figma__get_screenshot`
+   - Verdict written to `state.json.pre_merge_review.design`. BLOCK halts the chain.
+4. **6d — CI check on both branches:**
    - Feature branch: green
    - Main branch: green
-4. List risks and mitigations
+5. **6e — Aggregate verdict:**
+   - All four (6a, 6b, 6c, 6d) must pass before user approval is requested
+   - List risks + mitigations + UI drift findings + design system findings
+
+**Phase 7 (Merge) is NOT approvable** until both `state.json.pre_merge_review.ux` and `state.json.pre_merge_review.design` are `passed` or `passed_with_notes`.
+
+**Why 6b + 6c exist (added v4.X, 2026-05-06):** Phase 6 was a generic code-review step; UI drift between spec and shipped code was caught only by manual eyeballing during Phase 5 (Testing) — and missed entirely on import-training-plan until the user flagged the missing Figma sync post-merge. Steps 6b + 6c make UI review mechanical and gate-able, paired with the v4.X Phase 3 preflight gates (3e + 3f) so the spec-vs-code contract holds across both surfaces.
 
 Present review and ask for approval. **On approval, execute the Phase Transition Procedure.**
 
