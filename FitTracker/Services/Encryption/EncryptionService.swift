@@ -776,11 +776,12 @@ actor EncryptionService {
 @MainActor
 final class EncryptedDataStore: ObservableObject {
 
-    @Published var dailyLogs:        [DailyLog]        = []
-    @Published var weeklySnapshots:  [WeeklySnapshot]  = []
-    @Published var userProfile:      UserProfile       = UserProfile()
-    @Published var mealTemplates:    [MealTemplate]    = []
-    @Published var userPreferences:  UserPreferences   = UserPreferences()
+    @Published var dailyLogs:                [DailyLog]              = []
+    @Published var weeklySnapshots:          [WeeklySnapshot]        = []
+    @Published var userProfile:              UserProfile             = UserProfile()
+    @Published var mealTemplates:            [MealTemplate]          = []
+    @Published var userPreferences:          UserPreferences         = UserPreferences()
+    @Published var importedTrainingPlans:    [ImportedTrainingPlan]  = []
     @Published var isLoading:        Bool              = false
     @Published var lastError:        String?
     /// Set when `loadFromDisk` fails; observed by the UI to show an alert.
@@ -802,18 +803,19 @@ final class EncryptedDataStore: ObservableObject {
 
     /// Wipe all in-memory user data (called on sign-out / session lock).
     func clearInMemory() {
-        dailyLogs       = []
-        weeklySnapshots = []
-        userProfile     = UserProfile()
-        mealTemplates   = []
-        userPreferences = UserPreferences()
-        lastError       = nil
-        loadError       = nil
+        dailyLogs              = []
+        weeklySnapshots        = []
+        userProfile            = UserProfile()
+        mealTemplates          = []
+        userPreferences        = UserPreferences()
+        importedTrainingPlans  = []
+        lastError              = nil
+        loadError              = nil
     }
 
     func deletePersistedData() throws {
         clearInMemory()
-        for name in ["logs", "snaps", "profile", "mealTemplates", "userPreferences"] {
+        for name in ["logs", "snaps", "profile", "mealTemplates", "userPreferences", "importedTrainingPlans"] {
             let fileURL = url(name)
             if fm.fileExists(atPath: fileURL.path) {
                 try fm.removeItem(at: fileURL)
@@ -975,6 +977,7 @@ final class EncryptedDataStore: ObservableObject {
             let profEnc      = try await EncryptionService.shared.encrypt(userProfile)
             let templatesEnc = try await EncryptionService.shared.encrypt(mealTemplates)
             let prefsEnc     = try await EncryptionService.shared.encrypt(userPreferences)
+            let importsEnc   = try await EncryptionService.shared.encrypt(importedTrainingPlans)
 
             // Two-phase commit. Phase 1: write everything to `.tmp` siblings.
             let writes: [(name: String, data: Data)] = [
@@ -983,6 +986,7 @@ final class EncryptedDataStore: ObservableObject {
                 ("profile", profEnc),
                 ("mealTemplates", templatesEnc),
                 ("userPreferences", prefsEnc),
+                ("importedTrainingPlans", importsEnc),
             ]
 
             var tmpURLs: [URL] = []
@@ -1051,6 +1055,10 @@ final class EncryptedDataStore: ObservableObject {
             if let d = try loadDataIfPresent(from: url("userPreferences")), !d.isEmpty {
                 let v = try await EncryptionService.shared.decrypt(d, as: UserPreferences.self)
                 await MainActor.run { userPreferences = v }
+            }
+            if let d = try loadDataIfPresent(from: url("importedTrainingPlans")), !d.isEmpty {
+                let v = try await EncryptionService.shared.decrypt(d, as: [ImportedTrainingPlan].self)
+                await MainActor.run { importedTrainingPlans = v }
             }
         } catch {
             await MainActor.run {

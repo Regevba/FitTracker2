@@ -656,27 +656,90 @@ final class AnalyticsService: ObservableObject {
 
     // MARK: - Import Analytics
 
-    /// User initiates the import flow
-    func logImportStarted() {
-        logEvent(AnalyticsEvent.importStarted, parameters: nil)
+    /// Entry point for `import_started` (per PRD v2 Analytics Spec).
+    enum ImportEntryPoint: String {
+        case settingsData  = "settings_data"
+        case trainingTab   = "training_tab"
+        case onboarding    = "onboarding"
     }
 
-    /// User selects an import source (e.g. "paste", "file", "url")
+    /// User initiates the import flow. `entryPoint` is now required per PRD v2.
+    func logImportStarted(entryPoint: ImportEntryPoint) {
+        logEvent(AnalyticsEvent.importStarted, parameters: [
+            "entry_point": entryPoint.rawValue,
+        ])
+    }
+
+    /// User selects an import source (e.g. "csv", "json", "markdown_paste", "pdf")
     func logImportSourceSelected(source: String) {
         logEvent(AnalyticsEvent.importSourceSelected, parameters: [AnalyticsParam.itemCategory: source])
     }
 
-    /// Training plan import completed; exerciseCount = total exercises, matchRate = 0-100
-    func logImportCompleted(exerciseCount: Int, matchRate: Int) {
-        logEvent(AnalyticsEvent.importCompleted, parameters: [
+    /// Parser successfully produced a structured plan.
+    func logImportParsed(source: String, exerciseCount: Int, dayCount: Int, parseDurationMs: Int) {
+        logEvent(AnalyticsEvent.importParsed, parameters: [
+            AnalyticsParam.itemCategory: source,
             AnalyticsParam.quantity: exerciseCount,
-            "match_rate": matchRate,
+            "day_count": dayCount,
+            "parse_duration_ms": parseDurationMs,
         ])
     }
 
-    /// Import flow failed; reason is a short snake_case label (e.g. "unsupported_format", "network_error")
-    func logImportFailed(reason: String) {
-        logEvent(AnalyticsEvent.importFailed, parameters: [AnalyticsParam.itemCategory: reason])
+    /// Parser threw or returned empty result. Distinct from `import_failed`
+    /// (the user-cancelled / unrecoverable umbrella).
+    func logImportParseFailed(source: String, reason: String) {
+        logEvent(AnalyticsEvent.importParseFailed, parameters: [
+            AnalyticsParam.itemCategory: source,
+            "error_reason": reason,
+        ])
+    }
+
+    /// User confirmed the mapping on the preview screen.
+    func logImportMappingConfirmed(autoMatched: Int, manualConfirmed: Int, skipped: Int, unresolved: Int) {
+        logEvent(AnalyticsEvent.importMappingConfirmed, parameters: [
+            "auto_matched_count": autoMatched,
+            "manual_confirmed_count": manualConfirmed,
+            "skipped_count": skipped,
+            "unresolved_count": unresolved,
+        ])
+    }
+
+    /// Plan persisted to EncryptedDataStore. Fires after `persistToDisk()` returns success.
+    func logImportCompleted(source: String, totalExercises: Int, skippedExercises: Int, timeToCompleteMs: Int) {
+        logEvent(AnalyticsEvent.importCompleted, parameters: [
+            AnalyticsParam.itemCategory: source,
+            AnalyticsParam.quantity: totalExercises,
+            "skipped_exercises": skippedExercises,
+            "time_to_complete_ms": timeToCompleteMs,
+        ])
+    }
+
+    /// Import aborted (cancelled or unrecoverable). `step`: parse / mapping / save.
+    func logImportFailed(source: String, step: String, reason: String) {
+        logEvent(AnalyticsEvent.importFailed, parameters: [
+            AnalyticsParam.itemCategory: source,
+            "step": step,
+            "error_reason": reason,
+        ])
+    }
+
+    /// User opened an imported plan from the Imported Plans list. `daysSinceImport`
+    /// is computed at call time; `< 7` is the adoption-window for plan adoption rate.
+    func logImportPlanOpened(daysSinceImport: Int, source: String) {
+        logEvent(AnalyticsEvent.importPlanOpened, parameters: [
+            "days_since_import": daysSinceImport,
+            AnalyticsParam.itemCategory: source,
+        ])
+    }
+
+    /// User flipped an imported plan to isActive=true. PRIMARY conversion signal.
+    /// `wasFirstActivation` distinguishes first-ever activate from re-activate.
+    func logImportPlanActivated(source: String, daysSinceImport: Int, wasFirstActivation: Bool) {
+        logEvent(AnalyticsEvent.importPlanActivated, parameters: [
+            AnalyticsParam.itemCategory: source,
+            "days_since_import": daysSinceImport,
+            "was_first_activation": wasFirstActivation,
+        ])
     }
 
     // MARK: - Profile Events

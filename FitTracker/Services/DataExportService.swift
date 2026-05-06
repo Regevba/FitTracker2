@@ -34,6 +34,7 @@ final class DataExportService: ObservableObject {
             ("Daily Logs", dataStore.dailyLogs.count),
             ("Weekly Snapshots", dataStore.weeklySnapshots.count),
             ("Preferences", 1),
+            ("Imported Training Plans", dataStore.importedTrainingPlans.count),
         ]
     }
 
@@ -61,6 +62,7 @@ final class DataExportService: ObservableObject {
                 "preferences": encodePreferences(),
                 "dailyLogs": encodeDailyLogs(),
                 "weeklySnapshots": encodeWeeklySnapshots(),
+                "importedTrainingPlans": encodeImportedTrainingPlans(),
                 "recordCount": totalRecords,
             ]
 
@@ -163,6 +165,43 @@ final class DataExportService: ObservableObject {
                 if !bioDict.isEmpty { dict["biometrics"] = bioDict }
             }
 
+            return dict
+        }
+    }
+
+    /// GDPR Article 20 — exports the user's imported training plans as
+    /// portable structured data. Each plan emits its identity, provenance,
+    /// active flag, and every day's exercise list (raw + mapped names,
+    /// sets/reps/rest). `sourceText` is included only when the user opted to
+    /// retain it at import time (privacy-first default OFF).
+    private func encodeImportedTrainingPlans() -> [[String: Any]] {
+        dataStore.importedTrainingPlans.map { plan in
+            var dict: [String: Any] = [
+                "id": plan.id.uuidString,
+                "name": plan.name,
+                "createdAt": ISO8601DateFormatter().string(from: plan.createdAt),
+                "lastModified": ISO8601DateFormatter().string(from: plan.lastModified),
+                "source": plan.source.rawValue,
+                "isActive": plan.isActive,
+            ]
+            if let raw = plan.sourceText { dict["sourceText"] = raw }
+            dict["days"] = plan.days.map { day in
+                [
+                    "originalDayName": day.originalDayName,
+                    "assignedDayType": day.assignedDayType.rawValue,
+                    "exercises": day.exercises.map { entry in
+                        var exDict: [String: Any] = [
+                            "rawName": entry.rawName,
+                            "sets": entry.sets,
+                            "reps": entry.reps,
+                        ]
+                        if let mapped = entry.mappedExerciseId { exDict["mappedExerciseId"] = mapped }
+                        if let conf = entry.mappingConfidence { exDict["mappingConfidence"] = conf }
+                        if let rest = entry.restSeconds { exDict["restSeconds"] = rest }
+                        return exDict
+                    },
+                ]
+            }
             return dict
         }
     }

@@ -22,6 +22,7 @@ struct TrainingPlanView: View {
     @State private var showActivityPicker = false
     @State private var showCompletionSheet = false
     @State private var showFocusMode = false
+    @State private var showImportSheet = false
     @State private var focusedExerciseID: String?
     @State private var restTimerEnd: Date?
     @State private var restPresetSeconds = 90
@@ -113,6 +114,12 @@ struct TrainingPlanView: View {
                 )
                 .presentationDetents([.medium, .large])
                 .presentationCornerRadius(AppSheet.standardCornerRadius)
+            }
+            .sheet(isPresented: $showImportSheet) {
+                ImportSourcePickerView()
+                    .environmentObject(dataStore)
+                    .environmentObject(programStore)
+                    .environmentObject(analytics)
             }
             .fullScreenCover(isPresented: $showFocusMode) {
                 if let exercise = focusedExercise {
@@ -359,6 +366,17 @@ struct TrainingPlanView: View {
 
     @ToolbarContentBuilder
     private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                analytics.logImportStarted(entryPoint: .trainingTab)
+                showImportSheet = true
+            } label: {
+                Image(systemName: "square.and.arrow.down")
+                    .font(AppText.iconSmall).foregroundStyle(AppColor.Accent.primary)
+            }
+            .accessibilityLabel("Import training plan")
+            .accessibilityHint("Import a plan from CSV, JSON, or pasted text")
+        }
         ToolbarItem(placement: .primaryAction) {
             Button { showFocusMode = true } label: {
                 Image(systemName: "eye.fill")
