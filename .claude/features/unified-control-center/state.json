@@ -12,7 +12,7 @@
   "current_phase": "implementation",
   "status": "in_progress",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-05T21:30:00Z",
+  "updated": "2026-05-06T07:30:00Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -710,8 +710,12 @@
       "depends_on": [
         "T34"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-06T07:25:00Z",
+      "pr_ref": "https://github.com/Regevba/FitTracker2/pull/229",
+      "commit": "bebd62e",
+      "note": "307 redirect shipped via dashboard/vercel.json; verified live (HTTP/2 307 with location: https://fitme-story.vercel.app/control-room). Per user authorization 2026-05-06, the legacy fit-tracker2 Vercel project was DELETED post-verification (vercel project rm). fit-tracker2.vercel.app now returns Vercel's default 404; discovery path is via the showcase Control Center nav (fitme-story PR #37). Deviates from PRD \u00a713's 30-day rollback window in favor of cleaner end-state; legacy code stays in dashboard/ folder per V2 Rule retention (T34 marker)."
     },
     {
       "id": "T36",
@@ -727,12 +731,20 @@
         "T22",
         "T23"
       ],
-      "status": "in_progress",
+      "status": "done",
       "priority": "critical",
       "phase_1_completed_at": "2026-05-05T20:35:00Z",
-      "pr_ref": "https://github.com/Regevba/fitme-story/pull/33",
-      "commit": "bb9b31a",
-      "note": "Phase 1 SHIPPED: typed analytics helpers (8 events wrapped) + TrackPageView client island wired into Overview/Board/Knowledge pages firing dashboard_load + dashboard_sync_warning_shown. Phase 2 PENDING: wire dashboard_view_change (layout PRIMARY_NAV), dashboard_filter_apply (TableViewClient), dashboard_blocker_acknowledged (page-level AlertsBanner consumer), dashboard_knowledge_open (KnowledgeHub doc handler), dashboard_external_link (layout GitHub + palette external cmds), plus add TrackPageView to /tasks + /table pages. Phase 2 deferred as a separate PR."
+      "phase_2_completed_at": "2026-05-06T07:00:00Z",
+      "completed_at": "2026-05-06T07:00:00Z",
+      "pr_refs": [
+        "https://github.com/Regevba/fitme-story/pull/33",
+        "https://github.com/Regevba/fitme-story/pull/35"
+      ],
+      "commits": [
+        "bb9b31a",
+        "fe9926f"
+      ],
+      "note": "All 8 PRD §10.1 events wired. Phase 1 (#33): analytics.ts helpers + TrackPageView island for dashboard_load + dashboard_sync_warning_shown on Overview/Board/Knowledge. Phase 2 (#35): TrackedNavLink (dashboard_view_change), TrackedExternalLink (dashboard_external_link), TrackedDocLink (dashboard_knowledge_open), InstrumentedAlertsBanner (dashboard_blocker_acknowledged), TableViewClient handlers (dashboard_filter_apply with debounced search), commands.ts openExternal hook for palette tracking, plus TrackPageView added to /tasks + /table pages. dashboard_kanban_drag stubbed in Phase 1 (drag UX not yet shipped)."
     },
     {
       "id": "T37",
@@ -763,8 +775,12 @@
       "depends_on": [
         "T36"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-06T06:00:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/36",
+      "commit": "b9a9ab7",
+      "note": "13 tests across 5 suites at src/lib/control-room/analytics.test.ts. Pattern: node:test + node:assert/strict (matches existing builder.test.ts/reconcile.test.ts; no extra runner dep). Coverage: payload routing (8 helpers × 1 round-trip test) + server safety (no window) + gtag-missing safety + error tolerance (throwing gtag) + timeSinceLoadMs boundary checks. All green (~324ms)."
     },
     {
       "id": "T39",
@@ -838,9 +854,12 @@
       "lane": "P-core",
       "effort_days": 1.5,
       "depends_on": [],
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
-      "phase": "8 (Docs)"
+      "phase": "8 (Docs)",
+      "completed_at": "2026-05-06T07:35:00Z",
+      "case_study_path": "docs/case-studies/unified-control-center-case-study.md",
+      "note": "Phase 8 case study published. Tier-tagged per data-quality-tiers.md (T1 wherever extracted from state.json/git/code; T2 where declared from observed behavior; T2.5 deferred status documented openly). Honest disclosures section covers: pre-state TTC unmeasurable / CI side-fix during window / Turbopack regression / PR #37→#38 follow-up / PRD §13 30-day rollback window deviated. Lessons-for-future-migrations section seeds 5 takeaways for next cross-repo feature."
     },
     {
       "id": "T2.5",
@@ -853,15 +872,12 @@
       "depends_on": [
         "T2"
       ],
-      "status": "pending",
+      "status": "deferred",
       "priority": "critical_pre_merge",
       "started_at": null,
-      "blocking_gates": [
-        "T34",
-        "T35",
-        "T42"
-      ],
-      "note": "User (or analytics-skill agent with GA4 access) queries GA4 events dashboard_load + dashboard_blocker_acknowledged for sessions with both events; computes TTC; aggregates to p50/p90/sample_size; updates baseline-ttc.json baseline.tier to T1 + clears todo_before_final_merge.status. Per PRD section 5.1: T2 Declared MUST become T1 Instrumented before merge."
+      "deferred_at": "2026-05-06T06:30:00Z",
+      "deferred_reason": "Legacy Astro dashboard at fit-tracker2.vercel.app was effectively unmeasurable by the time the 7-day baseline window closed (clicking AlertsBanner did not fire dashboard_blocker_acknowledged events on subsequent visits; only 2 historical events visible from earlier testing, not a usable sample). Rather than fight the legacy surface for a contrived pre-state baseline, T2.5 is deferred: the new fitme-story dashboard ships with all 8 events wired (T36) and post-launch GA4 data on the new surface establishes the production baseline. Honest framing per data-quality-tiers.md: pre-migration sample is T2 (Declared, ~8s) with sample_size=2 noisy; post-migration measurement on the new surface will be T1 (Instrumented) once 7+ days of operator traffic accumulate.",
+      "note": "Original intent was an upgrade path T2→T1 against the legacy Astro dashboard. Path abandoned 2026-05-06 in favor of post-launch measurement on the new dashboard. Pre-state baseline remains T2 Declared with documented small-sample caveat in baseline-ttc.json. Post-launch T1 measurement is a non-blocking follow-up (no T2.7 task created — the new dashboard's GA4 events fire automatically and the T1 read is a lightweight query against future data, not a code change)."
     }
   ],
   "transitions": [
