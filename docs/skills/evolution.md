@@ -1057,6 +1057,70 @@ The integrity cycle is a **smoke detector**, not a fire-prevention system. It tr
 
 ---
 
+## 26. v4.X (Skill Layer) — UX/Design Preflight + Auto Figma Build + Pre-Merge UI Review (2026-05-06)
+
+**Note on numbering:** This is a _skill layer_ upgrade (changes how `/ux` and `/design` participate in the PM workflow chain), not a _framework layer_ upgrade (which would be v7.X). The skill layer was last touched at v4.4; this resumes that line. Framework layer is independently at v7.8.
+
+**Trigger.** During the import-training-plan resume (2026-05-06), a user-ordered pre-Phase-4 audit caught 4 P0 spec errors that would have hit "no such symbol" at compile time:
+
+- `AppRadius.pill` — referenced by spec, doesn't exist (real pattern is `Capsule()` shape)
+- `AppMotion.standardEase` — referenced by spec, doesn't exist (real container is `AppEasing`)
+- `SettingsActionLabel` with custom badge slot — component is fixed-trailing, can't host inline badges
+- Toast/snackbar component — referenced by spec, doesn't exist in the codebase
+
+The audit cost ~20 minutes; the implied Phase 4 rework would have cost 2-4 hours. The user's request: "promote this audit pattern to a mechanical gate, AND combine it with a Figma MCP liveness check, AND add a pre-merge UI review pass."
+
+The same session also surfaced that **Figma sync was being skipped on every UI feature**: Smart Reminders (2026-04-29) shipped code-first with Figma deferred manually for weeks; Push Notifications still pending; Import-Training-Plan was missed entirely until user flagged it post-Phase-5. `/design build` existed as a sub-command but was never auto-dispatched.
+
+**What changed.**
+
+### New sub-commands
+
+- **`/ux preflight {feature}`** — pre-Phase-4 P0 gate. Verifies every token, component, and pattern named in `ux-spec.md` exists in the codebase. Writes audit + cache record. Spec NOT approvable with unresolved P0.
+- **`/ux pre-merge-review {feature}`** — Phase 6 gate. Heuristic re-check of shipped code vs approved spec. Verdict PASS / PASS_WITH_NOTES / BLOCK. Sets `state.json.pre_merge_review.ux`.
+- **`/design preflight {feature}`** — pre-Phase-4 P0 gate. Combines token/component/pattern existence + Figma MCP liveness (`whoami`) + Figma library accessibility (`get_metadata` on `0Ai7s3fCFqR5JXDW8JvgmD`) + Figma library node availability check + delegated `/design audit`. Writes `figma-bridge-status.json`.
+- **`/design pre-merge-review {feature}`** — Phase 6 gate. `make ui-audit` P0=0 + `state.json.figma_node_ids` populated + PR description references node IDs + optional screenshot diff via Figma MCP. Sets `state.json.pre_merge_review.design`. BLOCK halts Phase 7.
+
+### Changed sub-commands
+
+- **`/design build {feature}`** — now auto-dispatched by `/pm-workflow` Phase 3.j. Writes captured Figma node IDs back to `state.json.figma_node_ids` AND adds row to `docs/design-system/figma-code-sync-status.md`. Falls back to prompt-only with `state.json.figma_build_status = "deferred_to_prompt"` when MCP unavailable.
+- **`/ux prompt {feature}`** — output path moved from flat `docs/prompts/` → `docs/prompts/ux/`.
+- **`/design prompt {feature}`** — output path moved from flat `docs/prompts/` → `docs/prompts/ui/`.
+
+### Deprecated sub-commands
+
+- **`/design ux-spec`** — `/ux spec` is canonical (kept as forwarder).
+- **`/design figma`** — `/design build` is canonical (kept as forwarder).
+
+### Folder reorganization
+
+`docs/prompts/` split into:
+
+- `docs/prompts/ux/` — auto-generated UX-build prompts (what-and-why)
+- `docs/prompts/ui/` — auto-generated design-build prompts (how-it-looks)
+- `docs/prompts/_legacy/` — hand-authored prompts pre-dating the auto-generation contract
+
+### state.json schema additions
+
+- `phases.ux_or_integration.preflight_passed` — set by `/ux preflight` + `/design preflight` aggregate
+- `figma_node_ids` — `{ "screen_name": "node_id" }`, populated by `/design build`
+- `figma_build_status` — `"completed"` | `"deferred_to_prompt"` | `null`
+- `pre_merge_review.ux` — `"passed"` | `"passed_with_notes"` | `"blocked"` | `null`
+- `pre_merge_review.design` — same shape
+
+### Hub chain expansions
+
+- **Phase 3 dispatch chain**: 7 steps → 11 steps (added 3e preflight, 3f preflight, 3j auto-build)
+- **Phase 6 dispatch chain**: 4 steps → 5 steps (added 6b ux pre-merge, 6c design pre-merge); Phase 7 BLOCKED unless both pre-merge reviews pass
+
+**Why it earned a version bump.** Previous skill-layer versions (v4.0-v4.4) were about HOW skills work internally (cache, learning lifecycle, eval coverage). v4.X is about what skills GATE — the difference between "the skill exists" and "the skill is mechanically required to pass before merge." It promotes 4 audit patterns from manual-on-request to mechanical gates, with state.json fields and dispatch-chain wiring to enforce them. That changes the framework's steady-state from "spec drift until someone notices" to "spec drift caught at Phase 3 entry, Figma drift caught at Phase 3 exit, code drift caught at Phase 6 entry."
+
+**Tested on:** import-training-plan resume (2026-05-06). Phase 1 ship spans 6 commits + 1 PR; v4.X gates fired during the resume on Phase 3 (audit found 4 P0s), are scheduled to fire on Phase 6 once PR #234 reaches merge gate, and `/design build` is the next dispatch (Figma Option C build for the 3 new surfaces).
+
+**Case study:** to be written post-merge as part of the import-training-plan Phase 8 closure narrative.
+
+---
+
 ## Consolidated Timeline with Case Studies
 
 Every version was tested through real feature work. The case study column links to the evidence.

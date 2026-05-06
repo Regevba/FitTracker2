@@ -195,11 +195,28 @@ The design system is a **living, evolving framework** — not a static constrain
 - Always use semantic tokens (AppColor, AppText, AppSpacing) — never raw literals
 
 **Evolution rules:**
+
 - New tokens/components are proposed on feature branches, never directly on main
 - Phase 3 compliance gateway validates every UI feature against the design system
 - If a feature needs to deviate, the user chooses: fix, evolve the system, or override with justification
 - Approved changes merge to main with the feature and become part of the system
 - All changes documented in `docs/design-system/feature-memory.md`
+
+### v4.X Skill-layer gates (added 2026-05-06)
+
+Phase 3 + Phase 6 of the PM workflow now mechanically gate the spec ↔ code ↔ Figma chain. Skipping any gate is no longer possible without explicit user override:
+
+- **`/ux preflight`** — verifies every token/component/pattern named in `ux-spec.md` exists in the codebase. Caught 4 P0 spec errors during the import-training-plan resume; saves 2-4h of "no such symbol" Phase 4 rework per feature on average.
+- **`/design preflight`** — extends `/ux preflight` with Figma MCP liveness + Figma library accessibility check. Writes `figma-bridge-status.json`. Failure → spec NOT approvable.
+- **`/design build`** — auto-dispatched at Phase 3.j. Pushes screens into the FitMe Design System Library (`0Ai7s3fCFqR5JXDW8JvgmD`) via Figma MCP, falls back to portable prompt at `docs/prompts/ui/{date}-{feature}-design-build.md` when MCP unreachable. Writes captured Figma node IDs back to `state.json.figma_node_ids` AND adds row to `figma-code-sync-status.md`.
+- **`/ux pre-merge-review`** — Phase 6 gate. Heuristic re-check of shipped code vs approved spec. Sets `state.json.pre_merge_review.ux`. BLOCK halts Phase 7.
+- **`/design pre-merge-review`** — Phase 6 gate. `make ui-audit` P0=0 + `state.json.figma_node_ids` populated + PR description references those node IDs (CLAUDE.md "Synced" definition mandates this). Sets `state.json.pre_merge_review.design`. BLOCK halts Phase 7.
+
+**PR description requirement (enforced):** every UI-touching PR must reference the Figma node IDs of the screens it touches. The IDs come from `state.json.figma_node_ids` (populated by `/design build`) and are validated by `/design pre-merge-review`. See `docs/skills/design.md` for the full `figma_node_ids` schema.
+
+**Folder convention:** `docs/prompts/ux/` for `/ux prompt` outputs, `docs/prompts/ui/` for `/design prompt` outputs, `docs/prompts/_legacy/` for hand-authored historical prompts.
+
+Full documentation: [`docs/skills/evolution.md`](docs/skills/evolution.md) §26.
 
 ### Verification Layer (added 2026-04-20)
 
