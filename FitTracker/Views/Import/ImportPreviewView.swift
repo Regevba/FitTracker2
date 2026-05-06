@@ -1,5 +1,9 @@
-// HISTORICAL — only referenced by the dead ImportSourcePickerView. Audit UI-015
-// (2026-04-16) identified both as dead code. Retained for reference.
+// FitTracker/Views/Import/ImportPreviewView.swift
+// Two-mode preview screen for imported training plans.
+// `.preview` mode: post-parse confirmation (Confirm & Import); used during the
+//   import flow from `ImportSourcePickerView`.
+// `.detail` mode: viewing a saved imported plan (rename / activate / delete);
+//   navigated to from `ImportedPlansListScreen`.
 
 import SwiftUI
 

@@ -262,6 +262,14 @@ enum AnalyticsEvent {
     static let importCompleted          = "import_completed"
     /// Import flow failed at any stage
     static let importFailed             = "import_failed"
+    /// Parser threw or returned an empty result (granular failure within importFailed)
+    static let importParseFailed        = "import_parse_failed"
+    /// User opened an imported plan from the Imported Plans list (within or
+    /// after the 7d adoption window)
+    static let importPlanOpened         = "import_plan_opened"
+    /// User flipped an imported plan to isActive=true (the primary
+    /// conversion signal — supersedes importCompleted as the conversion event)
+    static let importPlanActivated      = "import_plan_activated"
 
     // MARK: - Notification Events
     static let notificationPermissionRequested = "notification_permission_requested"
@@ -487,6 +495,8 @@ enum AnalyticsScreen {
     static let onboardingSuccess     = "onboarding_success"
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
+    static let importedPlansList = "imported_plans_list"
+    static let importedPlanDetail = "imported_plan_detail"
     static let bodyCompDetail    = "body_comp_detail"
 
     // Auth password reset screens (auth-polish-v2 A5)
