@@ -34,11 +34,17 @@ struct ImportSourcePickerView: View {
                     .padding(.vertical, AppSpacing.small)
                 }
             }
+            .onAppear { orchestrator.analytics = analytics }
             .navigationTitle("Import Training Plan")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                    Button("Cancel") {
+                        analytics.logImportFailed(source: orchestrator.sourceUsed.rawValue,
+                                                   step: "user_cancelled",
+                                                   reason: "user_dismissed_picker")
+                        dismiss()
+                    }
                 }
             }
             .sheet(isPresented: $showPreview) {
@@ -74,10 +80,12 @@ struct ImportSourcePickerView: View {
     private var sourceOptions: some View {
         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: AppSpacing.small) {
             sourceCard(icon: "doc.text", title: "Paste Text", subtitle: "AI chat, notes, email") {
+                analytics.logImportSourceSelected(source: "markdown_paste")
                 showPasteField = true
             }
             sourceCard(icon: "folder", title: "Choose File", subtitle: "CSV or JSON file") {
-                // File picker — future implementation
+                analytics.logImportSourceSelected(source: "csv")
+                // File picker — Phase 2 implementation. For now: no-op.
             }
         }
     }

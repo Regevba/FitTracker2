@@ -257,6 +257,7 @@
 		IM100000000000000000AA05 /* ImportPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA05 /* ImportPreviewView.swift */; };
 		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
 		IT100000000000000000TS01 /* ImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS01 /* ImportTests.swift */; };
+		IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -499,6 +500,7 @@
 		CP200000000000000000AT01 /* CohortPriorCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortPriorCacheTests.swift; sourceTree = "<group>"; };
 		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
 		IT200000000000000000TS01 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
+		IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportPersistenceAndAnalyticsTests.swift; sourceTree = "<group>"; };
 		CFG000000000000000000001 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		CFG000000000000000000002 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		CFG000000000000000000003 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
@@ -1009,6 +1011,7 @@
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
 				IT200000000000000000TS01 /* ImportTests.swift */,
+				IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */,
 			);
 			path = FitTrackerTests;
 			sourceTree = "<group>";
@@ -1509,6 +1512,7 @@
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
 				NT100000000000000000T001 /* NotificationTests.swift in Sources */,
 				IT100000000000000000TS01 /* ImportTests.swift in Sources */,
+				IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
