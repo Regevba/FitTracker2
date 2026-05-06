@@ -9,10 +9,10 @@
     "writes": [],
     "shared_writes": []
   },
-  "current_phase": "implementation",
-  "status": "in_progress",
+  "current_phase": "complete",
+  "status": "complete",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-06T07:30:00Z",
+  "updated": "2026-05-06T12:57:54Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -70,31 +70,49 @@
       "compliance_decision": "PASS conditional on T16 contrast audit (axe MCP) before production deploy"
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "commits": [],
-      "started_at": "2026-04-26T11:30:00Z"
+      "started_at": "2026-04-26T11:30:00Z",
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z"
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
-      "tests_added": 0,
-      "instrumentation_verified": false,
-      "analytics_tests_added": 0,
-      "analytics_verification_passed": false
+      "status": "approved",
+      "ci_passed": true,
+      "tests_added": 25,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 13,
+      "analytics_verification_passed": true,
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
       "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "ci_main": true,
+      "ci_feature": true,
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null,
-      "analytics_regression_passed": null
+      "status": "approved",
+      "pr_number": 230,
+      "analytics_regression_passed": true,
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     }
   },
   "tasks": [
@@ -507,7 +525,7 @@
       "completed_at": "2026-05-05T13:55:00Z",
       "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
       "commit": "d17855f",
-      "note": "DataFreshnessFooter RSC reads src/data/freshness.json; renders 'Last synced N ago · counts' under every /control-room/* page via layout.tsx; flips to red-warning state when staleness > 6h per PRD FR-8."
+      "note": "DataFreshnessFooter RSC reads src/data/freshness.json; renders 'Last synced N ago \u00b7 counts' under every /control-room/* page via layout.tsx; flips to red-warning state when staleness > 6h per PRD FR-8."
     },
     {
       "id": "T26",
@@ -526,7 +544,7 @@
       "completed_at": "2026-05-05T21:25:00Z",
       "pr_ref": "https://github.com/Regevba/fitme-story/pull/29",
       "commit": "21d8678",
-      "note": "New /control-room/tasks server component using parseStateFiles() to flatten tasks across all features into 4 status buckets (in_progress/ready/blocked/done). PRIMARY_NAV Tasks flipped from soon-placeholder to active link. Required fix(build) PR #34 (fitme-story) to land first because the chain page.tsx → parsers/state.ts → types.ts surfaced a Turbopack new-URL resolution bug."
+      "note": "New /control-room/tasks server component using parseStateFiles() to flatten tasks across all features into 4 status buckets (in_progress/ready/blocked/done). PRIMARY_NAV Tasks flipped from soon-placeholder to active link. Required fix(build) PR #34 (fitme-story) to land first because the chain page.tsx \u2192 parsers/state.ts \u2192 types.ts surfaced a Turbopack new-URL resolution bug."
     },
     {
       "id": "T27",
@@ -744,7 +762,7 @@
         "bb9b31a",
         "fe9926f"
       ],
-      "note": "All 8 PRD §10.1 events wired. Phase 1 (#33): analytics.ts helpers + TrackPageView island for dashboard_load + dashboard_sync_warning_shown on Overview/Board/Knowledge. Phase 2 (#35): TrackedNavLink (dashboard_view_change), TrackedExternalLink (dashboard_external_link), TrackedDocLink (dashboard_knowledge_open), InstrumentedAlertsBanner (dashboard_blocker_acknowledged), TableViewClient handlers (dashboard_filter_apply with debounced search), commands.ts openExternal hook for palette tracking, plus TrackPageView added to /tasks + /table pages. dashboard_kanban_drag stubbed in Phase 1 (drag UX not yet shipped)."
+      "note": "All 8 PRD \u00a710.1 events wired. Phase 1 (#33): analytics.ts helpers + TrackPageView island for dashboard_load + dashboard_sync_warning_shown on Overview/Board/Knowledge. Phase 2 (#35): TrackedNavLink (dashboard_view_change), TrackedExternalLink (dashboard_external_link), TrackedDocLink (dashboard_knowledge_open), InstrumentedAlertsBanner (dashboard_blocker_acknowledged), TableViewClient handlers (dashboard_filter_apply with debounced search), commands.ts openExternal hook for palette tracking, plus TrackPageView added to /tasks + /table pages. dashboard_kanban_drag stubbed in Phase 1 (drag UX not yet shipped)."
     },
     {
       "id": "T37",
@@ -762,7 +780,7 @@
       "completed_at": "2026-05-05T21:30:00Z",
       "pr_ref": "https://github.com/Regevba/FitTracker2/pull/226",
       "commit": "829f135",
-      "note": "8 dashboard_* event rows added (Dashboard category) + 1 conversion event (dashboard_blocker_acknowledged → TTC funnel). All comply with CLAUDE.md Analytics Naming Convention (snake_case + screen-prefix + ≤40 char + PII-free + 1 conversion flagged)."
+      "note": "8 dashboard_* event rows added (Dashboard category) + 1 conversion event (dashboard_blocker_acknowledged \u2192 TTC funnel). All comply with CLAUDE.md Analytics Naming Convention (snake_case + screen-prefix + \u226440 char + PII-free + 1 conversion flagged)."
     },
     {
       "id": "T38",
@@ -780,7 +798,7 @@
       "completed_at": "2026-05-06T06:00:00Z",
       "pr_ref": "https://github.com/Regevba/fitme-story/pull/36",
       "commit": "b9a9ab7",
-      "note": "13 tests across 5 suites at src/lib/control-room/analytics.test.ts. Pattern: node:test + node:assert/strict (matches existing builder.test.ts/reconcile.test.ts; no extra runner dep). Coverage: payload routing (8 helpers × 1 round-trip test) + server safety (no window) + gtag-missing safety + error tolerance (throwing gtag) + timeSinceLoadMs boundary checks. All green (~324ms)."
+      "note": "13 tests across 5 suites at src/lib/control-room/analytics.test.ts. Pattern: node:test + node:assert/strict (matches existing builder.test.ts/reconcile.test.ts; no extra runner dep). Coverage: payload routing (8 helpers \u00d7 1 round-trip test) + server safety (no window) + gtag-missing safety + error tolerance (throwing gtag) + timeSinceLoadMs boundary checks. All green (~324ms)."
     },
     {
       "id": "T39",
@@ -859,7 +877,7 @@
       "phase": "8 (Docs)",
       "completed_at": "2026-05-06T07:35:00Z",
       "case_study_path": "docs/case-studies/unified-control-center-case-study.md",
-      "note": "Phase 8 case study published. Tier-tagged per data-quality-tiers.md (T1 wherever extracted from state.json/git/code; T2 where declared from observed behavior; T2.5 deferred status documented openly). Honest disclosures section covers: pre-state TTC unmeasurable / CI side-fix during window / Turbopack regression / PR #37→#38 follow-up / PRD §13 30-day rollback window deviated. Lessons-for-future-migrations section seeds 5 takeaways for next cross-repo feature."
+      "note": "Phase 8 case study published. Tier-tagged per data-quality-tiers.md (T1 wherever extracted from state.json/git/code; T2 where declared from observed behavior; T2.5 deferred status documented openly). Honest disclosures section covers: pre-state TTC unmeasurable / CI side-fix during window / Turbopack regression / PR #37\u2192#38 follow-up / PRD \u00a713 30-day rollback window deviated. Lessons-for-future-migrations section seeds 5 takeaways for next cross-repo feature."
     },
     {
       "id": "T2.5",
@@ -877,7 +895,7 @@
       "started_at": null,
       "deferred_at": "2026-05-06T06:30:00Z",
       "deferred_reason": "Legacy Astro dashboard at fit-tracker2.vercel.app was effectively unmeasurable by the time the 7-day baseline window closed (clicking AlertsBanner did not fire dashboard_blocker_acknowledged events on subsequent visits; only 2 historical events visible from earlier testing, not a usable sample). Rather than fight the legacy surface for a contrived pre-state baseline, T2.5 is deferred: the new fitme-story dashboard ships with all 8 events wired (T36) and post-launch GA4 data on the new surface establishes the production baseline. Honest framing per data-quality-tiers.md: pre-migration sample is T2 (Declared, ~8s) with sample_size=2 noisy; post-migration measurement on the new surface will be T1 (Instrumented) once 7+ days of operator traffic accumulate.",
-      "note": "Original intent was an upgrade path T2→T1 against the legacy Astro dashboard. Path abandoned 2026-05-06 in favor of post-launch measurement on the new dashboard. Pre-state baseline remains T2 Declared with documented small-sample caveat in baseline-ttc.json. Post-launch T1 measurement is a non-blocking follow-up (no T2.7 task created — the new dashboard's GA4 events fire automatically and the T1 read is a lightweight query against future data, not a code change)."
+      "note": "Original intent was an upgrade path T2\u2192T1 against the legacy Astro dashboard. Path abandoned 2026-05-06 in favor of post-launch measurement on the new dashboard. Pre-state baseline remains T2 Declared with documented small-sample caveat in baseline-ttc.json. Post-launch T1 measurement is a non-blocking follow-up (no T2.7 task created \u2014 the new dashboard's GA4 events fire automatically and the T1 read is a lightweight query against future data, not a code change)."
     }
   ],
   "transitions": [
@@ -908,6 +926,41 @@
       "timestamp": "2026-04-26T11:30:00Z",
       "approved_by": "user",
       "note": "User said continue. Starting T1 (instrument current Astro dashboard) immediately so 7-day baseline clock starts. T15 + T8/T9/T10/T13 (parallelizable infra) can also proceed \u2014 none block on T2 baseline data."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "All implementation-block tasks done (43/44 + 1 deferred). T2.5 deferred per documented reason. CI passing across both repos. User explicit approval at session close 2026-05-06."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "T6/T11/T16/T33/T38 tests all passing. Analytics suite (T38) 13/13 green. pm-framework/pr-integrity gate green on every PR. CI clean on FT2 + fitme-story main."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "20 PRs merged across both repos. Live-verified: control-room/* gated by basic-auth, all 8 GA4 events firing, fit-tracker2 redirect functional then legacy project deleted per user authorization, showcase Control Center nav live, framework health page populating from synced data after PR #39."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "Phase 8 case study at docs/case-studies/unified-control-center-case-study.md (FT2 #230, ~530 lines, tier-tagged with 5 honest disclosures). Daily sync routine trig_01ThxQphvQQa8tyWMsxiyhdm scheduled for 09:00 IDT daily."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "Showcase MDX published at fitme-story/content/04-case-studies/23a-unified-control-center.mdx. Memory updated. Feature formally CLOSED. T2.5 deferred remains the only non-done task; post-launch baseline measurement on the new dashboard will close it organically."
     }
   ],
   "metrics": {
@@ -979,7 +1032,34 @@
         "duration_minutes": 180
       },
       "implementation": {
-        "started_at": "2026-04-26T11:30:00Z"
+        "started_at": "2026-04-26T11:30:00Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 14487
+      },
+      "testing": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "review": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "merge": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "documentation": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "complete": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
       }
     }
   },
@@ -1062,5 +1142,6 @@
   },
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "case_study_showcase": "fitme-story/content/04-case-studies/23a-unified-control-center.mdx"
 }
