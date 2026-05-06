@@ -12,7 +12,7 @@
   "current_phase": "complete",
   "status": "complete",
   "created_at": "2026-04-26T05:30:00Z",
-  "updated": "2026-05-06T12:57:54Z",
+  "updated": "2026-05-06T18:05:04Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -1117,6 +1117,20 @@
       "skill": "qa",
       "event_type": "cache_hit",
       "phase": "implementation"
+    },
+    {
+      "ts": "2026-05-06T18:05:04Z",
+      "key": "ux-spec-preflight:v4-x-first-run",
+      "layer": "L2",
+      "type": "adapted",
+      "skill": "ux"
+    },
+    {
+      "ts": "2026-05-06T18:05:04Z",
+      "key": "design-build:figma-mcp-auto-dispatch",
+      "layer": "L2",
+      "type": "adapted",
+      "skill": "design"
     }
   ],
   "case_study": {
