@@ -15,6 +15,11 @@ final class ImportOrchestrator: ObservableObject {
     private let parsers: [ImportParser] = [JSONImportParser(), CSVImportParser(), MarkdownImportParser()]
     private let mapper = ExerciseMapper()
 
+    /// Optional analytics injection. Set post-construction by the host view.
+    /// `nil` is graceful: events are skipped when no service is wired (test
+    /// targets, preview targets).
+    var analytics: AnalyticsService?
+
     enum ImportState {
         case idle
         case parsing
@@ -33,8 +38,11 @@ final class ImportOrchestrator: ObservableObject {
         sourceUsed = source
         rawSourceTextSnapshot = retainSourceText ? input : nil
         state = .parsing
+        let parseStart = Date()
 
         guard let parser = parsers.first(where: { $0.canParse(input) }) else {
+            analytics?.logImportParseFailed(source: source.rawValue,
+                                            reason: "no_parser_matched")
             state = .error("Couldn't recognize this format. Try pasting as CSV with a header row.")
             return
         }
@@ -51,6 +59,13 @@ final class ImportOrchestrator: ObservableObject {
                     plan.days[dayIndex].exercises[exIndex].mappingConfidence = result.confidence
                 }
             }
+
+            let parseDurationMs = Int(Date().timeIntervalSince(parseStart) * 1000)
+            let totalExercises = plan.days.reduce(0) { $0 + $1.exercises.count }
+            analytics?.logImportParsed(source: source.rawValue,
+                                        exerciseCount: totalExercises,
+                                        dayCount: plan.days.count,
+                                        parseDurationMs: parseDurationMs)
 
             currentPlan = plan
             currentDayAssignments = plan.days.map { day in
@@ -71,6 +86,8 @@ final class ImportOrchestrator: ObservableObject {
             }
             state = .preview(plan)
         } catch {
+            analytics?.logImportParseFailed(source: source.rawValue,
+                                            reason: error.localizedDescription)
             state = .error(error.localizedDescription)
         }
     }
@@ -80,6 +97,23 @@ final class ImportOrchestrator: ObservableObject {
     /// `persistToDisk()` returns successfully.
     func confirmImport(into dataStore: EncryptedDataStore, planName: String? = nil) async {
         guard let plan = currentPlan else { return }
+
+        let exercises = currentDayAssignments.flatMap(\.exercises)
+        let totalExercises = exercises.count
+        let autoMatched = exercises.filter {
+            ($0.mappingConfidence ?? 0) >= ExerciseMapper.autoAcceptThreshold
+        }.count
+        let needsReview = exercises.filter {
+            let c = $0.mappingConfidence ?? 0
+            return c >= ExerciseMapper.reviewThreshold && c < ExerciseMapper.autoAcceptThreshold
+        }.count
+        let unresolved = totalExercises - autoMatched - needsReview
+
+        analytics?.logImportMappingConfirmed(autoMatched: autoMatched,
+                                              manualConfirmed: needsReview,
+                                              skipped: 0,
+                                              unresolved: unresolved)
+
         state = .persisting
 
         let imported = ImportedTrainingPlan(
@@ -94,6 +128,9 @@ final class ImportOrchestrator: ObservableObject {
         await dataStore.persistToDisk()
 
         if dataStore.persistenceFailed {
+            analytics?.logImportFailed(source: sourceUsed.rawValue,
+                                        step: "save",
+                                        reason: dataStore.lastError ?? "persistence_failed")
             state = .error("Couldn't save your imported plan. Try again, or contact support if it persists.")
             // Roll back the optimistic append so the next attempt doesn't duplicate.
             if let last = dataStore.importedTrainingPlans.last, last.id == imported.id {
@@ -102,6 +139,11 @@ final class ImportOrchestrator: ObservableObject {
             return
         }
 
+        let timeToCompleteMs = Int(Date().timeIntervalSince(startedAt) * 1000)
+        analytics?.logImportCompleted(source: sourceUsed.rawValue,
+                                       totalExercises: totalExercises,
+                                       skippedExercises: 0,
+                                       timeToCompleteMs: timeToCompleteMs)
         state = .success(imported)
     }
 
