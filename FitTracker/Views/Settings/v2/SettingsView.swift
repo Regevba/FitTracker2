@@ -77,6 +77,7 @@ struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var watchService: WatchConnectivityService
     @EnvironmentObject var analytics: AnalyticsService
+    @EnvironmentObject var programStore: TrainingProgramStore
 
     @State private var navigationPath = NavigationPath()
     @State private var showResetAlert = false
@@ -157,6 +158,7 @@ struct SettingsView: View {
                     DataSyncSettingsScreen(showResetAlert: $showResetAlert)
                         .environmentObject(dataStore)
                         .environmentObject(cloudSync)
+                        .environmentObject(programStore)
                         .environmentObject(analytics)
                 }
             }
