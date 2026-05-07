@@ -36,6 +36,23 @@
       "owner_features": ["framework-*"],
       "mode": "advisory",
       "_note": "Generated/overwritten by scripts/measurement-adoption-report.py; not mergeable by content."
+    },
+    ".claude/logs/gate-coverage.jsonl": {
+      "merge_strategy": "append",
+      "owner_features": ["framework-*"],
+      "mode": "advisory",
+      "_note": "Mechanism A coverage telemetry. Append-only JSONL — concurrent writes from parallel agents safe via OS-level append atomicity. No dedup needed; each line is a unique gate evaluation event.",
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
+    },
+    ".claude/logs/_session-*.events.jsonl": {
+      "merge_strategy": "append",
+      "scope": "per-session",
+      "owner_features": ["*"],
+      "mode": "advisory",
+      "_note": "Mechanism C session event ledger. One JSONL file per Claude Code session ID. Append-only; per-file scope means no inter-session conflicts. Pattern uses glob to match every session file.",
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
     }
   }
 }

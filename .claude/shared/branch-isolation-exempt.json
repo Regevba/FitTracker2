@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "_description": "v7.8 framework-v7-8-branch-isolation Q3 (T3): allowlist of glob patterns exempt from BRANCH_ISOLATION_VIOLATION when those paths are the ONLY staged files. Used by the gate to allow legitimate-on-main work (CLAUDE.md edits during freeze, security patches, framework-version-bump commits) without forcing worktree creation. Each entry has a rationale + optional expiry. Empty patterns array = no exemptions = strict mode. Per integration-spec.md §3.3 + PRD §3.1.",
+  "_spec": "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md (parent) + .claude/features/framework-v7-8-branch-isolation/prd.md §3.1",
+  "_gate": "BRANCH_ISOLATION_VIOLATION (Block B, T6/T7)",
+  "_advisory_until": "v7.9 promotion (earliest 2026-05-21)",
+  "patterns": [
+    {
+      "glob": "CLAUDE.md",
+      "reason": "Project-rules file. Edits to CLAUDE.md during framework freezes or for typo fixes/section additions are legitimate-on-main work. The branch-isolation gate would otherwise auto-create a worktree for every CLAUDE.md edit, which is overhead.",
+      "expires_at": null,
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
+    },
+    {
+      "glob": "docs/architecture/dev-guide-v1-to-v7-7.md",
+      "reason": "DEV-only framework guide. Version-bump edits (e.g. v7.7 → v7.8 → v7.9 timeline) are legitimate-on-main; mostly maintained alongside CLAUDE.md updates as a paired doc-edit set.",
+      "expires_at": null,
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
+    },
+    {
+      "glob": ".claude/integrity/README.md",
+      "reason": "Integrity-cycle documentation. Updated when new check codes ship; co-edited with the gate implementations.",
+      "expires_at": null,
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
+    }
+  ],
+  "_notes": [
+    "Exemption applies ONLY when the staged commit's file list is a SUBSET of the patterns array. A commit that touches CLAUDE.md AND a feature file is NOT exempt — full isolation enforcement applies.",
+    "expires_at: null means the exemption is permanent. Date-bounded exemptions (e.g. for a specific freeze window) should set expires_at to the ISO 8601 date past which the exemption no longer applies.",
+    "Block B's BRANCH_ISOLATION_VIOLATION predicate (T6) reads this file via the existing flock_writer.py shared-state pattern. Default behavior: if file doesn't exist or fails to parse, treat as empty patterns (strict mode).",
+    "v7.9 promotion may add programmatic exemption-rotation review: any pattern with expires_at set is auto-deleted on its expiry date, and any pattern without expires_at is reviewed annually."
+  ]
+}

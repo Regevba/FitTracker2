@@ -3,10 +3,10 @@
   "feature": "framework-v7-8-branch-isolation",
   "title": "framework v7 8 branch isolation",
   "work_type": "Feature",
-  "current_phase": "ux_or_integration",
+  "current_phase": "implementation",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-07T14:25:00Z",
+  "updated_at": "2026-05-07T14:35:00Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -113,6 +113,27 @@
       "event_type": "phase_started",
       "phase": "ux_or_integration",
       "summary": "Phase 3 (Integration, since has_ui: false) opened. Composing integration-spec.md covering pre-commit hook integration order, skill API contracts for T20 (superpowers:using-git-worktrees extension) + T21 (/ux + /design pre-merge-review sub-step 6f), backward compatibility with existing 12 write-time + 13 cycle-time codes, error handling + --no-verify bypass + manual_bypass recording, advisory\u2192enforced migration plan.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:35:00Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (Integration) approved. 9-section integration spec covers pre-commit hook integration, T20+T21 skill API contracts, backward compatibility (zero regression on 12+13 existing codes), error handling, file dependency map (18 files), advisory\u2192enforced migration plan, inter-skill awareness, implementation latitude.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/integration-spec.md"
+      ],
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:35:00Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) opened. Beginning Block A (E-core, parallel sonnet) \u2014 4 schema-addition tasks T1/T2/T3/T4. Block B + C (P-core opus) follow with gate predicate logic.",
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"

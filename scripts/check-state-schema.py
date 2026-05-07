@@ -510,6 +510,29 @@ def validate_file(
             f"categorize this feature deterministically."
         )
 
+    # Check 1d (T1, framework-v7-8-branch-isolation, advisory in v7.8 → enforced in v7.9):
+    # ISOLATION_OPT_OUT_REASON_MISSING — when state.json::isolation_opt_out is True,
+    # the companion isolation_opt_out_reason field must be a non-empty string.
+    # Rationale: opt-out without explanation is silent drift; future-cycle audit
+    # can't tell whether the opt-out is legitimate or stale. Per
+    # `framework-v7-8-branch-isolation/integration-spec.md` §3.3 + PRD §3.1.
+    iso_opt = d.get("isolation_opt_out", False)
+    if coverage is not None:
+        coverage.candidate("ISOLATION_OPT_OUT_REASON_MISSING")
+        if iso_opt is True:
+            coverage.checked("ISOLATION_OPT_OUT_REASON_MISSING")
+        else:
+            coverage.skip("ISOLATION_OPT_OUT_REASON_MISSING", "opt_out_false_or_absent")
+    if iso_opt is True:
+        reason = d.get("isolation_opt_out_reason", "")
+        if not isinstance(reason, str) or not reason.strip():
+            errors.append(
+                f"{path}: isolation_opt_out=true requires a non-empty "
+                f"isolation_opt_out_reason field. Set the reason "
+                f"explaining why this feature opts out of branch-isolation "
+                f"enforcement, or change isolation_opt_out to false."
+            )
+
     # Check 2: PR_NUMBER_UNRESOLVED — phases.merge.pr_number must resolve
     if coverage is not None:
         coverage.candidate("PR_NUMBER_UNRESOLVED")
