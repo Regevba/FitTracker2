@@ -1,3 +1,9 @@
+// HISTORICAL — superseded on 2026-05-07 per push-notifications-v2 (FIT-23).
+// v2 moves per-type cap state into NotificationGateway (standard + critical
+// buckets) and per-consumer cap contributions into NotificationConsumerRegistry.
+// This file is no longer in the build target; kept in the repo as a reviewable
+// reference for the v1 → v2 diff. Do NOT use from new code.
+
 // Services/Notifications/NotificationPreferencesStore.swift
 // UserDefaults-backed store for per-type notification preferences and
 // global frequency cap.  All keys use the "ft.notification." prefix.

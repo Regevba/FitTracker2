@@ -110,7 +110,14 @@ struct TrainingPlanView: View {
                     previousLog: previousSameDayLog,
                     streak: dataStore.supplementStreak,
                     onShare: { showCompletionSheet = false },
-                    onDone: { showCompletionSheet = false }
+                    onDone: {
+                        showCompletionSheet = false
+                        // push-notifications-v2 (T6): record first-workout-completed
+                        // exactly once. Posts .fitMeFirstWorkoutCompleted; FitTrackerApp
+                        // listens and presents NotificationPermissionPrimingView when
+                        // the user is not yet notification-authorized.
+                        FirstWorkoutTrigger.mark()
+                    }
                 )
                 .presentationDetents([.medium, .large])
                 .presentationCornerRadius(AppSheet.standardCornerRadius)

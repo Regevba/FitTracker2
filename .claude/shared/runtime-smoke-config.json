@@ -65,6 +65,25 @@
       "only_testing": [
         "FitTrackerUITests/MealLogUITests/testNutritionTabOpensMealEntryPath"
       ]
+    },
+    "notification_platform_v2": {
+      "description": "Push-notifications-v2 platform-layer smoke (T16). Manual sim run per PRD §Test & Eval Requirements: install on simulator → complete first workout → assert NotificationPermissionPrimingView presents → tap Enable → grant OS permission → schedule a readinessAlert via debug menu (low score = workout-today path) → tap delivered notification → assert app routes to Home tab via DeepLinkRouter. Verifies the wire that v1 broke (UI-016) AND the deep-link consumer that smart-reminders left open. This profile is intentionally gated on manual run rather than XCUITest because (a) workout completion + permission grant + notification delivery require real iOS state, and (b) the parallel-clone simulator-hang env-flake (docs/case-studies/m-4-xcuitest-infrastructure-case-study.md) makes XCUITest-driven flows unreliable on hosted CI. Verification artifact: runner pastes the analytics events captured (notification_priming_shown, notification_permission_granted, deep_link_routed with outcome=succeeded) plus a screenshot of the priming sheet + post-tap Home view.",
+      "only_testing": [],
+      "manual_run": true,
+      "manual_steps": [
+        "Install fresh build on simulator (no prior workout in DataStore)",
+        "Open app → sign in (or skip via review fixtures) → reach Home",
+        "Navigate to Training tab → complete a workout (any exercises + Save)",
+        "After SessionCompletionSheet 'Done' tap, assert NotificationPermissionPrimingView appears (medium-detent sheet)",
+        "Tap 'Enable Notifications' → OS dialog → tap Allow",
+        "Assert sheet auto-dismisses, success haptic plays",
+        "Open Settings tab → assert Notifications row shows 'Notifications enabled ✓'",
+        "Trigger readinessAlert via debug menu (or wait for next ReadinessEngine score below 40)",
+        "Background app, wait for notification delivery",
+        "Tap notification → assert app foregrounds on Home tab",
+        "In GA4 (or analytics console), confirm events fired: notification_priming_shown, notification_permission_requested, notification_permission_granted, deep_link_routed (outcome=succeeded)",
+        "Background app again, kill it, tap a queued notification (cold-start) → assert deep link still lands on Home tab"
+      ]
     }
   }
 }

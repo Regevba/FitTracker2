@@ -111,6 +111,10 @@ struct SettingsView: View {
                         }
                         .buttonStyle(.plain)
 
+                        // push-notifications-v2 (T7): permanent re-entry to the
+                        // notification permission flow. State-driven (3 variants).
+                        NotificationPermissionRow(analytics: analytics)
+
                         LazyVGrid(columns: dashboardColumns, spacing: AppSpacing.xSmall) {
                             ForEach(SettingsCategory.allCases.filter { $0 != .accountSecurity }) { category in
                                 NavigationLink(value: category) {

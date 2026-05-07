@@ -271,17 +271,22 @@ enum AnalyticsEvent {
     /// conversion signal — supersedes importCompleted as the conversion event)
     static let importPlanActivated      = "import_plan_activated"
 
-    // MARK: - Notification Events
-    static let notificationPermissionRequested = "notification_permission_requested"
-    static let notificationPermissionGranted = "notification_permission_granted"
-    static let notificationPermissionDenied = "notification_permission_denied"
-    static let notificationScheduled = "notification_scheduled"
-    static let notificationDelivered = "notification_delivered"
-    static let notificationTapped = "notification_tapped"
-    static let notificationDismissed = "notification_dismissed"
-    static let notificationDisabled = "notification_disabled"
-    static let notificationPrimingShown = "notification_priming_shown"
-    static let notificationPrimingSkipped = "notification_priming_skipped"
+    // MARK: - Notification Platform Events (push-notifications-v2)
+    // Removed 2026-05-07 (push-notifications-v2 T11): notificationScheduled,
+    // notificationDelivered, notificationTapped, notificationDismissed,
+    // notificationDisabled — duplicates of the live reminder_* events. The
+    // push-notifications platform layer owns priming + permission + deep-link;
+    // smart-reminders owns scheduling lifecycle.
+    static let notificationPermissionRequested      = "notification_permission_requested"
+    static let notificationPermissionGranted        = "notification_permission_granted"
+    static let notificationPermissionDenied         = "notification_permission_denied"
+    static let notificationPrimingShown             = "notification_priming_shown"
+    static let notificationPrimingSkipped           = "notification_priming_skipped"
+    /// Fired when SettingsDeepLinkBanner appears at top of Home post-denial (one-time).
+    static let notificationSettingsDeeplinkShown    = "notification_settings_deeplink_shown"
+    /// Fired by DeepLinkRouter on every URL routing attempt.
+    /// Carries: deepLinkSource (notification/url/programmatic), destination, urlPattern, outcome.
+    static let deepLinkRouted                       = "deep_link_routed"
 
     // ── Smart Reminder Events (screen-prefixed: reminder_) ─
     /// A smart reminder notification was scheduled by ReminderScheduler
@@ -365,6 +370,13 @@ enum AnalyticsParam {
     // Recovery parameters
     static let metricType        = "metric_type"      // weight/hrv/rhr/sleep/body_fat
     static let source            = "source"           // manual/healthkit
+
+    // Notification Platform parameters (push-notifications-v2)
+    static let triggerContext    = "trigger_context"  // post_workout/settings — for notification_priming_shown
+    static let deepLinkSource    = "deep_link_source" // notification/url/programmatic — for deep_link_routed
+    static let destination       = "destination"      // tab/sheet/auth/settings — routed action variant
+    static let urlPattern        = "url_pattern"      // matched URL pattern, e.g. "fitme://nav/training"
+    static let outcome           = "outcome"          // succeeded/failed_no_pattern_match/failed_navigation
 
     // Engagement parameters
     static let statType          = "stat_type"

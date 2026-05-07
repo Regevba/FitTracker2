@@ -7,7 +7,7 @@
   "auth_handle": "Regev Barak",
   "auth_plan_tier": "pro",
   "node_count": null,
-  "last_checked": "2026-05-06T17:30:00Z",
+  "last_checked": "2026-05-07T05:00:00Z",
   "last_error": null,
-  "checked_by": "/design preflight (v4.X auto-dispatch from /pm-workflow Phase 3.f for import-training-plan resume)"
+  "checked_by": "/design preflight (v4.X auto-dispatch from /pm-workflow Phase 3.f for push-notifications-v2)"
 }

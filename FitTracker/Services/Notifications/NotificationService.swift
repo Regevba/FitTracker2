@@ -1,3 +1,14 @@
+// HISTORICAL — superseded by NotificationGateway.swift on 2026-05-07 per
+// push-notifications-v2 (FIT-23). The v1 service shipped via UI-016 partial-ship
+// (substrate built + tested + merged but never wired into runtime). v2 replaces
+// this with the platform-layer architecture: NotificationGateway (auth+dispatch+caps)
+// + DeepLinkRouter (URL→action) + NotificationConsumerRegistry (per-consumer types).
+// See `.claude/features/push-notifications/_v1/state.json` and
+// `docs/case-studies/push-notifications-case-study.md` for the v1 retrospective.
+// This file is no longer in the build target; it stays in the repo as a reviewable
+// reference for the v1 → v2 diff. Do NOT call into NotificationService.shared from
+// new code — call NotificationGateway.shared.dispatch(...) instead.
+
 // Services/Notifications/NotificationService.swift
 // Manages UNUserNotificationCenter: authorization, scheduling, cancellation.
 // Enforces quiet hours (10 PM – 7 AM) and delegates to NotificationPreferencesStore

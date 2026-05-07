@@ -83,6 +83,13 @@ Account Settings,settings_account,AccountSettingsView,settings,,,,,,,,
 Data Settings,settings_data,DataSettingsView,settings,,,,,,,,
 Appearance,settings_appearance,AppearanceSettingsView,settings,,,,,,,,
 Notifications,settings_notifications,NotificationSettingsView,settings,,,,,,,,
+Notifications,notification_priming_shown,Custom,NotificationPermissionPrimingView appear,trigger_context (post_workout/settings),,,,,,event,Priming sheet view event (push-notifications-v2)
+Notifications,notification_priming_skipped,Custom,User taps "Not now" or swipes-down to dismiss,trigger_context (post_workout/settings),,,,,,event,No OS dialog fired — preserves one-shot privilege
+Notifications,notification_permission_requested,Custom,OS dialog triggered (Step 3 of 3-step priming),,,,,,,event,UNUserNotificationCenter.requestAuthorization invoked
+Notifications,notification_permission_granted,Custom,User taps Allow in OS dialog,,,,,,,event,Mark as conversion in GA4 (opt-in primary metric)
+Notifications,notification_permission_denied,Custom,User taps Don't Allow in OS dialog,,,,,,,event,Triggers SettingsDeepLinkBanner on next Home appear
+Notifications,notification_settings_deeplink_shown,Custom,SettingsDeepLinkBanner appears at top of Home,,,,,,,event,One-time per device lifetime; UserDefaults flag dismisses permanently
+Notifications,deep_link_routed,Custom,DeepLinkRouter resolves any fitme:// URL,deep_link_source (notification/url/programmatic),destination (tab/sheet/auth/settings),url_pattern,outcome (succeeded/failed_no_pattern_match/failed_navigation),,,event,Trust-contract telemetry — kill criterion if outcome=succeeded rate < 95%
 About,settings_about,AboutView,settings,,,,,,,,
 Sign In,sign_in,SignInView,auth,,,,,,,,
 Sign Up,sign_up,SignUpView,auth,,,,,,,,

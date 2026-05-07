@@ -1,3 +1,10 @@
+// HISTORICAL — superseded on 2026-05-07 per push-notifications-v2 (FIT-23).
+// In v2, content composition is consumer-owned (each notification consumer
+// builds its own UNMutableNotificationContent and passes it to
+// NotificationGateway.dispatch). The platform layer no longer holds a central
+// content builder. ReadinessAlertObserver.buildContent(...) is the v2 example.
+// This file is no longer in the build target; kept for v1 → v2 diff reference.
+
 // Services/Notifications/NotificationContentBuilder.swift
 // Builds UNMutableNotificationContent for each NotificationType.
 // Content matches the UX spec (ux-spec.md): titles, bodies, categories,
