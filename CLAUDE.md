@@ -471,3 +471,4 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Dashboard activation: `docs/setup/dashboard-activation.md`
 - Integrations setup: `docs/setup/integrations-setup-guide.md`
 - Auth runtime verification: `docs/setup/auth-runtime-verification-playbook.md`
+- UCC passkey auth (going-live runbook): `docs/setup/ucc-passkey-auth-setup-guide.md`
