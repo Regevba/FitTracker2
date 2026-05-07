@@ -2,7 +2,15 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "research",
   "created_at": "2026-04-30T18:38:40Z",
+  "updated": "2026-05-07T05:01:33Z",
+  "framework_version": "v7.8",
   "work_type": "Feature",
+  "scheduled_after": {
+    "predecessor": "push-notifications",
+    "signal": "push-notifications phase=complete",
+    "captured_at": "2026-05-07",
+    "note": "User-declared queue position 2026-05-07: this feature is next-inline once push-notifications closes (currently phase=ux_or_integration, paused since 2026-04-27 for v7.7 freeze, eligible for resume since 2026-04-27). Do not start research/PRD work on framework-v7-8-branch-isolation until push-notifications transitions to current_phase=complete. The 2026-05-07 expansion to bundle FEATURE_CLOSURE_COMPLETENESS into this feature is captured in deliverables — both gates ship together."
+  },
   "phases": {
     "research": {
       "status": "in_progress",
@@ -54,7 +62,9 @@
       "Extension to `superpowers:using-git-worktrees` skill: auto-detect when a feature with an active branch is being touched from main and prompt/auto-create the worktree",
       "Pre-state.json-mutation guard for scheduled jobs: verify `branch + cwd + WorkingDirectory` resolve to the expected `.worktrees/<name>` (or sibling `/Volumes/DevSSD/FitTracker2-*`) tree before any write",
       "`make verify-isolation` readout listing every active feature with its expected branch + worktree path + actual git/launchd state",
-      "Documentation of which jobs/skills are exempt (e.g. framework-level meta-work that legitimately runs on main)"
+      "Documentation of which jobs/skills are exempt (e.g. framework-level meta-work that legitimately runs on main)",
+      "**(added 2026-05-07)** Companion gate `FEATURE_CLOSURE_COMPLETENESS` (write-time + readout-time) — fires on commits that transition `current_phase` → `complete` with a populated `case_study` link. Validates the state.json ↔ case study cross-reference is fully populated: every required frontmatter field (`date_written`, `dispatch_pattern`, `success_metrics`, `kill_criteria`, `framework_version`, `work_type`, `tier_tags_present`) is present and non-empty; state.json's PR list (`tasks[].pr_number`, `phases.merge.pr_number`) is cited in the case study; numeric claims carry T1/T2/T3 tier tags inline or in `key_numbers`. Promotes the 5 documentation-debt fields from advisory to write-time gate. Trigger memory: 2026-05-07 reconcile session that surfaced 5 missing frontmatter fields on UCC + import-training-plan AFTER both features had shipped (current detection via `make documentation-debt` runs only post-hoc).",
+      "**(added 2026-05-07)** Companion readout `make feature-completeness-audit` — system-wide scan across every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. For terminal features: full FEATURE_CLOSURE_COMPLETENESS check. For in-progress features: phase-appropriate schema check (e.g. PRD phase requires `success_metrics` in PRD; Implementation phase requires `tasks[]` populated). Outputs punch list grouped by feature. Replaces the manual cross-reference reconcile pass we just ran on 2026-05-07."
     ]
   },
   "open_questions": [
@@ -62,6 +72,8 @@
     "How does the auto-create flow interact with `superpowers:using-git-worktrees` smart-directory selection?",
     "What's the right escape hatch for legitimately-on-main work (e.g. integrity-check.py edits, framework-version bumps)? `BRANCH_ISOLATION_EXEMPT` allowlist? Per-feature opt-out?",
     "Do we need to inspect `~/Library/LaunchAgents/*.plist` (and equivalent on Linux/CI) WorkingDirectory values, or is checking the running process cwd sufficient?",
-    "Should the cycle-time check audit `.claude/features/*/state.json` against `git log --all` to detect features whose entire history happened on main?"
+    "Should the cycle-time check audit `.claude/features/*/state.json` against `git log --all` to detect features whose entire history happened on main?",
+    "**(FEATURE_CLOSURE_COMPLETENESS, added 2026-05-07)** Should the gate require state.json↔case-study PR-list parity (every PR cited in state.json appears in the case study, AND vice versa), or only one direction? Strict parity catches case studies that omit cleanup/follow-up PRs but may flag legitimately-redundant chore PRs.",
+    "**(FEATURE_CLOSURE_COMPLETENESS, added 2026-05-07)** Should the `kill_criteria_resolution` field be required when `kill_criteria` is set, or optional? Required forces honest disclosure when kill criteria were never tripped or were superseded mid-flight (e.g. UCC's PRD §13 30-day rollback window deviation), but adds friction for features where kill criteria are still pending the post-launch review window."
   ]
 }

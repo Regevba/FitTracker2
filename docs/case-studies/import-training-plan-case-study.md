@@ -6,9 +6,21 @@ framework_version: v7.8
 slug: import-training-plan
 title: "Import Training Plan — Resume from Audit-Flagged Partial Ship to Full Phase 1 Ship in 14 Hours"
 date: '2026-05-06'
+date_written: '2026-05-06'
+dispatch_pattern: serial (single resume session; mid-flight rollback to research after PRD architectural gap surfaced)
 shipped_window: '2026-05-06 (single-session resume)'
 external_audit_status: pending
 upstream_path: docs/case-studies/import-training-plan-case-study.md
+success_metrics:
+  primary: "Plan activation rate — % of `import_completed` events that flip a plan to `isActive=true` within session (T1 instrumented via `import_plan_activated`); target ≥ 80%; kill < 40% at 30 days"
+  secondary:
+    - "Import success rate (parser + mapping produces a usable plan, no manual fix) — T1 instrumented; target ≥ 80%; kill < 30% after 30 days → simplify to CSV-only"
+    - "Exercise mapping accuracy (% exercises auto-matched at ≥ 0.95 confidence) — T1 instrumented; target ≥ 90%; kill < 70% (trust broken)"
+    - "Time to first usable imported workout (`import_started` → first `training_workout_start` against the imported plan) — T1; target < 5 min; kill > 15 min median"
+    - "Plan adoption rate (imported plan opened or trained against within 7 days) — T1; target ≥ 60%; kill < 25% at 30 days"
+    - "User satisfaction rating on import experience (in-app rating prompt 7d post-import) — T2 declared (n≥50); target ≥ 4/5; kill ≤ 3/5 median"
+  source: docs/product/prd/import-training-plan.md §Success Metrics
+post_launch_review: "First post-launch metrics review 2026-05-13 (T+7d) — query GA4 funnel `import_started → import_completed → import_plan_activated`, compute activation rate, verify kill thresholds not tripped"
 key_numbers:
   - label: "PRs landed"
     value: "4"

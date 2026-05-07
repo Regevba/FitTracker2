@@ -132,7 +132,7 @@
     }
   },
   "case_study": "docs/case-studies/framework-story-site-case-study.md",
-  "case_study_showcase": "04-case-studies/14-framework-story-site.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/14-framework-story-site.mdx",
   "_meta": {
     "deprecation_warnings": []
   }
