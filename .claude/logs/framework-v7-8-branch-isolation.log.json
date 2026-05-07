@@ -3,10 +3,10 @@
   "feature": "framework-v7-8-branch-isolation",
   "title": "framework v7 8 branch isolation",
   "work_type": "Feature",
-  "current_phase": "research",
+  "current_phase": "tasks",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-07T13:33:02Z",
+  "updated_at": "2026-05-07T14:10:00Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -55,6 +55,38 @@
       "summary": "Phase 1 (PRD) opened after user approval of Phase 0 exit criteria. PRD scope: lock 7 design decisions into machine-verifiable specs (gate triggers, schema additions, exemption mechanisms, regex patterns, override flows). Authored against research.md decisions section.",
       "artifacts": [],
       "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:10:00Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) approved by user. 629-line PRD covers 7 locked decisions as machine-verifiable specs across 15 sections (gate predicates in pseudocode, schema additions, pre-commit hook integration, make targets, skill extensions, test plan, acceptance criteria 5-section checklist with 36 boxes, risks, review cadence, rollback). PRD committed at aefc8de + 9e0fd68 on feature/framework-v7-8-branch-isolation. GitHub Issue #243.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/prd.md"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:10:00Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened after user approval of Phase 1 exit criteria. Decomposed PRD \u00a710 acceptance criteria (5 sections, 36 checkboxes) into 28 implementation tasks across 8 blocks (A-H) with v5.1 task-complexity classification (E-core / P-core), dependency graph, skill assignment, effort estimates. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items. Out-of-scope companion spec at docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md + 7 backlog entries seeded into docs/product/backlog.md.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/tasks.md",
+        ".claude/features/framework-v7-8-branch-isolation/state.json",
+        "docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md",
+        "docs/product/backlog.md"
+      ],
+      "metrics": {
+        "tasks_total": 29,
+        "phase_9_deliverables": 1
+      },
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"

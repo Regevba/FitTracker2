@@ -1,8 +1,8 @@
 {
   "feature_name": "framework-v7-8-branch-isolation",
-  "current_phase": "prd",
+  "current_phase": "tasks",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T13:55:00Z",
+  "updated": "2026-05-07T14:10:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -27,13 +27,20 @@
       "deliverable": ".claude/features/framework-v7-8-branch-isolation/research.md"
     },
     "prd": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-07T13:35:00Z",
-      "note": "PRD authoring on feature/framework-v7-8-branch-isolation worktree per Q2 Mode B auto-isolation policy.",
-      "path": ".claude/features/framework-v7-8-branch-isolation/prd.md"
+      "approved_at": "2026-05-07T14:10:00Z",
+      "approved_by": "user",
+      "path": ".claude/features/framework-v7-8-branch-isolation/prd.md",
+      "note": "PRD authored on isolated worktree per Q2 Mode B; approved with \"plan approved and continue\"."
     },
     "tasks": {
-      "status": "not_started"
+      "status": "in_progress",
+      "started_at": "2026-05-07T14:10:00Z",
+      "count": 28,
+      "phase_9_deliverable_count": 1,
+      "task_file": ".claude/features/framework-v7-8-branch-isolation/tasks.md",
+      "note": "Decomposed PRD \u00a710 (5 sections, 36 checkboxes) into 28 implementation tasks across 8 blocks (A-H) with v5.1 task-complexity classification. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items."
     },
     "ux_or_integration": {
       "status": "not_started"
@@ -61,6 +68,13 @@
       "timestamp": "2026-05-07T13:35:00Z",
       "approved_by": "user",
       "note": "Phase 0 (Research) approved. 7 open questions \u2192 7 locked decisions captured in research.md \u00a78.3 + state.json::locked_decisions. Advancing to Phase 1 (PRD) on isolated feature branch."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-05-07T14:10:00Z",
+      "approved_by": "user",
+      "note": "PRD approved. Tasks decomposition + out-of-scope companion spec at docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md + 7 backlog entries seeded into docs/product/backlog.md \"v8.0+ Candidates\" section. T29 captured as Phase 9 prioritization deliverable."
     }
   ],
   "timing": {
@@ -70,7 +84,11 @@
         "ended_at": "2026-05-07T13:35:00Z"
       },
       "prd": {
-        "started_at": "2026-05-07T13:35:00Z"
+        "started_at": "2026-05-07T13:35:00Z",
+        "ended_at": "2026-05-07T14:10:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-05-07T14:10:00Z"
       }
     }
   },
@@ -152,5 +170,474 @@
       }
     ]
   },
-  "github_issue_number": 243
+  "github_issue_number": 243,
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Add isolation_opt_out + isolation_opt_out_reason + worktree_path to canonical state.json schema",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "A"
+    },
+    {
+      "id": "T2",
+      "title": "Add kill_criteria_resolution + pr_citation_exempt to case-study frontmatter required-field list",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "A"
+    },
+    {
+      "id": "T3",
+      "title": "Create .claude/shared/branch-isolation-exempt.json with initial allowlist",
+      "type": "data",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.2,
+      "depends_on": [],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "A"
+    },
+    {
+      "id": "T4",
+      "title": "Extend .claude/shared/path-reducers.json with 4 initial entries",
+      "type": "data",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.2,
+      "depends_on": [],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "A"
+    },
+    {
+      "id": "T5",
+      "title": "Implement is_infra_work() classifier",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "B"
+    },
+    {
+      "id": "T6",
+      "title": "Implement should_check_branch_isolation() predicate (Mode B + Mode C)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T5"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "B"
+    },
+    {
+      "id": "T7",
+      "title": "Implement is_branch_isolation_violation() violation predicate",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T6"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "B"
+    },
+    {
+      "id": "T8",
+      "title": "Wire BRANCH_ISOLATION_VIOLATION into pre-commit with Mechanism A coverage emission",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T6",
+        "T7"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "B"
+    },
+    {
+      "id": "T9",
+      "title": "Implement auto-isolation flow (dispatch superpowers:using-git-worktrees on gate fire)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "depends_on": [
+        "T8",
+        "T20"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "B"
+    },
+    {
+      "id": "T10",
+      "title": "Implement error message contract per PRD \u00a74.1",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T9"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "B"
+    },
+    {
+      "id": "T11",
+      "title": "Implement should_check_closure_completeness() predicate",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T2"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "C"
+    },
+    {
+      "id": "T12",
+      "title": "Implement closure_completeness_violations() \u2014 required field presence check",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T2",
+        "T11"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "C"
+    },
+    {
+      "id": "T13",
+      "title": "Add Q7 check: kill_criteria_resolution required when kill_criteria set",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T12"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "C"
+    },
+    {
+      "id": "T14",
+      "title": "Add Q6 check: bidirectional PR-list parity",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.7,
+      "depends_on": [
+        "T12"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "C"
+    },
+    {
+      "id": "T15",
+      "title": "Wire FEATURE_CLOSURE_COMPLETENESS into pre-commit with Mechanism A coverage emission",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T11",
+        "T12",
+        "T13",
+        "T14"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "C"
+    },
+    {
+      "id": "T16",
+      "title": "Implement error message contract per PRD \u00a74.2",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T15"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "C"
+    },
+    {
+      "id": "T17",
+      "title": "Implement BRANCH_ISOLATION_HISTORICAL advisory in integrity-check.py",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T7"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "D"
+    },
+    {
+      "id": "T18",
+      "title": "Implement BRANCH_ISOLATION_LAUNCHD_DRIFT advisory (macOS-only, gracefully skipped on Linux/CI)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T17"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "D"
+    },
+    {
+      "id": "T19",
+      "title": "Implement cycle-time mirror of FEATURE_CLOSURE_COMPLETENESS",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T15"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "D"
+    },
+    {
+      "id": "T20",
+      "title": "Extend superpowers:using-git-worktrees with --feature X --create-if-missing args + naming convention",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "E"
+    },
+    {
+      "id": "T21",
+      "title": "Extend /ux + /design pre-merge-review with sub-step 6f (kill_criteria_resolution check)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T13"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "E"
+    },
+    {
+      "id": "T22",
+      "title": "Create scripts/verify-isolation.py and make verify-isolation target",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T7"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "F"
+    },
+    {
+      "id": "T23",
+      "title": "Create scripts/feature-completeness-audit.py and make feature-completeness-audit target",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T11",
+        "T12",
+        "T13",
+        "T14"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "F"
+    },
+    {
+      "id": "T24",
+      "title": "Unit tests for BRANCH_ISOLATION_VIOLATION predicates",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T6",
+        "T7",
+        "T9"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "G"
+    },
+    {
+      "id": "T25",
+      "title": "Unit tests for FEATURE_CLOSURE_COMPLETENESS predicates",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T13",
+        "T14"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "G"
+    },
+    {
+      "id": "T26",
+      "title": "Cycle-time tests for advisories (HISTORICAL + LAUNCHD_DRIFT + closure mirror)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.4,
+      "depends_on": [
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "G"
+    },
+    {
+      "id": "T27",
+      "title": "Integration test extension: 4 new assertions in test-v7-5-pipeline.sh",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T8",
+        "T15",
+        "T22",
+        "T23"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "G"
+    },
+    {
+      "id": "T28",
+      "title": "Update doc inventory: lifecycle catalog + dev-guide + CLAUDE.md + integrity README",
+      "type": "docs",
+      "skill": "docs",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.6,
+      "depends_on": [
+        "T8",
+        "T15",
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "lane": "E-core",
+      "model_tier": "sonnet",
+      "block": "H"
+    },
+    {
+      "id": "T29",
+      "title": "Phase 9 prioritization pass on \u00a711 out-of-scope items: produce ranked v8 roadmap",
+      "type": "research",
+      "skill": "research",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T28"
+      ],
+      "lane": "P-core",
+      "model_tier": "opus",
+      "block": "phase_9",
+      "phase_9_deliverable": true
+    }
+  ],
+  "phase_9_followup": {
+    "task_id": "T29",
+    "description": "Prioritization pass on \u00a711 out-of-scope items (7 v8 candidates) at Phase 9 (Learn) close. Earliest 2026-05-21 after \u2265 7 days of gate-coverage.jsonl telemetry.",
+    "spec_path": "docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md",
+    "backlog_path": "docs/product/backlog.md",
+    "output": "Ranked v8 roadmap as case study section + backlog reorganization commit.",
+    "inputs": [
+      "7-day gate-coverage.jsonl telemetry for both new gates",
+      "make documentation-debt open count trend",
+      "agent-leases.json active-lease count",
+      "path-reducers.json entry count",
+      "forensic memory entries for stash/orphan-worktree drift",
+      "concurrent-write incident reports",
+      "any new external compliance requirements"
+    ]
+  }
 }
