@@ -64,9 +64,9 @@ It is also a case study in **how the framework caught the framework's own gaps**
 
 **Primary metric:** Notification opt-in rate ≥ 40%. Kill criterion: < 20% after 30 days. **Plus a new v2-specific metric:** Deep-link routing success rate ≥ 99% (% of reminder taps that navigate to the intended destination, vs the silent-fail today).
 
-**Success metrics (T1-instrumented at ship; 0 data until measurement window opens):**
+**Success metrics + kill criteria (T1-instrumented at ship; 0 data until measurement window opens):**
 
-| Metric | Tier | Baseline | Target | Kill |
+| Metric | Tier | Baseline | Target | Kill criteria |
 |---|---|---|---|---|
 | Notification opt-in rate | T1 | 0% (no priming surface today) | ≥ 40% | < 20% after 30d |
 | Workout reminder tap-through rate | T1 | 0% (deep links don't route) | ≥ 25% | < 10% after 30d |
