@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -137,6 +137,32 @@ v7.8 closes the v7.7 silent-pass via two surfaces specified jointly with v7.9:
 - **Mechanism F — Membrane status advisory** (PR #193): `scripts/membrane-status.py` reports active feature + recent gate firings + dispatch-blocker state in a single readout. Surfaced via SessionStart and `make membrane-status`. Closes the inter-agent context-handoff gap.
 
 **v7.8 fully shipped 2026-05-04** via 9 PRs: #173 (M-C scaffold) + #185 (PR-2 schema bridges A) + #186 (PR-3 framework_version backfill) + #187 (PR-4 Mechanism A coverage gates) + #188 (PR-5 M-C session attribution) + #189 (PR-6 Mechanism E merge driver) + #193 (PR-6 Mechanisms D + F) + #194 (PR-7 cold-start entrypoint + honesty ledger FT2-FH-001) + #195 (CI fix). Six mechanisms (A–F) all in advisory mode; v7.9 measurement window opens **2026-05-11** (+7d). Schema bridges populated on 47/47 features.
+
+## v7.8.1 Branch Isolation + Feature-Closure Completeness (advisory mode, shipped 2026-05-07 via PR #244 squash `6d1a53f` + PR #245 closure)
+
+v7.8.1 closes two empirically-witnessed silent-pass failure modes via cooperating pre-commit gates extending v7.8's enforcement layer. Both gates ship in **advisory mode** — they emit Mechanism A coverage telemetry but do NOT block commits. v7.9 promotion (earliest 2026-05-21, T+14d) flips them to enforced.
+
+**Trigger incidents:**
+- HADF Phase 2 (2026-04-30) — launchd plist anchored to canonical repo path; relative writes resolved against wrong tree; required mid-flight isolation + restart + remerge
+- 2026-05-07 reconcile session — 5 documentation-debt fields silently missing across 4 already-shipped features (UCC + import-training-plan + framework-story-site + push-notifications-v2); detection only post-hoc via `make documentation-debt`
+
+**3 new write-time gates (in `scripts/check-state-schema.py`):**
+- `BRANCH_ISOLATION_VIOLATION` (advisory) — Mode B fires on every commit when staged files match infra-path globs (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`); Mode C fires on `state.json::current_phase` mutations from a non-feature branch. Auto-isolation flow dispatches `scripts/create-isolated-worktree.py` (or `superpowers:using-git-worktrees` skill in agent context). Per-feature `isolation_opt_out: true` bypasses Mode C only; ignored for Mode B (Q3 infra override).
+- `FEATURE_CLOSURE_COMPLETENESS` (advisory) — fires on `current_phase=complete` transitions. Validates 7 required case-study frontmatter fields + Q7 (`kill_criteria_resolution` required when `kill_criteria` set) + Q6 bidirectional PR-list parity (state.json ↔ case study, override via `pr_citation_exempt`).
+- `ISOLATION_OPT_OUT_REASON_MISSING` (enforced) — when `isolation_opt_out: true`, `isolation_opt_out_reason` must be non-empty.
+
+**3 new cycle-time advisories (in `scripts/integrity-check.py`):** `BRANCH_ISOLATION_HISTORICAL` (forward-only audit, T+14d after-ship cutoff); `BRANCH_ISOLATION_LAUNCHD_DRIFT` (macOS-only plist scan); `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror (catches `--no-verify` bypasses).
+
+**Companion deliverables:**
+- `scripts/create-isolated-worktree.py` — local CLI auto-isolation (idempotent + adopt-existing)
+- `make verify-isolation` + `make feature-completeness-audit` — system-wide readouts
+- `/ux + /design pre-merge-review` extended with sub-step 6f (kill_criteria_resolution check)
+- `.claude/shared/branch-isolation-exempt.json` — exempt-pattern allowlist
+- `.claude/shared/path-reducers.json` extended with `gate-coverage.jsonl` + `_session-*.events.jsonl` entries
+
+**v7.8.1 first feature shipped via the v7.8 protocol** — first feature using Mechanism C session attribution + isolated worktree from Phase 1 onward + Tier 2.2 logging on every phase transition + Mechanism A coverage telemetry verification on its own gates. 14 commits across 9 phase transitions in one session; 28/28 implementation tasks done; 130/130 unit tests pass; 19/19 pipeline assertions pass.
+
+**Spec:** [`.claude/features/framework-v7-8-branch-isolation/prd.md`](.claude/features/framework-v7-8-branch-isolation/prd.md). **Case study:** [`docs/case-studies/framework-v7-8-branch-isolation-case-study.md`](docs/case-studies/framework-v7-8-branch-isolation-case-study.md). **Out-of-scope spec** (7 v8 candidates queued for Phase 9 prioritization 2026-05-21): [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md).
 
 **Spec:** [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md).
 **Predecessor v7.7 spec:** [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
