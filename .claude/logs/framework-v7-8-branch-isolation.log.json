@@ -3,10 +3,10 @@
   "feature": "framework-v7-8-branch-isolation",
   "title": "framework v7 8 branch isolation",
   "work_type": "Feature",
-  "current_phase": "tasks",
+  "current_phase": "ux_or_integration",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-07T14:10:00Z",
+  "updated_at": "2026-05-07T14:25:00Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -87,6 +87,32 @@
         "tasks_total": 29,
         "phase_9_deliverables": 1
       },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:25:00Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved by user. 28 implementation tasks decomposed across 8 blocks A-H with v5.1 task-complexity classification + dependency graph + skill assignment. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items, tracked in 4 places (state.json::phase_9_followup, tasks[T29], tasks.md narrative, out-of-scope.md criteria).",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/tasks.md"
+      ],
+      "metrics": {
+        "tasks_total": 29,
+        "phase_9_deliverables": 1,
+        "estimated_dev_days": 12
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:25:00Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (Integration, since has_ui: false) opened. Composing integration-spec.md covering pre-commit hook integration order, skill API contracts for T20 (superpowers:using-git-worktrees extension) + T21 (/ux + /design pre-merge-review sub-step 6f), backward compatibility with existing 12 write-time + 13 cycle-time codes, error handling + --no-verify bypass + manual_bypass recording, advisory\u2192enforced migration plan.",
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"

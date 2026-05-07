@@ -1,8 +1,8 @@
 {
   "feature_name": "framework-v7-8-branch-isolation",
-  "current_phase": "tasks",
+  "current_phase": "ux_or_integration",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T14:10:00Z",
+  "updated": "2026-05-07T14:30:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -35,15 +35,21 @@
       "note": "PRD authored on isolated worktree per Q2 Mode B; approved with \"plan approved and continue\"."
     },
     "tasks": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-07T14:10:00Z",
       "count": 28,
       "phase_9_deliverable_count": 1,
       "task_file": ".claude/features/framework-v7-8-branch-isolation/tasks.md",
-      "note": "Decomposed PRD \u00a710 (5 sections, 36 checkboxes) into 28 implementation tasks across 8 blocks (A-H) with v5.1 task-complexity classification. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items."
+      "note": "Decomposed PRD \u00a710 (5 sections, 36 checkboxes) into 28 implementation tasks across 8 blocks (A-H) with v5.1 task-complexity classification. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items.",
+      "approved_at": "2026-05-07T14:25:00Z",
+      "approved_by": "user"
     },
     "ux_or_integration": {
-      "status": "not_started"
+      "status": "in_progress",
+      "started_at": "2026-05-07T14:25:00Z",
+      "type": "integration",
+      "note": "has_ui: false \u2192 Integration spec instead of UX. Spec covers pre-commit hook integration + skill API contracts + backward compatibility + error handling + advisory\u2192enforced migration.",
+      "spec_path": ".claude/features/framework-v7-8-branch-isolation/integration-spec.md"
     },
     "implementation": {
       "status": "not_started"
@@ -75,6 +81,13 @@
       "timestamp": "2026-05-07T14:10:00Z",
       "approved_by": "user",
       "note": "PRD approved. Tasks decomposition + out-of-scope companion spec at docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md + 7 backlog entries seeded into docs/product/backlog.md \"v8.0+ Candidates\" section. T29 captured as Phase 9 prioritization deliverable."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-05-07T14:25:00Z",
+      "approved_by": "user",
+      "note": "Tasks approved (28 implementation + T29 Phase 9 deliverable). Advancing to Integration phase since has_ui: false."
     }
   ],
   "timing": {
@@ -88,7 +101,11 @@
         "ended_at": "2026-05-07T14:10:00Z"
       },
       "tasks": {
-        "started_at": "2026-05-07T14:10:00Z"
+        "started_at": "2026-05-07T14:10:00Z",
+        "ended_at": "2026-05-07T14:25:00Z"
+      },
+      "ux_or_integration": {
+        "started_at": "2026-05-07T14:25:00Z"
       }
     }
   },
