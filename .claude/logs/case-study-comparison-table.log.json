@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "feature": "case-study-comparison-table",
+  "title": "case study comparison table",
+  "work_type": "feature",
+  "current_phase": "complete",
+  "framework_version": "v7.8.1",
+  "started_at": "2026-05-07T19:12:20Z",
+  "updated_at": "2026-05-07T19:12:20Z",
+  "events": [
+    {
+      "timestamp": "2026-05-07T19:12:20Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "S3-G2 sub-feature opened from roadmap-stress-test reality-check finding.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T19:12:20Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "B_medium ship complete. fitme-story PR #58 squash 8e595b3 merged 19:02:16Z. 6/9 phases executed; 3 (PRD, tasks, UX) explicitly skipped per documented latitude. 30 min wall time end-to-end.",
+      "artifacts": [],
+      "metrics": {
+        "total_wall_time_minutes": 30,
+        "phases_executed": 6,
+        "phases_skipped": 3
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
