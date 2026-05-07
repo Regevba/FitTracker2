@@ -113,6 +113,20 @@ def extract_inline_drift_codes(text: str) -> set[str]:
         inline_codes.add("BROKEN_PR_CITATION")
     if "CASE_STUDY_MISSING_TIER_TAGS" in text or "no T1/T2/T3 tier tag" in text:
         inline_codes.add("CASE_STUDY_MISSING_TIER_TAGS")
+    # framework-v7-8-branch-isolation gates (T1, T6/T7, T11-T14, T17-T19).
+    # These use coverage.candidate("CODE") + variable-bound `"code": GATE`
+    # patterns rather than string-literal `"code": "NAME"`. Detect via
+    # explicit name match in the source.
+    if "ISOLATION_OPT_OUT_REASON_MISSING" in text:
+        inline_codes.add("ISOLATION_OPT_OUT_REASON_MISSING")
+    if "BRANCH_ISOLATION_VIOLATION" in text:
+        inline_codes.add("BRANCH_ISOLATION_VIOLATION")
+    if "FEATURE_CLOSURE_COMPLETENESS" in text:
+        inline_codes.add("FEATURE_CLOSURE_COMPLETENESS")
+    if "BRANCH_ISOLATION_HISTORICAL" in text:
+        inline_codes.add("BRANCH_ISOLATION_HISTORICAL")
+    if "BRANCH_ISOLATION_LAUNCHD_DRIFT" in text:
+        inline_codes.add("BRANCH_ISOLATION_LAUNCHD_DRIFT")
     return inline_codes
 
 

@@ -3,10 +3,10 @@
   "feature": "framework-v7-8-branch-isolation",
   "title": "framework v7 8 branch isolation",
   "work_type": "Feature",
-  "current_phase": "research",
+  "current_phase": "merge",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-05T04:17:25.828455Z",
+  "updated_at": "2026-05-07T17:05:00Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -30,6 +30,175 @@
         ".claude/features/framework-v7-8-branch-isolation/state.json"
       ],
       "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T13:33:02Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved by user. 7 open questions locked into design decisions: Mode B for infra (every commit) + Mode C for non-infra (current_phase mutations); auto-invoke superpowers:using-git-worktrees on gate fire; per-feature isolation_opt_out with infra override; process cwd at write-time + macOS plist scan as advisory; bidirectional PR-list parity for FEATURE_CLOSURE_COMPLETENESS; kill_criteria_resolution required when kill_criteria set + pre-merge-review verification. Synthesis from 3 prior research notes.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/research.md",
+        ".claude/features/framework-v7-8-branch-isolation/state.json"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T13:33:02Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened after user approval of Phase 0 exit criteria. PRD scope: lock 7 design decisions into machine-verifiable specs (gate triggers, schema additions, exemption mechanisms, regex patterns, override flows). Authored against research.md decisions section.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:10:00Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) approved by user. 629-line PRD covers 7 locked decisions as machine-verifiable specs across 15 sections (gate predicates in pseudocode, schema additions, pre-commit hook integration, make targets, skill extensions, test plan, acceptance criteria 5-section checklist with 36 boxes, risks, review cadence, rollback). PRD committed at aefc8de + 9e0fd68 on feature/framework-v7-8-branch-isolation. GitHub Issue #243.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/prd.md"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:10:00Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened after user approval of Phase 1 exit criteria. Decomposed PRD \u00a710 acceptance criteria (5 sections, 36 checkboxes) into 28 implementation tasks across 8 blocks (A-H) with v5.1 task-complexity classification (E-core / P-core), dependency graph, skill assignment, effort estimates. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items. Out-of-scope companion spec at docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md + 7 backlog entries seeded into docs/product/backlog.md.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/tasks.md",
+        ".claude/features/framework-v7-8-branch-isolation/state.json",
+        "docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md",
+        "docs/product/backlog.md"
+      ],
+      "metrics": {
+        "tasks_total": 29,
+        "phase_9_deliverables": 1
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:25:00Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved by user. 28 implementation tasks decomposed across 8 blocks A-H with v5.1 task-complexity classification + dependency graph + skill assignment. Plus T29 = Phase 9 prioritization pass on \u00a711 out-of-scope items, tracked in 4 places (state.json::phase_9_followup, tasks[T29], tasks.md narrative, out-of-scope.md criteria).",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/tasks.md"
+      ],
+      "metrics": {
+        "tasks_total": 29,
+        "phase_9_deliverables": 1,
+        "estimated_dev_days": 12
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:25:00Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (Integration, since has_ui: false) opened. Composing integration-spec.md covering pre-commit hook integration order, skill API contracts for T20 (superpowers:using-git-worktrees extension) + T21 (/ux + /design pre-merge-review sub-step 6f), backward compatibility with existing 12 write-time + 13 cycle-time codes, error handling + --no-verify bypass + manual_bypass recording, advisory\u2192enforced migration plan.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:35:00Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (Integration) approved. 9-section integration spec covers pre-commit hook integration, T20+T21 skill API contracts, backward compatibility (zero regression on 12+13 existing codes), error handling, file dependency map (18 files), advisory\u2192enforced migration plan, inter-skill awareness, implementation latitude.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/integration-spec.md"
+      ],
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T14:35:00Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) opened. Beginning Block A (E-core, parallel sonnet) \u2014 4 schema-addition tasks T1/T2/T3/T4. Block B + C (P-core opus) follow with gate predicate logic.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:00Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) approved. All 8 blocks (A-H) shipped: 28/28 tasks done. 130/130 unit tests pass; Mechanism D self-audit clean; schema-check 53/53; verify-isolation 53/53 clean; feature-completeness-audit 0 blocking + 1 advisory (forward-only working).",
+      "metrics": {
+        "tasks_done": 28,
+        "tests_passing": 130,
+        "blocks_complete": 8
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:00Z",
+      "event_type": "phase_started",
+      "phase": "test",
+      "summary": "Phase 5 (Test) opened. Extending test-v7-5-pipeline.sh with 4 new integration assertions per PRD \u00a79.2 + running full pipeline end-to-end.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:55:00Z",
+      "event_type": "phase_approved",
+      "phase": "test",
+      "summary": "Phase 5 (Test) complete. test-v7-5-pipeline.sh extended to 19 assertions (15 baseline + 4 new for v7.8 framework-v7-8-branch-isolation). All pass. pytest 130/130. schema-check 53/53. integrity-check 0+9 advisory. verify-isolation 53/53. feature-completeness-audit 0 blocking. Mechanism A coverage telemetry confirmed: BRANCH_ISOLATION_VIOLATION + FEATURE_CLOSURE_COMPLETENESS + ISOLATION_OPT_OUT_REASON_MISSING all emit gate-coverage.jsonl entries on every script run.",
+      "metrics": {
+        "pytest_passing": 130,
+        "pipeline_assertions": 19,
+        "schema_check": "53/53",
+        "integrity_advisory_count": 9
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:55:00Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Phase 6 (Review) opened. Pre-merge code review + /ux + /design pre-merge-review checks against the feature branch.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:05:00Z",
+      "event_type": "phase_approved",
+      "phase": "review",
+      "summary": "Phase 6 (Review) closed. Pre-merge-reviews N/A (has_ui:false). Risk surface low. 14 commits, 25 files, +4548/-38. 0 high-risk iOS files touched. Advisory mode; full backward compat verified.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:05:00Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Phase 7 (Merge) opened. Creating PR + waiting for CI before squash-merge.",
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"

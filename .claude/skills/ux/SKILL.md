@@ -245,7 +245,8 @@ You are the UX planning specialist for FitMe. You ensure every UI feature is gro
    - VoiceOver labels present where spec required
    - Reduce-motion alternatives present
 7. Write a review at `.claude/features/{feature}/ux-pre-merge-review-{date}.md` with: spec-vs-code matrix; drift findings; verdict (PASS / PASS_WITH_NOTES / BLOCK)
-8. Set `state.json.pre_merge_review.ux = "passed"` (or "blocked")
+8. **Sub-step 6f (T21, framework-v7-8-branch-isolation, advisory in v7.8 → enforced in v7.9):** kill_criteria_resolution check. Read the linked case study at `state.json.case_study`. Parse its frontmatter. If `kill_criteria` is non-empty, verify `kill_criteria_resolution` is non-empty AND substantively addresses each kill threshold (heuristic: mentions at least one of the listed kill thresholds verbatim OR contains acceptance keywords like "not tripped", "deferred", "superseded", "passed"). If kill_criteria is empty, skip. Failure → set `state.json.pre_merge_review.ux = "blocked"` with `block_reason: "kill_criteria_resolution missing or non-substantive"`. Per `framework-v7-8-branch-isolation/integration-spec.md` §2.2.
+9. Set `state.json.pre_merge_review.ux = "passed"` (or "blocked")
 
 **Gate behavior:**
 - **BLOCK verdict → Phase 7 (Merge) is NOT approvable.** User must fix the drift OR re-approve the spec to match shipped code (the latter requires PRD addendum).

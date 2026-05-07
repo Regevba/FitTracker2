@@ -106,6 +106,29 @@ V6_SHIP_DATE = "2026-04-16"
 # in v7.9 once Mechanism C has accumulated 7+ days of data.
 MECHANISM_C_SHIP_DATE = "2026-05-02"
 
+# T5 (Block B, framework-v7-8-branch-isolation): infra-path classifier globs.
+# Per PRD §4.1 + integration-spec.md §1.2. When a staged commit touches any
+# of these paths, Mode B (every-commit-fires) is triggered for the
+# BRANCH_ISOLATION_VIOLATION gate. Glob patterns match `fnmatch`-style
+# (no recursive `**`).
+_INFRA_PATH_GLOBS = (
+    ".githooks/*",
+    ".github/workflows/*",
+    "scripts/*",
+    ".claude/skills/*",
+    ".claude/shared/*",
+    "CLAUDE.md",
+    "docs/architecture/*",
+    "Makefile",
+)
+
+# T6 (Block B): gate ships in advisory mode at v7.8 — fires telemetry but does
+# not block commits. v7.9 promotion flips this to True (blocking). The gate
+# can also be controlled per-feature via state.json::isolation_opt_out (Q3)
+# but that override does NOT apply when the staged commit is infra work
+# (Mode B always fires regardless of opt-out).
+BRANCH_ISOLATION_ADVISORY_MODE = True
+
 # Canonical `framework_version` form. Accepts `v<major>.<minor>` and
 # `pre-v<major>.<minor>` (for features that predate framework versioning
 # but want to record their lineage). Bare numbers like "7.6" are rejected
@@ -510,6 +533,29 @@ def validate_file(
             f"categorize this feature deterministically."
         )
 
+    # Check 1d (T1, framework-v7-8-branch-isolation, advisory in v7.8 → enforced in v7.9):
+    # ISOLATION_OPT_OUT_REASON_MISSING — when state.json::isolation_opt_out is True,
+    # the companion isolation_opt_out_reason field must be a non-empty string.
+    # Rationale: opt-out without explanation is silent drift; future-cycle audit
+    # can't tell whether the opt-out is legitimate or stale. Per
+    # `framework-v7-8-branch-isolation/integration-spec.md` §3.3 + PRD §3.1.
+    iso_opt = d.get("isolation_opt_out", False)
+    if coverage is not None:
+        coverage.candidate("ISOLATION_OPT_OUT_REASON_MISSING")
+        if iso_opt is True:
+            coverage.checked("ISOLATION_OPT_OUT_REASON_MISSING")
+        else:
+            coverage.skip("ISOLATION_OPT_OUT_REASON_MISSING", "opt_out_false_or_absent")
+    if iso_opt is True:
+        reason = d.get("isolation_opt_out_reason", "")
+        if not isinstance(reason, str) or not reason.strip():
+            errors.append(
+                f"{path}: isolation_opt_out=true requires a non-empty "
+                f"isolation_opt_out_reason field. Set the reason "
+                f"explaining why this feature opts out of branch-isolation "
+                f"enforcement, or change isolation_opt_out to false."
+            )
+
     # Check 2: PR_NUMBER_UNRESOLVED — phases.merge.pr_number must resolve
     if coverage is not None:
         coverage.candidate("PR_NUMBER_UNRESOLVED")
@@ -562,6 +608,61 @@ def validate_file(
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )
+
+    # Check 9 (T11-T14, framework-v7-8-branch-isolation): FEATURE_CLOSURE_COMPLETENESS
+    # gate. Fires when staged state.json transitions current_phase → complete.
+    # Validates 7 required case-study frontmatter fields + Q7 kill_criteria_resolution
+    # + Q6 bidirectional PR-list parity. Advisory in v7.8: prints to stderr,
+    # does not block. v7.9 promotion adds findings to errors[].
+    for finding in check_feature_closure_completeness(
+        d, path, coverage=coverage, enforce_transition=enforce_transition
+    ):
+        if finding.get("advisory"):
+            details = []
+            if finding.get("violation") == "missing_required_fields":
+                details.append(f"  Missing fields: {finding['missing_fields']}")
+            elif finding.get("violation") == "kill_criteria_resolution_missing":
+                details.append("  Issue: kill_criteria is set but kill_criteria_resolution is empty")
+            elif finding.get("violation") == "pr_list_parity_mismatch":
+                details.append(f"  state.json → case study (state_only): {finding['state_only']}")
+                details.append(f"  case study → state.json (case_only): {finding['case_only']}")
+            print(
+                f"[ADVISORY] {finding['code']}: {finding['feature']}\n"
+                f"  Case study: {finding['case_study']}\n"
+                + "\n".join(details) + "\n"
+                f"  Remediation: {finding['remediation']}",
+                file=sys.stderr,
+            )
+        else:
+            errors.append(
+                f"{path}: [{finding['code']}] {finding.get('violation', 'unknown')}: "
+                f"{finding['remediation']}"
+            )
+
+    # Check 8 Mode C (T6, framework-v7-8-branch-isolation): per-state.json
+    # BRANCH_ISOLATION_VIOLATION check. Fires when non-infra feature's
+    # state.json mutates current_phase from a branch other than the expected
+    # feature branch. Mode B (infra) is handled commit-level in main().
+    # Advisory in v7.8: prints warning to stderr, does NOT add to errors list.
+    for finding in check_branch_isolation_violation_per_file(
+        d, path, coverage=coverage, enforce_transition=enforce_transition
+    ):
+        if finding.get("advisory"):
+            print(
+                f"[ADVISORY] {finding['code']} (Mode {finding['mode']}): "
+                f"{path}\n"
+                f"  Feature: {finding.get('feature', 'unknown')}\n"
+                f"  Expected branch: {finding['expected']}\n"
+                f"  Current branch: {finding['got']}\n"
+                f"  Phase transition: {finding.get('phase_transition', 'n/a')}\n"
+                f"  Remediation: {finding['remediation']}",
+                file=sys.stderr,
+            )
+        else:
+            errors.append(
+                f"{path}: [{finding['code']}] expected branch={finding['expected']}, "
+                f"got branch={finding['got']}. {finding['remediation']}"
+            )
 
     # Checks 3 + 4: phase-transition gates. Skip if we're doing a full-corpus
     # scan — those checks only make sense at commit time.
@@ -666,6 +767,534 @@ def collect_all_state_files() -> list[Path]:
     return sorted(FEATURES_DIR.glob("*/state.json"))
 
 
+def collect_all_staged_files() -> list[str]:
+    """Return ALL staged files (not just state.json). Used by Block B's
+    BRANCH_ISOLATION_VIOLATION gate to detect infra-path commits."""
+    try:
+        out = subprocess.check_output(
+            ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
+            cwd=REPO_ROOT,
+            text=True,
+        )
+    except Exception:
+        return []
+    return [line.strip() for line in out.splitlines() if line.strip()]
+
+
+def _matches_any_glob(path: str, globs: tuple[str, ...]) -> bool:
+    """fnmatch-style wildcard matching for path globs."""
+    import fnmatch
+    return any(fnmatch.fnmatch(path, g) for g in globs)
+
+
+def _is_infra_commit(staged_files: list[str]) -> bool:
+    """T5: classify a commit as infra/framework/hub work per PRD §4.1.
+
+    Returns True if ANY staged file matches the infra-path globs OR if the
+    commit modifies a state.json whose work_subtype is framework_feature
+    or work_type is chore.
+    """
+    # Path-glob check
+    for p in staged_files:
+        if _matches_any_glob(p, _INFRA_PATH_GLOBS):
+            return True
+    # Feature-classification check
+    for p in staged_files:
+        if p.startswith(".claude/features/") and p.endswith("/state.json"):
+            full = REPO_ROOT / p
+            if full.exists():
+                try:
+                    d = json.loads(full.read_text())
+                    if d.get("work_subtype") == "framework_feature":
+                        return True
+                    if d.get("work_type") == "chore":
+                        return True
+                except (json.JSONDecodeError, OSError):
+                    continue
+    return False
+
+
+def _get_current_branch() -> str:
+    """Returns current git branch (not detached HEAD)."""
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            cwd=REPO_ROOT,
+            text=True,
+        ).strip()
+    except Exception:
+        return ""
+
+
+_BRANCH_ISOLATION_EXEMPT_PATH = REPO_ROOT / ".claude" / "shared" / "branch-isolation-exempt.json"
+_branch_isolation_exempt: list[str] | None = None
+
+
+def _load_branch_isolation_exempt() -> list[str]:
+    """Load the exempt-pattern allowlist. Cached after first call."""
+    global _branch_isolation_exempt
+    if _branch_isolation_exempt is not None:
+        return _branch_isolation_exempt
+    try:
+        d = json.loads(_BRANCH_ISOLATION_EXEMPT_PATH.read_text())
+        patterns = [
+            p["glob"]
+            for p in d.get("patterns", [])
+            if isinstance(p, dict) and isinstance(p.get("glob"), str)
+        ]
+        _branch_isolation_exempt = patterns
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        _branch_isolation_exempt = []
+    return _branch_isolation_exempt
+
+
+def _commit_is_fully_exempt(staged_files: list[str]) -> bool:
+    """Return True if every staged file matches an exempt pattern.
+
+    Per integration-spec §3.3: exemption applies only when ALL staged files
+    are in the allowlist. A mixed commit (CLAUDE.md + a feature file) is NOT
+    exempt.
+    """
+    exempt = _load_branch_isolation_exempt()
+    if not exempt:
+        return False
+    return all(_matches_any_glob(f, tuple(exempt)) for f in staged_files)
+
+
+def check_branch_isolation_violation_commit_level(
+    staged_files: list[str], *, coverage: GateCoverage | None = None
+) -> list[dict]:
+    """T6 + T7 + T8: commit-level BRANCH_ISOLATION_VIOLATION check.
+
+    Mode B (per Q1): fires on every commit when staged files match infra
+    glob OR feature classifies as infra. The gate enforces that the commit
+    is NOT happening on `main` (it should be on a `feature/*` or `chore/*`
+    branch). Per-feature `isolation_opt_out: true` is IGNORED for infra
+    work (Q3 override).
+
+    Mode C is handled per-file in validate_file() (separate predicate).
+
+    Returns a list with one finding dict if the gate fires, else empty.
+    Advisory mode (v7.8): the caller prints findings to stderr but does
+    NOT add them to the blocking errors list. v7.9 promotion flips this
+    to enforcement.
+    """
+    findings: list[dict] = []
+    GATE = "BRANCH_ISOLATION_VIOLATION"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    if not staged_files:
+        if coverage is not None:
+            coverage.skip(GATE, "no_staged_files")
+        return findings
+
+    is_infra = _is_infra_commit(staged_files)
+    if not is_infra:
+        # Mode C is handled per-file in validate_file() — commit-level skip.
+        if coverage is not None:
+            coverage.skip(GATE, "not_infra_commit_level")
+        return findings
+
+    # Mode B fires. Check exemption allowlist first.
+    if _commit_is_fully_exempt(staged_files):
+        if coverage is not None:
+            coverage.skip(GATE, "all_paths_exempt")
+        return findings
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    current_branch = _get_current_branch()
+    if not current_branch:
+        # Detached HEAD or git error — don't fire (can't determine state)
+        return findings
+
+    if current_branch == "main":
+        findings.append({
+            "code": GATE,
+            "mode": "B (infra)",
+            "expected": "feature/<name> or chore/<name> branch",
+            "got": current_branch,
+            "advisory": BRANCH_ISOLATION_ADVISORY_MODE,
+            "staged_files_sample": staged_files[:5],
+            "remediation": (
+                "Auto-isolate to a feature/* or chore/* branch before committing. "
+                "Run: scripts/create-isolated-worktree.py --feature <slug> "
+                "--create-if-missing  (or invoke superpowers:using-git-worktrees "
+                "from an agent context). Emergency bypass: git commit --no-verify "
+                "(recorded as manual_bypass)."
+            ),
+        })
+
+    return findings
+
+
+_PR_CITATION_RE = re.compile(r'(?:[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/)(\d+)')
+_FM_LINE_RE = re.compile(r'^\s*([a-zA-Z_][a-zA-Z0-9_-]*)\s*:\s*(.*)$')
+
+
+def _parse_case_study_frontmatter(text: str) -> dict:
+    """Minimal YAML frontmatter parser. Returns top-level scalar / list keys.
+
+    Doesn't handle nested objects — sufficient for detecting required-field
+    presence + extracting `related_prs: [N1, N2]` and `pr_citation_exempt`
+    array shape. For deeper YAML, the doc-debt scanner uses regex which is
+    sufficient for presence checks.
+    """
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end == -1:
+        return {}
+    fm_text = text[3:end].strip()
+    fm: dict = {}
+    current_list_key: str | None = None
+    for raw in fm_text.splitlines():
+        line = raw.rstrip()
+        if not line.strip():
+            current_list_key = None
+            continue
+        if line.startswith("  - "):
+            if current_list_key is not None:
+                fm.setdefault(current_list_key, [])
+                fm[current_list_key].append(line[4:].strip().strip('"').strip("'"))
+            continue
+        m = _FM_LINE_RE.match(line)
+        if not m:
+            current_list_key = None
+            continue
+        key, val = m.group(1), m.group(2).strip()
+        if val == "":
+            # Could be a list key
+            current_list_key = key
+            fm[key] = []
+        elif val.startswith("[") and val.endswith("]"):
+            inner = val[1:-1].strip()
+            fm[key] = [v.strip().strip('"').strip("'") for v in inner.split(",")] if inner else []
+            current_list_key = None
+        else:
+            fm[key] = val.strip('"').strip("'")
+            current_list_key = None
+    return fm
+
+
+def _resolve_case_study_path(state: dict) -> Path | None:
+    """Resolve the case study file referenced by state.json::case_study (or
+    case_study_path / case_study_link / parent_case_study). Returns absolute
+    path or None if not set / not found."""
+    for key in ("case_study", "case_study_path", "case_study_link", "parent_case_study"):
+        val = state.get(key)
+        if isinstance(val, str) and val:
+            p = REPO_ROOT / val
+            if p.exists():
+                return p
+    return None
+
+
+def _collect_state_pr_numbers(state: dict) -> set[int]:
+    """T14 helper: gather all PR numbers cited in state.json.
+
+    Sources:
+      - phases.merge.pr_number
+      - tasks[].pr_number
+      - tasks[].related_prs (list of ints)
+      - phases.<phase>.pr_number for any phase
+    """
+    prs: set[int] = set()
+    phases = state.get("phases") or {}
+    for ph in phases.values():
+        if isinstance(ph, dict):
+            n = ph.get("pr_number")
+            if isinstance(n, int):
+                prs.add(n)
+    tasks = state.get("tasks") or []
+    if isinstance(tasks, list):
+        for t in tasks:
+            if not isinstance(t, dict):
+                continue
+            n = t.get("pr_number")
+            if isinstance(n, int):
+                prs.add(n)
+            related = t.get("related_prs") or []
+            if isinstance(related, list):
+                for r in related:
+                    if isinstance(r, int):
+                        prs.add(r)
+    return prs
+
+
+def _collect_case_study_pr_numbers(case_study_text: str, frontmatter: dict) -> set[int]:
+    """T14 helper: gather all PR numbers cited in a case study (body + frontmatter)."""
+    prs = {int(m.group(1)) for m in _PR_CITATION_RE.finditer(case_study_text)}
+    related = frontmatter.get("related_prs") or []
+    if isinstance(related, list):
+        for r in related:
+            try:
+                # Strings like "FT2 #234 (foo bar)" — extract the number
+                if isinstance(r, str):
+                    m = re.search(r'#(\d+)', r)
+                    if m:
+                        prs.add(int(m.group(1)))
+                elif isinstance(r, int):
+                    prs.add(r)
+            except (ValueError, TypeError):
+                continue
+    return prs
+
+
+# T11 (Block C, framework-v7-8-branch-isolation):
+# Required case-study frontmatter fields at current_phase=complete transitions.
+# 7 fields per PRD §4.2 + integration-spec §3.4.
+_CLOSURE_REQUIRED_FIELDS = [
+    "date_written",  # OR `date` synonym
+    "dispatch_pattern",
+    "success_metrics",  # OR `primary_metric` synonym
+    "kill_criteria",
+    "framework_version",
+    "work_type",
+    "tier_tags_present",
+]
+_CLOSURE_FIELD_SYNONYMS = {
+    "date_written": ["date_written", "date"],
+    "success_metrics": ["success_metrics", "primary_metric"],
+}
+
+
+def check_feature_closure_completeness(
+    state: dict, path: Path, *, coverage: GateCoverage | None = None,
+    enforce_transition: bool = True,
+) -> list[dict]:
+    """T11-T14 (Block C, framework-v7-8-branch-isolation):
+    FEATURE_CLOSURE_COMPLETENESS gate.
+
+    Fires when staged state.json transitions current_phase → 'complete'.
+    Validates:
+      - T12: 7 required frontmatter fields in linked case study
+      - T13: kill_criteria_resolution required when kill_criteria set (Q7)
+      - T14: bidirectional PR-list parity state.json ↔ case study (Q6)
+
+    Returns list of finding dicts. Advisory in v7.8 (caller prints to stderr,
+    does NOT block); v7.9 promotion adds findings to errors[] for blocking.
+    """
+    findings: list[dict] = []
+    GATE = "FEATURE_CLOSURE_COMPLETENESS"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    if not enforce_transition:
+        if coverage is not None:
+            coverage.skip(GATE, "not_staged_mode")
+        return findings
+
+    new_phase = state.get("current_phase")
+    if new_phase != "complete":
+        if coverage is not None:
+            coverage.skip(GATE, "not_complete_transition")
+        return findings
+
+    committed = _load_committed_state(path)
+    old_phase = committed.get("current_phase") if committed else None
+    if old_phase == "complete":
+        # Already complete (this commit doesn't transition; just edits the complete state)
+        if coverage is not None:
+            coverage.skip(GATE, "no_phase_change")
+        return findings
+
+    # Resolve case study
+    case_study_path = _resolve_case_study_path(state)
+    if case_study_path is None:
+        # The STATE_NO_CASE_STUDY_LINK gate handles this; we skip so we don't
+        # double-report. But emit candidate-checked so coverage shows the gate ran.
+        if coverage is not None:
+            coverage.skip(GATE, "no_case_study_link")
+        return findings
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    case_text = case_study_path.read_text()
+    fm = _parse_case_study_frontmatter(case_text)
+    feature_slug = _feature_slug_from_path(path)
+
+    # T12: 7 required field check (with synonym resolution)
+    missing_fields: list[str] = []
+    for field in _CLOSURE_REQUIRED_FIELDS:
+        synonyms = _CLOSURE_FIELD_SYNONYMS.get(field, [field])
+        present = False
+        for syn in synonyms:
+            val = fm.get(syn)
+            if val is not None and (
+                (isinstance(val, str) and val.strip() not in ("", "[]", "null"))
+                or (isinstance(val, list) and len(val) > 0)
+            ):
+                present = True
+                break
+        # tier_tags_present is a boolean field
+        if field == "tier_tags_present":
+            v = fm.get("tier_tags_present")
+            if isinstance(v, str):
+                present = v.lower() == "true"
+            elif isinstance(v, bool):
+                present = v
+            else:
+                # Fall back: check if body has any T1/T2/T3 tag
+                present = bool(_TIER_TAG_RE.search(case_text))
+        if not present:
+            missing_fields.append(field)
+
+    if missing_fields:
+        findings.append({
+            "code": GATE,
+            "feature": feature_slug,
+            "case_study": str(case_study_path.relative_to(REPO_ROOT)),
+            "violation": "missing_required_fields",
+            "missing_fields": missing_fields,
+            "advisory": BRANCH_ISOLATION_ADVISORY_MODE,  # same advisory flag for v7.8
+            "remediation": (
+                f"Case study {case_study_path.relative_to(REPO_ROOT)} is missing "
+                f"required frontmatter fields: {', '.join(missing_fields)}. "
+                "Add them before transitioning to current_phase=complete."
+            ),
+        })
+
+    # T13: Q7 — kill_criteria_resolution required when kill_criteria set
+    has_kill = bool(fm.get("kill_criteria"))
+    has_resolution = bool(fm.get("kill_criteria_resolution"))
+    if has_kill and not has_resolution:
+        findings.append({
+            "code": GATE,
+            "feature": feature_slug,
+            "case_study": str(case_study_path.relative_to(REPO_ROOT)),
+            "violation": "kill_criteria_resolution_missing",
+            "advisory": BRANCH_ISOLATION_ADVISORY_MODE,
+            "remediation": (
+                "kill_criteria is set but kill_criteria_resolution is empty. "
+                "Add a resolution that addresses each kill threshold (mention "
+                "thresholds OR use 'not tripped' / 'deferred' / 'superseded' / "
+                "'passed' to indicate disposition)."
+            ),
+        })
+
+    # T14: Q6 — bidirectional PR-list parity
+    state_prs = _collect_state_pr_numbers(state)
+    case_prs = _collect_case_study_pr_numbers(case_text, fm)
+    exempt_raw = fm.get("pr_citation_exempt") or []
+    exempt: set[int] = set()
+    if isinstance(exempt_raw, list):
+        for e in exempt_raw:
+            try:
+                if isinstance(e, dict):
+                    n = e.get("pr_number")
+                    if isinstance(n, int):
+                        exempt.add(n)
+                elif isinstance(e, int):
+                    exempt.add(e)
+                elif isinstance(e, str):
+                    m = re.search(r'\d+', e)
+                    if m:
+                        exempt.add(int(m.group(0)))
+            except (ValueError, TypeError):
+                continue
+
+    state_only = (state_prs - case_prs) - exempt
+    case_only = (case_prs - state_prs) - exempt
+
+    if state_only or case_only:
+        findings.append({
+            "code": GATE,
+            "feature": feature_slug,
+            "case_study": str(case_study_path.relative_to(REPO_ROOT)),
+            "violation": "pr_list_parity_mismatch",
+            "state_only": sorted(state_only),
+            "case_only": sorted(case_only),
+            "advisory": BRANCH_ISOLATION_ADVISORY_MODE,
+            "remediation": (
+                f"PR-list parity mismatch (Q6 bidirectional). "
+                f"In state.json but missing from case study: {sorted(state_only)}. "
+                f"In case study but missing from state.json: {sorted(case_only)}. "
+                "Add the missing PRs to whichever side or list them in "
+                "case study frontmatter `pr_citation_exempt: [{pr_number, reason}]`."
+            ),
+        })
+
+    return findings
+
+
+_TIER_TAG_RE = re.compile(r"\bT[123]\b[\s—:.\)\(]")
+
+
+def check_branch_isolation_violation_per_file(
+    state: dict, path: Path, *, coverage: GateCoverage | None = None,
+    enforce_transition: bool = True,
+) -> list[dict]:
+    """T6 Mode C: per-state.json check.
+
+    Fires when a non-infra feature's state.json mutates current_phase from a
+    branch other than `state.json::branch`. Honored opt-out: if
+    state.json::isolation_opt_out is True, the gate skips.
+
+    Only runs in staged mode (where we can detect phase changes via diff
+    against committed). Full-corpus scans cannot tell transitions.
+    """
+    findings: list[dict] = []
+    GATE = "BRANCH_ISOLATION_VIOLATION_MODE_C"
+
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    if not enforce_transition:
+        if coverage is not None:
+            coverage.skip(GATE, "not_staged_mode")
+        return findings
+
+    # Skip if feature opts out (per Q3; infra override handled commit-level)
+    if state.get("isolation_opt_out") is True:
+        if coverage is not None:
+            coverage.skip(GATE, "feature_opt_out")
+        return findings
+
+    expected_branch = state.get("branch")
+    if not expected_branch or expected_branch == "main":
+        # Feature has no branch declared OR claims to live on main — skip.
+        if coverage is not None:
+            coverage.skip(GATE, "no_expected_branch")
+        return findings
+
+    # Detect current_phase mutation
+    new_phase = state.get("current_phase")
+    committed = _load_committed_state(path)
+    old_phase = committed.get("current_phase") if committed else None
+    if new_phase == old_phase:
+        if coverage is not None:
+            coverage.skip(GATE, "no_phase_change")
+        return findings
+
+    # Phase mutation detected; check current branch matches expected
+    if coverage is not None:
+        coverage.checked(GATE)
+    current_branch = _get_current_branch()
+    if not current_branch or current_branch == expected_branch:
+        return findings
+
+    findings.append({
+        "code": "BRANCH_ISOLATION_VIOLATION",
+        "mode": "C (current_phase mutation)",
+        "feature": _feature_slug_from_path(path),
+        "expected": expected_branch,
+        "got": current_branch,
+        "phase_transition": f"{old_phase} → {new_phase}",
+        "advisory": BRANCH_ISOLATION_ADVISORY_MODE,
+        "remediation": (
+            "Mutate state.json::current_phase only from the feature's declared "
+            f"branch ({expected_branch}). Switch branches first. To opt out "
+            "for this feature only, set state.json::isolation_opt_out: true "
+            "with a non-empty isolation_opt_out_reason."
+        ),
+    })
+    return findings
+
+
 def main() -> int:
     args = sys.argv[1:]
     if args == ["--staged"]:
@@ -701,6 +1330,31 @@ def main() -> int:
     coverage = GateCoverage(mode=mode)
 
     all_errors: list[str] = []
+
+    # T8 (Block B, framework-v7-8-branch-isolation): commit-level
+    # BRANCH_ISOLATION_VIOLATION check (Mode B — infra-path classifier).
+    # Runs ONCE per script invocation in staged mode. Advisory in v7.8:
+    # prints warning to stderr, does NOT add to errors list.
+    if mode == "staged":
+        all_staged = collect_all_staged_files()
+        for finding in check_branch_isolation_violation_commit_level(
+            all_staged, coverage=coverage
+        ):
+            if finding.get("advisory"):
+                print(
+                    f"[ADVISORY] {finding['code']} (Mode {finding['mode']})\n"
+                    f"  Expected: {finding['expected']}\n"
+                    f"  Got branch: {finding['got']}\n"
+                    f"  Staged files (sample): {finding['staged_files_sample']}\n"
+                    f"  Remediation: {finding['remediation']}",
+                    file=sys.stderr,
+                )
+            else:
+                all_errors.append(
+                    f"COMMIT-LEVEL: [{finding['code']}] expected branch={finding['expected']}, "
+                    f"got branch={finding['got']}. {finding['remediation']}"
+                )
+
     for p in files:
         all_errors.extend(
             validate_file(p, enforce_transition=enforce_transition, coverage=coverage)
