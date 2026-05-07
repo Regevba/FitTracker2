@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "complete",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T17:35:00Z",
+  "updated": "2026-05-07T18:30:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -810,7 +810,7 @@
     "design_reason": "has_ui: false \u2192 no Figma node IDs / screens to compare. Sub-step 6f same as ux side.",
     "set_at": "2026-05-07T17:00:00Z"
   },
-  "case_study_showcase": "fitme-story/content/04-case-studies/24-framework-v7-8-branch-isolation.mdx",
+  "case_study_showcase": "fitme-story/content/04-case-studies/25-framework-v7-8-1-branch-isolation.mdx",
   "pr_citation_exempt": [
     {
       "pr_number": 243,
