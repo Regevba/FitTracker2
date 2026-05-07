@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.8.1",
   "started_at": "2026-05-07T16:27:24Z",
-  "updated_at": "2026-05-07T17:43:05Z",
+  "updated_at": "2026-05-07T17:53:18Z",
   "events": [
     {
       "timestamp": "2026-05-07T16:27:24Z",
@@ -256,6 +256,108 @@
       "artifacts": [],
       "metrics": {},
       "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "auth-polish-v2:patterns (L2)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L2",
+        "key": "auth-polish-v2:patterns",
+        "hit_type": "adapted",
+        "skill": "dev"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "ux-spec-preflight:fitme-story-tokens (L2)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L2",
+        "key": "ux-spec-preflight:fitme-story-tokens",
+        "hit_type": "exact",
+        "skill": "ux"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "vercel-storage:upstash-redis-from-env (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "vercel-storage:upstash-redis-from-env",
+        "hit_type": "exact",
+        "skill": "dev"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "phase_approved",
+      "phase": "merge",
+      "summary": "Phase 7 complete. fitme-story PR #55 merged (squash 5362f8f). FT2 PR #248 merged (squash e5a7c45). Both branches deleted post-merge.",
+      "artifacts": [],
+      "metrics": {
+        "duration_minutes": 10,
+        "prs_merged": 2
+      },
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "summary": "Phase 8 (Documentation) opened. Drafting source case study + showcase MDX slot 26.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "phase_approved",
+      "phase": "documentation",
+      "summary": "Phase 8 complete. Source case study + showcase MDX (slot 26) drafted with full v7.8.1 frontmatter compliance.",
+      "artifacts": [
+        "docs/case-studies/ucc-passkey-auth-case-study.md"
+      ],
+      "metrics": {
+        "duration_minutes": 10
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:18Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Feature complete. Total measured wall time 125 min across 9 phase transitions. 28/28 tasks done. 19/19 tests pass. 2 PRs merged (fitme-story #55, FT2 #248). FEATURE_CLOSURE_COMPLETENESS gate satisfied: 7 frontmatter fields + Q7 kill_criteria_resolution + Q6 PR parity all present.",
+      "artifacts": [],
+      "metrics": {
+        "total_wall_time_minutes": 125,
+        "phase_transitions": 9
+      },
+      "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
