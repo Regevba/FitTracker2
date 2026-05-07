@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "review",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T16:55:00Z",
+  "updated": "2026-05-07T17:00:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -84,7 +84,20 @@
     },
     "review": {
       "status": "in_progress",
-      "started_at": "2026-05-07T16:55:00Z"
+      "started_at": "2026-05-07T16:55:00Z",
+      "risk_surface": {
+        "commits": 14,
+        "files_changed": 25,
+        "insertions": 4548,
+        "deletions": 38,
+        "high_risk_files_touched": [],
+        "feature_type": "framework-internal",
+        "advisory_mode": true,
+        "backward_compat_verified": true,
+        "tests_passing": 130,
+        "pipeline_assertions": 19,
+        "schema_check": "53/53"
+      }
     },
     "merge": {
       "status": "not_started"
@@ -744,5 +757,12 @@
       "any new external compliance requirements"
     ]
   },
-  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-branch-isolation"
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-branch-isolation",
+  "pre_merge_review": {
+    "ux": "n/a",
+    "ux_reason": "has_ui: false \u2192 no ux-spec.md to compare against. Sub-step 6f (kill_criteria_resolution) not applicable yet \u2014 case study is Phase 8 deliverable, not yet authored.",
+    "design": "n/a",
+    "design_reason": "has_ui: false \u2192 no Figma node IDs / screens to compare. Sub-step 6f same as ux side.",
+    "set_at": "2026-05-07T17:00:00Z"
+  }
 }
