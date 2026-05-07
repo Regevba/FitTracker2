@@ -139,7 +139,8 @@ Run WCAG AA accessibility audit.
    - For each Figma node ID, call `mcp__claude_ai_Figma__get_screenshot`
    - Compare visually with rendered SwiftUI (manual review by user; tool surfaces side-by-side)
 6. Write the review at `.claude/features/{feature}/design-pre-merge-review-{date}.md` with the verdict
-7. Set `state.json.pre_merge_review.design = "passed" | "passed_with_notes" | "blocked"`
+7. **Sub-step 6f (T21, framework-v7-8-branch-isolation, advisory in v7.8 → enforced in v7.9):** kill_criteria_resolution check. Read the linked case study at `state.json.case_study`. Parse its frontmatter. If `kill_criteria` is non-empty, verify `kill_criteria_resolution` is non-empty AND substantively addresses each kill threshold (heuristic: mentions at least one of the listed kill thresholds verbatim OR contains acceptance keywords like "not tripped", "deferred", "superseded", "passed"). If kill_criteria is empty, skip. Failure → set `state.json.pre_merge_review.design = "blocked"` with `block_reason: "kill_criteria_resolution missing or non-substantive"`. Per `framework-v7-8-branch-isolation/integration-spec.md` §2.2.
+8. Set `state.json.pre_merge_review.design = "passed" | "passed_with_notes" | "blocked"`
 
 **Gate behavior:**
 - **BLOCK verdict → Phase 7 (Merge) is NOT approvable.** User must address findings or override with explicit justification recorded in `transitions[].note`.

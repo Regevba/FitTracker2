@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "implementation",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T15:35:00Z",
+  "updated": "2026-05-07T15:50:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -62,7 +62,7 @@
         "B": "completed",
         "C": "completed",
         "D": "completed",
-        "E": "pending",
+        "E": "completed",
         "F": "pending",
         "G": "pending",
         "H": "pending"
@@ -523,7 +523,7 @@
       "title": "Extend superpowers:using-git-worktrees with --feature X --create-if-missing args + naming convention",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -531,14 +531,15 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "E"
+      "block": "E",
+      "completed_at": "2026-05-07T15:50:00Z"
     },
     {
       "id": "T21",
       "title": "Extend /ux + /design pre-merge-review with sub-step 6f (kill_criteria_resolution check)",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.4,
       "depends_on": [
@@ -546,7 +547,8 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "E"
+      "block": "E",
+      "completed_at": "2026-05-07T15:50:00Z"
     },
     {
       "id": "T22",
@@ -700,5 +702,6 @@
       "concurrent-write incident reports",
       "any new external compliance requirements"
     ]
-  }
+  },
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-branch-isolation"
 }

@@ -1,8 +1,17 @@
 {
   "version": "1.0",
-  "_description": "v7.8 Mechanism F + I scaffolding. Tracks which agent (feature branch + worktree) holds a write lease on which paths. v7.8 ships this populated but UNENFORCED — pre-commit does not require lease acquisition; /pm-workflow does not call membrane-acquire.py. v7.9 promotes both to enforced. The `epoch` counter increments on every acquire; v7.9 fencing uses it (Kleppmann Redlock pattern). v7.8 just tracks it as scaffolding.",
-  "_spec": "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md §4.6 + §4.7.3 + §5.3",
-  "_concurrency": "fcntl.flock(LOCK_EX) on every write per scripts/flock_writer.py. SSD-only — refuses to operate on NFS-mounted state per spec §11 risk register.",
+  "_description": "v7.8 Mechanism F + I scaffolding. Tracks which agent (feature branch + worktree) holds a write lease on which paths. v7.8 ships this populated but UNENFORCED \u2014 pre-commit does not require lease acquisition; /pm-workflow does not call membrane-acquire.py. v7.9 promotes both to enforced. The `epoch` counter increments on every acquire; v7.9 fencing uses it (Kleppmann Redlock pattern). v7.8 just tracks it as scaffolding.",
+  "_spec": "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md \u00a74.6 + \u00a74.7.3 + \u00a75.3",
+  "_concurrency": "fcntl.flock(LOCK_EX) on every write per scripts/flock_writer.py. SSD-only \u2014 refuses to operate on NFS-mounted state per spec \u00a711 risk register.",
   "epoch": 0,
-  "leases": []
+  "leases": [
+    {
+      "feature": "framework-v7-8-branch-isolation",
+      "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-branch-isolation",
+      "leased_paths": [],
+      "started_at": "2026-05-07T14:34:36Z",
+      "last_heartbeat": "2026-05-07T14:34:36Z",
+      "status": "active"
+    }
+  ]
 }
