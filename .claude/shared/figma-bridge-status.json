@@ -1,13 +1,12 @@
 {
-  "mcp_connected": true,
+  "feature": "ucc-passkey-auth",
+  "preflight_at": "2026-05-07T17:00:00Z",
+  "mcp_live": true,
+  "mcp_user": "regev.ba@gmail.com",
+  "library_id": "0Ai7s3fCFqR5JXDW8JvgmD",
   "library_accessible": true,
-  "library_file_key": "0Ai7s3fCFqR5JXDW8JvgmD",
-  "library_file_name": "FitTracker Design System Library",
-  "auth_account": "regev.ba@gmail.com",
-  "auth_handle": "Regev Barak",
-  "auth_plan_tier": "pro",
-  "node_count": null,
-  "last_checked": "2026-05-07T05:00:00Z",
-  "last_error": null,
-  "checked_by": "/design preflight (v4.X auto-dispatch from /pm-workflow Phase 3.f for push-notifications-v2)"
+  "build_target_applicable": false,
+  "build_decision": "deferred_to_prompt",
+  "deferral_reason": "web_dashboard_no_figma_mapping",
+  "portable_prompt": "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md"
 }

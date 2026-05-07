@@ -1,0 +1,84 @@
+name: UCC audit log sync
+
+# T22 — Daily pull of fitme-story Vercel Blob → FT2 .claude/logs/ucc-auth-events.jsonl.
+#
+# Companion to fitme-story/scripts/sync-audit-log-to-blob.ts (T21). The Blob
+# URL is a public R2-style HTTPS endpoint set by the fitme-story deploy.
+# We fetch it, diff against the committed file, and only commit on change.
+#
+# Security review: this workflow does NOT consume any user-controlled
+# untrusted input (issue titles, PR descriptions, commit messages, etc.).
+# All inputs are repo variables and the built-in GITHUB_TOKEN. No
+# command-injection surface.
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ucc-audit-log-sync
+  cancel-in-progress: false
+
+env:
+  BLOB_URL: ${{ vars.UCC_AUDIT_BLOB_URL }}
+  TARGET_PATH: .claude/logs/ucc-auth-events.jsonl
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify Blob URL configured
+        id: check
+        run: |
+          if [ -z "$BLOB_URL" ]; then
+            echo "UCC_AUDIT_BLOB_URL repo variable not set; skipping sync."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch latest audit log
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          mkdir -p "$(dirname "$TARGET_PATH")"
+          curl --fail --silent --show-error --max-time 60 \
+            -o "$TARGET_PATH.new" \
+            "$BLOB_URL"
+
+      - name: Diff against committed
+        if: steps.check.outputs.skip == 'false'
+        id: diff
+        run: |
+          if [ ! -f "$TARGET_PATH" ]; then
+            mv "$TARGET_PATH.new" "$TARGET_PATH"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if cmp -s "$TARGET_PATH" "$TARGET_PATH.new"; then
+            rm "$TARGET_PATH.new"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            mv "$TARGET_PATH.new" "$TARGET_PATH"
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          DATE: ${{ steps.diff.outputs.date }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add "$TARGET_PATH"
+          git commit -m "chore(ucc-auth): daily sync of audit log"
+          git push origin main

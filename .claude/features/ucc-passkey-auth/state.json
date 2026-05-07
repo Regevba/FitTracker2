@@ -1,0 +1,295 @@
+{
+  "feature": "ucc-passkey-auth",
+  "created_at": "2026-05-07T16:25:00Z",
+  "updated": "2026-05-07T18:10:00Z",
+  "branch": "feature/ucc-passkey-auth",
+  "current_phase": "merge",
+  "work_type": "feature",
+  "work_subtype": "cross_repo",
+  "has_ui": true,
+  "requires_analytics": true,
+  "framework_version": "v7.8.1",
+  "parent_feature": "unified-control-center",
+  "predecessor_chain": [
+    "unified-control-center",
+    "auth-polish-v2"
+  ],
+  "isolation_opt_out": false,
+  "scheduled_after": null,
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-05-07T16:38:00Z",
+      "sources": [
+        ".claude/features/ucc-passkey-auth/research.md",
+        "docs/product/backlog.md:162",
+        "fitme-story/src/proxy.ts",
+        "@simplewebauthn/server v13",
+        "@simplewebauthn/browser v13",
+        "Vercel Marketplace Upstash Redis",
+        "iron-session",
+        "W3C WebAuthn Level 3"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-05-07T16:48:00Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-05-07T16:55:00Z",
+      "count": 28,
+      "lane_split": {
+        "e_core": 16,
+        "p_core": 12
+      },
+      "estimated_total_days": 11.5
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "approved_at": "2026-05-07T17:05:00Z",
+      "type": "ux",
+      "preflight_passed": true,
+      "compliance_decision": "tokens_components_compliant",
+      "checklist_completed": true,
+      "preflight_artifact": ".claude/features/ucc-passkey-auth/ux-preflight-audit-2026-05-07.md",
+      "design_preflight_artifact": ".claude/features/ucc-passkey-auth/design-preflight-2026-05-07.md",
+      "ux_build_prompt": "docs/prompts/ux/2026-05-07-ucc-passkey-auth-ux-build.md",
+      "design_build_prompt": "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md",
+      "p0_count": 0,
+      "p1_count": 0,
+      "p2_count": 0
+    },
+    "implementation": {
+      "status": "approved",
+      "approved_at": "2026-05-07T17:35:00Z",
+      "commits": [],
+      "files_added_fitme_story": 22,
+      "files_added_ft2": 2,
+      "files_modified_fitme_story": 3,
+      "tasks_done": 28
+    },
+    "testing": {
+      "status": "approved",
+      "approved_at": "2026-05-07T17:50:00Z",
+      "ci_passed": true,
+      "tests_added": 19,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": true,
+      "tsc_clean": true,
+      "next_build_clean": true,
+      "test_files": [
+        "fitme-story/src/lib/auth/util.test.ts",
+        "fitme-story/src/lib/auth/iron-session-config.test.ts",
+        "fitme-story/src/lib/auth/audit-log.test.ts",
+        "fitme-story/src/lib/auth/load-events.test.ts",
+        "fitme-story/src/lib/auth/round-trip.test.ts"
+      ]
+    },
+    "review": {
+      "status": "approved",
+      "approved_at": "2026-05-07T18:05:00Z",
+      "risks": [
+        "proxy.ts production gate — mitigated by UCC_AUTH_MODE=basic default + both migration window",
+        "CAS counter replay defense — mitigated by explicit unit test + K2 hard-stop kill criterion",
+        "PII redaction in audit-log — mitigated by tests asserting no raw value leaks"
+      ],
+      "ci_main": true,
+      "ci_feature": true,
+      "review_artifacts": [
+        ".claude/features/ucc-passkey-auth/ux-pre-merge-review-2026-05-07.md",
+        ".claude/features/ucc-passkey-auth/design-pre-merge-review-2026-05-07.md",
+        ".claude/features/ucc-passkey-auth/risk-audit-2026-05-07.md"
+      ]
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "unauthenticated_dashboard_reads_per_day",
+        "baseline": null,
+        "target": 0,
+        "current": null
+      },
+      "secondary": [
+        {
+          "name": "time_to_dashboard_p50_seconds",
+          "target": 2.5
+        },
+        {
+          "name": "registered_passkey_devices",
+          "target": null
+        }
+      ],
+      "guardrails": [
+        {
+          "name": "registration_ceremony_failure_rate",
+          "kill_threshold": 0.05
+        }
+      ],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": "If passkey registration ceremony fails on >5% of attempted devices in week 1, fall back to UCC_AUTH_MODE=both and reopen scope."
+    }
+  },
+  "tasks": [
+    {"id": "T1", "title": "Wrap @simplewebauthn/server v13 (registration + auth options + verify)", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.75, "depends_on": [], "lane": "p-core", "complexity_score": 8, "completed_at": null},
+    {"id": "T2", "title": "iron-session config + helpers (seal/unseal session cookie)", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "lane": "e-core", "complexity_score": 3, "completed_at": null},
+    {"id": "T3", "title": "Audit-log writer (JSONL append + PII redaction + Vercel Blob POST hook)", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "lane": "p-core", "complexity_score": 6, "completed_at": null},
+    {"id": "T4", "title": "Upstash Redis client setup + region pinning", "type": "infra", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": [], "lane": "e-core", "complexity_score": 3, "completed_at": null},
+    {"id": "T5", "title": "KV CRUD: operator + credential + reverse-index with CAS counter update", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T4"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T6", "title": "KV CRUD: challenge + bootstrap + session (TTL keys)", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T4"], "lane": "e-core", "complexity_score": 3, "completed_at": null},
+    {"id": "T7", "title": "POST /api/auth/register/options route", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T1", "T6"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T8", "title": "POST /api/auth/register/verify route (persists credential)", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.25, "depends_on": ["T1", "T5", "T6"], "lane": "e-core", "complexity_score": 3, "completed_at": null},
+    {"id": "T9", "title": "POST /api/auth/authenticate/options route", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T1", "T6"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T10", "title": "POST /api/auth/authenticate/verify route (mints session cookie)", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T1", "T2", "T3", "T5", "T6"], "lane": "p-core", "complexity_score": 6, "completed_at": null},
+    {"id": "T11", "title": "POST /api/auth/revoke route", "type": "backend", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T5"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T12", "title": "Edit proxy.ts: UCC_AUTH_MODE switch + iron-session check + redirect-to-sign-in", "type": "backend", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T2", "T6"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T13", "title": "AuthPasskeyForm component (capability detection + ceremony + error states)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": [], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T14", "title": "/control-room/sign-in page with conditional-UI autofill", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T13", "T9", "T10"], "lane": "e-core", "complexity_score": 3, "completed_at": null},
+    {"id": "T15", "title": "/control-room/sign-in/recover page (bootstrap-token paste flow)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T13", "T7", "T8"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T16", "title": "/control-room/settings/devices page (credentials table + Revoke)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T11"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T17", "title": "/control-room/settings/audit page (last 50 events viewer)", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.5, "depends_on": ["T3"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T18", "title": "AuditLogPanel component (3-stat row + recent events table + suspicious banner)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T3"], "lane": "e-core", "complexity_score": 3, "completed_at": null},
+    {"id": "T19", "title": "Wire AuditLogPanel into /control-room/framework page", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.25, "depends_on": ["T18"], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T20", "title": "scripts/issue-bootstrap-token.ts CLI (32B token + SHA-256 + admin-token gate)", "type": "infra", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T6"], "lane": "p-core", "complexity_score": 6, "completed_at": null},
+    {"id": "T21", "title": "Reverse-mode for sync-from-fittracker2.ts (fetch JSONL from Vercel Blob)", "type": "infra", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "depends_on": ["T3"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T22", "title": "Daily GHA workflow in FT2 to pull Vercel Blob into .claude/logs/ucc-auth-events.jsonl", "type": "infra", "skill": "ops", "status": "pending", "priority": "high", "effort_days": 0.25, "depends_on": ["T21"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T23", "title": "FT2 placeholder .claude/logs/ucc-auth-events.jsonl (empty + schema header)", "type": "docs", "skill": "dev", "status": "pending", "priority": "low", "effort_days": 0.1, "depends_on": [], "lane": "e-core", "complexity_score": 0, "completed_at": null},
+    {"id": "T24", "title": "Unit tests: webauthn-server + redis-store + audit-log + iron-session + proxy", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 1.0, "depends_on": ["T1", "T3", "T5", "T2", "T12"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T25", "title": "Unit tests: 5 API routes + AuthPasskeyForm + AuditLogPanel", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 1.0, "depends_on": ["T7", "T8", "T9", "T10", "T11", "T13", "T18"], "lane": "p-core", "complexity_score": 4, "completed_at": null},
+    {"id": "T26", "title": "Integration test: round-trip registration + authentication with stub authenticator", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 0.5, "depends_on": ["T8", "T10"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "T27", "title": "New runtime-smoke profile passkey_signin_surface in FT2", "type": "infra", "skill": "qa", "status": "pending", "priority": "medium", "effort_days": 0.25, "depends_on": ["T26"], "lane": "e-core", "complexity_score": 2, "completed_at": null},
+    {"id": "T28", "title": "Add glossary entries: passkey, WebAuthn, RP-ID, conditional UI, bootstrap token, iron-session, FIDO2", "type": "docs", "skill": "marketing", "status": "pending", "priority": "low", "effort_days": 0.25, "depends_on": [], "lane": "e-core", "complexity_score": 0, "completed_at": null}
+  ],
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-05-07T16:25:00Z",
+      "approved_by": "user",
+      "note": "Feature opened from UCC T2.5 deferral + backlog Passkey-auth-for-UCC entry. Cross-repo (fitme-story + FitTracker2)."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-05-07T16:38:00Z",
+      "approved_by": "user",
+      "note": "Phase 0 approved. 14-section research.md synthesized. Library: @simplewebauthn/{server,browser} v13. Storage: Upstash Redis. Sessions: iron-session. Bootstrap: CLI-issued + paste. UCC_AUTH_MODE migration. 7 open-question defaults locked."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-05-07T16:48:00Z",
+      "approved_by": "user",
+      "note": "Phase 1 approved. PRD with 15 sections, 5 goals, 6 user stories, primary T1 metric (0 unauthenticated reads), 3 kill criteria, 7 locked decisions baked in, analytics spec validated (10 events + 4 screens), 5-phase migration plan with rollback at every step."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-05-07T16:55:00Z",
+      "approved_by": "user",
+      "note": "Phase 2 approved. 28 tasks across 8 blocks. Lane split 16 E-core / 12 P-core. Critical path T1→T10→T13→T14→T25→T26 = 3.75d serial; total ~11.5d compresses to 5-6 calendar days with E-core parallel."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-05-07T17:05:00Z",
+      "approved_by": "user",
+      "note": "Phase 3 approved. ux-research + ux-spec + preflight (PASS, 0 P0) + design preflight (Figma MCP live, deferred to portable prompt — dashboard has no Figma mapping by design) + UX/design build prompts written. Implementation kickoff."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-05-07T17:35:00Z",
+      "approved_by": "user",
+      "note": "Phase 4 complete. 28/28 tasks done. fitme-story: 22 new files (5 lib, 1 helper util, 5 API routes, 4 page shells + 4 client shells, 4 components, 2 scripts, 1 cron route) + 3 edits (proxy.ts, vercel.json, package.json + glossary). FT2: 2 new files (GHA workflow + JSONL placeholder). 5 unit-test files written. Vercel Cron + GHA cross-repo sync wired."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-05-07T17:55:00Z",
+      "approved_by": "user",
+      "note": "Phase 5 complete. tsc 0 errors on feature files. 19/19 tests pass. next build clean. Caught + fixed iron-session garbage-input bug (returns {} not thrown). Refactored 4 modules to lazy env reads."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-05-07T18:10:00Z",
+      "approved_by": "user",
+      "note": "Phase 6 complete. UX pre-merge review PASS (0 P0). Design pre-merge review PASS_WITH_NOTES (Figma N/A by design — portable prompt is v4.X escape hatch). Risk audit identified 3 surfaces all mitigated. 0 high-risk Swift files touched."
+    }
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": "deferred_to_prompt",
+  "figma_deferral_reason": "web_dashboard_no_figma_mapping",
+  "figma_portable_prompt": "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md",
+  "pre_merge_review": {
+    "ux": "passed",
+    "design": "passed_with_notes",
+    "ux_review_artifact": ".claude/features/ucc-passkey-auth/ux-pre-merge-review-2026-05-07.md",
+    "design_review_artifact": ".claude/features/ucc-passkey-auth/design-pre-merge-review-2026-05-07.md",
+    "ux_findings": { "p0": 0, "p1": 0, "p2": 1 },
+    "design_findings": { "p0": 0, "p1": 0, "p2": 0 },
+    "design_notes": [
+      "Figma node IDs N/A — dashboard has no Figma mapping; portable prompt is the v4.X escape hatch (figma_build_status: deferred_to_prompt).",
+      "PR description references docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md instead of node IDs.",
+      "kill_criteria_resolution flagged for Phase 8 closure (Q7 v7.8.1 FEATURE_CLOSURE_COMPLETENESS gate)."
+    ]
+  },
+  "case_study": null,
+  "case_study_showcase": null,
+  "timing": {
+    "session_start": "2026-05-07T16:25:00Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-05-07T16:25:00Z",
+        "ended_at": "2026-05-07T16:38:00Z",
+        "duration_minutes": 13
+      },
+      "prd": {
+        "started_at": "2026-05-07T16:38:00Z",
+        "ended_at": "2026-05-07T16:48:00Z",
+        "duration_minutes": 10
+      },
+      "tasks": {
+        "started_at": "2026-05-07T16:48:00Z",
+        "ended_at": "2026-05-07T16:55:00Z",
+        "duration_minutes": 7
+      },
+      "ux_or_integration": {
+        "started_at": "2026-05-07T16:55:00Z",
+        "ended_at": "2026-05-07T17:05:00Z",
+        "duration_minutes": 10
+      },
+      "implementation": {
+        "started_at": "2026-05-07T17:05:00Z",
+        "ended_at": "2026-05-07T17:35:00Z",
+        "duration_minutes": 30
+      },
+      "testing": {
+        "started_at": "2026-05-07T17:35:00Z",
+        "ended_at": "2026-05-07T17:55:00Z",
+        "duration_minutes": 20
+      },
+      "review": {
+        "started_at": "2026-05-07T17:55:00Z",
+        "ended_at": "2026-05-07T18:10:00Z",
+        "duration_minutes": 15
+      },
+      "merge": {
+        "started_at": "2026-05-07T18:10:00Z"
+      }
+    }
+  },
+  "cache_hits": [],
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-ucc-passkey-auth"
+}
