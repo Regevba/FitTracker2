@@ -106,6 +106,17 @@ schema-check:
 documentation-debt:
 	python3 scripts/documentation-debt-report.py --output .claude/shared/documentation-debt.json
 
+# T22 (framework-v7-8-branch-isolation): system-wide branch-isolation status
+# readout. Lists every active feature with declared branch + worktree path +
+# actual git/launchd state. Per PRD §6.1.
+verify-isolation:
+	@python3 scripts/verify-isolation.py
+
+# T23 (framework-v7-8-branch-isolation): system-wide phase-appropriate
+# completeness audit. Replaces the manual reconcile pass. Per PRD §6.2.
+feature-completeness-audit:
+	@python3 scripts/feature-completeness-audit.py
+
 # Gemini audit Tier 1.1 — inventory which features have v6.0 measurement
 # fields populated in their state.json. Produces a machine-readable report
 # at .claude/shared/measurement-adoption.json and prints a summary.
