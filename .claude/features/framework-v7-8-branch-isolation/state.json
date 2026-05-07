@@ -1,8 +1,8 @@
 {
   "feature_name": "framework-v7-8-branch-isolation",
-  "current_phase": "merge",
+  "current_phase": "complete",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T17:05:00Z",
+  "updated": "2026-05-07T17:35:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -102,11 +102,19 @@
       "approved_by": "user"
     },
     "merge": {
-      "status": "in_progress",
-      "started_at": "2026-05-07T17:05:00Z"
+      "status": "approved",
+      "started_at": "2026-05-07T17:05:00Z",
+      "approved_at": "2026-05-07T17:15:00Z",
+      "approved_by": "user",
+      "pr_number": 244,
+      "merge_commit": "6d1a53f"
     },
     "documentation": {
-      "status": "not_started"
+      "status": "approved",
+      "started_at": "2026-05-07T17:15:00Z",
+      "approved_at": "2026-05-07T17:30:00Z",
+      "approved_by": "user",
+      "case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md"
     }
   },
   "transitions": [
@@ -158,6 +166,20 @@
       "timestamp": "2026-05-07T17:05:00Z",
       "approved_by": "user",
       "note": "Pre-merge reviews N/A; risk low; tests + integration pipeline green."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-05-07T17:15:00Z",
+      "approved_by": "user",
+      "note": "PR #244 merged at 6d1a53f. Authoring case study."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-07T17:30:00Z",
+      "approved_by": "user",
+      "note": "Case study authored. Showcase MDX deferred to follow-up. Feature closes; T29 Phase 9 prioritization pass scheduled for 2026-05-21 (T+14d)."
     }
   ],
   "timing": {
@@ -191,7 +213,15 @@
         "ended_at": "2026-05-07T17:05:00Z"
       },
       "merge": {
-        "started_at": "2026-05-07T17:05:00Z"
+        "started_at": "2026-05-07T17:05:00Z",
+        "ended_at": "2026-05-07T17:15:00Z"
+      },
+      "documentation": {
+        "started_at": "2026-05-07T17:15:00Z",
+        "ended_at": "2026-05-07T17:30:00Z"
+      },
+      "complete": {
+        "started_at": "2026-05-07T17:30:00Z"
       }
     }
   },
@@ -743,7 +773,7 @@
       "title": "Phase 9 prioritization pass on \u00a711 out-of-scope items: produce ranked v8 roadmap",
       "type": "research",
       "skill": "research",
-      "status": "pending",
+      "status": "deferred",
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [
@@ -752,7 +782,8 @@
       "lane": "P-core",
       "model_tier": "opus",
       "block": "phase_9",
-      "phase_9_deliverable": true
+      "phase_9_deliverable": true,
+      "deferred_reason": "Phase 9 prioritization pass scheduled for 2026-05-21 (T+14d post-v7.8-advisory ship + 7d telemetry window). Not blocked on this feature's closure; tracked in state.json::phase_9_followup."
     }
   ],
   "phase_9_followup": {
@@ -778,5 +809,12 @@
     "design": "n/a",
     "design_reason": "has_ui: false \u2192 no Figma node IDs / screens to compare. Sub-step 6f same as ux side.",
     "set_at": "2026-05-07T17:00:00Z"
-  }
+  },
+  "case_study_showcase": "fitme-story/content/04-case-studies/24-framework-v7-8-branch-isolation.mdx",
+  "pr_citation_exempt": [
+    {
+      "pr_number": 243,
+      "reason": "GitHub Issue #243 (tracking) \u2014 not a PR. Cited in case study related_prs for traceability."
+    }
+  ]
 }
