@@ -64,6 +64,10 @@ struct FitTrackerApp: App {
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
     @State private var showBiometricActivation = false
+    // push-notifications-v2 (T6): show priming sheet on first-workout-completed
+    // (via NotificationCenter post from FirstWorkoutTrigger.mark()).
+    @State private var showNotificationPriming = false
+    @ObservedObject private var notificationGateway = NotificationGateway.shared
     // Strong reference; iOS only retains the delegate weakly via the center.
     private let reminderNotificationDelegate = ReminderNotificationDelegate()
     // Behavioural learning sub-feature (PR 1 ships data-collection only).
@@ -139,6 +143,19 @@ struct FitTrackerApp: App {
                     // fetch if the on-device cache is stale or cold.
                     reminderNotificationDelegate.setStore(behavioralLearningStore)
                     reminderNotificationDelegate.setCohortClient(cohortPriorClient)
+
+                    // push-notifications-v2 (T6): platform init.
+                    // - Inject analytics into DeepLinkRouter
+                    // - Set the auth handler so fitme://auth/... URLs forward to SignInService
+                    // - Register the readinessAlert consumer
+                    // - Refresh authorization status (in case user toggled iOS Settings while app was backgrounded)
+                    DeepLinkRouter.shared.analytics = analytics
+                    DeepLinkRouter.shared.authHandler = { [signIn] url in
+                        await signIn.handleIncomingURL(url)
+                    }
+                    NotificationConsumerRegistry.shared.register(ReadinessAlertObserver.consumerRegistration)
+                    ReadinessAlertObserver.shared.analytics = analytics
+                    Task { await notificationGateway.refreshAuthorizationStatus() }
                     if cohortPriorCache.isStale {
                         let client = cohortPriorClient
                         let cache = cohortPriorCache
@@ -191,13 +208,22 @@ struct FitTrackerApp: App {
                     if unlocked { signIn.resumeStoredSession() }
                 }
                 .onOpenURL { url in
-                    // Deep-link return for forgot-password flow (auth-polish-v2 A1+A4).
-                    // URL scheme `fitme://reset-password?...` is registered in
-                    // Info.plist (CFBundleURLTypes/PasswordReset). The async call
-                    // exchanges the URL for a Supabase recovery session and then
-                    // sets `pendingPasswordResetURL`, which the .fullScreenCover
-                    // below observes to present SetNewPasswordView.
-                    Task { await signIn.handleIncomingURL(url) }
+                    // push-notifications-v2 (T6): all fitme:// URLs route through
+                    // DeepLinkRouter — single entry point for the platform layer.
+                    // Auth URLs (fitme://auth/reset-password?...) are forwarded to
+                    // SignInService.handleIncomingURL via DeepLinkRouter.authHandler
+                    // (set in `.task` above), which preserves the auth-polish-v2 A1+A4
+                    // flow. Other URLs (nav/action/settings) emit a DeepLinkAction
+                    // observable by RootTabView + sheet presenters.
+                    DeepLinkRouter.shared.handle(url: url, source: .url)
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .fitMeFirstWorkoutCompleted)) { _ in
+                    // push-notifications-v2 (T6): present priming sheet ONCE on
+                    // first-workout-completion, only when not yet authorized.
+                    // FirstWorkoutTrigger.mark() guarantees this fires exactly once.
+                    if !notificationGateway.isAuthorized {
+                        showNotificationPriming = true
+                    }
                 }
                 .fullScreenCover(isPresented: Binding(
                     get: { signIn.pendingPasswordResetURL != nil },
@@ -210,6 +236,17 @@ struct FitTrackerApp: App {
                     }
                     .environmentObject(signIn)
                     .environmentObject(analytics)
+                }
+                .sheet(isPresented: $showNotificationPriming) {
+                    // push-notifications-v2 (T6): permission priming sheet.
+                    // Triggered by .fitMeFirstWorkoutCompleted; secondary entry
+                    // point is Settings → Notifications row (T7).
+                    NotificationPermissionPrimingView(
+                        triggerContext: .postWorkout,
+                        analytics: analytics
+                    )
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
                 }
                 .sheet(isPresented: $showBiometricActivation) {
                     // auth-polish-v2 B3 — one-time post-sign-in offer. Predicate

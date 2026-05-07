@@ -820,12 +820,43 @@ final class AnalyticsService: ObservableObject {
         logEvent(granted ? AnalyticsEvent.notificationPermissionGranted : AnalyticsEvent.notificationPermissionDenied, parameters: nil)
     }
 
-    func logNotificationScheduled(type: String) {
-        logEvent(AnalyticsEvent.notificationScheduled, parameters: [AnalyticsParam.itemCategory: type])
+    // Removed 2026-05-07 (push-notifications-v2 T11): logNotificationScheduled,
+    // logNotificationTapped — duplicates of the live logReminderScheduled /
+    // logReminderTapped. Smart-reminders owns scheduling lifecycle; the
+    // push-notifications-v2 platform layer owns priming + permission + deep-link.
+    // Zero callers outside this file before deletion (verified by grep).
+
+    /// Priming sheet view event (push-notifications-v2 PN-12).
+    /// `triggerContext` is "post_workout" or "settings" — matches PrimingView.TriggerContext.
+    func logNotificationPrimingShown(triggerContext: String) {
+        logEvent(AnalyticsEvent.notificationPrimingShown, parameters: [
+            AnalyticsParam.triggerContext: triggerContext,
+        ])
     }
 
-    func logNotificationTapped(type: String) {
-        logEvent(AnalyticsEvent.notificationTapped, parameters: [AnalyticsParam.itemCategory: type])
+    /// User taps "Not now" or swipes-down to dismiss the priming sheet (no OS dialog fired).
+    func logNotificationPrimingSkipped(triggerContext: String) {
+        logEvent(AnalyticsEvent.notificationPrimingSkipped, parameters: [
+            AnalyticsParam.triggerContext: triggerContext,
+        ])
+    }
+
+    /// SettingsDeepLinkBanner appeared at top of Home (one-time per device lifetime).
+    func logNotificationSettingsDeeplinkShown() {
+        logEvent(AnalyticsEvent.notificationSettingsDeeplinkShown, parameters: nil)
+    }
+
+    /// DeepLinkRouter resolved a URL — fires on every routing attempt regardless of
+    /// outcome. The kill criterion is `outcome=succeeded` rate < 95% over 7 days.
+    /// `source` is "notification"|"url"|"programmatic"; `destination` is
+    /// "tab"|"sheet"|"auth"|"settings"; `outcome` is "succeeded"|"failed_no_pattern_match"|"failed_navigation".
+    func logDeepLinkRouted(source: String, destination: String, urlPattern: String, outcome: String) {
+        logEvent(AnalyticsEvent.deepLinkRouted, parameters: [
+            AnalyticsParam.deepLinkSource: source,
+            AnalyticsParam.destination: destination,
+            AnalyticsParam.urlPattern: urlPattern,
+            AnalyticsParam.outcome: outcome,
+        ])
     }
 
     // MARK: - Reminder Analytics

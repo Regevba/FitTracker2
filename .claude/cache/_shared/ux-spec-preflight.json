@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "description": "L2 cache: per-feature ux-spec preflight audit results. Feeds future drift detection — when a spec re-references a token that was preflight-verified previously, /ux preflight can short-circuit the grep.",
+  "entries": [
+    {
+      "feature": "push-notifications",
+      "spec_path": ".claude/features/push-notifications/ux-spec.md",
+      "checked_at": "2026-05-07T04:55:00Z",
+      "framework_version": "v7.8",
+      "tokens_referenced": [
+        "AppText.titleStrong", "AppText.body", "AppText.button", "AppText.caption", "AppText.captionStrong",
+        "AppSpacing.large", "AppSpacing.medium", "AppSpacing.small", "AppSpacing.xSmall",
+        "AppRadius.medium", "AppRadius.button",
+        "AppColor.Accent.primary", "AppColor.Text.primary", "AppColor.Text.secondary", "AppColor.Text.tertiary", "AppColor.Text.inversePrimary", "AppColor.Status.warning", "AppColor.Surface.secondary",
+        "AppSize.ctaHeight",
+        "AppGradient.screenBackground"
+      ],
+      "components_referenced": [
+        "NotificationPermissionPrimingView",
+        "RootTabView",
+        "ReminderNotificationDelegate",
+        "SessionCompletionSheet"
+      ],
+      "components_planned_new": [
+        "NotificationGateway",
+        "DeepLinkRouter",
+        "NotificationConsumerRegistry",
+        "SettingsDeepLinkBanner"
+      ],
+      "patterns_referenced": [
+        ".presentationDetents([.medium, .large])",
+        ".transition(.move(edge: .top).combined(with: .opacity))",
+        "@AppStorage for UserDefaults flag"
+      ],
+      "findings": {
+        "p0": [],
+        "p1": [
+          {
+            "id": "F1",
+            "title": "Spec referenced WorkoutResultsView; actual post-workout view is SessionCompletionSheet",
+            "status": "auto-corrected pre-publish",
+            "occurrences_fixed": 3
+          }
+        ],
+        "p2": []
+      },
+      "verdict": "PASS",
+      "audit_path": ".claude/features/push-notifications/ux-preflight-audit-2026-05-07.md"
+    }
+  ]
+}

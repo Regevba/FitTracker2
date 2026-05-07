@@ -128,7 +128,6 @@
 		VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedRecommendationTests.swift; sourceTree = "<group>"; };
 		WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */; };
 		WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityServiceTests.swift; sourceTree = "<group>"; };
-		NS100000000000000000AT01 /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS200000000000000000AT01 /* NotificationServiceTests.swift */; };
 		NS200000000000000000AT01 /* NotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
 		DE100000000000000000SR01 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE200000000000000000SR01 /* Debouncer.swift */; };
 		DE200000000000000000SR01 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
@@ -137,8 +136,17 @@
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
 		EV100000000000000000ET04 /* ProfileEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET04 /* ProfileEvals.swift */; };
 		EV200000000000000000ET04 /* ProfileEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEvals.swift; sourceTree = "<group>"; };
-		NT100000000000000000T001 /* NotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT200000000000000000T001 /* NotificationTests.swift */; };
 		NT200000000000000000T001 /* NotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTests.swift; sourceTree = "<group>"; };
+		NG200000000000000000T001 /* NotificationGatewayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGatewayTests.swift; sourceTree = "<group>"; };
+		DR200000000000000000T001 /* DeepLinkRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouterTests.swift; sourceTree = "<group>"; };
+		CR200000000000000000T001 /* NotificationConsumerRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConsumerRegistryTests.swift; sourceTree = "<group>"; };
+		RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertTriggerTests.swift; sourceTree = "<group>"; };
+		PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsReachabilityTests.swift; sourceTree = "<group>"; };
+		PN100000000000000000T001 /* PushNotificationsReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */; };
+		NG100000000000000000T001 /* NotificationGatewayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NG200000000000000000T001 /* NotificationGatewayTests.swift */; };
+		DR100000000000000000T001 /* DeepLinkRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DR200000000000000000T001 /* DeepLinkRouterTests.swift */; };
+		CR100000000000000000T001 /* NotificationConsumerRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CR200000000000000000T001 /* NotificationConsumerRegistryTests.swift */; };
+		RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -236,10 +244,13 @@
 		4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */; };
 		79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */; };
 		74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */; };
-		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
-		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
-		NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000003 /* NotificationContentBuilder.swift */; };
-		NT1000001000000000000004 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000004 /* DeepLinkHandler.swift */; };
+		NT1000001000000000000005 /* NotificationGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000005 /* NotificationGateway.swift */; };
+		NT1000001000000000000006 /* NotificationConsumerRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000006 /* NotificationConsumerRegistry.swift */; };
+		NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000007 /* DeepLinkRouter.swift */; };
+		NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000008 /* ReadinessAlertObserver.swift */; };
+		NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000009 /* FirstWorkoutTrigger.swift */; };
+		NP100000000000000000VW02 /* SettingsDeepLinkBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW02 /* SettingsDeepLinkBanner.swift */; };
+		NP100000000000000000VW03 /* NotificationPermissionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW03 /* NotificationPermissionRow.swift */; };
 		RM1000001000000000000001 /* ReminderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000001 /* ReminderType.swift */; };
 		RM1000001000000000000002 /* ReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000002 /* ReminderScheduler.swift */; };
 		RM1000001000000000000003 /* ReminderTriggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000003 /* ReminderTriggers.swift */; };
@@ -487,7 +498,13 @@
 		NT2000001000000000000001 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		NT2000001000000000000002 /* NotificationPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferencesStore.swift; sourceTree = "<group>"; };
 		NT2000001000000000000003 /* NotificationContentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationContentBuilder.swift; sourceTree = "<group>"; };
-		NT2000001000000000000004 /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
+		NT2000001000000000000005 /* NotificationGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGateway.swift; sourceTree = "<group>"; };
+		NT2000001000000000000006 /* NotificationConsumerRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConsumerRegistry.swift; sourceTree = "<group>"; };
+		NT2000001000000000000007 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
+		NT2000001000000000000008 /* ReadinessAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertObserver.swift; sourceTree = "<group>"; };
+		NT2000001000000000000009 /* FirstWorkoutTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstWorkoutTrigger.swift; sourceTree = "<group>"; };
+		NP200000000000000000VW02 /* SettingsDeepLinkBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDeepLinkBanner.swift; sourceTree = "<group>"; };
+		NP200000000000000000VW03 /* NotificationPermissionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRow.swift; sourceTree = "<group>"; };
 		RM2000001000000000000001 /* ReminderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderType.swift; sourceTree = "<group>"; };
 		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
@@ -708,6 +725,8 @@
 			isa = PBXGroup;
 			children = (
 				NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */,
+				NP200000000000000000VW02 /* SettingsDeepLinkBanner.swift */,
+				NP200000000000000000VW03 /* NotificationPermissionRow.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -736,10 +755,14 @@
 		NT4000001000000000000001 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				NT2000001000000000000005 /* NotificationGateway.swift */,
+				NT2000001000000000000006 /* NotificationConsumerRegistry.swift */,
+				NT2000001000000000000007 /* DeepLinkRouter.swift */,
+				NT2000001000000000000008 /* ReadinessAlertObserver.swift */,
+				NT2000001000000000000009 /* FirstWorkoutTrigger.swift */,
 				NT2000001000000000000001 /* NotificationService.swift */,
 				NT2000001000000000000002 /* NotificationPreferencesStore.swift */,
 				NT2000001000000000000003 /* NotificationContentBuilder.swift */,
-				NT2000001000000000000004 /* DeepLinkHandler.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -1010,6 +1033,11 @@
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
+				NG200000000000000000T001 /* NotificationGatewayTests.swift */,
+				DR200000000000000000T001 /* DeepLinkRouterTests.swift */,
+				CR200000000000000000T001 /* NotificationConsumerRegistryTests.swift */,
+				RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */,
+				PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */,
 				IT200000000000000000TS01 /* ImportTests.swift */,
 				IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */,
 			);
@@ -1447,10 +1475,13 @@
 				BL1000001000000000000001 /* BehavioralLearningStore.swift in Sources */,
 				CC1000001000000000000001 /* CohortPriorClient.swift in Sources */,
 				CP1000001000000000000001 /* CohortPriorCache.swift in Sources */,
-				NT1000001000000000000001 /* NotificationService.swift in Sources */,
-				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
-				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
-				NT1000001000000000000004 /* DeepLinkHandler.swift in Sources */,
+				NT1000001000000000000005 /* NotificationGateway.swift in Sources */,
+				NT1000001000000000000006 /* NotificationConsumerRegistry.swift in Sources */,
+				NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */,
+				NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */,
+				NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */,
+				NP100000000000000000VW02 /* SettingsDeepLinkBanner.swift in Sources */,
+				NP100000000000000000VW03 /* NotificationPermissionRow.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
 				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,
 				IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */,
@@ -1502,7 +1533,6 @@
 				OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */,
 				VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */,
 				WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */,
-				NS100000000000000000AT01 /* NotificationServiceTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
@@ -1510,9 +1540,13 @@
 				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
 				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
-				NT100000000000000000T001 /* NotificationTests.swift in Sources */,
 				IT100000000000000000TS01 /* ImportTests.swift in Sources */,
 				IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */,
+				NG100000000000000000T001 /* NotificationGatewayTests.swift in Sources */,
+				DR100000000000000000T001 /* DeepLinkRouterTests.swift in Sources */,
+				CR100000000000000000T001 /* NotificationConsumerRegistryTests.swift in Sources */,
+				RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */,
+				PN100000000000000000T001 /* PushNotificationsReachabilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

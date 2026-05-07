@@ -1,3 +1,11 @@
+// HISTORICAL — superseded on 2026-05-07 per push-notifications-v2 (FIT-23).
+// These tests target the v1 NotificationService/NotificationType/NotificationPreferencesStore
+// which are no longer in the build. v2 tests live in NotificationGatewayTests.swift,
+// DeepLinkRouterTests.swift, NotificationConsumerRegistryTests.swift,
+// ReadinessAlertTriggerTests.swift, and PushNotificationsReachabilityTests.swift.
+// This file is excluded from the test target Sources build phase but kept on
+// disk so the v1 → v2 test diff stays reviewable in git.
+
 // FitTrackerTests/NotificationServiceTests.swift
 // TEST-013: NotificationService scheduling, daily-cap, quiet-hour, and
 // authorization gates.
