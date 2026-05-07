@@ -3,10 +3,10 @@
   "feature": "framework-v7-8-branch-isolation",
   "title": "framework v7 8 branch isolation",
   "work_type": "Feature",
-  "current_phase": "implementation",
+  "current_phase": "review",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-07T14:35:00Z",
+  "updated_at": "2026-05-07T16:55:00Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -134,6 +134,53 @@
       "event_type": "phase_started",
       "phase": "implementation",
       "summary": "Phase 4 (Implementation) opened. Beginning Block A (E-core, parallel sonnet) \u2014 4 schema-addition tasks T1/T2/T3/T4. Block B + C (P-core opus) follow with gate predicate logic.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:00Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) approved. All 8 blocks (A-H) shipped: 28/28 tasks done. 130/130 unit tests pass; Mechanism D self-audit clean; schema-check 53/53; verify-isolation 53/53 clean; feature-completeness-audit 0 blocking + 1 advisory (forward-only working).",
+      "metrics": {
+        "tasks_done": 28,
+        "tests_passing": 130,
+        "blocks_complete": 8
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:00Z",
+      "event_type": "phase_started",
+      "phase": "test",
+      "summary": "Phase 5 (Test) opened. Extending test-v7-5-pipeline.sh with 4 new integration assertions per PRD \u00a79.2 + running full pipeline end-to-end.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:55:00Z",
+      "event_type": "phase_approved",
+      "phase": "test",
+      "summary": "Phase 5 (Test) complete. test-v7-5-pipeline.sh extended to 19 assertions (15 baseline + 4 new for v7.8 framework-v7-8-branch-isolation). All pass. pytest 130/130. schema-check 53/53. integrity-check 0+9 advisory. verify-isolation 53/53. feature-completeness-audit 0 blocking. Mechanism A coverage telemetry confirmed: BRANCH_ISOLATION_VIOLATION + FEATURE_CLOSURE_COMPLETENESS + ISOLATION_OPT_OUT_REASON_MISSING all emit gate-coverage.jsonl entries on every script run.",
+      "metrics": {
+        "pytest_passing": 130,
+        "pipeline_assertions": 19,
+        "schema_check": "53/53",
+        "integrity_advisory_count": 9
+      },
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:55:00Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Phase 6 (Review) opened. Pre-merge code review + /ux + /design pre-merge-review checks against the feature branch.",
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
