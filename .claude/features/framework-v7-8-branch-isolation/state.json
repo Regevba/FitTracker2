@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "implementation",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T15:05:00Z",
+  "updated": "2026-05-07T15:20:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -60,7 +60,7 @@
       "block_progress": {
         "A": "completed",
         "B": "completed",
-        "C": "pending",
+        "C": "completed",
         "D": "pending",
         "E": "pending",
         "F": "pending",
@@ -375,7 +375,7 @@
       "title": "Implement should_check_closure_completeness() predicate",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.3,
       "depends_on": [
@@ -383,14 +383,15 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "C"
+      "block": "C",
+      "completed_at": "2026-05-07T15:20:00Z"
     },
     {
       "id": "T12",
       "title": "Implement closure_completeness_violations() \u2014 required field presence check",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -399,14 +400,15 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "C"
+      "block": "C",
+      "completed_at": "2026-05-07T15:20:00Z"
     },
     {
       "id": "T13",
       "title": "Add Q7 check: kill_criteria_resolution required when kill_criteria set",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.2,
       "depends_on": [
@@ -414,14 +416,15 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "C"
+      "block": "C",
+      "completed_at": "2026-05-07T15:20:00Z"
     },
     {
       "id": "T14",
       "title": "Add Q6 check: bidirectional PR-list parity",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.7,
       "depends_on": [
@@ -429,14 +432,15 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "C"
+      "block": "C",
+      "completed_at": "2026-05-07T15:20:00Z"
     },
     {
       "id": "T15",
       "title": "Wire FEATURE_CLOSURE_COMPLETENESS into pre-commit with Mechanism A coverage emission",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.4,
       "depends_on": [
@@ -447,14 +451,15 @@
       ],
       "lane": "P-core",
       "model_tier": "opus",
-      "block": "C"
+      "block": "C",
+      "completed_at": "2026-05-07T15:20:00Z"
     },
     {
       "id": "T16",
       "title": "Implement error message contract per PRD \u00a74.2",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.2,
       "depends_on": [
@@ -462,7 +467,8 @@
       ],
       "lane": "E-core",
       "model_tier": "sonnet",
-      "block": "C"
+      "block": "C",
+      "completed_at": "2026-05-07T15:20:00Z"
     },
     {
       "id": "T17",
