@@ -4,12 +4,20 @@ type: feature_case_study
 case_study_type: feature_complete
 feature: unified-control-center
 framework_version: "v7.6"
+date_written: "2026-05-06"
+dispatch_pattern: "serial (subagent-driven within phases; F6-F9 concurrent-dispatch hygiene block)"
 phase_at_close: "implementation (block-level done; testing/review/merge/docs phase transitions deferred to user approval)"
 shipped_window: "2026-04-26 → 2026-05-06"
 work_type: "feature"
 work_subtype: "new_ui"
 primary_metric: "Time-to-Confidence (TTC) — seconds from page paint to operator clicking high-priority alert"
 primary_metric_status: "T2 Declared (~8s placeholder, n=2 noisy); T1 measurement deferred to post-launch on the new dashboard"
+kill_criteria:
+  - "Auth (proxy.ts basic-auth) blocks legitimate operator access — repeated 401s on valid credentials"
+  - "GA4 events fail to fire on the new surface — TTC measurement permanently unrecoverable on /control-room/*"
+  - "Sync pipeline (sync-from-fittracker2.ts) drifts — `.claude/shared/*.json` content visibly stale on dashboard >24h"
+  - "PRD §13 30-day rollback window: keep legacy Astro dashboard alive as fallback if any of the above fires"
+kill_criteria_resolution: "User authorized early legacy deletion 2026-05-06 because (a) new dashboard verified working with credentials, (b) legacy GA4 instrumentation was already broken so legacy had no rollback value, (c) discovery path preserved via public showcase nav. Documented in state.json::tasks[T35].note."
 tier_tags_present: true
 external_audit_status: "internal"
 related_prs:
