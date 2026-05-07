@@ -2,9 +2,9 @@
 
 > **Companion to** [`dev-guide-v1-to-v7-7.md`](./dev-guide-v1-to-v7-7.md). Where the dev-guide explains *how* the framework works (the four enforcement layers, schema, dispatch model), this catalog answers a different question: at any point in a feature's lifecycle, **what should be triggered, logged, measured, and persisted — and which gate enforces it?**
 >
-> **Authoritative for:** `FEATURE_CLOSURE_COMPLETENESS` gate spec ([`framework-v7-8-branch-isolation`](../../.claude/features/framework-v7-8-branch-isolation/state.json) deliverable §6).
+> **Authoritative for:** `FEATURE_CLOSURE_COMPLETENESS` gate spec — **gate now SHIPPED** in v7.8.1 (advisory mode) per [`framework-v7-8-branch-isolation` case study](../case-studies/framework-v7-8-branch-isolation-case-study.md). v7.9 promotion candidate decision: 2026-05-21.
 >
-> **Last verified against:** v7.8 (shipped 2026-05-04). Re-verify when the framework version bumps.
+> **Last verified against:** v7.8.1 (shipped 2026-05-07). Re-verify when the framework version bumps.
 
 ---
 
@@ -300,6 +300,9 @@ All implemented in [`scripts/check-state-schema.py`](../../scripts/check-state-s
 | 10 | `STATE_NO_CASE_STUDY_LINK` | v7.7 (2026-04-27) | `current_phase=complete` requires `case_study` / `parent_case_study` link OR exempt `case_study_type` |
 | 11 | `CASE_STUDY_MISSING_FIELDS` | v7.7 (2026-04-27) | Case study frontmatter required-fields check (work_type, framework_version, etc.) |
 | 12 | `FRAMEWORK_VERSION_FORMAT` | 2026-05-01 (PR #169) | When set, must match `(pre-)?v<major>.<minor>` |
+| 13 | `ISOLATION_OPT_OUT_REASON_MISSING` | **v7.8.1** (2026-05-07, PR #244) | When `state.json::isolation_opt_out: true`, `isolation_opt_out_reason` must be non-empty |
+| 14 | `BRANCH_ISOLATION_VIOLATION` | **v7.8.1** (2026-05-07, PR #244, **advisory** → enforced in v7.9) | Mode B fires on every commit when staged files match infra-path globs (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`); Mode C fires on `current_phase` mutations from non-feature branch. Auto-isolation flow dispatches `scripts/create-isolated-worktree.py`. Per-feature `isolation_opt_out: true` bypasses Mode C only |
+| 15 | `FEATURE_CLOSURE_COMPLETENESS` | **v7.8.1** (2026-05-07, PR #244, **advisory** → enforced in v7.9) | Fires on `current_phase=complete` transitions. Validates 7 required case-study frontmatter fields + Q7 (`kill_criteria_resolution` required when `kill_criteria` set) + Q6 bidirectional PR-list parity (state.json ↔ case study, override via `pr_citation_exempt`) |
 
 ### 6.2 Cycle-time check codes (Class B, fire every 72h)
 
