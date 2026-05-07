@@ -1,0 +1,129 @@
+{
+  "feature": "roadmap-stress-test-2026-05-07",
+  "created_at": "2026-05-07T21:33:00Z",
+  "updated": "2026-05-07T19:10:00Z",
+  "branch": "feature/roadmap-stress-test-2026-05-07",
+  "current_phase": "complete",
+  "work_type": "feature",
+  "work_subtype": "experiment",
+  "has_ui": false,
+  "requires_analytics": true,
+  "framework_version": "v7.8.1",
+  "experiment": true,
+  "experiment_kind": "protocol_stress_test",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Meta-feature orchestrating 9 sub-features. Each sub-feature will auto-isolate via scripts/create-isolated-worktree.py when its own current_phase changes. The meta-feature itself only mutates this state.json + the case-study + data-collection ledger; those writes happen on a feature branch but not in a separate worktree (would create excessive nesting). Q3 override per v7.8.1 protocol.",
+  "scheduled_after": null,
+  "predecessor_chain": [
+    "framework-v7-8-branch-isolation",
+    "ucc-passkey-auth"
+  ],
+  "phases": {
+    "research": {
+      "status": "in_progress",
+      "approved_at": null,
+      "sources": [
+        ".claude/features/roadmap-stress-test-2026-05-07/research.md (roadmap = research artifact)",
+        "docs/product/backlog.md (open UI/UX items list)",
+        "docs/case-studies/framework-v7-8-branch-isolation-case-study.md (prior session protocol baseline)",
+        "docs/case-studies/ucc-passkey-auth-case-study.md (second session protocol baseline)"
+      ]
+    },
+    "prd": { "status": "pending", "approved_at": null, "analytics_spec_complete": false },
+    "tasks": { "status": "pending", "count": 9 },
+    "ux_or_integration": { "status": "pending", "type": null, "preflight_passed": null },
+    "implementation": { "status": "pending", "commits": [] },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false },
+    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
+    "documentation": { "status": "pending" },
+    "metrics": {
+      "primary": {
+        "name": "subfeatures_completed_in_session",
+        "tier": "T1",
+        "baseline": 1,
+        "baseline_note": "ucc-passkey-auth completed 1 full feature cycle in ~125 min on 2026-05-07 (the precedent baseline)",
+        "target": 3,
+        "target_note": "3 sub-features through Phase 8 closure within 4-hour session",
+        "current": 0
+      },
+      "secondary": [
+        { "name": "phase_transitions_per_subfeature", "target": 9, "tier": "T1" },
+        { "name": "tier_2_2_log_emit_compliance", "target": 1.0, "tier": "T1", "note": "fraction of phase transitions with Tier 2.2 log within 15-min window" },
+        { "name": "FEATURE_CLOSURE_COMPLETENESS_pass_rate", "target": 1.0, "tier": "T1" }
+      ],
+      "guardrails": [
+        { "name": "high_risk_swift_files_touched", "kill_threshold": 1, "note": "DomainModels, EncryptionService, *SyncService, AuthManager, AIOrchestrator" },
+        { "name": "main_ci_red_at_session_end", "kill_threshold": 1 },
+        { "name": "BROKEN_PR_CITATION_after_merge", "kill_threshold": 1 }
+      ],
+      "instrumentation_ready": true,
+      "first_review_date": "2026-05-08",
+      "kill_criteria": "If any guardrail breaches, halt the experiment and revert to backup at ~/Documents/FitTracker2-backups/2026-05-07-pre-roadmap-stress-test/. If protocol overhead exceeds 25% of step duration (Tier 2.2 logging + state.json mutations + pre-commit fixups), declare protocol-breaking and report.",
+      "kill_criteria_resolution": "0 kill criteria breached. K1 (high-risk Swift files): 0 touched. K2 (main CI red): both repos green at session close. K3 (protocol overhead > 25%): per-step overhead was 0% on S3-G2; H2 partial-refuted on a separate ground (apparatus-setup-as-overhead malformed for single-feature sessions, not a per-step problem). Backup retained as historical record; no rollback needed."
+    }
+  },
+  "tasks": [
+    {"id": "S1", "title": "app-store-assets resume (paused implementation, FIT-17). DS Residual: Figma old frame cleanup (start)", "type": "feature", "skill": "design", "status": "pending", "priority": "high", "effort_days": 5, "depends_on": [], "lane": "p-core", "complexity_score": 7, "completed_at": null},
+    {"id": "S2", "title": "onboarding-v2-retroactive refactor into v2/ subdir per V2 Rule. DS Residual: 9 raw literals (onboarding subset) + VoiceOver labels (start)", "type": "feature", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 3, "depends_on": ["S1"], "lane": "p-core", "complexity_score": 6, "completed_at": null},
+    {"id": "S3", "title": "Refine case-study presentation/readability (fitme-story side)", "type": "feature", "skill": "design", "status": "pending", "priority": "medium", "effort_days": 5, "depends_on": ["S2"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "S4", "title": "Code Connect (Figma ↔ code mapping, iOS Figma file). DS Residual: Figma old frame cleanup (finish)", "type": "feature", "skill": "design", "status": "pending", "priority": "high", "effort_days": 3, "depends_on": ["S3"], "lane": "p-core", "complexity_score": 6, "completed_at": null},
+    {"id": "S5", "title": "Research mode: complete Figma design + architecture for both surfaces (Phase 0 only). DS Residual: Android token output for Style Dictionary (architecture)", "type": "feature", "skill": "research", "status": "pending", "priority": "high", "effort_days": 5, "depends_on": ["S4"], "lane": "p-core", "complexity_score": 8, "completed_at": null},
+    {"id": "S6", "title": "Readiness-Aware Training Alert (Smart Reminders v2 layer enhancement)", "type": "feature", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 5, "depends_on": [], "lane": "p-core", "complexity_score": 7, "completed_at": null},
+    {"id": "S7", "title": "Smart Reminders ↔ Push Notifications v2 deep-link integration (enhancement)", "type": "enhancement", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 3, "depends_on": ["S6"], "lane": "p-core", "complexity_score": 5, "completed_at": null},
+    {"id": "S8", "title": "Medium Priority UX (light → hard, includes a11y sprint with VoiceOver finish + Dark Mode E2E + Dynamic Type). DS Residual: 9 raw literals (sweep) + VoiceOver (finish)", "type": "epic", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 15, "depends_on": ["S7"], "lane": "p-core", "complexity_score": 8, "completed_at": null},
+    {"id": "S9", "title": "Low Priority sweep (12 nice-to-haves, ordered by blast radius). DS Residual: 9 raw literals (final catchall)", "type": "epic", "skill": "dev", "status": "pending", "priority": "low", "effort_days": 10, "depends_on": ["S8"], "lane": "e-core", "complexity_score": 4, "completed_at": null}
+  ],
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-05-07T21:33:00Z",
+      "approved_by": "user",
+      "note": "Meta-feature opened to stress-test the v7.8.1 protocol against a 9-step roadmap (~10 weeks of compressed work). Backup snapshotted to ~/Documents/FitTracker2-backups/2026-05-07-pre-roadmap-stress-test/. Treated as an experiment per user instruction; data-collection mode active."
+    },
+    {
+      "from": "research",
+      "to": "complete",
+      "timestamp": "2026-05-07T19:10:00Z",
+      "approved_by": "user",
+      "note": "Experiment session-natural halt at ~92 min wall time. 1 sub-feature shipped (S3-G2, fitme-story PR #58 squash 8e595b3). 1 already-complete pre-session (S2). 1 partial blocked-external (S1). 6 not-started in this session (deferred). 8 v7.9 protocol candidates (F1-F8) surfaced — see case study §99. PRD-vs-execution gap analysis written. 0 kill criteria breached. Phases 1-7 of meta-feature explicitly merged into research → complete with documented latitude (the meta-feature itself is the experiment; sub-features ran the formal protocol)."
+    }
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": { "ux": null, "design": null },
+  "case_study": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
+  "case_study_showcase": null,
+  "data_collection_ledger": ".claude/features/roadmap-stress-test-2026-05-07/data-collection.json",
+  "rollback_snapshot": "/Users/regevbarak/Documents/FitTracker2-backups/2026-05-07-pre-roadmap-stress-test/",
+  "timing": {
+    "session_start": "2026-05-07T21:33:00Z",
+    "session_end": "2026-05-07T19:10:00Z",
+    "total_wall_time_minutes": 92,
+    "time_source": "measured",
+    "phases": {
+      "research": {
+        "started_at": "2026-05-07T21:33:00Z",
+        "ended_at": "2026-05-07T19:10:00Z",
+        "duration_minutes": 92,
+        "duration_note": "Experiment ran end-to-end as 'research' since the meta-feature is itself an experiment. Sub-feature S3-G2 ran its own internal phase split (research 7 + implementation 15 + testing 1 + review 1 + merge 0.3 + documentation 3)."
+      },
+      "complete": {"started_at": "2026-05-07T19:10:00Z"}
+    }
+  },
+  "cache_hits": [
+    {"timestamp": "2026-05-07T21:33:00Z", "cache_level": "L3", "skill": "pm-workflow", "cache_key": "feature-v7.8.1-stress-test-pattern", "hit_type": "exact", "task_context": "Adapted ucc-passkey-auth full-cycle protocol baseline as the comparison reference for this experiment"},
+    {"timestamp": "2026-05-07T22:00:00Z", "cache_level": "L2", "skill": "qa", "cache_key": "filesystem-vs-state.json-drift-detection", "hit_type": "adapted", "task_context": "Reused the make app-store-check pattern to detect S1 task-completion drift"}
+  ],
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.9,
+      "blast_radius": 0.7,
+      "novelty": 0.8,
+      "verification_difficulty": 0.7
+    },
+    "total": 3.1,
+    "tier_class": "A_high"
+  }
+}
