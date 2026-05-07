@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": null,
   "started_at": "2026-04-24T03:59:17Z",
-  "updated_at": "2026-05-07T07:10:06Z",
+  "updated_at": "2026-05-07T08:05:50Z",
   "events": [
     {
       "timestamp": "2026-04-24T03:59:17Z",
@@ -564,6 +564,91 @@
       "status": "archived",
       "recording_mode": "retroactive",
       "retroactive_reason": "v1 archive \u2014 current_phase value preserved from 2026-04-27 paused snapshot; logging now to satisfy v7.6 PHASE_TRANSITION_NO_LOG schema check on the staged _v1/state.json file"
+    },
+    {
+      "timestamp": "2026-05-07T07:46:50Z",
+      "event_type": "phase_approved",
+      "phase": "merge",
+      "summary": "Phase 7 Merge complete. PR #239 squash-merged to main 2026-05-07T07:44:57Z; merge commit 6bf417a. All 8 CI checks PASSED including pm-framework/pr-integrity (zero new findings vs main).",
+      "artifacts": [
+        "https://github.com/Regevba/FitTracker2/pull/239"
+      ],
+      "metrics": {
+        "pr_number": 239
+      },
+      "actor": "user",
+      "status": "merged",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T07:46:50Z",
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "summary": "Phase 8 Documentation opened. Writing source case study + showcase MDX + state.json baseline metrics + backlog update + cross-reference sync.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T08:02:34Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "pm-workflow:full-cycle:single-day-rebuild (L1)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L1",
+        "key": "pm-workflow:full-cycle:single-day-rebuild",
+        "hit_type": "adapted",
+        "skill": "pm-workflow"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T08:02:34Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "ux:phase-3-chain:new-feature (L1)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L1",
+        "key": "ux:phase-3-chain:new-feature",
+        "hit_type": "adapted",
+        "skill": "ux"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T08:02:34Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "design:build-figma-frames-2x2-grid (L1)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L1",
+        "key": "design:build-figma-frames-2x2-grid",
+        "hit_type": "adapted",
+        "skill": "design"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T08:05:50Z",
+      "event_type": "phase_approved",
+      "phase": "complete",
+      "summary": "PM lifecycle complete. push-notifications-v2 fully shipped: PR #239 merged, source case study + showcase MDX (slot 23c) published, baseline metrics recorded, first review 2026-05-14, smart-reminders consumer-side adaptation deferred to paired backlog enhancement.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "user",
+      "status": "complete",
+      "recording_mode": "contemporaneous"
     }
   ]
 }
