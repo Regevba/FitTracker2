@@ -66,6 +66,26 @@
         "FitTrackerUITests/MealLogUITests/testNutritionTabOpensMealEntryPath"
       ]
     },
+    "passkey_signin_surface": {
+      "description": "ucc-passkey-auth smoke (T27). Manual sim run per PRD §Test & Eval Requirements: deploy fitme-story to a Vercel preview with UCC_AUTH_MODE=both → run scripts/issue-bootstrap-token.ts <email> on a trusted machine to get a bootstrap token → open /control-room/sign-in/recover?bootstrap=<token> → register a platform authenticator (Touch ID on Mac sim) → confirm /control-room redirect → sign out (clear cookie) → revisit /control-room/sign-in → confirm conditional-UI autofill prompt → biometric tap → re-enter dashboard → /control-room/settings/devices → confirm row exists with lastUsedAt updated → click Revoke → confirm inline pill → tap ✓ → verify next sign-in attempt fails with unknown_credential. Manual rather than XCUITest because: (a) WebAuthn ceremony cannot be automated headlessly on real authenticators, (b) the test exercises the full cross-repo plumb from fitme-story API routes → Upstash Redis → audit-log JSONL → framework-health page. Verification artifact: runner pastes the audit-log entries captured during the run (auth_passkey_register_completed, auth_passkey_authenticate_succeeded, auth_passkey_revoked, plus session_minted/expired) and a screenshot of the framework-health AuditLogPanel showing the 3-stat row populated.",
+      "only_testing": [],
+      "manual_run": true,
+      "manual_steps": [
+        "Deploy fitme-story to a Vercel preview branch with UCC_AUTH_MODE=both, UCC_SESSION_SECRET, and UPSTASH_REDIS_* env vars set",
+        "Run pnpm tsx scripts/issue-bootstrap-token.ts <ops-email> on a trusted machine; copy the printed token",
+        "Open /control-room/sign-in/recover?bootstrap=<token> in Safari → tap 'Register this device' → Touch ID confirms",
+        "Assert redirect to /control-room/sign-in?registered=1",
+        "Click 'Unlock with passkey' → assert biometric prompt → assert redirect into /control-room",
+        "Sign out (clear cookie) → revisit /control-room → assert redirect to /control-room/sign-in",
+        "On sign-in page, focus the input → assert conditional-UI autofill prompt fires → biometric tap → assert redirect to /control-room",
+        "Open /control-room/settings/devices → assert row exists with label + lastUsedAt updated",
+        "Click Revoke → assert inline pill appears → tap ✓ → assert row strikethrough",
+        "Sign out → revisit /control-room/sign-in → attempt to sign in → assert error 'This passkey is no longer valid. Use the Recover flow.'",
+        "Open /control-room/framework → assert AuditLogPanel shows 3-stat row populated with realistic counts",
+        "Confirm GA4 events fired: auth_passkey_register_started, auth_passkey_register_completed, auth_passkey_authenticate_succeeded, auth_session_minted, auth_passkey_revoked",
+        "Confirm fitme-story/.local/ucc-auth-events.jsonl contains the corresponding events with credential_id_hash redacted (sha256:... only) and ip_class truncated to /24"
+      ]
+    },
     "notification_platform_v2": {
       "description": "Push-notifications-v2 platform-layer smoke (T16). Manual sim run per PRD §Test & Eval Requirements: install on simulator → complete first workout → assert NotificationPermissionPrimingView presents → tap Enable → grant OS permission → schedule a readinessAlert via debug menu (low score = workout-today path) → tap delivered notification → assert app routes to Home tab via DeepLinkRouter. Verifies the wire that v1 broke (UI-016) AND the deep-link consumer that smart-reminders left open. This profile is intentionally gated on manual run rather than XCUITest because (a) workout completion + permission grant + notification delivery require real iOS state, and (b) the parallel-clone simulator-hang env-flake (docs/case-studies/m-4-xcuitest-infrastructure-case-study.md) makes XCUITest-driven flows unreliable on hosted CI. Verification artifact: runner pastes the analytics events captured (notification_priming_shown, notification_permission_granted, deep_link_routed with outcome=succeeded) plus a screenshot of the priming sheet + post-tap Home view.",
       "only_testing": [],
