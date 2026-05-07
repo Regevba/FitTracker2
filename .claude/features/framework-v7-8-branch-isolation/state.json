@@ -1,23 +1,36 @@
 {
   "feature_name": "framework-v7-8-branch-isolation",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T05:01:33Z",
+  "updated": "2026-05-07T13:35:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
+  "work_subtype": "framework_feature",
+  "has_ui": false,
+  "requires_analytics": false,
+  "branch": "feature/framework-v7-8-branch-isolation",
   "scheduled_after": {
     "predecessor": "push-notifications",
     "signal": "push-notifications phase=complete",
     "captured_at": "2026-05-07",
-    "note": "User-declared queue position 2026-05-07: this feature is next-inline once push-notifications closes (currently phase=ux_or_integration, paused since 2026-04-27 for v7.7 freeze, eligible for resume since 2026-04-27). Do not start research/PRD work on framework-v7-8-branch-isolation until push-notifications transitions to current_phase=complete. The 2026-05-07 expansion to bundle FEATURE_CLOSURE_COMPLETENESS into this feature is captured in deliverables — both gates ship together."
+    "resolved_at": "2026-05-07T12:20:11Z",
+    "resolved_by_pr": 240,
+    "note": "Resume signal fired 2026-05-07T12:20 UTC when push-notifications closed via FT2 PR #240 (squash `81d6e07`). PM workflow resumed 2026-05-07T13:00 UTC. The 2026-05-07 expansion to bundle FEATURE_CLOSURE_COMPLETENESS into this feature is captured in deliverables — both gates ship together."
   },
   "phases": {
     "research": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-04-30T18:38:40Z",
-      "note": "Idea captured in docs/product/backlog.md High Priority (Architecture & Framework). Triggered by the HADF Phase 2 fingerprinting campaign (2026-04-30): a long-running launchd-driven background job was anchored to the canonical repo path instead of an isolated feature/ worktree; the wrapper's relative writes resolved against launchd's WorkingDirectory, canonical jsonl landed in the wrong tree, and the campaign required mid-flight isolation + restart + remerge."
+      "approved_at": "2026-05-07T13:35:00Z",
+      "approved_by": "user",
+      "note": "Idea captured 2026-04-30 from HADF Phase 2 incident. Synthesis completed 2026-05-07 from 3 prior research notes + 2026-05-07 reconcile session findings. All 7 open questions locked into design decisions (see locked_decisions block).",
+      "deliverable": ".claude/features/framework-v7-8-branch-isolation/research.md"
     },
-    "prd": {"status": "not_started"},
+    "prd": {
+      "status": "in_progress",
+      "started_at": "2026-05-07T13:35:00Z",
+      "note": "PRD authoring on feature/framework-v7-8-branch-isolation worktree per Q2 Mode B auto-isolation policy."
+    },
     "tasks": {"status": "not_started"},
     "ux_or_integration": {"status": "not_started"},
     "implementation": {"status": "not_started"},
@@ -26,9 +39,24 @@
     "merge": {"status": "not_started"},
     "documentation": {"status": "not_started"}
   },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-05-07T13:35:00Z",
+      "approved_by": "user",
+      "note": "Phase 0 (Research) approved. 7 open questions → 7 locked decisions captured in research.md §8.3 + state.json::locked_decisions. Advancing to Phase 1 (PRD) on isolated feature branch."
+    }
+  ],
   "timing": {
     "phases": {
-      "research": {"started_at": "2026-04-30T18:38:40Z"}
+      "research": {
+        "started_at": "2026-04-30T18:38:40Z",
+        "ended_at": "2026-05-07T13:35:00Z"
+      },
+      "prd": {
+        "started_at": "2026-05-07T13:35:00Z"
+      }
     }
   },
   "cache_hits": [],
@@ -67,13 +95,46 @@
       "**(added 2026-05-07)** Companion readout `make feature-completeness-audit` — system-wide scan across every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. For terminal features: full FEATURE_CLOSURE_COMPLETENESS check. For in-progress features: phase-appropriate schema check (e.g. PRD phase requires `success_metrics` in PRD; Implementation phase requires `tasks[]` populated). Outputs punch list grouped by feature. Replaces the manual cross-reference reconcile pass we just ran on 2026-05-07."
     ]
   },
-  "open_questions": [
-    "Should the gate fire on uncommitted edits to a feature's files when on main, or only on `current_phase` mutations?",
-    "How does the auto-create flow interact with `superpowers:using-git-worktrees` smart-directory selection?",
-    "What's the right escape hatch for legitimately-on-main work (e.g. integrity-check.py edits, framework-version bumps)? `BRANCH_ISOLATION_EXEMPT` allowlist? Per-feature opt-out?",
-    "Do we need to inspect `~/Library/LaunchAgents/*.plist` (and equivalent on Linux/CI) WorkingDirectory values, or is checking the running process cwd sufficient?",
-    "Should the cycle-time check audit `.claude/features/*/state.json` against `git log --all` to detect features whose entire history happened on main?",
-    "**(FEATURE_CLOSURE_COMPLETENESS, added 2026-05-07)** Should the gate require state.json↔case-study PR-list parity (every PR cited in state.json appears in the case study, AND vice versa), or only one direction? Strict parity catches case studies that omit cleanup/follow-up PRs but may flag legitimately-redundant chore PRs.",
-    "**(FEATURE_CLOSURE_COMPLETENESS, added 2026-05-07)** Should the `kill_criteria_resolution` field be required when `kill_criteria` is set, or optional? Required forces honest disclosure when kill criteria were never tripped or were superseded mid-flight (e.g. UCC's PRD §13 30-day rollback window deviation), but adds friction for features where kill criteria are still pending the post-launch review window."
-  ]
+  "open_questions": [],
+  "locked_decisions": {
+    "decided_at": "2026-05-07T13:30:00Z",
+    "decided_by": "user",
+    "decisions": [
+      {
+        "id": "Q1",
+        "topic": "When does BRANCH_ISOLATION_VIOLATION fire?",
+        "decision": "Two modes by work classification: (a) infra/framework/hub work → Mode B (every commit on framework-internal paths) with auto-isolation; (b) non-infra features → Mode C (current_phase mutations only) with per-feature opt-out. Infra paths: .githooks/*, .github/workflows/*, scripts/*, .claude/skills/*, .claude/shared/*, CLAUDE.md, docs/architecture/*, Makefile, plus any state.json with work_subtype framework_feature or work_type chore."
+      },
+      {
+        "id": "Q2",
+        "topic": "Auto-create flow on gate fire?",
+        "decision": "Option A — auto-invoke superpowers:using-git-worktrees skill for both modes. Skill's smart-directory selection picks placement (FitTracker2-{feature} for features, FitTracker2-infra-{shortname} for infra). Commit blocked; user re-stages from inside the new worktree."
+      },
+      {
+        "id": "Q3",
+        "topic": "Exemption mechanism?",
+        "decision": "Per-feature opt-out via state.json::isolation_opt_out: true (default false). Mandatory state.json::isolation_opt_out_reason when opt-out is true. INFRA OVERRIDE: infra/framework work ignores isolation_opt_out (the framework cannot opt itself out of its own enforcement). Operator can use `git commit --no-verify` for true emergency bypass; this is recorded in Mechanism A coverage as `manual_bypass`."
+      },
+      {
+        "id": "Q4",
+        "topic": "launchd plist inspection vs process cwd?",
+        "decision": "Primary (mandatory, cross-platform): process cwd check at write-time via Python wrapper around state.json/log writes. Reject when os.getcwd() doesn't match expected worktree (resolved from state.json::branch + worktree registry). Secondary (optional, macOS-only, cycle-time only): scan ~/Library/LaunchAgents/*.plist for misconfigurations. Flag as advisory `BRANCH_ISOLATION_LAUNCHD_DRIFT` (does not block). Skipped on Linux/CI."
+      },
+      {
+        "id": "Q5",
+        "topic": "Cycle-time audit for 'all on main' history?",
+        "decision": "Both — defense in depth. Write-time mirror (Q4 primary) + cycle-time scan auditing `.claude/features/*/state.json` against `git log --all --oneline -- path/to/feature/` to detect features whose entire git history happened on main. Flagged as advisory `BRANCH_ISOLATION_HISTORICAL`. Forward-only: applies only to features with created_at >= ship_date of this gate."
+      },
+      {
+        "id": "Q6",
+        "topic": "PR-list parity direction (FEATURE_CLOSURE_COMPLETENESS)?",
+        "decision": "Bidirectional. (a) state.json → case study: every PR cited in tasks[].pr_number / phases.merge.pr_number / tasks[].related_prs must appear in case study body (regex match `PR #N` / `pull/N`) or `related_prs` frontmatter. (b) case study → state.json: every PR referenced in the case study via the same regex must appear in state.json's PR list. Mismatches block closure commit. Override: pr_citation_exempt frontmatter listing exempted PR numbers with reason."
+      },
+      {
+        "id": "Q7",
+        "topic": "kill_criteria_resolution required when kill_criteria set?",
+        "decision": "Yes, required + pre-merge-review check. (a) Pre-commit gate: if kill_criteria non-empty in case study frontmatter on current_phase=complete, then kill_criteria_resolution must also be non-empty. Empty → block. (b) /ux pre-merge-review and /design pre-merge-review skills extended: if kill_criteria non-empty, verify kill_criteria_resolution is non-empty AND substantively addresses each kill threshold (heuristic: mentions at least 1 of the kill thresholds OR contains words 'not tripped' / 'deferred' / 'superseded'). Failure → state.json::pre_merge_review.{ux,design}: blocked."
+      }
+    ]
+  }
 }

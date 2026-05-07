@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-05T04:17:25.828455Z",
+  "updated_at": "2026-05-07T13:33:02Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -29,6 +29,31 @@
       "artifacts": [
         ".claude/features/framework-v7-8-branch-isolation/state.json"
       ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T13:33:02Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved by user. 7 open questions locked into design decisions: Mode B for infra (every commit) + Mode C for non-infra (current_phase mutations); auto-invoke superpowers:using-git-worktrees on gate fire; per-feature isolation_opt_out with infra override; process cwd at write-time + macOS plist scan as advisory; bidirectional PR-list parity for FEATURE_CLOSURE_COMPLETENESS; kill_criteria_resolution required when kill_criteria set + pre-merge-review verification. Synthesis from 3 prior research notes.",
+      "artifacts": [
+        ".claude/features/framework-v7-8-branch-isolation/research.md",
+        ".claude/features/framework-v7-8-branch-isolation/state.json"
+      ],
+      "metrics": {},
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T13:33:02Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened after user approval of Phase 0 exit criteria. PRD scope: lock 7 design decisions into machine-verifiable specs (gate triggers, schema additions, exemption mechanisms, regex patterns, override flows). Authored against research.md decisions section.",
+      "artifacts": [],
       "metrics": {},
       "actor": "claude-opus-4-7",
       "status": "recorded",
