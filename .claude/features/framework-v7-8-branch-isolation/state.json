@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "implementation",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T15:20:00Z",
+  "updated": "2026-05-07T15:35:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -61,7 +61,7 @@
         "A": "completed",
         "B": "completed",
         "C": "completed",
-        "D": "pending",
+        "D": "completed",
         "E": "pending",
         "F": "pending",
         "G": "pending",
@@ -475,7 +475,7 @@
       "title": "Implement BRANCH_ISOLATION_HISTORICAL advisory in integrity-check.py",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
@@ -483,14 +483,15 @@
       ],
       "lane": "E-core",
       "model_tier": "sonnet",
-      "block": "D"
+      "block": "D",
+      "completed_at": "2026-05-07T15:35:00Z"
     },
     {
       "id": "T18",
       "title": "Implement BRANCH_ISOLATION_LAUNCHD_DRIFT advisory (macOS-only, gracefully skipped on Linux/CI)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [
@@ -498,14 +499,15 @@
       ],
       "lane": "E-core",
       "model_tier": "sonnet",
-      "block": "D"
+      "block": "D",
+      "completed_at": "2026-05-07T15:35:00Z"
     },
     {
       "id": "T19",
       "title": "Implement cycle-time mirror of FEATURE_CLOSURE_COMPLETENESS",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.3,
       "depends_on": [
@@ -513,7 +515,8 @@
       ],
       "lane": "E-core",
       "model_tier": "sonnet",
-      "block": "D"
+      "block": "D",
+      "completed_at": "2026-05-07T15:35:00Z"
     },
     {
       "id": "T20",

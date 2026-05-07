@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import re
 import subprocess
@@ -439,6 +440,248 @@ def check_cache_hits_auto_instrumentation_inactive() -> list[dict]:
     return findings
 
 
+def check_branch_isolation_historical() -> list[dict]:
+    """T17 (Block D, framework-v7-8-branch-isolation): forward-only advisory.
+
+    Audits .claude/features/<f>/state.json against `git log --all --oneline -- path/`
+    to detect features whose entire git history happened on `main` (no
+    feature/<name> branch ever existed). Forward-only: applies only to
+    features with created_at >= 2026-05-07 (this gate's ship date).
+
+    Severity: ADVISORY. Doesn't affect exit code. Surfaces post-hoc the
+    failure mode that BRANCH_ISOLATION_VIOLATION (write-time) prevents
+    going forward — useful for catching --no-verify bypasses or pre-gate
+    ship history.
+    """
+    findings: list[dict] = []
+    SHIP_DATE = "2026-05-07"
+    features_dir = REPO_ROOT / ".claude" / "features"
+    if not features_dir.exists():
+        return findings
+
+    for state_path in sorted(features_dir.glob("*/state.json")):
+        feature = state_path.parent.name
+        try:
+            state = json.loads(state_path.read_text())
+        except json.JSONDecodeError:
+            continue
+
+        # Forward-only: skip pre-ship-date features
+        created = state.get("created_at") or state.get("created", "")
+        if not created or created[:10] < SHIP_DATE:
+            continue
+
+        # Honor opt-out
+        if state.get("isolation_opt_out") is True:
+            continue
+
+        # Skip features that have a recorded merge PR — the PR existed on a
+        # feature branch even if squash-merge erased the attribution from
+        # `git log --source`. The advisory targets features that never had
+        # a PR (work happened entirely on main, no isolation), not those
+        # whose branches were cleanly merged + deleted.
+        merge_phase = (state.get("phases") or {}).get("merge") or {}
+        if isinstance(merge_phase, dict) and isinstance(merge_phase.get("pr_number"), int):
+            continue
+
+        # Also skip features that have been pre-PM-workflow-backfilled or
+        # otherwise tagged with an exempt case_study_type — those were
+        # historically reconstructed and don't claim isolation discipline.
+        cs_type = state.get("case_study_type", "")
+        if cs_type in ("pre_pm_workflow_backfill", "no_case_study_required",
+                       "roundup", "framework_meta_retroactive"):
+            continue
+
+        # Get all branches that touched this feature's directory
+        feature_dir_relative = state_path.parent.relative_to(REPO_ROOT).as_posix()
+        try:
+            out = subprocess.check_output(
+                ["git", "log", "--all", "--oneline", "--source",
+                 "--", feature_dir_relative],
+                cwd=REPO_ROOT,
+                text=True,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception:
+            continue
+
+        # Parse: each line starts with "<sha> <ref>" via --source. We want
+        # to know if ANY commit landed on a feature/<name> branch.
+        on_feature_branch = False
+        for line in out.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            # Format with --source: "abc1234 refs/heads/feature/name commit message"
+            # Newer git uses "<sha>\t<ref>" or similar — parse loosely.
+            parts = line.split(None, 2)
+            if len(parts) >= 2:
+                ref = parts[1] if "/" in parts[1] else ""
+                if "feature/" in ref or "chore/" in ref:
+                    on_feature_branch = True
+                    break
+
+        if not on_feature_branch:
+            findings.append({
+                "feature": feature,
+                "severity": "ADVISORY",
+                "code": "BRANCH_ISOLATION_HISTORICAL",
+                "message": (
+                    f"{feature}: feature created {created[:10]} (>= ship date "
+                    f"{SHIP_DATE}) but git history shows no feature/* or "
+                    f"chore/* branch touched its files. Likely committed "
+                    f"directly on main, bypassing branch isolation. Set "
+                    f"state.json::isolation_opt_out: true with a reason to "
+                    f"silence this advisory if intentional."
+                ),
+            })
+    return findings
+
+
+def check_branch_isolation_launchd_drift() -> list[dict]:
+    """T18 (Block D, framework-v7-8-branch-isolation): macOS-only advisory.
+
+    Scans ~/Library/LaunchAgents/*.plist files for jobs that reference
+    scripts writing to .claude/features/<feature>/. Verifies their
+    WorkingDirectory key resolves to the expected worktree path (per
+    state.json::worktree_path). Skipped on Linux/CI.
+
+    Triggered by the HADF Phase 2 incident (2026-04-30): launchd plist
+    pointed at canonical repo path; long-running script wrote to wrong
+    tree. This catches the misconfiguration upstream of the actual write.
+    """
+    findings: list[dict] = []
+    if sys.platform != "darwin":
+        return findings
+
+    launchagents = Path.home() / "Library" / "LaunchAgents"
+    if not launchagents.exists():
+        return findings
+
+    features_dir = REPO_ROOT / ".claude" / "features"
+    if not features_dir.exists():
+        return findings
+
+    # Build map of feature → expected worktree
+    expected_worktrees: dict[str, str] = {}
+    for state_path in features_dir.glob("*/state.json"):
+        try:
+            state = json.loads(state_path.read_text())
+        except json.JSONDecodeError:
+            continue
+        wt = state.get("worktree_path")
+        if isinstance(wt, str) and wt:
+            expected_worktrees[state_path.parent.name] = wt
+
+    if not expected_worktrees:
+        return findings
+
+    try:
+        import plistlib
+    except ImportError:
+        return findings
+
+    for plist_path in launchagents.glob("*.plist"):
+        try:
+            with open(plist_path, "rb") as f:
+                plist = plistlib.load(f)
+        except (plistlib.InvalidFileException, OSError):
+            continue
+
+        program_args = plist.get("ProgramArguments", []) or []
+        wd = plist.get("WorkingDirectory")
+        if not isinstance(wd, str):
+            continue
+
+        # Check if any program arg references a feature directory
+        all_args_str = " ".join(str(a) for a in program_args)
+        for feature, expected_wt in expected_worktrees.items():
+            if f".claude/features/{feature}" in all_args_str:
+                if not wd.startswith(expected_wt):
+                    findings.append({
+                        "feature": feature,
+                        "severity": "ADVISORY",
+                        "code": "BRANCH_ISOLATION_LAUNCHD_DRIFT",
+                        "message": (
+                            f"{feature}: launchd plist {plist_path.name} "
+                            f"references this feature in ProgramArguments but "
+                            f"WorkingDirectory ({wd}) does not start with the "
+                            f"expected worktree ({expected_wt}). Relative writes "
+                            f"from this job will resolve against the wrong tree. "
+                            f"This is the same failure mode that caused the "
+                            f"HADF Phase 2 incident (2026-04-30)."
+                        ),
+                    })
+    return findings
+
+
+def check_feature_closure_completeness_cycle() -> list[dict]:
+    """T19 (Block D): cycle-time mirror of FEATURE_CLOSURE_COMPLETENESS.
+
+    Re-runs the same predicates as the write-time gate against every
+    feature with current_phase=complete. Catches --no-verify bypasses
+    and any drift introduced post-merge. Forward-only: applies to features
+    with created_at >= 2026-05-07.
+
+    Severity: ADVISORY in v7.8; promoted to gating findings in v7.9.
+    """
+    findings: list[dict] = []
+    SHIP_DATE = "2026-05-07"
+    features_dir = REPO_ROOT / ".claude" / "features"
+    if not features_dir.exists():
+        return findings
+
+    # Reuse the predicate from check-state-schema.py
+    try:
+        spec_module = importlib.util.spec_from_file_location(
+            "_check_schema",
+            REPO_ROOT / "scripts" / "check-state-schema.py",
+        )
+        if spec_module is None or spec_module.loader is None:
+            return findings
+        css = importlib.util.module_from_spec(spec_module)
+        spec_module.loader.exec_module(css)
+    except Exception:
+        return findings
+
+    for state_path in sorted(features_dir.glob("*/state.json")):
+        try:
+            state = json.loads(state_path.read_text())
+        except json.JSONDecodeError:
+            continue
+
+        if state.get("current_phase") != "complete":
+            continue
+
+        # Forward-only
+        created = state.get("created_at") or state.get("created", "")
+        if not created or created[:10] < SHIP_DATE:
+            continue
+
+        # Run the predicate (force enforce_transition=True so it executes)
+        # We bypass the diff-based "is this a transition?" check by setting
+        # enforce_transition and reading the state directly.
+        try:
+            sub_findings = css.check_feature_closure_completeness(
+                state, state_path, coverage=None, enforce_transition=True,
+            )
+        except Exception:
+            continue
+
+        for sf in sub_findings:
+            findings.append({
+                "feature": state_path.parent.name,
+                "severity": "ADVISORY",
+                "code": "FEATURE_CLOSURE_COMPLETENESS",
+                "message": (
+                    f"{state_path.parent.name}: cycle-time mirror detected "
+                    f"closure-completeness violation ({sf.get('violation', 'unknown')}). "
+                    f"{sf.get('remediation', '')}"
+                ),
+            })
+    return findings
+
+
 def check_tier_tags_advisory() -> list[dict]:
     """Run validate-tier-tags.py; emit findings as ADVISORY (not failure).
 
@@ -561,7 +804,10 @@ def build_snapshot(snapshot_trigger: str) -> dict:
     # for observability but NOT counted in finding_count (preserves regression
     # detection / exit code).
     advisory_findings = (
-        check_tier_tags_advisory()
+        check_branch_isolation_historical()
+        + check_branch_isolation_launchd_drift()
+        + check_feature_closure_completeness_cycle()
+        + check_tier_tags_advisory()
         + check_cache_hits_auto_instrumentation_inactive()
     )
     all_findings = findings + advisory_findings
