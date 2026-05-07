@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "prd",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T13:50:00Z",
+  "updated": "2026-05-07T13:55:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -151,5 +151,6 @@
         "decision": "Yes, required + pre-merge-review check. (a) Pre-commit gate: if kill_criteria non-empty in case study frontmatter on current_phase=complete, then kill_criteria_resolution must also be non-empty. Empty \u2192 block. (b) /ux pre-merge-review and /design pre-merge-review skills extended: if kill_criteria non-empty, verify kill_criteria_resolution is non-empty AND substantively addresses each kill threshold (heuristic: mentions at least 1 of the kill thresholds OR contains words 'not tripped' / 'deferred' / 'superseded'). Failure \u2192 state.json::pre_merge_review.{ux,design}: blocked."
       }
     ]
-  }
+  },
+  "github_issue_number": 243
 }
