@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-8-branch-isolation",
   "current_phase": "prd",
   "created_at": "2026-04-30T18:38:40Z",
-  "updated": "2026-05-07T13:35:00Z",
+  "updated": "2026-05-07T13:50:00Z",
   "framework_version": "v7.8",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -15,7 +15,7 @@
     "captured_at": "2026-05-07",
     "resolved_at": "2026-05-07T12:20:11Z",
     "resolved_by_pr": 240,
-    "note": "Resume signal fired 2026-05-07T12:20 UTC when push-notifications closed via FT2 PR #240 (squash `81d6e07`). PM workflow resumed 2026-05-07T13:00 UTC. The 2026-05-07 expansion to bundle FEATURE_CLOSURE_COMPLETENESS into this feature is captured in deliverables — both gates ship together."
+    "note": "Resume signal fired 2026-05-07T12:20 UTC when push-notifications closed via FT2 PR #240 (squash `81d6e07`). PM workflow resumed 2026-05-07T13:00 UTC. The 2026-05-07 expansion to bundle FEATURE_CLOSURE_COMPLETENESS into this feature is captured in deliverables \u2014 both gates ship together."
   },
   "phases": {
     "research": {
@@ -29,15 +29,30 @@
     "prd": {
       "status": "in_progress",
       "started_at": "2026-05-07T13:35:00Z",
-      "note": "PRD authoring on feature/framework-v7-8-branch-isolation worktree per Q2 Mode B auto-isolation policy."
+      "note": "PRD authoring on feature/framework-v7-8-branch-isolation worktree per Q2 Mode B auto-isolation policy.",
+      "path": ".claude/features/framework-v7-8-branch-isolation/prd.md"
     },
-    "tasks": {"status": "not_started"},
-    "ux_or_integration": {"status": "not_started"},
-    "implementation": {"status": "not_started"},
-    "test": {"status": "not_started"},
-    "review": {"status": "not_started"},
-    "merge": {"status": "not_started"},
-    "documentation": {"status": "not_started"}
+    "tasks": {
+      "status": "not_started"
+    },
+    "ux_or_integration": {
+      "status": "not_started"
+    },
+    "implementation": {
+      "status": "not_started"
+    },
+    "test": {
+      "status": "not_started"
+    },
+    "review": {
+      "status": "not_started"
+    },
+    "merge": {
+      "status": "not_started"
+    },
+    "documentation": {
+      "status": "not_started"
+    }
   },
   "transitions": [
     {
@@ -45,7 +60,7 @@
       "to": "prd",
       "timestamp": "2026-05-07T13:35:00Z",
       "approved_by": "user",
-      "note": "Phase 0 (Research) approved. 7 open questions → 7 locked decisions captured in research.md §8.3 + state.json::locked_decisions. Advancing to Phase 1 (PRD) on isolated feature branch."
+      "note": "Phase 0 (Research) approved. 7 open questions \u2192 7 locked decisions captured in research.md \u00a78.3 + state.json::locked_decisions. Advancing to Phase 1 (PRD) on isolated feature branch."
     }
   ],
   "timing": {
@@ -91,8 +106,8 @@
       "Pre-state.json-mutation guard for scheduled jobs: verify `branch + cwd + WorkingDirectory` resolve to the expected `.worktrees/<name>` (or sibling `/Volumes/DevSSD/FitTracker2-*`) tree before any write",
       "`make verify-isolation` readout listing every active feature with its expected branch + worktree path + actual git/launchd state",
       "Documentation of which jobs/skills are exempt (e.g. framework-level meta-work that legitimately runs on main)",
-      "**(added 2026-05-07)** Companion gate `FEATURE_CLOSURE_COMPLETENESS` (write-time + readout-time) — fires on commits that transition `current_phase` → `complete` with a populated `case_study` link. Validates the state.json ↔ case study cross-reference is fully populated: every required frontmatter field (`date_written`, `dispatch_pattern`, `success_metrics`, `kill_criteria`, `framework_version`, `work_type`, `tier_tags_present`) is present and non-empty; state.json's PR list (`tasks[].pr_number`, `phases.merge.pr_number`) is cited in the case study; numeric claims carry T1/T2/T3 tier tags inline or in `key_numbers`. Promotes the 5 documentation-debt fields from advisory to write-time gate. Trigger memory: 2026-05-07 reconcile session that surfaced 5 missing frontmatter fields on UCC + import-training-plan AFTER both features had shipped (current detection via `make documentation-debt` runs only post-hoc).",
-      "**(added 2026-05-07)** Companion readout `make feature-completeness-audit` — system-wide scan across every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. For terminal features: full FEATURE_CLOSURE_COMPLETENESS check. For in-progress features: phase-appropriate schema check (e.g. PRD phase requires `success_metrics` in PRD; Implementation phase requires `tasks[]` populated). Outputs punch list grouped by feature. Replaces the manual cross-reference reconcile pass we just ran on 2026-05-07."
+      "**(added 2026-05-07)** Companion gate `FEATURE_CLOSURE_COMPLETENESS` (write-time + readout-time) \u2014 fires on commits that transition `current_phase` \u2192 `complete` with a populated `case_study` link. Validates the state.json \u2194 case study cross-reference is fully populated: every required frontmatter field (`date_written`, `dispatch_pattern`, `success_metrics`, `kill_criteria`, `framework_version`, `work_type`, `tier_tags_present`) is present and non-empty; state.json's PR list (`tasks[].pr_number`, `phases.merge.pr_number`) is cited in the case study; numeric claims carry T1/T2/T3 tier tags inline or in `key_numbers`. Promotes the 5 documentation-debt fields from advisory to write-time gate. Trigger memory: 2026-05-07 reconcile session that surfaced 5 missing frontmatter fields on UCC + import-training-plan AFTER both features had shipped (current detection via `make documentation-debt` runs only post-hoc).",
+      "**(added 2026-05-07)** Companion readout `make feature-completeness-audit` \u2014 system-wide scan across every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. For terminal features: full FEATURE_CLOSURE_COMPLETENESS check. For in-progress features: phase-appropriate schema check (e.g. PRD phase requires `success_metrics` in PRD; Implementation phase requires `tasks[]` populated). Outputs punch list grouped by feature. Replaces the manual cross-reference reconcile pass we just ran on 2026-05-07."
     ]
   },
   "open_questions": [],
@@ -103,12 +118,12 @@
       {
         "id": "Q1",
         "topic": "When does BRANCH_ISOLATION_VIOLATION fire?",
-        "decision": "Two modes by work classification: (a) infra/framework/hub work → Mode B (every commit on framework-internal paths) with auto-isolation; (b) non-infra features → Mode C (current_phase mutations only) with per-feature opt-out. Infra paths: .githooks/*, .github/workflows/*, scripts/*, .claude/skills/*, .claude/shared/*, CLAUDE.md, docs/architecture/*, Makefile, plus any state.json with work_subtype framework_feature or work_type chore."
+        "decision": "Two modes by work classification: (a) infra/framework/hub work \u2192 Mode B (every commit on framework-internal paths) with auto-isolation; (b) non-infra features \u2192 Mode C (current_phase mutations only) with per-feature opt-out. Infra paths: .githooks/*, .github/workflows/*, scripts/*, .claude/skills/*, .claude/shared/*, CLAUDE.md, docs/architecture/*, Makefile, plus any state.json with work_subtype framework_feature or work_type chore."
       },
       {
         "id": "Q2",
         "topic": "Auto-create flow on gate fire?",
-        "decision": "Option A — auto-invoke superpowers:using-git-worktrees skill for both modes. Skill's smart-directory selection picks placement (FitTracker2-{feature} for features, FitTracker2-infra-{shortname} for infra). Commit blocked; user re-stages from inside the new worktree."
+        "decision": "Option A \u2014 auto-invoke superpowers:using-git-worktrees skill for both modes. Skill's smart-directory selection picks placement (FitTracker2-{feature} for features, FitTracker2-infra-{shortname} for infra). Commit blocked; user re-stages from inside the new worktree."
       },
       {
         "id": "Q3",
@@ -123,17 +138,17 @@
       {
         "id": "Q5",
         "topic": "Cycle-time audit for 'all on main' history?",
-        "decision": "Both — defense in depth. Write-time mirror (Q4 primary) + cycle-time scan auditing `.claude/features/*/state.json` against `git log --all --oneline -- path/to/feature/` to detect features whose entire git history happened on main. Flagged as advisory `BRANCH_ISOLATION_HISTORICAL`. Forward-only: applies only to features with created_at >= ship_date of this gate."
+        "decision": "Both \u2014 defense in depth. Write-time mirror (Q4 primary) + cycle-time scan auditing `.claude/features/*/state.json` against `git log --all --oneline -- path/to/feature/` to detect features whose entire git history happened on main. Flagged as advisory `BRANCH_ISOLATION_HISTORICAL`. Forward-only: applies only to features with created_at >= ship_date of this gate."
       },
       {
         "id": "Q6",
         "topic": "PR-list parity direction (FEATURE_CLOSURE_COMPLETENESS)?",
-        "decision": "Bidirectional. (a) state.json → case study: every PR cited in tasks[].pr_number / phases.merge.pr_number / tasks[].related_prs must appear in case study body (regex match `PR #N` / `pull/N`) or `related_prs` frontmatter. (b) case study → state.json: every PR referenced in the case study via the same regex must appear in state.json's PR list. Mismatches block closure commit. Override: pr_citation_exempt frontmatter listing exempted PR numbers with reason."
+        "decision": "Bidirectional. (a) state.json \u2192 case study: every PR cited in tasks[].pr_number / phases.merge.pr_number / tasks[].related_prs must appear in case study body (regex match `PR #N` / `pull/N`) or `related_prs` frontmatter. (b) case study \u2192 state.json: every PR referenced in the case study via the same regex must appear in state.json's PR list. Mismatches block closure commit. Override: pr_citation_exempt frontmatter listing exempted PR numbers with reason."
       },
       {
         "id": "Q7",
         "topic": "kill_criteria_resolution required when kill_criteria set?",
-        "decision": "Yes, required + pre-merge-review check. (a) Pre-commit gate: if kill_criteria non-empty in case study frontmatter on current_phase=complete, then kill_criteria_resolution must also be non-empty. Empty → block. (b) /ux pre-merge-review and /design pre-merge-review skills extended: if kill_criteria non-empty, verify kill_criteria_resolution is non-empty AND substantively addresses each kill threshold (heuristic: mentions at least 1 of the kill thresholds OR contains words 'not tripped' / 'deferred' / 'superseded'). Failure → state.json::pre_merge_review.{ux,design}: blocked."
+        "decision": "Yes, required + pre-merge-review check. (a) Pre-commit gate: if kill_criteria non-empty in case study frontmatter on current_phase=complete, then kill_criteria_resolution must also be non-empty. Empty \u2192 block. (b) /ux pre-merge-review and /design pre-merge-review skills extended: if kill_criteria non-empty, verify kill_criteria_resolution is non-empty AND substantively addresses each kill threshold (heuristic: mentions at least 1 of the kill thresholds OR contains words 'not tripped' / 'deferred' / 'superseded'). Failure \u2192 state.json::pre_merge_review.{ux,design}: blocked."
       }
     ]
   }
