@@ -3,10 +3,10 @@
   "feature": "framework-v7-8-branch-isolation",
   "title": "framework v7 8 branch isolation",
   "work_type": "Feature",
-  "current_phase": "review",
+  "current_phase": "merge",
   "framework_version": null,
   "started_at": "2026-04-30T18:41:53Z",
-  "updated_at": "2026-05-07T16:55:00Z",
+  "updated_at": "2026-05-07T17:05:00Z",
   "events": [
     {
       "timestamp": "2026-04-30T18:41:53Z",
@@ -181,6 +181,24 @@
       "event_type": "phase_started",
       "phase": "review",
       "summary": "Phase 6 (Review) opened. Pre-merge code review + /ux + /design pre-merge-review checks against the feature branch.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:05:00Z",
+      "event_type": "phase_approved",
+      "phase": "review",
+      "summary": "Phase 6 (Review) closed. Pre-merge-reviews N/A (has_ui:false). Risk surface low. 14 commits, 25 files, +4548/-38. 0 high-risk iOS files touched. Advisory mode; full backward compat verified.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:05:00Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Phase 7 (Merge) opened. Creating PR + waiting for CI before squash-merge.",
       "actor": "claude-opus-4-7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
