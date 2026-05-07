@@ -45,7 +45,7 @@
       "v2_count": 16
     },
     "ux_or_integration": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-07T04:44:25Z",
       "type": "ux",
       "ux_research_path": ".claude/features/push-notifications/ux-research.md",
@@ -313,73 +313,73 @@
       "title": "NotificationGateway core (auth + dispatch + cap audit)",
       "type": "service",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 1.0,
       "lane": "P-core",
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T2",
       "title": "NotificationConsumerRegistry",
       "type": "service",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "lane": "P-core",
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T3",
       "title": "DeepLinkRouter (nested verb-noun grammar + @Published nav state)",
       "type": "service",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 1.0,
       "lane": "P-core",
       "depends_on": [
         "T2"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T4",
       "title": "Revive NotificationPermissionPrimingView (un-mark HISTORICAL, wire to Gateway)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "lane": "E-core",
       "depends_on": [
         "T1"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T5",
       "title": "ReadinessAlertObserver (Combine + threshold + confidence gate + de-dupe)",
       "type": "service",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "lane": "P-core",
       "depends_on": [
         "T1"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T6",
       "title": "FitTrackerApp wiring (platform init + first-workout trigger + onOpenURL + observe pendingDeepLink)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "lane": "P-core",
@@ -390,94 +390,94 @@
         "T4",
         "T5"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T7",
       "title": "Settings entry point for priming view",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.25,
       "lane": "E-core",
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T8",
       "title": "One-time notification_settings_deeplink_shown banner after denial",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.25,
       "lane": "E-core",
       "depends_on": [
         "T4"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T9",
       "title": "Mark v1 NotificationService stack HISTORICAL (4 files, banner header)",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "effort_days": 0.1,
       "lane": "E-core",
       "depends_on": [
         "T1"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T10",
       "title": "Delete dead DeepLinkHandler.swift (14-LOC targetTab)",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "effort_days": 0.05,
       "lane": "E-core",
       "depends_on": [
         "T3"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T11",
       "title": "Drop unused v1 AnalyticsEvent declarations + taxonomy CSV updates",
       "type": "analytics",
       "skill": "analytics",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.25,
       "lane": "E-core",
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T12",
       "title": "Add deep_link_routed event + AnalyticsParam keys + taxonomy CSV row",
       "type": "analytics",
       "skill": "analytics",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.1,
       "lane": "E-core",
       "depends_on": [],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T13",
       "title": "Unit tests (Gateway/Router/Registry/ReadinessAlertTrigger, \u226520 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 1.0,
       "lane": "P-core",
@@ -487,28 +487,28 @@
         "T3",
         "T5"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T14",
       "title": "Reachability gate tests (3 cases: priming reach + URL routing + SwiftUI subscriber)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "lane": "P-core",
       "depends_on": [
         "T6"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T15",
       "title": "Build verification + project.pbxproj updates (5 added, 1 deleted)",
       "type": "test",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.25,
       "lane": "E-core",
@@ -521,21 +521,21 @@
         "T13",
         "T14"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     },
     {
       "id": "T16",
       "title": "Runtime smoke profile notification_platform_v2",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "lane": "E-core",
       "depends_on": [
         "T15"
       ],
-      "completed_at": null
+      "completed_at": "2026-05-07T06:41:20Z"
     }
   ],
   "_meta": {
