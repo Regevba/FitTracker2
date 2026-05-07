@@ -1,11 +1,12 @@
 {
   "feature": "push-notifications",
-  "case_study": "docs/case-studies/push-notifications-case-study.md",
-  "case_study_showcase": "TODO: assigned at Phase 9 publication",
+  "case_study": "docs/case-studies/push-notifications-v2-case-study.md",
+  "case_study_v1": "docs/case-studies/push-notifications-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/23c-push-notifications-v2.mdx",
   "created_at": "2026-05-07T03:47:27Z",
-  "updated": "2026-05-07T06:41:20Z",
+  "updated": "2026-05-07T08:02:34Z",
   "branch": "feature/push-notifications-v2",
-  "current_phase": "review",
+  "current_phase": "complete",
   "framework_version": "v7.8",
   "agent_manifest": {
     "reads": [],
@@ -36,7 +37,13 @@
       "path": "docs/product/prd/push-notifications.md",
       "analytics_spec_complete": true
     },
-    "tasks": {"status": "approved", "started_at": "2026-05-07T04:38:06Z", "approved_at": "2026-05-07T04:44:25Z", "task_file": ".claude/features/push-notifications/tasks.md", "v2_count": 16},
+    "tasks": {
+      "status": "approved",
+      "started_at": "2026-05-07T04:38:06Z",
+      "approved_at": "2026-05-07T04:44:25Z",
+      "task_file": ".claude/features/push-notifications/tasks.md",
+      "v2_count": 16
+    },
     "ux_or_integration": {
       "status": "in_progress",
       "started_at": "2026-05-07T04:44:25Z",
@@ -46,14 +53,26 @@
       "ux_validate_path": ".claude/features/push-notifications/ux-validate-2026-05-07.md",
       "ux_preflight_path": ".claude/features/push-notifications/ux-preflight-audit-2026-05-07.md",
       "preflight_passed": true,
-      "ux_findings": {"p0": 0, "p1": 1, "p2": 0, "p1_resolved_pre_publish": 1},
+      "ux_findings": {
+        "p0": 0,
+        "p1": 1,
+        "p2": 0,
+        "p1_resolved_pre_publish": 1
+      },
       "design_preflight_path": ".claude/features/push-notifications/design-preflight-2026-05-07.md",
       "design_preflight_passed": true,
-      "design_findings": {"p0": 0, "p1": 0, "p2": 4},
-      "figma_bridge": {"mcp_connected": true, "library_accessible": true},
+      "design_findings": {
+        "p0": 0,
+        "p1": 0,
+        "p2": 4
+      },
+      "figma_bridge": {
+        "mcp_connected": true,
+        "library_accessible": true
+      },
       "design_audit_path": ".claude/features/push-notifications/design-audit-2026-05-07.md",
       "design_audit_passed": true,
-      "compliance_decision": "approved — 4 new components (NotificationGateway/DeepLinkRouter/NotificationConsumerRegistry/SettingsDeepLinkBanner) justified as platform-layer additions; merge to main with this feature per design-system evolution rule",
+      "compliance_decision": "approved \u2014 4 new components (NotificationGateway/DeepLinkRouter/NotificationConsumerRegistry/SettingsDeepLinkBanner) justified as platform-layer additions; merge to main with this feature per design-system evolution rule",
       "approved_at": "2026-05-07T05:48:35Z"
     },
     "implementation": {
@@ -82,11 +101,14 @@
       "note": "Phase 5 fast-pass: tests already written + executed during Phase 4 implementation per the v4.X reachability-gate codification of the v1 UI-016 lesson. Two follow-up MockAnalyticsAdapter cases (deep_link_routed succeeded/failed outcomes) added at Phase 5 close to satisfy strict reading of analytics gate."
     },
     "review": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-07T06:41:20Z",
-      "risks": ["LOW — no high-risk surface mutated; only indirect SignInService.handleIncomingURL reference via DeepLinkRouter.authHandler closure preserves auth-polish-v2 flow verbatim"],
-      "ci_main": "presumed_green",
-      "ci_feature": "local_verify_ios_passed",
+      "approved_at": "2026-05-07T07:46:45Z",
+      "risks": [
+        "LOW \u2014 no high-risk surface mutated; only indirect SignInService.handleIncomingURL reference via DeepLinkRouter.authHandler closure preserves auth-polish-v2 flow verbatim"
+      ],
+      "ci_main": "green",
+      "ci_feature": "green",
       "code_review_path": ".claude/features/push-notifications/code-review-2026-05-07.md",
       "ux_pre_merge_review_path": ".claude/features/push-notifications/ux-pre-merge-review-2026-05-07.md",
       "design_pre_merge_review_path": ".claude/features/push-notifications/design-pre-merge-review-2026-05-07.md"
@@ -95,8 +117,31 @@
       "ux": "passed",
       "design": "passed"
     },
-    "merge": {"status": "not_started"},
-    "documentation": {"status": "not_started"}
+    "merge": {
+      "status": "complete",
+      "approved_at": "2026-05-07T07:46:45Z",
+      "pr_number": 239,
+      "merged_at": "2026-05-07T07:44:57Z",
+      "merge_commit": "6bf417a877b99e623a771b217a7577ba16f42705",
+      "analytics_regression_passed": true
+    },
+    "documentation": {
+      "status": "approved",
+      "started_at": "2026-05-07T07:46:45Z",
+      "approved_at": "2026-05-07T07:59:33Z",
+      "case_study": "docs/case-studies/push-notifications-v2-case-study.md",
+      "case_study_showcase": "fitme-story/content/04-case-studies/23c-push-notifications-v2.mdx",
+      "first_review_date": "2026-05-14",
+      "baseline_metrics": {
+        "notification_opt_in_rate": 0,
+        "workout_reminder_tap_through_rate": 0,
+        "readiness_alert_acknowledgement_rate": 0,
+        "deep_link_routing_success_rate": 0,
+        "notification_disable_rate_per_month": null,
+        "dau_lift_attributed_sessions": 0,
+        "note": "All 0 by definition pre-launch. T1-instrumented at ship; first measurement window 2026-05-14."
+      }
+    }
   },
   "transitions": [
     {
@@ -125,7 +170,7 @@
       "to": "ux_or_integration",
       "timestamp": "2026-05-07T04:44:25Z",
       "approved_by": "user",
-      "note": "Phase 2 Tasks approved. 16 tasks, 6.75d effort, 7 P-core / 9 E-core. Critical path T1→T3→T6→T14→T15→T16."
+      "note": "Phase 2 Tasks approved. 16 tasks, 6.75d effort, 7 P-core / 9 E-core. Critical path T1\u2192T3\u2192T6\u2192T14\u2192T15\u2192T16."
     },
     {
       "from": "ux_or_integration",
@@ -139,7 +184,7 @@
       "to": "testing",
       "timestamp": "2026-05-07T06:41:20Z",
       "approved_by": "user",
-      "note": "Phase 4 Implementation approved. 16/16 tasks shipped, ~1850 LOC, BUILD ✓ + TEST ✓ + all 36 v2 tests pass at runtime."
+      "note": "Phase 4 Implementation approved. 16/16 tasks shipped, ~1850 LOC, BUILD \u2713 + TEST \u2713 + all 36 v2 tests pass at runtime."
     },
     {
       "from": "testing",
@@ -147,14 +192,34 @@
       "timestamp": "2026-05-07T06:41:20Z",
       "approved_by": "user",
       "note": "Phase 5 Testing approved. analytics_verification_passed=true. Branch feature/push-notifications-v2 ready for code + UI pre-merge review (v4.X Phase 6 layer)."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-05-07T07:46:45Z",
+      "approved_by": "user",
+      "note": "Phase 6 Review approved. All 3 gates PASSED (code review LOW risk; /ux pre-merge-review; /design pre-merge-review with ui-audit P0=0 P1=0 + 6/6 figma_node_ids)."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-05-07T07:46:45Z",
+      "approved_by": "user",
+      "note": "PR #239 squash-merged 2026-05-07T07:44:57Z; merge commit 6bf417a. All 8 CI checks PASSED. Phase 8 Documentation opened."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-07T07:59:33Z",
+      "approved_by": "user",
+      "note": "Phase 8 docs landed: source case study + showcase MDX (slot 23c, v7.8 framework chronology) + backlog moved to Done + baseline metrics recorded. First review 2026-05-14."
     }
   ],
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-04-20T00:00:00Z",
-        "ended_at": "2026-05-07T03:47:27Z",
-        "note": "v1 implementation reopened 2026-04-20 per UI-016, paused 2026-04-27 for v7.7 freeze, ended 2026-05-07 by user decision to rebuild. See _v1/state.json for full v1 timing history."
+        "started_at": "2026-05-07T05:48:35Z",
+        "ended_at": "2026-05-07T06:41:20Z"
       },
       "research": {
         "started_at": "2026-05-07T03:47:27Z",
@@ -172,20 +237,50 @@
         "started_at": "2026-05-07T04:44:25Z",
         "ended_at": "2026-05-07T05:48:35Z"
       },
-      "implementation": {
-        "started_at": "2026-05-07T05:48:35Z",
-        "ended_at": "2026-05-07T06:41:20Z"
-      },
       "testing": {
         "started_at": "2026-05-07T06:41:20Z",
         "ended_at": "2026-05-07T06:41:20Z"
       },
       "review": {
-        "started_at": "2026-05-07T06:41:20Z"
+        "started_at": "2026-05-07T06:41:20Z",
+        "ended_at": "2026-05-07T07:46:45Z"
+      },
+      "merge": {
+        "started_at": "2026-05-07T07:46:45Z",
+        "ended_at": "2026-05-07T07:46:45Z"
+      },
+      "documentation": {
+        "started_at": "2026-05-07T07:46:45Z",
+        "ended_at": "2026-05-07T07:59:33Z"
+      },
+      "complete": {
+        "started_at": "2026-05-07T08:05:44Z"
       }
     }
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "ts": "2026-05-07T08:02:34Z",
+      "key": "pm-workflow:full-cycle:single-day-rebuild",
+      "layer": "L1",
+      "type": "adapted",
+      "skill": "pm-workflow"
+    },
+    {
+      "ts": "2026-05-07T08:02:34Z",
+      "key": "ux:phase-3-chain:new-feature",
+      "layer": "L1",
+      "type": "adapted",
+      "skill": "ux"
+    },
+    {
+      "ts": "2026-05-07T08:02:34Z",
+      "key": "design:build-figma-frames-2x2-grid",
+      "layer": "L1",
+      "type": "adapted",
+      "skill": "design"
+    }
+  ],
   "cu_v2": {
     "factors": {
       "complexity": 0.5,
@@ -199,7 +294,7 @@
   },
   "success_metrics": "TODO: defined in Phase 2 PRD",
   "kill_criteria": "TODO: defined in Phase 2 PRD",
-  "dispatch_pattern": "TODO: defined in Phase 1 Research → Phase 2 PRD",
+  "dispatch_pattern": "TODO: defined in Phase 1 Research \u2192 Phase 2 PRD",
   "figma_node_ids": {
     "page": "936:2",
     "section": "936:3",
@@ -213,22 +308,235 @@
   "figma_page_name": "Push Notifications v2",
   "figma_build_completed_at": "2026-05-07T05:30:00Z",
   "tasks": [
-    {"id": "T1", "title": "NotificationGateway core (auth + dispatch + cap audit)", "type": "service", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 1.0, "lane": "P-core", "depends_on": [], "completed_at": null},
-    {"id": "T2", "title": "NotificationConsumerRegistry", "type": "service", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "lane": "P-core", "depends_on": [], "completed_at": null},
-    {"id": "T3", "title": "DeepLinkRouter (nested verb-noun grammar + @Published nav state)", "type": "service", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 1.0, "lane": "P-core", "depends_on": ["T2"], "completed_at": null},
-    {"id": "T4", "title": "Revive NotificationPermissionPrimingView (un-mark HISTORICAL, wire to Gateway)", "type": "ui", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.25, "lane": "E-core", "depends_on": ["T1"], "completed_at": null},
-    {"id": "T5", "title": "ReadinessAlertObserver (Combine + threshold + confidence gate + de-dupe)", "type": "service", "skill": "dev", "status": "pending", "priority": "high", "effort_days": 0.5, "lane": "P-core", "depends_on": ["T1"], "completed_at": null},
-    {"id": "T6", "title": "FitTrackerApp wiring (platform init + first-workout trigger + onOpenURL + observe pendingDeepLink)", "type": "ui", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.5, "lane": "P-core", "depends_on": ["T1", "T2", "T3", "T4", "T5"], "completed_at": null},
-    {"id": "T7", "title": "Settings entry point for priming view", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.25, "lane": "E-core", "depends_on": ["T4"], "completed_at": null},
-    {"id": "T8", "title": "One-time notification_settings_deeplink_shown banner after denial", "type": "ui", "skill": "dev", "status": "pending", "priority": "medium", "effort_days": 0.25, "lane": "E-core", "depends_on": ["T4"], "completed_at": null},
-    {"id": "T9", "title": "Mark v1 NotificationService stack HISTORICAL (4 files, banner header)", "type": "docs", "skill": "dev", "status": "pending", "priority": "low", "effort_days": 0.1, "lane": "E-core", "depends_on": ["T1"], "completed_at": null},
-    {"id": "T10", "title": "Delete dead DeepLinkHandler.swift (14-LOC targetTab)", "type": "docs", "skill": "dev", "status": "pending", "priority": "low", "effort_days": 0.05, "lane": "E-core", "depends_on": ["T3"], "completed_at": null},
-    {"id": "T11", "title": "Drop unused v1 AnalyticsEvent declarations + taxonomy CSV updates", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "medium", "effort_days": 0.25, "lane": "E-core", "depends_on": [], "completed_at": null},
-    {"id": "T12", "title": "Add deep_link_routed event + AnalyticsParam keys + taxonomy CSV row", "type": "analytics", "skill": "analytics", "status": "pending", "priority": "high", "effort_days": 0.1, "lane": "E-core", "depends_on": [], "completed_at": null},
-    {"id": "T13", "title": "Unit tests (Gateway/Router/Registry/ReadinessAlertTrigger, ≥20 cases)", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 1.0, "lane": "P-core", "depends_on": ["T1", "T2", "T3", "T5"], "completed_at": null},
-    {"id": "T14", "title": "Reachability gate tests (3 cases: priming reach + URL routing + SwiftUI subscriber)", "type": "test", "skill": "qa", "status": "pending", "priority": "critical", "effort_days": 0.5, "lane": "P-core", "depends_on": ["T6"], "completed_at": null},
-    {"id": "T15", "title": "Build verification + project.pbxproj updates (5 added, 1 deleted)", "type": "test", "skill": "dev", "status": "pending", "priority": "critical", "effort_days": 0.25, "lane": "E-core", "depends_on": ["T1", "T2", "T3", "T5", "T6", "T13", "T14"], "completed_at": null},
-    {"id": "T16", "title": "Runtime smoke profile notification_platform_v2", "type": "test", "skill": "qa", "status": "pending", "priority": "high", "effort_days": 0.25, "lane": "E-core", "depends_on": ["T15"], "completed_at": null}
+    {
+      "id": "T1",
+      "title": "NotificationGateway core (auth + dispatch + cap audit)",
+      "type": "service",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "lane": "P-core",
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T2",
+      "title": "NotificationConsumerRegistry",
+      "type": "service",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T3",
+      "title": "DeepLinkRouter (nested verb-noun grammar + @Published nav state)",
+      "type": "service",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "lane": "P-core",
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T4",
+      "title": "Revive NotificationPermissionPrimingView (un-mark HISTORICAL, wire to Gateway)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T5",
+      "title": "ReadinessAlertObserver (Combine + threshold + confidence gate + de-dupe)",
+      "type": "service",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T6",
+      "title": "FitTrackerApp wiring (platform init + first-workout trigger + onOpenURL + observe pendingDeepLink)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T7",
+      "title": "Settings entry point for priming view",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T8",
+      "title": "One-time notification_settings_deeplink_shown banner after denial",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T9",
+      "title": "Mark v1 NotificationService stack HISTORICAL (4 files, banner header)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "low",
+      "effort_days": 0.1,
+      "lane": "E-core",
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T10",
+      "title": "Delete dead DeepLinkHandler.swift (14-LOC targetTab)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "low",
+      "effort_days": 0.05,
+      "lane": "E-core",
+      "depends_on": [
+        "T3"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T11",
+      "title": "Drop unused v1 AnalyticsEvent declarations + taxonomy CSV updates",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T12",
+      "title": "Add deep_link_routed event + AnalyticsParam keys + taxonomy CSV row",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "lane": "E-core",
+      "depends_on": [],
+      "completed_at": null
+    },
+    {
+      "id": "T13",
+      "title": "Unit tests (Gateway/Router/Registry/ReadinessAlertTrigger, \u226520 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "lane": "P-core",
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T5"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T14",
+      "title": "Reachability gate tests (3 cases: priming reach + URL routing + SwiftUI subscriber)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T15",
+      "title": "Build verification + project.pbxproj updates (5 added, 1 deleted)",
+      "type": "test",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T5",
+        "T6",
+        "T13",
+        "T14"
+      ],
+      "completed_at": null
+    },
+    {
+      "id": "T16",
+      "title": "Runtime smoke profile notification_platform_v2",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T15"
+      ],
+      "completed_at": null
+    }
   ],
   "_meta": {
     "deprecation_warnings": [],
@@ -242,7 +550,7 @@
         "docs/product/prd/push-notifications.md (will be overwritten by new PRD)",
         "docs/case-studies/push-notifications-case-study.md (kept; new case study will reference)"
       ],
-      "v1_failure_mode": "Partial ship — substrate built + tested + merged, never wired into runtime. Audit UI-016 caught it post-ship via the v7.5 integrity cycle."
+      "v1_failure_mode": "Partial ship \u2014 substrate built + tested + merged, never wired into runtime. Audit UI-016 caught it post-ship via the v7.5 integrity cycle."
     }
   }
 }
