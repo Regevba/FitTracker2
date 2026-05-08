@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "feature": "fitme-story-public-enhancements",
+  "title": "fitme story public enhancements",
+  "work_type": null,
+  "current_phase": null,
+  "framework_version": null,
+  "started_at": "2026-05-08T06:36:08Z",
+  "updated_at": "2026-05-08T06:41:57Z",
+  "events": [
+    {
+      "timestamp": "2026-05-08T06:36:08Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T8 (G3 dual-outlet pattern doc) shipped via FT2 chore PR. New doc at docs/case-studies/dual-outlet-pattern.md (~9 sections, 11KB). Establishes the contract between FT2 source case study and fitme-story slot MDX. Unblocks T9 (G5 timeline frontmatter audit) by giving G5 a concrete checklist (\u00a77) to walk against.",
+      "artifacts": [
+        "docs/case-studies/dual-outlet-pattern.md"
+      ],
+      "metrics": {
+        "files_changed": 1
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:41:57Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T17 (P-MDX-CODE) rehype-pretty-code + CopyButton shipped via fitme-story PR #65 (commit d8893fe). 7 files +482/-5. Closes A-024 + R-008 + CS-004. Bonus: dev-guide page now also has heading anchors (CS-007 bonus). New deps rehype-pretty-code + shiki. Dual-theme github-light/dark.",
+      "artifacts": [
+        "src/components/mdx/CopyButton.tsx",
+        "src/components/mdx/Pre.tsx"
+      ],
+      "metrics": {
+        "files_changed": 7,
+        "lines_added": 482,
+        "lines_removed": 5,
+        "pr_number": 65
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
