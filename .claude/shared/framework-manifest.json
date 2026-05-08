@@ -1,7 +1,7 @@
 {
-  "version": "1.10",
-  "updated": "2026-05-07T18:00:00Z",
-  "framework_version": "7.8.1",
+  "version": "1.11",
+  "updated": "2026-05-08T06:30:00Z",
+  "framework_version": "7.8.2",
   "description": "PM framework v7.7 \u2014 Validity Closure. Closes A1\u2013A5 + B1\u2013B2 + C1 from the post-v7.6 gap inventory across two PRs (FT2 #144 + fitme-story #7). Adds 5 new gates: 4 write-time pre-commit hooks (CACHE_HITS_EMPTY_POST_V6, CU_V2_INVALID, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS) + 1 cycle-time check code + 1 advisory permanent (TIER_TAG_LIKELY_INCORRECT). Bulk-backfills 32 case-study frontmatters and timing.phases on 3 paused features. Plus framework-health dashboard at fitme-story /control-room/framework. Framework reaches 25 mechanical gates + 1 advisory. state\u2194case-study linkage 95.5% \u2192 100%. Builds on v7.6 (Mechanical Enforcement), v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), and v7.0 (HADF). 2026-05-01 follow-on PR #169 closed the v7.7 silent-pass surface: 43 state.json files migrated created \u2192 created_at so CACHE_HITS_EMPTY_POST_V6 actually fires. 2026-05-02 v7.8 PR-1 (#173) shipped Mechanism C in advisory mode (PostToolUse:Read hook + observe-cache-hit.py). v7.8 enforcement and v7.9 are downstream.",
   "audit_closures": {
     "FW-002": "Description string updated from v5.2 to v7.0 \u2014 closed.",
