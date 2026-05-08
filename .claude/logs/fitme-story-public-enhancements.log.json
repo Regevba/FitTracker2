@@ -9,6 +9,50 @@
   "updated_at": "2026-05-08T06:51:15Z",
   "events": [
     {
+      "timestamp": "2026-05-08T05:53:53Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks phase opened (retroactive \u2014 feature created after T1-T7 already shipped via PR #59 + #61). 23 tasks drafted from the 2026-05-08 audit synthesis.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Feature created post-hoc to capture the audit-driven enhancement rollup; the audit + 7 sub-tasks landed before the feature folder existed."
+    },
+    {
+      "timestamp": "2026-05-08T05:54:05Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Tasks approved with 23 entries (7 done + 16 pending). 17 audit findings already closed via T1-T7.",
+      "artifacts": [
+        ".claude/features/fitme-story-public-enhancements/tasks.md"
+      ],
+      "metrics": {
+        "tasks_total": 23,
+        "tasks_done": 7,
+        "tasks_pending": 16,
+        "findings_closed": 17
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T05:54:07Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Implementation phase opened. T1-T7 already shipped via fitme-story PR #59 (95cb4d1, 13 files +319/-40, prod 05:11:20Z) and PR #61 (a548e5f, 3 files +130/-8, prod 05:31:23Z). FT2 audit docs shipped via PR #254 (f252ded, 6 files +1105). 16 tasks remain.",
+      "artifacts": [],
+      "metrics": {
+        "prs_merged": 3,
+        "prs_remaining_estimated": 7
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
       "timestamp": "2026-05-08T06:22:39Z",
       "event_type": "task_in_progress",
       "phase": "implementation",
