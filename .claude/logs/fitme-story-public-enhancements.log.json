@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-08T06:36:08Z",
-  "updated_at": "2026-05-08T06:51:15Z",
+  "updated_at": "2026-05-08T21:05:47Z",
   "events": [
     {
       "timestamp": "2026-05-08T05:53:53Z",
@@ -133,6 +133,17 @@
         "files_changed": 1
       },
       "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T21:05:47Z",
+      "event_type": "reconciliation",
+      "phase": "implementation",
+      "summary": "Reconciliation pass: marked 10 silently-shipped tasks done (T8/T9/T11/T14/T15/T16/T17/T21/T22/T23). State 7/23 done \u2192 17/23 done. Source: live audit of merged PRs vs state.json. Pending 6: T10/T12/T13/T18/T19/T20.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
