@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-08T06:36:08Z",
-  "updated_at": "2026-05-08T06:41:57Z",
+  "updated_at": "2026-05-08T06:51:15Z",
   "events": [
     {
       "timestamp": "2026-05-08T06:22:39Z",
@@ -53,6 +53,21 @@
         "lines_added": 482,
         "lines_removed": 5,
         "pr_number": 65
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:51:15Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T21 (FIG-W6) fitme-story design architecture doc. New doc at docs/design-system/fitme-story-design-architecture.md (~9 sections, ~16KB). Documents Tailwind v4 @theme tokens (brand + skill palette + neutrals + measures + type scale), dark mode WCAG contract (4 overrides), component architecture (4 layers), /design build contract (forward-looking for T18+), maintenance protocol.",
+      "artifacts": [
+        "docs/design-system/fitme-story-design-architecture.md"
+      ],
+      "metrics": {
+        "files_changed": 1
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
