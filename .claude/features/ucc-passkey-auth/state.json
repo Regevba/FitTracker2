@@ -1,7 +1,7 @@
 {
   "feature": "ucc-passkey-auth",
   "created_at": "2026-05-07T16:25:00Z",
-  "updated": "2026-05-07T17:53:17Z",
+  "updated": "2026-05-08T06:45:40Z",
   "branch": "feature/ucc-passkey-auth",
   "current_phase": "complete",
   "work_type": "feature",
@@ -153,59 +153,59 @@
       "title": "Wrap @simplewebauthn/server v13 (registration + auth options + verify)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.75,
       "depends_on": [],
       "lane": "p-core",
       "complexity_score": 8,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T2",
       "title": "iron-session config + helpers (seal/unseal session cookie)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [],
       "lane": "e-core",
       "complexity_score": 3,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T3",
       "title": "Audit-log writer (JSONL append + PII redaction + Vercel Blob POST hook)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [],
       "lane": "p-core",
       "complexity_score": 6,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T4",
       "title": "Upstash Redis client setup + region pinning",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [],
       "lane": "e-core",
       "complexity_score": 3,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T5",
       "title": "KV CRUD: operator + credential + reverse-index with CAS counter update",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -213,14 +213,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T6",
       "title": "KV CRUD: challenge + bootstrap + session (TTL keys)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [
@@ -228,14 +228,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 3,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T7",
       "title": "POST /api/auth/register/options route",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [
@@ -244,14 +244,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T8",
       "title": "POST /api/auth/register/verify route (persists credential)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.25,
       "depends_on": [
@@ -261,14 +261,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 3,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T9",
       "title": "POST /api/auth/authenticate/options route",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [
@@ -277,14 +277,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T10",
       "title": "POST /api/auth/authenticate/verify route (mints session cookie)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -296,14 +296,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 6,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T11",
       "title": "POST /api/auth/revoke route",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [
@@ -311,14 +311,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T12",
       "title": "Edit proxy.ts: UCC_AUTH_MODE switch + iron-session check + redirect-to-sign-in",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -327,27 +327,27 @@
       ],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T13",
       "title": "AuthPasskeyForm component (capability detection + ceremony + error states)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T14",
       "title": "/control-room/sign-in page with conditional-UI autofill",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
@@ -357,14 +357,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 3,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T15",
       "title": "/control-room/sign-in/recover page (bootstrap-token paste flow)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [
@@ -374,14 +374,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T16",
       "title": "/control-room/settings/devices page (credentials table + Revoke)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
@@ -389,14 +389,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T17",
       "title": "/control-room/settings/audit page (last 50 events viewer)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [
@@ -404,14 +404,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T18",
       "title": "AuditLogPanel component (3-stat row + recent events table + suspicious banner)",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
@@ -419,14 +419,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 3,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T19",
       "title": "Wire AuditLogPanel into /control-room/framework page",
       "type": "ui",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.25,
       "depends_on": [
@@ -434,14 +434,14 @@
       ],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T20",
       "title": "scripts/issue-bootstrap-token.ts CLI (32B token + SHA-256 + admin-token gate)",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -449,14 +449,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 6,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T21",
       "title": "Reverse-mode for sync-from-fittracker2.ts (fetch JSONL from Vercel Blob)",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.5,
       "depends_on": [
@@ -464,14 +464,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T22",
       "title": "Daily GHA workflow in FT2 to pull Vercel Blob into .claude/logs/ucc-auth-events.jsonl",
       "type": "infra",
       "skill": "ops",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.25,
       "depends_on": [
@@ -479,27 +479,27 @@
       ],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T23",
       "title": "FT2 placeholder .claude/logs/ucc-auth-events.jsonl (empty + schema header)",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "effort_days": 0.1,
       "depends_on": [],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T24",
       "title": "Unit tests: webauthn-server + redis-store + audit-log + iron-session + proxy",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 1.0,
       "depends_on": [
@@ -511,14 +511,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T25",
       "title": "Unit tests: 5 API routes + AuthPasskeyForm + AuditLogPanel",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 1.0,
       "depends_on": [
@@ -532,14 +532,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 4,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T26",
       "title": "Integration test: round-trip registration + authentication with stub authenticator",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.5,
       "depends_on": [
@@ -548,14 +548,14 @@
       ],
       "lane": "p-core",
       "complexity_score": 5,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T27",
       "title": "New runtime-smoke profile passkey_signin_surface in FT2",
       "type": "infra",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.25,
       "depends_on": [
@@ -563,20 +563,20 @@
       ],
       "lane": "e-core",
       "complexity_score": 2,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     },
     {
       "id": "T28",
       "title": "Add glossary entries: passkey, WebAuthn, RP-ID, conditional UI, bootstrap token, iron-session, FIDO2",
       "type": "docs",
       "skill": "marketing",
-      "status": "pending",
+      "status": "done",
       "priority": "low",
       "effort_days": 0.25,
       "depends_on": [],
       "lane": "e-core",
       "complexity_score": 0,
-      "completed_at": null
+      "completed_at": "2026-05-07T17:35:00Z"
     }
   ],
   "transitions": [
