@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-08T06:36:08Z",
-  "updated_at": "2026-05-08T06:36:08Z",
+  "updated_at": "2026-05-08T06:41:57Z",
   "events": [
     {
       "timestamp": "2026-05-08T06:36:08Z",
@@ -18,6 +18,25 @@
       ],
       "metrics": {
         "files_changed": 1
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:41:57Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T17 (P-MDX-CODE) rehype-pretty-code + CopyButton shipped via fitme-story PR #65 (commit d8893fe). 7 files +482/-5. Closes A-024 + R-008 + CS-004. Bonus: dev-guide page now also has heading anchors (CS-007 bonus). New deps rehype-pretty-code + shiki. Dual-theme github-light/dark.",
+      "artifacts": [
+        "src/components/mdx/CopyButton.tsx",
+        "src/components/mdx/Pre.tsx"
+      ],
+      "metrics": {
+        "files_changed": 7,
+        "lines_added": 482,
+        "lines_removed": 5,
+        "pr_number": 65
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
