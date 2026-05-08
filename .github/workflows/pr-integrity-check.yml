@@ -31,12 +31,12 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout PR HEAD
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -127,7 +127,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Set commit status check
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           STATUS: ${{ steps.delta.outputs.status }}
           SUMMARY: ${{ steps.delta.outputs.summary }}
@@ -156,7 +156,7 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Sticky-comment on PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           STATUS: ${{ steps.delta.outputs.status }}
           SUMMARY: ${{ steps.delta.outputs.summary }}
