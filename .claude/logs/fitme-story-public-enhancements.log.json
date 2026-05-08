@@ -9,6 +9,22 @@
   "updated_at": "2026-05-08T06:41:57Z",
   "events": [
     {
+      "timestamp": "2026-05-08T06:22:39Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T22+T23 (F7+F8 cross-repo gate parity) \u2014 'document the asymmetry' disposition. Hook fix in .claude/settings.json (cwd-guard for observe-cache-hit.py) + new spec doc docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md. Closes recurring 30+ blocking-error notifications observed all session.",
+      "artifacts": [
+        ".claude/settings.json",
+        "docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md"
+      ],
+      "metrics": {
+        "files_changed": 2
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
       "timestamp": "2026-05-08T06:36:08Z",
       "event_type": "task_in_progress",
       "phase": "implementation",
