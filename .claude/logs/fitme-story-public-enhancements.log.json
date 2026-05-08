@@ -53,6 +53,25 @@
       "recording_mode": "contemporaneous"
     },
     {
+      "timestamp": "2026-05-08T06:05:04Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T16 (P-MOBNAV) MobileNav drawer implemented. PR #62 opened in fitme-story repo (branch feat/fitme-story-mobile-nav, commit e6c99e1). 3 files +187/-29: src/lib/nav.ts (new, shared NAV), src/components/MobileNav.tsx (new, native dialog), src/components/SiteHeader.tsx (refactored to use shared nav + render MobileNav). Closes V-004 P0 + partial V-005/V-009/A-001. tsc clean, next build passes 46 case-study pages.",
+      "artifacts": [
+        "src/components/MobileNav.tsx",
+        "src/lib/nav.ts"
+      ],
+      "metrics": {
+        "files_changed": 3,
+        "lines_added": 187,
+        "lines_removed": 29,
+        "pr_number": 62
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
       "timestamp": "2026-05-08T06:22:39Z",
       "event_type": "task_in_progress",
       "phase": "implementation",
