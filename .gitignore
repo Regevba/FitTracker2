@@ -86,5 +86,13 @@ Config/Local/*.xcconfig
 .claude/shared/hadf/pre-merge-backup-*/
 .claude/shared/hadf/incident-*-recovery/
 .claude/shared/hadf/*.pre-isolation-archive
-.claude/shared/hadf/phase2-fingerprint-*.json
 .claude/shared/sentry-recovery/
+
+# HADF Phase 2 raw observational data — gitignored per pre-registration
+# (the committed summary derives from this; raw stays local to preserve the
+# pre-registered "verdict is a pure function of (prereg, summary)" contract).
+# NOTE: only the raw .jsonl files are excluded — the summary + preregistration
+# JSON files ARE committed to satisfy the case study's T1 traceability claim
+# (docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md cites
+# both files at commit 61964d3 as "the assessable inputs").
+.claude/shared/hadf/phase2-fingerprint-raw*.jsonl

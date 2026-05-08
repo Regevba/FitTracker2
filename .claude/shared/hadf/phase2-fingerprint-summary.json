@@ -1,0 +1,199 @@
+{
+  "schema": "hadf-phase2-summary-v1",
+  "version": "1.0",
+  "computed_at": "2026-05-01T20:04:17Z",
+  "preregistration_path": ".claude/shared/hadf/phase2-preregistration.json",
+  "raw_path": ".claude/shared/hadf/phase2-fingerprint-raw.locked-700-fires1to7.jsonl",
+  "totals": {
+    "valid_records": 700,
+    "error_records": 0,
+    "total_records": 700
+  },
+  "per_endpoint": {
+    "openai": {
+      "n": 350,
+      "ttft_ms": {
+        "mean": 949.49,
+        "median": 676.32,
+        "p95": 2017.54,
+        "min": 388.2,
+        "stdev": 1104.95
+      },
+      "tps": {
+        "mean": 55.465,
+        "median": 54.853,
+        "p95": 79.69,
+        "stdev": 13.789,
+        "cov": 0.2486
+      }
+    },
+    "anthropic": {
+      "n": 350,
+      "ttft_ms": {
+        "mean": 909.43,
+        "median": 840.68,
+        "p95": 1338.32,
+        "min": 567.83,
+        "stdev": 299.95
+      },
+      "tps": {
+        "mean": 95.466,
+        "median": 92.416,
+        "p95": 117.774,
+        "stdev": 21.981,
+        "cov": 0.2302
+      }
+    }
+  },
+  "kmeans": {
+    "ran": true,
+    "valid_points": 700,
+    "per_k": {
+      "2": {
+        "silhouette": 0.5067,
+        "inertia": 985.7344,
+        "cluster_endpoint_purities": {
+          "1": {
+            "size": 327,
+            "dominant_endpoint": "openai",
+            "purity": 0.9725
+          },
+          "0": {
+            "size": 373,
+            "dominant_endpoint": "anthropic",
+            "purity": 0.9142
+          }
+        }
+      },
+      "3": {
+        "silhouette": 0.5228,
+        "inertia": 598.6961,
+        "cluster_endpoint_purities": {
+          "0": {
+            "size": 325,
+            "dominant_endpoint": "openai",
+            "purity": 0.9723
+          },
+          "1": {
+            "size": 372,
+            "dominant_endpoint": "anthropic",
+            "purity": 0.9167
+          },
+          "2": {
+            "size": 3,
+            "dominant_endpoint": "openai",
+            "purity": 1.0
+          }
+        }
+      },
+      "4": {
+        "silhouette": 0.546,
+        "inertia": 435.173,
+        "cluster_endpoint_purities": {
+          "2": {
+            "size": 15,
+            "dominant_endpoint": "openai",
+            "purity": 0.8667
+          },
+          "3": {
+            "size": 316,
+            "dominant_endpoint": "openai",
+            "purity": 0.9715
+          },
+          "0": {
+            "size": 368,
+            "dominant_endpoint": "anthropic",
+            "purity": 0.9212
+          },
+          "1": {
+            "size": 1,
+            "dominant_endpoint": "openai",
+            "purity": 1.0
+          }
+        }
+      },
+      "5": {
+        "silhouette": 0.5566,
+        "inertia": 298.2467,
+        "cluster_endpoint_purities": {
+          "3": {
+            "size": 15,
+            "dominant_endpoint": "openai",
+            "purity": 0.8667
+          },
+          "0": {
+            "size": 316,
+            "dominant_endpoint": "openai",
+            "purity": 0.9715
+          },
+          "2": {
+            "size": 365,
+            "dominant_endpoint": "anthropic",
+            "purity": 0.9205
+          },
+          "1": {
+            "size": 3,
+            "dominant_endpoint": "anthropic",
+            "purity": 1.0
+          },
+          "4": {
+            "size": 1,
+            "dominant_endpoint": "openai",
+            "purity": 1.0
+          }
+        }
+      },
+      "6": {
+        "silhouette": 0.4056,
+        "inertia": 245.9189,
+        "cluster_endpoint_purities": {
+          "2": {
+            "size": 15,
+            "dominant_endpoint": "openai",
+            "purity": 0.8667
+          },
+          "1": {
+            "size": 263,
+            "dominant_endpoint": "openai",
+            "purity": 0.9886
+          },
+          "0": {
+            "size": 207,
+            "dominant_endpoint": "anthropic",
+            "purity": 0.9855
+          },
+          "4": {
+            "size": 211,
+            "dominant_endpoint": "anthropic",
+            "purity": 0.654
+          },
+          "5": {
+            "size": 3,
+            "dominant_endpoint": "anthropic",
+            "purity": 1.0
+          },
+          "3": {
+            "size": 1,
+            "dominant_endpoint": "openai",
+            "purity": 1.0
+          }
+        }
+      }
+    },
+    "best_k": 5,
+    "max_silhouette_score_across_k": 0.5566
+  },
+  "verdict": {
+    "status": "complete",
+    "abort_conditions": [],
+    "clusters_found": true,
+    "best_k": 5,
+    "max_silhouette_score": 0.5566,
+    "threshold": {
+      "operator": ">",
+      "value": 0.5
+    },
+    "excluded_endpoints": [],
+    "path_b_recommendation": "green-lit"
+  }
+}

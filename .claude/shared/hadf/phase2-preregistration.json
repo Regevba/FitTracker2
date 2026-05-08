@@ -1,0 +1,119 @@
+{
+  "schema": "hadf-phase2-preregistration-v1",
+  "version": "1.0",
+  "authored_at": "2026-04-29T00:00:00Z",
+  "plan": "/Users/regevbarak/.claude/plans/floofy-finding-boole.md",
+  "spec_section": "docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md#11-validation-plan",
+  "research_question": "Do cloud inference endpoints cluster naturally by hardware class when measured via TTFT/TPS alone, without provider cooperation?",
+
+  "design": {
+    "independent_variable": "natural measurement noise across (time-of-day x calendar-day x endpoint)",
+    "dependent_variables": [
+      "ttft_ms — time to first streamed token, milliseconds",
+      "tps — output tokens per second computed from stream timestamps",
+      "ttft_floor_ms — minimum observed TTFT per endpoint (proxy for network RTT lower bound)",
+      "tps_cov — per-endpoint coefficient of variation of TPS (variance signal)"
+    ],
+    "controls": {
+      "prompt_shape": "single fixed shape: 'Write one paragraph (3-5 sentences) about the word: {nonce}.' nonce is one random English word per call to defeat provider response caching while keeping prompt structure identical.",
+      "system_prompt": "none",
+      "tool_use": "none",
+      "streaming_required": true,
+      "max_output_tokens": 200,
+      "temperature": 0.7,
+      "model_per_endpoint": {
+        "openai": "gpt-4o-mini",
+        "anthropic": "claude-haiku-4-5-20251001",
+        "local": "configured via OLLAMA_MODEL env (default llama3.2:3b)"
+      }
+    },
+    "schedule": {
+      "calls_per_run": 50,
+      "tod_windows_per_day": 5,
+      "tod_window_targets_utc": ["02:00", "08:00", "14:00", "18:00", "22:00"],
+      "calendar_days": 3,
+      "endpoints": ["openai", "anthropic", "local"],
+      "expected_data_points_floor": 750,
+      "expected_data_points_ceiling": 2250
+    }
+  },
+
+  "validity_thresholds": {
+    "minimum_data_points_per_endpoint": 150,
+    "minimum_total_data_points": 600,
+    "endpoint_failure_handling": "If any endpoint produces fewer than 150 valid (non-error, non-rate-limited) data points, that endpoint is excluded from clustering and reported as a methodology limitation. Study still publishable with reduced endpoint count if total >= 600 across remaining endpoints. If total < 600, kill_criteria.abort_if applies."
+  },
+
+  "analysis": {
+    "method": "k-means clustering on (ttft_ms, tps) joint space, with per-feature standardization (z-score)",
+    "k_values_tested": [2, 3, 4, 5, 6],
+    "scoring": "silhouette score per k; report inertia per k as supporting data",
+    "outlier_handling": "no a-priori outlier removal; analysis script reports sensitivity to top/bottom 1% trim as a robustness check",
+    "tooling": {
+      "library": "scikit-learn",
+      "kmeans_random_state": 42,
+      "kmeans_n_init": 10
+    }
+  },
+
+  "verdict_function": {
+    "primary_threshold": {
+      "metric": "max_silhouette_score_across_k",
+      "operator": ">",
+      "value": 0.5,
+      "if_true": "clusters_found = true. Path B (dispatch-layer HADF) green-lit.",
+      "if_false": "clusters_found = false. Path B not recommended. HADF stays client-device-only. Layer 2 falls back to static provider lookup."
+    },
+    "secondary_reporting": {
+      "best_k": "the k that achieved max_silhouette_score_across_k",
+      "cluster_endpoint_purity": "for each cluster, the fraction of points originating from a single endpoint. >0.8 = clusters reflect endpoint identity, supporting hardware-class hypothesis."
+    },
+    "mechanical_only": "Verdict is a pure function of (this preregistration JSON, scripts/hadf-phase2-analyze.py output summary JSON). No judgment, no hedging, no Claude-authored framing in the case study."
+  },
+
+  "case_study_constraints": {
+    "impartiality_rule_reference": "memory: feedback_measurement_case_study_impartiality.md",
+    "banned_phrases": [
+      "promising",
+      "encouraging",
+      "as expected",
+      "suggests that",
+      "likely means",
+      "could indicate",
+      "appears to"
+    ],
+    "banned_practices": [
+      "comparison to other case studies' numbers (v5.1 3.4x, v6.0 7/9 DVs, Orchid 89%) unless straight numeric delta from a value also in this study",
+      "speculation about Path B implementation details",
+      "next-steps lists beyond the mechanical go/no-go",
+      "qualitative interpretation in the Framework Signal section"
+    ],
+    "required_sections": [
+      "Summary Card",
+      "Experiment Design",
+      "Raw Data",
+      "Analysis",
+      "Success/Failure",
+      "Framework Signal",
+      "Methodology Notes"
+    ],
+    "raw_data_citation_rule": "every reported number must cite either (a) a value in phase2-fingerprint-summary.json with the source row count, or (b) a measurement procedure defined in this preregistration"
+  },
+
+  "kill_criteria": {
+    "abort_if": [
+      "fewer than 600 total data points across all endpoints after the 3-day window",
+      "all endpoints simultaneously rate-limited (cannot collect)",
+      "any endpoint changes streaming protocol or model id mid-collection (invalidates control)"
+    ],
+    "abort_action": "Document the abort condition in the case study Methodology Notes section and publish the partial data. Do NOT silently extend or restart collection — extension would break pre-registration and the case study's independent assessability."
+  },
+
+  "non_scope": [
+    "Layer 0/1/2/4 runtime code — that is Path B, conditional on this study",
+    "flipping hardware_context.enabled in dispatch-intelligence.json",
+    "instantiating hadf-metrics-template.json into feature directories",
+    "edits to cache-metrics.json::hadf_affinity or chip-affinity-map.json::affinity_entries",
+    "calibrating hardware-signature-table.json — done as a separate post-study commit only if clusters_found=true"
+  ]
+}
