@@ -1,0 +1,830 @@
+{
+  "timestamp": "2026-05-07T06:39:32.747776Z",
+  "commit_head": "732f4edaba6f0f400885f7b812eafbb00658c660",
+  "snapshot_context": {
+    "trigger": "scheduled_cycle",
+    "counts_for_trend": true
+  },
+  "feature_count": 53,
+  "case_study_count": 64,
+  "finding_count": 0,
+  "advisory_finding_count": 0,
+  "findings_by_severity": {
+    "CRITICAL": 0,
+    "INCONSISTENT": 0,
+    "MISSING": 0,
+    "WARN": 0,
+    "ADVISORY": 0
+  },
+  "auditor_agent": {
+    "citation_check_ran": false,
+    "known_pr_count": null
+  },
+  "features": [
+    {
+      "name": "adaptive-intelligence",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "3f7b49371dc26efb"
+    },
+    {
+      "name": "ai-cohort-intelligence",
+      "phase": "complete",
+      "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "3c529d74f690836e"
+    },
+    {
+      "name": "ai-engine-architecture-adaptation",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 13,
+      "task_completed": 13,
+      "state_hash": "b32e6d45c8fc7316"
+    },
+    {
+      "name": "ai-engine-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "abb9202ab18026f9"
+    },
+    {
+      "name": "ai-recommendation-ui",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "422b6b3b559b04b8"
+    },
+    {
+      "name": "android-design-system",
+      "phase": "complete",
+      "case_study": "docs/case-studies/android-design-system-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "394c83ae2119afc1"
+    },
+    {
+      "name": "app-store-assets",
+      "phase": "implementation",
+      "case_study": null,
+      "case_study_type": "no_case_study_required",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "d65525b6f7a75140"
+    },
+    {
+      "name": "auth-polish-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/auth-polish-v2-case-study.md",
+      "case_study_type": "live_pm_workflow",
+      "task_total": 18,
+      "task_completed": 14,
+      "state_hash": "0eca0afeaed3a15c"
+    },
+    {
+      "name": "authentication",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "1e2255f7ef7d2c31"
+    },
+    {
+      "name": "case-study-presentation",
+      "phase": "complete",
+      "case_study": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "322c86f9eb5af142"
+    },
+    {
+      "name": "data-integrity-framework-v7-6",
+      "phase": "complete",
+      "case_study": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "209e3a306a48ffb0"
+    },
+    {
+      "name": "data-sync",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "7c82ff058243a68a"
+    },
+    {
+      "name": "design-system-v2",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "fc8adea51e559549"
+    },
+    {
+      "name": "development-dashboard",
+      "phase": "complete",
+      "case_study": "docs/case-studies/six-features-roundup-case-study.md",
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "55f2eaa920ef277f"
+    },
+    {
+      "name": "dispatch-intelligence-v5.2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "1eee52aa9f78e8e3"
+    },
+    {
+      "name": "framework-honesty-fixes-2026-05-01",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "case_study_type": "live_pm_workflow",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "5740103d68bae55c"
+    },
+    {
+      "name": "framework-measurement-v6",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "8b1b5acb2a0f4669"
+    },
+    {
+      "name": "framework-story-site",
+      "phase": "closed",
+      "case_study": "docs/case-studies/framework-story-site-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "dda13ab4ae3160f1"
+    },
+    {
+      "name": "framework-v5-0-soc",
+      "phase": "complete",
+      "case_study": "docs/case-studies/soc-v5-framework-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "c9759a04004c5551"
+    },
+    {
+      "name": "framework-v7-1-integrity-cycle",
+      "phase": "complete",
+      "case_study": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "8e90b2827c4922a0"
+    },
+    {
+      "name": "framework-v7-5-data-integrity",
+      "phase": "complete",
+      "case_study": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "a4a72264528e4024"
+    },
+    {
+      "name": "framework-v7-7-validity-closure",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "2d30cbc53174ad43"
+    },
+    {
+      "name": "framework-v7-8-branch-isolation",
+      "phase": "research",
+      "case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "3728a669c19e40e3"
+    },
+    {
+      "name": "framework-v7-8-bridge",
+      "phase": "complete",
+      "case_study": "docs/case-studies/framework-v7-8-bridge-case-study.md",
+      "case_study_type": "framework_meta_retroactive",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "282fafe3b5af252f"
+    },
+    {
+      "name": "gdpr-compliance",
+      "phase": "complete",
+      "case_study": "docs/case-studies/gdpr-compliance-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "6bb8855978d7f399"
+    },
+    {
+      "name": "google-analytics",
+      "phase": "complete",
+      "case_study": "docs/case-studies/google-analytics-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "89713adc43a4a900"
+    },
+    {
+      "name": "hadf-infrastructure",
+      "phase": "complete",
+      "case_study": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "b65e38ab4b28a305"
+    },
+    {
+      "name": "home-status-goal-card",
+      "phase": "complete",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 9,
+      "task_completed": 9,
+      "state_hash": "35153cacb1d376b5"
+    },
+    {
+      "name": "home-today-screen",
+      "phase": "complete",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 17,
+      "task_completed": 17,
+      "state_hash": "a548a00edf21b66e"
+    },
+    {
+      "name": "import-training-plan",
+      "phase": "complete",
+      "case_study": "docs/case-studies/import-training-plan-case-study.md",
+      "case_study_type": null,
+      "task_total": 18,
+      "task_completed": 18,
+      "state_hash": "31c557443485b90a"
+    },
+    {
+      "name": "marketing-website",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "c09aadad43e5e25c"
+    },
+    {
+      "name": "meta-analysis-audit",
+      "phase": "complete",
+      "case_study": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "f5ccfbd96e19b4ed"
+    },
+    {
+      "name": "metric-tile-deep-linking",
+      "phase": "complete",
+      "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "d6f70b4533cfb075"
+    },
+    {
+      "name": "nutrition-logging",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "b33ac88cf99a024c"
+    },
+    {
+      "name": "nutrition-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "case_study_type": null,
+      "task_total": 14,
+      "task_completed": 14,
+      "state_hash": "d4b8758071365605"
+    },
+    {
+      "name": "onboarding",
+      "phase": "complete",
+      "case_study": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+      "case_study_type": null,
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "9b856e6011ed7d5b"
+    },
+    {
+      "name": "onboarding-v2-auth-flow",
+      "phase": "complete",
+      "case_study": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 12,
+      "task_completed": 12,
+      "state_hash": "9b850ac42db2935e"
+    },
+    {
+      "name": "onboarding-v2-retroactive",
+      "phase": "complete",
+      "case_study": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "283f777fff7abe88"
+    },
+    {
+      "name": "parallel-write-safety-v5.2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+      "case_study_type": null,
+      "task_total": 6,
+      "task_completed": 6,
+      "state_hash": "3dc27c5ae3e0e2c5"
+    },
+    {
+      "name": "push-notifications",
+      "phase": "implementation",
+      "case_study": "docs/case-studies/push-notifications-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "957941e9aa31cd68"
+    },
+    {
+      "name": "readiness-score-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "c5e451daa57f67a4"
+    },
+    {
+      "name": "recovery-biometrics",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "14e31504f0d766a7"
+    },
+    {
+      "name": "settings",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "6b081b1e38c545cc"
+    },
+    {
+      "name": "settings-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "55f8f5e5c6bd43ab"
+    },
+    {
+      "name": "smart-reminders",
+      "phase": "complete",
+      "case_study": "docs/case-studies/smart-reminders-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "147d3cb73fc2fcce"
+    },
+    {
+      "name": "smart-reminders-behavioral-learning",
+      "phase": "complete",
+      "case_study": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "dad0381e12dd186a"
+    },
+    {
+      "name": "stats-progress-hub",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "611fd193eb0d3dda"
+    },
+    {
+      "name": "stats-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/stats-v2-case-study.md",
+      "case_study_type": "shipped",
+      "task_total": 10,
+      "task_completed": 10,
+      "state_hash": "1d09a0cce835e3c3"
+    },
+    {
+      "name": "training-plan-v2",
+      "phase": "complete",
+      "case_study": "docs/case-studies/training-plan-v2-case-study.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "2a9f605217a521e5"
+    },
+    {
+      "name": "training-tracking",
+      "phase": "complete",
+      "case_study": null,
+      "case_study_type": "pre_pm_workflow_backfill",
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "c1b76e0724ff8119"
+    },
+    {
+      "name": "ui-audit-baseline-burndown",
+      "phase": "complete",
+      "case_study": "docs/case-studies/ui-audit-baseline-burndown.md",
+      "case_study_type": null,
+      "task_total": 0,
+      "task_completed": 0,
+      "state_hash": "300ff2ae6be77342"
+    },
+    {
+      "name": "unified-control-center",
+      "phase": "complete",
+      "case_study": {
+        "started_at": "2026-04-26T05:30:00Z",
+        "log_path": ".claude/logs/unified-control-center.log.json",
+        "case_study_path": "docs/case-studies/unified-control-center-case-study.md",
+        "monitored_from_day_one": true
+      },
+      "case_study_type": null,
+      "task_total": 44,
+      "task_completed": 43,
+      "state_hash": "a23317e9ac341389"
+    },
+    {
+      "name": "user-profile-settings",
+      "phase": "complete",
+      "case_study": "docs/case-studies/user-profile-v4.4-case-study.md",
+      "case_study_type": null,
+      "task_total": 13,
+      "task_completed": 13,
+      "state_hash": "a257f388d96789cf"
+    }
+  ],
+  "case_studies": [
+    {
+      "path": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "size_bytes": 13351,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/android-design-system-case-study.md",
+      "size_bytes": 6573,
+      "first_commit_date": "2026-05-05"
+    },
+    {
+      "path": "docs/case-studies/audit-remediation-case-study.md",
+      "size_bytes": 4873,
+      "first_commit_date": "2026-04-17"
+    },
+    {
+      "path": "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
+      "size_bytes": 18669,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
+      "size_bytes": 12324,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g1-ui-case-study.md",
+      "size_bytes": 1877,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g2-tests-case-study.md",
+      "size_bytes": 1886,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g3-ai-case-study.md",
+      "size_bytes": 1877,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g4-backend-case-study.md",
+      "size_bytes": 1892,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g5-ds-case-study.md",
+      "size_bytes": 1877,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g6-config-case-study.md",
+      "size_bytes": 1889,
+      "first_commit_date": "2026-04-18"
+    },
+    {
+      "path": "docs/case-studies/auth-polish-v2-case-study.md",
+      "size_bytes": 9096,
+      "first_commit_date": "2026-04-27"
+    },
+    {
+      "path": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+      "size_bytes": 17422,
+      "first_commit_date": "2026-04-28"
+    },
+    {
+      "path": "docs/case-studies/cleanup-control-room-case-study.md",
+      "size_bytes": 7947,
+      "first_commit_date": "2026-04-13"
+    },
+    {
+      "path": "docs/case-studies/control-center-alignment-ia-refresh-case-study.md",
+      "size_bytes": 4611,
+      "first_commit_date": "2026-04-13"
+    },
+    {
+      "path": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+      "size_bytes": 23174,
+      "first_commit_date": "2026-04-24"
+    },
+    {
+      "path": "docs/case-studies/data-quality-tiers.md",
+      "size_bytes": 4715,
+      "first_commit_date": "2026-04-21"
+    },
+    {
+      "path": "docs/case-studies/eval-layer-v4.4-case-study.md",
+      "size_bytes": 9546,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/fittracker-evolution-walkthrough.md",
+      "size_bytes": 7699,
+      "first_commit_date": "2026-04-01"
+    },
+    {
+      "path": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "size_bytes": 12885,
+      "first_commit_date": "2026-05-01"
+    },
+    {
+      "path": "docs/case-studies/framework-honesty-ledger.md",
+      "size_bytes": 6947,
+      "first_commit_date": "2026-05-04"
+    },
+    {
+      "path": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "size_bytes": 22211,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-case-study.md",
+      "size_bytes": 50010,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-dispatchreplay.md",
+      "size_bytes": 9704,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-ssr-regression.md",
+      "size_bytes": 8889,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+      "size_bytes": 49735,
+      "first_commit_date": "2026-04-27"
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-bridge-case-study.md",
+      "size_bytes": 18135,
+      "first_commit_date": "2026-05-04"
+    },
+    {
+      "path": "docs/case-studies/gdpr-compliance-case-study.md",
+      "size_bytes": 7077,
+      "first_commit_date": "2026-05-05"
+    },
+    {
+      "path": "docs/case-studies/google-analytics-case-study.md",
+      "size_bytes": 8100,
+      "first_commit_date": "2026-05-05"
+    },
+    {
+      "path": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+      "size_bytes": 18780,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+      "size_bytes": 18601,
+      "first_commit_date": "2026-05-02"
+    },
+    {
+      "path": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "size_bytes": 13975,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/import-training-plan-case-study.md",
+      "size_bytes": 15361,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+      "size_bytes": 16100,
+      "first_commit_date": "2026-04-21"
+    },
+    {
+      "path": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "size_bytes": 17758,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "size_bytes": 20399,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/m-3-design-system-completion-case-study.md",
+      "size_bytes": 17629,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/m-4-xcuitest-infrastructure-case-study.md",
+      "size_bytes": 18331,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "size_bytes": 59431,
+      "first_commit_date": "2026-04-25"
+    },
+    {
+      "path": "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+      "size_bytes": 21029,
+      "first_commit_date": "2026-04-17"
+    },
+    {
+      "path": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
+      "size_bytes": 35111,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/normalization-framework.md",
+      "size_bytes": 10274,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+      "size_bytes": 11096,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
+      "size_bytes": 1546,
+      "first_commit_date": "2026-04-27"
+    },
+    {
+      "path": "docs/case-studies/orchid-ai-accelerator-case-study.md",
+      "size_bytes": 15758,
+      "first_commit_date": "2026-04-17"
+    },
+    {
+      "path": "docs/case-studies/orchid-v1-5-additive-units-case-study.md",
+      "size_bytes": 9638,
+      "first_commit_date": "2026-05-03"
+    },
+    {
+      "path": "docs/case-studies/original-readme-redesign-case-study.md",
+      "size_bytes": 8325,
+      "first_commit_date": "2026-02-28"
+    },
+    {
+      "path": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+      "size_bytes": 9847,
+      "first_commit_date": "2026-04-16"
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-evolution-v1-to-v4.md",
+      "size_bytes": 61177,
+      "first_commit_date": "2026-04-10"
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+      "size_bytes": 17608,
+      "first_commit_date": "2026-04-07"
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-skill.md",
+      "size_bytes": 9068,
+      "first_commit_date": "2026-04-02"
+    },
+    {
+      "path": "docs/case-studies/post-stress-test-audit-remediation-case-study.md",
+      "size_bytes": 34022,
+      "first_commit_date": "2026-04-19"
+    },
+    {
+      "path": "docs/case-studies/push-notifications-case-study.md",
+      "size_bytes": 15994,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/six-features-roundup-case-study.md",
+      "size_bytes": 29272,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+      "size_bytes": 8432,
+      "first_commit_date": "2026-05-04"
+    },
+    {
+      "path": "docs/case-studies/smart-reminders-case-study.md",
+      "size_bytes": 14671,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/soc-v5-framework-case-study.md",
+      "size_bytes": 11279,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/stats-v2-case-study.md",
+      "size_bytes": 20840,
+      "first_commit_date": "2026-04-30"
+    },
+    {
+      "path": "docs/case-studies/training-plan-v2-case-study.md",
+      "size_bytes": 15816,
+      "first_commit_date": "2026-04-20"
+    },
+    {
+      "path": "docs/case-studies/ui-audit-baseline-burndown.md",
+      "size_bytes": 14102,
+      "first_commit_date": "2026-04-21"
+    },
+    {
+      "path": "docs/case-studies/unified-control-center-case-study.md",
+      "size_bytes": 22646,
+      "first_commit_date": "2026-05-06"
+    },
+    {
+      "path": "docs/case-studies/user-profile-v4.4-case-study.md",
+      "size_bytes": 18957,
+      "first_commit_date": "2026-04-13"
+    },
+    {
+      "path": "docs/case-studies/v5.1-parallel-stress-test-case-study.md",
+      "size_bytes": 20176,
+      "first_commit_date": "2026-04-15"
+    },
+    {
+      "path": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+      "size_bytes": 13706,
+      "first_commit_date": "2026-04-16"
+    }
+  ],
+  "findings": []
+}
