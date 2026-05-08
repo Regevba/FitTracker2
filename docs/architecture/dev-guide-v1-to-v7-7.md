@@ -1,9 +1,10 @@
-# PM Framework — Developer Guide (v1.0 → v7.8.1)
+# PM Framework — Developer Guide (v1.0 → v7.8.2)
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Last updated:** 2026-05-07 — v7.8.1 ship adds 3 new write-time gates (BRANCH_ISOLATION_VIOLATION, FEATURE_CLOSURE_COMPLETENESS, ISOLATION_OPT_OUT_REASON_MISSING), 3 new cycle-time advisories, auto-isolation flow, 2 new make targets, /ux + /design pre-merge-review sub-step 6f. v7.8 baseline below remains the structural foundation; v7.8.1 is a gate-layer extension.
-> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.8.1).
+> **Last updated:** 2026-05-08 — v7.8.2 ship adds (a) a Bash short-circuit cwd-guard to the PostToolUse:Read hook that silences cross-repo Mechanism C noise, and (b) a documented disposition spec resolving v7.9 candidates F7 + F8 (Tier 2.2 + Mechanism A cross-repo gate parity) as "documented exemption" rather than full parity build. v7.8.2 is a patch-level bump — NO new gates, NO regressions to existing gates. Pre-2026-05-08 content describing v7.8.1 gates remains accurate. See [`docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md`](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md).
+> **v7.8.1 baseline:** earlier on 2026-05-07 — 3 new write-time gates (BRANCH_ISOLATION_VIOLATION, FEATURE_CLOSURE_COMPLETENESS, ISOLATION_OPT_OUT_REASON_MISSING), 3 new cycle-time advisories, auto-isolation flow, 2 new make targets, /ux + /design pre-merge-review sub-step 6f.
+> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.8.2).
 > **Companion docs:** [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) (event/log/gate catalog with mermaid flow diagrams), [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
 > **Reading order:** §§ 1–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs.
 
