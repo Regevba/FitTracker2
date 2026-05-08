@@ -55,6 +55,40 @@ class CohortService:
                         segment, field_name, field_value, exc,
                     )
 
+    async def list_rows_by_segment_pattern(
+        self,
+        pattern: str,
+    ) -> list[dict[str, Any]]:
+        """Return every cohort_stats row whose `segment` matches the given
+        SQL LIKE pattern (e.g. ``"reminders.%"``).
+
+        Used by the smart-reminders behavioral-learning read path to gather
+        all per-(type, hour) shows + taps in one query, then compute the
+        per-type-per-hour tap-through rate client-side.
+
+        Returns rows as dicts with keys: segment, field_name, field_value,
+        frequency. Empty list on error (logged); never raises — callers
+        treat absence as "no cohort data yet" and degrade gracefully.
+        """
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            try:
+                resp = await client.get(
+                    f"{self._url}/rest/v1/cohort_stats",
+                    headers={**self._headers(), "Accept": "application/json"},
+                    params={
+                        "segment": f"like.{pattern}",
+                        "select":  "segment,field_name,field_value,frequency",
+                    },
+                )
+                resp.raise_for_status()
+                return resp.json()
+            except Exception as exc:
+                logger.error(
+                    "cohort list_by_pattern failed pattern=%s error=%s",
+                    pattern, exc,
+                )
+                return []
+
     async def get_cohort_totals(
         self,
         segment: str,

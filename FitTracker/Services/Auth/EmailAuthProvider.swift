@@ -1,11 +1,8 @@
 // FitTracker/Services/Auth/EmailAuthProvider.swift
-// DORMANT: LocalEmailAuthProvider (DEBUG-only) is wired in SignInService.
-//
-// To activate real Email auth:
-//   1. Ensure Email provider is enabled in Supabase → Auth → Providers
-//   2. In SignInService.init(): swap LocalEmailAuthProvider() → EmailAuthProvider()
-//
-// No package changes needed — supabase-swift already provides Auth.
+// Real email auth provider (Supabase signUp / OTP / signIn / password reset).
+// Wired in SignInService.init() when SupabaseRuntimeConfiguration.isConfigured;
+// LocalEmailAuthProvider (DEBUG) and UnavailableEmailAuthProvider (release) are
+// the fallbacks when Supabase is not configured.
 
 import Foundation
 import Auth  // Supabase Auth module
@@ -68,6 +65,17 @@ extension EmailAuthProvider {
     }
 
     func requestPasswordReset(email: String) async throws {
-        try await supabase.auth.resetPasswordForEmail(email)
+        try await supabase.auth.resetPasswordForEmail(
+            email,
+            redirectTo: URL(string: "fitme://reset-password")
+        )
+    }
+
+    func updatePassword(newPassword: String) async throws {
+        try await supabase.auth.update(user: UserAttributes(password: newPassword))
+    }
+
+    func processRecoveryURL(_ url: URL) async throws {
+        _ = try await supabase.auth.session(from: url)
     }
 }

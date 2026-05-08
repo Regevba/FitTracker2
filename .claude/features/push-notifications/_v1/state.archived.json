@@ -1,0 +1,197 @@
+{
+  "feature": "push-notifications",
+  "case_study": "docs/case-studies/push-notifications-case-study.md",
+  "case_study_showcase": "04-case-studies/22-push-notifications.md",
+  "created_at": "2026-04-12T21:30:00Z",
+  "updated": "2026-04-20T00:00:00Z",
+  "branch": null,
+  "current_phase": "implementation",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
+  "work_type": "feature",
+  "has_ui": true,
+  "requires_analytics": true,
+  "github_issue_number": null,
+  "parent_feature": null,
+  "phases": {
+    "research": {
+      "status": "approved",
+      "note": "High-priority maintenance research opened from the v4.3 cleanup program. Scope: workout reminders, readiness alerts, recovery/trend alerts, and notification preferences.",
+      "approved_at": "2026-04-13T17:45:00Z"
+    },
+    "prd": {
+      "status": "approved",
+      "path": "docs/product/prd/push-notifications.md",
+      "approved_at": "2026-04-15T17:35:00Z"
+    },
+    "tasks": {
+      "status": "approved",
+      "task_file": ".claude/features/push-notifications/tasks.md",
+      "v2_count": 12
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "type": "ux",
+      "compliance_gateway": "6/6 pass"
+    },
+    "implementation": {
+      "status": "complete"
+    },
+    "testing": {
+      "status": "complete",
+      "tests_added": 10,
+      "ci_passed": true
+    },
+    "review": {
+      "status": "complete",
+      "findings": {
+        "critical": 2,
+        "important": 4,
+        "suggestions": 5
+      },
+      "verdict": "APPROVED_AFTER_FIXES"
+    },
+    "merge": {
+      "status": "complete"
+    },
+    "documentation": {
+      "status": "complete"
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-04-12T21:30:00Z",
+      "approved_by": "user",
+      "note": "Research chapter opened after the maintenance prioritization pass identified push notifications as a top high-priority product gap."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-13T17:45:00Z",
+      "approved_by": "user",
+      "note": "Research phase complete. All scope questions answered. Ready for PRD authoring."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-15T17:35:00Z",
+      "approved_by": "user",
+      "note": "PRD written with 17 requirements, 5 metrics, 10 analytics events"
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-15T17:42:00Z",
+      "approved_by": "user",
+      "note": "12 tasks defined. Critical path: NotificationService \u2192 types \u2192 deep links \u2192 tests."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-15T17:50:00Z",
+      "approved_by": "user",
+      "note": "UX spec: permission priming, 3 notification types, timing rules, DS compliance."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-04-16T04:50:00Z",
+      "approved_by": "user",
+      "note": "All 12 tasks implemented. 10 tests pass."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-04-16T05:00:00Z",
+      "approved_by": "user",
+      "note": "BUILD SUCCEEDED. Tests pass. Ready for review."
+    },
+    {
+      "from": "review",
+      "to": "complete",
+      "timestamp": "2026-04-16T05:15:00Z",
+      "approved_by": "user",
+      "note": "C1+C2+I1 fixed. Review re-approved. First feature to complete full v5.2 PM lifecycle."
+    },
+    {
+      "from": "complete",
+      "to": "implementation",
+      "timestamp": "2026-04-20T00:00:00Z",
+      "approved_by": "integrity_audit",
+      "note": "Reopened 2026-04-20 per UI-016: priming view shipped tested + merged but never wired into navigation. Partial ship flagged per open-items review \u00a7 #12."
+    }
+  ],
+  "timing": {
+    "time_source": "git-backfill",
+    "backfill_note": "Phase boundaries inferred from state.json transitions[] array; timestamps from git log. T15 / PR-5 (2026-04-27).",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-12T21:30:00Z",
+        "ended_at": "2026-04-13T17:45:00Z"
+      },
+      "prd": {
+        "started_at": "2026-04-13T17:45:00Z",
+        "ended_at": "2026-04-15T17:35:00Z"
+      },
+      "tasks": {
+        "started_at": "2026-04-15T17:35:00Z",
+        "ended_at": "2026-04-15T17:42:00Z"
+      },
+      "ux_or_integration": {
+        "started_at": "2026-04-15T17:42:00Z",
+        "ended_at": "2026-04-15T17:50:00Z"
+      },
+      "implementation_first": {
+        "started_at": "2026-04-15T17:50:00Z",
+        "ended_at": "2026-04-16T04:50:00Z",
+        "note": "First implementation pass (pre-audit). Completed, then reopened for partial-ship fix."
+      },
+      "testing": {
+        "started_at": "2026-04-16T04:50:00Z",
+        "ended_at": "2026-04-16T05:00:00Z"
+      },
+      "review": {
+        "started_at": "2026-04-16T05:00:00Z",
+        "ended_at": "2026-04-16T05:15:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-04-20T00:00:00Z"
+      }
+    }
+  },
+  "tasks": [],
+  "partial_ship": true,
+  "known_gaps": {
+    "audit_finding": "UI-016",
+    "summary": "Local-notification substrate + scheduler + 2 critical-bug fixes + 18 tests shipped cleanly. NotificationPermissionPrimingView was built, tested, and merged but was never wired into navigation \u2014 the first-workout-completed trigger was never implemented, so zero entry points exist. No user has seen the priming surface.",
+    "open_tasks": [
+      "Implement first-workout-completed trigger that launches NotificationPermissionPrimingView",
+      "Build Settings preferences UI (explicitly deferred to Phase 2 at ship time)",
+      "APNs remote push integration (deferred to Phase 2)",
+      "Verify 5 PRD primary metrics have data after wire-up (currently 0 data)"
+    ]
+  },
+  "paused": {
+    "at": "2026-04-27T14:00:00Z",
+    "reason": "v7.7 Validity Closure full-priority freeze",
+    "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "snapshot": {
+      "current_phase": "implementation",
+      "next_action_when_resumed": "Resume implementation; coordinate with smart-reminders if both resume close in time",
+      "blockers": [],
+      "context_links": [
+        ".claude/features/push-notifications/state.json",
+        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_push_notifications.md"
+      ]
+    }
+  },
+  "_meta": {
+    "deprecation_warnings": []
+  }
+}

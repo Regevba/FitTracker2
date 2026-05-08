@@ -1,11 +1,17 @@
 {
   "feature": "import-training-plan",
   "case_study": "docs/case-studies/import-training-plan-case-study.md",
-  "case_study_showcase": "04-case-studies/23-import-training-plan.md",
-  "created": "2026-04-11T00:00:00Z",
-  "updated": "2026-04-20T00:00:00Z",
-  "branch": null,
-  "current_phase": "implementation",
+  "case_study_showcase": "04-case-studies/23b-import-training-plan.mdx",
+  "created_at": "2026-04-11T00:00:00Z",
+  "updated": "2026-05-06T17:57:02Z",
+  "branch": "feature/import-training-plan-resume",
+  "current_phase": "complete",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -16,36 +22,78 @@
   "phases": {
     "research": {
       "status": "approved",
-      "approved_at": "2026-04-15T17:35:00Z"
+      "approved_at": "2026-05-06T14:51:00Z",
+      "reopened_at": "2026-05-06T14:39:34Z",
+      "reopen_reason": "Audit UI-015 surfaced structural PRD gap: documented persistence target TrainingProgramData has no write path. Reopening to redesign persistence + active-plan switching + sync + GDPR integration before further work."
     },
     "prd": {
       "status": "approved",
       "path": "docs/product/prd/import-training-plan.md",
-      "approved_at": "2026-04-15T17:42:00Z"
+      "approved_at": "2026-05-06T14:51:00Z",
+      "analytics_spec_complete": true
     },
     "tasks": {
       "status": "approved",
       "task_file": ".claude/features/import-training-plan/tasks.md",
-      "v2_count": 13
+      "v2_count": 18,
+      "approved_at": "2026-05-06T14:57:44Z"
     },
     "ux_or_integration": {
       "status": "approved",
-      "type": "ux"
+      "type": "ux",
+      "compliance_gateway": "5/5 pass",
+      "compliance_decision": "fix_violations",
+      "heuristic_validation": "pass",
+      "checklist_completed": true,
+      "ux_research_path": ".claude/features/import-training-plan/research-persistence-2026-05-06.md",
+      "ux_spec_path": ".claude/features/import-training-plan/ux-spec.md",
+      "ux_build_prompt_path": "docs/prompts/2026-05-06-import-training-plan-ux-build.md",
+      "design_build_prompt_path": "docs/prompts/2026-05-06-import-training-plan-design-build.md",
+      "approved_at": "2026-05-06T15:15:39Z"
     },
     "implementation": {
-      "status": "pending"
+      "status": "approved",
+      "started_at": "2026-05-06T15:15:39Z",
+      "commits": [
+        "a2e757c",
+        "54f8b26",
+        "6f71ad8"
+      ],
+      "approved_at": "2026-05-06T16:14:10Z"
     },
     "testing": {
-      "status": "pending"
+      "status": "approved",
+      "tests_added": 33,
+      "analytics_tests_added": 11,
+      "instrumentation_verified": true,
+      "analytics_verification_passed": true,
+      "ci_passed": true,
+      "eval_results": {
+        "min_eval_coverage_met": true,
+        "note": "Non-AI feature; eval gate auto-passes."
+      },
+      "approved_at": "2026-05-06T17:49:14Z"
     },
     "review": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-05-06T17:49:14Z",
+      "risks": [
+        "Net-new patterns documented (.swipeActions, .contextMenu, ImportedPlanRow)"
+      ],
+      "ci_main": true,
+      "ci_feature": true
     },
     "merge": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-05-06T17:49:14Z",
+      "pr_number": 234,
+      "analytics_regression_passed": true
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-05-06T17:57:02Z",
+      "case_study_path": "docs/case-studies/import-training-plan-case-study.md",
+      "showcase_mdx_path": "fitme-story/content/04-case-studies/23b-import-training-plan.mdx"
     }
   },
   "transitions": [
@@ -96,6 +144,76 @@
       "timestamp": "2026-04-20T00:00:00Z",
       "approved_by": "integrity_audit",
       "note": "Reopened 2026-04-20 per UI-015: feature shipped infra + tests but no entry point exists. Partial ship flagged per open-items review \u00a7 #12."
+    },
+    {
+      "from": "implementation",
+      "to": "research",
+      "timestamp": "2026-05-06T14:39:34Z",
+      "approved_by": "user-manual",
+      "note": "Full PM rollback: pursuing Option C (full Phase 1 \u2014 persist + activate). Existing PRD claimed persistence to TrainingProgramData (static struct, no write path). Re-opening to research persistence layer, active-plan switching, CloudKit/Supabase sync semantics, GDPR Article 17/20 integration, and Training-tab read fan-out before any code."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-05-06T14:51:00Z",
+      "approved_by": "user",
+      "note": "Research v2 approved (research-persistence-2026-05-06.md). 8 PRD gaps catalogued, decisions locked in \u00a79, Phase 1 PRD outline pre-written."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-05-06T14:51:00Z",
+      "approved_by": "user",
+      "note": "PRD v2 approved (docs/product/prd/import-training-plan.md). Analytics Spec Gate passed (9 events). 14 P0 requirements grounded in file:line touch-points. Primary conversion flipped to import_plan_activated."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-05-06T14:57:44Z",
+      "approved_by": "user",
+      "note": "Tasks v2 approved (18 tasks, 7.10 effort-days, 7-hop critical path). Moving to UX phase to extend ux-spec.md against 3 new surfaces."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-05-06T15:15:39Z",
+      "approved_by": "user",
+      "note": "UX approved with audit corrections (C1-C10): Capsule() not AppRadius.pill, AppEasing.short not AppMotion.standardEase, new ImportedPlanRow component, no toast (rely on ACTIVE pill cross-fade). Branch: feature/import-training-plan-resume."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-05-06T16:14:10Z",
+      "approved_by": "user",
+      "note": "Implementation 18/18 done. xcodebuild build green; 49/49 import+program-store+persistence+analytics tests pass; ui-audit P0=0. 3 commits on feature/import-training-plan-resume."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-05-06T17:49:14Z",
+      "approved_by": "user",
+      "note": "Tests green (49/49 import suites). ui-audit P0=0. Figma build complete (page 916:2 + 4 frames). Pre-merge reviews: ux=passed, design=passed."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-05-06T17:49:14Z",
+      "approved_by": "user",
+      "note": "Phase 6 gates passed (v4.X /ux pre-merge-review + /design pre-merge-review). PR #234 ready for admin-merge."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-05-06T17:49:14Z",
+      "approved_by": "user",
+      "note": "PR #234 squash-merged via admin (commit 8bb5daa). All 8 CI checks green. Branch deleted. Companion PRs #235 + fitme-story #48 + #236 also merged."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-06T17:57:02Z",
+      "approved_by": "user",
+      "note": "Phase 8 closure: source case study at docs/case-studies/import-training-plan-case-study.md; showcase MDX at fitme-story slot 23b (v7.8 framework era, intercalates between UCC 23a and backlog-roundup 24); state.json fully reconciled. Linear FIT-24 + Notion sync next."
     }
   ],
   "timing": {
@@ -124,11 +242,362 @@
         "note": "First implementation pass (pre-audit). Completed, then reopened for partial-ship fix."
       },
       "implementation": {
-        "started_at": "2026-04-20T00:00:00Z"
+        "started_at": "2026-05-06T15:15:39Z",
+        "ended_at": "2026-05-06T16:14:10Z",
+        "note": "v2 resume implementation (post-rollback). v1 implementation_first preserved separately."
+      },
+      "research_reopened_2026_05_06": {
+        "started_at": "2026-05-06T14:39:34Z",
+        "note": "Reopened per user-manual override after audit UI-015 surfaced structural PRD gap.",
+        "ended_at": "2026-05-06T14:51:00Z"
+      },
+      "prd_v2": {
+        "started_at": "2026-05-06T14:51:00Z",
+        "ended_at": "2026-05-06T14:51:00Z",
+        "note": "Phase 1 v2 PRD rewrite (post-rollback)."
+      },
+      "tasks_v2": {
+        "started_at": "2026-05-06T14:51:00Z",
+        "ended_at": "2026-05-06T14:57:44Z"
+      },
+      "ux_or_integration_v2": {
+        "started_at": "2026-05-06T14:57:44Z",
+        "ended_at": "2026-05-06T15:15:39Z"
+      },
+      "implementation_v2": {
+        "started_at": "2026-05-06T15:15:39Z",
+        "ended_at": "2026-05-06T16:14:10Z"
+      },
+      "testing_v2": {
+        "started_at": "2026-05-06T16:14:10Z",
+        "ended_at": "2026-05-06T17:49:14Z"
+      },
+      "testing": {
+        "started_at": "2026-05-06T16:14:10Z",
+        "note": "v2 resume testing (post-rollback).",
+        "ended_at": "2026-05-06T17:49:14Z"
+      },
+      "review_v2": {
+        "started_at": "2026-05-06T17:49:14Z",
+        "ended_at": "2026-05-06T17:49:14Z"
+      },
+      "review": {
+        "started_at": "2026-05-06T17:49:14Z",
+        "ended_at": "2026-05-06T17:49:14Z"
+      },
+      "merge_v2": {
+        "started_at": "2026-05-06T17:49:14Z",
+        "ended_at": "2026-05-06T17:49:14Z"
+      },
+      "merge": {
+        "started_at": "2026-05-06T17:49:14Z",
+        "ended_at": "2026-05-06T17:49:14Z"
+      },
+      "documentation_v2": {
+        "started_at": "2026-05-06T17:49:14Z",
+        "ended_at": "2026-05-06T17:57:02Z"
+      },
+      "documentation": {
+        "started_at": "2026-05-06T17:49:14Z",
+        "ended_at": "2026-05-06T17:57:02Z"
+      },
+      "complete": {
+        "started_at": "2026-05-06T17:57:02Z"
       }
     }
   },
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Domain model: ImportedTrainingPlan + ImportedDayAssignment + ImportedExerciseEntry + ImportSource enum",
+      "type": "model",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "lane": "E-core",
+      "complexity_score": 3,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T2",
+      "title": "Extend EncryptedDataStore \u2014 @Published field + clearInMemory + deletePersistedData entry",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T1"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T3",
+      "title": "Extend EncryptedDataStore.attemptPersist() + loadFromDisk() for the 6th .ftenc",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T2"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T4",
+      "title": "EncryptedDataStorePersistenceTests \u2014 6-collection round-trip + clearInMemory wipe + GDPR Art-17 file-deletion",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T3"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T5",
+      "title": "TrainingProgramStore routing \u2014 activePlanId + exercises(for:) routing + activate() + ImportedExerciseEntry adapter",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T2"
+      ],
+      "lane": "P-core",
+      "complexity_score": 5,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T6",
+      "title": "TrainingProgramStoreTests \u2014 exercises(for:) routing + activate mutual-exclusion + adapter",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T5"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T7",
+      "title": "Extend ImportOrchestrator \u2014 day-name heuristic + confirmImport() persistence to EncryptedDataStore",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T5"
+      ],
+      "lane": "E-core",
+      "complexity_score": 3,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T8",
+      "title": "ImportOrchestratorTests \u2014 heuristic 7 cases + confirmImport persistence + completed-only-after-persist",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T7"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T9",
+      "title": "Extend DataExportService.swift \u2014 3 touch points (counts, JSON dict, encodeImportedTrainingPlans helper)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T2"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T10",
+      "title": "DataExportServiceTests + AccountDeletionTests \u2014 GDPR Art-20 export + Art-17 delete regressions",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T9"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T11",
+      "title": "Add 3 analytics constants + 2 screens to AnalyticsProvider.swift; sync analytics-taxonomy.csv",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T12",
+      "title": "Wire all 9 import_* events at trigger points (orchestrator + views + list + detail + activate)",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T7",
+        "T11",
+        "T13",
+        "T14",
+        "T15",
+        "T16"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T13",
+      "title": "ImportedPlansListScreen.swift (Settings \u2192 Data \u2192 Imported Plans): empty state, list, swipe actions, navbar +",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.75,
+      "depends_on": [
+        "T1",
+        "T5"
+      ],
+      "lane": "P-core",
+      "complexity_score": 9,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T14",
+      "title": "Extend ImportPreviewView with mode .preview/.detail + day-assignment editor",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T7"
+      ],
+      "lane": "P-core",
+      "complexity_score": 5,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T15",
+      "title": "Wire DataSyncSettingsScreen \u2192 ImportedPlansListScreen + sheet presentation of ImportSourcePickerView",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T13"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T16",
+      "title": "Training tab toolbar \u2014 square.and.arrow.down button + sheet presentation of ImportSourcePickerView",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T17",
+      "title": "Remove HISTORICAL headers from ImportSourcePickerView + ImportPreviewView",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T15",
+        "T16"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    },
+    {
+      "id": "T18",
+      "title": "ImportSmokeUITests + xcodebuild build/test green + analytics_verification_passed",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T9",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15",
+        "T16",
+        "T17"
+      ],
+      "lane": "E-core",
+      "complexity_score": 0,
+      "completed_at": "2026-05-06T16:14:10Z"
+    }
+  ],
   "source_investigation_areas": [
     "CSV/JSON import \u2014 simplest format, used by Strong/Hevy export",
     "PDF text extraction \u2014 reuse OCR from nutrition feature",
@@ -188,16 +657,20 @@
     "Notion fitness templates \u2014 markdown table parsing patterns"
   ],
   "transitions_note_v2": "2026-04-11: Scope expanded to include AI agent prompt parsing. Users often generate plans via ChatGPT/Claude/other assistants \u2014 FitMe should parse these varied outputs and optionally preserve the original prompt for regeneration via its own AI engine.",
-  "partial_ship": true,
-  "known_gaps": {
+  "partial_ship": false,
+  "partial_ship_history": {
+    "was_flagged": true,
     "audit_finding": "UI-015",
-    "summary": "Parser / mapper / orchestrator stack + 23 tests shipped cleanly. Entry-point views (ImportSourcePickerView, ImportPreviewView) were built and tested but never wired into any tab, sheet, or navigation destination. ImportOrchestrator transitions state correctly but confirmImport() does NOT persist to TrainingProgramData. Annotated HISTORICAL 2026-04-17 (commit 0831f60) per audit UI-015.",
-    "open_tasks": [
-      "Wire ImportSourcePickerView into Settings or Training tab navigation",
-      "Wire ImportPreviewView as destination from picker",
-      "Implement confirmImport() persistence to TrainingProgramData",
-      "Remove HISTORICAL header from both views once wired",
-      "Fire the 6 import_* analytics events (constants exist, track() never called)"
+    "flagged_at": "2026-04-20T00:00:00Z",
+    "resolved_at": "2026-05-06T18:00:00Z",
+    "resolution": "Resume session 2026-05-06 closed the partial ship end-to-end. Resolved via PR #234 (8bb5daa): 18/18 tasks done, including all 5 known_gaps tasks below — wire to Settings + Training (T15+T16), wire confirmImport persistence to EncryptedDataStore.importedTrainingPlans (T7, replacing the structurally-impossible TrainingProgramData claim from v1 PRD), un-HISTORICAL Picker + Preview (T17), fire all 9 analytics events (T11+T12). All 33 new tests pass.",
+    "original_summary": "Parser / mapper / orchestrator stack + 23 tests shipped cleanly. Entry-point views (ImportSourcePickerView, ImportPreviewView) were built and tested but never wired into any tab, sheet, or navigation destination. ImportOrchestrator transitions state correctly but confirmImport() does NOT persist to TrainingProgramData. Annotated HISTORICAL 2026-04-17 (commit 0831f60) per audit UI-015.",
+    "original_open_tasks_now_done": [
+      "Wire ImportSourcePickerView into Settings or Training tab navigation (T15)",
+      "Wire ImportPreviewView as destination from picker (T13)",
+      "Implement confirmImport() persistence to EncryptedDataStore.importedTrainingPlans (T7 — replacing structurally-impossible TrainingProgramData claim)",
+      "Remove HISTORICAL header from both views once wired (T17)",
+      "Fire the 6 import_* analytics events — actually shipped 9 events including 3 new constants (T11+T12)"
     ]
   },
   "paused": {
@@ -212,6 +685,58 @@
         ".claude/features/import-training-plan/state.json",
         "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_import_training_plan.md"
       ]
-    }
+    },
+    "resolved_at": "2026-05-06T14:39:34Z",
+    "resolution": "Reopened to research per user-manual override (full Option C path)."
+  },
+  "_meta": {
+    "deprecation_warnings": []
+  },
+  "figma_node_ids": {
+    "import_training_plan_page": "916:2",
+    "page_title_section": "918:2",
+    "imported_plans_list_populated_active": "919:2",
+    "imported_plans_list_empty": "920:2",
+    "day_assignment_editor": "921:2",
+    "training_tab_active_plan_badge": "922:2"
+  },
+  "figma_build_status": "completed",
+  "figma_build_run": {
+    "ran_at": "2026-05-06T17:32:30Z",
+    "method": "/design build (v4.X auto-dispatch \u2014 first run after skill upgrade landed in main as PR #235)",
+    "library_file_key": "0Ai7s3fCFqR5JXDW8JvgmD",
+    "library_file_url": "https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library?node-id=916-2",
+    "page_name": "Import Training Plan",
+    "page_node_id": "916:2",
+    "screen_count": 4,
+    "design_system_tokens_consumed": [
+      "background/app-primary",
+      "surface/primary",
+      "surface/elevated",
+      "surface/secondary",
+      "text/primary",
+      "text/secondary",
+      "text/tertiary",
+      "text/inverse-primary",
+      "text/inverse-secondary",
+      "border/subtle",
+      "border/hairline",
+      "accent/primary",
+      "status/success",
+      "status/warning"
+    ],
+    "fonts_loaded": [
+      "Inter Regular",
+      "Inter Medium",
+      "Inter Semi Bold",
+      "Inter Bold"
+    ],
+    "iterations": 2,
+    "iteration_notes": "First pass clipped Frame 3's Day-Assignment Card (FIXED primaryAxisSizingMode without explicit height); fixed in iteration 2 by switching to AUTO. Final screenshot verified all 4 frames render correctly."
+  },
+  "pre_merge_review": {
+    "design": "passed",
+    "design_reviewed_at": "2026-05-06T17:32:30Z",
+    "design_review_note": "/design pre-merge-review: ui-audit P0=0 (verified 2026-05-06 pre-Figma-build); figma_node_ids populated for 4 screens; PR description references those IDs (added in PR #234 update). Screenshot verified \u2014 all 4 frames render with semantic tokens; no raw colors."
   }
 }

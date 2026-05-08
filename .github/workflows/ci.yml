@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Full CI pipeline
         shell: bash
@@ -94,12 +94,19 @@ jobs:
           echo "::endgroup::"
 
           # Test — same signing flags so the test host can hit the keychain.
+          # -parallel-testing-enabled NO: avoids iOS Simulator clone churn that
+          # produced a class of nondeterministic UI test flakes (different tests
+          # failed each run on PRs that touched zero Swift code; main itself
+          # flaked the same way). Trades ~5-10 min of serial test time for
+          # deterministic CI. PR #160's narrower XCTSkipIf quarantine in
+          # HomeReadinessUITests becomes redundant after this lands.
           echo "::group::Test"
           xcodebuild test \
             -project "$PROJECT_PATH" \
             -scheme "$SCHEME" \
             -destination "$SIM_DEST" \
             -resultBundlePath TestResults.xcresult \
+            -parallel-testing-enabled NO \
             CODE_SIGN_IDENTITY=- \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=YES 2>&1 | tee /tmp/test.log
@@ -107,7 +114,7 @@ jobs:
 
       - name: Upload build log on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-log
           path: /tmp/build.log
@@ -116,7 +123,7 @@ jobs:
 
       - name: Upload test results on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: test-results
           path: TestResults.xcresult
@@ -125,7 +132,7 @@ jobs:
 
       - name: Comment error summary on PR
         if: failure() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         continue-on-error: true
         with:
           script: |

@@ -1,12 +1,19 @@
 {
   "feature": "android-design-system",
-  "case_study": "docs/case-studies/six-features-roundup-case-study.md",
-  "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
-  "case_study_type": "roundup",
-  "created": "2026-04-04T14:00:00Z",
+  "work_type": "feature",
+  "case_study": "docs/case-studies/android-design-system-case-study.md",
+  "parent_case_study": "docs/case-studies/six-features-roundup-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/24a-android-design-system.mdx",
+  "created_at": "2026-04-04T14:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": "feature/android-design-system",
   "current_phase": "complete",
+  "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": false,
   "requires_analytics": false,
   "github_issue_number": null,
@@ -37,5 +44,8 @@
       "first_review_date": null,
       "kill_criteria": "Defer Android expansion if iOS core not stable"
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

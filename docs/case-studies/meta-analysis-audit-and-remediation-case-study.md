@@ -4,6 +4,12 @@
 
 > Framework v7.0 | Chore → Fix | Audit (2026-04-16) → Remediation (2026-04-17) | PRs #84, #85, #86
 
+**Success Metrics:** N/A — pre-PRD chore document (audit-then-remediate). Per-finding closure tracked in `audit-findings.json`; aggregate "127 of 170 findings closed" is the closest proxy.
+
+**Kill Criteria:** N/A — chore document type. Audit findings either close, defer with documented external blocker, or remain open per the standard finding-state taxonomy.
+
+**Dispatch Pattern:** parallel domain agents (UI/Backend/AI/Design-System/Tests/Framework) for the audit phase; serial for the remediation phase.
+
 ---
 
 ## 1. Summary Card

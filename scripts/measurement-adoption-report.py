@@ -113,7 +113,12 @@ def build_report() -> dict:
             })
             continue
 
-        created = d.get("created") or ""
+        # Canonical field is `created_at` (per the 2026-05-01 schema migration
+        # in chore/framework-honesty-fixes-2026-05-01). Fall back to legacy
+        # `created` as a transitional safety net — the SCHEMA_DRIFT pre-commit
+        # gate prevents regression but the report should remain robust on any
+        # pre-migration snapshot of the data dir.
+        created = d.get("created_at") or d.get("created") or ""
         adoption = classify_feature(d)
         all_four = all(adoption.values())
         any_field = any(adoption.values())

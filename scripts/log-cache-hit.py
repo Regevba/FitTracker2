@@ -109,14 +109,42 @@ def find_active_feature() -> Path | None:
 
 
 def _append_to_state(state_path: Path, entry: dict) -> None:
-    """Append entry to state.json.cache_hits[]. Mutates the file in place."""
-    data = json.loads(state_path.read_text())
-    existing = data.get("cache_hits")
-    if not isinstance(existing, list):
-        data["cache_hits"] = []
-    data["cache_hits"].append(entry)
-    data["updated"] = _utc_now()
-    state_path.write_text(json.dumps(data, indent=2) + "\n")
+    """Append entry to state.json.cache_hits[]. Mutates the file in place.
+
+    v7.8 Mechanism I scaffolding: wraps the read-modify-write in
+    `fcntl.flock(LOCK_EX)` via scripts/flock_writer.flocked() so concurrent
+    writers from different worktrees serialize cleanly. flock failure
+    (e.g. NFS path refusal) falls through to an unlocked write — the call
+    site is fail-soft per the script's contract.
+    """
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    try:
+        from flock_writer import flocked  # noqa: E402
+    except ImportError:
+        flocked = None
+
+    def _do_write() -> None:
+        data = json.loads(state_path.read_text())
+        existing = data.get("cache_hits")
+        if not isinstance(existing, list):
+            data["cache_hits"] = []
+        data["cache_hits"].append(entry)
+        data["updated"] = _utc_now()
+        state_path.write_text(json.dumps(data, indent=2) + "\n")
+
+    if flocked is None:
+        _do_write()
+        return
+    try:
+        with flocked(state_path):
+            _do_write()
+    except OSError as exc:
+        print(
+            f"log-cache-hit: flock failed on {state_path} ({exc}); "
+            f"falling through to unlocked write",
+            file=sys.stderr,
+        )
+        _do_write()
 
 
 def _call_append_feature_log(feature: str, key: str, layer: str,

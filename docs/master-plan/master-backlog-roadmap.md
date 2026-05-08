@@ -5,7 +5,12 @@ Complete project roadmap with 18 tasks across 6 phases. Prioritized using the RI
 
 **Added 2026-04-02:** Task 18 — Create PRD for every existing shipped feature before building new ones.
 
-> **2026-04-27 — framework v7.7 freeze:** RICE-prioritized product work below is **paused** for ~2-3 weeks while v7.7 (Validity Closure) lands. v7.7 is framework-infrastructure work (data integrity gates), not a RICE-tracked product feature. Resume of paused features (`app-store-assets`, `auth-polish-v2`, `import-training-plan`, `onboarding-v2-retroactive`, `push-notifications`, `stats-v2`) is gated on v7.7 phase=complete. See [`docs/master-plan/master-plan-2026-04-15.md`](master-plan-2026-04-15.md) for the v7.7 banner and [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](../superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md) for scope.
+> **2026-05-07 — framework v7.7 freeze LIFTED:** v7.7 shipped 2026-04-27, v7.8 Bridge shipped 2026-05-04, v7.8.1 (Branch Isolation + Feature-Closure Completeness) shipped 2026-05-07. All 6 features paused under the freeze (`app-store-assets`, `auth-polish-v2`, `import-training-plan`, `onboarding-v2-retroactive`, `push-notifications`, `stats-v2`) have either shipped or were eligible to resume:
+>
+> - **Shipped:** stats-v2 (#164, 2026-04-30) · auth-polish-v2 (#163, 2026-05-01) · onboarding-v2-retroactive (#63 ship + #211-#216 reconcile, 2026-05-08) · import-training-plan Phase 1 (#234, 2026-05-06) · push-notifications-v2 (#239, 2026-05-07)
+> - **Resume-eligible:** app-store-assets (Linear FIT-17, paused implementation; pipeline scaffolding shipped)
+>
+> See [`master-plan-2026-04-15.md`](master-plan-2026-04-15.md) for the v7.8.1 banner and [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md) for the v8 candidate icebox (7 items, ranked at branch-isolation Phase 9 close ~2026-05-21).
 
 ---
 

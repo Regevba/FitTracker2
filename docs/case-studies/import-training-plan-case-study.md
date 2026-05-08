@@ -1,165 +1,145 @@
-# Import Training Plan — Case Study
-
-**Date written:** 2026-04-20
-<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
-
-| Field | Value |
-|---|---|
-| Dispatch Pattern | parallel |
-
-
-> **Subtitle:** The v5.1 parallel-stress-test feature that shipped a working parser + mapper + 23 unit tests in one sprint — then had its UI archived as dead code three days later when the audit proved it was never wired in.
-
-| Field | Value |
-|---|---|
-| Feature | import-training-plan |
-| Work type | feature |
-| Framework version | v5.1 (parallel stress test) |
-| State | `phase=complete` as of 2026-04-16T05:30:00Z |
-| Branch | none (direct commits to `main`) |
-| PRs | none (merged as commits: `b62b659`, `0a10a4a`, `33b4e72`, `c928b9c`, `aab67fb`, `0831f60`) |
-| Wall time | ~8 hours across 2 days (2026-04-15 PRD → 2026-04-16 complete) |
-| Files shipped | 5 production Swift files (607 lines) + 2 test files (316 lines) |
-| Tests | 23 unit tests (15 core + 8 edge cases) — all passing under BUILD SUCCEEDED |
-| UI status | Archived as HISTORICAL on 2026-04-17 (audit UI-015) — never wired into the app |
-| Analytics | 6 event constants defined in `AnalyticsProvider.swift`; not yet fired at call sites |
-
+---
+case_id: import-training-plan
+case_study_type: feature
+work_type: feature
+framework_version: v7.8
+slug: import-training-plan
+title: "Import Training Plan — Resume from Audit-Flagged Partial Ship to Full Phase 1 Ship in 14 Hours"
+date: '2026-05-06'
+date_written: '2026-05-06'
+dispatch_pattern: serial (single resume session; mid-flight rollback to research after PRD architectural gap surfaced)
+shipped_window: '2026-05-06 (single-session resume)'
+external_audit_status: pending
+upstream_path: docs/case-studies/import-training-plan-case-study.md
+success_metrics:
+  primary: "Plan activation rate — % of `import_completed` events that flip a plan to `isActive=true` within session (T1 instrumented via `import_plan_activated`); target ≥ 80%; kill < 40% at 30 days"
+  secondary:
+    - "Import success rate (parser + mapping produces a usable plan, no manual fix) — T1 instrumented; target ≥ 80%; kill < 30% after 30 days → simplify to CSV-only"
+    - "Exercise mapping accuracy (% exercises auto-matched at ≥ 0.95 confidence) — T1 instrumented; target ≥ 90%; kill < 70% (trust broken)"
+    - "Time to first usable imported workout (`import_started` → first `training_workout_start` against the imported plan) — T1; target < 5 min; kill > 15 min median"
+    - "Plan adoption rate (imported plan opened or trained against within 7 days) — T1; target ≥ 60%; kill < 25% at 30 days"
+    - "User satisfaction rating on import experience (in-app rating prompt 7d post-import) — T2 declared (n≥50); target ≥ 4/5; kill ≤ 3/5 median"
+  source: docs/product/prd/import-training-plan.md §Success Metrics
+post_launch_review: "First post-launch metrics review 2026-05-13 (T+7d) — query GA4 funnel `import_started → import_completed → import_plan_activated`, compute activation rate, verify kill thresholds not tripped"
+key_numbers:
+  - label: "PRs landed"
+    value: "4"
+    tier: T1
+    note: "FT2 #234 (feature) + #235 (skill upgrade) + #236 (backlog cleanup) + fitme-story #48 (skill reflection)"
+  - label: "Tasks done"
+    value: "18 / 18"
+    tier: T1
+    note: "15 E-core + 3 P-core, all green; tracked in state.json::tasks[]"
+  - label: "Tests added"
+    value: "33"
+    tier: T1
+    note: "T4 (persistence) + T6 (routing) + T8 (orchestrator) + T10 (GDPR) + 11 analytics tests; 49/49 import-related suites pass"
+  - label: "P0 spec errors caught"
+    value: "4"
+    tier: T1
+    note: "By the user-ordered pre-Phase-4 audit BEFORE any code was written; saved 2-4h of compile-error rework"
+  - label: "Wall-clock time"
+    value: "~14 hours"
+    tier: T2
+    note: "Single resume session 2026-05-06; original Phase 1 attempt ran ~12h on 2026-04-15 and shipped a partial-ship that audit UI-015 flagged"
+  - label: "Figma surfaces auto-built"
+    value: "4"
+    tier: T1
+    note: "First-ever v4.X /design build auto-dispatch run; page 916:2 + 4 frames in design system library 0Ai7s3fCFqR5JXDW8JvgmD"
 ---
 
-## 1. Why This Case Study Exists
+# Import Training Plan — Resume from Audit-Flagged Partial Ship to Full Phase 1 Ship in 14 Hours
 
-Import Training Plan is the project's clearest case of a feature **completing the PM funnel on paper while the shipped UI never reached a user**. Per the 2026-04-13 project rule, every feature gets a case study — and this one documents an uncomfortable but useful pattern:
+## TL;DR
 
-- The parser layer (CSV / JSON / Markdown) shipped, is exercised by 23 unit tests, and lives in the build target as reachable code.
-- The `ImportOrchestrator` state machine shipped and is tested end-to-end.
-- The `ExerciseMapper` shipped with 37 alias entries covering the core of the 87-exercise library.
-- The two entry-point views (`ImportSourcePickerView`, `ImportPreviewView`) shipped but were **never instantiated** by any tab, sheet, or navigation destination in the app. Three days after merge, a UI audit (finding UI-015 in Sprint D, 2026-04-17) flagged them as dead code and they were annotated `HISTORICAL —` in their file headers.
+The import-training-plan feature originally shipped 2026-04-16 as a partial-ship: parser + mapper + orchestrator + 23 unit tests landed cleanly, but the source-picker and preview views were never wired into navigation and `confirmImport()` was a no-op stub. Audit UI-015 (2026-04-20) caught it. Resume attempt 2026-05-06 then surfaced a deeper structural error: the original PRD claimed `ImportOrchestrator` writes to `TrainingProgramData` — structurally impossible because `TrainingProgramData` is a `struct` with only `static let` fields. The honest path was a mid-flight rollback to research, a rewritten PRD against the actual persistence target (`EncryptedDataStore.importedTrainingPlans`), and a re-decomposed task list.
 
-The feature is therefore a split outcome: a working, tested parser stack sitting on `main`, behind a UI that was archived before it reached production. The case study exists to record why that happened, what remains salvageable, and what revival looks like.
+The same session also produced a v4.X skill-layer upgrade as a meta-byproduct: a user-ordered pre-Phase-4 audit caught 4 P0 spec errors that would have hit "no such symbol" at compile time (`AppRadius.pill`, `AppMotion.standardEase`, `SettingsActionLabel` with custom badge slot, toast component — all referenced by the spec, none in the codebase). The user requested promoting that audit pattern to a mechanical PM-workflow gate. The result is `/ux preflight` + `/design preflight` + `/ux pre-merge-review` + `/design pre-merge-review` + `/design build` auto-dispatch, all shipped in PR #235 and adopted by this feature on first run via Figma Option C.
 
----
+**End state:** 4 PRs landed (FT2 #234 feature + #235 skill upgrade + #236 backlog + fitme-story #48 mirror), 18/18 tasks done, 33 new tests, 4 Figma frames auto-built into the FitMe Design System Library (the v4.X auto-dispatch flow's first production output), zero P0 in `make ui-audit`, all gates green.
 
-## 2. Summary Card
+## Architecture (locked, not re-litigated)
 
-| Concern | What shipped | Evidence |
-|---|---|---|
-| Parser protocol | `ImportParser` protocol with `canParse(_:)` + `parse(_:) throws -> ImportedPlan` | `FitTracker/Services/Import/ImportParser.swift` (174 lines) |
-| File formats supported | CSV (Strong/Hevy style), JSON (direct `ImportedPlan` or `[ImportedExercise]`), Markdown (tables + numbered lists) | Same file — `CSVImportParser`, `JSONImportParser`, `MarkdownImportParser` |
-| Schema validation | `canParse(_:)` gates each parser; `ImportError.emptyInput` / `.unsupportedFormat` / `.parsingFailed(String)` for negative paths | `ImportParser.swift` lines 156-168 |
-| Partial-import behavior | Non-numeric `sets` falls back to default of 3; missing `reps` defaults to `"8"`; missing `rest` stays `nil`; short rows (single column) silently skipped; unknown extra columns ignored | `ImportEdgeCaseTests.swift` lines 49-103 |
-| Exercise mapping | 3-tier confidence: exact (1.0) / substring contain (0.85) / word-overlap (>=0.5) / unmatched (0.0). 37 aliases seeded for 87-exercise library | `ExerciseMapper.swift` (88 lines) |
-| Confidence tiers | `autoAcceptThreshold = 0.95` / `reviewThreshold = 0.70` — matches PRD IT-4 spec | `ExerciseMapper.swift` lines 5-9 |
-| Orchestrator state machine | `.idle → .parsing → .mapping → .preview(plan) → .success(plan)` with `.error(String)` branch | `ImportOrchestrator.swift` (60 lines) |
-| Tests | 15 in `ImportTests.swift` (parser + mapper + orchestrator) + 8 in `ImportEdgeCaseTests.swift` (CSV malformed input) | Both in `FitTrackerTests/` |
-| Analytics event constants | `import_started`, `import_source_selected`, `import_parsed`, `import_mapping_confirmed`, `import_completed`, `import_failed` | `AnalyticsProvider.swift` lines 232-242 |
+1. **Persistence target = `EncryptedDataStore.importedTrainingPlans`** — sixth `@Published` collection in the encrypted store, persisted via the existing 2-phase commit pattern. New file `importedTrainingPlans.ftenc`. Closes the structural PRD gap.
+2. **Routing layer = `TrainingProgramStore`** — gains `activePlanId: UUID?`. `exercises(for:in:)` checks the flag; `nil` returns bundled program (existing behavior), non-`nil` returns synthesized `ExerciseDefinition`s from the active `ImportedTrainingPlan`. `activate(planId:dataStore:)` enforces mutual exclusion.
+3. **Domain model = `ImportedTrainingPlan` (Identifiable, Codable)** — separate from the parser-transient `ImportedPlan`. Wraps `[ImportedDayAssignment]` (each carries `originalDayName`, user-editable `assignedDayType`, `[ImportedExerciseEntry]`). Provenance fields: `id` UUID, `name`, `createdAt`, `lastModified`, `source` enum, opt-in `sourceText`, `isActive`, `needsSync`.
+4. **GDPR coverage** — Article 17 (delete) free transitively via `EncryptedDataStore.deletePersistedData()` extension. Article 20 (export) via 3 touch points in `DataExportService.swift`. Sync semantics deferred to Phase 2 (CloudKit/Supabase out of scope; `needsSync` flag exists on the model from day one).
+5. **Two entry points** — Settings → Data → Imported Plans (NavigationLink card) + Training tab toolbar (`square.and.arrow.down` on `.topBarLeading`). Both present `ImportSourcePickerView` as a sheet.
+6. **Three new UX surfaces** — `ImportedPlansListScreen` (4 states), day-assignment editor (extension to `ImportPreviewView` `.preview` mode), active-plan badge (Training tab insertion).
 
----
+## What shipped
 
-## 3. PRD Summary
+| Surface | Code file | Figma node | State |
+| --- | --- | --- | --- |
+| Domain model | `Models/ImportedTrainingPlan.swift` (new) | — | Live |
+| Persistence | `Services/Encryption/EncryptionService.swift` (5 touch points) | — | Live |
+| Active-plan routing | `Services/TrainingProgramStore.swift` (4 touch points incl. adapter) | — | Live |
+| Orchestrator persistence | `Services/Import/ImportOrchestrator.swift` (heuristic + `confirmImport(into:)`) | — | Live |
+| GDPR Art-20 export | `Services/DataExportService.swift` (3 touch points) | — | Live |
+| 9 analytics events | `Services/Analytics/AnalyticsProvider.swift` + `AnalyticsService.swift` (8 new methods) | — | Live |
+| Imported Plans List screen | `Views/Settings/v2/Screens/ImportedPlansListScreen.swift` (new) | [`919:2`](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library?node-id=919-2) (populated active) + [`920:2`](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library?node-id=920-2) (empty) | Live |
+| `ImportedPlanRow` component | `Views/Settings/v2/Components/ImportedPlanRow.swift` (new) | — | Live |
+| Day-Assignment Editor | `Views/Import/ImportPreviewView.swift` (`.preview` mode extension) | [`921:2`](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library?node-id=921-2) | Live |
+| Active-plan badge + toolbar Import | `Views/Training/v2/TrainingPlanView.swift` | [`922:2`](https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library?node-id=922-2) | Live |
 
-`docs/product/prd/import-training-plan.md` (Approved 2026-04-15, 234 lines):
+## Outcomes (tier-tagged)
 
-- **Problem.** New users with an existing plan (Hevy / Strong CSV, coach PDFs, AI-generated programs) have no path to bring that structure into FitMe short of manual re-entry. Import removes that migration barrier.
-- **Success metrics.** Import success rate >= 80%, exercise mapping accuracy >= 90%, time-to-first-imported-workout < 5 min, plan adoption within 7 days >= 60% of importers, user satisfaction >= 4/5. Kill criteria: <30% success rate or <70% mapping accuracy.
-- **P0 requirements (IT-1 to IT-8).** CSV parser, JSON parser, `ExerciseMapper` with alias dictionary, confirmation UI with auto-accept at >=0.9 confidence, plan-structure preservation (days + sets + reps + rest), unmatched handling, import preview with edit, analytics instrumentation.
-- **P1 requirements (IT-9 to IT-15).** Markdown/structured-text parser, paste-to-parse entry point, prompt preservation, progressive alias learning, PDF text extraction, protocol-based parser architecture, unit tests.
-- **P2 (IT-16 to IT-20).** Photo OCR, iOS Share Extension, AI prompt re-run via `AIOrchestrator`, phase/mesocycle structure import, RPE-based progression.
-- **North star.** Import-attributed WAU trending up; mapping accuracy stable or improving as alias dictionary grows.
+| Dimension | Pre-resume | Post-resume | Tier |
+| --- | --- | --- | --- |
+| Audit UI-015 status | Open (partial ship) | Closed | T1 |
+| Persistence path | None (`TrainingProgramData` is static; `confirmImport()` was no-op) | `EncryptedDataStore.importedTrainingPlans` (encrypted at rest, GDPR-compliant) | T1 |
+| Active-plan switching | Impossible (Training tab read path was hardcoded against bundled lookup) | `TrainingProgramStore.activePlanId` is the routing flag | T1 |
+| Entry points | 0 (views existed but unwired) | 2 (Settings list + Training toolbar) | T1 |
+| Analytics | 6 constants, 0 wired | 9 events (3 new constants), 100% wired through consent gate | T1 |
+| Test coverage | 23 unit tests on infra | 33 new tests across persistence + routing + orchestrator + GDPR + 11 analytics | T1 |
+| Figma↔code sync | Never built | 4 frames auto-built via v4.X `/design build` | T1 |
+| `make ui-audit` impact | n/a | 0 P0; +1 P1 (frame maxWidth: 280) on the new ImportedPlansListScreen | T1 |
+| Net-new app patterns introduced | n/a | 3 (`.swipeActions`, `.contextMenu`, `ImportedPlanRow` bespoke row component) | T1 |
 
----
+## Five honest disclosures
 
-## 4. Phase Walkthrough
+1. **The original PRD's persistence claim was structurally impossible.** v1 PRD said "ImportOrchestrator writes to TrainingProgramData" — but `TrainingProgramData` is a `struct` with only `static let` fields. No write path. The audit caught the partial ship; the resume caught the architectural gap. The fix was a full mid-flight rollback to research → rewritten PRD → re-decomposed tasks. Cost: ~1 day of wall-clock that wouldn't have been needed if the original PRD had referenced file:line touch points instead of just type names. The rewritten PRD now does, and Phase 6 review explicitly spot-checks them.
 
-The feature was one of four selected for the **v5.1 parallel stress test** (see `v5.1-parallel-stress-test-case-study.md`) — four PM workflows advanced concurrently to stress the v5.1 framework under load.
+2. **The user-ordered pre-Phase-4 audit caught 4 P0 spec errors before any code was written.** `AppRadius.pill` (doesn't exist; real pattern is `Capsule()` shape), `AppMotion.standardEase` (doesn't exist; real container is `AppEasing`), `SettingsActionLabel` with custom badge slot (component is fixed-trailing, can't host inline badges), toast/snackbar component (doesn't exist in the codebase). Audit cost ~20 min; Phase 4 rework cost would have been ~2-4h. This pattern is now mechanical via `/ux preflight` + `/design preflight` (shipped in PR #235).
 
-**Phase 0 — Research (2026-04-12 → 2026-04-15).** Scope expanded on 2026-04-11 (commit `719d652`) from "CSV/JSON import" to include AI-conversation parsing after recognition that ChatGPT/Claude/Gemini outputs were becoming a common user source. Research approved 2026-04-15T17:35Z.
+3. **The `/design build` Figma auto-dispatch was the v4.X chain's first production run.** The flow worked end-to-end on first invocation: preflight → MCP liveness check → page creation → 4 mobile-screen frames → node ID write-back → state.json + figma-code-sync-status.md updates → PR description gate satisfaction. One iteration was needed (Frame 3's `dayCard` had `primaryAxisSizingMode: "FIXED"` without explicit height, clipping rows 3-4; fixed by switching to `AUTO`). Final screenshot verified all 4 frames render correctly with semantic tokens — zero raw colors.
 
-**Phase 1 — PRD (2026-04-15, commit `0a10a4a`).** Written in the stress-test batch. Locked down multi-source parser architecture, 3-tier confidence tiers, analytics spec (6 events under `import_` prefix per the 2026-04-08 analytics naming rule), and deferred P2 AI prompt re-run to a separate cycle.
+4. **Three patterns net-new to the codebase.** `.swipeActions`, `.contextMenu`, and a bespoke `ImportedPlanRow` component were never used in FitMe before this feature. They're now documented in `docs/design-system/feature-memory.md` as design-system evolutions. The audit identified them; they were kept (not invented arbitrarily — Jakob's Law for swipe actions, VoiceOver redundancy for context menu, badge-slot requirement for the row).
 
-**Phase 2 — Tasks (2026-04-15T17:50Z).** 13 tasks on critical path T1 → T4 → T5 → T6 → T8 → T9 → T13. Effort estimate: 8 days.
+5. **Phase 2 sync is deferred.** CloudKit and Supabase per-record sync for imported plans is out of Phase 1 scope. The `needsSync: Bool` field exists on the model from day one so Phase 2 can opt records in without a schema migration. Documented as a known gap; tracked in the PRD's "Scope: Phase 1 vs Phase 2" section.
 
-**Phase 3 — UX spec (2026-04-15T17:58Z).** 2x2 source picker grid, TextEditor paste field, preview with confidence icons (green check / orange pencil / red warning), mapping review sheet.
+## Lessons for future features
 
-**Phase 4 — Implementation (2026-04-15 → 2026-04-16).** Landed across three stress-test phases:
-- Phase 5 (commit `c261594`, 2026-04-15): 7 Swift files via 3 parallel agents — parser + mapper + analytics wiring.
-- Phase 6 (commit `33b4e72`, 2026-04-15): `ImportOrchestrator` + `ImportSourcePickerView` — "3rd consecutive clean build under parallel load".
-- Phase 8 (commit `aab67fb`, 2026-04-16): 35 new tests across 3 parallel agents — "ALL PASSED".
+1. **PRDs that name persistence targets must reference the actual write path (file:line), not just the type name.** v1 PRD said "writes to TrainingProgramData"; v2 says "writes to `EncryptedDataStore.importedTrainingPlans` via the existing 2-phase commit pattern, touch points: `EncryptionService.swift:779-1062` (5 locations)". The latter is verifiable by Phase 6 review; the former isn't.
 
-**Phase 5-9 — Testing / Review / Merge / Docs.** Marked `pending` in `state.json`. The feature transitioned directly from `implementation` to `complete` on 2026-04-16T05:30Z with note *"All tasks implemented. BUILD SUCCEEDED. Feature complete."* No branch, no PR — commits landed on `main`.
+2. **Pre-flight existence checks should be mechanical, not manual.** A spec that invokes `AppRadius.pill` without grep'ing the codebase is a silent-pass hazard. The `/ux preflight` + `/design preflight` gates added in v4.X (2026-05-06) catch this class of error before Phase 4 begins.
 
-**Post-merge audit (2026-04-17, commit `0831f60`).** Sprint D of the meta-analysis audit flagged finding UI-015: the two import views were unreachable from any view hierarchy. The fix was to annotate them with `HISTORICAL —` headers rather than delete them, preserving the code as a revival anchor.
+3. **Figma sync is part of Phase 3, not a "deferred follow-up".** Smart Reminders shipped 2026-04-29 with code-first; Figma followed manually weeks later. Push Notifications still pending. Import-Training-Plan was missed entirely until the user flagged it post-Phase-5. Auto-dispatching `/design build` at Phase 3.j (with a portable prompt fallback when MCP is down) makes Figma sync part of the contract.
 
----
+4. **Honest scope rejection beats expanding ambition mid-resume.** When the persistence-layer architectural gap surfaced, three options were on the table: stub persistence (UserDefaults), encrypted persistence + read-only list, full Phase 1 (persist + activate). The user picked C. The honest path was to roll back to research and rewrite the PRD — not to expand ambition silently inside Phase 4. The 1-day rollback cost was net positive.
 
-## 5. What Shipped vs What Deferred
+5. **`deferred` task status is honest, not failure.** Phase 2 sync is deferred with rationale and tracking — same pattern as UCC's T2.5 baseline upgrade (deferred for data-availability reasons). Better than (a) faking Phase 1 done with a sync stub, or (b) expanding scope mid-resume.
 
-### Shipped (in build target, in `main`)
+## Cross-cutting framework signals
 
-- `FitTracker/Services/Import/ImportParser.swift` — protocol, 3 parser structs, `ImportError` enum, `ImportedPlan`/`ImportedDay`/`ImportedExercise` Codable models.
-- `FitTracker/Services/Import/ExerciseMapper.swift` — 3-tier confidence scoring, 37 aliases.
-- `FitTracker/Services/Import/ImportOrchestrator.swift` — `@MainActor` `ObservableObject` state machine.
-- `FitTrackerTests/ImportTests.swift` — 15 tests covering parser detection, JSON/CSV happy paths, mapper exact/fuzzy/no-match, orchestrator state transitions.
-- `FitTrackerTests/ImportEdgeCaseTests.swift` — 8 tests for CSV malformed input per TEST-024.
-- Analytics event constants in `AnalyticsProvider.swift` (6 events, `import_` prefix).
+- **v7.5 Data Integrity Framework (2026-04-24)** — All write-time gates fired correctly during the resume. PHASE_TRANSITION_NO_LOG + PHASE_TRANSITION_NO_TIMING gates flagged my early state.json edits before I had appended the corresponding log entries. Recovered by ordering: `append-feature-log.py` first, then state.json edit, then commit.
+- **v7.6 Mechanical Enforcement (2026-04-25)** — Pre-commit hooks fired on every reconcile commit. Zero gate skirts.
+- **v7.7 Validity Closure (2026-04-27)** — `cu_v2` schema was present from the original 2026-04-15 state.json; carried through. STATE_NO_CASE_STUDY_LINK satisfied by `case_study_showcase` field.
+- **v7.8 Bridge (2026-05-02 → 2026-05-04)** — Session attribution via `.claude/active-feature` lockfile worked; PostToolUse:Read events accumulated into `.claude/logs/_session-*.events.jsonl`.
+- **v4.X Skill-Layer Upgrade (2026-05-06 — this session)** — Shipped as a meta-byproduct. Promoted 4 audit patterns to mechanical gates. Phase 3 chain extended 7→11 steps; Phase 6 chain 4→5 steps. Phase 7 BLOCKED unless both pre-merge reviews pass. See [`docs/skills/evolution.md`](../skills/evolution.md) §26.
 
-### Archived as HISTORICAL (in build target but unreachable)
+## Numbers in 2 sentences
 
-- `FitTracker/Views/Import/ImportSourcePickerView.swift` — source picker sheet with 2x2 grid + paste field.
-- `FitTracker/Views/Import/ImportPreviewView.swift` — preview screen with confidence icons and summary bar.
+4 PRs landed across 2 repos in a single ~14-hour session: FT2 #234 (Phase 1 ship), FT2 #235 (v4.X skill upgrade), fitme-story #48 (skill mirror), FT2 #236 (backlog cleanup). 18/18 tasks done, 33 new tests, 4 Figma frames auto-built (first v4.X production run), 0 P0 in ui-audit, 4 P0 spec errors caught before code was written.
 
-Both annotated on 2026-04-17 per audit finding UI-015. Quote from the file header: *"the production import flow (if revived) should use ImportOrchestrator from a new entry point built on current design system."*
+## Where things go from here
 
-### Deferred from PRD
+- **Phase 2 follow-up PRD** (out of Phase 1 scope) — CloudKit per-record sync for imported plans + Supabase `imported_training_plans` table + per-day editor for unmapped exercises + AI prompt regeneration via `AIOrchestrator` + PDF / photo / share-extension import sources.
+- **First post-launch metrics review** scheduled for 2026-05-13 (T+7d) — query GA4 for `import_started` → `import_completed` → `import_plan_activated` funnel; compute activation rate; verify the kill criteria thresholds aren't tripped.
+- **Backfill `figma_node_ids` for already-shipped features** (Home v2, Onboarding, Smart Reminders, etc.) is now a normal part of the framework and will happen as features get touched.
 
-- **IT-9 / IT-10 (Markdown paste)** — parser code landed (see `MarkdownImportParser`), paste-to-parse entry point did not (view was archived before wiring).
-- **IT-11 (prompt preservation)** — not implemented; no field on `ImportedPlan` for the original AI prompt.
-- **IT-12 (progressive alias learning)** — `ExerciseMapper.aliases` is `let`, not `var`; no `learn(alias:for:)` method as specified in the PRD architecture.
-- **IT-13 (PDF text extraction)** — deferred to P1 follow-up; not implemented.
-- **IT-14 (protocol + distinct types)** — shipped.
-- **IT-15 (unit tests)** — shipped (23 tests total).
-- **Analytics call sites** — event constants defined but `AnalyticsService.track(...)` not called from the orchestrator or views. The 6 events exist in the taxonomy but do not fire yet.
-- **Commit to `TrainingProgramData`** — `ImportOrchestrator.confirmImport()` transitions to `.success(plan)` but does not persist to the training-program store. The ORCHESTRATOR.md-spec step "commit writes to existing TrainingProgramData" is a no-op today.
-- **P2 items (IT-16 to IT-20)** — all deferred as planned.
+## Closing
 
----
+This feature is two case studies in one. The surface case study is the persistence + active-plan + GDPR architecture closing audit UI-015. The deeper one is how the framework caught a structural PRD error mid-flight, demanded honest rework, and emerged with a v4.X skill-layer upgrade that promotes 4 audit patterns to mechanical gates so the next feature doesn't relearn the same lesson. The trigger event (4 P0 spec errors) became the test case for the new gates within the same session — `/ux preflight` + `/design preflight` ran on this feature's spec the moment they shipped.
 
-## 6. Lessons
-
-**1. "Phase complete" is not "feature live".** The state machine said `phase=complete` on 2026-04-16. The user could not import a training plan on 2026-04-16 — or today. The phase gate fired on "tasks implemented + BUILD SUCCEEDED" rather than "reachable from a tab". Later M-series features (M-1 through M-4) were more conservative about this — their completion required a merged PR with a visible entry point.
-
-**2. The parser layer is durable; the UI layer was premature.** The parser + mapper + orchestrator stack is well-tested (23 tests), decoupled from SwiftUI, and reusable. When an actual entry point is designed (likely inside Training tab or Onboarding), it can instantiate `ImportOrchestrator()` directly and get a working state machine. The two archived views become UI reference material for that future work.
-
-**3. Parallel stress-test dispatch works; validation-on-land doesn't come for free.** The v5.1 stress test executed 4 features' PRD + implementation in parallel and produced "3 consecutive clean builds under parallel load". That is a framework win. What it did not produce is integration: the views that landed weren't reachable, and no post-build step flagged that gap. The later v6.0 measurement framework added eval-coverage gates partly in response to this pattern.
-
-**4. Audit-driven archival is cheaper than audit-driven deletion.** UI-015 chose to annotate the dead views rather than delete them. That choice paid off for this case study — the files still tell the story of what was attempted, and they still compile. A revival attempt does not need to reconstruct the view code from the PRD; it only needs a new parent view that instantiates `ImportSourcePickerView()` and wires a concrete `TrainingProgramData` write on confirm.
-
-**5. Analytics constants without call sites is a taxonomy-only milestone.** The 6 `import_` events are a useful reservation — the names are locked, the prefix convention is honored — but the funnel is empty until the views are wired and the orchestrator calls `AnalyticsService.track(.importStarted, ...)` at transition points. Future revival should treat the call-site wiring as part of the first PR, not a follow-up.
-
----
-
-## 7. Revival Path (if the feature is ever picked up again)
-
-The cheapest revival is three changes:
-1. Remove the `HISTORICAL —` headers from `ImportSourcePickerView.swift` and `ImportPreviewView.swift`.
-2. Add a new entry point in the Training tab (e.g. a menu item "Import plan...") that presents `ImportSourcePickerView()`.
-3. Wire `ImportOrchestrator.confirmImport()` to actually persist to `TrainingProgramData` (currently it only transitions state).
-
-The parser + mapper + orchestrator + tests all still work. The 6 analytics events are already reserved. Design-system compliance was already enforced at the v1 view (tokens, spacing, typography all in place). The gap is entirely in wiring.
-
----
-
-## 8. Links
-
-- State: `.claude/features/import-training-plan/state.json`
-- PRD: `docs/product/prd/import-training-plan.md`
-- Research: `.claude/features/import-training-plan/research.md`
-- Tasks: `.claude/features/import-training-plan/tasks.md`
-- UX spec: `.claude/features/import-training-plan/ux-spec.md`
-- Code — parsers: `FitTracker/Services/Import/ImportParser.swift`
-- Code — mapper: `FitTracker/Services/Import/ExerciseMapper.swift`
-- Code — orchestrator: `FitTracker/Services/Import/ImportOrchestrator.swift`
-- Code — views (archived): `FitTracker/Views/Import/ImportSourcePickerView.swift`, `FitTracker/Views/Import/ImportPreviewView.swift`
-- Tests: `FitTrackerTests/ImportTests.swift`, `FitTrackerTests/ImportEdgeCaseTests.swift`
-- Analytics: `FitTracker/Services/Analytics/AnalyticsProvider.swift` (lines 232-242)
-- Companion case study: `docs/case-studies/v5.1-parallel-stress-test-case-study.md` (the stress-test run that shipped this feature's code)
-- Sprint D (UI-015 archival): commit `0831f60` — "fix(auth+ds+ui): Sprint D — type-safe sessions + scrim token + dead view archival"
+Full source case study + per-task notes + audit trail: [`.claude/features/import-training-plan/`](../../.claude/features/import-training-plan/). Showcase MDX: [`fitme-story/content/04-case-studies/23b-import-training-plan.mdx`](https://github.com/Regevba/fitme-story/blob/main/content/04-case-studies/23b-import-training-plan.mdx).

@@ -105,6 +105,24 @@ final class AppSettings: ObservableObject {
         didSet { UserDefaults.standard.set(requireBiometricUnlockOnReopen, forKey: "ft.requireBiometricUnlockOnReopen") }
     }
 
+    // ── Biometric activation prompt (auth-polish-v2 B2) ──
+    // FR-11: persisted, defaults false, never reset by sign-out. Once true,
+    // the post-sign-in BiometricActivationSheet (B1) won't be offered again.
+    @Published var hasAskedForBiometricActivation: Bool = false {
+        didSet { UserDefaults.standard.set(hasAskedForBiometricActivation, forKey: "ft.hasAskedForBiometricActivation") }
+    }
+
+    // ── Smart-timing global toggle (smart-reminders-behavioral-learning PR 1) ──
+    // PR 1 ships with default OFF — toggle has no consumer yet (resolver lands
+    // in PR 2). PR 2 will flip the default to ON for new installs.
+    // When OFF, all three personalisable reminder types (Nutrition Gap, Training
+    // Day, Rest Day) keep their static fire times. When ON, the future
+    // SmartTimingResolver (PR 2) reads BehavioralLearningStore + CohortPriorCache
+    // to compute per-user fire hours.
+    @Published var smartTimingEnabled: Bool = false {
+        didSet { UserDefaults.standard.set(smartTimingEnabled, forKey: "ft.smartTimingEnabled") }
+    }
+
     init() {
         if let raw = UserDefaults.standard.string(forKey: "ft.unitSystem"),
            let v = UnitSystem(rawValue: raw) { unitSystem = v }
@@ -112,6 +130,12 @@ final class AppSettings: ObservableObject {
            let v = AppAppearance(rawValue: raw) { appearance = v }
         if UserDefaults.standard.object(forKey: "ft.requireBiometricUnlockOnReopen") != nil {
             requireBiometricUnlockOnReopen = UserDefaults.standard.bool(forKey: "ft.requireBiometricUnlockOnReopen")
+        }
+        if UserDefaults.standard.object(forKey: "ft.hasAskedForBiometricActivation") != nil {
+            hasAskedForBiometricActivation = UserDefaults.standard.bool(forKey: "ft.hasAskedForBiometricActivation")
+        }
+        if UserDefaults.standard.object(forKey: "ft.smartTimingEnabled") != nil {
+            smartTimingEnabled = UserDefaults.standard.bool(forKey: "ft.smartTimingEnabled")
         }
     }
 }

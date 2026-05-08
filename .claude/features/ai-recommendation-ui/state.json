@@ -2,10 +2,16 @@
   "feature": "ai-recommendation-ui",
   "parent_case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study_showcase": "04-case-studies/07-ai-engine-architecture.md",
-  "created": "2026-04-10T21:00:00Z",
+  "created_at": "2026-04-10T21:00:00Z",
   "updated": "2026-04-11T01:00:00Z",
   "branch": "fix/design-system-token-compliance",
   "current_phase": "complete",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "parent_feature": "adaptive-intelligence",
   "has_ui": true,
@@ -139,5 +145,8 @@
       "note": "PRD: docs/product/prd/ai-recommendation-ui.md. UX spec: .claude/features/ai-recommendation-ui/ux-spec.md. Brand icon avatar design memory: feedback_ai_avatar_brand_icon.md."
     }
   },
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

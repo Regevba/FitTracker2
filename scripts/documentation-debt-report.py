@@ -62,8 +62,11 @@ def scan_case_study(path: Path) -> dict[str, object]:
     text = path.read_text()
     return {
         "path": path.relative_to(REPO_ROOT).as_posix(),
-        # date_written: body format OR YAML frontmatter key
-        "has_date_written": bool(re.search(r"(?im)(^\*\*Date written:\*\*|^>\s*\*\*Date:\*\*|^\|\s*Date written\s*\||^date_written\s*:)", text)),
+        # date_written: body format OR YAML frontmatter key (accepts the
+        # several equivalent date conventions case studies use in practice:
+        # "Date written:", "Date:" (table OR blockquote), "Generated:",
+        # plus YAML keys date / date_written / date_created).
+        "has_date_written": bool(re.search(r"(?im)(^\*\*Date written:\*\*|^>\s*\*\*Date:\*\*|^\|\s*Date(?:\s+written)?\s*\||^\*\*Generated:\*\*|^>\s*\*\*Generated:\*\*|^\s*>\s*\*\*Generated:\*\*|^date(?:_written|_created)?\s*:)", text)),
         # work_type: body text OR YAML frontmatter key
         "has_work_type": bool(re.search(r"(?im)(^\|\s*Work Type\s*\||\bWork Type\b|^work_type\s*:)", text)),
         # dispatch_pattern: body phrase OR YAML frontmatter key
@@ -72,6 +75,21 @@ def scan_case_study(path: Path) -> dict[str, object]:
         "has_success_metrics": bool(re.search(r"(?im)(success metrics?|primary metric|^success_metrics\s*:)", text)),
         # kill_criteria: body phrase OR YAML frontmatter key
         "has_kill_criteria": bool(re.search(r"(?im)(kill criteria|^kill_criteria\s*:)", text)),
+        # kill_criteria_resolution (T2, framework-v7-8-branch-isolation, advisory in v7.8):
+        # Required when kill_criteria is set on a current_phase=complete transition (per
+        # FEATURE_CLOSURE_COMPLETENESS gate, Block C). Detected here as body phrase
+        # ("kill criteria resolution" / "kill_criteria_resolution") OR YAML frontmatter
+        # key. The conditional "required when kill_criteria set" logic lives in the
+        # write-time gate (T13); this scan just measures presence so the
+        # documentation-debt readout shows whether case studies are in compliance.
+        "has_kill_criteria_resolution": bool(re.search(r"(?im)(kill criteria resolution|kill criterion resolution|^kill_criteria_resolution\s*:)", text)),
+        # pr_citation_exempt (T2): YAML frontmatter key only. This is an OPTIONAL
+        # override field listing PR numbers exempt from the bidirectional PR-list
+        # parity check (Q6, FEATURE_CLOSURE_COMPLETENESS). Presence is informational
+        # only — the documentation-debt readout doesn't flag missing pr_citation_exempt
+        # because it's not required. Detected here so future tooling can see at a
+        # glance which case studies use the override.
+        "has_pr_citation_exempt": bool(re.search(r"(?im)^pr_citation_exempt\s*:", text)),
     }
 
 
@@ -183,6 +201,30 @@ def build_debt_items(case_studies: list[dict[str, object]], coverage: dict[str, 
             "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful.",
         })
 
+    # Conditional debt item (T2, framework-v7-8-branch-isolation, advisory in v7.8):
+    # Flag case studies that DECLARE kill_criteria but DON'T provide kill_criteria_resolution.
+    # The write-time gate (T13, Block C) blocks this on current_phase=complete commits;
+    # this readout surfaces the same gap in the framework-health dashboard.
+    needs_resolution = [
+        cs for cs in case_studies
+        if cs.get("has_kill_criteria") and not cs.get("has_kill_criteria_resolution")
+    ]
+    if needs_resolution:
+        items.append({
+            "id": "kill_criteria_resolution_missing",
+            "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
+            # Pinned to "low" severity in v7.8 advisory mode because the gate is FORWARD-ONLY
+            # per PRD §3.4 — existing case studies are grandfathered. The readout surfaces
+            # the count for informational visibility on the framework-health dashboard,
+            # but should not trigger alerts on the historical backlog. v7.9 promotion task
+            # may refine this severity once forward-only mtime/git-date grandfathering
+            # is implemented.
+            "severity": "low",
+            "count": len(needs_resolution),
+            "examples": [cs["path"] for cs in needs_resolution[:5]],
+            "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill.",
+        })
+
     return items
 
 
@@ -206,6 +248,13 @@ def main() -> int:
         "dispatch_pattern": build_coverage(scanned, "has_dispatch_pattern"),
         "success_metrics": build_coverage(scanned, "has_success_metrics"),
         "kill_criteria": build_coverage(scanned, "has_kill_criteria"),
+        # Below 2 fields added by framework-v7-8-branch-isolation T2 (advisory in v7.8).
+        # Tracked for informational visibility on the framework-health dashboard.
+        # The CONDITIONAL "kill_criteria_resolution required when kill_criteria set" enforcement
+        # lives in the FEATURE_CLOSURE_COMPLETENESS gate (Block C, T13), not in this report.
+        # See debt_items below for the conditional readout entry.
+        "kill_criteria_resolution": build_coverage(scanned, "has_kill_criteria_resolution"),
+        "pr_citation_exempt": build_coverage(scanned, "has_pr_citation_exempt"),
         "state_case_study_linkage": {
             "present": linkage["present"],
             "missing": linkage["missing"],

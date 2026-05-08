@@ -1,12 +1,18 @@
 {
   "feature": "onboarding",
   "case_study": "docs/case-studies/pm-workflow-showcase-onboarding.md",
-  "case_study_showcase": "04-case-studies/01-onboarding-pilot.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/01-onboarding-pilot.mdx",
   "work_type": "feature",
-  "created": "2026-04-05T09:00:00Z",
+  "created_at": "2026-04-05T09:00:00Z",
   "updated": "2026-04-07T18:20:00Z",
   "branch": "main",
   "current_phase": "complete",
+  "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": 51,
@@ -66,5 +72,8 @@
     { "from": "review", "to": "merge", "timestamp": "2026-04-07T17:30:00Z", "approved_by": "user", "note": "PR #59 created with full timeline + risk assessment. CI green on PR after Node 20 deprecation warning (benign) and concurrency-cancellation re-run." },
     { "from": "merge", "to": "documentation", "timestamp": "2026-04-07T18:06:00Z", "approved_by": "user", "note": "Squash-merged as 66e42cf. Branch feature/onboarding-ux-align deleted from origin. Build sanity green on main." },
     { "from": "documentation", "to": "complete", "timestamp": "2026-04-07T18:20:00Z", "approved_by": "user", "note": "CHANGELOG, feature-memory, backlog, showcase doc all updated. State.json closed. First metrics review scheduled for 2026-04-14. Onboarding v2 alignment complete. First feature in sequential UX alignment initiative shipped." }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

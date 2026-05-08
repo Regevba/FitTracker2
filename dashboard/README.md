@@ -1,8 +1,28 @@
 # FitMe Operations Control Room
 
-Internal PM dashboard and canonical live web surface at [fit-tracker2.vercel.app](https://fit-tracker2.vercel.app).
+> ## ⚠️ HISTORICAL — superseded by fitme-story `/control-room/*`
+>
+> This Astro dashboard is the **legacy implementation** of the operator control room. As of the UCC migration (Wave 2 shipped 2026-05-05), the canonical live surface is the Next.js port at `fitme-story.vercel.app/control-room/*`, with code under [`fitme-story/src/{app,components,lib}/control-room/`](https://github.com/Regevba/fitme-story/tree/main/src/components/control-room).
+>
+> **Don't ship new features here.** All dashboard work goes to fitme-story. This directory remains in the repo as a reviewable git-history reference until the UCC retention review (≥30 days post-launch — see PRD §13 rollback plan).
+>
+> **Migration provenance:**
+> - Feature: [`unified-control-center`](../.claude/features/unified-control-center/) (`current_phase: implementation` → `complete` after Block H + T42)
+> - PRD: [`prd.md`](../.claude/features/unified-control-center/prd.md) — see §13 (rollback) for the conditions under which this directory could be re-promoted to active
+> - Token map (Astro → fitme-story): [`token-map.md`](../.claude/features/unified-control-center/token-map.md)
+> - Extraction recipe (if dashboard ever needs to leave fitme-story): [`fitme-story/EXTRACTION-RECIPE.md`](https://github.com/Regevba/fitme-story/blob/main/EXTRACTION-RECIPE.md)
+>
+> **Retention policy** (matches the V2 Rule's HISTORICAL retention codified 2026-05-08): retained indefinitely by default. The first scheduled review point for any prune policy is the UCC anniversary or the post-launch decommission decision specified in PRD §13. Until then, this directory stays in the repo as on-disk reviewable reference.
+>
+> **Live URL retired:** the original `fit-tracker2.vercel.app` host redirects to `fitme-story.vercel.app/control-room` after T35 ships (per [state.json](../.claude/features/unified-control-center/state.json) Block G).
 
-## Stack
+---
+
+## (Historical context follows)
+
+Internal PM dashboard, originally hosted at [fit-tracker2.vercel.app](https://fit-tracker2.vercel.app) prior to the UCC migration.
+
+## Stack (legacy)
 
 - **Framework:** Astro 6 + React 19
 - **Styling:** Tailwind CSS v4

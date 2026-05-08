@@ -8,18 +8,21 @@
 
 ## What it does
 
-Manages design system governance, creates UX specs from PRDs, generates Figma build prompts, validates the token pipeline, and enforces WCAG AA accessibility. After Phase 3 approval it auto-generates a visual-build prompt (`/design prompt {feature}`) in `docs/prompts/`, paired with `/ux prompt` for hand-off to a downstream agent.
+Manages design system governance, validates the token pipeline, enforces WCAG AA accessibility, gates Phase 3 + Phase 6 with preflight (DS + Figma MCP liveness) and pre-merge UI review, and auto-builds Figma frames via the Figma MCP (with prompt-fallback when MCP is unreachable). After Phase 3 approval the chain auto-generates a visual-build prompt (`/design prompt {feature}` → `docs/prompts/ui/`), then auto-dispatches `/design build {feature}` to push the screens into the FitMe Design System Library and write Figma node IDs back to `state.json`.
 
 ## Sub-commands
 
 | Command | Purpose | Standalone Example | Hub Context |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/design audit` | Design system compliance check | "Check if this PR's UI changes comply with the design system" | Phase 3 (compliance gateway), Phase 6 (Review) |
-| `/design ux-spec {feature}` | Generate UX spec from PRD | "Create UX spec for the onboarding flow" | Phase 3 (UX) — legacy; `/ux spec` is the newer path |
-| `/design figma {feature}` | Generate Figma build prompt | "Generate Figma prompt for the stats redesign" | Phase 3 (UX) |
+| **`/design preflight {feature}`** *(v4.X)* | **P0 gate — combines token/component/pattern existence (delegating to `/ux preflight`) + Figma MCP liveness (`whoami`) + Figma library accessibility (`get_metadata` on `0Ai7s3fCFqR5JXDW8JvgmD`) + Figma library node availability check. Writes `figma-bridge-status.json`. Spec NOT approvable on P0.** | "Preflight import-training-plan against design system + Figma MCP" | **Phase 3 Step 3f** |
+| **`/design pre-merge-review {feature}`** *(v4.X)* | **Phase 6 gate — `make ui-audit` P0=0 + `state.json.figma_node_ids` populated + PR description references those node IDs + optional screenshot diff via Figma MCP. Sets `state.json.pre_merge_review.design`. BLOCK halts Phase 7.** | "Pre-merge review on import-training-plan" | **Phase 6 Step 6c** |
 | `/design tokens` | Validate token pipeline | "Check if DesignTokens.swift matches tokens.json" | Phase 6 (Review) |
 | `/design accessibility` | WCAG AA audit | "Run accessibility audit on the nutrition screens" | Phase 6 (Review) |
-| `/design prompt {feature}` | Auto-generate a visual-build prompt in `docs/prompts/{date}-{feature}-design-build.md` once Phase 3 is approved | dispatched by hub after compliance gateway passes | Phase 3 Step 4 |
+| `/design prompt {feature}` | Auto-generate a visual-build prompt in `docs/prompts/ui/{date}-{feature}-design-build.md` once Phase 3 is approved | dispatched by hub after compliance gateway passes | Phase 3 Step 3i |
+| **`/design build {feature}`** *(auto-dispatched v4.X)* | **Build Figma screens via Figma MCP with prompt-fallback when MCP is unreachable. Writes captured node IDs back to `state.json.figma_node_ids` AND adds row to `figma-code-sync-status.md`.** | dispatched by hub after `/design prompt` lands; idempotent on re-run | **Phase 3 Step 3j (auto)** |
+| `/design ux-spec {feature}` *(DEPRECATED)* | Forwarder — `/ux spec` is canonical | — | (legacy) |
+| `/design figma {feature}` *(DEPRECATED)* | Forwarder — `/design build` is canonical | — | (legacy) |
 
 ## Shared data
 
@@ -28,18 +31,30 @@ Manages design system governance, creates UX specs from PRDs, generates Figma bu
 - `design-system.json` — current token/component inventory
 - `cx-signals.json` — UX confusion signals that imply visual problems
 - `.claude/features/{feature}/ux-spec.md` — the handoff from `/ux`
+- `.claude/cache/_shared/ux-spec-preflight.json` — `/ux preflight` audit log (v4.X)
+- `docs/design-system/figma-code-sync-status.md` — current Figma node mappings (v4.X read; also write target)
 
 **Writes:**
 - `design-system.json` — new tokens/components proposed
-- `docs/prompts/{date}-{feature}-design-build.md` (from `/design prompt`)
+- `docs/prompts/ui/{date}-{feature}-design-build.md` (from `/design prompt` — folder split established 2026-05-06)
+- `.claude/features/{feature}/design-preflight-{date}.md` (from `/design preflight`, v4.X)
+- `.claude/features/{feature}/design-pre-merge-review-{date}.md` (from `/design pre-merge-review`, v4.X)
+- `.claude/shared/figma-bridge-status.json` (from `/design preflight`, v4.X)
+- `state.json.figma_node_ids` (from `/design build`, v4.X)
+- `state.json.figma_build_status` (from `/design build`, v4.X)
+- `state.json.pre_merge_review.design` (from `/design pre-merge-review`, v4.X)
+- `docs/design-system/figma-code-sync-status.md` (from `/design build` — appends matrix row, v4.X)
 
 ## PM workflow integration
 
 | Phase | Dispatches |
-|---|---|
-| Phase 3 (UX Definition) | `/design audit` on the ux-spec → compliance gateway decision (fix / evolve DS / override) |
-| Phase 3 Step 4 | `/design prompt {feature}` (paired with `/ux prompt`) |
-| Phase 6 (Review) | `/design audit` for visual sign-off + `/design tokens` + `/design accessibility` |
+| --- | --- |
+| Phase 3 Step 3f | **`/design preflight {feature}` — DS + Figma MCP + library + node availability check (v4.X)** |
+| Phase 3 Step 3g | `/design audit` on the ux-spec → compliance gateway decision (fix / evolve DS / override) |
+| Phase 3 Step 3i | `/design prompt {feature}` → `docs/prompts/ui/` (paired with `/ux prompt` → `docs/prompts/ux/`) |
+| Phase 3 Step 3j | **`/design build {feature}` — Figma MCP build, fallback to prompt; writes figma_node_ids + sync-status row (v4.X)** |
+| Phase 6 Step 6c | **`/design pre-merge-review {feature}` — ui-audit P0=0 + figma_node_ids present + PR description gate (v4.X)** |
+| Phase 6 (also) | `/design audit` for visual sign-off + `/design tokens` + `/design accessibility` |
 
 ## Upstream / Downstream
 

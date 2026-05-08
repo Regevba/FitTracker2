@@ -1,0 +1,365 @@
+{
+  "version": "1.0",
+  "feature": "ucc-passkey-auth",
+  "title": "ucc passkey auth",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.8.1",
+  "started_at": "2026-05-07T16:27:24Z",
+  "updated_at": "2026-05-07T17:53:18Z",
+  "events": [
+    {
+      "timestamp": "2026-05-07T16:27:24Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 (Research) opened. Cross-repo Feature (fitme-story dashboard auth + FitTracker2 audit-log sync). Replaces basic-auth on /control-room/* with WebAuthn/passkeys. Surfaced from UCC T2.5 deferral.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:38:28Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) complete. 14-section research.md synthesized via parallel agents. Library decision: @simplewebauthn/{server,browser} v13. 7 open-question defaults locked.",
+      "artifacts": [
+        ".claude/features/ucc-passkey-auth/research.md"
+      ],
+      "metrics": {
+        "duration_minutes": 13,
+        "sections": 14
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:38:28Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened. Drafting against 7 locked default decisions: existing-operator-required for subsequent bootstrap; lockout N=5 M=15min; 24h+12h sliding session; desktop-first only; log every event; daily GHA sync; conditional-UI autofill enabled.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:41:46Z",
+      "event_type": "prd_drafted",
+      "phase": "prd",
+      "summary": "PRD drafted with 15 sections. Primary metric: 0 unauthenticated /control-room/* reads/day. 3 kill criteria. 7 locked decisions baked in. 10 GA4 events + 4 screens defined; analytics_spec_complete=true. 24-task estimate across 6 blocks. Cross-repo: ~14 fitme-story files + ~3 FT2 files + new GHA workflow.",
+      "artifacts": [
+        ".claude/features/ucc-passkey-auth/prd.md"
+      ],
+      "metrics": {
+        "goals": 5,
+        "user_stories": 6,
+        "kill_criteria": 3,
+        "ga4_events": 10,
+        "screens": 4,
+        "estimated_tasks": 24
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:41Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 complete. PRD approved with 7 locked decisions, primary T1 metric (0 unauthenticated reads), 3 kill criteria, 10 GA4 events + 4 screens validated, 5-phase migration plan with rollback at every step.",
+      "artifacts": [
+        ".claude/features/ucc-passkey-auth/prd.md"
+      ],
+      "metrics": {
+        "duration_minutes": 10,
+        "goals": 5,
+        "kill_criteria": 3
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:41Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened. 28 tasks decomposed across 8 blocks (A auth-server, B KV, C API routes, D sign-in UI, E admin UI, F sync+CLI+panel, G tests, H docs). Lane split: 16 E-core (sonnet parallel) + 12 P-core (opus serial).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:45:41Z",
+      "event_type": "tasks_decomposed",
+      "phase": "tasks",
+      "summary": "tasks.md drafted with 28 tasks + dependency graph + 4-wave dispatch order. Estimated total effort 11.5 days (1.5-2 weeks calendar). All tasks scored against task-complexity gate; lane assignments locked.",
+      "artifacts": [
+        ".claude/features/ucc-passkey-auth/tasks.md"
+      ],
+      "metrics": {
+        "task_count": 28,
+        "e_core": 16,
+        "p_core": 12,
+        "estimated_days": 11.5
+      },
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:55:39Z",
+      "event_type": "phase3_artifacts_complete",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 artifacts complete. ux-research.md (7 sections incl. iOS HIG/auth-polish-v2 references). ux-spec.md (5 screens \u00d7 5 states + tokens/components/patterns inventory). UX preflight PASS (12 tokens + 5 components + 4 new paths free; 0 P0). Design preflight PASS (Figma MCP live; defer-to-portable-prompt because dashboard has no Figma mapping). UX + design build prompts written. figma-bridge-status.json recorded.",
+      "artifacts": [
+        ".claude/features/ucc-passkey-auth/ux-research.md",
+        ".claude/features/ucc-passkey-auth/ux-spec.md",
+        ".claude/features/ucc-passkey-auth/ux-preflight-audit-2026-05-07.md",
+        ".claude/features/ucc-passkey-auth/design-preflight-2026-05-07.md",
+        "docs/prompts/ux/2026-05-07-ucc-passkey-auth-ux-build.md",
+        "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md"
+      ],
+      "metrics": {
+        "tokens_verified": 12,
+        "components_verified": 5,
+        "components_new": 4,
+        "screens": 5,
+        "p0_count": 0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:58:46Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 complete. UX/Integration: 7-section ux-research + 5-screen ux-spec + UX preflight PASS + design preflight PASS (Figma MCP live, deferred to portable prompt) + ux/design build prompts.",
+      "artifacts": [],
+      "metrics": {
+        "duration_minutes": 10
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T16:58:46Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) opened. Cross-repo: feature/ucc-passkey-auth branch on both FT2 worktree (already isolated) + fitme-story (just branched). 4-wave dispatch begins with Wave 1 E-core parallel (T2 T4 T6 T7 T11 T23 T28).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:24:29Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Phase 4 complete. 28/28 tasks done across both repos. fitme-story: 22 new + 3 edited; FT2: 2 new. 5 unit-test files. Vercel Cron + GHA cross-repo sync wired. proxy.ts switches on UCC_AUTH_MODE.",
+      "artifacts": [],
+      "metrics": {
+        "duration_minutes": 30,
+        "tasks_done": 28,
+        "fitme_story_files_new": 22,
+        "ft2_files_new": 2,
+        "test_files": 5
+      },
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:24:29Z",
+      "event_type": "phase_started",
+      "phase": "testing",
+      "summary": "Phase 5 (Testing) opened. Plan: pnpm install in fitme-story \u2192 tsc --noEmit \u2192 pnpm lint \u2192 pnpm test (the 5 new unit-test files).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:38:41Z",
+      "event_type": "phase_approved",
+      "phase": "testing",
+      "summary": "Phase 5 complete. tsc 0 errors on feature files. 19/19 tests pass. next build clean. Caught + fixed iron-session garbage-input bug.",
+      "artifacts": [],
+      "metrics": {
+        "duration_minutes": 20,
+        "tests_pass": 19,
+        "tests_total": 19
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:38:41Z",
+      "event_type": "phase_started",
+      "phase": "review",
+      "summary": "Phase 6 (Review) opened. Running /ux pre-merge-review + /design pre-merge-review + risk audit.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:38:41Z",
+      "event_type": "pre_merge_review_complete",
+      "phase": "review",
+      "summary": "Pre-merge review PASS. UX: 0 P0, 0 P1, 1 P2 (optional pulse animation deferred). Design: PASS_WITH_NOTES (Figma N/A by design \u2014 portable prompt is the v4.X escape hatch). Risk audit identified 3 surfaces all mitigated.",
+      "artifacts": [
+        ".claude/features/ucc-passkey-auth/ux-pre-merge-review-2026-05-07.md",
+        ".claude/features/ucc-passkey-auth/design-pre-merge-review-2026-05-07.md",
+        ".claude/features/ucc-passkey-auth/risk-audit-2026-05-07.md"
+      ],
+      "metrics": {
+        "ux_p0": 0,
+        "design_p0": 0,
+        "high_risk_files_touched": 0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:43:05Z",
+      "event_type": "phase_approved",
+      "phase": "review",
+      "summary": "Phase 6 complete. UX pre-merge review PASS (0 P0). Design pre-merge review PASS_WITH_NOTES (Figma N/A by design). Risk audit identified 3 surfaces all mitigated. Phase 7 (Merge) approvable.",
+      "artifacts": [],
+      "metrics": {
+        "duration_minutes": 15,
+        "ux_p0": 0,
+        "design_p0": 0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:43:05Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Phase 7 (Merge) opened. Committing FT2 worktree side; opening cross-repo PRs (fitme-story #cf656dc already committed; FT2 PR pending push).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "auth-polish-v2:patterns (L2)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L2",
+        "key": "auth-polish-v2:patterns",
+        "hit_type": "adapted",
+        "skill": "dev"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "ux-spec-preflight:fitme-story-tokens (L2)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L2",
+        "key": "ux-spec-preflight:fitme-story-tokens",
+        "hit_type": "exact",
+        "skill": "ux"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "vercel-storage:upstash-redis-from-env (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "vercel-storage:upstash-redis-from-env",
+        "hit_type": "exact",
+        "skill": "dev"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "phase_approved",
+      "phase": "merge",
+      "summary": "Phase 7 complete. fitme-story PR #55 merged (squash 5362f8f). FT2 PR #248 merged (squash e5a7c45). Both branches deleted post-merge.",
+      "artifacts": [],
+      "metrics": {
+        "duration_minutes": 10,
+        "prs_merged": 2
+      },
+      "actor": "claude_sonnet_4_6",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "summary": "Phase 8 (Documentation) opened. Drafting source case study + showcase MDX slot 26.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:17Z",
+      "event_type": "phase_approved",
+      "phase": "documentation",
+      "summary": "Phase 8 complete. Source case study + showcase MDX (slot 26) drafted with full v7.8.1 frontmatter compliance.",
+      "artifacts": [
+        "docs/case-studies/ucc-passkey-auth-case-study.md"
+      ],
+      "metrics": {
+        "duration_minutes": 10
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-07T17:53:18Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Feature complete. Total measured wall time 125 min across 9 phase transitions. 28/28 tasks done. 19/19 tests pass. 2 PRs merged (fitme-story #55, FT2 #248). FEATURE_CLOSURE_COMPLETENESS gate satisfied: 7 frontmatter fields + Q7 kill_criteria_resolution + Q6 PR parity all present.",
+      "artifacts": [],
+      "metrics": {
+        "total_wall_time_minutes": 125,
+        "phase_transitions": 9
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

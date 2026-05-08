@@ -1,12 +1,19 @@
 {
   "feature": "development-dashboard",
+  "work_type": "chore",
   "case_study": "docs/case-studies/six-features-roundup-case-study.md",
-  "case_study_showcase": "04-case-studies/24-backlog-features-roundup.md",
-  "case_study_type": "roundup",
-  "created": "2026-04-02T18:00:00Z",
+  "case_study_showcase": "fitme-story/content/04-case-studies/24-backlog-roundup-housekeeping.mdx",
+  "case_study_type": "pre_pm_workflow_backfill",
+  "created_at": "2026-04-02T18:00:00Z",
   "updated": "2026-04-03T00:00:00Z",
   "branch": "feature/development-dashboard",
   "current_phase": "complete",
+  "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "has_ui": true,
   "github_issue_number": null,
   "transitions": [
@@ -43,5 +50,8 @@
       "first_review_date": null,
       "kill_criteria": "< 5 unique visitors/week after 60 days AND developer stops using it"
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

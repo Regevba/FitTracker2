@@ -24,6 +24,10 @@
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
 		A10000010000000000000002 /* DomainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000002 /* DomainModels.swift */; };
 		A10000010000000000000003 /* TrainingProgramData.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000003 /* TrainingProgramData.swift */; };
+		A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* ImportedTrainingPlan.swift */; };
+		SP100000000000000000AA01 /* StatsPeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = SP200000000000000000AA01 /* StatsPeriod.swift */; };
+		SF100000000000000000AA01 /* StatsFocusMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = SF200000000000000000AA01 /* StatsFocusMetric.swift */; };
+		MP100000000000000000AA01 /* MetricSeriesPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = MP200000000000000000AA01 /* MetricSeriesPoint.swift */; };
 		A10000010000000000000004 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000004 /* AuthManager.swift */; };
 		A10000010000000000000005 /* SignInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000005 /* SignInService.swift */; };
 		A10000010000000000000006 /* HealthKitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000006 /* HealthKitService.swift */; };
@@ -50,6 +54,7 @@
 		AC1000000000000000000009 /* ConsentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000009 /* ConsentView.swift */; };
 		AC1000000000000000000010 /* DeleteAccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000010 /* DeleteAccountView.swift */; };
 		AC1000000000000000000011 /* ExportDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000011 /* ExportDataView.swift */; };
+		BL1000002000000000000001 /* BehavioralLearningSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */; };
 		TP100000000000000000AA01 /* TrainingPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA01 /* TrainingPlanView.swift */; };
 		TP100000000000000000AA02 /* ExerciseRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA02 /* ExerciseRowView.swift */; };
 		TP100000000000000000AA03 /* SetRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TP200000000000000000AA03 /* SetRowView.swift */; };
@@ -94,7 +99,11 @@
 		EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC200000000000000000AT01 /* EncryptionServiceTests.swift */; };
 		EC200000000000000000AT01 /* EncryptionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncryptionServiceTests.swift; sourceTree = "<group>"; };
 		AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AM200000000000000000AT01 /* AuthManagerTests.swift */; };
+		AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200000000000000000AT02 /* AuthPolishV2Tests.swift */; };
+		AN100000000000000000AT01 /* AnalyticsEventNamingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */; };
 		AM200000000000000000AT01 /* AuthManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManagerTests.swift; sourceTree = "<group>"; };
+		AP200000000000000000AT02 /* AuthPolishV2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPolishV2Tests.swift; sourceTree = "<group>"; };
+		AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsEventNamingTests.swift; sourceTree = "<group>"; };
 		HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HK200000000000000000AT01 /* HealthKitServiceTests.swift */; };
 		HK200000000000000000AT01 /* HealthKitServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitServiceTests.swift; sourceTree = "<group>"; };
 		DB100000000000000000AT01 /* DebouncerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB200000000000000000AT01 /* DebouncerTests.swift */; };
@@ -119,7 +128,6 @@
 		VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidatedRecommendationTests.swift; sourceTree = "<group>"; };
 		WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */; };
 		WC200000000000000000AT01 /* WatchConnectivityServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityServiceTests.swift; sourceTree = "<group>"; };
-		NS100000000000000000AT01 /* NotificationServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS200000000000000000AT01 /* NotificationServiceTests.swift */; };
 		NS200000000000000000AT01 /* NotificationServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationServiceTests.swift; sourceTree = "<group>"; };
 		DE100000000000000000SR01 /* Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE200000000000000000SR01 /* Debouncer.swift */; };
 		DE200000000000000000SR01 /* Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debouncer.swift; sourceTree = "<group>"; };
@@ -128,8 +136,17 @@
 		EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET03 /* AITierBehaviorEvals.swift */; };
 		EV100000000000000000ET04 /* ProfileEvals.swift in Sources */ = {isa = PBXBuildFile; fileRef = EV200000000000000000ET04 /* ProfileEvals.swift */; };
 		EV200000000000000000ET04 /* ProfileEvals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEvals.swift; sourceTree = "<group>"; };
-		NT100000000000000000T001 /* NotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT200000000000000000T001 /* NotificationTests.swift */; };
 		NT200000000000000000T001 /* NotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTests.swift; sourceTree = "<group>"; };
+		NG200000000000000000T001 /* NotificationGatewayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGatewayTests.swift; sourceTree = "<group>"; };
+		DR200000000000000000T001 /* DeepLinkRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouterTests.swift; sourceTree = "<group>"; };
+		CR200000000000000000T001 /* NotificationConsumerRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConsumerRegistryTests.swift; sourceTree = "<group>"; };
+		RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertTriggerTests.swift; sourceTree = "<group>"; };
+		PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsReachabilityTests.swift; sourceTree = "<group>"; };
+		PN100000000000000000T001 /* PushNotificationsReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */; };
+		NG100000000000000000T001 /* NotificationGatewayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NG200000000000000000T001 /* NotificationGatewayTests.swift */; };
+		DR100000000000000000T001 /* DeepLinkRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DR200000000000000000T001 /* DeepLinkRouterTests.swift */; };
+		CR100000000000000000T001 /* NotificationConsumerRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CR200000000000000000T001 /* NotificationConsumerRegistryTests.swift */; };
+		RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
 		CC000001000000000000AA02 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA02 /* SectionHeader.swift */; };
 		CC000001000000000000AA03 /* StatusBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA03 /* StatusBadge.swift */; };
@@ -159,6 +176,7 @@
 		UI100000000000000000UT04 /* SignInUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT04 /* SignInUITests.swift */; };
 		UI100000000000000000UT05 /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT05 /* OnboardingUITests.swift */; };
 		UI100000000000000000UT06 /* MealLogUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT06 /* MealLogUITests.swift */; };
+		UI100000000000000000UT07 /* AuthPolishV2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = UI200000000000000000UT07 /* AuthPolishV2UITests.swift */; };
 		SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA02 /* AccountSecuritySettingsScreen.swift */; };
 		SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA03 /* HealthDevicesSettingsScreen.swift */; };
 		SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */; };
@@ -166,6 +184,8 @@
 		SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */; };
 		SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC01 /* SettingsScaffolds.swift */; };
 		SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC02 /* SettingsFormComponents.swift */; };
+		SE100000000000000000AC03 /* ImportedPlanRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC03 /* ImportedPlanRow.swift */; };
+		SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AA07 /* ImportedPlansListScreen.swift */; };
 		SE100000000000000000AC04 /* SettingsHomeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = SE200000000000000000AC04 /* SettingsHomeViews.swift */; };
 		DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA01 /* AppDesignSystemComponents.swift */; };
 		DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD000002000000000000AA02 /* DesignSystemCatalogView.swift */; };
@@ -175,8 +195,14 @@
 		DS000001000000000000AA04 /* AppIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA04 /* AppIcon.swift */; };
 		DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA05 /* AppViewModifiers.swift */; };
 		DS000001000000000000AA06 /* AppComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA06 /* AppComponents.swift */; };
+		DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DS000002000000000000AA07 /* AuthSharedComponents.swift */; };
 		EE000001000000000000AA01 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA01 /* SignInView.swift */; };
 		EE000001000000000000AA02 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE000002000000000000AA02 /* WelcomeView.swift */; };
+		AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A301 /* ForgotPasswordRequestView.swift */; };
+		AP100001000000000001A302 /* ForgotPasswordCooldownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */; };
+		AP100001000000000001A303 /* SetNewPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001A303 /* SetNewPasswordView.swift */; };
+		AP100001000000000001B101 /* BiometricActivationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001B101 /* BiometricActivationSheet.swift */; };
+		AP100001000000000001B301 /* BiometricUnlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AP200002000000000001B301 /* BiometricUnlockView.swift */; };
 		FB1000001000000000000001 /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000001 /* SupabaseClient.swift */; };
 		FB1000001000000000000002 /* SupabaseSyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000002 /* SupabaseSyncService.swift */; };
 		FB1000001000000000000003 /* UserSession+Supabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2000001000000000000003 /* UserSession+Supabase.swift */; };
@@ -218,14 +244,23 @@
 		4EBF9208E18548B3B009001A /* ValidatedRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BF2CE90DB4CFE8912F36E /* ValidatedRecommendation.swift */; };
 		79436AA165D54D94937D68A8 /* RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* RecommendationMemory.swift */; };
 		74FEAE525F4C445790103F37 /* OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* OnboardingAuthView.swift */; };
-		NT1000001000000000000001 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000001 /* NotificationService.swift */; };
-		NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000002 /* NotificationPreferencesStore.swift */; };
-		NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000003 /* NotificationContentBuilder.swift */; };
-		NT1000001000000000000004 /* DeepLinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000004 /* DeepLinkHandler.swift */; };
+		NT1000001000000000000005 /* NotificationGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000005 /* NotificationGateway.swift */; };
+		NT1000001000000000000006 /* NotificationConsumerRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000006 /* NotificationConsumerRegistry.swift */; };
+		NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000007 /* DeepLinkRouter.swift */; };
+		NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000008 /* ReadinessAlertObserver.swift */; };
+		NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000009 /* FirstWorkoutTrigger.swift */; };
+		NP100000000000000000VW02 /* SettingsDeepLinkBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW02 /* SettingsDeepLinkBanner.swift */; };
+		NP100000000000000000VW03 /* NotificationPermissionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW03 /* NotificationPermissionRow.swift */; };
 		RM1000001000000000000001 /* ReminderType.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000001 /* ReminderType.swift */; };
 		RM1000001000000000000002 /* ReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000002 /* ReminderScheduler.swift */; };
 		RM1000001000000000000003 /* ReminderTriggers.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000003 /* ReminderTriggers.swift */; };
 		RM1000001000000000000004 /* ReminderNotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM2000001000000000000004 /* ReminderNotificationDelegate.swift */; };
+		BL1000001000000000000001 /* BehavioralLearningStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000001000000000000001 /* BehavioralLearningStore.swift */; };
+		BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */; };
+		CC1000001000000000000001 /* CohortPriorClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000001000000000000001 /* CohortPriorClient.swift */; };
+		CC100000000000000000AT01 /* CohortPriorClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC200000000000000000AT01 /* CohortPriorClientTests.swift */; };
+		CP1000001000000000000001 /* CohortPriorCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = CP2000001000000000000001 /* CohortPriorCache.swift */; };
+		CP100000000000000000AT01 /* CohortPriorCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CP200000000000000000AT01 /* CohortPriorCacheTests.swift */; };
 		IM100000000000000000AA01 /* ImportParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA01 /* ImportParser.swift */; };
 		IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA02 /* ExerciseMapper.swift */; };
 		IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA03 /* ImportOrchestrator.swift */; };
@@ -233,6 +268,7 @@
 		IM100000000000000000AA05 /* ImportPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = IM200000000000000000AA05 /* ImportPreviewView.swift */; };
 		NP100000000000000000VW01 /* NotificationPermissionPrimingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */; };
 		IT100000000000000000TS01 /* ImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS01 /* ImportTests.swift */; };
+		IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -283,6 +319,10 @@
 		A20000010000000000000001 /* FitTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerApp.swift; sourceTree = "<group>"; };
 		A20000010000000000000002 /* DomainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainModels.swift; sourceTree = "<group>"; };
 		A20000010000000000000003 /* TrainingProgramData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingProgramData.swift; sourceTree = "<group>"; };
+		A20000010000000000000017 /* ImportedTrainingPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedTrainingPlan.swift; sourceTree = "<group>"; };
+		SP200000000000000000AA01 /* StatsPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsPeriod.swift; sourceTree = "<group>"; };
+		SF200000000000000000AA01 /* StatsFocusMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsFocusMetric.swift; sourceTree = "<group>"; };
+		MP200000000000000000AA01 /* MetricSeriesPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricSeriesPoint.swift; sourceTree = "<group>"; };
 		A20000010000000000000004 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		A20000010000000000000005 /* SignInService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInService.swift; sourceTree = "<group>"; };
 		A20000010000000000000006 /* HealthKitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitService.swift; sourceTree = "<group>"; };
@@ -317,6 +357,7 @@
 		AC2000000000000000000009 /* ConsentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentView.swift; sourceTree = "<group>"; };
 		AC2000000000000000000010 /* DeleteAccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountView.swift; sourceTree = "<group>"; };
 		AC2000000000000000000011 /* ExportDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDataView.swift; sourceTree = "<group>"; };
+		BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningSettingsView.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA1 /* AITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AITypes.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA2 /* AIEngineClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIEngineClient.swift; sourceTree = "<group>"; };
 		AI200000000000000000AAA3 /* FoundationModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationModelService.swift; sourceTree = "<group>"; };
@@ -344,6 +385,8 @@
 		SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataSyncSettingsScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC01 /* SettingsScaffolds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScaffolds.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC02 /* SettingsFormComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsFormComponents.swift; sourceTree = "<group>"; };
+		SE200000000000000000AC03 /* ImportedPlanRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlanRow.swift; sourceTree = "<group>"; };
+		SE200000000000000000AA07 /* ImportedPlansListScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedPlansListScreen.swift; sourceTree = "<group>"; };
 		SE200000000000000000AC04 /* SettingsHomeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHomeViews.swift; sourceTree = "<group>"; };
 		B20000010000000000000002 /* FitTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		UI200000000000000000XT01 /* FitTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FitTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -353,6 +396,7 @@
 		UI200000000000000000UT04 /* SignInUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInUITests.swift; sourceTree = "<group>"; };
 		UI200000000000000000UT05 /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
 		UI200000000000000000UT06 /* MealLogUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealLogUITests.swift; sourceTree = "<group>"; };
+		UI200000000000000000UT07 /* AuthPolishV2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPolishV2UITests.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA01 /* ReadinessCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessCard.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA02 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeader.swift; sourceTree = "<group>"; };
 		CC000002000000000000AA03 /* StatusBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadge.swift; sourceTree = "<group>"; };
@@ -384,8 +428,14 @@
 		DS000002000000000000AA04 /* AppIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIcon.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA05 /* AppViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppViewModifiers.swift; sourceTree = "<group>"; };
 		DS000002000000000000AA06 /* AppComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppComponents.swift; sourceTree = "<group>"; };
+		DS000002000000000000AA07 /* AuthSharedComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSharedComponents.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA01 /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		EE000002000000000000AA02 /* WelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A301 /* ForgotPasswordRequestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordRequestView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordCooldownView.swift; sourceTree = "<group>"; };
+		AP200002000000000001A303 /* SetNewPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNewPasswordView.swift; sourceTree = "<group>"; };
+		AP200002000000000001B101 /* BiometricActivationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricActivationSheet.swift; sourceTree = "<group>"; };
+		AP200002000000000001B301 /* BiometricUnlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricUnlockView.swift; sourceTree = "<group>"; };
 		FB2000001000000000000001 /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		FB2000001000000000000002 /* SupabaseSyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseSyncService.swift; sourceTree = "<group>"; };
 		FB2000001000000000000003 /* UserSession+Supabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserSession+Supabase.swift"; sourceTree = "<group>"; };
@@ -448,13 +498,26 @@
 		NT2000001000000000000001 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		NT2000001000000000000002 /* NotificationPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPreferencesStore.swift; sourceTree = "<group>"; };
 		NT2000001000000000000003 /* NotificationContentBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationContentBuilder.swift; sourceTree = "<group>"; };
-		NT2000001000000000000004 /* DeepLinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkHandler.swift; sourceTree = "<group>"; };
+		NT2000001000000000000005 /* NotificationGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationGateway.swift; sourceTree = "<group>"; };
+		NT2000001000000000000006 /* NotificationConsumerRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationConsumerRegistry.swift; sourceTree = "<group>"; };
+		NT2000001000000000000007 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
+		NT2000001000000000000008 /* ReadinessAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertObserver.swift; sourceTree = "<group>"; };
+		NT2000001000000000000009 /* FirstWorkoutTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstWorkoutTrigger.swift; sourceTree = "<group>"; };
+		NP200000000000000000VW02 /* SettingsDeepLinkBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDeepLinkBanner.swift; sourceTree = "<group>"; };
+		NP200000000000000000VW03 /* NotificationPermissionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionRow.swift; sourceTree = "<group>"; };
 		RM2000001000000000000001 /* ReminderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderType.swift; sourceTree = "<group>"; };
 		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
 		RM2000001000000000000004 /* ReminderNotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationDelegate.swift; sourceTree = "<group>"; };
+		BL2000001000000000000001 /* BehavioralLearningStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningStore.swift; sourceTree = "<group>"; };
+		BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningStoreTests.swift; sourceTree = "<group>"; };
+		CC2000001000000000000001 /* CohortPriorClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortPriorClient.swift; sourceTree = "<group>"; };
+		CC200000000000000000AT01 /* CohortPriorClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortPriorClientTests.swift; sourceTree = "<group>"; };
+		CP2000001000000000000001 /* CohortPriorCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortPriorCache.swift; sourceTree = "<group>"; };
+		CP200000000000000000AT01 /* CohortPriorCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CohortPriorCacheTests.swift; sourceTree = "<group>"; };
 		NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionPrimingView.swift; sourceTree = "<group>"; };
 		IT200000000000000000TS01 /* ImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportTests.swift; sourceTree = "<group>"; };
+		IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportPersistenceAndAnalyticsTests.swift; sourceTree = "<group>"; };
 		CFG000000000000000000001 /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
 		CFG000000000000000000002 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		CFG000000000000000000003 /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
@@ -591,9 +654,21 @@
 			children = (
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
+				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
 				FB2000001000000000000003 /* UserSession+Supabase.swift */,
+				SS400000000000000000AA01 /* Stats */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		SS400000000000000000AA01 /* Stats */ = {
+			isa = PBXGroup;
+			children = (
+				SP200000000000000000AA01 /* StatsPeriod.swift */,
+				SF200000000000000000AA01 /* StatsFocusMetric.swift */,
+				MP200000000000000000AA01 /* MetricSeriesPoint.swift */,
+			);
+			path = Stats;
 			sourceTree = "<group>";
 		};
 		A40000010000000000000005 /* Services */ = {
@@ -650,6 +725,8 @@
 			isa = PBXGroup;
 			children = (
 				NP200000000000000000VW01 /* NotificationPermissionPrimingView.swift */,
+				NP200000000000000000VW02 /* SettingsDeepLinkBanner.swift */,
+				NP200000000000000000VW03 /* NotificationPermissionRow.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -678,10 +755,14 @@
 		NT4000001000000000000001 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
+				NT2000001000000000000005 /* NotificationGateway.swift */,
+				NT2000001000000000000006 /* NotificationConsumerRegistry.swift */,
+				NT2000001000000000000007 /* DeepLinkRouter.swift */,
+				NT2000001000000000000008 /* ReadinessAlertObserver.swift */,
+				NT2000001000000000000009 /* FirstWorkoutTrigger.swift */,
 				NT2000001000000000000001 /* NotificationService.swift */,
 				NT2000001000000000000002 /* NotificationPreferencesStore.swift */,
 				NT2000001000000000000003 /* NotificationContentBuilder.swift */,
-				NT2000001000000000000004 /* DeepLinkHandler.swift */,
 			);
 			path = Notifications;
 			sourceTree = "<group>";
@@ -693,6 +774,9 @@
 				RM2000001000000000000002 /* ReminderScheduler.swift */,
 				RM2000001000000000000003 /* ReminderTriggers.swift */,
 				RM2000001000000000000004 /* ReminderNotificationDelegate.swift */,
+				BL2000001000000000000001 /* BehavioralLearningStore.swift */,
+				CC2000001000000000000001 /* CohortPriorClient.swift */,
+				CP2000001000000000000001 /* CohortPriorCache.swift */,
 			);
 			path = Reminders;
 			sourceTree = "<group>";
@@ -870,6 +954,11 @@
 				A20000010000000000000016 /* AuthHubView.swift */,
 				EE000002000000000000AA01 /* SignInView.swift */,
 				EE000002000000000000AA02 /* WelcomeView.swift */,
+				AP200002000000000001A301 /* ForgotPasswordRequestView.swift */,
+				AP200002000000000001A302 /* ForgotPasswordCooldownView.swift */,
+				AP200002000000000001A303 /* SetNewPasswordView.swift */,
+				AP200002000000000001B101 /* BiometricActivationSheet.swift */,
+				AP200002000000000001B301 /* BiometricUnlockView.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -923,6 +1012,8 @@
 				AC200000000000000000AT01 /* AccountDeletionServiceTests.swift */,
 				EC200000000000000000AT01 /* EncryptionServiceTests.swift */,
 				AM200000000000000000AT01 /* AuthManagerTests.swift */,
+				AP200000000000000000AT02 /* AuthPolishV2Tests.swift */,
+				AN200000000000000000AT01 /* AnalyticsEventNamingTests.swift */,
 				HK200000000000000000AT01 /* HealthKitServiceTests.swift */,
 				DB200000000000000000AT01 /* DebouncerTests.swift */,
 				SS200000000000000000AT01 /* SupabaseSyncServiceTests.swift */,
@@ -931,6 +1022,9 @@
 				KH200000000000000000AT01 /* KeychainHelperTests.swift */,
 				RS200000000000000000AT01 /* ReminderSchedulerTests.swift */,
 				RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */,
+				BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */,
+				CC200000000000000000AT01 /* CohortPriorClientTests.swift */,
+				CP200000000000000000AT01 /* CohortPriorCacheTests.swift */,
 				OB200000000000000000AT01 /* OfflineBehaviourTests.swift */,
 				OR200000000000000000AT01 /* AIOrchestratorTests.swift */,
 				VR200000000000000000AT01 /* ValidatedRecommendationTests.swift */,
@@ -939,7 +1033,13 @@
 				EV300000000000000000GR01 /* EvalTests */,
 				FT4000001000000000000001 /* SupabaseTests */,
 				NT200000000000000000T001 /* NotificationTests.swift */,
+				NG200000000000000000T001 /* NotificationGatewayTests.swift */,
+				DR200000000000000000T001 /* DeepLinkRouterTests.swift */,
+				CR200000000000000000T001 /* NotificationConsumerRegistryTests.swift */,
+				RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */,
+				PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */,
 				IT200000000000000000TS01 /* ImportTests.swift */,
+				IT200000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift */,
 			);
 			path = FitTrackerTests;
 			sourceTree = "<group>";
@@ -953,6 +1053,7 @@
 				UI200000000000000000UT04 /* SignInUITests.swift */,
 				UI200000000000000000UT05 /* OnboardingUITests.swift */,
 				UI200000000000000000UT06 /* MealLogUITests.swift */,
+				UI200000000000000000UT07 /* AuthPolishV2UITests.swift */,
 			);
 			path = FitTrackerUITests;
 			sourceTree = "<group>";
@@ -984,6 +1085,7 @@
 			isa = PBXGroup;
 			children = (
 				AC2000000000000000000010 /* DeleteAccountView.swift */,
+				BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */,
 				DD000002000000000000AA02 /* DesignSystemCatalogView.swift */,
 				AC2000000000000000000011 /* ExportDataView.swift */,
 				CC000002000000000000AA0D /* SettingsView.swift */,
@@ -1007,6 +1109,7 @@
 			children = (
 				SE200000000000000000AC01 /* SettingsScaffolds.swift */,
 				SE200000000000000000AC02 /* SettingsFormComponents.swift */,
+				SE200000000000000000AC03 /* ImportedPlanRow.swift */,
 				SE200000000000000000AC04 /* SettingsHomeViews.swift */,
 			);
 			path = Components;
@@ -1020,6 +1123,7 @@
 				SE200000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift */,
 				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
+				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1035,6 +1139,7 @@
 				DS000002000000000000AA04 /* AppIcon.swift */,
 				DS000002000000000000AA05 /* AppViewModifiers.swift */,
 				DS000002000000000000AA06 /* AppComponents.swift */,
+				DS000002000000000000AA07 /* AuthSharedComponents.swift */,
 				NV200000000000000000AA04 /* ProgressBar.swift */,
 			);
 			path = DesignSystem;
@@ -1214,6 +1319,10 @@
 				A10000010000000000000001 /* FitTrackerApp.swift in Sources */,
 				A10000010000000000000002 /* DomainModels.swift in Sources */,
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
+				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
+				SP100000000000000000AA01 /* StatsPeriod.swift in Sources */,
+				SF100000000000000000AA01 /* StatsFocusMetric.swift in Sources */,
+				MP100000000000000000AA01 /* MetricSeriesPoint.swift in Sources */,
 				A10000010000000000000004 /* AuthManager.swift in Sources */,
 				A10000010000000000000005 /* SignInService.swift in Sources */,
 				A10000010000000000000015 /* AuthValidation.swift in Sources */,
@@ -1274,6 +1383,11 @@
 				A1000001000000000000000F /* AccountPanelView.swift in Sources */,
 				EE000001000000000000AA01 /* SignInView.swift in Sources */,
 				EE000001000000000000AA02 /* WelcomeView.swift in Sources */,
+				AP100001000000000001A301 /* ForgotPasswordRequestView.swift in Sources */,
+				AP100001000000000001A302 /* ForgotPasswordCooldownView.swift in Sources */,
+				AP100001000000000001A303 /* SetNewPasswordView.swift in Sources */,
+				AP100001000000000001B101 /* BiometricActivationSheet.swift in Sources */,
+				AP100001000000000001B301 /* BiometricUnlockView.swift in Sources */,
 				CC000001000000000000AA01 /* ReadinessCard.swift in Sources */,
 				CC000001000000000000AA02 /* SectionHeader.swift in Sources */,
 				OB100000000000000000AA01 /* OnboardingConsentView.swift in Sources */,
@@ -1306,14 +1420,17 @@
 				CC000001000000000000AA0C /* RecoverySupport.swift in Sources */,
 				AC1000000000000000000010 /* DeleteAccountView.swift in Sources */,
 				AC1000000000000000000011 /* ExportDataView.swift in Sources */,
+				BL1000002000000000000001 /* BehavioralLearningSettingsView.swift in Sources */,
 				SE100000000000000000AA01 /* SettingsView.swift in Sources */,
 				SE100000000000000000AA02 /* AccountSecuritySettingsScreen.swift in Sources */,
 				SE100000000000000000AA03 /* HealthDevicesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
+				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
+				SE100000000000000000AC03 /* ImportedPlanRow.swift in Sources */,
 				SE100000000000000000AC04 /* SettingsHomeViews.swift in Sources */,
 				DD000001000000000000AA01 /* AppDesignSystemComponents.swift in Sources */,
 				DD000001000000000000AA02 /* DesignSystemCatalogView.swift in Sources */,
@@ -1325,6 +1442,7 @@
 				DS000001000000000000AA04 /* AppIcon.swift in Sources */,
 				DS000001000000000000AA05 /* AppViewModifiers.swift in Sources */,
 				DS000001000000000000AA06 /* AppComponents.swift in Sources */,
+				DS000001000000000000AA07 /* AuthSharedComponents.swift in Sources */,
 				AI100000000000000000AAA1 /* AITypes.swift in Sources */,
 				AI100000000000000000AAA2 /* AIEngineClient.swift in Sources */,
 				AI100000000000000000AAA3 /* FoundationModelService.swift in Sources */,
@@ -1354,10 +1472,16 @@
 				RM1000001000000000000002 /* ReminderScheduler.swift in Sources */,
 				RM1000001000000000000003 /* ReminderTriggers.swift in Sources */,
 				RM1000001000000000000004 /* ReminderNotificationDelegate.swift in Sources */,
-				NT1000001000000000000001 /* NotificationService.swift in Sources */,
-				NT1000001000000000000002 /* NotificationPreferencesStore.swift in Sources */,
-				NT1000001000000000000003 /* NotificationContentBuilder.swift in Sources */,
-				NT1000001000000000000004 /* DeepLinkHandler.swift in Sources */,
+				BL1000001000000000000001 /* BehavioralLearningStore.swift in Sources */,
+				CC1000001000000000000001 /* CohortPriorClient.swift in Sources */,
+				CP1000001000000000000001 /* CohortPriorCache.swift in Sources */,
+				NT1000001000000000000005 /* NotificationGateway.swift in Sources */,
+				NT1000001000000000000006 /* NotificationConsumerRegistry.swift in Sources */,
+				NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */,
+				NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */,
+				NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */,
+				NP100000000000000000VW02 /* SettingsDeepLinkBanner.swift in Sources */,
+				NP100000000000000000VW03 /* NotificationPermissionRow.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
 				IM100000000000000000AA02 /* ExerciseMapper.swift in Sources */,
 				IM100000000000000000AA03 /* ImportOrchestrator.swift in Sources */,
@@ -1392,6 +1516,8 @@
 				AC100000000000000000AT01 /* AccountDeletionServiceTests.swift in Sources */,
 				EC100000000000000000AT01 /* EncryptionServiceTests.swift in Sources */,
 				AM100000000000000000AT01 /* AuthManagerTests.swift in Sources */,
+				AP100000000000000000AT02 /* AuthPolishV2Tests.swift in Sources */,
+				AN100000000000000000AT01 /* AnalyticsEventNamingTests.swift in Sources */,
 				HK100000000000000000AT01 /* HealthKitServiceTests.swift in Sources */,
 				DB100000000000000000AT01 /* DebouncerTests.swift in Sources */,
 				SS100000000000000000AT01 /* SupabaseSyncServiceTests.swift in Sources */,
@@ -1400,11 +1526,13 @@
 				KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */,
 				RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */,
 				RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */,
+				BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */,
+				CC100000000000000000AT01 /* CohortPriorClientTests.swift in Sources */,
+				CP100000000000000000AT01 /* CohortPriorCacheTests.swift in Sources */,
 				OB100000000000000000AT01 /* OfflineBehaviourTests.swift in Sources */,
 				OR100000000000000000AT01 /* AIOrchestratorTests.swift in Sources */,
 				VR100000000000000000AT01 /* ValidatedRecommendationTests.swift in Sources */,
 				WC100000000000000000AT01 /* WatchConnectivityServiceTests.swift in Sources */,
-				NS100000000000000000AT01 /* NotificationServiceTests.swift in Sources */,
 				EV100000000000000000ET01 /* ReadinessFormulaEvals.swift in Sources */,
 				EV100000000000000000ET02 /* AIOutputQualityEvals.swift in Sources */,
 				EV100000000000000000ET03 /* AITierBehaviorEvals.swift in Sources */,
@@ -1412,8 +1540,13 @@
 				FT1000001000000000000001 /* UserSessionMappingTests.swift in Sources */,
 				FT1000001000000000000002 /* SyncMergeTests.swift in Sources */,
 				FT1000001000000000000003 /* SupabaseClientTests.swift in Sources */,
-				NT100000000000000000T001 /* NotificationTests.swift in Sources */,
 				IT100000000000000000TS01 /* ImportTests.swift in Sources */,
+				IT100000000000000000TS02 /* ImportPersistenceAndAnalyticsTests.swift in Sources */,
+				NG100000000000000000T001 /* NotificationGatewayTests.swift in Sources */,
+				DR100000000000000000T001 /* DeepLinkRouterTests.swift in Sources */,
+				CR100000000000000000T001 /* NotificationConsumerRegistryTests.swift in Sources */,
+				RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */,
+				PN100000000000000000T001 /* PushNotificationsReachabilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1427,6 +1560,7 @@
 				UI100000000000000000UT04 /* SignInUITests.swift in Sources */,
 				UI100000000000000000UT05 /* OnboardingUITests.swift in Sources */,
 				UI100000000000000000UT06 /* MealLogUITests.swift in Sources */,
+				UI100000000000000000UT07 /* AuthPolishV2UITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

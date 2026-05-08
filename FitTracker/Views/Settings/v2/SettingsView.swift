@@ -77,6 +77,7 @@ struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var watchService: WatchConnectivityService
     @EnvironmentObject var analytics: AnalyticsService
+    @EnvironmentObject var programStore: TrainingProgramStore
 
     @State private var navigationPath = NavigationPath()
     @State private var showResetAlert = false
@@ -109,6 +110,10 @@ struct SettingsView: View {
                             )
                         }
                         .buttonStyle(.plain)
+
+                        // push-notifications-v2 (T7): permanent re-entry to the
+                        // notification permission flow. State-driven (3 variants).
+                        NotificationPermissionRow(analytics: analytics)
 
                         LazyVGrid(columns: dashboardColumns, spacing: AppSpacing.xSmall) {
                             ForEach(SettingsCategory.allCases.filter { $0 != .accountSecurity }) { category in
@@ -157,6 +162,7 @@ struct SettingsView: View {
                     DataSyncSettingsScreen(showResetAlert: $showResetAlert)
                         .environmentObject(dataStore)
                         .environmentObject(cloudSync)
+                        .environmentObject(programStore)
                         .environmentObject(analytics)
                 }
             }

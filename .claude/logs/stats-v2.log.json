@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "feature": "stats-v2",
+  "title": "stats v2",
+  "work_type": "feature",
+  "current_phase": "tasks",
+  "framework_version": null,
+  "started_at": "2026-04-30T15:59:07Z",
+  "updated_at": "2026-05-02T08:59:53Z",
+  "events": [
+    {
+      "timestamp": "2026-04-30T15:59:07Z",
+      "event_type": "phase_transition",
+      "phase": "implementation",
+      "summary": "Reconciliation: T3 (build v2/StatsView.swift), T4 (project.pbxproj v2 swap), T10 (mark v1 historical) shipped 2026-04-10 via PR #76 / commit e93d6e8 but never recorded in state.json. T7 (StatsAnalyticsTests.swift, 93 lines) also already exists. T1 already on main pre-feature. Transitioning current_phase tasks \u2192 implementation to match reality. Remaining real work: T2 type extraction, T5 wire analytics calls in view, T6 a11y from 9 \u2192 14+, T8 v2 checklist, T9 CI verify.",
+      "artifacts": [
+        "FitTracker/Views/Stats/v2/StatsView.swift",
+        "FitTrackerTests/StatsAnalyticsTests.swift"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-02T08:59:53Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Phase transition implementation\u2192complete. PR #164 admin-merged 2026-04-30T18:31:47Z (squash 9b05ebf). 10/10 tasks complete (T1-T10). T3+T4+T7+T10 shipped 2026-04-10 via PR #76 (e93d6e8) but never logged \u2014 caught at 2026-04-30 reconciliation. T2/T5/T6/T8/T9 shipped 2026-04-30 via commits 47f8bd5/027abf0/checklist-fill. PR #164 admin-merged despite Build-and-Test red (parallel-clone sim hang env-flake, Bug FIT-59) because all stats-v2 code clean. PR #165 (chore/ci-quarantine-fix) shipped fix downstream. Reconciling now to clear v7.7 silent-pass surface as part of full hygiene pass.",
+      "artifacts": [
+        "https://github.com/Regevba/FitTracker2/pull/164",
+        "docs/case-studies/stats-v2-case-study.md"
+      ],
+      "metrics": {
+        "pr_merged": 164,
+        "merge_sha": "9b05ebf",
+        "tasks_complete": 10,
+        "tasks_total": 10
+      },
+      "actor": "claude_code_opus_4_7_1m",
+      "status": "approved",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

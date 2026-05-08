@@ -1,0 +1,58 @@
+{
+  "version": "1.0",
+  "_description": "v7.8 Mechanism E + bridge-fields registry. Maps shared-write paths to merge strategy, dedup key, and enforcement mode. v7.8 ships every reducer in mode='advisory' (logs misses to .claude/logs/reducer-misses.json; never blocks the commit). v7.9 will flip mode='enforced' on entries that have ≥7 days of zero false-positives in the misses ledger. Pattern: Postgres ALTER TABLE ... NOT VALID → VALIDATE CONSTRAINT.",
+  "_spec": "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md §4.5 + §4.7.2",
+  "paths": {
+    ".claude/shared/measurement-adoption-history.json": {
+      "merge_strategy": "append_dedup",
+      "dedup_key": "date",
+      "array_path": "snapshots",
+      "owner_features": ["framework-*"],
+      "mode": "advisory",
+      "registered_in": ".gitattributes (merge=union-dedup-by-key)",
+      "registered_pr": 189
+    },
+    ".claude/shared/documentation-debt.json": {
+      "merge_strategy": "append_dedup",
+      "dedup_key": "id",
+      "array_path": "debt_items",
+      "owner_features": ["framework-*"],
+      "mode": "advisory",
+      "registered_in": ".gitattributes (merge=union-dedup-by-key)",
+      "registered_pr": 189
+    },
+    ".claude/shared/skill-routing.json": {
+      "merge_strategy": "exclusive_write",
+      "owner_features": ["framework-v*"],
+      "mode": "advisory"
+    },
+    ".claude/shared/framework-manifest.json": {
+      "merge_strategy": "exclusive_write",
+      "owner_features": ["framework-v*"],
+      "mode": "advisory"
+    },
+    ".claude/shared/measurement-adoption.json": {
+      "merge_strategy": "exclusive_write",
+      "owner_features": ["framework-*"],
+      "mode": "advisory",
+      "_note": "Generated/overwritten by scripts/measurement-adoption-report.py; not mergeable by content."
+    },
+    ".claude/logs/gate-coverage.jsonl": {
+      "merge_strategy": "append",
+      "owner_features": ["framework-*"],
+      "mode": "advisory",
+      "_note": "Mechanism A coverage telemetry. Append-only JSONL — concurrent writes from parallel agents safe via OS-level append atomicity. No dedup needed; each line is a unique gate evaluation event.",
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
+    },
+    ".claude/logs/_session-*.events.jsonl": {
+      "merge_strategy": "append",
+      "scope": "per-session",
+      "owner_features": ["*"],
+      "mode": "advisory",
+      "_note": "Mechanism C session event ledger. One JSONL file per Claude Code session ID. Append-only; per-file scope means no inter-session conflicts. Pattern uses glob to match every session file.",
+      "added_by": "framework-v7-8-branch-isolation",
+      "added_at": "2026-05-07"
+    }
+  }
+}

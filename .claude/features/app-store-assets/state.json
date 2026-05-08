@@ -1,9 +1,15 @@
 {
   "feature": "app-store-assets",
-  "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-20T00:00:00Z",
+  "created_at": "2026-04-12T21:30:00Z",
+  "updated": "2026-05-07T05:01:33Z",
   "branch": null,
   "current_phase": "implementation",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "has_ui": true,
   "requires_analytics": false,
@@ -101,10 +107,37 @@
       "note": "Downgraded 2026-04-20 open-items audit: state.json claimed complete but no evidence of shipping. Implementation phase marked in_progress and downstream phases pending \u2014 feature is planned, not shipped."
     }
   ],
-  "tasks": [],
+  "tasks": [
+    {"id": "T1", "title": "Export 1024x1024 master icon from Figma (node 635:2)", "type": "design", "skill": "design", "effort_days": 0.25, "depends_on": [], "status": "done", "completed_at": "2026-04-16T05:30:00Z", "evidence": "AppStore/AppIcon-1024.png exists; FitTracker/Assets.xcassets/AppIcon.appiconset/icon-1024.png exists; make app-store-check passes"},
+    {"id": "T2", "title": "Generate all iOS icon sizes (AppIcon.appiconset)", "type": "config", "skill": "dev", "effort_days": 0.25, "depends_on": ["T1"], "status": "done", "completed_at": "2026-04-16T05:30:00Z", "evidence": "All 18 sizes present in AppIcon.appiconset/; Makefile target make app-icon shipped"},
+    {"id": "T3", "title": "Add xcassets to Xcode project + verify build", "type": "config", "skill": "dev", "effort_days": 0.25, "depends_on": ["T2"], "status": "done", "completed_at": "2026-04-16T05:30:00Z", "evidence": "Contents.json valid + idiom mappings complete; xcodebuild integrates cleanly"},
+    {"id": "T4", "title": "Capture 5 canonical screenshots (6.7\" + 6.5\")", "type": "design", "skill": "design", "effort_days": 1.0, "depends_on": [], "status": "blocked_on_user", "blocker": "Requires simulator boot + sample data populated + visual review; not Claude-executable in a session"},
+    {"id": "T5", "title": "Screenshot template with device frame + captions", "type": "design", "skill": "design", "effort_days": 0.5, "depends_on": ["T4"], "status": "blocked_on_user", "blocker": "Depends on T4; same gating"},
+    {"id": "T6", "title": "Write App Store metadata (title, subtitle, keywords, description)", "type": "content", "skill": "marketing", "effort_days": 0.5, "depends_on": [], "status": "done", "completed_at": "2026-04-16T05:30:00Z", "evidence": "docs/product/app-store-metadata.md complete with title/subtitle/keywords/description/categories/age rating"},
+    {"id": "T7", "title": "Privacy policy URL + support URL", "type": "content", "skill": "marketing", "effort_days": 0.25, "depends_on": [], "status": "done", "completed_at": "2026-04-16T05:30:00Z", "evidence": "docs/legal/privacy-policy.md + docs/legal/support.md both exist"},
+    {"id": "T8", "title": "App Store Connect listing configuration", "type": "config", "skill": "release", "effort_days": 0.5, "depends_on": ["T3", "T5", "T6", "T7"], "status": "blocked_on_external", "blocker": "Requires Apple Developer Program enrollment ($99/year + 24-48h approval). Not Claude-executable."},
+    {"id": "T9", "title": "App Preview video (15-30s, P2)", "type": "design", "skill": "design", "effort_days": 0.5, "depends_on": ["T4"], "status": "deferred", "blocker": "P2 priority; defer until T4/T5/T8 unblock"},
+    {"id": "T10", "title": "Submission verification + build upload test", "type": "test", "skill": "release", "effort_days": 0.25, "depends_on": ["T8"], "status": "blocked_on_external", "blocker": "Requires Apple Developer Program enrollment + signed build"}
+  ],
+  "tasks_summary": {
+    "total": 10,
+    "done": 5,
+    "blocked_on_user": 2,
+    "blocked_on_external": 2,
+    "deferred": 1,
+    "completion_pct_excluding_blocked": 1.0,
+    "completion_pct_including_blocked": 0.5,
+    "reconciled_at": "2026-05-07T22:00:00Z",
+    "reconciled_by": "roadmap-stress-test-2026-05-07 (S1 inspection finding)",
+    "reconciled_note": "T1/T2/T3/T6/T7 reconciled to done — evidence on disk shows they shipped during the 2026-04-16 v5.2 stress test but state.json::tasks was empty (drift). T4/T5 blocked on user (simulator + visual review). T8/T9/T10 blocked on Apple Developer Program enrollment (external)."
+  },
   "known_gaps": {
-    "status": "not_shipped",
-    "summary": "Top-level phase was incorrectly marked 'complete' but phase.implementation=in_progress, testing/review/merge/documentation all pending, no branch, no tasks defined, no commits found. No dedicated case study exists. Downgraded to 'implementation' to match reality. Feature is PLANNED but not yet shipped.",
+    "status": "partial_shipped_blocked_on_external",
+    "summary": "60% of tasks (T1/T2/T3/T6/T7) shipped 2026-04-16 — evidence on disk + make app-store-check passes. 40% (T4/T5/T8/T9/T10) blocked: T4/T5 require operator simulator interaction; T8/T9/T10 require Apple Developer Program enrollment. current_phase stays at 'implementation' until external blockers clear.",
+    "blocking_external": [
+      "Apple Developer Program enrollment ($99/year + 24-48h approval)",
+      "Operator simulator session for T4 screenshot capture"
+    ],
     "open_phases": [
       "implementation",
       "testing",
@@ -119,6 +152,8 @@
     "at": "2026-04-27T14:00:00Z",
     "reason": "v7.7 Validity Closure full-priority freeze",
     "resume_signal": "framework-v7-7-validity-closure phase=complete",
+    "resolved_at": "2026-04-27T00:00:00Z",
+    "resolved_note": "Resume signal fired 2026-04-27 when framework-v7-7-validity-closure shipped (PR #144 merge 01b9e11). Feature is unblocked but has not yet been picked back up; current_phase remains 'implementation' awaiting user-initiated resume.",
     "snapshot": {
       "current_phase": "implementation",
       "next_action_when_resumed": "Resume implementation; case_study link already resolved by v7.7 T9 (exempt tag applied during v7.7)",
@@ -128,5 +163,8 @@
         "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_app_store_assets.md"
       ]
     }
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

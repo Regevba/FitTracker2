@@ -7,7 +7,7 @@
 |---|---|
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > **Core question:** Can the PM framework measure itself precisely enough to produce reproducible, deterministic performance data across features — and does self-referential measurement work (the feature measuring itself being built)?

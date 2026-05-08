@@ -7,9 +7,9 @@
 |---|---|
 | Dispatch Pattern | parallel |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 > Framework v7.0 | Chore (audit + framework hardening) → Fix (multi-sprint cleanup) | 2026-04-18 → 2026-04-19 | PRs #96-#116 (21 PRs)

@@ -1,9 +1,11 @@
-# PM Framework — Developer Guide (v1.0 → v7.7)
+# PM Framework — Developer Guide (v1.0 → v7.8.2)
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Last updated:** 2026-04-27 at v7.7 ship.
-> **Companion docs:** [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
+> **Last updated:** 2026-05-08 — v7.8.2 ship adds (a) a Bash short-circuit cwd-guard to the PostToolUse:Read hook that silences cross-repo Mechanism C noise, and (b) a documented disposition spec resolving v7.9 candidates F7 + F8 (Tier 2.2 + Mechanism A cross-repo gate parity) as "documented exemption" rather than full parity build. v7.8.2 is a patch-level bump — NO new gates, NO regressions to existing gates. Pre-2026-05-08 content describing v7.8.1 gates remains accurate. See [`docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md`](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md).
+> **v7.8.1 baseline:** earlier on 2026-05-07 — 3 new write-time gates (BRANCH_ISOLATION_VIOLATION, FEATURE_CLOSURE_COMPLETENESS, ISOLATION_OPT_OUT_REASON_MISSING), 3 new cycle-time advisories, auto-isolation flow, 2 new make targets, /ux + /design pre-merge-review sub-step 6f.
+> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.8.2).
+> **Companion docs:** [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) (event/log/gate catalog with mermaid flow diagrams), [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
 > **Reading order:** §§ 1–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs.
 
 ---
@@ -11,7 +13,7 @@
 ## Table of Contents
 
 1. [Audience and how to read](#1-audience-and-how-to-read)
-2. [Big picture (current state — v7.7)](#2-big-picture-current-state--v77)
+2. [Big picture (current state — v7.8)](#2-big-picture-current-state--v78)
 3. [Where the code lives](#3-where-the-code-lives)
 4. [The skill ecosystem (hub + 10 spokes)](#4-the-skill-ecosystem-hub--10-spokes)
 5. [`state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
@@ -21,7 +23,7 @@
 9. [Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
 10. [Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
 11. [Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
-12. [Compressed evolution timeline (v1.0 → v7.7)](#12-compressed-evolution-timeline-v10--v77)
+12. [Compressed evolution timeline (v1.0 → v7.8)](#12-compressed-evolution-timeline-v10--v78)
 13. [Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
 14. [Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
 15. [Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
@@ -44,13 +46,13 @@ There is **no compiled binary**. The framework is the union of the conventions a
 
 ---
 
-## 2. Big picture (current state — v7.7)
+## 2. Big picture (current state — v7.8)
 
 ### 2.1 What the framework does, in one sentence
 
 It enforces that every feature passes through a defined lifecycle (Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs), records its state and timing in a machine-readable file, and is gated by automated checks at write-time, per-PR, and on a 72h schedule so that drift between code and documentation is caught fast.
 
-### 2.2 The four enforcement layers (v7.7)
+### 2.2 The four enforcement layers (v7.8)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -90,17 +92,34 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.3 The 4 mechanically unclosable Class B gaps (v7.7 closed 1)
+### 2.3 The 4 mechanically unclosable Class B gaps (v7.8 closed Gap 1 in advisory)
 
-The four layers above catch what a deterministic script can catch. Five gaps remain Class B (agent-attention, judgment, or external-dependency). They are documented in [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md):
+The four layers above catch what a deterministic script can catch. Five gaps remain Class B (agent-attention, judgment, or external-dependency) at v7.7. v7.8 closed Gap 1 (`cache_hits[]` writer-path) in advisory mode via Mechanism C — capture is automatic, but writer-path adoption is not yet enforced. v7.9 promotes that to enforced once 7+ days of session-ledger data calibrate the threshold (window opens 2026-05-11). The list is documented in [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md):
 
-1. `cache_hits[]` writer-path adoption — agent must remember to log hits (issue #140).
+1. ~~`cache_hits[]` writer-path adoption — agent must remember to log hits (issue #140).~~ **v7.8 advisory** via `PostToolUse:Read` hook (Mechanism C). v7.9 promotes to enforced. Pre-Mechanism-C features (`created_at < 2026-05-02`) are exempt from `CACHE_HITS_EMPTY_POST_V6`.
 2. `cu_v2` factor *correctness* — magnitudes are judgment-based.
 3. T1/T2/T3 tag *correctness* — preflight checks presence, not whether the tag is right.
 4. Tier 2.1 real-provider auth — physical device required.
 5. Tier 3.3 external replication — external operator required.
 
 If you are a developer reading this guide, your code rarely needs to reason about Class B gaps directly — they exist as documented exceptions to the "everything is mechanical" framing. But if you are *adding* a check code, ask: "is what I'm checking deterministic, or am I trying to mechanize a judgment?" The latter belongs in the Class B inventory, not in `check-state-schema.py`.
+
+### 2.4 The v7.8 bridge mechanisms (A–F)
+
+v7.8 (shipped 2026-05-04 across 9 PRs: #173 + #185–#189 + #193–#195) added six cooperating mechanisms that close silent-pass and inter-agent context-handoff gaps without yet promoting them to Class A. All ship advisory; v7.9 (measurement window opens 2026-05-11) promotes the proven ones to enforced.
+
+| Mech | Name | What it does | Where the data lands |
+|------|------|--------------|----------------------|
+| **A** | Coverage-asserting gates | Every write-time gate emits `{candidates, checked, skipped, skip_reasons}` per run; `GATE_COVERAGE_ZERO` advisory fires when a gate stays at `checked=0` for 7+ days | [`.claude/logs/gate-coverage.jsonl`](../../.claude/logs/gate-coverage.jsonl) |
+| **B** | Schema field-rename detection + dual-read | `created` ∪ `created_at` dual-read for migration window; canonical `framework_version` field on all features; `agent_manifest` + `_meta.deprecation_warnings` schema bridges populated but un-validated until v7.9 | [`scripts/migrate-state-v7-8-bridge.py`](../../scripts/migrate-state-v7-8-bridge.py) |
+| **C** | PostToolUse:Read attribution | Auto-captures Read events with active-feature tag; advisory `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` fires when session ledger has Reads but `state.json::cache_hits[]` is empty | [`.claude/logs/_session-<id>.events.jsonl`](../../.claude/logs/) + [`.claude/active-feature`](../../.claude/) lockfile |
+| **D** | Pre-commit hook header self-audit | Validates the hook header matches the implementation (catches drift between docstring and code) | [`make pre-commit-self-test`](../../Makefile) → `scripts/pre-commit-self-test.py` |
+| **E** | Custom git merge driver | Auto-resolves merge conflicts on append-only ledgers (`measurement-adoption-history.json`, `documentation-debt.json`) via union-dedup-by-key | [`scripts/merge-driver-dedup.py`](../../scripts/merge-driver-dedup.py); registered by `make install-hooks`; `.gitattributes` opts in |
+| **F** | Membrane status advisory | Single readout: active feature + recent gate firings + dispatch-blocker state — closes inter-agent context-handoff gap | [`make membrane-status`](../../Makefile) → `scripts/membrane-status.py`; surfaced via SessionStart hook |
+
+Full design: [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](../superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md). Live append-only journal: [`docs/case-studies/framework-v7-8-bridge-case-study.md`](../case-studies/framework-v7-8-bridge-case-study.md).
+
+**The v7.8 design principle:** every new mechanism ships with a coverage ledger (Mechanism A) so we can measure its effective coverage before promoting to enforced. v7.7's `CACHE_HITS_EMPTY_POST_V6` shipped at 0/46 effective coverage for 4 days because the gate read `created_at` while 43/46 features used the legacy `created` key — a silent-pass that Mechanism A would have caught immediately. v7.8's lesson is that we don't trust a gate until its coverage ledger says it's actually firing.
 
 ---
 
@@ -402,7 +421,7 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 
 ## 10. Integrity layer — write-time + per-PR + cycle-time + weekly
 
-### 10.1 Check codes (13 cycle-time + 1 advisory in v7.7)
+### 10.1 Check codes (12 write-time + 13 cycle-time + 3 advisory in v7.8)
 
 | Code | Layer | Script | What it checks |
 |---|---|---|---|
@@ -425,6 +444,10 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 | `STATE_NO_CASE_STUDY_LINK` (v7.7) | Write | `check-state-schema.py` | `current_phase=complete` without `case_study` link OR `parent_case_study` link OR `case_study_type` exempt tag (`no_case_study_required` / `pre_pm_workflow_backfill` / `roundup`). Mirrors the cycle-time `NO_CS_LINK` at write-time. |
 | `CASE_STUDY_MISSING_FIELDS` (v7.7) | Write | `check-case-study-preflight.py` | Forward-only ≥ 2026-04-28: case study missing one or more of `work_type`, `success_metrics`, `kill_criteria`, `dispatch_pattern` in frontmatter. |
 | **`TIER_TAG_LIKELY_INCORRECT` (v7.7 advisory)** | Cycle (advisory) | `validate-tier-tags.py` + `integrity-check.py` | Heuristic regex extracts T1-tagged quantitative claims and cross-references against ledger numbers. **Advisory severity — does not gate.** Kill criterion 2 fired at baseline (FP rate 100% n=1; root cause: regex pattern designed for `**T1**:` prefix style, live corpus uses `\| value \| T1 \|` table-column format). Ships advisory permanent. v7.8 redesign documented in `docs/case-studies/meta-analysis/tier-tag-checker-baseline.md`. |
+| `SCHEMA_DRIFT_LEGACY_CREATED` (2026-05-01 honesty-fixes patch, PR #169) | Write | `check-state-schema.py` | Legacy `created` key on state.json (canonical: `created_at`). Closes the silent-pass that left v7.7 `CACHE_HITS_EMPTY_POST_V6` at 0/46 effective coverage when 43/46 features used the legacy field name. |
+| `FRAMEWORK_VERSION_FORMAT` (2026-05-01 honesty-fixes patch, PR #169) | Write | `check-state-schema.py` | When `framework_version` is set, must match `(pre-)?v<major>.<minor>`. Presence-required deferred to v7.9 backfill. |
+| **`CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (v7.8 advisory, Mechanism C)** | Cycle (advisory) | `integrity-check.py` | Session ledger (`.claude/logs/_session-<id>.events.jsonl`) attributes Read events to a feature, but `state.json::cache_hits[]` is empty/absent. Mechanism C captures session events; state.json::cache_hits requires manual `scripts/log-cache-hit.py` until v7.9 promotes `observe-cache-hit.py` to dual-write. **Advisory only** in v7.8; v7.9 promotes to enforced. |
+| **`GATE_COVERAGE_ZERO` (v7.8 advisory, Mechanism A; v7.9-enforced)** | Cycle (advisory) | `integrity-check.py` (planned) | Write-time gate that fired with `checked=0` (every candidate skipped) for 7+ days. Catches the failure mode where a gate's predicate is too restrictive and silently passes everything. Coverage data lands in `.claude/logs/gate-coverage.jsonl` per Mechanism A. **Advisory in v7.8** (need 7+ days of stats to calibrate); v7.9 promotes to enforced once the threshold is empirically grounded. |
 
 ### 10.2 The 72h cycle
 
@@ -486,7 +509,7 @@ All dynamic values used inside `run:` blocks **MUST** be routed through the `env
 
 ---
 
-## 12. Compressed evolution timeline (v1.0 → v7.7)
+## 12. Compressed evolution timeline (v1.0 → v7.8)
 
 Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). This section is the compressed dev-only summary — what each version changed structurally.
 
@@ -508,7 +531,8 @@ Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). T
 | v7.1 | 2026-04-21 | 72h Integrity Cycle. First framework capability whose trigger is wall-clock elapsed (cron). 7 failure-mode detectors. | The `integrity-cycle.yml` workflow + `.claude/integrity/snapshots/` ledger. |
 | v7.5 | 2026-04-24 | Data Integrity Framework (8 cooperating defenses). Pre-commit schema gates, PR-resolution check, runtime smoke gates, contemporaneous logging, T1/T2/T3 data quality tiers, documentation-debt + measurement-adoption ledgers, 3 new Auditor Agent check codes. Triggered by Gemini 2.5 Pro audit. | 7 of Gemini's 9 Tier 1/2/3 items shipped fully or effectively, 2 partial/pilot, 1 deferred to v7.6. The pre-commit hook and the `make` targets (`integrity-check`, `measurement-adoption`, `documentation-debt`, `runtime-smoke`) date from here. |
 | v7.6 | 2026-04-25 | Mechanical Enforcement. 4 new write-time check codes (`PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` write-time, `CASE_STUDY_MISSING_TIER_TAGS`). Per-PR review bot with `pm-framework/pr-integrity` status check. Weekly framework-status cron. Append-only adoption history. 5 explicit Class B gaps documented in `unclosable-gaps.md`. | The point where mechanical enforcement reached steady-state. The Class B inventory crystallized here. |
-| v7.7 | 2026-04-27 | Validity Closure. 5 new check codes (4 gating + 1 advisory): `CACHE_HITS_EMPTY_POST_V6` (write — closes #140 writer-path), `CU_V2_INVALID` (write+cycle — schema validator), `STATE_NO_CASE_STUDY_LINK` (write — mirrors cycle-time `NO_CS_LINK`), `CASE_STUDY_MISSING_FIELDS` (write — forward-only ≥ 2026-04-28), `TIER_TAG_LIKELY_INCORRECT` (cycle advisory permanent — kill-2 fired at baseline). Cycle-time codes 12 → 13. Linkage 95.5% → 100% (gated). Doc-debt fields 4–61% → 95.7–100% (gated forward). Framework-health dashboard live at fitme-story `/control-room/framework`. Reduces unclosable Class B gaps from 5 to 4. | **The current state.** Writing code today: expect the pre-commit hook to gate cache_hits population, cu_v2 schema, linkage, and case-study fields. The cycle still accepts advisory findings. 4 Class B gaps remain (cu_v2 magnitude, T1/T2/T3 tag correctness, real-provider auth playbook, external replication) — documented in `unclosable-gaps.md`. |
+| v7.7 | 2026-04-27 | Validity Closure. 5 new check codes (4 gating + 1 advisory): `CACHE_HITS_EMPTY_POST_V6` (write — closes #140 writer-path), `CU_V2_INVALID` (write+cycle — schema validator), `STATE_NO_CASE_STUDY_LINK` (write — mirrors cycle-time `NO_CS_LINK`), `CASE_STUDY_MISSING_FIELDS` (write — forward-only ≥ 2026-04-28), `TIER_TAG_LIKELY_INCORRECT` (cycle advisory permanent — kill-2 fired at baseline). Cycle-time codes 12 → 13. Linkage 95.5% → 100% (gated). Doc-debt fields 4–61% → 95.7–100% (gated forward). Framework-health dashboard live at fitme-story `/control-room/framework`. Reduces unclosable Class B gaps from 5 to 4. | The first version to gate the full closure-time chain (linkage + case-study fields + cu_v2 schema). The 2026-05-01 honesty-fixes patch (PR #169) revealed v7.7's `CACHE_HITS_EMPTY_POST_V6` had 0/46 effective coverage because the gate read `created_at` while 43/46 features used legacy `created` — surfaced the silent-pass class of failure that v7.8 set out to close. |
+| v7.8 | 2026-05-04 | Bridge to v7.9 — silent-pass prevention + inter-agent awareness. Six cooperating mechanisms (A–F): coverage-asserting gates (Mech A → `gate-coverage.jsonl`), schema field-rename detection + dual-read (Mech B → `migrate-state-v7-8-bridge.py`), PostToolUse:Read attribution (Mech C → `_session-<id>.events.jsonl` + `.claude/active-feature` lockfile; closes Gap 1 in advisory), pre-commit hook header self-audit (Mech D → `pre-commit-self-test.py`), custom git merge driver for append-only ledgers (Mech E → `merge-driver-dedup.py`), membrane status advisory (Mech F → `membrane-status.py`). 2 new write-time gates (`SCHEMA_DRIFT_LEGACY_CREATED`, `FRAMEWORK_VERSION_FORMAT`). 2 new cycle-time advisories (`CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE`, `GATE_COVERAGE_ZERO`). Schema bridges (`agent_manifest`, `_meta.deprecation_warnings`, `path-reducers.json`, `agent-leases.json`) ship populated but un-validated. Shipped via 9 PRs: #173 + #185–#189 + #193–#195. | **The current state.** Writing code today: expect the same v7.7 write-time gates to fire on every commit, plus 2 new gates (`SCHEMA_DRIFT_LEGACY_CREATED`, `FRAMEWORK_VERSION_FORMAT`). On every Read tool call, `PostToolUse:Read` hook captures the event into the session ledger via `scripts/observe-cache-hit.py` (Mechanism C). On every commit, every write-time gate emits coverage telemetry into `.claude/logs/gate-coverage.jsonl` (Mechanism A). v7.9 measurement window opens 2026-05-11; promotes the proven mechanisms to enforced once 7+ days of session-ledger data calibrate the threshold. The full event-and-trigger catalog: [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md). |
 
 ### 12.1 Version-bump policy
 
@@ -707,6 +731,7 @@ All assertions should pass. If you added a new check code (per § 14), the count
 
 ### Canonical docs
 - [`CLAUDE.md`](../../CLAUDE.md) — project rules (always loaded; fastest reference)
+- [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) — companion to this guide; the event/log/gate catalog (artifact stack, trigger stack, gate stack, phase-by-phase event matrix, mermaid flow diagrams, worked example)
 - [`docs/skills/architecture.md`](../skills/architecture.md) — skill-by-skill anatomy
 - [`docs/skills/evolution.md`](../skills/evolution.md) — full version-by-version history
 - [`docs/skills/pm-workflow.md`](../skills/pm-workflow.md) — user-facing PM workflow
@@ -715,7 +740,9 @@ All assertions should pass. If you added a new check code (per § 14), the count
 ### Case studies (most relevant for this guide)
 - [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](../case-studies/data-integrity-framework-v7.5-case-study.md) — v7.5 narrative
 - [`docs/case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md) — v7.6 narrative + comprehensive CU + workload analysis
-- [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md) — 5 mechanically unclosable Class B gaps
+- [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md) — v7.7 narrative
+- [`docs/case-studies/framework-v7-8-bridge-case-study.md`](../case-studies/framework-v7-8-bridge-case-study.md) — v7.8 live append-only journal (silent-pass prevention + inter-agent awareness)
+- [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md) — 5 mechanically unclosable Class B gaps (Gap 1 closed in v7.8 advisory)
 - [`docs/case-studies/normalization-framework.md`](../case-studies/normalization-framework.md) — CU formula reference
 - [`docs/case-studies/data-quality-tiers.md`](../case-studies/data-quality-tiers.md) — T1/T2/T3 convention
 
@@ -724,8 +751,11 @@ All assertions should pass. If you added a new check code (per § 14), the count
 - [`trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md`](../../trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md) — remediation tracker
 - [`docs/master-plan/codex-ssd-audit-2026-04-19.md`](../master-plan/codex-ssd-audit-2026-04-19.md) — Codex SSD audit (pre-v7.5 context)
 
-### Implementation plans
+### Implementation plans + specs
 - [`docs/superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md`](../superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md) — v7.6 plan agent output
+- [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](../superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md) — v7.7 spec
+- [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](../superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md) — v7.7 plan
+- [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](../superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md) — v7.8 + v7.9 bridge design
 
 ### Scripts (alphabetical)
 - [`scripts/append-feature-log.py`](../../scripts/append-feature-log.py) — contemporaneous log writer

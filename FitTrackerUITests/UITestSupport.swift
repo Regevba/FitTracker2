@@ -12,6 +12,8 @@ enum LaunchMode {
     case authenticated      // FITTRACKER_REVIEW_AUTH=authenticated → app skips auth, opens to home
     case settingsReview     // FITTRACKER_REVIEW_AUTH=settings → app opens to settings tab
     case forcedSignIn       // Skip auto-login + force onboarding so the embedded auth step is deterministic
+    case biometricOffer     // FITTRACKER_REVIEW_BIOMETRIC_OFFER=1 → mounts BiometricActivationSheet on first frame (auth-polish-v2 D3)
+    case biometricLock      // FITTRACKER_REVIEW_BIOMETRIC_LOCK=1 → routes rootView into BiometricUnlockView (auth-polish-v2 D3)
     case standard           // No env overrides — app launches as a real first-time user would
 }
 
@@ -44,6 +46,20 @@ enum UITestSupport {
             return [
                 "FITTRACKER_SKIP_AUTO_LOGIN": "1",
                 "FITTRACKER_FORCE_ONBOARDING": "1",
+            ]
+        case .biometricOffer:
+            // Bypass onboarding so the rootView's app branch renders, then
+            // FITTRACKER_REVIEW_BIOMETRIC_OFFER mounts the activation sheet
+            // on first frame.
+            return [
+                "FITTRACKER_REVIEW_AUTH": "authenticated",
+                "FITTRACKER_REVIEW_BIOMETRIC_OFFER": "1",
+            ]
+        case .biometricLock:
+            // Force the rootView's BiometricUnlockView branch unconditionally.
+            return [
+                "FITTRACKER_REVIEW_AUTH": "authenticated",
+                "FITTRACKER_REVIEW_BIOMETRIC_LOCK": "1",
             ]
         case .standard:
             return [:]

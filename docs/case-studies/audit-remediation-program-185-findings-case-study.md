@@ -8,9 +8,9 @@
 | Work Type | Chore |
 | Dispatch Pattern | parallel |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
-**Kill Criteria:** TODO: review <!-- TODO: review -->
+**Kill Criteria:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
 
 **Subtitle:** The full-arc synthesis of the v7.0 meta-analysis audit and the remediation program that followed it — from "185 findings surfaced in a single 4-layer sweep" to "183 / 185 closed, 2 deferred on genuine external blockers" across 6 coordinated sprints.

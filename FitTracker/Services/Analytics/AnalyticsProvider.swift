@@ -143,6 +143,28 @@ enum AnalyticsEvent {
     /// Session restore result on app launch
     static let sessionRestoreResult         = "session_restore_result"
 
+    // ── Auth Password Reset Events (auth-polish-v2 A5) ─────
+    /// User taps "Send reset link" on `forgot_password` and the request succeeds
+    static let authPasswordResetRequested     = "auth_password_reset_requested"
+    /// User updates their password successfully on `set_new_password` (mark as conversion in GA4)
+    static let authPasswordResetCompleted     = "auth_password_reset_completed"
+    /// User taps Resend on `email_sent_confirmation` after cooldown elapsed
+    static let authPasswordResetResend        = "auth_password_reset_resend"
+    /// User taps Resend on `email_sent_confirmation` while cooldown still active
+    static let authPasswordResetResendBlocked = "auth_password_reset_resend_blocked"
+
+    // ── Auth Biometric Events (auth-polish-v2 B4) ──────────
+    /// BiometricActivationSheet appeared on first sign-in
+    static let authBiometricActivationOffered  = "auth_biometric_activation_offered"
+    /// User completed the biometric activation scan (mark as conversion in GA4)
+    static let authBiometricActivated          = "auth_biometric_activated"
+    /// User tapped "Not now" or cancelled the activation scan
+    static let authBiometricActivationDeclined = "auth_biometric_activation_declined"
+    /// BiometricUnlockView completed an unlock scan successfully
+    static let authBiometricUnlockCompleted    = "auth_biometric_unlock_completed"
+    /// BiometricUnlockView's unlock scan failed (cancel/biometry/system/passcode)
+    static let authBiometricUnlockFailed       = "auth_biometric_unlock_failed"
+
     // ── Settings Events (custom) ────────────────────────────
 
     /// User changes a setting
@@ -240,18 +262,31 @@ enum AnalyticsEvent {
     static let importCompleted          = "import_completed"
     /// Import flow failed at any stage
     static let importFailed             = "import_failed"
+    /// Parser threw or returned an empty result (granular failure within importFailed)
+    static let importParseFailed        = "import_parse_failed"
+    /// User opened an imported plan from the Imported Plans list (within or
+    /// after the 7d adoption window)
+    static let importPlanOpened         = "import_plan_opened"
+    /// User flipped an imported plan to isActive=true (the primary
+    /// conversion signal — supersedes importCompleted as the conversion event)
+    static let importPlanActivated      = "import_plan_activated"
 
-    // MARK: - Notification Events
-    static let notificationPermissionRequested = "notification_permission_requested"
-    static let notificationPermissionGranted = "notification_permission_granted"
-    static let notificationPermissionDenied = "notification_permission_denied"
-    static let notificationScheduled = "notification_scheduled"
-    static let notificationDelivered = "notification_delivered"
-    static let notificationTapped = "notification_tapped"
-    static let notificationDismissed = "notification_dismissed"
-    static let notificationDisabled = "notification_disabled"
-    static let notificationPrimingShown = "notification_priming_shown"
-    static let notificationPrimingSkipped = "notification_priming_skipped"
+    // MARK: - Notification Platform Events (push-notifications-v2)
+    // Removed 2026-05-07 (push-notifications-v2 T11): notificationScheduled,
+    // notificationDelivered, notificationTapped, notificationDismissed,
+    // notificationDisabled — duplicates of the live reminder_* events. The
+    // push-notifications platform layer owns priming + permission + deep-link;
+    // smart-reminders owns scheduling lifecycle.
+    static let notificationPermissionRequested      = "notification_permission_requested"
+    static let notificationPermissionGranted        = "notification_permission_granted"
+    static let notificationPermissionDenied         = "notification_permission_denied"
+    static let notificationPrimingShown             = "notification_priming_shown"
+    static let notificationPrimingSkipped           = "notification_priming_skipped"
+    /// Fired when SettingsDeepLinkBanner appears at top of Home post-denial (one-time).
+    static let notificationSettingsDeeplinkShown    = "notification_settings_deeplink_shown"
+    /// Fired by DeepLinkRouter on every URL routing attempt.
+    /// Carries: deepLinkSource (notification/url/programmatic), destination, urlPattern, outcome.
+    static let deepLinkRouted                       = "deep_link_routed"
 
     // ── Smart Reminder Events (screen-prefixed: reminder_) ─
     /// A smart reminder notification was scheduled by ReminderScheduler
@@ -336,6 +371,13 @@ enum AnalyticsParam {
     static let metricType        = "metric_type"      // weight/hrv/rhr/sleep/body_fat
     static let source            = "source"           // manual/healthkit
 
+    // Notification Platform parameters (push-notifications-v2)
+    static let triggerContext    = "trigger_context"  // post_workout/settings — for notification_priming_shown
+    static let deepLinkSource    = "deep_link_source" // notification/url/programmatic — for deep_link_routed
+    static let destination       = "destination"      // tab/sheet/auth/settings — routed action variant
+    static let urlPattern        = "url_pattern"      // matched URL pattern, e.g. "fitme://nav/training"
+    static let outcome           = "outcome"          // succeeded/failed_no_pattern_match/failed_navigation
+
     // Engagement parameters
     static let statType          = "stat_type"
     static let timePeriod        = "time_period"      // week/month/quarter/year/all
@@ -411,6 +453,17 @@ enum AnalyticsParam {
     static let result            = "result"             // success/expired/failed/timeout — session restore
     static let restoreTimeMs     = "restore_time_ms"    // int — session restore duration
 
+    // Auth password reset parameters (auth-polish-v2 A5)
+    static let emailProvided           = "email_provided"             // bool — non-empty email at submit
+    static let timeToCompleteSeconds   = "time_to_complete_seconds"   // int 0..86400 — request → completed delta
+    static let cooldownRemainingSeconds = "cooldown_remaining_seconds" // int 0..60 — seconds left when blocked
+    static let attemptNumber           = "attempt_number"             // int 2..10 — resend attempt index
+
+    // Auth biometric parameters (auth-polish-v2 B4)
+    static let biometricType    = "biometric_type"  // string — "face_id" | "touch_id" | "optic_id" | "none"
+    static let provider         = "provider"        // string — "apple" | "google" | "facebook" | "passkey" | "email"
+    static let durationMs       = "duration_ms"     // int 0..30000 — unlock latency (ms)
+
     // Profile parameters
     static let field             = "field"
     static let oldValue          = "old_value"
@@ -454,7 +507,18 @@ enum AnalyticsScreen {
     static let onboardingSuccess     = "onboarding_success"
     static let deleteAccount     = "delete_account"
     static let exportData        = "export_data"
+    static let importedPlansList = "imported_plans_list"
+    static let importedPlanDetail = "imported_plan_detail"
     static let bodyCompDetail    = "body_comp_detail"
+
+    // Auth password reset screens (auth-polish-v2 A5)
+    static let forgotPassword         = "forgot_password"
+    static let emailSentConfirmation  = "email_sent_confirmation"
+    static let setNewPassword         = "set_new_password"
+
+    // Auth biometric screens (auth-polish-v2 B4)
+    static let biometricActivationSheet  = "biometric_activation_sheet"
+    static let biometricUnlock           = "biometric_unlock"
 }
 
 // MARK: - User Property Constants
@@ -484,5 +548,7 @@ enum AnalyticsConversion {
         AnalyticsEvent.accountDeleteCompleted,
         AnalyticsEvent.homeActionCompleted,
         AnalyticsEvent.trainingSessionCompleted,
+        AnalyticsEvent.authPasswordResetCompleted,
+        AnalyticsEvent.authBiometricActivated,
     ]
 }

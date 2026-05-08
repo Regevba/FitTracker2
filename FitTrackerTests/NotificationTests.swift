@@ -1,3 +1,12 @@
+// HISTORICAL — superseded on 2026-05-07 per push-notifications-v2 (FIT-23).
+// These tests target the v1 stack (NotificationPreferencesStore,
+// NotificationContentBuilder, DeepLinkHandler, NotificationService) which
+// is no longer in the build. v2 tests live in NotificationGatewayTests.swift,
+// DeepLinkRouterTests.swift, NotificationConsumerRegistryTests.swift, and
+// ReadinessAlertTriggerTests.swift. This file is excluded from the test
+// target Sources build phase (T15 pbxproj edit) but kept on disk so the v1
+// → v2 test diff is reviewable in git.
+
 import XCTest
 @testable import FitTracker
 

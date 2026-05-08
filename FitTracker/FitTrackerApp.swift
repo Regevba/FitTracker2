@@ -36,6 +36,17 @@ private var isForcedOnboardingModeEnabled: Bool {
     ProcessInfo.processInfo.environment["FITTRACKER_FORCE_ONBOARDING"] == "1"
 }
 
+// auth-polish-v2 D3 — UI test fixtures that mount the new auth screens
+// directly so XCUITest can drive them without needing a real sign-in
+// round-trip. Only consumed by the rootView + onAppear branches below.
+private var isBiometricActivationReviewModeEnabled: Bool {
+    ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_BIOMETRIC_OFFER"] == "1"
+}
+
+private var isBiometricLockReviewModeEnabled: Bool {
+    ProcessInfo.processInfo.environment["FITTRACKER_REVIEW_BIOMETRIC_LOCK"] == "1"
+}
+
 @main
 struct FitTrackerApp: App {
 
@@ -52,8 +63,21 @@ struct FitTrackerApp: App {
     @StateObject private var analytics     = AnalyticsService.makeDefault()
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
+    @State private var showBiometricActivation = false
+    // push-notifications-v2 (T6): show priming sheet on first-workout-completed
+    // (via NotificationCenter post from FirstWorkoutTrigger.mark()).
+    @State private var showNotificationPriming = false
+    @ObservedObject private var notificationGateway = NotificationGateway.shared
     // Strong reference; iOS only retains the delegate weakly via the center.
     private let reminderNotificationDelegate = ReminderNotificationDelegate()
+    // Behavioural learning sub-feature (PR 1 ships data-collection only).
+    // Store is @MainActor — App struct itself is @MainActor in SwiftUI 6, so
+    // the init runs on the right actor. Cache + client are non-isolated.
+    @MainActor private let behavioralLearningStore = BehavioralLearningStore()
+    private let cohortPriorCache = CohortPriorCache()
+    // `let` (not `lazy var`) so the `.task` closure can capture by value.
+    // `makeAIEngineBaseURL()` is a pure function — safe to evaluate eagerly.
+    private let cohortPriorClient = CohortPriorClient(baseURL: makeAIEngineBaseURL())
     @StateObject private var aiOrchestrator: AIOrchestrator = {
         let client: any AIEngineClientProtocol = AIEngineClient(baseURL: makeAIEngineBaseURL())
         let foundationModel: any FoundationModelProtocol = {
@@ -102,11 +126,53 @@ struct FitTrackerApp: App {
                 .preferredColorScheme(settings.appearance.colorScheme)
                 .task {
                     applyReviewFixturesIfNeeded()
+                    if isBiometricActivationReviewModeEnabled {
+                        // D3 fixture — surface BiometricActivationSheet on
+                        // first frame so UI tests can assert + screenshot.
+                        showBiometricActivation = true
+                    }
                     // Inject analytics into smart-reminder hooks once the
                     // @StateObject has resolved. Both stay set for the
                     // lifetime of the app.
                     reminderNotificationDelegate.setAnalytics(analytics)
                     ReminderScheduler.shared.analytics = analytics
+
+                    // smart-reminders-behavioral-learning Task 10:
+                    // wire the behavioral-learning store + cohort client
+                    // into the delegate. Then fire-and-forget cohort prior
+                    // fetch if the on-device cache is stale or cold.
+                    reminderNotificationDelegate.setStore(behavioralLearningStore)
+                    reminderNotificationDelegate.setCohortClient(cohortPriorClient)
+
+                    // push-notifications-v2 (T6): platform init.
+                    // - Inject analytics into DeepLinkRouter
+                    // - Set the auth handler so fitme://auth/... URLs forward to SignInService
+                    // - Register the readinessAlert consumer
+                    // - Refresh authorization status (in case user toggled iOS Settings while app was backgrounded)
+                    DeepLinkRouter.shared.analytics = analytics
+                    DeepLinkRouter.shared.authHandler = { [signIn] url in
+                        await signIn.handleIncomingURL(url)
+                    }
+                    NotificationConsumerRegistry.shared.register(ReadinessAlertObserver.consumerRegistration)
+                    ReadinessAlertObserver.shared.analytics = analytics
+                    Task { await notificationGateway.refreshAuthorizationStatus() }
+                    if cohortPriorCache.isStale {
+                        let client = cohortPriorClient
+                        let cache = cohortPriorCache
+                        Task {
+                            do {
+                                let response = try await client.fetchPriors()
+                                cache.persist(response)
+                            } catch {
+                                // Silent fallback — the resolver (PR 2) uses
+                                // static defaults when cache is empty. The
+                                // next app launch retries.
+                                #if DEBUG
+                                print("[smart-reminders] cohort prior fetch failed: \(error)")
+                                #endif
+                            }
+                        }
+                    }
                 }
                 .onChange(of: signIn.activeSession) { _, session in
                     if session != nil {
@@ -122,6 +188,12 @@ struct FitTrackerApp: App {
                             let jwt = signIn.activeSession?.backendAccessToken
                             await aiOrchestrator.processAll(jwt: jwt, snapshot: buildSnapshot())
                         }
+                        // auth-polish-v2 B3 — first sign-in on this install gets
+                        // the BiometricActivationSheet. Predicate gates on
+                        // device support + the two AppSettings flags.
+                        if biometricAuth.shouldOfferActivation(settings: settings) {
+                            showBiometricActivation = true
+                        }
                     } else {
                         // Session cleared (sign-out or lock) — wipe all in-memory sensitive state
                         Task {
@@ -134,6 +206,64 @@ struct FitTrackerApp: App {
                 .onChange(of: biometricAuth.isAuthenticated) { _, unlocked in
                     // Biometric lock screen succeeded — resume the stored session
                     if unlocked { signIn.resumeStoredSession() }
+                }
+                .onOpenURL { url in
+                    // push-notifications-v2 (T6): all fitme:// URLs route through
+                    // DeepLinkRouter — single entry point for the platform layer.
+                    // Auth URLs (fitme://auth/reset-password?...) are forwarded to
+                    // SignInService.handleIncomingURL via DeepLinkRouter.authHandler
+                    // (set in `.task` above), which preserves the auth-polish-v2 A1+A4
+                    // flow. Other URLs (nav/action/settings) emit a DeepLinkAction
+                    // observable by RootTabView + sheet presenters.
+                    DeepLinkRouter.shared.handle(url: url, source: .url)
+                }
+                .onReceive(NotificationCenter.default.publisher(for: .fitMeFirstWorkoutCompleted)) { _ in
+                    // push-notifications-v2 (T6): present priming sheet ONCE on
+                    // first-workout-completion, only when not yet authorized.
+                    // FirstWorkoutTrigger.mark() guarantees this fires exactly once.
+                    if !notificationGateway.isAuthorized {
+                        showNotificationPriming = true
+                    }
+                }
+                .fullScreenCover(isPresented: Binding(
+                    get: { signIn.pendingPasswordResetURL != nil },
+                    set: { if !$0 { signIn.pendingPasswordResetURL = nil } }
+                )) {
+                    // auth-polish-v2 A4 — present at the app entry so the cover
+                    // works from any auth state (onboarding, lock, app).
+                    SetNewPasswordView {
+                        signIn.pendingPasswordResetURL = nil
+                    }
+                    .environmentObject(signIn)
+                    .environmentObject(analytics)
+                }
+                .sheet(isPresented: $showNotificationPriming) {
+                    // push-notifications-v2 (T6): permission priming sheet.
+                    // Triggered by .fitMeFirstWorkoutCompleted; secondary entry
+                    // point is Settings → Notifications row (T7).
+                    NotificationPermissionPrimingView(
+                        triggerContext: .postWorkout,
+                        analytics: analytics
+                    )
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+                }
+                .sheet(isPresented: $showBiometricActivation) {
+                    // auth-polish-v2 B3 — one-time post-sign-in offer. Predicate
+                    // gating in `onChange(of: signIn.activeSession)` ensures
+                    // this only triggers when shouldOfferActivation is true.
+                    BiometricActivationSheet(
+                        onEnable: {
+                            await biometricAuth.requestActivation(settings: settings)
+                        },
+                        onDecline: {
+                            settings.hasAskedForBiometricActivation = true
+                            showBiometricActivation = false
+                        }
+                    )
+                    .environmentObject(biometricAuth)
+                    .environmentObject(signIn)
+                    .environmentObject(analytics)
                 }
                 .onChange(of: scenePhase) { _, phase in
                     guard !isScreenReviewModeEnabled else { return }
@@ -302,10 +432,16 @@ struct FitTrackerApp: App {
             .environmentObject(signIn)
             .environmentObject(analytics)
             .environmentObject(dataStore)
-        } else if signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen {
-            // Session exists but was locked for reopen — require biometric to resume
-            LockScreenView()
+        } else if (signIn.hasStoredSession && settings.requireBiometricUnlockOnReopen) || isBiometricLockReviewModeEnabled {
+            // Session exists but was locked for reopen — require biometric to resume.
+            // auth-polish-v2 B3 — replaces inline LockScreenView with the
+            // foundations-aligned BiometricUnlockView per FR-7..8 + ux-spec §5.5.
+            // D3 fixture — FITTRACKER_REVIEW_BIOMETRIC_LOCK=1 surfaces this view
+            // unconditionally so UI tests can assert + screenshot it.
+            BiometricUnlockView()
                 .environmentObject(biometricAuth)
+                .environmentObject(signIn)
+                .environmentObject(analytics)
         } else {
             // Onboarding complete — show the app (user may be authenticated or guest)
             if analytics.consent.gdprConsent == .pending {

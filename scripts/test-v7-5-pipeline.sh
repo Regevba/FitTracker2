@@ -43,7 +43,7 @@ else
   pass "legacy phase key correctly rejected"
 fi
 cat > "$FIXTURE_DIR/canonical-phase.json" <<'EOF'
-{"feature":"test-canonical","current_phase":"complete","status":"complete"}
+{"feature":"test-canonical","current_phase":"complete","status":"complete","case_study_type":"no_case_study_required","case_study_exempt_reason":"synthetic test fixture for SCHEMA_DRIFT regression"}
 EOF
 if python3 scripts/check-state-schema.py "$FIXTURE_DIR/canonical-phase.json" > /dev/null 2>&1; then
   pass "canonical current_phase key correctly accepted"
@@ -260,6 +260,73 @@ else
   fail "write-time CASE_STUDY_MISSING_TIER_TAGS did NOT fire; output: $out"
 fi
 rm -f "$fake_cs"
+
+# -- Defense 13 (v7.8 framework-v7-8-branch-isolation T27 — advisory):
+# ISOLATION_OPT_OUT_REASON_MISSING fires on opt_out=true + empty reason
+echo ""
+echo "Defense 13: ISOLATION_OPT_OUT_REASON_MISSING fires on bad fixture"
+cat > "$FIXTURE_DIR/opt-out-no-reason.json" <<'EOF'
+{"feature":"test","current_phase":"research","work_type":"feature","isolation_opt_out":true,"isolation_opt_out_reason":"","case_study_type":"no_case_study_required"}
+EOF
+out=$(python3 scripts/check-state-schema.py "$FIXTURE_DIR/opt-out-no-reason.json" 2>&1 || true)
+if echo "$out" | grep -q "isolation_opt_out=true requires"; then
+  pass "ISOLATION_OPT_OUT_REASON_MISSING fired correctly"
+else
+  fail "ISOLATION_OPT_OUT_REASON_MISSING did NOT fire; output: $out"
+fi
+rm -f "$FIXTURE_DIR/opt-out-no-reason.json"
+
+# -- Defense 14: opt_out=true + non-empty reason passes
+echo ""
+echo "Defense 14: ISOLATION_OPT_OUT_REASON_MISSING accepts populated reason"
+cat > "$FIXTURE_DIR/opt-out-with-reason.json" <<'EOF'
+{"feature":"test","current_phase":"research","work_type":"feature","isolation_opt_out":true,"isolation_opt_out_reason":"emergency hotfix in main per incident","case_study_type":"no_case_study_required"}
+EOF
+if python3 scripts/check-state-schema.py "$FIXTURE_DIR/opt-out-with-reason.json" > /dev/null 2>&1; then
+  pass "ISOLATION_OPT_OUT_REASON_MISSING correctly accepts populated opt-out"
+else
+  fail "ISOLATION_OPT_OUT_REASON_MISSING incorrectly blocked valid opt-out"
+fi
+rm -f "$FIXTURE_DIR/opt-out-with-reason.json"
+
+# -- Defense 15: BRANCH_ISOLATION_VIOLATION classifier — _is_infra_commit
+echo ""
+echo "Defense 15: _is_infra_commit() classifier correctness"
+out=$(python3 -c "
+import sys, importlib.util
+spec = importlib.util.spec_from_file_location('css', 'scripts/check-state-schema.py')
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+results = []
+results.append(m._is_infra_commit(['CLAUDE.md']))
+results.append(m._is_infra_commit(['scripts/foo.py']))
+results.append(m._is_infra_commit(['.githooks/pre-commit']))
+results.append(not m._is_infra_commit(['FitTracker/Views/Home.swift']))
+results.append(not m._is_infra_commit(['docs/case-studies/foo.md']))
+print('PASS' if all(results) else 'FAIL: ' + str(results))
+" 2>&1)
+if echo "$out" | grep -q "^PASS"; then
+  pass "_is_infra_commit() classifier correctness"
+else
+  fail "classifier wrong: $out"
+fi
+
+# -- Defense 16: FEATURE_CLOSURE_COMPLETENESS skips non-complete transitions
+echo ""
+echo "Defense 16: FEATURE_CLOSURE_COMPLETENESS skips non-complete state"
+out=$(python3 -c "
+import importlib.util, json
+from pathlib import Path
+spec = importlib.util.spec_from_file_location('css', 'scripts/check-state-schema.py')
+m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+state = {'current_phase': 'implementation', 'branch': 'feature/foo'}
+findings = m.check_feature_closure_completeness(state, Path('/tmp/fake.json'), enforce_transition=True)
+print('PASS' if findings == [] else 'FAIL: ' + str(findings))
+" 2>&1)
+if echo "$out" | grep -q "^PASS"; then
+  pass "FEATURE_CLOSURE_COMPLETENESS skips non-complete transitions"
+else
+  fail "FEATURE_CLOSURE_COMPLETENESS misfired on non-complete: $out"
+fi
 
 # -- Summary ---------------------------------------------------------------
 echo ""

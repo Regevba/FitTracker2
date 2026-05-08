@@ -1,11 +1,18 @@
 # PM Hub Evolution — Architecture & Skills Documentation
 
-> **Date:** 2026-04-27 (v7.7 update)
-> **Status:** v7.7 — **Validity Closure**: 5 new check codes (4 gating: `CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`; 1 advisory permanent: `TIER_TAG_LIKELY_INCORRECT` — kill criterion 2 fired at baseline FP rate 100% n=1). Cycle-time codes 12 → 13. 25 gates + 1 advisory total. Linkage 95.5% → 100% (gated). Doc-debt 4–61% → 95.7–100% (gated forward). Framework-health dashboard live at `/control-room/framework`. Reduces unclosable gaps from 5 to 4 (cache_hits writer-path closed by M1). Extends v7.6 (Mechanical Enforcement), v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), v7.0 (HADF).
+> **Date:** 2026-05-07 (v7.8.1 update)
+> **Status:** v7.8.1 — **Branch Isolation + Feature-Closure Completeness (advisory mode)**, shipped 2026-05-07 via PR #244 (squash `6d1a53f`) + #245 (Phase 8 closure). Extends v7.8 with 3 new write-time gates + 3 new cycle-time advisories + auto-isolation flow + 2 new make targets + `/ux + /design pre-merge-review` sub-step 6f. **First feature shipped via the v7.8 protocol** — 9 phase transitions in one session, 28/28 implementation tasks, 130/130 unit tests, 19/19 pipeline assertions. v7.9 promotion candidate decision: **2026-05-21** (T+14d). See `docs/case-studies/framework-v7-8-branch-isolation-case-study.md`.
+>
+> **Date:** 2026-05-04 (v7.8 update)
+> **Status:** v7.8 — **Bridge (advisory mode)**, fully shipped 2026-05-02 → 2026-05-04 across 9 PRs (#173 + #185–189 + #193–195). Six new mechanisms A–F all in advisory mode; v7.9 promotes to enforced after the +7d measurement window (opens **2026-05-11**). **Mechanism A**: coverage-asserting gates → `.claude/logs/gate-coverage.jsonl`. **Mechanism B**: schema field-rename detection + dual-read for `created` ∪ `created_at`. **Mechanism C**: `PostToolUse:Read` hook auto-captures cache observations + new advisory `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE`. **Mechanism D**: pre-commit hook header self-audit. **Mechanism E**: custom git merge driver auto-resolving append-only-ledger conflicts via union-dedup-by-key. **Mechanism F**: membrane-status advisory readout. Schema bridges populated on 47/47 features. Cold-start entrypoint + honesty ledger FT2-FH-001 published.
+> **2026-04-27 status (v7.7):** Validity Closure — 5 new check codes (4 gating: `CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`; 1 advisory permanent: `TIER_TAG_LIKELY_INCORRECT`). 25 gates + 1 advisory total. Linkage 95.5% → 100% (gated). v7.7 silent-pass on `CACHE_HITS_EMPTY_POST_V6` (gate had 0% effective coverage because 43/46 state.json used legacy `created` key) was caught 2026-04-30 + closed 2026-05-01 via PR #169 (43 files migrated `created` → `created_at`). Extends v7.6 (Mechanical Enforcement), v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), v7.0 (HADF).
 > **2026-04-23 note:** Gemini follow-up hardening corrected the workflow's regression detection path, tightened trend-readiness rules to count only scheduled cycle snapshots, and kept Tier 2.1/Tier 2.2/Tier 3.2 framed as groundwork or pilot work rather than fully complete.
 > **2026-04-24 note:** v7.5 shipped. 7 of Gemini's 9 Tier 1/2/3 items fully or effectively shipped; 2 partial/pilot with measured known deltas; 1 external-blocked. Integrity baseline at ship: 0 findings across 40 features + 46 case studies. See `docs/case-studies/data-integrity-framework-v7.5-case-study.md` for the full narrative.
 > **2026-04-25 note:** v7.6 shipped. 7 Class B → Class A promotions (4 write-time pre-commit, 1 per-PR status check, 1 weekly regression watcher, 1 append-only history). 5 Class B gaps remain documented in [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md). See `docs/case-studies/mechanical-enforcement-v7-6-case-study.md` for full Dev-style narrative including comprehensive CU + workload analysis (with explicit outlier caveat for retroactive v6.0 dogfooding).
-> **2026-04-27 note:** v7.7 shipped. 5 new check codes (4 gating + 1 advisory permanent). cache_hits writer-path gap closed (Class B → Class A via `CACHE_HITS_EMPTY_POST_V6`). 4 Class B gaps remain. See `docs/case-studies/framework-v7-7-validity-closure-case-study.md` for full narrative.
+> **2026-04-27 note:** v7.7 shipped. 5 new check codes (4 gating + 1 advisory permanent). cache_hits writer-path gap closed in spec via `CACHE_HITS_EMPTY_POST_V6`. 4 Class B gaps remain. See `docs/case-studies/framework-v7-7-validity-closure-case-study.md`.
+> **2026-05-01 note:** v7.7 silent-pass closed via PR #169 (`framework-honesty-fixes`). 43/46 state.json migrated `created` → `created_at`; gate now actually fires. See `docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md`.
+> **2026-05-02 → 2026-05-04 note:** v7.8 Bridge fully shipped across 9 PRs (#173 + #185–189 + #193–195). Six advisory mechanisms A–F. Schema bridges populated 47/47. v7.9 measurement window opens 2026-05-11. See `docs/case-studies/framework-v7-8-bridge-case-study.md` for the live append-only journal.
+> **2026-05-07 note:** v7.8.1 shipped. 3 new write-time gates (`BRANCH_ISOLATION_VIOLATION` Mode B/C, `FEATURE_CLOSURE_COMPLETENESS` 7-field + Q7 + Q6, `ISOLATION_OPT_OUT_REASON_MISSING`) + 3 new cycle-time advisories. First feature to ship via the v7.8 protocol (Mechanism C session attribution + isolated worktree from Phase 1 + Tier 2.2 logging on every phase transition + Mechanism A coverage telemetry verification on its own gates). 14 commits across 9 phase transitions in one session. v7.9 promotion candidate decision 2026-05-21. See `docs/case-studies/framework-v7-8-branch-isolation-case-study.md`.
 > **Supersedes:** Original serial pipeline from `/pm-workflow` v1.0
 
 ---
@@ -1051,6 +1058,70 @@ Each snapshot records (1) feature summaries — phase, case-study link, task com
 The integrity cycle is a **smoke detector**, not a fire-prevention system. It trades off false negatives (detects drift only 72h after it happens) for low false-positive rate (bypass markers keep the signal-to-noise ratio manageable).
 
 **Why it earned a version bump:** v7.1 adds a recurring automated background process that wasn't in any prior version. This is structurally different from a one-time audit script; it changes the framework's steady-state from "drift until audit catches up" to "drift for at most 72h before detection." That's a capability change, not a point improvement on v7.0.
+
+---
+
+## 26. v4.X (Skill Layer) — UX/Design Preflight + Auto Figma Build + Pre-Merge UI Review (2026-05-06)
+
+**Note on numbering:** This is a _skill layer_ upgrade (changes how `/ux` and `/design` participate in the PM workflow chain), not a _framework layer_ upgrade (which would be v7.X). The skill layer was last touched at v4.4; this resumes that line. Framework layer is independently at v7.8.
+
+**Trigger.** During the import-training-plan resume (2026-05-06), a user-ordered pre-Phase-4 audit caught 4 P0 spec errors that would have hit "no such symbol" at compile time:
+
+- `AppRadius.pill` — referenced by spec, doesn't exist (real pattern is `Capsule()` shape)
+- `AppMotion.standardEase` — referenced by spec, doesn't exist (real container is `AppEasing`)
+- `SettingsActionLabel` with custom badge slot — component is fixed-trailing, can't host inline badges
+- Toast/snackbar component — referenced by spec, doesn't exist in the codebase
+
+The audit cost ~20 minutes; the implied Phase 4 rework would have cost 2-4 hours. The user's request: "promote this audit pattern to a mechanical gate, AND combine it with a Figma MCP liveness check, AND add a pre-merge UI review pass."
+
+The same session also surfaced that **Figma sync was being skipped on every UI feature**: Smart Reminders (2026-04-29) shipped code-first with Figma deferred manually for weeks; Push Notifications still pending; Import-Training-Plan was missed entirely until user flagged it post-Phase-5. `/design build` existed as a sub-command but was never auto-dispatched.
+
+**What changed.**
+
+### New sub-commands
+
+- **`/ux preflight {feature}`** — pre-Phase-4 P0 gate. Verifies every token, component, and pattern named in `ux-spec.md` exists in the codebase. Writes audit + cache record. Spec NOT approvable with unresolved P0.
+- **`/ux pre-merge-review {feature}`** — Phase 6 gate. Heuristic re-check of shipped code vs approved spec. Verdict PASS / PASS_WITH_NOTES / BLOCK. Sets `state.json.pre_merge_review.ux`.
+- **`/design preflight {feature}`** — pre-Phase-4 P0 gate. Combines token/component/pattern existence + Figma MCP liveness (`whoami`) + Figma library accessibility (`get_metadata` on `0Ai7s3fCFqR5JXDW8JvgmD`) + Figma library node availability check + delegated `/design audit`. Writes `figma-bridge-status.json`.
+- **`/design pre-merge-review {feature}`** — Phase 6 gate. `make ui-audit` P0=0 + `state.json.figma_node_ids` populated + PR description references node IDs + optional screenshot diff via Figma MCP. Sets `state.json.pre_merge_review.design`. BLOCK halts Phase 7.
+
+### Changed sub-commands
+
+- **`/design build {feature}`** — now auto-dispatched by `/pm-workflow` Phase 3.j. Writes captured Figma node IDs back to `state.json.figma_node_ids` AND adds row to `docs/design-system/figma-code-sync-status.md`. Falls back to prompt-only with `state.json.figma_build_status = "deferred_to_prompt"` when MCP unavailable.
+- **`/ux prompt {feature}`** — output path moved from flat `docs/prompts/` → `docs/prompts/ux/`.
+- **`/design prompt {feature}`** — output path moved from flat `docs/prompts/` → `docs/prompts/ui/`.
+
+### Deprecated sub-commands
+
+- **`/design ux-spec`** — `/ux spec` is canonical (kept as forwarder).
+- **`/design figma`** — `/design build` is canonical (kept as forwarder).
+
+### Folder reorganization
+
+`docs/prompts/` split into:
+
+- `docs/prompts/ux/` — auto-generated UX-build prompts (what-and-why)
+- `docs/prompts/ui/` — auto-generated design-build prompts (how-it-looks)
+- `docs/prompts/_legacy/` — hand-authored prompts pre-dating the auto-generation contract
+
+### state.json schema additions
+
+- `phases.ux_or_integration.preflight_passed` — set by `/ux preflight` + `/design preflight` aggregate
+- `figma_node_ids` — `{ "screen_name": "node_id" }`, populated by `/design build`
+- `figma_build_status` — `"completed"` | `"deferred_to_prompt"` | `null`
+- `pre_merge_review.ux` — `"passed"` | `"passed_with_notes"` | `"blocked"` | `null`
+- `pre_merge_review.design` — same shape
+
+### Hub chain expansions
+
+- **Phase 3 dispatch chain**: 7 steps → 11 steps (added 3e preflight, 3f preflight, 3j auto-build)
+- **Phase 6 dispatch chain**: 4 steps → 5 steps (added 6b ux pre-merge, 6c design pre-merge); Phase 7 BLOCKED unless both pre-merge reviews pass
+
+**Why it earned a version bump.** Previous skill-layer versions (v4.0-v4.4) were about HOW skills work internally (cache, learning lifecycle, eval coverage). v4.X is about what skills GATE — the difference between "the skill exists" and "the skill is mechanically required to pass before merge." It promotes 4 audit patterns from manual-on-request to mechanical gates, with state.json fields and dispatch-chain wiring to enforce them. That changes the framework's steady-state from "spec drift until someone notices" to "spec drift caught at Phase 3 entry, Figma drift caught at Phase 3 exit, code drift caught at Phase 6 entry."
+
+**Tested on:** import-training-plan resume (2026-05-06). Phase 1 ship spans 6 commits + 1 PR; v4.X gates fired during the resume on Phase 3 (audit found 4 P0s), are scheduled to fire on Phase 6 once PR #234 reaches merge gate, and `/design build` is the next dispatch (Figma Option C build for the 3 new surfaces).
+
+**Case study:** to be written post-merge as part of the import-training-plan Phase 8 closure narrative.
 
 ---
 

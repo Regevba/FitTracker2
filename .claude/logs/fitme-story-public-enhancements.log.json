@@ -1,0 +1,140 @@
+{
+  "version": "1.0",
+  "feature": "fitme-story-public-enhancements",
+  "title": "fitme story public enhancements",
+  "work_type": null,
+  "current_phase": null,
+  "framework_version": null,
+  "started_at": "2026-05-08T06:36:08Z",
+  "updated_at": "2026-05-08T06:51:15Z",
+  "events": [
+    {
+      "timestamp": "2026-05-08T05:53:53Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Tasks phase opened (retroactive \u2014 feature created after T1-T7 already shipped via PR #59 + #61). 23 tasks drafted from the 2026-05-08 audit synthesis.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Feature created post-hoc to capture the audit-driven enhancement rollup; the audit + 7 sub-tasks landed before the feature folder existed."
+    },
+    {
+      "timestamp": "2026-05-08T05:54:05Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Tasks approved with 23 entries (7 done + 16 pending). 17 audit findings already closed via T1-T7.",
+      "artifacts": [
+        ".claude/features/fitme-story-public-enhancements/tasks.md"
+      ],
+      "metrics": {
+        "tasks_total": 23,
+        "tasks_done": 7,
+        "tasks_pending": 16,
+        "findings_closed": 17
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T05:54:07Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Implementation phase opened. T1-T7 already shipped via fitme-story PR #59 (95cb4d1, 13 files +319/-40, prod 05:11:20Z) and PR #61 (a548e5f, 3 files +130/-8, prod 05:31:23Z). FT2 audit docs shipped via PR #254 (f252ded, 6 files +1105). 16 tasks remain.",
+      "artifacts": [],
+      "metrics": {
+        "prs_merged": 3,
+        "prs_remaining_estimated": 7
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:05:04Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T16 (P-MOBNAV) MobileNav drawer implemented. PR #62 opened in fitme-story repo (branch feat/fitme-story-mobile-nav, commit e6c99e1). 3 files +187/-29: src/lib/nav.ts (new, shared NAV), src/components/MobileNav.tsx (new, native dialog), src/components/SiteHeader.tsx (refactored to use shared nav + render MobileNav). Closes V-004 P0 + partial V-005/V-009/A-001. tsc clean, next build passes 46 case-study pages.",
+      "artifacts": [
+        "src/components/MobileNav.tsx",
+        "src/lib/nav.ts"
+      ],
+      "metrics": {
+        "files_changed": 3,
+        "lines_added": 187,
+        "lines_removed": 29,
+        "pr_number": 62
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:22:39Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T22+T23 (F7+F8 cross-repo gate parity) \u2014 'document the asymmetry' disposition. Hook fix in .claude/settings.json (cwd-guard for observe-cache-hit.py) + new spec doc docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md. Closes recurring 30+ blocking-error notifications observed all session.",
+      "artifacts": [
+        ".claude/settings.json",
+        "docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md"
+      ],
+      "metrics": {
+        "files_changed": 2
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:36:08Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T8 (G3 dual-outlet pattern doc) shipped via FT2 chore PR. New doc at docs/case-studies/dual-outlet-pattern.md (~9 sections, 11KB). Establishes the contract between FT2 source case study and fitme-story slot MDX. Unblocks T9 (G5 timeline frontmatter audit) by giving G5 a concrete checklist (\u00a77) to walk against.",
+      "artifacts": [
+        "docs/case-studies/dual-outlet-pattern.md"
+      ],
+      "metrics": {
+        "files_changed": 1
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:41:57Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T17 (P-MDX-CODE) rehype-pretty-code + CopyButton shipped via fitme-story PR #65 (commit d8893fe). 7 files +482/-5. Closes A-024 + R-008 + CS-004. Bonus: dev-guide page now also has heading anchors (CS-007 bonus). New deps rehype-pretty-code + shiki. Dual-theme github-light/dark.",
+      "artifacts": [
+        "src/components/mdx/CopyButton.tsx",
+        "src/components/mdx/Pre.tsx"
+      ],
+      "metrics": {
+        "files_changed": 7,
+        "lines_added": 482,
+        "lines_removed": 5,
+        "pr_number": 65
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-08T06:51:15Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T21 (FIG-W6) fitme-story design architecture doc. New doc at docs/design-system/fitme-story-design-architecture.md (~9 sections, ~16KB). Documents Tailwind v4 @theme tokens (brand + skill palette + neutrals + measures + type scale), dark mode WCAG contract (4 overrides), component architecture (4 layers), /design build contract (forward-looking for T18+), maintenance protocol.",
+      "artifacts": [
+        "docs/design-system/fitme-story-design-architecture.md"
+      ],
+      "metrics": {
+        "files_changed": 1
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

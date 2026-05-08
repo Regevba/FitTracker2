@@ -3,11 +3,16 @@
   "feature_name": "case-study-presentation",
   "display_name": "Case-Study Presentation Refactor (Alternative A)",
   "case_study": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/21a-case-study-presentation.mdx",
   "work_type": "feature",
-  "framework_version": "7.7",
+  "framework_version": "v7.7",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "current_phase": "complete",
   "status": "complete",
-  "created": "2026-04-28T04:00:00Z",
   "created_at": "2026-04-28T04:00:00Z",
   "updated": "2026-04-28T22:30:00Z",
   "branch": "feature/case-study-presentation",
@@ -199,5 +204,8 @@
       "note": "Applied the locked Alt-A frontmatter shape to the case study itself (visual_aid: BeforeAfter, 3 T1 key_numbers, 5 honest_disclosures, 3 deferred_items)."
     }
   ],
-  "notes": "Feature shipped 2026-04-28 in two squash-merged PRs: fitme-story #8 (commit ed72514) carrying the chrome + 25-case backfill + build-time validator + cleanup; FitTracker2 #146 (commit f58ee01) carrying the visual-aid catalog + Alt-A/B worked-example templates + state.json + log. FT2 CI was blocked at queue time by a GitHub Actions billing issue and merged via user-authorized admin override; the 72h integrity cycle remains the belt. NB: branch name `feature/case-study-presentation` was previously reused locally for an unrelated dashboard schema-drift fix (commit a53d10b); that commit is preserved on fix/dashboard-feature-key-v7-7 (commit de1770b) and is NOT part of this feature."
+  "notes": "Feature shipped 2026-04-28 in two squash-merged PRs: fitme-story #8 (commit ed72514) carrying the chrome + 25-case backfill + build-time validator + cleanup; FitTracker2 #146 (commit f58ee01) carrying the visual-aid catalog + Alt-A/B worked-example templates + state.json + log. FT2 CI was blocked at queue time by a GitHub Actions billing issue and merged via user-authorized admin override; the 72h integrity cycle remains the belt. NB: branch name `feature/case-study-presentation` was previously reused locally for an unrelated dashboard schema-drift fix (commit a53d10b); that commit is preserved on fix/dashboard-feature-key-v7-7 (commit de1770b) and is NOT part of this feature.",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

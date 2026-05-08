@@ -1,188 +1,556 @@
 {
   "feature": "push-notifications",
-  "case_study": "docs/case-studies/push-notifications-case-study.md",
-  "case_study_showcase": "04-case-studies/22-push-notifications.md",
-  "created": "2026-04-12T21:30:00Z",
-  "updated": "2026-04-20T00:00:00Z",
-  "branch": null,
-  "current_phase": "implementation",
+  "case_study": "docs/case-studies/push-notifications-v2-case-study.md",
+  "case_study_v1": "docs/case-studies/push-notifications-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/23c-push-notifications-v2.mdx",
+  "created_at": "2026-05-07T03:47:27Z",
+  "updated": "2026-05-07T08:02:34Z",
+  "branch": "feature/push-notifications-v2",
+  "current_phase": "complete",
+  "framework_version": "v7.8",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
+  "work_subtype": "new_feature",
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": null,
+  "linear_issue": "FIT-23",
   "parent_feature": null,
+  "previous_iteration": ".claude/features/push-notifications/_v1/state.archived.json",
+  "rebuild_reason": "v1 partial-ship audit (UI-016): NotificationPermissionPrimingView + NotificationService + 18 tests + Phase 9 case study shipped, but priming view was never wired into navigation and NotificationService was never wired into app lifecycle. v7.7 freeze paused resume. User decision 2026-05-07: rebuild from scratch with full PM cycle rather than patch the partial ship. v1 artifacts preserved at _v1/ for reference.",
   "phases": {
     "research": {
       "status": "approved",
-      "note": "High-priority maintenance research opened from the v4.3 cleanup program. Scope: workout reminders, readiness alerts, recovery/trend alerts, and notification preferences.",
-      "approved_at": "2026-04-13T17:45:00Z"
+      "started_at": "2026-05-07T03:47:27Z",
+      "approved_at": "2026-05-07T04:09:17Z",
+      "artifact": ".claude/features/push-notifications/research.md",
+      "decision": "Approach B (push-notifications-v2 as platform layer). Smart-reminders becomes first consumer. Deep-link routing scoped as first-class infrastructure. work_type stays 'feature'."
     },
     "prd": {
       "status": "approved",
+      "started_at": "2026-05-07T04:09:17Z",
+      "approved_at": "2026-05-07T04:38:06Z",
       "path": "docs/product/prd/push-notifications.md",
-      "approved_at": "2026-04-15T17:35:00Z"
+      "analytics_spec_complete": true
     },
     "tasks": {
       "status": "approved",
+      "started_at": "2026-05-07T04:38:06Z",
+      "approved_at": "2026-05-07T04:44:25Z",
       "task_file": ".claude/features/push-notifications/tasks.md",
-      "v2_count": 12
+      "v2_count": 16
     },
     "ux_or_integration": {
       "status": "approved",
+      "started_at": "2026-05-07T04:44:25Z",
       "type": "ux",
-      "compliance_gateway": "6/6 pass"
+      "ux_research_path": ".claude/features/push-notifications/ux-research.md",
+      "ux_spec_path": ".claude/features/push-notifications/ux-spec.md",
+      "ux_validate_path": ".claude/features/push-notifications/ux-validate-2026-05-07.md",
+      "ux_preflight_path": ".claude/features/push-notifications/ux-preflight-audit-2026-05-07.md",
+      "preflight_passed": true,
+      "ux_findings": {
+        "p0": 0,
+        "p1": 1,
+        "p2": 0,
+        "p1_resolved_pre_publish": 1
+      },
+      "design_preflight_path": ".claude/features/push-notifications/design-preflight-2026-05-07.md",
+      "design_preflight_passed": true,
+      "design_findings": {
+        "p0": 0,
+        "p1": 0,
+        "p2": 4
+      },
+      "figma_bridge": {
+        "mcp_connected": true,
+        "library_accessible": true
+      },
+      "design_audit_path": ".claude/features/push-notifications/design-audit-2026-05-07.md",
+      "design_audit_passed": true,
+      "compliance_decision": "approved \u2014 4 new components (NotificationGateway/DeepLinkRouter/NotificationConsumerRegistry/SettingsDeepLinkBanner) justified as platform-layer additions; merge to main with this feature per design-system evolution rule",
+      "approved_at": "2026-05-07T05:48:35Z"
     },
     "implementation": {
-      "status": "complete"
+      "status": "approved",
+      "started_at": "2026-05-07T05:48:35Z",
+      "approved_at": "2026-05-07T06:41:20Z",
+      "commits": [],
+      "loc_added": 1850,
+      "files_added": 13,
+      "files_edited": 7,
+      "files_historical": 5,
+      "files_deleted": 1,
+      "checklist_completed": true
     },
     "testing": {
-      "status": "complete",
-      "tests_added": 10,
-      "ci_passed": true
+      "status": "approved",
+      "started_at": "2026-05-07T06:41:20Z",
+      "approved_at": "2026-05-07T06:41:20Z",
+      "ci_passed": true,
+      "tests_added": 36,
+      "tests_passed": 36,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 2,
+      "analytics_verification_passed": true,
+      "build_verdict": "** BUILD SUCCEEDED ** (xcodebuild build) + ** TEST SUCCEEDED ** (xcodebuild test FitTrackerCoreTests + SyncMergeTests + isolated push-notifications-v2 run)",
+      "note": "Phase 5 fast-pass: tests already written + executed during Phase 4 implementation per the v4.X reachability-gate codification of the v1 UI-016 lesson. Two follow-up MockAnalyticsAdapter cases (deep_link_routed succeeded/failed outcomes) added at Phase 5 close to satisfy strict reading of analytics gate."
     },
     "review": {
-      "status": "complete",
-      "findings": {
-        "critical": 2,
-        "important": 4,
-        "suggestions": 5
-      },
-      "verdict": "APPROVED_AFTER_FIXES"
+      "status": "approved",
+      "started_at": "2026-05-07T06:41:20Z",
+      "approved_at": "2026-05-07T07:46:45Z",
+      "risks": [
+        "LOW \u2014 no high-risk surface mutated; only indirect SignInService.handleIncomingURL reference via DeepLinkRouter.authHandler closure preserves auth-polish-v2 flow verbatim"
+      ],
+      "ci_main": "green",
+      "ci_feature": "green",
+      "code_review_path": ".claude/features/push-notifications/code-review-2026-05-07.md",
+      "ux_pre_merge_review_path": ".claude/features/push-notifications/ux-pre-merge-review-2026-05-07.md",
+      "design_pre_merge_review_path": ".claude/features/push-notifications/design-pre-merge-review-2026-05-07.md"
+    },
+    "pre_merge_review": {
+      "ux": "passed",
+      "design": "passed"
     },
     "merge": {
-      "status": "complete"
+      "status": "complete",
+      "approved_at": "2026-05-07T07:46:45Z",
+      "pr_number": 239,
+      "merged_at": "2026-05-07T07:44:57Z",
+      "merge_commit": "6bf417a877b99e623a771b217a7577ba16f42705",
+      "analytics_regression_passed": true
     },
     "documentation": {
-      "status": "complete"
+      "status": "approved",
+      "started_at": "2026-05-07T07:46:45Z",
+      "approved_at": "2026-05-07T07:59:33Z",
+      "case_study": "docs/case-studies/push-notifications-v2-case-study.md",
+      "case_study_showcase": "fitme-story/content/04-case-studies/23c-push-notifications-v2.mdx",
+      "first_review_date": "2026-05-14",
+      "baseline_metrics": {
+        "notification_opt_in_rate": 0,
+        "workout_reminder_tap_through_rate": 0,
+        "readiness_alert_acknowledgement_rate": 0,
+        "deep_link_routing_success_rate": 0,
+        "notification_disable_rate_per_month": null,
+        "dau_lift_attributed_sessions": 0,
+        "note": "All 0 by definition pre-launch. T1-instrumented at ship; first measurement window 2026-05-14."
+      }
     }
   },
   "transitions": [
     {
-      "from": null,
+      "from": "implementation",
       "to": "research",
-      "timestamp": "2026-04-12T21:30:00Z",
+      "timestamp": "2026-05-07T03:47:27Z",
       "approved_by": "user",
-      "note": "Research chapter opened after the maintenance prioritization pass identified push notifications as a top high-priority product gap."
+      "note": "Full PM cycle rebuild approved 2026-05-07. v1 partial-ship deemed unrecoverable via patch; clean restart from research is the cleaner path. v1 state.json + tasks.md archived to _v1/."
     },
     {
       "from": "research",
       "to": "prd",
-      "timestamp": "2026-04-13T17:45:00Z",
+      "timestamp": "2026-05-07T04:09:17Z",
       "approved_by": "user",
-      "note": "Research phase complete. All scope questions answered. Ready for PRD authoring."
+      "note": "Phase 0 approved. Approach B (push-notifications-v2 as platform layer; smart-reminders becomes first consumer). Deep-link routing scoped as first-class infra. Smart-reminders consumer-side adaptation filed as separate backlog enhancement (ships paired with v2)."
     },
     {
       "from": "prd",
       "to": "tasks",
-      "timestamp": "2026-04-15T17:35:00Z",
+      "timestamp": "2026-05-07T04:38:06Z",
       "approved_by": "user",
-      "note": "PRD written with 17 requirements, 5 metrics, 10 analytics events"
+      "note": "Phase 1 PRD approved. 22 requirements (P0=14 / P1=4 / P2=4), 6 metrics with kill criteria, 7 analytics events validated (1 new + 6 reused; 5 v1 events deleted). 8 OQs resolved."
     },
     {
       "from": "tasks",
       "to": "ux_or_integration",
-      "timestamp": "2026-04-15T17:42:00Z",
+      "timestamp": "2026-05-07T04:44:25Z",
       "approved_by": "user",
-      "note": "12 tasks defined. Critical path: NotificationService \u2192 types \u2192 deep links \u2192 tests."
+      "note": "Phase 2 Tasks approved. 16 tasks, 6.75d effort, 7 P-core / 9 E-core. Critical path T1\u2192T3\u2192T6\u2192T14\u2192T15\u2192T16."
     },
     {
       "from": "ux_or_integration",
       "to": "implementation",
-      "timestamp": "2026-04-15T17:50:00Z",
+      "timestamp": "2026-05-07T05:48:35Z",
       "approved_by": "user",
-      "note": "UX spec: permission priming, 3 notification types, timing rules, DS compliance."
+      "note": "Phase 3 approved. All 8 chain steps complete (ux-research/spec/validate/preflight P0 PASS + design-preflight P0 PASS + design-audit PASS + 2 prompts + design-build 4 frames on new page 936:2). Branch feature/push-notifications-v2."
     },
     {
       "from": "implementation",
       "to": "testing",
-      "timestamp": "2026-04-16T04:50:00Z",
+      "timestamp": "2026-05-07T06:41:20Z",
       "approved_by": "user",
-      "note": "All 12 tasks implemented. 10 tests pass."
+      "note": "Phase 4 Implementation approved. 16/16 tasks shipped, ~1850 LOC, BUILD \u2713 + TEST \u2713 + all 36 v2 tests pass at runtime."
     },
     {
       "from": "testing",
       "to": "review",
-      "timestamp": "2026-04-16T05:00:00Z",
+      "timestamp": "2026-05-07T06:41:20Z",
       "approved_by": "user",
-      "note": "BUILD SUCCEEDED. Tests pass. Ready for review."
+      "note": "Phase 5 Testing approved. analytics_verification_passed=true. Branch feature/push-notifications-v2 ready for code + UI pre-merge review (v4.X Phase 6 layer)."
     },
     {
       "from": "review",
-      "to": "complete",
-      "timestamp": "2026-04-16T05:15:00Z",
+      "to": "merge",
+      "timestamp": "2026-05-07T07:46:45Z",
       "approved_by": "user",
-      "note": "C1+C2+I1 fixed. Review re-approved. First feature to complete full v5.2 PM lifecycle."
+      "note": "Phase 6 Review approved. All 3 gates PASSED (code review LOW risk; /ux pre-merge-review; /design pre-merge-review with ui-audit P0=0 P1=0 + 6/6 figma_node_ids)."
     },
     {
-      "from": "complete",
-      "to": "implementation",
-      "timestamp": "2026-04-20T00:00:00Z",
-      "approved_by": "integrity_audit",
-      "note": "Reopened 2026-04-20 per UI-016: priming view shipped tested + merged but never wired into navigation. Partial ship flagged per open-items review \u00a7 #12."
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-05-07T07:46:45Z",
+      "approved_by": "user",
+      "note": "PR #239 squash-merged 2026-05-07T07:44:57Z; merge commit 6bf417a. All 8 CI checks PASSED. Phase 8 Documentation opened."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-07T07:59:33Z",
+      "approved_by": "user",
+      "note": "Phase 8 docs landed: source case study + showcase MDX (slot 23c, v7.8 framework chronology) + backlog moved to Done + baseline metrics recorded. First review 2026-05-14."
     }
   ],
   "timing": {
-    "time_source": "git-backfill",
-    "backfill_note": "Phase boundaries inferred from state.json transitions[] array; timestamps from git log. T15 / PR-5 (2026-04-27).",
     "phases": {
+      "implementation": {
+        "started_at": "2026-05-07T05:48:35Z",
+        "ended_at": "2026-05-07T06:41:20Z"
+      },
       "research": {
-        "started_at": "2026-04-12T21:30:00Z",
-        "ended_at": "2026-04-13T17:45:00Z"
+        "started_at": "2026-05-07T03:47:27Z",
+        "ended_at": "2026-05-07T04:09:17Z"
       },
       "prd": {
-        "started_at": "2026-04-13T17:45:00Z",
-        "ended_at": "2026-04-15T17:35:00Z"
+        "started_at": "2026-05-07T04:09:17Z",
+        "ended_at": "2026-05-07T04:38:06Z"
       },
       "tasks": {
-        "started_at": "2026-04-15T17:35:00Z",
-        "ended_at": "2026-04-15T17:42:00Z"
+        "started_at": "2026-05-07T04:38:06Z",
+        "ended_at": "2026-05-07T04:44:25Z"
       },
       "ux_or_integration": {
-        "started_at": "2026-04-15T17:42:00Z",
-        "ended_at": "2026-04-15T17:50:00Z"
-      },
-      "implementation_first": {
-        "started_at": "2026-04-15T17:50:00Z",
-        "ended_at": "2026-04-16T04:50:00Z",
-        "note": "First implementation pass (pre-audit). Completed, then reopened for partial-ship fix."
+        "started_at": "2026-05-07T04:44:25Z",
+        "ended_at": "2026-05-07T05:48:35Z"
       },
       "testing": {
-        "started_at": "2026-04-16T04:50:00Z",
-        "ended_at": "2026-04-16T05:00:00Z"
+        "started_at": "2026-05-07T06:41:20Z",
+        "ended_at": "2026-05-07T06:41:20Z"
       },
       "review": {
-        "started_at": "2026-04-16T05:00:00Z",
-        "ended_at": "2026-04-16T05:15:00Z"
+        "started_at": "2026-05-07T06:41:20Z",
+        "ended_at": "2026-05-07T07:46:45Z"
       },
-      "implementation": {
-        "started_at": "2026-04-20T00:00:00Z"
+      "merge": {
+        "started_at": "2026-05-07T07:46:45Z",
+        "ended_at": "2026-05-07T07:46:45Z"
+      },
+      "documentation": {
+        "started_at": "2026-05-07T07:46:45Z",
+        "ended_at": "2026-05-07T07:59:33Z"
+      },
+      "complete": {
+        "started_at": "2026-05-07T08:05:44Z"
       }
     }
   },
-  "tasks": [],
-  "partial_ship": true,
-  "known_gaps": {
-    "audit_finding": "UI-016",
-    "summary": "Local-notification substrate + scheduler + 2 critical-bug fixes + 18 tests shipped cleanly. NotificationPermissionPrimingView was built, tested, and merged but was never wired into navigation \u2014 the first-workout-completed trigger was never implemented, so zero entry points exist. No user has seen the priming surface.",
-    "open_tasks": [
-      "Implement first-workout-completed trigger that launches NotificationPermissionPrimingView",
-      "Build Settings preferences UI (explicitly deferred to Phase 2 at ship time)",
-      "APNs remote push integration (deferred to Phase 2)",
-      "Verify 5 PRD primary metrics have data after wire-up (currently 0 data)"
-    ]
+  "cache_hits": [
+    {
+      "ts": "2026-05-07T08:02:34Z",
+      "key": "pm-workflow:full-cycle:single-day-rebuild",
+      "layer": "L1",
+      "type": "adapted",
+      "skill": "pm-workflow"
+    },
+    {
+      "ts": "2026-05-07T08:02:34Z",
+      "key": "ux:phase-3-chain:new-feature",
+      "layer": "L1",
+      "type": "adapted",
+      "skill": "ux"
+    },
+    {
+      "ts": "2026-05-07T08:02:34Z",
+      "key": "design:build-figma-frames-2x2-grid",
+      "layer": "L1",
+      "type": "adapted",
+      "skill": "design"
+    }
+  ],
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.5,
+      "blast_radius": 0.6,
+      "novelty": 0.3,
+      "verification_difficulty": 0.6
+    },
+    "total": 2.0,
+    "tier_class": "B_medium",
+    "note": "Novelty low: substantial v1 substrate exists (NotificationService.swift, NotificationPermissionPrimingView.swift, log file, Linear issue). Blast radius medium: touches app lifecycle + permission flow + analytics. Complexity medium: integrates with smart-reminders. Verification medium: needs runtime smoke + analytics validation."
   },
-  "paused": {
-    "at": "2026-04-27T14:00:00Z",
-    "reason": "v7.7 Validity Closure full-priority freeze",
-    "resume_signal": "framework-v7-7-validity-closure phase=complete",
-    "snapshot": {
-      "current_phase": "implementation",
-      "next_action_when_resumed": "Resume implementation; coordinate with smart-reminders if both resume close in time",
-      "blockers": [],
-      "context_links": [
-        ".claude/features/push-notifications/state.json",
-        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_push_notifications.md"
-      ]
+  "success_metrics": "TODO: defined in Phase 2 PRD",
+  "kill_criteria": "TODO: defined in Phase 2 PRD",
+  "dispatch_pattern": "TODO: defined in Phase 1 Research \u2192 Phase 2 PRD",
+  "figma_node_ids": {
+    "page": "936:2",
+    "section": "936:3",
+    "priming_sheet": "937:6",
+    "settings_row_states": "937:46",
+    "denial_banner": "938:2",
+    "readiness_alert_banners": "938:50"
+  },
+  "figma_build_status": "completed",
+  "figma_file_key": "0Ai7s3fCFqR5JXDW8JvgmD",
+  "figma_page_name": "Push Notifications v2",
+  "figma_build_completed_at": "2026-05-07T05:30:00Z",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "NotificationGateway core (auth + dispatch + cap audit)",
+      "type": "service",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "lane": "P-core",
+      "depends_on": [],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T2",
+      "title": "NotificationConsumerRegistry",
+      "type": "service",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T3",
+      "title": "DeepLinkRouter (nested verb-noun grammar + @Published nav state)",
+      "type": "service",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "lane": "P-core",
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T4",
+      "title": "Revive NotificationPermissionPrimingView (un-mark HISTORICAL, wire to Gateway)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T5",
+      "title": "ReadinessAlertObserver (Combine + threshold + confidence gate + de-dupe)",
+      "type": "service",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T6",
+      "title": "FitTrackerApp wiring (platform init + first-workout trigger + onOpenURL + observe pendingDeepLink)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T7",
+      "title": "Settings entry point for priming view",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T8",
+      "title": "One-time notification_settings_deeplink_shown banner after denial",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T4"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T9",
+      "title": "Mark v1 NotificationService stack HISTORICAL (4 files, banner header)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "low",
+      "effort_days": 0.1,
+      "lane": "E-core",
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T10",
+      "title": "Delete dead DeepLinkHandler.swift (14-LOC targetTab)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "done",
+      "priority": "low",
+      "effort_days": 0.05,
+      "lane": "E-core",
+      "depends_on": [
+        "T3"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T11",
+      "title": "Drop unused v1 AnalyticsEvent declarations + taxonomy CSV updates",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T12",
+      "title": "Add deep_link_routed event + AnalyticsParam keys + taxonomy CSV row",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.1,
+      "lane": "E-core",
+      "depends_on": [],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T13",
+      "title": "Unit tests (Gateway/Router/Registry/ReadinessAlertTrigger, \u226520 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "lane": "P-core",
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T5"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T14",
+      "title": "Reachability gate tests (3 cases: priming reach + URL routing + SwiftUI subscriber)",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "lane": "P-core",
+      "depends_on": [
+        "T6"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T15",
+      "title": "Build verification + project.pbxproj updates (5 added, 1 deleted)",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T5",
+        "T6",
+        "T13",
+        "T14"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    },
+    {
+      "id": "T16",
+      "title": "Runtime smoke profile notification_platform_v2",
+      "type": "test",
+      "skill": "qa",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.25,
+      "lane": "E-core",
+      "depends_on": [
+        "T15"
+      ],
+      "completed_at": "2026-05-07T06:41:20Z"
+    }
+  ],
+  "_meta": {
+    "deprecation_warnings": [],
+    "v1_summary": {
+      "v1_pr_history": "12 v5.2 stress-test commits + UI-016 reopen + v7.7 pause",
+      "v1_artifacts_preserved": [
+        "FitTracker/Services/Notifications/NotificationService.swift (HISTORICAL marker pending)",
+        "FitTracker/Views/Notifications/NotificationPermissionPrimingView.swift (HISTORICAL marker present)",
+        ".claude/features/push-notifications/_v1/state.json",
+        ".claude/features/push-notifications/_v1/tasks.md",
+        "docs/product/prd/push-notifications.md (will be overwritten by new PRD)",
+        "docs/case-studies/push-notifications-case-study.md (kept; new case study will reference)"
+      ],
+      "v1_failure_mode": "Partial ship \u2014 substrate built + tested + merged, never wired into runtime. Audit UI-016 caught it post-ship via the v7.5 integrity cycle."
     }
   }
 }

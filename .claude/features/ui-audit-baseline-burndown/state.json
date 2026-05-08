@@ -1,7 +1,15 @@
 {
   "feature": "ui-audit-baseline-burndown",
+  "work_type": "chore",
   "type": "enhancement",
   "parent_feature": "design-system-v2",
+  "created_at": "2026-04-21T07:14:00Z",
+  "framework_version": "v7.1",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "started": "2026-04-21",
   "current_phase": "complete",
   "status": "complete",
@@ -83,7 +91,8 @@
     "target": 0,
     "kill_criteria": "visual regressions reported post-merge > 2 within 7 days"
   },
-  "case_study": ".claude/features/ui-audit-baseline-burndown/case-study.md",
+  "case_study": "docs/case-studies/ui-audit-baseline-burndown.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/20a-ui-audit-burndown.mdx",
   "risks": {
     "R1_visual_regression": "mitigated via mirror-diff per file",
     "R2_animation_gaps": "mitigated via Phase 0.1 token additions",
@@ -91,5 +100,8 @@
     "R4_scanner_gaps": "closed by Phase 4.1",
     "R5_baseline_drift": "closed by Phase 4.2",
     "R6_pbxproj_volatility": "isolated to separate PR in Phase 4.3"
+  },
+  "_meta": {
+    "deprecation_warnings": []
   }
 }

@@ -2,10 +2,16 @@
   "feature": "readiness-score-v2",
   "parent_case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study_showcase": "04-case-studies/07-ai-engine-architecture.md",
-  "created": "2026-04-10T20:00:00Z",
+  "created_at": "2026-04-10T20:00:00Z",
   "updated": "2026-04-11T01:00:00Z",
   "branch": "fix/design-system-token-compliance",
   "current_phase": "complete",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "enhancement",
   "parent_feature": "adaptive-intelligence",
   "has_ui": true,
@@ -108,5 +114,8 @@
       "note": "PRD: docs/product/prd/readiness-score-formula-v2.md. Feature memory: docs/design-system/feature-memory.md. Evolution: docs/skills/evolution.md (v4.2)."
     }
   },
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "feature": "framework-v5-0-soc",
+  "title": "Framework v5.0 SoC (Skill-on-demand + cache compression)",
+  "work_type": "Feature",
+  "current_phase": "complete",
+  "framework_version": "v5.0",
+  "started_at": "2026-04-14T00:00:00Z",
+  "updated_at": "2026-05-05T05:00:36Z",
+  "events": [
+    {
+      "timestamp": "2026-05-05T05:00:36Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Retroactive framework-meta state.json wrapper landed via PR-GJ (full-repair-mode plan, 2026-05-05). Original framework version shipped 2026-04-14. Case study at docs/case-studies/soc-v5-framework-case-study.md. Wrapper exists to give the orphan case study chain-of-custody.",
+      "actor": "claude-opus-4-7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

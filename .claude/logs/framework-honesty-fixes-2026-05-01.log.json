@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "feature": "framework-honesty-fixes-2026-05-01",
+  "title": "framework honesty fixes 2026 05 01",
+  "work_type": "chore",
+  "current_phase": "implementation",
+  "framework_version": "v7.7",
+  "started_at": "2026-05-01T04:47:04Z",
+  "updated_at": "2026-05-02T08:57:04Z",
+  "events": [
+    {
+      "timestamp": "2026-05-01T04:47:04Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Chore feature created \u2014 closes v7.7 silent-pass surface (43/46 state.json used legacy created field). See docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-01T06:19:45Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Rebased onto current main (post-#168, post-#163) \u2014 all 4 commits replayed clean with conflicts resolved. Ready for final push.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-02T08:57:04Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Phase transition implementation\u2192complete. PR #169 (framework-honesty-fixes session) admin-merged 2026-05-01T06:20:57Z (squash 95e13b2) along with PR #168 (repo-hygiene, 287d062) and PR #163 (auth-polish-v2, 4f6c4cc). Closed v7.7 silent-pass surface: 43/46 state.json migrated to created_at, gate now fires as designed. Reconciliation deferred from merge time; closing now as part of full hygiene pass.",
+      "artifacts": [
+        "https://github.com/Regevba/FitTracker2/pull/169",
+        "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md"
+      ],
+      "metrics": {
+        "pr_merged": 169,
+        "merge_sha": "95e13b2",
+        "tasks_complete": true
+      },
+      "actor": "claude_code_opus_4_7_1m",
+      "status": "approved",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

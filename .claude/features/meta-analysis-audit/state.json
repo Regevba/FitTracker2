@@ -1,13 +1,18 @@
 {
   "feature": "meta-analysis-audit",
   "case_study": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
-  "case_study_showcase": "04-case-studies/13-full-system-audit.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/13-full-system-audit.mdx",
   "display_name": "Meta-Analysis Full-System Audit",
   "work_type": "chore",
-  "framework_version": "7.0",
-  "current_phase": "documentation",
+  "framework_version": "v6.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
+  "current_phase": "complete",
   "status": "complete",
-  "created": "2026-04-16T00:00:00Z",
+  "created_at": "2026-04-16T00:00:00Z",
   "branch": "main",
   "spec": "docs/superpowers/specs/2026-04-16-meta-analysis-full-system-audit-design.md",
   "plan": "docs/superpowers/plans/2026-04-16-meta-analysis-full-system-audit.md",
@@ -40,10 +45,18 @@
         "notes": "4-layer audit: surface sweep \u2192 deep dive \u2192 cross-reference \u2192 external validation"
       },
       "documentation": {
-        "started_at": null,
+        "started_at": "2026-04-16T01:00:00Z",
+        "ended_at": "2026-04-24T09:25:30Z",
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Phase started in tandem with implementation; closed retroactively when state.json was last updated 2026-04-24 (case study + showcase MDX both shipped earlier in the window; phase advance was pending)."
+      },
+      "complete": {
+        "started_at": "2026-04-30T06:08:16Z",
         "ended_at": null,
         "duration_minutes": null,
-        "paused_minutes": 0
+        "paused_minutes": 0,
+        "notes": "Closure: artifacts (case study + slot 13 showcase) shipped weeks ago; documentation phase was idle. Advanced via the smart-reminders publication PR's housekeeping commit."
       }
     },
     "parallel_context": {
@@ -89,5 +102,8 @@
       "phase": "documentation"
     }
   ],
-  "updated": "2026-04-24T09:25:30Z"
+  "updated": "2026-04-30T06:08:16Z",
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

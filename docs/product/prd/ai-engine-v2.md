@@ -5,7 +5,7 @@
 | ID | ai-engine-v2 |
 | Status | PRD |
 | Priority | P1 |
-| Parent | adaptive-intelligence-initiative |
+| Parent | adaptive-intelligence |
 | Work Type | Enhancement (4-phase: Tasks → Implement → Test → Merge) |
 | GitHub Issue | backlog (no issue yet) |
 | Last Updated | 2026-04-10 |

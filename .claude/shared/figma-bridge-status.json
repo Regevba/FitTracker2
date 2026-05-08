@@ -1,0 +1,12 @@
+{
+  "feature": "ucc-passkey-auth",
+  "preflight_at": "2026-05-07T17:00:00Z",
+  "mcp_live": true,
+  "mcp_user": "regev.ba@gmail.com",
+  "library_id": "0Ai7s3fCFqR5JXDW8JvgmD",
+  "library_accessible": true,
+  "build_target_applicable": false,
+  "build_decision": "deferred_to_prompt",
+  "deferral_reason": "web_dashboard_no_figma_mapping",
+  "portable_prompt": "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md"
+}

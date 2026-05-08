@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
-# Git pre-commit hook — gates the v7.5/v7.6 Data Integrity Framework's
-# write-time defenses. Blocks commits that would introduce:
+# Git pre-commit hook — gates the Data Integrity Framework's write-time
+# defenses (v7.5 → v7.6 → v7.7 → 2026-05-01 honesty fixes → v7.8 bridge).
+# Self-audited: every gate named here is asserted to be implemented in
+# scripts/check-state-schema.py or scripts/check-case-study-preflight.py
+# via `make pre-commit-self-test` (v7.8 Mechanism D, spec §4.4).
+#
+# Blocks commits that would introduce:
 #
 #   v7.5 (shipped 2026-04-21):
 #     - SCHEMA_DRIFT (legacy `phase` key on state.json)
@@ -15,7 +20,61 @@
 #     - CASE_STUDY_MISSING_TIER_TAGS (post-2026-04-21 case study without
 #       T1/T2/T3 tier tags)
 #
-# Enable with: make install-hooks
+#   v7.7 (shipped 2026-04-27 via PR #144 [merge `01b9e11`], Validity Closure):
+#     - CACHE_HITS_EMPTY_POST_V6 (post-v6 feature reaches current_phase=complete
+#       with empty cache_hits[]; closes issue #140 writer-path adoption gap.
+#       Effective coverage was 0/46 until 2026-05-01 honesty-fixes migrated
+#       43 state.json files from legacy `created` to canonical `created_at`.)
+#     - CU_V2_INVALID (cu_v2 field, when present, must satisfy the T6 schema —
+#       missing required factor keys: complexity / blast_radius / novelty /
+#       verification_difficulty)
+#     - STATE_NO_CASE_STUDY_LINK (current_phase=complete requires case_study /
+#       parent_case_study link OR an exempt case_study_type tag)
+#     - CASE_STUDY_MISSING_FIELDS (frontmatter required-fields check)
+#
+#   2026-05-01 honesty-fixes patch (PR #169):
+#     - SCHEMA_DRIFT for legacy `created` key (parallel to legacy-`phase` check;
+#       closes the silent-pass that left v7.7 CACHE_HITS_EMPTY_POST_V6 at 0/46
+#       effective coverage when 43/46 features used the legacy field name)
+#     - FRAMEWORK_VERSION_FORMAT (when set, must match `(pre-)?v<major>.<minor>`;
+#       presence-required deferred to backfill PR)
+#
+#   v7.8 (shipped 2026-05-02 → 2026-05-03 via PRs #173 + #185 → #189 + #192):
+#     Bridge mechanisms — most ship advisory in v7.8, enforced in v7.9.
+#     The following are ADVISORY (cycle-time, non-blocking) — listed
+#     here for the self-audit's information; they are NOT pre-commit gates:
+#       - GATE_COVERAGE_ZERO (Mechanism A meta-check; v7.9 enforces)
+#       - CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE (Mechanism C T11 advisory)
+#     Schema bridge fields ship populated but un-validated:
+#       - state.json::agent_manifest        (v7.9 Mechanism G enforces)
+#       - state.json::_meta.deprecation_warnings  (v7.9 Mechanism B enforces)
+#       - .claude/shared/path-reducers.json (v7.9 reducer enforcement)
+#       - .claude/shared/agent-leases.json  (v7.9 lease + epoch enforcement)
+#
+#   framework-v7-8-branch-isolation (shipped 2026-05-07, advisory in v7.8):
+#     Pre-commit gates added to check-state-schema.py:
+#       - ISOLATION_OPT_OUT_REASON_MISSING (T1, write-time): when
+#         state.json::isolation_opt_out=true, isolation_opt_out_reason must
+#         be non-empty
+#       - BRANCH_ISOLATION_VIOLATION (T6/T7, write-time, ADVISORY in v7.8 →
+#         enforced in v7.9): Mode B fires on infra-path commits when on
+#         main; Mode C fires on current_phase mutations from a non-feature
+#         branch. Auto-isolation flow dispatches scripts/create-isolated-worktree.py
+#         (or superpowers:using-git-worktrees in agent context). Per-feature
+#         isolation_opt_out: true bypasses Mode C only; ignored for Mode B
+#         (infra override per Q3).
+#       - FEATURE_CLOSURE_COMPLETENESS (T11-T14, write-time, ADVISORY in v7.8 →
+#         enforced in v7.9): fires on current_phase=complete transitions.
+#         Validates 7 required case-study frontmatter fields (T12) +
+#         kill_criteria_resolution when kill_criteria set (T13, Q7) +
+#         bidirectional PR-list parity (T14, Q6, override via case-study
+#         pr_citation_exempt frontmatter).
+#     Cycle-time advisories (non-pre-commit) live in scripts/integrity-check.py:
+#     T17 BranchIsolationHistorical, T18 BranchIsolationLaunchdDrift, T19
+#     FeatureClosureCompleteness mirror. See .claude/integrity/README.md.
+#
+# Enable with: make install-hooks  (also installs custom merge drivers per Mechanism E)
+# Self-audit: make pre-commit-self-test  (asserts no header drift)
 # Bypass (emergency only): git commit --no-verify
 #   (The 72h integrity cycle still catches anything introduced via bypass.)
 
@@ -43,7 +102,7 @@ fi
 
 if [[ "$failed" -ne 0 ]]; then
   echo ""
-  echo "Pre-commit rejected: one or more v7.5/v7.6 framework gates failed."
+  echo "Pre-commit rejected: one or more framework gates failed (v7.5 → 2026-05-01)."
   echo "Address each violation listed above, restage, and recommit."
   echo "Emergency bypass: git commit --no-verify (the 72h cycle will still flag the issue)."
   exit 1

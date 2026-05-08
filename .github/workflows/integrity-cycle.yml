@@ -20,18 +20,19 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
@@ -88,20 +89,43 @@ jobs:
           echo "status=${status}" >> "$GITHUB_OUTPUT"
           echo "regression=${regression}" >> "$GITHUB_OUTPUT"
 
-      - name: Commit snapshot
+      - name: Stage snapshot
+        id: stage
         env:
           TIMESTAMP: ${{ steps.paths.outputs.timestamp }}
         run: |
-          git config --local user.email "integrity-cycle@actions"
-          git config --local user.name "Integrity Cycle Bot"
           git add .claude/integrity/snapshots/
           if git diff --staged --quiet; then
-            echo "No snapshot changes to commit."
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No snapshot changes to stage."
           else
-            git commit -m "chore(integrity): cycle snapshot ${TIMESTAMP}" \
-                       -m "Automated 72h integrity cycle. Diff vs prior snapshot in the workflow run."
-            git push origin main
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            echo "Snapshot staged for commit ${TIMESTAMP}."
           fi
+
+      - name: Open PR with snapshot
+        if: steps.stage.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore(integrity): cycle snapshot ${{ steps.paths.outputs.timestamp }}
+
+            Automated 72h integrity cycle. Diff vs prior snapshot in the workflow run.
+          title: "chore(integrity): cycle snapshot ${{ steps.paths.outputs.timestamp }}"
+          body: |
+            Automated 72h integrity cycle snapshot.
+
+            - Snapshot: `${{ steps.paths.outputs.new }}`
+            - Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Branch protection on `main` blocks direct cron push, so the snapshot is opened as a PR.
+            Merging this PR persists the cron-tagged snapshot — required for Tier 3.2 trend mode unlock (3 cron snapshots needed).
+          branch: integrity-cycle/${{ steps.paths.outputs.timestamp }}
+          base: main
+          committer: Integrity Cycle Bot <integrity-cycle@actions>
+          author: Integrity Cycle Bot <integrity-cycle@actions>
+          labels: integrity-cycle,automated
 
       - name: Package report for issue body
         if: steps.check.outputs.regression == 'true'
@@ -117,7 +141,7 @@ jobs:
 
       - name: Open issue on regression
         if: steps.check.outputs.regression == 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
           TIMESTAMP: ${{ steps.paths.outputs.timestamp }}

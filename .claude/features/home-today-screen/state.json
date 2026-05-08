@@ -1,9 +1,15 @@
 {
   "feature": "home-today-screen",
-  "created": "2026-04-06T14:00:00Z",
+  "created_at": "2026-04-06T14:00:00Z",
   "updated": "2026-04-20T00:00:00Z",
   "branch": "feature/home-today-screen-v2",
   "current_phase": "complete",
+  "framework_version": "pre-v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -15,7 +21,7 @@
   "v2_rule_compliant": true,
   "checklist_path": "docs/design-system/v2-refactor-checklist.md",
   "case_study": "docs/case-studies/home-today-screen-v2-case-study.md",
-  "case_study_showcase": "04-case-studies/18-home-today-screen.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/18a-home-today-screen.mdx",
   "parent_version": {
     "version": "v1",
     "status": "shipped-pre-pm-workflow",
@@ -585,5 +591,8 @@
       "reconciled": true,
       "note": "Home v2 shipped in PR #61, merged as bf3bd67. Case study: docs/case-studies/home-today-screen-v2-case-study.md. T1-T17 tasks reconciled 2026-04-20 \u2014 implementation commits 8b5fdf2, 136efe3, f266932, ec95eaa, 73df335 (Phase 4 section of the case study has the task\u2192commit breakdown)."
     }
-  ]
+  ],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

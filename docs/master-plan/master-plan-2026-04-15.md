@@ -1,6 +1,6 @@
 # FitMe Master Plan — 2026-04-15
 
-> **Status:** CURRENT · Last updated 2026-04-27 (v7.7 in progress — full-priority freeze)
+> **Status:** CURRENT · Last updated 2026-05-07 (v7.8.1 shipped — branch isolation + feature-closure completeness)
 > **Date opened:** 2026-04-15
 > **Purpose:** Updated master plan reflecting all work since the 2026-04-06 edition. Supersedes `master-plan-2026-04-06.md`.
 > **Context:** 28 additional items shipped through 2026-04-15, framework evolved v4.3 → v5.1, full external sync completed (Linear, Notion, Vercel), dashboard operational with zero alerts.
@@ -12,7 +12,15 @@
 > **Linear backfill (2026-04-26):** FIT-44 (v7.5), FIT-45 (v7.6, parent), FIT-46 (PR #141), FIT-47 (DEV guide), FIT-48 (Tier 3.3 #142). FIT-22 + FIT-6 marked Done in same pass.
 > **Notion backfill (2026-04-26):** new sub-page under FitMe Product Hub: "Framework v7.5 + v7.6 — Audit Response (2026-04-21 → 2026-04-26)". Project Context & Status updated v5.1 → v7.6.
 >
-> **v7.7 Validity Closure (READY FOR MERGE as of 2026-04-27, single-session ship):** A 2026-04-27 ledger pull surfaced that v7.6's "Known Mechanical Limits" included three items still mechanically or heuristically closable. v7.7 closed them in one session: A1 (`cache_hits[]` writer-path, GitHub issue #140), A2 (`cu_v2` schema validator), A3 (doc-debt field gates + bulk backfill of 32 case studies), A4 (state↔case-study linkage 95.5% → 100%), A5 (active-feature timing backfill, 3 features), C1 (tier-tag heuristic checker, advisory permanent — kill criterion 2 fired at baseline as designed). B1 + B2 are time-gated and verify automatically post-merge (B1 ~2026-05-04, B2 ~2026-05-03 to -06). UCC T43–T54 absorbed as M4 — framework-health dashboard live at fitme-story `/control-room/framework` (PR #7). **Two PRs awaiting merge: FitTracker2 [#144](https://github.com/Regevba/FitTracker2/pull/144) + fitme-story [#7](https://github.com/Regevba/fitme-story/pull/7).** Total framework mechanisms post-merge: 25 gates + 1 advisory. Linear epic [FIT-49](https://linear.app/fitme-project/issue/FIT-49/v77-validity-closure-epic) + 8 sub-issues (FIT-50 … FIT-57). Notion v7.7 sub-page live. 6 features paused for the freeze: app-store-assets, auth-polish-v2, import-training-plan, onboarding-v2-retroactive, push-notifications, stats-v2 — resume on PR #144 merge. D1 (Tier 2.1 auth playbook) + D2 (Tier 3.3 external replication, [#142](https://github.com/Regevba/FitTracker2/issues/142)) surfaced as a human-action checklist on the dashboard. Spec/plan/synthesis: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](../superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md), [plan](../superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md), [case study + Section 99 synthesis](../case-studies/framework-v7-7-validity-closure-case-study.md).
+> **v7.8.1 Branch Isolation + Feature-Closure Completeness (SHIPPED 2026-05-07, single-session ship):** First feature shipped via the v7.8 protocol (Mechanism C session attribution + isolated worktree from Phase 1). Three new write-time gates promoted from advisory: `ISOLATION_OPT_OUT_REASON_MISSING` (any feature whose `isolation_opt_out=true` must record a reason), `BRANCH_ISOLATION_VIOLATION` Modes B+C (every commit on infra paths + every `current_phase` mutation must come from the feature worktree), `FEATURE_CLOSURE_COMPLETENESS` (transitions to `complete` validate state↔case-study cross-reference + 7 required fields + Q7 kill-criteria-resolution + Q6 PR parity). Three new cycle-time advisories: `BRANCH_ISOLATION_HISTORICAL`, `BRANCH_ISOLATION_LAUNCHD_DRIFT`, `FEATURE_CLOSURE_COMPLETENESS` (cycle-time mirror). New tooling: `scripts/create-isolated-worktree.py` (auto-isolation CLI with idempotent + adopt-existing logic), `scripts/verify-isolation.py` (system-wide isolation status table), `scripts/feature-completeness-audit.py` (phase-appropriate forward-only check). Doc-debt fields `case_study_showcase` / `success_metrics` / `kill_criteria` / `dispatch_pattern` promoted from advisory to write-time gate. **28/28 implementation tasks done + T29 deferred. 130 unit tests, 19 pipeline assertions, all green. Framework reaches 30 mechanical gates + 5 advisories.** Three PRs merged today: [#244](https://github.com/Regevba/FitTracker2/pull/244) (gates + scripts) + [#245](https://github.com/Regevba/FitTracker2/pull/245) (Phase 8 closure + case study) + [#246](https://github.com/Regevba/FitTracker2/pull/246) (v7.8.1 docs propagation across 5 surfaces). Companion fitme-story PRs: [#52](https://github.com/Regevba/fitme-story/pull/52) (case-study showcase slot 25), [#53](https://github.com/Regevba/fitme-story/pull/53) (dev-guide bump to v7.8.1), [#54](https://github.com/Regevba/fitme-story/pull/54) (UCC resync to v7.8.1). 7 v8 candidates explicitly de-scoped at [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md); Phase 9 prioritization at branch-isolation feature close (~2026-05-21) produces ranked v8 roadmap. Linear FIT-62 Done. Source case study: [`../case-studies/framework-v7-8-branch-isolation-case-study.md`](../case-studies/framework-v7-8-branch-isolation-case-study.md). Showcase: [`fitme-story 04-case-studies/25-framework-v7-8-1-branch-isolation.mdx`](https://github.com/Regevba/fitme-story/blob/main/content/04-case-studies/25-framework-v7-8-1-branch-isolation.mdx).
+>
+> **v7.8 Bridge (SHIPPED 2026-05-04 across 9 PRs):** 6 cooperating mechanisms (A coverage gates → F membrane status) all in advisory mode pending v7.9 measurement window opening 2026-05-11 (+7d). Schema bridge fields populated on 47/47 features. Cold-start entrypoint at `.claude/entrypoints/framework-v7-8.md` + first honesty-ledger entry FT2-FH-001 at `docs/case-studies/framework-honesty-ledger.md`. Case study: [`../case-studies/framework-v7-8-bridge-case-study.md`](../case-studies/framework-v7-8-bridge-case-study.md).
+>
+> **Other 2026-05-07 ships:** Push Notifications v2 platform-layer rebuild (PR #239) — single-day full PM cycle (Phases 0–8) after v1 UI-016 partial-ship. Platform layer = `NotificationGateway` + `NotificationConsumerRegistry` + `DeepLinkRouter` + `ReadinessAlertObserver` + `FirstWorkoutTrigger`. 16 tasks, ~1850 LOC, 36 tests including 3-case reachability gate codifying the v1 UI-016 lesson mechanically. Linear FIT-23 Done. Source case study `docs/case-studies/push-notifications-v2-case-study.md`. Smart-reminders consumer-side adaptation deferred to paired backlog enhancement.
+>
+> **Major 2026-05-06 ships:** UCC (Unified Control Center) — Astro→Next.js `/control-room/*` migration COMPLETE via PR #232 + #230 + 12 fitme-story PRs. 43/44 tasks done + 1 deferred (T2.5 passkey auth — moved to backlog). Daily sync routine `trig_01ThxQphvQQa8tyWMsxiyhdm` LIVE (09:04 IDT, 8 MCPs auto-attached). Source case study `docs/case-studies/unified-control-center-case-study.md`; showcase `fitme-story 04-case-studies/23a-unified-control-center.mdx`. AND Import Training Plan — Phase 1 (PR #234) — full PM rollback → Research v2 → ship after 2026-04-20 partial-ship audit (UI-015). 33 new tests + 9 import_* analytics events + GDPR Art-17/20.
+>
+> **v7.7 Validity Closure (SHIPPED 2026-04-27, single-session ship):** A 2026-04-27 ledger pull surfaced that v7.6's "Known Mechanical Limits" included three items still mechanically or heuristically closable. v7.7 closed them in one session: A1 (`cache_hits[]` writer-path, GitHub issue #140), A2 (`cu_v2` schema validator), A3 (doc-debt field gates + bulk backfill of 32 case studies), A4 (state↔case-study linkage 95.5% → 100%), A5 (active-feature timing backfill, 3 features), C1 (tier-tag heuristic checker, advisory permanent — kill criterion 2 fired at baseline as designed). B1 + B2 are time-gated and verify automatically post-merge (B1 ~2026-05-04, B2 ~2026-05-03 to -06). UCC T43–T54 absorbed as M4 — framework-health dashboard live at fitme-story `/control-room/framework` (PR #7). **Two PRs awaiting merge: FitTracker2 [#144](https://github.com/Regevba/FitTracker2/pull/144) + fitme-story [#7](https://github.com/Regevba/fitme-story/pull/7).** Total framework mechanisms post-merge: 25 gates + 1 advisory. Linear epic [FIT-49](https://linear.app/fitme-project/issue/FIT-49/v77-validity-closure-epic) + 8 sub-issues (FIT-50 … FIT-57). Notion v7.7 sub-page live. 6 features paused for the freeze: app-store-assets, auth-polish-v2, import-training-plan, onboarding-v2-retroactive, push-notifications, stats-v2 — resume on PR #144 merge. D1 (Tier 2.1 auth playbook) + D2 (Tier 3.3 external replication, [#142](https://github.com/Regevba/FitTracker2/issues/142)) surfaced as a human-action checklist on the dashboard. Spec/plan/synthesis: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](../superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md), [plan](../superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md), [case study + Section 99 synthesis](../case-studies/framework-v7-7-validity-closure-case-study.md).
 
 ---
 
@@ -118,20 +126,30 @@ Requires Gate C + iOS core stable + backend green + measurement live.
 | 42 | Normalization Framework | commit 8a8db72 | CU formula, R²=0.82 |
 | 43-44 | Dashboard bug fixes | 2026-04-15 | Tab nav, case study links |
 
-### In Progress
+### In Progress (as of 2026-05-07)
+
 | Feature | Phase | Next Step |
 |---|---|---|
-| User Profile Settings | Implementation (Layer 1: 4/13 tasks) | Layer 2-4 |
-| Authentication hardening | Verification | Runtime credentials needed |
-| Operations control room | Maintenance | Ongoing |
+| App Store Assets | implementation (paused) | Linear FIT-17. Pipeline scaffolding shipped; resume after v7.9 enforcement window. |
+| Smart Reminders Behavioral Learning PR-2 | PR-1 shipped 2026-05-04 | Linear FIT-42. PR-2 (SmartTimingResolver + A/B test, default-on flip) gated on cohort data window — earliest 2026-05-09. |
+| Smart Reminders ↔ Push Notifications v2 deep-link integration | Enhancement, not yet started | Surfaced 2026-05-07 during push-notifications-v2 Phase 0. Smart-reminders consumer-side adaptation. Work type: Enhancement (4-phase). |
 
-### Research / PRD Phase
-| Feature | Phase | Linear |
-|---|---|---|
-| Push Notifications | PRD | FIT-23 |
-| App Store Assets | PRD | FIT-17 |
-| Import Training Plan | Research | FIT-24 |
-| Smart Reminders System | Planned | FIT-42 |
+### Recently Shipped (2026-04-30 → 2026-05-07)
+
+| Feature | Phase | PR | Date |
+|---|---|---|---|
+| Stats v2 — final ship | complete | #164 | 2026-04-30 |
+| Auth Polish v2 | complete | #163 | 2026-05-01 |
+| Framework Honesty Fixes | complete | #168 + #169 | 2026-05-01 |
+| Framework v7.8 PR-1 (Mechanism C scaffolding) | complete | #173 | 2026-05-02 |
+| State.json reconciliation pass | complete | #174 | 2026-05-02 |
+| Smart Reminders Behavioral Learning PR-1 | complete | #190 + #198 | 2026-05-04 |
+| Framework v7.8 Bridge | complete | 9 PRs (#185-#189, #191-#194, #195) | 2026-05-04 |
+| iOS audit Tier 1+2 closure | complete | #211-#216 | 2026-05-08 |
+| Unified Control Center (UCC) | complete | #232 + #230 + 12 fitme-story | 2026-05-06 |
+| Import Training Plan — Phase 1 | complete | #234 + #235 + fitme-story #48 | 2026-05-06 |
+| Push Notifications v2 platform-layer | complete | #239 | 2026-05-07 |
+| Framework v7.8.1 Branch Isolation + Closure Completeness | complete | #244 + #245 + #246 | 2026-05-07 |
 
 ### Planned (RICE-Prioritized)
 | RICE | Feature | Phase | Dependency |

@@ -11,22 +11,6 @@ final class HomeReadinessUITests: XCTestCase {
     }
 
     func testHomeTabRendersInAuthenticatedReviewMode() throws {
-        // Quarantined on hosted CI since 2026-04-28: this test's accessibility
-        // query consistently times out at ~236s on macos-15 with iPhone 16 Pro
-        // (iOS 18) when xcodebuild runs UI tests with simulator-clone parallelism.
-        // Error: "Failed to get matching snapshots: Timed out while evaluating UI query."
-        // Not a code regression — zero Swift changes between last green and first red.
-        // Hypothesis: one of the parallel simulator clones lands in an unhealthy
-        // state that prevents accessibility snapshotting. Other authenticated-mode
-        // UI tests (e.g., MealLogUITests) hit the same clone behavior but their
-        // skip path triggers cleanly; this one's query never returns.
-        // Tracked in memory: project_ci_ui_test_investigation_2026_04_29.md
-        // Resume locally: xcodebuild test -only-testing:FitTrackerUITests/HomeReadinessUITests
-        try XCTSkipIf(
-            ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] != nil,
-            "Quarantined on hosted GitHub Actions — see test comment + memory note for context"
-        )
-
         let app = UITestSupport.launch(mode: .authenticated)
 
         // Authenticated review mode bypasses sign-in/onboarding and lands on the

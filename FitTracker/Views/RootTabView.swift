@@ -37,6 +37,8 @@ struct RootTabView: View {
     @State private var selectedTab:    AppTab
     @State private var showAccount             = false
     @State private var pendingStatsMetric: StatsFocusMetric?
+    // push-notifications-v2 (T6): observe DeepLinkRouter for tab navigation.
+    @ObservedObject private var deepLinkRouter = DeepLinkRouter.shared
 
     init() {
         _selectedTab = State(initialValue: Self.reviewSelectedTab)
@@ -54,6 +56,15 @@ struct RootTabView: View {
             if Self.isReviewMode {
                 selectedTab = Self.reviewSelectedTab
             }
+        }
+        .onChange(of: deepLinkRouter.pendingDeepLink) { _, action in
+            // push-notifications-v2 (T6): drive tab navigation from DeepLinkRouter.
+            // Other action variants (.presentSheet, .authFlow, .settingsSection) are
+            // handled at FitTrackerApp / Settings call-site level; we only consume
+            // .navigateToTab here so the router state clears for the next event.
+            guard case .navigateToTab(let tab) = action else { return }
+            selectedTab = tab
+            deepLinkRouter.consume()
         }
         .task {
             guard !Self.isReviewMode else { return }

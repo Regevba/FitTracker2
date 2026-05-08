@@ -1,16 +1,27 @@
 # Six Features Roundup — Honest Backlog Accounting
 
 **Date written:** 2026-04-20
+**Last reorganized:** 2026-05-05 (Option 3 hybrid split — 3 dense sections split into dedicated case studies; this roundup retained for the 2 thin features + cross-feature lessons + chain-of-custody pointer to the splits)
 <!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
 
 | Field | Value |
 |---|---|
 | Dispatch Pattern | serial |
 
-**Success Metrics:** TODO: review <!-- TODO: review -->
+**Success Metrics:** N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type).
 
+> **2026-05-05 split-out notice.** The full-repair-mode plan (Decision 3 + Q1 = Option 3 hybrid split) determined that 3 of the 6 features in this roundup have substantive enough source material (PRD + research + tasks + ux-spec + dense PR) to warrant dedicated case studies. They were split out without modifying the original sections (preserved verbatim below); each split section now carries a prominent header link to its dedicated case study. The 2 thin features (`development-dashboard`, `ai-cohort-intelligence`) remain roundup-only — their state.jsons are tagged `case_study_type: pre_pm_workflow_backfill` per the existing exempt convention. The 6th section (`stats-v2`) was already covered by its own dedicated `stats-v2-case-study.md` and remains here only for the original cross-feature comparison.
 
-> **Subtitle:** Six features that shipped before the "every feature gets a case study" rule landed, or slipped through it — consolidated into one roundup so the record is honest rather than padded with six thin fabrications.
+**Split-out chain of custody (2026-05-05):**
+
+| Original section | Split-out case study |
+|---|---|
+| §2 android-design-system | [`android-design-system-case-study.md`](android-design-system-case-study.md) |
+| §4 gdpr-compliance | [`gdpr-compliance-case-study.md`](gdpr-compliance-case-study.md) |
+| §5 google-analytics | [`google-analytics-case-study.md`](google-analytics-case-study.md) |
+| §6 stats-v2 | [`stats-v2-case-study.md`](stats-v2-case-study.md) (predates the split — already had a dedicated CS) |
+
+> **Original subtitle (2026-04-20):** Six features that shipped before the "every feature gets a case study" rule landed, or slipped through it — consolidated into one roundup so the record is honest rather than padded with six thin fabrications.
 
 ## Why This Roundup Exists
 
@@ -65,6 +76,8 @@ The temptation was to write six dedicated case studies. The honest answer is tha
 
 ## 2. android-design-system — The Research-Only Deliverable
 
+> **2026-05-05: SPLIT OUT** — this section now has its own dedicated case study at [`android-design-system-case-study.md`](android-design-system-case-study.md). The text below is preserved verbatim for historical context; the dedicated case study is the source-of-truth going forward.
+
 **One-line headline:** A 92-token iOS → Material Design 3 mapping exercise that never ships a line of Android code, because it explicitly wasn't meant to.
 
 | Field | Value |
@@ -114,6 +127,8 @@ The temptation was to write six dedicated case studies. The honest answer is tha
 
 ## 4. gdpr-compliance — The Legal-Blocker Feature
 
+> **2026-05-05: SPLIT OUT** — this section now has its own dedicated case study at [`gdpr-compliance-case-study.md`](gdpr-compliance-case-study.md). The text below is preserved verbatim for historical context; the dedicated case study is the source-of-truth going forward.
+
 **One-line headline:** The first feature in the project where kill criteria read "Legal requirement — cannot be killed," shipped end-to-end in two hours.
 
 | Field | Value |
@@ -140,6 +155,8 @@ The temptation was to write six dedicated case studies. The honest answer is tha
 ---
 
 ## 5. google-analytics — The Measurement Foundation
+
+> **2026-05-05: SPLIT OUT** — this section now has its own dedicated case study at [`google-analytics-case-study.md`](google-analytics-case-study.md). The text below is preserved verbatim for historical context; the dedicated case study is the source-of-truth going forward.
 
 **One-line headline:** The feature that went from "11 shipped features, 40 defined metrics, zero analytics instrumentation" to a working GA4 pipeline with protocol abstraction, consent gating, and screen tracking — and unblocked every metric target in the project.
 

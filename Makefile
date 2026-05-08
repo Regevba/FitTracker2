@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -106,6 +106,17 @@ schema-check:
 documentation-debt:
 	python3 scripts/documentation-debt-report.py --output .claude/shared/documentation-debt.json
 
+# T22 (framework-v7-8-branch-isolation): system-wide branch-isolation status
+# readout. Lists every active feature with declared branch + worktree path +
+# actual git/launchd state. Per PRD §6.1.
+verify-isolation:
+	@python3 scripts/verify-isolation.py
+
+# T23 (framework-v7-8-branch-isolation): system-wide phase-appropriate
+# completeness audit. Replaces the manual reconcile pass. Per PRD §6.2.
+feature-completeness-audit:
+	@python3 scripts/feature-completeness-audit.py
+
 # Gemini audit Tier 1.1 — inventory which features have v6.0 measurement
 # fields populated in their state.json. Produces a machine-readable report
 # at .claude/shared/measurement-adoption.json and prints a summary.
@@ -145,12 +156,37 @@ runtime-smoke:
 	python3 scripts/runtime-smoke-gate.py --profile "$(PROFILE)" --mode "$(MODE)" $(if $(XCODE_CONFIGURATION),--configuration "$(XCODE_CONFIGURATION)",) $(if $(filter 1,$(DRY_RUN)),--dry-run,)
 
 # Install git hooks into .git/hooks/ by pointing core.hooksPath at .githooks/.
-# Idempotent — run after clone to activate the pre-commit schema check.
+# Also installs custom merge drivers (v7.8 Mechanism E) so append-only
+# ledger conflicts auto-resolve via union-dedup-by-key.
+# Idempotent — run after clone to activate both layers.
 install-hooks:
 	git config core.hooksPath .githooks
 	@echo "Git hooks installed (core.hooksPath = .githooks)."
 	@echo "Pre-commit will reject state.json files with legacy \`phase\` key."
 	@echo "Emergency bypass: git commit --no-verify"
+	@bash scripts/install-merge-drivers.sh
+
+# Mechanism D (v7.8 §4.4) — assert that every gate listed in the
+# .githooks/pre-commit header is implemented in scripts/check-state-schema.py
+# or scripts/check-case-study-preflight.py. Catches header-vs-code drift.
+pre-commit-self-test:
+	python3 scripts/pre-commit-self-test.py
+
+# Mechanism F (v7.8 §4.6) — read-only smartlog of in-flight feature work.
+# Joins .claude/features/*/state.json + .claude/shared/agent-leases.json +
+# `git for-each-ref refs/heads/feature/*` into one ASCII table (default)
+# or JSON (--format=json) for the UCC dashboard.
+membrane-status:
+	python3 scripts/membrane-status.py
+
+# v7.9 measurement-window snapshot (spec §7.2) — read the v7.8 advisory
+# ledgers (gate-coverage.jsonl, _session-*.events.jsonl, reducer-misses.json)
+# and produce the +7d / +14d / +21d decision-input report. Run any time;
+# meaningful from first commit forward, design-actionable at +7d (2026-05-11).
+# Pass OUTPUT=path.md to write Markdown to a file.
+OUTPUT ?=
+v7-9-snapshot:
+	python3 scripts/v7-9-measurement-snapshot.py $(if $(OUTPUT),--output $(OUTPUT),)
 
 # Install npm dependencies (style-dictionary)
 install:

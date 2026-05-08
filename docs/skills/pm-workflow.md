@@ -1,8 +1,8 @@
-# `/pm-workflow` — The Hub (v7.1)
+# `/pm-workflow` — The Hub (v7.8)
 
 > **Role in the ecosystem:** The orchestration layer. Every other skill is a spoke; `/pm-workflow` is the hub that reads feature state, decides which spoke to dispatch, syncs external tools (GitHub, Notion, Figma, Vercel), and waits for user approval before advancing.
 >
-> **Updated:** 2026-04-21
+> **Updated:** 2026-05-04 — v7.8 Bridge layer fully shipped. v7.9 measurement window opens 2026-05-11.
 
 **Agent-facing prompt:** [`.claude/skills/pm-workflow/SKILL.md`](../../.claude/skills/pm-workflow/SKILL.md)
 
@@ -88,6 +88,50 @@ Validated with Home v2, which spawned 4 sub-features from the parent audit:
 4. Each sub-feature tracks independently in `state.json` but rolls up to the parent GitHub Issue
 
 Example: Home v2 (#61) → Body Composition (#65), Metric Deep Link (#67), Training v2 (#74), Onboarding retro (#63).
+
+## v4.X — Phase 3 + Phase 6 chain expansions (added 2026-05-06)
+
+Phase 3 dispatch chain extended from 7 steps to 11. Phase 6 dispatch chain extended from 4 steps to 5. Both add explicit gates that catch silent-pass errors the framework was missing:
+
+### Phase 3 chain (10 dispatch steps + user approval)
+
+| Step | Dispatches | Output | Gate |
+| --- | --- | --- | --- |
+| 3a | `/ux audit {feature}` *(v2 only)* | `v2-audit-report.md` | User reviews |
+| 3b | `/ux research {feature}` | `ux-research.md` | Principles identified |
+| 3c | `/ux spec {feature}` | `ux-spec.md` | Spec covers all 5 states + a11y + principles |
+| 3d | `/ux validate {feature}` | heuristic report | No P0 violations |
+| **3e** | **`/ux preflight {feature}`** *(v4.X)* | **`ux-preflight-audit-{date}.md`** | **P0 unresolved → spec NOT approvable** |
+| **3f** | **`/design preflight {feature}`** *(v4.X)* | **`design-preflight-{date}.md` + `figma-bridge-status.json`** | **DS P0=0; Figma MCP liveness recorded; library accessibility recorded** |
+| 3g | `/design audit` | compliance report | Tokens, components, a11y, motion all pass |
+| 3h | `/ux prompt {feature}` | `docs/prompts/ux/{date}-...ux-build.md` | UX-build prompt ready |
+| 3i | `/design prompt {feature}` | `docs/prompts/ui/{date}-...design-build.md` | UI-build prompt ready |
+| **3j** | **`/design build {feature}`** *(v4.X — auto-dispatched)* | **Figma screens (or saved prompt fallback) + `state.json.figma_node_ids` + row added to `figma-code-sync-status.md`** | **MCP build OR `figma_build_status: "deferred_to_prompt"`** |
+| 3k | User approval | `phases.ux_or_integration.status = "approved"` | Advance to Phase 4 |
+
+### Phase 6 chain (4 dispatch steps + user approval)
+
+| Step | Dispatches | Output | Gate |
+| --- | --- | --- | --- |
+| 6a | Generic diff + risk surface | risk report | High-risk areas listed |
+| **6b** | **`/ux pre-merge-review {feature}`** *(v4.X)* | **`ux-pre-merge-review-{date}.md` + `state.json.pre_merge_review.ux`** | **Heuristic re-check vs spec; verdict PASS / PASS_WITH_NOTES / BLOCK** |
+| **6c** | **`/design pre-merge-review {feature}`** *(v4.X)* | **`design-pre-merge-review-{date}.md` + `state.json.pre_merge_review.design`** | **`make ui-audit` P0=0; `figma_node_ids` populated; PR description references node IDs** |
+| 6d | CI check on both branches | CI status | Both branches green |
+| 6e | User approval | `phases.review.status = "approved"` | **Phase 7 BLOCKED unless both `pre_merge_review.ux` AND `pre_merge_review.design` are passed/passed_with_notes** |
+
+### Why these gates exist
+
+- **3e + 3f (preflight gates):** Caught 4 P0 spec errors during the import-training-plan resume (2026-05-06): `AppRadius.pill`, `AppMotion.standardEase`, `SettingsActionLabel` with custom badge slot, toast component — all referenced by the spec, none existed in the codebase. Manual user-ordered audit caught them; v4.X promotes the audit to a mechanical gate. Saved 2-4 hours of Phase 4 rework on this feature alone.
+- **3j (Figma build auto-dispatch):** Smart Reminders (2026-04-29) and Push Notifications shipped code-first with Figma sync deferred manually for weeks. Import-Training-Plan was missed entirely until user flagged it post-Phase-5. Auto-dispatching `/design build` ensures Figma sync happens IN Phase 3 (or is explicitly deferred with a written prompt) so Phase 6 has ground truth.
+- **6b + 6c (pre-merge UI review):** Phase 6 was generic code review only. UI drift between spec and shipped code, plus Figma↔code drift, were caught by manual eyeballing during Phase 5 — and missed entirely on import-training-plan. Mechanical gate at merge time, paired with the Phase 3 preflight gates so the spec-vs-code contract holds across both surfaces.
+
+### state.json schema additions (v4.X)
+
+- `phases.ux_or_integration.preflight_passed` — set by `/ux preflight` + `/design preflight` aggregate result
+- `figma_node_ids` — `{ "screen_name": "node_id" }`, populated by `/design build`
+- `figma_build_status` — `"completed"` | `"deferred_to_prompt"` | `null`
+- `pre_merge_review.ux` — `"passed"` | `"passed_with_notes"` | `"blocked"` | `null`
+- `pre_merge_review.design` — same shape
 
 ## Phase transition procedure (6 steps)
 
@@ -286,5 +330,9 @@ Every version was tested through real feature work. The case study column links 
 | v6.0 | 2026-04-16 | Framework Measurement: deterministic phase timing, L1/L2/L3 cache hit tracking, eval coverage gates, monitoring auto-sync, token counting (79K tokens measured), CU v2 continuous factors, rolling baselines, serial/parallel velocity decomposition | — | [Framework Measurement CS](../case-studies/framework-measurement-v6-case-study.md) |
 | v7.0 | 2026-04-16 | HADF — Hardware-Aware Dispatch: 5-layer hardware detection (edge + cloud), 17 chip profiles across 6 vendors, 7 cloud fingerprints, confidence-gated dispatch, composite optimizer | HADF rollout + full-system meta-analysis audit (185 findings) | [HADF CS](../case-studies/hadf-hardware-aware-dispatch-case-study.md), [Meta-Analysis Audit CS](../case-studies/meta-analysis-full-system-audit-v7.0-case-study.md) |
 | v7.1 | 2026-04-21 | Integrity Cycle: 72h recurring GitHub Actions audit of every feature state.json. 7 failure-mode detectors (PHASE_LIE, TASK_LIE, NO_CS_LINK, V2_FILE_MISSING, PARTIAL_SHIP_TERMINAL, NO_STATE, INVALID_JSON, NO_PHASE). Snapshot-ledger diff catches regressions. Bypass markers (pre_pm_workflow_backfill, roundup) suppress false positives. Initial baseline: 40 features, 44 case studies, 0 findings. | Caught the 2026-04-20 "shipped but unreconciled" drift across 7 features (HADF, home-today-screen, nutrition-v2, onboarding-v2-auth-flow, settings-v2, user-profile-settings, parallel-write-safety-v5.2) | [Integrity Cycle v7.1 CS](../case-studies/integrity-cycle-v7.1-case-study.md) |
+| v7.5 | 2026-04-24 | Data Integrity Framework: 8 cooperating defenses (write-time + cycle-time + readout-time). Tier 1.1 measurement-adoption ledger, Tier 2.1 runtime-smoke gates, Tier 2.2 contemporaneous logging, Tier 2.3 T1/T2/T3 data quality tiers, Tier 3.2 documentation-debt dashboard. Source trigger: 2026-04-21 Gemini independent audit. | 7 of 9 Tier items shipped or piloted | [Data Integrity Framework v7.5 CS](../case-studies/data-integrity-framework-v7.5-case-study.md) |
+| v7.6 | 2026-04-25 | Mechanical Enforcement: 4 silent gaps promoted to pre-commit failures (PHASE_TRANSITION_NO_LOG, PHASE_TRANSITION_NO_TIMING, BROKEN_PR_CITATION write-time, CASE_STUDY_MISSING_TIER_TAGS) + per-PR review bot + weekly framework-status cron + append-only adoption history. Closes 7 Class B → A promotions. 5 documented Class B gaps. | All shipped features as of 2026-04-25 | [Mechanical Enforcement v7.6 CS](../case-studies/mechanical-enforcement-v7-6-case-study.md) |
+| v7.7 | 2026-04-27 | Validity Closure: 5 new gates (4 write-time pre-commit + 1 cycle-time check + 1 advisory permanent). Bulk-backfill of 32 case-study frontmatters + timing.phases backfill on 3 paused features. State↔case-study linkage 95.5% → 100% (gated). Doc-debt: success_metrics/kill_criteria/dispatch_pattern 8.9–28.9% → 95.7%. cu_v2 schema 100% validated. | 32 case studies + 3 paused features backfilled | [Validity Closure v7.7 CS](../case-studies/framework-v7-7-validity-closure-case-study.md) |
+| v7.8 | 2026-05-04 | Bridge layer: 6 advisory mechanisms A-F shipping schema bridges populated on 47/47 features. Mechanism D (pre-commit hook header self-audit) + Mechanism F (membrane-status advisory readout) shipped via PR #193. Cold-start entrypoint + honesty ledger FT2-FH-001 published. Closes 0% effective coverage on `CACHE_HITS_EMPTY_POST_V6` gate identified in 2026-04-30 audit. | 47 features end-to-end (PRs #173 + #185-189 + #191-194 + #195) | [v7.8 Bridge CS](../case-studies/) (in flight) — v7.9 measurement window opens 2026-05-11 |
 
 For the full narrative behind each version, see [evolution.md](evolution.md). For system schematics, see [architecture-one-pager.md](architecture-one-pager.md). For the detailed deep-dive, see [architecture.md](architecture.md).

@@ -3,11 +3,16 @@
   "display_name": "Unified Control Center \u2014 Migrate dashboard to Next.js, share fitme-story design system",
   "work_type": "feature",
   "work_subtype": "new_ui",
-  "framework_version": "7.6",
-  "current_phase": "implementation",
-  "status": "in_progress",
-  "created": "2026-04-26T05:30:00Z",
-  "updated": "2026-04-27T05:17:58Z",
+  "framework_version": "v7.6",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
+  "current_phase": "complete",
+  "status": "complete",
+  "created_at": "2026-04-26T05:30:00Z",
+  "updated": "2026-05-06T18:05:04Z",
   "branch": "main",
   "spec": "docs/case-studies/unified-control-center-case-study.md (to be created in Phase 8)",
   "has_ui": true,
@@ -65,31 +70,49 @@
       "compliance_decision": "PASS conditional on T16 contrast audit (axe MCP) before production deploy"
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "commits": [],
-      "started_at": "2026-04-26T11:30:00Z"
+      "started_at": "2026-04-26T11:30:00Z",
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z"
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
-      "tests_added": 0,
-      "instrumentation_verified": false,
-      "analytics_tests_added": 0,
-      "analytics_verification_passed": false
+      "status": "approved",
+      "ci_passed": true,
+      "tests_added": 25,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 13,
+      "analytics_verification_passed": true,
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
       "risks": [],
-      "ci_main": false,
-      "ci_feature": false
+      "ci_main": true,
+      "ci_feature": true,
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null,
-      "analytics_regression_passed": null
+      "status": "approved",
+      "pr_number": 230,
+      "analytics_regression_passed": true,
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved",
+      "approved_at": "2026-05-06T12:57:54Z",
+      "ended_at": "2026-05-06T12:57:54Z",
+      "started_at": "2026-05-06T12:57:54Z",
+      "duration_minutes": 0
     }
   },
   "tasks": [
@@ -118,9 +141,15 @@
       "depends_on": [
         "T1"
       ],
-      "status": "in_progress",
+      "status": "done",
       "priority": "critical",
-      "started_at": "2026-04-26T12:00:00Z"
+      "started_at": "2026-04-26T12:00:00Z",
+      "completed_at": "2026-05-05T11:45:45Z",
+      "commits": [
+        "pending_this_pr"
+      ],
+      "artifact": ".claude/features/unified-control-center/baseline-ttc.json",
+      "note": "T2 placeholder shipped per PRD section 5.1 allowance (T2 Declared, ~8s baseline). Real GA4 extraction tracked separately as T2.5 \u2014 must upgrade to T1 before final UCC merge (Block G + T42)."
     },
     {
       "id": "T3",
@@ -357,8 +386,15 @@
         "T7",
         "T15"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:05:43Z",
+      "commits": [
+        "9c8c6d4"
+      ],
+      "pr_number": 22,
+      "pr_repo": "fitme-story",
+      "note": "Ported Dashboard.jsx chrome to layout.tsx \u2014 header (brand icon + title + 2 badges) + 5-tab primary nav (Overview built, Board/Table/Tasks/Knowledge as 'soon' placeholders) + Framework Health secondary nav. Stat pills + workspaces dropdown + AlertsBanner + PipelineOverview deferred to T20+T24+T27."
     },
     {
       "id": "T19",
@@ -371,8 +407,15 @@
       "depends_on": [
         "T15"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:05:43Z",
+      "commits": [
+        "97b18c2"
+      ],
+      "pr_number": 21,
+      "pr_repo": "fitme-story",
+      "note": "Ported 8 primitives (Panel, MetricList, InfoTile, DriftList, ModeBadge, DocumentCard, DocumentGroupCard, EmptyState) to TypeScript with explicit prop interfaces. ~280 lines incl. JSDoc. Tailwind classes preserved verbatim \u2014 re-skin to fitme-story tokens deferred to post-T20-T28 visual review per token-map.md."
     },
     {
       "id": "T20",
@@ -386,8 +429,11 @@
         "T18",
         "T19"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:49:03Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/23",
+      "commit": "425506c"
     },
     {
       "id": "T21",
@@ -401,8 +447,11 @@
         "T18",
         "T19"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:49:03Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/24",
+      "commit": "425506c"
     },
     {
       "id": "T22",
@@ -416,8 +465,11 @@
         "T18",
         "T19"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T12:49:03Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/25",
+      "commit": "79f522c"
     },
     {
       "id": "T23",
@@ -431,8 +483,11 @@
         "T18",
         "T19"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T12:49:03Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/26",
+      "commit": "4009133"
     },
     {
       "id": "T24",
@@ -446,8 +501,12 @@
         "T18",
         "T19"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T13:30:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/27",
+      "commit": "d356553",
+      "note": "Wave 2 supporting components ported with re-skin to fitme-story tokens per token-map.md. AlertsBanner decoupled from direct analytics import via onAcknowledge callback (T36 will wire GA4). ThemeToggle uses useSyncExternalStore (React 19 set-state-in-effect compliant). SourceHealth is RSC-compatible; the other 4 are 'use client'. tsc + eslint clean. Layout/page wiring intentionally deferred to T25/T26/T27/T29/T36."
     },
     {
       "id": "T25",
@@ -461,8 +520,12 @@
         "T7",
         "T19"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T13:55:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
+      "commit": "d17855f",
+      "note": "DataFreshnessFooter RSC reads src/data/freshness.json; renders 'Last synced N ago \u00b7 counts' under every /control-room/* page via layout.tsx; flips to red-warning state when staleness > 6h per PRD FR-8."
     },
     {
       "id": "T26",
@@ -476,8 +539,12 @@
         "T19",
         "T21"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/29",
+      "commit": "21d8678",
+      "note": "New /control-room/tasks server component using parseStateFiles() to flatten tasks across all features into 4 status buckets (in_progress/ready/blocked/done). PRIMARY_NAV Tasks flipped from soon-placeholder to active link. Required fix(build) PR #34 (fitme-story) to land first because the chain page.tsx \u2192 parsers/state.ts \u2192 types.ts surfaced a Turbopack new-URL resolution bug."
     },
     {
       "id": "T27",
@@ -490,8 +557,12 @@
       "depends_on": [
         "T19"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T13:55:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
+      "commit": "d17855f",
+      "note": "PhaseLegendAndActivity RSC composes PhaseLegend (4 buckets matching FeatureCard accent colors) + RecentActivityStrip (top-5 events from src/data/shared/change-log.json, sorted desc). Wired into Overview page between Live modules and migration paragraph."
     },
     {
       "id": "T28",
@@ -504,8 +575,12 @@
       "depends_on": [
         "T18"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T13:55:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/28",
+      "commit": "d17855f",
+      "note": "Added 'Case studies \u2192' to SECONDARY_NAV in layout.tsx; trailing arrow signals leaving /control-room. Dashboard's CaseStudiesView.jsx was already absent from Wave 1 layout port."
     },
     {
       "id": "T29",
@@ -519,8 +594,12 @@
         "T19",
         "T21"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/30",
+      "commit": "b4c92e0",
+      "note": "TaskTree component replaces dashboard's 207-line SVG DependencyGraph with topologically-sorted indented list + critical-path emphasis. Component shipped as reusable primitive without an immediate consumer (per task description's omission allowance); future hosts include per-feature drill-down + Cmd+K palette."
     },
     {
       "id": "T30",
@@ -533,8 +612,12 @@
       "depends_on": [
         "T22"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/31",
+      "commit": "70346a2",
+      "note": "useViewPrefs<T> hook (useSyncExternalStore-backed for hydration + cross-tab sync + lint compliance) + TableViewClient client island with sortable column headers + global search + Reset View button. ?reset=true URL param clears storage and replaces URL via history.replaceState."
     },
     {
       "id": "T30.5",
@@ -549,8 +632,12 @@
         "T19",
         "T22"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T21:25:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/32",
+      "commit": "607e298",
+      "note": "Hand-rolled (no cmdk/kbar dep) modal palette mounted in layout.tsx. Three command groups: Navigate (7 routes), Actions (Reset prefs / Toggle dark mode / Open GitHub), Features (50+ entries from seed pointing at FT2 state.json on GitHub). Full a11y (role=dialog, role=listbox, aria-activedescendant). Lint-safe via onQueryChange handler resetting selectedIndex (avoids React 19 set-state-in-effect)."
     },
     {
       "id": "T31",
@@ -564,8 +651,15 @@
         "T7",
         "T18"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T11:30:42Z",
+      "commits": [
+        "e47378f",
+        "3f1efab",
+        "c5d9b28"
+      ],
+      "note": "Ported via cherry-pick PR (UCC Path A). Builder + 7 parsers shipped to src/lib/control-room/."
     },
     {
       "id": "T32",
@@ -578,8 +672,13 @@
       "depends_on": [
         "T31"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T11:30:42Z",
+      "commits": [
+        "e47378f"
+      ],
+      "note": "github.ts shipped alongside T31 parsers via UCC Path A cherry-pick PR."
     },
     {
       "id": "T33",
@@ -592,8 +691,13 @@
       "depends_on": [
         "T31"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T11:30:42Z",
+      "commits": [
+        "ef9c6e3"
+      ],
+      "note": "34 tests via node:test, all pass. UCC Path A cherry-pick PR."
     },
     {
       "id": "T34",
@@ -606,8 +710,12 @@
       "depends_on": [
         "T20"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T21:30:00Z",
+      "pr_ref": "https://github.com/Regevba/FitTracker2/pull/227",
+      "commit": "f864c55",
+      "note": "Prepended HISTORICAL banner to dashboard/README.md pointing at fitme-story/src/{app,components,lib}/control-room/. References the V2 Rule retention policy (indefinite) + extraction recipe + future T35 redirect. Original Stack/Features/etc content preserved below a (Historical context follows) delimiter."
     },
     {
       "id": "T35",
@@ -620,8 +728,12 @@
       "depends_on": [
         "T34"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-06T07:25:00Z",
+      "pr_ref": "https://github.com/Regevba/FitTracker2/pull/229",
+      "commit": "bebd62e",
+      "note": "307 redirect shipped via dashboard/vercel.json; verified live (HTTP/2 307 with location: https://fitme-story.vercel.app/control-room). Per user authorization 2026-05-06, the legacy fit-tracker2 Vercel project was DELETED post-verification (vercel project rm). fit-tracker2.vercel.app now returns Vercel's default 404; discovery path is via the showcase Control Center nav (fitme-story PR #37). Deviates from PRD \u00a713's 30-day rollback window in favor of cleaner end-state; legacy code stays in dashboard/ folder per V2 Rule retention (T34 marker)."
     },
     {
       "id": "T36",
@@ -637,8 +749,20 @@
         "T22",
         "T23"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "phase_1_completed_at": "2026-05-05T20:35:00Z",
+      "phase_2_completed_at": "2026-05-06T07:00:00Z",
+      "completed_at": "2026-05-06T07:00:00Z",
+      "pr_refs": [
+        "https://github.com/Regevba/fitme-story/pull/33",
+        "https://github.com/Regevba/fitme-story/pull/35"
+      ],
+      "commits": [
+        "bb9b31a",
+        "fe9926f"
+      ],
+      "note": "All 8 PRD \u00a710.1 events wired. Phase 1 (#33): analytics.ts helpers + TrackPageView island for dashboard_load + dashboard_sync_warning_shown on Overview/Board/Knowledge. Phase 2 (#35): TrackedNavLink (dashboard_view_change), TrackedExternalLink (dashboard_external_link), TrackedDocLink (dashboard_knowledge_open), InstrumentedAlertsBanner (dashboard_blocker_acknowledged), TableViewClient handlers (dashboard_filter_apply with debounced search), commands.ts openExternal hook for palette tracking, plus TrackPageView added to /tasks + /table pages. dashboard_kanban_drag stubbed in Phase 1 (drag UX not yet shipped)."
     },
     {
       "id": "T37",
@@ -651,8 +775,12 @@
       "depends_on": [
         "T36"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-05T21:30:00Z",
+      "pr_ref": "https://github.com/Regevba/FitTracker2/pull/226",
+      "commit": "829f135",
+      "note": "8 dashboard_* event rows added (Dashboard category) + 1 conversion event (dashboard_blocker_acknowledged \u2192 TTC funnel). All comply with CLAUDE.md Analytics Naming Convention (snake_case + screen-prefix + \u226440 char + PII-free + 1 conversion flagged)."
     },
     {
       "id": "T38",
@@ -665,8 +793,12 @@
       "depends_on": [
         "T36"
       ],
-      "status": "pending",
-      "priority": "critical"
+      "status": "done",
+      "priority": "critical",
+      "completed_at": "2026-05-06T06:00:00Z",
+      "pr_ref": "https://github.com/Regevba/fitme-story/pull/36",
+      "commit": "b9a9ab7",
+      "note": "13 tests across 5 suites at src/lib/control-room/analytics.test.ts. Pattern: node:test + node:assert/strict (matches existing builder.test.ts/reconcile.test.ts; no extra runner dep). Coverage: payload routing (8 helpers \u00d7 1 round-trip test) + server safety (no window) + gtag-missing safety + error tolerance (throwing gtag) + timeSinceLoadMs boundary checks. All green (~324ms)."
     },
     {
       "id": "T39",
@@ -685,8 +817,13 @@
         "T13",
         "T14"
       ],
-      "status": "pending",
-      "priority": "high"
+      "status": "done",
+      "priority": "high",
+      "completed_at": "2026-05-05T11:30:42Z",
+      "commits": [
+        "52ec022"
+      ],
+      "note": "EXTRACTION-RECIPE.md shipped via UCC Path A cherry-pick PR."
     },
     {
       "id": "T40",
@@ -699,8 +836,13 @@
       "depends_on": [
         "T39"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T11:30:42Z",
+      "commits": [
+        "cb60b16"
+      ],
+      "note": "CLAUDE.md Skills ecosystem section updated. T40 cherry-picked from feat/ucc-t31-builder-port."
     },
     {
       "id": "T41",
@@ -713,8 +855,13 @@
       "depends_on": [
         "T39"
       ],
-      "status": "pending",
-      "priority": "medium"
+      "status": "done",
+      "priority": "medium",
+      "completed_at": "2026-05-05T11:30:42Z",
+      "commits": [
+        "9873c17"
+      ],
+      "note": "fitme-story README operator-dashboard section. UCC Path A cherry-pick PR."
     },
     {
       "id": "T42",
@@ -725,9 +872,30 @@
       "lane": "P-core",
       "effort_days": 1.5,
       "depends_on": [],
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
-      "phase": "8 (Docs)"
+      "phase": "8 (Docs)",
+      "completed_at": "2026-05-06T07:35:00Z",
+      "case_study_path": "docs/case-studies/unified-control-center-case-study.md",
+      "note": "Phase 8 case study published. Tier-tagged per data-quality-tiers.md (T1 wherever extracted from state.json/git/code; T2 where declared from observed behavior; T2.5 deferred status documented openly). Honest disclosures section covers: pre-state TTC unmeasurable / CI side-fix during window / Turbopack regression / PR #37\u2192#38 follow-up / PRD \u00a713 30-day rollback window deviated. Lessons-for-future-migrations section seeds 5 takeaways for next cross-repo feature."
+    },
+    {
+      "id": "T2.5",
+      "title": "Upgrade T2 baseline-ttc.json from T2 (Declared placeholder) to T1 (Instrumented from GA4)",
+      "block": "A",
+      "skill": "analytics",
+      "type": "data",
+      "lane": "E-core",
+      "effort_days": 0.25,
+      "depends_on": [
+        "T2"
+      ],
+      "status": "deferred",
+      "priority": "critical_pre_merge",
+      "started_at": null,
+      "deferred_at": "2026-05-06T06:30:00Z",
+      "deferred_reason": "Legacy Astro dashboard at fit-tracker2.vercel.app was effectively unmeasurable by the time the 7-day baseline window closed (clicking AlertsBanner did not fire dashboard_blocker_acknowledged events on subsequent visits; only 2 historical events visible from earlier testing, not a usable sample). Rather than fight the legacy surface for a contrived pre-state baseline, T2.5 is deferred: the new fitme-story dashboard ships with all 8 events wired (T36) and post-launch GA4 data on the new surface establishes the production baseline. Honest framing per data-quality-tiers.md: pre-migration sample is T2 (Declared, ~8s) with sample_size=2 noisy; post-migration measurement on the new surface will be T1 (Instrumented) once 7+ days of operator traffic accumulate.",
+      "note": "Original intent was an upgrade path T2\u2192T1 against the legacy Astro dashboard. Path abandoned 2026-05-06 in favor of post-launch measurement on the new dashboard. Pre-state baseline remains T2 Declared with documented small-sample caveat in baseline-ttc.json. Post-launch T1 measurement is a non-blocking follow-up (no T2.7 task created \u2014 the new dashboard's GA4 events fire automatically and the T1 read is a lightweight query against future data, not a code change)."
     }
   ],
   "transitions": [
@@ -758,6 +926,41 @@
       "timestamp": "2026-04-26T11:30:00Z",
       "approved_by": "user",
       "note": "User said continue. Starting T1 (instrument current Astro dashboard) immediately so 7-day baseline clock starts. T15 + T8/T9/T10/T13 (parallelizable infra) can also proceed \u2014 none block on T2 baseline data."
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "All implementation-block tasks done (43/44 + 1 deferred). T2.5 deferred per documented reason. CI passing across both repos. User explicit approval at session close 2026-05-06."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "T6/T11/T16/T33/T38 tests all passing. Analytics suite (T38) 13/13 green. pm-framework/pr-integrity gate green on every PR. CI clean on FT2 + fitme-story main."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "20 PRs merged across both repos. Live-verified: control-room/* gated by basic-auth, all 8 GA4 events firing, fit-tracker2 redirect functional then legacy project deleted per user authorization, showcase Control Center nav live, framework health page populating from synced data after PR #39."
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "Phase 8 case study at docs/case-studies/unified-control-center-case-study.md (FT2 #230, ~530 lines, tier-tagged with 5 honest disclosures). Daily sync routine trig_01ThxQphvQQa8tyWMsxiyhdm scheduled for 09:00 IDT daily."
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-06T12:57:54Z",
+      "approved_by": "user",
+      "note": "Showcase MDX published at fitme-story/content/04-case-studies/23a-unified-control-center.mdx. Memory updated. Feature formally CLOSED. T2.5 deferred remains the only non-done task; post-launch baseline measurement on the new dashboard will close it organically."
     }
   ],
   "metrics": {
@@ -829,7 +1032,34 @@
         "duration_minutes": 180
       },
       "implementation": {
-        "started_at": "2026-04-26T11:30:00Z"
+        "started_at": "2026-04-26T11:30:00Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 14487
+      },
+      "testing": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "review": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "merge": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "documentation": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
+      },
+      "complete": {
+        "started_at": "2026-05-06T12:57:54Z",
+        "ended_at": "2026-05-06T12:57:54Z",
+        "duration_minutes": 0
       }
     }
   },
@@ -887,6 +1117,20 @@
       "skill": "qa",
       "event_type": "cache_hit",
       "phase": "implementation"
+    },
+    {
+      "ts": "2026-05-06T18:05:04Z",
+      "key": "ux-spec-preflight:v4-x-first-run",
+      "layer": "L2",
+      "type": "adapted",
+      "skill": "ux"
+    },
+    {
+      "ts": "2026-05-06T18:05:04Z",
+      "key": "design-build:figma-mcp-auto-dispatch",
+      "layer": "L2",
+      "type": "adapted",
+      "skill": "design"
     }
   ],
   "case_study": {
@@ -909,5 +1153,9 @@
       "migrated_at": "2026-04-27T14:00:00Z",
       "rationale": "Framework-health dashboard naturally surfaces v7.7 outputs (Tier 1.1/3.2 trends, automation map, human-action checklist). Absorption avoids parallel track."
     }
-  }
+  },
+  "_meta": {
+    "deprecation_warnings": []
+  },
+  "case_study_showcase": "fitme-story/content/04-case-studies/23a-unified-control-center.mdx"
 }

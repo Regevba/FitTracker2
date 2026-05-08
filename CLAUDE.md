@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7-IN-PROGRESS, shipped 2026-04-24 → 2026-04-25 → ___)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -62,11 +62,14 @@ The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defens
 - `PHASE_TRANSITION_NO_TIMING` (v7.6) — pre-commit hook rejects a `current_phase` change without `timing.phases.<new_phase>.started_at` and, when there was a previous phase, `timing.phases.<old_phase>.ended_at`. **T16 note (v7.7):** this hook means the timing-backfill scenario resolved by v7.7 T15 (push-notifications, import-training-plan, stats-v2 had zero timing coverage because they predated mechanical enforcement) will not recur for any feature created post-v7.6. The v7.7 T15 pass addresses pre-existing data debt only — no further backfill is required for features that advanced phases after 2026-04-25.
 - `BROKEN_PR_CITATION` (v7.6, write-time) — pre-commit hook rejects case-study commits that cite `PR #N` or `pull/N` if the number does not resolve in the cached `gh pr list` result; skipped gracefully when `gh` is unavailable. Cycle-level `BROKEN_PR_CITATION` still runs as a safety net.
 - `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) — pre-commit hook rejects scoped case-study commits (forward-only, dated ≥ 2026-04-21) when the file has no T1/T2/T3 tier tag at all. It checks tag presence, not every quantitative claim.
+- `ISOLATION_OPT_OUT_REASON_MISSING` (v7.8 framework-v7-8-branch-isolation, T1) — pre-commit hook rejects state.json with `isolation_opt_out: true` but empty `isolation_opt_out_reason`. Pairs with `BRANCH_ISOLATION_VIOLATION`'s per-feature opt-out (Q3).
+- `BRANCH_ISOLATION_VIOLATION` (v7.8 framework-v7-8-branch-isolation, T6/T7, **advisory in v7.8 → enforced in v7.9**) — two-mode gate. Mode B fires on every commit when staged files match infra-path globs (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`, OR feature has `work_subtype: framework_feature` or `work_type: chore`). Mode C fires on `state.json::current_phase` mutations from a non-feature branch. Auto-isolation flow dispatches `scripts/create-isolated-worktree.py` (or `superpowers:using-git-worktrees` skill in agent context) — creates the worktree at the smart-directory-selected path, links state.json, registers the lease in `.claude/shared/agent-leases.json`. Per-feature `isolation_opt_out: true` bypasses Mode C only; Mode B (infra) ignores it (Q3 override).
+- `FEATURE_CLOSURE_COMPLETENESS` (v7.8 framework-v7-8-branch-isolation, T11-T14, **advisory in v7.8 → enforced in v7.9**) — pre-commit hook fires on `current_phase=complete` transitions. Validates: (a) 7 required case-study frontmatter fields (`date_written` or `date`, `dispatch_pattern`, `success_metrics` or `primary_metric`, `kill_criteria`, `framework_version`, `work_type`, `tier_tags_present`); (b) Q7 — when `kill_criteria` is set, `kill_criteria_resolution` must also be non-empty; (c) Q6 — bidirectional PR-list parity between state.json (`tasks[].pr_number`, `phases.merge.pr_number`, `tasks[].related_prs`) and case study (body regex `PR #N` / `pull/N` + frontmatter `related_prs`). Override: case-study `pr_citation_exempt: [{pr_number, reason}]` frontmatter array.
 
 **Cycle-time gates (fire every 72h via GitHub Actions):**
-Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. 13 cycle-time check codes: `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `CU_V2_INVALID` (v7.7).
+Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. **16 cycle-time check codes** (13 baseline + 3 v7.8 additions): `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `CU_V2_INVALID` (v7.7), and **(v7.8 framework-v7-8-branch-isolation, all advisory)** `BRANCH_ISOLATION_HISTORICAL` (T17 — forward-only audit), `BRANCH_ISOLATION_LAUNCHD_DRIFT` (T18 — macOS-only plist scan), `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror (T19 — catches --no-verify bypasses).
 
-- **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"` or `"roundup"` bypass the sub-phase vocabulary check.
+- **Backfill exemption:** features tagged `case_study_type: "pre_pm_workflow_backfill"`, `"roundup"`, `"no_case_study_required"`, or `"framework_meta_retroactive"` bypass the sub-phase vocabulary check. The `framework_meta_retroactive` tag (added v7.8) is for framework-version meta features whose framework version itself shipped before spec discipline was established (v5.0 SoC, v5.2 dispatch intelligence, v6.0 measurement, v7.0 meta-analysis, v7.1 integrity cycle); the case study + git history are the source of truth — no spec/plan/PRD chain to backfill. Going forward (v7.9+), all new framework versions carry full chain-of-custody and CANNOT use this exemption.
 - **Local usage:** `make integrity-check` (findings only) or `make integrity-snapshot` (write + diff vs previous).
 - **Full docs:** [`.claude/integrity/README.md`](.claude/integrity/README.md).
 
@@ -87,7 +90,7 @@ This framework exists because we empirically observed 7+ features sit in "shippe
 - **Weekly framework-status cron** — [`.github/workflows/framework-status-weekly.yml`](.github/workflows/framework-status-weekly.yml) fires Mondays 05:00 UTC. Appends a snapshot to [`.claude/shared/measurement-adoption-history.json`](.claude/shared/measurement-adoption-history.json) (dedup by date). Opens `framework-status` issue on regression (decrease in `fully_adopted` or `any_adopted`).
 - **Append-only adoption history** — `make measurement-adoption` now writes a dated snapshot to the history ledger; trend mode unlocks after 3 snapshots accumulate.
 
-**v7.7 Validity Closure (ready for merge as of 2026-04-27):**
+**v7.7 Validity Closure (shipped 2026-04-27 via PR #144 [merge `01b9e11`]; state.json reconciled in PR #158):**
 Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
 
 - **FitTracker2 PR #144** — 5 new gates: 4 write-time pre-commit hooks (`CACHE_HITS_EMPTY_POST_V6`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`) + 1 cycle-time check code (`CU_V2_INVALID`) + 1 cycle-time advisory (`TIER_TAG_LIKELY_INCORRECT`, kill criterion 2 fired at baseline so it ships **advisory permanent**). Plus bulk-backfill of 32 case-study frontmatters and timing.phases backfill on 3 paused features.
@@ -108,17 +111,97 @@ Closes A1–A5 + B1–B2 + C1 from the post-v7.6 gap inventory across two PRs:
 - Tier 1.1 trend mode unlocks at 3 history snapshots — earliest **2026-05-04** (Monday cron appends snapshot #3).
 - Tier 3.2 trend mode unlocks at 3 cycle snapshots — earliest **~2026-05-03 to -06** (72h cycle accumulates 3rd snapshot).
 
-A scheduled +7d agent will append the verification + journal entry once both fire, and flip this section's banner from "ready for merge" to "shipped 2026-05-XX".
+A scheduled +7d agent will append the verification + journal entry once both fire.
 
-Spec: [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
-Plan: [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
-Live case study with the full live append-only journal + Section 99 synthesis: [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md).
+**Known gap (2026-04-30 audit) — RESOLVED in v7.8:** the `CACHE_HITS_EMPTY_POST_V6` write-time gate had 0% effective coverage at v7.7 ship because 43/46 state.json files used the legacy `created` key while the gate read `created_at`. Closed by:
+
+- PR #169 (2026-05-01) migrated 43 files from `created` → `created_at`.
+- PR #173 (2026-05-02) added a defensive dual-read parser + Mechanism C scaffolding.
+- PRs #185 + #186 (2026-05-03) backfilled `framework_version` to canonical `vX.Y` on all 46 features.
+- PR #187 + #188 + #189 (2026-05-03) shipped Mechanism A coverage-asserting gates, Mechanism C session attribution wiring, and Mechanism E git merge driver. Effective gate coverage now visible in `.claude/logs/gate-coverage.jsonl`.
+
+## v7.8 Bridge (advisory mode, shipped 2026-05-02 → 2026-05-03)
+
+v7.8 closes the v7.7 silent-pass via two surfaces specified jointly with v7.9:
+
+**Surface 1 — Silent-pass prevention (Mechanisms A, B, C, D):**
+
+- **Mechanism A — Coverage-asserting gates** (PR #187): every write-time gate emits `{candidates, checked, skipped, skip_reasons}` to `.claude/logs/gate-coverage.jsonl`. v7.9 will promote a `GATE_COVERAGE_ZERO` meta-check to enforced once ≥7 days of stats accumulate.
+- **Mechanism B — Schema field-rename detection + dual-read** (PR #173 + #185 + #186): `created` ∪ `created_at` dual-read for the migration window; canonical `framework_version` field on 46/46 features.
+- **Mechanism C — PostToolUse:Read hook** (PR #173 + #188): `scripts/observe-cache-hit.py` auto-captures Read events → `.claude/logs/_session-<id>.events.jsonl`. `/pm-workflow` now writes `.claude/active-feature` on entry; SessionStart hook surfaces it; new advisory check `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (15th cycle-time check code) flags features where session events show Reads but state.json::cache_hits[] is empty.
+- **Mechanism D — Pre-commit hook header self-audit** (PR #193): pre-commit hook validates its own header on each run; mismatch raises an advisory finding instead of failing silently.
+
+**Surface 2 — Inter-agent awareness (Mechanisms E, F):**
+
+- **Mechanism E — Custom git merge driver** (PR #189): `scripts/merge-driver-dedup.py` auto-resolves merge conflicts on append-only ledgers (`measurement-adoption-history.json`, `documentation-debt.json`) via union-dedup-by-key. `make install-hooks` registers the driver; `.gitattributes` opts the ledgers in.
+- **Mechanism F — Membrane status advisory** (PR #193): `scripts/membrane-status.py` reports active feature + recent gate firings + dispatch-blocker state in a single readout. Surfaced via SessionStart and `make membrane-status`. Closes the inter-agent context-handoff gap.
+
+**v7.8 fully shipped 2026-05-04** via 9 PRs: #173 (M-C scaffold) + #185 (PR-2 schema bridges A) + #186 (PR-3 framework_version backfill) + #187 (PR-4 Mechanism A coverage gates) + #188 (PR-5 M-C session attribution) + #189 (PR-6 Mechanism E merge driver) + #193 (PR-6 Mechanisms D + F) + #194 (PR-7 cold-start entrypoint + honesty ledger FT2-FH-001) + #195 (CI fix). Six mechanisms (A–F) all in advisory mode; v7.9 measurement window opens **2026-05-11** (+7d). Schema bridges populated on 47/47 features.
+
+## v7.8.1 Branch Isolation + Feature-Closure Completeness (advisory mode, shipped 2026-05-07 via PR #244 squash `6d1a53f` + PR #245 closure)
+
+v7.8.1 closes two empirically-witnessed silent-pass failure modes via cooperating pre-commit gates extending v7.8's enforcement layer. Both gates ship in **advisory mode** — they emit Mechanism A coverage telemetry but do NOT block commits. v7.9 promotion (earliest 2026-05-21, T+14d) flips them to enforced.
+
+**Trigger incidents:**
+- HADF Phase 2 (2026-04-30) — launchd plist anchored to canonical repo path; relative writes resolved against wrong tree; required mid-flight isolation + restart + remerge
+- 2026-05-07 reconcile session — 5 documentation-debt fields silently missing across 4 already-shipped features (UCC + import-training-plan + framework-story-site + push-notifications-v2); detection only post-hoc via `make documentation-debt`
+
+**3 new write-time gates (in `scripts/check-state-schema.py`):**
+- `BRANCH_ISOLATION_VIOLATION` (advisory) — Mode B fires on every commit when staged files match infra-path globs (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`); Mode C fires on `state.json::current_phase` mutations from a non-feature branch. Auto-isolation flow dispatches `scripts/create-isolated-worktree.py` (or `superpowers:using-git-worktrees` skill in agent context). Per-feature `isolation_opt_out: true` bypasses Mode C only; ignored for Mode B (Q3 infra override).
+- `FEATURE_CLOSURE_COMPLETENESS` (advisory) — fires on `current_phase=complete` transitions. Validates 7 required case-study frontmatter fields + Q7 (`kill_criteria_resolution` required when `kill_criteria` set) + Q6 bidirectional PR-list parity (state.json ↔ case study, override via `pr_citation_exempt`).
+- `ISOLATION_OPT_OUT_REASON_MISSING` (enforced) — when `isolation_opt_out: true`, `isolation_opt_out_reason` must be non-empty.
+
+**3 new cycle-time advisories (in `scripts/integrity-check.py`):** `BRANCH_ISOLATION_HISTORICAL` (forward-only audit, T+14d after-ship cutoff); `BRANCH_ISOLATION_LAUNCHD_DRIFT` (macOS-only plist scan); `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror (catches `--no-verify` bypasses).
+
+**Companion deliverables:**
+- `scripts/create-isolated-worktree.py` — local CLI auto-isolation (idempotent + adopt-existing)
+- `make verify-isolation` + `make feature-completeness-audit` — system-wide readouts
+- `/ux + /design pre-merge-review` extended with sub-step 6f (kill_criteria_resolution check)
+- `.claude/shared/branch-isolation-exempt.json` — exempt-pattern allowlist
+- `.claude/shared/path-reducers.json` extended with `gate-coverage.jsonl` + `_session-*.events.jsonl` entries
+
+**v7.8.1 first feature shipped via the v7.8 protocol** — first feature using Mechanism C session attribution + isolated worktree from Phase 1 onward + Tier 2.2 logging on every phase transition + Mechanism A coverage telemetry verification on its own gates. 14 commits across 9 phase transitions in one session; 28/28 implementation tasks done; 130/130 unit tests pass; 19/19 pipeline assertions pass.
+
+**Spec:** [`.claude/features/framework-v7-8-branch-isolation/prd.md`](.claude/features/framework-v7-8-branch-isolation/prd.md). **Case study:** [`docs/case-studies/framework-v7-8-branch-isolation-case-study.md`](docs/case-studies/framework-v7-8-branch-isolation-case-study.md). **Out-of-scope spec** (7 v8 candidates queued for Phase 9 prioritization 2026-05-21): [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md).
+
+**Spec:** [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md).
+**Predecessor v7.7 spec:** [`docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md`](docs/superpowers/specs/2026-04-27-framework-v7-7-validity-closure-design.md).
+**Predecessor v7.7 plan:** [`docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md`](docs/superpowers/plans/2026-04-27-framework-v7-7-validity-closure.md).
+**v7.7 case study:** [`docs/case-studies/framework-v7-7-validity-closure-case-study.md`](docs/case-studies/framework-v7-7-validity-closure-case-study.md).
+**v7.8 case study (live append-only journal):** [`docs/case-studies/framework-v7-8-bridge-case-study.md`](docs/case-studies/framework-v7-8-bridge-case-study.md).
+
+## v7.8.2 Cross-Repo Telemetry Asymmetry — Documented Disposition (shipped 2026-05-08)
+
+v7.8.2 is a **patch-level bump** that does NOT add new gates. It codifies a forward-looking policy decision and ships one operability fix. Closes 2 v7.9 candidates (F7 + F8) by documenting the "no-port" decision rather than building cross-repo gate parity.
+
+**Trigger:** during the 2026-05-08 fitme-story public-site audit session, the FT2 `PostToolUse:Read` hook fired `python3 scripts/observe-cache-hit.py` blindly even when cwd was in fitme-story (where the script doesn't exist), producing 30+ blocking-error notifications. Empirically confirmed F8 finding (Mechanism A telemetry is FT2-only).
+
+**What shipped:**
+
+- **Hook fix:** `.claude/settings.json` PostToolUse:Read command now has a Bash short-circuit existence guard (`[ -f scripts/observe-cache-hit.py ] && python3 ... || true`). Silently no-ops when the script is absent (cross-repo cwd, missing worktree, etc.).
+- **Disposition spec:** [`docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md`](docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md) — 7 sections explaining (1) the asymmetry, (2) why no full parity, (3) what we DO ship, (4) what does NOT change, (5) re-eval triggers (3 signals), (6) cross-references, (7) disposition record.
+
+**What does NOT change in v7.8.2:**
+- All v7.5 → v7.8.1 gates still fire on FT2 commits (no regression)
+- Mechanism A `gate-coverage.jsonl` still emits for every FT2 gate fire
+- Mechanism C session-attribution still works when cwd is FT2
+- Tier 2.2 contemporaneous logging still works for any feature in FT2
+
+**v7.9 candidates resolved at v7.8.2:**
+- **F7** (Tier 2.2 per-phase emission gate parity for fitme-story) — RESOLVED via documented exemption
+- **F8** (Mechanism A `gate-coverage.jsonl` parity for fitme-story) — RESOLVED via documented exemption
+
+**Re-evaluation cadence:** Annual (next 2027-05-08) OR earlier if any of 3 signals fire. See spec §5.
+
+**v7.8.2 ships via** PR #258 (FT2 chore). Tracks: [fitme-story-public-enhancements T22 + T23](https://github.com/Regevba/FitTracker2/issues/255).
+
+**Spec:** [`docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md`](docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md).
 
 ## Known Mechanical Limits
 
-v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. Five gaps remain mechanically unclosable:
+v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:
 
-1. `cache_hits[]` writer-path adoption — agent must remember to log it (issue #140).
+1. ~~`cache_hits[]` writer-path adoption — agent must remember to log it (issue #140).~~ **Auto-collected in v7.8 advisory** via `PostToolUse:Read` hook (`.claude/settings.json`) → `scripts/observe-cache-hit.py` → `.claude/logs/_session-<id>.events.jsonl`. v7.9 promotes to enforced. Pre-Mechanism-C features (`created_at < 2026-05-02`) are exempt from `CACHE_HITS_EMPTY_POST_V6` — the auto-instrumentation didn't exist for them.
 2. `cu_v2` factor *correctness* — judgment-based; we check presence, not magnitude.
 3. T1/T2/T3 tag *correctness* — preflight checks presence on post-2026-04-21 case studies, not whether the tag is right.
 4. Tier 2.1 real-provider auth checklist — requires a human at a simulator.
@@ -141,7 +224,8 @@ Parallel subagent dispatch is **currently blocked** at the framework layer (F6�
 - UI audit: `make ui-audit` (per-view design-system compliance scanner — see "Design System" section)
 - Build: `xcodebuild build` (iOS Simulator, no code signing)
 - Test: `xcodebuild test` (XCTest suite)
-- All four must pass before any merge to main once the UI-audit baseline reaches 0 P0. Today `ui-audit` runs separately; the existing 27 P0 baseline is being burned down "fix-as-you-touch" per `docs/design-system/ui-audit-baseline.md`.
+- All four must pass before any merge to main. The original 27-P0 baseline burndown completed (verified 2026-05-05: `make ui-audit` reports P0=0). `ui-audit` is now a hard gate within `verify-local` alongside tokens-check, build, and test. Fix-as-you-touch policy continues for P1 findings (current drift: +5 from 103 baseline → 108).
+- **UI test coverage strategy (codified 2026-05-08 per iOS audit finding E-2):** UI test coverage is **intentionally thin** (~7 UI test files vs. 49 unit test files / 440 test methods total). Reason: the parallel-clone simulator hang env-flake (per `docs/case-studies/m-4-xcuitest-infrastructure-case-study.md`) makes UI tests a high-cost, high-flake surface on hosted CI. Unit + analytics tests carry the load instead. Expansion is **deferred** until the env-flake root cause is resolved (tracked in `docs/product/backlog.md` under "CI parallel-clone simulator hang"). Two surgical XCTSkipIf quarantines (`HomeReadinessUITests`, `OnboardingUITests`) remain in place as the live workaround.
 
 ## Data-Driven Development
 
@@ -167,11 +251,28 @@ The design system is a **living, evolving framework** — not a static constrain
 - Always use semantic tokens (AppColor, AppText, AppSpacing) — never raw literals
 
 **Evolution rules:**
+
 - New tokens/components are proposed on feature branches, never directly on main
 - Phase 3 compliance gateway validates every UI feature against the design system
 - If a feature needs to deviate, the user chooses: fix, evolve the system, or override with justification
 - Approved changes merge to main with the feature and become part of the system
 - All changes documented in `docs/design-system/feature-memory.md`
+
+### v4.X Skill-layer gates (added 2026-05-06)
+
+Phase 3 + Phase 6 of the PM workflow now mechanically gate the spec ↔ code ↔ Figma chain. Skipping any gate is no longer possible without explicit user override:
+
+- **`/ux preflight`** — verifies every token/component/pattern named in `ux-spec.md` exists in the codebase. Caught 4 P0 spec errors during the import-training-plan resume; saves 2-4h of "no such symbol" Phase 4 rework per feature on average.
+- **`/design preflight`** — extends `/ux preflight` with Figma MCP liveness + Figma library accessibility check. Writes `figma-bridge-status.json`. Failure → spec NOT approvable.
+- **`/design build`** — auto-dispatched at Phase 3.j. Pushes screens into the FitMe Design System Library (`0Ai7s3fCFqR5JXDW8JvgmD`) via Figma MCP, falls back to portable prompt at `docs/prompts/ui/{date}-{feature}-design-build.md` when MCP unreachable. Writes captured Figma node IDs back to `state.json.figma_node_ids` AND adds row to `figma-code-sync-status.md`.
+- **`/ux pre-merge-review`** — Phase 6 gate. Heuristic re-check of shipped code vs approved spec. Sets `state.json.pre_merge_review.ux`. BLOCK halts Phase 7.
+- **`/design pre-merge-review`** — Phase 6 gate. `make ui-audit` P0=0 + `state.json.figma_node_ids` populated + PR description references those node IDs (CLAUDE.md "Synced" definition mandates this). Sets `state.json.pre_merge_review.design`. BLOCK halts Phase 7.
+
+**PR description requirement (enforced):** every UI-touching PR must reference the Figma node IDs of the screens it touches. The IDs come from `state.json.figma_node_ids` (populated by `/design build`) and are validated by `/design pre-merge-review`. See `docs/skills/design.md` for the full `figma_node_ids` schema.
+
+**Folder convention:** `docs/prompts/ux/` for `/ux prompt` outputs, `docs/prompts/ui/` for `/design prompt` outputs, `docs/prompts/_legacy/` for hand-authored historical prompts.
+
+Full documentation: [`docs/skills/evolution.md`](docs/skills/evolution.md) §26.
 
 ### Verification Layer (added 2026-04-20)
 
@@ -190,10 +291,13 @@ colorset.
   `DS-MAGIC-{PADDING,FRAME}`, `DS-A11Y-BUTTON`, `DS-MISSING-ASSET`
   (Gap-A: `Color("name")` in AppTheme without a backing colorset).
 - **Baseline:** `docs/design-system/ui-audit-baseline.md` (regenerate
-  with `make ui-audit-baseline`). Current snapshot: 27 P0 + 103 P1.
+  with `make ui-audit-baseline`). Baseline snapshot: 0 P0 + 103 P1
+  (P0 burndown completed 2026-05-05); current live: 0 P0 + 108 P1
+  (P1 drift +5 since baseline, fix-as-you-touch active).
 - **Fix-as-you-touch rule:** any PR touching a file with findings should
-  clear that file's findings as part of the change. Once baseline P0
-  reaches 0, add `ui-audit` to `verify-local` to make it a hard gate.
+  clear that file's findings as part of the change. `ui-audit` is now a
+  hard gate within `verify-local` (achieved 2026-05-05 once P0 baseline
+  reached 0).
 - **Verification contract:** `docs/design-system/figma-code-sync-status.md`
   Verification Contract section defines what is automatically vs
   manually verified, plus plans for closing the snapshot-test and
@@ -256,6 +360,8 @@ substantial refactor against `docs/design-system/ux-foundations.md`):
    // This file is no longer in the build target; it stays in the repo
    // as a reviewable reference for the v1 → v2 diff.
    ```
+
+   **Retention policy (codified 2026-05-08 per iOS audit finding F-1):** HISTORICAL v1 files are retained **indefinitely by default**. The V2 Rule's first anniversary (**2027-04-09**) is the scheduled review point for whether to introduce a year+1 prune policy (e.g., "drop HISTORICAL files older than 1 year; rely on git history"). Until then, all HISTORICAL files stay in the repo as on-disk reviewable references. As of 2026-05-05, 16 HISTORICAL files (~5K LoC) sit alongside their v2 counterparts.
 
 6. **One v2 split per surface.** A second alignment pass on the same
    screen does not become a `v3/` directory — it patches v2 in place.
@@ -324,6 +430,11 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 
 ## Key Paths
 
+### Glossaries
+
+- **Dev-process basics (for non-developers):** [`docs/glossary-dev-basics.md`](docs/glossary-dev-basics.md) — plain-English definitions of git / CI / shell terms (commit, push, PR, grep, pre-commit hook, etc.) plus a "how a feature reaches Done" walkthrough.
+- **Framework vocabulary (T1/T2/T3 tiers, Class A/B/C gates, validity closure, integrity check codes, …):** rendered at [fitme-story.vercel.app/glossary](https://fitme-story.vercel.app/glossary), source at `fitme-story/src/lib/glossary.ts`.
+
 ### Product
 - PRD: `docs/product/PRD.md`
 - Per-feature PRDs: `docs/product/prd/`
@@ -337,7 +448,8 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
 
 ### Skills ecosystem
-- **DEV-only framework guide (v1.0 → v7.6):** [`docs/architecture/dev-guide-v1-to-v7-6.md`](docs/architecture/dev-guide-v1-to-v7-6.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes, and operational walkthroughs (adding a feature, extending a check code, bumping the framework version).
+- **DEV-only framework guide (v1.0 → v7.8):** [`docs/architecture/dev-guide-v1-to-v7-7.md`](docs/architecture/dev-guide-v1-to-v7-7.md) — start here if you are a developer onboarding to the framework. Covers the 4 enforcement layers, `state.json` schema, phase lifecycle, dispatch model, cache architecture, measurement protocol, integrity check codes (12 write-time + 13 cycle-time + 3 advisory in v7.8), §2.4 v7.8 bridge mechanisms (A–F), and operational walkthroughs (adding a feature, extending a check code, bumping the framework version). Filename retained at `-v7-7` for ref-stability across 16+ cross-references in FT2 + fitme-story; content tracks v7.8 (last bumped 2026-05-07).
+- **Lifecycle event catalog (companion to dev-guide):** [`docs/architecture/feature-lifecycle-event-catalog.md`](docs/architecture/feature-lifecycle-event-catalog.md) — answers "at any point in a feature's lifecycle, what should be triggered, logged, measured, and persisted, and which gate enforces it?" 12 sections + 2 mermaid flow diagrams (L0 phase lifecycle + per-commit fan-out across all 4 loops). Authoritative spec source for the planned `FEATURE_CLOSURE_COMPLETENESS` gate ([`framework-v7-8-branch-isolation`](.claude/features/framework-v7-8-branch-isolation/state.json)).
 - Skills one-pager: `docs/skills/README.md`
 - Skills architecture deep-dive: `docs/skills/architecture.md` (merged from former skills-ecosystem.md + skills-ecosystem-analysis.md)
 - Ecosystem evolution history: `docs/skills/evolution.md` (v1.0 → v1.2 → v2.0 → v3.0 → v4.0 → v4.1)
@@ -346,6 +458,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Integration adapters: `.claude/integrations/{service}/` (ga4, app-store-connect, sentry, firecrawl, axe, security-audit)
 - Learning cache: `.claude/cache/` (L1 per-skill, L2 `_shared/`, L3 `_project/`)
 - Validation gate config: `.claude/shared/skill-routing.json` (`validation_gate` section)
+- **Operations control room (in-flight migration, UCC):** the operator dashboard that surfaces every framework gate, every cycle snapshot, every measurement-adoption ledger, and the case-study feed. Currently lives at `dashboard/` (Astro 6 + React 19, deployed at `fit-tracker2.vercel.app`); migrating to `fitme-story/src/{app,components,lib}/control-room/` (Next.js 16, deployed at `fitme-story.vercel.app/control-room/*`, basic-auth gated). Pre-build sync at `fitme-story/scripts/sync-from-fittracker2.ts` mirrors `.claude/shared/*.json`, `.claude/features/*/state.json`, and the canonical doc tree. Migration is extraction-ready: see [`fitme-story/EXTRACTION-RECIPE.md`](https://github.com/Regevba/fitme-story/blob/main/EXTRACTION-RECIPE.md) for the 7-step playbook. Per-feature state for the migration: `.claude/features/unified-control-center/`. The framework-health page at `/control-room/framework` (PR #7, fitme-story) is the first UCC route shipped; remaining UCC tasks tracked in `state.json.tasks[]`.
 
 ### Design system
 - UX foundations: `docs/design-system/ux-foundations.md` (13 principles)
@@ -367,6 +480,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Pilot case study (Onboarding v2): `docs/case-studies/pm-workflow-showcase-onboarding.md`
 - Data quality tiers convention: `docs/case-studies/data-quality-tiers.md` (T1/T2/T3 labeling, est. 2026-04-21)
 - Meta-analyses + independent audits: `docs/case-studies/meta-analysis/`
+- **Publication + chronological-order rule (est. 2026-04-30):** every feature that transitions to `complete` MUST have BOTH a source case study at `docs/case-studies/<feature>-case-study.md` AND a published showcase MDX at `fitme-story/content/04-case-studies/`. The showcase's slot-number filename prefix AND `timeline_position.order` MUST reflect the framework version under which the feature shipped — not the publication date. A v5.1 feature published retroactively still slots in chronologically: use a fractional `order` (e.g. `8.5`) and an intercalating filename prefix (e.g. `08a-`) so existing slots don't get renumbered. At PR review, a showcase MDX claiming `version: '5.1'` placed below a `version: '6.0'` slot is a review block. Publication is verified via the `case_study_showcase` field in `state.json` pointing at a real MDX in fitme-story (the existing `STATE_NO_CASE_STUDY_LINK` write-time gate enforces the source case study; chronological position is enforced at PR review for now).
 
 ### Process docs (Gemini audit Tier groundwork)
 - Index: `docs/process/README.md`
@@ -384,3 +498,4 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Dashboard activation: `docs/setup/dashboard-activation.md`
 - Integrations setup: `docs/setup/integrations-setup-guide.md`
 - Auth runtime verification: `docs/setup/auth-runtime-verification-playbook.md`
+- UCC passkey auth (going-live runbook): `docs/setup/ucc-passkey-auth-setup-guide.md`

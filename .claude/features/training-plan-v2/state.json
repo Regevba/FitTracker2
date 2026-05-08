@@ -1,9 +1,15 @@
 {
   "feature": "training-plan-v2",
-  "created": "2026-04-10T00:00:00Z",
+  "created_at": "2026-04-10T00:00:00Z",
   "updated": "2026-04-10T05:00:00Z",
   "branch": "feature/training-plan-v2",
   "current_phase": "complete",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "feature",
   "work_subtype": "v2_refactor",
   "has_ui": true,
@@ -14,7 +20,7 @@
   "v2_rule_compliant": true,
   "checklist_path": "docs/design-system/v2-refactor-checklist.md",
   "case_study": "docs/case-studies/training-plan-v2-case-study.md",
-  "case_study_showcase": "04-case-studies/19-training-plan-v2.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/19a-training-plan-v2.mdx",
   "transitions": [
     {
       "from": "init",
@@ -90,5 +96,8 @@
       "kill_criteria": "Per-exercise event drop-off > 15% vs training_workout_start across weekly/30d/90d cohorts"
     }
   },
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

@@ -1,14 +1,32 @@
+---
+title: "Auth Polish v2 — Case Study"
+date_written: 2026-04-28
+work_type: Feature
+dispatch_pattern: serial
+success_metrics:
+  primary: "Auth recovery success rate ≥ 70% by day 60, ≥ 75% by day 90 [T1]. Composite of password-reset completion + biometric-unlock completion + Google sign-in completion / their respective starts."
+  secondary:
+    - "Password-reset completion / requested ≥ 60% by day 60 [T1]"
+    - "Biometric activation rate (activated / offered) ≥ 35% by day 60 [T1]"
+    - "Google Sign-In adoption ≥ 20% of total sign-ins by day 60 [T1]"
+    - "Biometric unlock latency P95 < 1500ms [T1]"
+kill_criteria:
+  - "Biometric activation rate < 5% by day 14 → iterate copy/timing once; second miss → kill activation sheet, Settings-only"
+  - "Google Sign-In > 0.5% crash/hang rate → flip GoogleRuntimeConfiguration.isConfigured to false via remote-config"
+  - "Forgot-password deep-link return < 90% success → regress to inline status-banner-only mode"
+  - "Overall auth_signin_completed rate drops > 5% week-over-week → halt rollout; investigate SDK conflict"
+case_study_type: live_pm_workflow
+predecessor_case_studies:
+  - "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md"
+status: live_phase_2
+---
+
 # Case Study: auth-polish-v2
-<!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+<!-- doc-debt-backfill: original fields from scripts/backfill-case-study-fields.py;
+     2026-04-28: enriched with YAML frontmatter at PRD approval per Appendix B + v7.7 hooks. -->
 
-| Field | Value |
-|---|---|
-| Work Type | Enhancement |
-| Dispatch Pattern | serial |
-
-
-> **Status:** Live, Phase 1 (PRD draft approved-pending)
-> **Framework version:** v7.6 (Mechanical Enforcement)
+> **Status:** Live, Phase 2 (Tasks) — PRD approved 2026-04-28
+> **Framework version:** v7.7 (Validity Closure)
 > **Case study type:** `live_pm_workflow`
 > **Started:** 2026-04-27
 > **Feature directory:** [.claude/features/auth-polish-v2/](../../.claude/features/auth-polish-v2/)
@@ -41,11 +59,34 @@ The narrative below populates as phases complete. This file is intentionally spa
 
 **Deferred:** Apple Sign In Services-ID setup (out-of-repo Apple Developer console action), AI smart reminder UI (separate enhancement), Sentry MCP wiring (Gate C peer).
 
-## Phase 1 — PRD (in progress, opened 2026-04-27T05:09:15Z)
+## Phase 1 — PRD (closed 2026-04-28)
 
-To be populated on phase close: total FRs, primary metric, kill criteria, files-touched estimate, analytics-spec event count.
+| Field | Value | Tier |
+|---|---|---|
+| Started | 2026-04-27T05:09:15Z | T1 |
+| Approved | 2026-04-28 | T1 |
+| Wall-time gap (incl. v7.7 freeze pause) | ~36 hours calendar; ~8.6 min research + draft, paused 2026-04-27 14:00 UTC for v7.7 priority freeze; resumed 2026-04-28 17:00 UTC | T1 |
+| PRD size | 31KB / 473 lines / 21 sections | T1 |
+| Functional requirements | 18 (prioritized P0/P1/P2) | T1 |
+| User flows documented | 8 (A–H: forgot-password happy/cooldown, biometric activation/decline/unlock/fallback, Google new/returning) | T1 |
+| Analytics spec events | 9 new + reused | T1 |
+| Files-touched estimate | 26 (flags mandatory feature branch per CLAUDE.md) | T1 |
+| OQs resolved + locked at PRD | 3 (activation timing, URL scheme, GIDClientID source) | T1 |
+| Phase 1 exit-criteria checklist | 23/23 | T1 |
 
-## Phase 2-8
+**Resume + cu_v2 backstory:** the PRD was substantively complete by 2026-04-27 14:00 UTC when the v7.7 freeze paused work. v7.7 (Validity Closure) shipped 2026-04-27 17:39 UTC — PR #144 + #7. On 2026-04-28 the feature resumed; cu_v2 was populated (factors 0.6 / 0.7 / 0.4 / 0.6 → total 2.3, tier_class A_high) since auth = high-risk per CLAUDE.md. Live verification: 45 state.json files pass v7.6 + v7.7 hooks before approval.
+
+**v7.7 dogfood instrumentation activated on this commit:**
+- `cache_hits[]` gated by `CACHE_HITS_EMPTY_POST_V6` — empty array OK during work; required non-empty by `current_phase=complete`
+- `cu_v2` schema validated by `CU_V2_INVALID` — passes
+- `case_study` link present in state.json (gates `STATE_NO_CASE_STUDY_LINK`)
+- This file's frontmatter satisfies `CASE_STUDY_MISSING_FIELDS` (forward-only ≥ 2026-04-28; this is the first new case study after the cutoff)
+
+## Phase 2 — Tasks (in progress, opened 2026-04-28)
+
+To be populated on phase close: total tasks, parallel-block grouping, dependency graph, files touched per task.
+
+## Phases 3–8
 
 Pending.
 

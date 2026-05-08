@@ -2,10 +2,16 @@
   "feature": "ai-engine-v2",
   "parent_case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study_showcase": "04-case-studies/07-ai-engine-architecture.md",
-  "created": "2026-04-10T21:00:00Z",
+  "created_at": "2026-04-10T21:00:00Z",
   "updated": "2026-04-11T01:00:00Z",
   "branch": "fix/design-system-token-compliance",
   "current_phase": "complete",
+  "framework_version": "v5.0",
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
   "work_type": "enhancement",
   "parent_feature": "adaptive-intelligence",
   "has_ui": false,
@@ -98,8 +104,11 @@
     "documentation": {
       "status": "approved",
       "approved_at": "2026-04-11T01:00:00Z",
-      "note": "PRD: docs/product/prd/ai-engine-v2.md. Integration documented in adaptive-intelligence-initiative.md."
+      "note": "PRD: docs/product/prd/ai-engine-v2.md. Integration documented in adaptive-intelligence.md."
     }
   },
-  "tasks": []
+  "tasks": [],
+  "_meta": {
+    "deprecation_warnings": []
+  }
 }

@@ -656,27 +656,90 @@ final class AnalyticsService: ObservableObject {
 
     // MARK: - Import Analytics
 
-    /// User initiates the import flow
-    func logImportStarted() {
-        logEvent(AnalyticsEvent.importStarted, parameters: nil)
+    /// Entry point for `import_started` (per PRD v2 Analytics Spec).
+    enum ImportEntryPoint: String {
+        case settingsData  = "settings_data"
+        case trainingTab   = "training_tab"
+        case onboarding    = "onboarding"
     }
 
-    /// User selects an import source (e.g. "paste", "file", "url")
+    /// User initiates the import flow. `entryPoint` is now required per PRD v2.
+    func logImportStarted(entryPoint: ImportEntryPoint) {
+        logEvent(AnalyticsEvent.importStarted, parameters: [
+            "entry_point": entryPoint.rawValue,
+        ])
+    }
+
+    /// User selects an import source (e.g. "csv", "json", "markdown_paste", "pdf")
     func logImportSourceSelected(source: String) {
         logEvent(AnalyticsEvent.importSourceSelected, parameters: [AnalyticsParam.itemCategory: source])
     }
 
-    /// Training plan import completed; exerciseCount = total exercises, matchRate = 0-100
-    func logImportCompleted(exerciseCount: Int, matchRate: Int) {
-        logEvent(AnalyticsEvent.importCompleted, parameters: [
+    /// Parser successfully produced a structured plan.
+    func logImportParsed(source: String, exerciseCount: Int, dayCount: Int, parseDurationMs: Int) {
+        logEvent(AnalyticsEvent.importParsed, parameters: [
+            AnalyticsParam.itemCategory: source,
             AnalyticsParam.quantity: exerciseCount,
-            "match_rate": matchRate,
+            "day_count": dayCount,
+            "parse_duration_ms": parseDurationMs,
         ])
     }
 
-    /// Import flow failed; reason is a short snake_case label (e.g. "unsupported_format", "network_error")
-    func logImportFailed(reason: String) {
-        logEvent(AnalyticsEvent.importFailed, parameters: [AnalyticsParam.itemCategory: reason])
+    /// Parser threw or returned empty result. Distinct from `import_failed`
+    /// (the user-cancelled / unrecoverable umbrella).
+    func logImportParseFailed(source: String, reason: String) {
+        logEvent(AnalyticsEvent.importParseFailed, parameters: [
+            AnalyticsParam.itemCategory: source,
+            "error_reason": reason,
+        ])
+    }
+
+    /// User confirmed the mapping on the preview screen.
+    func logImportMappingConfirmed(autoMatched: Int, manualConfirmed: Int, skipped: Int, unresolved: Int) {
+        logEvent(AnalyticsEvent.importMappingConfirmed, parameters: [
+            "auto_matched_count": autoMatched,
+            "manual_confirmed_count": manualConfirmed,
+            "skipped_count": skipped,
+            "unresolved_count": unresolved,
+        ])
+    }
+
+    /// Plan persisted to EncryptedDataStore. Fires after `persistToDisk()` returns success.
+    func logImportCompleted(source: String, totalExercises: Int, skippedExercises: Int, timeToCompleteMs: Int) {
+        logEvent(AnalyticsEvent.importCompleted, parameters: [
+            AnalyticsParam.itemCategory: source,
+            AnalyticsParam.quantity: totalExercises,
+            "skipped_exercises": skippedExercises,
+            "time_to_complete_ms": timeToCompleteMs,
+        ])
+    }
+
+    /// Import aborted (cancelled or unrecoverable). `step`: parse / mapping / save.
+    func logImportFailed(source: String, step: String, reason: String) {
+        logEvent(AnalyticsEvent.importFailed, parameters: [
+            AnalyticsParam.itemCategory: source,
+            "step": step,
+            "error_reason": reason,
+        ])
+    }
+
+    /// User opened an imported plan from the Imported Plans list. `daysSinceImport`
+    /// is computed at call time; `< 7` is the adoption-window for plan adoption rate.
+    func logImportPlanOpened(daysSinceImport: Int, source: String) {
+        logEvent(AnalyticsEvent.importPlanOpened, parameters: [
+            "days_since_import": daysSinceImport,
+            AnalyticsParam.itemCategory: source,
+        ])
+    }
+
+    /// User flipped an imported plan to isActive=true. PRIMARY conversion signal.
+    /// `wasFirstActivation` distinguishes first-ever activate from re-activate.
+    func logImportPlanActivated(source: String, daysSinceImport: Int, wasFirstActivation: Bool) {
+        logEvent(AnalyticsEvent.importPlanActivated, parameters: [
+            AnalyticsParam.itemCategory: source,
+            "days_since_import": daysSinceImport,
+            "was_first_activation": wasFirstActivation,
+        ])
     }
 
     // MARK: - Profile Events
@@ -757,12 +820,43 @@ final class AnalyticsService: ObservableObject {
         logEvent(granted ? AnalyticsEvent.notificationPermissionGranted : AnalyticsEvent.notificationPermissionDenied, parameters: nil)
     }
 
-    func logNotificationScheduled(type: String) {
-        logEvent(AnalyticsEvent.notificationScheduled, parameters: [AnalyticsParam.itemCategory: type])
+    // Removed 2026-05-07 (push-notifications-v2 T11): logNotificationScheduled,
+    // logNotificationTapped — duplicates of the live logReminderScheduled /
+    // logReminderTapped. Smart-reminders owns scheduling lifecycle; the
+    // push-notifications-v2 platform layer owns priming + permission + deep-link.
+    // Zero callers outside this file before deletion (verified by grep).
+
+    /// Priming sheet view event (push-notifications-v2 PN-12).
+    /// `triggerContext` is "post_workout" or "settings" — matches PrimingView.TriggerContext.
+    func logNotificationPrimingShown(triggerContext: String) {
+        logEvent(AnalyticsEvent.notificationPrimingShown, parameters: [
+            AnalyticsParam.triggerContext: triggerContext,
+        ])
     }
 
-    func logNotificationTapped(type: String) {
-        logEvent(AnalyticsEvent.notificationTapped, parameters: [AnalyticsParam.itemCategory: type])
+    /// User taps "Not now" or swipes-down to dismiss the priming sheet (no OS dialog fired).
+    func logNotificationPrimingSkipped(triggerContext: String) {
+        logEvent(AnalyticsEvent.notificationPrimingSkipped, parameters: [
+            AnalyticsParam.triggerContext: triggerContext,
+        ])
+    }
+
+    /// SettingsDeepLinkBanner appeared at top of Home (one-time per device lifetime).
+    func logNotificationSettingsDeeplinkShown() {
+        logEvent(AnalyticsEvent.notificationSettingsDeeplinkShown, parameters: nil)
+    }
+
+    /// DeepLinkRouter resolved a URL — fires on every routing attempt regardless of
+    /// outcome. The kill criterion is `outcome=succeeded` rate < 95% over 7 days.
+    /// `source` is "notification"|"url"|"programmatic"; `destination` is
+    /// "tab"|"sheet"|"auth"|"settings"; `outcome` is "succeeded"|"failed_no_pattern_match"|"failed_navigation".
+    func logDeepLinkRouted(source: String, destination: String, urlPattern: String, outcome: String) {
+        logEvent(AnalyticsEvent.deepLinkRouted, parameters: [
+            AnalyticsParam.deepLinkSource: source,
+            AnalyticsParam.destination: destination,
+            AnalyticsParam.urlPattern: urlPattern,
+            AnalyticsParam.outcome: outcome,
+        ])
     }
 
     // MARK: - Reminder Analytics
@@ -784,6 +878,87 @@ final class AnalyticsService: ObservableObject {
             "reason": reason,
         ])
     }
+
+    // MARK: - Auth Password Reset Events (auth-polish-v2 A5)
+
+    /// Fired when the user successfully submits the "Send reset link" form on
+    /// `forgot_password`. Drives the funnel denominator for password recovery.
+    func logAuthPasswordResetRequested(emailProvided: Bool) {
+        logEvent(AnalyticsEvent.authPasswordResetRequested, parameters: [
+            AnalyticsParam.emailProvided: emailProvided,
+        ])
+    }
+
+    /// Fired when the user successfully updates their password on
+    /// `set_new_password`. Conversion event — funnel numerator.
+    func logAuthPasswordResetCompleted(timeToCompleteSeconds: Int) {
+        logEvent(AnalyticsEvent.authPasswordResetCompleted, parameters: [
+            AnalyticsParam.timeToCompleteSeconds: timeToCompleteSeconds,
+        ])
+    }
+
+    /// Fired when the user taps Resend on `email_sent_confirmation` after the
+    /// 60s cooldown elapsed. `attemptNumber` is 2 for the first resend, 3 for
+    /// the second, etc.
+    func logAuthPasswordResetResend(attemptNumber: Int) {
+        logEvent(AnalyticsEvent.authPasswordResetResend, parameters: [
+            AnalyticsParam.attemptNumber: attemptNumber,
+        ])
+    }
+
+    /// Fired when the user taps Resend on `email_sent_confirmation` while the
+    /// cooldown is still active. PRD guardrail metric: rate < 5%.
+    func logAuthPasswordResetResendBlocked(cooldownRemainingSeconds: Int) {
+        logEvent(AnalyticsEvent.authPasswordResetResendBlocked, parameters: [
+            AnalyticsParam.cooldownRemainingSeconds: cooldownRemainingSeconds,
+        ])
+    }
+
+    // MARK: - Auth Biometric Events (auth-polish-v2 B4)
+
+    /// Fired when BiometricActivationSheet appears on first sign-in.
+    func logAuthBiometricActivationOffered(biometricType: String) {
+        logEvent(AnalyticsEvent.authBiometricActivationOffered, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+        ])
+    }
+
+    /// Fired when the user successfully completes the activation scan.
+    /// Conversion event — primary metric numerator.
+    func logAuthBiometricActivated(biometricType: String, provider: String) {
+        logEvent(AnalyticsEvent.authBiometricActivated, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+            AnalyticsParam.provider: provider,
+        ])
+    }
+
+    /// Fired when the user taps "Not now" or cancels the activation scan.
+    func logAuthBiometricActivationDeclined(biometricType: String) {
+        logEvent(AnalyticsEvent.authBiometricActivationDeclined, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+        ])
+    }
+
+    /// Fired when BiometricUnlockView completes an unlock scan successfully.
+    /// `durationMs` measured from scan start to result, drives PRD §guardrail
+    /// "P95 < 1500ms".
+    func logAuthBiometricUnlockCompleted(biometricType: String, durationMs: Int) {
+        logEvent(AnalyticsEvent.authBiometricUnlockCompleted, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+            AnalyticsParam.durationMs: durationMs,
+        ])
+    }
+
+    /// Fired when BiometricUnlockView's scan fails. `reason` enum:
+    /// "user_cancel" | "biometry_failed" | "system_cancel" | "passcode_not_set" | "other".
+    func logAuthBiometricUnlockFailed(biometricType: String, reason: String) {
+        logEvent(AnalyticsEvent.authBiometricUnlockFailed, parameters: [
+            AnalyticsParam.biometricType: biometricType,
+            AnalyticsParam.reason: reason,
+        ])
+    }
+
+    // MARK: - Smart Reminder Events (smart-reminders)
 
     /// Smart reminder banner was presented (foreground or lock-screen)
     func logReminderShown(type: String) {

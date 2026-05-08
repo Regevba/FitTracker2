@@ -121,7 +121,12 @@ Phase 1: PRD ───────── /analytics spec (instrumentation)
 Phase 2: TASKS ──────── auto-assign tasks by skill routing
       │
 Phase 3: UX ─────────── /ux research → spec → validate
-                         /design ux-spec, figma, accessibility
+                         /ux preflight* (P0 gate, v4.X)
+                         /design preflight* (P0 gate, DS + Figma MCP, v4.X)
+                         /design audit, accessibility
+                         /ux prompt → docs/prompts/ux/
+                         /design prompt → docs/prompts/ui/
+                         /design build* (auto Figma, v4.X)
       │
 Phase 4: IMPLEMENT ──── /dev branch
                         parallel subagent dispatch (deps graph)
@@ -130,8 +135,9 @@ Phase 5: TEST ────────── /qa plan + run
                          /analytics validate
       │
 Phase 6: REVIEW ──────── /dev review (code)
-                         /design audit (visual)
-                         /ux validate (heuristic)
+                         /ux pre-merge-review* (gate, v4.X)
+                         /design pre-merge-review* (gate, v4.X)
+                         (Phase 7 BLOCKED unless both pass)
       │
 Phase 7: MERGE ───────── /release checklist + prepare
                          /dev ci-status
@@ -274,8 +280,8 @@ User ──→ /pm-workflow (hub)
 | # | Skill | Sub-commands | Role |
 |---|---|---|---|
 | 0 | `/pm-workflow` | `{feature}` | **Hub** — orchestrates 10-phase lifecycle |
-| 1 | `/ux` | `research`, `spec`, `validate`, `audit`, `patterns` | What & Why (planning layer) |
-| 2 | `/design` | `audit`, `ux-spec`, `figma`, `tokens`, `accessibility` | How it Looks (visual layer) |
+| 1 | `/ux` | `research`, `spec`, `validate`, **`preflight`**, **`pre-merge-review`**, `audit`, `patterns`, `prompt` | What & Why + Phase 3/6 gates (v4.X) |
+| 2 | `/design` | `audit`, `tokens`, `accessibility`, **`preflight`**, **`pre-merge-review`**, `prompt`, `build` (auto-dispatched) | How it Looks + Figma MCP build (v4.X) |
 | 3 | `/dev` | `branch`, `review`, `deps`, `perf`, `ci-status` | Build & ship |
 | 4 | `/qa` | `plan`, `run`, `coverage`, `regression`, `security` | Quality gates |
 | 5 | `/analytics` | `spec`, `validate`, `dashboard`, `report`, `funnel` | Measurement |

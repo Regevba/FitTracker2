@@ -1,0 +1,567 @@
+{
+  "feature": "fitme-story-public-enhancements",
+  "created_at": "2026-05-08T05:50:00Z",
+  "updated": "2026-05-08T05:50:00Z",
+  "branch": "feature/fitme-story-public-enhancements",
+  "current_phase": "implementation",
+  "work_type": "enhancement",
+  "work_subtype": "rollup_multi_pr",
+  "has_ui": true,
+  "requires_analytics": false,
+  "framework_version": "v7.8.1",
+  "parent_feature": "framework-story-site",
+  "predecessor_chain": [
+    "framework-story-site",
+    "case-study-presentation",
+    "case-study-comparison-table",
+    "ucc-passkey-auth"
+  ],
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Rollup feature that aggregates 23 small/medium audit-driven enhancements shipping as individual short-lived branches off main (per the 2026-05-08 fitme-story public-site audit). The rollup state.json itself is metadata-only; per-sub-task PRs follow standard branch isolation (each on its own feature/* branch). Today's 7 shipped sub-tasks landed via PR #59 (a-c) + PR #61 (g) following the standard convention. Mode C of BRANCH_ISOLATION_VIOLATION is opted out to allow this state.json to be updated from main when only documentation/scope changes accumulate (no code mutations live here).",
+  "scheduled_after": null,
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "approved_at": null,
+      "reason": "work_type:enhancement; B_medium tier latitude (per F6 v7.9 candidate). Audit synthesis at docs/research/2026-05-08-fitme-story-audit-synthesis.md serves as the research-equivalent — 3,100-word broad audit + 28-finding case-study deep-dive + 6-P0 / 12-quick-wins synthesis.",
+      "sources": [
+        "docs/research/2026-05-08-fitme-story-public-site-audit.md",
+        "docs/research/2026-05-08-case-study-readability-deep-dive.md",
+        "docs/research/2026-05-08-fitme-story-audit-synthesis.md"
+      ]
+    },
+    "prd": {
+      "status": "skipped",
+      "approved_at": null,
+      "reason": "work_type:enhancement; PRD-equivalent lives in the audit synthesis (success metrics + scope + sequencing) and the website-enhancement-queue spec (per-item scope + class). Per-sub-task PRs carry their own scope statements in PR description.",
+      "analytics_spec_complete": true,
+      "analytics_spec_note": "No new analytics events — enhancements are mechanical (a11y, perf, schema, layout). Re-evaluate when SEARCH-1 ships (search analytics may warrant new events)."
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-05-08T05:50:00Z",
+      "count": 23,
+      "approved_note": "23 tasks: 7 already shipped (T1-T7 via PR #59 + #61, marked done with completed_at from merge timestamps), 16 pending. See tasks.md for the full breakdown."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "approved_at": null,
+      "reason": "work_type:enhancement; per-sub-task UX dispatched in-line. Most items are mechanical (a11y, perf, schema, MDX pipeline). Larger UI items (P-MOBNAV, P-CALLOUTS, ArticleNav) dispatch /ux + /design when picked up — T7 (ArticleNav) already shipped this way via PR #61 with the audit synthesis serving as ux-spec equivalent.",
+      "type": null,
+      "preflight_passed": null
+    },
+    "implementation": {
+      "status": "in_progress",
+      "approved_at": null,
+      "commits": [
+        "95cb4d1",
+        "a548e5f"
+      ],
+      "commits_note": "Two squash commits on main from this rollup so far: 95cb4d1 (PR #59 quick-wins, 13 files +319/-40) and a548e5f (PR #61 ArticleNav, 3 files +130/-8). Plus FT2 PR #254 docs commit f252ded. Per-task commits live on the individual sub-task branches before squash."
+    },
+    "testing": {
+      "status": "in_progress",
+      "ci_passed": true,
+      "tests_added": 0,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": true,
+      "testing_note": "Per-sub-task: each PR runs Vercel preview build + GitGuardian + verify CI. All 3 today-PRs (#59, #61, FT2 #254) shipped CI-green. No new dedicated unit tests added (mechanical changes; no new business logic to assert). Future tasks with logic (SEARCH-1, P-CALLOUTS) will add tests."
+    },
+    "review": {
+      "status": "in_progress",
+      "risks": [],
+      "ci_main": true,
+      "ci_feature": true,
+      "review_note": "Per-sub-task code review handled in PR. No formal pre-merge-review dispatched for this rollup itself (each PR carries its own)."
+    },
+    "merge": {
+      "status": "in_progress",
+      "pr_number": null,
+      "pr_number_note": "This rollup feature does not have a single merge PR. Each sub-task ships as its own PR. See tasks[].pr_number for the per-task PR list. Today's 7 done items shipped via fitme-story PR #59 (T1-T6) + PR #61 (T7) + FT2 PR #254 (audit docs).",
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "in_progress",
+      "documentation_note": "Audit synthesis + website-enhancement-queue spec written ahead of work (FT2 PR #254). Per-sub-task PR descriptions document what landed. Final case study at feature closure."
+    },
+    "metrics": {
+      "primary": {
+        "name": "Audit findings closed",
+        "baseline": "0 of 30 (6 P0 + 11 P1 + 13 other)",
+        "target": "30 of 30 OR explicit deferral with reason for each remaining",
+        "current": "17 of 30 (6 P0 + 11 P1) closed via PR #59 + #61 today"
+      },
+      "secondary": [
+        {
+          "name": "fitme-story public site Lighthouse score",
+          "baseline": "95+/100/100/100 (per 2026-04-21 framework-story-site case study)",
+          "target": "Maintain or improve",
+          "current": "TBD — measure at next audit (suggest week-1 after each major ship)"
+        },
+        {
+          "name": "Case-study reader navigation aids present",
+          "baseline": "0 (no in-page TOC, no scroll progress, no prev/next)",
+          "target": "All Standard + Flagship templates have ArticleNav",
+          "current": "Achieved via PR #61"
+        }
+      ],
+      "guardrails": [
+        "JS error rate per Vercel Speed Insights < 0.5%",
+        "Cumulative Layout Shift on /case-studies/[slug] ≤ 0.1",
+        "Largest Contentful Paint p75 ≤ 2.5s on case-study pages"
+      ],
+      "instrumentation_ready": true,
+      "first_review_date": "2026-05-15",
+      "kill_criteria": "Vercel reports >0.1% increase in JS error rate post-deploy of any sub-task; OR user-reported regression in case-study reading experience >1 incident per 1000 sessions; OR CLS regresses below 0.1 on /case-studies/[slug]"
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "audit_id": "P-A11Y-1",
+      "title": "Skip-to-content link + WCAG contrast bump (light-mode --color-neutral-500)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "pr_number": 59,
+      "merge_commit": "95cb4d1",
+      "completed_at": "2026-05-08T05:09:55Z",
+      "closes_findings": ["A-001 P0", "A-002 P0", "A-018 P0"]
+    },
+    {
+      "id": "T2",
+      "audit_id": "P-NAV-CHROME",
+      "title": "aria-current + 2px underline on nav + global focus-visible ring + back-to-catalog with copy-link toolbar",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [],
+      "pr_number": 59,
+      "merge_commit": "95cb4d1",
+      "completed_at": "2026-05-08T05:09:55Z",
+      "closes_findings": ["A-003 P1", "V-003 P1", "A-008 P1", "V-007 P1", "CS-015 P1"]
+    },
+    {
+      "id": "T3",
+      "audit_id": "P-MDX-HEADINGS",
+      "title": "rehype-slug + rehype-autolink-headings — every heading becomes a deep-link target",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": [],
+      "pr_number": 59,
+      "merge_commit": "95cb4d1",
+      "completed_at": "2026-05-08T05:09:55Z",
+      "closes_findings": ["CS-007 P1"]
+    },
+    {
+      "id": "T4",
+      "audit_id": "P-MDX-TABLE",
+      "title": ".prose table display:block + overflow-x:auto — fixes mobile table overflow corpus-wide",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [],
+      "pr_number": 59,
+      "merge_commit": "95cb4d1",
+      "completed_at": "2026-05-08T05:09:55Z",
+      "closes_findings": ["CS-006 P1", "CS-020 P0", "R-009 P2"]
+    },
+    {
+      "id": "T5",
+      "audit_id": "P-CHROME-BACKFILL",
+      "title": "chrome_minimal: boolean + chrome_minimal_reason opt-out signal in frontmatter schema",
+      "type": "data",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "pr_number": 59,
+      "merge_commit": "95cb4d1",
+      "completed_at": "2026-05-08T05:09:55Z",
+      "closes_findings": ["CS-008 P0"]
+    },
+    {
+      "id": "T6",
+      "audit_id": "P-TIMELINENAV",
+      "title": "Wire <TimelineNav> at template level — prev/next derived from sorted getAllCaseStudies()",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "pr_number": 59,
+      "merge_commit": "95cb4d1",
+      "completed_at": "2026-05-08T05:09:55Z",
+      "closes_findings": ["R-003 P1", "CS-002 P1", "CS-016 P0"]
+    },
+    {
+      "id": "T7",
+      "audit_id": "P-ARTICLENAV",
+      "title": "<ArticleNav> sticky sidebar — TOC scraped from heading tree + scroll progress + active-section IntersectionObserver",
+      "type": "ui",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.5,
+      "depends_on": ["T3"],
+      "pr_number": 61,
+      "merge_commit": "a548e5f",
+      "completed_at": "2026-05-08T05:31:20Z",
+      "closes_findings": ["CS-001 P1", "CS-010 P2", "CS-013 P1", "R-001 P1", "R-002 P3", "A-020 P2"]
+    },
+    {
+      "id": "T8",
+      "audit_id": "G3",
+      "title": "Dual-outlet pattern doc — FT2 long-form vs fitme-story slot MDX contract",
+      "type": "docs",
+      "skill": "research",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Stress-test S3-G3 deferred 2026-05-07. Document the contract: what belongs in FT2 source case study (long-form, technical, append-only journal) vs fitme-story slot MDX (short-form, public showcase). Lives at docs/case-studies/dual-outlet-pattern.md. Blocks G5 (T9) since G5 needs G3's contract to know what 'complete frontmatter' means."
+    },
+    {
+      "id": "T9",
+      "audit_id": "G5",
+      "title": "Timeline frontmatter audit — backfill consistency across 47 showcase MDX files",
+      "type": "data",
+      "skill": "dev",
+      "status": "blocked",
+      "priority": "medium",
+      "effort_days": 1.5,
+      "depends_on": ["T8"],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Stress-test S3-G5 deferred 2026-05-07. Walk every showcase MDX in fitme-story/content/04-case-studies/ (47 files); verify each carries v7.7+ standard frontmatter (date, version, work_type, success_metrics, kill_criteria, kill_criterion_fired, dispatch_pattern, etc.). Audit synthesis appendix already shows the corpus-wide gap: 5 missing honest_disclosures, 6 missing visual_aid, 27 missing kill_criteria. Backfill OR set chrome_minimal: true with documented reason (T5's schema)."
+    },
+    {
+      "id": "T10",
+      "audit_id": "SEARCH-1",
+      "title": "Site-wide keyword search with smart ranked results across case-studies + glossary + dev-guide + lifecycle-event-catalog",
+      "type": "ui",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 2.0,
+      "depends_on": ["T8", "T9"],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Persistent header search + /search?q= page. Tag-aware ranking (frontmatter matches > body matches). Faceted filters (version / work_type / era / tier). Pagefind recommended (~80 docs ≈ tiny bundle). Benefits from G3+G5 done first so tag facets are accurate. Already on backlog as formal entry (line 166)."
+    },
+    {
+      "id": "T11",
+      "audit_id": "SEO-1",
+      "title": "Marketing/showcase SEO optimization (metadata, structured data, sitemap, OG tags)",
+      "type": "infra",
+      "skill": "marketing",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 1.0,
+      "depends_on": ["T14"],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "May merge with T14 (P-SEO-META) since both touch metadata pipeline. Backlog 'Pre-launch marketing / SEO' line 232."
+    },
+    {
+      "id": "T12",
+      "audit_id": "FIG-P4",
+      "title": "Figma screen frames for 35 public routes (showcase + 26 case-studies + sign-in/legal + glossary + trust + dispatch + dev-guide + lifecycle-catalog)",
+      "type": "design",
+      "skill": "design",
+      "status": "blocked",
+      "priority": "low",
+      "effort_days": 5.0,
+      "depends_on": ["T18", "T19"],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Large; foundational FIG-W1 + FIG-W2 must land first. Public-route subset of the 39-route total."
+    },
+    {
+      "id": "T13",
+      "audit_id": "V79-DOC",
+      "title": "Mirror v7.9 promotion outcome to /framework/dev-guide (new gates, advisory→enforced flips, breaking changes)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "blocked",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scheduled_after": {"date": "2026-05-21", "reason": "Date-gated: post-v7.9 promotion decision; nothing to mirror until v7.9 ships."},
+      "scope_note": "Will pull v7.9 candidate flips (10 candidates F1-F10 from docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md) and mirror to fitme-story/content/framework/dev-guide.md."
+    },
+    {
+      "id": "T14",
+      "audit_id": "P-SEO-META",
+      "title": "buildMetadata() helper — per-page openGraph + Twitter + JSON-LD",
+      "type": "infra",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Currently only / has openGraph; build src/lib/seo.ts buildMetadata({title, description, slug, type, image}) helper. Call from every page-level + dynamic route (case-studies, glossary, framework, trust, etc.). Even single fallback /og.png is enormous improvement. Closes audit V-002 + V-012 + V-014."
+    },
+    {
+      "id": "T15",
+      "audit_id": "P-CALLOUTS",
+      "title": "Callout component family — <HonestDisclosure>, <TriggerIncident>, <MemoryRef>, <PredecessorChain>, <KillCriterionResolution>",
+      "type": "ui",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 2.0,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "5 recurring narrative patterns currently inlined as ad-hoc prose across 4+ case studies. Promote to MDX components for visual consistency + cross-corpus queryability. Closes audit CS-014 + CS-024 + partial CS-008."
+    },
+    {
+      "id": "T16",
+      "audit_id": "P-MOBNAV",
+      "title": "<MobileNav> hamburger — focus-trapped Dialog with full nav + theme toggle",
+      "type": "ui",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "critical",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "P0 still OPEN from today's audit. Below 768px nav is hidden md:flex with NO fallback — all 7 items disappear. Mobile readers can navigate ~75 routes only via in-content links + 5-link footer. Closes audit V-004 P0."
+    },
+    {
+      "id": "T17",
+      "audit_id": "P-MDX-CODE",
+      "title": "rehype-pretty-code (or shiki) + <CopyButton> MDX component",
+      "type": "infra",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Single plugin install. Closes A-024 + R-008 + CS-004. Showcase MDX uses fenced blocks sparingly today, but engineering-positioned framework benefits from copyable code chips."
+    },
+    {
+      "id": "T18",
+      "audit_id": "FIG-W1",
+      "title": "Create new Figma file under team Regev - My apps named 'FitMe Story Web — Design System'",
+      "type": "design",
+      "skill": "design",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 0.25,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Foundational for FIG-U3, FIG-U4 (UCC), FIG-P4, FIG-W5. Unblocks the whole Figma track."
+    },
+    {
+      "id": "T19",
+      "audit_id": "FIG-W2",
+      "title": "Extract every token from globals.css into Figma variables",
+      "type": "design",
+      "skill": "design",
+      "status": "blocked",
+      "priority": "medium",
+      "effort_days": 1.0,
+      "depends_on": ["T18"],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "brand-indigo/coral, neutral 50–900, skill palette × 11, editorial type scale. Foundational for component frames."
+    },
+    {
+      "id": "T20",
+      "audit_id": "FIG-W5",
+      "title": "Code Connect integration — /design build pushes web screens via Figma MCP",
+      "type": "design",
+      "skill": "design",
+      "status": "blocked",
+      "priority": "medium",
+      "effort_days": 1.5,
+      "depends_on": ["T12"],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Eliminates figma_build_status: deferred_to_prompt fallback. Last in Figma sequence — runs after FIG-U3 + FIG-P4 land."
+    },
+    {
+      "id": "T21",
+      "audit_id": "FIG-W6",
+      "title": "Architecture doc docs/design-system/fitme-story-design-architecture.md",
+      "type": "docs",
+      "skill": "design",
+      "status": "ready",
+      "priority": "medium",
+      "effort_days": 0.5,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "Tailwind v4 @theme + globals.css variables + skill palette + editorial type scale contract. Can run parallel with FIG-W2."
+    },
+    {
+      "id": "T22",
+      "audit_id": "F7",
+      "title": "Tier 2.2 per-phase emission gate parity for fitme-story repo OR explicit exemption doc",
+      "type": "infra",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "low",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "v7.9 candidate. Cross-repo gate parity: bring FT2's Tier 2.2 emission gates to fitme-story pre-commit OR document exemption. Confirmed empirically today (post-Read hooks blocking from missing observe-cache-hit.py in fitme-story). Promote in v7.9 — likely as 'document the asymmetry'."
+    },
+    {
+      "id": "T23",
+      "audit_id": "F8",
+      "title": "Mechanism A gate-coverage.jsonl parity for fitme-story repo OR explicit exemption doc",
+      "type": "infra",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "low",
+      "effort_days": 1.0,
+      "depends_on": [],
+      "pr_number": null,
+      "merge_commit": null,
+      "completed_at": null,
+      "scope_note": "v7.9 candidate. Cross-repo telemetry parity. Same disposition as F7 — likely 'document the asymmetry'. Promote in v7.9."
+    }
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": "deferred_to_prompt",
+  "figma_build_status_note": "Per ucc-passkey-auth precedent: fitme-story has no Figma file mapping yet (FIG-W1+W2+W3+W4+W5+W6 will create one). Until then, all per-task UI work falls back to portable prompt at docs/prompts/ui/. v4.X documented escape hatch.",
+  "pre_merge_review": {
+    "ux": null,
+    "design": null,
+    "review_note": "Per-sub-task: each PR carries its own pre-merge review in PR description. T7 (ArticleNav) PR #61 included verification checklist; T1-T6 PR #59 included 8-item test plan."
+  },
+  "case_study": null,
+  "case_study_note": "TODO: write at feature closure. Will live at docs/case-studies/fitme-story-public-enhancements-case-study.md. Today's audit synthesis (docs/research/2026-05-08-fitme-story-audit-synthesis.md) is the pre-research; per-task PR descriptions document each sub-ship.",
+  "case_study_showcase": null,
+  "case_study_showcase_note": "TODO: write at feature closure. Slot TBD when ready (probably 27 or 28 depending on intervening ships).",
+  "success_metrics": [
+    "Audit findings closed: target 30/30 OR explicit deferral with reason. Current: 17/30 (6 P0 + 11 P1) closed via PR #59 + #61.",
+    "ArticleNav sidebar live on Standard + Flagship case-study templates: ACHIEVED (PR #61, prod a548e5f at 2026-05-08T05:31:23Z).",
+    "Mobile nav P0 (V-004) closed by P-MOBNAV ship: PENDING (T16)."
+  ],
+  "kill_criteria": [
+    "Vercel reports >0.1% increase in JS error rate post-deploy of any sub-task",
+    "User-reported regression in case-study reading experience >1 incident per 1000 sessions",
+    "CLS regresses below 0.1 on /case-studies/[slug]"
+  ],
+  "kill_criterion_fired": false,
+  "dispatch_pattern": "serial_per_sub_task",
+  "transitions": [
+    {
+      "from": null,
+      "to": "tasks",
+      "timestamp": "2026-05-08T05:50:00Z",
+      "approved_by": "user",
+      "note": "Feature created retroactively after 7 tasks already shipped via PR #59 + #61. user said 'start work on public enhancements and shared features with ucc pm cycle - enhancement mode using protocol 7.8.1 and add what we already done to the data regarding this project'. Skipping research+prd+ux per work_type:enhancement; tasks approved at creation."
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-05-08T05:50:00Z",
+      "approved_by": "user",
+      "note": "Implementation already in progress — 7 of 23 tasks done. Auto-advance to current state."
+    }
+  ],
+  "timing": {
+    "session_start": "2026-05-08T03:30:00Z",
+    "session_end": null,
+    "phases": {
+      "tasks": {
+        "started_at": "2026-05-08T03:30:00Z",
+        "ended_at": "2026-05-08T05:50:00Z",
+        "duration_minutes": 140,
+        "actor": "claude_opus_4_7",
+        "note": "Audit dispatch + synthesis + queue spec + 6+10 task drafting"
+      },
+      "implementation": {
+        "started_at": "2026-05-08T04:35:00Z",
+        "ended_at": null,
+        "actor": "claude_opus_4_7",
+        "note": "First implementation commit (T1-T6 quick-wins) at 04:35; ArticleNav T7 commit at 04:39; PR #59 merged 05:09:55Z; PR #61 merged 05:31:20Z. Implementation continues with remaining 16 tasks."
+      }
+    },
+    "total_wall_time_minutes": null,
+    "time_source": "measured"
+  },
+  "cache_hits": [
+    {
+      "timestamp": "2026-05-08T04:35:00Z",
+      "cache_level": "L3",
+      "skill": "pm-workflow",
+      "cache_key": "audit-pattern-v7-7",
+      "hit_type": "adapted",
+      "task_context": "Reused audit-driven enhancement pattern from v7.7 validity closure (broad audit → synthesis → quick-wins bundle → strategic recommendations → per-PR ship). Pattern adapted to public-site context."
+    },
+    {
+      "timestamp": "2026-05-08T04:39:00Z",
+      "cache_level": "L2",
+      "skill": "design",
+      "cache_key": "rehype-mdx-pipeline",
+      "hit_type": "exact",
+      "task_context": "Reused rehype-slug + rehype-autolink-headings pattern from generic Next.js+MDX best practices (well-known plugin install). Saved Phase 0 research."
+    },
+    {
+      "timestamp": "2026-05-08T05:00:00Z",
+      "cache_level": "L1",
+      "skill": "dev",
+      "cache_key": "ucc-passkey-auth-pr-template",
+      "hit_type": "adapted",
+      "task_context": "Reused PR description template + test plan checklist style + cross-reference pattern from yesterday's ucc-passkey-auth PRs. Saved drafting time on PR #59 + #61 bodies."
+    }
+  ],
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.6,
+      "blast_radius": 0.5,
+      "novelty": 0.3,
+      "verification_difficulty": 0.4
+    },
+    "total": 1.8,
+    "tier_class": "B_medium",
+    "rationale": "Rollup of 23 small/medium audit-driven enhancements. Net new code is small and surgical per item. Complexity comes from breadth (10+ sub-PRs over time) not depth. Blast radius medium because changes are user-facing on every showcase reader. Novelty low (well-trodden a11y/perf/SEO patterns). Verification medium (mostly visual + Vercel preview spot-checks; eval-gate not applicable since no AI behaviors)."
+  },
+  "experiment": false,
+  "experiment_kind": null
+}

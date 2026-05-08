@@ -40,9 +40,16 @@ Carthage/Build/
 !.claude/integrity/**
 !.claude/logs/
 !.claude/logs/**
+.claude/logs/_session-*.events.jsonl
+.claude/active-feature
+.claude/logs/gate-coverage.jsonl
 !.claude/entrypoints/
 !.claude/entrypoints/**
 !.claude/settings.json
+# Session-specific lock files (regenerated per session, never commit)
+.claude/scheduled_tasks.lock
+.claude/logs/*.lock
+.claude/logs/*.lock.json
 .superpowers/
 .worktrees/
 FitMe-GDPR-Docs/
@@ -70,9 +77,22 @@ Config/Local/*.xcconfig
 !Config/Local/*.example.xcconfig
 !Config/Local/README.md
 
+# Auth-polish-v2 / Sentry / HADF / Vercel local artifacts (never commit)
+.env.local
+.sentryclirc
+.venv-hadf-phase2/
+.vercel/
+.claude/shared/hadf/logs/
+.claude/shared/hadf/pre-merge-backup-*/
+.claude/shared/hadf/incident-*-recovery/
+.claude/shared/hadf/*.pre-isolation-archive
+.claude/shared/sentry-recovery/
+
 # HADF Phase 2 raw observational data — gitignored per pre-registration
 # (the committed summary derives from this; raw stays local to preserve the
-# pre-registered "verdict is a pure function of (prereg, summary)" contract)
-.claude/shared/hadf/phase2-fingerprint-raw.jsonl
-.claude/shared/hadf/logs/
-.venv-hadf-phase2/
+# pre-registered "verdict is a pure function of (prereg, summary)" contract).
+# NOTE: only the raw .jsonl files are excluded — the summary + preregistration
+# JSON files ARE committed to satisfy the case study's T1 traceability claim
+# (docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md cites
+# both files at commit 61964d3 as "the assessable inputs").
+.claude/shared/hadf/phase2-fingerprint-raw*.jsonl

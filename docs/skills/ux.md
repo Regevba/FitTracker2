@@ -27,13 +27,15 @@ Ensures every UI feature is grounded in research-backed UX principles **before**
 ## Sub-commands
 
 | Command | Purpose | Standalone Example | Hub Context |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `/ux research {feature}` | UX principle audit from the 13 ux-foundations heuristics (8 core + 5 FitMe-specific) | "Research UX principles for the training plan redesign" | Phase 3 (UX), **Phase 0 for v2 refactors** |
 | `/ux spec {feature}` | Generate `ux-spec.md` with Principle Application Table, screen flows, and state coverage | "Create ux-spec for the stats hub" | Phase 3 (UX) |
-| `/ux validate {feature}` | Heuristic evaluation of a spec or shipped surface against ux-foundations.md | "Validate the current onboarding flow against Hick's Law" | Phase 3 (UX), Phase 6 (Review) |
+| `/ux validate {feature}` | Heuristic evaluation of a spec or shipped surface against ux-foundations.md | "Validate the current onboarding flow against Hick's Law" | Phase 3 (UX), Phase 5 (Testing) |
+| **`/ux preflight {feature}`** *(v4.X)* | **P0 gate — verify every token, component, and pattern named in `ux-spec.md` exists in the codebase before Phase 4 starts. Writes audit + cache record. Spec NOT approvable with unresolved P0.** | "Preflight import-training-plan spec" | **Phase 3 Step 3e** |
+| **`/ux pre-merge-review {feature}`** *(v4.X)* | **Phase 6 gate — heuristic re-check of shipped code vs approved spec. Spot-checks file:line touch points; verdict PASS / PASS_WITH_NOTES / BLOCK. Sets `state.json.pre_merge_review.ux`.** | "Pre-merge review on import-training-plan" | **Phase 6 Step 6b** |
 | `/ux audit` | Walk a v1 Swift file against ux-foundations.md and produce `v2-audit-report.md` with P0/P1/P2 severity + tractability tags | "Audit MainScreenView.swift for UX Foundations compliance" | **Phase 0 for v2 refactors** |
 | `/ux patterns` | Surface existing FitMe interaction patterns for reuse before introducing new ones | "What existing patterns handle a biometric entry flow?" | Phase 3 (UX) |
-| `/ux prompt {feature}` | Auto-generate a handoff prompt in `docs/prompts/{date}-{feature}-ux-build.md` once Phase 3 is approved | dispatched by hub after `/ux validate` passes | Phase 3 Step 4 |
+| `/ux prompt {feature}` | Auto-generate a handoff prompt in `docs/prompts/ux/{date}-{feature}-ux-build.md` once Phase 3 is approved | dispatched by hub after `/ux validate` passes | Phase 3 Step 3h |
 
 ## Shared data
 
@@ -49,7 +51,11 @@ Ensures every UI feature is grounded in research-backed UX principles **before**
 - `.claude/features/{feature}/ux-research.md` (from `/ux research`)
 - `.claude/features/{feature}/ux-spec.md` (from `/ux spec`)
 - `.claude/features/{feature}/v2-audit-report.md` (from `/ux audit` in v2 mode)
-- `docs/prompts/{date}-{feature}-ux-build.md` (from `/ux prompt`)
+- `.claude/features/{feature}/ux-preflight-audit-{date}.md` (from `/ux preflight`, v4.X)
+- `.claude/features/{feature}/ux-pre-merge-review-{date}.md` (from `/ux pre-merge-review`, v4.X)
+- `.claude/cache/_shared/ux-spec-preflight.json` (append-only audit log, v4.X)
+- `state.json.pre_merge_review.ux` (set by `/ux pre-merge-review`, v4.X)
+- `docs/prompts/ux/{date}-{feature}-ux-build.md` (from `/ux prompt` — folder split established 2026-05-06)
 
 ## PM workflow integration
 

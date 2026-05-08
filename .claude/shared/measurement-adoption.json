@@ -1,46 +1,47 @@
 {
   "version": "1.0",
-  "updated": "2026-04-27T17:15:47Z",
+  "updated": "2026-05-07T16:11:57Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 45,
-    "features_post_v6": 9,
-    "features_pre_v6": 36,
-    "fully_adopted": 2,
-    "partial_adopted": 8,
-    "zero_adopted": 35,
-    "fully_adopted_post_v6": 2,
+    "features_total": 53,
+    "features_post_v6": 19,
+    "features_pre_v6": 34,
+    "fully_adopted": 3,
+    "partial_adopted": 13,
+    "zero_adopted": 37,
+    "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
-      "overall_present": 5,
-      "overall_percent": 11.1,
-      "post_v6_present": 5,
-      "post_v6_percent": 55.6
+      "overall_present": 7,
+      "overall_percent": 13.2,
+      "post_v6_present": 7,
+      "post_v6_percent": 36.8
     },
     "per_phase_timing": {
-      "overall_present": 10,
-      "overall_percent": 22.2,
-      "post_v6_present": 6,
-      "post_v6_percent": 66.7
+      "overall_present": 16,
+      "overall_percent": 30.2,
+      "post_v6_present": 13,
+      "post_v6_percent": 68.4
     },
     "cache_hits": {
-      "overall_present": 3,
-      "overall_percent": 6.7,
-      "post_v6_present": 3,
-      "post_v6_percent": 33.3
+      "overall_present": 7,
+      "overall_percent": 13.2,
+      "post_v6_present": 7,
+      "post_v6_percent": 36.8
     },
     "cu_v2": {
-      "overall_present": 6,
-      "overall_percent": 13.3,
-      "post_v6_present": 6,
-      "post_v6_percent": 66.7
+      "overall_present": 7,
+      "overall_percent": 13.2,
+      "post_v6_present": 7,
+      "post_v6_percent": 36.8
     }
   },
   "fully_adopted_features": [
     "data-integrity-framework-v7-6",
+    "framework-v7-7-validity-closure",
     "meta-analysis-audit"
   ],
   "partial_adopted_features": [
@@ -54,12 +55,39 @@
       }
     },
     {
+      "feature": "case-study-presentation",
+      "adoption": {
+        "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "framework-honesty-fixes-2026-05-01",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
       "feature": "framework-measurement-v6",
       "adoption": {
         "timing_wall_time": true,
         "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": true
+      }
+    },
+    {
+      "feature": "framework-v7-8-branch-isolation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
       }
     },
     {
@@ -81,11 +109,29 @@
       }
     },
     {
-      "feature": "push-notifications",
+      "feature": "onboarding-v2-retroactive",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "push-notifications",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "smart-reminders-behavioral-learning",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
         "cu_v2": false
       }
     },
@@ -184,9 +230,24 @@
       "post_v6": true
     },
     {
-      "feature": "framework-v7-7-validity-closure",
-      "created": null,
+      "feature": "framework-v5-0-soc",
+      "created": "2026-04-14",
       "post_v6": false
+    },
+    {
+      "feature": "framework-v7-1-integrity-cycle",
+      "created": "2026-04-21",
+      "post_v6": true
+    },
+    {
+      "feature": "framework-v7-5-data-integrity",
+      "created": "2026-04-24",
+      "post_v6": true
+    },
+    {
+      "feature": "framework-v7-8-bridge",
+      "created": "2026-05-04",
+      "post_v6": true
     },
     {
       "feature": "gdpr-compliance",
@@ -236,11 +297,6 @@
     {
       "feature": "onboarding-v2-auth-flow",
       "created": "2026-04-15",
-      "post_v6": false
-    },
-    {
-      "feature": "onboarding-v2-retroactive",
-      "created": "2026-04-09",
       "post_v6": false
     },
     {
@@ -397,7 +453,7 @@
       "feature": "auth-polish-v2",
       "created": "2026-04-27",
       "post_v6": true,
-      "current_phase": "prd",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": true,
         "per_phase_timing": true,
@@ -420,6 +476,20 @@
       },
       "fully_adopted": false,
       "any_adopted": false
+    },
+    {
+      "feature": "case-study-presentation",
+      "created": "2026-04-28",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
     },
     {
       "feature": "data-integrity-framework-v7-6",
@@ -492,6 +562,20 @@
       "any_adopted": false
     },
     {
+      "feature": "framework-honesty-fixes-2026-05-01",
+      "created": "2026-05-01",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
       "feature": "framework-measurement-v6",
       "created": "2026-04-16",
       "post_v6": true,
@@ -520,10 +604,80 @@
       "any_adopted": false
     },
     {
-      "feature": "framework-v7-7-validity-closure",
-      "created": null,
+      "feature": "framework-v5-0-soc",
+      "created": "2026-04-14",
       "post_v6": false,
-      "current_phase": "research",
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-v7-1-integrity-cycle",
+      "created": "2026-04-21",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-v7-5-data-integrity",
+      "created": "2026-04-24",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-v7-7-validity-closure",
+      "created": "2026-04-27",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": true
+      },
+      "fully_adopted": true,
+      "any_adopted": true
+    },
+    {
+      "feature": "framework-v7-8-branch-isolation",
+      "created": "2026-04-30",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "framework-v7-8-bridge",
+      "created": "2026-05-04",
+      "post_v6": true,
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": false,
@@ -607,7 +761,7 @@
       "feature": "import-training-plan",
       "created": "2026-04-11",
       "post_v6": false,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -635,7 +789,7 @@
       "feature": "meta-analysis-audit",
       "created": "2026-04-16",
       "post_v6": true,
-      "current_phase": "documentation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": true,
         "per_phase_timing": true,
@@ -719,15 +873,15 @@
       "feature": "onboarding-v2-retroactive",
       "created": "2026-04-09",
       "post_v6": false,
-      "current_phase": "tasks",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "parallel-write-safety-v5.2",
@@ -745,13 +899,13 @@
     },
     {
       "feature": "push-notifications",
-      "created": "2026-04-12",
-      "post_v6": false,
-      "current_phase": "implementation",
+      "created": "2026-05-07",
+      "post_v6": true,
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": false
       },
       "fully_adopted": false,
@@ -828,6 +982,20 @@
       "any_adopted": false
     },
     {
+      "feature": "smart-reminders-behavioral-learning",
+      "created": "2026-04-29",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
       "feature": "stats-progress-hub",
       "created": "2026-04-06",
       "post_v6": false,
@@ -845,7 +1013,7 @@
       "feature": "stats-v2",
       "created": "2026-04-10",
       "post_v6": false,
-      "current_phase": "tasks",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -885,8 +1053,8 @@
     },
     {
       "feature": "ui-audit-baseline-burndown",
-      "created": null,
-      "post_v6": false,
+      "created": "2026-04-21",
+      "post_v6": true,
       "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
@@ -901,7 +1069,7 @@
       "feature": "unified-control-center",
       "created": "2026-04-26",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
