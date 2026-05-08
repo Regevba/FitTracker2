@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "feature": "fitme-story-public-enhancements",
+  "title": "fitme story public enhancements",
+  "work_type": null,
+  "current_phase": null,
+  "framework_version": null,
+  "started_at": "2026-05-08T06:36:08Z",
+  "updated_at": "2026-05-08T06:36:08Z",
+  "events": [
+    {
+      "timestamp": "2026-05-08T06:36:08Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T8 (G3 dual-outlet pattern doc) shipped via FT2 chore PR. New doc at docs/case-studies/dual-outlet-pattern.md (~9 sections, 11KB). Establishes the contract between FT2 source case study and fitme-story slot MDX. Unblocks T9 (G5 timeline frontmatter audit) by giving G5 a concrete checklist (\u00a77) to walk against.",
+      "artifacts": [
+        "docs/case-studies/dual-outlet-pattern.md"
+      ],
+      "metrics": {
+        "files_changed": 1
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
