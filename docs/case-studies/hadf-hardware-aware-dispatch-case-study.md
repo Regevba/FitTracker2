@@ -10,7 +10,7 @@
 **Kill Criteria:** WAU drops ≥ 3% in HADF cohort at 90% confidence. Expected duration: 2 sprints
 
 
-> **Framework Version:** v6.0 (HADF extends v6.0 with hardware awareness)
+> **Framework Version:** v7.0 (HADF extends v6.0 dispatch with hardware awareness; ships as framework version 7.0)
 > **Date:** 2026-04-16
 > **Author:** PM Workflow (subagent-driven execution)
 
