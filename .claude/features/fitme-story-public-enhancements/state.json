@@ -1,7 +1,7 @@
 {
   "feature": "fitme-story-public-enhancements",
   "created_at": "2026-05-08T05:50:00Z",
-  "updated": "2026-05-08T05:50:00Z",
+  "updated": "2026-05-08T21:30:00Z",
   "branch": "feature/fitme-story-public-enhancements",
   "current_phase": "implementation",
   "work_type": "enhancement",
@@ -41,7 +41,7 @@
       "status": "approved",
       "approved_at": "2026-05-08T05:50:00Z",
       "count": 23,
-      "approved_note": "23 tasks: 7 already shipped (T1-T7 via PR #59 + #61, marked done with completed_at from merge timestamps), 16 pending. See tasks.md for the full breakdown."
+      "approved_note": "23 tasks: 17 done (T1-T7 via PR #59 + #61; T8/T11/T14/T15/T16/T17/T21 reconciled 2026-05-08 evening; T9 via PR #67; T22+T23 via PR #258 v7.8.2 documented exemption), 6 pending (T10 site-wide search, T12 35 Figma frames, T13 v7.9 mirror gated 2026-05-21, T18-T20 Figma file + tokens + Code Connect). See tasks.md for the full breakdown."
     },
     "ux_or_integration": {
       "status": "skipped",
@@ -55,9 +55,17 @@
       "approved_at": null,
       "commits": [
         "95cb4d1",
-        "a548e5f"
+        "a548e5f",
+        "d560500",
+        "ef1077f",
+        "3da5591",
+        "83b1a89",
+        "e79bc8c",
+        "f252ded",
+        "2975e74",
+        "3176038"
       ],
-      "commits_note": "Two squash commits on main from this rollup so far: 95cb4d1 (PR #59 quick-wins, 13 files +319/-40) and a548e5f (PR #61 ArticleNav, 3 files +130/-8). Plus FT2 PR #254 docs commit f252ded. Per-task commits live on the individual sub-task branches before squash."
+      "commits_note": "Squash commits on main from this rollup: 95cb4d1 (PR #59 T1-T6 quick-wins), a548e5f (PR #61 T7 ArticleNav), d560500 (PR #62 T16 MobileNav), ef1077f (PR #65 T17 rehype-pretty-code+CopyButton), 3da5591 (PR #66 T15 Callouts), 83b1a89 (PR #63 T11+T14 buildMetadata+SEO), e79bc8c (PR #67 T9 frontmatter audit), f252ded (FT2 PR #254 audit synthesis docs), 2975e74 (FT2 PR #260 T8 dual-outlet), 3176038 (FT2 PR #261 T21 architecture doc). 15 of 23 tasks shipped via 9 squash PRs."
     },
     "testing": {
       "status": "in_progress",
@@ -90,7 +98,7 @@
         "name": "Audit findings closed",
         "baseline": "0 of 30 (6 P0 + 11 P1 + 13 other)",
         "target": "30 of 30 OR explicit deferral with reason for each remaining",
-        "current": "17 of 30 (6 P0 + 11 P1) closed via PR #59 + #61 today"
+        "current": "26 of 30 closed via PRs #59 + #61 + #62 + #63 + #65 + #66 + #67 + FT2 #254 + #260 + #261. Remaining 4 traceable to T10 search (closes 1) + T12/T18-T20 Figma sequence (closes 2 visual aids) + T22/T23 cross-repo parity (closes 0; framework concern not audit finding)."
       },
       "secondary": [
         {
@@ -228,13 +236,13 @@
       "title": "Dual-outlet pattern doc — FT2 long-form vs fitme-story slot MDX contract",
       "type": "docs",
       "skill": "research",
-      "status": "ready",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 260,
+      "merge_commit": "2975e74",
+      "completed_at": "2026-05-08T08:15:33Z",
       "scope_note": "Stress-test S3-G3 deferred 2026-05-07. Document the contract: what belongs in FT2 source case study (long-form, technical, append-only journal) vs fitme-story slot MDX (short-form, public showcase). Lives at docs/case-studies/dual-outlet-pattern.md. Blocks G5 (T9) since G5 needs G3's contract to know what 'complete frontmatter' means."
     },
     {
@@ -243,13 +251,13 @@
       "title": "Timeline frontmatter audit — backfill consistency across 47 showcase MDX files",
       "type": "data",
       "skill": "dev",
-      "status": "blocked",
+      "status": "done",
       "priority": "medium",
       "effort_days": 1.5,
       "depends_on": ["T8"],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 67,
+      "merge_commit": "e79bc8c",
+      "completed_at": "2026-05-08T09:33:35Z",
       "scope_note": "Stress-test S3-G5 deferred 2026-05-07. Walk every showcase MDX in fitme-story/content/04-case-studies/ (47 files); verify each carries v7.7+ standard frontmatter (date, version, work_type, success_metrics, kill_criteria, kill_criterion_fired, dispatch_pattern, etc.). Audit synthesis appendix already shows the corpus-wide gap: 5 missing honest_disclosures, 6 missing visual_aid, 27 missing kill_criteria. Backfill OR set chrome_minimal: true with documented reason (T5's schema)."
     },
     {
@@ -273,13 +281,13 @@
       "title": "Marketing/showcase SEO optimization (metadata, structured data, sitemap, OG tags)",
       "type": "infra",
       "skill": "marketing",
-      "status": "ready",
+      "status": "done",
       "priority": "medium",
       "effort_days": 1.0,
       "depends_on": ["T14"],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 63,
+      "merge_commit": "83b1a89",
+      "completed_at": "2026-05-08T18:16:46Z",
       "scope_note": "May merge with T14 (P-SEO-META) since both touch metadata pipeline. Backlog 'Pre-launch marketing / SEO' line 232."
     },
     {
@@ -319,13 +327,13 @@
       "title": "buildMetadata() helper — per-page openGraph + Twitter + JSON-LD",
       "type": "infra",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "effort_days": 1.0,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 63,
+      "merge_commit": "83b1a89",
+      "completed_at": "2026-05-08T18:16:46Z",
       "scope_note": "Currently only / has openGraph; build src/lib/seo.ts buildMetadata({title, description, slug, type, image}) helper. Call from every page-level + dynamic route (case-studies, glossary, framework, trust, etc.). Even single fallback /og.png is enormous improvement. Closes audit V-002 + V-012 + V-014."
     },
     {
@@ -334,13 +342,13 @@
       "title": "Callout component family — <HonestDisclosure>, <TriggerIncident>, <MemoryRef>, <PredecessorChain>, <KillCriterionResolution>",
       "type": "ui",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "medium",
       "effort_days": 2.0,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 66,
+      "merge_commit": "3da5591",
+      "completed_at": "2026-05-08T13:02:54Z",
       "scope_note": "5 recurring narrative patterns currently inlined as ad-hoc prose across 4+ case studies. Promote to MDX components for visual consistency + cross-corpus queryability. Closes audit CS-014 + CS-024 + partial CS-008."
     },
     {
@@ -349,13 +357,13 @@
       "title": "<MobileNav> hamburger — focus-trapped Dialog with full nav + theme toggle",
       "type": "ui",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "critical",
       "effort_days": 1.0,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 62,
+      "merge_commit": "d560500",
+      "completed_at": "2026-05-08T08:16:40Z",
       "scope_note": "P0 still OPEN from today's audit. Below 768px nav is hidden md:flex with NO fallback — all 7 items disappear. Mobile readers can navigate ~75 routes only via in-content links + 5-link footer. Closes audit V-004 P0."
     },
     {
@@ -364,13 +372,13 @@
       "title": "rehype-pretty-code (or shiki) + <CopyButton> MDX component",
       "type": "infra",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "medium",
       "effort_days": 1.0,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 65,
+      "merge_commit": "ef1077f",
+      "completed_at": "2026-05-08T08:16:52Z",
       "scope_note": "Single plugin install. Closes A-024 + R-008 + CS-004. Showcase MDX uses fenced blocks sparingly today, but engineering-positioned framework benefits from copyable code chips."
     },
     {
@@ -424,13 +432,13 @@
       "title": "Architecture doc docs/design-system/fitme-story-design-architecture.md",
       "type": "docs",
       "skill": "design",
-      "status": "ready",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
+      "pr_number": 261,
+      "merge_commit": "3176038",
+      "completed_at": "2026-05-08T13:04:45Z",
       "scope_note": "Tailwind v4 @theme + globals.css variables + skill palette + editorial type scale contract. Can run parallel with FIG-W2."
     },
     {
@@ -439,14 +447,15 @@
       "title": "Tier 2.2 per-phase emission gate parity for fitme-story repo OR explicit exemption doc",
       "type": "infra",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "low",
       "effort_days": 1.0,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
-      "scope_note": "v7.9 candidate. Cross-repo gate parity: bring FT2's Tier 2.2 emission gates to fitme-story pre-commit OR document exemption. Confirmed empirically today (post-Read hooks blocking from missing observe-cache-hit.py in fitme-story). Promote in v7.9 — likely as 'document the asymmetry'."
+      "pr_number": 258,
+      "merge_commit": "02e3d8d",
+      "completed_at": "2026-05-08T13:02:49Z",
+      "resolution": "documented_exemption",
+      "scope_note": "v7.9 candidate. Closed via v7.8.2 documented exemption — see docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md (7 sections explaining the asymmetry decision + 3 re-eval triggers). PR #258 also shipped the operability fix (PostToolUse:Read hook short-circuit for missing observe-cache-hit.py in fitme-story cwd)."
     },
     {
       "id": "T23",
@@ -454,14 +463,15 @@
       "title": "Mechanism A gate-coverage.jsonl parity for fitme-story repo OR explicit exemption doc",
       "type": "infra",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "low",
       "effort_days": 1.0,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
-      "scope_note": "v7.9 candidate. Cross-repo telemetry parity. Same disposition as F7 — likely 'document the asymmetry'. Promote in v7.9."
+      "pr_number": 258,
+      "merge_commit": "02e3d8d",
+      "completed_at": "2026-05-08T13:02:49Z",
+      "resolution": "documented_exemption",
+      "scope_note": "v7.9 candidate. Closed via same PR + spec as T22 (v7.8.2 documented exemption — Mechanism A telemetry stays FT2-only)."
     }
   ],
   "figma_node_ids": {},
@@ -477,9 +487,15 @@
   "case_study_showcase": null,
   "case_study_showcase_note": "TODO: write at feature closure. Slot TBD when ready (probably 27 or 28 depending on intervening ships).",
   "success_metrics": [
-    "Audit findings closed: target 30/30 OR explicit deferral with reason. Current: 17/30 (6 P0 + 11 P1) closed via PR #59 + #61.",
+    "Audit findings closed: target 30/30 OR explicit deferral with reason. Current: 26/30 closed via 10 squash PRs (today's 7 P-* polish ships + #59 + #61 quick-wins + dual-outlet pattern + frontmatter audit + architecture doc).",
     "ArticleNav sidebar live on Standard + Flagship case-study templates: ACHIEVED (PR #61, prod a548e5f at 2026-05-08T05:31:23Z).",
-    "Mobile nav P0 (V-004) closed by P-MOBNAV ship: PENDING (T16)."
+    "Mobile nav P0 (V-004) closed by P-MOBNAV ship: ACHIEVED (PR #62 d560500 at 2026-05-08T08:16:40Z).",
+    "buildMetadata helper covering openGraph + Twitter + JSON-LD: ACHIEVED (PR #63 83b1a89).",
+    "5 callout components (HonestDisclosure / TriggerIncident / MemoryRef / PredecessorChain / KillCriterionResolution) live on case-study MDX: ACHIEVED (PR #66 3da5591).",
+    "Code blocks have shiki syntax highlighting + CopyButton: ACHIEVED (PR #65 ef1077f).",
+    "Dual-outlet pattern doc (FT2 long-form vs fitme-story slot MDX) published: ACHIEVED (FT2 PR #260 2975e74).",
+    "47-file frontmatter audit + backfill: ACHIEVED (PR #67 e79bc8c, 8 of 47 modified, 39 already compliant).",
+    "fitme-story design architecture doc: ACHIEVED (FT2 PR #261 3176038)."
   ],
   "kill_criteria": [
     "Vercel reports >0.1% increase in JS error rate post-deploy of any sub-task",
@@ -502,6 +518,13 @@
       "timestamp": "2026-05-08T05:50:00Z",
       "approved_by": "user",
       "note": "Implementation already in progress — 7 of 23 tasks done. Auto-advance to current state."
+    },
+    {
+      "from": "implementation",
+      "to": "implementation",
+      "timestamp": "2026-05-08T21:30:00Z",
+      "approved_by": "user",
+      "note": "Reconciliation pass: 8 additional tasks (T8/T9/T11/T14/T15/T16/T17/T21) marked done with their merge commit + PR + completed_at. Reality: 15/23 done. State.json had silent-passed these in prior session; user-requested reconcile + then proceed with remaining 8 tasks (T10/T12/T13/T18/T19/T20/T22/T23). Phase stays at implementation since 8 tasks remain."
     }
   ],
   "timing": {
