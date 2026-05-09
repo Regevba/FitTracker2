@@ -436,14 +436,14 @@
       "title": "Code Connect integration — /design build pushes web screens via Figma MCP",
       "type": "design",
       "skill": "design",
-      "status": "blocked",
+      "status": "ready",
       "priority": "medium",
-      "effort_days": 1.5,
+      "effort_days": 0.5,
       "depends_on": ["T12"],
       "pr_number": null,
       "merge_commit": null,
       "completed_at": null,
-      "scope_note": "Eliminates figma_build_status: deferred_to_prompt fallback. Last in Figma sequence — runs after FIG-U3 + FIG-P4 land."
+      "scope_note": "T18 + T19 + T12 + Component-library bootstrap shipped 2026-05-09. Library has 17 components on the Components page (per figma_node_ids.components). Remaining work: per-component → src/components/* path mappings via add_code_connect_map MCP tool. Effort revised down 1.5 → 0.5 days since the heavy lifting (file + tokens + components) is done. Mapping list (best-fit): button_primary→Button.tsx (none yet — would need component creation in fitme-story); tag_flagship→TimelineNode.tsx (or new Tag.tsx); callout_*→src/components/mdx/callouts/{HonestDisclosure,TriggerIncident,MemoryRef,PredecessorChain,KillCriterionResolution}.tsx; card_case_study→src/components/case-study/Card.tsx (or new); search_*→src/components/SearchInput.tsx; layout_site_header→src/components/SiteHeader.tsx; layout_site_footer→src/components/SiteFooter.tsx. 5 callouts + SiteHeader + SiteFooter + SearchInput map cleanly to existing fitme-story files; the rest would require new component files in fitme-story or the mapping would point at a parent component."
     },
     {
       "id": "T21",
@@ -508,9 +508,36 @@
       "scope_note": "Two-phase: (1) audit every public route at 3 mobile widths (360/iPhone-mini, 390/iPhone-15, 430/iPhone-15-Pro-Max) — capture findings (overflow, line-length > 75ch, sub-44px tap targets, non-scrollable code/table blocks, image overflow, sticky-header cropping, font-size < 16px on body); (2) fix pass — address each finding with utility-first Tailwind responsive prefixes. Audit surfaced 22 findings; PR #71 fixed top 8 (responsive type scale on Hero/PmFlowHero/Flagship/Standard h1, 3-col grids collapse to 1-col on phones for BeforeAfter/RankedBars/ParallelGantt, CopyButton tap-target 32→44, .prose code overflow-wrap:anywhere, case-study container px-6→px-4 sm:px-6). Intentionally not changed: long-form prose containers (preserves 65-75ch), horizontal-scroll components already using overflow-x-auto. Audit findings remaining: 14 documented but lower-priority (e.g., milestone strip min-w-[640px] is intentional UX)."
     }
   ],
-  "figma_node_ids": {},
-  "figma_build_status": "deferred_to_prompt",
-  "figma_build_status_note": "Per ucc-passkey-auth precedent: fitme-story has no Figma file mapping yet (FIG-W1+W2+W3+W4+W5+W6 will create one). Until then, all per-task UI work falls back to portable prompt at docs/prompts/ui/. v4.X documented escape hatch.",
+  "figma_node_ids": {
+    "_meta": {
+      "file_key": "fsjHfFLAHELACZHku8Rfcl",
+      "file_url": "https://www.figma.com/design/fsjHfFLAHELACZHku8Rfcl",
+      "file_name": "FitMe Story Web — Design System",
+      "captured_at": "2026-05-09",
+      "source_task": "T20 (Code Connect bootstrap) — components live on the Components page; screens live on the Screens page. T18 created the file; T19 imported the tokens; T12 built the wireframes; this entry captures component node IDs for T20 Code Connect mappings."
+    },
+    "components": {
+      "button_primary": "5:4",
+      "button_secondary": "5:6",
+      "button_ghost": "5:8",
+      "tag_flagship": "5:12",
+      "tag_standard": "5:14",
+      "tag_tier_t1": "5:16",
+      "callout_honest_disclosure": "5:20",
+      "callout_trigger_incident": "5:26",
+      "callout_memory_ref": "5:32",
+      "callout_predecessor_chain": "5:38",
+      "callout_kill_criterion_resolution": "5:44",
+      "card_case_study": "5:52",
+      "card_framework_version": "5:59",
+      "search_icon": "5:65",
+      "search_expanded": "5:67",
+      "layout_site_header": "5:74",
+      "layout_site_footer": "5:89"
+    }
+  },
+  "figma_build_status": "library_seeded",
+  "figma_build_status_note": "fitme-story Figma library bootstrap shipped 2026-05-09 in this single rollup: T18 created file fsjHfFLAHELACZHku8Rfcl (Cover · Tokens · Components · Screens pages); T19 imported 33 token variables (23 colors w/ Light+Dark modes + 8 numeric + 2 strings); T12 built 22 representative wireframe screens; T20 (this entry) bootstrapped the component library: 17 components — 3 Buttons (Primary/Secondary/Ghost), 3 Tags (Flagship/Standard/Tier T1), 5 Callouts (HonestDisclosure/TriggerIncident/MemoryRef/PredecessorChain/KillCriterionResolution), 2 Cards (CaseStudy/FrameworkVersion), 2 Search (Icon/Expanded), 2 Layouts (SiteHeader/SiteFooter). All components use the FitMe Tokens collection via setBoundVariableForPaint so a token edit re-themes the library. Per-component node IDs captured above for upcoming Code Connect mappings (T20 follow-up: per-component → fitme-story src/components/* paths via add_code_connect_map MCP tool).",
   "pre_merge_review": {
     "ux": null,
     "design": null,
