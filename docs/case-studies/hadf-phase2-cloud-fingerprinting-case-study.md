@@ -29,14 +29,14 @@ status: complete
 
 # HADF Phase 2 — Cloud Fingerprinting Measurement
 
-> **EXTERNAL AUDIT PENDING.** This case study reports the mechanical verdict from the analyzer; an independent assessment of the methodology, dataset, and conclusions has not yet been completed. The pre-registration ([`.claude/shared/hadf/phase2-preregistration.json`](../../.claude/shared/hadf/phase2-preregistration.json), authored 2026-04-29 and immutable since) and the summary artifact ([`.claude/shared/hadf/phase2-fingerprint-summary.json`](../../.claude/shared/hadf/phase2-fingerprint-summary.json), committed `61964d3`) are the assessable inputs. All quantitative claims in this document trace to one of those two files per `case_study_constraints.raw_data_citation_rule`.
+> **EXTERNAL AUDIT PENDING.** This case study reports the mechanical verdict from the analyzer; an independent assessment of the methodology, dataset, and conclusions has not yet been completed. The pre-registration ([`.claude/shared/hadf/phase2-preregistration.json`](../../.claude/shared/hadf/phase2-preregistration.json), authored 2026-04-29 and immutable since) and the summary artifact ([`.claude/shared/hadf/phase2-fingerprint-summary.json`](../../.claude/shared/hadf/phase2-fingerprint-summary.json), authored 2026-05-01 on branch tip `61964d3` and landed in main 2026-05-08 as squash commit `a4b357f` via PR #264) are the assessable inputs. All quantitative claims in this document trace to one of those two files per `case_study_constraints.raw_data_citation_rule`.
 
 ## Summary Card
 
 | Field | Value | Tier |
 |---|---|---|
 | Pre-registration | `.claude/shared/hadf/phase2-preregistration.json` (immutable, hash-verified) | T1 |
-| Summary artifact | `.claude/shared/hadf/phase2-fingerprint-summary.json` (commit `61964d3`) | T1 |
+| Summary artifact | `.claude/shared/hadf/phase2-fingerprint-summary.json` (squash commit `a4b357f` on main, originally branch tip `61964d3`) | T1 |
 | Verdict threshold | `max_silhouette_score_across_k > 0.5` | T1 |
 | Observed | `silhouette = 0.5566` at `best_k = 5` | T1 |
 | `clusters_found` | `true` | T1 |
@@ -66,7 +66,7 @@ Verdict function (pre-registered, mechanical):
 
 ## Raw Data
 
-Source: [`.claude/shared/hadf/phase2-fingerprint-summary.json`](../../.claude/shared/hadf/phase2-fingerprint-summary.json) (commit `61964d3`).
+Source: [`.claude/shared/hadf/phase2-fingerprint-summary.json`](../../.claude/shared/hadf/phase2-fingerprint-summary.json) (squash commit `a4b357f` on main, originally branch tip `61964d3`).
 
 ### Totals (T1)
 
