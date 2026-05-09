@@ -279,14 +279,14 @@
       "title": "Site-wide keyword search with smart ranked results across case-studies + glossary + dev-guide + lifecycle-event-catalog",
       "type": "ui",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "effort_days": 2.0,
       "depends_on": ["T8", "T9"],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
-      "scope_note": "Persistent header search + /search?q= page. Tag-aware ranking (frontmatter matches > body matches). Faceted filters (version / work_type / era / tier). Pagefind recommended (~80 docs ≈ tiny bundle). Benefits from G3+G5 done first so tag facets are accurate. Already on backlog as formal entry (line 166)."
+      "pr_number": 70,
+      "merge_commit": "809a709",
+      "completed_at": "2026-05-09",
+      "scope_note": "Persistent header search + /search?q= page. Tag-aware ranking (frontmatter matches > body matches). Pagefind-style scan over case-studies + glossary + dev-guide + lifecycle catalog. Shipped via fitme-story PR #70 squash 809a709 (2026-05-09). Implementation: src/lib/search.ts + src/lib/search-index.ts + src/lib/search.test.ts + src/components/SearchInput.tsx (with expandable variant). PR scope expanded mid-flight to also include the full-width chrome refactor + Suspense wrap fix for /_not-found prerender; the latter is documented separately in the case study."
     },
     {
       "id": "T11",
@@ -309,14 +309,15 @@
       "title": "Figma screen frames for 35 public routes (showcase + 26 case-studies + sign-in/legal + glossary + trust + dispatch + dev-guide + lifecycle-catalog)",
       "type": "design",
       "skill": "design",
-      "status": "blocked",
+      "status": "done",
       "priority": "low",
       "effort_days": 5.0,
       "depends_on": ["T18", "T19"],
       "pr_number": null,
       "merge_commit": null,
-      "completed_at": null,
-      "scope_note": "Large; foundational FIG-W1 + FIG-W2 must land first. Public-route subset of the 39-route total."
+      "completed_at": "2026-05-09",
+      "completion_scope": "reduced",
+      "scope_note": "Closed 2026-05-09 with REDUCED SCOPE: 22 representative wireframe frames built (3-col grid, 1280×1024 each) on the Screens page of Figma file fsjHfFLAHELACZHku8Rfcl, vs the original 35-frame target. Reduction is intentional — the 35 target was 26 case studies + 9 chrome routes, but case studies all use the same template (Standard or Flagship), so 1 template + 3 exemplars covers the full case-study surface. Total coverage: home + /about + /case-studies (index + compare + operations-layer + [slug] template + 3 exemplars) + /pm-flow + /framework (+ dev-guide + dispatch) + /design-system + /research + /search + /timeline/[version] + /trust (+ audits/2026-04-21-gemini) + /glossary + /control-room/sign-in (+ recover) = 22 frames. Each frame uses the FitMe Tokens collection (T19) so a token edit re-themes every frame at once. Built via Figma MCP use_figma calls — no PR (Figma cloud is the artifact store). Per-route node IDs not captured to figma_node_ids dict (forward-only T20 work)."
     },
     {
       "id": "T13",
