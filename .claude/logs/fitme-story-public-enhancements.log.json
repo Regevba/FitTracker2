@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-08T06:36:08Z",
-  "updated_at": "2026-05-08T21:05:47Z",
+  "updated_at": "2026-05-09T04:50:41Z",
   "events": [
     {
       "timestamp": "2026-05-08T05:53:53Z",
@@ -137,6 +137,23 @@
       "recording_mode": "contemporaneous"
     },
     {
+      "timestamp": "2026-05-08T06:55:26Z",
+      "event_type": "task_in_progress",
+      "phase": "implementation",
+      "summary": "T15 (P-CALLOUTS) callout component family shipped via fitme-story PR #66 (commit TBD). 6 files +330 lines: HonestDisclosure, TriggerIncident, MemoryRef, PredecessorChain, KillCriterionResolution. All server components, all dark-mode aware, all registered in mdx-components.tsx. Closes CS-014 + CS-024 + partial CS-008. Adoption (replacing existing prose patterns) deferred to T9 G5 timeline frontmatter audit.",
+      "artifacts": [
+        "src/components/mdx/callouts/"
+      ],
+      "metrics": {
+        "files_changed": 6,
+        "lines_added": 330,
+        "pr_number": 66
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
       "timestamp": "2026-05-08T21:05:47Z",
       "event_type": "reconciliation",
       "phase": "implementation",
@@ -144,6 +161,17 @@
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-09T04:50:41Z",
+      "event_type": "protocol_invocation",
+      "phase": "implementation",
+      "summary": "v7.8.1 invoked retroactively per user directive 2026-05-09. Rollup marked outlier_to_protocol with honest gap inventory. Case study created at docs/case-studies/fitme-story-public-enhancements-case-study.md with full v7.8.1 frontmatter (date_written, dispatch_pattern, success_metrics, kill_criteria, kill_criteria_resolution=deferred_until_complete, framework_version, work_type, tier_tags_present=true). T18 + T19 + T24 marked done with completed_at. T24 mobile-readiness PR #71 merged squash e675fe9. Phase B (port framework to fitme-story repo) and Phase C (cross-repo state sync) scoped + queued.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
