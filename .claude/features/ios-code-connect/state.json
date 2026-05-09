@@ -1,0 +1,81 @@
+{
+  "feature_name": "ios-code-connect",
+  "current_phase": "implementation",
+  "created_at": "2026-05-09T19:27:43Z",
+  "updated_at": "2026-05-09T19:27:43Z",
+  "framework_version": "v7.8.1",
+  "work_type": "chore",
+  "work_subtype": "design_system_extension",
+  "has_ui": false,
+  "requires_analytics": false,
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "1-phase chore scaffolding only — no current_phase mutations beyond initial creation; iOS Code Connect template files live under FitTracker/DesignSystem/ which is not in the infra-path glob list",
+  "scheduled_after": {
+    "predecessor": "fitme-story-public-enhancements",
+    "signal": "fitme-story-public-enhancements T20 phase=complete",
+    "captured_at": "2026-05-09T19:27:43Z",
+    "note": "iOS Code Connect groundwork waits for fitme-story (web) Code Connect to ship first as the learning exercise. T20 in the rollup feature captures 17 web component node IDs and authors .figma.tsx mappings for the FitMe Story Web Design System (file fsjHfFLAHELACZHku8Rfcl). Once that pattern is validated, this feature replays it for the iOS app pointing at the FitMe Design System Library (file 0Ai7s3fCFqR5JXDW8JvgmD)."
+  },
+  "phases": {
+    "implementation": {
+      "status": "scaffolded",
+      "started_at": "2026-05-09T19:27:43Z",
+      "note": "Feature scaffolded as placeholder. No implementation work started — waiting for scheduled_after.signal to fire."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-05-09T19:27:43Z"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Install @figma/code-connect Swift toolchain + author Figma.toml at FT2 repo root pointing at FitMe Design System Library 0Ai7s3fCFqR5JXDW8JvgmD",
+      "status": "pending",
+      "effort_days": 0.25,
+      "blocker": "scheduled_after.signal not yet fired"
+    },
+    {
+      "id": "T2",
+      "title": "Capture per-component node IDs from FitMe Design System Library — every reusable component in FitTracker/DesignSystem/AppComponents.swift (~13 components per CLAUDE.md design system reference)",
+      "status": "pending",
+      "effort_days": 0.25,
+      "blocker": "T1"
+    },
+    {
+      "id": "T3",
+      "title": "Author .figma.swift template files — one per component mapping Figma component → SwiftUI view in FitTracker/DesignSystem/",
+      "status": "pending",
+      "effort_days": 1.0,
+      "blocker": "T2"
+    },
+    {
+      "id": "T4",
+      "title": "Run figma connect publish — push iOS mappings to FitMe Design System Library; verify Code Connect snippets appear in Figma Dev Mode",
+      "status": "pending",
+      "effort_days": 0.25,
+      "blocker": "T3"
+    },
+    {
+      "id": "T5",
+      "title": "Document iOS Code Connect workflow in docs/design-system/ (companion to fitme-story-design-architecture.md from T21 of rollup feature)",
+      "status": "pending",
+      "effort_days": 0.25,
+      "blocker": "T4"
+    }
+  ],
+  "metrics": {
+    "primary": "components_with_figma_dev_mode_snippets",
+    "baseline": 0,
+    "target": 13,
+    "kill_criteria": "Code Connect publish fails for >3 components OR Figma Dev Mode shows no snippets after publish"
+  },
+  "_meta": {
+    "scaffolded_by": "claude_opus_4_7",
+    "scaffold_session": "2b1d970c-6a14-4cff-b61e-6011bdb87a68",
+    "scaffold_origin": "User directive 2026-05-09 during fitme-story-public-enhancements rollup merge session — 'add another task for code connect mapping for ios' followed by clarifying question answer choosing 'New chore feature ios-code-connect' + 'Placeholder only'."
+  }
+}

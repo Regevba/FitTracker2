@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "feature": "ios-code-connect",
+  "title": "iOS Code Connect mapping",
+  "work_type": "chore",
+  "current_phase": "implementation",
+  "framework_version": "v7.8.1",
+  "started_at": "2026-05-09T19:27:43Z",
+  "updated_at": "2026-05-09T19:27:43Z",
+  "events": [
+    {
+      "timestamp": "2026-05-09T19:27:43Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Feature scaffolded as placeholder per user directive 'add another task for code connect mapping for ios' during fitme-story-public-enhancements rollup merge session. Work_type: chore (1-phase). 5 tasks (T1-T5) defined with dependency chain T1→T2→T3→T4→T5; total ~2.0 days effort. Blocked on scheduled_after.signal 'fitme-story-public-enhancements T20 phase=complete'.",
+      "artifacts": [
+        ".claude/features/ios-code-connect/state.json",
+        ".claude/features/ios-code-connect/tasks.md"
+      ],
+      "metrics": {
+        "tasks_total": 5,
+        "tasks_pending": 5,
+        "estimated_effort_days": 2.0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
