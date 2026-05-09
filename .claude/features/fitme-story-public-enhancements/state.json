@@ -1,7 +1,7 @@
 {
   "feature": "fitme-story-public-enhancements",
   "created_at": "2026-05-08T05:50:00Z",
-  "updated": "2026-05-08T21:30:00Z",
+  "updated": "2026-05-09T04:30:00Z",
   "branch": "feature/fitme-story-public-enhancements",
   "current_phase": "implementation",
   "work_type": "enhancement",
@@ -9,6 +9,19 @@
   "has_ui": true,
   "requires_analytics": false,
   "framework_version": "v7.8.1",
+  "outlier_to_protocol": {
+    "is_outlier": true,
+    "tier": "midstream_invocation",
+    "reason": "Feature was created 2026-05-08 as a rollup of 23 audit-driven enhancements; 7 sub-tasks shipped same-day via PR #59 + #61 BEFORE v7.8.1 protocol was formally invoked on this rollup. Subsequent sub-tasks (T10/T15/T16/T17/T21/T24/T18/T19) shipped over multiple sessions across 2026-05-08 → 2026-05-09 with partial logging. Per user directive 2026-05-09: invoke v7.8.1 retroactively, fill in gaps honestly, mark as outlier. Subsequent sub-tasks from 2026-05-09 forward follow full protocol; pre-2026-05-09 sub-tasks carry partial timing/log coverage.",
+    "honest_gaps": [
+      "timing.phases lacks per-sub-task started_at/ended_at (only rollup-level timestamps present)",
+      "Tier 2.2 contemporaneous log coverage: ~50% — entries exist for major sub-tasks but not all 17",
+      "Mechanism A gate-coverage.jsonl coverage: NOT applicable — most sub-task commits landed in fitme-story repo where Mechanism A is not yet ported (Phase B of this 2026-05-09 directive)",
+      "Some sub-task PR descriptions are terse and don't reference back to T-IDs",
+      "kill_criteria_resolution: deferred until current_phase=complete (currently implementation; 17/24 done)"
+    ],
+    "filled_via": "docs/case-studies/fitme-story-public-enhancements-case-study.md (midstream honesty document)"
+  },
   "parent_feature": "framework-story-site",
   "predecessor_chain": [
     "framework-story-site",
@@ -40,8 +53,8 @@
     "tasks": {
       "status": "approved",
       "approved_at": "2026-05-08T05:50:00Z",
-      "count": 23,
-      "approved_note": "23 tasks: 17 done (T1-T7 via PR #59 + #61; T8/T11/T14/T15/T16/T17/T21 reconciled 2026-05-08 evening; T9 via PR #67; T22+T23 via PR #258 v7.8.2 documented exemption), 6 pending (T10 site-wide search, T12 35 Figma frames, T13 v7.9 mirror gated 2026-05-21, T18-T20 Figma file + tokens + Code Connect). See tasks.md for the full breakdown."
+      "count": 24,
+      "approved_note": "24 tasks (T24 mobile-readiness added 2026-05-09 per user; T1-T23 from rollup creation 2026-05-08). 19 done as of 2026-05-09: T1-T7 via fitme-story PR #59 + #61; T9 via PR #67; T11+T14 via PR #63; T15 via PR #66; T16 via PR #62; T17 via PR #65; T21 via FT2 PR #261; T22+T23 via FT2 PR #258 (v7.8.2 documented exemption — now superseded by Phase B port); T18 (Figma file fsjHfFLAHELACZHku8Rfcl) + T19 (33 token vars Light+Dark) created 2026-05-09 via Figma MCP; T24 (mobile-readiness fitme-story PR #71 squash e675fe9). 5 pending: T8 (dual-outlet pattern, ready), T10 (site-wide search, shipped via PR #70 — pending state.json update next session), T12 (22 wireframes built but not state-marked-done), T13 (v7.9 mirror, date-gated 2026-05-21), T20 (Code Connect, depends on Figma components). See tasks.md."
     },
     "ux_or_integration": {
       "status": "skipped",
@@ -387,14 +400,16 @@
       "title": "Create new Figma file under team Regev - My apps named 'FitMe Story Web — Design System'",
       "type": "design",
       "skill": "design",
-      "status": "ready",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.25,
       "depends_on": [],
       "pr_number": null,
       "merge_commit": null,
-      "completed_at": null,
-      "scope_note": "Foundational for FIG-U3, FIG-U4 (UCC), FIG-P4, FIG-W5. Unblocks the whole Figma track."
+      "completed_at": "2026-05-09",
+      "scope_note": "Foundational for FIG-U3, FIG-U4 (UCC), FIG-P4, FIG-W5. Unblocks the whole Figma track.",
+      "figma_file_key": "fsjHfFLAHELACZHku8Rfcl",
+      "figma_file_url": "https://www.figma.com/design/fsjHfFLAHELACZHku8Rfcl"
     },
     {
       "id": "T19",
@@ -402,14 +417,17 @@
       "title": "Extract every token from globals.css into Figma variables",
       "type": "design",
       "skill": "design",
-      "status": "blocked",
+      "status": "done",
       "priority": "medium",
       "effort_days": 1.0,
       "depends_on": ["T18"],
       "pr_number": null,
       "merge_commit": null,
-      "completed_at": null,
-      "scope_note": "brand-indigo/coral, neutral 50–900, skill palette × 11, editorial type scale. Foundational for component frames."
+      "completed_at": "2026-05-09",
+      "scope_note": "brand-indigo/coral, neutral 50–900, skill palette × 11, editorial type scale. Foundational for component frames.",
+      "figma_collection_name": "FitMe Tokens",
+      "figma_modes": ["Light", "Dark"],
+      "figma_variable_summary": "23 color (4 brand × 2 modes for indigo/coral, 8 neutral with neutral-500/700 dark overrides, 11 skill) + 8 numeric (3 measures, 5 type-scale + line-height) + 2 font strings = 33 variables. Pages: Cover · Tokens (with visual swatch preview) · Components · Screens."
     },
     {
       "id": "T20",
@@ -470,8 +488,23 @@
       "pr_number": 258,
       "merge_commit": "02e3d8d",
       "completed_at": "2026-05-08T13:02:49Z",
-      "resolution": "documented_exemption",
-      "scope_note": "v7.9 candidate. Closed via same PR + spec as T22 (v7.8.2 documented exemption — Mechanism A telemetry stays FT2-only)."
+      "resolution": "documented_exemption_then_superseded_by_phase_b_port",
+      "resolution_note": "Originally closed 2026-05-08 via FT2 PR #258 as documented exemption (v7.8.2 §1-7). Per user directive 2026-05-09, the exemption was reversed: fitme-story PR #72 vendored the framework gates, closing the asymmetry the exemption acknowledged. T23 stays in done state; the v7.8.2 spec carries a §8 reversal addendum.",
+      "scope_note": "v7.9 candidate. Cross-repo telemetry parity. Closed initially via documented exemption (PR #258), then superseded by Phase B port (fitme-story PR #72)."
+    },
+    {
+      "id": "T24",
+      "title": "Mobile-readiness audit + fix pass — every public route readable + usable at 360/390/430px",
+      "type": "ux",
+      "skill": "ux",
+      "status": "done",
+      "priority": "medium",
+      "effort_days": 2.0,
+      "depends_on": [],
+      "pr_number": 71,
+      "merge_commit": "e675fe9",
+      "completed_at": "2026-05-09",
+      "scope_note": "Two-phase: (1) audit every public route at 3 mobile widths (360/iPhone-mini, 390/iPhone-15, 430/iPhone-15-Pro-Max) — capture findings (overflow, line-length > 75ch, sub-44px tap targets, non-scrollable code/table blocks, image overflow, sticky-header cropping, font-size < 16px on body); (2) fix pass — address each finding with utility-first Tailwind responsive prefixes. Audit surfaced 22 findings; PR #71 fixed top 8 (responsive type scale on Hero/PmFlowHero/Flagship/Standard h1, 3-col grids collapse to 1-col on phones for BeforeAfter/RankedBars/ParallelGantt, CopyButton tap-target 32→44, .prose code overflow-wrap:anywhere, case-study container px-6→px-4 sm:px-6). Intentionally not changed: long-form prose containers (preserves 65-75ch), horizontal-scroll components already using overflow-x-auto. Audit findings remaining: 14 documented but lower-priority (e.g., milestone strip min-w-[640px] is intentional UX)."
     }
   ],
   "figma_node_ids": {},
@@ -482,7 +515,7 @@
     "design": null,
     "review_note": "Per-sub-task: each PR carries its own pre-merge review in PR description. T7 (ArticleNav) PR #61 included verification checklist; T1-T6 PR #59 included 8-item test plan."
   },
-  "case_study": null,
+  "case_study": "docs/case-studies/fitme-story-public-enhancements-case-study.md",
   "case_study_note": "TODO: write at feature closure. Will live at docs/case-studies/fitme-story-public-enhancements-case-study.md. Today's audit synthesis (docs/research/2026-05-08-fitme-story-audit-synthesis.md) is the pre-research; per-task PR descriptions document each sub-ship.",
   "case_study_showcase": null,
   "case_study_showcase_note": "TODO: write at feature closure. Slot TBD when ready (probably 27 or 28 depending on intervening ships).",

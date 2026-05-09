@@ -88,3 +88,32 @@ None of these signals are firing today. Re-evaluate annually OR when one of the 
 | **F8 (Mechanism A `gate-coverage.jsonl` parity)** | NOT PORTED to fitme-story. Documented exemption. |
 | **Hook noise** | FIXED via cwd-guard in `.claude/settings.json` PostToolUse:Read command. |
 | **Re-evaluation cadence** | Annual OR on signal trigger (see §5). Next review: 2027-05-08 OR earlier if signal fires. |
+
+---
+
+## §8 Reversal addendum — 2026-05-09
+
+**Disposition reversed by user directive 2026-05-09:** "every feature on fitme story must invoke full framework from now on and obey all rules to data between main repos are synced".
+
+The asymmetry documented in §1–§7 above is **closed** as of 2026-05-09 via cross-repo framework port:
+
+| Aspect | New decision (2026-05-09) | Reference |
+|---|---|---|
+| **F7 (Tier 2.2 per-phase emission gate parity)** | **PORTED.** `scripts/append-feature-log.py` vendored into fitme-story. Pre-commit hook fires on fitme-story features. | fitme-story branch `chore/install-framework-hooks` |
+| **F8 (Mechanism A `gate-coverage.jsonl` parity)** | **PORTED.** `scripts/observe-cache-hit.py` + `scripts/gate_coverage.py` vendored. `.claude/logs/gate-coverage.jsonl` will accumulate as fitme-story features ship. | same branch |
+| **Pre-commit gates (state.json + case-study)** | **PORTED.** `scripts/check-state-schema.py` + `scripts/check-case-study-preflight.py` vendored. `.githooks/pre-commit` mirrors FT2's. | same branch |
+| **CI integrity workflow** | **ADDED.** `.github/workflows/integrity.yml` runs all three gate scripts on every PR + main push. | same branch |
+| **`.claude/{features,logs,shared}/`** | **BOOTSTRAPPED.** Mirror schemas (`branch-isolation-exempt.json`, `path-reducers.json`) seeded. | same branch |
+| **Cross-repo state.json policy** | **DEFERRED to Phase C** of the 2026-05-09 directive. Cross-repo features still canonicalize at FT2; fitme-story-only features get state.json in the fitme-story repo. Phase C may evolve to bidirectional sync. | TBD |
+| **Re-evaluation cadence** | **RETIRED.** No longer waiting for annual review or signal trigger; full parity is now the policy. | n/a |
+
+**Why reversed:** the `fitme-story-public-enhancements` rollup (created 2026-05-08) demonstrated the asymmetry's measurement cost. It shipped 12 fitme-story PRs in 2 days with zero `gate-coverage.jsonl` entries and zero per-phase Tier 2.2 emission for fitme-story-side commits. The midstream case study at [`docs/case-studies/fitme-story-public-enhancements-case-study.md`](../../case-studies/fitme-story-public-enhancements-case-study.md) §"Why this rollup is an outlier" lists the three asymmetries explicitly. User directive 2026-05-09 prioritized closing them now rather than deferring to v7.9 (2026-05-21 promotion window).
+
+**What does NOT change:**
+
+- The §3 hook-fix (cwd-guard in `.claude/settings.json` PostToolUse:Read) stays in place as belt-and-suspenders. Even with the script vendored, the guard prevents noise if a worktree is missing the script (e.g., during a partial sync).
+- §4 (no regression on existing FT2 gates) still holds.
+
+**Honesty ledger note:** the reversal does NOT retroactively populate `gate-coverage.jsonl` for the 12 fitme-story PRs that shipped 2026-05-07/08/09 PRE-port. Those PRs remain measurement-blind — that's a permanent honest gap. Forward-only coverage starts with the fitme-story PR opening this port (TBD-PR-number).
+
+**v7.9 candidates F7 + F8 status:** **CLOSED** (resolved by this reversal, not by exemption).
