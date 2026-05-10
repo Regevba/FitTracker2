@@ -1,8 +1,8 @@
 {
   "feature_name": "code-connect-automation",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-05-10T05:32:33Z",
-  "updated_at": "2026-05-10T08:11:07Z",
+  "updated_at": "2026-05-10T13:56:52Z",
   "framework_version": "v7.8.1",
   "work_type": "chore",
   "work_subtype": "framework_tooling",
@@ -15,17 +15,28 @@
   "isolation_opt_out_reason": "Cross-repo tooling chore \u2014 touches scripts/ + .claude/skills/ + .github/workflows/ in BOTH FT2 and fitme-story. Branch isolation gate's Mode B (infra paths) fires by design; opt-out lets the chore proceed without per-commit auto-isolation, but commits remain on dedicated chore/* branches per repo for review hygiene.",
   "phases": {
     "implementation": {
-      "status": "in_progress",
+      "status": "completed",
       "started_at": "2026-05-10T05:32:33Z",
       "note": "3-layer automation closing the loop on ios-code-connect (PR #277) + fitme-story T20 (PR #75): A) scaffold script auto-generates mapping files from state.json::figma_node_ids; B) /design build skill calls scaffold after node ID capture; C) CI workflow auto-publishes on merge.",
       "updated_at": "2026-05-10T08:11:07Z",
-      "progress": "4/5 tasks done; T5 = end-to-end test on next real new UI feature (gate)"
+      "progress": "4/5 tasks done; T5 = end-to-end test on next real new UI feature (gate)",
+      "completed_at": "2026-05-10T13:49:12Z",
+      "final_note": "Layers A + B + C all shipped and code-clean (4/5 tasks done). T5 (E2E publish test) externally blocked by Figma Pro+Full-seat tier not granting Code Connect Write scope. Implementation remains valuable as: (a) documentation of design intent via .figma.{swift,tsx} mapping files; (b) auto-scaffold infrastructure that future UI features benefit from immediately via /design build; (c) CI workflows that auto-fire when seat/plan upgrade unblocks the scope, with no further code changes needed. Verified end-to-end up to (and inclusive of) the auth step: parser succeeds, all components validated successfully connected, only the upload to https://api.figma.com/v1/code_connect returns 403 due to scope."
+    },
+    "complete": {
+      "status": "reached",
+      "started_at": "2026-05-10T13:56:52Z",
+      "note": "Feature closes with T1-T4 done + T5 deferred for Figma plan-tier reason. case_study_type=no_case_study_required (set at scaffold time, retained). All shipped artifacts remain valuable. Re-activation path: operator obtains Code Connect Write scope (Org+ plan OR Dev seat add-on) \u2192 adds new token to FIGMA_ACCESS_TOKEN repo secrets in BOTH repos \u2192 triggers the figma-code-connect-publish workflow in either repo manually OR with next .figma.{swift,tsx} change."
     }
   },
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-05-10T05:32:33Z"
+        "started_at": "2026-05-10T05:32:33Z",
+        "ended_at": "2026-05-10T13:56:52Z"
+      },
+      "complete": {
+        "started_at": "2026-05-10T13:56:52Z"
       }
     }
   },
@@ -95,10 +106,12 @@
     {
       "id": "T5",
       "title": "End-to-end test on a real new UI feature",
-      "status": "pending",
+      "status": "deferred",
       "effort_days": 0.25,
       "blocker": "T2 + T3 + T4",
-      "scope_note": "Pick a near-future UI feature; verify /design build \u2192 state.json::figma_node_ids capture \u2192 scaffold script auto-runs \u2192 .figma.{swift|tsx} files appear \u2192 CI publish fires \u2192 mappings show in Figma Dev Mode. Documents any rough edges."
+      "scope_note": "Pick a near-future UI feature; verify /design build \u2192 state.json::figma_node_ids capture \u2192 scaffold script auto-runs \u2192 .figma.{swift|tsx} files appear \u2192 CI publish fires \u2192 mappings show in Figma Dev Mode. Documents any rough edges.",
+      "deferred_at": "2026-05-10T13:49:12Z",
+      "deferred_reason": "Code Connect publish endpoint requires the code_connect:write OAuth/PAT scope, which is not available on Pro tier with Full seat (Figma response: \"Invalid scopes for app\" when requested via OAuth; not present in PAT scope UI). Confirmed 2026-05-10 across multiple token regenerations + OAuth attempts. Implementation is complete and ready: when account upgrades to Org/Enterprise OR adds a Dev seat with Code Connect entitlement, T5 (end-to-end test) becomes runnable by simply re-triggering either repo's figma-code-connect-publish workflow. No code changes needed."
     }
   ],
   "metrics": {
@@ -108,7 +121,10 @@
     "target": 0,
     "target_note": "After Layer C ships: operator does nothing \u2014 mapping scaffolds + publish both fire automatically",
     "kill_criteria": "scaffold script produces wrong/non-compiling files OR CI publish fails > 1x without obvious operator-fixable cause",
-    "progress": "Pre-Layer-C: manual_steps=2. Post-Layer-C (today): manual_steps=0 once a UI feature actually flows through. T5 measures."
+    "progress": "Pre-Layer-C: manual_steps=2. Post-Layer-C (today): manual_steps=0 once a UI feature actually flows through. T5 measures.",
+    "final_status": "partial_success_external_blocker",
+    "final_status_note": "Code-side: 100% delivered (manual_steps_per_new_ui_feature: 2 \u2192 0 once publish path unblocks). Figma-side: 0% live (publish blocked by plan-tier scope availability). Both halves of the metric are independent \u2014 the code automation is fully working end-to-end EXCEPT for the final API call to Figma.",
+    "kill_criteria_resolution": "Kill criterion #1 (scaffold script produces wrong/non-compiling files): NOT FIRED. Local dry-run + CI parse+validation steps both confirm 100% mapping success across all 12 .figma.tsx + 5 .figma.swift files (17 React + 6 iOS connections). Kill criterion #2 (CI publish fails > 1x without obvious operator-fixable cause): TECHNICALLY FIRED but for a Figma-side entitlement reason that IS operator-fixable (Dev seat/Org plan upgrade). Documented as deferred re-activation rather than scope failure. Net assessment: implementation is correct; only the live publish step is externally blocked."
   },
   "_meta": {
     "scaffolded_by": "claude_opus_4_7",
