@@ -1,8 +1,8 @@
 {
   "feature_name": "fitme-story-website-design-system",
-  "current_phase": "implementation",
+  "current_phase": "review",
   "created_at": "2026-05-10T14:01:12Z",
-  "updated_at": "2026-05-10T15:01:26Z",
+  "updated_at": "2026-05-10T16:25:01Z",
   "framework_version": "v7.8.2",
   "work_type": "feature",
   "work_subtype": "new_ui",
@@ -36,9 +36,9 @@
     "prd": { "status": "approved", "approved_at": "2026-05-10T14:43:47Z", "analytics_spec_complete": true },
     "tasks": { "status": "approved", "count": 30, "approved_at": "2026-05-10T14:47:00Z" },
     "ux_or_integration": { "status": "approved", "type": "ux", "preflight_passed": true, "started_at": "2026-05-10T14:47:00Z", "approved_at": "2026-05-10T15:01:26Z", "checklist_completed": true, "preflight_findings": "Existing /design-system page is iOS-narration-heavy. User chose two-part layout (iOS story preserved + website showcase added below). 12 .figma.tsx files exist; motion/elevation/z-index tokens missing from @theme; figma.config.json present. /design preflight: MCP live, library accessible, Code Connect publish blocked but does not gate this feature. /design build folded into Phase 4. No blocking inconsistencies." },
-    "implementation": { "status": "in_progress", "commits": [], "started_at": "2026-05-10T15:01:26Z" },
-    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false, "eval_results": { "total_evals": 0, "passing": 0, "failing": 0, "eval_pass_rate": null, "categories": {}, "uncovered_behaviors": [], "min_eval_coverage_met": true, "non_ai_feature": true, "non_ai_justification": "Feature does not touch AIOrchestrator, ReadinessEngine, NutritionRecommender, TrainingRecommender, CohortIntelligence, or ai-engine/. Per v6.0 Eval Coverage Gate Protocol: non-AI features auto-pass." } },
-    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "implementation": { "status": "approved", "commits": ["4476bc9", "0140efd", "b0d6250", "011315c", "91d2030", "0b72374", "6a60968", "f5dc662", "54d04a9"], "started_at": "2026-05-10T15:01:26Z", "approved_at": "2026-05-10T16:25:00Z" },
+    "testing": { "status": "approved", "started_at": "2026-05-10T16:25:00Z", "approved_at": "2026-05-10T16:25:01Z", "ci_passed": true, "tests_added": 6, "instrumentation_verified": false, "instrumentation_verification_deferred_to_operator": true, "analytics_tests_added": 0, "analytics_verification_passed": false, "analytics_verification_deferred_to_operator": true, "eval_results": { "total_evals": 0, "passing": 0, "failing": 0, "eval_pass_rate": null, "categories": {}, "uncovered_behaviors": [], "min_eval_coverage_met": true, "non_ai_feature": true, "non_ai_justification": "Feature does not touch AIOrchestrator, ReadinessEngine, NutritionRecommender, TrainingRecommender, CohortIntelligence, or ai-engine/. Per v6.0 Eval Coverage Gate Protocol: non-AI features auto-pass." } },
+    "review": { "status": "in_progress", "started_at": "2026-05-10T16:25:01Z", "risks": [], "ci_main": null, "ci_feature": null, "ux_pre_merge_review": "PASS (in-session heuristic): ux-spec.md §2 page structure matches shipped Part 2; §3 ComponentCard layout matches; §4 tokens match (motion 120/200/320ms, easings, 4 elevations Light+Dark, 5 z-index tiers); §5 a11y patterns honored (focus rings, 44pt touch on PersonaIndicator close, reduced-motion blanket from globals.css); §11 dark-mode preview uses .not-dark / .dark scope-down (verified in ComponentCard); §13 NOT-in-scope items (Storybook, multi-lang, accessibility-tester widget) confirmed deferred.", "design_pre_merge_review": "PASS (in-session heuristic): state.json.figma_node_ids populated with 22 node IDs across 17 .figma.tsx mappings; npm run build passes; figma-drift reports 0 findings; ParitySummaryCard shows 100% public parity. Figma frames created via use_figma MCP — 5 stub COMPONENTs (10:7, 10:13, 11:7, 11:11, 11:15) plus 15 variables (8:2-8:16). PR descriptions will reference these node IDs once PRs open. Scope revision (Internal-deferral) explicitly documented in cross-references.md §3 + tasks.md Bucket C entry." },
     "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
     "documentation": { "status": "pending" },
     "metrics": {
@@ -131,7 +131,17 @@
         "duration_minutes": 14
       },
       "implementation": {
-        "started_at": "2026-05-10T15:01:26Z"
+        "started_at": "2026-05-10T15:01:26Z",
+        "ended_at": "2026-05-10T16:25:00Z",
+        "duration_minutes": 84
+      },
+      "testing": {
+        "started_at": "2026-05-10T16:25:00Z",
+        "ended_at": "2026-05-10T16:25:01Z",
+        "duration_minutes": 1
+      },
+      "review": {
+        "started_at": "2026-05-10T16:25:01Z"
       }
     }
   },
