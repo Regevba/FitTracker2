@@ -1,6 +1,6 @@
 ---
 name: design
-description: "Design system governance, accessibility audits, auto-generated build prompts, Figma MCP build with fallback, preflight gate (DS + Figma MCP liveness), pre-merge UI review (ui-audit + Figma node ID validation). Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → use /design build; /design ux-spec → use /ux spec.)"
+description: "Design system governance, accessibility audits, auto-generated build prompts, Figma MCP build with fallback, Code Connect mapping auto-scaffold (Layer B; web .figma.tsx + iOS .figma.swift), preflight gate (DS + Figma MCP liveness), pre-merge UI review (ui-audit + Figma node ID validation). Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → use /design build; /design ux-spec → use /ux spec.)"
 ---
 
 # Design & UX Skill: $ARGUMENTS
@@ -83,6 +83,25 @@ Run WCAG AA accessibility audit.
    - Call `mcp__claude_ai_Figma__get_metadata` with `fileKey = "0Ai7s3fCFqR5JXDW8JvgmD"`
    - On success: record `library_accessible: true`, capture `node_count` and `last_modified`
    - On failure: record `library_accessible: false, library_error: "{error}"`
+3.5. **Code Connect write-access gate (added 2026-05-10):** verify the publish path will work end-to-end, not just the read path checked above. Two sub-checks:
+   - **Token presence check:**
+     - Local invocation: check `$FIGMA_ACCESS_TOKEN` env var. Record `cc_token_present_local: bool`.
+     - CI invocation: check that `secrets.FIGMA_ACCESS_TOKEN` is set in BOTH `Regevba/FitTracker2` and `Regevba/fitme-story` repos via `gh api repos/{owner}/{repo}/actions/secrets/FIGMA_ACCESS_TOKEN` (returns 200 if exists, 404 if not). Record `cc_token_present_ci: { ft2: bool, fitme_story: bool }`.
+   - **Publish dry-run probe (only if token is present locally):**
+     - Run `npx --yes --package=@figma/code-connect figma connect publish --dry-run --token "$FIGMA_ACCESS_TOKEN" --skip-update-check` from the active repo root
+     - On success: record `cc_publish_authorized: true`
+     - On 401 / 403: record `cc_publish_authorized: false, cc_publish_error: "auth failed — token likely missing Code Connect Write scope"`
+     - On other error: record `cc_publish_authorized: null, cc_publish_error: "{error}"` (network / unrelated)
+   - **Output:** add `code_connect_access` block to `figma-bridge-status.json`:
+     ```json
+     "code_connect_access": {
+       "cc_token_present_local": bool,
+       "cc_token_present_ci": { "ft2": bool, "fitme_story": bool },
+       "cc_publish_authorized": bool | null,
+       "cc_publish_error": string | null,
+       "last_checked": "ISO 8601"
+     }
+     ```
 4. **Figma library node availability check:**
    - Read `docs/design-system/figma-code-sync-status.md` for existing node mappings
    - For each component in the spec, look up its mapping. Components without a mapping are flagged as "to be created during `/design build`" (P2, not blocking)
@@ -105,6 +124,8 @@ Run WCAG AA accessibility audit.
 **Gate behavior:**
 - **`mcp_connected == false` → P1 advisory.** `/design build` will fall back to prompt-only mode; user is informed.
 - **`library_accessible == false` AND `mcp_connected == true` → P0.** Either credentials are wrong or the file was moved. User must resolve before `/design build` runs.
+- **`cc_publish_authorized == false` (token present but auth failed) → P1 advisory** (added 2026-05-10). Publish step in CI / via operator will fail. Surface clear remediation: regenerate token with both `File Content` + `Code Connect Write` scopes, re-add to repo secrets. `/design build` still proceeds — Layer A scaffold runs, Layer C publish is the affected stage.
+- **`cc_token_present_local == false` AND `cc_token_present_ci.{repo} == false` for the active repo → P2 advisory** (added 2026-05-10). Operator hasn't set up Code Connect publishing yet. `/design build` proceeds normally; the auto-published mappings simply won't appear in Figma Dev Mode until the secret is added. Link operator runbook.
 - **Token P0 from `/design audit` → P0.** Same as `/ux preflight` token gate.
 - **Spec is approvable when:** all P0 findings resolved AND all required tokens/components confirmed present (or new ones explicitly approved on this feature's branch per CLAUDE.md design-system evolution rule).
 
@@ -131,6 +152,19 @@ Run WCAG AA accessibility audit.
 3. **Figma node ID presence check:**
    - For each surface listed in `ux-spec.md`, verify `state.json.figma_node_ids["{surface_name}"]` exists and is non-empty
    - If absent → BLOCK with "/design build {feature} must run before merge"
+3.5. **Spec ↔ build parity check (added 2026-05-10):** verifies what was actually built matches what the spec said to build. Three sub-checks:
+   - **Spec surface enumeration:** parse `ux-spec.md` (or `integration-spec.md` for has_ui:false features) into a canonical surface list. Sources to scan, in order: (a) explicit `## Screens` / `## Surfaces` / `## Components` sections; (b) tables with a `Surface` or `Screen` column; (c) headings of the form `### {SurfaceName}`. Normalize names to snake_case keys. Result: `spec_surfaces: [...]`.
+   - **Build surface enumeration:** read `state.json.figma_node_ids` keys (excluding RESERVED_KEYS like `library_file_key`, `code_mapping`, etc.) → `built_figma_nodes: [...]`. Read repo for `.figma.{swift,tsx}` files matching this feature's view files (FT2: `FitTracker/Views/**/*.figma.swift`; fitme-story: `src/components/**/*.figma.tsx`) → `built_mappings: [...]`.
+   - **Match each spec surface against built artifacts:**
+     - For each `spec_surface`:
+       - Has matching `figma_node_ids` key (snake_case match OR `code_mapping` override) → ✓ figma_built
+       - Has matching `.figma.{swift,tsx}` mapping file → ✓ code_connect_mapped
+       - Both ✓ → `parity: complete`
+       - Only figma_built ✓ → `parity: figma_only` (mapping file missing — Layer A scaffold likely didn't run, or operator deleted; ADVISORY for operator-deleted-on-purpose, otherwise BLOCK)
+       - Only code_connect_mapped ✓ → `parity: mapping_only` (figma_node_id missing — `/design build` likely failed; BLOCK)
+       - Neither ✓ → `parity: missing` (BLOCK with "{surface} declared in spec but not built")
+     - Reverse check (over-build advisory): list `built_figma_nodes` not present in `spec_surfaces`. These are NOT a block (spec may have evolved during impl), but surface as ADVISORY: "{node} built but not in spec — confirm intentional or update spec".
+   - **Output:** `state.json.pre_merge_review.design_parity = { spec_surfaces, built_figma_nodes, built_mappings, parity_per_surface, advisories }`. BLOCK if any `parity: missing` or `parity: mapping_only`.
 4. **PR description check (when running in CI / against a PR):**
    - Get current PR description via `gh pr view`
    - For each Figma node ID in `state.json.figma_node_ids`, verify it appears in the PR body
@@ -204,6 +238,14 @@ Run WCAG AA accessibility audit.
    - **Write node IDs back:**
      - Append/update `state.json.figma_node_ids[{screen_name}]` with the captured node ID
      - Append/update `docs/design-system/figma-code-sync-status.md` matrix with a row for the feature (Figma node | Code file | Status | Notes)
+   - **Auto-scaffold Code Connect mappings (Layer B, added 2026-05-09 via `code-connect-automation` feature):** after `figma_node_ids` is updated, invoke the scaffold script for the current repo:
+     - In FT2: `python3 scripts/scaffold-figma-mapping.py {feature}` — generates `.figma.swift` template files alongside the SwiftUI Views matched via the script's heuristic (snake_case → PascalCase + state-qualifier strip; falls back to `figma_node_ids.code_mapping` override block)
+     - In fitme-story: `node scripts/scaffold-figma-mapping.mjs {feature}` — generates `.figma.tsx` template files alongside the React components
+     - Coalesces multiple state variants of the same View/component into one mapping file with multiple `FigmaConnect` structs / `figma.connect` calls
+     - Idempotent: skips if `.figma.{swift|tsx}` already exists. Use `--force` to overwrite if the operator deliberately re-scaffolds
+     - Emits per-entry status report (scaffolded / skipped / unmapped). Unmapped entries trigger a warning — operator either adds a `code_mapping` override to `state.json::figma_node_ids` OR hand-authors the mapping file
+     - Operator-only step deferred: `figma connect publish` (requires `FIGMA_ACCESS_TOKEN`); planned to fire automatically via Layer C CI workflow once `FIGMA_ACCESS_TOKEN` repo secret is added
+     - Companion docs: `docs/design-system/ios-code-connect-workflow.md` (operator runbook, iOS) + `docs/design-system/fitme-story-design-architecture.md` (web architecture)
 5. **On Figma MCP failure** (connection error, timeout, API error, OR `mcp_connected: false` from preflight):
    - Announce: "Figma MCP unavailable: {error/reason}. Falling back to saved prompt."
    - Verify the design build prompt exists at `docs/prompts/ui/{date}-{feature}-design-build.md`
