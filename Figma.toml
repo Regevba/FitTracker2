@@ -1,0 +1,32 @@
+# Figma Code Connect — iOS configuration
+#
+# Maps Figma design library nodes to SwiftUI View files in this repo.
+# Source-of-truth design library: FitTracker-Design-System-Library
+#   File key:  0Ai7s3fCFqR5JXDW8JvgmD
+#   File URL:  https://www.figma.com/design/0Ai7s3fCFqR5JXDW8JvgmD/FitTracker-Design-System-Library
+#
+# Companion: web-side Figma Code Connect for fitme-story is configured at
+# fitme-story/figma.config.json pointing at file fsjHfFLAHELACZHku8Rfcl.
+#
+# Setup (operator):
+#   1. Add Figma Code Connect Swift package to FitTracker.xcodeproj
+#      via Xcode UI: File → Add Package Dependencies → enter
+#      https://github.com/figma/code-connect — pin to latest release.
+#   2. Run `figma-swift connect publish --token $FIGMA_ACCESS_TOKEN`
+#      after capturing FIGMA_ACCESS_TOKEN with both File Content and
+#      Code Connect Write scopes.
+#   3. Verify mappings appear in Figma Dev Mode panel for each
+#      mapped frame in the FitTracker-Design-System-Library file.
+
+[codeConnect]
+include = ["FitTracker/**/*.figma.swift"]
+exclude = [
+  "FitTracker/Tests/**",
+  "FitTracker/UITests/**",
+  ".build/**",
+]
+parser = "swift"
+
+[codeConnect.figma]
+file_key = "0Ai7s3fCFqR5JXDW8JvgmD"
+file_name = "FitTracker-Design-System-Library"
