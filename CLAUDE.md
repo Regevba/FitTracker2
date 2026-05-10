@@ -274,6 +274,37 @@ Phase 3 + Phase 6 of the PM workflow now mechanically gate the spec ↔ code ↔
 
 Full documentation: [`docs/skills/evolution.md`](docs/skills/evolution.md) §26.
 
+### v4.X+CC Cross-repo Code Connect bridge (added 2026-05-09 → 2026-05-10)
+
+Closes the loop in the OTHER direction: `/design build` pushes screens INTO Figma; the Code Connect bridge maps Figma library frames BACK to source code so Dev Mode shows the actual React/SwiftUI snippet for each component. Cross-repo, both web and iOS.
+
+**Foundation:**
+
+- **Web (fitme-story):** `.figma.tsx` mapping files → file `fsjHfFLAHELACZHku8Rfcl` (FitMe Story Web — Design System). Parsed by `@figma/code-connect` npm package directly. Foundation: fitme-story PR #75 (T20 of `fitme-story-public-enhancements` rollup) shipped 17 component node IDs + 4 new primitives (Button, Tag, CaseStudyCard, FrameworkVersionCard) + 12 mapping files; PR #80 fixed parser issues (inline URL literals, broader include glob, drop `figma.string()` props for components without named text properties).
+- **iOS (FitTracker2):** `.figma.swift` mapping files → file `0Ai7s3fCFqR5JXDW8JvgmD` (FitTracker-Design-System-Library). Foundation: FT2 PR #277 (`ios-code-connect` chore feature T1+T2+T3+T5) shipped `Figma.toml` + 5 mapping files covering 6 screen-level node IDs sourced from existing shipped features. Build-safety wrapper `#if canImport(Figma)` keeps Xcode green without the Swift package installed.
+
+**3-layer automation** (chore feature `code-connect-automation`, shipped via PRs #278/#279/#280/#281/#283 + fitme-story #77/#79):
+
+- **Layer A — scaffold scripts.** `scripts/scaffold-figma-mapping.py` (FT2) + `scripts/scaffold-figma-mapping.mjs` (fitme-story) auto-generate `.figma.{swift,tsx}` template files from any feature's `state.json::figma_node_ids` block. Coalesces multi-state variants of the same View/component into one mapping file. Override block `figma_node_ids.code_mapping` for keys that don't match the snake_case → PascalCase heuristic.
+- **Layer B — `/design build` skill extension.** After `figma_node_ids` is populated, the skill auto-invokes the scaffold script for the active repo. Closes the "manual mapping author per new UI feature" gap.
+- **Layer C — CI publish workflows.** `.github/workflows/figma-code-connect-publish.yml` in BOTH repos auto-runs `figma connect publish` on push to main when `*.figma.{swift,tsx}` or config changes. Web: ubuntu runner + `npx figma connect publish`. iOS: macos-15 runner + SPM cache + `npx figma connect publish` with `figma.config.json::swiftPackagePath` pointing at `.figma-cc-tools/Package.swift` (SPM wrapper subdir; the npm CLI calls `swift run --package-path .figma-cc-tools figma-swift` as a subprocess to parse `.figma.swift` files since the npm parser doesn't natively support Swift). Both gated on `FIGMA_ACCESS_TOKEN` repo secret (operator one-time setup); skip with clear log if missing.
+
+**Two new mechanical gates added 2026-05-10 to `/design` skill (PR #280):**
+
+- **`/design preflight` Step 3.5 — Code Connect write-access gate.** Verifies the publish path works end-to-end (not just MCP read access). Token presence check (local env + `gh api` for repo secret in BOTH repos) + publish dry-run probe (catches missing `Code Connect Write` scope or `file_dev_resources:write`). Records to `figma-bridge-status.json::code_connect_access`. Auth-failure → P1 advisory; token absent everywhere → P2 advisory.
+- **`/design pre-merge-review` Step 3.5 — Spec ↔ build parity check.** Verifies what was built matches what the spec said. Enumerates spec surfaces (parses `ux-spec.md` / `integration-spec.md`) and build surfaces (`state.json::figma_node_ids` + `.figma.{swift,tsx}` files), then cross-matches each spec surface (`complete` / `figma_only` / `mapping_only` / `missing`). BLOCK on `missing` or `mapping_only` (build incomplete). Records to `state.json.pre_merge_review.design_parity`.
+
+**Operator setup (one-time, both repos):** generate Figma Personal Access Token at <https://www.figma.com/settings> → Security → Personal access tokens. **Required scopes:** `file_content:read` + `file_dev_resources:read` + `file_dev_resources:write` (Code Connect mappings ARE dev resources in Figma's data model — there's no explicit "Code Connect" scope). `library_content:read` is recommended for team-library design systems. Add the token as `FIGMA_ACCESS_TOKEN` repo secret in BOTH `Regevba/FitTracker2` and `Regevba/fitme-story`. Until set, both publish workflows skip cleanly.
+
+**Companion docs:**
+
+- iOS operator runbook: [`docs/design-system/ios-code-connect-workflow.md`](docs/design-system/ios-code-connect-workflow.md)
+- Web architecture: [`docs/design-system/fitme-story-design-architecture.md`](docs/design-system/fitme-story-design-architecture.md)
+- Figma↔code matrix + Code Connect verification contract: [`docs/design-system/figma-code-sync-status.md`](docs/design-system/figma-code-sync-status.md)
+- Public showcase: fitme-story `/pm-flow` page §`#code-connect`
+
+**Manual steps per new UI feature: 2 → 0** once operator setup completes (which it has, as of 2026-05-10). Tracked feature: [`code-connect-automation`](.claude/features/code-connect-automation/) — 4/5 tasks done (T1-T4 shipped; T5 = end-to-end test on next real new UI feature).
+
 ### Verification Layer (added 2026-04-20)
 
 Per-PR review and `tokens-check` only catch token-definition drift. The

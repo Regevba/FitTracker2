@@ -1125,6 +1125,60 @@ The same session also surfaced that **Figma sync was being skipped on every UI f
 
 ---
 
+## 27. v4.X+CC — Cross-Repo Figma Code Connect Bridge (2026-05-09 → 2026-05-10)
+
+**Trigger.** During the 2026-05-09 fitme-story public-enhancement rollup, T20 (Code Connect integration) shipped — but exposed a one-directional gap: `/design build` pushes screens INTO Figma, but the OTHER direction (Figma library frame → "show me the actual React/SwiftUI code") was unmapped. Same gap on the iOS side: 16+ shipped iOS features had captured `figma_node_ids` in their state.json but no `.figma.swift` mappings to render their code in Figma Dev Mode.
+
+### Foundation layer
+
+- **Web:** fitme-story PR #75 — `@figma/code-connect@1.4.4` devDep + `figma.config.json` + 4 new primitive components (`Button`, `Tag`, `CaseStudyCard`, `FrameworkVersionCard`) + 12 `.figma.tsx` mapping files covering 17 component node IDs against file `fsjHfFLAHELACZHku8Rfcl`. PR #80 followed up with parser fixes after first dry-run surfaced 3 issues: template-literal URLs rejected (must be string literal), `include` glob too narrow (didn't catch component sources), `figma.string()` props rejected for components without named text properties.
+- **iOS:** FT2 PR #277 (chore feature `ios-code-connect` T1+T2+T3+T5) — `Figma.toml` at repo root + 5 `.figma.swift` mapping files covering 6 screen-level node IDs against file `0Ai7s3fCFqR5JXDW8JvgmD`. All node IDs sourced from existing shipped features' `state.json::figma_node_ids` blocks (no placeholders). Build-safety wrapper `#if canImport(Figma)` keeps Xcode green without the Swift package installed.
+
+### 3-layer automation (chore feature `code-connect-automation`)
+
+- **Layer A — scaffold scripts** (PRs #279 + fitme-story #77): `scripts/scaffold-figma-mapping.py` (FT2) + `scripts/scaffold-figma-mapping.mjs` (fitme-story) auto-generate `.figma.{swift,tsx}` template files from any feature's `state.json::figma_node_ids` block. Coalesces multi-state variants of the same View/component into one mapping file. `code_mapping` override block for keys that don't match the snake_case → PascalCase heuristic.
+- **Layer B — `/design build` skill extension** (PR #280): after `figma_node_ids` is populated, the skill auto-invokes the scaffold script for the active repo. Closes the "manual mapping author per new UI feature" gap.
+- **Layer C — CI publish workflows** (PRs #281 + #283 fix + fitme-story #79): `.github/workflows/figma-code-connect-publish.yml` in BOTH repos auto-runs `figma connect publish` on push to main when `*.figma.{swift,tsx}` or config changes. Web: ubuntu runner + npm CLI directly. iOS: macos-15 runner + SPM cache + npm CLI with `figma.config.json::swiftPackagePath` pointing at `.figma-cc-tools/Package.swift` SPM wrapper subdir (the npm CLI calls `swift run --package-path .figma-cc-tools figma-swift` as a subprocess to parse Swift files, since the npm parser doesn't natively support Swift). Gated on `FIGMA_ACCESS_TOKEN` repo secret; skips with clear log if missing. PR #281's first version used npm CLI ubuntu-only and fell back to html parser on Swift files (catastrophic 14817-file glob runaway when run against FT2); PR #283 replaced with the SPM wrapper approach.
+
+### Two new mechanical gates (added 2026-05-10, PR #280)
+
+- **`/design preflight` Step 3.5 — Code Connect write-access gate.** Verifies the publish path will work end-to-end. Token presence check (local env + `gh api` for repo secret in BOTH repos) + publish dry-run probe (catches missing `Code Connect Write` scope or `file_dev_resources:write`). Records to `figma-bridge-status.json::code_connect_access`. Auth-failure → P1 advisory; token absent everywhere → P2 advisory.
+- **`/design pre-merge-review` Step 3.5 — Spec ↔ build parity check.** Verifies what was actually built matches what the spec said. Enumerates spec surfaces (parses `ux-spec.md` / `integration-spec.md`) and build surfaces (`state.json::figma_node_ids` + `.figma.{swift,tsx}` files), then cross-matches each spec surface (`complete` / `figma_only` / `mapping_only` / `missing`). BLOCK on `missing` or `mapping_only` (build incomplete). Records to `state.json.pre_merge_review.design_parity`.
+
+### Hub chain expansions (over v4.X)
+
+- **Phase 3 dispatch chain (`/design build` step):** appends auto-scaffold sub-bullet that invokes `scripts/scaffold-figma-mapping.{py,mjs}` after `figma_node_ids` capture
+- **Phase 6 dispatch chain (`/design pre-merge-review`):** Step 3 (Figma node ID presence) extends with Step 3.5 (Spec ↔ build parity)
+- **Phase 3 preflight (`/design preflight`):** Step 3 (library access) extends with Step 3.5 (Code Connect write-access gate)
+- **Out-of-band:** CI publish workflows fire on merge-to-main without dispatch chain involvement
+
+### Critical implementation discovery — Swift parser IPC
+
+The `@figma/code-connect@1.4.4` npm package only ships React, HTML, and Storybook parsers natively. Swift parsing is delegated to a separate `figma-swift` binary built from the same GitHub repo via SPM. The npm CLI's `getSwiftParserDir` reads `swiftPackagePath` from `figma.config.json`, then invokes `swift run --package-path <dir> figma-swift` as a subprocess. The `figma-swift` binary itself is NOT a standalone CLI — it reads JSON requests from stdin and writes JSON responses to stdout. This split lets the npm CLI orchestrate auth + Figma API calls while delegating language-specific parsing to platform-native tooling.
+
+This was discovered during the 2026-05-10 iOS dry-run when running `npx figma connect publish` from FT2 root fell back to the html parser (no `figma.config.json` existed at the time, only `Figma.toml` which is a different format the Swift CLI uses standalone). The fix in PR #283 was to:
+
+1. Add `figma.config.json` at FT2 root with `parser: "swift"` + `swiftPackagePath: ".figma-cc-tools/Package.swift"`
+2. Create `.figma-cc-tools/Package.swift` (SPM wrapper subdirectory) depending on `@figma/code-connect` Swift package
+3. Add a placeholder `Sources/FigmaCodeConnectTools/Empty.swift` to satisfy SPM's "needs at least one target" rule
+
+The subdirectory isolation matters because putting Package.swift at FT2 repo root would tempt SPM to scan FT2's Xcode app sources (which depend on Xcode-only modules) and fail to compile.
+
+**Why it earned a sub-version bump (CC suffix).** v4.X (2026-05-06) closed the spec → code → Figma chain forward. v4.X+CC closes it BACKWARD: from Figma library back to source code. The combined chain now means: every spec'd surface is enforced into Figma at Phase 3 (`/design build` + node ID write-back), every Figma frame is enforced as a code mapping at Phase 3 (Layer B auto-scaffold), and every shipped UI feature has its mappings auto-published to Dev Mode at Phase 7 (Layer C CI). Manual steps per new UI feature: 2 → 0 once operator setup completes.
+
+**Operator setup (one-time, both repos):** generate Figma Personal Access Token at <https://www.figma.com/settings> → Security → Personal access tokens. Required scopes: `file_content:read` + `file_dev_resources:read` + `file_dev_resources:write` (Code Connect mappings ARE dev resources in Figma's data model). `library_content:read` recommended for team-library design systems. Add as `FIGMA_ACCESS_TOKEN` repo secret in BOTH `Regevba/FitTracker2` and `Regevba/fitme-story`. Until set, both publish workflows skip cleanly. **Operator setup completed 2026-05-10T06:38–06:39Z.**
+
+**Companion docs:**
+
+- iOS operator runbook: [`docs/design-system/ios-code-connect-workflow.md`](../design-system/ios-code-connect-workflow.md)
+- Web architecture: [`docs/design-system/fitme-story-design-architecture.md`](../design-system/fitme-story-design-architecture.md)
+- Figma↔code matrix + Code Connect verification contract: [`docs/design-system/figma-code-sync-status.md`](../design-system/figma-code-sync-status.md)
+- Public showcase: fitme-story `/pm-flow` page §`#code-connect` (PR #78)
+
+**Case study:** to be written post-merge as part of the `code-connect-automation` Phase 8 closure (T5 = end-to-end test on next real new UI feature).
+
+---
+
 ## Consolidated Timeline with Case Studies
 
 Every version was tested through real feature work. The case study column links to the evidence.
