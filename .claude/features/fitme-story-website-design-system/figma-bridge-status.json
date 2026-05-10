@@ -1,0 +1,63 @@
+{
+  "feature": "fitme-story-website-design-system",
+  "phase": "3c (design preflight + design build)",
+  "preflight_run_at": "2026-05-10T14:55:00Z",
+  "preflight_findings": {
+    "figma_mcp_live": true,
+    "figma_mcp_evidence": "mcp__claude_ai_Figma__whoami returned email=regev.ba@gmail.com, plan=pro/Full-seat. mcp__claude_ai_Figma__get_libraries on fsjHfFLAHELACZHku8Rfcl returned 8 libraries-added-to-file (Material 3, Simple Design System, iOS 18+26, iPadOS 26, watchOS 26, visionOS 26, macOS 26, plus 'Regev - Tattoo App Colors' team library).",
+    "figma_library_accessible": true,
+    "figma_library_key": "fsjHfFLAHELACZHku8Rfcl",
+    "figma_library_name": "FitMe Story Web — Design System (inferred from cross-doc references)",
+    "code_connect_write_access": {
+      "status": "blocked",
+      "reason": "Pro tier + Full seat does not expose 'Code Connect Write' / 'file_dev_resources:write' scope on PAT or OAuth. Empirically verified via PAT UI absence + OAuth invalid_scope rejection in code-connect-automation feature closure (2026-05-10).",
+      "impact_on_this_feature": "NONE. /design-system showcase route works without Code Connect publish. Drift detection works without publish. The 17+13 component mappings can land as .figma.tsx files in code without being publishable until the scope unblocks (tracked as backlog item 'Re-activate Code Connect publish when Figma seat/plan unblocks')."
+    }
+  },
+  "design_build_disposition": {
+    "decision": "FOLDED_INTO_PHASE_4",
+    "reason": "This feature has no pre-Phase-4 frames to create. The showcase route's NEW components (ComponentCard, TokenSwatch, VariantGrid, StatusBadge, DriftReportCard, DarkModeMatrix) are meta-components that DISPLAY other components — they don't themselves need Figma representations. The new tokens (motion/elevation/z-index) are additive VARIABLES in the existing collection — they get added in Phase 4 T1 atomically with their CSS + TS mirrors. The 13+ unmapped components (control-room/persona/case-study) get Figma frames + .figma.tsx mappings task-by-task in Phase 4 T10-T14.",
+    "what_phase_4_will_push_to_figma": [
+      {
+        "task_id": "T1",
+        "type": "variables_extension",
+        "tokens": [
+          "motion-duration-fast", "motion-duration-standard", "motion-duration-slow",
+          "motion-easing-standard", "motion-easing-decelerate", "motion-easing-emphasized",
+          "elevation-1", "elevation-2", "elevation-3", "elevation-4",
+          "z-base", "z-elevated", "z-header", "z-modal", "z-toast"
+        ],
+        "scopes_per_token": "Per ux-spec.md §4 — appropriate scope per token type (e.g., GAP for spacing-like, ALL_FILLS for color-derived shadows)"
+      },
+      {
+        "task_id": "T10",
+        "type": "component_frames",
+        "components": ["Panel", "MetricList", "AlertsBanner"],
+        "note": "Source-frame design + COMPONENT conversion + .figma.tsx mapping in one atomic task per family"
+      },
+      {
+        "task_id": "T11",
+        "type": "component_frames",
+        "components": ["TrackedDocLink", "AuthPasskeyForm"]
+      },
+      {
+        "task_id": "T12",
+        "type": "component_frames",
+        "components": ["DevicesTable", "AuditEventRow", "AuditLogPanel"]
+      },
+      {
+        "task_id": "T13",
+        "type": "component_frames",
+        "components": ["MetricsCard", "TaskCard", "FeatureCard"]
+      },
+      {
+        "task_id": "T14",
+        "type": "component_frames",
+        "components": ["PersonaBar", "PersonaIndicator", "PersonaLens"]
+      }
+    ],
+    "figma_node_ids_capture_strategy": "Each Phase 4 task that creates a Figma frame writes the resulting node_id back to state.json::figma_node_ids in the same commit. /design pre-merge-review (Phase 6) will validate parity between state.json::figma_node_ids and the .figma.tsx files at PR-time."
+  },
+  "phase_3_exit_status": "READY_TO_TRANSITION",
+  "next_phase": "implementation"
+}
