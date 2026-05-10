@@ -6,13 +6,13 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.1",
   "started_at": "2026-05-09T19:27:43Z",
-  "updated_at": "2026-05-09T19:27:43Z",
+  "updated_at": "2026-05-10T05:15:26Z",
   "events": [
     {
       "timestamp": "2026-05-09T19:27:43Z",
       "event_type": "phase_started",
       "phase": "implementation",
-      "summary": "Feature scaffolded as placeholder per user directive 'add another task for code connect mapping for ios' during fitme-story-public-enhancements rollup merge session. Work_type: chore (1-phase). 5 tasks (T1-T5) defined with dependency chain T1→T2→T3→T4→T5; total ~2.0 days effort. Blocked on scheduled_after.signal 'fitme-story-public-enhancements T20 phase=complete'.",
+      "summary": "Feature scaffolded as placeholder per user directive 'add another task for code connect mapping for ios' during fitme-story-public-enhancements rollup merge session. Work_type: chore (1-phase). 5 tasks (T1-T5) defined with dependency chain T1\u2192T2\u2192T3\u2192T4\u2192T5; total ~2.0 days effort. Blocked on scheduled_after.signal 'fitme-story-public-enhancements T20 phase=complete'.",
       "artifacts": [
         ".claude/features/ios-code-connect/state.json",
         ".claude/features/ios-code-connect/tasks.md"
@@ -21,6 +21,23 @@
         "tasks_total": 5,
         "tasks_pending": 5,
         "estimated_effort_days": 2.0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T05:15:26Z",
+      "event_type": "task_done",
+      "phase": "implementation",
+      "summary": "T1+T2+T3 shipped: Figma.toml at FT2 root + .figma.swift template files for screens captured from shipped features (push-notifications + import-training-plan + smart-reminders + onboarding). scheduled_after.signal resolved at fitme-story #75 + FT2 #275 merge. Toolchain install (Swift package via SPM) + actual publish deferred to operator (Xcode UI work + FIGMA_ACCESS_TOKEN required). T4 + T5 pending.",
+      "artifacts": [
+        "Figma.toml"
+      ],
+      "metrics": {
+        "tasks_done": 3,
+        "tasks_pending": 2,
+        "unblocked_at": "2026-05-10T05:15:26Z"
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
