@@ -89,6 +89,45 @@ The `#if canImport(Figma)` wrapper means:
 
 ---
 
+## ⚠️ Known external blocker — Code Connect Write scope (added 2026-05-10)
+
+**Status:** parser + auth pipeline works end-to-end, but the actual `POST /v1/code_connect` API call returns **HTTP 403 "Invalid scope(s)"** on this Figma account.
+
+**Root cause:** the `code_connect:write` scope (per [Figma's quickstart docs](https://developers.figma.com/docs/code-connect/quickstart-guide/)) is required to publish mappings. We confirmed this scope is **not available** on the operator's account:
+
+- **PAT scope UI** (figma.com/settings → Security → Personal access tokens → Generate new token): scrolling the entire scope list (Users / Files / Design systems / Development / Projects / Webhooks) shows no `code_connect:*` checkbox
+- **OAuth flow:** requesting `code_connect:write` in the authorization URL returns `{"error":true,"status":400,"message":"Invalid scopes for app"}`
+
+**Operator account context (per `mcp__claude_ai_Figma__whoami`, 2026-05-09):**
+- Tier: `pro` (Professional plan)
+- Seat: `Full`, seatType: `expert`
+- Team: "Regev - My apps"
+
+**Why it matters:** Figma's pricing page lists Code Connect under Professional plan and above, but empirically the scope is gated behind something more specific (likely Dev seat or an Org/Enterprise add-on). Figma's docs don't clarify the exact entitlement matrix.
+
+**What works without the scope:**
+
+- `npx figma connect publish` parses all 6 `.figma.swift` mappings cleanly ("Successfully connected component × 6")
+- Validation step PASSES (after the 2026-05-10 frame→component conversion fix)
+- Only the final upload to `https://api.figma.com/v1/code_connect` returns 403
+- The `.figma.swift` files remain valuable as: design intent documentation, future-publish ready, auto-scaffold target for new features
+
+**What's needed to unblock:**
+
+1. Operator obtains a Figma seat/plan that includes the `code_connect:write` scope:
+   - **Option A:** swap a Full seat for a Dev seat on the same Pro plan (free swap if available)
+   - **Option B:** upgrade Pro → Organization plan (~$15-25/seat/mo)
+   - **Option C:** contact Figma support to clarify which exact entitlement unlocks the scope
+2. Generate a new PAT (or OAuth token) with `code_connect:write` checked
+3. Update `FIGMA_ACCESS_TOKEN` repo secret in BOTH `Regevba/FitTracker2` and `Regevba/fitme-story`
+4. Trigger either repo's `figma-code-connect-publish` workflow manually (`gh workflow run`)
+
+**No code changes needed** to re-activate. The existing infrastructure (Figma.toml + `figma.config.json` + `.figma.swift` files + scaffold scripts + skill extension + CI workflows) all remain in place and will fire automatically once the scope is granted.
+
+**Tracking:** [`code-connect-automation`](../../.claude/features/code-connect-automation/state.json) — feature closed `current_phase: complete` with T5 (end-to-end test) marked `deferred` for this blocker. Re-open + re-run T5 when the scope unblocks.
+
+---
+
 ## §5 Publish procedure (operator playbook)
 
 These steps require operator action — they are NOT automated:

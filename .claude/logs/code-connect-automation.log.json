@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.1",
   "started_at": "2026-05-10T05:32:33Z",
-  "updated_at": "2026-05-10T08:11:07Z",
+  "updated_at": "2026-05-10T13:56:52Z",
   "events": [
     {
       "timestamp": "2026-05-10T05:32:33Z",
@@ -41,6 +41,42 @@
         "prs_merged": 11,
         "manual_steps_per_new_ui_feature_baseline": 2,
         "manual_steps_per_new_ui_feature_target": 0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T13:49:12Z",
+      "event_type": "phase_completed",
+      "phase": "implementation",
+      "summary": "Feature closed \u2014 current_phase: implementation \u2192 complete. T1-T4 done; T5 deferred for Figma Pro+Full-seat tier not granting code_connect:write scope (confirmed 2026-05-10 via OAuth invalid_scope rejection + PAT UI scope absence + Code Connect endpoint 403). Code automation is end-to-end functional EXCEPT the final API call to https://api.figma.com/v1/code_connect. All infrastructure remains valuable for future activation when account tier/seat unblocks the scope.",
+      "artifacts": [
+        ".claude/features/code-connect-automation/state.json",
+        ".claude/logs/code-connect-automation.log.json"
+      ],
+      "metrics": {
+        "tasks_done": 4,
+        "tasks_deferred": 1,
+        "final_status": "partial_success_external_blocker",
+        "manual_steps_per_new_ui_feature_code_side": 0,
+        "publish_to_figma_dev_mode": "blocked_on_plan_tier_scope"
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T13:56:52Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Phase transition implementation \u2192 complete. Feature closes with T1-T4 done + T5 deferred for Figma code_connect:write scope unavailability on Pro+Full-seat tier (confirmed via PAT UI absence + OAuth invalid_scope + 403 from POST /v1/code_connect). kill_criteria_resolution recorded. Re-activation path documented in ios-code-connect-workflow.md + backlog. No code changes needed when scope unblocks.",
+      "artifacts": [
+        ".claude/features/code-connect-automation/state.json"
+      ],
+      "metrics": {
+        "tasks_done": 4,
+        "tasks_deferred": 1
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
