@@ -1,0 +1,35 @@
+name: figma-code-connect-publish
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'FitTracker/**/*.figma.swift'
+      - 'Figma.toml'
+      - '.github/workflows/figma-code-connect-publish.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Skip if FIGMA_ACCESS_TOKEN not set
+        id: gate
+        env:
+          HAS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN != '' }}
+        run: |
+          if [ "$HAS_TOKEN" != "true" ]; then
+            echo "FIGMA_ACCESS_TOKEN repo secret not set; skipping publish"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/setup-node@v5
+        if: steps.gate.outputs.skip != 'true'
+        with:
+          node-version: '24'
+      - name: Publish Code Connect mappings
+        if: steps.gate.outputs.skip != 'true'
+        env:
+          FIGMA_ACCESS_TOKEN: ${{ secrets.FIGMA_ACCESS_TOKEN }}
+        run: |
+          npx --yes --package=@figma/code-connect figma connect publish --token "$FIGMA_ACCESS_TOKEN" --skip-update-check
