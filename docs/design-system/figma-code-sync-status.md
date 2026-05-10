@@ -151,3 +151,48 @@ Verified per-PR by the `/design pre-merge-review` Step 3.5 spec ↔ build parity
 - Web architecture: [`fitme-story-design-architecture.md`](./fitme-story-design-architecture.md)
 - Skill ecosystem evolution: [`docs/skills/evolution.md`](../skills/evolution.md) §27
 - Dev guide: [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) §15A
+
+---
+
+## Drift detection — fitme-story (added 2026-05-10 — fitme-story-website-design-system Bucket D)
+
+`figma-drift` cross-checks the fitme-story design-system manifest (`src/lib/design-system.ts`) against the `.figma.tsx` mapping files in `src/components/**`. Catches drift the publish pipeline doesn't see — e.g., manifest entry says `hasFigmaConnect: true` but no mapping file exists, or a `.figma.tsx` file references a Figma node that the manifest no longer declares.
+
+### Run it
+
+| Where | Command |
+|---|---|
+| Inside fitme-story checkout | `npm run figma-drift` |
+| FT2 root (delegates to fitme-story sibling clone) | `make figma-drift` |
+| FT2 root (with append) | `make figma-drift FIGMA_DRIFT_FLAGS=--append-report` |
+| CI weekly | [`.github/workflows/figma-drift-weekly.yml`](https://github.com/Regevba/fitme-story/blob/main/.github/workflows/figma-drift-weekly.yml) (Mondays 06:00 UTC) |
+| CI per-PR | Same workflow, runs on PRs that touch the manifest or any `.figma.tsx` file |
+
+### Findings emitted
+
+| Code | Severity | Triggered by |
+|---|---|---|
+| `MAPPING_INCONSISTENCY` | fail | Manifest says `hasFigmaConnect: true` but no `.figma.tsx` exists, or vice versa |
+| `MANIFEST_ONLY` | fail | Manifest declares Figma node IDs for a component but no `.figma.tsx` mapping exists |
+| `CODE_ONLY` | fail | A `.figma.tsx` file maps a component name that's missing from the manifest |
+| `MISSING_COMPONENT_SOURCE` | fail | A `.figma.tsx` file imports a component path that doesn't exist on disk |
+| `ORPHAN_FIGMA_NODE` | warn | Reserved for future Figma-API check (live nodes not referenced by any `.figma.tsx`) |
+
+### Scope + design choices
+
+- Local-only by default — does not call the Figma API. The orphan-node check (`ORPHAN_FIGMA_NODE`) is reserved for a future iteration that needs `FIGMA_ACCESS_TOKEN`.
+- Public-parity is the meaningful metric. Internal-status components (control-room operator surfaces + bespoke illustrations) are excluded from the parity denominator. Rationale codified in `src/lib/design-system.ts` (above the Internal-component block).
+- Tests live at fitme-story `src/lib/figma-drift.test.ts` (6 tests, all pass via `npx tsx --test`).
+
+### Latest snapshot — 2026-05-10
+
+```
+- Manifest entries: 31 (17 Stable + 14 Internal)
+- .figma.tsx files: 17 mapping 22 Figma nodes
+- Public parity: 100% (17 / 17)
+- Total parity: 55% (17 / 31)
+
+✓ No drift findings.
+```
+
+Future runs append here automatically when invoked with `--append-report` (or via the FT2 Makefile target with `FIGMA_DRIFT_FLAGS=--append-report`).

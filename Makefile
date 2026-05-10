@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -348,6 +348,24 @@ app-store-check:
 	@xcodebuild build -project FitTracker.xcodeproj -scheme FitTracker -destination 'generic/platform=iOS' -derivedDataPath .build/DerivedData CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO 2>&1 | tail -1
 	@echo "Screenshots: (manual — capture from simulator)"
 	@echo "Done."
+
+# ─── figma-drift (fitme-story-website-design-system Bucket D) ──────────────
+# Cross-checks the fitme-story design-system manifest (src/lib/design-system.ts)
+# against the .figma.tsx mapping files in src/components/**. Optional: appends
+# a dated snapshot to docs/design-system/figma-code-sync-status.md.
+#
+# Requires the fitme-story checkout to live next to FitTracker2 at
+# /Volumes/DevSSD/fitme-story (or an isolated worktree under /Volumes/DevSSD/).
+# If not found, the target prints a hint and exits 0.
+figma-drift:
+	@FITME_STORY_DIR=$$(ls -d /Volumes/DevSSD/fitme-story 2>/dev/null | head -1); \
+	if [ -z "$$FITME_STORY_DIR" ]; then \
+		echo "make figma-drift: fitme-story checkout not found at /Volumes/DevSSD/fitme-story"; \
+		echo "  → clone Regevba/fitme-story alongside FitTracker2, then re-run."; \
+		exit 0; \
+	fi; \
+	echo "Running figma-drift in $$FITME_STORY_DIR..."; \
+	cd "$$FITME_STORY_DIR" && npm run figma-drift -- $(FIGMA_DRIFT_FLAGS)
 
 # Auto-install on first run
 node_modules:
