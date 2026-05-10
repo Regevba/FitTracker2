@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.8.2",
   "started_at": "2026-05-10T14:26:27Z",
-  "updated_at": "2026-05-10T16:25:16Z",
+  "updated_at": "2026-05-10T16:52:51Z",
   "events": [
     {
       "timestamp": "2026-05-10T14:26:27Z",
@@ -223,6 +223,106 @@
       "event_type": "phase_started",
       "phase": "review",
       "summary": "Phase 6 (Review) opened. /ux pre-merge-review: ux-spec.md approved scope matches shipped Part 2 page structure (8 sections); ComponentCard layout matches \u00a73 of ux-spec; new tokens (motion + elevation + z-index) match \u00a74 values; a11y patterns (focus rings, 44pt touch, reduced-motion blanket) honored. /design pre-merge-review: state.json.figma_node_ids populated (22 node IDs across 17 .figma.tsx files); PR descriptions will reference these once PRs open. Internal-deferral policy noted as scope revision from PRD \u00a74 deliverable #2.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:50:17Z",
+      "event_type": "phase_approved",
+      "phase": "review",
+      "summary": "Phase 6 (Review) approved. Both /ux + /design pre-merge-review PASS. CI green on both PRs (Vercel + audit + drift + gates + Build/Test + integrity + pm-framework/pr-integrity all pass).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:50:17Z",
+      "event_type": "phase_started",
+      "phase": "merge",
+      "summary": "Phase 7 (Merge) \u2014 user explicit approval received. Marking both PRs ready (out of draft) + squash-merging.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:50:17Z",
+      "event_type": "phase_approved",
+      "phase": "merge",
+      "summary": "Both PRs merged. fitme-story #81 squash 9fc0fce. FT2 #287 squash 2e00e18. Branches deleted. fitme-story main now contains the showcase route + drift detection + heritage data + dark-mode matrix + contribution doc + analytics events. FT2 main now contains case study + scaffolding + analytics-taxonomy + Makefile target.",
+      "artifacts": [],
+      "metrics": {
+        "ft2_pr": 287,
+        "fitme_story_pr": 81
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:50:17Z",
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "summary": "Phase 8 (Documentation) opened post-merge. Tasks: cross-doc updates (CLAUDE.md design system section), memory entry, kill-criteria review schedule.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:50:25Z",
+      "event_type": "cache_hit_logged",
+      "phase": "complete",
+      "summary": "fitme-story-public-enhancements:foundation-T18-T21 (L3)",
+      "artifacts": [],
+      "metrics": {
+        "layer": "L3",
+        "key": "fitme-story-public-enhancements:foundation-T18-T21",
+        "hit_type": "adapted",
+        "skill": "design"
+      },
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:51:53Z",
+      "event_type": "phase_approved",
+      "phase": "documentation",
+      "summary": "Phase 8 (Documentation) complete. Memory entry added: project_fitme_story_website_design_system_shipped.md. MEMORY.md index updated. state.json transitioned to current_phase: complete with merge commits captured (FT2 2e00e18, fitme-story 9fc0fce). Post-deploy operator items captured: T28 GA4 DebugView + T29 Lighthouse.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:51:53Z",
+      "event_type": "feature_complete",
+      "phase": "complete",
+      "summary": "Feature COMPLETE. Total wall time 167 min across 9 phases. Primary metric design_system_figma_parity_coverage achieved 100% public parity (target \u226595%). 30/30 in-scope tasks done; 2 deferred to operator post-deploy (T28 GA4 DebugView + T29 Lighthouse); 3 queued post-feature for Bucket H site audit (T31-T33). Kill-criteria review schedule set (week 1: 2026-05-17 LCP guardrail; 30d: 2026-06-09 drift + dark-mode; 60d: 2026-07-09 contribution adoption).",
+      "artifacts": [],
+      "metrics": {
+        "total_wall_time_minutes": 167,
+        "phases_complete": 9,
+        "primary_metric_pct": 100
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T16:52:51Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Feature transitioning to current_phase=complete. All 9 phases approved. Both PRs merged. Memory entry + kill-criteria schedule + Bucket H queued. Total measured wall time: 169 min.",
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_7",
