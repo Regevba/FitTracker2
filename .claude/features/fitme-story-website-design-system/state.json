@@ -53,7 +53,16 @@
   "tasks": [
     {"id": "T1", "title": "Add motion + elevation + z-index variables to Figma", "status": "done", "completed_at": "2026-05-10T15:08:00Z", "figma_variable_ids": ["VariableID:8:2", "VariableID:8:3", "VariableID:8:4", "VariableID:8:5", "VariableID:8:6", "VariableID:8:7", "VariableID:8:8", "VariableID:8:9", "VariableID:8:10", "VariableID:8:11", "VariableID:8:12", "VariableID:8:13", "VariableID:8:14", "VariableID:8:15", "VariableID:8:16"]},
     {"id": "T2", "title": "Extend globals.css @theme with motion + elevation + z-index tokens (Light + Dark elevation overrides)", "status": "done", "completed_at": "2026-05-10T15:08:00Z"},
-    {"id": "T3", "title": "Extend design-tokens.ts with MOTION_TOKENS + ELEVATION_TOKENS + Z_INDEX_TOKENS exports", "status": "done", "completed_at": "2026-05-10T15:08:00Z"}
+    {"id": "T3", "title": "Extend design-tokens.ts with MOTION_TOKENS + ELEVATION_TOKENS + Z_INDEX_TOKENS exports", "status": "done", "completed_at": "2026-05-10T15:08:00Z"},
+    {"id": "T4", "title": "Typed manifest src/lib/design-system.ts with 31 components", "status": "done", "completed_at": "2026-05-10T18:30:00Z", "fitme_story_pr_commit": "0140efd"},
+    {"id": "T5", "title": "6 showcase components: StatusBadge, TokenSwatch, ComponentCard, VariantGrid, HeritageList, ParitySummaryCard", "status": "done", "completed_at": "2026-05-10T18:30:00Z", "fitme_story_pr_commit": "0140efd"},
+    {"id": "T6", "title": "Extend /design-system/page.tsx with Part 2 (8 new sections + heritage)", "status": "done", "completed_at": "2026-05-10T18:30:00Z", "fitme_story_pr_commit": "0140efd"},
+    {"id": "T7", "title": "/design-system in nav.ts (verified — already at line 17, no change needed)", "status": "done", "completed_at": "2026-05-10T18:30:00Z", "note": "no_change_needed"},
+    {"id": "T8", "title": "Add design-system cross-link from /control-room/framework", "status": "done", "completed_at": "2026-05-10T18:30:00Z", "fitme_story_pr_commit": "0140efd"},
+    {"id": "T9", "title": "SEO metadata for /design-system route (extended in T6 with two-system narrative)", "status": "done", "completed_at": "2026-05-10T18:30:00Z", "fitme_story_pr_commit": "0140efd"},
+    {"id": "T31", "title": "Bucket H: Walk every fitme-story route through DS lens (post-feature)", "status": "queued", "blocked_by": "Buckets A-G complete + merged"},
+    {"id": "T32", "title": "Bucket H: Triage findings + file backlog/PRs", "status": "queued", "blocked_by": "T31"},
+    {"id": "T33", "title": "Bucket H: Memory + tracker update on close", "status": "queued", "blocked_by": "T32"}
   ],
   "figma_node_ids": {
     "tokens": {

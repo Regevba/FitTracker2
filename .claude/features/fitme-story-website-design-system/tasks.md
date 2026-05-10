@@ -84,6 +84,10 @@
 
 ## Bucket G — Analytics + verification + case study (5 tasks)
 
+> **Scope expansion 2026-05-10** — Per user directive, the showcase route MUST surface "all of the data and ux/design decisions made on the site so far". Implication: the manifest carries `auditNotes` per token/component referencing past audit-finding fixes (A-002, A-018, T24, CS-006, CS-020, R-009). A dedicated `src/lib/design-system-heritage.ts` file holds the design-decisions log (locked case-study Alt A chrome, frontmatter audit results, ArticleNav addition, etc.). Showcase Part 2 includes a "Design heritage" subsection that walks the past audit decisions. See `cross-references.md` §1 for the full inventory.
+
+
+
 | # | Task | Repo | Files touched | Complexity | Depends on |
 |---|---|---|---|---|---|
 | **T26** | Implement the 4 GA4 events: `design_system_section_view` (intersection observer), `design_system_component_expand` (click handler on cards), `design_system_code_copy` (copy-to-clipboard handler), `design_system_figma_link_click` (anchor click). Use `'use client'` wrappers as needed. Add to `src/lib/analytics.ts` (or equivalent). | [FS] | `src/lib/analytics.ts`, `src/components/design-system/*` | S | T6 |
@@ -94,9 +98,24 @@
 
 ---
 
+---
+
+## Bucket H — Post-feature holistic site audit (3 tasks; QUEUED, not in scope for THIS feature's PR)
+
+> **Triggered by user directive 2026-05-10:** "when design system is finished let's review the entire site under the design system lens and see what other enhancements needs to be made". DEFERRED until after Buckets A-G ship. See `cross-references.md` §4 for context.
+
+| # | Task | Repo | Files touched | Complexity | Depends on |
+|---|---|---|---|---|---|
+| **T31** | Walk every fitme-story route through the now-completed design system lens. Routes: `/`, `/case-studies`, `/case-studies/[slug]`, `/glossary`, `/framework`, `/framework/dispatch`, `/framework/dev-guide`, `/timeline/[version]`, `/research`, `/trust`, `/about`, `/pm-flow`, `/control-room/*`. Capture findings (component drift, missing tokens, dark-mode gaps, contribution-doc-violating patterns) as `docs/research/{date}-fitme-story-design-system-lens-audit.md`. | [BOTH] | New research doc | H | Buckets A-G complete |
+| **T32** | Triage findings by P0 / P1 / P2. File P0/P1 as targeted backlog items or open fix-PRs against fitme-story; document P2s as "won't fix unless triggered" notes. | [FT2] | `docs/product/backlog.md` | S | T31 |
+| **T33** | Update `MEMORY.md` index + create `project_fitme_story_website_design_system_shipped.md` capturing: showcase URL, parity coverage achieved, drift findings count, audit synthesis link, follow-up tracker. | [FT2] | `~/.claude/.../memory/*` | L | T32 |
+
+---
+
 ## Summary
 
-- **Total tasks:** 30 (within the §13 estimate of 28-32)
+- **Total tasks (in scope for this feature):** 30 (Buckets A-G; matches §13 estimate of 28-32)
+- **Queued post-feature tasks:** 3 (Bucket H, T31-T33)
 - **Critical path:** T1 → T2 → T3 → T4 → T5 → T6 → (T15 ← T10-T14) → T18 → T20 → T21 → T26 → T29 → T30
 - **Parallelizable groups:** T10/T11/T12/T13/T14 (component mapping); T7/T8/T9 (route polish); T19/T21/T22 (drift detection peripherals); T23/T24 + T25 (audit + contrib doc) can run alongside Bucket C
 - **Repo distribution:** [FS] only: 25 tasks. [FT2] only: 1 task (T27). [BOTH]: 4 tasks (T20, T22, T25, T30)
