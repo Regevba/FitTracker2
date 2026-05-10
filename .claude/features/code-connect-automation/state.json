@@ -1,0 +1,82 @@
+{
+  "feature_name": "code-connect-automation",
+  "current_phase": "implementation",
+  "created_at": "2026-05-10T05:32:33Z",
+  "updated_at": "2026-05-10T05:32:33Z",
+  "framework_version": "v7.8.1",
+  "work_type": "chore",
+  "work_subtype": "framework_tooling",
+  "parent_feature": "ios-code-connect",
+  "has_ui": false,
+  "requires_analytics": false,
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Cross-repo tooling chore — touches scripts/ + .claude/skills/ + .github/workflows/ in BOTH FT2 and fitme-story. Branch isolation gate's Mode B (infra paths) fires by design; opt-out lets the chore proceed without per-commit auto-isolation, but commits remain on dedicated chore/* branches per repo for review hygiene.",
+  "phases": {
+    "implementation": {
+      "status": "started",
+      "started_at": "2026-05-10T05:32:33Z",
+      "note": "3-layer automation closing the loop on ios-code-connect (PR #277) + fitme-story T20 (PR #75): A) scaffold script auto-generates mapping files from state.json::figma_node_ids; B) /design build skill calls scaffold after node ID capture; C) CI workflow auto-publishes on merge."
+    }
+  },
+  "timing": {
+    "phases": {
+      "implementation": {
+        "started_at": "2026-05-10T05:32:33Z"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Layer A — scripts/scaffold-figma-mapping.py (FT2/iOS) + scripts/scaffold-figma-mapping.mjs (fitme-story/web)",
+      "status": "pending",
+      "effort_days": 1.0,
+      "scope_note": "Reads <feature>/state.json::figma_node_ids; for each node ID, scaffolds matching .figma.swift (iOS) or .figma.tsx (web) template file with the URL pre-filled + a placeholder example body the operator adjusts. Emits a report of scaffolded vs skipped (skip if file already exists). Idempotent."
+    },
+    {
+      "id": "T2",
+      "title": "Layer A docs + first PR",
+      "status": "pending",
+      "effort_days": 0.25,
+      "blocker": "T1",
+      "scope_note": "README section for both scripts + a usage example. PR ships Layer A as foundation."
+    },
+    {
+      "id": "T3",
+      "title": "Layer B — extend /design build skill to invoke scaffold-figma-mapping after node ID capture",
+      "status": "pending",
+      "effort_days": 0.5,
+      "blocker": "T1",
+      "scope_note": "Modify .claude/skills/design/SKILL.md so when /design build populates state.json::figma_node_ids, it also runs scripts/scaffold-figma-mapping.{py|mjs} (auto-detects which repo). Adds row to figma-code-sync-status.md."
+    },
+    {
+      "id": "T4",
+      "title": "Layer C — CI publish workflows (one per repo)",
+      "status": "pending",
+      "effort_days": 0.5,
+      "blocker": "T1",
+      "scope_note": "FT2: .github/workflows/figma-code-connect-publish.yml runs `figma-swift connect publish` on merge to main when *.figma.swift files change. fitme-story: equivalent runs `npx figma connect publish`. Both gated on FIGMA_ACCESS_TOKEN repo secret (operator adds via GitHub UI before workflows fire usefully)."
+    },
+    {
+      "id": "T5",
+      "title": "End-to-end test on a real new UI feature",
+      "status": "pending",
+      "effort_days": 0.25,
+      "blocker": "T2 + T3 + T4",
+      "scope_note": "Pick a near-future UI feature; verify /design build → state.json::figma_node_ids capture → scaffold script auto-runs → .figma.{swift|tsx} files appear → CI publish fires → mappings show in Figma Dev Mode. Documents any rough edges."
+    }
+  ],
+  "metrics": {
+    "primary": "manual_steps_per_new_ui_feature",
+    "baseline": 2,
+    "baseline_note": "Today (post-PR #277 + #75): operator hand-authors mapping file + manually runs publish",
+    "target": 0,
+    "target_note": "After Layer C ships: operator does nothing — mapping scaffolds + publish both fire automatically",
+    "kill_criteria": "scaffold script produces wrong/non-compiling files OR CI publish fails > 1x without obvious operator-fixable cause"
+  },
+  "_meta": {
+    "scaffolded_by": "claude_opus_4_7",
+    "scaffold_session": "1acfe748-7927-4116-a46e-c87c989a4253",
+    "scaffold_origin": "User answer to 'Automate Code Connect for new UI features?' on 2026-05-10 — chose 'All 3 layers (A + B + C)'. Surfaced as follow-up to ios-code-connect T1-T5 wrap-up + the question 'is the cmd automated when building a new ui feature' — answer was 'no' across both web + iOS, this feature closes that gap."
+  }
+}

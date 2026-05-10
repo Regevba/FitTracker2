@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "feature": "code-connect-automation",
+  "title": "Code Connect Automation (3-layer)",
+  "work_type": "chore",
+  "current_phase": "implementation",
+  "framework_version": "v7.8.1",
+  "started_at": "2026-05-10T05:32:33Z",
+  "updated_at": "2026-05-10T05:32:33Z",
+  "events": [
+    {
+      "timestamp": "2026-05-10T05:32:33Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Feature scaffolded as chore/framework_tooling. 3-layer automation closing the loop on ios-code-connect (PR #277) + fitme-story T20 (PR #75). 5 tasks T1-T5; T1 (scaffold scripts) is the foundation T3+T4 depend on. ~2.0d total estimated effort. Per user directive 2026-05-10 'is the cmd automated when building a new ui feature' (answer: no) → 'Automate Code Connect for new UI features?' (answer: All 3 layers A+B+C).",
+      "artifacts": [
+        ".claude/features/code-connect-automation/state.json",
+        ".claude/features/code-connect-automation/tasks.md"
+      ],
+      "metrics": {
+        "tasks_total": 5,
+        "tasks_pending": 5,
+        "estimated_effort_days": 2.0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
