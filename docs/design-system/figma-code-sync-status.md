@@ -109,3 +109,45 @@ A screen is **Synced** in the matrix above when ALL of:
 
 Anything less is **Minor drift** or **Major drift**, with the gap noted
 in the Notes column.
+
+---
+
+## Code Connect Verification Contract (added 2026-05-10, v4.X+CC)
+
+The Figma↔code matrix above tracks which Swift View renders which Figma frame. The Code Connect bridge (v4.X+CC) closes the loop in the OTHER direction: which Figma frame, when opened in Dev Mode, surfaces the actual SwiftUI / React snippet for the operator/designer.
+
+### What is automatically verified now
+
+- **Mapping file presence** — every screen-level `figma_node_ids` entry should have a matching `.figma.swift` (FT2) or `.figma.tsx` (fitme-story) mapping file. The `/design pre-merge-review` Step 3.5 (spec ↔ build parity check, v4.X+CC) BLOCKS merge if a spec'd surface has a Figma node ID but no mapping file (`mapping_only` is even worse — mapping authored but no Figma node, indicating `/design build` failed).
+- **Mapping file parses** — CI publish workflow (`figma-code-connect-publish.yml`) runs `figma connect publish` on every push to main touching `.figma.{swift,tsx}`. Parse errors fail the workflow visibly. iOS uses `npx figma connect publish` with `figma.config.json::swiftPackagePath` pointing at `.figma-cc-tools/Package.swift` SPM wrapper subdir; the npm CLI subprocesses to `figma-swift` to parse Swift files.
+- **Code Connect access** — `/design preflight` Step 3.5 (Code Connect write-access gate, v4.X+CC) verifies BEFORE build effort: `FIGMA_ACCESS_TOKEN` env var locally, repo secret in BOTH repos via `gh api`, plus a publish dry-run probe to catch missing `file_dev_resources:write` scope.
+- **Publish success** — CI workflow logs report `Successfully connected component: <name>` for each mapping. Auth failures, scope errors, or 4xx responses surface clearly in the workflow run log.
+
+### What is NOT yet automatically verified
+
+- **Snippet visual fidelity** — once a mapping publishes, Figma Dev Mode shows the snippet, but no automation compares the rendered snippet against the actual rendered SwiftUI/React preview. Operator-side spot-check still required.
+- **Mapping deletion sync** — if a `.figma.swift` file is deleted, the corresponding Code Connect record on Figma is NOT auto-removed. Operator runs `figma connect unpublish` manually if cleanup is needed.
+- **Cross-feature mapping conflicts** — if two features' mapping files happen to point at the same Figma node ID, the second publish will overwrite the first silently. No conflict detection yet.
+
+### Plan: closing the snippet visual fidelity gap
+
+Future enhancement: extend `/design pre-merge-review` to fetch each mapped Figma frame's screenshot via `mcp__claude_ai_Figma__get_screenshot`, render the same Swift View via Xcode preview/snapshot tests, diff the two. Tracked in the open `code-connect-automation` follow-ups (no concrete PR yet).
+
+### Definition of "Code Connect Synced"
+
+A `.figma.{swift,tsx}` mapping file is **Code Connect Synced** when ALL of:
+
+- [ ] The file parses cleanly (no `ParserError` in `figma connect publish --dry-run`)
+- [ ] The Figma node URL resolves (no "node X-Y not found" in publish output)
+- [ ] The corresponding component exists at the imported path (no "import for X could not be resolved")
+- [ ] The mapping has been published in the last `figma-code-connect-publish` workflow run on main
+
+Verified per-PR by the `/design pre-merge-review` Step 3.5 spec ↔ build parity check; verified per-merge-to-main by the `figma-code-connect-publish` workflow.
+
+### Cross-references
+
+- Skill source: [`.claude/skills/design/SKILL.md`](../../.claude/skills/design/SKILL.md) §`/design build`, §`/design preflight`, §`/design pre-merge-review`
+- iOS operator runbook: [`ios-code-connect-workflow.md`](./ios-code-connect-workflow.md)
+- Web architecture: [`fitme-story-design-architecture.md`](./fitme-story-design-architecture.md)
+- Skill ecosystem evolution: [`docs/skills/evolution.md`](../skills/evolution.md) §27
+- Dev guide: [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) §15A

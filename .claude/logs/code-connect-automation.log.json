@@ -6,13 +6,13 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.1",
   "started_at": "2026-05-10T05:32:33Z",
-  "updated_at": "2026-05-10T05:32:33Z",
+  "updated_at": "2026-05-10T08:11:07Z",
   "events": [
     {
       "timestamp": "2026-05-10T05:32:33Z",
       "event_type": "phase_started",
       "phase": "implementation",
-      "summary": "Feature scaffolded as chore/framework_tooling. 3-layer automation closing the loop on ios-code-connect (PR #277) + fitme-story T20 (PR #75). 5 tasks T1-T5; T1 (scaffold scripts) is the foundation T3+T4 depend on. ~2.0d total estimated effort. Per user directive 2026-05-10 'is the cmd automated when building a new ui feature' (answer: no) → 'Automate Code Connect for new UI features?' (answer: All 3 layers A+B+C).",
+      "summary": "Feature scaffolded as chore/framework_tooling. 3-layer automation closing the loop on ios-code-connect (PR #277) + fitme-story T20 (PR #75). 5 tasks T1-T5; T1 (scaffold scripts) is the foundation T3+T4 depend on. ~2.0d total estimated effort. Per user directive 2026-05-10 'is the cmd automated when building a new ui feature' (answer: no) \u2192 'Automate Code Connect for new UI features?' (answer: All 3 layers A+B+C).",
       "artifacts": [
         ".claude/features/code-connect-automation/state.json",
         ".claude/features/code-connect-automation/tasks.md"
@@ -21,6 +21,26 @@
         "tasks_total": 5,
         "tasks_pending": 5,
         "estimated_effort_days": 2.0
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T08:11:07Z",
+      "event_type": "reconciliation",
+      "phase": "implementation",
+      "summary": "T1-T4 reconciled to done after all 11 Code Connect PRs merged 2026-05-10. Layer A (PRs #279 + #77) + Layer B (PR #280) + Layer C (PR #281 superseded by fix #283 squash 8536fb8 + fitme-story #79) all shipped. Operator added FIGMA_ACCESS_TOKEN to BOTH repos at 06:38-06:39Z. Web dry-run verified clean post-PR #80. iOS dry-run verified clean post-PR #283 (npm CLI uses SPM wrapper at .figma-cc-tools/Package.swift to subprocess figma-swift parser). Only T5 (end-to-end test on next real new UI feature) remains.",
+      "artifacts": [
+        ".claude/features/code-connect-automation/state.json",
+        ".claude/logs/code-connect-automation.log.json"
+      ],
+      "metrics": {
+        "tasks_done": 4,
+        "tasks_pending": 1,
+        "prs_merged": 11,
+        "manual_steps_per_new_ui_feature_baseline": 2,
+        "manual_steps_per_new_ui_feature_target": 0
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
