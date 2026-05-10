@@ -1,0 +1,8 @@
+{
+  "codeConnect": {
+    "parser": "swift",
+    "include": ["FitTracker/**/*.figma.swift"],
+    "exclude": ["FitTracker/Tests/**", "FitTracker/UITests/**", ".build/**"],
+    "swiftPackagePath": ".figma-cc-tools/Package.swift"
+  }
+}
