@@ -2,7 +2,7 @@
   "feature_name": "ios-code-connect",
   "current_phase": "implementation",
   "created_at": "2026-05-09T19:27:43Z",
-  "updated_at": "2026-05-10T05:15:26Z",
+  "updated_at": "2026-05-10T05:26:37Z",
   "framework_version": "v7.8.1",
   "work_type": "chore",
   "work_subtype": "design_system_extension",
@@ -74,9 +74,11 @@
     {
       "id": "T5",
       "title": "Document iOS Code Connect workflow in docs/design-system/ (companion to fitme-story-design-architecture.md from T21 of rollup feature)",
-      "status": "pending",
+      "status": "done",
       "effort_days": 0.25,
-      "blocker": "T4"
+      "blocker": "T4",
+      "completed_at": "2026-05-10T05:26:37Z",
+      "scope_note": "Authored docs/design-system/ios-code-connect-workflow.md (~8 sections, ~190 lines). Documents big picture (feature-page-driven library), 5 existing mappings, build-safety contract (#if canImport(Figma)), publish procedure for operator (one-time setup + per-publish cycle + unpublish), maintenance rule, scope exclusions, cross-refs. Companion to fitme-story-design-architecture.md."
     }
   ],
   "metrics": {

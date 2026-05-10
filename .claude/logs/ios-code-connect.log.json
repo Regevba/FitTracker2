@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.1",
   "started_at": "2026-05-09T19:27:43Z",
-  "updated_at": "2026-05-10T05:15:26Z",
+  "updated_at": "2026-05-10T05:26:37Z",
   "events": [
     {
       "timestamp": "2026-05-09T19:27:43Z",
@@ -38,6 +38,23 @@
         "tasks_done": 3,
         "tasks_pending": 2,
         "unblocked_at": "2026-05-10T05:15:26Z"
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T05:26:37Z",
+      "event_type": "task_done",
+      "phase": "implementation",
+      "summary": "T5 shipped: docs/design-system/ios-code-connect-workflow.md authored (~190 lines, 8 sections). Companion to fitme-story-design-architecture.md. Documents the feature-page-driven Figma library shape, 5 existing mappings, build-safety contract, publish procedure (operator playbook), maintenance rule, and scope exclusions. With T1+T2+T3+T5 shipped, only T4 (operator: add Swift package via Xcode UI + figma-swift connect publish with FIGMA_ACCESS_TOKEN) remains.",
+      "artifacts": [
+        "docs/design-system/ios-code-connect-workflow.md"
+      ],
+      "metrics": {
+        "tasks_done": 4,
+        "tasks_pending": 1,
+        "sections_in_doc": 8
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
