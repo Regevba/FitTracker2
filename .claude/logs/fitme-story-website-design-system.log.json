@@ -1,0 +1,147 @@
+{
+  "version": "1.0",
+  "feature": "fitme-story-website-design-system",
+  "title": "fitme story website design system",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.8.2",
+  "started_at": "2026-05-10T14:26:27Z",
+  "updated_at": "2026-05-10T15:14:42Z",
+  "events": [
+    {
+      "timestamp": "2026-05-10T14:26:27Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Feature scaffolded; Phase 0 (Research) opened. Predecessor fitme-story-public-enhancements + ios-code-connect + code-connect-automation all closed/satisfied. Backlog item with 6 deliverables (added FT2 PR #274 squash 044c8ee) is the input. Active-feature lockfile written. Branch feature/fitme-story-website-design-system created.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T14:35:46Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved by user. 11-section research.md captured 6 deliverables, alternatives matrix (chose option A: build in fitme-story), Vercel/Geist as primary reference, primary metric design_system_figma_parity_coverage 57%\u219295%, kill criteria, sequencing.",
+      "artifacts": [
+        ".claude/features/fitme-story-website-design-system/research.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T14:35:53Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened. Drafting PRD with explicit success metrics, kill criteria, analytics spec (4 GA4 events), eval coverage assessment (non-AI feature \u2192 auto-pass), and per-deliverable acceptance criteria for all 6 deliverables.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T14:44:04Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) approved by user. 14-section PRD locked with primary metric design_system_figma_parity_coverage 57%->95%, 5 kill criteria, 4 GA4 events (screen_scope=design_system), eval gate auto-pass (non-AI feature), all 6 open questions resolved at recommended defaults.",
+      "artifacts": [
+        ".claude/features/fitme-story-website-design-system/prd.md"
+      ],
+      "metrics": {
+        "goal_count": 6,
+        "kill_criteria_count": 5,
+        "ga4_events": 4
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T14:44:04Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened. Drafting ~28-32 tasks across 7 buckets per PRD section 13 preview, sequenced per research section 10 (Tokens -> Showcase -> Coverage -> Drift -> Dark-mode -> Contrib -> Analytics+CaseStudy).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T14:47:14Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved by user. 30 tasks across 7 buckets (A: tokens 3, B: showcase 6, C: coverage 8, D: drift 5, E: dark-mode 2, F: contrib 1, G: analytics+CS 5). Critical path: T1->T6->(T10-T15)->T18->T20->T21->T26->T29->T30.",
+      "artifacts": [
+        ".claude/features/fitme-story-website-design-system/tasks.md"
+      ],
+      "metrics": {
+        "task_count": 30,
+        "bucket_count": 7
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T14:47:14Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX/Integration) opened. Phase 3a: /ux preflight to verify referenced tokens/components exist in fitme-story codebase. Phase 3b: draft ux-spec.md for /design-system route. Phase 3c: /design preflight + /design build to push showcase + new component frames into Figma library 'fsjHfFLAHELACZHku8Rfcl'.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T15:01:55Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX/Integration) complete. /ux preflight PASS (existing /design-system page is iOS-narration-heavy; user picked two-part layout). ux-spec.md drafted (15 sections). /design preflight PASS (Figma MCP live, library fsjHfFLAHELACZHku8Rfcl accessible, Code Connect publish blocked but does not gate this feature). /design build folded into Phase 4 (no pre-Phase-4 frames to push; new tokens added in T1; component frames added incrementally T10-T14).",
+      "artifacts": [
+        ".claude/features/fitme-story-website-design-system/ux-spec.md",
+        ".claude/features/fitme-story-website-design-system/figma-bridge-status.json"
+      ],
+      "metrics": {
+        "ux_spec_sections": 15,
+        "figma_mcp_live": 1,
+        "figma_library_accessible": 1
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T15:01:55Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) opened. Beginning with Bucket A (T1 motion/elevation/z-index tokens to Figma + Tailwind + design-tokens.ts). Branch: feature/fitme-story-website-design-system. All 30 tasks land on this branch except FT2-side companions (CLAUDE.md, analytics-taxonomy.csv, Makefile target, case study) which ship to FT2 main.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-10T15:14:42Z",
+      "event_type": "implementation_progress",
+      "phase": "implementation",
+      "summary": "Bucket A complete: T1 added 15 Figma variables to FitMe Tokens collection (motion durations 3, motion easings 3, elevations 4, z-index levels 5). T2 extended globals.css @theme with same tokens + Light/Dark elevation overrides. T3 extended design-tokens.ts with typed MotionToken/ElevationToken/ZIndexToken interfaces and arrays. Build passes; /design-system route still renders.",
+      "artifacts": [],
+      "metrics": {
+        "figma_vars_added": 15,
+        "collection_size_before": 36,
+        "collection_size_after": 51,
+        "tasks_done": 3
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

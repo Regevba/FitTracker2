@@ -1,0 +1,121 @@
+{
+  "feature_name": "fitme-story-website-design-system",
+  "current_phase": "implementation",
+  "created_at": "2026-05-10T14:01:12Z",
+  "updated_at": "2026-05-10T15:01:26Z",
+  "framework_version": "v7.8.2",
+  "work_type": "feature",
+  "work_subtype": "new_ui",
+  "branch": "feature/fitme-story-website-design-system",
+  "has_ui": true,
+  "requires_analytics": true,
+  "isolation_opt_out": false,
+  "scheduled_after": {
+    "predecessor": "fitme-story-public-enhancements",
+    "signal": "fitme-story-public-enhancements T18+T19+T20+T21 phase=complete",
+    "captured_at": "2026-05-10T14:01:12Z",
+    "resolved_at": "2026-05-10T07:46:32Z",
+    "resolved_by_pr": [277, 280, 283, 285, 286],
+    "note": "Predecessor satisfied: foundation work (T18 Figma file fsjHfFLAHELACZHku8Rfcl + T19 33 token vars + T20 17 component node IDs + T21 architecture doc) shipped 2026-05-09 via fitme-story #75 + #80 + FT2 #277 + #285. Code Connect pipe (Layers A+B+C) shipped 2026-05-10. This feature builds the next-phase evolution layer described in the backlog item added 2026-05-09 via FT2 PR #274."
+  },
+  "phases": {
+    "research": {
+      "status": "approved",
+      "started_at": "2026-05-10T14:01:12Z",
+      "approved_at": "2026-05-10T14:35:37Z",
+      "sources": [
+        {"type": "external_design_system", "name": "Vercel/Geist", "url": "https://vercel.com/geist", "use": "primary reference for showcase route pattern"},
+        {"type": "external_design_system", "name": "Linear Method", "url": "https://linear.app/method", "use": "editorial voice reference"},
+        {"type": "external_design_system", "name": "GitHub Primer", "url": "https://primer.style/", "use": "component status labels"},
+        {"type": "external_design_system", "name": "Atlassian Design System", "url": "https://atlassian.design/", "use": "contribution guidelines model"},
+        {"type": "internal", "name": "/glossary route pattern", "use": "src/lib/glossary.ts → /glossary template generalizes to design-system.ts → /design-system"},
+        {"type": "internal", "name": "Code Connect mappings (12 .figma.tsx files)", "use": "showcase reads these for Figma-link rendering"},
+        {"type": "tooling", "name": "Figma MCP", "use": "drift detection script foundation"}
+      ]
+    },
+    "prd": { "status": "approved", "approved_at": "2026-05-10T14:43:47Z", "analytics_spec_complete": true },
+    "tasks": { "status": "approved", "count": 30, "approved_at": "2026-05-10T14:47:00Z" },
+    "ux_or_integration": { "status": "approved", "type": "ux", "preflight_passed": true, "started_at": "2026-05-10T14:47:00Z", "approved_at": "2026-05-10T15:01:26Z", "checklist_completed": true, "preflight_findings": "Existing /design-system page is iOS-narration-heavy. User chose two-part layout (iOS story preserved + website showcase added below). 12 .figma.tsx files exist; motion/elevation/z-index tokens missing from @theme; figma.config.json present. /design preflight: MCP live, library accessible, Code Connect publish blocked but does not gate this feature. /design build folded into Phase 4. No blocking inconsistencies." },
+    "implementation": { "status": "in_progress", "commits": [], "started_at": "2026-05-10T15:01:26Z" },
+    "testing": { "status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false, "eval_results": { "total_evals": 0, "passing": 0, "failing": 0, "eval_pass_rate": null, "categories": {}, "uncovered_behaviors": [], "min_eval_coverage_met": true, "non_ai_feature": true, "non_ai_justification": "Feature does not touch AIOrchestrator, ReadinessEngine, NutritionRecommender, TrainingRecommender, CohortIntelligence, or ai-engine/. Per v6.0 Eval Coverage Gate Protocol: non-AI features auto-pass." } },
+    "review": { "status": "pending", "risks": [], "ci_main": false, "ci_feature": false },
+    "merge": { "status": "pending", "pr_number": null, "analytics_regression_passed": null },
+    "documentation": { "status": "pending" },
+    "metrics": {
+      "primary": { "name": "design_system_figma_parity_coverage", "baseline": null, "target": 95, "current": null },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": "Drift between Figma file and code repeatedly exceeds 10% within 30 days of a build pass (i.e., maintenance burden outpaces value) OR public /design-system showcase route adds > 200ms to LCP on the homepage navigation flow"
+    }
+  },
+  "tasks": [
+    {"id": "T1", "title": "Add motion + elevation + z-index variables to Figma", "status": "done", "completed_at": "2026-05-10T15:08:00Z", "figma_variable_ids": ["VariableID:8:2", "VariableID:8:3", "VariableID:8:4", "VariableID:8:5", "VariableID:8:6", "VariableID:8:7", "VariableID:8:8", "VariableID:8:9", "VariableID:8:10", "VariableID:8:11", "VariableID:8:12", "VariableID:8:13", "VariableID:8:14", "VariableID:8:15", "VariableID:8:16"]},
+    {"id": "T2", "title": "Extend globals.css @theme with motion + elevation + z-index tokens (Light + Dark elevation overrides)", "status": "done", "completed_at": "2026-05-10T15:08:00Z"},
+    {"id": "T3", "title": "Extend design-tokens.ts with MOTION_TOKENS + ELEVATION_TOKENS + Z_INDEX_TOKENS exports", "status": "done", "completed_at": "2026-05-10T15:08:00Z"}
+  ],
+  "figma_node_ids": {
+    "tokens": {
+      "collection_id": "VariableCollectionId:1:4",
+      "collection_name": "FitMe Tokens",
+      "total_variables": 51,
+      "added_in_this_feature": {
+        "motion/duration/fast": "VariableID:8:2",
+        "motion/duration/standard": "VariableID:8:3",
+        "motion/duration/slow": "VariableID:8:4",
+        "motion/easing/standard": "VariableID:8:5",
+        "motion/easing/decelerate": "VariableID:8:6",
+        "motion/easing/emphasized": "VariableID:8:7",
+        "elevation/level-1": "VariableID:8:8",
+        "elevation/level-2": "VariableID:8:9",
+        "elevation/level-3": "VariableID:8:10",
+        "elevation/level-4": "VariableID:8:11",
+        "z/base": "VariableID:8:12",
+        "z/elevated": "VariableID:8:13",
+        "z/header": "VariableID:8:14",
+        "z/modal": "VariableID:8:15",
+        "z/toast": "VariableID:8:16"
+      }
+    }
+  },
+  "figma_build_status": "tokens_published_2026-05-10",
+  "pre_merge_review": { "ux": null, "design": null },
+  "transitions": [],
+  "timing": {
+    "session_start": "2026-05-10T14:01:12Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-05-10T14:01:12Z",
+        "ended_at": "2026-05-10T14:35:37Z",
+        "duration_minutes": 34
+      },
+      "prd": {
+        "started_at": "2026-05-10T14:35:37Z",
+        "ended_at": "2026-05-10T14:43:47Z",
+        "duration_minutes": 8
+      },
+      "tasks": {
+        "started_at": "2026-05-10T14:43:47Z",
+        "ended_at": "2026-05-10T14:47:00Z",
+        "duration_minutes": 3
+      },
+      "ux_or_integration": {
+        "started_at": "2026-05-10T14:47:00Z",
+        "ended_at": "2026-05-10T15:01:26Z",
+        "duration_minutes": 14
+      },
+      "implementation": {
+        "started_at": "2026-05-10T15:01:26Z"
+      }
+    }
+  },
+  "cache_hits": [],
+  "_meta": {
+    "scaffolded_by": "claude_opus_4_7",
+    "scaffold_session": "1acfe748-7927-4116-a46e-c87c989a4253",
+    "scaffold_origin": "User directive 2026-05-10 'wait for 286 to green and merge then let's move to the fitme story website design system, full pm-flow invoke protocol 7.8.2'. Backlog source: docs/product/backlog.md item 'fitme-story website design system — ongoing build-out (added 2026-05-09)' merged via FT2 PR #274 squash 044c8ee.",
+    "backlog_item_link": "docs/product/backlog.md (line ~169) — 6 deliverables listed",
+    "predecessor_features": ["fitme-story-public-enhancements", "ios-code-connect", "code-connect-automation"]
+  }
+}
