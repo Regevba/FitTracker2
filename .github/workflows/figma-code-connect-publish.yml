@@ -4,14 +4,15 @@ on:
     branches: [main]
     paths:
       - 'FitTracker/**/*.figma.swift'
-      - 'Figma.toml'
+      - 'figma.config.json'
+      - '.figma-cc-tools/**'
       - '.github/workflows/figma-code-connect-publish.yml'
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v5
       - name: Skip if FIGMA_ACCESS_TOKEN not set
@@ -27,6 +28,19 @@ jobs:
         if: steps.gate.outputs.skip != 'true'
         with:
           node-version: '24'
+      - name: Cache SPM build artifacts
+        if: steps.gate.outputs.skip != 'true'
+        uses: actions/cache@v4
+        with:
+          path: |
+            .figma-cc-tools/.build
+            ~/Library/Caches/org.swift.swiftpm
+          key: spm-figma-cc-${{ hashFiles('.figma-cc-tools/Package.swift', '.figma-cc-tools/Package.resolved') }}
+          restore-keys: spm-figma-cc-
+      - name: Pre-resolve SPM (warms cache for npm CLI subprocess)
+        if: steps.gate.outputs.skip != 'true'
+        working-directory: .figma-cc-tools
+        run: swift package resolve
       - name: Publish Code Connect mappings
         if: steps.gate.outputs.skip != 'true'
         env:

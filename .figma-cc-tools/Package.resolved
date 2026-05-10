@@ -1,0 +1,41 @@
+{
+  "pins" : [
+    {
+      "identity" : "code-connect",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/figma/code-connect",
+      "state" : {
+        "revision" : "b8589684b6c88efcd10c37eea5048fd6b1cc7abf",
+        "version" : "1.4.4"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser",
+      "state" : {
+        "revision" : "626b5b7b2f45e1b0b1c6f4a309296d1d21d7311b",
+        "version" : "1.7.1"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax",
+      "state" : {
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
+      }
+    },
+    {
+      "identity" : "swiftformat",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nicklockwood/SwiftFormat",
+      "state" : {
+        "revision" : "a5fa7a6a57abeb834df1b3fa43ea9133137d5ade",
+        "version" : "0.61.1"
+      }
+    }
+  ],
+  "version" : 2
+}
