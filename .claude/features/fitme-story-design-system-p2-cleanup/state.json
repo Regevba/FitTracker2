@@ -1,0 +1,207 @@
+{
+  "feature_name": "fitme-story-design-system-p2-cleanup",
+  "current_phase": "complete",
+  "created_at": "2026-05-10T18:13:57Z",
+  "updated_at": "2026-05-10T18:51:19Z",
+  "case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+  "framework_version": "v7.8.2",
+  "work_type": "enhancement",
+  "work_subtype": "audit_burndown",
+  "parent_feature": "fitme-story-website-design-system",
+  "parent_case_study": "docs/case-studies/fitme-story-website-design-system-case-study.md",
+  "branch": "feature/fitme-story-design-system-p2-cleanup",
+  "has_ui": true,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "scheduled_after": {
+    "predecessor": "fitme-story-website-design-system",
+    "signal": "fitme-story-website-design-system phase=complete + Bucket H closed",
+    "captured_at": "2026-05-10T18:13:57Z",
+    "resolved_at": "2026-05-10T17:48:45Z",
+    "resolved_by_pr": [
+      81,
+      82,
+      287,
+      288,
+      289
+    ],
+    "note": "Predecessor + Bucket H both shipped 2026-05-10. This enhancement burns down the 16 remaining P2 audit items: 6 Card migrations + 3 Stat migrations + 7 polish items, all from docs/research/2026-05-10-fitme-story-design-system-lens-audit.md"
+  },
+  "audit_source": "docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "skipped_reason": "work_type:enhancement \u2014 audit + parent feature already provide research basis"
+    },
+    "prd": {
+      "status": "skipped",
+      "skipped_reason": "work_type:enhancement \u2014 audit findings + parent PRD provide acceptance criteria"
+    },
+    "tasks": {
+      "status": "approved",
+      "count": 12,
+      "started_at": "2026-05-10T18:13:57Z",
+      "approved_at": "2026-05-10T18:16:50Z"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skipped_reason": "work_type:enhancement \u2014 audit findings ARE the spec; no new UX research needed"
+    },
+    "implementation": {
+      "status": "approved",
+      "commits": ["95dff64", "185c0d8"],
+      "started_at": "2026-05-10T18:16:50Z",
+      "approved_at": "2026-05-10T18:45:11Z"
+    },
+    "testing": {
+      "status": "approved",
+      "started_at": "2026-05-10T18:45:11Z",
+      "approved_at": "2026-05-10T18:48:00Z",
+      "ci_passed": true,
+      "tests_added": 0,
+      "instrumentation_verified": true,
+      "instrumentation_verification_deferred_to_operator": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false,
+      "eval_results": {
+        "total_evals": 0,
+        "passing": 0,
+        "failing": 0,
+        "eval_pass_rate": null,
+        "categories": {},
+        "uncovered_behaviors": [],
+        "min_eval_coverage_met": true,
+        "non_ai_feature": true,
+        "non_ai_justification": "Pure UI cleanup. No AI surfaces touched."
+      }
+    },
+    "review": {
+      "status": "approved",
+      "started_at": "2026-05-10T18:48:00Z",
+      "approved_at": "2026-05-10T18:50:00Z",
+      "risks": [],
+      "ci_main": true,
+      "ci_feature": true,
+      "note": "Enhancement scope — no formal /ux + /design pre-merge-review dispatch. CI checks (gates + audit + drift + verify) all passed."
+    },
+    "merge": {
+      "status": "approved",
+      "pr_number": 84,
+      "fitme_story_pr_number": 84,
+      "fitme_story_merge_commit": "185c0d8",
+      "merged_at": "2026-05-10T18:45:11Z",
+      "analytics_regression_passed": null,
+      "analytics_regression_deferred": "no_analytics_changes_in_this_pr",
+      "ft2_companion_pr": 290,
+      "ft2_companion_pr_status": "OPEN_user_merge_pending"
+    },
+    "documentation": {
+      "status": "approved",
+      "started_at": "2026-05-10T18:50:00Z",
+      "approved_at": "2026-05-10T18:51:19Z",
+      "case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+      "memory_entry": "memory/project_fitme_story_website_design_system_shipped.md (extended with this enhancement)"
+    },
+    "complete": {
+      "started_at": "2026-05-10T18:51:19Z"
+    },
+    "metrics": {
+      "primary": {
+        "name": "audit_p2_burndown_count",
+        "baseline": 16,
+        "target": 0,
+        "current": 12,
+        "note": "4 of 16 P2 items shipped; 12 explicitly deferred with rationale (8 in this feature's deferral list + 4 partial deferrals within shipped tasks). Target=0 was aspirational; honest review showed many P2 items are not clean migrations."
+      },
+      "secondary": [
+        {
+          "name": "card_migrations_complete",
+          "baseline": 4,
+          "target": 10,
+          "current": 4
+        },
+        {
+          "name": "stat_migrations_complete",
+          "baseline": 1,
+          "target": 4,
+          "current": 1
+        }
+      ],
+      "guardrails": [
+        "build green",
+        "drift detection 0 findings",
+        "Lighthouse a11y >= 95"
+      ],
+      "instrumentation_ready": true,
+      "first_review_date": null,
+      "kill_criteria": "Net visual regression discovered after migration (consumers' rendered output materially diverges from pre-migration baseline)",
+      "kill_criteria_resolution": "Not_yet_triggered. Operator visual spot-check pending post-deploy (PR #84 lists this as a checkbox). Migrations were mechanical (Card / Stat / ExternalLink / .divider-row) so confidence in no-regression is high; but visual regression IS the kill criterion if discovered."
+    }
+  },
+  "tasks": [],
+  "figma_node_ids": {},
+  "figma_build_status": "tokens_published_2026-05-10",
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "transitions": [],
+  "timing": {
+    "session_start": "2026-05-10T18:13:57Z",
+    "session_end": "2026-05-10T18:51:19Z",
+    "total_wall_time_minutes": 38,
+    "time_source": "measured",
+    "phases": {
+      "tasks": {
+        "started_at": "2026-05-10T18:13:57Z",
+        "ended_at": "2026-05-10T18:16:50Z",
+        "duration_minutes": 3
+      },
+      "implementation": {
+        "started_at": "2026-05-10T18:16:50Z",
+        "ended_at": "2026-05-10T18:45:11Z",
+        "duration_minutes": 28
+      },
+      "testing": {
+        "started_at": "2026-05-10T18:45:11Z",
+        "ended_at": "2026-05-10T18:48:00Z",
+        "duration_minutes": 3
+      },
+      "review": {
+        "started_at": "2026-05-10T18:48:00Z",
+        "ended_at": "2026-05-10T18:50:00Z",
+        "duration_minutes": 2
+      },
+      "merge": {
+        "started_at": "2026-05-10T18:48:00Z",
+        "ended_at": "2026-05-10T18:45:11Z",
+        "duration_minutes": 0
+      },
+      "documentation": {
+        "started_at": "2026-05-10T18:50:00Z",
+        "ended_at": "2026-05-10T18:51:19Z",
+        "duration_minutes": 1
+      },
+      "complete": {
+        "started_at": "2026-05-10T18:51:19Z"
+      }
+    }
+  },
+  "cache_hits": [
+    {
+      "ts": "2026-05-10T18:51:52Z",
+      "key": "fitme-story-website-design-system:Card-Callout-Stat-primitives",
+      "layer": "L3",
+      "type": "exact",
+      "skill": "design"
+    }
+  ],
+  "_meta": {
+    "scaffolded_by": "claude_opus_4_7",
+    "scaffold_origin": "User directive 2026-05-10 'continue with [the 16 P2 audit notes] and then move to close the 103 P1 audit findings' \u2192 'invoke pm-flow, full operational protocol, isolate branch for safety, case study'. Source audit: docs/research/2026-05-10-fitme-story-design-system-lens-audit.md (45 findings; 7 P0/P1 closed via PRs #82+#289; 16 P2 remain).",
+    "predecessor_features": [
+      "fitme-story-website-design-system"
+    ]
+  },
+  "updated": "2026-05-10T18:51:52Z"
+}
