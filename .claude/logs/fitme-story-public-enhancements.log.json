@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-08T06:36:08Z",
-  "updated_at": "2026-05-09T07:18:59Z",
+  "updated_at": "2026-05-09T20:18:25Z",
   "events": [
     {
       "timestamp": "2026-05-08T05:53:53Z",
@@ -204,6 +204,28 @@
       "summary": "Component library bootstrap (17 components) shipped 2026-05-09 via Figma MCP use_figma calls \u2014 no PR (Figma cloud is the artifact store). 3 Buttons (Primary/Secondary/Ghost) \u00b7 3 Tags (Flagship/Standard/Tier-T1) \u00b7 5 Callouts (HonestDisclosure/TriggerIncident/MemoryRef/PredecessorChain/KillCriterionResolution) \u00b7 2 Cards (CaseStudy/FrameworkVersion) \u00b7 2 Search (Icon/Expanded) \u00b7 2 Layouts (SiteHeader/SiteFooter). All bound to FitMe Tokens collection via setBoundVariableForPaint. Per-component node IDs captured in state.json::figma_node_ids.components. Unblocks T20 Code Connect (status: blocked \u2192 ready, effort 1.5 \u2192 0.5 days).",
       "artifacts": [],
       "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-09T20:18:25Z",
+      "event_type": "task_done",
+      "phase": "implementation",
+      "summary": "T20 (FIG-W5) Code Connect web integration shipped via fitme-story PR #75 (feat/web-code-connect-t20). Authored 12 .figma.tsx mapping files covering all 17 captured node IDs. Created 4 new primitive components (Button + Tag + CaseStudyCard + FrameworkVersionCard) per user-chosen create-primitives path. figma connect publish deferred to operator (FIGMA_ACCESS_TOKEN required). Rollup advances 22 \u2192 23/24 done; only T13 (date-gated 2026-05-21) remains.",
+      "artifacts": [
+        "fitme-story/figma.config.json",
+        "fitme-story/src/components/ui/Button.tsx",
+        "fitme-story/src/components/ui/Tag.tsx",
+        "fitme-story/src/components/ui/CaseStudyCard.tsx",
+        "fitme-story/src/components/ui/FrameworkVersionCard.tsx"
+      ],
+      "metrics": {
+        "pr_number": 75,
+        "figma_mappings_authored": 17,
+        "new_primitive_components": 4,
+        "new_figma_tsx_files": 12
+      },
       "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
