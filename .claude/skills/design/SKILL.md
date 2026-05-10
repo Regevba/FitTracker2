@@ -1,6 +1,6 @@
 ---
 name: design
-description: "Design system governance, accessibility audits, auto-generated build prompts, Figma MCP build with fallback, preflight gate (DS + Figma MCP liveness), pre-merge UI review (ui-audit + Figma node ID validation). Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → use /design build; /design ux-spec → use /ux spec.)"
+description: "Design system governance, accessibility audits, auto-generated build prompts, Figma MCP build with fallback, Code Connect mapping auto-scaffold (Layer B; web .figma.tsx + iOS .figma.swift), preflight gate (DS + Figma MCP liveness), pre-merge UI review (ui-audit + Figma node ID validation). Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → use /design build; /design ux-spec → use /ux spec.)"
 ---
 
 # Design & UX Skill: $ARGUMENTS
@@ -204,6 +204,14 @@ Run WCAG AA accessibility audit.
    - **Write node IDs back:**
      - Append/update `state.json.figma_node_ids[{screen_name}]` with the captured node ID
      - Append/update `docs/design-system/figma-code-sync-status.md` matrix with a row for the feature (Figma node | Code file | Status | Notes)
+   - **Auto-scaffold Code Connect mappings (Layer B, added 2026-05-09 via `code-connect-automation` feature):** after `figma_node_ids` is updated, invoke the scaffold script for the current repo:
+     - In FT2: `python3 scripts/scaffold-figma-mapping.py {feature}` — generates `.figma.swift` template files alongside the SwiftUI Views matched via the script's heuristic (snake_case → PascalCase + state-qualifier strip; falls back to `figma_node_ids.code_mapping` override block)
+     - In fitme-story: `node scripts/scaffold-figma-mapping.mjs {feature}` — generates `.figma.tsx` template files alongside the React components
+     - Coalesces multiple state variants of the same View/component into one mapping file with multiple `FigmaConnect` structs / `figma.connect` calls
+     - Idempotent: skips if `.figma.{swift|tsx}` already exists. Use `--force` to overwrite if the operator deliberately re-scaffolds
+     - Emits per-entry status report (scaffolded / skipped / unmapped). Unmapped entries trigger a warning — operator either adds a `code_mapping` override to `state.json::figma_node_ids` OR hand-authors the mapping file
+     - Operator-only step deferred: `figma connect publish` (requires `FIGMA_ACCESS_TOKEN`); planned to fire automatically via Layer C CI workflow once `FIGMA_ACCESS_TOKEN` repo secret is added
+     - Companion docs: `docs/design-system/ios-code-connect-workflow.md` (operator runbook, iOS) + `docs/design-system/fitme-story-design-architecture.md` (web architecture)
 5. **On Figma MCP failure** (connection error, timeout, API error, OR `mcp_connected: false` from preflight):
    - Announce: "Figma MCP unavailable: {error/reason}. Falling back to saved prompt."
    - Verify the design build prompt exists at `docs/prompts/ui/{date}-{feature}-design-build.md`
