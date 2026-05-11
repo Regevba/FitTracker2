@@ -1677,6 +1677,62 @@ make snapshot-phase PHASE=phase-1-complete-pre-phase-2
 
 ---
 
+## Phase 1 — Adjustments from prep validation (added 2026-05-11)
+
+The original Phase 1 task instructions above were drafted from the spec. During Phase 0 ship + Phase 1 prep validation, 6 plan-vs-codebase deltas were discovered. These adjustments **supersede** the original task instructions where they conflict. Subagent prompts dispatching Tasks 1.1-1.7 must reference both the original task AND this adjustment section.
+
+### A1. Cross-repo cite count: 35 → 63
+
+**Original calibration target:** D-3: 35/35 retroactive cross-repo cite validation passes.
+**Reality (verified 2026-05-11):** `grep -rE "fitme-story[ ]?#[0-9]+|github\.com/Regevba/fitme-story" docs/case-studies/*.md | wc -l` returns **63**. The cite count grew between brainstorm-time (35) and Phase 1 ship-time as more case studies cite fitme-story PRs.
+**Action:** Update calibration target to 63/63. If any cite fails to validate, triage per the original kill criterion (likely typo'd PR number that the original silent-skip masked).
+
+### A2. D-3 regex update scope expansion: also update `integrity-check.py`
+
+**Original task scope:** Update `_PR_CITATION_PAT` regex in `scripts/check-case-study-preflight.py:74-76`.
+**Reality:** Line 74 of `check-case-study-preflight.py` has comment: `# Same regex shape as integrity-check.py (kept in sync intentionally).` — the regex is intentionally kept in sync between both scripts. Updating ONLY one would leave the cycle-time `BROKEN_PR_CITATION` check silently broken.
+**Action:** Task 1.2 implementer ALSO updates `scripts/integrity-check.py`'s parallel regex constant in the same commit. Verify by `grep -nE "_PR_CITATION_PAT|github\.com.*pull" scripts/integrity-check.py` and applying the same regex shape.
+
+### A3. `_load_pr_cache()` is morph-not-additive
+
+**Original task implication:** Add new `resolve_pr_cite()` function alongside existing `_load_pr_cache()`.
+**Reality:** Existing `_load_pr_cache()` at `check-case-study-preflight.py:190` returns `set[int] | None` (FT2-only PR numbers). The new multi-repo cache shape per spec §5.2 is incompatible.
+**Action:** Task 1.2 implementer MORPHS `_load_pr_cache()` to return the new multi-repo dict shape, OR replaces it with a new `_load_unified_pr_cache()` and updates all call sites. Review existing call sites first via `grep -n "_load_pr_cache" scripts/`. The same morphing applies to `check-state-schema.py:163` and `integrity-check.py:312` if they share the helper. NOTE: this is a non-trivial refactor — implementer should use Sonnet (not Haiku).
+
+### A4. fitme-story C-4 needs isolated worktree
+
+**Original task setup:** Switch to `/Volumes/DevSSD/fitme-story` + create branch.
+**Reality:** fitme-story working tree currently on `showcase/ios-ui-audit-p1-burndown-2026-05-11` with 10+ uncommitted modifications (auto-synced docs from FT2). Switching branches would conflict.
+**Action:** Task 1.5 implementer creates an isolated fitme-story worktree at `/Volumes/DevSSD/fitme-story-cross-repo-state-sync-phase-1/` (matches the FT2 sibling-worktree convention) on `feat/cross-repo-state-sync-phase-1` off origin/main, similar to how Phase 0 was set up for FT2.
+
+### A5. fitme-story test infrastructure: no `tests/` dir, different runner
+
+**Original task scope:** Create `tests/control-room/sync-extension.test.ts` and `tests/control-room/gate-coverage-aggregator.test.ts`.
+**Reality:** fitme-story has NO `tests/` directory. The package.json `test` script is `tsx --test 'scripts/*.test.ts' 'src/**/*.test.ts'` — picks up tests at scripts/* and src/** patterns, NOT tests/**.
+**Action:** Task 1.5/1.6 implementers either:
+- (a) Co-locate tests with sources: `src/lib/control-room/gate-coverage-aggregator.test.ts` + `scripts/sync-from-fittracker2.test.ts` — matches existing pattern, no package.json change needed.
+- (b) Update package.json `test` script to also include `tests/**/*.test.ts` AND create `tests/control-room/`.
+- **Recommend (a)** — minimal change, follows existing convention.
+
+### A6. fitme-story sync script line 313 comment must be updated
+
+**Original task scope:** Add gate-coverage.jsonl forward-sync to `sync-from-fittracker2.ts`.
+**Reality:** Line 313 of that script has a comment: `// - gate-coverage.jsonl (Mechanism A; per-repo, not synced — see §3 of spec)`. This comment was added per the original Phase C spec (`docs/superpowers/specs/2026-05-09-cross-repo-state-sync.md` §3) which explicitly excluded gate-coverage from sync. Phase 1 C-4 reverses that decision per the v7.8.3 spec §4.1.
+**Action:** Task 1.5 implementer updates the comment to reference the v7.8.3 reversal: `// - gate-coverage.jsonl: FT2's mirrored as gate-coverage-ft2.jsonl per v7.8.3 spec §4.1; fitme-story's stays per-repo (control-room aggregator reads both).` AND keeps a cross-reference to the new v7.8.3 spec.
+
+### Adjustments summary table
+
+| # | Affects | Action |
+|---|---|---|
+| A1 | Task 1.4, 1.7 calibration target | 35 → 63 |
+| A2 | Task 1.2 scope | Add `integrity-check.py` to commit |
+| A3 | Task 1.2 design | Refactor `_load_pr_cache`, not additive — use Sonnet |
+| A4 | Task 1.5 setup | Isolated fitme-story worktree at `/Volumes/DevSSD/fitme-story-cross-repo-state-sync-phase-1/` |
+| A5 | Task 1.5/1.6 file paths | Co-locate test files with source (recommended) |
+| A6 | Task 1.5 scope | Update sync script comment in addition to logic |
+
+---
+
 ## Phase 2 — Schema + backfill + morphed C-5
 
 **Branch:** `feat/cross-repo-state-sync-phase-2` (off latest `main` after Phase 1 merge)
