@@ -1,7 +1,7 @@
 {
   "version": "1.11",
-  "updated": "2026-05-08T06:30:00Z",
-  "framework_version": "7.8.2",
+  "updated": "2026-05-11T18:30:00Z",
+  "framework_version": "7.8.3",
   "description": "PM framework v7.7 \u2014 Validity Closure. Closes A1\u2013A5 + B1\u2013B2 + C1 from the post-v7.6 gap inventory across two PRs (FT2 #144 + fitme-story #7). Adds 5 new gates: 4 write-time pre-commit hooks (CACHE_HITS_EMPTY_POST_V6, CU_V2_INVALID, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS) + 1 cycle-time check code + 1 advisory permanent (TIER_TAG_LIKELY_INCORRECT). Bulk-backfills 32 case-study frontmatters and timing.phases on 3 paused features. Plus framework-health dashboard at fitme-story /control-room/framework. Framework reaches 25 mechanical gates + 1 advisory. state\u2194case-study linkage 95.5% \u2192 100%. Builds on v7.6 (Mechanical Enforcement), v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), and v7.0 (HADF). 2026-05-01 follow-on PR #169 closed the v7.7 silent-pass surface: 43 state.json files migrated created \u2192 created_at so CACHE_HITS_EMPTY_POST_V6 actually fires. 2026-05-02 v7.8 PR-1 (#173) shipped Mechanism C in advisory mode (PostToolUse:Read hook + observe-cache-hit.py). v7.8 enforcement and v7.9 are downstream.",
   "audit_closures": {
     "FW-002": "Description string updated from v5.2 to v7.0 \u2014 closed.",
@@ -526,5 +526,84 @@
       "fastlane"
     ]
   },
-  "v7_9_measurement_window_opens": "2026-05-11"
+  "v7_9_measurement_window_opens": "2026-05-11",
+  "v7_8_3_cross_repo_state_sync": {
+    "shipped": "2026-05-11",
+    "status": "shipped_enforced_plus_one_morphed",
+    "description": "Cross-repo state-sync release umbrella. 5 phases x 10 PRs in single-day ship. Promotes V2 (CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT) advisory -> enforced; extends V9 Mechanism E driver to .claude/logs/<feature>.log.json; adds 3 new state_owner gates (STATE_OWNER_MISSING + STATE_OWNER_INVALID + STATE_OWNER_LOCATION_MISMATCH morphed C-5); ships D-3 unified cross-repo PR cite cache + C-4 telemetry aggregator + D-1 reverse-sync GH Action; new make snapshot-phase target. Cycle-time gate count: 13 -> 16. Total framework mechanisms: 33 mechanical + 5 advisory.",
+    "spec": "docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md",
+    "plan": "docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md",
+    "case_study": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
+    "showcase_mdx": "fitme-story content/04-case-studies/29-cross-repo-state-sync-impl.mdx",
+    "cold_start_entrypoint": ".claude/entrypoints/framework-v7-8-3.md",
+    "ft2_prs": [
+      "#298",
+      "#299",
+      "#300",
+      "#301",
+      "#303",
+      "#304"
+    ],
+    "fitme_story_prs": [
+      "#86",
+      "#87",
+      "#88",
+      "#89",
+      "#90",
+      "#91"
+    ],
+    "cycle_time_gate_count_post_ship": 16,
+    "total_mechanisms_post_ship": "33 mechanical + 5 advisory",
+    "mechanisms": {
+      "V2_promotion": {
+        "mode": "enforced",
+        "replaces": "CACHE_HITS_EMPTY_POST_V6"
+      },
+      "V9_extension": {
+        "mode": "active",
+        "covers": ".claude/logs/<feature>.log.json"
+      },
+      "D3_unified_pr_cite_cache": {
+        "mode": "enforced",
+        "cache_path": ".cache/gh-pr-cache.json",
+        "retroactive_validation": "63/63"
+      },
+      "C4_telemetry_aggregator": {
+        "mode": "active",
+        "fitme_story_path": "src/data/integrity/gate-coverage-ft2.jsonl"
+      },
+      "C5_morphed": {
+        "mode": "enforced",
+        "gates": [
+          "STATE_OWNER_MISSING",
+          "STATE_OWNER_INVALID",
+          "STATE_OWNER_LOCATION_MISMATCH"
+        ],
+        "sync_origin_exemption": "fitme-story-reverse"
+      },
+      "D1_reverse_sync": {
+        "mode": "active",
+        "workflow_path": "fitme-story/.github/workflows/reverse-sync-fitme-story-to-ft2.yml"
+      },
+      "snapshot_protocol": {
+        "mode": "active",
+        "script": "scripts/snapshot-phase-completion.sh",
+        "make_target": "snapshot-phase"
+      }
+    },
+    "dogfood_catches": 6,
+    "v7_9_candidates_surfaced": [
+      "F11_BRANCH_ISOLATION_HISTORICAL_reverse_sync_recognition",
+      "F12_actionlint_pre_commit",
+      "F13_workflow_dispatch_source_commit_input"
+    ],
+    "hadf_phase2bis_unblock": {
+      "criterion_met": true,
+      "earliest_subexp1_start": "2026-05-23",
+      "soak_window_days": 12,
+      "linear_issue": "FIT-71"
+    },
+    "linear_epic": "FIT-70",
+    "backup_path": "~/Documents/FitTracker2-backups/2026-05-11-cross-repo-state-sync-impl-phase-4-complete-v7.8.3-shipped-rich/"
+  }
 }

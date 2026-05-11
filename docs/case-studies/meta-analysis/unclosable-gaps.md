@@ -1,7 +1,7 @@
-# Mechanically Unclosable Gaps — v7.7 Class B Inventory (1 closed by v7.7 M1)
+# Mechanically Unclosable Gaps — v7.7 Class B Inventory (1 closed by v7.7 M1; promoted to ENFORCED in v7.8.3)
 
-> **Generated:** 2026-04-25; **updated:** 2026-04-27 at v7.7 ship
-> **Framework version at publication:** 7.7 (Validity Closure)
+> **Generated:** 2026-04-25; **updated:** 2026-04-27 at v7.7 ship; **updated:** 2026-05-11 at v7.8.3 ship (Gap 1 promoted from advisory → ENFORCED via V2 — `CACHE_HITS_EMPTY_POST_V6` renamed to `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` and severity flipped to FAIL).
+> **Framework version at publication:** 7.7 (Validity Closure); subsequently extended at 7.8 / 7.8.1 / 7.8.2 / 7.8.3
 > **Authoritative companion:** [docs/case-studies/framework-v7-7-validity-closure-case-study.md](/docs/case-studies/framework-v7-7-validity-closure-case-study.md)
 > **v7.6 companion:** [docs/case-studies/mechanical-enforcement-v7-6-case-study.md](/docs/case-studies/mechanical-enforcement-v7-6-case-study.md)
 > **Policy precedent:** [`feedback_publish_verbatim_then_remediate.md`](../../.claude/feedback/) — gaps stay visible; we do not collapse them silently.
@@ -19,6 +19,8 @@ A gap is "Class A" when a deterministic check (pre-commit, CI, status check) blo
 **Tracked by:** [GitHub issue #140](https://github.com/Regevba/FitTracker2/issues/140) — **closed by v7.7 M1**
 
 > **v7.7 closure detail:** v7.7 M1 ships `scripts/log-cache-hit.py` wrapper that auto-discovers the active feature and dual-writes `state.json cache_hits[]` and the events log in one command. The pre-commit hook `CACHE_HITS_EMPTY_POST_V6` rejects `current_phase=complete` on post-v6 features whose `cache_hits[]` is empty. This means the writer-path is now mechanically enforced: an agent cannot advance a post-v6 feature to `complete` without at least one logged cache-hit event (or an explicit empty-acknowledgment override). Current observed adoption value is still 33.3% post-v6 (2/6 at v7.7 ship) because no post-v6 feature reached `complete` during the v7.7 session — adoption will tick upward on the first such write. Issue #140 closed.
+>
+> **v7.8.3 promotion detail (2026-05-11):** Gap 1 promoted from advisory to ENFORCED via the V2 plan-of-record decision (Q2=V2-only at HADF Phase 2-bis brainstorm). `CACHE_HITS_EMPTY_POST_V6` renamed to `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`; severity flipped from advisory to FAIL. `MECHANISM_C_SHIP_DATE` exemption preserved — features predating 2026-05-02 (when the PostToolUse:Read hook went live) continue to be exempt because the auto-instrumentation didn't exist for them. Forward-only enforcement on features created post-Mechanism-C. See [`docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md`](../../superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md) Phase 0 + [cross-repo-state-sync-impl case study](../cross-repo-state-sync-impl-case-study.md).
 
 ### Why it cannot be mechanically closed
 
