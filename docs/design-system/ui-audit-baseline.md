@@ -8,45 +8,43 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 ## Summary
 
 - **P0 (blocking):** 0
-- **P1 (warning):**  103
-- **Files with findings:** 42
-- **Files scanned:** 82
-- **Files skipped:** 24 (historical v1 + token-definition files)
+- **P1 (warning):**  72
+- **Files with findings:** 33
+- **Files scanned:** 101
+- **Files skipped:** 21 (historical v1 + token-definition files)
 
 ## Per-area breakdown
 
 | Area | P0 | P1 | Files |
 |---|---:|---:|---:|
-| `AI` | 0 | 6 | 2 |
-| `Auth` | 0 | 14 | 4 |
+| `AI` | 0 | 3 | 2 |
+| `Auth` | 0 | 10 | 4 |
 | `ConsentView.swift` | 0 | 1 | 1 |
+| `Import` | 0 | 1 | 1 |
 | `Main` | 0 | 4 | 2 |
 | `Nutrition` | 0 | 15 | 6 |
-| `Onboarding` | 0 | 7 | 4 |
-| `Profile` | 0 | 4 | 4 |
+| `Onboarding` | 0 | 5 | 2 |
+| `Profile` | 0 | 1 | 1 |
 | `RootTabView.swift` | 0 | 1 | 1 |
-| `Settings` | 0 | 4 | 3 |
-| `Shared` | 0 | 30 | 8 |
+| `Settings` | 0 | 5 | 4 |
+| `Shared` | 0 | 24 | 7 |
 | `Stats` | 0 | 1 | 1 |
-| `Training` | 0 | 16 | 6 |
+| `Training` | 0 | 1 | 1 |
 
 ## Per-file findings
 
-### `FitTracker/Views/AI/AIFeedbackView.swift` — P0=0, P1=3
+### `FitTracker/Views/AI/AIFeedbackView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 27 | P1 | `DS-A11Y-BUTTON` | `Button {` |
-| 33 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 44, height: 44)` |
-| 42 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 44, height: 44)` |
 
-### `FitTracker/Views/AI/AIIntelligenceSheet.swift` — P0=0, P1=3
+### `FitTracker/Views/AI/AIIntelligenceSheet.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 46 | P1 | `DS-A11Y-BUTTON` | `Button { dismiss() } label: {` |
 | 138 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 60, alignment: .leading)` |
-| 155 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28, alignment: .trailing)` |
 
 ### `FitTracker/Views/Auth/AccountPanelView.swift` — P0=0, P1=2
 
@@ -55,38 +53,40 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 146 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline.weight(.semibold))` |
 | 243 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline)` |
 
-### `FitTracker/Views/Auth/AuthHubView.swift` — P0=0, P1=6
+### `FitTracker/Views/Auth/AuthHubView.swift` — P0=0, P1=5
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 501 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 534 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 548 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28, height: 28)` |
-| 561 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 698 | P1 | `DS-MAGIC-PADDING` | `.padding(.vertical, 13)` |
-| 812 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 58)` |
+| 448 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
+| 481 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
+| 508 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
+| 617 | P1 | `DS-MAGIC-PADDING` | `.padding(.vertical, 13)` |
+| 677 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 58)` |
 
-### `FitTracker/Views/Auth/SignInView.swift` — P0=0, P1=3
+### `FitTracker/Views/Auth/SignInView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 53 | P1 | `DS-A11Y-BUTTON` | `Button { errorBanner = nil } label: {` |
-| 183 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
-| 287 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
 
-### `FitTracker/Views/Auth/WelcomeView.swift` — P0=0, P1=3
+### `FitTracker/Views/Auth/WelcomeView.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 54 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 120, height: 120)` |
 | 69 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 96, height: 96)` |
-| 102 | P1 | `DS-MAGIC-FRAME` | `Spacer().frame(height: 36)` |
 
 ### `FitTracker/Views/ConsentView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 21 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 160, height: 160)` |
+
+### `FitTracker/Views/Import/ImportSourcePickerView.swift` — P0=0, P1=1
+
+| Line | Sev | Rule | Snippet |
+|---:|:---:|---|---|
+| 118 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 200)` |
 
 ### `FitTracker/Views/Main/BodyCompositionDetailView.swift` — P0=0, P1=3
 
@@ -153,8 +153,8 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 31 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 120, height: 120)` |
 | 161 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 192 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 223 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
+| 193 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
+| 225 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 
 ### `FitTracker/Views/Onboarding/v2/OnboardingConsentView.swift` — P0=0, P1=1
 
@@ -162,47 +162,17 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 30 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 160, height: 160)` |
 
-### `FitTracker/Views/Onboarding/v2/OnboardingFirstActionView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 37 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 80, height: 80)` |
-
-### `FitTracker/Views/Onboarding/v2/OnboardingHealthKitView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 175 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28)` |
-
-### `FitTracker/Views/Profile/AccountDataCard.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 16 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 36, height: 36)` |
-
-### `FitTracker/Views/Profile/GoalsTrainingCard.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 17 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 36, height: 36)` |
-
 ### `FitTracker/Views/Profile/ProfileHeroSection.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 30 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 72, height: 72)` |
 
-### `FitTracker/Views/Profile/ProfileView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 123 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 36, height: 36)` |
-
 ### `FitTracker/Views/RootTabView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 128 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(syncColor).frame(width: 6, height: 6)` |
+| 139 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(syncColor).frame(width: 6, height: 6)` |
 
 ### `FitTracker/Views/Settings/DesignSystemCatalogView.swift` — P0=0, P1=1
 
@@ -223,6 +193,12 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 36 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 34, height: 34)` |
 | 104 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 6, height: 6)` |
 
+### `FitTracker/Views/Settings/v2/Screens/ImportedPlansListScreen.swift` — P0=0, P1=1
+
+| Line | Sev | Rule | Snippet |
+|---:|:---:|---|---|
+| 97 | P1 | `DS-MAGIC-FRAME` | `.frame(maxWidth: 280)` |
+
 ### `FitTracker/Views/Shared/ChartCard.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
@@ -241,17 +217,7 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 52 | P1 | `DS-MAGIC-FRAME` | `.frame(maxWidth: 320)` |
 
-### `FitTracker/Views/Shared/ManualBiometricEntry.swift` — P0=0, P1=5
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 25 | P1 | `DS-MAGIC-FRAME` | `TextField("kg", text: $weightText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
-| 30 | P1 | `DS-MAGIC-FRAME` | `TextField("%", text: $bfText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
-| 37 | P1 | `DS-MAGIC-FRAME` | `TextField("bpm", text: $hrText).keyboardType(.numberPad).multilineTextAlignment(.trailing).frame(width: 80)` |
-| 42 | P1 | `DS-MAGIC-FRAME` | `TextField("ms", text: $hrvText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
-| 47 | P1 | `DS-MAGIC-FRAME` | `TextField("hrs", text: $sleepText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)` |
-
-### `FitTracker/Views/Shared/ReadinessCard.swift` — P0=0, P1=11
+### `FitTracker/Views/Shared/ReadinessCard.swift` — P0=0, P1=10
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
@@ -261,7 +227,6 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 192 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 260)` |
 | 211 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 6)` |
 | 217 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 6)` |
-| 221 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 28, alignment: .trailing)` |
 | 307 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 76)` |
 | 359 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 6)` |
 | 484 | P1 | `DS-MAGIC-FRAME` | `Divider().background(AppColor.Surface.materialLight).frame(height: 50)` |
@@ -297,51 +262,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 463 | P1 | `DS-A11Y-BUTTON` | `return Button {` |
+| 231 | P1 | `DS-A11Y-BUTTON` | `return Button {` |
 
-### `FitTracker/Views/Training/v2/ExerciseRowView.swift` — P0=0, P1=2
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 99 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
-| 180 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, minHeight: 44)` |
-
-### `FitTracker/Views/Training/v2/FocusModeView.swift` — P0=0, P1=1
+### `FitTracker/Views/Training/v2/TrainingPlanView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 65 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, minHeight: 44)` |
-
-### `FitTracker/Views/Training/v2/RestTimerView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 74 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, minHeight: 44)` |
-
-### `FitTracker/Views/Training/v2/SessionCompletionSheet.swift` — P0=0, P1=2
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 164 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
-| 180 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
-
-### `FitTracker/Views/Training/v2/SetRowView.swift` — P0=0, P1=7
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 60 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
-| 81 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, alignment: .leading)` |
-| 133 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44)` |
-| 164 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, minHeight: 44)` |
-| 184 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
-| 201 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 44)` |
-| 217 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 44, minHeight: 44)` |
-
-### `FitTracker/Views/Training/v2/TrainingPlanView.swift` — P0=0, P1=3
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 166 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(AppColor.Brand.warmSoft).frame(width: 28, height: 28)` |
-| 168 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(AppColor.Surface.materialStrong).frame(width: 28, height: 28)` |
-| 348 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 72)` |
+| 362 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 72)` |
 

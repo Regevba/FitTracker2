@@ -161,7 +161,7 @@ struct SessionCompletionSheet: View {
                     .foregroundStyle(AppColor.Text.primary)
             }
             .buttonStyle(.plain)
-            .frame(minHeight: 44)
+            .frame(minHeight: AppSize.tapTarget)
             .accessibilityLabel("Share session summary")
             .accessibilityHint("Opens share sheet with your workout results")
 
@@ -177,7 +177,7 @@ struct SessionCompletionSheet: View {
                     )
             }
             .buttonStyle(.plain)
-            .frame(minHeight: 44)
+            .frame(minHeight: AppSize.tapTarget)
             .accessibilityLabel("Dismiss session summary")
             .accessibilityHint("Closes the completion sheet and returns to training")
         }

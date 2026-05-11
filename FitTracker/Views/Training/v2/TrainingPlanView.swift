@@ -177,9 +177,9 @@ struct TrainingPlanView: View {
                             .foregroundStyle(isActive ? AppColor.Text.primary : AppColor.Text.secondary)
                         ZStack {
                             if isToday {
-                                Circle().fill(AppColor.Brand.warmSoft).frame(width: 28, height: 28)
+                                Circle().fill(AppColor.Brand.warmSoft).frame(width: AppSize.iconContainer, height: AppSize.iconContainer)
                             } else if isActive {
-                                Circle().fill(AppColor.Surface.materialStrong).frame(width: 28, height: 28)
+                                Circle().fill(AppColor.Surface.materialStrong).frame(width: AppSize.iconContainer, height: AppSize.iconContainer)
                             }
                             Text("\(cal.component(.day, from: day))")
                                 .font(isToday ? AppText.body : AppText.subheading)

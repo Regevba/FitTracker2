@@ -62,7 +62,7 @@ struct FocusModeView: View {
                     .foregroundStyle(AppColor.Text.inverseTertiary)
             }
             .buttonStyle(.plain)
-            .frame(minWidth: 44, minHeight: 44)
+            .frame(minWidth: AppSize.tapTarget, minHeight: AppSize.tapTarget)
             .accessibilityLabel("Exit focus mode")
             .accessibilityHint("Returns to the exercise list")
         }

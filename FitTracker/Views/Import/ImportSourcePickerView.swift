@@ -96,7 +96,7 @@ struct ImportSourcePickerView: View {
                 Image(systemName: icon)
                     .font(.system(size: 28))
                     .foregroundStyle(AppColor.Accent.primary)
-                    .frame(height: 44)
+                    .frame(height: AppSize.tapTarget)
                 Text(title)
                     .font(AppText.callout)
                     .foregroundStyle(AppColor.Text.primary)

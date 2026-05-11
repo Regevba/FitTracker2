@@ -92,7 +92,7 @@ struct BiometricActivationSheet: View {
                     .foregroundStyle(AppColor.Text.secondary)
                     .underline()
             }
-            .frame(minHeight: 44)
+            .frame(minHeight: AppSize.tapTarget)
             .contentShape(Rectangle())
             .disabled(isLoading)
             .accessibilityLabel("Not now")

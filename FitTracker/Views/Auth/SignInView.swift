@@ -180,7 +180,7 @@ struct SocialSignInButton: View {
         Button(action: action) {
             HStack(spacing: AppSpacing.xSmall) {
                 providerIcon
-                    .frame(width: 28)
+                    .frame(width: AppSize.iconContainer)
 
                 Text("Continue with \(provider.rawValue)")
                     .font(AppText.callout)
@@ -302,7 +302,7 @@ struct PasskeyActionButton: View {
                 Image(systemName: icon)
                     .font(AppText.callout)
                     .foregroundStyle(color)
-                    .frame(width: 28)
+                    .frame(width: AppSize.iconContainer)
 
                 VStack(alignment: .leading, spacing: AppSpacing.micro) {
                     Text(title)

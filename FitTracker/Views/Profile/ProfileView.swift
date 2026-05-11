@@ -120,7 +120,7 @@ struct ProfileView: View {
                 Image(systemName: "paintpalette.fill")
                     .font(AppText.titleMedium)
                     .foregroundStyle(AppColor.Accent.sleep)
-                    .frame(width: 36, height: 36)
+                    .frame(width: AppSize.tapTargetCompact, height: AppSize.tapTargetCompact)
                     .background(AppColor.Accent.sleep.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
 
                 Text("Appearance & Units")

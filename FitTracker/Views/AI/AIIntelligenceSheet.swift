@@ -152,7 +152,7 @@ struct AIIntelligenceSheet: View {
             Text("\(Int(score))")
                 .font(AppText.monoCaption)
                 .foregroundStyle(AppColor.Text.tertiary)
-                .frame(width: 28, alignment: .trailing)
+                .frame(width: AppSize.iconContainer, alignment: .trailing)
         }
     }
 }

@@ -54,7 +54,11 @@ SKIP_FILES = {
 
 # Semantic token allowlists — tokens whose use is legitimate design-system usage.
 APP_SPACING_VALUES = {2, 4, 8, 12, 16, 20, 24, 32, 40, 54}
-APP_SIZE_VALUES = {4, 8, 26, 48, 52, 56}
+APP_SIZE_VALUES = {4, 8, 26, 28, 36, 44, 48, 52, 56, 80}
+# 28 = AppSize.iconContainer (added 2026-05-11 ios-ui-audit-p1-burndown PR-1)
+# 36 = AppSize.tapTargetCompact (added 2026-05-11)
+# 44 = AppSize.tapTarget — iOS HIG minimum (added 2026-05-11)
+# 80 = AppSize.fieldWidthCompact — inline numeric input width (added 2026-05-11)
 APP_RADIUS_VALUES = {4, 8, 12, 16, 20, 24, 28, 32, 36}
 # Visually-trivial small numbers that never warrant a token (line thickness, spacer).
 SPACING_ALLOW_TRIVIAL = {0, 1}

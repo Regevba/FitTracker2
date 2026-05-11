@@ -54,7 +54,7 @@ struct ForgotPasswordCooldownView: View {
                     .buttonStyle(AuthPrimaryButtonStyle())
                     .disabled(signIn.isLoading)
                     .opacity(cooldownActive ? 0.6 : 1.0)
-                    .frame(minHeight: 44)
+                    .frame(minHeight: AppSize.tapTarget)
                     .accessibilityLabel(
                         cooldownActive
                             ? "Resend reset email, available in \(remainingSeconds) seconds"
@@ -70,7 +70,7 @@ struct ForgotPasswordCooldownView: View {
                             .foregroundStyle(AppColor.Text.inverseSecondary)
                             .underline()
                     }
-                    .frame(minHeight: 44)
+                    .frame(minHeight: AppSize.tapTarget)
                     .contentShape(Rectangle())
                     .accessibilityLabel("Use a different email address")
                     .accessibilityHint("Returns to email entry with a blank field")

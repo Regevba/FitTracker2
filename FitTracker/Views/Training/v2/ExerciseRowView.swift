@@ -96,7 +96,7 @@ struct ExerciseRowView: View {
         }
         .padding(.horizontal, AppSpacing.xxSmall)
         .padding(.vertical, AppSpacing.xSmall)
-        .frame(minHeight: 44)
+        .frame(minHeight: AppSize.tapTarget)
     }
 
     // MARK: - Status Stripe (4pt left bar)
@@ -177,7 +177,7 @@ struct ExerciseRowView: View {
             .foregroundStyle(AppColor.Text.secondary)
             .rotationEffect(.degrees(isExpanded ? 90 : 0))
             .animation(reduceMotion ? .none : AppSpring.snappy, value: isExpanded)
-            .frame(minWidth: 44, minHeight: 44)
+            .frame(minWidth: AppSize.tapTarget, minHeight: AppSize.tapTarget)
     }
 
     // MARK: - Expanded Content (Set Rows)
