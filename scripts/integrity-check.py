@@ -257,7 +257,9 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
     if isinstance(merge_obj, dict):
         pr_number = merge_obj.get("pr_number")
         if isinstance(pr_number, int) and _PR_CACHE is not None:
-            if pr_number not in _PR_CACHE:
+            # v7.8.3: _PR_CACHE is now multi-repo dict; check FT2 repo specifically.
+            _ft2_prs = _CACHE_FT2_NUMBERS(_PR_CACHE)
+            if pr_number not in _ft2_prs:
                 findings.append({
                     "feature": feat,
                     "severity": "INCONSISTENT",
@@ -294,40 +296,134 @@ def audit_feature(feat_dir: Path) -> tuple[dict, list[dict]]:
 
 # Module-level PR cache. Populated by build_snapshot() once per run so
 # per-feature audit_feature() calls can reuse it without repeated gh invocations.
-_PR_CACHE: set[int] | None = None
+# v7.8.3 D-3: type morphed from set[int] | None to multi-repo dict | None.
+_PR_CACHE: dict | None = None
+
+
+def _CACHE_FT2_NUMBERS(cache: dict) -> set[int]:
+    """Extract the set of FitTracker2 PR numbers from the multi-repo cache dict.
+
+    Used by PR_NUMBER_UNRESOLVED check in audit_feature() which only
+    verifies state.json::phases.merge.pr_number (always a FT2 PR).
+    """
+    ft2 = cache.get("repos", {}).get("Regevba/FitTracker2", {})
+    return {
+        pr["number"]
+        for lst in (ft2.get("open", []), ft2.get("merged", []), ft2.get("closed", []))
+        for pr in lst
+    }
 
 
 # -- Case-study citation checks (Auditor Agent extensions, 2026-04-21) ------
 
 # Match PR citations with high-precision context:
-#   "PR #123", "PR 123", "pr #123", "pr 123"
-#   "github.com/owner/repo/pull/123"
+#   "PR #123", "PR#123", "pr #123"                   → group 1 (FT2 default)
+#   "[fitme-story#42]"                               → groups 2+3 (cross-repo short)
+#   "github.com/owner/repo/pull/123"                 → groups 4+5+6 (URL form)
 # Avoids raw "#123" (too many false positives from list numbers, issues, etc.).
+# Cross-repo short form requires brackets to avoid false positives on
+# "PRs #96-#116", "issue #140", "Fix#123", etc.
+# v7.8.3 D-3: updated to 3-alternation form; kept in sync with
+#             check-case-study-preflight.py (sync invariant per A2).
 _PR_CITATION_PAT = re.compile(
-    r'(?:[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/)(\d+)'
+    r"(?:[Pp][Rr]\s*#(\d+))"                              # group 1: FT2 default
+    r"|(?:\[([\w-]+)\s*#(\d+)\])(?!\()"                   # groups 2+3: cross-repo short (brackets, NOT markdown link)
+    r"|(?:github\.com/([\w-]+)/([\w-]+)/pull/(\d+))"     # groups 4+5+6: URL form
 )
 
+# Whitelist mapping repo short names → full "owner/repo" identifiers.
+# Kept in sync with check-case-study-preflight.py REPO_MAP (A2 sync invariant).
+_CITATION_REPO_MAP: dict[str, str] = {
+    "fitme-story": "Regevba/fitme-story",
+    "FitTracker2": "Regevba/FitTracker2",
+    "ft2": "Regevba/FitTracker2",
+}
 
-def load_pr_cache() -> set[int] | None:
-    """Load all PR numbers via `gh pr list`. Return None if gh is unavailable.
 
-    Used by the Auditor Agent's BROKEN_PR_CITATION check. Graceful degradation:
-    if `gh` is missing or unauthenticated (e.g., CI without GH_TOKEN), the
-    check is skipped rather than failing the whole integrity cycle.
+def load_pr_cache() -> dict | None:
+    """Load multi-repo cached PR data from .cache/gh-pr-cache.json.
+
+    v7.8.3 D-3: was set[int] | None (FT2-only). Now returns the multi-repo
+    dict shape:
+      {"schema_version": 1, "last_refreshed_at": "...",
+       "repos": {"Regevba/FitTracker2": {open,merged,closed}, ...}}
+
+    Falls back to a legacy `gh pr list` call for backward compatibility when
+    the cache file doesn't exist.
+
+    Returns None if gh is unavailable AND no cache exists (graceful degradation:
+    check is skipped rather than failing the whole integrity cycle).
     """
+    cache_file = REPO_ROOT / ".cache" / "gh-pr-cache.json"
+    if cache_file.exists():
+        try:
+            return json.loads(cache_file.read_text())
+        except Exception:
+            pass  # fall through to live gh call
+
+    # Fallback: legacy single-repo gh call (FT2-only).
     try:
         out = subprocess.check_output(
             ["gh", "pr", "list", "--state", "all", "--limit", "500",
              "--json", "number"],
             text=True, stderr=subprocess.DEVNULL,
         )
-        return {p["number"] for p in json.loads(out)}
+        numbers = [p["number"] for p in json.loads(out)]
+        # Wrap in multi-repo shape so callers work uniformly.
+        return {
+            "schema_version": 1,
+            "last_refreshed_at": None,
+            "repos": {
+                "Regevba/FitTracker2": {
+                    "open": [{"number": n} for n in numbers],
+                    "merged": [],
+                    "closed": [],
+                }
+            },
+        }
     except (subprocess.CalledProcessError, FileNotFoundError,
             json.JSONDecodeError):
         return None
 
 
-def audit_case_study_citations(pr_cache: set[int] | None) -> list[dict]:
+def _resolve_pr_cite_integrity(match: re.Match, cache: dict) -> str | None:
+    """Resolve a _PR_CITATION_PAT match against the multi-repo cache (integrity-check variant).
+
+    Returns an error message string if broken, None if valid.
+    Internal helper for audit_case_study_citations().
+    """
+    if match.group(1):
+        repo = "Regevba/FitTracker2"
+        pr_num = int(match.group(1))
+    elif match.group(2):
+        repo_short = match.group(2)
+        repo = _CITATION_REPO_MAP.get(repo_short)
+        if repo is None:
+            return f"cites [{repo_short}#{match.group(3)}] with unknown repo short name '{repo_short}'"
+        pr_num = int(match.group(3))
+    elif match.group(4):
+        repo = f"{match.group(4)}/{match.group(5)}"
+        pr_num = int(match.group(6))
+    else:
+        return None
+
+    repos = cache.get("repos", {})
+    if repo not in repos:
+        return f"cites PR #{pr_num} in unknown repo '{repo}' (not in cache)"
+
+    repo_cache = repos[repo]
+    all_prs = (
+        repo_cache.get("open", [])
+        + repo_cache.get("merged", [])
+        + repo_cache.get("closed", [])
+    )
+    if not any(pr["number"] == pr_num for pr in all_prs):
+        return f"cites PR #{pr_num} in {repo} which does not resolve on GitHub"
+
+    return None
+
+
+def audit_case_study_citations(pr_cache: dict | None) -> list[dict]:
     """Scan every case study .md for PR citations; flag broken ones.
 
     If pr_cache is None, skip gracefully (gh not available). Returns findings
@@ -336,6 +432,8 @@ def audit_case_study_citations(pr_cache: set[int] | None) -> list[dict]:
     Excludes files under `docs/case-studies/meta-analysis/`: those documents
     discuss citations (including false positives), so any PR number appearing
     in their prose is meta-reference, not a real evidentiary claim.
+
+    v7.8.3 D-3: uses resolve_pr_cite() for cross-repo routing via REPO_MAP.
     """
     if pr_cache is None or not CASE_STUDIES_DIR.exists():
         return []
@@ -349,14 +447,15 @@ def audit_case_study_citations(pr_cache: set[int] | None) -> list[dict]:
             text = f.read_text()
         except Exception:
             continue
-        cited = {int(m.group(1)) for m in _PR_CITATION_PAT.finditer(text)}
-        for n in sorted(n for n in cited if n not in pr_cache):
-            findings.append({
-                "feature": str(f.relative_to(REPO_ROOT)),
-                "severity": "INCONSISTENT",
-                "code": "BROKEN_PR_CITATION",
-                "message": f"cites PR #{n} which does not resolve on GitHub",
-            })
+        for m in _PR_CITATION_PAT.finditer(text):
+            err = _resolve_pr_cite_integrity(m, pr_cache)
+            if err is not None:
+                findings.append({
+                    "feature": str(f.relative_to(REPO_ROOT)),
+                    "severity": "INCONSISTENT",
+                    "code": "BROKEN_PR_CITATION",
+                    "message": err,
+                })
     return findings
 
 
@@ -831,7 +930,13 @@ def build_snapshot(snapshot_trigger: str) -> dict:
         },
         "auditor_agent": {
             "citation_check_ran": citation_check_ran,
-            "known_pr_count": len(_PR_CACHE) if _PR_CACHE is not None else None,
+            "known_pr_count": (
+                sum(
+                    len(r.get("open", [])) + len(r.get("merged", [])) + len(r.get("closed", []))
+                    for r in _PR_CACHE.get("repos", {}).values()
+                )
+                if _PR_CACHE is not None else None
+            ),
         },
         "features": feature_summaries,
         "case_studies": discover_case_studies(),
