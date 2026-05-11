@@ -71,7 +71,7 @@ struct RestTimerView: View {
                     .foregroundStyle(AppColor.Accent.primary)
             }
             .buttonStyle(.plain)
-            .frame(minWidth: 44, minHeight: 44)
+            .frame(minWidth: AppSize.tapTarget, minHeight: AppSize.tapTarget)
             .accessibilityLabel("Skip rest timer")
             .accessibilityHint("Skips the remaining \(formattedTime) rest")
         }

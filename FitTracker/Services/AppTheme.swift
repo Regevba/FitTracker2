@@ -199,6 +199,34 @@ enum AppSize {
     static let indicatorDot: CGFloat = 8
     /// Tab bar clearance padding (56pt) — Training v2 (T1)
     static let tabBarClearance: CGFloat = 56
+
+    // MARK: - P1 audit burndown tokens (ios-ui-audit-p1-burndown PR-1, 2026-05-11)
+    // Added after frequency analysis showed these were the most-repeated magic
+    // numbers in the codebase. Adding semantic names with consistent values lets
+    // us mass-substitute and keeps the design system honest about what these
+    // sizes mean (vs inventing a token for every one-off).
+
+    /// iOS HIG minimum tap target (44pt) — use for any tappable element
+    /// (icon-only buttons, label .frame(minHeight:), Circle stroke containers).
+    /// Source: Apple HIG "Touch target sizes" — 44×44 minimum.
+    static let tapTarget: CGFloat = 44
+
+    /// Compact tap target (36pt) — slightly tighter than the HIG minimum.
+    /// Use for secondary controls in already-constrained layouts (segmented
+    /// pills, inline-toolbar buttons). Verify legibility per Dynamic Type
+    /// before using.
+    static let tapTargetCompact: CGFloat = 36
+
+    /// Icon container (28pt) — distinct from iconBadge (26pt) which is for
+    /// overlay icons. iconContainer is the standalone size used in
+    /// list/nav contexts (settings rows, training plan exercise icons).
+    static let iconContainer: CGFloat = 28
+
+    /// Compact field width (80pt) — for inline numeric input fields
+    /// (weight in kg, body-fat %, heart-rate bpm). Aligns with trailing
+    /// label patterns where the field is constrained but the parent
+    /// row is full-width.
+    static let fieldWidthCompact: CGFloat = 80
 }
 
 // MARK: - Motion

@@ -492,7 +492,7 @@ private struct AppleProviderRow: View {
     var body: some View {
         HStack(spacing: AppSpacing.xSmall) {
             OfficialAppleButtonIcon()
-                .frame(width: 28, height: 28)
+                .frame(width: AppSize.iconContainer, height: AppSize.iconContainer)
 
             VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)

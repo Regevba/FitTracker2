@@ -99,7 +99,7 @@ struct WelcomeView: View {
                     .opacity(textOpacity)
                 }
 
-                Spacer().frame(height: 36)
+                Spacer().frame(height: AppSize.tapTargetCompact)
 
                 VStack(spacing: AppSpacing.xxSmall) {
                     welcomeFactRow(icon: "lock.shield.fill", text: "Encrypted locally before any iCloud sync")

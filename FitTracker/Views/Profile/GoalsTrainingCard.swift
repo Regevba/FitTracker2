@@ -14,7 +14,7 @@ struct GoalsTrainingCard: View {
                 Image(systemName: "target")
                     .font(AppText.titleMedium)
                     .foregroundStyle(AppColor.Accent.achievement)
-                    .frame(width: 36, height: 36)
+                    .frame(width: AppSize.tapTargetCompact, height: AppSize.tapTargetCompact)
                     .background(AppColor.Accent.achievement.opacity(0.12), in: RoundedRectangle(cornerRadius: AppRadius.small))
 
                 VStack(alignment: .leading, spacing: AppSpacing.micro) {

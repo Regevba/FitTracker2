@@ -30,7 +30,7 @@ struct AIFeedbackView: View {
                     } label: {
                         Image(systemName: AppIcon.thumbsUp)
                             .foregroundStyle(AppColor.Status.success)
-                            .frame(width: 44, height: 44)
+                            .frame(width: AppSize.tapTarget, height: AppSize.tapTarget)
                     }
 
                     Button {
@@ -39,7 +39,7 @@ struct AIFeedbackView: View {
                     } label: {
                         Image(systemName: AppIcon.thumbsDown)
                             .foregroundStyle(AppColor.Status.warning)
-                            .frame(width: 44, height: 44)
+                            .frame(width: AppSize.tapTarget, height: AppSize.tapTarget)
                     }
                 }
             }

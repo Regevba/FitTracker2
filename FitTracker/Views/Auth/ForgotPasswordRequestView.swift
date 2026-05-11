@@ -85,7 +85,7 @@ struct ForgotPasswordRequestView: View {
                     .font(AppText.subheading)
                     .foregroundStyle(AppColor.Text.inversePrimary)
                 }
-                .frame(minHeight: 44)
+                .frame(minHeight: AppSize.tapTarget)
                 .contentShape(Rectangle())
                 .accessibilityLabel("Back")
                 .accessibilityHint("Returns to sign-in")

@@ -74,7 +74,7 @@ struct BiometricUnlockView: View {
                             .foregroundStyle(AppColor.Text.inverseSecondary)
                             .underline()
                     }
-                    .frame(minHeight: 44)
+                    .frame(minHeight: AppSize.tapTarget)
                     .contentShape(Rectangle())
                     .accessibilityLabel("Use password instead")
                     .accessibilityHint("Signs you in with your email and password")

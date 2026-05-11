@@ -57,7 +57,7 @@ struct SetRowView: View {
         }
         .padding(.horizontal, AppSpacing.xSmall)
         .padding(.vertical, AppSpacing.xxSmall)
-        .frame(minHeight: 44)
+        .frame(minHeight: AppSize.tapTarget)
         .background(
             isLogged
                 ? AppColor.Status.success.opacity(0.08)
@@ -78,7 +78,7 @@ struct SetRowView: View {
         Text("Set \(setIndex)")
             .font(AppText.captionStrong)
             .foregroundStyle(AppColor.Text.secondary)
-            .frame(minWidth: 44, alignment: .leading)
+            .frame(minWidth: AppSize.tapTarget, alignment: .leading)
     }
 
     // MARK: - Weight Field
@@ -130,7 +130,7 @@ struct SetRowView: View {
                     AppColor.Surface.secondary,
                     in: RoundedRectangle(cornerRadius: AppRadius.xSmall)
                 )
-                .frame(minWidth: 44)
+                .frame(minWidth: AppSize.tapTarget)
                 .onChange(of: repsText) { _, newValue in
                     currentReps = Int(newValue)
                 }
@@ -161,7 +161,7 @@ struct SetRowView: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(AppText.iconMedium)
                 .foregroundStyle(AppColor.Status.success)
-                .frame(minWidth: 44, minHeight: 44)
+                .frame(minWidth: AppSize.tapTarget, minHeight: AppSize.tapTarget)
                 .accessibilityLabel("Set logged")
         } else {
             HStack(spacing: AppSpacing.xxSmall) {
@@ -181,7 +181,7 @@ struct SetRowView: View {
                             )
                     }
                     .buttonStyle(.plain)
-                    .frame(minHeight: 44)
+                    .frame(minHeight: AppSize.tapTarget)
                     .accessibilityLabel("Copy last session values")
                     .accessibilityHint("Fills weight and reps from previous session")
                 }
@@ -198,7 +198,7 @@ struct SetRowView: View {
                         )
                 }
                 .buttonStyle(.plain)
-                .frame(minHeight: 44)
+                .frame(minHeight: AppSize.tapTarget)
                 .accessibilityLabel("Log set \(setIndex)")
                 .accessibilityHint("Records the current weight and reps")
             }
@@ -214,7 +214,7 @@ struct SetRowView: View {
                 .foregroundStyle(AppColor.Status.error)
         }
         .buttonStyle(.plain)
-        .frame(minWidth: 44, minHeight: 44)
+        .frame(minWidth: AppSize.tapTarget, minHeight: AppSize.tapTarget)
         .accessibilityLabel("Delete set \(setIndex)")
         .accessibilityHint("Removes this set from the exercise")
     }

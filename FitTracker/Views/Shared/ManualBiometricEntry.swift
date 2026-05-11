@@ -22,29 +22,29 @@ struct ManualBiometricEntry: View {
                     HStack {
                         Text("Weight")
                         Spacer()
-                        TextField("kg", text: $weightText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
+                        TextField("kg", text: $weightText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: AppSize.fieldWidthCompact)
                     }
                     HStack {
                         Text("Body Fat")
                         Spacer()
-                        TextField("%", text: $bfText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
+                        TextField("%", text: $bfText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: AppSize.fieldWidthCompact)
                     }
                 }
                 Section("Manual Overrides (if Watch unavailable)") {
                     HStack {
                         Text("Resting HR")
                         Spacer()
-                        TextField("bpm", text: $hrText).keyboardType(.numberPad).multilineTextAlignment(.trailing).frame(width: 80)
+                        TextField("bpm", text: $hrText).keyboardType(.numberPad).multilineTextAlignment(.trailing).frame(width: AppSize.fieldWidthCompact)
                     }
                     HStack {
                         Text("HRV")
                         Spacer()
-                        TextField("ms", text: $hrvText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
+                        TextField("ms", text: $hrvText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: AppSize.fieldWidthCompact)
                     }
                     HStack {
                         Text("Sleep")
                         Spacer()
-                        TextField("hrs", text: $sleepText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: 80)
+                        TextField("hrs", text: $sleepText).keyboardType(.decimalPad).multilineTextAlignment(.trailing).frame(width: AppSize.fieldWidthCompact)
                     }
                 }
             }
