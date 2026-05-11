@@ -17,36 +17,63 @@
   "has_ui": true,
   "requires_analytics": true,
   "github_issue_number": 66,
-  "description": "Tap metric tiles (HRV, RHR, Sleep, Steps) on Home → navigate to Stats filtered to that metric. Deferred from Home v2 per OQ-13.",
+  "description": "Tap metric tiles (HRV, RHR, Sleep, Steps) on Home \u2192 navigate to Stats filtered to that metric. Deferred from Home v2 per OQ-13.",
   "transitions": [
     {
       "from": "init",
       "to": "tasks",
       "timestamp": "2026-04-09T23:30:00Z",
       "approved_by": "user",
-      "note": "Enhancement — skipped Research, PRD, UX. Parent: home-today-screen (PR #61). Deferred item: OQ-13, F11-partial, F25-partial (home_metric_tile_tap event)."
+      "note": "Enhancement \u2014 skipped Research, PRD, UX. Parent: home-today-screen (PR #61). Deferred item: OQ-13, F11-partial, F25-partial (home_metric_tile_tap event)."
     },
     {
       "from": "tasks",
       "to": "complete",
       "timestamp": "2026-04-14T03:24:00Z",
       "approved_by": "system",
-      "note": "Retroactive completion — PR #67 merged 2026-04-09 (commit 0446484). State.json was stale."
+      "note": "Retroactive completion \u2014 PR #67 merged 2026-04-09 (commit 0446484). State.json was stale."
     }
   ],
   "phases": {
-    "research": { "status": "skipped", "reason": "work_type:enhancement" },
-    "prd": { "status": "skipped", "reason": "work_type:enhancement" },
-    "tasks": { "status": "complete" },
-    "ux_or_integration": { "status": "skipped", "reason": "work_type:enhancement" },
-    "implementation": { "status": "complete", "commits": ["0446484"] },
-    "testing": { "status": "complete", "ci_passed": true },
-    "review": { "status": "complete" },
-    "merge": { "status": "complete", "pr_number": 67 },
-    "documentation": { "status": "complete" }
+    "research": {
+      "status": "skipped",
+      "reason": "work_type:enhancement"
+    },
+    "prd": {
+      "status": "skipped",
+      "reason": "work_type:enhancement"
+    },
+    "tasks": {
+      "status": "complete"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "reason": "work_type:enhancement"
+    },
+    "implementation": {
+      "status": "complete",
+      "commits": [
+        "0446484"
+      ]
+    },
+    "testing": {
+      "status": "complete",
+      "ci_passed": true
+    },
+    "review": {
+      "status": "complete"
+    },
+    "merge": {
+      "status": "complete",
+      "pr_number": 67
+    },
+    "documentation": {
+      "status": "complete"
+    }
   },
   "tasks": [],
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

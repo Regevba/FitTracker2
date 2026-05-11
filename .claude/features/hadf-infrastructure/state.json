@@ -218,5 +218,6 @@
   "updated": "2026-04-20T00:00:00Z",
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

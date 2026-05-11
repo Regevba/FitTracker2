@@ -53,14 +53,20 @@
     },
     "implementation": {
       "status": "complete",
-      "commits": ["e93d6e8", "71bac5a", "fca1ece", "027abf0", "47f8bd5"],
+      "commits": [
+        "e93d6e8",
+        "71bac5a",
+        "fca1ece",
+        "027abf0",
+        "47f8bd5"
+      ],
       "checklist_completed": true,
       "checklist_completed_at": "2026-04-30T16:30:00Z",
       "checklist_artifact": ".claude/features/stats-v2/v2-refactor-checklist.md",
       "ended_at": "2026-04-30T18:31:47Z",
       "pr_number": 164,
       "merge_sha": "9b05ebf",
-      "reconciliation_note": "2026-04-30 — second reconciliation. Initial 2026-04-30 lift downgraded status to pending (correcting 2026-04-10 false-positive). Audit during this resume found T3/T4/T7/T10 actually shipped on 2026-04-10 via PR #76 (commit e93d6e8) but never logged in state.json. T1 was already on main pre-feature. Resume work commits: 71bac5a (resume + T1 marker), fca1ece (reconciliation), 027abf0 (T5 + T6), 47f8bd5 (T2). 2026-05-02 — third reconciliation: PR #164 (squash 9b05ebf) admin-merged 2026-04-30T18:31:47Z; current_phase advanced from implementation to complete. Build-and-Test failed on parallel-clone sim env-flake (Bug FIT-59); all other CI checks green; admin-merge accepted."
+      "reconciliation_note": "2026-04-30 \u2014 second reconciliation. Initial 2026-04-30 lift downgraded status to pending (correcting 2026-04-10 false-positive). Audit during this resume found T3/T4/T7/T10 actually shipped on 2026-04-10 via PR #76 (commit e93d6e8) but never logged in state.json. T1 was already on main pre-feature. Resume work commits: 71bac5a (resume + T1 marker), fca1ece (reconciliation), 027abf0 (T5 + T6), 47f8bd5 (T2). 2026-05-02 \u2014 third reconciliation: PR #164 (squash 9b05ebf) admin-merged 2026-04-30T18:31:47Z; current_phase advanced from implementation to complete. Build-and-Test failed on parallel-clone sim env-flake (Bug FIT-59); all other CI checks green; admin-merge accepted."
     },
     "testing": {
       "status": "complete",
@@ -68,7 +74,7 @@
       "ci_passed": false,
       "ci_passed_note": "Build-and-Test red on parallel-clone sim env-flake (Bug FIT-59); pm-framework/pr-integrity + integrity + Analyze x3 + CodeQL + GitGuardian + Vercel x2 all green. Local xcodebuild build clean both architectures. Quarantine fix shipped via PR #165 downstream.",
       "tests_added": 4,
-      "tests_added_breakdown": "StatsAnalyticsTests.swift 4 cases (service-layer; pre-existing per T7 reconciliation note — view-integration coverage owed but not blocking ship)",
+      "tests_added_breakdown": "StatsAnalyticsTests.swift 4 cases (service-layer; pre-existing per T7 reconciliation note \u2014 view-integration coverage owed but not blocking ship)",
       "instrumentation_verified": true,
       "analytics_tests_added": 4,
       "analytics_verification_passed": true
@@ -160,7 +166,7 @@
       "to": "implementation",
       "timestamp": "2026-04-30T16:00:00Z",
       "approved_by": "reconciliation_audit",
-      "note": "2026-04-30 second reconciliation during stats-v2 resume. Discovered T3 (build v2/StatsView.swift), T4 (project.pbxproj v2 swap), T7 (StatsAnalyticsTests.swift, 93 lines), T10 (mark v1 historical) actually shipped 2026-04-10 via PR #76 / commit e93d6e8 — the original 'complete' status downgraded by the 2026-04-20 audit was over-corrected. Real state: implementation in_progress, with T2/T5(partial)/T6(partial)/T8/T9 outstanding. T1 was already on main pre-feature. Net: 5/10 tasks complete, 2 partial, 3 pending."
+      "note": "2026-04-30 second reconciliation during stats-v2 resume. Discovered T3 (build v2/StatsView.swift), T4 (project.pbxproj v2 swap), T7 (StatsAnalyticsTests.swift, 93 lines), T10 (mark v1 historical) actually shipped 2026-04-10 via PR #76 / commit e93d6e8 \u2014 the original 'complete' status downgraded by the 2026-04-20 audit was over-corrected. Real state: implementation in_progress, with T2/T5(partial)/T6(partial)/T8/T9 outstanding. T1 was already on main pre-feature. Net: 5/10 tasks complete, 2 partial, 3 pending."
     }
   ],
   "tasks": [
@@ -186,7 +192,7 @@
       "effort_days": 0.25,
       "depends_on": [],
       "completed_at": "2026-04-30T16:25:00Z",
-      "completion_note": "Shipped via commit 47f8bd5. 3 files at FitTracker/Models/Stats/ (StatsPeriod.swift 47 lines, StatsFocusMetric.swift 210 lines, MetricSeriesPoint.swift 8 lines). v2/StatsView.swift 899 → 673 lines. project.pbxproj wired (5 surgical edits, no UUID reshuffles). MetricSeriesPoint promoted from `private` to internal since it now lives in its own file. xcodebuild build clean both arm64 + x86_64 simulator targets."
+      "completion_note": "Shipped via commit 47f8bd5. 3 files at FitTracker/Models/Stats/ (StatsPeriod.swift 47 lines, StatsFocusMetric.swift 210 lines, MetricSeriesPoint.swift 8 lines). v2/StatsView.swift 899 \u2192 673 lines. project.pbxproj wired (5 surgical edits, no UUID reshuffles). MetricSeriesPoint promoted from `private` to internal since it now lives in its own file. xcodebuild build clean both arm64 + x86_64 simulator targets."
     },
     {
       "id": "T3",
@@ -201,7 +207,7 @@
         "T2"
       ],
       "completed_at": "2026-04-10T06:39:22Z",
-      "completion_note": "Shipped via PR #76 / commit e93d6e8 on 2026-04-10. v2/StatsView.swift = 899 lines. F1 (AppMotion.quickInteraction at line 464), F2 partial (chart accessibilityLabel/Value at line 627–628; AXChartDescriptorRepresentable not added — pragmatic fix accepted), F3-F5 (AppLayout tokens used). T2 dependency NOT satisfied at time of completion: 3 nested types still inline at lines 9, 57, 244. Marker recorded retroactively at 2026-04-30 reconciliation."
+      "completion_note": "Shipped via PR #76 / commit e93d6e8 on 2026-04-10. v2/StatsView.swift = 899 lines. F1 (AppMotion.quickInteraction at line 464), F2 partial (chart accessibilityLabel/Value at line 627\u2013628; AXChartDescriptorRepresentable not added \u2014 pragmatic fix accepted), F3-F5 (AppLayout tokens used). T2 dependency NOT satisfied at time of completion: 3 nested types still inline at lines 9, 57, 244. Marker recorded retroactively at 2026-04-30 reconciliation."
     },
     {
       "id": "T4",
@@ -243,7 +249,7 @@
         "T3"
       ],
       "completed_at": "2026-04-30T16:15:00Z",
-      "completion_note": "9 → 18 a11y annotations in v2/StatsView.swift via commit 027abf0. Exceeds audit target of 14+. Additions: period picker container label ('Time period'), 'Track More' isHeader trait, EmptyStateView combine+composite label, metricHeader VStack combine+composite label, chartSelection overlay combine+label. G4 (custom rotor for chart points) deferred — pragmatic accessibilityValue summary accepted. G8 contrast and AX5 manual tests deferred to manual QA cycle (school-project context, see v2-refactor-checklist.md Section J ⚠️ entries)."
+      "completion_note": "9 \u2192 18 a11y annotations in v2/StatsView.swift via commit 027abf0. Exceeds audit target of 14+. Additions: period picker container label ('Time period'), 'Track More' isHeader trait, EmptyStateView combine+composite label, metricHeader VStack combine+composite label, chartSelection overlay combine+label. G4 (custom rotor for chart points) deferred \u2014 pragmatic accessibilityValue summary accepted. G8 contrast and AX5 manual tests deferred to manual QA cycle (school-project context, see v2-refactor-checklist.md Section J \u26a0\ufe0f entries)."
     },
     {
       "id": "T7",
@@ -257,7 +263,7 @@
         "T5"
       ],
       "completed_at": "2026-04-10T06:39:22Z",
-      "completion_note": "FitTrackerTests/StatsAnalyticsTests.swift exists, 93 lines, tests AnalyticsService.logStats* methods emit correct events. NOTE: tests pass independently of T5's view-wiring gap — they exercise the service layer directly, not view → service integration. So green T7 does not validate that T5 events actually fire from the view. Marker recorded retroactively."
+      "completion_note": "FitTrackerTests/StatsAnalyticsTests.swift exists, 93 lines, tests AnalyticsService.logStats* methods emit correct events. NOTE: tests pass independently of T5's view-wiring gap \u2014 they exercise the service layer directly, not view \u2192 service integration. So green T7 does not validate that T5 events actually fire from the view. Marker recorded retroactively."
     },
     {
       "id": "T8",
@@ -273,7 +279,7 @@
         "T6"
       ],
       "completed_at": "2026-04-30T16:30:00Z",
-      "completion_note": "Filled checklist at .claude/features/stats-v2/v2-refactor-checklist.md. 46 verified + 11 N/A + 10 partial (mostly K=docs phase, not yet entered) + 6 deferred to manual QA (color contrast, AX5, VoiceOver simulator testing — school-project context). Boxes verified-or-N/A: 57 of 73 applicable."
+      "completion_note": "Filled checklist at .claude/features/stats-v2/v2-refactor-checklist.md. 46 verified + 11 N/A + 10 partial (mostly K=docs phase, not yet entered) + 6 deferred to manual QA (color contrast, AX5, VoiceOver simulator testing \u2014 school-project context). Boxes verified-or-N/A: 57 of 73 applicable."
     },
     {
       "id": "T9",
@@ -288,7 +294,7 @@
         "T7"
       ],
       "completed_at": "2026-04-30T18:30:00Z",
-      "partial_note": "Local xcodebuild build clean (verified twice: post-T5/T6 commit 027abf0 + post-T2 commit 47f8bd5, iOS Simulator arm64+x86_64). xcodebuild test not runnable locally — no iOS simulators installed on this machine. CI verification on PR #164: 9 of 10 checks green (Analyze x3, CodeQL, GitGuardian, Vercel x2, integrity, pm-framework/pr-integrity). Build-and-Test failed twice on UNRELATED UI test infra flake — first run on OnboardingUITests (74s timeout), rerun on HomeReadinessUITests (194s timeout). Root cause: parallel-clone sim hang affecting random tests each run; secondary cause: PR #160's GITHUB_ACTIONS env-var quarantine doesn't propagate to simulator XCTRunner process. Quarantine fix shipping in PR #165 (chore/ci-quarantine-fix, NSUserName-based detection). User accepted stats-v2 merge despite Build-and-Test red because: (a) all stats-v2 code verified clean (compile + non-flaky tests pass), (b) failure is unrelated UI test infra, (c) quarantine fix is in flight, (d) parallel-clone hang root cause is filed as separate backlog task. T9 marked completed with caveat for ledger honesty."
+      "partial_note": "Local xcodebuild build clean (verified twice: post-T5/T6 commit 027abf0 + post-T2 commit 47f8bd5, iOS Simulator arm64+x86_64). xcodebuild test not runnable locally \u2014 no iOS simulators installed on this machine. CI verification on PR #164: 9 of 10 checks green (Analyze x3, CodeQL, GitGuardian, Vercel x2, integrity, pm-framework/pr-integrity). Build-and-Test failed twice on UNRELATED UI test infra flake \u2014 first run on OnboardingUITests (74s timeout), rerun on HomeReadinessUITests (194s timeout). Root cause: parallel-clone sim hang affecting random tests each run; secondary cause: PR #160's GITHUB_ACTIONS env-var quarantine doesn't propagate to simulator XCTRunner process. Quarantine fix shipping in PR #165 (chore/ci-quarantine-fix, NSUserName-based detection). User accepted stats-v2 merge despite Build-and-Test red because: (a) all stats-v2 code verified clean (compile + non-flaky tests pass), (b) failure is unrelated UI test infra, (c) quarantine fix is in flight, (d) parallel-clone hang root cause is filed as separate backlog task. T9 marked completed with caveat for ledger honesty."
     },
     {
       "id": "T10",
@@ -329,7 +335,7 @@
       "tasks": {
         "started_at": "2026-04-20T00:00:00Z",
         "ended_at": "2026-04-10T06:39:22Z",
-        "ended_at_note": "Backfilled at 2026-04-30 reconciliation. Anomaly: ended_at < started_at because 2026-04-20 'tasks' entry was an integrity-audit downgrade from a false-positive 'complete' state — actual implementation work (T3/T4/T7/T10) had already shipped 2026-04-10 via PR #76. Real linear timeline: tasks_first 04-10 15:15→15:20Z, ux 15:20→15:25Z, implementation began 06:39Z (PR #76 commit, predates approval timestamps because PR was opened earlier and the state.json approvals were typed in retroactively)."
+        "ended_at_note": "Backfilled at 2026-04-30 reconciliation. Anomaly: ended_at < started_at because 2026-04-20 'tasks' entry was an integrity-audit downgrade from a false-positive 'complete' state \u2014 actual implementation work (T3/T4/T7/T10) had already shipped 2026-04-10 via PR #76. Real linear timeline: tasks_first 04-10 15:15\u219215:20Z, ux 15:20\u219215:25Z, implementation began 06:39Z (PR #76 commit, predates approval timestamps because PR was opened earlier and the state.json approvals were typed in retroactively)."
       },
       "implementation": {
         "started_at": "2026-04-10T06:39:22Z",
@@ -350,7 +356,7 @@
     "open_tasks": [],
     "open_caveats": [
       "T9 CI: Build-and-Test red on parallel-clone sim env-flake (Bug FIT-59); pm-framework/pr-integrity + 8 other checks green; admin-merge accepted.",
-      "T7 view-integration coverage: StatsAnalyticsTests exercises service layer; view→service integration coverage for the 4 stats_* events owed.",
+      "T7 view-integration coverage: StatsAnalyticsTests exercises service layer; view\u2192service integration coverage for the 4 stats_* events owed.",
       "G4/G8/AX5 a11y items deferred to manual QA cycle (school-project context, see v2-refactor-checklist.md Section J)."
     ]
   },
@@ -359,7 +365,7 @@
     "reason": "v7.7 Validity Closure full-priority freeze",
     "resume_signal": "framework-v7-7-validity-closure phase=complete",
     "lifted_at": "2026-04-30T00:00:00Z",
-    "lifted_reason": "User explicit override — lift pause for stats-v2 only while v7.7 remains in research phase. Other paused features stay paused.",
+    "lifted_reason": "User explicit override \u2014 lift pause for stats-v2 only while v7.7 remains in research phase. Other paused features stay paused.",
     "lift_method": "manual_user_override",
     "corrigendum": {
       "at": "2026-04-30T00:00:00Z",
@@ -377,5 +383,6 @@
   },
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

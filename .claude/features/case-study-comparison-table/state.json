@@ -18,15 +18,74 @@
   "isolation_opt_out": true,
   "isolation_opt_out_reason": "Sub-feature within roadmap-stress-test-2026-05-07. The stress test's meta-feature is already opted-out (Q3 override); nesting another isolated worktree under it adds complexity without protocol benefit. Web-side feature, fitme-story repo, no infra paths touched.",
   "phases": {
-    "research": {"status": "approved", "approved_at": "2026-05-07T22:40:00Z", "sources": [".claude/features/case-study-comparison-table/research.md", "src/lib/content-schema.ts (Zod frontmatter)", "src/app/case-studies/page.tsx (existing index pattern)"]},
-    "prd": {"status": "skipped", "reason": "research.md covered the PRD content adequately for a B_medium feature; explicit PRD would have duplicated the research artifact. Skipped per protocol latitude on B_medium tier."},
-    "tasks": {"status": "skipped", "reason": "Research.md enumerated the 3 deliverables (component + page + link); explicit tasks.md would have been a 3-line file. Skipped per protocol latitude on B_medium tier."},
-    "ux_or_integration": {"status": "skipped", "reason": "Reuses existing tokens + components (Tailwind utilities + Panel chrome + existing palette); no net-new tokens or net-new component categories. Preflight not required because no spec referenced unverified symbols."},
-    "implementation": {"status": "approved", "approved_at": "2026-05-07T19:00:00Z", "commits": ["8e595b3"], "files_added": 2, "files_modified": 1, "lines_added": 437},
-    "testing": {"status": "approved", "approved_at": "2026-05-07T19:01:00Z", "ci_passed": true, "tests_added": 0, "instrumentation_verified": false, "tsc_clean": true, "next_build_clean": true, "tests_added_note": "No new unit tests written — feature is read-only on existing data + UI interactivity covered by visual verification. Future a11y+functional E2E test welcome but not in this scope."},
-    "review": {"status": "approved", "approved_at": "2026-05-07T19:02:00Z", "risks": ["B_medium scope; no novel technical risk", "Surfaces existing frontmatter; if a study omits work_type/date/version, cell renders '—' (graceful degradation)"], "ci_main": true, "ci_feature": true},
-    "merge": {"status": "approved", "approved_at": "2026-05-07T19:02:16Z", "pr_number": null, "pr_external_repo": "fitme-story", "pr_external_number": 58, "squash_sha": "8e595b3", "analytics_regression_passed": null, "analytics_regression_passed_note": "no analytics events added in this PR; regression check N/A. Cross-repo: pr_number is null on FT2 side because the merge happened on Regevba/fitme-story (PR #58); FT2's BROKEN_PR_CITATION gate scans only FT2's gh pr list."},
-    "documentation": {"status": "approved", "approved_at": "2026-05-07T19:05:00Z", "case_study_path": "captured in stress-test parent §4", "showcase_mdx_path": null, "showcase_mdx_path_note": "B_medium increment to existing case-study-presentation feature; no separate showcase MDX warranted (would create slot conflict + dilute the corpus). Documented in stress-test §4 and parent backlog item."},
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-05-07T22:40:00Z",
+      "sources": [
+        ".claude/features/case-study-comparison-table/research.md",
+        "src/lib/content-schema.ts (Zod frontmatter)",
+        "src/app/case-studies/page.tsx (existing index pattern)"
+      ]
+    },
+    "prd": {
+      "status": "skipped",
+      "reason": "research.md covered the PRD content adequately for a B_medium feature; explicit PRD would have duplicated the research artifact. Skipped per protocol latitude on B_medium tier."
+    },
+    "tasks": {
+      "status": "skipped",
+      "reason": "Research.md enumerated the 3 deliverables (component + page + link); explicit tasks.md would have been a 3-line file. Skipped per protocol latitude on B_medium tier."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "reason": "Reuses existing tokens + components (Tailwind utilities + Panel chrome + existing palette); no net-new tokens or net-new component categories. Preflight not required because no spec referenced unverified symbols."
+    },
+    "implementation": {
+      "status": "approved",
+      "approved_at": "2026-05-07T19:00:00Z",
+      "commits": [
+        "8e595b3"
+      ],
+      "files_added": 2,
+      "files_modified": 1,
+      "lines_added": 437
+    },
+    "testing": {
+      "status": "approved",
+      "approved_at": "2026-05-07T19:01:00Z",
+      "ci_passed": true,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "tsc_clean": true,
+      "next_build_clean": true,
+      "tests_added_note": "No new unit tests written \u2014 feature is read-only on existing data + UI interactivity covered by visual verification. Future a11y+functional E2E test welcome but not in this scope."
+    },
+    "review": {
+      "status": "approved",
+      "approved_at": "2026-05-07T19:02:00Z",
+      "risks": [
+        "B_medium scope; no novel technical risk",
+        "Surfaces existing frontmatter; if a study omits work_type/date/version, cell renders '\u2014' (graceful degradation)"
+      ],
+      "ci_main": true,
+      "ci_feature": true
+    },
+    "merge": {
+      "status": "approved",
+      "approved_at": "2026-05-07T19:02:16Z",
+      "pr_number": null,
+      "pr_external_repo": "fitme-story",
+      "pr_external_number": 58,
+      "squash_sha": "8e595b3",
+      "analytics_regression_passed": null,
+      "analytics_regression_passed_note": "no analytics events added in this PR; regression check N/A. Cross-repo: pr_number is null on FT2 side because the merge happened on Regevba/fitme-story (PR #58); FT2's BROKEN_PR_CITATION gate scans only FT2's gh pr list."
+    },
+    "documentation": {
+      "status": "approved",
+      "approved_at": "2026-05-07T19:05:00Z",
+      "case_study_path": "captured in stress-test parent \u00a74",
+      "showcase_mdx_path": null,
+      "showcase_mdx_path_note": "B_medium increment to existing case-study-presentation feature; no separate showcase MDX warranted (would create slot conflict + dilute the corpus). Documented in stress-test \u00a74 and parent backlog item."
+    },
     "metrics": {
       "primary": {
         "name": "comparison_table_renders_all_case_studies",
@@ -34,34 +93,76 @@
         "baseline": 0,
         "target": 1,
         "current": null,
-        "note": "Boolean: 1 when the new /case-studies/compare route renders ≥ 25 of the existing case studies (= the floor of currently-tagged tier=T1+T2 studies)"
+        "note": "Boolean: 1 when the new /case-studies/compare route renders \u2265 25 of the existing case studies (= the floor of currently-tagged tier=T1+T2 studies)"
       },
       "secondary": [
-        {"name": "frontmatter_fields_surfaced", "target": 6, "tier": "T1", "note": "version, date, work_type, tldr, primary_metric.value, key_numbers[0]"},
-        {"name": "sortable_columns", "target": 4, "tier": "T1"},
-        {"name": "filterable_attributes", "target": 2, "tier": "T1", "note": "by tier (flagship/standard/light) + by framework version range"}
+        {
+          "name": "frontmatter_fields_surfaced",
+          "target": 6,
+          "tier": "T1",
+          "note": "version, date, work_type, tldr, primary_metric.value, key_numbers[0]"
+        },
+        {
+          "name": "sortable_columns",
+          "target": 4,
+          "tier": "T1"
+        },
+        {
+          "name": "filterable_attributes",
+          "target": 2,
+          "tier": "T1",
+          "note": "by tier (flagship/standard/light) + by framework version range"
+        }
       ],
       "guardrails": [
-        {"name": "next_build_clean", "kill_threshold": 1, "note": "any build failure → halt"},
-        {"name": "tsc_errors_introduced", "kill_threshold": 1}
+        {
+          "name": "next_build_clean",
+          "kill_threshold": 1,
+          "note": "any build failure \u2192 halt"
+        },
+        {
+          "name": "tsc_errors_introduced",
+          "kill_threshold": 1
+        }
       ],
       "kill_criteria": "If the comparison table cannot render the existing 26+ case studies without crashing the case-studies index page, fall back to a stub stub component + ship the page route empty.",
-      "kill_criteria_resolution": "Pending — captured at experiment session end."
+      "kill_criteria_resolution": "Pending \u2014 captured at experiment session end."
     }
   },
   "tasks": [],
   "transitions": [
-    {"from": null, "to": "research", "timestamp": "2026-05-07T22:35:00Z", "approved_by": "user", "note": "S3-G2 of stress test. Sub-feature opened from S3 reality-check finding: Goal 2 (cross-case-study comparison table) is the highest-value open subgoal in the case-study-presentation refactor backlog item; Goals 1+4 already shipped via PR #146 2026-04-28."},
-    {"from": "research", "to": "implementation", "timestamp": "2026-05-07T22:45:00Z", "approved_by": "user-implicit-stress-test-latitude", "note": "Phases 1-3 (PRD, tasks, UX) skipped per B_medium protocol latitude — research.md already covered the deliverables; no schema changes; no novel UI category. Documented in phases.{prd,tasks,ux_or_integration}.reason."},
-    {"from": "implementation", "to": "complete", "timestamp": "2026-05-07T19:05:00Z", "approved_by": "user", "note": "Build clean (tsc + next build); PR #58 squash 8e595b3 merged 19:02:16Z. B_medium increment closed. Documentation captured in roadmap-stress-test parent case study §4."}
+    {
+      "from": null,
+      "to": "research",
+      "timestamp": "2026-05-07T22:35:00Z",
+      "approved_by": "user",
+      "note": "S3-G2 of stress test. Sub-feature opened from S3 reality-check finding: Goal 2 (cross-case-study comparison table) is the highest-value open subgoal in the case-study-presentation refactor backlog item; Goals 1+4 already shipped via PR #146 2026-04-28."
+    },
+    {
+      "from": "research",
+      "to": "implementation",
+      "timestamp": "2026-05-07T22:45:00Z",
+      "approved_by": "user-implicit-stress-test-latitude",
+      "note": "Phases 1-3 (PRD, tasks, UX) skipped per B_medium protocol latitude \u2014 research.md already covered the deliverables; no schema changes; no novel UI category. Documented in phases.{prd,tasks,ux_or_integration}.reason."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-05-07T19:05:00Z",
+      "approved_by": "user",
+      "note": "Build clean (tsc + next build); PR #58 squash 8e595b3 merged 19:02:16Z. B_medium increment closed. Documentation captured in roadmap-stress-test parent case study \u00a74."
+    }
   ],
   "figma_node_ids": {},
   "figma_build_status": "deferred_to_prompt",
-  "figma_deferral_reason": "web_dashboard_no_figma_mapping (same as ucc-passkey-auth — fitme-story has no Figma file mapping by design)",
-  "pre_merge_review": {"ux": null, "design": null},
+  "figma_deferral_reason": "web_dashboard_no_figma_mapping (same as ucc-passkey-auth \u2014 fitme-story has no Figma file mapping by design)",
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
   "case_study": null,
   "parent_case_study": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
-  "parent_case_study_section": "§4 (S3-G2 entries) + §99 (PRD-vs-execution gap analysis)",
+  "parent_case_study_section": "\u00a74 (S3-G2 entries) + \u00a799 (PRD-vs-execution gap analysis)",
   "case_study_showcase": null,
   "timing": {
     "session_start": "2026-05-07T22:35:00Z",
@@ -69,18 +170,68 @@
     "total_wall_time_minutes": 30,
     "time_source": "measured",
     "phases": {
-      "research": {"started_at": "2026-05-07T22:35:00Z", "ended_at": "2026-05-07T22:42:00Z", "duration_minutes": 7},
-      "implementation": {"started_at": "2026-05-07T22:45:00Z", "ended_at": "2026-05-07T19:00:00Z", "duration_minutes": 15},
-      "testing": {"started_at": "2026-05-07T19:00:00Z", "ended_at": "2026-05-07T19:01:00Z", "duration_minutes": 1},
-      "review": {"started_at": "2026-05-07T19:01:00Z", "ended_at": "2026-05-07T19:02:00Z", "duration_minutes": 1},
-      "merge": {"started_at": "2026-05-07T19:02:00Z", "ended_at": "2026-05-07T19:02:16Z", "duration_minutes": 0.3},
-      "documentation": {"started_at": "2026-05-07T19:02:16Z", "ended_at": "2026-05-07T19:05:00Z", "duration_minutes": 3},
-      "complete": {"started_at": "2026-05-07T19:05:00Z"}
+      "research": {
+        "started_at": "2026-05-07T22:35:00Z",
+        "ended_at": "2026-05-07T22:42:00Z",
+        "duration_minutes": 7
+      },
+      "implementation": {
+        "started_at": "2026-05-07T22:45:00Z",
+        "ended_at": "2026-05-07T19:00:00Z",
+        "duration_minutes": 15
+      },
+      "testing": {
+        "started_at": "2026-05-07T19:00:00Z",
+        "ended_at": "2026-05-07T19:01:00Z",
+        "duration_minutes": 1
+      },
+      "review": {
+        "started_at": "2026-05-07T19:01:00Z",
+        "ended_at": "2026-05-07T19:02:00Z",
+        "duration_minutes": 1
+      },
+      "merge": {
+        "started_at": "2026-05-07T19:02:00Z",
+        "ended_at": "2026-05-07T19:02:16Z",
+        "duration_minutes": 0.3
+      },
+      "documentation": {
+        "started_at": "2026-05-07T19:02:16Z",
+        "ended_at": "2026-05-07T19:05:00Z",
+        "duration_minutes": 3
+      },
+      "complete": {
+        "started_at": "2026-05-07T19:05:00Z"
+      }
     }
   },
   "cache_hits": [
-    {"timestamp": "2026-05-07T22:38:00Z", "cache_level": "L2", "skill": "ux", "cache_key": "ux-spec-preflight:fitme-story-tokens", "hit_type": "exact", "task_context": "Token + component reuse check for the new comparison-table component"},
-    {"timestamp": "2026-05-07T22:42:00Z", "cache_level": "L3", "skill": "dev", "cache_key": "case-study-presentation-refactor:alt-a-chrome-pattern", "hit_type": "adapted", "task_context": "Reuse of the FlagshipTemplate/StandardTemplate/LightTemplate chrome convention for the new compare page"}
+    {
+      "timestamp": "2026-05-07T22:38:00Z",
+      "cache_level": "L2",
+      "skill": "ux",
+      "cache_key": "ux-spec-preflight:fitme-story-tokens",
+      "hit_type": "exact",
+      "task_context": "Token + component reuse check for the new comparison-table component"
+    },
+    {
+      "timestamp": "2026-05-07T22:42:00Z",
+      "cache_level": "L3",
+      "skill": "dev",
+      "cache_key": "case-study-presentation-refactor:alt-a-chrome-pattern",
+      "hit_type": "adapted",
+      "task_context": "Reuse of the FlagshipTemplate/StandardTemplate/LightTemplate chrome convention for the new compare page"
+    }
   ],
-  "cu_v2": {"factors": {"complexity": 0.4, "blast_radius": 0.2, "novelty": 0.4, "verification_difficulty": 0.3}, "total": 1.3, "tier_class": "B_medium"}
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.4,
+      "blast_radius": 0.2,
+      "novelty": 0.4,
+      "verification_difficulty": 0.3
+    },
+    "total": 1.3,
+    "tier_class": "B_medium"
+  },
+  "state_owner": "ft2"
 }

@@ -111,7 +111,9 @@
     "implementation": {
       "status": "approved",
       "approved_at": "2026-04-10T23:30:00Z",
-      "commits": ["bde97c0"],
+      "commits": [
+        "bde97c0"
+      ],
       "note": "4 new views (AIInsightCard, AIIntelligenceSheet, AIRecommendationCard, AIFeedbackView), MainScreenView wired, pbxproj updated. BUILD SUCCEEDED."
     },
     "testing": {
@@ -131,7 +133,7 @@
       "ci_main": true,
       "ci_feature": true,
       "risks": [],
-      "note": "Code review found 5 high issues: raw signal keys in UI (H5 fixed with signal-to-copy mapping), analytics never called (H6 fixed — all call sites wired), events missing screen prefix (H7 fixed), nil fallbackMetrics (H9 fixed with healthService injection). Design system violations (M5-M9) fixed with AppIcon tokens and AppColor replacements."
+      "note": "Code review found 5 high issues: raw signal keys in UI (H5 fixed with signal-to-copy mapping), analytics never called (H6 fixed \u2014 all call sites wired), events missing screen prefix (H7 fixed), nil fallbackMetrics (H9 fixed with healthService injection). Design system violations (M5-M9) fixed with AppIcon tokens and AppColor replacements."
     },
     "merge": {
       "status": "approved",
@@ -148,5 +150,6 @@
   "tasks": [],
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

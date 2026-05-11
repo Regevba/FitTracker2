@@ -40,7 +40,7 @@
     },
     "test": {
       "status": "complete",
-      "note": "swift-frontend -parse exit 0 on all 13 touched files; full make verify-ios blocked by pre-existing CoreSimulator/actool env issue affecting both main and the branch — used parse as substitute"
+      "note": "swift-frontend -parse exit 0 on all 13 touched files; full make verify-ios blocked by pre-existing CoreSimulator/actool env issue affecting both main and the branch \u2014 used parse as substitute"
     },
     "review": {
       "status": "complete",
@@ -56,7 +56,7 @@
         "branch": "chore/pbxproj-orphan-cleanup",
         "merge_commit": "e892ce3",
         "merged_at": "2026-04-24T04:00:09Z",
-        "note": "merged via direct commit, not PR — 2-line surgical pbxproj cleanup"
+        "note": "merged via direct commit, not PR \u2014 2-line surgical pbxproj cleanup"
       }
     },
     "docs": {
@@ -103,5 +103,6 @@
   },
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

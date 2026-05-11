@@ -147,5 +147,6 @@
     }
   ],
   "notes": "Brainstorm session 2026-04-30 locked OQ-1..OQ-5: (1) v1 scope = SR-17 data layer + SR-18 timing automation; (2) Bayesian update with static-default fire-time prior, no count-threshold cliff; (3) hybrid architecture - server cohort prior via existing Supabase cohort_stats + on-device per-user posterior + new backend writer hook + retention extension; (4) single global 'Smart timing' toggle in Settings -> Notifications (on by default) PLUS per-type 'Why this time?' affordance reusing AIIntelligenceSheet pattern; (5) success metric = aggregate tap-through lift >= +5 pp at p < 0.05 with per-type kill at -3 pp; readout window 14 +/- 4 days flexible per-user, plus post-population aggregation later for stable per-segment baselines. Constraint surfaced during brainstorm: only 3 of 6 ReminderTypes are personalisable (Nutrition Gap, Training Day, Rest Day); HealthKit/Account/Engagement keep static defaults due to lifetime caps. Approach A/B/C sequencing pick still open at session pause; design sections + spec doc + writing-plans not yet done. Resume by reading research/open-questions.md 'Decisions locked 2026-04-30' section.",
-  "known_followups": []
+  "known_followups": [],
+  "state_owner": "ft2"
 }

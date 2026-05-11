@@ -18,41 +18,172 @@
   "requires_analytics": true,
   "github_issue_number": null,
   "transitions": [
-    { "from": "init", "to": "research", "timestamp": "2026-04-04T11:00:00Z", "approved_by": "user", "note": "Feature initialized via /pm-workflow. Priority: CRITICAL (legal/App Store requirement)." },
-    { "from": "research", "to": "prd", "timestamp": "2026-04-04T11:30:00Z", "approved_by": "user", "note": "9 data stores audited, full in-app deletion + JSON export + 30-day grace period chosen." },
-    { "from": "prd", "to": "tasks", "timestamp": "2026-04-04T11:45:00Z", "approved_by": "user", "note": "PRD approved with analytics spec gate. 12 requirements, 5 events, 2 screens." },
-    { "from": "tasks", "to": "ux", "timestamp": "2026-04-04T12:00:00Z", "approved_by": "user", "note": "10 tasks approved, 9-day execution plan." },
-    { "from": "ux", "to": "implement", "timestamp": "2026-04-04T12:30:00Z", "approved_by": "user", "note": "UX spec approved. All 5 compliance checks pass. DeleteAccountView + ExportDataView + Settings integration." },
-    { "from": "implement", "to": "testing", "timestamp": "2026-04-04T12:45:00Z", "approved_by": "user", "note": "8 files, +711 lines. 2 services, 2 views, settings wiring, 5 events, 6 tests." },
-    { "from": "testing", "to": "review", "timestamp": "2026-04-04T12:50:00Z", "approved_by": "user", "note": "23 analytics tests, tokens-check green, zero high-risk files." },
-    { "from": "review", "to": "merge", "timestamp": "2026-04-04T12:55:00Z", "approved_by": "user", "note": "8 files, +711 lines. Zero high-risk files touched." },
-    { "from": "merge", "to": "docs", "timestamp": "2026-04-04T13:00:00Z", "approved_by": "user", "note": "Merged to main. CHANGELOG + backlog + PM skill README updated." },
-    { "from": "docs", "to": "complete", "timestamp": "2026-04-04T13:00:00Z", "approved_by": "user", "note": "GDPR compliance complete. Third feature through full PM lifecycle." }
+    {
+      "from": "init",
+      "to": "research",
+      "timestamp": "2026-04-04T11:00:00Z",
+      "approved_by": "user",
+      "note": "Feature initialized via /pm-workflow. Priority: CRITICAL (legal/App Store requirement)."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-04T11:30:00Z",
+      "approved_by": "user",
+      "note": "9 data stores audited, full in-app deletion + JSON export + 30-day grace period chosen."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-04T11:45:00Z",
+      "approved_by": "user",
+      "note": "PRD approved with analytics spec gate. 12 requirements, 5 events, 2 screens."
+    },
+    {
+      "from": "tasks",
+      "to": "ux",
+      "timestamp": "2026-04-04T12:00:00Z",
+      "approved_by": "user",
+      "note": "10 tasks approved, 9-day execution plan."
+    },
+    {
+      "from": "ux",
+      "to": "implement",
+      "timestamp": "2026-04-04T12:30:00Z",
+      "approved_by": "user",
+      "note": "UX spec approved. All 5 compliance checks pass. DeleteAccountView + ExportDataView + Settings integration."
+    },
+    {
+      "from": "implement",
+      "to": "testing",
+      "timestamp": "2026-04-04T12:45:00Z",
+      "approved_by": "user",
+      "note": "8 files, +711 lines. 2 services, 2 views, settings wiring, 5 events, 6 tests."
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "timestamp": "2026-04-04T12:50:00Z",
+      "approved_by": "user",
+      "note": "23 analytics tests, tokens-check green, zero high-risk files."
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "timestamp": "2026-04-04T12:55:00Z",
+      "approved_by": "user",
+      "note": "8 files, +711 lines. Zero high-risk files touched."
+    },
+    {
+      "from": "merge",
+      "to": "docs",
+      "timestamp": "2026-04-04T13:00:00Z",
+      "approved_by": "user",
+      "note": "Merged to main. CHANGELOG + backlog + PM skill README updated."
+    },
+    {
+      "from": "docs",
+      "to": "complete",
+      "timestamp": "2026-04-04T13:00:00Z",
+      "approved_by": "user",
+      "note": "GDPR compliance complete. Third feature through full PM lifecycle."
+    }
   ],
   "phases": {
-    "research": { "status": "approved", "approved_at": "2026-04-04T11:30:00Z", "sources": ["gdpr-info-art17", "gdpr-info-art20", "apple-guidelines-5.1.1", "supabase-auth-docs", "cloudkit-delete-docs"] },
-    "prd": { "status": "approved", "approved_at": "2026-04-04T11:45:00Z", "analytics_spec_complete": true },
-    "tasks": { "status": "approved", "count": 10 },
-    "ux_or_integration": { "status": "approved", "type": "ux", "compliance_passed": true, "compliance_violations": [], "compliance_decision": null, "design_system_changes": [] },
-    "implementation": { "status": "approved", "approved_at": "2026-04-04T12:45:00Z", "commits": ["13f4cfe", "470ee94"] },
-    "testing": { "status": "approved", "approved_at": "2026-04-04T12:50:00Z", "ci_passed": true, "tests_added": 6, "instrumentation_verified": true, "analytics_tests_added": 6, "analytics_verification_passed": true },
-    "review": { "status": "approved", "approved_at": "2026-04-04T12:55:00Z", "risks": ["Real Supabase/CloudKit runtime verification requires credentials", "Atomic rollback not yet implemented for partial deletion failures"], "ci_main": true, "ci_feature": true },
-    "merge": { "status": "done", "pr_number": null, "analytics_regression_passed": true },
-    "documentation": { "status": "done" },
-    "metrics": {
-      "primary": { "name": "deletion_completion_rate", "baseline": 0, "target": 1.0, "current": null },
-      "secondary": [
-        { "name": "export_completion_rate", "target": 1.0 },
-        { "name": "grace_period_cancel_rate", "target": null },
-        { "name": "gdpr_analytics_events_firing", "target": 5 }
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-04-04T11:30:00Z",
+      "sources": [
+        "gdpr-info-art17",
+        "gdpr-info-art20",
+        "apple-guidelines-5.1.1",
+        "supabase-auth-docs",
+        "cloudkit-delete-docs"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-04-04T11:45:00Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "approved",
+      "count": 10
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "type": "ux",
+      "compliance_passed": true,
+      "compliance_violations": [],
+      "compliance_decision": null,
+      "design_system_changes": []
+    },
+    "implementation": {
+      "status": "approved",
+      "approved_at": "2026-04-04T12:45:00Z",
+      "commits": [
+        "13f4cfe",
+        "470ee94"
+      ]
+    },
+    "testing": {
+      "status": "approved",
+      "approved_at": "2026-04-04T12:50:00Z",
+      "ci_passed": true,
+      "tests_added": 6,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 6,
+      "analytics_verification_passed": true
+    },
+    "review": {
+      "status": "approved",
+      "approved_at": "2026-04-04T12:55:00Z",
+      "risks": [
+        "Real Supabase/CloudKit runtime verification requires credentials",
+        "Atomic rollback not yet implemented for partial deletion failures"
       ],
-      "guardrails": ["crash_free_rate > 99.5%"],
+      "ci_main": true,
+      "ci_feature": true
+    },
+    "merge": {
+      "status": "done",
+      "pr_number": null,
+      "analytics_regression_passed": true
+    },
+    "documentation": {
+      "status": "done"
+    },
+    "metrics": {
+      "primary": {
+        "name": "deletion_completion_rate",
+        "baseline": 0,
+        "target": 1.0,
+        "current": null
+      },
+      "secondary": [
+        {
+          "name": "export_completion_rate",
+          "target": 1.0
+        },
+        {
+          "name": "grace_period_cancel_rate",
+          "target": null
+        },
+        {
+          "name": "gdpr_analytics_events_firing",
+          "target": 5
+        }
+      ],
+      "guardrails": [
+        "crash_free_rate > 99.5%"
+      ],
       "instrumentation_ready": true,
       "first_review_date": null,
-      "kill_criteria": "Legal requirement — cannot be killed"
+      "kill_criteria": "Legal requirement \u2014 cannot be killed"
     }
   },
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

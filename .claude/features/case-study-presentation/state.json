@@ -26,7 +26,7 @@
   "success_metrics": [
     "100% of case studies (22 timeline + 3 appendix) carry locked Alt-A frontmatter (tldr + key_numbers OR visual_aid + kill_criteria + kill_criterion_fired)",
     "Build-time validator (fitme-story/scripts/validate-frontmatter.ts) refuses any new case study missing tldr or missing both visual_aid and key_numbers",
-    "≤30% of shipped case studies fall back to KeyNumbersChart; ≥70% declare a specialised visual_aid component",
+    "\u226430% of shipped case studies fall back to KeyNumbersChart; \u226570% declare a specialised visual_aid component",
     "Visual-aid catalog (docs/design-system/case-study-visual-aid-catalog.md) and Alt-A worked example (docs/case-studies/templates/alternative-a-v7-5-example.md) documented at canonical FT2 paths and cross-linked from fitme-story content schema"
   ],
   "kill_criteria": [
@@ -207,5 +207,6 @@
   "notes": "Feature shipped 2026-04-28 in two squash-merged PRs: fitme-story #8 (commit ed72514) carrying the chrome + 25-case backfill + build-time validator + cleanup; FitTracker2 #146 (commit f58ee01) carrying the visual-aid catalog + Alt-A/B worked-example templates + state.json + log. FT2 CI was blocked at queue time by a GitHub Actions billing issue and merged via user-authorized admin override; the 72h integrity cycle remains the belt. NB: branch name `feature/case-study-presentation` was previously reused locally for an unrelated dashboard schema-drift fix (commit a53d10b); that commit is preserved on fix/dashboard-feature-key-v7-7 (commit de1770b) and is NOT part of this feature.",
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

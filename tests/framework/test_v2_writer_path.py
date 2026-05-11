@@ -42,9 +42,16 @@ def test_v2_post_v6_with_empty_cache_hits_and_session_reads_fails(write_state, t
 
 
 def test_v2_pre_v6_with_empty_cache_hits_passes(write_state):
-    """Pre-v6 features are exempt from V2 (per CLAUDE.md gate doc)."""
+    """Pre-v6 features are exempt from V2 (per CLAUDE.md gate doc).
+
+    Note: state_owner: 'ft2' added in v7.8.3 Phase 2 to satisfy the new
+    STATE_OWNER_MISSING gate (introduced 2026-05-13 by Phase 2 schema
+    addition); without it, this test would fail STATE_OWNER_MISSING + miss
+    the V2-pass assertion.
+    """
     state_path = write_state("legacy-feature", {
         "name": "legacy-feature",
+        "state_owner": "ft2",
         "framework_version": "v5.1",
         "created_at": "2026-04-01T00:00:00Z",
         "current_phase": "complete",
@@ -57,9 +64,14 @@ def test_v2_pre_v6_with_empty_cache_hits_passes(write_state):
 
 
 def test_v2_with_populated_cache_hits_passes(write_state):
-    """When cache_hits[] is non-empty, V2 passes regardless of Read events."""
+    """When cache_hits[] is non-empty, V2 passes regardless of Read events.
+
+    Note: state_owner: 'ft2' added in v7.8.3 Phase 2 (see test above for
+    rationale).
+    """
     state_path = write_state("ok-feature", {
         "name": "ok-feature",
+        "state_owner": "ft2",
         "framework_version": "v7.8.3",
         "created_at": "2026-05-12T00:00:00Z",
         "current_phase": "complete",

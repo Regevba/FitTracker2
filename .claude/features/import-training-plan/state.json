@@ -663,14 +663,14 @@
     "audit_finding": "UI-015",
     "flagged_at": "2026-04-20T00:00:00Z",
     "resolved_at": "2026-05-06T18:00:00Z",
-    "resolution": "Resume session 2026-05-06 closed the partial ship end-to-end. Resolved via PR #234 (8bb5daa): 18/18 tasks done, including all 5 known_gaps tasks below — wire to Settings + Training (T15+T16), wire confirmImport persistence to EncryptedDataStore.importedTrainingPlans (T7, replacing the structurally-impossible TrainingProgramData claim from v1 PRD), un-HISTORICAL Picker + Preview (T17), fire all 9 analytics events (T11+T12). All 33 new tests pass.",
+    "resolution": "Resume session 2026-05-06 closed the partial ship end-to-end. Resolved via PR #234 (8bb5daa): 18/18 tasks done, including all 5 known_gaps tasks below \u2014 wire to Settings + Training (T15+T16), wire confirmImport persistence to EncryptedDataStore.importedTrainingPlans (T7, replacing the structurally-impossible TrainingProgramData claim from v1 PRD), un-HISTORICAL Picker + Preview (T17), fire all 9 analytics events (T11+T12). All 33 new tests pass.",
     "original_summary": "Parser / mapper / orchestrator stack + 23 tests shipped cleanly. Entry-point views (ImportSourcePickerView, ImportPreviewView) were built and tested but never wired into any tab, sheet, or navigation destination. ImportOrchestrator transitions state correctly but confirmImport() does NOT persist to TrainingProgramData. Annotated HISTORICAL 2026-04-17 (commit 0831f60) per audit UI-015.",
     "original_open_tasks_now_done": [
       "Wire ImportSourcePickerView into Settings or Training tab navigation (T15)",
       "Wire ImportPreviewView as destination from picker (T13)",
-      "Implement confirmImport() persistence to EncryptedDataStore.importedTrainingPlans (T7 — replacing structurally-impossible TrainingProgramData claim)",
+      "Implement confirmImport() persistence to EncryptedDataStore.importedTrainingPlans (T7 \u2014 replacing structurally-impossible TrainingProgramData claim)",
       "Remove HISTORICAL header from both views once wired (T17)",
-      "Fire the 6 import_* analytics events — actually shipped 9 events including 3 new constants (T11+T12)"
+      "Fire the 6 import_* analytics events \u2014 actually shipped 9 events including 3 new constants (T11+T12)"
     ]
   },
   "paused": {
@@ -738,5 +738,6 @@
     "design": "passed",
     "design_reviewed_at": "2026-05-06T17:32:30Z",
     "design_review_note": "/design pre-merge-review: ui-audit P0=0 (verified 2026-05-06 pre-Figma-build); figma_node_ids populated for 4 screens; PR description references those IDs (added in PR #234 update). Screenshot verified \u2014 all 4 frames render with semantic tokens; no raw colors."
-  }
+  },
+  "state_owner": "ft2"
 }

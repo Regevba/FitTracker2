@@ -47,5 +47,6 @@
   "parent_case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

@@ -551,10 +551,22 @@ def check_state_owner_location_match(
         return []
 
     abs_path = os.path.abspath(str(file_path))
-    # Match any path component that starts with "FitTracker2" (covers canonical
-    # /FitTracker2/ and worktrees like /FitTracker2-cross-repo-state-sync-phase-2/).
-    is_ft2_path = bool(re.search(r"/FitTracker2\b", abs_path))
-    is_fs_path = bool(re.search(r"/fitme-story\b", abs_path))
+    # Match the actual repo path, NOT feature names that happen to start
+    # with the repo prefix.
+    #
+    # FT2: match /FitTracker2 followed by [-/] (covers canonical /FitTracker2/
+    # AND sibling worktrees like /FitTracker2-cross-repo-state-sync-phase-2/).
+    #
+    # fitme-story: require trailing slash /fitme-story/ — must be a directory
+    # within the fitme-story repo root. Critical: do NOT use \b — feature
+    # names commonly start with "fitme-story-" (e.g. fitme-story-design-
+    # system-p2-cleanup, fitme-story-public-enhancements) and \b would
+    # falsely match these as fitme-story-canonical. Worktree edge case
+    # (e.g. /fitme-story-cross-repo-state-sync-phase-1/) is handled at the
+    # operator level (such worktrees would commit through fitme-story's
+    # gate stack which has its own awareness).
+    is_ft2_path = bool(re.search(r"/FitTracker2[-/]", abs_path))
+    is_fs_path = "/fitme-story/" in abs_path
 
     if not is_ft2_path and not is_fs_path:
         # Path is neutral (e.g. /tmp, test fixtures) — cannot determine mismatch.

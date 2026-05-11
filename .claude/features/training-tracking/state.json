@@ -2,7 +2,7 @@
   "feature": "training-tracking",
   "work_type": "feature",
   "case_study_type": "pre_pm_workflow_backfill",
-  "backfill_note": "Shipped before 2026-04-06 PM workflow enforcement. Sub-phase statuses use pre-pm-workflow / backfilled / shipped as terminal states — not lies, just legacy vocabulary. No dedicated case study is expected; feature is captured in the collective pre-PM-workflow baseline that the post-2026-04-06 program builds on.",
+  "backfill_note": "Shipped before 2026-04-06 PM workflow enforcement. Sub-phase statuses use pre-pm-workflow / backfilled / shipped as terminal states \u2014 not lies, just legacy vocabulary. No dedicated case study is expected; feature is captured in the collective pre-PM-workflow baseline that the post-2026-04-06 program builds on.",
   "created_at": "2026-04-06T14:00:00Z",
   "updated": "2026-04-06T14:00:00Z",
   "branch": null,
@@ -23,29 +23,55 @@
       "to": "complete",
       "timestamp": "2026-04-06T14:00:00Z",
       "approved_by": "audit",
-      "note": "Retroactive backfill — feature was shipped pre-PM workflow."
+      "note": "Retroactive backfill \u2014 feature was shipped pre-PM workflow."
     }
   ],
   "phases": {
-    "research": { "status": "pre-pm-workflow" },
-    "prd": { "status": "backfilled", "prd_path": "docs/product/prd/18.1-training-tracking.md" },
-    "tasks": { "status": "pre-pm-workflow" },
-    "ux_or_integration": { "status": "pre-pm-workflow" },
-    "implementation": { "status": "shipped" },
-    "testing": { "status": "pre-pm-workflow", "note": "Test coverage varies by feature" },
-    "review": { "status": "pre-pm-workflow" },
-    "merge": { "status": "done" },
-    "documentation": { "status": "done" },
+    "research": {
+      "status": "pre-pm-workflow"
+    },
+    "prd": {
+      "status": "backfilled",
+      "prd_path": "docs/product/prd/18.1-training-tracking.md"
+    },
+    "tasks": {
+      "status": "pre-pm-workflow"
+    },
+    "ux_or_integration": {
+      "status": "pre-pm-workflow"
+    },
+    "implementation": {
+      "status": "shipped"
+    },
+    "testing": {
+      "status": "pre-pm-workflow",
+      "note": "Test coverage varies by feature"
+    },
+    "review": {
+      "status": "pre-pm-workflow"
+    },
+    "merge": {
+      "status": "done"
+    },
+    "documentation": {
+      "status": "done"
+    },
     "metrics": {
-      "primary": { "name": "sessions_logged_per_week", "baseline": 0, "target": 3, "current": null },
+      "primary": {
+        "name": "sessions_logged_per_week",
+        "baseline": 0,
+        "target": 3,
+        "current": null
+      },
       "secondary": [],
       "guardrails": [],
       "instrumentation_ready": false,
       "first_review_date": null,
-      "kill_criteria": "<20% WAU log training → deprioritize"
+      "kill_criteria": "<20% WAU log training \u2192 deprioritize"
     }
   },
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }
