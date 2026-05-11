@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# __SCHEMA_CHECKER_VERSION__ = "v7.8.3"
+# __SCHEMA_CHECKER_VERSION__ = "v7.8.3-phase2"
 """
 Validate `.claude/features/*/state.json` files against the canonical schema.
 
@@ -457,6 +457,144 @@ def check_cu_v2_schema(
     ]
 
 
+# v7.8.3 Phase 2: valid values for the state_owner field.
+VALID_STATE_OWNERS = {"ft2", "fitme-story"}
+
+
+def check_state_owner(
+    state: dict, *, coverage: GateCoverage | None = None
+) -> list[dict]:
+    """Phase 2 v7.8.3 gate: required state_owner field with valid enum value.
+
+    Per spec §3.4. Required from 2026-05-13 onward (Phase 2 ship date).
+    Valid values: 'ft2' | 'fitme-story'.
+
+    Returns a list with one finding dict if the check fails, or an empty list
+    when the state passes.
+    """
+    GATE_MISSING = "STATE_OWNER_MISSING"
+    GATE_INVALID = "STATE_OWNER_INVALID"
+    if coverage is not None:
+        coverage.candidate(GATE_MISSING)
+        coverage.candidate(GATE_INVALID)
+
+    state_owner = state.get("state_owner")
+    feature = state.get("feature_name", state.get("name", "unknown"))
+
+    if state_owner is None:
+        if coverage is not None:
+            coverage.checked(GATE_MISSING)
+            coverage.skip(GATE_INVALID, "state_owner_absent")
+        return [{
+            "code": GATE_MISSING,
+            "feature": feature,
+            "message": (
+                "state.json missing required state_owner field. "
+                "Set state_owner='ft2' for FT2-canonical features (the default), "
+                "or 'fitme-story' for fitme-story-canonical features."
+            ),
+            "severity": "failure",
+        }]
+
+    if coverage is not None:
+        coverage.skip(GATE_MISSING, "state_owner_present")
+        coverage.checked(GATE_INVALID)
+
+    if state_owner not in VALID_STATE_OWNERS:
+        return [{
+            "code": GATE_INVALID,
+            "feature": feature,
+            "message": (
+                f"state_owner='{state_owner}' is not a valid value. "
+                f"Must be one of: {sorted(VALID_STATE_OWNERS)}."
+            ),
+            "severity": "failure",
+        }]
+
+    return []
+
+
+def check_state_owner_location_match(
+    state: dict,
+    file_path: Path,
+    *,
+    coverage: GateCoverage | None = None,
+) -> list[dict]:
+    """Morphed C-5 (v7.8.3 Phase 2): file location must match state_owner.
+
+    Per spec §4.4. The state_owner_sync_origin marker (set by D-1 reverse-sync
+    GitHub Action in Phase 3) exempts sync mirrors from the location-mismatch
+    check — when the sync action writes a fitme-story state.json into the FT2
+    tree as a mirror, it sets state_owner_sync_origin='fitme-story-reverse'.
+
+    Returns a list with one finding dict if the check fails, or an empty list
+    when the state passes, the file path is neutral (neither repo), or a sync
+    mirror exemption applies.
+    """
+    import os
+    GATE = "STATE_OWNER_LOCATION_MISMATCH"
+    if coverage is not None:
+        coverage.candidate(GATE)
+
+    state_owner = state.get("state_owner")
+    if state_owner is None or state_owner not in VALID_STATE_OWNERS:
+        # Caught upstream by check_state_owner; skip to avoid double-report.
+        if coverage is not None:
+            coverage.skip(GATE, "state_owner_invalid_or_absent")
+        return []
+
+    sync_origin = state.get("state_owner_sync_origin")
+    if isinstance(sync_origin, str) and sync_origin.endswith("-reverse"):
+        # D-1 sync mirror — location mismatch is by design.
+        if coverage is not None:
+            coverage.skip(GATE, "sync_mirror_exempt")
+        return []
+
+    abs_path = os.path.abspath(str(file_path))
+    # Match any path component that starts with "FitTracker2" (covers canonical
+    # /FitTracker2/ and worktrees like /FitTracker2-cross-repo-state-sync-phase-2/).
+    is_ft2_path = bool(re.search(r"/FitTracker2\b", abs_path))
+    is_fs_path = bool(re.search(r"/fitme-story\b", abs_path))
+
+    if not is_ft2_path and not is_fs_path:
+        # Path is neutral (e.g. /tmp, test fixtures) — cannot determine mismatch.
+        if coverage is not None:
+            coverage.skip(GATE, "path_neutral")
+        return []
+
+    if coverage is not None:
+        coverage.checked(GATE)
+
+    feature = state.get("feature_name", state.get("name", "unknown"))
+
+    if state_owner == "ft2" and is_fs_path:
+        return [{
+            "code": GATE,
+            "feature": feature,
+            "message": (
+                f"state_owner='ft2' but file is at a fitme-story path. "
+                f"Commit to the FT2 repo instead, OR update state_owner='fitme-story' "
+                f"if migrating canonical home."
+            ),
+            "severity": "failure",
+        }]
+
+    if state_owner == "fitme-story" and is_ft2_path:
+        return [{
+            "code": GATE,
+            "feature": feature,
+            "message": (
+                f"state_owner='fitme-story' but file is at a FT2 path "
+                f"(sync_origin marker absent). "
+                f"Commit to fitme-story instead, OR update state_owner='ft2' "
+                f"if migrating canonical home."
+            ),
+            "severity": "failure",
+        }]
+
+    return []
+
+
 def validate_file(
     path: Path,
     *,
@@ -609,6 +747,23 @@ def validate_file(
     # Runs on both staged and full-corpus scans (no diff needed — checks content
     # only).
     for finding in check_cu_v2_schema(d, coverage=coverage):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
+
+    # Check 10 (v7.8.3 Phase 2): STATE_OWNER_MISSING + STATE_OWNER_INVALID —
+    # every state.json must carry a state_owner field with a valid enum value.
+    # Runs on both staged and full-corpus scans (no diff needed).
+    for finding in check_state_owner(d, coverage=coverage):
+        errors.append(
+            f"{path}: [{finding['code']}] {finding['message']}"
+        )
+
+    # Check 11 (v7.8.3 Phase 2, morphed C-5): STATE_OWNER_LOCATION_MISMATCH —
+    # the file location (repo path) must match state_owner. Sync mirrors
+    # (state_owner_sync_origin ending in '-reverse') are exempt.
+    # Runs on both staged and full-corpus scans.
+    for finding in check_state_owner_location_match(d, path, coverage=coverage):
         errors.append(
             f"{path}: [{finding['code']}] {finding['message']}"
         )
