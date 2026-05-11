@@ -15,7 +15,7 @@
   "phases": {
     "research": {
       "status": "skipped",
-      "note": "framework_meta_retroactive — backfill, no live PM workflow"
+      "note": "framework_meta_retroactive \u2014 backfill, no live PM workflow"
     },
     "prd": {
       "status": "skipped",
@@ -55,8 +55,9 @@
     "phases": {
       "complete": {
         "started_at": "2026-05-05T08:00:00Z",
-        "note": "framework_meta_retroactive backfill — wrapper landed via PR-GJ"
+        "note": "framework_meta_retroactive backfill \u2014 wrapper landed via PR-GJ"
       }
     }
-  }
+  },
+  "state_owner": "ft2"
 }

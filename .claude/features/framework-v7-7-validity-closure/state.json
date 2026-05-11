@@ -1,7 +1,7 @@
 {
   "feature": "framework-v7-7-validity-closure",
   "feature_name": "framework-v7-7-validity-closure",
-  "display_name": "Framework v7.7 — Validity Closure",
+  "display_name": "Framework v7.7 \u2014 Validity Closure",
   "case_study": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/22-validity-closure-v7-7.mdx",
   "work_type": "framework",
@@ -29,11 +29,11 @@
       "status": "complete",
       "started_at": "2026-04-27T14:00:00Z",
       "ended_at": "2026-04-27T14:35:00Z",
-      "skipped_reason": "Inherited gap inventory from v7.6 case study + Gemini audit follow-up; A1–A5 + B1–B2 + C1 enumerated upfront."
+      "skipped_reason": "Inherited gap inventory from v7.6 case study + Gemini audit follow-up; A1\u2013A5 + B1\u2013B2 + C1 enumerated upfront."
     },
     "prd": {
       "status": "complete",
-      "skipped_reason": "Spec doc 2026-04-27-framework-v7-7-validity-closure-design.md served as PRD (kill criterion 2 fired at baseline → TIER_TAG_LIKELY_INCORRECT shipped advisory permanent)."
+      "skipped_reason": "Spec doc 2026-04-27-framework-v7-7-validity-closure-design.md served as PRD (kill criterion 2 fired at baseline \u2192 TIER_TAG_LIKELY_INCORRECT shipped advisory permanent)."
     },
     "tasks": {
       "status": "complete",
@@ -183,5 +183,6 @@
   ],
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

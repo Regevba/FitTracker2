@@ -49,7 +49,10 @@
     },
     "implementation": {
       "status": "approved",
-      "commits": ["95dff64", "185c0d8"],
+      "commits": [
+        "95dff64",
+        "185c0d8"
+      ],
       "started_at": "2026-05-10T18:16:50Z",
       "approved_at": "2026-05-10T18:45:11Z"
     },
@@ -82,7 +85,7 @@
       "risks": [],
       "ci_main": true,
       "ci_feature": true,
-      "note": "Enhancement scope — no formal /ux + /design pre-merge-review dispatch. CI checks (gates + audit + drift + verify) all passed."
+      "note": "Enhancement scope \u2014 no formal /ux + /design pre-merge-review dispatch. CI checks (gates + audit + drift + verify) all passed."
     },
     "merge": {
       "status": "approved",
@@ -203,5 +206,6 @@
       "fitme-story-website-design-system"
     ]
   },
-  "updated": "2026-05-10T18:51:52Z"
+  "updated": "2026-05-10T18:51:52Z",
+  "state_owner": "ft2"
 }

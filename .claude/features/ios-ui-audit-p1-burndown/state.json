@@ -264,5 +264,6 @@
     ]
   },
   "case_study": "docs/case-studies/ios-ui-audit-p1-burndown-case-study.md",
-  "case_study_showcase": "fitme-story/content/04-case-studies/28-ios-ui-audit-p1-burndown.mdx"
+  "case_study_showcase": "fitme-story/content/04-case-studies/28-ios-ui-audit-p1-burndown.mdx",
+  "state_owner": "ft2"
 }

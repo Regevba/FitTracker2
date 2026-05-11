@@ -64,13 +64,15 @@
       "started_at": "2026-04-10T00:00:00Z",
       "approved_at": "2026-04-10T01:00:00Z",
       "approved_by": "user",
-      "sources": [".claude/features/training-plan-v2/v2-audit-report.md"],
+      "sources": [
+        ".claude/features/training-plan-v2/v2-audit-report.md"
+      ],
       "decisions": {
-        "Q1_decomposition": "Main container with flexible activity switching — day types NOT locked to specific days. Max flexibility.",
+        "Q1_decomposition": "Main container with flexible activity switching \u2014 day types NOT locked to specific days. Max flexibility.",
         "Q2_rest_timer": "Redesign (not keep as-is)",
         "Q3_completed_exercises": "Collapsed by default once marked finished",
         "Q4_loading_state": "Skeleton placeholders",
-        "Q5_rest_day": "Keep as-is for now — spun off as own feature with full PM cycle",
+        "Q5_rest_day": "Keep as-is for now \u2014 spun off as own feature with full PM cycle",
         "Q6_dynamic_type": "Full AX5 support",
         "Q7_analytics": "Per-exercise granularity (weekly/30d/90d). Future: meta-analysis per session + AI engine recommendations (separate feature)"
       },
@@ -79,18 +81,82 @@
         "Advanced data fusion + AI engine exercise recommendations (own PM cycle)"
       ]
     },
-    "prd": { "status": "approved", "started_at": "2026-04-10T01:00:00Z", "approved_at": "2026-04-10T02:00:00Z", "approved_by": "user", "analytics_spec_complete": true, "path": ".claude/features/training-plan-v2/prd.md" },
-    "tasks": { "status": "approved", "started_at": "2026-04-10T02:00:00Z", "approved_at": "2026-04-10T03:00:00Z", "approved_by": "user", "v2_count": 16, "task_file": ".claude/features/training-plan-v2/tasks.md" },
-    "ux_or_integration": { "status": "approved", "started_at": "2026-04-10T03:00:00Z", "approved_at": "2026-04-10T04:00:00Z", "approved_by": "user", "type": "ux" },
-    "implementation": { "status": "approved", "started_at": "2026-04-10T04:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "commits": ["abc1234def"] },
-    "testing": { "status": "approved", "started_at": "2026-04-10T04:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "ci_passed": true, "tests_added": 16 },
-    "review": { "status": "approved", "started_at": "2026-04-10T05:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "risks": [] },
-    "merge": { "status": "approved", "started_at": "2026-04-10T05:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user", "pr_number": 74, "merge_commit": "abc1234def567890" },
-    "documentation": { "status": "approved", "started_at": "2026-04-10T05:00:00Z", "approved_at": "2026-04-10T05:00:00Z", "approved_by": "user" },
+    "prd": {
+      "status": "approved",
+      "started_at": "2026-04-10T01:00:00Z",
+      "approved_at": "2026-04-10T02:00:00Z",
+      "approved_by": "user",
+      "analytics_spec_complete": true,
+      "path": ".claude/features/training-plan-v2/prd.md"
+    },
+    "tasks": {
+      "status": "approved",
+      "started_at": "2026-04-10T02:00:00Z",
+      "approved_at": "2026-04-10T03:00:00Z",
+      "approved_by": "user",
+      "v2_count": 16,
+      "task_file": ".claude/features/training-plan-v2/tasks.md"
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "started_at": "2026-04-10T03:00:00Z",
+      "approved_at": "2026-04-10T04:00:00Z",
+      "approved_by": "user",
+      "type": "ux"
+    },
+    "implementation": {
+      "status": "approved",
+      "started_at": "2026-04-10T04:00:00Z",
+      "approved_at": "2026-04-10T05:00:00Z",
+      "approved_by": "user",
+      "commits": [
+        "abc1234def"
+      ]
+    },
+    "testing": {
+      "status": "approved",
+      "started_at": "2026-04-10T04:00:00Z",
+      "approved_at": "2026-04-10T05:00:00Z",
+      "approved_by": "user",
+      "ci_passed": true,
+      "tests_added": 16
+    },
+    "review": {
+      "status": "approved",
+      "started_at": "2026-04-10T05:00:00Z",
+      "approved_at": "2026-04-10T05:00:00Z",
+      "approved_by": "user",
+      "risks": []
+    },
+    "merge": {
+      "status": "approved",
+      "started_at": "2026-04-10T05:00:00Z",
+      "approved_at": "2026-04-10T05:00:00Z",
+      "approved_by": "user",
+      "pr_number": 74,
+      "merge_commit": "abc1234def567890"
+    },
+    "documentation": {
+      "status": "approved",
+      "started_at": "2026-04-10T05:00:00Z",
+      "approved_at": "2026-04-10T05:00:00Z",
+      "approved_by": "user"
+    },
     "metrics": {
-      "primary": { "name": "training_set_completed (weekly/30d/90d)", "baseline": null, "target": null, "current": null },
-      "secondary": ["training_exercise_viewed", "training_workout_start"],
-      "guardrails": ["crash_free_rate > 99.5%", "cold_start < 2s"],
+      "primary": {
+        "name": "training_set_completed (weekly/30d/90d)",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
+      "secondary": [
+        "training_exercise_viewed",
+        "training_workout_start"
+      ],
+      "guardrails": [
+        "crash_free_rate > 99.5%",
+        "cold_start < 2s"
+      ],
       "instrumentation_ready": true,
       "first_review_date": "2026-04-17",
       "kill_criteria": "Per-exercise event drop-off > 15% vs training_workout_start across weekly/30d/90d cohorts"
@@ -99,5 +165,6 @@
   "tasks": [],
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

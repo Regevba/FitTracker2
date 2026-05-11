@@ -18,35 +18,136 @@
   "requires_analytics": true,
   "github_issue_number": 64,
   "parent_feature": "home-today-screen",
-  "description": "Merge separate Status and Goal cards on Home v2 into a unified body-composition card. Includes goal drill-down (tap ring → detail view) and macro strip placement. Deferred from Home v2 per Decisions Log OQ-3, OQ-7-folded, OQ-4.",
+  "description": "Merge separate Status and Goal cards on Home v2 into a unified body-composition card. Includes goal drill-down (tap ring \u2192 detail view) and macro strip placement. Deferred from Home v2 per Decisions Log OQ-3, OQ-7-folded, OQ-4.",
   "deferred_from": {
     "feature": "home-today-screen",
-    "findings": ["F11 (goal drill-down)", "F13 (macro strip)"],
-    "decisions": ["OQ-3 (merged card as own PM cycle)", "OQ-7-folded (goal drill-down folds in)", "OQ-4 (macro strip semantically placed)"]
+    "findings": [
+      "F11 (goal drill-down)",
+      "F13 (macro strip)"
+    ],
+    "decisions": [
+      "OQ-3 (merged card as own PM cycle)",
+      "OQ-7-folded (goal drill-down folds in)",
+      "OQ-4 (macro strip semantically placed)"
+    ]
   },
   "transitions": [
-    { "from": "init", "to": "research", "timestamp": "2026-04-09T19:00:00Z", "approved_by": "system", "note": "Feature initialized." },
-    { "from": "research", "to": "prd", "timestamp": "2026-04-09T20:00:00Z", "approved_by": "user", "note": "Withings-style unified card chosen." },
-    { "from": "prd", "to": "tasks", "timestamp": "2026-04-09T21:00:00Z", "approved_by": "user", "note": "PRD with 12 requirements, 3 analytics events." },
-    { "from": "tasks", "to": "ux_or_integration", "timestamp": "2026-04-09T22:00:00Z", "approved_by": "user", "note": "9 tasks, critical path ~2.5 days." },
-    { "from": "ux_or_integration", "to": "implementation", "timestamp": "2026-04-09T23:00:00Z", "approved_by": "user", "note": "UX spec, compliance 5/5, validation 13/13." },
-    { "from": "implementation", "to": "complete", "timestamp": "2026-04-15T17:30:00Z", "approved_by": "user", "note": "Verified complete. PR #65 shipped 2026-04-09. BodyCompositionCard + BodyCompositionDetailView implemented with full DS tokens, accessibility, 3 analytics events, SwiftUI Charts drill-down. Old statusCard + goalCard removed." }
+    {
+      "from": "init",
+      "to": "research",
+      "timestamp": "2026-04-09T19:00:00Z",
+      "approved_by": "system",
+      "note": "Feature initialized."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-04-09T20:00:00Z",
+      "approved_by": "user",
+      "note": "Withings-style unified card chosen."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-04-09T21:00:00Z",
+      "approved_by": "user",
+      "note": "PRD with 12 requirements, 3 analytics events."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-04-09T22:00:00Z",
+      "approved_by": "user",
+      "note": "9 tasks, critical path ~2.5 days."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-04-09T23:00:00Z",
+      "approved_by": "user",
+      "note": "UX spec, compliance 5/5, validation 13/13."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-04-15T17:30:00Z",
+      "approved_by": "user",
+      "note": "Verified complete. PR #65 shipped 2026-04-09. BodyCompositionCard + BodyCompositionDetailView implemented with full DS tokens, accessibility, 3 analytics events, SwiftUI Charts drill-down. Old statusCard + goalCard removed."
+    }
   ],
   "phases": {
-    "research": { "status": "approved", "started_at": "2026-04-09T19:00:00Z", "approved_at": "2026-04-09T20:00:00Z", "approved_by": "user" },
-    "prd": { "status": "approved", "started_at": "2026-04-09T20:00:00Z", "approved_at": "2026-04-09T21:00:00Z", "approved_by": "user", "analytics_spec_complete": true, "path": ".claude/features/home-status-goal-card/prd.md" },
-    "tasks": { "status": "approved", "started_at": "2026-04-09T21:00:00Z", "approved_at": "2026-04-09T22:00:00Z", "approved_by": "user", "v2_count": 9 },
-    "ux_or_integration": { "status": "approved", "started_at": "2026-04-09T22:00:00Z", "approved_at": "2026-04-09T23:00:00Z", "approved_by": "user", "type": "ux", "compliance_gateway": "5/5 pass", "heuristic_validation": "13/13 pass" },
-    "implementation": { "status": "complete", "started_at": "2026-04-09T23:00:00Z", "completed_at": "2026-04-09T23:30:00Z", "commits": ["PR #65"] },
-    "testing": { "status": "complete", "ci_passed": true, "tests_added": 0, "instrumentation_verified": true, "analytics_tests_added": 3 },
-    "review": { "status": "complete", "risks": [] },
-    "merge": { "status": "complete", "pr_number": 65 },
-    "documentation": { "status": "complete" },
+    "research": {
+      "status": "approved",
+      "started_at": "2026-04-09T19:00:00Z",
+      "approved_at": "2026-04-09T20:00:00Z",
+      "approved_by": "user"
+    },
+    "prd": {
+      "status": "approved",
+      "started_at": "2026-04-09T20:00:00Z",
+      "approved_at": "2026-04-09T21:00:00Z",
+      "approved_by": "user",
+      "analytics_spec_complete": true,
+      "path": ".claude/features/home-status-goal-card/prd.md"
+    },
+    "tasks": {
+      "status": "approved",
+      "started_at": "2026-04-09T21:00:00Z",
+      "approved_at": "2026-04-09T22:00:00Z",
+      "approved_by": "user",
+      "v2_count": 9
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "started_at": "2026-04-09T22:00:00Z",
+      "approved_at": "2026-04-09T23:00:00Z",
+      "approved_by": "user",
+      "type": "ux",
+      "compliance_gateway": "5/5 pass",
+      "heuristic_validation": "13/13 pass"
+    },
+    "implementation": {
+      "status": "complete",
+      "started_at": "2026-04-09T23:00:00Z",
+      "completed_at": "2026-04-09T23:30:00Z",
+      "commits": [
+        "PR #65"
+      ]
+    },
+    "testing": {
+      "status": "complete",
+      "ci_passed": true,
+      "tests_added": 0,
+      "instrumentation_verified": true,
+      "analytics_tests_added": 3
+    },
+    "review": {
+      "status": "complete",
+      "risks": []
+    },
+    "merge": {
+      "status": "complete",
+      "pr_number": 65
+    },
+    "documentation": {
+      "status": "complete"
+    },
     "metrics": {
-      "primary": { "name": "home_body_comp_tap", "baseline": 0, "target": null, "current": null },
+      "primary": {
+        "name": "home_body_comp_tap",
+        "baseline": 0,
+        "target": null,
+        "current": null
+      },
       "secondary": [
-        { "name": "home_body_comp_period_changed", "target": null },
-        { "name": "home_body_comp_log_tap", "target": null }
+        {
+          "name": "home_body_comp_period_changed",
+          "target": null
+        },
+        {
+          "name": "home_body_comp_log_tap",
+          "target": null
+        }
       ],
       "guardrails": [],
       "instrumentation_ready": true,
@@ -55,17 +156,63 @@
     }
   },
   "tasks": [
-    {"id": "T1", "title": "Add analytics enums + taxonomy rows", "status": "complete", "completed_at": "2026-04-09T23:10:00Z"},
-    {"id": "T2", "title": "Create BodyCompositionCard view", "status": "complete", "completed_at": "2026-04-09T23:15:00Z"},
-    {"id": "T3", "title": "Create BodyCompositionDetailView (drill-down sheet)", "status": "complete", "completed_at": "2026-04-09T23:20:00Z"},
-    {"id": "T4", "title": "Compact macro strip sub-view (P1)", "status": "complete", "completed_at": "2026-04-09T23:15:00Z"},
-    {"id": "T5", "title": "Wire BodyCompositionCard into MainScreenView", "status": "complete", "completed_at": "2026-04-09T23:25:00Z"},
-    {"id": "T6", "title": "Remove old statusCard + goalCard code", "status": "complete", "completed_at": "2026-04-09T23:25:00Z"},
-    {"id": "T7", "title": "Accessibility pass on card + detail view", "status": "complete", "completed_at": "2026-04-09T23:25:00Z"},
-    {"id": "T8", "title": "Analytics tests + build verification", "status": "complete", "completed_at": "2026-04-09T23:28:00Z"},
-    {"id": "T9", "title": "Full build + CI verification", "status": "complete", "completed_at": "2026-04-09T23:30:00Z"}
+    {
+      "id": "T1",
+      "title": "Add analytics enums + taxonomy rows",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:10:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "Create BodyCompositionCard view",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:15:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "Create BodyCompositionDetailView (drill-down sheet)",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:20:00Z"
+    },
+    {
+      "id": "T4",
+      "title": "Compact macro strip sub-view (P1)",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:15:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "Wire BodyCompositionCard into MainScreenView",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:25:00Z"
+    },
+    {
+      "id": "T6",
+      "title": "Remove old statusCard + goalCard code",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:25:00Z"
+    },
+    {
+      "id": "T7",
+      "title": "Accessibility pass on card + detail view",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:25:00Z"
+    },
+    {
+      "id": "T8",
+      "title": "Analytics tests + build verification",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:28:00Z"
+    },
+    {
+      "id": "T9",
+      "title": "Full build + CI verification",
+      "status": "complete",
+      "completed_at": "2026-04-09T23:30:00Z"
+    }
   ],
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

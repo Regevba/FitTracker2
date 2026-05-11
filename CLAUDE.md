@@ -205,15 +205,28 @@ Bundles all deferred Phase C/D state-sync work with two v7.9 candidates
 campaign cannot start until all 5 phases ship and per-phase calibration
 targets are met.
 
-**Phase 0 promotes (already shipped):**
+**Phase 0 promotes (shipped 2026-05-11 PR #298):**
 - V2 — `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` advisory → enforced
 - V9 — Mechanism E custom git merge driver extends to `.claude/logs/<feature>.log.json`
 - New `make snapshot-phase` Makefile target + `scripts/snapshot-phase-completion.sh` for per-phase off-SSD backups
 
-**Phases 1-4 (in flight):** D-3 unified PR cite cache + C-4 control-room
-aggregator (Phase 1); state_owner schema + 47-feature backfill + morphed
-C-5 (Phase 2); D-1 reverse-sync GitHub Action (Phase 3); cutover ceremony
-(Phase 4).
+**Phase 1 deliverables (shipped 2026-05-11 — D-3 PR #299 + C-4 fitme-story PR #86):**
+- D-3 — unified cross-repo PR cite cache: `scripts/refresh-pr-cache.py` + multi-repo `_load_pr_cache` + `REPO_MAP` whitelist + `resolve_pr_cite()` for routing match groups; closes BROKEN_PR_CITATION's silent-skip on `[fitme-story#N]` cites + URL-form mis-routing; 63/63 retroactive cite validation
+- C-4 — fitme-story control-room cross-repo gate-coverage aggregator: forward-sync extension mirrors FT2's `gate-coverage.jsonl` as `src/data/integrity/gate-coverage-ft2.jsonl`; `src/lib/control-room/gate-coverage-aggregator.ts` combines both repos' streams time-sorted; `/control-room/framework` page renders aggregated counts
+
+**Phase 2 deliverables (in flight 2026-05-11):**
+Every `state.json` now carries a top-level `state_owner` enum field
+(`{"ft2", "fitme-story"}`) per the cross-repo contract — value reflects
+WHERE the canonical state.json file lives, not where the feature's code
+lives. Required from 2026-05-13 forward; backfilled to all 62 existing
+features in a single mechanical commit. Three new write-time gates:
+- `STATE_OWNER_MISSING` — required field
+- `STATE_OWNER_INVALID` — must be in valid enum
+- `STATE_OWNER_LOCATION_MISMATCH` (morphed C-5) — file location must
+  match `state_owner`; sync mirrors with `state_owner_sync_origin`
+  ending in `-reverse` are exempted (D-1 reverse-sync compatibility)
+
+**Phases 3-4 (in flight):** D-1 reverse-sync GitHub Action (Phase 3) + cutover ceremony with first fitme-story-native feature (Phase 4).
 
 **Spec:** [`docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md`](docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md).
 **Plan:** [`docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md`](docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md).

@@ -129,5 +129,6 @@
         "note": "Tasks phase opened retroactively after PR #63 merged; closed via PR-T1-H2 reconciliation (iOS audit finding H-2)."
       }
     }
-  }
+  },
+  "state_owner": "ft2"
 }

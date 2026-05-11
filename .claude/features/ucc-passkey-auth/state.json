@@ -757,5 +757,6 @@
       "skill": "dev"
     }
   ],
-  "worktree_path": "/Volumes/DevSSD/FitTracker2-ucc-passkey-auth"
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-ucc-passkey-auth",
+  "state_owner": "ft2"
 }

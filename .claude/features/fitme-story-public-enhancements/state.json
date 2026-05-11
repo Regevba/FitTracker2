@@ -698,5 +698,6 @@
     "rationale": "Rollup of 23 small/medium audit-driven enhancements. Net new code is small and surgical per item. Complexity comes from breadth (10+ sub-PRs over time) not depth. Blast radius medium because changes are user-facing on every showcase reader. Novelty low (well-trodden a11y/perf/SEO patterns). Verification medium (mostly visual + Vercel preview spot-checks; eval-gate not applicable since no AI behaviors)."
   },
   "experiment": false,
-  "experiment_kind": null
+  "experiment_kind": null,
+  "state_owner": "ft2"
 }

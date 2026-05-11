@@ -197,7 +197,7 @@
       "risks": [],
       "ci_main": true,
       "ci_feature": true,
-      "ci_note": "pm-framework/pr-integrity green; CodeQL green; GitGuardian green; integrity green; Vercel green. Build-and-Test red on env-flake — accepted per stats-v2 precedent (Bug FIT-59 parallel-clone hang)."
+      "ci_note": "pm-framework/pr-integrity green; CodeQL green; GitGuardian green; integrity green; Vercel green. Build-and-Test red on env-flake \u2014 accepted per stats-v2 precedent (Bug FIT-59 parallel-clone hang)."
     },
     "merge": {
       "status": "complete",
@@ -655,5 +655,6 @@
   "case_study_showcase": "fitme-story/content/04-case-studies/22d-auth-polish-v2.mdx",
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }

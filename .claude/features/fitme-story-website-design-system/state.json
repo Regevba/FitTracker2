@@ -156,7 +156,10 @@
       "started_at": "2026-05-10T16:48:48Z",
       "approved_at": "2026-05-10T16:50:00Z",
       "memory_entry_added": "memory/project_fitme_story_website_design_system_shipped.md",
-      "post_deploy_operator_items": ["T28 GA4 DebugView verification", "T29 Lighthouse run on /design-system"],
+      "post_deploy_operator_items": [
+        "T28 GA4 DebugView verification",
+        "T29 Lighthouse run on /design-system"
+      ],
       "kill_criteria_review_schedule": {
         "week_1_2026_05_17": "homepage LCP guardrail (>200ms)",
         "30d_2026_06_09": "drift findings + dark-mode legibility",
@@ -490,5 +493,6 @@
       "code-connect-automation"
     ]
   },
-  "updated": "2026-05-10T16:50:25Z"
+  "updated": "2026-05-10T16:50:25Z",
+  "state_owner": "ft2"
 }

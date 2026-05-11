@@ -75,5 +75,6 @@
   "classification_note": "Both roundup (six-features-roundup) and pre-PM-workflow backfill \u2014 roundup is authoritative; backfill_note retained as legacy-status context.",
   "_meta": {
     "deprecation_warnings": []
-  }
+  },
+  "state_owner": "ft2"
 }
