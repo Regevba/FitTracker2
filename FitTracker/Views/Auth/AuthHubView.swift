@@ -445,7 +445,7 @@ private struct AuthProviderRow: View {
 
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -478,7 +478,7 @@ private struct GoogleProviderRow: View {
 
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Text.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -505,7 +505,7 @@ private struct AppleProviderRow: View {
 
             Spacer()
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Text.inverseSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

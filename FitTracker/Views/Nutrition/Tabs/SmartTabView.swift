@@ -56,14 +56,14 @@ struct SmartTabView: View {
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                     Text("Nutrition Text")
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.secondary)
                     TextEditor(text: $vm.rawLabelText)
                         .frame(minHeight: 140)
                         .padding(AppSpacing.xxSmall)
                         .background(AppColor.Text.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.small))
                     Text("Hebrew and English keywords are parsed here. Photos use Apple Vision OCR first, then this parser scales the label to your consumed weight. If a Hebrew label photo doesn’t scan cleanly, paste the label text here and the parser still works.")
-                        .font(.caption2)
+                        .font(AppText.captionMicro)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
 
@@ -74,13 +74,13 @@ struct SmartTabView: View {
 
                 if let smartStatus = vm.smartStatus {
                     Label(smartStatus, systemImage: "checkmark.circle.fill")
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Status.success)
                 }
 
                 if let smartError = vm.smartError {
                     Label(smartError, systemImage: "exclamationmark.triangle.fill")
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Status.error)
                 }
 
@@ -100,7 +100,7 @@ struct SmartTabView: View {
                 if let parsedLabel = vm.parsedLabel {
                     VStack(alignment: .leading, spacing: AppSpacing.xxSmall) {
                         Text("Parsed Per \(Int(parsedLabel.referenceGrams))g")
-                            .font(.caption.weight(.semibold))
+                            .font(AppText.captionStrong)
                             .foregroundStyle(AppColor.Text.secondary)
                         HStack(spacing: AppSpacing.xSmall) {
                             ParsedMetricView(title: "kcal", value: parsedLabel.calories, tint: AppColor.Brand.warm)

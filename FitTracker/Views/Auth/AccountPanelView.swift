@@ -143,7 +143,7 @@ struct AccountPanelView: View {
                         .foregroundStyle(AppColor.Accent.primary)
                     VStack(alignment: .leading, spacing: AppSpacing.micro) {
                         Text("Open Full Settings")
-                            .font(.subheadline.weight(.semibold))
+                            .font(AppText.subheadingStrong)
                             .foregroundStyle(AppColor.Text.primary)
                         Text("Manage account security, HealthKit, goals, training preferences, and sync.")
                             .font(AppText.caption)
@@ -240,7 +240,7 @@ struct AccountPanelView: View {
                     Text(value)
                 }
             }
-            .font(.subheadline)
+            .font(AppText.subheading)
             .foregroundStyle(AppColor.Text.primary.opacity(0.82))
             Spacer(minLength: 0)
         }

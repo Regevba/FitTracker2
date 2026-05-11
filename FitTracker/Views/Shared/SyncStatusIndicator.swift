@@ -12,7 +12,7 @@ struct SyncStatusIndicator: View {
                 .fill(watchService.status.dotColor)
                 .frame(width: 6, height: 6)
             Text(watchService.status.label)
-                .font(.caption2.weight(.medium))
+                .font(AppText.captionMicroMedium)
                 .foregroundStyle(AppColor.Text.secondary)
         }
         .padding(.horizontal, 12)

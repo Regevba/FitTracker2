@@ -46,6 +46,7 @@ struct AIIntelligenceSheet: View {
                     Button { dismiss() } label: {
                         Image(systemName: AppIcon.close)
                     }
+                    .accessibilityLabel("Close")
                 }
             }
             .onAppear { analytics.logAiSheetOpened(entryPoint: "insight_card") }

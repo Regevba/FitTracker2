@@ -8,8 +8,8 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 ## Summary
 
 - **P0 (blocking):** 0
-- **P1 (warning):**  72
-- **Files with findings:** 33
+- **P1 (warning):**  44
+- **Files with findings:** 26
 - **Files scanned:** 101
 - **Files skipped:** 21 (historical v1 + token-definition files)
 
@@ -17,57 +17,33 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 
 | Area | P0 | P1 | Files |
 |---|---:|---:|---:|
-| `AI` | 0 | 3 | 2 |
-| `Auth` | 0 | 10 | 4 |
+| `AI` | 0 | 1 | 1 |
+| `Auth` | 0 | 4 | 2 |
 | `ConsentView.swift` | 0 | 1 | 1 |
 | `Import` | 0 | 1 | 1 |
 | `Main` | 0 | 4 | 2 |
-| `Nutrition` | 0 | 15 | 6 |
-| `Onboarding` | 0 | 5 | 2 |
+| `Nutrition` | 0 | 5 | 3 |
+| `Onboarding` | 0 | 2 | 2 |
 | `Profile` | 0 | 1 | 1 |
 | `RootTabView.swift` | 0 | 1 | 1 |
 | `Settings` | 0 | 5 | 4 |
-| `Shared` | 0 | 24 | 7 |
-| `Stats` | 0 | 1 | 1 |
+| `Shared` | 0 | 18 | 7 |
 | `Training` | 0 | 1 | 1 |
 
 ## Per-file findings
 
-### `FitTracker/Views/AI/AIFeedbackView.swift` — P0=0, P1=1
+### `FitTracker/Views/AI/AIIntelligenceSheet.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 27 | P1 | `DS-A11Y-BUTTON` | `Button {` |
+| 139 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 60, alignment: .leading)` |
 
-### `FitTracker/Views/AI/AIIntelligenceSheet.swift` — P0=0, P1=2
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 46 | P1 | `DS-A11Y-BUTTON` | `Button { dismiss() } label: {` |
-| 138 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 60, alignment: .leading)` |
-
-### `FitTracker/Views/Auth/AccountPanelView.swift` — P0=0, P1=2
+### `FitTracker/Views/Auth/AuthHubView.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
-| 146 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline.weight(.semibold))` |
-| 243 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline)` |
-
-### `FitTracker/Views/Auth/AuthHubView.swift` — P0=0, P1=5
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 448 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 481 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 508 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 | 617 | P1 | `DS-MAGIC-PADDING` | `.padding(.vertical, 13)` |
 | 677 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 58)` |
-
-### `FitTracker/Views/Auth/SignInView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 53 | P1 | `DS-A11Y-BUTTON` | `Button { errorBanner = nil } label: {` |
 
 ### `FitTracker/Views/Auth/WelcomeView.swift` — P0=0, P1=2
 
@@ -102,43 +78,18 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 213 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 0.5)` |
 
-### `FitTracker/Views/Nutrition/Components/SupplementItemRow.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 16 | P1 | `DS-A11Y-BUTTON` | `Button {` |
-
 ### `FitTracker/Views/Nutrition/MacroTargetBar.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 60 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 14)` |
 
-### `FitTracker/Views/Nutrition/Tabs/MealEntrySharedComponents.swift` — P0=0, P1=3
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 46 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 63 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption2)` |
-| 66 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-
-### `FitTracker/Views/Nutrition/Tabs/SearchTabView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 97 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption2)` |
-
-### `FitTracker/Views/Nutrition/Tabs/SmartTabView.swift` — P0=0, P1=7
+### `FitTracker/Views/Nutrition/Tabs/SmartTabView.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 29 | P1 | `DS-MAGIC-FRAME` | `.frame(height: 150)` |
-| 59 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 | 62 | P1 | `DS-MAGIC-FRAME` | `.frame(minHeight: 140)` |
-| 66 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption2)` |
-| 77 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 83 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 103 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 
 ### `FitTracker/Views/Nutrition/v2/NutritionView.swift` — P0=0, P1=2
 
@@ -147,14 +98,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 776 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 260)` |
 | 939 | P1 | `DS-MAGIC-FRAME` | `.frame(minWidth: 160, idealWidth: 180, maxWidth: 220, alignment: .leading)` |
 
-### `FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift` — P0=0, P1=4
+### `FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift` — P0=0, P1=1
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 31 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 120, height: 120)` |
-| 161 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 193 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 225 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 
 ### `FitTracker/Views/Onboarding/v2/OnboardingConsentView.swift` — P0=0, P1=1
 
@@ -232,16 +180,11 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 | 484 | P1 | `DS-MAGIC-FRAME` | `Divider().background(AppColor.Surface.materialLight).frame(height: 50)` |
 | 486 | P1 | `DS-MAGIC-FRAME` | `Divider().background(AppColor.Surface.materialLight).frame(height: 50)` |
 
-### `FitTracker/Views/Shared/RecoveryRoutineSheet.swift` — P0=0, P1=7
+### `FitTracker/Views/Shared/RecoveryRoutineSheet.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 62 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 30, height: 30)` |
-| 64 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.bold))` |
-| 71 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.subheadline.weight(.semibold))` |
-| 74 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 116 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
-| 118 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption.weight(.semibold))` |
 | 123 | P1 | `DS-MAGIC-PADDING` | `.padding(.vertical, 9)` |
 
 ### `FitTracker/Views/Shared/StatusDropdown.swift` — P0=0, P1=1
@@ -250,19 +193,12 @@ every PR that touches a SwiftUI view should keep P0 count at 0.
 |---:|:---:|---|---|
 | 20 | P1 | `DS-MAGIC-FRAME` | `Circle().fill(color).frame(width: 6, height: 6)` |
 
-### `FitTracker/Views/Shared/SyncStatusIndicator.swift` — P0=0, P1=3
+### `FitTracker/Views/Shared/SyncStatusIndicator.swift` — P0=0, P1=2
 
 | Line | Sev | Rule | Snippet |
 |---:|:---:|---|---|
 | 13 | P1 | `DS-MAGIC-FRAME` | `.frame(width: 6, height: 6)` |
-| 15 | P1 | `DS-RAW-FONT-SHORTHAND` | `.font(.caption2.weight(.medium))` |
 | 19 | P1 | `DS-MAGIC-PADDING` | `.padding(.vertical, 10)` |
-
-### `FitTracker/Views/Stats/v2/StatsView.swift` — P0=0, P1=1
-
-| Line | Sev | Rule | Snippet |
-|---:|:---:|---|---|
-| 231 | P1 | `DS-A11Y-BUTTON` | `return Button {` |
 
 ### `FitTracker/Views/Training/v2/TrainingPlanView.swift` — P0=0, P1=1
 
