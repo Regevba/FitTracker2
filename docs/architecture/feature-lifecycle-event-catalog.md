@@ -2,9 +2,9 @@
 
 > **Companion to** [`dev-guide-v1-to-v7-7.md`](./dev-guide-v1-to-v7-7.md). Where the dev-guide explains *how* the framework works (the four enforcement layers, schema, dispatch model), this catalog answers a different question: at any point in a feature's lifecycle, **what should be triggered, logged, measured, and persisted — and which gate enforces it?**
 >
-> **Authoritative for:** `FEATURE_CLOSURE_COMPLETENESS` gate spec — **gate now SHIPPED** in v7.8.1 (advisory mode) per [`framework-v7-8-branch-isolation` case study](../case-studies/framework-v7-8-branch-isolation-case-study.md). v7.9 promotion candidate decision: 2026-05-21.
+> **Authoritative for:** `FEATURE_CLOSURE_COMPLETENESS` gate spec — **gate now SHIPPED** in v7.8.1 (advisory mode) per [`framework-v7-8-branch-isolation` case study](../case-studies/framework-v7-8-branch-isolation-case-study.md). v7.9 promotion candidate decision: 2026-05-21. **Note (v7.8.3, 2026-05-11):** the gate caught two real closure violations on the v7.8.3 ship itself (field name `case_study_link` vs canonical `case_study`; missing top-level `related_prs` array on closure PR #304). Both fixed pre-merge — see [cross-repo-state-sync-impl case study](../case-studies/cross-repo-state-sync-impl-case-study.md) for the dogfood story.
 >
-> **Last verified against:** v7.8.1 (shipped 2026-05-07). Re-verify when the framework version bumps.
+> **Last verified against:** v7.8.3 (shipped 2026-05-11). Re-verify when the framework version bumps. State.json schema gained a top-level `state_owner` enum (`{"ft2", "fitme-story"}`) at v7.8.3 Phase 2 — 62 features backfilled in a single mechanical commit. New required field on all features going forward.
 
 ---
 
