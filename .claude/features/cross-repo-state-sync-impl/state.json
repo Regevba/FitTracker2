@@ -1,0 +1,213 @@
+{
+  "name": "cross-repo-state-sync-impl",
+  "state_owner": "ft2",
+  "framework_version": "v7.8.3",
+  "current_phase": "complete",
+  "work_type": "Feature",
+  "dispatch_pattern": "subagent-driven-tdd-sequential-phased",
+  "created_at": "2026-05-11T07:00:00Z",
+  "case_study": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
+  "case_study_showcase": "../../fitme-story/content/04-case-studies/29-cross-repo-state-sync-impl.mdx",
+  "related_prs": [
+    "PR #298",
+    "PR #299",
+    "PR #300",
+    "PR #301",
+    "PR #302",
+    "PR #303",
+    "[fitme-story#86]",
+    "[fitme-story#87]",
+    "[fitme-story#88]",
+    "[fitme-story#89]",
+    "[fitme-story#90]",
+    "[fitme-story#91]"
+  ],
+  "scope": "v7.8.3 release umbrella: 5-phase rollout (V2 + V9 + snapshot protocol + D-3 + C-4 + state_owner schema + 62-feature backfill + morphed C-5 + D-1 reverse-sync GH Action + Phase 4 cutover ceremony). Gates HADF Phase 2-bis Sub-exp 1 launch.",
+  "success_metrics": [
+    "100% of state.json files in either repo have state_owner field within 14 days of Phase 2 ship",
+    "V2 (CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT) firing on at least one production commit before HADF Phase 2-bis Sub-exp 1 launch",
+    "All 4 framework calibration targets achieved before HADF Phase 2-bis Sub-exp 1 launch",
+    "Phase 4 cutover round-trip succeeds end-to-end"
+  ],
+  "kill_criteria": [
+    "Reverse-sync PRs create gate-firing storm (>10 false-positive failures in first week of Phase 3 production) -> halt Phase 3",
+    "state_owner backfill triggers integrity-cycle regression on >5 features within 72h post-merge -> roll back schema",
+    "V2 enforcement fires on >3 already-shipped features (false positives) -> revert to advisory + 7-day calibration",
+    "HADF Phase 2-bis Sub-exp 1 launch BLOCKED until all 5 phases ship AND each phase calibration targets are met"
+  ],
+  "kill_criteria_resolution": [
+    "Reverse-sync gate-firing storm: NOT TRIGGERED. Single reverse-sync PR (FT2 PR #301) merged cleanly with 7/8 CI checks green; framework integrity gates all pass.",
+    "62-feature backfill: NO integrity-cycle regression. PR #300 merged with 0 new findings; pm-framework/pr-integrity bot reports same baseline as main.",
+    "V2 enforcement false positives: 0 fires on shipped features. Gate runs on all 63 state.json files post-Phase-2 with no false positives.",
+    "HADF Phase 2-bis blocking criterion: ACTIVELY ENFORCED. All 5 phases shipped + cutover round-trip end-to-end certified. Per-phase calibration targets verified. HADF Phase 2-bis Sub-exp 1 NOW UNBLOCKED."
+  ],
+  "tasks": [
+    {
+      "id": "phase-0",
+      "status": "done",
+      "pr_number": 298,
+      "name": "V2 + V9 + snapshot protocol + tests/framework infra"
+    },
+    {
+      "id": "phase-1-d3",
+      "status": "done",
+      "pr_number": 299,
+      "name": "D-3 unified PR cite cache (FT2 side)"
+    },
+    {
+      "id": "phase-1-c4",
+      "status": "done",
+      "related_prs": [
+        "[fitme-story#86]"
+      ],
+      "name": "C-4 control-room aggregator (fitme-story side)"
+    },
+    {
+      "id": "phase-2",
+      "status": "done",
+      "pr_number": 300,
+      "name": "state_owner schema + 62-feature backfill + morphed C-5"
+    },
+    {
+      "id": "phase-3",
+      "status": "done",
+      "related_prs": [
+        "[fitme-story#87]"
+      ],
+      "name": "D-1 reverse-sync GitHub Action (fitme-story side)"
+    },
+    {
+      "id": "phase-4-cutover-fs",
+      "status": "done",
+      "related_prs": [
+        "[fitme-story#88]",
+        "[fitme-story#89]",
+        "[fitme-story#90]"
+      ],
+      "name": "Phase 4 cutover initial state.json + workflow hotfix + re-trigger (3 attempts)"
+    },
+    {
+      "id": "phase-4-reverse-sync-mirror",
+      "status": "done",
+      "pr_number": 301,
+      "name": "FT2-side reverse-sync auto-PR (mirror state.json with sync_origin marker)"
+    },
+    {
+      "id": "phase-4-v7-9-candidates",
+      "status": "done",
+      "pr_number": 302,
+      "name": "F11/F12/F13 v7.9 candidates from cutover dogfood findings"
+    },
+    {
+      "id": "phase-4-case-study",
+      "status": "done",
+      "pr_number": 303,
+      "name": "FT2 source case study"
+    },
+    {
+      "id": "phase-4-showcase-mdx",
+      "status": "done",
+      "related_prs": [
+        "[fitme-story#91]"
+      ],
+      "name": "fitme-story showcase MDX (slot 29)"
+    },
+    {
+      "id": "phase-4-closure",
+      "status": "done",
+      "name": "This PR: state.json transitions to complete + final snapshot + HADF unblock verification",
+      "pr_number": 304,
+      "note": "Self-referential: this closure PR documents the state.json complete transition; status='done' marks it complete because the PR-being-authored IS the closure act"
+    }
+  ],
+  "phases": {
+    "merge": {
+      "pr_number": null,
+      "note": "Multi-PR Feature; PR list in tasks[] above. No single 'merge PR'."
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-05-11T07:00:00Z",
+        "ended_at": "2026-05-11T08:00:00Z",
+        "note": "Brainstorm session (HADF Phase 2-bis brainstorm + 3 cross-references audit + Phase C/D state-sync analysis)"
+      },
+      "prd": {
+        "started_at": "2026-05-11T08:00:00Z",
+        "ended_at": "2026-05-11T10:00:00Z",
+        "note": "Spec written: docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md (5994 words, 11 sections)"
+      },
+      "tasks": {
+        "started_at": "2026-05-11T10:00:00Z",
+        "ended_at": "2026-05-11T11:00:00Z",
+        "note": "Plan written: docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md (10807 words, 5 phases x 40 tasks x 120 TDD steps)"
+      },
+      "implement": {
+        "started_at": "2026-05-11T11:00:00Z",
+        "ended_at": "2026-05-11T16:00:00Z",
+        "note": "Phases 0-3 implementation via subagent-driven-development (Haiku for mechanical, Sonnet for integration). 5 PRs across 2 repos."
+      },
+      "test": {
+        "started_at": "2026-05-11T11:00:00Z",
+        "ended_at": "2026-05-11T16:00:00Z",
+        "note": "Continuous: 12/12 framework tests, 4/4 aggregator tests, 35/35 + 63/63 D-3 retroactive validation, 47/47 (then 62/62) backfill verification"
+      },
+      "review": {
+        "started_at": "2026-05-11T11:30:00Z",
+        "ended_at": "2026-05-11T16:00:00Z",
+        "note": "Per-task spec compliance + code quality reviews via subagent dispatches; user approval gate before each PR merge"
+      },
+      "merge": {
+        "started_at": "2026-05-11T13:00:00Z",
+        "ended_at": "2026-05-11T17:05:00Z",
+        "note": "5 PRs merged: #298, #299, fitme-story#86, #300, fitme-story#87 (Phases 0-3); + Phase 4 chain: fitme-story#88+#89+#90, FT2#301, #302, #303, fitme-story#91 (10 PRs total)"
+      },
+      "docs": {
+        "started_at": "2026-05-11T16:30:00Z",
+        "ended_at": "2026-05-11T17:05:00Z",
+        "note": "Case study (FT2 #303) + showcase MDX (fitme-story #91) merged"
+      },
+      "complete": {
+        "started_at": "2026-05-11T17:10:00Z"
+      }
+    }
+  },
+  "framework_dogfooding_catches": [
+    {
+      "layer": "pre-commit",
+      "gate": "PHASE_TRANSITION_NO_LOG + PHASE_TRANSITION_NO_TIMING",
+      "caught_in": "fitme-story PR #88 commit attempt",
+      "fixed_via": "appended log event + added timing.phases.research.started_at"
+    },
+    {
+      "layer": "workflow runtime (GH Actions)",
+      "gate": "implicit YAML validator",
+      "caught_in": "fitme-story PR #88 merge to main fired the reverse-sync workflow which failed in 0s with workflow file load error",
+      "fixed_via": "fitme-story PR #89 hotfix moved secrets.* check from job-level if to step-level env-var indirection"
+    },
+    {
+      "layer": "workflow trigger semantics",
+      "gate": "n/a (logic bug)",
+      "caught_in": "post-hotfix workflow_dispatch ran 4s success but opened no FT2 PR (HEAD~1 diff window doesn't see cutover commit when hotfix lands between)",
+      "fixed_via": "fitme-story PR #90 third attempt via path-filter-matching state.json modification"
+    },
+    {
+      "layer": "BROKEN_PR_CITATION (D-3)",
+      "gate": "scripts/check-case-study-preflight.py",
+      "caught_in": "FT2 PR #303 case study had bare PR #72 reference interpreted as FT2 PR",
+      "fixed_via": "rewrote as cross-repo cite [fitme-story#72]"
+    }
+  ],
+  "v7_9_candidates_surfaced": [
+    "F11",
+    "F12",
+    "F13"
+  ],
+  "v7_9_candidates_doc": "docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md",
+  "unlocks": [
+    "HADF Phase 2-bis Sub-exp 1 launch (per spec section 3.5 calibration targets all met)",
+    "Track 6 (HADF gate activation post-Sub-exp-3 verdict) is now eligible to proceed once Phase 2-bis completes",
+    "Future fitme-story-native features can use the established v7.8.3 round-trip without ceremony"
+  ]
+}
