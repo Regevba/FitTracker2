@@ -1,0 +1,39 @@
+{
+  "name": "3d-interactive-framework-flow-diagram",
+  "state_owner": "fitme-story",
+  "framework_version": "v7.8.3",
+  "current_phase": "research",
+  "work_type": "Feature",
+  "created_at": "2026-05-11T16:30:00Z",
+  "case_study_link": "docs/case-studies/3d-interactive-framework-flow-diagram-case-study.md",
+  "research_dossier": "../../FT2/.claude/features/3d-interactive-framework-flow-diagram/research.md",
+  "scope": "fitme-story public-site enhancement; third flagship visual alongside DispatchReplay + LifecycleLoop; 3D interactive framework flow diagram via React Three Fiber + Theatre.js + GSAP",
+  "phase_4_cutover_role": "First fitme-story-native feature; serves as the v7.8.3 framework certification round-trip per FT2 spec docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md \u00a76.5",
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-05-11T16:30:00Z"
+      }
+    }
+  },
+  "cutover_attempts": [
+    {
+      "attempt": 1,
+      "fitme_story_commit": "7dd090f",
+      "fitme_story_pr": 88,
+      "workflow_outcome": "failed_workflow_load",
+      "reason": "Original workflow used secrets.* in job-level if (unsupported by GH Actions)",
+      "fix_pr": 89,
+      "fix_commit": "dcd4f84"
+    },
+    {
+      "attempt": 2,
+      "workflow_outcome": "workflow_dispatch_diff_window_wrong",
+      "reason": "workflow_dispatch HEAD is the hotfix commit; git diff HEAD~1 HEAD does not see the original state.json commit",
+      "mitigation": "Trigger via subsequent state.json modification (this commit) to exercise the path-filter trigger correctly"
+    }
+  ],
+  "state_owner_sync_origin": "fitme-story-reverse",
+  "state_owner_sync_origin_commit": "b844f69b8b1a791a1c4e1c10025a1833860538f9",
+  "state_owner_sync_origin_pr_url": "pending"
+}
