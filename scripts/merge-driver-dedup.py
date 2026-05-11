@@ -35,13 +35,17 @@ Exit codes:
 """
 from __future__ import annotations
 
+import fnmatch
 import json
 import sys
 from pathlib import Path
 
+__MERGE_DRIVER_VERSION__ = "v7.8.3"
 
-# Registry: relative-path suffix → merge config.
+# Registry: relative-path suffix or glob pattern → merge config.
 # Add new ledgers here as they accumulate with the union-dedup pattern.
+# Glob patterns (containing "*") are matched via fnmatch; exact entries
+# use endswith() for backwards compatibility.
 LEDGER_CONFIG = {
     ".claude/shared/measurement-adoption-history.json": {
         "array": "snapshots",
@@ -51,19 +55,30 @@ LEDGER_CONFIG = {
         "array": "debt_items",
         "key": "id",
     },
+    # v7.8.3 V9: Tier 2.2 contemporaneous feature logs
+    ".claude/logs/*.log.json": {
+        "array": "events",
+        "key": "ts",
+    },
 }
 
 
 def _config_for(path: str) -> dict | None:
-    """Look up the merge config for `path` by suffix match.
+    """Look up the merge config for `path` by suffix or glob match.
 
     Git passes %P as a repo-relative path; we accept either form.
+    Glob patterns (containing '*') are matched via fnmatch.fnmatch();
+    exact patterns use endswith() for backwards compatibility.
     Returns None (caller bails to git's default conflict markers) if
     the path isn't registered.
     """
-    for registered_suffix, cfg in LEDGER_CONFIG.items():
-        if path.endswith(registered_suffix):
-            return cfg
+    for pattern, cfg in LEDGER_CONFIG.items():
+        if "*" in pattern:
+            if fnmatch.fnmatch(path, pattern):
+                return cfg
+        else:
+            if path.endswith(pattern):
+                return cfg
     return None
 
 

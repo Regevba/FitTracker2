@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2 → v7.8.3, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08 → 2026-05-11)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -196,6 +196,27 @@ v7.8.2 is a **patch-level bump** that does NOT add new gates. It codifies a forw
 **v7.8.2 ships via** PR #258 (FT2 chore). Tracks: [fitme-story-public-enhancements T22 + T23](https://github.com/Regevba/FitTracker2/issues/255).
 
 **Spec:** [`docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md`](docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md).
+
+## v7.8.3 Cross-Repo State Sync Implementation (in flight, per spec 2026-05-11)
+
+v7.8.3 is the umbrella release for the `cross-repo-state-sync-impl` Feature.
+Bundles all deferred Phase C/D state-sync work with two v7.9 candidates
+(V2 + V9) into a single 5-phase rollout. Gates HADF Phase 2-bis: that
+campaign cannot start until all 5 phases ship and per-phase calibration
+targets are met.
+
+**Phase 0 promotes (already shipped):**
+- V2 — `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` advisory → enforced
+- V9 — Mechanism E custom git merge driver extends to `.claude/logs/<feature>.log.json`
+- New `make snapshot-phase` Makefile target + `scripts/snapshot-phase-completion.sh` for per-phase off-SSD backups
+
+**Phases 1-4 (in flight):** D-3 unified PR cite cache + C-4 control-room
+aggregator (Phase 1); state_owner schema + 47-feature backfill + morphed
+C-5 (Phase 2); D-1 reverse-sync GitHub Action (Phase 3); cutover ceremony
+(Phase 4).
+
+**Spec:** [`docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md`](docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md).
+**Plan:** [`docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md`](docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md).
 
 ## Known Mechanical Limits
 

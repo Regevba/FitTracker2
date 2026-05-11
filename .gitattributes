@@ -9,3 +9,6 @@
 # — that's the failure mode HADF Phase 2 surfaced).
 .claude/shared/measurement-adoption-history.json merge=union-dedup-by-key
 .claude/shared/documentation-debt.json merge=union-dedup-by-key
+
+# v7.8.3: feature log files (Tier 2.2 contemporaneous logging)
+.claude/logs/*.log.json merge=union-dedup-by-key

@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -366,6 +366,14 @@ figma-drift:
 	fi; \
 	echo "Running figma-drift in $$FITME_STORY_DIR..."; \
 	cd "$$FITME_STORY_DIR" && npm run figma-drift -- $(FIGMA_DRIFT_FLAGS)
+
+# Per-phase snapshot of feature artifacts to off-SSD backup (~/Documents/FitTracker2-backups/).
+# Spec §10; addresses SanDisk Extreme hardware risk.
+# Usage: make snapshot-phase PHASE=<id> [FEATURE=<name>]
+# Example: make snapshot-phase PHASE=phase-0-complete
+snapshot-phase:
+	@if [ -z "$(PHASE)" ]; then echo "Usage: make snapshot-phase PHASE=<id> [FEATURE=<name>]"; exit 1; fi
+	./scripts/snapshot-phase-completion.sh $(PHASE) $${FEATURE:-cross-repo-state-sync-impl}
 
 # Auto-install on first run
 node_modules:
