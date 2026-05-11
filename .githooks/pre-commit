@@ -21,10 +21,11 @@
 #       T1/T2/T3 tier tags)
 #
 #   v7.7 (shipped 2026-04-27 via PR #144 [merge `01b9e11`], Validity Closure):
-#     - CACHE_HITS_EMPTY_POST_V6 (post-v6 feature reaches current_phase=complete
-#       with empty cache_hits[]; closes issue #140 writer-path adoption gap.
-#       Effective coverage was 0/46 until 2026-05-01 honesty-fixes migrated
-#       43 state.json files from legacy `created` to canonical `created_at`.)
+#     - CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT (v7.8.3, enforced; promoted from
+#       the advisory gate added in v7.7) — post-v6 post-Mechanism-C feature
+#       reaches current_phase=complete with empty cache_hits[]. Effective
+#       coverage was 0/46 until 2026-05-01 honesty-fixes migrated 43 state.json
+#       files from legacy `created` to `created_at`.
 #     - CU_V2_INVALID (cu_v2 field, when present, must satisfy the T6 schema —
 #       missing required factor keys: complexity / blast_radius / novelty /
 #       verification_difficulty)
@@ -34,7 +35,7 @@
 #
 #   2026-05-01 honesty-fixes patch (PR #169):
 #     - SCHEMA_DRIFT for legacy `created` key (parallel to legacy-`phase` check;
-#       closes the silent-pass that left v7.7 CACHE_HITS_EMPTY_POST_V6 at 0/46
+#       closes the silent-pass that left v7.7 CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT at 0/46
 #       effective coverage when 43/46 features used the legacy field name)
 #     - FRAMEWORK_VERSION_FORMAT (when set, must match `(pre-)?v<major>.<minor>`;
 #       presence-required deferred to backfill PR)

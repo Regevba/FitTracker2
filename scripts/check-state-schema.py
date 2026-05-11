@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# __SCHEMA_CHECKER_VERSION__ = "v7.8.3"
 """
 Validate `.claude/features/*/state.json` files against the canonical schema.
 
@@ -95,7 +96,8 @@ V6_SHIP_DATE = "2026-04-16"
 # v7.8 ships Mechanism C — the PostToolUse:Read hook + observe-cache-hit.py
 # that auto-collects cache_hits[] events without agent attention (closes the
 # Class B writer-path gap, issue #140). Features whose entire active period
-# predates MECHANISM_C_SHIP_DATE are exempt from CACHE_HITS_EMPTY_POST_V6: the
+# predates MECHANISM_C_SHIP_DATE are exempt from CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT
+# (formerly CACHE_HITS_EMPTY_POST_V6, promoted in v7.8.3): the
 # auto-instrumentation that would have populated cache_hits[] mechanically did
 # not exist during their lifecycle, so an empty array is "instrumentation didn't
 # exist" not "instrumentation failed to fire." Approximation by created_at: a
@@ -299,11 +301,11 @@ def check_cache_hits_empty_post_v6(
     "non-empty" to "≥N calibrated" once the auto-collection has accumulated
     7+ days of data.
 
-    Returns a list with one finding dict (code=CACHE_HITS_EMPTY_POST_V6) if the
+    Returns a list with one finding dict (code=CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT) if the
     check fails, or an empty list if the check passes or is not applicable.
     """
     findings: list[dict] = []
-    GATE = "CACHE_HITS_EMPTY_POST_V6"
+    GATE = "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT"
     if coverage is not None:
         coverage.candidate(GATE)
     # Dual-read: prefer the canonical `created_at`; fall back to legacy `created`
@@ -338,7 +340,7 @@ def check_cache_hits_empty_post_v6(
         return findings
 
     findings.append({
-        "code": "CACHE_HITS_EMPTY_POST_V6",
+        "code": "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT",
         "feature": state.get("feature_name", "unknown"),
         "message": (
             "Post-Mechanism-C feature reached current_phase=complete with "
@@ -583,8 +585,10 @@ def validate_file(
         if coverage is not None:
             coverage.skip("PR_NUMBER_UNRESOLVED", "field_absent")
 
-    # Check 5: CACHE_HITS_EMPTY_POST_V6 — post-v6 features must have at least
-    # one cache_hits[] entry recorded before reaching current_phase=complete.
+    # Check 5: CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT (v7.8.3, enforced) — post-v6
+    # post-Mechanism-C features must have at least one cache_hits[] entry recorded
+    # before reaching current_phase=complete. Promoted from CACHE_HITS_EMPTY_POST_V6
+    # (advisory) per spec §6.1 Phase 0 Task 0.3.
     # This runs on both staged and full-corpus scans (unlike the phase-transition
     # checks it doesn't need a diff — it inspects current state only).
     for finding in check_cache_hits_empty_post_v6(d, coverage=coverage):
