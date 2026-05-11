@@ -293,10 +293,19 @@ def scan_file(path: Path, bypass_skip: bool = False) -> FileReport:
 
         # ── P1: Button without nearby accessibilityLabel/hidden when label is non-Text
         if RE_BUTTON_LABEL.search(line):
-            # Look ahead up to 20 lines for either:
+            # Look ahead up to 60 lines for either:
             #   - Text(...) inside the label block (accessibility inferred), OR
             #   - .accessibilityLabel / .accessibilityHidden(true) attached afterwards
-            window = "\n".join(lines[i - 1:min(i + 20, len(lines))])
+            #
+            # Window widened from 20 to 60 lines on 2026-05-11 (PR-2 of
+            # ios-ui-audit-p1-burndown). The 20-line heuristic produced a
+            # false-positive on Stats/v2/StatsView.metricChip — the Button's
+            # .accessibilityLabel sits 40 lines past the Button { line because
+            # the label block contains a multi-element AppSelectionTile chain.
+            # 60 lines covers complex multi-line label blocks without significant
+            # cross-button false-negative risk (modifiers attach to the closest
+            # view; intervening Button { blocks scope their own search).
+            window = "\n".join(lines[i - 1:min(i + 60, len(lines))])
             has_text = re.search(r"label:\s*\{[^}]*\bText\s*\(", window, re.DOTALL)
             has_label_mod = RE_ACCESSIBILITY_LABEL.search(window)
             has_hidden = RE_ACCESSIBILITY_HIDDEN.search(window)

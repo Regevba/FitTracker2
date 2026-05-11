@@ -264,8 +264,14 @@ enum AppText {
     static let bodyRegular       = Font.system(.body,         design: .rounded)
     static let callout           = Font.system(.callout,      design: .rounded).weight(.medium)
     static let subheading        = Font.system(.subheadline,  design: .rounded)
+    /// Subheading bold — secondary section labels (e.g. nutrition-step header)
+    static let subheadingStrong  = Font.system(.subheadline,  design: .rounded).weight(.semibold)
     static let caption           = Font.system(.caption,      design: .rounded)
     static let captionStrong     = Font.system(.caption,      design: .rounded).weight(.semibold)
+    /// Micro caption — smallest body-style text, non-monospaced
+    static let captionMicro      = Font.system(.caption2,     design: .rounded)
+    /// Micro caption medium — sync-status / inline-pill text
+    static let captionMicroMedium = Font.system(.caption2,    design: .rounded).weight(.medium)
     static let eyebrow           = Font.system(.caption,      design: .rounded).weight(.bold)
     static let chip              = Font.system(.footnote,     design: .rounded).weight(.semibold)
     static let footnote          = Font.system(.footnote,     design: .rounded)

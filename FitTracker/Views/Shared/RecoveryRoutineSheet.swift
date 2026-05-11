@@ -61,17 +61,17 @@ struct RecoveryRoutineSheet: View {
                                     .fill(Color.accentColor.opacity(0.14))
                                     .frame(width: 30, height: 30)
                                 Text("\(index + 1)")
-                                    .font(.caption.weight(.bold))
+                                    .font(AppText.eyebrow)
                                     .foregroundStyle(Color.accentColor)
                             }
 
                             VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                                 HStack {
                                     Text(step.title)
-                                        .font(.subheadline.weight(.semibold))
+                                        .font(AppText.subheadingStrong)
                                     Spacer()
                                     Text("\(step.minutes) min")
-                                        .font(.caption.weight(.semibold))
+                                        .font(AppText.captionStrong)
                                         .foregroundStyle(AppColor.Text.secondary)
                                 }
                                 Text(step.detail)
@@ -113,9 +113,9 @@ private struct RecoveryMetaPill: View {
     var body: some View {
         HStack(spacing: AppSpacing.xxSmall) {
             Image(systemName: icon)
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
             Text(label)
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .lineLimit(1)
         }
         .foregroundStyle(Color.accentColor)

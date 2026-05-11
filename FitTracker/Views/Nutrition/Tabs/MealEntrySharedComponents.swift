@@ -43,7 +43,7 @@ struct SmartActionLabel: View {
             Image(systemName: systemImage)
             Text(title)
         }
-        .font(.caption.weight(.semibold))
+        .font(AppText.captionStrong)
         .frame(maxWidth: .infinity)
         .padding(.vertical, AppSpacing.xSmall)
         .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
@@ -60,10 +60,10 @@ struct ParsedMetricView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: AppSpacing.micro) {
             Text(title)
-                .font(.caption2)
+                .font(AppText.captionMicro)
                 .foregroundStyle(AppColor.Text.secondary)
             Text(value.map { formatMealValue($0) } ?? "—")
-                .font(.caption.weight(.semibold))
+                .font(AppText.captionStrong)
                 .foregroundStyle(tint)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

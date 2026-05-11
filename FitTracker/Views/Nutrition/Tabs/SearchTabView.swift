@@ -94,7 +94,7 @@ struct SearchTabView: View {
                                 }
                             }
                             Text(product.sourceDescription)
-                                .font(.caption2)
+                                .font(AppText.captionMicro)
                                 .foregroundStyle(AppColor.Text.secondary)
                         }
                         .padding(.vertical, AppSpacing.xxxSmall)

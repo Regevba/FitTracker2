@@ -55,6 +55,7 @@ struct SignInView: View {
                                         .font(AppText.caption)
                                         .foregroundStyle(AppColor.Text.secondary)
                                 }
+                                .accessibilityLabel("Dismiss error")
                             }
                             .padding(AppSpacing.xSmall)
                             .background(AppColor.Status.warning.opacity(0.10), in: RoundedRectangle(cornerRadius: AppRadius.small, style: .continuous))

@@ -158,7 +158,7 @@ struct OnboardingAuthView: View {
                     }
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.secondary)
                 }
                 .padding(.horizontal, AppSpacing.small)
@@ -190,7 +190,7 @@ struct OnboardingAuthView: View {
                         }
                         Spacer()
                         Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
+                            .font(AppText.captionStrong)
                             .foregroundStyle(AppColor.Text.secondary)
                     }
                     .padding(.horizontal, AppSpacing.small)
@@ -222,7 +222,7 @@ struct OnboardingAuthView: View {
                     }
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
+                        .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.inverseSecondary)
                 }
                 .padding(.horizontal, AppSpacing.small)

@@ -32,6 +32,7 @@ struct AIFeedbackView: View {
                             .foregroundStyle(AppColor.Status.success)
                             .frame(width: AppSize.tapTarget, height: AppSize.tapTarget)
                     }
+                    .accessibilityLabel("Helpful")
 
                     Button {
                         withAnimation(AppMotion.quickInteraction) { submitted = true }
@@ -41,6 +42,7 @@ struct AIFeedbackView: View {
                             .foregroundStyle(AppColor.Status.warning)
                             .frame(width: AppSize.tapTarget, height: AppSize.tapTarget)
                     }
+                    .accessibilityLabel("Not helpful")
                 }
             }
         }
