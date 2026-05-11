@@ -114,8 +114,10 @@
     },
     {
       "id": "phase-4-closure",
-      "status": "in_progress",
-      "name": "This PR: state.json transitions to complete + final snapshot + HADF unblock verification"
+      "status": "done",
+      "name": "This PR: state.json transitions to complete + final snapshot + HADF unblock verification",
+      "pr_number": 304,
+      "note": "Self-referential: this closure PR documents the state.json complete transition; status='done' marks it complete because the PR-being-authored IS the closure act"
     }
   ],
   "phases": {
