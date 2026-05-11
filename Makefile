@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -378,3 +378,11 @@ snapshot-phase:
 # Auto-install on first run
 node_modules:
 	npm install --silent
+
+# v7.8.3 D-3: unified cross-repo PR cite cache (per spec §5)
+refresh-pr-cache:
+	python3 scripts/refresh-pr-cache.py
+
+validate-existing-cites: refresh-pr-cache
+	@echo "Validating PR cites in all docs/case-studies/*.md against unified cache…"
+	@python3 scripts/check-case-study-preflight.py docs/case-studies/*.md

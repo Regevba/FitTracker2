@@ -71,9 +71,26 @@ FIELDS_CUTOFF_DATE = "2026-04-28"
 REQUIRED_FRONTMATTER_FIELDS = ["work_type", "success_metrics", "kill_criteria", "dispatch_pattern"]
 
 # Same regex shape as integrity-check.py (kept in sync intentionally).
+# v7.8.3 D-3: updated to 3-alternation form for cross-repo cite routing.
+#
+# Groups:
+#   group(1)        — FT2 default form:       PR #N  or  PR#N
+#   group(2)+3      — cross-repo short form:  [fitme-story#42]  (brackets required
+#                     to avoid false positives on "PRs #96", "issue #140", etc.)
+#   group(4)+5+6    — URL form:               github.com/owner/repo/pull/N
 _PR_CITATION_PAT = re.compile(
-    r'(?:[Pp][Rr]\s*#?|github\.com/[^/\s]+/[^/\s]+/pull/)(\d+)'
+    r"(?:[Pp][Rr]\s*#(\d+))"                              # group 1: FT2 default
+    r"|(?:\[([\w-]+)\s*#(\d+)\])(?!\()"                   # groups 2+3: cross-repo short (brackets, NOT markdown link)
+    r"|(?:github\.com/([\w-]+)/([\w-]+)/pull/(\d+))"     # groups 4+5+6: URL form
 )
+
+# Whitelist mapping repo short names → full "owner/repo" identifiers.
+# Used by resolve_pr_cite() to route cross-repo short-form cites.
+REPO_MAP: dict[str, str] = {
+    "fitme-story": "Regevba/fitme-story",
+    "FitTracker2": "Regevba/FitTracker2",
+    "ft2": "Regevba/FitTracker2",
+}
 _DATE_WRITTEN_PAT = re.compile(
     r"(?im)^\*\*Date written:\*\*\s*(\d{4}-\d{2}-\d{2})|^>\s*\*\*Date:\*\*\s*(\d{4}-\d{2}-\d{2})"
 )
@@ -183,29 +200,109 @@ def check_case_study_missing_fields(path: Path) -> list[dict]:
     }]
 
 
-_PR_CACHE: set[int] | None = None
+_PR_CACHE: dict | None = None
 _PR_CACHE_LOADED: bool = False
 
 
-def _load_pr_cache() -> set[int] | None:
-    """Single `gh pr list` call, cached for the script's lifetime. Graceful
-    degradation: returns None if gh is unavailable, and the BROKEN_PR_CITATION
-    check is skipped rather than failing the hook."""
+def _load_pr_cache() -> dict | None:
+    """Load multi-repo cached PR data; refresh via refresh-pr-cache.py if stale.
+
+    v7.8.3 D-3 morph: was set[int] | None (FT2-only); now returns the
+    multi-repo dict shape matching .cache/gh-pr-cache.json:
+      {"schema_version": 1, "last_refreshed_at": "...",
+       "repos": {"Regevba/FitTracker2": {open,merged,closed}, ...}}
+
+    Returns None if gh is unavailable AND no stale cache exists — caller
+    skips the BROKEN_PR_CITATION check gracefully (never block a commit on
+    missing network access).
+    """
     global _PR_CACHE, _PR_CACHE_LOADED
     if _PR_CACHE_LOADED:
         return _PR_CACHE
     _PR_CACHE_LOADED = True
+
+    cache_file = REPO_ROOT / ".cache" / "gh-pr-cache.json"
+    if not cache_file.exists():
+        # Try to refresh via the Task 1.1 refresh script.
+        refresh_script = Path(__file__).parent / "refresh-pr-cache.py"
+        if refresh_script.exists():
+            try:
+                subprocess.run(
+                    [sys.executable, str(refresh_script)],
+                    check=False, timeout=60,
+                    stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                )
+            except Exception:
+                pass
+
+    if not cache_file.exists():
+        _PR_CACHE = None
+        return _PR_CACHE
+
     try:
-        out = subprocess.check_output(
-            ["gh", "pr", "list", "--state", "all", "--limit", "500",
-             "--json", "number"],
-            text=True, stderr=subprocess.DEVNULL,
-        )
-        _PR_CACHE = {p["number"] for p in json.loads(out)}
-    except (subprocess.CalledProcessError, FileNotFoundError,
-            json.JSONDecodeError):
+        _PR_CACHE = json.loads(cache_file.read_text())
+    except Exception as e:
+        print(f"WARN: PR cache load failed: {e}", file=sys.stderr)
         _PR_CACHE = None
     return _PR_CACHE
+
+
+def resolve_pr_cite(match: re.Match, cache: dict | None) -> str | None:
+    """Resolve a single _PR_CITATION_PAT match against the multi-repo PR cache.
+
+    Returns None if the cite is valid (PR found in cache).
+    Returns a human-readable error string if the cite is broken or unresolvable.
+    Returns None when cache is None (gh unavailable — caller skips gracefully).
+
+    Routing logic:
+      group(1)    → FT2 default       → repo "Regevba/FitTracker2"
+      group(2+3)  → cross-repo short  → REPO_MAP lookup → full repo name
+      group(4+6)  → URL form          → "{group4}/{group5}" as full repo name
+    """
+    if cache is None:
+        return None  # gh unavailable; caller already noted this, skip gracefully
+
+    if match.group(1):
+        repo = "Regevba/FitTracker2"
+        pr_num = int(match.group(1))
+    elif match.group(2):
+        repo_short = match.group(2)
+        repo = REPO_MAP.get(repo_short)
+        if repo is None:
+            return (
+                f"BROKEN_PR_CITATION: unknown repo short name '{repo_short}' — "
+                f"valid names: {sorted(REPO_MAP.keys())}. "
+                f"Add to REPO_MAP in check-case-study-preflight.py if intentional."
+            )
+        pr_num = int(match.group(3))
+    elif match.group(4):
+        repo = f"{match.group(4)}/{match.group(5)}"
+        pr_num = int(match.group(6))
+    else:
+        return None  # no group matched — regex logic error; skip silently
+
+    repos = cache.get("repos", {})
+    if repo not in repos:
+        return (
+            f"BROKEN_PR_CITATION: no cache entry for repo '{repo}'. "
+            f"Run scripts/refresh-pr-cache.py to rebuild, or add repo to REPO_MAP."
+        )
+
+    repo_cache = repos[repo]
+    all_prs = (
+        repo_cache.get("open", [])
+        + repo_cache.get("merged", [])
+        + repo_cache.get("closed", [])
+    )
+    if not any(pr["number"] == pr_num for pr in all_prs):
+        refreshed_at = cache.get("last_refreshed_at", "unknown")
+        return (
+            f"BROKEN_PR_CITATION: PR #{pr_num} not found in {repo} "
+            f"(cache last refreshed {refreshed_at}). "
+            f"Verify the number or run scripts/refresh-pr-cache.py to refresh."
+        )
+
+    return None
 
 
 def _is_exempt(path: Path) -> bool:
@@ -235,18 +332,12 @@ def validate_file(path: Path) -> list[str]:
         errors.append(f"{path}: cannot read ({e})")
         return errors
 
-    # Check 1c: BROKEN_PR_CITATION at write-time
-    cited = {int(m.group(1)) for m in _PR_CITATION_PAT.finditer(text)}
-    if cited:
-        pr_cache = _load_pr_cache()
-        if pr_cache is not None:
-            broken = sorted(n for n in cited if n not in pr_cache)
-            for n in broken:
-                errors.append(
-                    f"{path}: cites PR #{n} which does not resolve on GitHub. "
-                    f"Verify the number, fix the citation, or use issue-citation "
-                    f"syntax (`issue #{n}`, `repo#{n}`) if it's an issue not a PR."
-                )
+    # Check 1c: BROKEN_PR_CITATION at write-time (v7.8.3 D-3: multi-repo routing)
+    pr_cache = _load_pr_cache()
+    for m in _PR_CITATION_PAT.finditer(text):
+        finding = resolve_pr_cite(m, pr_cache)
+        if finding is not None:
+            errors.append(f"{path}: {finding}")
 
     # Check 1d: CASE_STUDY_MISSING_TIER_TAGS at write-time
     date_match = _DATE_WRITTEN_PAT.search(text)
@@ -331,7 +422,13 @@ def main() -> int:
 
     pr_note = ""
     if _PR_CACHE is not None:
-        pr_note = f" (PR-resolution: {len(_PR_CACHE)} known PRs)"
+        # Count total PRs across all repos in the multi-repo cache.
+        total_prs = sum(
+            len(r.get("open", [])) + len(r.get("merged", [])) + len(r.get("closed", []))
+            for r in _PR_CACHE.get("repos", {}).values()
+        )
+        repos_str = ", ".join(_PR_CACHE.get("repos", {}).keys())
+        pr_note = f" (PR-resolution: {total_prs} PRs across [{repos_str}])"
     elif _PR_CACHE_LOADED:
         pr_note = " (PR-resolution skipped — gh unavailable)"
     print(f"✓ All {len(eligible)} case study files pass all checks "
