@@ -96,3 +96,4 @@ Config/Local/*.xcconfig
 # (docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md cites
 # both files at commit 61964d3 as "the assessable inputs").
 .claude/shared/hadf/phase2-fingerprint-raw*.jsonl
+.cache/
