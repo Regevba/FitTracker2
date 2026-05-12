@@ -26,12 +26,20 @@ CUTOFF_DATE = "2026-04-21"
 
 # Match a T1/T2/T3 tag near a quantitative claim within the same paragraph.
 # Patterns covered: **T1**: 22%, [T1]: 6.5x, T1: 100ms, T1 22.2%
+# v7.8.4: tightened unit boundary — `\b` after the unit eliminates false
+# positives where the unit letter is the first char of a longer word
+# ("h" matching "hook", "s" matching "schema", "d" matching "declared").
 TIER_CLAIM_RE = re.compile(
     r"\*?\*?\[?T(?P<tier>[123])\]?\*?\*?\s*[:.]?\s*"
     r"(?P<claim>[^.\n]*?(?P<number>\d+(?:\.\d+)?)\s*"
-    r"(?P<unit>%|x|ms|s|min|hr|h|d|/(?:\d+))[^\n.]*)",
+    r"(?P<unit>%|x|ms|s|min|hr|h|d|/(?:\d+))\b[^\n.]*)",
     re.IGNORECASE
 )
+
+# v7.8.4: detects T1 ↔ T2/T3 confusion where the regex captures the
+# digit from a SECOND tier marker as if it were a measurement. Matches
+# "T2", "T3", "[T2]", "**T3**" (case-insensitive) within the claim text.
+INTERVENING_TIER_RE = re.compile(r"\*?\*?\[?T[123]\b", re.IGNORECASE)
 
 
 def parse_frontmatter(path: Path) -> dict:
@@ -82,6 +90,39 @@ def find_claims(text: str) -> List[dict]:
     return claims
 
 
+# v7.8.4: threshold-language markers that flip a T1 claim into a forward-looking
+# declaration (target/kill criterion) rather than an observation. These are
+# legitimately T1 ("T1-instrumented metric") but the *value* is a threshold,
+# not a measurement, so it has no ledger row. Skipping them eliminates the
+# largest false-positive class without weakening the heuristic for real
+# observed T1 values.
+TARGET_KILL_MARKERS = (
+    "target",
+    "kill <",
+    "kill >",
+    "kill ≥",
+    "kill ≤",
+    "kill if",
+    "goal:",
+    "goal ",
+    "threshold",
+    "≥",
+    "≤",
+)
+
+
+def is_target_or_kill_claim(context: str) -> bool:
+    """True when the claim context is a forward-looking threshold declaration.
+
+    Added v7.8.4 to narrow the false-positive class — see CLAUDE.md "v7.8.4"
+    section. Targets/kill criteria are legitimately T1-tagged because the
+    *metric* is instrumented, but the *number* is a declaration of intent
+    rather than an observation, so it will never have a ledger match.
+    """
+    lower = context.lower()
+    return any(marker in lower for marker in TARGET_KILL_MARKERS)
+
+
 def validate_file(path: Path, ledger_numbers: Set[float]) -> List[str]:
     fm = parse_frontmatter(path)
     date_written = str(fm.get("date_written", ""))
@@ -95,6 +136,10 @@ def validate_file(path: Path, ledger_numbers: Set[float]) -> List[str]:
     for c in claims:
         if c["tier"] != "1":
             continue  # only check T1
+        if is_target_or_kill_claim(c["context"]):
+            continue  # v7.8.4: target/kill thresholds are declarations, not observations
+        if INTERVENING_TIER_RE.search(c["context"]):
+            continue  # v7.8.4: claim context contains another tier marker — number likely belongs to it
         rounded = round(c["value"], 2)
         match = any(
             abs(rounded - n) / max(abs(n), 1.0) < 0.05
@@ -132,6 +177,10 @@ def main() -> int:
     ledger_paths = [Path(p) for p in args.ledger] or [
         Path(".claude/shared/measurement-adoption.json"),
         Path(".claude/shared/documentation-debt.json"),
+        # v7.8.4: dedicated reference ledger for T1 claims whose values are
+        # computed/derived and not naturally captured by the two ledgers above
+        # (e.g., wall-time totals, ui-audit reductions).
+        Path(".claude/shared/case-study-t1-references.json"),
     ]
     ledger_numbers = load_all_ledger_numbers(ledger_paths)
 

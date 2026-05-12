@@ -50,6 +50,15 @@ jobs:
           echo "New snapshot path: ${new}"
           echo "Previous snapshot path: ${prev:-<none>}"
 
+      # v7.8.4: refresh PR cache before scanning so BROKEN_PR_CITATION +
+      # PR_NUMBER_UNRESOLVED don't produce false positives against a stale
+      # or missing cache. The cache is .gitignored so each cron run starts cold.
+      - name: Refresh PR cache (v7.8.4)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 scripts/ensure-pr-cache-fresh.py || echo "::warning::PR cache refresh failed - integrity check may report false-positive citation findings."
+
       - name: Run integrity check
         id: check
         continue-on-error: true

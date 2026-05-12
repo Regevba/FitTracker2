@@ -2,17 +2,21 @@
 
 > The master plan for FitMe's overall direction and the handoff documents that capture state-of-repo checkpoints between sessions. Kept in one folder so anyone resuming work (human or agent) can find the current plan and the most recent handoff without hunting through scattered folders.
 
-> **Framework state at last update:** PM Framework v7.8.1 (Branch Isolation + Feature-Closure Completeness, shipped 2026-05-07). Canonical entry points:
-> - Developer guide (v1.0 → v7.8.1 technical reference): [`../architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (filename retained for ref-stability; content tracks v7.8.1)
+> **Framework state at last update:** PM Framework **v7.8.4** (Pre-v7.9 Telemetry Calibration & Doc-Debt Cleanup, shipped 2026-05-12 via [PR #314](https://github.com/Regevba/FitTracker2/pull/314)). Predecessor v7.8.3 (Cross-Repo State-Sync, shipped 2026-05-11). v7.9 promotion decision date: 2026-05-21. Canonical entry points:
+> - Developer guide (v1.0 → v7.8.4 technical reference): [`../architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) (filename retained for ref-stability; content tracks v7.8.4)
 > - Feature lifecycle event catalog (companion): [`../architecture/feature-lifecycle-event-catalog.md`](../architecture/feature-lifecycle-event-catalog.md) — every event/log/gate fired during a feature's 9-phase lifecycle, with 2 mermaid flow diagrams
-> - **v7.8.1 case study (current):** [`../case-studies/framework-v7-8-branch-isolation-case-study.md`](../case-studies/framework-v7-8-branch-isolation-case-study.md) — 3 new write-time gates + 3 cycle-time advisories, first feature shipped via v7.8 protocol (Mechanism C + isolated worktree)
+> - **v7.8.4 cold-start entrypoint (current):** [`../../.claude/entrypoints/framework-v7-8-4.md`](../../.claude/entrypoints/framework-v7-8-4.md) — pre-v7.9 calibration + PR_CACHE_STALE gate + TIER_TAG heuristic narrowing
+> - v7.8.3 cold-start entrypoint: [`../../.claude/entrypoints/framework-v7-8-3.md`](../../.claude/entrypoints/framework-v7-8-3.md) — cross-repo state-sync release umbrella
+> - v7.8.1 case study: [`../case-studies/framework-v7-8-branch-isolation-case-study.md`](../case-studies/framework-v7-8-branch-isolation-case-study.md) — 3 new write-time gates + 3 cycle-time advisories, first feature shipped via v7.8 protocol (Mechanism C + isolated worktree)
 > - v7.8 Bridge case study: [`../case-studies/framework-v7-8-bridge-case-study.md`](../case-studies/framework-v7-8-bridge-case-study.md)
 > - v7.7 case study: [`../case-studies/framework-v7-7-validity-closure-case-study.md`](../case-studies/framework-v7-7-validity-closure-case-study.md) — 5 new check codes, framework-health dashboard, cache_hits writer-path closed
 > - v7.6 case study: [`../case-studies/mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md)
 > - v7.5 case study: [`../case-studies/data-integrity-framework-v7.5-case-study.md`](../case-studies/data-integrity-framework-v7.5-case-study.md)
-> - Class B mechanically-unclosable gaps (4 remain after v7.8.1): [`../case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
+> - Honesty ledger (live append-only): [`../case-studies/framework-honesty-ledger.md`](../case-studies/framework-honesty-ledger.md) — FT2-FH-002 added 2026-05-12 (v7.8.3 PR-cache-staleness silent-pass)
+> - Class B mechanically-unclosable gaps (4 remain after v7.8.1; Gap 3 heuristic narrowed in v7.8.4): [`../case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
 > - Tier 3.3 external-replication invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142) (pinned)
 > - v8 candidates (deferred at v7.8.1 ship): [`../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md)
+> - **Infra roadmap (v7.9 promotion + v8.x docket + HADF Phase 2-bis calendar):** [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md)
 > - Pre-v7.5 Codex SSD audit (foundational input): [`codex-ssd-audit-2026-04-19.md`](codex-ssd-audit-2026-04-19.md)
 
 ---
@@ -38,7 +42,8 @@
 
 | File | Date | Purpose |
 |---|---|---|
-| `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-04-20 | **CURRENT master plan.** Adds all v4.3 → v7.0 work, M-series decomposition sprints, and the 185-finding audit remediation program. |
+| `infra-master-plan-2026-05-12.md` | 2026-05-12 | **CURRENT infra plan.** Forward-looking framework master plan covering v7.9 promotion docket, v8.x candidate ranking (F1–F13 + 7 icebox items), HADF Phase 2-bis pre-launch calendar, and the date-gated roadmap through Q3 2026. Separate from product master plan. |
+| `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-05-12 | **CURRENT product master plan.** Adds all v4.3 → v7.8.4 work, M-series decomposition sprints, audit remediation, cross-repo state-sync, and pre-v7.9 telemetry calibration patch. |
 | `master-plan-2026-04-06.md` | 2026-04-06 | DEPRECATED — superseded by 2026-04-15. Kept as a historical snapshot. |
 | `master-plan-reconciled-2026-04-05.md` | 2026-04-05 | DEPRECATED — superseded by 2026-04-06, then 2026-04-15. |
 | `master-backlog-roadmap.md` | living | RICE-prioritized 19-task roadmap. Updated continuously. Referenced by `docs/product/backlog.md`. |

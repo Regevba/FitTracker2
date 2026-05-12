@@ -1,3 +1,22 @@
+---
+title: "Dual-Outlet Case-Study Pattern — short/long contract between FT2 source + fitme-story slot"
+type: pattern_doc
+case_study_type: pattern_doc
+feature: fitme-story-public-enhancements
+date_written: "2026-05-08"
+work_type: "Chore"
+work_subtype: "documentation_pattern"
+dispatch_pattern: "serial (single-session synthesis from prior audit deep-dives)"
+success_metrics:
+  - "Future case studies follow the dual-outlet contract: FT2 source = append-only technical journal; fitme-story slot = frozen-at-merge editorial summary"
+  - "Audit ID G5 (timeline frontmatter audit) has a concrete contract to check against"
+kill_criteria:
+  - "If readers consistently misnavigate between the two outlets, simplify to a single outlet"
+kill_criteria_resolution: "N/A — pattern doc; not a measured feature. Closes audit ID G3 as a contract specification, not a launched feature."
+tier_tags_present: false
+external_audit_status: "internal"
+---
+
 # Dual-Outlet Case-Study Pattern
 
 **Created:** 2026-05-08

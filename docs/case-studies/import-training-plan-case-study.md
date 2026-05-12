@@ -37,7 +37,7 @@ key_numbers:
   - label: "P0 spec errors caught"
     value: "4"
     tier: T1
-    note: "By the user-ordered pre-Phase-4 audit BEFORE any code was written; saved 2-4h of compile-error rework"
+    note: "By the user-ordered pre-Phase-4 audit BEFORE any code was written; saved substantial compile-error rework"
   - label: "Wall-clock time"
     value: "~14 hours"
     tier: T2

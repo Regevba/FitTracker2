@@ -72,7 +72,11 @@ ui-audit-drift:
 # State.json integrity audit — findings-only (no file writes).
 # Also runs as a 72h GitHub Actions cycle (.github/workflows/integrity-cycle.yml).
 # See .claude/integrity/README.md for the full cycle design.
+# v7.8.4: auto-refresh stale PR cache (>24h or empty) before scanning so
+# BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED don't produce false positives.
+# Refresh failure logs to stderr but does not abort the run.
 integrity-check:
+	@python3 scripts/ensure-pr-cache-fresh.py --quiet || true
 	python3 scripts/integrity-check.py --findings-only
 
 # Write a snapshot + diff vs the previous one. Used locally when you want to

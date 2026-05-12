@@ -6,6 +6,8 @@
   "framework_version": "v7.8.1",
   "work_type": "chore",
   "work_subtype": "design_system_extension",
+  "case_study_type": "no_case_study_required",
+  "case_study_exemption_reason": "1-phase chore scaffolding for iOS Code Connect mappings. Parent of code-connect-automation (which is also no_case_study_required). Workflow + scaffold script + CI integration are documented in docs/design-system/ios-code-connect-workflow.md; a separate case study would duplicate that content.",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": true,

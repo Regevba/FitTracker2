@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2 → v7.8.3, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08 → 2026-05-11)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2 → v7.8.3 → v7.8.4, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08 → 2026-05-11 → 2026-05-12)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -230,6 +230,37 @@ features in a single mechanical commit. Three new write-time gates:
 
 **Spec:** [`docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md`](docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md).
 **Plan:** [`docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md`](docs/superpowers/plans/2026-05-11-cross-repo-state-sync-impl.md).
+
+## v7.8.4 Pre-v7.9 Telemetry Calibration & Doc-Debt Cleanup (shipped 2026-05-12)
+
+v7.8.4 is a **patch-level hygiene release** that does NOT add new gates, with one exception: a small operability gate (`PR_CACHE_STALE` auto-refresh) closing the v7.8.3-era false-positive incident. The release exists to clean the noise floor before the **2026-05-21 v7.9 promotion-decision data freezes** — master plan §2.2 promotion criterion #2 ("no false positives") is more credible against a clean baseline.
+
+**What ships:**
+
+1. **PR cache freshness auto-refresh** — new `scripts/ensure-pr-cache-fresh.py` runs before every `make integrity-check` and inside `.github/workflows/integrity-cycle.yml`. Triggers a refresh when `.cache/gh-pr-cache.json` is empty, missing, or older than 24h. Refresh failure logs to stderr but does NOT abort the run (downstream BROKEN_PR_CITATION + PR_NUMBER_UNRESOLVED gates remain operative). Closes the **33-finding false-positive incident** observed 2026-05-12 when an empty-cache run flagged every PR citation as broken.
+2. **TIER_TAG_LIKELY_INCORRECT heuristic narrowed (3 fixes in `scripts/validate-tier-tags.py`):**
+   - `is_target_or_kill_claim()` filter — skips T1 claims whose context contains target/kill/threshold language (forward-looking declarations, not observations)
+   - Word-boundary `\b` after unit regex — eliminates false positives where the unit letter is the first char of a longer word (`h` in `hook`, `s` in `schema`, `d` in `declared`)
+   - Intervening tier-marker filter — skips claims whose context contains another T-tag (e.g., `T1 ... T2`) — number likely belongs to the second tier marker, not the first
+3. **New reference ledger** `.claude/shared/case-study-t1-references.json` — pinned numerical values for T1 claims that are correctly instrumented but whose values are derived/computed and not captured by `measurement-adoption.json` or `documentation-debt.json` (initial seed: 3 entries — 57% ui-audit P1 reduction, 92min stress-test wall time, 2/9 post-v6 adoption ratio at synthesis time)
+4. **cache_hits[] backfills** — `framework-v7-8-branch-isolation` (33 attributed Reads) + `import-training-plan` (95) populated from Mechanism C session-ledger attributions. Clears 2 CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE advisories.
+5. **Doc-debt LOW items closed (5/5):**
+   - `docs/case-studies/dual-outlet-pattern.md` — added YAML frontmatter (date_written, work_type, dispatch_pattern, success_metrics, kill_criteria, kill_criteria_resolution)
+   - `docs/case-studies/framework-v7-8-branch-isolation-case-study.md` — added `success_metrics` field (companion to existing `primary_metric`)
+   - `.claude/features/ios-code-connect/state.json` — added `case_study_type: no_case_study_required` + exemption reason
+6. **Stale lockfile cleared** — `.claude/active-feature` reset from `ios-ui-audit-p1-burndown` (closed) to empty so the next `/pm-workflow` invocation owns it cleanly.
+7. **Pre-v7.9 snapshot captured** — `make snapshot-phase PHASE=pre-v7-9-baseline FEATURE=framework-v7-8-branch-isolation` writes baseline to `~/Documents/FitTracker2-backups/2026-05-12-framework-v7-8-branch-isolation-pre-v7-9-baseline/` (12 files, sha256-verified).
+
+**Outcome:** `make integrity-check` baseline at v7.8.4 ship — **0 findings + 0 advisory** (was 35+9 at session open, 6 advisory after stale-cache fix, 0+0 post-v7.8.4).
+
+**What does NOT change in v7.8.4:**
+- All v7.5 → v7.8.3 gates fire identically (no regression)
+- v7.9 promotion calendar unchanged (decision 2026-05-21 per master plan §2.2)
+- Master plan v8.x F-candidate docket unchanged
+
+**v7.8.4 ships via** PR (TBD) on `chore/framework-v7-8-4-calibration-patch`. Lifecycle catalog entry mirrors v7.8.2's documented-disposition format.
+
+**Spec:** N/A — patch-level hygiene; rationale captured in this section + cold-start entrypoint [`.claude/entrypoints/framework-v7-8-4.md`](.claude/entrypoints/framework-v7-8-4.md).
 
 ## Known Mechanical Limits
 
