@@ -1,0 +1,75 @@
+{
+  "feature_name": "fitme-story-ds-p2-final-sweep",
+  "current_phase": "tasks",
+  "created_at": "2026-05-12T03:50:06Z",
+  "updated_at": "2026-05-12T03:50:06Z",
+  "framework_version": "v7.8.3",
+  "work_type": "enhancement",
+  "work_subtype": "audit_burndown",
+  "parent_feature": "fitme-story-design-system-p2-cleanup",
+  "parent_case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+  "branch": "feature/fitme-story-ds-p2-final-sweep",
+  "state_owner": "ft2",
+  "has_ui": true,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "scheduled_after": {
+    "predecessor": "fitme-story-ds-p2-deferred",
+    "signal": "User requested 'continue with all fitme story tasks' after P2-044 closure (PRs #93 + #308 + #94)",
+    "captured_at": "2026-05-12T03:50:06Z",
+    "resolved_at": "2026-05-12T03:42:43Z",
+    "resolved_by_pr": [93],
+    "note": "Predecessor closed 1 of 11 deferred P2s (P2-044). This final-sweep enhancement attacks the 7 tractable items (P2-006/012/013/019/033/034/037) and explicitly re-defers 3 operator-required items (P2-002/003/029-remaining) with sharper documentation."
+  },
+  "audit_source": "docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
+  "case_study": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md",
+  "phases": {
+    "research": {"status": "skipped", "skipped_reason": "work_type:enhancement — audit findings ARE the spec."},
+    "prd": {"status": "skipped", "skipped_reason": "work_type:enhancement — parent feature has approved PRD."},
+    "tasks": {"status": "in_progress", "started_at": "2026-05-12T03:50:06Z"},
+    "ux_or_integration": {"status": "skipped", "skipped_reason": "work_type:enhancement + audit_burndown — small per-instance polish."},
+    "implementation": {"status": "pending"},
+    "testing": {"status": "pending"},
+    "review": {"status": "pending"},
+    "merge": {"status": "pending"},
+    "documentation": {"status": "pending"}
+  },
+  "tasks": [
+    {"id": "T1", "status": "pending", "description": "P2-006: unify About page contact link styling (consistent hover/focus + token-based)"},
+    {"id": "T2", "status": "pending", "description": "P2-013: Wrench icon DS-fy on Developer deep-dives header — use consistent stroke + token color"},
+    {"id": "T3", "status": "pending", "description": "P2-019: glossary <dt> term-label class — add semantic .term-label utility"},
+    {"id": "T4", "status": "pending", "description": "P2-033: unify /trust audit metadata link styling (mix of underline/inline)"},
+    {"id": "T5", "status": "pending", "description": "P2-034: tokenize /pm-flow padding breakpoint stack (px-4 sm:px-6 lg:px-10 xl:px-14)"},
+    {"id": "T6", "status": "pending", "description": "P2-012 + P2-037: heading-scale review on /case-studies (text-3xl vs --text-display-md) — swap clean cases only"},
+    {"id": "T7", "status": "pending", "description": "Re-defer P2-002 (Hero gradient), P2-003 (NumbersPanel text-3xl), P2-029-remaining (NumbersPanel + timeline Stat) with sharper operator-required docs"},
+    {"id": "T8", "status": "pending", "description": "Verify gates (tsc + tests + case-study-audit) + commit + open PR"},
+    {"id": "T9", "status": "pending", "description": "Close out: state.json complete + case study + showcase MDX slot 31"}
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {"ux": null, "design": null},
+  "transitions": [],
+  "timing": {
+    "session_start": "2026-05-12T03:50:06Z",
+    "phases": {"tasks": {"started_at": "2026-05-12T03:50:06Z"}},
+    "time_source": "measured"
+  },
+  "cache_hits": [],
+  "_meta": {
+    "scope_decision": "7 tractable P2 items shipping + 3 operator-required P2s explicitly re-deferred with sharper docs.",
+    "dispatch_pattern": "single-agent-tdd-sequential",
+    "tier_tags_present": ["T1"],
+    "success_metrics": [
+      "P2-006/012/013/019/033/034/037 closed in audit follow-up (7 items)",
+      "P2-002/003/029-remaining re-deferred with operator-action documented in case study",
+      "0 new tsc errors, 0 new test failures vs main",
+      "case-study-audit exit 0"
+    ],
+    "kill_criteria": [
+      "Heading-scale swap (P2-012/037) causes wide-viewport visual regression → revert that specific swap, mark heading as re-deferred",
+      "Padding tokenization (P2-034) breaks responsive grid on any breakpoint → revert + investigate"
+    ],
+    "kill_criteria_resolution": "pending_implementation"
+  },
+  "related_prs": []
+}
