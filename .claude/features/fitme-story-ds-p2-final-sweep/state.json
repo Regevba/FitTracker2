@@ -1,0 +1,102 @@
+{
+  "feature_name": "fitme-story-ds-p2-final-sweep",
+  "current_phase": "complete",
+  "created_at": "2026-05-12T03:50:06Z",
+  "updated_at": "2026-05-12T04:25:00Z",
+  "framework_version": "v7.8.3",
+  "work_type": "enhancement",
+  "work_subtype": "audit_burndown",
+  "parent_feature": "fitme-story-design-system-p2-cleanup",
+  "parent_case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+  "branch": "feature/fitme-story-ds-p2-final-sweep",
+  "state_owner": "ft2",
+  "has_ui": true,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "scheduled_after": {
+    "predecessor": "fitme-story-ds-p2-deferred",
+    "signal": "User requested 'continue with all fitme story tasks'",
+    "captured_at": "2026-05-12T03:50:06Z",
+    "resolved_at": "2026-05-12T03:42:43Z",
+    "resolved_by_pr": [93],
+    "note": "Final-sweep closes 5 more tractable P2s + re-defers 5 operator-required items with sharper docs."
+  },
+  "audit_source": "docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
+  "case_study": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/32-fitme-story-ds-p2-final-sweep.mdx",
+  "phases": {
+    "research": {"status": "skipped", "skipped_reason": "work_type:enhancement"},
+    "prd": {"status": "skipped", "skipped_reason": "work_type:enhancement"},
+    "tasks": {"status": "approved", "started_at": "2026-05-12T03:50:06Z", "approved_at": "2026-05-12T03:52:00Z"},
+    "ux_or_integration": {"status": "skipped", "skipped_reason": "work_type:enhancement + audit_burndown"},
+    "implementation": {
+      "status": "complete",
+      "started_at": "2026-05-12T03:52:00Z",
+      "ended_at": "2026-05-12T04:22:24Z",
+      "commits": [{"sha": "b54ed43", "pr": "[fitme-story#95]", "title": "feat(design-system): 3 utility classes + 6 site migrations (5 P2s closed)"}]
+    },
+    "testing": {"status": "complete", "ci_passed": true, "tests_added": 0, "notes": "Pure className + CSS additions; tsc + tests + case-study-audit all green."},
+    "review": {"status": "complete", "ci_main": "SUCCESS", "ci_feature": "SUCCESS"},
+    "merge": {"status": "complete", "pr_number": 95, "pr_repo": "fitme-story", "merge_commit": "b54ed43", "merged_at": "2026-05-12T04:22:24Z"},
+    "documentation": {"status": "complete", "case_study": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md", "case_study_showcase": "fitme-story/content/04-case-studies/32-fitme-story-ds-p2-final-sweep.mdx"}
+  },
+  "tasks": [
+    {"id": "T1", "status": "done", "description": "P2-006: unify About page contact link styling", "pr_number": "[fitme-story#95]"},
+    {"id": "T2", "status": "done", "description": "P2-013: Wrench icon — false positive, already tokenized"},
+    {"id": "T3", "status": "done", "description": "P2-019: glossary <dt> .term-label class", "pr_number": "[fitme-story#95]"},
+    {"id": "T4", "status": "done", "description": "P2-033: unify /trust audit metadata link styling", "pr_number": "[fitme-story#95]"},
+    {"id": "T5", "status": "done", "description": "P2-034: tokenize /pm-flow padding stack via .section-padding-x", "pr_number": "[fitme-story#95]"},
+    {"id": "T6", "status": "deferred", "description": "P2-012 + P2-037: heading-scale alignment — re-deferred (visual regression confirmed at wide viewports)"},
+    {"id": "T7", "status": "deferred", "description": "P2-002 (Hero gradient), P2-003 (NumbersPanel), P2-029-remaining — re-deferred per original parent rationale"},
+    {"id": "T8", "status": "done", "description": "Open PR + verify gates", "pr_number": "[fitme-story#95]"},
+    {"id": "T9", "status": "done", "description": "Close out state.json + case study + showcase MDX slot 32"}
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {"ux": null, "design": null},
+  "transitions": [
+    {"from": "tasks", "to": "implementation", "at": "2026-05-12T03:52:00Z", "note": "3 utility classes added + 6 site migrations"},
+    {"from": "implementation", "to": "testing", "at": "2026-05-12T04:10:00Z", "note": "Verified locally"},
+    {"from": "testing", "to": "review", "at": "2026-05-12T04:15:00Z", "note": "All CI green"},
+    {"from": "review", "to": "merge", "at": "2026-05-12T04:22:00Z", "note": "PR #95 squash-merged"},
+    {"from": "merge", "to": "documentation", "at": "2026-05-12T04:22:24Z", "note": "Case study + showcase MDX drafted"},
+    {"from": "documentation", "to": "complete", "at": "2026-05-12T04:25:00Z", "note": "FEATURE_CLOSURE_COMPLETENESS satisfied"}
+  ],
+  "timing": {
+    "session_start": "2026-05-12T03:50:06Z",
+    "phases": {
+      "tasks": {"started_at": "2026-05-12T03:50:06Z", "ended_at": "2026-05-12T03:52:00Z", "duration_minutes": 2},
+      "implementation": {"started_at": "2026-05-12T03:52:00Z", "ended_at": "2026-05-12T04:10:00Z", "duration_minutes": 18},
+      "testing": {"started_at": "2026-05-12T04:10:00Z", "ended_at": "2026-05-12T04:15:00Z", "duration_minutes": 5},
+      "review": {"started_at": "2026-05-12T04:15:00Z", "ended_at": "2026-05-12T04:22:00Z", "duration_minutes": 7},
+      "merge": {"started_at": "2026-05-12T04:22:00Z", "ended_at": "2026-05-12T04:22:24Z", "duration_minutes": 0},
+      "documentation": {"started_at": "2026-05-12T04:22:24Z", "ended_at": "2026-05-12T04:25:00Z", "duration_minutes": 3},
+      "complete": {"started_at": "2026-05-12T04:25:00Z", "ended_at": "2026-05-12T04:25:00Z", "duration_minutes": 0}
+    },
+    "session_end": "2026-05-12T04:25:00Z",
+    "total_wall_time_minutes": 35,
+    "time_source": "measured"
+  },
+  "cache_hits": [
+    {"timestamp": "2026-05-12T04:24:50Z", "level": "L1", "key": "globals.css utility class patterns", "type": "adapted", "skill": "design", "event_type": "cache_hit", "phase": "complete"}
+  ],
+  "_meta": {
+    "scope_decision": "5 tractable P2s shipped + 5 re-deferred with sharper docs.",
+    "dispatch_pattern": "single-agent-tdd-sequential",
+    "tier_tags_present": ["T1"],
+    "success_metrics": [
+      "P2-006/019/033/034 closed (4 items via 3 utility classes)",
+      "P2-013 confirmed as audit false positive",
+      "P2-012/037 re-deferred with new wide-viewport regression analysis",
+      "0 new tsc errors + 0 new test failures vs main"
+    ],
+    "kill_criteria": [
+      "Padding tokenization (P2-034) breaks responsive grid → revert"
+    ],
+    "kill_criteria_resolution": "not_triggered — .section-padding-x reproduces the original 4-breakpoint stack byte-for-byte; .term-label / .link-inline match original inline classes; heading swaps NOT attempted (re-deferred upfront)."
+  },
+  "related_prs": ["[fitme-story#95]"],
+  "pr_citation_exempt_state": [
+    {"pr_number": 93, "reason": "Predecessor reference"}
+  ]
+}
