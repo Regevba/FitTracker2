@@ -1,0 +1,85 @@
+{
+  "feature_name": "fitme-story-ds-p2-deferred",
+  "current_phase": "tasks",
+  "created_at": "2026-05-12T02:47:13Z",
+  "updated_at": "2026-05-12T02:47:13Z",
+  "framework_version": "v7.8.3",
+  "work_type": "enhancement",
+  "work_subtype": "audit_burndown",
+  "parent_feature": "fitme-story-design-system-p2-cleanup",
+  "parent_case_study": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+  "branch": "feature/fitme-story-ds-p2-deferred",
+  "state_owner": "ft2",
+  "has_ui": true,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "scheduled_after": {
+    "predecessor": "fitme-story-design-system-p2-cleanup",
+    "signal": "fitme-story-design-system-p2-cleanup phase=complete (PR #84 merged 2026-05-10 squash 185c0d8)",
+    "captured_at": "2026-05-12T02:47:13Z",
+    "resolved_at": "2026-05-10T00:00:00Z",
+    "resolved_by_pr": [84],
+    "note": "Predecessor shipped 4 of 16 P2 items + deferred 12 with documented reasons. This follow-up addresses ONLY P2-044 (Tag<muted> variant + /search badge migration) per user scope decision 2026-05-12. The remaining 11 stay deferred (P2-002/003/006/012/013/019/029-remaining/033/034/037 — judgment-needed or visual-regression-risk)."
+  },
+  "audit_source": "docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
+  "case_study": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "skipped_reason": "work_type:enhancement — audit findings ARE the spec."
+    },
+    "prd": {
+      "status": "skipped",
+      "skipped_reason": "work_type:enhancement — parent feature has approved PRD."
+    },
+    "tasks": {
+      "status": "in_progress",
+      "started_at": "2026-05-12T02:47:13Z"
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skipped_reason": "work_type:enhancement + audit_burndown — single new component variant + 4 call-site migrations."
+    },
+    "implementation": {"status": "pending"},
+    "testing": {"status": "pending"},
+    "review": {"status": "pending"},
+    "merge": {"status": "pending"},
+    "documentation": {"status": "pending"}
+  },
+  "tasks": [
+    {"id": "T1", "status": "pending", "description": "Add <Tag variant=\"muted\"> variant to fitme-story/src/components/ui/Tag.tsx — rounded-full bg-neutral-100, matches /search current visual"},
+    {"id": "T2", "status": "pending", "description": "Migrate /search category badges (4 inline rounded-full bg-neutral-100 sites) to <Tag variant=\"muted\">"},
+    {"id": "T3", "status": "pending", "description": "Update design-system showcase to render Tag<muted> alongside default Tag"},
+    {"id": "T4", "status": "pending", "description": "Run npm run typecheck + npm test + npm run case-study-audit"},
+    {"id": "T5", "status": "pending", "description": "Open fitme-story PR + close out FT2 state.json + case study + slot 30 showcase MDX"}
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {"ux": null, "design": null},
+  "transitions": [],
+  "timing": {
+    "session_start": "2026-05-12T02:47:13Z",
+    "phases": {
+      "tasks": {"started_at": "2026-05-12T02:47:13Z"}
+    },
+    "time_source": "measured"
+  },
+  "cache_hits": [],
+  "_meta": {
+    "scope_decision": "Only P2-044 (Tag<muted> + /search migration). 11 other deferred P2s re-deferred with documented reasons.",
+    "dispatch_pattern": "single-agent-tdd-sequential",
+    "tier_tags_present": ["T1"],
+    "success_metrics": [
+      "<Tag variant=\"muted\"> variant exists + renders correctly on /design-system",
+      "/search page uses <Tag variant=\"muted\"> instead of 4 inline rounded-full bg-neutral-100 spans",
+      "0 visual regressions on /search (operator preview spot-check)",
+      "P2-044 closed in audit follow-up"
+    ],
+    "kill_criteria": [
+      "Tag<muted> variant differs visually from current /search badges (defeats purpose of migration; cancel migration + adjust variant)",
+      "Migration breaks /search badge spacing or wrap behavior on mobile widths → revert + investigate"
+    ],
+    "kill_criteria_resolution": "pending_implementation"
+  },
+  "related_prs": []
+}
