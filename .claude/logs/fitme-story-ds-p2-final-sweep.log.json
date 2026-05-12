@@ -6,13 +6,24 @@
   "current_phase": "tasks",
   "framework_version": "v7.8.3",
   "started_at": "2026-05-12T03:52:07Z",
-  "updated_at": "2026-05-12T03:52:07Z",
+  "updated_at": "2026-05-12T04:26:35Z",
   "events": [
     {
       "timestamp": "2026-05-12T03:52:07Z",
       "event_type": "phase_started",
       "phase": "tasks",
       "summary": "Final sweep on 10 remaining deferred P2s \u2014 7 tractable + 3 operator-required re-defer",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-12T04:26:35Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Closure: PR #95 merged b54ed43; 5 P2s closed, 5 re-deferred with sharper docs",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
