@@ -170,5 +170,73 @@ def test_closure_completeness_against_real_case_study():
     assert isinstance(findings, list)
 
 
+# ─── Regression: main() must run Mode B even with no state.json staged ──
+# Pre-fix bug: main() early-returned at `if not files: return 0` BEFORE the
+# Mode B check block, so commits staging only infra-path files (scripts/,
+# .claude/shared/, .githooks/, etc.) without a state.json silently bypassed
+# the BRANCH_ISOLATION_VIOLATION gate AND the gate-coverage ledger write.
+# Witnessed empirically on HADF Phase 2-bis Block A commits A3–A11 (9
+# commits, 0 gate-coverage entries for BRANCH_ISOLATION_VIOLATION post
+# 2026-05-12T07:58:43Z). See PR for full diagnostic.
+
+def test_main_runs_mode_b_when_only_infra_files_staged(monkeypatch, tmp_path):
+    """Mode B must fire (or record skip) when infra-path files are staged
+    even if no state.json is staged."""
+    import json as _json
+
+    monkeypatch.setattr(_mod, "collect_staged_state_files", lambda: [])
+    monkeypatch.setattr(
+        _mod,
+        "collect_all_staged_files",
+        lambda: ["scripts/foo.py", ".claude/shared/bar.json"],
+    )
+    ledger_path = tmp_path / "gate-coverage.jsonl"
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", ledger_path)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    rc = _mod.main()
+    assert rc == 0, f"Advisory gate must not block; got rc={rc}"
+    assert ledger_path.exists(), (
+        "Coverage ledger must be written even when no state.json is staged "
+        "(Mechanism A requirement)"
+    )
+    entries = [
+        _json.loads(line)
+        for line in ledger_path.read_text().splitlines()
+        if line.strip()
+    ]
+    gate_names = {e["gate"] for e in entries}
+    assert "BRANCH_ISOLATION_VIOLATION" in gate_names, (
+        f"Mode B must record to coverage ledger; got gates: {gate_names}"
+    )
+
+
+def test_main_skips_mode_b_when_no_files_staged_at_all(monkeypatch, tmp_path):
+    """Empty staged set: Mode B records `no_staged_files` skip, exits 0."""
+    import json as _json
+
+    monkeypatch.setattr(_mod, "collect_staged_state_files", lambda: [])
+    monkeypatch.setattr(_mod, "collect_all_staged_files", lambda: [])
+    ledger_path = tmp_path / "gate-coverage.jsonl"
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", ledger_path)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    rc = _mod.main()
+    assert rc == 0
+    # Coverage ledger should still be written so Mechanism A can observe the
+    # candidate→skip transition (vs the pre-fix world where the gate was
+    # neither candidate nor skip — invisible to GATE_COVERAGE_ZERO meta-check).
+    assert ledger_path.exists()
+    entries = [
+        _json.loads(line)
+        for line in ledger_path.read_text().splitlines()
+        if line.strip()
+    ]
+    bi_entries = [e for e in entries if e["gate"] == "BRANCH_ISOLATION_VIOLATION"]
+    assert bi_entries, "BRANCH_ISOLATION_VIOLATION must appear as candidate+skip"
+    assert bi_entries[0]["skipped"] >= 1
+    assert "no_staged_files" in bi_entries[0]["skip_reasons"]
+
+
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-v"]))

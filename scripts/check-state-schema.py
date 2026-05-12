@@ -1478,10 +1478,6 @@ def main() -> int:
         files = [Path(a).resolve() for a in args]
         mode = "explicit"
 
-    if not files:
-        print(f"No state.json files to validate (mode={mode}).")
-        return 0
-
     # Phase-transition checks (1a, 1b) only fire at commit time. Full-corpus
     # scans cannot tell what's a "transition" — they just see current state.
     # Override via FORCE_TRANSITION_CHECKS=1 (used by the regression test
@@ -1506,6 +1502,13 @@ def main() -> int:
     # BRANCH_ISOLATION_VIOLATION check (Mode B — infra-path classifier).
     # Runs ONCE per script invocation in staged mode. Advisory in v7.8:
     # prints warning to stderr, does NOT add to errors list.
+    #
+    # NOTE: this block runs BEFORE the no-state-files early exit. Mode B
+    # fires on infra-path commits regardless of whether state.json is in
+    # the staged set, so scaffolding commits (scripts/, .claude/shared/,
+    # .githooks/, etc.) without a state.json must still be evaluated.
+    # Pre-2026-05-12 the early-exit was above this block, silently bypassing
+    # Mode B for ~9 commits in HADF Phase 2-bis Block A (A3–A11).
     if mode == "staged":
         all_staged = collect_all_staged_files()
         for finding in check_branch_isolation_violation_commit_level(
@@ -1526,11 +1529,6 @@ def main() -> int:
                     f"got branch={finding['got']}. {finding['remediation']}"
                 )
 
-    for p in files:
-        all_errors.extend(
-            validate_file(p, enforce_transition=enforce_transition, coverage=coverage)
-        )
-
     # Persist the coverage ledger. Failure to write must not affect the
     # exit code — Mechanism A is advisory in v7.8; the gate verdict is
     # what gates the commit. Tests opt out via GATE_COVERAGE_LEDGER_DISABLED=1.
@@ -1538,12 +1536,34 @@ def main() -> int:
     # concerned, but the longitudinal data accumulates on local + scheduled
     # cron runs (the data source for the v7.9 GATE_COVERAGE_ZERO meta-check).
     skip_ledger = os.environ.get("GATE_COVERAGE_LEDGER_DISABLED") == "1"
-    if not skip_ledger:
+
+    def _persist_coverage_ledger() -> None:
+        if skip_ledger:
+            return
         try:
             coverage.write_jsonl(GATE_COVERAGE_LEDGER)
         except OSError as e:
             print(f"warning: gate-coverage ledger write failed ({e})",
                   file=sys.stderr)
+
+    if not files:
+        _persist_coverage_ledger()
+        if all_errors:
+            print(f"✗ STATE_SCHEMA: {len(all_errors)} violation(s) "
+                  f"(mode={mode}, files scanned=0)",
+                  file=sys.stderr)
+            for err in all_errors:
+                print(f"  - {err}", file=sys.stderr)
+            return 1
+        print(f"No state.json files to validate (mode={mode}).")
+        return 0
+
+    for p in files:
+        all_errors.extend(
+            validate_file(p, enforce_transition=enforce_transition, coverage=coverage)
+        )
+
+    _persist_coverage_ledger()
 
     if all_errors:
         print(f"✗ STATE_SCHEMA: {len(all_errors)} violation(s) "
