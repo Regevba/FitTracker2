@@ -163,7 +163,7 @@ struct DesignSystemCatalogView: View {
                     ) {
                         RoundedRectangle(cornerRadius: AppRadius.medium, style: .continuous)
                             .fill(AppGradient.brand.opacity(0.24))
-                            .frame(height: 88)
+                            .frame(height: AppSize.bannerHeight)
                             .overlay(
                                 Text("Chart shell")
                                     .font(AppText.captionStrong)

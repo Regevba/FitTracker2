@@ -94,7 +94,7 @@ struct ImportedPlansListScreen: View {
                     .font(AppText.body)
                     .foregroundStyle(AppColor.Text.secondary)
                     .multilineTextAlignment(.center)
-                    .frame(maxWidth: 280)
+                    .frame(maxWidth: AppSize.centeredTextMaxWidth)
                 Button {
                     analytics.logImportStarted(entryPoint: .settingsData)
                     showImportSheet = true

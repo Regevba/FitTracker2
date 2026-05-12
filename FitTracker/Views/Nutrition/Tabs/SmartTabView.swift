@@ -26,7 +26,7 @@ struct SmartTabView: View {
                     Image(uiImage: selectedImagePreview)
                         .resizable()
                         .scaledToFill()
-                        .frame(height: 150)
+                        .frame(height: AppSize.imagePreviewHeight)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: AppRadius.medium))
                         .overlay(
@@ -59,7 +59,7 @@ struct SmartTabView: View {
                         .font(AppText.captionStrong)
                         .foregroundStyle(AppColor.Text.secondary)
                     TextEditor(text: $vm.rawLabelText)
-                        .frame(minHeight: 140)
+                        .frame(minHeight: AppSize.textEditorMinHeight)
                         .padding(AppSpacing.xxSmall)
                         .background(AppColor.Text.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: AppRadius.small))
                     Text("Hebrew and English keywords are parsed here. Photos use Apple Vision OCR first, then this parser scales the label to your consumed weight. If a Hebrew label photo doesn’t scan cleanly, paste the label text here and the parser still works.")

@@ -210,7 +210,7 @@ struct MainScreenView: View {
     private var sectionDivider: some View {
         Rectangle()
             .fill(AppColor.Text.tertiary.opacity(0.3))
-            .frame(height: 0.5)
+            .frame(height: AppSize.dividerHairline)
     }
 
     // ─────────────────────────────────────────────────────

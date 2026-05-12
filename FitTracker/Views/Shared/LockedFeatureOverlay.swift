@@ -49,7 +49,7 @@ struct LockedFeatureOverlay: View {
                     .accessibilityHint("Dismisses the upgrade prompt")
             }
             .padding(AppSpacing.large)
-            .frame(maxWidth: 320)
+            .frame(maxWidth: AppSize.dialogMaxWidth)
             .padding(.horizontal, AppSpacing.large)
             .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.card))
             .shadow(color: AppShadow.cardColor, radius: AppShadow.cardRadius, y: AppShadow.cardYOffset)

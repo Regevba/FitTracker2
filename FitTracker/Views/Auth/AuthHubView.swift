@@ -674,7 +674,7 @@ private struct OTPCodeEntryField: View {
 
                     RoundedRectangle(cornerRadius: AppRadius.small)
                         .fill(AppColor.Surface.primary)
-                        .frame(height: 58)
+                        .frame(height: AppSize.authFieldHeight)
                         .overlay(
                             Text(digit)
                                 .font(AppText.titleMedium)

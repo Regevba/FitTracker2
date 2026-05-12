@@ -136,7 +136,7 @@ struct AIIntelligenceSheet: View {
             Text(label)
                 .font(AppText.caption)
                 .foregroundStyle(AppColor.Text.secondary)
-                .frame(width: 60, alignment: .leading)
+                .frame(width: AppSize.captionLabelWidth, alignment: .leading)
 
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
