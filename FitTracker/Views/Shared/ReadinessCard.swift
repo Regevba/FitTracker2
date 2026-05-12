@@ -304,7 +304,7 @@ struct ReadinessCard: View {
                 }
             }
             .padding(.horizontal, AppSpacing.small)
-            .frame(height: 76)
+            .frame(height: AppSize.rowHeightCompact)
 
             // Next day label
             let tomorrowType = logsMap[weekDays.first(where: { cal.isDateInTomorrow($0) }) ?? today]?.dayType
@@ -481,9 +481,9 @@ struct ReadinessCard: View {
 
             HStack(spacing: 0) {
                 achievementCell(emoji: "🔥", value: streak,       label: "Supp Streak")
-                Divider().background(AppColor.Surface.materialLight).frame(height: 50)
+                Divider().background(AppColor.Surface.materialLight).frame(height: AppSize.dividerVerticalTall)
                 achievementCell(emoji: "🏆", value: prsThisWeek,  label: "PRs This Week")
-                Divider().background(AppColor.Surface.materialLight).frame(height: 50)
+                Divider().background(AppColor.Surface.materialLight).frame(height: AppSize.dividerVerticalTall)
                 achievementCell(emoji: "📅", value: dayOnProgram, label: "Program Day")
             }
             .padding(.horizontal, AppSpacing.xxSmall)

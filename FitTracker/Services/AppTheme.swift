@@ -277,6 +277,63 @@ enum AppSize {
     /// trackers + nutrition macro bars. Distinct from progressBarHeight
     /// (4pt, default thin bar).
     static let progressBarHeightTall: CGFloat = 6
+
+    // MARK: - P1 final-sweep tokens (ui-ux-final-sweep-2026-05-12)
+    // 13 semantic tokens for the remaining DS-MAGIC-FRAME singletons.
+    // User explicitly overrode Option B to push P1 to 0 — these tokens
+    // accept the bloat trade-off in exchange for design-system honesty
+    // (no raw literals in views).
+
+    /// Caption label width (60pt) — aligned read-only labels in detail
+    /// sheets (AIIntelligenceSheet trailing alignment).
+    static let captionLabelWidth: CGFloat = 60
+
+    /// Auth field row height (58pt) — input row containers, subtly
+    /// taller than ctaHeight (52pt).
+    static let authFieldHeight: CGFloat = 58
+
+    /// Hairline divider thickness (0.5pt) — sub-section dividers that
+    /// need to be visibly thinner than 1pt. Resolves to 1 physical pixel
+    /// on Retina displays.
+    static let dividerHairline: CGFloat = 0.5
+
+    /// Macro target bar height (14pt) — taller than progressBarHeightTall
+    /// (6pt) for prominent macro displays.
+    static let macroBarHeight: CGFloat = 14
+
+    /// Image preview height (150pt) — photo-picker label preview in
+    /// SmartTabView. Aspect ratio chosen for nutrition labels.
+    static let imagePreviewHeight: CGFloat = 150
+
+    /// Text-editor minimum height (140pt) — SmartTabView raw-text input.
+    static let textEditorMinHeight: CGFloat = 140
+
+    /// Popover max width (220pt) — NutritionView search-results popover.
+    static let popoverMaxWidth: CGFloat = 220
+
+    /// Brand banner height (88pt) — DesignSystemCatalogView brand-gradient
+    /// hero strip.
+    static let bannerHeight: CGFloat = 88
+
+    /// Centered prose max-width (280pt) — empty-state instructional text
+    /// in ImportedPlansListScreen.
+    static let centeredTextMaxWidth: CGFloat = 280
+
+    /// Modal dialog max-width (320pt) — LockedFeatureOverlay upgrade
+    /// prompt. Sized for compact dialog surfaces.
+    static let dialogMaxWidth: CGFloat = 320
+
+    /// Compact row height (76pt) — ReadinessCard next-day indicator row.
+    /// Distinct from avatarHero (72pt).
+    static let rowHeightCompact: CGFloat = 76
+
+    /// Vertical divider height (50pt) — between achievement cells in
+    /// ReadinessCard.
+    static let dividerVerticalTall: CGFloat = 50
+
+    /// Step indicator circle (30pt) — numbered-step circles in
+    /// RecoveryRoutineSheet onboarding-style lists.
+    static let stepIndicatorSize: CGFloat = 30
 }
 
 // MARK: - Motion

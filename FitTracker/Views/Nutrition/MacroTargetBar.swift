@@ -57,7 +57,7 @@ struct MacroTargetBar: View {
                     }
                 }
             }
-            .frame(height: 14)
+            .frame(height: AppSize.macroBarHeight)
 
             HStack(alignment: .top, spacing: AppSpacing.large) {
                 macroLabel("Protein", value: protein, target: targetProteinG, color: AppColor.Accent.recovery)

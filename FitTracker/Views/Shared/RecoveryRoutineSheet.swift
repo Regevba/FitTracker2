@@ -59,7 +59,7 @@ struct RecoveryRoutineSheet: View {
                             ZStack {
                                 Circle()
                                     .fill(Color.accentColor.opacity(0.14))
-                                    .frame(width: 30, height: 30)
+                                    .frame(width: AppSize.stepIndicatorSize, height: AppSize.stepIndicatorSize)
                                 Text("\(index + 1)")
                                     .font(AppText.eyebrow)
                                     .foregroundStyle(Color.accentColor)

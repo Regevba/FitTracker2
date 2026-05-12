@@ -936,7 +936,7 @@ struct NutritionView: View {
                                     .font(AppText.monoLabel)
                                     .foregroundStyle(AppColor.Text.secondary)
                             }
-                            .frame(minWidth: 160, idealWidth: 180, maxWidth: 220, alignment: .leading)
+                            .frame(minWidth: AppSize.illustrationXLarge, idealWidth: AppSize.chartHeightCompact, maxWidth: AppSize.popoverMaxWidth, alignment: .leading)
                             .padding(.vertical, AppSpacing.xxxSmall)
                         }
                         .buttonStyle(.plain)
