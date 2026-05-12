@@ -1,7 +1,7 @@
-# Mechanically Unclosable Gaps — v7.7 Class B Inventory (1 closed by v7.7 M1; promoted to ENFORCED in v7.8.3)
+# Mechanically Unclosable Gaps — v7.7 Class B Inventory (1 closed by v7.7 M1; promoted to ENFORCED in v7.8.3; **Gap 3 heuristic narrowed in v7.8.4**)
 
-> **Generated:** 2026-04-25; **updated:** 2026-04-27 at v7.7 ship; **updated:** 2026-05-11 at v7.8.3 ship (Gap 1 promoted from advisory → ENFORCED via V2 — `CACHE_HITS_EMPTY_POST_V6` renamed to `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` and severity flipped to FAIL).
-> **Framework version at publication:** 7.7 (Validity Closure); subsequently extended at 7.8 / 7.8.1 / 7.8.2 / 7.8.3
+> **Generated:** 2026-04-25; **updated:** 2026-04-27 at v7.7 ship; **updated:** 2026-05-11 at v7.8.3 ship (Gap 1 promoted from advisory → ENFORCED via V2); **updated:** 2026-05-12 at v7.8.4 ship (Gap 3 narrowed — `TIER_TAG_LIKELY_INCORRECT` heuristic now filters target/kill-threshold claims + applies `\b` word-boundary on unit regex + skips claims with intervening tier markers; cleared all 6 advisory false positives observed pre-v7.8.4; Gap 3 is still Class B but with a tighter false-positive surface).
+> **Framework version at publication:** 7.7 (Validity Closure); subsequently extended at 7.8 / 7.8.1 / 7.8.2 / 7.8.3 / 7.8.4
 > **Authoritative companion:** [docs/case-studies/framework-v7-7-validity-closure-case-study.md](/docs/case-studies/framework-v7-7-validity-closure-case-study.md)
 > **v7.6 companion:** [docs/case-studies/mechanical-enforcement-v7-6-case-study.md](/docs/case-studies/mechanical-enforcement-v7-6-case-study.md)
 > **Policy precedent:** [`feedback_publish_verbatim_then_remediate.md`](../../.claude/feedback/) — gaps stay visible; we do not collapse them silently.
@@ -85,8 +85,10 @@ A pre-commit hook that asserted "novelty must be ≥ 0.5 if the feature touches 
 ## Gap 3 — T1 / T2 / T3 tier label *correctness*
 
 **Tier:** 2.3
-**Class:** B (semantic-correctness)
-**Tracked by:** v7.6 case-study preflight (`scripts/check-case-study-preflight.py` — `CASE_STUDY_MISSING_TIER_TAGS`)
+**Class:** B (semantic-correctness) — v7.8.4 tightens the heuristic's false-positive surface but does not promote the class
+**Tracked by:** v7.6 case-study preflight (`scripts/check-case-study-preflight.py` — `CASE_STUDY_MISSING_TIER_TAGS`) + v7.7 advisory `TIER_TAG_LIKELY_INCORRECT` heuristic in `scripts/validate-tier-tags.py` + v7.8.4 reference ledger `.claude/shared/case-study-t1-references.json`
+
+> **v7.8.4 narrowing detail (2026-05-12):** the `TIER_TAG_LIKELY_INCORRECT` heuristic shipped at v7.7 produced advisory false positives in the wild — pre-v7.8.4 it flagged 4-6 legitimately-tagged T1 claims because (a) target/kill threshold values look like measurements to the regex but are forward-looking declarations, (b) the unit regex matched the leading letter of longer words (`h` in `hook`, `s` in `schema`, `d` in `declared`), (c) text containing two tier markers (`T1 ... T2`) confused which tier the captured number belonged to. v7.8.4 ships 3 narrowings (`is_target_or_kill_claim()` filter, `\b` word-boundary on unit, `INTERVENING_TIER_RE` skip) + a small reference ledger pinning known-correct T1 values not naturally in the 2 default ledger sources (e.g., 57% ui-audit P1 reduction, 92min stress-test wall time). Net effect: 4-6 advisories → 0 at v7.8.4 ship. The semantic-correctness gap remains — the heuristic still cannot verify that a `T1` tag is *true*; it only catches the easier false-positive shapes. See [v7.8.4 cold-start entrypoint](../../../.claude/entrypoints/framework-v7-8-4.md).
 
 ### Why it cannot be mechanically closed
 
