@@ -96,4 +96,8 @@ Config/Local/*.xcconfig
 # (docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md cites
 # both files at commit 61964d3 as "the assessable inputs").
 .claude/shared/hadf/phase2-fingerprint-raw*.jsonl
+# HADF Phase 2-bis wrapper preflight test logs — transient outputs only,
+# not deliverables. Real-run heartbeats go to phase2bis-fire-heartbeat.jsonl
+# (which IS committed for path stability).
+.claude/shared/hadf/phase2bis-deploy-verification/
 .cache/
