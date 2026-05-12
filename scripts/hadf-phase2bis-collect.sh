@@ -48,7 +48,7 @@ emit_heartbeat() {
 # ── Fix #3 PREFLIGHT CHECKS (any failure = exit 78 EX_CONFIG) ──
 
 # Check A: venv binary executable
-VENV_PYTHON="$(pwd)/.venv/bin/python3"
+VENV_PYTHON="$REPO_ROOT/.venv/bin/python3"
 if [ ! -x "$VENV_PYTHON" ]; then
     log_preflight "PREFLIGHT FAIL [A]: venv python missing or not executable: $VENV_PYTHON"
     emit_heartbeat "preflight_failed" ",\"check\":\"venv_binary\""
@@ -66,7 +66,7 @@ for mod in $REQUIRED_IMPORTS; do
 done
 
 # Check C: .env.local exists as REGULAR FILE (not symlink, not missing) — Fix #2
-ENV_FILE="$(pwd)/.env.local"
+ENV_FILE="$REPO_ROOT/.env.local"
 if [ ! -e "$ENV_FILE" ]; then
     log_preflight "PREFLIGHT FAIL [C]: .env.local does not exist: $ENV_FILE"
     emit_heartbeat "preflight_failed" ",\"check\":\"env_local_missing\""

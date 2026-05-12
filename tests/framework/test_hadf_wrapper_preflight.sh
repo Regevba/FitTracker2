@@ -7,10 +7,14 @@
 # Each scenario must produce exit 78 (EX_CONFIG)
 
 set +e  # do NOT abort on wrapper non-zero exit
+
+# Compute repo root robustly: cd to script's directory, then up two levels
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+WRAPPER="$REPO_ROOT/scripts/hadf-phase2bis-collect.sh"
+
 TMPDIR=$(mktemp -d)
 cd "$TMPDIR"
-
-WRAPPER=/Volumes/DevSSD/FitTracker2-hadf-phase2bis-impl/scripts/hadf-phase2bis-collect.sh
 
 # Scenario A: missing venv binary
 mkdir -p .venv/bin
