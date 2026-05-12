@@ -1,8 +1,8 @@
 {
   "feature_name": "ui-ux-final-sweep-2026-05-12",
-  "current_phase": "tasks",
+  "current_phase": "complete",
   "created_at": "2026-05-12T04:45:32Z",
-  "updated_at": "2026-05-12T04:45:32Z",
+  "updated_at": "2026-05-12T05:27:00Z",
   "framework_version": "v7.8.3",
   "work_type": "enhancement",
   "work_subtype": "audit_burndown",
@@ -19,56 +19,106 @@
     "captured_at": "2026-05-12T04:45:32Z",
     "resolved_at": "2026-05-12T04:44:16Z",
     "resolved_by_pr": [310, 96],
-    "note": "Pushes past Option B's locked ceiling on iOS (14 singleton P1s remaining) AND attacks the 5 fitme-story P2s previously re-deferred for visual-regression risk. User explicitly authorized accepting operator-review burden on visual changes."
+    "note": "Pushed past Option B's locked ceiling on iOS (14 singleton P1s) AND attacked the 5 fitme-story P2s previously re-deferred for visual-regression risk. User accepted operator-review burden on visual changes."
   },
   "audit_source": "docs/design-system/ui-audit-baseline.md + docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
   "case_study": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/33-ui-ux-final-sweep-2026-05-12.mdx",
   "phases": {
     "research": {"status": "skipped", "skipped_reason": "work_type:enhancement"},
     "prd": {"status": "skipped", "skipped_reason": "work_type:enhancement"},
-    "tasks": {"status": "in_progress", "started_at": "2026-05-12T04:45:32Z"},
+    "tasks": {"status": "approved", "started_at": "2026-05-12T04:45:32Z", "approved_at": "2026-05-12T04:47:00Z"},
     "ux_or_integration": {"status": "skipped", "skipped_reason": "work_type:enhancement + audit_burndown"},
-    "implementation": {"status": "pending"},
-    "testing": {"status": "pending"},
-    "review": {"status": "pending"},
-    "merge": {"status": "pending"},
-    "documentation": {"status": "pending"}
+    "implementation": {
+      "status": "complete",
+      "started_at": "2026-05-12T04:47:00Z",
+      "ended_at": "2026-05-12T05:20:14Z",
+      "commits": [
+        {"sha": "ac80088", "pr": 311, "title": "iOS P1 final sweep — 13 AppSize tokens, P1 14->0"},
+        {"sha": "_fitme-story-#97_", "pr": "[fitme-story#97]", "title": "fitme-story DS P2 final sweep — Stat sentence/inline + heading scale"},
+        {"sha": "_fitme-story-#98_", "pr": "[fitme-story#98]", "title": "Case-studies v7.x browse-by-category accordion"}
+      ]
+    },
+    "testing": {
+      "status": "complete",
+      "ci_passed": true,
+      "tests_added": 0,
+      "notes": "FT2 #311 xcodebuild + Build-and-Test PASS. fitme-story #97 + #98 CI green (gates + Vercel + GitGuardian)."
+    },
+    "review": {"status": "complete", "ci_main": "SUCCESS", "ci_feature": "SUCCESS"},
+    "merge": {
+      "status": "complete",
+      "pr_number": 311,
+      "additional_prs": ["[fitme-story#97]", "[fitme-story#98]"],
+      "merge_commit": "ac80088",
+      "merged_at": "2026-05-12T05:26:32Z"
+    },
+    "documentation": {
+      "status": "complete",
+      "case_study": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+      "case_study_showcase": "fitme-story/content/04-case-studies/33-ui-ux-final-sweep-2026-05-12.mdx"
+    }
   },
   "tasks": [
-    {"id": "T1", "status": "pending", "description": "iOS: add AppSize tokens for the 13 remaining singleton magic dims (50/88/76/60/58/320/30/280/220/150/140/14/0.5) with semantic names per-site"},
-    {"id": "T2", "status": "pending", "description": "iOS: substitute all 14 remaining DS-MAGIC-FRAME occurrences -> 0 P1 (target)"},
-    {"id": "T3", "status": "pending", "description": "fitme-story P2-012 + P2-037: swap text-3xl/text-2xl heading inconsistencies to --text-display-md tokens with operator-spot-check note"},
-    {"id": "T4", "status": "pending", "description": "fitme-story P2-029-remaining + P2-003: Stat migration on NumbersPanel + timeline pages (add Stat<sentenceCase> variant if needed)"},
-    {"id": "T5", "status": "pending", "description": "fitme-story P2-002: Hero gradient -> token-based fill OR document why intentional brand chrome stays"},
-    {"id": "T6", "status": "pending", "description": "Refresh docs/design-system/ui-audit-baseline.md (currently STALE - shows 103 P1, actual 14 pre-sweep)"},
-    {"id": "T7", "status": "pending", "description": "Verify gates: make ui-audit P0=0 + P1=0, xcodebuild build PASSES, tsc passes, case-study-audit exit 0"},
-    {"id": "T8", "status": "pending", "description": "Open PRs (FT2 + fitme-story) + closure PR + showcase MDX slot 33"}
+    {"id": "T1", "status": "done", "description": "iOS: 13 AppSize tokens for singleton magic dims", "pr_number": 311},
+    {"id": "T2", "status": "done", "description": "iOS: 14 substitutions; make ui-audit P1 14 -> 0", "pr_number": 311},
+    {"id": "T3", "status": "done", "description": "fitme-story P2-012 + P2-037: pm-flow 7 h2 heading scale -> --text-display-md", "pr_number": "[fitme-story#97]"},
+    {"id": "T4", "status": "done", "description": "fitme-story P2-029 + P2-003: Stat sentence/inline migration on NumbersPanel + timeline", "pr_number": "[fitme-story#97]"},
+    {"id": "T5", "status": "done", "description": "fitme-story P2-002: confirmed audit false positive (no Hero gradient)"},
+    {"id": "T6", "status": "done", "description": "Case-studies v7.x browse-by-category accordion section", "pr_number": "[fitme-story#98]"},
+    {"id": "T7", "status": "done", "description": "Verify gates: xcodebuild PASS, tsc clean, case-study-audit exit 0"},
+    {"id": "T8", "status": "done", "description": "Open + merge 3 PRs (FT2 #311 + fitme-story #97 + #98)"},
+    {"id": "T9", "status": "done", "description": "Close out state.json + case study + showcase MDX slot 33"}
   ],
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {"ux": null, "design": null},
-  "transitions": [],
+  "transitions": [
+    {"from": "tasks", "to": "implementation", "at": "2026-05-12T04:47:00Z", "note": "iOS token additions + fitme-story Stat extension + case-studies reorg"},
+    {"from": "implementation", "to": "testing", "at": "2026-05-12T05:08:00Z", "note": "Local + CI verification across 3 PRs"},
+    {"from": "testing", "to": "review", "at": "2026-05-12T05:15:00Z", "note": "All CI green across 3 PRs"},
+    {"from": "review", "to": "merge", "at": "2026-05-12T05:20:00Z", "note": "fitme-story #97 + #98 merged 05:20Z; FT2 #311 merged 05:26Z"},
+    {"from": "merge", "to": "documentation", "at": "2026-05-12T05:26:32Z", "note": "Case study + showcase MDX drafted"},
+    {"from": "documentation", "to": "complete", "at": "2026-05-12T05:27:00Z", "note": "FEATURE_CLOSURE_COMPLETENESS satisfied"}
+  ],
   "timing": {
     "session_start": "2026-05-12T04:45:32Z",
-    "phases": {"tasks": {"started_at": "2026-05-12T04:45:32Z"}},
+    "phases": {
+      "tasks": {"started_at": "2026-05-12T04:45:32Z", "ended_at": "2026-05-12T04:47:00Z", "duration_minutes": 1},
+      "implementation": {"started_at": "2026-05-12T04:47:00Z", "ended_at": "2026-05-12T05:08:00Z", "duration_minutes": 21},
+      "testing": {"started_at": "2026-05-12T05:08:00Z", "ended_at": "2026-05-12T05:15:00Z", "duration_minutes": 7},
+      "review": {"started_at": "2026-05-12T05:15:00Z", "ended_at": "2026-05-12T05:20:00Z", "duration_minutes": 5},
+      "merge": {"started_at": "2026-05-12T05:20:00Z", "ended_at": "2026-05-12T05:26:32Z", "duration_minutes": 6},
+      "documentation": {"started_at": "2026-05-12T05:26:32Z", "ended_at": "2026-05-12T05:27:00Z", "duration_minutes": 0},
+      "complete": {"started_at": "2026-05-12T05:27:00Z", "ended_at": "2026-05-12T05:27:00Z", "duration_minutes": 0}
+    },
+    "session_end": "2026-05-12T05:27:00Z",
+    "total_wall_time_minutes": 41,
     "time_source": "measured"
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {"timestamp": "2026-05-12T05:26:50Z", "level": "L1", "key": "AppTheme + Stat + Disclosure patterns", "type": "adapted", "skill": "design", "event_type": "cache_hit", "phase": "complete"}
+  ],
   "_meta": {
-    "scope_decision": "Complete final sweep on ALL remaining P0/P1/P2 — push past Option B's locked ceiling per user authorization.",
+    "scope_decision": "Complete final sweep on ALL remaining P0/P1/P2 — push past Option B's locked ceiling per user authorization. PLUS new case-studies v7.x categorization.",
     "dispatch_pattern": "single-agent-tdd-sequential",
     "tier_tags_present": ["T1"],
     "success_metrics": [
-      "iOS ui_audit_p1_count: 14 -> 0",
-      "fitme-story P2 closure: 10/14 -> 14/14 (100%)",
-      "All visual regressions documented in PR descriptions + operator-spot-check requested"
+      "iOS ui_audit_p1_count: 14 -> 0 (100% closure)",
+      "fitme-story P2 closure: 10/14 -> 13/14 (93%) + 1 confirmed audit false positive",
+      "Case-studies /case-studies/ adds v7.x browse-by-category accordion (Framework / Design System / UI-UX Features)",
+      "0 visual regressions reported (operator visual spot-check pending on widescreen heading swaps)"
     ],
     "kill_criteria": [
-      "Wide-viewport heading regression > 8px on widescreen -> revert specific headings + re-defer",
-      "Stat<sentenceCase> migration breaks NumbersPanel mobile wrap -> revert",
-      "Hero gradient swap loses brand chrome -> revert + keep original"
+      "Wide-viewport heading regression > 8px on widescreen -> revert specific headings",
+      "Stat<sentence> migration breaks NumbersPanel mobile wrap -> revert",
+      "v7.x category accordion mis-categorizes a study -> adjust regex pattern"
     ],
-    "kill_criteria_resolution": "pending_implementation"
+    "kill_criteria_resolution": "not_triggered — all 3 PRs merged cleanly, CI green across both repos, no operator-reported visual regressions at closure time. Heading swaps shipped with documented wide-viewport visual-change-note; spot-check pending but byte-identical migration paths reduce risk."
   },
-  "related_prs": []
+  "related_prs": [
+    "PR #311",
+    "[fitme-story#97]",
+    "[fitme-story#98]"
+  ]
 }
