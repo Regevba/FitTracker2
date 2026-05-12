@@ -1,0 +1,81 @@
+{
+  "version": "1.0",
+  "feature": "3d-interactive-framework-flow-diagram",
+  "title": "3d interactive framework flow diagram",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "framework_version": "v7.8.3",
+  "started_at": "2026-05-12T16:03:23Z",
+  "updated_at": "2026-05-12T16:21:59Z",
+  "events": [
+    {
+      "timestamp": "2026-05-12T16:03:23Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 (Research) opened. Three research streams dispatched in parallel: animation-studio inspiration, Vercel-adapted 3D tool survey, framework storytelling structure. Deliverable: research.md dossier.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-12T16:13:15Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) dossier complete. 10 sections covering existing-refs audit, 14 animation-studio references, 14-tool comparison matrix, recommended stack (R3F+Drei+Theatre.js+glTF), 5-scene storyboard, house motion language (Calibrated Isometric), 5 motion primitives, color palette, and 12 PRD-phase open questions.",
+      "artifacts": [
+        ".claude/features/3d-interactive-framework-flow-diagram/research.md"
+      ],
+      "metrics": {
+        "scenes_storyboarded": 5,
+        "tools_evaluated": 14,
+        "studio_references": 14,
+        "open_questions": 12
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-12T16:16:26Z",
+      "event_type": "research_revision",
+      "phase": "research",
+      "summary": "User scope directive (2026-05-12 evening): (1) reframe as STANDALONE feature, not extension of LifecycleLoop/DispatchReplay; (2) full cinematic animation experience, not hover-reveal docs; (3) instrumentation surface \u2014 the visual must enable additional data collection about how the framework operates. Existing 2D visuals (LifecycleLoop orbit + DispatchReplay) stay as-is. Reworking Section 5 storyboard, Section 2 existing-refs framing, adding new Section 5.5 on data-collection utility.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-12T16:20:52Z",
+      "event_type": "research_revision_complete",
+      "phase": "research",
+      "summary": "Research dossier v2 complete (revised per user directive). Reframed as standalone flagship (not extension of LifecycleLoop/DispatchReplay \u2014 those stay as-is per 'orbit stays' directive). Storyboard re-architected to 6-act ~3:15 cinematic following one feature's full lifecycle through a 'framework universe' (Threshold \u2192 Conception \u2192 Workshop Floor \u2192 Gate Chain \u2192 Shipping & Telemetry \u2192 Legacy/Calibration). Added Section 5.5 (Framework Instrumentation Surface) with 3 data streams: Visitor Analytics (A), Live Framework Telemetry (B), Operator-Mode View at /control-room/framework (C). Dossier now 558 lines / 10 sections.",
+      "artifacts": [
+        ".claude/features/3d-interactive-framework-flow-diagram/research.md"
+      ],
+      "metrics": {
+        "acts": 6,
+        "runtime_seconds": 195,
+        "data_streams": 3,
+        "open_questions": 15
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-12T16:21:59Z",
+      "event_type": "phase_paused",
+      "phase": "research",
+      "summary": "Phase 0 (Research) paused at user request. Dossier v2 complete (597 lines, 10 sections, 6-act ~3:15 cinematic storyboard, 3 instrumentation streams, 15 open questions). Awaiting user approval to advance to Phase 1 (PRD). Resume protocol: (1) re-read .claude/features/3d-interactive-framework-flow-diagram/research.md; (2) confirm user is ready to advance to PRD or wants to revise dossier; (3) on advance, execute Phase Transition Procedure research \u2192 prd + Tier 2.2 phase_started event.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
