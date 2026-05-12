@@ -6,13 +6,24 @@
   "current_phase": "tasks",
   "framework_version": "v7.8.3",
   "started_at": "2026-05-12T04:55:06Z",
-  "updated_at": "2026-05-12T04:55:06Z",
+  "updated_at": "2026-05-12T05:27:10Z",
   "events": [
     {
       "timestamp": "2026-05-12T04:55:06Z",
       "event_type": "phase_started",
       "phase": "tasks",
       "summary": "Final sweep: 14 iOS P1 singletons + 5 fitme-story P2s (push past Option B per user)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-12T05:27:09Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Closure: all 3 PRs merged (FT2 #311 ac80088, fitme-story #97 + #98); iOS P1 14->0, fitme-story P2 13/14 closed, v7.x browse-by-category live",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
