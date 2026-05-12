@@ -33,7 +33,7 @@ struct SettingsCategoryCard: View {
                 Image(systemName: category.icon)
                     .font(featured ? AppText.sectionTitle : AppText.callout)
                     .foregroundStyle(category.tint)
-                    .frame(width: 34, height: 34)
+                    .frame(width: AppSize.controlSmall, height: AppSize.controlSmall)
                     .background(category.tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.small))
 
                 Spacer(minLength: 12)
@@ -101,7 +101,7 @@ struct SettingsBadgeView: View {
         HStack(spacing: AppSpacing.xxSmall) {
             Circle()
                 .fill(badge.tint)
-                .frame(width: 6, height: 6)
+                .frame(width: AppSize.indicatorDotTiny, height: AppSize.indicatorDotTiny)
             Text(badge.title)
                 .font(AppText.captionStrong)
         }

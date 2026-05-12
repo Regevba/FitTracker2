@@ -27,7 +27,7 @@ struct ProfileHeroSection: View {
                                 endPoint: .bottomTrailing
                             )
                         )
-                        .frame(width: 72, height: 72)
+                        .frame(width: AppSize.avatarHero, height: AppSize.avatarHero)
                     Text(initials)
                         .font(AppText.titleStrong)
                         .foregroundStyle(AppColor.Text.inversePrimary)

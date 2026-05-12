@@ -359,7 +359,7 @@ struct TrainingPlanView: View {
             ForEach(0..<4, id: \.self) { _ in
                 RoundedRectangle(cornerRadius: AppRadius.small)
                     .fill(AppColor.Surface.materialLight)
-                    .frame(height: 72)
+                    .frame(height: AppSize.avatarHero)
                     .modifier(ShimmerEffect())
             }
         }

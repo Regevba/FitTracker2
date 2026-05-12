@@ -42,13 +42,13 @@ struct ReadinessCard: View {
             #else
             .tabViewStyle(.automatic)
             #endif
-            .frame(height: 180)
+            .frame(height: AppSize.chartHeightCompact)
 
             // Custom page dots
             pageDots
-                .padding(.bottom, 6)
+                .padding(.bottom, AppSpacing.xxSmall)
         }
-        .frame(height: 180)
+        .frame(height: AppSize.chartHeightCompact)
         .background(
             RoundedRectangle(cornerRadius: AppRadius.xLarge, style: .continuous)
                 .fill(AppColor.Surface.inverse)
@@ -189,7 +189,7 @@ struct ReadinessCard: View {
                         .foregroundStyle(AppColor.Text.secondary)
                 }
                 .padding(AppSpacing.small)
-                .frame(minWidth: 260)
+                .frame(minWidth: AppSize.chartMinWidth)
                 .presentationCompactAdaptation(.popover)
             }
             .padding(.top, AppSpacing.xxSmall)
@@ -208,13 +208,13 @@ struct ReadinessCard: View {
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: AppRadius.button)
                         .fill(AppColor.Surface.secondary)
-                        .frame(height: 6)
+                        .frame(height: AppSize.progressBarHeightTall)
                     RoundedRectangle(cornerRadius: AppRadius.button)
                         .fill(color)
-                        .frame(width: geo.size.width * min(1, score / 100), height: 6)
+                        .frame(width: geo.size.width * min(1, score / 100), height: AppSize.progressBarHeightTall)
                 }
             }
-            .frame(height: 6)
+            .frame(height: AppSize.progressBarHeightTall)
             Text("\(Int(score))")
                 .font(AppText.monoCaption)
                 .foregroundStyle(AppColor.Text.tertiary)
@@ -356,7 +356,7 @@ struct ReadinessCard: View {
                             .frame(width: geo.size.width * min(1, CGFloat(protein / max(proteinTarget, 1))))
                     }
                 }
-                .frame(height: 6)
+                .frame(height: AppSize.progressBarHeightTall)
             }
 
             // Supplements

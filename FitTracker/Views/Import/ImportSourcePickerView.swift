@@ -115,7 +115,7 @@ struct ImportSourcePickerView: View {
         VStack(spacing: AppSpacing.small) {
             TextEditor(text: $pasteText)
                 .font(AppText.body)
-                .frame(minHeight: 200)
+                .frame(minHeight: AppSize.chartHeightTall)
                 .padding(AppSpacing.xSmall)
                 .background(AppColor.Surface.primary, in: RoundedRectangle(cornerRadius: AppRadius.medium))
                 .overlay(

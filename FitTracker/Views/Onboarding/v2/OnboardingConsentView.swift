@@ -27,7 +27,7 @@ struct OnboardingConsentView: View {
                     ZStack {
                         Circle()
                             .fill(AppColor.Brand.coolSoft.opacity(0.5))
-                            .frame(width: 160, height: 160)
+                            .frame(width: AppSize.illustrationXLarge, height: AppSize.illustrationXLarge)
                         Image(systemName: "lock.shield.fill")
                             .font(AppText.iconHero)
                             .foregroundStyle(AppColor.Brand.secondary)

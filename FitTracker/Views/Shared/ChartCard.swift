@@ -53,7 +53,7 @@ struct ChartCard_Previews: PreviewProvider {
             positiveIsGood: true
         ) {
             Text("Chart content goes here")
-                .frame(height: 200)
+                .frame(height: AppSize.chartHeightTall)
         }
     }
 }

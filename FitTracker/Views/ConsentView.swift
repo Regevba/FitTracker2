@@ -18,7 +18,7 @@ struct ConsentView: View {
             ZStack {
                 Circle()
                     .fill(AppColor.Brand.coolSoft.opacity(0.5))
-                    .frame(width: 160, height: 160)
+                    .frame(width: AppSize.illustrationXLarge, height: AppSize.illustrationXLarge)
 
                 // Shield body
                 Image(systemName: "lock.shield.fill")
