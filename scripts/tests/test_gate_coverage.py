@@ -158,6 +158,43 @@ def test_write_jsonl_with_no_gates_returns_zero(tmp_path):
 # T3 — gate functions populate coverage on each early-return path
 # ---------------------------------------------------------------------------
 
+# NOTE: the gate function `check_cache_hits_empty_post_v6` retains its legacy
+# Python name (it pre-dates the v7.8.3 rename from CACHE_HITS_EMPTY_POST_V6 →
+# CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT), but its Mechanism A emission key is
+# the canonical NEW name. Tests below assert against the canonical emission key
+# — v7.8.5 fix (2026-05-12) to close the keying-drift suspicion flagged in
+# PR #318 §"Pre-promotion remediation". Production telemetry has been clean
+# since v7.8.3; only the test fixtures referenced the obsolete key.
+
+CACHE_HITS_GATE_KEY = "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT"
+
+
+def test_cache_hits_gate_emits_canonical_key():
+    """REGRESSION (v7.8.5): the gate function MUST emit to gate-coverage under
+    the canonical CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT key — never the legacy
+    CACHE_HITS_EMPTY_POST_V6 key — regardless of which call path triggers it.
+
+    Catches future rename drift between function-name and emission-key (the
+    class of bug suspected by PR #318 §Pre-promotion remediation, ruled out
+    in v7.8.5 diagnostic).
+    """
+    cov = GateCoverage()
+    state = {
+        "feature_name": "regression",
+        "current_phase": "complete",
+        "created_at": "2026-05-03T00:00:00Z",  # post-Mechanism-C, hits main predicate
+        "cache_hits": [{"key": "x"}],
+    }
+    check_cache_hits_empty_post_v6(state, coverage=cov)
+    assert CACHE_HITS_GATE_KEY in cov.gates, (
+        f"Gate must emit under canonical key {CACHE_HITS_GATE_KEY!r}; "
+        f"got keys: {list(cov.gates.keys())}"
+    )
+    assert "CACHE_HITS_EMPTY_POST_V6" not in cov.gates, (
+        "Legacy key CACHE_HITS_EMPTY_POST_V6 must NOT appear — was renamed in v7.8.3"
+    )
+
+
 def test_cache_hits_gate_records_pre_v6_skip():
     """Pre-v6 feature: skip reason 'pre_v6'."""
     cov = GateCoverage()
@@ -168,7 +205,7 @@ def test_cache_hits_gate_records_pre_v6_skip():
         "cache_hits": [],
     }
     check_cache_hits_empty_post_v6(state, coverage=cov)
-    stats = cov.gates["CACHE_HITS_EMPTY_POST_V6"]
+    stats = cov.gates[CACHE_HITS_GATE_KEY]
     assert stats["candidates"] == 1
     assert stats["checked"] == 0
     assert stats["skipped"] == 1
@@ -185,7 +222,7 @@ def test_cache_hits_gate_records_pre_mechanism_c_skip():
         "cache_hits": [],
     }
     check_cache_hits_empty_post_v6(state, coverage=cov)
-    stats = cov.gates["CACHE_HITS_EMPTY_POST_V6"]
+    stats = cov.gates[CACHE_HITS_GATE_KEY]
     assert stats["skipped"] == 1
     assert stats["skip_reasons"] == {"pre_mechanism_c": 1}
 
@@ -200,7 +237,7 @@ def test_cache_hits_gate_records_not_complete_skip():
         "cache_hits": [],
     }
     check_cache_hits_empty_post_v6(state, coverage=cov)
-    stats = cov.gates["CACHE_HITS_EMPTY_POST_V6"]
+    stats = cov.gates[CACHE_HITS_GATE_KEY]
     assert stats["skipped"] == 1
     assert stats["skip_reasons"] == {"not_complete": 1}
 
@@ -215,7 +252,7 @@ def test_cache_hits_gate_records_checked_when_predicate_runs():
         "cache_hits": [{"key": "x"}],
     }
     check_cache_hits_empty_post_v6(state, coverage=cov)
-    stats = cov.gates["CACHE_HITS_EMPTY_POST_V6"]
+    stats = cov.gates[CACHE_HITS_GATE_KEY]
     assert stats["checked"] == 1
     assert stats["skipped"] == 0
 
