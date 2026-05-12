@@ -1,0 +1,44 @@
+{
+  "subexp_id": "phase2bis-subexp3",
+  "rq": "TBD — fill before lock per spec §1",
+  "endpoints": [],
+  "per_call_controls": {
+    "calls_per_fire": 50,
+    "max_output_tokens": 200,
+    "temperature": 0.7,
+    "timeout_s": 60,
+    "streaming_required": true,
+    "system_prompt": null,
+    "tools": null,
+    "prompt_set_path": ".claude/shared/hadf/phase2bis-prompt-set.json",
+    "prompt_set_sha256": "TBD — computed at lock time"
+  },
+  "campaign_schedule": {
+    "fires_per_day": 5,
+    "fire_times_utc": ["02:00", "08:00", "14:00", "18:00", "22:00"],
+    "duration_days": 3
+  },
+  "primary_metric": "silhouette score at k=5",
+  "expected_yield_threshold": 600,
+  "kill_criteria": [
+    "n_valid < 600",
+    "all endpoints simultaneously rate-limited > 2 fires consecutively",
+    "ANY endpoint changes streaming protocol or model id mid-collection",
+    "wrapper preflight fails 3+ times consecutively"
+  ],
+  "trip_wires": [
+    {"name": "anchor_drift", "applies_to": "subexp3 only", "action": "methodology note, do not abort"},
+    {"name": "cost_overrun_3x", "action": "pause for operator review"}
+  ],
+  "verdict_thresholds": {
+    "pass_silhouette_min": 0.5,
+    "pass_yield_min": 600,
+    "fail_clusters_lt": 3
+  },
+  "harness_hardening_proof": {
+    "env_local_sha256_at_deploy": "TBD — computed at lock time",
+    "fix1_commit_hash": "TBD — git SHA where worktree-local venv was introduced",
+    "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp3-deliberate-break.log",
+    "state_owner_at_creation": "ft2"
+  }
+}
