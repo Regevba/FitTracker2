@@ -1,0 +1,74 @@
+{
+  "feature_name": "ui-ux-final-sweep-2026-05-12",
+  "current_phase": "tasks",
+  "created_at": "2026-05-12T04:45:32Z",
+  "updated_at": "2026-05-12T04:45:32Z",
+  "framework_version": "v7.8.3",
+  "work_type": "enhancement",
+  "work_subtype": "audit_burndown",
+  "parent_feature": "design-system-v2",
+  "parent_case_study": "docs/case-studies/design-system-v2-case-study.md",
+  "branch": "feature/ui-ux-final-sweep-2026-05-12",
+  "state_owner": "ft2",
+  "has_ui": true,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "scheduled_after": {
+    "predecessor": "fitme-story-ds-p2-final-sweep",
+    "signal": "User authorized 'finish all P2 and P1 tasks' explicitly overriding prior deferrals on 2026-05-12",
+    "captured_at": "2026-05-12T04:45:32Z",
+    "resolved_at": "2026-05-12T04:44:16Z",
+    "resolved_by_pr": [310, 96],
+    "note": "Pushes past Option B's locked ceiling on iOS (14 singleton P1s remaining) AND attacks the 5 fitme-story P2s previously re-deferred for visual-regression risk. User explicitly authorized accepting operator-review burden on visual changes."
+  },
+  "audit_source": "docs/design-system/ui-audit-baseline.md + docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
+  "case_study": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+  "phases": {
+    "research": {"status": "skipped", "skipped_reason": "work_type:enhancement"},
+    "prd": {"status": "skipped", "skipped_reason": "work_type:enhancement"},
+    "tasks": {"status": "in_progress", "started_at": "2026-05-12T04:45:32Z"},
+    "ux_or_integration": {"status": "skipped", "skipped_reason": "work_type:enhancement + audit_burndown"},
+    "implementation": {"status": "pending"},
+    "testing": {"status": "pending"},
+    "review": {"status": "pending"},
+    "merge": {"status": "pending"},
+    "documentation": {"status": "pending"}
+  },
+  "tasks": [
+    {"id": "T1", "status": "pending", "description": "iOS: add AppSize tokens for the 13 remaining singleton magic dims (50/88/76/60/58/320/30/280/220/150/140/14/0.5) with semantic names per-site"},
+    {"id": "T2", "status": "pending", "description": "iOS: substitute all 14 remaining DS-MAGIC-FRAME occurrences -> 0 P1 (target)"},
+    {"id": "T3", "status": "pending", "description": "fitme-story P2-012 + P2-037: swap text-3xl/text-2xl heading inconsistencies to --text-display-md tokens with operator-spot-check note"},
+    {"id": "T4", "status": "pending", "description": "fitme-story P2-029-remaining + P2-003: Stat migration on NumbersPanel + timeline pages (add Stat<sentenceCase> variant if needed)"},
+    {"id": "T5", "status": "pending", "description": "fitme-story P2-002: Hero gradient -> token-based fill OR document why intentional brand chrome stays"},
+    {"id": "T6", "status": "pending", "description": "Refresh docs/design-system/ui-audit-baseline.md (currently STALE - shows 103 P1, actual 14 pre-sweep)"},
+    {"id": "T7", "status": "pending", "description": "Verify gates: make ui-audit P0=0 + P1=0, xcodebuild build PASSES, tsc passes, case-study-audit exit 0"},
+    {"id": "T8", "status": "pending", "description": "Open PRs (FT2 + fitme-story) + closure PR + showcase MDX slot 33"}
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {"ux": null, "design": null},
+  "transitions": [],
+  "timing": {
+    "session_start": "2026-05-12T04:45:32Z",
+    "phases": {"tasks": {"started_at": "2026-05-12T04:45:32Z"}},
+    "time_source": "measured"
+  },
+  "cache_hits": [],
+  "_meta": {
+    "scope_decision": "Complete final sweep on ALL remaining P0/P1/P2 — push past Option B's locked ceiling per user authorization.",
+    "dispatch_pattern": "single-agent-tdd-sequential",
+    "tier_tags_present": ["T1"],
+    "success_metrics": [
+      "iOS ui_audit_p1_count: 14 -> 0",
+      "fitme-story P2 closure: 10/14 -> 14/14 (100%)",
+      "All visual regressions documented in PR descriptions + operator-spot-check requested"
+    ],
+    "kill_criteria": [
+      "Wide-viewport heading regression > 8px on widescreen -> revert specific headings + re-defer",
+      "Stat<sentenceCase> migration breaks NumbersPanel mobile wrap -> revert",
+      "Hero gradient swap loses brand chrome -> revert + keep original"
+    ],
+    "kill_criteria_resolution": "pending_implementation"
+  },
+  "related_prs": []
+}
