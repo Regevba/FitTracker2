@@ -12,3 +12,6 @@
 
 # v7.8.3: feature log files (Tier 2.2 contemporaneous logging)
 .claude/logs/*.log.json merge=union-dedup-by-key
+.claude/shared/hadf/phase2bis-raw-*.jsonl merge=union-dedup-by-key
+.claude/shared/hadf/phase2bis-fire-heartbeat.jsonl merge=union-dedup-by-key
+.claude/shared/hadf/phase2bis-cost-log.jsonl merge=union-dedup-by-key

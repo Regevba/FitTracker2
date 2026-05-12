@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fitme.hadf-phase2bis-subexp3</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/scripts/hadf-phase2bis-collect.sh</string>
+        <string>--subexp</string>
+        <string>subexp3</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3</string>
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict><key>Hour</key><integer>2</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>22</integer><key>Minute</key><integer>0</integer></dict>
+    </array>
+    <key>StandardOutPath</key>
+    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/.claude/shared/hadf/launchd-stdout-subexp3.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/.claude/shared/hadf/launchd-stderr-subexp3.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

@@ -108,3 +108,18 @@ if [[ "$failed" -ne 0 ]]; then
   echo "Emergency bypass: git commit --no-verify (the 72h cycle will still flag the issue)."
   exit 1
 fi
+
+# ── HADF Phase 2-bis prereg lock check (added v7.8.3+ HADF P2-bis Task A6) ──
+# Reject commits that modify a locked preregistration JSON unless the .lock file is also removed
+for prereg in $(git diff --cached --name-only | grep -E "^\.claude/shared/hadf/preregistration-phase2bis-subexp[1-3]\.json$" || true); do
+    lock="${prereg}.lock"
+    # If prereg modified AND lock still exists → block
+    if [ -f "$lock" ]; then
+        # Check if lock is being removed in this commit
+        if ! git diff --cached --name-only --diff-filter=D | grep -q "^${lock}$"; then
+            echo "ERROR: $prereg is locked at $lock — refusing to modify without removing the lock"
+            echo "       To unlock: git rm $lock + audit-log entry, then re-stage prereg edit"
+            exit 1
+        fi
+    fi
+done
