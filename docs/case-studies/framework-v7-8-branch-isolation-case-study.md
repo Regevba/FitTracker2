@@ -11,6 +11,11 @@ work_subtype: "framework_feature"
 shipped_window: "2026-05-07 (single-day full PM cycle)"
 primary_metric: "Effective coverage on the 3 new write-time gates per Mechanism A telemetry"
 primary_metric_status: "T1 Instrumented at ship; T+7d telemetry review on 2026-05-14"
+success_metrics:
+  - "BRANCH_ISOLATION_VIOLATION + FEATURE_CLOSURE_COMPLETENESS + ISOLATION_OPT_OUT_REASON_MISSING write-time gates: gate-coverage.jsonl emits {candidates, checked, skipped} per commit"
+  - "Pre-commit hook total runtime stays under 10s (no dev-velocity regression)"
+  - "Cycle-time mirrors (BRANCH_ISOLATION_HISTORICAL + LAUNCHD_DRIFT + FEATURE_CLOSURE_COMPLETENESS) emit advisory findings without false-positive blocks"
+  - "T+7d window (2026-05-14) supports v7.8 → v7.9 promotion decision"
 tier_tags_present: true
 external_audit_status: "internal"
 kill_criteria:

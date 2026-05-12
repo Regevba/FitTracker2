@@ -13,6 +13,7 @@
 > - Class B mechanically-unclosable gaps (4 remain after v7.8.1): [`../case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
 > - Tier 3.3 external-replication invitation: [GitHub issue #142](https://github.com/Regevba/FitTracker2/issues/142) (pinned)
 > - v8 candidates (deferred at v7.8.1 ship): [`../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md)
+> - **Infra roadmap (v7.9 promotion + v8.x docket + HADF Phase 2-bis calendar):** [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md)
 > - Pre-v7.5 Codex SSD audit (foundational input): [`codex-ssd-audit-2026-04-19.md`](codex-ssd-audit-2026-04-19.md)
 
 ---
@@ -38,7 +39,8 @@
 
 | File | Date | Purpose |
 |---|---|---|
-| `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-04-20 | **CURRENT master plan.** Adds all v4.3 → v7.0 work, M-series decomposition sprints, and the 185-finding audit remediation program. |
+| `infra-master-plan-2026-05-12.md` | 2026-05-12 | **CURRENT infra plan.** Forward-looking framework master plan covering v7.9 promotion docket, v8.x candidate ranking (F1–F13 + 7 icebox items), HADF Phase 2-bis pre-launch calendar, and the date-gated roadmap through Q3 2026. Separate from product master plan. |
+| `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-05-11 | **CURRENT product master plan.** Adds all v4.3 → v7.8.3 work, M-series decomposition sprints, audit remediation, and cross-repo state-sync. |
 | `master-plan-2026-04-06.md` | 2026-04-06 | DEPRECATED — superseded by 2026-04-15. Kept as a historical snapshot. |
 | `master-plan-reconciled-2026-04-05.md` | 2026-04-05 | DEPRECATED — superseded by 2026-04-06, then 2026-04-15. |
 | `master-backlog-roadmap.md` | living | RICE-prioritized 19-task roadmap. Updated continuously. Referenced by `docs/product/backlog.md`. |

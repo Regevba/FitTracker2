@@ -225,7 +225,18 @@
       }
     }
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "ts": "2026-05-12T07:30:00Z",
+      "layer": "session",
+      "key": "session_ledger_attribution:framework-v7-8-branch-isolation",
+      "type": "backfill_v7_8_4",
+      "skill": "framework-v7-8-4",
+      "event_count": 33,
+      "note": "33 Read events attributed to this feature via Mechanism C session ledgers during Phase 0-6 implementation (2026-05-04 \u2192 2026-05-07). Auto-instrumentation captured them but did not dual-write to state.json::cache_hits[] (v7.8 advisory; v7.9 promotes dual-write).",
+      "backfilled_from": "Mechanism C session-ledger attributions"
+    }
+  ],
   "cu_v2": {
     "factors": {
       "complexity": 0.6,
@@ -817,5 +828,6 @@
       "reason": "GitHub Issue #243 (tracking) \u2014 not a PR. Cited in case study related_prs for traceability."
     }
   ],
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "updated_at": "2026-05-12T07:30:00Z"
 }

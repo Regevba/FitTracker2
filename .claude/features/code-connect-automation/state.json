@@ -24,7 +24,9 @@
       "final_note": "Layers A + B + C all shipped and code-clean (4/5 tasks done). T5 (E2E publish test) externally blocked by Figma Pro+Full-seat tier not granting Code Connect Write scope. Implementation remains valuable as: (a) documentation of design intent via .figma.{swift,tsx} mapping files; (b) auto-scaffold infrastructure that future UI features benefit from immediately via /design build; (c) CI workflows that auto-fire when seat/plan upgrade unblocks the scope, with no further code changes needed. Verified end-to-end up to (and inclusive of) the auth step: parser succeeds, all components validated successfully connected, only the upload to https://api.figma.com/v1/code_connect returns 403 due to scope."
     },
     "complete": {
-      "status": "reached",
+      "status": "approved",
+      "approved": true,
+      "approved_at": "2026-05-12T07:25:00Z",
       "started_at": "2026-05-10T13:56:52Z",
       "note": "Feature closes with T1-T4 done + T5 deferred for Figma plan-tier reason. case_study_type=no_case_study_required (set at scaffold time, retained). All shipped artifacts remain valuable. Re-activation path: operator obtains Code Connect Write scope (Org+ plan OR Dev seat add-on) \u2192 adds new token to FIGMA_ACCESS_TOKEN repo secrets in BOTH repos \u2192 triggers the figma-code-connect-publish workflow in either repo manually OR with next .figma.{swift,tsx} change."
     }

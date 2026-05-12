@@ -739,5 +739,18 @@
     "design_reviewed_at": "2026-05-06T17:32:30Z",
     "design_review_note": "/design pre-merge-review: ui-audit P0=0 (verified 2026-05-06 pre-Figma-build); figma_node_ids populated for 4 screens; PR description references those IDs (added in PR #234 update). Screenshot verified \u2014 all 4 frames render with semantic tokens; no raw colors."
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "cache_hits": [
+    {
+      "ts": "2026-05-12T07:30:00Z",
+      "layer": "session",
+      "key": "session_ledger_attribution:import-training-plan",
+      "type": "backfill_v7_8_4",
+      "skill": "framework-v7-8-4",
+      "event_count": 95,
+      "note": "95 Read events attributed to this feature via Mechanism C session ledgers during Phase 0-4 (2026-05-05 \u2192 2026-05-06 implementation pass).",
+      "backfilled_from": "Mechanism C session-ledger attributions"
+    }
+  ],
+  "updated_at": "2026-05-12T07:30:00Z"
 }

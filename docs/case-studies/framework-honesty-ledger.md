@@ -81,6 +81,57 @@ Issue #140 was closed in spec, open in practice.
 
 ---
 
+## FT2-FH-002 — v7.8.3 PR-cache-staleness silent-pass
+
+**Filed:** 2026-05-12 (single-session patch v7.8.4)
+**Framework version at incident:** v7.8.3
+**Framework version at resolution:** v7.8.4
+
+**What we got wrong:** During the 2026-05-12 session-open status check, `make integrity-check` reported **35 findings** (32× BROKEN_PR_CITATION + 2× PR_NUMBER_UNRESOLVED + 1× PHASE_LIE). Every cited PR (#307, #311 in FT2; #93, #95, #97, #98 in fitme-story) was live-verified via `gh pr view` to be MERGED on GitHub. The findings were **100% false positives** caused by an empty `.cache/gh-pr-cache.json` (schema present, `last_refreshed_at: 2026-05-11T17:58Z`, but **0 PRs in both `Regevba/FitTracker2` and `Regevba/fitme-story`** in the cached arrays).
+
+**Root cause:** The v7.8.3 D-3 PR-cite cache (`scripts/refresh-pr-cache.py`) was a deliberate caching layer to avoid hitting the `gh` CLI on every integrity-check run. But the contract was "cache exists" — NOT "cache is fresh AND non-empty." A cache file written with malformed/empty `repos.*.{open,merged,closed}` payloads would still pass `load_pr_cache()`'s existence check, and downstream callers (`audit_case_study_citations`, `_resolve_pr_cite_integrity`) would lookup every cited PR number against an empty array → universal-not-found → BROKEN_PR_CITATION fires for everything.
+
+**Why the silent-pass class repeats v7.7's lesson:** FT2-FH-001 was "gate that depends on a field most features don't use silently passes." This is the same shape with a different victim: a *gate that depends on a cache layer assumed populated silently false-positives when the cache is empty.* In both cases, the gate has full implementation but lacks a coverage-assertion on its own dependency.
+
+**Why this matters:** v7.9's 2026-05-21 promotion decision evaluates criterion #2 ("no false positives") per the [infra master plan](../master-plan/infra-master-plan-2026-05-12.md) §2.2. If `make integrity-check` is reporting 33 BROKEN_PR_CITATION false-positives on the morning of 2026-05-21, the criterion becomes ambiguous to evaluate. v7.8.4 closes the door before the data freezes.
+
+**Closure (v7.8.4):**
+
+1. **New script `scripts/ensure-pr-cache-fresh.py`** — checks `last_refreshed_at` timestamp AND non-empty payload (`cache_is_empty()` returns True when all `repos[*].{open,merged,closed}` arrays are empty). Refreshes if stale (>24h), missing, or empty. Fail-soft on `gh` unavailability (logs warning, lets downstream proceed).
+2. **`Makefile::integrity-check` extended** — auto-invokes `ensure-pr-cache-fresh.py --quiet` before `integrity-check.py`.
+3. **`.github/workflows/integrity-cycle.yml` extended** — new `Refresh PR cache (v7.8.4)` step before the integrity-check step. `secrets.GITHUB_TOKEN` provides API auth; failure logs via `::warning::` annotation but does not abort the cycle.
+
+**Companion v7.8.4 hygiene (in the same patch, NOT separate honesty entries):**
+
+- 5 LOW doc-debt items closed (dual-outlet frontmatter + branch-isolation success_metrics + ios-code-connect case_study_type)
+- 6 TIER_TAG_LIKELY_INCORRECT advisories cleared (3 heuristic narrowings + 1 case-study re-tag + 1 reference-ledger pinning)
+- 2 CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE advisories cleared (cache_hits[] backfill from Mechanism C attribution data)
+- Stale `.claude/active-feature` lockfile reset
+- First-ever `make snapshot-phase` invocation (sha256-verified backup off-SSD)
+
+**Outcome:** `make integrity-check` baseline went from 35+9 (session open) → **0 findings + 0 advisory** (v7.8.4 ship).
+
+**Tier tags:** T1 (live `make integrity-check` runs across the v7.8.4 session, before/after snapshots captured to `.claude/integrity/snapshots/2026-05-12T07-22-35Z.json`).
+
+**Lessons recorded:**
+
+1. **A cache layer needs a "cache is meaningful" predicate, not just "cache exists."** Empty/stale caches silently false-positive every dependent gate. Future cache-dependent gates should ship with an `is_cache_usable()` check beside the cache-load.
+2. **The v7.7 silent-pass class is recurrent.** Different victim (PR cache vs. `created_at` field), same shape (gate depends on something it doesn't assert). The Mechanism A coverage-emission pattern (v7.8) should extend to cache-layer gates next: emit `{cache_age_seconds, entries_loaded}` alongside `{candidates, checked, skipped}`.
+3. **Patch-level hygiene releases pay for themselves before promotion windows.** v7.9 makes the 2026-05-21 promotion decision with a 0+0 baseline — every advisory at that moment is real, not noise. Cost: ~2h of work in this session. Cost saved: ambiguity-cost on the promotion criterion #2 evaluation.
+
+**Predecessor:** [`FT2-FH-001`](#ft2-fh-001--v77-silent-pass-on-cache_hits_empty_post_v6) — v7.7 silent-pass on `CACHE_HITS_EMPTY_POST_V6`.
+
+**Successor: TBD.**
+
+**Cross-references:**
+
+- v7.8.4 CLAUDE.md section: [`CLAUDE.md`](../../CLAUDE.md) — "v7.8.4" section
+- v7.8.4 cold-start entrypoint: [`.claude/entrypoints/framework-v7-8-4.md`](../../.claude/entrypoints/framework-v7-8-4.md)
+- PR cache freshness script: [`scripts/ensure-pr-cache-fresh.py`](../../scripts/ensure-pr-cache-fresh.py)
+- Infra master plan: [`docs/master-plan/infra-master-plan-2026-05-12.md`](../master-plan/infra-master-plan-2026-05-12.md) §2.2
+
+---
+
 > _Next entry will be appended below this line when needed. Format
 > is FT2-FH-NNN with immutable monotonic numbering. Entries are never
 > silently edited; revisions are themselves new entries that

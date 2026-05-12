@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "description": "Numerical reference ledger for T1 (Instrumented) claims in case studies whose values are NOT captured by the existing measurement-adoption.json or documentation-debt.json sources. Each entry pins a measured number to its case study + measurement-source so the validate-tier-tags.py heuristic has a ledger row to match against. Seeded v7.8.4 to clear 2 known-correct T1 advisories that previously had no ledger match.",
+  "updated": "2026-05-12",
+  "entries": [
+    {
+      "case_study": "ios-ui-audit-p1-burndown-case-study.md",
+      "claim": "P1 reduction %",
+      "value": 57,
+      "unit": "%",
+      "computed_from": {
+        "baseline_p1": 103,
+        "post_ship_p1": 44,
+        "delta": -59,
+        "formula": "(baseline - post_ship) / baseline * 100"
+      },
+      "instrumentation_source": "make ui-audit (scripts/ui-audit.py) — P1 finding count from .swift files under FitTracker/Views and FitTracker/DesignSystem"
+    },
+    {
+      "case_study": "roadmap-stress-test-2026-05-07-case-study.md",
+      "claim": "Total wall time",
+      "value": 92,
+      "unit": "min",
+      "computed_from": {
+        "state_json": ".claude/features/roadmap-stress-test-2026-05-07/state.json",
+        "field": "timing.phases.*.{started_at,ended_at}",
+        "formula": "sum of (ended_at - started_at) across all phases, in minutes"
+      },
+      "instrumentation_source": "state.json timing.phases ISO timestamps"
+    },
+    {
+      "case_study": "framework-v7-7-validity-closure-case-study.md",
+      "claim": "post-v6 fully-adopted count at synthesis time",
+      "value": 2,
+      "value_alt": 22.2,
+      "unit": "/9",
+      "computed_from": {
+        "numerator": 2,
+        "denominator": 9,
+        "as_percent": 22.2
+      },
+      "instrumentation_source": "scripts/measurement-adoption-report.py snapshot 2026-04-27 (now historical — current corpus is 3/34 = 8.8%)",
+      "note": "Forward-data-drift example: this T1 number reflects state at synthesis time but the live ledger has since moved. Pinned here so the heuristic stops false-flagging the historical fact."
+    }
+  ]
+}
