@@ -202,7 +202,7 @@ struct BodyCompositionDetailView: View {
                             .foregroundStyle(AppColor.Text.tertiary)
                     }
                 }
-                .frame(height: 200)
+                .frame(height: AppSize.chartHeightTall)
             }
 
             // Current vs goal summary
@@ -312,7 +312,7 @@ struct BodyCompositionDetailView: View {
                             .foregroundStyle(AppColor.Text.tertiary)
                     }
                 }
-                .frame(height: 200)
+                .frame(height: AppSize.chartHeightTall)
             }
 
             // Current vs goal summary
@@ -374,7 +374,7 @@ struct BodyCompositionDetailView: View {
                 .foregroundStyle(AppColor.Text.tertiary)
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 200)
+        .frame(height: AppSize.chartHeightTall)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("No \(metric) data available. Log a measurement to see trends.")
     }

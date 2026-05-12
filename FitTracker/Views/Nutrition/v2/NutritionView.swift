@@ -773,7 +773,7 @@ struct NutritionView: View {
                             .foregroundStyle(AppColor.Text.secondary)
                     }
                     .padding(AppSpacing.small)
-                    .frame(minWidth: 260)
+                    .frame(minWidth: AppSize.chartMinWidth)
                     .presentationCompactAdaptation(.popover)
                 }
             }

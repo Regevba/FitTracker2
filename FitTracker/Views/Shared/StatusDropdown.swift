@@ -17,7 +17,7 @@ struct StatusDropdown: View {
             Button { onSelect(.pending)   } label: { Label("Reset",     systemImage: "arrow.counterclockwise") }
         } label: {
             HStack(spacing: AppSpacing.xxxSmall) {
-                Circle().fill(color).frame(width: 6, height: 6)
+                Circle().fill(color).frame(width: AppSize.indicatorDotTiny, height: AppSize.indicatorDotTiny)
                 Text(status.rawValue.capitalized).font(AppText.caption)
                 Image(systemName: "chevron.down").font(AppText.monoLabel)
             }

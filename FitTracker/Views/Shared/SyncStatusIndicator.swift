@@ -10,13 +10,13 @@ struct SyncStatusIndicator: View {
         HStack(spacing: AppSpacing.xxxSmall) {
             Circle()
                 .fill(watchService.status.dotColor)
-                .frame(width: 6, height: 6)
+                .frame(width: AppSize.indicatorDotTiny, height: AppSize.indicatorDotTiny)
             Text(watchService.status.label)
                 .font(AppText.captionMicroMedium)
                 .foregroundStyle(AppColor.Text.secondary)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(
             Capsule()
                 .fill(AppColor.Surface.materialStrong)

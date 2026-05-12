@@ -51,7 +51,7 @@ struct WelcomeView: View {
                     ZStack {
                         Circle()
                             .fill(AppColor.Accent.recovery.opacity(0.12))
-                            .frame(width: 120, height: 120)
+                            .frame(width: AppSize.illustrationLarge, height: AppSize.illustrationLarge)
                             .blur(radius: 16)
                         Circle()
                             .stroke(
@@ -66,7 +66,7 @@ struct WelcomeView: View {
                                 ),
                                 lineWidth: 1.5
                             )
-                            .frame(width: 96, height: 96)
+                            .frame(width: AppSize.iconJumbo, height: AppSize.iconJumbo)
                         Image(systemName: "figure.strengthtraining.traditional")
                             .font(AppText.metricHero)
                             .foregroundStyle(

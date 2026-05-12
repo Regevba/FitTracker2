@@ -125,7 +125,7 @@ struct SettingsNumericFieldRow: View {
             .multilineTextAlignment(.trailing)
             .keyboardType(.decimalPad)
             .textFieldStyle(.roundedBorder)
-            .frame(width: 96)
+            .frame(width: AppSize.iconJumbo)
             Text(suffix)
                 .font(AppText.chip)
                 .foregroundStyle(AppColor.Text.secondary)

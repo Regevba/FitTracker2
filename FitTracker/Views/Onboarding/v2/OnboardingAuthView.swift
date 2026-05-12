@@ -28,7 +28,7 @@ struct OnboardingAuthView: View {
                     ZStack {
                         Circle()
                             .fill(AppColor.Brand.coolSoft.opacity(0.5))
-                            .frame(width: 120, height: 120)
+                            .frame(width: AppSize.illustrationLarge, height: AppSize.illustrationLarge)
 
                         Image(systemName: "person.badge.plus")
                             .font(AppText.iconHero)

@@ -119,8 +119,8 @@ private struct RecoveryMetaPill: View {
                 .lineLimit(1)
         }
         .foregroundStyle(Color.accentColor)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 9)
+        .padding(.horizontal, AppSpacing.xSmall)
+        .padding(.vertical, AppSpacing.xxSmall)
         .background(Color.accentColor.opacity(0.1), in: Capsule())
     }
 }

@@ -136,7 +136,7 @@ struct RootTabView: View {
 
                 VStack(spacing: AppSpacing.xxSmall) {
                     HStack(spacing: AppSpacing.xxSmall) {
-                        Circle().fill(syncColor).frame(width: 6, height: 6)
+                        Circle().fill(syncColor).frame(width: AppSize.indicatorDotTiny, height: AppSize.indicatorDotTiny)
                         Text(cloudSync.status.rawValue)
                             .font(AppText.caption)
                             .foregroundStyle(AppColor.Text.secondary)

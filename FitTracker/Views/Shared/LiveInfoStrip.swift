@@ -41,7 +41,7 @@ struct LiveInfoStrip: View {
                 .minimumScaleFactor(0.75)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .frame(minHeight: 34)
+        .frame(minHeight: AppSize.controlSmall)
     }
 }
 

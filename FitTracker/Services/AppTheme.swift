@@ -227,6 +227,56 @@ enum AppSize {
     /// label patterns where the field is constrained but the parent
     /// row is full-width.
     static let fieldWidthCompact: CGFloat = 80
+
+    // MARK: - P1 drift tokens (ios-ui-audit-p1-drift-cleanup, 2026-05-12)
+    // Frequency-gated additions per Option B rule (≥2 occurrences with
+    // consistent semantic intent). Closes 26 of 40 remaining DS-MAGIC-FRAME
+    // findings. Singletons (50, 88, 76, 60, 58, 320, …) stay as
+    // fix-as-you-touch — adding a token for every one-off would bloat
+    // the system without improving design coherence.
+
+    /// Tiny indicator dot (6pt) — small status pips, smaller than
+    /// indicatorDot (8pt). Used by StatusDropdown, SyncStatusIndicator,
+    /// the ReadinessCard score ladder.
+    static let indicatorDotTiny: CGFloat = 6
+
+    /// Tall chart container (200pt) — used by ImportSourcePicker,
+    /// BodyCompositionDetail, ChartCard. Distinct from chartHeight (158pt
+    /// default).
+    static let chartHeightTall: CGFloat = 200
+
+    /// Compact chart container (180pt) — used by ReadinessCard score
+    /// ladder.
+    static let chartHeightCompact: CGFloat = 180
+
+    /// Minimum chart width (260pt) — used for horizontally-scrolled
+    /// charts when their container is constrained (NutritionView,
+    /// ReadinessCard ladder).
+    static let chartMinWidth: CGFloat = 260
+
+    /// Jumbo icon (96pt) — large standalone icons in onboarding /
+    /// settings detail. Distinct from iconBadge (26pt) and iconContainer
+    /// (28pt).
+    static let iconJumbo: CGFloat = 96
+
+    /// Hero avatar (72pt) — primary profile + training-plan row avatars.
+    static let avatarHero: CGFloat = 72
+
+    /// Large illustration (120pt) — onboarding auth illustrations.
+    static let illustrationLarge: CGFloat = 120
+
+    /// XL illustration (160pt) — onboarding consent illustration.
+    static let illustrationXLarge: CGFloat = 160
+
+    /// Small control footprint (34pt) — segmented pills, status pills.
+    /// Smaller than tapTargetCompact (36pt); smaller than touchTargetLarge
+    /// (48pt). Verify legibility per Dynamic Type before reusing.
+    static let controlSmall: CGFloat = 34
+
+    /// Tall progress bar height (6pt) — used by ReadinessCard score
+    /// trackers + nutrition macro bars. Distinct from progressBarHeight
+    /// (4pt, default thin bar).
+    static let progressBarHeightTall: CGFloat = 6
 }
 
 // MARK: - Motion

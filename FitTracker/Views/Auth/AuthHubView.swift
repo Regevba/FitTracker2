@@ -614,7 +614,7 @@ private struct AuthTertiaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(.horizontal, AppSpacing.xSmall)
-            .padding(.vertical, 13)
+            .padding(.vertical, AppSpacing.xSmall)
             .background(
                 RoundedRectangle(cornerRadius: AppRadius.medium)
                     .fill(AppColor.Surface.secondary.opacity(configuration.isPressed ? 0.72 : 0.58))
