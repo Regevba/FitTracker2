@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "hadf-phase2bis-replication",
+  "title": "hadf phase2bis replication",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "framework_version": "v7.8.3",
+  "started_at": "2026-05-12T07:22:43Z",
+  "updated_at": "2026-05-12T07:22:43Z",
+  "events": [
+    {
+      "timestamp": "2026-05-12T07:22:43Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "HADF Phase 2-bis Feature stub created; Block A scaffolding starts",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

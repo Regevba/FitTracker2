@@ -1,0 +1,49 @@
+{
+  "name": "hadf-phase2bis-replication",
+  "state_owner": "ft2",
+  "framework_version": "v7.8.3",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "isolation_opt_out": false,
+  "created_at": "2026-05-12T00:00:00Z",
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-05-12T00:00:00Z"
+      }
+    }
+  },
+  "primary_metric": "silhouette score at k=5 across all 11 endpoints (replicates Phase 2 baseline)",
+  "success_metrics": [
+    "Sub-exp 1: silhouette ≥ 0.5 with cluster count ≥ 3 across 9 cloud endpoints",
+    "Sub-exp 2: Ollama distribution KS-distinguishable from cloud endpoints (p < 0.01)",
+    "Sub-exp 3: Bedrock haiku-4-5 fingerprint distinguishable from Anthropic-direct haiku-4-5 (signature delta > Sub-exp 1 within-provider variance)"
+  ],
+  "kill_criteria": [
+    "n_valid < 600 per sub-exp (yield too low for silhouette computation)",
+    "All endpoints simultaneously rate-limited > 2 fires consecutively",
+    "ANY endpoint changes streaming protocol or model id mid-collection",
+    "Wrapper preflight fails 3+ times consecutively"
+  ],
+  "kill_criteria_resolution": null,
+  "dispatch_pattern": "subagent-driven (Block A) + operator-driven (Block B/C)",
+  "case_study": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/30-hadf-phase2bis-cross-sub-exp-synthesis.mdx",
+  "spec": "docs/superpowers/specs/2026-05-11-hadf-phase2bis-replication-design.md",
+  "plan": "docs/superpowers/plans/2026-05-12-hadf-phase2bis-replication.md",
+  "predecessor_case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+  "linear": "FIT-71",
+  "related_prs": [],
+  "tasks": [],
+  "phases": {
+    "research": {"status": "in_progress"},
+    "prd": {"status": "pending"},
+    "tasks_phase": {"status": "pending"},
+    "implement": {"status": "pending"},
+    "test": {"status": "pending"},
+    "review": {"status": "pending"},
+    "merge": {"status": "pending"},
+    "docs": {"status": "pending"},
+    "learn": {"status": "pending"}
+  }
+}
