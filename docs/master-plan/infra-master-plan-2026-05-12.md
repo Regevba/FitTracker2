@@ -9,11 +9,14 @@
 
 ## 0. TL;DR
 
-Three things are happening at once on the infra surface as of 2026-05-12:
+Four streams of work converge on the infra surface as of 2026-05-12 (updated end-of-day after PR #317 + PR #318):
 
-1. **v7.9 is a *promotion* release, not a feature release.** The decision date is **2026-05-21**. At that gate, three currently-advisory mechanisms (`BRANCH_ISOLATION_VIOLATION`, `FEATURE_CLOSURE_COMPLETENESS`, the v7.8 mechanism A/B/C/D coverage gates) flip to enforced if 7+ days of `gate-coverage.jsonl` telemetry support the flip. No new gates are being written for v7.9 — the substantive new build work routes through v8.x.
-2. **v8.x is a *feature* release with 13 candidates queued.** F1–F13 from three source sessions (roadmap stress-test 2026-05-07, branch-isolation closure 2026-05-07, v7.8.3 cutover dogfood 2026-05-11) plus 7 v8 icebox items from `branch-isolation-out-of-scope.md`. Ranking pass at 2026-05-21 Phase 9 of `framework-v7-8-branch-isolation` produces the v8.0 docket.
-3. **HADF Phase 2-bis is the only active infra-adjacent research build right now.** Its 5 phases of cross-repo state-sync infrastructure dependencies are met by v7.8.3 (shipped yesterday). Sub-experiment 1 unblocks on **2026-05-23** (T+12d soak); 3 sub-experiments + cross-synthesis case study run through approximately **2026-06-07**. Spec at [`docs/superpowers/specs/2026-05-11-hadf-phase2bis-replication-design.md`](../superpowers/specs/2026-05-11-hadf-phase2bis-replication-design.md), open as **FT2 PR #306** on the current branch.
+1. **v7.9 is a *promotion* release, not a feature release.** Decision date **2026-05-21**. Currently-advisory mechanisms (`BRANCH_ISOLATION_VIOLATION` Modes B+C, `FEATURE_CLOSURE_COMPLETENESS`, the v7.8 mechanism A/C coverage gates) flip to enforced if 7+ days of `gate-coverage.jsonl` telemetry support the flip. No new gates ship at v7.9 — substantive new build routes through v8.x.
+2. **v7.8.5 — pre-promotion remediation patch (NEW, added 2026-05-12).** PR #317 fixed a silent-pass bug (`BRANCH_ISOLATION_VIOLATION` Mode B unreachable when no state.json staged) and the follow-up audit surfaced 4 currently-failing tests in `test_gate_coverage.py` whose `KeyError: 'CACHE_HITS_EMPTY_POST_V6'` may indicate a hidden silent-pass left by the v7.8.3 rename to `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`. If true, the v7.8 → v7.9 calibration data feeding the 2026-05-21 decision is keyed wrong. Triage + fix should ship as v7.8.5 BEFORE the promotion decision; otherwise the entire quantitative input stream is corrupted. See §2.4.
+3. **v8.x is a *feature* release with 18 F-candidates + 7 V8-I icebox items = 25 total queued.** F1–F18 across four source sessions (roadmap stress-test 2026-05-07, branch-isolation closure 2026-05-07, v7.8.3 cutover dogfood 2026-05-11, PR #317 + test-suite audit 2026-05-12) plus V8-I1–V8-I7 from [`branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md). The 2026-05-12 expansion added **Theme G — Test discipline** (F14–F18) that closes the same vulnerability class PR #317 fixed. Full forward plan v7.9 → v8.2 at §3.6.
+4. **HADF Phase 2-bis is the only active infra-adjacent research build right now.** Block A scaffolding SHIPPED 2026-05-12 via PR #316 (13 tasks A0–A12, 15 commits). State.json `current_phase: tasks_phase`. Block B Sub-exp 1 collection calendar-gated 2026-05-23 (T+12d v7.8.3 soak); 3 sub-experiments + cross-synthesis case study run through approximately **2026-06-07**. Track 6 HADF gate activation (currently Q3=OUT of Phase 2-bis scope) becomes eligible post Phase 2-bis closure ~2026-06-07.
+
+**Calibration protocol added 2026-05-12 (§3.5):** every new layer of framework infrastructure now requires a documented pre-build calibration window where telemetry from the prior layer proves it fires correctly under load. This codifies the "advisory → enforced after measurement" pattern that v7.8 introduced informally.
 
 ---
 
@@ -31,6 +34,16 @@ The v7.8.3 cross-repo state-sync umbrella shipped 2026-05-11 across 10 PRs in a 
 - **1 phase-snapshot protocol** (`make snapshot-phase` → `scripts/snapshot-phase-completion.sh`) for off-SSD per-phase backups
 
 Detailed inventory of what shipped + how the 3-attempt cutover ceremony surfaced F11/F12/F13: [`docs/case-studies/cross-repo-state-sync-impl-case-study.md`](../case-studies/cross-repo-state-sync-impl-case-study.md).
+
+### 1.1 v7.8.4 + PR #317 + PR #318 (2026-05-12 additions)
+
+**v7.8.4** shipped 2026-05-12 morning via PR #314 + PR #297 + companion doc-sync. Adds the `PR_CACHE_STALE` auto-refresh gate (closes the 33-finding false-positive incident from empty PR cache) + narrows `TIER_TAG_LIKELY_INCORRECT` heuristic + introduces `.claude/shared/case-study-t1-references.json` reference ledger. Single operability gate added (`PR_CACHE_STALE`); total mechanical gates 33 → 34.
+
+**PR #317** (`fix(framework): BRANCH_ISOLATION_VIOLATION Mode B silent-pass on infra-only commits`) shipped 2026-05-12 afternoon. Reordered `scripts/check-state-schema.py:main()` so the Mode B check + gate-coverage ledger write happen BEFORE the no-state-files early-return. Added 2 regression tests that drive `main()` end-to-end. No new mechanism; closes a 5+ day silent-pass window that affected ~9 HADF Phase 2-bis Block A commits.
+
+**PR #318** (`docs(v7-9-candidates):` F14–F18 from PR #317 + test-suite audit + external research) shipped 2026-05-12 evening. Expanded the v7.9 candidates spec from 13 to 18 items (Theme G — Test discipline). Documented pre-promotion remediation flag for cache_hits keying.
+
+**Inventory delta:** 33 → 34 mechanical gates; 5 advisory unchanged; F-candidate count 13 → 18.
 
 ---
 
@@ -71,9 +84,32 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 - **Honesty ledger** — new entry FT2-FH-002 documenting the decision rationale + any deferrals
 - **Linear** — new epic FIT-72 (or next) `v7.9-promotion`, sub-issues per flipped gate
 
+### 2.4 v7.8.5 Pre-Promotion Remediation Patch (NEW, added 2026-05-12)
+
+**Trigger:** PR #317 root-cause analysis surfaced 4 currently-failing tests in `test_gate_coverage.py::test_cache_hits_gate_records_*` all raising `KeyError: 'CACHE_HITS_EMPTY_POST_V6'`. CLAUDE.md says v7.8.3 promoted this gate to `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`. The tests' KeyError on the **old** name on origin/main suggests one of three possibilities:
+
+1. **Rename incomplete** — the gate function was renamed but the coverage-instrumentation key (passed to `coverage.candidate(GATE)`) wasn't updated in lockstep. **Symptom:** Mechanism A emissions land under the wrong key (or under no key), corrupting the 2026-05-21 calibration data input.
+2. **Test fixture rot only** — tests reference a constant that was deleted; gate emissions are fine. Symptom: tests fail but production telemetry is correct.
+3. **Coverage instrumentation deleted entirely** — the rename was a hard cut; `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` records no Mechanism A telemetry at all. Symptom: gate-coverage.jsonl has zero entries for the gate; the 2026-05-21 decision has no quantitative input for this specific candidate.
+
+**Why this MUST ship before 2026-05-21:** the entire promotion decision rests on `gate-coverage.jsonl` showing the gate fires correctly. If the gate's Mechanism A key is wrong, the data is keyed wrong, and the criterion #1 ("Coverage emitted") cannot be evaluated honestly. This is a meta-instance of the silent-pass class PR #317 fixed.
+
+**Triage plan (v7.8.5, single PR, ~2 hours):**
+
+1. **Read** `scripts/check-state-schema.py` for `check_cache_hits_*` function names + `coverage.candidate(...)` keys passed in.
+2. **Read** `test_gate_coverage.py::test_cache_hits_gate_records_*` for what keys the tests expect.
+3. **Read** `.claude/logs/gate-coverage.jsonl` (last 7 days) — count entries by gate name. If `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` has zero entries, the rename was incomplete.
+4. **Fix** the keying so emission ↔ test ↔ documentation all agree.
+5. **Backfill** if telemetry was missed — re-run `make integrity-check` to populate the ledger with current state's coverage data so the 7-day window before 2026-05-21 starts clean.
+6. **Add** a regression test that asserts the gate emits to `gate-coverage.jsonl` under the canonical key (Mechanism A check), preventing future rename-drift.
+
+**Target ship:** 2026-05-13 → 2026-05-14 (T+7d remaining before 2026-05-21 = full window for the decision).
+
+**Cross-references:** [`scripts/check-state-schema.py`](../../scripts/check-state-schema.py); [`scripts/tests/test_gate_coverage.py`](../../scripts/tests/test_gate_coverage.py); [PR #318](https://github.com/Regevba/FitTracker2/pull/318) §"Pre-promotion remediation"; [v7.9 candidates spec](../superpowers/specs/2026-05-08-framework-v7-9-candidates.md) F18 pre-promotion remediation callout.
+
 ---
 
-## 3. Build Docket (v8.x — 13 candidates + 7 icebox = 20 items)
+## 3. Build Docket (v8.x — 18 F-candidates + 7 V8-I icebox = 25 items)
 
 ### 3.1 v7.9 Candidate Features (F-series) — Surfaced from Three Sources
 
@@ -103,6 +139,16 @@ If any criterion fails for a given gate, that gate stays advisory and re-evaluat
 | **F12** | Pre-commit gate | Add `actionlint` to pre-commit stack | Write-time gate | H (R=10 I=2 C=100% E=0.2w → 100.0) |
 | **F13** | Workflow bootstrap | `source_commit` input on `workflow_dispatch` OR full-repo scan fallback for unmirrored fitme-story-native state.json files | GH Actions infra | M (R=8 I=2 C=80% E=0.4w → 32.0) |
 
+**Source D — PR #317 + test-suite audit + external research (2026-05-12 session, [v7.9 candidates spec §2](../superpowers/specs/2026-05-08-framework-v7-9-candidates.md)):**
+
+| ID | Layer | Item | Class | RICE-est |
+|---|---|---|---|---|
+| **F14** | Test infrastructure | Per-gate `test_main_dispatch_<gate_id>()` requirement — every write-time gate must have ≥1 test driving `main()` end-to-end (Semgrep `rule.yml↔rule.test.yml` enforced-pairing pattern). 4 gates currently miss this (`CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`, `CU_V2_INVALID`, `STATE_NO_CASE_STUDY_LINK`, `CASE_STUDY_MISSING_FIELDS`). | Test discipline (write-time) | H (R=10 I=3 C=80% E=0.5w → 48.0) |
+| **F15** | Test infrastructure | Unit tests for 5 zero-coverage gates — `PHASE_TRANSITION_NO_LOG` + `PHASE_TRANSITION_NO_TIMING` (highest risk, guard most frequent state mutation), `BRANCH_ISOLATION_HISTORICAL`, `BRANCH_ISOLATION_LAUNCHD_DRIFT`, `PR_CACHE_STALE`. | Test discipline (Class B closure) | H (R=10 I=2 C=100% E=0.5w → 40.0) |
+| **F16** | Test infrastructure | pre-commit `try-repo`-style end-to-end harness — spawn throwaway git repo, stage fixtures from `tests/fixtures/<gate-id>/{positive,negative}/`, run real `.githooks/pre-commit` via subprocess, assert each gate fires/skips per fixture. Run in CI nightly. **Highest-leverage single change** per external research synthesis. | Test infrastructure foundation | H (R=10 I=3 C=80% E=0.5w → 48.0) |
+| **F17** | Telemetry materialization | Per-gate `last_fired_at` derived nightly index — `scripts/refresh-gate-last-fired.py` writes `.claude/shared/gate-last-fired.json` from `gate-coverage.jsonl`. AWS Config Rules `LastSuccessfulInvocationTime` pattern. Enables planned `GATE_COVERAGE_ZERO` meta-check at O(1) instead of O(records × gates). | Telemetry materialization | H (R=10 I=2 C=100% E=0.3w → 66.7) |
+| **F18** | Test infrastructure | Nightly mutation testing on dispatcher files (`mutmut run --paths-to-mutate scripts/check-state-schema.py,scripts/check-case-study-preflight.py,scripts/integrity-check.py`). Pitest "Remove Conditionals" + "Statement Deletion" operators surface surviving mutants on early-return patterns like PR #317's. Calibrate baseline 7d, then fail PR if surviving mutants on touched files rise vs main. | Mutation testing (advisory → enforced) | M (R=8 I=2 C=60% E=0.7w → 13.7) |
+
 **Resolved already (no v7.9 promotion needed):**
 
 | ID | Item | Resolution |
@@ -128,12 +174,185 @@ Source: [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](.
 
 The 2026-05-21 prioritization pass at `framework-v7-8-branch-isolation` Phase 9 closure produces the final v8.0 docket by:
 
-1. **Ranking** F1–F6 + F9–F13 + V8-I1 through V8-I7 by RICE × 7-day telemetry signal strength
-2. **Top-3 rule** — only top 3 by RICE enter v8.0; rest defer to v8.1
+1. **Ranking** F1–F6 + F9–F18 + V8-I1 through V8-I7 (23 candidates after F7/F8 resolution) by RICE × 7-day telemetry signal strength
+2. **Top-3-per-theme rule** (relaxed 2026-05-12 from prior "top-3 absolute") — pick top 3 by RICE within each theme so v8.0 covers breadth, not just the highest-RICE items. With 7 themes (A roadmap, B cross-repo asymmetry RESOLVED, C schema, D vocabulary, E ergonomics, F v7.8.3 cutover, G test discipline), v8.0 max docket = 18 items. Rest defer to v8.1.
 3. **Companion case study** — Phase 9 produces `framework-v7-8-branch-isolation-case-study.md` with the prioritization decision recorded in Section 99 + ranked output to `docs/superpowers/specs/2026-05-21-v8-0-docket.md` (new file)
 4. **Sub-experiment with hold-out** — if telemetry suggests *zero* F-items warrant promotion (rare but possible), v8.0 ships as a pure protocol patch and v8.x deferred to v8.1
+5. **Test-discipline foundation precedence (added 2026-05-12)** — Theme G items (F14, F15, F16, F17, F18) have a dependency graph among themselves: F16 (try-repo harness) is foundation; F14 (per-gate dispatch tests) and F18 (mutation testing) depend on it; F15 is independent; F17 is independent. If ANY Theme G item enters v8.0, F16 MUST also enter v8.0 OR ship earlier as v7.9.1.
 
 The Phase 9 task is tracked as **T29** in [`.claude/features/framework-v7-8-branch-isolation/state.json`](../../.claude/features/framework-v7-8-branch-isolation/state.json).
+
+### 3.4 Theme distribution (after 2026-05-12 expansion)
+
+| Theme | Items | Open count | Notes |
+|---|---|---|---|
+| **A — Roadmap/multi-feature realism** | F1, F2, F3 | 3 | Stress-test session |
+| **B — Cross-repo asymmetry** | F7, F8 | 0 (both RESOLVED v7.8.2) | Documented exemption |
+| **C — Schema drift / migration** | F4, F10 | 2 | `framework_version` + `experiment_outcome` enum |
+| **D — Vocabulary / latitude** | F5, F6 | 2 | `scope_change` event + B_medium tier doc |
+| **E — Workflow ergonomics** | F9 | 1 | `make complete-feature` pre-flight |
+| **F — v7.8.3 cutover follow-up** | F11, F12, F13 | 3 | All independent |
+| **G — Test discipline** (NEW 2026-05-12) | F14, F15, F16, F17, F18 | 5 | F16 is foundation for F14 + F18 |
+| **Icebox** | V8-I1 through V8-I7 | 7 | Each gated on own re-eval trigger |
+| **TOTAL** | 25 | **23 open** | F7/F8 resolved; 23 in 2026-05-21 ranking |
+
+---
+
+## 3.5 Calibration Protocol for New Layers (NEW, added 2026-05-12)
+
+The PR #317 incident + the cache_hits keying-drift suspicion (§2.4) both share the same root: **a new layer of framework infrastructure was added on top of an unmeasured prior layer.** Going forward, every new infrastructure layer must walk a 5-phase calibration protocol before becoming load-bearing.
+
+### 3.5.1 The 5 Phases
+
+```
+Phase A — Specify         (before code is written)
+Phase B — Ship advisory + measure   (T+0 → T+7d)
+Phase C — Calibration gate          (T+7d → T+14d)
+Phase D — Promotion decision        (T+14d)
+Phase E — Post-promotion validation (T+14d → T+21d)
+```
+
+| Phase | Duration | Required artifacts | Exit criteria |
+|---|---|---|---|
+| **A — Specify** | Pre-code | Gate spec (`function_name`, `emission_key`, dispatch site, expected skip reasons), 1 positive fixture, 1 negative fixture, regression test that asserts "this gate's `coverage.candidate(GATE)` fires when invoked under the expected input partition" | Spec + fixture + dispatch test ALL exist before any production code lands |
+| **B — Ship advisory + measure** | 7 days minimum | Gate emits to `gate-coverage.jsonl` with `{candidates, checked, skipped, skip_reasons}`; PR ships with advisory-only mode (logs, doesn't block); operator checks Mechanism A at T+3d for unexpected skip_reasons | ≥7 days elapsed AND ≥1 real-world fire OR ≥3 documented legitimate skips |
+| **C — Calibration gate** | 7 days | Quantitative: ≥N gate fires (N specified per gate, default N=5 for advisory→enforced; N=10 for novel mechanisms). Zero false positives confirmed by operator review of every `failure` row. All `skipped` rows match documented expected reasons. | All quantitative checks pass AND qualitative dogfood test runs cleanly |
+| **D — Promotion decision** | 1 day | Decision recorded in case study + honesty ledger + CLAUDE.md update. Reversibility path tested (single-commit rollback rehearsed). | Either: flipped to enforced AND telemetry continues OR stays advisory AND re-evaluates at next T+14d cycle |
+| **E — Post-promotion validation** | 7 days | Continuous telemetry monitoring; watch for false-positive incidents; trend analysis on fire frequency vs advisory baseline | 0 false-positive incidents in 7d → layer is "stable" and may have new layers built on top |
+
+**Total minimum time per layer: 22 days** (Phase B 7d + Phase C 7d + Phase D 1d + Phase E 7d), with Phase A done up-front.
+
+### 3.5.2 Layer Stacking Rule
+
+**No new layer of framework infrastructure may be BUILT on top of a layer that hasn't reached Phase E.** This is the rule that codifies the PR #317 lesson — `BRANCH_ISOLATION_VIOLATION` Mode B was built (advisory) but never reached its own post-promotion validation; meanwhile we were already planning F11/F12/F13 on top of it.
+
+Concrete application to F14–F18 (Theme G test discipline):
+
+- F16 (try-repo harness) is foundation. It cannot ship until v7.9 promotion (~2026-05-21) clears Phase E (~2026-06-04 if successful).
+- F14 (per-gate dispatch tests) requires F16 in Phase E (so the harness exists). Earliest start: ~2026-06-04.
+- F18 (mutation testing) requires F16 in Phase E AND F14 in Phase B (so there are tests to mutate). Earliest start: ~2026-06-11.
+- F15 (zero-coverage gate unit tests) is independent — can start any time but should still walk Phases B–E.
+- F17 (last_fired_at index) is independent — can start any time; minimal calibration needed since it's a read-only derived artifact.
+
+### 3.5.3 Data Freshness Audit (quarterly)
+
+Every 90 days, run an audit that asserts:
+
+1. Each gate's `coverage.candidate(GATE)` emission key matches the gate's canonical function name (CLAUDE.md gate inventory).
+2. Each gate has emitted ≥1 candidate to `gate-coverage.jsonl` in the last 30 days (using F17's `last_fired_at` index for O(1) lookup).
+3. Each gate's `last_fired_at` is fresher than its introduction-date + advisory-window (else: silent-pass suspect).
+4. Tests in `scripts/tests/` reference current canonical names (no `KeyError` on a renamed gate).
+
+This audit is the meta-check that would have caught the cache_hits keying drift the moment it landed instead of weeks later via test failure. Initial run: 2026-08-12 (T+90d). Recurring: 2026-11-12, 2027-02-12, etc.
+
+### 3.5.4 Reversibility Contract
+
+Every gate must ship with a documented reversibility path:
+
+- **Advisory rollback** — single-line edit to gate function returning early; no hook-header changes; rollback time <2 min.
+- **Enforced rollback** — single-line edit to flip enforcement boolean OR hook-header bump from "enforced" to "advisory"; rollback time <5 min.
+- **Mechanism rollback** — full mechanism (e.g., A, C, E) rollback requires reverting the original PR + a `chore/rollback-mechanism-<X>` PR; rollback time <30 min.
+
+Rollback is rehearsed at Phase D (promotion decision) for every gate. Un-rehearsed rollback paths fail Phase D.
+
+---
+
+## 3.6 Forward Plan: v7.9 → v8.2 (NEW, added 2026-05-12)
+
+Mapping all 23 open candidates to version slots. Each version has explicit calibration checkpoints from §3.5.
+
+### 3.6.1 v7.8.5 — Pre-Promotion Remediation (target 2026-05-13 → 2026-05-14)
+
+**Scope:** cache_hits keying drift investigation + fix (§2.4). Single PR. ~2 hours wall.
+
+**Phase A artifacts** (must exist before fix is merged):
+- Regression test asserting `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` emits to `gate-coverage.jsonl` under the canonical key on the next invocation
+- Backfill of last 7 days of synthetic gate-coverage entries if the rename left a coverage hole (so the 2026-05-21 calibration window starts clean)
+
+**Phases B–E:** N/A for this patch (no advisory window — it's a fix to an existing enforced gate, not a new layer).
+
+**Why it ships at 7.8.5 not 7.9.0:** v7.9 is a *promotion* release, not a feature release. This is a fix that should ship under the patch-level cadence.
+
+### 3.6.2 v7.9 — Promotion Release (decision 2026-05-21)
+
+**Scope:** flip 6 currently-advisory mechanisms to enforced (§2.1 table).
+
+**Calibration data required at Phase D:**
+- `gate-coverage.jsonl` shows ≥7 days of `{candidates, checked, skipped}` per gate (Phase C exit)
+- Operator review of every `failure` row across the 7-day window — 0 false positives required
+- v7.8.5 (cache_hits keying) shipped — input data is keyed correctly
+
+**Risk if v7.8.5 doesn't ship before 2026-05-21:** calibration data for `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` may be keyed wrong. The promotion decision for that specific gate must be deferred to v7.10 (~2026-06-04) until keying is verified.
+
+**Phase E post-promotion validation runs 2026-05-21 → 2026-06-04.** During this window:
+- No new gates ship
+- No new test discipline work (F14, F18) starts
+- Operator monitors `.claude/logs/gate-coverage.jsonl` for unexpected `failure` rows
+- F17 (`last_fired_at` index) can be built in parallel since it's read-only — does not add new gates
+
+### 3.6.3 v7.9.1 — Test Discipline Foundation + Low-Effort Wins (target 2026-06-04 → 2026-06-11)
+
+**Scope:** ship the lowest-friction items that DON'T require waiting for v8.0 docket prioritization. All are non-gate-additive (no new gates) or telemetry-only.
+
+| Item | Phase A status | Effort | Notes |
+|---|---|---|---|
+| **F16** — try-repo harness | Spec ready in PR #318 + §3.6.4 below | 0.5w | Foundation for F14 + F18 |
+| **F17** — `last_fired_at` index | Spec at v7.9 candidates §2 F17 | 0.3w | Read-only derived artifact, no advisory window |
+| **F2** — Phase 0 reality-check sub-step | Spec at v7.9 candidates §2 F2 | 0.3w | Workflow-only, no gate code |
+| **F6** — B_medium tier doc | CLAUDE.md edit only | 0.1w | Doc-only |
+
+**Calibration windows:** F16 + F17 walk B–E since they're new infrastructure. F2 + F6 are workflow/doc changes (single-commit reversible) and skip B–C; ship directly with `verify-local` validation.
+
+### 3.6.4 v8.0 — Top-Per-Theme Docket (target 2026-06-18 → 2026-07-31)
+
+**Scope:** top 3 per theme by RICE × telemetry signal strength, picked at 2026-05-21 Phase 9 prioritization. Maximum docket = 18 items; realistic docket = 6–10 items per the historical v7.x cadence.
+
+**Theme G test discipline precedence:** F14 + F18 only ship if F16 is in Phase E (post-validation stable) by ~2026-06-11 per the layer stacking rule (§3.5.2). If F16 slips, F14 + F18 also slip.
+
+**Expected v8.0 docket composition (provisional, decided 2026-05-21):**
+
+| Likely-in | Likely-defer-to-v8.1 |
+|---|---|
+| F1 (STATE_TASKS_FILESYSTEM_DRIFT) — Theme A top | F3 — workflow gate, lower telemetry pull |
+| F4 (framework_version auto-update) — Theme C top | F5 — vocabulary, ergonomics-only |
+| F10 (experiment_outcome enum) — Theme C #2 | F9 — make complete-feature, depends on F14/F18 |
+| F11 (BRANCH_ISOLATION_HISTORICAL allowlist) — Theme F top | F12 (actionlint) — could ship v7.9.1 if it scores highest at 2026-05-21 |
+| F14 (per-gate dispatch tests) — Theme G #2 (if F16 stable) | F13 — workflow_dispatch input |
+| F15 (zero-coverage gate unit tests) — Theme G #3 | F18 (mutation testing) — depends on F14 + F16 |
+
+**Calibration:** every v8.0 item walks Phases B–E independently. v8.0 ships as a *cumulative release* — items merge to main as each individually completes Phase E.
+
+### 3.6.5 v8.1 — Deferred F-items + First Icebox Triggers (target 2026-08 → 2026-09)
+
+**Scope:** items deferred from v8.0 + any V8-I icebox item whose re-eval trigger fired.
+
+**Likely V8-I triggers by ~2026-08:**
+- **V8-I1** (Agent Smartlog UI) — trigger is ≥5 concurrent active features for 7+ days. Phase 2-bis + Track 6 + v8.0 builds may push concurrent count to that threshold; check at 2026-07-31.
+- **V8-I2** (Op-log Replay) — trigger is ≥3 manual-cleanup incidents in 90d OR `git stash list` >5 for 30d. Currently 2 stashes on canonical (stress-test pre-skill + import-training-plan-resume); monitor.
+
+**Likely V8-I non-triggers by ~2026-08 (defer to v8.2 or later):**
+- V8-I3 (Vercel Sandbox / Firecracker microVM) — no untrusted-code use case in the queue
+- V8-I4 (FS kernel sandboxing) — no regulatory mandate
+- V8-I5 (inotify/fsevents broadcast mediator) — no concurrent-write incidents tracked
+- V8-I6 (Cross-feature dependency analysis) — `path-reducers.json` has <5 entries; threshold is ≥20
+- V8-I7 (Auto-rollback on kill-criteria fire) — needs F1 (STATE_TASKS_FILESYSTEM_DRIFT) telemetry first
+
+### 3.6.6 v8.2+ — Long Tail (target Q4 2026 → 2027)
+
+**Scope:** remaining V8-I icebox items whose re-eval triggers haven't fired + new candidates surfaced from v8.0/v8.1 dogfood.
+
+**Note:** the framework explicitly does NOT pre-commit to v8.2+ contents. Per Phase E (post-promotion validation), each release writes its own docket only after the previous release stabilizes.
+
+### 3.6.7 Cumulative Mechanism Inventory by Version (projected)
+
+| Version | Mechanical gates | Advisory | Mechanisms (A–F) | Test discipline | Source |
+|---|---|---|---|---|---|
+| v7.8.4 (current) | 34 | 5 | A, C, D, F advisory; B, E enforced | None | shipped |
+| v7.8.5 | 34 | 5 | same | None (fix only) | target 2026-05-14 |
+| v7.9 | 34 | 3 | A, C → enforced; D, F stay advisory | None | target 2026-05-21 |
+| v7.9.1 | 34 | 3 | same | F16 advisory; F17 enforced (read-only) | target 2026-06-11 |
+| v8.0 | 37–39 | 4–6 | same + new gates per docket | F14 advisory; F15 enforced; F16 enforced | target 2026-07-31 |
+| v8.1 | 40–43 | 4–6 | + deferred items | F18 advisory → enforced | target 2026-09 |
 
 ---
 
@@ -190,9 +409,11 @@ Verbatim dates from source files. All times where unspecified are end-of-day in 
 |---|---|---|
 | **2026-05-11** | v7.8.3 SHIPPED · V2 enforced · V9 extended to feature logs · `state_owner` backfill complete | [v7.8.3 case study](../case-studies/cross-repo-state-sync-impl-case-study.md) |
 | **2026-05-11** | HADF Phase 2-bis unblock criterion MET (Q1=S1 sequencing) | v7.8.3 Phase 4 cutover |
-| **2026-05-12** | This document opened · `feat/hadf-phase2bis-spec` branch active · FT2 PR #306 open | — |
+| **2026-05-12** | This document opened · v7.8.4 SHIPPED (PR #314) · HADF Phase 2-bis Block A SHIPPED (PR #316) · PR #317 (`BRANCH_ISOLATION_VIOLATION` Mode B fix) MERGED · PR #318 (F14–F18 candidates added to v7.9 spec) OPEN | — |
+| **2026-05-13** | **v7.8.5 PATCH TARGET — cache_hits keying remediation** (§2.4) | This document §2.4 (added 2026-05-12) |
+| **2026-05-14** | v7.8.5 latest acceptable ship to keep full 7d calibration window before 2026-05-21 | derived |
 | **2026-05-18** | v7.9 promotion window opens (T+7d post-v7.8 ship) | [v7.8 bridge spec](../superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md) |
-| **2026-05-21** | **v7.9 PROMOTION DECISION** + **T29 v8.0 docket ranking pass** | v7.8.1 PRD §Phase 9 |
+| **2026-05-21** | **v7.9 PROMOTION DECISION** + **T29 v8.0 docket ranking pass** (23 candidates now, up from 13 pre-PR #318) | v7.8.1 PRD §Phase 9 |
 | **2026-05-23** | HADF Phase 2-bis Sub-experiment 1 earliest launch (T+12d soak post-v7.8.3) | [Phase 2-bis spec](../superpowers/specs/2026-05-11-hadf-phase2bis-replication-design.md) §11 |
 | **~2026-05-26** | Sub-exp 1 verdict + kill-criteria check | spec §10 |
 | **~2026-05-27** | Sub-exp 2 launch (if Sub-exp 1 passes kill-criteria) | spec §10 |
@@ -204,18 +425,31 @@ Verbatim dates from source files. All times where unspecified are end-of-day in 
 | Date | Event | Source |
 |---|---|---|
 | **~2026-06-03** | Sub-exp 3 verdict + anchor-drift trip-wire | spec §10 |
-| **~2026-06-04** | v7.10 promotion window opens (next 14d cycle for any v7.9 gates still advisory) | calendar |
+| **~2026-06-04** | v7.10 promotion window opens (next 14d cycle for any v7.9 gates still advisory) · **v7.9 Phase E exit** (post-promotion validation 7d clean) | calendar + §3.5 |
+| **~2026-06-04** | v7.9.1 build window opens (F16 + F17 + F2 + F6 — non-gate-additive items) per §3.6.3 | §3.6 |
 | **~2026-06-07** | HADF Phase 2-bis cross-sub-exp synthesis case study published | spec §10 |
 | **~2026-06-07** | Track 6 HADF gate activation Feature becomes eligible | Phase 2-bis closure |
-| **~2026-06-18** | v8.0 build kickoff window — earliest start if top-3 v8.0 docket items chosen at 2026-05-21 | calendar (T+28d post-prioritization for spec → plan → build) |
+| **~2026-06-11** | v7.9.1 latest ship target · F16 try-repo harness Phase E exit (foundation for F14 + F18) | §3.5.2 layer stacking rule |
+| **~2026-06-18** | v8.0 build kickoff window — earliest start if top-per-theme docket items chosen at 2026-05-21 · F14 + F18 unblock if F16 reached Phase E | §3.6.4 |
 
 ### 5.3 Q3 2026 (provisional)
 
 | Date | Event | Source |
 |---|---|---|
-| **2026-07** | v8.0 first build cycle — top-3 from F1–F13 + V8-I1–I7 | 2026-05-21 prioritization output |
-| **2026-08** | v8.0 ship target — Phase 9 case study | depends on v8.0 scope |
-| **2026-09** | Re-evaluation of un-shipped F-items + icebox triggers for v8.1 docket | calendar |
+| **2026-07-31** | v8.0 ship target — top-per-theme docket from F1–F18 + V8-I triggers | §3.6.4 |
+| **2026-08-12** | **First Data Freshness Audit** (T+90d quarterly) — assert gate emission keys ↔ function names ↔ test names all canonical | §3.5.3 |
+| **2026-08-31** | v8.1 build window opens — deferred F-items + first V8-I icebox triggers | §3.6.5 |
+| **2026-09-30** | v8.1 ship target | §3.6.5 |
+
+### 5.4 Q4 2026 + 2027 (provisional)
+
+| Date | Event | Source |
+|---|---|---|
+| **2026-11-12** | Data Freshness Audit #2 (T+180d) | §3.5.3 |
+| **2026-12** | v8.2 build window — long-tail V8-I icebox items per their re-eval triggers | §3.6.6 |
+| **2027-02-12** | Data Freshness Audit #3 (T+270d) | §3.5.3 |
+| **2027-05-08** | v7.8.2 cross-repo gate asymmetry annual re-eval (F7/F8 RESOLVED status review) | [2026-05-08 spec](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md) §5 |
+| **2027-05-12** | Data Freshness Audit #4 (T+365d, one year of forward plan) | §3.5.3 |
 
 ---
 
@@ -264,21 +498,28 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 
 | Risk | Likelihood | Impact | Mitigation |
 |---|---|---|---|
+| **cache_hits keying drift corrupts 2026-05-21 calibration data** (added 2026-05-12) | Medium | High (promotion decision keyed wrong) | v7.8.5 patch ships 2026-05-13 → 14 per §2.4; full audit of gate emission ↔ function name ↔ test name alignment; regression test asserts canonical key emission |
 | 2026-05-21 promotion fails on insufficient telemetry | Low | Medium | Stays advisory + re-evaluates 2026-06-04 (T+14d) |
 | HADF Phase 2-bis Sub-exp 1 kill-criteria fire | Medium | High (research-track halt) | Pre-registered kill criteria + 3 independent sub-experiments; failure of one does not invalidate the others |
 | F12 (actionlint) ships but catches a real CI YAML error mid-promotion week | Low | Low | Pre-commit gate fires locally before push; CI side already covered by GH Actions runtime validation |
 | v8.0 prioritization pass produces an empty docket | Low | Low | v8.0 ships as protocol patch; v8.1 inherits the F-series + icebox |
 | DevSSD disconnect during 2026-05-21 or 2026-05-23 windows | Medium (hardware open) | High | Pre-window: ensure backup + `pmset disksleep 0`; tracked separately in [project_devssd_disconnect_remediation_2026_05_02.md](~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_devssd_disconnect_remediation_2026_05_02.md) |
 | Cross-repo sync workflow regression on first non-FT2 fitme-story-native feature | Medium | Medium | F11 (BRANCH_ISOLATION_HISTORICAL allowlist) ships in v8.0 — interim manual reconciliation if regression hits 2026-05-12 → 2026-05-21 |
+| **Test discipline debt blocks v8.0 docket** (added 2026-05-12) | Medium | Medium | §3.5.2 layer stacking rule requires F16 (try-repo harness) at Phase E before F14 or F18 ships. If F16 slips, drop F14+F18 from v8.0 docket; don't pile on debt. |
+| **Mutation testing CI cost overrun on F18 promotion** (added 2026-05-12) | Low | Low | Phase B calibration measures actual `mutmut` runtime on hosted runner; if >15min/run, scope further before flipping enforced. Defer rather than slow CI. |
+| **Phase A specification rot** — gate spec exists but no fixture written, so Phase B coverage is theoretical (added 2026-05-12) | Medium | Medium | §3.5.1 Phase A exit criteria require BOTH spec AND fixture AND dispatch test. PR template + reviewer checklist added. |
 
 ---
 
 ## 8. Open Questions
 
-1. **v7.9 cadence going forward** — Is the T+14d advisory→enforced cadence the durable rule, or should it widen to T+21d once the framework stops accumulating new gates? Decide at 2026-05-21.
-2. **F12 (actionlint) priority placement** — RICE-est is 100.0 (highest in F-series). Should it ship *outside* the v8.0 docket as a v7.9.1 patch, or wait for v8.0? Decide at 2026-05-21.
-3. **v8.0 vs v8.1 split** — Top-3 rule may force F-items vs icebox items into the same shortlist. Tie-breaker: prefer F-items (already spec'd) over icebox (specs pending). Confirm at prioritization pass.
-4. **HADF gate activation as separate Feature vs v8.0 entry** — Track 6 is explicitly separate at 2026-06-07 launch. Should it carry its own framework version bump (v8.x = HADF gate)? Decide at Phase 2-bis Phase 9 close.
+1. **v7.9 cadence going forward** — Is the T+14d advisory→enforced cadence the durable rule, or should it widen to T+21d once the framework stops accumulating new gates? §3.5 codifies T+22d as the per-layer minimum (Phase B 7d + Phase C 7d + Phase D 1d + Phase E 7d) — should the project-wide cadence widen to match? Decide at 2026-05-21.
+2. **F12 (actionlint) priority placement** — RICE-est is 100.0 (highest in F-series). Should it ship *outside* the v8.0 docket as a v7.9.1 patch, or wait for v8.0? §3.6.3 currently does NOT include F12 in v7.9.1 because actionlint is gate-additive (new pre-commit check) — would require full Phase B–E walk. Decide at 2026-05-21.
+3. **v8.0 vs v8.1 split** — Top-per-theme rule (§3.3) may force F-items vs icebox items into the same shortlist. Tie-breaker: prefer F-items (already spec'd) over icebox (specs pending). Confirm at prioritization pass.
+4. **HADF gate activation as separate Feature vs v8.0 entry** — Track 6 is explicitly separate at ~2026-06-07 launch. Should it carry its own framework version bump (v8.x = HADF gate)? Decide at Phase 2-bis Phase 9 close.
+5. **(NEW 2026-05-12) v7.8.5 ship timing** — Can v7.8.5 (cache_hits keying remediation) ship 2026-05-13 OR 2026-05-14? If delayed past 2026-05-14, the gate's calibration window shrinks below 7d and that specific gate must defer to v7.10. Triage urgency on 2026-05-13 morning.
+6. **(NEW 2026-05-12) F16 sequencing — ship at v7.9.1 OR bundle with v8.0?** §3.6.3 puts F16 in v7.9.1 as foundation for F14 + F18. Argument for earlier ship: harness IS the calibration tool — lets us validate F14's per-gate dispatch tests catch dispatcher bugs. Argument for bundling with v8.0: keeps v7.9 promotion atomic + reduces Phase D cycles. Decide at 2026-05-21.
+7. **(NEW 2026-05-12) Phase A enforcement** — should Phase A artifacts (spec + fixture + dispatch test) be enforced via a new pre-commit gate (`GATE_SPEC_INCOMPLETE`) OR via PR-review checklist only? Mechanical enforcement matches v7.8.1 spirit; checklist-only matches v7.8.4 humility about what can be mechanically checked. Decide at 2026-06-04 v7.9.1 build start.
 
 ---
 
@@ -318,3 +559,4 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 | Date | Change |
 |---|---|
 | 2026-05-12 | Initial creation. Consolidates v7.9 / v8.x infra surface as of v7.8.3 ship. |
+| 2026-05-12 (evening) | Major expansion. PR #317 + #318 + test-suite audit + external research integrated. Added: §1.1 v7.8.4 + PR #317/#318 anchor; §2.4 v7.8.5 pre-promotion remediation patch (cache_hits keying); §3.1 Source D (F14–F18 test discipline); §3.3 top-per-theme docket rule + Theme G precedence; §3.4 theme distribution table; **§3.5 Calibration Protocol for New Layers** (5 phases, layer stacking rule, quarterly Data Freshness Audit, reversibility contract); **§3.6 Forward Plan v7.8.5 → v8.2** (versioned roadmap mapping all 23 open candidates); §5.1 + §5.2 + §5.3 + §5.4 extended calendar through 2027-05-12; §7 added 4 new risks; §8 added 3 new open questions (Q5/Q6/Q7). Doc grew 320 → ~430 lines. |
