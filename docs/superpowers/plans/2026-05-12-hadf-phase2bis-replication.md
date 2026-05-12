@@ -2196,6 +2196,8 @@ git push
 
 Each sub-exp is operator-driven, not subagent-dispatchable (real-time launchd interactions + 3-day collection windows). The runbooks below are precise step-by-steps the operator follows.
 
+> **Consolidation note 2026-05-12:** each Sub-exp closure (B13.13a/b, B14.9a/b, B15.22a/b) now produces a per-phase **ORCHID analysis report** per the template at [`docs/research/2026-05-12-hadf-phase2bis-orchid-integration.md`](../../research/2026-05-12-hadf-phase2bis-orchid-integration.md) §3.2. The synthesis case study (C16.6/7/8) produces an ORCHID v2 design spec stub + extends the framework-v7-mapping note. See the consolidation doc §6 for the exact additional sub-tasks per block. Hardware constraints (Chisel toolchain not installed → RTL blocked; everything upstream — behavioral models, DSE, framework mapping, ORCHID v2 spec writing — advances NOW) documented in §4 of that doc. State.json updated with `companion_research`, `calibration_protocol_phase`, and `external_audit_schedule` fields.
+
 ## Task B13: Sub-exp 1 launch + collection + verdict + closure
 
 **Calendar:** 2026-05-23 → ~2026-05-26 (3 days collection + 1 day verdict + closure)
