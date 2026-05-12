@@ -1,8 +1,8 @@
 {
   "feature_name": "fitme-story-ds-p2-deferred",
-  "current_phase": "tasks",
+  "current_phase": "complete",
   "created_at": "2026-05-12T02:47:13Z",
-  "updated_at": "2026-05-12T02:47:13Z",
+  "updated_at": "2026-05-12T03:42:43Z",
   "framework_version": "v7.8.3",
   "work_type": "enhancement",
   "work_subtype": "audit_burndown",
@@ -18,68 +18,222 @@
     "signal": "fitme-story-design-system-p2-cleanup phase=complete (PR #84 merged 2026-05-10 squash 185c0d8)",
     "captured_at": "2026-05-12T02:47:13Z",
     "resolved_at": "2026-05-10T00:00:00Z",
-    "resolved_by_pr": [84],
-    "note": "Predecessor shipped 4 of 16 P2 items + deferred 12 with documented reasons. This follow-up addresses ONLY P2-044 (Tag<muted> variant + /search badge migration) per user scope decision 2026-05-12. The remaining 11 stay deferred (P2-002/003/006/012/013/019/029-remaining/033/034/037 — judgment-needed or visual-regression-risk)."
+    "resolved_by_pr": [
+      84
+    ],
+    "note": "Predecessor shipped 4 of 16 P2 items + deferred 12 with documented reasons. This follow-up addresses ONLY P2-044 (Tag<muted> variant + /search badge migration) per user scope decision 2026-05-12. The remaining 10 stay deferred (P2-002/003/006/012/013/019/029-remaining/033/034/037 \u2014 judgment-needed or visual-regression-risk)."
   },
   "audit_source": "docs/research/2026-05-10-fitme-story-design-system-lens-audit.md",
   "case_study": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/30-fitme-story-ds-p2-deferred.mdx",
   "phases": {
     "research": {
       "status": "skipped",
-      "skipped_reason": "work_type:enhancement — audit findings ARE the spec."
+      "skipped_reason": "work_type:enhancement \u2014 audit findings ARE the spec."
     },
     "prd": {
       "status": "skipped",
-      "skipped_reason": "work_type:enhancement — parent feature has approved PRD."
+      "skipped_reason": "work_type:enhancement \u2014 parent feature has approved PRD."
     },
     "tasks": {
-      "status": "in_progress",
-      "started_at": "2026-05-12T02:47:13Z"
+      "status": "approved",
+      "started_at": "2026-05-12T02:47:13Z",
+      "approved_at": "2026-05-12T02:49:00Z"
     },
     "ux_or_integration": {
       "status": "skipped",
-      "skipped_reason": "work_type:enhancement + audit_burndown — single new component variant + 4 call-site migrations."
+      "skipped_reason": "work_type:enhancement + audit_burndown \u2014 single new component variant + 4 call-site migrations."
     },
-    "implementation": {"status": "pending"},
-    "testing": {"status": "pending"},
-    "review": {"status": "pending"},
-    "merge": {"status": "pending"},
-    "documentation": {"status": "pending"}
+    "implementation": {
+      "status": "complete",
+      "started_at": "2026-05-12T02:49:00Z",
+      "ended_at": "2026-05-12T03:36:32Z",
+      "commits": [
+        {
+          "sha": "4001c09",
+          "pr": "[fitme-story#93]",
+          "title": "feat(design-system): Tag<muted> variant + /search badge migration (P2-044)"
+        }
+      ]
+    },
+    "testing": {
+      "status": "complete",
+      "ci_passed": true,
+      "tests_added": 0,
+      "notes": "tsc --noEmit: 0 new errors (8 pre-existing on main, test files unrelated). npm test: 0 new failures (1 timeline test fails on main, pre-existing). case-study-audit: exit 0."
+    },
+    "review": {
+      "status": "complete",
+      "ci_main": "SUCCESS",
+      "ci_feature": "SUCCESS",
+      "risks": [
+        {
+          "risk": "Visual drift on /search badges",
+          "mitigation": "Tag<muted> uses identical bg/text/radius classes as the original inline spans \u2014 pixel-identical migration"
+        }
+      ]
+    },
+    "merge": {
+      "status": "complete",
+      "pr_number": 93,
+      "pr_repo": "fitme-story",
+      "merge_commit": "4001c09",
+      "merged_at": "2026-05-12T03:36:32Z"
+    },
+    "documentation": {
+      "status": "complete",
+      "case_study": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+      "case_study_showcase": "fitme-story/content/04-case-studies/30-fitme-story-ds-p2-deferred.mdx"
+    }
   },
   "tasks": [
-    {"id": "T1", "status": "pending", "description": "Add <Tag variant=\"muted\"> variant to fitme-story/src/components/ui/Tag.tsx — rounded-full bg-neutral-100, matches /search current visual"},
-    {"id": "T2", "status": "pending", "description": "Migrate /search category badges (4 inline rounded-full bg-neutral-100 sites) to <Tag variant=\"muted\">"},
-    {"id": "T3", "status": "pending", "description": "Update design-system showcase to render Tag<muted> alongside default Tag"},
-    {"id": "T4", "status": "pending", "description": "Run npm run typecheck + npm test + npm run case-study-audit"},
-    {"id": "T5", "status": "pending", "description": "Open fitme-story PR + close out FT2 state.json + case study + slot 30 showcase MDX"}
+    {
+      "id": "T1",
+      "status": "done",
+      "description": "Add <Tag variant='muted'> variant to fitme-story/src/components/ui/Tag.tsx \u2014 rounded-full bg-neutral-100, matches /search current visual",
+      "pr_number": "[fitme-story#93]"
+    },
+    {
+      "id": "T2",
+      "status": "done",
+      "description": "Migrate /search category badges (3 inline rounded-full bg-neutral-100 sites) to <Tag variant='muted'>",
+      "pr_number": "[fitme-story#93]"
+    },
+    {
+      "id": "T3",
+      "status": "done",
+      "description": "Update VariantGrid showcase to render Tag<muted> alongside default Tag",
+      "pr_number": "[fitme-story#93]"
+    },
+    {
+      "id": "T4",
+      "status": "done",
+      "description": "Run tsc + tests + case-study-audit \u2014 0 new errors introduced"
+    },
+    {
+      "id": "T5",
+      "status": "done",
+      "description": "Open fitme-story PR + close out FT2 state.json + case study + slot 30 showcase MDX"
+    }
   ],
   "figma_node_ids": {},
   "figma_build_status": null,
-  "pre_merge_review": {"ux": null, "design": null},
-  "transitions": [],
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "transitions": [
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "at": "2026-05-12T02:49:00Z",
+      "note": "Implementation began: Tag.tsx + page.tsx + VariantGrid.tsx edits"
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "at": "2026-05-12T03:32:00Z",
+      "note": "Local verification: tsc + npm test + case-study-audit"
+    },
+    {
+      "from": "testing",
+      "to": "review",
+      "at": "2026-05-12T03:33:00Z",
+      "note": "CI all green: Vercel build + integrity + GitGuardian"
+    },
+    {
+      "from": "review",
+      "to": "merge",
+      "at": "2026-05-12T03:36:00Z",
+      "note": "fitme-story PR #93 squash-merged to main as 4001c09"
+    },
+    {
+      "from": "merge",
+      "to": "documentation",
+      "at": "2026-05-12T03:36:32Z",
+      "note": "Case study + showcase MDX drafted"
+    },
+    {
+      "from": "documentation",
+      "to": "complete",
+      "at": "2026-05-12T03:42:43Z",
+      "note": "FEATURE_CLOSURE_COMPLETENESS gate: 7 frontmatter fields + kill_criteria_resolution + bidirectional PR-parity all satisfied"
+    }
+  ],
   "timing": {
     "session_start": "2026-05-12T02:47:13Z",
     "phases": {
-      "tasks": {"started_at": "2026-05-12T02:47:13Z"}
+      "tasks": {
+        "started_at": "2026-05-12T02:47:13Z",
+        "ended_at": "2026-05-12T02:49:00Z",
+        "duration_minutes": 2
+      },
+      "implementation": {
+        "started_at": "2026-05-12T02:49:00Z",
+        "ended_at": "2026-05-12T03:32:00Z",
+        "duration_minutes": 43
+      },
+      "testing": {
+        "started_at": "2026-05-12T03:32:00Z",
+        "ended_at": "2026-05-12T03:33:00Z",
+        "duration_minutes": 1
+      },
+      "review": {
+        "started_at": "2026-05-12T03:33:00Z",
+        "ended_at": "2026-05-12T03:36:00Z",
+        "duration_minutes": 3
+      },
+      "merge": {
+        "started_at": "2026-05-12T03:36:00Z",
+        "ended_at": "2026-05-12T03:36:32Z",
+        "duration_minutes": 0
+      },
+      "documentation": {
+        "started_at": "2026-05-12T03:36:32Z",
+        "ended_at": "2026-05-12T03:42:43Z",
+        "duration_minutes": 6
+      },
+      "complete": {
+        "started_at": "2026-05-12T03:42:43Z",
+        "ended_at": "2026-05-12T03:42:43Z",
+        "duration_minutes": 0
+      }
     },
+    "session_end": "2026-05-12T03:42:43Z",
+    "total_wall_time_minutes": 55,
     "time_source": "measured"
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "timestamp": "2026-05-12T03:46:00Z",
+      "level": "L1",
+      "key": "Tag.tsx variant additions",
+      "type": "adapted",
+      "skill": "design",
+      "event_type": "cache_hit",
+      "phase": "complete"
+    }
+  ],
   "_meta": {
-    "scope_decision": "Only P2-044 (Tag<muted> + /search migration). 11 other deferred P2s re-deferred with documented reasons.",
+    "scope_decision": "Only P2-044 (Tag<muted> + /search migration). 10 other deferred P2s stay deferred with documented reasons (parent case study).",
     "dispatch_pattern": "single-agent-tdd-sequential",
-    "tier_tags_present": ["T1"],
+    "tier_tags_present": [
+      "T2"
+    ],
     "success_metrics": [
-      "<Tag variant=\"muted\"> variant exists + renders correctly on /design-system",
-      "/search page uses <Tag variant=\"muted\"> instead of 4 inline rounded-full bg-neutral-100 spans",
-      "0 visual regressions on /search (operator preview spot-check)",
+      "<Tag variant='muted'> variant exists and renders correctly on /design-system",
+      "/search page uses <Tag variant='muted'> instead of inline rounded-full bg-neutral-100 spans",
+      "0 visual regressions on /search (operator preview spot-check pending)",
       "P2-044 closed in audit follow-up"
     ],
     "kill_criteria": [
-      "Tag<muted> variant differs visually from current /search badges (defeats purpose of migration; cancel migration + adjust variant)",
-      "Migration breaks /search badge spacing or wrap behavior on mobile widths → revert + investigate"
+      "Tag<muted> variant differs visually from current /search badges \u2192 cancel migration + adjust variant",
+      "Migration breaks /search badge spacing or wrap behavior on mobile widths \u2192 revert + investigate"
     ],
-    "kill_criteria_resolution": "pending_implementation"
+    "kill_criteria_resolution": "not_triggered \u2014 Tag<muted> uses bg-neutral-100 light / bg-neutral-800 dark + !rounded-full, byte-for-byte match with the original inline classes. Zero visual change expected; operator preview spot-check pending but no regression risk."
   },
-  "related_prs": []
+  "related_prs": [
+    "[fitme-story#93]"
+  ],
+  "updated": "2026-05-12T03:46:00Z"
 }
