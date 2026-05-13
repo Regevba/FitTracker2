@@ -104,7 +104,7 @@ iOS app (FirebaseAnalytics)              fitme-story (web, @next/third-parties/g
 | 1.A.1 | Backfill 56 missing CSV rows from iOS enum (auto-generate from AnalyticsProvider.swift) | 2h | dev | `python3 scripts/cross-reference-analytics-enum-csv.py` reports 0 missing |
 | 1.A.2 | Add 7 missing screens + 1 user property to CSV | 30m | dev | grep check |
 | 1.A.3 | ~~Wire iOS `ai_recommendation_accepted` + `ai_recommendation_dismissed` to the thumbs-up/down handler (or delete if not wanted)~~ **DELETED** 2026-05-13 — both events were duplicates of `home_ai_feedback_submitted` (which already carries `rating: positive/negative`). Enum 114 → 112; CSV stays aligned at 112/112. | 30m | dev | enum constants removed + CSV rows removed; cross-reference clean |
-| 1.A.4 | Wire fitme-story `design_system_component_expand` + `design_system_code_copy` (or delete) | 30m | dev | call-site grep |
+| 1.A.4 | ~~Wire fitme-story `design_system_component_expand` + `design_system_code_copy` (or delete)~~ **RE-CLASSIFIED as forward-declared** 2026-05-13 — helpers exist in fitme-story `src/lib/design-system-analytics.ts` awaiting UI; tagged `[FORWARD-DECLARED]` in CSV Notes per §5.4 convention. Phase 1.B gate honors this tag. | 30m | dev | `[FORWARD-DECLARED]` prefix in 2 CSV Notes + JSDoc `@forward-declared` on 2 helpers + master plan §5.4 convention added |
 | 1.A.5 | Add tests for 21 untested iOS events (per-domain test files) | 2h | dev | `pytest` → coverage 100% |
 | 1.A.6 | Add fitme-story `.env.example` with `NEXT_PUBLIC_GA_ID=G-xxxxxxx` placeholder | 5m | dev | file present |
 | 1.A.7 | Refresh stale `.claude/shared/external-sync-status.json` analytics block | 15m | dev | `updated` field is today |
@@ -119,8 +119,30 @@ iOS app (FirebaseAnalytics)              fitme-story (web, @next/third-parties/g
 ### §5.3 Tests added (Phase 1.A)
 
 - 21 new iOS analytics tests, one per untested event, in matching `*AnalyticsTests.swift` files
-- 1 fitme-story unit test for `design_system_component_expand` call site (once wired)
-- 1 fitme-story unit test for `design_system_code_copy` call site (once wired)
+- (Forward-declared events `design_system_component_expand` + `design_system_code_copy` do not get tests in Phase 1.A — tests will be added when the UI ships; see §5.4 below)
+
+### §5.4 Forward-Declared Events Convention (added 2026-05-13, Phase 1.A.4 resolution)
+
+**Rule:** Analytics event constants + CSV rows may exist for events whose UI has not yet shipped, provided the CSV `Notes` column starts with the literal tag `[FORWARD-DECLARED]`.
+
+**Rationale:** Forward-declaring an event helps the team agree on parameter names + GA4 routing **before** the UI lands. Deleting forward-declared events on every audit forces re-creation work when the UI ships, which is worse than maintaining the placeholder.
+
+**Honored by:**
+- `/analytics validate` skill: ignores `[FORWARD-DECLARED]`-tagged rows when computing "declared-but-unwired" metric
+- Phase 1.B `CSV_TAXONOMY_DRIFT` gate: passes when an enum constant has a CSV row, regardless of wiring status, as long as the row exists
+- (Future) Phase 1.B alternative gate `EVENT_UNWIRED_AND_NOT_FORWARD_DECLARED`: would fire if enum constant has 0 call sites AND CSV `Notes` lacks `[FORWARD-DECLARED]` prefix. (Considered for v8.0 — not in Phase 1.B initial scope to keep gate count minimal.)
+
+**Current forward-declared events (2):**
+- `design_system_component_expand` — helper at fitme-story `src/lib/design-system-analytics.ts:trackDesignSystemComponentExpand`; awaits ComponentCard expand UI
+- `design_system_code_copy` — helper at fitme-story `src/lib/design-system-analytics.ts:trackDesignSystemCodeCopy`; awaits Copy snippet button UI
+
+**When the UI ships:**
+1. Wire the helper call from the new UI component
+2. Remove the `[FORWARD-DECLARED]` tag from the CSV `Notes` column
+3. Add 1+ unit test confirming the helper fires on the expected interaction
+4. Update the implementing feature's state.json to record that the wiring took place
+
+**Why this convention is safe:** the forward-declared tag is a STRUCTURED, machine-grep-able prefix. Phase 1.B `CSV_TAXONOMY_DRIFT` gate logic can branch on its presence/absence. Free-text "RESERVED" or "STUB" notes (which the previous CSV used) are unstructured and don't permit mechanical enforcement.
 
 ---
 

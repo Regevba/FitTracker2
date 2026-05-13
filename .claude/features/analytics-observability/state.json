@@ -100,10 +100,12 @@
           "current": 0
         },
         {
-          "name": "Declared-but-unwired web events",
-          "baseline": 2,
+          "name": "Declared-but-unwired web events (excluding intentional forward-declared)",
+          "baseline": 0,
           "target": 0,
-          "current": 2
+          "current": 0,
+          "convention_reference": "docs/master-plan/analytics-master-plan-2026-05-13.md \u00a75.4",
+          "note": "Re-baselined 2026-05-13 Phase 1.A.4: the 2 declared-but-unwired web events (design_system_component_expand + design_system_code_copy) are intentional forward-declarations honored by the [FORWARD-DECLARED] CSV tag convention. They are no longer counted as drift."
         },
         {
           "name": "GA4 MCP connectivity",
@@ -182,6 +184,20 @@
         "docs/product/funnel-definitions.md",
         "docs/master-plan/analytics-master-plan-2026-05-13.md"
       ]
+    },
+    {
+      "id": "1.A.4",
+      "title": "Resolve declared-but-unwired fitme-story design_system_* events",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-13T16:37:42Z",
+      "completed_at": "2026-05-13T16:37:42Z",
+      "outcome": "RE-CLASSIFIED as forward-declared (per master plan \u00a75.4 new convention). Both helpers exist in fitme-story src/lib/design-system-analytics.ts awaiting UI (ComponentCard expand + Copy snippet button). Tagged [FORWARD-DECLARED] prefix in CSV Notes. Phase 1.B CSV_TAXONOMY_DRIFT gate logic will honor this structured tag. Metric re-baselined: 'Declared-but-unwired web events' from drift-counted to intent-honored.",
+      "files_touched": [
+        "docs/product/analytics-taxonomy.csv",
+        "docs/master-plan/analytics-master-plan-2026-05-13.md"
+      ],
+      "followup_fitme_story_pr": "JSDoc tags @forward-declared on the 2 helpers in src/lib/design-system-analytics.ts (separate PR for fitme-story repo)"
     }
   ],
   "figma_node_ids": {},
