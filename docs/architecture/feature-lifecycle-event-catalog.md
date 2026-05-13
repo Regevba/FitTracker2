@@ -234,6 +234,7 @@ Sorted by frequency (most frequent first).
 | Trigger | Source | Action |
 |---------|--------|--------|
 | `PostToolUse:Read` | [`.claude/settings.json`](../../.claude/settings.json) hook | Runs `scripts/observe-cache-hit.py` → appends to `_session-<id>.events.jsonl` (Mechanism C) |
+| `PostToolUse:Bash` (added v7.8.5 2026-05-13) | [`.claude/settings.json`](../../.claude/settings.json) hook | Runs `scripts/check-branch-drift.py` (W9 pattern detector) → records current branch on first call, compares + emits LOUD stderr warning on drift, updates baseline. Real-time alert surfaced back to assistant via tool output. Per-session state at `.claude/_session-state/<session_id>-branch.txt` (gitignored). Disable: `CLAUDE_W9_DISABLE_DRIFT_CHECK=1`. |
 
 ### 5.2 Per-commit (~seconds)
 

@@ -273,6 +273,20 @@ Mapping all 23 open candidates to version slots. Each version has explicit calib
 
 **Why it ships at 7.8.5 not 7.9.0:** v7.9 is a *promotion* release, not a feature release. This is a fix that should ship under the patch-level cadence.
 
+### 3.6.1.A v7.8.5 Observability Layer (SHIPPED 2026-05-13)
+
+**Scope:** ship the **operator-facing observability layer** that closes a recurring debugging-friction gap. No new write-time or cycle-time gates; no telemetry impact on v7.9 calibration data.
+
+**Two deliverables:**
+
+1. **Observed Patterns Catalog** at [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) — 23 gate-firing patterns (write-time + cycle-time) + 9 workflow patterns (W1–W9) documented with trigger / why-expected / signal-vs-noise rule / silence path / first-observed. CLI: `make observed-patterns`. Auto-loaded as preflight by `/pm-workflow`. **Mandatory rule:** any novel pattern surfaced during a session MUST be appended before the protocol closes the feature. Shipped via [PR #328](https://github.com/Regevba/FitTracker2/pull/328).
+
+2. **W9 branch-drift real-time alert** at [`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py) — `PostToolUse:Bash` hook that records the current branch per session and emits a LOUD stderr warning on unexpected branch change (typically caused by another concurrent Claude session sharing the same git working directory running `git checkout`, flipping HEAD). Warning surfaced back to the assistant via tool output for real-time operator alerting. Includes a 4-step recovery playbook in the catalog. Disable: `CLAUDE_W9_DISABLE_DRIFT_CHECK=1`. Shipped via [PR #341](https://github.com/Regevba/FitTracker2/pull/341).
+
+**Why it ships at 7.8.5 not 7.9.0:** observability/documentation surfaces don't carry the framework-version semantics of gate additions. Patches don't affect the 22-day Calibration Protocol clock.
+
+**v7.8.5 final mechanism inventory:** 33 mechanical gates + 5 advisories + **2 observability surfaces** (catalog + W9 hook). Effective `make integrity-check` baseline unchanged (0 findings + 4 expected advisories per pattern catalog).
+
 ### 3.6.2 v7.9 — Promotion Release (decision 2026-05-21)
 
 **Scope:** flip 6 currently-advisory mechanisms to enforced (§2.1 table).
