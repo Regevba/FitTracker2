@@ -212,6 +212,18 @@
         "FitTrackerTests/ImportPersistenceAndAnalyticsTests.swift",
         "FitTrackerTests/AnalyticsTests.swift"
       ]
+    },
+    {
+      "id": "1.A.7",
+      "title": "Refresh external-sync-status.json analytics block",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-13T17:50:08Z",
+      "completed_at": "2026-05-13T17:50:08Z",
+      "outcome": "Updated 'updated' timestamp + added new analytics_taxonomy_status block reflecting Phase 1.A reality (CSV 112/112, test coverage 100%, 0 unfired iOS events, web events status). Replaced findings array with current Phase 1.A summary. Preserved instrumentation_summary as backward-compat reference (40-metric framework \u2014 separate from event-taxonomy work).",
+      "files_touched": [
+        ".claude/shared/external-sync-status.json"
+      ]
     }
   ],
   "figma_node_ids": {},

@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-04-30T05:17:51Z",
+  "updated": "2026-05-13T17:48:36Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
     "healthy": true,
@@ -330,10 +330,35 @@
         "dashboard_speed_insights_deployed": true
       },
       "findings": [
-        "40 metrics defined, 14 available now (35%). 6 funnel definitions created (onboarding, training, nutrition, home, AI, readiness).",
-        "Remaining 26 metrics blocked by Firebase runtime (GoogleService-Info.plist), Sentry (crash-free rate), and external services.",
-        "Web Analytics and Speed Insights live on Vercel. GA4 event taxonomy in place with screen-prefix naming convention."
-      ]
+        "Phase 1.A (analytics-observability) IN FLIGHT \u2014 refreshed 2026-05-13.",
+        "iOS analytics taxonomy 100% aligned: 112/112 events have CSV rows + 100% test coverage (was 58/114 CSV + 81% tested at audit baseline).",
+        "Web analytics: 7/8 dashboard_* events wired + 1 intentional stub (dashboard_kanban_drag, Wave 1 read-only Kanban). 2/4 design_system_* events wired + 2 forward-declared placeholders ([FORWARD-DECLARED] convention per master plan \u00a75.4).",
+        "GA4 MCP defined but NOT connected \u2014 runtime event firing cannot be mechanically verified. Phase 2 (live debugger) ships GA4 Realtime poll via mcp-server-ga4 + local mirror sink.",
+        "Crash-free rate + Firebase health still 'unknown' \u2014 same root cause (no GA4 MCP, no Sentry MCP wired). Tracked in Phase 2 + master plan \u00a710 risks."
+      ],
+      "analytics_taxonomy_status": {
+        "as_of": "2026-05-13T17:48:36Z",
+        "source_of_truth": "FitTracker/Services/Analytics/AnalyticsProvider.swift (iOS) + fitme-story src/lib/design-system-analytics.ts + control-room/analytics.ts (web)",
+        "ios_enum_events": 112,
+        "ios_csv_rows": 112,
+        "ios_csv_drift_count": 0,
+        "ios_event_test_coverage_pct": 100,
+        "ios_events_unfired_in_production": 0,
+        "ios_screens_in_enum": 42,
+        "ios_screens_in_csv": 42,
+        "ios_user_properties_in_enum": 7,
+        "ios_user_properties_in_csv": 7,
+        "web_dashboard_events_declared": 8,
+        "web_dashboard_events_wired": 7,
+        "web_dashboard_events_stub": 1,
+        "web_design_system_events_declared": 4,
+        "web_design_system_events_wired": 2,
+        "web_design_system_events_forward_declared": 2,
+        "ga4_mcp_connected": false,
+        "ga4_mcp_setup_runbook": "docs/setup/ga4-mcp-setup-guide.md (Phase 2 deliverable)",
+        "forward_declared_convention_spec": "docs/master-plan/analytics-master-plan-2026-05-13.md \u00a75.4"
+      },
+      "instrumentation_summary_note": "instrumentation_summary below reflects PRE-Phase-1.A baseline (40 metrics, 14 available). Phase 1.A focused on event-taxonomy completeness (see analytics_taxonomy_status). The metric-level framework count is updated separately when measurement-adoption tooling re-scans."
     }
   }
 }
