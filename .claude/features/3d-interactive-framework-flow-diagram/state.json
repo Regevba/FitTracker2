@@ -2,17 +2,111 @@
   "name": "3d-interactive-framework-flow-diagram",
   "state_owner": "fitme-story",
   "framework_version": "v7.8.3",
-  "current_phase": "research",
+  "current_phase": "prd",
   "work_type": "Feature",
+  "has_ui": true,
+  "requires_analytics": true,
   "created_at": "2026-05-11T16:30:00Z",
   "case_study_link": "docs/case-studies/3d-interactive-framework-flow-diagram-case-study.md",
   "research_dossier": "../../FT2/.claude/features/3d-interactive-framework-flow-diagram/research.md",
-  "scope": "fitme-story public-site enhancement; third flagship visual alongside DispatchReplay + LifecycleLoop; 3D interactive framework flow diagram via React Three Fiber + Theatre.js + GSAP",
+  "scope": "fitme-story public-site enhancement; third flagship visual alongside DispatchReplay + LifecycleLoop; 3D interactive framework flow diagram (\"Framework Universe\") via React Three Fiber + Drei + Theatre.js + hybrid procedural-shell + glTF hero pieces",
   "phase_4_cutover_role": "First fitme-story-native feature; serves as the v7.8.3 framework certification round-trip per FT2 spec docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md \u00a76.5",
+  "public_name": "Framework Universe",
+  "launch_window": "Track A: PRD/Tasks/UX during v7.9 Phase E (2026-05-21 \u2192 06-04); implement parallel to v7.9.1; ship before v8.0 build window opens 2026-06-18",
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-05-13T00:00:00Z",
+      "sources": [
+        ".claude/features/3d-interactive-framework-flow-diagram/research.md (FT2)",
+        "PR #324 (FT2) merge 16312b0"
+      ]
+    },
+    "prd": {
+      "status": "in_progress",
+      "approved_at": null,
+      "analytics_spec_complete": true,
+      "draft_path": ".claude/features/3d-interactive-framework-flow-diagram/prd.md"
+    },
+    "tasks": {
+      "status": "pending",
+      "count": 0
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "type": null,
+      "preflight_passed": null
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    }
+  },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-05-13T00:00:00Z",
+      "approved_by": "user",
+      "note": "Phase 0 dossier approved with 4 pre-PRD blockers resolved: Q1=Pixar clean-tech, Q2=hybrid procedural+glTF, Q15=Framework Universe, Q10=Track A launch window."
+    }
+  ],
+  "blocker_resolutions": {
+    "universe_architectural_language": "Pixar clean-tech",
+    "authoring_split": "Hybrid: procedural R3F shell + Blender/glTF hero pieces",
+    "public_name": "Framework Universe",
+    "launch_window": "Track A (ship pre-v8.0)"
+  },
+  "tasks": [],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-05-11T16:30:00Z"
+        "started_at": "2026-05-11T16:30:00Z",
+        "ended_at": "2026-05-13T00:00:00Z"
+      },
+      "prd": {
+        "started_at": "2026-05-13T00:00:00Z"
       }
     }
   },
@@ -34,6 +128,6 @@
     }
   ],
   "state_owner_sync_origin": "fitme-story-reverse",
-  "state_owner_sync_origin_commit": "b844f69b8b1a791a1c4e1c10025a1833860538f9",
+  "state_owner_sync_origin_commit": "161e712c28b23a229c8379c55f1ab40c19c6dc12",
   "state_owner_sync_origin_pr_url": "pending"
 }
