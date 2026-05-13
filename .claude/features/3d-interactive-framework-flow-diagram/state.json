@@ -5,10 +5,10 @@
   "current_phase": "prd",
   "paused": true,
   "paused_at": "2026-05-13T15:30:00Z",
-  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Operator decision 2026-05-13: ship analytics-observability feature first to clear measurement debt (56 missing CSV rows + 4 unfired events + GA4 MCP disconnected) before 2026-05-21 v7.9 promotion decision. Resume signal fires when analytics-observability current_phase=complete. Decision-trail: docs/master-plan/analytics-observability-decisions-log-2026-05-13.md.",
+  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Operator decision 2026-05-13: ship analytics-observability feature first to clear measurement debt (56 missing CSV rows + 4 unfired events + GA4 MCP disconnected) before 2026-05-21 v7.9 promotion decision. Resume signal fires when analytics-observability current_phase=complete. Decision-trail: FT2 docs/master-plan/analytics-observability-decisions-log-2026-05-13.md.",
   "scheduled_after": {
     "signal": "analytics-observability phase=complete",
-    "trigger_action": "resume Phase 1 → Phase 2 (Tasks) approval gate; 600-line PRD already drafted at prd.md"
+    "trigger_action": "resume Phase 1 \u2192 Phase 2 (Tasks) approval gate; 600-line PRD already drafted at prd.md"
   },
   "work_type": "Feature",
   "has_ui": true,
@@ -35,15 +35,48 @@
       "analytics_spec_complete": true,
       "draft_path": ".claude/features/3d-interactive-framework-flow-diagram/prd.md"
     },
-    "tasks": {"status": "pending", "count": 0},
-    "ux_or_integration": {"status": "pending", "type": null, "preflight_passed": null},
-    "implementation": {"status": "pending", "commits": []},
-    "testing": {"status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false},
-    "review": {"status": "pending", "risks": [], "ci_main": false, "ci_feature": false},
-    "merge": {"status": "pending", "pr_number": null, "analytics_regression_passed": null},
-    "documentation": {"status": "pending"},
+    "tasks": {
+      "status": "pending",
+      "count": 0
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "type": null,
+      "preflight_passed": null
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
     "metrics": {
-      "primary": {"name": "", "baseline": null, "target": null, "current": null},
+      "primary": {
+        "name": "",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
       "secondary": [],
       "guardrails": [],
       "instrumentation_ready": false,
@@ -69,7 +102,10 @@
   "tasks": [],
   "figma_node_ids": {},
   "figma_build_status": null,
-  "pre_merge_review": {"ux": null, "design": null},
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
   "timing": {
     "phases": {
       "research": {
@@ -99,6 +135,6 @@
     }
   ],
   "state_owner_sync_origin": "fitme-story-reverse",
-  "state_owner_sync_origin_commit": "b844f69b8b1a791a1c4e1c10025a1833860538f9",
+  "state_owner_sync_origin_commit": "52f221342d794f771be116457ce1a09d2f8d6bf1",
   "state_owner_sync_origin_pr_url": "pending"
 }
