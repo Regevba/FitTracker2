@@ -90,7 +90,7 @@
           "name": "iOS event test coverage",
           "baseline": 81,
           "target": 100,
-          "current": 81,
+          "current": 100,
           "unit": "%"
         },
         {
@@ -198,6 +198,20 @@
         "docs/master-plan/analytics-master-plan-2026-05-13.md"
       ],
       "followup_fitme_story_pr": "JSDoc tags @forward-declared on the 2 helpers in src/lib/design-system-analytics.ts (separate PR for fitme-story repo)"
+    },
+    {
+      "id": "1.A.5",
+      "title": "Add 19 iOS analytics tests for previously-untested events",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-13T17:04:49Z",
+      "completed_at": "2026-05-13T17:04:49Z",
+      "outcome": "Coverage 81% \u2192 100% (93/112 \u2192 112/112). Added 19 new XCTest methods across 3 test files: HomeAnalyticsTests (4), ImportPersistenceAndAnalyticsTests (1), AnalyticsTests (14). Each test asserts event captured + enum constant + raw string match + key parameters. Pattern matches existing tests via MockAnalyticsAdapter + AnalyticsService convenience methods.",
+      "files_touched": [
+        "FitTrackerTests/HomeAnalyticsTests.swift",
+        "FitTrackerTests/ImportPersistenceAndAnalyticsTests.swift",
+        "FitTrackerTests/AnalyticsTests.swift"
+      ]
     }
   ],
   "figma_node_ids": {},

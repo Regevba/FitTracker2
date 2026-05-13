@@ -6,7 +6,7 @@
   "current_phase": "prd",
   "framework_version": "v7.8.5",
   "started_at": "2026-05-13T09:00:00Z",
-  "updated_at": "2026-05-13T16:37:42Z",
+  "updated_at": "2026-05-13T17:04:49Z",
   "events": [
     {
       "timestamp": "2026-05-13T09:00:00Z",
@@ -130,6 +130,28 @@
         "web_events_re_classified": 2,
         "convention_added": "[FORWARD-DECLARED] structured tag",
         "phase_1b_gate_implication": "CSV_TAXONOMY_DRIFT must branch on [FORWARD-DECLARED] prefix"
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-13T17:04:49Z",
+      "event_type": "task_completed",
+      "phase": "prd",
+      "task_id": "1.A.5",
+      "summary": "Phase 1.A.5: added 19 XCTest methods covering previously-untested iOS events. Coverage 81% \u2192 100% (112/112). Notifications (7), onboarding_auth (3), onboarding_goal/success/permission (3), session_restore_result, deep_link_routed, home_body_comp_* (3), home_metric_tile_tap, import_mapping_confirmed.",
+      "artifacts": [
+        "FitTrackerTests/HomeAnalyticsTests.swift",
+        "FitTrackerTests/ImportPersistenceAndAnalyticsTests.swift",
+        "FitTrackerTests/AnalyticsTests.swift"
+      ],
+      "metrics": {
+        "tests_added": 19,
+        "coverage_before_pct": 81,
+        "coverage_after_pct": 100,
+        "events_total": 112,
+        "events_tested_after": 112
       },
       "actor": "claude_opus_4_7",
       "status": "recorded",
