@@ -597,6 +597,7 @@ final class AnalyticsTests: XCTestCase {
         XCTAssertEqual(event.name, AnalyticsEvent.sessionRestoreResult)
         XCTAssertEqual(event.name, "session_restore_result")
         XCTAssertEqual(event.parameters?[AnalyticsParam.result] as? String, "success")
-        XCTAssertEqual(event.parameters?[AnalyticsParam.restoreTimeMs] as? Int, 240)
+        // Production code stringifies timeMs via "\(timeMs)" — match that contract.
+        XCTAssertEqual(event.parameters?[AnalyticsParam.restoreTimeMs] as? String, "240")
     }
 }
