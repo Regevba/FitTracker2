@@ -101,3 +101,4 @@ Config/Local/*.xcconfig
 # (which IS committed for path stability).
 .claude/shared/hadf/phase2bis-deploy-verification/
 .cache/
+.claude/_session-state/

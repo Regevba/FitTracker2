@@ -17,6 +17,18 @@ When investigation surfaces a NEW pattern not yet in the catalog, **document it 
 
 CLI: `make observed-patterns` prints the catalog. Cross-referenced from `.claude/integrity/README.md` § Expected false-positives.
 
+### Branch-drift safety (W9, added 2026-05-13) — real-time alert wired
+
+A `PostToolUse:Bash` hook ([`scripts/check-branch-drift.py`](../../../scripts/check-branch-drift.py)) detects when the current git branch has changed unexpectedly between tool calls within a session — typically caused by **another concurrent Claude session sharing the same working directory** running `git checkout`. The hook emits a LOUD stderr warning on drift; the warning is surfaced back to the assistant via tool output so it can be flagged to the operator in real time.
+
+**When the alert fires during this protocol run:**
+
+1. STOP. Do not commit until you've decided whether the drift was intentional.
+2. If the drift was unintentional → follow the W9 recovery playbook in [`observed-patterns.md`](../../integrity/observed-patterns.md) §W9 (stash + checkout-back + cherry-pick if needed).
+3. If the drift was intentional (you actually wanted to switch) → no action; the hook's internal state has already re-baselined to the new branch.
+
+**Prevention for multi-agent operators:** use isolated git worktrees (`scripts/create-isolated-worktree.py`) — each concurrent session gets its own HEAD so they cannot collide. This is the only robust prevention.
+
 ## Skill Loading Protocol (v5.1 — On-Demand + Model Tiering)
 
 Before starting any phase, check `.claude/shared/skill-routing.json` → `phase_skills` for the current phase. Load ONLY the listed SKILL.md files — do NOT load all 11 skills.

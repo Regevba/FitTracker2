@@ -201,6 +201,16 @@
             "command": "[ -f scripts/observe-cache-hit.py ] && python3 scripts/observe-cache-hit.py || true"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "_comment": "W9 pattern (added 2026-05-13): branch-drift detection. Catches the active-feature checkout-collision pattern where another concurrent Claude session sharing this working directory runs `git checkout` and flips THIS session's HEAD. Emits loud stderr warning on drift; surfaces back to assistant via tool output → assistant can flag to user in real time. Silent no-op when script absent (cross-repo guard). Disable with CLAUDE_W9_DISABLE_DRIFT_CHECK=1. Full pattern + playbook: .claude/integrity/observed-patterns.md W9.",
+            "command": "[ -f scripts/check-branch-drift.py ] && python3 scripts/check-branch-drift.py || true"
+          }
+        ]
       }
     ]
   }
