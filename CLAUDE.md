@@ -262,6 +262,16 @@ v7.8.4 is a **patch-level hygiene release** that does NOT add new gates, with on
 
 **Spec:** N/A — patch-level hygiene; rationale captured in this section + cold-start entrypoint [`.claude/entrypoints/framework-v7-8-4.md`](.claude/entrypoints/framework-v7-8-4.md).
 
+## v7.8.5 Observability Layer (shipped 2026-05-13)
+
+v7.8.5 adds two operator-facing observability surfaces — both are **documentation + a hook**, no new gates, no telemetry impact on the 2026-05-21 v7.9 promotion data:
+
+1. **Observed Patterns Catalog** — [`.claude/integrity/observed-patterns.md`](.claude/integrity/observed-patterns.md) is the canonical manifest of gate-firing patterns operators must recognize before debugging. 23 gate patterns + 9 workflow patterns documented. Auto-loaded as preflight by [`/pm-workflow`](.claude/skills/pm-workflow/SKILL.md). CLI: `make observed-patterns`. **Mandatory rule: any new pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.** Shipped via PR #328 (initial 23-pattern catalog) + PR #341 (W9 detection mechanism).
+
+2. **W9 branch-drift real-time alert** — [`scripts/check-branch-drift.py`](scripts/check-branch-drift.py) runs as a `PostToolUse:Bash` hook. Detects when the current git branch has changed unexpectedly between tool calls within a session (typically because another concurrent Claude session sharing the same git working directory ran `git checkout`, flipping HEAD). Emits a LOUD stderr warning surfaced back to the assistant via tool output, with a 4-step recovery playbook. Per-session state at `.claude/_session-state/<session_id>-branch.txt` (gitignored). Disable: `CLAUDE_W9_DISABLE_DRIFT_CHECK=1`. Full playbook: [`observed-patterns.md`](.claude/integrity/observed-patterns.md) W9.
+
+**Operator obligation:** when any framework gate or advisory fires during a session, the FIRST step is to check the catalog (`make observed-patterns`). Apply documented remediation if pattern matches; investigate only if novel; ALWAYS append a new entry when surfacing a novel pattern.
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:

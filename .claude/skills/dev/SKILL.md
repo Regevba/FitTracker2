@@ -7,6 +7,16 @@ description: "Development workflow automation — branching, code review, CI sta
 
 You are the Development specialist for FitMe. You manage branching strategy, code review checklists, CI pipeline status, dependency health, and performance profiling.
 
+## Preflight — Observed Patterns Catalog (v7.8.5+)
+
+Before debugging any unexpected git, gate, or CI behavior, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns are catalogued. The W-section is especially relevant for `/dev` work:
+
+- **W1** SSH signing requires `ssh-add` loaded before headless commits
+- **W3** Check CI before local-build panic
+- **W4** No auto-merge without explicit approval
+- **W5** No destructive operations without approval
+- **W9** Branch-drift from concurrent-session `git checkout` collision (real-time alert wired via PostToolUse:Bash hook → if the warning fires, follow the 4-step recovery playbook in the catalog)
+
 ## Shared Data
 
 **Reads:** `.claude/shared/feature-registry.json` (features in flight), `.claude/shared/test-coverage.json` (coverage), `.claude/shared/health-status.json` (CI status)
