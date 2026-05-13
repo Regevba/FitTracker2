@@ -103,7 +103,7 @@ iOS app (FirebaseAnalytics)              fitme-story (web, @next/third-parties/g
 |---|---|---|---|---|
 | 1.A.1 | Backfill 56 missing CSV rows from iOS enum (auto-generate from AnalyticsProvider.swift) | 2h | dev | `python3 scripts/cross-reference-analytics-enum-csv.py` reports 0 missing |
 | 1.A.2 | Add 7 missing screens + 1 user property to CSV | 30m | dev | grep check |
-| 1.A.3 | Wire iOS `ai_recommendation_accepted` + `ai_recommendation_dismissed` to the thumbs-up/down handler (or delete if not wanted) | 30m | dev | grep `AnalyticsEvent.aiRecommendationAccepted` shows ≥1 production call site |
+| 1.A.3 | ~~Wire iOS `ai_recommendation_accepted` + `ai_recommendation_dismissed` to the thumbs-up/down handler (or delete if not wanted)~~ **DELETED** 2026-05-13 — both events were duplicates of `home_ai_feedback_submitted` (which already carries `rating: positive/negative`). Enum 114 → 112; CSV stays aligned at 112/112. | 30m | dev | enum constants removed + CSV rows removed; cross-reference clean |
 | 1.A.4 | Wire fitme-story `design_system_component_expand` + `design_system_code_copy` (or delete) | 30m | dev | call-site grep |
 | 1.A.5 | Add tests for 21 untested iOS events (per-domain test files) | 2h | dev | `pytest` → coverage 100% |
 | 1.A.6 | Add fitme-story `.env.example` with `NEXT_PUBLIC_GA_ID=G-xxxxxxx` placeholder | 5m | dev | file present |
