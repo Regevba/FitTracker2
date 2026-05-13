@@ -101,8 +101,8 @@ iOS app (FirebaseAnalytics)              fitme-story (web, @next/third-parties/g
 
 | ID | Task | Effort | Owner | Verification |
 |---|---|---|---|---|
-| 1.A.1 | Backfill 56 missing CSV rows from iOS enum (auto-generate from AnalyticsProvider.swift) | 2h | dev | `python3 scripts/cross-reference-analytics-enum-csv.py` reports 0 missing |
-| 1.A.2 | Add 7 missing screens + 1 user property to CSV | 30m | dev | grep check |
+| 1.A.1 | ~~Backfill 56 missing CSV rows from iOS enum~~ **DONE** 2026-05-13 (PR #334) — flat-scan picked up all 49 events + 7 screens + 1 user prop in a single pass; 1.A.2 absorbed into this task. CSV now 112/112 aligned. | 2h | dev | ✅ `python3 scripts/cross-reference-analytics-enum-csv.py` reports 0 missing |
+| 1.A.2 | ~~Add 7 missing screens + 1 user property to CSV~~ **ROLLED INTO 1.A.1** — see above outcome. | 30m | dev | ✅ |
 | 1.A.3 | ~~Wire iOS `ai_recommendation_accepted` + `ai_recommendation_dismissed` to the thumbs-up/down handler (or delete if not wanted)~~ **DELETED** 2026-05-13 — both events were duplicates of `home_ai_feedback_submitted` (which already carries `rating: positive/negative`). Enum 114 → 112; CSV stays aligned at 112/112. | 30m | dev | enum constants removed + CSV rows removed; cross-reference clean |
 | 1.A.4 | ~~Wire fitme-story `design_system_component_expand` + `design_system_code_copy` (or delete)~~ **RE-CLASSIFIED as forward-declared** 2026-05-13 — helpers exist in fitme-story `src/lib/design-system-analytics.ts` awaiting UI; tagged `[FORWARD-DECLARED]` in CSV Notes per §5.4 convention. Phase 1.B gate honors this tag. | 30m | dev | `[FORWARD-DECLARED]` prefix in 2 CSV Notes + JSDoc `@forward-declared` on 2 helpers + master plan §5.4 convention added |
 | 1.A.5 | Add tests for 21 untested iOS events (per-domain test files) | 2h | dev | `pytest` → coverage 100% |
@@ -143,6 +143,28 @@ iOS app (FirebaseAnalytics)              fitme-story (web, @next/third-parties/g
 4. Update the implementing feature's state.json to record that the wiring took place
 
 **Why this convention is safe:** the forward-declared tag is a STRUCTURED, machine-grep-able prefix. Phase 1.B `CSV_TAXONOMY_DRIFT` gate logic can branch on its presence/absence. Free-text "RESERVED" or "STUB" notes (which the previous CSV used) are unstructured and don't permit mechanical enforcement.
+
+### §5.5 Phase 1.A current status (snapshot 2026-05-13 evening)
+
+**Shipped (3 tasks, 5 sub-deliverables):**
+
+| Task | PR | SHA | Outcome |
+|---|---|---|---|
+| 1.A.1 + 1.A.2 | [#334](https://github.com/Regevba/FitTracker2/pull/334) | merged | CSV 58 → 112 rows; 0 missing events / screens / user props |
+| 1.A.3 | [#335](https://github.com/Regevba/FitTracker2/pull/335) | merged | `aiRecommendationAccepted/Dismissed` removed (duplicates); enum 114 → 112; CSV stays aligned 112/112 |
+| 1.A.4 | [#336](https://github.com/Regevba/FitTracker2/pull/336) | merged | 2 web events re-classified `[FORWARD-DECLARED]`; new convention §5.4 added; metric re-baselined |
+
+Plus the parent feature scaffolding PR ([#332](https://github.com/Regevba/FitTracker2/pull/332), merged 2026-05-13T15:34Z) which carried the initial spec + decisions log + state.json.
+
+**Remaining (3 tasks before Phase 1.A closure):**
+
+| Task | Effort | Earliest | Blocker check |
+|---|---|---|---|
+| 1.A.5 — Add tests for 21 untested iOS events | 2h | 2026-05-14 | None — pure additive test work |
+| 1.A.6 — Add fitme-story `.env.example` with `NEXT_PUBLIC_GA_ID=G-xxxxxxx` placeholder | 5m | 2026-05-14 | None |
+| 1.A.7 — Refresh stale `.claude/shared/external-sync-status.json` analytics block | 15m | 2026-05-14 | None — value already auto-computable |
+
+**Phase 1.A close trigger:** all 3 remaining tasks shipped + `python3 scripts/cross-reference-analytics-enum-csv.py` clean + test-coverage 100%.
 
 ---
 
@@ -400,6 +422,24 @@ Both added to **§3.6.4 v8.0 docket — Theme G test discipline** in [`infra-mas
 - v7.8.2 cross-repo asymmetry policy (FT2-only Mechanism A)
 - v7.8.3 D-1 reverse-sync (extends to CSV mirror to fitme-story build)
 
+### §14.5 Observed Patterns Catalog applicability
+
+This feature both **consumes** existing entries in [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) and **adds** new entries when its gates ship. Cross-references:
+
+| Catalog entry | How analytics-observability uses it |
+|---|---|
+| **#2** `CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` | This feature's own state.json is currently flagged (9 Read events attributed via Mechanism C, no `cache_hits[]`). Expected per pattern — v7.8.x advisory, auto-resolves when v7.9 promotes Mechanism C dual-write. No action. |
+| **#1** `BRANCH_ISOLATION_HISTORICAL` | Will fire on this feature if its branches get squash-merged + cleanup-deleted before the catalog's signal-vs-noise check is run. Per pattern: cleanup-artifact, confirmed via PR `head_ref`. |
+| **#3** `BRANCH_ISOLATION_VIOLATION` Mode B | Phase 1.B gate work (2026-06-04+) is infra-path (`scripts/check-state-schema.py`, `.githooks/pre-commit`); Mode B WILL fire correctly on commits to those files. Mandatory: ship on a `chore/*` or `feat/*` branch. |
+| **#5** `ISOLATION_OPT_OUT_REASON_MISSING` | This feature has `isolation_opt_out: false` in state.json (sub-branches per phase), so this gate should not fire. If a sub-task needs metadata-only commits to main, opt out + document reason. |
+| **#6** `FEATURE_CLOSURE_COMPLETENESS` | Fires at `current_phase=complete`. Spec mandates filling all 7 frontmatter fields in `analytics-observability-case-study.md` before closing (incl. `kill_criteria_resolution` per Q7). |
+| **#14** `CASE_STUDY_MISSING_TIER_TAGS` | Case study dated post-2026-04-21 → must carry T1/T2/T3 tier tags on every quantitative claim. Mandatory at closure. |
+| **#21** `case_study_type` exemption tags | This feature is NOT exempt — `case_study_type` is absent in state.json by design; must produce a real case study. |
+| **NEW (post-1.B ship)** `CSV_TAXONOMY_DRIFT` | Will be added as catalog entry #24 the moment Phase 1.B gate ships. Document the trigger, the `[FORWARD-DECLARED]` exemption (per §5.4), and the silence path. |
+| **NEW (post-1.B ship)** `GA4_MCP_DISCONNECTED` | Will be added as catalog entry #25. Document that it is always advisory (never blocks), as a clear "GA4 reachability unknown" signal. |
+
+**Operator obligation:** when Phase 1.B ships, the closing PR MUST append entries #24 and #25 to `.claude/integrity/observed-patterns.md` — the catalog's mandatory-update rule (per [PR #328](https://github.com/Regevba/FitTracker2/pull/328)) makes this non-optional.
+
 ---
 
 ## §15 Approval
@@ -411,3 +451,179 @@ Both added to **§3.6.4 v8.0 docket — Theme G test discipline** in [`infra-mas
 **Phase 3 (UX/Integration) deliverable:** integration spec for `/control-room/analytics` route (component contracts, data shapes).
 
 **Phase 4 (Implementation) start:** 2026-05-15 earliest (after this PR merges + Linear/Notion setup).
+
+### §15.1 Phase 1 PRD approval checklist
+
+Operator confirms each item before transition from PRD → Tasks:
+
+- [ ] **§2** baseline numbers (56 missing rows / 4 unfired / 21 untested / 2 unwired / GA4 MCP disconnected) match the in-conversation audit findings of 2026-05-13
+- [ ] **§3** Approach B accepted; A (monolithic) + C (3 separate features) explicitly rejected
+- [ ] **§4** Architecture diagram covers all 5 surfaces (iOS app, web app, local mirror sink, MCP poll, control-room route)
+- [ ] **§5.1** task table accurate against `state.json::tasks` (1.A.1+1.A.2 / 1.A.3 / 1.A.4 done; 1.A.5–7 pending)
+- [ ] **§5.4** forward-declared events convention accepted; `[FORWARD-DECLARED]` Notes prefix is the canonical structured tag
+- [ ] **§5.5** Phase 1.A status snapshot accurate against PR history (#332, #334, #335, #336 all merged)
+- [ ] **§6–§7** Phase 2 + Phase 3 scope, files, and tests reviewed
+- [ ] **§8** Phase 1.B gate specs reviewed; 22-day Calibration Protocol mapping accepted; advisory-only nature of `GA4_MCP_DISCONNECTED` accepted
+- [ ] **§9** primary + 4 secondary metrics + 3 kill criteria reviewed
+- [ ] **§10** risk register reviewed; 7 risks classified
+- [ ] **§11** F19 + F20 candidate mapping aligned with `2026-05-08-framework-v7-9-candidates.md`
+- [ ] **§12** Linear epic + 13 child issues planned (actual numbers captured on creation)
+- [ ] **§13** Notion sub-page placement confirmed under FitMe Product Hub
+- [ ] **§14.5** Observed Patterns Catalog cross-references reviewed; obligation to add #24 + #25 at Phase 1.B ship accepted
+- [ ] **§16** Operational runbook reviewed (esp. mirror-OFF-by-default + passkey-gated dashboard)
+- [ ] **§17** Cross-phase dependencies + sequencing diagram accepted
+- [ ] **Calendar conflicts**: Phase 1.A + 2 → 2026-05-15→22 (post v7.8.5, before v7.9 Phase E start); Phase 3 → 2026-05-21→06-04 (parallel v7.9 Phase E); Phase 1.B → 2026-06-04→06-26 (post Phase E exit) — all 4 windows align with [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.5/§3.6
+
+Approval recorded as `transitions[].approved_at` in state.json (timestamp + `approved_by: "user"` + free-text `note`).
+
+---
+
+## §16 Operational Runbook
+
+How to operate each phase post-ship. Each subsection is the survival kit for an operator (you or me) coming in cold to maintain the feature.
+
+### §16.1 Phase 1.A — Hygiene maintenance
+
+**Regular operation:** none. The CSV is authored manually; the cross-reference script is the safety net.
+
+**On regression:** if `python3 scripts/cross-reference-analytics-enum-csv.py` flags drift (after Phase 1.B gate enforces it should be impossible without bypass), pull the offending feature branch, add the missing row(s), recommit. Pattern #24 (post-Phase-1.B) will document the exact remediation.
+
+**Adding a new analytics event:** define in `AnalyticsEvent` enum → add CSV row (with `Notes` field; use `[FORWARD-DECLARED]` if UI not wired yet) → add 1+ test in matching `*AnalyticsTests.swift` file → commit on a feature branch. Mode B will fire because pre-commit hooks live in `.githooks/`; that's expected per pattern #3.
+
+**Refresh stale `external-sync-status.json`:** `make analytics-instrumentation-summary` (added during 1.A.7); writes today's date + percentage to the analytics block.
+
+### §16.2 Phase 2 — Live debugger operation
+
+**Local mirror (DEBUG_ANALYTICS=1) — daily dev use:**
+
+```bash
+# Terminal 1: start the mirror server
+python3 scripts/analytics-watch-server.py --port 8765
+
+# Terminal 2: tail events
+/analytics watch                     # all events
+/analytics watch --filter onboarding # only onboarding_*
+/analytics watch --funnel sign_in,onboarding_step_viewed,onboarding_step_completed
+
+# Then run the app:
+#   iOS: set DEBUG_ANALYTICS=1 in scheme env → launch Simulator
+#   Web: NEXT_PUBLIC_DEBUG_ANALYTICS=1 npm run dev
+```
+
+**Port collision:** server exits with "port 8765 in use". Pass `--port 8766` and override the iOS/web env var to match.
+
+**PII safety:** mirror is **off by default**. The DebugSinkAdapter is a pass-through wrapper; if the env flag isn't set, it returns the underlying FirebaseAnalyticsAdapter unchanged. No code path writes to the websocket unless the env flag is set. Confirm in code review at every Phase 2 PR.
+
+**GA4 Realtime poll (`/analytics poll`):**
+
+```bash
+# One-time: connect GA4 MCP
+export GA4_PROPERTY_ID=<your-property-id>
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+# (see docs/setup/ga4-mcp-setup-guide.md for the full setup)
+
+/analytics poll                    # default 30s interval
+/analytics poll --interval 10s     # faster for active dev
+/analytics poll --event app_open   # single-event focus
+```
+
+**On auth failure:** advisory `GA4_MCP_DISCONNECTED` will surface; resolve service-account JSON file path + IAM role (`roles/analytics.viewer` on the property), retry. Never log credentials.
+
+### §16.3 Phase 3 — Dashboard operation
+
+**`/control-room/analytics` (fitme-story):**
+
+- Auth: passkey (reuses `ucc-passkey-auth` from 2026-05-07; same operator credentials)
+- Page load: <3s target including GA4 MCP roundtrip
+- Cache: 5-minute tiles via `use cache; cacheLife('minutes')` (per `next-cache-components` skill)
+- Live "last 10 events" stream: Suspense + Streaming, no cache
+
+**On GA4 MCP timeout:** the route degrades to "tiles only" with a banner explaining the live stream is unavailable. The 5-minute cached tiles continue to serve.
+
+**On stale data:** force-refresh with F5 invalidates the `cacheTag` set on the GA4 fetch. If cache is wrong for >10 minutes, check the cache tag invalidation in `ga4-mcp-client.ts`.
+
+**Looker Studio template:**
+
+- Operator imports `docs/analytics/looker-studio-template.json` into Looker once
+- Charts auto-populate from the configured GA4 property
+- No runtime cost; template is operator-owned post-import
+
+### §16.4 Phase 1.B — Gate operation
+
+**Once `CSV_TAXONOMY_DRIFT` is enforced (~2026-06-18):**
+
+- Pre-commit hook rejects commits where an `AnalyticsEvent` enum constant is added without a matching CSV row
+- Operator hits this → add the CSV row, restage, recommit
+- Legit forward-declared events: pre-add the CSV row tagged `[FORWARD-DECLARED]` BEFORE the enum constant. Gate honors the tag.
+- Emergency bypass: `git commit --no-verify` (logged; 72h cycle catches the resulting drift)
+
+**`GA4_MCP_DISCONNECTED` (always advisory):**
+
+- Emits to `gate-coverage.jsonl` + `make integrity-check` finding when env vars unset
+- Never blocks
+- Resolves naturally when operator runs `gcloud auth application-default login` + sets `GA4_PROPERTY_ID`
+
+**Reversibility:**
+
+- Rollback CSV gate to advisory: edit `scripts/check-state-schema.py` → set function early-return → push patch (<2 min)
+- Rollback GA4 advisory off entirely: same path (<5 min)
+- Both rehearsed at Phase D before Phase 1.B promotion (~2026-06-18)
+
+---
+
+## §17 Cross-Phase Dependencies & Sequencing
+
+### §17.1 Dependency graph
+
+```text
+Phase 1.A (hygiene, 1.A.1-7) ──────┐
+                                   │ (1.A.1+1.A.4 inform §5.4 convention)
+                                   ▼
+            Phase 1.B (gates, 2026-06-04+)
+                  ▲
+                  │ (gate predicates depend on Phase 1.A landing
+                  │  + F16 try-repo harness landing v7.9.1 ~2026-06-11)
+                  │
+Phase 2 (debugger, parallel 1.A) ──┤
+                                   │ (Phase 2 mirror surfaces drift early;
+                                   │  Phase 1.B gate codifies it)
+                                   │
+Phase 3 (dashboards, parallel v7.9 ┤
+         Phase E ~2026-05-21+) ────┘
+         │
+         │ (Phase 3 dashboard reuses Mechanism A coverage
+         │  ledger; needs gates to have shipped first
+         │  for "taxonomy compliance summary" tile to be useful)
+         ▼
+   Closure 2026-06-26 → triggers 3D Framework Universe auto-resume
+```
+
+### §17.2 Earliest start preconditions
+
+| Phase | Earliest start | Preconditions |
+|---|---|---|
+| 1.A.5 (iOS tests) | 2026-05-14 | None — purely additive |
+| 1.A.6 (.env.example) | 2026-05-14 | None |
+| 1.A.7 (sync status refresh) | 2026-05-14 | None |
+| 2.A (local mirror) | 2026-05-15 | v7.8.5 must be merged (avoid CI/SSD competition); v7.9 promotion calendar unaffected |
+| 2.B (GA4 MCP poll) | 2026-05-15 | Operator-set `GA4_PROPERTY_ID` + service-account JSON (one-time) |
+| 3.A (control-room route) | 2026-05-21 | v7.9 Phase E entered (parallel monitoring); passkey auth from `ucc-passkey-auth` still operational |
+| 3.B (Looker template) | 2026-05-21 | None |
+| 1.B.1 (CSV gate) | 2026-06-04 | v7.9 Phase E EXITED (Layer Stacking Rule per infra plan §3.5.2); F16 try-repo harness optional but recommended |
+| 1.B.2 (GA4 advisory gate) | 2026-06-04 | Same |
+| 1.B.3 (calibration) | 2026-06-11 | 1.B.1 + 1.B.2 in Phase B (advisory mode) for ≥7 days |
+| 1.B.4 (promotion decision) | 2026-06-18 | 1.B.3 calibration shows ≤5% FP rate per gate |
+
+### §17.3 Calendar conflicts already resolved
+
+| Conflict | Resolution | Captured in |
+|---|---|---|
+| v7.8.5 cache_hits keying patch competing for CI/SSD | Phase 1.A starts 2026-05-15 (after v7.8.5 ship) | `state.json::launch_window` |
+| v7.9 Phase E freeze (no new gates 2026-05-21→06-04) | Phase 1.B starts 2026-06-04 (post Phase E exit) | `state.json::launch_window` + §8.1 |
+| 22-day Calibration Protocol (infra plan §3.5) | Phase 1.B follows A→B→C→D→E with explicit per-stage dates | §8.1 |
+| Layer Stacking Rule (infra plan §3.5.2) | Phase 1.B gates ride on Mechanism A, which exits Phase E ~2026-06-04 if v7.9 promotes 2026-05-21 | §17.2 |
+| Active feature collision (3D vs analytics) | 3D parked (`scheduled_after: analytics-observability.complete`); analytics-observability is the live `.claude/active-feature` | state.json + §14.4 |
+| HADF Phase 2-bis Sub-exp 1 (2026-05-23) | Different team-track; no shared resources | None — independent track |
+| v7.8.5 + #336 + #335 + #334 + #332 already shipped | §5.5 snapshot table | §5.5 |
+
+---
