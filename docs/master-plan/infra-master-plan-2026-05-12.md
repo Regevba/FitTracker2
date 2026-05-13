@@ -192,9 +192,9 @@ The Phase 9 task is tracked as **T29** in [`.claude/features/framework-v7-8-bran
 | **D — Vocabulary / latitude** | F5, F6 | 2 | `scope_change` event + B_medium tier doc |
 | **E — Workflow ergonomics** | F9 | 1 | `make complete-feature` pre-flight |
 | **F — v7.8.3 cutover follow-up** | F11, F12, F13 | 3 | All independent |
-| **G — Test discipline** (NEW 2026-05-12) | F14, F15, F16, F17, F18 | 5 | F16 is foundation for F14 + F18 |
+| **G — Test discipline** (NEW 2026-05-12; expanded 2026-05-13) | F14, F15, F16, F17, F18, F19, F20 | 7 | F16 is foundation for F14 + F18; F19/F20 from analytics-observability ride on F16 harness |
 | **Icebox** | V8-I1 through V8-I7 | 7 | Each gated on own re-eval trigger |
-| **TOTAL** | 25 | **23 open** | F7/F8 resolved; 23 in 2026-05-21 ranking |
+| **TOTAL** | 27 | **25 open** | F7/F8 resolved; 25 in 2026-05-21 ranking (+2 from analytics-observability sub-doc) |
 
 ---
 
@@ -319,6 +319,8 @@ Mapping all 23 open candidates to version slots. Each version has explicit calib
 | F11 (BRANCH_ISOLATION_HISTORICAL allowlist) — Theme F top | F12 (actionlint) — could ship v7.9.1 if it scores highest at 2026-05-21 |
 | F14 (per-gate dispatch tests) — Theme G #2 (if F16 stable) | F13 — workflow_dispatch input |
 | F15 (zero-coverage gate unit tests) — Theme G #3 | F18 (mutation testing) — depends on F14 + F16 |
+| **F19** (CSV_TAXONOMY_DRIFT) — Theme G #4 (RICE 80.0; added 2026-05-13 via [analytics-master-plan §11](analytics-master-plan-2026-05-13.md#11-v79-candidate-mapping-f19--f20)) | — |
+| **F20** (GA4_MCP_DISCONNECTED advisory) — Theme G #5 (RICE 30.0; added 2026-05-13) | — |
 
 **Calibration:** every v8.0 item walks Phases B–E independently. v8.0 ships as a *cumulative release* — items merge to main as each individually completes Phase E.
 
@@ -342,6 +344,23 @@ Mapping all 23 open candidates to version slots. Each version has explicit calib
 **Scope:** remaining V8-I icebox items whose re-eval triggers haven't fired + new candidates surfaced from v8.0/v8.1 dogfood.
 
 **Note:** the framework explicitly does NOT pre-commit to v8.2+ contents. Per Phase E (post-promotion validation), each release writes its own docket only after the previous release stabilizes.
+
+### 3.6.6.A Analytics Observability Sub-doc (added 2026-05-13)
+
+Concurrent product-tier feature `analytics-observability` opened 2026-05-13 ships across the v7.9 + v7.9.1 + v8.0 windows as a sub-doc of this plan. Full spec at [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md); decisions trail at [`analytics-observability-decisions-log-2026-05-13.md`](analytics-observability-decisions-log-2026-05-13.md).
+
+**Calibration alignment with this plan:**
+
+| Analytics phase | Date window | Calibration phase | Why |
+|---|---|---|---|
+| Phase 1.A (hygiene) | 2026-05-15 → 22 | N/A (non-gate) | Backfill 56 CSV rows + wire 4 events + 21 tests |
+| Phase 2 (debugger) | 2026-05-15 → 22 (parallel 1.A) | N/A (non-gate) | Local mirror + GA4 Realtime MCP poll |
+| Phase 3 (dashboards) | 2026-05-21 → 06-04 (parallel **v7.9 Phase E**) | N/A (non-gate) | `/control-room/analytics` route + Looker template; honors Phase E "no new gates" rule |
+| Phase 1.B (gates) | 2026-06-04 → 06-26 | Full A→B→C→D→E 22d | 2 new gates: `CSV_TAXONOMY_DRIFT` (F19) + `GA4_MCP_DISCONNECTED` (F20); ship advisory 06-04, enforced earliest 06-18, Phase E exit 06-25 |
+
+**Why this fits this plan:** the analytics work consumes Mechanism A coverage telemetry, F16 try-repo harness (ride-on, not blocker), v7.8.2 cross-repo asymmetry policy (FT2-only Mechanism A), v7.8.3 D-1 reverse-sync (CSV mirror to fitme-story build), and v8.x docket Theme G test discipline. Treating it as a separate parallel track would duplicate those interfaces; Approach A (sub-doc) keeps the forward-looking roadmap single-source.
+
+**F19 + F20 added to §3.6.4 v8.0 docket Theme G** (see updated table below).
 
 ### 3.6.7 Cumulative Mechanism Inventory by Version (projected)
 
@@ -560,3 +579,4 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 |---|---|
 | 2026-05-12 | Initial creation. Consolidates v7.9 / v8.x infra surface as of v7.8.3 ship. |
 | 2026-05-12 (evening) | Major expansion. PR #317 + #318 + test-suite audit + external research integrated. Added: §1.1 v7.8.4 + PR #317/#318 anchor; §2.4 v7.8.5 pre-promotion remediation patch (cache_hits keying); §3.1 Source D (F14–F18 test discipline); §3.3 top-per-theme docket rule + Theme G precedence; §3.4 theme distribution table; **§3.5 Calibration Protocol for New Layers** (5 phases, layer stacking rule, quarterly Data Freshness Audit, reversibility contract); **§3.6 Forward Plan v7.8.5 → v8.2** (versioned roadmap mapping all 23 open candidates); §5.1 + §5.2 + §5.3 + §5.4 extended calendar through 2027-05-12; §7 added 4 new risks; §8 added 3 new open questions (Q5/Q6/Q7). Doc grew 320 → ~430 lines. |
+| 2026-05-13 | Analytics observability sub-doc + F19/F20 expansion. v7.8.5 SHIPPED via PR #320 (2026-05-12; cache_hits fixture rot confirmed case 2); v7.8.5.1 SHIPPED via PR #331 (4 residual test fixture rot from v7.8.3 + v7.8.4 schema migrations). Added §3.6.6.A `analytics-observability` sub-doc reference + F19/F20 to §3.6.4 v8.0 docket + Theme G expanded to 7 items in §3.4 (was 5). Total open candidates 23 → 25. 3D Framework Universe parked at PRD waypoint with `scheduled_after.signal: "analytics-observability phase=complete"`. Companion docs: [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) + [`analytics-observability-decisions-log-2026-05-13.md`](analytics-observability-decisions-log-2026-05-13.md). |

@@ -3,6 +3,13 @@
   "state_owner": "fitme-story",
   "framework_version": "v7.8.3",
   "current_phase": "prd",
+  "paused": true,
+  "paused_at": "2026-05-13T15:30:00Z",
+  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Operator decision 2026-05-13: ship analytics-observability feature first to clear measurement debt (56 missing CSV rows + 4 unfired events + GA4 MCP disconnected) before 2026-05-21 v7.9 promotion decision. Resume signal fires when analytics-observability current_phase=complete. Decision-trail: docs/master-plan/analytics-observability-decisions-log-2026-05-13.md.",
+  "scheduled_after": {
+    "signal": "analytics-observability phase=complete",
+    "trigger_action": "resume Phase 1 → Phase 2 (Tasks) approval gate; 600-line PRD already drafted at prd.md"
+  },
   "work_type": "Feature",
   "has_ui": true,
   "requires_analytics": true,
