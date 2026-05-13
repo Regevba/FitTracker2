@@ -79,6 +79,17 @@ integrity-check:
 	@python3 scripts/ensure-pr-cache-fresh.py --quiet || true
 	python3 scripts/integrity-check.py --findings-only
 
+# v7.8.5: print the Observed Patterns catalog — manifest of gate-firing
+# patterns operators must recognize before debugging. Append-only-by-default.
+# Established 2026-05-13. Used as preflight by /pm-workflow.
+observed-patterns:
+	@if [ -f .claude/integrity/observed-patterns.md ]; then \
+		cat .claude/integrity/observed-patterns.md | less -R; \
+	else \
+		echo "ERROR: .claude/integrity/observed-patterns.md not found. Run from repo root."; \
+		exit 1; \
+	fi
+
 # Write a snapshot + diff vs the previous one. Used locally when you want to
 # review what a cycle run would record before the next scheduled cycle fires.
 integrity-snapshot:

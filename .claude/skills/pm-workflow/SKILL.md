@@ -7,6 +7,16 @@ description: "Start or resume a v6.0 product management lifecycle for a feature.
 
 You are orchestrating the feature **"$ARGUMENTS"** through the complete product management lifecycle. Every phase requires explicit user approval before proceeding to the next.
 
+## Preflight: Observed Patterns Catalog (v7.8.5+ — added 2026-05-13)
+
+**Before starting the protocol, read `.claude/integrity/observed-patterns.md` once.**
+
+That file is the canonical manifest of gate-firing patterns (write-time + cycle-time advisories) that operators must recognize. Each entry documents: trigger, why-expected, signal-vs-noise rule, silence path. When any integrity gate or advisory fires during this protocol run, the FIRST step is always to consult this catalog — match the gate code, apply the documented remediation, only investigate from scratch if no pattern matches.
+
+When investigation surfaces a NEW pattern not yet in the catalog, **document it as a new entry at the bottom of `.claude/integrity/observed-patterns.md` before the protocol closes the feature.** This is mandatory, not optional — the catalog grows append-only-by-default and silent omissions break the next operator's ability to diagnose the same issue.
+
+CLI: `make observed-patterns` prints the catalog. Cross-referenced from `.claude/integrity/README.md` § Expected false-positives.
+
 ## Skill Loading Protocol (v5.1 — On-Demand + Model Tiering)
 
 Before starting any phase, check `.claude/shared/skill-routing.json` → `phase_skills` for the current phase. Load ONLY the listed SKILL.md files — do NOT load all 11 skills.
