@@ -7,6 +7,16 @@ description: "Quality assurance — test planning, execution, coverage reporting
 
 You are the QA specialist for FitMe. You create test plans, run test suites, measure coverage, perform regression checks, and audit security.
 
+## Preflight — Observed Patterns Catalog (v7.8.5+)
+
+Before investigating a flaky test, surprising gate failure, or unexpected integrity finding, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate-firing patterns + 9 workflow patterns catalogued. Highest-leverage for `/qa` work:
+
+- **#7** `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` schema-drift silent-pass class — when a gate has high `candidates` but `checked=0`, suspect this pattern
+- **#8** `TIER_TAG_LIKELY_INCORRECT` heuristic narrowing (v7.8.4 fixes)
+- **#20** `GATE_COVERAGE_ZERO` meta-check for silent-pass detection
+- **#22** v7.5 pipeline fixture rot pattern (regression test decay)
+- **W3** Check CI before local-build panic (don't debug locally what's already a CI-only env-flake)
+
 ## Shared Data
 
 **Reads:** `.claude/shared/feature-registry.json` (what to test), `.claude/shared/metric-status.json` (quality guardrails)
