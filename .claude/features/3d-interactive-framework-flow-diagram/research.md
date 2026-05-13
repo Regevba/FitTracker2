@@ -534,6 +534,17 @@ These decisions require user judgment and are deferred to PRD:
 14. **GA4 dashboard.** Should `/control-room/framework` include a new "Visitor Comprehension" panel summarizing Stream A analytics? Recommendation: yes, ship in same release.
 15. **Naming.** "Framework Universe", "Framework Flow", "How the Framework Works", "The Framework in Motion" (already taken by /framework/dispatch)? Naming deferred to PRD + marketing.
 
+### 7.A Pre-PRD blocker resolutions (locked 2026-05-13)
+
+Resolved before Phase 0 → Phase 1 transition. Remaining 11 questions defer to PRD drafting per user direction.
+
+| # | Question | Resolution | Downstream effect |
+|---|---|---|---|
+| Q1 | Architectural language of the universe | **Pixar clean-tech** — bright, minimalist, slightly playful. Smooth curves + matte plastics + accent colors. Reads as "approachable, modern, friendly tech." Closest peers: Inside Out HQ, WALL-E BnL surfaces. | Phase 3 design exploration anchors on this mood board. Pairs naturally with the existing 8-region blueprint accents (indigo / emerald / amber / coral / etc.) from `blueprint-data.ts`. Disqualifies cathedral / observatory / Ghibli explorations. |
+| Q2 | Authoring split | **Hybrid** — procedural R3F primitives for the architectural shell (chambers, walls, terrain, signage); Blender → glTF (.glb with Draco + Meshopt + KTX2) for hero pieces (signature instruments, gate machinery, hero props). | Asset pipeline scope: tasks include a Blender export workflow + .glb loading harness. Bundle budget allocates room for ~3–6 hero .glb files (target ≤200 KB each after compression). Procedural shell keeps base bundle small. |
+| Q15 | Public name | **"Framework Universe"** | Route name pending PRD finalization (likely `/framework` canonical OR `/framework/universe` sub-route — to be settled in PRD §1). Marketing copy, Notion page title, and Linear epic title align on this name. |
+| Q10 | Launch window | **Track A** — Phase 1 (PRD) + Phase 2 (Tasks) + Phase 3 (UX) during v7.9 Phase E (2026-05-21 → 2026-06-04); Phase 4 (Implement) parallel to v7.9.1 build; ship before v8.0 build window opens 2026-06-18. | Kill criteria timing anchors on these dates. Dependency: v7.9 promotion decision 2026-05-21 (informational, not blocking). Implementation must avoid blocking on the HADF Phase 2-bis Block B sub-experiments (collection earliest 2026-05-23). |
+
 ---
 
 ## 8. Decision summary (revised)
