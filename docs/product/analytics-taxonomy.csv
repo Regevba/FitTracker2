@@ -64,6 +64,56 @@ Home,home_body_comp_tap,Custom,Home Screen,has_weight (true/false),has_body_fat 
 Home,home_body_comp_period_changed,Custom,Home Screen,period (week/month/quarter/year),,,,,,No,event,Tracks preferred time-range
 Home,home_body_comp_log_tap,Custom,Home Screen,,,,,,,No,event,Log CTA engagement on body comp card
 Home,home_metric_tile_tap,Custom,Home Screen,metric_type (hrv/resting_heart_rate/sleep/steps),has_value (true/false),,,,No,event,Metric tile deep-link to Stats tab
+# Below rows added 2026-05-13 by analytics-observability Phase 1.A.1 — backfilled from FitTracker/Services/Analytics/AnalyticsProvider.swift. 49 events to close CSV-taxonomy-drift gap.
+AI,ai_recommendation_accepted,Custom,AI sheet,segment (training/nutrition/recovery/stats),rating (positive),source_tier (local/cloud/foundation),,,No,home,Recommendation thumbs-up — feedback signal for personalization
+AI,ai_recommendation_dismissed,Custom,AI sheet,segment,rating (negative),reason (not_relevant/already_know/disagree/other),,,No,home,Recommendation thumbs-down with optional dismiss reason
+AI,home_ai_avatar_state_changed,Custom,Home Screen,from_state (breathe/rotate/pulse/shimmer),to_state (breathe/rotate/pulse/shimmer),,,,No,home,AI avatar animation state transition
+AI,home_ai_feedback_submitted,Custom,AI sheet,segment,rating (positive/negative),reason (optional),,,No,home,Recommendation feedback captured
+AI,home_ai_insight_shown,Custom,Home Screen,segment,confidence (low/medium/high),source_tier (local/cloud/foundation),,,No,home,AI insight card impression
+AI,home_ai_insight_tap,Custom,Home Screen,segment,confidence,,,,No,home,AI insight card tap → expand
+AI,home_ai_recommendation_viewed,Custom,AI sheet,segment,confidence,,,,No,home,Recommendation viewed in sheet
+AI,home_ai_sheet_opened,Custom,Home Screen,entry_point (insight_card/readiness_tap/more_button),,,,,No,home,AI sheet opened from home
+GDPR,account_delete_requested,Custom,Delete Account,method (manual/exit_intent),stores_deleted (comma-sep: device/keychain/cloudkit/supabase),,,,No,settings,Grace-period start (default 30 days)
+GDPR,account_delete_completed,Custom,Delete Account,stores_deleted,size_bytes (int),days_remaining (0),,,Yes,settings,Mark as conversion. All stores purged.
+GDPR,account_delete_cancelled,Custom,Delete Account,days_remaining (int 0-30),,,,,No,settings,User cancels pending deletion during grace
+GDPR,data_export_requested,Custom,Export Data,,,,,,,No,settings,Export job initiated
+GDPR,data_export_completed,Custom,Export Data,size_bytes (int),record_count (int),,,,No,settings,Export file generated successfully
+Import,import_started,Custom,Imported Plans List,,,,,,,No,event,User opens import flow
+Import,import_source_selected,Custom,Import flow,entry_method (paste/file/url),,,,,No,event,Import source choice
+Import,import_parsed,Custom,Import flow,quantity (int exercises parsed),,,,,No,event,Successful parse
+Import,import_parse_failed,Custom,Import flow,item_category (parser_error_type),,,,,No,event,Parser threw or returned empty result
+Import,import_mapping_confirmed,Custom,Import flow,quantity (int),,,,,No,event,Exercise mapping approved
+Import,import_completed,Custom,Import flow,quantity (int),,,,,Yes,event,LEGACY conversion. Superseded by import_plan_activated (post-activation primary signal).
+Import,import_failed,Custom,Import flow,item_category (error_stage),,,,,No,event,Generic import failure (any stage)
+Import,import_plan_opened,Custom,Imported Plans List,item_category (within_7d/post_7d),,,,,No,event,Imported plan opened from list
+Import,import_plan_activated,Custom,Imported Plan Detail,source (manual/auto),,,,,Yes,event,Primary conversion. isActive=true flip on imported plan.
+Auth,onboarding_auth_method_selected,Custom,Onboarding Auth,method (email/google/apple),,,,,No,onboarding,User picks auth method during onboarding
+Auth,onboarding_auth_completed,Custom,Onboarding Auth,method,is_new_account (true/false),,,,Yes,onboarding,Mark as conversion. Account created or signed in during onboarding.
+Auth,onboarding_auth_failed,Custom,Onboarding Auth,method,error_type (cancelled/network/invalid_credentials/unknown),,,,No,onboarding,Auth attempt failed during onboarding
+Onboarding,onboarding_success_shown,Custom,Onboarding Success,,,,,,,No,onboarding,Success animation shown post-account-creation
+Auth,session_restore_result,Custom,App launch,result (success/expired/failed/timeout),restore_time_ms (int),,,,No,global,Cross-screen lifecycle. Restore attempt outcome on cold launch.
+Profile,profile_tab_viewed,Custom,Profile,,,,,,,No,profile,Profile tab impression
+Profile,profile_goal_changed,Custom,Profile,field,old_value,new_value,,,No,profile,Goal or preference change
+Profile,profile_settings_section_opened,Custom,Profile,section (account/data/appearance/notifications/about),,,,,No,profile,Settings sub-section opened from Profile
+Profile,profile_readiness_tap,Custom,Profile,,,,,,,No,profile,Readiness snapshot tap
+Profile,profile_body_comp_tap,Custom,Profile,,,,,,,No,profile,Body comp card tap from Profile
+Profile,profile_avatar_tap,Custom,Profile,,,,,,,No,profile,Avatar tap (future: open avatar editor)
+Readiness,home_readiness_score_computed,Custom,Home Screen,score (int 0-100),confidence (low/medium/high),layer (int 0-3),component_count (int),,No,home,Readiness score derived on home load
+Readiness,home_readiness_component_tap,Custom,Home Screen,component (hrv/sleep/training/rhr/bodycomp),,,,,No,home,Readiness mini-bar tap
+Readiness,home_readiness_recommendation_shown,Custom,Home Screen,recommendation (restDay/lightOnly/moderate/fullIntensity/pushHard),confidence_level (high/medium/low),,,,No,home,Training recommendation shown
+Settings,settings_sync_triggered,Custom,Settings,sync_type (push/fetch),,,,,No,settings,Sync action initiated from Settings
+Settings,settings_consent_updated,Custom,Settings,consent_type (gdpr/att),setting_value (granted/denied),,,,No,settings,Consent / privacy preference change
+Settings,settings_data_deleted,Custom,Settings,delete_scope (local/all),,,,,No,settings,Destructive data action triggered
+Reminder,reminder_scheduled,Custom,ReminderScheduler,item_category (reminder_type),,,,,No,global,Reminder scheduled (background — not screen-tied)
+Reminder,reminder_shown,Custom,Notification deliver,item_category,,,,,No,global,Reminder notification shown to user
+Reminder,reminder_tapped,Custom,Notification deliver,item_category,,,,,No,global,Reminder tap → deep-link fired
+Reminder,reminder_dismissed,Custom,Notification deliver,item_category,,,,,No,global,Reminder dismissed without tap
+Reminder,reminder_disabled,Custom,Settings notifications,item_category,,,,,No,settings,Reminder type disabled in settings
+Reminder,reminder_suppressed,Custom,ReminderScheduler,item_category,,,,,No,global,Suppressed by frequency or quiet-hour guard
+Stats,stats_period_changed,Custom,Stats Screen,time_period (week/month/quarter/year/all),,,,,No,stats,Time period filter change
+Stats,stats_metric_selected,Custom,Stats Screen,metric_name (weight/bodyFat/readiness/etc),category (body/recovery/training/nutrition),,,,No,stats,Metric carousel selection
+Stats,stats_chart_interaction,Custom,Chart Detail,metric_name,interaction_type (drag/tap),,,,No,stats,Chart drag-to-scrub or tap
+Stats,stats_empty_state_shown,Custom,Stats Screen,metric_name,,,,,No,stats,Empty state for metric (no data)
 ,,,,,,,,,,
 Screen Name,View Name,SwiftUI View,Category,,,,,,,,
 Home / Today,home,MainScreenView,core,,,,,,,,
@@ -108,6 +158,13 @@ Onboarding Goals,onboarding_goals,OnboardingGoalsView,onboarding,,,,,,,,
 Onboarding Profile,onboarding_profile,OnboardingProfileView,onboarding,,,,,,,,
 Onboarding HealthKit,onboarding_healthkit,OnboardingHealthKitView,onboarding,,,,,,,,
 Onboarding First Action,onboarding_first_action,OnboardingFirstActionView,onboarding,,,,,,,,
+Onboarding Auth,onboarding_auth,OnboardingAuthView,onboarding,,,,,,,,
+Onboarding Success,onboarding_success,OnboardingSuccessView,onboarding,,,,,,,,
+Training Session,training_session,ActiveTrainingSessionView,workout,,,,,,,,
+Imported Plans List,imported_plans_list,ImportedPlansListView,workout,,,,,,,,
+Imported Plan Detail,imported_plan_detail,ImportedPlanDetailView,workout,,,,,,,,
+Delete Account,delete_account,DeleteAccountView,settings,,,,,,,,
+Export Data,export_data,ExportDataView,settings,,,,,,,,
 ,,,,,,,,,,
 User Property,Type,Values,Auto-Collected,Notes,,,,,,,
 training_level,string,beginner/intermediate/advanced,No,Set after profile setup,,,,,,,
@@ -116,6 +173,7 @@ consent_status,string,granted/denied/pending,No,Updated on consent change,,,,,,,
 goal_type,string,weight_loss/strength/endurance/general,No,Set after profile setup,,,,,,,
 workout_frequency,string,1-7,No,Updated weekly based on actual usage,,,,,,,
 subscription_status,string,free/premium/trial,No,Future: after StoreKit integration,,,,,,,
+onboarding_completed,string,true/false,No,Set after Onboarding final-step completion,,,,,,,
 app_version,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
 device_model,string,(auto),Yes,Do NOT set manually — Firebase auto-collects,,,,,,,
 Dashboard,dashboard_load,Custom,/control-room (any route),route (overview/board/table/tasks/knowledge/framework),data_freshness_minutes (int),auth_method (basic/public/extracted),,,No,event,UCC T36 — fires once per route mount via TrackPageView client island

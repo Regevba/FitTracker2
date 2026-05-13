@@ -10,17 +10,20 @@
   "case_study_link": "docs/case-studies/analytics-observability-case-study.md",
   "scope": "Three-phase analytics framework upgrade: (1.A) hygiene + (1.B) gates, (2) live event debugger (local mirror + GA4 Realtime MCP poll), (3) dashboards (control-room/analytics route + Looker Studio template). Closes 56-row CSV drift + 4 unfired events + 21 untested + disconnected GA4 MCP. Approach B (phased single feature) per 2026-05-13 brainstorm.",
   "public_name": "Analytics Observability",
-  "launch_window": "Phase 1.A + Phase 2: 2026-05-15 → 22 (between v7.8.5.1 ship and v7.9 Phase E start). Phase 3: 2026-05-21 → 06-04 (parallel with v7.9 Phase E monitoring). Phase 1.B gates: 2026-06-04 → 06-26 via 22d Calibration Protocol (advisory 06-04 → 06-11; calibration 06-11 → 06-18; promotion decision 06-18; Phase E exit 06-25).",
+  "launch_window": "Phase 1.A + Phase 2: 2026-05-15 \u2192 22 (between v7.8.5.1 ship and v7.9 Phase E start). Phase 3: 2026-05-21 \u2192 06-04 (parallel with v7.9 Phase E monitoring). Phase 1.B gates: 2026-06-04 \u2192 06-26 via 22d Calibration Protocol (advisory 06-04 \u2192 06-11; calibration 06-11 \u2192 06-18; promotion decision 06-18; Phase E exit 06-25).",
   "decisions_log": "docs/master-plan/analytics-observability-decisions-log-2026-05-13.md",
   "spec": "docs/master-plan/analytics-master-plan-2026-05-13.md",
   "parent_master_plan": "docs/master-plan/infra-master-plan-2026-05-12.md",
-  "v8_docket_candidates": ["F19", "F20"],
+  "v8_docket_candidates": [
+    "F19",
+    "F20"
+  ],
   "blocker_resolutions": {
     "sequencing": "Revised 3-window plan (1.A + 2 next week, 3 during Phase E, 1.B post Phase E)",
     "csv_ownership": "Single canonical CSV in FT2; D-1 reverse-sync extends to fitme-story build read",
     "live_debugger_flavor": "Both local mirror (websocket + /analytics watch CLI) and GA4 Realtime MCP poll",
     "dashboard_surface": "Both /control-room/analytics route and Looker Studio template",
-    "infra_plan_fold_in": "Approach A — sub-doc of infra master plan; Phase 1.B becomes F19/F20 in v8.0 docket"
+    "infra_plan_fold_in": "Approach A \u2014 sub-doc of infra master plan; Phase 1.B becomes F19/F20 in v8.0 docket"
   },
   "phases": {
     "research": {
@@ -40,30 +43,91 @@
       "analytics_spec_complete": false,
       "draft_path": "docs/master-plan/analytics-master-plan-2026-05-13.md"
     },
-    "tasks": {"status": "pending", "count": 0},
-    "ux_or_integration": {"status": "pending", "type": "integration", "preflight_passed": null},
-    "implementation": {"status": "pending", "commits": []},
-    "testing": {"status": "pending", "ci_passed": false, "tests_added": 0, "instrumentation_verified": false, "analytics_tests_added": 0, "analytics_verification_passed": false},
-    "review": {"status": "pending", "risks": [], "ci_main": false, "ci_feature": false},
-    "merge": {"status": "pending", "pr_number": null, "analytics_regression_passed": null},
-    "documentation": {"status": "pending"},
+    "tasks": {
+      "status": "pending",
+      "count": 0
+    },
+    "ux_or_integration": {
+      "status": "pending",
+      "type": "integration",
+      "preflight_passed": null
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
     "metrics": {
       "primary": {
         "name": "Analytics taxonomy drift (CSV-missing-rows count)",
         "baseline": 56,
         "target": 0,
-        "current": 56
+        "current": 0
       },
       "secondary": [
-        {"name": "iOS event test coverage", "baseline": 81, "target": 100, "current": 81, "unit": "%"},
-        {"name": "Declared-but-unfired iOS events", "baseline": 4, "target": 0, "current": 4},
-        {"name": "Declared-but-unwired web events", "baseline": 2, "target": 0, "current": 2},
-        {"name": "GA4 MCP connectivity", "baseline": "disconnected", "target": "connected", "current": "disconnected"}
+        {
+          "name": "iOS event test coverage",
+          "baseline": 81,
+          "target": 100,
+          "current": 81,
+          "unit": "%"
+        },
+        {
+          "name": "Declared-but-unfired iOS events",
+          "baseline": 4,
+          "target": 0,
+          "current": 4
+        },
+        {
+          "name": "Declared-but-unwired web events",
+          "baseline": 2,
+          "target": 0,
+          "current": 2
+        },
+        {
+          "name": "GA4 MCP connectivity",
+          "baseline": "disconnected",
+          "target": "connected",
+          "current": "disconnected"
+        }
       ],
       "guardrails": [
-        {"name": "Crash-free rate", "min": 99.5, "unit": "%"},
-        {"name": "iOS app cold-start", "max": 2.0, "unit": "s"},
-        {"name": "make verify-local time", "max": 600, "unit": "s"}
+        {
+          "name": "Crash-free rate",
+          "min": 99.5,
+          "unit": "%"
+        },
+        {
+          "name": "iOS app cold-start",
+          "max": 2.0,
+          "unit": "s"
+        },
+        {
+          "name": "make verify-local time",
+          "max": 600,
+          "unit": "s"
+        }
       ],
       "instrumentation_ready": false,
       "first_review_date": "2026-06-04",
@@ -91,10 +155,26 @@
   },
   "isolation_opt_out": false,
   "cache_hits": [],
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "1.A.1",
+      "title": "CSV taxonomy backfill (49 events + 7 screens + 1 user prop)",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-13T15:51:46Z",
+      "completed_at": "2026-05-13T15:51:46Z",
+      "outcome": "0 missing events (was 49). 0 missing screens (was 7). 0 missing user properties (was 1). All 114 enum events in CSV via flat-scan.",
+      "files_touched": [
+        "docs/product/analytics-taxonomy.csv"
+      ]
+    }
+  ],
   "figma_node_ids": {},
   "figma_build_status": null,
-  "pre_merge_review": {"ux": null, "design": null},
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
   "timing": {
     "phases": {
       "research": {
