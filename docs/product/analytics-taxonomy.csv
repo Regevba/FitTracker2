@@ -65,8 +65,6 @@ Home,home_body_comp_period_changed,Custom,Home Screen,period (week/month/quarter
 Home,home_body_comp_log_tap,Custom,Home Screen,,,,,,,No,event,Log CTA engagement on body comp card
 Home,home_metric_tile_tap,Custom,Home Screen,metric_type (hrv/resting_heart_rate/sleep/steps),has_value (true/false),,,,No,event,Metric tile deep-link to Stats tab
 # Below rows added 2026-05-13 by analytics-observability Phase 1.A.1 — backfilled from FitTracker/Services/Analytics/AnalyticsProvider.swift. 49 events to close CSV-taxonomy-drift gap.
-AI,ai_recommendation_accepted,Custom,AI sheet,segment (training/nutrition/recovery/stats),rating (positive),source_tier (local/cloud/foundation),,,No,home,Recommendation thumbs-up — feedback signal for personalization
-AI,ai_recommendation_dismissed,Custom,AI sheet,segment,rating (negative),reason (not_relevant/already_know/disagree/other),,,No,home,Recommendation thumbs-down with optional dismiss reason
 AI,home_ai_avatar_state_changed,Custom,Home Screen,from_state (breathe/rotate/pulse/shimmer),to_state (breathe/rotate/pulse/shimmer),,,,No,home,AI avatar animation state transition
 AI,home_ai_feedback_submitted,Custom,AI sheet,segment,rating (positive/negative),reason (optional),,,No,home,Recommendation feedback captured
 AI,home_ai_insight_shown,Custom,Home Screen,segment,confidence (low/medium/high),source_tier (local/cloud/foundation),,,No,home,AI insight card impression

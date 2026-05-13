@@ -90,7 +90,7 @@
 
 **Key metric:** Tap-through rate (step 2 / step 1). Target: >15%.
 **GA4 config:** Exploration → Funnel Analysis → open funnel, 30-min window.
-**Note:** When AI Engine adaptation Phase 4 (feedback UI) ships, add `ai_recommendation_accepted` / `ai_recommendation_dismissed` events here.
+**Note:** When AI Engine adaptation Phase 4 (feedback UI) ships, use `home_ai_feedback_submitted` (rating=positive/negative) to extend this funnel. (Previously listed `ai_recommendation_accepted` / `ai_recommendation_dismissed`; these were removed 2026-05-13 in analytics-observability Phase 1.A.3 as duplicates of `home_ai_feedback_submitted`.)
 
 ---
 

@@ -97,7 +97,7 @@
           "name": "Declared-but-unfired iOS events",
           "baseline": 4,
           "target": 0,
-          "current": 4
+          "current": 0
         },
         {
           "name": "Declared-but-unwired web events",
@@ -166,6 +166,21 @@
       "outcome": "0 missing events (was 49). 0 missing screens (was 7). 0 missing user properties (was 1). All 114 enum events in CSV via flat-scan.",
       "files_touched": [
         "docs/product/analytics-taxonomy.csv"
+      ]
+    },
+    {
+      "id": "1.A.3",
+      "title": "Resolve declared-but-unfired ai_recommendation_* events",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-13T16:15:37Z",
+      "completed_at": "2026-05-13T16:15:37Z",
+      "outcome": "DELETED both events (aiRecommendationAccepted + aiRecommendationDismissed) \u2014 they were duplicates of home_ai_feedback_submitted which already carries rating: positive/negative. Removed enum constants, removed CSV rows, updated funnel-definitions.md + master plan \u00a75.1 task entry. Enum 114 \u2192 112; CSV stays aligned 112/112.",
+      "files_touched": [
+        "FitTracker/Services/Analytics/AnalyticsProvider.swift",
+        "docs/product/analytics-taxonomy.csv",
+        "docs/product/funnel-definitions.md",
+        "docs/master-plan/analytics-master-plan-2026-05-13.md"
       ]
     }
   ],

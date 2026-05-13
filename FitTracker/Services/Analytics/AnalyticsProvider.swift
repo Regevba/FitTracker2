@@ -243,10 +243,10 @@ enum AnalyticsEvent {
     static let aiFeedbackSubmitted             = "home_ai_feedback_submitted"
     /// AI avatar animation state changes
     static let aiAvatarStateChanged            = "home_ai_avatar_state_changed"
-    /// User accepts (thumbs-up) an AI recommendation
-    static let aiRecommendationAccepted        = "ai_recommendation_accepted"
-    /// User dismisses (thumbs-down) an AI recommendation
-    static let aiRecommendationDismissed       = "ai_recommendation_dismissed"
+    // Removed 2026-05-13 (analytics-observability Phase 1.A.3):
+    // aiRecommendationAccepted + aiRecommendationDismissed were declared but
+    // never fired in production. Their semantics duplicate `homeAiFeedbackSubmitted`
+    // which already carries `rating: positive | negative`. Use that instead.
 
     // ── Import Events (custom) ─────────────────────────────
 
