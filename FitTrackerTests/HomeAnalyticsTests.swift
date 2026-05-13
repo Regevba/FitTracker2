@@ -185,4 +185,53 @@ final class HomeAnalyticsTests: XCTestCase {
             XCTAssertFalse(param.contains(" "), "Param '\(param)' contains spaces")
         }
     }
+
+    // MARK: - Phase 1.A.5 Coverage Backfill (analytics-observability 2026-05-13)
+    // Closes coverage gaps for previously-untested home_body_comp_* + home_metric_tile_tap events.
+
+    @MainActor
+    func testHomeBodyCompTap() {
+        analyticsService.logHomeBodyCompTap(hasWeight: true, hasBodyFat: false, progressPercent: 42)
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.homeBodyCompTap)
+        XCTAssertEqual(event.name, "home_body_comp_tap")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.hasWeight] as? String, "true")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.hasBodyFat] as? String, "false")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.progressPercent] as? Int, 42)
+    }
+
+    @MainActor
+    func testHomeBodyCompPeriodChanged() {
+        analyticsService.logHomeBodyCompPeriodChanged(period: "month")
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.homeBodyCompPeriodChanged)
+        XCTAssertEqual(event.name, "home_body_comp_period_changed")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.period] as? String, "month")
+    }
+
+    @MainActor
+    func testHomeBodyCompLogTap() {
+        analyticsService.logHomeBodyCompLogTap()
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.homeBodyCompLogTap)
+        XCTAssertEqual(event.name, "home_body_comp_log_tap")
+    }
+
+    @MainActor
+    func testHomeMetricTileTap() {
+        analyticsService.logHomeMetricTileTap(metricType: "hrv", hasValue: true)
+
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.homeMetricTileTap)
+        XCTAssertEqual(event.name, "home_metric_tile_tap")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.metricType] as? String, "hrv")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.hasValue] as? String, "true")
+    }
 }

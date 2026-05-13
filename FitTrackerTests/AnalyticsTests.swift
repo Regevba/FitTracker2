@@ -445,4 +445,159 @@ final class AnalyticsTests: XCTestCase {
             XCTAssertFalse(screen.hasPrefix("firebase_"), "\(screen) has reserved prefix")
         }
     }
+
+    // MARK: - Phase 1.A.5 Coverage Backfill (analytics-observability 2026-05-13)
+    // Closes coverage gaps for 14 previously-untested events: notifications (7),
+    // onboarding-auth (3), onboarding lifecycle/permission (3), session_restore_result.
+
+    // ---- Notifications (7 events) ----
+
+    @MainActor
+    func testNotificationPermissionRequested() {
+        analyticsService.logNotificationPermissionRequested()
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.notificationPermissionRequested)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, "notification_permission_requested")
+    }
+
+    @MainActor
+    func testNotificationPermissionGranted() {
+        analyticsService.logNotificationPermissionResult(granted: true)
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.notificationPermissionGranted)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, "notification_permission_granted")
+    }
+
+    @MainActor
+    func testNotificationPermissionDenied() {
+        analyticsService.logNotificationPermissionResult(granted: false)
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.notificationPermissionDenied)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, "notification_permission_denied")
+    }
+
+    @MainActor
+    func testNotificationPrimingShown() {
+        analyticsService.logNotificationPrimingShown(triggerContext: "post_workout")
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.notificationPrimingShown)
+        XCTAssertEqual(event.name, "notification_priming_shown")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.triggerContext] as? String, "post_workout")
+    }
+
+    @MainActor
+    func testNotificationPrimingSkipped() {
+        analyticsService.logNotificationPrimingSkipped(triggerContext: "settings")
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.notificationPrimingSkipped)
+        XCTAssertEqual(event.name, "notification_priming_skipped")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.triggerContext] as? String, "settings")
+    }
+
+    @MainActor
+    func testNotificationSettingsDeeplinkShown() {
+        analyticsService.logNotificationSettingsDeeplinkShown()
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.notificationSettingsDeeplinkShown)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, "notification_settings_deeplink_shown")
+    }
+
+    @MainActor
+    func testDeepLinkRouted() {
+        analyticsService.logDeepLinkRouted(
+            source: "notification",
+            destination: "tab",
+            urlPattern: "fitme://nav/training",
+            outcome: "succeeded"
+        )
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.deepLinkRouted)
+        XCTAssertEqual(event.name, "deep_link_routed")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.deepLinkSource] as? String, "notification")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.destination] as? String, "tab")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.urlPattern] as? String, "fitme://nav/training")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.outcome] as? String, "succeeded")
+    }
+
+    // ---- Onboarding Auth (3 events) ----
+
+    @MainActor
+    func testOnboardingAuthMethodSelected() {
+        analyticsService.logOnboardingAuthMethodSelected(method: "apple")
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingAuthMethodSelected)
+        XCTAssertEqual(event.name, "onboarding_auth_method_selected")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.method] as? String, "apple")
+    }
+
+    @MainActor
+    func testOnboardingAuthCompleted() {
+        analyticsService.logOnboardingAuthCompleted(method: "google", isNewAccount: true)
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingAuthCompleted)
+        XCTAssertEqual(event.name, "onboarding_auth_completed")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.method] as? String, "google")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.isNewAccount] as? String, "true")
+    }
+
+    @MainActor
+    func testOnboardingAuthFailed() {
+        analyticsService.logOnboardingAuthFailed(method: "email", errorType: "invalid_credentials")
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingAuthFailed)
+        XCTAssertEqual(event.name, "onboarding_auth_failed")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.method] as? String, "email")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.errorType] as? String, "invalid_credentials")
+    }
+
+    // ---- Onboarding lifecycle + permission (3 events) ----
+
+    @MainActor
+    func testOnboardingGoalSelected() {
+        analyticsService.logOnboardingGoalSelected(goalValue: "build_muscle")
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.onboardingGoalSelected)
+        XCTAssertEqual(event.name, "onboarding_goal_selected")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.goalValue] as? String, "build_muscle")
+    }
+
+    @MainActor
+    func testOnboardingSuccessShown() {
+        analyticsService.logOnboardingSuccessShown()
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, AnalyticsEvent.onboardingSuccessShown)
+        XCTAssertEqual(mockAdapter.capturedEvents[0].name, "onboarding_success_shown")
+    }
+
+    @MainActor
+    func testPermissionResult() {
+        analyticsService.logPermissionResult(type: "healthkit", granted: true)
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.permissionResult)
+        XCTAssertEqual(event.name, "permission_result")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.permissionType] as? String, "healthkit")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.permissionGranted] as? String, "true")
+    }
+
+    // ---- Session lifecycle (1 event) ----
+
+    @MainActor
+    func testSessionRestoreResult() {
+        analyticsService.logSessionRestoreResult(result: "success", timeMs: 240)
+        XCTAssertEqual(mockAdapter.capturedEvents.count, 1)
+        let event = mockAdapter.capturedEvents[0]
+        XCTAssertEqual(event.name, AnalyticsEvent.sessionRestoreResult)
+        XCTAssertEqual(event.name, "session_restore_result")
+        XCTAssertEqual(event.parameters?[AnalyticsParam.result] as? String, "success")
+        // Production code stringifies timeMs via "\(timeMs)" — match that contract.
+        XCTAssertEqual(event.parameters?[AnalyticsParam.restoreTimeMs] as? String, "240")
+    }
 }

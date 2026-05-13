@@ -363,6 +363,10 @@ final class ImportPersistenceAndAnalyticsTests: XCTestCase {
     func testAnalytics_importMappingConfirmed_fourCounts() {
         let (service, adapter) = makeAnalytics()
         service.logImportMappingConfirmed(autoMatched: 7, manualConfirmed: 2, skipped: 1, unresolved: 0)
+        // Phase 1.A.5 (analytics-observability 2026-05-13): event-name assertion
+        // surfaces coverage to the cross-reference script without a duplicate test.
+        XCTAssertEqual(adapter.capturedEvents[0].name, AnalyticsEvent.importMappingConfirmed)
+        XCTAssertEqual(adapter.capturedEvents[0].name, "import_mapping_confirmed")
         let p = adapter.capturedEvents[0].parameters
         XCTAssertEqual(p?["auto_matched_count"] as? Int, 7)
         XCTAssertEqual(p?["manual_confirmed_count"] as? Int, 2)
@@ -408,4 +412,10 @@ final class ImportPersistenceAndAnalyticsTests: XCTestCase {
         XCTAssertEqual(adapter.capturedEvents.count, 0,
                        "Events must NOT fire when consent is denied")
     }
+
+    // Phase 1.A.5 coverage backfill note (analytics-observability 2026-05-13):
+    // `import_mapping_confirmed` is covered by `testAnalytics_importMappingConfirmed_fourCounts`
+    // above. That test was extended with an `AnalyticsEvent.importMappingConfirmed`
+    // name assertion so the cross-reference coverage script can detect it.
+    // A duplicate test was authored + deleted to keep the suite minimal.
 }
