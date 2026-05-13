@@ -513,6 +513,99 @@ Non-gate patterns: situations where operator action (or inaction) causes confusi
 
 ---
 
+### W9 — Branch drift from concurrent-session `git checkout` collision (DETECTED + REAL-TIME ALERTED)
+
+**Pattern:** Your session creates a chore/feature branch and starts work. Between tool calls, ANOTHER concurrent Claude session running in the **same** working directory executes `git checkout <other-branch>`. Git's working tree has a single HEAD, so YOUR session's HEAD flips silently too. Your next `git commit` lands on the wrong branch (the one the other session selected), not the one you intended.
+
+**Symptom signatures (any one is sufficient):**
+- `git log --oneline -1` after a commit shows it landed on a branch you don't recognize as yours this session.
+- `gh pr create` errors with "head branch \"main\" is the same as base branch \"main\", cannot create a pull request" because gh's default `--head` resolution disagrees with your intended branch.
+- The `gh pr merge` output says "Branch: main" but your next `git status` shows you on a `feature/<something-else>` branch.
+- You ran `git checkout main` minutes ago, did NOT run another checkout, but `git branch --show-current` now reports a different branch.
+
+**Distinguishing real signal:** Always real. There is no "false positive" interpretation — if HEAD changed and you did NOT run `git checkout` / `git switch` / `git branch -b` in YOUR Bash calls, another process flipped it. The only ambiguity is whether the other process was a concurrent Claude session OR a manual operator `git` command from a different shell.
+
+**Detection — real-time alert (added 2026-05-13, this session):**
+
+Every `PostToolUse:Bash` hook now invokes [`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py), which:
+
+1. Records the current branch in `.claude/_session-state/<CLAUDE_SESSION_ID>-branch.txt` on first invocation
+2. On every subsequent Bash, re-reads current branch + compares to recorded value
+3. If they differ → emits a LOUD warning to stderr (surfaced back to the assistant via tool output):
+
+   ```text
+   ⚠️  BRANCH DRIFT DETECTED (W9 pattern)  ⚠️
+      Expected branch: <previous>
+      Current branch:  <new>
+
+      Cause: another concurrent Claude session likely ran `git checkout`
+      in this same working directory, flipping HEAD.
+
+      Resolution:
+      1. STOP — do not commit unless you intended this branch.
+      2. To recover: git checkout <expected>
+         If you have uncommitted work: git stash push -u first
+         If you have committed on the wrong branch: cherry-pick to <expected>
+
+      Full playbook: .claude/integrity/observed-patterns.md (W9)
+   ```
+
+4. The recorded baseline is updated to the NEW branch — so the warning fires ONCE per drift event, not on every subsequent Bash.
+
+**Silence + bypass:**
+- Disable temporarily: `CLAUDE_W9_DISABLE_DRIFT_CHECK=1` in env
+- After confirming the drift was intentional (e.g., YOU ran `git checkout`): the warning fires once, then quiets down because state file is updated
+- Permanently disable: remove the `Bash` matcher block from `.claude/settings.json::hooks.PostToolUse`
+
+**Recovery playbook (when alert fires):**
+
+```bash
+# STEP 1 — STOP. Do not commit unless you intended to be on this branch.
+
+# STEP 2 — Inspect the situation:
+git status              # what's in the index?
+git log --oneline -3    # what's the recent history?
+
+# STEP 3a — If you have UNCOMMITTED work:
+git stash push -u -m "wip-recovery-$(date +%Y%m%d-%H%M)"
+git checkout <expected>
+git stash pop           # OR leave stashed if work belongs on the other branch
+
+# STEP 3b — If you ALREADY committed on the wrong branch:
+# Find your commit SHA via: git log --oneline -1
+git checkout <expected>
+git cherry-pick <wrong-branch-commit-SHA>
+# Optionally reset the wrong branch to drop your commit:
+git branch -f <wrong-branch> <wrong-branch>~1
+
+# STEP 4 — Push + open PR with explicit --head to bypass any gh default mismatch:
+git push -u origin <expected>
+gh pr create --head <expected> --base main --title "..." --body "..."
+```
+
+**Prevention — strongly recommended for multi-agent operators:**
+
+The ONLY robust prevention is to give each concurrent session its own git worktree. Sharing one working directory across N concurrent Claude sessions is a footgun.
+
+```bash
+# Each agent session does this on startup instead of working in the shared tree:
+git worktree add ../FitTracker2-<unique-task-slug>
+cd ../FitTracker2-<unique-task-slug>
+# Now your HEAD is independent of the main tree's HEAD
+```
+
+The framework already supports this via `scripts/create-isolated-worktree.py` (used by `BRANCH_ISOLATION_VIOLATION` Mode C auto-isolation). Multi-agent operators should make worktree creation the default for any session that intends to commit.
+
+**First observed:** 2026-05-13 across three separate sessions today (analytics spec completion → spec planning batch → this very session creating W9). Hit the same pattern three times in one day. Detection script + real-time alert hook shipped this session to ensure it never costs investigative time again.
+
+**Files involved:**
+- Detection script: [`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py)
+- Hook registration: [`.claude/settings.json`](../../.claude/settings.json) (PostToolUse:Bash matcher)
+- Session state (gitignored): `.claude/_session-state/<SESSION_ID>-branch.txt`
+- Worktree prevention: [`scripts/create-isolated-worktree.py`](../../scripts/create-isolated-worktree.py)
+
+---
+
 ## Pattern submission template
 
 When you discover a NEW pattern (gate fires + no matching entry above), add it here.
@@ -572,6 +665,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W6 Measurement impartiality | W6 | — |
 | W7 Approval gates multi-part | W7 | — |
 | W8 Audit status is UI marker | W8 | — |
+| W9 Branch-drift from concurrent-session collision (DETECTED via PostToolUse:Bash hook) | W9 | 2026-05-13 |
 
 ---
 
