@@ -168,21 +168,7 @@ The `state_hash` field is a truncated SHA-256 of the state.json content — dete
 
 4. **Features with `partial_ship: true`** are flagged via `PARTIAL_SHIP_TERMINAL` if they ALSO have a terminal phase — the policy is either "downgrade phase from complete" or "remove the partial_ship flag", pick one.
 
-5. **`BRANCH_ISOLATION_HISTORICAL` after a squash-merge + branch-cleanup pass** (v7.8.1 advisory, observed 2026-05-13). The advisory fires when `scripts/integrity-check.py` walks git history for a feature's files and cannot find a commit on any `feature/*` or `chore/*` branch that touched them. This happens by construction whenever:
-   - The feature shipped via squash-merge (the squash-merge commit lives on `main`, NOT on the original branch)
-   - The original branch was deleted post-merge (locally and on origin) — either by the standard `gh pr merge --delete-branch` flow, or by a deliberate cleanup pass
-   - The branch's commits become unreachable from any ref and eventually get GC'd
-   - `git log --all` then shows the feature's file changes as appearing first on `main`, with no branch attribution
-
-   **First observed:** 2026-05-13 cleanup pass. After deleting 29 squash-merged FT2 branches + 17 squash-merged fitme-story remote branches, the advisory fired on 3 features that had shipped that week (`3d-interactive-framework-flow-diagram`, `cross-repo-state-sync-impl`, `hadf-phase2bis-replication`). Before the cleanup these 3 still had local `feature/*` / `chore/*` branches in `git for-each-ref`; after deletion, the gate's git-log scan no longer found branch-named commits → advisory.
-
-   **How to tell real signal vs cleanup artifact:**
-   - **Cleanup artifact (expected, ignore):** the feature has a `phases.merge.pr_number` in `state.json` that resolves to a squash-merged PR on GitHub, AND the PR has an explicit `head_ref` matching `feature/*` / `chore/*`. The audit trail is on GitHub; local git history just no longer reflects it.
-   - **Real signal (investigate):** the feature has no PR linkage, OR the PR's `head_ref` is `main` (work was committed directly to main, bypassing branch isolation). This is what the advisory is designed to catch in v7.9 when it promotes from advisory → enforced.
-
-   Per-feature silence available via `state.json::isolation_opt_out: true` + `isolation_opt_out_reason: "<text>"` (enforced by the `ISOLATION_OPT_OUT_REASON_MISSING` write-time gate). Don't silence blindly — confirm the cleanup-artifact case first by checking the PR.
-
-   If this advisory pattern re-fires after a future cleanup pass, treat it as a normal artifact of squash-merge + cleanup, NOT a regression. Document any *new* trigger pattern (e.g. advisory fires on a feature that never went through squash-merge) as a 6th entry here.
+5. **`BRANCH_ISOLATION_HISTORICAL` after a squash-merge + branch-cleanup pass** (v7.8.1 advisory, observed 2026-05-13) and ~22 other gate-firing patterns are catalogued in **[`.claude/integrity/observed-patterns.md`](./observed-patterns.md)** — the canonical Observed Patterns Catalog. View with `make observed-patterns`. The catalog is auto-loaded as preflight by `/pm-workflow` (see [SKILL.md](../skills/pm-workflow/SKILL.md) § Preflight). When any gate fires, **check the catalog first** before debugging. New patterns must be appended to the catalog before closing the feature that surfaced them.
 
 ---
 
