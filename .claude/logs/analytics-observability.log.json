@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "feature": "analytics-observability",
+  "title": "Analytics Observability",
+  "work_type": "Feature",
+  "current_phase": "prd",
+  "framework_version": "v7.8.5",
+  "started_at": "2026-05-13T09:00:00Z",
+  "updated_at": "2026-05-13T15:17:18Z",
+  "events": [
+    {
+      "timestamp": "2026-05-13T09:00:00Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 (Research) opened. /analytics validate skill invoked for full iOS + web GA4 audit across all features. Deliverable: in-conversation audit report.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-13T13:00:00Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Audit complete. Findings: 114 iOS events (56 missing CSV rows), 4 declared-but-unfired events, 21 untested events, 81% test coverage; fitme-story web 12/14 events wired (2 declared-not-wired); GA4 MCP defined but not connected.",
+      "artifacts": [],
+      "metrics": {
+        "ios_events_declared": 114,
+        "csv_rows_missing": 56,
+        "events_unfired_in_app": 4,
+        "events_untested": 21,
+        "test_coverage_pct": 81,
+        "web_events_wired": 12,
+        "web_events_declared_not_wired": 2,
+        "ga4_mcp_connected": false
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-13T13:00:00Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened. Brainstorm + design via superpowers:brainstorming. 4 user decisions locked: Approach B phased, both debugger surfaces, both dashboard surfaces, CSV checkup gate; revised 3-window sequencing accepted; single canonical CSV in FT2; Approach A infra-plan fold-in; 3D Framework Universe parked at PRD waypoint.",
+      "artifacts": [
+        ".claude/features/analytics-observability/state.json",
+        "docs/master-plan/analytics-observability-decisions-log-2026-05-13.md",
+        "docs/master-plan/analytics-master-plan-2026-05-13.md"
+      ],
+      "metrics": {
+        "decisions_locked": 5,
+        "phases_planned": 3,
+        "sub_tracks": 9,
+        "v8_docket_candidates": 2
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-13T15:17:18Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) draft committed: feature state.json + decisions log + master plan spec + 3D Framework Universe parked. Awaiting PR review + operator approval to transition to Phase 2 Tasks.",
+      "artifacts": [
+        ".claude/features/analytics-observability/state.json",
+        "docs/master-plan/analytics-observability-decisions-log-2026-05-13.md",
+        "docs/master-plan/analytics-master-plan-2026-05-13.md",
+        "docs/master-plan/infra-master-plan-2026-05-12.md"
+      ],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
