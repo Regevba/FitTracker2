@@ -44,11 +44,16 @@ date_written: 2026-04-29
 
 
 def test_t1_claim_without_ledger_evidence_warns(tmp_path):
+    # Use a word-char-ending unit (`ms`) so the v7.8.4 `\b` boundary in the
+    # claim regex (validate-tier-tags.py:33) matches. The original `999%`
+    # example broke after v7.8.4 because `%` followed by space has no
+    # word-boundary transition (both non-word chars). `999ms` → boundary
+    # between `s` (word) and ` ` (non-word) ✓.
     text = """---
 date_written: 2026-04-29
 ---
 # Case
-**T1**: cache_hits is at 999% — totally instrumented.
+**T1**: cache_hits latency was 999ms — clearly broken.
 """
     result = run_on_text(text, tmp_path)
     assert "TIER_TAG_LIKELY_INCORRECT" in result.stdout
