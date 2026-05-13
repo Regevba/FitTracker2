@@ -4,7 +4,9 @@
 T3 / PR-1 of framework v7.7 Validity Closure.
 
 Verifies:
-  1. Post-v6 + complete + empty cache_hits[] → CACHE_HITS_EMPTY_POST_V6 finding.
+  1. Post-v6 + complete + empty cache_hits[] → CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT
+     finding (legacy name: CACHE_HITS_EMPTY_POST_V6, renamed in v7.8.3 — the
+     Python function name is preserved; the emission key was renamed).
   2. Pre-v6 features are exempt (empty cache_hits OK at any phase).
   3. Post-v6 but not yet complete → empty cache_hits still allowed.
   4. Post-v6 + complete + non-empty cache_hits → no finding (happy path).
@@ -38,6 +40,13 @@ check_cache_hits_empty_post_v6 = _mod.check_cache_hits_empty_post_v6
 check_cu_v2_schema = _mod.check_cu_v2_schema
 validate_file = _mod.validate_file
 
+# Canonical gate key — mirrors `scripts/check-state-schema.py:308`.
+# The Python function name `check_cache_hits_empty_post_v6` retains its
+# legacy name (pre-v7.8.3 rename); the EMISSION key is canonical. Using
+# a module-level constant locks the invariant against future rename drift,
+# mirroring the pattern adopted in `test_gate_coverage.py:169` (PR #320).
+CACHE_HITS_GATE_KEY = "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT"
+
 
 # ---------------------------------------------------------------------------
 # T3.1 — Post-v6 + complete + empty cache_hits → REJECT
@@ -59,8 +68,8 @@ def test_cache_hits_empty_post_v6_blocks_when_complete():
         "cache_hits": []
     }
     findings = check_cache_hits_empty_post_v6(state)
-    assert any(f["code"] == "CACHE_HITS_EMPTY_POST_V6" for f in findings), (
-        f"Expected CACHE_HITS_EMPTY_POST_V6 finding for post-Mechanism-C "
+    assert any(f["code"] == CACHE_HITS_GATE_KEY for f in findings), (
+        f"Expected {CACHE_HITS_GATE_KEY} finding for post-Mechanism-C "
         f"complete feature with empty cache_hits[]. Got: {findings}"
     )
 
@@ -79,7 +88,7 @@ def test_cache_hits_empty_post_v6_passes_pre_v6():
     }
     findings = check_cache_hits_empty_post_v6(state)
     assert findings == [], (
-        f"Pre-v6 feature must not trigger CACHE_HITS_EMPTY_POST_V6. Got: {findings}"
+        f"Pre-v6 feature must not trigger {CACHE_HITS_GATE_KEY}. Got: {findings}"
     )
 
 
@@ -97,7 +106,7 @@ def test_cache_hits_empty_post_v6_passes_non_complete():
     }
     findings = check_cache_hits_empty_post_v6(state)
     assert findings == [], (
-        f"In-progress post-v6 feature must not trigger CACHE_HITS_EMPTY_POST_V6. "
+        f"In-progress post-v6 feature must not trigger {CACHE_HITS_GATE_KEY}. "
         f"Got: {findings}"
     )
 
@@ -117,7 +126,7 @@ def test_cache_hits_post_v6_complete_with_entries_passes():
     findings = check_cache_hits_empty_post_v6(state)
     assert findings == [], (
         f"Post-v6 complete feature with non-empty cache_hits must not trigger "
-        f"CACHE_HITS_EMPTY_POST_V6. Got: {findings}"
+        f"{CACHE_HITS_GATE_KEY}. Got: {findings}"
     )
 
 
@@ -310,13 +319,22 @@ def test_schema_drift_created_passes_when_both_present(tmp_path):
 # backfill PR.
 # ---------------------------------------------------------------------------
 
+    # Match on the FRAMEWORK_VERSION_FORMAT error's unique phrase. Avoids substring
+# coincidences where (a) the pytest tmp dir path contains "framework_version" and
+# (b) the STATE_OWNER_MISSING error's "FT2-canonical features" contains "canonical",
+# which together can produce false matches if the assertion is loose. The phrase
+# below is unique to the FRAMEWORK_VERSION_FORMAT emit site at check-state-schema.py:680.
+_FW_VERSION_FORMAT_PHRASE = "is not in canonical"
+
+
 def test_framework_version_format_blocks_unprefixed_numeric(tmp_path):
     p = _write_tmp_state(tmp_path, {
         "feature_name": "test",
+        "state_owner": "ft2",
         "framework_version": "7.6",
     })
     errors = validate_file(p, enforce_transition=False)
-    assert any("framework_version" in e and "canonical" in e for e in errors), (
+    assert any(_FW_VERSION_FORMAT_PHRASE in e for e in errors), (
         f"Expected FRAMEWORK_VERSION_FORMAT finding for unprefixed '7.6'. "
         f"Got: {errors}"
     )
@@ -326,11 +344,11 @@ def test_framework_version_format_passes_canonical_v_prefix(tmp_path):
     for valid in ["v7.7", "v6.0", "v1.0", "v10.20", "v7.7.1", "pre-v5.0"]:
         p = _write_tmp_state(tmp_path, {
             "feature_name": "test",
+            "state_owner": "ft2",
             "framework_version": valid,
         })
         errors = validate_file(p, enforce_transition=False)
-        assert not any("framework_version" in e and "canonical" in e
-                       for e in errors), (
+        assert not any(_FW_VERSION_FORMAT_PHRASE in e for e in errors), (
             f"Canonical {valid!r} must pass FRAMEWORK_VERSION_FORMAT. "
             f"Got: {errors}"
         )
@@ -340,10 +358,10 @@ def test_framework_version_format_passes_when_absent(tmp_path):
     """Absence allowed pending backfill PR — only format is enforced."""
     p = _write_tmp_state(tmp_path, {
         "feature_name": "test",
+        "state_owner": "ft2",
     })
     errors = validate_file(p, enforce_transition=False)
-    assert not any("framework_version" in e and "canonical" in e
-                   for e in errors), (
+    assert not any(_FW_VERSION_FORMAT_PHRASE in e for e in errors), (
         f"Absent framework_version must not trigger format check. Got: {errors}"
     )
 
@@ -352,11 +370,11 @@ def test_framework_version_format_blocks_garbage_strings(tmp_path):
     for invalid in ["7", "v7", "version-7.6", "7.6-beta", "latest", ""]:
         p = _write_tmp_state(tmp_path, {
             "feature_name": "test",
+            "state_owner": "ft2",
             "framework_version": invalid,
         })
         errors = validate_file(p, enforce_transition=False)
-        assert any("framework_version" in e and "canonical" in e
-                   for e in errors), (
+        assert any(_FW_VERSION_FORMAT_PHRASE in e for e in errors), (
             f"Invalid {invalid!r} must trigger FRAMEWORK_VERSION_FORMAT. "
             f"Got: {errors}"
         )
