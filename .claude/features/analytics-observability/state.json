@@ -266,6 +266,19 @@
         "FitTrackerTests/DebugSinkAdapterTests.swift",
         "FitTracker.xcodeproj/project.pbxproj"
       ]
+    },
+    {
+      "id": "2.B.1",
+      "title": "/analytics poll sub-command + GA4 MCP setup runbook",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-14T04:07:22Z",
+      "completed_at": "2026-05-14T04:07:22Z",
+      "outcome": "Doc-only deliverable. NEW docs/setup/ga4-mcp-setup-guide.md (~270 lines, 7 steps + troubleshooting + cross-refs) \u2014 operator runbook for installing mcp-server-ga4 + Google Cloud service account + property access. UPDATED .claude/skills/analytics/SKILL.md /analytics poll section from placeholder to full procedure (5-step MCP tool flow + failure modes + cross-references). Phase 2 (live debugger) is now COMPLETE \u2014 local-mirror surface (2.A.1-4) + GA4 Realtime poll surface (2.B.1) both shipped.",
+      "files_touched": [
+        "docs/setup/ga4-mcp-setup-guide.md",
+        ".claude/skills/analytics/SKILL.md"
+      ]
     }
   ],
   "figma_node_ids": {},
