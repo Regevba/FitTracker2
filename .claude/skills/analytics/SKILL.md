@@ -7,6 +7,18 @@ description: "Analytics & data — event taxonomy management, instrumentation va
 
 You are the Analytics specialist for FitMe. You manage the GA4 event taxonomy, validate instrumentation, create dashboard templates, define funnels, and produce metric reports.
 
+## Preflight — Observed Patterns Catalog (v7.8.5+)
+
+Before investigating an analytics drift, taxonomy mismatch, or unexpected gate fire, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate-firing patterns + 9 workflow patterns catalogued. Highest-leverage for `/analytics` work:
+
+- **#7** `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` — schema-drift silent-pass class; reference for what happens when a measurement schema renames a field that gate predicates still read by the old name
+- **#19** `MECHANISM_C_SHIP_DATE` auto-exemption — features created before 2026-05-02 are exempt from auto-instrumentation checks (Mechanism C did not exist for them; reframe adoption-debt accordingly)
+- **#20** `GATE_COVERAGE_ZERO` — meta-check that catches gates which "ran" but never fired (silent-pass class)
+- **(Planned, post-Phase-1.B ship)** `CSV_TAXONOMY_DRIFT` (F19) + `GA4_MCP_DISCONNECTED` (F20) — the two analytics-specific gates from `docs/master-plan/analytics-master-plan-2026-05-13.md` Phase 1.B; will be added to the catalog as entries #24 + #25 when they ship
+- **W6** Measurement case-study impartiality — when measuring adoption metrics, treat all features uniformly; no selective backfill
+
+**The `[FORWARD-DECLARED]` convention** (analytics-master-plan §5.4): an event constant + CSV row may exist for events whose UI has not yet shipped, provided the CSV `Notes` column starts with the literal tag `[FORWARD-DECLARED]`. Honored by `/analytics validate` (ignores tagged rows when computing "declared-but-unwired") and Phase 1.B `CSV_TAXONOMY_DRIFT` gate (passes when an enum has a CSV row regardless of wiring status).
+
 ## Shared Data
 
 **Reads:** `.claude/shared/metric-status.json` (targets, baselines), `.claude/shared/feature-registry.json` (what's launched), `.claude/shared/cx-signals.json` (qualitative context), `.claude/shared/campaign-tracker.json` (attribution)
