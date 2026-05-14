@@ -314,9 +314,28 @@
     {
       "id": "3.A.1",
       "title": "fitme-story dashboard scaffold \u2014 /control-room/analytics route + 5 tile components + types + fixtures + tests + sidebar nav",
-      "status": "pending",
+      "status": "complete",
       "phase": "implementation",
-      "scope_note": "Green-bucket items 1-4, 7 from master plan \u00a77.5. Live GA4 binding (yellow) deferred to 2026-06-04 per Calibration Protocol."
+      "started_at": "2026-05-14T05:00:00Z",
+      "completed_at": "2026-05-14T09:01:51Z",
+      "scope_note": "Green-bucket items 1-4, 7 from master plan \u00a77.5. Live GA4 binding (yellow) deferred to 2026-06-04 per Calibration Protocol.",
+      "outcome": "Shipped via fitme-story PR #108 (squash 945e90c, merged 2026-05-14T09:01:51Z). New /control-room/analytics route (server component) renders 5 tiles + calibration banner: EventVolumeTile, DriftTrendTile, TaxonomyHealthTile, RecentEventsStream, ForwardDeclaredEventsTile. TypeScript contracts in src/lib/control-room/analytics-types.ts; fixture data in analytics-fixtures.ts; 7 fixture-shape tests pass via tsx --test. Sidebar nav entry added to SECONDARY_NAV. ControlRoomRoute union extended with 'analytics'. Loading skeleton + per-route README documenting calibration window. Build succeeds; route prerenders as static. All tile meta.status === 'fixture' (calibration-safety guarantee asserted by test).",
+      "files_touched": [
+        "fitme-story/src/app/control-room/analytics/page.tsx",
+        "fitme-story/src/app/control-room/analytics/loading.tsx",
+        "fitme-story/src/app/control-room/analytics/README.md",
+        "fitme-story/src/app/control-room/layout.tsx",
+        "fitme-story/src/lib/control-room/analytics.ts",
+        "fitme-story/src/lib/control-room/analytics-types.ts",
+        "fitme-story/src/lib/control-room/analytics-fixtures.ts",
+        "fitme-story/src/lib/control-room/__tests__/analytics-fixtures.test.ts",
+        "fitme-story/src/components/control-room/EventVolumeTile.tsx",
+        "fitme-story/src/components/control-room/DriftTrendTile.tsx",
+        "fitme-story/src/components/control-room/TaxonomyHealthTile.tsx",
+        "fitme-story/src/components/control-room/RecentEventsStream.tsx",
+        "fitme-story/src/components/control-room/ForwardDeclaredEventsTile.tsx",
+        "fitme-story/src/components/control-room/analytics-tile-primitives.tsx"
+      ]
     }
   ],
   "figma_node_ids": {},
