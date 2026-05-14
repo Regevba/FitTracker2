@@ -1,6 +1,6 @@
 ---
 name: pm-workflow
-description: "Use when starting a new feature, resuming a paused feature, advancing a phase, or running the v6.0 10-phase product management lifecycle (Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn). Orchestrates skill-on-demand dispatch, model tiering (Sonnet vs Opus), batch operations, deterministic phase timing, cache-hit tracking, eval coverage gates, and CU v2 continuous factors. Invoke with /pm-workflow {feature-name}."
+description: "Use when starting a new feature, resuming a paused feature, advancing a phase, running the v6.0 10-phase product management lifecycle (Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn), OR managing the roadmap (RICE / MoSCoW / Now-Next-Later prioritization + decision memos). Orchestrates skill-on-demand dispatch, model tiering (Sonnet vs Opus), batch operations, deterministic phase timing, cache-hit tracking, eval coverage gates, and CU v2 continuous factors. Invocations: /pm-workflow {feature-name} | /pm-workflow roadmap {review|prioritize|decide {item}}."
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
@@ -583,6 +583,28 @@ The key invariant: in full isolation, the shared layer is NEVER read between cha
 - The shared layer is a write-back target, like a register file in hardware
 
 **Fallback:** If no matching chain exists in `systolic_chains.defined_chains`, use standard per-skill execution with shared-layer reads (v5.0 behavior).
+
+## Alternative invocation: `/pm-workflow roadmap <verb>`
+
+When `$ARGUMENTS` is the literal token `roadmap` (optionally followed by a verb), do NOT run the standard feature lifecycle. Instead load the roadmap reference and dispatch to the requested verb:
+
+| Invocation | What it does |
+|---|---|
+| `/pm-workflow roadmap` (no verb) | Print verb menu + brief usage |
+| `/pm-workflow roadmap review` | Read current roadmap + state.json drift report |
+| `/pm-workflow roadmap prioritize` | Re-rank backlog via RICE / MoSCoW / Now-Next-Later |
+| `/pm-workflow roadmap decide {item}` | Produce a decision memo for one backlog item |
+
+**Dispatch:** load [`.claude/skills/pm-workflow/references/roadmap.md`](references/roadmap.md) (Anthropic progressive-disclosure pattern). Follow the sub-command protocol section that matches the verb. Do not load any phase-lifecycle protocols (Setup, State Initialization, Work Item Type Selection, Phase 0–9) when in `roadmap` mode — those are for feature work.
+
+Outputs go to:
+- Decision memos: `docs/master-plan/decisions/YYYY-MM-DD-<slug>.md`
+- Reordering diffs: stdout (user applies manually)
+- State drift report: stdout
+
+Closes §3A Gap #2 from `docs/skills/skills-review-2026-05-13.md`.
+
+---
 
 ## Setup
 
