@@ -251,6 +251,21 @@
         "scripts/tests/test_analytics_watch.py",
         ".claude/skills/analytics/SKILL.md"
       ]
+    },
+    {
+      "id": "2.A.3",
+      "title": "iOS DebugSinkAdapter \u2014 tee events to local SSE sink under DEBUG_ANALYTICS=1",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-14T03:21:11Z",
+      "completed_at": "2026-05-14T03:21:11Z",
+      "outcome": "New FitTracker/Services/Analytics/DebugSinkAdapter.swift wraps base AnalyticsProvider (Firebase/Mock); transparent passthrough when DEBUG_ANALYTICS env var unset. When set, tees logEvent + logScreenView to localhost:8765/event via fire-and-forget HTTP POST. NEVER tees user-identity APIs (PII safe). Wired into AnalyticsService.makeDefault. 14 XCTest methods at FitTrackerTests/DebugSinkAdapterTests.swift cover passthrough + tee + PII safety + env-driven sink resolution. Both files added to project.pbxproj (4 locations each).",
+      "files_touched": [
+        "FitTracker/Services/Analytics/DebugSinkAdapter.swift",
+        "FitTracker/Services/Analytics/AnalyticsService.swift",
+        "FitTrackerTests/DebugSinkAdapterTests.swift",
+        "FitTracker.xcodeproj/project.pbxproj"
+      ]
     }
   ],
   "figma_node_ids": {},
