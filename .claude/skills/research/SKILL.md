@@ -163,7 +163,6 @@ App Store keyword research and competitor rankings.
 | Adapter | Type | What It Provides |
 |---------|------|-----------------|
 | firecrawl | MCP | Structured web scraping, competitor page analysis, market data |
-| apify | MCP | App Store scraping, review mining, competitor feature extraction |
 
 **Adapter location:** `.claude/integrations/firecrawl/`
 **Shared layer writes:** `context.json`, `feature-registry.json`
@@ -187,7 +186,7 @@ When the cache doesn't have an answer for a research task, research:
 4. **Tools & APIs** — Firecrawl for structured scraping, Apify for App Store mining, web search for reports
 5. **User needs** — pain point validation, behavioral signals, unmet needs from cx-signals.json
 
-Sources checked in order: L1 cache → shared layer (context.json, feature-registry.json) → integration adapters (firecrawl, apify) → web search → industry reports
+Sources checked in order: L1 cache → shared layer (context.json, feature-registry.json) → integration adapters (firecrawl) → web search → industry reports
 
 ## Cache Protocol
 
