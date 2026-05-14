@@ -1,6 +1,6 @@
 ---
 name: dev
-description: "Use when starting a feature branch, requesting code review, checking CI status, auditing dependencies, or profiling a performance hotspot. Respects high-risk-area review policy (DomainModels, EncryptionService, SupabaseSyncService, CloudKitSyncService, SignInService, AuthManager, AIOrchestrator). Sub-commands: /dev branch {feature}, /dev review, /dev deps, /dev perf, /dev ci-status."
+description: "Use when starting a feature branch, requesting code review, checking CI status, auditing dependencies, profiling a performance hotspot, or auditing the skills layer itself (skill-of-skills meta-checks). Respects high-risk-area review policy (DomainModels, EncryptionService, SupabaseSyncService, CloudKitSyncService, SignInService, AuthManager, AIOrchestrator). Sub-commands: /dev branch {feature}, /dev review, /dev deps, /dev perf, /dev ci-status, /dev skills {audit|trace|freshness}."
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
@@ -91,6 +91,44 @@ Check current CI pipeline status.
 2. Check latest GitHub Actions run status
 3. Report: token-check, build, test results
 4. Update `.claude/shared/health-status.json` with current status
+
+### `/dev skills {audit|trace|freshness}`
+
+Skill-of-skills meta-checks for `.claude/skills/*`. Wraps the P0.4 audit script and adds usage tracing + freshness inspection. Per [`docs/skills/skills-review-2026-05-13.md`](../../../docs/skills/skills-review-2026-05-13.md) §5 item P1.1.
+
+#### `/dev skills audit`
+
+Run mechanical conformance checks on every SKILL.md (frontmatter present, trigger-rich descriptions, observed-patterns reference, adapter + script refs resolve on disk, freshness within window).
+
+```bash
+make skills-audit             # strict mode — exit 1 on E findings
+python3 scripts/skills-audit.py --advisory --quiet   # advisory mode (used in `make integrity-check`)
+python3 scripts/skills-audit.py --skill <name>       # single-skill scope
+```
+
+Report: per-skill PASS / E[code] / W[code] lines + summary count. Exit codes: 0 on clean, 1 on E findings. The audit also runs inside `make integrity-check` as `--advisory --quiet` (v7.8.5 → v7.9 window).
+
+#### `/dev skills trace {feature}`
+
+Surface which skills fired during a feature's lifecycle by cross-referencing three data sources:
+
+1. **`state.json::cache_hits[]`** — Read events attributed to that feature (Mechanism C). Filter for entries whose `file` field matches `.claude/skills/<name>/SKILL.md` — that's the proxy for "skill loaded into context."
+2. **`state.json::tasks[].dispatched_skills`** (if populated) — explicit skill dispatch ledger.
+3. **`.claude/logs/_session-<id>.events.jsonl`** — raw session events; filter where `active_feature == <feature>` and the Read target contains `.claude/skills/`.
+
+Output: ranked list of `<skill> — N hits` for the feature. Surfaces zero-usage skills empirically; data feeds the P2.4 retire/merge decision in the future.
+
+When `{feature}` is omitted: aggregate across all features in `.claude/features/*/state.json` and report a leaderboard.
+
+#### `/dev skills freshness`
+
+Inspect every SKILL.md frontmatter and flag those with `last_updated:` older than 90 days. Wraps the `W4` warning emitted by `scripts/skills-audit.py` (since this commit) so the operator can see the same data without running the full audit.
+
+```bash
+python3 scripts/skills-audit.py --quiet 2>&1 | grep '\[W4\]'
+```
+
+Reads `last_updated:` from each `.claude/skills/<name>/SKILL.md`. Flags any skill `>90 days` since last update (configurable via `--max-age-days <N>` to the audit script). Forces a review even if the skill is otherwise passing — stale skills accumulate quiet drift against the framework version they cite.
 
 ## Key References
 
