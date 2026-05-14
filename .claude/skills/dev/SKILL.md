@@ -1,6 +1,9 @@
 ---
 name: dev
-description: "Development workflow automation — branching, code review, CI status, dependency checks, performance profiling. Sub-commands: /dev branch, /dev review, /dev deps, /dev perf, /dev ci-status."
+description: "Use when starting a feature branch, requesting code review, checking CI status, auditing dependencies, or profiling a performance hotspot. Respects high-risk-area review policy (DomainModels, EncryptionService, SupabaseSyncService, CloudKitSyncService, SignInService, AuthManager, AIOrchestrator). Sub-commands: /dev branch {feature}, /dev review, /dev deps, /dev perf, /dev ci-status."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Development Skill: $ARGUMENTS

@@ -1,11 +1,26 @@
 ---
 name: ops
-description: "Infrastructure operations — health checks, incident response, cost tracking, alert configuration. Sub-commands: /ops health, /ops incident {description}, /ops cost, /ops alerts."
+description: "Use when running an infrastructure health check, responding to a production incident, auditing cloud cost, configuring alert thresholds, or feeding the UCC Source Health panel. Monitors Railway (FastAPI), Supabase (PostgreSQL), CloudKit, Firebase/GA4, Vercel, GitHub Actions. Sub-commands: /ops health, /ops incident {description}, /ops cost, /ops alerts."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: stable
 ---
 
 # Operations Skill: $ARGUMENTS
 
 You are the Operations specialist for FitMe. You monitor infrastructure health, manage incidents, track costs, and configure alerts.
+
+## Observed patterns preflight
+
+Before reacting to a health alert, gate fire, or PR-cite false positive, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/ops` work:
+
+- **#11** `STATE_OWNER_*` (MISSING / INVALID / LOCATION_MISMATCH) — cross-repo state ownership; check before assuming a state.json belongs to FT2
+- **#12** `PR_CACHE_STALE` — empty/stale `.cache/gh-pr-cache.json` cascades into 30+ false-positive BROKEN_PR_CITATION findings; run `scripts/ensure-pr-cache-fresh.py` before declaring an incident
+- **#23** `.gitignore` blocks Mechanism A / Mechanism C remote-agent visibility — `gate-coverage.jsonl` + `_session-*.events.jsonl` are gitignored; remote agents need committed snapshots to see them
+- **W3** Check CI before local-build panic — when a build fails locally, verify CI status first; environment-specific failures are common
+- **W5** No destructive operations without approval — never run `git reset --hard`, `git push --force`, dropping tables, killing prod processes without explicit user approval
+
+**Mandatory** per CLAUDE.md §v7.8.5: any novel ops-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
 
 ## Shared Data
 
@@ -120,7 +135,6 @@ Configure monitoring alerts.
 | Adapter | Type | What It Provides |
 |---------|------|-----------------|
 | sentry | MCP | Crash-free rate, error counts, issue trends, affected user counts |
-| datadog | MCP | Infrastructure metrics, cold start times, performance monitoring |
 
 **Adapter location:** `.claude/integrations/sentry/`
 **Shared layer writes:** `health-status.json`
@@ -144,7 +158,7 @@ When the cache doesn't have an answer for an ops task, research:
 4. **Infrastructure** — Xcode Cloud build configs, CI pipeline optimization, build artifact management
 5. **Threshold calibration** — when to alert (P0/P1/P2), escalation rules, notification channels
 
-Sources checked in order: L1 cache → shared layer (health-status.json) → integration adapters (sentry, datadog) → codebase (.github/workflows/) → external docs
+Sources checked in order: L1 cache → shared layer (health-status.json) → integration adapters (sentry) → codebase (.github/workflows/) → external docs
 
 ## Cache Protocol
 

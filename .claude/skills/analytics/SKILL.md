@@ -1,6 +1,9 @@
 ---
 name: analytics
-description: "Analytics & data — event taxonomy management, instrumentation validation, dashboard templates, funnel analysis, metric reporting. Sub-commands: /analytics spec {feature}, /analytics validate, /analytics dashboard {feature}, /analytics report, /analytics funnel {name}."
+description: "Use when planning event taxonomy for a new feature, auditing instrumentation drift (CSV ↔ enum ↔ code), building a metric dashboard, running a funnel analysis, producing a metric report, or watching live analytics events. Aligns events with docs/product/analytics-taxonomy.csv and enforces the screen-prefix naming convention. Sub-commands: /analytics spec {feature}, /analytics validate, /analytics dashboard {feature}, /analytics report, /analytics funnel {name}, /analytics watch."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Analytics & Data Skill: $ARGUMENTS
@@ -191,9 +194,8 @@ see `docs/setup/ga4-mcp-setup-guide.md` (planned).
 | Adapter | Type | What It Provides |
 |---------|------|-----------------|
 | ga4 | MCP | Real GA4 event data, user metrics, conversion rates, funnel analysis |
-| mixpanel | MCP | Alternative analytics source, event tracking, user segmentation |
 
-**Adapter location:** `.claude/integrations/{ga4,mixpanel}/`
+**Adapter location:** `.claude/integrations/ga4/`
 **Shared layer writes:** `metric-status.json`
 
 ### Validation Gate

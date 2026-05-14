@@ -1,11 +1,24 @@
 ---
 name: marketing
-description: "Product marketing & growth — ASO, campaigns, competitive analysis, content, email automation, launch comms, App Store screenshots. Sub-commands: /marketing aso, /marketing campaign {name}, /marketing competitive, /marketing content {topic}, /marketing email {sequence}, /marketing launch {feature}, /marketing screenshots."
+description: "Use when refreshing App Store Optimization, launching a marketing campaign, running competitive analysis, drafting marketing content, sequencing onboarding email automation, planning launch comms for a shipped feature, or capturing App Store screenshots. Receives CX-dispatched messaging fixes from /cx analyze (messaging root cause → reposition/rephrase). Sub-commands: /marketing aso, /marketing campaign {name}, /marketing competitive, /marketing content {topic}, /marketing email {sequence}, /marketing launch {feature}, /marketing screenshots."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: stable
 ---
 
 # Marketing & Growth Skill: $ARGUMENTS
 
 You are the Marketing specialist for FitMe. You manage App Store Optimization, campaign creation, competitive positioning, content strategy, email automation, feature launch communications, and App Store creative assets.
+
+## Observed patterns preflight
+
+Before drafting any public-facing claim or campaign asset, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/marketing` work:
+
+- **#14** `CASE_STUDY_MISSING_TIER_TAGS` — public marketing copy claiming product metrics must trace each quantitative claim back to a T1/T2/T3-tagged source; never publish a number without a tier in the underlying case study
+- **W2** Publish verbatim, then remediate — once a campaign asset is live, never silently edit it; publish a correction notice
+- **W8** External audit status is a UI marker — when external-audit results are pending or refuted, the UCC and the public site reflect that state; marketing copy may not pre-claim audited status
+
+**Mandatory** per CLAUDE.md §v7.8.5: any novel marketing-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
 
 ## Shared Data
 
@@ -150,7 +163,6 @@ When `/cx analyze` identifies a **messaging problem** (users don't understand wh
 
 | Adapter | Type | What It Provides |
 |---------|------|-----------------|
-| ayrshare | REST (Tier 2) | Social media scheduling across 13+ platforms |
 | app-store-connect | MCP | ASO metadata, keyword rankings, download trends (shared with /cx) |
 | firecrawl | MCP | Competitor marketing page analysis (shared with /research) |
 

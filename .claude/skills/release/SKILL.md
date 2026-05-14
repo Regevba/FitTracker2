@@ -1,11 +1,25 @@
 ---
 name: release
-description: "Release management — version bumps, changelogs, pre-release checklists, TestFlight prep, App Store submission. Sub-commands: /release prepare, /release checklist, /release notes, /release submit."
+description: "Use when preparing a TestFlight or App Store release, drafting a pre-release checklist, generating release notes from the changelog, or submitting a build to App Store Connect. Verifies CI gates green (build + test + tokens-check + ui-audit P0=0) before promoting any build. Sub-commands: /release prepare, /release checklist, /release notes, /release submit."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: stable
 ---
 
 # Release Management Skill: $ARGUMENTS
 
 You are the Release Management specialist for FitMe. You handle version bumps, changelog generation, release readiness checks, TestFlight distribution, and App Store submission preparation.
+
+## Observed patterns preflight
+
+Before promoting any build or drafting any release note, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/release` work:
+
+- **#6** `FEATURE_CLOSURE_COMPLETENESS` — every feature included in the release notes must have closed cleanly (7 required case-study frontmatter fields, kill_criteria_resolution when kill_criteria set, bidirectional PR-list parity)
+- **#15** `PARTIAL_SHIP_TERMINAL` — features in `partial_ship` status need a decision fork (`complete` or `dropped`); do NOT include partial-ship features in release notes without the fork resolved
+- **W4** No auto-merge without explicit approval — release ceremonies never auto-promote; every TestFlight push and App Store submit needs explicit user approval
+- **W7** Approval gates are multi-part — CI green + ui-audit P0=0 + tokens-check pass + all four `make verify-local` legs must each be confirmed
+
+**Mandatory** per CLAUDE.md §v7.8.5: any novel release-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
 
 ## Shared Data
 
@@ -108,7 +122,6 @@ App Store submission checklist.
 | Adapter | Type | What It Provides |
 |---------|------|-----------------|
 | app-store-connect | MCP | App versions, TestFlight builds, submission status, build processing |
-| fastlane | MCP | Automated build/sign/upload pipeline, certificate management |
 
 **Adapter location:** `.claude/integrations/app-store-connect/`
 **Shared layer writes:** `feature-registry.json`
@@ -132,7 +145,7 @@ When the cache doesn't have an answer for a release task, research:
 4. **Tools & APIs** — App Store Connect submission API, Fastlane lane configurations, TestFlight distribution
 5. **Rollback planning** — phased rollout percentage, crash monitoring thresholds, rollback triggers
 
-Sources checked in order: L1 cache → shared layer (feature-registry.json, health-status.json) → integration adapters (app-store-connect, fastlane) → codebase (CHANGELOG.md, xcodeproj) → external docs
+Sources checked in order: L1 cache → shared layer (feature-registry.json, health-status.json) → integration adapters (app-store-connect) → codebase (CHANGELOG.md, xcodeproj) → external docs
 
 ## Cache Protocol
 

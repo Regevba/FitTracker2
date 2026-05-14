@@ -1,11 +1,23 @@
 ---
 name: research
-description: "Market research — cross-industry pattern recognition, competitive analysis, feature-specific deep dives, UX pattern library, ASO research. Works in a wide-to-narrow funnel. Sub-commands: /research wide {topic}, /research narrow {category}, /research feature {name}, /research competitive, /research market, /research ux-patterns {pattern}, /research aso."
+description: "Use when researching a new feature, scanning competitive products in-category, mapping cross-industry UX patterns (Duolingo / Headspace / Strava / Notion / etc.), conducting an ASO research pass, or producing a market analysis. Works as a wide-to-narrow funnel (cross-industry → same-category → feature-specific). Sub-commands: /research wide {topic}, /research narrow {category}, /research feature {name}, /research competitive, /research market, /research ux-patterns {pattern}, /research aso."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Research Skill: $ARGUMENTS
 
 You are the Research specialist for FitMe. You conduct market research, competitive analysis, and cross-industry pattern recognition using a wide-to-narrow funnel: cross-industry → same-category → feature-specific.
+
+## Observed patterns preflight
+
+Before publishing any research output that will be cited downstream (PRDs, case studies, marketing claims), check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/research` work:
+
+- **#14** `CASE_STUDY_MISSING_TIER_TAGS` — research outputs that become case studies (e.g. `/research feature` reports, competitive analyses) must T1/T2/T3-tag every quantitative claim
+- **W6** Measurement case-study impartiality — when research benchmarks the framework against external products, apply uniform criteria; do not selectively cite favorable comparisons
+
+**Mandatory** per CLAUDE.md §v7.8.5: any novel research-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
 
 ## Shared Data
 
