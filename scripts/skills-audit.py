@@ -9,9 +9,10 @@ Per-skill checks:
   E2  description starts with "Use when " (Anthropic trigger-richness guidance)
   E3  Referenced adapters exist under .claude/integrations/
   E4  Referenced scripts (scripts/foo.py) exist on disk
-  E5  Cross-skill calls (/skill sub-cmd) reference real skills
   W1  Reference to observed-patterns catalog present (warn if missing)
   W2  Sub-commands declared in description match sub-commands documented in body
+  W3  Project cross-skill refs (/skill verb) resolve, with vendor-prefix allowlist
+  W4  Freshness — last_updated older than --max-age-days (default 90)
 
 Exit codes:
   0 — no E findings (W findings allowed)
@@ -21,8 +22,10 @@ CLI:
   --advisory        Treat E findings as W (always exit 0). Used during
                     v7.8.5 advisory window before v7.9 promotion.
   --quiet           Suppress per-skill PASS lines; print only findings + summary.
-  --skill <name>    Audit only the named skill (one of: analytics, cx, design,
-                    dev, marketing, ops, pm-workflow, qa, release, research, ux).
+  --skill <name>    Audit only the named skill (one of: analytics, brainstorm-pm,
+                    cx, design, dev, marketing, ops, pm-workflow, qa, release,
+                    research, ux).
+  --max-age-days N  Threshold for W4 freshness check (default 90).
 """
 
 from __future__ import annotations
@@ -31,6 +34,7 @@ import argparse
 import re
 import sys
 from dataclasses import dataclass, field
+from datetime import date, datetime
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -283,7 +287,26 @@ def check_w2_sub_commands(sf: SkillFile) -> list[Finding]:
     return []
 
 
-def audit_one(path: Path, real_adapters: set[str], known_skills: set[str]) -> list[Finding]:
+def check_w4_freshness(sf: SkillFile, max_age_days: int, today: date) -> list[Finding]:
+    """Warn when last_updated is older than max_age_days."""
+    raw = sf.frontmatter.get("last_updated", "").strip()
+    if not raw:
+        return []  # E1 already flags missing frontmatter
+    try:
+        last = datetime.strptime(raw, "%Y-%m-%d").date()
+    except ValueError:
+        return [Finding(sf.name, "W4", "W",
+                       f"last_updated='{raw}' does not parse as YYYY-MM-DD")]
+    age = (today - last).days
+    if age > max_age_days:
+        return [Finding(sf.name, "W4", "W",
+                       f"last_updated={raw} is {age} days old "
+                       f"(>{max_age_days}); review for drift against current framework")]
+    return []
+
+
+def audit_one(path: Path, real_adapters: set[str], known_skills: set[str],
+              max_age_days: int, today: date) -> list[Finding]:
     sf = parse_skill_file(path)
     findings: list[Finding] = []
     findings.extend(check_e1_required_frontmatter(sf))
@@ -293,6 +316,7 @@ def audit_one(path: Path, real_adapters: set[str], known_skills: set[str]) -> li
     findings.extend(check_w3_cross_skill_refs(sf, known_skills))
     findings.extend(check_w1_observed_patterns(sf))
     findings.extend(check_w2_sub_commands(sf))
+    findings.extend(check_w4_freshness(sf, max_age_days, today))
     return findings
 
 
@@ -304,6 +328,8 @@ def main() -> int:
                        help="Print only findings + summary")
     parser.add_argument("--skill", default=None,
                        help="Audit only the named skill")
+    parser.add_argument("--max-age-days", type=int, default=90,
+                       help="W4 freshness threshold (default 90)")
     args = parser.parse_args()
 
     if not SKILLS_ROOT.is_dir():
@@ -322,9 +348,11 @@ def main() -> int:
     known_skills = {p.name for p in SKILLS_ROOT.iterdir()
                     if p.is_dir() and (p / "SKILL.md").is_file()}
 
+    today = date.today()
     all_findings: list[Finding] = []
     for skill_dir in skill_dirs:
-        skill_findings = audit_one(skill_dir / "SKILL.md", real_adapters, known_skills)
+        skill_findings = audit_one(skill_dir / "SKILL.md", real_adapters,
+                                    known_skills, args.max_age_days, today)
         all_findings.extend(skill_findings)
         if not args.quiet and not skill_findings:
             print(f"PASS  {skill_dir.name}")
