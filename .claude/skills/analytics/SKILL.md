@@ -116,6 +116,53 @@ Define and track a conversion funnel.
 4. Generate GA4 funnel exploration configuration
 5. Set up monitoring for significant drop-off changes
 
+### `/analytics watch` (added 2026-05-13 — Phase 2.A.2 of analytics-observability)
+
+Tail the local analytics mirror SSE stream. Use when the iOS Simulator or
+fitme-story dev server runs locally with `DEBUG_ANALYTICS=1` (iOS scheme
+env var) or `NEXT_PUBLIC_DEBUG_ANALYTICS=1` (web `.env.local`) set —
+every event the app fires is teed to the local SSE server, and this CLI
+prints them in real time.
+
+**Prerequisite:** start the mirror server in a separate terminal first:
+
+```sh
+python3 scripts/analytics-watch-server.py
+```
+
+**Usage:**
+
+```sh
+# Default: connect to http://127.0.0.1:8765/stream
+python3 scripts/analytics-watch.py
+
+# Filter to a specific event prefix
+python3 scripts/analytics-watch.py --filter home_
+
+# Multiple filters (OR semantics)
+python3 scripts/analytics-watch.py --filter home_ --filter nutrition_
+
+# Raw JSON (one event per line) — for piping to jq / grep / file
+python3 scripts/analytics-watch.py --raw | jq '.event_name'
+
+# Connect to a server on a different port
+python3 scripts/analytics-watch.py --server http://127.0.0.1:9999
+
+# Disable color (also auto-disabled when not a TTY)
+python3 scripts/analytics-watch.py --no-color
+```
+
+**Implementation:** [`scripts/analytics-watch.py`](../../../scripts/analytics-watch.py). Stdlib-only (no pip deps). Connection-loss + bad-payload tolerant; exits 0 on Ctrl-C.
+
+**Companion:** [`scripts/analytics-watch-server.py`](../../../scripts/analytics-watch-server.py) (Phase 2.A.1).
+
+### `/analytics poll` (planned — Phase 2.B.1 of analytics-observability)
+
+Query the GA4 Realtime API via `mcp-server-ga4` to observe events firing
+against the production GA4 property (vs. the local mirror, which only
+sees events from the local dev environment). Requires GA4 MCP setup —
+see `docs/setup/ga4-mcp-setup-guide.md` (planned).
+
 ## Key References
 
 - `FitTracker/Services/Analytics/AnalyticsProvider.swift` — event/param/screen enums

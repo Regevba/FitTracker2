@@ -237,6 +237,20 @@
         "scripts/analytics-watch-server.py",
         "scripts/tests/test_analytics_watch_server.py"
       ]
+    },
+    {
+      "id": "2.A.2",
+      "title": " CLI sub-command + skill docs",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-13T18:54:50Z",
+      "completed_at": "2026-05-13T18:54:50Z",
+      "outcome": "New scripts/analytics-watch.py (CLI client for the SSE server shipped in 2.A.1). Connects to localhost:8765/stream, prints events in real time. Supports --filter (substring OR-semantics), --raw (JSON output), --no-color, --server URL. Stdlib-only. Tests at scripts/tests/test_analytics_watch.py: 12/12 pass (7 pure-function + 5 integration). Skill docs added at .claude/skills/analytics/SKILL.md.",
+      "files_touched": [
+        "scripts/analytics-watch.py",
+        "scripts/tests/test_analytics_watch.py",
+        ".claude/skills/analytics/SKILL.md"
+      ]
     }
   ],
   "figma_node_ids": {},
