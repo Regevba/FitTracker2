@@ -734,7 +734,7 @@ When `/cx analyze` or `/qa regression` detects an issue post-merge:
 
 | Subtype | Phase 0 primary output | Skills dispatched |
 |---|---|---|
-| **New feature** | `research.md` (market + competitive + alternatives) | `/research wide` → `/research narrow` → `/research feature` |
+| **New feature** | `research.md` (market + competitive + alternatives) + populated `state.json::brainstorm` block | `/brainstorm-pm` (default — problem/solution/assumption/strategy modes) → `/research wide` → `/research narrow` → `/research feature` |
 | **V2 refactor** (`state.json.work_subtype == "v2_refactor"`) | `v2-audit-report.md` (numbered findings against `ux-foundations.md`, each with P0/P1/P2 severity + tractability tag: auto / decision / new-token / new-component) | `/ux audit` on the v1 file |
 | **Enhancement** | Skipped — parent feature's research already exists | — |
 | **Fix / Chore** | Skipped | — |
@@ -744,6 +744,10 @@ market-research phase. The output drives the rest of the lifecycle: every
 finding becomes a Phase 2 task, every P0/P1 finding becomes a required
 Phase 4 patch, and Section A of
 `docs/design-system/v2-refactor-checklist.md` is the completion gate.
+
+### New-feature brainstorm preflight (v7.8.5+)
+
+Before filling out the research template, run `/brainstorm-pm` to lock the problem framing, surface assumptions, and enumerate alternative solutions. The skill writes to `state.json::brainstorm.<mode>` which serves as input to Phase 1 PRD sections (see `.claude/skills/brainstorm-pm/SKILL.md` → §"Integration with /pm-workflow"). Skip only if the problem framing is already documented in a research/spec doc and validated externally.
 
 ### New-feature research template
 
