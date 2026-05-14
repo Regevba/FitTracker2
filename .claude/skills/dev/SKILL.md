@@ -1,6 +1,9 @@
 ---
 name: dev
-description: "Development workflow automation — branching, code review, CI status, dependency checks, performance profiling. Sub-commands: /dev branch, /dev review, /dev deps, /dev perf, /dev ci-status."
+description: "Use when starting a feature branch, requesting code review, checking CI status, auditing dependencies, or profiling a performance hotspot. Respects high-risk-area review policy (DomainModels, EncryptionService, SupabaseSyncService, CloudKitSyncService, SignInService, AuthManager, AIOrchestrator). Sub-commands: /dev branch {feature}, /dev review, /dev deps, /dev perf, /dev ci-status."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Development Skill: $ARGUMENTS
@@ -170,3 +173,14 @@ On skill start, before cache check:
 5. Performance baselines
 
 **Source priority:** L2 cache > L1 cache > shared layer (health-status.json) > security-audit adapter > pbxproj direct read
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/dev` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not run `git commit` in a headless Bash shell without first confirming `ssh-add -l` shows identities — `ssh-keygen -Y sign` hangs silently with no error when the agent is empty (pattern W1)
+- Do not run destructive git operations (`git reset --hard`, `git push --force`, `git checkout .`, `git clean -f`, `git branch -D`) without explicit user approval — even if they look reversible from your perspective (pattern W5)
+- Do not merge a PR while you have unresolved questions about the diff — approval is multi-part (pattern W7)
+- Do not assume CI is broken before checking GitHub Actions status — environment-specific local failures are common (pattern W3: check CI before local-build panic)
+- Do not auto-merge a PR without explicit user 'merge' instruction — `gh pr merge --auto` flags should never be used unattended (pattern W4)

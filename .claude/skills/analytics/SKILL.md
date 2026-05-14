@@ -1,6 +1,9 @@
 ---
 name: analytics
-description: "Analytics & data — event taxonomy management, instrumentation validation, dashboard templates, funnel analysis, metric reporting. Sub-commands: /analytics spec {feature}, /analytics validate, /analytics dashboard {feature}, /analytics report, /analytics funnel {name}."
+description: "Use when planning event taxonomy for a new feature, auditing instrumentation drift (CSV ↔ enum ↔ code), building a metric dashboard, running a funnel analysis, producing a metric report, or watching live analytics events. Aligns events with docs/product/analytics-taxonomy.csv and enforces the screen-prefix naming convention. Sub-commands: /analytics spec {feature}, /analytics validate, /analytics dashboard {feature}, /analytics report, /analytics funnel {name}, /analytics watch."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Analytics & Data Skill: $ARGUMENTS
@@ -234,9 +237,8 @@ which only sees events from the local dev environment.
 | Adapter | Type | What It Provides |
 |---------|------|-----------------|
 | ga4 | MCP | Real GA4 event data, user metrics, conversion rates, funnel analysis |
-| mixpanel | MCP | Alternative analytics source, event tracking, user segmentation |
 
-**Adapter location:** `.claude/integrations/{ga4,mixpanel}/`
+**Adapter location:** `.claude/integrations/ga4/`
 **Shared layer writes:** `metric-status.json`
 
 ### Validation Gate
@@ -331,3 +333,14 @@ The operations control room tracks analytics instrumentation as one of its 8 sou
 
 - `.claude/shared/framework-manifest.json` — canonical framework version and capability list. `/analytics` should verify its own instrumentation coverage is consistent with the manifest's declared capability count.
 - `.claude/shared/case-study-monitoring.json` — when a tracked case study is in execution, `/analytics` should ensure instrumentation metrics are captured in the snapshot.
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/analytics` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not declare new GA4 events without first adding a row to `docs/product/analytics-taxonomy.csv` — the CSV is the single source of truth and `/analytics validate` rejects code-only declarations
+- Do not log PII into event parameters (user names, email addresses, raw recovery scores, free-text body weight) — strip or hash at the AnalyticsProvider boundary
+- Do not skip the screen-prefix naming convention for screen-scoped events (use `home_action_tap`, never bare `action_tap` — see CLAUDE.md § Analytics Naming Convention)
+- Do not infer adoption from a single day's event count — events instrument before the UI ships and post-launch funnels take 3–7 days to stabilize
+- Do not publish a metric report before the GA4 MCP returns its declared schema — empty MCP responses are a silent-pass class (pattern #7 `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`)

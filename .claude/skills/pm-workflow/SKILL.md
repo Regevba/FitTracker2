@@ -1,6 +1,9 @@
 ---
 name: pm-workflow
-description: "Start or resume a v6.0 product management lifecycle for a feature. Orchestrates the 10-phase loop: Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn, with shared-layer sync, health checks, and external tool coordination. v6.0 adds deterministic measurement instrumentation (phase timing, cache hit tracking, eval coverage gates, CU v2 continuous factors) on top of v5.1 model tiering, batch dispatch, result forwarding, speculative cache pre-loading, systolic chain protocol, and task complexity gate (big.LITTLE hybrid dispatch). Invoke with /pm-workflow {feature-name}."
+description: "Use when starting a new feature, resuming a paused feature, advancing a phase, running the v6.0 10-phase product management lifecycle (Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn), OR managing the roadmap (RICE / MoSCoW / Now-Next-Later prioritization + decision memos). Orchestrates skill-on-demand dispatch, model tiering (Sonnet vs Opus), batch operations, deterministic phase timing, cache-hit tracking, eval coverage gates, and CU v2 continuous factors. Invocations: /pm-workflow {feature-name} | /pm-workflow roadmap {review|prioritize|decide {item}}."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Product Management Lifecycle: $ARGUMENTS
@@ -581,6 +584,28 @@ The key invariant: in full isolation, the shared layer is NEVER read between cha
 
 **Fallback:** If no matching chain exists in `systolic_chains.defined_chains`, use standard per-skill execution with shared-layer reads (v5.0 behavior).
 
+## Alternative invocation: `/pm-workflow roadmap <verb>`
+
+When `$ARGUMENTS` is the literal token `roadmap` (optionally followed by a verb), do NOT run the standard feature lifecycle. Instead load the roadmap reference and dispatch to the requested verb:
+
+| Invocation | What it does |
+|---|---|
+| `/pm-workflow roadmap` (no verb) | Print verb menu + brief usage |
+| `/pm-workflow roadmap review` | Read current roadmap + state.json drift report |
+| `/pm-workflow roadmap prioritize` | Re-rank backlog via RICE / MoSCoW / Now-Next-Later |
+| `/pm-workflow roadmap decide {item}` | Produce a decision memo for one backlog item |
+
+**Dispatch:** load [`.claude/skills/pm-workflow/references/roadmap.md`](references/roadmap.md) (Anthropic progressive-disclosure pattern). Follow the sub-command protocol section that matches the verb. Do not load any phase-lifecycle protocols (Setup, State Initialization, Work Item Type Selection, Phase 0–9) when in `roadmap` mode — those are for feature work.
+
+Outputs go to:
+- Decision memos: `docs/master-plan/decisions/YYYY-MM-DD-<slug>.md`
+- Reordering diffs: stdout (user applies manually)
+- State drift report: stdout
+
+Closes §3A Gap #2 from `docs/skills/skills-review-2026-05-13.md`.
+
+---
+
 ## Setup
 
 1. Check if `.claude/features/$0/state.json` exists
@@ -731,7 +756,7 @@ When `/cx analyze` or `/qa regression` detects an issue post-merge:
 
 | Subtype | Phase 0 primary output | Skills dispatched |
 |---|---|---|
-| **New feature** | `research.md` (market + competitive + alternatives) | `/research wide` → `/research narrow` → `/research feature` |
+| **New feature** | `research.md` (market + competitive + alternatives) + populated `state.json::brainstorm` block | `/brainstorm-pm` (default — problem/solution/assumption/strategy modes) → `/research wide` → `/research narrow` → `/research feature` |
 | **V2 refactor** (`state.json.work_subtype == "v2_refactor"`) | `v2-audit-report.md` (numbered findings against `ux-foundations.md`, each with P0/P1/P2 severity + tractability tag: auto / decision / new-token / new-component) | `/ux audit` on the v1 file |
 | **Enhancement** | Skipped — parent feature's research already exists | — |
 | **Fix / Chore** | Skipped | — |
@@ -741,6 +766,10 @@ market-research phase. The output drives the rest of the lifecycle: every
 finding becomes a Phase 2 task, every P0/P1 finding becomes a required
 Phase 4 patch, and Section A of
 `docs/design-system/v2-refactor-checklist.md` is the completion gate.
+
+### New-feature brainstorm preflight (v7.8.5+)
+
+Before filling out the research template, run `/brainstorm-pm` to lock the problem framing, surface assumptions, and enumerate alternative solutions. The skill writes to `state.json::brainstorm.<mode>` which serves as input to Phase 1 PRD sections (see `.claude/skills/brainstorm-pm/SKILL.md` → §"Integration with /pm-workflow"). Skip only if the problem framing is already documented in a research/spec doc and validated externally.
 
 ### New-feature research template
 
@@ -1686,3 +1715,14 @@ On skill start, before cache check:
 5. Change broadcast and notification rules
 
 **Source priority:** L2 cache > L1 cache > shared layer (all files) > all adapters
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/pm-workflow` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not skip a phase without recording the skip reason in `state.json::phases.<name>.skip_reason` — the audit trail is part of the framework contract
+- Do not advance `current_phase` without a corresponding event in `.claude/logs/<feature>.log.json` within 15 minutes — pre-commit gate `PHASE_TRANSITION_NO_LOG` blocks this since v7.6
+- Do not advance to `current_phase=complete` without resolving `kill_criteria_resolution` when `kill_criteria` is set in state.json (pattern #6 `FEATURE_CLOSURE_COMPLETENESS`)
+- Do not dispatch parallel subagents while upstream tickets F6–F9 are still active — default to serial dispatch per `docs/framework-bugs/concurrent-dispatch-blockers.md`
+- Do not mark a UI feature `complete` without confirming BOTH `/ux pre-merge-review` AND `/design pre-merge-review` pass — the gates are not redundant

@@ -1,11 +1,25 @@
 ---
 name: design
-description: "Design system governance, accessibility audits, auto-generated build prompts, Figma MCP build with fallback, Code Connect mapping auto-scaffold (Layer B; web .figma.tsx + iOS .figma.swift), preflight gate (DS + Figma MCP liveness), pre-merge UI review (ui-audit + Figma node ID validation). Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → use /design build; /design ux-spec → use /ux spec.)"
+description: "Use when running a design-system audit, validating semantic tokens, running an accessibility pass, gating Phase 3 UI spec preflight (DS + Figma MCP liveness + Code Connect write-access), gating Phase 6 pre-merge UI review (ui-audit P0=0 + figma_node_ids populated + spec ↔ build parity), generating a Figma build prompt, or pushing screens into the FitMe Design System Library via Figma MCP with .figma.tsx / .figma.swift Code Connect auto-scaffold. Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → /design build; /design ux-spec → /ux spec.)"
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # Design & UX Skill: $ARGUMENTS
 
 You are the Design & UX specialist for FitMe. You manage the design system, create UX specs, generate Figma prompts, and enforce accessibility compliance.
+
+## Observed patterns preflight
+
+Before investigating an unexpected design-gate fire or Figma bridge anomaly, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/design` work:
+
+- **#6** `FEATURE_CLOSURE_COMPLETENESS` — `/design pre-merge-review` enforces this on `current_phase=complete`; verifies `figma_node_ids` populated + spec ↔ build parity + PR description cites the node IDs
+- **#16** `CASE_STUDY_MISSING_FIELDS` — design-led case studies must carry full required frontmatter
+- **W4** No auto-merge without explicit approval — never let `/design` work auto-promote past Phase 6 gate
+- **W7** Approval gates are multi-part — `/design preflight` is one of several gates that all must pass; do not interpret one green check as full approval
+
+**Mandatory** per CLAUDE.md §v7.8.5: any novel design-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
 
 ## Shared Data
 
@@ -341,3 +355,14 @@ On skill start, before cache check:
 5. Motion specs from ux-foundations.md Part 8
 
 **Source priority:** L2 cache > L1 cache > shared layer (design-system.json) > Figma MCP > AppTheme.swift direct read
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/design` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not introduce a raw `Color(...)` literal, `#hex` string, or `.font(.system(...))` call outside `DesignTokens.swift` — always go through `AppTheme` tokens (`make ui-audit` rule `DS-RAW-COLOR-*` enforces; P0 baseline is 0)
+- Do not advance Phase 3 without `/design preflight` recording Code Connect write-access status — auth-failure is a silent-pass class for the publish pipeline
+- Do not advance Phase 6 while `make ui-audit` reports any P0 finding (DS-RAW-* / DS-MISSING-ASSET / DS-A11Y-BUTTON)
+- Do not introduce a new `Color("name")` token without adding the matching `.colorset` directory + `design-tokens/tokens.json` entry + `DesignTokens.swift` generated line in the same commit (DS-MISSING-ASSET rule enforces)
+- Do not skip the spec ↔ build parity check at `/design pre-merge-review` — every spec surface must resolve to `complete`, never `mapping_only` or `missing` (pattern #6 `FEATURE_CLOSURE_COMPLETENESS`)

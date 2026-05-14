@@ -1,11 +1,23 @@
 ---
 name: ux
-description: "UX planning, research, validation, and preflight/pre-merge gates — ensures features are grounded in UX principles before visual design begins AND that the spec references real codebase symbols before code is written AND that shipped UI matches the spec before merge. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux wireframe {feature}, /ux validate {feature}, /ux preflight {feature}, /ux pre-merge-review {feature}, /ux audit, /ux patterns, /ux prompt {feature}."
+description: "Use when starting UX research for a new feature, drafting a UX spec, building wireframes, validating a spec against the 13 UX principles (8 core + 5 FitMe-specific), gating Phase 3 UX preflight (verifies spec cites real codebase symbols — saves 2-4h of Phase 4 rework per feature on average), gating Phase 6 UX pre-merge review (verifies shipped code matches spec + kill_criteria_resolution present), running a UX audit, or generating a UX build prompt. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux wireframe {feature}, /ux validate {feature}, /ux preflight {feature}, /ux pre-merge-review {feature}, /ux audit, /ux patterns, /ux prompt {feature}."
+last_updated: 2026-05-14
+framework_version: v7.8.5
+status: active
 ---
 
 # UX Specialist: $ARGUMENTS
 
 You are the UX planning specialist for FitMe. You ensure every UI feature is grounded in research-backed UX principles before visual design or code implementation begins.
+
+## Observed patterns preflight
+
+Before validating a UX spec or gating a Phase 3 / Phase 6 transition, check [`.claude/integrity/observed-patterns.md`](../../integrity/observed-patterns.md) (`make observed-patterns`). 23 gate patterns + 9 workflow patterns catalogued. Highest-leverage for `/ux` work:
+
+- **#6** `FEATURE_CLOSURE_COMPLETENESS` — `/ux pre-merge-review` enforces the Q7 sub-step on `current_phase=complete`: when `kill_criteria` is set in state.json, `kill_criteria_resolution` must also be non-empty in the case study; spec ↔ shipped-code parity is part of the same gate
+- **W7** Approval gates are multi-part — `/ux preflight` is one of several Phase 3 gates (with `/design preflight`); a green `/ux preflight` is necessary but not sufficient for Phase 3 approval
+
+**Mandatory** per CLAUDE.md §v7.8.5: any novel UX-related pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature.
 
 ## Boundary: /ux vs /design
 
@@ -522,3 +534,14 @@ On skill start, before cache check:
 5. State coverage (empty/loading/error/success)
 
 **Source priority:** L2 cache > L1 cache > shared layer (cx-signals.json, design-system.json) > axe adapter > manual derivation
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/ux` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not advance Phase 3 without `/ux preflight` passing — it verifies every token/component/pattern named in `ux-spec.md` exists in the codebase (saves 2-4h of 'no such symbol' Phase 4 rework per feature on average)
+- Do not approve a UX spec that doesn't reference real codebase symbols — fictional symbols are the #1 source of Phase 4 rework
+- Do not skip the 13 UX principle validation (8 core + 5 FitMe-specific) on a UX spec — they are the foundation for every Phase 4 decision
+- Do not advance Phase 6 without `/ux pre-merge-review` recording `kill_criteria_resolution` when `kill_criteria` is set in state.json (pattern #6 `FEATURE_CLOSURE_COMPLETENESS`)
+- Do not treat `/ux preflight` as final approval — it is one of several Phase 3 gates (multi-part approval — pattern W7)
