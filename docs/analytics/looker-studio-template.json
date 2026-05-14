@@ -1,0 +1,115 @@
+{
+  "$schema": "https://looker.com/looker-studio/template-schema-v1",
+  "_comment": "Spec for the FitMe Analytics Operator dashboard. Imported manually by the operator via Looker Studio's 'Build a new template' flow. Cross-references docs/master-plan/analytics-dashboard-metric-definitions.md tiles 1-5. Phase 3 deliverable, calibration-safe (this is a SPEC, not a live connection — importing or rendering does not query GA4).",
+  "name": "FitMe Analytics Operator Dashboard",
+  "version": "1.0.0",
+  "created": "2026-05-14",
+  "purpose": "Operator-facing alternative to /control-room/analytics for users who prefer Looker over the in-app dashboard. Same metrics, same source ledgers.",
+  "data_sources": [
+    {
+      "id": "ga4_realtime",
+      "type": "ga4",
+      "property_id_env": "GA4_PROPERTY_ID",
+      "purpose": "Live event firing rate, recent events stream",
+      "operator_setup": "See docs/setup/ga4-mcp-setup-guide.md Steps 1-3 for service account + property access setup. Looker uses the same service account credential."
+    },
+    {
+      "id": "external_sync_status",
+      "type": "connected_sheet",
+      "source_file": ".claude/shared/external-sync-status.json",
+      "extracted_path": "sources.analytics.analytics_taxonomy_status",
+      "purpose": "CSV drift count over time",
+      "refresh": "manual or weekly cron via scripts/refresh-external-sync-status.py"
+    },
+    {
+      "id": "taxonomy_csv",
+      "type": "connected_sheet",
+      "source_file": "docs/product/analytics-taxonomy.csv",
+      "purpose": "Taxonomy health %, forward-declared catalog",
+      "refresh": "on file change (committed)"
+    },
+    {
+      "id": "cross_reference_output",
+      "type": "connected_sheet",
+      "source_command": "python3 scripts/cross-reference-analytics-enum-csv.py --json",
+      "purpose": "Taxonomy health %",
+      "refresh": "on demand; cached 1 hour"
+    }
+  ],
+  "pages": [
+    {
+      "name": "Overview",
+      "charts": [
+        {
+          "id": "daily_event_volume",
+          "title": "Daily Event Volume (last 14 days)",
+          "type": "line_chart",
+          "data_source": "ga4_realtime",
+          "dimension": "date",
+          "metric": "eventCount",
+          "filter": "timestamp >= now() - 14d",
+          "calibration_impact": "yellow",
+          "metric_def_ref": "Tile 1 EventVolumeTile"
+        },
+        {
+          "id": "csv_drift_trend",
+          "title": "CSV Drift Trend (last 14 daily snapshots)",
+          "type": "line_chart",
+          "data_source": "external_sync_status",
+          "dimension": "snapshot_date",
+          "metric": "drift_count",
+          "calibration_impact": "green",
+          "metric_def_ref": "Tile 2 DriftTrendTile"
+        },
+        {
+          "id": "taxonomy_health_scorecard",
+          "title": "Taxonomy Health %",
+          "type": "scorecard",
+          "data_source": "cross_reference_output",
+          "metric": "health_pct",
+          "thresholds": {
+            "green": ">= 95",
+            "amber": ">= 80",
+            "red": "< 80"
+          },
+          "calibration_impact": "green",
+          "metric_def_ref": "Tile 3 TaxonomyHealthTile"
+        }
+      ]
+    },
+    {
+      "name": "Realtime",
+      "charts": [
+        {
+          "id": "last_30m_events",
+          "title": "Events fired in the last 30 minutes",
+          "type": "table",
+          "data_source": "ga4_realtime",
+          "dimensions": ["timestamp", "eventName", "topParam1", "topParam2"],
+          "metric": "eventCount",
+          "filter": "timestamp >= now() - 30min",
+          "sort": "timestamp DESC",
+          "limit": 100,
+          "calibration_impact": "yellow",
+          "metric_def_ref": "Tile 4 RecentEventsStream"
+        }
+      ]
+    },
+    {
+      "name": "Catalog",
+      "charts": [
+        {
+          "id": "forward_declared_catalog",
+          "title": "Forward-declared events (declared but not wired)",
+          "type": "table",
+          "data_source": "taxonomy_csv",
+          "filter": "Notes STARTS WITH '[FORWARD-DECLARED]'",
+          "dimensions": ["event_name", "screen_scope", "notes"],
+          "calibration_impact": "green",
+          "metric_def_ref": "Tile 5 ForwardDeclaredEventsTile"
+        }
+      ]
+    }
+  ],
+  "operator_import_instructions": "See docs/analytics/looker-studio-template.md (companion file)."
+}
