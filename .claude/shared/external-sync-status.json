@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-13T17:48:36Z",
+  "updated": "2026-05-14T22:10:35Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
     "healthy": true,
@@ -320,14 +320,18 @@
         "requires_external": 5
       },
       "runtime_health": {
-        "firebase": "unknown",
+        "firebase": "connected",
         "crash_free_rate": "unknown",
         "ci_pass_rate": "100%",
         "fit_tracker2_runtime_logs_last_1h": 0,
         "dashboard_web_analytics_repo_ready": true,
         "dashboard_web_analytics_deployed": true,
         "dashboard_speed_insights_repo_ready": true,
-        "dashboard_speed_insights_deployed": true
+        "dashboard_speed_insights_deployed": true,
+        "ga4_mcp_connected": true,
+        "ga4_property_id": "531124395",
+        "ga4_mcp_verified_at": "2026-05-14T09:50:00Z",
+        "ga4_mcp_verified_by": "operator"
       },
       "findings": [
         "Phase 1.A (analytics-observability) IN FLIGHT \u2014 refreshed 2026-05-13.",
