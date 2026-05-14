@@ -235,6 +235,8 @@ Before validating a UX spec or gating a Phase 3 / Phase 6 transition, check [`.c
 
 **Output:** `.claude/features/{feature}/ux-preflight-audit-{date}.md` + `.claude/cache/_shared/ux-spec-preflight.json` entry.
 
+**Self-test fixtures (P1.3, shipped 2026-05-14):** [`.claude/skills/ux/fixtures/`](fixtures/) holds canonical regression test cases for the symbol-existence check. Driver: [`scripts/preflight-fixture-test.py`](../../../scripts/preflight-fixture-test.py); invocation: `make preflight-fixture-test`. The `valid-*.md` fixtures cite only real codebase tokens (expected: 0 P0); the `invalid-*.md` fixtures cite a known-missing sentinel (expected: ≥1 P0). When the token-extraction regex or grep-target paths in this section change, update the fixtures + golden alignment to match. Wired into `make integrity-check` as an advisory tail-check.
+
 ### `/ux pre-merge-review {feature}`
 
 **Purpose:** Phase 6 (Review) UI-specific layer — heuristic re-check of the SHIPPED implementation against the original `ux-spec.md`. Catches drift where the code mostly matches the spec but key UX decisions silently shifted during implementation. Pairs with `/design pre-merge-review` (token compliance + Figma node ID validation).
