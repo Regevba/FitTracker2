@@ -144,27 +144,22 @@ iOS app (FirebaseAnalytics)              fitme-story (web, @next/third-parties/g
 
 **Why this convention is safe:** the forward-declared tag is a STRUCTURED, machine-grep-able prefix. Phase 1.B `CSV_TAXONOMY_DRIFT` gate logic can branch on its presence/absence. Free-text "RESERVED" or "STUB" notes (which the previous CSV used) are unstructured and don't permit mechanical enforcement.
 
-### §5.5 Phase 1.A current status (snapshot 2026-05-13 evening)
+### §5.5 Phase 1.A current status (snapshot 2026-05-14)
 
-**Shipped (3 tasks, 5 sub-deliverables):**
+**Status: COMPLETE — all 7 tasks shipped across 7 PRs.**
 
-| Task | PR | SHA | Outcome |
-|---|---|---|---|
-| 1.A.1 + 1.A.2 | [#334](https://github.com/Regevba/FitTracker2/pull/334) | merged | CSV 58 → 112 rows; 0 missing events / screens / user props |
-| 1.A.3 | [#335](https://github.com/Regevba/FitTracker2/pull/335) | merged | `aiRecommendationAccepted/Dismissed` removed (duplicates); enum 114 → 112; CSV stays aligned 112/112 |
-| 1.A.4 | [#336](https://github.com/Regevba/FitTracker2/pull/336) | merged | 2 web events re-classified `[FORWARD-DECLARED]`; new convention §5.4 added; metric re-baselined |
+| Task | PR | Outcome |
+|---|---|---|
+| 1.A.1 + 1.A.2 | [#334](https://github.com/Regevba/FitTracker2/pull/334) | CSV 58 → 112 rows; 0 missing events / screens / user props |
+| 1.A.3 | [#335](https://github.com/Regevba/FitTracker2/pull/335) | `aiRecommendationAccepted/Dismissed` removed (duplicates); enum 114 → 112 |
+| 1.A.4 | [#336](https://github.com/Regevba/FitTracker2/pull/336) + fitme-story [#104](https://github.com/Regevba/fitme-story/pull/104) | 2 web events re-classified `[FORWARD-DECLARED]`; new convention §5.4 added |
+| 1.A.5 | [#338](https://github.com/Regevba/FitTracker2/pull/338) | 19 XCTests added; iOS test coverage 81% → 100% |
+| 1.A.6 | fitme-story [#105](https://github.com/Regevba/fitme-story/pull/105) | 16 env vars documented in `.env.example` + `.gitignore` exception |
+| 1.A.7 | [#339](https://github.com/Regevba/FitTracker2/pull/339) | New `analytics_taxonomy_status` block in `external-sync-status.json`; freshness restored |
 
-Plus the parent feature scaffolding PR ([#332](https://github.com/Regevba/FitTracker2/pull/332), merged 2026-05-13T15:34Z) which carried the initial spec + decisions log + state.json.
+Plus parent feature scaffolding PR [#332](https://github.com/Regevba/FitTracker2/pull/332) and docs spec completion PR [#337](https://github.com/Regevba/FitTracker2/pull/337).
 
-**Remaining (3 tasks before Phase 1.A closure):**
-
-| Task | Effort | Earliest | Blocker check |
-|---|---|---|---|
-| 1.A.5 — Add tests for 21 untested iOS events | 2h | 2026-05-14 | None — pure additive test work |
-| 1.A.6 — Add fitme-story `.env.example` with `NEXT_PUBLIC_GA_ID=G-xxxxxxx` placeholder | 5m | 2026-05-14 | None |
-| 1.A.7 — Refresh stale `.claude/shared/external-sync-status.json` analytics block | 15m | 2026-05-14 | None — value already auto-computable |
-
-**Phase 1.A close trigger:** all 3 remaining tasks shipped + `python3 scripts/cross-reference-analytics-enum-csv.py` clean + test-coverage 100%.
+**Primary metric:** CSV taxonomy drift **56 → 0** ✅ (target met at Phase 1.A closure).
 
 ---
 
@@ -197,9 +192,28 @@ Plus the parent feature scaffolding PR ([#332](https://github.com/Regevba/FitTra
 
 ### §6.4 Tests added (Phase 2)
 
-- `scripts/tests/test_analytics_watch_server.py` — 5 tests (connect/disconnect, filter, malformed payload, port collision detection)
-- `FitTrackerTests/DebugSinkAdapterTests.swift` — 3 tests (no-op without env flag, tees when flag set, fails open on websocket disconnect)
-- fitme-story `src/lib/__tests__/analytics-debug-mirror.test.ts` — 3 tests (same shape as iOS)
+- `scripts/tests/test_analytics_watch_server.py` — 7 tests (POST /event shape, GET /stream subscriber registration, GET /health, filter, malformed payload, port collision detection, multi-subscriber broadcast)
+- `scripts/tests/test_analytics_watch.py` — 12 tests (CLI flag parsing + 5 integration tests via subprocess + reactive stdout reading)
+- `FitTrackerTests/DebugSinkAdapterTests.swift` — 14 tests (passthrough, tee, PII safety for setUserProperty/setUserID/setConsent, env discrimination, sink override)
+- fitme-story `src/lib/__tests__/analytics-debug-mirror.test.ts` — 8 node:test tests (env-gated resolveSinkURL + fetch shape + failure swallowing)
+
+### §6.5 Phase 2 current status (snapshot 2026-05-14)
+
+**Status: COMPLETE — all 5 sub-tasks shipped across 5 PRs.**
+
+| Task | PR | Outcome |
+|---|---|---|
+| 2.A.1 SSE mirror server | [#342](https://github.com/Regevba/FitTracker2/pull/342) (squash `353b142`) | stdlib-only HTTP+SSE on `localhost:8765`; endpoints POST /event, GET /stream, GET /health |
+| 2.A.2 `/analytics watch` CLI | [#345](https://github.com/Regevba/FitTracker2/pull/345) | stdlib client with `--filter`, `--raw`, `--no-color`, `--server` |
+| 2.A.3 iOS DebugSinkAdapter | [#349](https://github.com/Regevba/FitTracker2/pull/349) | wraps inner `AnalyticsProvider`; tees `logEvent` + `logScreenView` when `DEBUG_ANALYTICS=1`; PII safe (never tees setUserProperty/setUserID/setConsent) |
+| 2.A.4 fitme-story web mirror | fitme-story [#107](https://github.com/Regevba/fitme-story/pull/107) (squash `1ec463c`) | `analytics-debug-mirror.ts` tees gtag emits when `NEXT_PUBLIC_DEBUG_ANALYTICS=1`; fire-and-forget fetch with `keepalive: true` |
+| 2.B.1 `/analytics poll` + GA4 MCP runbook | [#351](https://github.com/Regevba/FitTracker2/pull/351) (squash `0b1f661`) | new `docs/setup/ga4-mcp-setup-guide.md` (~270 lines, 7-step operator runbook) + `/analytics poll` SKILL.md procedure expanded from placeholder to full 5-step MCP-driven query |
+
+**Phase 2 deliverables — verification at close:**
+- `pytest scripts/tests/` — 152/152 pass
+- `make schema-check` — 70/70 state.json clean
+- iOS `DebugSinkAdapterTests` — 14/14 (verified on PR #349 + #351 Build and Test)
+- fitme-story node:test — 8/8
 
 ---
 
@@ -239,8 +253,62 @@ Plus the parent feature scaffolding PR ([#332](https://github.com/Regevba/FitTra
 
 ### §7.4 Tests added (Phase 3)
 
-- `fitme-story/src/lib/control-room/__tests__/ga4-mcp-client.test.ts` — 5 tests (response shape, error fallback, retry, cache hit)
-- Vercel verification skill protocol: open route in browser, verify GA4 round-trip end-to-end
+- `fitme-story/src/lib/control-room/__tests__/ga4-mcp-client.test.ts` — 5 tests (response shape, error fallback, retry, cache hit) — **deferred to live-wiring sub-task**
+- Vercel verification skill protocol: open route in browser, verify GA4 round-trip end-to-end — **deferred to live-wiring sub-task**
+- `fitme-story/src/lib/control-room/__tests__/analytics-tile-fixtures.test.ts` — fixture-shape + render tests (ships with scaffold)
+
+### §7.5 Calibration safety: green / yellow / red work classification (added 2026-05-14)
+
+Phase 1.B's Calibration Protocol opens **2026-06-04** and measures (a) `CSV_TAXONOMY_DRIFT` baseline drift count and (b) `GA4_MCP_DISCONNECTED` connection success rate. To preserve the integrity of that ≥7-day soak window, Phase 3 work between now and 2026-06-04 is partitioned into three buckets:
+
+#### 🟢 Green — safe to ship now (zero contamination risk)
+
+Pure scaffold + spec work. Does **not** modify source-of-truth ledgers (CSV taxonomy, `external-sync-status.json::analytics_taxonomy_status`, GA4 properties), does **not** add new GA4 instrumentation, does **not** read live GA4.
+
+| # | Item | Repo | Files |
+|---|---|---|---|
+| 1 | Route shell at `/control-room/analytics` | fitme-story | `src/app/control-room/analytics/page.tsx`, `layout.tsx` |
+| 2 | Sidebar nav entry | fitme-story | `src/components/control-room/Sidebar.tsx` (or equivalent) |
+| 3 | Tile component scaffolding | fitme-story | `src/components/control-room/EventVolumeTile.tsx`, `DriftTrendTile.tsx`, `TaxonomyHealthTile.tsx` |
+| 4 | Data-fetcher TypeScript contracts | fitme-story | `src/lib/control-room/analytics-types.ts` |
+| 5 | Looker Studio template (JSON/markdown spec) | FT2 | `docs/analytics/looker-studio-template.json` + `.md` |
+| 6 | Metric definitions doc | FT2 | `docs/master-plan/analytics-dashboard-metric-definitions.md` |
+| 7 | Vitest/RTL test harness with fixture data | fitme-story | `src/lib/control-room/__tests__/analytics-tile-fixtures.test.ts` + `analytics-fixtures.ts` |
+| 8 | Operator runbook | FT2 | `docs/setup/control-room-analytics-setup-guide.md` |
+| 9 | State.json + log entries for Phase 3 sub-tasks | FT2 | `.claude/features/analytics-observability/state.json`, `.claude/logs/analytics-observability.log.json` |
+
+#### 🟡 Yellow — defer until 2026-06-04 (low but real contamination risk)
+
+Live-data wiring. Quota use is fine in absolute terms but adds variance to the GA4 MCP success-rate baseline OR forward-biases drift snapshots.
+
+- Wiring tiles to live GA4 Reporting API via `mcp-server-ga4` — adds variance to `GA4_MCP_DISCONNECTED` success-rate baseline
+- Wiring tiles to live `external-sync-status.json::analytics_taxonomy_status` reads — read-only is OK, but if the dashboard *triggers* a refresh-on-load it would forward-bias drift snapshots
+- Adding new GA4 instrumentation for the dashboard itself (`analytics_dashboard_view`, `analytics_dashboard_tile_interaction`, etc.) — pollutes event-volume baseline
+
+#### 🔴 Red — never do during the soak window (will contaminate)
+
+- Modifying [`docs/product/analytics-taxonomy.csv`](../product/analytics-taxonomy.csv) — would re-baseline drift from 0 to non-zero and reset the calibration clock
+- Promoting `CSV_TAXONOMY_DRIFT` or `GA4_MCP_DISCONNECTED` from advisory to enforced before 2026-06-04 — violates the Calibration Protocol contract
+- Backfilling events / replaying historical traffic into GA4 — corrupts event-volume baseline
+
+#### Re-evaluation trigger
+
+After 2026-06-04 (or at the formal Phase 1.B Calibration Protocol kickoff per [infra master plan §3.5](infra-master-plan-2026-05-12.md)), the yellow bucket re-classifies to green. Red items remain red until both Phase 1.B gates flip to enforced (earliest 2026-06-18 per §8.1).
+
+### §7.6 Phase 3 current status (snapshot 2026-05-14)
+
+**Status: SCAFFOLD IN PROGRESS — green-bucket items 1–9 shipping under PR (TBD).**
+
+| Sub-system | Item | Status |
+|---|---|---|
+| 7.1.A route shell | green #1, #2 | scaffold this PR |
+| 7.1.A tiles | green #3 | scaffold this PR |
+| 7.1.A live GA4 wiring | yellow | deferred — earliest 2026-06-04 |
+| 7.1.A `analytics_dashboard_view` event | yellow | deferred — earliest 2026-06-04 |
+| 7.2.B Looker template | green #5 | spec this PR |
+| 7.2.B operator runbook | green #8 | spec this PR |
+
+Phase 3 close trigger: green scaffold merged + (after 2026-06-04) yellow live-wiring shipped + Vercel verification passes + operator opens dashboard end-to-end.
 
 ---
 

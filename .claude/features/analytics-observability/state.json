@@ -268,6 +268,21 @@
       ]
     },
     {
+      "id": "2.A.4",
+      "title": "fitme-story web mirror function \u2014 tee gtag emits when NEXT_PUBLIC_DEBUG_ANALYTICS=1",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-14T03:55:00Z",
+      "completed_at": "2026-05-14T04:00:00Z",
+      "outcome": "New fitme-story/src/lib/analytics-debug-mirror.ts. resolveSinkURL() reads NEXT_PUBLIC_DEBUG_ANALYTICS=1 at module load. teeToDebugMirror(eventName, params) called from design-system-analytics.ts + control-room/analytics.ts emit() functions after gtag emit. Fire-and-forget fetch with keepalive: true, credentials: 'omit', mode: 'cors'. Failures swallowed (production safety). 8 node:test tests at src/lib/__tests__/analytics-debug-mirror.test.ts. Shipped via fitme-story PR #107 (squash 1ec463c).",
+      "files_touched": [
+        "fitme-story/src/lib/analytics-debug-mirror.ts",
+        "fitme-story/src/lib/design-system-analytics.ts",
+        "fitme-story/src/lib/control-room/analytics.ts",
+        "fitme-story/src/lib/__tests__/analytics-debug-mirror.test.ts"
+      ]
+    },
+    {
       "id": "2.B.1",
       "title": "/analytics poll sub-command + GA4 MCP setup runbook",
       "status": "complete",
@@ -279,6 +294,29 @@
         "docs/setup/ga4-mcp-setup-guide.md",
         ".claude/skills/analytics/SKILL.md"
       ]
+    },
+    {
+      "id": "3.A.0",
+      "title": "Phase 3 spec scaffold \u2014 master plan \u00a77.5/\u00a77.6 + metric definitions + Looker template + control-room setup guide",
+      "status": "complete",
+      "phase": "implementation",
+      "started_at": "2026-05-14T04:30:00Z",
+      "completed_at": "2026-05-14T04:55:00Z",
+      "outcome": "Phase 3 docs landed before live-data wiring (per \u00a77.5 calibration safety classification). Master plan \u00a75.5 + \u00a76.5 status snapshots updated to COMPLETE. NEW \u00a77.5 (green/yellow/red work classification documenting which Phase 3 work is calibration-safe vs deferred to 2026-06-04). NEW \u00a77.6 (Phase 3 status snapshot). NEW docs/master-plan/analytics-dashboard-metric-definitions.md (5-tile contract: EventVolumeTile, DriftTrendTile, TaxonomyHealthTile, RecentEventsStream, ForwardDeclaredEventsTile + Looker cross-walk). NEW docs/analytics/looker-studio-template.json (3-page dashboard spec) + .md (operator import guide). NEW docs/setup/control-room-analytics-setup-guide.md (operator dashboard setup with calibration-window note).",
+      "files_touched": [
+        "docs/master-plan/analytics-master-plan-2026-05-13.md",
+        "docs/master-plan/analytics-dashboard-metric-definitions.md",
+        "docs/analytics/looker-studio-template.json",
+        "docs/analytics/looker-studio-template.md",
+        "docs/setup/control-room-analytics-setup-guide.md"
+      ]
+    },
+    {
+      "id": "3.A.1",
+      "title": "fitme-story dashboard scaffold \u2014 /control-room/analytics route + 5 tile components + types + fixtures + tests + sidebar nav",
+      "status": "pending",
+      "phase": "implementation",
+      "scope_note": "Green-bucket items 1-4, 7 from master plan \u00a77.5. Live GA4 binding (yellow) deferred to 2026-06-04 per Calibration Protocol."
     }
   ],
   "figma_node_ids": {},
