@@ -193,8 +193,9 @@ The Phase 9 task is tracked as **T29** in [`.claude/features/framework-v7-8-bran
 | **E — Workflow ergonomics** | F9 | 1 | `make complete-feature` pre-flight |
 | **F — v7.8.3 cutover follow-up** | F11, F12, F13 | 3 | All independent |
 | **G — Test discipline** (NEW 2026-05-12; expanded 2026-05-13) | F14, F15, F16, F17, F18, F19, F20 | 7 | F16 is foundation for F14 + F18; F19/F20 from analytics-observability ride on F16 harness |
+| **H — Application-layer test coverage** (NEW 2026-05-13; see [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md)) | T1–T16 | 16 | iOS + web + backend + AI + analytics test discipline; T6 (Web PR gate) RICE 200; T14 (platform-parity field) RICE 160; full ranking at 2026-05-21 |
 | **Icebox** | V8-I1 through V8-I7 | 7 | Each gated on own re-eval trigger |
-| **TOTAL** | 27 | **25 open** | F7/F8 resolved; 25 in 2026-05-21 ranking (+2 from analytics-observability sub-doc) |
+| **TOTAL** | 43 | **41 open** | F7/F8 resolved; 41 in 2026-05-21 ranking (+16 from test-coverage sub-doc) |
 
 ---
 
@@ -375,6 +376,35 @@ Concurrent product-tier feature `analytics-observability` opened 2026-05-13 ship
 **Why this fits this plan:** the analytics work consumes Mechanism A coverage telemetry, F16 try-repo harness (ride-on, not blocker), v7.8.2 cross-repo asymmetry policy (FT2-only Mechanism A), v7.8.3 D-1 reverse-sync (CSV mirror to fitme-story build), and v8.x docket Theme G test discipline. Treating it as a separate parallel track would duplicate those interfaces; Approach A (sub-doc) keeps the forward-looking roadmap single-source.
 
 **F19 + F20 added to §3.6.4 v8.0 docket Theme G** (see updated table below).
+
+### 3.6.6.B Cross-Layer Test Coverage Sub-doc (added 2026-05-13)
+
+Concurrent test-discipline audit on 2026-05-13 surfaced that Theme G covers framework-layer tests only. The other five system layers (iOS, web, backend, AI, analytics) are under-spec'd or in some places zero-tested. Full audit + 16 T-candidates spec'd at [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md).
+
+**Headline gaps surfaced (4-agent audit):**
+
+| Layer | Tests inventoried | Top gap |
+|---|---|---|
+| Framework (Python) | 133 methods / 13 files; ~30% gate coverage | cache_hits keying drift (v7.8.5 blocker — already on docket §2.4) |
+| iOS (Swift) | 549 methods / 56 files | Sentry zero tests; SignInService passkey/WebAuthn zero tests; ~130-file View layer untested |
+| Web (fitme-story) | 122 cases / 17 files | **Zero JS tests run on PR**; 119 React components + 27 routes untested; WebAuthn route handlers untested |
+| Backend | 248 Swift methods / 22 files | SignInService zero coverage; multi-device reconciliation + key-rotation + sync cascades untested |
+| AI | 75 methods / 5 files | **Zero LLM behavioral evals**; cohort prior has 3 tests; `phase2bis-prompt-set.json` has no harness |
+| Analytics | 147 methods / 11 files; 81% event-count coverage | No runtime emission audit (events fired in app match CSV); ~40% parameter-combination coverage |
+
+**T-candidate docket (Theme H) feeds 2026-05-21 prioritization pass alongside F-candidates.** Top-5 by RICE:
+
+1. **T6** — Web PR test gate (RICE **200.0**; ~1h effort; v7.9.1 ride-along candidate or earlier)
+2. **T14** — Platform-parity state.json field `platforms_tested: {ios, web, backend, ai}` (RICE **160.0**; extends FEATURE_CLOSURE_COMPLETENESS; ~1–2h)
+3. **T2** — Sentry integration test pass (RICE **80.0**; closes pre-launch crash gate; mirrors push-notifications reachability discipline)
+4. **T13** — `last_fired_at` extension to all gates (RICE **80.0**; depends on F17 in Phase E)
+5. **T1** — Per-gate dispatch test enforcement gate `GATE_TEST_MISSING` (RICE **53.3**; depends on F14 in Phase E; closes the drift class behind cache_hits keying)
+
+**External pattern sources** (10 systems researched; 7 patterns borrowed): Next.js test stratification, AWS Config `LastSuccessfulInvocationTime`, Stripe/GitHub `oasdiff`, Linear/Lyft platform-parity, pre-commit `try-repo` + `stages:`, Semgrep rule-test pairing, promptfoo + Anthropic golden-set LLM evals, uber/pointfreeco Swift snapshot testing, ArchDrift + shipmonk orphan-test detection. Overkill-and-rejected: Pact broker, Next.js isolated-installation-per-test, Airbnb 30K-snapshot scale, Muter Swift mutation testing.
+
+**Calibration alignment:** all T-candidates walk the same Phase A→E protocol (§3.5). T-candidates with effort ≤ XS that extend an already-enforced gate (T14, T16) may skip Phases B–C. The sub-doc also proposes a quarterly cross-layer test audit (sub-doc §6.2) recurring at T+90d (first run 2026-08-13), mirroring §3.5.3 Data Freshness Audit but covering application-layer tests.
+
+**Why this fits this plan:** the sub-doc consumes the same calibration protocol, the same RICE convention, the same gate-coverage telemetry, and the same 2026-05-21 prioritization pass. Treating Theme H as a separate plan would duplicate those interfaces; sub-doc keeps the forward-looking roadmap single-source.
 
 ### 3.6.7 Cumulative Mechanism Inventory by Version (projected)
 
@@ -558,7 +588,13 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 
 ## 9. References
 
+### Sub-docs (children of this plan)
+
+- [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) — analytics-observability sub-doc (F19/F20 source)
+- [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md) — cross-layer test coverage sub-doc (T1–T16 source; Theme H)
+
 ### Source documents folded into this plan
+
 - [`master-plan-2026-04-15.md`](master-plan-2026-04-15.md) — current product master plan (v7.8.3 banner added 2026-05-11)
 - [`master-backlog-roadmap.md`](master-backlog-roadmap.md) — product RICE backlog (separate from this infra plan)
 - [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md`](../superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md) — v7.8 bridge + v7.9 design
