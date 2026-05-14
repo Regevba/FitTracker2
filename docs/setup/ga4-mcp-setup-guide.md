@@ -1,6 +1,6 @@
 # GA4 MCP Setup Guide
 
-**Audience:** operator (one-time setup) · **Created:** 2026-05-13 · **Phase:** analytics-observability 2.B.1
+**Audience:** operator (one-time setup) · **Created:** 2026-05-13 · **Updated:** 2026-05-14 (env var name corrected `GA4_PROPERTY_ID` → `GA_PROPERTY_ID`; absolute-path requirement for Claude Desktop documented) · **Phase:** analytics-observability 2.B.1 · **Status:** verified operational 2026-05-14 by operator (FIT-142)
 
 > Companion to [`docs/master-plan/analytics-master-plan-2026-05-13.md`](../master-plan/analytics-master-plan-2026-05-13.md) §6.2 Sub-system B. Once this guide is followed, the `/analytics poll` sub-command becomes operational and the audit's "GA4 MCP not connected" finding resolves to "connected".
 
@@ -33,7 +33,7 @@ After completing this setup, you can:
 3. Admin (gear icon, lower-left) → Property Settings (under "Property" column)
 4. Copy the **Property ID** (numeric, e.g. `123456789`) — NOT the Measurement ID (which starts with `G-`)
 
-Save this as `GA4_PROPERTY_ID` for Step 5.
+Save this as `GA_PROPERTY_ID` for Step 5.
 
 ---
 
@@ -105,21 +105,48 @@ mcp-server-ga4 --version
 
 ## Step 5 — Register the MCP server with Claude Code
 
-Add the server to your Claude Code MCP configuration. The exact path depends on your platform:
+Add the server to your Claude Code MCP configuration. **There are two separate configs depending on which interface you use:**
 
-- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json` (Claude Desktop) OR your CLI MCP config
-- **CLI / `.mcp.json`:** in the repo root (committed; team-shared)
+- **Claude Code CLI (terminal):** use `claude mcp add` — modifies `~/.claude.json` (preferred for analytics-skill work since `/pm-workflow`, `/analytics`, etc. run in CLI)
+- **Claude Desktop (macOS app):** edit `~/Library/Application Support/Claude/claude_desktop_config.json`
 
-Example `.mcp.json` entry (adapt to your installed `mcp-server-ga4` path):
+> ⚠️ **`claude mcp list` and `/mcp` inside a Claude Code CLI session read the CLI config (`~/.claude.json`), not the Claude Desktop one.** They are completely separate configs that don't share state.
+
+### Option A — Claude Code CLI (recommended)
+
+One-line command (substitute your real Property ID and binary path):
+
+```bash
+claude mcp add ga4 \
+  --env GA_PROPERTY_ID=123456789 \
+  --env GOOGLE_APPLICATION_CREDENTIALS=/Users/YOU/.config/ga4-mcp/service-account.json \
+  -- /Users/YOU/.nvm/versions/node/vXX.X.X/bin/mcp-server-ga4
+```
+
+The binary path after `--` should be the output of `which mcp-server-ga4` (Step 4). **Use absolute path** — nvm-managed binaries are not on the GUI app's PATH and the CLI's spawn behavior is more reliable with the absolute path too.
+
+After running, verify:
+
+```bash
+claude mcp list
+```
+
+`ga4: ... - ✓ Connected` should appear in the list.
+
+> ⚠️ **Currently-running Claude Code CLI sessions won't see the new server.** `claude mcp add` writes the config but running sessions only load MCP servers at boot. Exit (`exit`) + relaunch (`claude`) any active session before `/mcp` inside Claude Code will show `ga4`.
+
+### Option B — Claude Desktop config (parallel; for Claude Desktop app users)
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json` and add (or merge) this top-level `mcpServers` block:
 
 ```json
 {
   "mcpServers": {
     "ga4": {
-      "command": "mcp-server-ga4",
+      "command": "/Users/YOU/.nvm/versions/node/vXX.X.X/bin/mcp-server-ga4",
       "args": [],
       "env": {
-        "GA4_PROPERTY_ID": "123456789",
+        "GA_PROPERTY_ID": "123456789",
         "GOOGLE_APPLICATION_CREDENTIALS": "/Users/YOU/.config/ga4-mcp/service-account.json"
       }
     }
@@ -128,12 +155,14 @@ Example `.mcp.json` entry (adapt to your installed `mcp-server-ga4` path):
 ```
 
 Replace:
+
+- `/Users/YOU/.nvm/versions/node/vXX.X.X/bin/mcp-server-ga4` with the absolute output of `which mcp-server-ga4` (Step 4). **Must be absolute** — Claude Desktop is a GUI app and does NOT inherit your shell PATH; relative `"mcp-server-ga4"` will fail validation with a "could not be loaded" popup.
 - `123456789` with your Property ID from Step 1
 - `/Users/YOU/.config/ga4-mcp/service-account.json` with the absolute path from Step 2.8
 
-> **Why two env vars?** `GA4_PROPERTY_ID` tells the server which property to query. `GOOGLE_APPLICATION_CREDENTIALS` is the standard Google SDK env var pointing at the service account JSON.
+Then **fully quit Claude Desktop** (`osascript -e 'quit app "Claude"'` or Cmd+Q in the app) and reopen (`open -a Claude`). MCP servers only register on app launch — closing the window is not enough.
 
-Restart Claude Code so the new MCP server registers.
+> **Why two env vars?** `GA_PROPERTY_ID` tells the server which property to query. `GOOGLE_APPLICATION_CREDENTIALS` is the standard Google SDK env var pointing at the service account JSON.
 
 ---
 
