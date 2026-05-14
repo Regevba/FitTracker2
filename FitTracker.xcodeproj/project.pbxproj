@@ -48,6 +48,7 @@
 		AC1000000000000000000003 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000003 /* AnalyticsService.swift */; };
 		AC1000000000000000000004 /* ConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000004 /* ConsentManager.swift */; };
 		AC1000000000000000000005 /* FirebaseAnalyticsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000005 /* FirebaseAnalyticsAdapter.swift */; };
+		AC1000000000000000000200 /* DebugSinkAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000200 /* DebugSinkAdapter.swift */; };
 		AC1000000000000000000006 /* MockAnalyticsAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000006 /* MockAnalyticsAdapter.swift */; };
 		AC1000000000000000000007 /* AccountDeletionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000007 /* AccountDeletionService.swift */; };
 		AC1000000000000000000008 /* DataExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000008 /* DataExportService.swift */; };
@@ -69,6 +70,7 @@
 		AS000001000000000000AA01 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AS000002000000000000AA01 /* Assets.xcassets */; };
 		B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B20000010000000000000001 /* FitTrackerCoreTests.swift */; };
 		HA100000000000000000001 /* AnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HA200000000000000000001 /* AnalyticsTests.swift */; };
+		DA100000000000000000AT01 /* DebugSinkAdapterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA200000000000000000AT01 /* DebugSinkAdapterTests.swift */; };
 		HA100000000000000000002 /* HomeAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = HA200000000000000000002 /* HomeAnalyticsTests.swift */; };
 		TA100000000000000000001 /* TrainingAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TA200000000000000000001 /* TrainingAnalyticsTests.swift */; };
 		NA100000000000000000001 /* NutritionAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = NA200000000000000000001 /* NutritionAnalyticsTests.swift */; };
@@ -351,6 +353,7 @@
 		AC2000000000000000000003 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		AC2000000000000000000004 /* ConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentManager.swift; sourceTree = "<group>"; };
 		AC2000000000000000000005 /* FirebaseAnalyticsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAnalyticsAdapter.swift; sourceTree = "<group>"; };
+		AC2000000000000000000200 /* DebugSinkAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSinkAdapter.swift; sourceTree = "<group>"; };
 		AC2000000000000000000006 /* MockAnalyticsAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAnalyticsAdapter.swift; sourceTree = "<group>"; };
 		AC2000000000000000000007 /* AccountDeletionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDeletionService.swift; sourceTree = "<group>"; };
 		AC2000000000000000000008 /* DataExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportService.swift; sourceTree = "<group>"; };
@@ -366,6 +369,7 @@
 		AS000002000000000000AA01 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B20000010000000000000001 /* FitTrackerCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTrackerCoreTests.swift; sourceTree = "<group>"; };
 		HA200000000000000000001 /* AnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsTests.swift; sourceTree = "<group>"; };
+		DA200000000000000000AT01 /* DebugSinkAdapterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSinkAdapterTests.swift; sourceTree = "<group>"; };
 		HA200000000000000000002 /* HomeAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAnalyticsTests.swift; sourceTree = "<group>"; };
 		TA200000000000000000001 /* TrainingAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingAnalyticsTests.swift; sourceTree = "<group>"; };
 		NA200000000000000000001 /* NutritionAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionAnalyticsTests.swift; sourceTree = "<group>"; };
@@ -971,6 +975,7 @@
 				AC2000000000000000000003 /* AnalyticsService.swift */,
 				AC2000000000000000000004 /* ConsentManager.swift */,
 				AC2000000000000000000005 /* FirebaseAnalyticsAdapter.swift */,
+				AC2000000000000000000200 /* DebugSinkAdapter.swift */,
 				AC2000000000000000000006 /* MockAnalyticsAdapter.swift */,
 			);
 			path = Analytics;
@@ -992,6 +997,7 @@
 			isa = PBXGroup;
 			children = (
 				HA200000000000000000001 /* AnalyticsTests.swift */,
+				DA200000000000000000AT01 /* DebugSinkAdapterTests.swift */,
 				B20000010000000000000001 /* FitTrackerCoreTests.swift */,
 				HA200000000000000000002 /* HomeAnalyticsTests.swift */,
 				TA200000000000000000001 /* TrainingAnalyticsTests.swift */,
@@ -1339,6 +1345,7 @@
 				AC1000000000000000000003 /* AnalyticsService.swift in Sources */,
 				AC1000000000000000000004 /* ConsentManager.swift in Sources */,
 				AC1000000000000000000005 /* FirebaseAnalyticsAdapter.swift in Sources */,
+				AC1000000000000000000200 /* DebugSinkAdapter.swift in Sources */,
 				AC1000000000000000000006 /* MockAnalyticsAdapter.swift in Sources */,
 				AC1000000000000000000007 /* AccountDeletionService.swift in Sources */,
 				AC1000000000000000000008 /* DataExportService.swift in Sources */,
@@ -1497,6 +1504,7 @@
 			files = (
 				B10000010000000000000001 /* FitTrackerCoreTests.swift in Sources */,
 				HA100000000000000000001 /* AnalyticsTests.swift in Sources */,
+				DA100000000000000000AT01 /* DebugSinkAdapterTests.swift in Sources */,
 				HA100000000000000000002 /* HomeAnalyticsTests.swift in Sources */,
 				TA100000000000000000001 /* TrainingAnalyticsTests.swift in Sources */,
 				NA100000000000000000001 /* NutritionAnalyticsTests.swift in Sources */,

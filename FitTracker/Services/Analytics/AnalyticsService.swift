@@ -48,9 +48,13 @@ final class AnalyticsService: ObservableObject {
 
     static func makeDefault() -> AnalyticsService {
         let consent = ConsentManager()
-        let provider: AnalyticsProvider = AnalyticsRuntimeConfiguration.canUseFirebase
+        let baseProvider: AnalyticsProvider = AnalyticsRuntimeConfiguration.canUseFirebase
             ? FirebaseAnalyticsAdapter()
             : MockAnalyticsAdapter()
+        // Wrap with DebugSinkAdapter — transparent passthrough unless the
+        // DEBUG_ANALYTICS=1 env var is set. Phase 2.A.3 of analytics-observability
+        // per docs/master-plan/analytics-master-plan-2026-05-13.md §6.1.
+        let provider = DebugSinkAdapter(wrapping: baseProvider)
         return AnalyticsService(provider: provider, consent: consent)
     }
 
