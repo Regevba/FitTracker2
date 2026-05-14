@@ -179,3 +179,14 @@ On skill start, before cache check:
 5. Security checklist (OWASP Mobile Top 10)
 
 **Source priority:** L2 cache > L1 cache > shared layer (test-coverage.json) > axe adapter > security-audit adapter
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/qa` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not declare a feature 'tested' if the analytics test ratio (event/test) is below 1.3× — the density floor exists because uninstrumented events are post-launch-only bugs
+- Do not skip `/qa security` on changes to high-risk areas (`DomainModels.swift`, `EncryptionService.swift`, `SupabaseSyncService.swift`, `CloudKitSyncService.swift`, `SignInService.swift`, `AuthManager.swift`, `AIOrchestrator.swift`)
+- Do not approve a feature for Phase 7 (Review) without running `make verify-local` end-to-end — partial verification is invisible at PR time
+- Do not promote an `XCTSkipIf` quarantine from 'temporary workaround' to 'permanent' without an explicit decision recorded in state.json — quarantine debt accumulates silently
+- Do not trust a pre-commit gate as the sole signal — gates can have zero coverage (pattern #20 `GATE_COVERAGE_ZERO`); always cross-check with `make integrity-check` + the audit script

@@ -242,3 +242,14 @@ The operations control room is deployed as a static Astro dashboard on Vercel. D
 4. Dashboard reflects updated data at `fit-tracker2.vercel.app`
 
 This means `/ops health` results are not live-streamed — they are snapshotted at deploy time. For real-time monitoring, external adapters (Sentry MCP, etc.) would need to be connected.
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/ops` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not declare an incident open without an `/ops incident {description}` invocation that writes to `health-status.json` — verbal acknowledgement does not start the on-call timer
+- Do not respond to a PR-cite failure cascade without first running `scripts/ensure-pr-cache-fresh.py` — most cascades are pattern #12 `PR_CACHE_STALE` false positives, not real broken citations
+- Do not run destructive infrastructure operations (drop tables, kill prod processes, revoke tokens, force-restart services) without explicit user approval (pattern W5)
+- Do not report 'all sources green' if any of the six monitored sources (Railway, Supabase, CloudKit, Firebase, Vercel, GitHub Actions) is missing in the latest `health-status.json` — missing ≠ healthy
+- Do not silence an alert without recording the silence reason — silenced-without-record alerts become unknowable technical debt within weeks

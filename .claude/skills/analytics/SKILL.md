@@ -290,3 +290,14 @@ The operations control room tracks analytics instrumentation as one of its 8 sou
 
 - `.claude/shared/framework-manifest.json` — canonical framework version and capability list. `/analytics` should verify its own instrumentation coverage is consistent with the manifest's declared capability count.
 - `.claude/shared/case-study-monitoring.json` — when a tracked case study is in execution, `/analytics` should ensure instrumentation metrics are captured in the snapshot.
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/analytics` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not declare new GA4 events without first adding a row to `docs/product/analytics-taxonomy.csv` — the CSV is the single source of truth and `/analytics validate` rejects code-only declarations
+- Do not log PII into event parameters (user names, email addresses, raw recovery scores, free-text body weight) — strip or hash at the AnalyticsProvider boundary
+- Do not skip the screen-prefix naming convention for screen-scoped events (use `home_action_tap`, never bare `action_tap` — see CLAUDE.md § Analytics Naming Convention)
+- Do not infer adoption from a single day's event count — events instrument before the UI ships and post-launch funnels take 3–7 days to stabilize
+- Do not publish a metric report before the GA4 MCP returns its declared schema — empty MCP responses are a silent-pass class (pattern #7 `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`)

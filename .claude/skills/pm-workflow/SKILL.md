@@ -1689,3 +1689,14 @@ On skill start, before cache check:
 5. Change broadcast and notification rules
 
 **Source priority:** L2 cache > L1 cache > shared layer (all files) > all adapters
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/pm-workflow` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not skip a phase without recording the skip reason in `state.json::phases.<name>.skip_reason` — the audit trail is part of the framework contract
+- Do not advance `current_phase` without a corresponding event in `.claude/logs/<feature>.log.json` within 15 minutes — pre-commit gate `PHASE_TRANSITION_NO_LOG` blocks this since v7.6
+- Do not advance to `current_phase=complete` without resolving `kill_criteria_resolution` when `kill_criteria` is set in state.json (pattern #6 `FEATURE_CLOSURE_COMPLETENESS`)
+- Do not dispatch parallel subagents while upstream tickets F6–F9 are still active — default to serial dispatch per `docs/framework-bugs/concurrent-dispatch-blockers.md`
+- Do not mark a UI feature `complete` without confirming BOTH `/ux pre-merge-review` AND `/design pre-merge-review` pass — the gates are not redundant

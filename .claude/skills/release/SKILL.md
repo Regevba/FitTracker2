@@ -197,3 +197,14 @@ On skill start, before cache check:
 5. Store metadata and screenshot status
 
 **Source priority:** L2 cache > L1 cache > shared layer (feature-registry.json) > app-store-connect adapter
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/release` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not promote a build to TestFlight without `make verify-local` passing end-to-end (tokens-check + schema-check + ui-audit + build + test) — every leg gates
+- Do not include `partial_ship` features in release notes without resolving the decision fork first (pattern #15 `PARTIAL_SHIP_TERMINAL`)
+- Do not skip the release checklist — every TestFlight push and every App Store submit is multi-part approval (pattern W7)
+- Do not edit a release note after submission without recording the change in `CHANGELOG.md` and noting the version it correlates to
+- Do not bump a major version without parallel notification to `/marketing` — launch comms prep needs a 1-week lead time minimum

@@ -238,3 +238,14 @@ On skill start, before cache check:
 5. Technology trends affecting the domain
 
 **Source priority:** L2 cache > L1 cache > shared layer (context.json) > firecrawl adapter
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/research` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not publish a research finding citing a competitor metric without dating the data source — competitive landscapes shift fast and undated claims rot
+- Do not extrapolate from a single competitor's pattern without checking ≥2 same-category alternatives (research funnel: cross-industry → same-category → feature-specific)
+- Do not synthesize a 'common pattern' claim from fewer than 3 independent sources
+- Do not include outdated screenshots in a research output without dating them — every screenshot needs a `captured: YYYY-MM-DD` annotation
+- Do not file a competitive analysis without flagging which observations are first-hand (you observed in-app) vs. third-party (cited from another source)

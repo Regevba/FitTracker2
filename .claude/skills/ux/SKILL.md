@@ -534,3 +534,14 @@ On skill start, before cache check:
 5. State coverage (empty/loading/error/success)
 
 **Source priority:** L2 cache > L1 cache > shared layer (cx-signals.json, design-system.json) > axe adapter > manual derivation
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/ux` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not advance Phase 3 without `/ux preflight` passing — it verifies every token/component/pattern named in `ux-spec.md` exists in the codebase (saves 2-4h of 'no such symbol' Phase 4 rework per feature on average)
+- Do not approve a UX spec that doesn't reference real codebase symbols — fictional symbols are the #1 source of Phase 4 rework
+- Do not skip the 13 UX principle validation (8 core + 5 FitMe-specific) on a UX spec — they are the foundation for every Phase 4 decision
+- Do not advance Phase 6 without `/ux pre-merge-review` recording `kill_criteria_resolution` when `kill_criteria` is set in state.json (pattern #6 `FEATURE_CLOSURE_COMPLETENESS`)
+- Do not treat `/ux preflight` as final approval — it is one of several Phase 3 gates (multi-part approval — pattern W7)

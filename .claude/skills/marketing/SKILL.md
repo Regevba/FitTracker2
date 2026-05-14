@@ -240,3 +240,14 @@ On skill start, before cache check:
 5. Campaign attribution and ROAS
 
 **Source priority:** L2 cache > L1 cache > shared layer (campaign-tracker.json) > firecrawl adapter
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/marketing` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not publish a marketing claim citing a product metric unless the underlying case study T1/T2/T3-tags the source number (pattern #14 `CASE_STUDY_MISSING_TIER_TAGS`)
+- Do not silently edit a live campaign asset — publish a correction notice with the original preserved (pattern W2: publish verbatim, then remediate)
+- Do not pre-claim 'externally audited' status before the audit UI marker in the UCC shows verified (pattern W8)
+- Do not run an ASO experiment without baseline data captured first — every change needs a before/after to be actionable
+- Do not launch a campaign that names a feature still in `partial_ship` or `paused` phase — wait for `current_phase=complete` (pattern #15 `PARTIAL_SHIP_TERMINAL`)

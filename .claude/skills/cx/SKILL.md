@@ -254,3 +254,14 @@ On skill start, before cache check:
 5. NPS and rating trends
 
 **Source priority:** L2 cache > L1 cache > shared layer (cx-signals.json) > app-store-connect adapter > sentry adapter
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/cx` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not infer sentiment from fewer than 50 reviews — statistical noise dominates below that threshold
+- Do not dispatch a feedback signal to a downstream skill without recording the root-cause classification in `cx-signals.json` (the dispatch target must be traceable)
+- Do not modify or remove a public testimonial after publication — post a correction notice instead (pattern W2: publish verbatim, then remediate)
+- Do not run `/cx digest` on a feature that has been live for fewer than 7 days — early signals over-weight novelty and bug reports
+- Do not score sentiment on translated reviews without flagging the translation source — automatic translation introduces tonal drift

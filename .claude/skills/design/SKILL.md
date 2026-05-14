@@ -355,3 +355,14 @@ On skill start, before cache check:
 5. Motion specs from ux-foundations.md Part 8
 
 **Source priority:** L2 cache > L1 cache > shared layer (design-system.json) > Figma MCP > AppTheme.swift direct read
+
+
+## Anti-patterns
+
+Hard-won mistakes for `/design` work. Every bullet encodes a real or near-miss failure mode.
+
+- Do not introduce a raw `Color(...)` literal, `#hex` string, or `.font(.system(...))` call outside `DesignTokens.swift` — always go through `AppTheme` tokens (`make ui-audit` rule `DS-RAW-COLOR-*` enforces; P0 baseline is 0)
+- Do not advance Phase 3 without `/design preflight` recording Code Connect write-access status — auth-failure is a silent-pass class for the publish pipeline
+- Do not advance Phase 6 while `make ui-audit` reports any P0 finding (DS-RAW-* / DS-MISSING-ASSET / DS-A11Y-BUTTON)
+- Do not introduce a new `Color("name")` token without adding the matching `.colorset` directory + `design-tokens/tokens.json` entry + `DesignTokens.swift` generated line in the same commit (DS-MISSING-ASSET rule enforces)
+- Do not skip the spec ↔ build parity check at `/design pre-merge-review` — every spec surface must resolve to `complete`, never `mapping_only` or `missing` (pattern #6 `FEATURE_CLOSURE_COMPLETENESS`)
