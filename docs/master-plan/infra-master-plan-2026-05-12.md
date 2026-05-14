@@ -592,6 +592,7 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 
 - [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) — analytics-observability sub-doc (F19/F20 source)
 - [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md) — cross-layer test coverage sub-doc (T1–T16 source; Theme H)
+- [`data-integrity-and-rollback-2026-05-14.md`](data-integrity-and-rollback-2026-05-14.md) — continuous-integrity observability layer + platform-baseline rollback protocol (anchored to the 2026-05-14 baseline snapshot)
 
 ### Source documents folded into this plan
 

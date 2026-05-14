@@ -187,6 +187,11 @@
           {
             "type": "command",
             "command": "echo '## Active Features' && for f in .claude/features/*/state.json; do [ -f \"$f\" ] && echo \"- $(basename $(dirname $f)): phase=$(python3 -c \"import json,sys; print(json.load(open('$f'))['current_phase'])\" 2>/dev/null || echo 'unknown')\" ; done 2>/dev/null || echo '(none)'; if [ -f .claude/active-feature ]; then echo ''; echo \"## Active Feature (Mechanism C attribution): $(cat .claude/active-feature)\"; fi"
+          },
+          {
+            "type": "command",
+            "_comment": "Daily integrity checkpoint (added 2026-05-14). Kicks off scripts/daily-integrity-checkpoint.py in the background if today's snapshot hasn't run yet (idempotent --idempotent flag) and prints latest ledger row. Surfaces any active regression flag. Cross-repo guard: script self-skips when invoked outside FT2. Disable with CLAUDE_DISABLE_DAILY_CHECKPOINT=1. See docs/master-plan/data-integrity-and-rollback-2026-05-14.md §3 + scripts/session-start-checkpoint.sh.",
+            "command": "[ -f scripts/session-start-checkpoint.sh ] && bash scripts/session-start-checkpoint.sh || true"
           }
         ]
       }

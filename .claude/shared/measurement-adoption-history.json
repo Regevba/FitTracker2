@@ -370,7 +370,48 @@
           "post_v6_percent": 20.6
         }
       }
+    },
+    {
+      "date": "2026-05-14",
+      "generated_at": "2026-05-14T04:36:38Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 70,
+        "features_post_v6": 36,
+        "features_pre_v6": 34,
+        "fully_adopted": 3,
+        "partial_adopted": 29,
+        "zero_adopted": 38,
+        "fully_adopted_post_v6": 3,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 17,
+          "overall_percent": 24.3,
+          "post_v6_present": 17,
+          "post_v6_percent": 47.2
+        },
+        "per_phase_timing": {
+          "overall_present": 32,
+          "overall_percent": 45.7,
+          "post_v6_present": 29,
+          "post_v6_percent": 80.6
+        },
+        "cache_hits": {
+          "overall_present": 20,
+          "overall_percent": 28.6,
+          "post_v6_present": 19,
+          "post_v6_percent": 52.8
+        },
+        "cu_v2": {
+          "overall_present": 7,
+          "overall_percent": 10.0,
+          "post_v6_present": 7,
+          "post_v6_percent": 19.4
+        }
+      }
     }
   ],
-  "updated": "2026-05-12T07:24:45Z"
+  "updated": "2026-05-14T04:36:38Z"
 }

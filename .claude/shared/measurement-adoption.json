@@ -1,42 +1,42 @@
 {
   "version": "1.0",
-  "updated": "2026-05-12T07:24:45Z",
+  "updated": "2026-05-14T21:19:19Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 68,
-    "features_post_v6": 34,
+    "features_total": 70,
+    "features_post_v6": 36,
     "features_pre_v6": 34,
     "fully_adopted": 3,
-    "partial_adopted": 26,
-    "zero_adopted": 39,
+    "partial_adopted": 29,
+    "zero_adopted": 38,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 17,
-      "overall_percent": 25.0,
+      "overall_percent": 24.3,
       "post_v6_present": 17,
-      "post_v6_percent": 50.0
+      "post_v6_percent": 47.2
     },
     "per_phase_timing": {
-      "overall_present": 29,
-      "overall_percent": 42.6,
-      "post_v6_present": 26,
-      "post_v6_percent": 76.5
+      "overall_present": 32,
+      "overall_percent": 45.7,
+      "post_v6_present": 29,
+      "post_v6_percent": 80.6
     },
     "cache_hits": {
-      "overall_present": 18,
-      "overall_percent": 26.5,
-      "post_v6_present": 18,
-      "post_v6_percent": 52.9
+      "overall_present": 20,
+      "overall_percent": 28.6,
+      "post_v6_present": 19,
+      "post_v6_percent": 52.8
     },
     "cu_v2": {
       "overall_present": 7,
-      "overall_percent": 10.3,
+      "overall_percent": 10.0,
       "post_v6_present": 7,
-      "post_v6_percent": 20.6
+      "post_v6_percent": 19.4
     }
   },
   "fully_adopted_features": [
@@ -45,6 +45,24 @@
     "meta-analysis-audit"
   ],
   "partial_adopted_features": [
+    {
+      "feature": "3d-interactive-framework-flow-diagram",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "analytics-observability",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
     {
       "feature": "auth-polish-v2",
       "adoption": {
@@ -158,7 +176,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": false
       }
     },
@@ -172,11 +190,20 @@
       }
     },
     {
-      "feature": "import-training-plan",
+      "feature": "hadf-phase2bis-replication",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "import-training-plan",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
         "cu_v2": false
       }
     },
@@ -281,11 +308,6 @@
     }
   ],
   "zero_adopted_features": [
-    {
-      "feature": "3d-interactive-framework-flow-diagram",
-      "created": "2026-05-11",
-      "post_v6": true
-    },
     {
       "feature": "adaptive-intelligence",
       "created": "2026-04-10",
@@ -482,15 +504,15 @@
       "feature": "3d-interactive-framework-flow-diagram",
       "created": "2026-05-11",
       "post_v6": true,
-      "current_phase": "research",
+      "current_phase": "prd",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "adaptive-intelligence",
@@ -561,6 +583,20 @@
       },
       "fully_adopted": false,
       "any_adopted": false
+    },
+    {
+      "feature": "analytics-observability",
+      "created": "2026-05-13",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
     },
     {
       "feature": "android-design-system",
@@ -920,7 +956,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": false
       },
       "fully_adopted": false,
@@ -983,6 +1019,20 @@
       "any_adopted": true
     },
     {
+      "feature": "hadf-phase2bis-replication",
+      "created": "2026-05-12",
+      "post_v6": true,
+      "current_phase": "tasks_phase",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
       "feature": "home-status-goal-card",
       "created": "2026-04-09",
       "post_v6": false,
@@ -1018,7 +1068,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": false
       },
       "fully_adopted": false,
