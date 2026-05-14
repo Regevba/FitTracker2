@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  TEMPLATE — DO NOT load directly. Install via `make install-daily-cron`.
+
+  Daily integrity checkpoint launchd cron. Fires once per day at 06:00 local
+  time and runs scripts/daily-integrity-checkpoint.py. The script is idempotent —
+  if today's snapshot already exists (e.g. ran via SessionStart hook earlier),
+  this fire is a no-op.
+
+  KnownIssue: BRANCH_ISOLATION_LAUNCHD_DRIFT is a v7.8.1 advisory that fires
+  when launchd plists reference repo paths that diverge from the actual
+  working directory. This template anchors to /Volumes/DevSSD/FitTracker2;
+  if the SSD ever unmounts at fire time, the script's SSD-write step skips
+  gracefully (logs warning, continues with local-only write).
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fittracker.daily-integrity-checkpoint</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/python3</string>
+        <string>/Volumes/DevSSD/FitTracker2/scripts/daily-integrity-checkpoint.py</string>
+        <string>--idempotent</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Volumes/DevSSD/FitTracker2</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>6</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <key>StandardOutPath</key>
+    <string>/Users/regevbarak/Library/Logs/fittracker-daily-checkpoint.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/regevbarak/Library/Logs/fittracker-daily-checkpoint.err</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/bin:/bin:/usr/local/bin:/opt/homebrew/bin</string>
+    </dict>
+</dict>
+</plist>

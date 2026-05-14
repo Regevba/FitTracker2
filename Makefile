@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -407,6 +407,55 @@ figma-drift:
 snapshot-phase:
 	@if [ -z "$(PHASE)" ]; then echo "Usage: make snapshot-phase PHASE=<id> [FEATURE=<name>]"; exit 1; fi
 	./scripts/snapshot-phase-completion.sh $(PHASE) $${FEATURE:-cross-repo-state-sync-impl}
+
+# Daily full-platform integrity checkpoint. Captures the same telemetry surface
+# as the 2026-05-14 platform baseline (6 make outputs + all shared ledgers + all
+# 70 state.json files + Mechanism A summary + git context for both repos).
+# Writes to BOTH local-internal (~/Documents/FitTracker2-backups/daily/) AND
+# SSD-sibling (/Volumes/DevSSD/FitTracker2-snapshots/) and appends one row to
+# .claude/shared/integrity-checkpoint-ledger.jsonl with regression detection
+# vs the previous row. Idempotent — re-fires same day are no-ops.
+daily-checkpoint:
+	python3 scripts/daily-integrity-checkpoint.py
+
+# Force-overwrite today's checkpoint (use to re-snapshot after fixing a
+# regression flagged in the ledger, or after a state-mutating operation).
+daily-checkpoint-force:
+	python3 scripts/daily-integrity-checkpoint.py --force
+
+# Display the human-readable ledger.
+ledger:
+	@if [ -f .claude/shared/integrity-checkpoint-ledger.md ]; then \
+		less -R .claude/shared/integrity-checkpoint-ledger.md; \
+	else \
+		echo "No ledger yet. Run: make daily-checkpoint"; \
+	fi
+
+# Install daily-checkpoint launchd cron (fires at 06:00 local time daily).
+# Operator-driven install: requires user authorization before modifying ~/Library/LaunchAgents/.
+install-daily-cron:
+	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.daily-integrity-checkpoint.plist; \
+	if [ -f "$$PLIST_DEST" ]; then \
+		echo "Already installed: $$PLIST_DEST"; \
+		echo "To reinstall: make uninstall-daily-cron && make install-daily-cron"; \
+		exit 0; \
+	fi; \
+	cp infrastructure/launchd/com.fittracker.daily-integrity-checkpoint.plist.template "$$PLIST_DEST"; \
+	launchctl load "$$PLIST_DEST"; \
+	echo "Installed launchd cron: $$PLIST_DEST"; \
+	echo "Will fire daily at 06:00 local time."; \
+	echo "Verify with: launchctl list | grep fittracker"; \
+	echo "Logs at:    ~/Library/Logs/fittracker-daily-checkpoint.{log,err}"
+
+uninstall-daily-cron:
+	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.daily-integrity-checkpoint.plist; \
+	if [ ! -f "$$PLIST_DEST" ]; then \
+		echo "Not installed: $$PLIST_DEST"; \
+		exit 0; \
+	fi; \
+	launchctl unload "$$PLIST_DEST" 2>/dev/null || true; \
+	rm "$$PLIST_DEST"; \
+	echo "Uninstalled: $$PLIST_DEST"
 
 # Auto-install on first run
 node_modules:
