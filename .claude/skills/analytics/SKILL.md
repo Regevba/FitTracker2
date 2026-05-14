@@ -168,12 +168,55 @@ python3 scripts/analytics-watch.py --no-color
 
 **Companion:** [`scripts/analytics-watch-server.py`](../../../scripts/analytics-watch-server.py) (Phase 2.A.1).
 
-### `/analytics poll` (planned — Phase 2.B.1 of analytics-observability)
+### `/analytics poll` (added 2026-05-13 — Phase 2.B.1 of analytics-observability)
 
 Query the GA4 Realtime API via `mcp-server-ga4` to observe events firing
-against the production GA4 property (vs. the local mirror, which only
-sees events from the local dev environment). Requires GA4 MCP setup —
-see `docs/setup/ga4-mcp-setup-guide.md` (planned).
+against the **production** GA4 property. Complementary to `/analytics watch`,
+which only sees events from the local dev environment.
+
+**Prerequisite (one-time operator setup):** [`docs/setup/ga4-mcp-setup-guide.md`](../../../docs/setup/ga4-mcp-setup-guide.md) — installs `mcp-server-ga4` + configures Google Cloud service account credentials. Without that setup, this sub-command is unavailable (no MCP tool to call).
+
+**Procedure when invoked:**
+
+1. **Verify MCP connectivity.** Use the GA4 MCP server's health/list tool. If the server is not registered or not connected, output:
+   > GA4 MCP not connected. Run setup per `docs/setup/ga4-mcp-setup-guide.md`.
+
+   AND output the current `external-sync-status.json::sources.analytics.runtime_health.firebase` value so the operator sees the gap.
+
+2. **Fetch realtime data.** Call `mcp__ga4__run_realtime_report` (or the equivalent tool the registered server exposes) with parameters:
+   ```json
+   {
+     "propertyId": "{from env}",
+     "dimensions": ["eventName"],
+     "metrics": ["activeUsers", "eventCount"]
+   }
+   ```
+
+3. **Format output.** Group by event name, sort by event count descending. Show top 20 events with counts:
+   ```
+   GA4 Realtime — last 30 minutes (property 123456789)
+     active users: 7
+     events:
+       home_action_tap          12
+       nutrition_meal_logged     5
+       training_session_started  3
+       ...
+   ```
+
+4. **Optional — continuous mode.** If invoked with `/analytics poll --watch`, repeat steps 2-3 every 30 seconds until the user interrupts. Show only the diff between polls (events that changed count or appeared/disappeared).
+
+5. **Cross-validate against the local mirror.** If `/analytics watch` is also running, the operator can compare local-mirror events (Phase 2.A) to production GA4 firing (Phase 2.B) to spot prod-vs-dev drift. Document any drift in the analytics-observability case study.
+
+**Failure modes:**
+- MCP not registered → output setup hint (above)
+- Auth error (401/403) → likely service account access revoked or JSON expired; point at runbook §"Troubleshooting"
+- Empty response → either no recent traffic OR wrong property ID; verify against analytics.google.com Realtime view
+- Rate-limit (429) → back off + retry; GA4 Realtime quotas are generous but not infinite
+
+**Companion:**
+- Setup runbook: [`docs/setup/ga4-mcp-setup-guide.md`](../../../docs/setup/ga4-mcp-setup-guide.md)
+- Adapter spec: [`.claude/integrations/ga4/adapter.md`](../../../.claude/integrations/ga4/adapter.md)
+- Local mirror counterpart: [`/analytics watch`](#-analytics-watch-added-2026-05-13--phase-2a2-of-analytics-observability) above
 
 ## Key References
 
