@@ -4,6 +4,7 @@ description: "Use when planning the test surface for a new feature, running the 
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: [axe, security-audit, sentry]
 ---
 
 # Quality Assurance Skill: $ARGUMENTS

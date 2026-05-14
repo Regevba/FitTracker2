@@ -1,3 +1,10 @@
+---
+name: ga4
+type: MCP
+consumed_by: [analytics, pm-workflow, cx]
+last_updated: 2026-05-14
+---
+
 # GA4 Analytics — Integration Adapter
 
 ## Service Info

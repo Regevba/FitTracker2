@@ -1,3 +1,10 @@
+---
+name: firecrawl
+type: MCP
+consumed_by: [research, marketing]
+last_updated: 2026-05-14
+---
+
 # Firecrawl Web Scraping — Integration Adapter
 
 ## Service Info

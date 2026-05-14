@@ -4,6 +4,7 @@ description: "Use when preparing a TestFlight or App Store release, drafting a p
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: stable
+adapters_used: [app-store-connect]
 ---
 
 # Release Management Skill: $ARGUMENTS

@@ -1,3 +1,10 @@
+---
+name: axe
+type: MCP
+consumed_by: [ux, qa, design]
+last_updated: 2026-05-14
+---
+
 # Axe Accessibility Audit — Integration Adapter
 
 ## Service Info

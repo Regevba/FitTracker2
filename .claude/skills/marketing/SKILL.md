@@ -4,6 +4,7 @@ description: "Use when refreshing App Store Optimization, launching a marketing 
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: stable
+adapters_used: [app-store-connect, firecrawl]
 ---
 
 # Marketing & Growth Skill: $ARGUMENTS

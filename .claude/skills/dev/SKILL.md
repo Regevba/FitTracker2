@@ -4,6 +4,7 @@ description: "Use when starting a feature branch, requesting code review, checki
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: [security-audit]
 ---
 
 # Development Skill: $ARGUMENTS

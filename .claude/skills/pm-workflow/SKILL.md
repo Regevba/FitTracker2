@@ -4,6 +4,7 @@ description: "Use when starting a new feature, resuming a paused feature, advanc
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: [ga4]
 ---
 
 # Product Management Lifecycle: $ARGUMENTS
