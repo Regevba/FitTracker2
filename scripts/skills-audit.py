@@ -13,6 +13,8 @@ Per-skill checks:
   W2  Sub-commands declared in description match sub-commands documented in body
   W3  Project cross-skill refs (/skill verb) resolve, with vendor-prefix allowlist
   W4  Freshness — last_updated older than --max-age-days (default 90)
+  W5  Bidirectional adapter ↔ skill integrity — every SKILL.md `adapters_used`
+      entry must appear in that adapter.md's `consumed_by` list, and vice versa
 
 Exit codes:
   0 — no E findings (W findings allowed)
@@ -144,6 +146,47 @@ def existing_adapters() -> set[str]:
         p.name for p in INTEGRATIONS_ROOT.iterdir()
         if p.is_dir() and not p.name.startswith("_")
     }
+
+
+def load_adapter_consumers() -> dict[str, list[str]]:
+    """Parse each adapter.md frontmatter; return {adapter_name: [skill, ...]}.
+
+    Adapters without YAML frontmatter return empty list. Used by W5.
+    """
+    result: dict[str, list[str]] = {}
+    if not INTEGRATIONS_ROOT.is_dir():
+        return result
+    for adapter_dir in INTEGRATIONS_ROOT.iterdir():
+        if not adapter_dir.is_dir() or adapter_dir.name.startswith("_"):
+            continue
+        adapter_md = adapter_dir / "adapter.md"
+        if not adapter_md.is_file():
+            result[adapter_dir.name] = []
+            continue
+        raw = adapter_md.read_text(encoding="utf-8")
+        consumers: list[str] = []
+        lines = raw.split("\n")
+        if lines and lines[0].strip() == "---":
+            for line in lines[1:]:
+                if line.strip() == "---":
+                    break
+                if line.startswith("consumed_by:"):
+                    val = line.partition(":")[2].strip()
+                    if val.startswith("[") and val.endswith("]"):
+                        consumers = [s.strip() for s in val[1:-1].split(",") if s.strip()]
+                    break
+        result[adapter_dir.name] = consumers
+    return result
+
+
+def parse_adapters_used(sf: SkillFile) -> list[str]:
+    """Extract `adapters_used:` list from a SKILL.md frontmatter."""
+    raw = sf.frontmatter.get("adapters_used", "").strip()
+    if not raw:
+        return []
+    if raw.startswith("[") and raw.endswith("]"):
+        return [s.strip() for s in raw[1:-1].split(",") if s.strip()]
+    return []
 
 
 PLACEHOLDER_WORDS = {
@@ -287,6 +330,49 @@ def check_w2_sub_commands(sf: SkillFile) -> list[Finding]:
     return []
 
 
+def check_w5_bidirectional(sf: SkillFile,
+                            adapter_consumers: dict[str, list[str]]) -> list[Finding]:
+    """Forward direction of W5: every adapter in SKILL.md::adapters_used must
+    list this skill in its adapter.md::consumed_by. Reverse direction is
+    handled by report_adapter_orphans() at adapter scope.
+    """
+    findings: list[Finding] = []
+    for adapter in parse_adapters_used(sf):
+        if adapter not in adapter_consumers:
+            findings.append(Finding(sf.name, "W5", "W",
+                                    f"adapters_used cites '{adapter}' "
+                                    f"but no .claude/integrations/{adapter}/ exists"))
+            continue
+        if sf.name not in adapter_consumers[adapter]:
+            findings.append(Finding(sf.name, "W5", "W",
+                                    f"adapters_used cites '{adapter}' but that "
+                                    f"adapter.md::consumed_by does not list '{sf.name}'"))
+    return findings
+
+
+def report_adapter_orphans(known_skills: set[str],
+                            adapter_consumers: dict[str, list[str]],
+                            skill_adapters: dict[str, list[str]]) -> list[Finding]:
+    """Reverse direction of W5: every adapter.md::consumed_by entry must appear
+    in that skill's adapters_used. Attributed to the adapter (skill field
+    holds the adapter name in the Finding).
+    """
+    findings: list[Finding] = []
+    for adapter, consumers in sorted(adapter_consumers.items()):
+        for consumer in consumers:
+            if consumer not in known_skills:
+                findings.append(Finding(adapter, "W5", "W",
+                                        f"consumed_by lists '{consumer}' "
+                                        f"but no .claude/skills/{consumer}/ exists"))
+                continue
+            if adapter not in skill_adapters.get(consumer, []):
+                findings.append(Finding(adapter, "W5", "W",
+                                        f"consumed_by lists '{consumer}' "
+                                        f"but that skill's adapters_used does not "
+                                        f"include '{adapter}'"))
+    return findings
+
+
 def check_w4_freshness(sf: SkillFile, max_age_days: int, today: date) -> list[Finding]:
     """Warn when last_updated is older than max_age_days."""
     raw = sf.frontmatter.get("last_updated", "").strip()
@@ -306,7 +392,8 @@ def check_w4_freshness(sf: SkillFile, max_age_days: int, today: date) -> list[Fi
 
 
 def audit_one(path: Path, real_adapters: set[str], known_skills: set[str],
-              max_age_days: int, today: date) -> list[Finding]:
+              adapter_consumers: dict[str, list[str]],
+              max_age_days: int, today: date) -> tuple[list[Finding], SkillFile]:
     sf = parse_skill_file(path)
     findings: list[Finding] = []
     findings.extend(check_e1_required_frontmatter(sf))
@@ -317,7 +404,8 @@ def audit_one(path: Path, real_adapters: set[str], known_skills: set[str],
     findings.extend(check_w1_observed_patterns(sf))
     findings.extend(check_w2_sub_commands(sf))
     findings.extend(check_w4_freshness(sf, max_age_days, today))
-    return findings
+    findings.extend(check_w5_bidirectional(sf, adapter_consumers))
+    return findings, sf
 
 
 def main() -> int:
@@ -345,19 +433,30 @@ def main() -> int:
             return 1
 
     real_adapters = existing_adapters()
+    adapter_consumers = load_adapter_consumers()
     known_skills = {p.name for p in SKILLS_ROOT.iterdir()
                     if p.is_dir() and (p / "SKILL.md").is_file()}
 
     today = date.today()
     all_findings: list[Finding] = []
+    skill_adapters: dict[str, list[str]] = {}
     for skill_dir in skill_dirs:
-        skill_findings = audit_one(skill_dir / "SKILL.md", real_adapters,
-                                    known_skills, args.max_age_days, today)
+        skill_findings, sf = audit_one(skill_dir / "SKILL.md", real_adapters,
+                                        known_skills, adapter_consumers,
+                                        args.max_age_days, today)
+        skill_adapters[skill_dir.name] = parse_adapters_used(sf)
         all_findings.extend(skill_findings)
         if not args.quiet and not skill_findings:
             print(f"PASS  {skill_dir.name}")
         for f in skill_findings:
             print(f"{f.severity}  [{f.code}] {f.skill}: {f.message}")
+
+    # Reverse-direction W5 (adapter scope). Only runs when auditing all skills.
+    if args.skill is None:
+        orphans = report_adapter_orphans(known_skills, adapter_consumers, skill_adapters)
+        for f in orphans:
+            print(f"{f.severity}  [{f.code}] adapter:{f.skill}: {f.message}")
+        all_findings.extend(orphans)
 
     errors = [f for f in all_findings if f.severity == "E"]
     warnings = [f for f in all_findings if f.severity == "W"]
