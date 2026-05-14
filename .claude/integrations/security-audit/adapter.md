@@ -1,3 +1,10 @@
+---
+name: security-audit
+type: MCP
+consumed_by: [dev, ops, qa]
+last_updated: 2026-05-14
+---
+
 # Dependency Security Audit — Integration Adapter
 
 ## Service Info

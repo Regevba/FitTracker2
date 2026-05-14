@@ -4,6 +4,7 @@ description: "Use when running a design-system audit, validating semantic tokens
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: [axe]
 ---
 
 # Design & UX Skill: $ARGUMENTS

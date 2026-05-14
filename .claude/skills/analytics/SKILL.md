@@ -4,6 +4,7 @@ description: "Use when planning event taxonomy for a new feature, auditing instr
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: [ga4]
 ---
 
 # Analytics & Data Skill: $ARGUMENTS

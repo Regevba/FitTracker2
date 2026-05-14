@@ -4,6 +4,7 @@ description: "Use when starting a new feature without a clear PRD shape, decidin
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: []
 ---
 
 # Product brainstorming for FitMe: $ARGUMENTS

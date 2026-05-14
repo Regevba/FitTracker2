@@ -4,6 +4,7 @@ description: "Use when researching a new feature, scanning competitive products 
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: active
+adapters_used: [firecrawl]
 ---
 
 # Research Skill: $ARGUMENTS

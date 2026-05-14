@@ -1,3 +1,10 @@
+---
+name: app-store-connect
+type: MCP
+consumed_by: [cx, release, marketing]
+last_updated: 2026-05-14
+---
+
 # App Store Connect — Integration Adapter
 
 ## Service Info

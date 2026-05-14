@@ -4,6 +4,7 @@ description: "Use when running an infrastructure health check, responding to a p
 last_updated: 2026-05-14
 framework_version: v7.8.5
 status: stable
+adapters_used: [security-audit, sentry]
 ---
 
 # Operations Skill: $ARGUMENTS

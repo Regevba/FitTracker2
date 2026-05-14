@@ -1,3 +1,10 @@
+---
+name: sentry
+type: MCP
+consumed_by: [ops, cx, qa]
+last_updated: 2026-05-14
+---
+
 # Sentry Error Tracking — Integration Adapter
 
 ## Service Info
