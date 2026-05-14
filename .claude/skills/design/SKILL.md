@@ -146,6 +146,8 @@ Run WCAG AA accessibility audit.
 
 **Output:** `.claude/features/{feature}/design-preflight-{date}.md` + `.claude/shared/figma-bridge-status.json`.
 
+**Self-test fixtures (P1.3, shipped 2026-05-14):** [`.claude/skills/design/fixtures/`](fixtures/) holds canonical regression test cases for the **spec-side symbol-existence check** (the part `/design preflight` inherits from `/ux preflight`). Driver: [`scripts/preflight-fixture-test.py`](../../../scripts/preflight-fixture-test.py); invocation: `make preflight-fixture-test`. The Figma MCP liveness + Code Connect write-access checks (Steps 2, 3, 3.5 above) cannot be fixture-tested mechanically — they require live MCP authentication + token presence. Those have other safeguards: MCP failure surfaces as P1 advisory in `figma-bridge-status.json`; absent tokens surface as P2.
+
 ### `/design pre-merge-review {feature}`
 
 **Purpose:** Phase 6 (Review) UI-specific layer — pairs with `/ux pre-merge-review`. Validates that:

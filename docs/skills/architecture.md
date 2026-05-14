@@ -111,7 +111,7 @@ v1.2 was a pipeline that ended at Phase 8 (Docs). v2.0 adds Phase 9 (Learn), whi
 
 ```
 .claude/
-├── skills/                         # Skill definitions (11 skills: 1 hub + 10 spokes)
+├── skills/                         # Skill definitions (12 skills since 2026-05-14: 1 hub + 11 spokes; was 11 in v2.0–v7.8.4)
 │   ├── pm-workflow/SKILL.md        # Hub — orchestrates all phases
 │   ├── ux/SKILL.md                 # UX planning & validation — the What & Why layer
 │   ├── design/SKILL.md             # Design system, Figma, tokens, accessibility (visual)

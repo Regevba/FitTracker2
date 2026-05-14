@@ -79,6 +79,7 @@ integrity-check:
 	@python3 scripts/ensure-pr-cache-fresh.py --quiet || true
 	python3 scripts/integrity-check.py --findings-only
 	@python3 scripts/skills-audit.py --advisory --quiet || true
+	@python3 scripts/preflight-fixture-test.py 2>/dev/null || true
 
 # v7.8.5: P0.4 from docs/skills/skills-review-2026-05-13.md — mechanical
 # conformance check for .claude/skills/*/SKILL.md (frontmatter present,
@@ -87,6 +88,14 @@ integrity-check:
 # v7.8.5 → v7.9 window; flip to enforced once 7+ days of clean runs accumulate.
 skills-audit:
 	python3 scripts/skills-audit.py
+
+# v7.8.5: P1.3 from docs/skills/skills-review-2026-05-13.md — self-test
+# fixtures for /ux preflight + /design preflight. Walks
+# .claude/skills/{ux,design}/fixtures/{valid,invalid}-*.md and asserts each
+# fixture's outcome matches its filename prefix (valid- → 0 P0, invalid- → ≥1 P0).
+# Catches preflight prompt-drift regressions.
+preflight-fixture-test:
+	python3 scripts/preflight-fixture-test.py
 
 # v7.8.5: print the Observed Patterns catalog — manifest of gate-firing
 # patterns operators must recognize before debugging. Append-only-by-default.
