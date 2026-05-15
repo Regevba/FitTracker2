@@ -606,6 +606,56 @@ The framework already supports this via `scripts/create-isolated-worktree.py` (u
 
 ---
 
+### W10 — Stale `[gone]` branches + orphan worktrees surfaced by daily-checkpoint
+
+**Pattern:** [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py) (shipped 2026-05-15 in PR #365) lists, in its daily output, local branches whose remote-tracking ref is `[gone]` plus any worktrees present in `.claude/worktrees/` that the operator may have forgotten about. Counts accumulate over weeks of normal feature-cycle activity (each squash-merge leaves a `[gone]` shadow) and the warning is informational, not blocking.
+
+**Why expected:** Routine git hygiene gap. Squash-merge on GitHub deletes the remote branch but leaves the local tracking ref + branch + worktree (if any) intact. Cleanup is operator-driven by design — we don't auto-delete because of W5 (no destructive ops without approval) and because branches sometimes contain unmerged WIP the operator hasn't pushed.
+
+**Distinguishing real signal:**
+
+- **Routine drift (expected):** count grows by 1–5/week tracking the project's PR throughput. Branches all match `chore/*`, `feature/*`, `fix/*`, `docs/*` naming. Worktrees match the branch list 1-to-1.
+- **Investigate:** count grows by >10/week (someone's mass-merging without cleanup), OR a worktree's branch is **not** in the `[gone]` list (the worktree is on an active branch and was forgotten), OR you see an unfamiliar branch name (potential W9 branch-drift artifact someone else created).
+
+**Operator cleanup procedure:**
+
+```bash
+# Option A — invoke the bundled skill (recommended)
+# In a Claude session: invoke /commit-commands:clean_gone
+#   - lists all [gone] branches + their worktrees
+#   - asks for confirmation before deletion (W5 honored)
+#   - removes both branch + worktree atomically
+
+# Option B — manual, when you want to inspect first
+git fetch --prune                                  # refresh [gone] markers
+git branch -vv | grep ': gone\]'                   # list candidates
+git worktree list                                  # cross-check worktree usage
+
+# For each branch you've confirmed is fully merged:
+git worktree remove <path-if-any>                  # if a worktree exists
+git branch -d <branch>                             # safe (refuses if unmerged)
+# Use -D ONLY after confirming the branch is squash-merged on GitHub
+# (gh pr list --state merged --search "head:<branch>")
+```
+
+**Before deletion — quick safety check:**
+
+1. `gh pr list --state merged --search "head:<branch-name>"` → confirm PR exists + merged
+2. `git log <branch> --not main` → if non-empty, branch has commits not on main (DO NOT `-D`)
+3. If the branch is from another operator's session (unfamiliar name), confirm with them first
+
+**Silence path:** None needed — informational surface by design. If the daily-checkpoint output is consistently noisy (>20 stale branches), run a cleanup pass to drop the count; the surface will then shrink to a manageable steady state.
+
+**First observed:** 2026-05-15 (v7.8.6 nice-to-have batch added the surface via PR #365). The 14 FT2 + 11 fitme-story stale branches at v7.8.4 ship were a deliberately deferred cleanup window (per `[project_v7_8_4_calibration_paused_2026_05_12]` memory).
+
+**Files involved:**
+
+- Daily-checkpoint script: [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py)
+- Skill: `commit-commands:clean_gone` (bundled)
+- Related: W5 (no destructive ops without approval) — always confirm cleanup before deletion
+
+---
+
 ## Pattern submission template
 
 When you discover a NEW pattern (gate fires + no matching entry above), add it here.
@@ -666,6 +716,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W7 Approval gates multi-part | W7 | — |
 | W8 Audit status is UI marker | W8 | — |
 | W9 Branch-drift from concurrent-session collision (DETECTED via PostToolUse:Bash hook) | W9 | 2026-05-13 |
+| W10 Stale `[gone]` branches + orphan worktrees | W10 | 2026-05-15 |
 
 ---
 
@@ -675,4 +726,4 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-05-13.
+Last refreshed: 2026-05-15.

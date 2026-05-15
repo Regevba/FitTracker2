@@ -15,6 +15,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | B3 | **daily, starting now** | GA4 anomaly check (event volume + funnel breaks) | operator + GA4 MCP | analytics-observability epic |
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
 | B5 | **2026-11-13** | Quarterly cross-layer test-discipline audit (recurring) | operator | test-coverage §6.2 |
+| B6 | **2026-05-22** | C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21) | operator | followups §C1 |
 
 ### B1 — v7.9 promotion-decision data freeze (2026-05-21)
 
@@ -64,7 +65,7 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 
 | ID | Title | Plan ref | RICE | Suggested work_type | Target ship |
 |---|---|---|---|---|---|
-| C1 | F14/F15 dispatch-test coverage push | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **before 2026-05-21** |
+| C1 | F14/F15 dispatch-test coverage push | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **2026-05-22** (deferred 2026-05-15) |
 | C2 | T6 — Web PR JS test gate (fitme-story CI) | test-coverage-master-plan T6 | **200.0** | enhancement (on analytics-observability) | 2026-05-21 |
 | C3 | T2 — Sentry reachability test (iOS) | test-coverage-master-plan T2 | 80.0 | enhancement (test-coverage) | 2026-05-28 |
 
@@ -74,9 +75,11 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 
 **Suggested approach:** Each of the 9 gates needs a 5-line unit test in `tests/test_gate_dispatch.py` asserting (a) the gate function is called for matching inputs, (b) `gate-coverage.jsonl` receives a row, (c) the row has expected `gate=` and non-zero `candidates`.
 
-**Why MUST:** v7.9 promotion criterion #1 in master plan §2.2 ("Mechanism A coverage validated for all gates"). Cannot promote on 2026-05-21 if these 9 gates remain unverified.
+**Why MUST:** v7.9 promotion criterion #1 in master plan §2.2 ("Mechanism A coverage validated for all gates"). Without these tests, v7.9 promotion proceeds with unverified coverage on those 9 gates.
 
-**Open `/pm-workflow framework-f14-f15-dispatch-test-coverage`** to start.
+**Deferral note (decision 2026-05-15):** Original target was "before 2026-05-21". Operator decision deferred to **2026-05-22 (the day after v7.9 promotion decision)** to preserve the v7.9 calibration baseline (criterion #2 — "no false positives"). Adding 9 new test fixtures during 2026-05-15→05-21 would write ≥9 new `candidate` rows into `.claude/logs/gate-coverage.jsonl` during the calibration window — contaminating the data the promotion decision evaluates. The trade-off: v7.9 ships on 2026-05-21 WITHOUT F14/F15 coverage validated, then C1 lands 2026-05-22 + the v7.9.1 cycle re-evaluates whether the 9 gates promoted with or without these tests should be re-flipped. The auditor flagged this as the right read because the dispatch tests are themselves the Mechanism A validation work — excluding them from the calibration baseline is correct, not a hack.
+
+**Open `/pm-workflow framework-f14-f15-dispatch-test-coverage`** on 2026-05-22 to start.
 
 ### C2 — T6 web PR JS test gate (fitme-story)
 
