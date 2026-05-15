@@ -23,6 +23,8 @@ Before investigating a flaky test, surprising gate failure, or unexpected integr
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/feature-registry.json` (what to test), `.claude/shared/metric-status.json` (quality guardrails)
 
 **Writes:** `.claude/shared/test-coverage.json` (coverage per feature), `.claude/shared/health-status.json` (quality gate status)

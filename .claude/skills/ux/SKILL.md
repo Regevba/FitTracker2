@@ -34,6 +34,8 @@ Before validating a UX spec or gating a Phase 3 / Phase 6 transition, check [`.c
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:**
 - `.claude/shared/context.json` — personas, positioning, competitors
 - `.claude/shared/design-system.json` — tokens, components available

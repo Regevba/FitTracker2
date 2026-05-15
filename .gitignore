@@ -43,6 +43,9 @@ Carthage/Build/
 .claude/logs/_session-*.events.jsonl
 .claude/active-feature
 .claude/logs/gate-coverage.jsonl
+.claude/shared/preflight-cache.json
+.claude/shared/integrity-checkpoint-regression.flag
+.claude/worktrees/
 !.claude/entrypoints/
 !.claude/entrypoints/**
 !.claude/settings.json

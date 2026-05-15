@@ -753,6 +753,28 @@ When `/cx analyze` or `/qa regression` detects an issue post-merge:
 
 **Goal:** Understand what we're building, why, and validate the approach before committing to a PRD.
 
+### Phase 0.0 — Unified preflight (v7.8.6+, MANDATORY first step)
+
+Before any phase-specific work, run:
+
+```bash
+make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]
+```
+
+This writes `.claude/shared/preflight-cache.json` with the data downstream skills depend on:
+
+- **W1 ssh-agent state** — prevents silent commit-signing hang
+- **PR citation cache freshness** — prevents v7.8.4 PR_CACHE_STALE false-positives
+- **Current branch + isolation status** — flags infra-path commits from main
+- **Current integrity findings + advisory count** — system-wide health
+- **Integrity diff vs 2026-05-14 anchor** — drift detection (closes 96h cron gap per data-integrity §2.1)
+- **Documentation-debt + measurement-adoption baselines** — calibration data for post-ship comparison
+- **Work-type-specific check** — feature state.json, enhancement parent, fix high-risk-touch, chore infra-path
+
+Downstream skills (`/ux`, `/design`, `/dev`, `/qa`, `/analytics`, `/cx`, `/ops`, `/release`, `/marketing`, `/research`) read this cache instead of re-collecting the data. The cache is overwritten each run; re-run when work_type or feature changes.
+
+Block phase advancement if the preflight reports `blocking > 0`.
+
 ### Phase 0 variant by work subtype
 
 | Subtype | Phase 0 primary output | Skills dispatched |

@@ -49,6 +49,8 @@ FITME_STORY_REPO = Path("/Volumes/DevSSD/fitme-story")
 LEDGER_JSONL = REPO_ROOT / ".claude" / "shared" / "integrity-checkpoint-ledger.jsonl"
 LEDGER_MD = REPO_ROOT / ".claude" / "shared" / "integrity-checkpoint-ledger.md"
 REGRESSION_FLAG = REPO_ROOT / ".claude" / "shared" / "integrity-checkpoint-regression.flag"
+FOLLOWUPS_FILE = REPO_ROOT / ".claude" / "shared" / "must-have-cadence-followups.md"
+FOLLOWUP_LOOKAHEAD_DAYS = 14
 
 
 def run(cmd: list[str], cwd: Path = REPO_ROOT, timeout: int = 300) -> tuple[int, str]:
@@ -365,6 +367,38 @@ def detect_regression(prev: dict | None, curr: dict) -> tuple[bool, dict]:
     return regression, deltas
 
 
+def upcoming_followups(today: dt.date, lookahead_days: int = FOLLOWUP_LOOKAHEAD_DAYS) -> list[dict]:
+    """Parse must-have-cadence-followups.md and return rows whose date is within lookahead_days.
+
+    Format expected: markdown table rows like
+        | B1 | **2026-05-21** | description | owner | source |
+    Returns list of {id, date, days_away, description}.
+    """
+    if not FOLLOWUPS_FILE.exists():
+        return []
+    import re
+    rows = []
+    for line in FOLLOWUPS_FILE.read_text().splitlines():
+        if not line.startswith("| ") or not "**20" in line:
+            continue
+        m = re.search(r"\| ([A-Z]\d+) \| \*\*(\d{4}-\d{2}-\d{2})\*\* \| (.+?) \|", line)
+        if not m:
+            continue
+        try:
+            d = dt.date.fromisoformat(m.group(2))
+        except ValueError:
+            continue
+        days_away = (d - today).days
+        if 0 <= days_away <= lookahead_days:
+            rows.append({
+                "id": m.group(1),
+                "date": m.group(2),
+                "days_away": days_away,
+                "description": m.group(3).strip(),
+            })
+    return sorted(rows, key=lambda r: r["days_away"])
+
+
 def load_last_ledger_row() -> dict | None:
     if not LEDGER_JSONL.exists():
         return None
@@ -528,6 +562,15 @@ def main():
     log(f"  SSD:   {ssd_dir} ({'OK' if ssd_ok else 'SKIPPED/FAILED'})")
     log(f"  Ledger: {LEDGER_JSONL} (+1 row)")
     log(f"  Human:  {LEDGER_MD}")
+
+    # Calendar reminders — surface MUST-HAVE follow-ups within 14d
+    upcoming = upcoming_followups(dt.date.today())
+    if upcoming:
+        log("\n📅 Upcoming MUST-HAVE follow-ups (≤14d):")
+        for r in upcoming:
+            days = "TODAY" if r["days_away"] == 0 else f"in {r['days_away']}d"
+            log(f"  - [{r['id']}] {r['date']} ({days}): {r['description']}")
+        log(f"  Source: {FOLLOWUPS_FILE.relative_to(REPO_ROOT)}")
 
 
 if __name__ == "__main__":

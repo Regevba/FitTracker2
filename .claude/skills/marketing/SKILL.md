@@ -23,6 +23,8 @@ Before drafting any public-facing claim or campaign asset, check [`.claude/integ
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/context.json` (brand, personas, positioning, competitive landscape), `.claude/shared/cx-signals.json` (testimonials, user language, confusion signals dispatched here), `.claude/shared/metric-status.json` (conversion rates, retention), `.claude/shared/feature-registry.json` (what's launched)
 
 **Writes:** `.claude/shared/campaign-tracker.json` (campaign definitions, UTM params, attribution)

@@ -25,6 +25,8 @@ Before reacting to a health alert, gate fire, or PR-cite false positive, check [
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/metric-status.json` (guardrail thresholds), `.claude/shared/health-status.json` (current status)
 
 **Writes:** `.claude/shared/health-status.json` (infra status, incidents, cost data)
