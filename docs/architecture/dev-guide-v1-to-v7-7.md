@@ -19,7 +19,7 @@
 1. [Audience and how to read](#1-audience-and-how-to-read)
 2. [Big picture (current state — v7.8)](#2-big-picture-current-state--v78)
 3. [Where the code lives](#3-where-the-code-lives)
-4. [The skill ecosystem (hub + 10 spokes)](#4-the-skill-ecosystem-hub--10-spokes)
+4. [The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
 5. [`state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
 6. [Phase lifecycle (9 phases × 4 work types)](#6-phase-lifecycle-9-phases--4-work-types)
 7. [Dispatch model — how skills get invoked](#7-dispatch-model--how-skills-get-invoked)
@@ -144,7 +144,7 @@ FitTracker2/
 │   │   ├── case-study-monitoring.json        ← case-study health
 │   │   ├── skill-routing.json                ← skill phase routing config
 │   │   └── … (~24 shared state files total)
-│   ├── skills/<skill-name>/SKILL.md         ← agent-facing skill prompt (11 skills)
+│   ├── skills/<skill-name>/SKILL.md         ← agent-facing skill prompt (12 skills since 2026-05-14; was 11 through v7.8.4)
 │   ├── integrations/<service>/              ← per-service adapters (ga4, sentry…)
 │   ├── cache/                                ← learning cache (L1 + L2 _shared/ + L3 _project/)
 │   └── integrity/
@@ -188,12 +188,12 @@ FitTracker2/
 
 ---
 
-## 4. The skill ecosystem (hub + 10 spokes)
+## 4. The skill ecosystem (hub + 11 spokes)
 
-The framework runs as **11 skills** following a hub-and-spoke pattern:
+The framework runs as **12 skills** (since 2026-05-14; was 11 through v7.8.4) following a hub-and-spoke pattern:
 
 - **Hub:** `pm-workflow` — owns the lifecycle, dispatches work to spokes, gates phase transitions.
-- **Spokes:** `dev`, `qa`, `design`, `ux`, `analytics`, `cx`, `marketing`, `release`, `research`, `ops` — each owns a phase or cross-cutting responsibility.
+- **Spokes (11):** `brainstorm-pm` (added 2026-05-14, P1.0b — Phase 0 default new-feature entry point), `research`, `ux`, `design`, `dev`, `qa`, `analytics`, `cx`, `marketing`, `release`, `ops` — each owns a phase or cross-cutting responsibility.
 
 Each skill has:
 - An **agent-facing prompt** at `.claude/skills/<name>/SKILL.md`. The agent reads this when the skill is loaded.
@@ -202,7 +202,7 @@ Each skill has:
 
 ### 4.1 Skill loading model (v5.0+)
 
-Before v5.0, all 11 skills loaded into context on every session. After v5.0:
+Before v5.0, all 11 skills (the v2.0–v7.8.4 baseline) loaded into context on every session. After v5.0:
 - The `pm-workflow` hub always loads.
 - Spokes load **on demand** based on `phase_skills` in `skill-routing.json`.
 - Each spoke has a `compressed_view` field in its cache entry (~200 words) loaded by default; full expansion happens when the agent calls the skill.

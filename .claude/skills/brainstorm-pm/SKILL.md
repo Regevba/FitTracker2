@@ -1,8 +1,8 @@
 ---
 name: brainstorm-pm
 description: "Use when starting a new feature without a clear PRD shape, deciding whether the problem is real before investing in a solution, surfacing hidden assumptions in a proposed feature, or doing strategic framing (e.g. why this feature now, why not the alternative). PM-flavored brainstorming with 4 modes (problem / solution / assumption / strategy) and 4 frameworks (HMW / JTBD / First Principles / OST). Distinct from /superpowers:brainstorming which is generic creative work. Default Phase 0 (Research & Discovery) entry point for /pm-workflow on any new-feature work whose problem shape is not obvious."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: []
 ---

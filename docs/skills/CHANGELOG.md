@@ -17,9 +17,20 @@ Each entry follows:
 
 Versioning rules (P2.5):
 
-- `framework_version:` — mirrors the host framework version at write time (currently `v7.8.5`)
+- `framework_version:` — mirrors the host framework version at write time (currently `v7.8.6`)
 - A `vMAJOR.MINOR` bump corresponds to: sub-command add/remove/rename, mode change (active ↔ stable ↔ planned ↔ deprecated), or significant body restructure
 - `last_updated:` bumps on ANY change, including frontmatter-only edits
+
+---
+
+## v7.8.6 group bump (2026-05-15)
+
+Two PRs touched every SKILL.md `framework_version:` field:
+
+- **PR #367** — bumped 11 SKILL.md (`pm-workflow`, `ux`, `design`, `dev`, `qa`, `analytics`, `cx`, `marketing`, `ops`, `release`, `research`) `framework_version: v7.8.5 → v7.8.6` and `last_updated: 2026-05-14 → 2026-05-15`. No body changes.
+- **PR #368** (this PR) — bumps `/brainstorm-pm` SKILL.md `framework_version: v7.8.5 → v7.8.6` (skipped by #367 because brainstorm-pm was added the day before the v7.8.6 cycle started; this PR aligns it with the other 11). Also adds the missing `docs/skills/brainstorm-pm.md` public docs page closing the docsHref gap.
+
+No sub-command changes. No mode changes. Pure metadata sync against the v7.8.6 cadence batch (`make integrity-diff`, `make preflight WORK_TYPE=<type>`, weekly Mechanism A zero-drift, W1 ssh preflight) which adds NO new gates — every addition is a read/diff/warn surface. See [`evolution.md`](evolution.md) v7.8.6 row for the full ship narrative.
 
 ---
 
@@ -141,6 +152,12 @@ Versioning rules (P2.5):
 - Observed-patterns preflight stanza added (one of three skills to predate the P0.2 sweep).
 
 ## `/brainstorm-pm` (NEW)
+
+### 2026-05-15 — v7.8.6 (PR #368)
+
+- `framework_version: v7.8.5 → v7.8.6`, `last_updated: 2026-05-14 → 2026-05-15` (closes the gap left by PR #367 which only touched 11 SKILL.md files).
+- New `docs/skills/brainstorm-pm.md` public docs page (mirrors research.md format: role / 4 modes as sub-commands / when-to-use vs `superpowers:brainstorming` / 4 frameworks per mode / shared data / PM workflow integration / standalone examples / recent usage). Closes the `docsHref` gap from the 2026-05-14 sweep where the SKILL.md existed but no public docs page did, surfaced during the 2026-05-15 fitme-story `/pm-flow` audit.
+- Companion: fitme-story PR #114 registers `/brainstorm-pm` as the 12th brick in `src/lib/skill-ecosystem.ts` (was missing — caused the visible 11-vs-12 drift on `/pm-flow` Scattered view).
 
 ### 2026-05-14 — v7.8.5 (PR #350)
 
