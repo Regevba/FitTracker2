@@ -45,6 +45,19 @@ Detailed inventory of what shipped + how the 3-attempt cutover ceremony surfaced
 
 **Inventory delta:** 33 → 34 mechanical gates; 5 advisory unchanged; F-candidate count 13 → 18.
 
+### 1.2 v7.8.5 + v7.8.6 (2026-05-13 → 2026-05-15 additions)
+
+**v7.8.5** shipped 2026-05-13 — observability layer with no new gates. Adds the Observed Patterns Catalog ([`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md), 23 gate patterns + 9 workflow patterns) and the W9 branch-drift real-time alert (PostToolUse:Bash hook). Mandatory operator rule: any novel pattern surfaced during a session must be appended to the catalog before the protocol closes the feature. Shipped via PR #328 (catalog) + PR #341 (W9 hook).
+
+**v7.8.6** shipped 2026-05-15 — **cadence batch closing the 96-hour drift window** identified in `docs/master-plan/data-integrity-and-rollback-2026-05-14.md` §2.1+§2.3. Pure observability surfaces (no enforcement-gate changes). Two PRs:
+
+- **PR #363 (MUST batch):** `make integrity-diff` vs 2026-05-14 anchor + `make preflight WORK_TYPE=<type>` unified entry point + W1 ssh-agent SessionStart preflight + weekly Mechanism A gate-coverage zero-drift scan + per-dimension trend nudge in `framework-status-weekly.yml`. Mandatory Phase 0.0 step added to `/pm-workflow`. All 10 skills point at `.claude/shared/preflight-cache.json` in their `## Shared Data` section. New ledger: `.claude/shared/gate-coverage-weekly.jsonl` (append-only, populated on first weekly cron). Cadence-followups tracker at `.claude/shared/must-have-cadence-followups.md` with daily ≤14d lookahead.
+- **PR #365 (nice-to-have batch):** `.github/workflows/dependency-audit-weekly.yml` + `scripts/aggregate-dependency-audit.py` (Mondays 06:00 UTC, 1h after framework-status-weekly). Daily-checkpoint extension: stale-branch warning (`[gone]` local branches + orphan worktrees) + PR-babysit sweep (open PRs idle >24h, cross-repo).
+
+**Inventory delta:** 34 mechanical gates unchanged; 5 advisory unchanged. New observability surfaces: 2 Makefile targets (`integrity-diff`, `preflight`), 1 new cache ledger (`preflight-cache.json` — gitignored, per-session), 1 new append-only ledger (`gate-coverage-weekly.jsonl`), 2 new GH Actions workflows (extension of `framework-status-weekly` + new `dependency-audit-weekly`), 3 new SessionStart / daily-checkpoint output sections (W1 ssh-agent, stale-branch, PR babysit).
+
+**Why ship against the plan now:** master plan §2.2 promotion criterion #2 ("no false positives") + criterion #1 ("Mechanism A coverage validated") are measured against the 2026-05-14 baseline. v7.8.6 makes drift-vs-baseline a single command — operators can verify the 2026-05-21 promotion decision against fresh telemetry without manual ledger-diffing.
+
 ---
 
 ## 2. Promotion Docket (v7.9 → enforced, decision 2026-05-21)

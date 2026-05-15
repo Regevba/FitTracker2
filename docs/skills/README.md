@@ -76,8 +76,12 @@ Located under `.claude/shared/`:
 | `task-queue.json` | Pending work items and priority queue | `/pm-workflow` |
 | `change-log.json` | Audit trail + validation log entries | `/pm-workflow` |
 | `case-study-monitoring.json` | Cross-cycle evidence for showcase-worthy features, cleanup programs, and framework evolution | `/pm-workflow` + `/analytics` |
+| `preflight-cache.json` *(v7.8.6, gitignored)* | Per-session unified preflight result — written by `make preflight WORK_TYPE=<type>`; consumed by all 10 skills' `## Shared Data` section. Schema: [`preflight-cache-schema.md`](preflight-cache-schema.md). | `/pm-workflow` (writer) + all skills (readers) |
+| `must-have-cadence-followups.md` *(v7.8.6)* | Tracker for calendar-anchored MUST follow-ups (B1-B5) + feature-scope MUST items (C1-C3). Daily-checkpoint surfaces upcoming items ≤14d. | `/pm-workflow` |
+| `gate-coverage-weekly.jsonl` *(v7.8.6)* | Weekly Mechanism A distinct-gate set snapshot (A2 zero-drift tracking). Append-only; populated by `scripts/weekly-trend-scan.py`. | `framework-status-weekly.yml` cron |
+| `integrity-checkpoint-ledger.jsonl` *(v7.8.5)* | Daily-checkpoint metrics ledger (findings, advisory, adoption, doc-debt, gate count). Append-only; companion `.md` rendered alongside. | `scripts/daily-integrity-checkpoint.py` |
 
-Every skill reads `context.json` on startup. Most skills write to one primary file and read from the others for context.
+Every skill reads `context.json` on startup. Most skills write to one primary file and read from the others for context. **Phase 0.0 (v7.8.6, mandatory):** before any work begins, `/pm-workflow` runs `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]` to populate `preflight-cache.json`. Downstream skills read that cache instead of re-collecting pre-work data.
 
 ---
 
