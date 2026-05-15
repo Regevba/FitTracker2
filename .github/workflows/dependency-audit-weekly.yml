@@ -1,0 +1,114 @@
+name: Dependency Audit — Weekly
+
+# Nice-to-have N1 (shipped 2026-05-15). Weekly aggregated audit of npm
+# dependencies across all 3 subdirs (root design-tokens pipeline, website,
+# dashboard) + Swift Package.resolved staleness check. Complements (does
+# not replace) Dependabot — Dependabot opens individual bump PRs;
+# this workflow gives a weekly DIGEST of total vulnerability count + age
+# trends so a regression (new high/critical introduced) opens a single
+# tracking issue instead of getting buried in many Dependabot PRs.
+#
+# Spaced 1h after framework-status-weekly to avoid runner-pool contention.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+
+      - name: npm audit — root (design-tokens)
+        continue-on-error: true
+        run: |
+          set +e
+          npm audit --json --omit=dev > /tmp/audit-root.json 2>/tmp/audit-root.err
+
+      - name: npm audit — website
+        continue-on-error: true
+        run: |
+          set +e
+          cd website && npm audit --json --omit=dev > /tmp/audit-website.json 2>/tmp/audit-website.err
+
+      - name: npm audit — dashboard
+        continue-on-error: true
+        run: |
+          set +e
+          cd dashboard && npm audit --json --omit=dev > /tmp/audit-dashboard.json 2>/tmp/audit-dashboard.err
+
+      - name: Aggregate counts + Swift dep staleness
+        id: aggregate
+        run: |
+          python3 scripts/aggregate-dependency-audit.py \
+            --npm-audit /tmp/audit-root.json:root \
+            --npm-audit /tmp/audit-website.json:website \
+            --npm-audit /tmp/audit-dashboard.json:dashboard \
+            --swift-package-resolved FitTracker.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved \
+            --output-md /tmp/audit-summary.md \
+            --output-json /tmp/audit-summary.json
+          {
+            echo "DIGEST<<DIGEST_EOF"
+            cat /tmp/audit-summary.md
+            echo "DIGEST_EOF"
+          } >> "$GITHUB_ENV"
+          python3 -c "
+          import json
+          j = json.load(open('/tmp/audit-summary.json'))
+          t = j['totals']
+          print(f'high={t[\"high\"]}')
+          print(f'critical={t[\"critical\"]}')
+          print(f'total={t[\"total\"]}')
+          " >> "$GITHUB_OUTPUT"
+
+      - name: Open digest issue on high/critical findings
+        if: steps.aggregate.outputs.high != '0' || steps.aggregate.outputs.critical != '0'
+        uses: actions/github-script@v8
+        env:
+          HIGH: ${{ steps.aggregate.outputs.high }}
+          CRITICAL: ${{ steps.aggregate.outputs.critical }}
+          TOTAL: ${{ steps.aggregate.outputs.total }}
+        with:
+          script: |
+            const high = parseInt(process.env.HIGH || '0', 10);
+            const critical = parseInt(process.env.CRITICAL || '0', 10);
+            const total = parseInt(process.env.TOTAL || '0', 10);
+            const digest = process.env.DIGEST || '(empty)';
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `Dependency audit ${today}: ${critical} critical, ${high} high (${total} total)`;
+            const body = [
+              digest,
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'This is a weekly digest. Dependabot PRs cover individual bumps; this issue tracks the rolling vulnerability count.',
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['dependency-audit', 'automated'],
+            });
+
+      - name: Workflow summary
+        if: always()
+        run: |
+          {
+            echo "## Weekly dependency audit"
+            echo ""
+            cat /tmp/audit-summary.md 2>/dev/null || echo "(no output)"
+          } >> "$GITHUB_STEP_SUMMARY"

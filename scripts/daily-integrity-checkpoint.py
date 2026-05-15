@@ -367,6 +367,79 @@ def detect_regression(prev: dict | None, curr: dict) -> tuple[bool, dict]:
     return regression, deltas
 
 
+def stale_branches() -> tuple[list[str], list[str]]:
+    """N2 — find local branches whose remote is gone + orphan worktrees.
+
+    Returns (gone_branches, orphan_worktrees).
+    """
+    rc, out = run(["git", "branch", "-vv"], timeout=10)
+    gone = []
+    if rc == 0:
+        for line in out.splitlines():
+            if ": gone]" not in line:
+                continue
+            # `git branch -vv` prefixes:
+            #   "  branch-name 1234567 [origin/...: gone] msg"  (normal)
+            #   "* branch-name ..."                              (HEAD)
+            #   "+ branch-name ..."                              (checked-out in another worktree)
+            stripped = line[2:] if line[:1] in ("*", "+", " ") and line[1:2] == " " else line
+            parts = stripped.split()
+            if parts:
+                gone.append(parts[0])
+
+    rc, out = run(["git", "worktree", "list", "--porcelain"], timeout=10)
+    worktrees = []
+    if rc == 0:
+        current = None
+        for line in out.splitlines():
+            if line.startswith("worktree "):
+                path = line[len("worktree "):].strip()
+                # Anything under .claude/worktrees is an isolated session worktree
+                if "/.claude/worktrees/" in path:
+                    worktrees.append(path)
+    return gone, worktrees
+
+
+def pr_babysit(repos: tuple[str, ...] = ("Regevba/FitTracker2", "Regevba/fitme-story")) -> dict:
+    """N3 — list open PRs idle >24h, oldest first.
+
+    Returns {repo: [{number, title, updated_hours_ago, headRefName}, ...]}.
+    Silent failure if `gh` unavailable or auth missing.
+    """
+    import shutil
+    result = {r: [] for r in repos}
+    if not shutil.which("gh"):
+        return result
+    now = dt.datetime.now(dt.timezone.utc)
+    for repo in repos:
+        rc, out = run(
+            ["gh", "pr", "list", "--repo", repo, "--state", "open",
+             "--json", "number,title,updatedAt,headRefName"],
+            timeout=15,
+        )
+        if rc != 0:
+            continue
+        try:
+            prs = json.loads(out)
+        except json.JSONDecodeError:
+            continue
+        for p in prs:
+            try:
+                upd = dt.datetime.fromisoformat(p["updatedAt"].replace("Z", "+00:00"))
+            except (ValueError, KeyError):
+                continue
+            hours = round((now - upd).total_seconds() / 3600, 1)
+            if hours >= 24:
+                result[repo].append({
+                    "number": p["number"],
+                    "title": p["title"][:60],
+                    "updated_hours_ago": hours,
+                    "headRefName": p.get("headRefName", "?"),
+                })
+        result[repo].sort(key=lambda x: -x["updated_hours_ago"])
+    return result
+
+
 def upcoming_followups(today: dt.date, lookahead_days: int = FOLLOWUP_LOOKAHEAD_DAYS) -> list[dict]:
     """Parse must-have-cadence-followups.md and return rows whose date is within lookahead_days.
 
@@ -571,6 +644,37 @@ def main():
             days = "TODAY" if r["days_away"] == 0 else f"in {r['days_away']}d"
             log(f"  - [{r['id']}] {r['date']} ({days}): {r['description']}")
         log(f"  Source: {FOLLOWUPS_FILE.relative_to(REPO_ROOT)}")
+
+    # N2 — Stale-branch + orphan-worktree warning
+    gone, worktrees = stale_branches()
+    if gone or worktrees:
+        log("\n🌿 Stale git state:")
+        if gone:
+            log(f"  {len(gone)} local branch(es) whose remote is gone:")
+            for b in gone[:10]:
+                log(f"    - {b}")
+            if len(gone) > 10:
+                log(f"    ... +{len(gone) - 10} more")
+            log("  Cleanup: git branch -d <branch>  (or use commit-commands:clean_gone skill)")
+        if worktrees:
+            log(f"  {len(worktrees)} isolated worktree(s) on disk:")
+            for w in worktrees[:5]:
+                log(f"    - {w}")
+            if len(worktrees) > 5:
+                log(f"    ... +{len(worktrees) - 5} more")
+
+    # N3 — PR babysit sweep (open PRs idle >24h)
+    idle = pr_babysit()
+    total_idle = sum(len(v) for v in idle.values())
+    if total_idle > 0:
+        log(f"\n🔍 Open PRs idle >24h ({total_idle} across both repos):")
+        for repo, prs in idle.items():
+            if prs:
+                log(f"  {repo} ({len(prs)}):")
+                for p in prs[:3]:
+                    log(f"    #{p['number']} ({p['updated_hours_ago']}h idle): {p['title']}")
+                if len(prs) > 3:
+                    log(f"    ... +{len(prs) - 3} more")
 
 
 if __name__ == "__main__":
