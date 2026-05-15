@@ -1,8 +1,8 @@
 ---
 name: design
 description: "Use when running a design-system audit, validating semantic tokens, running an accessibility pass, gating Phase 3 UI spec preflight (DS + Figma MCP liveness + Code Connect write-access), gating Phase 6 pre-merge UI review (ui-audit P0=0 + figma_node_ids populated + spec ↔ build parity), generating a Figma build prompt, or pushing screens into the FitMe Design System Library via Figma MCP with .figma.tsx / .figma.swift Code Connect auto-scaffold. Sub-commands: /design audit, /design tokens, /design accessibility, /design preflight {feature}, /design pre-merge-review {feature}, /design prompt {feature}, /design build {feature}. (DEPRECATED: /design figma → /design build; /design ux-spec → /ux spec.)"
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [axe]
 ---

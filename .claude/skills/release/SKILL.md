@@ -1,8 +1,8 @@
 ---
 name: release
 description: "Use when preparing a TestFlight or App Store release, drafting a pre-release checklist, generating release notes from the changelog, or submitting a build to App Store Connect. Verifies CI gates green (build + test + tokens-check + ui-audit P0=0) before promoting any build. Sub-commands: /release prepare, /release checklist, /release notes, /release submit."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: stable
 adapters_used: [app-store-connect]
 ---

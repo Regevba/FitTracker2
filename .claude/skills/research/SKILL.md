@@ -1,8 +1,8 @@
 ---
 name: research
 description: "Use when researching a new feature, scanning competitive products in-category, mapping cross-industry UX patterns (Duolingo / Headspace / Strava / Notion / etc.), conducting an ASO research pass, or producing a market analysis. Works as a wide-to-narrow funnel (cross-industry → same-category → feature-specific). Sub-commands: /research wide {topic}, /research narrow {category}, /research feature {name}, /research competitive, /research market, /research ux-patterns {pattern}, /research aso."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [firecrawl]
 ---

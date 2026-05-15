@@ -1,8 +1,8 @@
 ---
 name: dev
 description: "Use when starting a feature branch, requesting code review, checking CI status, auditing dependencies, profiling a performance hotspot, or auditing the skills layer itself (skill-of-skills meta-checks). Respects high-risk-area review policy (DomainModels, EncryptionService, SupabaseSyncService, CloudKitSyncService, SignInService, AuthManager, AIOrchestrator). Sub-commands: /dev branch {feature}, /dev review, /dev deps, /dev perf, /dev ci-status, /dev skills {audit|trace|freshness}."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [security-audit]
 ---

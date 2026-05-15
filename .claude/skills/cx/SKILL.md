@@ -1,8 +1,8 @@
 ---
 name: cx
 description: "Use when reviewing App Store / Play Store feedback, running NPS analysis, scoring review sentiment, building a post-deploy CX digest, refreshing the public roadmap, capturing testimonials, or root-cause analyzing customer confusion for a shipped feature. Dispatches messaging issues to /marketing, UX issues to /design, functional bugs to /dev + /qa, expectation mismatches to /pm-workflow. Sub-commands: /cx reviews, /cx nps, /cx sentiment, /cx testimonials, /cx roadmap, /cx digest, /cx analyze {feature}."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: stable
 adapters_used: [app-store-connect, ga4, sentry]
 ---
