@@ -192,6 +192,11 @@
             "type": "command",
             "_comment": "Daily integrity checkpoint (added 2026-05-14). Kicks off scripts/daily-integrity-checkpoint.py in the background if today's snapshot hasn't run yet (idempotent --idempotent flag) and prints latest ledger row. Surfaces any active regression flag. Cross-repo guard: script self-skips when invoked outside FT2. Disable with CLAUDE_DISABLE_DAILY_CHECKPOINT=1. See docs/master-plan/data-integrity-and-rollback-2026-05-14.md §3 + scripts/session-start-checkpoint.sh.",
             "command": "[ -f scripts/session-start-checkpoint.sh ] && bash scripts/session-start-checkpoint.sh || true"
+          },
+          {
+            "type": "command",
+            "_comment": "W1 preflight (added 2026-05-15): SSH-agent identity check. Warns loudly when ssh-add has no loaded identities — prevents the documented W1 failure mode where `git commit -S` hangs silently on `ssh-keygen -Y sign`. Cross-repo safe (uses ssh-add command directly, no script-path dependency). Disable with CLAUDE_W1_DISABLE_SSH_CHECK=1. Full pattern: .claude/integrity/observed-patterns.md W1.",
+            "command": "[ -f scripts/check-ssh-agent.sh ] && bash scripts/check-ssh-agent.sh || true"
           }
         ]
       }

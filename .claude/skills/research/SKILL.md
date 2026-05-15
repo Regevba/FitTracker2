@@ -22,6 +22,8 @@ Before publishing any research output that will be cited downstream (PRDs, case 
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/context.json` (positioning, personas, competitive landscape), `.claude/shared/feature-registry.json` (what's built, find gaps), `.claude/shared/cx-signals.json` (user feedback — what users ask for), `.claude/shared/campaign-tracker.json` (marketing context)
 
 **Writes:** `.claude/shared/context.json` (updated competitive landscape, market insights), `.claude/shared/cx-signals.json` (user research findings)

@@ -25,6 +25,8 @@ Before investigating an analytics drift, taxonomy mismatch, or unexpected gate f
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/metric-status.json` (targets, baselines), `.claude/shared/feature-registry.json` (what's launched), `.claude/shared/cx-signals.json` (qualitative context), `.claude/shared/campaign-tracker.json` (attribution)
 
 **Writes:** `.claude/shared/metric-status.json` (updated values, instrumentation status)

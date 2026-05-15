@@ -130,12 +130,20 @@ jobs:
           print(f"delta_any={delta_any}")
           PY
 
+      - name: Run weekly trend scan (A2 gate-coverage zero-drift + A4 per-dimension)
+        id: trend
+        continue-on-error: true
+        run: |
+          set +e
+          python3 scripts/weekly-trend-scan.py 2>&1 | tee /tmp/weekly-trend.txt
+
       - name: Stage history snapshot
         id: stage
         run: |
           git add .claude/shared/measurement-adoption-history.json \
                   .claude/shared/measurement-adoption.json \
-                  .claude/shared/documentation-debt.json 2>/dev/null || true
+                  .claude/shared/documentation-debt.json \
+                  .claude/shared/gate-coverage-weekly.jsonl 2>/dev/null || true
           if git diff --staged --quiet; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
             echo "No snapshot changes to stage."
@@ -184,16 +192,34 @@ jobs:
           DELTA_FULLY: ${{ steps.compare.outputs.delta_fully }}
           DELTA_ANY: ${{ steps.compare.outputs.delta_any }}
           REGRESSION: ${{ steps.compare.outputs.regression }}
+          A2_REGRESSION: ${{ steps.trend.outputs.a2_gate_regression }}
+          A4_REGRESSION: ${{ steps.trend.outputs.a4_dim_regression }}
         run: |
+          # OR the new A2/A4 regression flags into the master regression flag.
+          if [ "$A2_REGRESSION" = "true" ] || [ "$A4_REGRESSION" = "true" ]; then
+            REGRESSION_COMBINED="true"
+          else
+            REGRESSION_COMBINED="$REGRESSION"
+          fi
+          echo "regression_combined=${REGRESSION_COMBINED}" >> "$GITHUB_OUTPUT"
           {
             echo "DIGEST<<DIGEST_EOF"
             echo "## Weekly framework-status digest"
             echo ""
-            echo "**Regression:** ${REGRESSION}"
+            echo "**Regression (any source):** ${REGRESSION_COMBINED}"
+            echo ""
+            echo "- Tier 1.1 fully/any adoption: ${REGRESSION}"
+            echo "- A2 gate-coverage zero-drift: ${A2_REGRESSION}"
+            echo "- A4 per-dimension trend: ${A4_REGRESSION}"
             echo ""
             echo "### Tier 1.1 measurement adoption"
             echo "- Fully adopted: ${CURRENT_FULLY} (Δ ${DELTA_FULLY} vs ${PRIOR_DATE:-baseline})"
             echo "- Any adoption: ${CURRENT_ANY} (Δ ${DELTA_ANY} vs ${PRIOR_DATE:-baseline})"
+            echo ""
+            echo "### Weekly trend scan (A2 + A4)"
+            echo '```'
+            head -c 4000 /tmp/weekly-trend.txt 2>/dev/null || echo "(no output)"
+            echo '```'
             echo ""
             echo "### Adoption report (head)"
             echo '```'
@@ -208,17 +234,26 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: Open digest issue
-        if: steps.compare.outputs.regression == 'true' || inputs.open_issue_on_no_regression == 'true'
+        if: steps.compare.outputs.regression == 'true' || steps.trend.outputs.a2_gate_regression == 'true' || steps.trend.outputs.a4_dim_regression == 'true' || inputs.open_issue_on_no_regression == 'true'
         uses: actions/github-script@v8
         env:
           REGRESSION: ${{ steps.compare.outputs.regression }}
+          A2_REGRESSION: ${{ steps.trend.outputs.a2_gate_regression }}
+          A4_REGRESSION: ${{ steps.trend.outputs.a4_dim_regression }}
         with:
           script: |
-            const regression = process.env.REGRESSION === 'true';
+            const adoptionRegr = process.env.REGRESSION === 'true';
+            const a2Regr = process.env.A2_REGRESSION === 'true';
+            const a4Regr = process.env.A4_REGRESSION === 'true';
+            const regression = adoptionRegr || a2Regr || a4Regr;
             const digest = process.env.DIGEST || '(empty)';
             const today = new Date().toISOString().slice(0, 10);
+            const reasons = [];
+            if (adoptionRegr) reasons.push('measurement-adoption');
+            if (a2Regr) reasons.push('A2 gate-coverage');
+            if (a4Regr) reasons.push('A4 per-dimension');
             const title = regression
-              ? `Framework status ${today}: regression in measurement adoption`
+              ? `Framework status ${today}: regression — ${reasons.join(', ')}`
               : `Framework status ${today}: weekly digest`;
             const labels = regression
               ? ['framework-status', 'regression']

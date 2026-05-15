@@ -25,6 +25,8 @@ Before investigating a CX signal anomaly, dispatch decision, or unexpected gate 
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/feature-registry.json` (launched features, original pain points), `.claude/shared/metric-status.json` (quantitative context), `.claude/shared/health-status.json` (technical context for complaints)
 
 **Writes:** `.claude/shared/cx-signals.json` (reviews, NPS, sentiment, feature requests, confusion signals, post-deployment assessments)

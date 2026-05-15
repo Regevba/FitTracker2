@@ -24,6 +24,8 @@ Before investigating an unexpected design-gate fire or Figma bridge anomaly, che
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/context.json` (brand, personas), `.claude/shared/design-system.json` (tokens, components), `.claude/shared/cx-signals.json` (UX confusion signals)
 
 **Writes:** `.claude/shared/design-system.json` (new tokens/components proposed)

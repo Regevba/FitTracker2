@@ -24,6 +24,8 @@ Before promoting any build or drafting any release note, check [`.claude/integri
 
 ## Shared Data
 
+**Preflight cache:** `.claude/shared/preflight-cache.json` — refreshed by `make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`. Run BEFORE any sub-command to get current work-context data (W1 ssh-agent, integrity findings, drift vs anchor, doc-debt, adoption baseline). Cache schema: `docs/skills/preflight-cache-schema.md`.
+
 **Reads:** `.claude/shared/feature-registry.json` (what's included in release), `.claude/shared/test-coverage.json` (quality gate status), `.claude/shared/health-status.json` (CI + infrastructure ready)
 
 **Produces:** `CHANGELOG.md` updates, version bump in Xcode project, App Store submission materials

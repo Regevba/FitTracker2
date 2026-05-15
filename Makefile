@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-snapshot schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -80,6 +80,31 @@ integrity-check:
 	python3 scripts/integrity-check.py --findings-only
 	@python3 scripts/skills-audit.py --advisory --quiet || true
 	@python3 scripts/preflight-fixture-test.py 2>/dev/null || true
+
+# Compare current platform state vs the 2026-05-14 pre-v7.9 baseline anchor.
+# Closes the 96h drift window between weekly cron (Mon 05:00 UTC) and 72h
+# cycle, per docs/master-plan/data-integrity-and-rollback-2026-05-14.md §2.1+§2.3.
+# Override anchor: INTEGRITY_DIFF_BASELINE=<path> make integrity-diff
+# CI mode: exits 1 on regression — `make integrity-diff EXIT_ON_REGRESSION=1`.
+integrity-diff:
+	@python3 scripts/integrity-diff.py $(if $(EXIT_ON_REGRESSION),--exit-on-regression,)
+
+# Unified preflight entry point — aggregates all pre-work data checks adapted
+# by work_type (feature / enhancement / fix / chore). Writes
+# .claude/shared/preflight-cache.json that downstream skills (ux, design, dev,
+# qa, analytics, cx, ops, release, marketing, research) read instead of
+# re-collecting data. Schema: docs/skills/preflight-cache-schema.md.
+#
+#   make preflight WORK_TYPE=feature FEATURE=my-feature
+#   make preflight WORK_TYPE=chore
+#   make preflight WORK_TYPE=enhancement FEATURE=parent-feature
+#   make preflight WORK_TYPE=fix
+preflight:
+	@if [ -z "$(WORK_TYPE)" ]; then \
+		echo "ERROR: WORK_TYPE required. Usage: make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]"; \
+		exit 2; \
+	fi
+	@python3 scripts/preflight.py --work-type $(WORK_TYPE) $(if $(FEATURE),--feature $(FEATURE),)
 
 # v7.8.5: P0.4 from docs/skills/skills-review-2026-05-13.md — mechanical
 # conformance check for .claude/skills/*/SKILL.md (frontmatter present,
