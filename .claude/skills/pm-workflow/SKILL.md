@@ -1,8 +1,8 @@
 ---
 name: pm-workflow
 description: "Use when starting a new feature, resuming a paused feature, advancing a phase, running the v6.0 10-phase product management lifecycle (Research → PRD → Tasks → UX/Integration → Code → Test → Review → Merge → Docs → Learn), OR managing the roadmap (RICE / MoSCoW / Now-Next-Later prioritization + decision memos). Orchestrates skill-on-demand dispatch, model tiering (Sonnet vs Opus), batch operations, deterministic phase timing, cache-hit tracking, eval coverage gates, and CU v2 continuous factors. Invocations: /pm-workflow {feature-name} | /pm-workflow roadmap {review|prioritize|decide {item}}."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [ga4]
 ---

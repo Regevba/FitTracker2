@@ -1,8 +1,8 @@
 ---
 name: qa
 description: "Use when planning the test surface for a new feature, running the iOS test suite via xcodebuild, generating a coverage report, executing a regression sweep, or running a security audit. Enforces test-density targets (analytics 1.3-2.7× event/test ratio, integration tests for high-risk paths) and Gemini-audit Tier 1.1 / 2.1 / 3.2 coverage. Sub-commands: /qa plan {feature}, /qa run, /qa coverage, /qa regression, /qa security."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [axe, security-audit, sentry]
 ---

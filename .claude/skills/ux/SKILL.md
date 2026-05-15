@@ -1,8 +1,8 @@
 ---
 name: ux
 description: "Use when starting UX research for a new feature, drafting a UX spec, building wireframes, validating a spec against the 13 UX principles (8 core + 5 FitMe-specific), gating Phase 3 UX preflight (verifies spec cites real codebase symbols — saves 2-4h of Phase 4 rework per feature on average), gating Phase 6 UX pre-merge review (verifies shipped code matches spec + kill_criteria_resolution present), running a UX audit, or generating a UX build prompt. Sub-commands: /ux research {feature}, /ux spec {feature}, /ux wireframe {feature}, /ux validate {feature}, /ux preflight {feature}, /ux pre-merge-review {feature}, /ux audit, /ux patterns, /ux prompt {feature}."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [axe]
 ---

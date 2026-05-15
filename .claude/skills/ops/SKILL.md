@@ -1,8 +1,8 @@
 ---
 name: ops
 description: "Use when running an infrastructure health check, responding to a production incident, auditing cloud cost, configuring alert thresholds, or feeding the UCC Source Health panel. Monitors Railway (FastAPI), Supabase (PostgreSQL), CloudKit, Firebase/GA4, Vercel, GitHub Actions. Sub-commands: /ops health, /ops incident {description}, /ops cost, /ops alerts."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: stable
 adapters_used: [security-audit, sentry]
 ---

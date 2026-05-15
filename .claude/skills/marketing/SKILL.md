@@ -1,8 +1,8 @@
 ---
 name: marketing
 description: "Use when refreshing App Store Optimization, launching a marketing campaign, running competitive analysis, drafting marketing content, sequencing onboarding email automation, planning launch comms for a shipped feature, or capturing App Store screenshots. Receives CX-dispatched messaging fixes from /cx analyze (messaging root cause → reposition/rephrase). Sub-commands: /marketing aso, /marketing campaign {name}, /marketing competitive, /marketing content {topic}, /marketing email {sequence}, /marketing launch {feature}, /marketing screenshots."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: stable
 adapters_used: [app-store-connect, firecrawl]
 ---

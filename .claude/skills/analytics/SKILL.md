@@ -1,8 +1,8 @@
 ---
 name: analytics
 description: "Use when planning event taxonomy for a new feature, auditing instrumentation drift (CSV ↔ enum ↔ code), building a metric dashboard, running a funnel analysis, producing a metric report, or watching live analytics events. Aligns events with docs/product/analytics-taxonomy.csv and enforces the screen-prefix naming convention. Sub-commands: /analytics spec {feature}, /analytics validate, /analytics dashboard {feature}, /analytics report, /analytics funnel {name}, /analytics watch."
-last_updated: 2026-05-14
-framework_version: v7.8.5
+last_updated: 2026-05-15
+framework_version: v7.8.6
 status: active
 adapters_used: [ga4]
 ---
