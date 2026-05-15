@@ -181,13 +181,26 @@ Fully adopted post-v6: **2/9** (data-integrity-framework-v7-6, meta-analysis-aud
 - **Status flip [T1]:** CLAUDE.md banner already updated to `v7.7, shipped 2026-04-27` by v7.8 sessions (no re-edit needed). `master-plan-2026-04-15.md` updated from "READY FOR MERGE" → "SHIPPED 2026-04-27" in this session.
 - **Tier tags applied:** snapshot count + adoption percentages + ledger commit ref T1; denominator-growth explanation T3.
 
+### 2026-05-14 09:01 UTC — B2 verified (Tier 3.2 trend mode unlocked); both B1 + B2 complete
+- **Trigger:** Scheduled verification agent run (2026-05-14). Checks B1 + B2 status per Section 99.8 post-merge checklist.
+- **B1 — Tier 1.1 trend mode: ALREADY VERIFIED 2026-05-04 [T1]** — `measurement-adoption-history.json` carries **10 snapshots [T1]** as of this run (dates: 2026-04-25 through 2026-05-14). Threshold ≥3 met; trend mode active. (First verified in the 2026-05-04 journal entry above.)
+- **B2 — Tier 3.2 trend mode: VERIFIED 2026-05-14 [T1]**
+  - `make documentation-debt` → `integrity_cycle.snapshots_available: 3 [T1]`, `trend_ready: true`, `snapshot_files_available: 5`. Threshold ≥3 met; trend mode active.
+  - `documentation-debt.json::summary.open_debt_items: 1 [T1]`, `case_studies_scanned: 76 [T1]`, `features_scanned: 69 [T1]`.
+- **`make measurement-adoption` key lines [T1]:**
+  - Features: 69 (post-v6: 35); fully adopted post-v6: 3/35 (8.6%); Tier 1.1 status: partial
+  - Per-dimension post-v6: `timing_wall_time` 48.6%, `per_phase_timing` 77.1%, `cache_hits` 54.3%, `cu_v2` 20.0%
+  - History ledger: 10 dated snapshots (2026-04-25 → 2026-05-14) [T1]
+- **Outcome:** Both B1 + B2 now verified. Section 99 status banner updated below [T2].
+- **Tier tags applied:** snapshot counts and `make` output numbers T1 (instrumented directly from ledger files and command output); banner-update declared date T2.
+
 ## Section 99 — Synthesis (written at M5 / T31, 2026-04-27)
 
-> **Status:** v7.7 work **complete and ready for merge** as of 2026-04-27. Two pieces remain time-gated and will be verified post-merge:
-> - **B1** (Tier 1.1 trend mode unlocks at 3 history snapshots) — earliest **2026-05-04** when the Monday cron appends snapshot #3.
-> - **B2** (Tier 3.2 trend mode unlocks at 3 cycle snapshots) — earliest **~2026-05-03 to -06** when the 72h cycle accumulates 3 snapshots.
+> **Status:** v7.7 work **complete and shipped 2026-05-14** [T2]. All cron-gated post-merge verifications now complete:
+> - **B1** (Tier 1.1 trend mode) — verified **2026-05-04** [T1]; `measurement-adoption-history.json` had ≥3 snapshots (10 total as of 2026-05-14).
+> - **B2** (Tier 3.2 trend mode) — verified **2026-05-14** [T1]; `documentation-debt.json::integrity_cycle.snapshots_available: 3`, `trend_ready: true`.
 >
-> The spec §6 explicitly anticipated this: "partly gated by passive cron firings." This synthesis covers everything that **did** ship; B1/B2 verification + journal entry will be appended by a +7d /schedule run.
+> Original prediction: "earliest 2026-05-03 to -06" for B2. Actual: 2026-05-14 (cron persistence fix delayed the 3rd cycle snapshot). Both unlock thresholds (≥3) confirmed met.
 
 ### 99.1 — Pre/post metrics (frozen at 2026-04-27 final read, before PR #144 merge)
 
