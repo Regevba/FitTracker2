@@ -272,6 +272,34 @@ v7.8.5 adds two operator-facing observability surfaces — both are **documentat
 
 **Operator obligation:** when any framework gate or advisory fires during a session, the FIRST step is to check the catalog (`make observed-patterns`). Apply documented remediation if pattern matches; investigate only if novel; ALWAYS append a new entry when surfacing a novel pattern.
 
+## v7.8.6 Cadence Batch (shipped 2026-05-15)
+
+v7.8.6 ships observability surfaces that close the **96-hour drift window** between the weekly framework-status cron (Mon 05:00 UTC) and the 72-hour integrity cycle (per `docs/master-plan/data-integrity-and-rollback-2026-05-14.md` §2.1+§2.3). No new enforcement gates; every addition is a read/diff/warn surface.
+
+**MUST-have batch (PR #363):**
+
+1. **`make integrity-diff`** — compares current platform state vs the 2026-05-14 pre-v7.9 baseline anchor. Anchored at `~/Documents/FitTracker2-backups/2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14/platform-baseline/`. Override via `INTEGRITY_DIFF_BASELINE=<path>`. CI mode: `EXIT_ON_REGRESSION=1` exits 1 on regression. Producer: [`scripts/integrity-diff.py`](scripts/integrity-diff.py).
+
+2. **Unified preflight entry point** — [`make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]`](Makefile). Aggregates every pre-work check (W1 ssh-agent, PR cache freshness, branch isolation, integrity findings, drift vs anchor, doc-debt, adoption baseline) into a single call. Writes `.claude/shared/preflight-cache.json` that all 10 downstream skills (ux, design, dev, qa, analytics, cx, ops, release, marketing, research) read from their `## Shared Data` section. Schema: [`docs/skills/preflight-cache-schema.md`](docs/skills/preflight-cache-schema.md). Mandatory Phase 0.0 step in `/pm-workflow`.
+
+3. **Weekly Mechanism A gate-coverage zero-drift scan** — extends `framework-status-weekly.yml`. Tracks distinct gates emitting telemetry week-over-week via `.claude/shared/gate-coverage-weekly.jsonl` (append-only). Surfaces any gate that previously emitted but stopped — opens the digest issue with reason `A2 gate-coverage`. Producer: [`scripts/weekly-trend-scan.py`](scripts/weekly-trend-scan.py).
+
+4. **Per-dimension adoption trend nudge** — same workflow extension. Diffs `timing_wall_time` / `per_phase_timing` / `cache_hits` / `cu_v2` / `fully_adopted_post_v6` against prior weekly snapshot. Opens digest issue on any decrease with reason `A4 per-dimension`. Addresses the documented `fully_adopted_post_v6` 27.3% → 8.3% regression + `cu_v2 ≥50%` chronic miss (master plan §2.5).
+
+5. **W1 ssh-agent preflight** — [`scripts/check-ssh-agent.sh`](scripts/check-ssh-agent.sh) wired into SessionStart. Loud stderr warning when `ssh-add -l` returns no identities — prevents the documented W1 silent-sign-hang failure mode. Disable: `CLAUDE_W1_DISABLE_SSH_CHECK=1`.
+
+**Nice-to-have batch (PR #365):**
+
+6. **Weekly dependency audit** — [`.github/workflows/dependency-audit-weekly.yml`](.github/workflows/dependency-audit-weekly.yml) (Mondays 06:00 UTC, 1h after framework-status-weekly). Runs `npm audit --omit=dev` across root + `website` + `dashboard` subdirs + counts Swift Package.resolved pins. Producer: [`scripts/aggregate-dependency-audit.py`](scripts/aggregate-dependency-audit.py). Opens an issue on any HIGH or CRITICAL. Complements Dependabot (which opens per-bump PRs) by surfacing a rolling weekly total.
+
+7. **Daily stale-branch + orphan-worktree warning** — appended to `scripts/daily-integrity-checkpoint.py` output. Lists local branches whose remote is gone (`[gone]`) + any isolated worktrees on disk in `.claude/worktrees/`. Suggests `commit-commands:clean_gone` skill for cleanup.
+
+8. **Daily open-PRs-idle-24h babysit** — same script. Calls `gh pr list` for FT2 + fitme-story; filters to PRs idle >24h (oldest first). Silent no-op when `gh` unavailable.
+
+**MUST-have follow-up tracker:** [`.claude/shared/must-have-cadence-followups.md`](.claude/shared/must-have-cadence-followups.md) — single ledger for calendar-anchored verifications (B1 v7.9 freeze 2026-05-21, B2 post-v7.9 baseline 2026-05-28, B4/B5 quarterly test audit) + feature-scope MUST items (C1 F14/F15 dispatch tests, C2 T6 web PR gate RICE 200.0, C3 T2 Sentry test). Daily checkpoint surfaces upcoming items ≤14d.
+
+**Spec / case study:** the v7.8.6 work ships against the existing infra-master-plan §4.1 calendar; no separate spec because every addition is a read-only observability surface (the spec/PRD requirement applies to enforcement gates). PR bodies (#363, #365) serve as the case-study source.
+
 ## Known Mechanical Limits
 
 v7.6 promoted 4 silent gaps to pre-commit failures and added 3 recurring CI defenses. v7.8 PR-1 ships **Mechanism C** (PostToolUse:Read hook + `scripts/observe-cache-hit.py`) which moves Gap 1 from Class B → A in advisory mode (capture only); v7.9 promotes the writer-path to enforced once 7+ days of session-ledger data calibrate the threshold. Four gaps remain mechanically unclosable:
