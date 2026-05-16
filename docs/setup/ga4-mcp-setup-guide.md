@@ -75,10 +75,12 @@ GCP service accounts have no GA access by default — you must grant it inside G
 2. Click **+** (top-right) → **Add users**
 3. Email address: paste the service account email from Step 2.9 (e.g. `ga4-mcp-reader@<project-id>.iam.gserviceaccount.com`)
 4. Direct roles: **Viewer** (read-only is sufficient for `/analytics poll`)
-5. Uncheck "Notify new users by email" (service accounts don't have inboxes)
+5. **Uncheck "Notify new users by email"** (service accounts don't have inboxes; failing to uncheck this is the #1 silent-failure cause)
 6. Click **Add**
 
 Verify: the service account should appear in the property access list with role "Viewer".
+
+> **If Step 3 fails** with "This email doesn't match a Google account" or similar — see [`ga4-access-binding-setup-guide.md`](./ga4-access-binding-setup-guide.md) for the 3-path recovery procedure (UI retry with propagation wait → non-APP account → custom OAuth client + API call), plus pivot options if the service account falls under [the post-April-23-2025 SA-create cutoff](https://support.google.com/analytics/thread/431700589/service-accounts-created-after-april-23-2025-cannot-be-added-to-ga4-properties).
 
 ---
 
