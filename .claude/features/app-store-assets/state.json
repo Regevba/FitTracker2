@@ -1,10 +1,23 @@
 {
   "feature": "app-store-assets",
   "created_at": "2026-04-12T21:30:00Z",
-  "updated": "2026-05-07T05:01:33Z",
+  "updated": "2026-05-16T07:00:00Z",
   "branch": null,
   "current_phase": "implementation",
   "framework_version": "v5.0",
+  "paused": {
+    "paused_at": "2026-04-27T00:00:00Z",
+    "paused_reason": "External blockers — 5 of 10 tasks (Apple Developer Program enrollment, simulator screenshot capture, App Store Connect metadata, TestFlight upload, StoreKit configuration) all need operator action with the $99/yr Apple Developer Program + a real simulator + an App Store Connect account, none of which a Claude session can produce. The 5 in-house tasks (icon master, xcassets generation, raw metadata draft, asset audit, P0 review) are complete.",
+    "expected_resume": "post-v8.0 (after analytics-observability + 3D Framework Universe + HADF Phase 2-bis close, when there's a real product release window)",
+    "deferred_per_memory": "MEMORY row 'app-store-assets' marked DEFERRED TO LAST 2026-05-08",
+    "documented_in_audit": "System sweep audit 2026-05-16 — gap closure"
+  },
+  "completion_scope_at_pause": {
+    "in_house_done": ["T1 icon master asset", "T2 xcassets generation", "T3 raw metadata draft", "T5 asset audit", "T10 P0 review"],
+    "external_blocked": ["T4 simulator screenshots", "T6 App Store Connect metadata", "T7 TestFlight upload", "T8 Apple Developer Program enrollment", "T9 StoreKit configuration"],
+    "done_count": 5,
+    "blocked_count": 5
+  },
   "agent_manifest": {
     "reads": [],
     "writes": [],

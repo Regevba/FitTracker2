@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "feature": "framework-v7-9-promotion",
+  "title": "framework v7 9 promotion",
+  "work_type": "Feature",
+  "current_phase": "research",
+  "framework_version": "v7.9",
+  "started_at": "2026-05-16T07:00:00Z",
+  "updated_at": "2026-05-16T07:00:00Z",
+  "events": [
+    {
+      "event_type": "phase_transition",
+      "timestamp": "2026-05-16T07:00:00Z",
+      "from_phase": null,
+      "to_phase": "research",
+      "note": "Feature scaffolded by system sweep audit 2026-05-16. Container created ahead of 2026-05-21 v7.9 promotion-decision date so the decision has a discoverable tracking home. Calibration window (2026-05-15 → 05-21) is the research phase — operator-driven review of Mechanism A gate-coverage.jsonl + cycle-time findings vs promotion criteria."
+    }
+  ]
+}

@@ -48,8 +48,73 @@
     {"audit_id": "audit-3-v8-0-ship", "scheduled_date": "2026-08-05", "scope": "Block C synthesis case study + ORCHID v2 design stub"}
   ],
   "linear": "FIT-71",
-  "related_prs": [],
-  "tasks": [],
+  "related_prs": [306, 313, 316],
+  "tasks": [
+    {
+      "id": "A",
+      "title": "Block A — Soak window scaffolding (state.json + harness + preflight + verdict scripts + launchd templates + 6 unit test suites + go/no-go ceremony runbook)",
+      "status": "done",
+      "effort_days": 4,
+      "completed_at": "2026-05-12T14:08:21Z",
+      "shipped_via_pr": 316,
+      "scope_note": "A0–A12 (13 sub-tasks, summarized 'Block A — 12 tasks' in PR title) shipped in one PR. Includes wrapper preflight, anchor-drift detection, cost cron, heartbeat audit, verdict script, launchd plist templates, go/no-go ceremony doc, 6 Python test suites + 1 bash test suite all passing. See docs/superpowers/plans/2026-05-12-hadf-phase2bis-replication.md §'BLOCK A — Soak Window Scaffolding' for the sub-task breakdown."
+    },
+    {
+      "id": "B13",
+      "title": "Block B Sub-exp 1 — Cloud fingerprinting (9 endpoints, 5 fires/day × 3 days, n≈675 valid records target)",
+      "status": "pending",
+      "effort_days": 4,
+      "blocker": "calendar gate — v7.8.3 soak window closes 2026-05-23",
+      "scheduled_start": "2026-05-23",
+      "sub_tasks": [
+        "B13.1 Operator runs go/no-go ceremony for Sub-exp 1",
+        "B13.2 Lock prereg-subexp1.json (sha256 + .lock + git tag)",
+        "B13.3 launchctl bootstrap subexp1 plist",
+        "B13.4 Wait 3 days for collection (5 fires/day × 3 days)",
+        "B13.5 Run verdict script (silhouette + cluster count + threshold check)",
+        "B13.6 Write Sub-exp 1 case study",
+        "B13.7 make snapshot-phase",
+        "B13.8 Commit + PR + merge"
+      ],
+      "external_audit": "audit-1-v7-9-promotion (2026-05-22, scope: Sub-exp 1 prereg + smoke-fire data quality)"
+    },
+    {
+      "id": "B14",
+      "title": "Block B Sub-exp 2 — Ollama local fingerprinting (1 endpoint, ~5,000 valid records target, KS-distinguishability check vs cloud)",
+      "status": "pending",
+      "effort_days": 4,
+      "blocker": "B13 verdict = PASS",
+      "scheduled_start": "~2026-05-27 (gated on Sub-exp 1 PASS)",
+      "sub_tasks": ["B14.1–B14.8 same as B13 with subexp2 substitutions"]
+    },
+    {
+      "id": "B15",
+      "title": "Block B Sub-exp 3 — Bedrock haiku-4-5 vs Anthropic-direct haiku-4-5 (1 endpoint each, fingerprint delta check)",
+      "status": "pending",
+      "effort_days": 5,
+      "blocker": "B14 verdict = PASS",
+      "scheduled_start": "~2026-05-31 (gated on Sub-exp 2 PASS)",
+      "sub_tasks": [
+        "B15.1–B15.8 same as B13 with subexp3 substitutions",
+        "B15.9 Run anchor-drift check vs Sub-exp 1 anchors (T2-E)"
+      ]
+    },
+    {
+      "id": "C",
+      "title": "Block C — Synthesis + closure (cross-sub-exp case study + fitme-story showcase slot 30 + state.json complete + final snapshot)",
+      "status": "pending",
+      "effort_days": 3,
+      "blocker": "B15 complete",
+      "scheduled_start": "~2026-06-04 (after Sub-exp 3 collection closes)",
+      "sub_tasks": [
+        "C16 Cross-sub-exp synthesis case study",
+        "C17 fitme-story showcase MDX (slot 30)",
+        "C18 state.json closure (current_phase=complete; passes FEATURE_CLOSURE_COMPLETENESS)",
+        "C19 Final make snapshot-phase",
+        "C20 Linear FIT-71 → Done"
+      ]
+    }
+  ],
   "phases": {
     "research": {
       "status": "complete"
