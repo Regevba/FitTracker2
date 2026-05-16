@@ -561,11 +561,16 @@ def main():
 
     log = (lambda *a, **kw: None) if args.quiet else print
 
-    # Idempotency check
-    if local_dir.exists() and not args.force:
+    # Idempotency check — keyed on the ledger row, not the snapshot dir.
+    # Why: if a prior fire crashed after creating the snapshot dir but before
+    # appending the ledger row, gating on `local_dir.exists()` would leave the
+    # ledger permanently missing today's row. Gating on the ledger row makes
+    # subsequent fires self-heal by re-running the full pipeline.
+    last_row = load_last_ledger_row()
+    if last_row and last_row.get("date") == today and not args.force:
         if args.idempotent:
             sys.exit(0)
-        log(f"Today's local snapshot already exists at {local_dir}. Use --force to overwrite.")
+        log(f"Today's ledger row already exists ({today}). Use --force to overwrite.")
         sys.exit(0)
 
     log(f"=== Daily integrity checkpoint — {today} ===")
