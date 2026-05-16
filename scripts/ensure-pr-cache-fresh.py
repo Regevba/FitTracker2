@@ -33,6 +33,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 CACHE_PATH = REPO_ROOT / ".cache" / "gh-pr-cache.json"
 REFRESH_SCRIPT = REPO_ROOT / "scripts" / "refresh-pr-cache.py"
 
+# Keep in sync with REPOS in scripts/refresh-pr-cache.py (v7.8.3 D-3 unified cache).
+# If refresh-pr-cache.py ever adds a third repo, append it here too — otherwise
+# the per-repo completeness check below will perpetually request a refresh.
+EXPECTED_REPOS = ("Regevba/FitTracker2", "Regevba/fitme-story")
+
 
 def cache_age_seconds() -> float | None:
     """Return cache age in seconds, or None if cache is missing/unreadable."""
@@ -76,6 +81,34 @@ def cache_is_empty() -> bool:
     return True
 
 
+def cache_missing_expected_repos() -> tuple[bool, list[str]]:
+    """Detect the W11 pattern: cache exists + non-empty but one of the expected
+    cross-repo entries is absent or has zero PRs in all buckets. A partial-write
+    or refresh interruption can leave the cache in this state, causing every
+    cross-repo BROKEN_PR_CITATION lookup to false-positive.
+
+    Returns (is_incomplete, missing_repos). Sibling check to cache_is_empty —
+    we run both so a fully-empty cache surfaces its own clearer reason string.
+    """
+    if not CACHE_PATH.exists():
+        return False, []  # cache_age_seconds() already covers this case
+    try:
+        data = json.loads(CACHE_PATH.read_text())
+    except (json.JSONDecodeError, OSError):
+        return False, []
+    repos = data.get("repos", {})
+    missing: list[str] = []
+    for expected in EXPECTED_REPOS:
+        info = repos.get(expected)
+        if not isinstance(info, dict):
+            missing.append(expected)
+            continue
+        has_any = any(info.get(b) for b in ("open", "merged", "closed"))
+        if not has_any:
+            missing.append(expected)
+    return (len(missing) > 0), missing
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -100,9 +133,16 @@ def main() -> int:
     elif cache_is_empty():
         needs_refresh = True
         reason = "cache reports 0 PRs in all repos (likely never populated)"
-    elif age > max_age_seconds:
-        needs_refresh = True
-        reason = f"cache age {age/3600:.1f}h > threshold {args.max_age_hours}h"
+    else:
+        # W11 — incomplete cache (one of two expected repos absent or empty).
+        # See .claude/integrity/observed-patterns.md §W11 for the full story.
+        incomplete, missing = cache_missing_expected_repos()
+        if incomplete:
+            needs_refresh = True
+            reason = f"cache missing expected repo(s): {', '.join(missing)} (W11 incomplete-cache pattern)"
+        elif age > max_age_seconds:
+            needs_refresh = True
+            reason = f"cache age {age/3600:.1f}h > threshold {args.max_age_hours}h"
 
     if not needs_refresh:
         if not args.quiet:
