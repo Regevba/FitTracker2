@@ -271,21 +271,12 @@
   },
   "case_study_type": "no_case_study_required",
   "case_study_exempt_reason": "App Store assets (screenshots, ASO copy, metadata) are operational artifacts; no case-study narrative warranted. Approved 2026-04-27 during v7.7 M2 T9.",
-  "paused": {
+  "previous_pause": {
     "at": "2026-04-27T14:00:00Z",
     "reason": "v7.7 Validity Closure full-priority freeze",
     "resume_signal": "framework-v7-7-validity-closure phase=complete",
     "resolved_at": "2026-04-27T00:00:00Z",
-    "resolved_note": "Resume signal fired 2026-04-27 when framework-v7-7-validity-closure shipped (PR #144 merge 01b9e11). Feature is unblocked but has not yet been picked back up; current_phase remains 'implementation' awaiting user-initiated resume.",
-    "snapshot": {
-      "current_phase": "implementation",
-      "next_action_when_resumed": "Resume implementation; case_study link already resolved by v7.7 T9 (exempt tag applied during v7.7)",
-      "blockers": [],
-      "context_links": [
-        ".claude/features/app-store-assets/state.json",
-        "~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/paused_app_store_assets.md"
-      ]
-    }
+    "resolved_note": "Resume signal fired 2026-04-27 when framework-v7-7-validity-closure shipped (PR #144 merge 01b9e11). Feature was unblocked but never picked back up. Historical record retained; current pause status is in the top-level `paused` field (post-2026-05-16 system-sweep audit, Apple Dev Program external blocker)."
   },
   "_meta": {
     "deprecation_warnings": []
