@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.5",
   "started_at": "2026-05-13T09:00:00Z",
-  "updated_at": "2026-05-14T09:28:20Z",
+  "updated_at": "2026-05-16T14:19:07Z",
   "events": [
     {
       "timestamp": "2026-05-13T09:00:00Z",
@@ -363,6 +363,17 @@
       "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "post_hoc"
+    },
+    {
+      "timestamp": "2026-05-16T14:19:07Z",
+      "event_type": "ga4_access_binding_diagnosis",
+      "phase": "implementation",
+      "summary": "GA4 access binding session 2026-05-16: PAUSED \u2014 multiple paths dead-ended. (1) SA path: confirmed April-23-2025 SA-create cutoff blocks the existing SA ga4-mcp-reader@fitme-490515 (UI rejects with 'doesn't match a Google account'); (2) Dedicated account fitmegaanalytics@gmail.com created + granted GA4 Admin on property 531124395 + GCP Service Usage Consumer on fitme-490515; (3) gcloud auth ADC login from dedicated WITHOUT --scopes: succeeded but token lacked analytics.readonly scope \u2192 403 ACCESS_TOKEN_SCOPE_INSUFFICIENT; (4) gcloud auth ADC login from dedicated WITH --scopes=analytics.readonly: 'This app is blocked' (Google young-account + sensitive-scope policy); (5) Custom OAuth client (ga4-playground-client) Test user add for dedicated: rejected with 'Email addresses must be associated with an active Google Account' (account pre-trust state). Documented blocker: dedicated account in <24h pre-trust state. Recommended next pivot: 5-min APP cycle on primary account (APP only blocks initial consent; refresh tokens survive). Estimated effort to resume: 5 min when operator is ready. B3 daily GA4 anomaly check status: SKIPPED until binding lands.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "blocked",
+      "recording_mode": "contemporaneous"
     }
   ]
 }
