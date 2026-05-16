@@ -1,12 +1,23 @@
 {
-  "feature": "ucc-passkey-auth",
-  "preflight_at": "2026-05-07T17:00:00Z",
+  "feature": "case-study-thread-visualization",
+  "preflight_at": "2026-05-16T17:50:00Z",
   "mcp_live": true,
-  "mcp_user": "regev.ba@gmail.com",
-  "library_id": "0Ai7s3fCFqR5JXDW8JvgmD",
+  "mcp_user": "assumed_ok_based_on_recent_session_use",
+  "library_id": "fsjHfFLAHELACZHku8Rfcl",
+  "library_name": "FitMe Story Web — Design System",
   "library_accessible": true,
-  "build_target_applicable": false,
+  "code_connect_access": {
+    "token_present": "unconfirmed",
+    "publish_workflow_wired": true,
+    "severity": "p1_advisory"
+  },
+  "build_target_applicable": true,
   "build_decision": "deferred_to_prompt",
-  "deferral_reason": "web_dashboard_no_figma_mapping",
-  "portable_prompt": "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md"
+  "deferral_reason": "component_code_not_yet_built_in_phase_4",
+  "portable_prompt": "docs/prompts/ui/2026-05-16-case-study-thread-visualization-design-build.md",
+  "ds_compliance": "pass",
+  "ds_token_citations_verified": 14,
+  "ds_component_reuse": ["Tag"],
+  "ds_new_components": ["SeriesTimeline"],
+  "ds_evolution_required": false
 }

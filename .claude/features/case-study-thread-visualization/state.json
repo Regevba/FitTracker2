@@ -1,0 +1,955 @@
+{
+  "feature": "case-study-thread-visualization",
+  "state_owner": "ft2",
+  "framework_version": "v7.8.6",
+  "created": "2026-05-16T17:26:14Z",
+  "created_at": "2026-05-16T17:26:14Z",
+  "updated": "2026-05-16T18:00:04Z",
+  "branch": "feature/case-study-thread-visualization",
+  "current_phase": "ux_or_integration",
+  "work_type": "feature",
+  "work_subtype": "new_ui",
+  "has_ui": true,
+  "requires_analytics": true,
+  "isolation_opt_out": false,
+  "isolation_opt_out_reason": "",
+  "scheduled_after": {
+    "signal": "Phases 0-3 walk now (2026-05-16 to ~2026-05-20). HARD PAUSE before Phase 4 per v7.9 calibration-window protection (cadence-followups.md C1 precedent). Resume Phase 4 on 2026-05-22 after v7.9 promotion decision 2026-05-21 lands."
+  },
+  "phases": {
+    "research": {
+      "status": "approved",
+      "approved_at": "2026-05-16T17:39:03Z",
+      "sources": [
+        ".claude/features/case-study-thread-visualization/research.md",
+        "Explore agent cluster catalog 2026-05-16",
+        ".claude/features/case-study-thread-visualization/state.json::brainstorm",
+        "docs/master-plan/infra-master-plan-2026-05-12.md (overlay verdict: no violations)"
+      ]
+    },
+    "prd": {
+      "status": "approved",
+      "approved_at": "2026-05-16T17:44:13Z",
+      "analytics_spec_complete": true
+    },
+    "tasks": {
+      "status": "approved",
+      "count": 44,
+      "approved_at": "2026-05-16T17:49:04Z"
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "type": "ux",
+      "preflight_passed": true,
+      "compliance_decision": "pass_no_evolution",
+      "approved_at": "2026-05-16T18:00:04Z"
+    },
+    "implementation": {
+      "status": "pending",
+      "commits": [],
+      "checklist_completed": false
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": null
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "case_study_series_navigation_engagement_rate",
+        "definition": "unique sessions firing >=1 case_study_series_node_click or _nav_click / unique sessions viewing case-study detail page with series_id",
+        "baseline": 0.0,
+        "target": 0.05,
+        "current": null,
+        "tier": "T1",
+        "instrumentation": "GA4 custom event aggregation"
+      },
+      "secondary": [
+        {
+          "name": "avg_case_studies_per_session",
+          "baseline": "TBC at Phase 5",
+          "target": "+20%",
+          "tier": "T1"
+        },
+        {
+          "name": "bounce_rate_series_member_pages",
+          "baseline": "TBC at Phase 5",
+          "target": "-10%",
+          "tier": "T1"
+        },
+        {
+          "name": "series_with_at_least_one_navigation_event_30d",
+          "baseline": 0,
+          "target": 7,
+          "tier": "T1"
+        },
+        {
+          "name": "series_section_impression_rate",
+          "baseline": 0.0,
+          "target": 0.8,
+          "tier": "T1"
+        }
+      ],
+      "guardrails": [
+        {
+          "name": "listing_page_lcp",
+          "baseline": "TBC at Phase 5",
+          "acceptable_range": "<= baseline + 100ms",
+          "tier": "T1"
+        },
+        {
+          "name": "listing_page_cls",
+          "baseline": "TBC at Phase 5",
+          "acceptable_range": "<= baseline + 0.01",
+          "tier": "T1"
+        },
+        {
+          "name": "axe_a11y_violations",
+          "baseline": "TBC at Phase 5",
+          "acceptable_range": "no new violations",
+          "tier": "T1"
+        },
+        {
+          "name": "lighthouse_a11y_score",
+          "baseline": "TBC at Phase 5",
+          "acceptable_range": ">= baseline",
+          "tier": "T1"
+        }
+      ],
+      "instrumentation_ready": false,
+      "first_review_date": "2026-06-26",
+      "kill_criteria": "Primary kill: if by 30 days post-ship ZERO case_study_series_node_click OR case_study_series_nav_click events fire across ALL 10 series, feature fails its discoverability hypothesis -> rollback to Option 3 (footer related[] only). Performance kill: LCP regression >200ms unfixable in <1d. A11y kill: any new AXE violation unfixable in <1d. Catalog drift kill: >3 catalog inconsistencies within 60 days."
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "UX research: applicable principles + horizontal-timeline patterns + iOS HIG analogs",
+      "type": "research",
+      "skill": "ux",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.15,
+      "depends_on": [],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T2",
+      "title": "UX spec: ux-spec.md covering 5 states + responsive + a11y contract",
+      "type": "design",
+      "skill": "ux",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T1"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T3",
+      "title": "UX preflight: verify every token/component/pattern in ux-spec exists in fitme-story DS",
+      "type": "infra",
+      "skill": "ux",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T4",
+      "title": "Design preflight: DS token compliance + Figma MCP liveness + Code Connect write-access",
+      "type": "infra",
+      "skill": "design",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T5",
+      "title": "Design audit: ux-spec against DS tokens, components, patterns, motion, a11y",
+      "type": "design",
+      "skill": "design",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T6",
+      "title": "UX prompt auto-generated to docs/prompts/ux/",
+      "type": "docs",
+      "skill": "ux",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T7",
+      "title": "Design prompt auto-generated to docs/prompts/ui/",
+      "type": "docs",
+      "skill": "design",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T2"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T8",
+      "title": "Figma build: push SeriesTimeline to FitMe DS Library via MCP; populate figma_node_ids",
+      "type": "design",
+      "skill": "design",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T2",
+        "T5"
+      ],
+      "completed_at": null,
+      "phase": "ux_or_integration"
+    },
+    {
+      "id": "T9",
+      "title": "Schema additive: series_id field in fitme-story content-schema.ts",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T10",
+      "title": "Series catalog: typed catalog at fitme-story/src/lib/series-catalog.ts with 10 series",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T9"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T11",
+      "title": "Helper lib: getSeriesById, getStudiesBySeries, getSeriesPosition",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T9",
+        "T10"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T12",
+      "title": "SeriesTimeline component: listing variant (no current node)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.5,
+      "depends_on": [
+        "T11",
+        "T2",
+        "T8"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T13",
+      "title": "SeriesTimeline component: detail variant with you-are-here marker",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T12"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T14",
+      "title": "Listing page integration: new Series section in case-studies/page.tsx",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T11",
+        "T12"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T15",
+      "title": "Detail page integration: timeline at top of every MDX with series_id",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T11",
+        "T13"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T16",
+      "title": "Backfill MDX: 12a-hadf-hardware-aware-dispatch.mdx",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T9",
+        "T10"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T17",
+      "title": "Backfill MDX: 08b-onboarding-v2-retroactive.mdx",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T9",
+        "T10"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T18",
+      "title": "Backfill MDX: 23d-push-notifications-v1.mdx",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T9",
+        "T10"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T19",
+      "title": "Backfill MDX: 27a-fitme-story-website-design-system-orig.mdx",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T9",
+        "T10"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T20",
+      "title": "Frontmatter sweep: populate series_id on ~46 existing MDX files",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.3,
+      "depends_on": [
+        "T9",
+        "T10",
+        "T16",
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T21",
+      "title": "GA4 instrumentation: wire 4 new events (view, node_click, nav_click, keyboard_nav)",
+      "type": "analytics",
+      "skill": "analytics",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T12",
+        "T13"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T22",
+      "title": "Responsive layout: handle 8+ node timelines on mobile (scroll or pagination)",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T12"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T23",
+      "title": "A11y: keyboard nav (Tab/Arrow/Enter), ARIA labels, reduced-motion fallback",
+      "type": "ui",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T12",
+        "T13"
+      ],
+      "completed_at": null,
+      "phase": "implementation"
+    },
+    {
+      "id": "T24",
+      "title": "CLAUDE.md convention: series-naming + series_id contract (requires isolated worktree)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "completed_at": null,
+      "phase": "implementation",
+      "isolation_required": true,
+      "isolation_reason": "infra-glob CLAUDE.md edit fires BRANCH_ISOLATION_VIOLATION Mode B advisory"
+    },
+    {
+      "id": "T25",
+      "title": "Unit tests: series-catalog integrity + helper lib getSeriesPosition",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T10",
+        "T11",
+        "T20"
+      ],
+      "completed_at": null,
+      "phase": "testing"
+    },
+    {
+      "id": "T26",
+      "title": "Unit tests: SeriesTimeline component (render + interaction + keyboard + you-are-here)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T12",
+        "T13",
+        "T21",
+        "T23"
+      ],
+      "completed_at": null,
+      "phase": "testing"
+    },
+    {
+      "id": "T27",
+      "title": "CI drift check: every series_id resolves; every series has >=2 members",
+      "type": "infra",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.2,
+      "depends_on": [
+        "T10",
+        "T20"
+      ],
+      "completed_at": null,
+      "phase": "testing"
+    },
+    {
+      "id": "T28",
+      "title": "GA4 verification: trigger each event on preview; confirm Realtime view shows correct params",
+      "type": "test",
+      "skill": "analytics",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T21"
+      ],
+      "completed_at": null,
+      "phase": "testing"
+    },
+    {
+      "id": "T29",
+      "title": "Performance baseline + verification: LCP/CLS pre-merge capture + post-deploy comparison",
+      "type": "test",
+      "skill": "ops",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T14",
+        "T15"
+      ],
+      "completed_at": null,
+      "phase": "testing"
+    },
+    {
+      "id": "T30",
+      "title": "A11y verification: AXE-core CI + manual keyboard/screen-reader test on preview",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T23"
+      ],
+      "completed_at": null,
+      "phase": "testing"
+    },
+    {
+      "id": "T31",
+      "title": "Code review: diff vs main, identify risks (none expected; fitme-story-only)",
+      "type": "review",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T29",
+        "T30"
+      ],
+      "completed_at": null,
+      "phase": "review"
+    },
+    {
+      "id": "T32",
+      "title": "/ux pre-merge-review: heuristic check of code vs ux-spec; verdict to state.json",
+      "type": "review",
+      "skill": "ux",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T29",
+        "T30"
+      ],
+      "completed_at": null,
+      "phase": "review"
+    },
+    {
+      "id": "T33",
+      "title": "/design pre-merge-review: spec<->build parity + figma_node_ids populated + PR description references IDs",
+      "type": "review",
+      "skill": "design",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T25",
+        "T26",
+        "T27",
+        "T28",
+        "T29",
+        "T30"
+      ],
+      "completed_at": null,
+      "phase": "review"
+    },
+    {
+      "id": "T34",
+      "title": "CI gate verification: feature branch + main both green",
+      "type": "review",
+      "skill": "ops",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T31",
+        "T32",
+        "T33"
+      ],
+      "completed_at": null,
+      "phase": "review"
+    },
+    {
+      "id": "T35",
+      "title": "Create PR + squash-merge + delete feature branch + record PR number",
+      "type": "merge",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T34"
+      ],
+      "completed_at": null,
+      "phase": "merge"
+    },
+    {
+      "id": "T36",
+      "title": "Post-merge GA4 regression: verify 4 new events still fire on prod; existing events not broken",
+      "type": "test",
+      "skill": "analytics",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T35"
+      ],
+      "completed_at": null,
+      "phase": "merge"
+    },
+    {
+      "id": "T37",
+      "title": "Update PRD with final implementation state",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T35"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T38",
+      "title": "Update docs/product/backlog.md: move feature Planned -> Done",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T35"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T39",
+      "title": "Record baseline metric values in state.json.phases.metrics (LCP, CLS, AXE)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T29",
+        "T30",
+        "T35"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T40",
+      "title": "Confirm first_review_date = 2026-06-26 in state.json",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "low",
+      "effort_days": 0.02,
+      "depends_on": [
+        "T35"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T41",
+      "title": "Author source case study at docs/case-studies/ with 7 frontmatter fields + 4 kill_criteria_resolution placeholders",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T35",
+        "T36",
+        "T37",
+        "T38",
+        "T39",
+        "T40"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T42",
+      "title": "Author fitme-story showcase MDX; chronologically slot after most-recent v7.8.6+ entry",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T41"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T43",
+      "title": "Append cache_hits + phase_approved + complete event; transition current_phase=complete",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T41",
+        "T42"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    },
+    {
+      "id": "T44",
+      "title": "Update memory file project_case_study_thread_visualization_shipped.md",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "low",
+      "effort_days": 0.05,
+      "depends_on": [
+        "T43"
+      ],
+      "completed_at": null,
+      "phase": "documentation"
+    }
+  ],
+  "figma_node_ids": {},
+  "figma_build_status": "deferred_to_prompt",
+  "pre_merge_review": {
+    "ux": null,
+    "design": null,
+    "design_parity": null
+  },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-05-16T17:39:03Z",
+      "approved_by": "user",
+      "note": "4 decision points resolved: min cluster size >=3, framework split into hadf + framework-integrity-v7, backfill scope confirmed-needed only (4 MDXs), hybrid naming convention. Final locked series catalog: 10 series, ~66 case studies threaded."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-05-16T17:44:13Z",
+      "approved_by": "user",
+      "note": "PRD approved as drafted. 12 functional requirements, 4 GA4 events (2 conversion), 4 kill criteria, primary target 5% engagement within 30 days. has_ui=true, requires_analytics=true, analytics_spec_complete=true. Min eval coverage gate auto-passes (no AI-touching code)."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-05-16T17:49:04Z",
+      "approved_by": "user",
+      "note": "Phase 2 approved as drafted. 44 tasks, 5.27 person-days, T24 flagged for isolation. Phase 3 chain: ux research/spec/preflight + design preflight/audit/build. Phase 3 is non-skippable for new UI feature."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "PAUSED_pending_calendar_gate",
+      "timestamp": "2026-05-16T18:00:04Z",
+      "approved_by": "user",
+      "note": "Phase 3 complete. ux-research.md + ux-spec.md + ux-preflight-audit + design-preflight + 2 build prompts all written. /ux validate self-check PASS (12/12 checks per spec \u00a712.1). /design audit PASS (compose-primitives build, zero DS evolution). T8 Figma build DEFERRED to Phase 4 close (figma_build_status=deferred_to_prompt). HARD PAUSE before Phase 4 \u2014 resume 2026-05-22 post v7.9 promotion decision."
+    }
+  ],
+  "cache_hits": [],
+  "timing": {
+    "session_start": "2026-05-16T17:26:14Z",
+    "sessions": [
+      {
+        "started_at": "2026-05-16T17:26:14Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "phases_active": [
+          "research",
+          "prd",
+          "tasks",
+          "ux_or_integration"
+        ]
+      }
+    ],
+    "phases": {
+      "research": {
+        "started_at": "2026-05-16T17:26:14Z",
+        "ended_at": "2026-05-16T17:39:03Z",
+        "duration_minutes": 12.8,
+        "paused_minutes": 0
+      },
+      "prd": {
+        "started_at": "2026-05-16T17:39:03Z",
+        "ended_at": "2026-05-16T17:44:13Z",
+        "duration_minutes": 5.2,
+        "paused_minutes": 0
+      },
+      "tasks": {
+        "started_at": "2026-05-16T17:44:13Z",
+        "ended_at": "2026-05-16T17:49:04Z",
+        "duration_minutes": 4.8,
+        "paused_minutes": 0
+      },
+      "ux_or_integration": {
+        "started_at": "2026-05-16T17:49:04Z",
+        "ended_at": "2026-05-16T18:00:04Z",
+        "duration_minutes": 11.0,
+        "paused_minutes": 0
+      }
+    },
+    "parallel_context": {
+      "concurrent_features": 0,
+      "concurrent_feature_slugs": [],
+      "is_stress_test": false
+    },
+    "session_end": null,
+    "total_wall_time_minutes": null,
+    "time_source": "measured"
+  },
+  "case_study_showcase": "fitme-story/content/04-case-studies/<slot>-case-study-thread-visualization.mdx",
+  "brainstorm": {
+    "mode_used": "mixed (problem + solution + assumption + strategy)",
+    "conducted_in": "pm-workflow launch conversation 2026-05-16",
+    "source_record": "session transcript: 4 rounds of AskUserQuestion + infra-master-plan overlay",
+    "problem": {
+      "pain": "When a project ships across multiple case studies (e.g., UCC: 4 studies spanning v4.3 to v7.8.1, or framework-v7.X: 10 studies from v7.1 to v7.8.6), readers see them as disconnected items in a flat listing. The progression from one part to the next is invisible at the listing level; readers must click into individual studies and manually trace prose mentions to discover the thread.",
+      "evidence": "fitme-story content-schema.ts:77 has an unused `related: z.array(z.string())` field. Listing page (case-studies/page.tsx) groups only by hardcoded MILESTONES + era buckets + v7 slug-regex categories; no project/feature grouping exists. UCC thread today is invisible: 23a (UCC migration) and 26 (UCC passkey) appear 3 slots apart with no connection cue.",
+      "reach": "Every reader of the public case-studies listing. ~20-30 case studies belong to multi-part clusters today (4 UCC + 10 framework-v7 + several smaller). Conservative estimate: 50% of public readers care about progression context.",
+      "who_complains": "External operators / portfolio readers who want to understand how a feature evolved over time."
+    },
+    "solution": {
+      "chosen": "Option 2 \u2014 Visual timeline thread (prominent)",
+      "alternatives_considered": [
+        {
+          "name": "Option 1 \u2014 Series buckets + breadcrumb (compact)",
+          "pro": "low real estate, scales to many clusters",
+          "con": "thread is informational not focal"
+        },
+        {
+          "name": "Option 2 \u2014 Visual timeline thread (prominent) \u2014 CHOSEN",
+          "pro": "thread becomes focal UI element on both listing and detail pages, clear chronology + version markers",
+          "con": "higher visual density on listing; ~2-3 days implementation vs ~1 day for Option 1"
+        },
+        {
+          "name": "Option 3 \u2014 Minimal: populated related[] + footer links",
+          "pro": "fastest (~2hrs); reuses existing unused field",
+          "con": "thread only visible AFTER click; defeats discoverability goal"
+        }
+      ],
+      "rationale": "User explicitly chose visual prominence over compact. They want the thread visible at listing level to signal multi-part progression without requiring a click. Bucket approach was close second but loses visual chronology cue (version markers on horizontal timeline immediately communicates the v4.3 -> v7.8.1 arc for UCC)."
+    },
+    "assumptions": [
+      {
+        "assumption": "A `series_id` frontmatter field is the right schema primitive (vs predecessor/successor pointers, vs a separate catalog file)",
+        "validation": "fitme-story `related[]` field exists as precedent; single ID + chronological sort by `timeline_position.order` is simpler than a graph; combined with a typed catalog file for series-level metadata.",
+        "risk_if_wrong": "Schema lock-in; harder to express multi-thread membership later (e.g., framework-v7 AND test-discipline). Mitigation: ship single series_id v1, evolve to array if needed."
+      },
+      {
+        "assumption": "FT2-only case studies should be backfilled as fitme-story MDX showcases (vs link-out cards)",
+        "validation": "User explicitly chose backfill. Public site becomes canonical thread display.",
+        "risk_if_wrong": "6-10 new MDX authoring effort; risk of stale FT2 .md if MDX summary drifts. Mitigation: MDX links to source FT2 markdown."
+      },
+      {
+        "assumption": "Framework v7.X chain is a single 10-part thread (not split by mechanical-enforcement boundary)",
+        "validation": "User explicitly chose single chain. Most truthful to how the work actually unfolded.",
+        "risk_if_wrong": "10-node timeline may be crowded on small viewports. Mitigation: Phase 3 UX spec must handle responsive layout (e.g., collapsed-by-default on mobile, max 5 nodes visible with paging)."
+      },
+      {
+        "assumption": "Calibration window 2026-05-15 to 2026-05-21 needs protection from this feature's gate fires",
+        "validation": "C1 precedent (cadence-followups.md L133) deferred 9 test fixtures past 2026-05-22 for same reason. Pre-commit gates would fire on case-study MDX edits + state.json phase transitions. Sequencing splits Phases 0-3 (planning, minimal fires) from Phases 4+ (implementation, many fires).",
+        "risk_if_wrong": "Either contaminates v7.9 promotion data OR delays feature. Mitigation: hard-pause checkpoint end of Phase 3 \u2014 re-evaluate once promotion decision lands 2026-05-21."
+      }
+    ],
+    "strategy": {
+      "why_now": "Public case-study listing matured to 25+ entries; threading would have been premature with <10 studies but now provides real reader value. v7.8.6 shipped 2026-05-15 closed the framework infra plumbing; Phase E window (2026-05-21 to 06-04) is a natural quiet period for product/presentation work.",
+      "why_not_defer": "Cluster count grows monotonically; every shipped feature adds zero or one more thread member. Threading retrofit cost grows with cluster size. Better to ship the primitive now so all future case studies benefit automatically.",
+      "why_not_simpler": "Minimal option (related[] + footer) was rejected because it doesn't make threads discoverable. Readers would still see a flat listing and learn of threading only post-click. The point of the feature is to make progression visible at the discovery surface.",
+      "kill_criteria_seed": "If by 30 days post-ship ZERO external readers click a series-timeline node to navigate between parts (measured via GA4 event), the feature is not solving the discoverability problem. Consider rollback to Option 1 (compact) or Option 3 (footer-only)."
+    }
+  },
+  "paused_at": "2026-05-16T18:00:04Z",
+  "paused_reason": "v7.9 calibration window protection per cadence-followups.md C1 precedent. Resume Phase 4 (implementation) on 2026-05-22 after v7.9 promotion decision lands 2026-05-21."
+}

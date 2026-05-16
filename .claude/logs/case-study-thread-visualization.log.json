@@ -1,0 +1,137 @@
+{
+  "version": "1.0",
+  "feature": "case-study-thread-visualization",
+  "title": "case study thread visualization",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.8.6",
+  "started_at": "2026-05-16T17:28:09Z",
+  "updated_at": "2026-05-16T18:00:14Z",
+  "events": [
+    {
+      "timestamp": "2026-05-16T17:28:09Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "Phase 0 (Research) opened. New feature: visual timeline component to render multi-part case-study threads on listing + detail pages. Locked decisions pre-Phase-0: visual timeline approach (Option 2), all identifiable clusters scope, FT2-only studies backfilled as fitme-story MDX. Sequencing: Phases 0-3 walk now; HARD PAUSE before Phase 4 per v7.9 calibration window protection.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T17:39:07Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved. research.md drafted with cluster catalog (22 clusters, 17 cross-repo, 72% public-side complete). 4 decision points resolved: min cluster >=3 members; framework-v7 split into hadf + framework-integrity-v7 per Explore agent recommendation; backfill scope confirmed-needed only (4 MDXs); hybrid naming convention. Final locked: 10 series rendered, ~66 case studies threaded.",
+      "artifacts": [
+        ".claude/features/case-study-thread-visualization/research.md"
+      ],
+      "metrics": {
+        "clusters_identified": 22,
+        "series_locked": 10,
+        "backfill_mdx_count": 4
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T17:39:09Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened. has_ui=true, requires_analytics=true. Drafting full PRD with success metrics, GA4 analytics spec (4 new web events), kill criteria, and 10 functional requirements.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T17:44:17Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) approved by user. 12 functional requirements documented; 4 GA4 events spec'd (2 conversion); primary metric target 5% series navigation engagement within 30 days; 4 kill criteria including primary zero-engagement rollback to Option 3. analytics_spec_complete=true. Min eval coverage auto-passes.",
+      "artifacts": [
+        ".claude/features/case-study-thread-visualization/prd.md"
+      ],
+      "metrics": {
+        "functional_requirements": 12,
+        "ga4_events": 4,
+        "conversion_events": 2,
+        "kill_criteria": 4
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T17:44:20Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) opened. Decomposing 12 FRs into atomic implementable tasks with dependency graph + skill routing + complexity classification.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T17:49:08Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved by user. 44 tasks across 7 phases, 5.27 person-days. T24 flagged isolation_required. No cross-feature dependencies.",
+      "artifacts": [
+        ".claude/features/case-study-thread-visualization/tasks.md"
+      ],
+      "metrics": {
+        "total_tasks": 44,
+        "total_effort_days": 5.27
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T17:49:11Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX/Integration) opened. Non-skippable for new UI. Dispatch chain: ux research/spec/preflight + design preflight/audit + build. work_subtype=new_ui (no /ux audit step needed).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T18:00:09Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (UX/Integration) approved by user. ux-research.md + ux-spec.md (13 sections, all 5 states + 3 breakpoints + a11y contract) + ux-preflight-audit (14 tokens verified + 4 components + 7 insertion points all PASS) + design-preflight (DS compliance PASS; Figma MCP assumed-OK; Code Connect token unconfirmed P1 advisory) + 2 build prompts. T8 Figma build DEFERRED to prompt (component code doesn't exist yet; auto-scaffold via code-connect-automation post Phase 4).",
+      "artifacts": [
+        ".claude/features/case-study-thread-visualization/ux-spec.md"
+      ],
+      "metrics": {
+        "tokens_verified": 14,
+        "components_reused": 1,
+        "new_components": 1,
+        "responsive_breakpoints": 3,
+        "ux_states_specified": 5
+      },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-16T18:00:14Z",
+      "event_type": "note",
+      "phase": "ux_or_integration",
+      "summary": "HARD PAUSE recorded. Feature halted at Phase 3 approved status. Resume protocol: re-run make preflight + make integrity-diff on 2026-05-22 (post v7.9 promotion decision), then transition current_phase to implementation. paused_reason in state.json. Calendar-anchored.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
