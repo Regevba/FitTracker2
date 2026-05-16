@@ -656,6 +656,42 @@ git branch -d <branch>                             # safe (refuses if unmerged)
 
 ---
 
+### W11 — Incomplete PR cache (one of two expected repos absent)
+
+**Pattern:** [`scripts/ensure-pr-cache-fresh.py`](../../scripts/ensure-pr-cache-fresh.py) (v7.8.4 `PR_CACHE_STALE` gate) refreshes `.cache/gh-pr-cache.json` when the cache is **missing**, **empty** (zero PRs across all repos), or **stale** (>24h). It does NOT validate that all expected repos are present. If a refresh ever produces a cache with only one of the two expected repos populated (e.g., `Regevba/FitTracker2` present but `Regevba/fitme-story` absent), the freshness check sees a non-empty, recently-rebuilt cache and skips refresh — but every cross-repo `BROKEN_PR_CITATION` lookup fires a false-positive finding.
+
+**Why expected:** Variant of W3-class issues — silent-pass-then-fixed. The v7.8.4 emptiness check uses "any repo has any PRs" semantics. v7.8.3's D-3 unified cross-repo PR cache assumed the canonical repo list (`REPOS = ["Regevba/FitTracker2", "Regevba/fitme-story"]`) would always be fully populated by `scripts/refresh-pr-cache.py`. A partial-write (gh CLI rate-limited mid-refresh, network blip after first repo, manual edit, parallel write race) violates this assumption silently.
+
+**Distinguishing real signal:**
+
+- **Real signal:** every BROKEN_PR_CITATION finding's URL or `pull/N` cite resolves manually with `gh pr view N --repo <owner>/<repo>` AND the case study or state.json was NOT recently introduced with a placeholder PR number. **AND** the cache file is recent (<24h) so the v7.8.4 refresh logic considers it "fresh."
+- **W11 artifact (skip):** ALL BROKEN_PR_CITATION findings cite the SAME absent repo (e.g., all cite `Regevba/fitme-story` while `Regevba/FitTracker2` cites resolve fine). Cache inspection (`python3 -c "import json; print(list(json.load(open('.cache/gh-pr-cache.json'))['repos'].keys()))"`) confirms the expected repo is missing from the `repos` dict.
+
+**Silence path:**
+
+```bash
+make refresh-pr-cache               # forces a full re-fetch across all REPOS
+make integrity-check                # findings should drop to baseline
+```
+
+The fix shipped in this PR (`fix/pr-cache-completeness-w3b`) extends `ensure-pr-cache-fresh.py` to validate per-repo completeness: cache is considered stale if ANY expected repo is absent OR has zero PRs in all buckets. After this fix lands, the `PR_CACHE_STALE` gate auto-recovers from this scenario on next invocation (typically next `make integrity-check` or pre-commit hook fire).
+
+**First observed:** 2026-05-16. The autonomous launchd cron rebuilt the cache at 03:04 UTC (06:04 IDT) but produced a single-repo cache. The 06:21 UTC daily-checkpoint then captured 32 BROKEN_PR_CITATION findings as a phantom regression vs baseline. Diagnosed within ~10 minutes via direct cache inspection + `make refresh-pr-cache` recovery. The script-side fix codifies the recovery so future occurrences self-heal.
+
+**Notes:**
+
+- Sibling to W3 / W3.b in spirit but tracked as its own W-number (W11) per the sequential-numbering convention used in this catalog.
+- Related: `BROKEN_PR_CITATION` (Section 1, #13) — this pattern's surface; `PR_CACHE_STALE` (Section 1, #12) — the cache-freshness gate; v7.8.3 D-3 cross-repo cache spec.
+- Lesson: emptiness checks must enforce per-element completeness, not aggregate presence. "Some data present somewhere" ≠ "all expected data present."
+
+**Files involved:**
+
+- Cache freshness gate: [`scripts/ensure-pr-cache-fresh.py`](../../scripts/ensure-pr-cache-fresh.py)
+- Cache writer: [`scripts/refresh-pr-cache.py`](../../scripts/refresh-pr-cache.py)
+- Cache file: `.cache/gh-pr-cache.json`
+
+---
+
 ## Pattern submission template
 
 When you discover a NEW pattern (gate fires + no matching entry above), add it here.
@@ -717,6 +753,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W8 Audit status is UI marker | W8 | — |
 | W9 Branch-drift from concurrent-session collision (DETECTED via PostToolUse:Bash hook) | W9 | 2026-05-13 |
 | W10 Stale `[gone]` branches + orphan worktrees | W10 | 2026-05-15 |
+| W11 Incomplete PR cache (one of two expected repos absent) | W11 | 2026-05-16 |
 
 ---
 
