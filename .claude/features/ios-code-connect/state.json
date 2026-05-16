@@ -2,7 +2,7 @@
   "feature_name": "ios-code-connect",
   "current_phase": "implementation",
   "created_at": "2026-05-09T19:27:43Z",
-  "updated_at": "2026-05-10T05:26:37Z",
+  "updated_at": "2026-05-16T06:30:00Z",
   "framework_version": "v7.8.1",
   "work_type": "chore",
   "work_subtype": "design_system_extension",
@@ -69,9 +69,28 @@
     {
       "id": "T4",
       "title": "Run figma connect publish \u2014 push iOS mappings to FitMe Design System Library; verify Code Connect snippets appear in Figma Dev Mode",
-      "status": "pending",
+      "status": "blocked",
       "effort_days": 0.25,
-      "blocker": "T3"
+      "blocker": "FIGMA_ACCESS_TOKEN repo secret is missing the Code Connect Write scope. CI workflow .github/workflows/figma-code-connect-publish.yml has run 3 times (run IDs 25621980058 / 25623253076 / 25629689372 on 2026-05-10): first run succeeded (token write-attempted on empty file), runs 2-3 failed with `Failed to upload to Figma (403): 403 Invalid scope(s): Please ensure that you have selected both the File Read scope and the Code Connect Write scope when generating the token.`",
+      "diagnostic": {
+        "diagnosed_at": "2026-05-16T06:30:00Z",
+        "diagnosed_via": "gh run view 25629689372 --log-failed",
+        "infrastructure_status": {
+          "ci_workflow": ".github/workflows/figma-code-connect-publish.yml present in main (1.7KB, dated 2026-05-10)",
+          "mapping_files": "5 .figma.swift files present (ImportPreviewView, NotificationPermissionRow, OnboardingWelcomeView.v2, ImportedPlansListScreen.v2, TrainingPlanView.v2)",
+          "secret_present": "FIGMA_ACCESS_TOKEN secret exists in repo (added 2026-05-10T08:20:15Z)",
+          "swift_parser": "Successfully built; all 6 Code Connect files validated locally per run-25629689372 logs"
+        },
+        "root_cause": "The FIGMA_ACCESS_TOKEN was generated with read scopes only. Code Connect publish requires the `file_dev_resources:write` scope (Figma calls this \"Code Connect Write\" in the token-generation UI).",
+        "operator_fix": [
+          "1. Visit https://www.figma.com/settings \u2192 Security \u2192 Personal access tokens.",
+          "2. Generate a new token with these scopes per CLAUDE.md: file_content:read + file_dev_resources:read + file_dev_resources:write (the \"Code Connect Write\" checkbox is the third one). library_content:read is recommended.",
+          "3. Update the FIGMA_ACCESS_TOKEN secret in Regevba/FitTracker2 repo settings: `gh secret set FIGMA_ACCESS_TOKEN --body \"<new-token>\"`.",
+          "4. Re-run the failed workflow: `gh run rerun 25629689372` OR push any change touching `*.figma.swift` to trigger a fresh publish.",
+          "5. Verify in Figma Dev Mode: open the FitMe Design System Library (file 0Ai7s3fCFqR5JXDW8JvgmD), inspect one of the 5 mapped screens (e.g., OnboardingWelcomeView.v2), confirm the iOS code panel shows the SwiftUI snippet."
+        ],
+        "related_gate": "/design preflight Step 3.5 (Code Connect write-access gate, FT2 PR #280) is the gate designed to catch this BEFORE the publish workflow fires \u2014 by probing the publish path during preflight. Running `/design preflight ios-code-connect` would have surfaced the scope gap at spec-time rather than at CI-time."
+      }
     },
     {
       "id": "T5",
