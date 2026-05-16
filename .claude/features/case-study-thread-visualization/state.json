@@ -951,5 +951,15 @@
     }
   },
   "paused_at": "2026-05-16T18:00:04Z",
-  "paused_reason": "v7.9 calibration window protection per cadence-followups.md C1 precedent. Resume Phase 4 (implementation) on 2026-05-22 after v7.9 promotion decision lands 2026-05-21."
+  "paused_reason": "v7.9 calibration window protection per cadence-followups.md C1 precedent. Resume Phase 4 (implementation) on 2026-05-22 after v7.9 promotion decision lands 2026-05-21.",
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.5,
+      "blast_radius": 0.4,
+      "novelty": 0.5,
+      "verification_difficulty": 0.6
+    },
+    "total": 2.0,
+    "tier_class": "B_medium"
+  }
 }

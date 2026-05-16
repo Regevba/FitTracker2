@@ -1,42 +1,42 @@
 {
   "version": "1.0",
-  "updated": "2026-05-16T06:08:12Z",
+  "updated": "2026-05-16T18:20:04Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 70,
-    "features_post_v6": 36,
+    "features_total": 72,
+    "features_post_v6": 38,
     "features_pre_v6": 34,
     "fully_adopted": 3,
-    "partial_adopted": 29,
-    "zero_adopted": 38,
+    "partial_adopted": 30,
+    "zero_adopted": 39,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 17,
-      "overall_percent": 24.3,
+      "overall_percent": 23.6,
       "post_v6_present": 17,
-      "post_v6_percent": 47.2
+      "post_v6_percent": 44.7
     },
     "per_phase_timing": {
-      "overall_present": 32,
-      "overall_percent": 45.7,
-      "post_v6_present": 29,
-      "post_v6_percent": 80.6
+      "overall_present": 33,
+      "overall_percent": 45.8,
+      "post_v6_present": 30,
+      "post_v6_percent": 78.9
     },
     "cache_hits": {
       "overall_present": 20,
-      "overall_percent": 28.6,
+      "overall_percent": 27.8,
       "post_v6_present": 19,
-      "post_v6_percent": 52.8
+      "post_v6_percent": 50.0
     },
     "cu_v2": {
       "overall_present": 7,
-      "overall_percent": 10.0,
+      "overall_percent": 9.7,
       "post_v6_present": 7,
-      "post_v6_percent": 19.4
+      "post_v6_percent": 18.4
     }
   },
   "fully_adopted_features": [
@@ -87,6 +87,15 @@
         "timing_wall_time": true,
         "per_phase_timing": true,
         "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "case-study-thread-visualization",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
         "cu_v2": false
       }
     },
@@ -394,6 +403,11 @@
       "post_v6": true
     },
     {
+      "feature": "framework-v7-9-promotion",
+      "created": "2026-05-16",
+      "post_v6": true
+    },
+    {
       "feature": "gdpr-compliance",
       "created": "2026-04-04",
       "post_v6": false
@@ -677,6 +691,20 @@
         "timing_wall_time": true,
         "per_phase_timing": true,
         "cache_hits": true,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "case-study-thread-visualization",
+      "created": "2026-05-16",
+      "post_v6": true,
+      "current_phase": "ux_or_integration",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
@@ -967,6 +995,20 @@
       "created": "2026-05-04",
       "post_v6": true,
       "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": false
+    },
+    {
+      "feature": "framework-v7-9-promotion",
+      "created": "2026-05-16",
+      "post_v6": true,
+      "current_phase": "research",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": false,

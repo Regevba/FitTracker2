@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "updated": "2026-05-16T06:08:12Z",
+  "updated": "2026-05-16T18:20:04Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 76,
-    "features_scanned": 70,
-    "integrity_snapshot_files": 6,
-    "integrity_cycle_snapshots": 4,
+    "features_scanned": 72,
+    "integrity_snapshot_files": 7,
+    "integrity_cycle_snapshots": 5,
     "trend_ready": true,
-    "open_debt_items": 1
+    "open_debt_items": 2
   },
   "coverage": {
     "date_written": {
@@ -66,21 +66,33 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 70,
-      "missing": 0,
-      "percent": 100.0,
-      "examples": []
+      "present": 71,
+      "missing": 1,
+      "percent": 98.6,
+      "examples": [
+        "case-study-thread-visualization"
+      ]
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 6,
-    "snapshots_available": 4,
+    "snapshot_files_available": 7,
+    "snapshots_available": 5,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": true,
     "status": "trend_ready",
     "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple scheduled 72h cycle snapshots; ad hoc local snapshots do not unlock trend mode."
   },
   "debt_items": [
+    {
+      "id": "state_case_study_linkage",
+      "title": "Features missing case-study linkage in state.json",
+      "severity": "low",
+      "count": 1,
+      "examples": [
+        "case-study-thread-visualization"
+      ],
+      "recommended_next_step": "Backfill case-study linkage or an explicit case_study_type marker when feature state is touched."
+    },
     {
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
