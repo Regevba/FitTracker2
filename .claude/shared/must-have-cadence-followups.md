@@ -16,7 +16,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
 | B5 | **2026-11-13** | Quarterly cross-layer test-discipline audit (recurring) | operator | test-coverage §6.2 |
 | B6 | **2026-05-22** | C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21) | operator | followups §C1 |
-| B7 | **2026-05-17** | UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2 (after first cron at 05:13 UTC) | operator | ucc-passkey-auth case study §99 |
+| B7 | **2026-05-18** | UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2 (DEFERRED from 2026-05-17: audit-log persistence bug discovered; Redis-backed fix shipped fitme-story PR #122 + FT2 PR #383; awaiting natural cron 05:13 UTC tomorrow) | operator | ucc-passkey-auth case study §99 + ucc-passkey-auth-audit-log-redis-fix |
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
 
