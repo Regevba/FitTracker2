@@ -121,6 +121,8 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 | C8 | SessionStart preflight — detect stale `.vercel/project.json` pointing to legacy `fit-tracker2` | ucc-passkey-auth case study §99 quirk 4 | low (operability) | chore (FT2 + fitme-story `.claude/settings.json`) | **2026-05-22** (`.claude/shared/*` infra-glob defer) |
 | C9 | UCC coral-pulse animation on `/control-room/sign-in` (800ms-after-load nudge) | ucc-passkey-auth ux-spec §6 + ux-pre-merge-review (1 P2) | P2 | enhancement (fitme-story) | when convenient (no calendar gate) |
 | C10 | UCC 4 control-room dark-mode contrast verifications — `AuthPasskeyForm` / `DevicesTable` / `AuditEventRow` / `AuditLogPanel` | fitme-story-dark-mode-coverage.md TODOs | P2 | enhancement (fitme-story) | when convenient (no calendar gate) |
+| C11 | MEMORY.md staleness check — `scripts/check-memory-staleness.py` + `make memory-check` + `.claude/settings.json` Stop hook (Option C from 2026-05-17 session) | session-end checklist formalization | low (operability) | chore (FT2) | **2026-05-22** (defer past v7.9 calibration — `scripts/*` + `Makefile` infra-glob) |
+| C12 | Preflight bug fix — `scripts/preflight.py:264` `enhancement_parent_state()` should read `parent_feature` from current state.json + check THAT parent's prd.md, not the current feature's. Today's UU4 setup hit a false-positive blocker; manual override used. | 2026-05-17 UU4 setup | low (preflight reliability) | fix (FT2) | **2026-05-22** (defer past v7.9 calibration — `scripts/*` infra-glob) |
 
 ### C1 — F14/F15 dispatch-test coverage push
 

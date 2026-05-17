@@ -1,0 +1,247 @@
+{
+  "feature": "ucc-sign-in-figma-mapping",
+  "display_name": "UCC sign-in screens — Figma representation + Internal-deferral policy amendment",
+  "work_type": "enhancement",
+  "parent_feature": "ucc-passkey-auth",
+  "framework_version": "v7.8.6",
+  "created_at": "2026-05-17T12:30:00Z",
+  "updated": "2026-05-17T12:30:00Z",
+  "branch": "feature/ucc-sign-in-figma-mapping",
+  "state_owner": "ft2",
+  "current_phase": "implementation",
+  "has_ui": true,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement",
+      "note": "Research inherited from parent ucc-passkey-auth. The decision to grant a form-driven exception to control-room components was made in the 2026-05-16 UU3/UU4/UU6 review."
+    },
+    "prd": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement",
+      "note": "PRD inherited from parent ucc-passkey-auth. This enhancement adds Figma representation to already-shipped screens (no new product behavior)."
+    },
+    "tasks": {
+      "status": "approved",
+      "approved_at": "2026-05-17T11:40:00Z",
+      "count": 11,
+      "approval_note": "User approved 2026-05-17 with directive to review infra master plan first for data-integrity concerns. Review confirmed UU4 is calibration-window-safe (no infra-glob path touches, no new candidate streams in gate-coverage.jsonl). Two separate items DEFERRED to 2026-05-22 (post v7.9 promotion): Option C MEMORY.md staleness check (C11) + preflight enhancement_parent bug fix (C12)."
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement (screens already live in production; this work documents existing UI in Figma, no new UX)"
+    },
+    "implementation": {
+      "status": "in_progress",
+      "started_at": "2026-05-17T11:40:00Z",
+      "commits": []
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "pending"
+    }
+  },
+  "rationale_summary": "The Internal-deferral policy at fitme-story/docs/CONTRIBUTING-design-system.md §3 says control-room components stay code-first because they are 'heavily data-driven — designing them in Figma without realistic data fixtures produces low-fidelity stubs.' The 2 UCC sign-in pages (/control-room/sign-in + /control-room/sign-in/recover) are form-driven not data-driven: stable email-input + WebAuthn-button UI + 8 known error states, no dynamic data fixtures needed. They also render to UNAUTHENTICATED users (effectively a public-feeling surface). UU1 (coral-pulse polish) already established that form-aesthetic matters here. This enhancement adds a 'form-driven exception' clause to §3 + ships Figma representation for the 2 sign-in screens + AuthPasskeyForm component + Code Connect mappings, closing the loop the parent feature deferred at ship 2026-05-07.",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Amend fitme-story/docs/CONTRIBUTING-design-system.md §3 with 'form-driven exception' clause",
+      "type": "docs",
+      "skill": "design",
+      "lane": "p-core",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.1,
+      "depends_on": [],
+      "files": ["fitme-story/docs/CONTRIBUTING-design-system.md"],
+      "note": "Adds an explicit exception clause: control-room components MAY have Figma representation when (a) shown to unauthenticated users OR (b) form-driven with no data-fixture complexity. Defines which components qualify (initial list: AuthPasskeyForm, plus the 2 sign-in pages). Defines what stays Internal (TaskTree, AuditLogPanel, DevicesTable, etc.). Cross-references the manifest convention update in T8."
+    },
+    {
+      "id": "T2",
+      "title": "Build Figma frames for /control-room/sign-in (3 states: idle / pending / error)",
+      "type": "design",
+      "skill": "design",
+      "lane": "p-core",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.3,
+      "depends_on": ["T1"],
+      "figma_file": "fsjHfFLAHELACZHku8Rfcl (FitMe Story Web — Design System)",
+      "note": "Three frames using existing Figma tokens (color-brand-indigo, color-brand-coral, neutral ladder, type scale). Uses Figma MCP via /design build skill. Captures the coral-pulse-cta polish from UU1 in the idle state. Error state covers all 8 ERROR_REASON entries from AuthPasskeyForm.tsx ERROR_REASON map. Node IDs land in state.json.figma_node_ids."
+    },
+    {
+      "id": "T3",
+      "title": "Build Figma frames for /control-room/sign-in/recover (3 states: idle / pending / error)",
+      "type": "design",
+      "skill": "design",
+      "lane": "p-core",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.3,
+      "depends_on": ["T1"],
+      "figma_file": "fsjHfFLAHELACZHku8Rfcl",
+      "note": "Recover flow uses bootstrap token paste field instead of email input. Idle state shows the input + paste-helper text; pending fires during token verification; error covers bootstrap_invalid + timeout."
+    },
+    {
+      "id": "T4",
+      "title": "Build AuthPasskeyForm component frame in Figma library (5 states: idle / pending / success / error / locked)",
+      "type": "design",
+      "skill": "design",
+      "lane": "p-core",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.3,
+      "depends_on": ["T1"],
+      "figma_file": "fsjHfFLAHELACZHku8Rfcl",
+      "note": "Component variants matching the Status type from AuthPasskeyForm.tsx ('idle' | 'pending' | 'success' | 'error' | 'locked'). Light + dark mode pair. Variant property: mode = authenticate | register (controls primary button label). Component becomes the Figma source-of-truth referenced from the 2 page frames in T2/T3."
+    },
+    {
+      "id": "T5",
+      "title": "Author .figma.tsx Code Connect mapping for AuthPasskeyForm",
+      "type": "docs",
+      "skill": "dev",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": ["T4"],
+      "files": ["fitme-story/src/components/control-room/AuthPasskeyForm.figma.tsx (new)"],
+      "note": "Standard Code Connect mapping per the 19 existing .figma.tsx files (Card, Button, Tag, etc.). Maps Figma variants to React props (mode + status + primaryLabel + disableConditional). Picked up by figma-code-connect-publish.yml on push."
+    },
+    {
+      "id": "T6",
+      "title": "Author .figma.tsx Code Connect mapping for /control-room/sign-in page",
+      "type": "docs",
+      "skill": "dev",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": ["T2"],
+      "files": ["fitme-story/src/app/control-room/sign-in/page.figma.tsx (new)"],
+      "note": "Page-level Code Connect mapping. Links the Figma frame from T2 to the React page component."
+    },
+    {
+      "id": "T7",
+      "title": "Author .figma.tsx Code Connect mapping for /control-room/sign-in/recover page",
+      "type": "docs",
+      "skill": "dev",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": ["T3"],
+      "files": ["fitme-story/src/app/control-room/sign-in/recover/page.figma.tsx (new)"],
+      "note": "Page-level Code Connect mapping for the recover flow."
+    },
+    {
+      "id": "T8",
+      "title": "Update fitme-story design-system manifest: AuthPasskeyForm + 2 sign-in pages flip Internal → Stable",
+      "type": "data",
+      "skill": "design",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": ["T5", "T6", "T7"],
+      "files": ["fitme-story/src/lib/design-system.ts"],
+      "note": "AuthPasskeyForm entry (currently lines 393-402): status 'Internal' → 'Stable', figmaNodeIds null → populated, hasFigmaConnect false → true, darkModeStatus 'TODO' → 'Designed'. Add 2 new entries for the page-level mappings if the manifest tracks pages. Update the manifest entry count comment at the top of design-system.ts if present."
+    },
+    {
+      "id": "T9",
+      "title": "Update parent ucc-passkey-auth state.json: figma_build_status null → complete + populate figma_node_ids",
+      "type": "docs",
+      "skill": "release",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": ["T8"],
+      "files": [".claude/features/ucc-passkey-auth/state.json"],
+      "note": "Currently has figma_build_status: 'deferred_to_prompt' + figma_deferral_reason: 'web_dashboard_no_figma_mapping' + figma_node_ids: {} + figma_portable_prompt: 'docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md'. Flip to figma_build_status: 'completed', populate figma_node_ids from T2/T3/T4, drop figma_deferral_reason."
+    },
+    {
+      "id": "T10",
+      "title": "Verify CI: figma-code-connect-publish.yml runs successfully on the new .figma.tsx files",
+      "type": "test",
+      "skill": "qa",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.05,
+      "depends_on": ["T5", "T6", "T7"],
+      "note": "After push to feature branch: monitor figma-code-connect-publish.yml workflow run. Expect 'success' with the new component IDs listed in the publish output. If FIGMA_ACCESS_TOKEN secret is missing required scopes (see ios-code-connect T4 diagnosis pattern), abort + escalate before merge."
+    },
+    {
+      "id": "T11",
+      "title": "Append §99 sub-entry to ucc-passkey-auth case study: UU4 closeout",
+      "type": "docs",
+      "skill": "research",
+      "lane": "e-core",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.1,
+      "depends_on": ["T9"],
+      "files": ["docs/case-studies/ucc-passkey-auth-case-study.md"],
+      "note": "New §99 sub-entry: 'UU4 closeout — form-driven exception added to Internal-deferral policy; 2 sign-in screens + AuthPasskeyForm mapped to Figma with Code Connect.' Tier-tagged T1 (node IDs measured from Figma file). Cross-references the policy amendment + CONTRIBUTING-design-system.md §3."
+    }
+  ],
+  "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
+  "predecessor_chain": ["ucc-passkey-auth"],
+  "cache_hits": [],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "complexity": {
+    "cu_version": 2,
+    "factors_applied": [
+      {"factor": "Cross-repo coordination", "value": 0.15, "reason": "Figma + Code Connect + manifest in fitme-story; state.json + case study in FT2"},
+      {"factor": "Multi-state Figma authoring", "value": 0.2, "reason": "9 frames + 1 component (5 variants × 2 themes = 10 component variants)"},
+      {"factor": "Has UI (documentation of existing)", "value": 0.1, "reason": "No new code paths; existing components get Figma representation"}
+    ]
+  },
+  "timing": {
+    "session_start": "2026-05-17T11:30:00Z",
+    "time_source": "measured",
+    "phases": {
+      "tasks": {
+        "started_at": "2026-05-17T11:30:00Z",
+        "ended_at": "2026-05-17T11:40:00Z",
+        "duration_minutes": 10
+      },
+      "implementation": {
+        "started_at": "2026-05-17T11:40:00Z",
+        "ended_at": null
+      }
+    }
+  },
+  "transitions": [
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "timestamp": "2026-05-17T11:40:00Z",
+      "approved_by": "user",
+      "note": "11-task plan approved. Data-integrity review confirmed UU4 is calibration-window-safe; Option C + preflight bug fix deferred to 2026-05-22 (C11/C12 cadence rows) since they touch infra-glob paths."
+    }
+  ]
+}
