@@ -758,5 +758,26 @@
     }
   ],
   "worktree_path": "/Volumes/DevSSD/FitTracker2-ucc-passkey-auth",
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "rollout_status": {
+    "last_updated": "2026-05-16T16:30:00Z",
+    "current_mode": "both",
+    "parts_shipped": [
+      "Part 1.1 — Upstash Redis provisioned (upstash-kv-coquelicot-pebble)",
+      "Part 1.2 — Vercel Blob provisioned (ucc-audit-log, store_Wbm976bbAd3TvK2o)",
+      "Part 2 — UCC_SESSION_SECRET + UCC_BOOTSTRAP_ADMIN_TOKEN set",
+      "Part 3 — .env.local pulled (development scope, perms 600)",
+      "Part 4 — UCC_AUTH_MODE=basic + production deploy dpl_87pw4jwejjexjf8cV9WKc3S5moQT",
+      "Part 5 — First platform passkey registered (ucc:credential:E5jvwGr...)",
+      "Part 6 — UCC_AUTH_MODE flipped basic→both + redeploy dpl_*-cp1019le3"
+    ],
+    "parts_deferred": [
+      "Part 7 break-glass — YubiKey/2nd platform passkey (target before 2026-05-28; first attempt blocked by browser UX)",
+      "Part 9 wire UCC_AUDIT_BLOB_URL — target 2026-05-17 after first 05:13 UTC cron",
+      "Part 10 verify framework-health passkey panel — target 2026-05-18+ after Part 9 + 1 daily sync",
+      "Part 8 passkey-only + drop legacy — calendar-gated on/after 2026-05-28 (post-v7.9 promotion)"
+    ],
+    "kill_criteria_checkpoint": "2026-05-23 (T+7d post UCC_AUTH_MODE=both flip; resolution lands in case study §99 + frontmatter kill_criteria_resolution)",
+    "cadence_followups_ref": ".claude/shared/must-have-cadence-followups.md (B7, B8, B9, C4-C10)"
+  }
 }

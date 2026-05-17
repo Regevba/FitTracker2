@@ -16,6 +16,9 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
 | B5 | **2026-11-13** | Quarterly cross-layer test-discipline audit (recurring) | operator | test-coverage §6.2 |
 | B6 | **2026-05-22** | C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21) | operator | followups §C1 |
+| B7 | **2026-05-17** | UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2 (after first cron at 05:13 UTC) | operator | ucc-passkey-auth case study §99 |
+| B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
+| B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
 
 ### B1 — v7.9 promotion-decision data freeze (2026-05-21)
 
@@ -49,6 +52,49 @@ mcp__ga4__runReport metric=conversions period=last_24h
 
 Flag day-over-day deltas > 30% as anomalies. No automation yet — operator runs in a session.
 
+### B7 — UCC Part 9 wire `UCC_AUDIT_BLOB_URL` (2026-05-17)
+
+After tonight's `13 5 * * *` Vercel Cron at fitme-story populates the Blob:
+
+```bash
+cd /Volumes/DevSSD/fitme-story
+CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d= -f2)
+URL=$(curl -s -H "Authorization: Bearer $CRON_SECRET" \
+  https://fitme-story.vercel.app/api/cron/sync-audit-log | jq -r .url)
+gh variable set UCC_AUDIT_BLOB_URL --body "$URL" --repo Regevba/FitTracker2
+gh workflow run "UCC audit log sync" --repo Regevba/FitTracker2
+```
+
+Activates the daily FT2 GHA T22 workflow (currently a no-op waiting on this variable).
+
+### B8 — UCC T+7d kill-criteria checkpoint (2026-05-23)
+
+Resolve K1 (registration ceremony failure rate ≤ 5%), K2 (any `counter_replay` = HARD STOP), K3 (function p50 ≤ 500ms sustained 24h) using:
+
+- Redis SCAN for `ucc:credential:*` + `ucc:operator:*` + audit-log events
+- Vercel function logs (p50 latency)
+- 7-day audit-log JSONL at `.claude/logs/ucc-auth-events.jsonl` (via B7-activated sync)
+
+Update `kill_criteria_resolution` frontmatter in `docs/case-studies/ucc-passkey-auth-case-study.md` + replace pending row in §99 with the T1 resolution.
+
+### B9 — UCC Part 8 passkey-only flip (2026-05-28+)
+
+PRECONDITIONS (ALL must hold):
+1. **B8 completed** — kill criteria resolved as `not_fired`
+2. **C4 completed** — at least one break-glass credential registered (YubiKey OR 2nd platform passkey)
+3. **B2 captured** — post-v7.9 baseline snapshot complete
+4. **0 open `auth_passkey_register_failed` events in audit log for last 7 days**
+
+If all hold:
+
+```bash
+# PATCH UCC_AUTH_MODE both → passkey via Vercel REST API + delete legacy basic-auth creds
+# See ucc-passkey-auth-setup-guide.md Part 8 for exact commands
+# DO NOT run any other infra change on the same day — single-variable blast radius
+```
+
+Rollback: PATCH back to `both` (30 seconds), re-add `DASHBOARD_USER`/`DASHBOARD_PASS` if dropped.
+
 ### B4 / B5 — Quarterly cross-layer test audit
 
 Per test-coverage §6.2. Initial run 2026-08-13, then recurring every 90 days. Output: `docs/process/cross-layer-test-audit-YYYY-MM-DD.md`.
@@ -68,6 +114,13 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 | C1 | F14/F15 dispatch-test coverage push | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **2026-05-22** (deferred 2026-05-15) |
 | C2 | T6 — Web PR JS test gate (fitme-story CI) | test-coverage-master-plan T6 | **200.0** | enhancement (on analytics-observability) | 2026-05-21 |
 | C3 | T2 — Sentry reachability test (iOS) | test-coverage-master-plan T2 | 80.0 | enhancement (test-coverage) | 2026-05-28 |
+| C4 | UCC Part 7 — break-glass registration (YubiKey OR 2nd platform passkey) | ucc-passkey-auth case study §99 | (gates B9) | operator action | before **2026-05-28** |
+| C5 | UCC Part 10 — verify framework-health passkey panel renders w/ real audit data | ucc-passkey-auth case study §99 | (depends on B7 + 1 daily sync) | operator action | **2026-05-18** earliest |
+| C6 | Bootstrap CLI — add `KV_REST_API_*` fallback in `scripts/issue-bootstrap-token.ts` | ucc-passkey-auth case study §99 quirk 2 | low (operability) | fix (fitme-story) | **2026-05-22** (defer past v7.9 calibration window — `scripts/*` is infra-glob) |
+| C7 | Vercel CLI env-add wrapper — REST API helper to bypass headless bug | ucc-passkey-auth case study §99 quirk 1 | low (operability) | chore (fitme-story OR FT2 helper) | **2026-05-22** (`scripts/*` infra-glob defer) |
+| C8 | SessionStart preflight — detect stale `.vercel/project.json` pointing to legacy `fit-tracker2` | ucc-passkey-auth case study §99 quirk 4 | low (operability) | chore (FT2 + fitme-story `.claude/settings.json`) | **2026-05-22** (`.claude/shared/*` infra-glob defer) |
+| C9 | UCC coral-pulse animation on `/control-room/sign-in` (800ms-after-load nudge) | ucc-passkey-auth ux-spec §6 + ux-pre-merge-review (1 P2) | P2 | enhancement (fitme-story) | when convenient (no calendar gate) |
+| C10 | UCC 4 control-room dark-mode contrast verifications — `AuthPasskeyForm` / `DevicesTable` / `AuditEventRow` / `AuditLogPanel` | fitme-story-dark-mode-coverage.md TODOs | P2 | enhancement (fitme-story) | when convenient (no calendar gate) |
 
 ### C1 — F14/F15 dispatch-test coverage push
 

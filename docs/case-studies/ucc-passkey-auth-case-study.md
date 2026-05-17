@@ -42,7 +42,7 @@ guardrails:
   - failed_assertion_ratio_pct: 5
   - control_room_page_load_p50_no_degradation: true
 kill_criteria: "If passkey registration ceremony fails on >5% of attempted devices in week 1, fall back to UCC_AUTH_MODE=both and reopen scope. K2 (any counter_replay event) is a hard stop. K3 (function p50 >500ms sustained 24h) → fall back."
-kill_criteria_resolution: "Pending — week-1 telemetry gate. Resolution recorded in §99 at T+7d post UCC_AUTH_MODE=both flip. Default state = `not_yet_observed` (T2 declared); flip to `not_fired` (T1 instrumented) once GA4 + audit-log show the first cohort cleanly."
+kill_criteria_resolution: "Pending — week-1 telemetry gate. Cutover Parts 1-6 SHIPPED 2026-05-16; UCC_AUTH_MODE=both flipped in production same day; T+7d checkpoint 2026-05-23 (see §99). Default state = `not_yet_observed` (T2 declared); flip to `not_fired` (T1 instrumented) once 7 days of audit-log telemetry show the first cohort cleanly."
 case_study_showcase: fitme-story/content/04-case-studies/26-ucc-passkey-auth.mdx
 external_audit_status: pending
 pr_citation_exempt:
@@ -54,9 +54,9 @@ pr_citation_exempt:
 
 # UCC Passkey Auth — Replacing basic-auth on /control-room/* with WebAuthn
 
-> **Status:** SHIPPED 2026-05-07 via fitme-story#55 (squash `5362f8f`) + FT2 PR #248 (squash `e5a7c45`).
+> **Status:** SHIPPED 2026-05-07 via fitme-story#55 (squash `5362f8f`) + FT2 PR #248 (squash `e5a7c45`). **Cutover Parts 1-6 EXECUTED 2026-05-16** — `UCC_AUTH_MODE=both` live in production; 1 platform passkey registered for the first operator; legacy basic-auth still active as fallback. Parts 7-10 + T+7d kill-criteria checkpoint deferred — see §99 for current rollout state.
 >
-> **One-line outcome:** the operator dashboard at `fitme-story.vercel.app/control-room/*` is now passkey-gated. The shared HTTP basic-auth credential it ran on for ~30 days has been preserved as a reversible fallback (`UCC_AUTH_MODE=basic`), but the path forward is per-operator passkeys with hardware-backed identity, server-side session revocation, and a daily-synced audit log surfaced on the framework-health page.
+> **One-line outcome:** the operator dashboard at `fitme-story.vercel.app/control-room/*` is now passkey-gated (both basic-auth AND passkey accepted in `both` mode). The shared HTTP basic-auth credential it ran on for ~30 days is preserved as a reversible fallback, but the path forward is per-operator passkeys with hardware-backed identity, server-side session revocation, and a daily-synced audit log surfaced on the framework-health page.
 
 ## TL;DR
 
@@ -130,12 +130,12 @@ Plus the full v7.8.1 protocol artifacts at `.claude/features/ucc-passkey-auth/` 
 
 ## Migration plan (reversible at every step)
 
-1. **Pre-ship:** `UCC_AUTH_MODE=basic` (current) — no behavior change.
-2. **Cutover-T0:** Operator runs `pnpm tsx scripts/issue-bootstrap-token.ts <email>` locally. Token TTL = 15 min, single-use, SHA-256 hash at rest. Operator pastes into `/control-room/sign-in/recover` to register first device. Flip env to `UCC_AUTH_MODE=both`. Each operator does the same.
-3. **Cutover-T+7d:** Each operator registers a YubiKey or second device as **break-glass** (mandatory before `passkey`-only flip).
-4. **Cutover-T+14d:** Flip env to `UCC_AUTH_MODE=passkey`. Drop `DASHBOARD_USER` + `DASHBOARD_PASS` env vars.
+1. **Pre-ship (2026-05-07 → 2026-05-16):** `UCC_AUTH_MODE=basic` — no behavior change for ~9 days while code shipped dormant.
+2. **Cutover-T0 (EXECUTED 2026-05-16):** Operator ran `pnpm tsx scripts/issue-bootstrap-token.ts regvash21@gmail.com` locally. Token TTL = 15 min, single-use, SHA-256 hash at rest. Pasted into `/control-room/sign-in/recover` to register first device (platform passkey on Touch ID Mac). Flipped env to `UCC_AUTH_MODE=both` and redeployed (`dpl_*-cp1019le3`). Redis confirms: `ucc:credential:E5jvwGr...` + `ucc:operator:regvash21@gmail.com` + active session [T1].
+3. **Cutover-T+7d (2026-05-23):** Each operator registers a YubiKey or second device as **break-glass** (mandatory before `passkey`-only flip). T+7d kill-criteria K1/K2/K3 resolution recorded in §99. **Note from 2026-05-16:** the first YubiKey registration attempt was deferred because the Mac browser only surfaced the platform-authenticator path (no USB security-key option). Three workarounds documented in §99: Chrome retry, register on a 2nd Touch-ID device, or temp-force `authenticatorAttachment: 'cross-platform'` in [src/app/api/auth/register/options/route.ts:69-72](https://github.com/Regevba/fitme-story/blob/main/src/app/api/auth/register/options/route.ts#L69-L72).
+4. **Cutover-T+14d (earliest 2026-05-28):** Flip env to `UCC_AUTH_MODE=passkey`. Drop `DASHBOARD_USER` + `DASHBOARD_PASS` env vars. Calendar-gated per [`infra-master-plan-2026-05-12.md`](../master-plan/infra-master-plan-2026-05-12.md) §4.1 — do not co-fire with 2026-05-21 v7.9 promotion decision.
 
-Reversal at any phase = single env-var change.
+Reversal at any phase = single env-var change. Today's `UCC_AUTH_MODE=both` flip is rollback-safe via `PATCH /v9/projects/{id}/env/{env_id}` setting value back to `basic` (under 30 seconds).
 
 ## How this got shipped — the v7.8.1 protocol
 
@@ -202,4 +202,40 @@ Total measured wall time: **~115 minutes** [T1] (Tier 2.2 instrumented; not a st
 
 ## §99 Resolution log (post-launch)
 
-> Reserved for the T+7d kill-criteria resolution + T+30/60/90d secondary-metric reviews. Update at the cadence specified in the PRD §6 Review Cadence section.
+### 2026-05-16 — Cutover Parts 1-6 executed; T+7d clock starts
+
+**Shipped on the day (chronological):**
+
+| Setup-guide step | What landed | Verification |
+|---|---|---|
+| Part 1.1 | Upstash Redis `upstash-kv-coquelicot-pebble` (Vercel Marketplace, free tier) | `KV_REST_API_URL`/`KV_REST_API_TOKEN` auto-injected to all 3 envs [T1] |
+| Part 1.2 | Vercel Blob store `ucc-audit-log` (`store_Wbm976bbAd3TvK2o`, public access, iad1) | `BLOB_READ_WRITE_TOKEN` auto-injected [T1] |
+| Part 2 | `UCC_SESSION_SECRET` (sensitive prod+preview, 64 chars base64url) + `UCC_BOOTSTRAP_ADMIN_TOKEN` (sensitive prod, encrypted dev, 43 chars base64url) | Length-verified via dev pull comparison [T1] |
+| Part 3 | `.env.local` pulled with development-scope vars (perms 600) | `UCC_BOOTSTRAP_ADMIN_TOKEN` length 43 confirmed [T1] |
+| Part 4 | `UCC_AUTH_MODE=basic` set explicitly + production deploy `dpl_87pw4jwejjexjf8cV9WKc3S5moQT` | 3-URL gate passed: `/control-room/` returns 401 Basic; `/sign-in` 200; `/sign-in/recover` 200 [T1] |
+| Part 5 | Bootstrap token issued for `regvash21@gmail.com` (TTL 15 min, single-use, SHA-256 hashed at rest) → opened in browser → platform passkey registered | Redis state: `ucc:credential:E5jvwGr...` + `ucc:operator:regvash21@gmail.com` + `ucc:operator:regvash21@gmail.com:credentials` + active `ucc:session:*` [T1] |
+| Part 6 | `UCC_AUTH_MODE` flipped `basic` → `both` via Vercel REST API PATCH; redeploy `dpl_*-cp1019le3` | `/control-room/` now returns `307 → /control-room/sign-in?next=%2Fcontrol-room` for no-creds; `/sign-in` still 200 [T1] |
+
+**Deferred (calendar-anchored, see [`.claude/shared/must-have-cadence-followups.md`](../../.claude/shared/must-have-cadence-followups.md)):**
+
+| Step | Target | Blocker |
+|---|---|---|
+| **Part 7 — break-glass YubiKey/2nd device** | before 2026-05-28 | Browser hid USB security-key option on first attempt. Three documented workarounds (Chrome retry; 2nd platform passkey on iPhone/2nd Mac; temp-force `authenticatorAttachment: 'cross-platform'`). |
+| **Part 9 — `UCC_AUDIT_BLOB_URL` repo variable in FT2** | 2026-05-17 (after first cron run 05:13 UTC) | Daily cron at `/api/cron/sync-audit-log` populates the Blob; URL extracted via authenticated curl; `gh variable set` writes the FT2 repo variable; T22 GHA workflow then activates. ~10 min. |
+| **Part 10 — framework-health passkey panel populated** | 2026-05-18 onward | Dependent on Part 9 + first daily GHA sync run (next morning after Part 9 lands). |
+| **Part 8 — `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS`** | on/after **2026-05-28** | Calendar-gated per [`infra-master-plan-2026-05-12.md`](../master-plan/infra-master-plan-2026-05-12.md) §4.1: don't co-fire with 2026-05-21 v7.9 promotion decision. Prerequisite: Part 7 complete. |
+| **T+7d kill-criteria checkpoint (K1, K2, K3)** | **2026-05-23** | Pending observation window of 7 days post `UCC_AUTH_MODE=both` flip. Resolution will replace this §99 row. |
+
+**Operational quirks captured during cutover (worth fixing as follow-ups):**
+
+1. **`vercel env add` silently writes empty values in headless mode** (this CLI version). Both `--value <v> --yes --non-interactive` and `< file` stdin-redirect forms fail. The Vercel REST API `POST /v10/projects/{id}/env` works reliably. Worked around for this session — followup is either a CLI bug report to Vercel OR a wrapper script that goes through the API by default. [T1]
+2. **Upstash Marketplace now injects `KV_REST_API_*` not `UPSTASH_REDIS_REST_*`.** Runtime code `Redis.fromEnv()` falls back automatically (per `@upstash/redis@latest`), but the bootstrap CLI [scripts/issue-bootstrap-token.ts](https://github.com/Regevba/fitme-story/blob/main/scripts/issue-bootstrap-token.ts) hard-fails without the `UPSTASH_*` names. Worked around via inline `export UPSTASH_REDIS_REST_URL="$KV_REST_API_URL"` shell. **Followup:** patch the CLI to match runtime fallback (small code change, low risk). [T1]
+3. **`sensitive` env vars are write-only by Vercel design.** `vercel env pull` returns empty strings for them — not a bug. Verification of write success requires a non-sensitive copy in another scope OR a runtime test. The session used a dev-scope `encrypted` copy of `UCC_BOOTSTRAP_ADMIN_TOKEN` to confirm the write-mechanism worked correctly. [T1]
+4. **Local `.vercel/project.json` was pointing to legacy `fit-tracker2` project at session start** (the now-deprecated Astro dashboard), not `fitme-story`. The first Upstash install ran against the wrong project before the operator caught it. Re-linked mid-session via `vercel link --yes --project fitme-story`. Worth a SessionStart preflight check — if any future operator's local clone has the same stale link, this fails subtly. [T1]
+
+### Pending entries
+
+- **2026-05-23** — T+7d kill-criteria K1/K2/K3 resolution
+- **2026-06-16** — T+30d secondary-metric review (registration rate, time-to-dashboard p50)
+- **2026-07-16** — T+60d cumulative review
+- **2026-08-16** — T+90d steady-state review

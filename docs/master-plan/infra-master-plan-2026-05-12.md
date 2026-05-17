@@ -58,6 +58,12 @@ Detailed inventory of what shipped + how the 3-attempt cutover ceremony surfaced
 
 **Why ship against the plan now:** master plan §2.2 promotion criterion #2 ("no false positives") + criterion #1 ("Mechanism A coverage validated") are measured against the 2026-05-14 baseline. v7.8.6 makes drift-vs-baseline a single command — operators can verify the 2026-05-21 promotion decision against fresh telemetry without manual ledger-diffing.
 
+### 1.3 UCC passkey cutover (2026-05-16 additions)
+
+`ucc-passkey-auth` cutover Parts 1-6 executed 2026-05-16 (feature shipped 2026-05-07, dormant at `UCC_AUTH_MODE=basic` for 9 days). The `fitme-story.vercel.app/control-room/*` operator dashboard now runs at `UCC_AUTH_MODE=both` — passkey AND legacy basic-auth both accepted; rollback is a single env-var flip. Touches no framework-gate code; no Mechanism A telemetry contamination during 2026-05-15 → 05-21 calibration window. 9 cadence-followups added to [`must-have-cadence-followups.md`](../../.claude/shared/must-have-cadence-followups.md): B7 (Part 9 audit-log GHA, 2026-05-17), B8 (T+7d kill-criteria checkpoint 2026-05-23), B9 (Part 8 passkey-only flip 2026-05-28+), C4-C8 (Part 7 break-glass + Part 10 panel verify + 3 operability fixes deferred past v7.9), C9-C10 (P2 UX polish — coral pulse animation + 4 control-room dark-mode contrast verifications). Source case study §99: [`docs/case-studies/ucc-passkey-auth-case-study.md`](../case-studies/ucc-passkey-auth-case-study.md).
+
+**Inventory delta:** 0 mechanical gates changed; 0 advisory changed; 0 new telemetry candidates. Pure operational rollout.
+
 ---
 
 ## 2. Promotion Docket (v7.9 → enforced, decision 2026-05-21)
