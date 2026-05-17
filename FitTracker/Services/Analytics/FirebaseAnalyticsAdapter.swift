@@ -10,6 +10,9 @@ final class FirebaseAnalyticsAdapter: AnalyticsProvider {
     func configure() {
         // FirebaseApp.configure() is called in FitTrackerApp.init()
         // Do not call it here — calling it twice crashes.
+        // Override the plist's IS_ANALYTICS_ENABLED=false default;
+        // GDPR consent gating is handled separately via setConsent().
+        Analytics.setAnalyticsCollectionEnabled(true)
     }
 
     func logEvent(_ name: String, parameters: [String: Any]?) {
