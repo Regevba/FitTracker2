@@ -3,7 +3,7 @@
 > Going-live runbook for the `ucc-passkey-auth` feature shipped 2026-05-07.
 > Estimated time: ~30 min if storage infrastructure is ready, ~60-90 min from scratch.
 
-> **Status note (`2026-05-07`):** the feature ships in production at `UCC_AUTH_MODE=basic` (legacy basic-auth preserved). All code is live behind the env var. This guide flips the dashboard at [`fitme-story.vercel.app/control-room/*`](https://fitme-story.vercel.app/control-room/) from shared HTTP basic-auth to per-operator WebAuthn passkeys. Reversible at every step via single env-var change.
+> **Status note (`2026-05-16`):** **Cutover Parts 1-6 EXECUTED 2026-05-16** — Upstash + Vercel Blob provisioned, secrets set, `UCC_AUTH_MODE=both` live in production, 1 platform passkey registered for the first operator. Legacy basic-auth (`DASHBOARD_USER`/`DASHBOARD_PASS`) still active as fallback. Parts 7-10 + T+7d kill-criteria checkpoint deferred — see [`docs/case-studies/ucc-passkey-auth-case-study.md`](../case-studies/ucc-passkey-auth-case-study.md) §99 for current rollout state. Original status (`2026-05-07`): feature shipped at `UCC_AUTH_MODE=basic` (legacy basic-auth preserved). Reversible at every step via single env-var change.
 
 ---
 
@@ -348,6 +348,15 @@ Update `kill_criteria_resolution` in [`docs/case-studies/ucc-passkey-auth-case-s
 - **K2 hard stop.** Do NOT keep signing in. Investigate: is the affected credential a hardware key that always reports counter=0 (some YubiKey models)? Check `redis-store.ts` CAS logic — counter=0 is allowed only when stored counter is also 0. If real attack suspected, revoke the credential immediately via `/control-room/settings/devices`.
 
 ---
+
+## Lessons captured during 2026-05-16 cutover
+
+Operational quirks worth knowing for future operators (full detail in case study §99):
+
+1. **`vercel env add` silently writes empty values in headless mode** in this CLI version. Both `--value <v> --yes --non-interactive` and `< file` stdin-redirect produce a vars row in `vercel env ls` but with empty value. Workaround: use the Vercel REST API directly — `POST /v10/projects/{project_id}/env?teamId={team_id}` with `{"key", "value", "type":"sensitive|encrypted|plain", "target":["production","preview","development"]}`. Auth token at `~/Library/Application\ Support/com.vercel.cli/auth.json`. Followup `C7` in the cadence ledger.
+2. **Upstash Marketplace injects `KV_REST_API_*`, not `UPSTASH_REDIS_REST_*`.** The runtime code uses `Redis.fromEnv()` which falls back automatically. The **bootstrap CLI ([scripts/issue-bootstrap-token.ts](../../../fitme-story/scripts/issue-bootstrap-token.ts)) does NOT fall back** and hard-fails without `UPSTASH_*` names. Inline workaround: `export UPSTASH_REDIS_REST_URL="$KV_REST_API_URL" && export UPSTASH_REDIS_REST_TOKEN="$KV_REST_API_TOKEN"` before invoking the CLI. Followup `C6` in the cadence ledger.
+3. **Sensitive-typed env vars are write-only by Vercel design.** `vercel env pull` returns empty strings for them — NOT a bug. Verify writes by adding a non-sensitive copy in development scope and comparing the readable value's length.
+4. **Local `.vercel/project.json` may point to legacy `fit-tracker2`** (the now-deprecated Astro dashboard at `fit-tracker2.vercel.app`). First Upstash install can land against the wrong project. Run `vercel link --yes --project fitme-story` BEFORE Part 1 if `.vercel/project.json::projectName` says anything other than `fitme-story`. Followup `C8` in the cadence ledger.
 
 ## Cross-references
 
