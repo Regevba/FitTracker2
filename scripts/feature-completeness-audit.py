@@ -77,7 +77,9 @@ def _audit_feature(state_path: Path, css_module) -> list[dict]:
                              "message": "framework_version not set (recommended for v7.6+ features)"})
 
     # PRD phase — cu_v2 required (forward-only since V6 ship)
-    if (phase == "prd" or _phase_index(phase) >= _phase_index("prd")) and not is_terminal:
+    # Chores are 1-phase per CLAUDE.md (Implement only) — no PRD, no cu_v2 obligation.
+    work_type = (state.get("work_type") or "").lower()
+    if (phase == "prd" or _phase_index(phase) >= _phase_index("prd")) and not is_terminal and work_type != "chore":
         if created_date >= V6_SHIP and not (state.get("cu_v2") or state.get("complexity")):
             findings.append({"feature": feature, "phase": phase, "severity": "blocking",
                              "code": "MISSING_CU_V2",

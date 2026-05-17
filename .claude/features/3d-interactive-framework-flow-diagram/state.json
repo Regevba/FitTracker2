@@ -136,5 +136,15 @@
   ],
   "state_owner_sync_origin": "fitme-story-reverse",
   "state_owner_sync_origin_commit": "52f221342d794f771be116457ce1a09d2f8d6bf1",
-  "state_owner_sync_origin_pr_url": "pending"
+  "state_owner_sync_origin_pr_url": "pending",
+  "cu_v2": {
+    "factors": {
+      "complexity": 0.8,
+      "blast_radius": 0.5,
+      "novelty": 0.8,
+      "verification_difficulty": 0.7
+    },
+    "total": 2.8,
+    "tier_class": "A_high"
+  }
 }
