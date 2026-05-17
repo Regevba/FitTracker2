@@ -36,7 +36,12 @@
     "implementation": {
       "status": "in_progress",
       "started_at": "2026-05-17T11:40:00Z",
-      "commits": []
+      "commits": ["dd87bad", "bf0b998"],
+      "fitme_story_pr": null,
+      "tasks_done": ["T1"],
+      "tasks_prompt_ready": ["T2", "T3", "T4"],
+      "tasks_blocked_on_t2_t4": ["T5", "T6", "T7", "T8", "T9", "T10", "T11"],
+      "notes": "T1 (§3.1 amendment) shipped via fitme-story commit dd87bad. T2-T4 (Figma frame authoring) deferred to a dedicated Figma MCP session — portable design-build prompt shipped via fitme-story commit bf0b998. T5-T11 are blocked on T2-T4 node IDs landing first. Next session: pick execution path (A=/design build, B=dedicated Figma session, C=subagent dispatch, D=manual operator)."
     },
     "testing": {
       "status": "pending",
@@ -66,7 +71,10 @@
       "type": "docs",
       "skill": "design",
       "lane": "p-core",
-      "status": "pending",
+      "status": "done",
+      "completed_at": "2026-05-17T11:50:00Z",
+      "commit": "dd87bad",
+      "result_note": "§3.1 form-driven exception clause added to CONTRIBUTING-design-system.md (+ §1 decision tree update in lockstep). Initial qualifying list locks: AuthPasskeyForm + 2 sign-in pages. fitme-story commit dd87bad.",
       "priority": "critical",
       "effort_days": 0.1,
       "depends_on": [],
@@ -79,7 +87,10 @@
       "type": "design",
       "skill": "design",
       "lane": "p-core",
-      "status": "pending",
+      "status": "prompt_ready",
+      "design_build_prompt": "fitme-story/docs/prompts/ui/2026-05-17-ucc-sign-in-figma-mapping-design-build.md",
+      "prompt_commit": "bf0b998",
+      "blocked_on": "Figma MCP build session — /design build OR subagent dispatch OR manual Figma work; node IDs land back in figma_node_ids",
       "priority": "critical",
       "effort_days": 0.3,
       "depends_on": ["T1"],
