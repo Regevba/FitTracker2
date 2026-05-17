@@ -187,10 +187,12 @@
       "type": "infra",
       "skill": "ops",
       "lane": "e-core",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.02,
       "depends_on": ["T6"],
+      "completed_at": "2026-05-17T14:05:50Z",
+      "completed_note": "Wired preemptively ahead of T6 because the blob URL is deterministic from the Vercel Blob store ID (store_Wbm976bbAd3TvK2o → https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl). The FT2 ucc-audit-log-sync.yml workflow short-circuits cleanly on 404, so setting the variable now is safe; it auto-activates the moment the next Vercel Cron (05:13 UTC) populates the blob. The workflow_dispatch verification still waits on T6 (cron must produce a real blob first).",
       "note": "gh variable set UCC_AUDIT_BLOB_URL --body '<url-from-T6>' --repo Regevba/FitTracker2. Trigger ucc-audit-log-sync.yml via workflow_dispatch to verify FT2 syncs the blob to .claude/logs/ucc-auth-events.jsonl."
     },
     {

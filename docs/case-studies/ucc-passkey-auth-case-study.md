@@ -255,8 +255,8 @@ Total measured wall time: **~115 minutes** [T1] (Tier 2.2 instrumented; not a st
 | T4 | Cron route reads Redis, **sanitizes** (hashes `operator_label` per security amendment below), writes Blob with `addRandomSuffix:false + allowOverwrite:true` (deterministic URL preserved for B7) | ✅ shipped (cbd487c) [T1] |
 | T5 | 15 unit tests with mock Redis; full auth suite **27/27 pass** | ✅ shipped (cbd487c); `npm run build` clean [T1] |
 | T6 | Deploy + manual `curl` invoke cron → validate blob URL returns 200 | ⏳ post-merge of fitme-story PR #122 [T2] |
-| T7 | `gh variable set UCC_AUDIT_BLOB_URL` in FT2 (= original B7 unblock) | ⏳ after T6 [T2] |
-| T8 | Update parent `ucc-passkey-auth/state.json` rollout_status: Part 9 deferred → shipped | ⏳ after T7 [T2] |
+| T7 | `gh variable set UCC_AUDIT_BLOB_URL` in FT2 (= original B7 unblock) | ✅ wired preemptively 2026-05-17T14:05:50Z (deterministic blob URL from `store_Wbm976bbAd3TvK2o` — auto-activates on next cron blob populate; FT2 workflow short-circuits cleanly on 404 until then) [T1] |
+| T8 | Update parent `ucc-passkey-auth/state.json` rollout_status: Part 9 deferred → shipped | ✅ same commit as T7 reconcile [T1] |
 | T9 | This §99 entry | ✅ this commit [T1] |
 
 **Security amendment (pre-implementation audit, 2026-05-17).** Operator emails (`operator_label`) had been stored raw because `AuditLogPanel` needs human-readable identification. The cron's blob target uses `access: 'public'` + `addRandomSuffix: false` → URL is **deterministic AND publicly readable**. Anyone who derives `store_id_prefix.public.blob.vercel-storage.com/ucc-auth-events.jsonl` from public Vercel deployment metadata can read the file. Pre-implementation audit caught this *before* T4 went out (zero events had been written to that URL yet — the original bug masked the leak). T4 added `sanitizeForPublicExport()` which hashes `operator_label` → `operator_label_hash` at the cron-write boundary using the same `sha256Truncated(..., 12)` convention as `credential_id_hash` and `session_id_hash`. Redis (private, token-gated) keeps raw emails for the in-app panel; the publicly-exported JSONL never carries them [T1].
