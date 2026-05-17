@@ -46,19 +46,20 @@
       "ft2_pr_url": "https://github.com/Regevba/FitTracker2/pull/383",
       "tasks_done_in_pr_122": ["T1", "T2", "T3", "T4", "T5"],
       "tasks_done_in_pr_383": ["T9"],
-      "tasks_pending": ["T6", "T7", "T8"],
+      "tasks_done_in_pr_387": ["T7", "T8"],
+      "tasks_pending": ["T6"],
       "t6_resume_plan_2026_05_18": {
-        "trigger": "Natural Vercel cron fires daily at 05:13 UTC; GHA ucc-audit-log-sync.yml fires at 05:17 UTC (skips today because UCC_AUDIT_BLOB_URL still unset).",
+        "trigger": "Natural Vercel cron fires daily at 05:13 UTC; GHA ucc-audit-log-sync.yml fires at 05:17 UTC (now wired with UCC_AUDIT_BLOB_URL per T7 close 2026-05-17T14:05:50Z; workflow self-activates when the blob exists).",
         "operator_action_today": "Sign in once at https://fitme-story.vercel.app/control-room/sign-in to populate Redis with 3 audit events (auth_passkey_authenticate_started + auth_passkey_authenticate_succeeded + auth_session_minted).",
         "resume_check_time_utc": "2026-05-18T05:30:00Z (08:30 IDT)",
         "resume_check_sequence": [
           "HEAD https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl — expect 200 (was 404 pre-Path-B)",
           "curl the URL — expect 3+ sanitized JSONL events (operator_label_hash present, operator_label absent)",
-          "gh variable set UCC_AUDIT_BLOB_URL --body '<url>' --repo Regevba/FitTracker2 (T7)",
-          "gh workflow run ucc-audit-log-sync.yml --repo Regevba/FitTracker2 (force re-run with var set)",
+          "T7 wire step already done 2026-05-17T14:05:50Z (PR #387); SKIP `gh variable set` step",
+          "gh workflow run ucc-audit-log-sync.yml --repo Regevba/FitTracker2 (force re-run now that blob exists)",
           "Verify FT2 .claude/logs/ucc-auth-events.jsonl populated via auto-commit",
-          "Update parent ucc-passkey-auth/state.json rollout_status.parts_deferred: remove Part 9 (T8)",
-          "Append §99 sub-entry to case study: 'T6-T8 closed 2026-05-18, B7 unblocked, B8 kill-criteria gate ready'"
+          "T8 parts_deferred reconcile already done in PR #387; SKIP",
+          "Append §99 sub-entry to case study: 'T6 closed 2026-05-18, B7 fully validated end-to-end, B8 kill-criteria gate ready'"
         ],
         "why_path_b": "Vercel Hobby plan lacks 'Run Now' cron trigger (Pro-only). Vercel UI /crons URL 404'd (correct path is /cron-jobs but operator confirmed no Run button visible). Curl-with-CRON_SECRET path declined to keep secret out of conversation transcript. Path B = natural cron + 17h wait, well within B8 deadline (2026-05-23) 5-day buffer."
       }
