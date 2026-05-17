@@ -340,31 +340,43 @@ diff metrics.json <(jq '.' "$BASELINE/measurement-adoption.json")
 
 
 def detect_regression(prev: dict | None, curr: dict) -> tuple[bool, dict]:
-    """Compare current vs previous metrics. Returns (is_regression, per-key deltas)."""
+    """Compare current vs previous metrics. Returns (is_regression, deltas).
+
+    The deltas dict separates regression-causing changes from improvements so
+    readers of the regression flag don't mistake `completeness_blocking: -2`
+    (a 2-block improvement) for a regression cause.
+
+    Shape: {"regressed": {<metric>: delta, ...}, "improved": {<metric>: delta, ...}}
+    """
     if prev is None:
-        return False, {}
-    deltas = {}
+        return False, {"regressed": {}, "improved": {}}
+    regressed: dict = {}
+    improved: dict = {}
     regression = False
-    # Higher-is-worse (findings, blocking, debt)
+    # Higher-is-worse (findings, blocking, debt) — d > 0 is a regression
     for k in ("integrity_findings", "completeness_blocking", "doc_debt_open"):
         d = curr.get(k, 0) - prev.get(k, 0)
-        if d != 0:
-            deltas[k] = d
         if d > 0:
+            regressed[k] = d
             regression = True
-    # Lower-is-worse (adoption, fully_adopted)
+        elif d < 0:
+            improved[k] = d
+    # Lower-is-worse (adoption, fully_adopted) — d < 0 is a regression
     for k in ("fully_adopted_post_v6", "adoption_pct_post_v6"):
         d = curr.get(k, 0) - prev.get(k, 0)
-        if d != 0:
-            deltas[k] = d
         if d < 0:
+            regressed[k] = d
             regression = True
-    # Mechanism A gates dropping is critical
+        elif d > 0:
+            improved[k] = d
+    # Mechanism A gates dropping is critical (lower-is-worse)
     d = curr.get("gate_coverage_distinct_gates", 0) - prev.get("gate_coverage_distinct_gates", 0)
     if d < 0:
-        deltas["gate_coverage_distinct_gates"] = d
+        regressed["gate_coverage_distinct_gates"] = d
         regression = True
-    return regression, deltas
+    elif d > 0:
+        improved["gate_coverage_distinct_gates"] = d
+    return regression, {"regressed": regressed, "improved": improved}
 
 
 def stale_branches() -> tuple[list[str], list[str]]:

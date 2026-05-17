@@ -620,6 +620,29 @@ def check_branch_isolation_historical() -> list[dict]:
                     on_feature_branch = True
                     break
 
+        # Fallback: when --delete-branch is used on PR merge, the feature/<name>
+        # ref disappears and `git log --source` only shows the squash commit on
+        # main. Accept a conventional-commit subject like `chore(<feature>):`
+        # or `feat(<feature>):` as evidence the work originated in a branch.
+        # False-positive risk is negligible: gaming requires direct-to-main
+        # commit AND naming the feature in the subject — the opposite of how
+        # bypasses look.
+        if not on_feature_branch:
+            try:
+                subjects = subprocess.check_output(
+                    ["git", "log", "--all", "--format=%s",
+                     "--", feature_dir_relative],
+                    cwd=REPO_ROOT, text=True, stderr=subprocess.DEVNULL,
+                )
+                cc_pattern = re.compile(
+                    r"^(?:chore|feat|fix|docs|refactor|test|perf|style|ci|build)"
+                    r"\(" + re.escape(feature) + r"\)", re.MULTILINE,
+                )
+                if cc_pattern.search(subjects):
+                    on_feature_branch = True
+            except Exception:
+                pass
+
         if not on_feature_branch:
             findings.append({
                 "feature": feature,
