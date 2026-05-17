@@ -233,6 +233,44 @@ Total measured wall time: **~115 minutes** [T1] (Tier 2.2 instrumented; not a st
 3. **`sensitive` env vars are write-only by Vercel design.** `vercel env pull` returns empty strings for them — not a bug. Verification of write success requires a non-sensitive copy in another scope OR a runtime test. The session used a dev-scope `encrypted` copy of `UCC_BOOTSTRAP_ADMIN_TOKEN` to confirm the write-mechanism worked correctly. [T1]
 4. **Local `.vercel/project.json` was pointing to legacy `fit-tracker2` project at session start** (the now-deprecated Astro dashboard), not `fitme-story`. The first Upstash install ran against the wrong project before the operator caught it. Re-linked mid-session via `vercel link --yes --project fitme-story`. Worth a SessionStart preflight check — if any future operator's local clone has the same stale link, this fails subtly. [T1]
 
+### 2026-05-17 — Audit-log persistence bug discovered (10-day silent window) + Redis-backed fix shipped
+
+**Discovery.** While executing B7 (wire `UCC_AUDIT_BLOB_URL` in FT2 after the first daily cron at 05:13 UTC), HEAD-probed the deterministic blob URL `https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl` — got **HTTP/2 404 from a real Vercel server** [T1]. That confirmed the cron has been returning `synced: 0` every run since 2026-05-07, even after the operator successfully registered a platform passkey and authenticated multiple times. The GHA workflow `ucc-audit-log-sync.yml` had run successfully 5 days in a row (2026-05-12 → 2026-05-16) — but every run short-circuited because `UCC_AUDIT_BLOB_URL` was unset; chicken-and-egg with a blob that never existed [T1].
+
+**Root cause traced (file:line, two cooperating failures).**
+
+1. **Stage 1 was architecturally broken on Vercel.** [`audit-log.ts:113-143`](https://github.com/Regevba/fitme-story/blob/main/src/lib/auth/audit-log.ts#L113-L143) wrote events to `cwd/.local/ucc-auth-events.jsonl` via `fs.appendFile`. Vercel function filesystem is **read-only at runtime** ([Vercel docs reference](https://vercel.com/docs/functions/runtimes#file-system-access)). The bare `try/catch` at line 122 swallowed the `EROFS` error — the inline comment literally read *"Local fs may be read-only on Vercel — that's expected; rely on Blob."* [T1] The "Blob" referenced was Stage 2.
+2. **Stage 2 was never provisioned.** [`audit-log.ts:128-142`](https://github.com/Regevba/fitme-story/blob/main/src/lib/auth/audit-log.ts#L128-L142) POSTs to `UCC_AUDIT_BLOB_ENDPOINT` (an externally-managed log forwarder endpoint — Logflare, Axiom, etc.). Cutover ([§Cutover Parts 1-6 above](#2026-05-16--cutover-parts-1-6-executed-t7d-clock-starts)) provisioned `UCC_SESSION_SECRET`, `UCC_BOOTSTRAP_ADMIN_TOKEN`, `UCC_AUTH_MODE`, `BLOB_READ_WRITE_TOKEN` (auto), `KV_REST_API_*` (auto) — but **never `UCC_AUDIT_BLOB_ENDPOINT`** [T1]. `getBlobEndpoint()` returned `null` on every call; `fetch()` was never invoked.
+3. **The cron read the same dead path** and dutifully reported `synced: 0` to caller logs ([`sync-audit-log/route.ts:46-51`](https://github.com/Regevba/fitme-story/blob/main/src/app/api/cron/sync-audit-log/route.ts#L46-L51) pre-fix) — a perfect silent-pass: no exception, no monitoring alert, no operator surface change (AuditLogPanel just renders empty regardless of activity) [T1].
+
+**Why it shipped (honest answer).** Phase 5 testing wrote `process.env.UCC_AUDIT_LIVE_PATH = tmpFile` to point Stage 1 at `os.tmpdir()` — the existing tests at [`audit-log.test.ts`](https://github.com/Regevba/fitme-story/blob/main/src/lib/auth/audit-log.test.ts) verified the **happy path** (event in → event readable via `readAuthEvents()`), but no test asserted Vercel-runtime behavior with a **read-only cwd**. Phase 6 risk audit ([`.claude/features/ucc-passkey-auth/risk-audit-2026-05-07.md`](https://github.com/Regevba/FitTracker2/blob/main/.claude/features/ucc-passkey-auth/risk-audit-2026-05-07.md)) surfaced 3 risks — proxy.ts gate, CAS counter replay, PII redaction — all 3 were correctly addressed; **audit-log persistence was not on the risk surface**. Production runtime smoke profile `passkey_signin_surface` validated the auth ceremony end-to-end but did not assert that audit events landed durably. This is a generalizable lesson: tests that swap in a writable fs path silently mask a write-failure failure mode the production environment guarantees [T3].
+
+**Fix shape (10-day-deferred enhancement, scoped as Tasks T1-T9).**
+
+| T | Title | Status |
+|---|---|---|
+| T1 | Redis audit-log primitives in `src/lib/auth/redis-audit-log.ts` (`pushEvent` / `readEvents` / `readAllEvents` / `trimEvents` / `sanitizeForPublicExport`) | ✅ shipped (cbd487c) [T1] |
+| T2 | `logAuthEvent` → Redis `LPUSH` + bounded `LTRIM` at 10k cap (no more dead fs write) | ✅ shipped (cbd487c) [T1] |
+| T3 | `readAuthEvents` + `loadAuthEvents` → Redis `LRANGE 0..N-1` (newest-first by construction; scope expanded mid-implementation to include the actually-used UI reader `load-events.ts`) | ✅ shipped (cbd487c) [T1] |
+| T4 | Cron route reads Redis, **sanitizes** (hashes `operator_label` per security amendment below), writes Blob with `addRandomSuffix:false + allowOverwrite:true` (deterministic URL preserved for B7) | ✅ shipped (cbd487c) [T1] |
+| T5 | 15 unit tests with mock Redis; full auth suite **27/27 pass** | ✅ shipped (cbd487c); `npm run build` clean [T1] |
+| T6 | Deploy + manual `curl` invoke cron → validate blob URL returns 200 | ⏳ post-merge of fitme-story PR #122 [T2] |
+| T7 | `gh variable set UCC_AUDIT_BLOB_URL` in FT2 (= original B7 unblock) | ⏳ after T6 [T2] |
+| T8 | Update parent `ucc-passkey-auth/state.json` rollout_status: Part 9 deferred → shipped | ⏳ after T7 [T2] |
+| T9 | This §99 entry | ✅ this commit [T1] |
+
+**Security amendment (pre-implementation audit, 2026-05-17).** Operator emails (`operator_label`) had been stored raw because `AuditLogPanel` needs human-readable identification. The cron's blob target uses `access: 'public'` + `addRandomSuffix: false` → URL is **deterministic AND publicly readable**. Anyone who derives `store_id_prefix.public.blob.vercel-storage.com/ucc-auth-events.jsonl` from public Vercel deployment metadata can read the file. Pre-implementation audit caught this *before* T4 went out (zero events had been written to that URL yet — the original bug masked the leak). T4 added `sanitizeForPublicExport()` which hashes `operator_label` → `operator_label_hash` at the cron-write boundary using the same `sha256Truncated(..., 12)` convention as `credential_id_hash` and `session_id_hash`. Redis (private, token-gated) keeps raw emails for the in-app panel; the publicly-exported JSONL never carries them [T1].
+
+**Silent-pass window — what we don't know.** Between 2026-05-07 ship and 2026-05-17 discovery, every `logAuthEvent` call dropped its event. The operator's 2026-05-16 cutover (1 successful registration + 1 successful sign-in + multiple Redis-state-confirmed activities) is the **last known set of events** that didn't get persisted [T2 — declared from absence of blob, not from a counted ledger of dropped events]. There is no way to reconstruct what was logged in the 10-day window because the data never existed at rest anywhere. The cutover sequence itself is fully captured above in §99's 2026-05-16 entry from Redis state inspection (`ucc:credential:E5jvwGr...` etc.) — that's the canonical record of what happened, drawn from the OAuth/passkey state store rather than the audit log [T1].
+
+**Net impact on rollout timeline.**
+
+- B7 (wire `UCC_AUDIT_BLOB_URL`) — **unblocked** once T6 ships [T1].
+- B8 (T+7d kill-criteria K1/K2/K3 checkpoint, 2026-05-23) — **now achievable** because real audit data starts accumulating with T2 ship + cron's first post-merge run [T1].
+- C5 (Part 10 framework-health passkey panel verify) — **now meaningful** since `AuditLogPanel` reads Redis directly (no longer dependent on the broken local-fs path) [T1].
+
+**Operational lesson encoded for v8.x infra plan** (per the v7.8.5 W-pattern catalog protocol): add a new W-pattern *"Vercel function filesystem ephemerality"* — any code reading/writing local files outside `/tmp` on a Vercel function will silently fail with the bare-catch idiom prevalent in this codebase. Future PR-review heuristic: any `fs.appendFile`/`fs.readFile` to `cwd/.local/...` paths in Vercel-deployed code is a P0 review finding unless explicitly justified [T3].
+
 ### Pending entries
 
 - **2026-05-23** — T+7d kill-criteria K1/K2/K3 resolution
