@@ -334,8 +334,12 @@ Mapping all 23 open candidates to version slots. Each version has explicit calib
 | **F17** — `last_fired_at` index | Spec at v7.9 candidates §2 F17 | 0.3w | Read-only derived artifact, no advisory window |
 | **F2** — Phase 0 reality-check sub-step | Spec at v7.9 candidates §2 F2 | 0.3w | Workflow-only, no gate code |
 | **F6** — B_medium tier doc | CLAUDE.md edit only | 0.1w | Doc-only |
+| **D-2** — Configure GA4 conversions (`workout_complete` + `nutrition_meal_logged`) | Spec in [analytics decisions log §13](analytics-observability-decisions-log-2026-05-13.md) | 5 min | 🟡 yellow per analytics MP §7.5 — defer until 2026-06-04 to avoid contaminating v7.9 calibration. GA4 UI toggle; verify via `mcp__ga4__runReport` with `isConversionEvent` dim. Surfaced by FIT-142 closure 2026-05-17 (PR [#388](https://github.com/Regevba/FitTracker2/pull/388)) |
+| **D-4** — Delete old `com.regevba.FitTracker` Firebase iOS app entry | Spec in [analytics decisions log §13](analytics-observability-decisions-log-2026-05-13.md) | 1 min | 🟢 green per analytics MP §7.5 — pure cleanup, no telemetry shape change. Operator-only Firebase Console click. Surfaced by FIT-142 closure 2026-05-17 (PR [#388](https://github.com/Regevba/FitTracker2/pull/388)) |
 
-**Calibration windows:** F16 + F17 walk B–E since they're new infrastructure. F2 + F6 are workflow/doc changes (single-commit reversible) and skip B–C; ship directly with `verify-local` validation.
+**Calibration windows:** F16 + F17 walk B–E since they're new infrastructure. F2 + F6 are workflow/doc changes (single-commit reversible) and skip B–C; ship directly with `verify-local` validation. D-2 + D-4 are operator-side surface changes (no code) and ride the v7.9.1 window only because they're scoped + cheap; D-4 could ship anytime post-v7.9 (green class) but is batched with D-2 to amortize the Firebase-Console operator cost.
+
+**D-3 (screen-view tracking gap) note:** also surfaced by FIT-142 closure but excluded from v7.9.1 because it's iOS code work (1-2h) with new event volume → tracked as analytics-observability v8 docket candidate **F21**. See [analytics master plan §5.6](analytics-master-plan-2026-05-13.md#56-phase-1a-bis--screen-view-tracking-gap-deferred-to-v791-or-v80) (to be added) + state.json task D-3.
 
 ### 3.6.4 v8.0 — Top-Per-Theme Docket (target 2026-06-18 → 2026-07-31)
 
