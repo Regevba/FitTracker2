@@ -105,3 +105,8 @@ Config/Local/*.xcconfig
 .claude/shared/hadf/phase2bis-deploy-verification/
 .cache/
 .claude/_session-state/
+
+# Audit bundles — per-run outputs are gitignored by default;
+# trust/audits/YYYY-MM-DD-<model>/ holds the reports we commit.
+docs/audits/runs/*/
+!docs/audits/runs/.gitkeep
