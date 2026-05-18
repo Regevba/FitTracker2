@@ -1,0 +1,16 @@
+{
+  "profile_name": "v7-9-promotion",
+  "description": "External Audit #1 (2026-05-22) — v7.9 promotion data + HADF Sub-exp 1 prereg",
+  "inherits_from": "base",
+  "additional_globs": [
+    ".claude/shared/gate-coverage-weekly.jsonl",
+    ".claude/shared/measurement-adoption-history.json",
+    "docs/case-studies/meta-analysis/v7-9-measurement-window-2026-05-11.md",
+    "docs/superpowers/specs/2026-05-11-hadf-phase2bis-replication-design.md",
+    "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md"
+  ],
+  "additional_state_snapshot_features": [
+    "hadf-phase2bis-replication",
+    "framework-v7-9-promotion"
+  ]
+}
