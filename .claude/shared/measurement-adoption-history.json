@@ -537,8 +537,8 @@
     },
     {
       "date": "2026-05-18",
-      "generated_at": "2026-05-18T06:00:23Z",
-      "trigger": "manual",
+      "generated_at": "2026-05-18T08:49:05Z",
+      "trigger": "weekly_status",
       "summary": {
         "features_total": 73,
         "features_post_v6": 39,
