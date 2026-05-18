@@ -2,7 +2,7 @@
   "feature_name": "framework-v7-9-promotion",
   "current_phase": "research",
   "created_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-16T07:00:00Z",
+  "updated_at": "2026-05-18T04:45:00Z",
   "framework_version": "v7.9",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -11,7 +11,7 @@
   "state_owner": "ft2",
   "isolation_opt_out": false,
   "isolation_opt_out_reason": "",
-  "branch": null,
+  "branch": "feature/framework-v7-9-promotion",
   "scheduled_after": null,
   "calendar_gate": {
     "decision_date": "2026-05-21",
