@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-14T22:10:35Z",
+  "updated": "2026-05-17T19:35:00Z",
   "description": "Live external-tool sync snapshot for the FitMe PM framework. Captures the current state of GitHub, Linear, Notion, Vercel, and analytics/observability so the dashboard can compare repo truth against workspace truth without relying on narrative docs alone.",
   "aggregate": {
     "healthy": true,
@@ -331,17 +331,25 @@
         "ga4_mcp_connected": true,
         "ga4_property_id": "531124395",
         "ga4_mcp_verified_at": "2026-05-14T09:50:00Z",
-        "ga4_mcp_verified_by": "operator"
+        "ga4_mcp_verified_by": "operator",
+        "ga4_access_binding_resolved_at": "2026-05-17T16:30:00Z",
+        "ga4_access_binding_path": "API Explorer + brief APP cycle (Path 4)",
+        "ios_firehose_verified_at": "2026-05-17T19:30:00Z",
+        "ios_firehose_status": "live",
+        "ios_firehose_app_id": "1:98024066974:ios:e0af823c1f876b0b3a908f",
+        "ios_firehose_bundle_id": "com.fittracker.regev"
       },
       "findings": [
         "Phase 1.A (analytics-observability) IN FLIGHT \u2014 refreshed 2026-05-13.",
         "iOS analytics taxonomy 100% aligned: 112/112 events have CSV rows + 100% test coverage (was 58/114 CSV + 81% tested at audit baseline).",
         "Web analytics: 7/8 dashboard_* events wired + 1 intentional stub (dashboard_kanban_drag, Wave 1 read-only Kanban). 2/4 design_system_* events wired + 2 forward-declared placeholders ([FORWARD-DECLARED] convention per master plan \u00a75.4).",
-        "GA4 MCP defined but NOT connected \u2014 runtime event firing cannot be mechanically verified. Phase 2 (live debugger) ships GA4 Realtime poll via mcp-server-ga4 + local mirror sink.",
-        "Crash-free rate + Firebase health still 'unknown' \u2014 same root cause (no GA4 MCP, no Sentry MCP wired). Tracked in Phase 2 + master plan \u00a710 risks."
+        "Crash-free rate + Firebase health still 'unknown' \u2014 same root cause (no GA4 MCP, no Sentry MCP wired). Tracked in Phase 2 + master plan \u00a710 risks.",
+        "2026-05-17: GA4 access binding RESOLVED via API Explorer + brief APP cycle. Service account ga4-mcp-reader@fitme-490515 has predefinedRoles/viewer on property 531124395. Verified via mcp__ga4__getActiveUsers returning 200 + valid payload.",
+        "2026-05-17: iOS firehose verified end-to-end via Firebase DebugView \u2014 26+ events flowing on bundle com.fittracker.regev / appId e0af823c1f876b0b3a908f. Custom events confirmed: consent_granted, onboarding_step_*, screen_view, home_action_tap, home_ai_insight_shown, select_content, tutorial_complete, reminder_suppressed + auto-events. Root cause of dark firehose: plist missing from Xcode target Resources phase (see FIT-142 closure + memory).",
+        "2026-05-17: 4 gates unblocked by GA4 binding + iOS firehose work: B3 daily anomaly check, Phase 1.B verification (was calendar-gated 2026-06-04), Tier 2.1 sign_in_surface smoke gate, External Audit #1 (2026-05-22) iOS evidence."
       ],
       "analytics_taxonomy_status": {
-        "as_of": "2026-05-13T17:48:36Z",
+        "as_of": "2026-05-17T19:30:00Z",
         "source_of_truth": "FitTracker/Services/Analytics/AnalyticsProvider.swift (iOS) + fitme-story src/lib/design-system-analytics.ts + control-room/analytics.ts (web)",
         "ios_enum_events": 112,
         "ios_csv_rows": 112,
@@ -358,9 +366,12 @@
         "web_design_system_events_declared": 4,
         "web_design_system_events_wired": 2,
         "web_design_system_events_forward_declared": 2,
-        "ga4_mcp_connected": false,
+        "ga4_mcp_connected": true,
         "ga4_mcp_setup_runbook": "docs/setup/ga4-mcp-setup-guide.md (Phase 2 deliverable)",
-        "forward_declared_convention_spec": "docs/master-plan/analytics-master-plan-2026-05-13.md \u00a75.4"
+        "forward_declared_convention_spec": "docs/master-plan/analytics-master-plan-2026-05-13.md \u00a75.4",
+        "ga4_mcp_access_binding_live": true,
+        "ios_firehose_verified": true,
+        "ios_firehose_verified_via": "Firebase DebugView (26+ events streaming including custom + auto events)"
       },
       "instrumentation_summary_note": "instrumentation_summary below reflects PRE-Phase-1.A baseline (40 metrics, 14 available). Phase 1.A focused on event-taxonomy completeness (see analytics_taxonomy_status). The metric-level framework count is updated separately when measurement-adoption tooling re-scans."
     }

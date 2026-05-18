@@ -273,3 +273,53 @@ Codified during the brainstorm + overlay:
   - [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) (spec/PRD)
   - [`.claude/features/analytics-observability/state.json`](../../.claude/features/analytics-observability/state.json) (canonical feature state)
   - [`.claude/logs/analytics-observability.log.json`](../../.claude/logs/analytics-observability.log.json) (contemporaneous event log)
+
+---
+
+## §13 Post-iOS-firehose follow-ups (added 2026-05-17, gated to v7.9.1)
+
+**Context:** FT2 PR [#388](https://github.com/Regevba/FitTracker2/pull/388) (2026-05-17) closed FIT-142 by lighting up the iOS firehose to GA4. Root cause: `GoogleService-Info.plist` was on disk but missing from the FitTracker target's Copy Bundle Resources phase. iOS analytics had been dark since project inception; events now verified streaming via Firebase DebugView. See: `memory/project_session_2026_05_17_ga4_binding_resolved_ios_dark.md`, FIT-142 closure comment `f42751ed-24cc-4e59-95ba-15683a19874b`.
+
+3 follow-up items surfaced during the closure. **All deferred to the v7.9.1 window (earliest 2026-06-04)** per [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.6.3 cadence — none are gate-additive at the framework layer, but D-2 (conversion config) and D-3 (screen-view tracking) change GA4 data shape and must respect the §7.5 yellow window.
+
+### §13.1 Items
+
+| ID | Effort | Calibration class (analytics MP §7.5) | Earliest start | Primary home |
+|---|---|---|---|---|
+| **D-2** Configure GA4 conversions (`workout_complete` + `nutrition_meal_logged`) | 5 min | 🟡 yellow | 2026-06-04 | Infra MP §3.6.3 v7.9.1 row |
+| **D-3** Wire `AnalyticsScreenModifier` to 5 main tabs (Home / Training / Stats / Nutrition / Settings) | 1-2h | 🟡 yellow | 2026-06-04 | Analytics MP §5.6 (new) + V8 docket F21 |
+| **D-4** Delete old `com.regevba.FitTracker` Firebase iOS app entry | 1 min | 🟢 green | 2026-06-04 | Infra MP §3.6.3 v7.9.1 row |
+
+### §13.2 Why deferred (not done in PR #388)
+
+PR #388 had to land **before** the v7.9 promotion calibration window closes (2026-05-21 decision per infra §2.2). Any work in #388 that changed gate behavior or GA4 data shape would have polluted the calibration data. The strict scope of #388 was:
+
+1. ✅ Add plist to target (one-time fix; restores never-working state — no telemetry impact since the state was broken)
+2. ✅ Add `Analytics.setAnalyticsCollectionEnabled(true)` override (defensive; doesn't alter what events fire)
+3. ✅ Document Path 4 in `ga4-access-binding-setup-guide.md` (operational guidance; no code)
+4. ✅ Refresh `external-sync-status.json` + Tier 2.2 log (telemetry-truth restoration)
+
+D-2 / D-3 / D-4 deliberately excluded because they:
+
+- **D-2**: Changes the shape of GA4 conversion data → step-change in `mcp__ga4__runReport` with `isConversionEvent` mid-calibration
+- **D-3**: Adds new explicit `screen_view` events that override Firebase's auto-collection signal → screen-class distribution shift mid-calibration
+- **D-4**: Pure cleanup, would be safe to do now, but kept with D-2 / D-3 to amortize operator cost (one Firebase Console visit)
+
+### §13.3 Sequence post-v7.9 ship (2026-06-04+)
+
+Recommended order (lowest-friction first):
+
+1. **D-4 first** (1 min, GREEN) — operator opens Firebase Console anyway for D-2; while there, click Remove on the orphan
+2. **D-2 next** (5 min, YELLOW) — toggle conversions in GA4 → wait 30 min → run `mcp__ga4__runReport` with `isConversionEvent` dimension to verify the flip
+3. **D-3 last** (1-2h, YELLOW) — wire `AnalyticsScreenModifier` to 5 tabs in iOS code; pair with screen-prefix funnel validation in `/analytics validate` skill
+
+If v7.9 promotion is deferred past 2026-05-21 (rare but possible per infra §2.2 criteria), this entire block waits until v7.9 actually ships. The earliest-start dates in `state.json` are tied to `blocked_until: "v7.9 ships"`, not the calendar 2026-06-04.
+
+### §13.4 Cross-references
+
+- [`.claude/features/analytics-observability/state.json`](../../.claude/features/analytics-observability/state.json) tasks D-2, D-3, D-4 (status `deferred`)
+- [`docs/master-plan/infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.6.3 v7.9.1 cadence (D-2 + D-4 rows added)
+- [`docs/master-plan/analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) §5.6 (D-3 detailed spec — to be added)
+- v8 docket: **F21 = D-3** (analytics-observability state.json `v8_docket_candidates`)
+- FIT-142 closure: Linear comment `f42751ed-24cc-4e59-95ba-15683a19874b`
+- PR [#388](https://github.com/Regevba/FitTracker2/pull/388)

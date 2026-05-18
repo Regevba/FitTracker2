@@ -16,7 +16,8 @@
   "parent_master_plan": "docs/master-plan/infra-master-plan-2026-05-12.md",
   "v8_docket_candidates": [
     "F19",
-    "F20"
+    "F20",
+    "F21"
   ],
   "blocker_resolutions": {
     "sequencing": "Revised 3-window plan (1.A + 2 next week, 3 during Phase E, 1.B post Phase E)",
@@ -336,6 +337,55 @@
         "fitme-story/src/components/control-room/ForwardDeclaredEventsTile.tsx",
         "fitme-story/src/components/control-room/analytics-tile-primitives.tsx"
       ]
+    },
+    {
+      "id": "D-2",
+      "title": "Configure GA4 conversions (workout_complete + nutrition_meal_logged)",
+      "status": "deferred",
+      "phase": "implementation",
+      "earliest_start": "2026-06-04",
+      "blocked_until": "v7.9 ships",
+      "effort": "5min",
+      "calibration_class": "yellow",
+      "outcome": "(pending) Per docs/product/analytics-taxonomy.csv `Conversion: Yes` column: mark workout_complete + nutrition_meal_logged as conversions in GA4 Property 531124395. Current state verified 2026-05-17: 0 of 8 received events have isConversionEvent=true. Path: GA4 \u2192 Admin \u2192 Events \u2192 toggle 'Mark as conversion'. Verify post-flip via mcp__ga4__runReport with isConversionEvent dimension.",
+      "files_touched": [],
+      "source_event": "FIT-142 closure 2026-05-17",
+      "v7_9_1_candidate": true
+    },
+    {
+      "id": "D-3",
+      "title": "Wire AnalyticsScreenModifier to main tabs (Home/Training/Stats/Nutrition/Settings) \u2014 screen-view tracking gap",
+      "status": "deferred",
+      "phase": "implementation",
+      "earliest_start": "2026-06-04",
+      "blocked_until": "v7.9 ships",
+      "effort": "1-2h",
+      "calibration_class": "yellow",
+      "outcome": "(pending) Discovered 2026-05-17 during FIT-142 iOS investigation: analytics.logScreenView only called from 15 onboarding views. Main app tabs have ZERO explicit screen-view tracking. AnalyticsScreenModifier exists at FitTracker/Services/Analytics/AnalyticsScreenModifier.swift:9 but isn't applied. Symptom in GA4: Firebase auto-screen_view fires with screen_class='SwiftUIView' for ALL non-onboarding views \u2192 no screen-prefix funnel possible per analytics-taxonomy convention. Fix: apply .trackedScreen(AnalyticsScreen.<name>) modifier to each tab's root view.",
+      "files_touched": [
+        "FitTracker/Views/Main/MainScreenView.swift (or v2)",
+        "FitTracker/Views/Training/v2/TrainingPlanView.swift",
+        "FitTracker/Views/Stats/...",
+        "FitTracker/Views/Nutrition/...",
+        "FitTracker/Views/Settings/v2/SettingsView.swift"
+      ],
+      "source_event": "FIT-142 closure 2026-05-17",
+      "v8_docket_candidate_id": "F21",
+      "v7_9_1_candidate": true
+    },
+    {
+      "id": "D-4",
+      "title": "Delete old com.regevba.FitTracker Firebase iOS app entry",
+      "status": "deferred",
+      "phase": "implementation",
+      "earliest_start": "2026-06-04",
+      "blocked_until": "v7.9 ships",
+      "effort": "1min",
+      "calibration_class": "green",
+      "outcome": "(pending) Firebase project fitme-467e7 still has legacy iOS app entry for bundle com.regevba.FitTracker. Now orphaned: runtime uses com.fittracker.regev. Safe to delete: no client points at old appId 1:98024066974:ios:ab500a1a1fc5deb63a908f. Removes Firebase Console confusion. Path: Firebase Console \u2192 Project Settings \u2192 Your apps \u2192 click old card \u2192 Remove this app.",
+      "files_touched": [],
+      "source_event": "FIT-142 closure 2026-05-17",
+      "v7_9_1_candidate": true
     }
   ],
   "figma_node_ids": {},

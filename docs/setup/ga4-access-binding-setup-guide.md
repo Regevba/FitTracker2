@@ -91,6 +91,74 @@ If the same "doesn't match a Google account" error appears even from a non-APP a
 
 ---
 
+## Path 4 — Google API Explorer + brief APP cycle (SIMPLEST, 5 min)  *★ RECOMMENDED when paths 1-2 fail and you're APP-enrolled*
+
+**Use when:** Path 1 + 2 failed, AND your primary account is APP-enrolled (which blocks OAuth Playground + API Explorer until APP is briefly disabled).
+
+**Why this works:** Google's API Explorer uses Google's first-party OAuth client (the highest trust tier). When APP is enrolled, it still blocks the OAuth flow because elevated scopes (`analytics.manage.users`) trigger APP's protections regardless of OAuth client identity. Briefly disabling APP unblocks ONLY the initial OAuth consent — once the access token is minted and the curl POST succeeds, you re-enable APP immediately. The binding persists; the APP-off window is ~2 minutes total.
+
+**Why this is simpler than Path 3 / Pivot D:**
+
+- No need to create a custom OAuth client (saves ~15 min of GCP Console configuration)
+- No CLI required (no `gcloud auth application-default login` scope debugging)
+- API Explorer pre-fills the entire request body interactively — fewer copy-paste errors
+- Uses an `analytics.manage.users` scope token (correct scope for `accessBindings.create`), automatically selected by API Explorer based on the endpoint
+
+### Steps (5 min total, ~2 min APP-off)
+
+1. Open <https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1alpha/properties.accessBindings/create>
+2. Scroll down to the **"Try it!"** panel on the right side
+3. Fill in:
+    - **parent**: `properties/<YOUR_PROPERTY_ID>` (e.g. `properties/531124395`)
+    - **Request body** (click "JSON" toggle if not in JSON mode):
+
+       ```json
+       {
+         "user": "<service-account>@<project>.iam.gserviceaccount.com",
+         "roles": ["predefinedRoles/viewer"]
+       }
+       ```
+
+4. **Credentials section** at the bottom:
+    - ✅ Check **Google OAuth 2.0**
+    - Confirm scope is `https://www.googleapis.com/auth/analytics.manage.users` (auto-selected by API Explorer)
+    - API key checkbox is fine to leave on — OAuth takes precedence on write methods
+5. Click **Execute**
+6. **If you get "Access blocked: Google APIs Explorer is not approved by Advanced Protection"** → proceed to step 7. Otherwise (you're not APP-enrolled), you'll be prompted to sign in + approve scope → skip to step 11.
+7. Open <https://myaccount.google.com/advanced-protection> in another tab
+8. Re-authenticate if prompted (Google often requires a fresh password + 2FA challenge for this page)
+9. Find **Turn off Advanced Protection** → click → confirm → confirmation banner says "Advanced Protection is off"
+10. Return to the API Explorer tab → click **Execute** again
+11. Sign in as your GA4 Administrator account → approve scope
+12. **Response panel** returns either `200 OK` with the binding JSON, or an error:
+
+       ```json
+       {
+         "name": "properties/531124395/accessBindings/<binding-id>",
+         "user": "<service-account>@<project>.iam.gserviceaccount.com",
+         "roles": ["predefinedRoles/viewer"]
+       }
+       ```
+
+13. **Immediately re-enable APP** at <https://myaccount.google.com/advanced-protection> → **Turn on**
+
+**Total APP-off window: ~2 minutes.** The access binding persists indefinitely after APP is re-enabled.
+
+### When Path 4 fails
+
+- **API Explorer "Try it" panel doesn't load** → falls back to Path 3 (need a custom OAuth client)
+- **Browser blocks API Explorer even with APP off** → check that you're signed in as the GA4 Administrator account (not another account in a multi-account browser session); re-try with a fresh Incognito window
+- **Response is `403 PERMISSION_DENIED`** → the signed-in account doesn't have GA4 Administrator role on the property; switch accounts and retry
+- **Response is `409 ALREADY_EXISTS`** → the SA already has a binding (success — verify via `GET /accessBindings`)
+
+### Why this is preferred over Pivot D (gcloud ADC)
+
+Pivot D (line 248) uses `gcloud auth application-default login --scopes=analytics.readonly`. That path WORKS for `READ` operations (data queries via the MCP), but the SCOPE is wrong for `accessBindings.create` (a write operation that requires `analytics.manage.users` or `analytics.edit`). To use Pivot D for creating a binding, you'd need to swap the scope flag — and even then, the API Explorer path skips the entire ADC plumbing.
+
+**Path 4 is the path that resolved FT2 FIT-142 on 2026-05-17** after the 2026-05-16 multi-path session paused at Pivot D's young-account block. Source: `.claude/logs/analytics-observability.log.json` event `ga4_access_binding_resolved` (timestamp 2026-05-17T16:30:00Z).
+
+---
+
 ## Path 3 — Configure your own OAuth client + use in OAuth Playground (MEDIUM-HIGH, 15-20 min)
 
 **Use when:** Path 1 + 2 failed, OR you don't have a non-APP admin account available.

@@ -161,6 +161,68 @@ Plus parent feature scaffolding PR [#332](https://github.com/Regevba/FitTracker2
 
 **Primary metric:** CSV taxonomy drift **56 → 0** ✅ (target met at Phase 1.A closure).
 
+### §5.6 Phase 1.A-bis — Screen-view tracking gap (deferred to v7.9.1 or v8.0)
+
+**Surfaced:** 2026-05-17 during FIT-142 iOS investigation (PR [#388](https://github.com/Regevba/FitTracker2/pull/388)).
+
+**Discovery:** Once the iOS firehose lit up (FIT-142 closure) + Firebase DebugView started streaming events, a structural gap in screen-view tracking became visible. The original Phase 1.A audit verified that **events** are wired (112 iOS enum entries + 100% test coverage) but did not check whether **screen-view modifiers** are applied across the app.
+
+**The gap:**
+
+```text
+Onboarding flow (15 views):     analytics.logScreenView(AnalyticsScreen.<named>) ✅
+Main app tabs (5 tabs):          ZERO explicit screen-view calls ❌
+```
+
+Files with screen-view calls (verified 2026-05-17 via grep): all 15 onboarding views call `analytics.logScreenView` directly (no modifier). The `AnalyticsScreenModifier` exists at `FitTracker/Services/Analytics/AnalyticsScreenModifier.swift:9` but is not applied to any view outside onboarding.
+
+**Symptom in GA4 (verified via Firebase DebugView 2026-05-17):**
+
+- Firebase auto-collects `screen_view` events for ALL views (no app code required) — BUT with `screen_class = "SwiftUIView"` for everything outside onboarding (generic SwiftUI hierarchy class, not feature-specific)
+- Effect: GA4 funnels keyed on `screen_class` can't distinguish Home from Training from Stats from Nutrition from Settings — they all show as "SwiftUIView"
+- Effect: screen-prefix funnel analysis (per `docs/product/analytics-taxonomy.csv` convention `home_*`, `training_*`, `stats_*`, etc.) doesn't work for the main app tabs
+
+**Fix (D-3, scoped):**
+
+```swift
+// In each tab's root SwiftUI View:
+.trackedScreen(AnalyticsScreen.home)         // MainScreenView / v2
+.trackedScreen(AnalyticsScreen.training)     // TrainingPlanView
+.trackedScreen(AnalyticsScreen.stats)        // (stats tab root)
+.trackedScreen(AnalyticsScreen.nutrition)    // (nutrition tab root)
+.trackedScreen(AnalyticsScreen.settings)     // SettingsView / v2
+```
+
+The `AnalyticsScreenModifier` already exists at line 9 — wiring is one modifier application per tab. Test plan: re-run app, verify `mcp__ga4__getEvents` returns `screen_view` events with proper `screen_class` for each of the 5 tabs.
+
+**Why deferred (not done in PR #388):**
+
+- D-3 is iOS code work (1-2h with verification)
+- Adds new explicit `screen_view` events that **override** Firebase's auto-collection signal → changes screen-class distribution
+- Mid-calibration shift in GA4 data shape contaminates v7.9 promotion telemetry (infra MP §2.2 criteria)
+- Per §7.5 calibration safety classification: **🟡 yellow** — defer until 2026-06-04 (analytics MP §7.5 explicit policy)
+
+**Earliest start:** 2026-06-04 (v7.9.1 window opens) per [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.6.3.
+
+**Tracking:**
+
+- `state.json` task **D-3** (status: `deferred`, `blocked_until: "v7.9 ships"`)
+- v8 docket candidate: **F21** (added to `state.json::v8_docket_candidates`)
+- Analytics decisions log §13 (cross-references)
+
+**Scope clarity — what this is NOT:**
+
+- NOT a new gate (no `EVENT_SCREEN_VIEW_MISSING` write-time check)
+- NOT a refactor of the screen-tracking architecture (existing modifier is sound)
+- NOT a Phase 1.B gate-additive item (Phase 1.B adds `CSV_TAXONOMY_DRIFT` + `GA4_MCP_DISCONNECTED` per §8)
+
+**Companion follow-ups (also deferred to v7.9.1):**
+
+- **D-2** — Configure GA4 conversions (`workout_complete`, `nutrition_meal_logged`). Per `docs/product/analytics-taxonomy.csv` "Conversion: Yes" column. 5-min GA4 UI toggle. Yellow class.
+- **D-4** — Delete old `com.regevba.FitTracker` Firebase iOS app entry (legacy bundle no longer referenced by any runtime client). Green class, 1-min Firebase Console click.
+
+See [`analytics-observability-decisions-log-2026-05-13.md`](analytics-observability-decisions-log-2026-05-13.md) §13 for the joint D-2/D-3/D-4 disposition.
+
 ---
 
 ## §6 Phase 2 — Live Debugger (window 2026-05-15 → 22, ~8h, non-gate, parallel with Phase 1.A)
