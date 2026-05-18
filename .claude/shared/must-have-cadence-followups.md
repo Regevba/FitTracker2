@@ -19,7 +19,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | ~~B7~~ | ~~2026-05-18~~ | ~~UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2~~ **Closed 2026-05-17 via FT2 PR #387** (preemptive wire; Part 9 shipped) | operator | ucc-passkey-auth case study §99 |
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
-| B10 | **2026-05-21 EOD** | Audit substrate spec §12 OQ #1 — decide `docs/audits/runs/<date>/bundle.md` commit policy before External Audit #1 fires on 2026-05-22 | operator | [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md) §12 OQ #1 |
+| B10 | **2026-05-21** | Audit substrate spec §12 OQ #1 — decide `docs/audits/runs/<date>/bundle.md` commit policy before External Audit #1 fires on 2026-05-22 (target: 2026-05-21 EOD) | operator | [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md) §12 OQ #1 |
 
 ### B1 — v7.9 promotion-decision data freeze (2026-05-21)
 
