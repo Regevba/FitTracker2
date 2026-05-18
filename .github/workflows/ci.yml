@@ -34,8 +34,34 @@ jobs:
           PLIST_BASE64: ${{ secrets.GOOGLESERVICE_INFO_PLIST_BASE64 }}
         run: |
           if [ -z "$PLIST_BASE64" ]; then
-            echo "::error::GOOGLESERVICE_INFO_PLIST_BASE64 secret is not set"
-            exit 1
+            # GitHub does not expose repo secrets to Dependabot PRs (or forks);
+            # in those contexts write a minimal stub so xcodebuild's resource
+            # phase succeeds. Analytics tests will silently fall back to
+            # MockAnalyticsAdapter — acceptable for dep-bump PRs that don't
+            # touch iOS code paths. Operator-owned PRs and main-branch builds
+            # still get the real secret and exercise the real adapter.
+            echo "::warning::GOOGLESERVICE_INFO_PLIST_BASE64 secret not exposed (Dependabot PR or fork). Writing stub plist; iOS analytics tests will use MockAnalyticsAdapter."
+            cat > FitTracker/GoogleService-Info.plist <<'PLIST_EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>BUNDLE_ID</key><string>com.fittracker.regev</string>
+            <key>PROJECT_ID</key><string>stub-no-secret</string>
+            <key>GCM_SENDER_ID</key><string>0</string>
+            <key>GOOGLE_APP_ID</key><string>1:0:ios:stub</string>
+            <key>API_KEY</key><string>stub</string>
+            <key>STORAGE_BUCKET</key><string>stub.appspot.com</string>
+            <key>IS_ADS_ENABLED</key><false/>
+            <key>IS_ANALYTICS_ENABLED</key><false/>
+            <key>IS_APPINVITE_ENABLED</key><false/>
+            <key>IS_GCM_ENABLED</key><false/>
+            <key>IS_SIGNIN_ENABLED</key><false/>
+          </dict>
+          </plist>
+          PLIST_EOF
+            echo "Wrote stub plist ($(wc -c < FitTracker/GoogleService-Info.plist) bytes)"
+            exit 0
           fi
           echo "$PLIST_BASE64" | base64 -d > FitTracker/GoogleService-Info.plist
           echo "Decoded plist ($(wc -c < FitTracker/GoogleService-Info.plist) bytes)"
