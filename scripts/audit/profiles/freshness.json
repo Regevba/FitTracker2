@@ -1,0 +1,14 @@
+{
+  "profile_name": "freshness",
+  "description": "Data Freshness Audits (T+90d / T+180d / T+270d / T+365d) — gate emission keys ↔ function names ↔ test names canonicality",
+  "inherits_from": "base",
+  "additional_globs": [
+    "scripts/integrity-check.py",
+    "scripts/check-state-schema.py",
+    "scripts/validate-tier-tags.py",
+    ".claude/integrity/README.md",
+    ".claude/integrity/observed-patterns.md",
+    ".claude/shared/gate-coverage-weekly.jsonl"
+  ],
+  "additional_state_snapshot_features": []
+}
