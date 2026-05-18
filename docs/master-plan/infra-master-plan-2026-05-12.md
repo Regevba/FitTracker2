@@ -442,6 +442,14 @@ Concurrent test-discipline audit on 2026-05-13 surfaced that Theme G covers fram
 
 ---
 
+### 3.8 External Audit Substrate
+
+The 4 External Audits + 4 quarterly Data Freshness Audits booked in §5 run through a single substrate: `docs/audits/prompts/01-extraction-prompt.md` (operator-side) + `docs/audits/prompts/02-auditor-prompt.md` (fresh-chat auditor) + `scripts/audit/build_bundle.py` (deterministic, redacted bundle generator). Profile JSON files at `scripts/audit/profiles/*.json` parameterize the substrate per audit date — same prompts, different file set. Spec: [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md).
+
+This addresses unclosable-gap #5 (Tier 3.3 external replication — see §6.1).
+
+---
+
 ## 4. HADF Phase 2-bis — Active Research Build (Special Status)
 
 HADF Phase 2-bis is the only infra-adjacent build *currently in flight* on the main branch. It's a research-tier feature whose 5 phases of cross-repo sync infrastructure dependencies are met by v7.8.3.
@@ -523,7 +531,7 @@ Verbatim dates from source files. All times where unspecified are end-of-day in 
 | Date | Event | Source |
 |---|---|---|
 | **2026-07-31** | v8.0 ship target — top-per-theme docket from F1–F18 + V8-I triggers | §3.6.4 |
-| **2026-08-12** | **First Data Freshness Audit** (T+90d quarterly) — assert gate emission keys ↔ function names ↔ test names all canonical | §3.5.3 |
+| **2026-08-12** | **First Data Freshness Audit** (T+90d quarterly) — assert gate emission keys ↔ function names ↔ test names all canonical, profile: `freshness` | §3.5.3 |
 | **2026-08-31** | v8.1 build window opens — deferred F-items + first V8-I icebox triggers | §3.6.5 |
 | **2026-09-30** | v8.1 ship target | §3.6.5 |
 
@@ -531,11 +539,11 @@ Verbatim dates from source files. All times where unspecified are end-of-day in 
 
 | Date | Event | Source |
 |---|---|---|
-| **2026-11-12** | Data Freshness Audit #2 (T+180d) | §3.5.3 |
+| **2026-11-12** | Data Freshness Audit #2 (T+180d), profile: `freshness` | §3.5.3 |
 | **2026-12** | v8.2 build window — long-tail V8-I icebox items per their re-eval triggers | §3.6.6 |
-| **2027-02-12** | Data Freshness Audit #3 (T+270d) | §3.5.3 |
+| **2027-02-12** | Data Freshness Audit #3 (T+270d), profile: `freshness` | §3.5.3 |
 | **2027-05-08** | v7.8.2 cross-repo gate asymmetry annual re-eval (F7/F8 RESOLVED status review) | [2026-05-08 spec](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md) §5 |
-| **2027-05-12** | Data Freshness Audit #4 (T+365d, one year of forward plan) | §3.5.3 |
+| **2027-05-12** | Data Freshness Audit #4 (T+365d, one year of forward plan), profile: `freshness` | §3.5.3 |
 
 ---
 
