@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-18T12:19:28Z",
+  "updated_at": "2026-05-18T13:47:37Z",
   "events": [
     {
       "event_type": "phase_transition",
@@ -182,6 +182,23 @@
       "metrics": {
         "risks_closed": 4,
         "blockers_remaining": 0
+      },
+      "actor": "claude-opus-4-7",
+      "status": "completed",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-18T13:47:37Z",
+      "event_type": "t7_9_0_6_rollback_rehearsal_completed",
+      "phase": "research",
+      "summary": "T7.9.0.6 rollback path rehearsal executed in isolated worktree (/tmp/v7-9-rehearsal on chore/v7-9-0-6-rollback-rehearsal-2026-05-18). Simulated forward-flip: edit scripts/check-state-schema.py:132 (BRANCH_ISOLATION_ADVISORY_MODE: True \u2192 False) + .githooks/pre-commit header bump. Forward commit: 1s. Rollback via 'git revert HEAD --no-edit': <1s. File state verified restored. Total elapsed <2s vs 300s target (150x under budget). Confirms the reversibility contract from v7.8.5\u2192v8.2 plan \u00a72: enforced rollback <5min is trivially met for these two flip files. Worktree discarded; no push, no merge.",
+      "artifacts": [
+        "docs/superpowers/plans/2026-05-12-framework-v7-8-5-to-v8-2-implementation-plan.md#T7.9.0.6"
+      ],
+      "metrics": {
+        "forward_flip_seconds": 1,
+        "rollback_seconds": 1,
+        "target_seconds": 300
       },
       "actor": "claude-opus-4-7",
       "status": "completed",
