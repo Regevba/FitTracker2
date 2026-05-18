@@ -1,9 +1,15 @@
 {
   "profile_name": "base",
-  "description": "Stub base profile — full content in Task 6",
+  "description": "Foundation profile — case studies + measurement ledgers + prior audits. All other profiles inherit from this.",
   "inherits_from": null,
   "globs": [
-    "docs/case-studies/**/*.md"
+    "docs/case-studies/**/*.md",
+    ".claude/shared/measurement-adoption.json",
+    ".claude/shared/measurement-adoption-history.json",
+    ".claude/shared/documentation-debt.json",
+    ".claude/shared/case-study-monitoring.json",
+    ".claude/shared/case-study-t1-references.json",
+    "trust/audits/**/*.md"
   ],
   "additional_state_snapshot_features": []
 }
