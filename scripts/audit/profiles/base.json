@@ -1,0 +1,9 @@
+{
+  "profile_name": "base",
+  "description": "Stub base profile — full content in Task 6",
+  "inherits_from": null,
+  "globs": [
+    "docs/case-studies/**/*.md"
+  ],
+  "additional_state_snapshot_features": []
+}
