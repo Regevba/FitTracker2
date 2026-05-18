@@ -19,6 +19,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | ~~B7~~ | ~~2026-05-18~~ | ~~UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2~~ **Closed 2026-05-17 via FT2 PR #387** (preemptive wire; Part 9 shipped) | operator | ucc-passkey-auth case study §99 |
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
+| B10 | **2026-05-21 EOD** | Audit substrate spec §12 OQ #1 — decide `docs/audits/runs/<date>/bundle.md` commit policy before External Audit #1 fires on 2026-05-22 | operator | [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md) §12 OQ #1 |
 
 ### B1 — v7.9 promotion-decision data freeze (2026-05-21)
 
@@ -94,6 +95,22 @@ If all hold:
 ```
 
 Rollback: PATCH back to `both` (30 seconds), re-add `DASHBOARD_USER`/`DASHBOARD_PASS` if dropped.
+
+### B10 — Audit substrate bundle.md commit policy (2026-05-21 EOD)
+
+Spec [§12 OQ #1](../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md): should `docs/audits/runs/<date>/bundle.md` be committed to git, or stay gitignored?
+
+**Default state shipped via PR #405:** gitignored (per `.gitignore`'s `docs/audits/runs/*/` rule). Only the auditor's report + manifest.json + redaction-log.json land in `trust/audits/<date>-<model>/`.
+
+**The question:**
+- **Argument for committing bundle.md:** public reproducibility — anyone can replay the audit prompts against the exact bundle the auditor saw.
+- **Argument against:** 1.6MB+ bundles bloat the repo (1 per audit × 8 audits × N re-runs over time); the bundle is regenerable from the manifest hash + repo state at that moment via `git checkout <commit>; make audit-bundle PROFILE=<name>`.
+
+**Decision needed by:** 2026-05-21 EOD (before the operator runs the first audit-bundle command on 2026-05-22 for External Audit #1).
+
+**Recommendation:** keep gitignored. Commit the report + manifest + redaction-log to `trust/audits/`; the manifest's `bundle_sha256` + `build_bundle_py_sha256` + commit SHA at audit time are a 3-tuple reproducibility receipt that's tiny and committable.
+
+**If decision flips to "commit bundle.md":** remove the `docs/audits/runs/*/` line from `.gitignore`; expect repo size growth of ~2MB per audit run.
 
 ### B4 / B5 — Quarterly cross-layer test audit
 
