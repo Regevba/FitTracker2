@@ -29,6 +29,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - name: Decode GoogleService-Info.plist
+        env:
+          PLIST_BASE64: ${{ secrets.GOOGLESERVICE_INFO_PLIST_BASE64 }}
+        run: |
+          if [ -z "$PLIST_BASE64" ]; then
+            echo "::error::GOOGLESERVICE_INFO_PLIST_BASE64 secret is not set"
+            exit 1
+          fi
+          echo "$PLIST_BASE64" | base64 -d > FitTracker/GoogleService-Info.plist
+          echo "Decoded plist ($(wc -c < FitTracker/GoogleService-Info.plist) bytes)"
+
       - name: Full CI pipeline
         shell: bash
         run: |
