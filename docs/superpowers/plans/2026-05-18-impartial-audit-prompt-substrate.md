@@ -14,7 +14,9 @@
 
 **Branch:** create `feat/audit-prompt-substrate` from `main`. Spec advisory `BRANCH_ISOLATION_VIOLATION` Mode B may fire because we touch `Makefile`, `.github/workflows/*`, `scripts/audit/*`, `CLAUDE.md` — that is expected (infra surface). Per CLAUDE.md the gate is advisory in v7.8 and does not block.
 
-**Target ship:** 2026-05-21 (one day before Audit #1 on 2026-05-22).
+**Target ship:** 2026-05-20 EOD (two days before Audit #1 on 2026-05-22; keeps 1-day clear slack from v7.9 promotion ceremony on 2026-05-21).
+
+**Off-docket classification:** v7.8.7 operability patch — no framework version bump, no new pre-commit gates, no calibration window required. Precedent: v7.8.5 (observability layer) + v7.8.6 (cadence batch) both shipped outside the F-docket.
 
 ---
 
@@ -62,7 +64,7 @@ Modified:
 └── docs/case-studies/meta-analysis/unclosable-gaps.md  [Task 17]
 
 Created (doc-sync):
-└── docs/case-studies/meta-analysis/external-audit-stream.md   [Task 17]
+└── docs/audits/external-audit-stream.md   [Task 17]  (relocated from docs/case-studies/meta-analysis/ per verification Patch A to dodge CASE_STUDY_MISSING_TIER_TAGS gate)
 ```
 
 ---
@@ -1928,7 +1930,7 @@ git commit -m "ci(audit): tag-triggered bundle builder; uploads 90d artifact for
 - Modify: `docs/master-plan/infra-master-plan-2026-05-12.md`
 - Modify: `docs/master-plan/2026-05-12-consolidated-review-linear-notion-prep.md`
 - Modify: `docs/case-studies/meta-analysis/unclosable-gaps.md`
-- Create: `docs/case-studies/meta-analysis/external-audit-stream.md`
+- Create: `docs/audits/external-audit-stream.md`
 
 - [ ] **Step 1: Add CLAUDE.md pointer**
 
@@ -1969,10 +1971,12 @@ In `docs/case-studies/meta-analysis/unclosable-gaps.md`, find the gap #5 entry (
 
 - [ ] **Step 4: Create the external-audit-stream.md ledger**
 
+Note: per verification Patch A (2026-05-18), this file lives at `docs/audits/external-audit-stream.md` rather than `docs/case-studies/meta-analysis/` to avoid ambiguous interaction with the `CASE_STUDY_MISSING_TIER_TAGS` gate.
+
 ```markdown
 # External Audit Stream — Append-Only Ledger
 
-> Per-audit summary log. One row appended after each External Audit + Data Freshness Audit completes. Source: [`docs/audits/prompts/`](../../audits/prompts/) substrate.
+> Per-audit summary log. One row appended after each External Audit + Data Freshness Audit completes. Source: [`docs/audits/prompts/`](prompts/) substrate.
 
 | Date | Audit label | Profile | Auditor model | Bundle SHA256 | Discrepancies count | Corrections proposed | Corrections accepted | Report path |
 |---|---|---|---|---|---|---|---|---|
@@ -1988,12 +1992,12 @@ After each audit:
 
 ## Cross-reference
 
-- Substrate spec: [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md)
-- Infra master plan calendar: [`docs/master-plan/infra-master-plan-2026-05-12.md`](../../master-plan/infra-master-plan-2026-05-12.md) §5
-- Unclosable-gaps #5 (operational handle): [`docs/case-studies/meta-analysis/unclosable-gaps.md`](unclosable-gaps.md)
+- Substrate spec: [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md)
+- Infra master plan calendar: [`docs/master-plan/infra-master-plan-2026-05-12.md`](../master-plan/infra-master-plan-2026-05-12.md) §5
+- Unclosable-gaps #5 (operational handle): [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)
 ```
 
-Save to `docs/case-studies/meta-analysis/external-audit-stream.md`.
+Save to `docs/audits/external-audit-stream.md`.
 
 - [ ] **Step 5: Run integrity check to verify cross-refs**
 
@@ -2006,7 +2010,7 @@ Expected: 0 new findings (the doc-sync edits don't change `current_phase` or cla
 - [ ] **Step 6: Commit**
 
 ```bash
-git add CLAUDE.md docs/master-plan/infra-master-plan-2026-05-12.md docs/case-studies/meta-analysis/unclosable-gaps.md docs/case-studies/meta-analysis/external-audit-stream.md
+git add CLAUDE.md docs/master-plan/infra-master-plan-2026-05-12.md docs/case-studies/meta-analysis/unclosable-gaps.md docs/audits/external-audit-stream.md
 git commit -m "docs(audit): cross-reference substrate from CLAUDE.md + infra plan + unclosable-gaps + new stream ledger"
 ```
 

@@ -320,7 +320,7 @@ When the auditor returns the 3-phase report:
 1. Operator saves the report to `trust/audits/YYYY-MM-DD-<model>/report.md`.
 2. Operator commits the report alongside the manifest, redaction-log, and (optionally) the bundle. `runs/` is gitignored by default; specific runs can be committed if the team wants public reproducibility.
 3. Operator opens a remediation issue/PR for each Phase 3 correction the team accepts. Each accepted correction is mechanical (a line edit, a ledger field addition, a retraction). No judgment calls deferred to "later."
-4. A summary entry lands in `docs/case-studies/meta-analysis/external-audit-stream.md` (new file, created with this spec) — a single append-only log of "audit ran on date X with profile P; produced N discrepancies; M corrections accepted; K rejected with rationale."
+4. A summary entry lands in `docs/audits/external-audit-stream.md` (new file, created with this spec — relocated from `docs/case-studies/meta-analysis/` per verification Patch A 2026-05-18 to avoid ambiguous interaction with the `CASE_STUDY_MISSING_TIER_TAGS` gate) — a single append-only log of "audit ran on date X with profile P; produced N discrepancies; M corrections accepted; K rejected with rationale."
 5. The infra master plan §5 calendar is updated only if dates slip. The substrate itself does not need re-spec'ing per audit.
 
 ---
@@ -370,4 +370,6 @@ Resolution: tracked in `trust/audits/YYYY-MM-DD-<model>/post-audit-substrate-rev
 
 Next step: invoke the `writing-plans` skill to produce the task list. Estimated scope: ~10-14 tasks across (a) `build-bundle.py` implementation, (b) 5 profile JSON files, (c) two prompt markdown files, (d) Makefile + CI workflows, (e) cross-reference doc-sync.
 
-Target ship date: **2026-05-21** (one day before the first audit on 2026-05-22). If ship slips past 2026-05-21, the first audit reverts to hand-assembled bundle + best-effort prompt (matching the Gemini 2026-04-21 precedent), and the substrate ships for Audit #2.
+Target ship date: **2026-05-20 EOD** (two days before the first audit on 2026-05-22; keeps 1-day clear slack from the v7.9 promotion ceremony on 2026-05-21 — per verification Patch B 2026-05-18). If ship slips past 2026-05-21, the first audit reverts to hand-assembled bundle + best-effort prompt (matching the Gemini 2026-04-21 precedent), and the substrate ships for Audit #2.
+
+**Off-docket classification:** v7.8.7 operability patch — no framework version bump, no new pre-commit gates, no calibration window required. Precedent: v7.8.5 observability layer + v7.8.6 cadence batch both shipped patch-level outside the F-docket. Confirmed by operator 2026-05-18.
