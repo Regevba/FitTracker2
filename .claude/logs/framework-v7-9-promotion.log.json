@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-18T06:07:21Z",
+  "updated_at": "2026-05-18T12:19:28Z",
   "events": [
     {
       "event_type": "phase_transition",
@@ -166,6 +166,24 @@
       "artifacts": [],
       "metrics": {},
       "actor": "claude-sonnet-4-6",
+      "status": "completed",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-18T12:19:28Z",
+      "event_type": "pre_decision_risk_closure_appended",
+      "phase": "research",
+      "summary": "Cross-referenced 4 risks from project_v7_9_promotion_risks_2026_05_17 memory against PR #392 verdict report + live gate-coverage.jsonl: Risk A (CACHE_HITS drift 6d stale) RESOLVED \u2014 verdict confirms 5/5 valid fires 2026-05-11/12, memory was stale. Risk B (CU_V2_INVALID 88.2% skip + cu_v2 enforcement extension) NOT A 2026-05-21 BLOCKER \u2014 gate NOT in promotion docket; cu_v2 extension is v8.x work. Risk C (STATE_OWNER_* 4d telemetry) EXPLAINED \u2014 3 gates fired on 5 distinct days (05-11/12/13/17/18); 05-14/15/16 gap explained by no-state.json-staged on those days, not silent regression. Risk D retracted 2026-05-17. Net: v7.9 GO confirmed; no remaining blockers.",
+      "artifacts": [
+        ".claude/shared/telemetry-audit-t7-9-0-decision-2026-05-18.md",
+        "https://github.com/Regevba/FitTracker2/pull/400",
+        ".claude/logs/gate-coverage.jsonl"
+      ],
+      "metrics": {
+        "risks_closed": 4,
+        "blockers_remaining": 0
+      },
+      "actor": "claude-opus-4-7",
       "status": "completed",
       "recording_mode": "contemporaneous"
     }
