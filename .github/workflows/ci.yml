@@ -20,6 +20,15 @@ permissions:
 jobs:
   build-and-test:
     name: Build and Test
+    # Skip iOS build/test for Dependabot PRs — they update npm/JS deps in
+    # /dashboard or /website and never touch Swift code. GitHub denies repo
+    # secrets to Dependabot anyway, so even with the stub-plist fallback
+    # from PR #398, Firebase tries to configure with invalid IDs and the
+    # app crashes on launch → UI tests time out. Skipping the job entirely
+    # is cheaper and avoids the false-failure. If Dependabot ever proposes
+    # an SPM/iOS-relevant change, manually convert the PR (close + reopen
+    # from a non-Dependabot branch) to run the full pipeline.
+    if: github.actor != 'dependabot[bot]'
     runs-on: macos-15
     env:
       PROJECT_PATH: FitTracker.xcodeproj
