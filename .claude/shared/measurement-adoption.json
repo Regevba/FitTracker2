@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-18T04:49:23Z",
+  "updated": "2026-05-19T04:38:09Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
