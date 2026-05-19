@@ -764,3 +764,19 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
 Last refreshed: 2026-05-15.
+
+---
+
+### W11 — `make preflight` enhancement_parent false-positive (2026-05-19)
+
+**Trigger:** Running `make preflight WORK_TYPE=enhancement FEATURE=<name>` blocks with `enhancement_parent: parent='<feature>' phase=tasks, prd.md present=False` even when the actual parent feature (referenced by `state.json::parent_feature`) IS complete with a PRD.
+
+**Why expected:** `scripts/preflight.py::enhancement_parent_state()` checks the ENHANCEMENT FEATURE'S own `prd.md` and `current_phase`, instead of resolving `state.json::parent_feature` and checking THAT feature. Pure heuristic bug — the check is mis-aimed.
+
+**Signal vs noise rule:** Always noise when the enhancement is legitimately scoped (state.json has `parent_feature` set + parent is `complete`). Signal only if no `parent_feature` field exists in state.json (real misconfiguration).
+
+**Silence path (Option A, workaround):** Write a thin "delta PRD" stub at `.claude/features/<enhancement>/prd.md` listing primary/secondary/guardrail metrics + kill criteria. Re-run preflight; the `prd.md present=True` check passes (but `phase=tasks` still trips the blocker — accept this as known-noise OR run preflight with `FEATURE=<parent>` for verification only).
+
+**Silence path (Option B, durable fix):** Patch `scripts/preflight.py::enhancement_parent_state()` to read `state.json::parent_feature` and resolve the check against THAT feature. Queue as a v7.9.1 candidate; tracked in [`docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md`](../../docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md) R7.
+
+**First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
