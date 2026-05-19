@@ -106,7 +106,10 @@ Config/Local/*.xcconfig
 .cache/
 .claude/_session-state/
 
-# Audit bundles — per-run outputs are gitignored by default;
-# trust/audits/YYYY-MM-DD-<model>/ holds the reports we commit.
-docs/audits/runs/*/
-!docs/audits/runs/.gitkeep
+# Audit bundles — commit per-run artifacts for public reproducibility
+# (decided 2026-05-19, spec §12 OQ #1). Each run directory commits
+# bundle.md, manifest.json, redaction-log.json, plus the auditor's report.
+# Only ad-hoc scratch / cache files under runs/*/ stay gitignored.
+docs/audits/runs/*/scratch/
+docs/audits/runs/*/.cache/
+docs/audits/runs/*/*.tmp
