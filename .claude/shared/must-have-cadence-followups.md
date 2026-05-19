@@ -19,6 +19,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | ~~B7~~ | ~~2026-05-18~~ | ~~UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2~~ **Closed 2026-05-17 via FT2 PR #387** (preemptive wire; Part 9 shipped) | operator | ucc-passkey-auth case study §99 |
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
+| ~~B10~~ | ~~2026-05-21~~ | ~~Audit substrate spec §12 OQ #1 — decide `docs/audits/runs/<date>/bundle.md` commit policy~~ **Closed 2026-05-19: commit per-run artifacts (bundle.md + manifest + redaction-log) for public reproducibility; shipped via PR #405 update** | operator | [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md) §12 OQ #1 |
 
 ### B1 — v7.9 promotion-decision data freeze (2026-05-21)
 
@@ -94,6 +95,12 @@ If all hold:
 ```
 
 Rollback: PATCH back to `both` (30 seconds), re-add `DASHBOARD_USER`/`DASHBOARD_PASS` if dropped.
+
+### ~~B10 — Audit substrate bundle.md commit policy~~ (CLOSED 2026-05-19)
+
+**Resolution:** commit per-run artifacts (`bundle.md`, `manifest.json`, `redaction-log.json`, plus the auditor's report) under `docs/audits/runs/<date>-<model>/`. Public reproducibility wins over repo-size concerns: ≈5–10 MB/year for 8 audits/year is fine for an audit-of-record, and the bundle is the canonical "what the auditor saw" that audit findings reference. Only ad-hoc scratch (`runs/*/scratch/`, `runs/*/.cache/`, `runs/*/*.tmp`) remains gitignored.
+
+**Shipped via:** PR #405 same-day update — `.gitignore` rule rewritten, spec §12 OQ #1 marked resolved with rationale captured inline.
 
 ### B4 / B5 — Quarterly cross-layer test audit
 

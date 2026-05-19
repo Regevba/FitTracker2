@@ -1,0 +1,40 @@
+name: audit-bundle-on-tag
+
+on:
+  push:
+    tags:
+      - 'external-audit-*'
+
+permissions:
+  contents: read
+
+jobs:
+  build-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Infer profile from tag
+        id: profile
+        run: |
+          TAG="${GITHUB_REF##*/}"
+          case "$TAG" in
+            external-audit-1-*|*-v7-9-promotion-*) echo "name=v7-9-promotion" >> "$GITHUB_OUTPUT" ;;
+            external-audit-2-*|*-v7-9-1-*)         echo "name=v7-9-1-f16-plus-hadf" >> "$GITHUB_OUTPUT" ;;
+            external-audit-3-*|*-v8-0-*)           echo "name=v8-0-gates-plus-hadf-closure" >> "$GITHUB_OUTPUT" ;;
+            external-audit-freshness-*)            echo "name=freshness" >> "$GITHUB_OUTPUT" ;;
+            *)                                     echo "name=base" >> "$GITHUB_OUTPUT" ;;
+          esac
+      - name: Build bundle
+        run: |
+          make audit-bundle PROFILE=${{ steps.profile.outputs.name }} RUN_LABEL=${GITHUB_REF##*/}
+      - name: Upload bundle artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-bundle-${{ github.ref_name }}
+          path: docs/audits/runs/${{ github.ref_name }}/
+          retention-days: 90

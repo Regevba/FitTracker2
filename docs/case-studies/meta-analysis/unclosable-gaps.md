@@ -183,6 +183,8 @@ No pre-commit hook can simulate "did an external operator succeed with this." We
 - Public issue: **[#142](https://github.com/Regevba/FitTracker2/issues/142)** — filed and pinned 2026-04-25 as the explicit final v7.6 deliverable, per [Phase 3c sequencing](../../superpowers/plans/2026-04-25-v7-6-mechanical-enforcement-phases-2-4.md). Labels: `tier-3-3`, `external-replication`, `help wanted`.
 - Closes when: at least one external case study lands in [`docs/case-studies/external/`](../external/) (directory does not exist yet — created on first external submission).
 
+**Operational handle (added 2026-05-18):** the impartial audit prompt substrate at `docs/audits/prompts/` + `scripts/audit/build_bundle.py` makes external replication a cheap, repeatable operator task. Does not close the gap (still requires an external operator running the prompts in a fresh chat), but reduces per-audit overhead from "hand-assemble bundle + hand-write prompt" to "run `make audit-bundle PROFILE=<name>` + paste". Spec: [`../../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md).
+
 ---
 
 ## Class A vs Class B — v7.5 → v7.6 promotions

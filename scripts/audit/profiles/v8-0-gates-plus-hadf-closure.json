@@ -1,0 +1,12 @@
+{
+  "profile_name": "v8-0-gates-plus-hadf-closure",
+  "description": "External Audit #3 (2026-08-05) — v8.0 gate calibration honesty + HADF Block C synthesis + ORCHID v2",
+  "inherits_from": "base",
+  "additional_globs": [
+    ".claude/shared/gate-coverage-weekly.jsonl",
+    "docs/case-studies/meta-analysis/*hadf*.md",
+    "docs/case-studies/meta-analysis/*orchid*.md",
+    "docs/master-plan/v8-0-docket-ranking-2026-05-13.md"
+  ],
+  "additional_state_snapshot_features": []
+}

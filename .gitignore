@@ -105,3 +105,11 @@ Config/Local/*.xcconfig
 .claude/shared/hadf/phase2bis-deploy-verification/
 .cache/
 .claude/_session-state/
+
+# Audit bundles — commit per-run artifacts for public reproducibility
+# (decided 2026-05-19, spec §12 OQ #1). Each run directory commits
+# bundle.md, manifest.json, redaction-log.json, plus the auditor's report.
+# Only ad-hoc scratch / cache files under runs/*/ stay gitignored.
+docs/audits/runs/*/scratch/
+docs/audits/runs/*/.cache/
+docs/audits/runs/*/*.tmp

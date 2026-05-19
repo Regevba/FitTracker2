@@ -493,3 +493,20 @@ refresh-pr-cache:
 validate-existing-cites: refresh-pr-cache
 	@echo "Validating PR cites in all docs/case-studies/*.md against unified cache…"
 	@python3 scripts/check-case-study-preflight.py docs/case-studies/*.md
+
+# ─────────────────────────────────────────────────────────────
+# Impartial Audit Substrate
+# ─────────────────────────────────────────────────────────────
+
+.PHONY: audit-bundle audit-prompts-self-check
+
+audit-bundle:
+	@if [ -z "$(if $(filter command line environment,$(origin PROFILE)),$(PROFILE),)" ]; then \
+		echo "Usage: make audit-bundle PROFILE=<name>"; \
+		echo "Available profiles: base v7-9-promotion v7-9-1-f16-plus-hadf v8-0-gates-plus-hadf-closure freshness"; \
+		exit 1; \
+	fi
+	python3 scripts/audit/build_bundle.py --profile=$(PROFILE) $(if $(RUN_LABEL),--run-label=$(RUN_LABEL))
+
+audit-prompts-self-check:
+	python3 scripts/audit/check_prompts.py

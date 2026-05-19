@@ -1,0 +1,10 @@
+{
+  "profile_name": "v7-9-1-f16-plus-hadf",
+  "description": "External Audit #2 (2026-06-12) — F16 try-repo fixture corpus + HADF Sub-exps 1-3 raw data integrity",
+  "inherits_from": "v7-9-promotion",
+  "additional_globs": [
+    "docs/master-plan/v7-9-1-f16-try-repo-harness-prd-2026-05-13.md",
+    "docs/case-studies/meta-analysis/*hadf*.md"
+  ],
+  "additional_state_snapshot_features": []
+}
