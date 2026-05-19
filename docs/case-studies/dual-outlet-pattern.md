@@ -1,3 +1,19 @@
+---
+date_written: "2026-05-08"
+work_type: "chore"
+work_subtype: "documentation_pattern"
+dispatch_pattern: "single_author_documentation"
+success_metrics:
+  - "Dual-outlet contract is unambiguous — every shipped feature post-2026-05-08 has both an FT2 source case study and a fitme-story slot MDX, with the same `case_study_type` taxonomy across both surfaces"
+  - "Frontmatter contracts (per outlet) are codified and machine-checkable by the existing v7.8.1 FEATURE_CLOSURE_COMPLETENESS gate + fitme-story Zod schema"
+  - "When the two outlets conflict, the FT2 source wins — and this rule is documented (no implicit precedence)"
+kill_criteria: []
+kill_criteria_resolution: "N/A — documentation-pattern doc, no kill criteria. Pattern is descriptive (codifies what already exists) not prescriptive (no measurable threshold to fail)."
+framework_version: "v7.8.1"
+case_study_type: "no_case_study_required"
+tier_tags_present: false
+---
+
 # Dual-Outlet Case-Study Pattern
 
 **Created:** 2026-05-08

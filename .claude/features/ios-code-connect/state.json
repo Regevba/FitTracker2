@@ -6,6 +6,8 @@
   "framework_version": "v7.8.1",
   "work_type": "chore",
   "work_subtype": "design_system_extension",
+  "case_study_type": "no_case_study_required",
+  "case_study_exemption_reason": "1-phase chore (design-system extension). T5 shipped docs/design-system/ios-code-connect-workflow.md (~190 lines, 8 sections) which captures the workflow, mappings, and operator publish procedure. A separate case study would duplicate that content with no added signal.",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": true,

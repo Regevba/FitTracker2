@@ -11,6 +11,11 @@ work_subtype: "framework_feature"
 shipped_window: "2026-05-07 (single-day full PM cycle)"
 primary_metric: "Effective coverage on the 3 new write-time gates per Mechanism A telemetry"
 primary_metric_status: "T1 Instrumented at ship; T+7d telemetry review on 2026-05-14"
+success_metrics:
+  - "Mechanism A coverage telemetry shows checked > 0 continuously for 7+ consecutive days on BRANCH_ISOLATION_VIOLATION + FEATURE_CLOSURE_COMPLETENESS + ISOLATION_OPT_OUT_REASON_MISSING"
+  - "False-positive rate < 5% on BRANCH_ISOLATION_VIOLATION (legitimate-on-main commits not blocked beyond the 20% kill threshold)"
+  - "Pre-commit hook total runtime < 10s p95 (does not degrade dev velocity)"
+  - "Zero silent-pass repeats (no new gate ships at checked=0 for 7+ days, the v7.7 CACHE_HITS_EMPTY_POST_V6 lesson)"
 tier_tags_present: true
 external_audit_status: "internal"
 kill_criteria:

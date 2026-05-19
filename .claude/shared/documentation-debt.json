@@ -1,52 +1,50 @@
 {
   "version": "1.0",
-  "updated": "2026-05-07T16:11:56Z",
+  "updated": "2026-05-11T04:22:30Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 63,
-    "features_scanned": 53,
-    "integrity_snapshot_files": 2,
-    "integrity_cycle_snapshots": 1,
-    "trend_ready": false,
-    "open_debt_items": 3
+    "case_studies_scanned": 70,
+    "features_scanned": 62,
+    "integrity_snapshot_files": 4,
+    "integrity_cycle_snapshots": 3,
+    "trend_ready": true,
+    "open_debt_items": 1
   },
   "coverage": {
     "date_written": {
-      "present": 63,
+      "present": 70,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 63,
+      "present": 70,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 63,
+      "present": 70,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 62,
-      "missing": 1,
-      "percent": 98.4,
-      "examples": [
-        "docs/case-studies/framework-v7-8-branch-isolation-case-study.md"
-      ]
+      "present": 70,
+      "missing": 0,
+      "percent": 100.0,
+      "examples": []
     },
     "kill_criteria": {
-      "present": 63,
+      "present": 70,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 2,
+      "present": 9,
       "missing": 61,
-      "percent": 3.2,
+      "percent": 12.9,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -56,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 1,
-      "missing": 62,
-      "percent": 1.6,
+      "present": 4,
+      "missing": 66,
+      "percent": 5.7,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -68,39 +66,21 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 53,
+      "present": 62,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 2,
-    "snapshots_available": 1,
+    "snapshot_files_available": 4,
+    "snapshots_available": 3,
     "legacy_snapshot_files_without_context": 1,
-    "trend_ready": false,
-    "status": "baseline_only",
+    "trend_ready": true,
+    "status": "trend_ready",
     "notes": "Point-in-time debt metrics are usable immediately. Trend analysis waits for multiple scheduled 72h cycle snapshots; ad hoc local snapshots do not unlock trend mode."
   },
   "debt_items": [
-    {
-      "id": "success_metrics",
-      "title": "Case studies missing success-metric restatement",
-      "severity": "low",
-      "count": 1,
-      "examples": [
-        "docs/case-studies/framework-v7-8-branch-isolation-case-study.md"
-      ],
-      "recommended_next_step": "Touch the missing files opportunistically and add the missing success metrics field explicitly."
-    },
-    {
-      "id": "integrity_trend_window",
-      "title": "Integrity-cycle history is too short for trustworthy documentation-debt trends",
-      "severity": "medium",
-      "count": 2,
-      "examples": [],
-      "recommended_next_step": "Wait for at least 2-3 scheduled 72h cycle snapshots before treating dashboard trend lines as meaningful."
-    },
     {
       "id": "kill_criteria_resolution_missing",
       "title": "Case studies declaring kill_criteria but missing kill_criteria_resolution (FEATURE_CLOSURE_COMPLETENESS Q7, advisory in v7.8)",
