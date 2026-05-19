@@ -208,9 +208,10 @@ final class MealEntryViewModel: ObservableObject {
             do {
                 try VNImageRequestHandler(cgImage: cgImage, options: [:]).perform([request])
             } catch {
-                await MainActor.run {
+                let errorDescription = error.localizedDescription
+                await MainActor.run { [weak self] in
                     self?.smartStatus = nil
-                    self?.smartError = "Photo scan failed: \(error.localizedDescription)"
+                    self?.smartError = "Photo scan failed: \(errorDescription)"
                 }
             }
         }

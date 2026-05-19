@@ -47,8 +47,75 @@
       "tasks_done_in_pr_122": ["T1", "T2", "T3", "T4", "T5"],
       "tasks_done_in_pr_383": ["T9"],
       "tasks_done_in_pr_387": ["T7", "T8"],
-      "tasks_pending": ["T6"],
-      "t6_resume_plan_2026_05_18": {
+      "tasks_pending": [],
+      "t6_resolved_2026_05_19": {
+        "resolved_at": "2026-05-19T13:53:46Z",
+        "root_cause": "CRON_SECRET env var was never set in Vercel production after PR #122 (2026-05-17) added the auth check at src/app/api/cron/sync-audit-log/route.ts:39. Vercel's scheduled cron caller sent `Authorization: Bearer undefined` daily → 401 → silent exit → no Redis read → no Blob write. Visible only because Hobby plan log retention (30min) expired the 401 entries before any natural audit could catch them.",
+        "fix_applied": [
+          "1. Generated cryptographically secure 64-hex-char CRON_SECRET via openssl rand -hex 32",
+          "2. Added to Vercel production env via `vercel env add CRON_SECRET production` (stdin from file, no echo)",
+          "3. Redeployed latest production deployment dpl_DBt2M3xZCuzSyPpj3QSCnuJ5NCPN via `vercel redeploy` to apply env var (~2min build)",
+          "4. Manually invoked cron route with new Bearer auth → response: {ok:true, synced:16, url:<blob>, pii_redacted:true}",
+          "5. Verified blob HEAD returns 200 (was 404 for 2 days)",
+          "6. Verified blob content: 16 JSONL events, 4364 bytes, first event auth_session_minted from 2026-05-18T12:21:48Z, zero raw operator_label fields (PII sanitization working)"
+        ],
+        "remaining_cascade_issue": {
+          "symptom": "FT2 ucc-audit-log-sync.yml workflow (run 26101838762) failed at git push origin main with GH006 'Protected branch update failed' — the workflow's auto-commit step blocked by branch protection added 2026-05-19 (chore/2026-05-19-batch-a1-d1-c1-c2 commit c9f993f via gh api).",
+          "what_actually_worked": "Workflow successfully fetched blob, diffed, staged 16 new lines, created local commit [main 237da17]. Only the final push was rejected.",
+          "fixes_options": [
+            "Option A: add github-actions[bot] to branch protection bypass via `gh api -X PUT repos/Regevba/FitTracker2/branches/main/protection` with bypass_pull_request_allowances.apps: ['github-actions']. Calibration-safe (GH API only, no FT2 commit). 5 min.",
+            "Option B: modify .github/workflows/ucc-audit-log-sync.yml to open a PR instead of direct push (uses peter-evans/create-pull-request action). Infra-glob touch → defer to 2026-05-22+. 30 min."
+          ],
+          "immediate_impact_assessment": "For B8 UCC kill-criteria checkpoint 2026-05-23: blob is publicly readable (operators can curl it directly to evaluate K1/K2/K3); FT2 mirror is NOT required for B8. T6 unblock complete for downstream consumers; FT2 mirror is observability convenience that can wait."
+        }
+      },
+      "t6_blocker_2026_05_19": {
+        "discovered_at": "2026-05-19T12:35:00Z",
+        "symptom": "Vercel Blob URL https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl returns HTTP 404 after 2 full daily cron windows (2026-05-18 + 2026-05-19).",
+        "cascade": "FT2 ucc-audit-log-sync.yml workflow fails daily since 2026-05-18T08:53Z with `curl: (22) The requested URL returned error: 404`. The workflow itself is correctly configured (UCC_AUDIT_BLOB_URL set per T7); the upstream Vercel Cron at fitme-story is not populating the blob.",
+        "likely_causes": [
+          "Operator sign-in to seed Redis (per original resume plan) did not write events, OR",
+          "fitme-story Vercel Cron /api/cron/sync-audit-log is failing silently (Redis read error / blob write error / env var missing on Vercel)",
+          "Cron is firing but Redis is empty → writes empty array → blob put fails or is rejected"
+        ],
+        "debug_path": [
+          "1. Verify CRON_SECRET is set in fitme-story Vercel production env",
+          "2. Manually invoke: curl -H 'Authorization: Bearer $CRON_SECRET' https://fitme-story.vercel.app/api/cron/sync-audit-log — inspect response.synced count + response.url",
+          "3. If synced=0: Redis is empty → operator must sign in at /control-room/sign-in to seed events",
+          "4. If response 5xx or error: read Vercel runtime logs for the cron route via Vercel MCP",
+          "5. Once blob exists (HEAD returns 200): re-trigger FT2 workflow_dispatch on ucc-audit-log-sync.yml"
+        ],
+        "calibration_window_safety": "All debug steps above are HTTP calls + Vercel env-var checks — no infra-glob commits. Safe during 2026-05-15 → 2026-05-21 calibration window."
+      },
+      "t6_diagnosis_2026_05_19_via_vercel_mcp": {
+        "diagnosed_at": "2026-05-19T13:00:00Z",
+        "method": "Vercel MCP get_runtime_logs over 24h + 7d windows",
+        "confirmed_state": [
+          "Cron route is correctly deployed: HEAD /api/cron/sync-audit-log returns 401 (route exists, auth-protected)",
+          "Cron is registered in vercel.json: /api/cron/sync-audit-log at schedule '13 5 * * *'",
+          "Latest production deployment dpl_DBt2M3xZCuzSyPpj3QSCnuJ5NCPN (2026-05-19) is READY",
+          "ZERO cron fire log entries in last 24h (and 7d); only logs are 1 HEAD probe (my own) + 1 random page view"
+        ],
+        "root_cause": "Vercel Cron is not triggering the route at 05:13 UTC. Function deployment is healthy; cron registration is valid; but scheduled invocations are not occurring.",
+        "likely_causes_ranked": [
+          "1. Vercel Hobby plan cron not auto-activated — some Hobby crons require explicit enable in dashboard /cron-jobs UI",
+          "2. Vercel-side cron infrastructure stall (silent fire-failure that doesn't surface in runtime logs)",
+          "3. Cron deployment desync — vercel.json changed but Vercel-side cron registration didn't update"
+        ],
+        "recommended_operator_action": [
+          "1. Open https://vercel.com/regevba-3729s-projects/fitme-story/cron-jobs",
+          "2. Check 'Last invoked' timestamp for /api/cron/sync-audit-log — if 'Never' or older than 2026-05-15, cron is stalled",
+          "3. If there's an 'Enable' or 'Resume' button → click it. If not, redeploy fitme-story (push no-op commit to main) to refresh cron registration",
+          "4. After redeploy: wait for next 05:13 UTC fire (≤24h) OR have operator sign in at /control-room/sign-in to seed Redis"
+        ],
+        "post_fix_validation": [
+          "curl -I https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl — expect 200 after first successful cron fire",
+          "gh run list --repo Regevba/FitTracker2 --workflow ucc-audit-log-sync.yml --limit 1 — expect conclusion=success",
+          "cat .claude/logs/ucc-auth-events.jsonl in FT2 main after next FT2 GHA fire — expect ≥3 events"
+        ],
+        "alternative_quick_fix_path": "Skip cron entirely: change the Vercel route to be invoked directly by the FT2 GHA workflow with CRON_SECRET. FT2 GHA already runs daily; making it the PRIMARY trigger removes Vercel-Cron dependency. Would require: (a) GH secret CRON_SECRET set on FT2 repo, (b) FT2 workflow modified to POST to /api/cron/sync-audit-log with Bearer auth before fetching the blob. ~30 min, infra-glob touch — defer to 2026-05-22+."
+      },
+      "t6_resume_plan_2026_05_18_SUPERSEDED": {
         "trigger": "Natural Vercel cron fires daily at 05:13 UTC; GHA ucc-audit-log-sync.yml fires at 05:17 UTC (now wired with UCC_AUDIT_BLOB_URL per T7 close 2026-05-17T14:05:50Z; workflow self-activates when the blob exists).",
         "operator_action_today": "Sign in once at https://fitme-story.vercel.app/control-room/sign-in to populate Redis with 3 audit events (auth_passkey_authenticate_started + auth_passkey_authenticate_succeeded + auth_session_minted).",
         "resume_check_time_utc": "2026-05-18T05:30:00Z (08:30 IDT)",
@@ -193,6 +260,7 @@
       "effort_days": 0.02,
       "depends_on": ["T6"],
       "completed_at": "2026-05-17T14:05:50Z",
+      "completed_via_pr": 387,
       "completed_note": "Wired preemptively ahead of T6 because the blob URL is deterministic from the Vercel Blob store ID (store_Wbm976bbAd3TvK2o → https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl). The FT2 ucc-audit-log-sync.yml workflow short-circuits cleanly on 404, so setting the variable now is safe; it auto-activates the moment the next Vercel Cron (05:13 UTC) populates the blob. The workflow_dispatch verification still waits on T6 (cron must produce a real blob first).",
       "note": "gh variable set UCC_AUDIT_BLOB_URL --body '<url-from-T6>' --repo Regevba/FitTracker2. Trigger ucc-audit-log-sync.yml via workflow_dispatch to verify FT2 syncs the blob to .claude/logs/ucc-auth-events.jsonl."
     },
@@ -202,7 +270,10 @@
       "type": "docs",
       "skill": "release",
       "lane": "e-core",
-      "status": "pending",
+      "status": "done",
+      "completed_at": "2026-05-17T16:28:51Z",
+      "completed_via_pr": 387,
+      "completed_note": "Confirmed 2026-05-19 audit: parent state.json::rollout_status.parts_shipped contains 'Part 9 wired UCC_AUDIT_BLOB_URL on FT2 (2026-05-17T14:05:50Z…)'. Part 9 reconciled as shipped per PR #387 title.",
       "priority": "high",
       "effort_days": 0.02,
       "depends_on": ["T7"],
@@ -214,7 +285,10 @@
       "type": "docs",
       "skill": "research",
       "lane": "e-core",
-      "status": "pending",
+      "status": "done",
+      "completed_at": "2026-05-17T16:28:51Z",
+      "completed_via_pr": 387,
+      "completed_note": "Confirmed 2026-05-19 audit: parent case study at docs/case-studies/ucc-passkey-auth-case-study.md line 203 has `## §99 Resolution log (post-launch)` section. Per PR #387 title, this includes the Redis fix W-pattern entry.",
       "priority": "high",
       "effort_days": 0.1,
       "depends_on": ["T7"],
@@ -222,6 +296,11 @@
       "note": "Honest disclosure: feature shipped 2026-05-07 with broken persistence; bug discovered 2026-05-17 during B7 wiring; fix lands as in-band enhancement. Frame as v7.8.5 W-pattern (filesystem-ephemerality on Vercel serverless)."
     }
   ],
+  "audit_2026_05_19": {
+    "reviewed_at": "2026-05-19T12:35:00Z",
+    "reviewer": "operator-via-Claude session",
+    "finding": "T7, T8, T9 already done via PR #387 (squash 31ea322, merged 2026-05-17T16:28:51Z); state.json T7/T8/T9 entries were stale. T6 verification (blob exists at deterministic URL) is genuinely pending — 2 full Vercel cron windows have passed since the 2026-05-17 implementation without populating the blob. See implementation.t6_blocker_2026_05_19 for diagnosis. Closure of this enhancement awaits T6 resolution + transition through testing/review/merge phases."
+  },
   "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
   "predecessor_chain": ["ucc-passkey-auth", "auth-polish-v2"],
   "cache_hits": [],
