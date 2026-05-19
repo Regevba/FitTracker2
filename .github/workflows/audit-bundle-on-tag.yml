@@ -5,6 +5,9 @@ on:
     tags:
       - 'external-audit-*'
 
+permissions:
+  contents: read
+
 jobs:
   build-bundle:
     runs-on: ubuntu-latest

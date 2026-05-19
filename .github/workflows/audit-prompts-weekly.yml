@@ -10,6 +10,10 @@ on:
       - 'scripts/audit/**'
       - '.github/workflows/audit-prompts-weekly.yml'
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   self-check:
     runs-on: ubuntu-latest
