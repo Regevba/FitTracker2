@@ -1,0 +1,4635 @@
+{
+  "schema_version": 1,
+  "last_refreshed_at": "2026-05-18T16:56:24.232555Z",
+  "repos": {
+    "Regevba/FitTracker2": {
+      "open": [],
+      "merged": [
+        {
+          "number": 404,
+          "state": "MERGED",
+          "title": "chore(framework-v7-9-promotion): T7.9.0.6 rollback rehearsal completed"
+        },
+        {
+          "number": 403,
+          "state": "MERGED",
+          "title": "docs(prompts/ui): UCC sign-in Figma build spec \u2014 discovery + variant-build recipe"
+        },
+        {
+          "number": 402,
+          "state": "MERGED",
+          "title": "docs(meta-analysis): cache_hits surgical backfill draft \u2014 execution deferred to 2026-05-22"
+        },
+        {
+          "number": 401,
+          "state": "MERGED",
+          "title": "chore(framework-v7-9-promotion): Tier 2.2 risk-closure event for 2026-05-21 decision"
+        },
+        {
+          "number": 400,
+          "state": "MERGED",
+          "title": "docs(meta-analysis): kill_criteria_resolution backfill decision (FIT-69) \u2014 option (c) grandfather"
+        },
+        {
+          "number": 399,
+          "state": "MERGED",
+          "title": "fix(ci): skip Build and Test for Dependabot PRs (follow-up to #398)"
+        },
+        {
+          "number": 398,
+          "state": "MERGED",
+          "title": "fix(ci): Dependabot-safe plist-decode (unblocks dep-bump PRs)"
+        },
+        {
+          "number": 396,
+          "state": "MERGED",
+          "title": "chore(ledger): 2026-05-18 daily ecosystem sync \u2014 squashed (closes #389 + #391)"
+        },
+        {
+          "number": 395,
+          "state": "MERGED",
+          "title": "chore(deps): Bump devalue from 5.6.4 to 5.8.1 in /dashboard"
+        },
+        {
+          "number": 394,
+          "state": "MERGED",
+          "title": "chore(framework-status): weekly snapshot 2026-05-18"
+        },
+        {
+          "number": 393,
+          "state": "MERGED",
+          "title": "docs(telemetry): T7.9.0 pre-decision review (D-3)"
+        },
+        {
+          "number": 392,
+          "state": "MERGED",
+          "title": "docs(telemetry): T7.9.0 v7.9 pre-promotion-decision verdict report (2026-05-18)"
+        },
+        {
+          "number": 388,
+          "state": "MERGED",
+          "title": "fix(ios-analytics): light up iOS firehose to GA4 \u2014 plist target membership"
+        },
+        {
+          "number": 387,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth): close T7 (preemptive wire) + reconcile Part 9 shipped + \u00a799 update"
+        },
+        {
+          "number": 386,
+          "state": "MERGED",
+          "title": "chore(ledger): 2026-05-17 daily-checkpoint snapshot at aaab08f \u2014 regression cleared"
+        },
+        {
+          "number": 385,
+          "state": "MERGED",
+          "title": "chore(framework): patch BRANCH_ISOLATION_HISTORICAL heuristic + regression flag display"
+        },
+        {
+          "number": 384,
+          "state": "MERGED",
+          "title": "chore(ucc-sign-in-figma-mapping): UU4 Phase 2-4 setup \u2014 state.json + log + cadence rows"
+        },
+        {
+          "number": 383,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth-audit-log-redis-fix): T1-T9 wrap-up \u2014 state.json + case study \u00a799"
+        },
+        {
+          "number": 382,
+          "state": "MERGED",
+          "title": "chore(framework): patch feature-completeness-audit chore-skip + backfill cu_v2 on 3d-interactive"
+        },
+        {
+          "number": 381,
+          "state": "MERGED",
+          "title": "fix(checkpoint): key daily-checkpoint idempotency on ledger row, not snapshot dir"
+        },
+        {
+          "number": 380,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth): sync docs after 2026-05-16 cutover Parts 1-6"
+        },
+        {
+          "number": 379,
+          "state": "MERGED",
+          "title": "fix(app-store-assets): rename stale paused block to previous_pause (resolve duplicate-key collision from PR #378)"
+        },
+        {
+          "number": 378,
+          "state": "MERGED",
+          "title": "chore(state): system-sweep gap closures \u2014 HADF tasks + v7.9 promotion scaffold + app-store-assets pause"
+        },
+        {
+          "number": 377,
+          "state": "MERGED",
+          "title": "chore(ios-code-connect): T4 root-cause diagnosis \u2014 FIGMA token missing Code Connect Write scope"
+        },
+        {
+          "number": 376,
+          "state": "MERGED",
+          "title": "docs(ga4): access binding setup guide + 2026-05-16 diagnostic findings"
+        },
+        {
+          "number": 375,
+          "state": "MERGED",
+          "title": "fix(framework): pr-cache freshness gate validates per-repo completeness (W11)"
+        },
+        {
+          "number": 374,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-16T06-24-57Z"
+        },
+        {
+          "number": 373,
+          "state": "MERGED",
+          "title": "docs(evolution): update v7.8.6 row to reflect /brainstorm-pm teal color (#14B8A6) recovery"
+        },
+        {
+          "number": 372,
+          "state": "MERGED",
+          "title": "chore(sync): 2026-05-16 daily ecosystem sync \u2014 framework tracking updates"
+        },
+        {
+          "number": 370,
+          "state": "MERGED",
+          "title": "chore(framework): v7.8.6 P2 polish \u2014 W10 stale-branch pattern + GA4 anomaly checklist + C1 deferral"
+        },
+        {
+          "number": 369,
+          "state": "MERGED",
+          "title": "docs(framework): add framework-routines navigation index"
+        },
+        {
+          "number": 368,
+          "state": "MERGED",
+          "title": "docs(skills): add brainstorm-pm.md docs page + sweep stale skill-count refs across canonical docs"
+        },
+        {
+          "number": 367,
+          "state": "MERGED",
+          "title": "chore(skills): bump 11 SKILL.md frontmatter to v7.8.6 / 2026-05-15"
+        },
+        {
+          "number": 366,
+          "state": "MERGED",
+          "title": "docs(framework): reconcile v7.8.6 across all framework doc surfaces"
+        },
+        {
+          "number": 365,
+          "state": "MERGED",
+          "title": "chore(framework): nice-to-have cadence batch \u2014 dep audit + stale-branch + PR babysit"
+        },
+        {
+          "number": 364,
+          "state": "MERGED",
+          "title": "docs(v7-7): flip Section 99 banner to shipped \u2014 rebased from #357"
+        },
+        {
+          "number": 363,
+          "state": "MERGED",
+          "title": "chore(framework): MUST-have cadence batch \u2014 integrity-diff + weekly trends + ssh preflight + unified preflight"
+        },
+        {
+          "number": 362,
+          "state": "MERGED",
+          "title": "docs(analytics): GA4 MCP connected \u2014 fix env-var typo + sync status update + Option A/B paths"
+        },
+        {
+          "number": 361,
+          "state": "MERGED",
+          "title": "chore(deps): Bump devalue from 5.6.4 to 5.8.1 in /website"
+        },
+        {
+          "number": 360,
+          "state": "MERGED",
+          "title": "chore(infra): daily integrity checkpoint system + companion master plan"
+        },
+        {
+          "number": 359,
+          "state": "MERGED",
+          "title": "chore(skills): P1.3 \u2014 preflight self-test fixtures + ecosystem doc sync"
+        },
+        {
+          "number": 358,
+          "state": "MERGED",
+          "title": "chore(analytics-observability): reconcile 3.A.1 \u2192 complete (post-merge cleanup)"
+        },
+        {
+          "number": 355,
+          "state": "MERGED",
+          "title": "chore(skills): W5 \u2014 bidirectional adapter \u2194 skill integrity check"
+        },
+        {
+          "number": 354,
+          "state": "MERGED",
+          "title": "docs(analytics-observability): Phase 3.A.0 \u2014 spec scaffold + master-plan \u00a77.5/\u00a77.6 (calibration-safe docs only)"
+        },
+        {
+          "number": 353,
+          "state": "MERGED",
+          "title": "chore(skills): P1.4 + P1.5 + P1.6 \u2014 adapter cross-links, skill changelog, UCC data-flow contract"
+        },
+        {
+          "number": 352,
+          "state": "MERGED",
+          "title": "chore(skills): P1.1 \u2014 /dev skills sub-command (audit | trace | freshness)"
+        },
+        {
+          "number": 351,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.B.1 \u2014 /analytics poll + GA4 MCP setup runbook (Phase 2 COMPLETE)"
+        },
+        {
+          "number": 350,
+          "state": "MERGED",
+          "title": "chore(skills): P0 + Top-3 P1 sweep \u2014 frontmatter, audit gate, anti-patterns, /brainstorm-pm, roadmap sub-cmd"
+        },
+        {
+          "number": 349,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.3 \u2014 iOS `DebugSinkAdapter`"
+        },
+        {
+          "number": 348,
+          "state": "MERGED",
+          "title": "docs(skill): add /analytics SKILL.md preflight section for observed-patterns catalog"
+        },
+        {
+          "number": 347,
+          "state": "MERGED",
+          "title": "docs(infra-master-plan): wire Theme H test-coverage sub-doc into v8.0 docket"
+        },
+        {
+          "number": 346,
+          "state": "MERGED",
+          "title": "docs(planning): commit 2026-05-13 planning docs (skills-review + test-coverage master plan)"
+        },
+        {
+          "number": 345,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.2 \u2014 `/analytics watch` CLI sub-command"
+        },
+        {
+          "number": 344,
+          "state": "MERGED",
+          "title": "docs(skill): add qa SKILL.md preflight section for observed-patterns catalog"
+        },
+        {
+          "number": 343,
+          "state": "MERGED",
+          "title": "docs(framework): v7.8.5 observability layer doc-sync across 5 surfaces"
+        },
+        {
+          "number": 342,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.1 \u2014 local analytics mirror SSE server"
+        },
+        {
+          "number": 341,
+          "state": "MERGED",
+          "title": "feat(integrity): W9 branch-drift detection + real-time alert hook"
+        },
+        {
+          "number": 340,
+          "state": "MERGED",
+          "title": "docs(planning): A2/A3/A4 spec planning batch \u2014 3D review notes + F16 PRD + v8.0 docket"
+        },
+        {
+          "number": 339,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.7 \u2014 refresh external-sync-status.json (Phase 1.A COMPLETE)"
+        },
+        {
+          "number": 338,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.5 \u2014 19 iOS analytics tests, coverage 81% \u2192 100%"
+        },
+        {
+          "number": 337,
+          "state": "MERGED",
+          "title": "docs(analytics-observability): complete spec \u2014 \u00a75.5 status + \u00a714.5 patterns + \u00a715.1-\u00a717 operational sections"
+        },
+        {
+          "number": 336,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.4 \u2014 forward-declared events convention"
+        },
+        {
+          "number": 335,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.3 \u2014 delete unfired ai_recommendation_accepted/dismissed"
+        },
+        {
+          "number": 334,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.1 \u2014 CSV taxonomy backfill (49 + 7 + 1 = 57 rows)"
+        },
+        {
+          "number": 333,
+          "state": "MERGED",
+          "title": "Reverse-sync: 1 fitme-story-native state.json from 52f2213"
+        },
+        {
+          "number": 332,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1 PRD + decisions log + 3D Framework Universe park"
+        },
+        {
+          "number": 331,
+          "state": "MERGED",
+          "title": "fix(v7.8.5.1): residual test fixture rot from v7.8.3 + v7.8.4 schema migrations"
+        },
+        {
+          "number": 329,
+          "state": "MERGED",
+          "title": "docs(framework): advance 3D Framework Universe research \u2192 PRD draft"
+        },
+        {
+          "number": 328,
+          "state": "MERGED",
+          "title": "docs(integrity): establish Observed Patterns Catalog + wire preflight check"
+        },
+        {
+          "number": 327,
+          "state": "MERGED",
+          "title": "docs(integrity): document BRANCH_ISOLATION_HISTORICAL post-cleanup behavior"
+        },
+        {
+          "number": 326,
+          "state": "MERGED",
+          "title": "chore(telemetry): seed Mode B post-fix + freeze gate-coverage snapshot for T7.9.0"
+        },
+        {
+          "number": 325,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-13T06-50-51Z"
+        },
+        {
+          "number": 324,
+          "state": "MERGED",
+          "title": "docs(telemetry): pre-T7.9.0 baseline + 3D framework diagram Phase 0 research"
+        },
+        {
+          "number": 323,
+          "state": "MERGED",
+          "title": "docs(master-plan): consolidated review + Linear/Notion paste-ready hierarchy (FIT-72\u219276)"
+        },
+        {
+          "number": 322,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2bis): consolidate with framework plan + per-phase ORCHID analysis + hardware constraints"
+        },
+        {
+          "number": 321,
+          "state": "MERGED",
+          "title": "docs(plan): full v7.8.5 \u2192 v8.2 implementation plan + product-framework concurrency + external audits"
+        },
+        {
+          "number": 320,
+          "state": "MERGED",
+          "title": "fix(v7.8.5): cache_hits gate-coverage test fixture rot \u2014 calibration data verified clean"
+        },
+        {
+          "number": 319,
+          "state": "MERGED",
+          "title": "docs(infra-plan + backlog): consolidate PR #317 + #318 findings into forward plan v7.8.5 \u2192 v8.2"
+        },
+        {
+          "number": 318,
+          "state": "MERGED",
+          "title": "docs(v7-9-candidates): F14-F18 from PR #317 + test-suite audit + external research"
+        },
+        {
+          "number": 317,
+          "state": "MERGED",
+          "title": "fix(framework): BRANCH_ISOLATION_VIOLATION Mode B silent-pass on infra-only commits"
+        },
+        {
+          "number": 316,
+          "state": "MERGED",
+          "title": "feat(hadf-phase2bis-replication): Block A \u2014 soak window scaffolding (12 tasks, all tests pass)"
+        },
+        {
+          "number": 314,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8.4): pre-v7.9 telemetry calibration + PR_CACHE_STALE gate"
+        },
+        {
+          "number": 313,
+          "state": "MERGED",
+          "title": "docs(plan): HADF Phase 2-bis implementation plan (Blocks A/B/C \u00d7 21 tasks)"
+        },
+        {
+          "number": 312,
+          "state": "MERGED",
+          "title": "chore(ui-ux-final-sweep-2026-05-12): closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 311,
+          "state": "MERGED",
+          "title": "feat(ds): 13 AppSize tokens + 14 substitutions \u2014 iOS P1 to 0"
+        },
+        {
+          "number": 310,
+          "state": "MERGED",
+          "title": "chore(fitme-story-ds-p2-final-sweep): closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 309,
+          "state": "MERGED",
+          "title": "chore(ios-ui-audit-p1-drift-cleanup): closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 308,
+          "state": "MERGED",
+          "title": "chore(fitme-story-ds-p2-deferred): closure \u2014 current_phase=complete + case study + state.json"
+        },
+        {
+          "number": 307,
+          "state": "MERGED",
+          "title": "feat(ios-p1-drift-cleanup): 10 AppSize tokens + 4 magic-padding swaps \u2014 44\u219214 P1"
+        },
+        {
+          "number": 306,
+          "state": "MERGED",
+          "title": "docs(spec): HADF Phase 2-bis hardened cloud replication design (11 sections + soak gate)"
+        },
+        {
+          "number": 305,
+          "state": "MERGED",
+          "title": "docs(v7.8.3): sync framework docs + master plan + backlog to v7.8.3 release umbrella"
+        },
+        {
+          "number": 304,
+          "state": "MERGED",
+          "title": "chore(cross-repo-state-sync-impl): closure \u2014 current_phase=complete (v7.8.3 SHIPPED)"
+        },
+        {
+          "number": 303,
+          "state": "MERGED",
+          "title": "docs(case-study): cross-repo-state-sync-impl (v7.8.3)"
+        },
+        {
+          "number": 302,
+          "state": "MERGED",
+          "title": "docs(v7.9-candidates): add F11/F12/F13 from v7.8.3 cutover dogfood findings"
+        },
+        {
+          "number": 301,
+          "state": "MERGED",
+          "title": "Reverse-sync: 1 fitme-story-native state.json from b844f69"
+        },
+        {
+          "number": 300,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 2 \u2014 state_owner schema + 62-feature backfill + morphed C-5"
+        },
+        {
+          "number": 299,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 1 D-3 \u2014 unified cross-repo PR cite cache + 63/63 calibration"
+        },
+        {
+          "number": 298,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 0 \u2014 V2 + V9 + snapshot protocol + tests/framework infra"
+        },
+        {
+          "number": 297,
+          "state": "MERGED",
+          "title": "chore(framework-v7.9): +7d measurement-window snapshot (2026-05-11)"
+        },
+        {
+          "number": 296,
+          "state": "MERGED",
+          "title": "chore(framework-status): weekly snapshot 2026-05-11"
+        },
+        {
+          "number": 295,
+          "state": "MERGED",
+          "title": "chore(ios-ui-audit-p1-burndown): Phase 5-8 closure \u2014 current_phase=complete"
+        },
+        {
+          "number": 294,
+          "state": "MERGED",
+          "title": "feat(design-system): 3 AppText tokens + 23 font subs + 5 a11y labels + widen audit window (PR-2 of ios-ui-audit-p1-burndown)"
+        },
+        {
+          "number": 293,
+          "state": "MERGED",
+          "title": "chore(closure-and-attribution): p2-cleanup closure + BHF attribution + control-room P2 (supersedes #290 + #291)"
+        },
+        {
+          "number": 292,
+          "state": "MERGED",
+          "title": "feat(design-system): add 4 AppSize tokens + mass-substitute magic frame values (PR-1 of ios-ui-audit-p1-burndown)"
+        },
+        {
+          "number": 289,
+          "state": "MERGED",
+          "title": "docs(bucket-h): DS lens audit (45 findings) + 4 P1 follow-up backlog items"
+        },
+        {
+          "number": 288,
+          "state": "MERGED",
+          "title": "chore(fitme-story-website-design-system): Phase 8+9 closure \u2014 current_phase=complete"
+        },
+        {
+          "number": 287,
+          "state": "MERGED",
+          "title": "feat(fitme-story-website-design-system): PM scaffolding + case study + analytics taxonomy + Makefile target"
+        },
+        {
+          "number": 286,
+          "state": "MERGED",
+          "title": "chore(code-connect-automation): close out \u2014 T1-T4 done, T5 deferred (Figma scope blocker)"
+        },
+        {
+          "number": 285,
+          "state": "MERGED",
+          "title": "fix(ios-code-connect): point .figma.swift mappings at component IDs (not frame IDs)"
+        },
+        {
+          "number": 284,
+          "state": "MERGED",
+          "title": "docs(code-connect): roll up v4.X+CC across CLAUDE.md + skills + dev-guide + DS contract"
+        },
+        {
+          "number": 283,
+          "state": "MERGED",
+          "title": "fix(ci): use Swift parser via SPM wrapper for iOS Code Connect publish"
+        },
+        {
+          "number": 282,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-10T06-36-02Z"
+        },
+        {
+          "number": 281,
+          "state": "MERGED",
+          "title": "feat(ci): T4 Layer C \u2014 figma-code-connect-publish workflow (FT2 half)"
+        },
+        {
+          "number": 280,
+          "state": "MERGED",
+          "title": "feat(design-skill): T3 Layer B + Code Connect access gate + spec\u2194build parity check"
+        },
+        {
+          "number": 279,
+          "state": "MERGED",
+          "title": "feat(scaffold): scripts/scaffold-figma-mapping.py \u2014 auto-gen .figma.swift templates"
+        },
+        {
+          "number": 278,
+          "state": "MERGED",
+          "title": "chore(code-connect-automation): scaffold chore feature (3-layer plan)"
+        },
+        {
+          "number": 277,
+          "state": "MERGED",
+          "title": "feat(ios-code-connect): T1+T2+T3+T5 \u2014 Figma.toml + 5 .figma.swift mappings + workflow doc"
+        },
+        {
+          "number": 276,
+          "state": "MERGED",
+          "title": "docs(backlog): mark \"Refine case-study presentation/readability\" SHIPPED"
+        },
+        {
+          "number": 275,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): reconcile T20 \u2192 done (23/24)"
+        },
+        {
+          "number": 274,
+          "state": "MERGED",
+          "title": "docs(backlog): add fitme-story website design system as separate item"
+        },
+        {
+          "number": 273,
+          "state": "MERGED",
+          "title": "chore(ios-code-connect): scaffold placeholder chore feature"
+        },
+        {
+          "number": 272,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): capture 17 Figma component node IDs (T20 unblocked)"
+        },
+        {
+          "number": 271,
+          "state": "MERGED",
+          "title": "docs(spec): Phase C cross-repo state sync \u2014 canonical contract"
+        },
+        {
+          "number": 270,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): advisory-period extension to 2026-05-16"
+        },
+        {
+          "number": 269,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): reconcile T10 + T12 to done (rollup 20\u219222/24)"
+        },
+        {
+          "number": 268,
+          "state": "MERGED",
+          "title": "docs(hadf): label Framework Version v7.0 (was v6.0) \u2014 match user-facing card"
+        },
+        {
+          "number": 267,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): invoke v7.8.1 retroactively + midstream case study"
+        },
+        {
+          "number": 266,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): reconcile state.json (7\u219217 done)"
+        },
+        {
+          "number": 265,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2): update case-study citations to squash SHA a4b357f"
+        },
+        {
+          "number": 264,
+          "state": "MERGED",
+          "title": "chore(hadf-phase2): land final summary + scripts in main (closes citation gap)"
+        },
+        {
+          "number": 263,
+          "state": "MERGED",
+          "title": "chore(workflows): bump GitHub Actions to Node 24-compatible majors"
+        },
+        {
+          "number": 262,
+          "state": "MERGED",
+          "title": "fix(ucc-passkey-auth): reconcile T1-T28 task statuses to done"
+        },
+        {
+          "number": 261,
+          "state": "MERGED",
+          "title": "docs(design-system): fitme-story design architecture (T21 / FIG-W6)"
+        },
+        {
+          "number": 260,
+          "state": "MERGED",
+          "title": "docs(case-studies): dual-outlet pattern contract (T8 / G3)"
+        },
+        {
+          "number": 258,
+          "state": "MERGED",
+          "title": "chore(framework): document cross-repo gate asymmetry + fix observe-cache-hit hook noise"
+        },
+        {
+          "number": 257,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-07T06-39-32Z"
+        },
+        {
+          "number": 256,
+          "state": "MERGED",
+          "title": "feat(fitme-story-public-enhancements): create rollup feature folder + capture 7 shipped + 16 pending"
+        },
+        {
+          "number": 254,
+          "state": "MERGED",
+          "title": "docs(audit): fitme-story public-site audit + v7.9 candidates queue"
+        },
+        {
+          "number": 253,
+          "state": "MERGED",
+          "title": "docs(stress-test): roadmap-stress-test-2026-05-07 closure (1 shipped, 8 v7.9 candidates)"
+        },
+        {
+          "number": 252,
+          "state": "MERGED",
+          "title": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web)"
+        },
+        {
+          "number": 251,
+          "state": "MERGED",
+          "title": "docs(claude.md): cross-reference ucc-passkey-auth setup guide"
+        },
+        {
+          "number": 250,
+          "state": "MERGED",
+          "title": "docs(setup): add ucc-passkey-auth going-live runbook"
+        },
+        {
+          "number": 249,
+          "state": "MERGED",
+          "title": "docs(ucc-passkey-auth): Phase 8 closure \u2014 case study + state.json complete"
+        },
+        {
+          "number": 248,
+          "state": "MERGED",
+          "title": "feat(ucc-passkey-auth): cross-repo audit-log sync + state + protocol artifacts"
+        },
+        {
+          "number": 247,
+          "state": "MERGED",
+          "title": "chore(master-plan+backlog): sync to v7.8.1 reality (2026-05-07)"
+        },
+        {
+          "number": 246,
+          "state": "MERGED",
+          "title": "chore(framework): bump to v7.8.1 \u2014 docs propagation across 5 surfaces"
+        },
+        {
+          "number": 245,
+          "state": "MERGED",
+          "title": "docs(framework-v7-8-branch-isolation): Phase 8 closure \u2014 case study + current_phase=complete"
+        },
+        {
+          "number": 244,
+          "state": "MERGED",
+          "title": "feat(framework-v7-8-branch-isolation): BRANCH_ISOLATION_VIOLATION + FEATURE_CLOSURE_COMPLETENESS gates (advisory in v7.8 \u2192 enforced in v7.9)"
+        },
+        {
+          "number": 242,
+          "state": "MERGED",
+          "title": "docs(push-notifications-v2): close last doc-debt item \u2014 rename 'Kill' \u2192 'Kill criteria'"
+        },
+        {
+          "number": 241,
+          "state": "MERGED",
+          "title": "docs(framework): bump dev-guide to v7.8 + ship lifecycle event catalog + reconcile 5 doc-debt gaps"
+        },
+        {
+          "number": 240,
+          "state": "MERGED",
+          "title": "chore(push-notifications-v2): Phase 8 closure"
+        },
+        {
+          "number": 239,
+          "state": "MERGED",
+          "title": "feat(push-notifications-v2): platform-layer rebuild"
+        },
+        {
+          "number": 238,
+          "state": "MERGED",
+          "title": "chore(sync): cross-reference sync \u2014 Linear + Notion + master plan + backlog + UCC + memory"
+        },
+        {
+          "number": 237,
+          "state": "MERGED",
+          "title": "chore(import-training-plan): Phase 8 closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 236,
+          "state": "MERGED",
+          "title": "docs(backlog): close /ux + /design preflight task (shipped via #235)"
+        },
+        {
+          "number": 235,
+          "state": "MERGED",
+          "title": "feat(skills): v4.X skill-layer \u2014 UX/Design preflight + auto Figma build + pre-merge UI review"
+        },
+        {
+          "number": 234,
+          "state": "MERGED",
+          "title": "feat(import-training-plan): Phase 1 ship \u2014 persist + active-plan + GDPR + 9 events"
+        },
+        {
+          "number": 233,
+          "state": "MERGED",
+          "title": "docs(backlog): strike CI parallel-clone hang \u2014 resolved via PR #225"
+        },
+        {
+          "number": 232,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): formal close \u2014 current_phase=complete"
+        },
+        {
+          "number": 230,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): final reconcile T35/T36/T38/T42 done + T2.5 deferred + Phase 8 case study"
+        },
+        {
+          "number": 229,
+          "state": "MERGED",
+          "title": "chore(ucc): T35 redirect fit-tracker2 -> fitme-story/control-room (307 temporary)"
+        },
+        {
+          "number": 228,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): end-of-day reconcile \u2014 39/44 done (89%)"
+        },
+        {
+          "number": 227,
+          "state": "MERGED",
+          "title": "docs(dashboard): mark Astro dashboard as HISTORICAL (UCC T34)"
+        },
+        {
+          "number": 226,
+          "state": "MERGED",
+          "title": "docs(analytics): add 8 dashboard_* events to taxonomy CSV (UCC T37)"
+        },
+        {
+          "number": 225,
+          "state": "MERGED",
+          "title": "fix(ci): disable UI test target parallelism \u2014 root-cause fix for parallel-clone sim hang"
+        },
+        {
+          "number": 223,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): reconcile T24/T25/T27/T28 done \u2014 fitme-story PRs #27 + #28"
+        },
+        {
+          "number": 222,
+          "state": "MERGED",
+          "title": "chore(ucc): mark T20-T23 done in state.json (Wave 1 complete)"
+        },
+        {
+          "number": 221,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): T18 + T19 state.json reconcile"
+        },
+        {
+          "number": 220,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): T2 baseline placeholder + T2.5 follow-up"
+        },
+        {
+          "number": 219,
+          "state": "MERGED",
+          "title": "docs(glossary): add dev-basics primer for non-developers"
+        },
+        {
+          "number": 218,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): UCC Path A \u2014 T40 + state.json reconcile (T31-T33, T39-T41)"
+        },
+        {
+          "number": 217,
+          "state": "MERGED",
+          "title": "docs(claudemd): codify Tier 3 policy notes \u2014 E-2 (UI test strategy) + F-1 (HISTORICAL retention)"
+        },
+        {
+          "number": 216,
+          "state": "MERGED",
+          "title": "docs(prd): rename adaptive-intelligence-initiative.md \u2192 adaptive-intelligence.md + add prd_path link (iOS audit C-1, 3/3)"
+        },
+        {
+          "number": 215,
+          "state": "MERGED",
+          "title": "docs(prd): retroactive PRD for settings-v2 (iOS audit C-1, 2/3)"
+        },
+        {
+          "number": 214,
+          "state": "MERGED",
+          "title": "docs(prd): retroactive PRD for metric-tile-deep-linking (iOS audit C-1, 1/3)"
+        },
+        {
+          "number": 213,
+          "state": "MERGED",
+          "title": "chore(dashboard): bump version 1.0.0 \u2192 1.0.1 (FIT-59 cache-bust)"
+        },
+        {
+          "number": 212,
+          "state": "MERGED",
+          "title": "chore(onboarding-v2-retroactive): reconcile state.json + add log.json"
+        },
+        {
+          "number": 211,
+          "state": "MERGED",
+          "title": "docs(claudemd): correct outdated 27-P0 ui-audit baseline references"
+        },
+        {
+          "number": 210,
+          "state": "MERGED",
+          "title": "chore(chain-of-custody): fix ui-audit link + 4 framework-meta wrappers + remove duplicate CS"
+        },
+        {
+          "number": 209,
+          "state": "MERGED",
+          "title": "docs(framework-meta): retroactive specs/plans for v7.5, v7.6, v7.8"
+        },
+        {
+          "number": 208,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): land framework-v7-8-branch-isolation backlog stub"
+        },
+        {
+          "number": 207,
+          "state": "MERGED",
+          "title": "docs(case-studies): split roundup into 3 dedicated CSes + standardize 28 showcase paths"
+        },
+        {
+          "number": 206,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): add framework_meta_retroactive exempt type for chain-of-custody backfill"
+        },
+        {
+          "number": 205,
+          "state": "MERGED",
+          "title": "docs(spec): framework page v7 floor update \u2014 add Floor 7 (v7.7 Validity Closure)"
+        },
+        {
+          "number": 204,
+          "state": "MERGED",
+          "title": "chore: untrack scheduled_tasks.lock + add lock-file gitignore patterns"
+        },
+        {
+          "number": 203,
+          "state": "MERGED",
+          "title": "chore(framework): close all remaining audit gaps \u2014 cron persistence + tier-tag advisories"
+        },
+        {
+          "number": 202,
+          "state": "MERGED",
+          "title": "chore(doc-debt): 100% coverage \u2014 slot-fix, work_type backfill, showcase wiring, TODO cleanup"
+        },
+        {
+          "number": 201,
+          "state": "MERGED",
+          "title": "chore(framework-v7-7): post-merge ledger cleanup + B1/B2 verification"
+        },
+        {
+          "number": 200,
+          "state": "MERGED",
+          "title": "docs: comprehensive review \u2014 v7.8 sync + PRD parent-child wiring (smart-reminders + 4 parents)"
+        },
+        {
+          "number": 199,
+          "state": "MERGED",
+          "title": "docs(smart-reminders-behavioral-learning): PR-2 implementation plan (execution waits for cohort data window)"
+        },
+        {
+          "number": 198,
+          "state": "MERGED",
+          "title": "feat(smart-reminders): backend half \u2014 AI engine endpoints + retention migration (PR-1 close-out)"
+        },
+        {
+          "number": 197,
+          "state": "MERGED",
+          "title": "feat(framework-v7.9): measurement-window snapshot tool"
+        },
+        {
+          "number": 196,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): final doc sweep \u2014 CLAUDE.md header + backlog row 74.5"
+        },
+        {
+          "number": 195,
+          "state": "MERGED",
+          "title": "fix(ci): disable parallel UI testing to eliminate sim-clone flake"
+        },
+        {
+          "number": 194,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): PR-7 \u2014 cold-start entrypoint + honesty ledger entry FT2-FH-001"
+        },
+        {
+          "number": 193,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-6 \u2014 Mechanism F membrane-status + Mechanism D self-test + hook header"
+        },
+        {
+          "number": 192,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-5 \u2014 Schema bridge fields (T15 + T16 + T17)"
+        },
+        {
+          "number": 191,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): CLAUDE.md update + bridge case study (live journal)"
+        },
+        {
+          "number": 190,
+          "state": "MERGED",
+          "title": "feat(smart-reminders): behavioral learning PR 1 \u2014 iOS data layer + toggle-off (backend deferred)"
+        },
+        {
+          "number": 189,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-4 \u2014 Mechanism E git merge driver for ledgers"
+        },
+        {
+          "number": 188,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-3 \u2014 Mechanism C wiring (T9 + T10 + T11 advisory)"
+        },
+        {
+          "number": 187,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-2 \u2014 Mechanism A coverage-asserting gates"
+        },
+        {
+          "number": 186,
+          "state": "MERGED",
+          "title": "chore(framework): backfill framework_version on 34 pre-v6 features"
+        },
+        {
+          "number": 185,
+          "state": "MERGED",
+          "title": "chore(framework): backfill framework_version on 5 post-v6 features + ui-audit dates"
+        },
+        {
+          "number": 184,
+          "state": "MERGED",
+          "title": "docs(orchid-v1.5): toolchain setup guide + companion case study scaffold"
+        },
+        {
+          "number": 183,
+          "state": "MERGED",
+          "title": "feat(orchid-v1.5): Track D D1+D2 \u2014 tier-aware DSE end-to-end"
+        },
+        {
+          "number": 182,
+          "state": "MERGED",
+          "title": "feat(orchid-v1.5): Track L \u2014 Layer A behavioral models for U8 + U9 + tier propagation"
+        },
+        {
+          "number": 180,
+          "state": "MERGED",
+          "title": "plan(orchid): v1.5 implementation plan \u2014 Tracks L (Layer A) + D (DSE) + R (RTL Phases 6-9)"
+        },
+        {
+          "number": 179,
+          "state": "MERGED",
+          "title": "spec(orchid): v1.5 design addendum \u2014 additive U8 + U9 + tier propagation + forward-compat (Option B)"
+        },
+        {
+          "number": 178,
+          "state": "MERGED",
+          "title": "docs(manifest): add 7 capability flags for v7.7 + v7.8 PR-1"
+        },
+        {
+          "number": 177,
+          "state": "MERGED",
+          "title": "docs(framework+setup): manifest 7.6\u21927.7 + recover ssd/sentry setup-guide updates"
+        },
+        {
+          "number": 176,
+          "state": "MERGED",
+          "title": "docs(backlog): sync In Progress \u2192 Done for 7 shipped items + correct stale pause claims"
+        },
+        {
+          "number": 175,
+          "state": "MERGED",
+          "title": "chore(repo): untrack .claude/settings.local.json (stop the cross-branch drift)"
+        },
+        {
+          "number": 174,
+          "state": "MERGED",
+          "title": "chore(framework): reconcile 3 state.json files to current_phase=complete"
+        },
+        {
+          "number": 173,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-1 \u2014 Mechanism C scaffolding + gate predicate fix (unblocks #170/#171/#172)"
+        },
+        {
+          "number": 172,
+          "state": "MERGED",
+          "title": "docs(framework): v7.8 + v7.9 bridge design spec + 2 deep research notes (draft for review)"
+        },
+        {
+          "number": 171,
+          "state": "MERGED",
+          "title": "feat(hadf): chip-profiles v1.1 schema + Tier-1 expansion (Slices A + B)"
+        },
+        {
+          "number": 170,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2): publish case study + Tracks 3/4 research notes"
+        },
+        {
+          "number": 169,
+          "state": "MERGED",
+          "title": "chore(framework): close v7.7 silent-pass surface + 3 near-miss disclosures"
+        },
+        {
+          "number": 168,
+          "state": "MERGED",
+          "title": "chore(repo): hygiene \u2014 .gitignore + research notes (audit cleanup)"
+        },
+        {
+          "number": 167,
+          "state": "MERGED",
+          "title": "docs(stats-v2): dedicated case study + repoint state.json from roundup"
+        },
+        {
+          "number": 166,
+          "state": "MERGED",
+          "title": "chore(backlog): add CI parallel-clone simulator hang investigation task"
+        },
+        {
+          "number": 165,
+          "state": "MERGED",
+          "title": "fix(ci): quarantine UI tests use NSUserName() instead of broken GITHUB_ACTIONS env check"
+        },
+        {
+          "number": 164,
+          "state": "MERGED",
+          "title": "feat(stats-v2): finish v2 alignment pass \u2014 analytics wiring + a11y + type extraction"
+        },
+        {
+          "number": 163,
+          "state": "MERGED",
+          "title": "feat(auth-polish-v2): forgot-password recovery flow (T0..A5)"
+        },
+        {
+          "number": 162,
+          "state": "MERGED",
+          "title": "docs(smart-reminders): record E-1 readiness-aware training alert as Enhancement"
+        },
+        {
+          "number": 161,
+          "state": "MERGED",
+          "title": "chore(smart-reminders): repoint case_study_showcase to slot 23"
+        },
+        {
+          "number": 160,
+          "state": "MERGED",
+          "title": "test(ui): quarantine HomeReadinessUITests on hosted CI"
+        },
+        {
+          "number": 159,
+          "state": "MERGED",
+          "title": "chore(repo): move stray project_*.md entrypoints to .claude/entrypoints/"
+        },
+        {
+          "number": 158,
+          "state": "MERGED",
+          "title": "feat(smart-reminders): wire all 6 lifecycle analytics events + housekeeping (v7.7 state.json + smart-reminders merge metadata)"
+        },
+        {
+          "number": 157,
+          "state": "MERGED",
+          "title": "docs(media): hero GIF recording guide"
+        },
+        {
+          "number": 156,
+          "state": "MERGED",
+          "title": "chore(deps): fix dashboard regression from #155 (bump astro/postcss constraints)"
+        },
+        {
+          "number": 155,
+          "state": "MERGED",
+          "title": "chore(deps): force path-to-regexp >=6.3.0 to close 2 HIGH CVEs"
+        },
+        {
+          "number": 154,
+          "state": "MERGED",
+          "title": "chore(readme): trim 359 \u2192 131 lines + fix outdated License footer"
+        },
+        {
+          "number": 153,
+          "state": "MERGED",
+          "title": "chore(deps): bump astro from 6.1.3 to 6.1.10 in /dashboard"
+        },
+        {
+          "number": 152,
+          "state": "MERGED",
+          "title": "chore(deps): bump vite from 7.3.1 to 7.3.2 in /dashboard"
+        },
+        {
+          "number": 151,
+          "state": "MERGED",
+          "title": "chore(portfolio): add MIT LICENSE and dedupe .gitignore"
+        },
+        {
+          "number": 150,
+          "state": "MERGED",
+          "title": "chore(deps): bump astro from 6.1.3 to 6.1.10 in /website"
+        },
+        {
+          "number": 149,
+          "state": "MERGED",
+          "title": "chore(deps): bump vite from 7.3.1 to 7.3.2 in /website"
+        },
+        {
+          "number": 148,
+          "state": "MERGED",
+          "title": "chore(deps-dev): bump lodash from 4.17.21 to 4.18.1"
+        },
+        {
+          "number": 147,
+          "state": "MERGED",
+          "title": "chore(deps): bump postcss from 8.5.8 to 8.5.12 in /website"
+        },
+        {
+          "number": 146,
+          "state": "MERGED",
+          "title": "docs(case-study): visual-aid catalog + Alt-A/B templates + state.json (locked 2026-04-28)"
+        },
+        {
+          "number": 145,
+          "state": "MERGED",
+          "title": "fix(dashboard): unbreak after v7.7 \u2014 state.json feature_name vs feature schema drift"
+        },
+        {
+          "number": 144,
+          "state": "MERGED",
+          "title": "v7.7 PR-1: cache_hits writer-path closure (Linear FIT-50)"
+        },
+        {
+          "number": 141,
+          "state": "MERGED",
+          "title": "Framework v7.6 pending fixes \u2014 reconciliation, shared tracking, PR-bot tightening, doc alignment"
+        },
+        {
+          "number": 139,
+          "state": "MERGED",
+          "title": "UI-audit baseline burndown: P0 27\u21920, hard gate in verify-local, AppMotion tokens"
+        },
+        {
+          "number": 137,
+          "state": "MERGED",
+          "title": "feat(ds): UI audit scanner + Figma verification contract + chart tokens"
+        },
+        {
+          "number": 136,
+          "state": "MERGED",
+          "title": "docs(case-studies): write Home v2 + Training Plan v2, sync pm-workflow hub to v6.1"
+        },
+        {
+          "number": 135,
+          "state": "MERGED",
+          "title": "docs: rescue pm-hub-evolution.md before branch cleanup"
+        },
+        {
+          "number": 134,
+          "state": "MERGED",
+          "title": "fix: full-sweep remediation \u2014 dashboard, README, docs, branch cleanup"
+        },
+        {
+          "number": 133,
+          "state": "MERGED",
+          "title": "feat(tests): M-4b/c/d \u2014 XCUITest happy-path coverage + case study + TEST-025 closure"
+        },
+        {
+          "number": 132,
+          "state": "MERGED",
+          "title": "feat(tests): M-4a \u2014 add FitTrackerUITests target + bootstrap smoke test (TEST-025)"
+        },
+        {
+          "number": 131,
+          "state": "MERGED",
+          "title": "docs(m-4): plan \u2014 XCUITest infrastructure (TEST-025)"
+        },
+        {
+          "number": 130,
+          "state": "MERGED",
+          "title": "docs(m-2): M-2d \u2014 case study + monitoring entry + UI-004 closure"
+        },
+        {
+          "number": 129,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2 final \u2014 ViewModel + per-tab views (UI-004) [resubmit to main]"
+        },
+        {
+          "number": 128,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2b \u2014 extract per-tab views (UI-004)"
+        },
+        {
+          "number": 127,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2c \u2014 extract MealEntryViewModel (UI-004)"
+        },
+        {
+          "number": 126,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2a \u2014 extract leaf types from MealEntrySheet (UI-004)"
+        },
+        {
+          "number": 125,
+          "state": "MERGED",
+          "title": "docs(m-1): M-1d \u2014 case study + monitoring entry + UI-002 closure"
+        },
+        {
+          "number": 124,
+          "state": "MERGED",
+          "title": "refactor(settings): M-1c \u2014 extract home-view sub-components (UI-002)"
+        },
+        {
+          "number": 123,
+          "state": "MERGED",
+          "title": "refactor(settings): M-1b \u2014 extract shared scaffolds + form components (UI-002)"
+        },
+        {
+          "number": 122,
+          "state": "MERGED",
+          "title": "refactor(settings): M-1a \u2014 extract 5 detail screens (UI-002)"
+        },
+        {
+          "number": 121,
+          "state": "MERGED",
+          "title": "docs(case-studies): M-3d \u2014 design system completion case study + monitoring entry"
+        },
+        {
+          "number": 120,
+          "state": "MERGED",
+          "title": "feat(ds): M-3c \u2014 dark-mode foundation (9 colorsets gain dark variants)"
+        },
+        {
+          "number": 119,
+          "state": "MERGED",
+          "title": "feat(ds): M-3b \u2014 chart + selection + appWarmTint colors added to pipeline"
+        },
+        {
+          "number": 118,
+          "state": "MERGED",
+          "title": "feat(ds): M-3a \u2014 non-color token categories added to pipeline"
+        },
+        {
+          "number": 117,
+          "state": "MERGED",
+          "title": "docs(case-studies): post-stress-test audit remediation \u2014 comprehensive synthesis"
+        },
+        {
+          "number": 116,
+          "state": "MERGED",
+          "title": "fix(ui): Sprint K-11 \u2014 UI-017 \u2014 extract FoodSearchService from MealEntrySheet"
+        },
+        {
+          "number": 115,
+          "state": "MERGED",
+          "title": "fix(ui): Sprint K-10 \u2014 UI-006 + UI-018 \u2014 extract MilestoneDetector service"
+        },
+        {
+          "number": 114,
+          "state": "MERGED",
+          "title": "fix(security): Sprint K-9 \u2014 DEEP-AUTH-015 \u2014 three-way merge digests in Keychain"
+        },
+        {
+          "number": 113,
+          "state": "MERGED",
+          "title": "chore(audit): Sprint K-8 \u2014 UI-003 + UI-005 historical closures (2 findings)"
+        },
+        {
+          "number": 112,
+          "state": "MERGED",
+          "title": "fix(ds): Sprint K-7 \u2014 DS-002 + DS-003 mechanical mass-rename"
+        },
+        {
+          "number": 111,
+          "state": "MERGED",
+          "title": "chore(framework): Sprint K-6 \u2014 FW Cleanup + status markers (8 findings)"
+        },
+        {
+          "number": 110,
+          "state": "MERGED",
+          "title": "fix(ai): Sprint K-5 \u2014 AI Adapter Cleanup (12 findings)"
+        },
+        {
+          "number": 109,
+          "state": "MERGED",
+          "title": "fix(audit): Sprint K-4 \u2014 small wins (8 findings)"
+        },
+        {
+          "number": 108,
+          "state": "MERGED",
+          "title": "fix(backend+sync): Sprint K-3 \u2014 BE-023 + DEEP-SYNC-014"
+        },
+        {
+          "number": 107,
+          "state": "MERGED",
+          "title": "fix(backend): DEEP-AUTH-011 \u2014 atomic 5-file write via two-phase commit"
+        },
+        {
+          "number": 106,
+          "state": "MERGED",
+          "title": "fix(backend): Sprint K-1 \u2014 BE-016 + BE-021 + BE-029 (3 deferred Sprint G items)"
+        },
+        {
+          "number": 105,
+          "state": "MERGED",
+          "title": "chore(audit): live-sync audit-findings.json with PR closure history"
+        },
+        {
+          "number": 104,
+          "state": "MERGED",
+          "title": "docs(framework): F8 + F9 from audit-v2 wave-2 \u2014 concurrent dispatch still blocked"
+        },
+        {
+          "number": 103,
+          "state": "MERGED",
+          "title": "fix(framework): F2 + F3 + F4 + F5 \u2014 close remaining stress-test bugs"
+        },
+        {
+          "number": 102,
+          "state": "MERGED",
+          "title": "fix(framework): F1 \u2014 worktree-isolated agents can write to .claude/{shared,features}"
+        },
+        {
+          "number": 101,
+          "state": "MERGED",
+          "title": "ci: ad-hoc sign so simulator keychain tests can access entitlements"
+        },
+        {
+          "number": 100,
+          "state": "MERGED",
+          "title": "fix(ai): Sprint H \u2014 AI pipeline correctness (8 findings)"
+        },
+        {
+          "number": 99,
+          "state": "MERGED",
+          "title": "fix(backend+sync): Sprint G \u2014 backend & sync hardening (5 findings)"
+        },
+        {
+          "number": 98,
+          "state": "MERGED",
+          "title": "test: Sprint J \u2014 ReminderScheduler tests + offline skeleton (3 findings, 13 cases)"
+        },
+        {
+          "number": 97,
+          "state": "MERGED",
+          "title": "fix(ui+ds): Sprint I \u2014 UI/DS small wins (10 findings)"
+        },
+        {
+          "number": 96,
+          "state": "MERGED",
+          "title": "chore(framework+ai): Sprint F \u2014 quick wins (7 resolved + 4 partial)"
+        },
+        {
+          "number": 95,
+          "state": "MERGED",
+          "title": "test: salvage 4 wave-1 G2 stranded test files (TEST-007/010/012/013)"
+        },
+        {
+          "number": 94,
+          "state": "MERGED",
+          "title": "fix(security+ds): Sprint E \u2014 Keychain status + AppMotion tokens (3 findings, 7 tests)"
+        },
+        {
+          "number": 93,
+          "state": "MERGED",
+          "title": "fix(auth+ds+ui): Sprint D \u2014 type-safe sessions + scrim token + dead view archival (6 findings)"
+        },
+        {
+          "number": 92,
+          "state": "MERGED",
+          "title": "test+refactor: Sprint C4 \u2014 sync contract tests + Debouncer extraction (2 findings, 15 cases)"
+        },
+        {
+          "number": 91,
+          "state": "MERGED",
+          "title": "test: Sprint C3 \u2014 EncryptionService/Auth/HealthKit tests + Sprint B crash fix"
+        },
+        {
+          "number": 90,
+          "state": "MERGED",
+          "title": "test: Sprint C2 \u2014 service + perf + accessibility tests (5 findings, 30 new cases)"
+        },
+        {
+          "number": 89,
+          "state": "MERGED",
+          "title": "test: Sprint C1 \u2014 AI adapter + service tests (6 findings, 27 new test cases)"
+        },
+        {
+          "number": 88,
+          "state": "MERGED",
+          "title": "fix(encryption+tests): Sprint B \u2014 HMAC validation + test dedup (3 findings)"
+        },
+        {
+          "number": 87,
+          "state": "MERGED",
+          "title": "fix(sync+auth): Sprint A \u2014 data integrity hardening (13 findings)"
+        },
+        {
+          "number": 86,
+          "state": "MERGED",
+          "title": "fix(tests): Phase 6 \u2014 phantom test fixes + deterministic helpers"
+        },
+        {
+          "number": 85,
+          "state": "MERGED",
+          "title": "fix: audit remediation Phases 5, 7 + combined case study"
+        },
+        {
+          "number": 84,
+          "state": "MERGED",
+          "title": "fix: audit remediation \u2014 Phases 1-4 + 8 (51 findings)"
+        },
+        {
+          "number": 83,
+          "state": "MERGED",
+          "title": "feat(orchid): Layer A \u2014 Python behavioral models for AI orchestration accelerator"
+        },
+        {
+          "number": 82,
+          "state": "MERGED",
+          "title": "feat(hadf): Hardware-Aware Dispatch Framework \u2014 v1.0 infrastructure"
+        },
+        {
+          "number": 81,
+          "state": "MERGED",
+          "title": "feat(v6.0): Framework Measurement \u2014 deterministic instrumentation for case studies"
+        },
+        {
+          "number": 80,
+          "state": "MERGED",
+          "title": "feat(onboarding): embedded auth flow \u2014 8-step onboarding with account creation"
+        },
+        {
+          "number": 79,
+          "state": "MERGED",
+          "title": "feat(ai-engine): architecture adaptation \u2014 adapters, confidence gate, goal-aware intelligence, learning cache"
+        },
+        {
+          "number": 78,
+          "state": "MERGED",
+          "title": "feat: Adaptive Intelligence + Framework v4.2 + PM Evolution Case Study"
+        },
+        {
+          "number": 77,
+          "state": "MERGED",
+          "title": "feat(settings-v2): Settings screen UX Foundations alignment"
+        },
+        {
+          "number": 76,
+          "state": "MERGED",
+          "title": "feat(stats-v2): Stats screen UX Foundations alignment"
+        },
+        {
+          "number": 75,
+          "state": "MERGED",
+          "title": "feat(nutrition-v2): Nutrition screen UX Foundations alignment"
+        },
+        {
+          "number": 74,
+          "state": "MERGED",
+          "title": "feat(training-v2): Training Plan v2 UX Foundations alignment"
+        },
+        {
+          "number": 67,
+          "state": "MERGED",
+          "title": "feat(home): metric tile deep linking to Stats"
+        },
+        {
+          "number": 65,
+          "state": "MERGED",
+          "title": "feat(home): unified body composition card with drill-down"
+        },
+        {
+          "number": 63,
+          "state": "MERGED",
+          "title": "feat(onboarding): retroactive v2/ subdirectory refactor"
+        },
+        {
+          "number": 61,
+          "state": "MERGED",
+          "title": "feat(home-v2): Home Today Screen v2 UX Foundations alignment"
+        },
+        {
+          "number": 59,
+          "state": "MERGED",
+          "title": "feat: onboarding v2 UX alignment + 4-day branch consolidation"
+        },
+        {
+          "number": 21,
+          "state": "MERGED",
+          "title": "feat: Product Management Lifecycle skill (/pm-workflow)"
+        },
+        {
+          "number": 20,
+          "state": "MERGED",
+          "title": "Phase 0: Foundation \u2014 PRD, metrics framework, backlog"
+        },
+        {
+          "number": 19,
+          "state": "MERGED",
+          "title": "docs: RICE-prioritized 18-task roadmap with phase gates"
+        },
+        {
+          "number": 18,
+          "state": "MERGED",
+          "title": "fix: Simulator auto-login + token cleanup"
+        },
+        {
+          "number": 17,
+          "state": "MERGED",
+          "title": "Design System v2 \u2014 unified PR #15 + #16 with CI fixes"
+        },
+        {
+          "number": 13,
+          "state": "MERGED",
+          "title": "fix: iOS stability, Supabase sync integration, and auth security hardening"
+        },
+        {
+          "number": 12,
+          "state": "MERGED",
+          "title": "feat: federated cohort intelligence \u2014 backend, AI engine, iOS AI layer"
+        },
+        {
+          "number": 10,
+          "state": "MERGED",
+          "title": "Extract auth redesign into merge-ready branch"
+        },
+        {
+          "number": 7,
+          "state": "MERGED",
+          "title": "## What's new in v3.0  A full UX/UI improvement pass across the entire app \u2014 reduced friction, smarter home screen, enhanced workout flow, polished design, and unified settings."
+        },
+        {
+          "number": 6,
+          "state": "MERGED",
+          "title": "Codex/your next feature"
+        },
+        {
+          "number": 5,
+          "state": "MERGED",
+          "title": "Skip biometric/passcode prompt on simulator"
+        },
+        {
+          "number": 4,
+          "state": "MERGED",
+          "title": "Codex/your next feature"
+        },
+        {
+          "number": 3,
+          "state": "MERGED",
+          "title": "Apply second-pass review fixes: concurrency, safety, and correctness"
+        },
+        {
+          "number": 2,
+          "state": "MERGED",
+          "title": "Equal spacing home screen"
+        },
+        {
+          "number": 1,
+          "state": "MERGED",
+          "title": "Equal spacing home screen"
+        }
+      ],
+      "closed": [
+        {
+          "number": 404,
+          "state": "MERGED",
+          "title": "chore(framework-v7-9-promotion): T7.9.0.6 rollback rehearsal completed"
+        },
+        {
+          "number": 403,
+          "state": "MERGED",
+          "title": "docs(prompts/ui): UCC sign-in Figma build spec \u2014 discovery + variant-build recipe"
+        },
+        {
+          "number": 402,
+          "state": "MERGED",
+          "title": "docs(meta-analysis): cache_hits surgical backfill draft \u2014 execution deferred to 2026-05-22"
+        },
+        {
+          "number": 401,
+          "state": "MERGED",
+          "title": "chore(framework-v7-9-promotion): Tier 2.2 risk-closure event for 2026-05-21 decision"
+        },
+        {
+          "number": 400,
+          "state": "MERGED",
+          "title": "docs(meta-analysis): kill_criteria_resolution backfill decision (FIT-69) \u2014 option (c) grandfather"
+        },
+        {
+          "number": 399,
+          "state": "MERGED",
+          "title": "fix(ci): skip Build and Test for Dependabot PRs (follow-up to #398)"
+        },
+        {
+          "number": 398,
+          "state": "MERGED",
+          "title": "fix(ci): Dependabot-safe plist-decode (unblocks dep-bump PRs)"
+        },
+        {
+          "number": 396,
+          "state": "MERGED",
+          "title": "chore(ledger): 2026-05-18 daily ecosystem sync \u2014 squashed (closes #389 + #391)"
+        },
+        {
+          "number": 395,
+          "state": "MERGED",
+          "title": "chore(deps): Bump devalue from 5.6.4 to 5.8.1 in /dashboard"
+        },
+        {
+          "number": 394,
+          "state": "MERGED",
+          "title": "chore(framework-status): weekly snapshot 2026-05-18"
+        },
+        {
+          "number": 393,
+          "state": "MERGED",
+          "title": "docs(telemetry): T7.9.0 pre-decision review (D-3)"
+        },
+        {
+          "number": 392,
+          "state": "MERGED",
+          "title": "docs(telemetry): T7.9.0 v7.9 pre-promotion-decision verdict report (2026-05-18)"
+        },
+        {
+          "number": 391,
+          "state": "CLOSED",
+          "title": "chore(sync): 2026-05-18 daily ecosystem sync \u2014 measurement-adoption + doc-debt snapshots"
+        },
+        {
+          "number": 390,
+          "state": "CLOSED",
+          "title": "chore(ucc-passkey-auth-audit-log-redis-fix): T6 BLOCKED \u2014 Vercel Blob host restriction blocks GHA sync"
+        },
+        {
+          "number": 389,
+          "state": "CLOSED",
+          "title": "chore(ledger): 2026-05-18 health-check snapshot"
+        },
+        {
+          "number": 388,
+          "state": "MERGED",
+          "title": "fix(ios-analytics): light up iOS firehose to GA4 \u2014 plist target membership"
+        },
+        {
+          "number": 387,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth): close T7 (preemptive wire) + reconcile Part 9 shipped + \u00a799 update"
+        },
+        {
+          "number": 386,
+          "state": "MERGED",
+          "title": "chore(ledger): 2026-05-17 daily-checkpoint snapshot at aaab08f \u2014 regression cleared"
+        },
+        {
+          "number": 385,
+          "state": "MERGED",
+          "title": "chore(framework): patch BRANCH_ISOLATION_HISTORICAL heuristic + regression flag display"
+        },
+        {
+          "number": 384,
+          "state": "MERGED",
+          "title": "chore(ucc-sign-in-figma-mapping): UU4 Phase 2-4 setup \u2014 state.json + log + cadence rows"
+        },
+        {
+          "number": 383,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth-audit-log-redis-fix): T1-T9 wrap-up \u2014 state.json + case study \u00a799"
+        },
+        {
+          "number": 382,
+          "state": "MERGED",
+          "title": "chore(framework): patch feature-completeness-audit chore-skip + backfill cu_v2 on 3d-interactive"
+        },
+        {
+          "number": 381,
+          "state": "MERGED",
+          "title": "fix(checkpoint): key daily-checkpoint idempotency on ledger row, not snapshot dir"
+        },
+        {
+          "number": 380,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth): sync docs after 2026-05-16 cutover Parts 1-6"
+        },
+        {
+          "number": 379,
+          "state": "MERGED",
+          "title": "fix(app-store-assets): rename stale paused block to previous_pause (resolve duplicate-key collision from PR #378)"
+        },
+        {
+          "number": 378,
+          "state": "MERGED",
+          "title": "chore(state): system-sweep gap closures \u2014 HADF tasks + v7.9 promotion scaffold + app-store-assets pause"
+        },
+        {
+          "number": 377,
+          "state": "MERGED",
+          "title": "chore(ios-code-connect): T4 root-cause diagnosis \u2014 FIGMA token missing Code Connect Write scope"
+        },
+        {
+          "number": 376,
+          "state": "MERGED",
+          "title": "docs(ga4): access binding setup guide + 2026-05-16 diagnostic findings"
+        },
+        {
+          "number": 375,
+          "state": "MERGED",
+          "title": "fix(framework): pr-cache freshness gate validates per-repo completeness (W11)"
+        },
+        {
+          "number": 374,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-16T06-24-57Z"
+        },
+        {
+          "number": 373,
+          "state": "MERGED",
+          "title": "docs(evolution): update v7.8.6 row to reflect /brainstorm-pm teal color (#14B8A6) recovery"
+        },
+        {
+          "number": 372,
+          "state": "MERGED",
+          "title": "chore(sync): 2026-05-16 daily ecosystem sync \u2014 framework tracking updates"
+        },
+        {
+          "number": 371,
+          "state": "CLOSED",
+          "title": "docs(ga4): 3-path Access Binding Recovery section in GA4 anomaly checklist"
+        },
+        {
+          "number": 370,
+          "state": "MERGED",
+          "title": "chore(framework): v7.8.6 P2 polish \u2014 W10 stale-branch pattern + GA4 anomaly checklist + C1 deferral"
+        },
+        {
+          "number": 369,
+          "state": "MERGED",
+          "title": "docs(framework): add framework-routines navigation index"
+        },
+        {
+          "number": 368,
+          "state": "MERGED",
+          "title": "docs(skills): add brainstorm-pm.md docs page + sweep stale skill-count refs across canonical docs"
+        },
+        {
+          "number": 367,
+          "state": "MERGED",
+          "title": "chore(skills): bump 11 SKILL.md frontmatter to v7.8.6 / 2026-05-15"
+        },
+        {
+          "number": 366,
+          "state": "MERGED",
+          "title": "docs(framework): reconcile v7.8.6 across all framework doc surfaces"
+        },
+        {
+          "number": 365,
+          "state": "MERGED",
+          "title": "chore(framework): nice-to-have cadence batch \u2014 dep audit + stale-branch + PR babysit"
+        },
+        {
+          "number": 364,
+          "state": "MERGED",
+          "title": "docs(v7-7): flip Section 99 banner to shipped \u2014 rebased from #357"
+        },
+        {
+          "number": 363,
+          "state": "MERGED",
+          "title": "chore(framework): MUST-have cadence batch \u2014 integrity-diff + weekly trends + ssh preflight + unified preflight"
+        },
+        {
+          "number": 362,
+          "state": "MERGED",
+          "title": "docs(analytics): GA4 MCP connected \u2014 fix env-var typo + sync status update + Option A/B paths"
+        },
+        {
+          "number": 361,
+          "state": "MERGED",
+          "title": "chore(deps): Bump devalue from 5.6.4 to 5.8.1 in /website"
+        },
+        {
+          "number": 360,
+          "state": "MERGED",
+          "title": "chore(infra): daily integrity checkpoint system + companion master plan"
+        },
+        {
+          "number": 359,
+          "state": "MERGED",
+          "title": "chore(skills): P1.3 \u2014 preflight self-test fixtures + ecosystem doc sync"
+        },
+        {
+          "number": 358,
+          "state": "MERGED",
+          "title": "chore(analytics-observability): reconcile 3.A.1 \u2192 complete (post-merge cleanup)"
+        },
+        {
+          "number": 357,
+          "state": "CLOSED",
+          "title": "docs(v7-7): trend-mode unlocks verified \u2014 flip banner to shipped"
+        },
+        {
+          "number": 355,
+          "state": "MERGED",
+          "title": "chore(skills): W5 \u2014 bidirectional adapter \u2194 skill integrity check"
+        },
+        {
+          "number": 354,
+          "state": "MERGED",
+          "title": "docs(analytics-observability): Phase 3.A.0 \u2014 spec scaffold + master-plan \u00a77.5/\u00a77.6 (calibration-safe docs only)"
+        },
+        {
+          "number": 353,
+          "state": "MERGED",
+          "title": "chore(skills): P1.4 + P1.5 + P1.6 \u2014 adapter cross-links, skill changelog, UCC data-flow contract"
+        },
+        {
+          "number": 352,
+          "state": "MERGED",
+          "title": "chore(skills): P1.1 \u2014 /dev skills sub-command (audit | trace | freshness)"
+        },
+        {
+          "number": 351,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.B.1 \u2014 /analytics poll + GA4 MCP setup runbook (Phase 2 COMPLETE)"
+        },
+        {
+          "number": 350,
+          "state": "MERGED",
+          "title": "chore(skills): P0 + Top-3 P1 sweep \u2014 frontmatter, audit gate, anti-patterns, /brainstorm-pm, roadmap sub-cmd"
+        },
+        {
+          "number": 349,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.3 \u2014 iOS `DebugSinkAdapter`"
+        },
+        {
+          "number": 348,
+          "state": "MERGED",
+          "title": "docs(skill): add /analytics SKILL.md preflight section for observed-patterns catalog"
+        },
+        {
+          "number": 347,
+          "state": "MERGED",
+          "title": "docs(infra-master-plan): wire Theme H test-coverage sub-doc into v8.0 docket"
+        },
+        {
+          "number": 346,
+          "state": "MERGED",
+          "title": "docs(planning): commit 2026-05-13 planning docs (skills-review + test-coverage master plan)"
+        },
+        {
+          "number": 345,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.2 \u2014 `/analytics watch` CLI sub-command"
+        },
+        {
+          "number": 344,
+          "state": "MERGED",
+          "title": "docs(skill): add qa SKILL.md preflight section for observed-patterns catalog"
+        },
+        {
+          "number": 343,
+          "state": "MERGED",
+          "title": "docs(framework): v7.8.5 observability layer doc-sync across 5 surfaces"
+        },
+        {
+          "number": 342,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.1 \u2014 local analytics mirror SSE server"
+        },
+        {
+          "number": 341,
+          "state": "MERGED",
+          "title": "feat(integrity): W9 branch-drift detection + real-time alert hook"
+        },
+        {
+          "number": 340,
+          "state": "MERGED",
+          "title": "docs(planning): A2/A3/A4 spec planning batch \u2014 3D review notes + F16 PRD + v8.0 docket"
+        },
+        {
+          "number": 339,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.7 \u2014 refresh external-sync-status.json (Phase 1.A COMPLETE)"
+        },
+        {
+          "number": 338,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.5 \u2014 19 iOS analytics tests, coverage 81% \u2192 100%"
+        },
+        {
+          "number": 337,
+          "state": "MERGED",
+          "title": "docs(analytics-observability): complete spec \u2014 \u00a75.5 status + \u00a714.5 patterns + \u00a715.1-\u00a717 operational sections"
+        },
+        {
+          "number": 336,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.4 \u2014 forward-declared events convention"
+        },
+        {
+          "number": 335,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.3 \u2014 delete unfired ai_recommendation_accepted/dismissed"
+        },
+        {
+          "number": 334,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.1 \u2014 CSV taxonomy backfill (49 + 7 + 1 = 57 rows)"
+        },
+        {
+          "number": 333,
+          "state": "MERGED",
+          "title": "Reverse-sync: 1 fitme-story-native state.json from 52f2213"
+        },
+        {
+          "number": 332,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1 PRD + decisions log + 3D Framework Universe park"
+        },
+        {
+          "number": 331,
+          "state": "MERGED",
+          "title": "fix(v7.8.5.1): residual test fixture rot from v7.8.3 + v7.8.4 schema migrations"
+        },
+        {
+          "number": 330,
+          "state": "CLOSED",
+          "title": "Reverse-sync: 1 fitme-story-native state.json from 161e712"
+        },
+        {
+          "number": 329,
+          "state": "MERGED",
+          "title": "docs(framework): advance 3D Framework Universe research \u2192 PRD draft"
+        },
+        {
+          "number": 328,
+          "state": "MERGED",
+          "title": "docs(integrity): establish Observed Patterns Catalog + wire preflight check"
+        },
+        {
+          "number": 327,
+          "state": "MERGED",
+          "title": "docs(integrity): document BRANCH_ISOLATION_HISTORICAL post-cleanup behavior"
+        },
+        {
+          "number": 326,
+          "state": "MERGED",
+          "title": "chore(telemetry): seed Mode B post-fix + freeze gate-coverage snapshot for T7.9.0"
+        },
+        {
+          "number": 325,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-13T06-50-51Z"
+        },
+        {
+          "number": 324,
+          "state": "MERGED",
+          "title": "docs(telemetry): pre-T7.9.0 baseline + 3D framework diagram Phase 0 research"
+        },
+        {
+          "number": 323,
+          "state": "MERGED",
+          "title": "docs(master-plan): consolidated review + Linear/Notion paste-ready hierarchy (FIT-72\u219276)"
+        },
+        {
+          "number": 322,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2bis): consolidate with framework plan + per-phase ORCHID analysis + hardware constraints"
+        },
+        {
+          "number": 321,
+          "state": "MERGED",
+          "title": "docs(plan): full v7.8.5 \u2192 v8.2 implementation plan + product-framework concurrency + external audits"
+        },
+        {
+          "number": 320,
+          "state": "MERGED",
+          "title": "fix(v7.8.5): cache_hits gate-coverage test fixture rot \u2014 calibration data verified clean"
+        },
+        {
+          "number": 319,
+          "state": "MERGED",
+          "title": "docs(infra-plan + backlog): consolidate PR #317 + #318 findings into forward plan v7.8.5 \u2192 v8.2"
+        },
+        {
+          "number": 318,
+          "state": "MERGED",
+          "title": "docs(v7-9-candidates): F14-F18 from PR #317 + test-suite audit + external research"
+        },
+        {
+          "number": 317,
+          "state": "MERGED",
+          "title": "fix(framework): BRANCH_ISOLATION_VIOLATION Mode B silent-pass on infra-only commits"
+        },
+        {
+          "number": 316,
+          "state": "MERGED",
+          "title": "feat(hadf-phase2bis-replication): Block A \u2014 soak window scaffolding (12 tasks, all tests pass)"
+        },
+        {
+          "number": 314,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8.4): pre-v7.9 telemetry calibration + PR_CACHE_STALE gate"
+        },
+        {
+          "number": 313,
+          "state": "MERGED",
+          "title": "docs(plan): HADF Phase 2-bis implementation plan (Blocks A/B/C \u00d7 21 tasks)"
+        },
+        {
+          "number": 312,
+          "state": "MERGED",
+          "title": "chore(ui-ux-final-sweep-2026-05-12): closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 311,
+          "state": "MERGED",
+          "title": "feat(ds): 13 AppSize tokens + 14 substitutions \u2014 iOS P1 to 0"
+        },
+        {
+          "number": 310,
+          "state": "MERGED",
+          "title": "chore(fitme-story-ds-p2-final-sweep): closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 309,
+          "state": "MERGED",
+          "title": "chore(ios-ui-audit-p1-drift-cleanup): closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 308,
+          "state": "MERGED",
+          "title": "chore(fitme-story-ds-p2-deferred): closure \u2014 current_phase=complete + case study + state.json"
+        },
+        {
+          "number": 307,
+          "state": "MERGED",
+          "title": "feat(ios-p1-drift-cleanup): 10 AppSize tokens + 4 magic-padding swaps \u2014 44\u219214 P1"
+        },
+        {
+          "number": 306,
+          "state": "MERGED",
+          "title": "docs(spec): HADF Phase 2-bis hardened cloud replication design (11 sections + soak gate)"
+        },
+        {
+          "number": 305,
+          "state": "MERGED",
+          "title": "docs(v7.8.3): sync framework docs + master plan + backlog to v7.8.3 release umbrella"
+        },
+        {
+          "number": 304,
+          "state": "MERGED",
+          "title": "chore(cross-repo-state-sync-impl): closure \u2014 current_phase=complete (v7.8.3 SHIPPED)"
+        },
+        {
+          "number": 303,
+          "state": "MERGED",
+          "title": "docs(case-study): cross-repo-state-sync-impl (v7.8.3)"
+        },
+        {
+          "number": 302,
+          "state": "MERGED",
+          "title": "docs(v7.9-candidates): add F11/F12/F13 from v7.8.3 cutover dogfood findings"
+        },
+        {
+          "number": 301,
+          "state": "MERGED",
+          "title": "Reverse-sync: 1 fitme-story-native state.json from b844f69"
+        },
+        {
+          "number": 300,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 2 \u2014 state_owner schema + 62-feature backfill + morphed C-5"
+        },
+        {
+          "number": 299,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 1 D-3 \u2014 unified cross-repo PR cite cache + 63/63 calibration"
+        },
+        {
+          "number": 298,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 0 \u2014 V2 + V9 + snapshot protocol + tests/framework infra"
+        },
+        {
+          "number": 297,
+          "state": "MERGED",
+          "title": "chore(framework-v7.9): +7d measurement-window snapshot (2026-05-11)"
+        },
+        {
+          "number": 296,
+          "state": "MERGED",
+          "title": "chore(framework-status): weekly snapshot 2026-05-11"
+        },
+        {
+          "number": 295,
+          "state": "MERGED",
+          "title": "chore(ios-ui-audit-p1-burndown): Phase 5-8 closure \u2014 current_phase=complete"
+        },
+        {
+          "number": 294,
+          "state": "MERGED",
+          "title": "feat(design-system): 3 AppText tokens + 23 font subs + 5 a11y labels + widen audit window (PR-2 of ios-ui-audit-p1-burndown)"
+        },
+        {
+          "number": 293,
+          "state": "MERGED",
+          "title": "chore(closure-and-attribution): p2-cleanup closure + BHF attribution + control-room P2 (supersedes #290 + #291)"
+        },
+        {
+          "number": 292,
+          "state": "MERGED",
+          "title": "feat(design-system): add 4 AppSize tokens + mass-substitute magic frame values (PR-1 of ios-ui-audit-p1-burndown)"
+        },
+        {
+          "number": 291,
+          "state": "CLOSED",
+          "title": "chore(fitme-story-design-system-p2-cleanup): Phase 8 closure \u2014 current_phase=complete"
+        },
+        {
+          "number": 290,
+          "state": "CLOSED",
+          "title": "docs(backlog): correct BHF attribution + add 'Apply DS web to /control-room/*' P2 deferred"
+        },
+        {
+          "number": 289,
+          "state": "MERGED",
+          "title": "docs(bucket-h): DS lens audit (45 findings) + 4 P1 follow-up backlog items"
+        },
+        {
+          "number": 288,
+          "state": "MERGED",
+          "title": "chore(fitme-story-website-design-system): Phase 8+9 closure \u2014 current_phase=complete"
+        },
+        {
+          "number": 287,
+          "state": "MERGED",
+          "title": "feat(fitme-story-website-design-system): PM scaffolding + case study + analytics taxonomy + Makefile target"
+        },
+        {
+          "number": 286,
+          "state": "MERGED",
+          "title": "chore(code-connect-automation): close out \u2014 T1-T4 done, T5 deferred (Figma scope blocker)"
+        },
+        {
+          "number": 285,
+          "state": "MERGED",
+          "title": "fix(ios-code-connect): point .figma.swift mappings at component IDs (not frame IDs)"
+        },
+        {
+          "number": 284,
+          "state": "MERGED",
+          "title": "docs(code-connect): roll up v4.X+CC across CLAUDE.md + skills + dev-guide + DS contract"
+        },
+        {
+          "number": 283,
+          "state": "MERGED",
+          "title": "fix(ci): use Swift parser via SPM wrapper for iOS Code Connect publish"
+        },
+        {
+          "number": 282,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-10T06-36-02Z"
+        },
+        {
+          "number": 281,
+          "state": "MERGED",
+          "title": "feat(ci): T4 Layer C \u2014 figma-code-connect-publish workflow (FT2 half)"
+        },
+        {
+          "number": 280,
+          "state": "MERGED",
+          "title": "feat(design-skill): T3 Layer B + Code Connect access gate + spec\u2194build parity check"
+        },
+        {
+          "number": 279,
+          "state": "MERGED",
+          "title": "feat(scaffold): scripts/scaffold-figma-mapping.py \u2014 auto-gen .figma.swift templates"
+        },
+        {
+          "number": 278,
+          "state": "MERGED",
+          "title": "chore(code-connect-automation): scaffold chore feature (3-layer plan)"
+        },
+        {
+          "number": 277,
+          "state": "MERGED",
+          "title": "feat(ios-code-connect): T1+T2+T3+T5 \u2014 Figma.toml + 5 .figma.swift mappings + workflow doc"
+        },
+        {
+          "number": 276,
+          "state": "MERGED",
+          "title": "docs(backlog): mark \"Refine case-study presentation/readability\" SHIPPED"
+        },
+        {
+          "number": 275,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): reconcile T20 \u2192 done (23/24)"
+        },
+        {
+          "number": 274,
+          "state": "MERGED",
+          "title": "docs(backlog): add fitme-story website design system as separate item"
+        },
+        {
+          "number": 273,
+          "state": "MERGED",
+          "title": "chore(ios-code-connect): scaffold placeholder chore feature"
+        },
+        {
+          "number": 272,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): capture 17 Figma component node IDs (T20 unblocked)"
+        },
+        {
+          "number": 271,
+          "state": "MERGED",
+          "title": "docs(spec): Phase C cross-repo state sync \u2014 canonical contract"
+        },
+        {
+          "number": 270,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): advisory-period extension to 2026-05-16"
+        },
+        {
+          "number": 269,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): reconcile T10 + T12 to done (rollup 20\u219222/24)"
+        },
+        {
+          "number": 268,
+          "state": "MERGED",
+          "title": "docs(hadf): label Framework Version v7.0 (was v6.0) \u2014 match user-facing card"
+        },
+        {
+          "number": 267,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): invoke v7.8.1 retroactively + midstream case study"
+        },
+        {
+          "number": 266,
+          "state": "MERGED",
+          "title": "chore(fitme-story-public-enhancements): reconcile state.json (7\u219217 done)"
+        },
+        {
+          "number": 265,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2): update case-study citations to squash SHA a4b357f"
+        },
+        {
+          "number": 264,
+          "state": "MERGED",
+          "title": "chore(hadf-phase2): land final summary + scripts in main (closes citation gap)"
+        },
+        {
+          "number": 263,
+          "state": "MERGED",
+          "title": "chore(workflows): bump GitHub Actions to Node 24-compatible majors"
+        },
+        {
+          "number": 262,
+          "state": "MERGED",
+          "title": "fix(ucc-passkey-auth): reconcile T1-T28 task statuses to done"
+        },
+        {
+          "number": 261,
+          "state": "MERGED",
+          "title": "docs(design-system): fitme-story design architecture (T21 / FIG-W6)"
+        },
+        {
+          "number": 260,
+          "state": "MERGED",
+          "title": "docs(case-studies): dual-outlet pattern contract (T8 / G3)"
+        },
+        {
+          "number": 259,
+          "state": "CLOSED",
+          "title": "chore(integrity): cycle snapshot 2026-05-08T06-36-23Z"
+        },
+        {
+          "number": 258,
+          "state": "MERGED",
+          "title": "chore(framework): document cross-repo gate asymmetry + fix observe-cache-hit hook noise"
+        },
+        {
+          "number": 257,
+          "state": "MERGED",
+          "title": "chore(integrity): cycle snapshot 2026-05-07T06-39-32Z"
+        },
+        {
+          "number": 256,
+          "state": "MERGED",
+          "title": "feat(fitme-story-public-enhancements): create rollup feature folder + capture 7 shipped + 16 pending"
+        },
+        {
+          "number": 254,
+          "state": "MERGED",
+          "title": "docs(audit): fitme-story public-site audit + v7.9 candidates queue"
+        },
+        {
+          "number": 253,
+          "state": "MERGED",
+          "title": "docs(stress-test): roadmap-stress-test-2026-05-07 closure (1 shipped, 8 v7.9 candidates)"
+        },
+        {
+          "number": 252,
+          "state": "MERGED",
+          "title": "docs(backlog): add Figma design + architecture for both surfaces (iOS + web)"
+        },
+        {
+          "number": 251,
+          "state": "MERGED",
+          "title": "docs(claude.md): cross-reference ucc-passkey-auth setup guide"
+        },
+        {
+          "number": 250,
+          "state": "MERGED",
+          "title": "docs(setup): add ucc-passkey-auth going-live runbook"
+        },
+        {
+          "number": 249,
+          "state": "MERGED",
+          "title": "docs(ucc-passkey-auth): Phase 8 closure \u2014 case study + state.json complete"
+        },
+        {
+          "number": 248,
+          "state": "MERGED",
+          "title": "feat(ucc-passkey-auth): cross-repo audit-log sync + state + protocol artifacts"
+        },
+        {
+          "number": 247,
+          "state": "MERGED",
+          "title": "chore(master-plan+backlog): sync to v7.8.1 reality (2026-05-07)"
+        },
+        {
+          "number": 246,
+          "state": "MERGED",
+          "title": "chore(framework): bump to v7.8.1 \u2014 docs propagation across 5 surfaces"
+        },
+        {
+          "number": 245,
+          "state": "MERGED",
+          "title": "docs(framework-v7-8-branch-isolation): Phase 8 closure \u2014 case study + current_phase=complete"
+        },
+        {
+          "number": 244,
+          "state": "MERGED",
+          "title": "feat(framework-v7-8-branch-isolation): BRANCH_ISOLATION_VIOLATION + FEATURE_CLOSURE_COMPLETENESS gates (advisory in v7.8 \u2192 enforced in v7.9)"
+        },
+        {
+          "number": 242,
+          "state": "MERGED",
+          "title": "docs(push-notifications-v2): close last doc-debt item \u2014 rename 'Kill' \u2192 'Kill criteria'"
+        },
+        {
+          "number": 241,
+          "state": "MERGED",
+          "title": "docs(framework): bump dev-guide to v7.8 + ship lifecycle event catalog + reconcile 5 doc-debt gaps"
+        },
+        {
+          "number": 240,
+          "state": "MERGED",
+          "title": "chore(push-notifications-v2): Phase 8 closure"
+        },
+        {
+          "number": 239,
+          "state": "MERGED",
+          "title": "feat(push-notifications-v2): platform-layer rebuild"
+        },
+        {
+          "number": 238,
+          "state": "MERGED",
+          "title": "chore(sync): cross-reference sync \u2014 Linear + Notion + master plan + backlog + UCC + memory"
+        },
+        {
+          "number": 237,
+          "state": "MERGED",
+          "title": "chore(import-training-plan): Phase 8 closure \u2014 current_phase=complete + case study"
+        },
+        {
+          "number": 236,
+          "state": "MERGED",
+          "title": "docs(backlog): close /ux + /design preflight task (shipped via #235)"
+        },
+        {
+          "number": 235,
+          "state": "MERGED",
+          "title": "feat(skills): v4.X skill-layer \u2014 UX/Design preflight + auto Figma build + pre-merge UI review"
+        },
+        {
+          "number": 234,
+          "state": "MERGED",
+          "title": "feat(import-training-plan): Phase 1 ship \u2014 persist + active-plan + GDPR + 9 events"
+        },
+        {
+          "number": 233,
+          "state": "MERGED",
+          "title": "docs(backlog): strike CI parallel-clone hang \u2014 resolved via PR #225"
+        },
+        {
+          "number": 232,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): formal close \u2014 current_phase=complete"
+        },
+        {
+          "number": 230,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): final reconcile T35/T36/T38/T42 done + T2.5 deferred + Phase 8 case study"
+        },
+        {
+          "number": 229,
+          "state": "MERGED",
+          "title": "chore(ucc): T35 redirect fit-tracker2 -> fitme-story/control-room (307 temporary)"
+        },
+        {
+          "number": 228,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): end-of-day reconcile \u2014 39/44 done (89%)"
+        },
+        {
+          "number": 227,
+          "state": "MERGED",
+          "title": "docs(dashboard): mark Astro dashboard as HISTORICAL (UCC T34)"
+        },
+        {
+          "number": 226,
+          "state": "MERGED",
+          "title": "docs(analytics): add 8 dashboard_* events to taxonomy CSV (UCC T37)"
+        },
+        {
+          "number": 225,
+          "state": "MERGED",
+          "title": "fix(ci): disable UI test target parallelism \u2014 root-cause fix for parallel-clone sim hang"
+        },
+        {
+          "number": 224,
+          "state": "CLOSED",
+          "title": "docs(backlog): quarantine AuthPolishV2UITests against parallel-clone sim hang"
+        },
+        {
+          "number": 223,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): reconcile T24/T25/T27/T28 done \u2014 fitme-story PRs #27 + #28"
+        },
+        {
+          "number": 222,
+          "state": "MERGED",
+          "title": "chore(ucc): mark T20-T23 done in state.json (Wave 1 complete)"
+        },
+        {
+          "number": 221,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): T18 + T19 state.json reconcile"
+        },
+        {
+          "number": 220,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): T2 baseline placeholder + T2.5 follow-up"
+        },
+        {
+          "number": 219,
+          "state": "MERGED",
+          "title": "docs(glossary): add dev-basics primer for non-developers"
+        },
+        {
+          "number": 218,
+          "state": "MERGED",
+          "title": "chore(unified-control-center): UCC Path A \u2014 T40 + state.json reconcile (T31-T33, T39-T41)"
+        },
+        {
+          "number": 217,
+          "state": "MERGED",
+          "title": "docs(claudemd): codify Tier 3 policy notes \u2014 E-2 (UI test strategy) + F-1 (HISTORICAL retention)"
+        },
+        {
+          "number": 216,
+          "state": "MERGED",
+          "title": "docs(prd): rename adaptive-intelligence-initiative.md \u2192 adaptive-intelligence.md + add prd_path link (iOS audit C-1, 3/3)"
+        },
+        {
+          "number": 215,
+          "state": "MERGED",
+          "title": "docs(prd): retroactive PRD for settings-v2 (iOS audit C-1, 2/3)"
+        },
+        {
+          "number": 214,
+          "state": "MERGED",
+          "title": "docs(prd): retroactive PRD for metric-tile-deep-linking (iOS audit C-1, 1/3)"
+        },
+        {
+          "number": 213,
+          "state": "MERGED",
+          "title": "chore(dashboard): bump version 1.0.0 \u2192 1.0.1 (FIT-59 cache-bust)"
+        },
+        {
+          "number": 212,
+          "state": "MERGED",
+          "title": "chore(onboarding-v2-retroactive): reconcile state.json + add log.json"
+        },
+        {
+          "number": 211,
+          "state": "MERGED",
+          "title": "docs(claudemd): correct outdated 27-P0 ui-audit baseline references"
+        },
+        {
+          "number": 210,
+          "state": "MERGED",
+          "title": "chore(chain-of-custody): fix ui-audit link + 4 framework-meta wrappers + remove duplicate CS"
+        },
+        {
+          "number": 209,
+          "state": "MERGED",
+          "title": "docs(framework-meta): retroactive specs/plans for v7.5, v7.6, v7.8"
+        },
+        {
+          "number": 208,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): land framework-v7-8-branch-isolation backlog stub"
+        },
+        {
+          "number": 207,
+          "state": "MERGED",
+          "title": "docs(case-studies): split roundup into 3 dedicated CSes + standardize 28 showcase paths"
+        },
+        {
+          "number": 206,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): add framework_meta_retroactive exempt type for chain-of-custody backfill"
+        },
+        {
+          "number": 205,
+          "state": "MERGED",
+          "title": "docs(spec): framework page v7 floor update \u2014 add Floor 7 (v7.7 Validity Closure)"
+        },
+        {
+          "number": 204,
+          "state": "MERGED",
+          "title": "chore: untrack scheduled_tasks.lock + add lock-file gitignore patterns"
+        },
+        {
+          "number": 203,
+          "state": "MERGED",
+          "title": "chore(framework): close all remaining audit gaps \u2014 cron persistence + tier-tag advisories"
+        },
+        {
+          "number": 202,
+          "state": "MERGED",
+          "title": "chore(doc-debt): 100% coverage \u2014 slot-fix, work_type backfill, showcase wiring, TODO cleanup"
+        },
+        {
+          "number": 201,
+          "state": "MERGED",
+          "title": "chore(framework-v7-7): post-merge ledger cleanup + B1/B2 verification"
+        },
+        {
+          "number": 200,
+          "state": "MERGED",
+          "title": "docs: comprehensive review \u2014 v7.8 sync + PRD parent-child wiring (smart-reminders + 4 parents)"
+        },
+        {
+          "number": 199,
+          "state": "MERGED",
+          "title": "docs(smart-reminders-behavioral-learning): PR-2 implementation plan (execution waits for cohort data window)"
+        },
+        {
+          "number": 198,
+          "state": "MERGED",
+          "title": "feat(smart-reminders): backend half \u2014 AI engine endpoints + retention migration (PR-1 close-out)"
+        },
+        {
+          "number": 197,
+          "state": "MERGED",
+          "title": "feat(framework-v7.9): measurement-window snapshot tool"
+        },
+        {
+          "number": 196,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): final doc sweep \u2014 CLAUDE.md header + backlog row 74.5"
+        },
+        {
+          "number": 195,
+          "state": "MERGED",
+          "title": "fix(ci): disable parallel UI testing to eliminate sim-clone flake"
+        },
+        {
+          "number": 194,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): PR-7 \u2014 cold-start entrypoint + honesty ledger entry FT2-FH-001"
+        },
+        {
+          "number": 193,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-6 \u2014 Mechanism F membrane-status + Mechanism D self-test + hook header"
+        },
+        {
+          "number": 192,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-5 \u2014 Schema bridge fields (T15 + T16 + T17)"
+        },
+        {
+          "number": 191,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): CLAUDE.md update + bridge case study (live journal)"
+        },
+        {
+          "number": 190,
+          "state": "MERGED",
+          "title": "feat(smart-reminders): behavioral learning PR 1 \u2014 iOS data layer + toggle-off (backend deferred)"
+        },
+        {
+          "number": 189,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-4 \u2014 Mechanism E git merge driver for ledgers"
+        },
+        {
+          "number": 188,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-3 \u2014 Mechanism C wiring (T9 + T10 + T11 advisory)"
+        },
+        {
+          "number": 187,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-2 \u2014 Mechanism A coverage-asserting gates"
+        },
+        {
+          "number": 186,
+          "state": "MERGED",
+          "title": "chore(framework): backfill framework_version on 34 pre-v6 features"
+        },
+        {
+          "number": 185,
+          "state": "MERGED",
+          "title": "chore(framework): backfill framework_version on 5 post-v6 features + ui-audit dates"
+        },
+        {
+          "number": 184,
+          "state": "MERGED",
+          "title": "docs(orchid-v1.5): toolchain setup guide + companion case study scaffold"
+        },
+        {
+          "number": 183,
+          "state": "MERGED",
+          "title": "feat(orchid-v1.5): Track D D1+D2 \u2014 tier-aware DSE end-to-end"
+        },
+        {
+          "number": 182,
+          "state": "MERGED",
+          "title": "feat(orchid-v1.5): Track L \u2014 Layer A behavioral models for U8 + U9 + tier propagation"
+        },
+        {
+          "number": 180,
+          "state": "MERGED",
+          "title": "plan(orchid): v1.5 implementation plan \u2014 Tracks L (Layer A) + D (DSE) + R (RTL Phases 6-9)"
+        },
+        {
+          "number": 179,
+          "state": "MERGED",
+          "title": "spec(orchid): v1.5 design addendum \u2014 additive U8 + U9 + tier propagation + forward-compat (Option B)"
+        },
+        {
+          "number": 178,
+          "state": "MERGED",
+          "title": "docs(manifest): add 7 capability flags for v7.7 + v7.8 PR-1"
+        },
+        {
+          "number": 177,
+          "state": "MERGED",
+          "title": "docs(framework+setup): manifest 7.6\u21927.7 + recover ssd/sentry setup-guide updates"
+        },
+        {
+          "number": 176,
+          "state": "MERGED",
+          "title": "docs(backlog): sync In Progress \u2192 Done for 7 shipped items + correct stale pause claims"
+        },
+        {
+          "number": 175,
+          "state": "MERGED",
+          "title": "chore(repo): untrack .claude/settings.local.json (stop the cross-branch drift)"
+        },
+        {
+          "number": 174,
+          "state": "MERGED",
+          "title": "chore(framework): reconcile 3 state.json files to current_phase=complete"
+        },
+        {
+          "number": 173,
+          "state": "MERGED",
+          "title": "feat(framework-v7.8): PR-1 \u2014 Mechanism C scaffolding + gate predicate fix (unblocks #170/#171/#172)"
+        },
+        {
+          "number": 172,
+          "state": "MERGED",
+          "title": "docs(framework): v7.8 + v7.9 bridge design spec + 2 deep research notes (draft for review)"
+        },
+        {
+          "number": 171,
+          "state": "MERGED",
+          "title": "feat(hadf): chip-profiles v1.1 schema + Tier-1 expansion (Slices A + B)"
+        },
+        {
+          "number": 170,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2): publish case study + Tracks 3/4 research notes"
+        },
+        {
+          "number": 169,
+          "state": "MERGED",
+          "title": "chore(framework): close v7.7 silent-pass surface + 3 near-miss disclosures"
+        },
+        {
+          "number": 168,
+          "state": "MERGED",
+          "title": "chore(repo): hygiene \u2014 .gitignore + research notes (audit cleanup)"
+        },
+        {
+          "number": 167,
+          "state": "MERGED",
+          "title": "docs(stats-v2): dedicated case study + repoint state.json from roundup"
+        },
+        {
+          "number": 166,
+          "state": "MERGED",
+          "title": "chore(backlog): add CI parallel-clone simulator hang investigation task"
+        },
+        {
+          "number": 165,
+          "state": "MERGED",
+          "title": "fix(ci): quarantine UI tests use NSUserName() instead of broken GITHUB_ACTIONS env check"
+        },
+        {
+          "number": 164,
+          "state": "MERGED",
+          "title": "feat(stats-v2): finish v2 alignment pass \u2014 analytics wiring + a11y + type extraction"
+        },
+        {
+          "number": 163,
+          "state": "MERGED",
+          "title": "feat(auth-polish-v2): forgot-password recovery flow (T0..A5)"
+        },
+        {
+          "number": 162,
+          "state": "MERGED",
+          "title": "docs(smart-reminders): record E-1 readiness-aware training alert as Enhancement"
+        },
+        {
+          "number": 161,
+          "state": "MERGED",
+          "title": "chore(smart-reminders): repoint case_study_showcase to slot 23"
+        },
+        {
+          "number": 160,
+          "state": "MERGED",
+          "title": "test(ui): quarantine HomeReadinessUITests on hosted CI"
+        },
+        {
+          "number": 159,
+          "state": "MERGED",
+          "title": "chore(repo): move stray project_*.md entrypoints to .claude/entrypoints/"
+        },
+        {
+          "number": 158,
+          "state": "MERGED",
+          "title": "feat(smart-reminders): wire all 6 lifecycle analytics events + housekeeping (v7.7 state.json + smart-reminders merge metadata)"
+        },
+        {
+          "number": 157,
+          "state": "MERGED",
+          "title": "docs(media): hero GIF recording guide"
+        },
+        {
+          "number": 156,
+          "state": "MERGED",
+          "title": "chore(deps): fix dashboard regression from #155 (bump astro/postcss constraints)"
+        },
+        {
+          "number": 155,
+          "state": "MERGED",
+          "title": "chore(deps): force path-to-regexp >=6.3.0 to close 2 HIGH CVEs"
+        },
+        {
+          "number": 154,
+          "state": "MERGED",
+          "title": "chore(readme): trim 359 \u2192 131 lines + fix outdated License footer"
+        },
+        {
+          "number": 153,
+          "state": "MERGED",
+          "title": "chore(deps): bump astro from 6.1.3 to 6.1.10 in /dashboard"
+        },
+        {
+          "number": 152,
+          "state": "MERGED",
+          "title": "chore(deps): bump vite from 7.3.1 to 7.3.2 in /dashboard"
+        },
+        {
+          "number": 151,
+          "state": "MERGED",
+          "title": "chore(portfolio): add MIT LICENSE and dedupe .gitignore"
+        },
+        {
+          "number": 150,
+          "state": "MERGED",
+          "title": "chore(deps): bump astro from 6.1.3 to 6.1.10 in /website"
+        },
+        {
+          "number": 149,
+          "state": "MERGED",
+          "title": "chore(deps): bump vite from 7.3.1 to 7.3.2 in /website"
+        },
+        {
+          "number": 148,
+          "state": "MERGED",
+          "title": "chore(deps-dev): bump lodash from 4.17.21 to 4.18.1"
+        },
+        {
+          "number": 147,
+          "state": "MERGED",
+          "title": "chore(deps): bump postcss from 8.5.8 to 8.5.12 in /website"
+        },
+        {
+          "number": 146,
+          "state": "MERGED",
+          "title": "docs(case-study): visual-aid catalog + Alt-A/B templates + state.json (locked 2026-04-28)"
+        },
+        {
+          "number": 145,
+          "state": "MERGED",
+          "title": "fix(dashboard): unbreak after v7.7 \u2014 state.json feature_name vs feature schema drift"
+        },
+        {
+          "number": 144,
+          "state": "MERGED",
+          "title": "v7.7 PR-1: cache_hits writer-path closure (Linear FIT-50)"
+        },
+        {
+          "number": 141,
+          "state": "MERGED",
+          "title": "Framework v7.6 pending fixes \u2014 reconciliation, shared tracking, PR-bot tightening, doc alignment"
+        },
+        {
+          "number": 139,
+          "state": "MERGED",
+          "title": "UI-audit baseline burndown: P0 27\u21920, hard gate in verify-local, AppMotion tokens"
+        },
+        {
+          "number": 137,
+          "state": "MERGED",
+          "title": "feat(ds): UI audit scanner + Figma verification contract + chart tokens"
+        },
+        {
+          "number": 136,
+          "state": "MERGED",
+          "title": "docs(case-studies): write Home v2 + Training Plan v2, sync pm-workflow hub to v6.1"
+        },
+        {
+          "number": 135,
+          "state": "MERGED",
+          "title": "docs: rescue pm-hub-evolution.md before branch cleanup"
+        },
+        {
+          "number": 134,
+          "state": "MERGED",
+          "title": "fix: full-sweep remediation \u2014 dashboard, README, docs, branch cleanup"
+        },
+        {
+          "number": 133,
+          "state": "MERGED",
+          "title": "feat(tests): M-4b/c/d \u2014 XCUITest happy-path coverage + case study + TEST-025 closure"
+        },
+        {
+          "number": 132,
+          "state": "MERGED",
+          "title": "feat(tests): M-4a \u2014 add FitTrackerUITests target + bootstrap smoke test (TEST-025)"
+        },
+        {
+          "number": 131,
+          "state": "MERGED",
+          "title": "docs(m-4): plan \u2014 XCUITest infrastructure (TEST-025)"
+        },
+        {
+          "number": 130,
+          "state": "MERGED",
+          "title": "docs(m-2): M-2d \u2014 case study + monitoring entry + UI-004 closure"
+        },
+        {
+          "number": 129,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2 final \u2014 ViewModel + per-tab views (UI-004) [resubmit to main]"
+        },
+        {
+          "number": 128,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2b \u2014 extract per-tab views (UI-004)"
+        },
+        {
+          "number": 127,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2c \u2014 extract MealEntryViewModel (UI-004)"
+        },
+        {
+          "number": 126,
+          "state": "MERGED",
+          "title": "refactor(nutrition): M-2a \u2014 extract leaf types from MealEntrySheet (UI-004)"
+        },
+        {
+          "number": 125,
+          "state": "MERGED",
+          "title": "docs(m-1): M-1d \u2014 case study + monitoring entry + UI-002 closure"
+        },
+        {
+          "number": 124,
+          "state": "MERGED",
+          "title": "refactor(settings): M-1c \u2014 extract home-view sub-components (UI-002)"
+        },
+        {
+          "number": 123,
+          "state": "MERGED",
+          "title": "refactor(settings): M-1b \u2014 extract shared scaffolds + form components (UI-002)"
+        },
+        {
+          "number": 122,
+          "state": "MERGED",
+          "title": "refactor(settings): M-1a \u2014 extract 5 detail screens (UI-002)"
+        },
+        {
+          "number": 121,
+          "state": "MERGED",
+          "title": "docs(case-studies): M-3d \u2014 design system completion case study + monitoring entry"
+        },
+        {
+          "number": 120,
+          "state": "MERGED",
+          "title": "feat(ds): M-3c \u2014 dark-mode foundation (9 colorsets gain dark variants)"
+        },
+        {
+          "number": 119,
+          "state": "MERGED",
+          "title": "feat(ds): M-3b \u2014 chart + selection + appWarmTint colors added to pipeline"
+        },
+        {
+          "number": 118,
+          "state": "MERGED",
+          "title": "feat(ds): M-3a \u2014 non-color token categories added to pipeline"
+        },
+        {
+          "number": 117,
+          "state": "MERGED",
+          "title": "docs(case-studies): post-stress-test audit remediation \u2014 comprehensive synthesis"
+        },
+        {
+          "number": 116,
+          "state": "MERGED",
+          "title": "fix(ui): Sprint K-11 \u2014 UI-017 \u2014 extract FoodSearchService from MealEntrySheet"
+        },
+        {
+          "number": 115,
+          "state": "MERGED",
+          "title": "fix(ui): Sprint K-10 \u2014 UI-006 + UI-018 \u2014 extract MilestoneDetector service"
+        },
+        {
+          "number": 114,
+          "state": "MERGED",
+          "title": "fix(security): Sprint K-9 \u2014 DEEP-AUTH-015 \u2014 three-way merge digests in Keychain"
+        },
+        {
+          "number": 113,
+          "state": "MERGED",
+          "title": "chore(audit): Sprint K-8 \u2014 UI-003 + UI-005 historical closures (2 findings)"
+        },
+        {
+          "number": 112,
+          "state": "MERGED",
+          "title": "fix(ds): Sprint K-7 \u2014 DS-002 + DS-003 mechanical mass-rename"
+        },
+        {
+          "number": 111,
+          "state": "MERGED",
+          "title": "chore(framework): Sprint K-6 \u2014 FW Cleanup + status markers (8 findings)"
+        },
+        {
+          "number": 110,
+          "state": "MERGED",
+          "title": "fix(ai): Sprint K-5 \u2014 AI Adapter Cleanup (12 findings)"
+        },
+        {
+          "number": 109,
+          "state": "MERGED",
+          "title": "fix(audit): Sprint K-4 \u2014 small wins (8 findings)"
+        },
+        {
+          "number": 108,
+          "state": "MERGED",
+          "title": "fix(backend+sync): Sprint K-3 \u2014 BE-023 + DEEP-SYNC-014"
+        },
+        {
+          "number": 107,
+          "state": "MERGED",
+          "title": "fix(backend): DEEP-AUTH-011 \u2014 atomic 5-file write via two-phase commit"
+        },
+        {
+          "number": 106,
+          "state": "MERGED",
+          "title": "fix(backend): Sprint K-1 \u2014 BE-016 + BE-021 + BE-029 (3 deferred Sprint G items)"
+        },
+        {
+          "number": 105,
+          "state": "MERGED",
+          "title": "chore(audit): live-sync audit-findings.json with PR closure history"
+        },
+        {
+          "number": 104,
+          "state": "MERGED",
+          "title": "docs(framework): F8 + F9 from audit-v2 wave-2 \u2014 concurrent dispatch still blocked"
+        },
+        {
+          "number": 103,
+          "state": "MERGED",
+          "title": "fix(framework): F2 + F3 + F4 + F5 \u2014 close remaining stress-test bugs"
+        },
+        {
+          "number": 102,
+          "state": "MERGED",
+          "title": "fix(framework): F1 \u2014 worktree-isolated agents can write to .claude/{shared,features}"
+        },
+        {
+          "number": 101,
+          "state": "MERGED",
+          "title": "ci: ad-hoc sign so simulator keychain tests can access entitlements"
+        },
+        {
+          "number": 100,
+          "state": "MERGED",
+          "title": "fix(ai): Sprint H \u2014 AI pipeline correctness (8 findings)"
+        },
+        {
+          "number": 99,
+          "state": "MERGED",
+          "title": "fix(backend+sync): Sprint G \u2014 backend & sync hardening (5 findings)"
+        },
+        {
+          "number": 98,
+          "state": "MERGED",
+          "title": "test: Sprint J \u2014 ReminderScheduler tests + offline skeleton (3 findings, 13 cases)"
+        },
+        {
+          "number": 97,
+          "state": "MERGED",
+          "title": "fix(ui+ds): Sprint I \u2014 UI/DS small wins (10 findings)"
+        },
+        {
+          "number": 96,
+          "state": "MERGED",
+          "title": "chore(framework+ai): Sprint F \u2014 quick wins (7 resolved + 4 partial)"
+        },
+        {
+          "number": 95,
+          "state": "MERGED",
+          "title": "test: salvage 4 wave-1 G2 stranded test files (TEST-007/010/012/013)"
+        },
+        {
+          "number": 94,
+          "state": "MERGED",
+          "title": "fix(security+ds): Sprint E \u2014 Keychain status + AppMotion tokens (3 findings, 7 tests)"
+        },
+        {
+          "number": 93,
+          "state": "MERGED",
+          "title": "fix(auth+ds+ui): Sprint D \u2014 type-safe sessions + scrim token + dead view archival (6 findings)"
+        },
+        {
+          "number": 92,
+          "state": "MERGED",
+          "title": "test+refactor: Sprint C4 \u2014 sync contract tests + Debouncer extraction (2 findings, 15 cases)"
+        },
+        {
+          "number": 91,
+          "state": "MERGED",
+          "title": "test: Sprint C3 \u2014 EncryptionService/Auth/HealthKit tests + Sprint B crash fix"
+        },
+        {
+          "number": 90,
+          "state": "MERGED",
+          "title": "test: Sprint C2 \u2014 service + perf + accessibility tests (5 findings, 30 new cases)"
+        },
+        {
+          "number": 89,
+          "state": "MERGED",
+          "title": "test: Sprint C1 \u2014 AI adapter + service tests (6 findings, 27 new test cases)"
+        },
+        {
+          "number": 88,
+          "state": "MERGED",
+          "title": "fix(encryption+tests): Sprint B \u2014 HMAC validation + test dedup (3 findings)"
+        },
+        {
+          "number": 87,
+          "state": "MERGED",
+          "title": "fix(sync+auth): Sprint A \u2014 data integrity hardening (13 findings)"
+        },
+        {
+          "number": 86,
+          "state": "MERGED",
+          "title": "fix(tests): Phase 6 \u2014 phantom test fixes + deterministic helpers"
+        },
+        {
+          "number": 85,
+          "state": "MERGED",
+          "title": "fix: audit remediation Phases 5, 7 + combined case study"
+        },
+        {
+          "number": 84,
+          "state": "MERGED",
+          "title": "fix: audit remediation \u2014 Phases 1-4 + 8 (51 findings)"
+        },
+        {
+          "number": 83,
+          "state": "MERGED",
+          "title": "feat(orchid): Layer A \u2014 Python behavioral models for AI orchestration accelerator"
+        },
+        {
+          "number": 82,
+          "state": "MERGED",
+          "title": "feat(hadf): Hardware-Aware Dispatch Framework \u2014 v1.0 infrastructure"
+        },
+        {
+          "number": 81,
+          "state": "MERGED",
+          "title": "feat(v6.0): Framework Measurement \u2014 deterministic instrumentation for case studies"
+        },
+        {
+          "number": 80,
+          "state": "MERGED",
+          "title": "feat(onboarding): embedded auth flow \u2014 8-step onboarding with account creation"
+        },
+        {
+          "number": 79,
+          "state": "MERGED",
+          "title": "feat(ai-engine): architecture adaptation \u2014 adapters, confidence gate, goal-aware intelligence, learning cache"
+        },
+        {
+          "number": 78,
+          "state": "MERGED",
+          "title": "feat: Adaptive Intelligence + Framework v4.2 + PM Evolution Case Study"
+        },
+        {
+          "number": 77,
+          "state": "MERGED",
+          "title": "feat(settings-v2): Settings screen UX Foundations alignment"
+        },
+        {
+          "number": 76,
+          "state": "MERGED",
+          "title": "feat(stats-v2): Stats screen UX Foundations alignment"
+        },
+        {
+          "number": 75,
+          "state": "MERGED",
+          "title": "feat(nutrition-v2): Nutrition screen UX Foundations alignment"
+        },
+        {
+          "number": 74,
+          "state": "MERGED",
+          "title": "feat(training-v2): Training Plan v2 UX Foundations alignment"
+        },
+        {
+          "number": 67,
+          "state": "MERGED",
+          "title": "feat(home): metric tile deep linking to Stats"
+        },
+        {
+          "number": 65,
+          "state": "MERGED",
+          "title": "feat(home): unified body composition card with drill-down"
+        },
+        {
+          "number": 63,
+          "state": "MERGED",
+          "title": "feat(onboarding): retroactive v2/ subdirectory refactor"
+        },
+        {
+          "number": 61,
+          "state": "MERGED",
+          "title": "feat(home-v2): Home Today Screen v2 UX Foundations alignment"
+        },
+        {
+          "number": 59,
+          "state": "MERGED",
+          "title": "feat: onboarding v2 UX alignment + 4-day branch consolidation"
+        },
+        {
+          "number": 21,
+          "state": "MERGED",
+          "title": "feat: Product Management Lifecycle skill (/pm-workflow)"
+        },
+        {
+          "number": 20,
+          "state": "MERGED",
+          "title": "Phase 0: Foundation \u2014 PRD, metrics framework, backlog"
+        },
+        {
+          "number": 19,
+          "state": "MERGED",
+          "title": "docs: RICE-prioritized 18-task roadmap with phase gates"
+        },
+        {
+          "number": 18,
+          "state": "MERGED",
+          "title": "fix: Simulator auto-login + token cleanup"
+        },
+        {
+          "number": 17,
+          "state": "MERGED",
+          "title": "Design System v2 \u2014 unified PR #15 + #16 with CI fixes"
+        },
+        {
+          "number": 16,
+          "state": "CLOSED",
+          "title": "Design System v2 + Full UI Iteration \u2014 172 files, 22 screens, zero raw literals"
+        },
+        {
+          "number": 15,
+          "state": "CLOSED",
+          "title": "Design system token migration \u2014 colors, typography, shadows, spacing, radius"
+        },
+        {
+          "number": 14,
+          "state": "CLOSED",
+          "title": "feat: Design System v2 \u2014 three-tier token architecture, 6 new components, WCAG AA, CI pipeline"
+        },
+        {
+          "number": 13,
+          "state": "MERGED",
+          "title": "fix: iOS stability, Supabase sync integration, and auth security hardening"
+        },
+        {
+          "number": 12,
+          "state": "MERGED",
+          "title": "feat: federated cohort intelligence \u2014 backend, AI engine, iOS AI layer"
+        },
+        {
+          "number": 11,
+          "state": "CLOSED",
+          "title": "Codex/auth merge ready"
+        },
+        {
+          "number": 10,
+          "state": "MERGED",
+          "title": "Extract auth redesign into merge-ready branch"
+        },
+        {
+          "number": 9,
+          "state": "CLOSED",
+          "title": "Test CI branch protection"
+        },
+        {
+          "number": 8,
+          "state": "CLOSED",
+          "title": "Full code review: fix 6 bugs across encryption, auth, and sync"
+        },
+        {
+          "number": 7,
+          "state": "MERGED",
+          "title": "## What's new in v3.0  A full UX/UI improvement pass across the entire app \u2014 reduced friction, smarter home screen, enhanced workout flow, polished design, and unified settings."
+        },
+        {
+          "number": 6,
+          "state": "MERGED",
+          "title": "Codex/your next feature"
+        },
+        {
+          "number": 5,
+          "state": "MERGED",
+          "title": "Skip biometric/passcode prompt on simulator"
+        },
+        {
+          "number": 4,
+          "state": "MERGED",
+          "title": "Codex/your next feature"
+        },
+        {
+          "number": 3,
+          "state": "MERGED",
+          "title": "Apply second-pass review fixes: concurrency, safety, and correctness"
+        },
+        {
+          "number": 2,
+          "state": "MERGED",
+          "title": "Equal spacing home screen"
+        },
+        {
+          "number": 1,
+          "state": "MERGED",
+          "title": "Equal spacing home screen"
+        }
+      ]
+    },
+    "Regevba/fitme-story": {
+      "open": [],
+      "merged": [
+        {
+          "number": 125,
+          "state": "MERGED",
+          "title": "feat(ucc-sign-in-figma-mapping): T2-T8 closeout \u2014 Figma frames + Code Connect + manifest"
+        },
+        {
+          "number": 124,
+          "state": "MERGED",
+          "title": "fix(mdx): recover Pullquote line-height fix from dangling branch (audit findings)"
+        },
+        {
+          "number": 123,
+          "state": "MERGED",
+          "title": "docs(design-system): \u00a73.1 form-driven exception clause + UCC sign-in design-build prompt (UU4 T1+T2-T4)"
+        },
+        {
+          "number": 122,
+          "state": "MERGED",
+          "title": "fix(ucc-passkey-auth): replace dead local-fs audit-log with Redis primary store"
+        },
+        {
+          "number": 121,
+          "state": "MERGED",
+          "title": "fix(pm-flow): recover h-full on LegoBrick button (dangling commit from 2026-05-16)"
+        },
+        {
+          "number": 120,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth): doc-sync + UU1 coral-pulse CTA + UU2 dark-mode contrast verify"
+        },
+        {
+          "number": 119,
+          "state": "MERGED",
+          "title": "docs(glossary): add W10 stale-branch + GA4 access-binding entries"
+        },
+        {
+          "number": 118,
+          "state": "MERGED",
+          "title": "fix(ui): teal recovery + brick h-full + framework page floor count + dispatch skill count + SVG focus rings"
+        },
+        {
+          "number": 117,
+          "state": "MERGED",
+          "title": "fix(pm-flow + framework): brick stripe rounded corners + /framework page redesign"
+        },
+        {
+          "number": 116,
+          "state": "MERGED",
+          "title": "docs(glossary): 4 framework entries for v7.8.6 cadence surfaces + W1 ssh-agent"
+        },
+        {
+          "number": 115,
+          "state": "MERGED",
+          "title": "chore(gitignore): exclude Claude Code session artifacts"
+        },
+        {
+          "number": 114,
+          "state": "MERGED",
+          "title": "feat(pm-flow): register /brainstorm-pm as the 12th brick + mirror dev-guide skill-count sweep"
+        },
+        {
+          "number": 113,
+          "state": "MERGED",
+          "title": "docs: complete v7.8.6 mirror \u2014 dev-guide body + /pm-flow skills count + /control-room/skills"
+        },
+        {
+          "number": 112,
+          "state": "MERGED",
+          "title": "docs: mirror v7.8.6 \u2014 README + control-room + framework dev-guide"
+        },
+        {
+          "number": 111,
+          "state": "MERGED",
+          "title": "feat(control-room): /control-room/skills runtime sync (P1.2 follow-up to #110)"
+        },
+        {
+          "number": 110,
+          "state": "MERGED",
+          "title": "feat(control-room): /control-room/skills MVP \u2014 Skills Activity panel (P1.2)"
+        },
+        {
+          "number": 109,
+          "state": "MERGED",
+          "title": "docs(framework): sync /framework page to v7.8.5+S (skills-review execution)"
+        },
+        {
+          "number": 108,
+          "state": "MERGED",
+          "title": "feat(control-room): /control-room/analytics scaffold \u2014 Phase 3.A.1 (calibration-safe; fixtures during 2026-05-14 \u2192 06-04)"
+        },
+        {
+          "number": 107,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.4 \u2014 fitme-story web mirror function"
+        },
+        {
+          "number": 106,
+          "state": "MERGED",
+          "title": "docs(framework): v7.8.5 observability layer mirror \u2014 dev-guide + control-room + glossary"
+        },
+        {
+          "number": 105,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.6 \u2014 add .env.example for fitme-story"
+        },
+        {
+          "number": 104,
+          "state": "MERGED",
+          "title": "chore(analytics): add @forward-declared JSDoc to design_system_* placeholder helpers"
+        },
+        {
+          "number": 103,
+          "state": "MERGED",
+          "title": "chore(3d-framework-universe): park canonical state.json at PRD waypoint"
+        },
+        {
+          "number": 101,
+          "state": "MERGED",
+          "title": "docs(framework): mirror state.json research \u2192 prd for 3D Framework Universe"
+        },
+        {
+          "number": 100,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): bump dev-guide + control-room + README to v7.8.4 (combined v7.8.3+v7.8.4 doc-sync)"
+        },
+        {
+          "number": 99,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 33 \u2014 ui-ux-final-sweep-2026-05-12 showcase"
+        },
+        {
+          "number": 98,
+          "state": "MERGED",
+          "title": "feat(case-studies): v7.x browse-by-category section with accordion groups"
+        },
+        {
+          "number": 97,
+          "state": "MERGED",
+          "title": "feat(ds): final P2 sweep \u2014 Stat sentence/inline + heading scale"
+        },
+        {
+          "number": 96,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slots 31 + 32 (iOS P1 drift + fitme-story P2 final sweep)"
+        },
+        {
+          "number": 95,
+          "state": "MERGED",
+          "title": "feat(ds): 3 utility classes + 6 site migrations (5 P2s closed)"
+        },
+        {
+          "number": 94,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 30 \u2014 fitme-story-ds-p2-deferred showcase"
+        },
+        {
+          "number": 93,
+          "state": "MERGED",
+          "title": "feat(ds): Tag<muted> variant + /search badge migration (P2-044)"
+        },
+        {
+          "number": 92,
+          "state": "MERGED",
+          "title": "docs(v7.8.3): bump dev-guide to v7.8.3 + control-room footer with v7.8.1/v7.8.2/v7.8.3 entries"
+        },
+        {
+          "number": 91,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 29 \u2014 cross-repo-state-sync-impl showcase (v7.8.3)"
+        },
+        {
+          "number": 90,
+          "state": "MERGED",
+          "title": "chore(cutover): re-trigger reverse-sync workflow + log 2 prior attempts (Attempt 3)"
+        },
+        {
+          "number": 89,
+          "state": "MERGED",
+          "title": "fix(v7.8.3): reverse-sync workflow \u2014 move secret check from job if to step level"
+        },
+        {
+          "number": 88,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 4 cutover: first fitme-story-native state.json (3d-interactive-framework-flow-diagram)"
+        },
+        {
+          "number": 87,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 3 \u2014 D-1 reverse-sync GitHub Action"
+        },
+        {
+          "number": 86,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 1 C-4 \u2014 control-room cross-repo gate-coverage aggregator + sync extension"
+        },
+        {
+          "number": 85,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 28 \u2014 ios-ui-audit-p1-burndown showcase"
+        },
+        {
+          "number": 84,
+          "state": "MERGED",
+          "title": "feat(design-system): P2 audit cleanup \u2014 Card\u00d75 + Stat\u00d71 + ExternalLink + divider class"
+        },
+        {
+          "number": 83,
+          "state": "MERGED",
+          "title": "fix: recover 5 lost commits from PR #82 (Card + Callout + Stat + reduced-motion + GA4 + TL;DR)"
+        },
+        {
+          "number": 82,
+          "state": "MERGED",
+          "title": "feat+fix: DS lens audit follow-ups \u2014 Card + Callout + Stat (BHF-1/2/4) + reduced-motion (BHF-3) + 2 P0 fixes + GA4 threshold + TL;DR"
+        },
+        {
+          "number": 81,
+          "state": "MERGED",
+          "title": "feat(design-system): website design system v1 \u2014 manifest + showcase Part 2 + drift detection + heritage"
+        },
+        {
+          "number": 80,
+          "state": "MERGED",
+          "title": "fix(code-connect): inline URLs + broaden include glob + drop unsupported figma.string props"
+        },
+        {
+          "number": 79,
+          "state": "MERGED",
+          "title": "feat(ci): T4 Layer C \u2014 figma-code-connect-publish workflow (fitme-story half)"
+        },
+        {
+          "number": 78,
+          "state": "MERGED",
+          "title": "feat(pm-flow): reflect Code Connect bridge + new docs in /pm-flow page"
+        },
+        {
+          "number": 77,
+          "state": "MERGED",
+          "title": "feat(scaffold): scripts/scaffold-figma-mapping.mjs \u2014 auto-gen .figma.tsx templates"
+        },
+        {
+          "number": 76,
+          "state": "MERGED",
+          "title": "chore(ci): codify case-study-audit as a CI gate"
+        },
+        {
+          "number": 75,
+          "state": "MERGED",
+          "title": "feat(public-site): T20 web Code Connect \u2014 17 component mappings"
+        },
+        {
+          "number": 74,
+          "state": "MERGED",
+          "title": "feat(sync): Phase C \u2014 extend forward sync to include Tier 2.2 feature logs"
+        },
+        {
+          "number": 73,
+          "state": "MERGED",
+          "title": "fix(public-site): align HADF version label to V7.0 across showcase + era logic"
+        },
+        {
+          "number": 72,
+          "state": "MERGED",
+          "title": "chore(framework): port v7.5 \u2192 v7.8.1 framework gates from FitTracker2"
+        },
+        {
+          "number": 71,
+          "state": "MERGED",
+          "title": "fix(public-site): T24 mobile-readiness pass \u2014 responsive type, grids, tap-targets"
+        },
+        {
+          "number": 70,
+          "state": "MERGED",
+          "title": "feat(public-site): site-wide search (T10 SEARCH-1)"
+        },
+        {
+          "number": 69,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2): update showcase citation to squash SHA a4b357f"
+        },
+        {
+          "number": 68,
+          "state": "MERGED",
+          "title": "chore(ci): wire Vercel SSO bypass token into verify-blind-switch"
+        },
+        {
+          "number": 67,
+          "state": "MERGED",
+          "title": "chore(case-studies): frontmatter audit + backfill 5 to COMPLIANT_FULL + label 3 BARE_INTENTIONAL"
+        },
+        {
+          "number": 66,
+          "state": "MERGED",
+          "title": "feat(public-site): callout component family (T15 P-CALLOUTS)"
+        },
+        {
+          "number": 65,
+          "state": "MERGED",
+          "title": "feat(public-site): rehype-pretty-code syntax highlighting + CopyButton"
+        },
+        {
+          "number": 64,
+          "state": "MERGED",
+          "title": "docs(dev-guide): mirror v7.8.2 bump from FT2"
+        },
+        {
+          "number": 63,
+          "state": "MERGED",
+          "title": "feat(public-site): buildMetadata() helper + per-page OG/Twitter/canonical"
+        },
+        {
+          "number": 62,
+          "state": "MERGED",
+          "title": "feat(public-site): MobileNav hamburger drawer \u2014 closes V-004 P0"
+        },
+        {
+          "number": 61,
+          "state": "MERGED",
+          "title": "feat(case-study): ArticleNav sidebar \u2014 sticky TOC + scroll progress (re-do of #60)"
+        },
+        {
+          "number": 60,
+          "state": "MERGED",
+          "title": "feat(case-study): ArticleNav sidebar \u2014 sticky TOC + scroll progress"
+        },
+        {
+          "number": 59,
+          "state": "MERGED",
+          "title": "feat(public-site): a11y + readability quick-wins from 2026-05-08 audit"
+        },
+        {
+          "number": 58,
+          "state": "MERGED",
+          "title": "feat(case-studies): cross-corpus comparison table at /case-studies/compare"
+        },
+        {
+          "number": 57,
+          "state": "MERGED",
+          "title": "fix(case-studies): kill_criteria must be array of strings (Zod schema) \u2014 fixes prod build"
+        },
+        {
+          "number": 56,
+          "state": "MERGED",
+          "title": "docs(case-studies): publish ucc-passkey-auth showcase (slot 26)"
+        },
+        {
+          "number": 55,
+          "state": "MERGED",
+          "title": "feat(ucc-passkey-auth): WebAuthn passkeys replace basic-auth on /control-room/*"
+        },
+        {
+          "number": 54,
+          "state": "MERGED",
+          "title": "chore(ucc): resync src/data from FT2 main @ 0a0ec25 (v7.8.1)"
+        },
+        {
+          "number": 53,
+          "state": "MERGED",
+          "title": "docs(dev-guide): bump to v7.8.1 \u2014 branch isolation + closure completeness gates"
+        },
+        {
+          "number": 52,
+          "state": "MERGED",
+          "title": "docs(dev-guide): bump to v7.8 + lifecycle-catalog companion"
+        },
+        {
+          "number": 51,
+          "state": "MERGED",
+          "title": "chore(case-studies): publish push-notifications-v2 showcase"
+        },
+        {
+          "number": 50,
+          "state": "MERGED",
+          "title": "chore(case-studies): publish import-training-plan showcase at slot 23b"
+        },
+        {
+          "number": 49,
+          "state": "MERGED",
+          "title": "feat(case-studies): order list rows by publication date"
+        },
+        {
+          "number": 48,
+          "state": "MERGED",
+          "title": "chore(skills): reflect FT2 v4.X skill-layer upgrade \u2014 preflight + auto Figma + pre-merge"
+        },
+        {
+          "number": 47,
+          "state": "MERGED",
+          "title": "Install Vercel Speed Insights"
+        },
+        {
+          "number": 46,
+          "state": "MERGED",
+          "title": "feat(dispatch-replay): add v7.7 + UCC traces, exercise floors 7-8"
+        },
+        {
+          "number": 45,
+          "state": "MERGED",
+          "title": "revert: blueprint-overlay activeAsOf (wrong direction)"
+        },
+        {
+          "number": 44,
+          "state": "MERGED",
+          "title": "feat(blueprint-overlay): dim post-feature floors via activeAsOf"
+        },
+        {
+          "number": 43,
+          "state": "MERGED",
+          "title": "fix(case-studies): strip duplicate body H1 from 32 MDX files (site-wide)"
+        },
+        {
+          "number": 42,
+          "state": "MERGED",
+          "title": "fix(case-study): remove duplicate H1 + TL;DR from UCC showcase"
+        },
+        {
+          "number": 41,
+          "state": "MERGED",
+          "title": "docs(case-study): publish UCC showcase at slot 23a (formal feature close)"
+        },
+        {
+          "number": 40,
+          "state": "MERGED",
+          "title": "feat(control-room): Kanban feature cards clickable \u2192 PRD on GitHub"
+        },
+        {
+          "number": 39,
+          "state": "MERGED",
+          "title": "fix(control-room): sync integrity snapshots + read ledgers from synced data (Framework Health page now populates)"
+        },
+        {
+          "number": 38,
+          "state": "MERGED",
+          "title": "fix(showcase): Control Center nav opens in new tab, no prefetch (auth dialog only on click)"
+        },
+        {
+          "number": 37,
+          "state": "MERGED",
+          "title": "feat(showcase): add Control Center nav link"
+        },
+        {
+          "number": 36,
+          "state": "MERGED",
+          "title": "test(control-room): analytics unit tests (UCC T38)"
+        },
+        {
+          "number": 35,
+          "state": "MERGED",
+          "title": "feat(control-room): T36 Phase 2 \u2014 wire 5 remaining GA4 events"
+        },
+        {
+          "number": 34,
+          "state": "MERGED",
+          "title": "fix(build): replace new URL('.', import.meta.url) with fileURLToPath (unblocks PR #29)"
+        },
+        {
+          "number": 33,
+          "state": "MERGED",
+          "title": "feat(control-room): GA4 analytics helper + page-load tracking (UCC T36 \u2014 Phase 1)"
+        },
+        {
+          "number": 32,
+          "state": "MERGED",
+          "title": "feat(control-room): Cmd+K command palette (UCC T30.5)"
+        },
+        {
+          "number": 31,
+          "state": "MERGED",
+          "title": "feat(control-room): table sort + search + view persistence (UCC T30)"
+        },
+        {
+          "number": 30,
+          "state": "MERGED",
+          "title": "feat(control-room): port DependencyGraph \u2192 TaskTree (UCC T29)"
+        },
+        {
+          "number": 29,
+          "state": "MERGED",
+          "title": "feat(control-room): port TaskBoard \u2192 /tasks (UCC T26)"
+        },
+        {
+          "number": 28,
+          "state": "MERGED",
+          "title": "feat(control-room): freshness footer + phase legend/activity + case-studies nav (UCC T25/T27/T28)"
+        },
+        {
+          "number": 27,
+          "state": "MERGED",
+          "title": "feat(control-room): port Wave 2 supporting components (UCC T24)"
+        },
+        {
+          "number": 26,
+          "state": "MERGED",
+          "title": "feat(control-room): port KnowledgeHub \u2192 /knowledge (UCC T23)"
+        },
+        {
+          "number": 25,
+          "state": "MERGED",
+          "title": "feat(control-room): port TableView \u2192 /table (UCC T22)"
+        },
+        {
+          "number": 24,
+          "state": "MERGED",
+          "title": "feat(control-room): port KanbanBoard \u2192 /board (UCC T21)"
+        },
+        {
+          "number": 23,
+          "state": "MERGED",
+          "title": "feat(control-room): T20 \u2014 port ControlRoom Hero + NumbersPanel \u2192 page.tsx"
+        },
+        {
+          "number": 22,
+          "state": "MERGED",
+          "title": "feat(control-room): T18 \u2014 port Dashboard.jsx \u2192 layout.tsx (full chrome)"
+        },
+        {
+          "number": 21,
+          "state": "MERGED",
+          "title": "feat(control-room): T19 \u2014 port controlCenterPrimitives \u2192 primitives.tsx (TypeScript)"
+        },
+        {
+          "number": 20,
+          "state": "MERGED",
+          "title": "feat(control-room): UCC T31/T32/T33/T39/T41 port (cherry-pick from feat/unified-control-center)"
+        },
+        {
+          "number": 19,
+          "state": "MERGED",
+          "title": "docs(case-studies): publish 6 missing showcase MDXs (publication-rule closure)"
+        },
+        {
+          "number": 18,
+          "state": "MERGED",
+          "title": "docs(case-studies): publish 6 missing showcases (publication-rule closure)"
+        },
+        {
+          "number": 16,
+          "state": "MERGED",
+          "title": "docs(framework): add Floor 8 (v7.8 Bridge to v7.9) to /framework page"
+        },
+        {
+          "number": 15,
+          "state": "MERGED",
+          "title": "feat(control-room): T19 v7.8 Mechanism F membrane-status panel"
+        },
+        {
+          "number": 14,
+          "state": "MERGED",
+          "title": "docs(framework): add Floor 7 (v7.7 Validity Closure) to /framework page"
+        },
+        {
+          "number": 13,
+          "state": "MERGED",
+          "title": "docs(case-studies): v7.8 bridge showcase (slot 23)"
+        },
+        {
+          "number": 12,
+          "state": "MERGED",
+          "title": "feat(case-studies): catalog redesign \u2014 era sublists + dedicated meta-analysis section"
+        },
+        {
+          "number": 11,
+          "state": "MERGED",
+          "title": "docs(case-study): publish 22b HADF Phase 2 cloud fingerprinting"
+        },
+        {
+          "number": 10,
+          "state": "MERGED",
+          "title": "docs(case-study): publish 22a framework honesty fixes (v7.7 expansion)"
+        },
+        {
+          "number": 9,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish smart-reminders showcase at slot 23"
+        },
+        {
+          "number": 8,
+          "state": "MERGED",
+          "title": "feat(case-study): site-wide rollout of locked Alt A chrome + per-case visual aid"
+        },
+        {
+          "number": 7,
+          "state": "MERGED",
+          "title": "v7.7 PR-7: framework-health dashboard at /control-room/framework"
+        },
+        {
+          "number": 6,
+          "state": "MERGED",
+          "title": "feat(case-studies): visuals for 7 prose-heavy studies \u2014 AuditFunnel + RaceTimeline + PRStackDiagram"
+        },
+        {
+          "number": 5,
+          "state": "MERGED",
+          "title": "feat(pm-flow): work-item pill toggle + concentric dual-ring feedback"
+        },
+        {
+          "number": 4,
+          "state": "MERGED",
+          "title": "feat(design-system): 'Under the hood' \u2014 tokens + components + pipeline read-more"
+        },
+        {
+          "number": 3,
+          "state": "MERGED",
+          "title": "feat(mdx): <DevDive> callout component + purge of \u2699\ufe0f from case studies"
+        },
+        {
+          "number": 2,
+          "state": "MERGED",
+          "title": "content: port case study 14 (framework-story-site) from showcase"
+        },
+        {
+          "number": 1,
+          "state": "MERGED",
+          "title": "feat(analytics): wire GA4 via @next/third-parties"
+        }
+      ],
+      "closed": [
+        {
+          "number": 125,
+          "state": "MERGED",
+          "title": "feat(ucc-sign-in-figma-mapping): T2-T8 closeout \u2014 Figma frames + Code Connect + manifest"
+        },
+        {
+          "number": 124,
+          "state": "MERGED",
+          "title": "fix(mdx): recover Pullquote line-height fix from dangling branch (audit findings)"
+        },
+        {
+          "number": 123,
+          "state": "MERGED",
+          "title": "docs(design-system): \u00a73.1 form-driven exception clause + UCC sign-in design-build prompt (UU4 T1+T2-T4)"
+        },
+        {
+          "number": 122,
+          "state": "MERGED",
+          "title": "fix(ucc-passkey-auth): replace dead local-fs audit-log with Redis primary store"
+        },
+        {
+          "number": 121,
+          "state": "MERGED",
+          "title": "fix(pm-flow): recover h-full on LegoBrick button (dangling commit from 2026-05-16)"
+        },
+        {
+          "number": 120,
+          "state": "MERGED",
+          "title": "chore(ucc-passkey-auth): doc-sync + UU1 coral-pulse CTA + UU2 dark-mode contrast verify"
+        },
+        {
+          "number": 119,
+          "state": "MERGED",
+          "title": "docs(glossary): add W10 stale-branch + GA4 access-binding entries"
+        },
+        {
+          "number": 118,
+          "state": "MERGED",
+          "title": "fix(ui): teal recovery + brick h-full + framework page floor count + dispatch skill count + SVG focus rings"
+        },
+        {
+          "number": 117,
+          "state": "MERGED",
+          "title": "fix(pm-flow + framework): brick stripe rounded corners + /framework page redesign"
+        },
+        {
+          "number": 116,
+          "state": "MERGED",
+          "title": "docs(glossary): 4 framework entries for v7.8.6 cadence surfaces + W1 ssh-agent"
+        },
+        {
+          "number": 115,
+          "state": "MERGED",
+          "title": "chore(gitignore): exclude Claude Code session artifacts"
+        },
+        {
+          "number": 114,
+          "state": "MERGED",
+          "title": "feat(pm-flow): register /brainstorm-pm as the 12th brick + mirror dev-guide skill-count sweep"
+        },
+        {
+          "number": 113,
+          "state": "MERGED",
+          "title": "docs: complete v7.8.6 mirror \u2014 dev-guide body + /pm-flow skills count + /control-room/skills"
+        },
+        {
+          "number": 112,
+          "state": "MERGED",
+          "title": "docs: mirror v7.8.6 \u2014 README + control-room + framework dev-guide"
+        },
+        {
+          "number": 111,
+          "state": "MERGED",
+          "title": "feat(control-room): /control-room/skills runtime sync (P1.2 follow-up to #110)"
+        },
+        {
+          "number": 110,
+          "state": "MERGED",
+          "title": "feat(control-room): /control-room/skills MVP \u2014 Skills Activity panel (P1.2)"
+        },
+        {
+          "number": 109,
+          "state": "MERGED",
+          "title": "docs(framework): sync /framework page to v7.8.5+S (skills-review execution)"
+        },
+        {
+          "number": 108,
+          "state": "MERGED",
+          "title": "feat(control-room): /control-room/analytics scaffold \u2014 Phase 3.A.1 (calibration-safe; fixtures during 2026-05-14 \u2192 06-04)"
+        },
+        {
+          "number": 107,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 2.A.4 \u2014 fitme-story web mirror function"
+        },
+        {
+          "number": 106,
+          "state": "MERGED",
+          "title": "docs(framework): v7.8.5 observability layer mirror \u2014 dev-guide + control-room + glossary"
+        },
+        {
+          "number": 105,
+          "state": "MERGED",
+          "title": "feat(analytics-observability): Phase 1.A.6 \u2014 add .env.example for fitme-story"
+        },
+        {
+          "number": 104,
+          "state": "MERGED",
+          "title": "chore(analytics): add @forward-declared JSDoc to design_system_* placeholder helpers"
+        },
+        {
+          "number": 103,
+          "state": "MERGED",
+          "title": "chore(3d-framework-universe): park canonical state.json at PRD waypoint"
+        },
+        {
+          "number": 102,
+          "state": "CLOSED",
+          "title": "chore(3d-framework-universe): park canonical state.json at PRD waypoint"
+        },
+        {
+          "number": 101,
+          "state": "MERGED",
+          "title": "docs(framework): mirror state.json research \u2192 prd for 3D Framework Universe"
+        },
+        {
+          "number": 100,
+          "state": "MERGED",
+          "title": "docs(framework-v7.8): bump dev-guide + control-room + README to v7.8.4 (combined v7.8.3+v7.8.4 doc-sync)"
+        },
+        {
+          "number": 99,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 33 \u2014 ui-ux-final-sweep-2026-05-12 showcase"
+        },
+        {
+          "number": 98,
+          "state": "MERGED",
+          "title": "feat(case-studies): v7.x browse-by-category section with accordion groups"
+        },
+        {
+          "number": 97,
+          "state": "MERGED",
+          "title": "feat(ds): final P2 sweep \u2014 Stat sentence/inline + heading scale"
+        },
+        {
+          "number": 96,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slots 31 + 32 (iOS P1 drift + fitme-story P2 final sweep)"
+        },
+        {
+          "number": 95,
+          "state": "MERGED",
+          "title": "feat(ds): 3 utility classes + 6 site migrations (5 P2s closed)"
+        },
+        {
+          "number": 94,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 30 \u2014 fitme-story-ds-p2-deferred showcase"
+        },
+        {
+          "number": 93,
+          "state": "MERGED",
+          "title": "feat(ds): Tag<muted> variant + /search badge migration (P2-044)"
+        },
+        {
+          "number": 92,
+          "state": "MERGED",
+          "title": "docs(v7.8.3): bump dev-guide to v7.8.3 + control-room footer with v7.8.1/v7.8.2/v7.8.3 entries"
+        },
+        {
+          "number": 91,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 29 \u2014 cross-repo-state-sync-impl showcase (v7.8.3)"
+        },
+        {
+          "number": 90,
+          "state": "MERGED",
+          "title": "chore(cutover): re-trigger reverse-sync workflow + log 2 prior attempts (Attempt 3)"
+        },
+        {
+          "number": 89,
+          "state": "MERGED",
+          "title": "fix(v7.8.3): reverse-sync workflow \u2014 move secret check from job if to step level"
+        },
+        {
+          "number": 88,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 4 cutover: first fitme-story-native state.json (3d-interactive-framework-flow-diagram)"
+        },
+        {
+          "number": 87,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 3 \u2014 D-1 reverse-sync GitHub Action"
+        },
+        {
+          "number": 86,
+          "state": "MERGED",
+          "title": "v7.8.3 Phase 1 C-4 \u2014 control-room cross-repo gate-coverage aggregator + sync extension"
+        },
+        {
+          "number": 85,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish slot 28 \u2014 ios-ui-audit-p1-burndown showcase"
+        },
+        {
+          "number": 84,
+          "state": "MERGED",
+          "title": "feat(design-system): P2 audit cleanup \u2014 Card\u00d75 + Stat\u00d71 + ExternalLink + divider class"
+        },
+        {
+          "number": 83,
+          "state": "MERGED",
+          "title": "fix: recover 5 lost commits from PR #82 (Card + Callout + Stat + reduced-motion + GA4 + TL;DR)"
+        },
+        {
+          "number": 82,
+          "state": "MERGED",
+          "title": "feat+fix: DS lens audit follow-ups \u2014 Card + Callout + Stat (BHF-1/2/4) + reduced-motion (BHF-3) + 2 P0 fixes + GA4 threshold + TL;DR"
+        },
+        {
+          "number": 81,
+          "state": "MERGED",
+          "title": "feat(design-system): website design system v1 \u2014 manifest + showcase Part 2 + drift detection + heritage"
+        },
+        {
+          "number": 80,
+          "state": "MERGED",
+          "title": "fix(code-connect): inline URLs + broaden include glob + drop unsupported figma.string props"
+        },
+        {
+          "number": 79,
+          "state": "MERGED",
+          "title": "feat(ci): T4 Layer C \u2014 figma-code-connect-publish workflow (fitme-story half)"
+        },
+        {
+          "number": 78,
+          "state": "MERGED",
+          "title": "feat(pm-flow): reflect Code Connect bridge + new docs in /pm-flow page"
+        },
+        {
+          "number": 77,
+          "state": "MERGED",
+          "title": "feat(scaffold): scripts/scaffold-figma-mapping.mjs \u2014 auto-gen .figma.tsx templates"
+        },
+        {
+          "number": 76,
+          "state": "MERGED",
+          "title": "chore(ci): codify case-study-audit as a CI gate"
+        },
+        {
+          "number": 75,
+          "state": "MERGED",
+          "title": "feat(public-site): T20 web Code Connect \u2014 17 component mappings"
+        },
+        {
+          "number": 74,
+          "state": "MERGED",
+          "title": "feat(sync): Phase C \u2014 extend forward sync to include Tier 2.2 feature logs"
+        },
+        {
+          "number": 73,
+          "state": "MERGED",
+          "title": "fix(public-site): align HADF version label to V7.0 across showcase + era logic"
+        },
+        {
+          "number": 72,
+          "state": "MERGED",
+          "title": "chore(framework): port v7.5 \u2192 v7.8.1 framework gates from FitTracker2"
+        },
+        {
+          "number": 71,
+          "state": "MERGED",
+          "title": "fix(public-site): T24 mobile-readiness pass \u2014 responsive type, grids, tap-targets"
+        },
+        {
+          "number": 70,
+          "state": "MERGED",
+          "title": "feat(public-site): site-wide search (T10 SEARCH-1)"
+        },
+        {
+          "number": 69,
+          "state": "MERGED",
+          "title": "docs(hadf-phase2): update showcase citation to squash SHA a4b357f"
+        },
+        {
+          "number": 68,
+          "state": "MERGED",
+          "title": "chore(ci): wire Vercel SSO bypass token into verify-blind-switch"
+        },
+        {
+          "number": 67,
+          "state": "MERGED",
+          "title": "chore(case-studies): frontmatter audit + backfill 5 to COMPLIANT_FULL + label 3 BARE_INTENTIONAL"
+        },
+        {
+          "number": 66,
+          "state": "MERGED",
+          "title": "feat(public-site): callout component family (T15 P-CALLOUTS)"
+        },
+        {
+          "number": 65,
+          "state": "MERGED",
+          "title": "feat(public-site): rehype-pretty-code syntax highlighting + CopyButton"
+        },
+        {
+          "number": 64,
+          "state": "MERGED",
+          "title": "docs(dev-guide): mirror v7.8.2 bump from FT2"
+        },
+        {
+          "number": 63,
+          "state": "MERGED",
+          "title": "feat(public-site): buildMetadata() helper + per-page OG/Twitter/canonical"
+        },
+        {
+          "number": 62,
+          "state": "MERGED",
+          "title": "feat(public-site): MobileNav hamburger drawer \u2014 closes V-004 P0"
+        },
+        {
+          "number": 61,
+          "state": "MERGED",
+          "title": "feat(case-study): ArticleNav sidebar \u2014 sticky TOC + scroll progress (re-do of #60)"
+        },
+        {
+          "number": 60,
+          "state": "MERGED",
+          "title": "feat(case-study): ArticleNav sidebar \u2014 sticky TOC + scroll progress"
+        },
+        {
+          "number": 59,
+          "state": "MERGED",
+          "title": "feat(public-site): a11y + readability quick-wins from 2026-05-08 audit"
+        },
+        {
+          "number": 58,
+          "state": "MERGED",
+          "title": "feat(case-studies): cross-corpus comparison table at /case-studies/compare"
+        },
+        {
+          "number": 57,
+          "state": "MERGED",
+          "title": "fix(case-studies): kill_criteria must be array of strings (Zod schema) \u2014 fixes prod build"
+        },
+        {
+          "number": 56,
+          "state": "MERGED",
+          "title": "docs(case-studies): publish ucc-passkey-auth showcase (slot 26)"
+        },
+        {
+          "number": 55,
+          "state": "MERGED",
+          "title": "feat(ucc-passkey-auth): WebAuthn passkeys replace basic-auth on /control-room/*"
+        },
+        {
+          "number": 54,
+          "state": "MERGED",
+          "title": "chore(ucc): resync src/data from FT2 main @ 0a0ec25 (v7.8.1)"
+        },
+        {
+          "number": 53,
+          "state": "MERGED",
+          "title": "docs(dev-guide): bump to v7.8.1 \u2014 branch isolation + closure completeness gates"
+        },
+        {
+          "number": 52,
+          "state": "MERGED",
+          "title": "docs(dev-guide): bump to v7.8 + lifecycle-catalog companion"
+        },
+        {
+          "number": 51,
+          "state": "MERGED",
+          "title": "chore(case-studies): publish push-notifications-v2 showcase"
+        },
+        {
+          "number": 50,
+          "state": "MERGED",
+          "title": "chore(case-studies): publish import-training-plan showcase at slot 23b"
+        },
+        {
+          "number": 49,
+          "state": "MERGED",
+          "title": "feat(case-studies): order list rows by publication date"
+        },
+        {
+          "number": 48,
+          "state": "MERGED",
+          "title": "chore(skills): reflect FT2 v4.X skill-layer upgrade \u2014 preflight + auto Figma + pre-merge"
+        },
+        {
+          "number": 47,
+          "state": "MERGED",
+          "title": "Install Vercel Speed Insights"
+        },
+        {
+          "number": 46,
+          "state": "MERGED",
+          "title": "feat(dispatch-replay): add v7.7 + UCC traces, exercise floors 7-8"
+        },
+        {
+          "number": 45,
+          "state": "MERGED",
+          "title": "revert: blueprint-overlay activeAsOf (wrong direction)"
+        },
+        {
+          "number": 44,
+          "state": "MERGED",
+          "title": "feat(blueprint-overlay): dim post-feature floors via activeAsOf"
+        },
+        {
+          "number": 43,
+          "state": "MERGED",
+          "title": "fix(case-studies): strip duplicate body H1 from 32 MDX files (site-wide)"
+        },
+        {
+          "number": 42,
+          "state": "MERGED",
+          "title": "fix(case-study): remove duplicate H1 + TL;DR from UCC showcase"
+        },
+        {
+          "number": 41,
+          "state": "MERGED",
+          "title": "docs(case-study): publish UCC showcase at slot 23a (formal feature close)"
+        },
+        {
+          "number": 40,
+          "state": "MERGED",
+          "title": "feat(control-room): Kanban feature cards clickable \u2192 PRD on GitHub"
+        },
+        {
+          "number": 39,
+          "state": "MERGED",
+          "title": "fix(control-room): sync integrity snapshots + read ledgers from synced data (Framework Health page now populates)"
+        },
+        {
+          "number": 38,
+          "state": "MERGED",
+          "title": "fix(showcase): Control Center nav opens in new tab, no prefetch (auth dialog only on click)"
+        },
+        {
+          "number": 37,
+          "state": "MERGED",
+          "title": "feat(showcase): add Control Center nav link"
+        },
+        {
+          "number": 36,
+          "state": "MERGED",
+          "title": "test(control-room): analytics unit tests (UCC T38)"
+        },
+        {
+          "number": 35,
+          "state": "MERGED",
+          "title": "feat(control-room): T36 Phase 2 \u2014 wire 5 remaining GA4 events"
+        },
+        {
+          "number": 34,
+          "state": "MERGED",
+          "title": "fix(build): replace new URL('.', import.meta.url) with fileURLToPath (unblocks PR #29)"
+        },
+        {
+          "number": 33,
+          "state": "MERGED",
+          "title": "feat(control-room): GA4 analytics helper + page-load tracking (UCC T36 \u2014 Phase 1)"
+        },
+        {
+          "number": 32,
+          "state": "MERGED",
+          "title": "feat(control-room): Cmd+K command palette (UCC T30.5)"
+        },
+        {
+          "number": 31,
+          "state": "MERGED",
+          "title": "feat(control-room): table sort + search + view persistence (UCC T30)"
+        },
+        {
+          "number": 30,
+          "state": "MERGED",
+          "title": "feat(control-room): port DependencyGraph \u2192 TaskTree (UCC T29)"
+        },
+        {
+          "number": 29,
+          "state": "MERGED",
+          "title": "feat(control-room): port TaskBoard \u2192 /tasks (UCC T26)"
+        },
+        {
+          "number": 28,
+          "state": "MERGED",
+          "title": "feat(control-room): freshness footer + phase legend/activity + case-studies nav (UCC T25/T27/T28)"
+        },
+        {
+          "number": 27,
+          "state": "MERGED",
+          "title": "feat(control-room): port Wave 2 supporting components (UCC T24)"
+        },
+        {
+          "number": 26,
+          "state": "MERGED",
+          "title": "feat(control-room): port KnowledgeHub \u2192 /knowledge (UCC T23)"
+        },
+        {
+          "number": 25,
+          "state": "MERGED",
+          "title": "feat(control-room): port TableView \u2192 /table (UCC T22)"
+        },
+        {
+          "number": 24,
+          "state": "MERGED",
+          "title": "feat(control-room): port KanbanBoard \u2192 /board (UCC T21)"
+        },
+        {
+          "number": 23,
+          "state": "MERGED",
+          "title": "feat(control-room): T20 \u2014 port ControlRoom Hero + NumbersPanel \u2192 page.tsx"
+        },
+        {
+          "number": 22,
+          "state": "MERGED",
+          "title": "feat(control-room): T18 \u2014 port Dashboard.jsx \u2192 layout.tsx (full chrome)"
+        },
+        {
+          "number": 21,
+          "state": "MERGED",
+          "title": "feat(control-room): T19 \u2014 port controlCenterPrimitives \u2192 primitives.tsx (TypeScript)"
+        },
+        {
+          "number": 20,
+          "state": "MERGED",
+          "title": "feat(control-room): UCC T31/T32/T33/T39/T41 port (cherry-pick from feat/unified-control-center)"
+        },
+        {
+          "number": 19,
+          "state": "MERGED",
+          "title": "docs(case-studies): publish 6 missing showcase MDXs (publication-rule closure)"
+        },
+        {
+          "number": 18,
+          "state": "MERGED",
+          "title": "docs(case-studies): publish 6 missing showcases (publication-rule closure)"
+        },
+        {
+          "number": 16,
+          "state": "MERGED",
+          "title": "docs(framework): add Floor 8 (v7.8 Bridge to v7.9) to /framework page"
+        },
+        {
+          "number": 15,
+          "state": "MERGED",
+          "title": "feat(control-room): T19 v7.8 Mechanism F membrane-status panel"
+        },
+        {
+          "number": 14,
+          "state": "MERGED",
+          "title": "docs(framework): add Floor 7 (v7.7 Validity Closure) to /framework page"
+        },
+        {
+          "number": 13,
+          "state": "MERGED",
+          "title": "docs(case-studies): v7.8 bridge showcase (slot 23)"
+        },
+        {
+          "number": 12,
+          "state": "MERGED",
+          "title": "feat(case-studies): catalog redesign \u2014 era sublists + dedicated meta-analysis section"
+        },
+        {
+          "number": 11,
+          "state": "MERGED",
+          "title": "docs(case-study): publish 22b HADF Phase 2 cloud fingerprinting"
+        },
+        {
+          "number": 10,
+          "state": "MERGED",
+          "title": "docs(case-study): publish 22a framework honesty fixes (v7.7 expansion)"
+        },
+        {
+          "number": 9,
+          "state": "MERGED",
+          "title": "feat(case-studies): publish smart-reminders showcase at slot 23"
+        },
+        {
+          "number": 8,
+          "state": "MERGED",
+          "title": "feat(case-study): site-wide rollout of locked Alt A chrome + per-case visual aid"
+        },
+        {
+          "number": 7,
+          "state": "MERGED",
+          "title": "v7.7 PR-7: framework-health dashboard at /control-room/framework"
+        },
+        {
+          "number": 6,
+          "state": "MERGED",
+          "title": "feat(case-studies): visuals for 7 prose-heavy studies \u2014 AuditFunnel + RaceTimeline + PRStackDiagram"
+        },
+        {
+          "number": 5,
+          "state": "MERGED",
+          "title": "feat(pm-flow): work-item pill toggle + concentric dual-ring feedback"
+        },
+        {
+          "number": 4,
+          "state": "MERGED",
+          "title": "feat(design-system): 'Under the hood' \u2014 tokens + components + pipeline read-more"
+        },
+        {
+          "number": 3,
+          "state": "MERGED",
+          "title": "feat(mdx): <DevDive> callout component + purge of \u2699\ufe0f from case studies"
+        },
+        {
+          "number": 2,
+          "state": "MERGED",
+          "title": "content: port case study 14 (framework-story-site) from showcase"
+        },
+        {
+          "number": 1,
+          "state": "MERGED",
+          "title": "feat(analytics): wire GA4 via @next/third-parties"
+        }
+      ]
+    }
+  }
+}
