@@ -48,7 +48,25 @@
       "tasks_done_in_pr_383": ["T9"],
       "tasks_done_in_pr_387": ["T7", "T8"],
       "tasks_pending": ["T6"],
-      "t6_resume_plan_2026_05_18": {
+      "t6_blocker_2026_05_19": {
+        "discovered_at": "2026-05-19T12:35:00Z",
+        "symptom": "Vercel Blob URL https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl returns HTTP 404 after 2 full daily cron windows (2026-05-18 + 2026-05-19).",
+        "cascade": "FT2 ucc-audit-log-sync.yml workflow fails daily since 2026-05-18T08:53Z with `curl: (22) The requested URL returned error: 404`. The workflow itself is correctly configured (UCC_AUDIT_BLOB_URL set per T7); the upstream Vercel Cron at fitme-story is not populating the blob.",
+        "likely_causes": [
+          "Operator sign-in to seed Redis (per original resume plan) did not write events, OR",
+          "fitme-story Vercel Cron /api/cron/sync-audit-log is failing silently (Redis read error / blob write error / env var missing on Vercel)",
+          "Cron is firing but Redis is empty → writes empty array → blob put fails or is rejected"
+        ],
+        "debug_path": [
+          "1. Verify CRON_SECRET is set in fitme-story Vercel production env",
+          "2. Manually invoke: curl -H 'Authorization: Bearer $CRON_SECRET' https://fitme-story.vercel.app/api/cron/sync-audit-log — inspect response.synced count + response.url",
+          "3. If synced=0: Redis is empty → operator must sign in at /control-room/sign-in to seed events",
+          "4. If response 5xx or error: read Vercel runtime logs for the cron route via Vercel MCP",
+          "5. Once blob exists (HEAD returns 200): re-trigger FT2 workflow_dispatch on ucc-audit-log-sync.yml"
+        ],
+        "calibration_window_safety": "All debug steps above are HTTP calls + Vercel env-var checks — no infra-glob commits. Safe during 2026-05-15 → 2026-05-21 calibration window."
+      },
+      "t6_resume_plan_2026_05_18_SUPERSEDED": {
         "trigger": "Natural Vercel cron fires daily at 05:13 UTC; GHA ucc-audit-log-sync.yml fires at 05:17 UTC (now wired with UCC_AUDIT_BLOB_URL per T7 close 2026-05-17T14:05:50Z; workflow self-activates when the blob exists).",
         "operator_action_today": "Sign in once at https://fitme-story.vercel.app/control-room/sign-in to populate Redis with 3 audit events (auth_passkey_authenticate_started + auth_passkey_authenticate_succeeded + auth_session_minted).",
         "resume_check_time_utc": "2026-05-18T05:30:00Z (08:30 IDT)",
@@ -193,6 +211,7 @@
       "effort_days": 0.02,
       "depends_on": ["T6"],
       "completed_at": "2026-05-17T14:05:50Z",
+      "completed_via_pr": 387,
       "completed_note": "Wired preemptively ahead of T6 because the blob URL is deterministic from the Vercel Blob store ID (store_Wbm976bbAd3TvK2o → https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl). The FT2 ucc-audit-log-sync.yml workflow short-circuits cleanly on 404, so setting the variable now is safe; it auto-activates the moment the next Vercel Cron (05:13 UTC) populates the blob. The workflow_dispatch verification still waits on T6 (cron must produce a real blob first).",
       "note": "gh variable set UCC_AUDIT_BLOB_URL --body '<url-from-T6>' --repo Regevba/FitTracker2. Trigger ucc-audit-log-sync.yml via workflow_dispatch to verify FT2 syncs the blob to .claude/logs/ucc-auth-events.jsonl."
     },
@@ -202,7 +221,10 @@
       "type": "docs",
       "skill": "release",
       "lane": "e-core",
-      "status": "pending",
+      "status": "done",
+      "completed_at": "2026-05-17T16:28:51Z",
+      "completed_via_pr": 387,
+      "completed_note": "Confirmed 2026-05-19 audit: parent state.json::rollout_status.parts_shipped contains 'Part 9 wired UCC_AUDIT_BLOB_URL on FT2 (2026-05-17T14:05:50Z…)'. Part 9 reconciled as shipped per PR #387 title.",
       "priority": "high",
       "effort_days": 0.02,
       "depends_on": ["T7"],
@@ -214,7 +236,10 @@
       "type": "docs",
       "skill": "research",
       "lane": "e-core",
-      "status": "pending",
+      "status": "done",
+      "completed_at": "2026-05-17T16:28:51Z",
+      "completed_via_pr": 387,
+      "completed_note": "Confirmed 2026-05-19 audit: parent case study at docs/case-studies/ucc-passkey-auth-case-study.md line 203 has `## §99 Resolution log (post-launch)` section. Per PR #387 title, this includes the Redis fix W-pattern entry.",
       "priority": "high",
       "effort_days": 0.1,
       "depends_on": ["T7"],
@@ -222,6 +247,11 @@
       "note": "Honest disclosure: feature shipped 2026-05-07 with broken persistence; bug discovered 2026-05-17 during B7 wiring; fix lands as in-band enhancement. Frame as v7.8.5 W-pattern (filesystem-ephemerality on Vercel serverless)."
     }
   ],
+  "audit_2026_05_19": {
+    "reviewed_at": "2026-05-19T12:35:00Z",
+    "reviewer": "operator-via-Claude session",
+    "finding": "T7, T8, T9 already done via PR #387 (squash 31ea322, merged 2026-05-17T16:28:51Z); state.json T7/T8/T9 entries were stale. T6 verification (blob exists at deterministic URL) is genuinely pending — 2 full Vercel cron windows have passed since the 2026-05-17 implementation without populating the blob. See implementation.t6_blocker_2026_05_19 for diagnosis. Closure of this enhancement awaits T6 resolution + transition through testing/review/merge phases."
+  },
   "case_study": "docs/case-studies/ucc-passkey-auth-case-study.md",
   "predecessor_chain": ["ucc-passkey-auth", "auth-polish-v2"],
   "cache_hits": [],
