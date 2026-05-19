@@ -66,6 +66,34 @@
         ],
         "calibration_window_safety": "All debug steps above are HTTP calls + Vercel env-var checks — no infra-glob commits. Safe during 2026-05-15 → 2026-05-21 calibration window."
       },
+      "t6_diagnosis_2026_05_19_via_vercel_mcp": {
+        "diagnosed_at": "2026-05-19T13:00:00Z",
+        "method": "Vercel MCP get_runtime_logs over 24h + 7d windows",
+        "confirmed_state": [
+          "Cron route is correctly deployed: HEAD /api/cron/sync-audit-log returns 401 (route exists, auth-protected)",
+          "Cron is registered in vercel.json: /api/cron/sync-audit-log at schedule '13 5 * * *'",
+          "Latest production deployment dpl_DBt2M3xZCuzSyPpj3QSCnuJ5NCPN (2026-05-19) is READY",
+          "ZERO cron fire log entries in last 24h (and 7d); only logs are 1 HEAD probe (my own) + 1 random page view"
+        ],
+        "root_cause": "Vercel Cron is not triggering the route at 05:13 UTC. Function deployment is healthy; cron registration is valid; but scheduled invocations are not occurring.",
+        "likely_causes_ranked": [
+          "1. Vercel Hobby plan cron not auto-activated — some Hobby crons require explicit enable in dashboard /cron-jobs UI",
+          "2. Vercel-side cron infrastructure stall (silent fire-failure that doesn't surface in runtime logs)",
+          "3. Cron deployment desync — vercel.json changed but Vercel-side cron registration didn't update"
+        ],
+        "recommended_operator_action": [
+          "1. Open https://vercel.com/regevba-3729s-projects/fitme-story/cron-jobs",
+          "2. Check 'Last invoked' timestamp for /api/cron/sync-audit-log — if 'Never' or older than 2026-05-15, cron is stalled",
+          "3. If there's an 'Enable' or 'Resume' button → click it. If not, redeploy fitme-story (push no-op commit to main) to refresh cron registration",
+          "4. After redeploy: wait for next 05:13 UTC fire (≤24h) OR have operator sign in at /control-room/sign-in to seed Redis"
+        ],
+        "post_fix_validation": [
+          "curl -I https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl — expect 200 after first successful cron fire",
+          "gh run list --repo Regevba/FitTracker2 --workflow ucc-audit-log-sync.yml --limit 1 — expect conclusion=success",
+          "cat .claude/logs/ucc-auth-events.jsonl in FT2 main after next FT2 GHA fire — expect ≥3 events"
+        ],
+        "alternative_quick_fix_path": "Skip cron entirely: change the Vercel route to be invoked directly by the FT2 GHA workflow with CRON_SECRET. FT2 GHA already runs daily; making it the PRIMARY trigger removes Vercel-Cron dependency. Would require: (a) GH secret CRON_SECRET set on FT2 repo, (b) FT2 workflow modified to POST to /api/cron/sync-audit-log with Bearer auth before fetching the blob. ~30 min, infra-glob touch — defer to 2026-05-22+."
+      },
       "t6_resume_plan_2026_05_18_SUPERSEDED": {
         "trigger": "Natural Vercel cron fires daily at 05:13 UTC; GHA ucc-audit-log-sync.yml fires at 05:17 UTC (now wired with UCC_AUDIT_BLOB_URL per T7 close 2026-05-17T14:05:50Z; workflow self-activates when the blob exists).",
         "operator_action_today": "Sign in once at https://fitme-story.vercel.app/control-room/sign-in to populate Redis with 3 audit events (auth_passkey_authenticate_started + auth_passkey_authenticate_succeeded + auth_session_minted).",
