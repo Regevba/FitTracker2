@@ -5,10 +5,15 @@
   "current_phase": "prd",
   "paused": true,
   "paused_at": "2026-05-13T15:30:00Z",
-  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Operator decision 2026-05-13: ship analytics-observability feature first to clear measurement debt (56 missing CSV rows + 4 unfired events + GA4 MCP disconnected) before 2026-05-21 v7.9 promotion decision. Resume signal fires when analytics-observability current_phase=complete. Decision-trail: FT2 docs/master-plan/analytics-observability-decisions-log-2026-05-13.md.",
+  "paused_reason_updated_2026_05_19": "Operator decision 2026-05-19: feature does NOT progress beyond Phase 1 PRD-draft state until v7.9 \u2192 v7.9.1 is fully finished (v7.9 promotion 2026-05-21 + v7.9.1 follow-up cycle complete, expected ~2026-06-04 Phase E end). Supersedes the prior `analytics-observability phase=complete` gate. Even PRD approval (Phase 1 \u2192 Phase 2 transition) waits for v7.9.1 closure. Rationale: avoid contamination of v7.9 calibration data + ensure framework substrate is fully shipped before adding a v7.8.3-state_owner=fitme-story flagship UI feature that depends on cross-repo sync stability.",
+  "paused_reason": "Deliberate park at Phase 1 PRD natural waypoint (PRD authored, awaiting approval). Original 2026-05-13 reason: ship analytics-observability feature first to clear measurement debt (56 missing CSV rows + 4 unfired events + GA4 MCP disconnected) before 2026-05-21 v7.9 promotion decision. SUPERSEDED 2026-05-19 \u2014 see paused_reason_updated_2026_05_19.",
   "scheduled_after": {
-    "signal": "analytics-observability phase=complete",
-    "trigger_action": "resume Phase 1 \u2192 Phase 2 (Tasks) approval gate; 600-line PRD already drafted at prd.md"
+    "signal": "v7.9 promotion (2026-05-21) AND v7.9.1 follow-up cycle complete",
+    "earliest_resume_window": "~2026-06-04 (end of v7.9 Phase E per calibration protocol)",
+    "trigger_action": "after v7.9.1 closes, re-open Phase 1 PRD-approval gate; 600-line PRD draft at prd.md still valid as starting point",
+    "previous_signal_2026_05_13": "analytics-observability phase=complete",
+    "previous_signal_superseded_at": "2026-05-19T12:38:00Z",
+    "previous_signal_superseded_reason": "operator preference 2026-05-19 to defer entire feature behind v7.9.1 finish; prevents Phase 2-3 work (tasks + UX) overlap with v7.9 calibration + post-promotion validation windows"
   },
   "work_type": "Feature",
   "has_ui": true,
@@ -19,7 +24,7 @@
   "scope": "fitme-story public-site enhancement; third flagship visual alongside DispatchReplay + LifecycleLoop; 3D interactive framework flow diagram (\"Framework Universe\") via React Three Fiber + Drei + Theatre.js + hybrid procedural-shell + glTF hero pieces",
   "phase_4_cutover_role": "First fitme-story-native feature; serves as the v7.8.3 framework certification round-trip per FT2 spec docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md \u00a76.5",
   "public_name": "Framework Universe",
-  "launch_window": "Track A: PRD/Tasks/UX during v7.9 Phase E (2026-05-21 \u2192 06-04); implement parallel to v7.9.1; ship before v8.0 build window opens 2026-06-18",
+  "launch_window": "Track A (SUPERSEDED 2026-05-19): originally `PRD/Tasks/UX during v7.9 Phase E (2026-05-21 \u2192 06-04); implement parallel to v7.9.1; ship before v8.0 build window opens 2026-06-18`. New launch window per 2026-05-19 operator decision: PRD/Tasks/UX/Implementation ALL wait until v7.9.1 ships (~2026-06-04). Ship target remains pre-2026-06-18 v8.0 window but compressed timeline accepted as trade-off for v7.9 calibration purity.",
   "phases": {
     "research": {
       "status": "approved",
