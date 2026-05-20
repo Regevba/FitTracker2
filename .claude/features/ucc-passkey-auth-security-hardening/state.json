@@ -5,10 +5,10 @@
   "parent_feature": "ucc-passkey-auth",
   "framework_version": "v7.8.6",
   "created_at": "2026-05-19T14:30:00Z",
-  "updated": "2026-05-20T03:25:26Z",
-  "branch": "feat/ucc-passkey-security-hardening",
+  "updated": "2026-05-20T04:50:12Z",
+  "branch": "docs/ucc-hardening-post-merge-2026-05-20",
   "state_owner": "ft2",
-  "current_phase": "implementation",
+  "current_phase": "documentation",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": false,
@@ -65,27 +65,34 @@
       "skip_reason": "work_type:enhancement (backend + CLI only, no UI changes)"
     },
     "implementation": {
-      "status": "in_progress",
-      "commits": []
+      "status": "approved",
+      "commits": [
+        "9ec248b \u2014 fitme-story PR #127"
+      ],
+      "approved_at": "2026-05-20T04:50:12Z"
     },
     "testing": {
-      "status": "pending",
-      "ci_passed": false,
-      "tests_added": 0,
-      "instrumentation_verified": false
+      "status": "approved",
+      "ci_passed": true,
+      "tests_added": 17,
+      "instrumentation_verified": true,
+      "approved_at": "2026-05-20T04:50:12Z"
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
       "risks": [],
       "ci_main": false,
-      "ci_feature": false
+      "ci_feature": false,
+      "approved_at": "2026-05-20T04:50:12Z"
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null
+      "status": "approved",
+      "pr_number": 127,
+      "approved_at": "2026-05-20T04:50:12Z",
+      "pr_repo": "Regevba/fitme-story"
     },
     "documentation": {
-      "status": "pending"
+      "status": "in_progress"
     }
   },
   "problem_statement": "The UCC passkey auth system shipped 2026-05-07 and cut over to UCC_AUTH_MODE=both on 2026-05-16. Production state at 2026-05-19 audit (verified via Upstash SCAN): 1 operator, 1 credential. Four parent-PRD gaps remain unclosed: (G1) no code-level lock against registering a 2nd operator email beyond bootstrap-token gating; (G2) no env-var allowlist of permitted operator emails \u2014 the system depends entirely on operational discipline around UCC_BOOTSTRAP_ADMIN_TOKEN secrecy; (G3) no rate limiting or lockout after N failed authentications \u2014 parent PRD \u00a77 Q2 deferred to T+7d; (G4) bootstrap-token issuance has no audit trail (only consumption is logged). The T+7d kill-criteria checkpoint at 2026-05-23 will evaluate cutover success; hardening must be live before then so the checkpoint reflects production posture, not cutover-day posture.",
@@ -593,7 +600,19 @@
       },
       "implementation": {
         "started_at": "2026-05-20T03:25:26Z",
-        "ended_at": null
+        "ended_at": "2026-05-20T04:50:12Z"
+      },
+      "testing": {
+        "ended_at": "2026-05-20T04:50:12Z"
+      },
+      "review": {
+        "ended_at": "2026-05-20T04:50:12Z"
+      },
+      "merge": {
+        "ended_at": "2026-05-20T04:50:12Z"
+      },
+      "documentation": {
+        "started_at": "2026-05-20T04:50:12Z"
       }
     }
   },
@@ -604,6 +623,13 @@
       "timestamp": "2026-05-20T03:25:26Z",
       "approved_by": "user",
       "note": "Phase 2 (Tasks) complete; advancing to Phase 3 (Implementation). User approval recorded 2026-05-20."
+    },
+    {
+      "from": "implementation",
+      "to": "documentation",
+      "timestamp": "2026-05-20T04:50:12Z",
+      "approved_by": "user",
+      "note": "Bulk-advance implementation\u2192testing\u2192review\u2192merge\u2192documentation. fitme-story PR #127 merged 2026-05-20T03:53Z (the code). FT2 PRs #410 (Phase 0/1/2 prep) + #412 (Phase 3 advance) merged. T20 partial-live verify done (S2+S3 live; S4-S6 unit-test-covered). Awaiting T+7d kill-criteria checkpoint 2026-05-27 to advance documentation\u2192complete."
     }
   ]
 }

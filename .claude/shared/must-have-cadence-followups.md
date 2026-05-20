@@ -20,6 +20,8 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
 | ~~B10~~ | ~~2026-05-21~~ | ~~Audit substrate spec §12 OQ #1 — decide `docs/audits/runs/<date>/bundle.md` commit policy~~ **Closed 2026-05-19: commit per-run artifacts (bundle.md + manifest + redaction-log) for public reproducibility; shipped via PR #405 update** | operator | [`docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`](../../docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md) §12 OQ #1 |
+| B11 | **2026-05-22** | UCC hardening T+3d calibration window check — `auth_lockout_*` counts should be 0, no `email_not_allowlisted` for `regvash21@gmail.com`, sign-in p50 latency Δ ≤+5ms | operator | [`docs/superpowers/specs/2026-05-19-ucc-passkey-security-hardening-design.md`](../../docs/superpowers/specs/2026-05-19-ucc-passkey-security-hardening-design.md) §11 |
+| B12 | **2026-05-27** | UCC hardening T+7d kill-criteria evaluation — populate `kill_criteria_resolution` in case study §4 + frontmatter; decide PROMOTE / RECALIBRATE / ROLLBACK | operator | [`docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md`](../../docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md) §4 + §99 |
 
 ### B1 — v7.9 promotion-decision data freeze (2026-05-21)
 
