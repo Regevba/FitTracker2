@@ -202,6 +202,27 @@ Total measured wall time: **~115 minutes** [T1] (Tier 2.2 instrumented; not a st
 
 ## §99 Resolution log (post-launch)
 
+### 2026-05-20 — UU4 (Figma Code Connect mapping) reconciliation — partial-ship
+
+State reconciliation: the `ucc-sign-in-figma-mapping` enhancement (UU4 on this feature) reported tasks T2-T11 as not-started, but live Figma inspection on 2026-05-18 and code inspection on 2026-05-20 confirmed **8 of 11 tasks are actually shipped**. The state was updated to reflect reality + partial-blocker on remaining work.
+
+| Stream | Status | Detail |
+|---|---|---|
+| **T2 — Figma page frames for `/control-room/sign-in`** | ✅ done | 6 variant frames at `31:3` (idle/mobile), `31:19` (idle/desktop), `31:35`, `31:51`, `31:67`, `31:86` |
+| **T3 — Figma page frames for `/control-room/sign-in/recover`** | ✅ done | 6 variant frames at `31:106+` |
+| **T4 — AuthPasskeyForm 10 component variants** | ⏸ partial-blocked | Component-set scaffold at `30:61` exists with 10 variant placeholders, but variants are empty 360×10 stubs. Requires dedicated Figma write session per the build spec at [`docs/prompts/ui/2026-05-18-ucc-sign-in-figma-mapping-design-build.md`](../prompts/ui/2026-05-18-ucc-sign-in-figma-mapping-design-build.md). Deferred to post-2026-05-21 v7.9 freeze. |
+| **T5 — `.figma.tsx` for AuthPasskeyForm** | ✅ done | [`src/components/control-room/AuthPasskeyForm.figma.tsx`](https://github.com/Regevba/fitme-story/blob/main/src/components/control-room/AuthPasskeyForm.figma.tsx) → node `30:61` with `figma.enum('mode', { authenticate, register })`. Validates correctly in CI. |
+| **T6 — `.figma.tsx` for `/sign-in` page** | ✅ done (with CI block) | [`src/app/control-room/sign-in/page.figma.tsx`](https://github.com/Regevba/fitme-story/blob/main/src/app/control-room/sign-in/page.figma.tsx) → node `31:3`. Currently fails `figma-code-connect-publish.yml` validation: "corresponding node is not a component or component set". Page frames must be Figma component-sets to validate; unblocks with T4. |
+| **T7 — `.figma.tsx` for `/recover` page** | ✅ done (with CI block) | Same as T6 — file shipped pointing at `31:106`; validation unblocks with T4. |
+| **T8 — design-system manifest update** | ⏭ skipped | Not applicable — `src/data/shared/design-system.json` is for public DS components only (4 total). AuthPasskeyForm + sign-in pages are control-room internals. |
+| **T9 — Parent `figma_node_ids` + `figma_build_status`** | ✅ done (2026-05-20) | This feature's `state.json::figma_node_ids` populated with 13 captured IDs; `figma_build_status` updated from `deferred_to_prompt` → `partial` with note explaining the T4 dependency. |
+| **T10 — figma-code-connect-publish CI green** | ⏸ blocked | Same root cause as T4 — page frames need component-ization in Figma. AuthPasskeyForm mapping itself validates; only page-level mappings fail. |
+| **T11 — §99 closeout** | ✅ done | This entry. |
+
+**Net delta:** Figma side is partial; Code Connect mappings shipped + validated for AuthPasskeyForm; page-level mappings shipped but blocked on Figma frame conversion. CI failure is bounded and documented. Post-v7.9-freeze priorities: T4 dedicated Figma session → unblocks T10 → green CI.
+
+**Cross-ref:** [`ucc-sign-in-figma-mapping/state.json`](../../.claude/features/ucc-sign-in-figma-mapping/state.json) for task-level detail; [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) W14 (new — Code Connect page-frame validation; documented in this PR).
+
 ### 2026-05-16 — Cutover Parts 1-6 executed; T+7d clock starts
 
 **Shipped on the day (chronological):**
