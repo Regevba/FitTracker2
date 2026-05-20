@@ -1,0 +1,595 @@
+{
+  "feature": "ucc-passkey-auth-security-hardening",
+  "display_name": "UCC passkey-auth \u2014 security hardening (allowlist + lockout + issuance audit)",
+  "work_type": "enhancement",
+  "parent_feature": "ucc-passkey-auth",
+  "framework_version": "v7.8.6",
+  "created_at": "2026-05-19T14:30:00Z",
+  "updated": "2026-05-19T20:01:44Z",
+  "branch": "feat/ucc-passkey-security-hardening",
+  "state_owner": "ft2",
+  "current_phase": "tasks",
+  "has_ui": false,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "dispatch_pattern": "serial",
+  "case_study_type": "feature_case_study",
+  "phases": {
+    "research": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement",
+      "note": "Research inherited from parent ucc-passkey-auth feature. Threat model + security audit lives in companion risk-assessment sub-plan at docs/master-plan/ucc-passkey-security-hardening-risk-assessment-2026-05-19.md \u00a72."
+    },
+    "prd": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement",
+      "note": "PRD inherited from parent ucc-passkey-auth \u00a77 Q1 + Q2. Delta scope + success_metrics + kill_criteria captured directly in this state.json. Technical authority: docs/superpowers/specs/2026-05-19-ucc-passkey-security-hardening-design.md. Operational authority: docs/master-plan/ucc-passkey-security-hardening-risk-assessment-2026-05-19.md."
+    },
+    "tasks": {
+      "status": "in_progress",
+      "started_at": "2026-05-19T14:30:00Z",
+      "paused_at": "2026-05-19T15:00:00Z",
+      "pause_reason": "Operator requested save + end session after design + sub-plan + state.json scaffolded. Implementation plan not yet generated.",
+      "note": "Spec + risk sub-plan + state.json (with embedded delta-PRD) written 2026-05-19. Internal-storage snapshot at ~/Documents/FitTracker2-backups/2026-05-19-ucc-passkey-security-hardening-docs/ with sha256-verified CHECKSUMS. Resume: see resume_plan_2026_05_19 below.",
+      "resume_plan_2026_05_19": {
+        "calendar_pressure": "MUST merge by 2026-05-20 EOD to beat v7.9 freeze (2026-05-21). T+7d UCC checkpoint 2026-05-23. Part 7 YubiKey \u2264 2026-05-28.",
+        "next_steps": [
+          "1. Re-load this state.json + read docs/superpowers/specs/2026-05-19-ucc-passkey-security-hardening-design.md + docs/master-plan/ucc-passkey-security-hardening-risk-assessment-2026-05-19.md",
+          "2. Confirm 3 open questions with operator: (a) lockout fail-open vs fail-closed for Redis errors, (b) need for UCC_LOCKOUT_DISABLED kill-switch, (c) any other spec edits",
+          "3. Invoke superpowers:writing-plans skill to generate task list \u2014 output to docs/superpowers/plans/2026-05-19-ucc-passkey-security-hardening.md",
+          "4. Backfill tasks[] in this state.json once plan approved",
+          "5. Create feature branches: FT2 feat/ucc-passkey-security-hardening + fitme-story feat/ucc-passkey-security-hardening",
+          "6. Stash or commit the 5 unrelated .claude/shared/* + docs/research/* WIP changes on feat/audit-prompt-substrate BEFORE switching branches (current FT2 branch has them dirty in working tree)",
+          "7. Set .claude/active-feature = ucc-passkey-auth-security-hardening (Mechanism C attribution)",
+          "8. Implement per plan (allowlist.ts + redis-lockout.ts + audit-event taxonomy + CLI script changes + tests)",
+          "9. Set UCC_ALLOWED_EMAILS=regvash21@gmail.com in Vercel production BEFORE merge",
+          "10. PRs: FT2 docs PR first, then fitme-story code PR; sequential merge"
+        ],
+        "verification_at_resume": [
+          "ls ~/Documents/FitTracker2-backups/2026-05-19-ucc-passkey-security-hardening-docs/  \u2192 expect MANIFEST.md + CHECKSUMS.sha256 + 3 docs",
+          "cd ~/Documents/FitTracker2-backups/2026-05-19-ucc-passkey-security-hardening-docs/ && shasum -a 256 -c CHECKSUMS.sha256  \u2192 expect 3 OK",
+          "git -C /Volumes/DevSSD/FitTracker2 status  \u2192 expect existing dirty state + the 3 new docs untracked",
+          "Run `make integrity-check` once on feature branch \u2014 should be 0 enforced findings (the new state.json carries valid v7.8.6 schema)"
+        ],
+        "open_questions_for_operator": [
+          "Spec \u00a74.5 \u2014 lockout fail-open on Redis error: keep as designed (Redis hiccup doesn't lock you out) OR change to fail-closed?",
+          "Sub-plan \u00a74.5 \u2014 no env-var bypass for lockout module (revert-the-commit only). Want me to add a UCC_LOCKOUT_DISABLED=1 kill switch?",
+          "Anything else to edit before writing-plans runs?"
+        ]
+      },
+      "count": 26
+    },
+    "ux_or_integration": {
+      "status": "skipped",
+      "skip_reason": "work_type:enhancement (backend + CLI only, no UI changes)"
+    },
+    "implementation": {
+      "status": "pending"
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null
+    },
+    "documentation": {
+      "status": "pending"
+    }
+  },
+  "problem_statement": "The UCC passkey auth system shipped 2026-05-07 and cut over to UCC_AUTH_MODE=both on 2026-05-16. Production state at 2026-05-19 audit (verified via Upstash SCAN): 1 operator, 1 credential. Four parent-PRD gaps remain unclosed: (G1) no code-level lock against registering a 2nd operator email beyond bootstrap-token gating; (G2) no env-var allowlist of permitted operator emails \u2014 the system depends entirely on operational discipline around UCC_BOOTSTRAP_ADMIN_TOKEN secrecy; (G3) no rate limiting or lockout after N failed authentications \u2014 parent PRD \u00a77 Q2 deferred to T+7d; (G4) bootstrap-token issuance has no audit trail (only consumption is logged). The T+7d kill-criteria checkpoint at 2026-05-23 will evaluate cutover success; hardening must be live before then so the checkpoint reflects production posture, not cutover-day posture.",
+  "proposed_solution": "Ship four defense-in-depth controls in a single Enhancement: (G1+G2) Email allowlist gate in /api/auth/register/options keyed off new UCC_ALLOWED_EMAILS env var (fail-closed); (G3) Hybrid per-email (10 fails / 15 min) + per-IP class (20 fails / 30 min) lockout via new src/lib/auth/redis-lockout.ts module wired into authenticate/verify + register/verify; (G4) auth_bootstrap_token_issued audit event emitted by scripts/issue-bootstrap-token.ts at issuance time (existing post-consumption event renamed to auth_bootstrap_token_consumed). Companion operator CLI scripts/clear-lockout.ts for manual recovery. No new infrastructure required \u2014 reuses existing Upstash Redis + audit-log writer. Auth-path latency +\u22642ms per request.",
+  "success_metrics": {
+    "primary": {
+      "name": "unauthorized_operator_registration_attempts_succeeded",
+      "tier": "T1",
+      "definition": "Count of successful registrations of a new operator email NOT in UCC_ALLOWED_EMAILS, measured over rolling 30-day window via Redis ucc:operator:* SCAN delta vs allowlist contents",
+      "target": "0",
+      "baseline": "0 at pre-hardening (no attack observed yet, but the surface was unprotected)"
+    },
+    "secondary": [
+      {
+        "name": "lockout_false_positive_rate",
+        "tier": "T1",
+        "definition": "auth_lockout_triggered events where the IP class matches the operator's own session origin, measured over rolling 7-day window via Redis audit log",
+        "target": "0 over 7 days",
+        "baseline": "n/a (gate did not exist)"
+      },
+      {
+        "name": "auth_path_latency_p50_overhead",
+        "tier": "T2",
+        "definition": "Sign-in latency p50 increase vs pre-hardening Vercel function-execution baseline (Vercel logs)",
+        "target": "\u2264 +5 ms",
+        "baseline": "Pre-hardening p50 captured from Vercel function logs 2026-05-19 evening"
+      },
+      {
+        "name": "bootstrap_token_issuance_audit_coverage",
+        "tier": "T1",
+        "definition": "Ratio of auth_bootstrap_token_issued events to actual ucc:bootstrap:* keys written, measured per issuance",
+        "target": "1.0",
+        "baseline": "0.0 pre-hardening (no issuance event existed)"
+      }
+    ],
+    "review_cadence": "T+3d (2026-05-22), T+7d (2026-05-23, joint with cutover kill-criteria), T+30d (2026-06-19), annual (2027-05-19)"
+  },
+  "kill_criteria": {
+    "trigger_1": {
+      "metric": "lockout_false_positive_rate",
+      "threshold": "\u2265 1 false positive locking the operator (regvash21@gmail.com) out for > 5 minutes within first 7 days",
+      "response": "Raise EMAIL_LOCK_THRESHOLD from 10 to 15 (or 20) AND extend window TTL inversely; ship as v0.2 patch"
+    },
+    "trigger_2": {
+      "metric": "auth_path_latency_p50_overhead",
+      "threshold": "> +15 ms p50 increase sustained over 24h",
+      "response": "Profile Redis client; either pipeline checkLockout into a single Redis pipeline call OR revert lockout module + ship without G3"
+    },
+    "trigger_3": {
+      "metric": "allowlist_unset_events",
+      "threshold": "\u2265 1 allowlist_unset event from production indicating env-var rolled back accidentally",
+      "response": "Re-add UCC_ALLOWED_EMAILS env var in Vercel + redeploy; audit Vercel env-var change log for who/when"
+    },
+    "trigger_4": {
+      "metric": "operator_locked_out_of_auth",
+      "threshold": "Operator cannot sign in for > 5 minutes due to any hardening-introduced bug",
+      "response": "Revert fitme-story merge commit immediately (no env-var bypass exists for lockout); see risk-sub-plan \u00a74.5"
+    }
+  },
+  "blocks_followups": [
+    "B8 (UCC T+7d kill-criteria checkpoint 2026-05-23) \u2014 this hardening adds 4 sub-criteria evaluated jointly with cutover criteria",
+    "C4-C5 (Part 7 break-glass YubiKey before 2026-05-28) \u2014 allowlist + lockout must accommodate 2nd-credential ceremony for same operator email"
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Extract ipClassFromRaw + uaFamilyFromRaw to audit-log-redactors.ts",
+      "type": "refactor",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": [],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T2",
+      "title": "Extend AuthEventType enum (3 new lockout types + rename + new issuance)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.06,
+      "depends_on": [],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T3",
+      "title": "Extend AuthEventReason enum (7 new reasons)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.03,
+      "depends_on": [],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T4",
+      "title": "Create src/lib/auth/allowlist.ts (isEmailAllowed, allowlistIsConfigured)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "critical",
+      "effort_days": 0.04,
+      "depends_on": [],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T5",
+      "title": "Wire allowlist gate in /api/auth/register/options/route.ts",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.04,
+      "depends_on": [
+        "T3",
+        "T4"
+      ],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T6",
+      "title": "Tests: allowlist.test.ts (6 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.06,
+      "depends_on": [
+        "T4"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T7",
+      "title": "Tests: allowlist-gate.test.ts (5 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.09,
+      "depends_on": [
+        "T5"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T8",
+      "title": "Create src/lib/auth/redis-lockout.ts (checkLockout, recordFailure, clearFailures)",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.13,
+      "depends_on": [
+        "T1"
+      ],
+      "complexity": "heavyweight",
+      "lane": "P-core"
+    },
+    {
+      "id": "T9",
+      "title": "Wire lockout in /api/auth/authenticate/verify/route.ts",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.06,
+      "depends_on": [
+        "T2",
+        "T3",
+        "T8"
+      ],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T10",
+      "title": "Wire lockout in /api/auth/register/verify/route.ts",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": [
+        "T2",
+        "T3",
+        "T8"
+      ],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T11",
+      "title": "Tests: redis-lockout.test.ts (10 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.15,
+      "depends_on": [
+        "T8"
+      ],
+      "complexity": "standard",
+      "lane": "E-core"
+    },
+    {
+      "id": "T12",
+      "title": "Tests: lockout-gate.test.ts (6 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.1,
+      "depends_on": [
+        "T9"
+      ],
+      "complexity": "standard",
+      "lane": "E-core"
+    },
+    {
+      "id": "T13",
+      "title": "Emit auth_bootstrap_token_issued in scripts/issue-bootstrap-token.ts",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": [
+        "T2"
+      ],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T14",
+      "title": "Extend uaFamilyFromRaw to detect cli/ prefix",
+      "type": "backend",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.03,
+      "depends_on": [
+        "T1"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T15",
+      "title": "Tests: issue-bootstrap-token-audit.test.ts (3 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.06,
+      "depends_on": [
+        "T13"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T16",
+      "title": "Create scripts/clear-lockout.ts CLI utility",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.06,
+      "depends_on": [
+        "T3",
+        "T8"
+      ],
+      "complexity": "standard",
+      "lane": "P-core"
+    },
+    {
+      "id": "T17",
+      "title": "Tests: clear-lockout.test.ts (4 cases)",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.06,
+      "depends_on": [
+        "T16"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T18",
+      "title": "Document UCC_ALLOWED_EMAILS in fitme-story/.env.example",
+      "type": "docs",
+      "skill": "dev",
+      "status": "ready",
+      "priority": "high",
+      "effort_days": 0.01,
+      "depends_on": [],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T19",
+      "title": "OPERATOR: Set UCC_ALLOWED_EMAILS in Vercel production env",
+      "type": "infra",
+      "skill": "ops",
+      "status": "ready",
+      "priority": "critical",
+      "effort_days": 0.01,
+      "depends_on": [],
+      "complexity": "lightweight",
+      "lane": "operator"
+    },
+    {
+      "id": "T20",
+      "title": "OPERATOR: Manual verification matrix (spec \u00a78.2, 6 scenarios)",
+      "type": "test",
+      "skill": "ops",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.06,
+      "depends_on": [
+        "T6",
+        "T7",
+        "T11",
+        "T12",
+        "T15",
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "complexity": "standard",
+      "lane": "operator"
+    },
+    {
+      "id": "T21",
+      "title": "CI gates green on fitme-story PR + FT2 integrity-check",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.04,
+      "depends_on": [
+        "T6",
+        "T7",
+        "T11",
+        "T12",
+        "T15",
+        "T17"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T22",
+      "title": "OPERATOR: Open fitme-story PR feat/ucc-passkey-security-hardening",
+      "type": "infra",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.03,
+      "depends_on": [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T9",
+        "T10",
+        "T11",
+        "T12",
+        "T13",
+        "T14",
+        "T15",
+        "T16",
+        "T17",
+        "T18",
+        "T19"
+      ],
+      "complexity": "standard",
+      "lane": "operator"
+    },
+    {
+      "id": "T23",
+      "title": "OPERATOR: Post-merge make integrity-check in FT2",
+      "type": "test",
+      "skill": "ops",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.01,
+      "depends_on": [
+        "T22"
+      ],
+      "complexity": "lightweight",
+      "lane": "operator"
+    },
+    {
+      "id": "T24",
+      "title": "Append cadence-followup B11 (T+3d calibration check 2026-05-22)",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.03,
+      "depends_on": [
+        "T22"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T25",
+      "title": "Create UCC hardening case study placeholder",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": [
+        "T22"
+      ],
+      "complexity": "lightweight",
+      "lane": "E-core"
+    },
+    {
+      "id": "T26",
+      "title": "OPERATOR: Open Linear sub-issue under FIT-63",
+      "type": "docs",
+      "skill": "ops",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.01,
+      "depends_on": [
+        "T22"
+      ],
+      "complexity": "lightweight",
+      "lane": "operator"
+    }
+  ],
+  "case_study": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
+  "predecessor_chain": [
+    "ucc-passkey-auth",
+    "ucc-passkey-auth-audit-log-redis-fix"
+  ],
+  "design_spec": "docs/superpowers/specs/2026-05-19-ucc-passkey-security-hardening-design.md",
+  "risk_assessment_sub_plan": "docs/master-plan/ucc-passkey-security-hardening-risk-assessment-2026-05-19.md",
+  "cache_hits": [],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "complexity": {
+    "cu_version": 2,
+    "factors_applied": [
+      {
+        "factor": "Backend + CLI only",
+        "value": 0.1,
+        "reason": "No UI; Next.js API route handler + Node-side module + CLI script"
+      },
+      {
+        "factor": "Existing infra reuse",
+        "value": 0.1,
+        "reason": "Upstash Redis already provisioned; reuses existing logAuthEvent writer; one new env var only"
+      },
+      {
+        "factor": "Cross-repo coordination",
+        "value": 0.15,
+        "reason": "Code lives in fitme-story; spec + sub-plan + state.json + delta-PRD in FT2; coordinated two-PR merge"
+      },
+      {
+        "factor": "Security-critical surface",
+        "value": 0.25,
+        "reason": "Auth code per CLAUDE.md high-risk-area policy; requires extra review pass + manual verification matrix; fail-open design for authentication path + fail-closed for registration"
+      },
+      {
+        "factor": "Calendar-pressured",
+        "value": 0.15,
+        "reason": "Must merge \u2264 2026-05-20 EOD to avoid v7.9 promotion freeze; T+7d checkpoint 2026-05-23 evaluates production posture"
+      }
+    ]
+  },
+  "timing": {
+    "session_start": "2026-05-19T14:30:00Z",
+    "time_source": "measured",
+    "phases": {
+      "tasks": {
+        "started_at": "2026-05-19T14:30:00Z",
+        "ended_at": null
+      }
+    }
+  },
+  "transitions": []
+}
