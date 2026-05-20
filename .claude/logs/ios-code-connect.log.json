@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.1",
   "started_at": "2026-05-09T19:27:43Z",
-  "updated_at": "2026-05-10T05:26:37Z",
+  "updated_at": "2026-05-20T06:18:16Z",
   "events": [
     {
       "timestamp": "2026-05-09T19:27:43Z",
@@ -57,6 +57,28 @@
         "sections_in_doc": 8
       },
       "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T06:17:42Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Implementation phase closed as partial-ship. 4/5 tasks done (T1+T2+T3+T5); T4 figma connect publish skipped \u2014 requires Figma organization-tier plan unavailable to this Hobby project. Operator decision 2026-05-20.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T06:18:16Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "Feature closed as partial-ship \u2014 T4 (figma connect publish) requires Figma organization-tier plan unavailable to this project. 4/5 implementation tasks done; scaffold + docs shipped and remain referenceable if org-tier access is acquired later. case_study_type: no_case_study_required exempt remains valid.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }

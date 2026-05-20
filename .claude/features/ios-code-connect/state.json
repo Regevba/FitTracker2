@@ -1,6 +1,6 @@
 {
   "feature_name": "ios-code-connect",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-05-09T19:27:43Z",
   "updated_at": "2026-05-16T06:30:00Z",
   "framework_version": "v7.8.1",
@@ -26,15 +26,21 @@
   },
   "phases": {
     "implementation": {
-      "status": "scaffolded",
+      "status": "approved",
       "started_at": "2026-05-09T19:27:43Z",
-      "note": "Feature scaffolded as placeholder. No implementation work started \u2014 waiting for scheduled_after.signal to fire."
+      "note": "Feature scaffolded as placeholder. No implementation work started \u2014 waiting for scheduled_after.signal to fire.",
+      "approved_at": "2026-05-20T06:17:42Z",
+      "closure_note": "4/5 tasks done; T4 (figma connect publish) skipped \u2014 requires Figma organization plan unavailable to this project."
     }
   },
   "timing": {
     "phases": {
       "implementation": {
-        "started_at": "2026-05-09T19:27:43Z"
+        "started_at": "2026-05-09T19:27:43Z",
+        "ended_at": "2026-05-20T06:18:16Z"
+      },
+      "complete": {
+        "started_at": "2026-05-20T06:18:16Z"
       }
     }
   },
@@ -69,7 +75,7 @@
     {
       "id": "T4",
       "title": "Run figma connect publish \u2014 push iOS mappings to FitMe Design System Library; verify Code Connect snippets appear in Figma Dev Mode",
-      "status": "blocked",
+      "status": "skipped",
       "effort_days": 0.25,
       "blocker": "FIGMA_ACCESS_TOKEN repo secret is missing the Code Connect Write scope. CI workflow .github/workflows/figma-code-connect-publish.yml has run 3 times (run IDs 25621980058 / 25623253076 / 25629689372 on 2026-05-10): first run succeeded (token write-attempted on empty file), runs 2-3 failed with `Failed to upload to Figma (403): 403 Invalid scope(s): Please ensure that you have selected both the File Read scope and the Code Connect Write scope when generating the token.`",
       "diagnostic": {
@@ -90,7 +96,9 @@
           "5. Verify in Figma Dev Mode: open the FitMe Design System Library (file 0Ai7s3fCFqR5JXDW8JvgmD), inspect one of the 5 mapped screens (e.g., OnboardingWelcomeView.v2), confirm the iOS code panel shows the SwiftUI snippet."
         ],
         "related_gate": "/design preflight Step 3.5 (Code Connect write-access gate, FT2 PR #280) is the gate designed to catch this BEFORE the publish workflow fires \u2014 by probing the publish path during preflight. Running `/design preflight ios-code-connect` would have surfaced the scope gap at spec-time rather than at CI-time."
-      }
+      },
+      "skip_reason": "permanently_blocked: Code Connect Swift publish requires Figma organization-tier plan; this project is on Hobby. Out of scope. Operator decision 2026-05-20 to not pursue organizational Figma plan within this project's scope.",
+      "skipped_at": "2026-05-20T06:17:42Z"
     },
     {
       "id": "T5",
@@ -115,5 +123,18 @@
     "scaffold_session": "2b1d970c-6a14-4cff-b61e-6011bdb87a68",
     "scaffold_origin": "User directive 2026-05-09 during fitme-story-public-enhancements rollup merge session \u2014 'add another task for code connect mapping for ios' followed by clarifying question answer choosing 'New chore feature ios-code-connect' + 'Placeholder only'."
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "updated": "2026-05-20T06:17:42Z",
+  "closure_reason": "partial_ship_org_tier_blocker",
+  "closure_note": "Scaffolding work shipped (Figma.toml + 5 .figma.swift template files + 6 screen-level node IDs + workflow docs). T4 figma connect publish requires Figma organization-tier plan; out of scope for this project. The scaffold + docs remain useful as a reference if org-tier access is acquired later.",
+  "closure_date": "2026-05-20T06:17:42Z",
+  "transitions": [
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-05-20T06:17:42Z",
+      "approved_by": "user",
+      "note": "Operator decision 2026-05-20: ios-code-connect closed as partial-ship. T4 (figma connect publish) permanently blocked \u2014 requires Figma organization-tier plan not available to this Hobby-tier project. 4/5 tasks done (scaffold + docs + node IDs). The shipped artifacts are useful as a reference if org-tier access is acquired in the future. case_study_type=no_case_study_required exempt remains valid (workflow docs at docs/design-system/ios-code-connect-workflow.md cover the practitioner-facing content)."
+    }
+  ]
 }
