@@ -1,7 +1,7 @@
 {
   "feature": "ucc-passkey-auth",
   "created_at": "2026-05-07T16:25:00Z",
-  "updated": "2026-05-08T06:45:40Z",
+  "updated": "2026-05-20T06:34:21Z",
   "branch": "feature/ucc-passkey-auth",
   "current_phase": "complete",
   "work_type": "feature",
@@ -651,8 +651,17 @@
       "note": "Phase 8 complete. Source case study at docs/case-studies/ucc-passkey-auth-case-study.md (full T1/T2/T3 tags + 7 frontmatter fields + Q7 kill_criteria_resolution + Q6 PR parity). Showcase MDX at fitme-story/content/04-case-studies/26-ucc-passkey-auth.mdx (slot 26, v7.8.1). FEATURE_CLOSURE_COMPLETENESS gate satisfied."
     }
   ],
-  "figma_node_ids": {},
-  "figma_build_status": "deferred_to_prompt",
+  "figma_node_ids": {
+    "auth_passkey_form_component_set": "30:61",
+    "sign_in_idle_mobile": "31:3",
+    "sign_in_idle_desktop": "31:19",
+    "sign_in_pending_mobile": "31:35",
+    "sign_in_pending_desktop": "31:51",
+    "sign_in_error_mobile": "31:67",
+    "sign_in_error_desktop": "31:86",
+    "recover_idle_mobile": "31:106"
+  },
+  "figma_build_status": "partial",
   "figma_deferral_reason": "web_dashboard_no_figma_mapping",
   "figma_portable_prompt": "docs/prompts/ui/2026-05-07-ucc-passkey-auth-design-build.md",
   "pre_merge_review": {
@@ -763,21 +772,22 @@
     "last_updated": "2026-05-17T14:05:50Z",
     "current_mode": "both",
     "parts_shipped": [
-      "Part 1.1 — Upstash Redis provisioned (upstash-kv-coquelicot-pebble)",
-      "Part 1.2 — Vercel Blob provisioned (ucc-audit-log, store_Wbm976bbAd3TvK2o)",
-      "Part 2 — UCC_SESSION_SECRET + UCC_BOOTSTRAP_ADMIN_TOKEN set",
-      "Part 3 — .env.local pulled (development scope, perms 600)",
-      "Part 4 — UCC_AUTH_MODE=basic + production deploy dpl_87pw4jwejjexjf8cV9WKc3S5moQT",
-      "Part 5 — First platform passkey registered (ucc:credential:E5jvwGr...)",
-      "Part 6 — UCC_AUTH_MODE flipped basic→both + redeploy dpl_*-cp1019le3",
+      "Part 1.1 \u2014 Upstash Redis provisioned (upstash-kv-coquelicot-pebble)",
+      "Part 1.2 \u2014 Vercel Blob provisioned (ucc-audit-log, store_Wbm976bbAd3TvK2o)",
+      "Part 2 \u2014 UCC_SESSION_SECRET + UCC_BOOTSTRAP_ADMIN_TOKEN set",
+      "Part 3 \u2014 .env.local pulled (development scope, perms 600)",
+      "Part 4 \u2014 UCC_AUTH_MODE=basic + production deploy dpl_87pw4jwejjexjf8cV9WKc3S5moQT",
+      "Part 5 \u2014 First platform passkey registered (ucc:credential:E5jvwGr...)",
+      "Part 6 \u2014 UCC_AUTH_MODE flipped basic\u2192both + redeploy dpl_*-cp1019le3",
       "Part 9 wired UCC_AUDIT_BLOB_URL on FT2 (2026-05-17T14:05:50Z; deterministic blob URL preemptively set; FT2 ucc-audit-log-sync.yml auto-activates on next cron blob populate)"
     ],
     "parts_deferred": [
-      "Part 7 break-glass — YubiKey/2nd platform passkey (target before 2026-05-28; first attempt blocked by browser UX)",
-      "Part 10 verify framework-health passkey panel — target 2026-05-18+ after Part 9 + 1 daily sync",
-      "Part 8 passkey-only + drop legacy — calendar-gated on/after 2026-05-28 (post-v7.9 promotion)"
+      "Part 7 break-glass \u2014 YubiKey/2nd platform passkey (target before 2026-05-28; first attempt blocked by browser UX)",
+      "Part 10 verify framework-health passkey panel \u2014 target 2026-05-18+ after Part 9 + 1 daily sync",
+      "Part 8 passkey-only + drop legacy \u2014 calendar-gated on/after 2026-05-28 (post-v7.9 promotion)"
     ],
-    "kill_criteria_checkpoint": "2026-05-23 (T+7d post UCC_AUTH_MODE=both flip; resolution lands in case study §99 + frontmatter kill_criteria_resolution)",
+    "kill_criteria_checkpoint": "2026-05-23 (T+7d post UCC_AUTH_MODE=both flip; resolution lands in case study \u00a799 + frontmatter kill_criteria_resolution)",
     "cadence_followups_ref": ".claude/shared/must-have-cadence-followups.md (B7, B8, B9, C4-C10)"
-  }
+  },
+  "figma_build_status_note": "Page frames + AuthPasskeyForm component-set scaffold shipped (13 node IDs captured 2026-05-18). Code Connect mappings shipped at src/{components/control-room/AuthPasskeyForm.figma.tsx, app/control-room/sign-in/page.figma.tsx, app/control-room/sign-in/recover/page.figma.tsx}. T4 of ucc-sign-in-figma-mapping (UU4 enhancement) still needs to populate the 10 AuthPasskeyForm component-set variants \u2014 currently empty 360\u00d710 stubs. Page-level Code Connect validation also blocked on T4 (page frames need component-ization). Deferred to post-v7.9-freeze Figma write session."
 }
