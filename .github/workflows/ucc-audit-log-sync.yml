@@ -18,6 +18,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: ucc-audit-log-sync
@@ -72,13 +73,34 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Commit and push
+      - name: Commit + open PR (branch-protection-safe)
         if: steps.diff.outputs.changed == 'true'
         env:
-          DATE: ${{ steps.diff.outputs.date }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+          DATE_STAMP=$(date -u +%Y%m%d)
+          BRANCH="chore/ucc-audit-log-sync-${DATE_STAMP}"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add "$TARGET_PATH"
-          git commit -m "chore(ucc-auth): daily sync of audit log"
-          git push origin main
+
+          # If a sync PR for today already exists, push onto its branch (idempotent within the day)
+          if git ls-remote --exit-code origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
+            git fetch origin "${BRANCH}"
+            git checkout -B "${BRANCH}" "origin/${BRANCH}"
+            # bring in the freshly-fetched file
+            git checkout main -- "$TARGET_PATH" 2>/dev/null || true
+            git add "$TARGET_PATH"
+            git commit -m "chore(ucc-auth): daily sync of audit log (append)" || echo "no changes vs branch HEAD"
+            git push origin "${BRANCH}"
+          else
+            git checkout -b "${BRANCH}"
+            git add "$TARGET_PATH"
+            git commit -m "chore(ucc-auth): daily sync of audit log"
+            git push -u origin "${BRANCH}"
+            gh pr create \
+              --base main \
+              --head "${BRANCH}" \
+              --title "chore(ucc-auth): daily sync of audit log (${DATE_STAMP})" \
+              --body "Daily UCC audit log sync from fitme-story Vercel Blob → \`.claude/logs/ucc-auth-events.jsonl\`.\n\nAutomated by \`.github/workflows/ucc-audit-log-sync.yml\` (T22 companion to fitme-story T21 sync-audit-log-to-blob).\n\nOperator: review the diff and merge when convenient. If multiple daily PRs accumulate, they're cumulative — merge the latest one and close the older ones." || echo "PR likely already exists; skipping creation"
+          fi
