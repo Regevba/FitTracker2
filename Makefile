@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher doctor integrity-snapshot-rotate logs-rotate sessions-compact
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check doctor integrity-snapshot-rotate logs-rotate sessions-compact
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -273,6 +273,29 @@ install:
 # Any new P0 (raw Color literal, raw animation, raw font, missing colorset)
 # or any SCHEMA_DRIFT introduced by a PR fails the local + CI verify pass.
 verify-local: tokens-check schema-check ui-audit ui-audit-drift verify-web verify-ai verify-evals verify-ios verify-timing verify-framework
+
+# R10 (FIT-176): defensive check that `make verify-local` does NOT mutate
+# tracked repo state. Captures git porcelain before + after; asserts
+# byte-identical. Use as pre-merge sanity or as a standing guard against
+# future regressions where a new verify-local subtarget might quietly
+# write to a tracked file. See docs/setup/verify-local-idempotency-audit.md.
+verify-local-idempotent-check:
+	@echo "=== verify-local idempotency check ==="
+	@_before=$$(mktemp); _after=$$(mktemp); \
+	 git status --porcelain | sort > $$_before; \
+	 echo "→ pre-state: $$(wc -l < $$_before | tr -d ' ') file(s) in porcelain"; \
+	 $(MAKE) --no-print-directory verify-local || { rm -f $$_before $$_after; exit 1; }; \
+	 git status --porcelain | sort > $$_after; \
+	 echo "→ post-state: $$(wc -l < $$_after | tr -d ' ') file(s) in porcelain"; \
+	 if diff -q $$_before $$_after >/dev/null 2>&1; then \
+	   echo "✓ verify-local is idempotent — no tracked-file mutations detected"; \
+	   rm -f $$_before $$_after; \
+	 else \
+	   echo "✗ verify-local mutated tracked state — review diff:"; \
+	   diff $$_before $$_after || true; \
+	   rm -f $$_before $$_after; \
+	   exit 1; \
+	 fi
 
 verify-web:
 	cd dashboard && npm test
