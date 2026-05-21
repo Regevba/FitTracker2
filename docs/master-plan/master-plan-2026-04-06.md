@@ -46,8 +46,21 @@ FitMe is a production-grade iOS fitness app with 11 shipped core features, zero-
 - **v5.1** (2026-04-14) — Complete SoC suite (8/8 items): model tiering, batch dispatch, result forwarding, speculative preloading, systolic chains, task complexity gate
 - **v5.2** (2026-04-16) — Dispatch Intelligence (3-stage pipeline, tool budgets, complexity scoring) + Parallel Write Safety (snapshot/rollback, 3-tier mirror extraction, progressive markers)
 - **v6.0** (2026-04-16) — Framework Measurement: deterministic phase timing, cache hit tracking, eval gates, CU v2, rolling baselines
+- **v7.0** (2026-04-17) — Meta-Analysis Audit + Failure Recognition Layer; surfaces patterns across cases
+- **v7.1** (2026-04-21) — 72h Integrity Cycle (state.json + case-study audit, baseline 40/45/0)
+- **v7.5** (2026-04-24) — Data Integrity Framework (8 cooperating defenses, triggered by 2026-04-21 Gemini independent audit)
+- **v7.6** (2026-04-25) — Mechanical Enforcement (4 Class B → A pre-commit gates + per-PR review bot + weekly framework-status cron)
+- **v7.7** (2026-04-27) — Validity Closure (5 new gates: CACHE_HITS_EMPTY_POST_V6 + CU_V2_INVALID + STATE_NO_CASE_STUDY_LINK + CASE_STUDY_MISSING_FIELDS + TIER_TAG_LIKELY_INCORRECT advisory)
+- **v7.8** (2026-05-04) — Bridge mechanisms A-F (coverage-asserting gates + schema bridges + Mechanism C session attribution + pre-commit self-audit + merge driver + membrane status)
+- **v7.8.1** (2026-05-07) — Branch Isolation + Feature-Closure Completeness (3 advisory gates: BRANCH_ISOLATION_VIOLATION Mode B + Mode C + FEATURE_CLOSURE_COMPLETENESS)
+- **v7.8.2** (2026-05-08) — Cross-Repo Telemetry Asymmetry documented disposition (F7+F8 exemption)
+- **v7.8.3** (2026-05-11) — Cross-Repo State Sync Implementation (V2 + V9 → enforced; state_owner field; 5-phase rollout)
+- **v7.8.4** (2026-05-12) — Pre-v7.9 Telemetry Calibration & Doc-Debt Cleanup (PR_CACHE_STALE auto-refresh + TIER_TAG heuristic narrowed)
+- **v7.8.5** (2026-05-13) — Observability Layer (Observed Patterns Catalog + W9 branch-drift alert)
+- **v7.8.6** (2026-05-15) — Cadence Batch (`make integrity-diff` + `make preflight WORK_TYPE=<>` + Phase 0.0 + 10-skill Shared Data + W1 ssh preflight + weekly Mech A scan)
+- **v7.9** (2026-05-21) — **Promotion Release.** Single-flag flip at `scripts/check-state-schema.py:132` (`BRANCH_ISOLATION_ADVISORY_MODE = True → False`) promotes 3 v7.8.1 advisory gates to enforced after 14d Mechanism A calibration. Phase E validation 2026-05-21 → 2026-06-04. First real-world gate fire caught + resolved same-session.
 
-**Current framework version: v6.0.** Full evolution history: `docs/skills/evolution.md`
+**Current framework version: v7.9.** Full evolution history: [`docs/skills/evolution.md`](../skills/evolution.md). Cold-start entrypoints per version: [`.claude/entrypoints/`](../../.claude/entrypoints/). Live infra master plan: [`docs/master-plan/infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md). v7.9 promotion case study: [`docs/case-studies/framework-v7-9-promotion-case-study.md`](../case-studies/framework-v7-9-promotion-case-study.md).
 
 ---
 

@@ -307,22 +307,33 @@ Mapping all 23 open candidates to version slots. Each version has explicit calib
 
 **v7.8.5 final mechanism inventory:** 33 mechanical gates + 5 advisories + **2 observability surfaces** (catalog + W9 hook). Effective `make integrity-check` baseline unchanged (0 findings + 4 expected advisories per pattern catalog).
 
-### 3.6.2 v7.9 — Promotion Release (decision 2026-05-21)
+### 3.6.2 v7.9 — Promotion Release (SHIPPED 2026-05-21 via PR #417 `ea53ff4`)
 
-**Scope:** flip 6 currently-advisory mechanisms to enforced (§2.1 table).
+**Outcome (B1 freeze-day execution, 2026-05-21):** all 4 §2.2 promotion criteria met for all 3 candidate gates. Single-line flip at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py) (`BRANCH_ISOLATION_ADVISORY_MODE = True → False`) drives all 3 gates simultaneously. **3 gates promoted, 0 rollbacks.**
 
-**Calibration data required at Phase D:**
-- `gate-coverage.jsonl` shows ≥7 days of `{candidates, checked, skipped}` per gate (Phase C exit)
-- Operator review of every `failure` row across the 7-day window — 0 false positives required
-- v7.8.5 (cache_hits keying) shipped — input data is keyed correctly
+| Gate | 14d telemetry (2026-05-07 → 2026-05-21) | candidates=0 | Verdict |
+|---|---|---|---|
+| `BRANCH_ISOLATION_VIOLATION` Mode B (infra commit-level) | 18 rows | 0 | PROMOTED |
+| `BRANCH_ISOLATION_VIOLATION` Mode C (per-state.json mutation) | 13 rows | 0 | PROMOTED |
+| `FEATURE_CLOSURE_COMPLETENESS` (write-time) | 13 rows | 0 | PROMOTED |
+| `ISOLATION_OPT_OUT_REASON_MISSING` | 13 rows | 0 | (already enforced at v7.8.1 — no action) |
 
-**Risk if v7.8.5 doesn't ship before 2026-05-21:** calibration data for `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` may be keyed wrong. The promotion decision for that specific gate must be deferred to v7.10 (~2026-06-04) until keying is verified.
+**First real-world gate fire confirmed same-session:** the v7.9 post-merge close-out commit triggered Mode C on first attempt (state.json declared `feature/v7-9-promotion` while operator was on `chore/v7-9-promotion-close-out`). Resolved via 1-line `branch` field update. Live demonstration that enforcement works. Captured in [FT2-FH-003 honesty ledger entry](../case-studies/framework-honesty-ledger.md#ft2-fh-003).
 
-**Phase E post-promotion validation runs 2026-05-21 → 2026-06-04.** During this window:
+**Side-effects shipped same-PR (per §2.3):** CLAUDE.md "v7.9 Promotion Release" section + [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md) §2.4.1 + [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md) cold-start entrypoint + [FT2-FH-003 honesty ledger](../case-studies/framework-honesty-ledger.md) + [v7.9 case study](../case-studies/framework-v7-9-promotion-case-study.md) + Linear epic FIT-72 In Progress + 9 sub-issues updated (FIT-78/79/80/81/84 Done, FIT-82/83 Canceled, FIT-85/86 In Progress).
+
+**Case study:** [`docs/case-studies/framework-v7-9-promotion-case-study.md`](../case-studies/framework-v7-9-promotion-case-study.md) — live append-only journal; §99 synthesis deferred to 2026-05-28 post-B2 baseline snapshot.
+
+**Phase E post-promotion validation runs 2026-05-21 → 2026-06-04 (LIVE):**
+
 - No new gates ship
 - No new test discipline work (F14, F18) starts
 - Operator monitors `.claude/logs/gate-coverage.jsonl` for unexpected `failure` rows
 - F17 (`last_fired_at` index) can be built in parallel since it's read-only — does not add new gates
+
+**Original Scope** (preserved for historical reference): flip 6 currently-advisory mechanisms to enforced. **Actual scope at decision time:** 3 gates required action; 3 others were already enforced at v7.8/v7.8.3 (Mechanism A coverage + Mechanism C session-attribution + `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` V2 + Mechanism E V9). Scope narrowed via 2026-05-12 → 2026-05-21 patch-level work; no new measurement window required.
+
+**Reversibility runbook:** single-line revert of `BRANCH_ISOLATION_ADVISORY_MODE = True` at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py) → commit + merge to main = <5min. Per [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md) reversibility-runbook section.
 
 ### 3.6.3 v7.9.1 — Test Discipline Foundation + Low-Effort Wins (target 2026-06-04 → 2026-06-11)
 
@@ -662,3 +673,11 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 | 2026-05-12 | Initial creation. Consolidates v7.9 / v8.x infra surface as of v7.8.3 ship. |
 | 2026-05-12 (evening) | Major expansion. PR #317 + #318 + test-suite audit + external research integrated. Added: §1.1 v7.8.4 + PR #317/#318 anchor; §2.4 v7.8.5 pre-promotion remediation patch (cache_hits keying); §3.1 Source D (F14–F18 test discipline); §3.3 top-per-theme docket rule + Theme G precedence; §3.4 theme distribution table; **§3.5 Calibration Protocol for New Layers** (5 phases, layer stacking rule, quarterly Data Freshness Audit, reversibility contract); **§3.6 Forward Plan v7.8.5 → v8.2** (versioned roadmap mapping all 23 open candidates); §5.1 + §5.2 + §5.3 + §5.4 extended calendar through 2027-05-12; §7 added 4 new risks; §8 added 3 new open questions (Q5/Q6/Q7). Doc grew 320 → ~430 lines. |
 | 2026-05-13 | Analytics observability sub-doc + F19/F20 expansion. v7.8.5 SHIPPED via PR #320 (2026-05-12; cache_hits fixture rot confirmed case 2); v7.8.5.1 SHIPPED via PR #331 (4 residual test fixture rot from v7.8.3 + v7.8.4 schema migrations). Added §3.6.6.A `analytics-observability` sub-doc reference + F19/F20 to §3.6.4 v8.0 docket + Theme G expanded to 7 items in §3.4 (was 5). Total open candidates 23 → 25. 3D Framework Universe parked at PRD waypoint with `scheduled_after.signal: "analytics-observability phase=complete"`. Companion docs: [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) + [`analytics-observability-decisions-log-2026-05-13.md`](analytics-observability-decisions-log-2026-05-13.md). |
+| 2026-05-14 | Data-integrity-and-rollback sub-doc + cross-layer test coverage sub-doc + daily integrity checkpoint VERIFIED (launchd via `/opt/homebrew/bin/python3`; first cron 2026-05-15 06:00). Linear/Notion sync: FIT-139/140 epics + FIT-141-164 sub-tasks; Notion v7.8.5 page created. Analytics-observability Phase 2 SHIPPED via PRs #342/#345/#349/#351 (#354 + fitme-story #108 still open). |
+| 2026-05-15 | **v7.8.6 Cadence Batch SHIPPED** via PRs #361/#363/#364/#365/#366 + fitme-story #112. Adds `make integrity-diff` + unified `make preflight WORK_TYPE=<>` entry point + weekly Mechanism A gate-coverage zero-drift scan + per-dimension adoption trend nudge + W1 ssh-agent preflight + weekly dependency audit + daily stale-branch/orphan-worktree warning + daily open-PRs-idle-24h babysit. MUST-have follow-up tracker at [`must-have-cadence-followups.md`](../../.claude/shared/must-have-cadence-followups.md). |
+| 2026-05-16 | Daily check + W11 fix SHIPPED via PR #375. Phantom 32 BROKEN_PR_CITATION root cause = per-repo emptiness check; fixed. v7.9 calibration window clear (2088 events / 17 gates / 12 days). [`framework-v7-9-promotion/state.json`](../../.claude/features/framework-v7-9-promotion/state.json) scaffolded as tracking container. UCC passkey cutover Parts 1-6 SHIPPED via FT2 #380 + fitme-story #120. Skills review EXECUTED (16/17 shipped). Next skills review 2026-08-13. |
+| 2026-05-17 | GA4 binding + iOS firehose RESOLVED. Root cause: plist missing target membership. Audit-log Redis fix + legobrick recovery via fitme-story PR #122 (live) + FT2 #383 (open). New W11 pattern (Vercel-fs ephemerality). UCC passkey Part 7 break-glass DEFERRED before 2026-05-28. |
+| 2026-05-18 | v7.9 pre-decision ship: T7.9.0 COMPLETE + 5 PRs merged (#400-#404; grandfather + risk closure + cache_hits draft + UU4 spec + rollback rehearsal). Audit substrate SHIPPED via PR #405 (18 tasks done, 36/36 tests, 5 profiles); ready for external audit #1 2026-05-22. PR audit + execution (9 PRs handled; race-condition issue #397 filed). |
+| 2026-05-19 | SSD migration refresh + dev-env audit + branch protection applied (both repos: `integrity` + `Build and Test` for FT2; `verify` + `gates` for fitme-story). New X10 Pro drive arrived + fresh-cloned at `/Volumes/DevSSD2/`; rename DevSSD2 → DevSSD. MEMORY.md trimmed 46KB → <24KB. UCC security hardening kickoff via FT2 PR #410. |
+| 2026-05-20 | **UCC hardening shipped** via FT2 #410/#411/#412 + fitme-story #127. T20 4/6 LIVE. Audit-log cron CRON_SECRET fix unblocked Vercel Blob sync. GA4 live audit (35 iOS TestFlight users / 13 event types) — instrumentation-verification only (iOS pre-launch; not real-user signal). v7.9 pre-freeze health GREEN (0 enforced findings, 23 BRANCH_ISOLATION + 10 FEATURE_CLOSURE_COMPLETENESS 14d Mechanism A firings). |
+| 2026-05-21 | **v7.9 PROMOTION SHIPPED** via PR #417 (`ea53ff4`). 3 advisory gates → enforced via single-flag flip at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py): `BRANCH_ISOLATION_VIOLATION` Mode B + Mode C + `FEATURE_CLOSURE_COMPLETENESS`. All 4 §2.2 criteria GREEN. Side-effects: CLAUDE.md v7.9 section + dev-guide §2.4.1 + [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md) + [FT2-FH-003 honesty ledger](../case-studies/framework-honesty-ledger.md#ft2-fh-003) + [`docs/case-studies/framework-v7-9-promotion-case-study.md`](../case-studies/framework-v7-9-promotion-case-study.md) + Linear FIT-72 In Progress + 9 sub-issues updated. **First real-world Mode C gate fire** caught + resolved (state.json::branch update). Day shipped 4 PRs: #413 (`e05eb32`) + #415 (`424963f`) + #416 (`0178a9c`) + #417 (`ea53ff4`) + close-out #419 (`9bfb7bb`). **Sentry pause** documented (PR #418) — pre-launch trigger because iOS app is TestFlight-beta only. §3.6.2 updated with SHIPPED outcome. Phase E live 2026-05-21 → 2026-06-04. |
