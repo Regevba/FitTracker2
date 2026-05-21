@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check doctor integrity-snapshot-rotate logs-rotate sessions-compact
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher verify-local-idempotent-check audit-cache audit-imports doctor integrity-snapshot-rotate logs-rotate sessions-compact
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -546,6 +546,19 @@ uninstall-devssd-watcher:
 	launchctl unload "$$PLIST_DEST" 2>/dev/null || true; \
 	rm "$$PLIST_DEST"; \
 	echo "Uninstalled: $$PLIST_DEST"
+
+# R16 (FIT-182): read-only cache hit-rate audit. Surfaces per-entry
+# mtime + cross-references against Mechanism C session reads to flag
+# cold candidates. Output to stdout only; operator decides eviction.
+audit-cache:
+	@python3 scripts/audit-cache-hit-rate.py
+
+# R23 (FIT-189): scripts/ third-party import survey. Categorizes each
+# .py file as CORE (stdlib + local) or RESEARCH (third-party). Helps
+# decide whether vendor/ is needed (today's answer: no — all
+# operational scripts are stdlib-only).
+audit-imports:
+	@python3 scripts/audit-script-imports.py
 
 # R11 (FIT-177): one-shot dev-env sanity readout. Read-only — integrates
 # every preflight signal (SSH, gh auth, hooks, tool versions, PR cache,
