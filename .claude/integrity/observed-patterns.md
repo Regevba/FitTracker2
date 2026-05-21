@@ -850,3 +850,42 @@ Last refreshed: 2026-05-15.
 **Recommended for product pages:** option (1) — page frames typically have inherent variants (idle/loading/error states) that map naturally to a component-set. Option (2) is the right call only if the page genuinely is a one-off composition (no recurring use across the design).
 
 **First surfaced by:** `ucc-sign-in-figma-mapping` enhancement on `ucc-passkey-auth` (2026-05-20). Documented in [`docs/case-studies/ucc-passkey-auth-case-study.md`](../../docs/case-studies/ucc-passkey-auth-case-study.md) §99 (UU4 2026-05-20 entry).
+
+---
+
+### W15 — MDX `<digit` or `<` followed by non-letter character breaks page rendering (2026-05-21)
+
+**Trigger:** A page authored as MDX (e.g. fitme-story `content/framework/dev-guide.md` rendered via `next-mdx-remote`) fails to prerender at `next build` with:
+
+```text
+Error occurred prerendering page "/<route>"
+[next-mdx-remote] error compiling MDX:
+Unexpected character `5` (U+0035) before name, expected a character that can start a name, such as a letter, `$`, or `_`
+```
+
+The character cited (`5` here) is whatever character followed an unescaped `<` in the MDX body. The build worker exits with code 1; the whole production deployment fails. Every commit to main since the offending one fails to deploy until the bad string is fixed. Site continues serving the **previous successful deploy** (Vercel's standard fallback), so end-users see stale-but-functional content with no degraded behavior.
+
+**Why expected:** MDX is JSX-flavored Markdown. `<` is reserved as the start of a JSX tag. JSX tag names must begin with a letter, `$`, or `_` (per the JSX grammar). Common gotcha-strings:
+
+- `<5 min` ← shipped 2026-05-21 via fitme-story PR #129, broke `/framework/dev-guide` production deploy until [PR #130 hotfix](https://github.com/Regevba/fitme-story/pull/130) (`f27a780`)
+- `<3` (heart emoji), `<10s`, `<0.5%`, `<HEAD~1` — any inequality / comparator string
+- `<-->` (Unicode arrow attempt), `<--`, `<==`, `<>` (empty fragment is parsed but `<>` adjacent to non-JSX text can confuse the lexer)
+- `< 5` with a space IS safe (JSX requires no whitespace after `<` before the tag name; lexer falls back to text)
+
+**Signal vs noise rule:** Always signal — the build correctly rejects this. The deploy failure is informative, not a flake. **Critical: this kind of failure can land silently** because:
+
+1. Pre-commit hooks don't compile MDX (the SCHEMA_DRIFT + CASE_STUDY checks don't validate render)
+2. PR-level CI (`verify` + `gates`) skips MDX render checks for docs-only PRs
+3. Vercel **preview** deploy on the PR shows `Vercel: fail` as a check but is **not a required check** in branch protection (so PR can merge anyway)
+4. The first sign that production is broken is when the next commit's production deploy also fails
+
+**Silence paths (in order of preference):**
+
+1. **Rewrite to avoid `<`** — `<5 min` → `in under 5 min`, `< 5 min` (space after `<`), `under 5 minutes`, `less than 5 min`, `~5 min`, `≤5 min` (Unicode `≤`). This is what the hotfix used.
+2. **HTML-escape** — `&lt;5 min` renders identically in the browser.
+3. **Code-span wrap** — `` `<5 min` `` (backticks). Renders as inline code; MDX parser treats code spans as opaque text.
+4. **Block-fence wrap** — for multi-line content, fence with ``` ``` blocks.
+
+**Prevention layer (operator action item for next session):** add MDX render to the verify CI workflow for fitme-story, OR require Vercel preview success in branch protection. Both close the silent-pass class for this category of bug.
+
+**First surfaced by:** fitme-story PR #129 (v7.9 dev-guide page bump, 2026-05-21). The bad string `<5 min` was authored as part of the v7.9 docs sweep. Caught + fixed within ~2 hours via hotfix PR #130 (no end-user-visible regression because Vercel served the previous successful deploy). Documented retrospectively here so the next operator authoring MDX content checks for `<digit` / `<non-letter` patterns before merging.
