@@ -122,6 +122,34 @@ def check_w1_ssh_agent() -> dict:
     }
 
 
+def check_ssd_health() -> dict:
+    """R5: SSD pre-flight probe (mount + free space + SMART + I/O errors).
+
+    Exit codes from scripts/check-ssd-health.sh:
+        0 — healthy
+        1 — warning (low free space or SMART degraded)
+        2 — critical (mount missing or SMART FAILED)
+    """
+    rc, out = run(["bash", "scripts/check-ssd-health.sh"], timeout=15)
+    summary = next(
+        (line for line in out.splitlines() if line.startswith("SSD health:")),
+        "SSD health: probe failed",
+    )
+    if rc == 0:
+        status = "ok"
+    elif rc == 1:
+        status = "warning"
+    else:
+        status = "warning"  # advisory; never block dispatch on this
+    return {
+        "name": "ssd_health",
+        "status": status,
+        "detail": summary.replace("SSD health: ", "")
+                  + " — re-run `bash scripts/check-ssd-health.sh` for full output",
+        "blocking": False,
+    }
+
+
 def check_pr_cache_fresh() -> dict:
     """v7.8.4 PR_CACHE_STALE prevention."""
     rc, out = run(["python3", "scripts/ensure-pr-cache-fresh.py", "--quiet"], timeout=30)
@@ -326,6 +354,7 @@ def run_preflight(work_type: str, feature: str | None) -> dict:
 
     # Always-run (every work_type)
     checks.append(check_w1_ssh_agent())
+    checks.append(check_ssd_health())
     checks.append(check_pr_cache_fresh())
     checks.append(check_branch_isolation())
     checks.append(check_integrity())
