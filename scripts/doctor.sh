@@ -56,6 +56,22 @@ else
   warn "gh auth" "not authenticated; run \`gh auth login\`"
 fi
 
+# 2b. Git signing key — checks if hardware-backed (FIDO2 sk-* prefix)
+signing_key=$(git config --global user.signingkey 2>/dev/null || echo "")
+if [[ -n "$signing_key" && -f "$signing_key" ]]; then
+  key_type=$(head -1 "$signing_key" | awk '{print $1}')
+  fp=$(ssh-keygen -lf "$signing_key" 2>/dev/null | awk '{print $2}' | head -c 16)
+  if [[ "$key_type" == sk-* ]]; then
+    ok "signing key" "FIDO2 hardware-backed ($key_type, ${fp}...)"
+  else
+    warn "signing key" "soft key ($key_type, ${fp}...) — consider YubiKey FIDO2 cut-over"
+  fi
+elif [[ -n "$signing_key" ]]; then
+  warn "signing key" "configured but file missing: $signing_key"
+else
+  warn "signing key" "git config user.signingkey not set"
+fi
+
 # 3. Git hooks
 hooks_path=$(git config core.hooksPath 2>/dev/null || echo "")
 if [[ "$hooks_path" == ".githooks" ]]; then
