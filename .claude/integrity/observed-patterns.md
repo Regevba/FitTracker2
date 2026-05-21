@@ -830,3 +830,23 @@ Last refreshed: 2026-05-15.
 3. **Add both names in Vercel env-vars** (mechanical mirror) — manual + duplicative.
 
 **First surfaced by:** UCC passkey security hardening T20 manual verification (2026-05-20). Documented in [`docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md`](../../docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md) §6.3.
+
+---
+
+### W14 — Code Connect `figma.connect()` rejects page frames as targets (2026-05-20)
+
+**Trigger:** `figma-code-connect-publish` CI workflow fails with `Validation failed for <Component> (...node-id=N): corresponding node is not a component or component set`.
+
+**Why expected:** The `@figma/code-connect` validator requires the target Figma node to be a **component** or **component-set** — regular frames (page frames, group frames, instance frames) are rejected even though they're valid Figma node types. Operators sometimes author Code Connect mappings against page-level frames intuitively (1 page in code ↔ 1 frame in Figma) without realizing the Code Connect API only supports component-typed targets.
+
+**Signal vs noise rule:** Always signal — the CI failure is correct. The fix is either to convert the page frame into a Figma component-set OR to remove the page-level mapping. Don't ignore.
+
+**Silence paths:**
+
+1. **Convert the page frame to a Figma component-set** — open the file in Figma, select the frame group, "Create Component Set" or "Promote to component-set". Each variant becomes a Properties value (e.g. `state: idle | pending | error`, `device: mobile | desktop`). The page-level `.figma.tsx` mapping then validates because the target is a component-set. Code Connect can also use `figma.enum(...)` to map React props to component-set properties.
+2. **Remove the page-level `.figma.tsx`** — accept that page composition isn't a Code Connect concern. Map only the leaf components (form components, atomic UI primitives). The Figma frames remain useful as design references without needing CI validation.
+3. **Comment out the `figma.connect()` call** in the `.figma.tsx` file temporarily while waiting for a future Figma session to convert frames to component-sets. Less clean than (2) but preserves the file as a TODO marker.
+
+**Recommended for product pages:** option (1) — page frames typically have inherent variants (idle/loading/error states) that map naturally to a component-set. Option (2) is the right call only if the page genuinely is a one-off composition (no recurring use across the design).
+
+**First surfaced by:** `ucc-sign-in-figma-mapping` enhancement on `ucc-passkey-auth` (2026-05-20). Documented in [`docs/case-studies/ucc-passkey-auth-case-study.md`](../../docs/case-studies/ucc-passkey-auth-case-study.md) §99 (UU4 2026-05-20 entry).
