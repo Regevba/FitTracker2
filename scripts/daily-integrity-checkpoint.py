@@ -177,6 +177,71 @@ def git_context(repo: Path) -> dict:
     }
 
 
+def hardware_context(mount: Path = Path("/Volumes/DevSSD")) -> dict:
+    """Capture SSD identity for the volume hosting the repo.
+
+    Surfaces UUID + media name + protocol + size so that replug events
+    (UUID change) and drive swaps (media name change) are visible
+    post-hoc in the daily ledger. Required for R4 (replug watcher) and
+    R12 (off-SSD heartbeat). See FIT-169.
+
+    Returns {"available": False} on any failure or non-macOS host so
+    the daily checkpoint never breaks because of hardware probing.
+    """
+    if sys.platform != "darwin" or shutil.which("diskutil") is None:
+        return {"available": False, "reason": "non-darwin-or-no-diskutil"}
+    if not mount.exists():
+        return {"available": False, "reason": f"mount-not-found:{mount}"}
+
+    rc_v, vol_info = run(["diskutil", "info", str(mount)], timeout=10)
+    if rc_v != 0:
+        return {"available": False, "reason": "diskutil-info-volume-failed"}
+
+    fields = {
+        "device_identifier": None,
+        "volume_uuid": None,
+        "volume_name": None,
+        "mount_point": str(mount),
+        "filesystem": None,
+    }
+    for raw in vol_info.splitlines():
+        line = raw.strip()
+        if line.startswith("Device Identifier:"):
+            fields["device_identifier"] = line.split(":", 1)[1].strip()
+        elif line.startswith("Volume UUID:"):
+            fields["volume_uuid"] = line.split(":", 1)[1].strip()
+        elif line.startswith("Volume Name:"):
+            fields["volume_name"] = line.split(":", 1)[1].strip()
+        elif line.startswith("File System Personality:"):
+            fields["filesystem"] = line.split(":", 1)[1].strip()
+
+    # Parent disk for media name + protocol (the volume is e.g. disk5s1; parent is disk5).
+    parent_disk = None
+    dev = fields["device_identifier"] or ""
+    if dev.startswith("disk"):
+        import re
+        m = re.match(r"(disk\d+)", dev)
+        if m:
+            parent_disk = m.group(1)
+
+    if parent_disk:
+        rc_d, disk_info = run(["diskutil", "info", parent_disk], timeout=10)
+        if rc_d == 0:
+            for raw in disk_info.splitlines():
+                line = raw.strip()
+                if line.startswith("Device / Media Name:"):
+                    fields["media_name"] = line.split(":", 1)[1].strip()
+                elif line.startswith("Protocol:"):
+                    fields["protocol"] = line.split(":", 1)[1].strip()
+                elif line.startswith("Disk Size:"):
+                    fields["disk_size"] = line.split(":", 1)[1].strip()
+                elif line.startswith("SMART Status:"):
+                    fields["smart_status"] = line.split(":", 1)[1].strip()
+
+    fields["available"] = True
+    return fields
+
+
 def collect_metrics(make_outputs: dict) -> dict:
     findings, advisory = parse_integrity_findings(make_outputs["integrity-check"]["output"])
     block, adv2 = parse_completeness_audit(make_outputs["feature-completeness-audit"]["output"])
@@ -292,14 +357,24 @@ def write_snapshot(target_dir: Path, make_outputs: dict, metrics: dict) -> bool:
         return False
 
 
-def write_manifest(target_dir: Path, metrics: dict, ft2_git: dict, fs_git: dict) -> None:
+def write_manifest(target_dir: Path, metrics: dict, ft2_git: dict, fs_git: dict, hw: dict | None = None) -> None:
     iso = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    if hw and hw.get("available"):
+        # Trim "1000.0 GB (999995129856 Bytes) (exactly ...)" to just "1000.0 GB" for display.
+        size_display = (hw.get("disk_size") or "?").split("(")[0].strip()
+        hw_line = (
+            f"**SSD:** {hw.get('media_name','?')} · {size_display} · "
+            f"{hw.get('protocol','?')} · UUID `{hw.get('volume_uuid','?')}`"
+        )
+    else:
+        hw_line = "**SSD:** not captured"
     manifest = f"""# Daily Integrity Checkpoint — {target_dir.name}
 
 **Created:** {iso}
 **Trigger:** daily-integrity-checkpoint.py
 **FT2 commit:** {ft2_git.get('commit','?')} (branch: {ft2_git.get('branch','?')}, dirty: {ft2_git.get('dirty_files',0)} files)
 **fitme-story commit:** {fs_git.get('commit','?')} (branch: {fs_git.get('branch','?')}, dirty: {fs_git.get('dirty_files',0)} files)
+{hw_line}
 
 ## Top-line metrics
 
@@ -589,15 +664,16 @@ def main():
     log("[1/5] Running all 6 make targets...")
     make_outputs = capture_make_outputs()
 
-    log("[2/5] Collecting metrics + git context...")
+    log("[2/5] Collecting metrics + git + hardware context...")
     metrics = collect_metrics(make_outputs)
     ft2_git = git_context(REPO_ROOT)
     fs_git = git_context(FITME_STORY_REPO)
+    hw = hardware_context()
 
     log(f"[3/5] Writing snapshot to local: {local_dir}")
     local_ok = write_snapshot(local_dir, make_outputs, metrics)
     if local_ok:
-        write_manifest(local_dir, metrics, ft2_git, fs_git)
+        write_manifest(local_dir, metrics, ft2_git, fs_git, hw)
         log(f"      ✓ {len(list(local_dir.rglob('*')))} files")
 
     log(f"[4/5] Writing snapshot to SSD: {ssd_dir}")
@@ -605,7 +681,7 @@ def main():
     if SSD_BACKUP_ROOT.parent.exists():  # /Volumes/DevSSD/ mounted
         ssd_ok = write_snapshot(ssd_dir, make_outputs, metrics)
         if ssd_ok:
-            write_manifest(ssd_dir, metrics, ft2_git, fs_git)
+            write_manifest(ssd_dir, metrics, ft2_git, fs_git, hw)
             log(f"      ✓ {len(list(ssd_dir.rglob('*')))} files")
     else:
         log(f"      ⚠ SSD not mounted ({SSD_BACKUP_ROOT.parent}); skipping SSD copy")
@@ -624,6 +700,7 @@ def main():
         "ft2_dirty": ft2_git.get("dirty_files", 0),
         "fitme_story_commit": fs_git.get("commit", "?"),
         "fitme_story_branch": fs_git.get("branch", "?"),
+        "hardware": hw,
         "metrics": metrics,
         "regression": regression,
         "deltas_vs_prev": deltas,
