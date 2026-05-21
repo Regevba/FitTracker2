@@ -1,0 +1,36 @@
+# EditorConfig — R6 from 2026-05-19 dev-env audit.
+#
+# Cross-editor formatting rules. Cuts whitespace-drift PR noise across
+# operator + Claude-agent sessions + future contributors.
+# https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 100
+
+[*.{swift,py}]
+indent_size = 4
+
+[*.{md,mdx}]
+# Markdown lines can legitimately exceed line length (long URLs, prose);
+# don't auto-trim trailing whitespace because Markdown uses "  " (2 spaces)
+# as a hard line break.
+max_line_length = off
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab
+
+[*.{yml,yaml,json,jsonl}]
+indent_size = 2
+
+[*.{tsx,ts,jsx,js,mjs,cjs}]
+indent_size = 2
+quote_type = single

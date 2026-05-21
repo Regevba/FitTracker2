@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "swiftlang.swift",
+    "ms-python.python",
+    "ms-python.vscode-pylance",
+    "redhat.vscode-yaml",
+    "editorconfig.editorconfig",
+    "github.vscode-pull-request-github",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "yzhang.markdown-all-in-one",
+    "davidanson.vscode-markdownlint",
+    "figma.figma-vscode-extension",
+    "anthropic.claude-code"
+  ]
+}

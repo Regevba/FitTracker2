@@ -1,0 +1,22 @@
+# Tool-versions pin file for mise / asdf — R1 from 2026-05-19 dev-env audit.
+#
+# Eliminates "works on my Mac" drift between operator sessions, Claude
+# agents in subagent dispatch, and any future contributor's checkout.
+# Daily-checkpoint cron + integrity-cycle workflow rely on stable Node
+# + Python versions; without a pin, a Homebrew bump silently changes
+# downstream behavior.
+#
+# Versions captured 2026-05-21 from the operator's working toolchain:
+#   node --version    -> v24.14.0
+#   python3 --version -> Python 3.14.4
+#   swift --version   -> Apple Swift 6.3.1 (Xcode-controlled; pinned declaratively for parity)
+#
+# Pin source of truth: this file. To bump a version, update this line +
+# verify on a feature/chore branch BEFORE merging to main.
+#
+# If `mise` is installed and operator runs `mise install` from repo root,
+# the listed versions auto-install + activate per-shell.
+
+node 24.14.0
+python 3.14.4
+swift 6.3.1
