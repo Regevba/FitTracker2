@@ -76,7 +76,7 @@ jobs:
 
       - name: Open digest issue on high/critical findings
         if: steps.aggregate.outputs.high != '0' || steps.aggregate.outputs.critical != '0'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           HIGH: ${{ steps.aggregate.outputs.high }}
           CRITICAL: ${{ steps.aggregate.outputs.critical }}
