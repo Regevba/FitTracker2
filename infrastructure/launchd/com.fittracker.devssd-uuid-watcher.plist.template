@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  TEMPLATE — DO NOT load directly. Install via `make install-devssd-watcher`.
+
+  Replug-detection watcher (R4 from dev-env audit). Fires every 5 minutes
+  and runs scripts/check-devssd-uuid.sh. Silent no-op when the SSD's volume
+  UUID matches the baseline captured in R3's daily integrity checkpoint;
+  loud warning + macOS notification + audit-log entry when it changes.
+
+  This is what catches:
+    - Operator replugs the drive (USB-C cable disconnect/reconnect)
+    - A different drive gets mounted at /Volumes/DevSSD (backup, clone)
+    - Filesystem corruption that re-mounts under a new UUID
+
+  KnownIssue: BRANCH_ISOLATION_LAUNCHD_DRIFT (v7.8.1 advisory) applies —
+  template anchors to /Volumes/DevSSD/FitTracker2. If the SSD ever unmounts,
+  the script's exit-2 path logs probe_failed and the next fire retries.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fittracker.devssd-uuid-watcher</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Volumes/DevSSD/FitTracker2/scripts/check-devssd-uuid.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Volumes/DevSSD/FitTracker2</string>
+
+    <key>StartInterval</key>
+    <integer>300</integer>
+
+    <key>StandardOutPath</key>
+    <string>/Users/regevbarak/Library/Logs/fittracker-devssd-uuid-watcher.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/regevbarak/Library/Logs/fittracker-devssd-uuid-watcher.err</string>
+
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>

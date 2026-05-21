@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -489,6 +489,33 @@ install-daily-cron:
 
 uninstall-daily-cron:
 	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.daily-integrity-checkpoint.plist; \
+	if [ ! -f "$$PLIST_DEST" ]; then \
+		echo "Not installed: $$PLIST_DEST"; \
+		exit 0; \
+	fi; \
+	launchctl unload "$$PLIST_DEST" 2>/dev/null || true; \
+	rm "$$PLIST_DEST"; \
+	echo "Uninstalled: $$PLIST_DEST"
+
+# R4 (FIT-170): replug-detection watcher. Fires every 5 min; loud warning when
+# /Volumes/DevSSD's volume UUID changes vs R3's baseline. Idempotent install.
+install-devssd-watcher:
+	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.devssd-uuid-watcher.plist; \
+	if [ -f "$$PLIST_DEST" ]; then \
+		echo "Already installed: $$PLIST_DEST"; \
+		echo "To reinstall: make uninstall-devssd-watcher && make install-devssd-watcher"; \
+		exit 0; \
+	fi; \
+	cp infrastructure/launchd/com.fittracker.devssd-uuid-watcher.plist.template "$$PLIST_DEST"; \
+	launchctl load "$$PLIST_DEST"; \
+	echo "Installed launchd watcher: $$PLIST_DEST"; \
+	echo "Polls /Volumes/DevSSD volume UUID every 5 min vs R3 baseline."; \
+	echo "Verify with: launchctl list | grep devssd-uuid"; \
+	echo "Audit log:   .claude/logs/devssd-uuid-watcher.log"; \
+	echo "stdout/err:  ~/Library/Logs/fittracker-devssd-uuid-watcher.{log,err}"
+
+uninstall-devssd-watcher:
+	@PLIST_DEST=$$HOME/Library/LaunchAgents/com.fittracker.devssd-uuid-watcher.plist; \
 	if [ ! -f "$$PLIST_DEST" ]; then \
 		echo "Not installed: $$PLIST_DEST"; \
 		exit 0; \
