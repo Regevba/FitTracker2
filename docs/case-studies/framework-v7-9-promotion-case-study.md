@@ -25,7 +25,7 @@ kill_criteria:
   - "False positive rate >5% during the 14d calibration window for any proposed-promotion gate"
   - "Post-promotion bug surfaces requiring rollback within T+7d soak — defer promotion or restore advisory mode"
 kill_criteria_resolution: "pending — evaluated 2026-05-28 (B2 post-v7.9 baseline snapshot per .claude/shared/must-have-cadence-followups.md §B2). Will record final disposition (passed / partially_passed / tripped) here on that date with deltas."
-related_prs: []
+related_prs: [417, 413, 415, 416]
 case_study_showcase: null
 external_audit_status: pending
 status: live
@@ -128,15 +128,33 @@ Setting the flag to `False` cleanly converts every previously-printed advisory f
 | C-4 | Dev-guide §2.4.1 promoted sub-section | `docs/architecture/dev-guide-v1-to-v7-7.md` | ✓ |
 | C-5 | Honesty ledger entry FT2-FH-003 (calibration discipline pattern) | `docs/case-studies/framework-honesty-ledger.md` | ✓ |
 | C-7 | This case study | `docs/case-studies/framework-v7-9-promotion-case-study.md` (this file) | ✓ |
-| C-6 | Linear epic + per-gate sub-issues | (Linear) | Post-PR-open |
+| C-6 | Linear epic + per-gate sub-issues | (Linear) | ✓ Shipped: FIT-72 In Progress + PR #417 attached + freeze-day comment posted + 9 sub-issues updated (FIT-78/79/80/81/84 Done, FIT-82/83 Canceled with "already enforced at v7.8/v7.8.3" note, FIT-85/86 In Progress) |
 
-State.json transitions:
+### PR merge sequence (all 4 landed 2026-05-21, freeze day) [T1]
+
+| PR | Title | Merge SHA | Merged at |
+|---|---|---|---|
+| [#413](https://github.com/Regevba/FitTracker2/pull/413) | docs(ucc-passkey-auth-security-hardening): Phase 8 docs — case study + cadence + W12/W13 patterns | `e05eb320` | 2026-05-21T04:54:40Z |
+| [#415](https://github.com/Regevba/FitTracker2/pull/415) | chore(ucc-sign-in-figma-mapping): reconcile state — 8/11 actually shipped + W14 catalog entry | `424963fd` | 2026-05-21T05:11:45Z |
+| [#416](https://github.com/Regevba/FitTracker2/pull/416) | docs(master-plan): fitme-story discoverability plan — 4-phase, ~11-13h, target 50+/wk by 2026-06-30 | `0178a9c2` | 2026-05-21T05:28:56Z |
+| [#417](https://github.com/Regevba/FitTracker2/pull/417) | **feat(framework-v7-9-promotion): flip 3 advisory gates → enforced (single-flag, B1 GREEN)** | **`ea53ff44`** | **2026-05-21T05:44:53Z** |
+
+PR #417 carried 10 files / 553 ins / 28 del. The squash-merge commit is the marker for "v7.9 promotion enforcement live on `main`."
+
+State.json transitions (final at v7.9 ship):
 
 - `phases.research.status` → `approved` (decision: PROMOTE all 3)
 - `phases.prd.status` → `skipped` (reason: spec pre-exists at infra-master-plan §2.x)
 - `phases.tasks_phase.status` → `skipped` (reason: tasks pre-defined in post-v7-9-candidate-plan §1)
-- `current_phase`: `research` → `implement`
-- `timing.phases.research.ended_at` + `timing.phases.implement.started_at`
+- `phases.implement.status` → `approved` (PR #417 merged ea53ff4 at 05:44:53Z)
+- `phases.test.status` → `approved` (auto-passed via CI: 8/8 GREEN; ci_passed=true)
+- `phases.review.status` → `approved` (PR self-review + pr-integrity bot GREEN + operator batch preauthorization)
+- `phases.merge.status` → `approved` (pr_number=417, merge_commit=ea53ff4459921948d029c4a3ef3bd57a29aa4d2c, merged_at=2026-05-21T05:44:53Z, merge_method=squash)
+- `phases.docs.status` → `in_progress` (this close-out PR)
+- `phases.learn.status` → `pending` (Phase E 2026-05-21 → 2026-06-04; B2 baseline 2026-05-28)
+- `current_phase`: `research` → `implement` → `docs` (single PR + close-out PR)
+- `related_prs`: `[417, 413, 415, 416]`
+- `linear`: `FIT-72`
 - `branch` set to `feature/v7-9-promotion`
 
 ## Section 6 — Phase E validation calendar (2026-05-21 → 2026-06-04) [T2]
