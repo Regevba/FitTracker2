@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-18T13:47:37Z",
+  "updated_at": "2026-05-21T04:22:10Z",
   "events": [
     {
       "event_type": "phase_transition",
@@ -202,6 +202,32 @@
       },
       "actor": "claude-opus-4-7",
       "status": "completed",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-21T04:21:58Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "B1 freeze checklist GREEN. PROMOTE decision: BRANCH_ISOLATION_VIOLATION (Modes B + C, single ADVISORY_MODE flag at scripts/check-state-schema.py:132) + FEATURE_CLOSURE_COMPLETENESS write-time. Criteria: (1) Coverage emitted \u2014 BRANCH_ISO Mode B 18 rows / Mode C 13 rows / FEATURE_CLOSURE 13 rows over 14d, 0 candidates=0 rows; (2) No false positives \u2014 all skip_reasons map to legitimate cases (not_infra_commit_level, not_complete_transition, opt_out_false_or_absent); (3) No silent skips; (4) Reversibility \u2014 single-line revert. ISOLATION_OPT_OUT_REASON_MISSING already enforced at v7.8.1. Mechanism A coverage + Mechanism C session-attribution + CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT + Mechanism E merge driver already enforced at v7.8/v7.8.3.",
+      "artifacts": [
+        "docs/master-plan/infra-master-plan-2026-05-12.md#2.2"
+      ],
+      "metrics": {},
+      "actor": "operator",
+      "status": "approved",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-21T04:22:10Z",
+      "event_type": "phase_started",
+      "phase": "implement",
+      "summary": "Implementing 6 side-effects of v7.9 promotion (C-1 through C-5 + C-7): (C-2) flip BRANCH_ISOLATION_ADVISORY_MODE=False at check-state-schema.py:132; (C-1) update CLAUDE.md Data Integrity Framework section + add v7.9 entry; (C-3) create .claude/entrypoints/framework-v7-9.md; (C-4) update dev-guide-v1-to-v7-7.md \u00a72.4; (C-5) add FT2-FH-002 to framework-honesty-ledger.md; (C-7) author framework-v7-9-promotion-case-study.md. Phases prd + tasks_phase recorded as SKIPPED (spec pre-exists at infra-master-plan-2026-05-12.md \u00a72.x + \u00a73.6; tasks pre-defined at post-v7-9-candidate-plan-2026-05-20.md \u00a71).",
+      "artifacts": [
+        "docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md#1"
+      ],
+      "metrics": {},
+      "actor": "operator",
+      "status": "in_progress",
       "recording_mode": "contemporaneous"
     }
   ]

@@ -132,6 +132,87 @@ Issue #140 was closed in spec, open in practice.
 
 ---
 
+## FT2-FH-003 — v7.9 promotion succeeded with no silent-pass; calibration discipline pattern codified
+
+**Status:** **CLOSED** at v7.9 ship (2026-05-21, single-session enforcement-flip on `feature/v7-9-promotion`).
+
+This entry is **not a correction.** It is a recorded discipline: the v7.9 promotion is the first framework-version flip to land with the 4-criterion Mechanism A calibration gate from infra-master-plan §2.2 already met for every candidate. v7.7 shipped a headline claim that turned out to be wrong (FT2-FH-001). v7.8.3 shipped a PR-cache assumption that turned out to be wrong (FT2-FH-002). v7.9 shipped only after the gates being promoted had emitted observed telemetry against the criteria they were going to enforce.
+
+**Decision context** (T1, captured 2026-05-21 from `.claude/logs/gate-coverage.jsonl`):
+
+| Gate | 14d rows (2026-05-07 → 2026-05-21) | candidates=0 rows | Skip reasons (all legitimate) |
+|---|---|---|---|
+| `BRANCH_ISOLATION_VIOLATION` Mode B | 18 | 0 | `not_infra_commit_level` × 13 |
+| `BRANCH_ISOLATION_VIOLATION` Mode C | 13 | 0 | (separate emission key) |
+| `FEATURE_CLOSURE_COMPLETENESS` write-time | 13 | 0 | `not_complete_transition` × 11, `no_phase_change` × 1 |
+
+**The 4-criterion checklist** (per infra-master-plan §2.2; the discipline being codified):
+
+1. **Coverage emitted** — ≥7 days of `{candidates, checked, skipped}` rows in `gate-coverage.jsonl` per candidate. Met: 14 days, 0 zero-candidate rows across all 3 gates.
+2. **No false positives** — every `failure` row maps to a legitimate violation in the staged diff (operator review). Met: 0 false-positive findings across the 14d window.
+3. **No silent skips** — `skipped` count tracks real reasons (out-of-scope files, exempt tags), not bugs. Met: all `skip_reasons` map to documented legitimate cases.
+4. **Reversibility** — advisory mode restorable in <5 min via single-line `BRANCH_ISOLATION_ADVISORY_MODE = True` revert + commit + merge. Verified locally.
+
+**What changed at v7.9 ship:**
+
+| File | Change | LoC |
+|---|---|---|
+| `scripts/check-state-schema.py:132` | `BRANCH_ISOLATION_ADVISORY_MODE = True → False` (single flag drives all 3 gates) | 1 |
+| `CLAUDE.md` | New "v7.9 Promotion Release" section + version-chain header update + 2 advisory→enforced annotations | ~50 |
+| `.claude/entrypoints/framework-v7-9.md` | New cold-start entrypoint | new file |
+| `docs/architecture/dev-guide-v1-to-v7-7.md` | §2.4.1 promoted sub-section | ~30 |
+| `docs/case-studies/framework-honesty-ledger.md` | This entry | ~70 |
+| `docs/case-studies/framework-v7-9-promotion-case-study.md` | New case study with B1 outcomes + Phase E calendar | new file |
+| `.claude/features/framework-v7-9-promotion/state.json` | Phase research → implement + skip prd + tasks_phase + timing | small |
+| `.claude/logs/framework-v7-9-promotion.log.json` | 2 Tier 2.2 log entries (phase_approved + phase_started) | small |
+
+**Discipline being codified** (T2, declarative — verifiable on next promotion):
+
+Every future advisory → enforced promotion must execute the B1-style freeze-day checklist before the flip lands:
+
+1. `make integrity-check` → must report 0 findings
+2. `make integrity-diff` → must report no regression vs the pre-window baseline anchor
+3. `make documentation-debt` → must report ≤ baseline open count
+4. `make measurement-adoption` → capture for the promotion record (snapshot of {features_total, fully_adopted, per-dimension coverage})
+5. `python3 scripts/membrane-status.py` → capture
+6. Last 14 days of `.claude/logs/gate-coverage.jsonl` analyzed — per candidate gate, verify (a) ≥7 days of emission, (b) zero candidates=0 rows, (c) all skip_reasons map to documented legitimate cases
+7. Per-gate decision recorded in the new framework version's case study + state.json `phases.research.decision` field
+8. Single-line flip + side-effects PR opened only after all 6 above are GREEN
+
+Any gate that fails any of the 4 §2.2 criteria stays advisory. Re-evaluation defaults to T+14d after the next attempted promotion window.
+
+**Why this matters** (T3, narrative):
+
+The 2026-04-21 Gemini independent audit's most consequential finding wasn't a specific bug — it was that the framework was shipping mechanisms (gates, advisories, scripts) faster than it was measuring whether those mechanisms actually fired. The v7.5 → v7.8 arc built the measurement infrastructure (Mechanism A coverage ledger, Mechanism C session attribution, Mechanism E merge driver, Mechanism F membrane status). v7.9 is the first promotion that *used* that infrastructure as a gate on its own promotion decision. The next promotion (v7.10 or whenever) will inherit the pattern: no flip without telemetry that the flip is needed and won't break the existing fleet.
+
+The framework now follows the same closure rule as the case-study layer: publish verbatim, then remediate. Mechanism A measures gates the same way case studies measure features. A future framework version that promotes a gate without 7d of Mechanism A data + 0-false-positive evidence + reversibility verified should be treated as a regression in framework discipline — flag it, roll it back, and document the decision in this ledger.
+
+**Tier tags:**
+
+- T1 — the 14d telemetry counts (`{18, 13, 13}` rows from `gate-coverage.jsonl`), the file-change LoC tally, the integrity-check baseline (0 findings, 1 advisory before commit), the per-feature B1 verification outputs.
+- T2 — the 4-criterion checklist becoming the canonical discipline for future promotions (declarative; verifiable on the next promotion's adherence).
+- T3 — the framework-discipline narrative about why this matters (interpretive synthesis).
+
+**Predecessors:**
+
+- [`FT2-FH-001`](#ft2-fh-001--v77-silent-pass-on-cache_hits_empty_post_v6) — v7.7 silent-pass on `CACHE_HITS_EMPTY_POST_V6` (0/46 effective coverage shipped under a "100% gated" headline).
+- [`FT2-FH-002`](#ft2-fh-002--v783-pr-cache-staleness-silent-pass) — v7.8.3 PR-cache-staleness silent-pass (33 false-positive findings on empty cache; closed at v7.8.4 with `PR_CACHE_STALE` auto-refresh).
+
+**Successor:** TBD — depends on Phase E soak outcome. The next entry will be created either (a) at v7.10 promotion (logging that the discipline held), or (b) if Phase E surfaces a regression requiring rollback, an immediate entry capturing what went wrong with the calibration interpretation.
+
+**Cross-references:**
+
+- v7.9 case study: [`docs/case-studies/framework-v7-9-promotion-case-study.md`](framework-v7-9-promotion-case-study.md)
+- v7.9 cold-start entrypoint: [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md)
+- CLAUDE.md v7.9 section: [`CLAUDE.md`](../../CLAUDE.md) — "v7.9 Promotion Release" section
+- Dev-guide §2.4.1: [`docs/architecture/dev-guide-v1-to-v7-7.md`](../architecture/dev-guide-v1-to-v7-7.md)
+- B1 freeze checklist: [`.claude/shared/must-have-cadence-followups.md`](../../.claude/shared/must-have-cadence-followups.md) §B1
+- Infra master plan promotion criteria: [`docs/master-plan/infra-master-plan-2026-05-12.md`](../master-plan/infra-master-plan-2026-05-12.md) §2.2
+- Pre-drafted day plan: [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../master-plan/post-v7-9-candidate-plan-2026-05-20.md)
+- Predecessor v7.8.1 (the gates being promoted): [`docs/case-studies/framework-v7-8-branch-isolation-case-study.md`](framework-v7-8-branch-isolation-case-study.md)
+
+---
+
 > _Next entry will be appended below this line when needed. Format
 > is FT2-FH-NNN with immutable monotonic numbering. Entries are never
 > silently edited; revisions are themselves new entries that

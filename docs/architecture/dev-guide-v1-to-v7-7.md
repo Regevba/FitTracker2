@@ -125,6 +125,32 @@ Full design: [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-
 
 **The v7.8 design principle:** every new mechanism ships with a coverage ledger (Mechanism A) so we can measure its effective coverage before promoting to enforced. v7.7's `CACHE_HITS_EMPTY_POST_V6` shipped at 0/46 effective coverage for 4 days because the gate read `created_at` while 43/46 features used the legacy `created` key — a silent-pass that Mechanism A would have caught immediately. v7.8's lesson is that we don't trust a gate until its coverage ledger says it's actually firing.
 
+### 2.4.1 v7.9 promotion outcome (shipped 2026-05-21)
+
+The 14-day Mechanism A telemetry window opened at v7.8.1 ship (2026-05-07) and closed 2026-05-21. The B1 freeze checklist [`.claude/shared/must-have-cadence-followups.md` §B1](../../.claude/shared/must-have-cadence-followups.md) was executed and all four §2.2 promotion criteria from [infra master plan](../master-plan/infra-master-plan-2026-05-12.md) were met for all three candidate gates.
+
+| Gate | Before v7.9 | After v7.9 | Telemetry over 14d |
+|---|---|---|---|
+| `BRANCH_ISOLATION_VIOLATION` Mode B (infra commit-level) | advisory | **enforced** | 18 rows, 0 zero-candidate, all skips legit |
+| `BRANCH_ISOLATION_VIOLATION` Mode C (per-state.json) | advisory | **enforced** | 13 rows, 0 zero-candidate |
+| `FEATURE_CLOSURE_COMPLETENESS` (write-time) | advisory | **enforced** | 13 rows, 0 zero-candidate |
+
+The flip is mechanically a single-line edit at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py): `BRANCH_ISOLATION_ADVISORY_MODE = True → False`. The same flag drives all three gates (`finding["advisory"] = BRANCH_ISOLATION_ADVISORY_MODE` for each of the 3 gates' findings), and the per-finding caller branches `if finding.get("advisory"): print to stderr; else: append to errors[]`. So the flip cleanly converts every previously-printed advisory finding into a blocking error, with no further code change.
+
+**Reversibility:** single-line revert + commit + merge to main = <5 min. Documented in [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md) reversibility-runbook section. Any rollback must record reason in [honesty ledger](../case-studies/framework-honesty-ledger.md) + the v7.9 case study §99.
+
+**Phase E validation calendar (2026-05-21 → 2026-06-04):** no new gates, no new test-discipline work starts. Operator monitors `gate-coverage.jsonl` for unexpected `failure` rows. B2 post-v7.9 baseline snapshot lands 2026-05-28 via `make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation`. v7.9.1 build window opens ~2026-06-04 with F16 try-repo harness + F17 last_fired_at index + F2 Phase 0 reality-check + F6 B_medium tier doc.
+
+**Gates that stay advisory by design (NOT promoted):**
+
+| Gate | Why |
+|---|---|
+| `BRANCH_ISOLATION_HISTORICAL` cycle-time | T17 forward-only audit — historical features predating the gate cannot retroactively pass |
+| `BRANCH_ISOLATION_LAUNCHD_DRIFT` cycle-time | T18 macOS-only — environment-specific |
+| `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror | T19 `--no-verify` bypass catcher — fires when write-time gate is bypassed |
+
+**Full lineage:** [v7.9 case study](../case-studies/framework-v7-9-promotion-case-study.md) | [v7.9 entrypoint](../../.claude/entrypoints/framework-v7-9.md) | [FT2-FH-003 honesty ledger entry](../case-studies/framework-honesty-ledger.md#ft2-fh-003).
+
 ---
 
 ## 3. Where the code lives

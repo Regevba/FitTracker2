@@ -124,12 +124,18 @@ _INFRA_PATH_GLOBS = (
     "Makefile",
 )
 
-# T6 (Block B): gate ships in advisory mode at v7.8 — fires telemetry but does
-# not block commits. v7.9 promotion flips this to True (blocking). The gate
-# can also be controlled per-feature via state.json::isolation_opt_out (Q3)
-# but that override does NOT apply when the staged commit is infra work
-# (Mode B always fires regardless of opt-out).
-BRANCH_ISOLATION_ADVISORY_MODE = True
+# T6 (Block B): gate shipped in advisory mode at v7.8.1 (2026-05-07); promoted
+# to enforced at v7.9 (2026-05-21) after 14 days of Mechanism A coverage
+# telemetry confirmed: ≥7d emission, 0 false positives, 0 zero-candidate rows.
+# This single flag controls 3 gates simultaneously: BRANCH_ISOLATION_VIOLATION
+# Mode B (infra commit-level), BRANCH_ISOLATION_VIOLATION Mode C (state.json
+# current_phase mutation), and FEATURE_CLOSURE_COMPLETENESS (case-study
+# completeness on current_phase=complete transitions). Setting back to True
+# reverts all three to advisory in <5 min (reversibility criterion #4).
+# Per-feature opt-out via state.json::isolation_opt_out (Q3) bypasses Mode C
+# only; Mode B (infra) always fires regardless. Promotion decision:
+# docs/case-studies/framework-v7-9-promotion-case-study.md.
+BRANCH_ISOLATION_ADVISORY_MODE = False
 
 # Canonical `framework_version` form. Accepts `v<major>.<minor>` and
 # `pre-v<major>.<minor>` (for features that predate framework versioning
