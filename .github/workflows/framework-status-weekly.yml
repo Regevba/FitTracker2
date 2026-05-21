@@ -235,7 +235,7 @@ jobs:
 
       - name: Open digest issue
         if: steps.compare.outputs.regression == 'true' || steps.trend.outputs.a2_gate_regression == 'true' || steps.trend.outputs.a4_dim_regression == 'true' || inputs.open_issue_on_no_regression == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           REGRESSION: ${{ steps.compare.outputs.regression }}
           A2_REGRESSION: ${{ steps.trend.outputs.a2_gate_regression }}

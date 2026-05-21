@@ -150,7 +150,7 @@ jobs:
 
       - name: Open issue on regression
         if: steps.check.outputs.regression == 'true'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         env:
           NEW_SNAPSHOT: ${{ steps.paths.outputs.new }}
           TIMESTAMP: ${{ steps.paths.outputs.timestamp }}

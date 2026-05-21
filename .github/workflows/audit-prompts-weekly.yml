@@ -33,7 +33,7 @@ jobs:
           python3 -m unittest scripts.audit.tests.test_check_prompts
       - name: Open issue on failure (scheduled only)
         if: ${{ failure() && github.event_name == 'schedule' }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const title = `audit-prompts-weekly: self-check failed on ${new Date().toISOString().split('T')[0]}`;
