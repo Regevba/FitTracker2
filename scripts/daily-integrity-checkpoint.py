@@ -177,6 +177,65 @@ def git_context(repo: Path) -> dict:
     }
 
 
+def gh_auth_context() -> dict:
+    """Capture gh auth health + token-expiry signal for R13 (FIT-179).
+
+    Surfaces:
+      - `gh` not installed              → {"available": False, "reason": "no-gh"}
+      - `gh auth status` returns non-0  → {"available": True, "authenticated": False}
+      - authenticated                   → {available: True, authenticated: True,
+                                            login, scopes, token_expires_at,
+                                            expires_in_days}
+
+    Token expiry: classic PATs + OAuth tokens (`gho_*`) have NO expiry header.
+    Only fine-grained PATs return `github-authentication-token-expiration` on
+    API responses. The function captures it when present so the SessionStart
+    + daily-checkpoint warning surfaces work the day a fine-grained PAT
+    enters use.
+    """
+    if shutil.which("gh") is None:
+        return {"available": False, "reason": "no-gh"}
+
+    rc, _ = run(["gh", "auth", "status"], timeout=10)
+    if rc != 0:
+        return {"available": True, "authenticated": False,
+                "reason": "gh-auth-status-failed"}
+
+    rc_u, user_out = run(["gh", "api", "user", "--jq", ".login"], timeout=15)
+    login = user_out.strip() if rc_u == 0 else "?"
+
+    # Try to capture token-expiry header (fine-grained PATs only)
+    rc_h, hdr_out = run(["gh", "api", "-i", "user"], timeout=15)
+    token_expires_at = None
+    expires_in_days = None
+    scopes: list[str] = []
+    if rc_h == 0:
+        for raw in hdr_out.splitlines():
+            line = raw.strip()
+            low = line.lower()
+            if low.startswith("github-authentication-token-expiration:"):
+                token_expires_at = line.split(":", 1)[1].strip()
+                try:
+                    exp = dt.datetime.strptime(
+                        token_expires_at.replace(" UTC", ""), "%Y-%m-%d %H:%M:%S"
+                    ).replace(tzinfo=dt.timezone.utc)
+                    delta = exp - dt.datetime.now(dt.timezone.utc)
+                    expires_in_days = max(0, delta.days)
+                except (ValueError, TypeError):
+                    pass
+            elif low.startswith("x-oauth-scopes:"):
+                scopes = [s.strip() for s in line.split(":", 1)[1].split(",") if s.strip()]
+
+    return {
+        "available": True,
+        "authenticated": True,
+        "login": login,
+        "scopes": scopes,
+        "token_expires_at": token_expires_at,
+        "expires_in_days": expires_in_days,
+    }
+
+
 def hardware_context(mount: Path = Path("/Volumes/DevSSD")) -> dict:
     """Capture SSD identity for the volume hosting the repo.
 
@@ -669,6 +728,7 @@ def main():
     ft2_git = git_context(REPO_ROOT)
     fs_git = git_context(FITME_STORY_REPO)
     hw = hardware_context()
+    gh_auth = gh_auth_context()
 
     log(f"[3/5] Writing snapshot to local: {local_dir}")
     local_ok = write_snapshot(local_dir, make_outputs, metrics)
@@ -701,6 +761,7 @@ def main():
         "fitme_story_commit": fs_git.get("commit", "?"),
         "fitme_story_branch": fs_git.get("branch", "?"),
         "hardware": hw,
+        "gh_auth": gh_auth,
         "metrics": metrics,
         "regression": regression,
         "deltas_vs_prev": deltas,
@@ -723,6 +784,24 @@ def main():
     elif REGRESSION_FLAG.exists():
         REGRESSION_FLAG.unlink()
         log(f"\n✓ Regression cleared since previous checkpoint.")
+
+    # R13 (FIT-179): gh auth warning. Surfaces critical conditions:
+    #   1. gh missing
+    #   2. gh auth status fails (token revoked / network)
+    #   3. fine-grained PAT expires in <14d
+    if gh_auth.get("available") is False:
+        log(f"\n⚠ gh not installed — required for PR cache + ledger PR cites")
+    elif not gh_auth.get("authenticated", True):
+        log(f"\n⚠ gh auth failed — run `gh auth login` to re-authenticate")
+    elif gh_auth.get("expires_in_days") is not None:
+        days = gh_auth["expires_in_days"]
+        if days <= 14:
+            log(f"\n⚠ gh token expires in {days}d ({gh_auth.get('token_expires_at','?')})")
+            log(f"   Rotate via Settings → Developer settings → Tokens")
+        else:
+            log(f"\n✓ gh authenticated as {gh_auth.get('login','?')} (token expires in {days}d)")
+    else:
+        log(f"\n✓ gh authenticated as {gh_auth.get('login','?')} (OAuth/classic; no fixed expiry)")
 
     log(f"\n✓ Checkpoint complete.")
     log(f"  Local: {local_dir} ({'OK' if local_ok else 'FAILED'})")
