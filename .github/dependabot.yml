@@ -1,0 +1,74 @@
+# Dependabot config — keeps deps + GH Actions current.
+#
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # ─────────────────────────────────────────────────────────────
+  # GitHub Actions — pin to SHA, auto-PR on upgrade
+  # ─────────────────────────────────────────────────────────────
+  # Tier S security hardening (2026-05-21): tag-retag attack
+  # vector — a compromised maintainer can retag e.g. `@v4` at a
+  # malicious SHA. Dependabot opens PRs that pin to specific SHAs;
+  # auto-merge them after CI passes.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    # When upgrading from @v4 to @v5, Dependabot writes the SHA in
+    # the version field automatically (modern behavior). Operator
+    # confirms via PR review then squash-merges.
+
+  # ─────────────────────────────────────────────────────────────
+  # npm (root + website/dashboard if those exist as separate trees)
+  # ─────────────────────────────────────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "npm"
+    groups:
+      # Group minor + patch upgrades so the PR cadence stays manageable.
+      # Majors stay as individual PRs for explicit review.
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ─────────────────────────────────────────────────────────────
+  # Python (HADF analysis venv via ai-engine)
+  # ─────────────────────────────────────────────────────────────
+  - package-ecosystem: "pip"
+    directory: "/ai-engine"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Etc/UTC"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "python"

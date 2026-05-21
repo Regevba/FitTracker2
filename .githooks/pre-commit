@@ -123,3 +123,80 @@ for prereg in $(git diff --cached --name-only | grep -E "^\.claude/shared/hadf/p
         fi
     fi
 done
+
+# ── GitHub Security Tier S (added 2026-05-21) ──────────────────────────────
+# Pre-commit checks for: (1) file-size limit (>5MB rejected), (2) high-confidence
+# secret patterns (AWS access keys, GitHub PATs, private-key markers). Local
+# secret-scan as belt-and-braces to GitGuardian server-side scan: catches
+# secrets BEFORE they leave the machine (vs. AFTER in PR audit).
+# Bypass: git commit --no-verify (use only with full understanding of the risk).
+
+# File-size guard: anything >5MB committed is almost always a mistake.
+SECURITY_MAX_BYTES="${SECURITY_MAX_BYTES:-5242880}"  # 5 MB default
+oversize_failed=0
+for f in $(git diff --cached --name-only --diff-filter=ACM); do
+    [ -f "$f" ] || continue
+    size=$(wc -c <"$f" | tr -d ' ')
+    if [ "$size" -gt "$SECURITY_MAX_BYTES" ]; then
+        echo "ERROR: $f is $(printf '%.1f' "$(echo "$size / 1048576" | bc -l)") MB (limit ${SECURITY_MAX_BYTES} B)"
+        echo "       Either reduce, move to a release artifact, or set SECURITY_MAX_BYTES=$((size+1024)) for this commit."
+        oversize_failed=1
+    fi
+done
+if [ "$oversize_failed" -ne 0 ]; then
+    exit 1
+fi
+
+# Secret-pattern guard: high-confidence patterns only (no generic API-key
+# regex; too noisy). Skip the pre-commit hook file itself + setup runbook +
+# test/fixture dirs that intentionally document the patterns.
+secret_failed=0
+secret_patterns=(
+    'AKIA[0-9A-Z]{16}'                            # AWS access key
+    'ghp_[A-Za-z0-9]{36}'                         # GitHub classic PAT
+    'gho_[A-Za-z0-9]{36}'                         # GitHub OAuth token
+    'github_pat_[A-Za-z0-9_]{82}'                 # GitHub fine-grained PAT
+    'glpat-[A-Za-z0-9_-]{20}'                     # GitLab PAT
+    '-----BEGIN (RSA |DSA |EC |OPENSSH |PGP )?PRIVATE KEY-----'  # private key
+    'xoxb-[0-9]+-[0-9]+-[A-Za-z0-9]+'             # Slack bot token
+    'sk-[A-Za-z0-9]{48,}'                         # OpenAI API key
+)
+secret_skip_patterns=(
+    '^\.githooks/pre-commit$'
+    '^docs/setup/'
+    '^scripts/audit-'
+    '^\.claude/skills/'
+    'fixtures/'
+    'observed-patterns\.md'
+)
+for f in $(git diff --cached --name-only --diff-filter=ACM); do
+    [ -f "$f" ] || continue
+    # Skip well-known false-positive paths (this hook + setup docs + fixtures)
+    skip=0
+    for skip_re in "${secret_skip_patterns[@]}"; do
+        if echo "$f" | grep -qE "$skip_re"; then
+            skip=1
+            break
+        fi
+    done
+    [ "$skip" -eq 1 ] && continue
+    # Skip files >2MB (likely binary; grep noisy)
+    fsize=$(wc -c <"$f" | tr -d ' ')
+    [ "$fsize" -gt 2097152 ] && continue
+    for pat in "${secret_patterns[@]}"; do
+        if grep -nE "$pat" "$f" >/dev/null 2>&1; then
+            match=$(grep -nE "$pat" "$f" | head -1)
+            echo "ERROR: possible secret matching /$pat/ in $f"
+            echo "       $match"
+            secret_failed=1
+        fi
+    done
+done
+if [ "$secret_failed" -ne 0 ]; then
+    echo ""
+    echo "Pre-commit rejected: high-confidence secret pattern detected."
+    echo "If this is a false positive, you can either:"
+    echo "  1. Add the path to secret_skip_patterns in .githooks/pre-commit"
+    echo "  2. git commit --no-verify (use ONLY if certain it's not a real secret)"
+    exit 1
+fi
