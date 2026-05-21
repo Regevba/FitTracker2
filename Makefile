@@ -89,6 +89,21 @@ integrity-check:
 integrity-diff:
 	@python3 scripts/integrity-diff.py $(if $(EXIT_ON_REGRESSION),--exit-on-regression,)
 
+# Rotate / prune daily-checkpoint snapshots under
+# ~/Documents/FitTracker2-backups/daily/ (R2 from 2026-05-19 dev-env audit).
+# Dry-run by default — re-run with EXECUTE=1 to apply changes.
+# Retention: last 30 days uncompressed + first-of-month anchors permanent
+# (optionally compressed via COMPRESS_ANCHORS=1).
+#   make checkpoint-rotate                              # dry-run, default 30d retention
+#   make checkpoint-rotate EXECUTE=1                    # actually rotate
+#   make checkpoint-rotate KEEP_DAYS=60 EXECUTE=1       # custom retention
+#   make checkpoint-rotate EXECUTE=1 COMPRESS_ANCHORS=1 # also compress older anchors to .tar.zst
+checkpoint-rotate:
+	@python3 scripts/rotate-checkpoint-snapshots.py \
+		$(if $(KEEP_DAYS),--keep-days=$(KEEP_DAYS),) \
+		$(if $(EXECUTE),--execute,) \
+		$(if $(COMPRESS_ANCHORS),--compress-anchors,)
+
 # Unified preflight entry point — aggregates all pre-work data checks adapted
 # by work_type (feature / enhancement / fix / chore). Writes
 # .claude/shared/preflight-cache.json that downstream skills (ux, design, dev,
