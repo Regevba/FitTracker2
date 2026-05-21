@@ -233,6 +233,37 @@ except Exception:
   fi
 fi
 
+# 11. GitHub branch protection: required_signatures (Tier S item 1, 2026-05-21)
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+  req_sig=$(gh api repos/Regevba/FitTracker2/branches/main/protection 2>/dev/null \
+    | python3 -c "import json, sys; print(json.load(sys.stdin).get('required_signatures', {}).get('enabled'))" 2>/dev/null)
+  if [[ "$req_sig" == "True" ]]; then
+    ok "branch protection" "required_signatures=ON on main"
+  elif [[ "$req_sig" == "False" ]]; then
+    warn "branch protection" "required_signatures=OFF on main — flip via gh API"
+  else
+    info "branch protection" "could not read; check gh permissions"
+  fi
+fi
+
+# 12. GHA workflow SHA-pin compliance (Tier S item 3, 2026-05-21)
+# Counts workflow `uses:` lines pinned to @sha vs @vN/@tag-name.
+if [[ -d .github/workflows ]]; then
+  total=$(grep -hE '^\s*uses:' .github/workflows/*.yml 2>/dev/null | grep -v '^\s*#' | wc -l | tr -d ' ')
+  # SHA-pinned: 40-hex character ref after @
+  pinned=$(grep -hE '^\s*uses:.*@[a-f0-9]{40}' .github/workflows/*.yml 2>/dev/null | wc -l | tr -d ' ')
+  if [[ "$total" -gt 0 ]]; then
+    pct=$(( 100 * pinned / total ))
+    if [[ "$pinned" -eq "$total" ]]; then
+      ok "gha sha-pin" "$pinned/$total workflows pinned to @sha (100%)"
+    elif [[ "$pct" -ge 50 ]]; then
+      info "gha sha-pin" "$pinned/$total pinned ($pct%); Dependabot opens upgrade PRs weekly"
+    else
+      warn "gha sha-pin" "$pinned/$total pinned ($pct%); tag-retag attack surface — accept Dependabot PRs"
+    fi
+  fi
+fi
+
 printf "\n${B}Tip:${N} \`make doctor\` is read-only. To act on warnings:\n"
 printf "  ssh-agent:      \`ssh-add\`\n"
 printf "  hooks:          \`make install-hooks\`\n"

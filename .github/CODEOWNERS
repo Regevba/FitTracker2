@@ -1,0 +1,76 @@
+# CODEOWNERS — ownership lock for security-relevant + framework-critical paths.
+#
+# Documentation: https://docs.github.com/en/repositories/managing-your-repositories-settings-and-security/customizing-your-repository/about-code-owners
+#
+# Today this enables review-mention on PRs touching these paths. Becomes
+# review-required (and self-approval becomes mandatory) only when branch
+# protection sets `require_code_owner_reviews: true` — currently OFF for
+# solo-dev workflow; flip when team grows or for higher-assurance phases.
+
+# Catch-all — solo dev today
+* @Regevba
+
+# ─────────────────────────────────────────────────────────────
+# Security-critical infrastructure
+# ─────────────────────────────────────────────────────────────
+
+# Pre-commit hooks (every commit is gated by these)
+/.githooks/         @Regevba
+
+# CI/CD workflows (control plane for every PR; deploy tokens accessible)
+/.github/workflows/ @Regevba
+/.github/CODEOWNERS @Regevba
+/.github/dependabot.yml @Regevba
+
+# Launchd plists (live on operator's machine post-`make install-*`)
+/infrastructure/launchd/ @Regevba
+
+# ─────────────────────────────────────────────────────────────
+# Framework gate engine (every PR is validated by these)
+# ─────────────────────────────────────────────────────────────
+
+/scripts/check-state-schema.py         @Regevba
+/scripts/integrity-check.py            @Regevba
+/scripts/ensure-pr-cache-fresh.py      @Regevba
+/scripts/preflight.py                  @Regevba
+/scripts/check-case-study-preflight.py @Regevba
+
+# ─────────────────────────────────────────────────────────────
+# Operator-facing surfaces (dev-env upgrade R-series)
+# ─────────────────────────────────────────────────────────────
+
+/scripts/daily-integrity-checkpoint.py     @Regevba
+/scripts/rotate-checkpoint-snapshots.py    @Regevba
+/scripts/rotate-integrity-snapshots.py     @Regevba
+/scripts/rotate-feature-logs.py            @Regevba
+/scripts/compact-session-ledgers.py        @Regevba
+/scripts/check-ssd-health.sh               @Regevba
+/scripts/check-devssd-uuid.sh              @Regevba
+/scripts/doctor.sh                         @Regevba
+/scripts/audit-cache-hit-rate.py           @Regevba
+/scripts/audit-script-imports.py           @Regevba
+
+# ─────────────────────────────────────────────────────────────
+# Top-level config that changes app-wide behavior
+# ─────────────────────────────────────────────────────────────
+
+/Makefile              @Regevba
+/CLAUDE.md             @Regevba
+/.gitignore            @Regevba
+/.editorconfig         @Regevba
+/.tool-versions        @Regevba
+/.vscode/              @Regevba
+
+# Design system primitives (drift here breaks every UI surface)
+/FitTracker/Services/AppTheme.swift       @Regevba
+/FitTracker/DesignSystem/                 @Regevba
+/design-tokens/                           @Regevba
+
+# High-risk domain layer (per CLAUDE.md "High-risk areas")
+/FitTracker/Models/DomainModels.swift          @Regevba
+/FitTracker/Services/EncryptionService.swift   @Regevba
+/FitTracker/Services/SupabaseSyncService.swift @Regevba
+/FitTracker/Services/CloudKitSyncService.swift @Regevba
+/FitTracker/Services/SignInService.swift       @Regevba
+/FitTracker/Services/AuthManager.swift         @Regevba
+/FitTracker/Services/AIOrchestrator.swift      @Regevba
