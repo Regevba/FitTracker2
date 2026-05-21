@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher doctor integrity-snapshot-rotate
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher doctor integrity-snapshot-rotate logs-rotate sessions-compact
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -541,6 +541,29 @@ doctor:
 integrity-snapshot-rotate:
 	@python3 scripts/rotate-integrity-snapshots.py \
 		$(if $(KEEP_COUNT),--keep-count=$(KEEP_COUNT),) \
+		$(if $(EXECUTE),--execute,)
+
+# R8 (FIT-174): rotate .claude/logs/<feature>.log.json files when they
+# exceed 5MB. Tier 2.2 lineage preserved — rotation MOVES into
+# .claude/logs/_archive/, never deletes.
+# Dry-run by default; EXECUTE=1 applies. Override THRESHOLD_MB.
+#   make logs-rotate                          # dry-run, default 5MB threshold
+#   make logs-rotate EXECUTE=1                # apply
+#   make logs-rotate THRESHOLD_MB=10 EXECUTE=1
+logs-rotate:
+	@python3 scripts/rotate-feature-logs.py \
+		$(if $(THRESHOLD_MB),--threshold-mb=$(THRESHOLD_MB),) \
+		$(if $(EXECUTE),--execute,)
+
+# R9 (FIT-175): archive Mechanism C session ledgers older than 30 days.
+# Sessions MOVED to .claude/logs/_archive/sessions/, never deleted.
+# Default min-age 30d is conservative — Mechanism C lookup is days, not weeks.
+#   make sessions-compact                          # dry-run
+#   make sessions-compact EXECUTE=1                # apply
+#   make sessions-compact MIN_AGE_DAYS=60 EXECUTE=1
+sessions-compact:
+	@python3 scripts/compact-session-ledgers.py \
+		$(if $(MIN_AGE_DAYS),--min-age-days=$(MIN_AGE_DAYS),) \
 		$(if $(EXECUTE),--execute,)
 
 # Auto-install on first run
