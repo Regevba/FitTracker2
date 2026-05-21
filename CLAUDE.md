@@ -51,7 +51,7 @@ Use `/pm-workflow {name}` and select the work type. Skipped phases are recorded 
 - **CI requirement:** both branches must pass before merge is approved
 - **High-risk areas** that require extra review: DomainModels.swift, EncryptionService.swift, SupabaseSyncService.swift, CloudKitSyncService.swift, SignInService.swift, AuthManager.swift, AIOrchestrator.swift
 
-## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2 → v7.8.3 → v7.8.4, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08 → 2026-05-11 → 2026-05-12)
+## Data Integrity Framework (v7.5 → v7.6 → v7.7 → v7.8 → v7.8.1 → v7.8.2 → v7.8.3 → v7.8.4 → v7.8.5 → v7.8.6 → v7.9, shipped 2026-04-24 → 2026-04-25 → 2026-04-27 → 2026-05-04 → 2026-05-07 → 2026-05-08 → 2026-05-11 → 2026-05-12 → 2026-05-13 → 2026-05-15 → 2026-05-21)
 
 The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defenses** in the v7.5 Data Integrity Framework — triggered by the 2026-04-21 Google Gemini 2.5 Pro independent audit. v7.6 (Mechanical Enforcement, shipped 2026-04-25) closes the remaining Class B → Class A gap by promoting four silent agent-attention checks into pre-commit failures and adding two recurring CI defenses (per-PR review bot, weekly framework-status cron).
 
@@ -63,8 +63,8 @@ The 72h Integrity Cycle shipped at v7.1 is now one of **eight cooperating defens
 - `BROKEN_PR_CITATION` (v7.6, write-time) — pre-commit hook rejects case-study commits that cite `PR #N` or `pull/N` if the number does not resolve in the cached `gh pr list` result; skipped gracefully when `gh` is unavailable. Cycle-level `BROKEN_PR_CITATION` still runs as a safety net.
 - `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) — pre-commit hook rejects scoped case-study commits (forward-only, dated ≥ 2026-04-21) when the file has no T1/T2/T3 tier tag at all. It checks tag presence, not every quantitative claim.
 - `ISOLATION_OPT_OUT_REASON_MISSING` (v7.8 framework-v7-8-branch-isolation, T1) — pre-commit hook rejects state.json with `isolation_opt_out: true` but empty `isolation_opt_out_reason`. Pairs with `BRANCH_ISOLATION_VIOLATION`'s per-feature opt-out (Q3).
-- `BRANCH_ISOLATION_VIOLATION` (v7.8 framework-v7-8-branch-isolation, T6/T7, **advisory in v7.8 → enforced in v7.9**) — two-mode gate. Mode B fires on every commit when staged files match infra-path globs (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`, OR feature has `work_subtype: framework_feature` or `work_type: chore`). Mode C fires on `state.json::current_phase` mutations from a non-feature branch. Auto-isolation flow dispatches `scripts/create-isolated-worktree.py` (or `superpowers:using-git-worktrees` skill in agent context) — creates the worktree at the smart-directory-selected path, links state.json, registers the lease in `.claude/shared/agent-leases.json`. Per-feature `isolation_opt_out: true` bypasses Mode C only; Mode B (infra) ignores it (Q3 override).
-- `FEATURE_CLOSURE_COMPLETENESS` (v7.8 framework-v7-8-branch-isolation, T11-T14, **advisory in v7.8 → enforced in v7.9**) — pre-commit hook fires on `current_phase=complete` transitions. Validates: (a) 7 required case-study frontmatter fields (`date_written` or `date`, `dispatch_pattern`, `success_metrics` or `primary_metric`, `kill_criteria`, `framework_version`, `work_type`, `tier_tags_present`); (b) Q7 — when `kill_criteria` is set, `kill_criteria_resolution` must also be non-empty; (c) Q6 — bidirectional PR-list parity between state.json (`tasks[].pr_number`, `phases.merge.pr_number`, `tasks[].related_prs`) and case study (body regex `PR #N` / `pull/N` + frontmatter `related_prs`). Override: case-study `pr_citation_exempt: [{pr_number, reason}]` frontmatter array.
+- `BRANCH_ISOLATION_VIOLATION` (v7.8 framework-v7-8-branch-isolation, T6/T7, **enforced at v7.9 2026-05-21**) — two-mode gate. Mode B fires on every commit when staged files match infra-path globs (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`, OR feature has `work_subtype: framework_feature` or `work_type: chore`). Mode C fires on `state.json::current_phase` mutations from a non-feature branch. Auto-isolation flow dispatches `scripts/create-isolated-worktree.py` (or `superpowers:using-git-worktrees` skill in agent context) — creates the worktree at the smart-directory-selected path, links state.json, registers the lease in `.claude/shared/agent-leases.json`. Per-feature `isolation_opt_out: true` bypasses Mode C only; Mode B (infra) ignores it (Q3 override).
+- `FEATURE_CLOSURE_COMPLETENESS` (v7.8 framework-v7-8-branch-isolation, T11-T14, **enforced at v7.9 2026-05-21**) — pre-commit hook fires on `current_phase=complete` transitions. Validates: (a) 7 required case-study frontmatter fields (`date_written` or `date`, `dispatch_pattern`, `success_metrics` or `primary_metric`, `kill_criteria`, `framework_version`, `work_type`, `tier_tags_present`); (b) Q7 — when `kill_criteria` is set, `kill_criteria_resolution` must also be non-empty; (c) Q6 — bidirectional PR-list parity between state.json (`tasks[].pr_number`, `phases.merge.pr_number`, `tasks[].related_prs`) and case study (body regex `PR #N` / `pull/N` + frontmatter `related_prs`). Override: case-study `pr_citation_exempt: [{pr_number, reason}]` frontmatter array.
 
 **Cycle-time gates (fire every 72h via GitHub Actions):**
 Runs [`scripts/integrity-check.py`](scripts/integrity-check.py) against every `.claude/features/*/state.json` and every `docs/case-studies/*.md`. **16 cycle-time check codes** (13 baseline + 3 v7.8 additions): `PHASE_LIE`, `TASK_LIE`, `NO_CS_LINK`, `V2_FILE_MISSING`, `PARTIAL_SHIP_TERMINAL`, `NO_STATE`, `INVALID_JSON`, `NO_PHASE`, `SCHEMA_DRIFT`, `PR_NUMBER_UNRESOLVED`, `BROKEN_PR_CITATION`, `CASE_STUDY_MISSING_TIER_TAGS`, `CU_V2_INVALID` (v7.7), and **(v7.8 framework-v7-8-branch-isolation, all advisory)** `BRANCH_ISOLATION_HISTORICAL` (T17 — forward-only audit), `BRANCH_ISOLATION_LAUNCHD_DRIFT` (T18 — macOS-only plist scan), `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror (T19 — catches --no-verify bypasses).
@@ -299,6 +299,51 @@ v7.8.6 ships observability surfaces that close the **96-hour drift window** betw
 **MUST-have follow-up tracker:** [`.claude/shared/must-have-cadence-followups.md`](.claude/shared/must-have-cadence-followups.md) — single ledger for calendar-anchored verifications (B1 v7.9 freeze 2026-05-21, B2 post-v7.9 baseline 2026-05-28, B4/B5 quarterly test audit) + feature-scope MUST items (C1 F14/F15 dispatch tests, C2 T6 web PR gate RICE 200.0, C3 T2 Sentry test). Daily checkpoint surfaces upcoming items ≤14d.
 
 **Spec / case study:** the v7.8.6 work ships against the existing infra-master-plan §4.1 calendar; no separate spec because every addition is a read-only observability surface (the spec/PRD requirement applies to enforcement gates). PR bodies (#363, #365) serve as the case-study source.
+
+## v7.9 Promotion Release (shipped 2026-05-21)
+
+v7.9 is the **enforcement-flip release** for the three v7.8.1 advisory gates that completed their 14-day Mechanism A telemetry window on 2026-05-21. No new gate code; no new schema fields; no new observability surfaces. The single change is `BRANCH_ISOLATION_ADVISORY_MODE = True → False` at [`scripts/check-state-schema.py:132`](scripts/check-state-schema.py), which controls all three gates simultaneously.
+
+**Promotion decision criteria (per [infra master plan §2.2](docs/master-plan/infra-master-plan-2026-05-12.md)):** all four required for each candidate.
+
+| Criterion | Result |
+|---|---|
+| 1. Coverage emitted — ≥7 days of `{candidates, checked, skipped}` rows | ✓ 14 days (2026-05-07 → 2026-05-21) |
+| 2. No false positives — every `failure` row maps to a legitimate violation | ✓ 0 false positives across 18 + 13 + 13 firings |
+| 3. No silent skips — skip counts track real reasons (not bugs) | ✓ All skip reasons: `not_infra_commit_level`, `not_complete_transition`, `opt_out_false_or_absent` |
+| 4. Reversibility — advisory mode restorable in <5 min | ✓ Single-line revert |
+
+**Gates promoted (3 advisory → 3 enforced):**
+
+| Gate | 14d telemetry | Skip reasons (legit) |
+|---|---|---|
+| `BRANCH_ISOLATION_VIOLATION` Mode B (infra commit-level) | 18 rows | `not_infra_commit_level` × 13 |
+| `BRANCH_ISOLATION_VIOLATION` Mode C (per-state.json) | 13 rows | (separate emission key) |
+| `FEATURE_CLOSURE_COMPLETENESS` (write-time) | 13 rows | `not_complete_transition` × 11, `no_phase_change` × 1 |
+
+**Gates already enforced (no v7.9 action):**
+
+- `ISOLATION_OPT_OUT_REASON_MISSING` — enforced at v7.8.1 ship (2026-05-07)
+- Mechanism A coverage gates + Mechanism C session-attribution — calibration window already met, enforced at v7.8
+- `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` (V2) — enforced at v7.8.3 Phase 0 (2026-05-11)
+- Mechanism E custom merge driver (V9) — enforced at v7.8.3 Phase 0
+
+**Gates that stay advisory by design:** `BRANCH_ISOLATION_HISTORICAL` cycle-time (T17 forward-only audit), `BRANCH_ISOLATION_LAUNCHD_DRIFT` cycle-time (T18 macOS-only), `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror (T19 `--no-verify` bypass catcher).
+
+**Post-promotion calendar (Phase E validation 2026-05-21 → 2026-06-04):**
+
+- **2026-05-22** — B11 UCC hardening T+3d check; new feature work resumes (no new gates this window)
+- **2026-05-23** — B8 parent UCC T+7d kill-criteria evaluation
+- **2026-05-27** — B12 hardening T+7d kill-criteria → complete
+- **2026-05-28** — B2 post-v7.9 baseline snapshot via `make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation`
+- **~2026-06-04** — Phase E exit; v7.9.1 build window opens
+
+**Reversibility runbook:** if a regression surfaces during Phase E soak, flip back via single-line edit at [`scripts/check-state-schema.py:132`](scripts/check-state-schema.py) (`BRANCH_ISOLATION_ADVISORY_MODE = True`), commit on `chore/v7-9-rollback`, merge to main. <5 min end-to-end.
+
+**Case study:** [`docs/case-studies/framework-v7-9-promotion-case-study.md`](docs/case-studies/framework-v7-9-promotion-case-study.md).
+**Cold-start entrypoint:** [`.claude/entrypoints/framework-v7-9.md`](.claude/entrypoints/framework-v7-9.md).
+**Honesty ledger entry:** [FT2-FH-003](docs/case-studies/framework-honesty-ledger.md#ft2-fh-003).
+**Per-PR provenance:** PR (TBD) on `feature/v7-9-promotion`.
 
 ## Known Mechanical Limits
 

@@ -1,8 +1,8 @@
 {
   "feature_name": "framework-v7-9-promotion",
-  "current_phase": "research",
+  "current_phase": "implement",
   "created_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-16T07:00:00Z",
+  "updated_at": "2026-05-21T04:25:00Z",
   "framework_version": "v7.9",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -11,7 +11,7 @@
   "state_owner": "ft2",
   "isolation_opt_out": false,
   "isolation_opt_out_reason": "",
-  "branch": null,
+  "branch": "feature/v7-9-promotion",
   "scheduled_after": null,
   "calendar_gate": {
     "decision_date": "2026-05-21",
@@ -33,41 +33,76 @@
     "Post-promotion bug surfaces requiring rollback within T+7d soak — defer promotion or restore advisory mode"
   ],
   "kill_criteria_resolution": null,
-  "dispatch_pattern": "operator-driven (decision) + subagent-driven (per-gate flip implementation)",
+  "dispatch_pattern": "operator-driven (decision) + agent-driven (per-gate flip implementation)",
   "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "case_study_showcase": null,
-  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md §4.1 + §3.6",
-  "plan": null,
+  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md §2.1 + §2.2 + §2.3 + §3.6.2",
+  "plan": "docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md §1",
   "predecessor_case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
-  "scope_summary": "Evaluate the 4 v7.8.1-introduced advisory gates + v7.8 Mechanism A coverage-assertion meta-gate against calibration data accumulated 2026-04-25 → 2026-05-21. For each gate that meets promotion criteria (≥7 days telemetry + 0 false positives + non-zero coverage), flip from advisory → enforced. Document each promotion (or non-promotion) decision in a per-gate case-study row. Update CLAUDE.md, docs/architecture/dev-guide-v1-to-v7-7.md, and observed-patterns.md to reflect the new enforcement state.",
+  "scope_summary": "Single-flag flip at scripts/check-state-schema.py:132 (BRANCH_ISOLATION_ADVISORY_MODE = True → False) promotes 3 v7.8.1 advisory gates simultaneously: BRANCH_ISOLATION_VIOLATION Mode B (infra commit-level), BRANCH_ISOLATION_VIOLATION Mode C (per-state.json mutation), and FEATURE_CLOSURE_COMPLETENESS (write-time). All 4 §2.2 promotion criteria verified GREEN against 14d Mechanism A telemetry (18+13+13 rows, 0 zero-candidate, 0 false positives). Side-effects: CLAUDE.md v7.9 section + dev-guide §2.4.1 + cold-start entrypoint + FT2-FH-003 honesty ledger entry + framework-v7-9-promotion-case-study.md + Linear epic FIT-72. Reversibility: single-line revert <5 min. Phase E validation 2026-05-21 → 2026-06-04 (B2 baseline snapshot 2026-05-28).",
   "linear": null,
   "related_prs": [],
-  "tasks": [],
+  "tasks": [
+    {"id": "C-1", "title": "Update CLAUDE.md: header version chain v7.9 + advisory-mode language + new v7.9 Promotion Release section", "status": "done"},
+    {"id": "C-2", "title": "Flip BRANCH_ISOLATION_ADVISORY_MODE = False at scripts/check-state-schema.py:132", "status": "done"},
+    {"id": "C-3", "title": "Create .claude/entrypoints/framework-v7-9.md cold-start entrypoint", "status": "done"},
+    {"id": "C-4", "title": "Update docs/architecture/dev-guide-v1-to-v7-7.md §2.4.1 with promoted sub-section", "status": "done"},
+    {"id": "C-5", "title": "Add FT2-FH-003 entry to docs/case-studies/framework-honesty-ledger.md (calibration discipline pattern codification)", "status": "done"},
+    {"id": "C-7", "title": "Author docs/case-studies/framework-v7-9-promotion-case-study.md (live append-only journal; §99 deferred to 2026-05-28 post-B2)", "status": "done"},
+    {"id": "C-6", "title": "Open Linear epic FIT-72 v7.9-promotion + per-gate sub-issues", "status": "pending"}
+  ],
   "phases": {
     "research": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-16T07:00:00Z",
-      "note": "Calibration data collection phase (2026-04-25 → 2026-05-21). Operator-driven: review gate-coverage.jsonl + cycle-time findings vs criteria. Mechanism A telemetry already streaming."
+      "approved_at": "2026-05-21T04:21:58Z",
+      "approved_by": "operator",
+      "decision": "PROMOTE all 3 candidate gates (BRANCH_ISOLATION_VIOLATION Mode B + Mode C + FEATURE_CLOSURE_COMPLETENESS) via single-flag flip at scripts/check-state-schema.py:132",
+      "decision_rationale": "B1 freeze checklist GREEN: integrity-check 0 findings, integrity-diff 3 dilution Δ only (4 new post-v6 features, denominator grew 70→74, numerator flat — not real drift), doc-debt baseline-aligned, measurement-adoption stable at 3/40 fully-adopted, membrane-status normal. 14d Mechanism A telemetry: BRANCH_ISOLATION_VIOLATION Mode B 18 rows, Mode C 13 rows, FEATURE_CLOSURE_COMPLETENESS 13 rows. 0 zero-candidate rows across all 3 gates. All skip_reasons map to documented legitimate cases (not_infra_commit_level, not_complete_transition, opt_out_false_or_absent, no_phase_change). 0 false-positive firings in 14d window (operator review of 44 firing rows). All 4 §2.2 criteria met for each candidate. ISOLATION_OPT_OUT_REASON_MISSING already enforced at v7.8.1. Mechanism A coverage gates + Mechanism C session-attribution + CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT + Mechanism E merge driver already enforced at v7.8/v7.8.3. No further candidates for this promotion window.",
+      "note": "Calibration data collection phase (2026-04-25 → 2026-05-21). Operator-driven freeze-day checklist + per-gate decision recording."
     },
-    "prd": {"status": "pending"},
-    "tasks_phase": {"status": "pending"},
-    "implement": {"status": "pending"},
+    "prd": {
+      "status": "skipped",
+      "reason": "Spec pre-exists at docs/master-plan/infra-master-plan-2026-05-12.md §2.1 (advisory→enforced calendar) + §2.2 (4-criterion decision criteria) + §2.3 (side-effects list) + §3.6.2 (Phase E validation calendar). No new PRD needed for a single-flag enforcement flip whose criteria + side-effects + post-promotion calendar were defined 9 days in advance."
+    },
+    "tasks_phase": {
+      "status": "skipped",
+      "reason": "Tasks pre-defined in docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md §1 (C-1 through C-7). Drafted 2026-05-20 eve as the operator's per-action checklist for freeze day. Captured as tasks[] in this state.json."
+    },
+    "implement": {
+      "status": "in_progress",
+      "started_at": "2026-05-21T04:22:10Z",
+      "note": "Executing C-1 through C-5 + C-7 in single PR. C-6 (Linear epic) opens after PR is up."
+    },
     "test": {"status": "pending"},
     "review": {"status": "pending"},
     "merge": {"status": "pending"},
     "docs": {"status": "pending"},
-    "learn": {"status": "pending"}
+    "learn": {"status": "pending", "note": "Phase E validation soak 2026-05-21 → 2026-06-04. B2 baseline snapshot lands 2026-05-28 (must-have-cadence-followups.md §B2). v7.9 case study §99 + kill_criteria_resolution filled in at B2."}
   },
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-05-16T07:00:00Z"
+        "started_at": "2026-05-16T07:00:00Z",
+        "ended_at": "2026-05-21T04:22:00Z"
+      },
+      "prd": {
+        "skipped": true,
+        "skipped_reason": "Spec pre-existed"
+      },
+      "tasks_phase": {
+        "skipped": true,
+        "skipped_reason": "Tasks pre-defined"
+      },
+      "implement": {
+        "started_at": "2026-05-21T04:22:10Z"
       }
     }
   },
   "_meta": {
     "scaffolded_by": "claude_opus_4_7",
     "scaffold_session": "system-sweep-gap-closures-2026-05-16",
-    "scaffold_origin": "System sweep audit 2026-05-16 surfaced gap: v7.9 promotion-decision (2026-05-21) is the highest-stakes upcoming framework event but had no state.json tracking container. Precedent: framework-v7-8-branch-isolation. This scaffold creates the container so the promotion decision has a discoverable home."
+    "scaffold_origin": "System sweep audit 2026-05-16 surfaced gap: v7.9 promotion-decision (2026-05-21) is the highest-stakes upcoming framework event but had no state.json tracking container. Precedent: framework-v7-8-branch-isolation. This scaffold creates the container so the promotion decision has a discoverable home.",
+    "freeze_day_session": "2026-05-21 (B1 freeze; PROMOTE decision recorded; phases research → implement)"
   }
 }
