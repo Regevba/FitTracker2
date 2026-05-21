@@ -1,42 +1,42 @@
 {
   "version": "1.0",
-  "updated": "2026-05-18T04:49:23Z",
+  "updated": "2026-05-21T04:09:06Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 73,
-    "features_post_v6": 39,
+    "features_total": 74,
+    "features_post_v6": 40,
     "features_pre_v6": 34,
     "fully_adopted": 3,
-    "partial_adopted": 31,
-    "zero_adopted": 39,
+    "partial_adopted": 33,
+    "zero_adopted": 38,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 17,
-      "overall_percent": 23.3,
+      "overall_percent": 23.0,
       "post_v6_present": 17,
-      "post_v6_percent": 43.6
+      "post_v6_percent": 42.5
     },
     "per_phase_timing": {
-      "overall_present": 34,
-      "overall_percent": 46.6,
-      "post_v6_present": 31,
-      "post_v6_percent": 79.5
+      "overall_present": 36,
+      "overall_percent": 48.6,
+      "post_v6_present": 33,
+      "post_v6_percent": 82.5
     },
     "cache_hits": {
       "overall_present": 20,
-      "overall_percent": 27.4,
+      "overall_percent": 27.0,
       "post_v6_present": 19,
-      "post_v6_percent": 48.7
+      "post_v6_percent": 47.5
     },
     "cu_v2": {
-      "overall_present": 9,
-      "overall_percent": 12.3,
-      "post_v6_present": 9,
-      "post_v6_percent": 23.1
+      "overall_present": 10,
+      "overall_percent": 13.5,
+      "post_v6_present": 10,
+      "post_v6_percent": 25.0
     }
   },
   "fully_adopted_features": [
@@ -208,6 +208,15 @@
       }
     },
     {
+      "feature": "ios-code-connect",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": false
+      }
+    },
+    {
       "feature": "ios-ui-audit-p1-burndown",
       "adoption": {
         "timing_wall_time": true,
@@ -281,6 +290,15 @@
     },
     {
       "feature": "ucc-passkey-auth-audit-log-redis-fix",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      }
+    },
+    {
+      "feature": "ucc-passkey-auth-security-hardening",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -435,11 +453,6 @@
       "feature": "home-today-screen",
       "created": "2026-04-06",
       "post_v6": false
-    },
-    {
-      "feature": "ios-code-connect",
-      "created": "2026-05-09",
-      "post_v6": true
     },
     {
       "feature": "marketing-website",
@@ -1115,15 +1128,15 @@
       "feature": "ios-code-connect",
       "created": "2026-05-09",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
+        "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": false
+      "any_adopted": true
     },
     {
       "feature": "ios-ui-audit-p1-burndown",
@@ -1464,6 +1477,20 @@
     {
       "feature": "ucc-passkey-auth-audit-log-redis-fix",
       "created": "2026-05-17",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": false,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "ucc-passkey-auth-security-hardening",
+      "created": "2026-05-19",
       "post_v6": true,
       "current_phase": "implementation",
       "adoption": {
