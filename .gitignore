@@ -43,6 +43,7 @@ Carthage/Build/
 .claude/logs/_session-*.events.jsonl
 .claude/active-feature
 .claude/logs/gate-coverage.jsonl
+.claude/logs/devssd-uuid-watcher.log
 .claude/shared/preflight-cache.json
 .claude/shared/integrity-checkpoint-regression.flag
 .claude/worktrees/
