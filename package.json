@@ -7,6 +7,6 @@
     "tokens:check": "node scripts/check-tokens.js"
   },
   "devDependencies": {
-    "style-dictionary": "^3.9.2"
+    "style-dictionary": "^5.4.1"
   }
 }
