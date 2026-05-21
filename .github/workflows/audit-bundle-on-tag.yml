@@ -33,7 +33,7 @@ jobs:
         run: |
           make audit-bundle PROFILE=${{ steps.profile.outputs.name }} RUN_LABEL=${GITHUB_REF##*/}
       - name: Upload bundle artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: audit-bundle-${{ github.ref_name }}
           path: docs/audits/runs/${{ github.ref_name }}/
