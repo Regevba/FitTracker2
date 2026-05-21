@@ -2,7 +2,7 @@
 # Primary target: `make tokens` — regenerates DesignTokens.swift from design-tokens/tokens.json
 # CI target: `make tokens-check` — fails if DesignTokens.swift is out of sync with tokens.json
 
-.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher doctor
+.PHONY: tokens tokens-check ui-audit ui-audit-baseline ui-audit-drift integrity-check integrity-diff integrity-snapshot preflight schema-check documentation-debt measurement-adoption framework-status advancement-report test-v7-5-pipeline runtime-smoke install-hooks pre-commit-self-test membrane-status v7-9-snapshot install verify-local verify-web verify-ai verify-ios verify-timing verify-framework verify-evals app-icon app-store-check validate-tier-tags figma-drift snapshot-phase refresh-pr-cache validate-existing-cites daily-checkpoint daily-checkpoint-force ledger install-daily-cron uninstall-daily-cron install-devssd-watcher uninstall-devssd-watcher doctor integrity-snapshot-rotate
 
 # All build artifacts stay on the SSD alongside the project source.
 # Override any variable via environment or command line: make verify-ios BUILD_DIR=/other/path
@@ -530,6 +530,18 @@ uninstall-devssd-watcher:
 # a single colored table. Use when something feels off.
 doctor:
 	@bash scripts/doctor.sh
+
+# R20 (FIT-186): rotate / prune integrity-check snapshots under
+# .claude/integrity/snapshots/<TIMESTAMP>.json. Companion to R2 (checkpoint
+# rotation) — same retention policy, different target dir.
+# Dry-run by default — re-run with EXECUTE=1 to apply.
+#   make integrity-snapshot-rotate                      # dry-run, default keep-30
+#   make integrity-snapshot-rotate EXECUTE=1            # apply
+#   make integrity-snapshot-rotate KEEP_COUNT=60 EXECUTE=1
+integrity-snapshot-rotate:
+	@python3 scripts/rotate-integrity-snapshots.py \
+		$(if $(KEEP_COUNT),--keep-count=$(KEEP_COUNT),) \
+		$(if $(EXECUTE),--execute,)
 
 # Auto-install on first run
 node_modules:
