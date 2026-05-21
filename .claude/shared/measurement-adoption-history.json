@@ -575,7 +575,89 @@
           "post_v6_percent": 23.1
         }
       }
+    },
+    {
+      "date": "2026-05-20",
+      "generated_at": "2026-05-20T03:20:14Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 74,
+        "features_post_v6": 40,
+        "features_pre_v6": 34,
+        "fully_adopted": 3,
+        "partial_adopted": 32,
+        "zero_adopted": 39,
+        "fully_adopted_post_v6": 3,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 17,
+          "overall_percent": 23.0,
+          "post_v6_present": 17,
+          "post_v6_percent": 42.5
+        },
+        "per_phase_timing": {
+          "overall_present": 34,
+          "overall_percent": 45.9,
+          "post_v6_present": 31,
+          "post_v6_percent": 77.5
+        },
+        "cache_hits": {
+          "overall_present": 20,
+          "overall_percent": 27.0,
+          "post_v6_present": 19,
+          "post_v6_percent": 47.5
+        },
+        "cu_v2": {
+          "overall_present": 10,
+          "overall_percent": 13.5,
+          "post_v6_present": 10,
+          "post_v6_percent": 25.0
+        }
+      }
+    },
+    {
+      "date": "2026-05-21",
+      "generated_at": "2026-05-21T04:09:04Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 74,
+        "features_post_v6": 40,
+        "features_pre_v6": 34,
+        "fully_adopted": 3,
+        "partial_adopted": 33,
+        "zero_adopted": 38,
+        "fully_adopted_post_v6": 3,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 17,
+          "overall_percent": 23.0,
+          "post_v6_present": 17,
+          "post_v6_percent": 42.5
+        },
+        "per_phase_timing": {
+          "overall_present": 36,
+          "overall_percent": 48.6,
+          "post_v6_present": 33,
+          "post_v6_percent": 82.5
+        },
+        "cache_hits": {
+          "overall_present": 20,
+          "overall_percent": 27.0,
+          "post_v6_present": 19,
+          "post_v6_percent": 47.5
+        },
+        "cu_v2": {
+          "overall_present": 10,
+          "overall_percent": 13.5,
+          "post_v6_present": 10,
+          "post_v6_percent": 25.0
+        }
+      }
     }
   ],
-  "updated": "2026-05-18T04:49:23Z"
+  "updated": "2026-05-21T04:09:04Z"
 }

@@ -6,7 +6,7 @@
   "current_phase": "tasks",
   "framework_version": "v7.8.6",
   "started_at": "2026-05-19T16:23:07Z",
-  "updated_at": "2026-05-20T03:25:27Z",
+  "updated_at": "2026-05-20T04:50:12Z",
   "events": [
     {
       "timestamp": "2026-05-19T16:23:07Z",
@@ -57,6 +57,61 @@
       "event_type": "phase_started",
       "phase": "implementation",
       "summary": "Phase 3 (Implementation) started. Critical path: T1 \u2192 T8 \u2192 T9 \u2192 T12 \u2192 T20 \u2192 T22. Code work happens in fitme-story; this FT2 branch carries phase-transition tracking commits only.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T04:50:12Z",
+      "event_type": "phase_approved",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) complete. fitme-story PR #127 merged 2026-05-20T03:53Z carrying 5 new modules + 2 enum extensions + 5 wirings + 1 CLI + 17/17 unit tests passing. Auth code live on fitme-story.vercel.app.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T04:50:12Z",
+      "event_type": "phase_approved",
+      "phase": "testing",
+      "summary": "Phase 5 (Testing) complete in partial-live mode. S2+S3 confirmed live on production (route serves + allowlist accepts allowed email). S4-S6 covered by 17 unit tests in allowlist.test.ts + redis-lockout.test.ts (all passing). T+7d kill-criteria check pending 2026-05-27.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T04:50:12Z",
+      "event_type": "phase_approved",
+      "phase": "review",
+      "summary": "Phase 6 (Review) complete. PR #127 reviewed + merged via fitme-story repo. No formal /design pre-merge-review (no UI changes \u2014 auth code only).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T04:50:12Z",
+      "event_type": "phase_approved",
+      "phase": "merge",
+      "summary": "Phase 7 (Merge) complete. fitme-story PR #127 squash-merged 2026-05-20T03:53Z. Vercel auto-deployed to fitme-story.vercel.app within ~3min. Production smoke-tested (HTTP 200 root + HTTP 401 fake-token route check).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-20T04:50:12Z",
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "summary": "Phase 8 (Documentation) start. Creating case study placeholder + B11 cadence entry + W12 observed pattern. Phase 9 (complete) gated on 2026-05-27 T+7d kill-criteria evaluation.",
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",

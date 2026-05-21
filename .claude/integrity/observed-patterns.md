@@ -780,3 +780,53 @@ Last refreshed: 2026-05-15.
 **Silence path (Option B, durable fix):** Patch `scripts/preflight.py::enhancement_parent_state()` to read `state.json::parent_feature` and resolve the check against THAT feature. Queue as a v7.9.1 candidate; tracked in [`docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md`](../../docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md) R7.
 
 **First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
+
+---
+
+### W12 — `vercel env pull` returns empty values for Sensitive vars (2026-05-20)
+
+**Trigger:** Running CLI scripts that need a Sensitive production env-var (e.g., `scripts/issue-bootstrap-token.ts` needs `UCC_BOOTSTRAP_ADMIN_TOKEN`). After `vercel env pull .env.local --environment=production --yes`, the script fails with `<VAR> env var not set (or too short)` despite the diff output showing `+ <VAR> (Updated)`.
+
+**Why expected:** Vercel marks certain env vars as "Sensitive" (a UI toggle on the env-var add/edit form). Sensitive vars are stored encrypted on the Vercel side and CANNOT be downloaded by `vercel env pull` — the CLI writes the variable NAME to `.env.local` but with an empty value (no warning emitted). The script's runtime length check (`adminToken.length < 32`) then trips.
+
+**Signal vs noise rule:** Always noise from a SECURITY perspective (Vercel is doing the right thing). The "signal" is that the operator's CLI workflow is blocked from local execution.
+
+**Silence paths (in order of preference):**
+
+1. **Use the Development env variant** — if the same env-var exists in the Development environment AND is NOT marked Sensitive there, `vercel env pull .env.local --environment=development` retrieves the value cleanly. This is the recommended workaround for the UCC bootstrap-token workflow.
+2. **Provision a separate non-Sensitive "CLI admin" env-var** for local-dev workflows. E.g., `UCC_BOOTSTRAP_ADMIN_TOKEN_DEV` (no Sensitive flag). The CLI script reads either name. Acceptable trade-off because the CLI is only useful with Redis WRITE access — the token itself doesn't add risk beyond what KV_REST_API_TOKEN already provides locally.
+3. **Toggle Sensitive off temporarily** in Vercel dashboard, pull, then re-mark Sensitive. Operationally fragile and racy — not recommended.
+
+**First surfaced by:** UCC passkey security hardening T20 manual verification (2026-05-20). Documented in [`docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md`](../../docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md) §6.2.
+
+---
+
+### W13 — Upstash KV_*  vs UPSTASH_REDIS_REST_* naming asymmetry (2026-05-20)
+
+**Trigger:** Local CLI scripts using `@upstash/redis`'s `Redis.fromEnv()` (or reading `process.env.UPSTASH_REDIS_REST_URL`) fail with "UPSTASH_REDIS_REST_URL + UPSTASH_REDIS_REST_TOKEN env vars must be set" after `vercel env pull .env.local`, even though `KV_REST_API_URL` + `KV_REST_API_TOKEN` ARE present in the pulled file.
+
+**Why expected:** The Upstash Marketplace integration on Vercel typically auto-provisions env vars under both legacy `KV_REST_API_*` (Vercel KV naming) AND modern `UPSTASH_REDIS_REST_*` (Upstash native naming). But in some projects (e.g., fitme-story as of 2026-05-20), only `KV_*` is provisioned to the production environment. Server-side `Redis.fromEnv()` works on Vercel runtime because Vercel injects BOTH names automatically; local pulls only get `KV_*`.
+
+**Signal vs noise rule:** Noise from a production correctness standpoint (production Redis works). Signal that local CLI workflows need either aliasing or a code-level fallback.
+
+**Silence paths:**
+
+1. **Shell aliasing (immediate)** — in the operator's shell before running CLI scripts:
+   ```bash
+   export UPSTASH_REDIS_REST_URL="$KV_REST_API_URL"
+   export UPSTASH_REDIS_REST_TOKEN="$KV_REST_API_TOKEN"
+   ```
+2. **Durable fix** — update `src/lib/auth/redis-client.ts` (and any other consumer) to read either name:
+   ```ts
+   const url = process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL;
+   const token = process.env.UPSTASH_REDIS_REST_TOKEN ?? process.env.KV_REST_API_TOKEN;
+   if (url && token) {
+     cached = new Redis({ url, token });
+   } else {
+     cached = Redis.fromEnv(); // falls back to default UPSTASH_* lookup w/ helpful error
+   }
+   ```
+   Queued as a v7.9.1+ candidate.
+3. **Add both names in Vercel env-vars** (mechanical mirror) — manual + duplicative.
+
+**First surfaced by:** UCC passkey security hardening T20 manual verification (2026-05-20). Documented in [`docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md`](../../docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md) §6.3.
