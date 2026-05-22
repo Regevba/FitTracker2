@@ -30,3 +30,28 @@
 | v7.8.5 | 2026-05-13 | Observed Patterns Catalog + W9 branch drift alert | PR #328+#341 |
 | v7.8.6 | 2026-05-15 | Cadence batch (preflight + integrity-diff + weekly Mech A) | PR #363+#365 |
 | v7.9 | 2026-05-21 | 3 gates flipped advisory→enforced | PR #417 |
+
+## 3. New gates inventory since anchor
+
+| Gate category | 2026-04-21 | 2026-05-22 | New |
+|---|---:|---:|---|
+| Write-time pre-commit gates | 4 (T1) | 8 (T1) | BRANCH_ISOLATION_VIOLATION (Mode B+C), FEATURE_CLOSURE_COMPLETENESS, CACHE_HITS_EMPTY_POST_V6, CU_V2_INVALID, STATE_NO_CASE_STUDY_LINK, STATE_OWNER + LOCATION_MISMATCH |
+| Cycle-time integrity check codes | 13 (T1) | 16 (T1) | BRANCH_ISOLATION_HISTORICAL, BRANCH_ISOLATION_LAUNCHD_DRIFT, FEATURE_CLOSURE_COMPLETENESS mirror |
+| Mechanism A coverage telemetry | 0 (T1) | 1 (T1) | gate-coverage.jsonl emission across all gates |
+| Mechanism E append-only merge driver | 0 (T1) | 2 (T1) | measurement-adoption-history.json, documentation-debt.json, gate-coverage.jsonl, .claude/logs/*.log.json |
+
+Totals (per CLAUDE.md "Data Integrity Framework"): 18 → 37+ mechanical gates, 0 → 5 advisories.
+
+## 4. Anchor §16 limitations — status
+
+Per spec §4:
+
+| # | Anchor limitation | Phase 1 response | Status |
+|---|---|---|---|
+| 1 | Sample size n=41 | n=83 (full corpus) | **CLOSED** |
+| 2 | No framework-version cohort comparison | L1 NEW §17 | **CLOSED** |
+| 3 | No cross-repo split FT2↔fitme-story | L1 NEW §18 | **CLOSED** |
+| 4 | Gemini audit then-pending | Folded into L1 §17 as v7.0→v7.5 inflection | **CLOSED** |
+| 5 | Self-referential bias (same author) | Anchor #2 (external auditor) is the closure | OPEN (Phase 3 reconciliation) |
+| 6 | No statistical significance testing | n still too small per cohort | OPEN (will close at n=200+) |
+| 7 | No reader-comprehension validation | Not in Phase 1 scope | OPEN (deferred) |
