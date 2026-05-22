@@ -1,0 +1,61 @@
+{
+  "feature": "meta-analysis-refresh-phase-1",
+  "display_name": "Meta-analysis refresh \u2014 Phase 1 (paired with External Audit #2)",
+  "work_type": "chore",
+  "framework_version": "v7.9",
+  "created_at": "2026-05-22T07:00:00Z",
+  "state_owner": "ft2",
+  "branch": "chore/meta-analysis-refresh-phase-1",
+  "current_phase": "implementation",
+  "has_ui": false,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "dispatch_pattern": "subagent-driven serial (20 tasks)",
+  "case_study_type": "no_case_study_required",
+  "design_spec": "docs/superpowers/specs/2026-05-22-meta-analysis-refresh-phase-1-design.md",
+  "implementation_plan": "docs/superpowers/plans/2026-05-22-meta-analysis-refresh-phase-1.md",
+  "predecessor_chain": [],
+  "phases": {
+    "implementation": {
+      "status": "in_progress",
+      "started_at": "2026-05-22T07:00:00Z"
+    }
+  },
+  "timing": {
+    "session_start": "2026-05-22T07:00:00Z",
+    "time_source": "measured",
+    "phases": {
+      "implementation": {
+        "started_at": "2026-05-22T07:00:00Z"
+      }
+    }
+  },
+  "cache_hits": [],
+  "complexity": {
+    "cu_version": 2,
+    "factors_applied": [
+      {
+        "factor": "Docs-only chore",
+        "value": 0.1,
+        "reason": "No code; 4 markdown docs + 1 JSON profile + 1 prompt file"
+      },
+      {
+        "factor": "Multi-session scope",
+        "value": 0.2,
+        "reason": "17-day calendar with 20 tasks across multiple sessions"
+      },
+      {
+        "factor": "External-audit pairing constraint",
+        "value": 0.15,
+        "reason": "Hard ship date 2026-06-08 paired with External Audit #2 2026-06-12"
+      },
+      {
+        "factor": "Impartiality contract validation",
+        "value": 0.15,
+        "reason": "L2 File A must pass \u00a76.4 5-rule contract (forbidden words / fields / leakage / evidence resolution / redaction)"
+      }
+    ]
+  },
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-refresh-phase-1",
+  "updated": "2026-05-22T05:13:59Z"
+}
