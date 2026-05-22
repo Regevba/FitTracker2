@@ -41,7 +41,7 @@ v7.7 closes A1–A5 + B1–B2 + C1 from the gap inventory. D1 (real-provider aut
 
 ## Section 1 — Pre-state Baseline (frozen 2026-04-27 14:00 UTC)
 
-**Tier 1.1 measurement adoption (post-v6 features) [Tier 1 @ 2026-04-27]:**
+**Tier 1.1 measurement adoption (post-v6 features) [Tier 1 @ 2026-04-27 — historical snapshot; live values supersede via [`.claude/shared/measurement-adoption.json`](../../.claude/shared/measurement-adoption.json) + [`.claude/shared/case-study-t1-references.json`](../../.claude/shared/case-study-t1-references.json)]:**
 
 | Dimension | Overall | Post-v6 |
 |---|---|---|
