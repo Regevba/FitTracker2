@@ -15,7 +15,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | B3 | **daily, starting now** | GA4 anomaly check (event volume + funnel breaks) | operator + GA4 MCP | analytics-observability epic |
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
 | B5 | **2026-11-13** | Quarterly cross-layer test-discipline audit (recurring) | operator | test-coverage §6.2 |
-| B6 | **2026-05-22** | C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21) | operator | followups §C1 |
+| ~~B6~~ | ~~2026-05-22~~ | ~~C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21)~~ **Started 2026-05-22; implementation + tests landed via commits 35ca182 + c790564 (9/9 dispatch tests, 161/161 pytest pass in 10.82s); Phase 8 docs landed 2026-05-23; PR opening + merge pending operator approval. See §C1 below.** | operator | followups §C1 |
 | ~~B7~~ | ~~2026-05-18~~ | ~~UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2~~ **Closed 2026-05-17 via FT2 PR #387** (preemptive wire; Part 9 shipped) | operator | ucc-passkey-auth case study §99 |
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
@@ -120,7 +120,7 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 
 | ID | Title | Plan ref | RICE | Suggested work_type | Target ship |
 |---|---|---|---|---|---|
-| C1 | F14/F15 dispatch-test coverage push | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **2026-05-22** (deferred 2026-05-15) |
+| ~~C1~~ | ~~F14/F15 dispatch-test coverage push~~ **Closed 2026-05-23 on feature branch (commits 35ca182 + c790564 + Phase 8 docs); PR opening + merge pending operator approval. Case study: [docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md](../../docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md).** | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **2026-05-22** (deferred 2026-05-15) |
 | C2 | T6 — Web PR JS test gate (fitme-story CI) | test-coverage-master-plan T6 | **200.0** | enhancement (on analytics-observability) | 2026-05-21 |
 | C3 | T2 — Sentry reachability test (iOS) | test-coverage-master-plan T2 | 80.0 | enhancement (test-coverage) | 2026-05-28 |
 | C4 | UCC Part 7 — break-glass registration (YubiKey OR 2nd platform passkey) | ucc-passkey-auth case study §99 | (gates B9) | operator action | before **2026-05-28** |
@@ -133,17 +133,33 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 | C11 | MEMORY.md staleness check — `scripts/check-memory-staleness.py` + `make memory-check` + `.claude/settings.json` Stop hook (Option C from 2026-05-17 session) | session-end checklist formalization | low (operability) | chore (FT2) | **2026-05-22** (defer past v7.9 calibration — `scripts/*` + `Makefile` infra-glob) |
 | C12 | Preflight bug fix — `scripts/preflight.py:264` `enhancement_parent_state()` should read `parent_feature` from current state.json + check THAT parent's prd.md, not the current feature's. Today's UU4 setup hit a false-positive blocker; manual override used. | 2026-05-17 UU4 setup | low (preflight reliability) | fix (FT2) | **2026-05-22** (defer past v7.9 calibration — `scripts/*` infra-glob) |
 
-### C1 — F14/F15 dispatch-test coverage push
+### ~~C1 — F14/F15 dispatch-test coverage push~~ (Closed 2026-05-23 on feature branch; PR + merge pending operator)
 
-**Problem:** Mechanism A coverage telemetry is unreliable for 4 gates with zero dispatch tests + 5 zero-coverage gates. Without dispatch tests asserting each gate function fires, a keying drift (like the `created` vs `created_at` v7.8 incident) can silently zero out coverage.
+**Problem (preserved for historical context):** Mechanism A coverage telemetry was unreliable for 4 gates with zero dispatch tests + 5 zero-coverage gates. Without dispatch tests asserting each gate function fires, a keying drift (like the `created` vs `created_at` v7.8 incident) could silently zero out coverage.
 
-**Suggested approach:** Each of the 9 gates needs a 5-line unit test in `tests/test_gate_dispatch.py` asserting (a) the gate function is called for matching inputs, (b) `gate-coverage.jsonl` receives a row, (c) the row has expected `gate=` and non-zero `candidates`.
+**Approach taken:** 9 `test_main_dispatch_<gate>()` end-to-end tests asserting (a) the gate's `main()` dispatcher invokes the gate function for matching inputs (via monkey-patch isolation), (b) a `candidate` row is written to a tmp `gate-coverage.jsonl` (for the 7 gates with Mechanism A telemetry), (c) the row has expected `gate=` and non-zero `candidates`. 2 gates (`CASE_STUDY_MISSING_FIELDS`, `PR_CACHE_STALE`) lack Mechanism A telemetry — assertion shape adapted (exit-code only); gap captured as a v8.x backlog item.
 
-**Why MUST:** v7.9 promotion criterion #1 in master plan §2.2 ("Mechanism A coverage validated for all gates"). Without these tests, v7.9 promotion proceeds with unverified coverage on those 9 gates.
+**What landed (2026-05-22 → 05-23 on `feature/framework-f14-f15-dispatch-test-coverage`):**
 
-**Deferral note (decision 2026-05-15):** Original target was "before 2026-05-21". Operator decision deferred to **2026-05-22 (the day after v7.9 promotion decision)** to preserve the v7.9 calibration baseline (criterion #2 — "no false positives"). Adding 9 new test fixtures during 2026-05-15→05-21 would write ≥9 new `candidate` rows into `.claude/logs/gate-coverage.jsonl` during the calibration window — contaminating the data the promotion decision evaluates. The trade-off: v7.9 ships on 2026-05-21 WITHOUT F14/F15 coverage validated, then C1 lands 2026-05-22 + the v7.9.1 cycle re-evaluates whether the 9 gates promoted with or without these tests should be re-flipped. The auditor flagged this as the right read because the dispatch tests are themselves the Mechanism A validation work — excluding them from the calibration baseline is correct, not a hack.
+- `scripts/tests/conftest.py` — NEW, 330 lines, 4 shared fixtures + 9 violation recipes
+- `scripts/tests/test_check_state_schema.py` — EXTENDED, +6 dispatch tests
+- `scripts/tests/test_check_case_study_preflight.py` — NEW, 48 lines, 1 dispatch test
+- `scripts/tests/test_integrity_check_dispatch.py` — NEW, 239 lines, 2 dispatch tests
+- `scripts/tests/test_ensure_pr_cache_fresh.py` — NEW, 151 lines, 1 dispatch test
+- Coverage delta: write-time 1/16 → 8/16 = 50%; cycle-time 0/3 → 2/3 = 67%; combined 1/19 → 10/19 = **53%**
+- Phase 5 verification: 161/161 pytest pass in 10.82s; 9/9 emit `candidate` row to tmp ledger; canonical `.claude/logs/gate-coverage.jsonl` mtime unchanged (K3 guard held)
+- Case study: [`docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md`](../../docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md)
+- Backlog: T1 `GATE_TEST_MISSING` meta-gate ticket added to [`docs/product/backlog.md`](../../docs/product/backlog.md)
 
-**Open `/pm-workflow framework-f14-f15-dispatch-test-coverage`** on 2026-05-22 to start.
+**Deferral note (decision 2026-05-15, preserved):** Original target was "before 2026-05-21". Operator decision deferred to **2026-05-22 (the day after v7.9 promotion decision)** to preserve the v7.9 calibration baseline (criterion #2 — "no false positives"). Adding 9 new test fixtures during 2026-05-15→05-21 would write ≥9 new `candidate` rows into `.claude/logs/gate-coverage.jsonl` during the calibration window — contaminating the data the promotion decision evaluates. The trade-off: v7.9 ships on 2026-05-21 WITHOUT F14/F15 coverage validated, then C1 lands 2026-05-22 + the v7.9.1 cycle re-evaluates whether the 9 gates promoted with or without these tests should be re-flipped. The auditor flagged this as the right read because the dispatch tests are themselves the Mechanism A validation work — excluding them from the calibration baseline is correct, not a hack.
+
+**Remaining work (pending operator authorization):**
+
+1. Open PR from `feature/framework-f14-f15-dispatch-test-coverage` → `main` (per CLAUDE.md, no auto-push / no auto-merge without per-PR approval)
+2. Pre-merge CI green on PR (`pm-framework/pr-integrity`)
+3. Squash-merge to main
+4. Update this entry with `**Closed YYYY-MM-DD via PR #N**` canonical strikethrough format once PR # is known
+5. T+7d (2026-06-01) — verify K1/K2/K3 not fired; T+30d (2026-06-21) — verify K4 not fired; T+90d (2026-08-22) — close case study, populate `kill_criteria_resolution` frontmatter, transition `current_phase` → `complete`
 
 ### C2 — T6 web PR JS test gate (fitme-story)
 
