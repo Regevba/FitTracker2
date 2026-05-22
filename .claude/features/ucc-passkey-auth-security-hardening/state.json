@@ -553,7 +553,38 @@
   ],
   "design_spec": "docs/superpowers/specs/2026-05-19-ucc-passkey-security-hardening-design.md",
   "risk_assessment_sub_plan": "docs/master-plan/ucc-passkey-security-hardening-risk-assessment-2026-05-19.md",
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "timestamp": "2026-05-19T14:30:00Z",
+      "level": "L1",
+      "key": "parent_gap_closure_chain",
+      "type": "applied",
+      "skill": "pm-workflow",
+      "event_type": "implementation_checkpoint",
+      "phase": "tasks",
+      "note": "Applied the parent-gap-closure protocol from the parent ucc-passkey-auth feature: skip research+prd (inherit from parent §7 Q1+Q2), produce design spec + risk sub-plan + state.json with embedded delta-PRD, then advance to tasks. Pattern captured in state.json::phases.{research,prd}.skip_reason = 'work_type:enhancement'."
+    },
+    {
+      "timestamp": "2026-05-19T15:00:00Z",
+      "level": "L2",
+      "key": "arm_big_little_lane_classification",
+      "type": "adapted",
+      "skill": "pm-workflow",
+      "event_type": "task_planning",
+      "phase": "tasks",
+      "note": "Adapted ARM big.LITTLE lane classification from HADF research to the 26-task breakdown: 8 P-core (architecture-shaping) + 13 E-core (mechanical) + 5 operator-only. Drove serial critical path identification (T1→T8→T9→T12→T20→T22, ~3.4h)."
+    },
+    {
+      "timestamp": "2026-05-20T03:54:00Z",
+      "level": "L2",
+      "key": "t_plus_7d_kill_criteria_checkpoint",
+      "type": "applied",
+      "skill": "pm-workflow",
+      "event_type": "phase_advance",
+      "phase": "documentation",
+      "note": "Applied the T+7d kill-criteria evaluation cadence pattern (used across UCC parent, smart-reminders, training-plan-v2, and 12+ other features). Wrote section 4 of the case study as blank-by-design placeholder; B11 cadence followup auto-scheduled for 2026-05-27 in .claude/shared/must-have-cadence-followups.md."
+    }
+  ],
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {
