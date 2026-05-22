@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "description": "Numerical reference ledger for T1 (Instrumented) claims in case studies whose values are NOT captured by the existing measurement-adoption.json or documentation-debt.json sources. Each entry pins a measured number to its case study + measurement-source so the validate-tier-tags.py heuristic has a ledger row to match against. Seeded v7.8.4 to clear 2 known-correct T1 advisories that previously had no ledger match.",
-  "updated": "2026-05-12",
+  "description": "Numerical reference ledger for T1 (Instrumented) claims in case studies whose values are NOT captured by the existing measurement-adoption.json or documentation-debt.json sources. Each entry pins a measured number to its case study + measurement-source so the validate-tier-tags.py heuristic has a ledger row to match against. Seeded v7.8.4 to clear 2 known-correct T1 advisories that previously had no ledger match. Extended 2026-05-22 with 3 entries per External Audit #1 (Gemini 2.5 Pro) findings D-004/D-005/D-006.",
+  "updated": "2026-05-22",
   "entries": [
     {
       "case_study": "ios-ui-audit-p1-burndown-case-study.md",
@@ -41,6 +41,52 @@
       },
       "instrumentation_source": "scripts/measurement-adoption-report.py snapshot 2026-04-27 (now historical — current corpus is 3/34 = 8.8%)",
       "note": "Forward-data-drift example: this T1 number reflects state at synthesis time but the live ledger has since moved. Pinned here so the heuristic stops false-flagging the historical fact."
+    },
+    {
+      "case_study": "hadf-phase2-cloud-fingerprinting-case-study.md",
+      "claim": "silhouette score at best_k=5",
+      "value": 0.5566,
+      "unit": "silhouette score",
+      "computed_from": {
+        "best_k": 5,
+        "metric": "sklearn.metrics.silhouette_score on standardized cloud-fingerprint feature space",
+        "max_across_k_searched": 0.5566
+      },
+      "instrumentation_source": "scripts/hadf-phase2-analyze.py output summary JSON",
+      "note": "Audit-1 correction C-002 (closes Gemini D-004). T1 claim in HADF Phase 2 case study line 41 + 99 + 102; pinned here so validate-tier-tags has a ledger row."
+    },
+    {
+      "case_study": "ios-ui-audit-p1-drift-cleanup-case-study.md",
+      "claim": "P1 findings reduction",
+      "value": 68,
+      "value_alt": 30,
+      "unit": "%",
+      "computed_from": {
+        "baseline_p1": 44,
+        "post_ship_p1": 14,
+        "delta": -30,
+        "as_percent": -68,
+        "formula": "(baseline - post_ship) / baseline * 100"
+      },
+      "instrumentation_source": "make ui-audit (scripts/ui-audit.py) — P1 finding count from .swift files under FitTracker/Views and FitTracker/DesignSystem",
+      "note": "Audit-1 correction C-003 (closes Gemini D-005). Drift-cleanup pass between burndown (103→44) and final sweep (14→0)."
+    },
+    {
+      "case_study": "ui-ux-final-sweep-2026-05-12-case-study.md",
+      "claim": "iOS P1 findings final reduction",
+      "value": 100,
+      "value_alt": 14,
+      "unit": "%",
+      "computed_from": {
+        "baseline_p1": 14,
+        "post_ship_p1": 0,
+        "delta": -14,
+        "as_percent": -100,
+        "formula": "(baseline - post_ship) / baseline * 100",
+        "rolling_baseline_from_initial_burndown": 103
+      },
+      "instrumentation_source": "make ui-audit (scripts/ui-audit.py) — P1 finding count from .swift files under FitTracker/Views and FitTracker/DesignSystem",
+      "note": "Audit-1 correction C-004 (closes Gemini D-006). Final closure pass — 14 → 0 (100% from this sweep, against rolling baseline of 103 across all three burndown passes)."
     }
   ]
 }
