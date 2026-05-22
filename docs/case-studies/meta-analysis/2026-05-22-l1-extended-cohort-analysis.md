@@ -252,3 +252,43 @@ Notes:
 **`cu_v2` schema (mandatory from v7.7):** The v7.5-v7.7 cohort shows 50.0% (4/8); the v7.8-v7.9 cohort shows 16.0% (4/25). The v7.8-v7.9 cohort has a lower rate than the v7.5-v7.7 cohort despite being the later cohort.
 
 **Tier-tag in case study body (mandatory from 2026-04-21, cuts across all buckets):** Among features with a case-study file present, tier-tag presence rates are: pre-v6 71.4% (15/21), v6.0-v6.x 25.0% (1/4), v7.0-v7.4 100.0% (2/2), v7.5-v7.7 100.0% (7/7), v7.8-v7.9 94.4% (17/18). The v6.0-v6.x cohort has the lowest rate at 25.0% (1/4 case-study files contain a tier tag). The 6 pre-v6 case-study files without tier tags account for the 71.4% rate on that cohort.
+
+## 18. NEW — Cross-repo split (FT2 vs fitme-story)
+
+Per spec §5.2, partition the 75-feature corpus by `state.json::state_owner`. Compare doc-debt field-presence rates per repo. Quantifies the v7.8.2 documented-disposition decision empirically. **Closes anchor §16 L3.**
+
+### 18.1 Cohort split
+
+| state_owner | n | Note |
+|---|---:|---|
+| `ft2` (explicit) | 74 | Set by v7.8.3 bulk backfill (PR #185+#186) on all pre-existing features + every post-v7.8.3 feature; no features have `state_owner` absent |
+| `ft2 (default — legacy)` | 0 | Zero: the bulk backfill populated `state_owner: "ft2"` on all 74 FT2 features; the legacy-default bucket is empty |
+| `fitme-story` | 1 | `3d-interactive-framework-flow-diagram` — first cross-repo feature; `current_phase: prd` at extraction time |
+| **Total** | **75** | |
+
+### 18.2 Doc-debt field-presence per repo
+
+| Field | ft2 (n=74) | fitme-story (n=1) | Δ (ft2 − fitme-story, percentage points) |
+|---|---:|---:|---:|
+| `success_metrics` non-empty | 10.8% (8/74) | 0.0% (0/1) | +10.8 |
+| `kill_criteria` non-empty | 10.8% (8/74) | 0.0% (0/1) | +10.8 |
+| `kill_criteria_resolution` when KC set | 12.5% (1/8) | n/a (0 features have KC set) | — |
+| `cache_hits[]` (post-v6) | 50.0% (19/38) | n/a (Mechanism A is FT2-only per v7.8.2 spec) | — |
+| `cu_v2` schema-valid | 14.9% (11/74) | 0.0% (0/1) | +14.9 |
+| Tier-tags in case study body | 80.8% (42/52) | n/a (0 case-study files present for fitme-story features) | — |
+
+(T1 — measured at extraction time from state.json + case-study scans)
+
+### 18.3 Per-rule asymmetry call-outs
+
+For fields in §18.2 where `Δ` is a numeric value (not `—`): `success_metrics` gap is +10.8 pp, `kill_criteria` gap is +10.8 pp, and `cu_v2` gap is +14.9 pp. No comparable field exceeds the 20 pp threshold. No significant asymmetry on any comparable field.
+
+For fields where the fitme-story denominator is zero or the measurement is FT2-only (`kill_criteria_resolution`, `cache_hits[]`, `tier-tags`): these fields cannot produce a valid cross-repo gap at n=1 without a case study, so no call-out is warranted.
+
+### 18.4 v7.8.2 disposition validation
+
+The v7.8.2 cross-repo gate asymmetry spec (2026-05-08) documented Mechanism A's FT2-only scope as a deliberate exemption. The §18.2 data shows whether the asymmetry caused measurable harm in OTHER fields — fields expected to be populated in both repos.
+
+Observed pattern: `success_metrics`, `kill_criteria`, and `cu_v2` show gaps of +10.8 pp, +10.8 pp, and +14.9 pp respectively. All three gaps are below 20 pp. `cache_hits[]` and `tier-tags` are not comparable (FT2-only scope or zero case-study denominator). The fitme-story cohort consists of a single feature at `prd` phase with no case study present — low field-presence rates on that feature reflect its early lifecycle stage, not a systematic adoption deficit attributable to the Mechanism A exemption.
+
+v7.8.2 disposition expected: Mechanism A telemetry asymmetry is acceptable; other field-adoption rates should be comparable across repos. Phase 1 measurement: PASS on all three comparable fields (`success_metrics` +10.8 pp: PASS; `kill_criteria` +10.8 pp: PASS; `cu_v2` +14.9 pp: PASS — all below 20 pp threshold). The single-feature fitme-story cohort limits the statistical weight of this conclusion; re-evaluation is scheduled annually per v7.8.2 spec §5 or when the fitme-story cohort reaches ≥5 features.
