@@ -13,6 +13,9 @@
 | [v7.5 Advancement Report](v7-5-advancement-report.md) | 2026-04-24 | Internal (Claude Opus 4.7) | Before/after measurement of every Gemini Tier item across the v7.1 → v7.5 transition. Every quantitative claim T1/T2/T3 tagged |
 | [Unclosable Gaps Inventory (v7.7 — 4 remain)](unclosable-gaps.md) | 2026-04-27 | Internal (Claude Opus 4.7) | The 4 mechanically unclosable Class B gaps remaining after v7.7 closed the cache_hits writer-path gap. Each gap has a 4-section format: technical reason / observability / human action / tracking. Includes the v7.5 → v7.6 and v7.7 Class A vs Class B promotion tables. |
 | [v7.7 Validity Closure](../framework-v7-7-validity-closure-case-study.md) | 2026-04-27 | Internal (Claude Opus 4.7) | Full narrative of v7.7: 5 new check codes (4 gating + 1 advisory permanent), framework-health dashboard, cache_hits writer-path closed, 32 case-study frontmatter backfills, 3 timing-phases backfills. Case study chain: Gemini audit → v7.5 → v7.6 → v7.7. |
+| [L0 — Delta vs 2026-04-21 anchor](2026-05-22-l0-delta-vs-anchor.md) | 2026-05-22 | Internal (Claude Opus 4.7) | Quantify corpus + framework + gate deltas since anchor; status of anchor §16 limitations |
+| [L1 — Extended cohort analysis (n=83)](2026-05-22-l1-extended-cohort-analysis.md) | 2026-05-22 | Internal (Claude Opus 4.7) | 2026-04-21 anchor replicated on n=83 corpus + 2 new cohort dimensions (framework-version + cross-repo) |
+| [L2 — Audit-prep claim ledger v7-9-1 (File A, auditor-facing)](2026-05-22-l2-audit-prep-claims-v7-9-1.md) | 2026-05-22 | Internal (Claude Opus 4.7) | Forward-looking claim ledger fed into External Audit #2 (2026-06-12) claude-bundle. File B internal sidecar NOT indexed (per spec §5.3) |
 
 ## How These Relate
 
