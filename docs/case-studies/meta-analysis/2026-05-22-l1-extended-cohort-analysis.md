@@ -63,3 +63,64 @@ Per `state.json::dispatch_pattern` across 75 features (T1). 88.0% of features ha
 | subagent-driven (Block A) + operator-driven (Block B/C) | 1 | 1.3% |
 | TODO: defined in Phase 1 Research → Phase 2 PRD | 1 | 1.3% |
 | **Total** | **75** | **100.0%** |
+
+## 6. Phase-documentation coverage
+
+Per `state.json::phases.<phase>.note` presence across the 75-feature corpus (T1):
+
+| Phase | features w/ note | features w/ phase present | coverage |
+|---|---:|---:|---:|
+| `implementation` | 16 | 68 | 23.5% |
+| `merge` | 9 | 68 | 13.2% |
+| `review` | 16 | 67 | 23.9% |
+| `research` | 14 | 66 | 21.2% |
+| `prd` | 12 | 66 | 18.2% |
+| `tasks` | 13 | 66 | 19.7% |
+| `ux_or_integration` | 9 | 64 | 14.1% |
+| `documentation` | 11 | 63 | 17.5% |
+| `testing` | 19 | 56 | 33.9% |
+| `metrics` | 0 | 34 | 0.0% |
+| `test` | 8 | 11 | 72.7% |
+| `complete` | 5 | 7 | 71.4% |
+| `implement` | 1 | 4 | 25.0% |
+| `docs` | 1 | 4 | 25.0% |
+| `learn` | 1 | 3 | 33.3% |
+| `tasks_phase` | 0 | 2 | 0.0% |
+| `pre_merge_review` | 0 | 1 | 0.0% |
+
+## 7. Structural anomalies
+
+Anchor §7 audit-v2-gN stub group: resolved (0 features remain). No `audit-v2-gN` stubs exist in `.claude/features/`.
+
+No new structural anomalies detected. All 75 state.json files are ≥500 bytes; no thin-state stubs found.
+
+## 8. Metrics sections coverage
+
+Per top-level state.json fields across 75 features (T1):
+
+| Field | features w/ value | denominator | coverage |
+|---|---:|---:|---:|
+| `success_metrics` non-empty | 8 | 75 | 10.7% |
+| `kill_criteria` non-empty | 8 | 75 | 10.7% |
+| `kill_criteria_resolution` (when `kill_criteria` set) | 1 | 8 | 12.5% |
+| `cache_hits[]` non-empty (post-v6 only) | 19 | 39 | 48.7% |
+| `cu_v2` schema-valid | 11 | 75 | 14.7% |
+
+## 9. PR citation verification
+
+| Repo | Total PR citations in case studies | Resolution rate (T2, declared) |
+|---|---:|---|
+| FT2 | 289 | 100% (gated by `BROKEN_PR_CITATION` since v7.5) |
+| fitme-story | 94 | 100% (cross-repo `BROKEN_PR_CITATION` since v7.8.3 Phase 1) |
+
+Note: T2 (declared) tier — actual verification happens at commit time by the pre-commit gate. Direct re-verification at meta-analysis time would require live `gh pr list` queries (deferred to Phase 3 cross-anchor reconciliation).
+
+## 10. state.json reconciliation
+
+Per state.json↔case-study link integrity (T1):
+
+| Check | passing | denominator | coverage |
+|---|---:|---:|---:|
+| `case_study` link present (path or exemption marker) | 54 | 75 | 72.0% |
+| `case_study` link resolves OR is valid exemption | 52 | 54 | 96.3% |
+| `current_phase` field set | 75 | 75 | 100.0% |
