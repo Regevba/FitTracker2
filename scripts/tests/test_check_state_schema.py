@@ -378,3 +378,286 @@ def test_framework_version_format_blocks_garbage_strings(tmp_path):
             f"Invalid {invalid!r} must trigger FRAMEWORK_VERSION_FORMAT. "
             f"Got: {errors}"
         )
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# F14/F15 dispatch tests — per-gate test_main_dispatch_<gate>() coverage
+# Feature: framework-f14-f15-dispatch-test-coverage (Phase 4 implementation).
+# Pattern proven by PR #317 (BRANCH_ISOLATION_VIOLATION Mode B prototype).
+# Each test invokes main() end-to-end with monkey-patched IO helpers and
+# asserts both the rejection path AND Mechanism A row emission.
+# ────────────────────────────────────────────────────────────────────────────
+
+
+def test_main_dispatch_state_no_case_study_link(
+    tmp_gate_coverage_ledger,
+    make_invalid_state_json,
+    monkeypatch,
+):
+    """T2 — pilot dispatch test. Validates the monkey-patch pattern shape
+    by exercising STATE_NO_CASE_STUDY_LINK end-to-end via main().
+
+    The gate fires when:
+      - current_phase = "complete"
+      - case_study + parent_case_study fields both absent
+      - case_study_type not in EXEMPT_CASE_STUDY_TYPES
+    """
+    import json as _json
+
+    # Build a state.json crafted to FAIL the gate.
+    invalid_state = make_invalid_state_json("STATE_NO_CASE_STUDY_LINK")
+
+    # Monkey-patch IO helpers so main() sees our synthetic state file.
+    monkeypatch.setattr(
+        _mod, "collect_staged_state_files", lambda: [invalid_state.path]
+    )
+    monkeypatch.setattr(
+        _mod, "collect_all_staged_files", lambda: [str(invalid_state.path)]
+    )
+    # Mechanism A: route ledger writes to the tmp path (K3 guard).
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", tmp_gate_coverage_ledger)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    # Drive main() end-to-end.
+    rc = _mod.main()
+
+    # STATE_NO_CASE_STUDY_LINK is enforced → rc must be non-zero.
+    assert rc != 0, (
+        f"STATE_NO_CASE_STUDY_LINK failed to fire on invalid state.json; rc={rc}. "
+        "Either the gate has regressed OR the violation recipe is no longer valid."
+    )
+
+    # Mechanism A: ledger must exist and contain a row for our gate.
+    assert tmp_gate_coverage_ledger.exists(), (
+        "Coverage ledger missing — main() bypassed Mechanism A telemetry. "
+        "This is the silent-pass class that F14 closes."
+    )
+    rows = [
+        _json.loads(line)
+        for line in tmp_gate_coverage_ledger.read_text().splitlines()
+        if line.strip()
+    ]
+    matching = [r for r in rows if r.get("gate") == "STATE_NO_CASE_STUDY_LINK"]
+    assert len(matching) >= 1, (
+        f"STATE_NO_CASE_STUDY_LINK did not emit a candidate row to "
+        f"gate-coverage.jsonl; got gates: {[r.get('gate') for r in rows]}"
+    )
+    assert matching[0].get("candidates", 0) > 0, (
+        f"STATE_NO_CASE_STUDY_LINK row has zero candidates: {matching[0]}"
+    )
+
+
+def test_main_dispatch_cu_v2_invalid(
+    tmp_gate_coverage_ledger,
+    make_invalid_state_json,
+    monkeypatch,
+):
+    """T4 — CU_V2_INVALID dispatch test. Gate fires when state.cu_v2 has a
+    malformed shape that validate-cu-v2.py rejects."""
+    import json as _json
+
+    invalid_state = make_invalid_state_json("CU_V2_INVALID")
+
+    monkeypatch.setattr(
+        _mod, "collect_staged_state_files", lambda: [invalid_state.path]
+    )
+    monkeypatch.setattr(
+        _mod, "collect_all_staged_files", lambda: [str(invalid_state.path)]
+    )
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", tmp_gate_coverage_ledger)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    rc = _mod.main()
+
+    # Enforced gate → non-zero rc.
+    assert rc != 0, f"CU_V2_INVALID failed to fire on malformed cu_v2; rc={rc}"
+
+    assert tmp_gate_coverage_ledger.exists()
+    rows = [
+        _json.loads(line)
+        for line in tmp_gate_coverage_ledger.read_text().splitlines()
+        if line.strip()
+    ]
+    matching = [r for r in rows if r.get("gate") == "CU_V2_INVALID"]
+    assert len(matching) >= 1, (
+        f"CU_V2_INVALID did not emit a candidate row; got: "
+        f"{[r.get('gate') for r in rows]}"
+    )
+    assert matching[0].get("candidates", 0) > 0
+
+
+def test_main_dispatch_cache_hits_auto_instrumentation_drift(
+    tmp_gate_coverage_ledger,
+    make_invalid_state_json,
+    monkeypatch,
+):
+    """T5 — CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT dispatch test. Gate fires
+    when a post-Mechanism-C feature (created_at >= 2026-05-02) reaches
+    current_phase=complete with empty cache_hits[]. This is the gate whose
+    keying-drift incident (honesty-ledger FT2-FH-001) motivated F14."""
+    import json as _json
+
+    invalid_state = make_invalid_state_json("CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT")
+
+    monkeypatch.setattr(
+        _mod, "collect_staged_state_files", lambda: [invalid_state.path]
+    )
+    monkeypatch.setattr(
+        _mod, "collect_all_staged_files", lambda: [str(invalid_state.path)]
+    )
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", tmp_gate_coverage_ledger)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    rc = _mod.main()
+
+    # Enforced post-v7.8.3 → non-zero rc.
+    assert rc != 0, (
+        f"CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT failed to fire; rc={rc}. "
+        "Check that the recipe's created_at is past MECHANISM_C_SHIP_DATE."
+    )
+
+    assert tmp_gate_coverage_ledger.exists()
+    rows = [
+        _json.loads(line)
+        for line in tmp_gate_coverage_ledger.read_text().splitlines()
+        if line.strip()
+    ]
+    matching = [r for r in rows if r.get("gate") == "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT"]
+    assert len(matching) >= 1, (
+        f"CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT did not emit a candidate row; "
+        f"got: {[r.get('gate') for r in rows]}"
+    )
+    assert matching[0].get("candidates", 0) > 0
+
+
+def test_main_dispatch_phase_transition_no_log(
+    tmp_gate_coverage_ledger,
+    make_invalid_state_json,
+    monkeypatch,
+):
+    """T6 — PHASE_TRANSITION_NO_LOG dispatch test.
+
+    Highest-risk F15 gate (guards most-frequent state mutation). Fires when:
+      - enforce_transition=True (--staged mode)
+      - committed (HEAD) current_phase != in-file current_phase
+      - .claude/logs/<feature>.log.json missing OR no recent matching event
+
+    We mock _feature_slug_from_path to return a known slug, _load_committed_state
+    to return a state with the OLD phase, and _load_feature_log to return None.
+    """
+    import json as _json
+
+    invalid_state = make_invalid_state_json("PHASE_TRANSITION_NO_LOG")
+
+    # Tell the dispatcher this file belongs to a known feature slug
+    monkeypatch.setattr(
+        _mod, "_feature_slug_from_path", lambda p: "test-no-log-feature"
+    )
+    # Simulate HEAD: this feature exists in HEAD with current_phase=research,
+    # so the in-file change to "prd" registers as a phase transition.
+    monkeypatch.setattr(
+        _mod,
+        "_load_committed_state",
+        lambda p: {"current_phase": "research"},
+    )
+    # Simulate: no log file exists for this feature → LOG check fails
+    monkeypatch.setattr(_mod, "_load_feature_log", lambda slug: None)
+
+    monkeypatch.setattr(
+        _mod, "collect_staged_state_files", lambda: [invalid_state.path]
+    )
+    monkeypatch.setattr(
+        _mod, "collect_all_staged_files", lambda: [str(invalid_state.path)]
+    )
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", tmp_gate_coverage_ledger)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    rc = _mod.main()
+
+    assert rc != 0, f"PHASE_TRANSITION_NO_LOG failed to fire; rc={rc}"
+
+    assert tmp_gate_coverage_ledger.exists()
+    rows = [
+        _json.loads(line)
+        for line in tmp_gate_coverage_ledger.read_text().splitlines()
+        if line.strip()
+    ]
+    matching = [r for r in rows if r.get("gate") == "PHASE_TRANSITION_NO_LOG"]
+    assert len(matching) >= 1, (
+        f"PHASE_TRANSITION_NO_LOG did not emit a candidate row; got: "
+        f"{[r.get('gate') for r in rows]}"
+    )
+    assert matching[0].get("candidates", 0) > 0
+
+
+def test_main_dispatch_phase_transition_no_timing(
+    tmp_gate_coverage_ledger,
+    make_invalid_state_json,
+    monkeypatch,
+):
+    """T7 — PHASE_TRANSITION_NO_TIMING dispatch test.
+
+    Fires when:
+      - enforce_transition=True
+      - phase changed vs HEAD
+      - timing.phases.<new_phase>.started_at missing OR
+      - timing.phases.<old_phase>.ended_at missing (when old_phase exists)
+
+    We provide a fresh log event (to pass LOG check) but omit the new
+    phase's timing entry.
+    """
+    import json as _json
+    import datetime as _dt
+
+    invalid_state = make_invalid_state_json("PHASE_TRANSITION_NO_TIMING")
+
+    monkeypatch.setattr(
+        _mod, "_feature_slug_from_path", lambda p: "test-no-timing-feature"
+    )
+    monkeypatch.setattr(
+        _mod,
+        "_load_committed_state",
+        lambda p: {"current_phase": "research"},
+    )
+    # LOG check needs to PASS so we isolate TIMING. Provide a fresh log
+    # event for the new phase.
+    now_iso = _dt.datetime.now(_dt.timezone.utc).isoformat().replace("+00:00", "Z")
+    monkeypatch.setattr(
+        _mod,
+        "_load_feature_log",
+        lambda slug: {
+            "events": [
+                {
+                    "event_type": "phase_started",
+                    "phase": "prd",
+                    "timestamp": now_iso,
+                }
+            ]
+        },
+    )
+
+    monkeypatch.setattr(
+        _mod, "collect_staged_state_files", lambda: [invalid_state.path]
+    )
+    monkeypatch.setattr(
+        _mod, "collect_all_staged_files", lambda: [str(invalid_state.path)]
+    )
+    monkeypatch.setattr(_mod, "GATE_COVERAGE_LEDGER", tmp_gate_coverage_ledger)
+    monkeypatch.setattr(sys, "argv", ["check-state-schema.py", "--staged"])
+
+    rc = _mod.main()
+
+    assert rc != 0, f"PHASE_TRANSITION_NO_TIMING failed to fire; rc={rc}"
+
+    assert tmp_gate_coverage_ledger.exists()
+    rows = [
+        _json.loads(line)
+        for line in tmp_gate_coverage_ledger.read_text().splitlines()
+        if line.strip()
+    ]
+    matching = [r for r in rows if r.get("gate") == "PHASE_TRANSITION_NO_TIMING"]
+    assert len(matching) >= 1, (
+        f"PHASE_TRANSITION_NO_TIMING did not emit a candidate row; got: "
+        f"{[r.get('gate') for r in rows]}"
+    )
+    assert matching[0].get("candidates", 0) > 0

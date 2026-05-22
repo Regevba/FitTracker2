@@ -1,0 +1,369 @@
+{
+  "feature_name": "framework-f14-f15-dispatch-test-coverage",
+  "display_name": "Framework F14/F15 \u2014 dispatch-test coverage push",
+  "current_phase": "implementation",
+  "created_at": "2026-05-22T19:15:05Z",
+  "updated": "2026-05-22T20:54:36Z",
+  "framework_version": "v7.9",
+  "work_type": "feature",
+  "work_subtype": "framework_feature",
+  "state_owner": "ft2",
+  "dispatch_pattern": "serial",
+  "has_ui": false,
+  "requires_analytics": false,
+  "isolation_opt_out": false,
+  "branch": "feature/framework-f14-f15-dispatch-test-coverage",
+  "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage",
+  "case_study_type": "feature_case_study",
+  "parent_feature": null,
+  "scheduled_after": {
+    "predecessor": "framework-v7-9-promotion",
+    "signal": "v7.9 promotion shipped 2026-05-21 + calibration baseline preserved (no new candidate rows during v7.8 \u2192 v7.9 window)",
+    "captured_at": "2026-05-15",
+    "resolved_at": "2026-05-22T19:15:05Z",
+    "resolved_by_pr": 417,
+    "note": "Per cadence-followups C1 deferral note (2026-05-15 decision): adding 9 new test fixtures during 2026-05-15 \u2192 05-21 would have written \u22659 new candidate rows into .claude/logs/gate-coverage.jsonl during the v7.9 calibration window. Deferred to 2026-05-22 (T+1d post-promotion). v7.9.1 cycle will re-evaluate whether the 9 gates that promoted without these tests should re-flip."
+  },
+  "links": {
+    "test_coverage_master_plan": "docs/master-plan/test-coverage-master-plan-2026-05-13.md",
+    "infra_master_plan": "docs/master-plan/infra-master-plan-2026-05-12.md",
+    "cadence_followups": ".claude/shared/must-have-cadence-followups.md#C1",
+    "f_candidates_spec": "docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md"
+  },
+  "phases": {
+    "research": {
+      "status": "approved",
+      "started_at": "2026-05-22T19:15:05Z",
+      "paused_at": "2026-05-22T19:20:00Z",
+      "resumed_at": "2026-05-22T20:20:22Z",
+      "approved_at": "2026-05-22T20:20:22Z",
+      "approved_by": "user",
+      "pause_reason": "Operator requested pause to allow a separate agent to run a full cross-source project sync (state.json files in FT2 + fitme-story, Linear, Notion, GitHub Issues, dashboard) before deciding how to move C1 forward. Phase 0 deliverable is complete; PRD start gated on sync outcome.",
+      "resume_note": "Operator returned 2026-05-22T20:20Z with 'continue work' — sync presumed complete or deferred; Phase 0 research approved as-is and Phase 1 (PRD) opened. Sync outcomes can still amend the PRD before its approval.",
+      "deliverable": ".claude/features/framework-f14-f15-dispatch-test-coverage/research.md",
+      "sources": [
+        "docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md §F14 + §F15",
+        "docs/master-plan/test-coverage-master-plan-2026-05-13.md §2.1",
+        ".claude/shared/must-have-cadence-followups.md §C1",
+        "FT2 PR #317 (commit 97af469) — dispatch-test prototype"
+      ],
+      "resume_plan_2026_05_22": {
+        "calendar_pressure": "Soft. Original target ship 2026-05-23 → 05-25; slipping a few days is fine since v7.9 already shipped without these tests per the documented deferral trade-off. v7.9.1 build window opens ~2026-06-04 → 06-11; C1 ideally lands inside that window.",
+        "next_steps_after_sync": [
+          "1. Read the sync agent's cross-source report",
+          "2. Re-load this state.json + research.md",
+          "3. Decide: advance to Phase 1 (PRD) OR redirect/expand scope based on sync findings",
+          "4. If advancing: resolve the 4 open questions in research.md §9 (cycle-time gate file location, PR_CACHE_STALE refactor scope, GATE_TEST_MISSING meta-gate inclusion, fixture-sharing strategy)",
+          "5. If redirecting: update research.md scope + re-approve Phase 0"
+        ],
+        "verification_at_resume": [
+          "ls /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage/.claude/features/framework-f14-f15-dispatch-test-coverage/ → expect state.json + research.md",
+          "git -C /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage status → expect feature dir + .claude/active-feature untracked on feature/framework-f14-f15-dispatch-test-coverage",
+          "cat .claude/active-feature in worktree → expect framework-f14-f15-dispatch-test-coverage",
+          "Tier 2.2 log at /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage/.claude/logs/framework-f14-f15-dispatch-test-coverage.log.json → 2 entries (phase_started + phase_paused)"
+        ]
+      }
+    },
+    "prd": {
+      "status": "approved",
+      "started_at": "2026-05-22T20:20:22Z",
+      "approved_at": "2026-05-22T20:47:12Z",
+      "approved_by": "user",
+      "analytics_spec_complete": true,
+      "analytics_spec_skip_reason": "requires_analytics=false (no user-facing screens/actions; pure framework test infrastructure)",
+      "deliverable": ".claude/features/framework-f14-f15-dispatch-test-coverage/prd.md",
+      "locked_decisions": {
+        "OQ1_cycle_time_gate_file": "scripts/tests/test_integrity_check_dispatch.py (new)",
+        "OQ2_pr_cache_stale": "one-off test file scripts/tests/test_ensure_pr_cache_fresh.py; refactor deferred to v8.x",
+        "OQ3_gate_test_missing_meta_gate": "deferred to T1 in test-coverage-master-plan (RICE 53.3); backlog ticket to open in Phase 8",
+        "OQ4_fixture_sharing": "scripts/tests/conftest.py (new) with make_valid_state_json, make_invalid_state_json, tmp_gate_coverage_ledger"
+      }
+    },
+    "tasks": {
+      "status": "approved",
+      "started_at": "2026-05-22T20:47:12Z",
+      "approved_at": "2026-05-22T20:50:26Z",
+      "approved_by": "user",
+      "count": 12,
+      "deliverable": ".claude/features/framework-f14-f15-dispatch-test-coverage/tasks.md"
+    },
+    "ux_or_integration": {
+      "status": "approved",
+      "type": "integration",
+      "started_at": "2026-05-22T20:50:26Z",
+      "approved_at": "2026-05-22T20:54:36Z",
+      "approved_by": "user",
+      "preflight_passed": null,
+      "preflight_skip_reason": "Integration-spec branch (has_ui=false) bypasses the UX/Design preflight chain; preflight applies only to UI features per skill-routing config",
+      "skip_reason_ux": "has_ui=false (pure test infrastructure; no user-facing surface)",
+      "deliverable": ".claude/features/framework-f14-f15-dispatch-test-coverage/integration-spec.md"
+    },
+    "implementation": {
+      "status": "in_progress",
+      "started_at": "2026-05-22T20:54:36Z",
+      "commits": [],
+      "progress": "6/12 tasks done (T1, T2, T4, T5, T6, T7); 6 remaining (T3, T8-T12). 5 dispatch tests passing in 90ms; full suite 155 passing in 10.78s; no regressions."
+    },
+    "testing": {
+      "status": "pending",
+      "ci_passed": false,
+      "tests_added": 0,
+      "instrumentation_verified": false,
+      "analytics_tests_added": 0,
+      "analytics_verification_passed": false
+    },
+    "review": {
+      "status": "pending",
+      "risks": [],
+      "ci_main": false,
+      "ci_feature": false
+    },
+    "merge": {
+      "status": "pending",
+      "pr_number": null,
+      "analytics_regression_passed": null
+    },
+    "documentation": {
+      "status": "pending"
+    },
+    "metrics": {
+      "primary": {
+        "name": "",
+        "baseline": null,
+        "target": null,
+        "current": null
+      },
+      "secondary": [],
+      "guardrails": [],
+      "instrumentation_ready": false,
+      "first_review_date": null,
+      "kill_criteria": ""
+    }
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Write scripts/tests/conftest.py with shared fixtures (tmp_gate_coverage_ledger, make_valid_state_json, make_invalid_state_json with 9 violation recipes, tmp_pr_cache_file)",
+      "type": "infra",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.13,
+      "depends_on": [],
+      "lane": "P-core",
+      "completed_at": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "T2",
+      "title": "test_main_dispatch_state_no_case_study_link — F14 pilot test validates monkey-patch pattern",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.06,
+      "depends_on": ["T1"],
+      "lane": "P-core",
+      "completed_at": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "T3",
+      "title": "test_main_dispatch_case_study_missing_fields — F14",
+      "type": "test",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": ["T1", "T2"],
+      "lane": "E-core",
+      "completed_at": null
+    },
+    {
+      "id": "T4",
+      "title": "test_main_dispatch_cu_v2_invalid — F14",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": ["T1", "T2"],
+      "lane": "E-core",
+      "completed_at": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "T5",
+      "title": "test_main_dispatch_cache_hits_auto_instrumentation_drift — F14 (renamed v7.8.3)",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "priority": "high",
+      "effort_days": 0.04,
+      "depends_on": ["T1", "T2"],
+      "lane": "E-core",
+      "completed_at": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "T6",
+      "title": "test_main_dispatch_phase_transition_no_log — F15 highest-risk (guards most-frequent state mutation)",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": ["T1", "T2"],
+      "lane": "E-core",
+      "completed_at": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "T7",
+      "title": "test_main_dispatch_phase_transition_no_timing — F15 pairs with T6",
+      "type": "test",
+      "skill": "dev",
+      "status": "done",
+      "priority": "critical",
+      "effort_days": 0.05,
+      "depends_on": ["T1", "T2"],
+      "lane": "E-core",
+      "completed_at": "2026-05-22T21:00:00Z"
+    },
+    {
+      "id": "T8",
+      "title": "New file scripts/tests/test_integrity_check_dispatch.py + test_main_dispatch_branch_isolation_historical (cycle-time)",
+      "type": "test",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.06,
+      "depends_on": ["T1", "T2"],
+      "lane": "P-core",
+      "completed_at": null
+    },
+    {
+      "id": "T9",
+      "title": "test_main_dispatch_branch_isolation_launchd_drift — F15 cycle-time, same file as T8",
+      "type": "test",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.05,
+      "depends_on": ["T1", "T8"],
+      "lane": "E-core",
+      "completed_at": null
+    },
+    {
+      "id": "T10",
+      "title": "New file scripts/tests/test_ensure_pr_cache_fresh.py + test_main_dispatch_pr_cache_stale (os.utime-based age)",
+      "type": "test",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "medium",
+      "effort_days": 0.06,
+      "depends_on": ["T1", "T2"],
+      "lane": "P-core",
+      "completed_at": null
+    },
+    {
+      "id": "T11",
+      "title": "Phase 5 verification: make test-framework-python green; 9/9 tests emit candidate row; runtime ceiling met; pre-commit hook still green; canonical gate-coverage.jsonl mtime unchanged",
+      "type": "test",
+      "skill": "qa",
+      "status": "pending",
+      "priority": "critical",
+      "effort_days": 0.06,
+      "depends_on": ["T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"],
+      "lane": "serial",
+      "completed_at": null
+    },
+    {
+      "id": "T12",
+      "title": "Phase 8 docs: case study + cadence-followups §C1 strikethrough + open T1 (GATE_TEST_MISSING) backlog + update test-coverage-master-plan §2.1 baselines",
+      "type": "docs",
+      "skill": "dev",
+      "status": "pending",
+      "priority": "high",
+      "effort_days": 0.13,
+      "depends_on": ["T11"],
+      "lane": "serial",
+      "completed_at": null
+    }
+  ],
+  "cache_hits": [],
+  "figma_node_ids": {},
+  "figma_build_status": null,
+  "pre_merge_review": {
+    "ux": null,
+    "design": null
+  },
+  "transitions": [
+    {
+      "from": "research",
+      "to": "prd",
+      "timestamp": "2026-05-22T20:20:22Z",
+      "approved_by": "user",
+      "note": "Operator returned with 'continue work' after a pause for cross-source project sync. Phase 0 deliverable accepted as-is; PRD phase opened."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "timestamp": "2026-05-22T20:47:12Z",
+      "approved_by": "user",
+      "note": "PRD approved with 'continue'. 4 open questions locked. Primary metric framework_gate_dispatch_test_coverage_pct, target 5% → 53%."
+    },
+    {
+      "from": "tasks",
+      "to": "ux_or_integration",
+      "timestamp": "2026-05-22T20:50:26Z",
+      "approved_by": "user",
+      "note": "Tasks approved with 'continue'. 12 tasks across 3 lanes (P-core × 4, E-core × 6, serial × 2). Phase 3 branches to integration-spec since has_ui=false."
+    },
+    {
+      "from": "ux_or_integration",
+      "to": "implementation",
+      "timestamp": "2026-05-22T20:54:36Z",
+      "approved_by": "user",
+      "note": "Integration-spec approved with 'continue'. 3 dispatcher surfaces locked; 4 fixture contracts + K3 ledger-isolation guard + schema-drift fail-fast at conftest import. Implementation Phase 4 opens with T1 (conftest foundation) followed by T2 pilot."
+    }
+  ],
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-05-22T19:15:05Z",
+        "ended_at": "2026-05-22T20:20:22Z",
+        "duration_minutes": 65,
+        "paused_minutes": 60
+      },
+      "prd": {
+        "started_at": "2026-05-22T20:20:22Z",
+        "ended_at": "2026-05-22T20:47:12Z",
+        "duration_minutes": 27
+      },
+      "tasks": {
+        "started_at": "2026-05-22T20:47:12Z",
+        "ended_at": "2026-05-22T20:50:26Z",
+        "duration_minutes": 3
+      },
+      "ux_or_integration": {
+        "started_at": "2026-05-22T20:50:26Z",
+        "ended_at": "2026-05-22T20:54:36Z",
+        "duration_minutes": 4
+      },
+      "implementation": {
+        "started_at": "2026-05-22T20:54:36Z",
+        "ended_at": null,
+        "duration_minutes": null
+      }
+    },
+    "session_start": "2026-05-22T19:15:05Z",
+    "sessions": [
+      {
+        "started_at": "2026-05-22T19:15:05Z",
+        "ended_at": null,
+        "duration_minutes": null,
+        "phases_active": [
+          "research",
+          "prd"
+        ]
+      }
+    ],
+    "time_source": "measuring"
+  }
+}

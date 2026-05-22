@@ -1,0 +1,124 @@
+{
+  "version": "1.0",
+  "feature": "framework-f14-f15-dispatch-test-coverage",
+  "title": "framework f14 f15 dispatch test coverage",
+  "work_type": null,
+  "current_phase": null,
+  "framework_version": null,
+  "started_at": "2026-05-22T20:21:09Z",
+  "updated_at": "2026-05-22T20:55:43Z",
+  "events": [
+    {
+      "timestamp": "2026-05-22T20:21:09Z",
+      "event_type": "phase_approved",
+      "phase": "research",
+      "summary": "Phase 0 (Research) approved by operator with 'continue work' command. research.md retained as-is; 4 open questions deferred to Phase 1 PRD. Effective measured duration: 65 min wall (60 min of which was the project-sync pause).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:21:09Z",
+      "event_type": "phase_started",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened. Scope: lock primary metric + targets + kill criteria, resolve 4 open questions from research.md \u00a79 (cycle-time gate test file, PR_CACHE_STALE refactor scope, GATE_TEST_MISSING meta-gate inclusion, fixture-sharing strategy), draft Test & Eval Requirements section. requires_analytics=false \u2192 analytics spec gate skipped.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:42:55Z",
+      "event_type": "phase_started",
+      "phase": "research",
+      "summary": "[RETROACTIVE] Phase 0 (Research) opened for the C1 cadence-followup. Scope: per-gate test_main_dispatch_* coverage for 9 gates (F14 + F15 from v7.9-candidates spec). Original event written 19:25Z but lost in a worktree-log consolidation mv between main and worktree at 22:18Z.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Original log file moved between worktrees; this entry reconstructs the contemporaneous record from the state.json::phases.research.started_at timestamp (2026-05-22T19:15:05Z) and the resume_plan_2026_05_22.verification_at_resume[3] which references both phase_started and phase_paused events."
+    },
+    {
+      "timestamp": "2026-05-22T20:43:06Z",
+      "event_type": "phase_paused",
+      "phase": "research",
+      "summary": "[RETROACTIVE] Operator pause requested before Phase 1 (PRD). Reason: waiting on a separate agent to run a full cross-source project sync (state.json FT2 + fitme-story, Linear, Notion, GitHub Issues, dashboard) before deciding how to move C1 forward. Pause cleared 60min later when operator returned with 'continue work'.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "retroactive",
+      "retroactive_reason": "Original log file moved between worktrees; reconstructing from state.json::phases.research.paused_at (2026-05-22T19:20:00Z) and pause_reason."
+    },
+    {
+      "timestamp": "2026-05-22T20:48:13Z",
+      "event_type": "phase_approved",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) approved by operator with 'continue'. 4 open questions locked: (Q1) cycle-time gates \u2192 new test_integrity_check_dispatch.py; (Q2) PR_CACHE_STALE \u2192 one-off test, refactor deferred; (Q3) GATE_TEST_MISSING \u2192 defer to T1; (Q4) shared fixtures \u2192 conftest.py. Primary metric: framework_gate_dispatch_test_coverage_pct (1/19=5% \u2192 10/19=53%). 4 kill criteria locked. 27 min wall.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:48:13Z",
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "summary": "Phase 2 (Task breakdown) opened. Scope: ~12 tasks per PRD \u00a79 \u2014 9 dispatch tests + 1 conftest + 1 integration-spec + 1 docs. Dependency graph: conftest first, then 6 F14+phase-transition tests in test_check_state_schema.py (parallel-safe via E-core lane), then 2 cycle-time tests in test_integrity_check_dispatch.py, then 1 PR_CACHE_STALE test.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:51:22Z",
+      "event_type": "phase_approved",
+      "phase": "tasks",
+      "summary": "Phase 2 (Tasks) approved by operator with 'continue'. 12 tasks: T1 conftest foundation, T2 pilot pattern validator, T3-T7+T9 E-core parallel lightweight tests, T8+T10 P-core (different dispatch surfaces), T11 verification, T12 docs+closure. Total 6.1h sum effort. 3 min phase wall.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:51:22Z",
+      "event_type": "phase_started",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (Integration spec branch \u2014 has_ui=false) opened. Scope: lock fixture API contracts, monkey-patch target lists per gate dispatch surface (3 different surfaces: check-state-schema.py + integrity-check.py + ensure-pr-cache-fresh.py), ledger-isolation rules, schema validation strategy for fixtures.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:55:43Z",
+      "event_type": "phase_approved",
+      "phase": "ux_or_integration",
+      "summary": "Phase 3 (Integration spec) approved by operator with 'continue'. 3 dispatcher surfaces locked + 4 fixture contracts + K3 guard + schema-drift mitigation. 4 min phase wall.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-22T20:55:43Z",
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "summary": "Phase 4 (Implementation) opened. Starting with T1 conftest.py foundation + T2 pilot test (STATE_NO_CASE_STUDY_LINK) to validate the monkey-patch pattern end-to-end. T3-T10 follow after pilot passes.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
