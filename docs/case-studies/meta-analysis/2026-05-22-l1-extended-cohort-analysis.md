@@ -168,3 +168,38 @@ Per spec §5.2 mirror of anchor §13. Comparison of case-study presence across t
 One additional feature (`hadf-phase2bis-replication`) has a `case_study` path declared in state.json but the referenced file does not exist on disk — the case study is in-flight. This accounts for the `cs_path_in_state = 53` vs `cs_exists = 52` delta.
 
 The 9 data-debt features (neither path nor valid exemption) represent 12.0% of the corpus. These are candidates for the next doc-debt sweep. The 52 path-resolving features (69.3%) plus 13 exempt (17.3%) together account for 65/75 (86.7%) of the corpus with a valid closure disposition.
+
+## 14. Summary of findings (pure restatement of data above)
+
+§3: n=83 case studies, 1,311,368 total bytes, median lines 212, median age not measured (corpus spans 2026-02 to 2026-05, T3). §4: work_type distribution top-3 is feature 49 (65.3%), enhancement 15 (20.0%), chore 9 (12.0%). §5: dispatch_pattern is `(missing)` on 66 of 75 features (88.0%); the remaining 9 are split across `serial` (3), `subagent-driven serial (20 tasks)` (1), and 5 other single-entry variants. §6: phase-documentation coverage ranges from 0.0% (`metrics`, `tasks_phase`, `pre_merge_review`) to 72.7% (`test`); the `metrics` phase is present in 34 features with 0 notes recorded. §7: the anchor §7 audit-v2-gN stub anomaly is resolved (0 stubs remain); no new structural anomalies detected across all 75 state.json files. §8: success_metrics non-empty 10.7% (8/75), kill_criteria non-empty 10.7% (8/75), kill_criteria_resolution 12.5% of features with kill_criteria set (1/8), cache_hits[] non-empty (post-v6) 48.7% (19/39), cu_v2 schema-valid 14.7% (11/75). §9: PR citation count FT2 289, fitme-story 94; resolution 100% for both (T2, declared via gate enforcement). §10: case_study link present 72.0% (54/75), of those 96.3% resolve or carry valid exemption (52/54); current_phase 100% (75/75). §11: framework_version distribution top-3 is v7.8-v7.9 25 (33.3%), v5.x 20 (26.7%), pre-v5.0 16 (21.3%); 0 features carry missing or parse_error values. §12: 0 features have a `failed` phase status (0.0%), 0 features have `pivot_reason` set (0.0%) — this is a schema coverage gap (fields unused), not a product health claim. §13: case study link + state.json reconciliation aligns with §10 (72.0% / 96.3%); chronological_order_violations not measured (T3).
+
+This summary is a restatement of measured data only. No editorializing.
+
+## 15. Comparison against prior meta-analyses
+
+| Metric | 2026-04-16 (Nemotron) | 2026-04-16 (what-if-v6) | 2026-04-21 (anchor) | 2026-05-22 (this doc) |
+|---|---|---|---|---|
+| n (case studies) | ~30 (T2) | 24 (T2) | 41 (T1) | 83 (T1) |
+| Cohort dimensions analyzed | 0 (validation focus) | 1 (work-type via CU recalc) | 5 (work-type, dispatch, version, framework_version, showcase mapping) | 7 (anchor 5 + framework-version cohort §17 + cross-repo split §18) |
+| External validation? | partial (Nvidia) | no | no (Gemini followed 5 days later 2026-04-21) | pending (External Audit #2 in 21 days, 2026-06-12) |
+| Key new finding | normalization model validation | CU v2 recalc + ROI 2.2x | structural anomaly: audit-v2-gN stub group | per §3-§13, dispatch_pattern field has 88.0% missing data coverage; v7.8-v7.9 is now the plurality framework_version bucket at 33.3%, overtaking v5.x at 26.7% |
+
+## 16. Limitations
+
+Per anchor §16, with status updates and additional Phase 1-specific limitations:
+
+Anchor §16 limitations status:
+- **L1 (sample size n=41):** CLOSED at n=83 (current corpus).
+- **L2 (no framework-version cohort comparison):** CLOSED — see NEW §17 (Task 10).
+- **L3 (no cross-repo split):** CLOSED — see NEW §18 (Task 11).
+- **L4 (Gemini audit then-pending):** CLOSED — Gemini audit (2026-04-21) is the v7.0→v7.5 inflection now folded into §17.
+- **L5 (self-referential bias — same author):** OPEN. Closure path: External Audit #2 (2026-06-12) provides impartial cross-check; Phase 3 reconciliation finalizes this.
+- **L6 (no statistical significance testing):** OPEN. Per-cohort n typically <15, insufficient for meaningful p-values. Will close at corpus n≈200+.
+- **L7 (no reader-comprehension validation):** OPEN. No operator has read every case study and rated quality. Out of Phase 1 scope; could be added in Phase 2.
+
+New L1-specific limitations:
+- **L8: §17 framework-version cohort boundaries are author-chosen.** Five buckets used (pre-v5.0 / v5.x / v6.x / v7.0-v7.4 / v7.5-v7.7 / v7.8-v7.9). Different groupings would yield different rates.
+- **L9: §18 cross-repo split treats fitme-story as a single repo.** But fitme-story has multiple sub-areas (control-room, case-studies, framework pages, public site) that could have different hygiene levels. Aggregate cross-repo claims may mask sub-area variance.
+- **L10: §11 framework_version count assumes the field is correctly populated.** That field was bulk-backfilled in PRs #185+#186 (v7.8 era). Pre-backfill values are recovered from PR commit dates + state.json `created_at`, not original ground truth.
+- **L11: §5 dispatch_pattern field has 88.0% missing coverage.** Findings about dispatch patterns are based on the 12.0% of features where the field is set — non-representative sample.
+- **L12: §12 failure/pivot density reports 0 because the `failed` status and `pivot_reason` fields are not in active use across the corpus.** Real failures + pivots are reported in case-study prose; the field-presence count is a schema-adoption signal, not a project-health signal.
