@@ -81,11 +81,13 @@ N/A. This is a fix, not a new layer. No Phase B–E walk needed.
 
 ---
 
-## §4 v7.9 — Promotion Release (decision 2026-05-21)
+## §4 v7.9 — Promotion Release (SHIPPED 2026-05-21 via PR #417 `ea53ff4`)
+
+> **Outcome:** 3 advisory gates promoted (not 5 — see notes below) via single-flag flip at [`scripts/check-state-schema.py:132`](../../../scripts/check-state-schema.py). Mechanism A + Mechanism C were already enforced at v7.8 / v7.8.3 ship dates, so v7.9 only flipped the remaining 3: `BRANCH_ISOLATION_VIOLATION` Mode B + Mode C + `FEATURE_CLOSURE_COMPLETENESS`. Phase E validation soak 2026-05-21 → 2026-06-04; case study at [`docs/case-studies/framework-v7-9-promotion-case-study.md`](../../case-studies/framework-v7-9-promotion-case-study.md). v7.9.1 build window opens ~2026-06-04 (F16 + F17 + F2 + F6 + D-2 + D-4 first wave per [infra-plan §3.6.3](../../master-plan/infra-master-plan-2026-05-12.md)).
 
 ### Goal
 
-Flip 5 currently-advisory gates to enforced based on 7+ days of clean `gate-coverage.jsonl` telemetry.
+Flip 5 currently-advisory gates to enforced based on 7+ days of clean `gate-coverage.jsonl` telemetry. **Actual:** only 3 needed flipping (Mechanism A + C already enforced earlier).
 
 ### Pre-decision state (as of 2026-05-12)
 
