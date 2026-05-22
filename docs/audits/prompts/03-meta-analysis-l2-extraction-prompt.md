@@ -80,21 +80,6 @@ L0 → L1 → L2 File A → staged bundle. Never the reverse.
 
 ---
 
-## Impartiality contract (verbatim from spec §6.4)
-
-The L2 File A auditor-facing claim ledger MUST satisfy all five rules:
-
-1. **Pure data.** Every claim is a STATEMENT OF FACT extractable from the cited evidence paths. No editorializing words ("good", "bad", "concerning", "promising", "surprisingly", "unfortunately"). No first-person framing ("we believe", "we expect", "we think"). No comparative judgments without evidence ("better than", "improved over").
-
-2. **Resolved evidence.** Every `evidence_paths` value MUST resolve to a real file in the redacted corpus bundle. CI check: `python3 scripts/audit/check_prompts.py` extended to validate L2 evidence paths.
-
-3. **Redaction pass.** Before File A is staged into `docs/audits/external/02-2026-06-12-v7-9-1-f16-plus-hadf/claude-bundle/`, it MUST be run through `scripts/audit/redaction.py` (the same 9-rule redactor used by `build_bundle.py`). **Zero new redactions = pass; ≥1 new redaction = STOP and fix corpus extraction first** (a leak in L2 means a leak in the L0/L1 inputs that fed it).
-
-4. **No internal-sidecar leakage.** File B (`2026-05-22-l2-internal-sidecar.md`) MUST NOT be copied, referenced, or linked from File A. Hard separation enforced by file naming + a CI grep check.
-
-5. **One-way data flow.** L0 → L1 → L2 File A → staged bundle. Never the reverse. If a claim in L2 File A turns out to be wrong, the fix lives in L1 first (or the corpus itself), then propagates forward.
-
----
 
 ## Output structure
 
@@ -156,64 +141,6 @@ Return this verbatim. Do not negotiate or simplify.
 
 ---
 
-## Sourcing tips for ≥30 claims
-
-### Scan L1 findings (existing corpus data)
-
-- L1 §3 "Corpus aggregates" — find specific n counts for feature categories
-- L1 §4 "Work-type distribution" — claim on distribution ratios
-- L1 §6 "Phase-documentation coverage" — gaps in case-study frontmatters
-- L1 §10 "state.json reconciliation" — broken links or missing citations
-- L1 §17 "Framework-version cohort" — adoption rates per cohort (NEW)
-- L1 §18 "Cross-repo split" — doc-debt deltas per repo (NEW)
-
-### Scan post-v7.9 §3.1 Source E candidates (F19/F20/F22/F23)
-
-- Source E is the outcome of framework-gate promotion telemetry
-- Mechanism A `gate-coverage.jsonl` shows what fired + when
-- Extract claims on: gate-promotion timing, skip-reason distributions, false-positive counts
-
-### Scan framework-honesty-ledger entries
-
-File: `docs/case-studies/framework-honesty-ledger.md`
-
-- FT2-FH-001 — what claim was made, what was the oversight
-- FT2-FH-002 — same
-- FT2-FH-003 — same
-
-Extract claims on timing, remediation status, impact.
-
-### Scan case-study PR citations
-
-File: `.claude/shared/gh-pr-cache.json` (the unified cross-repo PR cache)
-
-- Find claims like "Feature X was shipped in PR #N on date Y"
-- Cross-check the date from the PR metadata
-- State the fact: "PR #N merged on 2026-05-21 per git history"
-
----
-
-## Evidence path conventions
-
-For case studies:
-- `docs/case-studies/{feature}-case-study.md` — cite by file path, optionally with section anchor if the claim appears in a specific section
-
-For state files:
-- `.claude/features/{feature}/state.json` — cite by file path, optionally with JSON-path notation if the claim is about a specific field (e.g., `state.json::phases.merge.pr_number`)
-
-For ledgers:
-- `.claude/shared/measurement-adoption-history.json` — cite by file path, note the date if the claim is about a specific snapshot
-- `.claude/shared/documentation-debt.json` — same
-- `.claude/shared/framework-honesty-ledger.md` — cite by file path, note the entry ID (FT2-FH-001, etc.)
-
-For logs:
-- `.claude/logs/gate-coverage.jsonl` — cite by file path, note the date range if citing a specific window
-
-For meta-analysis:
-- `docs/case-studies/meta-analysis/2026-05-22-l0-delta-vs-anchor.md` — cite by file path, note the section (§1, §2, etc.)
-- `docs/case-studies/meta-analysis/2026-05-22-l1-extended-cohort-analysis.md` — same
-
----
 
 ## Example claims (to calibrate your output)
 
@@ -249,29 +176,3 @@ For meta-analysis:
 
 ---
 
-## Workflow
-
-1. **Load the inputs:** Open L0, L1, L2 File B, and the L0 bundle in your context.
-2. **Cite the bundle SHA256:** Paste it in the output header (from L0 §1).
-3. **Generate ≥30 claims:** Use the sourcing tips above to find facts across L1, post-v7.9 telemetry, and honesty ledger entries.
-4. **Verify each claim:**
-   - Is it a statement of fact (not interpretation)?
-   - Can I find it in the evidence_paths?
-   - Does it avoid forbidden words?
-5. **Check the schema:** Grep the output for `internal_confidence`, `expected_auditor_finding`, `notes`, etc. All should return 0 matches.
-6. **Run `python3 scripts/audit/check_prompts.py`:** Confirm no errors on the new file.
-7. **Commit:** Add to git with the message specified in the task.
-
----
-
-## Final checklist before shipping
-
-- [ ] Output has ≥30 claims
-- [ ] Output contains ONLY the 4 allowed fields (id, audit_profile_section, claim_text, evidence_paths)
-- [ ] No forbidden words in any claim_text
-- [ ] No first-person framing in any claim_text
-- [ ] Every evidence_paths entry points to a file that exists in the redacted corpus bundle
-- [ ] Bundle SHA256 cited in the intro line
-- [ ] No links to File B (internal sidecar) except the informational reference in the preamble
-- [ ] `python3 scripts/audit/check_prompts.py` returns 0 errors on the file
-- [ ] The YAML parses cleanly (test with `python3 -c "import yaml; yaml.safe_load(open('file.md').read())"`)
