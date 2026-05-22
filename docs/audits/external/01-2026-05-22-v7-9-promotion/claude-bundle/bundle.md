@@ -1,7 +1,7 @@
 # FitTracker2 Impartial Audit Bundle
-# Generated: 2026-05-22T03:36:42Z
+# Generated: 2026-05-22T07:30:47Z
 # Profile: v7-9-promotion
-# Bundle SHA256: 00c19219c500dc80d94dc4697a7eab4953334a6d6b66173caf795c517ceee92b
+# Bundle SHA256: 5b6a1039f6ec005fff7090b92665159980010209e991f34e797272e0748c1e75
 # build_bundle.py SHA256: 31f9df3e9d79789894a75d701775754ed37997e7905081142d519aee4614cfc8
 # File count: 108
 # Redaction count: 45
@@ -2385,10 +2385,10 @@
 
 {
   "version": "1.0",
-  "updated": "2026-05-22T03:03:56Z",
+  "updated": "2026-05-21T04:17:47Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 78,
+    "case_studies_scanned": 76,
     "features_scanned": 74,
     "integrity_snapshot_files": 7,
     "integrity_cycle_snapshots": 5,
@@ -2397,39 +2397,39 @@
   },
   "coverage": {
     "date_written": {
-      "present": 78,
+      "present": 76,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 78,
+      "present": 76,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 78,
+      "present": 76,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 78,
+      "present": 76,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 78,
+      "present": 76,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 17,
+      "present": 15,
       "missing": 61,
-      "percent": 21.8,
+      "percent": 19.7,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -2440,8 +2440,8 @@
     },
     "pr_citation_exempt": {
       "present": 8,
-      "missing": 70,
-      "percent": 10.3,
+      "missing": 68,
+      "percent": 10.5,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -3154,50 +3154,9 @@
           "post_v6_percent": 25.0
         }
       }
-    },
-    {
-      "date": "2026-05-22",
-      "generated_at": "2026-05-22T03:02:52Z",
-      "trigger": "manual",
-      "summary": {
-        "features_total": 74,
-        "features_post_v6": 40,
-        "features_pre_v6": 34,
-        "fully_adopted": 3,
-        "partial_adopted": 34,
-        "zero_adopted": 37,
-        "fully_adopted_post_v6": 3,
-        "tier_1_1_status": "partial"
-      },
-      "dimension_coverage": {
-        "timing_wall_time": {
-          "overall_present": 17,
-          "overall_percent": 23.0,
-          "post_v6_present": 17,
-          "post_v6_percent": 42.5
-        },
-        "per_phase_timing": {
-          "overall_present": 37,
-          "overall_percent": 50.0,
-          "post_v6_present": 34,
-          "post_v6_percent": 85.0
-        },
-        "cache_hits": {
-          "overall_present": 20,
-          "overall_percent": 27.0,
-          "post_v6_present": 19,
-          "post_v6_percent": 47.5
-        },
-        "cu_v2": {
-          "overall_present": 10,
-          "overall_percent": 13.5,
-          "post_v6_present": 10,
-          "post_v6_percent": 25.0
-        }
-      }
     }
   ],
-  "updated": "2026-05-22T03:02:52Z"
+  "updated": "2026-05-21T04:09:04Z"
 }
 
 
@@ -3207,7 +3166,7 @@
 
 {
   "version": "1.0",
-  "updated": "2026-05-22T03:03:55Z",
+  "updated": "2026-05-21T04:17:48Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -3215,8 +3174,8 @@
     "features_post_v6": 40,
     "features_pre_v6": 34,
     "fully_adopted": 3,
-    "partial_adopted": 34,
-    "zero_adopted": 37,
+    "partial_adopted": 33,
+    "zero_adopted": 38,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
   },
@@ -3228,10 +3187,10 @@
       "post_v6_percent": 42.5
     },
     "per_phase_timing": {
-      "overall_present": 37,
-      "overall_percent": 50.0,
-      "post_v6_present": 34,
-      "post_v6_percent": 85.0
+      "overall_present": 36,
+      "overall_percent": 48.6,
+      "post_v6_present": 33,
+      "post_v6_percent": 82.5
     },
     "cache_hits": {
       "overall_present": 20,
@@ -3384,15 +3343,6 @@
         "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
-        "cu_v2": false
-      }
-    },
-    {
-      "feature": "framework-v7-9-promotion",
-      "adoption": {
-        "timing_wall_time": false,
-        "per_phase_timing": true,
-        "cache_hits": false,
         "cu_v2": false
       }
     },
@@ -3643,6 +3593,11 @@
     {
       "feature": "framework-v7-8-bridge",
       "created": "2026-05-04",
+      "post_v6": true
+    },
+    {
+      "feature": "framework-v7-9-promotion",
+      "created": "2026-05-16",
       "post_v6": true
     },
     {
@@ -4227,15 +4182,15 @@
       "feature": "framework-v7-9-promotion",
       "created": "2026-05-16",
       "post_v6": true,
-      "current_phase": "docs",
+      "current_phase": "research",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": true,
+        "per_phase_timing": false,
         "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
-      "any_adopted": true
+      "any_adopted": false
     },
     {
       "feature": "gdpr-compliance",
@@ -4703,7 +4658,7 @@
       "feature": "ucc-passkey-auth-security-hardening",
       "created": "2026-05-19",
       "post_v6": true,
-      "current_phase": "documentation",
+      "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -24943,7 +24898,7 @@ Single-day execution against the 2026-05-20 EOD hard deadline (v7.9 freeze 2026-
 
 - 26-task breakdown organized into 9 streams (refactor → taxonomy → 4 gaps → CLI → env/docs → verify → merge → post-merge)
 - ARM big.LITTLE lane classification: 8 P-core + 13 E-core + 5 operator-only
-- Critical path: T1 → T8 → T9 → T12 → T20 → T22 (~3.4h serial)
+- Critical path: T1 → T8 → T9 → T12 → T20 → T22 (~3.4h serial, T2 declared estimate)
 - Infra master plan overlay surfaced 9 risks; none blocking, 3 timing-sensitive
 
 ### 3.3 Phase 3 (Implementation, 2026-05-20)

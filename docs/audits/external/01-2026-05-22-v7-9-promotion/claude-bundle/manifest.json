@@ -1,7 +1,7 @@
 {
   "profile": "v7-9-promotion",
-  "generated": "2026-05-22T03:36:42Z",
-  "bundle_sha256": "00c19219c500dc80d94dc4697a7eab4953334a6d6b66173caf795c517ceee92b",
+  "generated": "2026-05-22T07:30:47Z",
+  "bundle_sha256": "5b6a1039f6ec005fff7090b92665159980010209e991f34e797272e0748c1e75",
   "build_bundle_py_sha256": "31f9df3e9d79789894a75d701775754ed37997e7905081142d519aee4614cfc8",
   "file_count": 108,
   "files": [
@@ -21,8 +21,8 @@
     },
     {
       "path": ".claude/shared/documentation-debt.json",
-      "sha256_pre_redaction": "c7a9b8e5b000c51f19e93d57185fdf5f97d0d17824397d1f77a4450b6559d3aa",
-      "sha256_post_redaction": "c7a9b8e5b000c51f19e93d57185fdf5f97d0d17824397d1f77a4450b6559d3aa",
+      "sha256_pre_redaction": "928b4401fcbbc646b1c51f75925ea7ddf8659311e8d712b2f06f7b53776f560b",
+      "sha256_post_redaction": "928b4401fcbbc646b1c51f75925ea7ddf8659311e8d712b2f06f7b53776f560b",
       "bytes": 3357,
       "redactions_applied": {}
     },
@@ -35,16 +35,16 @@
     },
     {
       "path": ".claude/shared/measurement-adoption-history.json",
-      "sha256_pre_redaction": "b6437c7861cc0d0411f3adff59b91da138e425919fdd42b24bbc252226070254",
-      "sha256_post_redaction": "b6437c7861cc0d0411f3adff59b91da138e425919fdd42b24bbc252226070254",
-      "bytes": 19304,
+      "sha256_pre_redaction": "6208a16ae9d86d2a348d90a8ebdbc9c95a4bde543d58e50f07a4c4499acbcd70",
+      "sha256_post_redaction": "6208a16ae9d86d2a348d90a8ebdbc9c95a4bde543d58e50f07a4c4499acbcd70",
+      "bytes": 18185,
       "redactions_applied": {}
     },
     {
       "path": ".claude/shared/measurement-adoption.json",
-      "sha256_pre_redaction": "4b9615a716e8204b8448eab6d7ff7a8951c65aaeb051288b085b97eb226ffa47",
-      "sha256_post_redaction": "4b9615a716e8204b8448eab6d7ff7a8951c65aaeb051288b085b97eb226ffa47",
-      "bytes": 38466,
+      "sha256_pre_redaction": "14501bb02fed40f77e1652f7db4bdf3a17e68ae230ddfe47eb27702edce36570",
+      "sha256_post_redaction": "14501bb02fed40f77e1652f7db4bdf3a17e68ae230ddfe47eb27702edce36570",
+      "bytes": 38377,
       "redactions_applied": {}
     },
     {
@@ -702,9 +702,9 @@
     },
     {
       "path": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
-      "sha256_pre_redaction": "b0fef3732c27a9adf20125e2e5821d9f02224ba357ea4b56cef8bd604412f889",
-      "sha256_post_redaction": "45bb9d9e4ddd84aa98bbb69468161d79d5f85d40f0058619cd1526c89e341547",
-      "bytes": 10827,
+      "sha256_pre_redaction": "3340c9f90c9f7feb20e4e94047c3ec9434777eb61fcbf2e8808c4b33e79f8d5d",
+      "sha256_post_redaction": "bb827b081fec185ff4bb465da492d30a182b352e69c9ebdb976646fd8b43e555",
+      "bytes": 10849,
       "redactions_applied": {
         "email": 1
       }
