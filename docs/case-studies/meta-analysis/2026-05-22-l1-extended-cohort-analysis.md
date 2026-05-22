@@ -124,3 +124,47 @@ Per state.json↔case-study link integrity (T1):
 | `case_study` link present (path or exemption marker) | 54 | 75 | 72.0% |
 | `case_study` link resolves OR is valid exemption | 52 | 54 | 96.3% |
 | `current_phase` field set | 75 | 75 | 100.0% |
+
+## 11. Framework-version citation distribution
+
+Per `state.json::framework_version` across the 75-feature corpus (T1). The `pre-v5.0` bucket covers 16 features whose `framework_version` field is the literal string `"pre-v5.0"` — these predate the canonical `vX.Y` versioning introduced at v5.0:
+
+| Bucket | n | % |
+|---|---:|---:|
+| pre-v5.0 | 16 | 21.3% |
+| v5.x | 20 | 26.7% |
+| v6.x | 4 | 5.3% |
+| v7.0-v7.4 | 2 | 2.7% |
+| v7.5-v7.7 | 8 | 10.7% |
+| v7.8-v7.9 | 25 | 33.3% |
+| **Total** | **75** | **100.0%** |
+
+No features carry `(missing)` or `(parse_error)` framework_version values — the v7.8 `framework_version` backfill (PRs #185+#186, 2026-05-03) populated all 46 features that existed at that time, and all features created since have carried the canonical `vX.Y` form. The `pre-v5.0` string is intentional and machine-readable. v7.8-v7.9 now represents the plurality bucket at 33.3%, overtaking v5.x (26.7%), reflecting the accelerating framework build rate in 2026-Q2.
+
+## 12. Failure / pivot density
+
+Features with at least one phase marked `failed` (per `state.json::phases.<phase>.status == "failed"`) or with a `pivot_reason` set (T1):
+
+| Phase | failed | pivoted |
+|---|---:|---:|
+| (no phases with failed status or pivot_reason found) | 0 | 0 |
+
+Summary: 0 features have ≥1 failed phase (0.0%). 0 features have ≥1 pivot_reason (0.0%). (T1)
+
+The zero counts are a data-quality observation, not a product health claim. The `failed` status and `pivot_reason` fields were introduced in the v7.x schema but have not been retroactively populated for pre-v7.5 features that did encounter pivots (the HADF Phase 2 mid-flight isolation event of 2026-04-30, documented in the case study, would qualify as a pivot but is recorded in the case study narrative rather than as a structured field). This is a known schema coverage gap, not evidence that no feature ever pivoted.
+
+## 13. Showcase ↔ main-repo mapping (Corpus B vs A)
+
+Per spec §5.2 mirror of anchor §13. Comparison of case-study presence across the two corpora (T1 except where noted):
+
+| Status | count |
+|---|---:|
+| Case study EXISTS in `docs/case-studies/` + state.json `case_study` field path-resolves | 52 |
+| State.json declares `case_study_type` exemption (4 valid values per CLAUDE.md) | 13 |
+| Neither path nor exemption (data debt) | 9 |
+| Published showcase MDX in fitme-story `content/04-case-studies/` | 25 (T1, per L0 §1) |
+| chronological_order_violations | not checked (T3 — requires manual review of timeline_position.order vs framework_version per CLAUDE.md publication rule) |
+
+One additional feature (`hadf-phase2bis-replication`) has a `case_study` path declared in state.json but the referenced file does not exist on disk — the case study is in-flight. This accounts for the `cs_path_in_state = 53` vs `cs_exists = 52` delta.
+
+The 9 data-debt features (neither path nor valid exemption) represent 12.0% of the corpus. These are candidates for the next doc-debt sweep. The 52 path-resolving features (69.3%) plus 13 exempt (17.3%) together account for 65/75 (86.7%) of the corpus with a valid closure disposition.
