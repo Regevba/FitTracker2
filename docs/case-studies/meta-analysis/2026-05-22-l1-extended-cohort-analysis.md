@@ -203,3 +203,52 @@ New L1-specific limitations:
 - **L10: §11 framework_version count assumes the field is correctly populated.** That field was bulk-backfilled in PRs #185+#186 (v7.8 era). Pre-backfill values are recovered from PR commit dates + state.json `created_at`, not original ground truth.
 - **L11: §5 dispatch_pattern field has 88.0% missing coverage.** Findings about dispatch patterns are based on the 12.0% of features where the field is set — non-representative sample.
 - **L12: §12 failure/pivot density reports 0 because the `failed` status and `pivot_reason` fields are not in active use across the corpus.** Real failures + pivots are reported in case-study prose; the field-presence count is a schema-adoption signal, not a project-health signal.
+
+## 17. NEW — Framework-version cohort analysis
+
+Per spec §5.2, this dimension partitions the 75-feature corpus into 5 non-overlapping ship-version buckets and measures adoption rates of 5 framework fields per cohort. Surfaces whether each new field actually got adopted by the cohort that shipped after it became mandatory. **Closes anchor §16 L2.**
+
+### 17.1 Cohort definitions and population
+
+| Cohort | Ship-version range | n |
+|---|---|---:|
+| pre-v6 | v1.x–v5.x (includes `pre-v5.0` tag) | 36 |
+| v6.0-v6.x | v6.0, v6.1, … | 4 |
+| v7.0-v7.4 | v7.0–v7.4 | 2 |
+| v7.5-v7.7 | v7.5, v7.6, v7.7 | 8 |
+| v7.8-v7.9 | v7.8, v7.8.1–v7.8.6, v7.9 | 25 |
+| (unbucketable) | missing or parse_error | 0 |
+| **Total** | | **75** |
+
+(T1 — extracted from `framework_version` field across all 75 `state.json` files at extraction time)
+
+### 17.2 Adoption rates per cohort
+
+Each field becomes mandatory at a specific framework version. Cohorts that shipped BEFORE the mandatory version are shown as `n/a` (the field did not exist as a requirement when they shipped).
+
+| Field | mandatory from | pre-v6 (n=36) | v6.0-v6.x (n=4) | v7.0-v7.4 (n=2) | v7.5-v7.7 (n=8) | v7.8-v7.9 (n=25) |
+|---|---|---:|---:|---:|---:|---:|
+| `cache_hits[]` non-empty | v6.0 | n/a | 25.0% (1/4) | 0.0% (0/2) | 62.5% (5/8) | 52.0% (13/25) |
+| `kill_criteria_resolution` when `kill_criteria` set | v7.8.1 | n/a | n/a | n/a | n/a | 16.7% (1/6) |
+| `state_owner` present | v7.8.3 | n/a | n/a | n/a | n/a | 100.0% (25/25) |
+| `cu_v2` schema-valid | v7.7 | n/a | n/a | n/a | 50.0% (4/8) | 16.0% (4/25) |
+| Tier-tag in case study body | 2026-04-21 | 71.4% (15/21) | 25.0% (1/4) | 100.0% (2/2) | 100.0% (7/7) | 94.4% (17/18) |
+
+Notes:
+- `state_owner` was backfilled to all 75 features via a single mechanical commit at v7.8.3 ship (PRs #185+#186); the 100.0% rate on the v7.8-v7.9 cohort reflects that backfill, not organic adoption at commit time. Pre-v6 through v7.5-v7.7 cohorts show n/a because the field was not a requirement when they shipped.
+- Tier-tag denominator is the count of features in each cohort that have a `case_study` field pointing at an existing `.md` file (case-study-present subset), not the full cohort n. The pre-v6 cohort has 21 case-study files present out of 36 features.
+- `cu_v2` denominator is the full cohort n. The `complexity.cu_version == 2` check requires the nested `complexity` object to exist and carry `cu_version: 2`.
+
+(T1 — all rates measured from `state.json` field scans + case-study file content scans at extraction time)
+
+### 17.3 Observations (pure restatement of data)
+
+**`cache_hits[]` (mandatory from v6.0):** The v6.0-v6.x cohort shows 25.0% (1/4) adoption; the v7.0-v7.4 cohort shows 0.0% (0/2); the v7.5-v7.7 cohort shows 62.5% (5/8); the v7.8-v7.9 cohort shows 52.0% (13/25). The largest non-adoption gap in a mandatory cohort is the v7.0-v7.4 cohort at 0.0% (0/2 features). No cohort that is post-v6 reaches 100%.
+
+**`kill_criteria_resolution` (mandatory from v7.8.1):** The only measured cohort is v7.8-v7.9, where 16.7% (1/6) of features that have `kill_criteria` set also have `kill_criteria_resolution` populated. The 5 remaining features in that cohort have `kill_criteria` set but no `kill_criteria_resolution`.
+
+**`state_owner` (mandatory from v7.8.3):** The v7.8-v7.9 cohort shows 100.0% (25/25). This rate reflects the bulk backfill applied to all features at v7.8.3 ship, not organic field adoption across individual commits.
+
+**`cu_v2` schema (mandatory from v7.7):** The v7.5-v7.7 cohort shows 50.0% (4/8); the v7.8-v7.9 cohort shows 16.0% (4/25). The v7.8-v7.9 cohort has a lower rate than the v7.5-v7.7 cohort despite being the later cohort.
+
+**Tier-tag in case study body (mandatory from 2026-04-21, cuts across all buckets):** Among features with a case-study file present, tier-tag presence rates are: pre-v6 71.4% (15/21), v6.0-v6.x 25.0% (1/4), v7.0-v7.4 100.0% (2/2), v7.5-v7.7 100.0% (7/7), v7.8-v7.9 94.4% (17/18). The v6.0-v6.x cohort has the lowest rate at 25.0% (1/4 case-study files contain a tier tag). The 6 pre-v6 case-study files without tier tags account for the 71.4% rate on that cohort.
