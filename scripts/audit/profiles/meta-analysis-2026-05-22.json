@@ -1,0 +1,13 @@
+{
+  "profile_name": "meta-analysis-2026-05-22",
+  "description": "Internal corpus snapshot for Phase 1 meta-analysis refresh — L0/L1 inputs only. NOT for external auditor.",
+  "inherits_from": "base",
+  "globs": [
+    ".claude/features/*/state.json",
+    ".claude/shared/integrity-checkpoint-ledger.jsonl",
+    ".claude/shared/integrity-checkpoint-ledger.md",
+    ".claude/shared/gate-coverage-weekly.jsonl",
+    ".claude/logs/gate-coverage.jsonl"
+  ],
+  "additional_state_snapshot_features": []
+}
