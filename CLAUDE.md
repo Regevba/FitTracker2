@@ -622,7 +622,7 @@ The rule applies prospectively from 2026-04-08. Existing events that pre-date th
 - Feature state: `.claude/features/{name}/state.json`
 
 ### Master plan & handoffs
-- Master plan: `docs/master-plan/master-plan-2026-04-06.md` (current)
+- Master plan: `docs/master-plan/master-plan-2026-04-15.md` (current; `master-plan-2026-04-06.md` retained as historical predecessor)
 - RICE roadmap: `docs/master-plan/master-backlog-roadmap.md`
 - Handoff archive: `docs/master-plan/` (all session summaries, stabilization reports, branch reviews)
 
