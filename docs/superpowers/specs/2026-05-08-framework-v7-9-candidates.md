@@ -1,8 +1,9 @@
 # Framework v7.9 — Candidate Mechanisms (Input from 2026-05-07 Roadmap Stress-Test)
 
-**Status:** input doc · not yet a PRD
+**Status:** input doc · **RESOLVED 2026-05-21 — v7.9 shipped as promotion-only release (PR #417 `ea53ff4`); no F-candidates promoted to v7.9.** All 18 F-candidates DEFERRED to v7.9.1 build window (~2026-06-04) or later per [infra-master-plan §3.6.3-§3.6.5](../../master-plan/infra-master-plan-2026-05-12.md). v7.9.1 first wave: F16 (try-repo harness, foundation) + F17 (last_fired_at index) + F2 (reality-check Phase 0 sub-step) + F6 (B_medium tier doc) + D-2 (GA4 conversions = F19) + D-4 (Firebase cleanup = F20). Sentry F21 PAUSED → pre-launch trigger. New F22 (funnel dashboards) + F23 (`/ops digest`) added to docket post-v7.9 — see infra-plan §3.1 Source E.
 **Created:** 2026-05-08
-**Promotion decision date:** 2026-05-21 (T+14d after v7.8.1 ship)
+**Promotion decision shipped:** 2026-05-21 — outcome above; details in [`docs/case-studies/framework-v7-9-promotion-case-study.md`](../../case-studies/framework-v7-9-promotion-case-study.md)
+**Original promotion decision date:** 2026-05-21 (T+14d after v7.8.1 ship)
 **Authors:** stress-test session 2026-05-07 + closure-session 2026-05-07 (memory-captured F9/F10)
 **Source experiment:** `docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md`
 **Predecessor specs:**

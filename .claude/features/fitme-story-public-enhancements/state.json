@@ -366,18 +366,15 @@
       "title": "Mirror v7.9 promotion outcome to /framework/dev-guide (new gates, advisory\u2192enforced flips, breaking changes)",
       "type": "docs",
       "skill": "dev",
-      "status": "blocked",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [],
-      "pr_number": null,
-      "merge_commit": null,
-      "completed_at": null,
-      "scheduled_after": {
-        "date": "2026-05-21",
-        "reason": "Date-gated: post-v7.9 promotion decision; nothing to mirror until v7.9 ships."
-      },
-      "scope_note": "Will pull v7.9 candidate flips (10 candidates F1-F10 from docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md) and mirror to fitme-story/content/framework/dev-guide.md."
+      "pr_number": 129,
+      "pr_repo": "Regevba/fitme-story",
+      "merge_commit": "ad65d98",
+      "completed_at": "2026-05-21T07:16:31Z",
+      "scope_note": "Pulled v7.9 promotion outcome (3 advisory gates flipped to enforced via PR #417 single-line flip) and mirrored to fitme-story content/framework/dev-guide.md. Landed a day early because v7.9 promotion shipped same day (2026-05-21)."
     },
     {
       "id": "T14",

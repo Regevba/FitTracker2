@@ -66,7 +66,13 @@
             "Option A: add github-actions[bot] to branch protection bypass via `gh api -X PUT repos/Regevba/FitTracker2/branches/main/protection` with bypass_pull_request_allowances.apps: ['github-actions']. Calibration-safe (GH API only, no FT2 commit). 5 min.",
             "Option B: modify .github/workflows/ucc-audit-log-sync.yml to open a PR instead of direct push (uses peter-evans/create-pull-request action). Infra-glob touch → defer to 2026-05-22+. 30 min."
           ],
-          "immediate_impact_assessment": "For B8 UCC kill-criteria checkpoint 2026-05-23: blob is publicly readable (operators can curl it directly to evaluate K1/K2/K3); FT2 mirror is NOT required for B8. T6 unblock complete for downstream consumers; FT2 mirror is observability convenience that can wait."
+          "immediate_impact_assessment": "For B8 UCC kill-criteria checkpoint 2026-05-23: blob is publicly readable (operators can curl it directly to evaluate K1/K2/K3); FT2 mirror is NOT required for B8. T6 unblock complete for downstream consumers; FT2 mirror is observability convenience that can wait.",
+          "resolution_2026_05_20": {
+            "chosen_option": "B",
+            "shipped_via": "FT2 PR #411 (merged 2026-05-20) — UCC audit-log workflow PR-pattern fix",
+            "outcome": "Workflow now opens a PR via peter-evans/create-pull-request instead of direct push to main. Eliminates the GH006 protected-branch failure class. Closure: t6 cascade fully resolved.",
+            "verification_pending": "Next daily cron run (~2026-05-23 06:00 UTC) should successfully open a PR with the fresh blob diff. Daily-integrity-checkpoint will surface success in next snapshot."
+          }
         }
       },
       "t6_blocker_2026_05_19": {
