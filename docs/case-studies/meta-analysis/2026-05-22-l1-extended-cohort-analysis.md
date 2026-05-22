@@ -292,3 +292,15 @@ The v7.8.2 cross-repo gate asymmetry spec (2026-05-08) documented Mechanism A's 
 Observed pattern: `success_metrics`, `kill_criteria`, and `cu_v2` show gaps of +10.8 pp, +10.8 pp, and +14.9 pp respectively. All three gaps are below 20 pp. `cache_hits[]` and `tier-tags` are not comparable (FT2-only scope or zero case-study denominator). The fitme-story cohort consists of a single feature at `prd` phase with no case study present — low field-presence rates on that feature reflect its early lifecycle stage, not a systematic adoption deficit attributable to the Mechanism A exemption.
 
 v7.8.2 disposition expected: Mechanism A telemetry asymmetry is acceptable; other field-adoption rates should be comparable across repos. Phase 1 measurement: PASS on all three comparable fields (`success_metrics` +10.8 pp: PASS; `kill_criteria` +10.8 pp: PASS; `cu_v2` +14.9 pp: PASS — all below 20 pp threshold). The single-feature fitme-story cohort limits the statistical weight of this conclusion; re-evaluation is scheduled annually per v7.8.2 spec §5 or when the fitme-story cohort reaches ≥5 features.
+
+## 19. NEW — Phase 1 limitations + handoff to Audit #2
+
+L1 has the same self-referential bias as the anchor: same author, same project, same definitions. The closure for that bias is External Audit #2 (2026-06-12), which receives L2 File A as its claim ledger and produces an impartial finding set.
+
+If Audit #2 finds:
+
+- A discrepancy in L1 numbers → fix L0/L1 + open Honesty Ledger entry
+- A discrepancy in L2 File A → fix File A + restage to claude-bundle (if pre-audit) OR Honesty Ledger entry (if post-audit)
+- Both views agreeing on the same claim → validation; record as `confirmed_by_external_auditor_2026-06-12` in the L2 File B sidecar
+
+Phase 1's success is NOT defined by "auditor finds nothing". Phase 1's success is defined by §10 of the spec.
