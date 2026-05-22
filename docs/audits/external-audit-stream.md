@@ -4,7 +4,7 @@
 
 | Date | Audit label | Profile | Auditor model | Bundle SHA256 | Discrepancies count | Corrections proposed | Corrections accepted | Report path |
 |---|---|---|---|---|---|---|---|---|
-| _(seed row — first audit ships 2026-05-22)_ | — | — | — | — | — | — | — | — |
+| 2026-05-22 | External Audit #1 — v7.9 promotion | v7-9-promotion | Gemini 2.5 Pro (AI Studio) | 5b6a1039f6ec005fff7090b92665159980010209e991f34e797272e0748c1e75 | 4 (D-001/004/005/006) + 1 obs (O-002) | 5 (C-001 to C-005) | 5 (all accepted — C-001 on main, C-002/003/004/005 via chore/audit-1-corrections) | [`external/01-2026-05-22-v7-9-promotion/results/report.json`](external/01-2026-05-22-v7-9-promotion/results/report.json) |
 
 ## Process
 

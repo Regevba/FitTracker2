@@ -83,7 +83,7 @@ Single-day execution against the 2026-05-20 EOD hard deadline (v7.9 freeze 2026-
 
 - 26-task breakdown organized into 9 streams (refactor → taxonomy → 4 gaps → CLI → env/docs → verify → merge → post-merge)
 - ARM big.LITTLE lane classification: 8 P-core + 13 E-core + 5 operator-only
-- Critical path: T1 → T8 → T9 → T12 → T20 → T22 (~3.4h serial)
+- Critical path: T1 → T8 → T9 → T12 → T20 → T22 (~3.4h serial, T2 declared estimate)
 - Infra master plan overlay surfaced 9 risks; none blocking, 3 timing-sensitive
 
 ### 3.3 Phase 3 (Implementation, 2026-05-20)

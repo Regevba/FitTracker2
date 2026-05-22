@@ -1,0 +1,42 @@
+[
+  {
+    "id": "C-001",
+    "type": "edit",
+    "target_location": "docs/case-studies/framework-v7-7-validity-closure-case-study.md:43",
+    "current_text": "Fully adopted post-v6: 2/9 (22.2%) [Tier 1 @ 2026-04-27]",
+    "proposed_text": "Fully adopted post-v6: 2/9 (22.2%) [Tier 1 @ 2026-04-27; note: live ledger has since moved, see .claude/shared/case-study-t1-references.json]",
+    "rationale": "Corrects a date-inconsistency (D-001) where a historical T1 claim appears as a current fact; this edit adds the necessary context."
+  },
+  {
+    "id": "C-002",
+    "type": "add_ledger_entry",
+    "target_location": ".claude/shared/case-study-t1-references.json",
+    "current_text": "{\n  \"case_study\": \"hadf-phase2-cloud-fingerprinting-case-study.md\",\n  \"claim\": \"silhouette score at best_k=5\",\n  \"value\": 0.5566,\n  \"unit\": \"silhouette score\",\n  \"instrumentation_source\": \"scripts/hadf-phase2-analyze.py output summary JSON\"\n}",
+    "proposed_text": null,
+    "rationale": "Closes a missing_evidence discrepancy (D-004) by adding a ledger entry for a T1 claim that currently has no backing reference."
+  },
+  {
+    "id": "C-003",
+    "type": "add_ledger_entry",
+    "target_location": ".claude/shared/case-study-t1-references.json",
+    "current_text": "{\n  \"case_study\": \"ios-ui-audit-p1-drift-cleanup-case-study.md\",\n  \"claim\": \"P1 findings reduction\",\n  \"value\": \"44 to 14\",\n  \"unit\": \"count\",\n  \"instrumentation_source\": \"make ui-audit\"\n}",
+    "proposed_text": null,
+    "rationale": "Closes a missing_evidence discrepancy (D-005) by adding a ledger entry for a T1 claim that currently has no backing reference."
+  },
+  {
+    "id": "C-004",
+    "type": "add_ledger_entry",
+    "target_location": ".claude/shared/case-study-t1-references.json",
+    "current_text": "{\n  \"case_study\": \"ui-ux-final-sweep-2026-05-12-case-study.md\",\n  \"claim\": \"iOS P1 findings final reduction\",\n  \"value\": \"14 to 0\",\n  \"unit\": \"count\",\n  \"instrumentation_source\": \"make ui-audit\"\n}",
+    "proposed_text": null,
+    "rationale": "Closes a missing_evidence discrepancy (D-006) by adding a ledger entry for a T1 claim that currently has no backing reference."
+  },
+  {
+    "id": "C-005",
+    "type": "edit",
+    "target_location": ".claude/shared/documentation-debt.json:96",
+    "current_text": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill.",
+    "proposed_text": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered per docs/case-studies/meta-analysis/kill-criteria-resolution-backfill-decision-2026-05-18.md.",
+    "rationale": "Corrects a lack of context (O-002) by pointing the documentation-debt report to the explicit policy decision about the 61 missing fields."
+  }
+]

@@ -93,7 +93,7 @@
         "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
         "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
       ],
-      "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill."
+      "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered per docs/case-studies/meta-analysis/kill-criteria-resolution-backfill-decision-2026-05-18.md."
     }
   ]
 }
