@@ -55,3 +55,23 @@ Per spec §4:
 | 5 | Self-referential bias (same author) | Anchor #2 (external auditor) is the closure | OPEN (Phase 3 reconciliation) |
 | 6 | No statistical significance testing | n still too small per cohort | OPEN (will close at n=200+) |
 | 7 | No reader-comprehension validation | Not in Phase 1 scope | OPEN (deferred) |
+
+## 5. New meta-analysis sub-docs since anchor
+
+| Doc | Date | Type |
+|---|---|---|
+| v7-5-advancement-report.md | 2026-04-24 | Internal |
+| unclosable-gaps.md | 2026-04-27 | Internal |
+| ci-env-flake-research-2026-05-05.md | 2026-05-05 | Internal research |
+| v7-9-measurement-window-2026-05-11.md | 2026-05-11 | Internal |
+| cache-hits-backfill-draft-2026-05-18.md | 2026-05-18 | Internal |
+| kill-criteria-resolution-backfill-decision-2026-05-18.md | 2026-05-18 | Internal |
+| tier-tag-checker-baseline.md | 2026-04-27 | Internal |
+
+Plus 2 case-study-level meta-analyses (predate anchor but worth re-flagging): [`meta-analysis-full-system-audit-v7.0-case-study.md`](../meta-analysis-full-system-audit-v7.0-case-study.md), [`meta-analysis-audit-and-remediation-case-study.md`](../meta-analysis-audit-and-remediation-case-study.md).
+
+## 6. Where to go next
+
+- [L1 — Extended cohort analysis](2026-05-22-l1-extended-cohort-analysis.md) — the main analytical work, replicates anchor §1-§16 + 2 new dimensions
+- [L2 File A — Audit-prep claim ledger (auditor-facing)](2026-05-22-l2-audit-prep-claims-v7-9-1.md) — staged into Audit #2 claude-bundle on 2026-06-08
+- [L2 File B — Internal sidecar](2026-05-22-l2-internal-sidecar.md) — working notes, NEVER staged externally
