@@ -630,3 +630,6 @@ audit-bundle:
 
 audit-prompts-self-check:
 	python3 scripts/audit/check_prompts.py
+
+memory-check:
+	@python3 scripts/check-memory-staleness.py
