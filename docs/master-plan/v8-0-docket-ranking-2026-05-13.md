@@ -2,6 +2,7 @@
 
 **Created:** 2026-05-13
 **Decision date:** 2026-05-21
+**Status:** ✅ DECIDED 2026-05-21 — v7.9 promotion shipped via PR #417; v8.x docket frozen with 18 F-candidates + 7 V8-I icebox. Substantive new build routes through v8.x cycle after Phase E exit ~2026-06-04. See `infra-master-plan-2026-05-12.md` §3.6.
 **Parent:** [`docs/master-plan/infra-master-plan-2026-05-12.md`](./infra-master-plan-2026-05-12.md) §3.3
 **Input specs:**
 - [`docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md`](../superpowers/specs/2026-05-08-framework-v7-9-candidates.md) — F1–F18
