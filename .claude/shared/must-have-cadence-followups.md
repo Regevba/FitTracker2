@@ -15,7 +15,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | B3 | **daily, starting now** | GA4 anomaly check (event volume + funnel breaks) | operator + GA4 MCP | analytics-observability epic |
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
 | B5 | **2026-11-13** | Quarterly cross-layer test-discipline audit (recurring) | operator | test-coverage §6.2 |
-| ~~B6~~ | ~~2026-05-22~~ | ~~C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21)~~ **Started 2026-05-22; implementation + tests landed via commits 35ca182 + c790564 (9/9 dispatch tests, 161/161 pytest pass in 10.82s); Phase 8 docs landed 2026-05-23; PR opening + merge pending operator approval. See §C1 below.** | operator | followups §C1 |
+| ~~B6~~ | ~~2026-05-22~~ | ~~C1 start — F14/F15 dispatch-test coverage push (deferred from 2026-05-21)~~ **Closed 2026-05-23 via PR #451 (squash `86084c4`); 9/9 dispatch tests + Phase 8 docs landed together.** | operator | followups §C1 |
 | ~~B7~~ | ~~2026-05-18~~ | ~~UCC Part 9 — wire `UCC_AUDIT_BLOB_URL` repo variable in FT2~~ **Closed 2026-05-17 via FT2 PR #387** (preemptive wire; Part 9 shipped) | operator | ucc-passkey-auth case study §99 |
 | B8 | **2026-05-23** | UCC T+7d kill-criteria checkpoint (K1/K2/K3 resolution; replaces `kill_criteria_resolution` frontmatter) | operator | ucc-passkey-auth PRD §6 |
 | B9 | **2026-05-28+** | UCC Part 8 — flip `UCC_AUTH_MODE=passkey` + drop `DASHBOARD_USER`/`DASHBOARD_PASS` (irreversible direction) | operator | infra-plan §4.1 + ucc-passkey-auth case study §99 |
@@ -120,7 +120,7 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 
 | ID | Title | Plan ref | RICE | Suggested work_type | Target ship |
 |---|---|---|---|---|---|
-| ~~C1~~ | ~~F14/F15 dispatch-test coverage push~~ **Closed 2026-05-23 on feature branch (commits 35ca182 + c790564 + Phase 8 docs); PR opening + merge pending operator approval. Case study: [docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md](../../docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md).** | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **2026-05-22** (deferred 2026-05-15) |
+| ~~C1~~ | ~~F14/F15 dispatch-test coverage push~~ **Closed 2026-05-23 via PR #451 (squash `86084c4`); 9/9 dispatch tests + Phase 8 docs shipped together. Case study: [docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md](../../docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md).** | test-coverage-master-plan §2.1 + §4.1 | (gates v7.9 promotion) | feature | **2026-05-22** (deferred 2026-05-15) |
 | C2 | T6 — Web PR JS test gate (fitme-story CI) | test-coverage-master-plan T6 | **200.0** | enhancement (on analytics-observability) | 2026-05-21 |
 | C3 | T2 — Sentry reachability test (iOS) | test-coverage-master-plan T2 | 80.0 | enhancement (test-coverage) | 2026-05-28 |
 | C4 | UCC Part 7 — break-glass registration (YubiKey OR 2nd platform passkey) | ucc-passkey-auth case study §99 | (gates B9) | operator action | before **2026-05-28** |
@@ -133,7 +133,7 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 | C11 | MEMORY.md staleness check — `scripts/check-memory-staleness.py` + `make memory-check` + `.claude/settings.json` Stop hook (Option C from 2026-05-17 session) | session-end checklist formalization | low (operability) | chore (FT2) | **2026-05-22** (defer past v7.9 calibration — `scripts/*` + `Makefile` infra-glob) |
 | C12 | Preflight bug fix — `scripts/preflight.py:264` `enhancement_parent_state()` should read `parent_feature` from current state.json + check THAT parent's prd.md, not the current feature's. Today's UU4 setup hit a false-positive blocker; manual override used. | 2026-05-17 UU4 setup | low (preflight reliability) | fix (FT2) | **2026-05-22** (defer past v7.9 calibration — `scripts/*` infra-glob) |
 
-### ~~C1 — F14/F15 dispatch-test coverage push~~ (Closed 2026-05-23 on feature branch; PR + merge pending operator)
+### ~~C1 — F14/F15 dispatch-test coverage push~~ (Closed 2026-05-23 via PR #451, squash `86084c4`)
 
 **Problem (preserved for historical context):** Mechanism A coverage telemetry was unreliable for 4 gates with zero dispatch tests + 5 zero-coverage gates. Without dispatch tests asserting each gate function fires, a keying drift (like the `created` vs `created_at` v7.8 incident) could silently zero out coverage.
 
@@ -155,11 +155,11 @@ These require Plan→Implement→Test cycles and cannot be inlined into the cade
 
 **Remaining work (pending operator authorization):**
 
-1. Open PR from `feature/framework-f14-f15-dispatch-test-coverage` → `main` (per CLAUDE.md, no auto-push / no auto-merge without per-PR approval)
-2. Pre-merge CI green on PR (`pm-framework/pr-integrity`)
-3. Squash-merge to main
-4. Update this entry with `**Closed YYYY-MM-DD via PR #N**` canonical strikethrough format once PR # is known
-5. T+7d (2026-06-01) — verify K1/K2/K3 not fired; T+30d (2026-06-21) — verify K4 not fired; T+90d (2026-08-22) — close case study, populate `kill_criteria_resolution` frontmatter, transition `current_phase` → `complete`
+1. ~~Open PR from `feature/framework-f14-f15-dispatch-test-coverage` → `main`~~ **Done** — PR #451 opened 2026-05-23
+2. ~~Pre-merge CI green on PR (`pm-framework/pr-integrity`)~~ **Done** — all 8 checks green (Build and Test pass 11m27s, integrity pass 24s, pm-framework/pr-integrity PASS 0 findings, CodeQL × 3 pass, GitGuardian pass)
+3. ~~Squash-merge to main~~ **Done** — squash `86084c4` at 2026-05-23T04:55:46Z; feature branch deleted
+4. ~~Update this entry with canonical strikethrough~~ **Done** — this commit (PR # TBD)
+5. **PENDING** — T+7d (2026-06-01) verify K1/K2/K3 not fired; T+30d (2026-06-21) verify K4 not fired; T+90d (2026-08-22) close case study, populate `kill_criteria_resolution` frontmatter, transition `current_phase` → `complete`
 
 ### C2 — T6 web PR JS test gate (fitme-story)
 
