@@ -1,50 +1,50 @@
 {
   "version": "1.0",
-  "updated": "2026-05-22T06:05:39Z",
+  "updated": "2026-05-23T09:31:20Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 78,
-    "features_scanned": 74,
-    "integrity_snapshot_files": 7,
-    "integrity_cycle_snapshots": 5,
+    "case_studies_scanned": 79,
+    "features_scanned": 77,
+    "integrity_snapshot_files": 8,
+    "integrity_cycle_snapshots": 6,
     "trend_ready": true,
     "open_debt_items": 1
   },
   "coverage": {
     "date_written": {
-      "present": 78,
+      "present": 79,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 78,
+      "present": 79,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 78,
+      "present": 79,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 78,
+      "present": 79,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 78,
+      "present": 79,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 17,
+      "present": 18,
       "missing": 61,
-      "percent": 21.8,
+      "percent": 22.8,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -54,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 8,
+      "present": 9,
       "missing": 70,
-      "percent": 10.3,
+      "percent": 11.4,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -66,15 +66,15 @@
       ]
     },
     "state_case_study_linkage": {
-      "present": 74,
+      "present": 77,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 7,
-    "snapshots_available": 5,
+    "snapshot_files_available": 8,
+    "snapshots_available": 6,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": true,
     "status": "trend_ready",
@@ -93,7 +93,7 @@
         "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
         "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md"
       ],
-      "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered per docs/case-studies/meta-analysis/kill-criteria-resolution-backfill-decision-2026-05-18.md."
+      "recommended_next_step": "ADVISORY (v7.8 forward-only): if you author a NEW case study post-2026-05-07 with kill_criteria, also set kill_criteria_resolution. Existing case studies are grandfathered until v7.9 promotion may opt to backfill."
     }
   ]
 }
