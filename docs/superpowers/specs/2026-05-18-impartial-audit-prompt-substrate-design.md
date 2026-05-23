@@ -318,7 +318,7 @@ Features tagged this way auto-include their case study + state.json in the relev
 When the auditor returns the 3-phase report:
 
 1. Operator saves the report to `trust/audits/YYYY-MM-DD-<model>/report.md`.
-2. Operator commits the report alongside the manifest, redaction-log, and (optionally) the bundle. `runs/` is gitignored by default; specific runs can be committed if the team wants public reproducibility.
+2. Operator commits ALL per-run artifacts — `bundle.md`, `manifest.json`, `redaction-log.json`, plus the auditor's report. Only ad-hoc scratch (`runs/*/scratch/`, `runs/*/.cache/`, `runs/*/*.tmp`) stays gitignored. See §10 OQ #1 (RESOLVED 2026-05-19 as B10) for the rationale — the bundle is the canonical record of "what the auditor saw," and the audit findings reference specific text from it; without it, future readers can only trust the audit summary rather than verify the input. Repo growth is bounded to ~5-10 MB/year (8 audits/year × ≤500K-token bundles).
 3. Operator opens a remediation issue/PR for each Phase 3 correction the team accepts. Each accepted correction is mechanical (a line edit, a ledger field addition, a retraction). No judgment calls deferred to "later."
 4. A summary entry lands in `docs/audits/external-audit-stream.md` (new file, created with this spec — relocated from `docs/case-studies/meta-analysis/` per verification Patch A 2026-05-18 to avoid ambiguous interaction with the `CASE_STUDY_MISSING_TIER_TAGS` gate) — a single append-only log of "audit ran on date X with profile P; produced N discrepancies; M corrections accepted; K rejected with rationale."
 5. The infra master plan §5 calendar is updated only if dates slip. The substrate itself does not need re-spec'ing per audit.
