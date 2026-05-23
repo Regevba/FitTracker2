@@ -222,6 +222,18 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "_comment": "C11 MEMORY.md staleness check (added 2026-05-23). Runs at session-stop to flag oversized index, broken refs, orphan files, or long index lines. Non-blocking: writes findings to stderr but does not interrupt session flow. Cross-repo guard: silent no-op if script absent. Disable with CLAUDE_DISABLE_MEMORY_CHECK=1. Strict mode (exit 1 on warnings) via CHECK_MEMORY_STRICT=1.",
+            "command": "[ \"${CLAUDE_DISABLE_MEMORY_CHECK:-}\" = \"1\" ] || { [ -f scripts/check-memory-staleness.py ] && python3 scripts/check-memory-staleness.py >&2 || true; }"
+          }
+        ]
+      }
     ]
   }
 }
