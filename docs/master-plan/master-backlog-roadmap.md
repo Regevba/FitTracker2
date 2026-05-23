@@ -316,6 +316,37 @@ Output: `docs/product/prd/` directory with one PRD per feature
 ### Individual Feature PRDs
 All 18 features documented in `docs/product/prd/` (Task 18 complete)
 
+### Note on table staleness (2026-05-23 audit)
+
+The 3 tables above (Core iOS Features / Features Built via PM Workflow / Individual Feature PRDs) capture the project state through April 2026 (items 1–18). They do NOT list the ~50 shipped features since 2026-04-10, including:
+
+- Onboarding v2 + Onboarding v2 retroactive (PRs #59, #63)
+- Home v2 (#61) + Stats v2 (#76, #164) + Settings v2 (#77, #215) + Nutrition v2 (#75)
+- All UCC work (#218–#232 batch + #248 passkey + #380 cutover + hardening)
+- Framework versions v7.1 → v7.9 (15+ release PRs)
+- HADF + cross-repo state-sync (v7.8.3 umbrella, 10 PRs)
+- Code Connect bridge (PRs #277–#286 + fitme-story counterparts)
+- Audit substrate (PR #405) + audit corrections (#448)
+- F14/F15 dispatch-test coverage (PRs #451 + #452, shipped 2026-05-23)
+
+**Canonical sources for the full SHIPPED list:**
+- `docs/product/backlog.md` (item numbering through 100+) — current
+- `.claude/features/*/state.json` `current_phase: complete` (45+ features as of 2026-05-23)
+- `docs/case-studies/*.md` — narrative records of shipped features
+- `fitme-story/content/04-case-studies/*.mdx` — public showcase MDX (51+ slots)
+
+Backfilling these into this file is a tracked drift (D-PLAN-10 in `docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md`); ~30+ entries; would benefit from a dedicated backlog-backfill chore feature rather than an inline update here.
+
+### Cross-references (added 2026-05-23 — D-PLAN-3 close)
+
+Plans that sit alongside this roadmap:
+
+- [`fitme-story-discoverability-plan-2026-05-20.md`](fitme-story-discoverability-plan-2026-05-20.md) — 4-phase SEO + discoverability plan for the public fitme-story site; goal 50+ organic visitors/week by 2026-06-30. Was previously orphan (no master plan cross-linked it).
+- [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) — framework + infra roadmap; v7.9 promotion calendar + v8.x docket
+- [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md) — per-layer test inventory + T-series candidates
+- [`data-integrity-and-rollback-2026-05-14.md`](data-integrity-and-rollback-2026-05-14.md) — continuous observability + baseline rollback protocol
+- [`analytics-master-plan-2026-05-13.md`](analytics-master-plan-2026-05-13.md) — 3-phase analytics observability upgrade
+
 ---
 
 ## Verification

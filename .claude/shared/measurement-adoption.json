@@ -1,14 +1,14 @@
 {
   "version": "1.0",
-  "updated": "2026-05-22T06:05:40Z",
+  "updated": "2026-05-23T09:31:20Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
-    "features_total": 74,
-    "features_post_v6": 40,
+    "features_total": 77,
+    "features_post_v6": 43,
     "features_pre_v6": 34,
     "fully_adopted": 3,
-    "partial_adopted": 34,
+    "partial_adopted": 37,
     "zero_adopted": 37,
     "fully_adopted_post_v6": 3,
     "tier_1_1_status": "partial"
@@ -16,27 +16,27 @@
   "dimension_coverage": {
     "timing_wall_time": {
       "overall_present": 17,
-      "overall_percent": 23.0,
+      "overall_percent": 22.1,
       "post_v6_present": 17,
-      "post_v6_percent": 42.5
+      "post_v6_percent": 39.5
     },
     "per_phase_timing": {
-      "overall_present": 37,
-      "overall_percent": 50.0,
-      "post_v6_present": 34,
-      "post_v6_percent": 85.0
+      "overall_present": 39,
+      "overall_percent": 50.6,
+      "post_v6_present": 36,
+      "post_v6_percent": 83.7
     },
     "cache_hits": {
-      "overall_present": 20,
-      "overall_percent": 27.0,
-      "post_v6_present": 19,
-      "post_v6_percent": 47.5
+      "overall_present": 23,
+      "overall_percent": 29.9,
+      "post_v6_present": 22,
+      "post_v6_percent": 51.2
     },
     "cu_v2": {
-      "overall_present": 10,
-      "overall_percent": 13.5,
-      "post_v6_present": 10,
-      "post_v6_percent": 25.0
+      "overall_present": 12,
+      "overall_percent": 15.6,
+      "post_v6_present": 12,
+      "post_v6_percent": 27.9
     }
   },
   "fully_adopted_features": [
@@ -61,6 +61,15 @@
         "per_phase_timing": true,
         "cache_hits": false,
         "cu_v2": false
+      }
+    },
+    {
+      "feature": "audit-1-corrections",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": true
       }
     },
     {
@@ -148,6 +157,15 @@
       "feature": "fitme-story-website-design-system",
       "adoption": {
         "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      }
+    },
+    {
+      "feature": "framework-f14-f15-dispatch-test-coverage",
+      "adoption": {
+        "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
         "cu_v2": false
@@ -244,6 +262,15 @@
       }
     },
     {
+      "feature": "meta-analysis-refresh-phase-1",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": true
+      }
+    },
+    {
       "feature": "onboarding-v2-retroactive",
       "adoption": {
         "timing_wall_time": false,
@@ -311,7 +338,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": true
       }
     },
@@ -667,6 +694,20 @@
       "any_adopted": false
     },
     {
+      "feature": "audit-1-corrections",
+      "created": "2026-05-22",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
       "feature": "auth-polish-v2",
       "created": "2026-04-27",
       "post_v6": true,
@@ -883,6 +924,20 @@
       "current_phase": "complete",
       "adoption": {
         "timing_wall_time": true,
+        "per_phase_timing": true,
+        "cache_hits": true,
+        "cu_v2": false
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
+      "feature": "framework-f14-f15-dispatch-test-coverage",
+      "created": "2026-05-22",
+      "post_v6": true,
+      "current_phase": "complete",
+      "adoption": {
+        "timing_wall_time": false,
         "per_phase_timing": true,
         "cache_hits": true,
         "cu_v2": false
@@ -1199,6 +1254,20 @@
       "any_adopted": true
     },
     {
+      "feature": "meta-analysis-refresh-phase-1",
+      "created": "2026-05-22",
+      "post_v6": true,
+      "current_phase": "implementation",
+      "adoption": {
+        "timing_wall_time": false,
+        "per_phase_timing": false,
+        "cache_hits": false,
+        "cu_v2": true
+      },
+      "fully_adopted": false,
+      "any_adopted": true
+    },
+    {
       "feature": "metric-tile-deep-linking",
       "created": "2026-04-09",
       "post_v6": false,
@@ -1500,7 +1569,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": false,
+        "cache_hits": true,
         "cu_v2": true
       },
       "fully_adopted": false,

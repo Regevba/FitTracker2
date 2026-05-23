@@ -207,5 +207,8 @@
     ]
   },
   "updated": "2026-05-10T18:51:52Z",
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "case_study_showcase": "fitme-story/content/04-case-studies/30-fitme-story-ds-p2-deferred.mdx",
+  "case_study_showcase_secondary": "fitme-story/content/04-case-studies/32-fitme-story-ds-p2-final-sweep.mdx",
+  "case_study_showcase_note": "p2-cleanup work is subsumed under two later slots: the deferred items (slot 30) and the final sweep (slot 32). Both shipped before this cleanup feature closed; treat the two as the public-facing showcase narrative for the whole p2 arc."
 }

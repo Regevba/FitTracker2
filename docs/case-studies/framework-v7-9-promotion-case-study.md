@@ -27,7 +27,7 @@ kill_criteria:
 kill_criteria_resolution: "pending — evaluated 2026-05-28 (B2 post-v7.9 baseline snapshot per .claude/shared/must-have-cadence-followups.md §B2). Will record final disposition (passed / partially_passed / tripped) here on that date with deltas."
 related_prs: [417, 413, 415, 416]
 case_study_showcase: null
-external_audit_status: pending
+external_audit_status: corrected  # External Audit #1 corrections applied via PR #448 (2026-05-22)
 status: live
 ---
 

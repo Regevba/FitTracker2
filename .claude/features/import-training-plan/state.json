@@ -1,7 +1,7 @@
 {
   "feature": "import-training-plan",
   "case_study": "docs/case-studies/import-training-plan-case-study.md",
-  "case_study_showcase": "04-case-studies/23b-import-training-plan.mdx",
+  "case_study_showcase": "fitme-story/content/04-case-studies/23b-import-training-plan.mdx",
   "created_at": "2026-04-11T00:00:00Z",
   "updated": "2026-05-06T17:57:02Z",
   "branch": "feature/import-training-plan-resume",
