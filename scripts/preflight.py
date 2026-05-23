@@ -290,25 +290,57 @@ def feature_brainstorm_state(feature: str | None) -> dict | None:
 
 
 def enhancement_parent_state(feature: str | None) -> dict | None:
-    """Enhancement requires a parent feature with a PRD."""
+    """Enhancement requires a PARENT feature with a PRD.
+
+    Bug-fix 2026-05-23 (C12): the original implementation read
+    `feature/state.json` + `feature/prd.md` directly — but the caller
+    passes the ENHANCEMENT's own name. Enhancements don't have their own
+    PRD; they extend a parent feature's PRD. So the check was always
+    looking at the wrong file and false-positive-blocking when the
+    enhancement's directory had no prd.md (which it never does).
+
+    Correct path: read the enhancement's state.json, extract its
+    `parent_feature` field, then check THAT parent's state.json + prd.md.
+    """
     if not feature:
         return None
-    sf = REPO_ROOT / ".claude" / "features" / feature / "state.json"
-    if not sf.exists():
+
+    # Read the enhancement's own state.json first to find its parent.
+    own_sf = REPO_ROOT / ".claude" / "features" / feature / "state.json"
+    if not own_sf.exists():
         return {
             "name": "enhancement_parent",
             "status": "warning",
-            "detail": f"no state.json for '{feature}' — enhancements require a parent feature with PRD",
+            "detail": f"no state.json for enhancement '{feature}' — Phase 0 will create it",
             "blocking": False,
         }
-    s = load_json(sf)
-    phase = s.get("current_phase", "")
-    has_prd = (REPO_ROOT / ".claude" / "features" / feature / "prd.md").exists()
-    ok = has_prd and phase in ("complete", "implementation", "merge", "docs", "post_launch_review")
+    own_s = load_json(own_sf)
+    parent_name = own_s.get("parent_feature")
+    if not parent_name:
+        return {
+            "name": "enhancement_parent",
+            "status": "warning",
+            "detail": f"enhancement '{feature}' has no `parent_feature` field — set it before continuing",
+            "blocking": True,
+        }
+
+    # Now check the PARENT's state.
+    parent_sf = REPO_ROOT / ".claude" / "features" / parent_name / "state.json"
+    if not parent_sf.exists():
+        return {
+            "name": "enhancement_parent",
+            "status": "warning",
+            "detail": f"parent_feature='{parent_name}' has no state.json — invalid parent reference",
+            "blocking": True,
+        }
+    parent_s = load_json(parent_sf)
+    parent_phase = parent_s.get("current_phase", "")
+    has_prd = (REPO_ROOT / ".claude" / "features" / parent_name / "prd.md").exists()
+    ok = has_prd and parent_phase in ("complete", "implementation", "merge", "docs", "post_launch_review")
     return {
         "name": "enhancement_parent",
         "status": "ok" if ok else "warning",
-        "detail": f"parent='{feature}' phase={phase}, prd.md present={has_prd}",
+        "detail": f"parent='{parent_name}' phase={parent_phase}, prd.md present={has_prd}",
         "blocking": not ok,
     }
 
