@@ -440,7 +440,7 @@ Concurrent test-discipline audit on 2026-05-13 surfaced that Theme G covers fram
 
 1. **T6** — Web PR test gate (RICE **200.0**; ~1h effort; v7.9.1 ride-along candidate or earlier)
 2. **T14** — Platform-parity state.json field `platforms_tested: {ios, web, backend, ai}` (RICE **160.0**; extends FEATURE_CLOSURE_COMPLETENESS; ~1–2h)
-3. **T2** — Sentry integration test pass (RICE **80.0**; closes pre-launch crash gate; mirrors push-notifications reachability discipline)
+3. ~~**T2** — Sentry integration test pass~~ ⏸ **DEFERRED to App Store launch** (Sentry integration stack paused 2026-05-21; TestFlight ≠ real-user signal; cadence §C3 deferral closed 2026-05-23). RICE **80.0**; will reopen when launch is scheduled.
 4. **T13** — `last_fired_at` extension to all gates (RICE **80.0**; depends on F17 in Phase E)
 5. **T1** — Per-gate dispatch test enforcement gate `GATE_TEST_MISSING` (RICE **53.3**; depends on F14 in Phase E; closes the drift class behind cache_hits keying)
 
