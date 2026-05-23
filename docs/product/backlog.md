@@ -10,6 +10,7 @@
 | # | Feature | PR/Commit | Date | Notes |
 |---|---------|-----------|------|-------|
 | 1 | Core app foundation (SwiftUI shell, encrypted data, HealthKit) | Initial commits | 2026-02-28 | Base product |
+| 1a | Pre-PM-workflow seed PRs (#1, #2, #3, #4, #5, #6, #7, #20, Mar 13 → Apr 2) | PRs #1-#7 + #20 | 2026-03-13 → 04-02 | Housekeeping ships pre-dating /pm-workflow skill (PR #21): home-screen spacing, second-pass review fixes, simulator biometric skip, v3.0 UX/UI pass, Phase 0 PRD+metrics+backlog seed (PR #20 = this document's origin). Added 2026-05-23 per audit `docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md` D-AUDIT-1. |
 | 2 | Today-first product redesign (Home, Training, Nutrition, Stats) | Redesign phase | 2026-03-14 | 5-pass redesign |
 | 3 | Auth & settings overhaul (Apple Sign In, passkeys, grouped settings) | PR #10, #13 | 2026-03-25 | Auth hub + 5 settings groups |
 | 4 | Federated cohort intelligence (AI engine, backend, iOS AI layer) | PR #12 | 2026-03-26 | FastAPI + AIOrchestrator |
