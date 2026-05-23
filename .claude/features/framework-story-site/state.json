@@ -136,5 +136,18 @@
   "_meta": {
     "deprecation_warnings": []
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "additional_case_studies": [
+    {
+      "path": "docs/case-studies/framework-story-site-dispatchreplay.md",
+      "showcase": "fitme-story/content/04-case-studies/16-dispatchreplay.mdx",
+      "topic": "DispatchReplay live-demo"
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-ssr-regression.md",
+      "showcase": "fitme-story/content/04-case-studies/15-ssr-regression.mdx",
+      "topic": "SSR regression bisect lesson"
+    }
+  ],
+  "phase_schema_note": "current_phase='closed' is a non-canonical pre-v7.8.1 terminal state used before the lifecycle enum was standardized to {complete}. Feature shipped 2026-04-21 (PROD LIVE at fitme-story.vercel.app); leaving 'closed' preserves git history continuity. Forward-only: any future similar terminal-state feature must use canonical 'complete'."
 }

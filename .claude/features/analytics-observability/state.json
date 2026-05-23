@@ -7,7 +7,6 @@
   "has_ui": true,
   "requires_analytics": true,
   "created_at": "2026-05-13T15:30:00Z",
-  "case_study_link": "docs/case-studies/analytics-observability-case-study.md",
   "scope": "Three-phase analytics framework upgrade: (1.A) hygiene + (1.B) gates, (2) live event debugger (local mirror + GA4 Realtime MCP poll), (3) dashboards (control-room/analytics route + Looker Studio template). Closes 56-row CSV drift + 4 unfired events + 21 untested + disconnected GA4 MCP. Approach B (phased single feature) per 2026-05-13 brainstorm.",
   "public_name": "Analytics Observability",
   "launch_window": "Phase 1.A + Phase 2: 2026-05-15 \u2192 22 (between v7.8.5.1 ship and v7.9 Phase E start). Phase 3: 2026-05-21 \u2192 06-04 (parallel with v7.9 Phase E monitoring). Phase 1.B gates: 2026-06-04 \u2192 06-26 via 22d Calibration Protocol (advisory 06-04 \u2192 06-11; calibration 06-11 \u2192 06-18; promotion decision 06-18; Phase E exit 06-25).",
@@ -408,5 +407,88 @@
         "started_at": "2026-05-13T18:11:44Z"
       }
     }
-  }
+  },
+  "related_prs": [
+    {
+      "number": 332,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1_prd"
+    },
+    {
+      "number": 334,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1A_1_csv_taxonomy_backfill"
+    },
+    {
+      "number": 335,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1A_3_delete_unfired_ai_recommendation"
+    },
+    {
+      "number": 336,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1A_4_forward_declared_events_convention"
+    },
+    {
+      "number": 337,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1A_spec_extensions"
+    },
+    {
+      "number": 338,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1A_5_ios_analytics_tests"
+    },
+    {
+      "number": 339,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_1A_7_external_sync_status"
+    },
+    {
+      "number": 342,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_2A_1_local_sse_mirror"
+    },
+    {
+      "number": 345,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_2A_2_analytics_watch_cli"
+    },
+    {
+      "number": 349,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_2A_3_debug_sink_adapter"
+    },
+    {
+      "number": 351,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_2B_1_analytics_poll_ga4_mcp"
+    },
+    {
+      "number": 354,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_3A_0_spec_scaffold"
+    },
+    {
+      "number": 358,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_3A_1_reconcile_complete"
+    },
+    {
+      "number": 362,
+      "repo": "Regevba/FitTracker2",
+      "role": "ga4_mcp_connected_env_var_fix"
+    },
+    {
+      "number": 376,
+      "repo": "Regevba/FitTracker2",
+      "role": "ga4_access_binding_guide"
+    },
+    {
+      "number": 388,
+      "repo": "Regevba/FitTracker2",
+      "role": "ios_analytics_plist_target_membership_fix"
+    }
+  ],
+  "case_study": "docs/case-studies/analytics-observability-case-study.md"
 }

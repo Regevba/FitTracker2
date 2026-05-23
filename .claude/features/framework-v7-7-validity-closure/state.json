@@ -184,5 +184,27 @@
   "_meta": {
     "deprecation_warnings": []
   },
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "related_prs": [
+    {
+      "number": 201,
+      "repo": "Regevba/FitTracker2",
+      "role": "B1_B2_post_merge_ledger_cleanup"
+    },
+    {
+      "number": 202,
+      "repo": "Regevba/FitTracker2",
+      "role": "doc_debt_100pct_coverage"
+    },
+    {
+      "number": 203,
+      "repo": "Regevba/FitTracker2",
+      "role": "cron_persistence_tier_tag_advisories"
+    },
+    {
+      "number": 364,
+      "repo": "Regevba/FitTracker2",
+      "role": "section_99_banner_flip_shipped"
+    }
+  ]
 }

@@ -55,7 +55,7 @@
     "implementation": {
       "status": "complete",
       "started_at": "2026-05-03T12:55:34Z",
-      "note": "PR-1 iOS half shipped via FT2 PR #190 (squash 516eef0, merged 2026-05-04). PR-1 backend half (T6+T7 AI-engine endpoints + T8 Supabase migration 000009) shipped via FT2 PR-TBD on 2026-05-04. All 15 PR-1 tasks complete. 23 XCTests + 14 pytest cases pass. Migration 000009 is no-op-but-documented (000004 retention is already segment-agnostic).",
+      "note": "PR-1 iOS half shipped via FT2 PR #190 (squash 516eef0, merged 2026-05-04). PR-1 backend half (T6+T7 AI-engine endpoints + T8 Supabase migration 000009) shipped via FT2 PR #198 on 2026-05-04. All 15 PR-1 tasks complete. 23 XCTests + 14 pytest cases pass. Migration 000009 is no-op-but-documented (000004 retention is already segment-agnostic).",
       "ended_at": "2026-05-04T06:58:43Z"
     },
     "test": {
