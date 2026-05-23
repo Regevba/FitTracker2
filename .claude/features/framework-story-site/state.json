@@ -3,7 +3,7 @@
   "created_at": "2026-04-19T00:00:00Z",
   "updated": "2026-04-20T00:00:00Z",
   "branch": "main",
-  "current_phase": "closed",
+  "current_phase": "complete",
   "work_type": "feature",
   "framework_version": "v6.0",
   "agent_manifest": {
@@ -129,6 +129,11 @@
         "PM-workflow-led variant of /pm-flow that leads with phases instead of skills",
         "Revisit desktop perf on /case-studies/full-system-audit (94, 1 below target)"
       ]
+    },
+    "complete": {
+      "status": "complete",
+      "started_at": "2026-05-23T19:40:55Z",
+      "note": "Canonicalized from 'closed' (non-canonical pre-v7.8.1 terminal state) during 2026-05-23 post-audit hygiene. Feature continues PROD LIVE at fitme-story.vercel.app \u2014 no behavior change."
     }
   },
   "case_study": "docs/case-studies/framework-story-site-case-study.md",
@@ -149,5 +154,28 @@
       "topic": "SSR regression bisect lesson"
     }
   ],
-  "phase_schema_note": "current_phase='closed' is a non-canonical pre-v7.8.1 terminal state used before the lifecycle enum was standardized to {complete}. Feature shipped 2026-04-21 (PROD LIVE at fitme-story.vercel.app); leaving 'closed' preserves git history continuity. Forward-only: any future similar terminal-state feature must use canonical 'complete'."
+  "phase_schema_note": "current_phase canonicalized 'closed' \u2192 'complete' on 2026-05-23 (D-RECON-7 closure). 'closed' was a pre-v7.8.1 terminal-state convention; kept the additional_case_studies field documenting the 2 sibling case studies (dispatchreplay + ssr-regression) which had been unpointed.",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Post-audit canonicalization 2026-05-23. Feature shipped 2026-04-21 (PROD LIVE at fitme-story.vercel.app/) \u2014 code work all on the original feature/framework-story-site branch (merged + deleted). This commit only canonicalizes the non-standard 'closed' phase \u2192 'complete' per docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md D-RECON-7. No code risk.",
+  "cache_hits": [
+    {
+      "level": "L3",
+      "key": "closure_canonicalization_sentinel",
+      "count": 0,
+      "note": "Closure sentinel for the 2026-05-23 canonicalization commit. Original feature shipped pre-Mechanism-C; reads not attributed.",
+      "timestamp": "2026-05-23T19:40:55Z"
+    }
+  ],
+  "timing": {
+    "phases": {
+      "complete": {
+        "started_at": "2026-05-23T19:40:55Z"
+      },
+      "closed": {
+        "started_at": "2026-04-21T00:00:00Z",
+        "ended_at": "2026-05-23T19:42:18Z",
+        "note": "Non-canonical 'closed' state held from 2026-04-21 (PROD LIVE) to 2026-05-23 (canonicalization). Estimated start = ship date."
+      }
+    }
+  }
 }

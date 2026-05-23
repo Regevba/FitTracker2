@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "feature": "framework-story-site",
+  "title": "framework story site",
+  "work_type": "feature",
+  "current_phase": "complete",
+  "framework_version": "v6.0",
+  "started_at": "2026-05-23T19:40:55Z",
+  "updated_at": "2026-05-23T19:42:53Z",
+  "events": [
+    {
+      "timestamp": "2026-05-23T19:40:55Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure \u2014 'closed' \u2192 'complete' canonicalization per D-RECON-7",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T19:42:18Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure (retry) \u2014 case-study frontmatter added + closed.ended_at set",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T19:42:53Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure (retry 2) \u2014 kill_criteria_resolution added to case study frontmatter",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
