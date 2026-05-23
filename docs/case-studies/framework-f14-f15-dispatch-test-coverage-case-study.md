@@ -26,7 +26,7 @@ kill_criteria:
   - "K3 — Mechanism A canonical gate-coverage.jsonl shows test-induced contamination → IMMEDIATE revert + retroactive scrub"
   - "K4 — A new silent-pass incident hits one of the 9 covered gates within 30 days → monkey-patch pattern is insufficient; file meta-issue + delay v7.9.1 dispatch-test-driven decisions"
 kill_criteria_resolution: "pending — evaluated at T+7d (2026-06-01, K1/K2/K3) and T+30d (2026-06-21, K4) per PRD §3 review cadence. T11 verification at 2026-05-22 evidenced K1–K3 not tripped at implementation close."
-related_prs: []
+related_prs: [451]
 case_study_showcase: null
 external_audit_status: pending
 status: live
@@ -189,6 +189,6 @@ Three observations worth carrying forward to v7.9.1 and v8.x planning:
 
 ---
 
-**Related PRs:** will be appended at merge time. The implementation work is in two commits on `feature/framework-f14-f15-dispatch-test-coverage` (`35ca182` + `c790564`); the Phase 8 docs commit lands separately on the same branch before the PR opens.
+**Related PRs:** [PR #451](https://github.com/Regevba/FitTracker2/pull/451) — squash-merged 2026-05-23 as `86084c4`. The implementation work was carried by two commits on `feature/framework-f14-f15-dispatch-test-coverage` (`35ca182` + `c790564`) plus the Phase 8 docs commit (`d08a6ed`); two clean rebases onto fresh main (concurrent-session activity moved main twice) were required before the merge cleared branch protection.
 
 **Provenance:** [PRD](../../.claude/features/framework-f14-f15-dispatch-test-coverage/prd.md) · [Research](../../.claude/features/framework-f14-f15-dispatch-test-coverage/research.md) · [Tasks](../../.claude/features/framework-f14-f15-dispatch-test-coverage/tasks.md) · [Integration spec](../../.claude/features/framework-f14-f15-dispatch-test-coverage/integration-spec.md) · [State](../../.claude/features/framework-f14-f15-dispatch-test-coverage/state.json) · [Tier 2.2 log](../../.claude/logs/framework-f14-f15-dispatch-test-coverage.log.json)
