@@ -140,3 +140,51 @@ title: On cutoff
     assert "CASE_STUDY_MISSING_FIELDS" in codes, (
         f"Expected CASE_STUDY_MISSING_FIELDS for file dated exactly on cutoff. Got: {findings}"
     )
+
+
+# ────────────────────────────────────────────────────────────────────────────
+# F14 dispatch test — exercises main() end-to-end for CASE_STUDY_MISSING_FIELDS.
+# Feature: framework-f14-f15-dispatch-test-coverage (Phase 4 T3).
+# ────────────────────────────────────────────────────────────────────────────
+
+
+def test_main_dispatch_case_study_missing_fields(tmp_path, monkeypatch):
+    """T3 — CASE_STUDY_MISSING_FIELDS dispatch test on the
+    check-case-study-preflight.py surface (S4 — missed in integration-spec §1).
+
+    Honest finding (worth a backlog ticket): unlike the check-state-schema.py
+    gates, this script does NOT emit Mechanism A `gate-coverage.jsonl` rows.
+    F14's premise (per PRD §5) is that gates with internal-function tests
+    but no dispatch test are at risk of silent-pass — this gate adds a
+    SECOND class of risk: no Mechanism A coverage emission at all. We
+    assert rc != 0 as the dispatch signal; coverage-emission verification
+    is deferred to a follow-up backlog item (see T12 — open a
+    `check-case-study-preflight Mechanism A coverage` ticket).
+
+    Recipe: tmp .md with frontmatter dated >= cutoff missing REQUIRED fields.
+    Monkey-patch `_is_exempt` so the tmp file (outside CASE_STUDIES_DIR)
+    is treated as eligible.
+    """
+    invalid_case_study = tmp_path / "fake-feature-case-study.md"
+    invalid_case_study.write_text("""---
+date_written: 2026-05-22
+title: Fake feature
+---
+
+# Fake feature case study body
+""")
+    # Missing: work_type, success_metrics, kill_criteria, dispatch_pattern
+
+    monkeypatch.setattr(_mod, "_is_exempt", lambda p: False)
+    monkeypatch.setattr(
+        _mod, "collect_staged_case_studies", lambda: [invalid_case_study]
+    )
+    monkeypatch.setattr(sys, "argv", ["check-case-study-preflight.py", "--staged"])
+
+    rc = _mod.main()
+
+    assert rc != 0, (
+        f"CASE_STUDY_MISSING_FIELDS failed to fire via main() dispatch; rc={rc}. "
+        "Either the gate has regressed OR the recipe no longer matches the "
+        "REQUIRED_FRONTMATTER_FIELDS list."
+    )
