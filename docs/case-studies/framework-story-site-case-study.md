@@ -1,7 +1,21 @@
+---
+date_written: 2026-04-20
+work_type: enhancement
+dispatch_pattern: serial
+framework_version: v7.0
+tier_tags_present: true
+case_study_type: pre_pm_workflow_backfill
+primary_metric: "n/a — meta-build (no instrumented metric for the site itself); commit count + wall-clock time captured narratively [T3]"
+success_metrics: "N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type). Frontmatter added 2026-05-23 per D-RECON-7 closure to satisfy FEATURE_CLOSURE_COMPLETENESS gate's required-fields list."
+kill_criteria: "N/A — pre-PRD document type (audit/chore/roundup; field not applicable to this case study type)."
+kill_criteria_resolution: "not tripped — pre-PRD document type with no defined kill thresholds. Frontmatter field present to satisfy FEATURE_CLOSURE_COMPLETENESS gate Q7 (kill_criteria set → resolution required). Feature shipped 2026-04-21 PROD LIVE; no kill scenarios encountered in 30+ days of operation."
+---
+
 # Building the Site That Tells the Story — A Two-Hour Meta-Build
 
 **Date written:** 2026-04-20
 <!-- doc-debt-backfill: fields added by scripts/backfill-case-study-fields.py -->
+<!-- 2026-05-23 D-RECON-7 closure: YAML frontmatter added above to satisfy FEATURE_CLOSURE_COMPLETENESS gate's required-fields list. Original markdown-table format below preserved as historical record. -->
 
 | Field | Value |
 |---|---|
