@@ -6,10 +6,10 @@
   "created_at": "2026-05-22T08:00:00Z",
   "state_owner": "ft2",
   "branch": "chore/audit-1-corrections",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "has_ui": false,
   "requires_analytics": false,
-  "isolation_opt_out": false,
+  "isolation_opt_out": true,
   "dispatch_pattern": "operator-driven",
   "case_study_type": "no_case_study_required",
   "predecessor_chain": [
@@ -17,9 +17,15 @@
   ],
   "phases": {
     "implementation": {
-      "status": "in_progress",
+      "status": "complete",
       "started_at": "2026-05-22T08:00:00Z",
-      "note": "Apply C-002/003/004/005 from External Audit #1 (Gemini 2.5 Pro) \u2014 3 T1 ledger entries to case-study-t1-references.json + 1 cross-reference fix to documentation-debt.json. All 4 corrections touch .claude/shared/* (infra-path glob), requiring worktree per BRANCH_ISOLATION Mode B. C-001 already landed on main via commit 40387ce."
+      "note": "Apply C-002/003/004/005 from External Audit #1 (Gemini 2.5 Pro) \u2014 3 T1 ledger entries to case-study-t1-references.json + 1 cross-reference fix to documentation-debt.json. All 4 corrections touch .claude/shared/* (infra-path glob), requiring worktree per BRANCH_ISOLATION Mode B. C-001 already landed on main via commit 40387ce.",
+      "ended_at": "2026-05-23T06:30:00Z"
+    },
+    "complete": {
+      "status": "complete",
+      "started_at": "2026-05-23T06:30:00Z",
+      "note": "Closed during post-merge hygiene session 2026-05-23 \u2014 all PRs merged, case study + logs reconciled"
     }
   },
   "timing": {
@@ -27,11 +33,24 @@
     "time_source": "measured",
     "phases": {
       "implementation": {
-        "started_at": "2026-05-22T08:00:00Z"
+        "started_at": "2026-05-22T08:00:00Z",
+        "ended_at": "2026-05-23T06:30:00Z",
+        "duration_minutes": 1350
+      },
+      "complete": {
+        "started_at": "2026-05-23T06:30:00Z"
       }
     }
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "level": "L3",
+      "key": "closure_session_sentinel",
+      "count": 0,
+      "note": "Closure sentinel; original-session reads not attributed via Mechanism C (active-feature not set during chore execution). Marks feature complete vs the empty-array drift state.",
+      "timestamp": "2026-05-23T06:30:00Z"
+    }
+  ],
   "complexity": {
     "cu_version": 2,
     "factors_applied": [
@@ -48,5 +67,6 @@
     ]
   },
   "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-audit-1-corrections",
-  "updated": "2026-05-22T08:09:00Z"
+  "updated": "2026-05-22T08:09:00Z",
+  "isolation_opt_out_reason": "Post-merge closure during hygiene session 2026-05-23. All code work happened on the original chore/audit-1-corrections branch (now merged + deleted via PR #448). This commit only flips current_phase to complete + adds closure timing \u2014 no risk of crossing in-flight code work."
 }
