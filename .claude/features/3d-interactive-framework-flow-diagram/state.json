@@ -19,7 +19,6 @@
   "has_ui": true,
   "requires_analytics": true,
   "created_at": "2026-05-11T16:30:00Z",
-  "case_study_link": "docs/case-studies/3d-interactive-framework-flow-diagram-case-study.md",
   "research_dossier": "../../FT2/.claude/features/3d-interactive-framework-flow-diagram/research.md",
   "scope": "fitme-story public-site enhancement; third flagship visual alongside DispatchReplay + LifecycleLoop; 3D interactive framework flow diagram (\"Framework Universe\") via React Three Fiber + Drei + Theatre.js + hybrid procedural-shell + glTF hero pieces",
   "phase_4_cutover_role": "First fitme-story-native feature; serves as the v7.8.3 framework certification round-trip per FT2 spec docs/superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md \u00a76.5",
@@ -151,5 +150,6 @@
     },
     "total": 2.8,
     "tier_class": "A_high"
-  }
+  },
+  "case_study": "docs/case-studies/3d-interactive-framework-flow-diagram-case-study.md"
 }
