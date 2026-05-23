@@ -1,0 +1,798 @@
+{
+  "profile": "v7-9-promotion",
+  "generated": "2026-05-22T07:29:20Z",
+  "bundle_sha256": "00c19219c500dc80d94dc4697a7eab4953334a6d6b66173caf795c517ceee92b",
+  "build_bundle_py_sha256": "31f9df3e9d79789894a75d701775754ed37997e7905081142d519aee4614cfc8",
+  "file_count": 108,
+  "files": [
+    {
+      "path": ".claude/shared/case-study-monitoring.json",
+      "sha256_pre_redaction": "443b096eb273b95038608c393c041007b4b188e9504f1e01655f7b5cde9d2a9a",
+      "sha256_post_redaction": "443b096eb273b95038608c393c041007b4b188e9504f1e01655f7b5cde9d2a9a",
+      "bytes": 95926,
+      "redactions_applied": {}
+    },
+    {
+      "path": ".claude/shared/case-study-t1-references.json",
+      "sha256_pre_redaction": "369ca4302d574cbbd830c5851140c5546e06efce04f2c7ce1a427bf67fd8b275",
+      "sha256_post_redaction": "369ca4302d574cbbd830c5851140c5546e06efce04f2c7ce1a427bf67fd8b275",
+      "bytes": 2133,
+      "redactions_applied": {}
+    },
+    {
+      "path": ".claude/shared/documentation-debt.json",
+      "sha256_pre_redaction": "c7a9b8e5b000c51f19e93d57185fdf5f97d0d17824397d1f77a4450b6559d3aa",
+      "sha256_post_redaction": "c7a9b8e5b000c51f19e93d57185fdf5f97d0d17824397d1f77a4450b6559d3aa",
+      "bytes": 3357,
+      "redactions_applied": {}
+    },
+    {
+      "path": ".claude/shared/gate-coverage-weekly.jsonl",
+      "sha256_pre_redaction": "33c11a55180c9091c94b0be6856ed390357967c9a0b85ac38198756d4d3dbc89",
+      "sha256_post_redaction": "33c11a55180c9091c94b0be6856ed390357967c9a0b85ac38198756d4d3dbc89",
+      "bytes": 104,
+      "redactions_applied": {}
+    },
+    {
+      "path": ".claude/shared/measurement-adoption-history.json",
+      "sha256_pre_redaction": "b6437c7861cc0d0411f3adff59b91da138e425919fdd42b24bbc252226070254",
+      "sha256_post_redaction": "b6437c7861cc0d0411f3adff59b91da138e425919fdd42b24bbc252226070254",
+      "bytes": 19304,
+      "redactions_applied": {}
+    },
+    {
+      "path": ".claude/shared/measurement-adoption.json",
+      "sha256_pre_redaction": "4b9615a716e8204b8448eab6d7ff7a8951c65aaeb051288b085b97eb226ffa47",
+      "sha256_post_redaction": "4b9615a716e8204b8448eab6d7ff7a8951c65aaeb051288b085b97eb226ffa47",
+      "bytes": 38466,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/README.md",
+      "sha256_pre_redaction": "7974ef571322ab963190e6b4c7e4272877c5b64a5e095f228af0103664d74888",
+      "sha256_post_redaction": "7974ef571322ab963190e6b4c7e4272877c5b64a5e095f228af0103664d74888",
+      "bytes": 14889,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
+      "sha256_pre_redaction": "56075d983b7a8133590a8e32b346596cce8ce40af3c9a8d09dfda3144c702b3d",
+      "sha256_post_redaction": "56075d983b7a8133590a8e32b346596cce8ce40af3c9a8d09dfda3144c702b3d",
+      "bytes": 13351,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/android-design-system-case-study.md",
+      "sha256_pre_redaction": "c3ec45dec869b327620326f7ebcc586ffa7f1dfdd3fe364811a98712d1a8c11b",
+      "sha256_post_redaction": "c3ec45dec869b327620326f7ebcc586ffa7f1dfdd3fe364811a98712d1a8c11b",
+      "bytes": 6573,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-remediation-case-study.md",
+      "sha256_pre_redaction": "bbee9b224aeb45b0f121f7f93a42e9629df1ebb7c9f9b8167e31b00a2a6b3ebf",
+      "sha256_post_redaction": "bbee9b224aeb45b0f121f7f93a42e9629df1ebb7c9f9b8167e31b00a2a6b3ebf",
+      "bytes": 4873,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-remediation-program-185-findings-case-study.md",
+      "sha256_pre_redaction": "f16a73076314286566627eda7912adff1ab35bd4a66ed4f0e72a84e3ff9e67a9",
+      "sha256_post_redaction": "f16a73076314286566627eda7912adff1ab35bd4a66ed4f0e72a84e3ff9e67a9",
+      "bytes": 18669,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-v2-concurrent-stress-test-case-study.md",
+      "sha256_pre_redaction": "572f1c550dd36b2bfad3b9d57babd8298c5cd31262f7d0593a5d928c79a6ab63",
+      "sha256_post_redaction": "94cd1a7d2c5b8e0ed5283c05f84c5dfe58b6dc3bb84cf1a07473a362e7af53f6",
+      "bytes": 12240,
+      "redactions_applied": {
+        "ssd_path": 4
+      }
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g1-ui-case-study.md",
+      "sha256_pre_redaction": "6a862d8184c4cdd1a3041931a10f7dd7695f614dbfe6e6b1abb3122fbee7ff4a",
+      "sha256_post_redaction": "6a862d8184c4cdd1a3041931a10f7dd7695f614dbfe6e6b1abb3122fbee7ff4a",
+      "bytes": 1877,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g2-tests-case-study.md",
+      "sha256_pre_redaction": "a5e52a2ed06bc8440d7566a4ced5693a76a2313e29bb7c285ea12055d788a539",
+      "sha256_post_redaction": "a5e52a2ed06bc8440d7566a4ced5693a76a2313e29bb7c285ea12055d788a539",
+      "bytes": 1886,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g3-ai-case-study.md",
+      "sha256_pre_redaction": "f38c29b6b29b881e39bbe32cb269fa1df9b3a0ed7650c0fa54f7d05954ce75e3",
+      "sha256_post_redaction": "f38c29b6b29b881e39bbe32cb269fa1df9b3a0ed7650c0fa54f7d05954ce75e3",
+      "bytes": 1877,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g4-backend-case-study.md",
+      "sha256_pre_redaction": "36c96b4d6962a71548a965a6c99ebc77b7ce5a4a7e8924550d2eb64421ad0419",
+      "sha256_post_redaction": "36c96b4d6962a71548a965a6c99ebc77b7ce5a4a7e8924550d2eb64421ad0419",
+      "bytes": 1892,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g5-ds-case-study.md",
+      "sha256_pre_redaction": "5a77dc0a247e98b8008e19cfe52e882aa40a18139ca4adf2d82bcce4e079cd66",
+      "sha256_post_redaction": "5a77dc0a247e98b8008e19cfe52e882aa40a18139ca4adf2d82bcce4e079cd66",
+      "bytes": 1877,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/audit-v2-g6-config-case-study.md",
+      "sha256_pre_redaction": "f03289b8632026750265b97ea7697f14a076ebb2ef5b6615e88d906677910f2e",
+      "sha256_post_redaction": "f03289b8632026750265b97ea7697f14a076ebb2ef5b6615e88d906677910f2e",
+      "bytes": 1889,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/auth-polish-v2-case-study.md",
+      "sha256_pre_redaction": "d3e075fd32135fecc3f3bb5c27488b11b858555f74be44b919d04d0af2f9f2fc",
+      "sha256_post_redaction": "d3e075fd32135fecc3f3bb5c27488b11b858555f74be44b919d04d0af2f9f2fc",
+      "bytes": 9096,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/case-study-presentation-refactor-case-study.md",
+      "sha256_pre_redaction": "bf8bc66752161cdaf6d91859eddbb38ef7b43666e1a817ce25b16793cc925311",
+      "sha256_post_redaction": "bf8bc66752161cdaf6d91859eddbb38ef7b43666e1a817ce25b16793cc925311",
+      "bytes": 17422,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/case-study-template.md",
+      "sha256_pre_redaction": "b704b7b3256437433082ccc9c3efa0f6c4ca97cf2f05ad86f70e5ef542ec407d",
+      "sha256_post_redaction": "b704b7b3256437433082ccc9c3efa0f6c4ca97cf2f05ad86f70e5ef542ec407d",
+      "bytes": 12338,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/cleanup-control-room-case-study.md",
+      "sha256_pre_redaction": "59297f65950502ad7b50f5dd759083e252eded47464acaf8ebc8e97312693614",
+      "sha256_post_redaction": "6196d52754635d0590d23fab1b28e8011efe03cf23e10c047c9881b974de6b7b",
+      "bytes": 7926,
+      "redactions_applied": {
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/control-center-alignment-ia-refresh-case-study.md",
+      "sha256_pre_redaction": "11e736e3b6586bf77241ff9e56fb2b18fc6d992000d45b0f7a611342a8bca958",
+      "sha256_post_redaction": "11e736e3b6586bf77241ff9e56fb2b18fc6d992000d45b0f7a611342a8bca958",
+      "bytes": 4611,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/cross-repo-state-sync-impl-case-study.md",
+      "sha256_pre_redaction": "289a53f3be2469f2eb21df0972e68495a31d04a8d690bfc32662c97916b4db06",
+      "sha256_post_redaction": "289a53f3be2469f2eb21df0972e68495a31d04a8d690bfc32662c97916b4db06",
+      "bytes": 21732,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/data-integrity-framework-v7.5-case-study.md",
+      "sha256_pre_redaction": "2e7e1e92787261a14609688b2d35d77689217fa4738c2ab498a7dbf2ac7f3b1d",
+      "sha256_post_redaction": "2e7e1e92787261a14609688b2d35d77689217fa4738c2ab498a7dbf2ac7f3b1d",
+      "bytes": 23174,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/data-quality-tiers.md",
+      "sha256_pre_redaction": "5d1aeacfaed64b6cbe1707a05531cf7ae6be5efb2041c6c6c1c9b1503d1eb369",
+      "sha256_post_redaction": "5d1aeacfaed64b6cbe1707a05531cf7ae6be5efb2041c6c6c1c9b1503d1eb369",
+      "bytes": 4715,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/dual-outlet-pattern.md",
+      "sha256_pre_redaction": "dab35321189097c92911057dcd8439052a3f9db7a7c2284ed8658f495f2fdb54",
+      "sha256_post_redaction": "dab35321189097c92911057dcd8439052a3f9db7a7c2284ed8658f495f2fdb54",
+      "bytes": 15798,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/eval-layer-v4.4-case-study.md",
+      "sha256_pre_redaction": "6f7c3223925870af9ba1e7ad01687d2c6aae49946a7ae0461f9b027f9b118410",
+      "sha256_post_redaction": "6f7c3223925870af9ba1e7ad01687d2c6aae49946a7ae0461f9b027f9b118410",
+      "bytes": 9546,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/fitme-story-design-system-p2-cleanup-case-study.md",
+      "sha256_pre_redaction": "7c378e083a95599b384cc29d853704b14846ffcc61c0ac0450d25c8a03c5ce75",
+      "sha256_post_redaction": "7c378e083a95599b384cc29d853704b14846ffcc61c0ac0450d25c8a03c5ce75",
+      "bytes": 8274,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/fitme-story-ds-p2-deferred-case-study.md",
+      "sha256_pre_redaction": "0825ce5f04852a9ea1f3f88a90fb92f36a8c04f073daeccdf4fd0844b049347f",
+      "sha256_post_redaction": "0825ce5f04852a9ea1f3f88a90fb92f36a8c04f073daeccdf4fd0844b049347f",
+      "bytes": 7313,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/fitme-story-ds-p2-final-sweep-case-study.md",
+      "sha256_pre_redaction": "cb8f3233026520292ff99f9ebce39196ad98b44300b217025c09fd66d65f16b3",
+      "sha256_post_redaction": "cb8f3233026520292ff99f9ebce39196ad98b44300b217025c09fd66d65f16b3",
+      "bytes": 5125,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/fitme-story-public-enhancements-case-study.md",
+      "sha256_pre_redaction": "226bdc8b157abd3fa4ba5cb7426285e3abcc707fbb52caf551283df5933f5fd4",
+      "sha256_post_redaction": "226bdc8b157abd3fa4ba5cb7426285e3abcc707fbb52caf551283df5933f5fd4",
+      "bytes": 17366,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/fitme-story-website-design-system-case-study.md",
+      "sha256_pre_redaction": "bc27a8a38aaf8eb83875da333a709ec843874c1b97644acecff23865f33a2d86",
+      "sha256_post_redaction": "bc27a8a38aaf8eb83875da333a709ec843874c1b97644acecff23865f33a2d86",
+      "bytes": 13262,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/fittracker-evolution-walkthrough.md",
+      "sha256_pre_redaction": "7374af1c188dacdfef531d5e179a50768f46fe9121095b7bc0946cd75a0d5a8d",
+      "sha256_post_redaction": "7374af1c188dacdfef531d5e179a50768f46fe9121095b7bc0946cd75a0d5a8d",
+      "bytes": 7699,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-honesty-fixes-2026-05-01-case-study.md",
+      "sha256_pre_redaction": "116a00c7c19b4b59ce3a7b5cc1c7c203ccec94bbad78dee2a1dd15f088b3b7e5",
+      "sha256_post_redaction": "116a00c7c19b4b59ce3a7b5cc1c7c203ccec94bbad78dee2a1dd15f088b3b7e5",
+      "bytes": 12885,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-honesty-ledger.md",
+      "sha256_pre_redaction": "6e8fc272fe31547435e467db44e8191332b40d106dfed8a92e31d20493d32aad",
+      "sha256_post_redaction": "6e8fc272fe31547435e467db44e8191332b40d106dfed8a92e31d20493d32aad",
+      "bytes": 19692,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-measurement-v6-case-study.md",
+      "sha256_pre_redaction": "9e6efdd230d12853d94fd242e28df9d5ebd82f4ed36f7d24f6ae8b518b2224ec",
+      "sha256_post_redaction": "9e6efdd230d12853d94fd242e28df9d5ebd82f4ed36f7d24f6ae8b518b2224ec",
+      "bytes": 22211,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-case-study.md",
+      "sha256_pre_redaction": "1ab061f660e0f888ee40e9b6c5d5a7fc3abc6599831a9bb4514b86ed71b886f7",
+      "sha256_post_redaction": "1ab061f660e0f888ee40e9b6c5d5a7fc3abc6599831a9bb4514b86ed71b886f7",
+      "bytes": 50010,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-dispatchreplay.md",
+      "sha256_pre_redaction": "ce52baeec6e202393d5e1ff21756f7148acc06d38df692d83f8c2631cde58ecb",
+      "sha256_post_redaction": "ce52baeec6e202393d5e1ff21756f7148acc06d38df692d83f8c2631cde58ecb",
+      "bytes": 9704,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-story-site-ssr-regression.md",
+      "sha256_pre_redaction": "68d89d1506cd9215d3258e94cfc6d0225e8f84641ab5ca252ac885752f07c916",
+      "sha256_post_redaction": "68d89d1506cd9215d3258e94cfc6d0225e8f84641ab5ca252ac885752f07c916",
+      "bytes": 8889,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-v7-7-validity-closure-case-study.md",
+      "sha256_pre_redaction": "02e17de0ebbe7b632cfb82e46ff0658c59b68f5fdca6f484e3aea9f3f97f50c7",
+      "sha256_post_redaction": "02e17de0ebbe7b632cfb82e46ff0658c59b68f5fdca6f484e3aea9f3f97f50c7",
+      "bytes": 51157,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
+      "sha256_pre_redaction": "716e00d48b115fcd944b875be083f143fb47a8395cba99687b206a0aed5eb346",
+      "sha256_post_redaction": "716e00d48b115fcd944b875be083f143fb47a8395cba99687b206a0aed5eb346",
+      "bytes": 16537,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-bridge-case-study.md",
+      "sha256_pre_redaction": "9b1aaedf0f66252f5afa90dfd16588230eea9acd9a7c29c7d91f8a04e7bb0f63",
+      "sha256_post_redaction": "a8d125f544ea39540902f7a72e118dd72593ba94d671b1afecc160732b13b178",
+      "bytes": 18114,
+      "redactions_applied": {
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/framework-v7-8-pr1-advisory-calibration-2026-05-09.md",
+      "sha256_pre_redaction": "4306957c8f8e24cb5b7c11fb55b2743f50b4a8a92e9b9e3f4430cea192fac341",
+      "sha256_post_redaction": "c6225a15ccf32894231536c80924b8438e76cd4e429705e9d7e43db1c1b8c3e5",
+      "bytes": 13229,
+      "redactions_applied": {
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+      "sha256_pre_redaction": "ed7543def0f7ad20070464f2bec6da13ef2bc0bb76970a681e504dd9cfc00e1e",
+      "sha256_post_redaction": "c58b9c3344430c515706616152d926e539172695c34546e67a680d9d4722c226",
+      "bytes": 15596,
+      "redactions_applied": {
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/gdpr-compliance-case-study.md",
+      "sha256_pre_redaction": "6f81d6f42cc33a4e052d1382eed4adec0b6a4103e7cda81e7d24a025e5f79d49",
+      "sha256_post_redaction": "6f81d6f42cc33a4e052d1382eed4adec0b6a4103e7cda81e7d24a025e5f79d49",
+      "bytes": 7077,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/google-analytics-case-study.md",
+      "sha256_pre_redaction": "5dc4d0b103ff1df8996bbc774c0c3988df136c893ee622782eab15d7d8d0a38d",
+      "sha256_post_redaction": "5dc4d0b103ff1df8996bbc774c0c3988df136c893ee622782eab15d7d8d0a38d",
+      "bytes": 8100,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md",
+      "sha256_pre_redaction": "a3adc07c5af8d24664e513eb83ef316d8ca392d11c5db18d87a45d270ef157a5",
+      "sha256_post_redaction": "a3adc07c5af8d24664e513eb83ef316d8ca392d11c5db18d87a45d270ef157a5",
+      "bytes": 18821,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+      "sha256_pre_redaction": "232bd2664e27288ad6308d46bb7ccc3b84662d76ff0f1ebb19f6db568f111f07",
+      "sha256_post_redaction": "c853e0fd59b705a8191f084a2123cb220a679b37d2885b700327d4c0e5223a59",
+      "bytes": 18685,
+      "redactions_applied": {
+        "ssd_path": 5
+      }
+    },
+    {
+      "path": "docs/case-studies/home-today-screen-v2-case-study.md",
+      "sha256_pre_redaction": "836705598dc84bac119773af9201736891a3aa80672f5783785616fa3e1393a9",
+      "sha256_post_redaction": "836705598dc84bac119773af9201736891a3aa80672f5783785616fa3e1393a9",
+      "bytes": 13975,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/import-training-plan-case-study.md",
+      "sha256_pre_redaction": "70b3b513b25512f01f5010ba9714befe21b95c99565b5837aa03ace425ccad8d",
+      "sha256_post_redaction": "70b3b513b25512f01f5010ba9714befe21b95c99565b5837aa03ace425ccad8d",
+      "bytes": 16807,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/integrity-cycle-v7.1-case-study.md",
+      "sha256_pre_redaction": "bce244869bab575e48f1e3eaadaa39fc4280356e100af94177dae08b233a779e",
+      "sha256_post_redaction": "bce244869bab575e48f1e3eaadaa39fc4280356e100af94177dae08b233a779e",
+      "bytes": 16100,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/ios-ui-audit-p1-burndown-case-study.md",
+      "sha256_pre_redaction": "ef562c891b7f04a974311b5a60775c63b0be4d4256b3a02cac47bed405991f9b",
+      "sha256_post_redaction": "bf494c34575c47e14bc347e01d047cc84da07fbdb6279a6a8753f8c3577881e3",
+      "bytes": 11600,
+      "redactions_applied": {
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/ios-ui-audit-p1-drift-cleanup-case-study.md",
+      "sha256_pre_redaction": "a34592eb6eea23ffcfb7aa21633be9514b9a8fa7103c011771efacf93b7a4de5",
+      "sha256_post_redaction": "a34592eb6eea23ffcfb7aa21633be9514b9a8fa7103c011771efacf93b7a4de5",
+      "bytes": 4724,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/m-1-settings-decomposition-case-study.md",
+      "sha256_pre_redaction": "4effd4cc0ac77170cf3b678dff3cfac58920ea846aef91f2f745cc4ac238ffa6",
+      "sha256_post_redaction": "4effd4cc0ac77170cf3b678dff3cfac58920ea846aef91f2f745cc4ac238ffa6",
+      "bytes": 17758,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/m-2-mealentrysheet-decomposition-case-study.md",
+      "sha256_pre_redaction": "a4787c625da58f3a0372a5b63d6d270be8834534e415f067872e6d77fa0a2b0e",
+      "sha256_post_redaction": "a4787c625da58f3a0372a5b63d6d270be8834534e415f067872e6d77fa0a2b0e",
+      "bytes": 20399,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/m-3-design-system-completion-case-study.md",
+      "sha256_pre_redaction": "6d6891ffa2ac60e112c96f9adbef70e7203eae11152ce85f08415ac66b50add0",
+      "sha256_post_redaction": "6d6891ffa2ac60e112c96f9adbef70e7203eae11152ce85f08415ac66b50add0",
+      "bytes": 17629,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/m-4-xcuitest-infrastructure-case-study.md",
+      "sha256_pre_redaction": "7d918350023dd85df09cdf57b650a17e561b8dbce5029c6e382bba17c7ed8d11",
+      "sha256_post_redaction": "7d918350023dd85df09cdf57b650a17e561b8dbce5029c6e382bba17c7ed8d11",
+      "bytes": 18331,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/mechanical-enforcement-v7-6-case-study.md",
+      "sha256_pre_redaction": "4c32f1a657c11385b72a83247412d46c0f5643f8979faf0f05da57dd8eb19c62",
+      "sha256_post_redaction": "e0876db21d1d1a42db96e71403504a2ef3c593c3f3110e2adc42e1bad8c40632",
+      "bytes": 59426,
+      "redactions_applied": {
+        "email": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/meta-analysis-audit-and-remediation-case-study.md",
+      "sha256_pre_redaction": "949dd21cafd0fd9a2404a3e2a49acfbfe54883581f9f37faf60bdbbaf006918c",
+      "sha256_post_redaction": "949dd21cafd0fd9a2404a3e2a49acfbfe54883581f9f37faf60bdbbaf006918c",
+      "bytes": 21029,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis-full-system-audit-v7.0-case-study.md",
+      "sha256_pre_redaction": "c3f67358f78d8d2c7ab42076d8e3cf32353615be674589cee0eee6373b84204a",
+      "sha256_post_redaction": "c3f67358f78d8d2c7ab42076d8e3cf32353615be674589cee0eee6373b84204a",
+      "bytes": 35111,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/README.md",
+      "sha256_pre_redaction": "78e5079f6618f98d51bb4dff2277ff69e51bdc9663a1059a0fc8983aef0858fc",
+      "sha256_post_redaction": "78e5079f6618f98d51bb4dff2277ff69e51bdc9663a1059a0fc8983aef0858fc",
+      "bytes": 3857,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/cache-hits-backfill-draft-2026-05-18.md",
+      "sha256_pre_redaction": "134777551ed44ddd1477bc087f758495bc3b9cc67106023dede03cbfe7386865",
+      "sha256_post_redaction": "134777551ed44ddd1477bc087f758495bc3b9cc67106023dede03cbfe7386865",
+      "bytes": 12410,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/ci-env-flake-research-2026-05-05.md",
+      "sha256_pre_redaction": "837116e54fcb8e4237a836579dbc2aeaeb4719e67de9d064bed7211bfb187946",
+      "sha256_post_redaction": "82eb933978321a38559dfcc204e2f181385026a4e410fd701bb6c27a6f3aa7a4",
+      "bytes": 21166,
+      "redactions_applied": {
+        "home_path": 2
+      }
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/independent-audit-2026-04-21-gemini.md",
+      "sha256_pre_redaction": "000fa1b5fbbb5a8284d99de5f9359f9178efbd2b290271831991fbc17b21585a",
+      "sha256_post_redaction": "000fa1b5fbbb5a8284d99de5f9359f9178efbd2b290271831991fbc17b21585a",
+      "bytes": 25834,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/kill-criteria-resolution-backfill-decision-2026-05-18.md",
+      "sha256_pre_redaction": "57a705dee10c4a0e8b2cd338c83929a73018621ffd2695b2360f233ec888a646",
+      "sha256_post_redaction": "57a705dee10c4a0e8b2cd338c83929a73018621ffd2695b2360f233ec888a646",
+      "bytes": 9472,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/meta-analysis-2026-04-21.md",
+      "sha256_pre_redaction": "002ecd69c92f18837496de40c34808df973db87d749e8367770054f1a74c54f9",
+      "sha256_post_redaction": "002ecd69c92f18837496de40c34808df973db87d749e8367770054f1a74c54f9",
+      "bytes": 22712,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/meta-analysis-validation-2026-04-16.md",
+      "sha256_pre_redaction": "6a6d5db66c68964cfd70b0197c846d9864528ae8cf4de5568349fa442b541a1e",
+      "sha256_post_redaction": "6a6d5db66c68964cfd70b0197c846d9864528ae8cf4de5568349fa442b541a1e",
+      "bytes": 12314,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/tier-tag-checker-baseline.md",
+      "sha256_pre_redaction": "c3911ea2f7ead4bdb293f9b87c1274c168ceb71947abf53cca4ef93bd31316fd",
+      "sha256_post_redaction": "c3911ea2f7ead4bdb293f9b87c1274c168ceb71947abf53cca4ef93bd31316fd",
+      "bytes": 4684,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/unclosable-gaps.md",
+      "sha256_pre_redaction": "57d4f4863e23c776b5cb9b150d09e6cb01ef0309eaa6f32963c4d82e10b27b35",
+      "sha256_post_redaction": "57d4f4863e23c776b5cb9b150d09e6cb01ef0309eaa6f32963c4d82e10b27b35",
+      "bytes": 20811,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/v7-5-advancement-report.md",
+      "sha256_pre_redaction": "412b9f221522bbe21057db3790cc59f97000bb363d91b156e5f6ca59d4e9f6b8",
+      "sha256_post_redaction": "412b9f221522bbe21057db3790cc59f97000bb363d91b156e5f6ca59d4e9f6b8",
+      "bytes": 5004,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/v7-9-measurement-window-2026-05-11.md",
+      "sha256_pre_redaction": "cfb258a3ffa5db265fd08cef832f98c55ad947270f933d93401645c31b176724",
+      "sha256_post_redaction": "cfb258a3ffa5db265fd08cef832f98c55ad947270f933d93401645c31b176724",
+      "bytes": 789,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/meta-analysis/what-if-v6-from-day-one-2026-04-16.md",
+      "sha256_pre_redaction": "818a949ad27855678f589f2f18625218fa60223da18ab21d202819911dc152b5",
+      "sha256_post_redaction": "818a949ad27855678f589f2f18625218fa60223da18ab21d202819911dc152b5",
+      "bytes": 32346,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/normalization-framework.md",
+      "sha256_pre_redaction": "812ff8bff8a25acc7e16a1fc8e629430364ffcfba1b9aa7cc22246ad2309ffb1",
+      "sha256_post_redaction": "812ff8bff8a25acc7e16a1fc8e629430364ffcfba1b9aa7cc22246ad2309ffb1",
+      "bytes": 10274,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/onboarding-v2-auth-flow-v5.1-case-study.md",
+      "sha256_pre_redaction": "eb6993bebcaa3a3daf48e97c4dd6e0fd480311f2bebe4a2e23eb00db69dbf4b0",
+      "sha256_post_redaction": "eb6993bebcaa3a3daf48e97c4dd6e0fd480311f2bebe4a2e23eb00db69dbf4b0",
+      "bytes": 11096,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/onboarding-v2-retroactive-case-study.md",
+      "sha256_pre_redaction": "f8021d874dc63e187429f39efbf31cfcd3548d49eca5fd21bea3fda787f7a289",
+      "sha256_post_redaction": "f8021d874dc63e187429f39efbf31cfcd3548d49eca5fd21bea3fda787f7a289",
+      "bytes": 1546,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/orchid-ai-accelerator-case-study.md",
+      "sha256_pre_redaction": "b35e9b52eeea5b035f1cd9550287e28ec7d87768d7fc47ba9d0d8ad229bd8de1",
+      "sha256_post_redaction": "b35e9b52eeea5b035f1cd9550287e28ec7d87768d7fc47ba9d0d8ad229bd8de1",
+      "bytes": 15758,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/orchid-v1-5-additive-units-case-study.md",
+      "sha256_pre_redaction": "e3edba07c26aa4247e93163b079a3becc2a57aed943ea2a9bec8066702e99cb0",
+      "sha256_post_redaction": "e3edba07c26aa4247e93163b079a3becc2a57aed943ea2a9bec8066702e99cb0",
+      "bytes": 9638,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/original-readme-redesign-case-study.md",
+      "sha256_pre_redaction": "85c690602304e1a61efc813276d72a2fcd596e8bab5ef8aa5d959c2b9e209a26",
+      "sha256_post_redaction": "85c690602304e1a61efc813276d72a2fcd596e8bab5ef8aa5d959c2b9e209a26",
+      "bytes": 8325,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/parallel-write-safety-v5.2-case-study.md",
+      "sha256_pre_redaction": "525925afee7d75c761853d7ab6bba3a71286a472560150e0da93699928a733ac",
+      "sha256_post_redaction": "525925afee7d75c761853d7ab6bba3a71286a472560150e0da93699928a733ac",
+      "bytes": 9847,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-evolution-v1-to-v4.md",
+      "sha256_pre_redaction": "dd396ebafec2b563168771b31f5d25f4cd62f4354d11ca995da56ac8d5dea38a",
+      "sha256_post_redaction": "dd396ebafec2b563168771b31f5d25f4cd62f4354d11ca995da56ac8d5dea38a",
+      "bytes": 61177,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-showcase-onboarding.md",
+      "sha256_pre_redaction": "9b39331163180267f733de05edf59d55624d70c92a1687c41b72c82fe467f73d",
+      "sha256_post_redaction": "9b39331163180267f733de05edf59d55624d70c92a1687c41b72c82fe467f73d",
+      "bytes": 17608,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/pm-workflow-skill.md",
+      "sha256_pre_redaction": "e7770b71714218d274a70731a928713562af219beeab5e4006af9fd55838bed9",
+      "sha256_post_redaction": "e7770b71714218d274a70731a928713562af219beeab5e4006af9fd55838bed9",
+      "bytes": 9068,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/post-stress-test-audit-remediation-case-study.md",
+      "sha256_pre_redaction": "a98eaf71271f87c39d57b9bc93d20f65160555a8f567dc05a09748a73a73512e",
+      "sha256_post_redaction": "a98eaf71271f87c39d57b9bc93d20f65160555a8f567dc05a09748a73a73512e",
+      "bytes": 34022,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/push-notifications-case-study.md",
+      "sha256_pre_redaction": "2c348812b5428697c8cbb79afb48437a4470e1531e151d5ab9c2ead43a2a0e58",
+      "sha256_post_redaction": "2c348812b5428697c8cbb79afb48437a4470e1531e151d5ab9c2ead43a2a0e58",
+      "bytes": 15994,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/push-notifications-v2-case-study.md",
+      "sha256_pre_redaction": "d74421b15d78f512fe382043ec1756499ec8dda95284d9dcc21d535cb2ccfd0d",
+      "sha256_post_redaction": "7a6acc5028d1421190673d68a99c4127312a48761bfc5af3d002c7154be6635d",
+      "bytes": 24811,
+      "redactions_applied": {
+        "email": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
+      "sha256_pre_redaction": "0914340c874b64388ecba924bba2b2ffd27cf931f2874358e8f05ee5f7b4bdb5",
+      "sha256_post_redaction": "0914340c874b64388ecba924bba2b2ffd27cf931f2874358e8f05ee5f7b4bdb5",
+      "bytes": 26115,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/six-features-roundup-case-study.md",
+      "sha256_pre_redaction": "ddc023008009ae673dc3f19694c52e24226034b29f1dff3b0024f67cc4986b9c",
+      "sha256_post_redaction": "ddc023008009ae673dc3f19694c52e24226034b29f1dff3b0024f67cc4986b9c",
+      "bytes": 29272,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/smart-reminders-behavioral-learning-case-study.md",
+      "sha256_pre_redaction": "c5bccbd60476e70f4864ceb7fb7a990b4869a2d7c45b68c486c74d9f094e223a",
+      "sha256_post_redaction": "c5bccbd60476e70f4864ceb7fb7a990b4869a2d7c45b68c486c74d9f094e223a",
+      "bytes": 8432,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/smart-reminders-case-study.md",
+      "sha256_pre_redaction": "972fac1f77fe06dae48f27c4aeddabd72966e5bd658bb5e2007638f4748f9e86",
+      "sha256_post_redaction": "972fac1f77fe06dae48f27c4aeddabd72966e5bd658bb5e2007638f4748f9e86",
+      "bytes": 14671,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/soc-v5-framework-case-study.md",
+      "sha256_pre_redaction": "e3abffc851351576b1a94e67d66c70b3c7f7e5ffc8cf3b8b1bbff1ed1a24a5ca",
+      "sha256_post_redaction": "e3abffc851351576b1a94e67d66c70b3c7f7e5ffc8cf3b8b1bbff1ed1a24a5ca",
+      "bytes": 11279,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/stats-v2-case-study.md",
+      "sha256_pre_redaction": "5b863c84d0c49d07c0b98623459abe9f99d368ec334dbba7e89a713958c5578f",
+      "sha256_post_redaction": "5b863c84d0c49d07c0b98623459abe9f99d368ec334dbba7e89a713958c5578f",
+      "bytes": 20840,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/templates/alternative-a-v7-5-example.md",
+      "sha256_pre_redaction": "2a65e9c83754e6181991eee280b1f17ac9bff2ac526da786a5fe8843300e5ead",
+      "sha256_post_redaction": "2a65e9c83754e6181991eee280b1f17ac9bff2ac526da786a5fe8843300e5ead",
+      "bytes": 4923,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/templates/alternative-b-v7-5-example.md",
+      "sha256_pre_redaction": "a5edf848f99f924f7295456b34dfcc162575c23dbb75a3dc74047fbfb6cc8d98",
+      "sha256_post_redaction": "a5edf848f99f924f7295456b34dfcc162575c23dbb75a3dc74047fbfb6cc8d98",
+      "bytes": 5822,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/training-plan-v2-case-study.md",
+      "sha256_pre_redaction": "a2590293049e483fdc3fcb2ad15b854a0db2e379d6e126276a2e871b88a6911f",
+      "sha256_post_redaction": "a2590293049e483fdc3fcb2ad15b854a0db2e379d6e126276a2e871b88a6911f",
+      "bytes": 15816,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/ucc-passkey-auth-case-study.md",
+      "sha256_pre_redaction": "891b39373eba839eb753e0157e691598dd82f5e6d6a6f366eba6db361da3583c",
+      "sha256_post_redaction": "302580ac9eff28721760576beb884c8c7a83d828639925afc0ac66ae0dc1b7ad",
+      "bytes": 33927,
+      "redactions_applied": {
+        "email": 5,
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
+      "sha256_pre_redaction": "b0fef3732c27a9adf20125e2e5821d9f02224ba357ea4b56cef8bd604412f889",
+      "sha256_post_redaction": "45bb9d9e4ddd84aa98bbb69468161d79d5f85d40f0058619cd1526c89e341547",
+      "bytes": 10827,
+      "redactions_applied": {
+        "email": 1
+      }
+    },
+    {
+      "path": "docs/case-studies/ui-audit-baseline-burndown.md",
+      "sha256_pre_redaction": "950f27f1e7da02900922fea76b2d4fe165711a3f8c4b43b11b04478a0b7ee6ec",
+      "sha256_post_redaction": "950f27f1e7da02900922fea76b2d4fe165711a3f8c4b43b11b04478a0b7ee6ec",
+      "bytes": 14102,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/ui-ux-final-sweep-2026-05-12-case-study.md",
+      "sha256_pre_redaction": "26d13343b6bb6cf30a4b9cb18df61fbb485bfb1411b793be784c94e47fb3fc94",
+      "sha256_post_redaction": "26d13343b6bb6cf30a4b9cb18df61fbb485bfb1411b793be784c94e47fb3fc94",
+      "bytes": 9299,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/unified-control-center-case-study.md",
+      "sha256_pre_redaction": "7e2606b7398c4d8eb3441d5eb72d760da0c200011d9161523891b57d097c07c5",
+      "sha256_post_redaction": "7e2606b7398c4d8eb3441d5eb72d760da0c200011d9161523891b57d097c07c5",
+      "bytes": 23559,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/user-profile-v4.4-case-study.md",
+      "sha256_pre_redaction": "0dde95dd8972ad32954d51bceb5b2b50682298c2f442d0e6207063f17e3051b2",
+      "sha256_post_redaction": "0dde95dd8972ad32954d51bceb5b2b50682298c2f442d0e6207063f17e3051b2",
+      "bytes": 18957,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/v5.1-parallel-stress-test-case-study.md",
+      "sha256_pre_redaction": "d92fd5317b166ad7f6482ceaa52274c86b4aa96a4fe63d43cdf3b5fa0bf77295",
+      "sha256_post_redaction": "d92fd5317b166ad7f6482ceaa52274c86b4aa96a4fe63d43cdf3b5fa0bf77295",
+      "bytes": 20176,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/case-studies/v5.1-v5.2-framework-evolution-case-study.md",
+      "sha256_pre_redaction": "153134328543010c7af058443744814eca37b7f0a0825bd2f32f6ec0fd5b9082",
+      "sha256_post_redaction": "153134328543010c7af058443744814eca37b7f0a0825bd2f32f6ec0fd5b9082",
+      "bytes": 13706,
+      "redactions_applied": {}
+    },
+    {
+      "path": "docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-design.md",
+      "sha256_pre_redaction": "f50efab95b4d398aa47d970dc60b8e1a46b032d8c23e59e90842001bfeb3eb3f",
+      "sha256_post_redaction": "7517daa11f20fb9741a05dd188cae0c62f301067d5269f111889c4956543123c",
+      "bytes": 36810,
+      "redactions_applied": {
+        "ssd_path": 2
+      }
+    },
+    {
+      "path": "docs/superpowers/specs/2026-05-11-hadf-phase2bis-replication-design.md",
+      "sha256_pre_redaction": "b82b38b38a2c7e5b9f7919d4f068619f9e39e10dc989a70ebfcf4421714fdc93",
+      "sha256_post_redaction": "e9b18c61a4ce4ea54f1499b22e2c105203bb5bb7e1040e2cfd1a08f4dafc4ce2",
+      "bytes": 21988,
+      "redactions_applied": {
+        "ssd_path": 4
+      }
+    },
+    {
+      "path": "trust/audits/2026-04-21-gemini/README.md",
+      "sha256_pre_redaction": "a6c9be1255fce17e0a0629d9d693cab4dc796116fd918bd28d850629db21ec53",
+      "sha256_post_redaction": "690fade058df84219ab2ea1f6643ea32de54bd4cf3981cd1b5dbdf500d11b3b9",
+      "bytes": 6830,
+      "redactions_applied": {
+        "ssd_path": 13
+      }
+    },
+    {
+      "path": "trust/audits/2026-04-21-gemini/remediation-plan-2026-04-23.md",
+      "sha256_pre_redaction": "56d1512fb544a61ce57da528e197c7f051d098de54731571029e3d6c253d7150",
+      "sha256_post_redaction": "17a7874086405a1d5add982b4d1e6e905d1a8f1501256383118f82f18816b541",
+      "bytes": 5324,
+      "redactions_applied": {
+        "ssd_path": 1
+      }
+    },
+    {
+      "path": "_state-snapshot.json",
+      "sha256_pre_redaction": "6bc81b1e8687a4c47d9f01fc7d57fd56e3d57983fe65c36046dbfe5a299c68e1",
+      "sha256_post_redaction": "6bc81b1e8687a4c47d9f01fc7d57fd56e3d57983fe65c36046dbfe5a299c68e1",
+      "bytes": 1973,
+      "redactions_applied": {}
+    }
+  ]
+}
