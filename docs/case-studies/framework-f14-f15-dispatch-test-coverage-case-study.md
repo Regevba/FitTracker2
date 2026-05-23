@@ -27,6 +27,9 @@ kill_criteria:
   - "K4 — A new silent-pass incident hits one of the 9 covered gates within 30 days → monkey-patch pattern is insufficient; file meta-issue + delay v7.9.1 dispatch-test-driven decisions"
 kill_criteria_resolution: "pending — evaluated at T+7d (2026-06-01, K1/K2/K3) and T+30d (2026-06-21, K4) per PRD §3 review cadence. T11 verification at 2026-05-22 evidenced K1–K3 not tripped at implementation close."
 related_prs: [451]
+pr_citation_exempt:
+  - pr_number: 452
+    reason: "Cadence-only backfill PR (chore class) that landed metadata into C1 closure tracking. State.json captures it under tasks[0].related_prs as the closure-ceremony PR. Case study narrative documents the implementation (#451) rather than the metadata reconciliation."
 case_study_showcase: null
 external_audit_status: pending
 status: live

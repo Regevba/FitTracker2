@@ -1,7 +1,7 @@
 {
   "feature_name": "framework-f14-f15-dispatch-test-coverage",
   "display_name": "Framework F14/F15 \u2014 dispatch-test coverage push",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "created_at": "2026-05-22T19:15:05Z",
   "updated": "2026-05-22T20:54:36Z",
   "framework_version": "v7.9",
@@ -11,7 +11,7 @@
   "dispatch_pattern": "serial",
   "has_ui": false,
   "requires_analytics": false,
-  "isolation_opt_out": false,
+  "isolation_opt_out": true,
   "branch": "feature/framework-f14-f15-dispatch-test-coverage",
   "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage",
   "case_study_type": "feature_case_study",
@@ -39,28 +39,28 @@
       "approved_at": "2026-05-22T20:20:22Z",
       "approved_by": "user",
       "pause_reason": "Operator requested pause to allow a separate agent to run a full cross-source project sync (state.json files in FT2 + fitme-story, Linear, Notion, GitHub Issues, dashboard) before deciding how to move C1 forward. Phase 0 deliverable is complete; PRD start gated on sync outcome.",
-      "resume_note": "Operator returned 2026-05-22T20:20Z with 'continue work' — sync presumed complete or deferred; Phase 0 research approved as-is and Phase 1 (PRD) opened. Sync outcomes can still amend the PRD before its approval.",
+      "resume_note": "Operator returned 2026-05-22T20:20Z with 'continue work' \u2014 sync presumed complete or deferred; Phase 0 research approved as-is and Phase 1 (PRD) opened. Sync outcomes can still amend the PRD before its approval.",
       "deliverable": ".claude/features/framework-f14-f15-dispatch-test-coverage/research.md",
       "sources": [
-        "docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md §F14 + §F15",
-        "docs/master-plan/test-coverage-master-plan-2026-05-13.md §2.1",
-        ".claude/shared/must-have-cadence-followups.md §C1",
-        "FT2 PR #317 (commit 97af469) — dispatch-test prototype"
+        "docs/superpowers/specs/2026-05-08-framework-v7-9-candidates.md \u00a7F14 + \u00a7F15",
+        "docs/master-plan/test-coverage-master-plan-2026-05-13.md \u00a72.1",
+        ".claude/shared/must-have-cadence-followups.md \u00a7C1",
+        "FT2 PR #317 (commit 97af469) \u2014 dispatch-test prototype"
       ],
       "resume_plan_2026_05_22": {
-        "calendar_pressure": "Soft. Original target ship 2026-05-23 → 05-25; slipping a few days is fine since v7.9 already shipped without these tests per the documented deferral trade-off. v7.9.1 build window opens ~2026-06-04 → 06-11; C1 ideally lands inside that window.",
+        "calendar_pressure": "Soft. Original target ship 2026-05-23 \u2192 05-25; slipping a few days is fine since v7.9 already shipped without these tests per the documented deferral trade-off. v7.9.1 build window opens ~2026-06-04 \u2192 06-11; C1 ideally lands inside that window.",
         "next_steps_after_sync": [
           "1. Read the sync agent's cross-source report",
           "2. Re-load this state.json + research.md",
           "3. Decide: advance to Phase 1 (PRD) OR redirect/expand scope based on sync findings",
-          "4. If advancing: resolve the 4 open questions in research.md §9 (cycle-time gate file location, PR_CACHE_STALE refactor scope, GATE_TEST_MISSING meta-gate inclusion, fixture-sharing strategy)",
+          "4. If advancing: resolve the 4 open questions in research.md \u00a79 (cycle-time gate file location, PR_CACHE_STALE refactor scope, GATE_TEST_MISSING meta-gate inclusion, fixture-sharing strategy)",
           "5. If redirecting: update research.md scope + re-approve Phase 0"
         ],
         "verification_at_resume": [
-          "ls /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage/.claude/features/framework-f14-f15-dispatch-test-coverage/ → expect state.json + research.md",
-          "git -C /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage status → expect feature dir + .claude/active-feature untracked on feature/framework-f14-f15-dispatch-test-coverage",
-          "cat .claude/active-feature in worktree → expect framework-f14-f15-dispatch-test-coverage",
-          "Tier 2.2 log at /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage/.claude/logs/framework-f14-f15-dispatch-test-coverage.log.json → 2 entries (phase_started + phase_paused)"
+          "ls /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage/.claude/features/framework-f14-f15-dispatch-test-coverage/ \u2192 expect state.json + research.md",
+          "git -C /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage status \u2192 expect feature dir + .claude/active-feature untracked on feature/framework-f14-f15-dispatch-test-coverage",
+          "cat .claude/active-feature in worktree \u2192 expect framework-f14-f15-dispatch-test-coverage",
+          "Tier 2.2 log at /Volumes/DevSSD/FitTracker2-infra-dispatch-test-coverage/.claude/logs/framework-f14-f15-dispatch-test-coverage.log.json \u2192 2 entries (phase_started + phase_paused)"
         ]
       }
     },
@@ -99,22 +99,23 @@
       "deliverable": ".claude/features/framework-f14-f15-dispatch-test-coverage/integration-spec.md"
     },
     "implementation": {
-      "status": "approved",
+      "status": "complete",
       "started_at": "2026-05-22T20:54:36Z",
       "approved_at": "2026-05-22T21:20:28Z",
       "approved_by": "user (via continue + parallel-dispatch authorization)",
       "commits": [
-        "35ca182 — feat(framework-f14-f15): conftest + 6 of 9 dispatch tests (T1, T2, T4-T7)",
-        "c790564 — feat(framework-f14-f15): T3 + T8 + T9 + T10 complete — 9/9 dispatch tests landed"
+        "35ca182 \u2014 feat(framework-f14-f15): conftest + 6 of 9 dispatch tests (T1, T2, T4-T7)",
+        "c790564 \u2014 feat(framework-f14-f15): T3 + T8 + T9 + T10 complete \u2014 9/9 dispatch tests landed"
       ],
-      "progress": "9/9 dispatch tests done across 4 dispatcher surfaces. All 11 implementation tasks (T1-T11) marked done. T12 docs pending."
+      "progress": "9/9 dispatch tests done across 4 dispatcher surfaces. All 11 implementation tasks (T1-T11) marked done. T12 docs pending.",
+      "ended_at": "2026-05-23T06:30:00Z"
     },
     "testing": {
       "status": "approved",
       "approved_at": "2026-05-22T21:20:28Z",
       "approved_by": "user (T11 verification evidence: 161/161 tests pass in 10.82s)",
       "ci_passed": true,
-      "ci_passed_evidence": "local pytest scripts/tests/ — 161 passed in 10.82s; 6 dispatch tests in test_check_state_schema.py + 1 in test_check_case_study_preflight.py + 2 in test_integrity_check_dispatch.py + 1 in test_ensure_pr_cache_fresh.py",
+      "ci_passed_evidence": "local pytest scripts/tests/ \u2014 161 passed in 10.82s; 6 dispatch tests in test_check_state_schema.py + 1 in test_check_case_study_preflight.py + 2 in test_integrity_check_dispatch.py + 1 in test_ensure_pr_cache_fresh.py",
       "tests_added": 9,
       "instrumentation_verified": true,
       "analytics_tests_added": 0,
@@ -126,19 +127,21 @@
       "approved_at": "2026-05-22T21:20:28Z",
       "approved_by": "self-review (automated)",
       "risks": [
-        "K3 ledger-isolation guard verified — no canonical gate-coverage.jsonl writes",
-        "No production code changed — only test additions",
-        "2 gates (CASE_STUDY_MISSING_FIELDS, PR_CACHE_STALE) lack Mechanism A telemetry — assertion shape adapted; gap captured as T12 backlog item for v8.x"
+        "K3 ledger-isolation guard verified \u2014 no canonical gate-coverage.jsonl writes",
+        "No production code changed \u2014 only test additions",
+        "2 gates (CASE_STUDY_MISSING_FIELDS, PR_CACHE_STALE) lack Mechanism A telemetry \u2014 assertion shape adapted; gap captured as T12 backlog item for v8.x"
       ],
       "ci_main": null,
       "ci_feature": true,
       "ci_feature_evidence": "all pre-commit gates green on commits 35ca182 + c790564"
     },
     "merge": {
-      "status": "pending",
-      "pr_number": null,
+      "status": "complete",
+      "pr_number": 451,
       "analytics_regression_passed": null,
-      "note": "Gated on operator approval to push feature branch + open PR. Standard CLAUDE.md no-auto-merge rule."
+      "note": "Gated on operator approval to push feature branch + open PR. Standard CLAUDE.md no-auto-merge rule.",
+      "completed_at": "2026-05-23T04:55:46Z",
+      "merge_commit": "86084c4b"
     },
     "documentation": {
       "status": "in_progress",
@@ -146,9 +149,9 @@
       "note": "Docs drafted on feature branch BEFORE merge so the same PR carries code + tests + case study + cadence-closure + backlog tickets together.",
       "phase_8_artifacts_2026_05_23": {
         "case_study": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
-        "cadence_followups_closure": ".claude/shared/must-have-cadence-followups.md §C1 (struck through; PR # backfill at merge)",
-        "backlog_ticket_opened": "docs/product/backlog.md — T1 GATE_TEST_MISSING meta-gate (RICE 53.3, unblocks at F14 Phase E 2026-08-22)",
-        "test_coverage_plan_updated": "docs/master-plan/test-coverage-master-plan-2026-05-13.md §2.1 baseline 1/19 → 10/19 + T1 row reflects F14 ship",
+        "cadence_followups_closure": ".claude/shared/must-have-cadence-followups.md \u00a7C1 (struck through; PR # backfill at merge)",
+        "backlog_ticket_opened": "docs/product/backlog.md \u2014 T1 GATE_TEST_MISSING meta-gate (RICE 53.3, unblocks at F14 Phase E 2026-08-22)",
+        "test_coverage_plan_updated": "docs/master-plan/test-coverage-master-plan-2026-05-13.md \u00a72.1 baseline 1/19 \u2192 10/19 + T1 row reflects F14 ship",
         "state_json_review_dedup": "fixed duplicate review JSON key (stale pending block removed; approved block retained)"
       }
     },
@@ -164,6 +167,11 @@
       "instrumentation_ready": false,
       "first_review_date": null,
       "kill_criteria": ""
+    },
+    "complete": {
+      "status": "complete",
+      "started_at": "2026-05-23T06:30:00Z",
+      "note": "Closed during post-merge hygiene session 2026-05-23 \u2014 all PRs merged, case study + logs reconciled"
     }
   },
   "tasks": [
@@ -177,78 +185,102 @@
       "effort_days": 0.13,
       "depends_on": [],
       "lane": "P-core",
-      "completed_at": "2026-05-22T21:00:00Z"
+      "completed_at": "2026-05-22T21:00:00Z",
+      "pr_number": 451,
+      "related_prs": [
+        451,
+        452,
+        317,
+        417
+      ]
     },
     {
       "id": "T2",
-      "title": "test_main_dispatch_state_no_case_study_link — F14 pilot test validates monkey-patch pattern",
+      "title": "test_main_dispatch_state_no_case_study_link \u2014 F14 pilot test validates monkey-patch pattern",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "critical",
       "effort_days": 0.06,
-      "depends_on": ["T1"],
+      "depends_on": [
+        "T1"
+      ],
       "lane": "P-core",
       "completed_at": "2026-05-22T21:00:00Z"
     },
     {
       "id": "T3",
-      "title": "test_main_dispatch_case_study_missing_fields — F14 (S4 surface, no Mechanism A telemetry)",
+      "title": "test_main_dispatch_case_study_missing_fields \u2014 F14 (S4 surface, no Mechanism A telemetry)",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "high",
       "effort_days": 0.04,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "E-core",
       "completed_at": "2026-05-22T21:15:00Z",
       "finding": "Gate does NOT emit Mechanism A gate-coverage.jsonl rows. Assertion adapted to rc != 0 only. Coverage-emission deferred to backlog item (see T12)."
     },
     {
       "id": "T4",
-      "title": "test_main_dispatch_cu_v2_invalid — F14",
+      "title": "test_main_dispatch_cu_v2_invalid \u2014 F14",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "high",
       "effort_days": 0.04,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "E-core",
       "completed_at": "2026-05-22T21:00:00Z"
     },
     {
       "id": "T5",
-      "title": "test_main_dispatch_cache_hits_auto_instrumentation_drift — F14 (renamed v7.8.3)",
+      "title": "test_main_dispatch_cache_hits_auto_instrumentation_drift \u2014 F14 (renamed v7.8.3)",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "high",
       "effort_days": 0.04,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "E-core",
       "completed_at": "2026-05-22T21:00:00Z"
     },
     {
       "id": "T6",
-      "title": "test_main_dispatch_phase_transition_no_log — F15 highest-risk (guards most-frequent state mutation)",
+      "title": "test_main_dispatch_phase_transition_no_log \u2014 F15 highest-risk (guards most-frequent state mutation)",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "critical",
       "effort_days": 0.05,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "E-core",
       "completed_at": "2026-05-22T21:00:00Z"
     },
     {
       "id": "T7",
-      "title": "test_main_dispatch_phase_transition_no_timing — F15 pairs with T6",
+      "title": "test_main_dispatch_phase_transition_no_timing \u2014 F15 pairs with T6",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "critical",
       "effort_days": 0.05,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "E-core",
       "completed_at": "2026-05-22T21:00:00Z"
     },
@@ -260,20 +292,26 @@
       "status": "done",
       "priority": "medium",
       "effort_days": 0.06,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "P-core",
       "completed_at": "2026-05-22T21:15:00Z",
       "dispatch": "parallel sub-agent (operator authorized 2026-05-22)"
     },
     {
       "id": "T9",
-      "title": "test_main_dispatch_branch_isolation_launchd_drift — F15 cycle-time, same file as T8",
+      "title": "test_main_dispatch_branch_isolation_launchd_drift \u2014 F15 cycle-time, same file as T8",
       "type": "test",
       "skill": "dev",
       "status": "done",
       "priority": "medium",
       "effort_days": 0.05,
-      "depends_on": ["T1", "T8"],
+      "depends_on": [
+        "T1",
+        "T8"
+      ],
       "lane": "E-core",
       "completed_at": "2026-05-22T21:15:00Z",
       "dispatch": "parallel sub-agent (operator authorized 2026-05-22); macOS-only test gated via skipif"
@@ -286,11 +324,14 @@
       "status": "done",
       "priority": "medium",
       "effort_days": 0.06,
-      "depends_on": ["T1", "T2"],
+      "depends_on": [
+        "T1",
+        "T2"
+      ],
       "lane": "P-core",
       "completed_at": "2026-05-22T21:15:00Z",
       "dispatch": "parallel sub-agent (operator authorized 2026-05-22)",
-      "finding": "Gate reads last_refreshed_at from JSON content, NOT file mtime — integration-spec §2.3 os.utime hint was misleading. Conftest tmp_pr_cache_file fixture's .age() helper is a no-op for this gate (only mutates mtime). Test writes JSON with stale timestamp directly. Also: gate does NOT emit Mechanism A telemetry."
+      "finding": "Gate reads last_refreshed_at from JSON content, NOT file mtime \u2014 integration-spec \u00a72.3 os.utime hint was misleading. Conftest tmp_pr_cache_file fixture's .age() helper is a no-op for this gate (only mutates mtime). Test writes JSON with stale timestamp directly. Also: gate does NOT emit Mechanism A telemetry."
     },
     {
       "id": "T11",
@@ -300,7 +341,17 @@
       "status": "done",
       "priority": "critical",
       "effort_days": 0.06,
-      "depends_on": ["T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"],
+      "depends_on": [
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T9",
+        "T10"
+      ],
       "lane": "serial",
       "completed_at": "2026-05-22T21:15:00Z",
       "verification_results": {
@@ -308,30 +359,40 @@
         "suite_runtime_seconds": 10.82,
         "new_dispatch_tests": 9,
         "new_test_runtime_seconds": "0.21 total (well under 5s ceiling)",
-        "mechanism_a_coverage": "7/9 gates emit gate-coverage rows; 2 gates (CASE_STUDY_MISSING_FIELDS, PR_CACHE_STALE) lack Mechanism A telemetry — backlog item to open in T12",
-        "k3_guard": "verified — canonical .claude/logs/gate-coverage.jsonl mtime unchanged across full test runs"
+        "mechanism_a_coverage": "7/9 gates emit gate-coverage rows; 2 gates (CASE_STUDY_MISSING_FIELDS, PR_CACHE_STALE) lack Mechanism A telemetry \u2014 backlog item to open in T12",
+        "k3_guard": "verified \u2014 canonical .claude/logs/gate-coverage.jsonl mtime unchanged across full test runs"
       }
     },
     {
       "id": "T12",
-      "title": "Phase 8 docs: case study + cadence-followups §C1 strikethrough + open T1 (GATE_TEST_MISSING) backlog + update test-coverage-master-plan §2.1 baselines",
+      "title": "Phase 8 docs: case study + cadence-followups \u00a7C1 strikethrough + open T1 (GATE_TEST_MISSING) backlog + update test-coverage-master-plan \u00a72.1 baselines",
       "type": "docs",
       "skill": "dev",
       "status": "done",
       "priority": "high",
       "effort_days": 0.13,
-      "depends_on": ["T11"],
+      "depends_on": [
+        "T11"
+      ],
       "lane": "serial",
       "completed_at": "2026-05-23T00:00:00Z",
       "verification": {
         "case_study_path": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
         "cadence_followups_strikethrough": "soft (Closed 2026-05-23; PR # backfill at merge)",
-        "backlog_ticket": "docs/product/backlog.md — T1 GATE_TEST_MISSING meta-gate (RICE 53.3)",
-        "test_coverage_plan_baseline_updated": "1/19 → 10/19 in §2.1 + T1 row updated in §4"
+        "backlog_ticket": "docs/product/backlog.md \u2014 T1 GATE_TEST_MISSING meta-gate (RICE 53.3)",
+        "test_coverage_plan_baseline_updated": "1/19 \u2192 10/19 in \u00a72.1 + T1 row updated in \u00a74"
       }
     }
   ],
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "level": "L3",
+      "key": "closure_session_sentinel",
+      "count": 0,
+      "note": "Closure sentinel; original-session reads attributed via Mechanism C in the implementation worktree (FitTracker2-infra-dispatch-test-coverage). This sentinel marks the closure transition only.",
+      "timestamp": "2026-05-23T06:30:00Z"
+    }
+  ],
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {
@@ -351,14 +412,14 @@
       "to": "tasks",
       "timestamp": "2026-05-22T20:47:12Z",
       "approved_by": "user",
-      "note": "PRD approved with 'continue'. 4 open questions locked. Primary metric framework_gate_dispatch_test_coverage_pct, target 5% → 53%."
+      "note": "PRD approved with 'continue'. 4 open questions locked. Primary metric framework_gate_dispatch_test_coverage_pct, target 5% \u2192 53%."
     },
     {
       "from": "tasks",
       "to": "ux_or_integration",
       "timestamp": "2026-05-22T20:50:26Z",
       "approved_by": "user",
-      "note": "Tasks approved with 'continue'. 12 tasks across 3 lanes (P-core × 4, E-core × 6, serial × 2). Phase 3 branches to integration-spec since has_ui=false."
+      "note": "Tasks approved with 'continue'. 12 tasks across 3 lanes (P-core \u00d7 4, E-core \u00d7 6, serial \u00d7 2). Phase 3 branches to integration-spec since has_ui=false."
     },
     {
       "from": "ux_or_integration",
@@ -393,8 +454,11 @@
       },
       "implementation": {
         "started_at": "2026-05-22T20:54:36Z",
-        "ended_at": null,
-        "duration_minutes": null
+        "ended_at": "2026-05-23T06:30:00Z",
+        "duration_minutes": 575
+      },
+      "complete": {
+        "started_at": "2026-05-23T06:30:00Z"
       }
     },
     "session_start": "2026-05-22T19:15:05Z",
@@ -410,5 +474,35 @@
       }
     ],
     "time_source": "measuring"
-  }
+  },
+  "case_study": "docs/case-studies/framework-f14-f15-dispatch-test-coverage-case-study.md",
+  "isolation_opt_out_reason": "Post-merge closure during hygiene session 2026-05-23. All code work happened on feature/framework-f14-f15-dispatch-test-coverage + chore/f14-f15-pr-451-backfill branches (now merged via PRs #451 + #452). This commit only flips current_phase to complete + adds closure timing.",
+  "related_prs": [
+    {
+      "number": 451,
+      "repo": "Regevba/FitTracker2",
+      "role": "primary_implementation",
+      "merge_commit": "86084c4b",
+      "merged_at": "2026-05-23T04:55:46Z"
+    },
+    {
+      "number": 452,
+      "repo": "Regevba/FitTracker2",
+      "role": "cadence_backfill",
+      "merge_commit": "3686f983",
+      "merged_at": "2026-05-23T05:11:32Z"
+    },
+    {
+      "number": 317,
+      "repo": "Regevba/FitTracker2",
+      "role": "precursor",
+      "note": "Pre-v7.9 dispatch-test-coverage scaffolding (cited in case study)."
+    },
+    {
+      "number": 417,
+      "repo": "Regevba/FitTracker2",
+      "role": "context",
+      "note": "v7.9 promotion PR \u2014 cited as the gates-promoted context for which F14/F15 provides closure."
+    }
+  ]
 }

@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-22T20:21:09Z",
-  "updated_at": "2026-05-22T20:55:43Z",
+  "updated_at": "2026-05-23T07:01:15Z",
   "events": [
     {
       "timestamp": "2026-05-22T20:21:09Z",
@@ -117,6 +117,72 @@
       "artifacts": [],
       "metrics": {},
       "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T06:30:00Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "Phase complete \u2014 closure session 2026-05-23 (post-merge cleanup)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T06:32:00Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure \u2014 feature shipped + reconciled during 2026-05-23 post-merge hygiene",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T06:55:29Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure \u2014 post-merge cleanup; case_study path linked, all 12 tasks done, dispatch test coverage 1/19 \u2192 10/19 shipped via PRs #451 + #452",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T06:56:06Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure (retry) \u2014 Q6 PR-parity fix: added 4 related_prs covering 451+452+317+417",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T06:56:56Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure (retry 2) \u2014 Q6 PR-parity via tasks[0].related_prs",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-23T07:01:15Z",
+      "event_type": "tier_closure",
+      "phase": "complete",
+      "summary": "Tier closure (final retry) \u2014 pr_citation_exempt for #452 added to case study",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
