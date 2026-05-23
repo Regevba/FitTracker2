@@ -789,5 +789,37 @@
     "kill_criteria_checkpoint": "2026-05-23 (T+7d post UCC_AUTH_MODE=both flip; resolution lands in case study \u00a799 + frontmatter kill_criteria_resolution)",
     "cadence_followups_ref": ".claude/shared/must-have-cadence-followups.md (B7, B8, B9, C4-C10)"
   },
-  "figma_build_status_note": "Page frames + AuthPasskeyForm component-set scaffold shipped (13 node IDs captured 2026-05-18). Code Connect mappings shipped at src/{components/control-room/AuthPasskeyForm.figma.tsx, app/control-room/sign-in/page.figma.tsx, app/control-room/sign-in/recover/page.figma.tsx}. T4 of ucc-sign-in-figma-mapping (UU4 enhancement) still needs to populate the 10 AuthPasskeyForm component-set variants \u2014 currently empty 360\u00d710 stubs. Page-level Code Connect validation also blocked on T4 (page frames need component-ization). Deferred to post-v7.9-freeze Figma write session."
+  "figma_build_status_note": "Page frames + AuthPasskeyForm component-set scaffold shipped (13 node IDs captured 2026-05-18). Code Connect mappings shipped at src/{components/control-room/AuthPasskeyForm.figma.tsx, app/control-room/sign-in/page.figma.tsx, app/control-room/sign-in/recover/page.figma.tsx}. T4 of ucc-sign-in-figma-mapping (UU4 enhancement) still needs to populate the 10 AuthPasskeyForm component-set variants \u2014 currently empty 360\u00d710 stubs. Page-level Code Connect validation also blocked on T4 (page frames need component-ization). Deferred to post-v7.9-freeze Figma write session.",
+  "related_prs": [
+    {
+      "number": 249,
+      "repo": "Regevba/FitTracker2",
+      "role": "phase_8_closure"
+    },
+    {
+      "number": 250,
+      "repo": "Regevba/FitTracker2",
+      "role": "going_live_runbook"
+    },
+    {
+      "number": 251,
+      "repo": "Regevba/FitTracker2",
+      "role": "claude_md_cross_ref"
+    },
+    {
+      "number": 262,
+      "repo": "Regevba/FitTracker2",
+      "role": "T1_T28_reconcile"
+    },
+    {
+      "number": 380,
+      "repo": "Regevba/FitTracker2",
+      "role": "parts_1_6_docs_sync"
+    },
+    {
+      "number": 387,
+      "repo": "Regevba/FitTracker2",
+      "role": "T7_part_9_wire"
+    }
+  ]
 }

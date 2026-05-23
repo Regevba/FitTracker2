@@ -15,41 +15,95 @@
   "scheduled_after": null,
   "calendar_gate": {
     "decision_date": "2026-05-21",
-    "rationale": "v7.9 promotion-decision date locked by infra-master-plan-2026-05-12 §4.1. 7-day Mechanism A coverage calibration window opened 2026-05-15 (v7.8.6 ship) and freezes 2026-05-21. No new gate-coverage telemetry candidates should land 2026-05-15→05-21 to keep the baseline clean.",
+    "rationale": "v7.9 promotion-decision date locked by infra-master-plan-2026-05-12 \u00a74.1. 7-day Mechanism A coverage calibration window opened 2026-05-15 (v7.8.6 ship) and freezes 2026-05-21. No new gate-coverage telemetry candidates should land 2026-05-15\u219205-21 to keep the baseline clean.",
     "post_decision_soak": "2026-05-28 (T+7d post-v7.9 baseline snapshot)",
-    "source_plan": "docs/master-plan/infra-master-plan-2026-05-12.md §4.1",
+    "source_plan": "docs/master-plan/infra-master-plan-2026-05-12.md \u00a74.1",
     "cadence_followup_id": "B1 (must-have-cadence-followups.md)"
   },
   "primary_metric": "Number of advisory gates successfully promoted to enforced with 0 false positives in the 7-day post-flip soak",
   "success_metrics": [
     "All 4 v7.8.1 advisory gates (BRANCH_ISOLATION_VIOLATION Mode B, BRANCH_ISOLATION_VIOLATION Mode C, FEATURE_CLOSURE_COMPLETENESS, ISOLATION_OPT_OUT_REASON_MISSING already enforced) reviewed for promotion readiness",
     "Mechanism A gate-coverage.jsonl shows non-zero candidate count for each gate proposed for promotion",
-    "Zero false-positive findings in the 2026-05-15 → 05-21 calibration window",
+    "Zero false-positive findings in the 2026-05-15 \u2192 05-21 calibration window",
     "Post-promotion T+7d baseline (2026-05-28) shows zero regressions vs 2026-05-14 pre-promotion anchor"
   ],
   "kill_criteria": [
     "Mechanism A telemetry shows 0% coverage for any advisory-being-promoted gate at decision time (cannot promote what was never calibrated)",
     "False positive rate >5% during calibration window for any proposed-promotion gate",
-    "Post-promotion bug surfaces requiring rollback within T+7d soak — defer promotion or restore advisory mode"
+    "Post-promotion bug surfaces requiring rollback within T+7d soak \u2014 defer promotion or restore advisory mode"
   ],
   "kill_criteria_resolution": null,
   "dispatch_pattern": "operator-driven (decision) + agent-driven (per-gate flip implementation)",
   "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
-  "case_study_showcase": null,
-  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md §2.1 + §2.2 + §2.3 + §3.6.2",
-  "plan": "docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md §1",
+  "case_study_showcase": "fitme-story/content/04-case-studies/34-framework-v7-9-promotion.mdx",
+  "spec": "docs/master-plan/infra-master-plan-2026-05-12.md \u00a72.1 + \u00a72.2 + \u00a72.3 + \u00a73.6.2",
+  "plan": "docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md \u00a71",
   "predecessor_case_study": "docs/case-studies/framework-v7-8-branch-isolation-case-study.md",
-  "scope_summary": "Single-flag flip at scripts/check-state-schema.py:132 (BRANCH_ISOLATION_ADVISORY_MODE = True → False) promotes 3 v7.8.1 advisory gates simultaneously: BRANCH_ISOLATION_VIOLATION Mode B (infra commit-level), BRANCH_ISOLATION_VIOLATION Mode C (per-state.json mutation), and FEATURE_CLOSURE_COMPLETENESS (write-time). All 4 §2.2 promotion criteria verified GREEN against 14d Mechanism A telemetry (18+13+13 rows, 0 zero-candidate, 0 false positives). Side-effects: CLAUDE.md v7.9 section + dev-guide §2.4.1 + cold-start entrypoint + FT2-FH-003 honesty ledger entry + framework-v7-9-promotion-case-study.md + Linear epic FIT-72. Reversibility: single-line revert <5 min. Phase E validation 2026-05-21 → 2026-06-04 (B2 baseline snapshot 2026-05-28).",
+  "scope_summary": "Single-flag flip at scripts/check-state-schema.py:132 (BRANCH_ISOLATION_ADVISORY_MODE = True \u2192 False) promotes 3 v7.8.1 advisory gates simultaneously: BRANCH_ISOLATION_VIOLATION Mode B (infra commit-level), BRANCH_ISOLATION_VIOLATION Mode C (per-state.json mutation), and FEATURE_CLOSURE_COMPLETENESS (write-time). All 4 \u00a72.2 promotion criteria verified GREEN against 14d Mechanism A telemetry (18+13+13 rows, 0 zero-candidate, 0 false positives). Side-effects: CLAUDE.md v7.9 section + dev-guide \u00a72.4.1 + cold-start entrypoint + FT2-FH-003 honesty ledger entry + framework-v7-9-promotion-case-study.md + Linear epic FIT-72. Reversibility: single-line revert <5 min. Phase E validation 2026-05-21 \u2192 2026-06-04 (B2 baseline snapshot 2026-05-28).",
   "linear": "FIT-72",
-  "related_prs": [417, 413, 415, 416],
+  "related_prs": [
+    417,
+    413,
+    415,
+    416,
+    {
+      "number": 326,
+      "repo": "Regevba/FitTracker2",
+      "role": "mode_b_post_fix_seed"
+    },
+    {
+      "number": 392,
+      "repo": "Regevba/FitTracker2",
+      "role": "T7_9_0_verdict_report"
+    },
+    {
+      "number": 393,
+      "repo": "Regevba/FitTracker2",
+      "role": "T7_9_0_pre_decision_review_D3"
+    }
+  ],
   "tasks": [
-    {"id": "C-1", "title": "Update CLAUDE.md: header version chain v7.9 + advisory-mode language + new v7.9 Promotion Release section", "status": "done", "pr_number": 417},
-    {"id": "C-2", "title": "Flip BRANCH_ISOLATION_ADVISORY_MODE = False at scripts/check-state-schema.py:132", "status": "done", "pr_number": 417},
-    {"id": "C-3", "title": "Create .claude/entrypoints/framework-v7-9.md cold-start entrypoint", "status": "done", "pr_number": 417},
-    {"id": "C-4", "title": "Update docs/architecture/dev-guide-v1-to-v7-7.md §2.4.1 with promoted sub-section", "status": "done", "pr_number": 417},
-    {"id": "C-5", "title": "Add FT2-FH-003 entry to docs/case-studies/framework-honesty-ledger.md (calibration discipline pattern codification)", "status": "done", "pr_number": 417},
-    {"id": "C-7", "title": "Author docs/case-studies/framework-v7-9-promotion-case-study.md (live append-only journal; §99 deferred to 2026-05-28 post-B2)", "status": "done", "pr_number": 417},
-    {"id": "C-6", "title": "Open Linear epic FIT-72 v7.9-promotion + per-gate sub-issues (FIT-72 In Progress + 9 sub-issues updated: FIT-78/79/80/81/84 Done, FIT-82/83 Canceled, FIT-85/86 In Progress)", "status": "done"}
+    {
+      "id": "C-1",
+      "title": "Update CLAUDE.md: header version chain v7.9 + advisory-mode language + new v7.9 Promotion Release section",
+      "status": "done",
+      "pr_number": 417
+    },
+    {
+      "id": "C-2",
+      "title": "Flip BRANCH_ISOLATION_ADVISORY_MODE = False at scripts/check-state-schema.py:132",
+      "status": "done",
+      "pr_number": 417
+    },
+    {
+      "id": "C-3",
+      "title": "Create .claude/entrypoints/framework-v7-9.md cold-start entrypoint",
+      "status": "done",
+      "pr_number": 417
+    },
+    {
+      "id": "C-4",
+      "title": "Update docs/architecture/dev-guide-v1-to-v7-7.md \u00a72.4.1 with promoted sub-section",
+      "status": "done",
+      "pr_number": 417
+    },
+    {
+      "id": "C-5",
+      "title": "Add FT2-FH-003 entry to docs/case-studies/framework-honesty-ledger.md (calibration discipline pattern codification)",
+      "status": "done",
+      "pr_number": 417
+    },
+    {
+      "id": "C-7",
+      "title": "Author docs/case-studies/framework-v7-9-promotion-case-study.md (live append-only journal; \u00a799 deferred to 2026-05-28 post-B2)",
+      "status": "done",
+      "pr_number": 417
+    },
+    {
+      "id": "C-6",
+      "title": "Open Linear epic FIT-72 v7.9-promotion + per-gate sub-issues (FIT-72 In Progress + 9 sub-issues updated: FIT-78/79/80/81/84 Done, FIT-82/83 Canceled, FIT-85/86 In Progress)",
+      "status": "done"
+    }
   ],
   "phases": {
     "research": {
@@ -58,30 +112,30 @@
       "approved_at": "2026-05-21T04:21:58Z",
       "approved_by": "operator",
       "decision": "PROMOTE all 3 candidate gates (BRANCH_ISOLATION_VIOLATION Mode B + Mode C + FEATURE_CLOSURE_COMPLETENESS) via single-flag flip at scripts/check-state-schema.py:132",
-      "decision_rationale": "B1 freeze checklist GREEN: integrity-check 0 findings, integrity-diff 3 dilution Δ only (4 new post-v6 features, denominator grew 70→74, numerator flat — not real drift), doc-debt baseline-aligned, measurement-adoption stable at 3/40 fully-adopted, membrane-status normal. 14d Mechanism A telemetry: BRANCH_ISOLATION_VIOLATION Mode B 18 rows, Mode C 13 rows, FEATURE_CLOSURE_COMPLETENESS 13 rows. 0 zero-candidate rows across all 3 gates. All skip_reasons map to documented legitimate cases (not_infra_commit_level, not_complete_transition, opt_out_false_or_absent, no_phase_change). 0 false-positive firings in 14d window (operator review of 44 firing rows). All 4 §2.2 criteria met for each candidate. ISOLATION_OPT_OUT_REASON_MISSING already enforced at v7.8.1. Mechanism A coverage gates + Mechanism C session-attribution + CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT + Mechanism E merge driver already enforced at v7.8/v7.8.3. No further candidates for this promotion window.",
-      "note": "Calibration data collection phase (2026-04-25 → 2026-05-21). Operator-driven freeze-day checklist + per-gate decision recording."
+      "decision_rationale": "B1 freeze checklist GREEN: integrity-check 0 findings, integrity-diff 3 dilution \u0394 only (4 new post-v6 features, denominator grew 70\u219274, numerator flat \u2014 not real drift), doc-debt baseline-aligned, measurement-adoption stable at 3/40 fully-adopted, membrane-status normal. 14d Mechanism A telemetry: BRANCH_ISOLATION_VIOLATION Mode B 18 rows, Mode C 13 rows, FEATURE_CLOSURE_COMPLETENESS 13 rows. 0 zero-candidate rows across all 3 gates. All skip_reasons map to documented legitimate cases (not_infra_commit_level, not_complete_transition, opt_out_false_or_absent, no_phase_change). 0 false-positive firings in 14d window (operator review of 44 firing rows). All 4 \u00a72.2 criteria met for each candidate. ISOLATION_OPT_OUT_REASON_MISSING already enforced at v7.8.1. Mechanism A coverage gates + Mechanism C session-attribution + CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT + Mechanism E merge driver already enforced at v7.8/v7.8.3. No further candidates for this promotion window.",
+      "note": "Calibration data collection phase (2026-04-25 \u2192 2026-05-21). Operator-driven freeze-day checklist + per-gate decision recording."
     },
     "prd": {
       "status": "skipped",
-      "reason": "Spec pre-exists at docs/master-plan/infra-master-plan-2026-05-12.md §2.1 (advisory→enforced calendar) + §2.2 (4-criterion decision criteria) + §2.3 (side-effects list) + §3.6.2 (Phase E validation calendar). No new PRD needed for a single-flag enforcement flip whose criteria + side-effects + post-promotion calendar were defined 9 days in advance."
+      "reason": "Spec pre-exists at docs/master-plan/infra-master-plan-2026-05-12.md \u00a72.1 (advisory\u2192enforced calendar) + \u00a72.2 (4-criterion decision criteria) + \u00a72.3 (side-effects list) + \u00a73.6.2 (Phase E validation calendar). No new PRD needed for a single-flag enforcement flip whose criteria + side-effects + post-promotion calendar were defined 9 days in advance."
     },
     "tasks_phase": {
       "status": "skipped",
-      "reason": "Tasks pre-defined in docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md §1 (C-1 through C-7). Drafted 2026-05-20 eve as the operator's per-action checklist for freeze day. Captured as tasks[] in this state.json."
+      "reason": "Tasks pre-defined in docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md \u00a71 (C-1 through C-7). Drafted 2026-05-20 eve as the operator's per-action checklist for freeze day. Captured as tasks[] in this state.json."
     },
     "implement": {
       "status": "approved",
       "started_at": "2026-05-21T04:22:10Z",
       "approved_at": "2026-05-21T05:44:53Z",
       "approved_by": "operator",
-      "note": "All 7 C-tasks shipped in PR #417. Final commit on feature/v7-9-promotion: 1eac986 → squash-merged as ea53ff4 on main."
+      "note": "All 7 C-tasks shipped in PR #417. Final commit on feature/v7-9-promotion: 1eac986 \u2192 squash-merged as ea53ff4 on main."
     },
     "test": {
       "status": "approved",
       "started_at": "2026-05-21T05:44:53Z",
       "approved_at": "2026-05-21T05:44:53Z",
       "approved_by": "ci",
-      "note": "Auto-passed via CI on PR #417: 8/8 checks green. Build+Test 14m20s; integrity 0 findings; pr-integrity 0 new findings vs main; CodeQL + 3 Analyze + GitGuardian all pass. No new tests added — existing pre-commit hook tests cover the flag's effect.",
+      "note": "Auto-passed via CI on PR #417: 8/8 checks green. Build+Test 14m20s; integrity 0 findings; pr-integrity 0 new findings vs main; CodeQL + 3 Analyze + GitGuardian all pass. No new tests added \u2014 existing pre-commit hook tests cover the flag's effect.",
       "ci_passed": true
     },
     "review": {
@@ -95,7 +149,11 @@
         "files_changed": 10,
         "insertions": 553,
         "deletions": 28,
-        "high_risk_files_touched": ["scripts/check-state-schema.py", "CLAUDE.md", "docs/architecture/dev-guide-v1-to-v7-7.md"],
+        "high_risk_files_touched": [
+          "scripts/check-state-schema.py",
+          "CLAUDE.md",
+          "docs/architecture/dev-guide-v1-to-v7-7.md"
+        ],
         "feature_type": "framework-internal",
         "advisory_mode": false,
         "backward_compat_verified": true,
@@ -115,9 +173,12 @@
     "docs": {
       "status": "in_progress",
       "started_at": "2026-05-21T05:46:36Z",
-      "note": "Post-merge close-out PR opens (this commit's PR). Updates state.json + case study §5 with 4 merge SHAs + memory refresh. §99 synthesis + showcase MDX slot 31 in fitme-story deferred to 2026-05-28 post-B2 baseline snapshot."
+      "note": "Post-merge close-out PR opens (this commit's PR). Updates state.json + case study \u00a75 with 4 merge SHAs + memory refresh. \u00a799 synthesis + showcase MDX slot 31 in fitme-story deferred to 2026-05-28 post-B2 baseline snapshot."
     },
-    "learn": {"status": "pending", "note": "Phase E validation soak 2026-05-21 → 2026-06-04. B2 baseline snapshot lands 2026-05-28 (must-have-cadence-followups.md §B2). v7.9 case study §99 + kill_criteria_resolution filled in at B2."}
+    "learn": {
+      "status": "pending",
+      "note": "Phase E validation soak 2026-05-21 \u2192 2026-06-04. B2 baseline snapshot lands 2026-05-28 (must-have-cadence-followups.md \u00a7B2). v7.9 case study \u00a799 + kill_criteria_resolution filled in at B2."
+    }
   },
   "timing": {
     "phases": {
@@ -158,6 +219,6 @@
     "scaffolded_by": "claude_opus_4_7",
     "scaffold_session": "system-sweep-gap-closures-2026-05-16",
     "scaffold_origin": "System sweep audit 2026-05-16 surfaced gap: v7.9 promotion-decision (2026-05-21) is the highest-stakes upcoming framework event but had no state.json tracking container. Precedent: framework-v7-8-branch-isolation. This scaffold creates the container so the promotion decision has a discoverable home.",
-    "freeze_day_session": "2026-05-21 (B1 freeze; PROMOTE decision recorded; phases research → implement)"
+    "freeze_day_session": "2026-05-21 (B1 freeze; PROMOTE decision recorded; phases research \u2192 implement)"
   }
 }
