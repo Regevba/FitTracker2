@@ -350,7 +350,7 @@ Primary docs updated:
 - [`README.md`](../../README.md)
 - [`CHANGELOG.md`](../../CHANGELOG.md)
 - [`docs/setup/firebase-setup-guide.md`](../setup/firebase-setup-guide.md)
-- [`docs/master-plan/master-plan-reconciled-2026-04-05.md`](./master-plan-reconciled-2026-04-05.md)
+- [`docs/master-plan/_archive/master-plan-reconciled-2026-04-05.md`](./_archive/master-plan-reconciled-2026-04-05.md) (archived 2026-05-24 per D-PLAN-9)
 
 ---
 

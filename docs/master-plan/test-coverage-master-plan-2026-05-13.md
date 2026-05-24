@@ -53,7 +53,7 @@ T-candidates compete with F-candidates at the 2026-05-21 ranking pass (Phase 9 o
 
 ### 2.1 Framework (Python) — 161 methods / 17 files (as of 2026-05-23)
 
-**Updated 2026-05-23 to reflect F14 + F15 ship via `framework-f14-f15-dispatch-test-coverage` (commits 35ca182 + c790564; PR pending operator).** Baseline at plan authorship (2026-05-13) was 133 methods / 13 files; F14/F15 added the `conftest.py` shared fixtures, 9 new dispatch tests, and 3 new test files. Highlights:
+**Updated 2026-05-24 to reflect F14 + F15 ship via `framework-f14-f15-dispatch-test-coverage` — PR #451 squash `86084c4` (merged 2026-05-23T04:55:46Z) + backfill PR #452 (`3686f98`) + closure PR #455 (`98ca1ad7`). 161/161 pytest pass; combined dispatch-test coverage 1/19 → 10/19 = 53% (write-time 1/16→8/16; cycle-time 0/3→2/3 = 67%). Closes D-PLAN-5 (was: "PR pending operator").** Baseline at plan authorship (2026-05-13) was 133 methods / 13 files; F14/F15 added the `conftest.py` shared fixtures, 9 new dispatch tests, and 3 new test files. Highlights:
 
 | Gate / Script | Test File | Status |
 |---|---|---|

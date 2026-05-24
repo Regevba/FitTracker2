@@ -421,6 +421,21 @@ Concurrent product-tier feature `analytics-observability` opened 2026-05-13 ship
 
 **F19 + F20 added to §3.6.4 v8.0 docket Theme G** (see updated table below).
 
+### 3.6.6.C fitme-story Discoverability Sub-doc (added 2026-05-20; cross-ref backfilled 2026-05-24 per D-PLAN-3)
+
+Companion plan at [`fitme-story-discoverability-plan-2026-05-20.md`](fitme-story-discoverability-plan-2026-05-20.md) addressing the discoverability gap surfaced 2026-05-20: `fitme-story.vercel.app` was production-live with the v7.9 promotion case study but receiving 0 measurable web traffic. 4-phase plan (Foundation SEO → Crosslinking → Promotion → Measure+Iterate) with phased calendar 2026-05-21 → 2026-06-30 + kill criterion ("if <10 weekly visitors by 2026-06-30, pivot").
+
+**Phase E safe** — Phases 1-3 are all UI/content/redirect work (no infra-path commits). Phase 4 measure window overlaps Phase E end (2026-06-04) but doesn't conflict (analytics-observability Phase 3.B wiring is independent of the v7.9 promotion gate calibration).
+
+**Current status** (2026-05-24):
+
+- Phase 1 (Foundation, code-side): **CODE COMPLETE** — P1.3 OpenGraph + Twitter Card meta + P1.4 OG image generator shipped 2026-05-21 (`src/app/layout.tsx` + `src/app/opengraph-image.tsx`). Operator-only items (P1.1 Search Console DNS + P1.2 sitemap + P1.5 GA Realtime verify) pending.
+- Phase 2 (Crosslinking): **PARTIAL** — P2.1 FT2 README link shipped 2026-05-24 (PR #465); P2.2 fitme-story README link already present pre-plan; P2.3 dashboard 301 redirect + path preservation shipped 2026-05-24 (PR #467); P2.4 obviated by P2.3.
+- Phase 3 (Promotion): operator content work (LinkedIn / HN Show / dev.to crossposts).
+- Phase 4 (Measure + Iterate): 2026-06-04+ depends on analytics-observability Phase 3.B (E-4 in post-v7-9 candidate plan).
+
+**Why this fits this plan:** discoverability is an operational follow-through on the v7.9 promotion case study (the same content the framework page surfaces). Treating it as standalone disconnects the SEO + crosslink lift from the strategic narrative the framework dev-guide + case studies tell. Cross-referencing here ties the sub-doc into the §3.6 forward plan.
+
 ### 3.6.6.B Cross-Layer Test Coverage Sub-doc (added 2026-05-13)
 
 Concurrent test-discipline audit on 2026-05-13 surfaced that Theme G covers framework-layer tests only. The other five system layers (iOS, web, backend, AI, analytics) are under-spec'd or in some places zero-tested. Full audit + 16 T-candidates spec'd at [`test-coverage-master-plan-2026-05-13.md`](test-coverage-master-plan-2026-05-13.md).
