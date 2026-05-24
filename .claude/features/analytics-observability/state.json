@@ -53,8 +53,18 @@
       "preflight_passed": null
     },
     "implementation": {
-      "status": "pending",
-      "commits": []
+      "status": "in_progress",
+      "started_at": "2026-05-14T04:30:00Z",
+      "commits": [
+        {
+          "sha": "945e90c",
+          "repo": "fitme-story",
+          "pr": 108,
+          "date": "2026-05-14T09:01:51Z",
+          "scope": "3.A.1 fitme-story dashboard scaffold (5 tiles + sidebar + tests)"
+        }
+      ],
+      "notes": "Implementation is multi-stream (Phase 1.A hygiene, Phase 2 live debugger, Phase 3 dashboards, D-* iOS). Phase 3.A green-bucket items 1-9 all shipped on disk by 2026-05-14 (3.A.0 FT2 docs + 3.A.1 fitme-story PR #108). Phase 3.A yellow-bucket items deferred to >=2026-06-04 per master plan \u00a77.5 calibration safety contract. phases.implementation will flip to complete only when all sub-streams converge."
     },
     "testing": {
       "status": "pending",
