@@ -6,8 +6,8 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "destination": "https://fitme-story.vercel.app/control-room",
-      "permanent": false
+      "destination": "https://fitme-story.vercel.app/control-room/$1",
+      "permanent": true
     }
   ]
 }
