@@ -1,6 +1,6 @@
 # FitMe Skills Ecosystem — Architecture One-Pager
 
-> **Version:** 6.1 | **Updated:** 2026-04-16
+> **Version:** 6.1 | **Updated:** 2026-05-24 (v7.9 promoted 2026-05-21; Phase E soak 2026-05-21 → 2026-06-04; 37 mechanical gates + 5 advisories post-promotion)
 >
 > Quick-reference system schematics and information flow for the entire PM-flow ecosystem.
 > For the full deep-dive (per-skill sub-commands, shared data field descriptions, gap analysis, design decisions, evolution history), see [architecture.md](architecture.md).
