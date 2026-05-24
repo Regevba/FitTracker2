@@ -678,17 +678,30 @@ The fix shipped in this PR (`fix/pr-cache-completeness-w3b`) extends `ensure-pr-
 
 **First observed:** 2026-05-16. The autonomous launchd cron rebuilt the cache at 03:04 UTC (06:04 IDT) but produced a single-repo cache. The 06:21 UTC daily-checkpoint then captured 32 BROKEN_PR_CITATION findings as a phantom regression vs baseline. Diagnosed within ~10 minutes via direct cache inspection + `make refresh-pr-cache` recovery. The script-side fix codifies the recovery so future occurrences self-heal.
 
+**Second occurrence (2026-05-24, W11.b — launchd-cron refresh-subprocess silent fail):**
+
+PR #375's per-repo completeness fix DETECTS incompleteness correctly, but recovery requires `scripts/ensure-pr-cache-fresh.py` to successfully invoke `scripts/refresh-pr-cache.py` (which shells out to `gh pr list`). In a launchd-spawned cron context, the `gh` CLI's keychain-based OAuth credentials may not be accessible (launchd sessions don't inherit the user's login keychain by default), so the refresh subprocess can fail silently. The freshness wrapper's `--quiet || true` swallow then masks the refresh failure, the cache stays incomplete, and `integrity-check.py` runs against the incomplete cache → 319 phantom BROKEN_PR_CITATION findings on this day. Manual re-run from an interactive shell (with keychain access) immediately recovered to 0 findings + 2 advisory (true baseline).
+
+This is a NEW failure mode in the same W11 family. Filed as a v7.9.1 candidate addition to `F-LAUNCHD-DRIFT-EXTENSION`:
+
+- Detection: extend `ensure-pr-cache-fresh.py` to capture refresh subprocess exit status + stderr; if refresh fails, mark cache file as stale-failed and exit non-zero (override `--quiet`)
+- OR: extend `scripts/daily-integrity-checkpoint.py` to re-validate `gh auth status` before relying on cron-captured integrity-check output; if `gh` auth is degraded in cron context, mark the day's row as "telemetry-degraded" with a sentinel value instead of writing phantom counts to the ledger
+- OR: pre-warm the cache from an interactive shell daily (operator routine; lowest engineering cost but adds operator load)
+
 **Notes:**
 
 - Sibling to W3 / W3.b in spirit but tracked as its own W-number (W11) per the sequential-numbering convention used in this catalog.
 - Related: `BROKEN_PR_CITATION` (Section 1, #13) — this pattern's surface; `PR_CACHE_STALE` (Section 1, #12) — the cache-freshness gate; v7.8.3 D-3 cross-repo cache spec.
 - Lesson: emptiness checks must enforce per-element completeness, not aggregate presence. "Some data present somewhere" ≠ "all expected data present."
+- Lesson 2 (W11.b): subprocess `--quiet || true` swallow patterns hide ALL failures, not just the targeted noise. When the swallowed subprocess is recovery logic for a gate, the silent failure becomes a phantom-regression generator under cron contexts that lack interactive-shell credential access.
 
 **Files involved:**
 
 - Cache freshness gate: [`scripts/ensure-pr-cache-fresh.py`](../../scripts/ensure-pr-cache-fresh.py)
 - Cache writer: [`scripts/refresh-pr-cache.py`](../../scripts/refresh-pr-cache.py)
+- Daily cron entry point: [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py)
 - Cache file: `.cache/gh-pr-cache.json`
+- Launchd plist: `~/Library/LaunchAgents/com.fittracker.daily-integrity-checkpoint.plist`
 
 ---
 

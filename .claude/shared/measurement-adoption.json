@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-23T09:31:20Z",
+  "updated": "2026-05-24T04:00:42Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -21,16 +21,16 @@
       "post_v6_percent": 39.5
     },
     "per_phase_timing": {
-      "overall_present": 39,
-      "overall_percent": 50.6,
-      "post_v6_present": 36,
-      "post_v6_percent": 83.7
+      "overall_present": 38,
+      "overall_percent": 49.4,
+      "post_v6_present": 35,
+      "post_v6_percent": 81.4
     },
     "cache_hits": {
-      "overall_present": 23,
-      "overall_percent": 29.9,
-      "post_v6_present": 22,
-      "post_v6_percent": 51.2
+      "overall_present": 21,
+      "overall_percent": 27.3,
+      "post_v6_present": 20,
+      "post_v6_percent": 46.5
     },
     "cu_v2": {
       "overall_present": 12,
@@ -67,8 +67,8 @@
       "feature": "audit-1-corrections",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": true,
-        "cache_hits": true,
+        "per_phase_timing": false,
+        "cache_hits": false,
         "cu_v2": true
       }
     },
@@ -167,7 +167,7 @@
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": true,
+        "cache_hits": false,
         "cu_v2": false
       }
     },
@@ -697,11 +697,11 @@
       "feature": "audit-1-corrections",
       "created": "2026-05-22",
       "post_v6": true,
-      "current_phase": "complete",
+      "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": true,
-        "cache_hits": true,
+        "per_phase_timing": false,
+        "cache_hits": false,
         "cu_v2": true
       },
       "fully_adopted": false,
@@ -935,11 +935,11 @@
       "feature": "framework-f14-f15-dispatch-test-coverage",
       "created": "2026-05-22",
       "post_v6": true,
-      "current_phase": "complete",
+      "current_phase": "implementation",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
-        "cache_hits": true,
+        "cache_hits": false,
         "cu_v2": false
       },
       "fully_adopted": false,
