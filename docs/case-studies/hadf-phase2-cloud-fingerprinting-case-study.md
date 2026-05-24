@@ -6,6 +6,7 @@ dispatch_pattern: serial
 case_study_type: measurement_study
 framework_version: v7.7
 external_audit_status: pending
+primary_metric: "max_silhouette_score_across_k > 0.5 → clusters_found = true → Path B green-lit (observed: silhouette = 0.5566 at best_k = 5, T1)"
 success_metrics:
   primary: "max_silhouette_score_across_k > 0.5 → clusters_found = true → Path B green-lit"
   secondary:
@@ -17,6 +18,21 @@ kill_criteria:
   - "all endpoints simultaneously rate-limited (cannot collect)"
   - "any endpoint changes streaming protocol or model id mid-collection (invalidates control)"
 kill_criterion_fired: false
+kill_criteria_resolution: |
+  Not tripped — none of the 3 pre-registered abort conditions fired during the campaign:
+    1. Validity floor (600 valid records total) — MET. 700 valid records collected (350 openai + 350 anthropic) before user-directed campaign closure 2026-05-01 22:43 IDT.
+    2. All endpoints simultaneously rate-limited — DID NOT OCCUR. Zero rate-limited records observed across all 11 fires.
+    3. Any endpoint changes streaming protocol or model id mid-collection — DID NOT OCCUR. Model ids unchanged for openai (gpt-4o-mini) and anthropic (claude-haiku-4-5-20251001) throughout the campaign.
+  Verdict: silhouette = 0.5566 at best_k = 5 (exceeds pre-registered threshold > 0.5); clusters_found = true; path_b_recommendation = green-lit. The 200 contaminated records (fires 8 + 9, broken-venv + missing-env-keys) were segregated by the analyzer's ok=true filter at scripts/hadf-phase2-analyze.py:67 and contributed zero signal — see §Mid-Campaign Incident Disclosure for full forensic detail.
+related_prs:
+  - 170
+  - 264
+  - 265
+pr_citation_exempt:
+  - pr_number: 170
+    reason: PR #170 published this case study + Tracks 3/4 research notes. Publishing PR is not normally cited in the body of the file it publishes.
+  - pr_number: 265
+    reason: PR #265 was a citation-cleanup pass updating case study references to canonical squash SHA a4b357f after PR #264 landed the summary artifact. Not cited in body but is in-scope per state.json::tasks[].related_prs.
 predecessor_case_studies:
   - "docs/case-studies/hadf-hardware-aware-dispatch-case-study.md"
 spec_path: docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md
