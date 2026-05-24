@@ -114,3 +114,10 @@ Config/Local/*.xcconfig
 docs/audits/runs/*/scratch/
 docs/audits/runs/*/.cache/
 docs/audits/runs/*/*.tmp
+
+# R9 (dev-env-master-plan-2026-05-24) — coverage artifacts.
+# iOS Slather writes to .build/coverage-* (already ignored via .build/).
+# ai-engine pytest-cov writes to .coverage + coverage.xml + htmlcov/.
+ai-engine/.coverage
+ai-engine/coverage.xml
+ai-engine/htmlcov/

@@ -20,6 +20,7 @@ dependencies = [
 dev = [
     "pytest>=8.2.0",
     "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
     "httpx[asgi]>=0.27.0",
 ]
 
@@ -29,3 +30,36 @@ packages = ["app"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+# R9 (dev-env-master-plan-2026-05-24) — coverage instrumentation.
+# Invoke locally:
+#   pip install -e '.[dev]'         # installs pytest-cov
+#   pytest --cov                    # uses [tool.coverage.*] config below
+#   pytest --cov --cov-report=html  # full HTML report at ./htmlcov/
+#   pytest --cov --cov-report=xml   # Cobertura XML (for Codecov / CI consumption)
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = [
+    "app/__init__.py",
+    "app/main.py",
+    "tests/*",
+]
+
+[tool.coverage.report]
+# Fail-under stays unset for R9 ship; v8.0 GATE_TEST_MISSING meta-gate (T1
+# in backlog) will set per-module thresholds once a 30-day baseline exists.
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
