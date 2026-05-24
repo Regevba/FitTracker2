@@ -24,9 +24,9 @@ related_plans:
 related_prs:
   - 179  # spec
   - 180  # plan
-  - 181  # toolchain guide + case study scaffold
   - 182  # Track L (Layer A behavioral models)
   - 183  # Track D (tier-aware DSE)
+  - 184  # toolchain setup guide + case study scaffold (was misnumbered as #181 in original draft — #181 was never opened; corrected 2026-05-23 via D-AUDIT-9 retroactive feature-dir creation)
 success_metrics:
   primary: "Tier-aware DSE answers v2 mapping research §9 Q4 (does dispatcher de-rate T3?) with quantitative data [T1]"
   secondary:
