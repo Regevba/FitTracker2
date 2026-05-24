@@ -311,7 +311,7 @@
     "design": null
   },
   "case_study": "docs/case-studies/roadmap-stress-test-2026-05-07-case-study.md",
-  "case_study_showcase": null,
+  "case_study_showcase": "fitme-story/content/04-case-studies/35-roadmap-stress-test-2026-05-07.mdx",
   "data_collection_ledger": ".claude/features/roadmap-stress-test-2026-05-07/data-collection.json",
   "rollback_snapshot": "/Users/regevbarak/Documents/FitTracker2-backups/2026-05-07-pre-roadmap-stress-test/",
   "timing": {
