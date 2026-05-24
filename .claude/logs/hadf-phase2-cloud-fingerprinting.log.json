@@ -1,0 +1,125 @@
+{
+  "feature": "hadf-phase2-cloud-fingerprinting",
+  "schema_version": "v1",
+  "created_at": "2026-05-23T00:00:00Z",
+  "note": "Retroactive log created 2026-05-23 closing D-AUDIT-8. All events below carry recording_mode=retroactive and timestamps reflect actual campaign activity (T1 instrumented from pre-registration immutable file + summary artifact + PR merge timestamps). No live PHASE_TRANSITION_NO_LOG / NO_TIMING gate satisfaction is implied by these retroactive entries.",
+  "events": [
+    {
+      "event_type": "phase_started",
+      "phase": "research",
+      "timestamp": "2026-04-29T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_methodology_notes",
+      "evidence": [
+        ".claude/shared/hadf/phase2-preregistration.json (immutable, hash-verified)"
+      ],
+      "notes": "Pre-registration authored. Plan: ~/.claude/plans/floofy-finding-boole.md."
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "research",
+      "timestamp": "2026-04-29T12:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_methodology_notes"
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "timestamp": "2026-04-29T12:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_methodology_notes",
+      "notes": "Campaign launchd service installed; first fire scheduled 2026-04-30 07:00 IDT."
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "implementation",
+      "timestamp": "2026-05-01T19:43:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_methodology_notes",
+      "evidence": [
+        ".claude/shared/hadf/phase2-fingerprint-summary.json"
+      ],
+      "notes": "Locked-700 dataset achieved 2026-05-01 05:00 IDT (fire 7). Campaign closed by user direction 2026-05-01 22:43 IDT after 200 contaminated records segregated."
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "testing",
+      "timestamp": "2026-05-01T19:43:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_summary_card"
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "testing",
+      "timestamp": "2026-05-01T20:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_summary_card",
+      "evidence": [
+        "verdict: silhouette=0.5566 at best_k=5",
+        "clusters_found=true",
+        "path_b_recommendation=green-lit",
+        "valid_records=700",
+        "kill_criteria_fired=false (none of 3 abort conditions tripped)"
+      ]
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "merge",
+      "timestamp": "2026-05-02T08:36:16Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr",
+      "evidence": [
+        "PR #170 mergedAt 2026-05-02T08:36:16Z"
+      ]
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "merge",
+      "timestamp": "2026-05-08T20:29:09Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr",
+      "evidence": [
+        "PR #170 mergedAt 2026-05-02T08:36:16Z \u2014 case study + Tracks 3/4 research notes published",
+        "PR #264 mergedAt 2026-05-08T20:29:09Z \u2014 final summary + scripts land in main (squash SHA a4b357f)",
+        "PR #265 mergedAt 2026-05-09T02:59:50Z \u2014 case study citations updated to canonical squash SHA"
+      ]
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "documentation",
+      "timestamp": "2026-05-02T08:36:16Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr"
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "documentation",
+      "timestamp": "2026-05-09T03:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr"
+    },
+    {
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "from": null,
+      "to": "complete",
+      "timestamp": "2026-05-23T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "retroactive_audit_close",
+      "audit_reference": "docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md (D-AUDIT-8)",
+      "notes": "Retroactive ledger entry. No new code shipped; state.json + log created as audit close artifact pointing at existing case study + showcase MDX + immutable pre-registration + summary artifact + 3 shipping PRs (#170, #264, #265)."
+    },
+    {
+      "timestamp": "2026-05-23T20:27:37Z",
+      "event_type": "phase_started",
+      "phase": "complete",
+      "summary": "D-AUDIT-8 retroactive close: live transition event for complete phase (campaign shipped 2026-04-29 \u2192 2026-05-08; this satisfies PHASE_TRANSITION_NO_LOG)",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ],
+  "updated_at": "2026-05-23T20:27:37Z"
+}

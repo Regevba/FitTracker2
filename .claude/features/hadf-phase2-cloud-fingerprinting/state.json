@@ -1,0 +1,252 @@
+{
+  "feature": "hadf-phase2-cloud-fingerprinting",
+  "display_name": "HADF Phase 2 — Cloud Fingerprinting Measurement",
+  "case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+  "case_study_showcase": "fitme-story/content/04-case-studies/22b-hadf-phase2-cloud-fingerprinting.mdx",
+  "case_study_type": "measurement_study",
+  "work_type": "feature",
+  "work_subtype": "measurement_study",
+  "framework_version": "v7.7",
+  "spec": "docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md",
+  "predecessor_chain": [
+    "hadf-infrastructure"
+  ],
+  "agent_manifest": {
+    "reads": [],
+    "writes": [],
+    "shared_writes": []
+  },
+  "current_phase": "complete",
+  "status": "complete",
+  "created_at": "2026-04-29T00:00:00Z",
+  "branch": "feature/hadf-phase2-fingerprint",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Retroactive feature dir creation 2026-05-23 closing D-AUDIT-8 from comprehensive PR↔docs sync audit. Feature work shipped 2026-04-29 → 2026-05-08 (campaign ran 2026-04-30 → 2026-05-01 IDT; case study published in PR #170 on 2026-05-02; final scripts + summary landed in PR #264 on 2026-05-08). The campaign branches (feature/hadf-phase2-fingerprint + chore/hadf-phase2-progress-snapshot) and the dedicated worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/ are documented in the case study Methodology Notes; this state.json is a retroactive ledger entry, not a new working tree.",
+  "timing": {
+    "time_source": "measured-incomplete",
+    "total_wall_time_minutes": null,
+    "total_wall_time_note": "Campaign wall time spans 2026-04-29 (pre-registration authored) → 2026-05-01 22:43 IDT (campaign closed by user direction) → 2026-05-08 (final summary artifact landed in main as squash a4b357f via PR #264). Pre-registration immutable; raw data collected over ~2 calendar days (early closure documented in case study Methodology Notes). Wall-time instrumentation not captured at runtime — state.json created retroactively 2026-05-23.",
+    "session_start": "2026-04-29T00:00:00Z",
+    "session_end": "2026-05-08T20:29:09Z",
+    "phases": {
+      "research": {
+        "started_at": "2026-04-29T00:00:00Z",
+        "ended_at": "2026-04-29T12:00:00Z",
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Pre-registration authored at .claude/shared/hadf/phase2-preregistration.json (immutable, hash-verified). Defines IV/DV, controls, schedule, validity floor 600, three abort conditions. Plan: ~/.claude/plans/floofy-finding-boole.md."
+      },
+      "prd": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": 0,
+        "paused_minutes": 0,
+        "notes": "N/A — measurement study, no PRD; success/abort criteria pre-registered instead."
+      },
+      "tasks": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": 0,
+        "paused_minutes": 0,
+        "notes": "N/A — pre-registration defines the experiment, not a task list."
+      },
+      "ux_or_integration": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": 0,
+        "paused_minutes": 0,
+        "notes": "N/A — no UI."
+      },
+      "implementation": {
+        "started_at": "2026-04-29T12:00:00Z",
+        "ended_at": "2026-05-01T19:43:00Z",
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Campaign collection 2026-04-30 07:00 IDT → 2026-05-01 22:43 IDT. 11 scheduled+manual fires. 700 valid records (locked-700-fires1to7.jsonl) + 200 contaminated records segregated (fire 8 broken venv + fire 9 missing env keys). Mid-campaign incidents documented in case study Methodology Notes §Mid-Campaign Incident Disclosure."
+      },
+      "testing": {
+        "started_at": "2026-05-01T19:43:00Z",
+        "ended_at": "2026-05-01T20:00:00Z",
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Analyzer run via scripts/hadf-phase2-analyze.py on locked-700 file. Verdict: silhouette=0.5566 at best_k=5; clusters_found=true; path_b_recommendation=green-lit."
+      },
+      "review": {
+        "started_at": null,
+        "ended_at": null,
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Case study + Tracks 3/4 research notes drafted post-analysis; published via PR #170."
+      },
+      "merge": {
+        "started_at": "2026-05-02T08:36:16Z",
+        "ended_at": "2026-05-08T20:29:09Z",
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "PR #170 published case study (2026-05-02). PR #264 landed final summary artifact + scripts in main (2026-05-08; squash SHA a4b357f). PR #265 updated case study citations to canonical squash SHA."
+      },
+      "documentation": {
+        "started_at": "2026-05-02T08:36:16Z",
+        "ended_at": "2026-05-09T03:00:00Z",
+        "duration_minutes": null,
+        "paused_minutes": 0,
+        "notes": "Case study + showcase MDX (slot 22b) + Tracks 3/4 deep research notes."
+      },
+      "complete": {
+        "started_at": "2026-05-23T00:00:00Z",
+        "ended_at": "2026-05-23T00:00:00Z",
+        "duration_minutes": 0,
+        "paused_minutes": 0,
+        "notes": "Retroactive transition timestamp — D-AUDIT-8 audit-close ledger entry. The feature shipped 2026-04-29 → 2026-05-08; this 'complete' phase entry exists to satisfy PHASE_TRANSITION_NO_TIMING gate on the retroactive state.json creation commit."
+      }
+    },
+    "parallel_context": {
+      "concurrent_features": 0,
+      "stress_test": false
+    }
+  },
+  "complexity": {
+    "cu_version": 2,
+    "view_count": 0,
+    "new_types_count": 0,
+    "design_iteration_rounds": 1,
+    "is_first_of_kind": true,
+    "architectural_novelty": true,
+    "computed_cu": 1.3,
+    "factors_applied": [
+      "base: 1.0",
+      "first_of_kind: +0.2 (first cloud-fingerprinting measurement run inside FitMe HADF framework)",
+      "architectural_novelty: +0.1 (mid-campaign isolation pivot to dedicated worktree per branch-isolation pattern; later codified at v7.8.1)"
+    ]
+  },
+  "tasks": [
+    {
+      "id": "T1",
+      "name": "Pre-registration + plan author",
+      "status": "completed",
+      "completed_at": "2026-04-29T12:00:00Z",
+      "shipped_in_commit": "61964d3",
+      "pr_number": null,
+      "related_prs": [],
+      "note": "Authored .claude/shared/hadf/phase2-preregistration.json (immutable, hash-verified). Defines IV/DV, controls, validity floor 600, three kill conditions. Branch tip 61964d3 (later landed in main via PR #264 squash a4b357f)."
+    },
+    {
+      "id": "T2",
+      "name": "Campaign execution (11 fires; locked-700 dataset)",
+      "status": "completed",
+      "completed_at": "2026-05-01T19:43:00Z",
+      "shipped_in_commit": "61964d3",
+      "pr_number": null,
+      "related_prs": [],
+      "note": "700 valid records (350 openai + 350 anthropic) collected 2026-04-30 → 2026-05-01 IDT. Mid-campaign isolation pivot (5c096bc) — wrapper made portable; switched to dedicated worktree at /Volumes/DevSSD/FitTracker2-hadf-campaign/. Two contaminated batches segregated (fires 8+9). Campaign closed by user direction 2026-05-01 22:43 IDT after locked-700 reached."
+    },
+    {
+      "id": "T3",
+      "name": "Analyzer run + case study publication",
+      "status": "completed",
+      "completed_at": "2026-05-02T08:36:16Z",
+      "shipped_in_commit": "a4b357f",
+      "pr_number": 170,
+      "related_prs": [170],
+      "note": "Analyzer verdict: silhouette=0.5566 at best_k=5; clusters_found=true; path_b_recommendation=green-lit. Case study published via PR #170 alongside Tracks 3/4 deep research notes. None of the 3 pre-registered abort conditions fired."
+    },
+    {
+      "id": "T4",
+      "name": "Final summary + scripts land in main",
+      "status": "completed",
+      "completed_at": "2026-05-09T03:00:00Z",
+      "shipped_in_commit": "a4b357f",
+      "pr_number": 264,
+      "related_prs": [264, 265],
+      "note": "PR #264 landed scripts/hadf-phase2-analyze.py + .claude/shared/hadf/phase2-fingerprint-summary.json in main (closes citation gap; squash SHA a4b357f). PR #265 updated case study citations to canonical squash SHA."
+    }
+  ],
+  "tasks_summary": {
+    "total": 4,
+    "completed": 4,
+    "in_progress": 0
+  },
+  "phases": {
+    "merge": {
+      "pr_number": 264,
+      "related_prs": [264, 265],
+      "note": "Top-level phases block — duplicates timing.phases.merge but adds pr_number for Q6 PR-list parity gate. Final summary landed via PR #264; citation cleanup via PR #265."
+    },
+    "documentation": {
+      "pr_number": 170,
+      "related_prs": [170],
+      "note": "Case study published via PR #170."
+    }
+  },
+  "cache_hits": [],
+  "transitions": [
+    {
+      "from": null,
+      "to": "complete",
+      "timestamp": "2026-05-23T00:00:00Z",
+      "approved_by": "retroactive_audit_close",
+      "note": "D-AUDIT-8 retroactive feature-dir creation closing comprehensive PR↔docs sync audit 2026-05-23. Feature actually shipped 2026-04-29 → 2026-05-08; state.json + log created today as ledger entries pointing at existing case study + showcase MDX + immutable pre-registration + summary artifact. No new code shipped."
+    }
+  ],
+  "updated": "2026-05-23T00:00:00Z",
+  "artifacts": {
+    "in_main_repo_tree": {
+      "case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+      "case_study_showcase_mdx": "fitme-story/content/04-case-studies/22b-hadf-phase2-cloud-fingerprinting.mdx",
+      "spec": "docs/superpowers/specs/2026-04-16-hadf-hardware-aware-dispatch-design.md",
+      "pre_registration": ".claude/shared/hadf/phase2-preregistration.json",
+      "summary_artifact": ".claude/shared/hadf/phase2-fingerprint-summary.json",
+      "analyzer_script": "scripts/hadf-phase2-analyze.py",
+      "collector_scripts": [
+        "scripts/hadf-phase2-collect.sh",
+        "scripts/hadf-phase2-fingerprint.py"
+      ],
+      "research_notes": [
+        "docs/research/2026-04-28-hadf-signature-expansion.md"
+      ],
+      "architecture": [
+        "docs/architecture/hadf-reference-implementations.md"
+      ],
+      "fitme_story_showcase_companions": [
+        "fitme-story/content/05-research/hadf-design.mdx",
+        "fitme-story/content/05-research/hadf-reference-impl.mdx"
+      ]
+    },
+    "gitignored_or_off_repo": {
+      "raw_dataset_locked": ".claude/shared/hadf/phase2-fingerprint-raw.locked-700-fires1to7.jsonl",
+      "raw_dataset_contaminated": [
+        ".claude/shared/hadf/phase2-fingerprint-raw.contaminated-100-fire8-broken-venv.jsonl",
+        ".claude/shared/hadf/phase2-fingerprint-raw.contaminated-100-fire9-missing-env-keys.jsonl"
+      ],
+      "raw_dataset_empty_placeholder": ".claude/shared/hadf/phase2-fingerprint-raw.jsonl",
+      "campaign_logs_dir": ".claude/shared/hadf/logs/ (8 collect-*.log files spanning 2026-04-30 → 2026-05-01 IDT)",
+      "incident_recovery_dir": ".claude/shared/hadf/incident-2026-05-01-22utc-recovery/",
+      "pre_merge_backup_dir": ".claude/shared/hadf/pre-merge-backup-2026-04-30/",
+      "campaign_worktree": "/Volumes/DevSSD/FitTracker2-hadf-campaign/ (dedicated isolated worktree pinned to feature/hadf-phase2-fingerprint then renamed to chore/hadf-phase2-progress-snapshot)",
+      "launchd_plist_runtime": "~/Library/LaunchAgents/com.fitme.hadf.phase2.collect.plist (removed at campaign close 2026-05-01 22:43 IDT)"
+    },
+    "preservation_backup": {
+      "path": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/",
+      "manifest": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/MANIFEST.md",
+      "checksums": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/CHECKSUMS.sha256",
+      "trigger": "2026-05-08 audit pass surfaced that the final n=700 validated dataset existed only as an untracked working-tree file on the at-risk SanDisk Extreme SSD per reference_devssd_hardware_issue.md.",
+      "total_files": 52,
+      "total_size_mb": 1.0,
+      "contents_summary": "raw-data/ (4 jsonl, incl. 244 KB locked-700) + experiment-logs/ (8 collect-*.log) + active-branch-snapshot/ (15 files from chore/hadf-phase2-progress-snapshot tip 61964d38, incl. n=700 summary + pre-reg + 5 scripts + launchd plist) + main-ft2/ (10 files from FT2 main d5368710) + main-fitme-story/ (13 files from fitme-story main 83b1a893) + orphan-branch-22b/ (2 files from chore/publish-hadf-phase2-slot-22b f29f913b, incl. STALE n=100 intermediate snapshot distinct from n=700 final).",
+      "verification_cmd": "cd ~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/ && shasum -a 256 -c CHECKSUMS.sha256"
+    },
+    "campaign_branch_provenance": {
+      "feature_branch_initial": "feature/hadf-phase2-fingerprint @ 5c096bc890d2f10b4e7c14265009fcd4055b142e",
+      "feature_branch_renamed": "chore/hadf-phase2-progress-snapshot @ 61964d3816bf99aea8333d37327607b54636df91 (same commit; reflog-verified)",
+      "orphan_publish_attempt": "fitme-story chore/publish-hadf-phase2-slot-22b @ f29f913b773c2d6fa2f1228affb6b3549833767f (had stale n=100 snapshot; superseded by canonical slot 22b in fitme-story main 83b1a893)",
+      "final_main_squash": "FT2 main a4b357f via PR #264 (landed final summary + scripts)"
+    }
+  },
+  "_meta": {
+    "deprecation_warnings": [],
+    "retroactive_creation": true,
+    "audit_close": "D-AUDIT-8 from docs/audits/internal/2026-05-23-comprehensive-pr-sync-audit.md",
+    "preservation_backup_reference": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/"
+  },
+  "state_owner": "ft2"
+}
