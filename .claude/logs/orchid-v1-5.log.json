@@ -1,0 +1,87 @@
+{
+  "feature": "orchid-v1-5",
+  "schema_version": "v1",
+  "created_at": "2026-05-23T00:00:00Z",
+  "note": "Retroactive log created 2026-05-23 closing D-AUDIT-9. All events below carry recording_mode=retroactive and timestamps reflect actual feature activity reconstructed from case study + PR merge timestamps. Track R Layer B RTL Phases 6-9 are BLOCKED on v1 SoC integration (paused per v1.5 plan §Risks item 1).",
+  "events": [
+    {
+      "event_type": "phase_started",
+      "phase": "research",
+      "timestamp": "2026-04-28T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_frontmatter",
+      "evidence": [
+        "docs/research/2026-04-28-orchid-framework-v7-mapping.md",
+        "docs/research/2026-05-01-modular-chip-architecture-survey.md",
+        "docs/research/2026-05-01-chip-security-zero-day-survey.md"
+      ]
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "research",
+      "timestamp": "2026-05-01T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "case_study_frontmatter"
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "prd",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr",
+      "evidence": ["PR #179 mergedAt 2026-05-03"]
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "prd",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr"
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "tasks",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr",
+      "evidence": ["PR #180 mergedAt 2026-05-03 — implementation plan Tracks L+D+R"]
+    },
+    {
+      "event_type": "phase_ended",
+      "phase": "tasks",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr"
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "github_pr",
+      "evidence": [
+        "PR #182 mergedAt 2026-05-03 — Track L Layer A behavioral models",
+        "PR #183 mergedAt 2026-05-03 — Track D D1+D2 tier-aware DSE",
+        "PR #184 mergedAt 2026-05-03 — toolchain setup guide + case study scaffold"
+      ]
+    },
+    {
+      "event_type": "feature_paused",
+      "phase": "implementation",
+      "timestamp": "2026-05-03T00:00:00Z",
+      "recording_mode": "retroactive",
+      "source": "project_memory",
+      "reason": "Track R Layer B Chisel RTL Phases 6-9 blocked on v1 SoC integration (Phase 5). Per v1.5 plan §Risks item 1, Track R doesn't block on v1.5 spec/Layer A work — expected pause.",
+      "tracks_shipped": ["L", "D-partial-D1+D2"],
+      "tracks_blocked": ["R", "D-D3"]
+    },
+    {
+      "event_type": "phase_started",
+      "phase": "implementation",
+      "timestamp": "2026-05-23T20:30:00Z",
+      "recording_mode": "contemporaneous",
+      "source": "retroactive_audit_close",
+      "summary": "D-AUDIT-9 retroactive close: live transition event to implementation (paused) phase for PHASE_TRANSITION_NO_LOG gate satisfaction. Tracks L+D shipped 2026-05-03; Track R blocked on v1 toolchain."
+    }
+  ]
+}
