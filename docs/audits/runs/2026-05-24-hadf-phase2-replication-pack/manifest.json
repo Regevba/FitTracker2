@@ -1,0 +1,79 @@
+{
+  "$schema": "hadf-replication-pack-manifest-v1",
+  "pack_name": "hadf-phase2-replication-pack",
+  "pack_date": "2026-05-24",
+  "covers_case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+  "verdict_under_test": {
+    "expected_silhouette_at_best_k": 0.5566,
+    "expected_best_k": 5,
+    "expected_clusters_found": true,
+    "expected_path_b_recommendation": "green-lit"
+  },
+  "inputs": {
+    "raw_dataset": {
+      "filename": "phase2-fingerprint-raw.locked-700-fires1to7.jsonl",
+      "sha256": "62ddc6484bcea87c46a36af21d87a130c148d0c84d069ebeb0c6311b5f840cd7",
+      "lines": 700,
+      "approx_size_bytes": 244000,
+      "in_repo": false,
+      "in_repo_reason": "gitignored per .gitignore line referencing phase2-fingerprint-raw*.jsonl (decision still open per backlog item 'HADF Phase 2 backup + branch decisions' §2)",
+      "preserved_at": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/raw-data/phase2-fingerprint-raw.locked-700-fires1to7.jsonl",
+      "alternate_access_paths": [
+        "Request from FT2 maintainer (operator email)",
+        "Re-collect via scripts/hadf-phase2-collect.sh + scripts/hadf-phase2-fingerprint.py (~$5 in API spend; non-byte-identical but statistically equivalent)",
+        "Future: CDN-hosted persistent URL (planned post backup-decision)"
+      ]
+    },
+    "preregistration": {
+      "in_repo_path": ".claude/shared/hadf/phase2-preregistration.json",
+      "purpose": "Commits silhouette threshold + k-range BEFORE data observed; guarantees verdict is not p-hacked",
+      "in_repo": true
+    },
+    "summary": {
+      "in_repo_path": ".claude/shared/hadf/phase2-fingerprint-summary.json",
+      "purpose": "The mechanical verdict produced by hadf-phase2-analyze.py against raw + preregistration. Operator replicates this.",
+      "in_repo": true,
+      "computed_at": "2026-05-01T20:04:17Z"
+    },
+    "verifier_script": {
+      "in_repo_path": "scripts/hadf-phase2-analyze.py",
+      "purpose": "Pure function (raw, prereg) → summary. Run by operator to re-derive the verdict.",
+      "in_repo": true
+    }
+  },
+  "dependencies": {
+    "python": ">=3.12",
+    "pip_packages": ["numpy", "scikit-learn"]
+  },
+  "expected_silhouette_per_k": {
+    "2": 0.5067,
+    "3": 0.5228,
+    "4": 0.5460,
+    "5": 0.5566,
+    "6": 0.4056
+  },
+  "expected_per_endpoint": {
+    "openai": {
+      "n": 350,
+      "ttft_median_ms": 676.32,
+      "tps_median": 54.853
+    },
+    "anthropic": {
+      "n": 350,
+      "ttft_median_ms": 840.68,
+      "tps_median": 92.416
+    }
+  },
+  "pass_rule": "silhouette[best_k] > 0.5 AND best_k in {3,4,5,6} (per preregistration kmeans.k_range)",
+  "fail_rule": "silhouette[best_k] <= 0.5 OR best_k not in k_range OR clusters_found=false",
+  "cross_references": {
+    "case_study": "docs/case-studies/hadf-phase2-cloud-fingerprinting-case-study.md",
+    "showcase_mdx": "fitme-story/content/04-case-studies/22b-hadf-phase2-cloud-fingerprinting.mdx",
+    "preservation_backup": "~/Documents/FitTracker2-backups/2026-05-08-hadf-preservation/",
+    "backlog_parent_item": "HADF Phase 2 external audit (added 2026-05-10) — this pack completes step (1) of 3-phase chore"
+  },
+  "phase_e_safety": {
+    "phase_e_safe": true,
+    "rationale": "Read-only pack assembly + new audit-run dir. No infra-glob touches, no schema changes, no calibration contamination."
+  }
+}

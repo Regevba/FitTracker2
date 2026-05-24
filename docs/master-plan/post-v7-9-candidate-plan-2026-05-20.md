@@ -88,7 +88,7 @@ Per infra-master-plan §2.3 — these MUST ship as part of (or immediately after
 | C-11 | MEMORY.md "Latest" entry stale-correction (D1) | 2 min | Local memory; no PR |
 | C-12 | Open Linear FIT-63 sub-issue for UCC hardening (T26 from tasks.md) | 5 min | Operator action |
 | **C-13** | **[Backend]** Document `ai-engine/` deployment status (Railway? Vercel? local-only?) | 1h | Currently no clear record |
-| **C-14** | **[AI]** Verify Orchid v1.5 Track L+D preserved + Track R unblock conditions | 30 min | Per memory `project_orchid_v1_5_paused_at_track_l_d.md` |
+| ~~C-14~~ | ~~**[AI]** Verify Orchid v1.5 Track L+D preserved + Track R unblock conditions~~ **CLOSED 2026-05-24** — ✅ Paused state intact. Tracks L + D-partial(D1+D2) shipped; D-D3 + R blocked per documented resume signal (v1 SoC Phase 5 + Orchid v1 toolchain install). All `paused.*` invariants present. No drift detected. Report: [`docs/audits/runs/2026-05-24-c14-orchid-v1-5-status/audit-report.md`](../audits/runs/2026-05-24-c14-orchid-v1-5-status/audit-report.md). | ~~30 min~~ done | Per memory `project_orchid_v1_5_paused_at_track_l_d.md` |
 | ~~C-15~~ | ~~Master plan §3.1 — add funnel-dashboards + `/ops digest` as F-22 / F-23 candidates~~ **CLOSED 2026-05-24** — F-22 (Funnel Analysis Dashboards) + F-23 (`/ops digest` skill) confirmed present at `infra-master-plan-2026-05-12.md:178-179`. Sentry F-21 PAUSED row at line 177. Both candidates ready for v8.0 docket. | ~~20 min~~ done | ~~Required before §5 features can be scheduled~~ done |
 
 ---
