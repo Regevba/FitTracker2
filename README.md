@@ -9,6 +9,8 @@
 
 FitMe replaces your training log, meal tracker, and recovery dashboard with one app that knows what you should do today — without ever seeing your private health data.
 
+🌐 **Public showcase:** [fitme-story.vercel.app](https://fitme-story.vercel.app) — case studies, framework evolution timeline (v1.0 → v7.9), and interactive PM-flow diagrams. The story site is the canonical narrative; this repo is the source of truth.
+
 > Repo name is `FitTracker2` for historical reasons. The product brand is **FitMe**.
 
 ---

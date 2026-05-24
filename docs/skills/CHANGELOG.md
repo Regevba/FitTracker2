@@ -17,11 +17,17 @@ Each entry follows:
 
 Versioning rules (P2.5):
 
-- `framework_version:` — mirrors the host framework version at write time (currently `v7.8.6`)
+- `framework_version:` — mirrors the host framework version at write time (currently `v7.9`)
 - A `vMAJOR.MINOR` bump corresponds to: sub-command add/remove/rename, mode change (active ↔ stable ↔ planned ↔ deprecated), or significant body restructure
 - `last_updated:` bumps on ANY change, including frontmatter-only edits
 
 ---
+
+## v7.9 promotion-related notes (2026-05-21 → 2026-05-24)
+
+The v7.9 promotion was a single-line flip at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py) — `BRANCH_ISOLATION_ADVISORY_MODE = True → False`. **No SKILL.md was modified** during the promotion itself: the gates being promoted (`BRANCH_ISOLATION_VIOLATION` Mode B + Mode C + `FEATURE_CLOSURE_COMPLETENESS`) already fire in pre-commit hooks invoked by the framework — skills consume the resulting `preflight-cache.json` + `gate-coverage.jsonl` rather than calling the gates directly. Going-forward `framework_version:` frontmatter on each SKILL.md will mirror `v7.9` (currently `v7.8.6` on all 12 — a deferred batch bump is queued for the post-Phase-E (~2026-06-04) hygiene cycle alongside the v7.9.1 build window opening).
+
+**Phase E validation soak (2026-05-21 → 2026-06-04)** is the calibration window for the 3 promoted gates running in enforced mode. No new skill development work this window per [CLAUDE.md](../../CLAUDE.md). Skills review next scheduled 2026-08-13.
 
 ## v7.8.6 group bump (2026-05-15)
 
