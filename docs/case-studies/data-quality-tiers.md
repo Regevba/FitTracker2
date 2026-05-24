@@ -1,5 +1,7 @@
 # Data Quality Tiers
 
+> **Re-confirmed 2026-05-24 (post-v7.9 promotion, per post-v7-9-candidate-plan §7 sub-plan refresh):** the T1/T2/T3 vocabulary remains current and unchanged at v7.9. v7.9 is a single-flag enforcement flip with no new measurement surfaces; no new tier classifications needed. The three tiers below continue to apply uniformly across case studies, PRDs, meta-analyses, and dashboard cards. Pre-Mechanism-C features (`created_at < 2026-05-02`) remain exempt from `CACHE_HITS_EMPTY_POST_V6`'s T1 expectation per CLAUDE.md "Known Mechanical Limits" §1.
+>
 > **Purpose:** Make the provenance of every metric explicit. A narrative
 > cache-hit rate should not be weighed the same as an instrumented
 > wall-time measurement. This convention, recommended by the Google

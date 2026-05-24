@@ -18,7 +18,7 @@
 |---|---|---|---|
 | **v7.8.5** | 2026-05-12 → 13 | 1 task (cache_hits fix) | ✅ SHIPPED PR #320 |
 | **v7.9** | 2026-05-18 → 21 | 5 enforcement flips | Calibration window OPEN |
-| **v7.9.1** | 2026-06-04 → 11 | 4 items (F16, F17, F2, F6) | Pending v7.9 Phase E |
+| **v7.9.1** | 2026-06-04 → 11 | 4 items (F16, F17, F2, F6) + **E-14** (F-LAUNCHD-DRIFT-EXTENSION, filed 2026-05-24 per W11.b) | Pending v7.9 Phase E. F2 + F6 **spec-defined** (verified 2026-05-24 per post-v7-9-candidate-plan §7 sub-plan refresh) — F2 at T7.9.1.3 (`.claude/skills/pm-workflow/SKILL.md` Phase 0 reality-check sub-step + new SUBSKILL doc), F6 at T7.9.1.4 (CLAUDE.md Work Item Types B_medium tier doc). Both ≤1h effort; not placeholders. |
 | **v8.0** | 2026-06-18 → 07-31 | 6 items (top-per-theme docket) | Pending 2026-05-21 ranking |
 | **v8.1** | 2026-08 → 09 | 5–7 deferred F-items + early V8-I triggers | Pending v8.0 Phase E |
 | **v8.2+** | 2026-12+ | Long-tail V8-I icebox per triggers | Pending re-eval |

@@ -223,6 +223,8 @@ Before any sub-exp's launchctl plist is bootstrapped, the following must be sati
 
 **No sub-exp launches until all 6 pass.** A failure on any line is a hold; operator must remediate before re-running the ceremony.
 
+> **Pre-Sub-exp-1 ceremony refresh (2026-05-24, per post-v7-9-candidate-plan §7 sub-plan refresh):** all 6 ceremony checks remain in spec as documented above. The 4 mandatory architectural fixes from §3 are in place per `feat/hadf-phase2bis-impl` worktree (Block A shipped 2026-05-12). Sub-exp 1 cleared for launch 2026-05-23 (T-14 ceremony performed; gnogo_recorded_at populated). Verdict due ~2026-05-26 per infra-plan §3.6 calendar. v7.9 promotion (2026-05-21) does NOT alter the ceremony — promoted gates `BRANCH_ISOLATION_VIOLATION` Mode B+C apply only to FT2 commits matching infra-glob, and the dedicated `feat/hadf-phase2bis-impl` worktree satisfies Mode C via per-feature `state.json::branch` declaration. Mechanism A telemetry impact: ~20 calibration rows expected per sub-exp campaign, within calibration tolerance.
+
 ## §10 Sub-experiment orchestration (NEW)
 
 ### Heartbeat ledger (T2-A)
