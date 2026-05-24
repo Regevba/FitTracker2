@@ -2,37 +2,61 @@
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Last updated:** 2026-05-24 — **v7.9 PROMOTION SHIPPED 2026-05-21** via PR #417 `ea53ff4` (3 advisory gates → enforced through a single-line `BRANCH_ISOLATION_ADVISORY_MODE = True → False` flip at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py)). Gates promoted simultaneously: `BRANCH_ISOLATION_VIOLATION` Mode B (infra commit-level) + Mode C (per-state.json mutation) + `FEATURE_CLOSURE_COMPLETENESS` (write-time). All 4 §2.2 promotion criteria from [`docs/master-plan/infra-master-plan-2026-05-12.md`](../master-plan/infra-master-plan-2026-05-12.md) met against 14d Mechanism A telemetry (18 + 13 + 13 firings; 0 zero-candidate rows; all skip-reasons legitimate). **Total framework mechanisms post-promotion: 37 mechanical gates + 5 advisories** (3 advisories promoted to enforced). **Phase E validation soak runs 2026-05-21 → 2026-06-04**; B2 post-v7.9 baseline snapshot 2026-05-28; v7.9.1 build window opens ~2026-06-04. First real-world Mode C gate fire caught + resolved same-session. Reversibility runbook: single-line revert <5 min. See [CLAUDE.md "v7.9 Promotion Release" section](../../CLAUDE.md) + [cold-start entrypoint](../../.claude/entrypoints/framework-v7-9.md) + [FT2-FH-003 honesty ledger entry](../case-studies/framework-honesty-ledger.md#ft2-fh-003) + [v7.9 promotion case study](../case-studies/framework-v7-9-promotion-case-study.md).
-> **v7.8.6 baseline:** 2026-05-15 — **v7.8.6** ships the **cadence-batch observability surfaces** that close the 96-hour drift window between weekly framework-status cron and the 72-hour integrity cycle (per `docs/master-plan/data-integrity-and-rollback-2026-05-14.md` §2.1+§2.3). MUST-have additions: `make integrity-diff` (vs 2026-05-14 anchor), `make preflight WORK_TYPE=<type>` (unified per-work-type entry point writing `.claude/shared/preflight-cache.json` consumed by all 10 skills), W1 ssh-agent preflight via SessionStart hook, weekly Mechanism A gate-coverage zero-drift scan + per-dimension trend nudge (extension of `framework-status-weekly.yml`). Nice-to-have additions: weekly dependency audit workflow + daily stale-branch + PR-babysit sections in daily-integrity-checkpoint output. No new enforcement gates — pure read/diff/warn surfaces. Total framework mechanisms unchanged from v7.8.5: **33 mechanical gates + 5 advisories**. Shipped via PR #363 (MUST batch) + PR #365 (nice-to-have batch). See [CLAUDE.md "v7.8.6 Cadence Batch" section](../../CLAUDE.md).
-> **v7.8.5 baseline:** 2026-05-13 — observability layer: the Observed Patterns Catalog ([`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md), 23 gate patterns + 9 workflow patterns) and the **W9 branch-drift real-time alert** (PostToolUse:Bash hook at [`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py)). Shipped via PR #328 (catalog) + PR #341 (W9 hook). See [CLAUDE.md "v7.8.5 Observability Layer" section](../../CLAUDE.md).
-> **v7.8.4 baseline:** 2026-05-12 — single-session calibration patch closing the noise floor before the 2026-05-21 v7.9 promotion decision. Adds 1 operability gate (`PR_CACHE_STALE` auto-refresh — closes the 33-finding false-positive class observed 2026-05-12 when `.cache/gh-pr-cache.json` was empty), narrows the `TIER_TAG_LIKELY_INCORRECT` heuristic via 3 fixes (target/kill claim filter + unit `\b` word-boundary + intervening-tier-marker filter), introduces `.claude/shared/case-study-t1-references.json` reference ledger for T1 measurements not in default 2-ledger scope, backfills 2 cache_hits[] from Mechanism C attributions, closes 5 LOW doc-debt items, and resets stale `.claude/active-feature` lockfile. No new write-time gates beyond the operability check. **`make integrity-check` baseline at v7.8.4 ship: 0 findings + 0 advisory** (was 35+9 at session open). Total framework mechanisms at v7.8.4: **33 mechanical gates + 5 advisories**. See [CLAUDE.md "v7.8.4" section](../../CLAUDE.md) + [cold-start entrypoint](../../.claude/entrypoints/framework-v7-8-4.md) + [FT2-FH-002 honesty ledger entry](../case-studies/framework-honesty-ledger.md#ft2-fh-002--v783-pr-cache-staleness-silent-pass) + [PR #314](https://github.com/Regevba/FitTracker2/pull/314).
-> **v7.8.3 baseline:** 2026-05-11 — cross-repo state-sync umbrella, 5 phases × 10 PRs across 2 repos. Promotes V2 (`CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`) advisory → enforced; extends V9 Mechanism E custom git merge driver to cover `.claude/logs/<feature>.log.json`; adds 3 new write-time gates for the cross-repo `state_owner` enum schema; ships D-3 unified cross-repo PR cite cache, C-4 telemetry aggregator, D-1 reverse-sync GitHub Action, `make snapshot-phase`. Cycle-time gate count: 13 → 16. See [v7.8.3 spec](../superpowers/specs/2026-05-11-cross-repo-state-sync-impl-design.md) and [case study](../case-studies/cross-repo-state-sync-impl-case-study.md).
-> **v7.8.2 baseline:** 2026-05-08 — patch-level (a) Bash short-circuit cwd-guard on PostToolUse:Read hook silences cross-repo Mechanism C noise, and (b) documented disposition spec resolving v7.9 candidates F7 + F8 (Tier 2.2 + Mechanism A cross-repo gate parity) as "documented exemption". NO new gates. See [`docs/superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md`](../superpowers/specs/2026-05-08-cross-repo-gate-asymmetry.md).
-> **v7.8.1 baseline:** earlier on 2026-05-07 — 3 new write-time gates (BRANCH_ISOLATION_VIOLATION, FEATURE_CLOSURE_COMPLETENESS, ISOLATION_OPT_OUT_REASON_MISSING), 3 new cycle-time advisories, auto-isolation flow, 2 new make targets, /ux + /design pre-merge-review sub-step 6f.
-> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.8.6).
+> **Current version:** **v7.9** (shipped 2026-05-21) — promotes 3 v7.8.1 advisory gates to enforced via a single-flag flip ([`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py)). Phase E validation soak runs through 2026-06-04. Total at v7.9: **37 mechanical gates + 5 advisories**. Shipped via [FT2 PR #417](https://github.com/Regevba/FitTracker2/pull/417). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v79). For the full v7.9 outcome see [§2.0](#20-current-version-snapshot-v79-2026-05-21).
+> **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.9).
 > **Companion docs:** [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) (event/log/gate catalog with mermaid flow diagrams), [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
-> **Reading order:** §§ 1–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs.
+> **Reading order:** §0 is a 90-second tour. §1 is audience and reading hints. §1.5 is the glossary. §§ 2–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs. § 16 is the cross-repo Code Connect bridge. § 17 is references.
 
 ---
 
 ## Table of Contents
 
+0. [TL;DR — 90-second tour](#0-tldr--90-second-tour)
 1. [Audience and how to read](#1-audience-and-how-to-read)
-2. [Big picture (current state — v7.8)](#2-big-picture-current-state--v78)
-3. [Where the code lives](#3-where-the-code-lives)
-4. [The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
-5. [`state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
-6. [Phase lifecycle (9 phases × 4 work types)](#6-phase-lifecycle-9-phases--4-work-types)
-7. [Dispatch model — how skills get invoked](#7-dispatch-model--how-skills-get-invoked)
-8. [Cache architecture (L1 per-skill, L2 shared, L3 project)](#8-cache-architecture-l1-per-skill-l2-shared-l3-project)
-9. [Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
-10. [Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
-11. [Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
-12. [Compressed evolution timeline (v1.0 → v7.8)](#12-compressed-evolution-timeline-v10--v78)
-13. [Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
-14. [Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
-15. [Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
-16. [References](#16-references)
+2. [Glossary](#15-glossary)
+3. [Big picture (current state — v7.9, Phase E soak)](#2-big-picture-current-state--v79-phase-e-soak)
+4. [Where the code lives](#3-where-the-code-lives)
+5. [The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
+6. [`state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
+7. [Phase lifecycle (9 phases × 4 work types)](#6-phase-lifecycle-9-phases--4-work-types)
+8. [Dispatch model — how skills get invoked](#7-dispatch-model--how-skills-get-invoked)
+9. [Cache architecture (L1 per-skill, L2 shared, L3 project)](#8-cache-architecture-l1-per-skill-l2-shared-l3-project)
+10. [Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
+11. [Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
+12. [Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
+13. [Compressed evolution timeline (v1.0 → v7.9)](#12-compressed-evolution-timeline-v10--v79)
+14. [Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
+15. [Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
+16. [Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
+17. [Cross-repo Code Connect bridge (orthogonal capability)](#16-cross-repo-code-connect-bridge-orthogonal-capability)
+18. [References](#17-references)
+
+> Note: TOC numbering above is reading order. Section anchors in the body retain their canonical numbers (§0, §1, §1.5, §2 … §17) so external links keep resolving.
+
+---
+
+## 0. TL;DR — 90-second tour
+
+**What this framework does.** Every feature passes through a 9-phase lifecycle (Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs) and is gated by automated checks at four cadences. Drift between code and documentation is caught fast.
+
+**The 4 enforcement layers (§2.2):**
+
+| Layer | Cadence | Where it lives |
+|---|---|---|
+| 1. Write-time | every `git commit` (~3-5s) | `.githooks/pre-commit` |
+| 2. Per-PR | every push to a PR (~1-3min) | `.github/workflows/pr-integrity-check.yml` |
+| 3. 72h cycle | cron, every 3 days at 04:00 UTC | `.github/workflows/integrity-cycle.yml` |
+| 4. Weekly | cron, Mondays 05:00 UTC | `.github/workflows/framework-status-weekly.yml` |
+
+**The 1 file you touch most.** [`.claude/features/<name>/state.json`](#5-statejson--the-canonical-per-feature-contract) — your feature's lifecycle contract. Schema is enforced at write-time.
+
+**The 1 command you run most.** `/pm-workflow <feature-name>` — creates state.json, drives phase transitions, dispatches the right skill per phase, gates each transition.
+
+**Where to next.**
+- New to the framework? → §1 (audience) → §1.5 (glossary) → §2 (big picture) → §3 (where the code lives)
+- Writing a feature? → §13 walkthrough
+- Adding a check code? → §14 walkthrough
+- Bumping the framework version? → §15 walkthrough (and: don't forget to bump THIS doc — see §15's "what NOT to skip" callout)
 
 ---
 
@@ -51,13 +75,59 @@ There is **no compiled binary**. The framework is the union of the conventions a
 
 ---
 
-## 2. Big picture (current state — v7.8)
+## 1.5 Glossary
+
+Cross-cutting terms used throughout this guide and in commit messages, PR descriptions, and case studies. If a term is unfamiliar in §§ 2–15, look it up here first.
+
+| Term | Definition |
+|---|---|
+| **Mechanism A–F** | The six v7.8 bridge mechanisms (§2.4). A = coverage-asserting gates (`gate-coverage.jsonl`). B = schema field-rename detection + dual-read. C = `PostToolUse:Read` attribution (auto-captures cache hits). D = pre-commit hook header self-audit. E = custom git merge driver for append-only ledgers. F = membrane status advisory (`make membrane-status`). |
+| **T1 / T2 / T3** | Data quality tiers for every quantitative claim in a PRD, case study, or meta-analysis. T1 = Instrumented (live metric). T2 = Declared (PRD target / pre-registered). T3 = Narrative (estimate). Convention: [`docs/case-studies/data-quality-tiers.md`](../case-studies/data-quality-tiers.md). |
+| **Class A / B / C** | Gate categorization. Class A = mechanically enforced. Class B = mechanically unclosable (requires judgment, external operator, or physical device — see §2.3, currently 4 gaps). Class C = advisory en route to enforced after a calibration window. |
+| **Advisory vs enforced** | An advisory gate emits a finding but does NOT block a commit. An enforced gate blocks. Most v7.8 mechanisms ship advisory, then promote to enforced after ≥7 days of Mechanism A telemetry shows zero false positives. v7.9 promoted 3 advisories to enforced via a single-flag flip (§2.0). |
+| **Write-time / Per-PR / Cycle-time / Weekly** | The 4 enforcement layers (§2.2). Write-time = pre-commit (every commit). Per-PR = GitHub Actions on every push. Cycle-time = 72h cron. Weekly = Mondays 05:00 UTC, observational. |
+| **CU (Composite Units)** | The v6.0 measurement protocol's normalized "size of work" score. CU formula v2 has 4 continuous factors: complexity, blast_radius, novelty, verification_difficulty. See §9.1. |
+| **Gate vs check code** | A gate is the mechanism (a script that runs at a given cadence). A check code is the finding type the gate emits (e.g., `SCHEMA_DRIFT`, `PHASE_LIE`). One gate emits multiple check codes. |
+| **Skill / spoke / hub** | The framework runs as 12 skills. `pm-workflow` is the hub (always loaded). The other 11 are spokes (loaded on demand based on the active phase per `skill-routing.json`). See §4. |
+| **Phase E** | A post-promotion validation soak (typically 14 days) where no new gates ship and the operator watches `gate-coverage.jsonl` for unexpected `failure` rows. v7.9 Phase E ran 2026-05-21 → 2026-06-04. |
+| **state.json** | Per-feature canonical contract at `.claude/features/<name>/state.json`. The single source of truth for that feature's lifecycle. See §5. |
+| **`/pm-workflow`** | The agent command that creates state.json, drives phase transitions, dispatches the right skill per phase. The 1 command you run most. |
+
+---
+
+## 2. Big picture (current state — v7.9, Phase E soak)
+
+### 2.0 Current version snapshot (v7.9, 2026-05-21)
+
+v7.9 is the **enforcement-flip release**. No new gate code, no new schema fields, no new observability surfaces. A single-line edit at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py) flipped `BRANCH_ISOLATION_ADVISORY_MODE` from `True` to `False`, promoting 3 v7.8.1 advisory gates simultaneously to enforced.
+
+**Gates promoted (3 advisory → 3 enforced):**
+
+| Gate | 14d telemetry | Skip reasons (all legit) |
+|---|---|---|
+| `BRANCH_ISOLATION_VIOLATION` Mode B (infra commit-level) | 18 firings, 0 zero-candidate | `not_infra_commit_level` × 13 |
+| `BRANCH_ISOLATION_VIOLATION` Mode C (per-state.json) | 13 firings, 0 zero-candidate | separate emission key |
+| `FEATURE_CLOSURE_COMPLETENESS` (write-time) | 13 firings, 0 zero-candidate | `not_complete_transition` × 11, `no_phase_change` × 1 |
+
+All four §2.2 promotion criteria (coverage ≥ 7d, no false positives, no silent skips, reversibility < 5 min) were met. Phase E validation soak runs 2026-05-21 → 2026-06-04.
+
+**Gates that stay advisory by design (NOT promoted at v7.9):**
+
+| Gate | Why |
+|---|---|
+| `BRANCH_ISOLATION_HISTORICAL` cycle-time | T17 forward-only audit — historical features predating the gate cannot retroactively pass |
+| `BRANCH_ISOLATION_LAUNCHD_DRIFT` cycle-time | T18 macOS-only — environment-specific |
+| `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror | T19 `--no-verify` bypass catcher — fires when the write-time gate is bypassed |
+
+**Reversibility:** single-line revert + commit + merge to main = < 5 min. Documented in [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md) reversibility-runbook section.
+
+**Full lineage:** [v7.9 case study](../case-studies/framework-v7-9-promotion-case-study.md) | [v7.9 entrypoint](../../.claude/entrypoints/framework-v7-9.md) | [FT2-FH-003 honesty ledger entry](../case-studies/framework-honesty-ledger.md#ft2-fh-003).
 
 ### 2.1 What the framework does, in one sentence
 
 It enforces that every feature passes through a defined lifecycle (Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs), records its state and timing in a machine-readable file, and is gated by automated checks at write-time, per-PR, and on a 72h schedule so that drift between code and documentation is caught fast.
 
-### 2.2 The four enforcement layers (v7.8)
+### 2.2 The four enforcement layers (v7.9 — 3 advisories promoted to enforced 2026-05-21)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -97,7 +167,7 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 2.3 The 4 mechanically unclosable Class B gaps (v7.8 closed Gap 1 in advisory)
+### 2.3 The 4 mechanically unclosable Class B gaps (Gap 1 promoted to enforced at v7.9)
 
 The four layers above catch what a deterministic script can catch. Five gaps remain Class B (agent-attention, judgment, or external-dependency) at v7.7. v7.8 closed Gap 1 (`cache_hits[]` writer-path) in advisory mode via Mechanism C — capture is automatic, but writer-path adoption is not yet enforced. v7.9 promotes that to enforced once 7+ days of session-ledger data calibrate the threshold (window opens 2026-05-11). The list is documented in [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md):
 
@@ -126,31 +196,7 @@ Full design: [`docs/superpowers/specs/2026-05-02-framework-v7-8-and-v7-9-bridge-
 
 **The v7.8 design principle:** every new mechanism ships with a coverage ledger (Mechanism A) so we can measure its effective coverage before promoting to enforced. v7.7's `CACHE_HITS_EMPTY_POST_V6` shipped at 0/46 effective coverage for 4 days because the gate read `created_at` while 43/46 features used the legacy `created` key — a silent-pass that Mechanism A would have caught immediately. v7.8's lesson is that we don't trust a gate until its coverage ledger says it's actually firing.
 
-### 2.4.1 v7.9 promotion outcome (shipped 2026-05-21)
-
-The 14-day Mechanism A telemetry window opened at v7.8.1 ship (2026-05-07) and closed 2026-05-21. The B1 freeze checklist [`.claude/shared/must-have-cadence-followups.md` §B1](../../.claude/shared/must-have-cadence-followups.md) was executed and all four §2.2 promotion criteria from [infra master plan](../master-plan/infra-master-plan-2026-05-12.md) were met for all three candidate gates.
-
-| Gate | Before v7.9 | After v7.9 | Telemetry over 14d |
-|---|---|---|---|
-| `BRANCH_ISOLATION_VIOLATION` Mode B (infra commit-level) | advisory | **enforced** | 18 rows, 0 zero-candidate, all skips legit |
-| `BRANCH_ISOLATION_VIOLATION` Mode C (per-state.json) | advisory | **enforced** | 13 rows, 0 zero-candidate |
-| `FEATURE_CLOSURE_COMPLETENESS` (write-time) | advisory | **enforced** | 13 rows, 0 zero-candidate |
-
-The flip is mechanically a single-line edit at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py): `BRANCH_ISOLATION_ADVISORY_MODE = True → False`. The same flag drives all three gates (`finding["advisory"] = BRANCH_ISOLATION_ADVISORY_MODE` for each of the 3 gates' findings), and the per-finding caller branches `if finding.get("advisory"): print to stderr; else: append to errors[]`. So the flip cleanly converts every previously-printed advisory finding into a blocking error, with no further code change.
-
-**Reversibility:** single-line revert + commit + merge to main = <5 min. Documented in [`.claude/entrypoints/framework-v7-9.md`](../../.claude/entrypoints/framework-v7-9.md) reversibility-runbook section. Any rollback must record reason in [honesty ledger](../case-studies/framework-honesty-ledger.md) + the v7.9 case study §99.
-
-**Phase E validation calendar (2026-05-21 → 2026-06-04):** no new gates, no new test-discipline work starts. Operator monitors `gate-coverage.jsonl` for unexpected `failure` rows. B2 post-v7.9 baseline snapshot lands 2026-05-28 via `make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation`. v7.9.1 build window opens ~2026-06-04 with F16 try-repo harness + F17 last_fired_at index + F2 Phase 0 reality-check + F6 B_medium tier doc.
-
-**Gates that stay advisory by design (NOT promoted):**
-
-| Gate | Why |
-|---|---|
-| `BRANCH_ISOLATION_HISTORICAL` cycle-time | T17 forward-only audit — historical features predating the gate cannot retroactively pass |
-| `BRANCH_ISOLATION_LAUNCHD_DRIFT` cycle-time | T18 macOS-only — environment-specific |
-| `FEATURE_CLOSURE_COMPLETENESS` cycle-time mirror | T19 `--no-verify` bypass catcher — fires when write-time gate is bypassed |
-
-**Full lineage:** [v7.9 case study](../case-studies/framework-v7-9-promotion-case-study.md) | [v7.9 entrypoint](../../.claude/entrypoints/framework-v7-9.md) | [FT2-FH-003 honesty ledger entry](../case-studies/framework-honesty-ledger.md#ft2-fh-003).
+> The v7.9 promotion outcome — gate-by-gate telemetry, reversibility runbook, and the Phase E calendar — moved to [§2.0 Current version snapshot](#20-current-version-snapshot-v79-2026-05-21) above so it surfaces as the first thing inside §2 instead of being buried at §2.4.1. The content is identical.
 
 ---
 
@@ -452,7 +498,7 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 
 ## 10. Integrity layer — write-time + per-PR + cycle-time + weekly
 
-### 10.1 Check codes (12 write-time + 13 cycle-time + 3 advisory in v7.8)
+### 10.1 Check codes (37 mechanical + 5 advisories at v7.9, 2026-05-21)
 
 | Code | Layer | Script | What it checks |
 |---|---|---|---|
@@ -540,7 +586,7 @@ All dynamic values used inside `run:` blocks **MUST** be routed through the `env
 
 ---
 
-## 12. Compressed evolution timeline (v1.0 → v7.8)
+## 12. Compressed evolution timeline (v1.0 → v7.9)
 
 Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). This section is the compressed dev-only summary — what each version changed structurally.
 
@@ -704,71 +750,60 @@ Once the cycle-time check is stable, copy the check function into `scripts/check
 
 ## 15. Operational walkthrough — bumping the framework version
 
-You shipped a structural capability (criteria in § 12.1). Here's the v7.6-style bump sequence.
+You shipped a structural capability that meets §12.1 criteria. The checklist below is the full propagation sequence. Run it top-to-bottom; if you skip a step, the framework will drift between surfaces and the next operator (often you, two weeks later) will hit a confusing inconsistency.
 
-### 15.1 Manifest bump
+### 15.1 The checklist (10 steps)
 
-Edit `.claude/shared/framework-manifest.json`:
-- Bump `version` (the manifest schema version, currently 1.8).
-- Bump `framework_version` (e.g., 7.6 → 7.7).
-- Update `description`.
-- Add new capability flags to the `capabilities` block.
-- Add a new top-level block `v<X>_<name>` mirroring the `v7_6_mechanical_enforcement` shape.
+1. **Bump the manifest.** Edit [`.claude/shared/framework-manifest.json`](../../.claude/shared/framework-manifest.json): bump `framework_version` (e.g., `7.6 → 7.7`); update `description`; add new capability flags to `capabilities`; add a new top-level block `v<X>_<name>` mirroring the `v7_6_mechanical_enforcement` shape.
+2. **Update [`CLAUDE.md`](../../CLAUDE.md).** Update the "## Data Integrity Framework" header. Add new check codes to the Write-time gates list. Add new defenses to the appropriate block. Update "## Known Mechanical Limits" if Class B gaps changed.
+3. **Update [`docs/skills/evolution.md`](../skills/evolution.md).** Update the `> **Status:** v<X>` line. Add a new dated note. Add a new row to the version table at the bottom.
+4. **Update THIS dev guide.** Bump the title `(v1.0 → v<X>)`. Bump the "Current version" callout at the top. Add a new row to the §12 timeline table. If the change introduced new gates, update the §10.1 check-code table AND the §2.2 layer diagram. If you promoted advisories to enforced, add an §2.0 snapshot block.
+5. **Update the website-rendered guide.** Mirror the same changes into [`fitme-story/content/framework/dev-guide.md`](https://github.com/Regevba/fitme-story/blob/main/content/framework/dev-guide.md) (the Next.js render source for `/framework/dev-guide`). The FT2 → fitme-story sync script handles `src/data/docs/docs/architecture/dev-guide-v1-to-v7-7.md` automatically, but `content/framework/dev-guide.md` is independent.
+6. **Write the case study.** Create `docs/case-studies/<slug>-v<X>-case-study.md`. Follow [`mechanical-enforcement-v7-6-case-study.md`](../case-studies/mechanical-enforcement-v7-6-case-study.md) as the format reference. T1/T2/T3 tier tags are required forward of 2026-04-21 — the pre-commit hook will block the commit otherwise.
+7. **Update memory + mirrors.** Update repo-root `project_*.md` mirror files where relevant. Add a memory entry under `~/.claude/projects/.../memory/project_<slug>.md`. Update `MEMORY.md` index.
+8. **Cross-repo.** If user-visible, add a new MDX case study slot in `fitme-story/content/04-case-studies/`. If it relates to the trust page, append a section to the appropriate trust subroute.
+9. **Commit + push.** Pre-commit hooks catch tier-tag gaps in the case study and phase-transition discipline failures. Fix and re-commit if any fire.
+10. **Verify.** Run `bash scripts/test-v7-5-pipeline.sh` — all assertions should pass. If you added a new check code (per §14), the count line in the script header updates.
 
-### 15.2 CLAUDE.md update
+### 15.2 What NOT to skip — the dev-guide drift trap
 
-- Update the "## Data Integrity Framework" header.
-- Add new check codes to the Write-time gates list.
-- Add new defenses to the appropriate block.
-- Update the "## Known Mechanical Limits" section if Class B gaps changed.
+The most common failure mode is finishing steps 1–3 (manifest, CLAUDE.md, evolution doc) and then forgetting steps 4 + 5 (this dev guide + the website-rendered mirror). The result: CLAUDE.md says "current version v7.9," `framework-manifest.json` says `"framework_version": 7.9`, and yet the `/framework/dev-guide` page on the website still says "v1.0 → v7.8.6" in its title. Operators landing on the website think the framework is 3 days behind reality.
 
-### 15.3 Evolution doc update
+> **Concrete example.** The v7.9 promotion (shipped 2026-05-21 via [FT2 PR #417](https://github.com/Regevba/FitTracker2/pull/417)) bumped CLAUDE.md, the manifest, and `fitme-story/content/framework/dev-guide.md`. It missed this FT2 dev-guide canonical and its sync mirror. The drift was caught + fixed 3 days later in the same PR that introduced this callout.
 
-Open `docs/skills/evolution.md`:
-- Update the header `> **Status:** v<X>` line.
-- Add a new note dated to the ship.
-- Add a new row to the version table at the bottom.
+**Pre-flight check (do this before pushing the bump):**
 
-### 15.4 Case study
-
-Write `docs/case-studies/<slug>-v<X>-case-study.md`. Follow the v7.6 case study (`mechanical-enforcement-v7-6-case-study.md`) as the format reference. Required sections include outlier framing if the work is itself an outlier.
-
-### 15.5 Mirrors + memory
-
-- Update repo-root `project_*.md` mirror files where relevant.
-- Add a new memory entry under `~/.claude/projects/.../memory/project_<slug>.md`.
-- Update `MEMORY.md` index.
-
-### 15.6 Cross-repo
-
-If the new capability is user-visible, add a new MDX case study slot in `fitme-story/content/04-case-studies/`. If it relates to the trust page, append a section to the appropriate trust subroute.
-
-### 15.7 Commit + push
-
-The pre-commit hook will catch any tier-tag gaps in the new case study and any phase-transition discipline failures. Fix and re-commit.
-
-### 15.8 Verify
-
-Run the regression test:
 ```bash
-bash scripts/test-v7-5-pipeline.sh
+grep -nE '^# .* \(v1\.0 → ' \
+  /Volumes/DevSSD/FitTracker2/docs/architecture/dev-guide-v1-to-v7-7.md \
+  /Volumes/DevSSD/fitme-story/content/framework/dev-guide.md
 ```
 
-All assertions should pass. If you added a new check code (per § 14), the count is now > 15.
+Both files should show the same `v<X>` in their H1. If they diverge, finish step 4 + 5 before pushing.
+
+### 15.3 Version-bump criteria (when does a change qualify?)
+
+A major bump (e.g., v7.6 → v7.7) requires:
+
+1. **A new structural capability** — not just code changes within an existing capability.
+2. **A propagated update across surfaces** — manifest, CLAUDE.md, evolution doc, case study, this dev guide, the website-rendered mirror, trust-page integration where relevant.
+3. **A measurement that the change is real** — pipeline test, integrity check, or instrumented data.
+
+Minor bumps (e.g., v7.5 → v7.5.1) extend an existing capability without introducing a new layer.
 
 ---
 
-## 15A. v4.X+CC — Cross-repo Code Connect bridge (added 2026-05-09 → 2026-05-10)
+## 16. Cross-repo Code Connect bridge (orthogonal capability)
 
-This section documents a SKILL-LAYER capability orthogonal to the framework version axis (v7.8.x). It evolved on the `/design` skill (v4.X → v4.X+CC) and ships across BOTH FT2 and fitme-story.
+This section documents a SKILL-LAYER capability that is orthogonal to the framework version axis (v7.8.x). It evolved on the `/design` skill (v4.X → v4.X+CC) and ships across BOTH FT2 and fitme-story. It is included in the dev guide because new UI-touching features rely on it for designer-developer feedback loop closure.
 
-### 15A.1 Why it exists
+### 16.1 Why it exists
 
 `/design build` (v4.X) closed the spec → Figma chain forward: every feature's screens get pushed into the design library, captured node IDs land in `state.json::figma_node_ids`, and the matrix in `figma-code-sync-status.md` records which Figma frame corresponds to which Swift View. v4.X+CC closes the OTHER direction — Figma library frame → "show me the actual React/SwiftUI code" — via Figma Code Connect mappings.
 
 Without v4.X+CC, opening any frame in Figma's Dev Mode shows no code snippet. With it, the right-pane shows the actual `Button(...)`, `<HonestDisclosure>{...}</HonestDisclosure>`, etc. that renders the frame in production. Designer ↔ developer feedback loop closes.
 
-### 15A.2 Architecture (both repos)
+### 16.2 Architecture (both repos)
 
 ```
 .figma.{swift,tsx} mapping files    ←  authored manually (PR #277, #75) OR
@@ -788,13 +823,13 @@ npx @figma/code-connect figma connect publish
 Figma Dev Mode shows the snippet for each mapped frame
 ```
 
-### 15A.3 The 3 automation layers
+### 16.3 The 3 automation layers
 
 - **Layer A — scaffold scripts.** `scripts/scaffold-figma-mapping.py` (FT2) + `scripts/scaffold-figma-mapping.mjs` (fitme-story). Reads `<feature>/state.json::figma_node_ids`, generates matching `.figma.{swift,tsx}` template files alongside the SwiftUI Views / React components. Coalesces multi-state variants into one mapping file with multiple `figma.connect()` calls. Override `code_mapping` in figma_node_ids for keys that don't match the snake_case → PascalCase heuristic. PRs #279 (iOS) + fitme-story #77 (web).
 - **Layer B — `/design build` skill extension.** `.claude/skills/design/SKILL.md` Step 4 appends an auto-scaffold sub-bullet: after `figma_node_ids` is populated, the skill invokes the scaffold script for the active repo. Closes the "manual mapping author per new UI feature" gap. PR #280.
 - **Layer C — CI publish workflows.** `.github/workflows/figma-code-connect-publish.yml` in BOTH repos runs `npx figma connect publish` on push to main when `*.figma.{swift,tsx}` or config changes. Web: ubuntu runner, npm CLI directly. iOS: macos-15 runner + SPM cache + npm CLI with `figma.config.json::swiftPackagePath` pointing at `.figma-cc-tools/Package.swift` (SPM wrapper subdir). Gated on `FIGMA_ACCESS_TOKEN` repo secret; skips with clear log if missing. PRs #281 + #283 fix + fitme-story #79.
 
-### 15A.4 Two new mechanical gates on `/design`
+### 16.4 Two new mechanical gates on `/design`
 
 | Gate | Phase | What it verifies | Block on |
 |---|---|---|---|
@@ -803,7 +838,7 @@ Figma Dev Mode shows the snippet for each mapped frame
 
 Records to `figma-bridge-status.json::code_connect_access` (preflight) + `state.json.pre_merge_review.design_parity` (pre-merge).
 
-### 15A.5 Critical Swift parser IPC discovery (worked example)
+### 16.5 Critical Swift parser IPC discovery (worked example)
 
 The `@figma/code-connect@1.4.4` npm package only ships React, HTML, and Storybook parsers natively. Swift parsing is delegated via subprocess to a `figma-swift` binary built from the same GitHub repo via SPM.
 
@@ -820,7 +855,7 @@ When `figma connect publish` is invoked from FT2:
 
 **Failure mode caught during dry-run (2026-05-10):** without `figma.config.json` at FT2 root (only `Figma.toml`, which is the standalone Swift CLI's config format), the npm CLI fell back to the html parser, scanned 14817 files in the repo, and errored. PR #283 added the `figma.config.json` + SPM wrapper; PR #281's first attempt (ubuntu + npx-only) is the broken approach this replaces.
 
-### 15A.6 Operator setup (one-time)
+### 16.6 Operator setup (one-time)
 
 1. Generate Figma Personal Access Token at <https://www.figma.com/settings> → Security → Personal access tokens
 2. Required scopes: `file_content:read` + `file_dev_resources:read` + `file_dev_resources:write` (Code Connect mappings ARE dev resources in Figma's data model — there's no explicit "Code Connect" scope). `library_content:read` recommended.
@@ -829,7 +864,7 @@ When `figma connect publish` is invoked from FT2:
 
 **Operator setup completed 2026-05-10T06:38–06:39Z.**
 
-### 15A.7 Companion docs
+### 16.7 Companion docs
 
 - iOS operator runbook: [`docs/design-system/ios-code-connect-workflow.md`](../design-system/ios-code-connect-workflow.md)
 - Web architecture: [`docs/design-system/fitme-story-design-architecture.md`](../design-system/fitme-story-design-architecture.md)
@@ -839,7 +874,7 @@ When `figma connect publish` is invoked from FT2:
 
 ---
 
-## 16. References
+## 17. References
 
 ### Canonical docs
 - [`CLAUDE.md`](../../CLAUDE.md) — project rules (always loaded; fastest reference)
