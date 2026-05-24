@@ -11,27 +11,25 @@
 
 ## Table of Contents
 
-0. [TL;DR — 90-second tour](#0-tldr--90-second-tour)
-1. [Audience and how to read](#1-audience-and-how-to-read)
-2. [Glossary](#15-glossary)
-3. [Big picture (current state — v7.9, Phase E soak)](#2-big-picture-current-state--v79-phase-e-soak)
-4. [Where the code lives](#3-where-the-code-lives)
-5. [The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
-6. [`state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
-7. [Phase lifecycle (9 phases × 4 work types)](#6-phase-lifecycle-9-phases--4-work-types)
-8. [Dispatch model — how skills get invoked](#7-dispatch-model--how-skills-get-invoked)
-9. [Cache architecture (L1 per-skill, L2 shared, L3 project)](#8-cache-architecture-l1-per-skill-l2-shared-l3-project)
-10. [Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
-11. [Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
-12. [Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
-13. [Compressed evolution timeline (v1.0 → v7.9)](#12-compressed-evolution-timeline-v10--v79)
-14. [Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
-15. [Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
-16. [Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
-17. [Cross-repo Code Connect bridge (orthogonal capability)](#16-cross-repo-code-connect-bridge-orthogonal-capability)
-18. [References](#17-references)
-
-> Note: TOC numbering above is reading order. Section anchors in the body retain their canonical numbers (§0, §1, §1.5, §2 … §17) so external links keep resolving.
+- [§0. TL;DR — 90-second tour](#0-tldr--90-second-tour)
+- [§1. Audience and how to read](#1-audience-and-how-to-read)
+- [§1.5 Glossary](#15-glossary)
+- [§2. Big picture (current state — v7.9, Phase E soak)](#2-big-picture-current-state--v79-phase-e-soak)
+- [§3. Where the code lives](#3-where-the-code-lives)
+- [§4. The skill ecosystem (hub + 11 spokes)](#4-the-skill-ecosystem-hub--11-spokes)
+- [§5. `state.json` — the canonical per-feature contract](#5-statejson--the-canonical-per-feature-contract)
+- [§6. Phase lifecycle (9 phases × 4 work types)](#6-phase-lifecycle-9-phases--4-work-types)
+- [§7. Dispatch model — how skills get invoked](#7-dispatch-model--how-skills-get-invoked)
+- [§8. Cache architecture (L1 per-skill, L2 shared, L3 project)](#8-cache-architecture-l1-per-skill-l2-shared-l3-project)
+- [§9. Measurement protocol (CU formula, cache_hits, timing)](#9-measurement-protocol-cu-formula-cache_hits-timing)
+- [§10. Integrity layer — write-time + per-PR + cycle-time + weekly](#10-integrity-layer--write-time--per-pr--cycle-time--weekly)
+- [§11. Pre-commit hooks and GitHub Actions](#11-pre-commit-hooks-and-github-actions)
+- [§12. Compressed evolution timeline (v1.0 → v7.9)](#12-compressed-evolution-timeline-v10--v79)
+- [§13. Operational walkthrough — adding a new feature](#13-operational-walkthrough--adding-a-new-feature)
+- [§14. Operational walkthrough — extending an integrity check code](#14-operational-walkthrough--extending-an-integrity-check-code)
+- [§15. Operational walkthrough — bumping the framework version](#15-operational-walkthrough--bumping-the-framework-version)
+- [§16. Cross-repo Code Connect bridge (orthogonal capability)](#16-cross-repo-code-connect-bridge-orthogonal-capability)
+- [§17. References](#17-references)
 
 ---
 
@@ -171,7 +169,7 @@ It enforces that every feature passes through a defined lifecycle (Research → 
 
 The four layers above catch what a deterministic script can catch. Five gaps remain Class B (agent-attention, judgment, or external-dependency) at v7.7. v7.8 closed Gap 1 (`cache_hits[]` writer-path) in advisory mode via Mechanism C — capture is automatic, but writer-path adoption is not yet enforced. v7.9 promotes that to enforced once 7+ days of session-ledger data calibrate the threshold (window opens 2026-05-11). The list is documented in [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md):
 
-1. ~~`cache_hits[]` writer-path adoption — agent must remember to log hits (issue #140).~~ **v7.8 advisory** via `PostToolUse:Read` hook (Mechanism C). v7.9 promotes to enforced. Pre-Mechanism-C features (`created_at < 2026-05-02`) are exempt from `CACHE_HITS_EMPTY_POST_V6`.
+1. **`cache_hits[]` writer-path adoption** — **✅ CLOSED at v7.9** (was issue #140, agent-must-remember-to-log-hits, the original Class B gap). Closed via the v7.8 advisory `PostToolUse:Read` hook (Mechanism C) → promoted to enforced at v7.9 via `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`. Pre-Mechanism-C features (`created_at < 2026-05-02`) remain exempt from `CACHE_HITS_EMPTY_POST_V6`.
 2. `cu_v2` factor *correctness* — magnitudes are judgment-based.
 3. T1/T2/T3 tag *correctness* — preflight checks presence, not whether the tag is right.
 4. Tier 2.1 real-provider auth — physical device required.
