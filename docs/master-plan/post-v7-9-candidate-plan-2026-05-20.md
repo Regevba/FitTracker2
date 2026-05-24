@@ -89,7 +89,7 @@ Per infra-master-plan §2.3 — these MUST ship as part of (or immediately after
 | C-12 | Open Linear FIT-63 sub-issue for UCC hardening (T26 from tasks.md) | 5 min | Operator action |
 | **C-13** | **[Backend]** Document `ai-engine/` deployment status (Railway? Vercel? local-only?) | 1h | Currently no clear record |
 | **C-14** | **[AI]** Verify Orchid v1.5 Track L+D preserved + Track R unblock conditions | 30 min | Per memory `project_orchid_v1_5_paused_at_track_l_d.md` |
-| **C-15** | Master plan §3.1 — add funnel-dashboards + `/ops digest` as F-22 / F-23 candidates (Sentry F-21 dropped from this batch: **PAUSED 2026-05-21 → pre-launch**) | 20 min | Required before §5 features can be scheduled |
+| ~~C-15~~ | ~~Master plan §3.1 — add funnel-dashboards + `/ops digest` as F-22 / F-23 candidates~~ **CLOSED 2026-05-24** — F-22 (Funnel Analysis Dashboards) + F-23 (`/ops digest` skill) confirmed present at `infra-master-plan-2026-05-12.md:178-179`. Sentry F-21 PAUSED row at line 177. Both candidates ready for v8.0 docket. | ~~20 min~~ done | ~~Required before §5 features can be scheduled~~ done |
 
 ---
 
@@ -98,13 +98,13 @@ Per infra-master-plan §2.3 — these MUST ship as part of (or immediately after
 | # | Title | Parent | Scope | Effort | Gate-trip risk |
 |---|---|---|---|---|---|
 | E-1 | **W11 durable fix** — `scripts/preflight.py` resolve `state.json::parent_feature` | preflight (v7.8.6) | scripts/ infra-path | 2-3h | 🔴 Isolated worktree |
-| E-2 | **W13 durable fix** — `redis-client.ts` dual-name fallback (KV_* + UPSTASH_REDIS_REST_*) | fitme-story auth | Pure code | 1h | 🟢 Low |
+| ~~E-2~~ | ~~**W13 durable fix** — `redis-client.ts` dual-name fallback (KV_* + UPSTASH_REDIS_REST_*)~~ **CLOSED — already shipped 2026-05-21** via fitme-story `src/lib/auth/redis-client.ts:21-22` (`process.env.UPSTASH_REDIS_REST_URL ?? process.env.KV_REST_API_URL`). Verified during session 2026-05-24. | fitme-story auth | Pure code | ~~1h~~ done | 🟢 Low |
 | E-3 | **OQ-4** — elevate `auth_lockout_blocked_attempt` to weekly digest | ucc-passkey-auth-security-hardening | scripts/+workflow | 2-3h | 🔴 Isolated worktree |
 | E-4 | **Phase 3.B** — wire `dashboard_*` event call-sites in `/control-room/*` pages | analytics-observability | fitme-story product code | 4-6h | 🟢 Low |
-| E-5 | Smart Reminders ↔ Push Notifications v2 deep-link integration | smart-reminders + push-notifications-v2 | iOS-side | 1-2 days | 🟢 Low |
+| ~~E-5~~ | ~~Smart Reminders ↔ Push Notifications v2 deep-link integration~~ **CLOSED 2026-05-24 via PR #466** — wired `.fitMeReminderTapped` NotificationCenter broadcast → `DeepLinkRouter.handle(url:source:.notification)`. ~30 LOC (scaffold was already in place: ReminderNotificationDelegate posts, DeepLinkRouter handles URLs — missing observer was the bridge). +2 XCTests. Tapping smart-reminder notification now actually navigates instead of opening to last-active screen. | smart-reminders + push-notifications-v2 | iOS-side | ~~1-2 days~~ done in ~1h | 🟢 Low |
 | E-6 | **C-2** Web PR JS test gate (fitme-story CI) — RICE 200 | test-coverage T6 | fitme-story workflow | 2-3h | 🟡 Workflow file |
 | ~~E-7~~ | ~~**C-3** Sentry reachability test (iOS) — RICE 80~~ — **PAUSED 2026-05-21 → pre-launch** (rides Sentry pause; resume when SDK init lands) | test-coverage T2 | iOS code | 2-3h | 🟢 Low |
-| E-8 | **F14/F15** dispatch-test coverage push (per cadence B6) | preflight + state-schema | scripts/+tests/ | 3-4h | 🔴 Isolated worktree |
+| ~~E-8~~ | ~~**F14/F15** dispatch-test coverage push (per cadence B6)~~ **CLOSED 2026-05-23 via PR #451 squash `86084c4` + backfill #452 + closure #455.** 161/161 pytest pass; combined dispatch-test coverage 1/19 → 10/19 = 53%. | preflight + state-schema | scripts/+tests/ | ~~3-4h~~ done | 🔴 Isolated worktree |
 | **E-9** | **[AI]** Smart Reminders Behavioral Learning PR-2 | smart-reminders + ai-engine | SmartTimingResolver + A/B test + default-on flip | 1-2 days | 🟡 iOS+backend; isolated worktree |
 | ~~E-10~~ | ~~Sentry SDK init in iOS app + 1 test event~~ — **PAUSED 2026-05-21 → pre-launch** | sentry-integration | — | — | — |
 | ~~E-11~~ | ~~`/ops health` reads Sentry crash-free rate~~ — **PAUSED 2026-05-21 → pre-launch** | sentry-integration | — | — | — |

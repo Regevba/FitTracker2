@@ -5,7 +5,7 @@
 # FitMe Master Plan — 2026-04-06 (SSD Home Edition)
 
 > **Date:** 2026-04-06
-> **Purpose:** Reconciled master plan after full codebase review, SSD migration, and PM workflow audit. Supersedes `master-plan-reconciled-2026-04-05.md`.
+> **Purpose:** Reconciled master plan after full codebase review, SSD migration, and PM workflow audit. Supersedes `_archive/master-plan-reconciled-2026-04-05.md` (archived 2026-05-24 per D-PLAN-9).
 > **Context:** Project moved from local internal storage to external SSD. New agent taking ownership. All prior work verified via git history.
 
 ---
