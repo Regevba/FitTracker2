@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.5",
   "started_at": "2026-05-13T09:00:00Z",
-  "updated_at": "2026-05-17T19:33:00Z",
+  "updated_at": "2026-05-24T16:48:33Z",
   "events": [
     {
       "timestamp": "2026-05-13T09:00:00Z",
@@ -379,7 +379,7 @@
       "timestamp": "2026-05-17T16:30:00Z",
       "event_type": "ga4_access_binding_resolved",
       "phase": "implementation",
-      "summary": "GA4 access binding RESOLVED via Google API Explorer 'Try it' panel for properties.accessBindings.create + brief APP cycle on primary account (regev.ba@gmail.com). Service account ga4-mcp-reader@fitme-490515 successfully granted predefinedRoles/viewer on property 531124395. Verification: mcp__ga4__getActiveUsers returns 200 + valid payload (was PERMISSION_DENIED). Closes the 2026-05-16T14:19:07Z 'blocked' event. Path used (now documented as Path 4 in ga4-access-binding-setup-guide.md): API Explorer is simpler than gcloud Pivot D — pre-filled request body + Google first-party OAuth client. Total APP-off window: ~2 minutes.",
+      "summary": "GA4 access binding RESOLVED via Google API Explorer 'Try it' panel for properties.accessBindings.create + brief APP cycle on primary account (regev.ba@gmail.com). Service account ga4-mcp-reader@fitme-490515 successfully granted predefinedRoles/viewer on property 531124395. Verification: mcp__ga4__getActiveUsers returns 200 + valid payload (was PERMISSION_DENIED). Closes the 2026-05-16T14:19:07Z 'blocked' event. Path used (now documented as Path 4 in ga4-access-binding-setup-guide.md): API Explorer is simpler than gcloud Pivot D \u2014 pre-filled request body + Google first-party OAuth client. Total APP-off window: ~2 minutes.",
       "artifacts": [
         "FIT-142 comment ceb5cb54-1acd-44c5-ac70-8a1b127c9f1c (Stage 2 readout + iOS-dark finding)",
         "FIT-142 comment f42751ed-24cc-4e59-95ba-15683a19874b (final closure)",
@@ -397,7 +397,7 @@
       "timestamp": "2026-05-17T19:30:00Z",
       "event_type": "ios_firehose_verified",
       "phase": "implementation",
-      "summary": "iOS analytics firehose verified end-to-end for the first time in project history. Stage 2 audit (FIT-142) discovered the iOS app had been DARK since inception: 30-day GA4 query returned 0 iOS events despite 112 declared events in the taxonomy. Root cause: GoogleService-Info.plist was on disk at FitTracker/GoogleService-Info.plist but NOT registered in the FitTracker target's Copy Bundle Resources phase. At runtime, Bundle.main.path(forResource: 'GoogleService-Info', ofType: 'plist') returned nil, causing AnalyticsRuntimeConfiguration.canUseFirebase=false, FirebaseApp.configure() never ran, and AnalyticsService.makeDefault() selected MockAnalyticsAdapter (events went to console only). Fix: re-added plist to target via Xcode 'Add Files' with target membership checked. Also resolved bundle-ID mismatch (Xcode com.fittracker.regev vs plist com.regevba.FitTracker) by adding new Firebase iOS app entry with correct bundle, downloading matching plist. Added defensive Analytics.setAnalyticsCollectionEnabled(true) override in FirebaseAnalyticsAdapter.configure() to bypass plist IS_ANALYTICS_ENABLED=false. Verified via Firebase DebugView: 26+ events flowing including consent_granted, onboarding_step_*, screen_view, home_action_tap, home_ai_insight_shown, select_content, tutorial_complete, reminder_suppressed + Firebase auto-events first_open/session_start/user_engagement. Lesson captured: when iOS analytics goes dark, FIRST step is request first 10 Xcode console lines — 'MockAnalytics configured' as line 1 = adapter selection wrong = plist not in bundle. This would have identified root cause in 30 seconds instead of 2h chasing IS_ANALYTICS_ENABLED + consent-gate red herrings.",
+      "summary": "iOS analytics firehose verified end-to-end for the first time in project history. Stage 2 audit (FIT-142) discovered the iOS app had been DARK since inception: 30-day GA4 query returned 0 iOS events despite 112 declared events in the taxonomy. Root cause: GoogleService-Info.plist was on disk at FitTracker/GoogleService-Info.plist but NOT registered in the FitTracker target's Copy Bundle Resources phase. At runtime, Bundle.main.path(forResource: 'GoogleService-Info', ofType: 'plist') returned nil, causing AnalyticsRuntimeConfiguration.canUseFirebase=false, FirebaseApp.configure() never ran, and AnalyticsService.makeDefault() selected MockAnalyticsAdapter (events went to console only). Fix: re-added plist to target via Xcode 'Add Files' with target membership checked. Also resolved bundle-ID mismatch (Xcode com.fittracker.regev vs plist com.regevba.FitTracker) by adding new Firebase iOS app entry with correct bundle, downloading matching plist. Added defensive Analytics.setAnalyticsCollectionEnabled(true) override in FirebaseAnalyticsAdapter.configure() to bypass plist IS_ANALYTICS_ENABLED=false. Verified via Firebase DebugView: 26+ events flowing including consent_granted, onboarding_step_*, screen_view, home_action_tap, home_ai_insight_shown, select_content, tutorial_complete, reminder_suppressed + Firebase auto-events first_open/session_start/user_engagement. Lesson captured: when iOS analytics goes dark, FIRST step is request first 10 Xcode console lines \u2014 'MockAnalytics configured' as line 1 = adapter selection wrong = plist not in bundle. This would have identified root cause in 30 seconds instead of 2h chasing IS_ANALYTICS_ENABLED + consent-gate red herrings.",
       "artifacts": [
         "FitTracker/Services/Analytics/FirebaseAnalyticsAdapter.swift (line 15: setAnalyticsCollectionEnabled override)",
         "FitTracker.xcodeproj/project.pbxproj (GoogleService-Info.plist now in Resources build phase)",
@@ -419,7 +419,7 @@
       "timestamp": "2026-05-17T19:35:00Z",
       "event_type": "blocked_gates_unblocked",
       "phase": "implementation",
-      "summary": "Today's GA4 access binding + iOS firehose work unblocks 4 downstream items that were waiting on real iOS event flow: (1) B3 daily GA4 anomaly check — was SKIPPED per 2026-05-16 log entry; now can run on real data. (2) Phase 1.B GA4 MCP verification — was calendar-gated to 2026-06-04 per master plan; with binding live + iOS firehose verified, earlier verification possible. (3) Tier 2.1 sign_in_surface runtime smoke gate — requires real iOS auth events; now possible. (4) External Audit #1 (2026-05-22) — was going to have thin iOS measurement evidence; now has empirical proof of end-to-end pipeline. Outstanding follow-ups filed: D-1 setup-guide doc patch (this commit closes it via Path 4 addition), D-2 GA4 conversions config (workout_complete + nutrition_meal_logged), D-3 screen-view tracking gap (no logScreenView outside onboarding views).",
+      "summary": "Today's GA4 access binding + iOS firehose work unblocks 4 downstream items that were waiting on real iOS event flow: (1) B3 daily GA4 anomaly check \u2014 was SKIPPED per 2026-05-16 log entry; now can run on real data. (2) Phase 1.B GA4 MCP verification \u2014 was calendar-gated to 2026-06-04 per master plan; with binding live + iOS firehose verified, earlier verification possible. (3) Tier 2.1 sign_in_surface runtime smoke gate \u2014 requires real iOS auth events; now possible. (4) External Audit #1 (2026-05-22) \u2014 was going to have thin iOS measurement evidence; now has empirical proof of end-to-end pipeline. Outstanding follow-ups filed: D-1 setup-guide doc patch (this commit closes it via Path 4 addition), D-2 GA4 conversions config (workout_complete + nutrition_meal_logged), D-3 screen-view tracking gap (no logScreenView outside onboarding views).",
       "artifacts": [
         "docs/setup/ga4-access-binding-setup-guide.md (new Path 4)",
         "docs/setup/ga4-mcp-setup-guide.md Step 3 (already references this guide)",
@@ -430,6 +430,17 @@
         "doc_updates": 3
       },
       "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-24T16:48:33Z",
+      "event_type": "reconciliation",
+      "phase": "implementation",
+      "summary": "phases.implementation.status: pending \u2192 in_progress (drift reconcile) \u2014 3.A.0 + 3.A.1 shipped 2026-05-14 (fitme-story PR #108 squash 945e90c); phase remained 'pending' despite all 9 green-bucket items being on main. Yellow-bucket items still gated >=2026-06-04 per master plan \u00a77.5.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
