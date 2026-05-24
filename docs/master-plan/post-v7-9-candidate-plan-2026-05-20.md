@@ -110,8 +110,9 @@ Per infra-master-plan §2.3 — these MUST ship as part of (or immediately after
 | ~~E-11~~ | ~~`/ops health` reads Sentry crash-free rate~~ — **PAUSED 2026-05-21 → pre-launch** | sentry-integration | — | — | — |
 | **E-12** | **[AI]** `ai-engine/` Dockerfile audit + deployment-target reconfirm | ai-engine-architecture-adaptation | Backend deploy | 1-2h | 🟢 Low (config) |
 | **E-13** | **[AI]** Cohort intelligence telemetry audit — verify federated learning loop still emitting | ai-cohort-intelligence | Backend + iOS | 1h | 🟢 Low (audit) |
+| **E-14** | **F-LAUNCHD-DRIFT-EXTENSION** — extend `BRANCH_ISOLATION_LAUNCHD_DRIFT` advisory + `ensure-pr-cache-fresh.py` for launchd-cron context: (a) advisory checks plist path existence + canonical form (would have caught 2026-05-19 SSD-migration drift on day 1, not day 5); (b) W11.b mitigation — `ensure-pr-cache-fresh.py` must propagate refresh subprocess failure instead of `--quiet \|\| true` swallow; OR `daily-integrity-checkpoint.py` re-validates `gh auth status` before trusting cron-captured integrity-check output; OR pre-warm cache from interactive shell daily. **Trigger:** 2026-05-19 SSD migration silently broke cron 5 days + 2026-05-24 launchd cron produced 319 phantom BROKEN_PR_CITATION findings (per observed-patterns.md W11.b). | framework integrity / observability (`BRANCH_ISOLATION_LAUNCHD_DRIFT` + cron freshness wrapper) | infra (`scripts/` + plist) | 3-4h | 🔴 Isolated worktree |
 
-**Total enhancement time: ~30-35 hours** spread across sprints. Most needing infra-path worktrees should wait until Phase E exit (~2026-06-04).
+**Total enhancement time: ~33-39 hours** (was ~30-35h pre-E-14) spread across sprints. Most needing infra-path worktrees should wait until Phase E exit (~2026-06-04).
 
 ---
 

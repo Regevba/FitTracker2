@@ -701,7 +701,7 @@
     },
     {
       "date": "2026-05-23",
-      "generated_at": "2026-05-23T09:31:20Z",
+      "generated_at": "2026-05-23T06:36:10Z",
       "trigger": "manual",
       "summary": {
         "features_total": 77,
@@ -721,16 +721,57 @@
           "post_v6_percent": 39.5
         },
         "per_phase_timing": {
-          "overall_present": 39,
-          "overall_percent": 50.6,
-          "post_v6_present": 36,
-          "post_v6_percent": 83.7
+          "overall_present": 38,
+          "overall_percent": 49.4,
+          "post_v6_present": 35,
+          "post_v6_percent": 81.4
         },
         "cache_hits": {
-          "overall_present": 23,
-          "overall_percent": 29.9,
-          "post_v6_present": 22,
-          "post_v6_percent": 51.2
+          "overall_present": 21,
+          "overall_percent": 27.3,
+          "post_v6_present": 20,
+          "post_v6_percent": 46.5
+        },
+        "cu_v2": {
+          "overall_present": 12,
+          "overall_percent": 15.6,
+          "post_v6_present": 12,
+          "post_v6_percent": 27.9
+        }
+      }
+    },
+    {
+      "date": "2026-05-24",
+      "generated_at": "2026-05-24T03:41:32Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 77,
+        "features_post_v6": 43,
+        "features_pre_v6": 34,
+        "fully_adopted": 3,
+        "partial_adopted": 37,
+        "zero_adopted": 37,
+        "fully_adopted_post_v6": 3,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 17,
+          "overall_percent": 22.1,
+          "post_v6_present": 17,
+          "post_v6_percent": 39.5
+        },
+        "per_phase_timing": {
+          "overall_present": 38,
+          "overall_percent": 49.4,
+          "post_v6_present": 35,
+          "post_v6_percent": 81.4
+        },
+        "cache_hits": {
+          "overall_present": 21,
+          "overall_percent": 27.3,
+          "post_v6_present": 20,
+          "post_v6_percent": 46.5
         },
         "cu_v2": {
           "overall_present": 12,
@@ -741,5 +782,5 @@
       }
     }
   ],
-  "updated": "2026-05-23T09:31:20Z"
+  "updated": "2026-05-24T03:41:32Z"
 }

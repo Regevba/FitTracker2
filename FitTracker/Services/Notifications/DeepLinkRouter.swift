@@ -4,8 +4,9 @@
 // fragmented surfaces that existed before push-notifications-v2:
 //   - Auth (`fitme://reset-password`) had its own dedicated `.onOpenURL` handler
 //   - v1 `DeepLinkHandler.targetTab(_:)` was 14 LOC of dead code (zero callers)
-//   - Smart-reminders broadcast `.fitMeReminderTapped` via NotificationCenter but
-//     no SwiftUI observer consumed the broadcast — taps dropped silently
+//   - Smart-reminders broadcast `.fitMeReminderTapped` via NotificationCenter;
+//     this router subscribes in init() and forwards to handle(url:source:) so
+//     reminder taps no longer drop silently (E-5 wiring, shipped 2026-05-24)
 //
 // Owned by: push-notifications-v2 (FIT-23).
 //
@@ -87,7 +88,33 @@ final class DeepLinkRouter: ObservableObject {
 
     private let dedupeWindow: TimeInterval = 0.2 // 200ms
 
-    private init() {}
+    private init() {
+        subscribeToReminderTaps()
+    }
+
+    /// E-5 wiring (cadence-followups, shipped 2026-05-24): subscribe to the
+    /// `.fitMeReminderTapped` Notification broadcast that `ReminderNotificationDelegate`
+    /// fires when the user taps a smart-reminder notification. Previously the
+    /// broadcast had no consumer and taps dropped silently. Now we read the
+    /// `deepLink` userInfo string, parse to URL, and forward to handle().
+    ///
+    /// Idempotent: the existing 200ms (url, source) dedup window in handle()
+    /// protects against double-fire if iOS also delivers via .onOpenURL.
+    private func subscribeToReminderTaps() {
+        NotificationCenter.default.addObserver(
+            forName: .fitMeReminderTapped,
+            object: nil,
+            queue: .main
+        ) { [weak self] notif in
+            guard
+                let self,
+                let userInfo = notif.userInfo,
+                let urlString = userInfo["deepLink"] as? String,
+                let url = URL(string: urlString)
+            else { return }
+            self.handle(url: url, source: .notification)
+        }
+    }
 
     // MARK: Handle
 

@@ -150,4 +150,53 @@ final class DeepLinkRouterTests: XCTestCase {
         XCTAssertNil(DeepLinkRouter.shared.pendingDeepLink,
                      "Dedup'd call must not re-set pendingDeepLink")
     }
+
+    // MARK: E-5 — Smart-reminders broadcast → DeepLinkRouter wiring
+    // (Closes E-5 from cadence-followups: previously ReminderNotificationDelegate
+    // posted `.fitMeReminderTapped` with no consumer; taps dropped silently.
+    // DeepLinkRouter.init() now subscribes and forwards to handle().)
+
+    func testReminderBroadcastRoutesViaDeepLinkRouter() {
+        // Simulate exactly what ReminderNotificationDelegate.postDeepLinkNotification posts.
+        let userInfo: [AnyHashable: Any] = [
+            "type": "log-workout",
+            "deepLink": "fitme://nav/training",
+        ]
+        NotificationCenter.default.post(
+            name: .fitMeReminderTapped,
+            object: nil,
+            userInfo: userInfo
+        )
+
+        // Observer is on .main queue — let the runloop process the post.
+        let exp = expectation(description: "router observes broadcast")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 0.5)
+
+        XCTAssertEqual(
+            DeepLinkRouter.shared.pendingDeepLink,
+            .navigateToTab(.training),
+            "Reminder broadcast must forward to handle(url:source:.notification)"
+        )
+    }
+
+    func testReminderBroadcastMissingDeepLinkIsIgnored() {
+        // userInfo without "deepLink" key — observer should silently drop, not crash.
+        NotificationCenter.default.post(
+            name: .fitMeReminderTapped,
+            object: nil,
+            userInfo: ["type": "log-workout"]  // no deepLink
+        )
+
+        let exp = expectation(description: "no-op")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            exp.fulfill()
+        }
+        wait(for: [exp], timeout: 0.5)
+
+        XCTAssertNil(DeepLinkRouter.shared.pendingDeepLink,
+                     "Missing deepLink in broadcast must be a no-op")
+    }
 }
