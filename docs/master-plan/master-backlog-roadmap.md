@@ -12,6 +12,8 @@ Complete project roadmap with 18 tasks across 6 phases. Prioritized using the RI
 >
 > See [`master-plan-2026-04-15.md`](master-plan-2026-04-15.md) for the v7.8.1 banner and [`docs/superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md`](../superpowers/specs/2026-05-07-branch-isolation-out-of-scope.md) for the v8 candidate icebox (7 items, ranked at branch-isolation Phase 9 close ~2026-05-21).
 
+> **2026-05-24 — D-PLAN-10 close:** this RICE roadmap covers PRODUCT-layer Phase 0 → Phase 5 tasks. Framework-version infrastructure work (v7.5 → v7.9 + every intermediate v7.8.x) is tracked separately in [`docs/product/backlog.md`](../product/backlog.md) §Done (rows #93–#100 cover v7.8.5–v7.9; row #115 covers today's W11.b pattern + E-14 candidate) and in [`infra-master-plan-2026-05-12.md`](infra-master-plan-2026-05-12.md) §3.6 (forward plan v7.9 → v8.2 with version-by-version cumulative mechanism inventory). The audit-flagged PRs from D-PLAN-10 (#244, #298–#304, #314, #328, #341, #363, #365 + #417 + #427–#454 + #460–#467) are all framework-infra commits — backlog.md is the SoT for those; this doc stays product-PRD-focused per its original scope.
+
 ---
 
 ## RICE Scoring Legend

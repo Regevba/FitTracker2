@@ -45,7 +45,7 @@
 | `infra-master-plan-2026-05-12.md` | 2026-05-12 | **CURRENT infra plan.** Forward-looking framework master plan covering v7.9 promotion docket, v8.x candidate ranking (F1–F13 + 7 icebox items), HADF Phase 2-bis pre-launch calendar, and the date-gated roadmap through Q3 2026. Separate from product master plan. |
 | `master-plan-2026-04-15.md` | 2026-04-15 · updated 2026-05-12 | **CURRENT product master plan.** Adds all v4.3 → v7.8.4 work, M-series decomposition sprints, audit remediation, cross-repo state-sync, and pre-v7.9 telemetry calibration patch. |
 | `master-plan-2026-04-06.md` | 2026-04-06 | DEPRECATED — superseded by 2026-04-15. Kept as a historical snapshot. |
-| `master-plan-reconciled-2026-04-05.md` | 2026-04-05 | DEPRECATED — superseded by 2026-04-06, then 2026-04-15. |
+| `_archive/master-plan-reconciled-2026-04-05.md` | 2026-04-05 | DEPRECATED — superseded by 2026-04-06, then 2026-04-15. **Archived 2026-05-24 to `_archive/` per D-PLAN-9** (38+ days SUPERSEDED). |
 | `master-backlog-roadmap.md` | living | RICE-prioritized 19-task roadmap. Updated continuously. Referenced by `docs/product/backlog.md`. |
 
 ### Handoffs (most recent first)

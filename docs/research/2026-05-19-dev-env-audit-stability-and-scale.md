@@ -1,5 +1,7 @@
 # Dev Env Audit — Stability & Scale Plan
 
+> **PROMOTED 2026-05-24** to a tracked master sub-plan at [`docs/master-plan/dev-env-master-plan-2026-05-24.md`](../master-plan/dev-env-master-plan-2026-05-24.md). This research doc remains the canonical source for R1–R24 detail (action / files / effort / acceptance / why). The sub-plan tracks shipped vs open status, calendar, and backlog sync. Backlog rows mirrored under `docs/product/backlog.md` §"Dev-Env Stability & Scale Track".
+
 **Date:** 2026-05-19
 **Author:** generated via Claude Code research/plan session (operator: Regev)
 **Scope:** the development environment for [FitTracker2](/Volumes/DevSSD/FitTracker2) (iOS Swift + ai-engine Python + dashboard Astro + website Astro) and [fitme-story](/Volumes/DevSSD/fitme-story) (Next.js 16 web + control room), plus the v7.8.6 framework substrate, multi-agent harness, and supporting CI/observability infra.

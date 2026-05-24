@@ -16,8 +16,8 @@ kill_criteria:
   - vercel_js_error_rate_increase: ">0.1%"
   - user_reported_regression_per_1000_sessions: ">1"
   - cls_regression_on_case_studies_slug: "<0.1"
-kill_criteria_resolution: deferred_until_complete
-kill_criteria_resolution_note: "Feature is current_phase=implementation (17/24 done at writing). Final resolution evaluated when phase transitions to complete; midstream check shows zero criteria fired across 12 fitme-story PRs (#59-#71)."
+kill_criteria_resolution: not_fired
+kill_criteria_resolution_note: "Final at phase=complete transition (2026-05-24): all 3 kill criteria did not fire across 17 sub-task PRs (12 fitme-story #59-#71 + #134 + 5 FT2 #256/#258/#260/#261/#266). (a) Vercel JS error rate baseline preserved; (b) zero user-reported regressions; (c) CLS on /case-studies/[slug] ≤ 0.1. T13 (v7.9 mirror) shipped 2026-05-21 via fitme-story PR #134 as the last task without firing any criterion."
 framework_version: v7.8.1
 work_type: enhancement
 work_subtype: rollup_multi_pr
@@ -36,11 +36,19 @@ related_prs:
   - "fitme-story#69"
   - "fitme-story#70"
   - "fitme-story#71"
+  - "fitme-story#75"
+  - "fitme-story#129"
+  - "fitme-story#134"
   - "FT2#256"
   - "FT2#258"
   - "FT2#260"
   - "FT2#261"
   - "FT2#266"
+pr_citation_exempt:
+  - pr_number: 75
+    reason: "fitme-story#75 (T20 Code Connect foundation, 17 component node IDs + 4 primitives) shipped per the v4.X+CC cross-repo Code Connect bridge axis (CLAUDE.md \"v4.X+CC\" section), NOT as an audit-finding closure. Cited in state.json::tasks[T20].pr_number; intentionally not cited in case-study body because the case-study scope is audit-finding closure metrics, not Code Connect track."
+  - pr_number: 129
+    reason: "fitme-story#129 (T13 v9 mirror predecessor) shipped 2026-05-21 as the first ship of T13 dev-guide v7.9 bump; superseded the same-day by fitme-story#134 (the canonical T13 ship). Retained in state.json::tasks[T13].related_prs for full provenance; case-study body cites only the canonical #134 to avoid redundant narrative."
 outlier_disclosure: |
   This is the first case study in the corpus written MIDSTREAM (current_phase=implementation,
   17/24 tasks done) rather than at closure. Written 2026-05-09 per direct user directive after

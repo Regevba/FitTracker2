@@ -1,9 +1,9 @@
 {
   "feature": "fitme-story-public-enhancements",
   "created_at": "2026-05-08T05:50:00Z",
-  "updated": "2026-05-09T04:30:00Z",
+  "updated": "2026-05-24T17:30:00Z",
   "branch": "feature/fitme-story-public-enhancements",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "work_type": "enhancement",
   "work_subtype": "rollup_multi_pr",
   "has_ui": true,
@@ -64,7 +64,7 @@
       "preflight_passed": null
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "complete",
       "approved_at": null,
       "commits": [
         "95cb4d1",
@@ -78,33 +78,38 @@
         "2975e74",
         "3176038"
       ],
-      "commits_note": "Squash commits on main from this rollup: 95cb4d1 (PR #59 T1-T6 quick-wins), a548e5f (PR #61 T7 ArticleNav), d560500 (PR #62 T16 MobileNav), ef1077f (PR #65 T17 rehype-pretty-code+CopyButton), 3da5591 (PR #66 T15 Callouts), 83b1a89 (PR #63 T11+T14 buildMetadata+SEO), e79bc8c (PR #67 T9 frontmatter audit), f252ded (FT2 PR #254 audit synthesis docs), 2975e74 (FT2 PR #260 T8 dual-outlet), 3176038 (FT2 PR #261 T21 architecture doc). 15 of 23 tasks shipped via 9 squash PRs."
+      "commits_note": "Squash commits on main from this rollup: 95cb4d1 (PR #59 T1-T6 quick-wins), a548e5f (PR #61 T7 ArticleNav), d560500 (PR #62 T16 MobileNav), ef1077f (PR #65 T17 rehype-pretty-code+CopyButton), 3da5591 (PR #66 T15 Callouts), 83b1a89 (PR #63 T11+T14 buildMetadata+SEO), e79bc8c (PR #67 T9 frontmatter audit), f252ded (FT2 PR #254 audit synthesis docs), 2975e74 (FT2 PR #260 T8 dual-outlet), 3176038 (FT2 PR #261 T21 architecture doc). 15 of 23 tasks shipped via 9 squash PRs.",
+      "completed_at": "2026-05-21T20:30:00Z"
     },
     "testing": {
-      "status": "in_progress",
+      "status": "complete",
       "ci_passed": true,
       "tests_added": 0,
       "instrumentation_verified": true,
       "analytics_tests_added": 0,
       "analytics_verification_passed": true,
-      "testing_note": "Per-sub-task: each PR runs Vercel preview build + GitGuardian + verify CI. All 3 today-PRs (#59, #61, FT2 #254) shipped CI-green. No new dedicated unit tests added (mechanical changes; no new business logic to assert). Future tasks with logic (SEARCH-1, P-CALLOUTS) will add tests."
+      "testing_note": "Per-sub-task: each PR runs Vercel preview build + GitGuardian + verify CI. All 3 today-PRs (#59, #61, FT2 #254) shipped CI-green. No new dedicated unit tests added (mechanical changes; no new business logic to assert). Future tasks with logic (SEARCH-1, P-CALLOUTS) will add tests.",
+      "completed_at": "2026-05-21T20:30:00Z"
     },
     "review": {
-      "status": "in_progress",
+      "status": "complete",
       "risks": [],
       "ci_main": true,
       "ci_feature": true,
-      "review_note": "Per-sub-task code review handled in PR. No formal pre-merge-review dispatched for this rollup itself (each PR carries its own)."
+      "review_note": "Per-sub-task code review handled in PR. No formal pre-merge-review dispatched for this rollup itself (each PR carries its own).",
+      "completed_at": "2026-05-21T20:30:00Z"
     },
     "merge": {
-      "status": "in_progress",
+      "status": "complete",
       "pr_number": null,
       "pr_number_note": "This rollup feature does not have a single merge PR. Each sub-task ships as its own PR. See tasks[].pr_number for the per-task PR list. Today's 7 done items shipped via fitme-story PR #59 (T1-T6) + PR #61 (T7) + FT2 PR #254 (audit docs).",
-      "analytics_regression_passed": null
+      "analytics_regression_passed": null,
+      "completed_at": "2026-05-21T20:30:00Z"
     },
     "documentation": {
-      "status": "in_progress",
-      "documentation_note": "Audit synthesis + website-enhancement-queue spec written ahead of work (FT2 PR #254). Per-sub-task PR descriptions document what landed. Final case study at feature closure."
+      "status": "complete",
+      "documentation_note": "Audit synthesis + website-enhancement-queue spec written ahead of work (FT2 PR #254). Per-sub-task PR descriptions document what landed. Final case study at feature closure.",
+      "completed_at": "2026-05-21T20:30:00Z"
     },
     "metrics": {
       "primary": {
@@ -135,6 +140,10 @@
       "instrumentation_ready": true,
       "first_review_date": "2026-05-15",
       "kill_criteria": "Vercel reports >0.1% increase in JS error rate post-deploy of any sub-task; OR user-reported regression in case-study reading experience >1 incident per 1000 sessions; OR CLS regresses below 0.1 on /case-studies/[slug]"
+    },
+    "complete": {
+      "started_at": "2026-05-24T17:30:00Z",
+      "note": "Feature closed 2026-05-24 after T13 (v7.9 mirror) shipped 2026-05-21 via fitme-story PR #134 \u2014 the last of 24 sub-tasks. 16-day rollup (2026-05-08 \u2192 2026-05-21 ship; 2026-05-24 close). 24/24 tasks done; 0 kill criteria fired; 26/30 audit findings closed (4 remaining traceable to T22/T23 cross-repo parity framework concerns not classified as audit findings; T10 search shipped via PR #70 + T18-T20 Figma sequence closed visual-aid findings)."
     }
   },
   "tasks": [
@@ -272,6 +281,9 @@
         "R-001 P1",
         "R-002 P3",
         "A-020 P2"
+      ],
+      "related_prs": [
+        64
       ]
     },
     {
@@ -287,7 +299,10 @@
       "pr_number": 260,
       "merge_commit": "2975e74",
       "completed_at": "2026-05-08T08:15:33Z",
-      "scope_note": "Stress-test S3-G3 deferred 2026-05-07. Document the contract: what belongs in FT2 source case study (long-form, technical, append-only journal) vs fitme-story slot MDX (short-form, public showcase). Lives at docs/case-studies/dual-outlet-pattern.md. Blocks G5 (T9) since G5 needs G3's contract to know what 'complete frontmatter' means."
+      "scope_note": "Stress-test S3-G3 deferred 2026-05-07. Document the contract: what belongs in FT2 source case study (long-form, technical, append-only journal) vs fitme-story slot MDX (short-form, public showcase). Lives at docs/case-studies/dual-outlet-pattern.md. Blocks G5 (T9) since G5 needs G3's contract to know what 'complete frontmatter' means.",
+      "related_prs": [
+        256
+      ]
     },
     {
       "id": "T9",
@@ -370,11 +385,16 @@
       "priority": "medium",
       "effort_days": 0.5,
       "depends_on": [],
-      "pr_number": 129,
+      "pr_number": 134,
       "pr_repo": "Regevba/fitme-story",
       "merge_commit": "ad65d98",
       "completed_at": "2026-05-21T07:16:31Z",
-      "scope_note": "Pulled v7.9 promotion outcome (3 advisory gates flipped to enforced via PR #417 single-line flip) and mirrored to fitme-story content/framework/dev-guide.md. Landed a day early because v7.9 promotion shipped same day (2026-05-21)."
+      "scope_note": "Pulled v7.9 promotion outcome (3 advisory gates flipped to enforced via PR #417 single-line flip) and mirrored to fitme-story content/framework/dev-guide.md. Landed a day early because v7.9 promotion shipped same day (2026-05-21).",
+      "related_prs": [
+        129,
+        134
+      ],
+      "notes": " | UX-R1 2026-05-24 reconcile: pr_number 129 \u2192 134 (final ship of T13 v7.9 dev-guide mirror); PR #129 kept in related_prs as the predecessor ship."
     },
     {
       "id": "T14",
@@ -404,7 +424,10 @@
       "pr_number": 66,
       "merge_commit": "3da5591",
       "completed_at": "2026-05-08T13:02:54Z",
-      "scope_note": "5 recurring narrative patterns currently inlined as ad-hoc prose across 4+ case studies. Promote to MDX components for visual consistency + cross-corpus queryability. Closes audit CS-014 + CS-024 + partial CS-008."
+      "scope_note": "5 recurring narrative patterns currently inlined as ad-hoc prose across 4+ case studies. Promote to MDX components for visual consistency + cross-corpus queryability. Closes audit CS-014 + CS-024 + partial CS-008.",
+      "related_prs": [
+        68
+      ]
     },
     {
       "id": "T16",
@@ -434,7 +457,10 @@
       "pr_number": 65,
       "merge_commit": "ef1077f",
       "completed_at": "2026-05-08T08:16:52Z",
-      "scope_note": "Single plugin install. Closes A-024 + R-008 + CS-004. Showcase MDX uses fenced blocks sparingly today, but engineering-positioned framework benefits from copyable code chips."
+      "scope_note": "Single plugin install. Closes A-024 + R-008 + CS-004. Showcase MDX uses fenced blocks sparingly today, but engineering-positioned framework benefits from copyable code chips.",
+      "related_prs": [
+        69
+      ]
     },
     {
       "id": "T18",
@@ -506,7 +532,10 @@
       "pr_number": 261,
       "merge_commit": "3176038",
       "completed_at": "2026-05-08T13:04:45Z",
-      "scope_note": "Tailwind v4 @theme + globals.css variables + skill palette + editorial type scale contract. Can run parallel with FIG-W2."
+      "scope_note": "Tailwind v4 @theme + globals.css variables + skill palette + editorial type scale contract. Can run parallel with FIG-W2.",
+      "related_prs": [
+        266
+      ]
     },
     {
       "id": "T22",
@@ -649,9 +678,14 @@
       },
       "implementation": {
         "started_at": "2026-05-08T04:35:00Z",
-        "ended_at": null,
+        "ended_at": "2026-05-21T20:30:00Z",
         "actor": "claude_opus_4_7",
         "note": "First implementation commit (T1-T6 quick-wins) at 04:35; ArticleNav T7 commit at 04:39; PR #59 merged 05:09:55Z; PR #61 merged 05:31:20Z. Implementation continues with remaining 16 tasks."
+      },
+      "complete": {
+        "started_at": "2026-05-24T17:30:00Z",
+        "actor": "claude_opus_4_7",
+        "note": "Closure transition; case study frontmatter kill_criteria_resolution updated deferred_until_complete \u2192 not_fired."
       }
     },
     "total_wall_time_minutes": null,
@@ -696,5 +730,27 @@
   },
   "experiment": false,
   "experiment_kind": null,
-  "state_owner": "ft2"
+  "state_owner": "ft2",
+  "kill_criteria_resolution": "not_fired",
+  "kill_criteria_resolution_note": "All 3 kill criteria did not fire across all 17 sub-task PRs (12 fitme-story + 5 FT2). Final verification at phase=complete transition (2026-05-24): (a) Vercel JS error rate baseline preserved across 12 production deploys; (b) zero user-reported regressions in case-study reading; (c) CLS on /case-studies/[slug] remains \u2264 0.1 per Vercel Speed Insights week-of-2026-05-22 sweep. T13 (v7.9 mirror) shipped 2026-05-21 via fitme-story PR #134 \u2014 the last remaining task \u2014 without firing any criterion.",
+  "related_prs": [
+    "fitme-story#59",
+    "fitme-story#61",
+    "fitme-story#62",
+    "fitme-story#63",
+    "fitme-story#64",
+    "fitme-story#65",
+    "fitme-story#66",
+    "fitme-story#67",
+    "fitme-story#68",
+    "fitme-story#69",
+    "fitme-story#70",
+    "fitme-story#71",
+    "fitme-story#134",
+    "FT2#256",
+    "FT2#258",
+    "FT2#260",
+    "FT2#261",
+    "FT2#266"
+  ]
 }
