@@ -10,9 +10,60 @@
 
 ---
 
-## 0. How to read this doc
+## 0. How to read this doc — 90-second tour
 
-Every section is structured the same way: a 1-2 sentence purpose statement, then a table or list of named things. If you want to know "what should be present on a `current_phase=complete` commit?", jump to [§8 Phase-by-phase event matrix](#8-phase-by-phase-event-matrix). If you want to know "what does `cu_v2` actually measure?", jump to [§7 Measurement dimensions](#7-measurement-dimensions-tier-11).
+This catalog is a **reference**, not a tutorial. Every section is structured the same way: a 1-2 sentence purpose statement, then a table or list of named things. You don't read it cover-to-cover; you look up the thing you need.
+
+**The 4 nested loops at a glance:**
+
+| Loop | Cadence | Owns | Authority |
+|---|---|---|---|
+| **L0** Per-feature lifecycle | days to weeks | Research → PRD → Tasks → UX → Implement → Test → Review → Merge → Docs → Learn | the feature's `state.json` |
+| **L1** Per-commit gates | seconds | 9 write-time gates via pre-commit hook | blocks the commit |
+| **L2** Per-PR gates | minutes | `pr-integrity-check.yml` + `ci.yml` | blocks the merge |
+| **L3** Periodic gates | hours to days | `integrity-cycle.yml` (72h) + `framework-status-weekly.yml` | opens an issue |
+
+Authority increases as you go outer. L3 catches what L0/L1/L2 missed.
+
+**Common operator questions → which § answers them:**
+
+| Question | Section |
+|---|---|
+| What should be present on a `current_phase=complete` commit? | [§8 Phase-by-phase event matrix](#8-phase-by-phase-event-matrix) |
+| What does `cu_v2` actually measure? | [§7 Measurement dimensions (Tier 1.1)](#7-measurement-dimensions-tier-11) |
+| What files get written during a feature's lifecycle? | [§4 The artifact stack](#4-the-artifact-stack--every-file-written-during-a-features-lifecycle) |
+| What hooks/crons fire when? | [§5 The trigger stack](#5-the-trigger-stack--every-hookcroncli-that-fires) |
+| What gates block on what? | [§6 The gate stack](#6-the-gate-stack) |
+| What's a Mechanism A/B/C/D/E/F? | [§0.5 Glossary](#05-glossary) + [§3 v7.8 mechanism inventory](#3-v78-mechanism-inventory) |
+| What's the difference between Data-Quality tiers and Gate-class tiers? | [§2 Two orthogonal tier systems](#2-two-orthogonal-tier-systems) |
+| What work-type uses how many phases? | [§1 The lifecycle hierarchy](#1-the-lifecycle-hierarchy) (4 work types × phase counts) |
+| Where does THIS catalog fit in the doc ecosystem? | [companion `dev-guide-v1-to-v7-7.md`](./dev-guide-v1-to-v7-7.md) |
+
+---
+
+## 0.5 Glossary
+
+Cross-cutting terms that appear in §§ 1–8 without inline definition. Look them up here first.
+
+| Term | Definition |
+|---|---|
+| **L0 / L1 / L2 / L3 loops** | The four nested cadences. L0 = per-feature (days to weeks). L1 = per-commit (seconds). L2 = per-PR (minutes). L3 = periodic / 72h + weekly (hours to days). |
+| **Mechanism A** | Coverage-asserting gates. Every write-time gate emits `{candidates, checked, skipped, skip_reasons}` per run to [`.claude/logs/gate-coverage.jsonl`](../../.claude/logs/gate-coverage.jsonl). Lets us detect silent-pass gates (`checked=0` for 7+ days). |
+| **Mechanism B** | Schema field-rename detection + dual-read. `created` ∪ `created_at` migration window pattern; canonical `framework_version` field. |
+| **Mechanism C** | `PostToolUse:Read` attribution. Auto-captures Read events with active-feature tag into [`.claude/logs/_session-<id>.events.jsonl`](../../.claude/logs/). |
+| **Mechanism D** | Pre-commit hook header self-audit. Validates the hook header matches the implementation. |
+| **Mechanism E** | Custom git merge driver. Auto-resolves merge conflicts on append-only ledgers (`measurement-adoption-history.json`, `documentation-debt.json`, `gate-coverage.jsonl`, per-feature `.log.json`) via union-dedup-by-key. |
+| **Mechanism F** | Membrane status advisory. Single readout: active feature + recent gate firings + dispatch-blocker state via `make membrane-status`. |
+| **Class A / B / C (gate classes)** | Gate enforcement category. **A** = mechanically enforced. **B** = mechanically unclosable (judgment / external operator / physical device required — see [`docs/case-studies/meta-analysis/unclosable-gaps.md`](../case-studies/meta-analysis/unclosable-gaps.md)). **C** = advisory en route to enforced after calibration window. Not the same as Data-Quality T1/T2/T3 tiers (§2). |
+| **T1 / T2 / T3 (data-quality tiers)** | Every quantitative claim in a PRD, case study, or meta-analysis must carry one. **T1** = Instrumented (live metric from `.claude/shared/measurement-adoption.json` or `documentation-debt.json`). **T2** = Declared (PRD target / pre-registered threshold). **T3** = Narrative (estimate / approximation). Convention: [`docs/case-studies/data-quality-tiers.md`](../case-studies/data-quality-tiers.md). |
+| **Tier 1.1 / 2.1 / 2.2 / 2.3 / 3.2 / 3.3 (audit tiers)** | Numbered remediation categories from the 2026-04-21 Gemini audit. 1.1 = measurement adoption ledger. 2.1 = runtime smoke gates. 2.2 = contemporaneous logging. 2.3 = data quality tiers. 3.2 = documentation-debt ledger. 3.3 = external replication. NOT the same as the T1/T2/T3 data-quality labels — these are remediation buckets. |
+| **Phase / sub-phase** | A feature's `current_phase` is one of: research, prd, tasks, ux_or_integration, implement, test, review, merge, docs, complete. Each entered phase has a `status` block under `phases.<phase>` with `started_at`, `completed_at`, and one of `in_progress` / `complete` / `skipped` / `approved`. |
+| **Work type** | One of: `feature` (10 phases), `enhancement` (4: tasks→implement→test→merge), `fix` (2: implement→test), `chore` (1: implement). Skipped phases recorded in audit trail. |
+| **state.json** | Per-feature canonical contract at `.claude/features/<name>/state.json`. The single source of truth for that feature's lifecycle. |
+| **state_owner enum** | Cross-repo schema field (v7.8.3+): `{"ft2", "fitme-story"}` — which repo owns the state.json file. Validated by `STATE_OWNER_LOCATION_MISMATCH` gate. |
+| **Phase E** | A post-promotion validation soak (typically 14 days) where no new gates ship and the operator watches `gate-coverage.jsonl` for unexpected `failure` rows. v7.9 Phase E: 2026-05-21 → 2026-06-04. |
+| **`make integrity-check`** | The cycle-time (72h cron) gate runner. Emits findings + advisories. Baseline goal: 0 findings + 0 advisory. |
+| **`make preflight WORK_TYPE=<>`** | The Phase 0.0 unified entry point (v7.8.6). Aggregates W1 ssh-agent + PR cache + branch isolation + integrity + drift + doc-debt + adoption baseline + work-type check into `.claude/shared/preflight-cache.json`. |
 
 ---
 

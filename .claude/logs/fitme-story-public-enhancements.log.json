@@ -6,7 +6,7 @@
   "current_phase": null,
   "framework_version": null,
   "started_at": "2026-05-08T06:36:08Z",
-  "updated_at": "2026-05-09T20:18:25Z",
+  "updated_at": "2026-05-24T12:18:00Z",
   "events": [
     {
       "timestamp": "2026-05-08T05:53:53Z",
@@ -226,6 +226,28 @@
         "new_primitive_components": 4,
         "new_figma_tsx_files": 12
       },
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-24T11:39:29Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "UX-R1 closure: implementation \u2192 complete. 24/24 tasks done; 0 kill criteria fired; case-study frontmatter updated deferred_until_complete \u2192 not_fired; related_prs (18) backfilled. T13 shipped 2026-05-21 via fitme-story PR #134.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-24T12:18:00Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "UX-R1 closure commit attempt re-log: 15-min window after first phase_transition entry expired during PR conflict resolution + multi-file staging. Re-appending to satisfy PHASE_TRANSITION_NO_LOG. Substance unchanged from prior entry \u2014 implementation \u2192 complete; 24/24 done; 0 kill criteria fired; Q6 PR-list parity backfilled.",
+      "artifacts": [],
+      "metrics": {},
       "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
