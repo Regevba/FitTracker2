@@ -1,7 +1,53 @@
 {
   "subexp_id": "phase2bis-subexp1",
-  "rq": "TBD — fill before lock per spec §1",
-  "endpoints": [],
+  "rq": "Does the silhouette signature reproduce on cloud endpoints beyond OpenAI direct? (Phase 2 baseline: silhouette 0.5566 at k=5 on openai/gpt-4o-mini single endpoint via streaming TTFT/TPS fingerprint, n=700 valid, 2026-04-30. Phase 2-bis Sub-exp 1 tests this generalization across 9 endpoints / 6 providers.)",
+  "endpoints": [
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o-mini",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-sonnet-4-6",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "google",
+      "endpoint": "gemini-2-flash",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "google",
+      "endpoint": "gemini-2-pro",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "vercel-ai-gateway",
+      "endpoint": "gpt-4o-mini",
+      "api_kind": "gateway"
+    },
+    {
+      "provider": "mistral",
+      "endpoint": "mistral-large-latest",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "xai",
+      "endpoint": "grok-4-1",
+      "api_kind": "direct"
+    }
+  ],
   "per_call_controls": {
     "calls_per_fire": 50,
     "max_output_tokens": 200,
@@ -11,11 +57,17 @@
     "system_prompt": null,
     "tools": null,
     "prompt_set_path": ".claude/shared/hadf/phase2bis-prompt-set.json",
-    "prompt_set_sha256": "TBD — computed at lock time"
+    "prompt_set_sha256": "7b4d9dc9000893fcbec1fde7c75c9e25b41bc2e7c8b05046d6f8a9dfd71c69a4"
   },
   "campaign_schedule": {
     "fires_per_day": 5,
-    "fire_times_utc": ["02:00", "08:00", "14:00", "18:00", "22:00"],
+    "fire_times_utc": [
+      "02:00",
+      "08:00",
+      "14:00",
+      "18:00",
+      "22:00"
+    ],
     "duration_days": 3
   },
   "primary_metric": "silhouette score at k=5",
@@ -27,8 +79,15 @@
     "wrapper preflight fails 3+ times consecutively"
   ],
   "trip_wires": [
-    {"name": "anchor_drift", "applies_to": "subexp3 only", "action": "methodology note, do not abort"},
-    {"name": "cost_overrun_3x", "action": "pause for operator review"}
+    {
+      "name": "anchor_drift",
+      "applies_to": "subexp3 only",
+      "action": "methodology note, do not abort"
+    },
+    {
+      "name": "cost_overrun_3x",
+      "action": "pause for operator review"
+    }
   ],
   "verdict_thresholds": {
     "pass_silhouette_min": 0.5,
@@ -36,8 +95,8 @@
     "fail_clusters_lt": 3
   },
   "harness_hardening_proof": {
-    "env_local_sha256_at_deploy": "TBD — computed at lock time",
-    "fix1_commit_hash": "TBD — git SHA where worktree-local venv was introduced",
+    "env_local_sha256_at_deploy": "TBD \u2014 blocked on operator restoring .env.local with cloud-AI API keys (lost in 2026-05-19 SSD migration; keys were never persisted to disk per oldssd-devssd-migration-verification-addendum-2026-05-25.md \u00a73.6). Compute via `shasum -a 256 .env.local` immediately before invoking scripts/hadf-phase2bis-lock-prereg.sh subexp1. This is the LAST remaining TBD before pre-reg can be locked.",
+    "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A \u2014 soak window scaffolding (12 tasks, all tests pass) (#316) \u2014 establishes worktree-local venv pattern (Fix #1) via scripts/hadf-phase2bis-collect.sh preflight Check A (venv binary executable)",
     "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp1-deliberate-break.log",
     "state_owner_at_creation": "ft2"
   }
