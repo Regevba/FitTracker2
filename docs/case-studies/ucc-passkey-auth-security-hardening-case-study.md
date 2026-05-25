@@ -109,27 +109,70 @@ Single-day execution against the 2026-05-20 EOD hard deadline (v7.9 freeze 2026-
 
 ## 4. Outcome (populated at T+7d, 2026-05-27)
 
-> Sections 4.1–4.5 are blank-by-design. The T+7d kill-criteria evaluation (cadence followup B11) populates these.
+> Sections 4.1–4.5 are blank-by-design. The T+7d kill-criteria evaluation (cadence followup B12) populates these.
+>
+> **T-2 prep (2026-05-25):** structured query templates added below so the 2026-05-27 evaluation is mechanical — operator runs templated queries, pastes observed values, picks a verdict. ~30 min total once the audit-log JSONL is in place.
 
 ### 4.1 Primary metric outcome
 
-TBD (2026-05-27)
+**Primary metric:** `auth_lockout_blocked_attempt_count_for_operator_ip` (target: 0)
+
+**Query (2026-05-27):**
+```bash
+# Count auth_lockout_blocked_attempt events for operator's IP class in audit log
+jq -s '[.[] | select(.event=="auth_lockout_blocked_attempt" and (.timestamp | fromdateiso8601) > (now - 7*86400))] | length' \
+  .claude/logs/ucc-auth-events.jsonl
+```
+
+**Observed:** TBD
+**Target:** 0
+**Verdict:** TBD (PASS if 0, FAIL otherwise)
 
 ### 4.2 Secondary metrics
 
-TBD (2026-05-27)
+| # | Metric | Query | Observed | Target | Verdict |
+|---|---|---|---|---|---|
+| 1 | `email_not_allowlisted` for `regvash21@gmail.com` (7d) | `jq -s '[.[] \| select(.event=="auth_passkey_register_failed" and .reason=="email_not_allowlisted" and (.email_hash // "")=="<operator_email_sha256>")] \| length'` | TBD | 0 | TBD |
+| 2 | Sign-in latency p50 delta vs pre-hardening | Vercel function logs → `/api/auth/passkey/authenticate/verify` p50 last-7d − pre-2026-05-20 p50 baseline | TBD ms | ≤+5 ms | TBD |
+| 3 | Redis quota usage (last 7d) | Upstash console → metrics → daily commands count | TBD / 10k/day | within free tier | TBD |
 
 ### 4.3 Kill-criteria resolution
 
-TBD (2026-05-27) — fills frontmatter `kill_criteria_resolution` field.
+Three kill criteria from frontmatter (`kill_criteria` block). Each requires explicit `not_fired` / `fired` + 1-line evidence. Fills frontmatter `kill_criteria_resolution` field.
+
+| K# | Criterion | Observed | Resolution (T1) | Action if FIRED |
+|---|---|---|---|---|
+| K1 | >0 `auth_lockout_blocked_attempt` for operator's IP class | TBD | `not_fired` / `fired` | Tune `EMAIL_LOCK_THRESHOLD` up (default 5 → 10) |
+| K2 | >0 `email_not_allowlisted` for `regvash21@gmail.com` | TBD | `not_fired` / `fired` | Fix `UCC_ALLOWED_EMAILS` env-var on Vercel |
+| K3 | Sign-in latency p50 increase >5ms | TBD ms | `not_fired` / `fired` | Investigate Redis round-trip overhead |
+
+**Frontmatter `kill_criteria_resolution` value template** (paste in YAML on 2026-05-27):
+```yaml
+kill_criteria_resolution: |
+  K1 not_fired [T1 — 0 auth_lockout_blocked_attempt events for operator IP class in 7d audit log scan, 2026-05-20→2026-05-27]
+  K2 not_fired [T1 — 0 email_not_allowlisted events for regvash21@gmail.com hash in 7d audit log scan]
+  K3 not_fired [T1 — sign-in p50 delta +Xms vs pre-2026-05-20 baseline, within ≤+5ms threshold]
+```
 
 ### 4.4 Hardening verdict
 
-TBD (PROMOTE / RECALIBRATE / ROLLBACK)
+Decision matrix based on §4.3:
+
+| K1 | K2 | K3 | Verdict | Next action |
+|---|---|---|---|---|
+| not_fired | not_fired | not_fired | **PROMOTE** | Mark `current_phase=complete`; state.json transition; hardening permanent |
+| fired (single) | * or * | * or * | **RECALIBRATE** | Apply tuning per §4.3 action column; re-arm at T+14d (2026-06-03) |
+| 2+ fired | — | — | **ROLLBACK** | Revert hardening via single-flag (spec §10 reversibility); investigate root cause before re-attempt |
+
+**Selected verdict (2026-05-27):** TBD
 
 ### 4.5 Latency impact (measured)
 
-TBD (2026-05-27 — measured p50 delta vs pre-hardening baseline)
+| Window | p50 (ms) | p95 (ms) | p99 (ms) | Source |
+|---|---|---|---|---|
+| Pre-hardening (2026-05-15 → 2026-05-19) | TBD | TBD | TBD | Vercel function logs |
+| Post-hardening (2026-05-20 → 2026-05-26) | TBD | TBD | TBD | Vercel function logs |
+| **Delta** | **TBD ms** | **TBD ms** | **TBD ms** | (K3 threshold: ≤+5ms p50) |
 
 ## 5. Telemetry signals to monitor (2026-05-20 → 2026-05-27)
 
@@ -191,3 +234,7 @@ export UPSTASH_REDIS_REST_TOKEN="$KV_REST_API_TOKEN"
 ## §99 Outcome (T+7d evaluation — 2026-05-27)
 
 To be populated by the operator + meta-analysis pass on 2026-05-27. Updates `kill_criteria_resolution` in the frontmatter + §4 above.
+
+**T-2 preparation completed 2026-05-25** (this commit) — §4 sections now carry structured query templates and decision matrix. The 2026-05-27 evaluation reduces to: (a) run the 3 queries in §4.1/§4.2, (b) fill the TBD cells, (c) select verdict from §4.4 matrix, (d) paste the rendered `kill_criteria_resolution` YAML block from §4.3 into frontmatter line 26.
+
+**Estimated 2026-05-27 wall-time:** ~30 min once the 7-day audit-log JSONL (`.claude/logs/ucc-auth-events.jsonl`) is in place via cadence followup B7 + B8 sync pipeline.

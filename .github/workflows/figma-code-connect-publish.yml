@@ -24,13 +24,13 @@ jobs:
             echo "FIGMA_ACCESS_TOKEN repo secret not set; skipping publish"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         if: steps.gate.outputs.skip != 'true'
         with:
           node-version: '24'
       - name: Cache SPM build artifacts
         if: steps.gate.outputs.skip != 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .figma-cc-tools/.build
