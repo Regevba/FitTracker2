@@ -2,7 +2,7 @@
   "name": "analytics-observability",
   "state_owner": "ft2",
   "framework_version": "v7.8.5",
-  "current_phase": "implementation",
+  "current_phase": "testing",
   "work_type": "Feature",
   "has_ui": true,
   "requires_analytics": true,
@@ -53,7 +53,7 @@
       "preflight_passed": null
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-14T04:30:00Z",
       "commits": [
         {
@@ -67,7 +67,7 @@
       "notes": "Implementation is multi-stream (Phase 1.A hygiene, Phase 2 live debugger, Phase 3 dashboards, D-* iOS). Phase 3.A green-bucket items 1-9 all shipped on disk by 2026-05-14 (3.A.0 FT2 docs + 3.A.1 fitme-story PR #108). Phase 3.A yellow-bucket items deferred to >=2026-06-04 per master plan \u00a77.5 calibration safety contract. phases.implementation will flip to complete only when all sub-streams converge."
     },
     "testing": {
-      "status": "pending",
+      "status": "in_progress",
       "ci_passed": false,
       "tests_added": 0,
       "instrumentation_verified": false,
@@ -408,7 +408,12 @@
         "ended_at": "2026-05-13T18:11:44Z"
       },
       "implementation": {
-        "started_at": "2026-05-13T18:11:44Z"
+        "started_at": "2026-05-13T18:11:44Z",
+        "ended_at": "2026-05-25T18:37:14Z"
+      },
+      "testing": {
+        "started_at": "2026-05-25T18:37:14Z",
+        "ended_at": null
       }
     }
   },
