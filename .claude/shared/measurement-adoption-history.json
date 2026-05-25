@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "description": "Append-only daily snapshots of Tier 1.1 measurement adoption. Dedup by date \u2014 at most one snapshot per day. Mirrors the documentation-debt history pattern; enables Tier 1.1 trend analysis after 3+ daily snapshots accumulate.",
+  "description": "Append-only daily snapshots of Tier 1.1 measurement adoption. Dedup by date — at most one snapshot per day. Mirrors the documentation-debt history pattern; enables Tier 1.1 trend analysis after 3+ daily snapshots accumulate.",
   "snapshots": [
     {
       "date": "2026-04-25",
@@ -780,7 +780,48 @@
           "post_v6_percent": 27.9
         }
       }
+    },
+    {
+      "date": "2026-05-25",
+      "generated_at": "2026-05-25T09:05:55Z",
+      "trigger": "manual",
+      "summary": {
+        "features_total": 79,
+        "features_post_v6": 45,
+        "features_pre_v6": 34,
+        "fully_adopted": 3,
+        "partial_adopted": 40,
+        "zero_adopted": 36,
+        "fully_adopted_post_v6": 3,
+        "tier_1_1_status": "partial"
+      },
+      "dimension_coverage": {
+        "timing_wall_time": {
+          "overall_present": 17,
+          "overall_percent": 21.5,
+          "post_v6_present": 17,
+          "post_v6_percent": 37.8
+        },
+        "per_phase_timing": {
+          "overall_present": 42,
+          "overall_percent": 53.2,
+          "post_v6_present": 39,
+          "post_v6_percent": 86.7
+        },
+        "cache_hits": {
+          "overall_present": 24,
+          "overall_percent": 30.4,
+          "post_v6_present": 23,
+          "post_v6_percent": 51.1
+        },
+        "cu_v2": {
+          "overall_present": 14,
+          "overall_percent": 17.7,
+          "post_v6_present": 14,
+          "post_v6_percent": 31.1
+        }
+      }
     }
   ],
-  "updated": "2026-05-24T03:41:32Z"
+  "updated": "2026-05-25T09:05:55Z"
 }
