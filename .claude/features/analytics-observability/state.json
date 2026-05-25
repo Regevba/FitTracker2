@@ -352,49 +352,43 @@
       "title": "Configure GA4 conversions (workout_complete + nutrition_meal_logged)",
       "status": "deferred",
       "phase": "implementation",
-      "earliest_start": "2026-06-04",
-      "blocked_until": "v7.9 ships",
+      "earliest_start": "app_store_launch",
+      "blocked_until": "app_store_launch",
       "effort": "5min",
       "calibration_class": "yellow",
-      "outcome": "(pending) Per docs/product/analytics-taxonomy.csv `Conversion: Yes` column: mark workout_complete + nutrition_meal_logged as conversions in GA4 Property 531124395. Current state verified 2026-05-17: 0 of 8 received events have isConversionEvent=true. Path: GA4 \u2192 Admin \u2192 Events \u2192 toggle 'Mark as conversion'. Verify post-flip via mcp__ga4__runReport with isConversionEvent dimension.",
+      "outcome": "(pending \u2014 deferred to app store launch) Per docs/product/analytics-taxonomy.csv `Conversion: Yes` column: mark workout_complete + nutrition_meal_logged as key events in GA4 Admin \u2192 Events. Activates conversion-funnel reporting in /control-room/analytics. 5min operator console action.",
       "files_touched": [],
       "source_event": "FIT-142 closure 2026-05-17",
-      "v7_9_1_candidate": true
+      "v7_9_1_candidate": true,
+      "defer_reason": "Operator decision 2026-05-25: GA4 conversion events have no meaningful signal in pre-launch TestFlight traffic where 100% of activeUsers are newUsers (same-day fresh installs from internal test cohort). Marking 'workout_complete' and 'nutrition_meal_logged' as conversions while the only traffic is operator + TestFlight beta would produce vanity numbers, not measurement. Reactivate when App Store launch is scheduled and real-user funnel data starts flowing. Per B3 daily-anomaly-check 2026-05-25: top-5 events for 2026-05-24 were screen_view (102), onboarding_step_viewed (63), user_engagement (63), first_open (46), session_start (45) \u2014 all infrastructure/onboarding events, no conversion candidates yet."
     },
     {
       "id": "D-3",
       "title": "Wire AnalyticsScreenModifier to main tabs (Home/Training/Stats/Nutrition/Settings) \u2014 screen-view tracking gap",
-      "status": "deferred",
+      "status": "complete",
       "phase": "implementation",
-      "earliest_start": "2026-06-04",
-      "blocked_until": "v7.9 ships",
       "effort": "1-2h",
       "calibration_class": "yellow",
-      "outcome": "(pending) Discovered 2026-05-17 during FIT-142 iOS investigation: analytics.logScreenView only called from 15 onboarding views. Main app tabs have ZERO explicit screen-view tracking. AnalyticsScreenModifier exists at FitTracker/Services/Analytics/AnalyticsScreenModifier.swift:9 but isn't applied. Symptom in GA4: Firebase auto-screen_view fires with screen_class='SwiftUIView' for ALL non-onboarding views \u2192 no screen-prefix funnel possible per analytics-taxonomy convention. Fix: apply .trackedScreen(AnalyticsScreen.<name>) modifier to each tab's root view.",
+      "outcome": "Closed 2026-05-25. SettingsView v2 was the only missing tab root view \u2014 Home / Training / Nutrition / Stats were already wired (Home via Main/v2/MainScreenView.swift:103; Training + Nutrition + Stats via RootTabView.swift:204-207 call-site modifier). Added `.analyticsScreen(AnalyticsScreen.settings)` after `.onAppear` block at FitTracker/Views/Settings/v2/SettingsView.swift:190 \u2014 fires `screen_view` event when the Settings sheet appears (presented from RootTabView profile button \u2192 ProfileView \u2192 SettingsView). Closes the GA4 screen-prefix drift: future settings_* events now have an instrumented screen-view ancestor for funnel analysis.",
       "files_touched": [
-        "FitTracker/Views/Main/MainScreenView.swift (or v2)",
-        "FitTracker/Views/Training/v2/TrainingPlanView.swift",
-        "FitTracker/Views/Stats/...",
-        "FitTracker/Views/Nutrition/...",
         "FitTracker/Views/Settings/v2/SettingsView.swift"
       ],
       "source_event": "FIT-142 closure 2026-05-17",
-      "v8_docket_candidate_id": "F21",
-      "v7_9_1_candidate": true
+      "started_at": "2026-05-25T11:45:00Z",
+      "completed_at": "2026-05-25T11:45:00Z"
     },
     {
       "id": "D-4",
       "title": "Delete old com.regevba.FitTracker Firebase iOS app entry",
-      "status": "deferred",
+      "status": "complete",
       "phase": "implementation",
-      "earliest_start": "2026-06-04",
-      "blocked_until": "v7.9 ships",
       "effort": "1min",
       "calibration_class": "green",
-      "outcome": "(pending) Firebase project fitme-467e7 still has legacy iOS app entry for bundle com.regevba.FitTracker. Now orphaned: runtime uses com.fittracker.regev. Safe to delete: no client points at old appId 1:98024066974:ios:ab500a1a1fc5deb63a908f. Removes Firebase Console confusion. Path: Firebase Console \u2192 Project Settings \u2192 Your apps \u2192 click old card \u2192 Remove this app.",
+      "outcome": "Closed 2026-05-25 (operator-confirmed). Firebase project fitme-467e7 legacy iOS app entry for bundle com.regevba.FitTracker REMOVED via Firebase Console. New GoogleService-Info.plist for canonical bundle com.fittracker.regev already migrated into Xcode target. Operator verbal confirmation 2026-05-25. Firebase Console no longer surfaces the orphaned app card; GA4 stream remains bound to canonical bundle.",
       "files_touched": [],
       "source_event": "FIT-142 closure 2026-05-17",
-      "v7_9_1_candidate": true
+      "started_at": "2026-05-25T11:30:00Z",
+      "completed_at": "2026-05-25T11:30:00Z"
     }
   ],
   "figma_node_ids": {},
