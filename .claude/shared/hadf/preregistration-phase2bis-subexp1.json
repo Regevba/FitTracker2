@@ -95,7 +95,7 @@
     "fail_clusters_lt": 3
   },
   "harness_hardening_proof": {
-    "env_local_sha256_at_deploy": "TBD \u2014 blocked on operator restoring .env.local with cloud-AI API keys (lost in 2026-05-19 SSD migration; keys were never persisted to disk per oldssd-devssd-migration-verification-addendum-2026-05-25.md \u00a73.6). Compute via `shasum -a 256 .env.local` immediately before invoking scripts/hadf-phase2bis-lock-prereg.sh subexp1. This is the LAST remaining TBD before pre-reg can be locked.",
+    "env_local_sha256_at_deploy": "763fb6efe518eca3c8dd4de552d799d2f8124a076467a6fe45b72bcff6ef24a0",
     "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A \u2014 soak window scaffolding (12 tasks, all tests pass) (#316) \u2014 establishes worktree-local venv pattern (Fix #1) via scripts/hadf-phase2bis-collect.sh preflight Check A (venv binary executable)",
     "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp1-deliberate-break.log",
     "state_owner_at_creation": "ft2"
