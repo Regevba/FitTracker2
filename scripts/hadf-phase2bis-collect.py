@@ -274,10 +274,13 @@ def call_endpoint(provider, endpoint, prompt):
         return _call_google(api_key, endpoint, prompt, timeout_s)
 
     if provider == "mistral":
+        # Mistral's API is OpenAI-compatible — route via the openai SDK with
+        # base_url override (avoids mistralai 2.4.7's restructured namespace
+        # which dropped top-level `Mistral` export). Discovered 2026-05-25.
         api_key = os.environ.get("MISTRAL_API_KEY")
         if not api_key:
             raise RuntimeError("MISTRAL_API_KEY not set")
-        return _call_mistral(api_key, endpoint, prompt, timeout_s)
+        return _call_openai_compat(api_key, "https://api.mistral.ai/v1", endpoint, prompt, timeout_s)
 
     if provider == "xai":
         # xai is OpenAI-compatible — base_url override
