@@ -772,6 +772,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W14 Code Connect `figma.connect()` rejects page frames | W14 | 2026-05-20 |
 | W15 MDX `<digit` / `<non-letter` breaks page rendering | W15 | 2026-05-21 |
 | W16 Contract-boundary tests must sample from canonical producer | W16 | 2026-05-24 (v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING) |
+| W17 Stale-base branches — PR diff misleads; cherry-pick onto fresh main is ground truth | W17 | 2026-05-25 (v7.9.1 candidate F-STALE-BASE-DETECTION) |
 
 ---
 
@@ -781,7 +782,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-05-24 (added W16 — contract-boundary fixture sampling, v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING).
+Last refreshed: 2026-05-25 (added W17 — stale-base branch detection, v7.9.1 candidate F-STALE-BASE-DETECTION).
 
 ---
 
@@ -953,3 +954,73 @@ The test fixtures encoded the wrong field too. They validated the parser against
 **Stacking with F16 (try-repo harness, v7.9.1 candidate):** F16's positive/negative fixtures are *intra-repo* (FT2 gate fixtures). F-CONTRACT-FIXTURE-SAMPLING is the *cross-repo* sibling. Both stack on the same fixture-as-contract principle; both are runtime executable assertions that the catalog entry still holds.
 
 **First surfaced by:** PR-induced regression analysis 2026-05-24 after operator pushback ("not transient need to check deeper") on intermittent Vercel runtime error log. Root cause + hotfix shipped as fitme-story PR #146. Documented retrospectively here as a v7.9.1 process-pattern candidate so any future cross-repo synced-data feature (current count: 5; expected growth path: every new FT2-generated ledger that the website renders) cannot land with consumer-only-validated fixtures.
+
+---
+
+### W17 — Stale-base unmerged branches: `gh pr view` file list misleads; cherry-pick onto fresh `origin/main` is ground truth (2026-05-25)
+
+**Trigger:** any unmerged branch / draft PR that has sat through one or more merge waves on `main`. `git diff origin/main..<branch>` shows enormous "deletions" (often 1000s of lines, 20+ files) that don't appear in the branch's own commits. `gh pr view --json files` reports only the branch's actually-touched files (e.g. 6); the merge-time effective diff is much larger.
+
+**Why expected:** GitHub computes a draft PR's file list against the branch's *original base SHA*, not against current `origin/main`. When `main` advances via squash-merges of unrelated work, every file added to `main` after the branch forked appears as "DELETED" in the branch's effective merge diff. The branch isn't actively deleting those files — it just doesn't have them — so merging as-is would revert all of them. `mergeStateStatus: BEHIND` is the GitHub-side warning, but the file-list misleads operators who don't drill into the `git diff` against current main.
+
+**Distinguishing real signal:**
+
+- **Stale-base (artifact):** `git diff origin/main..<branch> --shortstat` shows huge negative line counts (>500 deletions) and "files changed" >> the count of files actually touched by `git log origin/main..<branch>` commits. `mergeStateStatus: BEHIND`.
+- **Live (real content):** the diff stat matches what the branch's commits actually touch. No files in the diff are recent additions to main.
+
+**Detection commands:**
+
+```bash
+# Quick screen — patch-id match against main
+git cherry origin/main <branch>
+#   - prefix on each commit = ALREADY on main (zombie)
+#   + prefix on each commit = appears new
+# NOTE: misses squash-merge zombies (patch-ids differ from squashed equivalent).
+
+# Ground truth — cherry-pick onto fresh main, count non-empty results
+git worktree add -b _audit /tmp/audit origin/main
+cd /tmp/audit
+for c in $(git log origin/main..<branch> --reverse --format=%H); do
+  git cherry-pick --keep-redundant-commits $c
+done
+git rev-list --count origin/main..HEAD     # 0 → ZOMBIE; >0 → has real content
+```
+
+**Three classes of stale-base outcome:**
+
+1. **Zombie** — every cherry-pick produces an empty commit. All content already on main (typically because main re-shipped the same patch via a different branch). Safe to `git branch -D <branch>` locally + delete remote.
+2. **Content-zombie** — cherry-pick conflicts on a file, but inspection shows the branch's version is an OLDER subset of main's (e.g. branch has 27 lines of `ucc-auth-events.jsonl`, main has 43 = branch's 27 + 16 new events). Branch's intent has been fulfilled via different paths (daily-sync PR shipped the events; squash-merge PR shipped the bumps). Safe to delete after intent verification — diff size/direction is the signal.
+3. **Live** — cherry-pick produces real new content not on main. Rebase branch onto current main, audit the resulting clean diff, open a fresh PR.
+
+**Silence path:**
+
+For each stale-base branch, run the cherry-pick audit. Zombies + content-zombies get deleted. Live branches get rebased and PR'd fresh. If the work is already covered by other PRs (the content-zombie case), close any draft PR with an explanatory comment ("content shipped via PR #X; this branch's diff is stale-base phantom-revert; closing per W17") rather than merging — per [W4](#w4--no-auto-merge-without-explicit-approval).
+
+**Examples observed 2026-05-25 session:**
+
+- **PRs #484 + #488** (daily-digest + stale-state-sweep drafts) — opened earlier in the day, sat through 5 same-day merges (HADF runbook, oldSSD addendum, R-tracks, UCC hardening case study, integrity snapshots). `gh pr view --json files` showed 2 + 6 files; the actual merge-time diff was 9 + 23 files with phantom reverts of all the day's new docs. Closed with explanation; daily-digest re-generated cleanly off current main as PR #491 (3 files / +149 / -58 vs the original draft's 2 files / +38 / -827). PR #491 merged 17:54 UTC.
+- **Local branch GC** — 35 unpushed local branches enumerated at session-close; **33 turned out to be zombies or content-zombies** after the cherry-pick audit. Only 2 were genuinely live: `chore/dev-guide-v7-9-readability-pass-ft2-2026-05-24` (explicitly DEFERRED per memory) and a worktree-pinned in-flight branch (`chore/2026-05-25-cadence-followups-green-items` — 9 commits, several already overlap with PR #483).
+
+**Why this is dangerous if missed:**
+
+Merging a stale-base PR without rebasing reverts every file the branch doesn't know about. The 2026-05-25 draft PR #488 would have reverted: HADF runbook (-183), oldSSD addendum (-208), env template (-54), pre-reg lock, 12 R-track config files, integrity snapshot (-1172), UCC hardening case study modifications, and `scripts/hadf-phase2bis-collect.py` (-280). The `gh pr view --json files` API showed 6 files; the actual revert blast-radius was 23.
+
+**Prevention layer (v7.9.1 candidate F-STALE-BASE-DETECTION):**
+
+A pre-merge gate that compares the PR's "files changed" count (`gh pr view --json files`) against `git diff origin/main..<head> --stat` and raises a P0 advisory when the ratio diverges by >2× — typical signal of phantom-revert. The per-PR review bot already worktree-captures `origin/main baseline`; extending it to surface the stale-base ratio explicitly would close this silent-pass. Stacks with [W11 — Incomplete PR cache](#w11--incomplete-pr-cache-one-of-two-expected-repos-absent) as a "PR-time sanity check" class. Sibling of [W16 — Contract-boundary fixture sampling](#w16--contract-boundary-tests-must-use-a-sample-drawn-from-the-canonical-producer-not-the-consumers-expected-shape-2026-05-24) in that both detect "the diff that ships ≠ the diff the operator reviewed."
+
+**Operator workflow (session close):**
+
+1. `git for-each-ref --format='%(refname:short)' refs/heads/` — enumerate local branches
+2. For each branch ahead of `origin/main` (and not checked out in a worktree), run cherry-pick audit
+3. Delete zombies + content-zombies (`git branch -D <branch>`)
+4. For genuinely-live branches: rebase onto main, push, open fresh PR
+5. After 2-3 merge waves, even week-old branches usually become zombies — making this a daily/weekly cleanup, not exceptional
+
+**Related patterns:**
+
+- [W4](#w4--no-auto-merge-without-explicit-approval) — never auto-merge a stale-base PR; always per-PR approval
+- [W10](#w10--stale-gone-branches--orphan-worktrees-surfaced-by-daily-checkpoint) — daily checkpoint warns about local branches whose REMOTE is gone; W17 extends to branches whose CONTENT is gone (already shipped via different patch path)
+- [W16](#w16--contract-boundary-tests-must-use-a-sample-drawn-from-the-canonical-producer-not-the-consumers-expected-shape-2026-05-24) — sibling pattern; both detect "the artifact you reviewed ≠ the artifact that ships"
+
+**First surfaced by:** 2026-05-25 session — initially as a near-miss on draft PRs #484 + #488 (closed via Path 2 = "close + regenerate fresh on current main"). Pattern then verified at scale via a 35-branch local-state audit yielding 33 deletions: 4 confirmed clean ZOMBIES + 10 MANUAL-conflict content-zombies + 11 pre-bulk-audit zombies + 7 `pr-*` tracking branches of CLOSED PRs + 1 stale `claude/*` session branch. Worktrees cleaned: 2 (123 MB reclaimed). Stashes dropped: 3.
