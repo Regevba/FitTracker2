@@ -385,16 +385,15 @@
     {
       "id": "D-4",
       "title": "Delete old com.regevba.FitTracker Firebase iOS app entry",
-      "status": "deferred",
+      "status": "complete",
       "phase": "implementation",
-      "earliest_start": "2026-06-04",
-      "blocked_until": "v7.9 ships",
       "effort": "1min",
       "calibration_class": "green",
-      "outcome": "(pending) Firebase project fitme-467e7 still has legacy iOS app entry for bundle com.regevba.FitTracker. Now orphaned: runtime uses com.fittracker.regev. Safe to delete: no client points at old appId 1:98024066974:ios:ab500a1a1fc5deb63a908f. Removes Firebase Console confusion. Path: Firebase Console \u2192 Project Settings \u2192 Your apps \u2192 click old card \u2192 Remove this app.",
+      "outcome": "Closed 2026-05-25 (operator-confirmed). Firebase project fitme-467e7 legacy iOS app entry for bundle com.regevba.FitTracker REMOVED via Firebase Console. New GoogleService-Info.plist for canonical bundle com.fittracker.regev already migrated into Xcode target. Operator verbal confirmation 2026-05-25. Firebase Console no longer surfaces the orphaned app card; GA4 stream remains bound to canonical bundle.",
       "files_touched": [],
       "source_event": "FIT-142 closure 2026-05-17",
-      "v7_9_1_candidate": true
+      "started_at": "2026-05-25T11:30:00Z",
+      "completed_at": "2026-05-25T11:30:00Z"
     }
   ],
   "figma_node_ids": {},
