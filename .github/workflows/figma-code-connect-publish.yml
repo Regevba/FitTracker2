@@ -30,7 +30,7 @@ jobs:
           node-version: '24'
       - name: Cache SPM build artifacts
         if: steps.gate.outputs.skip != 'true'
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             .figma-cc-tools/.build
