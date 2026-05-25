@@ -1,0 +1,66 @@
+################################################################################
+# Slather — iOS code-coverage reporter
+#
+# Part of R9 (dev-env-master-plan-2026-05-24): add coverage instrumentation
+# across iOS (Slather), web (c8), and Python (pytest-cov). This config covers
+# the iOS portion. xcodebuild already emits per-test coverage when invoked
+# with `-enableCodeCoverage YES`; Slather aggregates the .xcresult bundle
+# into human-readable reports + LCOV for upstream tooling (Codecov, SonarCloud,
+# v8.0 GATE_TEST_MISSING meta-gate per T1 in backlog).
+#
+# USAGE (local):
+#   1. Run tests with coverage enabled (Makefile target uses -enableCodeCoverage YES):
+#        make test
+#      OR direct xcodebuild:
+#        xcodebuild test -workspace FitTracker.xcworkspace -scheme FitTracker \
+#          -destination 'platform=iOS Simulator,name=iPhone 16' \
+#          -enableCodeCoverage YES -derivedDataPath .build/coverage-derived
+#   2. Generate the report:
+#        slather coverage --html --output-directory .build/coverage-report
+#      OR plain-text:
+#        slather coverage --simple-output
+#      OR LCOV (for Codecov upload / CI consumption):
+#        slather coverage --cobertura-xml --output-directory .build/coverage-xml
+#
+# INSTALL (operator one-time):
+#   gem install slather
+#   # OR via Bundler:
+#   bundle add slather --group test
+#
+# IGNORE PATTERNS — exclude Pods, generated tokens, design-system templates,
+# and test files themselves. Edit cautiously: excluding too much hides genuine
+# coverage gaps that R9 + T1 are meant to surface.
+#
+# This file lives at FT2 root (not infra-glob); operator updates are PR-able
+# without isolated worktree.
+################################################################################
+
+coverage_service: cobertura_xml
+xcodeproj: FitTracker.xcodeproj
+workspace: FitTracker.xcworkspace
+scheme: FitTracker
+configuration: Debug
+
+# Output directories (gitignored via .gitignore .build/)
+output_directory: .build/coverage-report
+binary_basename:
+  - FitTracker
+
+# Source files to include in coverage analysis
+source_files:
+  - FitTracker/**/*.swift
+
+# Paths to ignore — coverage on these provides no signal
+ignore:
+  # Generated tokens (no logic to cover)
+  - "FitTracker/DesignSystem/DesignTokens.swift"
+  # Historical v1 files retained per V2 Rule (HISTORICAL marker excludes from build but kept for diff)
+  - "FitTracker/**/HISTORICAL_*.swift"
+  # Test files themselves
+  - "**/*Tests.swift"
+  - "FitTrackerTests/**/*.swift"
+  - "FitTrackerUITests/**/*.swift"
+  # Pods (third-party — not our coverage to claim)
+  - "Pods/**/*.swift"
+  # Generated Swift-package interfaces
+  - "*.generated.swift"

@@ -767,6 +767,11 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W9 Branch-drift from concurrent-session collision (DETECTED via PostToolUse:Bash hook) | W9 | 2026-05-13 |
 | W10 Stale `[gone]` branches + orphan worktrees | W10 | 2026-05-15 |
 | W11 Incomplete PR cache (one of two expected repos absent) | W11 | 2026-05-16 |
+| W12 `vercel env pull` returns empty for Sensitive vars | W12 | 2026-05-20 |
+| W13 Upstash `KV_*` vs `UPSTASH_REDIS_REST_*` naming asymmetry | W13 | 2026-05-20 |
+| W14 Code Connect `figma.connect()` rejects page frames | W14 | 2026-05-20 |
+| W15 MDX `<digit` / `<non-letter` breaks page rendering | W15 | 2026-05-21 |
+| W16 Contract-boundary tests must sample from canonical producer | W16 | 2026-05-24 (v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING) |
 
 ---
 
@@ -776,7 +781,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-05-15.
+Last refreshed: 2026-05-24 (added W16 — contract-boundary fixture sampling, v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING).
 
 ---
 
@@ -902,3 +907,49 @@ The character cited (`5` here) is whatever character followed an unescaped `<` i
 **Prevention layer (operator action item for next session):** add MDX render to the verify CI workflow for fitme-story, OR require Vercel preview success in branch protection. Both close the silent-pass class for this category of bug.
 
 **First surfaced by:** fitme-story PR #129 (v7.9 dev-guide page bump, 2026-05-21). The bad string `<5 min` was authored as part of the v7.9 docs sweep. Caught + fixed within ~2 hours via hotfix PR #130 (no end-user-visible regression because Vercel served the previous successful deploy). Documented retrospectively here so the next operator authoring MDX content checks for `<digit` / `<non-letter` patterns before merging.
+
+---
+
+### W16 — Contract-boundary tests must use a sample drawn from the canonical producer, not the consumer's expected shape (2026-05-24)
+
+**Trigger:** A server component on the fitme-story `/control-room/framework` page rendered a 200 OK *error boundary* on every visit. Vercel runtime logs (truncated) showed `TypeError: Cannot read prop...`. Full local trace:
+
+```text
+TypeError: Cannot read properties of undefined (reading 'localeCompare')
+    at gate-coverage-aggregator.ts:36 — all.sort((a, b) => a.ts.localeCompare(b.ts))
+    at aggregateGateCoverage
+    at loadGateCoverage (page.tsx:46)
+    at FrameworkHealthPage (page.tsx:292)
+```
+
+Dormant since v7.8.3 Phase 1 C-4 ship (fitme-story PR #86, 2026-05-11) — error required ≥1 synced FT2 event to manifest, then deterministic on every render thereafter. Site continued serving the previous successful deploy of all *other* routes, so the broken `/control-room/framework` page was the only end-user-visible symptom.
+
+**Why expected:** Schema mismatch between producer and consumer, where the tests on both sides agreed with the consumer rather than the producer:
+
+| Side | File | Field emitted / expected |
+|---|---|---|
+| Producer (canonical) | FT2 `scripts/gate_coverage.py:101` | `{"timestamp": "..."}` |
+| Consumer | fitme-story `src/lib/control-room/gate-coverage-aggregator.ts:36` | expected `a.ts` |
+| Test fixture | fitme-story `gate-coverage-aggregator.test.ts` | hand-written `{"ts": "..."}` — **same wrong field as the consumer**, so tests stayed green for 13 days |
+
+The test fixtures encoded the wrong field too. They validated the parser against the contract the parser *invented*, not the contract the upstream producer actually emits. Schema mismatch was invisible to:
+
+1. Pre-commit hooks (no static cross-repo schema check)
+2. PR-level CI (tests pass with the matching wrong fixture)
+3. Vercel preview deploy (`/control-room/framework` is basic-auth gated, so the preview smoke skips it — see W12 family)
+4. The next 13 days of production renders (Next.js error boundary returned 200, so uptime monitors stayed green)
+
+**Signal vs noise rule:** Always signal — schema mismatch is exactly the silent-pass class v7.8 Mechanisms A + B were built to eliminate at the *gate* layer. W16 extends the same principle to *cross-repo data contracts that flow through synced ledgers*.
+
+**Silence paths (in order of preference):**
+
+1. **Fixtures sampled from the real producer.** Prefer copying one row of actual production output (`head -1 .claude/logs/gate-coverage.jsonl`) into a `*.fixture.jsonl` file checked into the consumer's tests. The fixture file gets re-sampled on the consumer side whenever the producer schema bumps.
+2. **Shared TypeScript / JSON-Schema interface.** Producer side emits to a shape declared in `.claude/shared/schemas/gate-coverage.schema.json`; consumer side validates with `ajv` (or equivalent) at parse time. Mismatch surfaces immediately at the consumer's first run.
+3. **Normalize at parse, accept legacy alias.** The W16 hotfix (PR #146) renamed `GateEvent.ts → GateEvent.timestamp` to match the canonical producer field, and made `parseLines` accept both via a `RawGateEvent` shape that normalizes (`raw.timestamp ?? raw.ts ?? ''`). Defensive sort comparator fallback (`?? ''`) makes a malformed row degrade to "render but unsorted" instead of crashing the page. Backward-compat is preserved for any legacy fixtures or stale ledger files still on disk.
+4. **Defensive nullish-coalescing on every boundary access.** When the consumer doesn't control the producer schema (third-party data sources, Vercel runtime metadata, etc.), every accessor on a `unknown` JSON field should `?? <safe-default>` before being passed into a method call. Forces the failure mode to be "missing value rendered as empty" rather than "page crash."
+
+**Prevention layer (operator action item — promoted to v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING):** add a `make sample-contract-fixtures` target to FT2 that copies one production row per cross-repo data feed (`gate-coverage.jsonl`, `measurement-adoption.json`, `documentation-debt.json`, `integrity-cycle/snapshots/*.json`) into a `tests/fixtures/cross-repo-contracts/` directory checked into both repos. The fitme-story prebuild step then asserts the live data file's keys are a superset of the fixture's keys. Closes the silent-pass class for *all* cross-repo data contracts, not just gate-coverage.
+
+**Stacking with F16 (try-repo harness, v7.9.1 candidate):** F16's positive/negative fixtures are *intra-repo* (FT2 gate fixtures). F-CONTRACT-FIXTURE-SAMPLING is the *cross-repo* sibling. Both stack on the same fixture-as-contract principle; both are runtime executable assertions that the catalog entry still holds.
+
+**First surfaced by:** PR-induced regression analysis 2026-05-24 after operator pushback ("not transient need to check deeper") on intermittent Vercel runtime error log. Root cause + hotfix shipped as fitme-story PR #146. Documented retrospectively here as a v7.9.1 process-pattern candidate so any future cross-repo synced-data feature (current count: 5; expected growth path: every new FT2-generated ledger that the website renders) cannot land with consumer-only-validated fixtures.

@@ -20,6 +20,7 @@ dependencies = [
 dev = [
     "pytest>=8.2.0",
     "pytest-asyncio>=0.23.0",
+    "pytest-cov>=5.0.0",
     "httpx[asgi]>=0.27.0",
 ]
 
@@ -29,3 +30,73 @@ packages = ["app"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+# R8 (dev-env-master-plan-2026-05-24) — ruff lint + format config for ai-engine.
+# Track A only: ships config. Makefile lint-py target ships in Track B
+# (infra-glob, isolated worktree, post-Phase-E ~2026-06-04).
+#
+# Companion to FT2 root .ruff.toml (which covers scripts/).
+#
+# USAGE (operator):
+#   pip install -e '.[dev]'   # ruff is NOT in dev deps yet; install separately:
+#   pip install ruff
+#   ruff check .
+#   ruff format . --check
+#   ruff check --fix .
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [".coverage", "coverage.xml", "htmlcov"]
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W", "B", "UP", "PIE", "SIM", "RUF",
+]
+ignore = [
+    "E501",   # handled by formatter line-length
+    "B008",   # function calls in defaults (argparse, FastAPI Depends)
+    "SIM108", # ternary readability — let humans decide
+    "RUF012", # mutable class attrs — not a real risk in app scope
+]
+fixable = ["E", "F", "UP", "PIE", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["UP015"]
+"**/__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# R9 (dev-env-master-plan-2026-05-24) — coverage instrumentation.
+# Invoke locally:
+#   pip install -e '.[dev]'         # installs pytest-cov
+#   pytest --cov                    # uses [tool.coverage.*] config below
+#   pytest --cov --cov-report=html  # full HTML report at ./htmlcov/
+#   pytest --cov --cov-report=xml   # Cobertura XML (for Codecov / CI consumption)
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = [
+    "app/__init__.py",
+    "app/main.py",
+    "tests/*",
+]
+
+[tool.coverage.report]
+# Fail-under stays unset for R9 ship; v8.0 GATE_TEST_MISSING meta-gate (T1
+# in backlog) will set per-module thresholds once a 30-day baseline exists.
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.coverage.xml]
+output = "coverage.xml"
