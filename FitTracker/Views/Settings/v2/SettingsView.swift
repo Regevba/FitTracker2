@@ -187,6 +187,7 @@ struct SettingsView: View {
             .onAppear {
                 applyReviewRouteIfNeeded()
             }
+            .analyticsScreen(AnalyticsScreen.settings)
         }
     }
 

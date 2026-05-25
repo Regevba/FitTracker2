@@ -364,23 +364,17 @@
     {
       "id": "D-3",
       "title": "Wire AnalyticsScreenModifier to main tabs (Home/Training/Stats/Nutrition/Settings) \u2014 screen-view tracking gap",
-      "status": "deferred",
+      "status": "complete",
       "phase": "implementation",
-      "earliest_start": "2026-06-04",
-      "blocked_until": "v7.9 ships",
       "effort": "1-2h",
       "calibration_class": "yellow",
-      "outcome": "(pending) Discovered 2026-05-17 during FIT-142 iOS investigation: analytics.logScreenView only called from 15 onboarding views. Main app tabs have ZERO explicit screen-view tracking. AnalyticsScreenModifier exists at FitTracker/Services/Analytics/AnalyticsScreenModifier.swift:9 but isn't applied. Symptom in GA4: Firebase auto-screen_view fires with screen_class='SwiftUIView' for ALL non-onboarding views \u2192 no screen-prefix funnel possible per analytics-taxonomy convention. Fix: apply .trackedScreen(AnalyticsScreen.<name>) modifier to each tab's root view.",
+      "outcome": "Closed 2026-05-25. SettingsView v2 was the only missing tab root view \u2014 Home / Training / Nutrition / Stats were already wired (Home via Main/v2/MainScreenView.swift:103; Training + Nutrition + Stats via RootTabView.swift:204-207 call-site modifier). Added `.analyticsScreen(AnalyticsScreen.settings)` after `.onAppear` block at FitTracker/Views/Settings/v2/SettingsView.swift:190 \u2014 fires `screen_view` event when the Settings sheet appears (presented from RootTabView profile button \u2192 ProfileView \u2192 SettingsView). Closes the GA4 screen-prefix drift: future settings_* events now have an instrumented screen-view ancestor for funnel analysis.",
       "files_touched": [
-        "FitTracker/Views/Main/MainScreenView.swift (or v2)",
-        "FitTracker/Views/Training/v2/TrainingPlanView.swift",
-        "FitTracker/Views/Stats/...",
-        "FitTracker/Views/Nutrition/...",
         "FitTracker/Views/Settings/v2/SettingsView.swift"
       ],
       "source_event": "FIT-142 closure 2026-05-17",
-      "v8_docket_candidate_id": "F21",
-      "v7_9_1_candidate": true
+      "started_at": "2026-05-25T11:45:00Z",
+      "completed_at": "2026-05-25T11:45:00Z"
     },
     {
       "id": "D-4",
