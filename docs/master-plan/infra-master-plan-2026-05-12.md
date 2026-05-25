@@ -663,6 +663,10 @@ The six v7.8 bridge mechanisms (A coverage gates, B schema dual-read, C session 
 - [`dev-env-master-plan-2026-05-24.md`](dev-env-master-plan-2026-05-24.md) — dev-env stability & scale sub-doc (R1–R24 source; chore-cadence, NOT in v7.9.1 / v8.x F-series docket). Source audit at [`docs/research/2026-05-19-dev-env-audit-stability-and-scale.md`](../research/2026-05-19-dev-env-audit-stability-and-scale.md)
 - [`ui-ux-master-plan-2026-05-24.md`](ui-ux-master-plan-2026-05-24.md) — UI/UX sub-doc covering both surfaces (iOS + website). 26 shipped + 9 in-flight + ~23 open backlog items cross-referenced with parent features. Drives per-screen v2 alignment, design-system evolution, ui-audit P1 drift, Code Connect bridge, and UCC operator-dashboard polish. NOT in v7.9.1 / v8.x F-series docket — items ship as feature/enhancement/chore per their own cadence.
 
+### Addenda (one-off verification + post-mortem records)
+
+- [`oldssd-devssd-migration-verification-addendum-2026-05-25.md`](oldssd-devssd-migration-verification-addendum-2026-05-25.md) — formal git cross-reference (recovery-mode inspection) verifying the 2026-05-19 SSD migration preserved 100% of work. Demotes oldSSD from primary canonical to redundant tertiary backup. Companion memory + raw evidence snapshot at `~/Documents/FitTracker2-backups/2026-05-25-oldssd-devssd-cross-reference-addendum/`. §6 includes a re-runnable verification methodology for future SSD migrations.
+
 ### Source documents folded into this plan
 
 - [`master-plan-2026-04-15.md`](master-plan-2026-04-15.md) — current product master plan (v7.8.3 banner added 2026-05-11)
