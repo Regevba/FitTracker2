@@ -24,12 +24,12 @@
     },
     {
       "provider": "google",
-      "endpoint": "gemini-2-flash",
+      "endpoint": "gemini-2.5-flash",
       "api_kind": "direct"
     },
     {
       "provider": "google",
-      "endpoint": "gemini-2-pro",
+      "endpoint": "gemini-2.5-pro",
       "api_kind": "direct"
     },
     {
