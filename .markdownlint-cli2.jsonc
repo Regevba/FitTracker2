@@ -1,0 +1,103 @@
+// R12 (dev-env-master-plan-2026-05-24) — markdownlint-cli2 config for FT2.
+//
+// Track A only: ships config. Makefile `lint-md` target + integration with
+// `verify-local` is Track B (infra-glob, isolated worktree, post-Phase-E).
+//
+// USAGE (operator, local — until Track B lands):
+//   npx markdownlint-cli2 "**/*.md" "#node_modules" "#.build"
+// OR install once:
+//   npm install -g markdownlint-cli2
+//   markdownlint-cli2 "**/*.md"
+//
+// PHILOSOPHY: warn-only baseline at Track A ship. v7.9 Phase E forbids new
+// enforcement gates; findings surface for operator visibility without blocking
+// commits. v8.0 may promote selected rules to errors after a 30-day baseline.
+//
+// Sources of pre-existing lint noise (already flagged by editor MD060/MD032):
+//   - master-plan tables use compact pipe style — disabled MD060
+//   - audit reports + case studies are long-form prose — relaxed line-length
+//   - mermaid diagrams in dev-guide use untagged fences — relaxed MD040
+
+{
+  // Glob patterns (markdownlint-cli2 syntax — first entries are includes,
+  // entries starting with `!` are excludes, entries starting with `#` are
+  // ignore comments in legacy form)
+  "globs": [
+    "**/*.md"
+  ],
+
+  "ignores": [
+    "node_modules/**",
+    ".build/**",
+    ".cache/**",
+    ".swiftpm/**",
+    "Pods/**",
+    "DerivedData/**",
+    "trust/audits/**/raw-transcripts/**",
+    // External audit raw transcripts ship verbatim — no lint
+    "docs/audits/runs/**/raw-transcripts/**",
+    // Per .gitignore — backup contents may contain stale prose
+    "~/Documents/FitTracker2-backups/**"
+  ],
+
+  "config": {
+    // Default: most rules enabled
+    "default": true,
+
+    // ── Disabled / relaxed rules with reasoning ────────────────────────────
+    // MD013 line-length — case studies, audit reports, master plans
+    // routinely contain long sentences + URLs + tables. Hard wrap fights
+    // the prose style. v8.0 may revisit.
+    "MD013": false,
+
+    // MD060 / MD056 table style — pre-existing inconsistency across many
+    // files (compact-pipe style in master plans, padded in case studies).
+    // Enforce a single style would require a one-shot reformat PR; out of
+    // scope for Track A.
+    "MD060": false,
+    "MD056": false,
+
+    // MD040 fenced-code-language — many doc fences use plaintext for
+    // ASCII art / diagrams. Allow untagged fences.
+    "MD040": false,
+
+    // MD041 first-line H1 — some files (READMEs in subdirs, change-log
+    // fragments) deliberately start with a YAML frontmatter or H2.
+    "MD041": false,
+
+    // MD033 inline-html — markdown tables sometimes need `<br>` for
+    // multi-line cells, and MDX docs intentionally contain JSX.
+    "MD033": false,
+
+    // MD024 no-duplicate-headings — long master plans have repeated
+    // section names ("Files", "Verification", "Cross-references") which
+    // is a deliberate documentation pattern. v8.0 may revisit with
+    // `siblings_only: true`.
+    "MD024": false,
+
+    // ── Tuned rules with custom thresholds ─────────────────────────────────
+    // MD007 ul-indent — Markdown allows 2 OR 4 spaces; project uses both
+    "MD007": {
+      "indent": 2
+    },
+
+    // MD025 single-H1 — enforce one H1 per doc but allow YAML frontmatter
+    // above it (frontmatter is the default exception in most linters).
+    "MD025": {
+      "level": 1,
+      "front_matter_title": "^\\s*title\\s*[:=]"
+    },
+
+    // MD029 ol-prefix — projects use "1. 2. 3." (ordered, not all-1s)
+    "MD029": {
+      "style": "ordered"
+    },
+
+    // MD032 blanks-around-lists — required. This is one of the rules
+    // that does catch real readability issues in long markdown files.
+    "MD032": true,
+
+    // MD031 blanks-around-fences — required (helps editor folding)
+    "MD031": true
+  }
+}
