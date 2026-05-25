@@ -33,15 +33,17 @@ from pathlib import Path
 # Endpoint matrices per sub-exp (spec §2)
 ENDPOINTS = {
     "subexp1": [
+        # 2026-05-25 launch matrix narrowed to original Phase 2 intent
+        # (openai + anthropic) per operator decision after smoke-fire revealed:
+        # - gemini-2.5-flash + gemini-2.5-pro are reasoning models (different signal class)
+        # - mistral/xai/vercel-ai-gateway had placeholder keys
+        # Full 9-endpoint matrix (subexp1-full) queued for follow-up Sub-exp 1B after
+        # key acquisition + reasoning-model investigation. See docs/master-plan/
+        # hadf-phase2bis-key-acquisition-runbook-2026-05-25.md
         ("openai", "gpt-4o-mini", "direct"),
         ("openai", "gpt-4o", "direct"),
         ("anthropic", "claude-haiku-4-5", "direct"),
         ("anthropic", "claude-sonnet-4-6", "direct"),
-        ("google", "gemini-2.5-flash", "direct"),
-        ("google", "gemini-2.5-pro", "direct"),
-        ("vercel-ai-gateway", "gpt-4o-mini", "gateway"),
-        ("mistral", "mistral-large-latest", "direct"),
-        ("xai", "grok-4-1", "direct"),
     ],
     "subexp2": [
         ("ollama", "llama3.2:3b", "local"),
