@@ -1,0 +1,121 @@
+# R7 (dev-env-master-plan-2026-05-24) — SwiftLint config for FitTracker iOS.
+#
+# Track A only: ships the rules file. The Makefile lint-ios target +
+# Xcode build-phase integration are Track B (infra-glob, needs isolated
+# worktree per BRANCH_ISOLATION_VIOLATION Mode B; planned post-Phase-E
+# ~2026-06-04).
+#
+# USAGE (operator, local — until Track B lands):
+#   1. Install SwiftLint:
+#        brew install swiftlint
+#   2. Run from FT2 root:
+#        swiftlint lint --quiet
+#      Or with auto-fix where supported:
+#        swiftlint --fix
+#
+# RULE PHILOSOPHY: warn-only baseline. v7.9 Phase E forbids new
+# enforcement gates; SwiftLint findings surface for operator visibility
+# but never block commits. v8.0 may promote selected rules to errors
+# after a 30-day baseline accumulates.
+
+# ── What gets linted ─────────────────────────────────────────────────────────
+included:
+  - FitTracker/
+
+excluded:
+  # Generated tokens (no semantic lint signal)
+  - FitTracker/DesignSystem/DesignTokens.swift
+  # V2 Rule HISTORICAL files — retained for diff but excluded from build
+  - FitTracker/**/HISTORICAL_*.swift
+  # Test files — different style budget (per session 2026-05-08 feedback)
+  - FitTrackerTests/
+  - FitTrackerUITests/
+  # SPM build artifacts + Xcode derived data
+  - .build/
+  - .swiftpm/
+  - DerivedData/
+  - Pods/
+
+# ── Severity defaults — warn-only at Track A ship ────────────────────────────
+# Override per-rule severity below for any rule where we want errors. None
+# escalated at Track A ship time; v8.0 calibration window will tune these
+# based on the actual baseline counts.
+
+# ── Disabled rules (intentional, with reasoning) ─────────────────────────────
+disabled_rules:
+  # `line_length` 120 default is too restrictive for SwiftUI ViewBuilder code
+  # which routinely produces long expressive view chains. v8.0 may re-enable
+  # with a project-tuned threshold (likely 160-200).
+  - line_length
+
+  # `trailing_comma` policy is opinionated; project has not yet codified one
+  - trailing_comma
+
+  # `file_length` — defer until v8.0 module split discussion. Current top-N
+  # files include several historical pre-V2 surfaces that legitimately need
+  # >400 lines.
+  - file_length
+
+  # `type_body_length` — same reason as file_length
+  - type_body_length
+
+  # `function_body_length` — same reason
+  - function_body_length
+
+  # `large_tuple` (default >2) is over-pedantic for analytics event payloads
+  - large_tuple
+
+  # `cyclomatic_complexity` — defer to v8.0 with proper threshold tuning
+  # against an established baseline
+  - cyclomatic_complexity
+
+  # `nesting` — over-pedantic for SwiftUI ViewBuilder + opaque return types
+  - nesting
+
+# ── Opt-in rules (recommended community rules not on by default) ─────────────
+opt_in_rules:
+  # Modernization
+  - empty_count            # Use isEmpty instead of count == 0
+  - empty_string           # Use isEmpty instead of == ""
+  - first_where            # Use .first(where:) instead of .filter().first
+  - last_where             # Use .last(where:) instead of .filter().last
+  - contains_over_filter_count  # Use .contains over .filter().count
+  - sorted_first_last      # Use .min()/.max() over .sorted().first/.last
+  - reduce_into            # Use reduce(into:) for mutable accumulator
+  # Code clarity
+  - explicit_init          # Don't write .init() when type is inferred
+  - redundant_nil_coalescing  # x ?? nil → x
+  - unneeded_parentheses_in_closure_argument
+  - closure_end_indentation
+  - closure_spacing
+  - operator_usage_whitespace
+  - prefer_self_in_static_references  # .x not Type.x in static contexts
+  # SwiftUI / async hygiene
+  - convenience_type       # Use caseless enums as namespaces, not classes
+  - implicit_return        # Drop explicit return in single-expression closures
+  - toggle_bool            # Use .toggle() not = !
+
+# ── Custom thresholds (tuned conservatively for warn-only Track A) ───────────
+identifier_name:
+  min_length:
+    warning: 2  # Allow 2-char names like `id`, `up`, `dx` — Track B may bump
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - to
+    - at
+    - on
+    - in
+    - x
+    - y
+    - z
+
+force_cast: warning
+force_try: warning
+force_unwrapping: warning
+
+# ── Reporter (default xcode is fine for both CLI + Xcode in-editor) ──────────
+reporter: xcode
