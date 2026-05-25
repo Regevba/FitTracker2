@@ -29,3 +29,40 @@ packages = ["app"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+# R8 (dev-env-master-plan-2026-05-24) — ruff lint + format config for ai-engine.
+# Track A only: ships config. Makefile lint-py target ships in Track B
+# (infra-glob, isolated worktree, post-Phase-E ~2026-06-04).
+#
+# Companion to FT2 root .ruff.toml (which covers scripts/).
+#
+# USAGE (operator):
+#   pip install -e '.[dev]'   # ruff is NOT in dev deps yet; install separately:
+#   pip install ruff
+#   ruff check .
+#   ruff format . --check
+#   ruff check --fix .
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = [".coverage", "coverage.xml", "htmlcov"]
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W", "B", "UP", "PIE", "SIM", "RUF",
+]
+ignore = [
+    "E501",   # handled by formatter line-length
+    "B008",   # function calls in defaults (argparse, FastAPI Depends)
+    "SIM108", # ternary readability — let humans decide
+    "RUF012", # mutable class attrs — not a real risk in app scope
+]
+fixable = ["E", "F", "UP", "PIE", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["UP015"]
+"**/__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

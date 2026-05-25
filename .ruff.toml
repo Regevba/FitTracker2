@@ -1,0 +1,86 @@
+# R8 (dev-env-master-plan-2026-05-24) — ruff config for FT2 Python (scripts/).
+#
+# ai-engine/ has its own pyproject.toml [tool.ruff] section (added in this PR).
+# This file covers scripts/ Python (53 files) which has no pyproject.
+#
+# Track A: ships the config. The Makefile lint-py target is Track B (infra-glob,
+# isolated worktree, post-Phase-E).
+#
+# USAGE (operator, local — until Track B lands):
+#   pip install ruff
+#   ruff check scripts/
+#   ruff format scripts/ --check
+#   ruff check scripts/ --fix     # auto-fix where supported
+#
+# Warn-only at Track A ship per v7.9 Phase E "no new enforcement gates" rule.
+# v8.0 may promote selected rules to errors after baseline accumulates.
+
+# Python 3.12 (matches FT2 .tool-versions)
+target-version = "py312"
+line-length = 100  # scripts/ is operator-facing tooling; 100 is a humane budget
+
+# Exclude common build/data dirs
+extend-exclude = [
+    ".build",
+    ".cache",
+    ".claude",  # internal state — managed by other tooling
+    ".coverage",
+    ".pytest_cache",
+    ".ruff_cache",
+    "htmlcov",
+    "node_modules",
+    "Pods",
+    "scripts/tests/fixtures",  # snapshot fixtures — verbatim, no lint
+    "trust/audits/2026-04-21-gemini/raw-transcripts",  # external audit verbatim
+]
+
+[lint]
+# Conservative starting set — pick rules that catch real bugs but don't fight
+# the existing scripts/ style. We deliberately skip `D` (docstrings — too noisy
+# for tooling scripts) and `ANN` (type annotations — scripts/ is mostly typed
+# but legacy gaps exist).
+select = [
+    "E",     # pycodestyle errors
+    "F",     # Pyflakes (undefined names, unused imports, etc.)
+    "W",     # pycodestyle warnings
+    "B",     # flake8-bugbear (likely bugs)
+    "UP",    # pyupgrade (modernization)
+    "PIE",   # flake8-pie (misc unnecessary code)
+    "SIM",   # flake8-simplify
+    "RUF",  # ruff-specific rules
+]
+
+# Rules to ignore (with reasoning)
+ignore = [
+    # E501 line-too-long is handled by formatter (line-length = 100)
+    "E501",
+    # B008 — Function calls in argparse defaults are an established
+    # pattern in scripts/ for default factories
+    "B008",
+    # SIM108 — "use ternary" sometimes hurts readability; let humans decide
+    "SIM108",
+    # RUF012 — Mutable class attributes; not a real risk in script context
+    "RUF012",
+    # SIM117 — Use single 'with' statement; nested is fine in scripts
+    "SIM117",
+]
+
+# Allow auto-fix for these rule families
+fixable = ["E", "F", "UP", "PIE", "SIM", "RUF"]
+
+[lint.per-file-ignores]
+# Test files: relax modern-Python rule UP015 (open mode "r" is sometimes
+# explicit on purpose for readability)
+"scripts/tests/**" = ["UP015"]
+# __init__.py allows unused imports for re-export
+"**/__init__.py" = ["F401"]
+# Migration scripts may legitimately have long-living unused vars
+"scripts/migrate_*.py" = ["F841"]
+"scripts/backfill_*.py" = ["F841"]
+"scripts/backfill-*.py" = ["F841"]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+docstring-code-format = false

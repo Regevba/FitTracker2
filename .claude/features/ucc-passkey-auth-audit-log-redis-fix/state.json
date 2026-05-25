@@ -282,7 +282,7 @@
       "type": "test",
       "skill": "qa",
       "lane": "p-core",
-      "status": "pending",
+      "status": "complete",
       "priority": "critical",
       "effort_days": 0.05,
       "depends_on": [
@@ -291,7 +291,9 @@
         "T4",
         "T5"
       ],
-      "note": "After PR merges to fitme-story main + Vercel auto-deploy READY: curl GET https://fitme-story.vercel.app/api/cron/sync-audit-log -H 'Authorization: Bearer $CRON_SECRET'. Expect response {ok:true, synced:N>=2, url:'https://...'}. HEAD the URL \u2014 expect 200."
+      "note": "After PR merges to fitme-story main + Vercel auto-deploy READY: curl GET https://fitme-story.vercel.app/api/cron/sync-audit-log -H 'Authorization: Bearer $CRON_SECRET'. Expect response {ok:true, synced:N>=2, url:'https://...'}. HEAD the URL \u2014 expect 200.",
+      "completed_at": "2026-05-20T00:00:00Z",
+      "outcome": "Resolved 2026-05-19 + cascade fixed 2026-05-20. Original blocker: Vercel Blob 404 because CRON_SECRET env var was empty in production (workflow auth received \"Bearer undefined\"). Fixed via: (1) generated new 64-hex-char secret + vercel env add + redeploy; (2) PR #411 (2026-05-20) refactored ucc-audit-log-sync.yml to open a PR via peter-evans/create-pull-request instead of direct push to main (eliminates GH006 protected-branch-update-failed class). Verification: blob HEAD returns 200; 24+ events in ucc-auth-events.jsonl Blob (16 originally, growing). Full root-cause analysis in phases.implementation.t6_resolved_2026_05_19 block. Status flipped pending \u2192 complete 2026-05-24 to close drift."
     },
     {
       "id": "T7",

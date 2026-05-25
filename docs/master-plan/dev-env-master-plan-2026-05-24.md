@@ -107,12 +107,12 @@ Source-of-truth fs sweep on 2026-05-24. `[x]` = file/config/policy exists on dis
 | ID | Action | Status | Evidence / blocker |
 |---|---|---|---|
 | R6 | Add `.editorconfig` + `.vscode/{settings,extensions}.json` | **[x]** | Verified SHIPPED 2026-05-24 (audit re-check): FT2 + fitme-story both have `.editorconfig` (794 + 336 bytes) + `.vscode/settings.json` (991 + 1182 bytes) + `.vscode/extensions.json` (406 + 321 bytes). Original "PARTIAL" status was an audit miss — only file presence was checked, not contents. Both configs are substantive (language-specific tabSize, formatOnSave, recommended extensions: swift/python/eslint/prettier/figma/claude-code/markdown). |
-| R7 | Configure SwiftLint via SPM plugin + `.swiftlint.yml` | **[ ]** OPEN | No `.swiftlint.yml`; calendar-safe **2026-05-22+** (`Makefile` infra-glob defer) |
-| R8 | Configure ruff for ai-engine + `scripts/` | **[ ]** OPEN | No `[tool.ruff]` in pyproject; calendar-safe **2026-05-22+** |
+| R7 | Configure SwiftLint via SPM plugin + `.swiftlint.yml` | **[~]** TRACK A SHIPPED 2026-05-24 | `.swiftlint.yml` at FT2 root (warn-only baseline, ~80 rules). Track B (Makefile `lint-ios` + Xcode build phase) is infra-glob, isolated worktree, post-Phase-E. |
+| R8 | Configure ruff for ai-engine + `scripts/` | **[~]** TRACK A SHIPPED 2026-05-24 | `.ruff.toml` at FT2 root (for `scripts/` — 53 files) + `[tool.ruff]` in `ai-engine/pyproject.toml`. Track B (Makefile `lint-py` target) is infra-glob, isolated worktree, post-Phase-E. |
 | R9 | Add coverage instrumentation (Slather + c8 + coverage.py) | **[ ]** OPEN | No coverage tooling; **2026-05-25 → 2026-05-26** target |
 | R10 | Migrate daily-checkpoint cron from launchd → GitHub Actions | **[ ]** OPEN | Cron still launchd; calendar-safe **2026-05-22+** (`.github/workflows/*` infra-glob defer). Recommend post-Phase-E for safety |
 | R11 | Add `gitleaks` pre-commit + GH Action | **[ ]** OPEN | No `.gitleaks.toml`; calendar-safe **2026-05-22+** |
-| R12 | Add `markdownlint-cli2` to `verify-local` | **[ ]** OPEN | No `.markdownlint-cli2.jsonc`; calendar-safe **2026-05-22+** |
+| R12 | Add `markdownlint-cli2` to `verify-local` | **[~]** TRACK A SHIPPED 2026-05-24 | `.markdownlint-cli2.jsonc` at FT2 root (warn-only; relaxed MD013/MD060/MD040 for project prose style). Companion fitme-story config + devDep ships in separate PR. Track B (Makefile `lint-md` + verify-local integration) is infra-glob, isolated worktree, post-Phase-E. |
 
 ### Tier 3 — Future-proofing (target 60–90 days post-v7.9)
 
