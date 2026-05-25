@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "run_at": "2026-05-25T09:08:10Z",
+      "candidates_count": 0,
+      "candidates": [],
+      "indeterminate": [
+        {
+          "feature": "analytics-observability",
+          "reason": "branch_null",
+          "current_phase": "implementation",
+          "created_at": "2026-05-13T15:30:00Z",
+          "last_log_event": "2026-05-24T16:48:33Z",
+          "note": "Very recent activity (yesterday); likely active in-flight work"
+        },
+        {
+          "feature": "app-store-assets",
+          "reason": "branch_null",
+          "current_phase": "implementation",
+          "created_at": "2026-04-12T21:30:00Z",
+          "last_log_event": "2026-04-24T03:59:17Z",
+          "note": "43 days in implementation, single log event, no branch tracked; may be stalled"
+        }
+      ],
+      "excluded_branch_not_merged": [
+        {
+          "feature": "meta-analysis-refresh-phase-1",
+          "branch": "chore/meta-analysis-refresh-phase-1",
+          "reason": "BRANCH_NOT_MERGED",
+          "last_log_event": "2026-05-22T05:34:55Z"
+        },
+        {
+          "feature": "orchid-v1-5",
+          "branch": "feature/orchid-v1-5",
+          "reason": "BRANCH_NOT_MERGED",
+          "last_log_event": "2026-05-23T20:30:00Z"
+        },
+        {
+          "feature": "ucc-passkey-auth-audit-log-redis-fix",
+          "branch": "feature/ucc-passkey-auth-audit-log-redis-fix",
+          "reason": "BRANCH_NOT_MERGED",
+          "last_log_event": "2026-05-24T18:04:16Z"
+        },
+        {
+          "feature": "ucc-sign-in-figma-mapping",
+          "branch": "chore/ucc-sign-in-figma-mapping-reconcile-2026-05-20",
+          "reason": "BRANCH_NOT_MERGED",
+          "last_log_event": "2026-05-20T06:34:04Z"
+        }
+      ],
+      "schema_notes": {
+        "total_state_files_scanned": 79,
+        "implementation_phase_count": 6,
+        "legacy_phase_key_files": "checked — auth-polish-v2 and import-training-plan matched grep for 'phase' string due to sub-key usage, both confirmed current_phase=complete",
+        "phase_value_in_use": "implementation (not 'implement')"
+      },
+      "action": "noop_no_candidates",
+      "issue_number": null
+    }
+  ]
+}
