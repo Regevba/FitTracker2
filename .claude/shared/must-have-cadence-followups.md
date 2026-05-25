@@ -104,6 +104,56 @@ Rollback: PATCH back to `both` (30 seconds), re-add `DASHBOARD_USER`/`DASHBOARD_
 
 **Shipped via:** PR #405 same-day update — `.gitignore` rule rewritten, spec §12 OQ #1 marked resolved with rationale captured inline.
 
+### ~~Production incident — `/control-room/framework` TypeError~~ (CLOSED 2026-05-24)
+
+**Resolution:** 13-day silent regression rendering Next.js error boundary every visit. Root cause: schema mismatch — FT2 producer `scripts/gate_coverage.py` emits `{"timestamp": …}` but fitme-story `gate-coverage-aggregator.ts` expected `event.ts`. Test fixtures used the consumer's wrong field too, so 6/6 tests stayed green. Hotfix renamed field + added back-compat alias + defensive sort comparator.
+
+**Lesson captured as W16 in [`observed-patterns.md`](../integrity/observed-patterns.md):** contract-boundary tests must use a fixture sample drawn from the canonical producer, not the consumer's expected shape. v7.9.1 candidate **F-CONTRACT-FIXTURE-SAMPLING** (filed as E-15) builds the `make sample-contract-fixtures` aggregator closing this silent-pass class for all cross-repo data contracts.
+
+**Shipped via:** fitme-story PR #146 (hotfix) + FT2 PR #476 (W16 catalog + E-15 docket).
+
+### ~~Phase 3.A drift reconciliation (analytics-observability)~~ (CLOSED 2026-05-24)
+
+**Resolution:** 9 of 9 `/control-room/analytics` green-bucket items per analytics master plan §7.5 shipped on disk since 2026-05-14 (3.A.0 + 3.A.1 fitme-story PR #108 squash `945e90c`). Sub-task entries correctly marked complete, but enclosing `phases.implementation.status` remained `"pending"` with empty `commits: []`. **Shipped via:** FT2 PR #477.
+
+### ~~Post-v7-9 docket C-14 + E-12 + E-13 audits~~ (CLOSED 2026-05-24)
+
+All 3 ✅ Healthy / ✅ Paused-state intact; no changes required to either system.
+
+- **E-12** ai-engine Dockerfile: pinned `python:3.12-slim`, Railway target confirmed, deps floor-pinned identical to last verified state (2026-04-20). [Report](../../docs/audits/runs/2026-05-24-e12-e13-ai-engine-cohort/audit-report.md).
+- **E-13** Cohort telemetry: loop emits via 5 endpoints (fire-and-forget); iOS read/write loop closed via `/reminder-cohort-priors` (k-anonymity floor 50). Zero rows at TestFlight stage is expected pre-launch posture.
+- **C-14** Orchid v1.5 paused-state intact: Track L + D-partial shipped; D-D3 + R blocked per documented `paused.resume_signal`. [Report](../../docs/audits/runs/2026-05-24-c14-orchid-v1-5-status/audit-report.md).
+
+**Shipped via:** FT2 PR #478 (E-12 + E-13) + FT2 PR #480 (C-14).
+
+### HADF Phase 2 external audit — step (1) DONE 2026-05-24
+
+Replication pack at [`docs/audits/runs/2026-05-24-hadf-phase2-replication-pack/`](../../docs/audits/runs/2026-05-24-hadf-phase2-replication-pack/) with REPLICATION-README.md (operator runbook + mechanical pass/fail rule + expected per-k silhouettes 0.5067/0.5228/0.5460/**0.5566**/0.4056) and manifest.json (raw dataset SHA-256 + 3 alternate access paths for the gitignored raw `.jsonl`).
+
+**Operator action remaining (steps 2 + 3):**
+
+1. Post replication invitation to Tier 3.3 thread (GitHub Issue #142 OR new dedicated thread)
+2. T+60d (~**2026-07-24**): if no external replicator emerges, decide pending vs internal per `feedback_external_audit_status_is_ui_marker.md`
+
+**Shipped via:** FT2 PR #480.
+
+### ~~Dev-env R7 + R8 + R9 + R12 Track A~~ (CLOSED 2026-05-24)
+
+Lint + coverage configs shipped warn-only across all 3 stacks per dev-env-master-plan §0 Top-3. **Track B (Makefile + verify-local + CI workflow integration) remains open** — infra-glob, isolated worktree, post-Phase-E (~2026-06-04).
+
+| R | Track A shipped | Track B status |
+|---|---|---|
+| R7 SwiftLint | `.swiftlint.yml` warn-only — FT2 PR #481 | OPEN (Makefile `lint-ios` + Xcode build phase) |
+| R8 ruff | `.ruff.toml` + ai-engine `[tool.ruff]` — FT2 PR #481 | OPEN (Makefile `lint-py`) |
+| R9 coverage | iOS Slather + ai-engine `pytest-cov` (FT2 PR #479) + fitme-story `c8` (fitme-story PR #147) | OPEN (Makefile `coverage-report` + `.github/workflows/coverage.yml` + Codecov) |
+| R12 markdownlint | FT2 `.markdownlint-cli2.jsonc` (FT2 PR #481) + fitme-story config + devDep (fitme-story PR #148) | OPEN (Makefile `lint-md` + `make verify-local` integration) |
+
+**Track B bundle target:** single isolated-worktree PR week of 2026-06-09, ~6-8h all-in (covers R7+R8+R9+R12 Track B + R10 launchd→GHA + R11 gitleaks).
+
+### ~~Audit-log Redis fix T6 status drift~~ (CLOSED 2026-05-24)
+
+`ucc-passkey-auth-audit-log-redis-fix` T6 was `status: pending` despite cascade fully resolved 2026-05-19 (Vercel CRON_SECRET fix) + 2026-05-20 (FT2 PR #411 workflow PR-pattern refactor eliminating GH006 protected-branch-update-failed). Reconciled T6 → complete with `completed_at: 2026-05-20T00:00:00Z`.
+
 ### B4 / B5 — Quarterly cross-layer test audit
 
 Per test-coverage §6.2. Initial run 2026-08-13, then recurring every 90 days. Output: `docs/process/cross-layer-test-audit-YYYY-MM-DD.md`.
