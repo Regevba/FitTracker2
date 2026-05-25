@@ -1,5 +1,6 @@
 {
   "feature": "ai-recommendation-ui",
+  "case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study": "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
   "parent_case_study_showcase": "fitme-story/content/04-case-studies/07-ai-engine-architecture.mdx",
   "created_at": "2026-04-10T21:00:00Z",
