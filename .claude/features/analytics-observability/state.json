@@ -352,14 +352,15 @@
       "title": "Configure GA4 conversions (workout_complete + nutrition_meal_logged)",
       "status": "deferred",
       "phase": "implementation",
-      "earliest_start": "2026-06-04",
-      "blocked_until": "v7.9 ships",
+      "earliest_start": "app_store_launch",
+      "blocked_until": "app_store_launch",
       "effort": "5min",
       "calibration_class": "yellow",
-      "outcome": "(pending) Per docs/product/analytics-taxonomy.csv `Conversion: Yes` column: mark workout_complete + nutrition_meal_logged as conversions in GA4 Property 531124395. Current state verified 2026-05-17: 0 of 8 received events have isConversionEvent=true. Path: GA4 \u2192 Admin \u2192 Events \u2192 toggle 'Mark as conversion'. Verify post-flip via mcp__ga4__runReport with isConversionEvent dimension.",
+      "outcome": "(pending \u2014 deferred to app store launch) Per docs/product/analytics-taxonomy.csv `Conversion: Yes` column: mark workout_complete + nutrition_meal_logged as key events in GA4 Admin \u2192 Events. Activates conversion-funnel reporting in /control-room/analytics. 5min operator console action.",
       "files_touched": [],
       "source_event": "FIT-142 closure 2026-05-17",
-      "v7_9_1_candidate": true
+      "v7_9_1_candidate": true,
+      "defer_reason": "Operator decision 2026-05-25: GA4 conversion events have no meaningful signal in pre-launch TestFlight traffic where 100% of activeUsers are newUsers (same-day fresh installs from internal test cohort). Marking 'workout_complete' and 'nutrition_meal_logged' as conversions while the only traffic is operator + TestFlight beta would produce vanity numbers, not measurement. Reactivate when App Store launch is scheduled and real-user funnel data starts flowing. Per B3 daily-anomaly-check 2026-05-25: top-5 events for 2026-05-24 were screen_view (102), onboarding_step_viewed (63), user_engagement (63), first_open (46), session_start (45) \u2014 all infrastructure/onboarding events, no conversion candidates yet."
     },
     {
       "id": "D-3",
