@@ -18,6 +18,8 @@ Four streams of work converge on the infra surface as of 2026-05-12 (updated end
 
 **Calibration protocol added 2026-05-12 (§3.5):** every new layer of framework infrastructure now requires a documented pre-build calibration window where telemetry from the prior layer proves it fires correctly under load. This codifies the "advisory → enforced after measurement" pattern that v7.8 introduced informally.
 
+**Phase E Day-5 status (2026-05-26):** 7 PRs merged across both repos (FT2 #494/#495/#496/#497/#499/#500 + fitme-story #150) — **no new gates ship in Phase E**; today's batch is hygiene + reconciliation + B12 prep. Three drifted-feature closures (`ucc-passkey-auth-audit-log-redis-fix` complete; `ucc-sign-in-figma-mapping` complete with 3 Figma-seat-blocked tasks deferred; `ucc-passkey-auth-security-hardening` 24/26 task statuses reconciled — full closure awaits B12 evaluation 2026-05-27). B12 spec hardened against 3 query template bugs found via dry-run (PR #499); predicted verdict tomorrow: PROMOTE. Signing infrastructure repaired (3 silent bugs in `sign-yk`/`sign-tid` aliases + wrapper). UI/UX Tier A bundle closed AND-3 decision + VoiceOver audit doc + ui-audit P1 reconcile (live scanner P0=0 + P1=0; plan claim was stale). `make integrity-check` baseline maintained at session end: **0 findings + 3 advisory** (no regression). Phase E remains GREEN. Detail in backlog row 116; Linear FIT-192 + FIT-66 + FIT-132 + FIT-165 commented.
+
 ---
 
 ## 1. v7.8.3 Anchor — What's Already Shipped
