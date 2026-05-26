@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.5",
   "started_at": "2026-05-13T09:00:00Z",
-  "updated_at": "2026-05-24T16:48:33Z",
+  "updated_at": "2026-05-25T18:37:34Z",
   "events": [
     {
       "timestamp": "2026-05-13T09:00:00Z",
@@ -442,6 +442,17 @@
       "metrics": {},
       "actor": "human_or_agent",
       "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-25T18:37:34Z",
+      "event_type": "phase_transition",
+      "phase": "testing",
+      "summary": "Phase flip: implementation (12 complete + 3 deferred tasks, all closed) \u2192 testing. Drift reconciliation \u2014 implementation work shipped via PRs #342/#345/#349/#351 (Phase 2) + Phase 3 D-3 scaffold via PR #489 (2026-05-25); current_phase was never advanced post-merge. No new code in this PR; pure state.json + log ceremony to align declared phase with shipped reality. Phase 1.B remains gated 2026-06-04 per memory.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude-session-2026-05-25-tier3-driftclose",
+      "status": "ok",
       "recording_mode": "contemporaneous"
     }
   ]
