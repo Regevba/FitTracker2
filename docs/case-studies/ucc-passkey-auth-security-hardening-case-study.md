@@ -120,9 +120,11 @@ Single-day execution against the 2026-05-20 EOD hard deadline (v7.9 freeze 2026-
 **Query (2026-05-27):**
 ```bash
 # Count auth_lockout_blocked_attempt events for operator's IP class in audit log
-jq -s '[.[] | select(.event=="auth_lockout_blocked_attempt" and (.timestamp | fromdateiso8601) > (now - 7*86400))] | length' \
+jq -s '[.[] | select(.event_type=="auth_lockout_blocked_attempt" and (.timestamp | sub("\\.[0-9]+Z$"; "Z") | fromdateiso8601) > (now - 7*86400))] | length' \
   .claude/logs/ucc-auth-events.jsonl
 ```
+
+> **Schema note (T-1 fix 2026-05-26 dry-run):** field is `event_type` (not `event`); timestamps include milliseconds (`.303Z`) so `fromdateiso8601` requires trimming via `sub("\\.[0-9]+Z$"; "Z")` first. **Dry-run result (2026-05-26):** **0** events anywhere in the 27-event log → predicted K1 = `not_fired`.
 
 **Observed:** TBD
 **Target:** 0
@@ -132,7 +134,7 @@ jq -s '[.[] | select(.event=="auth_lockout_blocked_attempt" and (.timestamp | fr
 
 | # | Metric | Query | Observed | Target | Verdict |
 |---|---|---|---|---|---|
-| 1 | `email_not_allowlisted` for `regvash21@gmail.com` (7d) | `jq -s '[.[] \| select(.event=="auth_passkey_register_failed" and .reason=="email_not_allowlisted" and (.email_hash // "")=="<operator_email_sha256>")] \| length'` | TBD | 0 | TBD |
+| 1 | `email_not_allowlisted` for `regvash21@gmail.com` (7d) | `jq -s '[.[] \| select(.event_type=="auth_passkey_register_failed" and .reason=="email_not_allowlisted" and .operator_label_hash=="<operator_email_sha256_first24>")] \| length'` (operator hash = `sha256:0aeb2d54ea2a9a9a45501bf4`; dry-run 2026-05-26 found 1 `email_not_allowlisted` event with hash `sha256:2ebf2e2f8386685e7506603b` ≠ operator → predicted K2 = `not_fired`) | TBD | 0 | TBD |
 | 2 | Sign-in latency p50 delta vs pre-hardening | Vercel function logs → `/api/auth/passkey/authenticate/verify` p50 last-7d − pre-2026-05-20 p50 baseline | TBD ms | ≤+5 ms | TBD |
 | 3 | Redis quota usage (last 7d) | Upstash console → metrics → daily commands count | TBD / 10k/day | within free tier | TBD |
 
