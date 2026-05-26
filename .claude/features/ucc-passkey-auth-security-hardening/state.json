@@ -5,7 +5,7 @@
   "parent_feature": "ucc-passkey-auth",
   "framework_version": "v7.8.6",
   "created_at": "2026-05-19T14:30:00Z",
-  "updated": "2026-05-20T04:50:12Z",
+  "updated": "2026-05-26T06:36:58.174505Z",
   "branch": "docs/ucc-hardening-post-merge-2026-05-20",
   "state_owner": "ft2",
   "current_phase": "documentation",
@@ -162,55 +162,87 @@
       "title": "Extract ipClassFromRaw + uaFamilyFromRaw to audit-log-redactors.ts",
       "type": "refactor",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.04,
       "depends_on": [],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T2",
       "title": "Extend AuthEventType enum (3 new lockout types + rename + new issuance)",
       "type": "backend",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.06,
       "depends_on": [],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T3",
       "title": "Extend AuthEventReason enum (7 new reasons)",
       "type": "backend",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.03,
       "depends_on": [],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T4",
       "title": "Create src/lib/auth/allowlist.ts (isEmailAllowed, allowlistIsConfigured)",
       "type": "backend",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.04,
       "depends_on": [],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T5",
       "title": "Wire allowlist gate in /api/auth/register/options/route.ts",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.04,
       "depends_on": [
@@ -218,56 +250,88 @@
         "T4"
       ],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T6",
       "title": "Tests: allowlist.test.ts (6 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.06,
       "depends_on": [
         "T4"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T7",
       "title": "Tests: allowlist-gate.test.ts (5 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.09,
       "depends_on": [
         "T5"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T8",
       "title": "Create src/lib/auth/redis-lockout.ts (checkLockout, recordFailure, clearFailures)",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.13,
       "depends_on": [
         "T1"
       ],
       "complexity": "heavyweight",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T9",
       "title": "Wire lockout in /api/auth/authenticate/verify/route.ts",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.06,
       "depends_on": [
@@ -276,14 +340,22 @@
         "T8"
       ],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T10",
       "title": "Wire lockout in /api/auth/register/verify/route.ts",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.04,
       "depends_on": [
@@ -292,84 +364,132 @@
         "T8"
       ],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T11",
       "title": "Tests: redis-lockout.test.ts (10 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.15,
       "depends_on": [
         "T8"
       ],
       "complexity": "standard",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T12",
       "title": "Tests: lockout-gate.test.ts (6 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.1,
       "depends_on": [
         "T9"
       ],
       "complexity": "standard",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T13",
       "title": "Emit auth_bootstrap_token_issued in scripts/issue-bootstrap-token.ts",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.04,
       "depends_on": [
         "T2"
       ],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T14",
       "title": "Extend uaFamilyFromRaw to detect cli/ prefix",
       "type": "backend",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.03,
       "depends_on": [
         "T1"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T15",
       "title": "Tests: issue-bootstrap-token-audit.test.ts (3 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.06,
       "depends_on": [
         "T13"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T16",
       "title": "Create scripts/clear-lockout.ts CLI utility",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.06,
       "depends_on": [
@@ -377,45 +497,77 @@
         "T8"
       ],
       "complexity": "standard",
-      "lane": "P-core"
+      "lane": "P-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T17",
       "title": "Tests: clear-lockout.test.ts (4 cases)",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "medium",
       "effort_days": 0.06,
       "depends_on": [
         "T16"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T18",
       "title": "Document UCC_ALLOWED_EMAILS in fitme-story/.env.example",
       "type": "docs",
       "skill": "dev",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.01,
       "depends_on": [],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T19",
       "title": "OPERATOR: Set UCC_ALLOWED_EMAILS in Vercel production env",
       "type": "infra",
       "skill": "ops",
-      "status": "ready",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.01,
       "depends_on": [],
       "complexity": "lightweight",
-      "lane": "operator"
+      "lane": "operator",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T20",
@@ -443,7 +595,7 @@
       "title": "CI gates green on fitme-story PR + FT2 integrity-check",
       "type": "test",
       "skill": "qa",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.04,
       "depends_on": [
@@ -455,14 +607,22 @@
         "T17"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T22",
       "title": "OPERATOR: Open fitme-story PR feat/ucc-passkey-security-hardening",
       "type": "infra",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.03,
       "depends_on": [
@@ -487,49 +647,81 @@
         "T19"
       ],
       "complexity": "standard",
-      "lane": "operator"
+      "lane": "operator",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T23",
       "title": "OPERATOR: Post-merge make integrity-check in FT2",
       "type": "test",
       "skill": "ops",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.01,
       "depends_on": [
         "T22"
       ],
       "complexity": "lightweight",
-      "lane": "operator"
+      "lane": "operator",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T24",
       "title": "Append cadence-followup B11 (T+3d calibration check 2026-05-22)",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.03,
       "depends_on": [
         "T22"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T25",
       "title": "Create UCC hardening case study placeholder",
       "type": "docs",
       "skill": "dev",
-      "status": "pending",
+      "status": "done",
       "priority": "high",
       "effort_days": 0.04,
       "depends_on": [
         "T22"
       ],
       "complexity": "lightweight",
-      "lane": "E-core"
+      "lane": "E-core",
+      "completed_at": "2026-05-20T07:00:00Z",
+      "related_prs": [
+        127,
+        410,
+        412,
+        413
+      ],
+      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
     },
     {
       "id": "T26",
@@ -562,7 +754,7 @@
       "skill": "pm-workflow",
       "event_type": "implementation_checkpoint",
       "phase": "tasks",
-      "note": "Applied the parent-gap-closure protocol from the parent ucc-passkey-auth feature: skip research+prd (inherit from parent §7 Q1+Q2), produce design spec + risk sub-plan + state.json with embedded delta-PRD, then advance to tasks. Pattern captured in state.json::phases.{research,prd}.skip_reason = 'work_type:enhancement'."
+      "note": "Applied the parent-gap-closure protocol from the parent ucc-passkey-auth feature: skip research+prd (inherit from parent \u00a77 Q1+Q2), produce design spec + risk sub-plan + state.json with embedded delta-PRD, then advance to tasks. Pattern captured in state.json::phases.{research,prd}.skip_reason = 'work_type:enhancement'."
     },
     {
       "timestamp": "2026-05-19T15:00:00Z",
@@ -572,7 +764,7 @@
       "skill": "pm-workflow",
       "event_type": "task_planning",
       "phase": "tasks",
-      "note": "Adapted ARM big.LITTLE lane classification from HADF research to the 26-task breakdown: 8 P-core (architecture-shaping) + 13 E-core (mechanical) + 5 operator-only. Drove serial critical path identification (T1→T8→T9→T12→T20→T22, ~3.4h)."
+      "note": "Adapted ARM big.LITTLE lane classification from HADF research to the 26-task breakdown: 8 P-core (architecture-shaping) + 13 E-core (mechanical) + 5 operator-only. Drove serial critical path identification (T1\u2192T8\u2192T9\u2192T12\u2192T20\u2192T22, ~3.4h)."
     },
     {
       "timestamp": "2026-05-20T03:54:00Z",
@@ -661,6 +853,32 @@
       "timestamp": "2026-05-20T04:50:12Z",
       "approved_by": "user",
       "note": "Bulk-advance implementation\u2192testing\u2192review\u2192merge\u2192documentation. fitme-story PR #127 merged 2026-05-20T03:53Z (the code). FT2 PRs #410 (Phase 0/1/2 prep) + #412 (Phase 3 advance) merged. T20 partial-live verify done (S2+S3 live; S4-S6 unit-test-covered). Awaiting T+7d kill-criteria checkpoint 2026-05-27 to advance documentation\u2192complete."
+    }
+  ],
+  "reconcile_notes": [
+    {
+      "date": "2026-05-26",
+      "session": "post-v7.9-Phase-E reconcile",
+      "tasks_flipped": 24,
+      "tasks_still_pending": [
+        20,
+        26
+      ],
+      "pending_reasons": {
+        "20": "OPERATOR: manual verification matrix execution not recorded",
+        "26": "OPERATOR: Linear sub-issue creation under FIT-63 not visible in repo"
+      },
+      "shipping_prs": {
+        "fitme-story": [
+          127
+        ],
+        "FT2": [
+          410,
+          412,
+          413
+        ]
+      },
+      "current_phase_intentionally_unchanged": "documentation \u2014 awaits B12 T+7d kill-criteria evaluation on 2026-05-27 (operator-driven; populates kill_criteria_resolution in case study \u00a74)"
     }
   ]
 }
