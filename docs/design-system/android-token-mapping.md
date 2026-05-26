@@ -1,22 +1,36 @@
 # FitMe — iOS to Android (MD3) Design Token Mapping
 
-> Maps all 92 FitMe iOS design tokens to Material Design 3 equivalents for Jetpack Compose.
+> Maps the FitMe iOS design tokens to Material Design 3 equivalents for Jetpack Compose.
 > Source of truth: `design-tokens/tokens.json`
-> Last updated: 2026-04-04
+> Last updated: 2026-05-25 (AND-2 audit pass; per-row mappings still reflect 2026-04-04 schema)
 
 ---
 
-## Overview
+## 0. AND-2 Audit Note (2026-05-25)
 
-| Category | iOS Tokens | MD3 Mapped | Custom (no MD3 equivalent) |
-|----------|-----------|------------|---------------------------|
-| Colors | 46 | 30 | 16 (domain-specific) |
-| Typography | 22 | 15 | 7 (metric/mono variants) |
-| Spacing | 9 | 9 | 0 (1:1 mapping) |
-| Radius/Shape | 9 | 6 | 3 (custom) |
-| Shadow/Elevation | 4 | 2 | 2 (custom) |
-| Motion | 14 | 10 | 4 (spring presets) |
-| **Total** | **104** | **72** | **32** |
+This doc was last fully audited at the `android-design-system` feature ship date (2026-04-04). On 2026-05-25 a token-count drift check (per the UI/UX Master Plan §4.4 AND-2 task) found that `design-tokens/tokens.json` has evolved substantially since the mapping was authored. Current state vs original:
+
+| Category | Original count (2026-04-04) | Current count (2026-05-25) | Drift |
+|---|---|---|---|
+| Colors | 46 | 49 | +3 |
+| Typography | 22 | 16 | -6 |
+| Spacing | 9 | 8 | -1 |
+| Radius/Shape | 9 | 10 | +1 |
+| Shadow/Elevation | 4 | 6 (split: 2 color + 4 dimension) | +2 |
+| Motion | 14 | 6 | -8 |
+| Opacity | — | 3 | +3 (new category) |
+| Layout (dimension) | — | 6 | +6 (new category) |
+| Size (dimension) | — | 6 | +6 (new category) |
+| **Total** | **104** | **108** | **+4 net (but type taxonomy substantially restructured)** |
+
+**Drift root cause:** `tokens.json` has had silent additions/restructures across 7+ weeks of iOS-side work with no Android-side review. Per-row mappings below (sections 1-6) still reference the original 2026-04-04 schema. A full per-row refresh is the natural successor pass — estimated 2-3 hr — and is **deferred** until either (a) the `android-app-implementation` feature kicks off, OR (b) the next quarterly token audit catches the next drift cycle. Until then, this top-of-doc note is the canonical "use with caution" marker.
+
+**AND-1 status (per UI/UX Master Plan §4.4):** the original 1-2 hr estimate to "generate Android token output and commit `android/FitMeDesignTokens.kt`" is **revised upward to 3-4 hr** because `design-tokens/config-android.json` references Style Dictionary transforms (`size/compose/dp`, `size/compose/sp`) that don't exist in `style-dictionary@3.9.2`. The actual `compose` transformGroup ships `size/compose/em`, `size/compose/remToSp`, `size/compose/remToDp` — designed for REM-input tokens, not raw-pixel-input tokens like FitMe's. Two paths to ship AND-1 properly:
+
+1. **Custom transforms** — register `size/compose/dp` + `size/compose/sp` in a new `sd.config.android.js` that wraps `config-android.json`'s JSON-only declarative form. Outputs raw `Float.dp` and `Float.sp` literals from the integer pixel values in `tokens.json`. Most faithful to FitMe's spacing scale.
+2. **Switch transformGroup to `android`** (XML-only) — drops the Compose output but keeps the `android-xml` output working. Acceptable if Compose generation can be deferred until the `android-app-implementation` feature actually picks up.
+
+Decision deferred to operator. Pre-condition for either path: settle whether the Android pipeline outputs raw-pixel `Float.dp` / `Float.sp` (consistent with iOS `CGFloat` direct values) or REM-scaled units (consistent with Material 3 defaults). Recommend the former for cross-platform parity, but the choice is design-system-author level.
 
 ---
 
