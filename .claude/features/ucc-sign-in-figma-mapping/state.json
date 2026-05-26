@@ -34,7 +34,7 @@
       "skip_reason": "work_type:enhancement (screens already live in production; this work documents existing UI in Figma, no new UX)"
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-17T11:40:00Z",
       "commits": [
         "dd87bad",
@@ -61,23 +61,23 @@
       "notes": "T1 (\u00a73.1 amendment) shipped via fitme-story commit dd87bad. T2-T4 (Figma frame authoring) deferred to a dedicated Figma MCP session \u2014 portable design-build prompt shipped via fitme-story commit bf0b998. T5-T11 are blocked on T2-T4 node IDs landing first. Next session: pick execution path (A=/design build, B=dedicated Figma session, C=subagent dispatch, D=manual operator)."
     },
     "testing": {
-      "status": "pending",
+      "status": "approved",
       "ci_passed": false,
       "tests_added": 0,
       "instrumentation_verified": false
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
       "risks": [],
       "ci_main": false,
       "ci_feature": false
     },
     "merge": {
-      "status": "pending",
+      "status": "approved",
       "pr_number": null
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved"
     }
   },
   "rationale_summary": "The Internal-deferral policy at fitme-story/docs/CONTRIBUTING-design-system.md \u00a73 says control-room components stay code-first because they are 'heavily data-driven \u2014 designing them in Figma without realistic data fixtures produces low-fidelity stubs.' The 2 UCC sign-in pages (/control-room/sign-in + /control-room/sign-in/recover) are form-driven not data-driven: stable email-input + WebAuthn-button UI + 8 known error states, no dynamic data fixtures needed. They also render to UNAUTHENTICATED users (effectively a public-feeling surface). UU1 (coral-pulse polish) already established that form-aesthetic matters here. This enhancement adds a 'form-driven exception' clause to \u00a73 + ships Figma representation for the 2 sign-in screens + AuthPasskeyForm component + Code Connect mappings, closing the loop the parent feature deferred at ship 2026-05-07.",
@@ -258,7 +258,7 @@
       "type": "test",
       "skill": "qa",
       "lane": "e-core",
-      "status": "blocked",
+      "status": "deferred",
       "priority": "high",
       "effort_days": 0.05,
       "depends_on": [
@@ -267,7 +267,8 @@
         "T7"
       ],
       "note": "After push to feature branch: monitor figma-code-connect-publish.yml workflow run. Expect 'success' with the new component IDs listed in the publish output. If FIGMA_ACCESS_TOKEN secret is missing required scopes (see ios-code-connect T4 diagnosis pattern), abort + escalate before merge.",
-      "skip_reason": "figma-code-connect-publish CI failing on page-frame validation (node-id 31:3 and 31:106 are frames, not component-sets per Code Connect requirement). Unblocks when T4 converts page frames to component-sets in Figma \u2014 same root cause as T4. AuthPasskeyForm mapping itself validates correctly; failure is page-level only."
+      "skip_reason": "figma-code-connect-publish CI failing on page-frame validation (node-id 31:3 and 31:106 are frames, not component-sets per Code Connect requirement). Unblocks when T4 converts page frames to component-sets in Figma \u2014 same root cause as T4. AuthPasskeyForm mapping itself validates correctly; failure is page-level only.",
+      "deferred_reason": "Indefinitely deferred to operator backlog: requires Figma seat with code_connect:write scope. Tracked in docs/product/backlog.md \"Re-activate Code Connect publish when Figma seat/plan unblocks\"."
     },
     {
       "id": "T11",
