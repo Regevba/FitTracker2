@@ -1,0 +1,91 @@
+# VoiceOver Coverage Audit — 2026-05-26
+
+> Tier A audit pass per UI/UX Master Plan §2.5 (Design System Residual: "VoiceOver labels comprehensive audit"). Inventories all v2-target SwiftUI views by interactive-element count vs `accessibilityLabel` + `accessibilityHint` coverage. Identifies the 7 files needing P1 attention before App Store launch.
+>
+> **Methodology:** counted occurrences of `onTapGesture` + `Button(` per file (interactive surfaces) vs `accessibilityLabel` / `accessibility(label:` and `accessibilityHint`. Ratio < 1.0 flags files where typical interactive elements lack labels; ratio ≥ 1.0 is healthy because complex controls often warrant multiple labels per tap (rows with dynamic state, etc.). HISTORICAL v1 files excluded — they are out of the build target per the V2 Rule retention policy.
+>
+> **Scope:** v2-target SwiftUI views under `FitTracker/Views/*/v2/`. Does not audit DesignSystem primitives (those are atomic — coverage is consumer-responsibility) or v1 historical files. 21 v2 files in scope. 45 total interactive elements; 78 labels; 30 hints. Average 1.73 labels per tap.
+>
+> **Not in scope (this pass):** running a VoiceOver-on simulator session to verify utterance-level quality. That requires xcodebuild + a sighted-with-VoiceOver-running pass — a separate work item per CLAUDE.md "CI Pipeline" UI test coverage strategy. This audit identifies *which files* need that follow-up, not the verdict per element.
+
+---
+
+## P1 findings (7 files needing label coverage before App Store launch)
+
+| # | File | Taps | Labels | Hints | L/T ratio | Recommended fix |
+|---|---|---|---|---|---|---|
+| 1 | `FitTracker/Views/Onboarding/v2/OnboardingWelcomeView.swift` | 1 | 0 | 0 | 0.00 | Welcome CTA needs `accessibilityLabel("Get started")` |
+| 2 | `FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift` | 4 | 0 | 0 | 0.00 | 4 auth buttons (Sign in with Apple / passkey / email / continue) each need `accessibilityLabel`. Per [`feedback_onboarding_auth_flow_issues`](../../.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_onboarding_auth_flow_issues.md) this surface has multiple a11y-adjacent issues already |
+| 3 | `FitTracker/Views/Onboarding/v2/OnboardingHealthKitView.swift` | 1 | 0 | 0 | 0.00 | Permission-prompt CTA needs `accessibilityLabel("Connect HealthKit")` + `accessibilityHint("Opens iOS permission dialog for sleep, heart rate, and activity data")` |
+| 4 | `FitTracker/Views/Onboarding/v2/OnboardingConsentView.swift` | 2 | 0 | 0 | 0.00 | 2 consent toggles need explicit labels naming the data category (e.g., "Analytics", "Crash reports") |
+| 5 | `FitTracker/Views/Settings/v2/SettingsView.swift` | 2 | 0 | 0 | 0.00 | Top-level settings entry points (likely sign-out / about) need labels |
+| 6 | `FitTracker/Views/Settings/v2/Screens/ImportedPlansListScreen.swift` | 6 | 2 | 0 | 0.33 | 6 tap surfaces (likely per-plan rows + a delete control); needs per-row `accessibilityLabel(plan.name + ", " + plan.duration)` pattern |
+| 7 | `FitTracker/Views/Onboarding/v2/OnboardingGoalsView.swift` | 3 | 1 | 0 | 0.33 | 3 goal-selection buttons; only 1 has label. Add labels naming the goal (e.g., "Lose weight", "Build muscle", "Maintain") |
+
+**Total P1 fixes:** 19 interactive elements need labels added (45 total − 26 already labeled). Estimated effort: ~30 min each via SwiftUI `.accessibilityLabel("...")` modifier; ~10 hr total if done as a single PR. Recommended split: one PR per file (7 PRs) following fix-as-you-touch policy.
+
+---
+
+## P2 finding (1 file)
+
+| File | Taps | Labels | Hints | L/T | Note |
+|---|---|---|---|---|---|
+| `FitTracker/Views/Onboarding/v2/OnboardingProfileView.swift` | 4 | 2 | 0 | 0.50 | 2 of 4 surfaces labeled. Audit which 2 are missing and add. |
+
+---
+
+## Healthy files (13 — at or above 1.0 label/tap ratio)
+
+| File | L/T | Notes |
+|---|---|---|
+| `FitTracker/Views/Training/v2/FocusModeView.swift` | 9.00 | Gold standard — 9 labels for 1 tap; comprehensive a11y |
+| `FitTracker/Views/Training/v2/TrainingPlanView.swift` | 8.00 | Multi-state plan card with rich state labeling |
+| `FitTracker/Views/Stats/v2/StatsView.swift` | 7.00 | Chart-tile rich label coverage |
+| `FitTracker/Views/Main/v2/MainScreenView.swift` | 7.00 | Home metric-tile rich label coverage |
+| `FitTracker/Views/Training/v2/ExerciseRowView.swift` | 4.00 | Per-set + per-rep labels |
+| `FitTracker/Views/Training/v2/SessionCompletionSheet.swift` | 3.00 | Result-stat labels |
+| `FitTracker/Views/Settings/v2/Screens/DataSyncSettingsScreen.swift` | 3.00 | 3 labels + 3 hints — well-covered |
+| `FitTracker/Views/Training/v2/SetRowView.swift` | 2.33 | Healthy |
+| `FitTracker/Views/Nutrition/v2/NutritionView.swift` | 2.14 | 15 labels + 8 hints across 7 taps — well-covered |
+| `FitTracker/Views/Onboarding/v2/OnboardingView.swift` | 2.00 | Container view; counts inherit child coverage |
+| `FitTracker/Views/Training/v2/RestTimerView.swift` | 2.00 | Timer state labels |
+| `FitTracker/Views/Settings/v2/Screens/GoalsPreferencesSettingsScreen.swift` | 2.00 | 2 labels + 2 hints — solid |
+| `FitTracker/Views/Onboarding/v2/OnboardingFirstActionView.swift` | 1.00 | Borderline; consider 1-2 additional hints |
+
+---
+
+## Hint coverage gap
+
+Of the 45 interactive surfaces, only 30 have hints (67%). Hints are the secondary VoiceOver layer (after labels) that describe *what happens* on activation. Recommended bar: every CTA that triggers navigation, an iOS system prompt, or a destructive action carries an `accessibilityHint`.
+
+**Files with labels but no hints (lowest-hanging hint additions):**
+
+- `ImportedPlansListScreen.swift` (2 labels, 0 hints): every "tap to view/edit plan" row needs `accessibilityHint("Opens plan details and edit options")`
+- `OnboardingFirstActionView.swift` (1 label, 0 hints): the action CTA should describe what happens
+
+---
+
+## Recommended next actions
+
+1. **7 file-scoped PRs** (one per P1 file) — apply fix-as-you-touch on the next time each file is edited for any other reason. Don't bundle all 7 into one mega-PR; respects the V2 Rule's per-file isolation principle.
+2. **Dedicated "P2 audit fixes" PR** — small bundle of the OnboardingProfileView (P2) + ImportedPlansListScreen hint additions (~30 min total). Doable today as a follow-up.
+3. **Pre-launch VoiceOver-on simulator pass** — separate work item; required before App Store submission. Adds a `make verify-voiceover` runtime smoke profile.
+4. **Promote to a `make` gate** when iOS app moves to App Store submission window. Currently advisory.
+
+---
+
+## Cross-references
+
+- UI/UX Master Plan §2.5 Design System Residual: "VoiceOver labels comprehensive audit" (this audit closes that line item)
+- CLAUDE.md "CI Pipeline" → UI test coverage strategy (UI tests intentionally thin; VoiceOver verification belongs to that future expansion)
+- iOS Audit P1 Drift (UI/UX plan §2.5 implicit) — orthogonal to a11y but same fix-as-you-touch discipline
+- [`docs/design-system/ui-audit-baseline.md`](ui-audit-baseline.md) — DS-A11Y-BUTTON rule complements this label audit
+- [`docs/design-system/ux-foundations.md`](ux-foundations.md) — 13 principles include accessibility
+
+## Audit metadata
+
+- **Date:** 2026-05-26
+- **Scope:** `FitTracker/Views/*/v2/*.swift` (21 files; HISTORICAL v1 excluded)
+- **Method:** static count of `onTapGesture` + `Button(` vs `accessibilityLabel` / `accessibility(label:` + `accessibilityHint`
+- **Limit:** static counts cannot detect over-labeling, label quality, or screen-reader utterance order. A future xcodebuild-driven VoiceOver-on simulator pass is the gold standard.
+- **Author:** automated tooling-assisted audit, recorded as Tier A pre-launch UI/UX hygiene
