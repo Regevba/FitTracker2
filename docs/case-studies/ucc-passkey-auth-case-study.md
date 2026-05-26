@@ -223,6 +223,8 @@ State reconciliation: the `ucc-sign-in-figma-mapping` enhancement (UU4 on this f
 
 **Cross-ref:** [`ucc-sign-in-figma-mapping/state.json`](../../.claude/features/ucc-sign-in-figma-mapping/state.json) for task-level detail; [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) W14 (new — Code Connect page-frame validation; documented in this PR).
 
+**Shipping PRs (2026-05-26 closure audit-trail amendment):** fitme-story PR #123 (`docs(design-system): §3.1 form-driven exception clause + UCC sign-in design-build prompt — UU4 T1+T2-T4`, squash `f3dc8f3`, 2026-05-19) + fitme-story PR #125 (`feat(ucc-sign-in-figma-mapping): T2-T8 closeout — Figma frames + Code Connect + manifest`, squash `75bf6b7`, 2026-05-19). Three remaining tasks (T4 / T8 / T10) are blocked on Figma seat scope (`code_connect:write`) per the Code Connect activation tracker; deferred indefinitely until operator unblocks.
+
 ### 2026-05-16 — Cutover Parts 1-6 executed; T+7d clock starts
 
 **Shipped on the day (chronological):**

@@ -6,7 +6,7 @@
   "current_phase": "implementation",
   "framework_version": "v7.8.6",
   "started_at": "2026-05-17T11:42:37Z",
-  "updated_at": "2026-05-20T06:34:04Z",
+  "updated_at": "2026-05-26T06:33:43Z",
   "events": [
     {
       "timestamp": "2026-05-17T11:42:37Z",
@@ -56,6 +56,17 @@
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-26T06:33:43Z",
+      "event_type": "phase_approved",
+      "phase": "complete",
+      "summary": "Closure during 2026-05-26 reconcile session. 8/11 tasks done via fitme-story PRs #123 + #125 (2026-05-19). 3 tasks (T4 / T8 / T10) explicitly blocked on Figma code_connect:write scope unblock \u2014 deferred indefinitely per backlog tracker. Parent case study \u00a799 amended with shipping-PR citation. State.json closure with isolation_opt_out=true.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "claude_opus_4_7",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }

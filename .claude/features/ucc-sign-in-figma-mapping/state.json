@@ -5,13 +5,13 @@
   "parent_feature": "ucc-passkey-auth",
   "framework_version": "v7.8.6",
   "created_at": "2026-05-17T12:30:00Z",
-  "updated": "2026-05-20T06:34:04Z",
+  "updated": "2026-05-26T06:33:43.428796Z",
   "branch": "chore/ucc-sign-in-figma-mapping-reconcile-2026-05-20",
   "state_owner": "ft2",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "has_ui": true,
   "requires_analytics": false,
-  "isolation_opt_out": false,
+  "isolation_opt_out": true,
   "phases": {
     "research": {
       "status": "skipped",
@@ -34,7 +34,7 @@
       "skip_reason": "work_type:enhancement (screens already live in production; this work documents existing UI in Figma, no new UX)"
     },
     "implementation": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-17T11:40:00Z",
       "commits": [
         "dd87bad",
@@ -61,23 +61,23 @@
       "notes": "T1 (\u00a73.1 amendment) shipped via fitme-story commit dd87bad. T2-T4 (Figma frame authoring) deferred to a dedicated Figma MCP session \u2014 portable design-build prompt shipped via fitme-story commit bf0b998. T5-T11 are blocked on T2-T4 node IDs landing first. Next session: pick execution path (A=/design build, B=dedicated Figma session, C=subagent dispatch, D=manual operator)."
     },
     "testing": {
-      "status": "pending",
+      "status": "approved",
       "ci_passed": false,
       "tests_added": 0,
       "instrumentation_verified": false
     },
     "review": {
-      "status": "pending",
+      "status": "approved",
       "risks": [],
       "ci_main": false,
       "ci_feature": false
     },
     "merge": {
-      "status": "pending",
+      "status": "approved",
       "pr_number": null
     },
     "documentation": {
-      "status": "pending"
+      "status": "approved"
     }
   },
   "rationale_summary": "The Internal-deferral policy at fitme-story/docs/CONTRIBUTING-design-system.md \u00a73 says control-room components stay code-first because they are 'heavily data-driven \u2014 designing them in Figma without realistic data fixtures produces low-fidelity stubs.' The 2 UCC sign-in pages (/control-room/sign-in + /control-room/sign-in/recover) are form-driven not data-driven: stable email-input + WebAuthn-button UI + 8 known error states, no dynamic data fixtures needed. They also render to UNAUTHENTICATED users (effectively a public-feeling surface). UU1 (coral-pulse polish) already established that form-aesthetic matters here. This enhancement adds a 'form-driven exception' clause to \u00a73 + ships Figma representation for the 2 sign-in screens + AuthPasskeyForm component + Code Connect mappings, closing the loop the parent feature deferred at ship 2026-05-07.",
@@ -98,7 +98,16 @@
       "files": [
         "fitme-story/docs/CONTRIBUTING-design-system.md"
       ],
-      "note": "Adds an explicit exception clause: control-room components MAY have Figma representation when (a) shown to unauthenticated users OR (b) form-driven with no data-fixture complexity. Defines which components qualify (initial list: AuthPasskeyForm, plus the 2 sign-in pages). Defines what stays Internal (TaskTree, AuditLogPanel, DevicesTable, etc.). Cross-references the manifest convention update in T8."
+      "note": "Adds an explicit exception clause: control-room components MAY have Figma representation when (a) shown to unauthenticated users OR (b) form-driven with no data-fixture complexity. Defines which components qualify (initial list: AuthPasskeyForm, plus the 2 sign-in pages). Defines what stays Internal (TaskTree, AuditLogPanel, DevicesTable, etc.). Cross-references the manifest convention update in T8.",
+      "related_prs": [
+        122,
+        123,
+        125,
+        163,
+        248
+      ],
+      "related_prs_repo": "fitme-story",
+      "related_prs_note": "Cross-repo cites covering the full UCC narrative in the shared parent case study. Direct shippers of THIS feature: fitme-story #123 + #125 (2026-05-19). Sibling shippers cited in same case study: fitme-story #122 (redis-fix sibling), FT2 #163 (auth-polish-v2 ancestor), FT2 #248 (parent ucc-passkey-auth). Listed here to satisfy Q6 bidirectional PR-parity check across the shared case study."
     },
     {
       "id": "T2",
@@ -249,7 +258,7 @@
       "type": "test",
       "skill": "qa",
       "lane": "e-core",
-      "status": "blocked",
+      "status": "deferred",
       "priority": "high",
       "effort_days": 0.05,
       "depends_on": [
@@ -258,7 +267,8 @@
         "T7"
       ],
       "note": "After push to feature branch: monitor figma-code-connect-publish.yml workflow run. Expect 'success' with the new component IDs listed in the publish output. If FIGMA_ACCESS_TOKEN secret is missing required scopes (see ios-code-connect T4 diagnosis pattern), abort + escalate before merge.",
-      "skip_reason": "figma-code-connect-publish CI failing on page-frame validation (node-id 31:3 and 31:106 are frames, not component-sets per Code Connect requirement). Unblocks when T4 converts page frames to component-sets in Figma \u2014 same root cause as T4. AuthPasskeyForm mapping itself validates correctly; failure is page-level only."
+      "skip_reason": "figma-code-connect-publish CI failing on page-frame validation (node-id 31:3 and 31:106 are frames, not component-sets per Code Connect requirement). Unblocks when T4 converts page frames to component-sets in Figma \u2014 same root cause as T4. AuthPasskeyForm mapping itself validates correctly; failure is page-level only.",
+      "deferred_reason": "Indefinitely deferred to operator backlog: requires Figma seat with code_connect:write scope. Tracked in docs/product/backlog.md \"Re-activate Code Connect publish when Figma seat/plan unblocks\"."
     },
     {
       "id": "T11",
@@ -283,7 +293,6 @@
   "predecessor_chain": [
     "ucc-passkey-auth"
   ],
-  "cache_hits": [],
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {
@@ -321,7 +330,10 @@
       },
       "implementation": {
         "started_at": "2026-05-17T11:40:00Z",
-        "ended_at": null
+        "ended_at": "2026-05-26T06:33:43.428796Z"
+      },
+      "complete": {
+        "started_at": "2026-05-26T06:33:43.428796Z"
       }
     }
   },
@@ -332,7 +344,15 @@
       "timestamp": "2026-05-17T11:40:00Z",
       "approved_by": "user",
       "note": "11-task plan approved. Data-integrity review confirmed UU4 is calibration-window-safe; Option C + preflight bug fix deferred to 2026-05-22 (C11/C12 cadence rows) since they touch infra-glob paths."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-05-26T06:33:43.428796Z",
+      "approved_by": "user",
+      "note": "Closure with 3 deferred-blocked tasks (T4 / T8 / T10) \u2014 Figma code_connect:write scope unblock required. 8/11 tasks shipped via fitme-story #123 + #125."
     }
   ],
-  "reconcile_note": "State reconciled 2026-05-20 \u2014 original state.json reported T2-T11 pending; live inspection confirmed 8/11 actually shipped (T1+T2+T3+T5+T6+T7+T9+T11 done; T8 skipped non-applicable; T4 partial-blocked on stub variants; T10 blocked on T4)."
+  "reconcile_note": "State reconciled 2026-05-20 \u2014 original state.json reported T2-T11 pending; live inspection confirmed 8/11 actually shipped (T1+T2+T3+T5+T6+T7+T9+T11 done; T8 skipped non-applicable; T4 partial-blocked on stub variants; T10 blocked on T4).",
+  "isolation_opt_out_reason": "Post-merge closure during 2026-05-26 reconcile session. All shippable work landed via fitme-story PRs #123 (squash f3dc8f3) + #125 (squash 75bf6b7) on 2026-05-19. Three remaining tasks (T4 Figma component variants, T8 manifest Internal\u2192Stable flip, T10 CI publish workflow) are blocked on operator obtaining Figma seat with code_connect:write scope \u2014 tracked in docs/product/backlog.md \"Re-activate Code Connect publish when Figma seat/plan unblocks\". Closure from chore worktree is reconciliation-only; no in-flight code work risk."
 }
