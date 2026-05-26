@@ -5,13 +5,13 @@
   "parent_feature": "ucc-passkey-auth",
   "framework_version": "v7.8.6",
   "created_at": "2026-05-17T05:50:00Z",
-  "updated": "2026-05-17T05:50:00Z",
+  "updated": "2026-05-26T06:20:08.814733Z",
   "branch": "feature/ucc-passkey-auth-audit-log-redis-fix",
   "state_owner": "ft2",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "has_ui": false,
   "requires_analytics": false,
-  "isolation_opt_out": false,
+  "isolation_opt_out": true,
   "phases": {
     "research": {
       "status": "skipped",
@@ -194,7 +194,13 @@
       "files": [
         "fitme-story/src/lib/auth/redis-audit-log.ts (new)"
       ],
-      "note": "redis.lpush('ucc:audit-log:events', json) for write, redis.ltrim('ucc:audit-log:events', 0, 9999) for bound, redis.lrange('ucc:audit-log:events', 0, N) for read. Uses existing getRedis() from redis-client.ts. Cap = 10000 events (~5MB at avg 500B/event)."
+      "note": "redis.lpush('ucc:audit-log:events', json) for write, redis.ltrim('ucc:audit-log:events', 0, 9999) for bound, redis.lrange('ucc:audit-log:events', 0, N) for read. Uses existing getRedis() from redis-client.ts. Cap = 10000 events (~5MB at avg 500B/event).",
+      "related_prs": [
+        122,
+        163,
+        248
+      ],
+      "related_prs_note": "fitme-story #122 = T1-T5 ship; FT2 #163 + #248 = parent UCC case study cross-references where redis-fix work is documented"
     },
     {
       "id": "T2",
@@ -362,7 +368,6 @@
     "ucc-passkey-auth",
     "auth-polish-v2"
   ],
-  "cache_hits": [],
   "figma_node_ids": {},
   "figma_build_status": null,
   "pre_merge_review": {
@@ -400,7 +405,10 @@
       },
       "implementation": {
         "started_at": "2026-05-17T06:05:00Z",
-        "ended_at": null
+        "ended_at": "2026-05-26T06:20:08.814733Z"
+      },
+      "complete": {
+        "started_at": "2026-05-26T06:20:08.814733Z"
       }
     }
   },
@@ -411,6 +419,13 @@
       "timestamp": "2026-05-17T06:05:00Z",
       "approved_by": "user",
       "note": "9-task plan approved. Pre-implementation security audit surfaced operator_label PII vector in public blob \u2014 T4 amended to hash operator_label at cron-sanitize boundary. Integrity check clean (0 findings + 3 unrelated advisories)."
+    },
+    {
+      "from": "implementation",
+      "to": "complete",
+      "timestamp": "2026-05-26T06:20:08.814733Z",
+      "approved_by": "user",
+      "note": "Closure during 2026-05-26 reconcile session. All 9 tasks substantively done. State.json drift remediation only."
     }
   ],
   "related_prs": [
@@ -420,5 +435,6 @@
       "role": "production_redis_fix_dead_local_fs_to_primary_store",
       "merged_at": "2026-05-17"
     }
-  ]
+  ],
+  "isolation_opt_out_reason": "Post-merge closure during 2026-05-26 reconcile session. All implementation work shipped via fitme-story PR #122 (T1-T5, 2026-05-17) + fitme-story PRs #410+#411+#412 (T6 resolution, 2026-05-19) + parent FT2 PRs documented in \u00a799 of parent case study. Original chore/audit-log-redis-fix-* branches merged + deleted. This commit only flips current_phase \u2192 complete + adds closure timing \u2014 no risk of crossing in-flight code work, no infra-glob touched, no state.json mutation requiring branch isolation."
 }
