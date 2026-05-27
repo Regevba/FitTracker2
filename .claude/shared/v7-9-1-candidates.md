@@ -102,14 +102,25 @@ To be filled when shipped.
 
 ---
 
-## W11-PREFLIGHT-ENHANCEMENT-PARENT-FIX
+## ~~W11-PREFLIGHT-ENHANCEMENT-PARENT-FIX~~ — **VERIFIED CLOSED 2026-05-27 via FT2 PR #454** (commit `e906601`)
 
 **Discovered:** 2026-05-19 (UCC hardening Phase 0 prep; documented in [`observed-patterns.md`](../integrity/observed-patterns.md) as W11).
-**Status:** queued. Workaround in production (thin delta-PRD), durable fix queued.
-**Owner:** TBD (single-file FT2 fix at `scripts/preflight.py`).
-**Effort:** ~0.25 day (one function rewrite + 2-3 unit tests).
+**Status:** **CLOSED**. Verified during 2026-05-27 docket-grooming session: PR #454 commit `e906601` ("chore(batch): C-batch — C7 + C8 + C11 + C12 infra-ops chores") shipped the durable fix. Current `scripts/preflight.py:292` carries the C12 docstring + correct implementation reading the enhancement's `state.json::parent_feature` and checking THAT parent's state.json + prd.md. Effective coverage: confirmed via `grep -nA15 "def enhancement_parent_state" scripts/preflight.py`.
+**Owner:** N/A — shipped.
+**Effort:** ~0.25 day actual.
 **Source PR containing the workaround:** FT2 PR #410 (UCC hardening Phase 0/1/2 prep).
-**Initial closure attempt:** FT2 PR #454 (C12, claimed closure 2026-05-23) — but the closure note in cadence ledger says "Function now reads enhancement's own state.json → extracts `parent_feature` → checks THAT parent's state.json + prd.md". Need to verify this actually shipped and is sufficient; if so, this docket entry just needs verification + close. If not, it's still queued.
+**Closing PR:** FT2 PR #454 commit `e906601` (2026-05-23).
+**Closure verification log:**
+
+```
+$ git log --oneline --all -- scripts/preflight.py | head -3
+e906601 chore(batch): C-batch — C7 + C8 + C11 + C12 infra-ops chores (#454)
+$ grep -nA1 "def enhancement_parent_state" scripts/preflight.py
+292:def enhancement_parent_state(feature: str | None) -> dict | None:
+293:    """Enhancement requires a PARENT feature with a PRD.
+```
+
+Docket entry kept in-place (not deleted) per closure protocol so the discovery → workaround → durable-fix chain stays readable. Sections below describe the original problem + fix shape that landed.
 
 ### Problem
 
