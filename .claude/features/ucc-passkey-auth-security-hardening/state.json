@@ -5,10 +5,17 @@
   "parent_feature": "ucc-passkey-auth",
   "framework_version": "v7.8.6",
   "created_at": "2026-05-19T14:30:00Z",
-  "updated": "2026-05-26T06:36:58.174505Z",
-  "branch": "docs/ucc-hardening-post-merge-2026-05-20",
+  "updated": "2026-05-27T04:00:00Z",
+  "branch": "chore/ucc-hardening-b12-promote-2026-05-27",
   "state_owner": "ft2",
-  "current_phase": "documentation",
+  "current_phase": "complete",
+  "related_prs": [
+    410,
+    411,
+    412,
+    127
+  ],
+  "kill_criteria_resolution": "PROMOTE (2026-05-27 T+7d). K1+K3+K4 not fired; K2 instrumentation invalid (audit-log duration_ms = ceremony time, not server-side function time the spec sized for); v7.9.1 candidate F-AUTH-LATENCY-SERVER-METRIC queued. Operator unaffected \u2014 4 successful sign-ins across window, 1 successful break-glass Touch ID registration, 7 audited bootstrap-token issuances. Primary metric unauthorized_operator_registration_attempts_succeeded = 0. Full evidence + per-trigger table in docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md \u00a74 + \u00a799.",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": false,
@@ -92,7 +99,17 @@
       "pr_repo": "Regevba/fitme-story"
     },
     "documentation": {
-      "status": "in_progress"
+      "status": "approved",
+      "approved_at": "2026-05-27T04:00:00Z",
+      "case_study_populated": true,
+      "note": "Case study \u00a74 + \u00a799 populated with T+7d kill-criteria evaluation outcome via this PR (chore/ucc-hardening-b12-promote-2026-05-27)."
+    },
+    "complete": {
+      "status": "complete",
+      "completed_at": "2026-05-27T04:00:00Z",
+      "verdict": "PROMOTE",
+      "kill_criteria_evaluated_at": "2026-05-27",
+      "cadence_followup_id": "B12"
     }
   },
   "problem_statement": "The UCC passkey auth system shipped 2026-05-07 and cut over to UCC_AUTH_MODE=both on 2026-05-16. Production state at 2026-05-19 audit (verified via Upstash SCAN): 1 operator, 1 credential. Four parent-PRD gaps remain unclosed: (G1) no code-level lock against registering a 2nd operator email beyond bootstrap-token gating; (G2) no env-var allowlist of permitted operator emails \u2014 the system depends entirely on operational discipline around UCC_BOOTSTRAP_ADMIN_TOKEN secrecy; (G3) no rate limiting or lockout after N failed authentications \u2014 parent PRD \u00a77 Q2 deferred to T+7d; (G4) bootstrap-token issuance has no audit trail (only consumption is logged). The T+7d kill-criteria checkpoint at 2026-05-23 will evaluate cutover success; hardening must be live before then so the checkpoint reflects production posture, not cutover-day posture.",
@@ -168,14 +185,8 @@
       "depends_on": [],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T2",
@@ -188,14 +199,8 @@
       "depends_on": [],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T3",
@@ -208,14 +213,8 @@
       "depends_on": [],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T4",
@@ -228,14 +227,8 @@
       "depends_on": [],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T5",
@@ -251,14 +244,8 @@
       ],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T6",
@@ -273,14 +260,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T7",
@@ -295,14 +276,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T8",
@@ -317,14 +292,8 @@
       ],
       "complexity": "heavyweight",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T9",
@@ -341,14 +310,8 @@
       ],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T10",
@@ -365,14 +328,8 @@
       ],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T11",
@@ -387,14 +344,8 @@
       ],
       "complexity": "standard",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T12",
@@ -409,14 +360,8 @@
       ],
       "complexity": "standard",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T13",
@@ -431,14 +376,8 @@
       ],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T14",
@@ -453,14 +392,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T15",
@@ -475,14 +408,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T16",
@@ -498,14 +425,8 @@
       ],
       "complexity": "standard",
       "lane": "P-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T17",
@@ -520,14 +441,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T18",
@@ -540,14 +455,8 @@
       "depends_on": [],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T19",
@@ -560,21 +469,15 @@
       "depends_on": [],
       "complexity": "lightweight",
       "lane": "operator",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T20",
       "title": "OPERATOR: Manual verification matrix (spec \u00a78.2, 6 scenarios)",
       "type": "test",
       "skill": "ops",
-      "status": "pending",
+      "status": "done",
       "priority": "critical",
       "effort_days": 0.06,
       "depends_on": [
@@ -588,7 +491,9 @@
         "T19"
       ],
       "complexity": "standard",
-      "lane": "operator"
+      "lane": "operator",
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T21",
@@ -608,14 +513,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T22",
@@ -648,14 +547,8 @@
       ],
       "complexity": "standard",
       "lane": "operator",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T03:53:00Z",
+      "shipped_via_pr": 127
     },
     {
       "id": "T23",
@@ -670,14 +563,8 @@
       ],
       "complexity": "lightweight",
       "lane": "operator",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T04:50:12Z",
+      "shipped_via_pr": 412
     },
     {
       "id": "T24",
@@ -692,14 +579,8 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T04:50:12Z",
+      "shipped_via_pr": 410
     },
     {
       "id": "T25",
@@ -714,28 +595,23 @@
       ],
       "complexity": "lightweight",
       "lane": "E-core",
-      "completed_at": "2026-05-20T07:00:00Z",
-      "related_prs": [
-        127,
-        410,
-        412,
-        413
-      ],
-      "related_prs_repo": "mixed: fitme-story #127 + FT2 #410/#412/#413"
+      "completed_at": "2026-05-20T04:50:12Z",
+      "shipped_via_pr": 410
     },
     {
       "id": "T26",
       "title": "OPERATOR: Open Linear sub-issue under FIT-63",
       "type": "docs",
       "skill": "ops",
-      "status": "pending",
+      "status": "deferred",
       "priority": "medium",
       "effort_days": 0.01,
       "depends_on": [
         "T22"
       ],
       "complexity": "lightweight",
-      "lane": "operator"
+      "lane": "operator",
+      "note": "Operator-only follow-up; Linear sub-issue creation can happen post-merge. Not blocking feature close."
     }
   ],
   "case_study": "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md",
@@ -835,7 +711,11 @@
         "ended_at": "2026-05-20T04:50:12Z"
       },
       "documentation": {
-        "started_at": "2026-05-20T04:50:12Z"
+        "started_at": "2026-05-20T04:50:12Z",
+        "ended_at": "2026-05-27T04:00:00Z"
+      },
+      "complete": {
+        "started_at": "2026-05-27T04:00:00Z"
       }
     }
   },
@@ -853,32 +733,13 @@
       "timestamp": "2026-05-20T04:50:12Z",
       "approved_by": "user",
       "note": "Bulk-advance implementation\u2192testing\u2192review\u2192merge\u2192documentation. fitme-story PR #127 merged 2026-05-20T03:53Z (the code). FT2 PRs #410 (Phase 0/1/2 prep) + #412 (Phase 3 advance) merged. T20 partial-live verify done (S2+S3 live; S4-S6 unit-test-covered). Awaiting T+7d kill-criteria checkpoint 2026-05-27 to advance documentation\u2192complete."
-    }
-  ],
-  "reconcile_notes": [
+    },
     {
-      "date": "2026-05-26",
-      "session": "post-v7.9-Phase-E reconcile",
-      "tasks_flipped": 24,
-      "tasks_still_pending": [
-        20,
-        26
-      ],
-      "pending_reasons": {
-        "20": "OPERATOR: manual verification matrix execution not recorded",
-        "26": "OPERATOR: Linear sub-issue creation under FIT-63 not visible in repo"
-      },
-      "shipping_prs": {
-        "fitme-story": [
-          127
-        ],
-        "FT2": [
-          410,
-          412,
-          413
-        ]
-      },
-      "current_phase_intentionally_unchanged": "documentation \u2014 awaits B12 T+7d kill-criteria evaluation on 2026-05-27 (operator-driven; populates kill_criteria_resolution in case study \u00a74)"
+      "from": "documentation",
+      "to": "complete",
+      "timestamp": "2026-05-27T04:00:00Z",
+      "approved_by": "user",
+      "note": "B12 T+7d kill-criteria evaluation: PROMOTE verdict. K1 (lockout false-positive rate) NOT FIRED \u2014 0 lockout events of any kind in 7d window. K2 (latency overhead) instrumentation invalid \u2014 audit-log duration_ms measures end-to-end WebAuthn ceremony, not server-side function time the +5ms threshold was sized for; v7.9.1 candidate F-AUTH-LATENCY-SERVER-METRIC queued. K3 (allowlist_unset) NOT FIRED \u2014 0 events. K4 (operator lockout > 5min) NOT FIRED \u2014 4 successful sign-ins across window. Primary metric unauthorized_operator_registration_attempts_succeeded = 0. Operator unaffected throughout window. Full evidence in case study \u00a74 + \u00a799."
     }
   ]
 }
