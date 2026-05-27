@@ -48,7 +48,11 @@
     {"audit_id": "audit-3-v8-0-ship", "scheduled_date": "2026-08-05", "scope": "Block C synthesis case study + ORCHID v2 design stub"}
   ],
   "linear": "FIT-71",
-  "related_prs": [306, 313, 316],
+  "related_prs": [306, 313, 316, 506, 507],
+  "related_prs_notes": {
+    "506": "chore — Sub-exp 2 prereg pre-ceremony fill-in (B14.2 prep, awaiting ceremony lock ~2026-05-28+)",
+    "507": "chore — Sub-exp 3 prereg pre-ceremony fill-in (B15.2 prep, awaiting ceremony lock ~2026-06-01+, double-gated on Sub-exp 1+2 PASS)"
+  },
   "tasks": [
     {
       "id": "A",
