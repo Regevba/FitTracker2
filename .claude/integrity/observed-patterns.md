@@ -1024,3 +1024,113 @@ A pre-merge gate that compares the PR's "files changed" count (`gh pr view --jso
 - [W16](#w16--contract-boundary-tests-must-use-a-sample-drawn-from-the-canonical-producer-not-the-consumers-expected-shape-2026-05-24) — sibling pattern; both detect "the artifact you reviewed ≠ the artifact that ships"
 
 **First surfaced by:** 2026-05-25 session — initially as a near-miss on draft PRs #484 + #488 (closed via Path 2 = "close + regenerate fresh on current main"). Pattern then verified at scale via a 35-branch local-state audit yielding 33 deletions: 4 confirmed clean ZOMBIES + 10 MANUAL-conflict content-zombies + 11 pre-bulk-audit zombies + 7 `pr-*` tracking branches of CLOSED PRs + 1 stale `claude/*` session branch. Worktrees cleaned: 2 (123 MB reclaimed). Stashes dropped: 3.
+
+---
+
+### W18 — Default-URL OG image silent-404: metadata helper hardcodes a URL that doesn't exist in `public/` or as an auto-route (2026-05-27)
+
+**Trigger:** Social shares (LinkedIn, Twitter, Hacker News, dev.to) from `fitme-story.vercel.app` produce bare blue links instead of rich previews. End-user-visible only AFTER share is posted; invisible during local dev + during preview-URL inspection in the Vercel dashboard.
+
+**Reproduce:**
+
+```text
+$ curl -sI https://fitme-story.vercel.app/og.png
+HTTP/2 404                              ← URL referenced in og:image meta tag
+
+$ curl -sI https://fitme-story.vercel.app/opengraph-image
+HTTP/2 200                              ← Next.js auto-generates this from
+                                          src/app/opengraph-image.tsx
+```
+
+The `og:image` meta tag in deployed HTML pointed at `/og.png` (which doesn't exist in `public/`) instead of the Next.js Metadata API auto-route `/opengraph-image` (which the per-page `src/app/opengraph-image.tsx` file emits as a 1200×630 `ImageResponse`). Social platforms fetched the bad URL, got 404, suppressed the rich preview entirely.
+
+Dormant for 6 days from 2026-05-21 (DISCO Phase 1 P1.3 + P1.4 ship) until 2026-05-27 (operator P1.5 incognito-check on Realtime). Detection required either (a) the operator manually visiting the OG URL or (b) running a real social-share preview test. Neither was in the test plan; the silent class persisted.
+
+**Why expected:** the `src/lib/seo.ts::buildMetadata()` helper override is "useful" — it lets per-page metadata declare a custom OG image. But the *default* was hardcoded to `/og.png` instead of pointing at the same auto-route the Next.js convention emits when `opengraph-image.tsx` exists. The defaults disagreed.
+
+| Side | File | URL emitted |
+|---|---|---|
+| Producer (canonical) | `fitme-story/src/app/opengraph-image.tsx` | `/opengraph-image` (Next.js convention) |
+| Default consumer | `fitme-story/src/lib/seo.ts:57` (pre-fix) | `${SITE_BASE}/og.png` ← 404 |
+| Per-page override | callers of `buildMetadata({ image: '...' })` | whatever passed |
+
+The override callers worked; the default callers (the homepage + most other routes) all 404'd.
+
+**Silence paths (in order of preference):**
+
+1. **The default URL is the framework convention.** When you adopt Next.js's `opengraph-image.tsx` file-based metadata convention, every default in your codebase must point at the convention's emitted URL (`/opengraph-image`), not a parallel hand-named static asset.
+2. **Test that the URL resolves.** Unit-test the helper's output, asserting `og:image` URL exists in `public/` OR matches a known Next.js auto-route. Fixed in PR #156 + 6 regression tests in `src/lib/seo.test.ts` covering the OG + Twitter + JSON-LD branches.
+3. **Defensive normalization at the helper boundary.** If a caller might pass a relative path or a 404'd path, normalize/probe at build time. Out of scope for this fix; queued as v7.9.1 candidate **F-DEPLOYED-URL-PROBE** which adds a CI step that curl-HEAD's the OG URL + curl-200's the `gtag/js?id=$NEXT_PUBLIC_GA_ID` URL on every deploy preview.
+
+**Prevention layer (v7.9.1 candidate F-DEPLOYED-URL-PROBE):**
+
+Sibling of [W16](#w16--contract-boundary-tests-must-use-a-sample-drawn-from-the-canonical-producer-not-the-consumers-expected-shape-2026-05-24). W16 closes consumer-fixture-disagrees-with-producer-shape; W18 closes consumer-hardcoded-URL-disagrees-with-deployment. Both belong to the same silent-pass class: "the data the test exercises is not the data production delivers."
+
+**Related patterns:**
+
+- [W12](#w12--vercel-env-pull-returns-empty-values-for-sensitive-vars-2026-05-20) — Vercel-deploy-time vs runtime divergence; shared substrate ("how the deploy renders ≠ how the source reads")
+- W13 (Upstash `KV_*` vs `UPSTASH_REDIS_REST_*` naming asymmetry) — same "two valid names; helper picks the wrong one" pattern (Upstash Redis env var aliasing)
+- [W16](#w16--contract-boundary-tests-must-use-a-sample-drawn-from-the-canonical-producer-not-the-consumers-expected-shape-2026-05-24) — closest sibling; both flag "consumer-side tests validated the wrong shape"
+
+**First surfaced by:** 2026-05-27 DISCO Phase 1 P1.5 operator-verification follow-up. Operator confirmed GA Realtime saw web sessions only AFTER both #156 (this URL fix) + #157 (W19 below — env-var trailing-newline corruption) were live. Closed via fitme-story PR #156 + 6 new regression tests.
+
+---
+
+### W19 — Environment-variable trailing newline silently corrupts runtime string (2026-05-27)
+
+**Trigger:** `NEXT_PUBLIC_GA_ID` (or any string env var) injected at runtime via `process.env.X` carries trailing whitespace from the original env-var paste. Downstream consumers that URL-encode the value (e.g. `${url}?id=${process.env.X}`) silently produce malformed URLs (`?id=G-XE4E1JGWRZ%0A`) that the receiving service rejects.
+
+**Reproduce in deployed HTML:**
+
+```text
+$ curl -s https://fitme-story.vercel.app | grep -oE '.{20}G-XE4E1JGWRZ.{5}'
+..."gaId":"G-XE4E1JGWRZ\n"...           ← \n in the JSON-stringified gaId
+
+$ curl -sI 'https://www.googletagmanager.com/gtag/js?id=G-XE4E1JGWRZ%0A'
+HTTP/2 200                              ← Google serves the file, BUT every
+                                          subsequent measurement-protocol POST
+                                          tagged with the malformed ID is
+                                          silently rejected at GA4 ingestion.
+```
+
+Result: GA4 Realtime showed `iOS = 30 sessions` and `web = 0 sessions` for 6 days post-DISCO-Phase-1-ship (2026-05-21 → 2026-05-27), even though `gtag/js` was being loaded successfully by every web visitor. The protocol-level rejection produced no client-side error, no console warning, no Realtime debug-view entry — only zero events in dashboards.
+
+**Why expected:** the operator ran `vercel env add NEXT_PUBLIC_GA_ID production` and pasted `G-XE4E1JGWRZ` followed by Enter. The trailing newline became part of the stored value. `process.env.NEXT_PUBLIC_GA_ID` returned `G-XE4E1JGWRZ\n` verbatim. The Next.js Script component injected the string into the gtag URL as-is.
+
+Most consumers of `process.env.X` are forgiving — they pass the string to other consumers who also tolerate whitespace. But URL builders + query-string serializers + JSON consumers don't tolerate whitespace; they percent-encode it (`\n → %0A`) and pass the bad URL forward. The transformation makes the corruption invisible at every layer except the final receiving server.
+
+**Silence paths (in order of preference):**
+
+1. **Trim every string env var at the boundary.** `const X = process.env.X?.trim()`. One token. Defends against every future paste regardless of how the env var was set.
+2. **Helper module for env reads.** Centralize all `process.env.*` reads in a `src/lib/env.ts` that returns trimmed values + emits a warning on unexpected whitespace. Out of scope for hotfix; queued as a v8.x candidate.
+3. **CI assertion at deploy boundary.** After deploy, curl the deployed HTML + assert no `\n` appears in the JSON-serialized config payload. Subsumes by v7.9.1 candidate **F-DEPLOYED-URL-PROBE** which builds the curl assertions.
+
+**Prevention layer (v7.9.1 candidate F-DEPLOYED-URL-PROBE):**
+
+Same candidate as W18; W19 motivates a sibling probe: after deploy, the CI step asserts `curl 'https://www.googletagmanager.com/gtag/js?id=$NEXT_PUBLIC_GA_ID' -I` returns 200 + the URL contains no `%0A`. Catches both the W18 (wrong URL) + W19 (corrupted ID) silent-pass classes in one gate.
+
+**Related patterns:**
+
+- [W12](#w12--vercel-env-pull-returns-empty-values-for-sensitive-vars-2026-05-20) — Vercel env-var quirks family; W12 (Sensitive vars empty) + W13 (alias mismatch) + W19 (trailing whitespace) are three faces of the same "Vercel env-store has hidden semantics" class
+- [W18](#w18--default-url-og-image-silent-404-metadata-helper-hardcodes-a-url-that-doesnt-exist-in-public-or-as-an-auto-route-2026-05-27) — sibling discovered same day; both 6-day silent-pass classes invisible to local dev + preview deploys
+
+**First surfaced by:** 2026-05-27 DISCO Phase 1 P1.5 operator-verification. Initial diagnosis assumed GA wiring was missing entirely (Realtime showed 0 web sessions); deeper curl inspection of the deployed HTML revealed the `\n` literal in the JSON payload. The `\n` made it through Vercel's env-var-store + Next.js's environment injection + the Script component's URL builder, only being rejected at the GA4 Measurement Protocol gate. Closed via fitme-story PR #157 with one-line `?.trim()` fix.
+
+**Operator runbook (general env-var hygiene):**
+
+When pasting any string env var, prefer `printf '%s' 'value'` (no trailing newline) over a direct interactive paste OR check the value post-write:
+
+```bash
+# Verify no trailing whitespace post-set:
+vercel env pull .env.local --environment=production --yes
+grep -E '\s+$' .env.local && echo "WARN: trailing whitespace detected" || echo "clean"
+```
+
+Or set the value through the Vercel REST API with explicit JSON payload (which forbids embedded newlines by construction):
+
+```bash
+curl -X POST "https://api.vercel.com/v10/projects/<project_id>/env" \
+  -H "Authorization: Bearer $VERCEL_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"key":"NEXT_PUBLIC_GA_ID","value":"G-XXXXXXX","type":"plain","target":["production"]}'
+```
