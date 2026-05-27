@@ -53,7 +53,7 @@
     "All 3 endpoints simultaneously rate-limited > 2 fires consecutively",
     "ANY endpoint changes streaming protocol or model id mid-collection",
     "Wrapper preflight fails 3+ times consecutively",
-    "_subexp3_specific_kill": "Anchor distributions in Sub-exp 3 drift > 2σ from their Sub-exp 1 distributions on either axis (TTFT or TPS) — this means infrastructure drifted between Sub-exp 1 and Sub-exp 3 collection windows, invalidating the routing-test comparison. Run scripts/hadf-phase2bis-anchor-drift-check.py BEFORE running the routing verdict; if anchor drift exceeds 2σ, halt + investigate before drawing routing conclusions."
+    "Subexp3-specific: Anchor distributions in Sub-exp 3 drift > 2σ from their Sub-exp 1 distributions on either axis (TTFT or TPS) — infrastructure drifted between Sub-exp 1 and Sub-exp 3 collection windows, invalidating the routing-test comparison. Run scripts/hadf-phase2bis-anchor-drift-check.py BEFORE running the routing verdict; if anchor drift exceeds 2σ, halt + investigate before drawing routing conclusions."
   ],
   "trip_wires": [
     {
