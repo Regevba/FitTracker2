@@ -42,6 +42,12 @@ import tarfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+
+# Import the project's flock_writer helper for race-condition protection
+# (#397: 4 parallel cron + manual invocations all passed the idempotency check
+# before any wrote, producing 4 duplicate rows for 2026-05-18 in PR #389).
+sys.path.insert(0, str(REPO_ROOT / "scripts"))
+from flock_writer import flocked  # noqa: E402
 LOCAL_BACKUP_ROOT = Path.home() / "Documents" / "FitTracker2-backups" / "daily"
 SSD_BACKUP_ROOT = Path("/Volumes/DevSSD/FitTracker2-snapshots")
 FITME_STORY_REPO = Path("/Volumes/DevSSD/fitme-story")
@@ -706,6 +712,23 @@ def main():
     ssd_dir = SSD_BACKUP_ROOT / today
 
     log = (lambda *a, **kw: None) if args.quiet else print
+
+    # Race-condition protection (#397): wrap the entire read-check-pipeline-append
+    # sequence in an exclusive flock on the ledger file via a sidecar lockfile.
+    # Why: the prior design's check-then-act window allowed concurrent fires
+    # (cron + manual + SessionStart hook) to all pass the idempotency check
+    # before any wrote, producing duplicate ledger rows (4× rows for 2026-05-18
+    # in PR #389). Now: concurrent fires serialize at flock acquire; the second-
+    # to-acquire sees today's row already present and exits cleanly.
+    # Sidecar lockfile pattern follows scripts/flock_writer.py (Mechanism I);
+    # see .gitignore: `.claude/shared/*.lock` is already excluded.
+    LEDGER_JSONL.parent.mkdir(parents=True, exist_ok=True)
+    with flocked(LEDGER_JSONL):
+        _run_pipeline(today, local_dir, ssd_dir, args, log)
+
+
+def _run_pipeline(today: str, local_dir: Path, ssd_dir: Path, args, log) -> None:
+    """Read-check-pipeline-append, guarded by the caller's flock."""
 
     # Idempotency check — keyed on the ledger row, not the snapshot dir.
     # Why: if a prior fire crashed after creating the snapshot dir but before
