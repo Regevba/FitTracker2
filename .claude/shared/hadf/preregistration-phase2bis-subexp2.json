@@ -1,44 +1,87 @@
 {
   "subexp_id": "phase2bis-subexp2",
-  "rq": "TBD — fill before lock per spec §1",
-  "endpoints": [],
+  "rq": "Can we distinguish Ollama-on-M2 from cloud endpoints by signature alone? (Per spec §1 RQ2. Sub-exp 1 establishes the cloud-side signature baseline; Sub-exp 2 collects an Ollama local-execution distribution and tests KS-distinguishability vs the cloud anchor distributions at p<0.01. Hypothesis: local execution produces a distinguishably different streaming TTFT/TPS signature than any cloud-hosted endpoint because the model is loaded locally with no rate-limiting / no network round-trip / different memory hierarchy.)",
+  "_status_at_2026_05_27": "DRAFT — pre-ceremony fill-in. The operator finalizes verdict_thresholds + computes harness_hardening_proof.env_local_sha256_at_deploy + prompt_set_sha256 + runs go-no-go-ceremony.md, THEN locks via sha256 + .lock + git tag per spec §6.2. The schema below carries spec-derived concrete values for endpoints + per_call_controls + campaign_schedule + kill_criteria so that less mechanical work remains at ceremony time. DO NOT treat this file as locked — the .lock sidecar is absent until the ceremony.",
+  "endpoints": [
+    {
+      "provider": "ollama",
+      "endpoint": "llama3.2:3b",
+      "api_kind": "local"
+    }
+  ],
   "per_call_controls": {
     "calls_per_fire": 50,
     "max_output_tokens": 200,
     "temperature": 0.7,
-    "timeout_s": 60,
+    "timeout_s": 600,
+    "_timeout_note": "Per spec §3 row 'Per-call timeout': 600s override (vs 60s cloud default). Ollama on M2 has streaming TPS variance the 60s cloud default doesn't accommodate.",
     "streaming_required": true,
     "system_prompt": null,
     "tools": null,
     "prompt_set_path": ".claude/shared/hadf/phase2bis-prompt-set.json",
-    "prompt_set_sha256": "TBD — computed at lock time"
+    "prompt_set_sha256": "TBD — recompute at lock time; Sub-exp 1 lock value was 7b4d9dc9000893fcbec1fde7c75c9e25b41bc2e7c8b05046d6f8a9dfd71c69a4 (carries forward unless prompt-set edits between sub-exps)"
   },
   "campaign_schedule": {
     "fires_per_day": 5,
     "fire_times_utc": ["02:00", "08:00", "14:00", "18:00", "22:00"],
-    "duration_days": 3
+    "duration_days": 3,
+    "expected_endpoints_per_fire": 1
   },
-  "primary_metric": "silhouette score at k=5",
-  "expected_yield_threshold": 600,
+  "primary_metric": "KS-distinguishability p-value vs Sub-exp 1 anchor distributions (openai/gpt-4o-mini + anthropic/claude-haiku-4-5)",
+  "_primary_metric_change_note": "Sub-exp 2 uses KS-distinguishability (1 endpoint vs N cloud anchors) instead of Sub-exp 1's silhouette score (cluster-separability across endpoints). Per state.json::success_metrics line 'Sub-exp 2: Ollama distribution KS-distinguishable from cloud endpoints (p < 0.01)'.",
+  "expected_yield_threshold": 150,
+  "_expected_yield_threshold_derivation": "Sub-exp 1's threshold was 300 for ~1,500 nominal records (4 endpoints × 50 calls × 5 fires × 3 days × 50% yield = ~1,500 valid). Sub-exp 2 nominal: 1 endpoint × 50 calls × 5 fires × 3 days = 750 records. At Phase 2's 50% yield: ~375 valid. Floor at 150 = ~20% nominal (deliberately permissive — Ollama-on-M2 thermal throttling can shave yield more than cloud).",
   "kill_criteria": [
-    "n_valid < 600",
-    "all endpoints simultaneously rate-limited > 2 fires consecutively",
-    "ANY endpoint changes streaming protocol or model id mid-collection",
-    "wrapper preflight fails 3+ times consecutively"
+    "n_valid < 150",
+    "Ollama endpoint rate-limited > 2 fires consecutively (note: rate-limiting on local Ollama only happens via OOM / thermal throttling / process termination; if observed, halt — indicates hardware instability, not random fluctuation)",
+    "Endpoint changes streaming protocol or model id mid-collection (e.g., operator pulls a different llama3.2 variant — invalidates the run)",
+    "Wrapper preflight fails 3+ times consecutively"
   ],
   "trip_wires": [
     {"name": "anchor_drift", "applies_to": "subexp3 only", "action": "methodology note, do not abort"},
-    {"name": "cost_overrun_3x", "action": "pause for operator review"}
+    {"name": "cost_overrun_3x", "action": "pause for operator review (note: Sub-exp 2 has $0 cloud cost; cost_overrun trip is N/A here but kept for schema consistency)"},
+    {"name": "ollama_thermal_anomaly", "applies_to": "subexp2 only", "action": "if fire latency > 2× p50 of first 10 calls, log methodology note; do not abort — variance IS part of the local-vs-cloud signature we measure"}
   ],
   "verdict_thresholds": {
-    "pass_silhouette_min": 0.5,
-    "pass_yield_min": 600,
-    "fail_clusters_lt": 3
+    "_TBD_at_ceremony": true,
+    "_recommendation": "Operator decides at go-no-go ceremony. Suggested schema below pending operator finalization:",
+    "pass_ks_p_max": "TBD — suggested 0.01 per spec §1 RQ2 + state.json::success_metrics line 'p < 0.01'. Means: Ollama distribution distinguishable from each cloud anchor at p<0.01 on a 2-sample KS test of streaming-TTFT or TTFT+TPS joint distribution.",
+    "pass_yield_min": "TBD — suggested 150 (matches expected_yield_threshold above; operator may raise floor if Sub-exp 1 confirmed Ollama harness reliability)",
+    "fail_if_ks_p_greater_than": "TBD — suggested 0.05. If KS p > 0.05 vs ALL cloud anchors, conclude Ollama signature is indistinguishable from cloud (HADF dispatch claim weakened — operator decides whether this refutes Sub-exp 2's hypothesis or just means the M2 + 3B model is too cloud-like for this metric)"
   },
   "harness_hardening_proof": {
-    "env_local_sha256_at_deploy": "TBD — computed at lock time",
-    "fix1_commit_hash": "TBD — git SHA where worktree-local venv was introduced",
+    "env_local_sha256_at_deploy": "TBD — computed at lock time via shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+    "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A — soak window scaffolding — carries forward from Sub-exp 1 lock (worktree-local venv pattern unchanged for Sub-exp 2)",
     "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp2-deliberate-break.log",
     "state_owner_at_creation": "ft2"
+  },
+  "endpoints_full_design": [
+    {
+      "provider": "ollama",
+      "endpoint": "llama3.2:3b",
+      "api_kind": "local",
+      "_design_note": "Single endpoint by design — spec §2 'Sub-exp 2 — Cloud-vs-local separability (1 endpoint, 1 provider)'. H1 (Ollama no-anchor decision): local execution doesn't drift across runs, so no anchor endpoint is needed for drift detection (contrast with Sub-exp 3 which carries Sub-exp 1's anchors forward)."
+    }
+  ],
+  "_ceremony_checklist_2026_05_28_or_later": {
+    "_purpose": "Reminder for the operator at go-no-go time. Each item is a single-line action; tick off in order.",
+    "items": [
+      "1. Confirm Sub-exp 1 verdict = PASS (per B13.5 verdict-script output)",
+      "2. Read this prereg in full; review the TBD fields under verdict_thresholds + sha256 fields",
+      "3. Decide pass_ks_p_max (suggested 0.01) + pass_yield_min (suggested 150) + fail_if_ks_p_greater_than (suggested 0.05)",
+      "4. Set _TBD_at_ceremony: false; replace each TBD placeholder with concrete value",
+      "5. Remove _status_at_2026_05_27 + _expected_yield_threshold_derivation + _ceremony_checklist_2026_05_28_or_later + _primary_metric_change_note + _timeout_note + _design_note keys (strip pre-ceremony scaffolding so the locked artifact is clean)",
+      "6. Compute env_local_sha256_at_deploy: shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+      "7. Compute prompt_set_sha256: shasum -a 256 .claude/shared/hadf/phase2bis-prompt-set.json",
+      "8. Save the locked file in impl repo: /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.claude/shared/hadf/preregistration-phase2bis-subexp2.json",
+      "9. Create sha256 lock sidecar: shasum -a 256 <locked-file> > <locked-file>.lock",
+      "10. git tag -s -m 'Sub-exp 2 prereg locked $(date -u +%Y-%m-%dT%H:%M:%SZ)' phase2bis-subexp2-prereg-locked",
+      "11. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.fitme.hadf-phase2bis-subexp2.plist (per spec §6.3)",
+      "12. Wait 3 days for collection (5 fires/day × 3 days = 750 nominal records)",
+      "13. Run verdict script: python3 scripts/hadf-phase2bis-subexp2-verdict.py",
+      "14. Write Sub-exp 2 case study (per state.json::tasks B14.6)",
+      "15. make snapshot-phase PHASE=subexp2-complete FEATURE=hadf-phase2bis-replication",
+      "16. Commit + open PR + merge (per state.json::tasks B14.7-B14.8)"
+    ]
   }
 }
