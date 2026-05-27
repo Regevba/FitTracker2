@@ -1,7 +1,32 @@
 {
   "subexp_id": "phase2bis-subexp3",
-  "rq": "TBD — fill before lock per spec §1",
-  "endpoints": [],
+  "rq": "Does AWS Bedrock haiku-4-5 fingerprint differently from Anthropic-direct haiku-4-5? (Per spec §1 RQ3 — the central HADF claim: same model behind different providers must yield different signatures or the entire HADF dispatch premise fails. Anchor endpoints openai/gpt-4o-mini + anthropic/claude-haiku-4-5 carry forward from Sub-exp 1 to detect cross-sub-exp drift via T2-E anchor-drift check.)",
+  "_status_at_2026_05_27": "DRAFT — pre-ceremony fill-in. The operator finalizes verdict_thresholds + computes harness_hardening_proof.env_local_sha256_at_deploy + prompt_set_sha256 + runs go-no-go-ceremony.md, THEN locks via sha256 + .lock + git tag per spec §6.2. Sub-exp 3 launch is double-gated: Sub-exp 1 PASS + Sub-exp 2 PASS. DO NOT treat this file as locked — the .lock sidecar is absent until the ceremony.",
+  "endpoints": [
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o-mini",
+      "api_kind": "direct",
+      "_role": "anchor_carried_from_subexp1",
+      "_drift_check_target": true
+    },
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5",
+      "api_kind": "direct",
+      "_role": "anchor_carried_from_subexp1",
+      "_drift_check_target": true,
+      "_routing_test_pair_with": "aws-bedrock/anthropic.claude-haiku-4-5"
+    },
+    {
+      "provider": "aws-bedrock",
+      "endpoint": "anthropic.claude-haiku-4-5",
+      "api_kind": "bedrock",
+      "_role": "routing_test_target",
+      "_routing_test_pair_with": "anthropic/claude-haiku-4-5",
+      "_central_hadf_claim_probe": true
+    }
+  ],
   "per_call_controls": {
     "calls_per_fire": 50,
     "max_output_tokens": 200,
@@ -11,34 +36,106 @@
     "system_prompt": null,
     "tools": null,
     "prompt_set_path": ".claude/shared/hadf/phase2bis-prompt-set.json",
-    "prompt_set_sha256": "TBD — computed at lock time"
+    "prompt_set_sha256": "TBD — recompute at lock time; Sub-exp 1 lock value was 7b4d9dc9000893fcbec1fde7c75c9e25b41bc2e7c8b05046d6f8a9dfd71c69a4 (carries forward unless prompt-set edits between sub-exps)"
   },
   "campaign_schedule": {
     "fires_per_day": 5,
     "fire_times_utc": ["02:00", "08:00", "14:00", "18:00", "22:00"],
-    "duration_days": 3
+    "duration_days": 3,
+    "expected_endpoints_per_fire": 3
   },
-  "primary_metric": "silhouette score at k=5",
-  "expected_yield_threshold": 600,
+  "primary_metric": "signature delta (Bedrock haiku-4-5 vs Anthropic-direct haiku-4-5) compared to Sub-exp 1's within-provider variance",
+  "_primary_metric_definition_note": "Per state.json::success_metrics line 'Sub-exp 3: Bedrock haiku-4-5 fingerprint distinguishable from Anthropic-direct haiku-4-5 (signature delta > Sub-exp 1 within-provider variance)'. Operationalization: compute KS-test p-value or Mahalanobis distance between the two haiku-4-5 distributions (Bedrock vs Anthropic-direct) on streaming TTFT/TPS fingerprint axes; compare to the within-Anthropic baseline variance established in Sub-exp 1 (Anthropic provider's intra-endpoint distance across the haiku-4-5 + sonnet-4-6 distributions).",
+  "expected_yield_threshold": 450,
+  "_expected_yield_threshold_derivation": "3 endpoints × 50 calls × 5 fires × 3 days = 2,250 nominal records. At Phase 2's 50% yield: ~1,125 valid. Floor at 450 = 40% nominal (deliberately permissive). Sub-exp 1's 4-endpoint locked threshold was 300, so 3-endpoint 450 is consistent with the per-endpoint expectation.",
   "kill_criteria": [
-    "n_valid < 600",
-    "all endpoints simultaneously rate-limited > 2 fires consecutively",
+    "n_valid < 450",
+    "All 3 endpoints simultaneously rate-limited > 2 fires consecutively",
     "ANY endpoint changes streaming protocol or model id mid-collection",
-    "wrapper preflight fails 3+ times consecutively"
+    "Wrapper preflight fails 3+ times consecutively",
+    "Subexp3-specific: Anchor distributions in Sub-exp 3 drift > 2σ from their Sub-exp 1 distributions on either axis (TTFT or TPS) — infrastructure drifted between Sub-exp 1 and Sub-exp 3 collection windows, invalidating the routing-test comparison. Run scripts/hadf-phase2bis-anchor-drift-check.py BEFORE running the routing verdict; if anchor drift exceeds 2σ, halt + investigate before drawing routing conclusions."
   ],
   "trip_wires": [
-    {"name": "anchor_drift", "applies_to": "subexp3 only", "action": "methodology note, do not abort"},
-    {"name": "cost_overrun_3x", "action": "pause for operator review"}
+    {
+      "name": "anchor_drift",
+      "applies_to": "subexp3 only",
+      "action": "if KS-test p-value comparing Sub-exp 1 anchor distributions vs Sub-exp 3 anchor distributions < 0.01, append methodology note to Sub-exp 3 case study; do NOT abort"
+    },
+    {
+      "name": "cost_overrun_3x",
+      "action": "pause for operator review (Sub-exp 3 cost is ~$1 expected per spec §2; 3x = $3 ceiling)"
+    },
+    {
+      "name": "bedrock_haiku_version_drift",
+      "applies_to": "subexp3 only",
+      "action": "if Bedrock's claude-haiku-4-5 model version differs from Anthropic-direct's claude-haiku-4-5 version mid-collection, log methodology note + flag in case study; AWS Bedrock model-version transparency is less explicit than Anthropic-direct"
+    }
   ],
   "verdict_thresholds": {
-    "pass_silhouette_min": 0.5,
-    "pass_yield_min": 600,
-    "fail_clusters_lt": 3
+    "_TBD_at_ceremony": true,
+    "_recommendation": "Operator decides at go-no-go ceremony. Sub-exp 3 is the most consequential verdict — it directly probes the central HADF claim. Suggested schema below pending operator finalization:",
+    "pass_signature_delta_ratio_min": "TBD — suggested 2.0. Defined as: distance(bedrock_haiku, anthropic_haiku) / median(within-provider intra-Sub-exp-1-variance). If > 2.0, Bedrock haiku is clearly outside Anthropic-direct's within-provider noise floor → routing produces distinguishable signatures → HADF dispatch claim supported.",
+    "pass_yield_min": "TBD — suggested 450 (matches expected_yield_threshold above)",
+    "pass_anchor_drift_p_value_min": "TBD — suggested 0.01. If Sub-exp 3 anchors drift from Sub-exp 1 anchors at p < 0.01, the routing-test comparison is potentially contaminated by cross-window drift — flag in case study + lower confidence in verdict",
+    "fail_if_signature_delta_ratio_lt": "TBD — suggested 1.0. Bedrock haiku and Anthropic-direct haiku indistinguishable within Anthropic's own intra-provider noise → routing produces no signature change → central HADF dispatch premise REFUTED. This is the falsification criterion.",
+    "_verdict_logic_note": "Three outcomes: (a) delta_ratio > 2.0 → HADF supported. (b) 1.0 ≤ delta_ratio ≤ 2.0 → HADF inconclusive — Bedrock-vs-Anthropic differs from within-provider but not by enough; may need higher-n run or different metric. (c) delta_ratio < 1.0 → HADF refuted on this metric (operator decides whether to weaken the HADF claim's wording, queue follow-up sub-exp, or accept refutation)."
   },
   "harness_hardening_proof": {
-    "env_local_sha256_at_deploy": "TBD — computed at lock time",
-    "fix1_commit_hash": "TBD — git SHA where worktree-local venv was introduced",
+    "env_local_sha256_at_deploy": "TBD — computed at lock time via shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+    "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A — soak window scaffolding — carries forward from Sub-exp 1 lock (worktree-local venv pattern unchanged for Sub-exp 3)",
     "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp3-deliberate-break.log",
     "state_owner_at_creation": "ft2"
+  },
+  "endpoints_full_design": [
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o-mini",
+      "api_kind": "direct",
+      "_role": "anchor",
+      "_design_note": "Carries forward from Sub-exp 1 to enable T2-E anchor-drift check (scripts/hadf-phase2bis-anchor-drift-check.py). Provides cross-sub-exp drift signal independent of the routing comparison."
+    },
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5",
+      "api_kind": "direct",
+      "_role": "anchor + routing-test pair",
+      "_design_note": "Dual role: (1) anchor for drift check; (2) one half of the routing-test pair with Bedrock's haiku-4-5. Carries forward from Sub-exp 1."
+    },
+    {
+      "provider": "aws-bedrock",
+      "endpoint": "anthropic.claude-haiku-4-5",
+      "api_kind": "bedrock",
+      "_role": "routing-test target",
+      "_design_note": "The central HADF claim probe — same model id (anthropic.claude-haiku-4-5) served by different infrastructure (AWS Bedrock vs Anthropic API). If the signatures differ enough to clear the within-provider noise floor (delta_ratio > 2.0), HADF dispatch premise holds. If indistinguishable (delta_ratio < 1.0), HADF refuted on this metric. Single endpoint — no other Bedrock model in Sub-exp 3."
+    }
+  ],
+  "_subexp3_critical_path_note": {
+    "_purpose": "Sub-exp 3 is structurally different from Sub-exps 1+2 — it's a FALSIFICATION test for the central HADF claim. Document the binary nature so operator + reader understand the stakes.",
+    "_falsification_explicit": "Per spec §1 RQ3 wording 'same model, different provider, must yield different signatures or the entire HADF dispatch premise fails'. Sub-exp 3 is a one-shot probe with a clear falsification path. Operator should NOT treat verdict_thresholds as exploratory — they're the pre-registered binary against which the HADF claim stands or falls.",
+    "_post_verdict_artifacts": "After Sub-exp 3 verdict, the cross-sub-exp synthesis case study (per spec §4) carries the full claim status: confirmed (delta_ratio > 2.0) / refuted (delta_ratio < 1.0) / inconclusive (1.0 ≤ delta_ratio ≤ 2.0). The case study + showcase MDX update is Block C of the feature plan."
+  },
+  "_ceremony_checklist_2026_06_01_or_later": {
+    "_purpose": "Reminder for the operator at go-no-go time. Each item is a single-line action; tick off in order. Sub-exp 3 ceremony happens AFTER Sub-exp 2 PASS (~2026-05-31+).",
+    "items": [
+      "1. Confirm Sub-exp 1 verdict = PASS AND Sub-exp 2 verdict = PASS (per state.json + verdict-script outputs)",
+      "2. Read this prereg in full; pay special attention to the FALSIFICATION-critical-path verdict_thresholds (Sub-exp 3 has higher stakes than Sub-exps 1+2 — a refuted verdict invalidates HADF claim)",
+      "3. Decide pass_signature_delta_ratio_min (suggested 2.0) + fail_if_signature_delta_ratio_lt (suggested 1.0) + pass_yield_min (suggested 450) + pass_anchor_drift_p_value_min (suggested 0.01)",
+      "4. Set _TBD_at_ceremony: false; replace each TBD placeholder with concrete value",
+      "5. Remove _status_at_2026_05_27 + _expected_yield_threshold_derivation + _ceremony_checklist_2026_06_01_or_later + _primary_metric_definition_note + _verdict_logic_note + _subexp3_critical_path_note + _routing_test_pair_with + _central_hadf_claim_probe + _drift_check_target + _role + _design_note + _falsification_explicit + _post_verdict_artifacts + _purpose + _subexp3_specific_kill keys (strip pre-ceremony scaffolding so the locked artifact is clean — Sub-exp 1's locked file only carries operationally-essential keys)",
+      "6. Compute env_local_sha256_at_deploy: shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+      "7. Compute prompt_set_sha256: shasum -a 256 .claude/shared/hadf/phase2bis-prompt-set.json",
+      "8. Verify AWS Bedrock API credentials are present in .env.local (BEDROCK_AWS_ACCESS_KEY_ID + BEDROCK_AWS_SECRET_ACCESS_KEY + BEDROCK_AWS_REGION)",
+      "9. Smoke-fire test (1 call per endpoint via wrapper) — confirm Bedrock haiku response shape matches Anthropic-direct response shape on streaming-event boundaries",
+      "10. Save the locked file in impl repo: /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.claude/shared/hadf/preregistration-phase2bis-subexp3.json",
+      "11. Create sha256 lock sidecar: shasum -a 256 <locked-file> > <locked-file>.lock",
+      "12. git tag -s -m 'Sub-exp 3 prereg locked $(date -u +%Y-%m-%dT%H:%M:%SZ)' phase2bis-subexp3-prereg-locked",
+      "13. launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.fitme.hadf-phase2bis-subexp3.plist (per spec §6.3)",
+      "14. Wait 3 days for collection (5 fires/day × 3 days × 3 endpoints = 2,250 nominal records)",
+      "15. Run anchor-drift check: python3 scripts/hadf-phase2bis-anchor-drift-check.py (verify anchors did NOT drift from Sub-exp 1)",
+      "16. Run verdict script: python3 scripts/hadf-phase2bis-subexp3-verdict.py",
+      "17. Write Sub-exp 3 case study + cross-sub-exp synthesis case study (per state.json::tasks B15.6 + Block C task)",
+      "18. make snapshot-phase PHASE=subexp3-complete FEATURE=hadf-phase2bis-replication",
+      "19. Commit + open PR + merge (per state.json::tasks B15.7-B15.8 + Block C C17 fitme-story showcase slot 30 + C18 state.json closure)"
+    ]
   }
 }

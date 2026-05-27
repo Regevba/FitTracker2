@@ -54,6 +54,7 @@ Carthage/Build/
 .claude/scheduled_tasks.lock
 .claude/logs/*.lock
 .claude/logs/*.lock.json
+.claude/shared/*.lock
 .superpowers/
 .worktrees/
 FitMe-GDPR-Docs/
