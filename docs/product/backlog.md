@@ -133,17 +133,37 @@
 
 ## In Progress
 
+> **Section last refreshed 2026-05-27** (Phase E Day 6). Five rows moved to "Done"; remaining = truly-live work.
+
 | Item | state.json phase | Notes |
 |------|-------|-------|
-| **Framework v7.9 Promotion** | docs phase (in_progress); Phase E soak 2026-05-21 → 2026-06-04 | Shipped via PR #417 `ea53ff4` 2026-05-21T05:44:53Z. 3 advisory gates → enforced. **B2 baseline snapshot 2026-05-28** triggers §99 case-study synthesis + `kill_criteria_resolution` backfill + advance to `complete`. v7.9.1 build window opens ~2026-06-04. Linear FIT-72 In Progress + 9 sub-issues updated. Reversibility runbook in `.claude/entrypoints/framework-v7-9.md`. |
-| **UCC Passkey Auth Security Hardening** | implementation; Phase 8 complete-gate **2026-05-27** | T20 4/6 LIVE post-merge of FT2 #410-#413 + fitme-story #127. B11 hardening T+3d check 2026-05-22. **B12 hardening T+7d kill-criteria 2026-05-27 → advance to complete.** Audit-log pipeline restored (CRON_SECRET fix). Linear FIT-63 In Progress. Part 7 break-glass DEFERRED before 2026-05-28; Part 8 (`UCC_AUTH_MODE=passkey` flip) gated on B2 + Part 7 complete + 0 `auth_passkey_register_failed` last 7 days. |
-| **analytics-observability** | implementation (12/15 done); Phase 3.B + Phase 1.B remaining | Phase 2 shipped 2026-05-14 via PRs #342/#345/#349/#351. Phase 3.B (production call-site wiring for `dashboard_*` events in `/control-room/*`) deferred to post-Phase-E (~2026-06-04). Phase 1.B GA4 conversions (D-2) deferred to v7.9.1 build window. fitme-story #108 still open as of 2026-05-21. |
-| **fitme-story-public-enhancements** | implementation (24/24 done); ready for closure | T13 (mirror v7.9 outcome to /framework/dev-guide) SHIPPED 2026-05-21 via fitme-story PR #129 `ad65d98`. State.json reconciled 2026-05-22 (T13 marked done). All 24 tasks complete; advance to `complete` phase requires `FEATURE_CLOSURE_COMPLETENESS` gate satisfaction (7 case-study frontmatter fields + Q6 PR-list parity + Q7 kill_criteria_resolution). |
-| HADF Phase 2-bis Replication (hardened) | Brainstorm paused; Sub-exp 1 start **2026-05-23** (T+12d v7.8.3 soak window met by v7.9 promotion) | Q1=S1 sequencing decision met by v7.8.3 ship 2026-05-11; D+P1+H1+T1 scope decisions locked. 11 endpoints / 6 providers / 9,750 nominal records / ~$5-20 / ~15 days wall-clock. 3 sub-experiments: cloud generalization + halfway routing test (Sub-exp 1), cloud-vs-local separability (Sub-exp 2), decisive same-model routing test (Sub-exp 3 — AWS Bedrock haiku-4-5 vs OpenAI/Anthropic anchors). Pre-conditions: 3 architectural fixes (worktree-local venv, copy `.env.local`, wrapper preflight self-check). v7.8.3 + v7.9 framework primitives available: `state_owner: "ft2"`, V2 enforced cache_hits writer-path, V9 driver covers feature logs, snapshot protocol per sub-exp, FEATURE_CLOSURE_COMPLETENESS gate (now enforced) per sub-exp closure. Pre-Sub-exp-1 safety verification ceremony 2026-05-23 morning. Sub-exp 1 verdict ~2026-05-26. Work type: **Feature** (full PM cycle). |
-| App Store assets | implementation (paused) | Linear FIT-17. Operator decision 2026-05-08: deferred to last (5/10 done; remaining: S3-G3 + S5 + S4 + S7 + S6 + S8 + S9). Resume after main product surface stabilizes pre-launch. |
-| Smart Reminders Behavioral Learning PR-2 | PR-1 shipped 2026-05-04; PR-2 plan in PR #199 | PR-1 (foundation) merged via PR #190 + #198. PR-2 (SmartTimingResolver + A/B test, default-on flip) gated on cohort data window — earliest 2026-05-09 (data now available; ready to ship). |
-| Smart Reminders ↔ Push Notifications v2 deep-link integration | Enhancement, not yet started | Surfaced 2026-05-07 during push-notifications-v2 Phase 0. Smart-reminders consumer-side adaptation: route through `NotificationGateway` + register types with `NotificationConsumerRegistry` + migrate `ReminderType.deepLink` to `DeepLinkRouter`. Parent PRD `docs/product/prd/smart-reminders.md`. Work type: Enhancement (4-phase: Tasks → Implement → Test → Merge). |
-| **Sentry Error Tracking Integration** | **PAUSED 2026-05-21 → pre-launch trigger** | Operator decision today: drop active Sentry work because iOS app is pre-launch (TestFlight beta only; not real-user signal per `feedback-ios-app-not-in-production` memory). SDK + analytics→breadcrumb mirror preserved in iOS; awaiting App Store submission ≤2 weeks + ConsentManager.crashScreenshotConsent toggle decision + pre-public-launch checklist opens this item. Linear FIT-136 + FIT-150 paused (priority Low). See "High Priority (Architecture & Framework)" section + `feedback-sentry-integration-paused.md`. |
+| **Framework v7.9 Promotion** | docs (in_progress); Phase E soak 2026-05-21 → 2026-06-04 | Shipped via PR #417 `ea53ff4` 2026-05-21T05:44:53Z. 3 advisory gates → enforced. **B2 baseline snapshot 2026-05-28** triggers §99 case-study synthesis + `kill_criteria_resolution` backfill + advance to `complete`. v7.9.1 build window opens ~2026-06-04. Linear FIT-72 In Progress + 9 sub-issues updated. Reversibility runbook in `.claude/entrypoints/framework-v7-9.md`. |
+| **analytics-observability** | testing (in_progress); Phase 3.B + Phase 1.B remaining | Phase 2 shipped 2026-05-14 via PRs #342/#345/#349/#351. Phase 3.B (production call-site wiring for `dashboard_*` events in `/control-room/*`) deferred to post-Phase-E (~2026-06-04). Phase 1.B GA4 conversions (D-2) deferred to v7.9.1 build window. fitme-story #108 still open as of 2026-05-21. |
+| **HADF Phase 2-bis Replication** | tasks_phase (in_progress); Sub-exp 1 LIVE since 2026-05-25 | Sub-exp 1 collecting since 2026-05-25 (~1,800 records at 2026-05-27; kill criterion `n_valid < 600` already cleared 2.3×); verdict gate ~2026-05-28. Sub-exp 2 + 3 prereg pre-ceremony fill-ins MERGED 2026-05-27 via PRs #506 + #507 (B14.2 + B15.2 prep). Cross-sub-exp synthesis case study skeleton MERGED 2026-05-27 via FT2 PR #511 (source) + fitme-story PR #155 (slot 22c showcase). Block C closure (verdict fill-in) gated on Sub-exp 3 ~2026-06-04. Work type: **Feature** (full PM cycle). |
+| **meta-analysis-refresh-phase-1** | implementation (in_progress); 17-day chore | Paired with External Audit #2 (2026-06-12); ships 2026-06-08. Started 2026-05-22. Docs-only chore (4 markdown docs + 1 JSON profile + 1 prompt file). |
+| **Smart Reminders ↔ Push Notifications v2 deep-link integration** | Enhancement, not yet started | Surfaced 2026-05-07 during push-notifications-v2 Phase 0. Consumer-side adaptation: route through `NotificationGateway` + register types with `NotificationConsumerRegistry` + migrate `ReminderType.deepLink` to `DeepLinkRouter`. Parent PRD `docs/product/prd/smart-reminders.md`. Work type: Enhancement (4-phase: Tasks → Implement → Test → Merge). |
+
+### Paused — explicit resume triggers documented
+
+| Item | Resume signal |
+|------|---|
+| **App Store assets** (5/10 done) | Resume after main product surface stabilizes pre-launch. Per `paused_app_store_assets` memory; Linear FIT-17. Remaining 5: S3-G3 + S5 + S4 + S7 + S6 + S8 + S9. |
+| **Smart Reminders Behavioral Learning PR-2** | RE-DEFERRED 2026-05-25 → app_store_launch trigger (per master plan E-9 strike). Bayesian per-user posterior + Supabase server-cohort prior cannot calibrate against operator-only TestFlight traffic; needs real-user data accumulation post-App-Store-launch. |
+| **Sentry Error Tracking Integration** | PAUSED 2026-05-21 → pre-launch trigger. SDK + analytics→breadcrumb mirror preserved in iOS; awaiting App Store submission + ConsentManager.crashScreenshotConsent toggle decision. Linear FIT-136 + FIT-150. |
+| **3d-interactive-framework-flow-diagram** | PRD draft parked at Phase 1; waiting for v7.9.1 close (~2026-06-04). Per `paused.scheduled_after`. |
+| **Orchid v1.5 Track R** | Blocked on v1 SoC Phase 5 integration + Orchid v1 toolchain install. Per `paused.resume_signal`. |
+
+### Moved to "Done" 2026-05-27 (this refresh)
+
+The following 5 rows moved out of "In Progress":
+
+| Item | New status | Closure ref |
+|------|---|---|
+| **UCC Passkey Auth Security Hardening** | `current_phase: complete` | Closed today via FT2 PR #503 (B12 PROMOTE verdict, squash `bca2e12`). Kill-criteria resolved. |
+| **fitme-story-public-enhancements** | `current_phase: complete` | 24/24 tasks done; FT2 #255 closed 2026-05-27 with verification. |
+| **UCC Passkey Auth Audit-log Redis fix** | `current_phase: complete` | Closed 2026-05-26 via PR #495; T6 cascade resolved 2026-05-19 + #411 (peter-evans/create-pull-request migration). |
+| **UCC Sign-in Figma Mapping** | `current_phase: complete` | Closed 2026-05-26 via PR #496; 8/11 tasks done + 3 explicitly deferred under Figma seat scope blocker. |
+| **3d-interactive-framework-flow-diagram** | moved from "In Progress" to "Paused" | Explicitly parked; `isolation_opt_out: true` advisory silenced via PR #504. |
 
 ---
 

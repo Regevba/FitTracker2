@@ -102,6 +102,53 @@ To be filled when shipped.
 
 ---
 
+## F-LAUNCHD-DRIFT-EXTENSION
+
+**Discovered:** 2026-05-24 (W11.b sub-pattern documented in [`observed-patterns.md`](../integrity/observed-patterns.md) after 2026-05-24 daily cron captured 319 phantom `BROKEN_PR_CITATION` findings due to launchd context lacking keychain access for `gh` CLI; second trigger was the 2026-05-19 SSD migration which silently broke cron for 5 days due to plist hardcoding `/Volumes/DevSSD 1/...` instead of canonical `/Volumes/DevSSD/...`).
+**Status:** queued. Master plan entry: E-14 in [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../../docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md).
+**Owner:** TBD (single-PR FT2 fix at `scripts/` + plist).
+**Effort:** ~3-4h (split across 3 small concerns — see below).
+
+### Problem
+
+Two distinct silent-pass failure modes both originate from the launchd-cron execution context:
+
+1. **Plist path drift** — when the SSD's mount point changes (SSD-migration, USB-port-swap, system reboot anomaly), the launchd plist's hardcoded `WorkingDirectory` + script path no longer resolves. Cron continues firing but every invocation silently fails with exit 78 (no such file). The 2026-05-19 SSD migration broke cron for 5 days before anyone noticed because no surface alerted to the drift.
+
+2. **Subprocess swallow** — `ensure-pr-cache-fresh.py` calls `gh` CLI via subprocess; when run from launchd context (no keychain access), `gh` returns auth failure but the wrapper's `--quiet || true` swallowed the error code. The downstream `make integrity-check` then ran against an empty `.cache/gh-pr-cache.json`, producing 319 phantom `BROKEN_PR_CITATION` findings — all false-positive but indistinguishable from real findings without manual investigation.
+
+### Smallest viable shape — 3 sub-fixes (any subset can ship independently)
+
+**(a) Promote `BRANCH_ISOLATION_LAUNCHD_DRIFT` advisory checks** — currently advisory checks plist existence; extend to also check (i) plist `WorkingDirectory` path resolves on the current filesystem, (ii) `ProgramArguments[0]` script path resolves, (iii) at least one `StandardOutPath` is writable. Would have caught the 2026-05-19 drift on day 1.
+
+**(b) Subprocess-failure propagation fix in `ensure-pr-cache-fresh.py`** — remove the `--quiet || true` swallow. Refresh subprocess failures propagate to caller. Caller decides whether to abort (cron) or warn (interactive). Sample fix:
+
+```python
+# Before:
+subprocess.run(["gh", "pr", "list", "..."], capture_output=True, quiet=True) or True
+
+# After:
+result = subprocess.run(["gh", "pr", "list", "..."], capture_output=True)
+if result.returncode != 0:
+    if os.environ.get("LAUNCHD_CONTEXT") == "1":
+        sys.exit(78)  # signal launchd to mark the run failed + retry
+    print(f"WARN: pr-cache refresh failed: {result.stderr.decode()[:200]}", file=sys.stderr)
+```
+
+**(c) Daily-checkpoint cron context validation** — `daily-integrity-checkpoint.py` re-validates `gh auth status` before trusting cron-captured integrity-check output. If auth fails, the script either re-warms via `gh auth login` (won't work in cron context — fail-closed) OR exits with a "cron auth not configured" sentinel finding that's distinguishable from a real finding.
+
+### Why now (gates v7.9.1)
+
+- The 2026-05-24 phantom-finding incident was a 5-hour false-positive panic before manual investigation revealed the launchd context. Without the fix, the same class recurs on every SSD-migration or keychain-rotation event.
+- Stacks under v7.9.1's "observability hardening" theme (alongside F-CONTRACT-FIXTURE-SAMPLING which closes the cross-repo silent-pass class).
+- Touches `scripts/` + plist (infra-glob) → 🔴 Phase-E-contaminating → defer actual implementation to v7.9.1 cycle ~2026-06-04+.
+
+### Linked PR closing this thread
+
+To be filled when shipped.
+
+---
+
 ## ~~W11-PREFLIGHT-ENHANCEMENT-PARENT-FIX~~ — **VERIFIED CLOSED 2026-05-27 via FT2 PR #454** (commit `e906601`)
 
 **Discovered:** 2026-05-19 (UCC hardening Phase 0 prep; documented in [`observed-patterns.md`](../integrity/observed-patterns.md) as W11).

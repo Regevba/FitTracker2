@@ -10,7 +10,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 
 | ID | Date | Event | Owner | Source |
 |---|---|---|---|---|
-| B1 | **2026-05-21** | v7.9 promotion-decision data freeze | operator | infra-plan §4.1, master-plan §2.2 |
+| ~~B1~~ | ~~2026-05-21~~ | ~~v7.9 promotion-decision data freeze~~ **EXECUTED 2026-05-21** — promotion shipped same day via PR #417 (`ea53ff4`). All §B1 prerequisites met: `make integrity-check` 0 findings, `make integrity-diff` no regression vs 2026-05-14 anchor, `make documentation-debt` ≤ baseline, `make measurement-adoption` captured, `membrane-status.py` captured, 14d gate-coverage telemetry confirmed no `GATE_COVERAGE_ZERO`. 3 advisory gates flipped to enforced. Ledger strikethrough deferred until 2026-05-27 reconcile (this PR). | operator | infra-plan §4.1, master-plan §2.2 |
 | B2 | **2026-05-28** | Post-v7.9 T+7d baseline snapshot | operator | data-integrity §3.2 trigger (2) |
 | B3 | **daily, starting now** | GA4 anomaly check (event volume + funnel breaks) | operator + GA4 MCP | analytics-observability epic |
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
