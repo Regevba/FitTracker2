@@ -3,6 +3,8 @@
   "state_owner": "fitme-story",
   "framework_version": "v7.8.3",
   "current_phase": "prd",
+  "isolation_opt_out": true,
+  "isolation_opt_out_reason": "Feature is paused at Phase 1 (PRD draft) waiting for v7.9.1 close (~2026-06-04). state_owner is fitme-story so all real work will happen in that repo via standard isolated branches once unparked. The PRD draft committed direct-on-main 2026-05-11 was a pre-v7.9 PRD-authoring activity in FT2 (state.json + research dossier living in FT2 .claude/features/ per cross-repo convention). No code shipped from main; opting out of BRANCH_ISOLATION_HISTORICAL advisory until resume-from-pause activates real implementation work.",
   "paused": true,
   "paused_at": "2026-05-13T15:30:00Z",
   "paused_reason_updated_2026_05_19": "Operator decision 2026-05-19: feature does NOT progress beyond Phase 1 PRD-draft state until v7.9 \u2192 v7.9.1 is fully finished (v7.9 promotion 2026-05-21 + v7.9.1 follow-up cycle complete, expected ~2026-06-04 Phase E end). Supersedes the prior `analytics-observability phase=complete` gate. Even PRD approval (Phase 1 \u2192 Phase 2 transition) waits for v7.9.1 closure. Rationale: avoid contamination of v7.9 calibration data + ensure framework substrate is fully shipped before adding a v7.8.3-state_owner=fitme-story flagship UI feature that depends on cross-repo sync stability.",
