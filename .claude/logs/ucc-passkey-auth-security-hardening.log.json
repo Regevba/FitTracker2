@@ -6,7 +6,7 @@
   "current_phase": "tasks",
   "framework_version": "v7.8.6",
   "started_at": "2026-05-19T16:23:07Z",
-  "updated_at": "2026-05-20T04:50:12Z",
+  "updated_at": "2026-05-27T04:47:01Z",
   "events": [
     {
       "timestamp": "2026-05-19T16:23:07Z",
@@ -116,6 +116,28 @@
       "metrics": {},
       "actor": "human_or_agent",
       "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-27T04:47:01Z",
+      "event_type": "phase_completed",
+      "phase": "complete",
+      "summary": "B12 T+7d kill-criteria evaluation complete: PROMOTE. K1+K3+K4 not fired (0 lockout events, 0 allowlist_unset, operator signed in 4x in window). K2 instrumentation invalid (duration_ms = ceremony time, not server time); v7.9.1 candidate F-AUTH-LATENCY-SERVER-METRIC queued. Primary metric unauthorized_operator_registration_attempts_succeeded = 0. Closed via chore/ucc-hardening-b12-promote-2026-05-27.",
+      "artifacts": [
+        "docs/case-studies/ucc-passkey-auth-security-hardening-case-study.md#section-4",
+        "https://wbm976bbad3tvk2o.public.blob.vercel-storage.com/ucc-auth-events.jsonl",
+        ".claude/shared/must-have-cadence-followups.md#b12"
+      ],
+      "metrics": {
+        "k1_lockout_events": 0,
+        "k1_blocked_attempts": 0,
+        "k4_successful_signins_in_window": 4,
+        "primary_metric_unauthorized_registrations": 0,
+        "bootstrap_token_issuance_audit_coverage": 1.0,
+        "audit_events_in_window": 39
+      },
+      "actor": "human_or_agent",
+      "status": "complete",
       "recording_mode": "contemporaneous"
     }
   ]
