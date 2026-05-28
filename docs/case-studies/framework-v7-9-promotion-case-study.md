@@ -24,9 +24,12 @@ kill_criteria:
   - "Mechanism A telemetry shows 0% coverage for any advisory-being-promoted gate at decision time (cannot promote what was never calibrated)"
   - "False positive rate >5% during the 14d calibration window for any proposed-promotion gate"
   - "Post-promotion bug surfaces requiring rollback within T+7d soak — defer promotion or restore advisory mode"
-kill_criteria_resolution: "pending — evaluated 2026-05-28 (B2 post-v7.9 baseline snapshot per .claude/shared/must-have-cadence-followups.md §B2). Will record final disposition (passed / partially_passed / tripped) here on that date with deltas."
-related_prs: [417, 413, 415, 416]
-case_study_showcase: null
+kill_criteria_resolution: "All 3 kill criteria not_fired (evaluated 2026-05-28, Phase E Day 7, post-B2 baseline snapshot). K1 (Mech A 0% coverage at decision time): 18 + 13 + 13 firings observed across 14-day calibration window 2026-05-07 → 2026-05-21; 0% coverage was NEVER observed for any of the 3 candidate gates [T1, .claude/logs/gate-coverage.jsonl]. K2 (false positive rate >5%): 0 false positives across 44 total firings; rate = 0% < 5% threshold [T1]. K3 (post-promotion rollback within T+7d): Phase E Day 7 — scripts/check-state-schema.py:132 still reads BRANCH_ISOLATION_ADVISORY_MODE = False per git log; no rollback PR opened [T1]. Verdict: PASSED — v7.9 promotion holds. Process regressions in adoption_pct_post_v6 / timing_wall_time_pct_post_v6 / cache_hits_pct_post_v6 observed via make integrity-diff are denominator dilution from +9 features added during Phase E without adoption metrics backfilled — NOT v7.9-caused; flagged for v7.9.1 backfill follow-up (see §99.2)."
+related_prs: [326, 392, 393, 413, 415, 416, 417, 448]
+pr_citation_exempt:
+  - {pr_number: 503, reason: "Contextual cite in §99.3 — B12 hardening verdict (different feature: ucc-passkey-auth-security-hardening); referenced for Phase E timeline, not a shipping PR for v7.9 promotion."}
+  - {pr_number: 520, reason: "Contextual cite in §99.3 — HADF Sub-exp 1A closure (different feature: hadf-phase2bis-replication); referenced as an example of Mode B Branch Isolation firing correctly during Phase E, not a shipping PR for v7.9 promotion."}
+case_study_showcase: "fitme-story/content/04-case-studies/34-framework-v7-9-promotion.mdx"
 external_audit_status: corrected  # External Audit #1 corrections applied via PR #448 (2026-05-22)
 status: live
 ---
@@ -199,14 +202,79 @@ Tracked in [`docs/master-plan/post-v7-9-candidate-plan-2026-05-20.md`](../master
 - **Post-promotion telemetry-commit workflow fix** — noted during today's commit-to-main (BRANCH_ISOLATION_VIOLATION advisory fired on routine cron-artifact commit before the worktree spin-up). Now that the gate is enforced, cron artifact commits to `.claude/shared/*` will be blocked from main. Two paths: (a) add `.claude/shared/*.json` to `branch-isolation-exempt.json` allowlist, or (b) move cron-artifact commits to an isolated chore branch with auto-PR. Decision deferred to v7.9.1 build window.
 - **C1 F14/F15 dispatch-test coverage push** (~2026-05-22) — opens `framework-f14-f15-dispatch-test-coverage` feature
 
-## Section 99 — Synthesis (deferred to 2026-05-28+ post-B2)
+## Section 99 — Synthesis (executed 2026-05-28, post-B2)
 
-This section is intentionally empty at v7.9 ship. After the B2 post-v7.9 baseline snapshot lands 2026-05-28, this section will be appended with:
+> **Authored:** 2026-05-28T17:30:00Z, immediately after the B2 post-v7.9 baseline snapshot at `~/Documents/FitTracker2-backups/2026-05-28-framework-v7-8-branch-isolation-post-v7-9-baseline/` (6/6 source files sha256-verified per `CHECKSUMS.sha256`). Phase E Day 7 of 14.
 
-- B2 snapshot delta table (post-v7.9 vs 2026-05-12 pre-v7.9 baseline + 2026-05-14 platform anchor) [T1]
-- Phase E daily observations log (any unexpected `failure` rows, any operator-driven rollback decisions, any new commits that the 3 newly-enforced gates blocked) [T1]
-- Final `kill_criteria_resolution` (replaces the `pending` frontmatter value) [T1]
-- 2-3 lessons recorded for FT2-FH-NNN (or absence-of-lessons if Phase E passed clean) [T3]
-- v7.10 anchor points (do not commit to specifics yet)
+### §99.1 — Kill-criteria resolution
 
-Until then, this case study is the canonical pointer to the 2026-05-21 freeze-day decision and the side-effects PR. [T3]
+All three kill criteria evaluated against the 14-day calibration window (2026-05-07 → 2026-05-21) + 7-day Phase E soak data through 2026-05-28 [T1]:
+
+| K# | Criterion | Observed | Verdict |
+|---|---|---|---|
+| K1 | Mechanism A telemetry shows 0% coverage for any advisory-being-promoted gate at decision time | `.claude/logs/gate-coverage.jsonl` 2026-05-07 → 2026-05-21: 18 + 13 + 13 firings across the 3 candidate gates; 0% coverage was **never observed** | **not_fired** [T1] |
+| K2 | False positive rate >5% during the 14d calibration window | 0 false positives across 44 total firings; rate = 0% < 5% threshold | **not_fired** [T1] |
+| K3 | Post-promotion bug surfaces requiring rollback within T+7d soak | Phase E Day 7 (2026-05-28). `scripts/check-state-schema.py:132` still reads `BRANCH_ISOLATION_ADVISORY_MODE = False` per `git log` on main. No rollback PR opened on `chore/v7-9-rollback` or equivalent | **not_fired** [T1] |
+
+**Resolution:** All 3 kill criteria `not_fired`. v7.9 promotion holds. Advance `docs → complete`.
+
+### §99.2 — B2 post-v7.9 baseline delta table
+
+`make integrity-diff` against the 2026-05-14 platform anchor (per v7.8.6 § MUST-have batch #1), measured 2026-05-28T17:00Z [T1]:
+
+| Metric | 2026-05-14 baseline | 2026-05-28 current | Δ | Verdict |
+|---|---|---|---|---|
+| `integrity_findings` | 0 | 0 | 0 | ✓ No regression |
+| `integrity_advisory` | 4 | 3 | −1 | ✓ Improvement (1 advisory closed during Phase E) |
+| `doc_debt_open` | 1 | 1 | 0 | ✓ Stable |
+| `features_total` | 70 | 79 | +9 | New feature work continued during Phase E (expected) |
+| `features_post_v6` | 36 | 45 | +9 | All 9 new features are post-v6 |
+| `fully_adopted` | 3 | 3 | 0 | Stable |
+| `fully_adopted_post_v6` | 3 | 3 | 0 | Stable |
+| `adoption_pct_post_v6` | 8.3% | 6.7% | −1.6 pp | ⚠ Dilution from +9 features (process, not v7.9) |
+| `timing_wall_time_pct_post_v6` | 47.2% | 37.8% | −9.4 pp | ⚠ Same dilution effect |
+| `cache_hits_pct_post_v6` | 52.8% | 51.1% | −1.7 pp | ⚠ Same dilution effect |
+| `per_phase_timing_pct_post_v6` | 80.6% | 86.7% | +6.1 pp | ✓ Improvement |
+| `cu_v2_pct_post_v6` | 19.4% | 31.1% | +11.7 pp | ✓ Improvement (operator backfilling `cu_v2` on new features) |
+
+**Honest framing:** The 3 measured regressions (`adoption_pct`, `timing_wall_time`, `cache_hits`) are **PROCESS regressions** caused by adding 9 new features during Phase E (2026-05-21 → 2026-05-28) without backfilling their adoption metrics. They are NOT v7.9 kill criteria; the kill criteria targeted FALSE POSITIVES and ROLLBACKS, both of which were `not_fired`. Phase E exit (~2026-06-04) is the right time to address the process regressions via an adoption-metric backfill pass — filed as a v7.9.1 follow-up (see §99.4 below). [T1]
+
+### §99.3 — Phase E daily observations log (Days 1-7)
+
+Through Phase E Day 7 (2026-05-28), no unexpected `failure` rows in `gate-coverage.jsonl` for the 3 promoted gates beyond expected legitimate skips (`not_complete_transition`, `not_infra_commit_level`). No operator-driven rollback decisions. The 3 newly-enforced gates DID block several commits during Phase E (each surfaced via auto-isolation flow as designed — including the PR #520 HADF Sub-exp 1A closure workflow today, which correctly fired Mode B on `.claude/shared/hadf/*` infra edits and prompted isolated-worktree creation). [T1]
+
+Cadence-followup milestones executed during Phase E [T1]:
+
+- **B11 (2026-05-22)** — UCC hardening T+3d check executed PASS
+- **B8 (2026-05-23)** — UCC T+7d kill-criteria evaluation: `not_fired`
+- **B12 (2026-05-27)** — UCC hardening T+7d evaluation: PROMOTE verdict via PR #503 squash `bca2e12`
+- **B2 (2026-05-28)** — Post-v7.9 baseline snapshot captured (this case study's primary trigger)
+
+### §99.4 — Lessons recorded
+
+No FT2-FH-NNN-level lessons surfaced through Phase E Day 7. Two minor learnings to flag:
+
+1. **Snapshot script MANIFEST.md checksum ordering bug** — `scripts/snapshot-phase-completion.sh` writes `MANIFEST.md` AFTER `CHECKSUMS.sha256` is generated, so its hash is stale by design. `shasum -c CHECKSUMS.sha256` returns `MANIFEST.md: FAILED` consistently. Cosmetic only; data integrity verified via 6/6 source-file hashes OK. **Filed as v7.9.1 candidate** `F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING` (~15 min fix: regenerate `CHECKSUMS.sha256` after `MANIFEST.md` is written, or exclude `MANIFEST.md` from the checksum list). [T1]
+2. **Adoption-metric dilution discipline** — adding 9 features during a soak window (Days 1-7 of Phase E) without backfilling their adoption metrics caused the 3 measured regressions in §99.2. Worth codifying as a Phase E discipline: "during a soak window, either freeze numerator/denominator OR run backfill in parallel." This isn't a v7.9 framework bug; it's an operational pattern observation. **Filed as v7.9.1 candidate** `F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE` (~30 min spec; documentation-only). [T3]
+
+### §99.5 — v7.10 anchor points
+
+Not committed yet. Per the v7.8 / v7.9 staged-promotion pattern, v7.10 anchor points emerge from observed gaps during Phase E + Phase E exit (~2026-06-04). Will be drafted when v7.9.1 build window opens. Candidate anchor points to be considered at that time:
+
+- Phase E hygiene gates (codify the adoption-freeze discipline from §99.4 lesson 2)
+- Snapshot-script integrity hardening (close the cosmetic-bug surface filed at §99.4 lesson 1)
+- Whatever v7.9.1 candidates accumulate in `.claude/shared/v7-9-1-candidates.md` between now and 06-04
+
+### §99.6 — Closure timeline
+
+| Event | Timestamp |
+|---|---|
+| B2 snapshot captured | 2026-05-28T16:30:12Z |
+| Integrity-diff measurement (T1 evidence) | 2026-05-28T17:00:00Z |
+| §99 synthesis authored | 2026-05-28T17:30:00Z |
+| `kill_criteria_resolution` populated (state.json + frontmatter) | 2026-05-28T17:30:00Z |
+| State.json advanced `docs → complete` | 2026-05-28T17:30:00Z |
+| Phase E exit anticipated | ~2026-06-04 (Day 14) |
+| v7.9.1 build window opens | ~2026-06-04 |
+
+**Final status:** v7.9 Promotion Release is `complete`. The `learn` phase continues through Phase E exit, but the feature's PM lifecycle has reached terminal positive closure. Future v7.9.1 build work is tracked separately under the v7.9.1 candidates docket.
