@@ -1,8 +1,8 @@
 {
-  "version": "1.11",
-  "updated": "2026-05-11T18:30:00Z",
-  "framework_version": "7.8.3",
-  "description": "PM framework v7.7 \u2014 Validity Closure. Closes A1\u2013A5 + B1\u2013B2 + C1 from the post-v7.6 gap inventory across two PRs (FT2 #144 + fitme-story #7). Adds 5 new gates: 4 write-time pre-commit hooks (CACHE_HITS_EMPTY_POST_V6, CU_V2_INVALID, STATE_NO_CASE_STUDY_LINK, CASE_STUDY_MISSING_FIELDS) + 1 cycle-time check code + 1 advisory permanent (TIER_TAG_LIKELY_INCORRECT). Bulk-backfills 32 case-study frontmatters and timing.phases on 3 paused features. Plus framework-health dashboard at fitme-story /control-room/framework. Framework reaches 25 mechanical gates + 1 advisory. state\u2194case-study linkage 95.5% \u2192 100%. Builds on v7.6 (Mechanical Enforcement), v7.5 (Data Integrity Framework, 8 cooperating defenses), v7.1 (72h integrity cycle), and v7.0 (HADF). 2026-05-01 follow-on PR #169 closed the v7.7 silent-pass surface: 43 state.json files migrated created \u2192 created_at so CACHE_HITS_EMPTY_POST_V6 actually fires. 2026-05-02 v7.8 PR-1 (#173) shipped Mechanism C in advisory mode (PostToolUse:Read hook + observe-cache-hit.py). v7.8 enforcement and v7.9 are downstream.",
+  "version": "1.12",
+  "updated": "2026-05-28T15:30:00Z",
+  "framework_version": "7.9",
+  "description": "PM framework v7.9 \u2014 Promotion Release (shipped 2026-05-21). Enforcement flip for the three v7.8.1 advisory gates (BRANCH_ISOLATION_VIOLATION Mode B + Mode C + FEATURE_CLOSURE_COMPLETENESS) after a 14-day Mechanism A telemetry calibration window (2026-05-07 \u2192 2026-05-21) showed 0 false positives across 18 + 13 + 13 firings. Single code change: BRANCH_ISOLATION_ADVISORY_MODE = True \u2192 False at scripts/check-state-schema.py:132. Reversibility runbook in .claude/entrypoints/framework-v7-9.md. Builds on v7.8.6 (Cadence Batch \u2014 make integrity-diff + unified preflight + weekly trend scans + W1 ssh-agent + dependency audit, shipped 2026-05-15), v7.8.5 (Observability Layer \u2014 Observed Patterns Catalog + W9 branch-drift alert, shipped 2026-05-13), v7.8.4 (Pre-v7.9 Telemetry Calibration & Doc-Debt Cleanup \u2014 PR cache freshness auto-refresh + TIER_TAG_LIKELY_INCORRECT heuristic narrowing + case-study-t1-references ledger, shipped 2026-05-12), v7.8.3 (Cross-Repo State Sync \u2014 state_owner gates + D-3 unified PR cite cache + V2/V9 promotions, shipped 2026-05-11), v7.8.2 (Cross-Repo Telemetry Asymmetry documented disposition, shipped 2026-05-08), v7.8.1 (Branch Isolation + Feature-Closure Completeness, advisory shipped 2026-05-07), v7.8 Bridge (Mechanisms A-F, shipped 2026-05-04), v7.7 (Validity Closure, 5 new gates, shipped 2026-04-27), v7.6 (Mechanical Enforcement, shipped 2026-04-25), v7.5 (Data Integrity Framework, 8 cooperating defenses, shipped 2026-04-24), v7.1 (72h Integrity Cycle), v7.0 (HADF). Post-promotion calendar: Phase E soak 2026-05-21 \u2192 2026-06-04. Total framework mechanisms post-v7.9: 36 mechanical + 2 advisory (3 advisory gates flipped to enforced; 3 cycle-time advisories stay advisory by design). state\u2194case-study linkage 100% gated. Honesty ledger entry FT2-FH-003.",
   "audit_closures": {
     "FW-002": "Description string updated from v5.2 to v7.0 \u2014 closed.",
     "FW-007": "chip-profiles.json verified at 17 profiles matching spec \u2014 see chip-profiles.json.",
@@ -605,5 +605,221 @@
     },
     "linear_epic": "FIT-70",
     "backup_path": "~/Documents/FitTracker2-backups/2026-05-11-cross-repo-state-sync-impl-phase-4-complete-v7.8.3-shipped-rich/"
+  },
+  "v7_8_4_pre_v7_9_calibration": {
+    "shipped": "2026-05-12",
+    "status": "shipped_patch_hygiene",
+    "description": "Patch-level hygiene release. No new enforcement gates with one exception — PR_CACHE_STALE auto-refresh operability gate closes the v7.8.3-era false-positive incident. Cleans the noise floor before the 2026-05-21 v7.9 promotion-decision data freeze (master plan §2.2 promotion criterion #2 'no false positives' is more credible against a clean baseline).",
+    "merged_via": "PR TBD on chore/framework-v7-8-4-calibration-patch",
+    "cold_start_entrypoint": ".claude/entrypoints/framework-v7-8-4.md",
+    "extends": "v7_8_3_cross_repo_state_sync",
+    "deliverables": {
+      "pr_cache_freshness_auto_refresh": {
+        "script": "scripts/ensure-pr-cache-fresh.py",
+        "trigger": "runs before every make integrity-check and inside .github/workflows/integrity-cycle.yml",
+        "rule": "Refresh when .cache/gh-pr-cache.json is empty, missing, or older than 24h. Refresh failure logs to stderr but does NOT abort the run. Closes the 33-finding false-positive incident observed 2026-05-12 from an empty-cache run flagging every PR citation as broken."
+      },
+      "tier_tag_likely_incorrect_narrowing": {
+        "script": "scripts/validate-tier-tags.py",
+        "fixes": [
+          "is_target_or_kill_claim() filter — skips T1 claims with target/kill/threshold language (forward-looking declarations not observations)",
+          "word-boundary \\b after unit regex — eliminates false positives where the unit letter is the first char of a longer word (h in hook, s in schema, d in declared)",
+          "intervening tier-marker filter — skips claims whose context contains another T-tag (number likely belongs to the second tier marker)"
+        ]
+      },
+      "case_study_t1_references_ledger": {
+        "file": ".claude/shared/case-study-t1-references.json",
+        "purpose": "pinned numerical values for T1 claims correctly instrumented but derived/computed (not captured by measurement-adoption.json or documentation-debt.json)",
+        "seed_entries": 3
+      },
+      "cache_hits_backfills": {
+        "features": [
+          "framework-v7-8-branch-isolation (33 attributed Reads)",
+          "import-training-plan (95 attributed Reads)"
+        ],
+        "clears_advisories": 2
+      },
+      "doc_debt_low_items_closed": {
+        "count": 5,
+        "examples": [
+          "docs/case-studies/dual-outlet-pattern.md — added YAML frontmatter",
+          "docs/case-studies/framework-v7-8-branch-isolation-case-study.md — added success_metrics field",
+          ".claude/features/ios-code-connect/state.json — added case_study_type: no_case_study_required"
+        ]
+      },
+      "stale_lockfile_cleared": ".claude/active-feature reset from ios-ui-audit-p1-burndown (closed) to empty",
+      "pre_v7_9_snapshot": "~/Documents/FitTracker2-backups/2026-05-12-framework-v7-8-branch-isolation-pre-v7-9-baseline/ (12 files, sha256-verified)"
+    },
+    "outcome": {
+      "integrity_check_baseline": "0 findings + 0 advisory (was 35 findings + 9 advisory at session open, 6 advisory after stale-cache fix, 0+0 post-v7.8.4)"
+    },
+    "no_regression_vs": "all v7.5 → v7.8.3 gates fire identically"
+  },
+  "v7_8_5_observability_layer": {
+    "shipped": "2026-05-13",
+    "status": "shipped_observability_only",
+    "description": "Two operator-facing observability surfaces — documentation + a hook. No new gates; no telemetry impact on 2026-05-21 v7.9 promotion data.",
+    "merged_via": "PR #328 (initial 23-pattern catalog) + PR #341 (W9 detection mechanism)",
+    "extends": "v7_8_4_pre_v7_9_calibration",
+    "deliverables": {
+      "observed_patterns_catalog": {
+        "file": ".claude/integrity/observed-patterns.md",
+        "patterns": "23 gate patterns + 9 workflow patterns",
+        "auto_loaded_by": "/pm-workflow as preflight",
+        "cli": "make observed-patterns",
+        "operator_rule": "any new pattern surfaced during a session MUST be appended to the catalog before the protocol closes the feature"
+      },
+      "w9_branch_drift_alert": {
+        "script": "scripts/check-branch-drift.py",
+        "hook": "PostToolUse:Bash",
+        "purpose": "detects when the current git branch has changed unexpectedly between tool calls within a session (typically because another concurrent Claude session sharing the same git working directory ran git checkout)",
+        "behavior": "emits LOUD stderr warning surfaced back to the assistant via tool output, with a 4-step recovery playbook",
+        "state_path": ".claude/_session-state/<session_id>-branch.txt",
+        "gitignored": true,
+        "disable_env": "CLAUDE_W9_DISABLE_DRIFT_CHECK=1",
+        "playbook": "observed-patterns.md W9"
+      }
+    },
+    "operator_obligation": "when any framework gate or advisory fires during a session, the FIRST step is to check the catalog (make observed-patterns). Apply documented remediation if pattern matches; investigate only if novel; ALWAYS append a new entry when surfacing a novel pattern."
+  },
+  "v7_8_6_cadence_batch": {
+    "shipped": "2026-05-15",
+    "status": "shipped_observability_only",
+    "description": "Closes the 96-hour drift window between the weekly framework-status cron (Mon 05:00 UTC) and the 72-hour integrity cycle. No new enforcement gates; every addition is a read/diff/warn surface.",
+    "merged_via": "PR #363 (MUST-have batch) + PR #365 (Nice-to-have batch)",
+    "extends": "v7_8_5_observability_layer",
+    "must_have_batch": {
+      "integrity_diff": {
+        "make_target": "make integrity-diff",
+        "script": "scripts/integrity-diff.py",
+        "baseline_anchor": "~/Documents/FitTracker2-backups/2026-05-14-analytics-observability-platform-integrity-baseline-2026-05-14/platform-baseline/",
+        "override_env": "INTEGRITY_DIFF_BASELINE=<path>",
+        "ci_mode": "EXIT_ON_REGRESSION=1"
+      },
+      "unified_preflight_entry_point": {
+        "make_target": "make preflight WORK_TYPE=<feature|enhancement|fix|chore> [FEATURE=<name>]",
+        "aggregates": [
+          "W1 ssh-agent",
+          "PR cache freshness",
+          "branch isolation",
+          "integrity findings",
+          "drift vs anchor",
+          "doc-debt",
+          "adoption baseline"
+        ],
+        "cache_file": ".claude/shared/preflight-cache.json",
+        "schema_doc": "docs/skills/preflight-cache-schema.md",
+        "rule": "Mandatory Phase 0.0 step in /pm-workflow; all 10 downstream skills read from this cache"
+      },
+      "weekly_gate_coverage_zero_drift_scan": {
+        "extends": ".github/workflows/framework-status-weekly.yml",
+        "producer": "scripts/weekly-trend-scan.py",
+        "history_file": ".claude/shared/gate-coverage-weekly.jsonl",
+        "trigger": "opens digest issue with reason 'A2 gate-coverage' when any previously-emitting gate stops"
+      },
+      "per_dimension_adoption_trend_nudge": {
+        "dimensions": [
+          "timing_wall_time",
+          "per_phase_timing",
+          "cache_hits",
+          "cu_v2",
+          "fully_adopted_post_v6"
+        ],
+        "trigger": "opens digest issue with reason 'A4 per-dimension' on any decrease",
+        "addresses": "documented fully_adopted_post_v6 27.3% → 8.3% regression + cu_v2 ≥50% chronic miss"
+      },
+      "w1_ssh_agent_preflight": {
+        "script": "scripts/check-ssh-agent.sh",
+        "hook": "SessionStart",
+        "purpose": "loud stderr warning when ssh-add -l returns no identities — prevents documented W1 silent-sign-hang failure mode",
+        "disable_env": "CLAUDE_W1_DISABLE_SSH_CHECK=1"
+      }
+    },
+    "nice_to_have_batch": {
+      "weekly_dependency_audit": {
+        "workflow": ".github/workflows/dependency-audit-weekly.yml",
+        "schedule": "Mondays 06:00 UTC (1h after framework-status-weekly)",
+        "producer": "scripts/aggregate-dependency-audit.py",
+        "covers": "npm audit --omit=dev across root + website + dashboard + Swift Package.resolved pins",
+        "trigger": "opens issue on any HIGH or CRITICAL"
+      },
+      "daily_stale_branch_warning": {
+        "appended_to": "scripts/daily-integrity-checkpoint.py output",
+        "lists": "local branches whose remote is gone ([gone]) + isolated worktrees in .claude/worktrees/",
+        "suggests": "commit-commands:clean_gone skill for cleanup"
+      },
+      "daily_open_prs_idle_24h_babysit": {
+        "appended_to": "scripts/daily-integrity-checkpoint.py",
+        "behavior": "calls gh pr list for FT2 + fitme-story; filters to PRs idle >24h (oldest first); silent no-op when gh unavailable"
+      }
+    },
+    "follow_up_tracker": {
+      "file": ".claude/shared/must-have-cadence-followups.md",
+      "purpose": "single ledger for calendar-anchored verifications (B1 v7.9 freeze, B2 post-v7.9 baseline, B4/B5 quarterly test audit) + feature-scope MUST items",
+      "surface": "daily checkpoint script surfaces upcoming items ≤14d"
+    }
+  },
+  "v7_9_promotion": {
+    "shipped": "2026-05-21",
+    "status": "enforced",
+    "description": "Enforcement-flip release. The three v7.8.1 advisory gates (BRANCH_ISOLATION_VIOLATION Mode B + Mode C + FEATURE_CLOSURE_COMPLETENESS) flipped to enforced after a 14-day Mechanism A telemetry calibration window confirmed 0 false positives. Single code change: BRANCH_ISOLATION_ADVISORY_MODE = True → False at scripts/check-state-schema.py:132. No new gate code; no new schema fields; no new observability surfaces.",
+    "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
+    "cold_start_entrypoint": ".claude/entrypoints/framework-v7-9.md",
+    "honesty_ledger_entry": "FT2-FH-003 (docs/case-studies/framework-honesty-ledger.md#ft2-fh-003)",
+    "merged_via": "PR #417 (squash ea53ff4) on feature/v7-9-promotion",
+    "extends": "v7_8_6_cadence_batch",
+    "promotion_decision_criteria": {
+      "criterion_1_coverage_emitted": "✓ 14 days (2026-05-07 → 2026-05-21) ≥ 7-day threshold",
+      "criterion_2_no_false_positives": "✓ 0 false positives across 18 + 13 + 13 firings",
+      "criterion_3_no_silent_skips": "✓ all skip reasons map to legitimate conditions (not_infra_commit_level, not_complete_transition, opt_out_false_or_absent)",
+      "criterion_4_reversibility": "✓ single-line revert in <5 min"
+    },
+    "gates_promoted": {
+      "BRANCH_ISOLATION_VIOLATION_mode_b": {
+        "tier": "write-time",
+        "scope": "infra commit-level — fires when staged files match infra-path globs (.githooks/*, .github/workflows/*, scripts/*, .claude/skills/*, .claude/shared/*, CLAUDE.md, docs/architecture/*, Makefile, OR feature has work_subtype: framework_feature, OR work_type: chore)",
+        "telemetry_14d": "18 firings",
+        "skip_reasons_legit": "not_infra_commit_level × 13"
+      },
+      "BRANCH_ISOLATION_VIOLATION_mode_c": {
+        "tier": "write-time",
+        "scope": "per-state.json — fires on current_phase mutations from a non-feature branch",
+        "telemetry_14d": "13 firings (separate emission key)",
+        "opt_out_field": "per-feature isolation_opt_out: true (Mode B/infra ignores it)"
+      },
+      "FEATURE_CLOSURE_COMPLETENESS_write_time": {
+        "tier": "write-time",
+        "scope": "fires on current_phase=complete transitions; validates 7 required case-study frontmatter fields + Q7 kill_criteria_resolution + Q6 bidirectional PR-list parity",
+        "telemetry_14d": "13 firings",
+        "skip_reasons_legit": "not_complete_transition × 11, no_phase_change × 1"
+      }
+    },
+    "gates_already_enforced_no_v7_9_action": [
+      "ISOLATION_OPT_OUT_REASON_MISSING (enforced at v7.8.1 ship 2026-05-07)",
+      "Mechanism A coverage gates + Mechanism C session-attribution (enforced at v7.8)",
+      "CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT V2 (enforced at v7.8.3 Phase 0 2026-05-11)",
+      "Mechanism E custom merge driver V9 (enforced at v7.8.3 Phase 0)"
+    ],
+    "gates_advisory_by_design": [
+      "BRANCH_ISOLATION_HISTORICAL cycle-time (T17 forward-only audit)",
+      "BRANCH_ISOLATION_LAUNCHD_DRIFT cycle-time (T18 macOS-only)",
+      "FEATURE_CLOSURE_COMPLETENESS cycle-time mirror (T19 catches --no-verify bypasses)"
+    ],
+    "post_promotion_calendar": {
+      "phase_e_window": "2026-05-21 → 2026-06-04 (14-day soak)",
+      "milestones": {
+        "2026_05_22_b11_ucc_t_plus_3d_check": "executed PASS — signals 1+2+3 PASS (auth_lockout=0; email_not_allowlisted hash mismatch; counter_replay=0); signals 4+5 deferred to first organic sign-in",
+        "2026_05_23_b8_parent_ucc_t_plus_7d_kill_criteria": "executed not_fired",
+        "2026_05_27_b12_hardening_t_plus_7d_kill_criteria": "executed PROMOTE verdict via PR #503 squash bca2e12",
+        "2026_05_28_b2_post_v7_9_baseline_snapshot": "make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation",
+        "approx_2026_06_04_phase_e_exit": "v7.9.1 build window opens"
+      }
+    },
+    "reversibility_runbook": "flip back via single-line edit at scripts/check-state-schema.py:132 (BRANCH_ISOLATION_ADVISORY_MODE = True), commit on chore/v7-9-rollback, merge to main. <5 min end-to-end.",
+    "aggregate": {
+      "total_mechanisms_post_v7_9": "36 mechanical + 2 advisory",
+      "advisory_to_enforced_in_v7_9": 3,
+      "state_to_case_study_linkage_percent": 100
+    }
   }
 }
