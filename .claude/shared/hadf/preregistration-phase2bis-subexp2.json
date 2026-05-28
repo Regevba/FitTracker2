@@ -29,10 +29,11 @@
   },
   "primary_metric": "KS-distinguishability p-value vs Sub-exp 1 anchor distributions (openai/gpt-4o-mini + anthropic/claude-haiku-4-5)",
   "_primary_metric_change_note": "Sub-exp 2 uses KS-distinguishability (1 endpoint vs N cloud anchors) instead of Sub-exp 1's silhouette score (cluster-separability across endpoints). Per state.json::success_metrics line 'Sub-exp 2: Ollama distribution KS-distinguishable from cloud endpoints (p < 0.01)'.",
-  "expected_yield_threshold": 150,
-  "_expected_yield_threshold_derivation": "Sub-exp 1's threshold was 300 for ~1,500 nominal records (4 endpoints × 50 calls × 5 fires × 3 days × 50% yield = ~1,500 valid). Sub-exp 2 nominal: 1 endpoint × 50 calls × 5 fires × 3 days = 750 records. At Phase 2's 50% yield: ~375 valid. Floor at 150 = ~20% nominal (deliberately permissive — Ollama-on-M2 thermal throttling can shave yield more than cloud).",
+  "expected_yield_threshold": 200,
+  "_expected_yield_threshold_derivation": "Sub-exp 2 nominal: 1 endpoint × 50 calls × 5 fires × 3 days = 750 dispatched, ~375 valid expected (per spec §2 'Expected: ~375 valid'). Kill floor 200 (~53% of expected; ~27% of nominal dispatched) — tighter than the pre-2026-05-28 draft's 150 because Sub-exp 1A confirmed harness reliability at 92.86% valid rate, so 53%-of-expected is a meaningful floor for the local-vs-cloud separability claim. Operator-confirmed values 2026-05-28 (kill n<200, expected/nominal-valid 375).",
+  "_yield_reconciliation_note": "The 2026-05-12 spec §2 stated 'expected ~375 valid' but the 2026-05-27 PR #506 pre-fill used `expected_yield_threshold: 150` with kill `n_valid < 150` (deliberately permissive). The 2026-05-28 reconciliation pulls both numbers in line with the operator's chosen value set: kill floor 200, nominal-valid 375. The variable name `expected_yield_threshold` is semantically the FLOOR/KILL value (Sub-exp 1's locked prereg paired `expected_yield_threshold: 300` with kill `n_valid < 300`); 200 is the floor here. Nominal-valid 375 is captured in the derivation comment above + spec §2.",
   "kill_criteria": [
-    "n_valid < 150",
+    "n_valid < 200",
     "Ollama endpoint rate-limited > 2 fires consecutively (note: rate-limiting on local Ollama only happens via OOM / thermal throttling / process termination; if observed, halt — indicates hardware instability, not random fluctuation)",
     "Endpoint changes streaming protocol or model id mid-collection (e.g., operator pulls a different llama3.2 variant — invalidates the run)",
     "Wrapper preflight fails 3+ times consecutively"
@@ -46,7 +47,7 @@
     "_TBD_at_ceremony": true,
     "_recommendation": "Operator decides at go-no-go ceremony. Suggested schema below pending operator finalization:",
     "pass_ks_p_max": "TBD — suggested 0.01 per spec §1 RQ2 + state.json::success_metrics line 'p < 0.01'. Means: Ollama distribution distinguishable from each cloud anchor at p<0.01 on a 2-sample KS test of streaming-TTFT or TTFT+TPS joint distribution.",
-    "pass_yield_min": "TBD — suggested 150 (matches expected_yield_threshold above; operator may raise floor if Sub-exp 1 confirmed Ollama harness reliability)",
+    "pass_yield_min": "TBD — suggested 250 (matches reconciled expected_yield_threshold floor 200 + comfortable margin; Sub-exp 1A confirmed harness reliability at 92.86% valid rate so operator can set this higher if desired)",
     "fail_if_ks_p_greater_than": "TBD — suggested 0.05. If KS p > 0.05 vs ALL cloud anchors, conclude Ollama signature is indistinguishable from cloud (HADF dispatch claim weakened — operator decides whether this refutes Sub-exp 2's hypothesis or just means the M2 + 3B model is too cloud-like for this metric)"
   },
   "harness_hardening_proof": {
@@ -66,7 +67,7 @@
   "_ceremony_checklist_2026_05_28_or_later": {
     "_purpose": "Reminder for the operator at go-no-go time. Each item is a single-line action; tick off in order.",
     "items": [
-      "1. Confirm Sub-exp 1 verdict = PASS (per B13.5 verdict-script output)",
+      "1. Confirm Sub-exp 1 verdict = PASS (per B13.5 verdict-script output) — CONFIRMED 2026-05-28: silhouette 0.7003, n_valid 2600, 5 clusters; see hadf-phase2bis-cross-sub-exp-synthesis-case-study.md §3.A",
       "2. Read this prereg in full; review the TBD fields under verdict_thresholds + sha256 fields",
       "3. Decide pass_ks_p_max (suggested 0.01) + pass_yield_min (suggested 150) + fail_if_ks_p_greater_than (suggested 0.05)",
       "4. Set _TBD_at_ceremony: false; replace each TBD placeholder with concrete value",

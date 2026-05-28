@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.8.3",
   "started_at": "2026-05-12T07:22:43Z",
-  "updated_at": "2026-05-12T09:44:09Z",
+  "updated_at": "2026-05-28T13:48:23Z",
   "events": [
     {
       "timestamp": "2026-05-12T07:22:43Z",
@@ -27,6 +27,31 @@
       "artifacts": [],
       "metrics": {},
       "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-05-28T13:48:23Z",
+      "event_type": "sub_experiment_closed",
+      "phase": "tasks_phase",
+      "summary": "Sub-exp 1A closed PASS: silhouette 0.7003 at k=5 (+25.8% over Phase 2 baseline 0.5566), n_valid=2600 across 4-endpoint cloud matrix (gpt-4o-mini + gpt-4o + claude-haiku-4-5 + claude-sonnet-4-6), 14 fires over 2026-05-25T16:36Z to 2026-05-28T11:11Z, cost $0.324 actual vs $3-$4 nominal. Disarm at 2026-05-28T13:34Z via launchctl bootout. B13 -> done; B14 (Ollama llama3.2:3b) prep_in_progress with Saturday 2026-05-30 22:00 UTC scheduled arming.",
+      "artifacts": [
+        "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md#3a-sub-exp-1-cloud-generalization",
+        "/Volumes/DevSSD/hadf-sub-exp-1a-backups/",
+        "scripts/hadf-phase2bis-verdict.py"
+      ],
+      "metrics": {
+        "silhouette": 0.7003,
+        "best_k": 5,
+        "cluster_count": 5,
+        "n_valid": 2600,
+        "n_dispatched": 2800,
+        "valid_rate": 0.9286,
+        "cost_usd": 0.324,
+        "fires": 14,
+        "verdict": "PASS"
+      },
+      "actor": "agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }

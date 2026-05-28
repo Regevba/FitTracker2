@@ -65,31 +65,69 @@
     },
     {
       "id": "B13",
-      "title": "Block B Sub-exp 1 — Cloud fingerprinting (9 endpoints, 5 fires/day × 3 days, n≈675 valid records target)",
-      "status": "pending",
+      "title": "Block B Sub-exp 1 — Cloud fingerprinting (4-endpoint narrowed matrix per launch_matrix_narrowing 2026-05-25; 14 fires across ~2.8 days)",
+      "status": "done",
       "effort_days": 4,
-      "blocker": "calendar gate — v7.8.3 soak window closes 2026-05-23",
-      "scheduled_start": "2026-05-23",
+      "started_at": "2026-05-25T16:36:44Z",
+      "completed_at": "2026-05-28T13:34:00Z",
+      "shipped_via_pr": "this-PR",
+      "verdict": {
+        "outcome": "PASS",
+        "silhouette": 0.7003,
+        "best_k": 5,
+        "cluster_count": 5,
+        "n_valid": 2600,
+        "n_dispatched": 2800,
+        "valid_rate": 0.9286,
+        "thresholds": {"silhouette_min": 0.5, "yield_min": 600, "clusters_min": 3},
+        "vs_phase2_baseline": {"phase2_silhouette": 0.5566, "delta": 0.1437, "delta_pct": 25.8},
+        "kill_criteria_tripped": [],
+        "trip_wires_tripped": [],
+        "cost_usd_actual": 0.324,
+        "cost_usd_nominal_for_full_matrix": "$3-$4",
+        "endpoints": [
+          {"provider": "openai", "endpoint": "gpt-4o-mini", "n_dispatched": 700, "n_valid": 650, "median_ttft_s": 0.0296, "median_tps": 49.64},
+          {"provider": "openai", "endpoint": "gpt-4o", "n_dispatched": 700, "n_valid": 650, "median_ttft_s": 0.0163, "median_tps": 99.54},
+          {"provider": "anthropic", "endpoint": "claude-haiku-4-5", "n_dispatched": 700, "n_valid": 650, "median_ttft_s": 0.9181, "median_tps": 152.93},
+          {"provider": "anthropic", "endpoint": "claude-sonnet-4-6", "n_dispatched": 700, "n_valid": 650, "median_ttft_s": 1.38, "median_tps": 67.98}
+        ],
+        "verdict_script": "scripts/hadf-phase2bis-verdict.py --raw-dir /Volumes/DevSSD/hadf-sub-exp-1a-backups --subexp subexp1",
+        "raw_data_backup_dir": "/Volumes/DevSSD/hadf-sub-exp-1a-backups/",
+        "case_study_section": "docs/case-studies/hadf-phase2bis-cross-sub-exp-synthesis-case-study.md §3.A",
+        "disarm_command": "launchctl bootout gui/$UID ~/Library/LaunchAgents/com.fitme.hadf-phase2bis-subexp1.plist"
+      },
       "sub_tasks": [
-        "B13.1 Operator runs go/no-go ceremony for Sub-exp 1",
-        "B13.2 Lock prereg-subexp1.json (sha256 + .lock + git tag)",
-        "B13.3 launchctl bootstrap subexp1 plist",
-        "B13.4 Wait 3 days for collection (5 fires/day × 3 days)",
-        "B13.5 Run verdict script (silhouette + cluster count + threshold check)",
-        "B13.6 Write Sub-exp 1 case study",
-        "B13.7 make snapshot-phase",
-        "B13.8 Commit + PR + merge"
+        "B13.1 Operator runs go/no-go ceremony for Sub-exp 1 — done 2026-05-25",
+        "B13.2 Lock prereg-subexp1.json — done 2026-05-25 (git tag prereg-phase2bis-subexp1-locked-2026-05-25)",
+        "B13.3 launchctl bootstrap subexp1 plist — done 2026-05-25",
+        "B13.4 Wait for collection — 14 fires across 2026-05-25T16:36 → 2026-05-28T11:11Z (~2.8 days; 1 fire skipped vs nominal 15 because verdict landed PASS at 4.3× yield threshold post-fire-14)",
+        "B13.5 Run verdict script — done; final yield 2600, silhouette 0.7003 at k=5, 5 clusters",
+        "B13.6 Sub-exp 1A verdict written into §3.A of synthesis case study (operator's chosen flow vs standalone per-sub-exp doc)",
+        "B13.7 make snapshot-phase PHASE=subexp1-closure FEATURE=hadf-phase2bis-replication — done this-PR",
+        "B13.8 Commit + PR + merge — this-PR"
       ],
-      "external_audit": "audit-1-v7-9-promotion (2026-05-22, scope: Sub-exp 1 prereg + smoke-fire data quality)"
+      "external_audit": "audit-1-v7-9-promotion (2026-05-22, scope: Sub-exp 1 prereg + smoke-fire data quality)",
+      "subexp1b_status": "queued — gated on (a) operator API-key acquisition for vercel-ai-gateway/mistral/xai, (b) reasoning-model TTFT decomposition methodology for gemini-2.5-flash/pro; not in scope of B13"
     },
     {
       "id": "B14",
-      "title": "Block B Sub-exp 2 — Ollama local fingerprinting (1 endpoint, ~5,000 valid records target, KS-distinguishability check vs cloud)",
-      "status": "pending",
+      "title": "Block B Sub-exp 2 — Ollama local fingerprinting (1 endpoint = llama3.2:3b on M2, KS-distinguishability check vs cloud anchors per spec §1 RQ2)",
+      "status": "prep_in_progress",
       "effort_days": 4,
-      "blocker": "B13 verdict = PASS",
-      "scheduled_start": "~2026-05-27 (gated on Sub-exp 1 PASS)",
-      "sub_tasks": ["B14.1–B14.8 same as B13 with subexp2 substitutions"]
+      "blocker_resolved_at": "2026-05-28T13:30:00Z (B13 verdict PASS)",
+      "scheduled_start": "2026-05-30T22:00:00Z (Sat night Israel time = Sun 01:00 IDT; first fire aligns to standard 22:00 UTC slot per spec §4)",
+      "scheduled_end": "~2026-06-02T22:00Z (3 days × 5 fires/day, Day-3 final fire 22:00 UTC Tue)",
+      "yield_target_reconciliation": "Prereg expected_yield_threshold = 375 (per spec §2 Sub-exp 2 nominal); kill_criteria n_valid < 200 (consistent with expected 375; legacy 600 threshold was Sub-exp 1 holdover, reconciled per operator decision 2026-05-28)",
+      "sub_tasks": [
+        "B14.1 Operator runs go/no-go ceremony for Sub-exp 2 — Saturday 2026-05-30 evening IDT (pre-arming)",
+        "B14.2 Lock prereg-subexp2.json (filled in this-PR; ceremony locks + signed tag at B14.1)",
+        "B14.3 launchctl bootstrap subexp2 plist — Saturday 2026-05-30 evening IDT (post-ceremony)",
+        "B14.4 Wait 3 days for collection (5 fires/day × 3 days × 1 endpoint × 50 calls = 750 dispatched, ~375 valid expected)",
+        "B14.5 Run verdict script (KS-test vs cloud anchors + yield check)",
+        "B14.6 Populate §3.B of synthesis case study",
+        "B14.7 make snapshot-phase",
+        "B14.8 Commit + PR + merge"
+      ]
     },
     {
       "id": "B15",

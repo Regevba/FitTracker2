@@ -5,14 +5,15 @@ Per spec §2 + §4: 50 calls per endpoint, max_output_tokens=200, temp=0.7,
 
 Writes raw .jsonl atomically (Fix #4): one line per call with TTFT, TPS, total_tokens, status.
 
-Provider-specific streaming code: implemented 2026-05-25 (Task A5 completion).
-4 unique SDKs cover all 13 (provider, endpoint, api_kind) tuples across the 3 sub-exps:
+Provider-specific streaming code: cloud providers implemented 2026-05-25 (Task A5);
+Ollama added 2026-05-28 ahead of Sub-exp 2 launch.
+5 unique paths cover all 13 (provider, endpoint, api_kind) tuples across the 3 sub-exps:
   - openai SDK with base_url override → openai direct, vercel-ai-gateway, xai
   - anthropic SDK → anthropic direct
   - google.genai SDK → google direct
   - mistralai SDK → mistral direct
-  - (subexp2/3 providers ollama + aws-bedrock not implemented in this pass —
-     scoped to sub-exp 1 launch per operator decision 2026-05-25)
+  - urllib + Ollama /api/generate streaming → ollama local (no SDK dep — stdlib only)
+  - (aws-bedrock not implemented in this pass — scoped to ship before Sub-exp 3 launch)
 
 Required env vars:
   OPENAI_API_KEY                openai endpoints
@@ -22,6 +23,7 @@ Required env vars:
   XAI_API_KEY                   xai endpoint (uses openai SDK + base_url override)
   VERCEL_AI_GATEWAY_API_KEY     vercel-ai-gateway endpoint
   VERCEL_AI_GATEWAY_BASE_URL    optional — defaults to https://ai-gateway.vercel.sh/v1
+  OLLAMA_BASE_URL               optional — defaults to http://localhost:11434
 """
 import argparse
 import json
@@ -249,6 +251,74 @@ def _call_mistral(api_key, model, prompt, timeout_s):
     return _result(ttft, total, output_tokens)
 
 
+def _call_ollama(base_url, model, prompt, timeout_s):
+    """Ollama local streaming via stdlib urllib (no SDK dep).
+
+    Streams NDJSON from POST /api/generate; each non-final line carries a
+    `response` field (the generated chunk). Final line has `done: true` plus
+    `eval_count` (output token count). Wall-clock TTFT semantics match cloud
+    providers so signatures are comparable.
+    """
+    import urllib.request
+    import urllib.error
+
+    url = f"{base_url.rstrip('/')}/api/generate"
+    body = json.dumps(
+        {
+            "model": model,
+            "prompt": prompt,
+            "stream": True,
+            "options": {
+                "temperature": TEMPERATURE,
+                "num_predict": MAX_OUTPUT_TOKENS,
+            },
+        }
+    ).encode("utf-8")
+    req = urllib.request.Request(
+        url, data=body, headers={"Content-Type": "application/json"}
+    )
+
+    t_start = time.time()
+    ttft = None
+    output_tokens = 0
+    server_eval_count = None
+
+    try:
+        with urllib.request.urlopen(req, timeout=timeout_s) as resp:
+            for raw in resp:
+                line = raw.decode("utf-8").strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if obj.get("done"):
+                    if obj.get("eval_count"):
+                        server_eval_count = int(obj["eval_count"])
+                    break
+                chunk = obj.get("response", "")
+                if chunk:
+                    if ttft is None:
+                        ttft = time.time() - t_start
+                        output_tokens = 1
+                    else:
+                        output_tokens += 1
+    except urllib.error.URLError as e:
+        raise RuntimeError(
+            f"Ollama unreachable at {base_url}: {e}. "
+            f"Verify daemon is running (`ollama serve`) and model is pulled "
+            f"(`ollama pull {model}`)."
+        )
+
+    total = time.time() - t_start
+    if ttft is None:
+        ttft = total
+    if server_eval_count:
+        output_tokens = server_eval_count
+    return _result(ttft, total, output_tokens)
+
+
 def call_endpoint(provider, endpoint, prompt):
     """Provider-specific streaming call. Returns dict {ttft_s, tps, output_tokens}.
 
@@ -301,13 +371,16 @@ def call_endpoint(provider, endpoint, prompt):
         )
         return _call_openai_compat(api_key, base_url, endpoint, prompt, timeout_s)
 
-    # Sub-exp 2/3 providers — out of scope for 2026-05-25 sub-exp 1 launch.
+    if provider == "ollama":
+        base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
+        return _call_ollama(base_url, endpoint, prompt, timeout_s)
+
+    # aws-bedrock (Sub-exp 3) — ships in follow-up commit before Sub-exp 3 launch.
     raise NotImplementedError(
         f"Provider {provider!r} (endpoint {endpoint!r}) not implemented yet. "
-        f"This implementation covers sub-exp 1 providers only "
-        f"(openai/anthropic/google/mistral/xai/vercel-ai-gateway). "
-        f"ollama (sub-exp 2) and aws-bedrock (sub-exp 3) ship in follow-up commits "
-        f"before their respective sub-exp launches."
+        f"This implementation covers Sub-exp 1 + Sub-exp 2 providers "
+        f"(openai/anthropic/google/mistral/xai/vercel-ai-gateway/ollama). "
+        f"aws-bedrock (Sub-exp 3) ships in a follow-up commit before Sub-exp 3 launch."
     )
 
 
