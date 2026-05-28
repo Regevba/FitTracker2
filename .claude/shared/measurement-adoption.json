@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-25T17:33:43Z",
+  "updated": "2026-05-28T06:08:06Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -677,7 +677,7 @@
       "feature": "analytics-observability",
       "created": "2026-05-13",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "testing",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -1601,7 +1601,7 @@
       "feature": "ucc-passkey-auth-audit-log-redis-fix",
       "created": "2026-05-17",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -1615,7 +1615,7 @@
       "feature": "ucc-passkey-auth-security-hardening",
       "created": "2026-05-19",
       "post_v6": true,
-      "current_phase": "documentation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -1629,7 +1629,7 @@
       "feature": "ucc-sign-in-figma-mapping",
       "created": "2026-05-17",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
