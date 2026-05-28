@@ -775,6 +775,15 @@ Downstream skills (`/ux`, `/design`, `/dev`, `/qa`, `/analytics`, `/cx`, `/ops`,
 
 Block phase advancement if the preflight reports `blocking > 0`.
 
+**Cross-layer freshness (auto-chained, 2026-05-28+).** `make preflight` also runs `make freshness-check` which surfaces:
+
+- **Recent merged PRs (both repos, last 7d)** — catches the W20 failure mode where session-state thinks work is open but the operator already shipped it (root-cause of the 2026-05-28 prereg-duplication incident).
+- **Stale worktrees (behind > 7 commits vs origin/main)** — flags worktrees that would silently overwrite shipped work on commit.
+- **Memory ↔ feature-state drift** — surfaces `MEMORY.md` entries claiming "in flight" / "paused" / "pending" for features whose `state.json::current_phase` is now `complete`.
+- **Linear sync (optional)** — FIT-team root-issue status when `LINEAR_API_KEY` is set.
+
+Cross-reference the freshness output against any operator-gate inventory, status survey, or files you're about to edit. See [W20](.claude/integrity/observed-patterns.md#w20--stale-session-state-inventory-drift-2026-05-28) + [`feedback_cross_layer_freshness_check.md`](../../memory/feedback_cross_layer_freshness_check.md).
+
 ### Phase 0 variant by work subtype
 
 | Subtype | Phase 0 primary output | Skills dispatched |
