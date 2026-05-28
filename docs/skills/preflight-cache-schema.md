@@ -92,10 +92,58 @@ The cache has no expiry mechanism — the consumer is responsible for re-running
 
 `scripts/preflight.py` is idempotent and fast (~5s on a clean tree). Re-run liberally.
 
+## Cross-layer freshness companion (added 2026-05-28)
+
+`make preflight` auto-chains `make freshness-check` (`scripts/cross-layer-freshness.py`) which writes a separate ASCII summary to stdout — it does NOT extend the JSON cache. Skills that need the freshness datums consume them via:
+
+```bash
+python3 scripts/cross-layer-freshness.py --format=json
+```
+
+The freshness check covers 4 layers `make preflight` does not:
+
+| Layer | Producer | Purpose |
+|---|---|---|
+| `recent_merged_prs` | `gh pr list --state merged --search "merged:>=…"` BOTH repos | Catch operator-shipped work the session thought was open |
+| `worktree_divergence` | `git worktree list` + `git rev-list --left-right --count` per worktree | Flag stale worktrees (behind > 7) before they overwrite shipped work |
+| `memory_drift` | `MEMORY.md` keyword scan vs `.claude/features/*/state.json::current_phase` | Surface memory entries claiming "in flight" for already-complete features |
+| `linear_sync` | Linear GraphQL (requires `LINEAR_API_KEY`) | FIT-team root issue status vs local state.json |
+
+JSON schema (see `scripts/cross-layer-freshness.py::collect_freshness()` for the producer):
+
+```json
+{
+  "generated_at": "<ISO-8601 UTC>",
+  "days": 7,
+  "since": "<YYYY-MM-DD>",
+  "layers": {
+    "recent_merged_prs": {
+      "FitTracker2": {"status": "ok|unavailable", "count": <int>, "prs": [{"number","title","headRefName","mergedAt"}]},
+      "fitme-story": {…}
+    },
+    "worktree_divergence": [
+      {"path","branch","head","ahead","behind","stale_warning":true|false}
+    ],
+    "memory_drift": [
+      {"line_no","feature_slug","claim_phrase","snippet","actual_phase","drift":true}
+    ],
+    "linear_sync": {"status":"checked|skipped_no_token|error","epics":[…]}
+  },
+  "summary": {
+    "recent_pr_count_total": <int>,
+    "stale_worktrees": <int>,
+    "memory_drift_count": <int>,
+    "linear_status": "<string>"
+  }
+}
+```
+
+Rationale: [`feedback_cross_layer_freshness_check.md`](../../memory/feedback_cross_layer_freshness_check.md) (auto-memory) — established 2026-05-28 after a session-state failure mode where work prep duplicated already-merged PRs.
+
 ## Related
 
 - `docs/master-plan/data-integrity-and-rollback-2026-05-14.md` §2.1 — drift window this closes
 - `docs/master-plan/infra-master-plan-2026-05-12.md` §4.1 — v7.9 promotion calendar
-- `.claude/integrity/observed-patterns.md` — W1 (ssh) + W3 (CI check) + W9 (branch drift) patterns the preflight surfaces
+- `.claude/integrity/observed-patterns.md` — W1 (ssh) + W3 (CI check) + W9 (branch drift) + W20 (stale-session-state) patterns the preflight surfaces
 - `scripts/preflight.py` — producer
 - `scripts/integrity-diff.py` — drift-vs-anchor comparator the preflight invokes
