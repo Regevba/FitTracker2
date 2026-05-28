@@ -1,8 +1,8 @@
 {
   "feature_name": "framework-v7-9-promotion",
-  "current_phase": "docs",
+  "current_phase": "complete",
   "created_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-21T05:46:36Z",
+  "updated_at": "2026-05-28T17:30:00Z",
   "framework_version": "v7.9",
   "work_type": "Feature",
   "work_subtype": "framework_feature",
@@ -32,7 +32,7 @@
     "False positive rate >5% during calibration window for any proposed-promotion gate",
     "Post-promotion bug surfaces requiring rollback within T+7d soak \u2014 defer promotion or restore advisory mode"
   ],
-  "kill_criteria_resolution": null,
+  "kill_criteria_resolution": "All 3 kill criteria not_fired (evaluated 2026-05-28, Phase E Day 7, post-B2 baseline snapshot). K1 (Mech A 0% coverage at decision time): 18 + 13 + 13 firings observed across 14-day calibration window 2026-05-07 → 2026-05-21; 0% coverage was NEVER observed for any of the 3 candidate gates [T1, .claude/logs/gate-coverage.jsonl]. K2 (false positive rate >5% during calibration): 0 false positives across 44 total firings; rate = 0% < 5% threshold [T1, operator review of 44 rows]. K3 (post-promotion rollback within T+7d): Phase E Day 7 (2026-05-28) — scripts/check-state-schema.py:132 still reads `BRANCH_ISOLATION_ADVISORY_MODE = False` per git log; no rollback PR opened on `chore/v7-9-rollback` or equivalent [T1, git log on main]. Verdict: v7.9 promotion holds; advance docs → complete. Process regressions in adoption_pct_post_v6 (8.3% → 6.7%), timing_wall_time_pct_post_v6 (47.2% → 37.8%), cache_hits_pct_post_v6 (52.8% → 51.1%) observed via `make integrity-diff` vs 2026-05-14 anchor are denominator-dilution from +9 features added during Phase E without adoption metrics backfilled — NOT v7.9-caused; flagged for v7.9.1 backfill follow-up (see §99.2 of case study) [T1, integrity-diff output 2026-05-28T17:00Z].",
   "dispatch_pattern": "operator-driven (decision) + agent-driven (per-gate flip implementation)",
   "case_study": "docs/case-studies/framework-v7-9-promotion-case-study.md",
   "case_study_showcase": "fitme-story/content/04-case-studies/34-framework-v7-9-promotion.mdx",
@@ -60,6 +60,11 @@
       "number": 393,
       "repo": "Regevba/FitTracker2",
       "role": "T7_9_0_pre_decision_review_D3"
+    },
+    {
+      "number": 448,
+      "repo": "Regevba/FitTracker2",
+      "role": "external_audit_1_corrections_post_ship_2026_05_22"
     }
   ],
   "tasks": [
@@ -171,13 +176,21 @@
       "merge_method": "squash"
     },
     "docs": {
-      "status": "in_progress",
+      "status": "complete",
       "started_at": "2026-05-21T05:46:36Z",
-      "note": "Post-merge close-out PR opens (this commit's PR). Updates state.json + case study \u00a75 with 4 merge SHAs + memory refresh. \u00a799 synthesis + showcase MDX slot 31 in fitme-story deferred to 2026-05-28 post-B2 baseline snapshot."
+      "ended_at": "2026-05-28T17:30:00Z",
+      "approved_by": "operator",
+      "note": "Post-merge close-out PR opened 2026-05-21 (#417 close-out). \u00a799 synthesis + kill_criteria_resolution populated 2026-05-28 post-B2 baseline snapshot via this closure PR."
+    },
+    "complete": {
+      "status": "in_progress",
+      "started_at": "2026-05-28T17:30:00Z",
+      "note": "Feature closure with kill_criteria_resolution populated + case study \u00a799 synthesis filled in. Phase E soak continues through 2026-06-04 (operator monitors gate-coverage.jsonl for any rollback-triggering events; none observed through Phase E Day 7). v7.9.1 build window opens ~2026-06-04."
     },
     "learn": {
-      "status": "pending",
-      "note": "Phase E validation soak 2026-05-21 \u2192 2026-06-04. B2 baseline snapshot lands 2026-05-28 (must-have-cadence-followups.md \u00a7B2). v7.9 case study \u00a799 + kill_criteria_resolution filled in at B2."
+      "status": "in_progress",
+      "started_at": "2026-05-28T17:30:00Z",
+      "note": "Phase E validation soak continues 2026-05-28 \u2192 2026-06-04 (Days 7 \u2192 14). Post-Phase-E synthesis: meta-analysis case study comparing 2026-05-12 pre-v7-9-baseline vs 2026-05-28 post-v7-9-baseline snapshots, slotted for Phase E exit ~2026-06-04. v7.9.1 candidate F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING filed 2026-05-28 from the B2 snapshot run (see post-v7-9-candidate-plan-2026-05-20.md)."
     }
   },
   "timing": {
@@ -211,7 +224,14 @@
         "ended_at": "2026-05-21T05:44:53Z"
       },
       "docs": {
-        "started_at": "2026-05-21T05:46:36Z"
+        "started_at": "2026-05-21T05:46:36Z",
+        "ended_at": "2026-05-28T17:30:00Z"
+      },
+      "complete": {
+        "started_at": "2026-05-28T17:30:00Z"
+      },
+      "learn": {
+        "started_at": "2026-05-28T17:30:00Z"
       }
     }
   },

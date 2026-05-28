@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-05-16T07:00:00Z",
-  "updated_at": "2026-05-21T05:46:49Z",
+  "updated_at": "2026-05-28T17:05:53Z",
   "events": [
     {
       "event_type": "phase_transition",
@@ -289,6 +289,30 @@
       "status": "merged",
       "recording_mode": "retroactive",
       "retroactive_reason": "Recorded post-merge \u2014 PR #417 merged at 05:44:53Z; this log entry written at 05:46:36Z as part of close-out PR authoring."
+    },
+    {
+      "timestamp": "2026-05-28T17:05:53Z",
+      "event_type": "phase_transition",
+      "phase": "complete",
+      "summary": "framework-v7-9-promotion advanced docs -> complete. All 3 kill criteria not_fired (K1+K2+K3 evaluated against 14d calibration + 7d Phase E soak data, all not_fired with T1 evidence). $99 synthesis populated with B2 baseline delta table (3 process-dilution regressions flagged as not v7.9-caused), Phase E daily observations log, 2 minor learnings (filed as v7.9.1 candidates F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING + F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE). Phase E soak continues through 2026-06-04; learn phase in_progress. Closure timestamp 2026-05-28T17:30:00Z.",
+      "artifacts": [
+        "docs/case-studies/framework-v7-9-promotion-case-study.md#section-99-synthesis",
+        ".claude/features/framework-v7-9-promotion/state.json",
+        "~/Documents/FitTracker2-backups/2026-05-28-framework-v7-8-branch-isolation-post-v7-9-baseline/"
+      ],
+      "metrics": {
+        "kill_criteria_resolution": "passed",
+        "k1_not_fired": true,
+        "k2_not_fired": true,
+        "k3_not_fired": true,
+        "integrity_findings_delta": 0,
+        "integrity_advisory_delta": -1,
+        "phase_e_day": 7,
+        "v7_9_1_candidates_filed": 2
+      },
+      "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
     }
   ]
 }
