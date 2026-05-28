@@ -120,6 +120,21 @@ preflight:
 		exit 2; \
 	fi
 	@python3 scripts/preflight.py --work-type $(WORK_TYPE) $(if $(FEATURE),--feature $(FEATURE),)
+	@$(MAKE) --no-print-directory freshness-check
+
+# 2026-05-28: cross-layer freshness check. Closes the 4-layer gap that
+# `make preflight` doesn't cover: (1) recent merged PRs both repos, (2)
+# worktree-vs-main divergence per worktree, (3) memory-vs-feature-state
+# drift, (4) Linear sync (optional, requires LINEAR_API_KEY).
+#
+# Triggered:
+#   - `make freshness-check`       (standalone)
+#   - `make preflight`             (auto-chained above)
+#   - SessionStart hook            (surfaces top-line summary)
+#
+# Read-only advisory. Exit 0 always.
+freshness-check:
+	@python3 scripts/cross-layer-freshness.py $(if $(DAYS),--days $(DAYS),)
 
 # v7.8.5: P0.4 from docs/skills/skills-review-2026-05-13.md — mechanical
 # conformance check for .claude/skills/*/SKILL.md (frontmatter present,

@@ -1134,3 +1134,40 @@ curl -X POST "https://api.vercel.com/v10/projects/<project_id>/env" \
   -H "Content-Type: application/json" \
   -d '{"key":"NEXT_PUBLIC_GA_ID","value":"G-XXXXXXX","type":"plain","target":["production"]}'
 ```
+
+---
+
+### W20 — Stale-session-state inventory drift (2026-05-28)
+
+**Symptom:** Session produces an operator-gate inventory, status survey, or "what's open" list that contains items the operator already shipped. Worse: agent proceeds to "prep" or "fix" those items on a stale worktree, overwriting the operator's better-quality work.
+
+**Detection:** `make freshness-check` (`scripts/cross-layer-freshness.py`) — 4-layer scan covering: recent merged PRs (both repos, default 7d), worktree-vs-main divergence, memory ↔ feature-state drift, optional Linear sync. Auto-chained by `make preflight` from 2026-05-28+.
+
+**Failure mode (2026-05-28 root incident):**
+
+The session opened with `make membrane-status` + `make integrity-check` clean. Agent produced a multi-section operator-gate inventory referencing "HADF Sub-exp 2 + 3 preregs need filling" + "Block C slot 22c collision needs fixing." Agent then `Edit`ed the prereg JSONs on a 26-commits-behind worktree + `git mv`'d the MDX. **Reality:** FT2 PRs #506 + #507 had already filled the preregs ~16h earlier (with better rationale + `_status_at_2026_05_27` provenance + correctly-tuned yield_thresholds); fitme-story PR #155 had deliberately placed the MDX at slot 22c (overriding the chronological heuristic). The agent's edits diverged from the operator's intent. Recovery: revert the prereg edits + undo the rename + apologize for the duplicated work.
+
+**Sibling patterns:**
+
+- [W9 — Branch drift](#w9--branch-drift-from-concurrent-session-git-checkout-collision-detected--real-time-alerted) — concurrent-session HEAD flip; **different mechanism** (W9 = mid-session checkout, W20 = stale baseline at session start)
+- [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — PR review surface lies about what will actually merge; **sibling** in the "your view of state is stale" family
+- [W16 — Contract-boundary fixture sampling](#w16--contract-boundary-tests-must-use-a-sample-drawn-from-the-canonical-producer-not-the-consumers-expected-shape-2026-05-24) — your test fixture lies about producer reality; same epistemological class
+
+**Why the existing preflight didn't catch it:**
+
+`make preflight` (v7.8.6) reads the local snapshot (state.json, integrity findings, doc-debt). All of those were clean at session-open because the operator's recent PRs had already merged — main was in good shape. The gap: nothing in preflight compared MY session's mental model (built from MEMORY.md + assumptions) against `origin/main`'s actual recent history. Local state was correct; my model was 16h stale.
+
+**Remediation (mandatory operator workflow):**
+
+Run `make freshness-check` (or accept the auto-chain via `make preflight`) at any of:
+
+1. Session start (auto-surfaced via SessionStart hook)
+2. Before producing any inventory ≥3 items deep that claims items are "open" / "pending" / "in flight"
+3. Before `Edit`ing a file the operator may have shipped recently (preregs, case studies, runbooks, state.json, cadence ledgers)
+4. After `git fetch` but before `git checkout` — the divergence-per-worktree layer surfaces which worktrees are now stale
+
+**Mandatory rule (operator obligation):**
+
+The agent obligation is codified in [`feedback_cross_layer_freshness_check.md`](../../memory/feedback_cross_layer_freshness_check.md) (auto-memory). The pattern is mechanically enforced via the auto-chain from `make preflight` (v7.8.6+) and surfaced via SessionStart hook (when wired).
+
+**First surfaced by:** 2026-05-28 session — HADF Sub-exp 2/3 prereg duplication incident. Cost: ~30 min of duplicated work + an operator correction round-trip. Recovery: revert prereg edits + undo MDX rename. Net session deliverable salvaged: collector code (ollama + aws-bedrock branches) + requirements + operator runbook — all genuinely new and useful.
