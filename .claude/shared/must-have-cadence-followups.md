@@ -11,7 +11,7 @@ Surfaced daily by `scripts/daily-integrity-checkpoint.py` when the target date i
 | ID | Date | Event | Owner | Source |
 |---|---|---|---|---|
 | ~~B1~~ | ~~2026-05-21~~ | ~~v7.9 promotion-decision data freeze~~ **EXECUTED 2026-05-21** — promotion shipped same day via PR #417 (`ea53ff4`). All §B1 prerequisites met: `make integrity-check` 0 findings, `make integrity-diff` no regression vs 2026-05-14 anchor, `make documentation-debt` ≤ baseline, `make measurement-adoption` captured, `membrane-status.py` captured, 14d gate-coverage telemetry confirmed no `GATE_COVERAGE_ZERO`. 3 advisory gates flipped to enforced. Ledger strikethrough deferred until 2026-05-27 reconcile (this PR). | operator | infra-plan §4.1, master-plan §2.2 |
-| B2 | **2026-05-28** | Post-v7.9 T+7d baseline snapshot | operator | data-integrity §3.2 trigger (2) |
+| ~~B2~~ | ~~2026-05-28~~ | ~~Post-v7.9 T+7d baseline snapshot~~ **EXECUTED 2026-05-28T16:30:12Z** — `make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation` produced `~/Documents/FitTracker2-backups/2026-05-28-framework-v7-8-branch-isolation-post-v7-9-baseline/` (8 files: 6 feature source files + CHECKSUMS.sha256 + MANIFEST.md; on internal Mac storage per established convention). `shasum -a 256 -c CHECKSUMS.sha256` returned 6/6 source files OK; the lone `MANIFEST.md: FAILED` is a known cosmetic ordering bug in `scripts/snapshot-phase-completion.sh` (manifest is written after the checksum file, so its hash is stale by design). Commit SHA at capture time: `3fb76d0` (main HEAD pre-#521 manifest backfill). Unblocks `framework-v7-9-promotion` advance from `docs` → `complete` (case-study §99 synthesis + `kill_criteria_resolution` backfill). Follow-up: meta-analysis case study comparing 2026-05-12 pre-v7-9-baseline vs this snapshot is a separate task (B2's literal trigger is "snapshot taken"; the comparison is part of Phase E exit ~2026-06-04). | operator | data-integrity §3.2 trigger (2) |
 | B3 | **daily, starting now** | GA4 anomaly check (event volume + funnel breaks) | operator + GA4 MCP | analytics-observability epic |
 | B4 | **2026-08-13** | Quarterly cross-layer test-discipline audit (initial run) | operator | test-coverage §6.2 |
 | B5 | **2026-11-13** | Quarterly cross-layer test-discipline audit (recurring) | operator | test-coverage §6.2 |
@@ -35,13 +35,19 @@ Required actions on the day:
 6. Review last 14 days of `.claude/logs/gate-coverage.jsonl` — verify no `GATE_COVERAGE_ZERO` for any gate that previously fired
 7. Decision: flip v7.8.x advisory gates to enforced (specific list in infra-plan §4.1)
 
-### B2 — Post-v7.9 T+7d baseline (2026-05-28)
+### B2 — Post-v7.9 T+7d baseline (2026-05-28) — EXECUTED 2026-05-28T16:30:12Z
 
 ```bash
 make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation
 ```
 
-Compare against the 2026-05-14 pre-v7.9 baseline. Document deltas in a meta-analysis case study.
+**Output:** `~/Documents/FitTracker2-backups/2026-05-28-framework-v7-8-branch-isolation-post-v7-9-baseline/` (8 files: feature source + CHECKSUMS.sha256 + MANIFEST.md; on internal Mac storage per established off-SSD backup convention). Commit SHA at capture: `3fb76d0` (main HEAD pre-#521).
+
+**Verification:** `shasum -a 256 -c CHECKSUMS.sha256` → 6/6 source files OK. `MANIFEST.md: FAILED` is a known cosmetic bug in `scripts/snapshot-phase-completion.sh` ordering (manifest written after checksums file generated, so its hash is stale by design). No data corruption; safe to ignore.
+
+**Comparison vs 2026-05-12 pre-v7-9-baseline (predecessor):** deferred to Phase E exit synthesis (~2026-06-04). Both snapshots co-located at `~/Documents/FitTracker2-backups/2026-05-{12,28}-framework-v7-8-branch-isolation-{pre,post}-v7-9-baseline/`. Meta-analysis case study slot reserved at [`docs/case-studies/meta-analysis/`](../../docs/case-studies/meta-analysis/) for Phase E exit synthesis.
+
+**Downstream unlock:** `framework-v7-9-promotion` feature advance from `docs` → `complete` is now unblocked (per state.json `phases.docs.notes`: "B2 baseline snapshot 2026-05-28 triggers §99 case-study synthesis + kill_criteria_resolution backfill"). Separate follow-up task; not part of B2 closure scope.
 
 ### B3 — Daily GA4 anomaly check
 
