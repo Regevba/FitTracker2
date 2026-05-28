@@ -1,9 +1,9 @@
 {
   "version": "1.0",
-  "updated": "2026-05-25T17:33:43Z",
+  "updated": "2026-05-28T06:08:05Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
-    "case_studies_scanned": 80,
+    "case_studies_scanned": 81,
     "features_scanned": 79,
     "integrity_snapshot_files": 9,
     "integrity_cycle_snapshots": 7,
@@ -12,39 +12,39 @@
   },
   "coverage": {
     "date_written": {
-      "present": 80,
+      "present": 81,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "work_type": {
-      "present": 80,
+      "present": 81,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "dispatch_pattern": {
-      "present": 80,
+      "present": 81,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "success_metrics": {
-      "present": 80,
+      "present": 81,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria": {
-      "present": 80,
+      "present": 81,
       "missing": 0,
       "percent": 100.0,
       "examples": []
     },
     "kill_criteria_resolution": {
-      "present": 21,
+      "present": 22,
       "missing": 59,
-      "percent": 26.2,
+      "percent": 27.2,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -54,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 11,
+      "present": 12,
       "missing": 69,
-      "percent": 13.8,
+      "percent": 14.8,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
