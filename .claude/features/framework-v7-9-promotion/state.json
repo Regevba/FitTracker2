@@ -183,14 +183,18 @@
       "note": "Post-merge close-out PR opened 2026-05-21 (#417 close-out). \u00a799 synthesis + kill_criteria_resolution populated 2026-05-28 post-B2 baseline snapshot via this closure PR."
     },
     "complete": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-28T17:30:00Z",
-      "note": "Feature closure with kill_criteria_resolution populated + case study \u00a799 synthesis filled in. Phase E soak continues through 2026-06-04 (operator monitors gate-coverage.jsonl for any rollback-triggering events; none observed through Phase E Day 7). v7.9.1 build window opens ~2026-06-04."
+      "approved_at": "2026-05-28T17:30:00Z",
+      "approved_by": "operator",
+      "note": "Feature closure with kill_criteria_resolution populated + case study \u00a799 synthesis filled in. Sub-phase status `approved` reflects PM-workflow terminal closure (operator signoff complete). Phase E soak observability continues through 2026-06-04 \u2014 see `phases.learn` for the observation window; no rollback-triggering events observed through Phase E Day 7. v7.9.1 build window opens ~2026-06-04."
     },
     "learn": {
-      "status": "in_progress",
+      "status": "approved",
       "started_at": "2026-05-28T17:30:00Z",
-      "note": "Phase E validation soak continues 2026-05-28 \u2192 2026-06-04 (Days 7 \u2192 14). Post-Phase-E synthesis: meta-analysis case study comparing 2026-05-12 pre-v7-9-baseline vs 2026-05-28 post-v7-9-baseline snapshots, slotted for Phase E exit ~2026-06-04. v7.9.1 candidate F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING filed 2026-05-28 from the B2 snapshot run (see post-v7-9-candidate-plan-2026-05-20.md)."
+      "approved_at": "2026-05-28T17:30:00Z",
+      "approved_by": "operator",
+      "note": "Phase E validation soak observability continues 2026-05-28 \u2192 2026-06-04 (Days 7 \u2192 14), but the PM-workflow `learn` phase status itself is `approved` \u2014 operator signs off on the post-promotion observation framing (kill-criteria evaluation complete + 2 v7.9.1 candidates filed). Post-Phase-E meta-analysis (comparing 2026-05-12 pre-v7-9-baseline vs 2026-05-28 post-v7-9-baseline snapshots) is a SEPARATE deliverable slotted for Phase E exit ~2026-06-04; that comparison output will land in `docs/case-studies/meta-analysis/` not in this feature's case study (which is now terminal). v7.9.1 candidate F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING + F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE filed 2026-05-28 via PR #524."
     }
   },
   "timing": {
