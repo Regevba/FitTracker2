@@ -286,6 +286,131 @@ When a new candidate surfaces (during session work, audit, or incident review):
 
 4. **Don't queue more than 5 candidates simultaneously.** v7.9.1 should ship within 1-2 weeks of opening. If the docket grows past 5, the cycle isn't a patch cycle anymore — escalate to v8.x.
 
+---
+
+## F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING
+
+**Discovered:** 2026-05-28 (B2 post-v7.9 baseline snapshot run; framework-v7-9-promotion case study §99.4 lesson 1).
+**Status:** queued.
+**Owner:** TBD (FT2; single script + 1-2 line fix).
+**Effort:** ~15 min (1 script reorder + 1 manual test pass).
+
+### Problem
+
+`scripts/snapshot-phase-completion.sh` generates `CHECKSUMS.sha256` BEFORE writing `MANIFEST.md`. The manifest is then included in the checksum list with a stale hash (computed against an empty/placeholder file). Every snapshot since `make snapshot-phase` shipped (v7.8.3, 2026-05-11) has this defect.
+
+**Symptom:** `shasum -a 256 -c CHECKSUMS.sha256` returns `MANIFEST.md: FAILED` on every snapshot, including the 2026-05-28 B2 baseline:
+
+```text
+MANIFEST.md: FAILED
+framework-v7-8-branch-isolation.log.json: OK
+integration-spec.md: OK
+prd.md: OK
+research.md: OK
+state.json: OK
+tasks.md: OK
+shasum: WARNING: 1 computed checksum did NOT match
+```
+
+**Impact:** Cosmetic — the 6 actual feature source files verify clean (sha256 OK). Data integrity is intact. But the `FAILED` line is misleading noise that breaks scripted verification workflows (e.g., a CI job checking `shasum -c` exit code would see 1 FAILED and red-flag the snapshot).
+
+### Smallest viable shape
+
+Two equally-valid fixes:
+
+**Option A — exclude MANIFEST.md from CHECKSUMS:**
+
+```bash
+# In scripts/snapshot-phase-completion.sh, change the find expression to skip MANIFEST.md
+find "$DEST" -type f ! -name 'MANIFEST.md' ! -name 'CHECKSUMS.sha256' -exec shasum -a 256 {} + > "$DEST/CHECKSUMS.sha256"
+write_manifest > "$DEST/MANIFEST.md"
+```
+
+**Option B — write MANIFEST.md first, then regenerate CHECKSUMS to include it:**
+
+```bash
+write_manifest > "$DEST/MANIFEST.md"
+find "$DEST" -type f ! -name 'CHECKSUMS.sha256' -exec shasum -a 256 {} + > "$DEST/CHECKSUMS.sha256"
+```
+
+Option B is more rigorous (manifest content is itself integrity-protected) but requires the manifest writer to not depend on the checksum file. Option A is the smaller change and reflects the realpolitik: MANIFEST.md is auto-generated descriptive metadata, not load-bearing audit data.
+
+**Recommended: Option A** (exclude pattern; ~3-line diff to the find expression).
+
+### Why now
+
+- The `MANIFEST.md: FAILED` line surfaces in every snapshot verification and will keep training operators to ignore `shasum -c` output. Bad signal hygiene.
+- Phase E exit (~2026-06-04) will produce the meta-analysis baseline comparison snapshot; fixing this before then keeps the comparison's audit trail clean.
+- Trivial scope: ~3 lines, no behavior change beyond signal cleanup.
+
+### Linked PR closing this thread
+
+To be filled when shipped.
+
+---
+
+## F-PHASE-E-ADOPTION-FREEZE-DISCIPLINE
+
+**Discovered:** 2026-05-28 (Phase E Day 7 B2 baseline analysis; framework-v7-9-promotion case study §99.4 lesson 2).
+**Status:** queued.
+**Owner:** TBD (documentation-only; ~30 min spec + ~15 min reference cite in CLAUDE.md).
+**Effort:** ~45 min total.
+
+### Problem
+
+During v7.9 Phase E soak (2026-05-21 → 2026-05-28, Days 1-7), 9 new features were added to `.claude/features/*/` without backfilling their adoption metrics (`cache_hits`, `cu_v2`, `timing_wall_time`, `per_phase_timing`). `make integrity-diff` against the 2026-05-14 anchor consequently surfaced 3 measured regressions:
+
+| Metric | 2026-05-14 | 2026-05-28 | Δ |
+|---|---|---|---|
+| `adoption_pct_post_v6` | 8.3% | 6.7% | −1.6 pp |
+| `timing_wall_time_pct_post_v6` | 47.2% | 37.8% | −9.4 pp |
+| `cache_hits_pct_post_v6` | 52.8% | 51.1% | −1.7 pp |
+
+These are **PROCESS regressions** caused by denominator dilution (+9 features in numerator-static fields), not framework-caused regressions. They are NOT v7.9 kill criteria; the kill criteria targeted false positives + rollbacks, both `not_fired`.
+
+However, they ARE measurement noise that the v7.9.1 cycle should clean up — and the underlying *discipline gap* (no codified rule about adoption-metric backfill during soak windows) should be addressed before v7.10's soak window opens.
+
+### Smallest viable shape
+
+Two-part fix, documentation-only:
+
+**Part 1 — add a soak-window discipline section to `CLAUDE.md` Data Integrity Framework section:**
+
+```markdown
+### Soak-window discipline (v7.9.1+)
+
+During any framework-version soak window (Phase E for v7.X, Phase Y for
+future versions), new features that ship during the soak MUST either
+(a) freeze adoption metric collection until soak exit, OR (b) backfill
+adoption metrics in the same PR that introduces the feature's state.json.
+
+**Rationale:** denominator dilution from soak-window feature growth causes
+process regressions in `make integrity-diff` percentage metrics that are
+NOT framework-caused but trigger weekly trend-scan alerts. The v7.9 Phase
+E soak (2026-05-21 → 2026-05-28) observed −9.4 pp regression in
+`timing_wall_time_pct_post_v6` from this pattern; the v7.9 verdict was
+PROMOTE regardless (kill criteria were unaffected), but soak-window
+disciplines should prevent the noise prospectively.
+
+**Enforcement:** advisory at v7.9.1 ship (operator-attention check on the
+weekly trend-scan output); promote to enforced if 2 consecutive soak
+windows show >5 pp regression on any post-v6 percentage metric.
+```
+
+**Part 2 — add a backlog item under `docs/product/backlog.md` "Framework hygiene" section** cross-referencing the new CLAUDE.md section + the v7.9 case study §99.4 lesson 2.
+
+### Why now
+
+- Phase E exit is ~2026-06-04, ~7 days from filing. v7.9.1 cycle opens then.
+- Documenting the discipline before v7.10's planning (~Q3 2026) prevents repeat. The pattern is fresh enough to capture concretely.
+- Documentation-only; no telemetry impact, no gate flip, no risk to v7.9 enforcement state.
+
+### Linked PR closing this thread
+
+To be filled when shipped.
+
+---
+
 ## How v7.9.1 cycle opens
 
 - **Trigger:** v7.9 Phase E exits cleanly (~2026-06-04, 14 days post-promotion). See [infra master plan §4.1](../../docs/master-plan/infra-master-plan-2026-05-12.md).
