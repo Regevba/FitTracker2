@@ -100,7 +100,7 @@ The cache has no expiry mechanism — the consumer is responsible for re-running
 python3 scripts/cross-layer-freshness.py --format=json
 ```
 
-The freshness check covers 4 layers `make preflight` does not:
+The freshness check covers 6 layers `make preflight` does not:
 
 | Layer | Producer | Purpose |
 |---|---|---|
@@ -108,6 +108,8 @@ The freshness check covers 4 layers `make preflight` does not:
 | `worktree_divergence` | `git worktree list` + `git rev-list --left-right --count` per worktree | Flag stale worktrees (behind > 7) before they overwrite shipped work |
 | `memory_drift` | `MEMORY.md` keyword scan vs `.claude/features/*/state.json::current_phase` | Surface memory entries claiming "in flight" for already-complete features |
 | `linear_sync` | Linear GraphQL (requires `LINEAR_API_KEY`) | FIT-team root issue status vs local state.json |
+| `gh_scope` | `gh auth status` parse | Detect missing OAuth scopes (e.g. `admin:public_key`) that silently 404 diagnostic API calls. Added 2026-05-28. |
+| `signing` | `SSH_AUTH_SOCK` + `ssh-add -l` + `git config user.signingkey` + `ioreg` (YubiKey USB presence) | Catch the 2026-05-28 footgun: user.signingkey expects YubiKey but agent has Touch ID only + YubiKey absent → 15s pause per commit. Added 2026-05-28. |
 
 JSON schema (see `scripts/cross-layer-freshness.py::collect_freshness()` for the producer):
 

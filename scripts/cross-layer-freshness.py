@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Cross-layer freshness check — verify session state matches reality.
 
-Read-only advisory. Covers 4 layers that `make preflight` (v7.8.6) does not:
+Read-only advisory. Covers 6 layers that `make preflight` (v7.8.6) does not:
 
   1. Recent merged PRs (FT2 + fitme-story, default last 7d) — surfaces work
      the operator shipped while the session thought it was open. Root-cause
@@ -15,6 +15,12 @@ Read-only advisory. Covers 4 layers that `make preflight` (v7.8.6) does not:
      state.json now reports current_phase=complete.
   4. Linear sync (optional, requires LINEAR_API_KEY) — FIT epic status vs
      local state.json. Skipped cleanly when token absent.
+  5. gh CLI scope health — detects missing OAuth scopes (e.g. admin:public_key)
+     that silently 404 diagnostic API calls. Added 2026-05-28 (R5 of signing
+     audit).
+  6. Signing sanity — ssh-agent state + user.signingkey resolution + YubiKey
+     physical presence. Added 2026-05-28 (R6 of signing audit) to catch the
+     "agent has only Touch ID but user.signingkey expects YubiKey" footgun.
 
 Triggered by:
   - `make freshness-check`  (standalone)
@@ -164,6 +170,166 @@ def _memory_claims() -> list[dict]:
     return claims
 
 
+def _gh_scope_check() -> dict:
+    """Check whether `gh` CLI has the OAuth scopes we depend on for diagnostics.
+
+    The `admin:public_key` scope is required to enumerate user/keys for the
+    signing-audit cross-check. Without it, `gh api user/keys` 404s silently.
+    """
+    try:
+        # `gh auth status` writes to stderr; need stderr=STDOUT to capture.
+        out = subprocess.check_output(
+            ["gh", "auth", "status"],
+            text=True, stderr=subprocess.STDOUT, timeout=GIT_TIMEOUT_S,
+        )
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+        return {"status": "gh_unauthenticated_or_error",
+                "error": (e.output[:200] if hasattr(e, "output") else str(e))}
+    except FileNotFoundError:
+        return {"status": "gh_unavailable", "error": "gh CLI not installed"}
+
+    scopes_line = next(
+        (line for line in out.splitlines() if "Token scopes:" in line),
+        "",
+    )
+    # Scopes line example: "  - Token scopes: 'gist', 'read:org', 'repo', 'workflow'"
+    has_admin_pubkey = "admin:public_key" in scopes_line
+    missing = []
+    for required in ("admin:public_key",):
+        if required not in scopes_line:
+            missing.append(required)
+
+    return {
+        "status": "ok" if not missing else "missing_scopes",
+        "scopes_line": scopes_line.strip() if scopes_line else "(no scopes line found)",
+        "has_admin_pubkey": has_admin_pubkey,
+        "missing_scopes": missing,
+        "remediation": (
+            f"gh auth refresh -h github.com -s {','.join(missing)}"
+            if missing else None
+        ),
+    }
+
+
+def _signing_sanity() -> dict:
+    """Check signing-stack consistency.
+
+    Surfaces 4 sub-checks:
+      a) SSH_AUTH_SOCK pointing at a socket
+      b) ssh-add -l reports ≥1 key in the agent
+      c) git's user.signingkey resolves to a file on disk
+      d) YubiKey physically connected (informational; not a failure mode)
+
+    Catches the 2026-05-28 failure mode: agent had Touch ID only but
+    user.signingkey defaulted to the YubiKey path → every commit paused
+    15s for a YubiKey touch that wasn't going to happen.
+    """
+    checks: dict = {}
+
+    # (a) SSH_AUTH_SOCK
+    sock = os.environ.get("SSH_AUTH_SOCK")
+    checks["ssh_auth_sock"] = {
+        "ok": bool(sock),
+        "value": sock or "(unset)",
+        "via_secretive": bool(sock and "Secretive" in sock),
+    }
+
+    # (b) ssh-add -l
+    try:
+        ssh_add_out = subprocess.check_output(
+            ["ssh-add", "-l"], text=True, stderr=subprocess.STDOUT, timeout=GIT_TIMEOUT_S,
+        )
+        keys = [line for line in ssh_add_out.splitlines() if "SHA256" in line]
+        checks["agent_keys"] = {
+            "ok": len(keys) > 0,
+            "count": len(keys),
+            "fingerprints": [k.split()[1] if len(k.split()) > 1 else k for k in keys],
+            "labels": [
+                " ".join(k.split()[3:]) for k in keys
+                if len(k.split()) > 3
+            ],
+        }
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as e:
+        out = getattr(e, "output", "") or ""
+        # "The agent has no identities." → exit 1 + that text — graceful empty
+        checks["agent_keys"] = {
+            "ok": False,
+            "count": 0,
+            "error": out.strip()[:120] if out else "ssh-add failed",
+        }
+    except FileNotFoundError:
+        checks["agent_keys"] = {"ok": False, "count": 0, "error": "ssh-add not installed"}
+
+    # (c) user.signingkey resolves
+    try:
+        signingkey_raw = subprocess.check_output(
+            ["git", "config", "--global", "--get", "user.signingkey"],
+            text=True, stderr=subprocess.DEVNULL, timeout=GIT_TIMEOUT_S,
+        ).strip()
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        signingkey_raw = ""
+
+    if signingkey_raw:
+        signingkey_path = Path(signingkey_raw).expanduser()
+        path_exists = signingkey_path.exists()
+        # Classify by path heuristic: keys under ~/.config/git-signing-keys
+        # vs ~/.ssh/*_sk indicate Touch ID vs YubiKey defaults.
+        is_touchid = "touchid" in str(signingkey_path).lower()
+        is_yubikey = "_sk" in signingkey_path.name or "yubikey" in str(signingkey_path).lower()
+        kind = "touchid" if is_touchid else ("yubikey" if is_yubikey else "unknown")
+    else:
+        signingkey_path = None
+        path_exists = False
+        kind = "unset"
+
+    checks["signingkey"] = {
+        "ok": path_exists,
+        "configured": signingkey_raw or None,
+        "exists_on_disk": path_exists,
+        "kind": kind,
+    }
+
+    # (d) YubiKey physical presence (informational only on macOS)
+    yk_present = None
+    try:
+        ioreg_out = subprocess.check_output(
+            ["ioreg", "-p", "IOUSB", "-l"],
+            text=True, stderr=subprocess.DEVNULL, timeout=GIT_TIMEOUT_S,
+        )
+        ioreg_lower = ioreg_out.lower()
+        yk_present = "yubico" in ioreg_lower or "yubikey" in ioreg_lower
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        yk_present = None  # cannot detect (not on macOS or ioreg failed)
+
+    checks["yubikey_physical"] = {
+        "ok": True,  # informational only
+        "present": yk_present,
+    }
+
+    # Roll-up: any agent + signingkey mismatch is the operationally-painful case.
+    # If signingkey kind is "yubikey" but agent only holds non-SK keys + YubiKey
+    # is absent → every commit will pause 15s. Flag it.
+    agent_has_keys = checks["agent_keys"]["ok"]
+    expects_yubikey = checks["signingkey"]["kind"] == "yubikey"
+    yubikey_unavailable = yk_present is False
+    mismatch_warning = (
+        expects_yubikey and yubikey_unavailable and agent_has_keys
+    )
+
+    return {
+        "status": "warning" if mismatch_warning or not checks["signingkey"]["ok"] else "ok",
+        "mismatch_warning": mismatch_warning,
+        "checks": checks,
+        "recommendation": (
+            "user.signingkey expects YubiKey but YubiKey not detected — "
+            "every commit will pause 15s waiting for touch. Run "
+            "`git config --global user.signingkey ~/.config/git-signing-keys/touchid.pub` "
+            "or plug in the YubiKey."
+            if mismatch_warning else None
+        ),
+    }
+
+
 def _linear_check() -> dict:
     """Query Linear for FIT-team root issues if LINEAR_API_KEY set."""
     api_key = os.environ.get("LINEAR_API_KEY")
@@ -228,6 +394,12 @@ def collect_freshness(days: int = 7) -> dict:
     # Layer 4: Linear (optional)
     linear = _linear_check()
 
+    # Layer 5: gh CLI scope health (added 2026-05-28, R5)
+    gh_scope = _gh_scope_check()
+
+    # Layer 6: signing sanity (added 2026-05-28, R6)
+    signing = _signing_sanity()
+
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "days": days,
@@ -237,6 +409,8 @@ def collect_freshness(days: int = 7) -> dict:
             "worktree_divergence": worktree_data,
             "memory_drift": drifts,
             "linear_sync": linear,
+            "gh_scope": gh_scope,
+            "signing": signing,
         },
         "summary": {
             "recent_pr_count_total": sum(
@@ -245,6 +419,8 @@ def collect_freshness(days: int = 7) -> dict:
             "stale_worktrees": sum(1 for w in worktree_data if w.get("stale_warning")),
             "memory_drift_count": len(drifts),
             "linear_status": linear.get("status"),
+            "gh_scope_status": gh_scope.get("status"),
+            "signing_status": signing.get("status"),
         },
     }
 
@@ -260,6 +436,8 @@ def render_ascii(data: dict) -> str:
         f"  Stale worktrees (behind > 7):    {s['stale_worktrees']}",
         f"  Memory ↔ feature drifts:         {s['memory_drift_count']}",
         f"  Linear sync:                     {s['linear_status']}",
+        f"  gh CLI scopes:                   {s['gh_scope_status']}",
+        f"  Signing sanity:                  {s['signing_status']}",
         "",
         "Recent merged PRs:",
     ]
@@ -303,6 +481,32 @@ def render_ascii(data: dict) -> str:
     elif linear["status"] == "error":
         lines.append("")
         lines.append(f"⚠ Linear sync error: {linear.get('error', '?')}")
+
+    gh_scope = data["layers"]["gh_scope"]
+    if gh_scope.get("status") == "missing_scopes":
+        lines.append("")
+        lines.append(f"⚠ gh CLI missing scopes: {', '.join(gh_scope.get('missing_scopes', []))}")
+        if gh_scope.get("remediation"):
+            lines.append(f"  Fix:  {gh_scope['remediation']}")
+    elif gh_scope.get("status") not in ("ok", None):
+        lines.append("")
+        lines.append(f"⚠ gh CLI: {gh_scope.get('status')} — {gh_scope.get('error', '?')[:120]}")
+
+    signing = data["layers"]["signing"]
+    sc = signing.get("checks", {})
+    lines.append("")
+    lines.append(
+        f"Signing: agent={sc.get('agent_keys', {}).get('count', '?')} key(s)  "
+        f"signingkey={sc.get('signingkey', {}).get('kind', '?')}"
+        f"{'  YubiKey=' + str(sc.get('yubikey_physical', {}).get('present')) if sc.get('yubikey_physical', {}).get('present') is not None else ''}"
+    )
+    if signing.get("mismatch_warning"):
+        lines.append(f"⚠ {signing.get('recommendation', 'signing-config mismatch')}")
+    elif not sc.get("signingkey", {}).get("exists_on_disk"):
+        lines.append(
+            f"⚠ user.signingkey configured but file missing: "
+            f"{sc.get('signingkey', {}).get('configured', '(unset)')}"
+        )
 
     lines.append("")
     lines.append(
