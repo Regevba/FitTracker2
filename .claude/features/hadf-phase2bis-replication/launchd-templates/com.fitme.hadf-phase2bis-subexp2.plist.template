@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  HADF Phase 2-bis Sub-exp 2 — Ollama llama3.2:3b local fingerprinting
+
+  Fire schedule: 5 fires/day at UTC 02/08/14/18/22 (spec §4 standard).
+  Bootstrap Saturday 2026-05-30 evening IDT so first fire = 22:00 UTC Saturday.
+  Day-3 final fire = ~22:00 UTC Tuesday 2026-06-02.
+
+  3 macOS gotchas applied (per Sub-exp 1 working plist + HADF launchd checklist):
+    (1) FDA for /bin/bash granted to terminal
+    (2) Explicit /bin/bash in ProgramArguments (no shebang reliance)
+    (3) stdout/stderr on /tmp/ (NOT /Volumes/ — SSD unmount kills logging)
+
+  WorkingDirectory uses the shared impl worktree (matches Sub-exp 1's working
+  setup). Operator may switch to a dedicated /Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp2/
+  worktree per spec §8 if desired — just update both path strings below.
+-->
 <plist version="1.0">
 <dict>
     <key>Label</key>
     <string>com.fitme.hadf-phase2bis-subexp2</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp2/scripts/hadf-phase2bis-collect.sh</string>
+        <string>/bin/bash</string>
+        <string>/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/scripts/hadf-phase2bis-collect.sh</string>
         <string>--subexp</string>
         <string>subexp2</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp2</string>
+    <string>/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl</string>
     <key>StartCalendarInterval</key>
     <array>
         <dict><key>Hour</key><integer>2</integer><key>Minute</key><integer>0</integer></dict>
@@ -21,9 +38,9 @@
         <dict><key>Hour</key><integer>22</integer><key>Minute</key><integer>0</integer></dict>
     </array>
     <key>StandardOutPath</key>
-    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp2/.claude/shared/hadf/launchd-stdout-subexp2.log</string>
+    <string>/tmp/hadf-phase2bis-subexp2-stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp2/.claude/shared/hadf/launchd-stderr-subexp2.log</string>
+    <string>/tmp/hadf-phase2bis-subexp2-stderr.log</string>
     <key>RunAtLoad</key>
     <false/>
 </dict>

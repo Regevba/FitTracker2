@@ -1,1 +1,2 @@
 {"timestamp":"2026-05-12T09:14:51Z","subexp":"subexp1","run_id":"subexp1-2026-05-12T09-14-51Z","event":"preflight_failed","check":"env_local_missing"}
+{"timestamp":"2026-05-28T13:53:20Z","subexp":"subexp2","run_id":"subexp2-2026-05-28T13-53-20Z","event":"preflight_failed","check":"venv_binary"}
