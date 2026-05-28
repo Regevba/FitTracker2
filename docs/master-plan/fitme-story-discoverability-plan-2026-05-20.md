@@ -64,11 +64,23 @@ Three causes, ordered by likelihood:
 | **P1.2** | Submit sitemap URL (`/sitemap.xml`) to Search Console | 5 min | All 13+ static + dynamic routes prioritized for crawl | ⏳ pending (gated on P1.1) |
 | ~~**P1.3**~~ | ~~Add OpenGraph + Twitter Card meta tags to root layout~~ | ~~45 min~~ | ~~Social shares produce rich previews~~ | ✅ **SHIPPED 2026-05-21** via fitme-story root layout + `src/lib/seo.ts::buildMetadata()` helper + per-page `generateMetadata`. Verified live via `curl https://fitme-story.vercel.app \| grep og:`. All openGraph + twitter:card meta present on every page. |
 | ~~**P1.4**~~ | ~~Create OG image at 1200×630~~ | ~~30 min~~ | ~~Visual asset for social previews~~ | ✅ **SHIPPED 2026-05-21** via [`fitme-story/src/app/opengraph-image.tsx`](https://github.com/Regevba/fitme-story/blob/main/src/app/opengraph-image.tsx) — Next.js ImageResponse generates the 1200×630 PNG at runtime at `/opengraph-image`. Auto-applied via Next.js Metadata API auto-detection. ⚠ **2026-05-27 live bug discovered + fixed:** `buildMetadata()` was hardcoding `og:image` URL as `/og.png` which 404'd → social previews silently broken for 6 days; fixed via [fitme-story PR #156](https://github.com/Regevba/fitme-story/pull/156) (`fix(seo): og:image defaults to /opengraph-image`) + 6 regression tests in `src/lib/seo.test.ts`. |
-| **P1.5** | Verify GA Realtime sees a visit from incognito window | 5 min | Confirms wiring once and for all | ⏳ pending (operator action — needs incognito browser visit + GA4 Realtime tab check). **GA4 7-day backward check 2026-05-27:** 0 fitme-story.vercel.app sessions in 2026-05-21 → 05-27 window (only iOS app traffic present); confirms P1.1 GSC verification is the gating step. |
+| ~~**P1.5**~~ | ~~Verify GA Realtime sees a visit from incognito window~~ | ~~5 min~~ | ~~Confirms wiring once and for all~~ | ✅ **CONFIRMED 2026-05-27 ~19:00 IDT** — operator ran incognito visit + GA4 Realtime tab; web sessions appeared after both fitme-story PR #156 (og:image fix) + PR #157 (GA_ID `.trim()` fix) deployed. **2nd silent-bug discovered during this verification:** `NEXT_PUBLIC_GA_ID` env var had value `G-XE4E1JGWRZ\n` (trailing newline from paste); Next.js Script injected verbatim → gtag URL `?id=G-XE4E1JGWRZ%0A` → Google Measurement Protocol rejected every event silently. Fixed via [fitme-story PR #157](https://github.com/Regevba/fitme-story/pull/157) (`?.trim()` on env-var read) + lesson captured as W19 in [`observed-patterns.md`](../../.claude/integrity/observed-patterns.md). |
 
-**Outcome (so far):** P1.3 + P1.4 SHIPPED (with 1 silent-bug post-deploy fix); P1.1 + P1.2 + P1.5 pending operator actions (Google account auth + browser visit).
+**Phase 1 Outcome — COMPLETE for operator-Claude collaboration scope:**
 
-**Phase 1 lesson captured:** the `og:image` URL must round-trip via curl HEAD after every layout/seo.ts change. The 6-day silent-404 reproduced because no test asserted the URL resolved to 200. Closed via [fitme-story `src/lib/seo.test.ts`](https://github.com/Regevba/fitme-story/blob/main/src/lib/seo.test.ts) — 6 unit tests pin the contract. A v7.9.1 candidate could extend this to a deployed-URL HEAD probe in CI; queued informally.
+- ✅ P1.3 (OG meta) shipped 2026-05-21
+- ✅ P1.4 (OG image 1200×630) shipped 2026-05-21; silent og:image-404 bug (W18) fixed 2026-05-27 via fitme-story PR #156
+- ✅ P1.5 (GA Realtime verify) confirmed 2026-05-27; silent GA_ID-trailing-newline bug (W19) fixed via fitme-story PR #157
+- ⏳ P1.1 (GSC verification) — operator action remaining (Google account auth required; ~30 min)
+- ⏳ P1.2 (sitemap submit) — gated on P1.1
+
+**Operator-side dashboard separation (added 2026-05-27 ~19:30 IDT):** post-P1.5 confirmation, operator built GA4 dashboards separating iOS vs web traffic within the same `G-XE4E1JGWRZ` property. Path A (Comparisons, filtered to `Platform = web` on Realtime view) + Path B (dedicated Explore report named "Web (fitme-story.vercel.app)" with `Web Users` segment using `Platform exactly matches web`) both **LOCKED**. Cross-platform comparisons remain easy via the GA4 default views. Tomorrow 2026-05-28 ~12:00 IDT, the Exploration backfill completes and Web Users segment will start showing non-zero historical data (the first 24h of post-fix traffic).
+
+**Phase 1 lessons captured in observed-patterns catalog:**
+
+1. **W18 — Default-URL OG image silent-404** (this incident's og:image bug) — captures the "metadata helper hardcodes a URL that doesn't exist in `public/` or as an auto-route" pattern. Closed by PR #156 + 6 regression tests.
+2. **W19 — Environment-variable trailing newline silently corrupts runtime string** (this incident's GA_ID bug) — captures the "env-var paste residue makes it through 3 layers of injection before being rejected at the receiving service" pattern. Closed by PR #157.
+3. **v7.9.1 candidate F-DEPLOYED-URL-PROBE** — adds a post-deploy CI step that curl-HEAD's `og:image` + curl-200's `gtag/js?id=$NEXT_PUBLIC_GA_ID` + asserts canonical/sitemap/robots. Catches both W18 + W19 classes + future siblings. Filed in [`.claude/shared/v7-9-1-candidates.md`](../../.claude/shared/v7-9-1-candidates.md). Implementation deferred to v7.9.1 cycle (~2026-06-04+) per Phase E infra-glob constraint.
 
 ### Phase 2 — Crosslinking (~2h, target 2026-05-23 → 05-25)
 

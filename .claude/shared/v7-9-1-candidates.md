@@ -102,6 +102,60 @@ To be filled when shipped.
 
 ---
 
+## F-DEPLOYED-URL-PROBE
+
+**Discovered:** 2026-05-27 (DISCO Phase 1 P1.5 operator-verification follow-up — two distinct silent-pass bugs surfaced within minutes: W18 og-image URL hardcoded at a 404 path + W19 env-var trailing newline corrupting the GA measurement ID).
+**Status:** queued.
+**Owner:** TBD (FT2 CI workflow + shared shell helper).
+**Effort:** ~2-3h (workflow YAML + 4-6 probe assertions + 2-3 regression tests).
+**Source incidents:** fitme-story PR #156 (og:image fix) + fitme-story PR #157 (GA_ID `.trim()` fix). Catalog entries: W18 + W19 in [`observed-patterns.md`](../integrity/observed-patterns.md).
+
+### Problem
+
+Local dev + Vercel preview-deploy inspection passed cleanly for both 2026-05-21 ships (DISCO Phase 1 P1.3 OG meta + P1.4 OG image). But both shipped with silent runtime bugs that only manifested AFTER production deploy + actual end-user inspection:
+
+| Bug | Root cause | Silent path |
+|---|---|---|
+| og:image 404 (W18) | `src/lib/seo.ts::buildMetadata()` hardcoded `${SITE_BASE}/og.png`; actual auto-generated image was at `${SITE_BASE}/opengraph-image` | LinkedIn/Twitter/HN fetch og:image URL → 404 → no rich preview. Operator-side never noticed because nobody shared a link in those 6 days. |
+| GA_ID trailing newline (W19) | `process.env.NEXT_PUBLIC_GA_ID` returned `G-XE4E1JGWRZ\n` (env-var paste residue); Script component injected literal `\n` into gtag URL as `%0A` | Google Measurement Protocol rejected every event silently; GA4 Realtime + Reports showed 0 web sessions despite gtag.js loading correctly on every page. |
+
+Both classes share the same property: **what the deployed HTML SAYS is the URL ≠ what the receiving service can actually fetch + process**. Local dev + preview-deploy environments never expose this because neither runs the receiving-service round-trip.
+
+Both bugs were dormant for 6 days (2026-05-21 → 2026-05-27) before discovery via P1.5 operator-verification. Without F-DEPLOYED-URL-PROBE, the next ship of a similar URL-emitting feature can recur the same silent class.
+
+### Smallest viable shape
+
+Single GitHub Actions workflow file: `.github/workflows/post-deploy-url-probe.yml` (or extend an existing workflow). Runs **after** Vercel auto-deploys a successful preview OR production deploy. Triggers on `deployment_status: success` event (or a periodic cron if `deployment_status` isn't reliable).
+
+Probe assertions (each a `curl` + assert on response):
+
+1. **OG image URL exists.** Parse the deployed root HTML, extract `<meta property="og:image" content="...">`, curl HEAD that URL, assert HTTP 200. Catches W18.
+2. **GA measurement ID is clean.** Parse the deployed root HTML, extract the `gaId` field from the GoogleAnalytics component config, assert no `\n` / `\t` / leading-trailing whitespace, then curl `https://www.googletagmanager.com/gtag/js?id=$EXTRACTED_ID` with HEAD, assert 200 + no `%0A` in the response URL. Catches W19.
+3. **Canonical URL self-references valid.** Extract `<link rel="canonical" href="...">`, curl HEAD that URL, assert 200 (catches broken canonical URLs that hurt SEO).
+4. **Sitemap is reachable.** Curl `https://${DEPLOY_HOST}/sitemap.xml` HEAD, assert 200 + `content-type: application/xml`.
+5. **Robots.txt is reachable.** Curl `https://${DEPLOY_HOST}/robots.txt` HEAD, assert 200 + body contains `Sitemap:` line.
+
+For each assertion, on failure: post a sticky comment on the triggering PR (or open an issue if production deploy) with the failing URL + the deployed HTML excerpt that referenced it. Optional: file a `framework-status` issue if it's a production deploy.
+
+### Why now (v7.9.1 cycle)
+
+- 2 silent-pass bugs in 6 days from the same feature ship (DISCO Phase 1) demonstrates the class is real + recurrent, not a one-off.
+- Stacks under v7.9.1's "observability hardening" theme alongside F-CONTRACT-FIXTURE-SAMPLING (cross-repo data contracts) and F-LAUNCHD-DRIFT-EXTENSION (cron context drift). All three close silent-pass classes where the test data ≠ the production data.
+- Phase-E-CONTAMINATING (infra-glob `.github/workflows/*` touch) → defer actual implementation to v7.9.1 cycle ~2026-06-04+.
+
+### Linked PR closing this thread
+
+To be filled when shipped.
+
+### Related v7.9.1 candidates (recurring "test ≠ production" theme)
+
+- F-CONTRACT-FIXTURE-SAMPLING — closes consumer-fixture-disagrees-with-producer-shape (cross-repo data contracts; W16)
+- F-LAUNCHD-DRIFT-EXTENSION — closes cron-context-lacks-keychain (launchd auth drift; W11.b)
+- F-DEPLOYED-URL-PROBE — closes URL-in-source-doesnt-resolve-on-deploy (W18 + W19)
+- ~~W11~~ closed via PR #454 — predecessor of the same "deployment surface ≠ source surface" family
+
+---
+
 ## F-LAUNCHD-DRIFT-EXTENSION
 
 **Discovered:** 2026-05-24 (W11.b sub-pattern documented in [`observed-patterns.md`](../integrity/observed-patterns.md) after 2026-05-24 daily cron captured 319 phantom `BROKEN_PR_CITATION` findings due to launchd context lacking keychain access for `gh` CLI; second trigger was the 2026-05-19 SSD migration which silently broke cron for 5 days due to plist hardcoding `/Volumes/DevSSD 1/...` instead of canonical `/Volumes/DevSSD/...`).
