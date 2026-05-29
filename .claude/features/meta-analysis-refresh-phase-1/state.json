@@ -1,24 +1,39 @@
 {
   "feature": "meta-analysis-refresh-phase-1",
-  "display_name": "Meta-analysis refresh \u2014 Phase 1 (paired with External Audit #2)",
+  "display_name": "Meta-analysis refresh — Phase 1 (paired with External Audit #2)",
   "work_type": "chore",
   "framework_version": "v7.9",
   "created_at": "2026-05-22T07:00:00Z",
   "state_owner": "ft2",
   "branch": "chore/meta-analysis-refresh-phase-1",
-  "current_phase": "implementation",
+  "current_phase": "complete",
   "has_ui": false,
   "requires_analytics": false,
   "isolation_opt_out": false,
-  "dispatch_pattern": "subagent-driven serial (20 tasks)",
+  "dispatch_pattern": "subagent-driven serial (20 tasks); shipped atomically in one PR",
   "case_study_type": "no_case_study_required",
+  "case_study_exemption_reason": "Phase 1 of the meta-analysis program IS itself a set of meta-analysis docs (L0/L1/L2); the deliverables are the analysis, so no separate case study is warranted.",
   "design_spec": "docs/superpowers/specs/2026-05-22-meta-analysis-refresh-phase-1-design.md",
   "implementation_plan": "docs/superpowers/plans/2026-05-22-meta-analysis-refresh-phase-1.md",
   "predecessor_chain": [],
   "phases": {
     "implementation": {
-      "status": "in_progress",
-      "started_at": "2026-05-22T07:00:00Z"
+      "status": "complete",
+      "started_at": "2026-05-22T07:00:00Z",
+      "ended_at": "2026-05-22T07:48:59Z",
+      "pr_number": 445,
+      "commits": [
+        "ab4eebe9f3f66d0331e74d710a98972ad9b0a48a"
+      ],
+      "note": "All 7 deliverables shipped in PR #445 (squash merge ab4eebe, 34 files). Pre-squash branch commits per Tier 2.2 log: 422d7d1 + d7920c1 + 0a1032b + 1891a1c5 + 0a6cbb7."
+    },
+    "complete": {
+      "status": "approved",
+      "approved": true,
+      "completed_at": "2026-05-22T07:48:59Z",
+      "started_at": "2026-05-22T07:48:59Z",
+      "pr_number": 445,
+      "note": "Phase 1 met all 7 spec success criteria (design §success-criteria), shipped 2026-05-22 — 17 days ahead of the 2026-06-08 target. Verified 2026-05-29: 7/7 deliverable files present with full content; L2 File A == staged Audit #2 bundle copy (identical); 38 claims (≥ 30 required); README index +3 rows; integrity-check 0 findings on the new docs. state.json reconciled 2026-05-29 (drift: shipped 2026-05-22 but never advanced past implementation)."
     }
   },
   "timing": {
@@ -26,11 +41,67 @@
     "time_source": "measured",
     "phases": {
       "implementation": {
-        "started_at": "2026-05-22T07:00:00Z"
+        "started_at": "2026-05-22T07:00:00Z",
+        "ended_at": "2026-05-22T07:48:59Z"
+      },
+      "complete": {
+        "started_at": "2026-05-22T07:48:59Z"
       }
     }
   },
-  "cache_hits": [],
+  "cache_hits": [
+    {
+      "level": "L3",
+      "key": "closure_session_sentinel",
+      "count": 0,
+      "note": "Closure sentinel (same pattern as audit-1-corrections, created 2026-05-22). Original 2026-05-22 session reads of this feature's spec/plan/docs were recorded by Mechanism C but attributed to active_feature='ucc-passkey-auth-security-hardening' — the .claude/active-feature pointer was never switched to meta-analysis-refresh-phase-1 during its lifecycle, so auto-population never targeted this feature. count:0 is accurate (zero reads attributed here); this entry marks the feature complete vs the empty-array drift state without fabricating cache hits.",
+      "timestamp": "2026-05-29T04:32:27Z"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Extraction profile JSON (scripts/audit/profiles/meta-analysis-2026-05-22.json)",
+      "status": "done",
+      "pr_number": 445
+    },
+    {
+      "id": "T2",
+      "title": "L2 File A prompt of record (docs/audits/prompts/03-meta-analysis-l2-extraction-prompt.md)",
+      "status": "done",
+      "pr_number": 445
+    },
+    {
+      "id": "T3-T5",
+      "title": "L0 delta-vs-anchor doc §1-§6 (docs/case-studies/meta-analysis/2026-05-22-l0-delta-vs-anchor.md)",
+      "status": "done",
+      "pr_number": 445
+    },
+    {
+      "id": "T6-T12",
+      "title": "L1 extended cohort analysis (docs/case-studies/meta-analysis/2026-05-22-l1-extended-cohort-analysis.md)",
+      "status": "done",
+      "pr_number": 445
+    },
+    {
+      "id": "T13-T17",
+      "title": "L2 File A (auditor-facing claim ledger, 38 claims) + L2 File B (internal sidecar) + impartiality/redaction validation",
+      "status": "done",
+      "pr_number": 445
+    },
+    {
+      "id": "T18-T19",
+      "title": "README.md index +3 rows + pre-ship integrity-check",
+      "status": "done",
+      "pr_number": 445
+    },
+    {
+      "id": "T20",
+      "title": "Stage L2 File A into Audit #2 claude-bundle (docs/audits/external/02-2026-06-12-v7-9-1-f16-plus-hadf/claude-bundle/)",
+      "status": "done",
+      "pr_number": 445
+    }
+  ],
   "complexity": {
     "cu_version": 2,
     "factors_applied": [
@@ -52,10 +123,10 @@
       {
         "factor": "Impartiality contract validation",
         "value": 0.15,
-        "reason": "L2 File A must pass \u00a76.4 5-rule contract (forbidden words / fields / leakage / evidence resolution / redaction)"
+        "reason": "L2 File A must pass §6.4 5-rule contract (forbidden words / fields / leakage / evidence resolution / redaction)"
       }
     ]
   },
   "worktree_path": "/Volumes/DevSSD/FitTracker2-infra-refresh-phase-1",
-  "updated": "2026-05-22T05:13:59Z"
+  "updated": "2026-05-29T04:32:27Z"
 }
