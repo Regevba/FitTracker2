@@ -4,6 +4,14 @@
 > Estimated time: ~30 min if storage infrastructure is ready, ~60-90 min from scratch.
 
 > **Status note (`2026-05-16`):** **Cutover Parts 1-6 EXECUTED 2026-05-16** — Upstash + Vercel Blob provisioned, secrets set, `UCC_AUTH_MODE=both` live in production, 1 platform passkey registered for the first operator. Legacy basic-auth (`DASHBOARD_USER`/`DASHBOARD_PASS`) still active as fallback. Parts 7-10 + T+7d kill-criteria checkpoint deferred — see [`docs/case-studies/ucc-passkey-auth-case-study.md`](../case-studies/ucc-passkey-auth-case-study.md) §99 for current rollout state. Original status (`2026-05-07`): feature shipped at `UCC_AUTH_MODE=basic` (legacy basic-auth preserved). Reversible at every step via single env-var change.
+>
+> ### ⛔ TERMINAL DECISION (`2026-05-29`, operator) — rollout COMPLETE at `both`; DO NOT run Part 8
+>
+> The UCC passkey-auth rollout is **closed in its terminal state: `UCC_AUTH_MODE=both`, permanently.** Passkey is the primary sign-in path; the basic-auth password (`DASHBOARD_USER`/`DASHBOARD_PASS`) is **intentionally RETAINED as a break-glass fallback in case passkey fails.**
+>
+> **Part 8 (passkey-only flip + dropping the dashboard credentials) is DELIBERATELY NOT EXECUTED and must NOT be run.** Rationale: the C4 break-glass credential carries an iCloud-Keychain dependency caveat (an Apple ID lockout would lose the platform passkeys simultaneously), so retaining the independent password fallback is a deliberate belt-and-suspenders safety choice. Do **not** delete `DASHBOARD_USER` / `DASHBOARD_PASS`.
+>
+> Verified live 2026-05-29: `UCC_AUTH_MODE=both` (Production) + `DASHBOARD_USER` + `DASHBOARD_PASS` (Production, encrypted) all present. Cadence item **B9 CLOSED** as a "stay on `both`" decision (not a passkey-only cutover).
 
 ---
 
@@ -203,6 +211,8 @@ pnpm tsx scripts/issue-bootstrap-token.ts ops@yourdomain.com
 ---
 
 ## Part 8: Flip to `passkey`-only + drop legacy (~2 min)
+
+> ⛔ **DO NOT RUN — superseded by the 2026-05-29 terminal decision (see status note at top).** The rollout is closed at `UCC_AUTH_MODE=both` with the password fallback intentionally retained. This section is preserved for historical reference only; executing it would remove the break-glass password fallback the operator deliberately chose to keep. If the policy ever changes, re-open B9 first.
 
 Only do this once you have:
 
