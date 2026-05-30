@@ -5,10 +5,19 @@
 #   source /Volumes/DevSSD/FitTracker2/.venv-hadf-phase2/bin/activate
 #   pip install -r scripts/requirements-hadf-phase2.txt
 
-# Provider SDKs — both required for the cloud half of the study.
-openai>=1.50,<2.0
-anthropic>=0.40,<1.0
+# Provider SDKs — cover all (provider, endpoint, api_kind) tuples across Sub-exps 1+1B+2+3.
+openai>=1.50                    # openai-direct, vercel-ai-gateway, xai, mistral-via-openai-compat
+anthropic>=0.40,<1.0            # anthropic-direct (Sub-exp 1A + 3 anchor)
+google-genai>=1.0,<3.0          # google-direct (Sub-exp 1B gemini-2.5-flash-lite)
+mistralai>=1.0                  # mistral-direct fallback (openai-compat is the primary route)
+boto3>=1.35,<2.0                # aws-bedrock (Sub-exp 3 routing test — added 2026-05-30)
+botocore>=1.35,<2.0             # boto3 dep; pinned for read_timeout config in _call_bedrock
+
+# Ollama (Sub-exp 2): no SDK needed — uses urllib + /api/generate streaming (stdlib only).
+# Operator: ensure `ollama` daemon running locally + `ollama pull llama3.2:3b`
+# before Sub-exp 2 smoke-fire. Daemon install: https://ollama.com/download
 
 # Clustering + numerical core.
 numpy>=1.26,<3.0
 scikit-learn>=1.4,<2.0
+scipy>=1.13,<2.0                # KS-distinguishability test (Sub-exp 2 cloud-vs-local secondary metric)
