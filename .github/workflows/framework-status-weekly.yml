@@ -154,8 +154,19 @@ jobs:
             echo "Snapshot staged for ${today}."
           fi
 
-      - name: Open PR with weekly snapshot
+      # B14 (2026-05-30): peter-evans/create-pull-request@v8 fails when GitHub
+      # returns 500 on the internal push (2 transient failures observed in last
+      # 5 weeks: 2026-05-04 + 2026-05-25). continue-on-error keeps the workflow
+      # from terminating; the shell fallback below retries push + PR creation
+      # via gh CLI with linear backoff (2s, 5s, 15s).
+      #
+      # Injection-safe: all dynamic values are passed via env: (TODAY,
+      # REGRESSION, GH_TOKEN) and consumed as $-prefixed shell vars. No
+      # ${{ ... }} substitution inside run: blocks.
+      - name: Open PR with weekly snapshot (primary path)
+        id: open-pr
         if: steps.stage.outputs.has_changes == 'true'
+        continue-on-error: true
         uses: peter-evans/create-pull-request@v8
         env:
           REGRESSION: ${{ steps.compare.outputs.regression }}
@@ -180,6 +191,76 @@ jobs:
           committer: Framework Status Bot <framework-status@actions>
           author: Framework Status Bot <framework-status@actions>
           labels: framework-status,automated
+
+      - name: Open PR with weekly snapshot (shell fallback on primary-path failure)
+        if: |
+          steps.stage.outputs.has_changes == 'true' &&
+          steps.open-pr.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TODAY: ${{ steps.stage.outputs.today }}
+          REGRESSION: ${{ steps.compare.outputs.regression }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          echo "Primary path (peter-evans/create-pull-request@v8) failed — falling back to shell with retry/backoff."
+          BRANCH="framework-status/${TODAY}"
+
+          git config user.name "Framework Status Bot"
+          git config user.email "framework-status@actions"
+          if ! git rev-parse --verify "${BRANCH}" >/dev/null 2>&1; then
+            git checkout -b "${BRANCH}"
+          else
+            git checkout "${BRANCH}"
+          fi
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "chore(framework-status): weekly snapshot ${TODAY} (shell-fallback after primary action failed) - Regression=${REGRESSION}"
+          fi
+
+          push_ok=""
+          for delay in 2 5 15; do
+            if git push --force-with-lease origin "HEAD:${BRANCH}"; then
+              echo "::notice::push succeeded after primary-action failure"
+              push_ok=1
+              break
+            fi
+            echo "push failed, sleeping ${delay}s before retry…"
+            sleep "${delay}"
+          done
+          if [ -z "${push_ok}" ]; then
+            echo "::error::push failed all 3 retry attempts; abandoning fallback"
+            exit 1
+          fi
+
+          pr_ok=""
+          PR_BODY="Automated weekly framework-status snapshot (shell-fallback path).
+
+          - Snapshot date: ${TODAY}
+          - Regression detected: ${REGRESSION}
+          - Run: ${RUN_URL}
+          - Primary path (peter-evans/create-pull-request@v8) returned a non-zero outcome; this PR was opened via the B14 shell-fallback after push --force-with-lease succeeded.
+
+          Merging this PR persists the cron-tagged snapshot — required for Tier 1.1 trend mode unlock."
+          for delay in 2 5 15; do
+            if gh pr create \
+                --base main \
+                --head "${BRANCH}" \
+                --title "chore(framework-status): weekly snapshot ${TODAY}" \
+                --body "${PR_BODY}" \
+                --label framework-status \
+                --label automated; then
+              echo "::notice::PR created via shell fallback"
+              pr_ok=1
+              break
+            fi
+            echo "gh pr create failed, sleeping ${delay}s before retry…"
+            sleep "${delay}"
+          done
+          if [ -z "${pr_ok}" ]; then
+            echo "::error::gh pr create failed all 3 retry attempts after successful push"
+            exit 1
+          fi
 
       - name: Package digest body
         if: always()
