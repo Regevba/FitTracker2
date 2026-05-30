@@ -6,14 +6,15 @@ Per spec §2 + §4: 50 calls per endpoint, max_output_tokens=200, temp=0.7,
 Writes raw .jsonl atomically (Fix #4): one line per call with TTFT, TPS, total_tokens, status.
 
 Provider-specific streaming code: cloud providers implemented 2026-05-25 (Task A5);
-Ollama added 2026-05-28 ahead of Sub-exp 2 launch.
-5 unique paths cover all 13 (provider, endpoint, api_kind) tuples across the 3 sub-exps:
+Ollama added 2026-05-28 ahead of Sub-exp 2 launch; aws-bedrock added 2026-05-30
+ahead of Sub-exp 3 launch.
+6 unique paths cover all (provider, endpoint, api_kind) tuples across the 4 sub-exps:
   - openai SDK with base_url override → openai direct, vercel-ai-gateway, xai
   - anthropic SDK → anthropic direct
   - google.genai SDK → google direct
   - mistralai SDK → mistral direct
   - urllib + Ollama /api/generate streaming → ollama local (no SDK dep — stdlib only)
-  - (aws-bedrock not implemented in this pass — scoped to ship before Sub-exp 3 launch)
+  - boto3 bedrock-runtime converse_stream → aws-bedrock (Sub-exp 3 routing test)
 
 Required env vars:
   OPENAI_API_KEY                openai endpoints
@@ -24,6 +25,9 @@ Required env vars:
   VERCEL_AI_GATEWAY_API_KEY     vercel-ai-gateway endpoint
   VERCEL_AI_GATEWAY_BASE_URL    optional — defaults to https://ai-gateway.vercel.sh/v1
   OLLAMA_BASE_URL               optional — defaults to http://localhost:11434
+  AWS_ACCESS_KEY_ID             aws-bedrock (boto3 default chain also honors ~/.aws/credentials)
+  AWS_SECRET_ACCESS_KEY         aws-bedrock
+  AWS_REGION                    aws-bedrock (default us-east-1)
 """
 import argparse
 import json
@@ -66,9 +70,18 @@ ENDPOINTS = {
         ("ollama", "llama3.2:3b", "local"),
     ],
     "subexp3": [
+        # The central HADF falsification test (per spec §1 RQ3): same model id behind
+        # two different providers must yield distinguishable signatures or the HADF
+        # dispatch premise fails.
+        # - openai/gpt-4o-mini = anchor carried from Sub-exp 1A (cross-window drift check)
+        # - anthropic/claude-haiku-4-5-20251001 = anchor carried from Sub-exp 1A + routing-test LEFT side
+        # - aws-bedrock/anthropic.claude-haiku-4-5-PLACEHOLDER-v1:0 = routing-test RIGHT side
+        #   OPERATOR MUST resolve the exact dated Bedrock model id before ceremony:
+        #     aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION
+        #   then update both this ENDPOINTS entry AND the locked prereg's endpoint string.
         ("openai", "gpt-4o-mini", "direct"),
-        ("anthropic", "claude-haiku-4-5", "direct"),
-        ("aws-bedrock", "anthropic.claude-haiku-4-5", "bedrock"),
+        ("anthropic", "claude-haiku-4-5-20251001", "direct"),
+        ("aws-bedrock", "anthropic.claude-haiku-4-5-PLACEHOLDER-v1:0", "bedrock"),
     ],
 }
 
@@ -222,6 +235,71 @@ def _call_google(api_key, model, prompt, timeout_s):
         ttft = total
     if final_usage is not None and getattr(final_usage, "candidates_token_count", None):
         output_tokens = final_usage.candidates_token_count
+    return _result(ttft, total, output_tokens)
+
+
+def _call_bedrock(model, prompt, timeout_s, region):
+    """boto3 bedrock-runtime converse_stream. Covers aws-bedrock (Sub-exp 3 routing test).
+
+    The collector's ENDPOINTS[subexp3] entry passes the modelId verbatim — operator
+    must update the entry with the dated Bedrock model id resolved via:
+        aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION
+    Typical form: "anthropic.claude-haiku-4-5-YYYYMMDD-v1:0".
+
+    Auth uses the standard boto3 chain: AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY env
+    vars, OR ~/.aws/credentials, OR IAM instance role. AWS_REGION (or the region arg)
+    selects the region; us-east-1 is the default since Anthropic Claude models are
+    GA there.
+
+    converse_stream() is the unified streaming API across all Bedrock model
+    families. For Claude on Bedrock it produces:
+      - contentBlockDelta events with .delta.text chunks (HADF measures TTFT from
+        the first such event with non-empty text)
+      - metadata event at end with .usage.outputTokens (authoritative count)
+    """
+    import boto3
+    from botocore.config import Config
+
+    cfg = Config(
+        read_timeout=timeout_s,
+        connect_timeout=10,
+        retries={"max_attempts": 1, "mode": "standard"},
+    )
+    client = boto3.client("bedrock-runtime", region_name=region, config=cfg)
+    t_start = time.time()
+    ttft = None
+    output_tokens = 0
+    final_usage = None
+    response = client.converse_stream(
+        modelId=model,
+        messages=[{"role": "user", "content": [{"text": prompt}]}],
+        inferenceConfig={
+            "maxTokens": MAX_OUTPUT_TOKENS,
+            "temperature": TEMPERATURE,
+        },
+    )
+    stream = response.get("stream")
+    if stream is None:
+        raise RuntimeError("bedrock converse_stream returned no stream")
+    for event in stream:
+        if "contentBlockDelta" in event:
+            delta = event["contentBlockDelta"].get("delta", {})
+            text = delta.get("text", "")
+            if text:
+                if ttft is None:
+                    ttft = time.time() - t_start
+                    output_tokens = 1
+                else:
+                    output_tokens += 1
+        elif "metadata" in event:
+            usage = event["metadata"].get("usage", {})
+            if usage:
+                final_usage = usage
+    total = time.time() - t_start
+    if ttft is None:
+        ttft = total
+    if final_usage is not None and "outputTokens" in final_usage:
+        output_tokens = final_usage["outputTokens"]
     return _result(ttft, total, output_tokens)
 
 
@@ -390,12 +468,22 @@ def call_endpoint(provider, endpoint, prompt):
         base_url = os.environ.get("OLLAMA_BASE_URL", "http://localhost:11434")
         return _call_ollama(base_url, endpoint, prompt, timeout_s)
 
-    # aws-bedrock (Sub-exp 3) — ships in follow-up commit before Sub-exp 3 launch.
+    if provider == "aws-bedrock":
+        # boto3 picks up credentials from env / ~/.aws/credentials / IAM role.
+        # No explicit api_key arg — auth is the standard AWS chain.
+        if not (os.environ.get("AWS_ACCESS_KEY_ID")
+                or Path.home().joinpath(".aws/credentials").exists()):
+            raise RuntimeError(
+                "AWS credentials not found — set AWS_ACCESS_KEY_ID + "
+                "AWS_SECRET_ACCESS_KEY env vars or configure ~/.aws/credentials"
+            )
+        region = os.environ.get("AWS_REGION", "us-east-1")
+        return _call_bedrock(endpoint, prompt, timeout_s, region)
+
     raise NotImplementedError(
-        f"Provider {provider!r} (endpoint {endpoint!r}) not implemented yet. "
-        f"This implementation covers Sub-exp 1 + Sub-exp 2 providers "
-        f"(openai/anthropic/google/mistral/xai/vercel-ai-gateway/ollama). "
-        f"aws-bedrock (Sub-exp 3) ships in a follow-up commit before Sub-exp 3 launch."
+        f"Provider {provider!r} (endpoint {endpoint!r}) not implemented. "
+        f"Supported providers: openai, anthropic, google, mistral, xai, "
+        f"vercel-ai-gateway, ollama, aws-bedrock."
     )
 
 
