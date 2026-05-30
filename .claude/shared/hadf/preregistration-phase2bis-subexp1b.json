@@ -1,0 +1,130 @@
+{
+  "subexp_id": "phase2bis-subexp1b",
+  "rq": "Does the silhouette signature generalize across a wider 4-endpoint cloud matrix (Anthropic anchor + Google non-reasoning Gemini + Mistral + Vercel AI Gateway-routed OpenAI) and span 4 providers (vs Sub-exp 1A's 2-provider matrix)? Two secondary questions: (a) does the Anthropic claude-haiku-4-5 anchor distribution drift across the Sub-exp 1A → Sub-exp 1B window (cross-window drift detection); (b) does the Vercel AI Gateway-routed gpt-4o-mini fingerprint match OpenAI-direct's gpt-4o-mini from Sub-exp 1A, or does the gateway routing inject a distinguishable signature?",
+  "endpoints": [
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5-20251001",
+      "api_kind": "direct",
+      "role": "anchor — cross-window drift detection vs Sub-exp 1A. Uses dated form (not the bare alias) so a downstream Anthropic alias-update mid-collection wouldn't trip kill-criterion model_id-change. Sub-exp 1A locked the bare alias; the dated form here is a tighter lock + remains comparable since both point at the same model snapshot."
+    },
+    {
+      "provider": "google",
+      "endpoint": "gemini-2.5-flash-lite",
+      "api_kind": "direct",
+      "role": "Non-reasoning Gemini class — replaces the Sub-exp 1A-dropped gemini-2.5-flash and gemini-2.5-pro (both reasoning class with thoughtsTokenCount that broke the TTFT signature comparison). 2026-05-30 verification at HADF-scale prompts: 0 thoughtsTokenCount, visible_ratio=1.0 at max_tokens=200 across the prompt-set categories."
+    },
+    {
+      "provider": "mistral",
+      "endpoint": "mistral-large-latest",
+      "api_kind": "direct",
+      "role": "First Mistral inclusion in the HADF matrix. Was deferred from Sub-exp 1A on placeholder key; key minted 2026-05-30 with chat+models scope (NO connectors — connectors scope would inject web-search/tool-call latency that distorts pure-generation TTFT). 2026-05-30 verification: real call returned in normal latency profile."
+    },
+    {
+      "provider": "vercel-ai-gateway",
+      "endpoint": "gpt-4o-mini",
+      "api_kind": "gateway",
+      "role": "Routing-layer signature probe — same model id as OpenAI-direct in Sub-exp 1A, served via Vercel AI Gateway. Tests whether the gateway routing layer injects a distinguishable signature (latency added by the gateway middleware) or transparently passes through. If gateway-routed signature matches OpenAI-direct, gateway is signal-transparent. If distinguishable, the gateway introduces a measurable routing fingerprint — useful for HADF's central dispatch claim (Sub-exp 3 echoes this with Bedrock vs Anthropic-direct same-model routing)."
+    }
+  ],
+  "per_call_controls": {
+    "calls_per_fire": 50,
+    "max_output_tokens": 200,
+    "temperature": 0.7,
+    "timeout_s": 60,
+    "streaming_required": true,
+    "system_prompt": null,
+    "tools": null,
+    "prompt_set_path": ".claude/shared/hadf/phase2bis-prompt-set.json",
+    "prompt_set_sha256": "7b4d9dc9000893fcbec1fde7c75c9e25b41bc2e7c8b05046d6f8a9dfd71c69a4"
+  },
+  "campaign_schedule": {
+    "fires_per_day": 5,
+    "fire_times_utc": [
+      "02:00",
+      "08:00",
+      "14:00",
+      "18:00",
+      "22:00"
+    ],
+    "duration_days": 3,
+    "expected_endpoints_per_fire": 4,
+    "_schedule_note": "Original spec §4 schedule (02/08/14/18/22 UTC). Sub-exp 2 is on a rotated schedule (UTC 05/11/15/19/23 = IDT 08/14/18/22/02) so Sub-exp 1B + Sub-exp 2 never co-fire — 3h offset between any pair of fires across the two sub-exps. No file-write conflicts; no cron lock contention; merge-driver-dedup handles concurrent ledger appends."
+  },
+  "primary_metric": "silhouette score at k=5",
+  "secondary_metrics": [
+    "anchor drift: Mahalanobis distance between Sub-exp 1A's anthropic/claude-haiku-4-5 distribution and Sub-exp 1B's anthropic/claude-haiku-4-5-20251001 distribution; expected < 2σ if no cross-window infrastructure drift",
+    "gateway transparency: Mahalanobis distance between Sub-exp 1A's openai/gpt-4o-mini direct distribution and Sub-exp 1B's vercel-ai-gateway/gpt-4o-mini distribution; if < 2σ gateway is transparent, if > 4σ gateway injects measurable routing signature"
+  ],
+  "expected_yield_threshold": 300,
+  "kill_criteria": [
+    "n_valid < 300",
+    "all endpoints simultaneously rate-limited > 2 fires consecutively",
+    "ANY endpoint changes streaming protocol or model id mid-collection",
+    "wrapper preflight fails 3+ times consecutively"
+  ],
+  "trip_wires": [
+    {
+      "name": "anchor_drift",
+      "applies_to": "subexp1b — vs Sub-exp 1A's anchor",
+      "action": "methodology note, do not abort",
+      "details": "Compute Mahalanobis distance between Sub-exp 1B's anthropic anchor (claude-haiku-4-5-20251001) and Sub-exp 1A's anthropic anchor (claude-haiku-4-5, same model snapshot via alias). If > 2σ flag a methodology note in the verdict; do not invalidate the cross-window drift secondary metric unless drift > 4σ."
+    },
+    {
+      "name": "cost_overrun_3x",
+      "action": "pause for operator review",
+      "note": "Expected ~$1.10 over 3 days (Anthropic $0.12 + Google free + Mistral free-tier-or-$0.90 + Vercel-AI-Gateway $0.10). Pause at ~$3.30."
+    },
+    {
+      "name": "gemini_reasoning_regression",
+      "applies_to": "subexp1b google endpoint",
+      "action": "halt + investigate",
+      "details": "If gemini-2.5-flash-lite responses begin emitting non-zero thoughtsTokenCount mid-collection (Google model-update during the 3-day window), the gemini distribution becomes contaminated with reasoning-latency signal. Heartbeat ledger should monitor; halt sub-exp + decide rerun with fresh anchor if observed."
+    }
+  ],
+  "verdict_thresholds": {
+    "pass_silhouette_min": 0.5,
+    "pass_yield_min": 600,
+    "fail_clusters_lt": 3
+  },
+  "harness_hardening_proof": {
+    "env_local_sha256_at_deploy": "TBD — computed at lock time via shasum -a 256 /Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/.env.local",
+    "fix1_commit_hash": "442427d feat(hadf-phase2bis-replication): Block A — soak window scaffolding — establishes worktree-local venv pattern (Fix #1) via scripts/hadf-phase2bis-collect.sh preflight Check A (venv binary executable). Carries forward for Sub-exp 1B unchanged.",
+    "preflight_test_log_path": ".claude/shared/hadf/phase2bis-deploy-verification/subexp1b-deliberate-break.log",
+    "state_owner_at_creation": "ft2"
+  },
+  "endpoints_full_design": [
+    {
+      "provider": "anthropic",
+      "endpoint": "claude-haiku-4-5-20251001",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "google",
+      "endpoint": "gemini-2.5-flash-lite",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "mistral",
+      "endpoint": "mistral-large-latest",
+      "api_kind": "direct"
+    },
+    {
+      "provider": "vercel-ai-gateway",
+      "endpoint": "gpt-4o-mini",
+      "api_kind": "gateway"
+    }
+  ],
+  "deferred_endpoints": [
+    {
+      "provider": "xai",
+      "endpoint": "(TBD — grok-4 or grok-2-latest)",
+      "deferred_reason": "Operator decision 2026-05-30: skip xAI for Sub-exp 1B to minimize API surface area + $2-3 cost. Mint key + add as Sub-exp 1C if signature-breadth analysis benefits from a 5th provider. xAI's deferred status is intentional, not a key-acquisition blocker."
+    },
+    {
+      "provider": "openai",
+      "endpoint": "gpt-4o-mini + gpt-4o",
+      "deferred_reason": "Sub-exp 1A already collected 1,100+ records on each. Sub-exp 1B adds vercel-ai-gateway routing of gpt-4o-mini as the gateway probe; direct OpenAI re-sampling would be redundant + the gateway comparison is more informative."
+    }
+  ]
+}
