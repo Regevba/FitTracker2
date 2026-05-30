@@ -412,7 +412,12 @@ def main():
     written = 0
     with tmp_path.open("w") as f:
         for provider, endpoint, api_kind in ENDPOINTS[args.subexp]:
-            for i, prompt in enumerate(prompts):
+            for i, prompt_obj in enumerate(prompts):
+                # Prompt set entries are {id, category, text} dicts; APIs expect a string.
+                # First caught 2026-05-25 (commit 3b1938a, lost in 2026-05-29 worktree reset).
+                # Re-applied 2026-05-30 04:55 UTC after Sub-exp 2 launch fire failed
+                # 50/50 with HTTP 400 (dict-as-prompt → Ollama "Bad Request").
+                prompt = prompt_obj["text"] if isinstance(prompt_obj, dict) else prompt_obj
                 t_start = time.time()
                 try:
                     result = call_endpoint(provider, endpoint, prompt)
