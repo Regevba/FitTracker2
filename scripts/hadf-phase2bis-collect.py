@@ -47,6 +47,21 @@ ENDPOINTS = {
         ("anthropic", "claude-haiku-4-5", "direct"),
         ("anthropic", "claude-sonnet-4-6", "direct"),
     ],
+    "subexp1b": [
+        # 2026-05-30 follow-up to Sub-exp 1A. Verifies that the silhouette
+        # signature generalizes to a wider 4-endpoint cloud matrix spanning 4
+        # providers (vs 1A's 2-provider 4-endpoint matrix). Key acquisitions
+        # closed the deferral from 1A: Mistral + Vercel-AI-Gateway minted
+        # 2026-05-30; Google rotated to a non-reasoning model (gemini-2.5-flash-lite
+        # — verified 0 thoughtsTokens at HADF-scale prompts); Anthropic anchor
+        # carries forward from 1A for cross-window drift detection.
+        # xAI deferred per operator decision 2026-05-30 (skip cost + API gateway
+        # surface area until a future Sub-exp 1C if signature breadth demands it).
+        ("anthropic", "claude-haiku-4-5-20251001", "direct"),  # anchor — dated form for lock stability
+        ("google", "gemini-2.5-flash-lite", "direct"),
+        ("mistral", "mistral-large-latest", "direct"),
+        ("vercel-ai-gateway", "gpt-4o-mini", "gateway"),
+    ],
     "subexp2": [
         ("ollama", "llama3.2:3b", "local"),
     ],
