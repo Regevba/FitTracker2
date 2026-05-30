@@ -1,29 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  HADF Phase 2-bis Sub-exp 3 — Bedrock vs Anthropic-direct routing test
+  (central HADF falsification test per spec §1 RQ3)
+
+  Endpoint matrix (3 endpoints, 3 providers):
+    1. openai/gpt-4o-mini                              (anchor — drift detection vs Sub-exp 1A)
+    2. anthropic/claude-haiku-4-5-20251001              (anchor + routing-test LEFT side)
+    3. aws-bedrock/anthropic.claude-haiku-4-5-...-v1:0  (routing-test RIGHT side; exact dated id
+                                                        resolved by operator at lock time)
+
+  Fire schedule: 5 fires/day at UTC 05/11/15/19/23 (= IDT 08/14/18/22/02).
+  Inherits Sub-exp 2's slot — Sub-exp 2 closes ~2026-06-02; Sub-exp 3 bootstraps then.
+  Sub-exp 1B (if still running) is on UTC 02/08/14/18/22 — 3-hour offset, no fire collision.
+
+  3 macOS gotchas applied (per Sub-exp 1 + 2 working plists + HADF launchd checklist):
+    (1) FDA for /bin/bash granted to terminal
+    (2) Explicit /bin/bash in ProgramArguments (no shebang reliance)
+    (3) stdout/stderr on /tmp/ (NOT /Volumes/ — SSD unmount kills logging)
+
+  WorkingDirectory uses the shared impl worktree (matches Sub-exp 1A + 2 working setups).
+  Operator may switch to a dedicated /Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/
+  worktree per spec §8 if desired — just update both path strings below.
+
+  Operator prerequisites BEFORE bootstrap (see operator-actions-subexp3.md):
+    - AWS Bedrock model access for Anthropic Claude APPROVED (request takes minutes-to-days)
+    - AWS_ACCESS_KEY_ID + AWS_SECRET_ACCESS_KEY + AWS_REGION in .env.local
+    - Exact dated Bedrock model id verified + propagated to prereg + ENDPOINTS dict
+    - Prereg locked via lock-prereg.sh + signed git tag pushed
+-->
 <plist version="1.0">
 <dict>
     <key>Label</key>
     <string>com.fitme.hadf-phase2bis-subexp3</string>
     <key>ProgramArguments</key>
     <array>
-        <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/scripts/hadf-phase2bis-collect.sh</string>
+        <string>/bin/bash</string>
+        <string>/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/scripts/hadf-phase2bis-collect.sh</string>
         <string>--subexp</string>
         <string>subexp3</string>
     </array>
     <key>WorkingDirectory</key>
-    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3</string>
+    <string>/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl</string>
     <key>StartCalendarInterval</key>
     <array>
-        <dict><key>Hour</key><integer>2</integer><key>Minute</key><integer>0</integer></dict>
-        <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
-        <dict><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
-        <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>0</integer></dict>
-        <dict><key>Hour</key><integer>22</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>5</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>11</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>15</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>19</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>23</integer><key>Minute</key><integer>0</integer></dict>
     </array>
     <key>StandardOutPath</key>
-    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/.claude/shared/hadf/launchd-stdout-subexp3.log</string>
+    <string>/tmp/hadf-phase2bis-subexp3-stdout.log</string>
     <key>StandardErrorPath</key>
-    <string>/Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp3/.claude/shared/hadf/launchd-stderr-subexp3.log</string>
+    <string>/tmp/hadf-phase2bis-subexp3-stderr.log</string>
     <key>RunAtLoad</key>
     <false/>
 </dict>
