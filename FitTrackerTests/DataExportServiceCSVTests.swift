@@ -4,6 +4,7 @@
 import XCTest
 @testable import FitTracker
 
+@MainActor
 final class DataExportServiceCSVTests: XCTestCase {
 
     // MARK: - csvEscape RFC 4180 behavior
