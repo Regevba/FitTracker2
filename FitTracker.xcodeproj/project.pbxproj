@@ -73,6 +73,7 @@
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */; };
+		DLR100001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLR200001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift */; };
 		BL1000001000000000000001 /* BehavioralLearningStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000001000000000000001 /* BehavioralLearningStore.swift */; };
 		BL1000002000000000000001 /* BehavioralLearningSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
@@ -351,6 +352,7 @@
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningStoreTests.swift; sourceTree = "<group>"; };
+		DLR200001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouterReminderRegistryTests.swift; sourceTree = "<group>"; };
 		BL2000001000000000000001 /* BehavioralLearningStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningStore.swift; sourceTree = "<group>"; };
 		BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningSettingsView.swift; sourceTree = "<group>"; };
 		CA6ACD6FF9F1414981D90944 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift; sourceTree = "<group>"; };
@@ -882,6 +884,7 @@
 				RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */,
 				SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */,
 				DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */,
+				DLR200001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift */,
 				BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */,
 				CC200000000000000000AT01 /* CohortPriorClientTests.swift */,
 				CP200000000000000000AT01 /* CohortPriorCacheTests.swift */,
@@ -1610,6 +1613,7 @@
 				RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */,
 				SCR100001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift in Sources */,
 				DECSV01000000000000T001 /* DataExportServiceCSVTests.swift in Sources */,
+				DLR100001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift in Sources */,
 				BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */,
 				CC100000000000000000AT01 /* CohortPriorClientTests.swift in Sources */,
 				CP100000000000000000AT01 /* CohortPriorCacheTests.swift in Sources */,

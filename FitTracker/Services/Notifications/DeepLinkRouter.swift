@@ -231,4 +231,26 @@ final class DeepLinkRouter: ObservableObject {
             outcome: outcome.rawValue
         )
     }
+
+    // MARK: - Smart-reminders deep-link registry (C1 item #3, 2026-05-31)
+
+    /// Source of truth for smart-reminder deep-link URLs. Previously these
+    /// strings lived inline in `ReminderType.deepLink` — that property now
+    /// delegates here so the router owns the mapping. Per L207 backlog
+    /// item #3.
+    ///
+    /// `nonisolated` so non-MainActor callers (notification delegate,
+    /// background Codable decoding paths) can resolve a URL without
+    /// crossing actor boundaries.
+    nonisolated static func deepLinkURL(forReminderTypeRawValue rawValue: String) -> String {
+        switch rawValue {
+        case "healthkit_connect":    return "fitme://settings/health"
+        case "account_registration": return "fitme://auth"
+        case "nutrition_gap":        return "fitme://nutrition"
+        case "training_day":         return "fitme://training"
+        case "rest_day":             return "fitme://home"
+        case "engagement":           return "fitme://home"
+        default:                     return "fitme://home"
+        }
+    }
 }
