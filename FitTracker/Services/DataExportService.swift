@@ -126,42 +126,57 @@ final class DataExportService: ObservableObject {
             "completedTaskCount", "notes",
         ].joined(separator: ",")
 
-        let rows = dataStore.dailyLogs.map { log -> String in
-            let exerciseLogs = Array(log.exerciseLogs.values)
-            let cardioLogs = Array(log.cardioLogs.values)
-            let bio = log.biometrics
-            let nut = log.nutritionLog
-
-            let fields: [String] = [
-                ISO8601DateFormatter().string(from: log.date),
-                log.phase.rawValue,
-                log.dayType.rawValue,
-                log.recoveryDay ? "true" : "false",
-                String(log.completionPct),
-                bio.weightKg.map(String.init) ?? "",
-                bio.bodyFatPercent.map(String.init) ?? "",
-                bio.effectiveRestingHR.map(String.init) ?? "",
-                bio.effectiveHRV.map(String.init) ?? "",
-                bio.effectiveSleep.map(String.init) ?? "",
-                String(nut.meals.count),
-                nut.resolvedCalories.map(String.init) ?? "",
-                nut.resolvedProteinG.map(String.init) ?? "",
-                nut.resolvedCarbsG.map(String.init) ?? "",
-                nut.resolvedFatG.map(String.init) ?? "",
-                nut.waterML.map(String.init) ?? "",
-                String(exerciseLogs.count),
-                String(cardioLogs.count),
-                String(exerciseLogs.reduce(0) { $0 + $1.sets.count }),
-                String(exerciseLogs.reduce(0) { $0 + $1.totalVolume }),
-                String(cardioLogs.compactMap(\.durationMinutes).reduce(0, +)),
-                String(log.taskStatuses.values.filter { $0 == .completed }.count),
-                log.notes,
-            ]
-
-            return fields.map(Self.csvEscape).joined(separator: ",")
-        }
+        let rows = dataStore.dailyLogs.map(Self.csvRow(for:))
 
         return ([header] + rows).joined(separator: "\n") + "\n"
+    }
+
+    /// Renders a single daily log as one CSV row. Split out from
+    /// `generateDailyLogsCSV()` so the Swift type-checker does not have to
+    /// resolve a 23-element heterogeneous array literal in one pass — that
+    /// hit the "compiler is unable to type-check this expression in
+    /// reasonable time" limit on iOS Simulator builds.
+    static func csvRow(for log: DailyLog) -> String {
+        let bio = log.biometrics
+        let nut = log.nutritionLog
+        let exerciseLogs = Array(log.exerciseLogs.values)
+        let cardioLogs = Array(log.cardioLogs.values)
+
+        // Pre-compute optional + reduce helpers as plain strings before
+        // assembling the array literal — keeps each line trivially typeable.
+        let dateStr = ISO8601DateFormatter().string(from: log.date)
+        let recovery = log.recoveryDay ? "true" : "false"
+        let completion = String(log.completionPct)
+
+        let weightKg = bio.weightKg.map(String.init) ?? ""
+        let bodyFat = bio.bodyFatPercent.map(String.init) ?? ""
+        let restingHR = bio.effectiveRestingHR.map(String.init) ?? ""
+        let hrv = bio.effectiveHRV.map(String.init) ?? ""
+        let sleep = bio.effectiveSleep.map(String.init) ?? ""
+
+        let mealCount = String(nut.meals.count)
+        let calories = nut.resolvedCalories.map(String.init) ?? ""
+        let protein = nut.resolvedProteinG.map(String.init) ?? ""
+        let carbs = nut.resolvedCarbsG.map(String.init) ?? ""
+        let fat = nut.resolvedFatG.map(String.init) ?? ""
+        let water = nut.waterML.map(String.init) ?? ""
+
+        let exerciseCount = String(exerciseLogs.count)
+        let cardioCount = String(cardioLogs.count)
+        let totalSets = String(exerciseLogs.reduce(0) { $0 + $1.sets.count })
+        let totalVolume = String(exerciseLogs.reduce(0) { $0 + $1.totalVolume })
+        let cardioMins = String(cardioLogs.compactMap(\.durationMinutes).reduce(0, +))
+        let completedTasks = String(log.taskStatuses.values.filter { $0 == .completed }.count)
+
+        let fields: [String] = [
+            dateStr, log.phase.rawValue, log.dayType.rawValue, recovery, completion,
+            weightKg, bodyFat, restingHR, hrv, sleep,
+            mealCount, calories, protein, carbs, fat, water,
+            exerciseCount, cardioCount, totalSets, totalVolume, cardioMins,
+            completedTasks, log.notes,
+        ]
+
+        return fields.map(Self.csvEscape).joined(separator: ",")
     }
 
     /// RFC 4180 field escape: wrap in double-quotes if the field contains
