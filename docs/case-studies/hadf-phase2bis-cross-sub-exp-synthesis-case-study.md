@@ -76,10 +76,21 @@ Sub-exp 1 launched 2026-05-25 with a **narrowed 4-endpoint matrix** (openai gpt-
 | #316 | FT2 | Block A — soak window scaffolding (state.json + harness + preflight + verdict scripts + launchd plist templates + 6 unit test suites + go/no-go ceremony runbook) | Merged 2026-05-12 |
 | #506 | FT2 | chore — Sub-exp 2 prereg pre-ceremony fill-in (B14.2 prep) | Merged 2026-05-27 |
 | #507 | FT2 | chore — Sub-exp 3 prereg pre-ceremony fill-in (B15.2 prep) | Merged 2026-05-27 |
-| this-PR (B13) | FT2 | Sub-exp 1A verdict run + §3.A populated + Sub-exp 2 prereg/plist staged | Open 2026-05-28 |
-| TBD-B14 | FT2 | Sub-exp 2 verdict run + §3.B populated | Pending ~2026-06-03 (3 days × launch 2026-05-30 22:00 UTC) |
-| TBD-B15 | FT2 | Sub-exp 3 verdict run + case study | Pending ~2026-06-04 |
-| TBD-C | FT2 | Block C — this synthesis case study + fitme-story showcase slot 30 + state.json closure | Pending ~2026-06-04 (this PR) |
+| #511 | FT2 | Block C case-study skeleton (this file — pre-ceremony scaffolding) | Merged 2026-05-27 |
+| #520 | FT2 | Sub-exp 1A close + Sub-exp 2 prereg+plist staged for 2026-05-30 launch | Merged 2026-05-29 |
+| #530 | FT2 | Sub-exp 2 + Sub-exp 3 operator pre-launch runbook | Merged 2026-05-30 |
+| #532 | FT2 | fix — `prompt_obj['text']` extraction in collect.py main loop (Sub-exp 2 Fire 0 unblocker) | Merged 2026-05-30 |
+| #533 | FT2 | Sub-exp 1B v1 prep — 4-endpoint cloud matrix prereg + plist template | Merged 2026-05-30 |
+| #534 | FT2 | Sub-exp 3 prep — Bedrock routing-test scaffolding (collect.py `_call_bedrock` + ENDPOINTS["subexp3"] + prereg + plist template + operator-actions runbook) | Merged 2026-05-30 |
+| #536 | FT2 | verdict-script `--metric ks` for Sub-exp 2 cloud-vs-local KS-distinguishability | Merged 2026-05-31 |
+| #539 | FT2 | verdict-script `--metric signature_delta_ratio` for Sub-exp 3 Bedrock-vs-Anthropic-direct routing test | Open 2026-05-31 |
+| #542 | FT2 | Sub-exp 1B **v2 scope reduction** — drop mistral + vercel-ai-gateway after v1 Fire 0 free-tier rate-limit triage; ship 2-endpoint design (anthropic + google) for 2026-06-10 launch | Open 2026-05-31 |
+| this-PR | FT2 | Block C synthesis case study — §2 PR chain backfill + §3.A.1 Sub-exp 1B v2 update + §3.B/§3.C prereg-locked threshold values | Open 2026-05-31 |
+| TBD-B14.5 | FT2 | Sub-exp 2 verdict run + §3.B populated | Pending ~2026-06-02 (3 days × launch 2026-05-30T08:00Z) |
+| TBD-B15 | FT2 | Sub-exp 3 prereg lock ceremony + launchd bootstrap | Pending ~2026-06-02 (after Sub-exp 2 closes; gated on operator AWS Bedrock model-access approval — lead time minutes to days) |
+| TBD-B15.5 | FT2 | Sub-exp 3 verdict run + §3.C populated | Pending ~2026-06-05 (3 days × Sub-exp 3 launch) |
+| TBD-1B-V2 | FT2 | Sub-exp 1B v2 verdict run + §3.A.1 populated | Pending ~2026-06-13 (3 days × 2026-06-10 earliest launch) |
+| TBD-C | FT2 | Block C — final synthesis closure + fitme-story showcase slot 30 + state.json closure | Pending ~2026-06-13 (after all sub-exps close, latest sub-exp = 1B v2) |
 
 ## §3 Per-sub-exp verdicts (populated as each sub-exp closes)
 
@@ -137,24 +148,44 @@ Sub-exp 1 launched 2026-05-25 with a **narrowed 4-endpoint matrix** (openai gpt-
 
 The 200-record uniform drop (50/endpoint) traces to the 2026-05-25T16:40:34Z fire window that ran before harness-hardening Fix #1's worktree-local venv settled across the wrapper; subsequent 12 fires were clean (validated by heartbeat ledger `preflight=ok` flag).
 
-#### §3.A.1 Sub-exp 1B (if shipped before Block C closure)
+#### §3.A.1 Sub-exp 1B v2 (updated 2026-05-31)
 
-Sub-exp 1B remains queued (5 endpoints dropped from 1A: gemini-2.5-flash, gemini-2.5-pro, vercel-ai-gateway gpt-4o-mini, mistral-large-latest, xai grok-4-1). Gating items unchanged from 2026-05-25 launch_matrix_narrowing decision:
+**Lifecycle to date:**
 
-- API keys for vercel-ai-gateway / mistral / xai still placeholders pending operator acquisition (see Sub-exp 1A prereg `launch_matrix_narrowing.endpoints_dropped` + spec §2 follow-up runbook reference)
-- gemini-2.5-flash / gemini-2.5-pro reasoning-model TTFT distortion (visible_tokens << output_tokens) needs methodology resolution — either a non-reasoning gemini-2.0 variant or an explicit reasoning-vs-generation TTFT decomposition
+| Date | Event |
+|---|---|
+| 2026-05-25 (Sub-exp 1A close) | 5 endpoints originally deferred from Sub-exp 1A: gemini-2.5-flash, gemini-2.5-pro (reasoning-model TTFT distortion), vercel-ai-gateway gpt-4o-mini, mistral-large-latest, xai grok-4-1 (placeholder API keys) |
+| 2026-05-30 (PR #533) | Sub-exp 1B v1 prereg shipped with 4-endpoint cloud matrix (anthropic anchor + google non-reasoning gemini-2.5-flash-lite + mistral-large-latest + vercel-ai-gateway gpt-4o-mini). xAI deferred. Reasoning-model concern resolved via Google rotation to `gemini-2.5-flash-lite` (verified 0 thoughtsTokenCount at HADF-scale prompts) |
+| 2026-05-30T07:46:24Z | Sub-exp 1B v1 prereg LOCKED at sha256=`cfc7e968feeb`; signed tag `prereg-phase2bis-subexp1b-locked-2026-05-30` pushed to origin |
+| 2026-05-30T07:47:03Z | Sub-exp 1B v1 Fire 0 (manual jumpstart): 200 records dispatched, **114/200 OK** — anthropic 50/50 + google 50/50 clean; mistral 9/50 (41× HTTP 429 free-tier RPS); vercel-ai-gateway 5/50 (45× HTTP 429 "Free tier requests on this model are rate-limited. Upgrade to paid credits") |
+| 2026-05-30 ~08:01Z | Operator decision: BOOT-OUT launchd. Plist preserved at `~/.fittracker/deferred-plists/com.fitme.hadf-phase2bis-subexp1b.plist.deferred-2026-05-30`. Fire 0 data preserved + `.v1-rate-limited-partial` archive suffix |
+| 2026-05-31 (PR #542) | **Sub-exp 1B v2 scope reduction** — drop mistral + vercel-ai-gateway; ship 2-endpoint design (anthropic + google) for 2026-06-10 earliest launch |
 
-Not in scope of B13. If Sub-exp 1B ships before Block C closure, append a row to the per-endpoint table above + note any verdict-direction changes vs 1A.
+**v2 design (per [`preregistration-phase2bis-subexp1b.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp1b.json) at this PR — pending re-lock after merge):**
+
+- Endpoints: 2 (anthropic/claude-haiku-4-5-20251001 + google/gemini-2.5-flash-lite)
+- Primary metric: silhouette score at k=2 (v1 was k=5)
+- expected_yield_threshold: 150 (v1 was 300)
+- pass_yield_min: 300 (v1 was 600)
+- fail_clusters_lt: 2 (v1 was 3)
+- earliest_start_date: **2026-06-10**
+- Cost estimate: ~$0.12 (Anthropic only; Google free at scale)
+
+**Deferred from v2 (vs v1):** mistral/mistral-large-latest + vercel-ai-gateway/gpt-4o-mini. Revival paths: (A) upgrade plans, (B) per-call throttle in collect.py, (C) continued deferral. Detailed rationale in v2 prereg `deferred_endpoints` block + this case-study §6.
+
+**Verdict:** TBD (populate ~2026-06-13 after 3-day Sub-exp 1B v2 collection closes). Per-endpoint table will be appended to §3.A above; secondary metrics §3.A.1.B (anchor drift vs 1A) + §3.A.1.G (google class validation — first non-Anthropic + non-OpenAI provider) populated at verdict time.
 
 ### §3.B Sub-exp 2 — Cloud-vs-local separability
 
-**Verdict:** TBD (populate after B14.5 verdict-script run)
+**Verdict:** TBD (populate after B14.5 verdict-script run ~2026-06-02). Verdict script `scripts/hadf-phase2bis-verdict.py --metric ks` shipped via PR #536 (2026-05-31); ready when collection closes.
 
-**Pre-registered pass criteria** (per [`preregistration-phase2bis-subexp2.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp2.json) `verdict_thresholds` — operator finalizes at B14 ceremony):
+**Pre-registered pass criteria** (per [`preregistration-phase2bis-subexp2.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp2.json) `verdict_thresholds` — **LOCKED 2026-05-30T04:43:31Z at sha256=`d4ec4680ef21`** via signed tag `prereg-phase2bis-subexp2-locked-2026-05-30`):
 
-- `pass_ks_p_max`: TBD (suggested 0.01 per spec §1 RQ2)
-- `pass_yield_min`: TBD (suggested 150)
-- `fail_if_ks_p_greater_than`: TBD (suggested 0.05)
+- `pass_ks_p_max`: **0.01** (per spec §1 RQ2)
+- `pass_yield_min`: **250** (3 days × 5 fires × 50 calls/fire = 750 expected; 250 = 33% floor)
+- `fail_if_ks_p_greater_than`: **0.05**
+- Anchor: pooled Sub-exp 1A cloud distribution (openai/gpt-4o-mini + openai/gpt-4o + anthropic/claude-haiku-4-5 + anthropic/claude-sonnet-4-6 = 2600 records)
+- Target: ollama/llama3.2:3b (Sub-exp 2's single endpoint, ~750 records expected)
 
 **Observed values:**
 
@@ -172,16 +203,21 @@ Not in scope of B13. If Sub-exp 1B ships before Block C closure, append a row to
 
 ### §3.C Sub-exp 3 — Routing test (the central HADF claim)
 
-**Verdict:** TBD (populate after B15.5 verdict-script run)
+**Verdict:** TBD (populate ~2026-06-05 after B15.5 verdict-script run). Verdict script `scripts/hadf-phase2bis-verdict.py --metric signature_delta_ratio` shipped via PR #539 (2026-05-31, in CI at this PR's open time); ready when Sub-exp 3 collection closes.
 
 **This is the FALSIFICATION test for the central HADF dispatch claim.** Same model id (`anthropic.claude-haiku-4-5`) served by 2 providers (Anthropic-direct + AWS Bedrock); if signatures differ enough to clear within-provider noise floor → HADF dispatch premise holds; if indistinguishable → HADF refuted on this metric.
 
-**Pre-registered pass criteria** (per [`preregistration-phase2bis-subexp3.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp3.json) `verdict_thresholds` — operator finalizes at B15 ceremony):
+**Pre-registered pass criteria** (per [`preregistration-phase2bis-subexp3.json`](../../.claude/shared/hadf/preregistration-phase2bis-subexp3.json) `verdict_thresholds` — **pre-ceremony scaffolding on main; operator locks at B15 ceremony after AWS Bedrock model-id verification + .env.local SHA256 capture**):
 
-- `pass_signature_delta_ratio_min`: TBD (suggested 2.0)
-- `fail_if_signature_delta_ratio_lt`: TBD (suggested 1.0)
-- `pass_anchor_drift_p_value_min`: TBD (suggested 0.01)
-- `pass_yield_min`: TBD (suggested 450)
+- `pass_signature_delta_ratio_gt`: **2.0** (per PR #534 prereg scaffolding; operator may revise at lock)
+- `fail_signature_delta_ratio_lt`: **1.0** (inconclusive band: 1.0–2.0)
+- `pass_yield_min`: **600** (3 days × 5 fires × 3 endpoints × 50 calls/fire = 2,250 expected; 600 = ~27% floor)
+- `pass_silhouette_min_k3`: **0.4** (secondary metric — 3 distinct clusters across openai-anchor + anthropic-direct + bedrock)
+- `anchor_drift_max_sigma_for_pass`: **4.0** (vs Sub-exp 1A's openai/anthropic anchors)
+
+**4 trip-wires** (per #534 prereg): `anchor_drift_subexp1a` + `anchor_drift_subexp1b` (now applies to v2 anthropic distribution per §3.A.1 above) + `cost_overrun_3x` (~$1 expected; pause at $3) + `bedrock_serverless_cold_start_bias` (Bedrock cold-start adds TTFT noise; methodology caveat).
+
+**AWS Bedrock model id**: PLACEHOLDER in prereg + ENDPOINTS["subexp3"] — operator replaces with verified dated form (`aws bedrock list-foundation-models --by-provider anthropic --region $AWS_REGION`) before lock per [`operator-actions-subexp3.md`](../../.claude/features/hadf-phase2bis-replication/operator-actions-subexp3.md) §3.
 
 **Observed values:**
 
