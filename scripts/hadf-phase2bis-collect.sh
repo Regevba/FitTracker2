@@ -84,7 +84,14 @@ source "$ENV_FILE"
 set +a
 
 case "$SUBEXP" in
-    subexp1)  REQUIRED_KEYS="OPENAI_API_KEY ANTHROPIC_API_KEY GOOGLE_API_KEY VERCEL_AI_GATEWAY_KEY MISTRAL_API_KEY XAI_API_KEY" ;;
+    # subexp1 = original 9-endpoint matrix (narrowed at 2026-05-25 launch to openai+anthropic).
+    #   Typo fix 2026-05-30: VERCEL_AI_GATEWAY_KEY → VERCEL_AI_GATEWAY_API_KEY (matches
+    #   the .env.local naming convention; pre-fix subexp1 would always fail preflight here
+    #   even with a valid key).
+    # subexp1b = 2026-05-30 follow-up: anthropic anchor + google (non-reasoning) +
+    #   mistral + vercel-ai-gateway. xAI deferred per operator decision.
+    subexp1)  REQUIRED_KEYS="OPENAI_API_KEY ANTHROPIC_API_KEY GOOGLE_API_KEY VERCEL_AI_GATEWAY_API_KEY MISTRAL_API_KEY XAI_API_KEY" ;;
+    subexp1b) REQUIRED_KEYS="ANTHROPIC_API_KEY GOOGLE_API_KEY MISTRAL_API_KEY VERCEL_AI_GATEWAY_API_KEY" ;;
     subexp2)  REQUIRED_KEYS="" ;;  # Ollama is local, no API key
     subexp3)  REQUIRED_KEYS="OPENAI_API_KEY ANTHROPIC_API_KEY AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY" ;;
     test)     REQUIRED_KEYS="OPENAI_API_KEY" ;;  # for preflight test fixture
