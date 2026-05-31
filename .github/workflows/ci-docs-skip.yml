@@ -37,6 +37,13 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Least-privilege GITHUB_TOKEN — this workflow only writes a status check
+# (handled by the runner via the default check token); it does not read
+# repo contents, post PR comments, or write to any other API surface.
+# Per CodeQL workflow-permissions best practice.
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     # SAME name as the heavy iOS job in ci.yml so branch protection's
