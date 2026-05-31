@@ -137,6 +137,18 @@ struct FitTrackerApp: App {
                     reminderNotificationDelegate.setAnalytics(analytics)
                     ReminderScheduler.shared.analytics = analytics
 
+                    // C1 first slice (L207): register smart-reminders as a
+                    // consumer of the v2 notification platform. Idempotent.
+                    // Surfaces a Sentry-style breadcrumb if registration fails
+                    // (would only happen if another consumer claims the same
+                    // urlPatterns — should never occur with the current 2
+                    // consumers: smart-reminders + readinessAlert).
+                    let registered = SmartRemindersConsumerRegistration.registerAtAppInit()
+                    if !registered {
+                        analytics.logEvent("smart_reminders_consumer_registration_failed",
+                                           parameters: ["consumer_id": SmartRemindersConsumerRegistration.consumerID])
+                    }
+
                     // smart-reminders-behavioral-learning Task 10:
                     // wire the behavioral-learning store + cohort client
                     // into the delegate. Then fire-and-forget cohort prior
