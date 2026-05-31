@@ -61,6 +61,7 @@ struct FitTrackerApp: App {
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
     @StateObject private var analytics     = AnalyticsService.makeDefault()
+    @StateObject private var reminderPreferences = ReminderPreferencesStore()
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
     @State private var showBiometricActivation = false
@@ -439,6 +440,7 @@ struct FitTrackerApp: App {
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
+                .environmentObject(reminderPreferences)
         } else if (!hasCompletedOnboarding || isForcedOnboardingModeEnabled), !isScreenReviewModeEnabled {
             // First launch or sign-in smoke override — onboarding includes auth at step 5.
             OnboardingView {
