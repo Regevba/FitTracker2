@@ -1,12 +1,12 @@
 {
   "version": "1.0",
-  "updated": "2026-05-28T06:08:05Z",
+  "updated": "2026-05-31T12:55:48Z",
   "description": "Baseline documentation-debt report for case-study structure, state linkage, and integrity-cycle readiness.",
   "summary": {
     "case_studies_scanned": 81,
     "features_scanned": 79,
-    "integrity_snapshot_files": 9,
-    "integrity_cycle_snapshots": 7,
+    "integrity_snapshot_files": 10,
+    "integrity_cycle_snapshots": 8,
     "trend_ready": true,
     "open_debt_items": 1
   },
@@ -54,9 +54,9 @@
       ]
     },
     "pr_citation_exempt": {
-      "present": 12,
-      "missing": 69,
-      "percent": 14.8,
+      "present": 13,
+      "missing": 68,
+      "percent": 16.0,
       "examples": [
         "docs/case-studies/ai-engine-architecture-v5.1-case-study.md",
         "docs/case-studies/android-design-system-case-study.md",
@@ -73,8 +73,8 @@
     }
   },
   "integrity_cycle": {
-    "snapshot_files_available": 9,
-    "snapshots_available": 7,
+    "snapshot_files_available": 10,
+    "snapshots_available": 8,
     "legacy_snapshot_files_without_context": 1,
     "trend_ready": true,
     "status": "trend_ready",
