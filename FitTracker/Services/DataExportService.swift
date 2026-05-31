@@ -183,10 +183,19 @@ final class DataExportService: ObservableObject {
     }
 
     /// RFC 4180 field escape: wrap in double-quotes if the field contains
-    /// a comma, newline, or double quote; escape internal double quotes by
-    /// doubling them. Empty + plain alphanumeric fields pass through unquoted.
+    /// a comma, newline, carriage return, or double quote; escape internal
+    /// double quotes by doubling them. Empty + plain alphanumeric fields
+    /// pass through unquoted.
+    ///
+    /// Uses `unicodeScalars.contains(where:)` because Swift's grapheme-cluster
+    /// `String.contains("\n")` returns false when the field contains `\r\n`
+    /// — CRLF parses as a single CRLF grapheme cluster, neither `\n` alone
+    /// nor `\r` alone matches it. Scalar-level scan sidesteps that.
     static func csvEscape(_ field: String) -> String {
-        if field.contains(",") || field.contains("\n") || field.contains("\r") || field.contains("\"") {
+        let needsEscape = field.unicodeScalars.contains(where: { scalar in
+            scalar == "," || scalar == "\n" || scalar == "\r" || scalar == "\""
+        })
+        if needsEscape {
             let escaped = field.replacingOccurrences(of: "\"", with: "\"\"")
             return "\"\(escaped)\""
         }
