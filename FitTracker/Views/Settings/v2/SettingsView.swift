@@ -11,6 +11,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
     case goalsPreferences
     case trainingNutrition
     case dataSync
+    case notifications
 
     var id: String { rawValue }
 
@@ -21,6 +22,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .goalsPreferences: "Goals & Preferences"
         case .trainingNutrition: "Training & Nutrition"
         case .dataSync: "Data & Sync"
+        case .notifications: "Notifications"
         }
     }
 
@@ -31,6 +33,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .goalsPreferences: "Units, appearance, stats layout, and body goals."
         case .trainingNutrition: "Nutrition mode, meal slots, and readiness thresholds."
         case .dataSync: "Cloud sync, local data counts, and destructive actions."
+        case .notifications: "Per-reminder type toggles and daily cap."
         }
     }
 
@@ -41,6 +44,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .goalsPreferences: "slider.horizontal.3"
         case .trainingNutrition: "figure.run.circle.fill"
         case .dataSync: "arrow.triangle.2.circlepath.icloud.fill"
+        case .notifications: "bell.badge.fill"
         }
     }
 
@@ -51,6 +55,7 @@ enum SettingsCategory: String, CaseIterable, Hashable, Identifiable {
         case .goalsPreferences: AppColor.Accent.achievement
         case .trainingNutrition: AppColor.Accent.sleep
         case .dataSync: AppColor.Status.success
+        case .notifications: AppColor.Brand.warm
         }
     }
 }
@@ -78,6 +83,7 @@ struct SettingsView: View {
     @EnvironmentObject var watchService: WatchConnectivityService
     @EnvironmentObject var analytics: AnalyticsService
     @EnvironmentObject var programStore: TrainingProgramStore
+    @EnvironmentObject var reminderPreferences: ReminderPreferencesStore
 
     @State private var navigationPath = NavigationPath()
     @State private var showResetAlert = false
@@ -164,6 +170,10 @@ struct SettingsView: View {
                         .environmentObject(cloudSync)
                         .environmentObject(programStore)
                         .environmentObject(analytics)
+                case .notifications:
+                    NotificationsSettingsScreen()
+                        .environmentObject(reminderPreferences)
+                        .environmentObject(analytics)
                 }
             }
             .navigationDestination(for: SettingsReviewDestination.self) { destination in
@@ -249,6 +259,13 @@ struct SettingsView: View {
             return [
                 SettingsSummaryBadge(title: cloudSync.status.rawValue, tint: syncTint),
                 SettingsSummaryBadge(title: "\(dataStore.dailyLogs.count) Logs", tint: AppColor.Accent.primary),
+            ]
+        case .notifications:
+            let masterLabel = reminderPreferences.masterEnabled ? "Enabled" : "Off"
+            let masterTint: Color = reminderPreferences.masterEnabled ? AppColor.Status.success : AppColor.Text.secondary
+            return [
+                SettingsSummaryBadge(title: masterLabel, tint: masterTint),
+                SettingsSummaryBadge(title: "Cap \(reminderPreferences.dailyCap)/day", tint: AppColor.Brand.warm),
             ]
         }
     }

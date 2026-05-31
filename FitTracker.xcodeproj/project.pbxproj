@@ -172,6 +172,9 @@
 		NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000007 /* DeepLinkRouter.swift */; };
 		NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000008 /* ReadinessAlertObserver.swift */; };
 		NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000009 /* FirstWorkoutTrigger.swift */; };
+		NT1000001000000000000010 /* ReminderPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000010 /* ReminderPreferencesStore.swift */; };
+		NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS2100001000000000000001 /* NotificationsSettingsScreen.swift */; };
+		RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */; };
 		SCR100001000000000000001 /* SmartRemindersConsumerRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */; };
 		SCR100001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */; };
 		NV100000000000000000AA01 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA01 /* NutritionView.swift */; };
@@ -459,6 +462,9 @@
 		NT2000001000000000000007 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
 		NT2000001000000000000008 /* ReadinessAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertObserver.swift; sourceTree = "<group>"; };
 		NT2000001000000000000009 /* FirstWorkoutTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstWorkoutTrigger.swift; sourceTree = "<group>"; };
+		NT2000001000000000000010 /* ReminderPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStore.swift; sourceTree = "<group>"; };
+		NS2100001000000000000001 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
+		RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStoreTests.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA01 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA02 /* SupplementStackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementStackCard.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA03 /* SupplementItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementItemRow.swift; sourceTree = "<group>"; };
@@ -871,6 +877,7 @@
 				KH200000000000000000AT01 /* KeychainHelperTests.swift */,
 				RS200000000000000000AT01 /* ReminderSchedulerTests.swift */,
 				RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */,
+				RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */,
 				SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */,
 				BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */,
 				CC200000000000000000AT01 /* CohortPriorClientTests.swift */,
@@ -1098,6 +1105,7 @@
 				NT2000001000000000000007 /* DeepLinkRouter.swift */,
 				NT2000001000000000000008 /* ReadinessAlertObserver.swift */,
 				NT2000001000000000000009 /* FirstWorkoutTrigger.swift */,
+				NT2000001000000000000010 /* ReminderPreferencesStore.swift */,
 				NT2000001000000000000001 /* NotificationService.swift */,
 				NT2000001000000000000002 /* NotificationPreferencesStore.swift */,
 				NT2000001000000000000003 /* NotificationContentBuilder.swift */,
@@ -1185,6 +1193,7 @@
 				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
 				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
+				NS2100001000000000000001 /* NotificationsSettingsScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1494,6 +1503,7 @@
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
+				NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */,
 				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
@@ -1546,6 +1556,7 @@
 				NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */,
 				NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */,
 				NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */,
+				NT1000001000000000000010 /* ReminderPreferencesStore.swift in Sources */,
 				NP100000000000000000VW02 /* SettingsDeepLinkBanner.swift in Sources */,
 				NP100000000000000000VW03 /* NotificationPermissionRow.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
@@ -1593,6 +1604,7 @@
 				KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */,
 				RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */,
 				RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */,
+				RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */,
 				SCR100001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift in Sources */,
 				BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */,
 				CC100000000000000000AT01 /* CohortPriorClientTests.swift in Sources */,
