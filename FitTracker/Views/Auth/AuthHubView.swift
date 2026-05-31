@@ -428,12 +428,16 @@ private struct AuthProviderRow: View {
     let subtitle: String
     let tint: Color
 
+    // L353 Phase 1 (2026-05-31): scale icon-leading width with Dynamic Type so
+    // the sectionTitle-sized icon's leading column grows together.
+    @ScaledMetric private var iconLeadingWidth: CGFloat = 26
+
     var body: some View {
         HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: icon)
                 .font(AppText.sectionTitle)
                 .foregroundStyle(tint)
-                .frame(width: 26)
+                .frame(width: iconLeadingWidth)
 
             VStack(alignment: .leading, spacing: AppSpacing.micro) {
                 Text(title)

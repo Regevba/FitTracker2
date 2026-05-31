@@ -13,12 +13,17 @@ import SwiftUI
 struct ImportedPlanRow: View {
     let plan: ImportedTrainingPlan
 
+    // L353 Phase 1 (2026-05-31): scale the icon-container frame with Dynamic Type
+    // so a user at AX5 settings gets a proportionally larger icon, not the
+    // captionStrong-sized symbol clipped to a 26pt box.
+    @ScaledMetric private var iconBox: CGFloat = 26
+
     var body: some View {
         HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: plan.source.iconName)
                 .font(AppText.captionStrong)
                 .foregroundStyle(AppColor.Accent.primary)
-                .frame(width: 26, height: 26)
+                .frame(width: iconBox, height: iconBox)
                 .background(AppColor.Accent.primary.opacity(0.14),
                             in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
 

@@ -8,6 +8,10 @@ struct GoalsPreferencesSettingsScreen: View {
     @EnvironmentObject private var dataStore: EncryptedDataStore
     @EnvironmentObject private var settings: AppSettings
 
+    // L353 Phase 1 (2026-05-31): scale stats-metric icon leading width with
+    // Dynamic Type so the captionStrong icon grows together with its 20pt column.
+    @ScaledMetric private var metricIconWidth: CGFloat = 20
+
     var body: some View {
         SettingsDetailScaffold(
             title: SettingsCategory.goalsPreferences.title,
@@ -64,7 +68,7 @@ struct GoalsPreferencesSettingsScreen: View {
                             Image(systemName: metric.icon)
                                 .font(AppText.captionStrong)
                                 .foregroundStyle(metric.tint)
-                                .frame(width: 20)
+                                .frame(width: metricIconWidth)
 
                             Text(metric.title)
                                 .font(AppText.body)
