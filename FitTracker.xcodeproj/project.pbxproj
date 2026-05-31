@@ -202,6 +202,7 @@
 		PF100000000000000000PV06 /* AccountDataCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV06 /* AccountDataCard.swift */; };
 		PF100000000000000000PV07 /* AppearanceUnitsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV07 /* AppearanceUnitsSheet.swift */; };
 		PN100000000000000000T001 /* PushNotificationsReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */; };
+		DECSV01000000000000T001 /* DataExportServiceCSVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */; };
 		RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */; };
 		RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */; };
 		RC100000000000000000AT01 /* RecommendationMemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RC200000000000000000AT01 /* RecommendationMemoryTests.swift */; };
@@ -490,6 +491,7 @@
 		PF200000000000000000PV06 /* AccountDataCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDataCard.swift; sourceTree = "<group>"; };
 		PF200000000000000000PV07 /* AppearanceUnitsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceUnitsSheet.swift; sourceTree = "<group>"; };
 		PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsReachabilityTests.swift; sourceTree = "<group>"; };
+		DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportServiceCSVTests.swift; sourceTree = "<group>"; };
 		RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAnalyticsTests.swift; sourceTree = "<group>"; };
 		RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertTriggerTests.swift; sourceTree = "<group>"; };
 		RC200000000000000000AT01 /* RecommendationMemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryTests.swift; sourceTree = "<group>"; };
@@ -879,6 +881,7 @@
 				RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */,
 				RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */,
 				SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */,
+				DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */,
 				BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */,
 				CC200000000000000000AT01 /* CohortPriorClientTests.swift */,
 				CP200000000000000000AT01 /* CohortPriorCacheTests.swift */,
@@ -1606,6 +1609,7 @@
 				RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */,
 				RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */,
 				SCR100001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift in Sources */,
+				DECSV01000000000000T001 /* DataExportServiceCSVTests.swift in Sources */,
 				BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */,
 				CC100000000000000000AT01 /* CohortPriorClientTests.swift in Sources */,
 				CP100000000000000000AT01 /* CohortPriorCacheTests.swift in Sources */,
