@@ -411,6 +411,155 @@ To be filled when shipped.
 
 ---
 
+## ~~F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING~~
+
+**Closed 2026-05-30 via PR (this PR — chore/phase-e-sweep-2026-05-30).** Moved MANIFEST.md write BEFORE CHECKSUMS.sha256 generation in [`scripts/snapshot-phase-completion.sh`](../../scripts/snapshot-phase-completion.sh). MANIFEST.md is now included in CHECKSUMS with a real hash; `shasum -a 256 -c CHECKSUMS.sha256` verifies cleanly (smoke-tested 2026-05-30 — 7/7 files OK including MANIFEST.md, prior bug reported MANIFEST.md:FAILED). Non-gate hygiene fix; Phase-E-safe (script edit, no gate behavior change).
+
+---
+
+## F-LOCK-INTRODUCING-COMMIT-PERMIT
+
+**Discovered:** 2026-05-30 (Sub-exp 2 lock ceremony + Sub-exp 1B lock ceremony during HADF Phase 2-bis replication launch).
+**Status:** queued.
+**Owner:** TBD.
+**Effort:** ~1h (pre-commit hook conditional check + 1 test).
+
+### Problem
+
+The pre-commit hook at [`.githooks/pre-commit:117-123`](../../.githooks/pre-commit) rejects any commit when a `.lock` sidecar exists alongside the prereg JSON. This is correct for forward edits (locked preregs must not change). But the lock-introducing commit itself — the commit produced by `scripts/hadf-phase2bis-lock-prereg.sh` that writes both the modified prereg + the new `.lock` file — is blocked by its own hook output, requiring `--no-verify` to land.
+
+Empirically observed twice on 2026-05-30: once for Sub-exp 2 lock (`bd0db7e`) and once for Sub-exp 1B lock (`6cad3c7`). Both required operator-side `--no-verify`. The `--no-verify` rule (don't skip hooks) is being violated by the very script designed to honor the lock contract.
+
+### Smallest viable shape
+
+Pre-commit hook gains a "lock-introducing commit" exemption: if the SAME commit creates both `<file>.lock` AND modifies `<file>` (the prereg), AND the lock sha256 in the new `.lock` file matches the post-modification file content sha256 → ALLOW the commit. Otherwise reject as before.
+
+```python
+# scripts/check-state-schema.py (or wherever the lock-rejection fires)
+if lock_exists_in_working_tree(prereg_path):
+    if is_lock_introducing_commit(prereg_path):
+        # Lock-introducing commit: .lock + prereg modified together,
+        # sha256 in .lock matches post-modification prereg content
+        # → allow
+        pass
+    else:
+        # Forward edit attempt: reject
+        raise SchemaCheckFailure(...)
+```
+
+### Why now
+
+- Sub-exp 3 lock ceremony will hit the same issue post-2026-06-02 when Sub-exp 2 closes. Without this fix, operator forced to `--no-verify` a third time.
+- Pattern generalizes to any future cryptographic lock-and-amend ceremony (e.g., audit-substrate bundle hashes per `docs/superpowers/specs/2026-05-18-impartial-audit-prompt-substrate-design.md`).
+
+### Linked PR closing this thread
+
+To be filled when shipped.
+
+---
+
+## F-SNAPSHOT-MANIFEST-LEDGER-ORDERING
+
+**Discovered:** 2026-05-30 (full system check during Phase E Day 10).
+**Status:** queued (user-local script — separate from in-repo F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING above).
+**Owner:** TBD (operator-personal script edit).
+**Effort:** ~10min (single edit in `~/.fittracker/hadf-snapshot.sh`).
+
+### Problem
+
+User-local snapshot cron script at `~/.fittracker/hadf-snapshot.sh` writes `MANIFEST.sha256` BEFORE appending to per-sub-exp `snapshot-ledger.jsonl`. The MANIFEST hash for `snapshot-ledger.jsonl` is therefore stale-by-one-line at verification time; `shasum -a 256 -c MANIFEST.sha256` reports `snapshot-ledger.jsonl: FAILED` even though the ledger is correct append-only.
+
+Empirically observed 2026-05-30 system check: 2 dedicated HADF backup dirs (subexp1a + subexp2) report `snapshot-ledger.jsonl: FAILED`. Not a real corruption — heuristic false-positive.
+
+### Smallest viable shape
+
+Option (a): move ledger append BEFORE MANIFEST regen.
+Option (b): exclude `snapshot-ledger.jsonl` from MANIFEST.sha256 generation.
+
+Option (b) is simpler — ledger is append-only by design, externally re-verifiable from its own line count.
+
+### Why now
+
+- Separate from in-repo F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING (this docket's predecessor) which addressed `scripts/snapshot-phase-completion.sh::MANIFEST.md`. Same class of bug in a different script.
+- Operator-local edit; not blocking any v7.9.1 build window concern.
+
+### Linked PR closing this thread
+
+N/A — operator-side personal-script edit (lives outside repo at `~/.fittracker/hadf-snapshot.sh`).
+
+---
+
+## F-TIER-TAG-FORWARD-DEADLINE-FILTER
+
+**Discovered:** 2026-05-30 (integrity regression flag investigation during full system check).
+**Status:** queued.
+**Owner:** TBD.
+**Effort:** ~30min (1 regex pattern + 2 test cases in `scripts/validate-tier-tags.py`).
+
+### Problem
+
+The `TIER_TAG_LIKELY_INCORRECT` cycle-time advisory matches numeric mentions like `"7.0d"` to ledger entries via heuristic. Forward-looking deadline notations (`T+7d`, `0 events / 7d`, `within Nd window`) are NOT measurements — they're targets/thresholds/kill-criterion windows. The v7.8.4 fix added `is_target_or_kill_claim()` to filter target/kill claims, but the new `T+Nd` and `events / Nd` patterns aren't yet recognized.
+
+Empirically observed 2026-05-30: 4 false-positive advisories fire on these patterns in framework-v7-8-branch-isolation, framework-v7-9-promotion, ucc-passkey-auth, and ucc-passkey-auth-security-hardening case studies. Pushed today's `Adv` count to 4 (vs 1 baseline), triggering the daily-checkpoint regression flag.
+
+### Smallest viable shape
+
+Extend `is_target_or_kill_claim()` in [`scripts/validate-tier-tags.py`](../../scripts/validate-tier-tags.py) to recognize:
+
+```python
+FORWARD_DEADLINE_PATTERNS = [
+    r'T\+\d+d',                  # "T+7d", "T+14d"
+    r'\d+\s*events?\s*/\s*\d+d', # "0 events / 7d", "10 events/30d"
+    r'within\s+T?\+?\d+d',       # "within 7d", "within T+14d"
+]
+```
+
+A claim's context matching any of these → skip. Existing `is_target_or_kill_claim()` already runs context inspection; just extend its pattern list.
+
+### Why now
+
+- 4 advisories every cycle means the regression-flag is permanently lit until cleared. Operator fatigue erodes the signal value of the flag.
+- Phase-E-safe: tightens an advisory heuristic, doesn't add or enforce a new gate.
+
+### Linked PR closing this thread
+
+To be filled when shipped.
+
+---
+
+## W-MISTRAL-VERCEL-FREE-TIER-BURST
+
+**Discovered:** 2026-05-30 (Sub-exp 1B Fire 0 — HADF Phase 2-bis replication attempt).
+**Status:** workaround documented; deferred until operator decides Mistral + Vercel AI Gateway plan upgrades OR explicit 2-endpoint scope reduction.
+**Owner:** operator (API tier decision); no code action queued.
+**Effort:** ~30min if scope-reduction path is taken (modify ENDPOINTS dict + REQUIRED_KEYS + unlock-relock prereg ceremony).
+
+### Problem
+
+Sub-exp 1B's 4-endpoint design hit HTTP 429 rate-limits on mistral (free-tier RPS) and vercel-ai-gateway gpt-4o-mini (explicit "Upgrade to paid credits" message) during burst-fire pattern (50 calls back-to-back per endpoint). Fire 0 yielded 114/200 records (anthropic + google clean; mistral 9/50; vercel-ai-gateway 5/50).
+
+Probe at 2 RPS later in the day showed both endpoints clean — burst pattern is the trigger. Either per-second RPS limits OR per-day quota windows.
+
+### Workaround currently in effect
+
+- Sub-exp 1B launchd job BOOTED-OUT 2026-05-30
+- Plist moved to `~/.fittracker/deferred-plists/com.fitme.hadf-phase2bis-subexp1b.plist.deferred-2026-05-30`
+- Fire 0 raw .jsonl preserved at `phase2bis-raw-subexp1b-subexp1b-2026-05-30T07-47-03Z.jsonl` + duplicate suffixed `.v1-rate-limited-partial`
+- Prereg LOCKED at sha256=cfc7e968feeb (unchanged)
+- Reversibility runbook: see `~/.fittracker/deferred-plists/README.md`
+
+### Future fix options (when operator revisits)
+
+- **A.** Upgrade Mistral + Vercel AI Gateway plans → re-bootstrap as-is (4 endpoints, burst pattern works)
+- **B.** Drop mistral + vercel-ai-gateway → 2-endpoint scope reduction (anthropic + google only; silhouette analysis limited to k≤2)
+- **C.** Add per-call throttle (sleep ~200ms between burst calls) to `scripts/hadf-phase2bis-collect.py` → 4-endpoint design works on free tiers but each fire takes ~3x longer
+
+### Linked PR closing this thread
+
+To be filled when shipped (or marked CLOSED if operator chooses to retire Sub-exp 1B entirely).
+
+---
+
 ## How v7.9.1 cycle opens
 
 - **Trigger:** v7.9 Phase E exits cleanly (~2026-06-04, 14 days post-promotion). See [infra master plan §4.1](../../docs/master-plan/infra-master-plan-2026-05-12.md).

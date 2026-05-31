@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  HADF Phase 2-bis Sub-exp 1B — extended cloud matrix fingerprinting
+
+  Endpoint matrix (4 endpoints, 4 providers):
+    1. anthropic/claude-haiku-4-5-20251001  (anchor — cross-window drift vs Sub-exp 1A)
+    2. google/gemini-2.5-flash-lite          (non-reasoning Gemini)
+    3. mistral/mistral-large-latest          (first Mistral inclusion)
+    4. vercel-ai-gateway/gpt-4o-mini         (routing-layer signature probe)
+
+  Fire schedule: 5 fires/day at UTC 02/08/14/18/22 (spec §4 standard schedule).
+  Sub-exp 2 runs on a rotated schedule (UTC 05/11/15/19/23 = IDT 08/14/18/22/02);
+  the 3-hour offset means Sub-exp 1B and Sub-exp 2 NEVER co-fire — safe parallel
+  operation. Cloud (1B) + local Ollama (2) hit different resource pools anyway.
+
+  3 macOS gotchas applied (per Sub-exp 1 working plist + HADF launchd checklist):
+    (1) FDA for /bin/bash granted to terminal
+    (2) Explicit /bin/bash in ProgramArguments (no shebang reliance)
+    (3) stdout/stderr on /tmp/ (NOT /Volumes/ — SSD unmount kills logging)
+
+  WorkingDirectory uses the shared impl worktree (matches Sub-exp 1A's working
+  setup and Sub-exp 2's launched setup). Operator may switch to a dedicated
+  /Volumes/DevSSD/FitTracker2-hadf-phase2bis-subexp1b/ worktree per spec §8 if
+  desired — just update both path strings below.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.fitme.hadf-phase2bis-subexp1b</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl/scripts/hadf-phase2bis-collect.sh</string>
+        <string>--subexp</string>
+        <string>subexp1b</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Volumes/DevSSD/FitTracker2-feature-hadf-phase2bis-impl</string>
+    <key>StartCalendarInterval</key>
+    <array>
+        <dict><key>Hour</key><integer>2</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>14</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>0</integer></dict>
+        <dict><key>Hour</key><integer>22</integer><key>Minute</key><integer>0</integer></dict>
+    </array>
+    <key>StandardOutPath</key>
+    <string>/tmp/hadf-phase2bis-subexp1b-stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/hadf-phase2bis-subexp1b-stderr.log</string>
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

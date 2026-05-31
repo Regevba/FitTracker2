@@ -34,13 +34,12 @@ done
 COMMIT_SHA=$(git rev-parse HEAD 2>/dev/null || echo "(no git)")
 BRANCH=$(git branch --show-current 2>/dev/null || echo "(no git)")
 
-# Generate sha256 manifest (only of files actually copied)
 cd "$BACKUP_DIR"
-if compgen -G "*" > /dev/null; then
-    shasum -a 256 * 2>/dev/null | grep -v "CHECKSUMS.sha256" > CHECKSUMS.sha256 || true
-fi
 
-# Write MANIFEST.md
+# Write MANIFEST.md FIRST so it's present when CHECKSUMS.sha256 is computed.
+# Closes v7.9.1 F-SNAPSHOT-MANIFEST-CHECKSUM-ORDERING — previously MANIFEST.md
+# was written AFTER CHECKSUMS, causing `shasum -c` to report MANIFEST.md:FAILED
+# at verification time (its hash was absent from CHECKSUMS).
 cat > MANIFEST.md <<EOF
 # Snapshot — ${FEATURE_NAME} ${PHASE_ID}
 
@@ -72,6 +71,13 @@ This backup lives on internal Mac storage, NOT the SanDisk Extreme
 \`/Volumes/DevSSD/\`, per the established convention from
 \`reference_devssd_hardware_issue.md\`.
 EOF
+
+# Generate sha256 manifest LAST so MANIFEST.md is included with a real hash.
+# CHECKSUMS.sha256 self-exclusion via grep: the redirect creates an empty
+# CHECKSUMS.sha256 before shasum runs, but that entry is filtered out.
+if compgen -G "*" > /dev/null; then
+    shasum -a 256 * 2>/dev/null | grep -v "CHECKSUMS.sha256" > CHECKSUMS.sha256 || true
+fi
 
 echo "Snapshot created: $BACKUP_DIR"
 echo "Files: $(ls | wc -l | tr -d ' ')"

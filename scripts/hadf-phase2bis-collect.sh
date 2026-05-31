@@ -84,7 +84,18 @@ source "$ENV_FILE"
 set +a
 
 case "$SUBEXP" in
-    subexp1)  REQUIRED_KEYS="OPENAI_API_KEY ANTHROPIC_API_KEY GOOGLE_API_KEY VERCEL_AI_GATEWAY_KEY MISTRAL_API_KEY XAI_API_KEY" ;;
+    # subexp1 = original 9-endpoint matrix (narrowed at 2026-05-25 launch to openai+anthropic).
+    #   Typo fix 2026-05-30: VERCEL_AI_GATEWAY_KEY → VERCEL_AI_GATEWAY_API_KEY (matches
+    #   the .env.local naming convention; pre-fix subexp1 would always fail preflight here
+    #   even with a valid key).
+    # subexp1b = v2 (2026-05-31): scope reduction after Sub-exp 1B v1 Fire 0
+    #   (2026-05-30T07:47Z) returned 9/50 OK on mistral (free-tier RPS HTTP 429)
+    #   and 5/50 OK on vercel-ai-gateway/gpt-4o-mini ('Free tier ... Upgrade to
+    #   paid credits'). Anthropic + Google clean (50/50 each). Operator decision
+    #   2026-05-31: drop both rate-limited endpoints; ship 2-endpoint design for
+    #   2026-06-10 launch.
+    subexp1)  REQUIRED_KEYS="OPENAI_API_KEY ANTHROPIC_API_KEY GOOGLE_API_KEY VERCEL_AI_GATEWAY_API_KEY MISTRAL_API_KEY XAI_API_KEY" ;;
+    subexp1b) REQUIRED_KEYS="ANTHROPIC_API_KEY GOOGLE_API_KEY" ;;  # v2: mistral + vercel-ai-gateway dropped
     subexp2)  REQUIRED_KEYS="" ;;  # Ollama is local, no API key
     subexp3)  REQUIRED_KEYS="OPENAI_API_KEY ANTHROPIC_API_KEY AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY" ;;
     test)     REQUIRED_KEYS="OPENAI_API_KEY" ;;  # for preflight test fixture
