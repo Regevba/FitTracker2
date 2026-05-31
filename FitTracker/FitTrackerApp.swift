@@ -139,15 +139,19 @@ struct FitTrackerApp: App {
 
                     // C1 first slice (L207): register smart-reminders as a
                     // consumer of the v2 notification platform. Idempotent.
-                    // Surfaces a Sentry-style breadcrumb if registration fails
-                    // (would only happen if another consumer claims the same
+                    // Returns false only if another consumer claims the same
                     // urlPatterns — should never occur with the current 2
-                    // consumers: smart-reminders + readinessAlert).
+                    // consumers (smart-reminders + readinessAlert). Surface
+                    // via DEBUG print so a developer hitting it during
+                    // testing sees the issue immediately.
                     let registered = SmartRemindersConsumerRegistration.registerAtAppInit()
+                    #if DEBUG
                     if !registered {
-                        analytics.logEvent("smart_reminders_consumer_registration_failed",
-                                           parameters: ["consumer_id": SmartRemindersConsumerRegistration.consumerID])
+                        print("[SmartReminders] WARNING: consumer registration failed — urlPatterns collision with another consumer.")
                     }
+                    #else
+                    _ = registered
+                    #endif
 
                     // smart-reminders-behavioral-learning Task 10:
                     // wire the behavioral-learning store + cohort client
