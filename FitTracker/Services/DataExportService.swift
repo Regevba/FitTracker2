@@ -144,22 +144,25 @@ final class DataExportService: ObservableObject {
 
         // Pre-compute optional + reduce helpers as plain strings before
         // assembling the array literal — keeps each line trivially typeable.
+        // recoveryDay is `Int` (days-since-program-start counter), not Bool.
+        // `String($0)` (closure form) avoids the multi-init overload
+        // ambiguity that `String.init` triggers when mapping Optional<Double>.
         let dateStr = ISO8601DateFormatter().string(from: log.date)
-        let recovery = log.recoveryDay ? "true" : "false"
+        let recovery = String(log.recoveryDay)
         let completion = String(log.completionPct)
 
-        let weightKg = bio.weightKg.map(String.init) ?? ""
-        let bodyFat = bio.bodyFatPercent.map(String.init) ?? ""
-        let restingHR = bio.effectiveRestingHR.map(String.init) ?? ""
-        let hrv = bio.effectiveHRV.map(String.init) ?? ""
-        let sleep = bio.effectiveSleep.map(String.init) ?? ""
+        let weightKg = bio.weightKg.map { String($0) } ?? ""
+        let bodyFat = bio.bodyFatPercent.map { String($0) } ?? ""
+        let restingHR = bio.effectiveRestingHR.map { String($0) } ?? ""
+        let hrv = bio.effectiveHRV.map { String($0) } ?? ""
+        let sleep = bio.effectiveSleep.map { String($0) } ?? ""
 
         let mealCount = String(nut.meals.count)
-        let calories = nut.resolvedCalories.map(String.init) ?? ""
-        let protein = nut.resolvedProteinG.map(String.init) ?? ""
-        let carbs = nut.resolvedCarbsG.map(String.init) ?? ""
-        let fat = nut.resolvedFatG.map(String.init) ?? ""
-        let water = nut.waterML.map(String.init) ?? ""
+        let calories = nut.resolvedCalories.map { String($0) } ?? ""
+        let protein = nut.resolvedProteinG.map { String($0) } ?? ""
+        let carbs = nut.resolvedCarbsG.map { String($0) } ?? ""
+        let fat = nut.resolvedFatG.map { String($0) } ?? ""
+        let water = nut.waterML.map { String($0) } ?? ""
 
         let exerciseCount = String(exerciseLogs.count)
         let cardioCount = String(cardioLogs.count)
