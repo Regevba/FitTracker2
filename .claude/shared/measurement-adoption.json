@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-28T06:08:06Z",
+  "updated": "2026-05-31T12:55:48Z",
   "v6_ship_date": "2026-04-16",
   "description": "Gemini audit Tier 1.1 adoption inventory. Counts which features have v6.0 measurement fields (timing.total_wall_time_minutes, per-phase timing, cache_hits, CU v2) in their state.json.",
   "summary": {
@@ -21,16 +21,16 @@
       "post_v6_percent": 37.8
     },
     "per_phase_timing": {
-      "overall_present": 42,
-      "overall_percent": 53.2,
-      "post_v6_present": 39,
-      "post_v6_percent": 86.7
+      "overall_present": 43,
+      "overall_percent": 54.4,
+      "post_v6_present": 40,
+      "post_v6_percent": 88.9
     },
     "cache_hits": {
-      "overall_present": 24,
-      "overall_percent": 30.4,
-      "post_v6_present": 23,
-      "post_v6_percent": 51.1
+      "overall_present": 25,
+      "overall_percent": 31.6,
+      "post_v6_present": 24,
+      "post_v6_percent": 53.3
     },
     "cu_v2": {
       "overall_present": 14,
@@ -283,8 +283,8 @@
       "feature": "meta-analysis-refresh-phase-1",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
-        "cache_hits": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
         "cu_v2": true
       }
     },
@@ -1097,7 +1097,7 @@
       "feature": "framework-v7-9-promotion",
       "created": "2026-05-16",
       "post_v6": true,
-      "current_phase": "docs",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
         "per_phase_timing": true,
@@ -1293,11 +1293,11 @@
       "feature": "meta-analysis-refresh-phase-1",
       "created": "2026-05-22",
       "post_v6": true,
-      "current_phase": "implementation",
+      "current_phase": "complete",
       "adoption": {
         "timing_wall_time": false,
-        "per_phase_timing": false,
-        "cache_hits": false,
+        "per_phase_timing": true,
+        "cache_hits": true,
         "cu_v2": true
       },
       "fully_adopted": false,
