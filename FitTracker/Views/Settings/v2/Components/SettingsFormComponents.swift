@@ -16,12 +16,16 @@ struct SettingsActionLabel: View {
     let tint: Color
     var trailing: SettingsActionTrailing = .chevron
 
+    // L353 Phase 1 (2026-05-31): scale the icon-container frame with Dynamic
+    // Type so the captionStrong-sized symbol grows together with its 26pt box.
+    @ScaledMetric private var iconBox: CGFloat = 26
+
     var body: some View {
         HStack(spacing: AppSpacing.xSmall) {
             Image(systemName: icon)
                 .font(AppText.captionStrong)
                 .foregroundStyle(tint)
-                .frame(width: 26, height: 26)
+                .frame(width: iconBox, height: iconBox)
                 .background(tint.opacity(0.14), in: RoundedRectangle(cornerRadius: AppRadius.xSmall))
 
             VStack(alignment: .leading, spacing: AppSpacing.micro) {
