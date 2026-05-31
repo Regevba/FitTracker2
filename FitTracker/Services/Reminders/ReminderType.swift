@@ -40,15 +40,13 @@ enum ReminderType: String, CaseIterable, Codable {
 
     // ── Routing ──────────────────────────────────────────
 
+    /// Deep-link URL for this reminder type, delegated to `DeepLinkRouter`
+    /// which now owns the smart-reminders URL registry (C1 item #3,
+    /// L207 backlog). Behavior preserved — the same 6 URLs are returned —
+    /// but the source of truth moved so DeepLinkRouter has full ownership
+    /// of every consumer's URL space.
     var deepLink: String {
-        switch self {
-        case .healthKitConnect:    "fitme://settings/health"
-        case .accountRegistration: "fitme://auth"
-        case .nutritionGap:        "fitme://nutrition"
-        case .trainingDay:         "fitme://training"
-        case .restDay:             "fitme://home"
-        case .engagement:          "fitme://home"
-        }
+        DeepLinkRouter.deepLinkURL(forReminderTypeRawValue: self.rawValue)
     }
 
     // ── Fire-time defaults (smart-reminders-behavioral-learning PR 1) ──
