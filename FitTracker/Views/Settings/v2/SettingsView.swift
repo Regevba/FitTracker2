@@ -260,6 +260,13 @@ struct SettingsView: View {
                 SettingsSummaryBadge(title: cloudSync.status.rawValue, tint: syncTint),
                 SettingsSummaryBadge(title: "\(dataStore.dailyLogs.count) Logs", tint: AppColor.Accent.primary),
             ]
+        case .notifications:
+            let masterLabel = reminderPreferences.masterEnabled ? "Enabled" : "Off"
+            let masterTint: Color = reminderPreferences.masterEnabled ? AppColor.Status.success : AppColor.Text.secondary
+            return [
+                SettingsSummaryBadge(title: masterLabel, tint: masterTint),
+                SettingsSummaryBadge(title: "Cap \(reminderPreferences.dailyCap)/day", tint: AppColor.Brand.warm),
+            ]
         }
     }
 
