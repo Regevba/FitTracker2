@@ -489,11 +489,13 @@ N/A — operator-side personal-script edit (lives outside repo at `~/.fittracker
 
 ---
 
-## F-TIER-TAG-FORWARD-DEADLINE-FILTER
+## ~~F-TIER-TAG-FORWARD-DEADLINE-FILTER~~
+
+**Closed 2026-05-31 via PR #540.** Extended `is_target_or_kill_claim()` in [`scripts/validate-tier-tags.py`](../../scripts/validate-tier-tags.py) with `FORWARD_DEADLINE_RE` regex recognizing `T+Nd` / `events / Nd` / `within Nd` patterns. 8/8 unit smoke tests pass; closes the 4-false-positive class observed 2026-05-30. Phase-E-safe (advisory heuristic tightening, no gate behavior change).
 
 **Discovered:** 2026-05-30 (integrity regression flag investigation during full system check).
-**Status:** queued.
-**Owner:** TBD.
+**Status:** ~~queued~~ → **CLOSED 2026-05-31.**
+**Owner:** ~~TBD~~ → shipped.
 **Effort:** ~30min (1 regex pattern + 2 test cases in `scripts/validate-tier-tags.py`).
 
 ### Problem
