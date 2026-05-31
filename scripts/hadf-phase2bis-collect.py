@@ -52,19 +52,20 @@ ENDPOINTS = {
         ("anthropic", "claude-sonnet-4-6", "direct"),
     ],
     "subexp1b": [
-        # 2026-05-30 follow-up to Sub-exp 1A. Verifies that the silhouette
-        # signature generalizes to a wider 4-endpoint cloud matrix spanning 4
-        # providers (vs 1A's 2-provider 4-endpoint matrix). Key acquisitions
-        # closed the deferral from 1A: Mistral + Vercel-AI-Gateway minted
-        # 2026-05-30; Google rotated to a non-reasoning model (gemini-2.5-flash-lite
-        # — verified 0 thoughtsTokens at HADF-scale prompts); Anthropic anchor
-        # carries forward from 1A for cross-window drift detection.
-        # xAI deferred per operator decision 2026-05-30 (skip cost + API gateway
-        # surface area until a future Sub-exp 1C if signature breadth demands it).
+        # v2 (2026-05-31): scope reduction after Sub-exp 1B v1 Fire 0 (2026-05-30T07:47Z)
+        # returned 9/50 OK on mistral (HTTP 429 free-tier RPS) and 5/50 OK on
+        # vercel-ai-gateway/gpt-4o-mini ('Free tier requests on this model are
+        # rate-limited. Upgrade to paid credits'). Anthropic + Google clean
+        # (50/50 each). Operator decision 2026-05-31: drop mistral + vercel-ai-
+        # gateway; keep 2-endpoint design for the 2026-06-10 launch. Primary
+        # metric adjusted from silhouette k=5 → k=2 (only 2 clusters with 2
+        # providers); pass_yield_min halved from 600 → 300. Full v2 prereg at
+        # .claude/shared/hadf/preregistration-phase2bis-subexp1b.json (sha256
+        # to be locked at ceremony; v1 lock sha256=cfc7e968feeb retained as
+        # historical record via signed tag prereg-phase2bis-subexp1b-locked-
+        # 2026-05-30).
         ("anthropic", "claude-haiku-4-5-20251001", "direct"),  # anchor — dated form for lock stability
         ("google", "gemini-2.5-flash-lite", "direct"),
-        ("mistral", "mistral-large-latest", "direct"),
-        ("vercel-ai-gateway", "gpt-4o-mini", "gateway"),
     ],
     "subexp2": [
         ("ollama", "llama3.2:3b", "local"),
