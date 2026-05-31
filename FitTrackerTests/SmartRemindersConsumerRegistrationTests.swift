@@ -9,11 +9,11 @@ final class SmartRemindersConsumerRegistrationTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        NotificationConsumerRegistry.shared.unregisterAll()
+        NotificationConsumerRegistry.shared.reset()
     }
 
     override func tearDown() {
-        NotificationConsumerRegistry.shared.unregisterAll()
+        NotificationConsumerRegistry.shared.reset()
         super.tearDown()
     }
 
