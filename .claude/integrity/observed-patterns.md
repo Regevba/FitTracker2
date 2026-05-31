@@ -1171,3 +1171,112 @@ Run `make freshness-check` (or accept the auto-chain via `make preflight`) at an
 The agent obligation is codified in [`feedback_cross_layer_freshness_check.md`](../../memory/feedback_cross_layer_freshness_check.md) (auto-memory). The pattern is mechanically enforced via the auto-chain from `make preflight` (v7.8.6+) and surfaced via SessionStart hook (when wired).
 
 **First surfaced by:** 2026-05-28 session — HADF Sub-exp 2/3 prereg duplication incident. Cost: ~30 min of duplicated work + an operator correction round-trip. Recovery: revert prereg edits + undo MDX rename. Net session deliverable salvaged: collector code (ollama + aws-bedrock branches) + requirements + operator runbook — all genuinely new and useful.
+
+### W21 — Swift `String.contains("\n")` misses CRLF graphemes; scan unicodeScalars instead (2026-05-31)
+
+**Surfaced by:** `feat/data-export-csv-2026-05-31` PR #549 — CSV `csvEscape("line1\r\nline2")` returned the raw input instead of the quoted form, because the function gated its escape branch on `field.contains("\n") || field.contains("\r")`. CI test `test_csvEscape_quotesAndEscapesFieldsWithNewlines` failed with the wrapped-form expected but raw form actual.
+
+**Root cause:** Swift's `String` is a sequence of extended grapheme clusters, not scalars. The bytes `\r\n` (U+000D + U+000A) form a single CRLF cluster. `String.contains("\n")` looks for a `\n` cluster on its own — the CRLF cluster does not match `\n` alone, and does not match `\r` alone. The escape branch never fired, raw input returned.
+
+**Fix:**
+
+```swift
+let needsEscape = field.unicodeScalars.contains(where: { scalar in
+    scalar == "," || scalar == "\n" || scalar == "\r" || scalar == "\""
+})
+```
+
+Scalar-level scan detects CR + LF whether they appear standalone or inside any cluster.
+
+**Generalizable rule:** when checking for ASCII control characters in arbitrary Swift `String` input, scan `unicodeScalars` not graphemes. The grapheme abstraction is correct for user-facing text length, sorting, slicing — wrong for byte-level format compliance (CSV, NDJSON, HTTP framing, etc.).
+
+**Sibling patterns:** None in current catalog; first Swift-language-behavior W-code.
+
+### W22 — Swift type-checker timeout on heterogeneous array literals >20 elements with `Optional.map(String.init)` (2026-05-31)
+
+**Surfaced by:** `feat/data-export-csv-2026-05-31` PR #549 first CI failure — `DataExportService.swift:129: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions`.
+
+**Root cause:** the failing line assembled a 23-element `[String]` literal mixing:
+
+- direct strings (`log.phase.rawValue`)
+- `String(_:)` calls on Ints (`String(log.completionPct)`)
+- `Optional<Double>.map(String.init) ?? ""` chains (`bio.weightKg.map(String.init) ?? ""`)
+- `Optional<Double>.map(String.init) ?? ""` for several nutrition fields
+- `reduce`/`compactMap`/`filter` accumulations wrapped in `String(_:)`
+
+Swift's `String.init(_:)` has many overloads (Int, Double, Float, CustomStringConvertible, …); each `Optional.map(String.init)` site is independently ambiguous. Combined with array-literal type inference, the constraint solver hits its budget cap and gives up.
+
+**Fix (two layers):**
+
+1. Extract each cell as a plain `String` local before the literal:
+   ```swift
+   let weightKg = bio.weightKg.map { String($0) } ?? ""
+   // ... 22 more locals
+   let fields: [String] = [dateStr, log.phase.rawValue, ..., weightKg, ...]
+   ```
+2. Use closure form `.map { String($0) }` (not unbound `.map(String.init)`) — the closure-parameter type is inferred from the optional's `Wrapped`, picking exactly one `String.init(_:)` overload.
+
+**Generalizable rule:** when assembling a homogeneous array from heterogeneous expressions, pre-compute each cell. When mapping `Optional<T>` through `String.init`, prefer the closure form.
+
+**Sibling patterns:** None directly; closest is [W21](#w21--swift-stringcontainsn-misses-crlf-graphemes-scan-unicodescalars-instead-2026-05-31) — both are Swift-language-behavior W-codes from the same PR.
+
+### W23 — `AnalyticsService.logEvent` is private; callers must use a `log*`-named public method (2026-05-31)
+
+**Surfaced by:** `feat/smart-reminders-consumer-registry-2026-05-31` PR #551 first CI failure — `FitTrackerApp.swift:148: error: 'logEvent' is inaccessible due to 'private' protection level`.
+
+**Root cause:** `AnalyticsService` exposes ~30 `func log<EventName>(...)` methods (`logLogin`, `logShare`, `logWorkoutStarted`, …) and channels them all through a single `private func logEvent(_ name: String, parameters: [String: Any]?)`. The funnel is intentionally private — every event must come from a named, documented call site. Free-form callers cannot bypass the taxonomy.
+
+**Fix:** for edge-case-that-shouldn't-happen events with no matching `log*` method, surface via `#if DEBUG print()` instead of inventing a new method. Adding a `log*` method specifically for a path that should never fire violates the taxonomy discipline.
+
+```swift
+let registered = SmartRemindersConsumerRegistration.registerAtAppInit()
+#if DEBUG
+if !registered {
+    print("[SmartReminders] WARNING: consumer registration failed — urlPatterns collision.")
+}
+#else
+_ = registered
+#endif
+```
+
+**Generalizable rule:** if your call site needs a `logEvent` for a real product surface, add a named `log*` method to the public API. If it's a defensive can't-happen path, use a debug print, not a new method.
+
+**Sibling patterns:** None directly; analytics-taxonomy hygiene is enforced in the [analytics naming convention](../../CLAUDE.md#analytics-naming-convention) but not as a W-code until now.
+
+### W24 — pbxproj merge conflicts when concurrent PRs add files in the same group/sources position (2026-05-31)
+
+**Surfaced by:** PRs #549 + #550 — both branched from the same `main` SHA, each added entries to `FitTrackerTests` group and Sources phase at the position immediately after `ReminderAnalyticsTests.swift`. When #551 (Smart Reminders consumer registry, the third concurrent PR) merged first, the other two branches went `DIRTY` with conflict markers in two `project.pbxproj` regions per PR.
+
+**Root cause:** Xcode's pbxproj is line-ordered; new entries by convention land at the same neighborhood relative to a stable anchor (e.g. "after ReminderAnalyticsTests"). When N concurrent PRs target that anchor, only the first merger lands cleanly; the rest see CONTENT conflicts in the same span.
+
+**Fix:** resolve by keeping ALL branches' entries side-by-side — the entries themselves never overlap semantically (distinct PBXBuildFile IDs + distinct PBXFileReference IDs + distinct paths). Manual merge keeping `<<<<<<<` content + `=======` content + dropping the markers + the `>>>>>>>` line is mechanically safe.
+
+**Generalizable rule:** when N concurrent PRs add files to the same Xcode target, expect pbxproj merge conflicts; resolution is purely additive. No code-semantic risk — but at scale (>3 concurrent PRs) consider sequencing or splitting the target.
+
+**Sibling patterns:**
+
+- [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — same "concurrent branches diverge against main" class, different surface (PR-review preview lies vs pbxproj conflict)
+
+### W25 — `@MainActor` propagates to static methods; main-actor-bound statics must be called from `@MainActor` test classes (2026-05-31)
+
+**Surfaced by:** `feat/data-export-csv-2026-05-31` PR #549 second CI failure — `DataExportServiceCSVTests.swift:12: error: call to main actor-isolated static method 'csvEscape' in a synchronous nonisolated context`.
+
+**Root cause:** `DataExportService` is declared `@MainActor final class …` because it's an `ObservableObject` driving SwiftUI updates. The annotation propagates to all members, including `static func csvEscape(_:)`. Synchronous test methods in a non-isolated `XCTestCase` subclass cannot call main-actor statics without an `await MainActor.run { … }` wrapper.
+
+**Fix:** mark the test class `@MainActor`:
+
+```swift
+@MainActor
+final class DataExportServiceCSVTests: XCTestCase {
+    func test_csvEscape_passesPlainStringUnchanged() {
+        XCTAssertEqual(DataExportService.csvEscape("hello"), "hello")  // OK
+    }
+}
+```
+
+This matches the pattern already used in [`ReminderPreferencesStoreTests`](../../FitTrackerTests/ReminderPreferencesStoreTests.swift) + [`SmartRemindersConsumerRegistrationTests`](../../FitTrackerTests/SmartRemindersConsumerRegistrationTests.swift) — three sibling test files in the same merge window.
+
+**Generalizable rule:** when adding a unit-test file for a `@MainActor` type's static or instance methods, annotate the test class `@MainActor`. If most tests in the codebase target `@MainActor` types (SwiftUI app), `@MainActor` on the class becomes the default; non-actor tests are the exception.
+
+**Sibling patterns:** None directly; closest is the design-system test discipline that XCTest's main-actor handling enables — not yet codified as a W-code.
+
