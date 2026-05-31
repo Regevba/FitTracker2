@@ -170,24 +170,51 @@ The following 5 rows moved out of "In Progress":
 
 ## Planned (Roadmap Tasks — RICE Ordered)
 
-| RICE | Task | Phase | Description |
-|------|------|-------|-------------|
-| 20.0 | Task 13: Metrics framework | 0 | 40 metrics defined ✅ |
-| 20.0 | Task 6: Full backlog dump | 0 | This document ✅ |
-| 16.0 | Task 17: Public README | 1 | Polished repo front door |
-| 15.0 | Task 12+18: Unified PRD | 0 | Complete PRD ✅ |
-| 8.0 | Task 4: Google Analytics | 2 | Firebase SDK, event taxonomy, funnels |
-| 4.8 | Task 2: Android design system | 3 | Token mapping, MD3 equivalents |
-| 4.3 | Task 1: Figma prototype | 1 | Interactive 22+ screen demo |
-| 4.3 | Task 16: Marketing website | 5 | Comprehensive site with testimonials |
-| 3.6 | Task 3: Android app research | 3 | Native vs framework, effort estimate |
-| 3.2 | Task 14: Skills OS | 2 | API connections, review cycles, live dashboard |
-| 3.2 | Task 15: CX system | 2 | Reviews, NPS, follow-up, public roadmap |
-| 3.0 | Task 7: Notion integration | 0 | Backlog/roadmap management |
-| 2.1 | Task 10: Health API connections | 3 | Garmin, Whoop, Oura, Samsung, Fitbit |
-| 2.0 | Task 11: DEXA + body composition | 3 | Scan import, regional breakdown |
-| 1.3 | Task 9: Blood test reader | 4 | OCR, regulatory research, encryption |
-| 1.0 | Task 5: Skills feature (in-app) | 4 | Categories, progression, UI |
+> **Refreshed 2026-05-31 (E1 RICE pass).** The previous 16-task table dated from the 2026-04-02 Phase 0 backlog dump; 11 of those tasks have since shipped (Metrics framework, Full backlog dump, Public README, Unified PRD, Google Analytics, Android design system, Figma prototype, Marketing website, Skills OS, Notion integration, and Onboarding). Today's session shipped 11 PRs (L207 fully closed = 4/4 items; L349 + L350 closed; W21-W25 catalog; CI optimization; Dark Mode + Dynamic Type audits). Remaining unshipped items from the 2026-04-02 list re-scored alongside today's surfaced work below.
+>
+> **RICE scoring scale (0-20 raw):** higher = sooner. Inputs: Reach (% users impacted) × Impact (0.25 minimal → 3 massive) × Confidence (% certainty) ÷ Effort (person-weeks). Tie-broken by dependency unblocking value.
+
+| RICE | Item | Type | Effort | Why now |
+|------|------|------|--------|---------|
+| 13.0 | **C2 — Readiness-Aware Training Alert** (Enhancement; parent: smart-reminders) | iOS Enhancement | 3-5d | All deps shipped today after L207 close: NotificationGateway routing (#553), DeepLinkRouter registry (#556), AIInsightCard + AIOrchestrator + ReadinessEngine v2 + smart-reminders all already in place. Proactive readiness guidance is core to the app's value prop |
+| 10.5 | **C4 — Trend alerts (HRV threshold)** (L346) | iOS Feature, 9-phase | 2-3d | Cross-feature win: HealthKit + Smart Reminders + Push v2 all shipped; NotificationGateway path operational. Surfaces real value to power users with stable HRV history |
+| 9.0 | **C5 — AI user feedback loop** (L351) | iOS Feature, 9-phase | 2-3d | Improves AI recommendation quality over time; pairs naturally with D1 (adaptive-intelligence next pass). Enables thumbs up/down on AI insights → reinforcement loop |
+| 8.0 | **C3 — Exercise search/filter** (L347) | iOS Feature, 9-phase | 2-3d | 87 exercises currently in fixed-order list; clear UX gap. Power-user complaint surface |
+| 7.5 | **L353 audit-doc revision + Phases 3-4** | iOS doc PR | 30-60 min | PR #555's "~40-50" estimate was loose; Phase 1 (#557) shipped 4-site fix. Closes L353 backlog with tight final count + Phase 3 (touch target rationale) + Phase 4 (layout dim case-by-case) docs |
+| 7.0 | **C6 — Training program customization** (L348) | iOS Feature, 9-phase | 4-6d | Largest scope. Replaces fixed 6-day PPL split. Depends on Import Training Plan (shipped). High impact but high effort → slot after C2-C5 |
+| 6.5 | **L352 simulator walkthrough + selection-state contrast** | iOS operator-paced | ~50 min | Per PR #554 audit doc. Validates dark mode E2E. Closes L352 backlog row once 1+2 from the operator checklist run |
+| 6.0 | **Funnel Analysis Dashboards** | GA4 dashboards | 2-3d | Blocks PRD kill-criteria evaluation. Analytics taxonomy in place; just needs GA4 funnel definitions wired |
+| 5.5 | **App Store assets** (FIT-17) | Marketing chore | 5/10 already done | Pre-launch surface. Resume after S3-G3 / S5 / S4 / S7 / S6 / S8 / S9. Calendar-anchored to App Store submission window |
+| 5.0 | **Sentry Integration** | iOS infra | gated on pre-launch | PAUSED 2026-05-21 → resume before App Store submission. Code wiring preserved; just needs DSN + ConsentManager flow |
+| 4.5 | **D1 — adaptive-intelligence next pass** | Research → PRD | 5-7d | Cross-platform research-heavy. Pairs with C5 (AI feedback loop). Builds the reinforcement layer on top of AIOrchestrator |
+| 4.5 | **Task 15: CX system** (carryover from Phase 0) | Cross-platform Feature | 2-3w | Reviews, NPS, follow-up, public roadmap. Needs research → PRD; defer to post-launch reality check |
+| 4.0 | **L353 Phase 1 simulator verification** | Operator action | ~10 min | Verify @ScaledMetric in PR #557 takes effect at AX5 Dynamic Type in simulator. Closes the implementation half of L353 |
+| 3.6 | **Task 3: Android app research** | Cross-platform research | 1-2w | Native vs framework decision. Android design system tokens already shipped; just need implementation-language scope decision |
+| 3.0 | **B2 post-v7.9 baseline snapshot** | One-shot ceremony | 5 min | 3d overdue from 2026-05-28. Mechanical command: `make snapshot-phase PHASE=post-v7-9-baseline FEATURE=framework-v7-8-branch-isolation` |
+| 2.5 | **Onboarding v2 retroactive refactor to `v2/` subdir** (E4) | iOS chore | 1d | V2 Rule validation — pilot used patch-in-place; needs proper subdirectory split. Methodology proof, not user-facing |
+| 2.5 | **L207 followups: Smart Reminders behavioral learning PR-2** | iOS Enhancement | 1-2d | Bayesian per-user posterior + Supabase server-cohort prior. Gated on App Store launch — needs real-user data, not operator-only TestFlight |
+| 2.1 | **Task 10: Health API connections** (Garmin/Whoop/Oura/Samsung/Fitbit) | iOS Feature, multi-platform | 3-5w | Carryover from Phase 0. Each platform = 1-week PRD + implementation. Large multi-week effort; pick top-2 by user research first |
+| 2.0 | **Task 11: DEXA + body composition** | iOS Feature | 2-3w | DEXA scan import, regional breakdown. Niche but high-value for body recomposition users |
+| 1.3 | **Task 9: Blood test reader** | iOS Feature | 4-6w | OCR + regulatory research + encryption. Large scope, regulatory complexity (medical data), defer |
+| 1.0 | **Task 5: Skills feature (in-app)** | iOS Feature | 2-3w | Categories, progression, in-app UI for skills metaphor. Low priority — internal skill metaphor doesn't need user-facing surface yet |
+
+### Shipped from the 2026-04-02 Phase 0 list (no longer in Planned table)
+
+For audit reference, these original Phase 0 RICE-table items shipped in subsequent sessions:
+
+| Original task | Shipped | Reference |
+|---|---|---|
+| Task 13: Metrics framework | 2026-04-02 | `docs/product/metrics-framework.md` (40 metrics) |
+| Task 6: Full backlog dump | 2026-04-02 | This document (multiple refresh passes since) |
+| Task 17: Public README | 2026-04-25 | Repo README + framework-story site |
+| Task 12+18: Unified PRD | 2026-04-02 | `docs/product/PRD.md` + per-feature PRDs in `docs/product/prd/` |
+| Task 4: Google Analytics | 2026-04-04 | GA4 + Firebase SDK + 20 events + 17 tests |
+| Task 2: Android design system | 2026-04-04 | Token mapping + Style Dictionary config |
+| Task 1: Figma prototype | 2026-04-04 | 28-screen Figma file + flow wiring |
+| Task 16: Marketing website | 2026-04-21 | fitme-story.vercel.app — Lighthouse 95+ |
+| Task 14: Skills OS | 2026-04-10 to 05-06 | Skills evolution v1.0 → v4.X (in-app dashboard + ecosystem) |
+| Task 7: Notion integration | 2026-04-15 | Linear + Notion MCPs wired |
+| Onboarding (was in Backlog) | 2026-04-15 | PR #80 v2 auth flow shipped |
 
 ---
 
