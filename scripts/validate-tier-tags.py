@@ -110,17 +110,51 @@ TARGET_KILL_MARKERS = (
     "≤",
 )
 
+# v7.9.1 F-TIER-TAG-FORWARD-DEADLINE-FILTER (added 2026-05-31): extend the
+# v7.8.4 filter to recognize forward-looking deadline / measurement-window /
+# kill-criterion-window patterns. These are NOT measurements — they're
+# durations attached to a threshold or evaluation window, so the number is a
+# declaration, not an observation. Closes the 4 false-positive advisories
+# surfaced 2026-05-30 (framework-v7-8-branch-isolation, framework-v7-9-promotion,
+# ucc-passkey-auth, ucc-passkey-auth-security-hardening).
+FORWARD_DEADLINE_RE = re.compile(
+    r"""
+    (
+        # "T+7d", "T+14d" (post-promotion soak windows)
+        T\+\d+\s*[dhm]
+        |
+        # "0 events / 7d", "10 events/30d" (rate / window threshold)
+        \d+\s*events?\s*/\s*\d+\s*[dhm]
+        |
+        # "within 7d", "within T+14d" (kill-criterion evaluation window)
+        within\s+T?\+?\d+\s*[dhm]
+        |
+        # "events / Nd window" (measurement-window declarations)
+        events?\s*/\s*\d+\s*[dhm]\s+window
+    )
+    """,
+    re.IGNORECASE | re.VERBOSE,
+)
+
 
 def is_target_or_kill_claim(context: str) -> bool:
     """True when the claim context is a forward-looking threshold declaration.
 
     Added v7.8.4 to narrow the false-positive class — see CLAUDE.md "v7.8.4"
-    section. Targets/kill criteria are legitimately T1-tagged because the
-    *metric* is instrumented, but the *number* is a declaration of intent
-    rather than an observation, so it will never have a ledger match.
+    section. Extended v7.9.1 (F-TIER-TAG-FORWARD-DEADLINE-FILTER) to also
+    recognize T+Nd / events/Nd / within-Nd forward-deadline patterns.
+
+    Targets/kill criteria/measurement-windows are legitimately T1-tagged
+    because the *metric* is instrumented, but the *number* is a declaration
+    of intent rather than an observation, so it will never have a ledger
+    match.
     """
     lower = context.lower()
-    return any(marker in lower for marker in TARGET_KILL_MARKERS)
+    if any(marker in lower for marker in TARGET_KILL_MARKERS):
+        return True
+    if FORWARD_DEADLINE_RE.search(context):
+        return True
+    return False
 
 
 def validate_file(path: Path, ledger_numbers: Set[float]) -> List[str]:
