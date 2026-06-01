@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T16:24:49Z",
-  "updated_at": "2026-06-01T16:24:49Z",
+  "updated_at": "2026-06-01T16:32:45Z",
   "events": [
     {
       "timestamp": "2026-06-01T16:24:49Z",
@@ -16,6 +16,19 @@
       "artifacts": [],
       "metrics": {},
       "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-01T16:32:45Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Phase 0 (Research) approved in PR #572. Phase 1 (PRD) authored at docs/product/prd/ai-user-feedback-loop.md. FROZEN constants: acceptanceUpgradeThreshold=0.70, dismissalSuppressionThreshold=3, quorumCount=5, confidenceTierOnly mode. 3 new analytics events screen-prefixed home_. 5 success metrics T1/T2/T3 tagged. 4 kill criteria. 6 open questions resolved. Phase E compliant (no new gates).",
+      "artifacts": [
+        "docs/product/prd/ai-user-feedback-loop.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
       "status": "recorded",
       "recording_mode": "contemporaneous"
     }
