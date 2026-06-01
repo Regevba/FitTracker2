@@ -69,6 +69,11 @@ struct NotificationsSettingsScreen: View {
                     detail: "Pre-training nudge if HRV, sleep, or RHR suggest adapting today's load.",
                     isOn: $preferences.readinessAwareAlertsEnabled
                 )
+                reminderToggle(
+                    title: "Trend Alerts",
+                    detail: "Heads-up when HRV trends below your baseline for 3+ days.",
+                    isOn: $preferences.trendAlertsEnabled
+                )
             }
             .disabled(!preferences.masterEnabled)
             .opacity(preferences.masterEnabled ? 1.0 : 0.55)
