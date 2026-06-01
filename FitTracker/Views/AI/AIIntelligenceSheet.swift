@@ -9,6 +9,7 @@ struct AIIntelligenceSheet: View {
     @EnvironmentObject private var analytics:      AnalyticsService
     @EnvironmentObject private var healthService:  HealthKitService
     @EnvironmentObject private var readinessAware: ReadinessAwareAlertStore
+    @EnvironmentObject private var trendAlert:     TrendAlertStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -37,6 +38,11 @@ struct AIIntelligenceSheet: View {
 
                     // Readiness breakdown
                     readinessSection
+
+                    // C4 — Your HRV Trend (sustained-trend advisory, when present)
+                    if let context = trendAlert.current() {
+                        hrvTrendSection(context: context)
+                    }
 
                     // Feedback
                     AIFeedbackView()
@@ -137,6 +143,74 @@ struct AIIntelligenceSheet: View {
                         in: RoundedRectangle(cornerRadius: AppRadius.card)
                     )
             }
+        }
+    }
+
+    // MARK: - C4 — Your HRV Trend section
+
+    @ViewBuilder
+    private func hrvTrendSection(context: TrendAlertContext) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            Text("Your HRV Trend")
+                .font(AppText.sectionTitle)
+                .foregroundStyle(AppColor.Text.primary)
+
+            HRVTrendChart(
+                dailySamples: paddedSamples(from: context),
+                baseline: context.baseline,
+                floor: context.floor,
+                referenceDates: paddedDates(from: context)
+            )
+
+            Text("Baseline computed from your last 30 days. Adjust at Settings → Notifications → Trend Alerts.")
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            HStack(spacing: AppSpacing.medium) {
+                Spacer()
+                trendFeedbackButton(rating: "positive", icon: "hand.thumbsup", kind: context.kind.rawValue)
+                trendFeedbackButton(rating: "negative", icon: "hand.thumbsdown", kind: context.kind.rawValue)
+                Spacer()
+            }
+            .padding(.top, AppSpacing.xSmall)
+        }
+        .padding(AppSpacing.medium)
+        .background(
+            AppColor.Surface.primary,
+            in: RoundedRectangle(cornerRadius: AppRadius.card)
+        )
+        .accessibilityElement(children: .contain)
+    }
+
+    private func trendFeedbackButton(rating: String, icon: String, kind: String) -> some View {
+        Button {
+            analytics.logHomeTrendAlertActionTaken(kind: kind, rating: rating)
+            trendAlert.clear()
+        } label: {
+            Image(systemName: icon)
+                .font(AppText.subheading)
+                .foregroundStyle(AppColor.Text.secondary)
+                .padding(AppSpacing.xSmall)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(rating == "positive" ? "Helpful" : "Not helpful")
+    }
+
+    /// Pads the context's samples array to 7 days (oldest → newest) so the
+    /// chart renders a full week even when the trigger only fires on the
+    /// most recent 3 days. Missing days surface as nil (gaps in the line).
+    private func paddedSamples(from context: TrendAlertContext) -> [Double?] {
+        let prefixCount = max(0, 7 - context.samples.count)
+        let prefix: [Double?] = Array(repeating: nil, count: prefixCount)
+        let recent: [Double?] = context.samples.map { Optional($0) }
+        return prefix + recent
+    }
+
+    private func paddedDates(from context: TrendAlertContext) -> [Date] {
+        let calendar = Calendar.current
+        let endDate = context.generatedAt
+        return (0..<7).reversed().compactMap { offset in
+            calendar.date(byAdding: .day, value: -offset, to: endDate)
         }
     }
 
