@@ -2,7 +2,7 @@
 
 > **Audience:** developers landing in this codebase who need to understand how the PM framework actually works — not the marketing narrative, not the case-study story arc, but the wiring. If you are about to add a new feature, extend a check code, fix a CI workflow, or bump the framework version, start here.
 >
-> **Current version:** **v7.9** (shipped 2026-05-21) — promotes 3 v7.8.1 advisory gates to enforced via a single-flag flip ([`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py)). Phase E validation soak runs through 2026-06-04. Total at v7.9: **37 mechanical gates + 5 advisories**. Shipped via [FT2 PR #417](https://github.com/Regevba/FitTracker2/pull/417). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v79). For the full v7.9 outcome see [§2.0](#20-current-version-snapshot-v79-2026-05-21).
+> **Current version:** **v7.9** (shipped 2026-05-21) — promotes 3 v7.8.1 advisory gates to enforced via a single-flag flip ([`scripts/check-state-schema.py:138`](../../scripts/check-state-schema.py)). Phase E validation soak runs through 2026-06-04. Total at v7.9: **37 mechanical gates + 5 advisories**. Shipped via [FT2 PR #417](https://github.com/Regevba/FitTracker2/pull/417). For prior versions see [§12 timeline](#12-compressed-evolution-timeline-v10--v79). For the full v7.9 outcome see [§2.0](#20-current-version-snapshot-v79-2026-05-21).
 > **Filename note:** the file stays `dev-guide-v1-to-v7-7.md` for ref-stability across 16+ cross-references in FT2 + fitme-story. Content tracks the latest framework version (v7.9).
 > **Companion docs:** [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md) (event/log/gate catalog with mermaid flow diagrams), [`docs/skills/architecture.md`](../skills/architecture.md) (skill-by-skill anatomy), [`docs/skills/evolution.md`](../skills/evolution.md) (full version-by-version history), [`CLAUDE.md`](../../CLAUDE.md) (project rules, fastest reference).
 > **Reading order:** §0 is a 90-second tour. §1 is audience and reading hints. §1.5 is the glossary. §§ 2–3 give you the mental model. §§ 4–8 are the schemas and contracts you'll edit against. §§ 9–11 are the integrity layer (where failures get caught). § 12 is the compressed timeline. §§ 13–15 are operational walkthroughs. § 16 is the cross-repo Code Connect bridge. § 17 is references.
@@ -90,6 +90,10 @@ Cross-cutting terms used throughout this guide and in commit messages, PR descri
 | **Phase E** | A post-promotion validation soak (typically 14 days) where no new gates ship and the operator watches `gate-coverage.jsonl` for unexpected `failure` rows. v7.9 Phase E ran 2026-05-21 → 2026-06-04. |
 | **state.json** | Per-feature canonical contract at `.claude/features/<name>/state.json`. The single source of truth for that feature's lifecycle. See §5. |
 | **`/pm-workflow`** | The agent command that creates state.json, drives phase transitions, dispatches the right skill per phase. The 1 command you run most. |
+| **Observed Patterns Catalog** | [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) (v7.8.5). The canonical manifest of gate-firing patterns — 23 gate patterns + 26 workflow (W1–W26). When a gate fires, consult it FIRST (§10.5). `make observed-patterns`. |
+| **`make preflight`** | The unified pre-work aggregator (v7.8.6). `make preflight WORK_TYPE=<feature\|enhancement\|fix\|chore>` runs every pre-work check (ssh-agent, PR-cache freshness, branch isolation, integrity findings, drift-vs-anchor, doc-debt, adoption, W20 freshness) into `preflight-cache.json`. Mandatory Phase 0.0 step (§10.6). |
+| **`state_owner`** | Required top-level state.json enum (`{ft2, fitme-story}`, v7.8.3) declaring which repo holds the canonical state file. Enforced by the `STATE_OWNER_*` gates. |
+| **snapshot-phase / integrity-diff** | `make snapshot-phase` (v7.8.3) writes a per-phase off-SSD backup; `make integrity-diff` (v7.8.6) diffs current platform state vs the 2026-05-14 baseline anchor. |
 
 ---
 
@@ -97,7 +101,7 @@ Cross-cutting terms used throughout this guide and in commit messages, PR descri
 
 ### 2.0 Current version snapshot (v7.9, 2026-05-21)
 
-v7.9 is the **enforcement-flip release**. No new gate code, no new schema fields, no new observability surfaces. A single-line edit at [`scripts/check-state-schema.py:132`](../../scripts/check-state-schema.py) flipped `BRANCH_ISOLATION_ADVISORY_MODE` from `True` to `False`, promoting 3 v7.8.1 advisory gates simultaneously to enforced.
+v7.9 is the **enforcement-flip release**. No new gate code, no new schema fields, no new observability surfaces. A single-line edit at [`scripts/check-state-schema.py:138`](../../scripts/check-state-schema.py) flipped `BRANCH_ISOLATION_ADVISORY_MODE` from `True` to `False`, promoting 3 v7.8.1 advisory gates simultaneously to enforced.
 
 **Gates promoted (3 advisory → 3 enforced):**
 
@@ -220,16 +224,28 @@ FitTracker2/
 │   ├── cache/                                ← learning cache (L1 + L2 _shared/ + L3 _project/)
 │   └── integrity/
 │       ├── README.md                         ← integrity layer canonical entry
+│       ├── observed-patterns.md              ← gate-firing pattern catalog (v7.8.5; `make observed-patterns`)
 │       └── snapshots/                        ← 72h cycle snapshots (committed)
 ├── scripts/
-│   ├── check-state-schema.py                 ← write-time + cycle (10+ check codes)
+│   ├── check-state-schema.py                 ← write-time + cycle (state.json gates incl. branch-isolation + state_owner)
 │   ├── check-case-study-preflight.py         ← write-time (case studies)
-│   ├── integrity-check.py                    ← cycle-time (13 check codes + 1 advisory)
+│   ├── integrity-check.py                    ← cycle-time check codes + advisories
+│   ├── ensure-pr-cache-fresh.py              ← PR_CACHE_STALE auto-refresh (v7.8.4)
+│   ├── observe-cache-hit.py                  ← Mechanism C PostToolUse:Read capture (v7.8)
+│   ├── check-branch-drift.py                 ← W9 branch-drift PostToolUse:Bash alert (v7.8.5)
+│   ├── check-ssh-agent.sh                    ← W1 ssh-agent SessionStart preflight (v7.8.6)
+│   ├── membrane-status.py                    ← Mechanism F membrane readout
+│   ├── preflight.py                          ← unified pre-work aggregator (v7.8.6)
+│   ├── cross-layer-freshness.py              ← W20 freshness scan (v7.8.6)
+│   ├── daily-integrity-checkpoint.py         ← daily launchd cron job
+│   ├── integrity-diff.py                     ← diff vs baseline anchor (v7.8.6)
+│   ├── snapshot-phase-completion.sh          ← per-phase off-SSD backup (v7.8.3)
+│   ├── merge-driver-dedup.py                 ← Mechanism E ledger merge driver
 │   ├── measurement-adoption-report.py        ← Tier 1.1 ledger generator
 │   ├── append-feature-log.py                 ← contemporaneous log writer
 │   ├── documentation-debt-report.py          ← Tier 3.2 ledger generator
 │   ├── runtime-smoke-gate.py                 ← Tier 2.1 smoke runner
-│   └── test-v7-5-pipeline.sh                 ← 15-assertion regression test
+│   └── test-v7-5-pipeline.sh                 ← mechanical-enforcement regression test
 ├── .githooks/pre-commit                       ← orchestrates write-time checks
 ├── .github/workflows/
 │   ├── ci.yml                                ← Xcode build + test
@@ -496,7 +512,9 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 
 ## 10. Integrity layer — write-time + per-PR + cycle-time + weekly
 
-### 10.1 Check codes (37 mechanical + 5 advisories at v7.9, 2026-05-21)
+### 10.1 Check codes (write-time + cycle-time, current through v7.9, 2026-05-21)
+
+> The table below enumerates every check code emitted by the enforcement scripts. The v7.8.1 branch-isolation + feature-closure family and the v7.8.3 cross-repo `state_owner` family were promoted/added after the original §10.1 table was written; they are now included. When debugging a gate that fired, **check the [Observed Patterns Catalog](#105-observed-patterns-catalog-v785) (§10.5) first** — most fire-patterns are documented there with a signal-vs-noise rule and a silence path.
 
 | Code | Layer | Script | What it checks |
 |---|---|---|---|
@@ -514,7 +532,7 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 | `NO_STATE` | Cycle | `integrity-check.py` | Feature in registry has no state.json |
 | `BROKEN_PR_CITATION` (v7.6 write-time, v7.5 cycle) | Write + cycle | `check-case-study-preflight.py` (write) + `integrity-check.py` (cycle) | PR # in case study does not resolve |
 | `CASE_STUDY_MISSING_TIER_TAGS` (v7.6) | Write + cycle | `check-case-study-preflight.py` (write) + `integrity-check.py` (cycle) | Scoped case study has no T1/T2/T3 tag at all (forward-only ≥ 2026-04-21); presence only, not exhaustiveness |
-| `CACHE_HITS_EMPTY_POST_V6` (v7.7) | Write | `check-state-schema.py` | Post-v6 feature reaches `current_phase=complete` with empty `cache_hits[]`. Pairs with `scripts/log-cache-hit.py` wrapper that auto-discovers the active feature and dual-writes state.json + events log. Closes #140 (the v6 writer-path adoption gap). |
+| `CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT` (v7.7 as `CACHE_HITS_EMPTY_POST_V6`; **renamed v7.8.3**, enforced) | Write | `check-state-schema.py` | Post-v6 feature reaches `current_phase=complete` with empty `cache_hits[]`. Pairs with `scripts/log-cache-hit.py` wrapper that auto-discovers the active feature and dual-writes state.json + events log. Closes #140 (the v6 writer-path adoption gap). Pre-Mechanism-C features (`created_at < 2026-05-02`) are auto-exempt. |
 | `CU_V2_INVALID` (v7.7) | Write + cycle | `check-state-schema.py` + `integrity-check.py` | `cu_v2` schema invalid: missing factor (complexity/blast_radius/novelty/verification_difficulty), out-of-range value, total mismatch with sum(factors), or invalid tier_class. Pre-v6 features without `cu_v2` are exempt. Validates STRUCTURE only — magnitude correctness stays a documented Class B gap. |
 | `STATE_NO_CASE_STUDY_LINK` (v7.7) | Write | `check-state-schema.py` | `current_phase=complete` without `case_study` link OR `parent_case_study` link OR `case_study_type` exempt tag (`no_case_study_required` / `pre_pm_workflow_backfill` / `roundup`). Mirrors the cycle-time `NO_CS_LINK` at write-time. |
 | `CASE_STUDY_MISSING_FIELDS` (v7.7) | Write | `check-case-study-preflight.py` | Forward-only ≥ 2026-04-28: case study missing one or more of `work_type`, `success_metrics`, `kill_criteria`, `dispatch_pattern` in frontmatter. |
@@ -523,6 +541,14 @@ Forward-only: case studies dated `>= 2026-04-21` get file-level tag-presence enf
 | `FRAMEWORK_VERSION_FORMAT` (2026-05-01 honesty-fixes patch, PR #169) | Write | `check-state-schema.py` | When `framework_version` is set, must match `(pre-)?v<major>.<minor>`. Presence-required deferred to v7.9 backfill. |
 | **`CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE` (v7.8 advisory, Mechanism C)** | Cycle (advisory) | `integrity-check.py` | Session ledger (`.claude/logs/_session-<id>.events.jsonl`) attributes Read events to a feature, but `state.json::cache_hits[]` is empty/absent. Mechanism C captures session events; state.json::cache_hits requires manual `scripts/log-cache-hit.py` until v7.9 promotes `observe-cache-hit.py` to dual-write. **Advisory only** in v7.8; v7.9 promotes to enforced. |
 | **`GATE_COVERAGE_ZERO` (v7.8 advisory, Mechanism A; v7.9-enforced)** | Cycle (advisory) | `integrity-check.py` (planned) | Write-time gate that fired with `checked=0` (every candidate skipped) for 7+ days. Catches the failure mode where a gate's predicate is too restrictive and silently passes everything. Coverage data lands in `.claude/logs/gate-coverage.jsonl` per Mechanism A. **Advisory in v7.8** (need 7+ days of stats to calibrate); v7.9 promotes to enforced once the threshold is empirically grounded. |
+| `BRANCH_ISOLATION_VIOLATION` Mode B (v7.8.1 advisory → **enforced v7.9**, 2026-05-21) | Write | `check-state-schema.py` | Infra-path commit (`.githooks/*`, `.github/workflows/*`, `scripts/*`, `.claude/skills/*`, `.claude/shared/*`, `CLAUDE.md`, `docs/architecture/*`, `Makefile`, OR `work_subtype: framework_feature` / `work_type: chore`) on a non-feature branch. Per-feature `isolation_opt_out` does NOT bypass Mode B (Q3 infra override). Auto-isolation dispatches `scripts/create-isolated-worktree.py`. |
+| `BRANCH_ISOLATION_VIOLATION` Mode C (v7.8.1 advisory → **enforced v7.9**) | Write | `check-state-schema.py` (`BRANCH_ISOLATION_VIOLATION_MODE_C`) | `state.json::current_phase` mutation from a non-feature branch. Per-feature `isolation_opt_out: true` + reason bypasses Mode C only. |
+| `ISOLATION_OPT_OUT_REASON_MISSING` (v7.8.1, **enforced at ship**) | Write | `check-state-schema.py` | `isolation_opt_out: true` with empty/missing `isolation_opt_out_reason`. |
+| `FEATURE_CLOSURE_COMPLETENESS` (v7.8.1 advisory → **enforced v7.9**; cycle mirror stays advisory) | Write + cycle | `check-state-schema.py` (write) + `integrity-check.py` (cycle mirror) | `current_phase=complete` transition: validates 7 required case-study frontmatter fields + Q7 (`kill_criteria_resolution` when `kill_criteria` set) + Q6 bidirectional PR-list parity (state.json ↔ case study). Cycle mirror catches `--no-verify` bypasses. Override: `pr_citation_exempt` / `case_study_type` exemption. |
+| `STATE_OWNER_MISSING` / `STATE_OWNER_INVALID` / `STATE_OWNER_LOCATION_MISMATCH` (v7.8.3) | Write | `check-state-schema.py` | Cross-repo state ownership: `state_owner` ∈ `{ft2, fitme-story}` required + valid enum + file location must match the value (reverse-sync mirrors with `state_owner_sync_origin` ending `-reverse` exempt from LOCATION_MISMATCH). |
+| `BRANCH_ISOLATION_HISTORICAL` (v7.8.1 cycle advisory — **stays advisory by design**) | Cycle (advisory) | `integrity-check.py` | T17 forward-only audit — feature files first appear on `main` with no `feature/*`/`chore/*` branch attribution (squash-merge + branch-cleanup artifact; see Observed Patterns #1). |
+| `BRANCH_ISOLATION_LAUNCHD_DRIFT` (v7.8.1 cycle advisory — macOS-only, **stays advisory**) | Cycle (advisory) | `integrity-check.py` | T18 — launchd plist anchored to a stale repo path (the 2026-04-30 HADF Phase 2 trigger incident). |
+| `PR_CACHE_STALE` (v7.8.4 operability) | Pre-check | `ensure-pr-cache-fresh.py` | `.cache/gh-pr-cache.json` empty/missing/>24h → auto-refresh runs before `make integrity-check` + inside `integrity-cycle.yml`. Refresh failure logs but does NOT abort. Closes the 33-finding empty-cache false-positive incident (2026-05-12; see Observed Patterns #12 + W11). |
 
 ### 10.2 The 72h cycle
 
@@ -550,6 +576,31 @@ Defined in `.github/workflows/framework-status-weekly.yml` (v7.6 Phase 2c). Cron
 3. Open issue if `fully_adopted` or `any_adopted` decreased.
 4. **Observational only** — never blocks merges.
 
+### 10.5 Observed Patterns Catalog (v7.8.5)
+
+When a gate fires, the finding alone does not tell you whether it is a real problem or an expected artifact (a squash-merge leaving no branch attribution, an empty PR cache, a heuristic over-trigger, etc.). The **Observed Patterns Catalog** at [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) is the canonical manifest of every recognized fire-pattern. Each entry carries a **trigger**, a **why-expected** classification (by-design / cleanup-artifact / silent-pass-then-fixed / heuristic-FP / schema-drift), a **distinguishing-real-signal** rule, and a **silence path**.
+
+- **Coverage (current):** 23 gate-firing patterns (Section 1, `#1`–`#23`) + 26 workflow/operational patterns (Section 2, `W1`–`W26`).
+- **CLI:** `make observed-patterns`.
+- **Preflight-loaded** by `/pm-workflow` and referenced by all spoke skills.
+- **Operator obligation (mandatory):** when any framework gate or advisory fires, the FIRST step is to consult this catalog. Apply the documented remediation if the pattern matches; investigate only if novel; and **append a new entry** to the catalog before the feature that surfaced the novel pattern is closed. The catalog is append-only-by-default.
+
+The catalog is the human-facing companion to the Mechanism A coverage ledger (§2.4): Mechanism A tells you a gate *fired*; the catalog tells you what the firing *means*.
+
+### 10.6 Real-time + daily observability surfaces (v7.8.5 → v7.8.6)
+
+Beyond the four scheduled enforcement layers, the framework runs several lightweight read/warn surfaces:
+
+| Surface | Cadence | What it does | Producer |
+|---|---|---|---|
+| **W9 branch-drift alert** | `PostToolUse:Bash` hook (every Bash call) | Warns when the git branch changed unexpectedly between tool calls (concurrent-session `git checkout` collision). Disable: `CLAUDE_W9_DISABLE_DRIFT_CHECK=1` | [`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py) |
+| **W1 ssh-agent preflight** | `SessionStart` hook | Loud stderr warning when `ssh-add -l` shows no identities (prevents the silent sign-hang). Disable: `CLAUDE_W1_DISABLE_SSH_CHECK=1` | [`scripts/check-ssh-agent.sh`](../../scripts/check-ssh-agent.sh) |
+| **Mechanism C cache-hit capture** | `PostToolUse:Read` hook | Auto-captures Read events into the session ledger (existence-guarded so it no-ops in cross-repo cwd, per v7.8.2) | [`scripts/observe-cache-hit.py`](../../scripts/observe-cache-hit.py) |
+| **Membrane status (Mechanism F)** | `make membrane-status` + SessionStart | Active feature + recent gate firings + dispatch-blocker state in one readout | [`scripts/membrane-status.py`](../../scripts/membrane-status.py) |
+| **Daily integrity checkpoint** | launchd cron (daily) | Appends an integrity snapshot to the checkpoint ledger + surfaces stale `[gone]` branches (W10), orphan worktrees, idle-PR babysit. SessionStart surfaces the regression flag | [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py) → `make daily-checkpoint` |
+| **Preflight aggregator** | `make preflight WORK_TYPE=… [FEATURE=…]` | Mandatory Phase 0.0 step: aggregates W1 ssh-agent, PR-cache freshness, branch isolation, integrity findings, drift-vs-anchor, doc-debt, adoption baseline + auto-chains `make freshness-check` (W20) into `.claude/shared/preflight-cache.json` | [`scripts/preflight.py`](../../scripts/preflight.py) + [`scripts/cross-layer-freshness.py`](../../scripts/cross-layer-freshness.py) |
+| **Integrity diff vs anchor** | `make integrity-diff` | Compares current platform state vs the 2026-05-14 pre-v7.9 baseline anchor; `EXIT_ON_REGRESSION=1` for CI | [`scripts/integrity-diff.py`](../../scripts/integrity-diff.py) |
+
 ---
 
 ## 11. Pre-commit hooks and GitHub Actions
@@ -573,10 +624,23 @@ Both scripts exit non-zero on findings. Emergency bypass: `git commit --no-verif
 
 | Workflow | Trigger | Purpose |
 |---|---|---|
-| `ci.yml` | push, PR | Xcode build + XCTest |
-| `integrity-cycle.yml` | cron `0 4 */3 * *` + workflow_dispatch | 72h state.json + case-study audit |
+| `ci.yml` | push, PR | Xcode build + XCTest + tokens-check + ui-audit |
+| `ci-docs-skip.yml` | PR (docs-only paths) | Skips the iOS build for docs-only PRs (10-15min → instant) |
+| `integrity-cycle.yml` | cron `0 4 */3 * *` + workflow_dispatch | 72h state.json + case-study audit; snapshots ledger; regression issue |
 | `pr-integrity-check.yml` | pull_request (opened, sync, reopen) | Per-PR delta vs main; sets `pm-framework/pr-integrity` status |
-| `framework-status-weekly.yml` | cron `0 5 * * 1` + workflow_dispatch | Weekly measurement-adoption + documentation-debt snapshot, regression issue |
+| `framework-status-weekly.yml` | cron `0 5 * * 1` (Mon 05:00Z) + workflow_dispatch | Weekly measurement-adoption + documentation-debt snapshot + Mechanism A gate-coverage zero-drift scan (v7.8.6) + per-dimension adoption trend nudge; regression issue |
+| `dependency-audit-weekly.yml` (v7.8.6) | cron `0 6 * * 1` (Mon 06:00Z) | `npm audit --omit=dev` across root + website + dashboard + Swift pin count; issue on HIGH/CRITICAL |
+| `audit-prompts-weekly.yml` | cron `0 6 * * 1` (Mon 06:00Z) | Rebuilds the external-audit prompt substrate bundle |
+| `audit-bundle-on-tag.yml` | tag push | Builds a deterministic audit bundle on release tags |
+| `ucc-audit-log-sync.yml` | cron `17 5 * * *` (daily) | Syncs the UCC passkey-auth audit log (Redis → ledger) |
+| `weekly-backup.yml` | cron `0 2 * * 0` (Sun 02:00Z) | Weekly off-repo backup snapshot |
+| `figma-code-connect-publish.yml` | push to main (`*.figma.{swift,tsx}` / config) | Publishes Code Connect mappings (see §16) |
+
+**Local (launchd) cron — not a GitHub Action:**
+
+| Job | Cadence | Purpose |
+|---|---|---|
+| `com.fittracker.daily-integrity-checkpoint.plist` | daily | Runs `scripts/daily-integrity-checkpoint.py` (§10.6) — daily integrity snapshot + stale-branch / orphan-worktree / idle-PR surfaces. Install via `make install-daily-cron`. macOS-specific; see `feedback_hadf_launchd_setup_checklist.md` for the exit-78 gotchas. |
 
 ### 11.4 Security note for workflow files
 
@@ -608,6 +672,13 @@ Full per-version detail: [`docs/skills/evolution.md`](../skills/evolution.md). T
 | v7.6 | 2026-04-25 | Mechanical Enforcement. 4 new write-time check codes (`PHASE_TRANSITION_NO_LOG`, `PHASE_TRANSITION_NO_TIMING`, `BROKEN_PR_CITATION` write-time, `CASE_STUDY_MISSING_TIER_TAGS`). Per-PR review bot with `pm-framework/pr-integrity` status check. Weekly framework-status cron. Append-only adoption history. 5 explicit Class B gaps documented in `unclosable-gaps.md`. | The point where mechanical enforcement reached steady-state. The Class B inventory crystallized here. |
 | v7.7 | 2026-04-27 | Validity Closure. 5 new check codes (4 gating + 1 advisory): `CACHE_HITS_EMPTY_POST_V6` (write — closes #140 writer-path), `CU_V2_INVALID` (write+cycle — schema validator), `STATE_NO_CASE_STUDY_LINK` (write — mirrors cycle-time `NO_CS_LINK`), `CASE_STUDY_MISSING_FIELDS` (write — forward-only ≥ 2026-04-28), `TIER_TAG_LIKELY_INCORRECT` (cycle advisory permanent — kill-2 fired at baseline). Cycle-time codes 12 → 13. Linkage 95.5% → 100% (gated). Doc-debt fields 4–61% → 95.7–100% (gated forward). Framework-health dashboard live at fitme-story `/control-room/framework`. Reduces unclosable Class B gaps from 5 to 4. | The first version to gate the full closure-time chain (linkage + case-study fields + cu_v2 schema). The 2026-05-01 honesty-fixes patch (PR #169) revealed v7.7's `CACHE_HITS_EMPTY_POST_V6` had 0/46 effective coverage because the gate read `created_at` while 43/46 features used legacy `created` — surfaced the silent-pass class of failure that v7.8 set out to close. |
 | v7.8 | 2026-05-04 | Bridge to v7.9 — silent-pass prevention + inter-agent awareness. Six cooperating mechanisms (A–F): coverage-asserting gates (Mech A → `gate-coverage.jsonl`), schema field-rename detection + dual-read (Mech B → `migrate-state-v7-8-bridge.py`), PostToolUse:Read attribution (Mech C → `_session-<id>.events.jsonl` + `.claude/active-feature` lockfile; closes Gap 1 in advisory), pre-commit hook header self-audit (Mech D → `pre-commit-self-test.py`), custom git merge driver for append-only ledgers (Mech E → `merge-driver-dedup.py`), membrane status advisory (Mech F → `membrane-status.py`). 2 new write-time gates (`SCHEMA_DRIFT_LEGACY_CREATED`, `FRAMEWORK_VERSION_FORMAT`). 2 new cycle-time advisories (`CACHE_HITS_AUTO_INSTRUMENTATION_INACTIVE`, `GATE_COVERAGE_ZERO`). Schema bridges (`agent_manifest`, `_meta.deprecation_warnings`, `path-reducers.json`, `agent-leases.json`) ship populated but un-validated. Shipped via 9 PRs: #173 + #185–#189 + #193–#195. | **The current state.** Writing code today: expect the same v7.7 write-time gates to fire on every commit, plus 2 new gates (`SCHEMA_DRIFT_LEGACY_CREATED`, `FRAMEWORK_VERSION_FORMAT`). On every Read tool call, `PostToolUse:Read` hook captures the event into the session ledger via `scripts/observe-cache-hit.py` (Mechanism C). On every commit, every write-time gate emits coverage telemetry into `.claude/logs/gate-coverage.jsonl` (Mechanism A). v7.9 measurement window opens 2026-05-11; promotes the proven mechanisms to enforced once 7+ days of session-ledger data calibrate the threshold. The full event-and-trigger catalog: [`docs/architecture/feature-lifecycle-event-catalog.md`](./feature-lifecycle-event-catalog.md). |
+| v7.8.1 | 2026-05-07 | Branch Isolation + Feature-Closure Completeness. 3 new write-time gates — `BRANCH_ISOLATION_VIOLATION` (Mode B infra / Mode C per-state.json), `FEATURE_CLOSURE_COMPLETENESS` (7 frontmatter fields + Q6 PR-parity + Q7 kill-resolution), `ISOLATION_OPT_OUT_REASON_MISSING` (enforced at ship) — plus 3 cycle-time advisories (`BRANCH_ISOLATION_HISTORICAL`, `BRANCH_ISOLATION_LAUNCHD_DRIFT`, `FEATURE_CLOSURE_COMPLETENESS` mirror). All advisory pending the 14-day Mechanism A window. Companions: `create-isolated-worktree.py`, `make verify-isolation`, `make feature-completeness-audit`. Shipped via PR #244 + #245. | The gates you'll most often see fire on infra/chore commits. If you commit to `scripts/*` or `.claude/shared/*` off a non-feature branch, Mode B fires — isolate first. |
+| v7.8.2 | 2026-05-08 | Cross-Repo Telemetry Asymmetry — documented disposition (no new gates). Hook fix: `PostToolUse:Read` command gets a Bash existence guard so it no-ops in fitme-story cwd. Closes v7.9 candidates F7 + F8 by documented exemption (annual re-eval). Shipped via PR #258. | Why the Mechanism C hook silently no-ops when cwd is the website repo — by design, not a bug. |
+| v7.8.3 | 2026-05-11 | Cross-Repo State Sync. Top-level `state_owner` enum (`{ft2, fitme-story}`) on every state.json + 3 gates (`STATE_OWNER_MISSING/INVALID/LOCATION_MISMATCH`). Promotes V2 (`CACHE_HITS_AUTO_INSTRUMENTATION_DRIFT`, renamed from `CACHE_HITS_EMPTY_POST_V6`) + V9 (merge driver extends to `<feature>.log.json`) to enforced. New `make snapshot-phase` + `scripts/snapshot-phase-completion.sh` for per-phase off-SSD backups. Unified cross-repo PR-cite cache (`refresh-pr-cache.py`). Shipped via PR #298/#299 (+ fitme-story #86). | `state_owner` is now a required field — `/pm-workflow` writes it; the gate blocks if absent/mismatched. |
+| v7.8.4 | 2026-05-12 | Pre-v7.9 telemetry calibration + doc-debt cleanup. One operability gate: `PR_CACHE_STALE` auto-refresh (`ensure-pr-cache-fresh.py`) closing the 33-finding empty-cache false-positive. `TIER_TAG_LIKELY_INCORRECT` heuristic narrowed (3 fixes). New `case-study-t1-references.json` ledger. Baseline driven to 0 findings + 0 advisory. Shipped on `chore/framework-v7-8-4-calibration-patch`. | Why a stale/empty PR cache no longer produces a wall of phantom `BROKEN_PR_CITATION` findings. |
+| v7.8.5 | 2026-05-13 | Observability layer (docs + a hook, no new gates). **Observed Patterns Catalog** ([`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md), `make observed-patterns`) — canonical manifest of gate-firing patterns; check it FIRST when a gate fires. **W9 branch-drift real-time alert** (`PostToolUse:Bash` → `check-branch-drift.py`). Shipped via PR #327/#328 + #341. | The catalog is the doc you consult when a gate fires; W9 warns you if a concurrent session flipped your branch (§10.5 + §10.6). |
+| v7.8.6 | 2026-05-15 | Cadence batch — read/diff/warn surfaces closing the 96h drift window. `make integrity-diff` (vs 2026-05-14 anchor), unified `make preflight` (mandatory Phase 0.0 aggregator → `preflight-cache.json`), weekly gate-coverage zero-drift scan + per-dimension adoption trend nudge (extends `framework-status-weekly.yml`), W1 ssh-agent SessionStart preflight, `dependency-audit-weekly.yml`, daily stale-branch / orphan-worktree / idle-PR surfaces. Shipped via PR #363 + #365. | `make preflight WORK_TYPE=<type>` is the one command to run before any new work — it aggregates every pre-work check (§10.6). |
+| v7.9 | 2026-05-21 | Promotion release. Single-flag flip at [`scripts/check-state-schema.py:138`](../../scripts/check-state-schema.py) (`BRANCH_ISOLATION_ADVISORY_MODE = True → False`) promotes the 3 v7.8.1 advisory gates (Mode B, Mode C, `FEATURE_CLOSURE_COMPLETENESS` write-time) to enforced after their 14-day telemetry window (0 false positives across 18 + 13 + 13 firings). No new gate code. Phase E validation soak 2026-05-21 → 2026-06-04. Shipped via PR #417. | **The current enforced state.** Those 3 gates now block commits. The 3 cycle-time advisories stay advisory by design. Reversibility: single-line revert, < 5 min (§2.0). |
 
 ### 12.1 Version-bump policy
 
@@ -623,6 +694,16 @@ Minor bumps (e.g., v7.5 hardening commits) extend an existing capability without
 ## 13. Operational walkthrough — adding a new feature
 
 You are adding a new feature called `widget-customization`. Here's the full sequence.
+
+### 13.0 Preflight (Phase 0.0, mandatory since v7.8.6)
+
+Before any work, run the unified preflight aggregator:
+
+```bash
+make preflight WORK_TYPE=feature FEATURE=widget-customization
+```
+
+This runs every pre-work check (W1 ssh-agent, PR-cache freshness, branch isolation, integrity findings, drift-vs-anchor, doc-debt, adoption baseline) and auto-chains `make freshness-check` (W20 — confirms your mental model isn't stale vs `origin/main`). Results land in `.claude/shared/preflight-cache.json`, which every spoke skill reads. If preflight surfaces a blocker (e.g., you're on `main` and about to touch infra paths → branch-isolation), resolve it before starting.
 
 ### 13.1 Bootstrap
 
@@ -881,6 +962,7 @@ When `figma connect publish` is invoked from FT2:
 - [`docs/skills/evolution.md`](../skills/evolution.md) — full version-by-version history
 - [`docs/skills/pm-workflow.md`](../skills/pm-workflow.md) — user-facing PM workflow
 - [`.claude/integrity/README.md`](../../.claude/integrity/README.md) — integrity layer canonical entry
+- [`.claude/integrity/observed-patterns.md`](../../.claude/integrity/observed-patterns.md) — Observed Patterns Catalog (gate-firing pattern manifest; consult FIRST when a gate fires; `make observed-patterns`)
 
 ### Case studies (most relevant for this guide)
 - [`docs/case-studies/data-integrity-framework-v7.5-case-study.md`](../case-studies/data-integrity-framework-v7.5-case-study.md) — v7.5 narrative
@@ -904,19 +986,40 @@ When `figma connect publish` is invoked from FT2:
 
 ### Scripts (alphabetical)
 - [`scripts/append-feature-log.py`](../../scripts/append-feature-log.py) — contemporaneous log writer
+- [`scripts/check-branch-drift.py`](../../scripts/check-branch-drift.py) — W9 branch-drift PostToolUse:Bash alert (v7.8.5)
 - [`scripts/check-case-study-preflight.py`](../../scripts/check-case-study-preflight.py) — write-time case study checks
-- [`scripts/check-state-schema.py`](../../scripts/check-state-schema.py) — write-time + cycle state.json checks
+- [`scripts/check-ssh-agent.sh`](../../scripts/check-ssh-agent.sh) — W1 ssh-agent SessionStart preflight (v7.8.6)
+- [`scripts/check-state-schema.py`](../../scripts/check-state-schema.py) — write-time + cycle state.json checks (incl. branch-isolation + state_owner gates)
+- [`scripts/create-isolated-worktree.py`](../../scripts/create-isolated-worktree.py) — branch-isolation auto-isolation (v7.8.1)
+- [`scripts/cross-layer-freshness.py`](../../scripts/cross-layer-freshness.py) — W20 cross-layer freshness scan (v7.8.6)
+- [`scripts/daily-integrity-checkpoint.py`](../../scripts/daily-integrity-checkpoint.py) — daily launchd checkpoint
 - [`scripts/documentation-debt-report.py`](../../scripts/documentation-debt-report.py) — Tier 3.2 ledger
+- [`scripts/ensure-pr-cache-fresh.py`](../../scripts/ensure-pr-cache-fresh.py) — PR_CACHE_STALE auto-refresh (v7.8.4)
 - [`scripts/integrity-check.py`](../../scripts/integrity-check.py) — cycle-time integrity check
+- [`scripts/integrity-diff.py`](../../scripts/integrity-diff.py) — diff vs baseline anchor (v7.8.6)
 - [`scripts/measurement-adoption-report.py`](../../scripts/measurement-adoption-report.py) — Tier 1.1 ledger + history
+- [`scripts/membrane-status.py`](../../scripts/membrane-status.py) — Mechanism F membrane readout
+- [`scripts/merge-driver-dedup.py`](../../scripts/merge-driver-dedup.py) — Mechanism E append-only-ledger merge driver
+- [`scripts/observe-cache-hit.py`](../../scripts/observe-cache-hit.py) — Mechanism C PostToolUse:Read capture (v7.8)
+- [`scripts/preflight.py`](../../scripts/preflight.py) — unified pre-work aggregator (v7.8.6)
 - [`scripts/runtime-smoke-gate.py`](../../scripts/runtime-smoke-gate.py) — Tier 2.1 smoke runner
-- [`scripts/test-v7-5-pipeline.sh`](../../scripts/test-v7-5-pipeline.sh) — 15-assertion regression test
+- [`scripts/snapshot-phase-completion.sh`](../../scripts/snapshot-phase-completion.sh) — per-phase off-SSD backup (v7.8.3)
+- [`scripts/test-v7-5-pipeline.sh`](../../scripts/test-v7-5-pipeline.sh) — mechanical-enforcement regression test
+- [`scripts/weekly-trend-scan.py`](../../scripts/weekly-trend-scan.py) — weekly gate-coverage + adoption trend scan (v7.8.6)
 
-### Workflows
-- [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) — Xcode build + test
-- [`.github/workflows/integrity-cycle.yml`](../../.github/workflows/integrity-cycle.yml) — 72h cycle (v7.1 → v7.5)
+### Workflows (full inventory in §11.3)
+- [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) — Xcode build + test + tokens-check + ui-audit
+- [`.github/workflows/ci-docs-skip.yml`](../../.github/workflows/ci-docs-skip.yml) — skips iOS build for docs-only PRs
+- [`.github/workflows/integrity-cycle.yml`](../../.github/workflows/integrity-cycle.yml) — 72h cycle (v7.1 → v7.5), cron `0 4 */3 * *`
 - [`.github/workflows/pr-integrity-check.yml`](../../.github/workflows/pr-integrity-check.yml) — per-PR (v7.6 Phase 2a)
-- [`.github/workflows/framework-status-weekly.yml`](../../.github/workflows/framework-status-weekly.yml) — weekly cron (v7.6 Phase 2c)
+- [`.github/workflows/framework-status-weekly.yml`](../../.github/workflows/framework-status-weekly.yml) — weekly cron `0 5 * * 1` (v7.6 + v7.8.6 trend scans)
+- [`.github/workflows/dependency-audit-weekly.yml`](../../.github/workflows/dependency-audit-weekly.yml) — weekly npm audit, cron `0 6 * * 1` (v7.8.6)
+- [`.github/workflows/audit-prompts-weekly.yml`](../../.github/workflows/audit-prompts-weekly.yml) — external-audit prompt substrate, cron `0 6 * * 1`
+- [`.github/workflows/audit-bundle-on-tag.yml`](../../.github/workflows/audit-bundle-on-tag.yml) — deterministic audit bundle on tag push
+- [`.github/workflows/ucc-audit-log-sync.yml`](../../.github/workflows/ucc-audit-log-sync.yml) — UCC audit-log sync, cron `17 5 * * *`
+- [`.github/workflows/weekly-backup.yml`](../../.github/workflows/weekly-backup.yml) — weekly off-repo backup, cron `0 2 * * 0`
+- [`.github/workflows/figma-code-connect-publish.yml`](../../.github/workflows/figma-code-connect-publish.yml) — Code Connect publish (§16)
+- Local launchd: `com.fittracker.daily-integrity-checkpoint.plist` — daily checkpoint (`make install-daily-cron`)
 
 ### External reference
 - [GitHub Actions injection guide](https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/) — security pattern referenced in workflow files
