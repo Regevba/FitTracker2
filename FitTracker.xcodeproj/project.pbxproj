@@ -228,6 +228,10 @@
 		RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */; };
 		RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */; };
 		RC100000000000000000AT01 /* RecommendationMemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RC200000000000000000AT01 /* RecommendationMemoryTests.swift */; };
+		C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */; };
+		C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */; };
+		C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */; };
+		C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */; };
 		RE100000000000000000AA01 /* ReadinessEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AA01 /* ReadinessEngine.swift */; };
 		RE100000000000000000AT01 /* ReadinessEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RE200000000000000000AT01 /* ReadinessEngineTests.swift */; };
 		RM100000000000000000AT01 /* ReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RM200000000000000000AT01 /* ReminderTests.swift */; };
@@ -522,6 +526,10 @@
 		RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAnalyticsTests.swift; sourceTree = "<group>"; };
 		RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertTriggerTests.swift; sourceTree = "<group>"; };
 		RC200000000000000000AT01 /* RecommendationMemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryTests.swift; sourceTree = "<group>"; };
+		C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryWindowTests.swift; sourceTree = "<group>"; };
+		C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationFeedbackControllerTests.swift; sourceTree = "<group>"; };
+		C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIOrchestratorReinforcementHelpersTests.swift; sourceTree = "<group>"; };
+		C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIRecommendationWithConfidenceTests.swift; sourceTree = "<group>"; };
 		RE200000000000000000AA01 /* ReadinessEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngine.swift; sourceTree = "<group>"; };
 		RE200000000000000000AT01 /* ReadinessEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessEngineTests.swift; sourceTree = "<group>"; };
 		RM200000000000000000AT01 /* ReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTests.swift; sourceTree = "<group>"; };
@@ -910,6 +918,10 @@
 				RM200000000000000000AT01 /* ReminderTests.swift */,
 				AD200000000000000000AT01 /* AIAdapterTests.swift */,
 				RC200000000000000000AT01 /* RecommendationMemoryTests.swift */,
+				C5T12A0000000000000FRT01 /* RecommendationMemoryWindowTests.swift */,
+				C5T12B0000000000000FRT02 /* RecommendationFeedbackControllerTests.swift */,
+				C5T12D0000000000000FRT03 /* AIOrchestratorReinforcementHelpersTests.swift */,
+				C5T12E0000000000000FRT04 /* AIRecommendationWithConfidenceTests.swift */,
 				AS200000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift */,
 				TP200000000000000000AT01 /* TrainingProgramStoreTests.swift */,
 				IE200000000000000000AT01 /* ImportEdgeCaseTests.swift */,
@@ -1669,6 +1681,10 @@
 				RM100000000000000000AT01 /* ReminderTests.swift in Sources */,
 				AD100000000000000000AT01 /* AIAdapterTests.swift in Sources */,
 				RC100000000000000000AT01 /* RecommendationMemoryTests.swift in Sources */,
+				C5T12A0000000000000ATT01 /* RecommendationMemoryWindowTests.swift in Sources */,
+				C5T12B0000000000000ATT02 /* RecommendationFeedbackControllerTests.swift in Sources */,
+				C5T12D0000000000000ATT03 /* AIOrchestratorReinforcementHelpersTests.swift in Sources */,
+				C5T12E0000000000000ATT04 /* AIRecommendationWithConfidenceTests.swift in Sources */,
 				AS100000000000000000AT01 /* AppSettingsAndGoalProfileTests.swift in Sources */,
 				TP100000000000000000AT01 /* TrainingProgramStoreTests.swift in Sources */,
 				IE100000000000000000AT01 /* ImportEdgeCaseTests.swift in Sources */,
