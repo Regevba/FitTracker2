@@ -32,6 +32,7 @@ final class ReminderPreferencesStore: ObservableObject {
         static let restDay             = "ft.reminder.restDay"
         static let engagement          = "ft.reminder.engagement"
         static let readinessAware      = "ft.reminder.readinessAware"
+        static let trendAlerts         = "ft.reminder.trendAlerts"
     }
 
     // MARK: - Published
@@ -79,6 +80,13 @@ final class ReminderPreferencesStore: ObservableObject {
         didSet { UserDefaults.standard.set(readinessAwareAlertsEnabled, forKey: Keys.readinessAware) }
     }
 
+    /// C4 feature: sustained-trend HRV advisory. When false, the daily
+    /// 08:00 morning trend evaluation is fully suppressed — no push,
+    /// no in-app banner. Default true.
+    @Published var trendAlertsEnabled: Bool = true {
+        didSet { UserDefaults.standard.set(trendAlertsEnabled, forKey: Keys.trendAlerts) }
+    }
+
     // MARK: - Init
 
     init() {
@@ -111,6 +119,9 @@ final class ReminderPreferencesStore: ObservableObject {
         }
         if defaults.object(forKey: Keys.readinessAware) != nil {
             readinessAwareAlertsEnabled = defaults.bool(forKey: Keys.readinessAware)
+        }
+        if defaults.object(forKey: Keys.trendAlerts) != nil {
+            trendAlertsEnabled = defaults.bool(forKey: Keys.trendAlerts)
         }
     }
 
