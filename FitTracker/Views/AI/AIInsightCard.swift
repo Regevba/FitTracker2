@@ -9,6 +9,7 @@ struct AIInsightCard: View {
     @EnvironmentObject private var analytics: AnalyticsService
     @EnvironmentObject private var readinessAware: ReadinessAwareAlertStore
     @EnvironmentObject private var trendAlert: TrendAlertStore
+    @EnvironmentObject private var feedbackController: RecommendationFeedbackController
     @State private var showSheet = false
     @State private var feedbackGiven = false
 
@@ -228,11 +229,20 @@ struct AIInsightCard: View {
         let rating = (action == .accepted) ? "positive" : "negative"
         analytics.logAiFeedbackSubmitted(segment: validated.recommendation.segment, rating: rating)
 
-        // Note (audit UI-024): Local RecommendationMemory recording deferred —
-        // RecommendationMemory is owned per-AIOrchestrator instance, not a
-        // shared singleton. Wiring requires either an EnvironmentObject pattern
-        // or a dedicated DI container. Tracked separately; analytics signal
-        // already captures the feedback event server-side.
+        // C5 ai-user-feedback-loop — closes audit UI-024.
+        // RecommendationMemory is now promoted to RecommendationFeedbackController,
+        // injected via env-object in FitTrackerApp. Each tap records an outcome
+        // on-device. AIOrchestrator's reinforcement-loop block reads these outcomes
+        // on the next refreshRecommendations pass to suppress / boost per-segment.
+        let source = validated.recommendation.escalateToLLM ? "cloud" : "local"
+        feedbackController.record(outcome: RecommendationOutcome(
+            segment: validated.recommendation.segment,
+            signals: validated.recommendation.signals,
+            confidenceLevel: validated.overallConfidence.rawValue,
+            source: source,
+            action: action,
+            dismissReason: nil
+        ))
     }
 
     /// Maps internal signal keys to user-facing copy.
