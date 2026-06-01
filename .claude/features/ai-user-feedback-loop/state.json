@@ -2,7 +2,7 @@
   "feature": "ai-user-feedback-loop",
   "description": "Wire the existing AI feedback signal (thumbs up/down in AIInsightCard + AIIntelligenceSheet AIFeedbackView) into a real reinforcement loop. RecommendationMemory storage layer already exists (record/outcomes/acceptanceRate/frequentlyDismissedSignals/clearAll) and has unit tests, but is per-AIOrchestrator-instance — not wired into views. C5 closes the deferred audit UI-024 by promoting RecommendationMemory to an injectable EnvironmentObject, wiring the actual record() call from AIInsightCard.recordFeedback (replacing the existing no-op comment block), feeding back into AIOrchestrator's recommendation pipeline (suppress signals with high dismiss-count + boost segments with high acceptance-rate), and surfacing a Settings → AI Feedback row showing history + GDPR clear-all. Pairs with D1 (adaptive-intelligence next pass).",
   "work_type": "feature",
-  "current_phase": "prd",
+  "current_phase": "tasks_phase",
   "created_at": "2026-06-01T16:22:20Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -32,7 +32,22 @@
     "c5_closes_ui_024": true,
     "what_c5_adds_beyond_wiring": "Reinforcement loop in AIOrchestrator (consume RecommendationMemory.acceptanceRate + frequentlyDismissedSignals to suppress dismissed signals + boost accepted-signal confidence) + Settings → AI Feedback management surface + dismiss-reason picker"
   },
-  "tasks": [],
+  "tasks": [
+    { "id": "T1", "title": "RecommendationMemory.frequentlyDismissedSignals → 30-day window", "file": "FitTracker/AI/RecommendationMemory.swift", "type": "modify", "loc_est": 12, "status": "pending" },
+    { "id": "T2", "title": "RecommendationFeedbackController facade (new ObservableObject)", "file": "FitTracker/AI/RecommendationFeedbackController.swift", "type": "new", "loc_est": 50, "status": "pending" },
+    { "id": "T3", "title": "AppSettings.aiFeedbackLoopEnabled UserDefaults-backed toggle", "file": "FitTracker/Services/AppSettings.swift", "type": "modify", "loc_est": 15, "status": "pending" },
+    { "id": "T4", "title": "FitTrackerApp @StateObject + env-object injection", "file": "FitTracker/FitTrackerApp.swift", "type": "modify", "loc_est": 3, "status": "pending" },
+    { "id": "T5", "title": "AIOrchestrator reinforcement-loop block + analytics fire", "file": "FitTracker/AI/AIOrchestrator.swift", "type": "modify", "loc_est": 40, "status": "pending" },
+    { "id": "T6", "title": "AIInsightCard.recordFeedback — close audit UI-024", "file": "FitTracker/Views/AI/AIInsightCard.swift", "type": "modify", "loc_est": 10, "status": "pending" },
+    { "id": "T7", "title": "DismissReasonPicker view modifier (new confirmationDialog + 80-char free-text sheet)", "file": "FitTracker/Views/AI/DismissReasonPicker.swift", "type": "new", "loc_est": 80, "status": "pending" },
+    { "id": "T8", "title": "AIFeedbackView dismiss-reason wire", "file": "FitTracker/Views/AI/AIFeedbackView.swift", "type": "modify", "loc_est": 25, "status": "pending" },
+    { "id": "T9", "title": "AIFeedbackSettingsScreen — 4-section Settings detail", "file": "FitTracker/Views/Settings/v2/Screens/AIFeedbackSettingsScreen.swift", "type": "new", "loc_est": 180, "status": "pending" },
+    { "id": "T10", "title": "SettingsView add aiFeedback row", "file": "FitTracker/Views/Settings/v2/SettingsView.swift", "type": "modify", "loc_est": 25, "status": "pending" },
+    { "id": "T11", "title": "AnalyticsService — 3 new logAi* methods + AnalyticsProvider constants", "file": "FitTracker/Services/Analytics/AnalyticsService.swift,FitTracker/Services/Analytics/AnalyticsProvider.swift", "type": "modify", "loc_est": 30, "status": "pending" },
+    { "id": "T12", "title": "Test suite — 10 new test files, 21 tests, ≥90% coverage on new files + pbxproj wires", "file": "FitTrackerTests/*", "type": "new", "loc_est": 400, "status": "pending" }
+  ],
+  "tasks_total_loc_est": 870,
+  "tasks_path": ".claude/features/ai-user-feedback-loop/tasks.md",
   "prd_path": "docs/product/prd/ai-user-feedback-loop.md",
   "phases": {
     "research": {
@@ -42,7 +57,13 @@
       "approval_signal": "approved"
     },
     "prd": {
-      "started_at": "2026-06-01T17:35:00Z"
+      "started_at": "2026-06-01T17:35:00Z",
+      "ended_at": "2026-06-01T17:55:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue"
+    },
+    "tasks_phase": {
+      "started_at": "2026-06-01T17:55:00Z"
     }
   },
   "timing": {
@@ -52,7 +73,11 @@
         "ended_at": "2026-06-01T17:35:00Z"
       },
       "prd": {
-        "started_at": "2026-06-01T17:35:00Z"
+        "started_at": "2026-06-01T17:35:00Z",
+        "ended_at": "2026-06-01T17:55:00Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-01T17:55:00Z"
       }
     }
   },
@@ -68,6 +93,12 @@
       "to": "prd",
       "at": "2026-06-01T17:35:00Z",
       "reason": "Phase 0 approved in PR #572. Phase 1 PRD authored at docs/product/prd/ai-user-feedback-loop.md — frozen constants (acceptanceUpgradeThreshold=0.70, dismissalSuppressionThreshold=3, quorumCount=5, 5-enum dismissReasonOptions, confidenceTierOnly adjustment mode), 3 new analytics events (home_ai_feedback_signal_suppressed + home_ai_feedback_segment_boosted + home_ai_feedback_history_cleared), Settings copy + opt-out toggle, 6 user stories, 5 success metrics (T1/T2/T3 tagged), 4 kill criteria, 6 open questions resolved."
+    },
+    {
+      "from": "prd",
+      "to": "tasks_phase",
+      "at": "2026-06-01T17:55:00Z",
+      "reason": "Phase 1 PRD approved (operator: 'continue'). Phase 2 Tasks authored at .claude/features/ai-user-feedback-loop/tasks.md — 12 discrete tasks T1-T12 with dependency graph, LoC estimates totaling ~870 (470 production + 400 tests), Phase 4 landing-order recommendation (7 commits), 10 new test files = 21 tests targeting ≥90% coverage on new files. Out-of-scope guards explicit: C5.b/c/d/e + server-side dismiss-reason aggregation."
     }
   ]
 }
