@@ -1,0 +1,59 @@
+{
+  "feature": "adaptive-intelligence-next-pass",
+  "description": "Next-pass layer ON TOP of the C5 ai-user-feedback-loop on-device reinforcement cycle (PR #572 in flight). D1 is research-heavy (5-7d est) and cross-platform — it spans iOS (consumes RecommendationMemory + extends AIOrchestrator), backend (cohort-level adoption signal aggregation OR privacy-preserving federated learning), and product surface (transparency UX: 'why did the AI suppress this?'). Phase 0 enumerates the candidate sub-features, the privacy/aggregation tradeoffs, the dependency on D1.a vs D1.b vs D1.c branch decisions, and the Phase 1 prerequisites BEFORE PRD-level commitment.",
+  "work_type": "feature",
+  "current_phase": "research",
+  "created_at": "2026-06-01T20:15:00Z",
+  "state_owner": "ft2",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/adaptive-intelligence-next-pass",
+  "isolation_opt_out": false,
+  "rice_score": 4.5,
+  "rice_inputs": {
+    "reach": 0.4,
+    "impact": 2.5,
+    "confidence": 0.45,
+    "effort_person_weeks": 1.0
+  },
+  "backlog_source": "docs/product/backlog.md Planned RICE row 4.5 + 2026-05-31 tier carryover plan D1",
+  "dependencies_met": {
+    "C5_ai_user_feedback_loop": "in flight 2026-06-01 PR #572 — provides RecommendationMemory env-object + AIOrchestrator reinforcement-loop block + 3 new home_ai_feedback_* analytics events. D1 builds on top, NOT around.",
+    "AIOrchestrator_pipeline": "shipped (FitTracker/AI/AIOrchestrator.swift)",
+    "RecommendationMemory_storage": "shipped 2026-04-10 + extended in C5",
+    "HADF_Phase_2_clustering": "shipped 2026-05-01 → k=5 clusters, silhouette 0.5566; cohort-level fingerprinting infra in place"
+  },
+  "dependencies_gated_on": {
+    "C5_reaches_implementation_complete": "PR #572 must merge OR reach phases.implementation.ended_at before D1 PRD authoring (D1 references C5's APIs)",
+    "Phase_E_exits": "v7.9 Phase E exits ~2026-06-04. D1 PRD authoring CAN start in Phase E (no new gates yet), but ENFORCEMENT of any new D1 gates waits until v7.9.1 build window opens."
+  },
+  "open_decisions_at_phase_0": {
+    "D1.a": "Pure on-device extension: time-decay weighting on RecommendationMemory + lightweight per-user trend detection (signal acceptance trending up over 60d). Zero server-side. Privacy-preserving by construction.",
+    "D1.b": "Cohort-level adoption signal: anonymous aggregated counts of fraction of users who accept signal X shared via the existing cohort backend. Federated avg, k>=20 minimum cohort, no per-user data leaves device. Requires backend extension.",
+    "D1.c": "AI-suggested replacement: when a signal is suppressed, surface an alternative (e.g. dismissed protein_below -> try meal_timing_late instead). Requires LLM call OR pre-computed mapping table.",
+    "D1.d": "Suppression transparency UX: Why was this recommendation suppressed? affordance in Settings -> AI Feedback. Opens explanation showing the 3 dismissals + their dates + reasons.",
+    "Phase_0_decision_required": "Pick 2 of D1.a/b/c/d for Phase 1 PRD. Phase 0 enumerates tradeoffs but does NOT pre-commit. Recommendation: D1.a + D1.d (100% on-device, ~3.5 person-days)."
+  },
+  "tasks": [],
+  "phases": {
+    "research": {
+      "started_at": "2026-06-01T20:15:00Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-01T20:15:00Z"
+      }
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "at": "2026-06-01T20:15:00Z",
+      "reason": "D1 from 2026-05-31 tier carryover plan (RICE 4.5, research-heavy 5-7d, pairs with C5). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only — D1 has 4 open candidate sub-features requiring decision before PRD authoring."
+    }
+  ]
+}

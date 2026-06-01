@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "feature": "adaptive-intelligence-next-pass",
+  "title": "adaptive intelligence next pass",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9",
+  "started_at": "2026-06-01T17:35:21Z",
+  "updated_at": "2026-06-01T17:35:21Z",
+  "events": [
+    {
+      "timestamp": "2026-06-01T17:35:21Z",
+      "event_type": "phase_transition",
+      "phase": "research",
+      "summary": "D1 Phase 0 (Research) initialized. Research.md authored (12 sections, ~440 lines). 4 candidate sub-features enumerated: D1.a (time-decay + trend), D1.b (cohort priors), D1.c (AI-suggested replacement), D1.d (transparency UX). Recommended v1 pair: D1.a + D1.d (100% on-device, ~3.5 person-days, closes C5.b + C5.e out-of-scope). D1.b/c deferred to v8.0+. 3 new analytics events. Cross-platform tradeoff matrix documented. Phase E compliant. Phase 0 to Phase 1 GATED on operator picking 2 of D1.a/b/c/d.",
+      "artifacts": [
+        ".claude/features/adaptive-intelligence-next-pass/research.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
