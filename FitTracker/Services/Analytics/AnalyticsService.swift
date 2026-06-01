@@ -649,6 +649,40 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - C4 Sustained-Trend HRV Alert Events
+
+    /// Sustained-trend advisory shown on home insight card
+    func logHomeTrendAlertShown(kind: String, sustainedDays: Int, baseline: Int, floor: Int) {
+        logEvent(AnalyticsEvent.homeTrendAlertShown, parameters: [
+            AnalyticsParam.kind: kind,
+            AnalyticsParam.sustainedDays: sustainedDays,
+            AnalyticsParam.baseline: baseline,
+            AnalyticsParam.floor: floor,
+        ])
+    }
+
+    /// User taps the sustained-trend insight card
+    func logHomeTrendAlertTap(kind: String) {
+        logEvent(AnalyticsEvent.homeTrendAlertTap, parameters: [
+            AnalyticsParam.kind: kind,
+        ])
+    }
+
+    /// User picks thumbs-up / thumbs-down feedback in the "Your HRV Trend" sheet
+    func logHomeTrendAlertActionTaken(kind: String, rating: String) {
+        logEvent(AnalyticsEvent.homeTrendAlertActionTaken, parameters: [
+            AnalyticsParam.kind: kind,
+            AnalyticsParam.rating: rating,
+        ])
+    }
+
+    /// Sustained-trend advisory dismissed without feedback pick
+    func logHomeTrendAlertDismissed(kind: String) {
+        logEvent(AnalyticsEvent.homeTrendAlertDismissed, parameters: [
+            AnalyticsParam.kind: kind,
+        ])
+    }
+
     // MARK: - Onboarding Auth Events
 
     func logOnboardingAuthMethodSelected(method: String) {
