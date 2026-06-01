@@ -773,6 +773,16 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W15 MDX `<digit` / `<non-letter` breaks page rendering | W15 | 2026-05-21 |
 | W16 Contract-boundary tests must sample from canonical producer | W16 | 2026-05-24 (v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING) |
 | W17 Stale-base branches — PR diff misleads; cherry-pick onto fresh main is ground truth | W17 | 2026-05-25 (v7.9.1 candidate F-STALE-BASE-DETECTION) |
+| W18 Default-URL OG image silent-404 | W18 | 2026-05-27 (v7.9.1 candidate F-DEPLOYED-URL-PROBE) |
+| W19 Env-var trailing newline corrupts runtime string | W19 | 2026-05-27 (v7.9.1 candidate F-DEPLOYED-URL-PROBE) |
+| W20 Stale-session-state inventory drift | W20 | 2026-05-28 |
+| W21 Swift `String.contains("\n")` misses CRLF graphemes — scan `unicodeScalars` | W21 | 2026-05-31 |
+| W22 Swift type-checker timeout on heterogeneous array literals >20 elements | W22 | 2026-05-31 |
+| W23 `AnalyticsService.logEvent` private — callers must use a `log*` method | W23 | 2026-05-31 |
+| W24 pbxproj merge conflicts from concurrent PRs at same group/sources position | W24 | 2026-05-31 |
+| W25 `@MainActor` propagates to statics — test class must be `@MainActor` | W25 | 2026-05-31 |
+| W26 Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups | W26 | 2026-06-01 |
+| W27 `make preflight` enhancement_parent false-positive (was mis-numbered W11) | W27 | 2026-05-19 |
 
 ---
 
@@ -782,23 +792,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-05-25 (added W17 — stale-base branch detection, v7.9.1 candidate F-STALE-BASE-DETECTION).
-
----
-
-### W11 — `make preflight` enhancement_parent false-positive (2026-05-19)
-
-**Trigger:** Running `make preflight WORK_TYPE=enhancement FEATURE=<name>` blocks with `enhancement_parent: parent='<feature>' phase=tasks, prd.md present=False` even when the actual parent feature (referenced by `state.json::parent_feature`) IS complete with a PRD.
-
-**Why expected:** `scripts/preflight.py::enhancement_parent_state()` checks the ENHANCEMENT FEATURE'S own `prd.md` and `current_phase`, instead of resolving `state.json::parent_feature` and checking THAT feature. Pure heuristic bug — the check is mis-aimed.
-
-**Signal vs noise rule:** Always noise when the enhancement is legitimately scoped (state.json has `parent_feature` set + parent is `complete`). Signal only if no `parent_feature` field exists in state.json (real misconfiguration).
-
-**Silence path (Option A, workaround):** Write a thin "delta PRD" stub at `.claude/features/<enhancement>/prd.md` listing primary/secondary/guardrail metrics + kill criteria. Re-run preflight; the `prd.md present=True` check passes (but `phase=tasks` still trips the blocker — accept this as known-noise OR run preflight with `FEATURE=<parent>` for verification only).
-
-**Silence path (Option B, durable fix):** Patch `scripts/preflight.py::enhancement_parent_state()` to read `state.json::parent_feature` and resolve the check against THAT feature. Queue as a v7.9.1 candidate; tracked in [`docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md`](../../docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md) R7.
-
-**First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
+Last refreshed: 2026-06-01 (index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561).
 
 ---
 
@@ -1307,4 +1301,20 @@ Both workflows then run independently. On a mixed PR you get TWO passing `Build 
 **Generalizable rule:** when two workflow files share the same `name:` (intentional, to satisfy branch protection by status-check-name matching), DO NOT use `${{ github.workflow }}` in their `concurrency.group` expressions. Use file-specific hardcoded prefixes. Anywhere two workflows share a status-check name, audit their concurrency groups for collision.
 
 **Sibling patterns:** the original W26 placeholder note in [`project_session_2026_05_31_tier_carryover_plan.md`](../../.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_session_2026_05_31_tier_carryover_plan.md) captured the Catch-22 symptom (cancelled status blocking merge) but mis-attributed the cause to `cancel-in-progress: true` alone. The actual root cause is the cross-workflow group sharing — `cancel-in-progress: true` per workflow is correct and desirable; only the cross-workflow collision is wrong.
+
+### W27 — `make preflight` enhancement_parent false-positive (2026-05-19)
+
+> **Numbering note:** this pattern was originally documented as a second `W11` (colliding with the canonical W11 "Incomplete PR cache"). The de-duplication was scheduled to renumber it to W26, but W26 was concurrently claimed by the CI-concurrency pattern above (PR #561). Renumbered to W27 on 2026-06-01. Chronologically it sits between W11 (2026-05-16) and W12 (2026-05-20); the W-number is later because the collision was only caught during the 2026-06-01 index sync.
+
+**Trigger:** Running `make preflight WORK_TYPE=enhancement FEATURE=<name>` blocks with `enhancement_parent: parent='<feature>' phase=tasks, prd.md present=False` even when the actual parent feature (referenced by `state.json::parent_feature`) IS complete with a PRD.
+
+**Why expected:** `scripts/preflight.py::enhancement_parent_state()` checks the ENHANCEMENT FEATURE'S own `prd.md` and `current_phase`, instead of resolving `state.json::parent_feature` and checking THAT feature. Pure heuristic bug — the check is mis-aimed.
+
+**Signal vs noise rule:** Always noise when the enhancement is legitimately scoped (state.json has `parent_feature` set + parent is `complete`). Signal only if no `parent_feature` field exists in state.json (real misconfiguration).
+
+**Silence path (Option A, workaround):** Write a thin "delta PRD" stub at `.claude/features/<enhancement>/prd.md` listing primary/secondary/guardrail metrics + kill criteria. Re-run preflight; the `prd.md present=True` check passes (but `phase=tasks` still trips the blocker — accept this as known-noise OR run preflight with `FEATURE=<parent>` for verification only).
+
+**Silence path (Option B, durable fix):** Patch `scripts/preflight.py::enhancement_parent_state()` to read `state.json::parent_feature` and resolve the check against THAT feature. Queue as a v7.9.1 candidate; tracked in [`docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md`](../../docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md) R7.
+
+**First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
 
