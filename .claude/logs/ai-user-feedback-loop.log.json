@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "ai-user-feedback-loop",
+  "title": "ai user feedback loop",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9",
+  "started_at": "2026-06-01T16:24:49Z",
+  "updated_at": "2026-06-01T16:24:49Z",
+  "events": [
+    {
+      "timestamp": "2026-06-01T16:24:49Z",
+      "event_type": "phase_transition",
+      "phase": "research",
+      "summary": "C5 Phase 0 (Research) opened \u2014 11-section research.md authored covering: problem framing (UI-024 deferred wire + RecommendationMemory storage layer already shipped but never wired into views), three closures (A wire RecommendationMemory as @StateObject env-object; B reinforcement loop in AIOrchestrator with confidence-tier-only adjustment + per-signal-per-segment + 5-outcome quorum; C Settings \u2192 AI Feedback surface with breakdown + clear-all + opt-out toggle), new dismiss-reason picker (5 enum values + free-text), 5 success metrics (T1/T2/T3 tagged), 3 kill criteria, dependencies (all shipped), scope NOT (cohort + time-decay + signal-generation + push-routing + transparency UX deferred), C5 vs C2 vs C4 distinction table, Phase E compliance. Awaiting operator approval before Phase 1 (PRD).",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

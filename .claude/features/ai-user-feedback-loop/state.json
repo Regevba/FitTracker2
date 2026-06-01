@@ -1,0 +1,56 @@
+{
+  "feature": "ai-user-feedback-loop",
+  "description": "Wire the existing AI feedback signal (thumbs up/down in AIInsightCard + AIIntelligenceSheet AIFeedbackView) into a real reinforcement loop. RecommendationMemory storage layer already exists (record/outcomes/acceptanceRate/frequentlyDismissedSignals/clearAll) and has unit tests, but is per-AIOrchestrator-instance — not wired into views. C5 closes the deferred audit UI-024 by promoting RecommendationMemory to an injectable EnvironmentObject, wiring the actual record() call from AIInsightCard.recordFeedback (replacing the existing no-op comment block), feeding back into AIOrchestrator's recommendation pipeline (suppress signals with high dismiss-count + boost segments with high acceptance-rate), and surfacing a Settings → AI Feedback row showing history + GDPR clear-all. Pairs with D1 (adaptive-intelligence next pass).",
+  "work_type": "feature",
+  "current_phase": "research",
+  "created_at": "2026-06-01T16:22:20Z",
+  "state_owner": "ft2",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/ai-user-feedback-loop",
+  "isolation_opt_out": false,
+  "rice_score": 9.0,
+  "rice_inputs": {
+    "reach": 0.6,
+    "impact": 2.0,
+    "confidence": 0.75,
+    "effort_person_weeks": 0.5
+  },
+  "dependencies_met": {
+    "RecommendationMemory_storage_layer": "shipped 2026-04-10 (FitTracker/AI/RecommendationMemory.swift — record + outcomes + acceptanceRate + frequentlyDismissedSignals + clearAll)",
+    "RecommendationMemoryTests": "shipped (FitTrackerTests/RecommendationMemoryTests.swift)",
+    "AIFeedbackView": "shipped 2026-04-10 (thumbs up/down + submitted-state + AppMotion.quickInteraction)",
+    "AIInsightCard_feedback_buttons": "shipped 2026-04-10 (private var feedbackButtons + recordFeedback function — fires analytics but no RecommendationMemory.record call)",
+    "AIOrchestrator": "shipped 2026-04-10 (recommendation pipeline)",
+    "ValidatedRecommendation": "shipped (carries segment + confidenceLevel + source needed for outcome recording)",
+    "AnalyticsService.logAiFeedbackSubmitted": "shipped 2026-04-10 (home_ai_feedback_submitted event with segment + rating params)",
+    "homeReadinessAlertActionTaken + homeTrendAlertActionTaken": "shipped 2026-06-01 (C2 + C4 — established the action_taken pattern for sibling banners)"
+  },
+  "scope_known_gap": {
+    "deferred_comment_at_AIInsightCard_recordFeedback": "Note (audit UI-024): Local RecommendationMemory recording deferred — RecommendationMemory is owned per-AIOrchestrator instance, not a shared singleton. Wiring requires either an EnvironmentObject pattern or a dedicated DI container.",
+    "c5_closes_ui_024": true,
+    "what_c5_adds_beyond_wiring": "Reinforcement loop in AIOrchestrator (consume RecommendationMemory.acceptanceRate + frequentlyDismissedSignals to suppress dismissed signals + boost accepted-signal confidence) + Settings → AI Feedback management surface + dismiss-reason picker"
+  },
+  "tasks": [],
+  "phases": {
+    "research": {
+      "started_at": "2026-06-01T16:22:20Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-01T16:22:20Z"
+      }
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "at": "2026-06-01T16:22:20Z",
+      "reason": "C5 from 2026-05-31 tier carryover plan (RICE 9.0; second-highest agent-advanceable C-tier item after C4 shipped 2026-06-01). Operator directive: 'continue c5'."
+    }
+  ]
+}
