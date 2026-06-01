@@ -63,6 +63,8 @@ mcp__ga4__runReport metric=conversions period=last_24h
 
 Flag day-over-day deltas > 30% as anomalies. No automation yet — operator runs in a session.
 
+**Last run: 2026-06-01.** No anomalies — partial-day artifact (-85 to -90% across all events on day-N vs day-N-1 reflects ~15h elapsed of 24h baseline). 31 distinct event types observed across 2 days. 0 instances of new C2/C4 `home_*_alert_*` events (expected — TestFlight build cycle not yet shipped to testers). Full deliverable: [`docs/setup/ga4-funnels-and-conversions-runbook.md`](../../docs/setup/ga4-funnels-and-conversions-runbook.md).
+
 ### B7 — UCC Part 9 wire `UCC_AUDIT_BLOB_URL` (2026-05-17)
 
 After tonight's `13 5 * * *` Vercel Cron at fitme-story populates the Blob:
