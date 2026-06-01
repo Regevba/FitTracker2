@@ -74,27 +74,7 @@ struct AIIntelligenceSheet: View {
 
             HStack(spacing: AppSpacing.xSmall) {
                 ForEach(ReadinessAlertRecommendation.allCases, id: \.self) { option in
-                    Button {
-                        handleCTA(option, context: context)
-                    } label: {
-                        Text(option.primaryCTA)
-                            .font(AppText.caption)
-                            .padding(.horizontal, AppSpacing.small)
-                            .padding(.vertical, AppSpacing.xxSmall)
-                            .background(
-                                option == context.recommendation
-                                    ? AppColor.Brand.primary
-                                    : AppColor.Surface.secondary,
-                                in: Capsule()
-                            )
-                            .foregroundStyle(
-                                option == context.recommendation
-                                    ? AppColor.Text.onBrand
-                                    : AppColor.Text.primary
-                            )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(option.primaryCTA)
+                    ctaButton(option: option, context: context)
                 }
             }
         }
@@ -104,6 +84,26 @@ struct AIIntelligenceSheet: View {
             in: RoundedRectangle(cornerRadius: AppRadius.card)
         )
         .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder
+    private func ctaButton(option: ReadinessAlertRecommendation, context: ReadinessAlertContext) -> some View {
+        let isPrimary = option == context.recommendation
+        let background: Color = isPrimary ? AppColor.Brand.primary : AppColor.Surface.secondary
+        let foreground: Color = isPrimary ? AppColor.Text.inversePrimary : AppColor.Text.primary
+
+        Button {
+            handleCTA(option, context: context)
+        } label: {
+            Text(option.primaryCTA)
+                .font(AppText.caption)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.vertical, AppSpacing.xxSmall)
+                .background(background, in: Capsule())
+                .foregroundStyle(foreground)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(option.primaryCTA)
     }
 
     private func handleCTA(_ choice: ReadinessAlertRecommendation, context: ReadinessAlertContext) {
