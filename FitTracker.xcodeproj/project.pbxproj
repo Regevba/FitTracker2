@@ -18,6 +18,7 @@
 		6CE2745F57FD4DE3B57B14A9 /* FitTracker/AI/GoalProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */; };
 		74FEAE525F4C445790103F37 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6ACD6FF9F1414981D90944 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift */; };
 		79436AA165D54D94937D68A8 /* FitTracker/AI/RecommendationMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B4473D583514FE5A6A1297E /* FitTracker/AI/RecommendationMemory.swift */; };
+		C5AAFBAA111111111111AAAA /* FitTracker/AI/RecommendationFeedbackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AAFBAA222222222222AAAA /* FitTracker/AI/RecommendationFeedbackController.swift */; };
 		8287618AAA1A42A6A6AC9EB9 /* FitTracker/AI/Adapters/ProfileAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DB1AB8240F41ADB9BB8927 /* FitTracker/AI/Adapters/ProfileAdapter.swift */; };
 		98DFF4A40C424A3E9B71560F /* FitTracker/AI/Adapters/TrainingAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656B9E0FD2FC47EB9F874958 /* FitTracker/AI/Adapters/TrainingAdapter.swift */; };
 		A10000010000000000000001 /* FitTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000001 /* FitTrackerApp.swift */; };
@@ -303,6 +304,7 @@
 		11B09D322F852BF900DCB9A0 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		11B09D332F852BF900DCB9A0 /* OnboardingWelcomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingWelcomeView.swift; sourceTree = "<group>"; };
 		1B4473D583514FE5A6A1297E /* FitTracker/AI/RecommendationMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationMemory.swift; sourceTree = "<group>"; };
+		C5AAFBAA222222222222AAAA /* FitTracker/AI/RecommendationFeedbackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/RecommendationFeedbackController.swift; sourceTree = "<group>"; };
 		1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/GoalProfile.swift; sourceTree = "<group>"; };
 		22DB1AB8240F41ADB9BB8927 /* FitTracker/AI/Adapters/ProfileAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/ProfileAdapter.swift; sourceTree = "<group>"; };
 		401017612EDA442EA7BFB2E4 /* FitTracker/AI/Adapters/NutritionAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/AI/Adapters/NutritionAdapter.swift; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 				1B52DF0A4443482E855B2DEE /* FitTracker/AI/GoalProfile.swift */,
 				562BF2CE90DB4CFE8912F36E /* FitTracker/AI/ValidatedRecommendation.swift */,
 				1B4473D583514FE5A6A1297E /* FitTracker/AI/RecommendationMemory.swift */,
+				C5AAFBAA222222222222AAAA /* FitTracker/AI/RecommendationFeedbackController.swift */,
 				CA6ACD6FF9F1414981D90944 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift */,
 			);
 			name = "Recovered References";
@@ -1603,6 +1606,7 @@
 				6CE2745F57FD4DE3B57B14A9 /* FitTracker/AI/GoalProfile.swift in Sources */,
 				4EBF9208E18548B3B009001A /* FitTracker/AI/ValidatedRecommendation.swift in Sources */,
 				79436AA165D54D94937D68A8 /* FitTracker/AI/RecommendationMemory.swift in Sources */,
+				C5AAFBAA111111111111AAAA /* FitTracker/AI/RecommendationFeedbackController.swift in Sources */,
 				74FEAE525F4C445790103F37 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift in Sources */,
 				RM1000001000000000000001 /* ReminderType.swift in Sources */,
 				RM1000001000000000000002 /* ReminderScheduler.swift in Sources */,

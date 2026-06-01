@@ -65,6 +65,9 @@ struct FitTrackerApp: App {
     // C2 + C4 alert stores — UI mirrors for the two new observer-driven banners.
     @StateObject private var readinessAwareAlertStore = ReadinessAwareAlertStore()
     @StateObject private var trendAlertStore          = TrendAlertStore()
+    // C5 ai-user-feedback-loop — RecommendationMemory facade, promoted from
+    // per-AIOrchestrator-instance to env-object to close audit UI-024.
+    @StateObject private var feedbackController       = RecommendationFeedbackController()
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
     @State private var showBiometricActivation = false
@@ -456,6 +459,7 @@ struct FitTrackerApp: App {
                 .environmentObject(reminderPreferences)
                 .environmentObject(readinessAwareAlertStore)
                 .environmentObject(trendAlertStore)
+                .environmentObject(feedbackController)
         } else if (!hasCompletedOnboarding || isForcedOnboardingModeEnabled), !isScreenReviewModeEnabled {
             // First launch or sign-in smoke override — onboarding includes auth at step 5.
             OnboardingView {
@@ -497,6 +501,7 @@ struct FitTrackerApp: App {
                     .environmentObject(analytics)
                     .environmentObject(readinessAwareAlertStore)
                     .environmentObject(trendAlertStore)
+                    .environmentObject(feedbackController)
             }
         }
     }
