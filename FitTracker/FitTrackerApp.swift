@@ -324,6 +324,14 @@ struct FitTrackerApp: App {
                             aiOrchestrator.goalMode = { [weak dataStore] in
                                 dataStore?.userPreferences.nutritionGoalMode ?? .fatLoss
                             }
+                            // C5 ai-user-feedback-loop — late-inject the reinforcement-loop wires.
+                            // Couldn't pass these into the @StateObject closure since self wasn't
+                            // available there. Same pattern as goalMode late-injection above.
+                            aiOrchestrator.setFeedbackHooks(
+                                memory: feedbackController.memory,
+                                settings: settings,
+                                analytics: analytics
+                            )
                             // Ensure ReminderScheduler is initialised — actual trigger
                             // evaluation happens in MainScreenView when data is available.
                             _ = ReminderScheduler.shared
