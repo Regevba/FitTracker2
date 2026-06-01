@@ -1,0 +1,46 @@
+{
+  "feature": "readiness-aware-training-alert",
+  "description": "Proactive pre-training readiness alert that fires BEFORE the user starts today's planned session. Integrates yesterday's HealthKit signals (HRV trend, RHR, sleep) + nutrition + recovery flags from ReadinessEngine v2 with today's training plan (DayType + volume from training-plan-v2). Outputs one of three smart recommendations (Continue / Rest day swap / Adapt to easier load) surfaced via AIInsightCard + push notification + AI avatar state. Includes Why? affordance that opens AIIntelligenceSheet with the readiness component breakdown that drove the recommendation.",
+  "work_type": "enhancement",
+  "current_phase": "tasks",
+  "created_at": "2026-06-01T07:10:00Z",
+  "state_owner": "ft2",
+  "parent_feature": "smart-reminders",
+  "parent_case_study": "docs/case-studies/smart-reminders-case-study.md",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/readiness-aware-training-alert",
+  "isolation_opt_out": false,
+  "rice_score": 13.0,
+  "rice_inputs": {
+    "reach": 1.0,
+    "impact": 2.5,
+    "confidence": 0.85,
+    "effort_person_weeks": 0.6
+  },
+  "dependencies_met": {
+    "ReadinessEngine_v2": "shipped 2026-04-10",
+    "AIOrchestrator": "shipped 2026-04-10",
+    "AIInsightCard": "shipped 2026-04-10",
+    "smart_reminders_core": "shipped 2026-04-16 (PR #98)",
+    "ReminderScheduler": "now routes through NotificationGateway (PR #553, 2026-05-31)",
+    "DeepLinkRouter_registry": "shipped 2026-05-31 (PR #556)",
+    "training_plan_v2": "shipped 2026-04-10 (PR #74)",
+    "AI_avatar_state_machine": "shipped 2026-04-10"
+  },
+  "tasks": [],
+  "phases": {
+    "tasks": {
+      "started_at": "2026-06-01T07:10:00Z"
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "tasks",
+      "at": "2026-06-01T07:10:00Z",
+      "reason": "C2 from 2026-05-31 tier carryover plan (top of RICE-13.0 ranking after E1 refresh)"
+    }
+  ]
+}

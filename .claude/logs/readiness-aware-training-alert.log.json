@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "feature": "readiness-aware-training-alert",
+  "title": "readiness aware training alert",
+  "work_type": "enhancement",
+  "current_phase": "tasks",
+  "framework_version": "v7.9",
+  "started_at": "2026-06-01T04:12:30Z",
+  "updated_at": "2026-06-01T04:12:30Z",
+  "events": [
+    {
+      "timestamp": "2026-06-01T04:12:30Z",
+      "event_type": "phase_transition",
+      "phase": "tasks",
+      "summary": "C2 Phase 1 (Tasks) opened \u2014 state.json + 12-task tasks.md authored. Parent: smart-reminders. RICE 13.0 from 2026-05-31 carryover. All deps confirmed shipped.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
