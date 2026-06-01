@@ -61,6 +61,10 @@ struct FitTrackerApp: App {
     @StateObject private var settings      = AppSettings()
     @StateObject private var watchService  = WatchConnectivityService()
     @StateObject private var analytics     = AnalyticsService.makeDefault()
+    @StateObject private var reminderPreferences = ReminderPreferencesStore()
+    // C2 + C4 alert stores — UI mirrors for the two new observer-driven banners.
+    @StateObject private var readinessAwareAlertStore = ReadinessAwareAlertStore()
+    @StateObject private var trendAlertStore          = TrendAlertStore()
     @State private var hasRestoredSession = false
     @State private var hasAppliedReviewFixtures = false
     @State private var showBiometricActivation = false
@@ -137,6 +141,22 @@ struct FitTrackerApp: App {
                     reminderNotificationDelegate.setAnalytics(analytics)
                     ReminderScheduler.shared.analytics = analytics
 
+                    // C1 first slice (L207): register smart-reminders as a
+                    // consumer of the v2 notification platform. Idempotent.
+                    // Returns false only if another consumer claims the same
+                    // urlPatterns — should never occur with the current 2
+                    // consumers (smart-reminders + readinessAlert). Surface
+                    // via DEBUG print so a developer hitting it during
+                    // testing sees the issue immediately.
+                    let registered = SmartRemindersConsumerRegistration.registerAtAppInit()
+                    #if DEBUG
+                    if !registered {
+                        print("[SmartReminders] WARNING: consumer registration failed — urlPatterns collision with another consumer.")
+                    }
+                    #else
+                    _ = registered
+                    #endif
+
                     // smart-reminders-behavioral-learning Task 10:
                     // wire the behavioral-learning store + cohort client
                     // into the delegate. Then fire-and-forget cohort prior
@@ -155,6 +175,16 @@ struct FitTrackerApp: App {
                     }
                     NotificationConsumerRegistry.shared.register(ReadinessAlertObserver.consumerRegistration)
                     ReadinessAlertObserver.shared.analytics = analytics
+                    // C2 readiness-aware training observer — registered AFTER ReadinessAlertObserver
+                    // so its `.standard` cap-tag claims don't override the `.critical` precedence.
+                    // Per PRD OQ-4 (C4 trend-alerts), C2 ALSO wins the in-app single-banner slot
+                    // (precedence resolved in AIInsightCard, not in the registry).
+                    NotificationConsumerRegistry.shared.register(ReadinessAwareTrainingObserver.consumerRegistration)
+                    ReadinessAwareTrainingObserver.shared.analytics = analytics
+                    // C4 sustained-trend HRV observer — registered LAST. Distinct typeIdentifier
+                    // (`trendAlert`), distinct cap-tag scope, distinct 7-day de-dupe window.
+                    NotificationConsumerRegistry.shared.register(TrendAlertObserver.consumerRegistration)
+                    TrendAlertObserver.shared.analytics = analytics
                     Task { await notificationGateway.refreshAuthorizationStatus() }
                     if cohortPriorCache.isStale {
                         let client = cohortPriorClient
@@ -423,6 +453,9 @@ struct FitTrackerApp: App {
                 .environmentObject(watchService)
                 .environmentObject(aiOrchestrator)
                 .environmentObject(analytics)
+                .environmentObject(reminderPreferences)
+                .environmentObject(readinessAwareAlertStore)
+                .environmentObject(trendAlertStore)
         } else if (!hasCompletedOnboarding || isForcedOnboardingModeEnabled), !isScreenReviewModeEnabled {
             // First launch or sign-in smoke override — onboarding includes auth at step 5.
             OnboardingView {
@@ -462,6 +495,8 @@ struct FitTrackerApp: App {
                     .environmentObject(watchService)
                     .environmentObject(aiOrchestrator)
                     .environmentObject(analytics)
+                    .environmentObject(readinessAwareAlertStore)
+                    .environmentObject(trendAlertStore)
             }
         }
     }

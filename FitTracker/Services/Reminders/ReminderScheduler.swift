@@ -34,39 +34,39 @@ final class ReminderScheduler: ObservableObject {
 
     // ── Public API ───────────────────────────────────────
 
-    /// Schedules a reminder notification if all frequency and quiet-hour guards
-    /// pass.  Silently no-ops when any guard rejects the request.
+    /// Schedules a reminder notification if all smart-reminder guards pass AND
+    /// the v2 NotificationGateway accepts the dispatch.
+    ///
+    /// **Guard ownership split (C1 item #1, 2026-05-31):**
+    ///
+    /// - Smart-reminders owns: per-type daily cap, per-type lifetime cap, minimum
+    ///   interval between any two reminders. These are smart-reminders' policy and
+    ///   the gateway has no concept of `ReminderType`.
+    /// - `NotificationGateway` owns: authorization, quiet hours, global standard-tag
+    ///   cap (3/day). Routing through the gateway means smart-reminders + future
+    ///   consumers (ReadinessAlertObserver, etc.) share one accurate cap counter.
+    ///
+    /// Silently no-ops when any guard rejects the request. Analytics events are
+    /// emitted at every gate so downstream funnel analysis can attribute drop-off.
     ///
     /// - Parameters:
     ///   - type:         The `ReminderType` that categorises this notification.
     ///   - body:         The notification body string (personalised by the caller).
     ///   - delayMinutes: How many minutes from now the notification should fire.
-    ///                   Pass `0` to fire after a 1-second delay (effectively
-    ///                   immediate, required by UNTimeIntervalNotificationTrigger).
+    ///                   Pass `0` to fire after a 1-second delay (required by
+    ///                   `UNTimeIntervalNotificationTrigger`).
     func scheduleIfAllowed(
         type: ReminderType,
         body: String,
         delayMinutes: Int = 0
     ) async {
-        // 1. Quiet-hours guard
-        guard !isQuietHour() else {
-            analytics?.logReminderSuppressed(type: type.rawValue, reason: "quiet_hours")
-            return
-        }
-
-        // 2. Global daily cap — use actual send count (more reliable than pending queue)
-        guard todaySendCount() < maxDailyGlobal else {
-            analytics?.logReminderSuppressed(type: type.rawValue, reason: "global_daily_cap")
-            return
-        }
-
-        // 3. Per-type daily cap (resets at midnight via key naming)
+        // 1. Per-type daily cap (resets at midnight via key naming)
         guard !dailyCapReached(for: type) else {
             analytics?.logReminderSuppressed(type: type.rawValue, reason: "per_type_daily_cap")
             return
         }
 
-        // 4. Per-type lifetime cap
+        // 2. Per-type lifetime cap
         if let maxLifetime = type.maxLifetime {
             let sent = lifetimeSentCount(for: type)
             guard sent < maxLifetime else {
@@ -76,7 +76,7 @@ final class ReminderScheduler: ObservableObject {
             }
         }
 
-        // 5. Minimum interval since last reminder of any type
+        // 3. Minimum interval since last reminder of any type
         guard minimumIntervalElapsed() else {
             analytics?.logReminderSuppressed(type: type.rawValue, reason: "min_interval")
             return
@@ -101,21 +101,34 @@ final class ReminderScheduler: ObservableObject {
             repeats: false
         )
 
-        let request = UNNotificationRequest(
-            identifier: "\(type.rawValue)_\(Date().timeIntervalSince1970)",
+        // Route through the v2 NotificationGateway (auth + quiet hours +
+        // standard-tag global cap all enforced there).
+        let result = await NotificationGateway.shared.dispatch(
             content: content,
-            trigger: trigger
+            trigger: trigger,
+            consumerID: SmartRemindersConsumerRegistration.consumerID,
+            tag: .standard
         )
 
-        do {
-            try await center.add(request)
+        switch result {
+        case .dispatched:
             recordScheduled(for: type)
             incrementDailyCount()
             scheduledCount += 1
             analytics?.logReminderScheduled(type: type.rawValue)
-        } catch {
-            // Notifications are best-effort; silent failure is intentional.
-            analytics?.logReminderSuppressed(type: type.rawValue, reason: "system_add_failed")
+        case .denied_unauthorized:
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: "system_unauthorized")
+        case .suppressed(let reason):
+            // Map gateway suppression reasons to existing smart-reminder analytics
+            // taxonomy where possible; otherwise emit the gateway's raw reason.
+            let mapped: String
+            switch reason {
+            case .quiet_hours:       mapped = "quiet_hours"
+            case .standard_cap:      mapped = "global_daily_cap"
+            case .critical_cap:      mapped = "critical_cap"  // shouldn't fire for smart-reminders (tag=.standard)
+            case .scheduling_failed: mapped = "system_add_failed"
+            }
+            analytics?.logReminderSuppressed(type: type.rawValue, reason: mapped)
         }
     }
 

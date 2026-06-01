@@ -7,16 +7,25 @@ import SwiftUI
 struct AIInsightCard: View {
     @EnvironmentObject private var orchestrator: AIOrchestrator
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var readinessAware: ReadinessAwareAlertStore
+    @EnvironmentObject private var trendAlert: TrendAlertStore
     @State private var showSheet = false
     @State private var feedbackGiven = false
 
     var body: some View {
         Button {
             showSheet = true
-            analytics.logAiInsightTap(segment: primarySegment)
+            // Precedence: C2 (training-day advisory) → C4 (sustained-trend) → default AI insight
+            if let context = readinessAware.current() {
+                analytics.logHomeReadinessAlertTap(recommendation: context.recommendation.rawValue)
+            } else if let context = trendAlert.current() {
+                analytics.logHomeTrendAlertTap(kind: context.kind.rawValue)
+            } else {
+                analytics.logAiInsightTap(segment: primarySegment)
+            }
         } label: {
             HStack(spacing: AppSpacing.medium) {
-                FitMeLogoLoader(mode: hasInsight ? .breathe : .shimmer, size: .small)
+                FitMeLogoLoader(mode: avatarMode, size: .small)
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     HStack(spacing: AppSpacing.xxSmall) {
@@ -58,11 +67,26 @@ struct AIInsightCard: View {
             AIIntelligenceSheet()
         }
         .onAppear {
-            analytics.logAiInsightShown(
-                segment: primarySegment,
-                confidence: confidenceLevel,
-                sourceTier: "local"
-            )
+            if let context = readinessAware.current() {
+                analytics.logHomeReadinessAlertShown(
+                    recommendation: context.recommendation.rawValue,
+                    score: context.readinessScore,
+                    drivingComponent: context.drivingComponent.rawValue
+                )
+            } else if let context = trendAlert.current() {
+                analytics.logHomeTrendAlertShown(
+                    kind: context.kind.rawValue,
+                    sustainedDays: context.sustainedDays,
+                    baseline: Int(context.baseline.rounded()),
+                    floor: Int(context.floor.rounded())
+                )
+            } else {
+                analytics.logAiInsightShown(
+                    segment: primarySegment,
+                    confidence: confidenceLevel,
+                    sourceTier: "local"
+                )
+            }
         }
         .accessibilityLabel("AI insight: \(insightTitle). \(insightSubtitle). Double tap to see all recommendations.")
     }
@@ -70,7 +94,33 @@ struct AIInsightCard: View {
     // MARK: - Derived
 
     private var hasInsight: Bool {
-        !orchestrator.latestRecommendations.isEmpty
+        readinessAware.current() != nil
+            || trendAlert.current() != nil
+            || !orchestrator.latestRecommendations.isEmpty
+    }
+
+    /// Avatar mode mapping:
+    ///   C2 takes precedence on training days:
+    ///     • `.shimmer` — restDaySwap
+    ///     • `.pulse`   — adaptEasierLoad
+    ///     • `.breathe` — continueAsPlanned
+    ///   C4 fills the gap on non-training days:
+    ///     • `.pulse`   — any sustained-trend advisory (advisory weight)
+    ///   Default:
+    ///     • `.breathe` — has any insight
+    ///     • `.shimmer` — no insight yet
+    private var avatarMode: FitMeLogoLoader.Mode {
+        if let context = readinessAware.current() {
+            switch context.recommendation {
+            case .restDaySwap:       return .shimmer
+            case .adaptEasierLoad:   return .pulse
+            case .continueAsPlanned: return .breathe
+            }
+        }
+        if trendAlert.current() != nil {
+            return .pulse
+        }
+        return hasInsight ? .breathe : .shimmer
     }
 
     private var primaryRecommendation: AIRecommendation? {
@@ -93,6 +143,12 @@ struct AIInsightCard: View {
     }
 
     private var insightTitle: String {
+        if let context = readinessAware.current() {
+            return context.recommendation.headline
+        }
+        if let context = trendAlert.current() {
+            return context.kind.headline
+        }
         guard let rec = primaryRecommendation else {
             return "Analyzing your data..."
         }
@@ -101,6 +157,12 @@ struct AIInsightCard: View {
     }
 
     private var insightSubtitle: String {
+        if let context = readinessAware.current() {
+            return "Readiness \(context.readinessScore)/100 — tap for why"
+        }
+        if trendAlert.current() != nil {
+            return "Tap to see your 7-day pattern"
+        }
         guard primaryRecommendation != nil else {
             return "Collecting data for personalized insights"
         }

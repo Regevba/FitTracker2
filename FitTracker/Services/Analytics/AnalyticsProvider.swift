@@ -248,6 +248,26 @@ enum AnalyticsEvent {
     // never fired in production. Their semantics duplicate `homeAiFeedbackSubmitted`
     // which already carries `rating: positive | negative`. Use that instead.
 
+    // ── C2: Readiness-Aware Training Alert (screen-prefixed: home_) ──
+    /// Readiness-aware advisory shown on home insight card
+    static let homeReadinessAlertShown         = "home_readiness_alert_shown"
+    /// User taps the readiness-aware insight card
+    static let homeReadinessAlertTap           = "home_readiness_alert_tap"
+    /// User picks a CTA in the readiness-aware sheet banner
+    static let homeReadinessAlertActionTaken   = "home_readiness_alert_action_taken"
+    /// Readiness-aware advisory dismissed without CTA pick (sheet closed)
+    static let homeReadinessAlertDismissed     = "home_readiness_alert_dismissed"
+
+    // ── C4: Sustained-Trend HRV Alert (screen-prefixed: home_) ──
+    /// Sustained-trend advisory shown on home insight card
+    static let homeTrendAlertShown             = "home_trend_alert_shown"
+    /// User taps the sustained-trend insight card
+    static let homeTrendAlertTap               = "home_trend_alert_tap"
+    /// User picks thumbs-up/thumbs-down feedback in the Your HRV Trend sheet section
+    static let homeTrendAlertActionTaken       = "home_trend_alert_action_taken"
+    /// Sustained-trend advisory dismissed without feedback pick (sheet closed)
+    static let homeTrendAlertDismissed         = "home_trend_alert_dismissed"
+
     // ── Import Events (custom) ─────────────────────────────
 
     /// User initiates a training plan import flow
@@ -445,6 +465,16 @@ enum AnalyticsParam {
     static let confidenceLevel   = "confidence_level"   // high/medium/low — recommendation confidence
     // source already defined above — reuse for cloud/local/personalised pipeline source
     static let reason            = "reason"             // not_relevant/already_know/disagree/other — dismiss reason
+
+    // C2 readiness-aware training alert parameters
+    static let chosen            = "chosen"             // continueAsPlanned/adaptEasierLoad/restDaySwap (the CTA the user picked)
+    static let drivingComponent  = "driving_component"  // hrv/sleep/restingHR/trainingLoad/composite
+
+    // C4 sustained-trend HRV alert parameters
+    static let kind              = "kind"                // hrv_sustained_low (future: sleep_sustained_low, rhr_sustained_high)
+    static let sustainedDays     = "sustained_days"      // int — number of consecutive days below floor
+    static let baseline          = "baseline"            // int — rounded HRV ms median over baselineWindow
+    static let floor             = "floor"               // int — rounded HRV ms adaptive floor (baseline - 1σ, min hardFloor)
 
     // Onboarding auth parameters
     // method already defined above — reuse for email/google/apple

@@ -773,6 +773,16 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 | W15 MDX `<digit` / `<non-letter` breaks page rendering | W15 | 2026-05-21 |
 | W16 Contract-boundary tests must sample from canonical producer | W16 | 2026-05-24 (v7.9.1 candidate F-CONTRACT-FIXTURE-SAMPLING) |
 | W17 Stale-base branches — PR diff misleads; cherry-pick onto fresh main is ground truth | W17 | 2026-05-25 (v7.9.1 candidate F-STALE-BASE-DETECTION) |
+| W18 Default-URL OG image silent-404 | W18 | 2026-05-27 (v7.9.1 candidate F-DEPLOYED-URL-PROBE) |
+| W19 Env-var trailing newline corrupts runtime string | W19 | 2026-05-27 (v7.9.1 candidate F-DEPLOYED-URL-PROBE) |
+| W20 Stale-session-state inventory drift | W20 | 2026-05-28 |
+| W21 Swift `String.contains("\n")` misses CRLF graphemes — scan `unicodeScalars` | W21 | 2026-05-31 |
+| W22 Swift type-checker timeout on heterogeneous array literals >20 elements | W22 | 2026-05-31 |
+| W23 `AnalyticsService.logEvent` private — callers must use a `log*` method | W23 | 2026-05-31 |
+| W24 pbxproj merge conflicts from concurrent PRs at same group/sources position | W24 | 2026-05-31 |
+| W25 `@MainActor` propagates to statics — test class must be `@MainActor` | W25 | 2026-05-31 |
+| W26 Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups | W26 | 2026-06-01 |
+| W27 `make preflight` enhancement_parent false-positive (was mis-numbered W11) | W27 | 2026-05-19 |
 
 ---
 
@@ -782,23 +792,7 @@ Commit the new entry on a `chore/document-pattern-<slug>` branch + open PR + mer
 - Workflow patterns mined from: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/feedback_*.md`
 - Cross-referenced against: `scripts/check-state-schema.py`, `scripts/integrity-check.py`, `.claude/integrity/README.md`
 
-Last refreshed: 2026-05-25 (added W17 — stale-base branch detection, v7.9.1 candidate F-STALE-BASE-DETECTION).
-
----
-
-### W11 — `make preflight` enhancement_parent false-positive (2026-05-19)
-
-**Trigger:** Running `make preflight WORK_TYPE=enhancement FEATURE=<name>` blocks with `enhancement_parent: parent='<feature>' phase=tasks, prd.md present=False` even when the actual parent feature (referenced by `state.json::parent_feature`) IS complete with a PRD.
-
-**Why expected:** `scripts/preflight.py::enhancement_parent_state()` checks the ENHANCEMENT FEATURE'S own `prd.md` and `current_phase`, instead of resolving `state.json::parent_feature` and checking THAT feature. Pure heuristic bug — the check is mis-aimed.
-
-**Signal vs noise rule:** Always noise when the enhancement is legitimately scoped (state.json has `parent_feature` set + parent is `complete`). Signal only if no `parent_feature` field exists in state.json (real misconfiguration).
-
-**Silence path (Option A, workaround):** Write a thin "delta PRD" stub at `.claude/features/<enhancement>/prd.md` listing primary/secondary/guardrail metrics + kill criteria. Re-run preflight; the `prd.md present=True` check passes (but `phase=tasks` still trips the blocker — accept this as known-noise OR run preflight with `FEATURE=<parent>` for verification only).
-
-**Silence path (Option B, durable fix):** Patch `scripts/preflight.py::enhancement_parent_state()` to read `state.json::parent_feature` and resolve the check against THAT feature. Queue as a v7.9.1 candidate; tracked in [`docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md`](../../docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md) R7.
-
-**First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
+Last refreshed: 2026-06-01 (index synced through W27; resolved the duplicate-W11 collision — the 2026-05-19 `make preflight` enhancement_parent entry renumbered to W27, since W26 was concurrently claimed by the CI-concurrency pattern in PR #561).
 
 ---
 
@@ -1171,3 +1165,191 @@ Run `make freshness-check` (or accept the auto-chain via `make preflight`) at an
 The agent obligation is codified in [`feedback_cross_layer_freshness_check.md`](../../memory/feedback_cross_layer_freshness_check.md) (auto-memory). The pattern is mechanically enforced via the auto-chain from `make preflight` (v7.8.6+) and surfaced via SessionStart hook (when wired).
 
 **First surfaced by:** 2026-05-28 session — HADF Sub-exp 2/3 prereg duplication incident. Cost: ~30 min of duplicated work + an operator correction round-trip. Recovery: revert prereg edits + undo MDX rename. Net session deliverable salvaged: collector code (ollama + aws-bedrock branches) + requirements + operator runbook — all genuinely new and useful.
+
+### W21 — Swift `String.contains("\n")` misses CRLF graphemes; scan unicodeScalars instead (2026-05-31)
+
+**Surfaced by:** `feat/data-export-csv-2026-05-31` PR #549 — CSV `csvEscape("line1\r\nline2")` returned the raw input instead of the quoted form, because the function gated its escape branch on `field.contains("\n") || field.contains("\r")`. CI test `test_csvEscape_quotesAndEscapesFieldsWithNewlines` failed with the wrapped-form expected but raw form actual.
+
+**Root cause:** Swift's `String` is a sequence of extended grapheme clusters, not scalars. The bytes `\r\n` (U+000D + U+000A) form a single CRLF cluster. `String.contains("\n")` looks for a `\n` cluster on its own — the CRLF cluster does not match `\n` alone, and does not match `\r` alone. The escape branch never fired, raw input returned.
+
+**Fix:**
+
+```swift
+let needsEscape = field.unicodeScalars.contains(where: { scalar in
+    scalar == "," || scalar == "\n" || scalar == "\r" || scalar == "\""
+})
+```
+
+Scalar-level scan detects CR + LF whether they appear standalone or inside any cluster.
+
+**Generalizable rule:** when checking for ASCII control characters in arbitrary Swift `String` input, scan `unicodeScalars` not graphemes. The grapheme abstraction is correct for user-facing text length, sorting, slicing — wrong for byte-level format compliance (CSV, NDJSON, HTTP framing, etc.).
+
+**Sibling patterns:** None in current catalog; first Swift-language-behavior W-code.
+
+### W22 — Swift type-checker timeout on heterogeneous array literals >20 elements with `Optional.map(String.init)` (2026-05-31)
+
+**Surfaced by:** `feat/data-export-csv-2026-05-31` PR #549 first CI failure — `DataExportService.swift:129: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions`.
+
+**Root cause:** the failing line assembled a 23-element `[String]` literal mixing:
+
+- direct strings (`log.phase.rawValue`)
+- `String(_:)` calls on Ints (`String(log.completionPct)`)
+- `Optional<Double>.map(String.init) ?? ""` chains (`bio.weightKg.map(String.init) ?? ""`)
+- `Optional<Double>.map(String.init) ?? ""` for several nutrition fields
+- `reduce`/`compactMap`/`filter` accumulations wrapped in `String(_:)`
+
+Swift's `String.init(_:)` has many overloads (Int, Double, Float, CustomStringConvertible, …); each `Optional.map(String.init)` site is independently ambiguous. Combined with array-literal type inference, the constraint solver hits its budget cap and gives up.
+
+**Fix (two layers):**
+
+1. Extract each cell as a plain `String` local before the literal:
+   ```swift
+   let weightKg = bio.weightKg.map { String($0) } ?? ""
+   // ... 22 more locals
+   let fields: [String] = [dateStr, log.phase.rawValue, ..., weightKg, ...]
+   ```
+2. Use closure form `.map { String($0) }` (not unbound `.map(String.init)`) — the closure-parameter type is inferred from the optional's `Wrapped`, picking exactly one `String.init(_:)` overload.
+
+**Generalizable rule:** when assembling a homogeneous array from heterogeneous expressions, pre-compute each cell. When mapping `Optional<T>` through `String.init`, prefer the closure form.
+
+**Sibling patterns:** None directly; closest is [W21](#w21--swift-stringcontainsn-misses-crlf-graphemes-scan-unicodescalars-instead-2026-05-31) — both are Swift-language-behavior W-codes from the same PR.
+
+### W23 — `AnalyticsService.logEvent` is private; callers must use a `log*`-named public method (2026-05-31)
+
+**Surfaced by:** `feat/smart-reminders-consumer-registry-2026-05-31` PR #551 first CI failure — `FitTrackerApp.swift:148: error: 'logEvent' is inaccessible due to 'private' protection level`.
+
+**Root cause:** `AnalyticsService` exposes ~30 `func log<EventName>(...)` methods (`logLogin`, `logShare`, `logWorkoutStarted`, …) and channels them all through a single `private func logEvent(_ name: String, parameters: [String: Any]?)`. The funnel is intentionally private — every event must come from a named, documented call site. Free-form callers cannot bypass the taxonomy.
+
+**Fix:** for edge-case-that-shouldn't-happen events with no matching `log*` method, surface via `#if DEBUG print()` instead of inventing a new method. Adding a `log*` method specifically for a path that should never fire violates the taxonomy discipline.
+
+```swift
+let registered = SmartRemindersConsumerRegistration.registerAtAppInit()
+#if DEBUG
+if !registered {
+    print("[SmartReminders] WARNING: consumer registration failed — urlPatterns collision.")
+}
+#else
+_ = registered
+#endif
+```
+
+**Generalizable rule:** if your call site needs a `logEvent` for a real product surface, add a named `log*` method to the public API. If it's a defensive can't-happen path, use a debug print, not a new method.
+
+**Sibling patterns:** None directly; analytics-taxonomy hygiene is enforced in the [analytics naming convention](../../CLAUDE.md#analytics-naming-convention) but not as a W-code until now.
+
+### W24 — pbxproj merge conflicts when concurrent PRs add files in the same group/sources position (2026-05-31)
+
+**Surfaced by:** PRs #549 + #550 — both branched from the same `main` SHA, each added entries to `FitTrackerTests` group and Sources phase at the position immediately after `ReminderAnalyticsTests.swift`. When #551 (Smart Reminders consumer registry, the third concurrent PR) merged first, the other two branches went `DIRTY` with conflict markers in two `project.pbxproj` regions per PR.
+
+**Root cause:** Xcode's pbxproj is line-ordered; new entries by convention land at the same neighborhood relative to a stable anchor (e.g. "after ReminderAnalyticsTests"). When N concurrent PRs target that anchor, only the first merger lands cleanly; the rest see CONTENT conflicts in the same span.
+
+**Fix:** resolve by keeping ALL branches' entries side-by-side — the entries themselves never overlap semantically (distinct PBXBuildFile IDs + distinct PBXFileReference IDs + distinct paths). Manual merge keeping `<<<<<<<` content + `=======` content + dropping the markers + the `>>>>>>>` line is mechanically safe.
+
+**Generalizable rule:** when N concurrent PRs add files to the same Xcode target, expect pbxproj merge conflicts; resolution is purely additive. No code-semantic risk — but at scale (>3 concurrent PRs) consider sequencing or splitting the target.
+
+**Sibling patterns:**
+
+- [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — same "concurrent branches diverge against main" class, different surface (PR-review preview lies vs pbxproj conflict)
+
+### W25 — `@MainActor` propagates to static methods; main-actor-bound statics must be called from `@MainActor` test classes (2026-05-31)
+
+**Surfaced by:** `feat/data-export-csv-2026-05-31` PR #549 second CI failure — `DataExportServiceCSVTests.swift:12: error: call to main actor-isolated static method 'csvEscape' in a synchronous nonisolated context`.
+
+**Root cause:** `DataExportService` is declared `@MainActor final class …` because it's an `ObservableObject` driving SwiftUI updates. The annotation propagates to all members, including `static func csvEscape(_:)`. Synchronous test methods in a non-isolated `XCTestCase` subclass cannot call main-actor statics without an `await MainActor.run { … }` wrapper.
+
+**Fix:** mark the test class `@MainActor`:
+
+```swift
+@MainActor
+final class DataExportServiceCSVTests: XCTestCase {
+    func test_csvEscape_passesPlainStringUnchanged() {
+        XCTAssertEqual(DataExportService.csvEscape("hello"), "hello")  // OK
+    }
+}
+```
+
+This matches the pattern already used in [`ReminderPreferencesStoreTests`](../../FitTrackerTests/ReminderPreferencesStoreTests.swift) + [`SmartRemindersConsumerRegistrationTests`](../../FitTrackerTests/SmartRemindersConsumerRegistrationTests.swift) — three sibling test files in the same merge window.
+
+**Generalizable rule:** when adding a unit-test file for a `@MainActor` type's static or instance methods, annotate the test class `@MainActor`. If most tests in the codebase target `@MainActor` types (SwiftUI app), `@MainActor` on the class becomes the default; non-actor tests are the exception.
+
+**Sibling patterns:** None directly; closest is the design-system test discipline that XCTest's main-actor handling enables — not yet codified as a W-code.
+
+### W26 — Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups → cross-workflow cancellation blocks merges (2026-06-01)
+
+**Surfaced by:** PR #560 (C2 readiness-aware-training-alert, mixed iOS code + docs/.claude). The PR's required `Build and Test` status check appeared TWICE in the rollup — one CANCELLED, one SUCCESS — blocking the green-status criterion even though no real failure occurred.
+
+**Root cause:** both `.github/workflows/ci.yml` (heavy macos-15 iOS pipeline) and `.github/workflows/ci-docs-skip.yml` (cheap ubuntu-latest fast-path) declare `name: CI`. The `${{ github.workflow }}` expression resolves to the workflow NAME (not file), so both files computed identical concurrency groups (`ci-CI-refs/pull/N/merge`). With `cancel-in-progress: true`, whichever workflow entered the group second cancelled the first — typically the fast docs-skip job cancelled the heavy iOS job. The CANCELLED status persisted in the PR rollup and blocked merge even with `--admin` until rerun-superseded.
+
+Compounding cause: the `paths:` vs `paths-ignore:` filters in the two files are not mutually exclusive on mixed PRs. A PR touching BOTH `FitTracker/**` files AND `docs/**` files trips ci.yml's `paths:` (at least one match) AND ci-docs-skip.yml's `paths-ignore:` (at least one non-match) — so both fire and immediately race for the shared concurrency group.
+
+**Fix (PR pending):** give each workflow its own hardcoded concurrency-group prefix instead of `${{ github.workflow }}`:
+
+```yaml
+# ci.yml
+concurrency:
+  group: ci-yml-${{ github.ref }}
+  cancel-in-progress: true
+
+# ci-docs-skip.yml
+concurrency:
+  group: ci-docs-skip-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+Both workflows then run independently. On a mixed PR you get TWO passing `Build and Test` status checks (one from each file) — branch protection accepts the rollup because both are SUCCESS.
+
+**Generalizable rule:** when two workflow files share the same `name:` (intentional, to satisfy branch protection by status-check-name matching), DO NOT use `${{ github.workflow }}` in their `concurrency.group` expressions. Use file-specific hardcoded prefixes. Anywhere two workflows share a status-check name, audit their concurrency groups for collision.
+
+**Sibling patterns:** the original W26 placeholder note in [`project_session_2026_05_31_tier_carryover_plan.md`](../../.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_session_2026_05_31_tier_carryover_plan.md) captured the Catch-22 symptom (cancelled status blocking merge) but mis-attributed the cause to `cancel-in-progress: true` alone. The actual root cause is the cross-workflow group sharing — `cancel-in-progress: true` per workflow is correct and desirable; only the cross-workflow collision is wrong.
+
+### W27 — `make preflight` enhancement_parent false-positive (2026-05-19)
+
+> **Numbering note:** this pattern was originally documented as a second `W11` (colliding with the canonical W11 "Incomplete PR cache"). The de-duplication was scheduled to renumber it to W26, but W26 was concurrently claimed by the CI-concurrency pattern above (PR #561). Renumbered to W27 on 2026-06-01. Chronologically it sits between W11 (2026-05-16) and W12 (2026-05-20); the W-number is later because the collision was only caught during the 2026-06-01 index sync.
+
+**Trigger:** Running `make preflight WORK_TYPE=enhancement FEATURE=<name>` blocks with `enhancement_parent: parent='<feature>' phase=tasks, prd.md present=False` even when the actual parent feature (referenced by `state.json::parent_feature`) IS complete with a PRD.
+
+**Why expected:** `scripts/preflight.py::enhancement_parent_state()` checks the ENHANCEMENT FEATURE'S own `prd.md` and `current_phase`, instead of resolving `state.json::parent_feature` and checking THAT feature. Pure heuristic bug — the check is mis-aimed.
+
+**Signal vs noise rule:** Always noise when the enhancement is legitimately scoped (state.json has `parent_feature` set + parent is `complete`). Signal only if no `parent_feature` field exists in state.json (real misconfiguration).
+
+**Silence path (Option A, workaround):** Write a thin "delta PRD" stub at `.claude/features/<enhancement>/prd.md` listing primary/secondary/guardrail metrics + kill criteria. Re-run preflight; the `prd.md present=True` check passes (but `phase=tasks` still trips the blocker — accept this as known-noise OR run preflight with `FEATURE=<parent>` for verification only).
+
+**Silence path (Option B, durable fix):** Patch `scripts/preflight.py::enhancement_parent_state()` to read `state.json::parent_feature` and resolve the check against THAT feature. Queue as a v7.9.1 candidate; tracked in [`docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md`](../../docs/master-plan/ucc-hardening-infra-overlay-2026-05-19.md) R7.
+
+**First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
+
+### W28 — Local `xcodebuild` blocked by CoreSimulator + iOS platform out-of-date (Mac restart required) (2026-06-01)
+
+**Surfaced by:** every local Swift build attempt during the 2026-06-01 C2 + C4 + W26 session. Surfaced 10+ times across the session — each `xcodebuild` invocation produced the same pair of errors:
+
+```text
+DVTErrorPresenter: Unable to load simulator devices.
+CoreSimulator is out of date. Current version (1051.50.0) is older than build version (1051.54.0).
+…
+xcodebuild: error: Unable to find a destination matching the provided destination specifier:
+  { generic:1, platform:iOS }
+  Ineligible destinations for the "FitTracker" scheme:
+    { platform:iOS, … error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+```
+
+**Root cause:** the macOS-side `CoreSimulator.framework` daemon binary on the operator's Mac (currently `1051.50.0`) was loaded into memory before an Xcode update bumped the on-disk version to `1051.54.0`. The mismatch persists across `xcodebuild` invocations because the daemon is loaded once at boot. Until the Mac restarts, every `xcodebuild build`/`test`/`-showdestinations` rejects the run with "simulator device support disabled" + the secondary "platform not installed" error (Xcode treats the iOS 26.5 platform files as unreachable while the simulator runtime is out of date).
+
+This is **operator-side only** — the GitHub Actions hosted runners boot fresh CoreSimulator on every job, so CI is unaffected. Local builds + local UI test runs are blocked until the Mac restarts.
+
+**Workaround used during this session:**
+
+- `swiftc -parse <files>` directly against the iphoneos26.5 SDK: returns exit 0 and validates Swift syntax + type lookups on new source files. Enough to confirm a commit will pass compile-time checks on CI.
+- `xcodebuild -list`: parses `project.pbxproj` integrity (target list + scheme list + SPM resolution) without needing a destination. Catches malformed pbxproj edits.
+- All real build + test validation delegated to the per-PR CI run on the feature branch. The CI run reliably catches what `swiftc -parse` misses (linker errors, test compile errors, runtime XCTest failures).
+
+**Operator-side fix:** **Full Mac restart.** After restart, `CoreSimulator.framework` loads the on-disk `1051.54.0` binary and `xcodebuild` regains access to the simulator runtimes. The iOS 26.5 platform also becomes resolvable for `generic/platform=iOS` destinations.
+
+**Why the restart is gated:** the restart cannot be performed while HADF Sub-exp 2 is LIVE on the same Mac (~400 records vs 250 kill at this checkpoint per `project_session_2026_05_30_31_hadf_subexp_lifecycle.md`). The Sub-exp 2 dispatch process owns long-running state that does not survive a reboot. The restart window opens **after Sub-exp 2 closes** — at which point the operator can reboot, and the next session's `xcodebuild` invocations will work locally again.
+
+**Generalizable rule:** when `xcodebuild` reports `CoreSimulator is out of date` paired with "iOS X.Y is not installed", trust the diagnostic — do NOT try to install the platform via `xcodebuild -downloadPlatform iOS` (the platform IS installed; CoreSimulator just can't load it). Fall back to `swiftc -parse` for syntax validation, `xcodebuild -list` for pbxproj validation, and defer the real build to CI. Schedule the Mac restart for whenever the next long-running local process (HADF Sub-exp 2 in this case) finishes.
+
+**Sibling patterns:**
+
+- [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — same "trust the explicit error, don't paper over with workarounds" class.
+- HADF launchd setup checklist (memory `feedback-hadf-launchd-setup-checklist`) — adjacent class of "operator-side macOS daemon issues require restart or careful sequence". Both this W28 and the HADF launchd patterns reinforce that fresh-boot daemon state is the reliable recovery path on macOS.
+

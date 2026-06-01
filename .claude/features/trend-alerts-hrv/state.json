@@ -1,0 +1,103 @@
+{
+  "feature": "trend-alerts-hrv",
+  "description": "Sustained-trend HRV alert: fires when HRV stays below the user's personal baseline (or a fixed floor for cold-start users) for 3+ consecutive days. Distinct from ReadinessAlertObserver (single-day score crossing) and ReadinessAwareTrainingObserver (daily pre-training advisory) — this observer surfaces a multi-day pattern. Surfaces via push notification + Home AIInsightCard banner; the Why? affordance opens an AIIntelligenceSheet section showing the 3-day HRV mini-chart with baseline overlay. Backlog source: docs/product/backlog.md L346 (RICE 10.5 per 2026-05-31 E1 refresh).",
+  "work_type": "feature",
+  "current_phase": "implementation",
+  "created_at": "2026-06-01T08:30:00Z",
+  "state_owner": "ft2",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/trend-alerts-hrv",
+  "isolation_opt_out": false,
+  "rice_score": 10.5,
+  "rice_inputs": {
+    "reach": 0.7,
+    "impact": 2.0,
+    "confidence": 0.75,
+    "effort_person_weeks": 0.5
+  },
+  "dependencies_met": {
+    "HealthKitService": "shipped 2026-04-10 (HRV daily reads operational)",
+    "ReadinessEngine_v2": "shipped 2026-04-10 (component scores incl. hrvScore)",
+    "NotificationGateway": "shipped 2026-05-07 (PR #239) — v2 dispatch platform",
+    "NotificationConsumerRegistry": "shipped 2026-05-07 (PR #239)",
+    "DeepLinkRouter": "shipped 2026-05-07 (PR #239) + #556 (registry, 2026-05-31)",
+    "AIInsightCard": "shipped 2026-04-10",
+    "AIIntelligenceSheet": "shipped 2026-04-10",
+    "EncryptedDataStore_daily_history": "shipped 2026-04-10 (daily logs persist HRV history)",
+    "ReminderPreferencesStore": "shipped 2026-05-31 (PR #550) — v2 prefs UserDefaults-backed",
+    "ReadinessAwareAlertStore": "depends_on C2 PR #560 merge — if not merged, C4 ships its own TrendAlertStore"
+  },
+  "scope_vs_c2": {
+    "c2_covers": "Daily pre-training advisory: TODAY is a training day AND today's readiness suggests continue/lighten/swap",
+    "c4_covers": "Multi-day sustained-trend pattern: HRV has been BELOW baseline for 3+ consecutive days regardless of today's training plan",
+    "shared_dependencies": "Both observers consume HealthKit HRV reads via HealthKitService + emit through NotificationGateway",
+    "trigger_windows_distinct": "C2 fires at the user's learned training time-of-day. C4 fires on a daily morning evaluation (~08:00 local fallback, learnable from app-open patterns later) regardless of training schedule.",
+    "conflict_risk": "AIInsightCard + AIIntelligenceSheet edited by C2 are likely targets for C4 too. Phase 0 mitigation: defer C4's in-app surface to a follow-on commit if C2 ships first; otherwise C4 lands the patterns and C2 rebases on top."
+  },
+  "tasks": [],
+  "phases": {
+    "research": {
+      "started_at": "2026-06-01T08:30:00Z",
+      "ended_at":   "2026-06-01T07:10:30Z"
+    },
+    "prd": {
+      "started_at": "2026-06-01T07:10:30Z",
+      "ended_at":   "2026-06-01T07:22:30Z"
+    },
+    "tasks": {
+      "started_at": "2026-06-01T07:22:30Z",
+      "ended_at":   "2026-06-01T07:24:00Z"
+    },
+    "implementation": {
+      "started_at": "2026-06-01T07:24:00Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-01T08:30:00Z",
+        "ended_at":   "2026-06-01T07:10:30Z"
+      },
+      "prd": {
+        "started_at": "2026-06-01T07:10:30Z",
+        "ended_at":   "2026-06-01T07:22:30Z"
+      },
+      "tasks": {
+        "started_at": "2026-06-01T07:22:30Z",
+        "ended_at":   "2026-06-01T07:24:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-01T07:24:00Z"
+      }
+    }
+  },
+  "prd_path": "docs/product/prd/trend-alerts-hrv.md",
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "at": "2026-06-01T08:30:00Z",
+      "reason": "C4 from 2026-05-31 tier carryover plan (RICE 10.5; next-most-valuable C-tier item after C2 ships per E1 RICE refresh in PR #559)"
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-01T07:10:30Z",
+      "reason": "Phase 0 research approved + merged to main (PR #562, 8121294). C2 PR #560 also merged (dcf30c9) clearing the shared-file conflict risk — proceeding with Option A from research.md scope_vs_c2 plan."
+    },
+    {
+      "from": "prd",
+      "to": "tasks",
+      "at": "2026-06-01T07:22:30Z",
+      "reason": "Operator approved PRD via 'approved' directive. Phase 2 (Tasks) tasks.md authored — 14-task breakdown covering 5 new source files + ReadinessEngine.personalBaseline stddev: extension + 4 modified UI files + 4 modified analytics/settings files + 4 test files (~41 tests total) + case study + showcase MDX + backlog strike."
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "at": "2026-06-01T07:24:00Z",
+      "reason": "Operator approved Phase 4 (Implement) kickoff via 'go' directive. T1-T14 begin. Branch: feature/trend-alerts-hrv (Mode C compliant — no infra-path edits)."
+    }
+  ]
+}

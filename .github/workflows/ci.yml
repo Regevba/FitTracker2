@@ -1,16 +1,48 @@
 name: CI
 
+# Run the full iOS Build + xctest pipeline ONLY when iOS-relevant paths change.
+# Pure docs/operator-ledger PRs are handled by the sibling `ci-docs-skip.yml`
+# workflow which publishes a `Build and Test` status check by name-match in
+# seconds, satisfying branch protection without paying the ~10-15min iOS cost.
+#
+# Path filter inclusions (anything matching -> full pipeline):
+# - FitTracker/**, FitTrackerTests/**, FitTrackerUITests/**,
+#   FitTracker.xcodeproj/** -- Swift code + Xcode project files
+# - design-tokens/** + Makefile -- `make tokens-check` runs in this pipeline
+# - scripts/ui-audit.py -- token compliance scanner triggered by Makefile
+# - .github/workflows/ci.yml itself -- workflow-config edits must re-validate
+# - Package.swift -- SPM manifest changes affect the build
+#
+# Anything NOT in these globs falls through to the docs-skip workflow.
+# `push: main` keeps the full pipeline on main-branch merges so the
+# trunk-of-record is always known-good against the full suite.
 on:
   pull_request:
     branches:
       - main
+    paths:
+      - 'FitTracker/**'
+      - 'FitTrackerTests/**'
+      - 'FitTrackerUITests/**'
+      - 'FitTracker.xcodeproj/**'
+      - 'design-tokens/**'
+      - 'Makefile'
+      - 'scripts/ui-audit.py'
+      - '.github/workflows/ci.yml'
+      - 'Package.swift'
   push:
     branches:
       - main
   workflow_dispatch:
 
+# ci.yml-specific concurrency group. We use a hardcoded prefix here (NOT
+# the workflow name expression) because ci-docs-skip.yml ALSO has `name:
+# CI` — the workflow-name expression would resolve identically in both
+# files and the two workflows would clash on the same group, racing each
+# other into mutual cancellation on every mixed-content PR. See
+# .claude/integrity/observed-patterns.md W26 for the historical incident.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-yml-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:

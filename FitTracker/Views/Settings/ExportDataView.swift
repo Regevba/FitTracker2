@@ -1,11 +1,31 @@
 // Views/Settings/ExportDataView.swift
-// GDPR Article 20 — Data portability. Export all user data as JSON.
+// GDPR Article 20 — Data portability.
+// JSON = full data (all training logs, nutrition, biometrics, profile, preferences).
+// CSV  = daily logs flat (spreadsheet-friendly companion).
 
 import SwiftUI
 
 struct ExportDataView: View {
     @EnvironmentObject private var exportService: DataExportService
     @State private var showShareSheet = false
+    @State private var selectedFormat: DataExportFormat = .json
+
+    private var formatEyebrow: String {
+        selectedFormat == .json ? "JSON" : "CSV"
+    }
+
+    private var formatDescription: String {
+        switch selectedFormat {
+        case .json:
+            return "Your data will be exported as a JSON file containing all your training logs, nutrition data, biometrics, profile, and preferences.\n\nNo data is sent to any server during export — everything stays on your device."
+        case .csv:
+            return "Your data will be exported as a CSV file containing one row per day (date, phase, biometrics, nutrition totals, training summary). Best for spreadsheets and data analysis.\n\nNo data is sent to any server during export — everything stays on your device."
+        }
+    }
+
+    private var exportButtonTitle: String {
+        selectedFormat == .json ? "Export as JSON" : "Export as CSV"
+    }
 
     var body: some View {
         SettingsDetailScaffold(
@@ -19,8 +39,16 @@ struct ExportDataView: View {
                     }
                 }
 
-                SettingsSectionCard(title: "Export Format", eyebrow: "JSON") {
-                    SettingsSupportingText("Your data will be exported as a JSON file containing all your training logs, nutrition data, biometrics, profile, and preferences.\n\nNo data is sent to any server during export — everything stays on your device.")
+                SettingsSectionCard(title: "Export Format", eyebrow: formatEyebrow) {
+                    Picker("Format", selection: $selectedFormat) {
+                        Text("JSON").tag(DataExportFormat.json)
+                        Text("CSV").tag(DataExportFormat.csv)
+                    }
+                    .pickerStyle(.segmented)
+                    .padding(.bottom, AppSpacing.xSmall)
+                    .accessibilityLabel("Export format")
+
+                    SettingsSupportingText(formatDescription)
                 }
 
                 if exportService.isExporting {
@@ -29,13 +57,13 @@ struct ExportDataView: View {
                 } else {
                     Button {
                         Task {
-                            await exportService.generateExport()
+                            await exportService.generateExport(format: selectedFormat)
                             if exportService.exportURL != nil {
                                 showShareSheet = true
                             }
                         }
                     } label: {
-                        Label("Export as JSON", systemImage: "square.and.arrow.up")
+                        Label(exportButtonTitle, systemImage: "square.and.arrow.up")
                             .font(AppText.button)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, AppSpacing.small)

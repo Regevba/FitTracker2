@@ -616,6 +616,73 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - C2 Readiness-Aware Training Alert Events
+
+    /// Readiness-aware advisory shown on home insight card
+    func logHomeReadinessAlertShown(recommendation: String, score: Int, drivingComponent: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertShown, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+            AnalyticsParam.score: score,
+            AnalyticsParam.drivingComponent: drivingComponent,
+        ])
+    }
+
+    /// User taps the readiness-aware insight card
+    func logHomeReadinessAlertTap(recommendation: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertTap, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+        ])
+    }
+
+    /// User picks a CTA in the readiness-aware sheet banner
+    func logHomeReadinessAlertActionTaken(recommendation: String, chosen: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertActionTaken, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+            AnalyticsParam.chosen: chosen,
+        ])
+    }
+
+    /// Readiness-aware advisory dismissed without CTA pick (sheet closed)
+    func logHomeReadinessAlertDismissed(recommendation: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertDismissed, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+        ])
+    }
+
+    // MARK: - C4 Sustained-Trend HRV Alert Events
+
+    /// Sustained-trend advisory shown on home insight card
+    func logHomeTrendAlertShown(kind: String, sustainedDays: Int, baseline: Int, floor: Int) {
+        logEvent(AnalyticsEvent.homeTrendAlertShown, parameters: [
+            AnalyticsParam.kind: kind,
+            AnalyticsParam.sustainedDays: sustainedDays,
+            AnalyticsParam.baseline: baseline,
+            AnalyticsParam.floor: floor,
+        ])
+    }
+
+    /// User taps the sustained-trend insight card
+    func logHomeTrendAlertTap(kind: String) {
+        logEvent(AnalyticsEvent.homeTrendAlertTap, parameters: [
+            AnalyticsParam.kind: kind,
+        ])
+    }
+
+    /// User picks thumbs-up / thumbs-down feedback in the "Your HRV Trend" sheet
+    func logHomeTrendAlertActionTaken(kind: String, rating: String) {
+        logEvent(AnalyticsEvent.homeTrendAlertActionTaken, parameters: [
+            AnalyticsParam.kind: kind,
+            AnalyticsParam.rating: rating,
+        ])
+    }
+
+    /// Sustained-trend advisory dismissed without feedback pick
+    func logHomeTrendAlertDismissed(kind: String) {
+        logEvent(AnalyticsEvent.homeTrendAlertDismissed, parameters: [
+            AnalyticsParam.kind: kind,
+        ])
+    }
+
     // MARK: - Onboarding Auth Events
 
     func logOnboardingAuthMethodSelected(method: String) {

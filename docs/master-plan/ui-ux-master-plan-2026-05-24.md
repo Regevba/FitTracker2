@@ -10,27 +10,29 @@
 
 ## 0. TL;DR
 
-**26 shipped, 8 in-flight, ~26 open backlog items across all three platforms (iOS + website + Android).**
+**30 shipped, 3 in-flight, ~26 open backlog items across all three platforms (iOS + website + Android).**
 
-### Headline counts (2026-05-24 fs + memory cross-reference; platform-comprehensive revision)
+### Headline counts (2026-05-31 freshness reconcile; platform-comprehensive revision)
 
 | Category | iOS | Website | Android | Cross-cutting | Total |
 |---|---|---|---|---|---|
-| **Shipped features** | 16 | 6 | 1 | 2 | 25 |
+| **Shipped features** | 16 | 10 | 1 | 2 | 29 |
 | **Shipped enhancements** | 5 | 3 | — | — | 8 |
 | **Shipped chores** | 3 | — | — | 2 | 5 |
-| **In-flight (need attention)** | 2 | 6 | — | — | 8 |
+| **In-flight (need attention)** | 2 | 1 | — | — | 3 |
 | **Open backlog items** | ~17 | ~6 | ~3 | 1 | ~27 |
 
 ### Top 5 next actions
 
-1. **Verify + backfill `ai-recommendation-ui` case_study link** — state.json has `case_study: null`; next mutation will trip `STATE_NO_CASE_STUDY_LINK`. ~10 min fix; today-advanceable
-2. **C9 + C10 fitme-story-only polish bundle** (~3h) — UCC coral-pulse animation + 4 control-room dark-mode contrast verifications; no Phase E conflict, no infra-glob
+1. **Verify + backfill `ai-recommendation-ui` case_study link** — RESOLVED 2026-05-31: state.json has `case_study` pointing at parent `ai-engine-architecture-v5.1-case-study.md`. May need `case_study_type: parent` field to silence `STATE_NO_CASE_STUDY_LINK` advisory cleanly
+2. **C9 + C10 fitme-story-only polish bundle** — CLOSED 2026-05-24 PR-2B (see §3.4 row strikethroughs)
 3. **Resume app-store-assets** (5/10 done per `paused_app_store_assets.md`) — needed for App Store launch surface; operator-paced
-4. **Open the 3 memory-only design rules as backlog rows** — AI avatar / orbital pm-flow rollback / failure-recognition-layer currently invisible outside memory
+4. **Open the 3 memory-only design rules as backlog rows** — AI avatar / orbital pm-flow rollback / failure-recognition-layer — confirmed UX-R3+UX-R4 closed 2026-05-24 PR #472; UX-R5 remains Aspirational
 5. **Apply fitme-story web design system to `/control-room/*`** — 14 internal components deferred per Internal-deferral policy; estimated 1-week if drift-only
 
-> **Reconciled drift items (closed during 2026-05-24 platform-comprehensive revision):** (a) `fitme-story-public-enhancements` confirmed `phase=complete` + 24/24 tasks done in state.json (UX-R1 already satisfied — no work needed); (b) `user-profile-settings` added as missing iOS shipped feature (was absent from §2.1); (c) `android-design-system` added as new §4 Android section (was excluded from prior scope).
+> **Reconciled drift items (2026-05-31 freshness pass):** moved 4 features from §3.3 "In-flight" to "Reconciled to Done" — ucc-sign-in-figma-mapping + ucc-passkey-auth-security-hardening + ucc-passkey-auth-audit-log-redis-fix + fitme-story-public-enhancements (all confirmed `current_phase: complete` on disk via state.json after Phase E Day 6/7 closure batch). §3.3 now shows only `analytics-observability` (testing, deferred to post-Phase-E) + `3d-interactive-framework-flow-diagram` (paused PRD).
+>
+> **Reconciled drift items (2026-05-24 platform-comprehensive revision):** (a) `fitme-story-public-enhancements` confirmed `phase=complete` + 24/24 tasks done in state.json (UX-R1 already satisfied — no work needed); (b) `user-profile-settings` added as missing iOS shipped feature (was absent from §2.1); (c) `android-design-system` added as new §4 Android section (was excluded from prior scope).
 
 ---
 
@@ -197,16 +199,21 @@
 | `fitme-story-ds-p2-deferred` | fitme-story-website-design-system | enhancement | Deferred-items closeout |
 | `fitme-story-ds-p2-final-sweep` | fitme-story-website-design-system | enhancement | Final sweep batch |
 
-### 3.3 In-flight website (6)
+### 3.3 In-flight website (1 in-flight + 1 paused; freshness reconciled 2026-05-31)
 
 | Feature | Phase | Tasks | Notes |
 |---|---|---|---|
-| `fitme-story-public-enhancements` | complete | 24/24 | Reconciled 2026-05-24 — state.json confirms `current_phase=complete` + all 24 tasks done. T13 shipped 2026-05-21 via fitme-story PR #134. Closure ceremony complete |
-| `3d-interactive-framework-flow-diagram` | prd | — | `scheduled_after.signal: "analytics-observability phase=complete"` |
-| `ucc-sign-in-figma-mapping` | implementation | 11 | Figma-side sign-in mapping (cross-repo with iOS); promoted from §2.4 |
-| `ucc-passkey-auth-security-hardening` | documentation | 26 | B12 T+7d kill-criteria due 2026-05-27 |
-| `ucc-passkey-auth-audit-log-redis-fix` | implementation | 9 | Redis audit-log fix |
-| `analytics-observability` | implementation | 15 | Sub-plan: `analytics-master-plan-2026-05-13.md`; F19/F20 → v7.9.1 |
+| `analytics-observability` | testing | 15 | Sub-plan: `analytics-master-plan-2026-05-13.md`; F19/F20 → v7.9.1. Phase 3.B production call-site wiring deferred post-Phase-E (~2026-06-04). Phase 1.B GA4 conversions deferred to v7.9.1 build window |
+| `3d-interactive-framework-flow-diagram` | prd (paused) | — | `scheduled_after.signal: "analytics-observability phase=complete"`. PRD parked 2026-05-13; resumes when analytics-observability closes |
+
+**Reconciled to "Done" 2026-05-31** (previously listed here but state.json `current_phase=complete` on disk):
+
+| Feature | Closure ref |
+|---|---|
+| `fitme-story-public-enhancements` | 24/24 tasks done; T13 shipped 2026-05-21 via fitme-story PR #134; row #117 of backlog (Phase E Day 6 batch) confirms closure ceremony |
+| `ucc-sign-in-figma-mapping` | 8/11 done + 3 deferred under Figma seat scope blocker; closed 2026-05-26 via PR #496 |
+| `ucc-passkey-auth-security-hardening` | B12 T+7d PROMOTE verdict 2026-05-27 via PR #503 (`bca2e12`); kill-criteria resolved |
+| `ucc-passkey-auth-audit-log-redis-fix` | Closed 2026-05-26 via PR #495; T6 cascade resolved 2026-05-19 + #411 (peter-evans/create-pull-request migration) |
 
 ### 3.4 Open website UI/UX backlog
 

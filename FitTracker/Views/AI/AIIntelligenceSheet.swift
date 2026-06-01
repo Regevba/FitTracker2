@@ -8,6 +8,8 @@ struct AIIntelligenceSheet: View {
     @EnvironmentObject private var dataStore:      EncryptedDataStore
     @EnvironmentObject private var analytics:      AnalyticsService
     @EnvironmentObject private var healthService:  HealthKitService
+    @EnvironmentObject private var readinessAware: ReadinessAwareAlertStore
+    @EnvironmentObject private var trendAlert:     TrendAlertStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -24,6 +26,11 @@ struct AIIntelligenceSheet: View {
                     }
                     .padding(.top, AppSpacing.large)
 
+                    // C2 — readiness-aware training alert banner (when present)
+                    if let context = readinessAware.current() {
+                        readinessAwareBanner(context: context)
+                    }
+
                     // Segment sections
                     ForEach(AISegment.allCases, id: \.self) { segment in
                         segmentSection(segment)
@@ -31,6 +38,11 @@ struct AIIntelligenceSheet: View {
 
                     // Readiness breakdown
                     readinessSection
+
+                    // C4 — Your HRV Trend (sustained-trend advisory, when present)
+                    if let context = trendAlert.current() {
+                        hrvTrendSection(context: context)
+                    }
 
                     // Feedback
                     AIFeedbackView()
@@ -51,6 +63,62 @@ struct AIIntelligenceSheet: View {
             }
             .onAppear { analytics.logAiSheetOpened(entryPoint: "insight_card") }
         }
+    }
+
+    // MARK: - C2 banner
+
+    @ViewBuilder
+    private func readinessAwareBanner(context: ReadinessAlertContext) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            Text(context.recommendation.headline)
+                .font(AppText.sectionTitle)
+                .foregroundStyle(AppColor.Text.primary)
+
+            Text("Readiness \(context.readinessScore)/100. Driving factor: \(context.drivingComponent.rawValue.capitalized).")
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            HStack(spacing: AppSpacing.xSmall) {
+                ForEach(ReadinessAlertRecommendation.allCases, id: \.self) { option in
+                    ctaButton(option: option, context: context)
+                }
+            }
+        }
+        .padding(AppSpacing.medium)
+        .background(
+            AppColor.Surface.primary,
+            in: RoundedRectangle(cornerRadius: AppRadius.card)
+        )
+        .accessibilityElement(children: .contain)
+    }
+
+    @ViewBuilder
+    private func ctaButton(option: ReadinessAlertRecommendation, context: ReadinessAlertContext) -> some View {
+        let isPrimary = option == context.recommendation
+        let background: Color = isPrimary ? AppColor.Brand.primary : AppColor.Surface.secondary
+        let foreground: Color = isPrimary ? AppColor.Text.inversePrimary : AppColor.Text.primary
+
+        Button {
+            handleCTA(option, context: context)
+        } label: {
+            Text(option.primaryCTA)
+                .font(AppText.caption)
+                .padding(.horizontal, AppSpacing.small)
+                .padding(.vertical, AppSpacing.xxSmall)
+                .background(background, in: Capsule())
+                .foregroundStyle(foreground)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(option.primaryCTA)
+    }
+
+    private func handleCTA(_ choice: ReadinessAlertRecommendation, context: ReadinessAlertContext) {
+        analytics.logHomeReadinessAlertActionTaken(
+            recommendation: context.recommendation.rawValue,
+            chosen: choice.rawValue
+        )
+        readinessAware.clear()
+        dismiss()
     }
 
     // MARK: - Segment section
@@ -75,6 +143,74 @@ struct AIIntelligenceSheet: View {
                         in: RoundedRectangle(cornerRadius: AppRadius.card)
                     )
             }
+        }
+    }
+
+    // MARK: - C4 — Your HRV Trend section
+
+    @ViewBuilder
+    private func hrvTrendSection(context: TrendAlertContext) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            Text("Your HRV Trend")
+                .font(AppText.sectionTitle)
+                .foregroundStyle(AppColor.Text.primary)
+
+            HRVTrendChart(
+                dailySamples: paddedSamples(from: context),
+                baseline: context.baseline,
+                floor: context.floor,
+                referenceDates: paddedDates(from: context)
+            )
+
+            Text("Baseline computed from your last 30 days. Adjust at Settings → Notifications → Trend Alerts.")
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            HStack(spacing: AppSpacing.medium) {
+                Spacer()
+                trendFeedbackButton(rating: "positive", icon: "hand.thumbsup", kind: context.kind.rawValue)
+                trendFeedbackButton(rating: "negative", icon: "hand.thumbsdown", kind: context.kind.rawValue)
+                Spacer()
+            }
+            .padding(.top, AppSpacing.xSmall)
+        }
+        .padding(AppSpacing.medium)
+        .background(
+            AppColor.Surface.primary,
+            in: RoundedRectangle(cornerRadius: AppRadius.card)
+        )
+        .accessibilityElement(children: .contain)
+    }
+
+    private func trendFeedbackButton(rating: String, icon: String, kind: String) -> some View {
+        Button {
+            analytics.logHomeTrendAlertActionTaken(kind: kind, rating: rating)
+            trendAlert.clear()
+        } label: {
+            Image(systemName: icon)
+                .font(AppText.subheading)
+                .foregroundStyle(AppColor.Text.secondary)
+                .padding(AppSpacing.xSmall)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(rating == "positive" ? "Helpful" : "Not helpful")
+    }
+
+    /// Pads the context's samples array to 7 days (oldest → newest) so the
+    /// chart renders a full week even when the trigger only fires on the
+    /// most recent 3 days. Missing days surface as nil (gaps in the line).
+    private func paddedSamples(from context: TrendAlertContext) -> [Double?] {
+        let prefixCount = max(0, 7 - context.samples.count)
+        let prefix: [Double?] = Array(repeating: nil, count: prefixCount)
+        let recent: [Double?] = context.samples.map { Optional($0) }
+        return prefix + recent
+    }
+
+    private func paddedDates(from context: TrendAlertContext) -> [Date] {
+        let calendar = Calendar.current
+        let endDate = context.generatedAt
+        return (0..<7).reversed().compactMap { offset in
+            calendar.date(byAdding: .day, value: -offset, to: endDate)
         }
     }
 

@@ -1,0 +1,65 @@
+name: CI
+
+# Sibling of ci.yml — handles the inverse path filter. When a PR touches
+# ONLY docs / observed-patterns / operator ledgers / non-iOS workflow YAML,
+# this workflow publishes a `Build and Test` status check (same name as the
+# heavy iOS pipeline in ci.yml) in seconds, on a cheap ubuntu-latest runner.
+#
+# Because branch protection matches required status checks BY NAME, and
+# ci.yml + ci-docs-skip.yml fire on MUTUALLY EXCLUSIVE path filters, exactly
+# one of them runs per PR. The PR's required `Build and Test` check is
+# satisfied by whichever ran, no branch protection changes needed.
+#
+# Why this is safe:
+# - On main-branch pushes (post-merge), ci.yml still runs `push: main`
+#   regardless of paths, so trunk is always validated against the full suite
+# - The exclusion list mirrors ci.yml's inclusion list exactly — no PR
+#   can land in both workflows or neither
+# - If iOS code sneaks into a "docs PR", it lands in ci.yml's inclusion
+#   pattern (FitTracker/**, etc.) and never reaches this workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'FitTracker/**'
+      - 'FitTrackerTests/**'
+      - 'FitTrackerUITests/**'
+      - 'FitTracker.xcodeproj/**'
+      - 'design-tokens/**'
+      - 'Makefile'
+      - 'scripts/ui-audit.py'
+      - '.github/workflows/ci.yml'
+      - 'Package.swift'
+
+# ci-docs-skip.yml-specific concurrency group. Hardcoded prefix (NOT the
+# workflow-name expression) because ci.yml also has `name: CI` — sharing
+# the workflow-name across both files clashes the groups, racing into
+# mutual cancellation on every mixed-content PR. See
+# .claude/integrity/observed-patterns.md W26 for the historical incident.
+concurrency:
+  group: ci-docs-skip-${{ github.ref }}
+  cancel-in-progress: true
+
+# Least-privilege GITHUB_TOKEN — this workflow only writes a status check
+# (handled by the runner via the default check token); it does not read
+# repo contents, post PR comments, or write to any other API surface.
+# Per CodeQL workflow-permissions best practice.
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    # SAME name as the heavy iOS job in ci.yml so branch protection's
+    # required "Build and Test" status check is satisfied either way.
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Identify the path-filter-skipped PR
+        run: |
+          echo "::notice title=Docs-only PR — iOS Build skipped::This PR touched only paths excluded from ci.yml's iOS pipeline (docs, observed-patterns, .claude/shared, operator ledgers, or non-iOS workflows). The full iOS build + xctest pipeline runs on push to main after this PR merges, so trunk integrity is preserved."
+          echo "Triggered by: PR_HEAD_REF=$PR_HEAD_REF on $REPO"
+        env:
+          PR_HEAD_REF: ${{ github.head_ref }}
+          REPO: ${{ github.repository }}

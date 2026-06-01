@@ -33,6 +33,7 @@
 		A1000001000000000000000F /* AccountPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F /* AccountPanelView.swift */; };
 		A10000010000000000000015 /* AuthValidation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000015 /* AuthValidation.swift */; };
 		A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000017 /* ImportedTrainingPlan.swift */; };
+		A10000010000000000000018 /* ReadinessAlertRecommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000018 /* ReadinessAlertRecommendation.swift */; };
 		AB100000000000000000AT01 /* AccessibilityBasicsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */; };
 		AC1000000000000000000001 /* AnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000001 /* AnalyticsProvider.swift */; };
 		AC1000000000000000000002 /* AnalyticsScreenModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC2000000000000000000002 /* AnalyticsScreenModifier.swift */; };
@@ -73,6 +74,7 @@
 		BC100000000000000000AA01 /* BodyCompositionCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA01 /* BodyCompositionCard.swift */; };
 		BC100000000000000000AA02 /* BodyCompositionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC200000000000000000AA02 /* BodyCompositionDetailView.swift */; };
 		BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */; };
+		DLR100001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLR200001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift */; };
 		BL1000001000000000000001 /* BehavioralLearningStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000001000000000000001 /* BehavioralLearningStore.swift */; };
 		BL1000002000000000000001 /* BehavioralLearningSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */; };
 		CC000001000000000000AA01 /* ReadinessCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC000002000000000000AA01 /* ReadinessCard.swift */; };
@@ -172,6 +174,28 @@
 		NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000007 /* DeepLinkRouter.swift */; };
 		NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000008 /* ReadinessAlertObserver.swift */; };
 		NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000009 /* FirstWorkoutTrigger.swift */; };
+		NT1000001000000000000010 /* ReminderPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000010 /* ReminderPreferencesStore.swift */; };
+		NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS2100001000000000000001 /* NotificationsSettingsScreen.swift */; };
+		RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */; };
+		SCR100001000000000000001 /* SmartRemindersConsumerRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */; };
+		RAT100001000000000000001 /* ReadinessAwareTrainingTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000001 /* ReadinessAwareTrainingTrigger.swift */; };
+		RAT100001000000000000002 /* TrainingStartTimeLearner.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000002 /* TrainingStartTimeLearner.swift */; };
+		RAT100001000000000000003 /* ReadinessAwareTrainingObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000003 /* ReadinessAwareTrainingObserver.swift */; };
+		RAT100001000000000000004 /* ReadinessAwareAlertStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000004 /* ReadinessAwareAlertStore.swift */; };
+		TAH100001000000000000001 /* TrendAlertContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000001 /* TrendAlertContext.swift */; };
+		TAH100001000000000000002 /* TrendAlertTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000002 /* TrendAlertTrigger.swift */; };
+		TAH100001000000000000003 /* TrendAlertDispatchTimeLearner.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000003 /* TrendAlertDispatchTimeLearner.swift */; };
+		TAH100001000000000000004 /* TrendAlertObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000004 /* TrendAlertObserver.swift */; };
+		TAH100001000000000000005 /* TrendAlertStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000005 /* TrendAlertStore.swift */; };
+		TAH100001000000000000006 /* HRVTrendChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000006 /* HRVTrendChart.swift */; };
+		SCR100001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */; };
+		RAT100001000000000000T01 /* ReadinessAwareTrainingTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000T01 /* ReadinessAwareTrainingTriggerTests.swift */; };
+		RAT100001000000000000T02 /* TrainingStartTimeLearnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000T02 /* TrainingStartTimeLearnerTests.swift */; };
+		RAT100001000000000000T03 /* ReadinessAwareTrainingObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000T03 /* ReadinessAwareTrainingObserverTests.swift */; };
+		TAH100001000000000000T01 /* TrendAlertTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000T01 /* TrendAlertTriggerTests.swift */; };
+		TAH100001000000000000T02 /* TrendAlertDispatchTimeLearnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000T02 /* TrendAlertDispatchTimeLearnerTests.swift */; };
+		TAH100001000000000000T03 /* TrendAlertObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000T03 /* TrendAlertObserverTests.swift */; };
+		TAH100001000000000000T04 /* TrendAlertStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = TAH200001000000000000T04 /* TrendAlertStoreTests.swift */; };
 		NV100000000000000000AA01 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA01 /* NutritionView.swift */; };
 		NV100000000000000000AA02 /* SupplementStackCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA02 /* SupplementStackCard.swift */; };
 		NV100000000000000000AA03 /* SupplementItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = NV200000000000000000AA03 /* SupplementItemRow.swift */; };
@@ -197,6 +221,7 @@
 		PF100000000000000000PV06 /* AccountDataCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV06 /* AccountDataCard.swift */; };
 		PF100000000000000000PV07 /* AppearanceUnitsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = PF200000000000000000PV07 /* AppearanceUnitsSheet.swift */; };
 		PN100000000000000000T001 /* PushNotificationsReachabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */; };
+		DECSV01000000000000T001 /* DataExportServiceCSVTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */; };
 		RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */; };
 		RA100000000000000000T001 /* ReadinessAlertTriggerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */; };
 		RC100000000000000000AT01 /* RecommendationMemoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RC200000000000000000AT01 /* RecommendationMemoryTests.swift */; };
@@ -304,6 +329,7 @@
 		A20000010000000000000015 /* AuthValidation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthValidation.swift; sourceTree = "<group>"; };
 		A20000010000000000000016 /* AuthHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthHubView.swift; sourceTree = "<group>"; };
 		A20000010000000000000017 /* ImportedTrainingPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportedTrainingPlan.swift; sourceTree = "<group>"; };
+		A20000010000000000000018 /* ReadinessAlertRecommendation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertRecommendation.swift; sourceTree = "<group>"; };
 		AB200000000000000000AT01 /* AccessibilityBasicsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessibilityBasicsTests.swift; sourceTree = "<group>"; };
 		AC2000000000000000000001 /* AnalyticsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsProvider.swift; sourceTree = "<group>"; };
 		AC2000000000000000000002 /* AnalyticsScreenModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsScreenModifier.swift; sourceTree = "<group>"; };
@@ -345,6 +371,7 @@
 		BC200000000000000000AA01 /* BodyCompositionCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionCard.swift; sourceTree = "<group>"; };
 		BC200000000000000000AA02 /* BodyCompositionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyCompositionDetailView.swift; sourceTree = "<group>"; };
 		BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningStoreTests.swift; sourceTree = "<group>"; };
+		DLR200001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouterReminderRegistryTests.swift; sourceTree = "<group>"; };
 		BL2000001000000000000001 /* BehavioralLearningStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningStore.swift; sourceTree = "<group>"; };
 		BL2000002000000000000001 /* BehavioralLearningSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehavioralLearningSettingsView.swift; sourceTree = "<group>"; };
 		CA6ACD6FF9F1414981D90944 /* FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FitTracker/Views/Onboarding/v2/OnboardingAuthView.swift; sourceTree = "<group>"; };
@@ -457,6 +484,9 @@
 		NT2000001000000000000007 /* DeepLinkRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkRouter.swift; sourceTree = "<group>"; };
 		NT2000001000000000000008 /* ReadinessAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertObserver.swift; sourceTree = "<group>"; };
 		NT2000001000000000000009 /* FirstWorkoutTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstWorkoutTrigger.swift; sourceTree = "<group>"; };
+		NT2000001000000000000010 /* ReminderPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStore.swift; sourceTree = "<group>"; };
+		NS2100001000000000000001 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
+		RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStoreTests.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA01 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA02 /* SupplementStackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementStackCard.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA03 /* SupplementItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementItemRow.swift; sourceTree = "<group>"; };
@@ -482,6 +512,7 @@
 		PF200000000000000000PV06 /* AccountDataCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountDataCard.swift; sourceTree = "<group>"; };
 		PF200000000000000000PV07 /* AppearanceUnitsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceUnitsSheet.swift; sourceTree = "<group>"; };
 		PN200000000000000000T001 /* PushNotificationsReachabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationsReachabilityTests.swift; sourceTree = "<group>"; };
+		DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExportServiceCSVTests.swift; sourceTree = "<group>"; };
 		RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAnalyticsTests.swift; sourceTree = "<group>"; };
 		RA200000000000000000T001 /* ReadinessAlertTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAlertTriggerTests.swift; sourceTree = "<group>"; };
 		RC200000000000000000AT01 /* RecommendationMemoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationMemoryTests.swift; sourceTree = "<group>"; };
@@ -491,6 +522,25 @@
 		RM2000001000000000000001 /* ReminderType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderType.swift; sourceTree = "<group>"; };
 		RM2000001000000000000002 /* ReminderScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderScheduler.swift; sourceTree = "<group>"; };
 		RM2000001000000000000003 /* ReminderTriggers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderTriggers.swift; sourceTree = "<group>"; };
+		SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartRemindersConsumerRegistration.swift; sourceTree = "<group>"; };
+		RAT200001000000000000001 /* ReadinessAwareTrainingTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAwareTrainingTrigger.swift; sourceTree = "<group>"; };
+		RAT200001000000000000002 /* TrainingStartTimeLearner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingStartTimeLearner.swift; sourceTree = "<group>"; };
+		RAT200001000000000000003 /* ReadinessAwareTrainingObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAwareTrainingObserver.swift; sourceTree = "<group>"; };
+		RAT200001000000000000004 /* ReadinessAwareAlertStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAwareAlertStore.swift; sourceTree = "<group>"; };
+		TAH200001000000000000001 /* TrendAlertContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertContext.swift; sourceTree = "<group>"; };
+		TAH200001000000000000002 /* TrendAlertTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertTrigger.swift; sourceTree = "<group>"; };
+		TAH200001000000000000003 /* TrendAlertDispatchTimeLearner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertDispatchTimeLearner.swift; sourceTree = "<group>"; };
+		TAH200001000000000000004 /* TrendAlertObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertObserver.swift; sourceTree = "<group>"; };
+		TAH200001000000000000005 /* TrendAlertStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertStore.swift; sourceTree = "<group>"; };
+		TAH200001000000000000006 /* HRVTrendChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HRVTrendChart.swift; sourceTree = "<group>"; };
+		SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartRemindersConsumerRegistrationTests.swift; sourceTree = "<group>"; };
+		RAT200001000000000000T01 /* ReadinessAwareTrainingTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAwareTrainingTriggerTests.swift; sourceTree = "<group>"; };
+		RAT200001000000000000T02 /* TrainingStartTimeLearnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingStartTimeLearnerTests.swift; sourceTree = "<group>"; };
+		RAT200001000000000000T03 /* ReadinessAwareTrainingObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadinessAwareTrainingObserverTests.swift; sourceTree = "<group>"; };
+		TAH200001000000000000T01 /* TrendAlertTriggerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertTriggerTests.swift; sourceTree = "<group>"; };
+		TAH200001000000000000T02 /* TrendAlertDispatchTimeLearnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertDispatchTimeLearnerTests.swift; sourceTree = "<group>"; };
+		TAH200001000000000000T03 /* TrendAlertObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertObserverTests.swift; sourceTree = "<group>"; };
+		TAH200001000000000000T04 /* TrendAlertStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrendAlertStoreTests.swift; sourceTree = "<group>"; };
 		RM2000001000000000000004 /* ReminderNotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationDelegate.swift; sourceTree = "<group>"; };
 		RS200000000000000000AT01 /* ReminderSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderSchedulerTests.swift; sourceTree = "<group>"; };
 		SA200000000000000000001 /* StatsAnalyticsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsAnalyticsTests.swift; sourceTree = "<group>"; };
@@ -638,6 +688,8 @@
 				A20000010000000000000002 /* DomainModels.swift */,
 				A20000010000000000000003 /* TrainingProgramData.swift */,
 				A20000010000000000000017 /* ImportedTrainingPlan.swift */,
+				A20000010000000000000018 /* ReadinessAlertRecommendation.swift */,
+				TAH200001000000000000001 /* TrendAlertContext.swift */,
 				FB2000001000000000000003 /* UserSession+Supabase.swift */,
 				SS400000000000000000AA01 /* Stats */,
 			);
@@ -827,6 +879,7 @@
 				AI200000000000000000UI01 /* AIInsightCard.swift */,
 				AI200000000000000000UI02 /* AIIntelligenceSheet.swift */,
 				AI200000000000000000UI03 /* AIRecommendationCard.swift */,
+				TAH200001000000000000006 /* HRVTrendChart.swift */,
 				AI200000000000000000UI04 /* AIFeedbackView.swift */,
 			);
 			path = AI;
@@ -867,6 +920,17 @@
 				KH200000000000000000AT01 /* KeychainHelperTests.swift */,
 				RS200000000000000000AT01 /* ReminderSchedulerTests.swift */,
 				RA200000000000000000AT01 /* ReminderAnalyticsTests.swift */,
+				RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */,
+				SCR200001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift */,
+				RAT200001000000000000T01 /* ReadinessAwareTrainingTriggerTests.swift */,
+				RAT200001000000000000T02 /* TrainingStartTimeLearnerTests.swift */,
+				RAT200001000000000000T03 /* ReadinessAwareTrainingObserverTests.swift */,
+				TAH200001000000000000T01 /* TrendAlertTriggerTests.swift */,
+				TAH200001000000000000T02 /* TrendAlertDispatchTimeLearnerTests.swift */,
+				TAH200001000000000000T03 /* TrendAlertObserverTests.swift */,
+				TAH200001000000000000T04 /* TrendAlertStoreTests.swift */,
+				DECSV02000000000000T001 /* DataExportServiceCSVTests.swift */,
+				DLR200001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift */,
 				BL200000000000000000AT01 /* BehavioralLearningStoreTests.swift */,
 				CC200000000000000000AT01 /* CohortPriorClientTests.swift */,
 				CP200000000000000000AT01 /* CohortPriorCacheTests.swift */,
@@ -1093,6 +1157,7 @@
 				NT2000001000000000000007 /* DeepLinkRouter.swift */,
 				NT2000001000000000000008 /* ReadinessAlertObserver.swift */,
 				NT2000001000000000000009 /* FirstWorkoutTrigger.swift */,
+				NT2000001000000000000010 /* ReminderPreferencesStore.swift */,
 				NT2000001000000000000001 /* NotificationService.swift */,
 				NT2000001000000000000002 /* NotificationPreferencesStore.swift */,
 				NT2000001000000000000003 /* NotificationContentBuilder.swift */,
@@ -1153,6 +1218,15 @@
 				RM2000001000000000000002 /* ReminderScheduler.swift */,
 				RM2000001000000000000003 /* ReminderTriggers.swift */,
 				RM2000001000000000000004 /* ReminderNotificationDelegate.swift */,
+				SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */,
+				RAT200001000000000000001 /* ReadinessAwareTrainingTrigger.swift */,
+				RAT200001000000000000002 /* TrainingStartTimeLearner.swift */,
+				RAT200001000000000000003 /* ReadinessAwareTrainingObserver.swift */,
+				RAT200001000000000000004 /* ReadinessAwareAlertStore.swift */,
+				TAH200001000000000000002 /* TrendAlertTrigger.swift */,
+				TAH200001000000000000003 /* TrendAlertDispatchTimeLearner.swift */,
+				TAH200001000000000000004 /* TrendAlertObserver.swift */,
+				TAH200001000000000000005 /* TrendAlertStore.swift */,
 				BL2000001000000000000001 /* BehavioralLearningStore.swift */,
 				CC2000001000000000000001 /* CohortPriorClient.swift */,
 				CP2000001000000000000001 /* CohortPriorCache.swift */,
@@ -1179,6 +1253,7 @@
 				SE200000000000000000AA05 /* TrainingNutritionSettingsScreen.swift */,
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
 				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
+				NS2100001000000000000001 /* NotificationsSettingsScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1380,6 +1455,7 @@
 				A10000010000000000000002 /* DomainModels.swift in Sources */,
 				A10000010000000000000003 /* TrainingProgramData.swift in Sources */,
 				A10000010000000000000017 /* ImportedTrainingPlan.swift in Sources */,
+				A10000010000000000000018 /* ReadinessAlertRecommendation.swift in Sources */,
 				SP100000000000000000AA01 /* StatsPeriod.swift in Sources */,
 				SF100000000000000000AA01 /* StatsFocusMetric.swift in Sources */,
 				MP100000000000000000AA01 /* MetricSeriesPoint.swift in Sources */,
@@ -1488,6 +1564,7 @@
 				SE100000000000000000AA04 /* GoalsPreferencesSettingsScreen.swift in Sources */,
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
+				NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */,
 				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
@@ -1531,6 +1608,17 @@
 				RM1000001000000000000002 /* ReminderScheduler.swift in Sources */,
 				RM1000001000000000000003 /* ReminderTriggers.swift in Sources */,
 				RM1000001000000000000004 /* ReminderNotificationDelegate.swift in Sources */,
+				SCR100001000000000000001 /* SmartRemindersConsumerRegistration.swift in Sources */,
+				RAT100001000000000000001 /* ReadinessAwareTrainingTrigger.swift in Sources */,
+				RAT100001000000000000002 /* TrainingStartTimeLearner.swift in Sources */,
+				RAT100001000000000000003 /* ReadinessAwareTrainingObserver.swift in Sources */,
+				RAT100001000000000000004 /* ReadinessAwareAlertStore.swift in Sources */,
+				TAH100001000000000000001 /* TrendAlertContext.swift in Sources */,
+				TAH100001000000000000002 /* TrendAlertTrigger.swift in Sources */,
+				TAH100001000000000000003 /* TrendAlertDispatchTimeLearner.swift in Sources */,
+				TAH100001000000000000004 /* TrendAlertObserver.swift in Sources */,
+				TAH100001000000000000005 /* TrendAlertStore.swift in Sources */,
+				TAH100001000000000000006 /* HRVTrendChart.swift in Sources */,
 				BL1000001000000000000001 /* BehavioralLearningStore.swift in Sources */,
 				CC1000001000000000000001 /* CohortPriorClient.swift in Sources */,
 				CP1000001000000000000001 /* CohortPriorCache.swift in Sources */,
@@ -1539,6 +1627,7 @@
 				NT1000001000000000000007 /* DeepLinkRouter.swift in Sources */,
 				NT1000001000000000000008 /* ReadinessAlertObserver.swift in Sources */,
 				NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */,
+				NT1000001000000000000010 /* ReminderPreferencesStore.swift in Sources */,
 				NP100000000000000000VW02 /* SettingsDeepLinkBanner.swift in Sources */,
 				NP100000000000000000VW03 /* NotificationPermissionRow.swift in Sources */,
 				IM100000000000000000AA01 /* ImportParser.swift in Sources */,
@@ -1586,6 +1675,17 @@
 				KH100000000000000000AT01 /* KeychainHelperTests.swift in Sources */,
 				RS100000000000000000AT01 /* ReminderSchedulerTests.swift in Sources */,
 				RA100000000000000000AT01 /* ReminderAnalyticsTests.swift in Sources */,
+				RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */,
+				SCR100001000000000000T01 /* SmartRemindersConsumerRegistrationTests.swift in Sources */,
+				RAT100001000000000000T01 /* ReadinessAwareTrainingTriggerTests.swift in Sources */,
+				RAT100001000000000000T02 /* TrainingStartTimeLearnerTests.swift in Sources */,
+				RAT100001000000000000T03 /* ReadinessAwareTrainingObserverTests.swift in Sources */,
+				TAH100001000000000000T01 /* TrendAlertTriggerTests.swift in Sources */,
+				TAH100001000000000000T02 /* TrendAlertDispatchTimeLearnerTests.swift in Sources */,
+				TAH100001000000000000T03 /* TrendAlertObserverTests.swift in Sources */,
+				TAH100001000000000000T04 /* TrendAlertStoreTests.swift in Sources */,
+				DECSV01000000000000T001 /* DataExportServiceCSVTests.swift in Sources */,
+				DLR100001000000000T01 /* DeepLinkRouterReminderRegistryTests.swift in Sources */,
 				BL100000000000000000AT01 /* BehavioralLearningStoreTests.swift in Sources */,
 				CC100000000000000000AT01 /* CohortPriorClientTests.swift in Sources */,
 				CP100000000000000000AT01 /* CohortPriorCacheTests.swift in Sources */,
