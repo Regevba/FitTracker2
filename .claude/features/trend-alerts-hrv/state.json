@@ -2,7 +2,7 @@
   "feature": "trend-alerts-hrv",
   "description": "Sustained-trend HRV alert: fires when HRV stays below the user's personal baseline (or a fixed floor for cold-start users) for 3+ consecutive days. Distinct from ReadinessAlertObserver (single-day score crossing) and ReadinessAwareTrainingObserver (daily pre-training advisory) — this observer surfaces a multi-day pattern. Surfaces via push notification + Home AIInsightCard banner; the Why? affordance opens an AIIntelligenceSheet section showing the 3-day HRV mini-chart with baseline overlay. Backlog source: docs/product/backlog.md L346 (RICE 10.5 per 2026-05-31 E1 refresh).",
   "work_type": "feature",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-06-01T08:30:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -39,22 +39,37 @@
   "tasks": [],
   "phases": {
     "research": {
-      "started_at": "2026-06-01T08:30:00Z"
+      "started_at": "2026-06-01T08:30:00Z",
+      "ended_at":   "2026-06-01T07:10:30Z"
+    },
+    "prd": {
+      "started_at": "2026-06-01T07:10:30Z"
     }
   },
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-01T08:30:00Z"
+        "started_at": "2026-06-01T08:30:00Z",
+        "ended_at":   "2026-06-01T07:10:30Z"
+      },
+      "prd": {
+        "started_at": "2026-06-01T07:10:30Z"
       }
     }
   },
+  "prd_path": "docs/product/prd/trend-alerts-hrv.md",
   "transitions": [
     {
       "from": null,
       "to": "research",
       "at": "2026-06-01T08:30:00Z",
       "reason": "C4 from 2026-05-31 tier carryover plan (RICE 10.5; next-most-valuable C-tier item after C2 ships per E1 RICE refresh in PR #559)"
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-01T07:10:30Z",
+      "reason": "Phase 0 research approved + merged to main (PR #562, 8121294). C2 PR #560 also merged (dcf30c9) clearing the shared-file conflict risk — proceeding with Option A from research.md scope_vs_c2 plan."
     }
   ]
 }

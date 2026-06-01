@@ -6,13 +6,24 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T05:13:55Z",
-  "updated_at": "2026-06-01T05:13:55Z",
+  "updated_at": "2026-06-01T07:10:30Z",
   "events": [
     {
       "timestamp": "2026-06-01T05:13:55Z",
       "event_type": "phase_transition",
       "phase": "research",
       "summary": "C4 Phase 0 (Research) opened \u2014 10-section research.md authored covering: problem framing (3 existing observers + sustained-trend gap), trigger algorithm (personal-baseline median \u00b1 1\u03c3 + hardFloor=25 + 3-day window + 7-day re-fire), three surfaces (push + Home banner + Why? affordance), distinction from C2 (training-day vs daily, 1-day vs 3-day window), success metrics (4 tiered) + kill criteria (3), dependencies (all shipped), scope-NOT (sleep mirror + composite fusion + predictive overlay deferred to follow-ons), Phase E compliance (no new gates). Branch: feature/trend-alerts-hrv off origin/main 228430a.",
+      "artifacts": [],
+      "metrics": {},
+      "actor": "agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-01T07:10:30Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Phase 1 (PRD) opened \u2014 docs/product/prd/trend-alerts-hrv.md authored covering 15 sections (Purpose, Problem, Business Objective, Success Metrics with T1/T2/T3 tier tags, Kill Criteria with 4 fire conditions, Requirements + 5 user stories, FROZEN algorithm constants (baselineWindow=30d, percentile=50, sustainedDays=3, hardFloor=25ms, refireWindow=7d, dataQuality=3/3), 3 surface specs, Settings opt-out copy, Technical Approach (5 new files + 7 modified), Analytics Events (4 home_-prefixed), Phased Rollout, Dependencies all shipped, GDPR/Privacy single-paragraph, 5 Risks + mitigations, 5 Open Questions resolved/deferred, future Enhancements docket, Phase transition criteria). Awaiting operator PRD approval before Phase 2 (Tasks) begins.",
       "artifacts": [],
       "metrics": {},
       "actor": "agent",
