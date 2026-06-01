@@ -268,6 +268,14 @@ enum AnalyticsEvent {
     /// Sustained-trend advisory dismissed without feedback pick (sheet closed)
     static let homeTrendAlertDismissed         = "home_trend_alert_dismissed"
 
+    // ── C5: AI User Feedback Loop (screen-prefixed: home_) ──
+    /// AIOrchestrator's reinforcement-loop block suppressed a signal because user dismissed it >=3 times within 30 days
+    static let homeAiFeedbackSignalSuppressed  = "home_ai_feedback_signal_suppressed"
+    /// AIOrchestrator's reinforcement-loop block boosted a segment's confidence because acceptanceRate > 0.70 with >=5 outcomes
+    static let homeAiFeedbackSegmentBoosted    = "home_ai_feedback_segment_boosted"
+    /// User taps "Clear feedback history" in Settings → AI Feedback
+    static let homeAiFeedbackHistoryCleared    = "home_ai_feedback_history_cleared"
+
     // ── Import Events (custom) ─────────────────────────────
 
     /// User initiates a training plan import flow
@@ -475,6 +483,13 @@ enum AnalyticsParam {
     static let sustainedDays     = "sustained_days"      // int — number of consecutive days below floor
     static let baseline          = "baseline"            // int — rounded HRV ms median over baselineWindow
     static let floor             = "floor"               // int — rounded HRV ms adaptive floor (baseline - 1σ, min hardFloor)
+
+    // C5 AI user feedback loop parameters
+    static let signal                  = "signal"                    // string — signal-id (e.g., protein_below, elevated_resting_hr)
+    static let dismissalCount          = "dismissal_count"           // int — exactly how many dismissals triggered the suppression
+    static let acceptanceRate          = "acceptance_rate"           // int 0..100 — rounded percentage acceptance rate
+    static let outcomeCount            = "outcome_count"             // int — sample size at boost-evaluation time
+    static let totalOutcomesCleared    = "total_outcomes_cleared"    // int — count of outcomes wiped via Settings → Clear feedback history
 
     // Onboarding auth parameters
     // method already defined above — reuse for email/google/apple
