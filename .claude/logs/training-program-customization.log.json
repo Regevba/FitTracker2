@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "feature": "training-program-customization",
+  "title": "training program customization",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9",
+  "started_at": "2026-06-01T17:29:44Z",
+  "updated_at": "2026-06-01T17:29:44Z",
+  "events": [
+    {
+      "timestamp": "2026-06-01T17:29:44Z",
+      "event_type": "phase_transition",
+      "phase": "research",
+      "summary": "C6 Phase 0 (Research) initialized. Research.md authored (12 sections, ~360 lines). Scope: replace fixed PPL with user-defined custom programs. Data model: customPrograms[] + customDay + exerciseSlot with exerciseID reference. 4 starter templates (PPL/UL/FB3/Empty). NO destructive migration \u2014 fixed PPL stays as fallback. Depends on C3 (PR #573) shipping exercise library picker. Out-of-scope guards (8 explicit). 8 new training_-prefixed analytics events. Phase 4 LoC estimate ~1700. Phase E compliant. 4-6 person-days effort.",
+      "artifacts": [
+        ".claude/features/training-program-customization/research.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}

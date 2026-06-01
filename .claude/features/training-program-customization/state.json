@@ -1,0 +1,60 @@
+{
+  "feature": "training-program-customization",
+  "description": "Replace the fixed 6-day Push/Pull/Legs split (Models/TrainingProgramData.swift) with a user-defined custom training program. Users can: (a) pick a starting template from the gallery (current PPL, Upper/Lower, Full-body 3x/week, Bro split), (b) edit days (rename / change DayType / reorder), (c) add/remove/reorder exercises within each day from the catalog (depends on C3 read-only library), (d) save multiple programs and switch between them. Existing users keep current PPL until they explicitly create or import a different program — migration is implicit, not destructive. Closes backlog L348 (RICE 7.0, 4-6d Feature 9-phase — LARGEST in tier C carryover).",
+  "work_type": "feature",
+  "current_phase": "research",
+  "created_at": "2026-06-01T19:50:00Z",
+  "state_owner": "ft2",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/training-program-customization",
+  "isolation_opt_out": false,
+  "rice_score": 7.0,
+  "rice_inputs": {
+    "reach": 0.5,
+    "impact": 2.5,
+    "confidence": 0.7,
+    "effort_person_weeks": 1.25
+  },
+  "backlog_source": "docs/product/backlog.md L348 + Planned RICE row 7.0 + 2026-05-31 tier carryover plan C6",
+  "dependencies_met": {
+    "Import_Training_Plan_Phase_1": "shipped 2026-05-06 PR #234 — persistence + active-plan switching + CSV/JSON/Markdown parsers + 87-exercise mapper",
+    "ExerciseDefinition_schema": "shipped (Models/TrainingProgramData.swift)",
+    "ExerciseMapper": "shipped (Services/Import/ExerciseMapper.swift) — full-text catalog mapping",
+    "TrainingProgramStore": "shipped (DataStore) — owns the active program slot",
+    "Settings v2 navigation patterns": "shipped",
+    "ImportedPlansListScreen": "shipped (Views/Settings/v2/Screens/) — sibling pattern for program list management"
+  },
+  "dependencies_gated_on": {
+    "C3_exercise_search_filter": "in flight 2026-06-01 PR #573 — C6 'add exercise' picker reuses the C3 library sheet for browsing"
+  },
+  "scope_decision_tree_at_phase_0": {
+    "data_model": "Per-user `[CustomProgram]` array in dataStore; each program has [Day], each Day has [ExerciseSlot] with exercise_id reference + override-able sets/reps/rest fields",
+    "migration": "Existing users see fixed PPL until they tap 'Customize program' in Settings. First customization snapshots current PPL as 'My Program (was Default PPL)' editable copy.",
+    "templates": "4 starter templates: (1) PPL 6-day current default; (2) Upper/Lower 4-day; (3) Full-body 3-day; (4) Empty (build from scratch)",
+    "scope_v1": "ADD/REMOVE/REORDER exercises within days. RENAME day labels. Change DayType assignment. SAVE multiple programs.",
+    "scope_v1_NOT": "Per-day target progression curves. Periodization phase blocks. AI-suggested replacements. Shared community programs. Mid-week swap warnings."
+  },
+  "tasks": [],
+  "phases": {
+    "research": {
+      "started_at": "2026-06-01T19:50:00Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-01T19:50:00Z"
+      }
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "at": "2026-06-01T19:50:00Z",
+      "reason": "C6 from 2026-05-31 tier carryover plan (RICE 7.0, LARGEST). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Phase 0 research draft only — scope is 4-6d Feature 9-phase, can't realistically full-ship in one continuation alongside C3+E4+D1."
+    }
+  ]
+}
