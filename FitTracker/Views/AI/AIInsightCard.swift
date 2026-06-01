@@ -7,16 +7,21 @@ import SwiftUI
 struct AIInsightCard: View {
     @EnvironmentObject private var orchestrator: AIOrchestrator
     @EnvironmentObject private var analytics: AnalyticsService
+    @EnvironmentObject private var readinessAware: ReadinessAwareAlertStore
     @State private var showSheet = false
     @State private var feedbackGiven = false
 
     var body: some View {
         Button {
             showSheet = true
-            analytics.logAiInsightTap(segment: primarySegment)
+            if let context = readinessAware.current() {
+                analytics.logHomeReadinessAlertTap(recommendation: context.recommendation.rawValue)
+            } else {
+                analytics.logAiInsightTap(segment: primarySegment)
+            }
         } label: {
             HStack(spacing: AppSpacing.medium) {
-                FitMeLogoLoader(mode: hasInsight ? .breathe : .shimmer, size: .small)
+                FitMeLogoLoader(mode: avatarMode, size: .small)
 
                 VStack(alignment: .leading, spacing: AppSpacing.xxxSmall) {
                     HStack(spacing: AppSpacing.xxSmall) {
@@ -58,11 +63,19 @@ struct AIInsightCard: View {
             AIIntelligenceSheet()
         }
         .onAppear {
-            analytics.logAiInsightShown(
-                segment: primarySegment,
-                confidence: confidenceLevel,
-                sourceTier: "local"
-            )
+            if let context = readinessAware.current() {
+                analytics.logHomeReadinessAlertShown(
+                    recommendation: context.recommendation.rawValue,
+                    score: context.readinessScore,
+                    drivingComponent: context.drivingComponent.rawValue
+                )
+            } else {
+                analytics.logAiInsightShown(
+                    segment: primarySegment,
+                    confidence: confidenceLevel,
+                    sourceTier: "local"
+                )
+            }
         }
         .accessibilityLabel("AI insight: \(insightTitle). \(insightSubtitle). Double tap to see all recommendations.")
     }
@@ -70,7 +83,22 @@ struct AIInsightCard: View {
     // MARK: - Derived
 
     private var hasInsight: Bool {
-        !orchestrator.latestRecommendations.isEmpty
+        readinessAware.current() != nil || !orchestrator.latestRecommendations.isEmpty
+    }
+
+    /// Avatar mode mapping (Task 7):
+    ///   • `.shimmer` — no insights yet OR rest-day swap recommendation
+    ///   • `.pulse`   — adaptEasierLoad advisory (calls attention)
+    ///   • `.breathe` — default with insight, including continueAsPlanned
+    private var avatarMode: FitMeLogoLoader.Mode {
+        if let context = readinessAware.current() {
+            switch context.recommendation {
+            case .restDaySwap:       return .shimmer
+            case .adaptEasierLoad:   return .pulse
+            case .continueAsPlanned: return .breathe
+            }
+        }
+        return hasInsight ? .breathe : .shimmer
     }
 
     private var primaryRecommendation: AIRecommendation? {
@@ -93,6 +121,9 @@ struct AIInsightCard: View {
     }
 
     private var insightTitle: String {
+        if let context = readinessAware.current() {
+            return context.recommendation.headline
+        }
         guard let rec = primaryRecommendation else {
             return "Analyzing your data..."
         }
@@ -101,6 +132,9 @@ struct AIInsightCard: View {
     }
 
     private var insightSubtitle: String {
+        if let context = readinessAware.current() {
+            return "Readiness \(context.readinessScore)/100 — tap for why"
+        }
         guard primaryRecommendation != nil else {
             return "Collecting data for personalized insights"
         }

@@ -248,6 +248,16 @@ enum AnalyticsEvent {
     // never fired in production. Their semantics duplicate `homeAiFeedbackSubmitted`
     // which already carries `rating: positive | negative`. Use that instead.
 
+    // ── C2: Readiness-Aware Training Alert (screen-prefixed: home_) ──
+    /// Readiness-aware advisory shown on home insight card
+    static let homeReadinessAlertShown         = "home_readiness_alert_shown"
+    /// User taps the readiness-aware insight card
+    static let homeReadinessAlertTap           = "home_readiness_alert_tap"
+    /// User picks a CTA in the readiness-aware sheet banner
+    static let homeReadinessAlertActionTaken   = "home_readiness_alert_action_taken"
+    /// Readiness-aware advisory dismissed without CTA pick (sheet closed)
+    static let homeReadinessAlertDismissed     = "home_readiness_alert_dismissed"
+
     // ── Import Events (custom) ─────────────────────────────
 
     /// User initiates a training plan import flow
@@ -445,6 +455,10 @@ enum AnalyticsParam {
     static let confidenceLevel   = "confidence_level"   // high/medium/low — recommendation confidence
     // source already defined above — reuse for cloud/local/personalised pipeline source
     static let reason            = "reason"             // not_relevant/already_know/disagree/other — dismiss reason
+
+    // C2 readiness-aware training alert parameters
+    static let chosen            = "chosen"             // continueAsPlanned/adaptEasierLoad/restDaySwap (the CTA the user picked)
+    static let drivingComponent  = "driving_component"  // hrv/sleep/restingHR/trainingLoad/composite
 
     // Onboarding auth parameters
     // method already defined above — reuse for email/google/apple

@@ -31,6 +31,7 @@ final class ReminderPreferencesStore: ObservableObject {
         static let trainingDay         = "ft.reminder.trainingDay"
         static let restDay             = "ft.reminder.restDay"
         static let engagement          = "ft.reminder.engagement"
+        static let readinessAware      = "ft.reminder.readinessAware"
     }
 
     // MARK: - Published
@@ -71,6 +72,13 @@ final class ReminderPreferencesStore: ObservableObject {
         didSet { UserDefaults.standard.set(engagementEnabled, forKey: Keys.engagement) }
     }
 
+    /// C2 feature: readiness-aware training alerts. When false, the daily
+    /// pre-training advisory (driven by `ReadinessAwareTrainingObserver`) is
+    /// fully suppressed — no push, no in-app banner. Default true.
+    @Published var readinessAwareAlertsEnabled: Bool = true {
+        didSet { UserDefaults.standard.set(readinessAwareAlertsEnabled, forKey: Keys.readinessAware) }
+    }
+
     // MARK: - Init
 
     init() {
@@ -100,6 +108,9 @@ final class ReminderPreferencesStore: ObservableObject {
         }
         if defaults.object(forKey: Keys.engagement) != nil {
             engagementEnabled = defaults.bool(forKey: Keys.engagement)
+        }
+        if defaults.object(forKey: Keys.readinessAware) != nil {
+            readinessAwareAlertsEnabled = defaults.bool(forKey: Keys.readinessAware)
         }
     }
 

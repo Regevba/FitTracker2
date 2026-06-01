@@ -2,7 +2,7 @@
   "feature": "readiness-aware-training-alert",
   "description": "Proactive pre-training readiness alert that fires BEFORE the user starts today's planned session. Integrates yesterday's HealthKit signals (HRV trend, RHR, sleep) + nutrition + recovery flags from ReadinessEngine v2 with today's training plan (DayType + volume from training-plan-v2). Outputs one of three smart recommendations (Continue / Rest day swap / Adapt to easier load) surfaced via AIInsightCard + push notification + AI avatar state. Includes Why? affordance that opens AIIntelligenceSheet with the readiness component breakdown that drove the recommendation.",
   "work_type": "enhancement",
-  "current_phase": "tasks",
+  "current_phase": "testing",
   "created_at": "2026-06-01T07:10:00Z",
   "state_owner": "ft2",
   "parent_feature": "smart-reminders",
@@ -29,10 +29,111 @@
     "training_plan_v2": "shipped 2026-04-10 (PR #74)",
     "AI_avatar_state_machine": "shipped 2026-04-10"
   },
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Data model + recommendation enum",
+      "status": "complete",
+      "artifact": "FitTracker/Models/ReadinessAlertRecommendation.swift"
+    },
+    {
+      "id": "T2",
+      "title": "Trigger logic (pure-function evaluator)",
+      "status": "complete",
+      "artifact": "FitTracker/Services/Reminders/ReadinessAwareTrainingTrigger.swift"
+    },
+    {
+      "id": "T3",
+      "title": "Notification time-of-day learner",
+      "status": "complete",
+      "artifact": "FitTracker/Services/Reminders/TrainingStartTimeLearner.swift"
+    },
+    {
+      "id": "T4",
+      "title": "Observer wired to NotificationGateway",
+      "status": "complete",
+      "artifact": "FitTracker/Services/Reminders/ReadinessAwareTrainingObserver.swift"
+    },
+    {
+      "id": "T4b",
+      "title": "ReadinessAwareAlertStore (UI observable surface)",
+      "status": "complete",
+      "artifact": "FitTracker/Services/Reminders/ReadinessAwareAlertStore.swift"
+    },
+    {
+      "id": "T5",
+      "title": "AIInsightCard integration (override title + avatar)",
+      "status": "complete",
+      "artifact": "FitTracker/Views/AI/AIInsightCard.swift"
+    },
+    {
+      "id": "T6",
+      "title": "AIIntelligenceSheet readinessAwareBanner + 3 CTAs",
+      "status": "complete",
+      "artifact": "FitTracker/Views/AI/AIIntelligenceSheet.swift"
+    },
+    {
+      "id": "T7",
+      "title": "Avatar state mapping inline in card",
+      "status": "complete",
+      "artifact": "FitTracker/Views/AI/AIInsightCard.swift::avatarMode"
+    },
+    {
+      "id": "T8",
+      "title": "DeepLinkRouter integration (fitme://nav/home)",
+      "status": "complete",
+      "artifact": "no change \u2014 existing ReadinessAlertObserver consumer covers this URL"
+    },
+    {
+      "id": "T9",
+      "title": "4 home_-prefixed analytics events",
+      "status": "complete",
+      "artifact": "FitTracker/Services/Analytics/AnalyticsProvider.swift + AnalyticsService.swift"
+    },
+    {
+      "id": "T10",
+      "title": "Settings toggle for readinessAwareAlertsEnabled",
+      "status": "complete",
+      "artifact": "ReminderPreferencesStore.swift + NotificationsSettingsScreen.swift"
+    },
+    {
+      "id": "T11",
+      "title": "25 new tests across 3 files",
+      "status": "complete",
+      "artifact": "FitTrackerTests/ReadinessAwareTrainingTriggerTests.swift + TrainingStartTimeLearnerTests.swift + ReadinessAwareTrainingObserverTests.swift"
+    },
+    {
+      "id": "T12",
+      "title": "Case study + showcase MDX + backlog strike + PR",
+      "status": "in_progress"
+    }
+  ],
   "phases": {
     "tasks": {
-      "started_at": "2026-06-01T07:10:00Z"
+      "started_at": "2026-06-01T07:10:00Z",
+      "ended_at": "2026-06-01T07:25:00Z"
+    },
+    "implementation": {
+      "started_at": "2026-06-01T07:25:00Z",
+      "ended_at": "2026-06-01T07:50:00Z"
+    },
+    "testing": {
+      "started_at": "2026-06-01T07:50:00Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "tasks": {
+        "started_at": "2026-06-01T07:10:00Z",
+        "ended_at": "2026-06-01T07:25:00Z"
+      },
+      "implementation": {
+        "started_at": "2026-06-01T07:25:00Z",
+        "ended_at": "2026-06-01T07:50:00Z"
+      },
+      "testing": {
+        "started_at": "2026-06-01T07:50:00Z"
+      }
     }
   },
   "transitions": [
@@ -41,6 +142,39 @@
       "to": "tasks",
       "at": "2026-06-01T07:10:00Z",
       "reason": "C2 from 2026-05-31 tier carryover plan (top of RICE-13.0 ranking after E1 refresh)"
+    },
+    {
+      "from": "tasks",
+      "to": "implementation",
+      "at": "2026-06-01T07:25:00Z",
+      "reason": "Operator authorized via 'continue after data no violation check' \u2014 data violation gate passed (integrity 0+0, 80/80 state schemas, Tier 2.2 log valid)"
+    },
+    {
+      "from": "implementation",
+      "to": "testing",
+      "at": "2026-06-01T07:50:00Z",
+      "reason": "All 11 implementation tasks shipped (5 new source files + 5 modified) + 25 new tests written across 3 test files; swiftc parse exit 0 on all new source"
     }
-  ]
+  ],
+  "cache_hits": [
+    {
+      "timestamp": "2026-06-01T07:30:00Z",
+      "level": "L1",
+      "key": "smart-reminders-consumer-pattern",
+      "type": "adapted",
+      "skill": "pm-workflow",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    },
+    {
+      "timestamp": "2026-06-01T07:35:00Z",
+      "level": "L2",
+      "key": "swift-pbxproj-4-slot-wiring",
+      "type": "exact",
+      "skill": "dev",
+      "event_type": "cache_hit",
+      "phase": "implementation"
+    }
+  ],
+  "updated": "2026-06-01T04:45:52Z"
 }

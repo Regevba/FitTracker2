@@ -8,6 +8,7 @@ struct AIIntelligenceSheet: View {
     @EnvironmentObject private var dataStore:      EncryptedDataStore
     @EnvironmentObject private var analytics:      AnalyticsService
     @EnvironmentObject private var healthService:  HealthKitService
+    @EnvironmentObject private var readinessAware: ReadinessAwareAlertStore
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -23,6 +24,11 @@ struct AIIntelligenceSheet: View {
                         )
                     }
                     .padding(.top, AppSpacing.large)
+
+                    // C2 — readiness-aware training alert banner (when present)
+                    if let context = readinessAware.current() {
+                        readinessAwareBanner(context: context)
+                    }
 
                     // Segment sections
                     ForEach(AISegment.allCases, id: \.self) { segment in
@@ -51,6 +57,62 @@ struct AIIntelligenceSheet: View {
             }
             .onAppear { analytics.logAiSheetOpened(entryPoint: "insight_card") }
         }
+    }
+
+    // MARK: - C2 banner
+
+    @ViewBuilder
+    private func readinessAwareBanner(context: ReadinessAlertContext) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.small) {
+            Text(context.recommendation.headline)
+                .font(AppText.sectionTitle)
+                .foregroundStyle(AppColor.Text.primary)
+
+            Text("Readiness \(context.readinessScore)/100. Driving factor: \(context.drivingComponent.rawValue.capitalized).")
+                .font(AppText.caption)
+                .foregroundStyle(AppColor.Text.secondary)
+
+            HStack(spacing: AppSpacing.xSmall) {
+                ForEach(ReadinessAlertRecommendation.allCases, id: \.self) { option in
+                    Button {
+                        handleCTA(option, context: context)
+                    } label: {
+                        Text(option.primaryCTA)
+                            .font(AppText.caption)
+                            .padding(.horizontal, AppSpacing.small)
+                            .padding(.vertical, AppSpacing.xxSmall)
+                            .background(
+                                option == context.recommendation
+                                    ? AppColor.Brand.primary
+                                    : AppColor.Surface.secondary,
+                                in: Capsule()
+                            )
+                            .foregroundStyle(
+                                option == context.recommendation
+                                    ? AppColor.Text.onBrand
+                                    : AppColor.Text.primary
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(option.primaryCTA)
+                }
+            }
+        }
+        .padding(AppSpacing.medium)
+        .background(
+            AppColor.Surface.primary,
+            in: RoundedRectangle(cornerRadius: AppRadius.card)
+        )
+        .accessibilityElement(children: .contain)
+    }
+
+    private func handleCTA(_ choice: ReadinessAlertRecommendation, context: ReadinessAlertContext) {
+        analytics.logHomeReadinessAlertActionTaken(
+            recommendation: context.recommendation.rawValue,
+            chosen: choice.rawValue
+        )
+        readinessAware.clear()
+        dismiss()
     }
 
     // MARK: - Segment section

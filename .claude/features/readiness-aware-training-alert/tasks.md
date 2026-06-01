@@ -242,3 +242,30 @@ Update:
 - Parent PRD: `docs/product/prd/smart-reminders.md`
 - E1 RICE table entry: row 1 of the refreshed Planned section (RICE 13.0)
 - Tier carryover plan: `~/.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_session_2026_05_31_tier_carryover_plan.md`
+
+---
+
+## Implementation status — 2026-06-01
+
+Phase 2 (Implement) + Phase 3 (Test) completed in a single session. All 12 task descriptors closed.
+
+| Task | Status | Artifact(s) |
+|---|---|---|
+| T1 — Data model | ✅ done | `FitTracker/Models/ReadinessAlertRecommendation.swift` |
+| T2 — Trigger logic | ✅ done | `FitTracker/Services/Reminders/ReadinessAwareTrainingTrigger.swift` |
+| T3 — Time-of-day learner | ✅ done | `FitTracker/Services/Reminders/TrainingStartTimeLearner.swift` |
+| T4 — Observer + Gateway wiring | ✅ done | `FitTracker/Services/Reminders/ReadinessAwareTrainingObserver.swift` + companion `ReadinessAwareAlertStore.swift` |
+| T5 — AIInsightCard integration | ✅ done | `FitTracker/Views/AI/AIInsightCard.swift` (modified) |
+| T6 — AIIntelligenceSheet Why? breakdown | ✅ done | `FitTracker/Views/AI/AIIntelligenceSheet.swift` (modified; existing `readinessSection` is the breakdown — banner with 3 CTAs added at top) |
+| T7 — Avatar state mapping | ✅ done | `AIInsightCard.avatarMode` inline (`.shimmer` rest-swap / `.pulse` adapt / `.breathe` continue) |
+| T8 — DeepLinkRouter integration | ✅ done | No new code — `fitme://nav/home` already routable per `ReadinessAlertObserver.consumerRegistration` |
+| T9 — 4 analytics events | ✅ done | `home_readiness_alert_shown` + `_tap` + `_action_taken` + `_dismissed` in `AnalyticsProvider` + `AnalyticsService` |
+| T10 — Settings toggle | ✅ done | `ReminderPreferencesStore.readinessAwareAlertsEnabled` + `NotificationsSettingsScreen` toggle |
+| T11 — 25 new tests | ✅ done | `ReadinessAwareTrainingTriggerTests` (12 tests) + `TrainingStartTimeLearnerTests` (7 tests) + `ReadinessAwareTrainingObserverTests` (6 tests) — total 25 |
+| T12 — Docs + PR | ⏳ in flight | Case study at `docs/case-studies/readiness-aware-training-alert-case-study.md`; PR pending |
+
+**Build verification:**
+- Local `xcodebuild` blocked on CoreSimulator/iOS-platform out-of-date environment drift (operator-side, post-2026-05-19 SSD migration aftermath). Standalone `swiftc -parse` on all 5 new source files returns exit 0.
+- Real build + test run validated via CI on the feature branch PR.
+
+**Phase-transition discipline:** tasks → implementation → testing all logged in `.claude/logs/readiness-aware-training-alert.log.json`.
