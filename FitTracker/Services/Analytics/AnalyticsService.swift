@@ -616,6 +616,39 @@ final class AnalyticsService: ObservableObject {
         ])
     }
 
+    // MARK: - C2 Readiness-Aware Training Alert Events
+
+    /// Readiness-aware advisory shown on home insight card
+    func logHomeReadinessAlertShown(recommendation: String, score: Int, drivingComponent: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertShown, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+            AnalyticsParam.score: score,
+            AnalyticsParam.drivingComponent: drivingComponent,
+        ])
+    }
+
+    /// User taps the readiness-aware insight card
+    func logHomeReadinessAlertTap(recommendation: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertTap, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+        ])
+    }
+
+    /// User picks a CTA in the readiness-aware sheet banner
+    func logHomeReadinessAlertActionTaken(recommendation: String, chosen: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertActionTaken, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+            AnalyticsParam.chosen: chosen,
+        ])
+    }
+
+    /// Readiness-aware advisory dismissed without CTA pick (sheet closed)
+    func logHomeReadinessAlertDismissed(recommendation: String) {
+        logEvent(AnalyticsEvent.homeReadinessAlertDismissed, parameters: [
+            AnalyticsParam.recommendation: recommendation,
+        ])
+    }
+
     // MARK: - Onboarding Auth Events
 
     func logOnboardingAuthMethodSelected(method: String) {

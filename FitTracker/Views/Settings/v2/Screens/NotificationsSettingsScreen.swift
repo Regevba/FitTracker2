@@ -64,6 +64,11 @@ struct NotificationsSettingsScreen: View {
                     detail: "Gentle nudge after extended inactivity (max 3 lifetime).",
                     isOn: $preferences.engagementEnabled
                 )
+                reminderToggle(
+                    title: "Readiness-Aware Advisory",
+                    detail: "Pre-training nudge if HRV, sleep, or RHR suggest adapting today's load.",
+                    isOn: $preferences.readinessAwareAlertsEnabled
+                )
             }
             .disabled(!preferences.masterEnabled)
             .opacity(preferences.masterEnabled ? 1.0 : 0.55)
