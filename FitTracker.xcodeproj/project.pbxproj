@@ -178,6 +178,7 @@
 		NT1000001000000000000009 /* FirstWorkoutTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000009 /* FirstWorkoutTrigger.swift */; };
 		NT1000001000000000000010 /* ReminderPreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = NT2000001000000000000010 /* ReminderPreferencesStore.swift */; };
 		NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = NS2100001000000000000001 /* NotificationsSettingsScreen.swift */; };
+		C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */; };
 		RP1000001000000000000T01 /* ReminderPreferencesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */; };
 		SCR100001000000000000001 /* SmartRemindersConsumerRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = SCR200001000000000000001 /* SmartRemindersConsumerRegistration.swift */; };
 		RAT100001000000000000001 /* ReadinessAwareTrainingTrigger.swift in Sources */ = {isa = PBXBuildFile; fileRef = RAT200001000000000000001 /* ReadinessAwareTrainingTrigger.swift */; };
@@ -490,6 +491,7 @@
 		NT2000001000000000000009 /* FirstWorkoutTrigger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstWorkoutTrigger.swift; sourceTree = "<group>"; };
 		NT2000001000000000000010 /* ReminderPreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStore.swift; sourceTree = "<group>"; };
 		NS2100001000000000000001 /* NotificationsSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsSettingsScreen.swift; sourceTree = "<group>"; };
+		C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIFeedbackSettingsScreen.swift; sourceTree = "<group>"; };
 		RP2000001000000000000T01 /* ReminderPreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPreferencesStoreTests.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA01 /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		NV200000000000000000AA02 /* SupplementStackCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementStackCard.swift; sourceTree = "<group>"; };
@@ -1260,6 +1262,7 @@
 				SE200000000000000000AA06 /* DataSyncSettingsScreen.swift */,
 				SE200000000000000000AA07 /* ImportedPlansListScreen.swift */,
 				NS2100001000000000000001 /* NotificationsSettingsScreen.swift */,
+				C5AIFB00200000000000FR04 /* AIFeedbackSettingsScreen.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1572,6 +1575,7 @@
 				SE100000000000000000AA05 /* TrainingNutritionSettingsScreen.swift in Sources */,
 				SE100000000000000000AA06 /* DataSyncSettingsScreen.swift in Sources */,
 				NS1100001000000000000001 /* NotificationsSettingsScreen.swift in Sources */,
+				C5AIFB00100000000000FB04 /* AIFeedbackSettingsScreen.swift in Sources */,
 				SE100000000000000000AA07 /* ImportedPlansListScreen.swift in Sources */,
 				SE100000000000000000AC01 /* SettingsScaffolds.swift in Sources */,
 				SE100000000000000000AC02 /* SettingsFormComponents.swift in Sources */,
