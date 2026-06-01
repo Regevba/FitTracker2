@@ -1,0 +1,55 @@
+{
+  "feature": "exercise-search-filter",
+  "description": "Add a searchable + filterable exercise library surface on top of the existing TrainingProgramData.allExercises catalog (~50 exercises in the v1 program; ~87 unique post-import-training-plan v1 mapper). Today the catalog is consumed silently — TrainingPlanView shows the day's exercises but there's no UI to discover all available exercises, filter by muscle/equipment/category, or search by name. C3 builds a sheet-based ExerciseLibraryView with: (a) live text search across name + muscle keywords, (b) horizontal scrolling filter chips for muscle group + equipment + category, (c) one-tap exercise detail with coaching cue + sets/reps/rest, (d) optional 'add to today' affordance gated on the v2 training surface. Closes backlog L347 (RICE 8.0, 2-3d Feature 9-phase).",
+  "work_type": "feature",
+  "current_phase": "research",
+  "created_at": "2026-06-01T19:30:00Z",
+  "state_owner": "ft2",
+  "framework_version": "v7.9",
+  "has_ui": true,
+  "requires_analytics": true,
+  "branch": "feature/exercise-search-filter",
+  "isolation_opt_out": false,
+  "rice_score": 8.0,
+  "rice_inputs": {
+    "reach": 0.6,
+    "impact": 1.5,
+    "confidence": 0.7,
+    "effort_person_weeks": 0.43
+  },
+  "backlog_source": "docs/product/backlog.md L347 + Planned RICE row 8.0",
+  "dependencies_met": {
+    "ExerciseDefinition_schema": "shipped (Models/TrainingProgramData.swift — id, name, category, equipment, muscleGroups, targetSets, targetReps, restSeconds, coachingCue, dayType, order, progressionNote)",
+    "Static catalog": "shipped (~50 exercises across upperPush/lowerBody/upperPull/fullBody/cardioOnly)",
+    "ExerciseMapper": "shipped (Services/Import/ExerciseMapper.swift — full-text mapping from external plan imports)",
+    "Settings v2 sheet patterns": "shipped (SettingsDetailScaffold + SettingsSectionCard reusable for the library detail row)",
+    "ChipRow component or equivalent": "needs verification — likely missing; may need to add an AppChip primitive"
+  },
+  "scope_known_gaps": {
+    "no_existing_search_index": "Catalog is a 50-element array — linear scan is fast enough; no FTS / Core Data index needed for v1.",
+    "no_existing_filter_chip_component": "AppComponents may or may not have a chip; verify in Phase 1 (PRD) and either reuse or add as a single new component.",
+    "no_existing_navigation_entrypoint": "Must add entry point — likely from Training tab (Library button on TrainingPlanView) and/or Settings → Training & Nutrition.",
+    "no_routing_to_add_to_plan": "C3 ships a discovery + browse surface. The 'add to active program' action is GATED by C6 (Training program customization) data model — out of scope for C3."
+  },
+  "tasks": [],
+  "phases": {
+    "research": {
+      "started_at": "2026-06-01T19:30:00Z"
+    }
+  },
+  "timing": {
+    "phases": {
+      "research": {
+        "started_at": "2026-06-01T19:30:00Z"
+      }
+    }
+  },
+  "transitions": [
+    {
+      "from": null,
+      "to": "research",
+      "at": "2026-06-01T19:30:00Z",
+      "reason": "C3 from 2026-05-31 tier carryover plan (RICE 8.0; second-largest agent-advanceable item). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Following C5 ship pattern."
+    }
+  ]
+}

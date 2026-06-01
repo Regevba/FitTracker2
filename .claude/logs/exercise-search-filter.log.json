@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "feature": "exercise-search-filter",
+  "title": "exercise search filter",
+  "work_type": "feature",
+  "current_phase": "research",
+  "framework_version": "v7.9",
+  "started_at": "2026-06-01T17:26:23Z",
+  "updated_at": "2026-06-01T17:26:23Z",
+  "events": [
+    {
+      "timestamp": "2026-06-01T17:26:23Z",
+      "event_type": "phase_transition",
+      "phase": "research",
+      "summary": "C3 Phase 0 (Research) initialized. Research.md authored (12 sections: surface design + search algorithm + filter taxonomy + entry points + out-of-scope guards + 3 design decisions + 6 success metrics + 4 kill criteria + 4 new analytics events + Phase E discipline). Branch: feature/exercise-search-filter. Scope: read-only ExerciseLibraryView sheet on top of TrainingProgramData.allExercises (~50 exercises). Companion to C6 (mutable surface). Phase E compliant.",
+      "artifacts": [
+        ".claude/features/exercise-search-filter/research.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    }
+  ]
+}
