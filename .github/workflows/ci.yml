@@ -35,8 +35,14 @@ on:
       - main
   workflow_dispatch:
 
+# ci.yml-specific concurrency group. We use a hardcoded prefix here (NOT
+# the workflow name expression) because ci-docs-skip.yml ALSO has `name:
+# CI` — the workflow-name expression would resolve identically in both
+# files and the two workflows would clash on the same group, racing each
+# other into mutual cancellation on every mixed-content PR. See
+# .claude/integrity/observed-patterns.md W26 for the historical incident.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-yml-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:

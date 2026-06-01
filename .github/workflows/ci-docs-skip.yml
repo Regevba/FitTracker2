@@ -33,8 +33,13 @@ on:
       - '.github/workflows/ci.yml'
       - 'Package.swift'
 
+# ci-docs-skip.yml-specific concurrency group. Hardcoded prefix (NOT the
+# workflow-name expression) because ci.yml also has `name: CI` — sharing
+# the workflow-name across both files clashes the groups, racing into
+# mutual cancellation on every mixed-content PR. See
+# .claude/integrity/observed-patterns.md W26 for the historical incident.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
+  group: ci-docs-skip-${{ github.ref }}
   cancel-in-progress: true
 
 # Least-privilege GITHUB_TOKEN — this workflow only writes a status check

@@ -1280,3 +1280,31 @@ This matches the pattern already used in [`ReminderPreferencesStoreTests`](../..
 
 **Sibling patterns:** None directly; closest is the design-system test discipline that XCTest's main-actor handling enables — not yet codified as a W-code.
 
+### W26 — Two workflows sharing `name:` clash in `${{ github.workflow }}` concurrency groups → cross-workflow cancellation blocks merges (2026-06-01)
+
+**Surfaced by:** PR #560 (C2 readiness-aware-training-alert, mixed iOS code + docs/.claude). The PR's required `Build and Test` status check appeared TWICE in the rollup — one CANCELLED, one SUCCESS — blocking the green-status criterion even though no real failure occurred.
+
+**Root cause:** both `.github/workflows/ci.yml` (heavy macos-15 iOS pipeline) and `.github/workflows/ci-docs-skip.yml` (cheap ubuntu-latest fast-path) declare `name: CI`. The `${{ github.workflow }}` expression resolves to the workflow NAME (not file), so both files computed identical concurrency groups (`ci-CI-refs/pull/N/merge`). With `cancel-in-progress: true`, whichever workflow entered the group second cancelled the first — typically the fast docs-skip job cancelled the heavy iOS job. The CANCELLED status persisted in the PR rollup and blocked merge even with `--admin` until rerun-superseded.
+
+Compounding cause: the `paths:` vs `paths-ignore:` filters in the two files are not mutually exclusive on mixed PRs. A PR touching BOTH `FitTracker/**` files AND `docs/**` files trips ci.yml's `paths:` (at least one match) AND ci-docs-skip.yml's `paths-ignore:` (at least one non-match) — so both fire and immediately race for the shared concurrency group.
+
+**Fix (PR pending):** give each workflow its own hardcoded concurrency-group prefix instead of `${{ github.workflow }}`:
+
+```yaml
+# ci.yml
+concurrency:
+  group: ci-yml-${{ github.ref }}
+  cancel-in-progress: true
+
+# ci-docs-skip.yml
+concurrency:
+  group: ci-docs-skip-${{ github.ref }}
+  cancel-in-progress: true
+```
+
+Both workflows then run independently. On a mixed PR you get TWO passing `Build and Test` status checks (one from each file) — branch protection accepts the rollup because both are SUCCESS.
+
+**Generalizable rule:** when two workflow files share the same `name:` (intentional, to satisfy branch protection by status-check-name matching), DO NOT use `${{ github.workflow }}` in their `concurrency.group` expressions. Use file-specific hardcoded prefixes. Anywhere two workflows share a status-check name, audit their concurrency groups for collision.
+
+**Sibling patterns:** the original W26 placeholder note in [`project_session_2026_05_31_tier_carryover_plan.md`](../../.claude/projects/-Volumes-DevSSD-FitTracker2/memory/project_session_2026_05_31_tier_carryover_plan.md) captured the Catch-22 symptom (cancelled status blocking merge) but mis-attributed the cause to `cancel-in-progress: true` alone. The actual root cause is the cross-workflow group sharing — `cancel-in-progress: true` per workflow is correct and desirable; only the cross-workflow collision is wrong.
+
