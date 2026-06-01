@@ -162,12 +162,14 @@ final class TrendAlertTriggerTests: XCTestCase {
         XCTAssertNil(TrendAlertTrigger.populationStdDev([]))
     }
 
-    func test_stddev_singleSampleReturnsZero() {
-        XCTAssertEqual(TrendAlertTrigger.populationStdDev([50.0]), 0.0, accuracy: 0.001)
+    func test_stddev_singleSampleReturnsZero() throws {
+        let s = try XCTUnwrap(TrendAlertTrigger.populationStdDev([50.0]))
+        XCTAssertEqual(s, 0.0, accuracy: 0.001)
     }
 
-    func test_stddev_identicalReturnsZero() {
-        XCTAssertEqual(TrendAlertTrigger.populationStdDev([42.0, 42.0, 42.0]), 0.0, accuracy: 0.001)
+    func test_stddev_identicalReturnsZero() throws {
+        let s = try XCTUnwrap(TrendAlertTrigger.populationStdDev([42.0, 42.0, 42.0]))
+        XCTAssertEqual(s, 0.0, accuracy: 0.001)
     }
 
     func test_stddev_knownValue() {
