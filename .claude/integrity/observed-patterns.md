@@ -1318,3 +1318,38 @@ Both workflows then run independently. On a mixed PR you get TWO passing `Build 
 
 **First surfaced by:** `ucc-passkey-auth-security-hardening` enhancement work, 2026-05-19. The work proceeded with Option A.
 
+### W28 — Local `xcodebuild` blocked by CoreSimulator + iOS platform out-of-date (Mac restart required) (2026-06-01)
+
+**Surfaced by:** every local Swift build attempt during the 2026-06-01 C2 + C4 + W26 session. Surfaced 10+ times across the session — each `xcodebuild` invocation produced the same pair of errors:
+
+```text
+DVTErrorPresenter: Unable to load simulator devices.
+CoreSimulator is out of date. Current version (1051.50.0) is older than build version (1051.54.0).
+…
+xcodebuild: error: Unable to find a destination matching the provided destination specifier:
+  { generic:1, platform:iOS }
+  Ineligible destinations for the "FitTracker" scheme:
+    { platform:iOS, … error:iOS 26.5 is not installed. Please download and install the platform from Xcode > Settings > Components. }
+```
+
+**Root cause:** the macOS-side `CoreSimulator.framework` daemon binary on the operator's Mac (currently `1051.50.0`) was loaded into memory before an Xcode update bumped the on-disk version to `1051.54.0`. The mismatch persists across `xcodebuild` invocations because the daemon is loaded once at boot. Until the Mac restarts, every `xcodebuild build`/`test`/`-showdestinations` rejects the run with "simulator device support disabled" + the secondary "platform not installed" error (Xcode treats the iOS 26.5 platform files as unreachable while the simulator runtime is out of date).
+
+This is **operator-side only** — the GitHub Actions hosted runners boot fresh CoreSimulator on every job, so CI is unaffected. Local builds + local UI test runs are blocked until the Mac restarts.
+
+**Workaround used during this session:**
+
+- `swiftc -parse <files>` directly against the iphoneos26.5 SDK: returns exit 0 and validates Swift syntax + type lookups on new source files. Enough to confirm a commit will pass compile-time checks on CI.
+- `xcodebuild -list`: parses `project.pbxproj` integrity (target list + scheme list + SPM resolution) without needing a destination. Catches malformed pbxproj edits.
+- All real build + test validation delegated to the per-PR CI run on the feature branch. The CI run reliably catches what `swiftc -parse` misses (linker errors, test compile errors, runtime XCTest failures).
+
+**Operator-side fix:** **Full Mac restart.** After restart, `CoreSimulator.framework` loads the on-disk `1051.54.0` binary and `xcodebuild` regains access to the simulator runtimes. The iOS 26.5 platform also becomes resolvable for `generic/platform=iOS` destinations.
+
+**Why the restart is gated:** the restart cannot be performed while HADF Sub-exp 2 is LIVE on the same Mac (~400 records vs 250 kill at this checkpoint per `project_session_2026_05_30_31_hadf_subexp_lifecycle.md`). The Sub-exp 2 dispatch process owns long-running state that does not survive a reboot. The restart window opens **after Sub-exp 2 closes** — at which point the operator can reboot, and the next session's `xcodebuild` invocations will work locally again.
+
+**Generalizable rule:** when `xcodebuild` reports `CoreSimulator is out of date` paired with "iOS X.Y is not installed", trust the diagnostic — do NOT try to install the platform via `xcodebuild -downloadPlatform iOS` (the platform IS installed; CoreSimulator just can't load it). Fall back to `swiftc -parse` for syntax validation, `xcodebuild -list` for pbxproj validation, and defer the real build to CI. Schedule the Mac restart for whenever the next long-running local process (HADF Sub-exp 2 in this case) finishes.
+
+**Sibling patterns:**
+
+- [W17 — Stale-base unmerged branches](#w17--stale-base-unmerged-branches-gh-pr-view-file-list-misleads-cherry-pick-onto-fresh-origin-main-is-ground-truth-2026-05-25) — same "trust the explicit error, don't paper over with workarounds" class.
+- HADF launchd setup checklist (memory `feedback-hadf-launchd-setup-checklist`) — adjacent class of "operator-side macOS daemon issues require restart or careful sequence". Both this W28 and the HADF launchd patterns reinforce that fresh-boot daemon state is the reliable recovery path on macOS.
+
