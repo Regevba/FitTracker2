@@ -23,6 +23,9 @@ kill_criteria_resolution: pending_t14_eval_2026-06-16
 tier_tags_present: true
 related_prs:
   - 576
+pr_citation_exempt:
+  - pr_number: 572
+    reason: "Cross-reference to C5 (ai-user-feedback-loop) predecessor — D1 builds on top of C5's RecommendationMemory + AIOrchestrator reinforcement-loop shape. PR #572 belongs to C5, cited here for context only."
 case_study_type: full
 ---
 
