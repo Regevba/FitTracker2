@@ -178,7 +178,7 @@ The following 5 rows moved out of "In Progress":
 |------|------|------|--------|---------|
 | 13.0 | **C2 — Readiness-Aware Training Alert** (Enhancement; parent: smart-reminders) | iOS Enhancement | 3-5d | All deps shipped today after L207 close: NotificationGateway routing (#553), DeepLinkRouter registry (#556), AIInsightCard + AIOrchestrator + ReadinessEngine v2 + smart-reminders all already in place. Proactive readiness guidance is core to the app's value prop |
 | 10.5 | **C4 — Trend alerts (HRV threshold)** (L346) | iOS Feature, 9-phase | 2-3d | Cross-feature win: HealthKit + Smart Reminders + Push v2 all shipped; NotificationGateway path operational. Surfaces real value to power users with stable HRV history |
-| 9.0 | **C5 — AI user feedback loop** (L351) | iOS Feature, 9-phase | 2-3d | Improves AI recommendation quality over time; pairs naturally with D1 (adaptive-intelligence next pass). Enables thumbs up/down on AI insights → reinforcement loop |
+| ~~9.0~~ | ~~**C5 — AI user feedback loop** (L351)~~ — **SHIPPED 2026-06-02 via PR #572 (`ec5dff9`)** | ~~iOS Feature, 9-phase~~ | ~~2-3d~~ (actual: 1 session ~3h + merge ceremony) | ~~Improves AI recommendation quality over time~~ — closes audit UI-024. Wires AIInsightCard.recordFeedback into RecommendationMemory via @StateObject env-object facade + adds AIOrchestrator reinforcement-loop block + Settings → AI Feedback management screen with 5-enum dismiss-reason picker. 7 commits, 14/14 tests pass, 670 LoC. 3 new `home_ai_feedback_*` analytics events. Frozen constants: `acceptanceUpgradeThreshold=0.70`, `dismissalSuppressionThreshold=3/30d`, `quorumCount=5`, `confidenceTierOnly`. Phase E compliant. Source case study: [`ai-user-feedback-loop-case-study.md`](../case-studies/ai-user-feedback-loop-case-study.md). Successor: D1 (PR #576 draft) — recommended v1 pair D1.a (time-decay) + D1.d (transparency UX). |
 | 8.0 | **C3 — Exercise search/filter** (L347) | iOS Feature, 9-phase | 2-3d | 87 exercises currently in fixed-order list; clear UX gap. Power-user complaint surface |
 | 7.5 | **L353 audit-doc revision + Phases 3-4** | iOS doc PR | 30-60 min | PR #555's "~40-50" estimate was loose; Phase 1 (#557) shipped 4-site fix. Closes L353 backlog with tight final count + Phase 3 (touch target rationale) + Phase 4 (layout dim case-by-case) docs |
 | 7.0 | **C6 — Training program customization** (L348) | iOS Feature, 9-phase | 4-6d | Largest scope. Replaces fixed 6-day PPL split. Depends on Import Training Plan (shipped). High impact but high effort → slot after C2-C5 |
@@ -376,7 +376,7 @@ For audit reference, these original Phase 0 RICE-table items shipped in subseque
 - [ ] Training program customization — fixed 6-day PPL split (partially addressed by "Import Training Plan from External Sources" above)
 - [ ] Notification settings — backend `NotificationPreferencesStore` exists but no user-facing Settings screen to edit preferences
 - [ ] Data export from Settings — JSON export UI exists (`ExportDataView`); CSV format not yet implemented
-- [ ] User feedback loop for AI — can't rate recommendation quality
+- [x] User feedback loop for AI — can't rate recommendation quality ✅ SHIPPED 2026-06-02 via PR #572 (`ec5dff9`) — see C5 in Planned RICE table above (`ai-user-feedback-loop`)
 - [ ] Dark Mode end-to-end testing — asset catalog has values but not verified
 - [ ] Dynamic Type full compliance — @ScaledMetric not on all text tokens
 - [ ] Code Connect (Figma ↔ code mapping)
