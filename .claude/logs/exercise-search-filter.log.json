@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T17:26:23Z",
-  "updated_at": "2026-06-01T17:26:23Z",
+  "updated_at": "2026-06-02T09:43:11Z",
   "events": [
     {
       "timestamp": "2026-06-01T17:26:23Z",
@@ -15,6 +15,19 @@
       "summary": "C3 Phase 0 (Research) initialized. Research.md authored (12 sections: surface design + search algorithm + filter taxonomy + entry points + out-of-scope guards + 3 design decisions + 6 success metrics + 4 kill criteria + 4 new analytics events + Phase E discipline). Branch: feature/exercise-search-filter. Scope: read-only ExerciseLibraryView sheet on top of TrainingProgramData.allExercises (~50 exercises). Companion to C6 (mutable surface). Phase E compliant.",
       "artifacts": [
         ".claude/features/exercise-search-filter/research.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-02T09:43:11Z",
+      "event_type": "phase_transition",
+      "phase": "prd",
+      "summary": "Phase 0 (Research) approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD at docs/product/prd/exercise-search-filter.md (~370 lines). Phase 0 \u00a77 chip-component question RESOLVED: AppPickerChip + AppFilterBar exist; no new primitive. Picker-mode init signature defined for C6 reuse: ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil). 4 new training_-prefixed analytics events. 6 success metrics T1/T2/T3 + 4 kill criteria + 6 OQ resolved. ~600 LoC est.",
+      "artifacts": [
+        "docs/product/prd/exercise-search-filter.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",

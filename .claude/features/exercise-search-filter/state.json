@@ -2,7 +2,7 @@
   "feature": "exercise-search-filter",
   "description": "Add a searchable + filterable exercise library surface on top of the existing TrainingProgramData.allExercises catalog (~50 exercises in the v1 program; ~87 unique post-import-training-plan v1 mapper). Today the catalog is consumed silently — TrainingPlanView shows the day's exercises but there's no UI to discover all available exercises, filter by muscle/equipment/category, or search by name. C3 builds a sheet-based ExerciseLibraryView with: (a) live text search across name + muscle keywords, (b) horizontal scrolling filter chips for muscle group + equipment + category, (c) one-tap exercise detail with coaching cue + sets/reps/rest, (d) optional 'add to today' affordance gated on the v2 training surface. Closes backlog L347 (RICE 8.0, 2-3d Feature 9-phase).",
   "work_type": "feature",
-  "current_phase": "research",
+  "current_phase": "prd",
   "created_at": "2026-06-01T19:30:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -23,7 +23,7 @@
     "Static catalog": "shipped (~50 exercises across upperPush/lowerBody/upperPull/fullBody/cardioOnly)",
     "ExerciseMapper": "shipped (Services/Import/ExerciseMapper.swift — full-text mapping from external plan imports)",
     "Settings v2 sheet patterns": "shipped (SettingsDetailScaffold + SettingsSectionCard reusable for the library detail row)",
-    "ChipRow component or equivalent": "needs verification — likely missing; may need to add an AppChip primitive"
+    "ChipRow component or equivalent": "RESOLVED at Phase 1 — AppPickerChip + AppFilterBar already exist in FitTracker/DesignSystem/AppComponents.swift; no new primitive needed."
   },
   "scope_known_gaps": {
     "no_existing_search_index": "Catalog is a 50-element array — linear scan is fast enough; no FTS / Core Data index needed for v1.",
@@ -32,15 +32,26 @@
     "no_routing_to_add_to_plan": "C3 ships a discovery + browse surface. The 'add to active program' action is GATED by C6 (Training program customization) data model — out of scope for C3."
   },
   "tasks": [],
+  "prd_path": "docs/product/prd/exercise-search-filter.md",
   "phases": {
     "research": {
-      "started_at": "2026-06-01T19:30:00Z"
+      "started_at": "2026-06-01T19:30:00Z",
+      "ended_at": "2026-06-02T13:30:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue with D1, C6 and C3"
+    },
+    "prd": {
+      "started_at": "2026-06-02T13:30:00Z"
     }
   },
   "timing": {
     "phases": {
       "research": {
-        "started_at": "2026-06-01T19:30:00Z"
+        "started_at": "2026-06-01T19:30:00Z",
+        "ended_at": "2026-06-02T13:30:00Z"
+      },
+      "prd": {
+        "started_at": "2026-06-02T13:30:00Z"
       }
     }
   },
@@ -50,6 +61,12 @@
       "to": "research",
       "at": "2026-06-01T19:30:00Z",
       "reason": "C3 from 2026-05-31 tier carryover plan (RICE 8.0; second-largest agent-advanceable item). Operator directive: 'continue c3,c6,e4,d1 in sequence'. Following C5 ship pattern."
+    },
+    {
+      "from": "research",
+      "to": "prd",
+      "at": "2026-06-02T13:30:00Z",
+      "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD authored at docs/product/prd/exercise-search-filter.md. FROZEN: 0ms search debounce, localizedCaseInsensitiveContains match, 3 chip dimensions (Muscle/Equipment/Category) with one-of-N mutex within dim AND across dims, .large sheet detent, 2-char analytics threshold. 6 OQ resolved (no filter memory, multi-word AND-via-contains, no video v1, count badge YES, catalog order, no Home-tab entry). Phase 0 §7 chip-component question RESOLVED: AppPickerChip + AppFilterBar already exist. Picker-mode init signature defined for C6 reuse: ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil). 4 new training_-prefixed analytics events. ~600 LoC est (4 new + 5 modified). Phase E compliant."
     }
   ]
 }
