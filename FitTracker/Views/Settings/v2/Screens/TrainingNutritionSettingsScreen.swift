@@ -8,6 +8,7 @@ struct TrainingNutritionSettingsScreen: View {
     @EnvironmentObject private var dataStore: EncryptedDataStore
     @EnvironmentObject private var analytics: AnalyticsService
     @State private var showExerciseLibrary = false
+    @State private var showCustomProgramList = false
 
     var body: some View {
         SettingsDetailScaffold(
@@ -44,6 +45,34 @@ struct TrainingNutritionSettingsScreen: View {
                 ) {
                     Task { await dataStore.persistToDisk() }
                 }
+            }
+
+            SettingsSectionCard(title: "Customize Program", eyebrow: "Training") {
+                Button {
+                    showCustomProgramList = true
+                } label: {
+                    HStack(spacing: AppSpacing.small) {
+                        Image(systemName: "list.bullet.rectangle.fill")
+                            .foregroundStyle(AppColor.Accent.primary)
+                            .frame(width: AppSize.tapTarget * 0.6)
+                        VStack(alignment: .leading, spacing: AppSpacing.micro) {
+                            Text("Customize Program")
+                                .font(AppText.body)
+                                .foregroundStyle(AppColor.Text.primary)
+                            Text("Active: \(CustomProgramMigration.activeProgramDisplayName(dataStore.userPreferences))")
+                                .font(AppText.caption)
+                                .foregroundStyle(AppColor.Text.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: AppIcon.forward)
+                            .font(AppText.caption)
+                            .foregroundStyle(AppColor.Text.secondary)
+                    }
+                    .padding(.vertical, AppSpacing.xSmall)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Customize training program — active: \(CustomProgramMigration.activeProgramDisplayName(dataStore.userPreferences))")
             }
 
             SettingsSectionCard(title: "Exercise Library", eyebrow: "Training") {
@@ -102,6 +131,13 @@ struct TrainingNutritionSettingsScreen: View {
         .sheet(isPresented: $showExerciseLibrary) {
             ExerciseLibraryView(source: "settings_row")
                 .environmentObject(analytics)
+        }
+        .sheet(isPresented: $showCustomProgramList) {
+            NavigationStack {
+                CustomProgramListScreen()
+                    .environmentObject(dataStore)
+                    .environmentObject(analytics)
+            }
         }
     }
 

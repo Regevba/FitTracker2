@@ -517,6 +517,12 @@ struct UserPreferences: Codable, Equatable, Sendable {
     // Conflict resolution timestamp — set on every mutation, nil for legacy data
     var lastModified: Date?
 
+    // C6 training-program-customization: user-defined custom programs +
+    // active-program selection. Default empty []/nil → fixed PPL fallback
+    // (no behavior change for legacy users). PRD §"Migration logic".
+    var customPrograms: [CustomProgram]
+    var activeProgramID: UUID?
+
     init(
         zone2LowerHR: Int = 106,
         zone2UpperHR: Int = 124,
@@ -524,7 +530,9 @@ struct UserPreferences: Codable, Equatable, Sendable {
         hrvReadyThreshold: Double = 28.0,
         nutritionGoalMode: NutritionGoalMode = .fatLoss,
         preferredStatsCarouselMetrics: [String] = UserPreferences.defaultStatsCarouselMetrics,
-        sleepGoalHours: Double = 8.0
+        sleepGoalHours: Double = 8.0,
+        customPrograms: [CustomProgram] = [],
+        activeProgramID: UUID? = nil
     ) {
         self.zone2LowerHR = zone2LowerHR
         self.zone2UpperHR = zone2UpperHR
@@ -533,6 +541,8 @@ struct UserPreferences: Codable, Equatable, Sendable {
         self.nutritionGoalMode = nutritionGoalMode
         self.preferredStatsCarouselMetrics = preferredStatsCarouselMetrics
         self.sleepGoalHours = sleepGoalHours
+        self.customPrograms = customPrograms
+        self.activeProgramID = activeProgramID
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -544,6 +554,8 @@ struct UserPreferences: Codable, Equatable, Sendable {
         case preferredStatsCarouselMetrics
         case sleepGoalHours
         case lastModified
+        case customPrograms
+        case activeProgramID
     }
 
     init(from decoder: Decoder) throws {
@@ -556,6 +568,8 @@ struct UserPreferences: Codable, Equatable, Sendable {
         preferredStatsCarouselMetrics = try container.decodeIfPresent([String].self, forKey: .preferredStatsCarouselMetrics) ?? Self.defaultStatsCarouselMetrics
         sleepGoalHours = try container.decodeIfPresent(Double.self, forKey: .sleepGoalHours) ?? 8.0
         lastModified = try container.decodeIfPresent(Date.self, forKey: .lastModified)
+        customPrograms = try container.decodeIfPresent([CustomProgram].self, forKey: .customPrograms) ?? []
+        activeProgramID = try container.decodeIfPresent(UUID.self, forKey: .activeProgramID)
     }
 }
 
