@@ -2,7 +2,7 @@
   "feature": "training-program-customization",
   "description": "Replace the fixed 6-day Push/Pull/Legs split (Models/TrainingProgramData.swift) with a user-defined custom training program. Users can: (a) pick a starting template from the gallery (current PPL, Upper/Lower, Full-body 3x/week, Bro split), (b) edit days (rename / change DayType / reorder), (c) add/remove/reorder exercises within each day from the catalog (depends on C3 read-only library), (d) save multiple programs and switch between them. Existing users keep current PPL until they explicitly create or import a different program — migration is implicit, not destructive. Closes backlog L348 (RICE 7.0, 4-6d Feature 9-phase — LARGEST in tier C carryover).",
   "work_type": "feature",
-  "current_phase": "prd",
+  "current_phase": "tasks_phase",
   "created_at": "2026-06-01T19:50:00Z",
   "state_owner": "ft2",
   "framework_version": "v7.9",
@@ -38,6 +38,25 @@
   },
   "tasks": [],
   "prd_path": "docs/product/prd/training-program-customization.md",
+  "tasks_path": ".claude/features/training-program-customization/tasks.md",
+  "tasks_total_loc_est": 1965,
+  "tasks": [
+    { "id": "T1", "title": "Data model — CustomProgram + CustomDay + ExerciseSlot + TemplateID enum", "file": "FitTracker/Models/CustomProgram.swift", "type": "new", "loc_est": 80, "status": "pending" },
+    { "id": "T2", "title": "UserPreferences extension + Codable persistence (customPrograms + activeProgramID)", "file": "FitTracker/Services/EncryptedDataStore.swift", "type": "modify", "loc_est": 25, "status": "pending" },
+    { "id": "T3", "title": "TrainingProgramData.fixedPPLDays + 4 starterTemplates static constants", "file": "FitTracker/Models/TrainingProgramData.swift", "type": "modify", "loc_est": 140, "status": "pending" },
+    { "id": "T4", "title": "CustomProgramMigration.currentProgramDays resolver + ResolvedDay struct", "file": "FitTracker/Models/CustomProgramMigration.swift", "type": "new", "loc_est": 100, "status": "pending" },
+    { "id": "T5", "title": "AnalyticsProvider constants + AnalyticsService methods (8 events + 5 params)", "file": "FitTracker/Services/Analytics/{AnalyticsProvider,AnalyticsService}.swift", "type": "modify", "loc_est": 100, "status": "pending" },
+    { "id": "T6", "title": "CustomProgramListScreen (Surface 1 — program list + activate + swipe-delete + +New)", "file": "FitTracker/Views/Settings/v2/Screens/CustomProgramListScreen.swift", "type": "new", "loc_est": 200, "status": "pending" },
+    { "id": "T7", "title": "NewProgramSheet (Surface 2 — template picker + name entry + Save activates)", "file": "FitTracker/Views/Settings/v2/Screens/NewProgramSheet.swift", "type": "new", "loc_est": 130, "status": "pending" },
+    { "id": "T8", "title": "DayEditSheet (Surface 4 — rename / DayType / weekday / duplicate)", "file": "FitTracker/Views/Settings/v2/Screens/DayEditSheet.swift", "type": "new", "loc_est": 120, "status": "pending" },
+    { "id": "T9", "title": "ExerciseSlotOverrideSheet (Surface 5 — sets/reps/rest overrides)", "file": "FitTracker/Views/Settings/v2/Screens/ExerciseSlotOverrideSheet.swift", "type": "new", "loc_est": 120, "status": "pending" },
+    { "id": "T10", "title": "CustomProgramEditorScreen (Surface 3 — composes T8+T9 + C3 picker callback)", "file": "FitTracker/Views/Settings/v2/Screens/CustomProgramEditorScreen.swift", "type": "new", "loc_est": 300, "status": "pending" },
+    { "id": "T11", "title": "Settings → Training & Nutrition row + SettingsView routing (Surface 6)", "file": "FitTracker/Views/Settings/v2/Screens/TrainingNutritionSettingsScreen.swift + SettingsView.swift", "type": "modify", "loc_est": 40, "status": "pending" },
+    { "id": "T12", "title": "TrainingPlanView + v2 consumer update — read currentProgramDays()", "file": "FitTracker/Views/Training/{,v2/}TrainingPlanView.swift", "type": "modify", "loc_est": 80, "status": "pending" },
+    { "id": "T13", "title": "project.pbxproj wiring (7 new source + 5 new test files)", "file": "FitTracker.xcodeproj/project.pbxproj", "type": "modify", "loc_est": 70, "status": "pending" },
+    { "id": "T14", "title": "Test suite — 5+1 new test files, ~25 tests, ≥90% coverage on new production files", "file": "FitTrackerTests/{CustomProgramCodable,UserPreferencesCustomPrograms,StarterTemplates,CustomProgramMigration,AnalyticsTrainingCustomProgramEvents,CustomProgramViewSmoke}Tests.swift", "type": "new", "loc_est": 370, "status": "pending" },
+    { "id": "T15", "title": "Final verify-local + case study + state.json → testing + backlog L348 + RICE 7.0 strike", "file": "docs/case-studies/training-program-customization-case-study.md + state.json + backlog.md", "type": "new+modify", "loc_est": 190, "status": "pending" }
+  ],
   "phases": {
     "research": {
       "started_at": "2026-06-01T19:50:00Z",
@@ -46,7 +65,13 @@
       "approval_signal": "continue with D1, C6 and C3"
     },
     "prd": {
-      "started_at": "2026-06-02T14:00:00Z"
+      "started_at": "2026-06-02T14:00:00Z",
+      "ended_at": "2026-06-02T19:40:00Z",
+      "approved_by": "operator",
+      "approval_signal": "continue c6"
+    },
+    "tasks_phase": {
+      "started_at": "2026-06-02T19:40:00Z"
     }
   },
   "timing": {
@@ -56,7 +81,11 @@
         "ended_at": "2026-06-02T14:00:00Z"
       },
       "prd": {
-        "started_at": "2026-06-02T14:00:00Z"
+        "started_at": "2026-06-02T14:00:00Z",
+        "ended_at": "2026-06-02T19:40:00Z"
+      },
+      "tasks_phase": {
+        "started_at": "2026-06-02T19:40:00Z"
       }
     }
   },
@@ -72,6 +101,12 @@
       "to": "prd",
       "at": "2026-06-02T14:00:00Z",
       "reason": "Phase 0 approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD authored at docs/product/prd/training-program-customization.md (~550 lines). C3 picker-mode dependency RESOLVED via C3 Phase 1 PRD §'Surface 1' defining ExerciseLibraryView(picker: ((ExerciseDefinition) -> Void)? = nil) — C6 calls with non-nil picker. FROZEN: schemaVersion=1, maxSavedProgramsPerUser=10, 4 templates, opt-in snapshot migration (NO destructive), 3 override fields (sets/reps/rest) all nil-defaulted, 7 days per program, picker-mode init signature. Data model: CustomProgram + CustomDay + ExerciseSlot, exerciseID as string reference (not copy). 6 surfaces (list / new-sheet / editor / day-edit-sheet / slot-override-sheet / Settings entry-row). 8 new training_-prefixed analytics events. 7 new + 8 modified source files, ~500 LoC tests, Phase 4 LoC est ~1700. 6 success metrics T1/T2/T3 + 5 kill criteria + 8 OQ resolved. Phase 4 begin BLOCKED on C3 reaching Phase 4 implement-complete (recommended; or stub picker with operator approval). Phase E compliant — no new gates, no schema fields."
+    },
+    {
+      "from": "prd",
+      "to": "tasks_phase",
+      "at": "2026-06-02T19:40:00Z",
+      "reason": "Phase 1 PRD approved (operator: 'continue c6'). Phase 2 Tasks at .claude/features/training-program-customization/tasks.md — 15 discrete tasks T1-T15 with dependency graph, LoC estimates totaling ~1965 (T1-T5 infra ~445, T6-T10 surfaces ~870, T11-T12 wires ~120, T13 pbxproj ~70, T14 tests ~370, T15 case study ~190). 9-commit Phase 4 landing order matching C3/C5 single-session pattern. Out-of-scope guards (8) explicit. Estimated wall time ~5-7h. Phase 4 implement BLOCKED on C3 PR #573 merging to main (picker signature reachable from main) OR operator approves stub-picker workaround."
     }
   ]
 }

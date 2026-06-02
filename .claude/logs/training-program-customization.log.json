@@ -6,7 +6,7 @@
   "current_phase": "research",
   "framework_version": "v7.9",
   "started_at": "2026-06-01T17:29:44Z",
-  "updated_at": "2026-06-02T09:47:19Z",
+  "updated_at": "2026-06-02T16:27:15Z",
   "events": [
     {
       "timestamp": "2026-06-01T17:29:44Z",
@@ -28,6 +28,19 @@
       "summary": "Phase 0 (Research) approved (operator: 'continue with D1, C6 and C3'). Phase 1 PRD at docs/product/prd/training-program-customization.md (~550 lines). C3 picker-mode dependency RESOLVED via C3 PRD Surface 1. FROZEN: 4 templates / opt-in snapshot migration / 3 override fields / 7 days per program / picker-mode init signature. 6 surfaces. 8 new training_-prefixed analytics events. 7 new + 8 modified source files. Phase 4 LoC est ~1700. 6 success metrics T1/T2/T3 + 5 kill criteria + 8 OQ resolved. Phase 4 GATED on C3 reaching implement-complete.",
       "artifacts": [
         "docs/product/prd/training-program-customization.md"
+      ],
+      "metrics": {},
+      "actor": "human_or_agent",
+      "status": "recorded",
+      "recording_mode": "contemporaneous"
+    },
+    {
+      "timestamp": "2026-06-02T16:27:15Z",
+      "event_type": "phase_transition",
+      "phase": "tasks_phase",
+      "summary": "Phase 1 PRD approved (operator: 'continue c6'). Phase 2 Tasks at .claude/features/training-program-customization/tasks.md \u2014 15 discrete tasks T1-T15 with dependency graph + LoC est ~1965 total. 9-commit Phase 4 landing order: T1+T2+T3 infra > T4+T5 resolver+analytics > T6 list > T7 new-sheet > T8+T9 sub-sheets > T10 editor (C3 picker) > T11+T12 wires > T13+T14 pbxproj+tests > T15 case-study. ~5-7h estimated. Phase 4 BLOCKED on C3 PR #573 merging to main OR operator approves stub-picker workaround.",
+      "artifacts": [
+        ".claude/features/training-program-customization/tasks.md"
       ],
       "metrics": {},
       "actor": "human_or_agent",
